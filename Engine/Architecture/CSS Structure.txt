@@ -1,0 +1,48 @@
+﻿
+Title: CSS Structure
+
+
+Topic: Index Page
+_______________________________________________________________________________
+
+(start text)
+
+	<body NDPage NDIndexPage [browser classes]>
+
+		<#NDHeader>
+			<#HTitle>...</#HTitle>
+			<#HSubTitle>...</#HSubTitle>
+		</#NDHeader>
+
+		<#NDMenu>
+		</#NDMenu>
+
+		<#NDContent>
+		</#NDContent>
+
+		<#NDFooter>
+			<#FCopyright>...</#FCopyright>
+			<#FTimeStamp>...</#FTimeStamp>
+			<#FGeneratedBy>...</#FGeneratedBy>
+		</#NDFooter>
+
+	</body NDPage NDIndexPage>
+
+(end)
+
+Browser Classes:
+
+	If certain browsers are detected, these classes are added to the body element:
+	- IE6
+	- IE7
+
+
+Topic: Content Page
+_______________________________________________________________________________
+
+(start text)
+
+	<body NDPage NDContentPage>
+	</body NDPage NDContentPage>
+
+(end)

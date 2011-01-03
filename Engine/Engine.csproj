@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F7569B05-FFFD-4084-8F33-760F3E1916CD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GregValure.NaturalDocs.Engine</RootNamespace>
+    <AssemblyName>NaturalDocs.Engine</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SQLITE_UTF8</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SQLITE_UTF8</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\BinaryFile.cs" />
+    <Compile Include="Source\CodeDB\Accessor.cs" />
+    <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
+    <Compile Include="Source\CodeDB\ChangeNotifier.cs" />
+    <Compile Include="Source\CodeDB\EventAccessor.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\LockMinimumNotMet.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\TopicStringMustHaveContent.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\TopicValueMustBeNonZero.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\TopicValueMustBeZero.cs" />
+    <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
+    <Compile Include="Source\CodeDB\InfoTableID.cs" />
+    <Compile Include="Source\CodeDB\Lock.cs" />
+    <Compile Include="Source\CodeDB\Manager.cs" />
+    <Compile Include="Source\CodeDB\Manager.SQL.cs" />
+    <Compile Include="Source\Collections\SortedStringTable.cs" />
+    <Compile Include="Source\Collections\StringSet.cs" />
+    <Compile Include="Source\Collections\StringTable.cs" />
+    <Compile Include="Source\Collections\StringToStringTable.cs" />
+    <Compile Include="Source\Comments\LinkInterpretation.cs" />
+    <Compile Include="Source\Comments\Manager.cs" />
+    <Compile Include="Source\Comments\Parser.cs" />
+    <Compile Include="Source\Comments\Parsers\LineFinder.cs" />
+    <Compile Include="Source\Comments\Parsers\NaturalDocs.cs" />
+    <Compile Include="Source\Comments\PossibleDocumentationComment.cs" />
+    <Compile Include="Source\Comments\Type.cs" />
+    <Compile Include="Source\ConfigFile.cs" />
+    <Compile Include="Source\Config\ConfigData.cs" />
+    <Compile Include="Source\Config\ConfigFileParser.cs" />
+    <Compile Include="Source\Config\ProjectInfo.cs" />
+    <Compile Include="Source\Config\Entries\HTMLOutputFolder.cs" />
+    <Compile Include="Source\Config\Entries\IgnoredSourceFolder.cs" />
+    <Compile Include="Source\Config\Entries\IgnoredSourceFolderPatten.cs" />
+    <Compile Include="Source\Config\Entries\InputFolder.cs" />
+    <Compile Include="Source\Config\Entries\XMLOutputFolder.cs" />
+    <Compile Include="Source\Config\Entry.cs" />
+    <Compile Include="Source\Config\FilterEntry.cs" />
+    <Compile Include="Source\Config\InputEntry.cs" />
+    <Compile Include="Source\Config\Manager.cs" />
+    <Compile Include="Source\Config\OutputEntry.cs" />
+    <Compile Include="Source\Config\PropertyResult.cs" />
+    <Compile Include="Source\Delegates.cs" />
+    <Compile Include="Source\Errors\Error.cs" />
+    <Compile Include="Source\Errors\ErrorList.cs" />
+    <Compile Include="Source\Exceptions\ArrayDidntHaveEvenLength.cs" />
+    <Compile Include="Source\Exceptions\FileAlreadyOpen.cs" />
+    <Compile Include="Source\Exceptions\NameChangeDifferedInMoreThanCapitalization.cs" />
+    <Compile Include="Source\Exceptions\RelativeCompareOfIteratorsNotOnSameBase.cs" />
+    <Compile Include="Source\Exceptions\StringNotInValidFormat.cs" />
+    <Compile Include="Source\Exceptions\Thread.cs" />
+    <Compile Include="Source\Exceptions\UserFriendly.cs" />
+    <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
+    <Compile Include="Source\Output\Builders\HTML.Source.cs" />
+    <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
+    <Compile Include="Source\Output\Shrinker.cs" />
+    <Compile Include="Source\Output\Style.cs" />
+    <Compile Include="Source\Output\Styles\FileSource.cs" />
+    <Compile Include="Source\Output\Styles\HTMLStyle.cs" />
+    <Compile Include="Source\Path.cs" />
+    <Compile Include="Source\Files\File.cs" />
+    <Compile Include="Source\Files\FileFlags.cs" />
+    <Compile Include="Source\Files\FileSource.cs" />
+    <Compile Include="Source\Files\FileSources\Folder.cs" />
+    <Compile Include="Source\Files\FileType.cs" />
+    <Compile Include="Source\Files\Filter.cs" />
+    <Compile Include="Source\Files\Filters\IgnoredSourceFolder.cs" />
+    <Compile Include="Source\Files\Filters\IgnoredSourceFolderPattern.cs" />
+    <Compile Include="Source\Files\Filters\IgnoredSourceFolderRegex.cs" />
+    <Compile Include="Source\Files\InputType.cs" />
+    <Compile Include="Source\Files\Manager.cs" />
+    <Compile Include="Source\Files\AddAllFilesStatus.cs" />
+    <Compile Include="Source\Files\ProcessChangesStatus.cs" />
+    <Compile Include="Source\IDObjects\Base.cs" />
+    <Compile Include="Source\IDObjects\Manager.cs" />
+    <Compile Include="Source\IDObjects\NumberSet.cs" />
+    <Compile Include="Source\Instance.cs" />
+    <Compile Include="Source\Languages\AccessLevel.cs" />
+    <Compile Include="Source\Languages\ConfigFileLanguage.cs" />
+    <Compile Include="Source\Languages\Language.cs" />
+    <Compile Include="Source\Languages\Language.Parsing.cs" />
+    <Compile Include="Source\Languages\Manager.cs" />
+    <Compile Include="Source\Languages\ParseState.cs" />
+    <Compile Include="Source\Languages\ShebangStringComparer.cs" />
+    <Compile Include="Source\Locale.cs" />
+    <Compile Include="Source\TextConverter.cs" />
+    <Compile Include="Source\Output\Builder.cs" />
+    <Compile Include="Source\Output\Builders\HTML.cs" />
+    <Compile Include="Source\Output\Builders\XML.cs" />
+    <Compile Include="Source\Output\Manager.cs" />
+    <Compile Include="Source\SQLite\API.cs" />
+    <Compile Include="Source\SQLite\Connection.cs" />
+    <Compile Include="Source\SQLite\Exceptions\UnexpectedResult.cs" />
+    <Compile Include="Source\SQLite\Query.cs" />
+    <Compile Include="Source\StringExtensions.cs" />
+    <Compile Include="Source\Symbol.cs" />
+    <Compile Include="Source\Thread.cs" />
+    <Compile Include="Source\Tokenization\Exceptions\InvalidConversion.cs" />
+    <Compile Include="Source\Tokenization\Line.cs" />
+    <Compile Include="Source\Tokenization\LineBoundsMode.cs" />
+    <Compile Include="Source\Tokenization\LineIterator.cs" />
+    <Compile Include="Source\Tokenization\Token.cs" />
+    <Compile Include="Source\Tokenization\TokenIterator.cs" />
+    <Compile Include="Source\Tokenization\Tokenizer.cs" />
+    <Compile Include="Source\Tokenization\TokenType.cs" />
+    <Compile Include="Source\Topic.cs" />
+    <Compile Include="Source\TopicTypes\ConfigFileTopicType.cs" />
+    <Compile Include="Source\TopicTypes\Manager.cs" />
+    <Compile Include="Source\TopicTypes\Tag.cs" />
+    <Compile Include="Source\TopicTypes\TopicType.cs" />
+    <Compile Include="Source\Version.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Architecture\Code Conventions.txt" />
+    <Content Include="Architecture\Compilation Symbols.txt" />
+    <Content Include="Architecture\CSS Structure.txt" />
+    <Content Include="Architecture\Database Layout\EndingSymbols.txt" />
+    <Content Include="Architecture\Database Layout\System.txt" />
+    <Content Include="Architecture\Database Layout\Topics.txt" />
+    <Content Include="Architecture\File Parsing.txt" />
+    <Content Include="Architecture\ID Deletions.txt" />
+    <Content Include="Architecture\NDMarkup Format.txt" />
+    <Content Include="Build Scripts\PostBuild.js" />
+    <Content Include="Resources\Config\Languages.txt" />
+    <Content Include="Resources\Config\Parser.txt" />
+    <Content Include="Resources\Config\Topics.txt" />
+    <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="NaturalDocs.Engine.Regex, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Resources\Regex\Release\NaturalDocs.Engine.Regex.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>"$(ProjectDir)Build Scripts\PostBuild.js" Engine $(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

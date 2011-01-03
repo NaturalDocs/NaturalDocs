@@ -1,0 +1,520 @@
+﻿Format: 2.0 (Development Release 01-26-2009)
+
+# This is the main Natural Docs topics file.  If you change anything here, it
+# will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
+# you edit the version in your project configuration folder instead.  This
+# will keep your changes separate so you won't have to reapply them whenever
+# you upgrade Natural Docs.
+
+
+# Tags
+# ------------------------------------------------------------------------
+# Tags allow you to create documentation that only includes topics marked
+# with that tag.
+
+Tags:
+   API
+
+
+# Topic Types
+#-------------------------------------------------------------------------
+# Each Natural Docs topic has a corresponding type which determine things
+# like how they are indexed.
+#
+# Topic Type: [name]
+#    Creates a new topic type.
+#
+# Display Name: [name]
+# Plural Display Name: [name]
+#    The singular and plural name of the topic type as it should appear in the
+#    output.  Change these instead of the topic type name because most of the
+#    default types are required to be defined with their current names.
+#
+# Display Name from Locale: [identifier]
+# Plural Display Name from Locale: [identifier]
+#    The identifiers in the current translation file that define the singular
+#    and plural names of the topic type as it should appear in the output.  If
+#    you want to change the name of a topic type in the output, you should
+#    remove these properties and use the versions without "from Locale"
+#    instead.
+#
+# Simple Identifier: [name]
+#    The name of the topic type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Index: [yes|no|with [topic type]]
+#    Whether an index should be generated for the topic type.  Defaults to
+#    yes.  If "with [topic type]" is specified, the type is indexed but only
+#    as part of the other topic type's index.
+#
+# Scope: [normal|start|end|always global]
+#    How the topic affects scope.  Defaults to normal.
+#    normal - The topic stays within the current scope.
+#    start - The topic starts a new scope for all the topics beneath it, like
+#            class topics.
+#    end - The topic resets the scope back to global for all the topics
+#          beneath it, like section topics.
+#    always global - The topic is defined as a global symbol, but does not
+#                    change the scope for any other topics.
+#
+# Class Hierarchy: [yes|no]
+#    Whether the topic is part of the class hierarchy.  Defaults to no.
+#
+# Variable Type: [yes|no]
+#    Whether the topic can be used as a variable type.  Defaults to no.
+#
+# Break Lists: [yes|no]
+#    Whether list topics should be broken into individual topics in the
+#    output.  Defaults to no.
+#
+# List Position: [number]
+#    A number representing where this topic type should appear relative to the
+#    other types in a list, such as in HTML summaries.
+#
+# Can Change To: [topic type], [topic type] ...
+#    Lets Natural Docs change the topic type if you use a keyword from this
+#    one but Natural Docs thinks it should be a different one on the list.
+#    This is what lets you document constructors with function keywords, for
+#    example.  Only works with full language support and the built in types.
+#
+# Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of the topic type's keywords.  Each line after the heading is the
+#    keyword and optionally its plural form for list topics.
+
+
+Topic Type: Class
+
+   Display Name from Locale: Topics.txt.Class.DisplayName
+   Plural Display Name from Locale: Topics.txt.Class.PluralDisplayName
+
+   Scope: Start
+   Class Hierarchy: Yes
+   Variable Type: Yes
+   List Position: 1100
+   Can Change To: Interface, Struct
+
+   Keywords:
+      class, classes
+      package, packages
+      namespace, namespaces
+
+
+Topic Type: Interface
+
+   Display Name from Locale: Topics.txt.Interface.DisplayName
+   Plural Display Name from Locale: Topics.txt.Interface.PluralDisplayName
+
+   Index: with Class
+   Scope: Start
+   Class Hierarchy: Yes
+   List Position: 1200
+
+   Keywords:
+      interface, interfaces
+
+
+Topic Type: Struct
+
+   Display Name from Locale: Topics.txt.Struct.DisplayName
+   Plural Display Name from Locale: Topics.txt.Struct.PluralDisplayName
+
+   Index: with Class
+   Scope: Start
+   Class Hierarchy: Yes
+   Variable Type: Yes
+   List Position: 1300
+
+   Keywords:
+      struct, structs
+      structure, structures
+
+
+Topic Type: Section
+
+   Display Name from Locale: Topics.txt.Section.DisplayName
+   Plural Display Name from Locale: Topics.txt.Section.PluralDisplayName
+
+   Index: No
+   Scope: End
+   List Position: 2100
+
+   Keywords:
+      section
+      title
+
+
+Topic Type: Group
+
+   Display Name from Locale: Topics.txt.Group.DisplayName
+   Plural Display Name from Locale: Topics.txt.Group.PluralDisplayName
+
+   Index: No
+   List Position: 2200
+
+   Keywords:
+      group
+
+
+Topic Type: Information
+
+   Display Name from Locale: Topics.txt.Information.DisplayName
+   Plural Display Name from Locale: Topics.txt.Information.PluralDisplayName
+
+   Index: No
+   List Position: 3100
+
+   Keywords:
+      topic, topics
+      about, list
+
+
+Topic Type: File
+
+   Display Name from Locale: Topics.txt.File.DisplayName
+   Plural Display Name from Locale: Topics.txt.File.PluralDisplayName
+
+   Scope: Always Global
+   List Position: 3200
+
+   Keywords:
+      file, files
+      program, programs
+      script, scripts
+      document, documents
+      doc, docs
+      header, headers
+
+
+Topic Type: Type
+
+   Display Name from Locale: Topics.txt.Type.DisplayName
+   Plural Display Name from Locale: Topics.txt.Type.PluralDisplayName
+
+   Variable Type: Yes
+   List Position: 4100
+   Can Change To: Enumeration, Delegate
+
+   Keywords:
+      type, types
+      typedef, typedefs
+
+
+Topic Type: Enumeration
+
+   Display Name from Locale: Topics.txt.Enumeration.DisplayName
+   Plural Display Name from Locale: Topics.txt.Enumeration.PluralDisplayName
+
+   Index: with Type
+   Variable Type: Yes
+   List Position: 4200
+   Can Change To: Variable
+
+   Keywords:
+      enum, enums
+      enumeration, enumerations
+
+
+Topic Type: Delegate
+
+   Display Name from Locale: Topics.txt.Delegate.DisplayName
+   Plural Display Name from Locale: Topics.txt.Delegate.PluralDisplayName
+
+   Index: with Type
+   Variable Type: Yes
+   List Position: 4300
+
+   Keywords:
+      delegate, delegates
+
+
+Topic Type: Constructor
+
+   Display Name from Locale: Topics.txt.Constructor.DisplayName
+   Plural Display Name from Locale: Topics.txt.Constructor.PluralDisplayName
+
+   Index: with Function
+   Break Lists: Yes
+   List Position: 4500
+
+   Keywords:
+      constructor, constructors
+
+
+Topic Type: Destructor
+
+   Display Name from Locale: Topics.txt.Destructor.DisplayName
+   Plural Display Name from Locale: Topics.txt.Destructor.PluralDisplayName
+
+   Index: with Function
+   Break Lists: Yes
+   List Position: 4600
+
+   Keywords:
+      destructor, destructors
+
+
+Topic Type: Function
+
+   Display Name from Locale: Topics.txt.Function.DisplayName
+   Plural Display Name from Locale: Topics.txt.Function.PluralDisplayName
+
+   Break Lists: Yes
+   List Position: 4700
+   Can Change To: Constructor, Destructor, Operator, Delegate, Event
+
+   Keywords:
+      function, functions
+      func, funcs
+      procedure, procedures
+      proc, procs
+      routine, routines
+      subroutine, subroutines
+      sub, subs
+      method, methods
+      callback, callbacks
+
+
+Topic Type: Operator
+
+   Display Name from Locale: Topics.txt.Operator.DisplayName
+   Plural Display Name from Locale: Topics.txt.Operator.PluralDisplayName
+
+   Index: with Function
+   Break Lists: Yes
+   List Position: 4800
+
+   Keywords:
+      operator, operators
+
+
+Topic Type: Macro
+
+   Display Name from Locale: Topics.txt.Macro.DisplayName
+   Plural Display Name from Locale: Topics.txt.Macro.PluralDisplayName
+
+   List Position: 4900
+
+   Keywords:
+      define, defines
+      def, defs
+      macro, macros
+
+
+Topic Type: Property
+
+   Display Name from Locale: Topics.txt.Property.DisplayName
+   Plural Display Name from Locale: Topics.txt.Property.PluralDisplayName
+
+   Index: with Function
+   List Position: 5000
+   Can Change To: Variable
+
+   Keywords:
+      property, properties
+      prop, props
+
+
+Topic Type: Event
+
+   Display Name from Locale: Topics.txt.Event.DisplayName
+   Plural Display Name from Locale: Topics.txt.Event.PluralDisplayName
+
+   List Position: 5100
+
+   Keywords:
+      event, events
+
+
+Topic Type: Constant
+
+   Display Name from Locale: Topics.txt.Constant.DisplayName
+   Plural Display Name from Locale: Topics.txt.Constant.PluralDisplayName
+
+   List Position: 5200
+
+   Keywords:
+      constant, constants
+      const, consts
+
+
+Topic Type: Variable
+
+   Display Name from Locale: Topics.txt.Variable.DisplayName
+   Plural Display Name from Locale: Topics.txt.Variable.PluralDisplayName
+
+   Variable Type: Yes
+   List Position: 5300
+   Can Change To: Constant, Property, Event, Database Field
+
+   Keywords:
+      variable, variables
+      var, vars
+      integer, integers
+      int, ints
+      uint, uints
+      long, longs
+      ulong, ulongs
+      short, shorts
+      ushort, ushorts
+      byte, bytes
+      ubyte, ubytes
+      sbyte, sbytes
+      float, floats
+      double, doubles
+      real, reals
+      decimal, decimals
+      scalar, scalars
+      array, arrays
+      arrayref, arrayrefs
+      hash, hashes
+      hashref, hashrefs
+      bool, bools
+      boolean, booleans
+      flag, flags
+      bit, bits
+      bitd, bitfields
+      field, fields
+      pointer, pointers
+      ptr, ptrs
+      reference, references
+      ref, refs
+      object, objects
+      obj, objs
+      character, characters
+      wcharacter, wcharacters
+      char, chars
+      wchar, wchars
+      string, strings
+      wstring, wstrings
+      str, strs
+      wstr, wstrs
+      handle, handles
+
+
+Topic Type: Database
+
+   Display Name from Locale: Topics.txt.Database.DisplayName
+   Plural Display Name from Locale: Topics.txt.Database.PluralDisplayName
+
+   List Position: 6100
+
+   Keywords:
+      database, databases
+      db, dbs
+
+
+Topic Type: Database Table
+
+   Display Name from Locale: Topics.txt.DatabaseTable.DisplayName
+   Plural Display Name from Locale: Topics.txt.DatabaseTable.PluralDisplayName
+
+   Scope: Start
+   List Position: 6200
+
+   Keywords:
+      table, tables
+      database table, database tables
+      databasetable, databasetables
+      db table, db tables
+      dbtable, dbtables
+      
+      
+Topic Type: Database Field
+
+	Display Name from Locale: Topics.txt.DatabaseField.DisplayName
+	Plural Display Name from Locale: Topics.txt.DatabaseField.PluralDisplayName
+	
+	List Position: 6300
+	
+	Keywords:
+		database field, database fields
+		databasefield, databasefields
+		db field, db fields
+		dbfield, dbfields
+		database column, database columns
+		databasecolumn, databasecolumns
+		db column, db columns
+		dbcolumn, dbcolumns
+		column, columns
+
+
+Topic Type: Database View
+
+   Display Name from Locale: Topics.txt.DatabaseView.DisplayName
+   Plural Display Name from Locale: Topics.txt.DatabaseView.PluralDisplayName
+
+   Scope: Start
+   List Position: 6400
+
+   Keywords:
+      view, views
+      database view, database views
+      databaseview, databaseviews
+      db view, db views
+      dbview, dbviews
+
+
+Topic Type: Database Index
+
+   Display Name from Locale: Topics.txt.DatabaseIndex.DisplayName
+   Plural Display Name from Locale: Topics.txt.DatabaseIndex.PluralDisplayName
+
+   List Position: 6500
+
+   Keywords:
+      index, indexes
+      index, indices
+      database index, database indexes
+      database index, database indices
+      databaseindex, databaseindexes
+      databaseindex, databaseindices
+      db index, db indexes
+      db index, db indices
+      dbindex, dbindexes
+      dbindex, dbindices
+      key, keys
+      database key, database keys
+      databasekey, databasekeys
+      db key, db keys
+      dbkey, dbkeys
+      primary key, primary keys
+      primarykey, primarykeys
+      database primary key, database primary keys
+      databaseprimarykey, databaseprimarykeys
+      db primary key, db primary keys
+      dbprimarykey, dbprimarykeys
+
+
+Topic Type: Database Cursor
+
+   Display Name from Locale: Topics.txt.DatabaseCursor.DisplayName
+   Plural Display Name from Locale: Topics.txt.DatabaseCursor.PluralDisplayName
+
+   List Position: 6600
+
+   Keywords:
+      cursor, cursors
+      database cursor, database cursors
+      databasecursor, databasecursors
+      db cursor, db cursors
+      dbcursor, dbcursors
+
+
+Topic Type: Database Trigger
+
+   Display Name from Locale: Topics.txt.DatabaseTrigger.DisplayName
+   Plural Display Name from Locale: Topics.txt.DatabaseTrigger.PluralDisplayName
+
+   List Position: 6700
+
+   Keywords:
+      trigger, triggers
+      database trigger, database triggers
+      databasetrigger, databasetriggers
+      db trigger, db triggers
+      dbtrigger, dbtriggers

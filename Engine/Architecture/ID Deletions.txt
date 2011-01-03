@@ -1,0 +1,49 @@
+﻿
+Title: ID Deletions
+_______________________________________________________________________________
+
+This is actually an important issue to keep track of because ID numbers are managed in <IDObjects.Managers> and/or
+<IDObjects.NumberSets>.  When a NumberSet assigns a new ID number it gives out the lowest one available, which
+means that IDs which are deleted will probably be reused right away.  That means it's important to keep track of exactly 
+when they are deleted so that you know there are no references left behind when it happens.  Otherwise an ID number's 
+meaning may change out from under code unexpectedly.
+
+
+Topic: Topic Type, Language, and Tag IDs
+
+	These are easy.  These IDs can only be changed by changing <Topics.txt> or <Languages.txt> between runs.  
+	Changing those files in a substantial way automatically triggers a complete rebuild, so any references to them in 
+	CodeDB or other areas are thrown out and the data regenerated.  As such you don't have to worry about deletions
+	for these types of IDs.
+	
+	
+Topic: File IDs
+
+	File IDs are assigned by <Files.Manager>.  First the IDs from the previous run are loaded from <Files.nd>.  Then as
+	the program executes, new files are added to it and old ones are culled by notifications provided by external code.
+	When it is notified of a file deletion, it first puts it on a list so that builders can claim and process it.  Even after
+	the file is successfully processed, the ID remains assigned and the file information for it remains intact.  Only after
+	<Files.Manager.Cleanup()> is called is the file information destroyed and the ID released.
+
+
+Topic: Topic IDs
+
+	Topic IDs are assigned by <CodeDB.Manager>.  New ones are assigned when an accessor adds one to the database,
+	and the IDs are removed immediately when it deletes them.  However, the accessor needs to have a write lock on
+	the database in order to perform the deletion, and that lock is not released until after the notification event is fired 
+	and handled.  So while the ID will already be deleted at the time of the event handlers, it could not possibly be 
+	reassigned until after they have completed.
+	
+	Builders should not need deleted topic IDs to stick around.  They should be translating the add/change/delete events
+	into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
+	notification.
+	
+	
+Topic: Ending Symbol IDs 
+
+	Ending Symbol IDs should not be used anywhere except internally by <CodeDB.Manager>.  As such there should be
+	no external references to them.
+	
+	Regardless, when a topic is deleted the ending symbol ID is put on a list to be checked for deletion during 
+	<CodeDB.Manager.Cleanup()>.  So deleted IDs stick around until then simply because we're delaying the effort of
+	determining whether they're actually deleted or not until then.

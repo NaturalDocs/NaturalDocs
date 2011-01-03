@@ -1,0 +1,37 @@
+﻿
+Database Table: CodeDB.System
+_______________________________________________________________________________
+
+A simple, one-row table that stores various information about the database.
+
+
+Column: Version
+	
+	(SQL Prototype)
+		Version TEXT NOT NULL
+	(end)
+	
+	The version string of the database.  This will always be present no matter what version of Natural Docs is being used,
+	so you can safely do "SELECT Version from System" on any past or future version of Natural Docs based on SQLite.
+	
+	
+Column: UsedTopicIDs
+
+	(SQL Prototype)
+		UsedTopicIDs TEXT NOT NULL
+	(end)
+
+	A string containing the <GregValure.NaturalDocs.Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.  
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
+	
+	
+Column: UsedEndingSymbolIDs
+
+	(SQL Prototype)
+		UsedEndingSymbolIDs TEXT NOT NULL
+	(end)
+
+	A string containing the <GregValure.NaturalDocs.Engine.IDObjects.NumberSet> for all the used ending symbol IDs in 
+	<CodeDB.EndingSymbols>.  This is only used for storage between Natural Docs executions.  It is not continually updated during 
+	execution.
+	

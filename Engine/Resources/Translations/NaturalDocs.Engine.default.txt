@@ -1,0 +1,823 @@
+﻿#
+# Natural Docs Default Language File, English (United States)
+#
+# To create a new language file, copy this one and rename it to replace
+# "default" with the locale code in all lowercase, such as 
+# "NaturalDocs.Engine.en-us.txt".  You can also omit the extension to have it
+# apply to all locales in that language, such as "NaturalDocs.Engine.en.txt".
+# They inherit from each other, so anything not found in 
+# NaturalDocs.Engine.en-us.txt will be taken from NaturalDocs.Engine.en.txt,
+# and if it's not in there, from NaturalDocs.Engine.default.txt.
+#
+
+# This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
+# Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
+# Refer to License.txt for the complete details
+
+
+
+#
+# HTML Generation
+#______________________________________________________________________________
+
+HTML.PageTitle(projectTitle): {0} Documentation
+HTML.HeaderTitle(projectTitle): {0}
+HTML.HeaderSubTitle(projectSubTitle): {0}
+
+HTML.DefaultPageTitle: Source Documentation
+HTML.DefaultHeaderTitle: Source Documentation
+
+TimeStamp.Month1: January
+TimeStamp.ShortMonth1: Jan
+TimeStamp.Month2: February
+TimeStamp.ShortMonth2: Feb
+TimeStamp.Month3: March
+TimeStamp.ShortMonth3: Mar
+TimeStamp.Month4: April
+TimeStamp.ShortMonth4: Apr
+TimeStamp.Month5: May
+TimeStamp.ShortMonth5: May
+TimeStamp.Month6: June
+TimeStamp.ShortMonth6: Jun
+TimeStamp.Month7: July
+TimeStamp.ShortMonth7: Jul
+TimeStamp.Month8: August
+TimeStamp.ShortMonth8: Aug
+TimeStamp.Month9: September
+TimeStamp.ShortMonth9: Sep
+TimeStamp.Month10: October
+TimeStamp.ShortMonth10: Oct
+TimeStamp.Month11: November
+TimeStamp.ShortMonth11: Nov
+TimeStamp.Month12: December
+TimeStamp.ShortMonth12: Dec
+
+
+#
+# Errors
+#______________________________________________________________________________
+
+Error.NoFileSourcesDefined: You did not define any file sources.
+Error.FolderDoesntExist(type, name): The {0} folder {1} doesn't exist.
+Error.SourceFolderIsIgnored(sourceFolder): The source folder {0} matches a filter, output folder, or configuration folder.
+
+Error.NoProjectConfigFolder: You did not define a project configuration folder.
+Error.ProjectConfigFolderDoesntExist(name): The project configuration folder {0} doesn't exist.
+Error.CantCreateWorkingDataFolder(name): Could not create working data folder {0}.
+Error.ProjectConfigFolderCannotEqualSystemConfigFolder: The project configuration folder cannot be the same as Natural Docs' configuration folder.
+Error.TabWidthMustBeANumber: The tab width must be a number.
+Error.TabWidthMustBeGreaterThanZero: The tab width must be greater than zero.
+
+Error.CouldNotWriteToDataFile(name): Could not write to data file {0}.
+Error.NoInputEntries: There were no input entries in Project.txt or the command line.
+Error.NoOutputEntries: There were no output entries in Project.txt or the command line.
+
+Error.CouldNotCreateOutputFolder(name): Could not create output folder {0}.
+Error.CouldNotCreateOutputFile(name): Could not create output file {0}.
+
+CrashReport.Message: Crash Message:
+CrashReport.CausedBy: Caused By:
+CrashReport.StackTrace: Stack Trace:
+CrashReport.GeneratedOn(date): Generated on {0}
+CrashReport.Platform: Platform
+CrashReport.Version: Version
+CrashReport.CommandLine: Command Line
+
+Thread.ParentThread: Parent Thread
+Thread.ThreadPoolThread: Thread Pool Member
+Thread.UnnamedThread: Unnamed Thread
+
+
+
+#
+# General Configuration Files
+# _____________________________________________________________________________
+
+ConfigFile.DoesNotExist(name): The configuration file {0} does not exist.
+ConfigFile.CouldNotOpen(name): Could not open configuration file {0}.
+ConfigFile.CouldNotWriteTo(name): Could not write to configuration file {0}.
+ConfigFile.LineNotInIdentifierValueFormat: Lines must be in [name]: [value] format.
+ConfigFile.NotAValidIdentifier(identifier): {0} is not a valid identifier.
+ConfigFile.NotAValidValue(value): {0} is not a valid value.
+ConfigFile.DidntStartWithFormat(name): The first line in configuration file {0} must be the Format line.
+ConfigFile.FormatNotAValidVersionString(versionString): "{0}" is not a valid value for the Format line.
+ConfigFile.RequiredIdentifierNotDefined(identifier): The identifier "{0}" must be defined.
+ConfigFile.RequiredIdentifiersNotDefined(identifiers): The following identifiers must be defined: {0}.
+
+ConfigFile.ErrorPrefix: ERROR:
+ConfigFile.ErrorInThisFile: There is an error in this file.  Search for ERROR to find it.
+ConfigFile.ErrorsInThisFile(count): There are {0} errors in this file.  Search for ERROR to find them.
+ConfigFile.ErrorsInThisFileRegex: ^# There (?:is an error|are [0-9]+ errors) in this file\.  Search for ERROR to find (?:it|them)\.
+
+
+
+
+#
+# Project.txt
+# _____________________________________________________________________________
+
+
+Project.txt.SourceFolderDoesNotExist(folder): The source folder {0} does not exist.
+Project.txt.IgnoredSourceFolderDoesNotExist(folder): The ignored source folder {0} does not exist.
+Project.txt.ImageFolderDoesNotExist(folder): The image folder {0} does not exist.
+Project.txt.OutputFolderDoesNotExist(folder): The output folder {0} does not exist.
+Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greater than zero.
+Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to source folders.
+Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
+
+Project.txt.FileHeader.multiline {{{
+# This is the file you use to provide information about your project.  It can
+# also be used to specify input and output settings so you don't have to
+# include them on the command line.
+}}}
+
+Project.txt.ProjectInfoHeader.multiline {{{
+# Project Information
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.ProjectInfoHeaderText.multiline {{{
+# This is where you specify general information about your project.
+}}}
+
+Project.txt.TitleSyntax.multiline {{{
+# Title: [text]
+#    The name of your project.  (R) and (TM) will be converted to their
+#    respective symbols.
+}}}
+Project.txt.SubtitleSyntax.multiline {{{
+# Subtitle: [text]
+#    A subtitle for your project.
+}}}
+Project.txt.CopyrightSyntax.multiline {{{
+# Copyright: [text]
+#    The copyright notice for your project.  (C) will be converted to the
+#    copyright symbol.
+}}}
+Project.txt.TimestampSyntax.multiline {{{
+# Timestamp: [text]
+#    Text explaining when the documentation was generated.  The following
+#    substitutions are performed:
+}}}
+Project.txt.TimestampSubstitutions(shortYear, longYear).multiline {{{
+#    m     - Single digit month, where applicable.  January is "1".
+#    mm    - Always double digit month.  January is "01".
+#    mon   - Short month word.  January is "Jan".
+#    month - Long month word.  January is "January".
+#    d     - Single digit day, where applicable.  1 is "1".
+#    dd    - Always double digit day.  1 is "01".
+#    day   - Day with text extension.  1 is "1st".
+#    yy    - Double digit year.  {1} is "{0}".
+#    yyyy  - Four digit year.  {1} is "{1}".
+#    year  - Four digit year.  {1} is "{1}".
+}}}
+Project.txt.StyleSyntax.multiline {{{
+# Style: [style]
+#    The style to apply to the generated output.
+}}}
+
+Project.txt.InputHeader.multiline {{{
+# Input
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.InputHeaderText.multiline {{{
+# This is where you specify what files and folders Natural Docs should be 
+# scanning.  If you use any of these options on the command line, this entire
+# section is ignored except for names and numbers.
+#
+# All paths are relative to the project folder, which lets this file remain
+# portable across computers and not cause problems in version control systems.
+# You can enter absolute paths and they will be converted automatically.
+}}}
+
+Project.txt.SourceFolderSyntax.multiline {{{
+# Source Folder: [path]
+#    Name: [name]
+#
+#    Specifies a folder which will be searched for source files.  If you have
+#    more than one, add the Name property to set how it will show up in the
+#    menu.
+}}}
+
+Project.txt.ImageFolderSyntax.multiline {{{
+# Image Folder: [path]
+#    Specifies a folder which will be searched for image files.
+}}}
+
+Project.txt.FilterHeader.multiline {{{
+# Filtering
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.FilterHeaderText.multiline {{{
+# If there are any subfolders of the input folders that you would like Natural
+# Docs to ignore, they can be specified here.  If you use any of these options
+# on the command line, this entire section is ignored.
+}}}
+
+Project.txt.IgnoreSourceFolderSyntax.multiline {{{
+# Ignore Source Folder: [path]
+#    Tells Natural Docs to skip this folder when scanning files.
+}}}
+
+Project.txt.IgnoreSourceFolderPatternSyntax.multiline {{{
+# Ignore Source Folder Pattern: [pattern]
+#    Tells Natural Docs to skip all folders which match this pattern when
+#    scanning files.  ? matches a single character, * matches zero or more
+#    characters.  It applies to the entire folder name, so "cli" will not 
+#    match "client", although "cli*" will.
+}}}
+
+Project.txt.OutputHeader.multiline {{{
+# Output
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.OutputHeaderText.multiline {{{
+# This is where you specify what kind of documentation you want Natural Docs
+# to build and where it should be put.  If you use any of these options on the
+# command line, this entire section is ignored except for secondary settings.
+#
+# All paths are relative to the project folder, which lets this file remain
+# portable across computers and not cause problems in version control systems.
+# You can enter absolute paths and they will be converted automatically.
+#
+# You can override any of the project information settings under each entry,
+# so if you have multiple output folders you can give them each different
+# styles or subtitles.
+}}}
+
+Project.txt.HTMLOutputFoldersSyntax.multiline {{{
+# HTML Output Folder: [path]
+#    [Project Information]
+#
+#    Generates HTML documentation in the specified folder.
+}}}
+
+Project.txt.XMLOutputFoldersSyntax.multiline {{{
+# XML Output Folder: [path]
+#    [Project Information]
+#
+#    Generates XML documentation in the specified folder.
+}}}
+
+Project.txt.GlobalSettingsHeader.multiline {{{
+# Global Settings
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.GlobalSettingsHeaderText.multiline {{{
+# Other settings that apply to your entire project.  Settings specified on the
+# command line override the settings here.
+}}}
+
+Project.txt.TabWidthSyntax.multiline {{{
+# Tab Width: [width]
+#    The number of spaces tabs should be expanded to.
+}}}
+
+
+
+#
+# Topics.txt
+# _____________________________________________________________________________
+
+
+Topics.txt.Information.DisplayName: Information
+Topics.txt.Information.PluralDisplayName: Information
+Topics.txt.Class.DisplayName: Class
+Topics.txt.Class.PluralDisplayName: Classes
+Topics.txt.Interface.DisplayName: Interface
+Topics.txt.Interface.PluralDisplayName: Interfaces
+Topics.txt.Struct.DisplayName: Struct
+Topics.txt.Struct.PluralDisplayName: Structs
+Topics.txt.Section.DisplayName: Section
+Topics.txt.Section.PluralDisplayName: Sections
+Topics.txt.File.DisplayName: File
+Topics.txt.File.PluralDisplayName: Files
+Topics.txt.Group.DisplayName: Group
+Topics.txt.Group.PluralDisplayName: Groups
+Topics.txt.Function.DisplayName: Function
+Topics.txt.Function.PluralDisplayName: Functions
+Topics.txt.Constructor.DisplayName: Constructor
+Topics.txt.Constructor.PluralDisplayName: Constructors
+Topics.txt.Destructor.DisplayName: Destructor
+Topics.txt.Destructor.PluralDisplayName: Destructors
+Topics.txt.Operator.DisplayName: Operator
+Topics.txt.Operator.PluralDisplayName: Operators
+Topics.txt.Variable.DisplayName: Variable
+Topics.txt.Variable.PluralDisplayName: Variables
+Topics.txt.Property.DisplayName: Property
+Topics.txt.Property.PluralDisplayName: Properties
+Topics.txt.Type.DisplayName: Type
+Topics.txt.Type.PluralDisplayName: Types
+Topics.txt.Constant.DisplayName: Constant
+Topics.txt.Constant.PluralDisplayName: Constants
+Topics.txt.Enumeration.DisplayName: Enum
+Topics.txt.Enumeration.PluralDisplayName: Enums
+Topics.txt.Event.DisplayName: Event
+Topics.txt.Event.PluralDisplayName: Events
+Topics.txt.Delegate.DisplayName: Delegate
+Topics.txt.Delegate.PluralDisplayName: Delegates
+Topics.txt.Macro.DisplayName: Macro
+Topics.txt.Macro.PluralDisplayName: Macros
+Topics.txt.Database.DisplayName: Database
+Topics.txt.Database.PluralDisplayName: Databases
+Topics.txt.DatabaseTable.DisplayName: Table
+Topics.txt.DatabaseTable.PluralDisplayName: Tables
+Topics.txt.DatabaseField.DisplayName: Field
+Topics.txt.DatabaseField.PluralDisplayName: Fields
+Topics.txt.DatabaseView.DisplayName: View
+Topics.txt.DatabaseView.PluralDisplayName: Views
+Topics.txt.DatabaseIndex.DisplayName: Index
+Topics.txt.DatabaseIndex.PluralDisplayName: Indexes
+Topics.txt.DatabaseCursor.DisplayName: Cursor
+Topics.txt.DatabaseCursor.PluralDisplayName: Cursors
+Topics.txt.DatabaseTrigger.DisplayName: Trigger
+Topics.txt.DatabaseTrigger.PluralDisplayName: Triggers
+
+Topics.txt.KeywordsCannotContain(char): Keywords cannot contain the {0} character.
+Topics.txt.TagsCannotContain(char): Tags cannot contain the {0} character.
+Topics.txt.TopicTypeAlreadyExists(name): The topic type "{0}" already exists.  Use Alter Topic Type or choose a different name.
+Topics.txt.AlteredTopicTypeDoesntExist(name): The topic type you are trying to alter, "{0}", doesn't exist.
+Topics.txt.IndexWithTopicTypeDoesntExist(name): The topic type you are trying to index with, "{0}", doesn't exist.
+Topics.txt.CanChangeToTopicTypeDoesntExist(name): The topic type "{0}" doesn't exist.
+Topics.txt.NoMoreThanTwoKeywordsOnALine: There cannot be more than two keywords on a line.  The first is singular, the second is plural.
+Topics.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a line.
+Topics.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used after a Topic Type or Alter Topic Type keyword.
+Topics.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
+Topics.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
+Topics.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
+Topics.txt.RequiredTopicTypeNotDefined(name): The topic type "{0}" must be defined.
+Topics.txt.RequiredTopicTypesNotDefined(names): The following topic types must be defined: {0}.
+Topics.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
+Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
+Topics.txt.InvalidListPositionValue(value): The list position must be a number between one and one billion.
+
+Topics.txt.SystemHeader.multiline {{{
+# This is the main Natural Docs topics file.  If you change anything here, it
+# will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
+# you edit the version in your project configuration folder instead.  This 
+# will keep your changes separate so you won't have to reapply them whenever
+# you upgrade Natural Docs.
+}}}
+
+Topics.txt.ProjectHeader.multiline {{{
+# This is the Natural Docs topics file for this project.  If you change anything
+# here, it will apply to THIS PROJECT ONLY.  You can edit the version in
+# Natural Docs' Config folder to make the changes apply to all projects, but
+# it's recommended that you edit this version instead.
+}}}
+
+Topics.txt.IgnoredKeywordsHeader.multiline {{{
+# Ignored Keywords
+# ------------------------------------------------------------------------
+}}}
+
+Topics.txt.IgnoredKeywordsReference.multiline {{{
+# If you'd like to prevent keywords from being recognized by Natural Docs, 
+# you can do it like this:
+#
+# Ignore Keywords:
+#    [keyword]
+#    [keyword]
+#    ...
+}}}
+
+Topics.txt.TagsHeader.multiline {{{
+# Tags
+# ------------------------------------------------------------------------
+}}}
+
+Topics.txt.TagsReference.multiline {{{
+# Tags allow you to create documentation that only includes topics marked
+# with that tag.  If you'd like to define your own tags, you can do it like
+# this:
+#
+# Tags:
+#    [tag]
+#    [tag]
+#    ...
+}}}
+
+Topics.txt.TopicTypesHeader.multiline {{{
+# Topic Types
+# ------------------------------------------------------------------------
+}}}
+Topics.txt.DeferredTopicTypesReference.multiline {{{
+# The syntax reference is after the definitions.
+}}}
+
+Topics.txt.SystemTopicTypesReference.multiline {{{
+# Each Natural Docs topic has a corresponding type which determine things
+# like how they are indexed.  This is how you define them.
+#
+# Topic Type: [name]
+#    Creates a new topic type.
+#
+# Display Name: [name]
+# Plural Display Name: [name]
+#    The singular and plural name of the topic type as it should appear in the
+#    output.  Change these instead of the topic type name because most of the
+#    default types are required to be defined with their current names.
+#
+# Display Name from Locale: [identifier]
+# Plural Display Name from Locale: [identifier]
+#    The identifiers in the current translation file that define the singular
+#    and plural names of the topic type as it should appear in the output.  If
+#    you want to change the name of a topic type in the output, you should 
+#    remove these properties and use the versions without "from Locale" 
+#    instead.
+#
+# Simple Identifier: [name]
+#    The name of the topic type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Index: [yes|no|with [topic type]]
+#    Whether an index should be generated for the topic type.  Defaults to 
+#    yes.  If "with [topic type]" is specified, the type is indexed but only
+#    as part of the other topic type's index.
+#
+# Scope: [normal|start|end|always global]
+#    How the topic affects scope.  Defaults to normal.
+#    normal - The topic stays within the current scope.
+#    start - The topic starts a new scope for all the topics beneath it, like
+#            class topics.
+#    end - The topic resets the scope back to global for all the topics 
+#          beneath it, like section topics.
+#    always global - The topic is defined as a global symbol, but does not 
+#                    change the scope for any other topics.
+#
+# Class Hierarchy: [yes|no]
+#    Whether the topic is part of the class hierarchy.  Defaults to no.
+#
+# Variable Type: [yes|no]
+#    Whether the topic can be used as a variable type.  Defaults to no.
+#
+# Break Lists: [yes|no]
+#    Whether list topics should be broken into individual topics in the
+#    output.  Defaults to no.
+#
+# List Position: [number]
+#    A number representing where this topic type should appear relative to the
+#    other types in a list, such as in HTML summaries.
+#
+# Can Change To: [topic type], [topic type] ...
+#    Lets Natural Docs change the topic type if you use a keyword from this
+#    one but Natural Docs thinks it should be a different one on the list.
+#    This is what lets you document constructors with function keywords, for
+#    example.  Only works with full language support and the built in types.
+#
+# Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of the topic type's keywords.  Each line after the heading is the
+#    keyword and optionally its plural form for list topics.
+}}}
+
+Topics.txt.ProjectTopicTypesReference.multiline {{{
+# Each Natural Docs topic has a corresponding type which determine things
+# like how they are indexed.  You can define your own here or override the 
+# settings of the existing ones.
+#
+# Topic Type: [name]
+# Alter Topic Type: [name]
+#    Creates a new topic type or changes an existing one.
+#
+# Display Name: [name]
+# Plural Display Name: [name]
+#    The singular and plural name of the topic type as it should appear in the
+#    output.
+#
+# Simple Identifier: [name]
+#    The name of the topic type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Index: [yes|no|with [topic type]]
+#    Whether an index should be generated for the topic type.  Defaults to 
+#    yes.  If "with [topic type]" is specified, the type is indexed but only
+#    as part of the other topic type's index.
+#
+# Scope: [normal|start|end|always global]
+#    How the topic affects scope.  Defaults to normal.
+#    normal - The topic stays within the current scope.
+#    start - The topic starts a new scope for all the topics beneath it, like
+#            class topics.
+#    end - The topic resets the scope back to global for all the topics 
+#          beneath it, like section topics.
+#    always global - The topic is defined as a global symbol, but does not 
+#                    change the scope for any other topics.
+#
+# Class Hierarchy: [yes|no]
+#    Whether the topic is part of the class hierarchy.  Defaults to no.
+#
+# Variable Type: [yes|no]
+#    Whether the topic can be used as a variable type.  Defaults to no.
+#
+# Break Lists: [yes|no]
+#    Whether list topics should be broken into individual topics in the
+#    output.  Defaults to no.
+#
+# List Position: [number]
+#    A number representing where this topic type should appear relative to the
+#    other types in a list, such as in HTML summaries.
+#
+# Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of the topic type's keywords.  Each line after the heading is the
+#    keyword and optionally its plural form for list topics.  You can reuse
+#    existing keywords to change their definition.  When using 
+#    "Alter Topic Type", these keywords are added to the existing ones rather
+#    than replacing them.
+}}}
+
+
+
+
+#
+# Languages.txt
+# _____________________________________________________________________________
+
+
+Languages.txt.LanguageAlreadyExists(name): The language "{0}" already exists.  Use Alter Language or choose a different name.
+Languages.txt.KeywordMustBeInLanguage(keyword): The keyword "{0}" can only be used after a Language or Alter Language keyword.
+Languages.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
+Languages.txt.NeedAddReplaceWhenAlteringLanguage(keyword): You need to use Add {0} or Replace {0} when altering a language.
+Languages.txt.BlockCommentsMustHaveAnEvenNumberOfSymbols: Block Comments must have an even number of symbols.
+Languages.txt.InvalidEnumValue(value): "{0}" is not a valid Enum Value.
+Languages.txt.AlteredLanguageDoesntExist(name): The language you are trying to alter, "{0}", doesn't exist.
+Languages.txt.LanguageAlreadyExists(name): The language "{0}" already exists.  Use Alter Language or choose a different name.
+Languages.txt.PrototypeEnderTopicTypeDoesntExist(name): The topic type "{0}" doesn't exist.
+Languages.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
+
+Languages.txt.CantDefinePropertyForTextFiles(property, language): You cannot define {0} for {1}.
+Languages.txt.CantDefinePropertyForContainers(property, language): You cannot define {0} for {1}.
+Languages.txt.CantDefinePropertyForFullLanguageSupport(property, language): You cannot define {0} for {1} because it has full language support.
+Languages.txt.CantDefinePropertyForBasicLanguageSupport(property, language): You cannot define {0} for {1} because it has basic language support.
+
+
+Languages.txt.SystemHeader.multiline {{{
+# This is the main Natural Docs languages file.  If you change anything here,
+# it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
+# that you edit the version in your project configuration folder instead.
+# This will keep your changes separate so you won't have to reapply them
+# whenever you upgrade Natural Docs.
+}}}
+
+Languages.txt.ProjectHeader.multiline {{{
+# This is the Natural Docs languages file for this project.  If you change 
+# anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
+# in Natural Docs' Config folder to make the changes apply to all projects,
+# but it's recommended that you edit this version instead.
+}}}
+
+Languages.txt.IgnoredExtensionsHeader.multiline {{{
+# Ignored Extensions
+# ------------------------------------------------------------------------
+}}}
+
+Languages.txt.IgnoredExtensionsReference.multiline {{{
+# If you'd like to prevent certain file extensions from being scanned by
+# Natural Docs, you can do it like this:
+#
+# Ignore Extensions: [extension] [extension] ...
+}}}
+
+Languages.txt.LanguagesHeader.multiline {{{
+# Languages
+# ------------------------------------------------------------------------
+}}}
+Languages.txt.DeferredLanguagesReference.multiline {{{
+# The syntax reference is after the definitions.
+}}}
+
+Languages.txt.SystemLanguagesReference.multiline {{{
+# These settings define the languages Natural Docs knows how to parse.  Note 
+# that all lists are space separated so that commas can be used as values.
+#
+# Language: [name]
+#    Defines a new language.  Its name can use any characters.
+#
+#    The language Shebang Script is special.  It's entry is only used for
+#    extensions, and files with those extensions have their shebang (#!) lines
+#    read to determine the real language of the file.  Extensionless files are
+#    always treated this way.
+#
+#    The language Text File is also special.  It's treated as one big comment
+#    so you can put Natural Docs content in them without special symbols.  Also,
+#    if you don't specify a member operator or enum value behavior, it will
+#    copy those settings from the language that is used most in the source tree.
+#
+# Extensions: [extension] [extension] ...
+#    Defines the file extensions of the language's source files.
+#
+# Shebang Strings: [string] [string] ...
+#    Defines a list of strings that can appear in the shebang (#!) line to
+#    designate that it's part of the language.
+#
+# Simple Identifier: [name]
+#    The name of the language using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the language name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Aliases: [alias] [alias] ...
+#    Defines alternate names for the language that can be used in code block
+#    tags like (start c++ code).
+#
+#
+# Properties for Basic Language Support Only
+# ------------------------------------------------------------------------
+# If you're adding your own language to Natural Docs you must define these.
+#
+# Line Comments: [symbol] [symbol] ...
+#    Defines a space-separated list of symbols that are used for line comments,
+#    if any.
+#
+# Block Comments: [opening sym] [closing sym] [opening sym] [closing sym] ...
+#    Defines a space-separated list of symbol pairs that are used for block
+#    comments, if any.
+#
+# Member Operator: [symbol]
+#    Defines the default member operator symbol.  The default is a dot.
+#
+# Line Extender: [symbol]
+#    Defines the symbol that allows a prototype to span multiple lines if
+#    normally a line break would end it.
+#
+# Enum Values: [global|under type|under parent]
+#    Defines how enum values are referenced.  The default is global.
+#    global       - Values are always global, referenced as 'value'.
+#    under type   - Values are under the enum type, referenced as
+#                 'class.enum.value'.
+#    under parent - Values are under the enum's parent, referenced as
+#                 'class.value'.
+#
+# [Topic Type] Prototype Enders: [symbol] [symbol] ...
+#    When defined, Natural Docs will attempt to get a prototype from the code
+#    immediately following the topic type.  It stops when it reaches one of
+#    these symbols.  Use \n for line breaks.
+}}}
+
+Languages.txt.ProjectLanguagesReference.multiline {{{
+# These settings define the languages Natural Docs knows how to parse.  You 
+# can define your own here or override the settings of the existing ones.
+# Note that all lists are space separated so that commas can be used as 
+# values.
+#
+# Language: [name]
+# Alter Language: [name]
+#    Defines a new language or alters an existing one.  Its name can use any
+#    characters.  If any of the properties below have an add/replace form, you
+#    must use that when using Alter Language.
+#
+#    The language Shebang Script is special.  It's entry is only used for
+#    extensions, and files with those extensions have their shebang (#!) lines
+#    read to determine the real language of the file.  Extensionless files are
+#    always treated this way.
+#
+#    The language Text File is also special.  It's treated as one big comment
+#    so you can put Natural Docs content in them without special symbols.  Also,
+#    if you don't specify a member operator or enum value behavior, it will
+#    copy those settings from the language that is used most in the source tree.
+#
+# Extensions: [extension] [extension] ...
+# [Add/Replace] Extensions: [extension] [extension] ...
+#    Defines the file extensions of the language's source files.
+#
+# Shebang Strings: [string] [string] ...
+# [Add/Replace] Shebang Strings: [string] [string] ...
+#    Defines a list of strings that can appear in the shebang (#!) line to
+#    designate that it's part of the language.
+#
+# Simple Identifier: [name]
+#    The name of the language using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the language name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Aliases: [alias] [alias] ...
+# [Add/Replace] Aliases: [alias] [alias] ...
+#    Defines alternate names for the language that can be used in code block
+#    tags like (start c++ code).
+#
+#
+# Properties for Basic Language Support Only
+# ------------------------------------------------------------------------
+# If you're adding your own language to Natural Docs you must define these.
+#
+# Line Comments: [symbol] [symbol] ...
+#    Defines a space-separated list of symbols that are used for line comments,
+#    if any.
+#
+# Block Comments: [opening sym] [closing sym] [opening sym] [closing sym] ...
+#    Defines a space-separated list of symbol pairs that are used for block
+#    comments, if any.
+#
+# Member Operator: [symbol]
+#    Defines the default member operator symbol.  The default is a dot.
+#
+# Line Extender: [symbol]
+#    Defines the symbol that allows a prototype to span multiple lines if
+#    normally a line break would end it.
+#
+# Enum Values: [global|under type|under parent]
+#    Defines how enum values are referenced.  The default is global.
+#    global       - Values are always global, referenced as 'value'.
+#    under type   - Values are under the enum type, referenced as
+#                 'class.enum.value'.
+#    under parent - Values are under the enum's parent, referenced as
+#                 'class.value'.
+#
+# [Topic Type] Prototype Enders: [symbol] [symbol] ...
+#    When defined, Natural Docs will attempt to get a prototype from the code
+#    immediately following the topic type.  It stops when it reaches one of
+#    these symbols.  Use \n for line breaks.
+}}}
+
+
+
+
+#
+# Style.txt
+# _____________________________________________________________________________
+
+
+HTML.Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css, .js, and .json files.
+HTML.Style.txt.CantFindStyle(name): Can't find style {0}.
+HTML.Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
+HTML.Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.
+
+
+HTML.Style.txt.Header.multiline {{{
+# This is a configuration file for a Natural Docs HTML output style.
+}}}
+
+HTML.Style.txt.InheritanceHeader.multiline {{{
+# Inheritance
+# ------------------------------------------------------------------------
+}}}
+
+HTML.Style.txt.InheritanceReference.multiline {{{
+# You can inherit the settings of another style like this:
+#
+# Inherit: [style]
+#
+# All of its settings will be applied before yours.  You can inherit more than
+# one style.
+#
+# If you're building your own style from scratch, do not inherit anything.  If
+# you just want to make some changes to the default style, inherit Default.
+# If you're building your own page design from scratch but want to keep the
+# default JavaScript functions, inherit DefaultJS.  This will include the code
+# but not the CSS or images.
+}}}
+
+HTML.Style.txt.LinkedFilesHeader.multiline {{{
+# Linked Files
+# ------------------------------------------------------------------------
+}}}
+
+HTML.Style.txt.LinkedFilesReference.multiline {{{
+# You can link .css, .js, and .json files to the output like this:
+#
+# Link: [file]
+# Content Link: [file]
+# Index Link: [file]
+#
+# These files will be included the generated output via link or script tags.
+# If you do not specify a page type, it will be included in every page.
+#
+# While all files will be copied to the output folder automatically, they are
+# not linked automatically.  JavaScript files can be loaded dynamically and
+# CSS files can be imported from other ones, so you must explicitly link the
+# ones you want here.
+}}}
+
+HTML.Style.txt.OnLoadHeader.multiline {{{
+# OnLoad
+# ------------------------------------------------------------------------
+}}}
+
+HTML.Style.txt.OnLoadReference.multiline {{{
+# You can add code to the page's OnLoad handler like this:
+#
+# OnLoad: [statement]
+# Content OnLoad: [statement]
+# Index OnLoad: [statement]
+#
+# If you do not specify a page type, it will be called for every page.
+#
+# The OnLoad statement is confined to a single line.  It's recommended that
+# you make your OnLoad code a function in a separate .js file, link that file
+# from here, and then call it from this statement rather than trying to cram
+# it on this line.
+}}}

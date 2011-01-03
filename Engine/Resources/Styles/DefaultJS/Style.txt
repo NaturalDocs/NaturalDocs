@@ -1,0 +1,8 @@
+﻿Format: 1.4
+
+link: NDCore.js
+index link: NDPageFrame.js
+index link: NDMenu.js
+
+onload: NDCore.AddBrowserClassesToBody();
+index onload: NDPageFrame.OnLoad();

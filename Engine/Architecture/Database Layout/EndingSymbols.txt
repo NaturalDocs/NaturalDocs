@@ -1,0 +1,23 @@
+﻿
+Database Table: CodeDB.EndingSymbols
+_______________________________________________________________________________
+
+A table that has an index of all the ending symbols defined by the <Topics>.
+
+
+Column: EndingSymbolID
+
+	(SQL Prototype)
+		EndingSymbolID INTEGER PRIMARY KEY NOT NULL
+	(end)
+	
+	The ID of the ending symbol.
+	
+	
+Column: EndingSymbol
+
+	(SQL Prototype)
+		EndingSymbol TEXT UNIQUE NOT NULL
+	(end)
+	
+	The ending symbol, in lowercase.

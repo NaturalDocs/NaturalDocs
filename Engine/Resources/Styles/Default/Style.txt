@@ -1,0 +1,6 @@
+﻿Format: 1.5
+
+inherit: DefaultJS
+inherit: VisualStudioCode
+
+link: Default.css

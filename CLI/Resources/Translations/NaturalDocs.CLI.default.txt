@@ -1,0 +1,167 @@
+﻿#
+# Natural Docs Default Language File, English (United States)
+#
+# To create a new language file, copy this one and rename it to replace
+# "default" with the locale code in all lowercase, such as 
+# "NaturalDocs.CLI.en-us.txt".  You can also omit the extension to have it apply
+# to all locales in that language, such as "NaturalDocs.CLI.en.txt".  They
+# inherit from each other, so anything not found in NaturalDocs.CLI.en-us.txt
+# will be taken from NaturalDocs.CLI.en.txt, and if it's not in there, from 
+# NaturalDocs.CLI.default.txt.
+#
+
+# This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
+# Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
+# Refer to License.txt for the complete details
+
+
+
+#
+# Status Messages
+#______________________________________________________________________________
+
+
+Status.Start(version).multiline {{{
+Natural Docs {0}
+----------------------
+}}}
+Status.End.multiline {{{
+----------------------
+}}}
+
+Status.StartFileSearch: Searching for files...
+Status.FileSearchUpdate(files, folders): ...{0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder} so far
+Status.EndFileSearch(files, folders): Found {0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder}.
+
+Status.RebuildEverythingByRequest: All documentation will be rebuilt.
+Status.RebuildEverythingAutomatically: All documentation needs to be rebuilt.
+
+Status.StartFileParsing(changed): {0:#,0} {0s?files:file} changed.  Updating...
+Status.StartFileParsing(changed, deleted): {0:#,0} {0s?files:file} changed, {1:#,0} {1s?were:was} deleted.  Updating...
+Status.StartFileParsing(deleted): {0:#,0} {0s?files were:file was} deleted.  Updating...
+Status.FileParsingUpdate(percent): ...{0}% complete
+Status.EndFileParsing: Finished updating.
+Status.NoChanges: No changes detected.
+Status.StartOutputBuilding: Building documentation...
+Status.OutputBuildingUpdate(percent): ...{0}% complete
+Status.EndOutputBuilding: Finished building.
+
+
+
+#
+# Command Line
+#______________________________________________________________________________
+
+
+CommandLine.ErrorsInFile(file): There are errors in {0}:
+CommandLine.Line: Line
+
+CommandLine.InvalidParameter(param): {0} is not a valid parameter.
+CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
+CommandLine.OnlyOneProjectConfigFolder: You may only specify one project configuration folder.
+CommandLine.OnlyOneWorkingDataFolder: You man only specify one working data folder.
+CommandLine.UnrecognizedOutputFormat(format): {0} is not a valid output format.
+CommandLine.OutputMustIncludeFormat: You must include an output format with -o.  Use "-o [format] [folder]".
+CommandLine.NoProjectConfigFolder: You need to define a project configuration folder with -p.
+CommandLine.TabLengthMustBeGreaterThanZero: The tab length must be a number greater than zero.
+
+CommandLine.SyntaxReference(version).multiline {{{
+Natural Docs, version {0}
+http://www.naturaldocs.org
+This program is licensed under the AGPL
+---------------------------------------
+
+Syntax:
+
+    NaturalDocs [project config folder]
+
+    NaturalDocs -i [input (source) folder]
+                -p [project config folder]
+                -o [output format] [output folder]
+                [additional options]
+
+Examples:
+
+    NaturalDocs C:\My Project\Natural Docs Config
+    
+    NaturalDocs -i /project/src
+                -o html /project/doc
+                -p /project/ndconf
+
+
+Parameters:
+--------------------
+
+ -p [folder]
+--project-config [folder]
+    Specifies a folder to store project configuration files.  Required.
+
+ -i [folder]
+--input [folder]
+--source [folder]
+    Specifies an input (source) folder.  Required either on the command line
+    or in Project.txt.  Can be specified multiple times.
+
+ -o [format] [folder]
+--output [format] [folder]
+    Specifies an output format and folder.  Required either on the command
+    line or in Project.txt.  Can be specified multiple times.
+
+ -xi [folder]
+--exclude-input [folder]
+--exclude-source [folder]
+    Excludes an input (source) folder.
+
+ -xip [pattern]
+--exclude-input-pattern [pattern]
+--exclude-source-pattern [pattern]
+    Excludes input (source) folders by a pattern, which can include * and ?
+    wildcards.  The pattern must match an entire folder name, so "cli" will
+    not match "client", but "cli*" would.
+
+ -img [folder]
+--images [folder]
+    Specifies an image folder.
+
+ -t [width]
+--tab-width [width]
+    Specifies how many spaces a tab should be expanded to.
+
+ -w [folder]
+--working-data [folder]
+    Specifies a folder to store temporary data.  If not specified it will be
+    a subfolder of the project configuration folder.
+
+ -r
+--rebuild
+    Rescans every source file and rebuilds all the output.
+
+ -v
+--version
+    Displays the current version of Natural Docs.
+
+ -?
+ -h
+--help
+    Displays this command line reference.
+}}}
+
+
+
+#
+# Crash Messages and Report
+#______________________________________________________________________________
+
+
+Crash.Exception: Natural Docs has stopped because of the following error:
+Crash.NestedException: This error was caused by the following error:
+Crash.IncludeInfoAndGetHelp: Please include this information when asking for help at naturaldocs.org.
+
+Crash.ReportAt(file).multiline {{{
+A crash report has been generated at {0}.
+Please include this file when asking for help at naturaldocs.org.
+}}}
+
+Crash.Version: Version
+Crash.Platform: Platform
+Crash.CommandLine: Command Line
