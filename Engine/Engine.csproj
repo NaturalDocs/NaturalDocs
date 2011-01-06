@@ -94,6 +94,7 @@
     <Compile Include="Source\Exceptions\Thread.cs" />
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
+    <Compile Include="Source\IStartupWatcher.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
     <Compile Include="Source\Output\Shrinker.cs" />

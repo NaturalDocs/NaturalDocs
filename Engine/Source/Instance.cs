@@ -56,6 +56,7 @@
 
 
 using System;
+using System.Collections.Generic;
 
 
 namespace GregValure.NaturalDocs.Engine
@@ -80,6 +81,8 @@ namespace GregValure.NaturalDocs.Engine
 														 CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
 														 Files.Manager filesManager = null)
 			{
+			startupWatchers = new List<IStartupWatcher>();
+
 			config = configManager ?? new Config.Manager();
 			topicTypes = topicTypesManager ?? new TopicTypes.Manager();
 			languages = languagesManager ?? new Languages.Manager();
@@ -279,6 +282,42 @@ namespace GregValure.NaturalDocs.Engine
 			
 
 
+		// Group: Startup Event Functions
+		// __________________________________________________________________________
+
+
+		/* Function: AddStartupWatcher
+		 * Adds an object that wants to be aware of events that occur during initialization.  Call after <Create()> but before <Start()>.
+		 */
+		static public void AddStartupWatcher (IStartupWatcher watcher)
+			{
+			startupWatchers.Add(watcher);
+			}
+
+		/* Function: StartPossiblyLongOperation
+		 * Called *by module code only* to signify that a possibly long operation is about to begin.  The operation name is arbitrary but 
+		 * should be documented in <IStartupWatcher.OnStartPossiblyLongOperation>.  Every call should be matched with a
+		 * <EndPossiblyLongOperation()> call, and it is up to the module code to make sure the calls are properly paired and 
+		 * non-overlapping.
+		 */
+		static public void StartPossiblyLongOperation (string operationName)
+			{
+			foreach (IStartupWatcher watcher in startupWatchers)
+				{  watcher.OnStartPossiblyLongOperation(operationName);  }
+			}
+
+		/* Function: EndPossiblyLongOperation
+		 * Called *by module code only* to signify that the possibly long operation previously recorded with <StartPossiblyLongOperation()>
+		 * has concluded.
+		 */
+		static public void EndPossiblyLongOperation ()
+			{
+			foreach (IStartupWatcher watcher in startupWatchers)
+				{  watcher.OnEndPossiblyLongOperation();  }
+			}
+
+
+
 		// Group: Constants and Properties
 		// __________________________________________________________________________
 		
@@ -372,6 +411,11 @@ namespace GregValure.NaturalDocs.Engine
 		// __________________________________________________________________________
 		
 		
+		/* var: startupWatchers
+		 * A list of all the objects that want to observe the engine's initialization.
+		 */
+		static private List<IStartupWatcher> startupWatchers;
+
 		static private Config.Manager config;
 		
 		static private TopicTypes.Manager topicTypes;
