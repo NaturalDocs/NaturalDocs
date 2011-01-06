@@ -496,6 +496,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			// Purge stray output working data, since otherwise it will be left behind if an output entry is removed.
 
 			Regex.Config.OutputPathNumber outputPathNumberRegex = new Regex.Config.OutputPathNumber();
+			bool raisedPossiblyLongOperationEvent = false;
 
 			string[] outputDataFolders = System.IO.Directory.GetDirectories(workingDataFolder, "Output*", 
 																																System.IO.SearchOption.TopDirectoryOnly);
@@ -513,7 +514,17 @@ namespace GregValure.NaturalDocs.Engine.Config
 						{  number = int.Parse(numberString);  }
 
 					if (outputNumbersToPurge.Contains(number) || !usedOutputNumbers.Contains(number))
-						{  System.IO.Directory.Delete(outputDataFolder, true);  }
+						{  
+						// Since we're deleting an entire folder, mark it as a possibly long operation.  Some output formats may create many
+						// files in there which could take a while to clear out.
+						if (!raisedPossiblyLongOperationEvent)
+							{
+							Engine.Instance.StartPossiblyLongOperation("PurgeOutputWorkingData");
+							raisedPossiblyLongOperationEvent = true;
+							}
+
+						System.IO.Directory.Delete(outputDataFolder, true);  
+						}
 					}
 				}
 
@@ -533,9 +544,17 @@ namespace GregValure.NaturalDocs.Engine.Config
 						{  number = int.Parse(numberString);  }
 
 					if (outputNumbersToPurge.Contains(number) || !usedOutputNumbers.Contains(number))
-						{  System.IO.File.Delete(outputDataFile);  }
+						{  
+						// Since this should just be a few individual files we don't have to worry about it being a possibly long operation,
+						// although this will piggyback on that event if it was already raised.
+
+						System.IO.File.Delete(outputDataFile);  
+						}
 					}
 				}
+
+			if (raisedPossiblyLongOperationEvent)
+				{  Engine.Instance.EndPossiblyLongOperation();  }
 				
 
 			return success;
