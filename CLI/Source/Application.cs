@@ -48,7 +48,12 @@ namespace GregValure.NaturalDocs.CLI
 		 */
 		private const int StatusInterval = 5000;
 			
+		/* Constant: LongOperationMessageDelay
+		 * The amount of time in milliseconds that must go by before a possibly long operation warrants a status update.
+		 */
+		internal const int LongOperationMessageDelay = 3000;
 			
+						
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -82,6 +87,8 @@ namespace GregValure.NaturalDocs.CLI
 					System.Console.Write(
 						Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version).multiline", Engine.Instance.VersionString)
 						);
+
+					NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
 
 					if (NaturalDocs.Engine.Instance.Start(startupErrors) == true)
 						{
@@ -210,7 +217,7 @@ namespace GregValure.NaturalDocs.CLI
 				}
 				
 			System.Console.WriteLine("= Entire program time: " + ((DateTime.Now.Ticks - startProgram)/10000)); // xxx
-			//System.Console.ReadKey(true); //xxx 
+			System.Console.ReadKey(true); //xxx 
 			}
 			
 			

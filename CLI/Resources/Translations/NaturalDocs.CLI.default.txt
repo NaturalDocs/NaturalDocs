@@ -46,6 +46,8 @@ Status.StartOutputBuilding: Building documentation...
 Status.OutputBuildingUpdate(percent): ...{0}% complete
 Status.EndOutputBuilding: Finished building.
 
+Status.LongStartupOperation.StartPurgeOutputWorkingData: Purging working data...
+Status.LongStartupOperation.EndPurgeOutputWorkingData: Finished purging.
 
 
 #
