@@ -31,7 +31,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 		// __________________________________________________________________________
 		
 		
-		/* Function: Folder
+		/* Function: FileSource
 		 * Instance constructor.  If the path is relative it will be made absolute using the current working folder.
 		 */
 		public FileSource () : base ()
@@ -143,6 +143,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 		// Group: Properties
 		// __________________________________________________________________________
 
+		/* Property: UniqueIDString
+		 * A string that uniquely identifies this FileSource among all others of its <Type>, including FileSources based on other
+		 * classes.
+		 */
+		override public string UniqueIDString
+			{
+			get 
+				{  
+				// Since we only have one FileSource for all the combined styles in all the output builders, we don't need to append
+				// any sort of path or style name information.
+				return "Styles:";  
+				}
+			}
 
 		/* Property: Type
 		 * The type of files this FileSource provides.

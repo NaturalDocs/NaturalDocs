@@ -153,6 +153,24 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 		// Group: Properties
 		// __________________________________________________________________________
 
+		/* Property: UniqueIDString
+		 * A string that uniquely identifies this FileSource among all others of its <Type>, including FileSources based on other
+		 * classes.
+		 */
+		override public string UniqueIDString
+			{
+			get 
+				{  return "Folder:" + config.Folder;  }
+			}
+
+		/* Property: Path
+		 * The path to the FileSource's folder.
+		 */
+		public Path Path
+			{
+			get 
+				{  return config.Folder;  }
+			}
 
 		/* Property: Type
 		 * The type of files this FileSource provides.
@@ -179,12 +197,6 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 			{
 			get
 				{  return config.Name;  }
-			}
-
-		public Path Path
-			{
-			get 
-				{  return config.Folder;  }
 			}
 
 

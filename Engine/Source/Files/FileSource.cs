@@ -91,6 +91,13 @@ namespace GregValure.NaturalDocs.Engine.Files
 		// Group: Properties
 		// __________________________________________________________________________
 		
+
+		/* Property: UniqueIDString
+		 * A string that uniquely identifies this FileSource among all others of its <Type>, including ones based on different
+		 * classes.  For example, "Folder:[path]" or "VSProject:[file]".
+		 */
+		abstract public string UniqueIDString
+			{  get;  }
 		
 		/* Property: Type
 		 * The type of files this FileSource provides.
