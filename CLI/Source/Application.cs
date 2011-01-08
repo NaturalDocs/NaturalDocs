@@ -51,7 +51,7 @@ namespace GregValure.NaturalDocs.CLI
 		/* Constant: LongOperationMessageDelay
 		 * The amount of time in milliseconds that must go by before a possibly long operation warrants a status update.
 		 */
-		internal const int LongOperationMessageDelay = 3000;
+		internal const int LongOperationMessageDelay = 1500;
 			
 						
 
