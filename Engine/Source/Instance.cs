@@ -34,13 +34,14 @@
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <TopicTypes.Manager>.
  *		
- *		- <CodeDB.Manager> is next though it only needs <Config.Manager>.
+ *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> watchers.  It can
+ *		   also set the rebuild/reparse flags that CodeDB needs to interpret.
  *		
- *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> watchers.
+ *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
+ *		   to true, though it only needs <Config.Manager>.
  *		
- *		- <Files.Manager> is next because it depends on <Languages.Manager> to know whether a file's extension is for a
- *		  supported language or not.  Also, it must be after anything that can set <Config.Manager.RebuildEverything> to true,
- *		  which includes <Comments.Manager> because of <Parser.txt> and <CodeDB.Manager> because of <CodeDB.nd>.
+ *		- <Files.Manager> is last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
+ *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
  *		  
  * 
  * File: GracefulExit.nd
@@ -157,8 +158,8 @@ namespace GregValure.NaturalDocs.Engine
 				topicTypes.Start(errors) &&
 				languages.Start(errors) &&
 				comments.Start(errors) &&
-				codeDB.Start(errors) &&
 				output.Start(errors) &&
+				codeDB.Start(errors) &&
 				files.Start(errors)
 				);
 			}
@@ -325,7 +326,7 @@ namespace GregValure.NaturalDocs.Engine
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
-		public const string VersionString = "2.0 (Development Release 01-01-2011)";
+		public const string VersionString = "2.0 (Development Release 01-08-2011)";
 		
 		
 		/* Property: Version
