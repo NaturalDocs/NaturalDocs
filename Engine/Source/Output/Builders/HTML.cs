@@ -18,6 +18,19 @@
  *		list of style paths.  The paths are either to <HTMLStyle.CSSFile> or <HTMLStyle.ConfigFile>.  These are stored
  *		instead of the names so that if a name is interpreted differently from one run to the next it will be detected.  It's
  *		also the computed list of styles after all inheritance has been applied.
+ *		
+ *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+ *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+ *		> ...
+ *		> [Int32: 0]
+ *		>
+ *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+ *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+ *		> ...
+ *		> [Int32: 0]
+ *		
+ *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
+ *		one is deleted or changes.
  * 
  */
 
@@ -30,6 +43,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+
+// We must include this so that "FileSource" doesn't get accidentally interpreted as Output.Styles.FileSource
+// instead of Files.FileSource.  Including them both makes "FileSource" ambiguous and the compiler forces you
+// to specify.
+using GregValure.NaturalDocs.Engine.Files;
+
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Output.Styles;
 
@@ -118,31 +137,40 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return false;  }
 
 
-			// Load and compare to the previous list of styles.
+			// Load Output.nd
 
 			List<HTMLStyle> previousStyles;
-			bool hasBinaryFile = LoadBinaryFile(config.OutputWorkingDataFile, out previousStyles);
+			List<FileSourceInfo> previousFileSourceInfoList;
+			bool hasBinaryFile = LoadBinaryFile(config.OutputWorkingDataFile, out previousStyles, out previousFileSourceInfoList);
+
+			bool saidPurgingOutputFiles = false;
+
+
+			// Compare to the previous list of styles.
 
 			if (!hasBinaryFile)
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
+
 				if (System.IO.Directory.Exists(RootStyleFolder))
 					{  
-					try
-						{  System.IO.Directory.Delete(RootStyleFolder, true);  }
-					catch
+					if (!saidPurgingOutputFiles)
 						{
-						// If something is reading a file this will fail.  It's not worth stopping the program so just continue silently.
+						Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+						saidPurgingOutputFiles = true;
 						}
+
+					System.IO.Directory.Delete(RootStyleFolder, true);  
 					}
 
 				Engine.Instance.Output.ReparseStyleFiles = true;
 				}
-			else
+
+			else // (hasBinaryFile)
 				{
-				// Purge folders of anything deleted.  Since IsSameFundamentalStyle relies on the path and not just the name,
-				// different styles with the same name will be handled correctly.
+				// Purge the style folders of anything deleted or changed.
+
 				foreach (HTMLStyle previousStyle in previousStyles)
 					{
 					bool stillExists = false;
@@ -158,19 +186,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					if (stillExists == false)
 						{  
-						if (System.IO.Directory.Exists( StyleOutputFolder(previousStyle) ))
+						Path folder = StyleOutputFolder(previousStyle);
+
+						if (System.IO.Directory.Exists(folder))
 							{  
-							try
-								{  System.IO.Directory.Delete( StyleOutputFolder(previousStyle), true);  }
-							catch  
+							if (!saidPurgingOutputFiles)
 								{
-								// If something is reading a file this will fail.  It's not worth stopping the program so just continue silently.
+								Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+								saidPurgingOutputFiles = true;
 								}
+
+							System.IO.Directory.Delete(folder, true);  
 							}
-						 }
+						}
 					}
 
-				// Reparse on anything added.
+				// Reparse styles on anything new or changed.  If a style is new we can't assume all its files are going to be
+				// sent to the IChangeWatcher functions because another output target may have been using it, and thus they
+				// are already in Files.Manager.
+
 				foreach (HTMLStyle currentStyle in styles)
 					{
 					bool foundMatch = false;
@@ -193,6 +227,117 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
+			// Compare to the previous list of FileSources.
+
+			if (!hasBinaryFile)
+				{
+				// If the binary file doesn't exist, we have to purge every folder because some of them may have changed or are no
+				// longer in use and we won't know which.
+
+				Regex.Output.HTML.SourceOrImageOutputFolder sourceOrImageOutputFolderRegex = 
+					new Regex.Output.HTML.SourceOrImageOutputFolder();
+
+				string[] outputFolders = System.IO.Directory.GetDirectories(config.Folder);
+
+				foreach (string outputFolder in outputFolders)
+					{
+					if (sourceOrImageOutputFolderRegex.IsMatch(outputFolder))
+						{
+						if (!saidPurgingOutputFiles)
+							{
+							Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+							saidPurgingOutputFiles = true;
+							}
+
+						System.IO.Directory.Delete(outputFolder, true);  
+						}
+					}
+
+				Engine.Instance.Config.RebuildAllOutput = true;
+				}
+
+			else  // (hasBinaryFile)
+				{
+				bool hasDeletions = false;
+				bool hasAdditions = false;
+
+
+				// Purge the output folders of anything deleted or changed.
+
+				foreach (FileSourceInfo previousFileSourceInfo in previousFileSourceInfoList)
+					{
+					bool stillExists = false;
+
+					foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+						{
+						if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
+							{
+							stillExists = true;
+							break;
+							}
+						}
+
+					if (stillExists == false)
+						{
+						hasDeletions = true;
+						Path outputFolder = OutputFolder(previousFileSourceInfo.Type, previousFileSourceInfo.Number);
+
+						if (System.IO.Directory.Exists(outputFolder))
+							{  
+							if (!saidPurgingOutputFiles)
+								{
+								Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+								saidPurgingOutputFiles = true;
+								}
+
+							System.IO.Directory.Delete(outputFolder, true);
+							}
+						}
+					}
+
+
+				// Check if anything was added or changed.
+
+				foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+					{
+					if (fileSource.Type == InputType.Source || fileSource.Type == InputType.Image)
+						{
+						bool foundMatch = false;
+
+						foreach (FileSourceInfo previousFileSourceInfo in previousFileSourceInfoList)
+							{
+							if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
+								{
+								foundMatch = true;
+								break;
+								}
+							}
+
+						if (foundMatch == false)
+							{  
+							hasAdditions = true;
+							break;
+							}
+						}
+					}
+					
+
+				// If there were both additions and deletions, force a rebuild.  This covers if a FileSource was simply moved from one
+				// number to another, in which case the rebuild is required to populate the new folder.  This also covers if a folder
+				// FileSource is replaced by one for its parent folder, in which case a rebuild is required to recreate the output for the
+				// files in the child folder.
+
+				if (hasAdditions && hasDeletions)
+					{  Engine.Instance.Config.RebuildAllOutput = true;  }
+				}
+
+
+			// We're done with anything that could purge.
+
+			if (saidPurgingOutputFiles)
+				{  Instance.EndPossiblyLongOperation();  }
+
+
 			// Resave the Style.txt-based styles.
 
 			foreach (HTMLStyle style in styles)
@@ -207,7 +352,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Save output.nd.
 
-			SaveBinaryFile(config.OutputWorkingDataFile, styles);
+			List<FileSourceInfo> fileSourceInfoList = new List<FileSourceInfo>();
+
+			foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+				{
+				if (fileSource.Type == Files.InputType.Source || fileSource.Type == Files.InputType.Image)
+					{
+					FileSourceInfo fileSourceInfo = new FileSourceInfo();
+					fileSourceInfo.CopyFrom(fileSource);
+					fileSourceInfoList.Add(fileSourceInfo);
+					};
+				}
+
+			SaveBinaryFile(config.OutputWorkingDataFile, styles, fileSourceInfoList);
 
 
 			return (errors == errorList.Count);
@@ -542,9 +699,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Loads the information in <Output.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public static bool LoadBinaryFile (Path filename, out List<HTMLStyle> styles)
+		public static bool LoadBinaryFile (Path filename, out List<HTMLStyle> styles, out List<FileSourceInfo> fileSourceInfoList)
 			{
 			styles = new List<HTMLStyle>();
+			fileSourceInfoList = new List<FileSourceInfo>();
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -567,6 +725,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						styles.Add( new HTMLStyle(stylePath) );
 						stylePath = binaryFile.ReadString();
 						}
+
+					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+					// ...
+					// [Int32: 0]
+
+					FileSourceInfo fileSourceInfo = new FileSourceInfo();
+					fileSourceInfo.Type = Files.InputType.Source;
+
+					for (;;)
+						{
+						fileSourceInfo.Number = binaryFile.ReadInt32();
+
+						if (fileSourceInfo.Number == 0)
+							{  break;  }
+
+						fileSourceInfo.UniqueIDString = binaryFile.ReadString();
+						fileSourceInfoList.Add(fileSourceInfo);
+						}
+
+					// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+					// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+					// ...
+					// [Int32: 0]
+
+					fileSourceInfo.Type = Files.InputType.Image;
+
+					for (;;)
+						{
+						fileSourceInfo.Number = binaryFile.ReadInt32();
+
+						if (fileSourceInfo.Number == 0)
+							{  break;  }
+
+						fileSourceInfo.UniqueIDString = binaryFile.ReadString();
+						fileSourceInfoList.Add(fileSourceInfo);
+						}
 					}
 				}
 			catch
@@ -584,7 +779,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: SaveBinaryFile
 		 * Saves the passed information in <Output.nd>.
 		 */
-		public static void SaveBinaryFile (Path filename, List<HTMLStyle> styles)
+		public static void SaveBinaryFile (Path filename, List<HTMLStyle> styles, List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -604,6 +799,38 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 
 				binaryFile.WriteString(null);
+
+				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
+				// ...
+				// [Int32: 0]
+
+				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
+					{
+					if (fileSourceInfo.Type == Files.InputType.Source)
+						{
+						binaryFile.WriteInt32(fileSourceInfo.Number);
+						binaryFile.WriteString(fileSourceInfo.UniqueIDString);
+						}
+					}
+
+				binaryFile.WriteInt32(0);
+
+				// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+				// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
+				// ...
+				// [Int32: 0]
+
+				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
+					{
+					if (fileSourceInfo.Type == Files.InputType.Image)
+						{
+						binaryFile.WriteInt32(fileSourceInfo.Number);
+						binaryFile.WriteString(fileSourceInfo.UniqueIDString);
+						}
+					}
+
+				binaryFile.WriteInt32(0);
 				}
 			}
 
@@ -714,6 +941,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			return null;
 			}
 
+		}
+
+
+	public struct FileSourceInfo
+		{
+		public bool IsSameFundamentalFileSource (Files.FileSource other)
+			{
+			return (Number == other.Number &&
+						 Type == other.Type &&
+						 UniqueIDString == other.UniqueIDString);
+			}
+
+		public void CopyFrom (Files.FileSource other)
+			{
+			Number = other.Number;
+			Type = other.Type;
+			UniqueIDString = other.UniqueIDString;
+			}
+
+		public int Number;
+		public Files.InputType Type;
+		public string UniqueIDString;
 		}
 	}
 

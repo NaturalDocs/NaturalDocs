@@ -92,8 +92,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		public void DeleteSourceFile (int fileID)
 			{
 			Path outputFile = ToSourceOutputPath(fileID);
-			
-			if (System.IO.File.Exists(outputFile))
+
+			if (outputFile != null &&  System.IO.File.Exists(outputFile))
 				{  
 				System.IO.File.Delete(outputFile);
 				foldersToCheckForDeletion.Add(outputFile.ParentFolder);
@@ -107,12 +107,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: ToSourceOutputPath
-		 * Returns the output path of the passed source file ID.
+		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
+		 * it no longer exists.
 		 */
 		public Path ToSourceOutputPath (int fileID)
 			{
 			Files.File file = Engine.Instance.Files.FromID(fileID);
 			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+			if (fileSource == null)
+				{  return null;  }
+
 			Path relativePath = fileSource.MakeRelative(file.FileName);
 			
 			string fileName = relativePath.NameWithoutPath;
@@ -124,6 +129,39 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Use /../ to ninja in a file name replacement.  It will be fixed in Path's normalization.
 			return config.Folder + "/files" + (fileSource.Number != 1 ? fileSource.Number.ToString() : "") + 
 					  '/' + relativePath + "/../" + fileName + ".html";
+			}
+
+
+		/* Function: OutputFolder
+		 * Returns the output folder for the passed type and number.  This only works with source and image folders.  To
+		 * do styles, use <StyleOutputFolder()>.
+		 */
+		public Path OutputFolder (Files.InputType type, int number)
+			{
+			StringBuilder folder = new StringBuilder(config.Folder);
+			folder.Append('/');
+
+			if (type == Files.InputType.Source)
+				{  folder.Append("files");  }
+			else if (type == Files.InputType.Image)
+				{  folder.Append("images");  }
+			else
+				{  throw new InvalidOperationException();  }
+
+			if (number != 1)
+				{  folder.Append(number);  }
+				
+			return folder.ToString();
+			}
+
+
+		/* Function: OutputFolder
+		 * Returns the output folder for the passed <FileSource>.  This only works with source and image FileSources.  To
+		 * do styles, use <StyleOutputFolder()>.
+		 */
+		public Path OutputFolder (Files.FileSource fileSource)
+			{
+			return OutputFolder(fileSource.Type, fileSource.Number);
 			}
 
 

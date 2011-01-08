@@ -519,7 +519,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 						// files in there which could take a while to clear out.
 						if (!raisedPossiblyLongOperationEvent)
 							{
-							Engine.Instance.StartPossiblyLongOperation("PurgeOutputWorkingData");
+							Engine.Instance.StartPossiblyLongOperation("PurgingOutputWorkingData");
 							raisedPossiblyLongOperationEvent = true;
 							}
 
@@ -737,7 +737,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 			set
 				{
 				if (value == true)
-					{  rebuildAllOutput = true;  }
+					{  
+					rebuildAllOutput = true;  
+					reparseEverything = true; //xxx until rebuildAllOutput is supported
+					}
 				else
 					{  throw new InvalidOperationException();  }
 				}

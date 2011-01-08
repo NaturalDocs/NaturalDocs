@@ -24,10 +24,10 @@ namespace GregValure.NaturalDocs.Engine
 		 * in others it could cause a significant, user-noticeable delay.  The operation name iwill be one of the following, but you
 		 * must design the watcher code for any possibility because future versions may add new operation names:
 		 * 
-		 *    "PurgeOutputWorkingData" - Output temporary files are being deleted.  If there are a lot of them, such as many folders
-		 *															 full of partial PDF files, this can take a long time.
-		 *		 "PurgeOutputFiles" - Output files are being deleted.  If there are a lot of them, such as many folders full of HTML files,
-		 *											  this can take a long time.
+		 *    "PurgingOutputWorkingData" - Output temporary files are being deleted.  If there are a lot of them, such as many folders
+		 *																full of partial PDF files, this can take a long time.
+		 *		 "PurgingOutputFiles" - Output files are being deleted.  If there are a lot of them, such as many folders full of HTML files,
+		 *												 this can take a long time.
 		 */
 		void OnStartPossiblyLongOperation (string operationName);
 		
