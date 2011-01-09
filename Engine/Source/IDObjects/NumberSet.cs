@@ -19,7 +19,7 @@ using System;
 
 namespace GregValure.NaturalDocs.Engine.IDObjects
 	{
-	public class NumberSet : System.Collections.Generic.IEnumerable<int>
+	public class NumberSet : System.Collections.Generic.IEnumerable<int>, IBinaryFileObject
 		{
 		
 		// Group: Functions
@@ -44,6 +44,18 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			numberPairsUsedLength = 0;
 			
 			FromString(input);
+			}
+			
+			
+		/* Constructor: NumberSet
+		 * Reads a number set from the passed <BinaryFile>.
+		 */
+		public NumberSet (BinaryFile input)
+			{
+			numberPairs = null;
+			numberPairsUsedLength = 0;
+			
+			FromBinaryFile(input);
 			}
 			
 			
@@ -432,7 +444,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				}
 				
 				
-			// If we're here the string is valid.
+			// If we're here the string is valid enough to parse, though it still may contain things like "3-5,6-9" which should be "3-9".
 			
 			if (numberPairs == null || numberPairs.Length < arraySize)
 				{  numberPairs = new int[arraySize];  }
@@ -486,8 +498,89 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					secondNumber = true;
 					}
 				}
+
+			// Catch any remaining errors like "3-5,6-9".
+			if (!Validate())
+				{  
+				numberPairsUsedLength = 0;
+				throw new Exceptions.StringNotInValidFormat(input, this);  
+				}
 			}
-			
+
+
+		/* Function: ToBinaryFile
+		 * Writes the number set to the passed <BinaryFile>.
+		 */
+		public void ToBinaryFile (BinaryFile binaryFile)
+			{
+			// [int32: numbers] - Like numberPairsUsedLength, a count of integers, not of pairs.
+			// [int32: low] [int32: high]
+			// [int32: low] [int32: high]
+			// ...
+
+			binaryFile.WriteInt32(numberPairsUsedLength);
+
+			for (int i = 0; i < numberPairsUsedLength; i++)
+				{  binaryFile.WriteInt32(numberPairs[i]);  }
+			}
+
+
+		/* Function: FromBinaryFile
+		 * Replaces the current number set with one from the passed <BinaryFile>.
+		 */
+		public void FromBinaryFile (BinaryFile binaryFile)
+			{
+			// DEPENDENCY: This has to be able to be called from the constructor when numberPairs is null.
+
+			// [int32: numbers] - Like numberPairsUsedLength, a count of integers, not of pairs.
+			// [int32: low] [int32: high]
+			// [int32: low] [int32: high]
+			// ...
+
+			int length = binaryFile.ReadInt32();
+
+			if (length < 0 || length % 2 != 0)
+				{  throw new FormatException();  }
+
+			if (numberPairs == null || numberPairs.Length < length)
+				{  
+				if (length == 0)
+					{  numberPairs = new int[2];  }
+				else
+					{  numberPairs = new int[length];  }
+				}
+
+			numberPairsUsedLength = length;
+
+			for (int i = 0; i < length; i++)
+				{  numberPairs[i] = binaryFile.ReadInt32();  }
+
+			if (!Validate())
+				{  
+				numberPairsUsedLength = 0;
+				throw new FormatException();  
+				}
+			}
+
+
+		/* Function: Validate
+		 * Checks whether <numberPairs> is in the proper format to be used.
+		 */
+		protected bool Validate()
+			{
+			if (numberPairsUsedLength < 0 || numberPairsUsedLength % 2 != 0)
+				{  return false;  }
+
+			for (int i = 0; i < numberPairsUsedLength; i += 2)
+				{
+				if (numberPairs[i] <= 0 || numberPairs[i+1] < numberPairs[i])
+					{  return false;  }
+				if (i > 0 && numberPairs[i] <= numberPairs[i-1] + 1)
+					{  return false;  }
+				}
+
+			return true;
+			}
 			
 			
 			
