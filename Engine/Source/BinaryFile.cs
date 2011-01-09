@@ -9,7 +9,7 @@
  * 
  *		- Handles the header and version string.
  *		- Allows null strings to be written.  Never returns empty strings, only nulls.
- *		- Will eventually support an interface that allows arbitrary objects to be read/written.
+ *		- Allows arbitrary objects to be read/written with <IBinaryFileObject>.
  * 
  * 
  * Topic: File Format
@@ -28,7 +28,7 @@
  *		
  *			All data types are stored in the standard encodings provided by C#'s BinaryReader and BinaryWriter.  This means
  *			multibyte integers are stored in little endian and strings are stored in UTF-8 and are preceded by a character count
- *			in their weird 7-bit encoding scheme.
+ *			in .NET's 7-bit encoding scheme.
  *			
  */
 
@@ -186,6 +186,8 @@ namespace GregValure.NaturalDocs.Engine
 		 * ReadInt64 - Reads a signed 64-bit integer.
 		 * ReadUInt64 - Reads an unsigned 64-bit integer.
 		 * ReadString - Reads a string.  Returns null for empty strings.
+		 * ReadObject - Reads an object that supports <IBinaryFileObject>.  The object must already exist, 
+		 *							  this function just replaces its contents with the one from the file.
 		 */
 		public sbyte ReadInt8()
 			{  return fileReader.ReadSByte();  }
@@ -205,6 +207,7 @@ namespace GregValure.NaturalDocs.Engine
 			{  return fileReader.ReadInt64();  }
 		public ulong ReadUInt64()
 			{  return fileReader.ReadUInt64();  }
+
 		public string ReadString()
 			{
 			// Zero length strings are returned as empty strings, but we want them to be nulls instead.
@@ -215,6 +218,15 @@ namespace GregValure.NaturalDocs.Engine
 				
 			return result;
 			}
+
+		public void ReadObject (ref IBinaryFileObject target)
+			{
+			if (target == null)
+				{  throw new ArgumentException();  }
+
+			target.FromBinaryFile(this);
+			}
+
 
 		/* Functions: Writing Functions
 		 * Writes the specified type to a binary file open for writing.
@@ -229,6 +241,7 @@ namespace GregValure.NaturalDocs.Engine
 		 * WriteInt64 - Writes a signed 64-bit integer.
 		 * WriteUInt64 - Writes an unsigned 64-bit integer.
 		 * WriteString - Writes a string.  Empty strings are encoded as nulls.
+		 * WriteObject - Writes an object that supports <IBinaryFileObject>.
 		 */
 		public void WriteInt8 (sbyte value)
 			{  fileWriter.Write(value);  }
@@ -248,6 +261,7 @@ namespace GregValure.NaturalDocs.Engine
 			{  fileWriter.Write(value);  }
 		public void WriteUInt64 (ulong value)
 			{  fileWriter.Write(value);  }
+
 		public void WriteString (string value)
 			{
 			// It throws an exception if you pass null, so encode an empty string instead.
@@ -257,7 +271,12 @@ namespace GregValure.NaturalDocs.Engine
 			fileWriter.Write(value);  
 			}
 
-			
+		public void WriteObject (IBinaryFileObject value)
+			{
+			value.ToBinaryFile(this);
+			}
+
+
 
 		// Group: IDisposable Functions
 		// __________________________________________________________________________

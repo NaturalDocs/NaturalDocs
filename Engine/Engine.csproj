@@ -83,6 +83,7 @@
     <Compile Include="Source\Config\Manager.cs" />
     <Compile Include="Source\Config\OutputEntry.cs" />
     <Compile Include="Source\Config\PropertyResult.cs" />
+    <Compile Include="Source\IBinaryFileObject.cs" />
     <Compile Include="Source\Delegates.cs" />
     <Compile Include="Source\Errors\Error.cs" />
     <Compile Include="Source\Errors\ErrorList.cs" />
