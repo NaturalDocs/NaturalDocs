@@ -45,8 +45,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			FromString(input);
 			}
-			
-			
+						
 		/* Constructor: NumberSet
 		 * Reads a number set from the passed <BinaryFile>.
 		 */
@@ -56,6 +55,17 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			numberPairsUsedLength = 0;
 			
 			FromBinaryFile(input);
+			}
+
+		/* Constructor: NumberSet
+		 * Creates a number set by duplicating the passed one.
+		 */
+		public NumberSet (NumberSet toCopy)
+			{
+			numberPairs = null;
+			numberPairsUsedLength = 0;
+
+			Duplicate(toCopy);
 			}
 			
 			
@@ -297,6 +307,24 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			if (numberPairs.Length >= NumberPairShrinkThreshold)
 				{  numberPairs = new int[2];  }
 			}
+
+
+		/* Function: Duplicate
+		 * Makes this number set have the same contents as the passed one.
+		 */
+		public void Duplicate (NumberSet other)
+			{
+			// DEPENDENCY: This has to be able to be called from the constructor when numberPairs is null.
+
+			if (numberPairs == null || numberPairs.Length < other.numberPairsUsedLength || 
+				 numberPairs.Length - other.numberPairsUsedLength >= NumberPairShrinkThreshold)
+				{
+				numberPairs = new int[other.numberPairsUsedLength];
+				}
+
+			numberPairsUsedLength = other.numberPairsUsedLength;
+			Array.Copy(other.numberPairs, numberPairs, numberPairsUsedLength);
+			}
 			
 			
 		/* Operator: operator==
@@ -446,7 +474,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				
 			// If we're here the string is valid enough to parse, though it still may contain things like "3-5,6-9" which should be "3-9".
 			
-			if (numberPairs == null || numberPairs.Length < arraySize)
+			if (numberPairs == null || numberPairs.Length < arraySize || numberPairs.Length - arraySize >= NumberPairShrinkThreshold)
 				{  numberPairs = new int[arraySize];  }
 				
 			numberPairsUsedLength = arraySize;
@@ -542,7 +570,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			if (length < 0 || length % 2 != 0)
 				{  throw new FormatException();  }
 
-			if (numberPairs == null || numberPairs.Length < length)
+			if (numberPairs == null || numberPairs.Length < length || numberPairs.Length - length >= NumberPairShrinkThreshold)
 				{  
 				if (length == 0)
 					{  numberPairs = new int[2];  }
