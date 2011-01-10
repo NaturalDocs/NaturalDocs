@@ -48,10 +48,15 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * multiple threads can call this function and the work will be divided up between them.
 		 * 
 		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
-		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
-		 * may have returned because there was no more work for this thread to do, but other threads are still working.
+		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  One 
+		 * may return because there was no more work for that thread to do, but other threads are still working.
+		 * 
+		 * Finalization can optionally be skipped.  Finalization is any potentially long task that can only be done after all source
+		 * files have been processed, like generating HTML search data and indexes or compiling temporary files into the final PDF.
+		 * This allows it to be delayed if you think more changes will be coming soon or you want to run it with a different thread
+		 * priority.  To apply finalization you would call this function again with the parameter set to true.
 		 */
-		abstract public void WorkOnUpdatingOutput (CancelDelegate cancelDelegate);
+		abstract public void WorkOnUpdatingOutput (CancelDelegate cancelDelegate, bool finalize = true);
 
 			
 		/* Function: Cleanup

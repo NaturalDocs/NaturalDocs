@@ -438,7 +438,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
+		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate, bool finalize = true)
 			{
 			CodeDB.Accessor accessor = null;
 			bool haveLock = false;
