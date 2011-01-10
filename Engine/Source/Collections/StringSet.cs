@@ -80,8 +80,8 @@ namespace GregValure.NaturalDocs.Engine.Collections
 				
 			return ContainsKey( key.NormalizeKey(ignoreCase, normalizeUnicode) );
 			}
-			
-		
+
+
 		/* Function: operator ==
 		 */
 		public static bool operator== (StringSet set1, StringSet set2)
@@ -139,8 +139,27 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			{
 			return new StringSetEnumerator(this);
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+		
+		
+		/* Property: IsEmpty
+		 * Whether there are any strings in the set.
+		 */
+		public bool IsEmpty
+			{
+			get
+				{  return (Count == 0);  }
+			}
+
 			
-			
+
+		// Group: Variables
+		// __________________________________________________________________________
+
 			
 		/* var: ignoreCase
 		 * Whether the set is case sensitive.
