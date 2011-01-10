@@ -152,8 +152,13 @@ namespace GregValure.NaturalDocs.CLI
 						// Building
 						
 						Threads.Builder[] builders = new Threads.Builder[ Engine.Instance.Config.BackgroundThreadsPerTask ];
+						Threads.Finalizer[] finalizers = new Threads.Finalizer[ Engine.Instance.Config.BackgroundThreadsPerTask ];
+
 						for (int i = 0; i < builders.Length; i++)
-							{  builders[i] = new Threads.Builder(i + 1);  }
+							{  
+							builders[i] = new Threads.Builder(i + 1);  
+							finalizers[i] = new Threads.Finalizer(i + 1);  
+							}
 						
 						using ( StatusManagers.Building statusManager = new StatusManagers.Building(StatusInterval) )
 							{
@@ -165,11 +170,19 @@ namespace GregValure.NaturalDocs.CLI
 							foreach (Threads.Builder builder in builders)
 								{  builder.Join();  }
 							
+							foreach (Threads.Finalizer finalizer in finalizers)
+								{  finalizer.Start();  }
+								
+							foreach (Threads.Finalizer finalizer in finalizers)
+								{  finalizer.Join();  }
+							
 							statusManager.End();
 							}
 							
 						foreach (Threads.Builder builder in builders)
 							{  builder.ThrowExceptions();  }
+						foreach (Threads.Finalizer finalizer in finalizers)
+							{  finalizer.ThrowExceptions();  }
 							
 							
 						// End

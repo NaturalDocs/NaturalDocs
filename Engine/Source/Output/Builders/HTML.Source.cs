@@ -41,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: BuildSourceFile
 		 * Builds an output file based on a source file.  The accessor should NOT hold a lock on the database.
 		 */
-		public void BuildSourceFile (int fileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		protected void BuildSourceFile (int fileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			accessor.GetReadOnlyLock();
 			bool haveLock = true;
@@ -89,7 +89,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: DeleteSourceFile
 		 * Deletes an output file based on a source file.
 		 */
-		public void DeleteSourceFile (int fileID)
+		protected void DeleteSourceFile (int fileID)
 			{
 			Path outputFile = ToSourceOutputPath(fileID);
 
@@ -136,7 +136,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Returns the output folder for the passed type and number.  This only works with source and image folders.  To
 		 * do styles, use <StyleOutputFolder()>.
 		 */
-		public Path OutputFolder (Files.InputType type, int number)
+		protected Path OutputFolder (Files.InputType type, int number)
 			{
 			StringBuilder folder = new StringBuilder(config.Folder);
 			folder.Append('/');
@@ -159,7 +159,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Returns the output folder for the passed <FileSource>.  This only works with source and image FileSources.  To
 		 * do styles, use <StyleOutputFolder()>.
 		 */
-		public Path OutputFolder (Files.FileSource fileSource)
+		protected Path OutputFolder (Files.FileSource fileSource)
 			{
 			return OutputFolder(fileSource.Type, fileSource.Number);
 			}

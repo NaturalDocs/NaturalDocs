@@ -40,7 +40,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 	
-		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate, bool finalize = true)
+		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
 			}
 			

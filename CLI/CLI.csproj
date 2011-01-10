@@ -70,6 +70,7 @@
     <Compile Include="Source\StatusManagers\FileSearch.cs" />
     <Compile Include="Source\StatusManagers\Parsing.cs" />
     <Compile Include="Source\Threads\Builder.cs" />
+    <Compile Include="Source\Threads\Finalizer.cs" />
     <Compile Include="Source\Threads\Parser.cs" />
   </ItemGroup>
   <ItemGroup>

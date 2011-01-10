@@ -73,6 +73,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* enum: ClaimedTaskFlags
+		 * Flags that specify which unparallelizable tasks are already being worked on by thread.
+		 * 
+		 * None - None of the below are claimed.
+		 * CheckFoldersForDeletion - A thread is going through <foldersToCheckForDeletion>.
+		 */
+		 [Flags]
+		 protected enum ClaimedTaskFlags : byte {
+			None = 0x00,
+			CheckFoldersForDeletion = 0x01
+			}
+
+
 		/* enum: PageType
 		 * Used for specifying the type of page something applies to.
 		 * 
@@ -99,6 +112,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			sourceFilesToRebuild = new IDObjects.NumberSet();
 			foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
 			buildFlags = BuildFlags.Everything;
+			claimedTaskFlags = ClaimedTaskFlags.None;
 			config = configEntry;
 			styles = null;
 			}
@@ -438,7 +452,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate, bool finalize = true)
+		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
 			CodeDB.Accessor accessor = null;
 			bool haveLock = false;
@@ -452,6 +466,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					
 					if (cancelDelegate())
 						{  return;  }
+
+
+					// Build index file
 
 					if ((buildFlags & BuildFlags.IndexFile) != 0)
 						{
@@ -467,6 +484,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								{  buildFlags |= BuildFlags.IndexFile;  }
 							}
 						}
+
+
+					// Build main style files
 						
 					else if ((buildFlags & BuildFlags.MainStyleFiles) != 0)
 						{
@@ -482,6 +502,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								{  buildFlags |= BuildFlags.MainStyleFiles;  }
 							}
 						}
+
+
+					// Build source files
 						
 					else if (sourceFilesToRebuild.IsEmpty == false)
 						{
@@ -520,6 +543,75 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 			
 
+		public override void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
+			{
+			CodeDB.Accessor accessor = null;
+			bool haveLock = false;
+			
+			try
+				{
+				for (;;)
+					{
+					Monitor.Enter(writeLock);
+					haveLock = true;
+					
+					if (cancelDelegate())
+						{  return;  }
+
+
+					// Delete empty folders
+
+					// This task is not parallelizable so it gets claimed by one thread and looped to completion.  Theoretically it should
+					// be, but in practice when two or more threads try to delete the same folder at the same time they both fail.  This
+					// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
+					// while the other thread gets it by walking up the child's tree.
+
+					if ( (claimedTaskFlags & ClaimedTaskFlags.CheckFoldersForDeletion) == 0 &&
+						 foldersToCheckForDeletion.IsEmpty == false)
+						{
+						claimedTaskFlags |= ClaimedTaskFlags.CheckFoldersForDeletion;
+
+						try
+							{
+							while (!cancelDelegate())
+								{
+								Path folder = foldersToCheckForDeletion.RemoveOne();
+								System.Console.WriteLine();
+
+								Monitor.Exit(writeLock);
+								haveLock = false;
+
+								if (folder == null)
+									{  break;  }
+
+								DeleteEmptyFolders(folder);
+
+								Monitor.Enter(writeLock);
+								haveLock = true;
+								}
+							}
+						finally
+							{  claimedTaskFlags &= ~ClaimedTaskFlags.CheckFoldersForDeletion;  }
+						}
+
+
+					else
+						{  break;  }
+						
+					if (cancelDelegate())
+						{  return;  }
+					}
+				}
+			finally
+				{
+				if (haveLock)
+					{  Monitor.Exit(writeLock);  }
+				if (accessor != null)
+					{  accessor.Dispose();  }
+				}
+			}
+			
+
 			
 		// Group: Builder Functions
 		// __________________________________________________________________________
@@ -529,7 +621,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
+		protected void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
 			{
 			using (System.IO.StreamWriter file = CreateTextFileAndPath(outputPath))
 				{
@@ -590,7 +682,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: BuildIndexFile
 		 * Builds index.html, which provides the documentation frame.
 		 */
-		public void BuildIndexFile (CancelDelegate cancelDelegate)
+		protected void BuildIndexFile (CancelDelegate cancelDelegate)
 			{
 
 			// Page and header titles
@@ -687,6 +779,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				);
 
 			BuildFile(config.Folder + "/index.html", rawPageTitle, content.ToString(), PageType.Index);
+			}
+
+
+		/* Function: DeleteEmptyFolders
+		 * Deletes the passed folder if it's empty.  If so it also tries the parent folder, continuing up the tree until it finds a
+		 * non-empty folder or reaches the root output folder.
+		 */
+		protected void DeleteEmptyFolders (Path folder)
+			{
+			while (config.Folder.Contains(folder))
+				{
+				try
+					{
+					// If the folder isn't empty this will throw an exception.  We have to rely on that because .NET doesn't otherwise
+					// provide an efficient way to detect if a folder is empty.  All its functions enumerate all its contents and return it
+					// as an array; there's nothing that returns the first item and lets you stop there.
+					System.IO.Directory.Delete(folder);
+					}
+				catch (Exception e)
+					{
+					break;
+					}
+
+				folder = folder.ParentFolder;
+				}
 			}
 
 
@@ -844,7 +961,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Creates a relative URL between the two absolute filesystem paths.  Make sure the From parameter is a *file* and not
 		 * a folder.
 		 */
-		public string MakeRelativeURL (Path fromFile, Path toFile)
+		protected string MakeRelativeURL (Path fromFile, Path toFile)
 			{
 			return fromFile.ParentFolder.MakeRelative(toFile).ToURL();
 			}
@@ -893,6 +1010,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Flags for everything that needs to be built not encompassed by other variables like <sourceFilesToRebuild>.
 		 */
 		protected BuildFlags buildFlags;
+
+		/* var: claimedTaskFlags
+		 * Flags specifying which unparallelizable tasks are already claimed by a thread.
+		 */
+		protected ClaimedTaskFlags claimedTaskFlags;
 
 		/* var: config
 		 */

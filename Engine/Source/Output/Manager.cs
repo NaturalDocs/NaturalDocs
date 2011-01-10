@@ -88,7 +88,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: WorkOnUpdatingOutput
 		 * 
 		 * Works on the task of updating the output files for any changes it has detected so far.  This is a parallelizable task, so
-		 * multiple threads can call this function and the work will be divided up between them.
+		 * multiple threads can call this function and the work will be divided up between them.  Note that the output may not be
+		 * usable after this completes; you also need to call <WorkOnFinalizingOutput()>.
 		 * 
 		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
 		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
@@ -102,6 +103,30 @@ namespace GregValure.NaturalDocs.Engine.Output
 					{  return;  }
 					
 				builder.WorkOnUpdatingOutput(cancelDelegate);
+				}
+			}
+
+
+		/* Function: WorkOnFinalizingOutput
+		 * 
+		 * Works on the task of finalizing the output, which is any task that requires all files to be successfully processed by
+		 * <WorkOnUpdatingOutput()> before it can run.  You must wait for all threads to return from <WorkOnUpdatingOutput()>
+		 * before calling this function.  Examples of finalization include generating index and search data for HTML output and
+		 * compiling the temporary files into the final one for PDF output.  This is a parallelizable task, so multiple threads can call 
+		 * this function and the work will be divided up between them.
+		 * 
+		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
+		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
+		 * may have returned because there was no more work for this thread to do, but other threads are still working.
+		 */
+		public void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
+			{
+			foreach (Builder builder in builders)
+				{
+				if (cancelDelegate())
+					{  return;  }
+					
+				builder.WorkOnFinalizingOutput(cancelDelegate);
 				}
 			}
 

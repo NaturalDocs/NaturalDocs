@@ -286,7 +286,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: BuildMainStyleFiles
 		 * Builds main.css and main.js.
 		 */
-		public void BuildMainStyleFiles (CancelDelegate cancelDelegate)
+		protected void BuildMainStyleFiles (CancelDelegate cancelDelegate)
 			{
 			// main.css
 
@@ -428,7 +428,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Property: RootStyleFolder
 		 * The folder that holds all the style folders.
 		 */
-		public Path RootStyleFolder
+		protected Path RootStyleFolder
 			{
 			get
 				{  return config.Folder + "/styles";  }
@@ -437,7 +437,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: StyleOutputFolder
 		 * Returns the folder for the passed style.
 		 */
-		public Path StyleOutputFolder (HTMLStyle style)
+		protected Path StyleOutputFolder (HTMLStyle style)
 			{
 			return config.Folder + "/styles/" + style.Name;
 			}
@@ -445,7 +445,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: StyleFileOutputPath
 		 * Returns the output path of the passed style file if it is part of a style used by this builder.  Otherwise returns null.
 		 */
-		public Path StyleFileOutputPath (Path originalStyleFile)
+		protected Path StyleFileOutputPath (Path originalStyleFile)
 			{
 			foreach (HTMLStyle style in styles)
 				{
