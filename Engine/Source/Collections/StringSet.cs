@@ -82,6 +82,24 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			}
 
 
+		/* Function: RemoveOne
+		 * Removes and returns an arbitrary string from the set.  If the set is empty it will return null.
+		 */
+		public string RemoveOne ()
+			{
+			var enumerator = GetEnumerator();
+
+			if (enumerator.MoveNext() == false)
+				{  return null;  }
+			else
+				{
+				string result = (string)enumerator.Current;
+				Remove(result);
+				return result;
+				}
+			}
+
+
 		/* Function: operator ==
 		 */
 		public static bool operator== (StringSet set1, StringSet set2)
