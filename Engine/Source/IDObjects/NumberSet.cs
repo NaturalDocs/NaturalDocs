@@ -70,9 +70,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			
 		/* Function: Add
-		 * Adds the specified number to the set.
+		 * Adds the specified number to the set.  Returns true if the number didn't already exist in the set and was added, false
+		 * if it was already in the set.
 		 */
-		public void Add (int number)
+		public bool Add (int number)
 			{
 			if (number < 1)
 				{  throw new ArgumentException("Can't add zero or negative numbers to an ID number set.");  }
@@ -86,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				
 				// If the number is already in the indexed pair...
 				if (number >= numberPairs[pairIndex] && number <= numberPairs[pairIndex + 1])
-					{  return;  }
+					{  return false;  }
 					
 				// If the number is one lower than the lower bounds of the indexed pair...
 				else if (number == numberPairs[pairIndex] - 1)
@@ -100,14 +101,17 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 						numberPairs[pairIndex - 1] = numberPairs[pairIndex + 1];
 						DeleteAtIndex(pairIndex);
 						}
+
+					return true;
 					}
 					
 				// If it's not the first pair and the number is one higher than the upper bounds of the previous pair...
 				else if (pairIndex > 0 && number == numberPairs[pairIndex - 1] + 1)
 					{
 					numberPairs[pairIndex - 1]++;
-					// We don't have to check if we need to combine the prior pair with the previous because we already
-					// checked if it's one lower than the current's lower bounds.
+					// We don't have to check if we need to combine the prior pair with the indexed because we already
+					// checked if it's one lower than the indexed's lower bounds.
+					return true;
 					}
 					
 				// If it's not one off from the indexed or prior pair...
@@ -116,6 +120,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					InsertAtIndex(pairIndex);
 					numberPairs[pairIndex] = number;
 					numberPairs[pairIndex+1] = number;
+					return true;
 					}
 
 				}
@@ -128,6 +133,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				if (pairIndex > 0 && number == numberPairs[pairIndex - 1] + 1)
 					{
 					numberPairs[pairIndex - 1]++;
+					return true;
 					}
 					
 				// If the array is empty or it's more than one past the prior's upper bounds...
@@ -136,6 +142,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					InsertAtIndex(pairIndex);
 					numberPairs[pairIndex] = number;
 					numberPairs[pairIndex + 1] = number;
+					return true;
 					}
 					
 				}
@@ -143,8 +150,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			
 		/* Function: Remove
-		 * Removes the specified number from the set.  Returns whether the number was part of the set.  It does not throw
-		 * an exception if it was not.
+		 * Removes the specified number from the set.  Returns true if the number existed in the set and was removed, false if
+		 * it wasn't part of the set.
 		 */
 		public bool Remove (int number)
 			{
