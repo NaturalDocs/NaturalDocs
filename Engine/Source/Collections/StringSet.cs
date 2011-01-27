@@ -8,6 +8,7 @@
  * - It has a more straightforward interface for the intended purpose.
  * - It supports case sensitivity and Unicode normalization flags.
  * - It has a constructor that allows you to initialize it with an array of strings.
+ * - Supports <IBinaryFileObject>.
  * 
  */
 
@@ -22,7 +23,7 @@ using System.Collections.Generic;
 
 namespace GregValure.NaturalDocs.Engine.Collections
 	{
-	public class StringSet : System.Collections.Generic.Dictionary<string, bool>, System.Collections.IEnumerable
+	public class StringSet : System.Collections.Generic.Dictionary<string, bool>, System.Collections.IEnumerable, IBinaryFileObject
 		{
 		// Group: Functions
 		// __________________________________________________________________________
@@ -156,6 +157,40 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		new public System.Collections.IEnumerator GetEnumerator()
 			{
 			return new StringSetEnumerator(this);
+			}
+
+
+		/* Function: ToBinaryFile
+		 * Writes the contents of the string set to the passed binary file.
+		 */
+		public void ToBinaryFile (BinaryFile binaryFile)
+			{
+			// [String: member]
+			// [String: member]
+			// ...
+			// [String: null]
+
+			foreach (string member in this)
+				{  binaryFile.WriteString(member);  }
+
+			binaryFile.WriteString(null);
+			}
+
+
+		/* Function: FromBinaryFile
+		 * Reads the contents of the string set from the passed binary file.
+		 */
+		public void FromBinaryFile (BinaryFile binaryFile)
+			{
+			Clear();
+
+			// [String: member]
+			// [String: member]
+			// ...
+			// [String: null]
+
+			for (string member = binaryFile.ReadString(); member != null; member = binaryFile.ReadString())
+				{  Add(member);  }
 			}
 
 
