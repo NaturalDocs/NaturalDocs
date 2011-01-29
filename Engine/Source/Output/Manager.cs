@@ -17,7 +17,7 @@ using GregValure.NaturalDocs.Engine.Errors;
 
 namespace GregValure.NaturalDocs.Engine.Output
 	{
-	public class Manager
+	public class Manager : IDisposable
 		{
 		
 		// Group: Functions
@@ -33,6 +33,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 			
 			
+		/* Function: Dispose
+		 */
+		public void Dispose ()
+			{
+			foreach (Builder builder in builders)
+				{
+				if (builder is IDisposable)
+					{  ((IDisposable)builder).Dispose();  }
+				}
+			}
+
+
 		/* Function: AddBuilder
 		 * Adds an <Output.Builder> to the list.  This can only be called before the class is started.
 		 */

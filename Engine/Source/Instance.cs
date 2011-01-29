@@ -107,11 +107,11 @@ namespace GregValure.NaturalDocs.Engine
 				if (System.IO.File.Exists(gracefulExitFilePath))
 					{  System.IO.File.Delete(gracefulExitFilePath);  }
 				}
-				
-			if (files != null)
-				{  
-				files.Dispose();  
-				files = null;
+
+			if (output != null)
+				{
+				output.Dispose();
+				output = null;
 				}
 				
 			if (codeDB != null)
@@ -119,11 +119,16 @@ namespace GregValure.NaturalDocs.Engine
 				codeDB.Dispose();
 				codeDB = null;
 				}
-				
+
+			if (files != null)
+				{  
+				files.Dispose();  
+				files = null;
+				}
+								
 			comments = null;
 			languages = null;
 			topicTypes = null;
-			output = null;
 			config = null;
 			}
 			
@@ -326,7 +331,7 @@ namespace GregValure.NaturalDocs.Engine
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
-		public const string VersionString = "2.0 (Development Release 01-08-2011)";
+		public const string VersionString = "2.0 (Development Release 01-27-2011)";
 		
 		
 		/* Property: Version
