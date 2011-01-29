@@ -5,9 +5,9 @@
  * An output builder for HTML.
  * 
  * 
- * File: Output.nd
+ * File: Config.nd
  * 
- *		A file used to store information about the last time this output target was built.
+ *		A file used to store information about the configuration as of last time this output target was built.
  *		
  *		> [String: Style Path]
  *		> [String: Style Path]
@@ -31,6 +31,25 @@
  *		
  *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
  *		one is deleted or changes.
+ *		
+ * 
+ * File: BuildState.nd
+ * 
+ *		A file used to store the build state of this output target the last time it was built.
+ *		
+ *		> [NumberSet: Source File IDs to Rebuild]
+ *		
+ *		The source files that needed to be rebuilt but weren't yet.  If the last build was run to completion this should be
+ *		an empty set, though if the build was interrupted this will have the ones left to do.
+ *		
+ *		> [NumberSet: Source File IDs with Content]
+ *		
+ *		A set of all the source files known to have content after all filters were applied.
+ *		
+ *		> [StringSet: Folders to Check for Deletion]
+ *		
+ *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
+ *		to completion this should be an empty set.
  * 
  */
 
@@ -55,34 +74,36 @@ using GregValure.NaturalDocs.Engine.Output.Styles;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
 	{
-	public partial class HTML : Builder, Files.IStyleChangeWatcher
+	public partial class HTML : Builder, Files.IStyleChangeWatcher, IDisposable
 		{
 
 		/* enum: BuildFlags
 		 * Flags that specify what parts of the HTML output structure still need to be built.
 		 * 
+		 * IndexFile - index.html
 		 * MainStyleFiles - main.css and main.js
-		 * Everything - The combination of everything above.
+		 * 
+		 * FileHierarchy - FileHierarchy.xml
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
 			IndexFile = 0x01,
 			MainStyleFiles = 0x02,
 
-			Everything = IndexFile | MainStyleFiles
+			FileHierarchy = 0x04
 			}
 
 
 		/* enum: ClaimedTaskFlags
 		 * Flags that specify which unparallelizable tasks are already being worked on by thread.
 		 * 
-		 * None - None of the below are claimed.
+		 * BuildFileHierarchy - A thread is updating FileHierarchy.xml.
 		 * CheckFoldersForDeletion - A thread is going through <foldersToCheckForDeletion>.
 		 */
 		 [Flags]
 		 protected enum ClaimedTaskFlags : byte {
-			None = 0x00,
-			CheckFoldersForDeletion = 0x01
+			BuildFileHierarchy = 0x01,
+			CheckFoldersForDeletion = 0x02
 			}
 
 
@@ -109,10 +130,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		public HTML (Config.Entries.HTMLOutputFolder configEntry) : base ()
 			{
 			writeLock = new object();
-			sourceFilesToRebuild = new IDObjects.NumberSet();
-			foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
-			buildFlags = BuildFlags.Everything;
-			claimedTaskFlags = ClaimedTaskFlags.None;
+
+			sourceFilesToRebuild = null;
+			sourceFilesWithContent = null;
+			foldersToCheckForDeletion = null;
+			buildFlags = 0;
+			claimedTaskFlags = 0;
+
 			config = configEntry;
 			styles = null;
 			}
@@ -151,18 +175,46 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return false;  }
 
 
-			// Load Output.nd
+			// Set the default build flags
+
+			buildFlags = BuildFlags.IndexFile | BuildFlags.MainStyleFiles;
+			// FileHierarchy only gets rebuilt if changes are detected in sourceFilesWithContent.
+
+
+			// Load Config.nd
 
 			List<HTMLStyle> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
-			bool hasBinaryFile = LoadBinaryFile(config.OutputWorkingDataFile, out previousStyles, out previousFileSourceInfoList);
+			bool hasBinaryConfigFile = LoadBinaryConfigFile(config.OutputWorkingDataFolder + "/Config.nd", 
+																								 out previousStyles, out previousFileSourceInfoList);
 
-			bool saidPurgingOutputFiles = false;
+			
+			// Load BuildState.nd
+
+			bool hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
+																											  out sourceFilesToRebuild, out sourceFilesWithContent, 
+																											  out foldersToCheckForDeletion);
+
+			if (!hasBinaryBuildStateFile)
+				{
+				// Because we need sourceFilesWithContent
+				Engine.Instance.Config.ReparseEverything = true;
+
+				// Because we don't know if there was anything left in sourceFilesToRebuild
+				Engine.Instance.Config.RebuildAllOutput = true;
+				}
+
+			if (Engine.Instance.Config.RebuildAllOutput)
+				{  
+				buildFlags |= BuildFlags.FileHierarchy;
+				}
 
 
 			// Compare to the previous list of styles.
 
-			if (!hasBinaryFile)
+			bool saidPurgingOutputFiles = false;
+
+			if (!hasBinaryConfigFile)
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
@@ -243,7 +295,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Compare to the previous list of FileSources.
 
-			if (!hasBinaryFile)
+			if (!hasBinaryConfigFile)
 				{
 				// If the binary file doesn't exist, we have to purge every folder because some of them may have changed or are no
 				// longer in use and we won't know which.
@@ -364,7 +416,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
-			// Save output.nd.
+			// Save Config.nd.
+
+			if (!System.IO.Directory.Exists(config.OutputWorkingDataFolder))
+				{  System.IO.Directory.CreateDirectory(config.OutputWorkingDataFolder);  }
 
 			List<FileSourceInfo> fileSourceInfoList = new List<FileSourceInfo>();
 
@@ -378,7 +433,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					};
 				}
 
-			SaveBinaryFile(config.OutputWorkingDataFile, styles, fileSourceInfoList);
+			SaveBinaryConfigFile(config.OutputWorkingDataFolder + "/Config.nd", styles, fileSourceInfoList);
 
 
 			return (errors == errorList.Count);
@@ -449,6 +504,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			loadList.Add(style);
 
 			return (errorList.Count == errors);
+			}
+
+
+		/* Function: Dispose
+		 */
+		public void Dispose ()
+			{
+			try
+				{
+				SaveBinaryBuildStateFile( config.OutputWorkingDataFolder + "/BuildState.nd", sourceFilesToRebuild, sourceFilesWithContent,
+															  foldersToCheckForDeletion );
+				}
+			catch 
+				{  }
 			}
 
 
@@ -812,11 +881,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: LoadBinaryFile
-		 * Loads the information in <Output.nd> and returns whether it was successful.  If not all the out parameters will still 
+		/* Function: LoadBinaryConfigFile
+		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public static bool LoadBinaryFile (Path filename, out List<HTMLStyle> styles, out List<FileSourceInfo> fileSourceInfoList)
+		public static bool LoadBinaryConfigFile (Path filename, out List<HTMLStyle> styles, out List<FileSourceInfo> fileSourceInfoList)
 			{
 			styles = new List<HTMLStyle>();
 			fileSourceInfoList = new List<FileSourceInfo>();
@@ -882,21 +951,24 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 			catch
-				{  
-				styles.Clear();
-				result = false;
-				}
+				{  result = false;  }
 			finally
 				{  binaryFile.Dispose();  }
+
+			if (result == false)
+				{
+				styles.Clear();
+				fileSourceInfoList.Clear();
+				}
 
 			return result;
 			}
 
 
-		/* Function: SaveBinaryFile
-		 * Saves the passed information in <Output.nd>.
+		/* Function: SaveBinaryConfigFile
+		 * Saves the passed information in <Config.nd>.
 		 */
-		public static void SaveBinaryFile (Path filename, List<HTMLStyle> styles, List<FileSourceInfo> fileSourceInfoList)
+		public static void SaveBinaryConfigFile (Path filename, List<HTMLStyle> styles, List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -952,6 +1024,83 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: LoadBinaryBuildStateFile
+		 * Loads the information in <BuildState.nd> and returns whether it was successful.  If not all the out parameters will still 
+		 * return objects, they will just be empty.  
+		 */
+		public static bool LoadBinaryBuildStateFile (Path filename, out IDObjects.NumberSet fileIDsToBuild, 
+																					 out IDObjects.NumberSet fileIDsWithContent, out StringSet foldersToCheckForDeletion)
+			{
+			fileIDsToBuild = null;
+			fileIDsWithContent = null;
+			foldersToCheckForDeletion = null;
+
+			BinaryFile binaryFile = new BinaryFile();
+			bool result = true;
+
+			try
+				{
+				if (binaryFile.OpenForReading(filename, "2.0") == false)
+					{  result = false;  }
+				else
+					{
+					// [NumberSet: Source File IDs to Rebuild]
+					// [NumberSet: Source File IDs with Content]
+					// [StringSet: Folders to Check for Deletion]
+
+					fileIDsToBuild = new IDObjects.NumberSet(binaryFile);
+					fileIDsWithContent = new IDObjects.NumberSet(binaryFile);
+					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
+					}
+				}
+			catch
+				{  result = false;  }
+			finally
+				{  binaryFile.Dispose();  }
+
+			if (result == false)
+				{
+				if (fileIDsToBuild == null)
+					{  fileIDsToBuild = new IDObjects.NumberSet();  }
+				else
+					{  fileIDsToBuild.Clear();  }
+
+				if (fileIDsWithContent == null)
+					{  fileIDsWithContent = new IDObjects.NumberSet();  }
+				else
+					{  fileIDsWithContent.Clear();  }
+
+				if (foldersToCheckForDeletion == null)
+					{  foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false);  }
+				else
+					{  foldersToCheckForDeletion.Clear();  }
+				}
+
+			return result;
+			}
+
+
+		/* Function: SaveBinaryBuildStateFile
+		 * Saves the passed information in <BuildState.nd>.
+		 */
+		public static void SaveBinaryBuildStateFile (Path filename, IDObjects.NumberSet fileIDsToBuild, 
+																					 IDObjects.NumberSet fileIDsWithContent, StringSet foldersToCheckForDeletion)
+			{
+			using (BinaryFile binaryFile = new BinaryFile())
+				{
+				binaryFile.OpenForWriting(filename);
+
+				// [NumberSet: Source File IDs to Rebuild]
+				// [NumberSet: Source File IDs with Content]
+				// [StringSet: Folders to Check for Deletion]
+
+				binaryFile.WriteObject(fileIDsToBuild);
+				binaryFile.WriteObject(fileIDsWithContent);
+				binaryFile.WriteObject(foldersToCheckForDeletion);
+				}
+			}
+
+
 
 		// Group: Path Functions
 		// __________________________________________________________________________
@@ -1000,6 +1149,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * A set of the source file IDs that need to be rebuilt.
 		 */
 		protected IDObjects.NumberSet sourceFilesToRebuild;
+
+		/* var: sourceFilesWithContent
+		 * A set of the source file IDs that contain content this output target can use.  This is different from all the files with
+		 * content in <CodeDB.Manager> because it is after all filters have been applied.
+		 */
+		protected IDObjects.NumberSet sourceFilesWithContent;
 		
 		/* var: foldersToCheckForDeletion
 		 * A set of folders that have had files removed, and thus should be deleted if empty.

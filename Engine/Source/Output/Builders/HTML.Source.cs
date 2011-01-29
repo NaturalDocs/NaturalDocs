@@ -44,7 +44,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildSourceFile (int fileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			accessor.GetReadOnlyLock();
-			bool haveLock = true;
+			bool haveDBLock = true;
 			
 			try
 				{
@@ -56,12 +56,24 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (topics.Count == 0)
 					{
 					accessor.ReleaseLock();
-					haveLock = false;
+					haveDBLock = false;
 					
-					DeleteSourceFile(fileID);  
-					return;
+					Path outputFile = ToSourceOutputPath(fileID);
+
+					if (outputFile != null && System.IO.File.Exists(outputFile))
+						{  
+						System.IO.File.Delete(outputFile);
+						foldersToCheckForDeletion.Add(outputFile.ParentFolder);
+						}
+
+					lock (writeLock)
+						{
+						if (sourceFilesWithContent.Remove(fileID) == true)
+							{  buildFlags |= BuildFlags.FileHierarchy;  }
+						}
 					}
-				else
+
+				else // (topics.Count != 0)
 					{
 					StringBuilder content = new StringBuilder();
 					content.Append("<ul>");
@@ -73,30 +85,24 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							
 					content.Append("</ul>");
 
+					accessor.ReleaseLock();
+					haveDBLock = false;
+
 					Path outputPath = ToSourceOutputPath(fileID);
 					BuildFile(outputPath, "test", content.ToString(), PageType.Content);
+
+					lock (writeLock)
+						{
+						if (sourceFilesWithContent.Add(fileID) == true)
+							{  buildFlags |= BuildFlags.FileHierarchy;  }
+						}
 					}
 				}
 				
 			finally
 				{ 
-				if (haveLock)
+				if (haveDBLock)
 					{  accessor.ReleaseLock();  }
-				}
-			}
-			
-			
-		/* Function: DeleteSourceFile
-		 * Deletes an output file based on a source file.
-		 */
-		protected void DeleteSourceFile (int fileID)
-			{
-			Path outputFile = ToSourceOutputPath(fileID);
-
-			if (outputFile != null &&  System.IO.File.Exists(outputFile))
-				{  
-				System.IO.File.Delete(outputFile);
-				foldersToCheckForDeletion.Add(outputFile.ParentFolder);
 				}
 			}
 
