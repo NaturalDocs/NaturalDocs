@@ -52,6 +52,18 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			}
 			
 			
+		/* Function: StringSet
+		 * Creates a set and reads the members from the passed <BinaryFile>.
+		 */
+		public StringSet (bool ignoreCase, bool normalizeUnicode, BinaryFile binaryFile)
+			{
+			this.ignoreCase = ignoreCase;
+			this.normalizeUnicode = normalizeUnicode;
+			
+			FromBinaryFile(binaryFile);
+			}
+			
+			
 		/* Function: Add
 		 * Adds a new string to the set.  Nothing happens if the string is already in it.
 		 */
