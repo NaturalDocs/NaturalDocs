@@ -5,7 +5,7 @@
  * A simple class to show topic change events.  This class only exists if <SHOW_TOPIC_CHANGES> is defined.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2008 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
