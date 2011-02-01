@@ -56,16 +56,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Parses the tokenized source code and returns it as a list of <Topics>.  The list will be null if there are no topics or parsing was
 		 * interrupted.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
-		virtual public ParseResult Parse (Tokenizer newTokenizedSourceCode, int fileID, CancelDelegate newCancelDelegate, 
+		virtual public ParseResult Parse (Tokenizer tokenizedSourceCode, int fileID, CancelDelegate cancelDelegate, 
 																  out List<Topic> topics)
 			{
 			topics = null;
 			ParseState parser = new ParseState();
 			
-			parser.TokenizedSourceCode = newTokenizedSourceCode;
-			parser.CancelDelegate = newCancelDelegate;
+			parser.TokenizedSourceCode = tokenizedSourceCode;
+			parser.CancelDelegate = cancelDelegate;
 			
-			ExtractPossibleDocumentationComments(parser);
+			GetPossibleDocumentationComments(parser);
 			
 			if (parser.Cancelled)
 				{  return ParseResult.Cancelled;  }
@@ -106,13 +106,65 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: GetComments
+		 * 
+		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
+		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		 * comments it will return an empty list.
+		 * 
+		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
+		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
+		 * 
+		 * All the comments in the returned list will have their comment symbols marked as <TokenType.CommentSymbol> in the
+		 * tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
+		 * will also be marked as <TokenType.CommentDecoration>.
+		 * 
+		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
+		 */
+		public List<PossibleDocumentationComment> GetComments (string sourceCode)
+			{
+			return GetComments( new Tokenizer(sourceCode) );
+			}
+
+
+		/* Function: GetComments
+		 * 
+		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
+		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		 * comments it will return an empty list.
+		 * 
+		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
+		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
+		 * 
+		 * All the comments in the returned list will have their comment symbols marked as <TokenType.CommentSymbol> in the
+		 * tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
+		 * will also be marked as <TokenType.CommentDecoration>.
+		 */
+		public List<PossibleDocumentationComment> GetComments (Tokenizer tokenizedSourceCode)
+			{
+			ParseState parser = new ParseState();
+			
+			parser.TokenizedSourceCode = tokenizedSourceCode;
+			parser.CancelDelegate = Delegates.NeverCancel;
+			
+			GetPossibleDocumentationComments(parser);
+
+			foreach (PossibleDocumentationComment comment in parser.PossibleDocumentationComments)
+				{
+				Instance.Comments.LineFinder.MarkTextBoxes(comment);
+				}
+
+			return parser.PossibleDocumentationComments;
+			}
+
+
 			
 		// Group: Overridable Parsing Stages
 		// Override these stages in subclasses as necessary.
 		// __________________________________________________________________________
 		
 			
-		// Function: ExtractPossibleDocumentationComments
+		// Function: GetPossibleDocumentationComments
 		// 
 		// Goes through the file looking for comments that could possibly contain documentation and retrieves them as a list in
 		// <ParseState.PossibleDocumentationComments>.  These comments are not guaranteed to have documentation in them, 
@@ -142,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the 
 		// parser gets tripped up on something like an unmatched brace.
 		//
-		virtual protected void ExtractPossibleDocumentationComments (ParseState parser)
+		virtual protected void GetPossibleDocumentationComments (ParseState parser)
 			{
 			parser.PossibleDocumentationComments = new List<PossibleDocumentationComment>();
 			LineIterator lineIterator = parser.TokenizedSourceCode.FirstLine;
@@ -180,7 +232,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								comment.Type = Comments.Type.Javadoc;
 								comment.Start = lineIterator;
 
-								if (ExtractPossibleDocumentationComments_GetUntil (parser, JavadocBlockCommentStringPairs[i+1],
+								if (GetPossibleDocumentationComments_GetUntil (parser, JavadocBlockCommentStringPairs[i+1],
 																											  ref lineIterator, comment) )
 									{  parser.PossibleDocumentationComments.Add(comment);  }
 									
@@ -206,7 +258,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							comment.Type = Comments.Type.Plain;
 							comment.Start = lineIterator;
 							
-							if (ExtractPossibleDocumentationComments_GetUntil (parser, BlockCommentStringPairs[i+1],
+							if (GetPossibleDocumentationComments_GetUntil (parser, BlockCommentStringPairs[i+1],
 																										  ref lineIterator, comment) )
 								{  parser.PossibleDocumentationComments.Add(comment);  }
 							
@@ -240,7 +292,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								
 								lineIterator.Next();
 
-								ExtractPossibleDocumentationComments_GetWhile (parser, JavadocLineCommentStringPairs[i+1],
+								GetPossibleDocumentationComments_GetWhile (parser, JavadocLineCommentStringPairs[i+1],
 																										   ref lineIterator, comment);
 								parser.PossibleDocumentationComments.Add(comment);
 									
@@ -275,7 +327,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								
 								lineIterator.Next();
 
-								ExtractPossibleDocumentationComments_GetWhile (parser, XMLLineCommentStrings[i],
+								GetPossibleDocumentationComments_GetWhile (parser, XMLLineCommentStrings[i],
 																										   ref lineIterator, comment);
 								parser.PossibleDocumentationComments.Add(comment);
 									
@@ -303,7 +355,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							
 							lineIterator.Next();
 
-							ExtractPossibleDocumentationComments_GetWhile (parser, LineCommentStrings[i],
+							GetPossibleDocumentationComments_GetWhile (parser, LineCommentStrings[i],
 																									   ref lineIterator, comment);
 							parser.PossibleDocumentationComments.Add(comment);
 								
@@ -322,9 +374,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 			
-		/* Function: ExtractPossibleDocumentationComments_GetUntil
+		/* Function: GetPossibleDocumentationComments_GetUntil
 		 * 
-		 * A helper function used only by <ExtractPossibleDocumentationComments()> that advances the iterator until it
+		 * A helper function used only by <GetPossibleDocumentationComments()> that advances the iterator until it
 		 * reaches a line containing the passed closing comment symbol.  If that was the last thing on the line, it sets the ending
 		 * iterator field on the comment object and returns true.  If not, or if it reaches the end of the file, it returns false.
 		 * The closing comment symbol will be marked as <TokenType.CommentSymbol>.
@@ -332,7 +384,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * The passed iterator should be on the first line of the comment so that it can capture a single line block comment.  The 
 		 * iterator will be left on the line following the one with the ending comment symbol.
 		 */
-		 protected bool ExtractPossibleDocumentationComments_GetUntil (ParseState parser, string closingCommentSymbol, 
+		 protected bool GetPossibleDocumentationComments_GetUntil (ParseState parser, string closingCommentSymbol, 
 																										ref LineIterator lineIterator,
 																										PossibleDocumentationComment comment)
 			{
@@ -370,16 +422,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 			
 			
-		/* Function: ExtractPossibleDocumentationComments_GetWhile
+		/* Function: GetPossibleDocumentationComments_GetWhile
 		 * 
-		 * A helper function used only by <ExtractPossibleDocumentationComments()> that advances the iterator until it
+		 * A helper function used only by <GetPossibleDocumentationComments()> that advances the iterator until it
 		 * reaches a line that doesn't start with the passed comment symbol.  It then sets the ending iterator field in
 		 * the comment.  All the comment symbols will be marked as <TokenType.CommentSymbol>.
 		 * 
 		 * The passed iterator should start on the second line of the comment since you should already know the first one is
 		 * a part of it.  The iterator will be left on the line following the last one which started with the comment symbol.
 		 */
-		 protected void ExtractPossibleDocumentationComments_GetWhile (ParseState parser, string commentSymbol, 
+		 protected void GetPossibleDocumentationComments_GetWhile (ParseState parser, string commentSymbol, 
 																										  ref LineIterator lineIterator,
 																										  PossibleDocumentationComment comment)
 			{
