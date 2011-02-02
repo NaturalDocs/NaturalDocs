@@ -320,6 +320,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// main-[filter].js
 
+			Shrinker shrinker = new Shrinker();
+
 			for (int filterIndex = 0; filterIndex < Builders.HTML.AllPageTypes.Length; filterIndex++)
 				{
 				if (cancelDelegate())
@@ -415,7 +417,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				jsOutput.Append('}');
 
-				System.IO.File.WriteAllText(RootStyleFolder + "/main-" + filterName.ToLower() + ".js", Shrinker.ShrinkJS(jsOutput.ToString()));
+				System.IO.File.WriteAllText(RootStyleFolder + "/main-" + filterName.ToLower() + ".js", shrinker.ShrinkJS(jsOutput.ToString()));
 				}
 			}
 
@@ -482,12 +484,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					if (extension == "js" || extension == "json")
 						{
-						string output = Shrinker.ShrinkJS(System.IO.File.ReadAllText(originalStyleFile));
+						Shrinker shrinker = new Shrinker();
+						string output = shrinker.ShrinkJS(System.IO.File.ReadAllText(originalStyleFile));
 						System.IO.File.WriteAllText(outputStyleFile, output);
 						}
 					else if (extension == "css")
 						{
-						string output = Shrinker.ShrinkCSS(System.IO.File.ReadAllText(originalStyleFile));
+						Shrinker shrinker = new Shrinker();
+						string output = shrinker.ShrinkCSS(System.IO.File.ReadAllText(originalStyleFile));
 						System.IO.File.WriteAllText(outputStyleFile, output);
 						}
 					else

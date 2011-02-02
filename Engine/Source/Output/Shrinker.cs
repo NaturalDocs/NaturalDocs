@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Output.Shrinker
+ * Class: GregValure.NaturalDocs.Engine.Output.Shrinker
  * ____________________________________________________________________________
  * 
  * A class used to condense JavaScript and CSS so that it doesn't contain any unnecessary comments or whitespace.
@@ -13,21 +13,51 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Comments;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 namespace GregValure.NaturalDocs.Engine.Output
 	{
-	public static class Shrinker
+	public class Shrinker
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public static string ShrinkJS (string javascript)
+		public Shrinker ()
 			{
-			Tokenizer source = new Tokenizer(javascript);
-			StringBuilder output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
-			List<string> savedComments = new List<string>();
+			source = null;
+			output = null;
+			substitutions = null;
+			}
+
+		public string ShrinkJS (string javascript)
+			{
+			source = new Tokenizer(javascript);
+			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
+			substitutions = new StringToStringTable(false, false);
+
+
+			// Search comments for sections to include in the output and substitution definitions.
+
+			Languages.Language jsLanguage = new Languages.Language("JavaScript");
+			jsLanguage.LineCommentStrings = new string[] { "//" };
+			jsLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+
+			List<PossibleDocumentationComment> comments = jsLanguage.GetComments(source);
+
+			foreach (PossibleDocumentationComment comment in comments)
+				{  ProcessComment(comment);  }
+
+			if (output.Length > 0)
+				{  
+				output.AppendLine(" */");
+				output.AppendLine();  
+				}
+
+
+			// Build the condensed output.
 
 			TokenIterator iterator = source.FirstToken;
 
@@ -39,7 +69,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
 
-				if (TryToSkipWhitespace(ref iterator, savedComments, false) == true)
+				if (TryToSkipWhitespace(ref iterator, false) == true)
 					{
 					char nextChar = iterator.Character; 
 
@@ -61,29 +91,35 @@ namespace GregValure.NaturalDocs.Engine.Output
 					}
 				}
 
-			if (savedComments.Count > 0)
-				{
-				StringBuilder combinedSaved = new StringBuilder();
-
-				foreach (string savedComment in savedComments)
-					{
-					combinedSaved.Append(savedComment);
-					combinedSaved.AppendLine();
-					combinedSaved.AppendLine();
-					}
-
-				output.Insert(0, combinedSaved);
-				}
-			
 			return output.ToString();
 			}
 
 
-		public static string ShrinkCSS (string css)
+		public string ShrinkCSS (string css)
 			{
-			Tokenizer source = new Tokenizer(css);
-			StringBuilder output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
-			List<string> savedComments = new List<string>();
+			source = new Tokenizer(css);
+			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
+			substitutions = new StringToStringTable(false, false);
+
+
+			// Search comments for sections to include in the output and substitution definitions.
+
+			Languages.Language cssLanguage = new Languages.Language("CSS");
+			cssLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+
+			List<PossibleDocumentationComment> comments = cssLanguage.GetComments(source);
+
+			foreach (PossibleDocumentationComment comment in comments)
+				{  ProcessComment(comment);  }
+
+			if (output.Length > 0)
+				{  
+				output.AppendLine(" */");
+				output.AppendLine();  
+				}
+
+
+			// Build the condensed output.
 
 			TokenIterator iterator = source.FirstToken;
 
@@ -97,7 +133,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
 
-				if (TryToSkipWhitespace(ref iterator, savedComments, true) == true)
+				if (TryToSkipWhitespace(ref iterator, true) == true)
 					{
 					char nextChar = iterator.Character; 
 
@@ -125,22 +161,82 @@ namespace GregValure.NaturalDocs.Engine.Output
 					}
 				}
 
-			if (savedComments.Count > 0)
-				{
-				StringBuilder combinedSaved = new StringBuilder();
-
-				foreach (string savedComment in savedComments)
-					{
-					combinedSaved.Append(savedComment);
-					combinedSaved.AppendLine();
-					combinedSaved.AppendLine();
-					}
-
-				output.Insert(0, combinedSaved);
-				}
-
 			return output.ToString();
 			}
+
+
+		/* Function: ProcessComment
+		 * Searches the passed comment for sections that should be included in the output or for substitution definitions.
+		 */
+		protected void ProcessComment (PossibleDocumentationComment comment)
+			{
+			LineIterator iterator = comment.Start;
+
+			while (iterator < comment.End)
+				{
+				if (iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
+					{
+					iterator.Next();
+
+					while (iterator < comment.End && iterator.IsEmpty(LineBoundsMode.CommentContent))
+						{  iterator.Next();  }
+
+					LineIterator start = iterator;
+					LineIterator end = iterator;
+					int commonIndent = 9999;
+
+					while (iterator < comment.End && 
+								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false &&
+								iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success == false)
+						{
+						if (iterator.IsEmpty(LineBoundsMode.CommentContent))
+							{  iterator.Next();  }
+						else
+							{
+							if (iterator.Indent(LineBoundsMode.CommentContent) < commonIndent)
+								{  commonIndent = iterator.Indent(LineBoundsMode.CommentContent);  }
+
+							iterator.Next();
+							end = iterator;
+							}
+						}
+
+					if (start < end)
+						{
+						if (output.Length > 0)
+							{  output.AppendLine(" *");  }
+
+						do
+							{
+							if (start.IsEmpty(LineBoundsMode.CommentContent))
+								{  output.AppendLine(" *");  }
+							else
+								{
+								if (output.Length == 0)
+									{  output.Append("/* ");  }
+								else
+									{  output.Append(" * ");  }
+
+								int indentDifference = start.Indent(LineBoundsMode.CommentContent) - commonIndent;
+
+								if (indentDifference > 0)
+									{  output.Append(' ', indentDifference);  }
+
+								start.AppendTo(output, LineBoundsMode.CommentContent);
+								output.AppendLine();
+								}
+
+							start.Next();
+							}
+						while (start < end);
+						}
+					}
+
+				else
+					{  iterator.Next();  }
+				}
+			}
+
 
 
 		// Group: Parsing Functions
@@ -149,9 +245,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: TryToSkipWhitespace
 		 * If the iterator is on whitespace or a comment, skips over it and returns true.  Otherwise leaves the iterator alone and
-		 * returns false.  If any comments contain the text "(include in output)" it will be added to savedComments.
+		 * returns false.
 		 */
-		private static bool TryToSkipWhitespace (ref TokenIterator iterator, List<string> savedComments, bool blockCommentsOnly)
+		protected bool TryToSkipWhitespace (ref TokenIterator iterator, bool blockCommentsOnly)
 			{
 			bool result = false;
 
@@ -162,8 +258,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 					iterator.Next();
 					result = true;
 					}
-				else if (TryToSkipBlockComment(ref iterator, savedComments) || 
-							 (!blockCommentsOnly && TryToSkipLineComment(ref iterator, savedComments)) )
+				else if (TryToSkipBlockComment(ref iterator) || (!blockCommentsOnly && TryToSkipLineComment(ref iterator)) )
 					{  
 					result = true;  
 					}
@@ -174,46 +269,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: TryToSkipLineComment
 		 * If the iterator is on the opening symbol of a line comment, skips over it and returns true.  Otherwise leaves the iterator
-		 * alone and returns false.  If any comments contain the text "(include in output)" it will be added to savedComments.
+		 * alone and returns false.\
 		 */
-		private static bool TryToSkipLineComment (ref TokenIterator iterator, List<string> savedComments)
+		protected bool TryToSkipLineComment (ref TokenIterator iterator)
 			{
 			if (iterator.MatchesAcrossTokens("//"))
 				{
-				TokenIterator beginningOfComment = iterator;
+				iterator.NextByCharacters(2);
 
-				for (;;)
-					{
-					iterator.NextByCharacters(2);
+				while (iterator.IsInBounds && iterator.Type != TokenType.LineBreak)
+					{  iterator.Next();  }
 
-					while (iterator.IsInBounds && iterator.Type != TokenType.LineBreak)
-						{  iterator.Next();  }
-
-					iterator.Next();
-
-					// See if there's another // starting the next line.  If so we want to include it as part of this comment for the purposes
-					// of finding "(include in output)".
-					TokenIterator lookahead = iterator;
-
-					while (lookahead.Type == TokenType.Whitespace)
-						{  lookahead.Next();  }
-
-					if (lookahead.MatchesAcrossTokens("//"))
-						{  iterator = lookahead;  }
-					else
-						{  break;  }
-					}
-
-				System.Text.RegularExpressions.Match match = 
-					iterator.Tokenizer.MatchTextBetween(keepInOutputRegex, beginningOfComment, iterator);
-
-				if (match.Success)
-					{
-					string comment = iterator.Tokenizer.TextBetween(beginningOfComment, iterator);
-					comment = comment.Remove(match.Index - beginningOfComment.RawTextIndex, match.Length);
-					savedComments.Add(comment);
-					}
-
+				iterator.Next();
 				return true;
 				}
 			else
@@ -222,30 +289,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: TryToSkipBlockComment
 		 * If the iterator is on the opening symbol of a block comment, skips over it and returns true.  Otherwise leaves the iterator
-		 * alone and returns false.  If any comments contain the text "(include in output)" it will be added to savedComments.
+		 * alone and returns false.
 		 */
-		private static bool TryToSkipBlockComment (ref TokenIterator iterator, List<string> savedComments)
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator)
 			{
 			if (iterator.MatchesAcrossTokens("/*"))
 				{
-				TokenIterator beginningOfComment = iterator;
 				iterator.NextByCharacters(2);
 
 				while (iterator.IsInBounds && !iterator.MatchesAcrossTokens("*/"))
 					{  iterator.Next();  }
 
 				iterator.NextByCharacters(2);
-
-				System.Text.RegularExpressions.Match match = 
-					iterator.Tokenizer.MatchTextBetween(keepInOutputRegex, beginningOfComment, iterator);
-
-				if (match.Success)
-					{
-					string comment = iterator.Tokenizer.TextBetween(beginningOfComment, iterator);
-					comment = comment.Remove(match.Index - beginningOfComment.RawTextIndex, match.Length);
-					savedComments.Add(comment);
-					}
-
 				return true;
 				}
 			else
@@ -256,7 +311,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * If the iterator is on the opening symbol of a string, skips over it and returns true.  Otherwise leaves the iterator alone and
 		 * returns false.
 		 */
-		private static bool TryToSkipString (ref TokenIterator iterator)
+		protected bool TryToSkipString (ref TokenIterator iterator)
 			{
 			return (TryToSkipQuotedText(ref iterator, '\'') || TryToSkipQuotedText(ref iterator, '\"'));
 			}
@@ -265,7 +320,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * If the iterator is on the opening symbol of a regular expression, skips over it and returns true.  Otherwise leaves the iterator
 		 * alone and returns false.
 		 */
-		private static bool TryToSkipRegex (ref TokenIterator iterator)
+		protected bool TryToSkipRegex (ref TokenIterator iterator)
 			{
 			// Starts and ends with a slash except when escaped.  Just like a string right?
 			return TryToSkipQuotedText(ref iterator, '/');
@@ -278,7 +333,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * Quoted text is a segment that starts and ends with the passed character.  Everything in between is part of the quoted section
 		 * until it reaches the character again, excluding when that character is preceded by a backslash.
 		 */
-		private static bool TryToSkipQuotedText (ref TokenIterator iterator, char quoteChar)
+		protected bool TryToSkipQuotedText (ref TokenIterator iterator, char quoteChar)
 			{
 			if (iterator.Character == quoteChar)
 				{
@@ -305,7 +360,22 @@ namespace GregValure.NaturalDocs.Engine.Output
 				{  return false;  }
 			}
 
-		private static Regex.Comments.KeepInOutput keepInOutputRegex = new Regex.Comments.KeepInOutput();
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected Tokenizer source;
+		protected StringBuilder output;
+		protected StringToStringTable substitutions;
+
+		
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
+		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
+		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
 
 		}
 	}

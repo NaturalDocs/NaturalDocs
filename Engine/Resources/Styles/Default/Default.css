@@ -1,5 +1,7 @@
 ﻿/*
-   This file is part of Natural Docs, which is Copyright © 2003-2010 Greg Valure.
+   Include in output:
+
+   This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
    Natural Docs is licensed under version 3 of the GNU Affero General Public
    License (AGPL).  Refer to License.txt for the complete details.
 
@@ -7,7 +9,6 @@
    Such documentation is not covered by Natural Docs' copyright and licensing,
    and may have its own copyright and distribution terms as decided by its author.
 
-	(include in output) 
 */
 
 body.NDIndexPage {
