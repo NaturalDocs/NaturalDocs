@@ -181,8 +181,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 
 		/* Function: String
-		 * Returns the line as a string.  Note that this allocates a memory copy.  For efficiency, it's preferrable to work on the
-		 * original memory whenever possible with functions like <RawTextLocation()> and <Match()>.
+		 * Returns the line as a string.  Note that this allocates a copy of the memory.  For efficiency, it's preferrable to work on 
+		 * the original memory whenever possible with functions like <Match()> and <AppendTo()>.
 		 */
 		public string String (LineBoundsMode boundsMode)
 			{
@@ -190,6 +190,19 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			CalculateBounds(boundsMode, out rawTextStart, out rawTextEnd, out tokenStart, out tokenEnd);
 
 			return tokenizer.RawText.Substring(rawTextStart, rawTextEnd - rawTextStart);			
+			}
+			
+			
+		/* Function: AppendTo
+		 * Appends the line to the passed StringBuilder.  This works from the original memory so it's more efficent than appending
+		 * the result from <String()>.
+		 */
+		public void AppendTo (System.Text.StringBuilder target, LineBoundsMode boundsMode)
+			{
+			int rawTextStart, rawTextEnd, tokenStart, tokenEnd;
+			CalculateBounds(boundsMode, out rawTextStart, out rawTextEnd, out tokenStart, out tokenEnd);
+
+			target.Append(tokenizer.RawText, rawTextStart, rawTextEnd - rawTextStart);			
 			}
 			
 			
