@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Comments;
 using GregValure.NaturalDocs.Engine.Tokenization;
@@ -78,6 +79,25 @@ namespace GregValure.NaturalDocs.Engine.Output
 						  (Tokenizer.FundamentalTypeOf(lastChar) == TokenType.Text &&
 						   Tokenizer.FundamentalTypeOf(nextChar) == TokenType.Text) )
 						{  output.Append(' ');  }
+					}
+				else if (iterator.Character == '`')
+					{
+					iterator.Next();
+					string substitution = null;
+
+					if (iterator.IsInBounds && iterator.Type == TokenType.Text)
+						{  substitution = substitutions[iterator.String];  }
+
+					if (substitution != null)
+						{  
+						output.Append(substitution);  
+						iterator.Next();
+						}
+					else
+						{
+						output.Append('`');
+						// Leave iterator on following token.
+						}
 					}
 				else
 					{
@@ -145,6 +165,25 @@ namespace GregValure.NaturalDocs.Engine.Output
 				else if (TryToSkipString(ref iterator) == true)
 					{
 					source.AppendTextBetweenTo(prevIterator, iterator, output);
+					}
+				else if (iterator.Character == '`')
+					{
+					iterator.Next();
+					string substitution = null;
+
+					if (iterator.IsInBounds && iterator.Type == TokenType.Text)
+						{  substitution = substitutions[iterator.String];  }
+
+					if (substitution != null)
+						{  
+						output.Append(substitution);  
+						iterator.Next();
+						}
+					else
+						{
+						output.Append('`');
+						// Leave iterator on following token.
+						}
 					}
 				else
 					{
@@ -229,6 +268,24 @@ namespace GregValure.NaturalDocs.Engine.Output
 							start.Next();
 							}
 						while (start < end);
+						}
+					}
+
+				else if (iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success)
+					{
+					iterator.Next();
+
+					while (iterator < comment.End && 
+								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false)
+						{
+						Match match = iterator.Match(substitutionDefinitionRegex, LineBoundsMode.CommentContent);
+
+						if (match.Success)
+							{
+							substitutions[ match.Groups[1].ToString() ] = match.Groups[2].ToString();
+							}
+
+						iterator.Next();
 						}
 					}
 
