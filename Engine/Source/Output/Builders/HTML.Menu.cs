@@ -146,35 +146,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				System.Console.WriteLine("### " + (fileSourceEntry.WrappedFileSource.Name ?? "Default File Source"));
 
 				foreach (var member in fileSourceEntry.Members)
-					{  xxxPrintEntry(member, 1);  }
+					{  xxxPrintEntry(member);  }
 				}
 			}
 
-		void xxxPrintEntry (FileHierarchyEntries.Entry entry, int indent)
+		void xxxPrintEntry (FileHierarchyEntries.Entry entry)
 			{
-			for (int i = indent; i > 0; i--)
+			for (var parent = entry.Parent; parent != null; parent = parent.Parent)
 				{  System.Console.Write("   ");  }
 
 			if (entry is FileHierarchyEntries.Folder)
 				{
 				System.Console.WriteLine("[+] " + (entry as FileHierarchyEntries.Folder).PathFragment);
 
-				for (int i = indent; i > 0; i--)
-				   {  System.Console.Write("   ");  }
-
-				System.Console.WriteLine("::: " + entry.Output);
-
 				foreach (var member in (entry as FileHierarchyEntries.Folder).Members)
-					{  xxxPrintEntry(member, indent + 1);  }
+					{  xxxPrintEntry(member);  }
 				}
 			else if (entry is FileHierarchyEntries.File)
 				{
 				System.Console.WriteLine(" -  " + (entry as FileHierarchyEntries.File).FileName);
-
-				for (int i = indent; i > 0; i--)
-				   {  System.Console.Write("   ");  }
-
-				System.Console.WriteLine(" :  " + entry.Output);
 				}
 			}
 		}

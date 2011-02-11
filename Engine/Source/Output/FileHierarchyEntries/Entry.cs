@@ -23,6 +23,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 		public Entry ()
 			{
+			parent = null;
 			output = null;
 			}
 
@@ -34,6 +35,17 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 		// Group: Properties
 		// __________________________________________________________________________
+
+		/* Property: Parent
+		 * The parent of this entry, or null if none.
+		 */
+		public Container Parent
+			{
+			get
+				{  return parent;  }
+			set
+				{  parent = value;  }
+			}
 
 		/* Property: Output
 		 * A string for use by the code using the hierarchy.  Can be used to build the output entry by entry, regardless
@@ -58,6 +70,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		// __________________________________________________________________________
 
 		protected string output;
+		protected Container parent;
 
 		}
 	}

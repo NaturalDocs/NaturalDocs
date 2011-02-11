@@ -103,12 +103,14 @@ namespace GregValure.NaturalDocs.Engine.Output
 				if (folderEntry == null)
 					{
 					folderEntry = new FileHierarchyEntries.Folder(pathSegment);
+					folderEntry.Parent = container;
 					container.Members.Add(folderEntry);
 					}
 
 				container = folderEntry;
 				}
 
+			fileEntry.Parent = container;
 			container.Members.Add(fileEntry);
 			}
 
@@ -130,13 +132,20 @@ namespace GregValure.NaturalDocs.Engine.Output
 						var replacement = CondenseFolder((FileHierarchyEntries.Folder)member);
 
 						if (replacement != null)
-							{  fileSourceEntry.Members[i] = replacement;  }
+							{  
+							replacement.Parent = fileSourceEntry;
+							fileSourceEntry.Members[i] = replacement;  
+							}
 						}
 					}
 
 				if (fileSourceEntry.Members.Count == 1 && fileSourceEntry.Members[0] is FileHierarchyEntries.Folder)
 					{  
 					fileSourceEntry.Members = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).Members;  
+
+					foreach (var member in fileSourceEntry.Members)
+						{  member.Parent = fileSourceEntry;  }
+
 					fileSourceEntry.PathFragment = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).PathFragment;
 					}
 				}
@@ -158,7 +167,10 @@ namespace GregValure.NaturalDocs.Engine.Output
 					var replacement = CondenseFolder((FileHierarchyEntries.Folder)member);
 
 					if (replacement != null)
-						{  folderEntry.Members[i] = replacement;  }
+						{  
+						replacement.Parent = folderEntry;
+						folderEntry.Members[i] = replacement;  
+						}
 					}
 				}
 
