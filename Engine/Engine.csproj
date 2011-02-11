@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SQLITE_UTF8</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQLITE_UTF8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>
@@ -96,8 +96,15 @@
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
+    <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
+    <Compile Include="Source\Output\FileHierarchy.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\Container.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\Folder.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\FileSource.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\File.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\Entry.cs" />
     <Compile Include="Source\Output\Shrinker.cs" />
     <Compile Include="Source\Output\Style.cs" />
     <Compile Include="Source\Output\Styles\FileSource.cs" />

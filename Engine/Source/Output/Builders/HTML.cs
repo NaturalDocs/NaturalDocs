@@ -83,7 +83,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * IndexFile - index.html
 		 * MainStyleFiles - main.css and main.js
 		 * 
-		 * FileHierarchy - FileHierarchy.xml
+		 * FileHierarchy - FileHierarchy.json
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
@@ -97,7 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* enum: ClaimedTaskFlags
 		 * Flags that specify which unparallelizable tasks are already being worked on by thread.
 		 * 
-		 * BuildFileHierarchy - A thread is updating FileHierarchy.xml.
+		 * BuildFileHierarchy - A thread is updating FileHierarchy.json.
 		 * CheckFoldersForDeletion - A thread is going through <foldersToCheckForDeletion>.
 		 */
 		 [Flags]
@@ -179,21 +179,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			buildFlags = BuildFlags.IndexFile | BuildFlags.MainStyleFiles;
 			// FileHierarchy only gets rebuilt if changes are detected in sourceFilesWithContent.
+			buildFlags |= BuildFlags.FileHierarchy;  //xxx for testing
 
 
 			// Load Config.nd
 
 			List<HTMLStyle> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
-			bool hasBinaryConfigFile = LoadBinaryConfigFile(config.OutputWorkingDataFolder + "/Config.nd", 
-																								 out previousStyles, out previousFileSourceInfoList);
+			bool hasBinaryConfigFile = false;
+			
+			if (!Engine.Instance.Config.ReparseEverything)
+				{
+				hasBinaryConfigFile = LoadBinaryConfigFile(config.OutputWorkingDataFolder + "/Config.nd", 
+																							out previousStyles, out previousFileSourceInfoList);
+				}
+			else
+				{
+				previousStyles = new List<HTMLStyle>();
+				previousFileSourceInfoList = new List<FileSourceInfo>();
+				}
 
 			
 			// Load BuildState.nd
 
-			bool hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
-																											  out sourceFilesToRebuild, out sourceFilesWithContent, 
-																											  out foldersToCheckForDeletion);
+			bool hasBinaryBuildStateFile = false;
+			
+			if (!Engine.Instance.Config.ReparseEverything)
+				{
+				hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
+																										 out sourceFilesToRebuild, out sourceFilesWithContent, 
+																										 out foldersToCheckForDeletion);
+				}
+			else
+				{
+				sourceFilesToRebuild = new IDObjects.NumberSet();
+				sourceFilesWithContent = new IDObjects.NumberSet();
+				foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
+				}
 
 			if (!hasBinaryBuildStateFile)
 				{
@@ -645,7 +667,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							while (!cancelDelegate())
 								{
 								Path folder = foldersToCheckForDeletion.RemoveOne();
-								System.Console.WriteLine();
 
 								Monitor.Exit(writeLock);
 								haveLock = false;
@@ -661,6 +682,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							}
 						finally
 							{  claimedTaskFlags &= ~ClaimedTaskFlags.CheckFoldersForDeletion;  }
+						}
+
+
+					// Build file hierarchy
+
+					else if ( (buildFlags & BuildFlags.FileHierarchy) != 0 &&
+								  (claimedTaskFlags & ClaimedTaskFlags.BuildFileHierarchy) == 0)
+						{
+						claimedTaskFlags |= ClaimedTaskFlags.BuildFileHierarchy;
+
+						Monitor.Exit(writeLock);
+						haveLock = false;
+
+						BuildFileHierarchy(cancelDelegate);
+
+						Monitor.Enter(writeLock);
+						haveLock = true;
+
+						claimedTaskFlags &= ~ClaimedTaskFlags.BuildFileHierarchy;
+
+						if (!cancelDelegate())
+							{  buildFlags &= ~BuildFlags.FileHierarchy;  }
+
+						Monitor.Exit(writeLock);
+						haveLock = false;
 						}
 
 
@@ -866,10 +912,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// as an array; there's nothing that returns the first item and lets you stop there.
 					System.IO.Directory.Delete(folder);
 					}
-				catch (Exception e)
-					{
-					break;
-					}
+				catch
+					{  break;  }
 
 				folder = folder.ParentFolder;
 				}

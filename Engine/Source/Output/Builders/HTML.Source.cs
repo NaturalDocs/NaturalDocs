@@ -45,7 +45,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			accessor.GetReadOnlyLock();
 			bool haveDBLock = true;
-			
+
 			try
 				{
 				IList<Topic> topics = accessor.GetTopicsInFile(fileID, cancelDelegate);
@@ -125,7 +125,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return null;  }
 
 			Path relativePath = fileSource.MakeRelative(file.FileName);
-			
+
+			return ToSourceOutputPath(fileSource, relativePath);			
+			}
+
+
+		/* Function: ToSourceOutputPath
+		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
+		 * it no longer exists.
+		 */
+		public Path ToSourceOutputPath (Files.FileSource fileSource, Path relativePath)
+			{
 			string fileName = relativePath.NameWithoutPath;
 			
 			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
