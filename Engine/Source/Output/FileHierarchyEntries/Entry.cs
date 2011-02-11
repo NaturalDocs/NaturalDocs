@@ -24,7 +24,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		public Entry ()
 			{
 			parent = null;
-			output = null;
+			outputData = null;
 			}
 
 		public int CompareTo (Entry other)
@@ -47,16 +47,15 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				{  parent = value;  }
 			}
 
-		/* Property: Output
-		 * A string for use by the code using the hierarchy.  Can be used to build the output entry by entry, regardless
-		 * of the format.
+		/* Property: OutputData
+		 * An arbitrary object that can be attached to each entry to aid in generating output.
 		 */
-		public string Output
+		public object OutputData
 			{
 			get
-				{  return output;  }
+				{  return outputData;  }
 			set
-				{  output = value;  }
+				{  outputData = value;  }
 			}
 
 		/* Property: SortString
@@ -69,7 +68,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected string output;
+		protected object outputData;
 		protected Container parent;
 
 		}
