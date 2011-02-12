@@ -141,13 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 			//xxx printing
-			foreach (var fileSourceEntry in fileHierarchy.FileSourceEntries)
-				{
-				System.Console.WriteLine("### " + (fileSourceEntry.WrappedFileSource.Name ?? "Default File Source"));
-
-				foreach (var member in fileSourceEntry.Members)
-					{  xxxPrintEntry(member);  }
-				}
+			fileHierarchy.ForEach(FileHierarchy.ForEachMethod.Linear, xxxPrintEntry);
 			}
 
 		void xxxPrintEntry (FileHierarchyEntries.Entry entry)
@@ -155,12 +149,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			for (var parent = entry.Parent; parent != null; parent = parent.Parent)
 				{  System.Console.Write("   ");  }
 
-			if (entry is FileHierarchyEntries.Folder)
+			if (entry is FileHierarchyEntries.FileSource)
+				{
+				System.Console.WriteLine("### " + ((entry as FileHierarchyEntries.FileSource).WrappedFileSource.Name ?? "Default File Source"));
+				}
+			else if (entry is FileHierarchyEntries.Folder)
 				{
 				System.Console.WriteLine("[+] " + (entry as FileHierarchyEntries.Folder).PathFragment);
-
-				foreach (var member in (entry as FileHierarchyEntries.Folder).Members)
-					{  xxxPrintEntry(member);  }
 				}
 			else if (entry is FileHierarchyEntries.File)
 				{

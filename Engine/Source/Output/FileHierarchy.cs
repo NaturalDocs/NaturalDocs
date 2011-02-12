@@ -26,6 +26,24 @@ namespace GregValure.NaturalDocs.Engine.Output
 	public class FileHierarchy
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+		/* Enum: ForEachMethod
+		 * 
+		 * The ways to traverse the hierarchy with <ForEach()>.
+		 * 
+		 * Linear - ForEach will walk through the hierarchy as if it were displaying a fully expanded tree line by
+		 *					line.  The parent will be done, then all its children, then back to the parent's next sibling.
+		 * ChildrenFirst - ForEach will walk through all children before performing the action on any parent, which
+		 *							  allows things like output generation where the parent's output depends on the children's
+		 *							  output being already made.
+		 */
+		public enum ForEachMethod : byte
+			{  Linear, ChildrenFirst  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 
@@ -194,6 +212,37 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			foreach (FileHierarchyEntries.FileSource fileSourceEntry in fileSourceEntries)
 				{  fileSourceEntry.Sort();  }
+			}
+
+
+		/* Function: ForEach
+		 * Performs an action on every element in the hierarchy.
+		 */
+		public void ForEach (ForEachMethod method, Action<FileHierarchyEntries.Entry> action)
+			{
+			foreach (var fileSourceEntry in fileSourceEntries)
+				{  ForEach(method, fileSourceEntry, action);  }
+			}
+
+		/* Function: ForEach
+		 * A recursive helper function for the public ForEach function.
+		 */
+		protected void ForEach (ForEachMethod method, FileHierarchyEntries.Container container,
+													Action<FileHierarchyEntries.Entry> action)
+			{
+			if (method == ForEachMethod.Linear)
+				{  action(container);  }
+
+			foreach (var member in container.Members)
+				{
+				if (member is FileHierarchyEntries.Container)
+					{  ForEach(method, (FileHierarchyEntries.Container)member, action);  }
+				else
+					{  action(member);  }
+				}
+
+			if (method == ForEachMethod.ChildrenFirst)
+				{  action(container);  }
 			}
 
 
