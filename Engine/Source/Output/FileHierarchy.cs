@@ -218,17 +218,17 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: ForEach
 		 * Performs an action on every element in the hierarchy.
 		 */
-		public void ForEach (ForEachMethod method, Action<FileHierarchyEntries.Entry> action)
+		public void ForEach (Action<FileHierarchyEntries.Entry> action, ForEachMethod method = ForEachMethod.Linear)
 			{
 			foreach (var fileSourceEntry in fileSourceEntries)
-				{  ForEach(method, fileSourceEntry, action);  }
+				{  ForEach(action, method, fileSourceEntry);  }
 			}
 
 		/* Function: ForEach
 		 * A recursive helper function for the public ForEach function.
 		 */
-		protected void ForEach (ForEachMethod method, FileHierarchyEntries.Container container,
-													Action<FileHierarchyEntries.Entry> action)
+		protected void ForEach (Action<FileHierarchyEntries.Entry> action, ForEachMethod method, 
+													FileHierarchyEntries.Container container)
 			{
 			if (method == ForEachMethod.Linear)
 				{  action(container);  }
@@ -236,7 +236,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 			foreach (var member in container.Members)
 				{
 				if (member is FileHierarchyEntries.Container)
-					{  ForEach(method, (FileHierarchyEntries.Container)member, action);  }
+					{  ForEach(action, method, (FileHierarchyEntries.Container)member);  }
 				else
 					{  action(member);  }
 				}

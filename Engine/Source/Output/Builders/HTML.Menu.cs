@@ -141,7 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 			//xxx printing
-			fileHierarchy.ForEach(FileHierarchy.ForEachMethod.Linear, xxxPrintEntry);
+			fileHierarchy.ForEach(xxxPrintEntry, FileHierarchy.ForEachMethod.Linear);
 			}
 
 		void xxxPrintEntry (FileHierarchyEntries.Entry entry)
