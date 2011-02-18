@@ -56,7 +56,7 @@ namespace GregValure.NaturalDocs.Engine
 		
 		
 		/* Function: EncodeEntityCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder will <, >, ", and & replaced by
+		 * Appends the contents of the input string to the output StringBuilder with <, >, ", and & replaced by
 		 * their entity encodings.
 		 */
 		public static void EncodeEntityCharsAndAppend (string input, StringBuilder output)
@@ -66,7 +66,7 @@ namespace GregValure.NaturalDocs.Engine
 		
 		
 		/* Function: EncodeEntityCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder will <, >, ", and & replaced by
+		 * Appends the contents of the input string to the output StringBuilder with <, >, ", and & replaced by
 		 * their entity encodings.  Offset and length represent the portion of the input string to convert.
 		 */
 		public static void EncodeEntityCharsAndAppend (string input, StringBuilder output, int offset, int length)
@@ -93,6 +93,60 @@ namespace GregValure.NaturalDocs.Engine
 					{  output.Append("&gt;");  }
 					
 				offset = nextEntityChar + 1;
+				}
+				
+			if (offset < endOfInput)
+				{  output.Append(input, offset, endOfInput - offset);  }
+			}
+			
+			
+		/* Function: EscapeStringChars
+		 * Returns the input string with ", ', and \ escaped so that they can be put into a JavaScript string.  If the result
+		 * string will be appended to a StringBuilder, it is more efficient to use <EscapeStringCharsAndAppend> instead 
+		 * of this function.
+		 */
+		public static string EscapeStringChars (string input)
+			{
+			if (input.IndexOfAny(EscapedStringChars) == -1)
+				{  return input;  }
+
+			StringBuilder output = new StringBuilder();
+			EscapeStringCharsAndAppend(input, output);
+			return output.ToString();
+			}
+		
+		
+		/* Function: EscapeStringCharsAndAppend
+		 * Appends the contents of the input string to the output StringBuilder with ', ", and \ escaped.
+		 */
+		public static void EscapeStringCharsAndAppend (string input, StringBuilder output)
+			{
+			EscapeStringCharsAndAppend(input, output, 0, input.Length);
+			}
+		
+		
+		/* Function: EscapeStringCharsAndAppend
+		 * Appends the contents of the input string to the output StringBuilder with ', ", and \ escaped.
+		 * Offset and length represent the portion of the input string to convert.
+		 */
+		public static void EscapeStringCharsAndAppend (string input, StringBuilder output, int offset, int length)
+			{
+			int endOfInput = offset + length;
+			
+			while (offset < endOfInput)
+				{
+				int nextEscapedChar = input.IndexOfAny(EscapedStringChars, offset, endOfInput - offset);
+				
+				if (nextEscapedChar == -1)
+					{  break;  }
+				
+				if (nextEscapedChar != offset)
+					{  output.Append(input, offset, nextEscapedChar - offset);  }
+					
+				output.Append('\\');
+				output.Append(input[nextEscapedChar]);
+					
+				offset = nextEscapedChar + 1;
 				}
 				
 			if (offset < endOfInput)
@@ -181,6 +235,11 @@ namespace GregValure.NaturalDocs.Engine
 		 * The neutral quote and apostrophe characters suitable for String.IndexOfAny(char[]).
 		 */
 		static char[] QuoteLiterals = new char[] { '"', '\'' };
+		
+		/* var: EscapedStringChars
+		 * An array of characters that must be escaped in a JavaScript string.
+		 */
+		static char[] EscapedStringChars = new char[] { '"', '\'', '\\' };
 		
 		static Regex.NDMarkup.CopyrightAndTrademark copyrightAndTrademarkRegex = new Regex.NDMarkup.CopyrightAndTrademark();
 		static Regex.MultipleWhitespaceChars multipleWhitespaceCharsRegex = new Regex.MultipleWhitespaceChars();
