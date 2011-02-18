@@ -21,9 +21,9 @@
  *			> Path: Full path to output folder
  *			> Members: An array of further entries
  *			
- *		Local Folder Entries:
+ *		Inline Folder Entries:
  *		
- *			> Type: LocalFolder
+ *			> Type: InlineFolder
  *			> Name: HTML string or array of HTML strings
  *			> Path: Full path to output folder
  *			> Members: An array of further entries
@@ -45,7 +45,7 @@
  *		
  *			> Type: File
  *			> Name: HTML string
- *			> Path: Relative path to output file
+ *			> Path: Output file name, no path
  *			
  *			File entries don't store the full path to its output file as that would be a lot of duplicated memory.  Rather, the
  *			path is relative to its containing folder which it must be combined with.
@@ -76,15 +76,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * The type value of a file hierarchy entry.
 		 *
 		 * RootFolder - The entry is the root folder.
-		 * LocalFolder - The entry is a folder that has its members stored inline as an array.
+		 * InlineFolder - The entry is a folder that has its members stored inline as an array.
 		 * DynamicFolder - The entry is a folder that has its members in a different file and stores only its ID.
 		 * File - The entry is a file.
 		 */
-		protected enum FileHierarchyEntryType : byte  
+		public enum FileHierarchyEntryType : byte  
 			{
 			// If these values ever change, you also have to change the substitutions in the JavaScript styles.
 			RootFolder = 0, 
-			LocalFolder = 1,
+			InlineFolder = 1,
 			DynamicFolder = 2,
 			File = 3
 			};
@@ -92,7 +92,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Enum: FileHierarchyEntryMember
 		 * The indexes into the array of various file hierarchy entry members.
 		 */
-		protected enum FileHierarchyEntryMember : byte
+		public enum FileHierarchyEntryMember : byte
 			{  
 			// If these values ever change, you also have to change the substitutions in the JavaScript styles and the
 			// JSON generation functions.
@@ -114,7 +114,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildFileHierarchy (CancelDelegate cancelDelegate)
 			{
-			FileHierarchy fileHierarchy = new FileHierarchy();
+			HTMLFileHierarchy fileHierarchy = new HTMLFileHierarchy();
 
 			foreach (Files.FileSource fileSource in Instance.Files.FileSources)
 				{
@@ -138,16 +138,35 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			fileHierarchy.Sort();
 
+			fileHierarchy.ForEach(
+				delegate (FileHierarchyEntries.Entry entry)
+					{
+					if (entry is FileHierarchyEntries.IHTMLEntry)
+						{  (entry as FileHierarchyEntries.IHTMLEntry).PrepareJSON(this);  }
+					}, 
+				FileHierarchy.ForEachMethod.ChildrenFirst);
 
 
 			//xxx printing
 			fileHierarchy.ForEach(xxxPrintEntry, FileHierarchy.ForEachMethod.Linear);
+
+			StringBuilder json = new StringBuilder();
+
+			fileHierarchy.ForEach(
+				delegate (FileHierarchyEntries.Entry entry)
+					{
+					if (entry is FileHierarchyEntries.IHTMLEntry)
+						{  (entry as FileHierarchyEntries.IHTMLEntry).AppendJSON(json);  }
+					}, 
+				FileHierarchy.ForEachMethod.Linear);
+
+			System.Console.WriteLine();
+			System.Console.Write(json.ToString());
 			}
 
 		void xxxPrintEntry (FileHierarchyEntries.Entry entry)
 			{
-			for (var parent = entry.Parent; parent != null; parent = parent.Parent)
-				{  System.Console.Write("   ");  }
+			xxxIndentEntry(entry);
 
 			if (entry is FileHierarchyEntries.FileSource)
 				{
@@ -157,10 +176,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				System.Console.WriteLine("[+] " + (entry as FileHierarchyEntries.Folder).PathFragment);
 				}
-			else if (entry is FileHierarchyEntries.File)
+			else if (entry is FileHierarchyEntries.HTMLFile)
 				{
 				System.Console.WriteLine(" -  " + (entry as FileHierarchyEntries.File).FileName);
 				}
+			else if (entry is FileHierarchyEntries.RootFolder)
+				{
+				System.Console.WriteLine("[root]");
+				}
+			}
+		void xxxIndentEntry (FileHierarchyEntries.Entry entry)
+			{
+			for (var parent = entry.Parent; parent != null; parent = parent.Parent)
+				{  System.Console.Write("   ");  }
 			}
 		}
 

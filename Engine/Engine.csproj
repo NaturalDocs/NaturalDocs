@@ -99,8 +99,15 @@
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\HTMLRootFolder.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\RootFolder.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\IHTMLEntry.cs" />
+    <Compile Include="Source\Output\HTMLFileHierarchy.cs" />
     <Compile Include="Source\Output\FileHierarchy.cs" />
     <Compile Include="Source\Output\FileHierarchyEntries\Container.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\HTMLFile.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\HTMLFileSource.cs" />
+    <Compile Include="Source\Output\FileHierarchyEntries\HTMLFolder.cs" />
     <Compile Include="Source\Output\FileHierarchyEntries\Folder.cs" />
     <Compile Include="Source\Output\FileHierarchyEntries\FileSource.cs" />
     <Compile Include="Source\Output\FileHierarchyEntries\File.cs" />

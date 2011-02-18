@@ -10,6 +10,18 @@
  *		- Add all <Files.Files> with <AddFile()>.
  *		- If desired, condense unnecessary folder levels with <Condense()>.
  *		- If desired, sort the members with <Sort()>.
+ *		
+ * Tree Structure:
+ * 
+ *		The tree starts out with a <FileHierarchyEntries.RootFolder>.  It will only contain <FileHierarchyEntries.FileSource> 
+ *		members.
+ *		
+ *		The file sources can have <FileHierarchyEntries.File> and <FileHierarchyEntries.Folder> entries, and the folders
+ *		may contain further entries of these types.
+ *		
+ *		In order to support dynamic folders, additional root folders may be introduced between a folder and its members.
+ *		The folder will have all its members replaced with a single root folder entry, and the root folder will contain its
+ *		members instead.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -49,7 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		public FileHierarchy ()
 			{
-			fileSourceEntries = new List<FileHierarchyEntries.FileSource>();
+			rootFolder = MakeRootFolderEntry();
 			}
 
 
@@ -58,7 +70,10 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 */
 		public void AddFileSource (Files.FileSource fileSource)
 			{
-			fileSourceEntries.Add( new FileHierarchyEntries.FileSource(fileSource) );
+			FileHierarchyEntries.FileSource fileSourceEntry = MakeFileSourceEntry(fileSource);
+
+			fileSourceEntry.Parent = rootFolder;
+			rootFolder.Members.Add(fileSourceEntry);
 			}
 
 
@@ -73,7 +88,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 			FileHierarchyEntries.FileSource fileSourceEntry = null;
 			Path relativePath = null;
 
-			foreach (FileHierarchyEntries.FileSource possibleFileSourceEntry in fileSourceEntries)
+			foreach (FileHierarchyEntries.FileSource possibleFileSourceEntry in rootFolder.Members)
 				{
 				// We don't need a separate test for whether the file source contains the file name since we'll get the same 
 				// information by checking whether the result of MakeRelative is null.  This is more efficient too.
@@ -101,7 +116,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Create the file entry and find out where it goes.  Create new folder levels as necessary.
 
-			FileHierarchyEntries.File fileEntry = new FileHierarchyEntries.File(filename);
+			FileHierarchyEntries.File fileEntry = MakeFileEntry(filename);
 			FileHierarchyEntries.Container container = fileSourceEntry;
 
 			foreach (Path pathSegment in pathSegments)
@@ -120,7 +135,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 				if (folderEntry == null)
 					{
-					folderEntry = new FileHierarchyEntries.Folder(pathSegment);
+					folderEntry = MakeFolderEntry(pathSegment);
 					folderEntry.Parent = container;
 					container.Members.Add(folderEntry);
 					}
@@ -135,36 +150,45 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: Condense
 		 * Condenses unnecessary folder levels, turning "FolderA" and "FolderB" into "FolderA/FolderB" if A contains nothing
-		 * other than B.
+		 * other than B.  Will also remove file source entries that do not have content.
 		 */
 		public void Condense ()
 			{
-			foreach (var fileSourceEntry in fileSourceEntries)
+			int fileSourceIndex = 0;
+			while (fileSourceIndex < rootFolder.Members.Count)
 				{
-				for (int i = 0; i < fileSourceEntry.Members.Count; i++)
+				FileHierarchyEntries.FileSource fileSourceEntry = (FileHierarchyEntries.FileSource)rootFolder.Members[fileSourceIndex];
+
+				if (fileSourceEntry.Members.Count == 0)
+					{  rootFolder.Members.RemoveAt(fileSourceIndex);  }
+				else
 					{
-					var member = fileSourceEntry.Members[i];
+					for (int i = 0; i < fileSourceEntry.Members.Count; i++)
+						{
+						var member = fileSourceEntry.Members[i];
 
-					if (member is FileHierarchyEntries.Folder)
-						{  
-						var replacement = CondenseFolder((FileHierarchyEntries.Folder)member);
-
-						if (replacement != null)
+						if (member is FileHierarchyEntries.Folder)
 							{  
-							replacement.Parent = fileSourceEntry;
-							fileSourceEntry.Members[i] = replacement;  
+							var replacement = CondenseFolder((FileHierarchyEntries.Folder)member);
+
+							if (replacement != null)
+								{  
+								replacement.Parent = fileSourceEntry;
+								fileSourceEntry.Members[i] = replacement;  
+								}
 							}
 						}
-					}
 
-				if (fileSourceEntry.Members.Count == 1 && fileSourceEntry.Members[0] is FileHierarchyEntries.Folder)
-					{  
-					fileSourceEntry.Members = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).Members;  
+					if (fileSourceEntry.Members.Count == 1 && fileSourceEntry.Members[0] is FileHierarchyEntries.Folder)
+						{  
+						fileSourceEntry.PathFragment = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).PathFragment;
+						fileSourceEntry.Members = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).Members;  
 
-					foreach (var member in fileSourceEntry.Members)
-						{  member.Parent = fileSourceEntry;  }
+						foreach (var member in fileSourceEntry.Members)
+							{  member.Parent = fileSourceEntry;  }
+						}
 
-					fileSourceEntry.PathFragment = (fileSourceEntry.Members[0] as FileHierarchyEntries.Folder).PathFragment;
+					fileSourceIndex++;
 					}
 				}
 			}
@@ -208,10 +232,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 */
 		public void Sort ()
 			{
-			fileSourceEntries.Sort();
-
-			foreach (FileHierarchyEntries.FileSource fileSourceEntry in fileSourceEntries)
-				{  fileSourceEntry.Sort();  }
+			rootFolder.Sort();
 			}
 
 
@@ -220,8 +241,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 */
 		public void ForEach (Action<FileHierarchyEntries.Entry> action, ForEachMethod method = ForEachMethod.Linear)
 			{
-			foreach (var fileSourceEntry in fileSourceEntries)
-				{  ForEach(action, method, fileSourceEntry);  }
+			ForEach(action, method, rootFolder);
 			}
 
 		/* Function: ForEach
@@ -245,25 +265,44 @@ namespace GregValure.NaturalDocs.Engine.Output
 				{  action(container);  }
 			}
 
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: FileSourceEntries
+		/* Function: MakeRootFolderEntry
+		 * An overridable function to create a root folder entry.  Is overridable so that you can subclass the entries.
 		 */
-		public List<FileHierarchyEntries.FileSource> FileSourceEntries
+		protected virtual FileHierarchyEntries.RootFolder MakeRootFolderEntry ()
 			{
-			get
-				{  return fileSourceEntries;  }
+			return new FileHierarchyEntries.RootFolder();
 			}
+
+		/* Function: MakeFileSourceEntry
+		 * An overridable function to create a file source entry.  Is overridable so that you can subclass the entries.
+		 */
+		protected virtual FileHierarchyEntries.FileSource MakeFileSourceEntry (Files.FileSource fileSource)
+			{
+			return new FileHierarchyEntries.FileSource(fileSource);
+			}
+
+		/* Function: MakeFolderEntry
+		 * An overridable function to create a folder entry.  Is overridable so that you can subclass the entries.
+		 */
+		protected virtual FileHierarchyEntries.Folder MakeFolderEntry (Path pathSegment)
+			{
+			return new FileHierarchyEntries.Folder(pathSegment);
+			}
+
+		/* Function: MakeFileEntry
+		 * An overridable function to create a file entry.  Is overridable so that you can subclass the entries.
+		 */
+		protected virtual FileHierarchyEntries.File MakeFileEntry (Path filename)
+			{
+			return new FileHierarchyEntries.File(filename);
+			}
+
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected List<FileHierarchyEntries.FileSource> fileSourceEntries;
+		protected FileHierarchyEntries.RootFolder rootFolder;
 
 		}
 	}
