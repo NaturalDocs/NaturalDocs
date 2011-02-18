@@ -368,7 +368,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (stillExists == false)
 						{
 						hasDeletions = true;
-						Path outputFolder = OutputFolder(previousFileSourceInfo.Type, previousFileSourceInfo.Number);
+						Path outputFolder = OutputPath(previousFileSourceInfo.Type, previousFileSourceInfo.Number);
 
 						if (System.IO.Directory.Exists(outputFolder))
 							{  

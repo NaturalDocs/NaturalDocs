@@ -34,9 +34,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 	public partial class HTML
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+		/* Enum: SourcePathType
+		 * FolderOnly - The input path doesn't contain a file name.
+		 * FileAndFolder - The input path contains a file name and may also contain all or part of a folder path.
+		 */
+		public enum SourcePathType : byte
+			{  FolderOnly, FileAndFolder  };
+
+		/* Enum: OutputPathType
+		 * Absolute - Will return an absolute path.
+		 * RelativeToRootOutputFolder - Will return a path relative to <RootOutputFolder>.
+		 */
+		public enum OutputPathType : byte
+			{  Absolute, RelativeToRootOutputFolder  };
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
-		
 		
 		/* Function: BuildSourceFile
 		 * Builds an output file based on a source file.  The accessor should NOT hold a lock on the database.
@@ -58,7 +76,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					accessor.ReleaseLock();
 					haveDBLock = false;
 					
-					Path outputFile = ToSourceOutputPath(fileID);
+					Path outputFile = OutputPath(fileID);
 
 					if (outputFile != null && System.IO.File.Exists(outputFile))
 						{  
@@ -88,7 +106,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					accessor.ReleaseLock();
 					haveDBLock = false;
 
-					Path outputPath = ToSourceOutputPath(fileID);
+					Path outputPath = OutputPath(fileID);
 					BuildFile(outputPath, "test", content.ToString(), PageType.Content);
 
 					lock (writeLock)
@@ -112,11 +130,95 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: ToSourceOutputPath
+		/* Function: OutputFileName
+		 * Converts the source file name to its output file name.  Does not include or convert any path information.
+		 */
+		public static Path OutputFileName (Path fileName)
+			{
+			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
+			// the last extension.  Dots in folder names are okay though.
+			return fileName.ToString().Replace('.', '-') + ".html";
+			}
+
+
+		/* Function: OutputPath
+		 * Returns a path to the output file to be generated from the passed source file information.  The relative path
+		 * may be null to retrieve the root output folder for the input type and number.
+		 */
+		public Path OutputPath (Files.InputType type, int number, Path relativePath = default(Path), 
+													SourcePathType sourcePathType = SourcePathType.FileAndFolder,
+													OutputPathType outputPathType = OutputPathType.Absolute)
+			{
+			string path, fileName;
+			
+			if (relativePath == null)
+				{
+				path = null;
+				fileName = null;
+				}
+			else if (sourcePathType == SourcePathType.FolderOnly)
+				{
+				path = relativePath;
+				fileName = null;
+				}
+			else // SourcePathType.FileAndFolder
+				{
+				path = relativePath.ParentFolder;
+				fileName = relativePath.NameWithoutPath;
+				}
+
+			StringBuilder result = new StringBuilder();
+
+			if (outputPathType == OutputPathType.Absolute)
+				{ 
+				result.Append(config.Folder);
+				result.Append('/');  
+				}
+
+			if (type == Files.InputType.Source)
+				{  result.Append("files");  }
+			else if (type == Files.InputType.Image)
+				{  result.Append("images");  }
+			else
+				{  throw new InvalidOperationException();  }
+
+			if (number != 1)
+				{  result.Append(number);  }
+					
+			if (path != null)
+				{
+				result.Append('/');
+				result.Append(path);
+				}
+
+			if (fileName != null)
+				{  
+				result.Append('/');
+				result.Append(OutputFileName(fileName));
+				}
+
+			return result.ToString();
+			}
+
+
+		/* Function: OutputPath
+		 * Returns a path to the output file to be generated from the passed source file information.  The relative path
+		 * may be null to retrieve the root output folder for the file source.
+		 */
+		public Path OutputPath (Files.FileSource fileSource, Path relativePath = default(Path), 
+													SourcePathType sourcePathType = SourcePathType.FileAndFolder,
+													OutputPathType outputPathType = OutputPathType.Absolute)
+			{
+			return OutputPath(fileSource.Type, fileSource.Number, relativePath, sourcePathType, outputPathType);
+			}
+
+
+		/* Function: OutputPath
 		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
 		 * it no longer exists.
 		 */
-		public Path ToSourceOutputPath (int fileID)
+		public Path OutputPath (int fileID, SourcePathType sourcePathType = SourcePathType.FileAndFolder,
+													OutputPathType outputPathType = OutputPathType.Absolute)
 			{
 			Files.File file = Engine.Instance.Files.FromID(fileID);
 			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
@@ -126,58 +228,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			Path relativePath = fileSource.MakeRelative(file.FileName);
 
-			return ToSourceOutputPath(fileSource, relativePath);			
-			}
-
-
-		/* Function: ToSourceOutputPath
-		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
-		 * it no longer exists.
-		 */
-		public Path ToSourceOutputPath (Files.FileSource fileSource, Path relativePath)
-			{
-			string fileName = relativePath.NameWithoutPath;
-			
-			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
-			// the last extension.  Dots in folder names are okay though.
-			fileName = fileName.Replace('.', '-');
-			
-			// Use /../ to ninja in a file name replacement.  It will be fixed in Path's normalization.
-			return config.Folder + "/files" + (fileSource.Number != 1 ? fileSource.Number.ToString() : "") + 
-					  '/' + relativePath + "/../" + fileName + ".html";
-			}
-
-
-		/* Function: OutputFolder
-		 * Returns the output folder for the passed type and number.  This only works with source and image folders.  To
-		 * do styles, use <StyleOutputFolder()>.
-		 */
-		protected Path OutputFolder (Files.InputType type, int number)
-			{
-			StringBuilder folder = new StringBuilder(config.Folder);
-			folder.Append('/');
-
-			if (type == Files.InputType.Source)
-				{  folder.Append("files");  }
-			else if (type == Files.InputType.Image)
-				{  folder.Append("images");  }
-			else
-				{  throw new InvalidOperationException();  }
-
-			if (number != 1)
-				{  folder.Append(number);  }
-				
-			return folder.ToString();
-			}
-
-
-		/* Function: OutputFolder
-		 * Returns the output folder for the passed <FileSource>.  This only works with source and image FileSources.  To
-		 * do styles, use <StyleOutputFolder()>.
-		 */
-		protected Path OutputFolder (Files.FileSource fileSource)
-			{
-			return OutputFolder(fileSource.Type, fileSource.Number);
+			return OutputPath(fileSource, relativePath, sourcePathType, outputPathType);			
 			}
 
 
