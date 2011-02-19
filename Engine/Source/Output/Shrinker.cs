@@ -72,6 +72,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 				if (TryToSkipWhitespace(ref iterator, false) == true)
 					{
+					#if DONT_SHRINK_FILES
+						source.AppendTextBetweenTo(prevIterator, iterator, output);
+					#else
 					char nextChar = iterator.Character; 
 
 					if ( (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
@@ -79,6 +82,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 						  (Tokenizer.FundamentalTypeOf(lastChar) == TokenType.Text &&
 						   Tokenizer.FundamentalTypeOf(nextChar) == TokenType.Text) )
 						{  output.Append(' ');  }
+					#endif
 					}
 				else if (iterator.Character == '`')
 					{
@@ -155,12 +159,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 				if (TryToSkipWhitespace(ref iterator, true) == true)
 					{
-					char nextChar = iterator.Character; 
+					#if DONT_SHRINK_FILES
+						source.AppendTextBetweenTo(prevIterator, iterator, output);
+					#else
+						char nextChar = iterator.Character; 
 
-					if (nextChar == ':' ||
-						  (safeToCondenseAround.IndexOf(lastChar) == -1 &&
-						   safeToCondenseAround.IndexOf(nextChar) == -1) )
-						{  output.Append(' ');  }
+						if (nextChar == ':' ||
+							  (safeToCondenseAround.IndexOf(lastChar) == -1 &&
+								safeToCondenseAround.IndexOf(nextChar) == -1) )
+							{  output.Append(' ');  }
+					#endif
 					}
 				else if (TryToSkipString(ref iterator) == true)
 					{
