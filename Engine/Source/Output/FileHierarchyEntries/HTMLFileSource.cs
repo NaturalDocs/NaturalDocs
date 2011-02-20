@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 
@@ -47,10 +48,11 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output)
+		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
 			{
-			for (var parent = Parent; parent != null; parent = parent.Parent)
-				{  output.Append("   ");  }  // xxx
+			#if DONT_SHRINK_FILES
+				HTMLFileHierarchy.AppendJSONIndent(this, output);
+			#endif
 
 			output.Append('[');
 			
@@ -69,10 +71,37 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 			output.Append(',');
 			output.Append(jsonPath);
-			output.Append(',');
-			output.Append("[xxx]");
-			output.Append(']');
-			output.AppendLine();//xxx
+			output.Append(",[");
+
+			#if DONT_SHRINK_FILES
+				output.AppendLine();
+			#endif
+
+			for (int i = 0; i < Members.Count; i++)
+				{
+				if (i > 0)
+					{
+					output.Append(',');
+
+					#if DONT_SHRINK_FILES
+						output.AppendLine();
+					#endif
+					}
+
+				(Members[i] as IHTMLEntry).AppendJSON(output, rootFolders);
+				}
+
+			#if DONT_SHRINK_FILES
+				output.AppendLine();
+				HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+			#endif
+
+			output.Append("]]");
+
+			#if DONT_SHRINK_FILES
+				if (MergeWithRoot)
+					{  output.AppendLine();  }
+			#endif
 			}
 
 		// Group: Properties

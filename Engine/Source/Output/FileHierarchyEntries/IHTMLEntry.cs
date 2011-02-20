@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
@@ -28,9 +29,10 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 		/* Function: AppendJSON
 		 * Builds the JSON tag and appends it to the passed StringBuilder.  If the tag contains inline members, they 
-		 * will be included automatically.
+		 * will be included automatically.  If it reaches a <HTMLRootFolder> in the tree, it will be added to the passed
+		 * list and its members will not be added to the StringBuilder.
 		 */
-		void AppendJSON (StringBuilder output);
+		void AppendJSON (StringBuilder output, List<HTMLRootFolder> rootFolders);
 
 
 		// Group: Properties

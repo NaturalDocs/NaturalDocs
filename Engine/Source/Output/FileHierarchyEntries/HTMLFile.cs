@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 
@@ -31,25 +32,41 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			{
 			StringBuilder output = new StringBuilder();
 
+			string htmlName = TextConverter.TextToHTML(FileName);
+			string path = Builders.HTML.OutputFileName(FileName);
+			Builders.HTML.FileHierarchyEntryType type;
+
+			string htmlNameTranslation = htmlName.Replace('.', '-') + ".html";
+			if (htmlNameTranslation == path)
+				{  type = Builders.HTML.FileHierarchyEntryType.ImplicitFile;  }
+			else
+				{  type = Builders.HTML.FileHierarchyEntryType.ExplicitFile;  }
+
 			output.Append('[');
-			output.Append((int)Builders.HTML.FileHierarchyEntryType.File);
+			output.Append((int)type);
 			output.Append(",\"");
-			output.Append( TextConverter.EscapeStringChars(TextConverter.TextToHTML(FileName)) );
-			output.Append("\",\"");
-			output.Append( TextConverter.EscapeStringChars(Builders.HTML.OutputFileName(FileName)) );
-			output.Append("\"]");
+			output.Append( TextConverter.EscapeStringChars(htmlName) );
+			output.Append('"');
+
+			if (type == Builders.HTML.FileHierarchyEntryType.ExplicitFile)
+				{
+				output.Append(",\"");
+				output.Append( TextConverter.EscapeStringChars(path) );
+				output.Append('"');
+				}
+
+			output.Append(']');
 
 			json = output.ToString();
 			}
 
-		public void AppendJSON (StringBuilder output)
+		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
 			{
-			for (var parent = Parent; parent != null; parent = parent.Parent)
-				{  output.Append("   ");  }  // xxx
+			#if DONT_SHRINK_FILES
+				HTMLFileHierarchy.AppendJSONIndent(this, output);
+			#endif
 
 			output.Append(json);
-
-			output.AppendLine(); //xxx
 			}
 
 

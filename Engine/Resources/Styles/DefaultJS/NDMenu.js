@@ -17,7 +17,8 @@
 		`RootFolder = 0
 		`LocalFolder = 1
 		`DynamicFolder = 2
-		`File = 3
+		`ExplicitFile = 3
+		`ImplicitFile = 4
 
 		Member Indexes:
 

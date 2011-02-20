@@ -41,14 +41,24 @@
  *			Unlike local and root folders, the Members variable just holds an ID number for the file that contains them.  They
  *			will be stored in FileHierarchy[number].json.
  *		
- *		File Entries:
+ *		Explicit File Entries:
  *		
  *			> Type: File
  *			> Name: HTML string
- *			> Path: Output file name, no path
+ *			> Path: Output file name without path
  *			
- *			File entries don't store the full path to its output file as that would be a lot of duplicated memory.  Rather, the
- *			path is relative to its containing folder which it must be combined with.
+ *			A file entry with an explicit path.  The path is just a file name.  The full path isn't stored because that would be
+ *			a lot of duplicated memory.  Rather, the path is relative to the containing folder.
+ *			
+ *		Implicit File Entries:
+ *		
+ *			> Type: AutoFile
+ *			> Name: HTML string
+ *			
+ *			The same as an explicit file entry except the path is implied.  It can be obtained by taking the name string, 
+ *			substituting dashes for periods, and then appending ".html".  This saves a significant amount of space in the 
+ *			generated JSON because this applies to most files.  Explicit file entries are for when this translation wouldn't work, 
+ *			such as if the generated HTML string contained entity characters.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -78,7 +88,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * RootFolder - The entry is the root folder.
 		 * InlineFolder - The entry is a folder that has its members stored inline as an array.
 		 * DynamicFolder - The entry is a folder that has its members in a different file and stores only its ID.
-		 * File - The entry is a file.
+		 * ExplicitFile - The entry is a file with an explicit path.
+		 * ImplicitFile - The entry is a file with an implicit path.
 		 */
 		public enum FileHierarchyEntryType : byte  
 			{
@@ -86,7 +97,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			RootFolder = 0, 
 			InlineFolder = 1,
 			DynamicFolder = 2,
-			File = 3
+			ExplicitFile = 3,
+			ImplicitFile = 4
 			};
 
 		/* Enum: FileHierarchyEntryMember
@@ -97,9 +109,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// If these values ever change, you also have to change the substitutions in the JavaScript styles and the
 			// JSON generation functions.
 			Type = 0,  // All
-			ID = 1,  // Root
-			Name = 1,  // Local Folder, Dynamic Folder, File
-			Path = 2, // All
+			ID = 1,  // Root Folder
+			Name = 1,  // Local Folder, Dynamic Folder, Explicit File, Implicit File
+			Path = 2, // Root Folder, Local Folder, Dynamic Folder, Explicit File
 			Members = 3  // Root Folder, Local Folder, Dynamic Folder
 			};
 
@@ -151,17 +163,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			fileHierarchy.ForEach(xxxPrintEntry, FileHierarchy.ForEachMethod.Linear);
 
 			StringBuilder json = new StringBuilder();
+			List<FileHierarchyEntries.HTMLRootFolder> rootFolders = new List<FileHierarchyEntries.HTMLRootFolder>();
 
-			fileHierarchy.ForEach(
-				delegate (FileHierarchyEntries.Entry entry)
-					{
-					if (entry is FileHierarchyEntries.IHTMLEntry)
-						{  (entry as FileHierarchyEntries.IHTMLEntry).AppendJSON(json);  }
-					}, 
-				FileHierarchy.ForEachMethod.Linear);
+			fileHierarchy.AppendJSON(json, rootFolders);
 
 			System.Console.WriteLine();
 			System.Console.Write(json.ToString());
+			System.IO.File.WriteAllText("c:\\temp\\a.txt", json.ToString());
 			}
 
 		void xxxPrintEntry (FileHierarchyEntries.Entry entry)

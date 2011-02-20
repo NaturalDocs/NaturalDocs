@@ -62,31 +62,62 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output)
+		public void AppendJSON (StringBuilder output, List<HTMLRootFolder> rootFolders)
 			{
-			if (MergeWithFileSource)
-				{  return;  }
+			if (!MergeWithFileSource)
+				{
+				#if DONT_SHRINK_FILES
+					HTMLFileHierarchy.AppendJSONIndent(this, output);
+				#endif
 
-			for (var parent = Parent; parent != null; parent = parent.Parent)
-				{  output.Append("   ");  }  // xxx
+				output.Append('[');
+				output.Append((int)Builders.HTML.FileHierarchyEntryType.RootFolder);
+				output.Append(',');
+				output.Append(ID);
+				output.Append(',');
 
-			output.Append('[');
-			output.Append((int)Builders.HTML.FileHierarchyEntryType.RootFolder);
-			output.Append(',');
-			output.Append(ID);
-			output.Append(',');
+				if (jsonPath != null)
+					{  output.Append(jsonPath);  }
+				else
+					{  output.Append("undefined");  }
 
-			if (jsonPath != null)
-				{  output.Append(jsonPath);  }
+				output.Append(",[");
+
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+				#endif
+
+				for (int i = 0; i < Members.Count; i++)
+					{
+					if (i > 0)
+						{
+						output.Append(',');
+
+						#if DONT_SHRINK_FILES
+							output.AppendLine();
+						#endif
+						}
+
+					(Members[i] as IHTMLEntry).AppendJSON(output, rootFolders);
+					}
+
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+					HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+				#endif
+
+				output.Append("]]");
+
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+				#endif
+				}
 			else
-				{  output.Append("undefined");  }
-
-			output.Append(',');
-			output.Append("[xxx]");
-			output.Append(']');
-
-			output.AppendLine();//xxx
+				{
+				(Members[0] as FileHierarchyEntries.HTMLFileSource).AppendJSON(output, rootFolders);
+				}
 			}
+
 
 
 		// Group: Properties

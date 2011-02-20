@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 
 namespace GregValure.NaturalDocs.Engine.Output
@@ -26,6 +27,31 @@ namespace GregValure.NaturalDocs.Engine.Output
 			{
 			}
 
+
+		/* Function: AppendJSON
+		 * Generates JSON for the root folder of the hierarchy and appends it to the StringBuilder.  If it finds any
+		 * <FileHierarchyEntries.HTMLRootFolders> in the tree, they will be added to the passed root folders list
+		 * and not included in the JSON.
+		 */
+		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+			{
+			(rootFolder as FileHierarchyEntries.HTMLRootFolder).AppendJSON(output, rootFolders);
+			}
+
+		#if DONT_SHRINK_FILES
+		/* Function: AppendJSONIndent
+		 * Appends spaces to the passed StringBuilder based on how many parents it has until the next root folder.
+		 * This function only does anything exists if <DONT_SHRINK_FILES> is defined.
+		 */
+		public static void AppendJSONIndent (FileHierarchyEntries.Entry entry, StringBuilder output)
+			{
+			while ((entry is FileHierarchyEntries.RootFolder) == false)
+				{
+				output.Append("   ");
+				entry = entry.Parent;
+				}
+			}
+		#endif
 
 		override protected FileHierarchyEntries.RootFolder MakeRootFolderEntry ()
 			{
