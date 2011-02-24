@@ -86,21 +86,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 					}
 				else if (iterator.Character == '`')
 					{
-					iterator.Next();
 					string substitution = null;
 
-					if (iterator.IsInBounds && iterator.Type == TokenType.Text)
-						{  substitution = substitutions[iterator.String];  }
-
-					if (substitution != null)
+					if (TryToGetSubstitution(ref iterator, out substitution))
 						{  
 						output.Append(substitution);  
-						iterator.Next();
 						}
 					else
 						{
 						output.Append('`');
-						// Leave iterator on following token.
+						iterator.Next();
 						}
 					}
 				else
@@ -176,21 +171,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 					}
 				else if (iterator.Character == '`')
 					{
-					iterator.Next();
 					string substitution = null;
 
-					if (iterator.IsInBounds && iterator.Type == TokenType.Text)
-						{  substitution = substitutions[iterator.String];  }
-
-					if (substitution != null)
+					if (TryToGetSubstitution(ref iterator, out substitution))
 						{  
 						output.Append(substitution);  
-						iterator.Next();
 						}
 					else
 						{
 						output.Append('`');
-						// Leave iterator on following token.
+						iterator.Next();
 						}
 					}
 				else
@@ -423,6 +413,46 @@ namespace GregValure.NaturalDocs.Engine.Output
 				}
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: TryToGetSubstitution
+		 * If the iterator is on a valid substitution token, advances it past it, returns the replacement text, and returns true.
+		 * Otherwise the iterator will be left alone and it will return false.
+		 */
+		protected bool TryToGetSubstitution (ref TokenIterator iterator, out string substitution)
+			{
+			if (iterator.Character != '`')
+				{
+				substitution = null;
+				return false;
+				}
+
+			TokenIterator tokenIterator = iterator;
+			tokenIterator.Next();
+
+			StringBuilder token = new StringBuilder();
+
+			while (tokenIterator.IsInBounds && (tokenIterator.Type == TokenType.Text || tokenIterator.Character == '.' ||
+						 tokenIterator.Character == '_'))
+				{
+				tokenIterator.AppendTokenTo(token);
+				tokenIterator.Next();
+				}
+
+			string tokenSubstitution = substitutions[token.ToString()];
+
+			if (tokenSubstitution != null)
+				{
+				substitution = tokenSubstitution;
+				iterator = tokenIterator;
+				return true;
+				}
+			else
+				{
+				substitution = null;
+				return false;
+				}
 			}
 
 
