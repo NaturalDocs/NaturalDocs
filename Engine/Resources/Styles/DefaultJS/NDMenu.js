@@ -99,12 +99,11 @@ var NDMenu = new function ()
 			{
 			if (this.GetFileMenuSection(1) == undefined)
 				{
-				this.LoadFileMenuSection(1);
-
 				var htmlEntry = document.createElement("div");
 				htmlEntry.className = "MLoadingNotice";
 				htmlMenu.appendChild(htmlEntry);
 
+				this.LoadFileMenuSection(1);
 				return;
 				}
 			else
@@ -196,12 +195,11 @@ var NDMenu = new function ()
 
 			else if (navigationType == `Nav_NeedToLoad)
 				{
-				this.LoadFileMenuSection(iterator.needToLoad);
-
 				var htmlEntry = document.createElement("div");
 				htmlEntry.className = "MLoadingNotice";
 				htmlMenu.appendChild(htmlEntry);
 
+				this.LoadFileMenuSection(iterator.needToLoad);
 				return;
 				}
 
@@ -222,12 +220,11 @@ var NDMenu = new function ()
 
 			if (selectedFolder == undefined)
 				{
-				this.LoadFileMenuSection(membersID);
-
 				var htmlEntry = document.createElement("div");
 				htmlEntry.className = "MLoadingNotice";
 				htmlMenu.appendChild(htmlEntry);
 
+				this.LoadFileMenuSection(membersID);
 				return;
 				}
 			}
