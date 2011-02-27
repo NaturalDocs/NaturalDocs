@@ -324,7 +324,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: TryToSkipLineComment
 		 * If the iterator is on the opening symbol of a line comment, skips over it and returns true.  Otherwise leaves the iterator
-		 * alone and returns false.\
+		 * alone and returns false.
 		 */
 		protected bool TryToSkipLineComment (ref TokenIterator iterator)
 			{
@@ -432,15 +432,44 @@ namespace GregValure.NaturalDocs.Engine.Output
 			tokenIterator.Next();
 
 			StringBuilder token = new StringBuilder();
+			string tokenSubstitution = null;
 
-			while (tokenIterator.IsInBounds && (tokenIterator.Type == TokenType.Text || tokenIterator.Character == '.' ||
-						 tokenIterator.Character == '_'))
+			// Locale substitutions
+			if (tokenIterator.Character == '{')
 				{
-				tokenIterator.AppendTokenTo(token);
 				tokenIterator.Next();
+
+				while (tokenIterator.IsInBounds && tokenIterator.Character != '}')
+					{  
+					tokenIterator.AppendTokenTo(token);
+					tokenIterator.Next();  
+					}
+
+				if (tokenIterator.Character != '}')
+					{
+					substitution = null;
+					return false;
+					}
+
+				tokenIterator.Next();
+
+				string tokenString = token.ToString();
+				tokenSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", tokenString, "`{" + tokenString + '}');
+				tokenSubstitution = '"' + TextConverter.EscapeStringChars(tokenSubstitution) + '"';
 				}
 
-			string tokenSubstitution = substitutions[token.ToString()];
+			// Standard comment substitutions
+			else
+				{
+				while (tokenIterator.IsInBounds && (tokenIterator.Type == TokenType.Text || tokenIterator.Character == '.' ||
+							 tokenIterator.Character == '_'))
+					{
+					tokenIterator.AppendTokenTo(token);
+					tokenIterator.Next();
+					}
+
+				tokenSubstitution = substitutions[token.ToString()];
+				}
 
 			if (tokenSubstitution != null)
 				{
