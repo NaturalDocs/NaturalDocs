@@ -77,7 +77,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 					#else
 					char nextChar = iterator.Character; 
 
-					if ( (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
+					if ( nextChar == '`' ||
+						  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
 						   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
 						  (Tokenizer.FundamentalTypeOf(lastChar) == TokenType.Text &&
 						   Tokenizer.FundamentalTypeOf(nextChar) == TokenType.Text) )

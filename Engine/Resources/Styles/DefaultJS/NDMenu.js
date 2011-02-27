@@ -445,7 +445,7 @@ function NDMenu_FileMenuPath_ByOffset (offsets)
 	this.GetIterator = function ()
 		{
 		return new NDMenu_FileMenuPath_ByOffset_Iterator(this);
-		}
+		};
 
 
 	// Group: Properties
@@ -637,7 +637,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	this.AtEndOfPath = function ()
 		{
 		return (this.index == this.pathObject.path.length);
-		}
+		};
 
 
 	/* Function: Duplicate
@@ -652,7 +652,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 		newObject.index = this.index;
 
 		return newObject;
-		}
+		};
 
 
 
