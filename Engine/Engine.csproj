@@ -178,6 +178,7 @@
     <Content Include="Architecture\Database Layout\Topics.txt" />
     <Content Include="Architecture\File Parsing.txt" />
     <Content Include="Architecture\ID Deletions.txt" />
+    <Content Include="Architecture\JavaScript Notes.txt" />
     <Content Include="Architecture\NDMarkup Format.txt" />
     <Content Include="Build Scripts\PostBuild.js" />
     <Content Include="Resources\Config\Languages.txt" />

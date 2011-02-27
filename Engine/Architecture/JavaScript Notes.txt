@@ -1,0 +1,88 @@
+﻿
+Title: JavaScript Notes
+_______________________________________________________________________________
+
+Topic: File Shrinking
+
+	JavaScript style files (and CSS for that matter) are shrunk in the generated output.  All unnecessary whitespace and 
+	comments are removed.  This includes line breaks, so you have to be diligent about using semicolons in JavaScript.
+	For example, you must make sure all functions defined this way have a semicolon after the closing brace:
+
+	> this.FunctionName = function ()
+	>    {
+	>    ...
+	>    };
+
+	It's technically an assignment statement, not a declaration, so it needs to be finished with a semicolon.  This won't cause
+	an error in JavaScript that isn't shrunk because the semicolon would be implied by the line break, but the shrunk JavaScript
+	won't have line breaks.
+
+	Debugging:
+
+		You can turn off file shrinking by xxx, which allows you to step through the code in the output with things like Firebug.  
+		However, file shrinking is on by default so if other people are going to be using your files you need to make sure it works 
+		shrunk too.  Also, the default Natural Docs JavaScript is heavily documented so you'll be increasing their output file sizes 
+		considerably by turning it off.
+
+		If you have an error that only appears when shrinking is on, use Opera's error console to see the exact character it occurs
+		at.  As of this writing both Firefox and Chrome will only give you the line number in their error consoles, which isn't helpful
+		when line breaks are removed.
+
+
+	Including Comments in Shrunken Files:
+
+		Normally comments are removed during shrinking, but if there's some copyright and licensing information you want to keep in 
+		there, put them in a comment under the heading "Include in output:".
+
+		> /* Include in output:
+		>  * Copyright (C) 2011 Me
+		>  */
+
+		Only the text from that line to the end of the comment (or to the next substitution header) will be included, so you can
+		have other information above it.  If you include Natural Docs comments in your file and don't want this included in that
+		documentation, put it in a separate comment.
+
+
+Topic: Substitutions
+
+	Natural Docs includes a simple substitution engine for JavaScript and CSS files.
+
+	Direct Substitutions:
+
+		If you include a comment with the heading "Substitutions:" in it, anything under that heading will be scanned for substitution 
+		definitions, which take this form:
+
+		> /* Substitutions:
+		>  * `Name1 = value1
+		>  * `Name2 = value2
+		>  */
+
+		Now anywhere you put "`Name1" in the code it will be replaced by "value1".  This is a literal substitution so the value can
+		be anything: a string, an integer, a snippet of code.  The name must be preceded by a backtick and can only contain ASCII
+		letters, numbers, underscores, and dots.  All substitutions are per file, so substitutions defined in one file will not apply to 
+		others.  Any backtick entries that aren't recognized will be left as is in the output.
+
+	Locale Substitutions:
+
+		You can also embed strings from the Engine.NaturalDocs locale file ([ND Dir]/Translations/NaturalDocs.Engine.[locale].txt)
+		by following the backtick with braces:
+
+		> var title = `{LocaleIdentifier};
+
+		This lets you include text that will be in the native language of each Natural Docs user.  The substitution will include the 
+		quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a string representation of 
+		the identifier.  You cannot pass parameters to the identifiers with parenthesis.
+
+
+Topic: Browser Notes
+
+	Use ClassName Instead of SetAttribute:
+
+		This won't work in Internet Explorer 7:
+
+		> htmlEntry.setAttribute("class", "MEntry MFolder Child");
+
+		It will work in IE 8 and other browsers, but not in IE 7.  You must use this instead:
+
+		> htmlEntry.className = "MEntry MFolder Child";
+	
