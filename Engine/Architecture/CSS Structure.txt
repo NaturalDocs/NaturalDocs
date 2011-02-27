@@ -37,6 +37,48 @@ Browser Classes:
 	- IE7
 
 
+
+Topic: Menu
+_______________________________________________________________________________
+
+(start text)
+
+	<#NDMenu>
+		<#NDMenuContent>
+
+			<MFolder MEntry Parent Root Selected?>
+				Name
+			</MFolder>
+
+			<MFolder MEntry Parent Empty? Selected?>
+				Name
+			</MFolder>
+
+			<MFile MEntry Selected>
+				Name
+			</MFile>
+
+			<MFolder MEntry Child>
+				Name
+			</MFolder>
+
+			<MLoadingNotice>
+			</MLoadingNotice>
+
+		</#NDMenuContent>
+	</#NDMenu>
+
+(end)
+
+	The menu always starts with a root folder entry.  There may also be a list of subfolder entries leading from it to the
+	currently selected folder.  Most entries will be "a" tags, though they may be div tags if they don't need to serve as a
+	link, such as empty and selected folders.  Use the Root, Parent, Child, and Selected classes to distinguish between types 
+	of folder entries, such as .MFolder.Child.
+
+	Following it will be a list of the files and folders contained in that location.
+
+
+
 Topic: Content Page
 _______________________________________________________________________________
 

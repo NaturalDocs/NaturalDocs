@@ -23,6 +23,13 @@ a:hover, a:active {
 	text-decoration: underline;
 	}
 
+
+
+
+/* Header
+	___________________________________________________________________________
+*/
+
 #NDHeader {
 	background-color: #7070C0;
 	position: fixed;
@@ -42,11 +49,83 @@ a:hover, a:active {
 		margin-left: .65em;
 		}
 
+
+
+
+/* Menu
+	___________________________________________________________________________
+*/
+
 #NDMenu {
-	background-color: #C0C0C0;
+	background-color: #E0E0E0;
 	position: fixed;
 	z-index: 3;
+	overflow: hidden;
 	}
+
+	#NDMenu a:hover,
+	#NDMenu a:active {
+		text-decoration: none;
+		}
+
+	.MLoadingNotice {
+		height: 20px;
+		background: URL("images/menu-loading.gif") no-repeat center bottom;
+		}
+
+	.MEntry {
+		display: block;
+		font: 10pt "Trebuchet MS", sans-serif;
+		padding: .4ex 1.5ex .4ex 3ex;
+		}
+	.MEntry,
+	a.MEntry {
+		color: #606060;
+		}
+	a.MEntry:hover,
+	a.MEntry:active {
+		background-color: #ECECEC;
+		}
+
+	.MFolder {
+		font-weight: bold;
+		}
+	.MFolder.Parent {
+		border-bottom: 1px solid #C0C0C0;
+		}
+	.MFolder.Parent,
+	a.MFolder.Parent {
+		color: #808080;
+		}
+	.MFolder.Parent,
+	.MFolder.Selected {
+		padding-left: 1.5ex;
+		}
+	.MFolder.Parent.Empty {
+		border-bottom-style: dashed;
+		color: #B0B0B0;
+		}
+
+	.MFolder.Child:after {
+		content: " ▸";
+		}
+
+	.MFolder.Selected {
+		font-weight: bold;
+		background-color: #FFFFFF;
+		border-bottom: 3px solid #888888;
+		}
+	.MFile.Selected {
+		background-color: #FFFFFF;
+		}
+
+
+
+
+
+/* Content
+	___________________________________________________________________________
+*/
 
 #NDContent {
 	background-color: #FFFFFF;
@@ -54,8 +133,15 @@ a:hover, a:active {
 	z-index: 1;
 	}
 
+
+
+
+/* Footer
+	___________________________________________________________________________
+*/
+
 #NDFooter {
-	background-color: #C0C0C0;
+	background-color: #E0E0E0;
 	position: fixed;
 	font: 7pt Georgia, serif;
 	padding: .2em 1ex;
@@ -64,11 +150,8 @@ a:hover, a:active {
 	}
 
 	#NDFooter,
-	#NDFooter a:link,
-	#NDFooter a:visited,
-	#NDFooter a:hover,
-	#NDFooter a:active {
-		color: #686868;
+	#NDFooter a {
+		color: #808080;
 		}
 
 	#FCopyright,

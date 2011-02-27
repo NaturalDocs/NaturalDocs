@@ -19,9 +19,9 @@
 var NDPageFrame = { };
 
 
-/* Function: OnLoad
+/* Function: Start
 */
-NDPageFrame.OnLoad = function ()
+NDPageFrame.Start = function ()
 	{
 	if (navigator.userAgent.indexOf("MSIE 6") != -1)
 		{
@@ -37,6 +37,8 @@ NDPageFrame.OnLoad = function ()
 
 	this.OnResize();
 	window.onresize = this.OnResize;
+
+	NDMenu.Start();
 	};
 
 /* Function: OnResize

@@ -27,6 +27,8 @@ HTML.HeaderSubTitle(projectSubTitle): {0}
 HTML.DefaultPageTitle: Source Documentation
 HTML.DefaultHeaderTitle: Source Documentation
 
+HTML.RootFolderName: Files
+
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan
 TimeStamp.Month2: February

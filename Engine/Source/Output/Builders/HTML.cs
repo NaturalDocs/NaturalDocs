@@ -856,7 +856,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				content.Append(
 				"</div>" +
 
-				"<div id=\"NDMenu\">xxx" +
+				"<div id=\"NDMenu\">" +
+					"<div id=\"NDMenuContent\">" +
+					"</div>" +
 				"</div>" +
 
 				"<div id=\"NDContent\">xxx" +

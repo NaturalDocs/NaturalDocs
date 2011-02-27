@@ -70,7 +70,7 @@ var NDCore = { };
 
 				element.className = newClassName;
 				return;
-				};
+				}
 
 			index = element.className.indexOf(targetClassName, index + 1);
 			}

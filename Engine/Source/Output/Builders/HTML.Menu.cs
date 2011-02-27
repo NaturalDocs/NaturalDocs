@@ -149,55 +149,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return;  }
 
 			fileHierarchy.Sort();
+			fileHierarchy.PrepareJSON(this);
 
-			fileHierarchy.ForEach(
-				delegate (FileHierarchyEntries.Entry entry)
-					{
-					if (entry is FileHierarchyEntries.IHTMLEntry)
-						{  (entry as FileHierarchyEntries.IHTMLEntry).PrepareJSON(this);  }
-					}, 
-				FileHierarchy.ForEachMethod.ChildrenFirst);
-
-
-			//xxx printing
-			fileHierarchy.ForEach(xxxPrintEntry, FileHierarchy.ForEachMethod.Linear);
+			List<FileHierarchyEntries.HTMLRootFolder> otherRootFolders = new List<FileHierarchyEntries.HTMLRootFolder>();
 
 			StringBuilder json = new StringBuilder();
-			List<FileHierarchyEntries.HTMLRootFolder> rootFolders = new List<FileHierarchyEntries.HTMLRootFolder>();
+			fileHierarchy.AppendJSON(json, otherRootFolders);
 
-			fileHierarchy.AppendJSON(json, rootFolders);
+			System.IO.StreamWriter outputFile = CreateTextFileAndPath(config.Folder + "/menu/files.js");
 
-			System.Console.WriteLine();
-			System.Console.Write(json.ToString());
-			System.IO.File.WriteAllText("c:\\temp\\a.txt", json.ToString());
-			}
-
-		void xxxPrintEntry (FileHierarchyEntries.Entry entry)
-			{
-			xxxIndentEntry(entry);
-
-			if (entry is FileHierarchyEntries.FileSource)
+			try
 				{
-				System.Console.WriteLine("### " + ((entry as FileHierarchyEntries.FileSource).WrappedFileSource.Name ?? "Default File Source"));
+				outputFile.Write("NDMenu.FileMenuSectionLoaded(1,");
+				outputFile.Write(json.ToString());
+				outputFile.Write(");");
 				}
-			else if (entry is FileHierarchyEntries.Folder)
+			finally
 				{
-				System.Console.WriteLine("[+] " + (entry as FileHierarchyEntries.Folder).PathFragment);
-				}
-			else if (entry is FileHierarchyEntries.HTMLFile)
-				{
-				System.Console.WriteLine(" -  " + (entry as FileHierarchyEntries.File).FileName);
-				}
-			else if (entry is FileHierarchyEntries.RootFolder)
-				{
-				System.Console.WriteLine("[root]");
+				outputFile.Dispose();
 				}
 			}
-		void xxxIndentEntry (FileHierarchyEntries.Entry entry)
-			{
-			for (var parent = entry.Parent; parent != null; parent = parent.Parent)
-				{  System.Console.Write("   ");  }
-			}
+
 		}
 
 	}

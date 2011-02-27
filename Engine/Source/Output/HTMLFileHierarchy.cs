@@ -25,16 +25,38 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		public HTMLFileHierarchy () : base ()
 			{
+			preparedJSON = false;
 			}
 
+
+		/* Function: PrepareJSON
+		 * Performs all calculations related to figuring out the JSON tag lengths of each entry.  This must be called
+		 * before using <AppendJSON()>.
+		 */
+		public void PrepareJSON (Builders.HTML builder)
+			{
+			ForEach(
+				delegate (FileHierarchyEntries.Entry entry)
+					{
+					(entry as FileHierarchyEntries.IHTMLEntry).PrepareJSON(builder);
+					}, 
+				FileHierarchy.ForEachMethod.ChildrenFirst);
+
+			preparedJSON = true;
+			}
 
 		/* Function: AppendJSON
 		 * Generates JSON for the root folder of the hierarchy and appends it to the StringBuilder.  If it finds any
 		 * <FileHierarchyEntries.HTMLRootFolders> in the tree, they will be added to the passed root folders list
 		 * and not included in the JSON.
+		 * 
+		 * <PrepareJSON()> must be called before this can be called.
 		 */
 		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
 			{
+			if (!preparedJSON)
+				{  throw new Exception("Must call PrepareJSON before AppendJSON");  }
+
 			(rootFolder as FileHierarchyEntries.HTMLRootFolder).AppendJSON(output, rootFolders);
 			}
 
@@ -73,5 +95,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 			return new FileHierarchyEntries.HTMLFile(filename);
 			}
 
+		protected bool preparedJSON;
 		}
 	}

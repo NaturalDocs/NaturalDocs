@@ -5,4 +5,4 @@ index link: NDPageFrame.js
 index link: NDMenu.js
 
 onload: NDCore.AddBrowserClassesToBody();
-index onload: NDPageFrame.OnLoad();
+index onload: NDPageFrame.Start();
