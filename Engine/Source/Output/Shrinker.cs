@@ -205,6 +205,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		/* Function: ProcessComment
 		 * Searches the passed comment for sections that should be included in the output or for substitution definitions.
+		 * Comments that should be included in the output will be added to <output>.
 		 */
 		protected void ProcessComment (PossibleDocumentationComment comment)
 			{
@@ -212,7 +213,28 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			while (iterator < comment.End)
 				{
-				if (iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
+				if (iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success)
+					{
+					iterator.Next();
+
+					while (iterator < comment.End && 
+								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false)
+						{
+						Match match = iterator.Match(substitutionDefinitionRegex, LineBoundsMode.CommentContent);
+
+						if (match.Success)
+							{
+							substitutions[ match.Groups[1].ToString() ] = match.Groups[2].ToString();
+							}
+
+						iterator.Next();
+						}
+					}
+
+				#if !DONT_SHRINK_FILES
+				// We only need to worry about Keep in Output if we're shrinking files.  Unshrunk files will have the comments
+				// anyway, and adding them again would throw off the line numbers compared to the original.
+				else if (iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
 					{
 					iterator.Next();
 
@@ -269,24 +291,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 						while (start < end);
 						}
 					}
-
-				else if (iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success)
-					{
-					iterator.Next();
-
-					while (iterator < comment.End && 
-								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false)
-						{
-						Match match = iterator.Match(substitutionDefinitionRegex, LineBoundsMode.CommentContent);
-
-						if (match.Success)
-							{
-							substitutions[ match.Groups[1].ToString() ] = match.Groups[2].ToString();
-							}
-
-						iterator.Next();
-						}
-					}
+				#endif
 
 				else
 					{  iterator.Next();  }
