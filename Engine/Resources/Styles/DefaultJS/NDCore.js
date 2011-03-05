@@ -187,3 +187,26 @@ var NDCore = { };
 				}
 			}
 		};
+
+
+
+	// Group: Other Functions
+	// ________________________________________________________________________
+
+
+	/* Function: SameHash
+		Returns whether the two passed hashes are functionally the same.  The difference between this 
+		and a straight string comparison is that "#", "", and undefined are equal.
+	*/
+	NDCore.SameHash = function (hashA, hashB)
+		{
+		if (hashA === hashB)
+			{  return true;  }
+
+		if (hashA === "" || hashA === "#")
+			{  hashA = undefined;  }
+		if (hashB === "" || hashB === "#")
+			{  hashB = undefined;  }
+
+		return (hashA === hashB);
+		};

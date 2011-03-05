@@ -696,4 +696,4 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	*/
 	this.index = 0;
 
-	}
+	};

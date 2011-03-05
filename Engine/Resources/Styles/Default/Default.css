@@ -60,7 +60,8 @@ a:hover, a:active {
 	background-color: #E0E0E0;
 	position: fixed;
 	z-index: 3;
-	overflow: hidden;
+	overflow: auto;
+	width: 30ex;
 	}
 
 	#NDMenu a:hover,

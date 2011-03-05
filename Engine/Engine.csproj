@@ -184,6 +184,7 @@
     <Content Include="Resources\Config\Languages.txt" />
     <Content Include="Resources\Config\Parser.txt" />
     <Content Include="Resources\Config\Topics.txt" />
+    <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -89,6 +89,7 @@ if (!fs.folderExists(OutputPathOf(targetComponent)))
 
 
 CopyResourceFiles("Engine", "SQLite");
+CopyResourceFiles("Engine", "License");
 
 CopyResourceFolder("Engine", "Config");
 CopyResourceFolder("Engine", "Styles");
