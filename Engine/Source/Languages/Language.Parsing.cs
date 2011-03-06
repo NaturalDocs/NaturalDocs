@@ -197,22 +197,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		virtual protected void GetPossibleDocumentationComments (ParseState parser)
 			{
 			parser.PossibleDocumentationComments = new List<PossibleDocumentationComment>();
-			LineIterator lineIterator = parser.TokenizedSourceCode.FirstLine;
 
 			if (Type == LanguageType.TextFile)
 				{
 				PossibleDocumentationComment comment = new PossibleDocumentationComment();
 				comment.Type = Comments.Type.Plain;
-				comment.Start = lineIterator;
-
-				while (lineIterator.Next()) { };
-
-				comment.End = lineIterator;
+				comment.Start = parser.TokenizedSourceCode.FirstLine;
+				comment.End = parser.TokenizedSourceCode.LastLine;
 
 				parser.PossibleDocumentationComments.Add(comment);
 				}
 			else
 				{
+				LineIterator lineIterator = parser.TokenizedSourceCode.FirstLine;
 				bool foundComment = false;
 			
 				while (lineIterator.IsInBounds)

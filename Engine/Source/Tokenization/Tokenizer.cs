@@ -378,6 +378,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return new TokenIterator(this, 0, 0, StartingLineNumber);  }
 			}
 			
+		/* Function: LastToken
+		 * A <TokenIterator> set to one past the last token of this object.
+		 */
+		public TokenIterator LastToken
+			{
+			get
+				{  return new TokenIterator(this, tokens.Count, rawText.Length, StartingLineNumber + Lines.Count);  }
+			}
+			
 		/* Function: FirstLine
 		 * A <LineIterator> set to the first line in this object.
 		 */
@@ -385,6 +394,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{  return new LineIterator(this, 0, 0, 0);  }
+			}
+
+		/* Function: LastLine
+		 * A <LineIterator> set to the one past the last line in this object.
+		 */
+		public LineIterator LastLine
+			{
+			get
+				{  return new LineIterator(this, Lines.Count, tokens.Count, rawText.Length);  }
 			}
 
 
