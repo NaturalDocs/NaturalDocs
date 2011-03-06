@@ -90,30 +90,64 @@ var NDMenu = new function ()
 		if (this.newFileMenuPath == undefined)
 			{  return;  }
 
-		var htmlMenu = document.getElementById("NDMenuContent");
+		var htmlMenu = document.createElement("div");
+		htmlMenu.id = "NDMenuContent";
 
-		while (htmlMenu.hasChildNodes())
-			{  htmlMenu.removeChild(htmlMenu.lastChild);  }
+		var result = this.BuildEntries(htmlMenu);
+
+		if (this.currentFileMenuPath != undefined && result.newPath != undefined)
+			{  this.currentFileMenuPath.path = result.newPath;  }
+
+		if (result.completed)
+			{  this.newFileMenuPath = undefined;  }
+		else
+			{
+			var htmlEntry = document.createElement("div");
+			htmlEntry.className = "MLoadingNotice";
+			htmlMenu.appendChild(htmlEntry);
+			}
+
+		var oldMenuContent = document.getElementById("NDMenuContent");
+		oldMenuContent.parentNode.replaceChild(htmlMenu, oldMenuContent);
+
+		if (result.needToLoad != undefined)
+			{  this.LoadFileMenuSection(result.needToLoad);  }
+		};
+
+	
+	/* Function: BuildEntries
+		Generates the HTML menu entries and appends them to the passed element.  Returns an object with the
+		following members:
+
+		completed - Bool.  Whether it was able to build the complete path in <newFileMenuPath> as opposed to just
+						  part.
+		needToLoad - The ID of the menu section that needs to be loaded, or undefined if none.
+		newPath - An array of offsets representing the new path, or at least as much as was generated.
+	*/
+	this.BuildEntries = function (htmlMenu)
+		{
+		var result = 
+			{ 
+			completed: false,
+			needToLoad: undefined,
+			newPath: [ ]
+			};
+
+		if (this.newFileMenuPath == undefined)
+			{  return result;  }
 
 		if (this.currentFileMenuPath == undefined)
 			{
 			if (this.GetFileMenuSection(1) == undefined)
-				{
-				var htmlEntry = document.createElement("div");
-				htmlEntry.className = "MLoadingNotice";
-				htmlMenu.appendChild(htmlEntry);
-
-				this.LoadFileMenuSection(1);
-				return;
+				{  
+				result.needToLoad = 1;
+				return result;  
 				}
 			else
-				{
-				this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();
-				}
+				{  this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();  }
 			}
 
 		var iterator = this.newFileMenuPath.GetIterator();
-		var newPath = [ ];
 		var navigationType;
 
 
@@ -150,7 +184,7 @@ var NDMenu = new function ()
 			
 			else if (navigationType == `Nav_ParentFolder || navigationType == `Nav_SelectedParentFolder)
 				{
-				newPath.push(iterator.offsetFromParent);
+				result.newPath.push(iterator.offsetFromParent);
 
 				var name;
 
@@ -185,7 +219,7 @@ var NDMenu = new function ()
 					{
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFolder Parent";
-					htmlEntry.setAttribute("href", "javascript:NDMenu.GoToFileOffsets([" + newPath.join(",") + "])");
+					htmlEntry.setAttribute("href", "javascript:NDMenu.GoToFileOffsets([" + result.newPath.join(",") + "])");
 					htmlEntry.innerHTML = name;
 
 					htmlMenu.appendChild(htmlEntry);
@@ -194,13 +228,9 @@ var NDMenu = new function ()
 				}
 
 			else if (navigationType == `Nav_NeedToLoad)
-				{
-				var htmlEntry = document.createElement("div");
-				htmlEntry.className = "MLoadingNotice";
-				htmlMenu.appendChild(htmlEntry);
-
-				this.LoadFileMenuSection(iterator.needToLoad);
-				return;
+				{  
+				result.needToLoad = iterator.needToLoad;  
+				return result;
 				}
 
 			else
@@ -219,14 +249,7 @@ var NDMenu = new function ()
 			selectedFolder = this.GetFileMenuSection(membersID);  
 
 			if (selectedFolder == undefined)
-				{
-				var htmlEntry = document.createElement("div");
-				htmlEntry.className = "MLoadingNotice";
-				htmlMenu.appendChild(htmlEntry);
-
-				this.LoadFileMenuSection(membersID);
-				return;
-				}
+				{  return membersID;  }
 			}
 		
 		var selectedFileIndex = -1;
@@ -279,7 +302,7 @@ var NDMenu = new function ()
 				else
 					{  name = member[`Name];  }
 
-				var targetPath = (newPath.length == 0 ? i : newPath.join(",") + "," + i);
+				var targetPath = (result.newPath.length == 0 ? i : result.newPath.join(",") + "," + i);
 
 				var htmlEntry = document.createElement("a");
 				htmlEntry.className = "MEntry MFolder Child";
@@ -290,8 +313,8 @@ var NDMenu = new function ()
 				}
 			}
 
-		this.currentFileMenuPath.path = newPath;
-		this.newFileMenuPath = undefined;
+		result.completed = true;
+		return result;
 		};
 
 	
@@ -364,8 +387,8 @@ var NDMenu = new function ()
 			}
 
 		if (this.newFileMenuPath != undefined)
-			{  this.Update();  }
-	//		{  setTimeout("NDMenu.Update()", 5000);  }  // xxx delay all loads
+	//		{  this.Update();  }
+			{  setTimeout("NDMenu.Update()", 5000);  }  // xxx delay all loads
 		};
 
 
