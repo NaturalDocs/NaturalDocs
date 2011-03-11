@@ -149,26 +149,62 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return;  }
 
 			fileHierarchy.Sort();
+
+			if (cancelDelegate())
+				{  return;  }
+
 			fileHierarchy.PrepareJSON(this);
 
-			List<FileHierarchyEntries.HTMLRootFolder> otherRootFolders = new List<FileHierarchyEntries.HTMLRootFolder>();
+			if (cancelDelegate())
+				{  return;  }
 
-			StringBuilder json = new StringBuilder();
-			fileHierarchy.AppendJSON(json, otherRootFolders);
+			fileHierarchy.SegmentJSON(JSONMenuSegmentLength);
 
-			System.IO.StreamWriter outputFile = CreateTextFileAndPath(config.Folder + "/menu/files.js");
+			if (cancelDelegate())
+				{  return;  }
 
-			try
+			Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders = new Stack<FileHierarchyEntries.HTMLRootFolder>();
+			rootFolders.Push( (FileHierarchyEntries.HTMLRootFolder)fileHierarchy.RootFolder );
+
+			while (rootFolders.Count > 0)
 				{
-				outputFile.Write("NDMenu.FileMenuSectionLoaded(1,");
-				outputFile.Write(json.ToString());
-				outputFile.Write(");");
-				}
-			finally
-				{
-				outputFile.Dispose();
+				StringBuilder json = new StringBuilder();
+
+				FileHierarchyEntries.HTMLRootFolder rootFolder = rootFolders.Pop();
+				rootFolder.AppendJSON(json, rootFolders);
+
+				System.IO.StreamWriter outputFile = CreateTextFileAndPath(config.Folder + "/menu/files" + 
+																															(rootFolder.ID == 1 ? "" : rootFolder.ID.ToString()) + ".js");
+
+				try
+					{
+					outputFile.Write("NDMenu.FileMenuSectionLoaded(");
+					outputFile.Write(rootFolder.ID);
+					outputFile.Write(',');
+					outputFile.Write(json.ToString());
+					outputFile.Write(");");
+					}
+				finally
+					{
+					outputFile.Dispose();
+					}
 				}
 			}
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* const: JSONMenuSegmentLength
+		 * The amount of data to try to fit in each JSON file before splitting it off into another one.  This will be
+		 * artificially low in debug builds to better test the loading mechanism.
+		 */
+		#if DEBUG
+			protected const int JSONMenuSegmentLength = 1024*3;
+		#else
+			protected const int JSONMenuSegmentLength = 1024*32;
+		#endif
 
 		}
 

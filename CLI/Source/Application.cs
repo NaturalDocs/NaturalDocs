@@ -230,7 +230,7 @@ namespace GregValure.NaturalDocs.CLI
 				}
 				
 			System.Console.WriteLine("= Entire program time: " + ((DateTime.Now.Ticks - startProgram)/10000)); // xxx
-			System.Console.ReadKey(true); //xxx 
+			//System.Console.ReadKey(true); //xxx 
 			}
 			
 			

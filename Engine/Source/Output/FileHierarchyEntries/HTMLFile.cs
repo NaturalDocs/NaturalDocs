@@ -60,7 +60,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			json = output.ToString();
 			}
 
-		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
 			{
 			#if DONT_SHRINK_FILES
 				HTMLFileHierarchy.AppendJSONIndent(this, output);

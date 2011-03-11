@@ -48,61 +48,83 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output, List<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
 			{
 			#if DONT_SHRINK_FILES
 				HTMLFileHierarchy.AppendJSONIndent(this, output);
 			#endif
 
+			// Sanity check
+			if (MergeWithRoot && IsDynamicFolder)
+				{  throw new Exception("File source can't merge with root and be dynamic.");  }
+
 			output.Append('[');
 			
-			if (!MergeWithRoot)
-				{  
-				output.Append((int)Builders.HTML.FileHierarchyEntryType.InlineFolder);  
-				output.Append(',');
-				output.Append(jsonName);
-				}
-			else
+			if (MergeWithRoot)
 				{  
 				output.Append((int)Builders.HTML.FileHierarchyEntryType.RootFolder);
 				output.Append(',');
 				output.Append( (Parent as FileHierarchyEntries.RootFolder).ID );
 				}
+			else
+				{  
+				if (IsDynamicFolder)
+					{  output.Append((int)Builders.HTML.FileHierarchyEntryType.DynamicFolder);  }
+				else
+					{  output.Append((int)Builders.HTML.FileHierarchyEntryType.InlineFolder);  }
+
+				output.Append(',');
+				output.Append(jsonName);
+				}
 
 			output.Append(',');
 			output.Append(jsonPath);
-			output.Append(",[");
+			output.Append(',');
 
-			#if DONT_SHRINK_FILES
-				output.AppendLine();
-			#endif
-
-			for (int i = 0; i < Members.Count; i++)
+			if (IsDynamicFolder)
+				{  
+				output.Append(DynamicMembersID);  
+				rootFolders.Push((HTMLRootFolder)Members[0]);
+				}
+			else // Inline or root
 				{
-				if (i > 0)
-					{
-					output.Append(',');
+				output.Append('[');
 
-					#if DONT_SHRINK_FILES
-						output.AppendLine();
-					#endif
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+				#endif
+
+				for (int i = 0; i < Members.Count; i++)
+					{
+					if (i > 0)
+						{
+						output.Append(',');
+
+						#if DONT_SHRINK_FILES
+							output.AppendLine();
+						#endif
+						}
+
+					(Members[i] as IHTMLEntry).AppendJSON(output, rootFolders);
 					}
 
-				(Members[i] as IHTMLEntry).AppendJSON(output, rootFolders);
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+					HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+				#endif
+
+				output.Append(']');
 				}
-
-			#if DONT_SHRINK_FILES
-				output.AppendLine();
-				HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
-			#endif
-
-			output.Append("]]");
+				
+			output.Append(']');
 
 			#if DONT_SHRINK_FILES
 				if (MergeWithRoot)
 					{  output.AppendLine();  }
 			#endif
 			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -135,6 +157,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 					}
 				}
 			}
+
 
 
 		// Group: Variables

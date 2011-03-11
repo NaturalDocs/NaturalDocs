@@ -62,7 +62,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output, List<HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<HTMLRootFolder> rootFolders)
 			{
 			if (!MergeWithFileSource)
 				{
@@ -157,6 +157,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 					}
 				}
 			}
+
 
 
 		// Group: Variables

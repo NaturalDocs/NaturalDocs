@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SQLITE_UTF8 xDONT_SHRINK_FILES</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SQLITE_UTF8 DONT_SHRINK_FILES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>

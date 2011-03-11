@@ -91,7 +91,7 @@ var NDMenu = new function ()
 			{  return;  }
 
 		var htmlMenu = document.createElement("div");
-		htmlMenu.id = "NDMenuContent";
+		htmlMenu.id = "MContent";
 
 		var result = this.BuildEntries(htmlMenu);
 
@@ -107,7 +107,7 @@ var NDMenu = new function ()
 			htmlMenu.appendChild(htmlEntry);
 			}
 
-		var oldMenuContent = document.getElementById("NDMenuContent");
+		var oldMenuContent = document.getElementById("MContent");
 		oldMenuContent.parentNode.replaceChild(htmlMenu, oldMenuContent);
 
 		if (result.needToLoad != undefined)
@@ -249,7 +249,10 @@ var NDMenu = new function ()
 			selectedFolder = this.GetFileMenuSection(membersID);  
 
 			if (selectedFolder == undefined)
-				{  return membersID;  }
+				{  
+				result.needToLoad = membersID;
+				return result;
+				}
 			}
 		
 		var selectedFileIndex = -1;
@@ -387,8 +390,8 @@ var NDMenu = new function ()
 			}
 
 		if (this.newFileMenuPath != undefined)
-	//		{  this.Update();  }
-			{  setTimeout("NDMenu.Update()", 5000);  }  // xxx delay all loads
+//			{  this.Update();  }
+			{  setTimeout("NDMenu.Update()", 1500);  }  // xxx delay all loads
 		};
 
 

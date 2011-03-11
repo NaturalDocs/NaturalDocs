@@ -62,6 +62,10 @@ namespace GregValure.NaturalDocs.Engine.Output
 		public FileHierarchy ()
 			{
 			rootFolder = MakeRootFolderEntry();
+			rootFolderIDs = new IDObjects.NumberSet();
+
+			rootFolder.ID = 1;
+			rootFolderIDs.Add(1);
 			}
 
 
@@ -298,11 +302,33 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+		/* Property: RootFolder
+		 * The root folder at the base of the hierarchy.
+		 */
+		public FileHierarchyEntries.RootFolder RootFolder
+			{
+			get
+				{  return rootFolder;  }
+			}
+
+		/* Property: RootFolderIDs
+		 * A number set of all the used root folder IDs.
+		 */
+		public IDObjects.NumberSet RootFolderIDs
+			{
+			get
+				{  return rootFolderIDs;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 		protected FileHierarchyEntries.RootFolder rootFolder;
+		protected IDObjects.NumberSet rootFolderIDs;
 
 		}
 	}

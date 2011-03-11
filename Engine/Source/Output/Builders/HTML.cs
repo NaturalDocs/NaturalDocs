@@ -857,7 +857,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				"</div>" +
 
 				"<div id=\"NDMenu\">" +
-					"<div id=\"NDMenuContent\">" +
+					"<div id=\"MContent\">" +
 					"</div>" +
 				"</div>" +
 

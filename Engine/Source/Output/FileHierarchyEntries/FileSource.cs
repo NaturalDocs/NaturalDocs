@@ -52,6 +52,41 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				{  pathFragment = value;  }
 			}
 
+		/* Property: IsDynamicFolder
+		 * Whether this folder dynamically loads its members as opposed to storing them inline.  The folder will
+		 * be dynamic if it only contains a single entry and it's a <RootFolder>.
+		 */
+		public bool IsDynamicFolder
+			{
+			get
+				{  
+				return (Members.Count == 1 && Members[0] is RootFolder);
+				}
+			}
+
+		/* Property: IsInlineFolder
+		 * Whether this folder stores its members inline as opposed to loading them dynamically.
+		 */
+		public bool IsInlineFolder
+			{
+			get
+				{  return !IsDynamicFolder;  }
+			}
+
+		/* Property: DynamicMembersID
+		 * If <IsDynamicFolder> is true, the ID number that should be used in place of the members.
+		 */
+		public int DynamicMembersID
+			{
+			get
+				{  
+				if (IsDynamicFolder)
+					{  return (Members[0] as RootFolder).ID;  }
+				else
+					{  return 0;  }
+				}
+			}
+
 		/* Property: SortString
 		 * Returns the string that should be used to sort this entry in a list.
 		 */
