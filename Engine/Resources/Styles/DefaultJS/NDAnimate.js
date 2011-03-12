@@ -80,23 +80,34 @@ var NDAnimate = new function ()
 	*/
 	this.Start = function (state)
 		{
-		var animationIndex = -1;
-
-		for (var i = 0; i < this.animations.length; i++)
+		if (this.enabled)
 			{
-			if (this.animations[i] === undefined)
+			var animationIndex = -1;
+
+			for (var i = 0; i < this.animations.length; i++)
 				{
-				animationIndex = i;
-				break;
+				if (this.animations[i] === undefined)
+					{
+					animationIndex = i;
+					break;
+					}
 				}
+
+			if (animationIndex == -1)
+				{  this.animations.push(state);  }
+			else
+				{  this.animations[animationIndex] = state;  }
+
+			this.SetTimeout();
 			}
 
-		if (animationIndex == -1)
-			{  this.animations.push(state);  }
-		else
-			{  this.animations[animationIndex] = state;  }
-
-		 this.SetTimeout();
+		else // animations disabled
+			{
+			if (state.countDown)
+				{  state.progressFunction(0);  }
+			else
+				{  state.progressFunction(1);  }
+			}
 		};
 
 
