@@ -132,6 +132,7 @@ a:hover, a:active {
 	background-color: #FFFFFF;
 	position: fixed;
 	z-index: 1;
+	overflow: auto;
 	}
 
 

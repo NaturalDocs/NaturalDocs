@@ -96,6 +96,19 @@ var NDPageFrame = new function ()
 
 		document.getElementById("NDContent").innerHTML += "<br>Hash Change: [" + hash + "]";
 		document.title = hash;
+
+		if (this.fadexxx !== true)
+			{			
+			NDAnimate.FadeIn(document.getElementById("HTitle"), 1000);
+			NDAnimate.FadeOut(document.getElementById("HSubTitle"), 1000);
+			this.fadexxx = true;
+			}
+		else
+			{			
+			NDAnimate.FadeOut(document.getElementById("HTitle"), 1000);
+			NDAnimate.FadeIn(document.getElementById("HSubTitle"), 1000);
+			this.fadexxx = false;
+			}
 		};
 
 

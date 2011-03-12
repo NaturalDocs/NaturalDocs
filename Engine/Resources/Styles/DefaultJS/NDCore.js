@@ -13,12 +13,12 @@
 
 
 /* Class: NDCore
-	 _____________________________________________________________________________
+	_____________________________________________________________________________
 
     Various helper functions to be used throughout the other scripts.
 */
-var NDCore = { };
-
+var NDCore = new function ()
+	{
 
 
 	// Group: Class Functions
@@ -28,7 +28,7 @@ var NDCore = { };
 	/* Function: AddClass
 		Adds a class to the passed HTML element.
 	*/
-	NDCore.AddClass = function (element, newClassName)
+	this.AddClass = function (element, newClassName)
 		{
 		var index = element.className.indexOf(newClassName);
 
@@ -50,7 +50,7 @@ var NDCore = { };
 	/* Function: RemoveClass
 		Removes a class from the passed HTML element.
 	*/
-	NDCore.RemoveClass = function (element, targetClassName)
+	this.RemoveClass = function (element, targetClassName)
 		{
 		var index = element.className.indexOf(targetClassName);
 
@@ -82,12 +82,12 @@ var NDCore = { };
 		like Natural Docs 1.x did because it's not generally good practice and none of the other browsers should be broken 
 		enough to need it anymore.
 	*/
-	NDCore.AddBrowserClassesToBody = function ()
+	this.AddBrowserClassesToBody = function ()
 		{
-		if (navigator.userAgent.indexOf("MSIE 6") != -1)
-			{  this.AddClass(document.body, "IE6");  }
-		else if (navigator.userAgent.indexOf("MSIE 7") != -1)
-			{  this.AddClass(document.body, "IE7");  }
+		var ieVersion = this.IEVersion();
+
+		if (ieVersion == 6 || ieVersion == 7)  // 7 covers IE8 in IE7 compatibility mode
+			{  this.AddClass(document.body, "IE" + ieVersion);  }
 		};
 
 
@@ -99,7 +99,7 @@ var NDCore = { };
 	/* Function: WindowClientWidth
 		 A browser-agnostic way to get the window's client width.
 	*/
-	NDCore.WindowClientWidth = function ()
+	this.WindowClientWidth = function ()
 		{
 		var width = window.innerWidth;
 
@@ -114,7 +114,7 @@ var NDCore = { };
 	/* Function: WindowClientHeight
 		 A browser-agnostic way to get the window's client height.
 	*/
-	NDCore.WindowClientHeight = function ()
+	this.WindowClientHeight = function ()
 		{
 		var height = window.innerHeight;
 
@@ -132,7 +132,7 @@ var NDCore = { };
 		will match what you passed regardless of any borders or padding.  If any of the coordinates are undefined it will be
 		left alone.
 	*/
-	NDCore.SetToAbsolutePosition = function (element, x, y, width, height)
+	this.SetToAbsolutePosition = function (element, x, y, width, height)
 		{
 		var pxRegex = /^([0-9]+)px$/i;
 
@@ -198,7 +198,7 @@ var NDCore = { };
 		Returns whether the two passed hashes are functionally the same.  The difference between this 
 		and a straight string comparison is that "#", "", and undefined are equal.
 	*/
-	NDCore.SameHash = function (hashA, hashB)
+	this.SameHash = function (hashA, hashB)
 		{
 		if (hashA === hashB)
 			{  return true;  }
@@ -210,3 +210,68 @@ var NDCore = { };
 
 		return (hashA === hashB);
 		};
+
+
+	/* Function: IEVersion
+		Returns the major IE version as an integer, or undefined if not using IE.
+	*/
+	this.IEVersion = function ()
+		{
+		var ieIndex = navigator.userAgent.indexOf("MSIE");
+
+		if (ieIndex == -1)
+			{  return undefined;  }
+		else
+			{
+			// parseInt() allows random crap to appear after the numbers.  It will still interpret only the leading digit
+			// characters at that location and return successfully.
+			return parseInt(navigator.userAgent.substr(ieIndex + 5));
+			}
+		};
+
+
+	/* Function: SetOpacity
+		Sets the opacity of the passed element in a browser-independent way.  Opacity is a float that ranges from
+		0 for completely transparent to 1 for completely opaque.
+	*/
+	this.SetOpacity = function (targetElement, opacity) 
+		{ 
+		var ieVersion = NDCore.IEVersion();
+
+		if (ieVersion === undefined || ieVersion >= 9)
+			{
+			targetElement.style.opacity = opacity;
+			}
+		else if (ieVersion == 8)
+			{
+			targetElement.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + Math.ceil(opacity * 100) + ")";
+			}
+		else  // (ieVersion <= 7)  This covers IE8 running in IE7 compatibility mode
+			{
+			if (ieVersion == 6 && opacity == 1)
+				{
+				// When the opacity filter is set on IE6 and ClearType is on, it renders text against a black background
+				// giving it annoying fringes.  When the animation is done, remove the filter to make it render properly
+				// again.  It's still distracting during the animation but the end result looks decent at least.
+
+				targetElement.style.filter = undefined;
+
+				// We don't do this for IE 7 and 8 because they instead render the text without ClearType on.  That kind of
+				// sucks, especially since they render large fonts with non-ClearType anti-aliasing so they should be
+				// capable of doing it.  Anyway, the lack of fringing means you get a smooth animation and end point, and
+				// it's turning ClearType back on at the end that makes it distracting.  Since we care about IE8 we'll sacrifice
+				// ideal text clarity for not having a broken-looking jump at the end of the animation.  IE9 doesn't have any
+				// of these issues.
+				}
+			else
+				{
+				// Forces hasLayout, which allows this to work.
+				// http://www.satzansatz.de/cssd/onhavinglayout.html
+				targetElement.style.zoom = 1;
+
+				targetElement.style.filter = "alpha(opacity=" + Math.ceil(opacity * 100) + ")";
+				}
+			}
+		};
+
+	};
