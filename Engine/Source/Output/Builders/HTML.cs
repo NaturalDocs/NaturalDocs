@@ -51,6 +51,10 @@
  *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
  *		to completion this should be an empty set.
  * 
+ *		> [NumberSet: File Hierarchy Root Folder IDs]
+ *		
+ *		The IDs used building the file menu.  This allows us to clean up old JSON data files if we're using less than before.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -139,6 +143,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			config = configEntry;
 			styles = null;
+			fileHierarchyRootFolderIDs = null;
 			}
 
 
@@ -179,7 +184,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			buildFlags = BuildFlags.IndexFile | BuildFlags.MainStyleFiles;
 			// FileHierarchy only gets rebuilt if changes are detected in sourceFilesWithContent.
-			buildFlags |= BuildFlags.FileHierarchy;  //xxx for testing
 
 
 			// Load Config.nd
@@ -208,13 +212,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
 																										 out sourceFilesToRebuild, out sourceFilesWithContent, 
-																										 out foldersToCheckForDeletion);
+																										 out foldersToCheckForDeletion, out fileHierarchyRootFolderIDs);
 				}
 			else
 				{
 				sourceFilesToRebuild = new IDObjects.NumberSet();
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
+				fileHierarchyRootFolderIDs = new IDObjects.NumberSet();
 				}
 
 			if (!hasBinaryBuildStateFile)
@@ -236,7 +241,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			bool saidPurgingOutputFiles = false;
 
-			if (!hasBinaryConfigFile)
+			if (!hasBinaryConfigFile || !hasBinaryBuildStateFile)
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
@@ -323,7 +328,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Compare to the previous list of FileSources.
 
-			if (!hasBinaryConfigFile)
+			if (!hasBinaryConfigFile || !hasBinaryBuildStateFile)
 				{
 				// If the binary file doesn't exist, we have to purge every folder because some of them may have changed or are no
 				// longer in use and we won't know which.
@@ -423,6 +428,32 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (hasAdditions && hasDeletions)
 					{  Engine.Instance.Config.RebuildAllOutput = true;  }
+				}
+
+
+			// If the binary file doesn't exist, we have to purge all the menu files
+
+			if (!hasBinaryBuildStateFile)
+				{
+
+				if (System.IO.Directory.Exists(RootMenuFolder))
+					{  
+					if (!saidPurgingOutputFiles)
+						{
+						Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+						saidPurgingOutputFiles = true;
+						}
+
+					try
+						{  System.IO.Directory.Delete(RootMenuFolder, true);  }
+					catch (Exception e)
+						{
+						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+							{  throw;  }
+						}
+					}
+
+				buildFlags |= BuildFlags.FileHierarchy;
 				}
 
 
@@ -542,7 +573,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			try
 				{
 				SaveBinaryBuildStateFile( config.OutputWorkingDataFolder + "/BuildState.nd", sourceFilesToRebuild, sourceFilesWithContent,
-															  foldersToCheckForDeletion );
+																  foldersToCheckForDeletion, fileHierarchyRootFolderIDs );
 				}
 			catch 
 				{  }
@@ -1088,11 +1119,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * return objects, they will just be empty.  
 		 */
 		public static bool LoadBinaryBuildStateFile (Path filename, out IDObjects.NumberSet fileIDsToBuild, 
-																					 out IDObjects.NumberSet fileIDsWithContent, out StringSet foldersToCheckForDeletion)
+																					 out IDObjects.NumberSet fileIDsWithContent, out StringSet foldersToCheckForDeletion,
+																					 out IDObjects.NumberSet fileHierarchyRootFolderIDs)
 			{
 			fileIDsToBuild = null;
 			fileIDsWithContent = null;
 			foldersToCheckForDeletion = null;
+			fileHierarchyRootFolderIDs = null;
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -1106,10 +1139,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [StringSet: Folders to Check for Deletion]
+					// [NumberSet: File Hierarchy Root Folder IDs]
 
 					fileIDsToBuild = new IDObjects.NumberSet(binaryFile);
 					fileIDsWithContent = new IDObjects.NumberSet(binaryFile);
 					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
+					fileHierarchyRootFolderIDs = new IDObjects.NumberSet(binaryFile);
 					}
 				}
 			catch
@@ -1133,6 +1168,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false);  }
 				else
 					{  foldersToCheckForDeletion.Clear();  }
+
+				if (fileHierarchyRootFolderIDs == null)
+					{  fileHierarchyRootFolderIDs = new IDObjects.NumberSet();  }
+				else
+					{  fileHierarchyRootFolderIDs.Clear();  }
 				}
 
 			return result;
@@ -1143,7 +1183,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Saves the passed information in <BuildState.nd>.
 		 */
 		public static void SaveBinaryBuildStateFile (Path filename, IDObjects.NumberSet fileIDsToBuild, 
-																					 IDObjects.NumberSet fileIDsWithContent, StringSet foldersToCheckForDeletion)
+																							IDObjects.NumberSet fileIDsWithContent, StringSet foldersToCheckForDeletion,
+																							IDObjects.NumberSet fileHierarchyRootFolderIDs)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -1152,10 +1193,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [StringSet: Folders to Check for Deletion]
+				// [NumberSet: File Hierarchy Root Folder IDs]
 
 				binaryFile.WriteObject(fileIDsToBuild);
 				binaryFile.WriteObject(fileIDsWithContent);
 				binaryFile.WriteObject(foldersToCheckForDeletion);
+				binaryFile.WriteObject(fileHierarchyRootFolderIDs);
 				}
 			}
 
@@ -1238,6 +1281,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * A list of <Styles.HTMLStyles> that apply to this builder in the order in which they should be loaded.
 		 */
 		protected List<Styles.HTMLStyle> styles;
+
+		/* var: fileHierarchyRootFolderIDs
+		 * The IDs used by the <FileHierarchy>.
+		 */
+		protected IDObjects.NumberSet fileHierarchyRootFolderIDs;
 
 
 

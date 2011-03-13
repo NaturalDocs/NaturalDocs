@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * 
- * File: FileHierarchy.json
+ * File: files.js
  * 
  *		A data file representing all or part of the source file hierarchy.  The hierarchy is represented by entries, each one 
  *		being an array with the first value being its type.  The values are defined in <FileHierarchyEntryType>, and the 
@@ -122,7 +122,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: BuildFileHierarchy
-		 * Generates <FileHierarchy.json> from <sourceFilesWithContent>.
+		 * Generates <files.js> from <sourceFilesWithContent>.
 		 */
 		protected void BuildFileHierarchy (CancelDelegate cancelDelegate)
 			{
@@ -173,8 +173,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				FileHierarchyEntries.HTMLRootFolder rootFolder = rootFolders.Pop();
 				rootFolder.AppendJSON(json, rootFolders);
 
-				System.IO.StreamWriter outputFile = CreateTextFileAndPath(config.Folder + "/menu/files" + 
-																															(rootFolder.ID == 1 ? "" : rootFolder.ID.ToString()) + ".js");
+				System.IO.StreamWriter outputFile = CreateTextFileAndPath(FileMenuFile(rootFolder.ID));
 
 				try
 					{
@@ -189,7 +188,50 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					outputFile.Dispose();
 					}
 				}
+
+
+			// Clear out any old menu files that are no longer in use.
+
+			foreach (int oldID in fileHierarchyRootFolderIDs)
+				{
+				if (fileHierarchy.RootFolderIDs.Contains(oldID) == false)
+					{
+					try
+						{  System.IO.File.Delete(FileMenuFile(oldID));  }
+					catch (Exception e)
+						{
+						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+							{  throw;  }
+						}
+					}
+				}
+
+			fileHierarchyRootFolderIDs.Duplicate(fileHierarchy.RootFolderIDs);
 			}
+
+
+
+		// Group: Path Functions
+		// __________________________________________________________________________
+
+
+		/* Property: RootMenuFolder
+		 * The folder that holds all the menu files.
+		 */
+		protected Path RootMenuFolder
+			{
+			get
+				{  return config.Folder + "/menu";  }
+			}
+
+		/* Function: FileMenuFile
+		 * Returns the path of the file menu file with the passed ID number.
+		 */
+		protected Path FileMenuFile (int id)
+			{
+			return config.Folder + "/menu/files" + (id == 1 ? "" : id.ToString()) + ".js";
+			}
+
 
 
 		// Group: Constants
