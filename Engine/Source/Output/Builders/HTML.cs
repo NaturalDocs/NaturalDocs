@@ -844,6 +844,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			content.Append(
 
+				"<div id=\"NDMessages\">" +
+					"<a href=\"javascript:NDPageFrame.CloseMessages()\" id=\"MsgCloseButton\">" +
+						TextConverter.TextToHTML( Locale.Get("NaturalDocs.Engine", "HTML.Close") ) +
+					"</a>" +
+					"<div id=\"MsgContent\"></div>" +
+				"</div>" +
+
 				"<div id=\"NDHeader\">" +
 					"<div id=\"HTitle\">" +
 					

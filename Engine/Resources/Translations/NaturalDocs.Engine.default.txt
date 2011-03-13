@@ -28,6 +28,7 @@ HTML.DefaultPageTitle: Source Documentation
 HTML.DefaultHeaderTitle: Source Documentation
 
 HTML.RootFolderName: Files
+HTML.Close: Close
 
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan

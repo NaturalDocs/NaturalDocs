@@ -38,6 +38,7 @@ var NDPageFrame = new function ()
 			document.getElementById("NDFooter").style.position = "absolute";
 			document.getElementById("NDMenu").style.position = "absolute";
 			document.getElementById("NDContent").style.position = "absolute";
+			document.getElementById("NDMessages").style.position = "absolute";
 			}
 
 		this.OnResize();
@@ -61,6 +62,7 @@ var NDPageFrame = new function ()
 		var footer = document.getElementById("NDFooter");
 		var menu = document.getElementById("NDMenu");
 		var content = document.getElementById("NDContent");
+		var messages = document.getElementById("NDMessages");
 
 		NDCore.SetToAbsolutePosition(header, 0, 0, width, undefined);
 		NDCore.SetToAbsolutePosition(footer, 0, undefined, width, undefined);
@@ -76,6 +78,8 @@ var NDPageFrame = new function ()
 		NDCore.SetToAbsolutePosition(menu, 0, headerHeight, menuWidth, height - headerHeight - footerHeight);
 		NDCore.SetToAbsolutePosition(content, menuWidth, headerHeight, width - menuWidth, height - headerHeight - footerHeight);
 
+		NDCore.SetToAbsolutePosition(messages, menuWidth, 0, width - menuWidth, undefined);
+
 		content.innerHTML = 
 			"Page Width: " + width + "<br>" +
 			"header Width (style): " + header.style.width + "<br>" +
@@ -83,6 +87,32 @@ var NDPageFrame = new function ()
 			"header Width (clientWidth): " + header.clientWidth + "<br>" +
 			"header Width (scrollWidth): " + header.scrollWidth + "<br>";
 
+		};
+
+
+	/* Function: Message
+		Posts a message on the screen.
+	*/
+	this.Message = function (message)
+		{
+		var htmlEntry = document.createElement("div");
+		htmlEntry.className = "MsgMessage";
+
+		var htmlMessage = document.createTextNode(message);
+		htmlEntry.appendChild(htmlMessage);
+
+		document.getElementById("MsgContent").appendChild(htmlEntry);
+		document.getElementById("NDMessages").style.display = "block";
+		this.OnResize();
+		};
+
+	
+	/* Function: CloseMessages
+	*/
+	this.CloseMessages = function ()
+		{
+		document.getElementById("MsgContent").innerHTML = "";
+		document.getElementById("NDMessages").style.display = "none";
 		};
 
 
@@ -94,21 +124,8 @@ var NDPageFrame = new function ()
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
 
-		document.getElementById("NDContent").innerHTML += "<br>Hash Change: [" + hash + "]";
+		this.Message("Hash Change: [" + hash + "]");
 		document.title = hash;
-
-		if (this.fadexxx !== true)
-			{			
-			NDAnimate.FadeIn(document.getElementById("HTitle"), 1000);
-			NDAnimate.FadeOut(document.getElementById("HSubTitle"), 1000);
-			this.fadexxx = true;
-			}
-		else
-			{			
-			NDAnimate.FadeOut(document.getElementById("HTitle"), 1000);
-			NDAnimate.FadeIn(document.getElementById("HSubTitle"), 1000);
-			this.fadexxx = false;
-			}
 		};
 
 
@@ -124,7 +141,8 @@ var NDPageFrame = new function ()
 		// though the event isn't supported, so also test document.documentMode.
 		if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7))
 			{
-			window.onhashchange = this.OnHashChange;
+			// If we don't do it this way the "this" parameter doesn't get set.
+			window.onhashchange = function () {  NDPageFrame.OnHashChange();  };
 			}
 
 		// If browser doesn't support onhashchange...

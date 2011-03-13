@@ -9,6 +9,19 @@ _______________________________________________________________________________
 
 	<body NDPage NDIndexPage [browser classes]>
 
+		<#NDMessages>
+
+			<#MsgCloseButton></#MsgCloseButton>
+
+			<#MsgContent>
+				<MsgMessage Debug?>
+					message
+				</MsgMessage>
+				...
+			</#MsgContent>
+
+		</#NDMessages>
+
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
 			<#HSubTitle>...</#HSubTitle>
@@ -44,7 +57,7 @@ _______________________________________________________________________________
 (start text)
 
 	<#NDMenu>
-		<#NDMenuContent>
+		<#MContent>
 
 			<MFolder MEntry Parent Root Selected?>
 				Name
@@ -65,7 +78,7 @@ _______________________________________________________________________________
 			<MLoadingNotice>
 			</MLoadingNotice>
 
-		</#NDMenuContent>
+		</#MContent>
 	</#NDMenu>
 
 (end)
