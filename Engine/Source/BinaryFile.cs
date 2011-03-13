@@ -93,9 +93,12 @@ namespace GregValure.NaturalDocs.Engine
 				{  
 				fileStream = new FileStream(newFileName, FileMode.Open);
 				}
-			catch
+			catch (Exception e)
 				{
-				return false;
+				if (e is FileNotFoundException || e is DirectoryNotFoundException)
+					{  return false;  }
+				else
+					{  throw;  }
 				}
 				
 			fileName = newFileName;

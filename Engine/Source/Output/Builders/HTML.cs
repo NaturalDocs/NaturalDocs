@@ -249,7 +249,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						saidPurgingOutputFiles = true;
 						}
 
-					System.IO.Directory.Delete(RootStyleFolder, true);  
+					try
+						{  System.IO.Directory.Delete(RootStyleFolder, true);  }
+					catch (Exception e)
+						{
+						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+							{  throw;  }
+						}
 					}
 
 				Engine.Instance.Output.ReparseStyleFiles = true;
