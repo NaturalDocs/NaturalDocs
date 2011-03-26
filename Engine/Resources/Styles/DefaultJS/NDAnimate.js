@@ -50,7 +50,7 @@ var NDAnimate = new function ()
 
 		state.targetElement = element;
 		state.duration = duration;
-		state.progressFunction = function (progress) { NDCore.SetOpacity(element, progress); };
+		state.progressFunction = function (progress) { NDAnimate.SetOpacity(element, progress); };
 
 		this.Start(state);
 		};
@@ -64,7 +64,7 @@ var NDAnimate = new function ()
 		state.targetElement = element;
 		state.duration = duration;
 		state.countDown = true;
-		state.progressFunction = function (progress) { NDCore.SetOpacity(element, progress); };
+		state.progressFunction = function (progress) { NDAnimate.SetOpacity(element, progress); };
 
 		this.Start(state);
 		};
@@ -180,7 +180,52 @@ var NDAnimate = new function ()
 		};
 
 
+	/* Function: SetOpacity
+		Sets the opacity of the passed element in a browser-independent way.  Opacity is a float that ranges from
+		0 for completely transparent to 1 for completely opaque.
+	*/
+	this.SetOpacity = function (targetElement, opacity) 
+		{ 
+		var ieVersion = NDCore.IEVersion();
 
+		if (ieVersion === undefined || ieVersion >= 9)
+			{
+			targetElement.style.opacity = opacity;
+			}
+		else if (ieVersion == 8)
+			{
+			targetElement.style.filter = "progid:DXImageTransform.Microsoft.Alpha(Opacity=" + Math.ceil(opacity * 100) + ")";
+			}
+		else  // (ieVersion <= 7)  This covers IE8 running in IE7 compatibility mode
+			{
+			if (ieVersion == 6 && opacity == 1)
+				{
+				// When the opacity filter is set on IE6 and ClearType is on, it renders text against a black background
+				// giving it annoying fringes.  When the animation is done, remove the filter to make it render properly
+				// again.  It's still distracting during the animation but the end result looks decent at least.
+
+				targetElement.style.filter = undefined;
+
+				// We don't do this for IE 7 and 8 because they instead render the text without ClearType on.  That kind of
+				// sucks, especially since they render large fonts with non-ClearType anti-aliasing so they should be
+				// capable of doing it.  Anyway, the lack of fringing means you get a smooth animation and end point, and
+				// it's turning ClearType back on at the end that makes it distracting.  Since we care about IE8 we'll sacrifice
+				// ideal text clarity for not having a broken-looking jump at the end of the animation.  IE9 doesn't have any
+				// of these issues.
+				}
+			else
+				{
+				// Forces hasLayout, which allows this to work.
+				// http://www.satzansatz.de/cssd/onhavinglayout.html
+				targetElement.style.zoom = 1;
+
+				targetElement.style.filter = "alpha(opacity=" + Math.ceil(opacity * 100) + ")";
+				}
+			}
+		};
+
+
+	
 	// Group: Variables
 	// ________________________________________________________________________
 
