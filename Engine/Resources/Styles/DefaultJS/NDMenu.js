@@ -27,6 +27,7 @@
 		`Name = 1
 		`Path = 2
 		`Members = 3
+
 */
 
 
@@ -63,11 +64,11 @@ var NDMenu = new function ()
 	*/
 	this.Start = function ()
 		{
-		this.currentFileMenuPath = undefined;
-		this.newFileMenuPath = new NDMenu_FileMenuPath_ByOffset();
+		this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();
+		this.newFileMenuPath = undefined;
 		this.fileMenuSections = [ ];
 
-		this.Update();
+		this.Update(true);
 		};
 
 
@@ -83,11 +84,11 @@ var NDMenu = new function ()
 
 
 	/* Function: Update
-		Generates the HTML for the menu.
+		Generates the HTML for the menu.  If force is true, forces an update even if <newFileMenuPath> isn't set.
 	*/
-	this.Update = function ()
+	this.Update = function (force)
 		{
-		if (this.newFileMenuPath == undefined)
+		if (this.newFileMenuPath == undefined && force == false)
 			{  return;  }
 
 		var htmlMenu = document.createElement("div");
@@ -95,8 +96,7 @@ var NDMenu = new function ()
 
 		var result = this.BuildEntries(htmlMenu);
 
-		if (this.currentFileMenuPath != undefined && result.newPath != undefined)
-			{  this.currentFileMenuPath.path = result.newPath;  }
+		this.currentFileMenuPath.path = result.newPath;
 
 		if (result.completed)
 			{  this.newFileMenuPath = undefined;  }
@@ -116,8 +116,8 @@ var NDMenu = new function ()
 
 	
 	/* Function: BuildEntries
-		Generates the HTML menu entries and appends them to the passed element.  Returns an object with the
-		following members:
+		Generates the HTML menu entries and appends them to the passed element.  Works from <newFileMenuPath> if
+		defined, otherwise <currentFileMenuPath>.  Returns an object with the following members:
 
 		completed - Bool.  Whether it was able to build the complete path in <newFileMenuPath> as opposed to just
 						  part.
@@ -133,21 +133,8 @@ var NDMenu = new function ()
 			newPath: [ ]
 			};
 
-		if (this.newFileMenuPath == undefined)
-			{  return result;  }
-
-		if (this.currentFileMenuPath == undefined)
-			{
-			if (this.GetFileMenuSection(1) == undefined)
-				{  
-				result.needToLoad = 1;
-				return result;  
-				}
-			else
-				{  this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();  }
-			}
-
-		var iterator = this.newFileMenuPath.GetIterator();
+		var iterator = (this.newFileMenuPath != undefined ? this.newFileMenuPath.GetIterator() 
+																				: this.currentFileMenuPath.GetIterator());
 		var navigationType;
 
 
@@ -336,7 +323,10 @@ var NDMenu = new function ()
 			if (this.fileMenuSections[i].ID == id)
 				{
 				if (this.fileMenuSections[i].Ready == true)
-					{  return this.fileMenuSections[i].RootFolder;  }
+					{  
+					this.fileMenuSections[i].WasAccessed = true;
+					return this.fileMenuSections[i].RootFolder;  
+					}
 				else
 					{  return undefined;  }
 				}
@@ -364,18 +354,21 @@ var NDMenu = new function ()
 		this.fileMenuSections.push({
 			ID: id,
 			RootFolder: undefined,
-			Ready: false
+			Ready: false,
+			WasAccessed: false
 			});
 
 		var script = document.createElement("script");
 		script.src = "menu/files" + (id == 1 ? "" : id) + ".js";
 		script.type = "text/javascript";
+		script.id = "NDFileMenuLoader" + id;
 
 		document.getElementsByTagName("head")[0].appendChild(script);
 		};
 
 
 	/* Function: FileMenuSectionLoaded
+		Called by the menu data file when it has finished loading, passing its contents as a parameter.
 	*/
 	this.FileMenuSectionLoaded = function (id, rootFolder)
 		{
@@ -391,7 +384,7 @@ var NDMenu = new function ()
 
 		if (this.newFileMenuPath != undefined)
 //			{  this.Update();  }
-			{  setTimeout("NDMenu.Update()", 1500);  }  // xxx delay all loads
+			{  setTimeout("NDMenu.Update()", 2000);  }  // xxx delay all loads
 		};
 
 
@@ -444,6 +437,13 @@ var NDMenu = new function ()
 		True if the data has been loaded and is ready to use.  False if the data has been
 		requested but is not ready yet.  If the data has not been requested it simply would
 		not have a MenuSection object for it.
+
+		var: WasAccessed
+		Set to true whenever an iterator accesses this section with <NDMenu.GetFileMenuSection()>.  It does NOT
+		get automatically set to false when the location changes and it's not needed anymore.  Instead you have to
+		set all of them to false, walk all iterators through their paths, and then see if any are still false to determine 
+		if they're no longer in use.  The name "WasAccessed" was chosen instead of "InUse" to hopefully make this 
+		more clear.
 
 */
 
@@ -703,6 +703,9 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 		guaranteed to notice the new addition.
 	*/
 	this.needToLoad = undefined;
+
+	if (this.currentEntry == undefined)
+		{  this.needToLoad = 1;  }
 
 
 
