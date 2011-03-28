@@ -28,6 +28,11 @@
 		`Path = 2
 		`Members = 3
 
+		Constants:
+
+		`MaxFileMenuSections = 3
+			This is the ideal, since it may need to be larger if there are a lot of levels in use.
+			xxx make 10 in full release
 */
 
 
@@ -39,8 +44,8 @@
 		- The displayed navigation path is in <currentFileMenuPath>.  When a file or folder is clicked, it creates a new path
 		  in <newFileMenuPath> and calls <Update()>.  
 		
-		- If all the data needed exists in <fileMenuSections> a new menu is generated, <currentFileMenuPath> will match
-		  <newFileMenuPath>, and <newFileMenuPath> becomes undefined.
+		- If all the data needed exists in <fileMenuSections> a new menu is generated, <newFileMenuPath> replaces 
+		  <currentFileMenuPath>, and <newFileMenuPath> becomes undefined.
 
 		- If some of the data is missing <Update()> displays what it can, requests to load additional menu sections, and returns.
 		  When the data comes back via <FileMenuSectionLoaded()> that function will call <Update()> again if <newFileMenuPath> 
@@ -50,8 +55,47 @@
 		- This system allows the user to click a different file before everything finishes loading.  <newFileMenuPath> will be replaced
 		  and <Update()> called again.  If the previous click's data comes back after the new navigation has been completed, 
 		  <Update()> won't do anything because it cleared <newFileMenuPath()> already.  If the previous click's data comes back
-		  but isn't relevant to the new click which is still loading, <Update()> will see that there's still more work to do and either 
-		  wait or request more data.
+		  but isn't relevant to the new click which is still loading, <Update()> will just rebuild the partial menu with what it has to no
+		  detrimental effect.
+
+	Caching:
+
+		The class stores loaded sections in <fileMenuSections>, hanging on to them until it grows to `MaxFileMenuSections, at which
+		point unused entries may be pruned.  The array may grow larger than `MaxFileMenuSections if required to display everything.
+
+		Which entries are in use is tracked by the <firstUnusedFileMenuSection> index.  This is reset when <Update()> starts,
+		and every call to <GetFileMenuSection()> rearranges the array and advances it so that it serves as a dividing line.  If both
+		<currentFileMenuPath> and <newFileMenuPath> (if defined) are walked start to finish, everything in use will be in indexes 
+		below <firstUnusedFileMenuSection>.
+
+		The array is rearranged so that it gets put in MRU order.  When the array grows too large unused entries can be plucked off the 
+		back end and the least recently used ones will go first.
+
+		There's another trick to it though.  When <GetFileMenuSection()> returns an entry that was past <firstUnusedFileMenuSection>,
+		it doesn't move it to the head of the array, it moves it to the back of the used list.  Why?  Because the paths are walked from
+		root to leaf, meaning if you had path A > B > C > D and you just moved entries to the head, they would end up in the cache in 
+		this order:
+
+		> [ D, C, B, A ]
+
+		So then let's say you navigated from that to A > B > C2 > D2.  The cache now looks like this, with | representing the 
+		used/unused divider:
+
+		> [ D2, C2, B, A | D, C ]
+
+		C would get ejected from the cache before D, but since D is below C in the hierarchy its presence in the cache is not especially
+		useful.  So instead we move entries to the end of the used list, which keeps them in their proper order.  Going to A > B > C > D 
+		results in this cache:
+
+		> [ A, B, C, D ]
+
+		and then navigating to A > B > C2 > D2 results in this cache:
+
+		> [ A, B, C2, D2 | C, D ]
+
+		D would get ejected before C.  We now have a MRU ordering that also implicitly favors higher hierarchy entries instead of lower
+		ones which aren't that valuable without their parents.
+
 */
 var NDMenu = new function ()
 	{ 
@@ -65,8 +109,10 @@ var NDMenu = new function ()
 	this.Start = function ()
 		{
 		this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();
-		this.newFileMenuPath = undefined;
+		this.newFileMenuPath = new NDMenu_FileMenuPath_ByOffset();  // Forces the initial menu generation
+
 		this.fileMenuSections = [ ];
+		this.firstUnusedFileMenuSection = 0;
 
 		this.Update(true);
 		};
@@ -84,23 +130,23 @@ var NDMenu = new function ()
 
 
 	/* Function: Update
-		Generates the HTML for the menu.  If force is true, forces an update even if <newFileMenuPath> isn't set.
+		Generates the HTML for the menu.
 	*/
-	this.Update = function (force)
+	this.Update = function ()
 		{
-		if (this.newFileMenuPath == undefined && force == false)
+		if (this.newFileMenuPath == undefined)
 			{  return;  }
+
+		// Reset.  Calls to GetFileMenuSection() made while rebuilding the menu will recalculate this.
+		this.firstUnusedFileMenuSection = 0;
 
 		var htmlMenu = document.createElement("div");
 		htmlMenu.id = "MContent";
 
 		var result = this.BuildEntries(htmlMenu);
-
 		this.currentFileMenuPath.path = result.newPath;
 
-		if (result.completed)
-			{  this.newFileMenuPath = undefined;  }
-		else
+		if (!result.completed)
 			{
 			var htmlEntry = document.createElement("div");
 			htmlEntry.className = "MLoadingNotice";
@@ -110,7 +156,12 @@ var NDMenu = new function ()
 		var oldMenuContent = document.getElementById("MContent");
 		oldMenuContent.parentNode.replaceChild(htmlMenu, oldMenuContent);
 
-		if (result.needToLoad != undefined)
+		if (result.completed)
+			{  
+			this.newFileMenuPath = undefined;  
+			this.CleanUpFileMenuSections();
+			}
+		else if (result.needToLoad != undefined)
 			{  this.LoadFileMenuSection(result.needToLoad);  }
 		};
 
@@ -322,11 +373,22 @@ var NDMenu = new function ()
 			{
 			if (this.fileMenuSections[i].ID == id)
 				{
-				if (this.fileMenuSections[i].Ready == true)
-					{  
-					this.fileMenuSections[i].WasAccessed = true;
-					return this.fileMenuSections[i].RootFolder;  
+				var section = this.fileMenuSections[i];
+
+				// Move to the end of the used sections list.  It doesn't matter if it's ready.
+				if (i >= this.firstUnusedFileMenuSection)
+					{
+					if (i > this.firstUnusedFileMenuSection)
+						{
+						this.fileMenuSections.splice(i, 1);
+						this.fileMenuSections.splice(this.firstUnusedFileMenuSection, 0, section);
+						}
+
+					this.firstUnusedFileMenuSection++;
 					}
+
+				if (section.Ready == true)
+					{  return section.RootFolder;  }
 				else
 					{  return undefined;  }
 				}
@@ -354,8 +416,7 @@ var NDMenu = new function ()
 		this.fileMenuSections.push({
 			ID: id,
 			RootFolder: undefined,
-			Ready: false,
-			WasAccessed: false
+			Ready: false
 			});
 
 		var script = document.createElement("script");
@@ -384,7 +445,33 @@ var NDMenu = new function ()
 
 		if (this.newFileMenuPath != undefined)
 //			{  this.Update();  }
-			{  setTimeout("NDMenu.Update()", 2000);  }  // xxx delay all loads
+			{  setTimeout("NDMenu.Update()", 1500);  }  // xxx delay all loads
+		};
+
+
+	/* Function: CleanUpFileMenuSections
+		Goes through <fileMenuSections> and if there's more than `MaxFileMenuSections, removes the least recently accessed
+		entries that aren't being used.
+	*/
+	this.CleanUpFileMenuSections = function ()
+		{
+		if (this.fileMenuSections.length > `MaxFileMenuSections)
+			{
+			var head = document.getElementsByTagName("head")[0];
+
+			for (var i = this.fileMenuSections.length - 1; i >= this.firstUnusedFileMenuSection && this.fileMenuSections.length > `MaxFileMenuSections; i--)
+				{
+				// We don't want to remove an entry if data's being loaded for it.  The event handler could reasonably expect it 
+				// to exist.
+				if (this.fileMenuSections[i].Ready == false)
+					{  break;  }
+
+				// Remove the loader tag too so it can be recreated if we ever need this section again.
+				head.removeChild(document.getElementById("NDFileMenuLoader" + this.fileMenuSections[i].ID));
+
+				this.fileMenuSections.pop();
+				}
+			}
 		};
 
 
@@ -412,7 +499,13 @@ var NDMenu = new function ()
 
 
 	/* var: fileMenuSections
-		An array of <MenuSection> objects that have been loaded for the file menu.
+		An array of <MenuSection> objects that have been loaded for the file menu or are in the process of being
+		loaded.  The array is ordered from the most recently accessed to the least.
+	*/
+
+	/* var: firstUnusedFileMenuSection
+		An index into <fileMenuSections> of the first entry that was not accessed via <GetFileMenuSection()> in the
+		last call to <Update()>.
 	*/
 
 	};
@@ -437,13 +530,6 @@ var NDMenu = new function ()
 		True if the data has been loaded and is ready to use.  False if the data has been
 		requested but is not ready yet.  If the data has not been requested it simply would
 		not have a MenuSection object for it.
-
-		var: WasAccessed
-		Set to true whenever an iterator accesses this section with <NDMenu.GetFileMenuSection()>.  It does NOT
-		get automatically set to false when the location changes and it's not needed anymore.  Instead you have to
-		set all of them to false, walk all iterators through their paths, and then see if any are still false to determine 
-		if they're no longer in use.  The name "WasAccessed" was chosen instead of "InUse" to hopefully make this 
-		more clear.
 
 */
 
@@ -484,7 +570,7 @@ function NDMenu_FileMenuPath_ByOffset (offsets)
 	else
 		{  this.path = offsets;  }
 
-	}
+	};
 
 
 /* Class: NDMenu_FileMenuPath_ByOffset_Iterator
@@ -511,15 +597,14 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	*/
 	this.Next = function ()
 		{
-		// If we're past or at the end of the path...
+		// If we're past the end of the path...
 		// Remember index points to the next step forward, so it equaling path.length means we're at the end of
 		// the path rather than past it.  That's why we don't use path.length - 1.
-		if (this.index >= this.pathObject.path.length)
+		if (this.index > this.pathObject.path.length)
 			{
 			this.index++;
 			this.currentEntry = undefined;
 			this.offsetFromParent = -1;
-			return false;
 			}
 
 		// If we're in the path but past what's loaded...
@@ -527,7 +612,6 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			{
 			this.offsetFromParent = this.pathObject.path[this.index];
 			this.index++;
-			return true;
 			}
 
 		// If we're moving into a folder with local members...
@@ -537,7 +621,6 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			this.offsetFromParent = this.pathObject.path[this.index];
 			this.currentEntry = this.currentEntry[`Members][this.offsetFromParent];
 			this.index++;
-			return true;
 			}
 
 		// If we're moving into a folder with dynamic members...
@@ -554,18 +637,19 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 				{  this.currentEntry = this.currentEntry[`Members][this.offsetFromParent];  }
 
 			this.index++;
-			return true;
 			}
 
-		// If we're on a file entry that's not the last one in the path...
+		// If we're on a file entry...
 		else
 			{
-			// ...it means we have an invalid path so just ignore the rest of it.
+			// ...jump to the end of the path.  In most cases this will be the same as this.index++, but on the off chance
+			// that we have an invalid path that extends beyond the file, just ignore the extra.
 			this.index = this.pathObject.path.length + 1;
 			this.currentEntry = undefined;
 			this.offsetFromParent = -1;
-			return false;
 			}
+
+		return (this.index <= this.pathObject.path.length);
 		};
 
 

@@ -111,8 +111,8 @@ var NDPageFrame = new function ()
 	*/
 	this.CloseMessages = function ()
 		{
-		document.getElementById("MsgContent").innerHTML = "";
 		document.getElementById("NDMessages").style.display = "none";
+		document.getElementById("MsgContent").innerHTML = "";
 		};
 
 
@@ -124,7 +124,6 @@ var NDPageFrame = new function ()
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
 
-		this.Message("Hash Change: [" + hash + "]");
 		document.title = hash;
 		};
 
