@@ -238,7 +238,7 @@ var NDAnimate = new function ()
 
 	/* var: timeoutID
 	*/
-	this.timeoutID = undefined;
+	// this.timeoutID = undefined;
 	
 	};
 

@@ -157,8 +157,11 @@ var NDMenu = new function ()
 		oldMenuContent.parentNode.replaceChild(htmlMenu, oldMenuContent);
 
 		if (result.completed)
-			{  
-			this.newFileMenuPath = undefined;  
+			{
+			if (result.selectedFileTitle)
+				{  NDPageFrame.UpdatePageTitle(result.selectedFileTitle);  }
+
+			this.newFileMenuPath = undefined;
 			this.CleanUpFileMenuSections();
 			}
 		else if (result.needToLoad != undefined)
@@ -174,14 +177,16 @@ var NDMenu = new function ()
 						  part.
 		needToLoad - The ID of the menu section that needs to be loaded, or undefined if none.
 		newPath - An array of offsets representing the new path, or at least as much as was generated.
+		selectedFileTitle - If the path selects a file and enough entries are loaded, returns the file title in HTML.
 	*/
 	this.BuildEntries = function (htmlMenu)
 		{
 		var result = 
 			{ 
 			completed: false,
-			needToLoad: undefined,
+			// needToLoad: undefined,
 			newPath: [ ]
+			// selectedFileTitle: undefined
 			};
 
 		var iterator = (this.newFileMenuPath != undefined ? this.newFileMenuPath.GetIterator() 
@@ -323,6 +328,8 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
+
+					result.selectedFileTitle = member[`Name];
 					}
 				else
 					{
@@ -415,7 +422,7 @@ var NDMenu = new function ()
 		// If we're here, there was no entry for it.
 		this.fileMenuSections.push({
 			ID: id,
-			RootFolder: undefined,
+			// RootFolder: undefined,
 			Ready: false
 			});
 
@@ -598,11 +605,9 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	this.Next = function ()
 		{
 		// If we're past the end of the path...
-		// Remember index points to the next step forward, so it equaling path.length means we're at the end of
-		// the path rather than past it.  That's why we don't use path.length - 1.
-		if (this.index > this.pathObject.path.length)
+		if (this.nextIndex > this.pathObject.path.length)
 			{
-			this.index++;
+			this.nextIndex++;
 			this.currentEntry = undefined;
 			this.offsetFromParent = -1;
 			}
@@ -610,23 +615,23 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 		// If we're in the path but past what's loaded...
 		else if (this.currentEntry == undefined)
 			{
-			this.offsetFromParent = this.pathObject.path[this.index];
-			this.index++;
+			this.offsetFromParent = this.pathObject.path[this.nextIndex];
+			this.nextIndex++;
 			}
 
 		// If we're moving into a folder with local members...
 		else if (this.currentEntry[`Type] == `LocalFolder ||
 				  this.currentEntry[`Type] == `RootFolder)
 			{
-			this.offsetFromParent = this.pathObject.path[this.index];
+			this.offsetFromParent = this.pathObject.path[this.nextIndex];
 			this.currentEntry = this.currentEntry[`Members][this.offsetFromParent];
-			this.index++;
+			this.nextIndex++;
 			}
 
 		// If we're moving into a folder with dynamic members...
 		else if (this.currentEntry[`Type] == `DynamicFolder)
 			{
-			this.offsetFromParent = this.pathObject.path[this.index];
+			this.offsetFromParent = this.pathObject.path[this.nextIndex];
 
 			var membersID = this.currentEntry[`Members];
 			this.currentEntry = NDMenu.GetFileMenuSection(membersID);
@@ -636,20 +641,20 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			else
 				{  this.currentEntry = this.currentEntry[`Members][this.offsetFromParent];  }
 
-			this.index++;
+			this.nextIndex++;
 			}
 
 		// If we're on a file entry...
 		else
 			{
-			// ...jump to the end of the path.  In most cases this will be the same as this.index++, but on the off chance
+			// ...jump to the end of the path.  In most cases this will be the same as nextIndex++, but on the off chance
 			// that we have an invalid path that extends beyond the file, just ignore the extra.
-			this.index = this.pathObject.path.length + 1;
+			this.nextIndex = this.pathObject.path.length + 1;
 			this.currentEntry = undefined;
 			this.offsetFromParent = -1;
 			}
 
-		return (this.index <= this.pathObject.path.length);
+		return (this.nextIndex <= this.pathObject.path.length);
 		};
 
 
@@ -677,9 +682,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			`Nav_OutOfBounds = -1
 		*/
 
-		// Remember index points to the next step forward, so it equaling path.length means we're at the end of
-		// the path rather than past it.  That's why we don't use path.length - 1.
-		if (this.index > this.pathObject.path.length)
+		if (this.nextIndex > this.pathObject.path.length)
 			{  return `Nav_OutOfBounds;  }
 
 		else if (this.currentEntry == undefined)
@@ -690,18 +693,18 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			{  return `Nav_SelectedFile;  }
 
 		// So we're at a folder.  If it's the last one we know it's selected.
-		else if (this.index == this.pathObject.path.length)
+		else if (this.nextIndex == this.pathObject.path.length)
 			{
-			if (this.index == 0)
+			if (this.nextIndex == 0)
 				{  return `Nav_SelectedRootFolder;  }
 			else
 				{  return `Nav_SelectedParentFolder;  }
 			}
 
 		// and if there's more than one past it, we know it's not selected.
-		else if (this.index <= this.pathObject.path.length - 2)
+		else if (this.nextIndex <= this.pathObject.path.length - 2)
 			{
-			if (this.index == 0)
+			if (this.nextIndex == 0)
 				{  return `Nav_RootFolder;  }
 			else
 				{  return `Nav_ParentFolder;  }
@@ -722,14 +725,14 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 			else if (lookahead.currentEntry[`Type] == `ImplicitFile ||
 					  lookahead.currentEntry[`Type] == `ExplicitFile)
 				{  
-				if (this.index == 0)
+				if (this.nextIndex == 0)
 					{  return `Nav_SelectedRootFolder;  }
 				else
 					{  return `Nav_SelectedParentFolder;  }
 				}
 			else // on a folder
 				{  
-				if (this.index == 0)
+				if (this.nextIndex == 0)
 					{  return `Nav_RootFolder;  }
 				else
 					{  return `Nav_ParentFolder;  }
@@ -743,7 +746,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	*/
 	this.AtEndOfPath = function ()
 		{
-		return (this.index == this.pathObject.path.length);
+		return (this.nextIndex == this.pathObject.path.length);
 		};
 
 
@@ -756,7 +759,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 		newObject.currentEntry = this.currentEntry;
 		newObject.offsetFromParent = this.offsetFromParent;
 		newObject.needToLoad = this.needToLoad;
-		newObject.index = this.index;
+		newObject.nextIndex = this.nextIndex;
 
 		return newObject;
 		};
@@ -786,7 +789,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 		Remember that you need to create a new iterator after loading a section of the menu.  Existing ones are not
 		guaranteed to notice the new addition.
 	*/
-	this.needToLoad = undefined;
+	// this.needToLoad = undefined;
 
 	if (this.currentEntry == undefined)
 		{  this.needToLoad = 1;  }
@@ -802,11 +805,11 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	*/
 	this.pathObject = pathObject;
 
-	/* var: index
-		An index into <NDMenu_FileMenuPath_ByOffset.path>.  Note that the entry this points refers to how to move
-		forward, not what the current position is.  This means an index of zero refers to the root folder even though entry 
-		zero in the path refers to the root folder's member.
+	/* var: nextIndex
+		An index into <NDMenu_FileMenuPath_ByOffset.path> of the *next* position, not what the current position is.  
+		This means an index of zero refers to the root folder even though entry zero in the path refers to the root folder's 
+		member.
 	*/
-	this.index = 0;
+	this.nextIndex = 0;
 
 	};

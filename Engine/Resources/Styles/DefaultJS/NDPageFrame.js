@@ -24,10 +24,19 @@
 var NDPageFrame = new function ()
 	{
 
+	// Group: Functions
+	// ________________________________________________________________________
+
+
 	/* Function: Start
 	*/
 	this.Start = function ()
 		{
+		// The default title of the page is the project title.  Save a copy before we mess with it.
+		this.projectTitle = document.title;
+
+		// this.hashChangePoller = undefined;
+
 		if (navigator.userAgent.indexOf("MSIE 6") != -1)
 			{
 			// IE 6 doesn't like fixed positioning the way other browsers do.
@@ -123,8 +132,17 @@ var NDPageFrame = new function ()
 		// Strip the hash symbol and everything before.  If there's no hash symbol, indexOf returning -1 means substr
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
+		};
 
-		document.title = hash;
+
+	/* Function: UpdatePageTitle
+	*/
+	this.UpdatePageTitle = function (pageTitle)
+		{
+		if (pageTitle)
+			{  document.title = pageTitle + " - " + this.projectTitle;  }
+		else
+			{  document.title = this.projectTitle;  }
 		};
 
 
@@ -136,7 +154,7 @@ var NDPageFrame = new function ()
 		{
 		// If the browser supports onhashchange...
 
-		// Note that IE8 running in IE7 compatibility mode reports true for "onhashchange" in window, even
+		// Note that IE8 running in IE7 compatibility mode reports true for "onhashchange" in window even
 		// though the event isn't supported, so also test document.documentMode.
 		if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7))
 			{
@@ -147,12 +165,13 @@ var NDPageFrame = new function ()
 		// If browser doesn't support onhashchange...
 		else
 			{
-			this.hashChangePoller.timeoutID = undefined;
-			this.hashChangePoller.timeoutLength = 200;  // Every fifth of a second
+			this.hashChangePoller = {
+				// timeoutID: undefined,
+				timeoutLength: 200,  // Every fifth of a second
 
-			// Remember the initial hash so it doesn't get triggered immediately.
-			this.hashChangePoller.lastHash = location.hash;
-
+				// Remember the initial hash so it doesn't get triggered immediately.
+				lastHash: location.hash
+				};
 
 			// Non-IE browsers that don't support onhashchange can use a straightforward polling loop of the hash.
 			if (navigator.userAgent.indexOf("MSIE") == -1)
@@ -221,7 +240,7 @@ var NDPageFrame = new function ()
 						);
 
 					// jQuery HashChange Event does some stuff I'm not 100% clear on to "append iframe after 
-					// the end of the body to prevent unecessary initial page scrolling (yes, this works)."  Bah, 
+					// the end of the body to prevent unnecessary initial page scrolling (yes, this works)."  Bah, 
 					// screw it, let's just go with straightforward.
 					document.body.appendChild(iframeElement);
 
@@ -303,10 +322,17 @@ var NDPageFrame = new function ()
 		};
 
 
+
+	// Group: Variables
+	// ________________________________________________________________________
+
+	/* var: projectTitle
+		The project title in HTML.
+	*/
+
 	/* var: hashChangePoller
 		An object to assist with hash change polling on browsers that don't support onhashchange.  Only used in
 		<AddHashChangeHandler()>.
 	*/
-	this.hashChangePoller = { };
 
 	};
