@@ -132,6 +132,8 @@ var NDPageFrame = new function ()
 		// Strip the hash symbol and everything before.  If there's no hash symbol, indexOf returning -1 means substr
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
+		
+		NDMenu.GoToFilePath(hash);
 		};
 
 

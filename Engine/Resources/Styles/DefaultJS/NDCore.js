@@ -230,3 +230,20 @@ var NDCore = new function ()
 		};
 
 	};
+
+
+
+// Section: Extension Functions
+// ____________________________________________________________________________
+
+
+/* Function: String.StartsWith
+	Returns whether the string starts with or is equal to the passed string.
+*/
+String.prototype.StartsWith = function (other)
+	{
+	if (other === undefined)
+		{  return false;  }
+
+	return (this.length >= other.length && this.substr(0, other.length) == other);
+	};

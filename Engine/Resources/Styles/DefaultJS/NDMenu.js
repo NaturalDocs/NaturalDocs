@@ -108,23 +108,31 @@ var NDMenu = new function ()
 	*/
 	this.Start = function ()
 		{
-		this.currentFileMenuPath = new NDMenu_FileMenuPath_ByOffset();
-		this.newFileMenuPath = new NDMenu_FileMenuPath_ByOffset();  // Forces the initial menu generation
+		this.currentFileMenuPath = new NDMenu_FileMenuOffsetPath();
+		// this.newFileMenuPath = undefined;
 
 		this.fileMenuSections = [ ];
 		this.firstUnusedFileMenuSection = 0;
-
-		this.Update(true);
 		};
 
 
 	/* Function: GoToFileOffsets
 		Changes the current page in the file menu to the passed array of offsets, which should be in the format used by
-		<NDMenu_FileMenuPath_ByOffset>.
+		<NDMenu_FileMenuOffsetPath>.
 	*/
 	this.GoToFileOffsets = function (offsets)
 		{
-		this.newFileMenuPath = new NDMenu_FileMenuPath_ByOffset(offsets);
+		this.newFileMenuPath = new NDMenu_FileMenuOffsetPath(offsets);
+		this.Update();
+		};
+
+
+	/* Function: GoToFilePath
+		Changes the current page in the file menu to the passed path string, such as "files2/folder/folder/file.cs".
+	*/
+	this.GoToFilePath = function (path)
+		{
+		this.newFileMenuPath = new NDMenu_FileMenuPath(path);
 		this.Update();
 		};
 
@@ -158,9 +166,6 @@ var NDMenu = new function ()
 
 		if (result.completed)
 			{
-			if (result.selectedFileTitle)
-				{  NDPageFrame.UpdatePageTitle(result.selectedFileTitle);  }
-
 			this.newFileMenuPath = undefined;
 			this.CleanUpFileMenuSections();
 			}
@@ -177,7 +182,6 @@ var NDMenu = new function ()
 						  part.
 		needToLoad - The ID of the menu section that needs to be loaded, or undefined if none.
 		newPath - An array of offsets representing the new path, or at least as much as was generated.
-		selectedFileTitle - If the path selects a file and enough entries are loaded, returns the file title in HTML.
 	*/
 	this.BuildEntries = function (htmlMenu)
 		{
@@ -186,7 +190,6 @@ var NDMenu = new function ()
 			completed: false,
 			// needToLoad: undefined,
 			newPath: [ ]
-			// selectedFileTitle: undefined
 			};
 
 		var iterator = (this.newFileMenuPath != undefined ? this.newFileMenuPath.GetIterator() 
@@ -309,17 +312,7 @@ var NDMenu = new function ()
 
 			if (member[`Type] == `ImplicitFile || member[`Type] == `ExplicitFile)
 				{
-				var filePath;
-				
-				if (member[`Type] == `ExplicitFile)
-					{  filePath = member[`Path];  }
-				else
-					{
-					filePath = member[`Name];
-					filePath = filePath.replace(/\./g, "-") + ".html";
-					}
-
-				filePath = selectedFolderPath + "/" + filePath;
+				var filePath = selectedFolderPath + "/" + member[`Name];
 				
 				if (i == selectedFileIndex)
 					{
@@ -328,8 +321,6 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
-
-					result.selectedFileTitle = member[`Name];
 					}
 				else
 					{
@@ -422,7 +413,7 @@ var NDMenu = new function ()
 		// If we're here, there was no entry for it.
 		this.fileMenuSections.push({
 			ID: id,
-			// RootFolder: undefined,
+			RootFolder: undefined,
 			Ready: false
 			});
 
@@ -488,7 +479,7 @@ var NDMenu = new function ()
 
 
 	/* Property: currentFileMenuPath
-		A <NDMenu_FileMenuPath_ByOffset> that forms the navigation path from the root folder to the selected 
+		A <NDMenu_FileMenuOffsetPath> that forms the navigation path from the root folder to the selected 
 		folder or file, if any.  If <newFileMenuPath> is undefined, this is the full path.  If <newFileMenuPath> has a
 		value, this is the part of it that is displayed so far, as it may only be able to show part if it is not completely 
 		loaded yet.  This may also be undefined if nothing has been displayed yet.
@@ -541,26 +532,27 @@ var NDMenu = new function ()
 */
 
 
-/* Class: NDMenu_FileMenuPath_ByOffset
+/* Class: NDMenu_FileMenuOffsetPath
 	___________________________________________________________________________
 
 	A path through <NDMenu's> hierarchy using array offsets, which is more efficient than using folder names.
+	This has the same interface as <NDMenu_FileMenuPath> so they can be used interchangeably.
 
 	You can pass an array of file offsets to the constructor, or leave it undefined to refer to the root folder.
 
 */
-function NDMenu_FileMenuPath_ByOffset (offsets)
+function NDMenu_FileMenuOffsetPath (offsets)
 	{
 
 	// Group: Functions
 	// ________________________________________________________________________
 
 	/* Function: GetIterator
-		Creates and returns a new <iterator: NDMenu_FileMenuPath_ByOffset_Iterator> positioned at the beginning of the path.
+		Creates and returns a new <iterator: NDMenu_FileMenuOffsetPath_Iterator> positioned at the beginning of the path.
 	*/
 	this.GetIterator = function ()
 		{
-		return new NDMenu_FileMenuPath_ByOffset_Iterator(this);
+		return new NDMenu_FileMenuOffsetPath_Iterator(this);
 		};
 
 
@@ -580,10 +572,12 @@ function NDMenu_FileMenuPath_ByOffset (offsets)
 	};
 
 
-/* Class: NDMenu_FileMenuPath_ByOffset_Iterator
+/* Class: NDMenu_FileMenuOffsetPath_Iterator
 	___________________________________________________________________________
 
-	A class that can walk through <NDMenu_FileMenuPath_ByOffset>.
+	A class that can walk through <NDMenu_FileMenuOffsetPath>.  This has the same interface as 
+	<NDMenu_FileMenuPath_Iterator> so they can be used interchangeably provided they're with their appropriate
+	path types.
 
 	Limitations:
 
@@ -592,7 +586,7 @@ function NDMenu_FileMenuPath_ByOffset (offsets)
 		   guaranteed to notice the new data.
 
 */
-function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
+function NDMenu_FileMenuOffsetPath_Iterator (pathObject)
 	{
 
 	// Group: Functions
@@ -755,7 +749,7 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 	*/
 	this.Duplicate = function ()
 		{
-		var newObject = new NDMenu_FileMenuPath_ByOffset_Iterator (this.pathObject);
+		var newObject = new NDMenu_FileMenuOffsetPath_Iterator (this.pathObject);
 		newObject.currentEntry = this.currentEntry;
 		newObject.offsetFromParent = this.offsetFromParent;
 		newObject.needToLoad = this.needToLoad;
@@ -801,15 +795,143 @@ function NDMenu_FileMenuPath_ByOffset_Iterator (pathObject)
 
 
 	/* var: pathObject
-		A reference to the <NDMenu_FileMenuPath_ByOffset> object this iterator works on.
+		A reference to the <NDMenu_FileMenuOffsetPath> object this iterator works on.
 	*/
 	this.pathObject = pathObject;
 
 	/* var: nextIndex
-		An index into <NDMenu_FileMenuPath_ByOffset.path> of the *next* position, not what the current position is.  
+		An index into <NDMenu_FileMenuOffsetPath.path> of the *next* position, not what the current position is.  
 		This means an index of zero refers to the root folder even though entry zero in the path refers to the root folder's 
 		member.
 	*/
 	this.nextIndex = 0;
+
+	};
+
+
+
+/* Class: NDMenu_FileMenuPath
+	___________________________________________________________________________
+
+	A path through <NDMenu's> hierarchy using a path string such as "files2/folder/folder/source.cs".  All paths are
+	assumed to terminate on a file name instead of a folder.  It will tolerate a leading hash and/or slash.
+
+*/
+function NDMenu_FileMenuPath (path)
+	{
+
+	// Group: Functions
+	// ________________________________________________________________________
+
+	/* Function: GetIterator
+		Creates and returns a new <iterator: NDMenu_FileMenuOffsetPath_Iterator> positioned at the beginning of the path.
+	*/
+	this.GetIterator = function ()
+		{
+		// We generate a new offset path for every iterator created because a path can persist between menu section
+		// loads, but an iterator should not.
+		return new NDMenu_FileMenuOffsetPath_Iterator(this.MakeOffsetPath());
+		};
+
+
+	/* Function: MakeOffsetPath
+		Generates and returns a <NDMenu_FileMenuOffsetPath> from the path string.  If there are not enough menu 
+		sections loaded to fully resolve it, it will generate what it can and put an extra -1 offset on the end to indicate 
+		that there's more.  The extra entry prevents things from rendering as selected when they may not be.  
+		<NDMenu_FileMenuOffsetPath_Iterator> shouldn't have to worry about handling the -1 because it would stop 
+		with `Nav_NeedToLoad before using it, and after the section is loaded new iterators will have to be created 
+		which will cause this function to generate an updated offset path.
+	*/
+	this.MakeOffsetPath = function ()
+		{
+		var offsets = [ ];
+
+		if (this.pathString == "" || this.pathString == undefined)
+			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
+
+		var section = NDMenu.GetFileMenuSection(1);
+
+		if (section === undefined)
+			{
+			offsets.push(-1);
+			return new NDMenu_FileMenuOffsetPath(offsets);
+			}
+
+		var sectionPath = section[`Path];
+
+		if (this.pathString == sectionPath || !this.pathString.StartsWith(sectionPath))
+			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
+
+		do
+			{
+			var found = false;
+
+			for (var i = 0; i < section[`Members].length; i++)
+				{
+				var member = section[`Members][i];
+
+				if (member[`Type] == `ExplicitFile || member[`Type] == `ImplicitFile)
+					{
+					if (sectionPath + '/' + member[`Name] == this.pathString)
+						{
+						offsets.push(i);
+						return new NDMenu_FileMenuOffsetPath(offsets);
+						}
+					}
+				else // folder
+					{
+					if (this.pathString == member[`Path])
+						{
+						offsets.push(i);
+						return new NDMenu_FileMenuOffsetPath(offsets);
+						}
+					else if (this.pathString.StartsWith(member[`Path]) && this.pathString[member[`Path].length] == '/')
+						{
+						offsets.push(i);
+						section = member;
+						sectionPath = member[`Path];
+						found = true;
+
+						if (section[`Type] == `DynamicFolder)	
+							{
+							section = NDMenu.GetFileMenuSection(section[`Members]);
+							if (section === undefined)
+								{
+								offsets.push(-1);
+								return new NDMenu_FileMenuOffsetPath(offsets);
+								}
+
+							// Don't update sectionPath since it will be defined in the DynamicFolder member, not in the root
+							// section that's returned by GetFileMenuSection().
+							}
+
+						break;
+						}
+					}
+				}
+			}
+		while (found == true);
+
+		return new NDMenu_FileMenuOffsetPath(offsets);
+		};
+
+
+
+	// Group: Properties
+	// ________________________________________________________________________
+
+	/* Property: pathString
+		The path string such as "files2/folder/folder/source.cs".  It will not contain a leading hash or slash.
+	*/
+	var startIndex = 0;
+
+	if (path[startIndex] == '#')
+		{  startIndex++;  }
+	if (path[startIndex] == '/')
+		{  startIndex++;  }
+	if (startIndex != 0)
+		{  this.pathString = path.substr(startIndex);  }
+	else
+		{  this.pathString = path;  }
 
 	};
