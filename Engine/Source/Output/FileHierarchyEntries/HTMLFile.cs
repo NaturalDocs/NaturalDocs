@@ -33,7 +33,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			StringBuilder output = new StringBuilder();
 
 			string htmlName = TextConverter.TextToHTML(FileName);
-			string path = Builders.HTML.OutputFileName(FileName);
+			string path = Builders.HTML.Source_OutputFileNameOnly(FileName);
 			Builders.HTML.FileHierarchyEntryType type;
 
 			string htmlNameTranslation = htmlName.Replace('.', '-') + ".html";

@@ -18,7 +18,21 @@
 
 
 /* Class: NDPageFrame
-	 _____________________________________________________________________________
+	_____________________________________________________________________________
+
+	Topic: URL Hash Format
+
+		File References:
+
+			> #file[number unless 1]:[full path]:[full symbol (optional)]
+			>
+			> #file:source/module/file.cs
+			> #file3:source/module/file.cs:Namespace.Package.Function
+
+		Path Restrictions:
+
+			Because of the above format, generated file paths cannot contain the colon character.  This is
+			documented in <GregValure.NaturalDocs.Engine.Output.Builders.HTML.Path Restrictions>.
 
 */
 var NDPageFrame = new function ()

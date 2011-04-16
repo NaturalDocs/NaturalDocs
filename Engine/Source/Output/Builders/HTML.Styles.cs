@@ -39,6 +39,7 @@
 
 
 using System;
+using System.Text;
 using GregValure.NaturalDocs.Engine.Output.Styles;
 
 
@@ -291,14 +292,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// main.css
 
 			// There's nothing to condense so just write it directly to a file.
-			using (System.IO.StreamWriter mainCSSFile = System.IO.File.CreateText(RootStyleFolder + "/main.css"))
+			using (System.IO.StreamWriter mainCSSFile = System.IO.File.CreateText(Styles_OutputFolder() + "/main.css"))
 				{
 				foreach (HTMLStyle style in styles)
 					{
 					if (style.IsCSSOnly)
 						{
-						Path outputPath = StyleFileOutputPath(style.CSSFile);
-						Path relativeOutputPath = RootStyleFolder.MakeRelative(outputPath);
+						Path outputPath = Styles_OutputFile(style.CSSFile);
+						Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
 						mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 						}
 					else if (style.Links != null)
@@ -308,8 +309,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							// We don't care about filters for CSS files.
 							if (link.File.Extension.ToLower() == "css")
 								{
-								Path outputPath = StyleFileOutputPath(style.Folder + '/' + link.File);
-								Path relativeOutputPath = RootStyleFolder.MakeRelative(outputPath);
+								Path outputPath = Styles_OutputFile(style.Folder + '/' + link.File);
+								Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
 								mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 								}
 							}
@@ -351,8 +352,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								if (linkCount > 0)
 									{  jsOutput.Append(',');  }
 
-								Path outputPath = StyleFileOutputPath(style.Folder + "/" + style.Links[i].File);
-								Path relativeOutputPath = RootStyleFolder.MakeRelative(outputPath);
+								Path outputPath = Styles_OutputFile(style.Folder + "/" + style.Links[i].File);
+								Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
 								jsOutput.Append("\"" + relativeOutputPath.ToURL() + "\"");
 
 								linkCount++;
@@ -417,7 +418,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				jsOutput.Append('}');
 
-				System.IO.File.WriteAllText(RootStyleFolder + "/main-" + filterName.ToLower() + ".js", shrinker.ShrinkJS(jsOutput.ToString()));
+				System.IO.File.WriteAllText(Styles_OutputFolder() + "/main-" + filterName.ToLower() + ".js", shrinker.ShrinkJS(jsOutput.ToString()));
 				}
 			}
 
@@ -427,34 +428,34 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Property: RootStyleFolder
-		 * The folder that holds all the style folders.
+		/* Function: Styles_OutputFolder
+		 * Returns the folder for the passed style, or if null, the root output folder for all styles.
 		 */
-		protected Path RootStyleFolder
+		protected Path Styles_OutputFolder (HTMLStyle style = null)
 			{
-			get
-				{  return config.Folder + "/styles";  }
+			StringBuilder result = new StringBuilder(OutputFolder);
+			result.Append("/styles");
+
+			if (style != null)
+				{  
+				result.Append('/');
+				result.Append(SanitizePathString(style.Name));
+				}
+			
+			return result.ToString();
 			}
 
-		/* Function: StyleOutputFolder
-		 * Returns the folder for the passed style.
-		 */
-		protected Path StyleOutputFolder (HTMLStyle style)
-			{
-			return config.Folder + "/styles/" + style.Name;
-			}
-
-		/* Function: StyleFileOutputPath
+		/* Function: Styles_OutputFile
 		 * Returns the output path of the passed style file if it is part of a style used by this builder.  Otherwise returns null.
 		 */
-		protected Path StyleFileOutputPath (Path originalStyleFile)
+		protected Path Styles_OutputFile (Path originalStyleFile)
 			{
 			foreach (HTMLStyle style in styles)
 				{
 				if (style.Contains(originalStyleFile))
 					{
 					Path relativeStyleFile = style.MakeRelative(originalStyleFile);
-					return config.Folder + "/styles/" + style.Name + "/" + relativeStyleFile;
+					return OutputFolder + "/styles/" + SanitizePathString(style.Name) + "/" + SanitizePath(relativeStyleFile);
 					}
 				}
 
@@ -469,7 +470,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		public Files.Manager.ReleaseClaimedFileReason OnAddOrChangeFile (Path originalStyleFile)
 			{
-			Path outputStyleFile = StyleFileOutputPath(originalStyleFile);
+			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
 
 			if (outputStyleFile == null)
 				{  return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
@@ -515,7 +516,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		public Files.Manager.ReleaseClaimedFileReason OnDeleteFile (Path originalStyleFile)
 			{
-			Path outputStyleFile = StyleFileOutputPath(originalStyleFile);
+			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
 
 			if (outputStyleFile == null || !System.IO.File.Exists(outputStyleFile))
 				{  return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;  }

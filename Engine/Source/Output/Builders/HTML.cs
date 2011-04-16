@@ -5,6 +5,13 @@
  * An output builder for HTML.
  * 
  * 
+ * Topic: Path Restrictions
+ * 
+ *		- Output file paths cannot contain the colon character as it would conflict with the URL hash format
+ *		  "#file:[path]:[symbol]".
+ *		- Output file paths cannot contain the hash character as it would truncate any URL based on it.
+ *		
+ * 
  * File: Config.nd
  * 
  *		A file used to store information about the configuration as of last time this output target was built.
@@ -246,7 +253,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
 
-				if (System.IO.Directory.Exists(RootStyleFolder))
+				if (System.IO.Directory.Exists(Styles_OutputFolder()))
 					{  
 					if (!saidPurgingOutputFiles)
 						{
@@ -255,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 					try
-						{  System.IO.Directory.Delete(RootStyleFolder, true);  }
+						{  System.IO.Directory.Delete(Styles_OutputFolder(), true);  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -285,7 +292,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					if (stillExists == false)
 						{  
-						Path folder = StyleOutputFolder(previousStyle);
+						Path folder = Styles_OutputFolder(previousStyle);
 
 						if (System.IO.Directory.Exists(folder))
 							{  
@@ -336,7 +343,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				Regex.Output.HTML.SourceOrImageOutputFolder sourceOrImageOutputFolderRegex = 
 					new Regex.Output.HTML.SourceOrImageOutputFolder();
 
-				string[] outputFolders = System.IO.Directory.GetDirectories(config.Folder);
+				string[] outputFolders = System.IO.Directory.GetDirectories(OutputFolder);
 
 				foreach (string outputFolder in outputFolders)
 					{
@@ -379,7 +386,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (stillExists == false)
 						{
 						hasDeletions = true;
-						Path outputFolder = OutputPath(previousFileSourceInfo.Type, previousFileSourceInfo.Number);
+						Path outputFolder;
+						
+						if (previousFileSourceInfo.Type == InputType.Source)
+							{  outputFolder = Source_OutputFolder(previousFileSourceInfo.Number);  }
+						else
+							{  
+							throw new Exception("xxx");							// xxx image source
+							}
 
 						if (System.IO.Directory.Exists(outputFolder))
 							{  
@@ -436,7 +450,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 
-				if (System.IO.Directory.Exists(RootMenuFolder))
+				if (System.IO.Directory.Exists(MenuJS_OutputFolder))
 					{  
 					if (!saidPurgingOutputFiles)
 						{
@@ -445,7 +459,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 					try
-						{  System.IO.Directory.Delete(RootMenuFolder, true);  }
+						{  System.IO.Directory.Delete(MenuJS_OutputFolder, true);  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -790,14 +804,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							"<title>" + TextConverter.TextToHTML(pageTitle) + "</title>" +
 
 							"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
-								MakeRelativeURL(outputPath, RootStyleFolder + "/main.css") +
+								MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main.css") +
 								"\">");
 
 							string allName = PageTypeNameOf(PageType.All);
 							string typeName = PageTypeNameOf(pageType);
 
-							string allJSRelativeURL = MakeRelativeURL(outputPath, RootStyleFolder + "/main-" + allName.ToLower() + ".js");
-							string typeJSRelativeURL = MakeRelativeURL(outputPath, RootStyleFolder + "/main-" + typeName.ToLower() + ".js");
+							string allJSRelativeURL = MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main-" + allName.ToLower() + ".js");
+							string typeJSRelativeURL = MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main-" + typeName.ToLower() + ".js");
 							string jsRelativePrefix = allJSRelativeURL.Substring(0, allJSRelativeURL.Length - allName.Length - 8);
 
 
@@ -939,7 +953,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				);
 
-			BuildFile(config.Folder + "/index.html", rawPageTitle, content.ToString(), PageType.Index);
+			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Index);
 			}
 
 
@@ -949,7 +963,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void DeleteEmptyFolders (Path folder)
 			{
-			while (config.Folder.Contains(folder))
+			while (OutputFolder.Contains(folder))
 				{
 				try
 					{
@@ -1208,6 +1222,62 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 
+		/* Property: OutputFolder
+		 * The root output folder of the entire build target.
+		 */
+		public Path OutputFolder
+			{
+			get
+				{  return config.Folder;  }
+			}
+
+		/* Function: SanitizePath
+		 * Replaces characters in the path according to the <Path Restrictions>.  This should only be used for parts of the path
+		 * generated by user information such as source folders.  You don't want to use this on the absolute result path because 
+		 * it could replace things like the colon after the drive letter on Windows or parts of the path specifying the root output 
+		 * folder instead of just folders inside it.
+		 */
+		protected static Path SanitizePath (Path input)
+			{
+			#if DEBUG
+				if (input.IsAbsolute)
+					{  throw new Exception("You can't use SantizePath on an absolute folder.  Only use it for sections generated from user content.");  }
+			#endif
+
+			if (input.ToString().IndexOfAny(restrictedPathCharacters) == -1)
+				{  return input;  }
+			else
+				{
+				StringBuilder output = new StringBuilder(input);
+
+				foreach (char restrictedPathCharacter in restrictedPathCharacters)
+					{  output.Replace(restrictedPathCharacter, '_');  }
+
+				return output.ToString();
+				}
+			}
+
+
+		/* Function: SanitizePathString
+		 * Same as <SanitizePath()>, only working from a string.  Lighter weight for things like style names which become part of
+		 * the output path but would need to be unnecessarily converted back and forth to a <Path> in the other function.
+		 */
+		protected static string SanitizePathString (string input)
+			{
+			if (input.IndexOfAny(restrictedPathCharacters) == -1)
+				{  return input;  }
+			else
+				{
+				StringBuilder output = new StringBuilder(input);
+
+				foreach (char restrictedPathCharacter in restrictedPathCharacters)
+					{  output.Replace(restrictedPathCharacter, '_');  }
+
+				return output.ToString();
+				}
+			}
+
+
 		/* Function: MakeRelativeURL
 		 * Creates a relative URL between the two absolute filesystem paths.  Make sure the From parameter is a *file* and not
 		 * a folder.
@@ -1292,6 +1362,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// Group: Static Functions and Variables
 		// __________________________________________________________________________
 
+		/* var: restrictedPathCharacters
+		 * An array of characters that cannot appear in output paths according to <Path Restrictions>.
+		 */
+		public static char[] restrictedPathCharacters = { ':', '#' };
 
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.

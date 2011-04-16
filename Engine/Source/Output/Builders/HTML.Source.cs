@@ -76,7 +76,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					accessor.ReleaseLock();
 					haveDBLock = false;
 					
-					Path outputFile = OutputPath(fileID);
+					Path outputFile = Source_OutputFile(fileID);
 
 					if (outputFile != null && System.IO.File.Exists(outputFile))
 						{  
@@ -106,7 +106,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					accessor.ReleaseLock();
 					haveDBLock = false;
 
-					Path outputPath = OutputPath(fileID);
+					Path outputPath = Source_OutputFile(fileID);
 					BuildFile(outputPath, "test", content.ToString(), PageType.Content);
 
 					lock (writeLock)
@@ -130,95 +130,49 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: OutputFileName
-		 * Converts the source file name to its output file name.  Does not include or convert any path information.
+		/* Function: Source_OutputFolder
+		 * Returns the output folder of the passed file source number and, if specified, the folder within it.  If the folder is null
+		 * it returns the root output folder for the file source number.
 		 */
-		public static Path OutputFileName (Path fileName)
+		public Path Source_OutputFolder (int number, Path relativeFolder = default(Path))
 			{
-			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
-			// the last extension.  Dots in folder names are okay though.
-			return fileName.ToString().Replace('.', '-') + ".html";
-			}
-
-
-		/* Function: OutputPath
-		 * Returns a path to the output file to be generated from the passed source file information.  The relative path
-		 * may be null to retrieve the root output folder for the input type and number.
-		 */
-		public Path OutputPath (Files.InputType type, int number, Path relativePath = default(Path), 
-													SourcePathType sourcePathType = SourcePathType.FileAndFolder,
-													OutputPathType outputPathType = OutputPathType.Absolute)
-			{
-			string path, fileName;
-			
-			if (relativePath == null)
-				{
-				path = null;
-				fileName = null;
-				}
-			else if (sourcePathType == SourcePathType.FolderOnly)
-				{
-				path = relativePath;
-				fileName = null;
-				}
-			else // SourcePathType.FileAndFolder
-				{
-				path = relativePath.ParentFolder;
-				fileName = relativePath.NameWithoutPath;
-				}
-
-			StringBuilder result = new StringBuilder();
-
-			if (outputPathType == OutputPathType.Absolute)
-				{ 
-				result.Append(config.Folder);
-				result.Append('/');  
-				}
-
-			if (type == Files.InputType.Source)
-				{  result.Append("files");  }
-			else if (type == Files.InputType.Image)
-				{  result.Append("images");  }
-			else
-				{  throw new InvalidOperationException();  }
+			StringBuilder result = new StringBuilder(OutputFolder);
+			result.Append("/files");  
 
 			if (number != 1)
 				{  result.Append(number);  }
 					
-			if (path != null)
+			if (relativeFolder != null)
 				{
 				result.Append('/');
-				result.Append(path);
-				}
-
-			if (fileName != null)
-				{  
-				result.Append('/');
-				result.Append(OutputFileName(fileName));
+				result.Append(SanitizePath(relativeFolder));
 				}
 
 			return result.ToString();
 			}
 
 
-		/* Function: OutputPath
-		 * Returns a path to the output file to be generated from the passed source file information.  The relative path
-		 * may be null to retrieve the root output folder for the file source.
+		/* Function: Source_OutputFileNameOnly
+		 * Returns the output file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public Path OutputPath (Files.FileSource fileSource, Path relativePath = default(Path), 
-													SourcePathType sourcePathType = SourcePathType.FileAndFolder,
-													OutputPathType outputPathType = OutputPathType.Absolute)
+		public static Path Source_OutputFileNameOnly (Path filename)
 			{
-			return OutputPath(fileSource.Type, fileSource.Number, relativePath, sourcePathType, outputPathType);
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
+			// the last extension.  Dots in folder names are okay though.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + ".html";
 			}
 
 
-		/* Function: OutputPath
+		/* Function: Source_OutputFile
 		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
 		 * it no longer exists.
 		 */
-		public Path OutputPath (int fileID, SourcePathType sourcePathType = SourcePathType.FileAndFolder,
-													OutputPathType outputPathType = OutputPathType.Absolute)
+		public Path Source_OutputFile (int fileID)
 			{
 			Files.File file = Engine.Instance.Files.FromID(fileID);
 			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
@@ -228,7 +182,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			Path relativePath = fileSource.MakeRelative(file.FileName);
 
-			return OutputPath(fileSource, relativePath, sourcePathType, outputPathType);			
+			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
+						 Source_OutputFileNameOnly(relativePath.NameWithoutPath);
 			}
 
 

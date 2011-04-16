@@ -41,10 +41,9 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 			// JSON Path
 
-			Path fullPath = htmlBuilder.OutputPath(WrappedFileSource, pathFragment, 
-																				 Builders.HTML.SourcePathType.FolderOnly,
-																				 Builders.HTML.OutputPathType.RelativeToRootOutputFolder);
-			jsonPath = '"' + TextConverter.EscapeStringChars(fullPath.ToURL()) + '"';
+			Path fullPath = htmlBuilder.Source_OutputFolder(WrappedFileSource.Number, pathFragment);
+			Path relativePath = htmlBuilder.OutputFolder.MakeRelative(fullPath);
+			jsonPath = '"' + TextConverter.EscapeStringChars(relativePath.ToURL()) + '"';
 			}
 
 

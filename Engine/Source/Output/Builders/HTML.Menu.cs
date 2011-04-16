@@ -158,7 +158,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (cancelDelegate())
 				{  return;  }
 
-			fileHierarchy.SegmentJSON(JSONMenuSegmentLength);
+			fileHierarchy.SegmentJSON(JSONMenuSegmentLength, this);
 
 			if (cancelDelegate())
 				{  return;  }
@@ -173,7 +173,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				FileHierarchyEntries.HTMLRootFolder rootFolder = rootFolders.Pop();
 				rootFolder.AppendJSON(json, rootFolders);
 
-				System.IO.StreamWriter outputFile = CreateTextFileAndPath(FileMenuFile(rootFolder.ID));
+				System.IO.StreamWriter outputFile = CreateTextFileAndPath(MenuJS_FileMenuDataFile(rootFolder.ID));
 
 				try
 					{
@@ -197,7 +197,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (fileHierarchy.RootFolderIDs.Contains(oldID) == false)
 					{
 					try
-						{  System.IO.File.Delete(FileMenuFile(oldID));  }
+						{  System.IO.File.Delete(MenuJS_FileMenuDataFile(oldID));  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -215,21 +215,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Property: RootMenuFolder
-		 * The folder that holds all the menu files.
+		/* Property: MenuJS_OutputFolder
+		 * The folder that holds all the menu JavaScript files.
 		 */
-		protected Path RootMenuFolder
+		protected Path MenuJS_OutputFolder
 			{
 			get
-				{  return config.Folder + "/menu";  }
+				{  return OutputFolder + "/menu";  }
 			}
 
-		/* Function: FileMenuFile
-		 * Returns the path of the file menu file with the passed ID number.
+		/* Function: MenuJS_FileMenuDataFile
+		 * Returns the path of the file menu JavaScript file with the passed ID number.
 		 */
-		protected Path FileMenuFile (int id)
+		protected Path MenuJS_FileMenuDataFile (int id)
 			{
-			return config.Folder + "/menu/files" + (id == 1 ? "" : id.ToString()) + ".js";
+			return OutputFolder + "/menu/files" + (id == 1 ? "" : id.ToString()) + ".js";
 			}
 
 

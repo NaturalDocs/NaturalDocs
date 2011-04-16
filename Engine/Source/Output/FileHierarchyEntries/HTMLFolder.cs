@@ -62,7 +62,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 			// JSON Path
 
-			Path fullPath = PathFragment;
+			string pathString = PathFragment;
 			Entry parent = Parent;
 
 			// Build the full path by walking all the way down to the file source.  We have to handle both folders and root folder 
@@ -70,7 +70,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			while ((parent is FileSource) == false)
 				{
 				if (parent is Folder)
-					{  fullPath = (parent as Folder).PathFragment + '/' + fullPath;  }
+					{  pathString = (parent as Folder).PathFragment + '/' + pathString;  }
 
 				parent = parent.Parent;
 				}
@@ -78,12 +78,11 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			FileSource fileSource = (FileSource)parent;
 			
 			if (fileSource.PathFragment != null)
-				{  fullPath = fileSource.PathFragment + '/' + fullPath;  }
+				{  pathString = fileSource.PathFragment + '/' + pathString;  }
 
-			fullPath = htmlBuilder.OutputPath(fileSource.WrappedFileSource, fullPath, 
-																		 Builders.HTML.SourcePathType.FolderOnly,
-																		 Builders.HTML.OutputPathType.RelativeToRootOutputFolder);
-			jsonPath = '"' + TextConverter.EscapeStringChars(fullPath.ToURL()) + '"';
+			Path fullPath = htmlBuilder.Source_OutputFolder(fileSource.WrappedFileSource.Number, pathString);
+			Path relativePath = htmlBuilder.OutputFolder.MakeRelative(fullPath);
+			jsonPath = '"' + TextConverter.EscapeStringChars(relativePath.ToURL()) + '"';
 			}
 
 
