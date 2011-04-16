@@ -62,7 +62,10 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			TokenIterator iterator = source.FirstToken;
 
-			string spaceSeparatedSymbols = "+-";
+			#if !DONT_SHRINK_FILES
+				string spaceSeparatedSymbols = "+-";
+			#endif
+
 			string regexPrefixCharacters = "({[,;:=&|!?\0";
 
 			while (iterator.IsInBounds)
@@ -146,7 +149,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 			// We have to be more cautious than the JS shrinker.  You don't want something like "head .class" to become
 			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
 			// and not before ("body :link").
-			string safeToCondenseAround = "{},;:+>[]=\0";
+			#if !DONT_SHRINK_FILES
+				string safeToCondenseAround = "{},;:+>[]=\0";
+			#endif
 
 			while (iterator.IsInBounds)
 				{
