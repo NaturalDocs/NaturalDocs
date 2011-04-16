@@ -53,18 +53,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 *	 
 		 * <PrepareJSON()> must be called before this can be called.
 		 */
-		public void SegmentJSON (int maxLength)
+		public void SegmentJSON (int maxLength, Builders.HTML builder)
 			{
 			if (!preparedJSON)
 				{  throw new Exception("Must call PrepareJSON before SegmentJSON");  }
 
-			SegmentJSON(maxLength, (HTMLRootFolder)rootFolder);
+			SegmentJSON(maxLength, (HTMLRootFolder)rootFolder, builder);
 			}
 
 		/* Function: SegmentJSON
 		 * A recursive helper to the public SegmentJSON.
 		 */
-		protected void SegmentJSON (int maxLength, HTMLRootFolder root)
+		protected void SegmentJSON (int maxLength, HTMLRootFolder root, Builders.HTML builder)
 			{
 			List<Container> containersInThisLevel = new List<Container>();
 			List<Container> containersInNextLevel = new List<Container>();
@@ -169,10 +169,12 @@ namespace GregValure.NaturalDocs.Engine.Output
 				rootFolderIDs.Add(newRoot.ID);
 
 				newRoot.Members = entry.Members;
+				newRoot.Parent = entry;
 				entry.Members = new List<Entry>(1);
 				entry.Members.Add(newRoot);
 
-				SegmentJSON(maxLength, newRoot);
+				newRoot.PrepareJSON(builder);
+				SegmentJSON(maxLength, newRoot, builder);
 				}
 			}
 

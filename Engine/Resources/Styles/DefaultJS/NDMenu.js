@@ -857,9 +857,7 @@ function NDMenu_FileMenuPath (path)
 			return new NDMenu_FileMenuOffsetPath(offsets);
 			}
 
-		var sectionPath = section[`Path];
-
-		if (this.pathString == sectionPath || !this.pathString.StartsWith(sectionPath))
+		if (this.pathString == section[`Path] || !this.pathString.StartsWith(section[`Path]))
 			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
 
 		do
@@ -872,7 +870,7 @@ function NDMenu_FileMenuPath (path)
 
 				if (member[`Type] == `ExplicitFile || member[`Type] == `ImplicitFile)
 					{
-					if (sectionPath + '/' + member[`Name] == this.pathString)
+					if (section[`Path] + '/' + member[`Name] == this.pathString)
 						{
 						offsets.push(i);
 						return new NDMenu_FileMenuOffsetPath(offsets);
@@ -889,7 +887,6 @@ function NDMenu_FileMenuPath (path)
 						{
 						offsets.push(i);
 						section = member;
-						sectionPath = member[`Path];
 						found = true;
 
 						if (section[`Type] == `DynamicFolder)	
@@ -900,9 +897,6 @@ function NDMenu_FileMenuPath (path)
 								offsets.push(-1);
 								return new NDMenu_FileMenuOffsetPath(offsets);
 								}
-
-							// Don't update sectionPath since it will be defined in the DynamicFolder member, not in the root
-							// section that's returned by GetFileMenuSection().
 							}
 
 						break;
