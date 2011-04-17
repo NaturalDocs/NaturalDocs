@@ -147,7 +147,10 @@ var NDPageFrame = new function ()
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
 		
-		NDMenu.GoToFileHashPath(hash);
+		if (NDCore.IsFileHashPath(hash))
+			{  NDMenu.GoToFileHashPath(hash);  }
+		else
+			{  NDMenu.Update();  }
 		};
 
 

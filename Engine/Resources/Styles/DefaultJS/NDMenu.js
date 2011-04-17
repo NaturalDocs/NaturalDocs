@@ -48,9 +48,8 @@
 		  <currentFileMenuPath>, and <newFileMenuPath> becomes undefined.
 
 		- If some of the data is missing <Update()> displays what it can, requests to load additional menu sections, and returns.
-		  When the data comes back via <FileMenuSectionLoaded()> that function will call <Update()> again if <newFileMenuPath> 
-		  is not undefined, meaning we're still trying to navigate.  <Update()> will either finish the update, request more parts of 
-		  the menu, or just wait for previously requested data to come in.
+		  When the data comes back via <FileMenuSectionLoaded()> that function will call <Update()> again.  <Update()> will either 
+		  finish the update, request more parts of the menu, or just wait for previously requested data to come in.
 
 		- This system allows the user to click a different file before everything finishes loading.  <newFileMenuPath> will be replaced
 		  and <Update()> called again.  If the previous click's data comes back after the new navigation has been completed, 
@@ -113,6 +112,8 @@ var NDMenu = new function ()
 
 		this.fileMenuSections = [ ];
 		this.firstUnusedFileMenuSection = 0;
+
+		this.firstUpdate = true;
 		};
 
 
@@ -132,15 +133,7 @@ var NDMenu = new function ()
 	*/
 	this.GoToFileHashPath = function (hashPath)
 		{
-		var path;
-
-		if (hashPath !== undefined)
-			{
-			var prefix = hashPath.match(/^file([0-9]*):/);
-			path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
-			}
-
-		this.newFileMenuPath = new NDMenu_FileMenuPath(path);
+		this.newFileMenuPath = new NDMenu_FileMenuPath( NDCore.FileHashPathToPath(hashPath) );
 		this.Update();
 		};
 
@@ -150,7 +143,7 @@ var NDMenu = new function ()
 	*/
 	this.Update = function ()
 		{
-		if (this.newFileMenuPath == undefined)
+		if (this.firstUpdate == false && this.newFileMenuPath == undefined)
 			{  return;  }
 
 		// Reset.  Calls to GetFileMenuSection() made while rebuilding the menu will recalculate this.
@@ -176,6 +169,7 @@ var NDMenu = new function ()
 			{
 			this.newFileMenuPath = undefined;
 			this.CleanUpFileMenuSections();
+			this.firstUpdate = false;
 			}
 		else if (result.needToLoad != undefined)
 			{  this.LoadFileMenuSection(result.needToLoad);  }
@@ -295,17 +289,17 @@ var NDMenu = new function ()
 		// Generate the list of files in the selected folder
 
 		var selectedFolder = iterator.currentEntry;
-		var selectedFolderPath = selectedFolder[`Path];
-		var selectedFolderHashPath;
+		var selectedFolderHashPathPrefix;
 
-		if (selectedFolderPath !== undefined)
-			{
-			var prefix = selectedFolderPath.match( /^files([0-9]*)\/?/ );
-			selectedFolderHashPath = "file" + prefix[1] + ":";
-			
-			if (selectedFolderPath.length > prefix[0].length)
-				{  selectedFolderHashPath += selectedFolderPath.substr(prefix[0].length) + "/";  }
+		if (selectedFolder[`Path] !== undefined)
+			{  
+			selectedFolderHashPathPrefix = NDCore.FilePathToHashPath(selectedFolder[`Path]);  
+
+			if (selectedFolderHashPathPrefix[ selectedFolderHashPathPrefix.length - 1 ] != ':')
+				{  selectedFolderHashPathPrefix += '/';  }
 			}
+		// If it's undefined, that means we're in the topmost folder and it only contains other folders for the file sources,
+		// thus this variable won't be used.  Anything that contains a file will at least have a beginning "files/" path to it.
 
 		if (selectedFolder[`Type] == `DynamicFolder)
 			{
@@ -342,7 +336,7 @@ var NDMenu = new function ()
 					{
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFile";
-					htmlEntry.setAttribute("href", "#" + selectedFolderHashPath + member[`Name]);
+					htmlEntry.setAttribute("href", "#" + selectedFolderHashPathPrefix + member[`Name]);
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
@@ -457,9 +451,8 @@ var NDMenu = new function ()
 				}
 			}
 
-		if (this.newFileMenuPath != undefined)
-//			{  this.Update();  }
-			{  setTimeout("NDMenu.Update()", 1500);  }  // xxx delay all loads
+//		this.Update();
+		setTimeout("NDMenu.Update()", 1500);  // xxx delay all loads
 		};
 
 
@@ -520,6 +513,10 @@ var NDMenu = new function ()
 	/* var: firstUnusedFileMenuSection
 		An index into <fileMenuSections> of the first entry that was not accessed via <GetFileMenuSection()> in the
 		last call to <Update()>.
+	*/
+
+	/* var: firstUpdate
+		Whether this is the first time the menu was ever updated.
 	*/
 
 	};

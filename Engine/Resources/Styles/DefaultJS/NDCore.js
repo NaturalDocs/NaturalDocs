@@ -190,7 +190,7 @@ var NDCore = new function ()
 
 
 
-	// Group: Other Functions
+	// Group: Hash and Path Functions
 	// ________________________________________________________________________
 
 
@@ -210,6 +210,35 @@ var NDCore = new function ()
 
 		return (hashA === hashB);
 		};
+
+
+	/* Function: IsFileHashPath
+	*/
+	this.IsFileHashPath = function (hashPath)
+		{
+		return (hashPath.match(/^file([0-9]*):/) != null);
+		};
+
+	/* Function: FileHashPathToPath
+	*/
+	this.FileHashPathToPath = function (hashPath)
+		{
+		var prefix = hashPath.match(/^file([0-9]*):/);
+		return "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
+		};
+
+	/* Function: FilePathToHashPath
+	*/
+	this.FilePathToHashPath = function (path)
+		{
+		var prefix = path.match( /^files([0-9]*)\/?/ );
+		return "file" + prefix[1] + ":" + path.substr(prefix[0].length);
+		};
+
+
+
+	// Group: Other Functions
+	// ________________________________________________________________________
 
 
 	/* Function: IEVersion
