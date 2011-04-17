@@ -127,11 +127,19 @@ var NDMenu = new function ()
 		};
 
 
-	/* Function: GoToFilePath
-		Changes the current page in the file menu to the passed path string, such as "files2/folder/folder/file.cs".
+	/* Function: GoToFileHashPath
+		Changes the current page in the file menu to the passed hash string, such as "file2:folder/folder/file.cs".
 	*/
-	this.GoToFilePath = function (path)
+	this.GoToFileHashPath = function (hashPath)
 		{
+		var path;
+
+		if (hashPath !== undefined)
+			{
+			var prefix = hashPath.match(/^file([0-9]*):/);
+			path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
+			}
+
 		this.newFileMenuPath = new NDMenu_FileMenuPath(path);
 		this.Update();
 		};
@@ -288,6 +296,16 @@ var NDMenu = new function ()
 
 		var selectedFolder = iterator.currentEntry;
 		var selectedFolderPath = selectedFolder[`Path];
+		var selectedFolderHashPath;
+
+		if (selectedFolderPath !== undefined)
+			{
+			var prefix = selectedFolderPath.match( /^files([0-9]*)\/?/ );
+			selectedFolderHashPath = "file" + prefix[1] + ":";
+			
+			if (selectedFolderPath.length > prefix[0].length)
+				{  selectedFolderHashPath += selectedFolderPath.substr(prefix[0].length) + "/";  }
+			}
 
 		if (selectedFolder[`Type] == `DynamicFolder)
 			{
@@ -312,8 +330,6 @@ var NDMenu = new function ()
 
 			if (member[`Type] == `ImplicitFile || member[`Type] == `ExplicitFile)
 				{
-				var filePath = selectedFolderPath + "/" + member[`Name];
-				
 				if (i == selectedFileIndex)
 					{
 					var htmlEntry = document.createElement("div");
@@ -326,7 +342,7 @@ var NDMenu = new function ()
 					{
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFile";
-					htmlEntry.setAttribute("href", "#" + filePath);
+					htmlEntry.setAttribute("href", "#" + selectedFolderHashPath + member[`Name]);
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
@@ -857,7 +873,8 @@ function NDMenu_FileMenuPath (path)
 			return new NDMenu_FileMenuOffsetPath(offsets);
 			}
 
-		if (this.pathString == section[`Path] || !this.pathString.StartsWith(section[`Path]))
+		// If you don't test for undefined the !StartsWith will work.
+		if (this.pathString == section[`Path] || (section[`Path] !== undefined && !this.pathString.StartsWith(section[`Path])) )
 			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
 
 		do
