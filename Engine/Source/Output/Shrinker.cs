@@ -67,11 +67,15 @@ namespace GregValure.NaturalDocs.Engine.Output
 			#endif
 
 			string regexPrefixCharacters = "({[,;:=&|!?\0";
+			char lastNonWSChar = '\0';
 
 			while (iterator.IsInBounds)
 				{
 				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
+
+				if (lastChar != ' ' && lastChar != '\t')
+					{  lastNonWSChar = lastChar;  }
 
 				if (TryToSkipWhitespace(ref iterator, false) == true)
 					{
@@ -105,7 +109,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				else
 					{
 					if (TryToSkipString(ref iterator) == true ||
-						 (regexPrefixCharacters.IndexOf(lastChar) != -1 && TryToSkipRegex(ref iterator) == true) )
+							(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
 						{  }
 					else
 						{  iterator.Next();  }
