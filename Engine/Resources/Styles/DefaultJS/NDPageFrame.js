@@ -24,10 +24,10 @@
 
 		File References:
 
-			> #file[number unless 1]:[full path]:[full symbol (optional)]
+			> #File[number unless 1]:[full path]:[full symbol (optional)]
 			>
-			> #file:source/module/file.cs
-			> #file3:source/module/file.cs:Namespace.Package.Function
+			> #File:source/module/file.cs
+			> #File3:source/module/file.cs:Namespace.Package.Function
 
 		Path Restrictions:
 
@@ -64,8 +64,8 @@ var NDPageFrame = new function ()
 			document.getElementById("NDMessages").style.position = "absolute";
 			}
 
-		this.OnResize();
 		window.onresize = this.OnResize;
+		this.OnResize();
 
 		NDMenu.Start();
 
@@ -102,14 +102,6 @@ var NDPageFrame = new function ()
 		NDCore.SetToAbsolutePosition(content, menuWidth, headerHeight, width - menuWidth, height - headerHeight - footerHeight);
 
 		NDCore.SetToAbsolutePosition(messages, menuWidth, 0, width - menuWidth, undefined);
-
-		content.innerHTML = 
-			"Page Width: " + width + "<br>" +
-			"header Width (style): " + header.style.width + "<br>" +
-			"<b>header Width (offsetWidth): " + header.offsetWidth + "</b><br>" +
-			"header Width (clientWidth): " + header.clientWidth + "<br>" +
-			"header Width (scrollWidth): " + header.scrollWidth + "<br>";
-
 		};
 
 
@@ -148,7 +140,14 @@ var NDPageFrame = new function ()
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
 		
 		if (NDCore.IsFileHashPath(hash))
-			{  NDMenu.GoToFileHashPath(hash);  }
+			{
+			var path = NDCore.FileHashPathToPath(hash);
+
+			var frame = document.getElementById("CFrame");
+			frame.src = path;
+
+			NDMenu.GoToFileHashPath(hash);  
+			}
 		else
 			{  NDMenu.Update();  }
 		};

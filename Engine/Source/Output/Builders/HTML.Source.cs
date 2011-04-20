@@ -152,6 +152,30 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: Source_OutputFolderHashPath
+		 * Returns the hash path of the output folder of the passed file source number and, if specified, the folder within it.
+		 * If the folder is null it returns the root output folder hash path for the file source number.  The hash path will always
+		 * include a trailing symbol so that the file name can simply be concatenated.
+		 */
+		public string Source_OutputFolderHashPath (int number, Path relativeFolder = default(Path))
+			{
+			StringBuilder result = new StringBuilder("File");
+
+			if (number != 1)
+				{  result.Append(number);  }
+
+			result.Append(':');
+					
+			if (relativeFolder != null)
+				{
+				result.Append(SanitizePath(relativeFolder).ToURL());
+				result.Append('/');
+				}
+
+			return result.ToString();
+			}
+
+
 		/* Function: Source_OutputFileNameOnly
 		 * Returns the output file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */

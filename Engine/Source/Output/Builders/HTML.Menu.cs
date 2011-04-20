@@ -14,18 +14,28 @@
  *		to split off sections of it into separate files.  This keeps the file sizes down, allowing only the sections of the 
  *		hierarchy in use to be loaded.
  *		
+ *		Hash paths are in the format "File[#]:[folder]/[folder]/", which is how they are used in the URL minus the file name.
+ *		They will always be relative to the output folder instead of its parent entry, which means you don't have to walk 
+ *		up the hierarchy to determine the full path.  They will also always contain a trailing symbol so that the file name 
+ *		can simply be concatenated to it.  This is necessary because it will end in a colon instead of a slash if there are no
+ *		folders.
+ *		
  *		Root Folder Entries:
  *		
  *			> Type: RootFolder
  *			> ID: Number.  The number for the main JSON file is always 1.
- *			> Path: Full path to output folder
+ *			> HashPath: Hash path to the folder or undefined
  *			> Members: An array of further entries
  *			
+ *			The bottom root folder entry may have an undefined hash path if it only contains file sources.  In this case it
+ *			cannot contain files so this shouldn't cause a problem.  Root folder entries used for the contents of dynamic
+ *			folders will always have a hash path and it will be the same as the dynamic folder's.
+ * 
  *		Inline Folder Entries:
  *		
  *			> Type: InlineFolder
  *			> Name: HTML string or array of HTML strings
- *			> Path: Full path to output folder
+ *			> HashPath: Hash path to the folder
  *			> Members: An array of further entries
  *			
  *			If the folder entry was condensed (making a single entry for "FolderA/FolderB" if folder A contains nothing except
@@ -35,7 +45,7 @@
  *		
  *			> Type: DynamicFolder
  *			> Name: HTML string or array of HTML strings
- *			> Path: Full path to output folder
+ *			> HashPath: Hash path to the folder
  *			> Members: ID number of the file containing its members.
  *			
  *			Unlike local and root folders, the Members variable just holds an ID number for the file that contains them.  They
@@ -45,20 +55,18 @@
  *		
  *			> Type: File
  *			> Name: HTML string
- *			> Path: Output file name without path
+ *			> HashPath: Hash path of the file name
  *			
- *			A file entry with an explicit path.  The path is just a file name.  The full path isn't stored because that would be
- *			a lot of duplicated memory.  Rather, the path is relative to the containing folder.
+ *			A file entry with an explicit file name for the path.  This is used when the generated HTML name differs from the
+ *			path, such as by having entity characters.
  *			
  *		Implicit File Entries:
  *		
  *			> Type: AutoFile
  *			> Name: HTML string
  *			
- *			The same as an explicit file entry except the path is implied.  It can be obtained by taking the name string, 
- *			substituting dashes for periods, and then appending ".html".  This saves a significant amount of space in the 
- *			generated JSON because this applies to most files.  Explicit file entries are for when this translation wouldn't work, 
- *			such as if the generated HTML string contained entity characters.
+ *			The same as an explicit file entry except the path is implied.  Most fie entries will have no difference between the
+ *			HTML name and the hash path so this prevents unnecessary data from increasing the file sizes.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -111,7 +119,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			Type = 0,  // All
 			ID = 1,  // Root Folder
 			Name = 1,  // Local Folder, Dynamic Folder, Explicit File, Implicit File
-			Path = 2, // Root Folder, Local Folder, Dynamic Folder, Explicit File
+			HashPath = 2, // Root Folder, Local Folder, Dynamic Folder, Explicit File
 			Members = 3  // Root Folder, Local Folder, Dynamic Folder
 			};
 

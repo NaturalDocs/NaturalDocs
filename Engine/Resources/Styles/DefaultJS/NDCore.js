@@ -216,23 +216,21 @@ var NDCore = new function ()
 	*/
 	this.IsFileHashPath = function (hashPath)
 		{
-		return (hashPath.match(/^file([0-9]*):/) != null);
+		return (hashPath.match(/^File[0-9]*:/) != null);
 		};
 
 	/* Function: FileHashPathToPath
 	*/
 	this.FileHashPathToPath = function (hashPath)
 		{
-		var prefix = hashPath.match(/^file([0-9]*):/);
-		return "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
-		};
+		var prefix = hashPath.match(/^File([0-9]*):/);
+		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
 
-	/* Function: FilePathToHashPath
-	*/
-	this.FilePathToHashPath = function (path)
-		{
-		var prefix = path.match( /^files([0-9]*)\/?/ );
-		return "file" + prefix[1] + ":" + path.substr(prefix[0].length);
+		var lastSeparator = path.lastIndexOf('/');
+		var filename = path.substr(lastSeparator + 1);
+		filename = filename.replace(/\./g, '-');
+		
+		return path.substr(0, lastSeparator + 1) + filename + ".html";
 		};
 
 

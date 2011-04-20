@@ -27,12 +27,12 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 		public HTMLRootFolder () : base ()
 			{
-			jsonPath = null;
+			hashPath = null;
 			}
 
 		public void PrepareJSON (Builders.HTML htmlBuilder)
 			{
-			// The JSON path is only relevant for root folders used to create dynamic folders.  It will remain null for the
+			// The hash path is only relevant for root folders used to create dynamic folders.  It will remain null for the
 			// bottom root folder.
 			if (Parent != null)
 				{
@@ -54,9 +54,8 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				if (fileSource.PathFragment != null)
 					{  path = fileSource.PathFragment + '/' + path;  }
 
-				Path fullPath = htmlBuilder.Source_OutputFolder(fileSource.WrappedFileSource.Number, path);
-				Path relativePath = htmlBuilder.OutputFolder.MakeRelative(fullPath);
-				jsonPath = '"' + TextConverter.EscapeStringChars(relativePath.ToURL()) + '"';
+				hashPath = htmlBuilder.Source_OutputFolderHashPath(fileSource.WrappedFileSource.Number, path);
+				hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
 				}
 			}
 
@@ -75,8 +74,8 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				output.Append(ID);
 				output.Append(',');
 
-				if (jsonPath != null)
-					{  output.Append(jsonPath);  }
+				if (hashPath != null)
+					{  output.Append(hashPath);  }
 				else
 					{  output.Append("undefined");  }
 
@@ -144,8 +143,8 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 					// +2 for member brackets, + separating commas
 					int length = 9 + (Members.Count - 1);
 
-					if (jsonPath != null)
-						{  length += jsonPath.Length;  }
+					if (hashPath != null)
+						{  length += hashPath.Length;  }
 					else
 						{  
 						// +9 for "undefined"
@@ -162,7 +161,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected string jsonPath;
+		protected string hashPath;
 
 		}
 	}

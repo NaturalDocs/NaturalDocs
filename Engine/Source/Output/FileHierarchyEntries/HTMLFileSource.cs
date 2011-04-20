@@ -26,7 +26,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		public HTMLFileSource (Files.FileSource newFileSource) : base (newFileSource)
 			{
 			jsonName = null;
-			jsonPath = null;
+			hashPath = null;
 			}
 
 		public void PrepareJSON (Builders.HTML htmlBuilder)
@@ -39,11 +39,10 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				}
 
 
-			// JSON Path
+			// Hash Path
 
-			Path fullPath = htmlBuilder.Source_OutputFolder(WrappedFileSource.Number, pathFragment);
-			Path relativePath = htmlBuilder.OutputFolder.MakeRelative(fullPath);
-			jsonPath = '"' + TextConverter.EscapeStringChars(relativePath.ToURL()) + '"';
+			hashPath = htmlBuilder.Source_OutputFolderHashPath(WrappedFileSource.Number, pathFragment);
+			hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
 			}
 
 
@@ -77,7 +76,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				}
 
 			output.Append(',');
-			output.Append(jsonPath);
+			output.Append(hashPath);
 			output.Append(',');
 
 			if (IsDynamicFolder)
@@ -146,13 +145,13 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 					{
 					// [#,[name],[path],[members]] = 6 for id, commas, and brackets
 					// +2 for member brackets, + separating commas
-					return jsonName.Length + jsonPath.Length + 8 + (Members.Count - 1);
+					return jsonName.Length + hashPath.Length + 8 + (Members.Count - 1);
 					}
 				else
 					{
 					// [#,#,[path],[members]] = 7 for id, root id, commas, and brackets
 					// +2 for member brackets, + separating commas
-					return jsonPath.Length + 9 + (Members.Count - 1);
+					return hashPath.Length + 9 + (Members.Count - 1);
 					}
 				}
 			}
@@ -163,7 +162,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		// __________________________________________________________________________
 
 		protected string jsonName;
-		protected string jsonPath;
+		protected string hashPath;
 
 		}
 	}

@@ -25,7 +25,7 @@
 		`Type = 0
 		`ID = 1
 		`Name = 1
-		`Path = 2
+		`HashPath = 2
 		`Members = 3
 
 		Constants:
@@ -129,11 +129,11 @@ var NDMenu = new function ()
 
 
 	/* Function: GoToFileHashPath
-		Changes the current page in the file menu to the passed hash string, such as "file2:folder/folder/file.cs".
+		Changes the current page in the file menu to the passed hash string, such as "File2:folder/folder/file.cs".
 	*/
 	this.GoToFileHashPath = function (hashPath)
 		{
-		this.newFileMenuPath = new NDMenu_FileMenuPath( NDCore.FileHashPathToPath(hashPath) );
+		this.newFileMenuPath = new NDMenu_FileMenuHashPath(hashPath);
 		this.Update();
 		};
 
@@ -195,7 +195,7 @@ var NDMenu = new function ()
 			};
 
 		var iterator = (this.newFileMenuPath != undefined ? this.newFileMenuPath.GetIterator() 
-																				: this.currentFileMenuPath.GetIterator());
+																			: this.currentFileMenuPath.GetIterator());
 		var navigationType;
 
 
@@ -289,17 +289,6 @@ var NDMenu = new function ()
 		// Generate the list of files in the selected folder
 
 		var selectedFolder = iterator.currentEntry;
-		var selectedFolderHashPathPrefix;
-
-		if (selectedFolder[`Path] !== undefined)
-			{  
-			selectedFolderHashPathPrefix = NDCore.FilePathToHashPath(selectedFolder[`Path]);  
-
-			if (selectedFolderHashPathPrefix[ selectedFolderHashPathPrefix.length - 1 ] != ':')
-				{  selectedFolderHashPathPrefix += '/';  }
-			}
-		// If it's undefined, that means we're in the topmost folder and it only contains other folders for the file sources,
-		// thus this variable won't be used.  Anything that contains a file will at least have a beginning "files/" path to it.
 
 		if (selectedFolder[`Type] == `DynamicFolder)
 			{
@@ -336,7 +325,7 @@ var NDMenu = new function ()
 					{
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFile";
-					htmlEntry.setAttribute("href", "#" + selectedFolderHashPathPrefix + member[`Name]);
+					htmlEntry.setAttribute("href", "#" + selectedFolder[`HashPath] + member[`Name]);
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
@@ -466,7 +455,9 @@ var NDMenu = new function ()
 			{
 			var head = document.getElementsByTagName("head")[0];
 
-			for (var i = this.fileMenuSections.length - 1; i >= this.firstUnusedFileMenuSection && this.fileMenuSections.length > `MaxFileMenuSections; i--)
+			for (var i = this.fileMenuSections.length - 1; 
+				  i >= this.firstUnusedFileMenuSection && this.fileMenuSections.length > `MaxFileMenuSections; 
+				  i--)
 				{
 				// We don't want to remove an entry if data's being loaded for it.  The event handler could reasonably expect it 
 				// to exist.
@@ -549,7 +540,7 @@ var NDMenu = new function ()
 	___________________________________________________________________________
 
 	A path through <NDMenu's> hierarchy using array offsets, which is more efficient than using folder names.
-	This has the same interface as <NDMenu_FileMenuPath> so they can be used interchangeably.
+	This has the same interface as <NDMenu_FileMenuHashPath> so they can be used interchangeably.
 
 	You can pass an array of file offsets to the constructor, or leave it undefined to refer to the root folder.
 
@@ -589,7 +580,7 @@ function NDMenu_FileMenuOffsetPath (offsets)
 	___________________________________________________________________________
 
 	A class that can walk through <NDMenu_FileMenuOffsetPath>.  This has the same interface as 
-	<NDMenu_FileMenuPath_Iterator> so they can be used interchangeably provided they're with their appropriate
+	<NDMenu_FileMenuHashPath_Iterator> so they can be used interchangeably provided they're with their appropriate
 	path types.
 
 	Limitations:
@@ -823,14 +814,14 @@ function NDMenu_FileMenuOffsetPath_Iterator (pathObject)
 
 
 
-/* Class: NDMenu_FileMenuPath
+/* Class: NDMenu_FileMenuHashPath
 	___________________________________________________________________________
 
-	A path through <NDMenu's> hierarchy using a path string such as "files2/folder/folder/source.cs".  All paths are
-	assumed to terminate on a file name instead of a folder.  It will tolerate a leading hash and/or slash.
+	A path through <NDMenu's> hierarchy using a hash path string such as "File2:folder/folder/source.cs".  All paths are
+	assumed to terminate on a file name instead of a folder.
 
 */
-function NDMenu_FileMenuPath (path)
+function NDMenu_FileMenuHashPath (hashPath)
 	{
 
 	// Group: Functions
@@ -848,18 +839,22 @@ function NDMenu_FileMenuPath (path)
 
 
 	/* Function: MakeOffsetPath
-		Generates and returns a <NDMenu_FileMenuOffsetPath> from the path string.  If there are not enough menu 
-		sections loaded to fully resolve it, it will generate what it can and put an extra -1 offset on the end to indicate 
-		that there's more.  The extra entry prevents things from rendering as selected when they may not be.  
-		<NDMenu_FileMenuOffsetPath_Iterator> shouldn't have to worry about handling the -1 because it would stop 
-		with `Nav_NeedToLoad before using it, and after the section is loaded new iterators will have to be created 
-		which will cause this function to generate an updated offset path.
+		Generates and returns a <NDMenu_FileMenuOffsetPath> from the hash path string.
+		
+		If there are not enough menu sections loaded to fully resolve it, it will generate what it can and put an extra -1 
+		offset on the end to indicate  that there's more.  The extra entry prevents things from rendering as selected 
+		when they may not be.  <NDMenu_FileMenuOffsetPath_Iterator> shouldn't have to worry about handling the -1 
+		because it would stop with `Nav_NeedToLoad before using it, and after the section is loaded new iterators will 
+		have to be created which will cause this function to generate an updated offset path.
+
+		If there are invalid sections of the hash path, such as a folder name that doesn't exist, this will generate as much
+		as it can from the valid section and ignore the rest.
 	*/
 	this.MakeOffsetPath = function ()
 		{
 		var offsets = [ ];
 
-		if (this.pathString == "" || this.pathString == undefined)
+		if (this.hashPathString == "" || this.hashPathString == undefined)
 			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
 
 		var section = NDMenu.GetFileMenuSection(1);
@@ -871,7 +866,8 @@ function NDMenu_FileMenuPath (path)
 			}
 
 		// If you don't test for undefined the !StartsWith will work.
-		if (this.pathString == section[`Path] || (section[`Path] !== undefined && !this.pathString.StartsWith(section[`Path])) )
+		if (this.hashPathString == section[`HashPath] || 
+			(section[`HashPath] !== undefined && !this.hashPathString.StartsWith(section[`HashPath])) )
 			{  return new NDMenu_FileMenuOffsetPath(offsets);  }
 
 		do
@@ -884,7 +880,7 @@ function NDMenu_FileMenuPath (path)
 
 				if (member[`Type] == `ExplicitFile || member[`Type] == `ImplicitFile)
 					{
-					if (section[`Path] + '/' + member[`Name] == this.pathString)
+					if (section[`HashPath] + member[`Name] == this.hashPathString)
 						{
 						offsets.push(i);
 						return new NDMenu_FileMenuOffsetPath(offsets);
@@ -892,12 +888,12 @@ function NDMenu_FileMenuPath (path)
 					}
 				else // folder
 					{
-					if (this.pathString == member[`Path])
+					if (this.hashPathString == member[`HashPath])
 						{
 						offsets.push(i);
 						return new NDMenu_FileMenuOffsetPath(offsets);
 						}
-					else if (this.pathString.StartsWith(member[`Path]) && this.pathString[member[`Path].length] == '/')
+					else if (this.hashPathString.StartsWith(member[`HashPath]))
 						{
 						offsets.push(i);
 						section = member;
@@ -928,18 +924,9 @@ function NDMenu_FileMenuPath (path)
 	// Group: Properties
 	// ________________________________________________________________________
 
-	/* Property: pathString
-		The path string such as "files2/folder/folder/source.cs".  It will not contain a leading hash or slash.
+	/* Property: hashPathString
+		The hash path string such as "File2:folder/folder/source.cs".
 	*/
-	var startIndex = 0;
-
-	if (path[startIndex] == '#')
-		{  startIndex++;  }
-	if (path[startIndex] == '/')
-		{  startIndex++;  }
-	if (startIndex != 0)
-		{  this.pathString = path.substr(startIndex);  }
-	else
-		{  this.pathString = path;  }
+	this.hashPathString = hashPath;
 
 	};

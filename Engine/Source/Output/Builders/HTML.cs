@@ -8,7 +8,7 @@
  * Topic: Path Restrictions
  * 
  *		- Output file paths cannot contain the colon character as it would conflict with the URL hash format
- *		  "#file:[path]:[symbol]".
+ *		  "#File:[path]:[symbol]".
  *		- Output file paths cannot contain the hash character as it would truncate any URL based on it.
  *		
  * 
@@ -919,7 +919,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					"</div>" +
 				"</div>" +
 
-				"<div id=\"NDContent\">xxx" +
+				"<div id=\"NDContent\">" +
+					"<iframe id=\"CFrame\"></iframe>" +
 				"</div>" +
 
 				"<div id=\"NDFooter\">");

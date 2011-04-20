@@ -28,7 +28,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		public HTMLFolder (Path newPathFragment) : base (newPathFragment)
 			{
 			jsonName = null;
-			jsonPath = null;
+			hashPath = null;
 			}
 
 		public void PrepareJSON (Builders.HTML htmlBuilder)
@@ -60,7 +60,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			jsonName = nameBuilder.ToString();
 
 
-			// JSON Path
+			// Hash Path
 
 			string pathString = PathFragment;
 			Entry parent = Parent;
@@ -80,9 +80,8 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			if (fileSource.PathFragment != null)
 				{  pathString = fileSource.PathFragment + '/' + pathString;  }
 
-			Path fullPath = htmlBuilder.Source_OutputFolder(fileSource.WrappedFileSource.Number, pathString);
-			Path relativePath = htmlBuilder.OutputFolder.MakeRelative(fullPath);
-			jsonPath = '"' + TextConverter.EscapeStringChars(relativePath.ToURL()) + '"';
+			hashPath = htmlBuilder.Source_OutputFolderHashPath(fileSource.WrappedFileSource.Number, pathString);
+			hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
 			}
 
 
@@ -102,7 +101,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			output.Append(',');
 			output.Append(jsonName);
 			output.Append(',');
-			output.Append(jsonPath);
+			output.Append(hashPath);
 			output.Append(',');
 
 			if (IsDynamicFolder)
@@ -153,7 +152,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				{  
 				// [#,[name],[path],[members]] = 6 for id, commas, and brackets
 				// +2 for member brackets or number
-				int tagLength = jsonName.Length + jsonPath.Length + 8;
+				int tagLength = jsonName.Length + hashPath.Length + 8;
 
 				if (IsInlineFolder)
 					{
@@ -171,7 +170,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		// __________________________________________________________________________
 
 		protected string jsonName;
-		protected string jsonPath;
+		protected string hashPath;
 
 		}
 	}
