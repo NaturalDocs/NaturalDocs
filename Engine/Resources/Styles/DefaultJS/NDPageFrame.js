@@ -51,7 +51,9 @@ var NDPageFrame = new function ()
 
 		// this.hashChangePoller = undefined;
 
-		if (navigator.userAgent.indexOf("MSIE 6") != -1)
+		var ieVersion = NDCore.IEVersion();
+
+		if (ieVersion == 6)
 			{
 			// IE 6 doesn't like fixed positioning the way other browsers do.
 
@@ -62,6 +64,16 @@ var NDPageFrame = new function ()
 			document.getElementById("NDMenu").style.position = "absolute";
 			document.getElementById("NDContent").style.position = "absolute";
 			document.getElementById("NDMessages").style.position = "absolute";
+			}
+		
+		if (ieVersion !== undefined)
+			{
+			// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always 
+			// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does 
+			// do it on a different computer even though they're both running the same version and are both XP.  Weird.  
+			// Since it shouldn't have any detrimental effect, add it for all IE versions just to be safe.
+
+			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 			}
 
 		window.onresize = this.OnResize;
