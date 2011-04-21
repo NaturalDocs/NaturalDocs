@@ -793,7 +793,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				file.Write(
 
-					"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">" +
+					// We're stuck in Transitional while we use iframes, which are deprecated in Strict.  HTML5 will supposedly bring
+					// iframes back.
+					"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" +
 					"\r\n\r\n" +
 
 					"<html>" +
@@ -920,7 +922,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				"</div>" +
 
 				"<div id=\"NDContent\">" +
-					"<iframe id=\"CFrame\"></iframe>" +
+
+					// We can theoretically replace this with an object tag which will let us go back to HTML Strict, but it's more trouble
+					// than it's worth.  You'll still need to fall back to iframes for IE8 and below, and WebKit has issues with using
+					// location.replace() from the local drive.  This keeps the JavaScript simpler.
+					"<iframe id=\"CFrame\" frameborder=\"0\"></iframe>" +
+
 				"</div>" +
 
 				"<div id=\"NDFooter\">");

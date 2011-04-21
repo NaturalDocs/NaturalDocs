@@ -141,15 +141,24 @@ var NDPageFrame = new function ()
 		
 		if (NDCore.IsFileHashPath(hash))
 			{
-			var path = NDCore.FileHashPathToPath(hash);
-
-			var frame = document.getElementById("CFrame");
-			frame.src = path;
-
+			this.ChangeContent( NDCore.FileHashPathToPath(hash) );
 			NDMenu.GoToFileHashPath(hash);  
 			}
 		else
 			{  NDMenu.Update();  }
+		};
+
+
+	/* Function: ChangeContent
+		Replaces the content frame with the passed URL.  Doesn't affect the history.
+	*/
+	this.ChangeContent = function (url)
+		{
+		var frame = document.getElementById("CFrame");
+		frame.contentWindow.location.replace(url);
+
+		// If we ever switch back to object, use "frame.contentDocument.location.replace(url);".
+		// If we need both, detect it with frame.nodeName == "OBJECT" or "IFRAME".
 		};
 
 
