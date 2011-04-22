@@ -1,9 +1,10 @@
 ﻿Format: 1.4
 
 link: NDCore.js
-link: NDAnimate.js
 index link: NDPageFrame.js
 index link: NDMenu.js
+content link: NDContentPage.js
 
 onload: NDCore.AddBrowserClassesToBody();
 index onload: NDPageFrame.Start();
+content onload: NDContentPage.Start();

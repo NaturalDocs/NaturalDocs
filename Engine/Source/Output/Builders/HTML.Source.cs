@@ -107,7 +107,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					haveDBLock = false;
 
 					Path outputPath = Source_OutputFile(fileID);
-					BuildFile(outputPath, "test", content.ToString(), PageType.Content);
+
+					// Can't get this from outputPath because it may have substituted characters to satisfy the path restrictions.
+					string fileName = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
+
+					BuildFile(outputPath, fileName, content.ToString(), PageType.Content);
 
 					lock (writeLock)
 						{
