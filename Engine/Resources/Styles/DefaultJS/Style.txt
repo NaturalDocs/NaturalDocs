@@ -5,6 +5,5 @@ index link: NDPageFrame.js
 index link: NDMenu.js
 content link: NDContentPage.js
 
-onload: NDCore.AddBrowserClassesToBody();
 index onload: NDPageFrame.Start();
 content onload: NDContentPage.Start();

@@ -77,20 +77,6 @@ var NDCore = new function ()
 		};
 
 
-	/* Function: AddBrowserClassesToBody
-		If the current browser is IE6 or IE7, add thoses classes to HTML.body.  We're not doing a more generalized thing
-		like Natural Docs 1.x did because it's not generally good practice and none of the other browsers should be broken 
-		enough to need it anymore.
-	*/
-	this.AddBrowserClassesToBody = function ()
-		{
-		var ieVersion = this.IEVersion();
-
-		if (ieVersion == 6 || ieVersion == 7)  // 7 covers IE8 in IE7 compatibility mode
-			{  this.AddClass(document.body, "IE" + ieVersion);  }
-		};
-
-
 
 	// Group: Positioning Functions
 	// ________________________________________________________________________

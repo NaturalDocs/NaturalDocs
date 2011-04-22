@@ -7,7 +7,7 @@ _______________________________________________________________________________
 
 (start text)
 
-	<body NDPage NDIndexPage [browser classes]>
+	<body NDPage NDIndexPage>
 
 		<#NDMessages>
 
@@ -43,12 +43,6 @@ _______________________________________________________________________________
 	</body NDPage NDIndexPage>
 
 (end)
-
-Browser Classes:
-
-	If certain browsers are detected, these classes are added to the body element:
-	- IE6
-	- IE7
 
 
 
