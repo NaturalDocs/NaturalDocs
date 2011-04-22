@@ -154,6 +154,7 @@ var NDPageFrame = new function ()
 		if (NDCore.IsFileHashPath(hash))
 			{
 			this.ChangeContent( NDCore.FileHashPathToPath(hash) );
+			this.SetFocusToContent();
 			NDMenu.GoToFileHashPath(hash);  
 			}
 		else
@@ -171,6 +172,18 @@ var NDPageFrame = new function ()
 
 		// If we ever switch back to object, use "frame.contentDocument.location.replace(url);".
 		// If we need both, detect it with frame.nodeName == "OBJECT" or "IFRAME".
+		};
+
+
+	/* Function: SetFocusToContent
+		Sets the focus on the content frame, which lets things like keyboard scrolling work.
+	*/
+	this.SetFocusToContent = function ()
+		{
+		if (NDCore.IsIE())
+			{  document.getElementById("CFrame").contentDocument.body.focus();  }
+		else
+			{  document.getElementById("CFrame").focus();  }
 		};
 
 

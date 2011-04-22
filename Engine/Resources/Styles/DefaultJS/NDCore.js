@@ -221,9 +221,18 @@ var NDCore = new function ()
 
 
 
-	// Group: Other Functions
+	// Group: Browser Functions
 	// ________________________________________________________________________
 
+
+	/* Function: IsIE
+		Returns whether or not you're using Internet Explorer.  If you're going to use <IEVersion()> later, you might
+		want to skip this call and test its result for undefined instead.
+	*/
+	this.IsIE = function ()
+		{
+		return (navigator.userAgent.indexOf("MSIE") != -1);
+		};
 
 	/* Function: IEVersion
 		Returns the major IE version as an integer, or undefined if not using IE.
