@@ -10,6 +10,8 @@
  *		- Output file paths cannot contain the colon character as it would conflict with the URL hash format
  *		  "#File:[path]:[symbol]".
  *		- Output file paths cannot contain the hash character as it would truncate any URL based on it.
+ *		- Output file paths cannot contain the semicolon or ampersand characters as not all browsers can load files with
+ *		  them in the path.
  *		
  * 
  * File: Config.nd
@@ -1373,7 +1375,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: restrictedPathCharacters
 		 * An array of characters that cannot appear in output paths according to <Path Restrictions>.
 		 */
-		public static char[] restrictedPathCharacters = { ':', '#' };
+		public static char[] restrictedPathCharacters = { ':', '#', ';', '&' };
 
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.

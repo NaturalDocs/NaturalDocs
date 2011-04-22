@@ -65,7 +65,7 @@
  *			> Type: AutoFile
  *			> Name: HTML string
  *			
- *			The same as an explicit file entry except the path is implied.  Most fie entries will have no difference between the
+ *			The same as an explicit file entry except the path is implied.  Most file entries will have no difference between the
  *			HTML name and the hash path so this prevents unnecessary data from increasing the file sizes.
  */
 

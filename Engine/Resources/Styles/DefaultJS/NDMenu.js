@@ -323,9 +323,16 @@ var NDMenu = new function ()
 					}
 				else
 					{
+					var hashPath = selectedFolder[`HashPath];
+
+					if (member[`Type] == `ImplicitFile)
+						{  hashPath += member[`Name];  }
+					else
+						{  hashPath += member[`HashPath];  }
+
 					var htmlEntry = document.createElement("a");
 					htmlEntry.className = "MEntry MFile";
-					htmlEntry.setAttribute("href", "#" + selectedFolder[`HashPath] + member[`Name]);
+					htmlEntry.setAttribute("href", "#" + hashPath);
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
@@ -880,7 +887,14 @@ function NDMenu_FileMenuHashPath (hashPath)
 
 				if (member[`Type] == `ExplicitFile || member[`Type] == `ImplicitFile)
 					{
-					if (section[`HashPath] + member[`Name] == this.hashPathString)
+					var hashPath = section[`HashPath];
+
+					if (member[`Type] == `ExplicitFile)
+						{  hashPath += member[`HashPath];  }
+					else
+						{  hashPath += member[`Name];  }
+
+					if (hashPath == this.hashPathString)
 						{
 						offsets.push(i);
 						return new NDMenu_FileMenuOffsetPath(offsets);

@@ -192,6 +192,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: Source_OutputFileNameOnlyHashPath
+		 * Returns the hash path of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public string Source_OutputFileNameOnlyHashPath (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+			return SanitizePath(nameString);
+			}
+
+
 		/* Function: Source_OutputFile
 		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
 		 * it no longer exists.

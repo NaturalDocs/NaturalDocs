@@ -33,11 +33,11 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			StringBuilder output = new StringBuilder();
 
 			string htmlName = TextConverter.TextToHTML(FileName);
-			string path = Builders.HTML.Source_OutputFileNameOnly(FileName);
+			string hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath(FileName);
+
 			Builders.HTML.FileHierarchyEntryType type;
 
-			string htmlNameTranslation = htmlName.Replace('.', '-') + ".html";
-			if (htmlNameTranslation == path)
+			if (hashPath == htmlName)
 				{  type = Builders.HTML.FileHierarchyEntryType.ImplicitFile;  }
 			else
 				{  type = Builders.HTML.FileHierarchyEntryType.ExplicitFile;  }
@@ -51,7 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			if (type == Builders.HTML.FileHierarchyEntryType.ExplicitFile)
 				{
 				output.Append(",\"");
-				output.Append( TextConverter.EscapeStringChars(path) );
+				output.Append( TextConverter.EscapeStringChars(hashPath) );
 				output.Append('"');
 				}
 
