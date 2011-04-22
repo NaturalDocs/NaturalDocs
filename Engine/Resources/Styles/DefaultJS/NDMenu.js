@@ -30,9 +30,7 @@
 
 		Constants:
 
-		`MaxFileMenuSections = 3
-			This is the ideal, since it may need to be larger if there are a lot of levels in use.
-			xxx make 10 in full release
+		`MaxFileMenuSections = 10
 */
 
 
@@ -447,8 +445,8 @@ var NDMenu = new function ()
 				}
 			}
 
-//		this.Update();
-		setTimeout("NDMenu.Update()", 1500);  // xxx delay all loads
+		//	To simulate latency for testing, replace this line with setTimeout("NDMenu.Update()", 1500);
+		this.Update();
 		};
 
 
