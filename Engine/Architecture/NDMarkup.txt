@@ -1,5 +1,5 @@
 ﻿
-Title: NDMarkup Format
+Title: NDMarkup
 _______________________________________________________________________________
 
 NDMarkup is Natural Docs' internal XML representation of formatted topic bodies.
