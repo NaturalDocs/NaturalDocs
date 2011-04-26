@@ -83,6 +83,9 @@
     <Compile Include="Source\Config\Manager.cs" />
     <Compile Include="Source\Config\OutputEntry.cs" />
     <Compile Include="Source\Config\PropertyResult.cs" />
+    <Compile Include="Source\NDMarkup\Exceptions\InvalidTag.cs" />
+    <Compile Include="Source\NDMarkup\Exceptions\InvalidMarkup.cs" />
+    <Compile Include="Source\NDMarkup\Iterator.cs" />
     <Compile Include="Source\IBinaryFileObject.cs" />
     <Compile Include="Source\Delegates.cs" />
     <Compile Include="Source\Errors\Error.cs" />
@@ -179,7 +182,7 @@
     <Content Include="Architecture\File Parsing.txt" />
     <Content Include="Architecture\ID Deletions.txt" />
     <Content Include="Architecture\JavaScript Notes.txt" />
-    <Content Include="Architecture\NDMarkup Format.txt" />
+    <Content Include="Architecture\NDMarkup.txt" />
     <Content Include="Build Scripts\PostBuild.js" />
     <Content Include="Resources\Config\Languages.txt" />
     <Content Include="Resources\Config\Parser.txt" />
