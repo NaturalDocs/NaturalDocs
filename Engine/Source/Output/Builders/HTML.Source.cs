@@ -34,25 +34,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 	public partial class HTML
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-		/* Enum: SourcePathType
-		 * FolderOnly - The input path doesn't contain a file name.
-		 * FileAndFolder - The input path contains a file name and may also contain all or part of a folder path.
-		 */
-		public enum SourcePathType : byte
-			{  FolderOnly, FileAndFolder  };
-
-		/* Enum: OutputPathType
-		 * Absolute - Will return an absolute path.
-		 * RelativeToRootOutputFolder - Will return a path relative to <RootOutputFolder>.
-		 */
-		public enum OutputPathType : byte
-			{  Absolute, RelativeToRootOutputFolder  };
-
-
-
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -87,7 +68,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Remove(fileID) == true)
-							{  buildFlags |= BuildFlags.FileHierarchy;  }
+							{  buildFlags |= BuildFlags.FileMenu;  }
 						}
 					}
 
@@ -116,7 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Add(fileID) == true)
-							{  buildFlags |= BuildFlags.FileHierarchy;  }
+							{  buildFlags |= BuildFlags.FileMenu;  }
 						}
 					}
 				}

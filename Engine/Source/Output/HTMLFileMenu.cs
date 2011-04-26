@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.HTMLFileHierarchy
+ * Class: GregValure.NaturalDocs.Engine.Output.HTMLFileMenu
  * ____________________________________________________________________________
  * 
  * A class for generating a tree of all the files to be used in output.  Extra fields are added to help output generation.
@@ -13,18 +13,18 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries;
+using GregValure.NaturalDocs.Engine.Output.FileMenuEntries;
 
 
 namespace GregValure.NaturalDocs.Engine.Output
 	{
-	public class HTMLFileHierarchy : FileHierarchy
+	public class HTMLFileMenu : FileMenu
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public HTMLFileHierarchy () : base ()
+		public HTMLFileMenu () : base ()
 			{
 			preparedJSON = false;
 			}
@@ -37,17 +37,17 @@ namespace GregValure.NaturalDocs.Engine.Output
 		public void PrepareJSON (Builders.HTML builder)
 			{
 			ForEach(
-				delegate (FileHierarchyEntries.Entry entry)
+				delegate (FileMenuEntries.Entry entry)
 					{
-					(entry as FileHierarchyEntries.IHTMLEntry).PrepareJSON(builder);
+					(entry as FileMenuEntries.IHTMLEntry).PrepareJSON(builder);
 					}, 
-				FileHierarchy.ForEachMethod.ChildrenFirst);
+				FileMenu.ForEachMethod.ChildrenFirst);
 
 			preparedJSON = true;
 			}
 
 		/* Function: SegmentJSON
-		 *	 Goes through the hierarchy and attempts to break the tree into segments that would create JSON data
+		 *	 Goes through the menu and attempts to break the tree into segments that would create JSON data
 		 *	 of no more than the passed length.  It will insert <HTMLRootFolders> to make folders dynamic and thus
 		 *	 part of another file.  It's possible for a segment to be larger than the passed length if it's unavoidable.
 		 *	 
@@ -179,18 +179,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 
 		/* Function: AppendJSON
-		 * Generates JSON for the root folder of the hierarchy and appends it to the StringBuilder.  If it finds any
-		 * <FileHierarchyEntries.HTMLRootFolders> in the tree, they will be added to the passed root folders list
+		 * Generates JSON for the root folder of the menu and appends it to the StringBuilder.  If it finds any
+		 * <FileMenuEntries.HTMLRootFolders> in the tree, they will be added to the passed root folders list
 		 * and not included in the JSON.
 		 * 
 		 * <PrepareJSON()> must be called before this can be called.
 		 */
-		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileMenuEntries.HTMLRootFolder> rootFolders)
 			{
 			if (!preparedJSON)
 				{  throw new Exception("Must call PrepareJSON before AppendJSON");  }
 
-			(rootFolder as FileHierarchyEntries.HTMLRootFolder).AppendJSON(output, rootFolders);
+			(rootFolder as FileMenuEntries.HTMLRootFolder).AppendJSON(output, rootFolders);
 			}
 
 		#if DONT_SHRINK_FILES
@@ -198,9 +198,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * Appends spaces to the passed StringBuilder based on how many parents it has until the next root folder.
 		 * This function only does anything exists if <DONT_SHRINK_FILES> is defined.
 		 */
-		public static void AppendJSONIndent (FileHierarchyEntries.Entry entry, StringBuilder output)
+		public static void AppendJSONIndent (FileMenuEntries.Entry entry, StringBuilder output)
 			{
-			while ((entry is FileHierarchyEntries.RootFolder) == false)
+			while ((entry is FileMenuEntries.RootFolder) == false)
 				{
 				output.Append("   ");
 				entry = entry.Parent;
@@ -208,24 +208,24 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 		#endif
 
-		override protected FileHierarchyEntries.RootFolder MakeRootFolderEntry ()
+		override protected FileMenuEntries.RootFolder MakeRootFolderEntry ()
 			{
-			return new FileHierarchyEntries.HTMLRootFolder();
+			return new FileMenuEntries.HTMLRootFolder();
 			}
 
-		override protected FileHierarchyEntries.FileSource MakeFileSourceEntry (Files.FileSource fileSource)
+		override protected FileMenuEntries.FileSource MakeFileSourceEntry (Files.FileSource fileSource)
 			{
-			return new FileHierarchyEntries.HTMLFileSource(fileSource);
+			return new FileMenuEntries.HTMLFileSource(fileSource);
 			}
 
-		override protected FileHierarchyEntries.Folder MakeFolderEntry (Path pathSegment)
+		override protected FileMenuEntries.Folder MakeFolderEntry (Path pathSegment)
 			{
-			return new FileHierarchyEntries.HTMLFolder(pathSegment);
+			return new FileMenuEntries.HTMLFolder(pathSegment);
 			}
 
-		override protected FileHierarchyEntries.File MakeFileEntry (Path filename)
+		override protected FileMenuEntries.File MakeFileEntry (Path filename)
 			{
-			return new FileHierarchyEntries.HTMLFile(filename);
+			return new FileMenuEntries.HTMLFile(filename);
 			}
 
 		protected bool preparedJSON;

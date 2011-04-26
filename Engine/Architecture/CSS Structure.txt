@@ -2,12 +2,12 @@
 Title: CSS Structure
 
 
-Topic: Index Page
+Topic: Page Frame
 _______________________________________________________________________________
 
 (start text)
 
-	<body NDPage NDIndexPage>
+	<body NDPage NDFramePage>
 
 		<#NDMessages>
 
@@ -40,7 +40,7 @@ _______________________________________________________________________________
 			<#FGeneratedBy>...</#FGeneratedBy>
 		</#NDFooter>
 
-	</body NDPage NDIndexPage>
+	</body NDPage NDFramePage>
 
 (end)
 

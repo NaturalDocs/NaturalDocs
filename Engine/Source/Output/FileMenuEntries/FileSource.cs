@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.FileSource
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.FileSource
  * ____________________________________________________________________________
  * 
- * Represents a file source in a <FileHierarchy>.
+ * Represents a file source in a <FileMenu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class FileSource : Container
 		{

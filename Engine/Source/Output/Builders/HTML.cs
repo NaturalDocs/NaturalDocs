@@ -60,9 +60,9 @@
  *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
  *		to completion this should be an empty set.
  * 
- *		> [NumberSet: File Hierarchy Root Folder IDs]
+ *		> [NumberSet: File Menu Root Folder IDs]
  *		
- *		The IDs used building the file menu.  This allows us to clean up old JSON data files if we're using less than before.
+ *		The IDs used building the file menu.  This allows us to clean up old JS data files if we're using less than before.
  *		
  */
 
@@ -93,29 +93,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* enum: BuildFlags
 		 * Flags that specify what parts of the HTML output structure still need to be built.
 		 * 
-		 * IndexFile - index.html
+		 * FramePage - index.html
 		 * MainStyleFiles - main.css and main.js
 		 * 
-		 * FileHierarchy - FileHierarchy.json
+		 * FileMenu - files.js
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
-			IndexFile = 0x01,
+			FramePage = 0x01,
 			MainStyleFiles = 0x02,
 
-			FileHierarchy = 0x04
+			FileMenu = 0x04
 			}
 
 
 		/* enum: ClaimedTaskFlags
 		 * Flags that specify which unparallelizable tasks are already being worked on by thread.
 		 * 
-		 * BuildFileHierarchy - A thread is updating FileHierarchy.json.
+		 * BuildFileMenu - A thread is updating files.js.
 		 * CheckFoldersForDeletion - A thread is going through <foldersToCheckForDeletion>.
 		 */
 		 [Flags]
 		 protected enum ClaimedTaskFlags : byte {
-			BuildFileHierarchy = 0x01,
+			BuildFileMenu = 0x01,
 			CheckFoldersForDeletion = 0x02
 			}
 
@@ -124,13 +124,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Used for specifying the type of page something applies to.
 		 * 
 		 * All - Applies to all page types.
-		 * Index - Applies to index.html.
+		 * Frame - Applies to index.html.
 		 * Content - Applies to page content for a source file or class.
 		 */
 		public enum PageType : byte {
 			// Indexes are manual and start at zero so they can be used as indexes into AllPageTypeNames.
   			All = 0,
-			Index = 1,
+			Frame = 1,
 			Content = 2
 			}
 
@@ -152,7 +152,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			config = configEntry;
 			styles = null;
-			fileHierarchyRootFolderIDs = null;
+			fileMenuRootFolderIDs = null;
 			}
 
 
@@ -191,8 +191,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Set the default build flags
 
-			buildFlags = BuildFlags.IndexFile | BuildFlags.MainStyleFiles;
-			// FileHierarchy only gets rebuilt if changes are detected in sourceFilesWithContent.
+			buildFlags = BuildFlags.FramePage | BuildFlags.MainStyleFiles;
+			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
 
 
 			// Load Config.nd
@@ -221,14 +221,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
 																										 out sourceFilesToRebuild, out sourceFilesWithContent, 
-																										 out foldersToCheckForDeletion, out fileHierarchyRootFolderIDs);
+																										 out foldersToCheckForDeletion, out fileMenuRootFolderIDs);
 				}
 			else
 				{
 				sourceFilesToRebuild = new IDObjects.NumberSet();
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
-				fileHierarchyRootFolderIDs = new IDObjects.NumberSet();
+				fileMenuRootFolderIDs = new IDObjects.NumberSet();
 				}
 
 			if (!hasBinaryBuildStateFile)
@@ -242,7 +242,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (Engine.Instance.Config.RebuildAllOutput)
 				{  
-				buildFlags |= BuildFlags.FileHierarchy;
+				buildFlags |= BuildFlags.FileMenu;
 				}
 
 
@@ -452,7 +452,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 
-				if (System.IO.Directory.Exists(MenuJS_OutputFolder))
+				if (System.IO.Directory.Exists(FileMenu_OutputFolder))
 					{  
 					if (!saidPurgingOutputFiles)
 						{
@@ -461,7 +461,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 					try
-						{  System.IO.Directory.Delete(MenuJS_OutputFolder, true);  }
+						{  System.IO.Directory.Delete(FileMenu_OutputFolder, true);  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -469,7 +469,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
-				buildFlags |= BuildFlags.FileHierarchy;
+				buildFlags |= BuildFlags.FileMenu;
 				}
 
 
@@ -589,7 +589,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			try
 				{
 				SaveBinaryBuildStateFile( config.OutputWorkingDataFolder + "/BuildState.nd", sourceFilesToRebuild, sourceFilesWithContent,
-																  foldersToCheckForDeletion, fileHierarchyRootFolderIDs );
+																  foldersToCheckForDeletion, fileMenuRootFolderIDs );
 				}
 			catch 
 				{  }
@@ -612,20 +612,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  return;  }
 
 
-					// Build index file
+					// Build frame page
 
-					if ((buildFlags & BuildFlags.IndexFile) != 0)
+					if ((buildFlags & BuildFlags.FramePage) != 0)
 						{
-						buildFlags &= ~BuildFlags.IndexFile;
+						buildFlags &= ~BuildFlags.FramePage;
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildIndexFile(cancelDelegate);
+						BuildFramePage(cancelDelegate);
 
 						if (cancelDelegate())
 							{
 							lock (writeLock)
-								{  buildFlags |= BuildFlags.IndexFile;  }
+								{  buildFlags |= BuildFlags.FramePage;  }
 							}
 						}
 
@@ -738,25 +738,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 
-					// Build file hierarchy
+					// Build file menu
 
-					else if ( (buildFlags & BuildFlags.FileHierarchy) != 0 &&
-								  (claimedTaskFlags & ClaimedTaskFlags.BuildFileHierarchy) == 0)
+					else if ( (buildFlags & BuildFlags.FileMenu) != 0 &&
+								  (claimedTaskFlags & ClaimedTaskFlags.BuildFileMenu) == 0)
 						{
-						claimedTaskFlags |= ClaimedTaskFlags.BuildFileHierarchy;
+						claimedTaskFlags |= ClaimedTaskFlags.BuildFileMenu;
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildFileHierarchy(cancelDelegate);
+						BuildFileMenu(cancelDelegate);
 
 						Monitor.Enter(writeLock);
 						haveLock = true;
 
-						claimedTaskFlags &= ~ClaimedTaskFlags.BuildFileHierarchy;
+						claimedTaskFlags &= ~ClaimedTaskFlags.BuildFileMenu;
 
 						if (!cancelDelegate())
-							{  buildFlags &= ~BuildFlags.FileHierarchy;  }
+							{  buildFlags &= ~BuildFlags.FileMenu;  }
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -849,10 +849,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildIndexFile
+		/* Function: BuildFramePage
 		 * Builds index.html, which provides the documentation frame.
 		 */
-		protected void BuildIndexFile (CancelDelegate cancelDelegate)
+		protected void BuildFramePage (CancelDelegate cancelDelegate)
 			{
 
 			// Page and header titles
@@ -963,7 +963,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				);
 
-			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Index);
+			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
 			}
 
 
@@ -1144,12 +1144,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static bool LoadBinaryBuildStateFile (Path filename, out IDObjects.NumberSet fileIDsToBuild, 
 																					 out IDObjects.NumberSet fileIDsWithContent, out StringSet foldersToCheckForDeletion,
-																					 out IDObjects.NumberSet fileHierarchyRootFolderIDs)
+																					 out IDObjects.NumberSet fileMenuRootFolderIDs)
 			{
 			fileIDsToBuild = null;
 			fileIDsWithContent = null;
 			foldersToCheckForDeletion = null;
-			fileHierarchyRootFolderIDs = null;
+			fileMenuRootFolderIDs = null;
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -1163,12 +1163,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [StringSet: Folders to Check for Deletion]
-					// [NumberSet: File Hierarchy Root Folder IDs]
+					// [NumberSet: File Menu Root Folder IDs]
 
 					fileIDsToBuild = new IDObjects.NumberSet(binaryFile);
 					fileIDsWithContent = new IDObjects.NumberSet(binaryFile);
 					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
-					fileHierarchyRootFolderIDs = new IDObjects.NumberSet(binaryFile);
+					fileMenuRootFolderIDs = new IDObjects.NumberSet(binaryFile);
 					}
 				}
 			catch
@@ -1193,10 +1193,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				else
 					{  foldersToCheckForDeletion.Clear();  }
 
-				if (fileHierarchyRootFolderIDs == null)
-					{  fileHierarchyRootFolderIDs = new IDObjects.NumberSet();  }
+				if (fileMenuRootFolderIDs == null)
+					{  fileMenuRootFolderIDs = new IDObjects.NumberSet();  }
 				else
-					{  fileHierarchyRootFolderIDs.Clear();  }
+					{  fileMenuRootFolderIDs.Clear();  }
 				}
 
 			return result;
@@ -1208,7 +1208,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static void SaveBinaryBuildStateFile (Path filename, IDObjects.NumberSet fileIDsToBuild, 
 																							IDObjects.NumberSet fileIDsWithContent, StringSet foldersToCheckForDeletion,
-																							IDObjects.NumberSet fileHierarchyRootFolderIDs)
+																							IDObjects.NumberSet fileMenuRootFolderIDs)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -1217,12 +1217,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [StringSet: Folders to Check for Deletion]
-				// [NumberSet: File Hierarchy Root Folder IDs]
+				// [NumberSet: File Menu Root Folder IDs]
 
 				binaryFile.WriteObject(fileIDsToBuild);
 				binaryFile.WriteObject(fileIDsWithContent);
 				binaryFile.WriteObject(foldersToCheckForDeletion);
-				binaryFile.WriteObject(fileHierarchyRootFolderIDs);
+				binaryFile.WriteObject(fileMenuRootFolderIDs);
 				}
 			}
 
@@ -1362,10 +1362,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected List<Styles.HTMLStyle> styles;
 
-		/* var: fileHierarchyRootFolderIDs
-		 * The IDs used by the <FileHierarchy>.
+		/* var: fileMenuRootFolderIDs
+		 * The IDs used by the <FileMenu> to build <files.js>.
 		 */
-		protected IDObjects.NumberSet fileHierarchyRootFolderIDs;
+		protected IDObjects.NumberSet fileMenuRootFolderIDs;
 
 
 
@@ -1380,7 +1380,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.
 		 */
-		public static PageType[] AllPageTypes = { PageType.All, PageType.Index, PageType.Content };
+		public static PageType[] AllPageTypes = { PageType.All, PageType.Frame, PageType.Content };
 
 		/* var: AllPageTypeNames
 		 * A static array of simple A-Z names with each index corresponding to those in <AllPageTypes>.

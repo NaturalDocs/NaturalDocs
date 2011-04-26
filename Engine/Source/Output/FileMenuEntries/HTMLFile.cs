@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.HTMLFile
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.HTMLFile
  * ____________________________________________________________________________
  * 
- * Represents a file in a <HTMLFileHierarchy>.  Extra fields are added to help output generation.
+ * Represents a file in a <HTMLFileMenu>.  Extra fields are added to help output generation.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class HTMLFile : File, IHTMLEntry
 		{
@@ -35,12 +35,12 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			string htmlName = TextConverter.TextToHTML(FileName);
 			string hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath(FileName);
 
-			Builders.HTML.FileHierarchyEntryType type;
+			Builders.HTML.FileMenuEntryType type;
 
 			if (hashPath == htmlName)
-				{  type = Builders.HTML.FileHierarchyEntryType.ImplicitFile;  }
+				{  type = Builders.HTML.FileMenuEntryType.ImplicitFile;  }
 			else
-				{  type = Builders.HTML.FileHierarchyEntryType.ExplicitFile;  }
+				{  type = Builders.HTML.FileMenuEntryType.ExplicitFile;  }
 
 			output.Append('[');
 			output.Append((int)type);
@@ -48,7 +48,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			output.Append( TextConverter.EscapeStringChars(htmlName) );
 			output.Append('"');
 
-			if (type == Builders.HTML.FileHierarchyEntryType.ExplicitFile)
+			if (type == Builders.HTML.FileMenuEntryType.ExplicitFile)
 				{
 				output.Append(",\"");
 				output.Append( TextConverter.EscapeStringChars(hashPath) );
@@ -60,10 +60,10 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			json = output.ToString();
 			}
 
-		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileMenuEntries.HTMLRootFolder> rootFolders)
 			{
 			#if DONT_SHRINK_FILES
-				HTMLFileHierarchy.AppendJSONIndent(this, output);
+				HTMLFileMenu.AppendJSONIndent(this, output);
 			#endif
 
 			output.Append(json);

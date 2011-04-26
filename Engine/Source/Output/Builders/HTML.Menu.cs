@@ -5,14 +5,14 @@
  * 
  * File: files.js
  * 
- *		A data file representing all or part of the source file hierarchy.  The hierarchy is represented by entries, each one 
- *		being an array with the first value being its type.  The values are defined in <FileHierarchyEntryType>, and the 
- *		indexes of other members are defined in <FileHierarchyEntryMember>.
+ *		A file representing all or part of the source file menu.  The menu is represented by entries, each one being an array 
+ *		with the first value being its type.  The values are defined in <FileMenuEntryType>, and the indexes of other members 
+ *		are defined in <FileMenuEntryMember>.
  *		
  *		Every file starts off with a root folder entry, which in turn contains other file and folder entries.  For small projects
- *		the entire hierarchy may be contained in a single JSON file, but in larger projects it may use dynamic folder entries
- *		to split off sections of it into separate files.  This keeps the file sizes down, allowing only the sections of the 
- *		hierarchy in use to be loaded.
+ *		the entire menu may be contained in a single JS file, but in larger projects it may use dynamic folder entries
+ *		to split off sections of it into separate files.  This keeps the file sizes down, allowing only the sections of the menu
+ *		in use to be loaded.
  *		
  *		Hash paths are in the format "File[#]:[folder]/[folder]/", which is how they are used in the URL minus the file name.
  *		They will always be relative to the output folder instead of its parent entry, which means you don't have to walk 
@@ -49,7 +49,7 @@
  *			> Members: ID number of the file containing its members.
  *			
  *			Unlike local and root folders, the Members variable just holds an ID number for the file that contains them.  They
- *			will be stored in FileHierarchy[number].json.
+ *			will be stored in files[number].js.
  *		
  *		Explicit File Entries:
  *		
@@ -89,9 +89,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Enum: FileHierarchyEntryType
+		/* Enum: FileMenuEntryType
 		 * 
-		 * The type value of a file hierarchy entry.
+		 * The type value of a file menu entry.
 		 *
 		 * RootFolder - The entry is the root folder.
 		 * InlineFolder - The entry is a folder that has its members stored inline as an array.
@@ -99,7 +99,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * ExplicitFile - The entry is a file with an explicit path.
 		 * ImplicitFile - The entry is a file with an implicit path.
 		 */
-		public enum FileHierarchyEntryType : byte  
+		public enum FileMenuEntryType : byte  
 			{
 			// If these values ever change, you also have to change the substitutions in the JavaScript styles.
 			RootFolder = 0, 
@@ -109,10 +109,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			ImplicitFile = 4
 			};
 
-		/* Enum: FileHierarchyEntryMember
-		 * The indexes into the array of various file hierarchy entry members.
+		/* Enum: FileMenuEntryMember
+		 * The indexes into the array of various file menu entry members.
 		 */
-		public enum FileHierarchyEntryMember : byte
+		public enum FileMenuEntryMember : byte
 			{  
 			// If these values ever change, you also have to change the substitutions in the JavaScript styles and the
 			// JSON generation functions.
@@ -129,17 +129,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: BuildFileHierarchy
+		/* Function: BuildFileMenu
 		 * Generates <files.js> from <sourceFilesWithContent>.
 		 */
-		protected void BuildFileHierarchy (CancelDelegate cancelDelegate)
+		protected void BuildFileMenu (CancelDelegate cancelDelegate)
 			{
-			HTMLFileHierarchy fileHierarchy = new HTMLFileHierarchy();
+			HTMLFileMenu fileMenu = new HTMLFileMenu();
 
 			foreach (Files.FileSource fileSource in Instance.Files.FileSources)
 				{
 				if (fileSource.Type == Files.InputType.Source)
-					{  fileHierarchy.AddFileSource(fileSource);  }
+					{  fileMenu.AddFileSource(fileSource);  }
 				}
 
 			foreach (int fileID in sourceFilesWithContent)
@@ -148,40 +148,40 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  return;  }
 
 				Files.File file = Instance.Files.FromID(fileID);
-				fileHierarchy.AddFile(file);
+				fileMenu.AddFile(file);
 				}
 
-			fileHierarchy.Condense();
+			fileMenu.Condense();
 			
 			if (cancelDelegate())
 				{  return;  }
 
-			fileHierarchy.Sort();
+			fileMenu.Sort();
 
 			if (cancelDelegate())
 				{  return;  }
 
-			fileHierarchy.PrepareJSON(this);
+			fileMenu.PrepareJSON(this);
 
 			if (cancelDelegate())
 				{  return;  }
 
-			fileHierarchy.SegmentJSON(JSONMenuSegmentLength, this);
+			fileMenu.SegmentJSON(JSONMenuSegmentLength, this);
 
 			if (cancelDelegate())
 				{  return;  }
 
-			Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders = new Stack<FileHierarchyEntries.HTMLRootFolder>();
-			rootFolders.Push( (FileHierarchyEntries.HTMLRootFolder)fileHierarchy.RootFolder );
+			Stack<FileMenuEntries.HTMLRootFolder> rootFolders = new Stack<FileMenuEntries.HTMLRootFolder>();
+			rootFolders.Push( (FileMenuEntries.HTMLRootFolder)fileMenu.RootFolder );
 
 			while (rootFolders.Count > 0)
 				{
 				StringBuilder json = new StringBuilder();
 
-				FileHierarchyEntries.HTMLRootFolder rootFolder = rootFolders.Pop();
+				FileMenuEntries.HTMLRootFolder rootFolder = rootFolders.Pop();
 				rootFolder.AppendJSON(json, rootFolders);
 
-				System.IO.StreamWriter outputFile = CreateTextFileAndPath(MenuJS_FileMenuDataFile(rootFolder.ID));
+				System.IO.StreamWriter outputFile = CreateTextFileAndPath(FileMenu_DataFile(rootFolder.ID));
 
 				try
 					{
@@ -200,12 +200,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Clear out any old menu files that are no longer in use.
 
-			foreach (int oldID in fileHierarchyRootFolderIDs)
+			foreach (int oldID in fileMenuRootFolderIDs)
 				{
-				if (fileHierarchy.RootFolderIDs.Contains(oldID) == false)
+				if (fileMenu.RootFolderIDs.Contains(oldID) == false)
 					{
 					try
-						{  System.IO.File.Delete(MenuJS_FileMenuDataFile(oldID));  }
+						{  System.IO.File.Delete(FileMenu_DataFile(oldID));  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -214,7 +214,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			fileHierarchyRootFolderIDs.Duplicate(fileHierarchy.RootFolderIDs);
+			fileMenuRootFolderIDs.Duplicate(fileMenu.RootFolderIDs);
 			}
 
 
@@ -223,19 +223,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Property: MenuJS_OutputFolder
+		/* Property: FileMenu_OutputFolder
 		 * The folder that holds all the menu JavaScript files.
 		 */
-		protected Path MenuJS_OutputFolder
+		protected Path FileMenu_OutputFolder
 			{
 			get
 				{  return OutputFolder + "/menu";  }
 			}
 
-		/* Function: MenuJS_FileMenuDataFile
+		/* Function: FileMenu_DataFile
 		 * Returns the path of the file menu JavaScript file with the passed ID number.
 		 */
-		protected Path MenuJS_FileMenuDataFile (int id)
+		protected Path FileMenu_DataFile (int id)
 			{
 			return OutputFolder + "/menu/files" + (id == 1 ? "" : id.ToString()) + ".js";
 			}

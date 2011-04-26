@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.Entry
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.Entry
  * ____________________________________________________________________________
  * 
- * A base class for entries in <FileHierarchy>.
+ * A base class for entries in <FileMenu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	abstract public class Entry : IComparable<Entry>
 		{

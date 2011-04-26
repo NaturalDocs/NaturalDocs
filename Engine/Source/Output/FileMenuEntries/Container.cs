@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.Container
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.Container
  * ____________________________________________________________________________
  * 
- * A base class for entries in <FileHierarchy> which can contain other entries.
+ * A base class for entries in <FileMenu> which can contain other entries.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public abstract class Container : Entry
 		{

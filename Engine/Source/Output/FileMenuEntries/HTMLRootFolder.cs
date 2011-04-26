@@ -1,9 +1,9 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.HTMLRootFolder
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.HTMLRootFolder
  * ____________________________________________________________________________
  * 
- * Represents the root folder in a <HTMLFileHierarchy>.  This may be the bottom root that contains the
- * entire hierarchy, or additional roots added to create dynamic folders.  Extra fields are added to help 
+ * Represents the root folder in a <HTMLFileMenu>.  This may be the bottom root that contains the
+ * entire menu, or additional roots added to create dynamic folders.  Extra fields are added to help 
  * output generation.
  */
 
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class HTMLRootFolder : RootFolder, IHTMLEntry
 		{
@@ -65,11 +65,11 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			if (!MergeWithFileSource)
 				{
 				#if DONT_SHRINK_FILES
-					HTMLFileHierarchy.AppendJSONIndent(this, output);
+					HTMLFileMenu.AppendJSONIndent(this, output);
 				#endif
 
 				output.Append('[');
-				output.Append((int)Builders.HTML.FileHierarchyEntryType.RootFolder);
+				output.Append((int)Builders.HTML.FileMenuEntryType.RootFolder);
 				output.Append(',');
 				output.Append(ID);
 				output.Append(',');
@@ -101,7 +101,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 				#if DONT_SHRINK_FILES
 					output.AppendLine();
-					HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+					HTMLFileMenu.AppendJSONIndent(Members[0], output);
 				#endif
 
 				output.Append("]]");
@@ -112,7 +112,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 				}
 			else
 				{
-				(Members[0] as FileHierarchyEntries.HTMLFileSource).AppendJSON(output, rootFolders);
+				(Members[0] as FileMenuEntries.HTMLFileSource).AppendJSON(output, rootFolders);
 				}
 			}
 

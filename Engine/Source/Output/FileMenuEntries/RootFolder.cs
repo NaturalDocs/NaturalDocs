@@ -1,8 +1,9 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.File
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.RootFolder
  * ____________________________________________________________________________
  * 
- * Represents a file in a <FileHierarchy>.
+ * Represents the root folder in a <FileMenu>.  This may be either the bottom root containing the 
+ * entire menu, or additional roots created to allow dynamic folders.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -13,31 +14,22 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
-	public class File : Entry
+	public class RootFolder : Container
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public File (Path newFileName) : base ()
+		public RootFolder () : base ()
 			{
-			fileName = newFileName;
+			id = 0;
 			}
 
 
 		// Group: Properties
 		// __________________________________________________________________________
-
-		/* Property: FileName
-		 * The name of the file.  Does not include the full path, only the file name.
-		 */
-		public string FileName
-			{
-			get
-				{  return fileName;  }
-			}
 
 		/* Property: SortString
 		 * Returns the string that should be used to sort this entry in a list.
@@ -45,13 +37,24 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 		override public string SortString
 			{  
 			get
-				{  return fileName;  }
+				{  return "Root";  }
+			}
+
+		/* Property: ID
+		 */
+		public int ID
+			{
+			get
+				{  return id;  }
+			set
+				{  id = value;  }
 			}
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Path fileName;
+		protected int id;
+
 		}
 	}

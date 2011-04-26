@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.HTMLFolder
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.HTMLFolder
  * ____________________________________________________________________________
  * 
- * Represents a folder or group of folders in a <FileHierarchy>.  It will only represent a group of folders
+ * Represents a folder or group of folders in a <FileMenu>.  It will only represent a group of folders
  * ("FolderA/FolderB") if the parent folder contains nothing other than the child folder.  Extra fields are added 
  * to help output generation.
  */
@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class HTMLFolder : Folder, IHTMLEntry
 		{
@@ -85,18 +85,18 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileMenuEntries.HTMLRootFolder> rootFolders)
 			{
 			#if DONT_SHRINK_FILES
-				HTMLFileHierarchy.AppendJSONIndent(this, output);
+				HTMLFileMenu.AppendJSONIndent(this, output);
 			#endif
 
 			output.Append('[');
 			
 			if (IsDynamicFolder)
-				{  output.Append((int)Builders.HTML.FileHierarchyEntryType.DynamicFolder);  }
+				{  output.Append((int)Builders.HTML.FileMenuEntryType.DynamicFolder);  }
 			else  // Inline
-				{  output.Append((int)Builders.HTML.FileHierarchyEntryType.InlineFolder);  }
+				{  output.Append((int)Builders.HTML.FileMenuEntryType.InlineFolder);  }
 
 			output.Append(',');
 			output.Append(jsonName);
@@ -133,7 +133,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 				#if DONT_SHRINK_FILES
 					output.AppendLine();
-					HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+					HTMLFileMenu.AppendJSONIndent(Members[0], output);
 				#endif
 
 				output.Append(']');

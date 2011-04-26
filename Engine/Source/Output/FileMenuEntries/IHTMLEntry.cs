@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.IHTMLEntry
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.IHTMLEntry
  * ____________________________________________________________________________
  * 
- * An interface for all HTML entries in <HTMLFileHierarchy>.
+ * An interface for all HTML entries in <HTMLFileMenu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public interface IHTMLEntry
 		{

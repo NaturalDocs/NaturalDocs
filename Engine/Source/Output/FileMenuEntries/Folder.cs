@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.Folder
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.Folder
  * ____________________________________________________________________________
  * 
- * Represents a folder or group of folders in a <FileHierarchy>.  It will only represent a group of folders
+ * Represents a folder or group of folders in a <FileMenu>.  It will only represent a group of folders
  * ("FolderA/FolderB") if the parent folder contains nothing other than the child folder.
  */
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class Folder : Container
 		{

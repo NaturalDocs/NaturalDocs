@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries.HTMLFileSource
+ * Class: GregValure.NaturalDocs.Engine.Output.FileMenuEntries.HTMLFileSource
  * ____________________________________________________________________________
  * 
- * Represents a file source in a <HTMLFileHierarchy>.  Extra fields are added to help output generation.
+ * Represents a file source in a <HTMLFileMenu>.  Extra fields are added to help output generation.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
+namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 	{
 	public class HTMLFileSource : FileSource, IHTMLEntry
 		{
@@ -46,10 +46,10 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			}
 
 
-		public void AppendJSON (StringBuilder output, Stack<FileHierarchyEntries.HTMLRootFolder> rootFolders)
+		public void AppendJSON (StringBuilder output, Stack<FileMenuEntries.HTMLRootFolder> rootFolders)
 			{
 			#if DONT_SHRINK_FILES
-				HTMLFileHierarchy.AppendJSONIndent(this, output);
+				HTMLFileMenu.AppendJSONIndent(this, output);
 			#endif
 
 			// Sanity check
@@ -60,16 +60,16 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 			
 			if (MergeWithRoot)
 				{  
-				output.Append((int)Builders.HTML.FileHierarchyEntryType.RootFolder);
+				output.Append((int)Builders.HTML.FileMenuEntryType.RootFolder);
 				output.Append(',');
-				output.Append( (Parent as FileHierarchyEntries.RootFolder).ID );
+				output.Append( (Parent as FileMenuEntries.RootFolder).ID );
 				}
 			else
 				{  
 				if (IsDynamicFolder)
-					{  output.Append((int)Builders.HTML.FileHierarchyEntryType.DynamicFolder);  }
+					{  output.Append((int)Builders.HTML.FileMenuEntryType.DynamicFolder);  }
 				else
-					{  output.Append((int)Builders.HTML.FileHierarchyEntryType.InlineFolder);  }
+					{  output.Append((int)Builders.HTML.FileMenuEntryType.InlineFolder);  }
 
 				output.Append(',');
 				output.Append(jsonName);
@@ -108,7 +108,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileHierarchyEntries
 
 				#if DONT_SHRINK_FILES
 					output.AppendLine();
-					HTMLFileHierarchy.AppendJSONIndent(Members[0], output);
+					HTMLFileMenu.AppendJSONIndent(Members[0], output);
 				#endif
 
 				output.Append(']');
