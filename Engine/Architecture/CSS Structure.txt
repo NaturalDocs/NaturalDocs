@@ -7,7 +7,7 @@ _______________________________________________________________________________
 
 (start text)
 
-	<body NDPage NDFramePage>
+	<body NDPage NDFramePage IE6/7?>
 
 		<#NDMessages>
 
@@ -43,6 +43,8 @@ _______________________________________________________________________________
 	</body NDPage NDFramePage>
 
 (end)
+
+If the browser is Internet Explorer 6 or 7, the default style's JavaScript will add an IE6 or IE7 class to the body.
 
 
 
@@ -92,7 +94,55 @@ _______________________________________________________________________________
 
 (start text)
 
-	<body NDPage NDContentPage>
+	<body NDPage NDContentPage IE6/7?>
+
+		<CTopic T[Type] L[Language] first/last?>
+
+			<CTitle>
+				<qualifier>Package.Package.</qualifier>Title
+			</CTitle>
+
+			<CBody>
+
+				<CHeading>Heading</CHeading>
+
+				<p>Paragraph text</p>
+
+				<ul>
+					<li><p>Bullet list item</p></li>
+					<li><p>Bullet list item</p></li>
+					<li>
+						<p>Bullet list item paragraph 1</p>
+						<p>Bullet list item paragraph 2</p>
+						<ul>
+							<li>Nested bullet list item</li>
+						</ul>
+					</li>
+				</ul>
+
+				<table CDescriptionList>
+               <tr>
+                  <td CDLEntry>
+                        Entry
+                  </td CDLEntry>
+                  <td CDLDescription>
+                        Description
+                  </td CDLDescription>
+               </tr>
+            </table CDescriptionList>
+
+				<pre>
+					Code<br>
+					Code<br>
+					Code
+				</pre>
+
+			</CBody>
+
+		</CTopic>
+
 	</body NDPage NDContentPage>
 
 (end)
+
+If the browser is Internet Explorer 6 or 7, the default style's JavaScript will add an IE6 or IE7 class to the body.

@@ -153,12 +153,35 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			config = configEntry;
 			styles = null;
 			fileMenuRootFolderIDs = null;
+
+			fileTopicTypeID = -1;
+			nonCodeTopicTypeIDs = new IDObjects.NumberSet();
 			}
 
 
 		public override bool Start (Errors.ErrorList errorList)
 			{  
 			int errors = errorList.Count;
+
+
+			// Topic type IDs
+
+			bool ignore;
+			TopicTypes.TopicType topicType = Instance.TopicTypes.FromKeyword("File", out ignore);
+
+			if (topicType != null)
+				{  fileTopicTypeID = topicType.ID;  }
+
+			// This list isn't meant to be definitive since people can just define their own topic types, but it helps.
+			string[] nonCodeKeywords = { "Topic", "File", "Group", "Section" };
+
+			foreach (string nonCodeKeyword in nonCodeKeywords)
+				{
+				topicType = Instance.TopicTypes.FromKeyword(nonCodeKeyword, out ignore);
+
+				if (topicType != null)
+					{  nonCodeTopicTypeIDs.Add(topicType.ID);  }
+				}
 
 
 			// Validate the output folder.
@@ -1367,6 +1390,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected IDObjects.NumberSet fileMenuRootFolderIDs;
 
+		/* var: fileTopicTypeID
+		 * A reference to the <TopicType> ID of the "file" keyword, or -1 if it isn't defined.
+		 */
+		protected int fileTopicTypeID;
+
+		/* var: nonCodeTopicTypeIDs
+		 * A set of the <TopicType> IDs which are definitely not code.  This list is NOT definitive, as people can always 
+		 * define their own topic types, but it's still helpful.
+		 */
+		protected IDObjects.NumberSet nonCodeTopicTypeIDs;
+
 
 
 		// Group: Static Functions and Variables
@@ -1408,6 +1442,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			return null;
 			}
+
+		static protected Regex.Output.HTML.FileSplitSymbols FileSplitSymbolsRegex = new Regex.Output.HTML.FileSplitSymbols();
+		static protected Regex.Output.HTML.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.Output.HTML.CodeSplitSymbols();
 
 		}
 

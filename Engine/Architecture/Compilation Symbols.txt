@@ -28,3 +28,5 @@ Macros: Other Symbols
 	SHOW_TOPIC_CHANGES - If defined, Natural Docs will detail all the topic changes using the console.
 
 	DONT_SHRINK_FILES - If defined, extra whitespace and comments will not be removed from JS, JSON, and CSS files.
+
+	SHOW_NDMARKUP - If defined, Natural Docs will put a copy of the <NDMarkup> in the output.

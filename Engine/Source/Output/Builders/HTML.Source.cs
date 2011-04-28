@@ -2,7 +2,6 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
- * 
  * File: Output.nd
  * 
  *		A file used to store information about the last time this output target was built.
@@ -27,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
@@ -74,16 +74,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				else // (topics.Count != 0)
 					{
-					StringBuilder content = new StringBuilder();
-					content.Append("<ul>");
+					StringBuilder html = new StringBuilder("\r\n\r\n");
 						
-					foreach (Topic topic in topics)
-						{
-						content.Append("<li>" + topic.Title + "</li>");
+					for (int i = 0; i < topics.Count; i++)
+						{  
+						string extraClass = null;
+
+						if (i == 0)
+							{  extraClass = "first";  }
+						else if (i == topics.Count - 1)
+							{  extraClass = "last";  }
+
+						BuildTopic(topics[i], html, extraClass);  
+						html.Append("\r\n\r\n");
 						}
 							
-					content.Append("</ul>");
-
 					accessor.ReleaseLock();
 					haveDBLock = false;
 
@@ -92,7 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// Can't get this from outputPath because it may have substituted characters to satisfy the path restrictions.
 					string fileName = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
 
-					BuildFile(outputPath, fileName, content.ToString(), PageType.Content);
+					BuildFile(outputPath, fileName, html.ToString(), PageType.Content);
 
 					lock (writeLock)
 						{
@@ -107,6 +112,203 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (haveDBLock)
 					{  accessor.ReleaseLock();  }
 				}
+			}
+
+
+		/* Function: BuildTopic
+		 */
+		protected void BuildTopic (Topic topic, StringBuilder html, string extraClass = null)
+			{
+			string topicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string languageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+
+			html.Append(
+				"<div class=\"CTopic T" + topicTypeName + " L" + languageName + (extraClass == null ? "" : ' ' + extraClass) + "\">" +
+
+					"\r\n ");
+					BuildTitle(topic, html);
+
+					#if SHOW_NDMARKUP
+						if (topic.Body != null)
+							{
+							html.Append(
+							"\r\n " +
+							"<div class=\"CBodyNDMarkup\">" +
+								TextConverter.TextToHTML(topic.Body, false) +
+							"</div>");
+							}
+					#endif
+
+					html.Append("\r\n ");
+					BuildBody(topic, html);
+
+				html.Append(
+				"\r\n" +
+				"</div>"
+				);
+			}
+
+
+		/* Function: BuildTitle
+		 */
+		protected void BuildTitle (Topic topic, StringBuilder html)
+			{
+			MatchCollection splitSymbols = null;
+
+			if (topic.TopicTypeID == fileTopicTypeID)
+				{  splitSymbols = FileSplitSymbolsRegex.Matches(topic.Title);  }
+			else if (nonCodeTopicTypeIDs.Contains(topic.TopicTypeID) == false)
+				{  splitSymbols = CodeSplitSymbolsRegex.Matches(topic.Title);  }
+
+			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);
+
+
+			// Don't count separators on the end of the string.
+
+			if (splitCount > 0)
+				{
+				int endOfString = topic.Title.Length;
+
+				for (int i = splitCount - 1; i >= 0; i--)
+					{
+					if (splitSymbols[i].Index + splitSymbols[i].Length == endOfString)
+						{
+						splitCount--;
+						endOfString = splitSymbols[i].Index;
+						}
+					else
+						{  break;  }
+					}
+				}
+
+
+			// Build the HTML.
+
+			html.Append("<div class=\"CTitle\">");
+
+			if (splitCount == 0)
+				{
+				html.Append( TextConverter.TextToHTML(topic.Title, false, true) );
+				}
+			else
+				{
+				int appendedSoFar = 0;
+				html.Append("<span class=\"qualifier\">");
+
+				for (int i = 0; i < splitCount; i++)
+					{
+					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
+					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
+					html.Append( TextConverter.TextToHTML(titleSection, false, true) );
+					html.Append('\u200B');  // zero-width space for wrapping
+
+					appendedSoFar = endOfSection;
+					}
+
+				html.Append("</span>");
+
+				html.Append( TextConverter.TextToHTML(topic.Title.Substring(appendedSoFar), false, true) );
+				}
+
+			html.Append("</div>");
+			}
+
+
+		/* Function: BuildBody
+		 */
+		protected void BuildBody (Topic topic, StringBuilder html)
+			{
+			if (topic.Body == null)
+				{  return;  }
+
+			html.Append("<div class=\"CBody\">");
+
+			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+
+			while (iterator.IsInBounds)
+				{
+				switch (iterator.Type)
+					{
+					case NDMarkup.Iterator.ElementType.Text:
+						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
+							{  iterator.AppendTo(html);  }
+						else
+							{  html.Append( TextConverter.ConvertMultipleWhitespaceChars(iterator.String) );  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.ParagraphTag:
+					case NDMarkup.Iterator.ElementType.BulletListTag:
+					case NDMarkup.Iterator.ElementType.BulletListItemTag:
+					case NDMarkup.Iterator.ElementType.BoldTag:
+					case NDMarkup.Iterator.ElementType.ItalicsTag:
+					case NDMarkup.Iterator.ElementType.UnderlineTag:
+					case NDMarkup.Iterator.ElementType.LTEntityChar:
+					case NDMarkup.Iterator.ElementType.GTEntityChar:
+					case NDMarkup.Iterator.ElementType.AmpEntityChar:
+					case NDMarkup.Iterator.ElementType.QuoteEntityChar:
+						iterator.AppendTo(html);
+						break;
+
+					case NDMarkup.Iterator.ElementType.HeadingTag:
+						if (iterator.IsOpeningTag)
+							{  html.Append("<div class=\"CHeading\">");  }
+						else
+							{  html.Append("</div>");  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.PreTag:
+						// Because we can assume the NDMarkup is valid, we can assume it's an opening tag and that we will run
+						// into a closing tag.
+
+						html.Append("<pre>");
+
+						for (;;)
+							{
+							iterator.Next();
+
+							if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag)
+								{  break;  }
+							else
+								{  
+								// Includes PreLineBreakTags
+								iterator.AppendTo(html);  
+								}
+							}
+
+						html.Append("</pre>");
+						break;
+
+					case NDMarkup.Iterator.ElementType.DefinitionListTag:
+						if (iterator.IsOpeningTag)
+							{  html.Append("<table class=\"CDefinitionList\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");  }
+						else
+							{  html.Append("</table>");  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.DefinitionListEntryTag:
+						if (iterator.IsOpeningTag)
+							{  html.Append("<tr><td class=\"CDLEntry\">");  }
+						else
+							{  html.Append("</td>");  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.DefinitionListDefinitionTag:
+						if (iterator.IsOpeningTag)
+							{  html.Append("<td class=\"CDLDefinition\">");  }
+						else
+							{  html.Append("</td></tr>");  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
+					case NDMarkup.Iterator.ElementType.LinkTag:
+						html.Append( "<i>" + TextConverter.TextToHTML(iterator.String, false, false) + "</i>" );
+						break;
+					}
+
+				iterator.Next();
+				}
+
+			html.Append("</div>");
 			}
 
 

@@ -29,13 +29,17 @@ namespace GregValure.NaturalDocs.Engine
 		 * Converts a plain text string to HTML.  This encodes <, >, ", and & as entity characters, replaces generic quotes
 		 * with left and right, and encodes double spaces with &nbsp;.
 		 */
-		public static string TextToHTML (string text)
+		public static string TextToHTML (string text, bool convertQuotes = true, bool convertDoubleSpaces = true)
 			{
-			string output = ConvertQuotes(text);
-			output = EncodeEntityChars(output);
-			output = ConvertMultipleWhitespaceChars(output);
+			if (convertQuotes)
+				{  text = ConvertQuotes(text);  }
 
-			return output;
+			text = EncodeEntityChars(text);
+
+			if (convertDoubleSpaces)
+				{  text = ConvertMultipleWhitespaceChars(text);  }
+
+			return text;
 			}
 
 
