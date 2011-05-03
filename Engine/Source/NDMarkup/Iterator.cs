@@ -247,7 +247,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 					return content.Substring(contentStartIndex, contentEndIndex - contentStartIndex);
 					}
 
-				spaceIndex = propertyEndIndex + 1;  // Skip closing quote
+				spaceIndex = contentEndIndex + 1;  // Skip closing quote
 				}
 			while (content[spaceIndex] == ' ');
 
