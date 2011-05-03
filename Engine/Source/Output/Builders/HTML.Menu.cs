@@ -185,7 +185,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				try
 					{
-					outputFile.Write("NDMenu.FileMenuSectionLoaded(");
+					outputFile.Write("NDMenu.OnFileMenuSectionLoaded(");
 					outputFile.Write(rootFolder.ID);
 					outputFile.Write(',');
 					outputFile.Write(json.ToString());

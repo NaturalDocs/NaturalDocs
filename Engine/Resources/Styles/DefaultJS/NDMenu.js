@@ -46,7 +46,7 @@
 		  <currentFileMenuPath>, and <newFileMenuPath> becomes undefined.
 
 		- If some of the data is missing <Update()> displays what it can, requests to load additional menu sections, and returns.
-		  When the data comes back via <FileMenuSectionLoaded()> that function will call <Update()> again.  <Update()> will either 
+		  When the data comes back via <OnFileMenuSectionLoaded()> that function will call <Update()> again.  <Update()> will either 
 		  finish the update, request more parts of the menu, or just wait for previously requested data to come in.
 
 		- This system allows the user to click a different file before everything finishes loading.  <newFileMenuPath> will be replaced
@@ -112,6 +112,7 @@ var NDMenu = new function ()
 		this.firstUnusedFileMenuSection = 0;
 
 		this.firstUpdate = true;
+		this.Update();
 		};
 
 
@@ -430,10 +431,10 @@ var NDMenu = new function ()
 		};
 
 
-	/* Function: FileMenuSectionLoaded
+	/* Function: OnFileMenuSectionLoaded
 		Called by the menu data file when it has finished loading, passing its contents as a parameter.
 	*/
-	this.FileMenuSectionLoaded = function (id, rootFolder)
+	this.OnFileMenuSectionLoaded = function (id, rootFolder)
 		{
 		for (var i = 0; i < this.fileMenuSections.length; i++)
 			{

@@ -49,7 +49,6 @@ var NDPageFrame = new function ()
 		// The default title of the page is the project title.  Save a copy before we mess with it.
 		this.projectTitle = document.title;
 
-		// this.hashChangePoller = undefined;
 
 		var ieVersion = NDCore.IEVersion();
 
@@ -76,10 +75,12 @@ var NDPageFrame = new function ()
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 			}
 
+
 		window.onresize = this.OnResize;
 		this.OnResize();
 
 		NDMenu.Start();
+		NDSummary.Start();
 
 		this.AddHashChangeHandler();
 		this.OnHashChange();
@@ -143,47 +144,92 @@ var NDPageFrame = new function ()
 		};
 
 
-	/* Function: OnHashChange
+	
+	// Group: Hash and Navigation Functions
+	// ________________________________________________________________________
+
+
+	/* Function: DecodeHash
+		Converts the hash into the variables <hashType>, <hashPath>, <contentPath>, and <hashAnchor>.
 	*/
-	this.OnHashChange = function ()
+	this.DecodeHash = function ()
 		{
 		// Strip the hash symbol and everything before.  If there's no hash symbol, indexOf returning -1 means substr
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
-		
+
 		if (NDCore.IsFileHashPath(hash))
 			{
-			this.ChangeContent( NDCore.FileHashPathToPath(hash) );
-			this.SetFocusToContent();
-			NDMenu.GoToFileHashPath(hash);  
+			this.hashType = `FileHash;
+
+			// The first colon after File:, which will always exist if we're a file hash path.
+			var anchorSeparator = hash.indexOf(':');
+
+			// The second colon for the anchor, which may or may not exist.
+			anchorSeparator = hash.indexOf(':', anchorSeparator + 1);
+
+			if (anchorSeparator == -1)
+				{
+				this.hashPath = hash;
+				this.hashAnchor = undefined;
+				}
+			else
+				{
+				this.hashPath = hash.substr(0, anchorSeparator);
+				this.hashArchor = hash.substr(anchorSeparator + 1);
+				}
+
+			this.contentPath = NDCore.FileHashPathToContentPath(this.hashPath);
+			}
+
+		// All unrecognized hash types default to empty
+		else
+			{  
+			this.hashType = `EmptyHash;
+			this.hashPath = undefined;
+			this.hashAnchor = undefined;
+			this.contentPath = "about:blank";  //xxx
+			}
+		};
+
+
+	/* Function: OnHashChange
+	*/
+	this.OnHashChange = function ()
+		{
+		this.DecodeHash();
+		
+		var frame = document.getElementById("CFrame");
+
+		frame.contentWindow.location.replace(this.contentPath);
+
+		// Set focus to the iframe so that keyboard scrolling works without clicking over to it.
+		if (NDCore.IsIE())
+			{  frame.contentDocument.body.focus();  }
+		else
+			{  frame.focus();  }
+
+
+		if (this.hashType == `FileHash)
+			{  
+			NDMenu.GoToFileHashPath(this.hashPath);  
+			NDSummary.GoToFileHashPath(this.hashPath);
 			}
 		else
-			{  NDMenu.Update();  }
+			{  
+			// Call it manually since there's no metadata file to do it.
+			this.UpdatePageTitle();  
+			}
 		};
 
 
-	/* Function: ChangeContent
-		Replaces the content frame with the passed URL.  Doesn't affect the history.
+	/* Function: OnPageTitleLoaded
+		Called by a source file's metadata when it's loaded.
 	*/
-	this.ChangeContent = function (url)
+	this.OnPageTitleLoaded = function (hashPath, title)
 		{
-		var frame = document.getElementById("CFrame");
-		frame.contentWindow.location.replace(url);
-
-		// If we ever switch back to object, use "frame.contentDocument.location.replace(url);".
-		// If we need both, detect it with frame.nodeName == "OBJECT" or "IFRAME".
-		};
-
-
-	/* Function: SetFocusToContent
-		Sets the focus on the content frame, which lets things like keyboard scrolling work.
-	*/
-	this.SetFocusToContent = function ()
-		{
-		if (NDCore.IsIE())
-			{  document.getElementById("CFrame").contentDocument.body.focus();  }
-		else
-			{  document.getElementById("CFrame").focus();  }
+		if (hashPath == this.hashPath)
+			{  this.UpdatePageTitle(title);  }
 		};
 
 
@@ -380,6 +426,30 @@ var NDPageFrame = new function ()
 
 	/* var: projectTitle
 		The project title in HTML.
+	*/
+
+	/* var: hashType
+		The type of the hash path, which will be one of:
+
+		`EmptyHash - There is no hash, or it's in an invalid formt which should be treated the same.
+		`FileHash - A file location, such as "File2:Folder/Folder/Source.cs:Function".
+	*/
+
+			// Substitutions:
+			//    `EmptyHash = 0
+			//    `FileHash = 1
+
+	/* var: hashPath
+		If <hashType> is `FileHash, the path portion of the hash, shuch as "File2:Folder/Folder/Source.cs".
+	*/
+
+	/* var: hashAnchor
+		If <hashType> is  `FileHash, the anchor within the <hashPath> file that should be used.  In the example
+		"File2:Folder/Folder/Source.cs:Function", this would be "Function".
+	*/
+
+	/* var: contentPath
+		This will be the path to the output file used for the content area of the page.
 	*/
 
 	/* var: hashChangePoller

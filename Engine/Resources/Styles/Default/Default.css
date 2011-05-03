@@ -193,6 +193,7 @@ td {
 	.TDatabaseTable .CTitle,
 	.TSection .CTitle {
 		font-size: 20pt;
+		border-color: #A8A8A8;
 		}
 
 	.TGroup .CTitle {

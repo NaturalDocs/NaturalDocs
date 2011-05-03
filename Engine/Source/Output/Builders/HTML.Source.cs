@@ -38,7 +38,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		/* Function: BuildSourceFile
-		 * Builds an output file based on a source file.  The accessor should NOT hold a lock on the database.
+		 * Builds an output file based on a source file.  The accessor should NOT hold a lock on the database.  This will also
+		 * build the metadata file.
 		 */
 		protected void BuildSourceFile (int fileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
@@ -63,6 +64,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  
 						System.IO.File.Delete(outputFile);
 						foldersToCheckForDeletion.Add(outputFile.ParentFolder);
+						}
+
+					Path metadataFile = Source_MetaDataFile(fileID);
+
+					if (metadataFile != null && System.IO.File.Exists(metadataFile))
+						{  
+						System.IO.File.Delete(metadataFile);  
+						foldersToCheckForDeletion.Add(metadataFile.ParentFolder);
 						}
 
 					lock (writeLock)
@@ -95,9 +104,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					Path outputPath = Source_OutputFile(fileID);
 
 					// Can't get this from outputPath because it may have substituted characters to satisfy the path restrictions.
-					string fileName = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
+					string title = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
 
-					BuildFile(outputPath, fileName, html.ToString(), PageType.Content);
+					BuildFile(outputPath, title, html.ToString(), PageType.Content);
+
+					BuildMetaData(fileID, topics, title);
 
 					lock (writeLock)
 						{
@@ -139,8 +150,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							}
 					#endif
 
-					html.Append("\r\n ");
-					BuildBody(topic, html);
+					if (topic.Body != null)
+						{
+						html.Append("\r\n ");
+						BuildBody(topic, html);
+						}
 
 				html.Append(
 				"\r\n" +
@@ -218,9 +232,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildBody (Topic topic, StringBuilder html)
 			{
-			if (topic.Body == null)
-				{  return;  }
-
 			html.Append("<div class=\"CBody\">");
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
@@ -312,6 +323,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: BuildMetaData
+		 */
+		protected void BuildMetaData (int fileID, IList<Topic> topics, string title)
+			{
+			string hashPath = Source_OutputFileHashPath(fileID);
+
+			System.IO.StreamWriter metadataFile = CreateTextFileAndPath( Source_MetaDataFile(fileID) );
+
+			try
+				{
+				metadataFile.Write(
+					"NDPageFrame.OnPageTitleLoaded(\"" + TextConverter.EscapeStringChars(hashPath) + "\", \"" +
+																						TextConverter.EscapeStringChars(title) + "\");"
+					);
+				}
+			finally
+				{
+				metadataFile.Dispose();
+				}
+			}
+
+
 
 		// Group: Path Functions
 		// __________________________________________________________________________
@@ -379,6 +412,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: Source_MetaDataFileNameOnly
+		 * Returns the metadata file name of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public static Path Source_MetaDataFileNameOnly (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + ".js";
+			}
+
+
 		/* Function: Source_OutputFileNameOnlyHashPath
 		 * Returns the hash path of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
@@ -405,6 +453,45 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
 						 Source_OutputFileNameOnly(relativePath.NameWithoutPath);
+			}
+
+
+		/* Function: Source_OutputFileHashPath
+		 * Returns the hash path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
+		 * it no longer exists.
+		 */
+		public string Source_OutputFileHashPath (int fileID)
+			{
+			Files.File file = Engine.Instance.Files.FromID(fileID);
+			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+			if (fileSource == null)
+				{  return null;  }
+
+			Path relativePath = fileSource.MakeRelative(file.FileName);
+
+			// OutputFolderHashPath already includes the trailing symbol so we don't need + '/' +
+			return Source_OutputFolderHashPath(fileSource.Number, relativePath.ParentFolder) + 
+						 Source_OutputFileNameOnlyHashPath(relativePath.NameWithoutPath);
+			}
+
+
+		/* Function: Source_MetaDataFile
+		 * Returns the metadata file path of the passed source file ID, or null if none.  It may be null if the <FileSource> that 
+		 * created it no longer exists.
+		 */
+		public Path Source_MetaDataFile (int fileID)
+			{
+			Files.File file = Engine.Instance.Files.FromID(fileID);
+			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+			if (fileSource == null)
+				{  return null;  }
+
+			Path relativePath = fileSource.MakeRelative(file.FileName);
+
+			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
+						 Source_MetaDataFileNameOnly(relativePath.NameWithoutPath);
 			}
 
 

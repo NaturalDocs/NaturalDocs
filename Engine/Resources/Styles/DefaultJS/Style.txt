@@ -3,8 +3,7 @@
 link: NDCore.js
 index link: NDPageFrame.js
 index link: NDMenu.js
-content link: NDContentPage.js
+index link: NDSummary.js
 
 onload: NDCore.AddIEClassesToBody();
 index onload: NDPageFrame.Start();
-content onload: NDContentPage.Start();

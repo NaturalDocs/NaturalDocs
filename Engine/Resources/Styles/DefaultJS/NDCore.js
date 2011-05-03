@@ -205,9 +205,9 @@ var NDCore = new function ()
 		return (hashPath.match(/^File[0-9]*:/) != null);
 		};
 
-	/* Function: FileHashPathToPath
+	/* Function: FileHashPathToContentPath
 	*/
-	this.FileHashPathToPath = function (hashPath)
+	this.FileHashPathToContentPath = function (hashPath)
 		{
 		var prefix = hashPath.match(/^File([0-9]*):/);
 		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
@@ -217,6 +217,20 @@ var NDCore = new function ()
 		filename = filename.replace(/\./g, '-');
 		
 		return path.substr(0, lastSeparator + 1) + filename + ".html";
+		};
+
+	/* Function: FileHashPathToMetaDataPath
+	*/
+	this.FileHashPathToMetaDataPath = function (hashPath)
+		{
+		var prefix = hashPath.match(/^File([0-9]*):/);
+		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
+
+		var lastSeparator = path.lastIndexOf('/');
+		var filename = path.substr(lastSeparator + 1);
+		filename = filename.replace(/\./g, '-');
+		
+		return path.substr(0, lastSeparator + 1) + filename + ".js";
 		};
 
 
