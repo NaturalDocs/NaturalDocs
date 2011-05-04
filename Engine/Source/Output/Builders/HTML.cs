@@ -1411,6 +1411,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static char[] restrictedPathCharacters = { ':', '#', ';', '&' };
 
+		/* var: breakURLCharacters
+		 * An array of characters that cause an inline URL to wrap.
+		 */
+		public static char[] breakURLCharacters = { '.', '/', '#', '?', '&' };
+
+		/* var: maxUnbrokenURLCharacters
+		 * The longest stretch between <breakURLCharacters> that can occur unbroken in an inline URL.  Formatting attempts
+		 * to break on those characters as it looks cleaner, but this limit forces it to happen if they don't occur.
+		 */
+		public const int maxUnbrokenURLCharacters = 35;
+
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.
 		 */

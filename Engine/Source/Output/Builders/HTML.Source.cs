@@ -310,8 +310,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							{  html.Append("</td></tr>");  }
 						break;
 
-					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
 					case NDMarkup.Iterator.ElementType.LinkTag:
+						string type = iterator.Property("type");
+
+						if (type == "email")
+							{  BuildEMailLink(iterator, html);  }
+						else if (type == "url")
+							{  BuildURLLink(iterator, html);  }
+						else // type == "naturaldocs"
+							{  BuildNaturalDocsLink(iterator, html);  }
+
+						break;
+
+					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
 						html.Append( "<i>" + TextConverter.TextToHTML(iterator.String, false, false) + "</i>" );
 						break;
 					}
@@ -320,6 +331,132 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			html.Append("</div>");
+			}
+
+
+		/* Function: BuildEMailLink
+		 */
+		protected void BuildEMailLink (NDMarkup.Iterator iterator, StringBuilder html)
+			{
+			string address = iterator.Property("target");
+			int atIndex = address.IndexOf('@');
+			int cutPoint1 = atIndex / 2;
+			int cutPoint2 = (atIndex+1) + ((address.Length - (atIndex+1)) / 2);
+			
+			html.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
+			html.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
+			html.Append("'+'");
+			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
+			html.Append("'+'\\u0040'+'");
+			html.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
+			html.Append("'+'");
+			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
+			html.Append("';return false;\">");
+
+			string text = iterator.Property("text");
+
+			if (text != null)
+				{  TextConverter.EncodeEntityCharsAndAppend(text, html);  }
+			else
+				{
+				html.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
+				html.Append("<span style=\"display: none\">[xxx]</span>");
+				html.Append( EMailSegmentForHTML( address.Substring(cutPoint1, atIndex - cutPoint1) ));
+				html.Append("<span>&#64;</span>");
+				html.Append( EMailSegmentForHTML( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
+				html.Append("<span style=\"display: none\">[xxx]</span>");
+				html.Append( EMailSegmentForHTML( address.Substring(cutPoint2, address.Length - cutPoint2) ));
+				}
+
+			html.Append("</a>");
+			}
+
+		/* Function: EMailSegmentForJavaScriptString
+		 */
+		protected string EMailSegmentForJavaScriptString (string segment)
+			{
+			segment = TextConverter.EscapeStringChars(segment);
+			segment = segment.Replace(".", "\\u002e");
+			return segment;
+			}
+
+		/* Function: EMailSegmentForHTML
+		 */
+		protected string EMailSegmentForHTML (string segment)
+			{
+			segment = TextConverter.EncodeEntityChars(segment);
+			segment = segment.Replace(".", "&#46;");
+			return segment;
+			}
+
+		/* Function: BuildURLLink
+		 */
+		protected void BuildURLLink (NDMarkup.Iterator iterator, StringBuilder html)
+			{
+			string target = iterator.Property("target");
+			html.Append("<a href=\"");
+				TextConverter.EncodeEntityCharsAndAppend(target, html);
+			html.Append("\" target=\"_top\">");
+
+			string text = iterator.Property("text");
+
+			if (text != null)
+				{  TextConverter.EncodeEntityCharsAndAppend(text, html);  }
+			else
+				{
+				int startIndex = 0;
+				int breakIndex;
+
+				// Skip the protocol and any following slashes since we don't want a break after every slash in http:// or
+				// file:///.
+
+				int endOfProtocolIndex = target.IndexOf(':');
+
+				if (endOfProtocolIndex != -1)
+					{
+					do
+						{  endOfProtocolIndex++;  }
+					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
+
+					TextConverter.EncodeEntityCharsAndAppend( target.Substring(0, endOfProtocolIndex), html);
+					html.Append('\u200B');  // Zero width space
+					startIndex = endOfProtocolIndex;
+					}
+
+				for (;;)
+					{
+					breakIndex = target.IndexOfAny(breakURLCharacters, startIndex);
+
+					if (breakIndex == -1)
+						{
+						if (target.Length - startIndex > maxUnbrokenURLCharacters)
+							{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
+						else
+							{  break;  }
+						}
+					else if (breakIndex - startIndex > maxUnbrokenURLCharacters)
+						{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
+
+					TextConverter.EncodeEntityCharsAndAppend( target.Substring(startIndex, breakIndex - startIndex), html);
+					html.Append('\u200B');  // Zero width space
+					TextConverter.EncodeEntityCharAndAppend(target[breakIndex], html);
+
+					startIndex = breakIndex + 1;
+					}
+
+				TextConverter.EncodeEntityCharsAndAppend( target.Substring(startIndex), html );
+				}
+
+			html.Append("</a>");
+			}
+
+
+		/* Function: BuildNaturalDocsLink
+		 */
+		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator, StringBuilder html)
+			{
+			// xxx
+			TextConverter.EncodeEntityCharsAndAppend(iterator.Property("originaltext"), html);
 			}
 
 

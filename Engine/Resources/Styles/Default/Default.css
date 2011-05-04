@@ -215,6 +215,15 @@ td {
 		text-indent: 4ex;
 		}
 
+	.CTopic a:link,
+	.CTopic a:visited,
+	.CTopic a:hover {
+		color: #937C49; /* brownish */
+		}
+	.CTopic a:active {
+		color: #C69D45;
+		}
+
 	.CTopic ul {
 		margin: 0 0 0 6ex;
 		padding: 0;
