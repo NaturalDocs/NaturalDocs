@@ -43,6 +43,31 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: EncodeEntityChar
+		 * Returns the input character as a string with <, >, ", and & replaced by their entity encodings.
+		 */
+		public static string EncodeEntityChar (char input)
+			{
+			if (input == '"')
+				{  return "&quot;";  }
+			else if (input == '&')
+				{  return "&amp;";  }
+			else if (input == '<')
+				{  return "&lt;";  }
+			else if (input == '>')
+				{  return "&gt;";  }
+			else
+				{  return input.ToString();  }
+			}
+
+		/* Function: EncodeEntityCharAndAppend
+		 * Returns the input character as a string with <, >, ", and & replaced by their entity encodings.
+		 */
+		public static void EncodeEntityCharAndAppend (char input, StringBuilder output)
+			{
+			output.Append(EncodeEntityChar(input));
+			}
+
 		/* Function: EncodeEntityChars
 		 * Returns the input string with <, >, ", and & replaced by their entity encodings.  If the result
 		 * string will be appended to a StringBuilder, it is more efficient to use <EncodeEntityCharsAndAppend> instead 
@@ -87,14 +112,7 @@ namespace GregValure.NaturalDocs.Engine
 				if (nextEntityChar != offset)
 					{  output.Append(input, offset, nextEntityChar - offset);  }
 					
-				if (input[nextEntityChar] == '"')
-					{  output.Append("&quot;");  }
-				else if (input[nextEntityChar] == '&')
-					{  output.Append("&amp;");  }
-				else if (input[nextEntityChar] == '<')
-					{  output.Append("&lt;");  }
-				else if (input[nextEntityChar] == '>')
-					{  output.Append("&gt;");  }
+				output.Append( EncodeEntityChar(input[nextEntityChar]) );
 					
 				offset = nextEntityChar + 1;
 				}
@@ -104,6 +122,23 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
+		/* Function: DecodeEntityChars
+		 * Returns the input string with <, >, ", and & restored from their entity encodings.
+		 */
+		public static string DecodeEntityChars (string input)
+			{
+			if (input.IndexOf('&') == -1)
+				{  return input;  }
+
+			string output = input.Replace("&quot;", "\"");
+			output = output.Replace("&lt;", "<");
+			output = output.Replace("&gt;", ">");
+			output = output.Replace("&amp;", "&");
+
+			return output;
+			}
+
+
 		/* Function: EscapeStringChars
 		 * Returns the input string with ", ', and \ escaped so that they can be put into a JavaScript string.  If the result
 		 * string will be appended to a StringBuilder, it is more efficient to use <EscapeStringCharsAndAppend> instead 
