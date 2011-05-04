@@ -215,9 +215,9 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: Property
-		 * If the iterator is on a tag and it contains the passed property, returns it sans quotes.  There is nothing
-		 * else done to the value so the calling code has to handle escapement or entity encoding where appropriate.
-		 * If the property isn't defined it will return null.
+		 * If the iterator is on a tag and it contains the passed property, returns it sans quotes.  The value is 
+		 * automatically passed through <TextConverter.DecodeEntityChars()>.  If the property isn't defined it 
+		 * will return null.
 		 */
 		public string Property (string propertyName)
 			{
@@ -244,7 +244,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 				if (propertyEndIndex - propertyStartIndex == propertyName.Length &&
 					 string.Compare(propertyName, 0, content, propertyStartIndex, propertyEndIndex - propertyStartIndex) == 0)
 					{
-					return content.Substring(contentStartIndex, contentEndIndex - contentStartIndex);
+					return TextConverter.DecodeEntityChars( content.Substring(contentStartIndex, contentEndIndex - contentStartIndex) );
 					}
 
 				spaceIndex = contentEndIndex + 1;  // Skip closing quote
