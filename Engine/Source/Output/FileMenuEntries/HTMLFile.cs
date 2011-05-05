@@ -45,13 +45,13 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 			output.Append('[');
 			output.Append((int)type);
 			output.Append(",\"");
-			output.Append( TextConverter.EscapeStringChars(htmlName) );
+			output.EscapeStringCharsAndAppend(htmlName);
 			output.Append('"');
 
 			if (type == Builders.HTML.FileMenuEntryType.ExplicitFile)
 				{
 				output.Append(",\"");
-				output.Append( TextConverter.EscapeStringChars(hashPath) );
+				output.EscapeStringCharsAndAppend(hashPath);
 				output.Append('"');
 				}
 

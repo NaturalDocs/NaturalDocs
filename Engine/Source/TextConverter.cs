@@ -60,13 +60,6 @@ namespace GregValure.NaturalDocs.Engine
 				{  return input.ToString();  }
 			}
 
-		/* Function: EncodeEntityCharAndAppend
-		 * Returns the input character as a string with <, >, ", and & replaced by their entity encodings.
-		 */
-		public static void EncodeEntityCharAndAppend (char input, StringBuilder output)
-			{
-			output.Append(EncodeEntityChar(input));
-			}
 
 		/* Function: EncodeEntityChars
 		 * Returns the input string with <, >, ", and & replaced by their entity encodings.  If the result
@@ -79,49 +72,11 @@ namespace GregValure.NaturalDocs.Engine
 				{  return input;  }
 
 			StringBuilder output = new StringBuilder();
-			EncodeEntityCharsAndAppend(input, output);
+			output.EncodeEntityCharsAndAppend(input);
 			return output.ToString();
 			}
 		
 		
-		/* Function: EncodeEntityCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder with <, >, ", and & replaced by
-		 * their entity encodings.
-		 */
-		public static void EncodeEntityCharsAndAppend (string input, StringBuilder output)
-			{
-			EncodeEntityCharsAndAppend(input, output, 0, input.Length);
-			}
-		
-		
-		/* Function: EncodeEntityCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder with <, >, ", and & replaced by
-		 * their entity encodings.  Offset and length represent the portion of the input string to convert.
-		 */
-		public static void EncodeEntityCharsAndAppend (string input, StringBuilder output, int offset, int length)
-			{
-			int endOfInput = offset + length;
-			
-			while (offset < endOfInput)
-				{
-				int nextEntityChar = input.IndexOfAny(EntityCharLiterals, offset, endOfInput - offset);
-				
-				if (nextEntityChar == -1)
-					{  break;  }
-				
-				if (nextEntityChar != offset)
-					{  output.Append(input, offset, nextEntityChar - offset);  }
-					
-				output.Append( EncodeEntityChar(input[nextEntityChar]) );
-					
-				offset = nextEntityChar + 1;
-				}
-				
-			if (offset < endOfInput)
-				{  output.Append(input, offset, endOfInput - offset);  }
-			}
-			
-			
 		/* Function: DecodeEntityChars
 		 * Returns the input string with <, >, ", and & restored from their entity encodings.
 		 */
@@ -150,49 +105,11 @@ namespace GregValure.NaturalDocs.Engine
 				{  return input;  }
 
 			StringBuilder output = new StringBuilder();
-			EscapeStringCharsAndAppend(input, output);
+			output.EscapeStringCharsAndAppend(input);
 			return output.ToString();
 			}
 		
 		
-		/* Function: EscapeStringCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder with ', ", and \ escaped.
-		 */
-		public static void EscapeStringCharsAndAppend (string input, StringBuilder output)
-			{
-			EscapeStringCharsAndAppend(input, output, 0, input.Length);
-			}
-		
-		
-		/* Function: EscapeStringCharsAndAppend
-		 * Appends the contents of the input string to the output StringBuilder with ', ", and \ escaped.
-		 * Offset and length represent the portion of the input string to convert.
-		 */
-		public static void EscapeStringCharsAndAppend (string input, StringBuilder output, int offset, int length)
-			{
-			int endOfInput = offset + length;
-			
-			while (offset < endOfInput)
-				{
-				int nextEscapedChar = input.IndexOfAny(EscapedStringChars, offset, endOfInput - offset);
-				
-				if (nextEscapedChar == -1)
-					{  break;  }
-				
-				if (nextEscapedChar != offset)
-					{  output.Append(input, offset, nextEscapedChar - offset);  }
-					
-				output.Append('\\');
-				output.Append(input[nextEscapedChar]);
-					
-				offset = nextEscapedChar + 1;
-				}
-				
-			if (offset < endOfInput)
-				{  output.Append(input, offset, endOfInput - offset);  }
-			}
-			
-			
 		/* Function: ConvertCopyrightAndTrademark
 		 * Returns a string with all occurrances of (c), (r), and (tm) converted to their respective Unicode characters.
 		 */
@@ -262,6 +179,96 @@ namespace GregValure.NaturalDocs.Engine
 
 		
 		
+		// Group: StringBuilder Extension Functions
+		// __________________________________________________________________________
+
+
+		/* Function: EncodeEntityCharsAndAppend
+		 * Appends the input character to the StringBuilder with <, >, ", and & replaced by their entity encodings.
+		 */
+		public static void EncodeEntityCharsAndAppend (this StringBuilder output, char input)
+			{
+			output.Append(EncodeEntityChar(input));
+			}
+
+
+		/* Function: EncodeEntityCharsAndAppend
+		 * Appends the contents of the input string to the StringBuilder with <, >, ", and & replaced by their entity 
+		 * encodings.
+		 */
+		public static void EncodeEntityCharsAndAppend (this StringBuilder output, string input)
+			{
+			output.EncodeEntityCharsAndAppend(input, 0, input.Length);
+			}
+		
+		
+		/* Function: EncodeEntityCharsAndAppend
+		 * Appends the contents of the input string to the StringBuilder with <, >, ", and & replaced by their entity 
+		 * encodings.  Offset and length represent the portion of the input string to convert.
+		 */
+		public static void EncodeEntityCharsAndAppend (this StringBuilder output, string input, int offset, int length)
+			{
+			int endOfInput = offset + length;
+			
+			while (offset < endOfInput)
+				{
+				int nextEntityChar = input.IndexOfAny(EntityCharLiterals, offset, endOfInput - offset);
+				
+				if (nextEntityChar == -1)
+					{  break;  }
+				
+				if (nextEntityChar != offset)
+					{  output.Append(input, offset, nextEntityChar - offset);  }
+					
+				output.Append( EncodeEntityChar(input[nextEntityChar]) );
+					
+				offset = nextEntityChar + 1;
+				}
+				
+			if (offset < endOfInput)
+				{  output.Append(input, offset, endOfInput - offset);  }
+			}
+			
+			
+		/* Function: EscapeStringCharsAndAppend
+		 * Appends the contents of the input string to the StringBuilder with ', ", and \ escaped.
+		 */
+		public static void EscapeStringCharsAndAppend (this StringBuilder output, string input)
+			{
+			output.EscapeStringCharsAndAppend(input, 0, input.Length);
+			}
+		
+		
+		/* Function: EscapeStringCharsAndAppend
+		 * Appends the contents of the input string to the StringBuilder with ', ", and \ escaped.  Offset and length 
+		 * represent the portion of the input string to convert.
+		 */
+		public static void EscapeStringCharsAndAppend (this StringBuilder output, string input, int offset, int length)
+			{
+			int endOfInput = offset + length;
+			
+			while (offset < endOfInput)
+				{
+				int nextEscapedChar = input.IndexOfAny(EscapedStringChars, offset, endOfInput - offset);
+				
+				if (nextEscapedChar == -1)
+					{  break;  }
+				
+				if (nextEscapedChar != offset)
+					{  output.Append(input, offset, nextEscapedChar - offset);  }
+					
+				output.Append('\\');
+				output.Append(input[nextEscapedChar]);
+					
+				offset = nextEscapedChar + 1;
+				}
+				
+			if (offset < endOfInput)
+				{  output.Append(input, offset, endOfInput - offset);  }
+			}
+			
+			
+
 		// Group: Variables
 		// __________________________________________________________________________
 

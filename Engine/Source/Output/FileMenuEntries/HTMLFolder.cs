@@ -50,7 +50,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 					{  nameBuilder.Append(',');  }
 
 				nameBuilder.Append('"');
-				nameBuilder.Append( TextConverter.EscapeStringChars(TextConverter.TextToHTML(pathSegments[i])) );
+				nameBuilder.EscapeStringCharsAndAppend(TextConverter.TextToHTML(pathSegments[i]));
 				nameBuilder.Append('"');
 				}
 

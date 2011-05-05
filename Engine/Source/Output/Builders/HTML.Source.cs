@@ -356,7 +356,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  TextConverter.EncodeEntityCharsAndAppend(text, html);  }
+				{  html.EncodeEntityCharsAndAppend(text);  }
 			else
 				{
 				html.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
@@ -395,13 +395,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			string target = iterator.Property("target");
 			html.Append("<a href=\"");
-				TextConverter.EncodeEntityCharsAndAppend(target, html);
+				html.EncodeEntityCharsAndAppend(target);
 			html.Append("\" target=\"_top\">");
 
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  TextConverter.EncodeEntityCharsAndAppend(text, html);  }
+				{  html.EncodeEntityCharsAndAppend(text);  }
 			else
 				{
 				int startIndex = 0;
@@ -418,7 +418,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  endOfProtocolIndex++;  }
 					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
 
-					TextConverter.EncodeEntityCharsAndAppend( target.Substring(0, endOfProtocolIndex), html);
+					html.EncodeEntityCharsAndAppend( target.Substring(0, endOfProtocolIndex) );
 					html.Append('\u200B');  // Zero width space
 					startIndex = endOfProtocolIndex;
 					}
@@ -437,14 +437,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					else if (breakIndex - startIndex > maxUnbrokenURLCharacters)
 						{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
 
-					TextConverter.EncodeEntityCharsAndAppend( target.Substring(startIndex, breakIndex - startIndex), html);
+					html.EncodeEntityCharsAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
 					html.Append('\u200B');  // Zero width space
-					TextConverter.EncodeEntityCharAndAppend(target[breakIndex], html);
+					html.EncodeEntityCharsAndAppend(target[breakIndex]);
 
 					startIndex = breakIndex + 1;
 					}
 
-				TextConverter.EncodeEntityCharsAndAppend( target.Substring(startIndex), html );
+				html.EncodeEntityCharsAndAppend( target.Substring(startIndex) );
 				}
 
 			html.Append("</a>");
@@ -456,7 +456,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator, StringBuilder html)
 			{
 			// xxx
-			TextConverter.EncodeEntityCharsAndAppend(iterator.Property("originaltext"), html);
+			html.EncodeEntityCharsAndAppend(iterator.Property("originaltext"));
 			}
 
 
