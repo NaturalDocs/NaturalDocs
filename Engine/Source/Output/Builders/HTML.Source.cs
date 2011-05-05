@@ -202,7 +202,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (splitCount == 0)
 				{
-				html.Append( TextConverter.TextToHTML(topic.Title, false, true) );
+				html.Append( TextConverter.TextToHTML(topic.Title) );
 				}
 			else
 				{
@@ -213,7 +213,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
 					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
-					html.Append( TextConverter.TextToHTML(titleSection, false, true) );
+					html.Append( TextConverter.TextToHTML(titleSection) );
 					html.Append('\u200B');  // zero-width space for wrapping
 
 					appendedSoFar = endOfSection;
@@ -221,7 +221,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				html.Append("</span>");
 
-				html.Append( TextConverter.TextToHTML(topic.Title.Substring(appendedSoFar), false, true) );
+				html.Append( TextConverter.TextToHTML(topic.Title.Substring(appendedSoFar)) );
 				}
 
 			html.Append("</div>");
@@ -323,7 +323,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
-						html.Append( "<i>" + TextConverter.TextToHTML(iterator.String, false, false) + "</i>" );
+						html.Append( "<i>" + TextConverter.TextToHTML(iterator.String) + "</i>" );
 						break;
 					}
 

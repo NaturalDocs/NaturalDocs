@@ -29,15 +29,10 @@ namespace GregValure.NaturalDocs.Engine
 		 * Converts a plain text string to HTML.  This encodes <, >, ", and & as entity characters, replaces generic quotes
 		 * with left and right, and encodes double spaces with &nbsp;.
 		 */
-		public static string TextToHTML (string text, bool convertQuotes = true, bool convertDoubleSpaces = true)
+		public static string TextToHTML (string text)
 			{
-			if (convertQuotes)
-				{  text = ConvertQuotes(text);  }
-
 			text = EncodeEntityChars(text);
-
-			if (convertDoubleSpaces)
-				{  text = ConvertMultipleWhitespaceChars(text);  }
+			text = ConvertMultipleWhitespaceChars(text);
 
 			return text;
 			}
@@ -128,44 +123,6 @@ namespace GregValure.NaturalDocs.Engine
 						{  return "™";  }
 					}
 				);
-			}
-
-
-		/* Function: ConvertQuotes
-		 * Converts neutral quotes and apostrophes into left and right Unicode characters.
-		 */
-		public static string ConvertQuotes (string input)
-			{
-			int index = input.IndexOfAny(QuoteLiterals);
-
-			if (index == -1)
-				{  return input;  }
-
-			StringBuilder output = new StringBuilder(input);
-			string acceptableLeftCharacters = " \t([{";
-
-			do
-				{
-				if (index == 0 || acceptableLeftCharacters.IndexOf(input[index - 1]) != -1)
-					{  
-					if (output[index] == '"')
-						{  output[index] = '“';  }
-					else
-						{  output[index] = '‘';  }
-					}
-				else
-					{
-					if (output[index] == '"')
-						{  output[index] = '”';  }
-					else
-						{  output[index] = '’';  }
-					}
-
-				index = input.IndexOfAny(QuoteLiterals, index + 1);
-				}
-			while (index != -1);
-
-			return output.ToString();
 			}
 
 
