@@ -470,7 +470,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 				string tokenString = token.ToString();
 				tokenSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", tokenString, "`{" + tokenString + '}');
-				tokenSubstitution = '"' + TextConverter.EscapeStringChars(tokenSubstitution) + '"';
+				tokenSubstitution = '"' + tokenSubstitution.StringEscape() + '"';
 				}
 
 			// Standard comment substitutions

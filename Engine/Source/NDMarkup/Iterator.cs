@@ -244,7 +244,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 				if (propertyEndIndex - propertyStartIndex == propertyName.Length &&
 					 string.Compare(propertyName, 0, content, propertyStartIndex, propertyEndIndex - propertyStartIndex) == 0)
 					{
-					return TextConverter.DecodeEntityChars( content.Substring(contentStartIndex, contentEndIndex - contentStartIndex) );
+					return content.Substring(contentStartIndex, contentEndIndex - contentStartIndex).EntityDecode();
 					}
 
 				spaceIndex = contentEndIndex + 1;  // Skip closing quote

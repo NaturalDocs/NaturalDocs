@@ -145,7 +145,7 @@
     <Compile Include="Source\Languages\ParseState.cs" />
     <Compile Include="Source\Languages\ShebangStringComparer.cs" />
     <Compile Include="Source\Locale.cs" />
-    <Compile Include="Source\TextConverter.cs" />
+    <Compile Include="Source\StringBuilderExtensions.cs" />
     <Compile Include="Source\Output\Builder.cs" />
     <Compile Include="Source\Output\Builders\HTML.cs" />
     <Compile Include="Source\Output\Builders\XML.cs" />

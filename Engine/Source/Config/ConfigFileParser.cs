@@ -443,11 +443,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 				while (configFile.Get(out lcIdentifier, out value))
 					{
 					if (lcIdentifier == "title")
-						{  configFileData.Title = TextConverter.ConvertCopyrightAndTrademark(value);  }
+						{  configFileData.Title = value.ConvertCopyrightAndTrademark();  }
 					else if (subtitleRegex.IsMatch(lcIdentifier))
-						{  configFileData.Subtitle = TextConverter.ConvertCopyrightAndTrademark(value);  }
+						{  configFileData.Subtitle = value.ConvertCopyrightAndTrademark();  }
 					else if (lcIdentifier == "footer" || lcIdentifier == "copyright")
-						{  configFileData.Copyright = TextConverter.ConvertCopyrightAndTrademark(value);  }
+						{  configFileData.Copyright = value.ConvertCopyrightAndTrademark();  }
 					else if (timestampRegex.IsMatch(lcIdentifier))
 						{  configFileData.TimestampCode = value;  }
 					// Otherwise just ignore the entry.
@@ -503,15 +503,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			if (lcIdentifier == "title")
 				{
-				projectInfo.Title = TextConverter.ConvertCopyrightAndTrademark(value);
+				projectInfo.Title = value.ConvertCopyrightAndTrademark();
 				}
 			else if (subtitleRegex.IsMatch(lcIdentifier))
 				{
-				projectInfo.Subtitle = TextConverter.ConvertCopyrightAndTrademark(value);
+				projectInfo.Subtitle = value.ConvertCopyrightAndTrademark();
 				}
 			else if (lcIdentifier == "copyright")
 				{
-				projectInfo.Copyright = TextConverter.ConvertCopyrightAndTrademark(value);
+				projectInfo.Copyright = value.ConvertCopyrightAndTrademark();
 				}
 			else if (timestampRegex.IsMatch(lcIdentifier))
 				{

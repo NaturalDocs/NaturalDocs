@@ -1459,7 +1459,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						if (language != null)
 							{  
 							body.Append(" language=\"");
-							body.EncodeEntityCharsAndAppend(language.Name);
+							body.EntityEncodeAndAppend(language.Name);
 							body.Append('"');
 							}
 								
@@ -1516,9 +1516,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					line.GetRawTextBounds(LineBoundsMode.CommentContent, out rawTextStart, out rawTextEnd);
 					
 					body.Append("<image type=\"standalone\" originaltext=\"");
-					body.EncodeEntityCharsAndAppend(line.Tokenizer.RawText, rawTextStart, rawTextEnd - rawTextStart);
+					body.EntityEncodeAndAppend(line.Tokenizer.RawText, rawTextStart, rawTextEnd - rawTextStart);
 					body.Append("\" target=\"");
-					body.EncodeEntityCharsAndAppend(filePath);
+					body.EntityEncodeAndAppend(filePath);
 					body.Append("\">");
 					
 					prevLineBlank = false;
@@ -1545,7 +1545,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						}
 						
 					body.Append("<de>");
-					body.EncodeEntityCharsAndAppend(tempString);
+					body.EntityEncodeAndAppend(tempString);
 					body.Append("</de><dd><p>");
 					
 					if (paragraph == null)
@@ -1752,7 +1752,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					{  ndMarkup.Append("<br>");  }
 					
 				if (rawCodeLines[i].Length != 0)
-					{  ndMarkup.EncodeEntityCharsAndAppend(rawCodeLines[i], sharedIndent, rawCodeLines[i].Length - sharedIndent);  }
+					{  ndMarkup.EntityEncodeAndAppend(rawCodeLines[i], sharedIndent, rawCodeLines[i].Length - sharedIndent);  }
 				}			
 			}
 			
@@ -2483,15 +2483,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							string name = file.NameWithoutPathOrExtension;
 							
 							output.Append("<image type=\"inline\" originaltext=\"(");
-							output.EncodeEntityCharsAndAppend(tagContent);
+							output.EntityEncodeAndAppend(tagContent);
 							output.Append(")\" linktext=\"(");
-							output.EncodeEntityCharsAndAppend(keyword);
+							output.EntityEncodeAndAppend(keyword);
 							output.Append(' ');
-							output.EncodeEntityCharsAndAppend(name);
+							output.EntityEncodeAndAppend(name);
 							output.Append(")\" target=\"");
-							output.EncodeEntityCharsAndAppend(file);
+							output.EntityEncodeAndAppend(file);
 							output.Append("\" caption=\"");
-							output.EncodeEntityCharsAndAppend(name);
+							output.EntityEncodeAndAppend(name);
 							output.Append("\">");
 							}
 							
@@ -2502,7 +2502,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							if (match.Success && IsURLProtocol(match.Groups[1].Value))
 								{
 								output.Append("<link type=\"url\" target=\"");
-								output.EncodeEntityCharsAndAppend(tagContent);
+								output.EntityEncodeAndAppend(tagContent);
 								output.Append("\">");
 								}
 								
@@ -2513,7 +2513,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 								if (match.Success)
 									{
 									output.Append("<link type=\"email\" target=\"");
-									output.EncodeEntityCharsAndAppend(match.Groups[1].Value);
+									output.EntityEncodeAndAppend(match.Groups[1].Value);
 									output.Append("\">");
 									}
 									
@@ -2533,9 +2533,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 											if (match.Success && IsURLProtocol(match.Groups[1].Value))
 												{
 												output.Append("<link type=\"url\" target=\"");
-												output.EncodeEntityCharsAndAppend(interpretations[i].Target);
+												output.EntityEncodeAndAppend(interpretations[i].Target);
 												output.Append("\" text=\"");
-												output.EncodeEntityCharsAndAppend(interpretations[i].Text);
+												output.EntityEncodeAndAppend(interpretations[i].Text);
 												output.Append("\">");
 												
 												found = true;
@@ -2547,9 +2547,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 												if (match.Success)
 													{
 													output.Append("<link type=\"email\" target=\"");
-													output.EncodeEntityCharsAndAppend(match.Groups[1].Value);
+													output.EntityEncodeAndAppend(match.Groups[1].Value);
 													output.Append("\" text=\"");
-													output.EncodeEntityCharsAndAppend(interpretations[i].Text);
+													output.EntityEncodeAndAppend(interpretations[i].Text);
 													output.Append("\">");
 													
 													found = true;
@@ -2562,9 +2562,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 									if (found == false)
 										{
 										output.Append("<link type=\"naturaldocs\" originaltext=\"&lt;");
-										output.EncodeEntityCharsAndAppend(tagContent);
+										output.EntityEncodeAndAppend(tagContent);
 										output.Append("&gt;\" target=\"");
-										output.EncodeEntityCharsAndAppend(tagContent);
+										output.EntityEncodeAndAppend(tagContent);
 										output.Append("\">");
 										}
 									}
@@ -2599,7 +2599,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					while (tokenIterator.Type == TokenType.URL);
 					
 					output.Append("<link type=\"url\" target=\"");
-					output.EncodeEntityCharsAndAppend( tokenizer.RawText, startOfURL.RawTextIndex,
+					output.EntityEncodeAndAppend( tokenizer.RawText, startOfURL.RawTextIndex,
 																						 tokenIterator.RawTextIndex - startOfURL.RawTextIndex );
 					output.Append("\">");
 					}
@@ -2615,7 +2615,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					Match match = tokenizer.MatchTextBetween(EMailRegex, startOfURL, tokenIterator);
 					
 					output.Append("<link type=\"email\" target=\"");
-					output.EncodeEntityCharsAndAppend( match.Groups[1].Value );
+					output.EntityEncodeAndAppend( match.Groups[1].Value );
 					output.Append("\">");
 					}
 					
@@ -2639,7 +2639,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							 tokenType != TokenType.URL && tokenType != TokenType.EMail && !(eatUnderscores && lookahead.Character == '_'));
 							// Null will signify out of bounds.
 							 
-					output.EncodeEntityCharsAndAppend(tokenizer.RawText, tokenIterator.RawTextIndex, 
+					output.EntityEncodeAndAppend(tokenizer.RawText, tokenIterator.RawTextIndex, 
 																						lookahead.RawTextIndex - tokenIterator.RawTextIndex);
 					tokenIterator = lookahead;
 					}

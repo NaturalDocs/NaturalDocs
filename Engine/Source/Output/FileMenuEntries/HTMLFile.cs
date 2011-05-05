@@ -32,7 +32,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 			{
 			StringBuilder output = new StringBuilder();
 
-			string htmlName = TextConverter.TextToHTML(FileName);
+			string htmlName = FileName.ToHTML();
 			string hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath(FileName);
 
 			Builders.HTML.FileMenuEntryType type;
@@ -45,13 +45,13 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 			output.Append('[');
 			output.Append((int)type);
 			output.Append(",\"");
-			output.EscapeStringCharsAndAppend(htmlName);
+			output.StringEscapeAndAppend(htmlName);
 			output.Append('"');
 
 			if (type == Builders.HTML.FileMenuEntryType.ExplicitFile)
 				{
 				output.Append(",\"");
-				output.EscapeStringCharsAndAppend(hashPath);
+				output.StringEscapeAndAppend(hashPath);
 				output.Append('"');
 				}
 

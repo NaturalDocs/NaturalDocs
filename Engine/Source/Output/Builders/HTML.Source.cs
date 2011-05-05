@@ -202,7 +202,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (splitCount == 0)
 				{
-				html.Append( TextConverter.TextToHTML(topic.Title) );
+				html.Append( topic.Title.ToHTML() );
 				}
 			else
 				{
@@ -213,7 +213,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
 					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
-					html.Append( TextConverter.TextToHTML(titleSection) );
+					html.Append( titleSection.ToHTML() );
 					html.Append('\u200B');  // zero-width space for wrapping
 
 					appendedSoFar = endOfSection;
@@ -221,7 +221,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				html.Append("</span>");
 
-				html.Append( TextConverter.TextToHTML(topic.Title.Substring(appendedSoFar)) );
+				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
 				}
 
 			html.Append("</div>");
@@ -244,7 +244,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
 							{  iterator.AppendTo(html);  }
 						else
-							{  html.Append( TextConverter.ConvertMultipleWhitespaceChars(iterator.String) );  }
+							{  html.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.ParagraphTag:
@@ -323,7 +323,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
-						html.Append( "<i>" + TextConverter.TextToHTML(iterator.String) + "</i>" );
+						html.Append( "<i>" + iterator.String.ToHTML() + "</i>" );
 						break;
 					}
 
@@ -356,7 +356,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  html.EncodeEntityCharsAndAppend(text);  }
+				{  html.EntityEncodeAndAppend(text);  }
 			else
 				{
 				html.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
@@ -375,7 +375,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected string EMailSegmentForJavaScriptString (string segment)
 			{
-			segment = TextConverter.EscapeStringChars(segment);
+			segment = segment.StringEscape();
 			segment = segment.Replace(".", "\\u002e");
 			return segment;
 			}
@@ -384,7 +384,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected string EMailSegmentForHTML (string segment)
 			{
-			segment = TextConverter.EncodeEntityChars(segment);
+			segment = segment.EntityEncode();
 			segment = segment.Replace(".", "&#46;");
 			return segment;
 			}
@@ -395,13 +395,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			string target = iterator.Property("target");
 			html.Append("<a href=\"");
-				html.EncodeEntityCharsAndAppend(target);
+				html.EntityEncodeAndAppend(target);
 			html.Append("\" target=\"_top\">");
 
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  html.EncodeEntityCharsAndAppend(text);  }
+				{  html.EntityEncodeAndAppend(text);  }
 			else
 				{
 				int startIndex = 0;
@@ -418,7 +418,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  endOfProtocolIndex++;  }
 					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
 
-					html.EncodeEntityCharsAndAppend( target.Substring(0, endOfProtocolIndex) );
+					html.EntityEncodeAndAppend( target.Substring(0, endOfProtocolIndex) );
 					html.Append('\u200B');  // Zero width space
 					startIndex = endOfProtocolIndex;
 					}
@@ -437,14 +437,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					else if (breakIndex - startIndex > maxUnbrokenURLCharacters)
 						{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
 
-					html.EncodeEntityCharsAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
+					html.EntityEncodeAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
 					html.Append('\u200B');  // Zero width space
-					html.EncodeEntityCharsAndAppend(target[breakIndex]);
+					html.EntityEncodeAndAppend(target[breakIndex]);
 
 					startIndex = breakIndex + 1;
 					}
 
-				html.EncodeEntityCharsAndAppend( target.Substring(startIndex) );
+				html.EntityEncodeAndAppend( target.Substring(startIndex) );
 				}
 
 			html.Append("</a>");
@@ -456,7 +456,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator, StringBuilder html)
 			{
 			// xxx
-			html.EncodeEntityCharsAndAppend(iterator.Property("originaltext"));
+			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
 			}
 
 
@@ -471,8 +471,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			try
 				{
 				metadataFile.Write(
-					"NDPageFrame.OnPageTitleLoaded(\"" + TextConverter.EscapeStringChars(hashPath) + "\", \"" +
-																						TextConverter.EscapeStringChars(title) + "\");"
+					"NDPageFrame.OnPageTitleLoaded(\"" + hashPath.StringEscape() + "\", \"" + title.StringEscape() + "\");"
 					);
 				}
 			finally

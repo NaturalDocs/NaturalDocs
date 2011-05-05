@@ -50,7 +50,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 					{  nameBuilder.Append(',');  }
 
 				nameBuilder.Append('"');
-				nameBuilder.EscapeStringCharsAndAppend(TextConverter.TextToHTML(pathSegments[i]));
+				nameBuilder.StringEscapeAndAppend(pathSegments[i].ToHTML());
 				nameBuilder.Append('"');
 				}
 
@@ -81,7 +81,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 				{  pathString = fileSource.PathFragment + '/' + pathString;  }
 
 			hashPath = htmlBuilder.Source_OutputFolderHashPath(fileSource.WrappedFileSource.Number, pathString);
-			hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
+			hashPath = '"' + hashPath.StringEscape() + '"';
 			}
 
 

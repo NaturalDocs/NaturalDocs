@@ -55,7 +55,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 					{  path = fileSource.PathFragment + '/' + path;  }
 
 				hashPath = htmlBuilder.Source_OutputFolderHashPath(fileSource.WrappedFileSource.Number, path);
-				hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
+				hashPath = '"' + hashPath.StringEscape() + '"';
 				}
 			}
 

@@ -35,14 +35,14 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 
 			if (!MergeWithRoot)
 				{
-				jsonName = '"' + TextConverter.EscapeStringChars(TextConverter.TextToHTML(WrappedFileSource.Name)) + '"';
+				jsonName = '"' + WrappedFileSource.Name.ToHTML().StringEscape() + '"';
 				}
 
 
 			// Hash Path
 
 			hashPath = htmlBuilder.Source_OutputFolderHashPath(WrappedFileSource.Number, pathFragment);
-			hashPath = '"' + TextConverter.EscapeStringChars(hashPath) + '"';
+			hashPath = '"' + hashPath.StringEscape() + '"';
 			}
 
 

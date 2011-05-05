@@ -828,7 +828,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 							"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" +
 
-							"<title>" + TextConverter.TextToHTML(pageTitle) + "</title>" +
+							"<title>" + pageTitle.ToHTML() + "</title>" +
 
 							"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
 								MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main.css") +
@@ -918,7 +918,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				"<div id=\"NDMessages\">" +
 					"<a href=\"javascript:NDPageFrame.CloseMessages()\" id=\"MsgCloseButton\">" +
-						TextConverter.TextToHTML( Locale.Get("NaturalDocs.Engine", "HTML.Close") ) +
+						Locale.Get("NaturalDocs.Engine", "HTML.Close").ToHTML() +
 					"</a>" +
 					"<div id=\"MsgContent\"></div>" +
 				"</div>" +
@@ -926,7 +926,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				"<div id=\"NDHeader\">" +
 					"<div id=\"HTitle\">" +
 					
-						TextConverter.TextToHTML(rawHeaderTitle) +
+						rawHeaderTitle.ToHTML() +
 					
 					"</div>");
 
@@ -934,7 +934,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  
 						content.Append(
 							"<div id=\"HSubTitle\">" +
-								TextConverter.TextToHTML(rawHeaderSubTitle) +
+								rawHeaderSubTitle.ToHTML() +
 							"</div>");  
 						}
 
@@ -961,7 +961,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{
 						content.Append(
 							"<div id=\"FCopyright\">" +
-								TextConverter.TextToHTML(config.ProjectInfo.Copyright) +
+								config.ProjectInfo.Copyright.ToHTML() +
 							"</div>");
 						}
 
@@ -969,7 +969,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{
 						content.Append(
 							"<div id=\"FTimeStamp\">" +
-								TextConverter.TextToHTML(rawTimeStamp) +
+								rawTimeStamp.ToHTML() +
 							"</div>");
 						}
 
