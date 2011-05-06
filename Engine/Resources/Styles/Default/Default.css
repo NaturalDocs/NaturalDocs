@@ -129,6 +129,12 @@ td {
 		content: " ▸";
 		}
 
+		/* IE can't do :after elements prior to 8 */
+		.IE6 .MFolder.Child,
+		.IE7 .MFolder.Child {
+			background: url("images/menu-folder-arrow.gif") no-repeat 97% center;
+			}
+
 	.MFolder.Selected {
 		font-weight: bold;
 		background-color: #FFFFFF;
@@ -304,13 +310,13 @@ td {
 		content: "  ·  ";
 		}
 
-	/* IE can't do :after elements prior to 8 */
-	.IE6 #FCopyright,
-	.IE7 #FCopyright,
-	.IE6 #FTimeStamp,
-	.IE7 #FTimeStamp {
-		margin-right: 3ex;
-		}
+		/* IE can't do :after elements prior to 8 */
+		.IE6 #FCopyright,
+		.IE7 #FCopyright,
+		.IE6 #FTimeStamp,
+		.IE7 #FTimeStamp {
+			margin-right: 3ex;
+			}
 
 	#FGeneratedBy {
 		display: inline;
