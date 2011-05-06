@@ -2,20 +2,6 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
- * File: Output.nd
- * 
- *		A file used to store information about the last time this output target was built.
- *		
- *		> [String: Style Path]
- *		> [String: Style Path]
- *		> ...
- *		> [String: null]
- *		
- *		Stores the list of styles that apply to this target, in the order in which they must be loaded, as a null-terminated
- *		list of style paths.  The paths are either to <HTMLStyle.CSSFile> or <HTMLStyle.ConfigFile>.  These are stored
- *		instead of the names so that if a name is interpreted differently from one run to the next it will be detected.  It's
- *		also the computed list of styles after all inheritance has been applied.
- * 
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
