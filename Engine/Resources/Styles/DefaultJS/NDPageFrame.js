@@ -204,11 +204,7 @@ var NDPageFrame = new function ()
 		frame.contentWindow.location.replace(this.contentPath);
 
 		// Set focus to the iframe so that keyboard scrolling works without clicking over to it.
-		if (NDCore.IsIE())
-			{  frame.contentDocument.body.focus();  }
-		else
-			{  frame.focus();  }
-
+		frame.contentWindow.focus();
 
 		if (this.hashType == `FileHash)
 			{  
