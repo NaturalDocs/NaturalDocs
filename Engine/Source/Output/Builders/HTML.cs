@@ -93,14 +93,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* enum: BuildFlags
 		 * Flags that specify what parts of the HTML output structure still need to be built.
 		 * 
-		 * FramePage - index.html
+		 * PageFrame - index.html
 		 * MainStyleFiles - main.css and main.js
 		 * 
 		 * FileMenu - files.js
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
-			FramePage = 0x01,
+			PageFrame = 0x01,
 			MainStyleFiles = 0x02,
 
 			FileMenu = 0x04
@@ -214,7 +214,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Set the default build flags
 
-			buildFlags = BuildFlags.FramePage | BuildFlags.MainStyleFiles;
+			buildFlags = BuildFlags.PageFrame | BuildFlags.MainStyleFiles;
 			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
 
 
@@ -637,18 +637,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build frame page
 
-					if ((buildFlags & BuildFlags.FramePage) != 0)
+					if ((buildFlags & BuildFlags.PageFrame) != 0)
 						{
-						buildFlags &= ~BuildFlags.FramePage;
+						buildFlags &= ~BuildFlags.PageFrame;
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildFramePage(cancelDelegate);
+						BuildPageFrame(cancelDelegate);
 
 						if (cancelDelegate())
 							{
 							lock (writeLock)
-								{  buildFlags |= BuildFlags.FramePage;  }
+								{  buildFlags |= BuildFlags.PageFrame;  }
 							}
 						}
 
@@ -872,10 +872,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildFramePage
+		/* Function: BuildPageFrame
 		 * Builds index.html, which provides the documentation frame.
 		 */
-		protected void BuildFramePage (CancelDelegate cancelDelegate)
+		protected void BuildPageFrame (CancelDelegate cancelDelegate)
 			{
 
 			// Page and header titles
@@ -1430,7 +1430,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: AllPageTypeNames
 		 * A static array of simple A-Z names with each index corresponding to those in <AllPageTypes>.
 		 */
-		public  static string[] AllPageTypeNames = { "All", "Index", "Content" };
+		public  static string[] AllPageTypeNames = { "All", "Frame", "Content" };
 
 		/* Function: PageTypeNameOf
 		 * Translates a <PageType> into a string.

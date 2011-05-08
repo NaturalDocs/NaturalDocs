@@ -7,7 +7,7 @@ _______________________________________________________________________________
 
 (start text)
 
-	<body NDPage NDFramePage IE6/7?>
+	<body NDPage NDPageFrame IE6/7?>
 
 		<#NDMessages>
 
@@ -40,7 +40,7 @@ _______________________________________________________________________________
 			<#FGeneratedBy>...</#FGeneratedBy>
 		</#NDFooter>
 
-	</body NDPage NDFramePage>
+	</body NDPage NDPageFrame>
 
 (end)
 

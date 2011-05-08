@@ -1,9 +1,9 @@
 ﻿Format: 1.4
 
 link: NDCore.js
-index link: NDPageFrame.js
-index link: NDMenu.js
-index link: NDSummary.js
+frame link: NDPageFrame.js
+frame link: NDMenu.js
+frame link: NDSummary.js
 
 onload: NDCore.AddIEClassesToBody();
-index onload: NDPageFrame.Start();
+frame onload: NDPageFrame.Start();

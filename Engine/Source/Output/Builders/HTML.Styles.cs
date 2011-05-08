@@ -13,7 +13,7 @@
  *		output first, then this style's files.  Can be specified multiple times.
  *		
  *		> OnLoad: [code]
- *		> Index OnLoad: [code]
+ *		> Frame OnLoad: [code]
  *		> Content OnLoad: [code]
  *		
  *		Specifies a single line of JavaScript code that will be executed from the page's OnLoad function.  Can be restricted
@@ -21,7 +21,7 @@
  *		a function to be called from here instead.
  *		
  *		> Link: [file]
- *		> Index Link: [file]
+ *		> Frame Link: [file]
  *		> Content Link: [file]
  *		
  *		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.  
