@@ -5,9 +5,10 @@
  * 
  * File: files.js
  * 
- *		A file representing all or part of the source file menu.  The menu is represented by entries, each one being an array 
- *		with the first value being its type.  The values are defined in <FileMenuEntryType>, and the indexes of other members 
- *		are defined in <FileMenuEntryMember>.
+ *		A file representing all or part of the source file menu.  When executed, it calls <NDMenu.OnFileMenuSectionLoaded()>,
+ *		passing the part of the menu it stores as an array of entries.  Each entry is itself an array whose first value is its
+ *		type.  The values are defined in <FileMenuEntryType>, and the indexes of other members are defined in 
+ *		<FileMenuEntryMember>.
  *		
  *		Every file starts off with a root folder entry, which in turn contains other file and folder entries.  For small projects
  *		the entire menu may be contained in a single JS file, but in larger projects it may use dynamic folder entries

@@ -164,7 +164,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			int errors = errorList.Count;
 
 
-			// Topic type IDs
+			// Look up special topic type IDs
 
 			bool ignore;
 			TopicTypes.TopicType topicType = Instance.TopicTypes.FromKeyword("File", out ignore);
@@ -216,6 +216,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			buildFlags = BuildFlags.PageFrame | BuildFlags.MainStyleFiles;
 			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
+			// If you ever make this differential, remember that PageFrame depends on the project name and other
+			// information.
 
 
 			// Load Config.nd
