@@ -188,7 +188,7 @@ var NDPageFrame = new function ()
 			this.hashType = `EmptyHash;
 			this.hashPath = undefined;
 			this.hashAnchor = undefined;
-			this.contentPath = "about:blank";  //xxx
+			this.contentPath = "other/home.html";
 			}
 		};
 
@@ -215,6 +215,8 @@ var NDPageFrame = new function ()
 			{  
 			// Call it manually since there's no metadata file to do it.
 			this.UpdatePageTitle();  
+
+			NDMenu.GoToFileHashPath("");
 			}
 		};
 

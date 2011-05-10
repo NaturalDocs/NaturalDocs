@@ -81,6 +81,7 @@ namespace GregValure.NaturalDocs.Engine
 		public static string ToHTML (this string text)
 			{
 			text = text.EntityEncode();
+			text = text.ConvertLineBreaksToBR();
 			text = text.ConvertMultipleWhitespaceChars();
 
 			return text;
@@ -106,8 +107,19 @@ namespace GregValure.NaturalDocs.Engine
 				);
 			}
 
+		/* Function: ConvertLineBreaksToBR
+		 *	 Replaces line breaks in any format with <br> tags.  If you plan to use this and <ConvertMultipleWhitespaceChars()>,
+		 *	 you must call this function first.
+		 */
+		public static string ConvertLineBreaksToBR (this string input)
+			{
+			return LineBreakRegex.Replace(input, "<br>");
+			}
+		 
+
 		/* Function: ConvertMultipleWhitespaceChars
-		 * Replaces instances of at least two whitespace characters in a row with &nbsp; and a space.
+		 * Replaces instances of at least two whitespace characters in a row with &nbsp; and a space.  If you plan to use this and
+		 * <ConvertLineBreaksToBR()>, you must call the other function first.
 		 */
 		public static string ConvertMultipleWhitespaceChars (this string input)
 			{
@@ -205,6 +217,7 @@ namespace GregValure.NaturalDocs.Engine
 		static public Regex.WhitespaceChars WhitespaceCharsRegex = new Regex.WhitespaceChars();
 		static public Regex.NDMarkup.CopyrightAndTrademark CopyrightAndTrademarkRegex = new Regex.NDMarkup.CopyrightAndTrademark();
 		static public Regex.MultipleWhitespaceChars MultipleWhitespaceCharsRegex = new Regex.MultipleWhitespaceChars();
+		static public Regex.LineBreak LineBreakRegex = new Regex.LineBreak();
 			
 		}
 	}

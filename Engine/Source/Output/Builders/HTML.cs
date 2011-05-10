@@ -126,12 +126,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * All - Applies to all page types.
 		 * Frame - Applies to index.html.
 		 * Content - Applies to page content for a source file or class.
+		 * Other - Applies to other page content such as the default home page.
 		 */
 		public enum PageType : byte {
 			// Indexes are manual and start at zero so they can be used as indexes into AllPageTypeNames.
   			All = 0,
 			Frame = 1,
-			Content = 2
+			Content = 2,
+			Other = 3
 			}
 
 		
@@ -883,36 +885,42 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Page and header titles
 
 			string rawPageTitle;
-			string rawHeaderTitle;
-			string rawHeaderSubTitle;
+			string headerTitleHTML;
+			string headerSubTitleHTML;
 
 			if (config.ProjectInfo.Title == null)
 				{
 				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
-				rawHeaderTitle = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle");
-				rawHeaderSubTitle = null;
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
+				headerSubTitleHTML = null;
 				}
 			else
 				{
 				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", config.ProjectInfo.Title);
-				rawHeaderTitle = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", config.ProjectInfo.Title);
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", config.ProjectInfo.Title).ToHTML();
 
 				if (config.ProjectInfo.Subtitle == null)
-					{  rawHeaderSubTitle = null;  }
+					{  headerSubTitleHTML = null;  }
 				else
 					{
-					rawHeaderSubTitle = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubTitle(projectSubTitle)",
-																				config.ProjectInfo.Subtitle);
+					headerSubTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubTitle(projectSubTitle)",
+																				 config.ProjectInfo.Subtitle).ToHTML();
 					}
 				}
 
 
 			// Footer
 
-			string rawTimeStamp = config.ProjectInfo.MakeTimeStamp();
+			string timeStampHTML = config.ProjectInfo.MakeTimeStamp();
+			string copyrightHTML = config.ProjectInfo.Copyright;
+
+			if (timeStampHTML != null)
+				{  timeStampHTML = timeStampHTML.ToHTML();  }
+			if (copyrightHTML != null)
+				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
 
-			// Final page structure
+			// index.html, the main page frame
 
 			StringBuilder content = new StringBuilder();
 
@@ -928,15 +936,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				"<div id=\"NDHeader\">" +
 					"<div id=\"HTitle\">" +
 					
-						rawHeaderTitle.ToHTML() +
+						headerTitleHTML +
 					
 					"</div>");
 
-					if (rawHeaderSubTitle != null)
+					if (headerSubTitleHTML != null)
 						{  
 						content.Append(
 							"<div id=\"HSubTitle\">" +
-								rawHeaderSubTitle.ToHTML() +
+								headerSubTitleHTML +
 							"</div>");  
 						}
 
@@ -959,19 +967,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				"<div id=\"NDFooter\">");
 
-					if (config.ProjectInfo.Copyright != null)
+					if (copyrightHTML != null)
 						{
 						content.Append(
 							"<div id=\"FCopyright\">" +
-								config.ProjectInfo.Copyright.ToHTML() +
+								copyrightHTML +
 							"</div>");
 						}
 
-					if (rawTimeStamp != null)
+					if (timeStampHTML != null)
 						{
 						content.Append(
 							"<div id=\"FTimeStamp\">" +
-								rawTimeStamp.ToHTML() +
+								timeStampHTML +
 							"</div>");
 						}
 
@@ -989,6 +997,90 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				);
 
 			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
+
+
+			// other/home.html, the default welcome page
+
+			content.Remove(0, content.Length);
+
+			string titleHTML, subTitleHTML;
+
+			if (config.ProjectInfo.Title != null)
+				{
+				titleHTML = headerTitleHTML;
+
+				if (config.ProjectInfo.Subtitle != null)
+					{  subTitleHTML = headerSubTitleHTML;  }
+				else
+					{  subTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeSubTitleIfTitleExists").ToHTML();  }
+				}
+			else
+				{
+				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeTitle").ToHTML();
+				subTitleHTML = null;
+				}
+
+			content.Append(
+				"\r\n\r\n" +
+				"<div class=\"OHomeHeader\">" + 
+					"<div class=\"OHomeTitle\">" +
+						titleHTML + 
+					"</div>");
+
+					if (subTitleHTML != null)
+						{
+						content.Append(
+							"<div class=\"OHomeSubTitle\">" +
+								subTitleHTML + 
+							"</div>");
+						}
+
+			content.Append(
+				"</div>");
+
+			string welcome;
+
+			if (config.ProjectInfo.Subtitle != null)
+				{  
+				welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph(projectTitle, projectSubTitle).multiline", 
+																										config.ProjectInfo.Title, config.ProjectInfo.Subtitle);
+				}
+			else if (config.ProjectInfo.Title != null)
+				{  welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph(projectTitle).multiline", config.ProjectInfo.Title);  }
+			else
+				{  welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph.multiline");  }
+
+			content.Append(
+				"\r\n\r\n" +
+				"<p>" + welcome.ToHTML() + "</p>" +
+
+				"\r\n\r\n" +
+				"<div class=\"OHomeFooter\">");
+
+				if (copyrightHTML != null)
+					{
+					content.Append(
+						"<div class=\"OHomeCopyright\">" +
+							copyrightHTML +
+						"</div>");
+					}
+
+				if (timeStampHTML != null)
+					{
+					content.Append(
+						"<div class=\"OHomeTimeStamp\">" +
+							timeStampHTML +
+						"</div>");
+					}
+
+				content.Append(
+				"<div class=\"OHomeGeneratedBy\">" +
+					"<a href=\"http://www.naturaldocs.org\">Generated by Natural Docs</a>" +
+				"</div>" +
+
+			"</div>");
+
+			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), PageType.Other);
 			}
 
 
@@ -1427,12 +1519,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.
 		 */
-		public static PageType[] AllPageTypes = { PageType.All, PageType.Frame, PageType.Content };
+		public static PageType[] AllPageTypes = { PageType.All, PageType.Frame, PageType.Content, PageType.Other };
 
 		/* var: AllPageTypeNames
 		 * A static array of simple A-Z names with each index corresponding to those in <AllPageTypes>.
 		 */
-		public  static string[] AllPageTypeNames = { "All", "Frame", "Content" };
+		public  static string[] AllPageTypeNames = { "All", "Frame", "Content", "Other" };
 
 		/* Function: PageTypeNameOf
 		 * Translates a <PageType> into a string.

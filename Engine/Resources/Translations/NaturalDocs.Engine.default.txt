@@ -26,6 +26,8 @@ HTML.HeaderSubTitle(projectSubTitle): {0}
 
 HTML.DefaultPageTitle: Source Documentation
 HTML.DefaultHeaderTitle: Source Documentation
+HTML.DefaultHomeTitle: Source Documentation
+HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
 
 HTML.RootFolderName: Files
 HTML.Close: Close
@@ -54,6 +56,18 @@ TimeStamp.Month11: November
 TimeStamp.ShortMonth11: Nov
 TimeStamp.Month12: December
 TimeStamp.ShortMonth12: Dec
+
+HTML.HomeParagraph(projectTitle, projectSubTitle).multiline {{{
+This is the source documentation for {0}.
+Use the menu on the left to navigate by file or class.
+}}}
+HTML.HomeParagraph(projectTitle).multiline {{{
+Use the menu on the left to navigate by file or class.
+}}}
+HTML.HomeParagraph.multiline {{{
+Use the menu on the left to navigate by file or class.
+}}}
+
 
 
 #

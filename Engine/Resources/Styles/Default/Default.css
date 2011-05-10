@@ -21,6 +21,11 @@
 		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`MenuFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`CodeFontFamily = Consolas, "Lucida Console", Monaco, monospace
+		`ProjectTitleFontFamily = "Palatino Linotype", Palatino, Georgia, serif
+		`ProjectSubTitleFontFamily = Georgia, serif
+
+		`TextLinkColor = #937C49
+		`TextLinkActiveColor = #C69D45
 
 */
 
@@ -55,13 +60,13 @@ td {
 	}
 
 	#HTitle {
-		font: bold small-caps 20pt "Palatino Linotype", Palatino, Georgia, serif;
+		font: bold small-caps 20pt `ProjectTitleFontFamily;
 		text-shadow: 0 .1ex .3ex #202020;
 		line-height: 90%;
 		color: #FFFFFF;
 		}
 	#HSubTitle {
-		font: 10pt Georgia, serif;
+		font: 10pt `ProjectSubTitleFontFamily;
 		color: #B0B0B0;
 		margin-left: .65em;
 		}
@@ -168,7 +173,7 @@ td {
 
 
 .NDContentPage {
-	margin: .5em .75em;
+	margin: .5em 1em;
 	padding: 0;
 	}
 
@@ -224,10 +229,10 @@ td {
 	.CTopic a:link,
 	.CTopic a:visited,
 	.CTopic a:hover {
-		color: #937C49; /* brownish */
+		color: `TextLinkColor;
 		}
 	.CTopic a:active {
-		color: #C69D45;
+		color: `TextLinkActiveColor;
 		}
 
 	.CTopic ul {
@@ -321,6 +326,84 @@ td {
 	#FGeneratedBy {
 		display: inline;
 		}
+
+
+
+
+
+/* Other Content
+	___________________________________________________________________________
+*/
+
+body.NDOtherPage {
+	padding: 3em 5em;
+	background-color: `MenuBackgroundColor;
+	}
+
+	.OHomeTitle,
+	.OHomeSubTitle,
+	.OHomeCopyright,
+	.OHomeTimeStamp,
+	.OHomeGeneratedBy,
+	.NDOtherPage p {
+		text-align: center;
+		}
+
+	.OHomeHeader {
+		margin-bottom: 3.25em;
+		padding: 1.5em 2em;
+		background-color: #FFFFFF;
+
+		/* Firefox doesn't support plain border-radius until 4. */
+		/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
+		/* Opera 11 supports plain border-radius. */
+		-moz-border-radius: 5ex;
+		-webkit-border-radius: 5ex;
+		border-radius: 5ex;
+
+		/* Firefox doesn't support plain box-shadow until 4. */
+		/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
+		/* Opera 11 supports plain box-shadow. */
+		-moz-box-shadow: 0 .75ex 1.5ex #606060;
+		-webkit-box-shadow: 0 .75ex 1.5ex #606060;
+		box-shadow: 0 .75ex 1.5ex #606060;
+		}
+
+		/* IE doesn't support any kind of border radius or box shadow until 9. */
+		.IE8 .OHomeHeader,
+		.IE7 .OHomeHeader,
+		.IE6 .OHomeHeader {
+			border: 2px solid #B0B0B0;
+			}
+
+		.OHomeTitle {
+			font: small-caps 24pt `ProjectTitleFontFamily;
+			line-height: 85%;
+			}
+		.OHomeSubTitle {
+			font: 13pt `ProjectSubTitleFontFamily;
+			margin-top: .25em;
+			line-height: 85%;
+			}
+
+	.NDOtherPage p {
+		font: 10pt `ParagraphFontFamily;
+		}
+
+	.OHomeFooter {
+		margin: 3.5em auto 0 auto;
+		font: 8pt `ParagraphFontFamily;
+		}
+		.OHomeFooter div {
+			margin-bottom: .8em;
+			color: #707070;
+			}
+		.OHomeFooter a:link,
+		.OHomeFooter a:visited,
+		.OHomeFooter a:hover,
+		.OHomeFooter a:active {
+			color: #707070;
+			}
 
 
 
