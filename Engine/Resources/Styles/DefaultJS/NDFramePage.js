@@ -17,7 +17,7 @@
 */
 
 
-/* Class: NDPageFrame
+/* Class: NDFramePage
 	_____________________________________________________________________________
 
 	Topic: URL Hash Format
@@ -35,7 +35,7 @@
 			documented in <GregValure.NaturalDocs.Engine.Output.Builders.HTML.Path Restrictions>.
 
 */
-var NDPageFrame = new function ()
+var NDFramePage = new function ()
 	{
 
 	// Group: Functions
@@ -182,10 +182,10 @@ var NDPageFrame = new function ()
 			this.contentPath = NDCore.FileHashPathToContentPath(this.hashPath);
 			}
 
-		// All unrecognized hash types default to empty
 		else
-			{  
-			this.hashType = `EmptyHash;
+			{
+			// All empty and invalid hashes show the home page.
+			this.hashType = `HomeHash;
 			this.hashPath = undefined;
 			this.hashAnchor = undefined;
 			this.contentPath = "other/home.html";
@@ -198,9 +198,8 @@ var NDPageFrame = new function ()
 	this.OnHashChange = function ()
 		{
 		this.DecodeHash();
-		
-		var frame = document.getElementById("CFrame");
 
+		var frame = document.getElementById("CFrame");
 		frame.contentWindow.location.replace(this.contentPath);
 
 		// Set focus to the iframe so that keyboard scrolling works without clicking over to it.
@@ -216,6 +215,7 @@ var NDPageFrame = new function ()
 			// Call it manually since there's no metadata file to do it.
 			this.UpdatePageTitle();  
 
+			// Reset back to the default state.
 			NDMenu.GoToFileHashPath("");
 			}
 		};
@@ -255,7 +255,7 @@ var NDPageFrame = new function ()
 		if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7))
 			{
 			// If we don't do it this way the "this" parameter doesn't get set.
-			window.onhashchange = function () {  NDPageFrame.OnHashChange();  };
+			window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 			}
 
 		// If browser doesn't support onhashchange...
@@ -270,7 +270,7 @@ var NDPageFrame = new function ()
 				};
 
 			// Non-IE browsers that don't support onhashchange can use a straightforward polling loop of the hash.
-			if (navigator.userAgent.indexOf("MSIE") == -1)
+			if (!NDCore.IsIE())
 				{
 				this.hashChangePoller.Start = function ()
 					{  
@@ -291,10 +291,10 @@ var NDPageFrame = new function ()
 					if (!NDCore.SameHash(location.hash, this.lastHash))
 						{  
 						this.lastHash = location.hash;
-						NDPageFrame.OnHashChange();  
+						NDFramePage.OnHashChange();  
 						}
 
-					this.timeoutID = setTimeout("NDPageFrame.hashChangePoller.Poll()", this.timeoutLength);
+					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
 					};
 				}
 
@@ -325,12 +325,12 @@ var NDPageFrame = new function ()
 					iframeElement.attachEvent("onload", 
 						function () 
 							{
-							if (NDPageFrame.hashChangePoller.firstRun)
+							if (NDFramePage.hashChangePoller.firstRun)
 								{
-								NDPageFrame.hashChangePoller.firstRun = false;
-								NDPageFrame.hashChangePoller.SetHistory(location.hash);  
+								NDFramePage.hashChangePoller.firstRun = false;
+								NDFramePage.hashChangePoller.SetHistory(location.hash);  
 
-								NDPageFrame.hashChangePoller.Poll();
+								NDFramePage.hashChangePoller.Poll();
 								}
 							}
 						);
@@ -351,7 +351,7 @@ var NDPageFrame = new function ()
 						if (event.propertyName == "title") 
 							{  
 							try 
-								{  NDPageFrame.hashChangePoller.iframe.document.title = document.title;  }
+								{  NDFramePage.hashChangePoller.iframe.document.title = document.title;  }
 							catch(e)
 								{  }
 							}
@@ -374,7 +374,7 @@ var NDPageFrame = new function ()
 						{
 						this.lastHash = location.hash;
 						this.SetHistory(hash, historyHash);
-						NDPageFrame.OnHashChange();  
+						NDFramePage.OnHashChange();  
 						}
 
 					// If historyHash changed, which covers back and forward buttons
@@ -383,7 +383,7 @@ var NDPageFrame = new function ()
 						location.href = location.href.replace( /#.*/, '' ) + historyHash;
 						}
 
-					this.timeoutID = setTimeout("NDPageFrame.hashChangePoller.Poll()", this.timeoutLength);
+					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
 					};
 
 				this.hashChangePoller.GetHistory = function ()
@@ -429,12 +429,11 @@ var NDPageFrame = new function ()
 	/* var: hashType
 		The type of the hash path, which will be one of:
 
-		`EmptyHash - There is no hash, or it's in an invalid formt which should be treated the same.
+		`HomeHash - An empty hash or any unrecognized hash format which cause the home page to show up.
 		`FileHash - A file location, such as "File2:Folder/Folder/Source.cs:Function".
 	*/
-
 			// Substitutions:
-			//    `EmptyHash = 0
+			//    `HomeHash = 0
 			//    `FileHash = 1
 
 	/* var: hashPath

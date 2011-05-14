@@ -93,14 +93,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* enum: BuildFlags
 		 * Flags that specify what parts of the HTML output structure still need to be built.
 		 * 
-		 * PageFrame - index.html
+		 * FramePage - index.html
 		 * MainStyleFiles - main.css and main.js
 		 * 
 		 * FileMenu - files.js
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
-			PageFrame = 0x01,
+			FramePage = 0x01,
 			MainStyleFiles = 0x02,
 
 			FileMenu = 0x04
@@ -216,9 +216,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Set the default build flags
 
-			buildFlags = BuildFlags.PageFrame | BuildFlags.MainStyleFiles;
+			buildFlags = BuildFlags.FramePage | BuildFlags.MainStyleFiles;
 			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
-			// If you ever make this differential, remember that PageFrame depends on the project name and other
+			// If you ever make this differential, remember that FramePage depends on the project name and other
 			// information.
 
 
@@ -659,18 +659,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build frame page
 
-					if ((buildFlags & BuildFlags.PageFrame) != 0)
+					if ((buildFlags & BuildFlags.FramePage) != 0)
 						{
-						buildFlags &= ~BuildFlags.PageFrame;
+						buildFlags &= ~BuildFlags.FramePage;
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildPageFrame(cancelDelegate);
+						BuildFramePage(cancelDelegate);
 
 						if (cancelDelegate())
 							{
 							lock (writeLock)
-								{  buildFlags |= BuildFlags.PageFrame;  }
+								{  buildFlags |= BuildFlags.FramePage;  }
 							}
 						}
 
@@ -894,10 +894,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildPageFrame
+		/* Function: BuildFramePage
 		 * Builds index.html, which provides the documentation frame.
 		 */
-		protected void BuildPageFrame (CancelDelegate cancelDelegate)
+		protected void BuildFramePage (CancelDelegate cancelDelegate)
 			{
 
 			// Page and header titles
@@ -938,14 +938,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
 
-			// index.html, the main page frame
+			// index.html, the main frame page
 
 			StringBuilder content = new StringBuilder();
 
 			content.Append(
 
 				"<div id=\"NDMessages\">" +
-					"<a href=\"javascript:NDPageFrame.CloseMessages()\" id=\"MsgCloseButton\">" +
+					"<a href=\"javascript:NDFramePage.CloseMessages()\" id=\"MsgCloseButton\">" +
 						Locale.Get("NaturalDocs.Engine", "HTML.Close").ToHTML() +
 					"</a>" +
 					"<div id=\"MsgContent\"></div>" +

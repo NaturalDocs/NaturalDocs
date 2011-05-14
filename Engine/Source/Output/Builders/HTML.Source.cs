@@ -7,7 +7,7 @@
  * 
  *		Each source file that has a content file built for it will also have a metadata file.  It's in the same location and 
  *		has the same file name, only substituting .html for .js.  When executed, this file will pass the source file's title to
- *		<NDPageFrame.OnPageTitleLoaded()>.
+ *		<NDFramePage.OnPageTitleLoaded()>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -470,7 +470,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			try
 				{
 				metadataFile.Write(
-					"NDPageFrame.OnPageTitleLoaded(\"" + hashPath.StringEscape() + "\", \"" + title.StringEscape() + "\");"
+					"NDFramePage.OnPageTitleLoaded(\"" + hashPath.StringEscape() + "\", \"" + title.StringEscape() + "\");"
 					);
 				}
 			finally
