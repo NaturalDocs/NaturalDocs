@@ -159,7 +159,6 @@ td {
 */
 
 #NDContent {
-	background-color: #FFFFFF;
 	position: fixed;
 	z-index: 1;
 	overflow: hidden;
@@ -172,7 +171,8 @@ td {
 		}
 
 
-.NDContentPage {
+body.NDContentPage {
+	background-color: #FFFFFF;
 	margin: .5em 1em;
 	padding: 0;
 	}
@@ -180,9 +180,6 @@ td {
 	.CTopic {
 		margin-bottom: 1em;
 		font: 10pt `ParagraphFontFamily;
-		}
-	.CTopic.last {
-		margin-bottom: 0;
 		}
 
 	.CTitle {
@@ -202,7 +199,8 @@ td {
 	.TInterface .CTitle,
 	.TDatabase .CTitle,
 	.TDatabaseTable .CTitle,
-	.TSection .CTitle {
+	.TSection .CTitle,
+	.TFile.first .CTitle {
 		font-size: 20pt;
 		border-color: #A8A8A8;
 		}
@@ -340,16 +338,21 @@ body.NDOtherPage {
 	background-color: `MenuBackgroundColor;
 	}
 
-	.OHomeTitle,
-	.OHomeSubTitle,
-	.OHomeCopyright,
-	.OHomeTimeStamp,
-	.OHomeGeneratedBy,
-	.NDOtherPage p {
+	.OHomePage {
+		max-width: 70ex;
+		margin: 0 auto;
+		}
+
+	.OTitle,
+	.OSubTitle,
+	.OCopyright,
+	.OTimeStamp,
+	.OGeneratedBy,
+	.OHomePage p {
 		text-align: center;
 		}
 
-	.OHomeHeader {
+	.OHeader {
 		margin-bottom: 3.25em;
 		padding: 1.5em 2em;
 		background-color: #FFFFFF;
@@ -370,38 +373,38 @@ body.NDOtherPage {
 		}
 
 		/* IE doesn't support any kind of border radius or box shadow until 9. */
-		.IE8 .OHomeHeader,
-		.IE7 .OHomeHeader,
-		.IE6 .OHomeHeader {
+		.IE8 .OHeader,
+		.IE7 .OHeader,
+		.IE6 .OHeader {
 			border: 2px solid #B0B0B0;
 			}
 
-		.OHomeTitle {
+		.OTitle {
 			font: small-caps 24pt `ProjectTitleFontFamily;
 			line-height: 85%;
 			}
-		.OHomeSubTitle {
+		.OSubTitle {
 			font: 13pt `ProjectSubTitleFontFamily;
 			margin-top: .25em;
 			line-height: 85%;
 			}
 
-	.NDOtherPage p {
+	.OHomePage p {
 		font: 10pt `ParagraphFontFamily;
 		}
 
-	.OHomeFooter {
+	.OFooter {
 		margin: 3.5em auto 0 auto;
 		font: 8pt `ParagraphFontFamily;
 		}
-		.OHomeFooter div {
+		.OFooter div {
 			margin-bottom: .8em;
 			color: #707070;
 			}
-		.OHomeFooter a:link,
-		.OHomeFooter a:visited,
-		.OHomeFooter a:hover,
-		.OHomeFooter a:active {
+		.OFooter a:link,
+		.OFooter a:visited,
+		.OFooter a:hover,
+		.OFooter a:active {
 			color: #707070;
 			}
 
