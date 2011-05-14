@@ -523,7 +523,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 							raisedPossiblyLongOperationEvent = true;
 							}
 
-						System.IO.Directory.Delete(outputDataFolder, true);  
+						try
+							{  System.IO.Directory.Delete(outputDataFolder, true);  }
+						catch (Exception e)
+							{
+							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+								{  throw;  }
+							}
 						}
 					}
 				}
