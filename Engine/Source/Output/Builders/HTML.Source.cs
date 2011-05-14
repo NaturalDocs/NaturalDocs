@@ -206,12 +206,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
 					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
 					html.Append( titleSection.ToHTML() );
-					html.Append('\u200B');  // zero-width space for wrapping
+
+					if (i < splitCount - 1)
+						{
+						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
+						// Webkit browsers won't wrap on it.
+						html.Append('\u200B');
+						}
 
 					appendedSoFar = endOfSection;
 					}
 
 				html.Append("</span>");
+				html.Append('\u200B');  // zero-width space for wrapping
 
 				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
 				}
