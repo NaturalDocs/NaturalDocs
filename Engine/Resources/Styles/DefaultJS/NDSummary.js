@@ -10,6 +10,8 @@
 	and may have its own copyright and distribution terms as decided by its author.
 */
 
+"use strict";
+
 
 /* Class: NDSummary
 	___________________________________________________________________________

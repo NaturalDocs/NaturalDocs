@@ -16,6 +16,8 @@
 
 */
 
+"use strict";
+
 
 /* Class: NDFramePage
 	_____________________________________________________________________________
@@ -310,15 +312,12 @@ var NDFramePage = new function ()
 
 					// Attempt to make it as hidden as possible by using techniques from 
 					// http://www.paciellogroup.com/blog/?p=604
-					with (iframeElement)
-						{
-						title = "empty";
-						tabindex = -1;
-						style.display = "none";
-						width = 0;
-						height = 0;
-						src = "javascript:0";
-						}
+					iframeElement.title = "empty";
+					iframeElement.tabindex = -1;
+					iframeElement.style.display = "none";
+					iframeElement.width = 0;
+					iframeElement.height = 0;
+					iframeElement.src = "javascript:0";
 
 					this.firstRun = true;
 
@@ -395,17 +394,14 @@ var NDFramePage = new function ()
 					{
 					if (!NDCore.SameHash(hash, historyHash))
 						{
-						with (this.iframe.document)
-							{
-							// Update iframe with any initial document.title that might be set.
-							title = document.title;
+						// Update iframe with any initial document.title that might be set.
+						this.iframe.document.title = document.title;
 
-							// Opening the iframe's document after it has been closed is what
-							// actually adds a history entry.
-							open();
+						// Opening the iframe's document after it has been closed is what
+						// actually adds a history entry.
+						this.iframe.document.open();
 
-							close();
-							}
+						this.iframe.document.close();
 
 						// Update the iframe's hash, for great justice.
 						this.iframe.location.hash = hash;

@@ -334,7 +334,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				System.Text.StringBuilder jsOutput = new System.Text.StringBuilder();
 
-				jsOutput.Append("function NDLoadJS_" + filterName + " (relativePrefix) {");
+				jsOutput.Append("\"use strict\";function NDLoadJS_" + filterName + " (relativePrefix) {");
 
 				jsOutput.Append("var links = [");
 				int linkCount = 0;
@@ -396,7 +396,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (linkCount == 0)
 					{
 					jsOutput.Remove(0, jsOutput.Length);
-					jsOutput.Append("function NDLoadJS_" + filterName + " (relativePrefix) { }");
+					jsOutput.Append("\"use strict\";function NDLoadJS_" + filterName + " (relativePrefix) { }");
 					}
 
 				jsOutput.Append("function NDOnLoad_" + filterName + " () {");
