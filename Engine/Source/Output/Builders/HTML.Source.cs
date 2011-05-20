@@ -137,7 +137,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							html.Append(
 							"\r\n " +
 							"<div class=\"CBodyNDMarkup\">" +
-								TextConverter.TextToHTML(topic.Body, false) +
+								topic.Body.ToHTML() +
 							"</div>");
 							}
 					#endif
