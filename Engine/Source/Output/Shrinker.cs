@@ -450,9 +450,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 			string tokenSubstitution = null;
 
 			// Locale substitutions
-			if (tokenIterator.Character == '{')
+			if (tokenIterator.MatchesAcrossTokens("Locale{"))
 				{
-				tokenIterator.Next();
+				tokenIterator.NextByCharacters(7);
 
 				while (tokenIterator.IsInBounds && tokenIterator.Character != '}')
 					{  
@@ -469,7 +469,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				tokenIterator.Next();
 
 				string tokenString = token.ToString();
-				tokenSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", tokenString, "`{" + tokenString + '}');
+				tokenSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", tokenString, tokenString);
 				tokenSubstitution = '"' + tokenSubstitution.StringEscape() + '"';
 				}
 

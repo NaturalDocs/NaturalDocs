@@ -212,7 +212,7 @@ var NDMenu = new function ()
 				htmlEntry.className = "MEntry MFolder Parent Root";
 				htmlEntry.setAttribute("href", "javascript:NDMenu.GoToFileOffsets([])");
 
-				var name = document.createTextNode(`{HTML.RootFolderName});
+				var name = document.createTextNode(`Locale{HTML.RootFolderName});
 				htmlEntry.appendChild(name);
 
 				htmlMenu.appendChild(htmlEntry);
@@ -224,7 +224,7 @@ var NDMenu = new function ()
 				var htmlEntry = document.createElement("div");
 				htmlEntry.className = "MEntry MFolder Parent Root Selected";
 
-				var name = document.createTextNode(`{HTML.RootFolderName});
+				var name = document.createTextNode(`Locale{HTML.RootFolderName});
 				htmlEntry.appendChild(name);
 
 				htmlMenu.appendChild(htmlEntry);
