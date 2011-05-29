@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A general parser which finds vertical and horizontal lines in comments and marks them with
- * <Tokenization.TokenType.CommentDecoration> so that they can be ignored in later stages of parsing.
+ * <Tokenization.CommentParsingType.CommentDecoration> so that they can be ignored in later stages of parsing.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -22,11 +22,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		
 		/* Function: MarkTextBoxes
 		 * 
-		 * Finds all text boxes in a comment and marks their tokens as <Tokenization.TokenType.CommentDecoration>.
+		 * Finds all text boxes in a comment and marks their tokens as <Tokenization.CommentParsingType.CommentDecoration>.
 		 * Vertical lines will only be detected if they are continuous throughout the comment and horizontal lines if they
 		 * are connected to it.  Freestanding horizontal lines are *not* detected here.  This function tolerates differing
 		 * symbols on corners and where embedded horizontal lines connect to the vertical.  It also tolerates tokens
-		 * marked with <Tokenization.TokenType.CommentSymbol> differing.
+		 * marked with <Tokenization.CommentParsingType.CommentSymbol> differing.
 		 * 
 		 * Examples:
 		 * 
@@ -94,40 +94,40 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				bool commentSymbolWithoutWhitespaceAtStart = false;
 				bool commentSymbolWithoutWhitespaceAtEnd = false;
 				
-				if (lineStart.Type == TokenType.CommentSymbol)
+				if (lineStart.CommentParsingType == CommentParsingType.CommentSymbol)
 					{
 					commentSymbolWithoutWhitespaceAtStart = true;
 					
 					do
 						{  lineStart.Next();  }
-					while (lineStart.Type == TokenType.CommentSymbol);
+					while (lineStart.CommentParsingType == CommentParsingType.CommentSymbol);
 					
-					if (lineStart.Type == TokenType.Whitespace)
+					if (lineStart.FundamentalType == FundamentalType.Whitespace)
 						{
 						commentSymbolWithoutWhitespaceAtStart = false;
 						
 						do
 							{  lineStart.Next();  }
-						while (lineStart.Type == TokenType.Whitespace);
+						while (lineStart.FundamentalType == FundamentalType.Whitespace);
 						}
 					}
 					
 				lineEnd.Previous();
-				if (lineEnd.Type == TokenType.CommentSymbol)
+				if (lineEnd.CommentParsingType == CommentParsingType.CommentSymbol)
 					{
 					commentSymbolWithoutWhitespaceAtEnd = true;
 					
 					do
 						{  lineEnd.Previous();  }
-					while (lineEnd.Type == TokenType.CommentSymbol);
+					while (lineEnd.CommentParsingType == CommentParsingType.CommentSymbol);
 					
-					if (lineEnd.Type == TokenType.Whitespace)
+					if (lineEnd.FundamentalType == FundamentalType.Whitespace)
 						{
 						commentSymbolWithoutWhitespaceAtEnd = false;
 						
 						do
 							{  lineEnd.Previous();  }
-						while (lineEnd.Type == TokenType.Whitespace);
+						while (lineEnd.FundamentalType == FundamentalType.Whitespace);
 						}
 					}					
 				lineEnd.Next();
@@ -263,7 +263,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					{
 					while (lineStart < lineEnd)
 					    {
-					    lineStart.ChangeType(TokenType.CommentDecoration);
+					    lineStart.CommentParsingType = CommentParsingType.CommentDecoration;
 					    lineStart.Next();
 					    }
 					}
@@ -277,7 +277,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{
 						if (lineStart.Character == leftSymbol)
 							{
-							lineStart.ChangeType(TokenType.CommentDecoration);
+							lineStart.CommentParsingType = CommentParsingType.CommentDecoration;
 							lineStart.Next();
 							}
 						}
@@ -287,7 +287,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{
 						if (lineEnd.Character == rightSymbol)
 							{
-							lineEnd.ChangeType(TokenType.CommentDecoration);
+							lineEnd.CommentParsingType = CommentParsingType.CommentDecoration;
 							lineEnd.Previous();
 							}
 						}
@@ -392,13 +392,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			if (CountSymbols(ref lineStart, lineEnd, out leftSymbol, out leftSymbolCount))
 				{
-				if ( (lineStart.Type != TokenType.Whitespace && lineStart != lineEnd) || leftSymbolCount > 3)
+				if ( (lineStart.FundamentalType != FundamentalType.Whitespace && lineStart != lineEnd) || leftSymbolCount > 3)
 					{
 					leftSymbol = '\0';
 					leftSymbolCount = 0;
 					}
 					
-				while (lineStart.Type == TokenType.Whitespace && lineStart < lineEnd)
+				while (lineStart.FundamentalType == FundamentalType.Whitespace && lineStart < lineEnd)
 					{  lineStart.Next();  }
 					
 				if (lineStart == lineEnd)
@@ -409,7 +409,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				lineEnd.Previous();
 				
-				if ( (lineEnd >= lineStart && lineEnd.Type != TokenType.Whitespace) || rightSymbolCount > 3)
+				if ( (lineEnd >= lineStart && lineEnd.FundamentalType != FundamentalType.Whitespace) || rightSymbolCount > 3)
 					{
 					rightSymbol = '\0';
 					rightSymbolCount = 0;
@@ -431,7 +431,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected bool CountSymbols (ref TokenIterator start, TokenIterator end, out char symbol, out int count)
 			{
-			if (start >= end || start.FundamentalType != TokenType.Symbol)
+			if (start >= end || start.FundamentalType != FundamentalType.Symbol)
 				{  
 				symbol = '\0';
 				count = 0;
@@ -465,7 +465,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			{
 			end.Previous();
 			
-			if (end < start || end.FundamentalType != TokenType.Symbol)
+			if (end < start || end.FundamentalType != FundamentalType.Symbol)
 				{
 				symbol = '\0';
 				count = 0;

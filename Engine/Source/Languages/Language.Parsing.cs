@@ -57,8 +57,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * interrupted.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
 		virtual public ParseResult Parse (Tokenizer tokenizedSourceCode, int fileID, CancelDelegate cancelDelegate, 
-																  out List<Topic> topics)
-			{
+																	  out List<Topic> topics)
+			{ 
 			topics = null;
 			ParseState parser = new ParseState();
 			
@@ -75,8 +75,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (parser.Cancelled)
 				{  return ParseResult.Cancelled;  }
 				
-			// XXX: Parse for code topics
-			parser.CodeTopics = new List<Topic>();
+			GetCodeTopics(parser);
 			
 			if (parser.Cancelled)
 				{  return ParseResult.Cancelled; }
@@ -115,9 +114,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
 		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
 		 * 
-		 * All the comments in the returned list will have their comment symbols marked as <TokenType.CommentSymbol> in the
-		 * tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
-		 * will also be marked as <TokenType.CommentDecoration>.
+		 * All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
+		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
+		 * will also be marked as <CommentParsingType.CommentDecoration>.
 		 * 
 		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
@@ -136,9 +135,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
 		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
 		 * 
-		 * All the comments in the returned list will have their comment symbols marked as <TokenType.CommentSymbol> in the
-		 * tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
-		 * will also be marked as <TokenType.CommentDecoration>.
+		 * All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
+		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
+		 * will also be marked as <CommentParsingType.CommentDecoration>.
 		 */
 		public List<PossibleDocumentationComment> GetComments (Tokenizer tokenizedSourceCode)
 			{
@@ -171,8 +170,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// just to be acceptable candidates for them.  If there are no comments, PossibleDocumentationComments will be set to
 		// an empty list.
 		//
-		// All the comments in the returned list will have their comment symbols marked as <TokenType.CommentSymbol> in the
-		// tokenizer.  This allows further operations to be done on them in a language independent manner.
+		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
+		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.
 		//
 		// Default Implementation:
 		//
@@ -235,9 +234,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								TokenIterator afterOpeningBlock = startOfLine;
 								afterOpeningBlock.NextByCharacters(JavadocBlockCommentStringPairs[i].Length);
 							
-								if (afterOpeningBlock.FundamentalType != TokenType.Symbol)
+								if (afterOpeningBlock.FundamentalType != FundamentalType.Symbol)
 									{
-									startOfLine.ChangeTypeByCharacters(TokenType.CommentSymbol, 
+									startOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
 																							JavadocBlockCommentStringPairs[i].Length);
 
 									PossibleDocumentationComment comment = new PossibleDocumentationComment();
@@ -263,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							{
 							if (startOfLine.MatchesAcrossTokens(BlockCommentStringPairs[i], false))
 								{
-								startOfLine.ChangeTypeByCharacters(TokenType.CommentSymbol, 
+								startOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
 																						BlockCommentStringPairs[i].Length);
 
 								PossibleDocumentationComment comment = new PossibleDocumentationComment();
@@ -293,9 +292,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								TokenIterator afterOpeningBlock = startOfLine;
 								afterOpeningBlock.NextByCharacters(JavadocLineCommentStringPairs[i].Length);
 							
-								if (afterOpeningBlock.FundamentalType != TokenType.Symbol)
+								if (afterOpeningBlock.FundamentalType != FundamentalType.Symbol)
 									{
-									startOfLine.ChangeTypeByCharacters(TokenType.CommentSymbol, 
+									startOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
 																							JavadocLineCommentStringPairs[i].Length);
 
 									PossibleDocumentationComment comment = new PossibleDocumentationComment();
@@ -328,9 +327,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								TokenIterator afterOpeningBlock = startOfLine;
 								afterOpeningBlock.NextByCharacters(XMLLineCommentStrings[i].Length);
 							
-								if (afterOpeningBlock.FundamentalType != TokenType.Symbol)
+								if (afterOpeningBlock.FundamentalType != FundamentalType.Symbol)
 									{
-									startOfLine.ChangeTypeByCharacters(TokenType.CommentSymbol, 
+									startOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
 																							XMLLineCommentStrings[i].Length);
 
 									PossibleDocumentationComment comment = new PossibleDocumentationComment();
@@ -358,7 +357,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							{
 							if (startOfLine.MatchesAcrossTokens(LineCommentStrings[i], false))
 								{
-								startOfLine.ChangeTypeByCharacters(TokenType.CommentSymbol, 
+								startOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
 																						LineCommentStrings[i].Length);
 
 								PossibleDocumentationComment comment = new PossibleDocumentationComment();
@@ -391,7 +390,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * A helper function used only by <GetPossibleDocumentationComments()> that advances the iterator until it
 		 * reaches a line containing the passed closing comment symbol.  If that was the last thing on the line, it sets the ending
 		 * iterator field on the comment object and returns true.  If not, or if it reaches the end of the file, it returns false.
-		 * The closing comment symbol will be marked as <TokenType.CommentSymbol>.
+		 * The closing comment symbol will be marked as <CommentParsingType.CommentSymbol>.
 		 * 
 		 * The passed iterator should be on the first line of the comment so that it can capture a single line block comment.  The 
 		 * iterator will be left on the line following the one with the ending comment symbol.
@@ -414,7 +413,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					
 					bool lastThingOnLine = ( symbolPosition.RawTextIndex + closingCommentSymbol.Length == rawTextEnd );
 						
-					symbolPosition.ChangeTypeByCharacters(TokenType.CommentSymbol, closingCommentSymbol.Length);
+					symbolPosition.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, 
+																															 closingCommentSymbol.Length);
 					lineIterator.Next();
 					
 					if (lastThingOnLine == true)
@@ -438,7 +438,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * A helper function used only by <GetPossibleDocumentationComments()> that advances the iterator until it
 		 * reaches a line that doesn't start with the passed comment symbol.  It then sets the ending iterator field in
-		 * the comment.  All the comment symbols will be marked as <TokenType.CommentSymbol>.
+		 * the comment.  All the comment symbols will be marked as <CommentParsingType.CommentSymbol>.
 		 * 
 		 * The passed iterator should start on the second line of the comment since you should already know the first one is
 		 * a part of it.  The iterator will be left on the line following the last one which started with the comment symbol.
@@ -456,7 +456,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				
 				if (symbolPosition.MatchesAcrossTokens(commentSymbol, false))
 					{
-					symbolPosition.ChangeTypeByCharacters(TokenType.CommentSymbol, commentSymbol.Length);
+					symbolPosition.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, commentSymbol.Length);
 					lineIterator.Next();
 					}
 				else
@@ -471,8 +471,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* Function: ParsePossibleDocumentationComments
 		 * 
 		 * Converts the raw comments in <ParseState.PossibleDocumentationComments> to <ParseState.CommentTopics>.
-		 * If there are none, CommentTopics will be set to an empty list.  PossibleDocumentationComments will be set to null
-		 * afterwards.
+		 * If there are none, CommentTopics will be set to an empty list.
 		 * 
 		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()>.  There
 		 * should be no need to change it.
@@ -488,8 +487,76 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (parser.Cancelled)
 					{  return;  }
 				}
-				
-			parser.PossibleDocumentationComments = null;
+			}
+
+
+		/* Function: GetCodeTopics
+		 * 
+		 * Goes through the file looking for code elements that should be included in the output and creates a list in
+		 * <ParseState.CodeTopics>.  If there are none, CodeTopics will be set to an empty list.
+		 *
+		 * Default Implementation:
+		 *
+		 * The default implementation uses <ParseState.CommentTopics> and the language's prototype enders to gather 
+		 * prototypes for languages with basic support.  It basically takes the code between the end of the comment topic and the 
+		 * next one (or the next entry in <ParseState.PossibleDocumentationComments>) and if it finds the topic title before
+		 * it finds an ender, the prototype will be the code between the topic and the ender.  You can override this function to do
+		 * real language processing for full support.
+		 *
+		 * This function does the basic looping of the search but throws the actual prototype detection to <GetPrototype()>.
+		 * This makes it easier for tweaks to be implemented for certain languages that have unique prototype formats but don't 
+		 * have full language support.
+		 */
+		protected virtual void GetCodeTopics (ParseState parser)
+			{
+			parser.CodeTopics = new List<Topic>();
+
+			int topicIndex = 0;
+
+			for (int commentIndex = 0; commentIndex < parser.PossibleDocumentationComments.Count; commentIndex++)
+				{
+				if (parser.Cancelled)
+					{  return;  }
+
+				PossibleDocumentationComment comment = parser.PossibleDocumentationComments[commentIndex];
+
+				// Advance the topic index to the last one in this comment.  If there are multiple topics in a comment only the
+				// last one gets a prototype search.
+
+				while (topicIndex + 1 < parser.CommentTopics.Count && 
+							parser.CommentTopics[topicIndex + 1].CommentLineNumber < comment.End.LineNumber)
+					{  topicIndex++;  }
+
+				if (topicIndex >= parser.CommentTopics.Count ||
+					 parser.CommentTopics[topicIndex].CommentLineNumber < comment.Start.LineNumber ||
+					 parser.CommentTopics[topicIndex].CommentLineNumber > comment.End.LineNumber)
+					{  
+					// We're out of topics or the one we're on isn't in this comment.
+					continue;  
+					}
+
+				// Build the bounds for the prototype search and perform it.
+
+				Tokenization.LineIterator startCode = comment.End;
+				startCode.Next();
+
+				Tokenization.LineIterator endCode;
+
+				if (commentIndex + 1 < parser.PossibleDocumentationComments.Count)
+					{  endCode = parser.PossibleDocumentationComments[commentIndex + 1].Start;  }
+				else
+					{  endCode = parser.TokenizedSourceCode.LastLine;  }
+
+				GetPrototype(parser.CommentTopics[topicIndex], startCode, endCode);
+				}
+			}
+
+
+		/* Function: GetPrototype
+		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will set xxx
+		 */
+		protected virtual void GetPrototype (Topic topic, Tokenization.LineIterator startCode, Tokenization.LineIterator endCode)
+			{
 			}
 			
 		

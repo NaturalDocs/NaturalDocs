@@ -157,14 +157,12 @@
     <Compile Include="Source\StringExtensions.cs" />
     <Compile Include="Source\Symbol.cs" />
     <Compile Include="Source\Thread.cs" />
-    <Compile Include="Source\Tokenization\Exceptions\InvalidConversion.cs" />
     <Compile Include="Source\Tokenization\Line.cs" />
     <Compile Include="Source\Tokenization\LineBoundsMode.cs" />
     <Compile Include="Source\Tokenization\LineIterator.cs" />
-    <Compile Include="Source\Tokenization\Token.cs" />
     <Compile Include="Source\Tokenization\TokenIterator.cs" />
     <Compile Include="Source\Tokenization\Tokenizer.cs" />
-    <Compile Include="Source\Tokenization\TokenType.cs" />
+    <Compile Include="Source\Tokenization\TokenTypes.cs" />
     <Compile Include="Source\Topic.cs" />
     <Compile Include="Source\TopicTypes\ConfigFileTopicType.cs" />
     <Compile Include="Source\TopicTypes\Manager.cs" />

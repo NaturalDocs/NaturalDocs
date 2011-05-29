@@ -2,13 +2,13 @@
  * Struct: GregValure.NaturalDocs.Engine.Tokenization.TokenIterator
  * ____________________________________________________________________________
  * 
- * An iterator for effeciently walking through the tokens in <Tokenizer> while keeping track of the line number
+ * An iterator for efficiently walking through the tokens in <Tokenizer> while keeping track of the line number
  * and offset into the raw text.
  * 
  * It is designed to be tolerant to allow for easier parsing.  You can go past the bounds of the data without 
  * exceptions being thrown.
  * 
- * It is a struct rather than a class because it is expected many of them are going to be created, copied, passed
+ * It is a struct rather than a class because it is expected that many of them are going to be created, copied, passed
  * around, and then disappear just as quickly.  It's not worth the memory churn to be a reference type, and having
  * them behave as a value type is more intuitive.
  */
@@ -55,14 +55,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 					}
 				}
 
-			while (count > 0 && tokenIndex < tokenizer.Tokens.Count)
+			while (count > 0 && tokenIndex < tokenizer.TokenCount)
 				{
-				rawTextIndex += tokenizer.Tokens[tokenIndex].Length;
-
-				if (tokenizer.Tokens[tokenIndex].Type == TokenType.LineBreak)
+				if (FundamentalType == FundamentalType.LineBreak)
 					{  lineNumber++;  }
 					
+				rawTextIndex += tokenizer.TokenLengths[tokenIndex];
 				tokenIndex++;
+
 				count--;
 				}
 				
@@ -73,7 +73,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				tokenIndex += count;
 				}
 			
-			return (tokenIndex < tokenizer.Tokens.Count);
+			return (tokenIndex < tokenizer.TokenCount);
 			}
 			
 			
@@ -104,27 +104,26 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			if (count < 0)
 				{  throw new InvalidOperationException();  }
 				
-			if (tokenIndex > tokenizer.Tokens.Count)
+			if (tokenIndex > tokenizer.TokenCount)
 				{
-				if (tokenIndex - count >= tokenizer.Tokens.Count)
+				if (tokenIndex - count >= tokenizer.TokenCount)
 					{
 					tokenIndex -= count;
 					return false;
 					}
 				else
 					{
-					count -= tokenIndex - tokenizer.Tokens.Count;
-					tokenIndex = tokenizer.Tokens.Count;
+					count -= tokenIndex - tokenizer.TokenCount;
+					tokenIndex = tokenizer.TokenCount;
 					}
 				}
 
 			while (count > 0 && tokenIndex > 0)
 				{			
 				tokenIndex--;
-
-				rawTextIndex -= tokenizer.Tokens[tokenIndex].Length;
+				rawTextIndex -= tokenizer.TokenLengths[tokenIndex];
 			
-				if (tokenizer.Tokens[tokenIndex].Type == TokenType.LineBreak)
+				if (FundamentalType == FundamentalType.LineBreak)
 					{  lineNumber--;  }
 					
 				count--;
@@ -153,9 +152,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			int i = tokenIndex;
 			int tokenCount = 0;
 			
-			while (characterCount > 0 && i < tokenizer.Tokens.Count)
+			while (characterCount > 0 && i < tokenizer.TokenCount)
 				{
-				characterCount -= tokenizer.Tokens[i].Length;
+				characterCount -= tokenizer.TokenLengths[i];
 				i++;
 				tokenCount++;
 				}
@@ -176,8 +175,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			if (!IsInBounds)
 				{  return false;  }
 				
-			return ( text.Length == tokenizer.Tokens[tokenIndex].Length &&
-						String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
+			return ( text.Length == tokenizer.TokenLengths[tokenIndex] &&
+							String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
 			}
 			
 			
@@ -190,7 +189,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			if (!IsInBounds)
 				{  return regex.Match("");  }
 		
-			return regex.Match(tokenizer.RawText, rawTextIndex, tokenizer.Tokens[tokenIndex].Length);
+			return regex.Match(tokenizer.RawText, rawTextIndex, tokenizer.TokenLengths[tokenIndex]);
 			}
 
 
@@ -206,7 +205,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return false;  }
 				
 			return ( TokensInCharacters(text.Length) != -1 &&
-						String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
+							String.Compare(tokenizer.RawText, rawTextIndex, text, 0, text.Length, ignoreCase) == 0 );
 			}
 
 
@@ -225,59 +224,29 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
-		/* Function: ChangeType
+		/* Function: SetCommentParsingTypeByCharacters
 		 * 
-		 * Changes the current <TokenType> to something else.  You must respect the following rules though or
-		 * it will throw an exception.
-		 * 
-		 * - You can switch tokens among text, symbols, whitespace, and code types.  If you change any token to
-		 *   or from whitespace it will affect the values returned by <LineIterator>.
-		 * - You cannot change line break tokens.  Otherwise the line number wouldn't match the source file anymore.
-		 * - You cannot change null tokens.
-		 */
-		public void ChangeType (TokenType newType)
-			{
-			if (!IsInBounds)
-				{  throw new InvalidOperationException();  }
-				
-			TokenType oldType = tokenizer.Tokens[tokenIndex].Type;
-			
-			// There will not be any oldTypes as null since we're in bounds and we can't manually change anything to it.
-			if (oldType == TokenType.LineBreak || newType == TokenType.LineBreak || newType == TokenType.Null)
-				{  throw new Exceptions.InvalidConversion(oldType, newType);  }
-				
-			// We have to do it this way because it's a struct.  We can't modify it inline.
-			Token token;
-			token.Length = tokenizer.Tokens[tokenIndex].Length;
-			token.Type = newType;
-			tokenizer.Tokens[tokenIndex] = token;
-			}
-			
-			
-		/* Function: ChangeTypeByCharacters
-		 * 
-		 * Changes the <TokenType> of the tokens encompassed by the passed number of characters.  See 
-		 * <ChangeType()> for the rules you must follow when converting <TokenTypes>.
+		 * Changes the <CommentParsingType> of the tokens encompassed by the passed number of characters.
 		 * 
 		 * This throws an exception if the number of characters does not evenly fall on a token boundary.  It
 		 * is assumed that this function will primarily be used after a positive result from <MatchesAcrossTokens()>
 		 * or <TokensInCharacters()> which would cause this to not be an issue.
 		 */
-		public void ChangeTypeByCharacters (TokenType newType, int characters)
+		public void SetCommentParsingTypeByCharacters (CommentParsingType newType, int characters)
 			{
 			int tokenCount = TokensInCharacters(characters);
 			
 			if (tokenCount == -1)
 				{  throw new InvalidOperationException();  }
 			else if (tokenCount == 1)
-				{  ChangeType(newType);  }
+				{  CommentParsingType = newType;  }
 			else
 				{
 				TokenIterator iterator = this;
 				
 				while (tokenCount > 0)
 					{
-					iterator.ChangeType(newType);
+					iterator.CommentParsingType = newType;
 					iterator.Next();
 					tokenCount--;
 					}
@@ -320,15 +289,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			get
 				{
 				if (IsInBounds)
-					{  return tokenizer.RawText.Substring( rawTextIndex, tokenizer.Tokens[tokenIndex].Length );  }
+					{  return tokenizer.RawText.Substring( rawTextIndex, tokenizer.TokenLengths[tokenIndex] );  }
 				else
 					{  return "";  }
 				}
 			}
 			
 		/* Property: Character
-		 * Returns the first character of the token, or null if it's out of bounds.  This is useful for symbol tokens which will
-		 * always be only one character long.
+		 * The first character of the token, or null if it's out of bounds.  This is useful for symbol tokens which will always be
+		 * only one character long.
 		 */
 		public char Character
 			{
@@ -341,44 +310,30 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				}
 			}
 			
-		/* Property: Type
-		 * The <TokenType> of the current token.  Will return <TokenType.Null> if the iterator is out of bounds.  See
-		 * <ChangeType()> for the rules that apply when changing the type.
-		 */
-		public TokenType Type
-			{
-			get
-				{
-				if (IsInBounds)
-					{  return tokenizer.Tokens[tokenIndex].Type;  }
-				else
-					{  return TokenType.Null;  }
-				}
-			set
-				{  ChangeType(value);  }
-			}
-			
 		/* Property: FundamentalType
-		 * Returns the fundamental <TokenType> of the current token, regardless of whether it was changed to one of
-		 * the code types, or <TokenType.Null> if the iterator is out of bounds.
+		 * The <FundamentalType> of the current token, or <FundamentalType.Null> if the iterator is out of bounds.  It 
+		 * cannot be changed.
 		 */
-		public TokenType FundamentalType
+		public FundamentalType FundamentalType
 			{
 			get
-				{
-				if (!IsInBounds)
-					{  return TokenType.Null;  }
-					
-				else if (tokenizer.Tokens[tokenIndex].Type < TokenType.EndOfFundamentalTypes)
-					{  return tokenizer.Tokens[tokenIndex].Type;  }
-					
-				else
-					{  return Tokenizer.FundamentalTypeOf(tokenizer.RawText[rawTextIndex]);  }
-				}
+				{  return tokenizer.FundamentalTypeAt(tokenIndex, rawTextIndex);  }
+			}
+
+		/* Property: CommentParsingType
+		 * The <CommentParsingType> of the current token, or <CommentParsingType.Null> if it hasn't been set or the
+		 * iterator is out of bounds.
+		 */
+		public CommentParsingType CommentParsingType
+			{
+			get
+				{  return tokenizer.CommentParsingTypeAt(tokenIndex);  }
+			set
+				{  tokenizer.SetCommentParsingTypeAt(tokenIndex, value);  }
 			}
 			
 		/* Property: LineNumber
-		 * Returns the line number of the current token, or the one it left off on if it went out of bounds.
+		 * The line number of the current token, or the one it left off on if it went out of bounds.
 		 */
 		public int LineNumber
 			{
@@ -387,8 +342,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 		/* Property: RawTextIndex
-		 * Returns the offset of the current token into <Tokenizer.RawText>.  Will be zero if it went past the beginning, or
-		 * the index one past the last character if it went past the end.
+		 * The offset of the current token into <Tokenizer.RawText>.  Will be zero if it went past the beginning, or the index 
+		 * one past the last character if it went past the end.
 		 */
 		public int RawTextIndex
 			{
@@ -397,14 +352,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 		/* Property: RawTextLength
-		 * Returns the length of the current token in characters, or zero if the iterator is out of bounds.
+		 * The length of the current token in characters, or zero if the iterator is out of bounds.
 		 */
 		public int RawTextLength
 			{
 			get
 				{
 				if (IsInBounds)
-					{  return tokenizer.Tokens[tokenIndex].Length;  }
+					{  return tokenizer.TokenLengths[tokenIndex];  }
 				else
 					{  return 0;  }
 				}
@@ -416,7 +371,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		public bool IsInBounds
 			{
 			get
-				{  return (tokenIndex >= 0 && tokenIndex < tokenizer.Tokens.Count);  }
+				{  return (tokenIndex >= 0 && tokenIndex < tokenizer.TokenCount);  }
 			}
 			
 		/* Property: Tokenizer
@@ -522,7 +477,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		private Tokenizer tokenizer;
 		
 		/* var: tokenIndex
-		 * The current index into <Tokenizer.Tokens>.  Can be a negative number if we're before the first token.
+		 * The current index into the tokens.  Can be a negative number if we're before the first token.
 		 */
 		private int tokenIndex;
 		
@@ -532,7 +487,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		private int rawTextIndex;
 		
 		/* var: lineNumber
-		 * The current line number.  Lines start at one.
+		 * The current line number.  Lines start at one instead of zero.
 		 */
 		private int lineNumber;
 	

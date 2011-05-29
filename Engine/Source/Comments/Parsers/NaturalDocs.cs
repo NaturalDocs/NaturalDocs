@@ -482,15 +482,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			TokenIterator afterColon = colon;
 
 			afterColon.Next();
-			if (afterColon.FundamentalType != TokenType.Whitespace)
+			if (afterColon.FundamentalType != FundamentalType.Whitespace)
 				{  return false;  }
 				
 			do
 				{  afterColon.Next();  }
-			while (afterColon.FundamentalType == TokenType.Whitespace);
+			while (afterColon.FundamentalType == FundamentalType.Whitespace);
 			
-			if ( (afterColon.FundamentalType != TokenType.Text && afterColon.FundamentalType != TokenType.Symbol) ||
-				afterColon.Type == TokenType.CommentSymbol || afterColon.Type == TokenType.CommentDecoration)
+			if ( (afterColon.FundamentalType != FundamentalType.Text && afterColon.FundamentalType != FundamentalType.Symbol) ||
+				 afterColon.CommentParsingType == CommentParsingType.CommentSymbol || 
+				 afterColon.CommentParsingType == CommentParsingType.CommentDecoration)
 				{  return false;  }
 				
 				
@@ -499,7 +500,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			TokenIterator beforeColon = colon;
 			beforeColon.Previous();
 			
-			if (beforeColon.FundamentalType == TokenType.Whitespace)
+			if (beforeColon.FundamentalType == FundamentalType.Whitespace)
 				{  return false;  }
 				
 				
@@ -660,8 +661,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			firstToken.Next();
 			lastToken.Previous();
 			
-			if (firstToken > lastToken || firstToken.FundamentalType == TokenType.Whitespace ||
-				lastToken.FundamentalType == TokenType.Whitespace)
+			if (firstToken > lastToken || firstToken.FundamentalType == FundamentalType.Whitespace ||
+				lastToken.FundamentalType == FundamentalType.Whitespace)
 				{  
 				content = null;
 				return false;  
@@ -878,7 +879,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			end.Previous();
 			
-			if (end.FundamentalType == TokenType.Whitespace)
+			if (end.FundamentalType == FundamentalType.Whitespace)
 				{
 				heading = null;
 				headingType = HeadingType.Generic;
@@ -925,7 +926,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (token < end)
 				{
-				if (token.FundamentalType == TokenType.Whitespace)
+				if (token.FundamentalType == FundamentalType.Whitespace)
 					{
 					int tokenEndIndex = token.RawTextIndex + token.RawTextLength;
 					
@@ -943,7 +944,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					token.Next();
 					}
 				
-				else if (token.Type == TokenType.CommentSymbol || token.Type == TokenType.CommentDecoration)
+				else if (token.CommentParsingType == CommentParsingType.CommentSymbol || 
+							 token.CommentParsingType == CommentParsingType.CommentDecoration)
 					{
 					lineLength += token.RawTextLength;
 					token.Next();
@@ -966,7 +968,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (token < end)
 				{
-				if (token.FundamentalType == TokenType.Whitespace)
+				if (token.FundamentalType == FundamentalType.Whitespace)
 					{
 					int tokenEndIndex = token.RawTextIndex + token.RawTextLength;
 					int oldLineLength = lineLength;
@@ -1030,7 +1032,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			token.Next();
 			
-			if (token < end && token.FundamentalType != TokenType.Whitespace)
+			if (token < end && token.FundamentalType != FundamentalType.Whitespace)
 				{
 				line = null;
 				indent = 0;
@@ -1043,13 +1045,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			// Grab it and strip out the leading symbol.
 			
-			TokenType oldType = token.Type;
-			token.ChangeType(TokenType.CommentDecoration);
+			CommentParsingType oldType = token.CommentParsingType;
+			token.CommentParsingType = CommentParsingType.CommentDecoration;
 			
 			GetPreformattedLine(lineIterator, out line, out indent);
 			leadingCharacter = token.Character;
 			
-			token.ChangeType(oldType);
+			token.CommentParsingType = oldType;
 			
 			return true;
 			}
@@ -1147,7 +1149,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			bulletChar = start.Character;
 			start.Next();
 			
-			if (start.FundamentalType != TokenType.Whitespace)
+			if (start.FundamentalType != FundamentalType.Whitespace)
 				{
 				content = null;
 				bulletChar = '\0';
@@ -1157,7 +1159,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			start.Next();
 			
-			if (start >= end || (start.FundamentalType != TokenType.Text && start.FundamentalType != TokenType.Symbol) )
+			if (start >= end || (start.FundamentalType != FundamentalType.Text && start.FundamentalType != FundamentalType.Symbol) )
 				{
 				content = null;
 				bulletChar = '\0';
@@ -1181,17 +1183,17 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			lineIterator.GetBounds(LineBoundsMode.CommentContent, out start, out end);
 			
 			token = start;
-			TokenType lastType = token.FundamentalType;
+			FundamentalType lastType = token.FundamentalType;
 			token.Next();
 			
 			while (token < end)
 				{
-				if (token.Character == '-' && lastType == TokenType.Whitespace)
+				if (token.Character == '-' && lastType == FundamentalType.Whitespace)
 					{
 					TokenIterator next = token;
 					next.Next();
 					
-					if (next.FundamentalType == TokenType.Whitespace)
+					if (next.FundamentalType == FundamentalType.Whitespace)
 						{  break;  }
 					}
 					
@@ -1211,12 +1213,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			TokenIterator startOfRightSide = token;
 			
 			endOfLeftSide.Previous(2);
-			while (endOfLeftSide.FundamentalType == TokenType.Whitespace)
+			while (endOfLeftSide.FundamentalType == FundamentalType.Whitespace)
 				{  endOfLeftSide.Previous();  }
 			endOfLeftSide.Next();
 			
 			startOfRightSide.Next(2);
-			while (startOfRightSide.FundamentalType == TokenType.Whitespace)
+			while (startOfRightSide.FundamentalType == FundamentalType.Whitespace)
 				{  startOfRightSide.Next();  }
 				
 			if (endOfLeftSide <= start || startOfRightSide >= end)
@@ -1419,7 +1421,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (line < endOfContent)
 				{
-				
+
 				// Preformatted blocks
 				// (start code)
 				
@@ -1829,8 +1831,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: MarkPossibleFormattingTags
-		 * Goes through the passed <Tokenizer> and marks asterisks and underscores with <TokenType.PossibleOpeningTag> and 
-		 * <TokenType.PossibleClosingTag> if they can possibly be interpreted as bold and underline formatting.
+		 * Goes through the passed <Tokenizer> and marks asterisks and underscores with <CommentParsingType.PossibleOpeningTag> and 
+		 * <CommentParsingType.PossibleClosingTag> if they can possibly be interpreted as bold and underline formatting.
 		 */
 		protected void MarkPossibleFormattingTags (Tokenizer tokenizer)
 			{
@@ -1854,12 +1856,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  goto ClosingSymbols;  }
 							
 					// The next token must also be non-whitespace.
-					if (next.FundamentalType == TokenType.Whitespace)
+					if (next.FundamentalType == FundamentalType.Whitespace)
 						{  goto ClosingSymbols;  }							
 					
 					// Move past the content immediately before it.											
-					while (prev.FundamentalType != TokenType.Whitespace &&
-							 prev.FundamentalType != TokenType.Null)
+					while (prev.FundamentalType != FundamentalType.Whitespace &&
+							 prev.FundamentalType != FundamentalType.Null)
 						{
 						prev.Previous();
 						}
@@ -1873,7 +1875,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							{  goto ClosingSymbols;  }
 						}
 							
-					token.ChangeType(TokenType.PossibleOpeningTag);
+					token.CommentParsingType = CommentParsingType.PossibleOpeningTag;
 					continue;
 						
 					
@@ -1890,14 +1892,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  continue;  }
 							
 					// The previous token must also be non-whitespace.
-					if (prev.FundamentalType == TokenType.Whitespace)
+					if (prev.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }
 							
 					// Skip past the content immediately after it.
 					TokenIterator end = next;
 						
-					while (end.FundamentalType != TokenType.Whitespace &&
-							 end.FundamentalType != TokenType.Null)
+					while (end.FundamentalType != FundamentalType.Whitespace &&
+							 end.FundamentalType != FundamentalType.Null)
 						{  end.Next();  }
 							
 					// If there's still intervening content, it must be entirely acceptable characters like ) and ".						
@@ -1907,15 +1909,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							{  continue;  }
 						}
 							
-					token.ChangeType(TokenType.PossibleClosingTag);
+					token.CommentParsingType = CommentParsingType.PossibleClosingTag;
 					}
 				}
 			}
 
 			
 		/* Function: MarkPossibleLinkTags
-		 * Goes through the passed <Tokenizer> and marks angle brackets with <TokenType.PossibleOpeningTag> and 
-		 * <TokenType.PossibleClosingTag> if they can possibly be interpreted as links.  Call <MarkPossibleFormattingTags()>
+		 * Goes through the passed <Tokenizer> and marks angle brackets with <CommentParsingType.PossibleOpeningTag> and 
+		 * <CommentParsingType.PossibleClosingTag> if they can possibly be interpreted as links.  Call <MarkPossibleFormattingTags()>
 		 * prior to this in order to allow links to be tolerant of formatting tags surrounding them.  Call
 		 * <MarkPossibleInlineImageTags()> after this so marked parenthesis don't screw it up.
 		 */
@@ -1941,20 +1943,20 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  continue;  }
 							
 					// The next token must also be non-whitespace.
-					if (next.FundamentalType == TokenType.Whitespace)
+					if (next.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }							
 						
 					// Move past the content immediately before it.
-					while (prev.FundamentalType != TokenType.Whitespace &&
-							 prev.FundamentalType != TokenType.Null &&
-							 prev.Type != TokenType.PossibleOpeningTag)
+					while (prev.FundamentalType != FundamentalType.Whitespace &&
+								 prev.FundamentalType != FundamentalType.Null &&
+								 prev.CommentParsingType != CommentParsingType.PossibleOpeningTag)
 						{
 						prev.Previous();
 						}
 							
 					// An opening link tag can only be preceded by another opening tag without intervening whitespace if
 					// it's a bold or underline tag.
-					if (prev.Type == TokenType.PossibleOpeningTag)
+					if (prev.CommentParsingType == CommentParsingType.PossibleOpeningTag)
 						{
 						if (prev.Character != '*' && prev.Character != '_')
 							{  continue;  }
@@ -1970,7 +1972,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							{  continue;  }
 						}
 							
-					token.ChangeType(TokenType.PossibleOpeningTag);
+					token.CommentParsingType = CommentParsingType.PossibleOpeningTag;
 					}
 						
 					
@@ -1989,7 +1991,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  continue;  }
 						
 					// The previous token must also be non-whitespace.
-					if (prev.FundamentalType == TokenType.Whitespace)
+					if (prev.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }
 							
 					// Skip any acceptable suffixes, like 's.  We pick the longest match we can find.
@@ -2006,14 +2008,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					// Skip past the content immediately after it.
 					TokenIterator end = next;
 					
-					while (end.FundamentalType != TokenType.Whitespace &&
-							 end.FundamentalType != TokenType.Null &&
-							 end.Type != TokenType.PossibleClosingTag)
+					while (end.FundamentalType != FundamentalType.Whitespace &&
+								end.FundamentalType != FundamentalType.Null &&
+								end.CommentParsingType != CommentParsingType.PossibleClosingTag)
 						{  end.Next();  }
 							
 					// A closing link tag can only be followed by another closing tag without intervening whitespace if
 					// it's a bold or underline tag.
-					if (end.Type == TokenType.PossibleClosingTag)
+					if (end.CommentParsingType == CommentParsingType.PossibleClosingTag)
 						{
 						if (end.Character != '*' && end.Character != '_')
 							{  continue;  }
@@ -2026,7 +2028,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							{  continue;  }
 						}
 							
-					token.ChangeType(TokenType.PossibleClosingTag);
+					token.CommentParsingType = CommentParsingType.PossibleClosingTag;
 					}
 				}
 				
@@ -2034,8 +2036,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			
 		/* Function: MarkPossibleInlineImageTags
-		 * Goes through the passed <Tokenizer> and marks parenthesis with <TokenType.PossibleOpeningTag> and 
-		 * <TokenType.PossibleClosingTag> if they can possibly be used for inline images.  This does NOT validate
+		 * Goes through the passed <Tokenizer> and marks parenthesis with <CommentParsingType.PossibleOpeningTag> and 
+		 * <CommentParsingType.PossibleClosingTag> if they can possibly be used for inline images.  This does NOT validate
 		 * the content of the parenthesis, merely that they are acceptable candidates.
 		 */
 		protected void MarkPossibleInlineImageTags (Tokenizer tokenizer)
@@ -2056,14 +2058,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					prev.Previous();
 					
 					// The preceding token must be whitespace.
-					if (prev.FundamentalType != TokenType.Whitespace && prev.FundamentalType != TokenType.Null)
+					if (prev.FundamentalType != FundamentalType.Whitespace && prev.FundamentalType != FundamentalType.Null)
 						{  continue;  }
 							
 					// The next token must be non-whitespace.
-					if (next.FundamentalType == TokenType.Whitespace)
+					if (next.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }							
 						
-					token.ChangeType(TokenType.PossibleOpeningTag);
+					token.CommentParsingType = CommentParsingType.PossibleOpeningTag;
 					}
 						
 					
@@ -2078,7 +2080,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					prev.Previous();
 												
 					// The previous token must be non-whitespace.
-					if (prev.FundamentalType == TokenType.Whitespace)
+					if (prev.FundamentalType == FundamentalType.Whitespace)
 						{  continue;  }
 						
 					// There may be a single acceptable non-whitespace token after it.
@@ -2088,10 +2090,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  next.Next();  }
 						
 					// After that it must be whitespace.
-					if (next.FundamentalType != TokenType.Whitespace && next.FundamentalType != TokenType.Null)
+					if (next.FundamentalType != FundamentalType.Whitespace && next.FundamentalType != FundamentalType.Null)
 						{  continue;  }
 							
-					token.ChangeType(TokenType.PossibleClosingTag);
+					token.CommentParsingType = CommentParsingType.PossibleClosingTag;
 					}
 				}
 				
@@ -2099,11 +2101,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			
 		/* Function: FinalizeLinkTags
-		 * Goes through the passed <Tokenizer> and converts all angle brackets marked as <TokenType.PossibleOpeningTag> and 
-		 * <TokenType.PossibleClosingTag> to <TokenType.OpeningTag>, <TokenType.ClosingTag>, or back to its fundamental type.
-		 * It makes sure every opening tag has a closing tag and removes possible tag markings on other symbols between them.
-		 * Call this before <FinalizeInlineImageTags()> and <FinalizeFormattingTags()> because parenthesis, asterisks, and underscores
-		 * can be part of a link's content.
+		 * Goes through the passed <Tokenizer> and converts all angle brackets marked as <CommentParsingType.PossibleOpeningTag> and 
+		 * <CommentParsingType.PossibleClosingTag> to <CommentParsingType.OpeningTag>, <CommentParsingType.ClosingTag>, or back 
+		 * to <CommentParsingType.Null>.  It makes sure every opening tag has a closing tag and removes possible tag markings on other 
+		 * symbols between them.  Call this before <FinalizeInlineImageTags()> and <FinalizeFormattingTags()> because parenthesis, asterisks,
+		 * and underscores can be part of a link's content.
 		 */
 		protected void FinalizeLinkTags (Tokenizer tokenizer)
 			{
@@ -2111,7 +2113,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (token.IsInBounds)
 				{
-				if (token.Type == TokenType.PossibleOpeningTag && token.Character == '<')
+				if (token.CommentParsingType == CommentParsingType.PossibleOpeningTag && token.Character == '<')
 					{
 					TokenIterator lookahead = token;
 					
@@ -2120,23 +2122,25 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						lookahead.Next();
 						
 						// If there's another opening angle bracket or there's no closing one, this one is unacceptable.
-						if (!lookahead.IsInBounds || (lookahead.Type == TokenType.PossibleOpeningTag && lookahead.Character == '<'))
+						if (!lookahead.IsInBounds || 
+							 (lookahead.CommentParsingType == CommentParsingType.PossibleOpeningTag && lookahead.Character == '<'))
 							{
-							token.ChangeType(TokenType.Symbol);
+							token.CommentParsingType = CommentParsingType.Null;
 							token.Next();
 							break;
 							}
 							
 						// If there is a closing tag, mark the start and close and eat any possible tags between them.
-						else if (lookahead.Type == TokenType.PossibleClosingTag && lookahead.Character == '>')
+						else if (lookahead.CommentParsingType == CommentParsingType.PossibleClosingTag && lookahead.Character == '>')
 							{
-							token.ChangeType(TokenType.OpeningTag);
-							lookahead.ChangeType(TokenType.ClosingTag);
+							token.CommentParsingType = CommentParsingType.OpeningTag;
+							lookahead.CommentParsingType = CommentParsingType.ClosingTag;
 							
 							while (token < lookahead)
 								{
-								if (token.Type == TokenType.PossibleOpeningTag || token.Type == TokenType.PossibleClosingTag)
-									{  token.ChangeType(TokenType.Symbol);  }
+								if (token.CommentParsingType == CommentParsingType.PossibleOpeningTag || 
+									 token.CommentParsingType == CommentParsingType.PossibleClosingTag)
+									{  token.CommentParsingType = CommentParsingType.Null;  }
 									
 								token.Next();
 								}
@@ -2146,10 +2150,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						}
 					}
 					
-				else if (token.Type == TokenType.PossibleClosingTag && token.Character == '>')
+				else if (token.CommentParsingType == CommentParsingType.PossibleClosingTag && token.Character == '>')
 					{
 					// Closing tag without an opening tag preceding it.
-					token.ChangeType(TokenType.Symbol);
+					token.CommentParsingType = CommentParsingType.Null;
 					token.Next();
 					}
 					
@@ -2160,11 +2164,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		/* Function: FinalizeInlineImageTags
-		 * Goes through the passed <Tokenizer> and converts all parenthesis marked as <TokenType.PossibleOpeningTag> and 
-		 * <TokenType.PossibleClosingTag> to <TokenType.OpeningTag>, <TokenType.ClosingTag>, or back to its fundamental type.
-		 * It makes sure every opening tag has a closing tag, the content is in the right format, and removes possible tag markings on 
-		 * other symbols between them.  Call this before <FinalizeFormattingTags()> because asterisks and underscores may be part
-		 * of a tag's content.
+		 * Goes through the passed <Tokenizer> and converts all parenthesis marked as <CommentParsingType.PossibleOpeningTag> and 
+		 * <CommentParsingType.PossibleClosingTag> to <CommentParsingType.OpeningTag>, <CommentParsingType.ClosingTag>, or 
+		 * back to <CommentParsingType.Null>.  It makes sure every opening tag has a closing tag, the content is in the right format, and 
+		 * removes possible tag markings on other symbols between them.  Call this before <FinalizeFormattingTags()> because asterisks 
+		 * and underscores may be part of a tag's content.
 		 */
 		protected void FinalizeInlineImageTags (Tokenizer tokenizer)
 			{
@@ -2172,7 +2176,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (token.IsInBounds)
 				{
-				if (token.Type == TokenType.PossibleOpeningTag && token.Character == '(')
+				if (token.CommentParsingType == CommentParsingType.PossibleOpeningTag && token.Character == '(')
 					{
 					TokenIterator lookahead = token;
 					
@@ -2181,15 +2185,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						lookahead.Next();
 						
 						// If there's another opening paren or there's no closing one, this one is unacceptable.
-						if (!lookahead.IsInBounds || (lookahead.Type == TokenType.PossibleOpeningTag && lookahead.Character == '('))
+						if (!lookahead.IsInBounds || 
+							 (lookahead.CommentParsingType == CommentParsingType.PossibleOpeningTag && lookahead.Character == '('))
 							{
-							token.ChangeType(TokenType.Symbol);
+							token.CommentParsingType = CommentParsingType.Null;
 							token.Next();
 							break;
 							}
 							
 						// If there is a closing tag, try to validate the content between them.
-						else if (lookahead.Type == TokenType.PossibleClosingTag && lookahead.Character == ')')
+						else if (lookahead.CommentParsingType == CommentParsingType.PossibleClosingTag && lookahead.Character == ')')
 							{
 							TokenIterator contentStart = token;
 							contentStart.Next();
@@ -2208,20 +2213,21 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							// Eat all the other tags between them.
 							if (acceptable)
 								{							
-								token.ChangeType(TokenType.OpeningTag);
-								lookahead.ChangeType(TokenType.ClosingTag);
+								token.CommentParsingType = CommentParsingType.OpeningTag;
+								lookahead.CommentParsingType = CommentParsingType.ClosingTag;
 								
 								while (token < lookahead)
 									{
-									if (token.Type == TokenType.PossibleOpeningTag || token.Type == TokenType.PossibleClosingTag)
-										{  token.ChangeType(TokenType.Symbol);  }
+									if (token.CommentParsingType == CommentParsingType.PossibleOpeningTag || 
+										 token.CommentParsingType == CommentParsingType.PossibleClosingTag)
+										{  token.CommentParsingType = CommentParsingType.Null;  }
 										
 									token.Next();
 									}
 								}
 							else
 								{
-								token.ChangeType(TokenType.Symbol);
+								token.CommentParsingType = CommentParsingType.Null;
 								token.Next();
 								}
 								
@@ -2230,10 +2236,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						}
 					}
 					
-				else if (token.Type == TokenType.PossibleClosingTag && token.Character == ')')
+				else if (token.CommentParsingType == CommentParsingType.PossibleClosingTag && token.Character == ')')
 					{
 					// Closing tag without an opening tag preceding it.
-					token.ChangeType(TokenType.Symbol);
+					token.CommentParsingType = CommentParsingType.Null;
 					token.Next();
 					}
 					
@@ -2244,10 +2250,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		/* Function: FinalizeFormattingTags
-		 * Goes through the passed <Tokenizer> and converts all asterisks and underscores marked as <TokenType.PossibleOpeningTag> 
-		 * and <TokenType.PossibleClosingTag> to <TokenType.OpeningTag>, <TokenType.ClosingTag>, or back to its fundamental type.
-		 * It makes sure every opening tag has a closing tag.  Call this after <FinalizeLinkTags()> and <FinalizeInlineImageTags()> so that
-		 * these are the only tokens marked as possible tags left.
+		 * Goes through the passed <Tokenizer> and converts all asterisks and underscores marked as <CommentParsingType.PossibleOpeningTag> 
+		 * and <CommentParsingType.PossibleClosingTag> to <CommentParsingType.OpeningTag>, <CommentParsingType.ClosingTag>, or back 
+		 * to <CommentParsingType.Null>.  It makes sure every opening tag has a closing tag.  Call this after <FinalizeLinkTags()> and 
+		 * <FinalizeInlineImageTags()> so that these are the only tokens marked as possible tags left.
 		 */
 		protected void FinalizeFormattingTags (Tokenizer tokenizer)
 			{
@@ -2255,7 +2261,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (token.IsInBounds)
 				{
-				if (token.Type == TokenType.PossibleOpeningTag)
+				if (token.CommentParsingType == CommentParsingType.PossibleOpeningTag)
 					{
 					TokenIterator lookahead = token;
 					
@@ -2264,46 +2270,47 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						lookahead.Next();
 						
 						// If there's another opening symbol of the same type or there's no closing one, this one is unacceptable.
-						if (!lookahead.IsInBounds || (lookahead.Type == TokenType.PossibleOpeningTag && lookahead.Character == token.Character))
+						if (!lookahead.IsInBounds || (lookahead.CommentParsingType == CommentParsingType.PossibleOpeningTag && 
+							 lookahead.Character == token.Character))
 							{
-							token.ChangeType(TokenType.Symbol);
+							token.CommentParsingType = CommentParsingType.Null;
 							token.Next();
 							break;
 							}
 							
 						// If we hit a definite tag, skip it.
-						else if (lookahead.Type == TokenType.OpeningTag)
+						else if (lookahead.CommentParsingType == CommentParsingType.OpeningTag)
 							{
 							do
 								{  lookahead.Next();  }
-							while (lookahead.Type != TokenType.ClosingTag);
+							while (lookahead.CommentParsingType != CommentParsingType.ClosingTag);
 							
 							// The first line of the loop will advance past the closing tag.
 							}
 							
 						// If we hit a definite closing tag without hitting an opening tag first, it means this tag can't have an end while being nested
 						// properly, like the first asterisk in "_startunderline *startbold endunderline_".
-						else if (lookahead.Type == TokenType.ClosingTag)
+						else if (lookahead.CommentParsingType == CommentParsingType.ClosingTag)
 							{
-							token.ChangeType(TokenType.Symbol);
+							token.CommentParsingType = CommentParsingType.Null;
 							token.Next();
 							break;
 							}
 							
 						// Success if we hit a closing tag of the same type before breaking out of this loop.
-						else if (lookahead.Type == TokenType.PossibleClosingTag && lookahead.Character == token.Character)
+						else if (lookahead.CommentParsingType == CommentParsingType.PossibleClosingTag && lookahead.Character == token.Character)
 							{
-							token.ChangeType(TokenType.OpeningTag);
-							lookahead.ChangeType(TokenType.ClosingTag);
+							token.CommentParsingType = CommentParsingType.OpeningTag;
+							lookahead.CommentParsingType = CommentParsingType.ClosingTag;
 							break;
 							}
 						}
 					}
 					
-				else if (token.Type == TokenType.PossibleClosingTag)
+				else if (token.CommentParsingType == CommentParsingType.PossibleClosingTag)
 					{
 					// Closing tag without an opening tag preceding it.
-					token.ChangeType(TokenType.Symbol);
+					token.CommentParsingType = CommentParsingType.Null;
 					token.Next();
 					}
 					
@@ -2314,7 +2321,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: MarkURLs
-		 * Goes through the passed <Tokenizer> and marks all tokens than are part of an URL with <TokenType.URL>.
+		 * Goes through the passed <Tokenizer> and marks all tokens than are part of an URL with <CommentParsingType.URL>.
 		 * This should be called after the MarkPossibleTags functions so it can reclaim any of their characters if it needs to,
 		 * but before the FinalizeTags functions so it's not invalidating them.
 		 */
@@ -2365,7 +2372,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					
 				// All okay.  Mark it.
 
-				token.ChangeTypeByCharacters(TokenType.URL, match.Length);
+				token.SetCommentParsingTypeByCharacters(CommentParsingType.URL, match.Length);
 				token.Next(tokensInMatch);
 				}
 			}
@@ -2373,8 +2380,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 		/* Function: MarkEMailAddresses
 		 * Goes through the passed <Tokenizer> and marks all tokens than are part of an e-mail address with 
-		 * <TokenType.EMail>.  This should be called after the MarkPossibleTags functions so it can reclaim any of their characters 
-		 * if it needs to, but before the FinalizeTags functions so it's not invalidating them.
+		 * <CommentParsingType.EMail>.  This should be called after the MarkPossibleTags functions so it can reclaim any of their 
+		 * characters if it needs to, but before the FinalizeTags functions so it's not invalidating them.
 		 */
 		protected void MarkEMailAddresses (Tokenizer tokenizer)
 			{
@@ -2414,15 +2421,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					
 				// All okay.  Mark it.
 
-				token.ChangeTypeByCharacters(TokenType.EMail, match.Length);
+				token.SetCommentParsingTypeByCharacters(CommentParsingType.EMail, match.Length);
 				token.Next(tokensInMatch);
 				}
 			}
 			
 			
 		/* Function: MarkedTokensToNDMarkup
-		 * Appends the tokenizer's content to the StringBuilder as NDMarkup.  All tokens marked with types like <TokenType.URL>
-		 * and <TokenType.OpeningTag> will be converted to tags.
+		 * Appends the tokenizer's content to the StringBuilder as NDMarkup.  All tokens marked with types like <CommentParsingType.URL>
+		 * and <CommentParsingType.OpeningTag> will be converted to tags.
 		 */
 		protected void MarkedTokensToNDMarkup(Tokenizer tokenizer, StringBuilder output)
 			{
@@ -2434,7 +2441,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			while (tokenIterator.IsInBounds)
 				{
-				if (tokenIterator.Type == TokenType.OpeningTag)
+				if (tokenIterator.CommentParsingType == CommentParsingType.OpeningTag)
 					{
 					if (tokenIterator.Character == '*')
 						{  output.Append("<b>");  }
@@ -2447,11 +2454,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						TokenIterator lookahead = tokenIterator;
 						lookahead.Next();
 						
-						while ( !(lookahead.Type == TokenType.ClosingTag && lookahead.Character == '_') )
+						while ( !(lookahead.CommentParsingType == CommentParsingType.ClosingTag && lookahead.Character == '_') )
 							{
 							if (lookahead.Character == '_')
 								{  eatUnderscores = true;  }
-							else if (lookahead.FundamentalType == TokenType.Whitespace)
+							else if (lookahead.FundamentalType == FundamentalType.Whitespace)
 								{
 								eatUnderscores = false;
 								break;
@@ -2471,7 +2478,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						// We don't have to check the character because there are no other tags allowed in links or inline images.
 						do
 							{  closingTag.Next();  }
-						while (closingTag.Type != TokenType.ClosingTag);
+						while (closingTag.CommentParsingType != CommentParsingType.ClosingTag);
 						
 						string tagContent = tokenizer.TextBetween(startOfContent, closingTag);
 																					  
@@ -2577,7 +2584,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					tokenIterator.Next();
 					}
 				
-				else if (tokenIterator.Type == TokenType.ClosingTag)
+				else if (tokenIterator.CommentParsingType == CommentParsingType.ClosingTag)
 					{
 					if (tokenIterator.Character == '*')
 						{  output.Append("</b>");  }
@@ -2590,13 +2597,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					tokenIterator.Next();
 					}
 					
-				else if (tokenIterator.Type == TokenType.URL)
+				else if (tokenIterator.CommentParsingType == CommentParsingType.URL)
 					{
 					TokenIterator startOfURL = tokenIterator;
 					
 					do
 						{  tokenIterator.Next();  }
-					while (tokenIterator.Type == TokenType.URL);
+					while (tokenIterator.CommentParsingType == CommentParsingType.URL);
 					
 					output.Append("<link type=\"url\" target=\"");
 					output.EntityEncodeAndAppend( tokenizer.RawText, startOfURL.RawTextIndex,
@@ -2604,13 +2611,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					output.Append("\">");
 					}
 					
-				else if (tokenIterator.Type == TokenType.EMail)
+				else if (tokenIterator.CommentParsingType == CommentParsingType.EMail)
 					{
 					TokenIterator startOfURL = tokenIterator;
 					
 					do
 						{  tokenIterator.Next();  }
-					while (tokenIterator.Type == TokenType.EMail);
+					while (tokenIterator.CommentParsingType == CommentParsingType.EMail);
 					
 					Match match = tokenizer.MatchTextBetween(EMailRegex, startOfURL, tokenIterator);
 					
@@ -2628,19 +2635,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				else
 					{
 					TokenIterator lookahead = tokenIterator;
-					TokenType tokenType;
 					
 					do
 						{  
 						lookahead.Next();  
-						tokenType = lookahead.Type;
 						}
-					while (tokenType != TokenType.Null && tokenType != TokenType.OpeningTag && tokenType != TokenType.ClosingTag &&
-							 tokenType != TokenType.URL && tokenType != TokenType.EMail && !(eatUnderscores && lookahead.Character == '_'));
-							// Null will signify out of bounds.
+					while (lookahead.IsInBounds && lookahead.CommentParsingType == CommentParsingType.Null &&
+								!(eatUnderscores && lookahead.Character == '_'));
 							 
 					output.EntityEncodeAndAppend(tokenizer.RawText, tokenIterator.RawTextIndex, 
-																						lookahead.RawTextIndex - tokenIterator.RawTextIndex);
+																				 lookahead.RawTextIndex - tokenIterator.RawTextIndex);
 					tokenIterator = lookahead;
 					}
 				}

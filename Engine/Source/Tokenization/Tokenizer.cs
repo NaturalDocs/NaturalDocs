@@ -2,7 +2,7 @@
  * Class: GregValure.NaturalDocs.Engine.Tokenization.Tokenizer
  * ____________________________________________________________________________
  * 
- * A class for dividing a block of text into easily navigable tokens.  See <TokenType> for a description of
+ * A class for dividing a block of text into easily navigable tokens.  See <FundamentalType> for a description of
  * how they are divided up by default.
  * 
  * 
@@ -42,54 +42,72 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public Tokenizer (string input)
 			{
-			rawText = null;
-			tokens = null;
-			lines = null;
-			startingLineNumber = 1;
-			
-			Load(input, 1);
+			if (input == null)
+				{
+				rawText = null;
+				tokenLengths = null;
+				commentParsingTypes = null;
+				lines = null;
+				startingLineNumber = 1;
+				}
+			else
+				{  
+				// DEPENDENCY: Load() must set all internal variables.
+				Load(input, 1);  
+				}
 			}
 			
 			
 		/* Function: CreateFromIterators
-		 * Creates a new tokenizer from the range between two <LineIterators>.  The line the ending iterator is
-		 * on is not included in the range.  The new tokenizer has a copy of the memory and is thus independent.  This
-		 * is faster than creating a new tokenizer around a substring of the raw text because it doesn't need to be
-		 * tokenized all over again.
-		 */
-		public Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
-		    {
-		    // We don't just pass it off to CreateFromIterators(TokenIterator) because we don't want to regenerate the
-		    // lines array.
-		    
-			if (!start.IsInBounds || start > end)
-				{  throw new ArgumentOutOfRangeException();  }
-			
-			// If end is out of bounds it's return values will be one past the end of the data.	
-			string newRawText = rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
-			List<Token> newTokens = tokens.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
-			List<Line> newLines = lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
-			
-			return new Tokenizer(newRawText, newTokens, newLines, start.LineNumber);
-		    }
-
-
-		/* Function: CreateFromIterators
 		 * Creates a new tokenizer from the range between two <TokenIterators>.  The token the ending iterator is
 		 * on is not included in the range.  The new tokenizer has a copy of the memory and is thus independent.  This
 		 * is faster than creating a new tokenizer around a substring of the raw text because it doesn't need to be
-		 * tokenized all over again.
+		 * tokenized all over again.  It also carries over any defined token information like <CommentParsingTypes>.
 		 */
 		public Tokenizer CreateFromIterators (TokenIterator start, TokenIterator end)
 			{
-			if (!start.IsInBounds || start > end)
-				{  throw new ArgumentOutOfRangeException();  }
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
+
+			Tokenizer result = new Tokenizer(null);
 			
 			// If end is out of bounds it's return values will be one past the end of the data.	
-			string newRawText = rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
-			List<Token> newTokens = tokens.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
+			result.rawText = rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			
-			return new Tokenizer(newRawText, newTokens, null, start.LineNumber);
+			result.tokenLengths = tokenLengths.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
+			result.startingLineNumber = start.LineNumber;
+			
+			// Leave lines null.  Even if they exist the iterators may not be cleanly on the beginning and end.  Let them be
+			// recalculated.
+
+			if (commentParsingTypes != null)
+				{  
+				result.commentParsingTypes = new CommentParsingType[result.tokenLengths.Count];
+				Array.Copy(commentParsingTypes, start.TokenIndex, result.commentParsingTypes, 0, result.tokenLengths.Count);
+				}
+
+			return result;
+			}
+
+
+		/* Function: CreateFromIterators
+		 * Creates a new tokenizer from the range between two <LineIterators>.  The line the ending iterator is
+		 * on is not included in the range.  The new tokenizer has a copy of the memory and is thus independent.  This
+		 * is faster than creating a new tokenizer around a substring of the raw text because it doesn't need to be
+		 * tokenized all over again.  It also carries over any defined token information like <CommentParsingTypes>.
+		 */
+		public Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
+		    {
+			Tokenizer result = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything), 
+																						  end.FirstToken(LineBoundsMode.Everything) );
+
+			result.lines = lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
+			
+			return result;
 			}
 
 
@@ -99,8 +117,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public string TextBetween (TokenIterator start, TokenIterator end)
 			{
-			if (start.Tokenizer != this || end.Tokenizer != this || start.RawTextIndex >= end.RawTextIndex)
-				{  throw new InvalidOperationException();  }
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
 
 			return rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			}
@@ -113,8 +135,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public void AppendTextBetweenTo (TokenIterator start, TokenIterator end, System.Text.StringBuilder output)
 			{
-			if (start.Tokenizer != this || end.Tokenizer != this || start.RawTextIndex >= end.RawTextIndex)
-				{  throw new InvalidOperationException();  }
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
 
 			output.Append(rawText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			}
@@ -125,8 +151,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public Match MatchTextBetween (System.Text.RegularExpressions.Regex regex, TokenIterator start, TokenIterator end)
 			{
-			if (start.Tokenizer != this || end.Tokenizer != this || start.RawTextIndex >= end.RawTextIndex)
-				{  throw new InvalidOperationException();  }
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
 
 			return regex.Match(rawText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			}
@@ -137,11 +167,59 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public bool ContainsTextBetween (string searchText, bool ignoreCase, TokenIterator start, TokenIterator end)
 			{
-			if (start.Tokenizer != this || end.Tokenizer != this || start.RawTextIndex >= end.RawTextIndex)
-				{  throw new InvalidOperationException();  }
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
 
 			StringComparison compareMode = (ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture);
 			return (rawText.IndexOf(searchText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex, compareMode) != -1);
+			}
+
+
+
+		// Group: Type Functions
+		// __________________________________________________________________________
+
+
+		/* Function: FundamentalTypeAt
+		 * Returns the <FundamentalType> at the passed location.
+		 */
+		public FundamentalType FundamentalTypeAt (int tokenIndex, int rawTextIndex)
+			{
+			// We test the bounds of tokenIndex instead of rawTextIndex because iterators will keep the raw text index at zero if you go 
+			// backwards past the beginning of the string.
+			if (tokenIndex < 0 || tokenIndex >= tokenLengths.Count)
+				{  return FundamentalType.Null;  }
+			else
+				{  return FundamentalTypeOf(rawText[rawTextIndex]);  }
+			}
+
+		/* Function: CommentParsingTypeAt
+		 * Returns the <CommentParsingType> at the passed token index.
+		 */
+		public CommentParsingType CommentParsingTypeAt (int tokenIndex)
+			{
+			if (commentParsingTypes == null || tokenIndex < 0 || tokenIndex >= commentParsingTypes.Length)
+				{  return CommentParsingType.Null;  }
+			else
+				{  return commentParsingTypes[tokenIndex];  }
+			}
+
+		/* Function: SetCommentParsingTypeAt
+		 * Changes the <CommentParsingType> at the passed token index.
+		 */
+		public void SetCommentParsingTypeAt (int tokenIndex, CommentParsingType type)
+			{
+			if (commentParsingTypes == null)
+				{  commentParsingTypes = new CommentParsingType[tokenLengths.Count];  }
+
+			if (tokenIndex < 0 || tokenIndex >= commentParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+
+			commentParsingTypes[tokenIndex] = type;
 			}
 			
 			
@@ -151,34 +229,34 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		
 		
 		/* Function: FundamentalTypeOf
-		 * Returns the fundamental <TokenType> of the passed character.
+		 * Returns the <FundamentalType> of the passed character.
 		 */
-		static public TokenType FundamentalTypeOf (char character)
+		static public FundamentalType FundamentalTypeOf (char character)
 			{
-			// DEPENDENCY: If this changes, Load() must also change.
+			// DEPENDENCY: If this changes, Load() must change to match.
 			
-			char maskedCharacter = (char)(character & 0xFFDF);  // Converts a-z to A-Z
+			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
-			if ( (maskedCharacter >= 'A' && maskedCharacter <= 'Z') ||
+			if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 				 (character >= '0' && character <= '9') ||
 				 character > 0x007F )  // Beyond ASCII
 				{
-				return TokenType.Text;
+				return FundamentalType.Text;
 				}
 					
 			else if (character == ' ' || character == '\t')
 				{
-				return TokenType.Whitespace;
+				return FundamentalType.Whitespace;
 				}
 					
 			else if (character == '\n' || character == '\r')
 				{
-				return TokenType.LineBreak;
+				return FundamentalType.LineBreak;
 				}
 					
 			else
 				{
-				return TokenType.Symbol;
+				return FundamentalType.Symbol;
 				}
 			}
 			
@@ -188,30 +266,21 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		// __________________________________________________________________________
 
 
-		/* Function: Tokenizer
-		 */
-		protected Tokenizer (string newRawText, List<Token> newTokens, List<Line> newLines,
-									   int newStartingLineNumber)
-			{
-			rawText = newRawText;
-			tokens = newTokens;
-			lines = newLines;
-			startingLineNumber = newStartingLineNumber;
-			}
-			
-			
 		/* Function: Load
 		 * Loads and tokenizes the passed string.
 		 */
 		protected void Load (string input, int newStartingLineNumber)
 			{
+			// DEPENDENCY: The constructor assumes all internal variables will be set.
+
 			rawText = input;
 			// Random guess, almost definitely too low, but that's better than being too high.  Will still be closer than the default.
-			tokens = new List<Token>(8 + (input.Length / 20));
+			tokenLengths = new List<byte>(8 + (input.Length / 20));
+			commentParsingTypes = null;
 			lines = null;
 			startingLineNumber = newStartingLineNumber;
 			
-			Token token;
+			byte tokenLength;
 			
 			int index = 0;
 			char character;
@@ -221,37 +290,36 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{
 				character = rawText[index];
 				
-				// DEPENDENCY: If this changes, FundamentalTypeOf() must also change.
+				// DEPENDENCY: If this changes, FundamentalTypeOf() must change to match.
 				
 				// Text
 				
-				maskedCharacter = (char)(character & 0xFFDF);  // Converts a-z to A-Z
+				maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
-				if ( (maskedCharacter >= 'A' && maskedCharacter <= 'Z') ||
+				if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 					 (character >= '0' && character <= '9') ||
 					 character > 0x007F )  // Beyond ASCII
 					{
-					token.Type = TokenType.Text;
-					token.Length = 1;
+					tokenLength = 1;
 					index++;
 					
-					while (index < rawText.Length && token.Length < 255)
+					while (index < rawText.Length && tokenLength < 255)
 						{
 						character = rawText[index];
-						maskedCharacter = (char)(character & 0xFFDF);
+						maskedCharacter = (char)(character | 0x0020);
 						
-						if ( (maskedCharacter >= 'A' && maskedCharacter <= 'Z') ||
+						if ( (maskedCharacter >= 'a' && maskedCharacter <= 'z') ||
 							 (character >= '0' && character <= '9') ||
 							 character > 0x007F )
 							{
-							token.Length++;
+							tokenLength++;
 							index++;
 							}
 						else
 							{  break;  }
 						}
 						
-					tokens.Add(token);
+					tokenLengths.Add(tokenLength);
 					}
 					
 					
@@ -259,24 +327,23 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				
 				else if (character == ' ' || character == '\t')
 					{
-					token.Type = TokenType.Whitespace;
-					token.Length = 1;
+					tokenLength = 1;
 					index++;
 					
-					while (index < rawText.Length && token.Length < 255)
+					while (index < rawText.Length && tokenLength < 255)
 						{
 						character = rawText[index];
 						
 						if (character == ' ' || character == '\t')
 							{
-							token.Length++;
+							tokenLength++;
 							index++;
 							}
 						else
 							{  break;  }
 						}
 						
-					tokens.Add(token);
+					tokenLengths.Add(tokenLength);
 					}
 					
 					
@@ -284,17 +351,16 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				
 				else if (character == '\n' || character == '\r')
 					{
-					token.Type = TokenType.LineBreak;
-					token.Length = 1;
+					tokenLength = 1;
 					index++;
 					
 					if (index < rawText.Length && character == '\r' && rawText[index] == '\n')
 						{
-						token.Length++;
+						tokenLength++;
 						index++;
 						}
 						
-					tokens.Add(token);
+					tokenLengths.Add(tokenLength);
 					}
 					
 					
@@ -302,11 +368,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				
 				else
 					{
-					token.Type = TokenType.Symbol;
-					token.Length = 1;
 					index++;
-					
-					tokens.Add(token);
+					tokenLengths.Add(1);
 					}
 				}
 			}
@@ -322,9 +385,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				
 			Line line;
 			int tokenIndex = 0;
-			TokenType previousType = TokenType.Null;
+			int rawTextIndex = 0;
+			FundamentalType previousType = FundamentalType.Null;
 			
-			while (tokenIndex < tokens.Count)
+			while (tokenIndex < tokenLengths.Count)
 				{
 				line.TokenLength = 0;
 				line.RawTextLength = 0;
@@ -332,12 +396,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				do
 					{
 					line.TokenLength++;
-					line.RawTextLength += tokens[tokenIndex].Length;
-					previousType = tokens[tokenIndex].Type;
+					line.RawTextLength += tokenLengths[tokenIndex];
 
+					previousType = FundamentalTypeOf(rawText[rawTextIndex]);
+
+					rawTextIndex += tokenLengths[tokenIndex];
 					tokenIndex++;
 					}
-				while (tokenIndex < tokens.Count && previousType != TokenType.LineBreak);
+				while (tokenIndex < tokenLengths.Count && previousType != FundamentalType.LineBreak);
 					
 				lines.Add(line);
 				}
@@ -357,8 +423,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			get
 				{  return rawText;  }
 			}
-			
-			
+						
 		/* Property: StartingLineNumber
 		 * The starting line number for the tokenized text.
 		 */
@@ -367,8 +432,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			get
 				{  return startingLineNumber;  }
 			}
-			
-			
+						
 		/* Function: FirstToken
 		 * A <TokenIterator> set to the first token of this object.
 		 */
@@ -384,7 +448,16 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		public TokenIterator LastToken
 			{
 			get
-				{  return new TokenIterator(this, tokens.Count, rawText.Length, StartingLineNumber + Lines.Count);  }
+				{  return new TokenIterator(this, tokenLengths.Count, rawText.Length, StartingLineNumber + Lines.Count);  }
+			}
+
+		/* Function: TokenCount
+		 * The number of tokens in this object.
+		 */
+		public int TokenCount
+			{
+			get
+				{  return tokenLengths.Count;  }
 			}
 			
 		/* Function: FirstLine
@@ -402,7 +475,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		public LineIterator LastLine
 			{
 			get
-				{  return new LineIterator(this, Lines.Count, tokens.Count, rawText.Length);  }
+				{  return new LineIterator(this, Lines.Count, tokenLengths.Count, rawText.Length);  }
 			}
 
 
@@ -411,13 +484,13 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		// __________________________________________________________________________
 		
 			
-		/* Property: Tokens
-		 * The list of tokens.
+		/* Property: TokenLengths
+		 * The list of token lengths.
 		 */
-		protected internal IList<Token> Tokens
+		protected internal IList<byte> TokenLengths
 			{
 			get
-				{  return tokens;  }
+				{  return tokenLengths;  }
 			}
 			
 		/* Property: Lines
@@ -445,14 +518,20 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		protected string rawText;
 		
-		/* var: tokens
-		 * The list of <Tokens> generated for <rawText>.
+		/* var: tokenLengths
+		 * The list of token lengths generated for <rawText> based on <FundamentalTypes>.
 		 */
-		protected List<Token> tokens;
+		protected List<byte> tokenLengths;
+
+		/* var: commentParsingTypes
+		 * A list of <CommentParsingTypes> that are set for each token.  The array indexes correspond to those in
+		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
+		 */
+		protected CommentParsingType[] commentParsingTypes;
 		
 		/* var: lines
-		 * The list of <Lines> generated for <rawText>.  Unlike <tokens>, this is generated on demand
-		 * so this variable will be null if it hasn't been done yet.
+		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null 
+		 * if it hasn't been done yet.
 		 */
 		protected List<Line> lines;
 		

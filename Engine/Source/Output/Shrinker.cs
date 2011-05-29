@@ -87,8 +87,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 					if ( nextChar == '`' ||
 						  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
 						   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
-						  (Tokenizer.FundamentalTypeOf(lastChar) == TokenType.Text &&
-						   Tokenizer.FundamentalTypeOf(nextChar) == TokenType.Text) )
+						  (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
+						   Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
 						{  output.Append(' ');  }
 					#endif
 					}
@@ -323,7 +323,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			for (;;)
 				{
-				if (iterator.Type == TokenType.Whitespace || iterator.Type == TokenType.LineBreak)
+				if (iterator.FundamentalType == FundamentalType.Whitespace || 
+					 iterator.FundamentalType == FundamentalType.LineBreak)
 					{
 					iterator.Next();
 					result = true;
@@ -347,7 +348,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				{
 				iterator.NextByCharacters(2);
 
-				while (iterator.IsInBounds && iterator.Type != TokenType.LineBreak)
+				while (iterator.IsInBounds && iterator.FundamentalType != FundamentalType.LineBreak)
 					{  iterator.Next();  }
 
 				iterator.Next();
@@ -476,8 +477,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 			// Standard comment substitutions
 			else
 				{
-				while (tokenIterator.IsInBounds && (tokenIterator.Type == TokenType.Text || tokenIterator.Character == '.' ||
-							 tokenIterator.Character == '_'))
+				while (tokenIterator.IsInBounds && (tokenIterator.FundamentalType == FundamentalType.Text || 
+							 tokenIterator.Character == '.' || tokenIterator.Character == '_'))
 					{
 					tokenIterator.AppendTokenTo(token);
 					tokenIterator.Next();

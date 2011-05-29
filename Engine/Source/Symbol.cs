@@ -207,8 +207,8 @@ namespace GregValure.NaturalDocs.Engine
 			    if (nextChar > index)
 			        {
 			        if (addWhitespace && normalizedString.Length > 0 &&
-						Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == TokenType.Text &&
-						Tokenizer.FundamentalTypeOf( symbolString[index] ) == TokenType.Text)
+						Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == FundamentalType.Text &&
+						Tokenizer.FundamentalTypeOf( symbolString[index] ) == FundamentalType.Text)
 						{
 						normalizedString.Append(' ');
 						}
@@ -264,8 +264,8 @@ namespace GregValure.NaturalDocs.Engine
 			if (index < symbolString.Length)
 			    {
 		        if (addWhitespace && normalizedString.Length > 0 &&
-					Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == TokenType.Text &&
-					Tokenizer.FundamentalTypeOf( symbolString[index] ) == TokenType.Text)
+					Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == FundamentalType.Text &&
+					Tokenizer.FundamentalTypeOf( symbolString[index] ) == FundamentalType.Text)
 					{
 					normalizedString.Append(' ');
 					}

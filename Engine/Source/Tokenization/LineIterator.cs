@@ -7,7 +7,7 @@
  * It is designed to be tolerant to allow for easier parsing.  You can go past the bounds of the data without 
  * exceptions being thrown.
  * 
- * It is a struct rather than a class because it is expected many of them are going to be created, copied, passed
+ * It is a struct rather than a class because it is expected that many of them are going to be created, copied, passed
  * around, and then disappear just as quickly.  It's not worth the memory churn to be a reference type, and having
  * them behave as a value type is more intuitive.
  */
@@ -29,19 +29,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		// __________________________________________________________________________
 		
 		
-		/* Function: Next
-		 * Moves to the next line, returning false if we've moved past the end.
-		 */
-		public bool Next ()
-			{
-			return Next(1);
-			}
-			
-			
 		/* Function: Next (count)
 		 * Moves forward the specified number of lines, returning false if we've moved past the end.
 		 */
-		public bool Next (int count)
+		public bool Next (int count = 1)
 			{
 			if (count < 0)
 				{  throw new InvalidOperationException();  }
@@ -76,19 +67,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
-		/* Function: Previous
-		 * Moves to the previous line, returning false if we've move past the beginning.
-		 */
-		public bool Previous ()
-			{
-			return Previous(1);
-			}
-			
-			
 		/* Function: Previous (count)
 		 * Moves backwards the specified number of lines, returning false if we've move past the beginning.
 		 */
-		public bool Previous (int count)
+		public bool Previous (int count = 1)
 			{
 			if (count < 0)
 				{  throw new InvalidOperationException();  }
@@ -131,8 +113,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			{
 			if (lineIndex >= tokenizer.Lines.Count)
 				{  
-				return new TokenIterator(tokenizer, tokenizer.Tokens.Count, tokenizer.RawText.Length, 
-													 tokenizer.StartingLineNumber + tokenizer.Lines.Count - 1);
+				return new TokenIterator(tokenizer, tokenizer.TokenCount, tokenizer.RawText.Length, 
+																 tokenizer.StartingLineNumber + tokenizer.Lines.Count - 1);
 				}
 			else if (lineIndex <= 0)
 				{  
@@ -339,7 +321,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 * Determines and returns the bounds of the current line according to the <LineBoundsMode>.
 		 */
 		internal void CalculateBounds (LineBoundsMode boundsMode, out int rawTextStart, out int rawTextEnd,
-													 out int tokenStart, out int tokenEnd)
+																	out int tokenStart, out int tokenEnd)
 			{
 			if (!IsInBounds)
 				{
@@ -359,34 +341,44 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			if (boundsMode == LineBoundsMode.Everything)
 				{  return;  }
 				
-			while (tokenEnd > tokenStart && IsSkippable(tokenizer.Tokens[tokenEnd - 1].Type, boundsMode))
+			while (tokenEnd > tokenStart && IsSkippable(tokenEnd - 1, rawTextEnd - tokenizer.TokenLengths[tokenEnd - 1], boundsMode))
 				{
 				tokenEnd--;
-				rawTextEnd -= tokenizer.Tokens[tokenEnd].Length;
+				rawTextEnd -= tokenizer.TokenLengths[tokenEnd];
 				}
 				
-			while (tokenStart < tokenEnd && IsSkippable(tokenizer.Tokens[tokenStart].Type, boundsMode))
+			while (tokenStart < tokenEnd && IsSkippable(tokenStart, rawTextStart, boundsMode))
 				{
-				rawTextStart += tokenizer.Tokens[tokenStart].Length;
+				rawTextStart += tokenizer.TokenLengths[tokenStart];
 				tokenStart++;
 				}
 			}
 			
 			
 		/* Function: IsSkippable
-		 * Returns whether the <TokenType> should be skipped based on the passed <LineBoundsMode>.
+		 * Returns whether the token at the passed index should be skipped based on the <LineBoundsMode>.
 		 */
-		internal bool IsSkippable (TokenType type, LineBoundsMode boundsMode)
+		internal bool IsSkippable (int testTokenIndex, int testRawTextIndex, LineBoundsMode boundsMode)
 			{
 			if (boundsMode == LineBoundsMode.Everything)
 				{  return false;  }
-			else if (boundsMode == LineBoundsMode.ExcludeWhitespace)
-				{  return (type == TokenType.Whitespace || type == TokenType.LineBreak);  }
-			else // LineBoundsMode.CommentContent
-				{
-				return (type == TokenType.Whitespace || type == TokenType.LineBreak ||
-						   type == TokenType.CommentSymbol || type == TokenType.CommentDecoration);
-				}
+
+			FundamentalType fundamentalType = tokenizer.FundamentalTypeAt(testTokenIndex, testRawTextIndex);
+
+			// Whitespace is skippable for both ExcludeWhitespace and CommentContent
+			if (fundamentalType == FundamentalType.Whitespace || 
+				 fundamentalType == FundamentalType.LineBreak)
+				{  return true;  }
+
+			if (boundsMode == LineBoundsMode.ExcludeWhitespace)
+				{  return false;  }
+
+			// The only other choice is CommentContent
+
+			CommentParsingType commentParsingType = tokenizer.CommentParsingTypeAt(testTokenIndex);
+
+			return (commentParsingType == CommentParsingType.CommentSymbol || 
+						  commentParsingType == CommentParsingType.CommentDecoration);
 			}
 			
 
@@ -442,7 +434,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 			
 		/* Property: TokenIndex
-		 * The index into <Tokenizer.Tokens> of the beginning of the current line.
+		 * The token index of the beginning of the current line.
 		 */
 		internal int TokenIndex
 			{

@@ -6,9 +6,9 @@
  * 
  * Everything - The entire line, including all whitespace and the line break.
  * ExcludeWhitespace - The line content, excluding leading and trailing whitespace and line breaks.
- *	CommentContent - The comment content, which is the line minus leading and trailing whitespace,
- *								 line breaks, and tokens marked <TokenType.CommentSymbol> and
- *								 <TokenType.CommentDecoration>.
+ * CommentContent - The comment content, which is the line minus leading and trailing whitespace,
+ *										  line breaks, and tokens marked <CommentParsingType.CommentSymbol> and
+ *										  <CommentParsingType.CommentDecoration>.
  * 
  */
 
