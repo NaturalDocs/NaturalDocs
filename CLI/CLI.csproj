@@ -74,6 +74,7 @@
     <Compile Include="Source\Threads\Parser.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Architecture\Compilation Symbols.txt" />
     <Content Include="Build Scripts\PostBuild.js" />
     <Content Include="Resources\Icons\Application.ico" />
     <Content Include="Resources\Translations\NaturalDocs.CLI.default.txt" />

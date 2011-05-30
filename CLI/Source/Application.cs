@@ -64,10 +64,21 @@ namespace GregValure.NaturalDocs.CLI
 		 */
 		public static void Main (string[] commandLine)
 			{
+			#if SHOW_EXECUTION_TIME
+				long startProgram = System.DateTime.Now.Ticks;
+				long endProgram = startProgram;
+				long startProcessing = 0;
+				long endProcessing = 0;
+			#endif
+
+			#if PAUSE_BEFORE_EXIT
+				bool pauseBeforeExit = true;
+			#elif PAUSE_ON_ERROR
+				bool pauseBeforeExit = false;
+			#endif
+			
 			bool gracefulExit = false;
 
-			long startProgram = System.DateTime.Now.Ticks;  // xxx
-			
 			try
 				{
 				ErrorList startupErrors = new ErrorList();
@@ -92,7 +103,9 @@ namespace GregValure.NaturalDocs.CLI
 
 					if (NaturalDocs.Engine.Instance.Start(startupErrors) == true)
 						{
-						long startMainExecution = System.DateTime.Now.Ticks;  // xxx
+						#if SHOW_EXECUTION_TIME
+							startProcessing = System.DateTime.Now.Ticks;
+						#endif
 						
 
 						// File Search
@@ -194,15 +207,19 @@ namespace GregValure.NaturalDocs.CLI
 							);
 						System.Console.WriteLine();
 						
-						System.Console.WriteLine("= Main execution time: " + ((DateTime.Now.Ticks - startMainExecution)/10000)); // xxx
-						
 						gracefulExit = true;
+
+						#if SHOW_EXECUTION_TIME
+							endProcessing = DateTime.Now.Ticks;
+						#endif
 						}
 					else
 						{  
 						HandleErrorList(startupErrors); 
-						System.Console.WriteLine("Press any key to continue..."); //xxx
-						System.Console.ReadKey(true); //xxx 
+						
+						#if PAUSE_ON_ERROR
+							pauseBeforeExit = true;
+						#endif
 						}
 					}
 				
@@ -214,14 +231,20 @@ namespace GregValure.NaturalDocs.CLI
 				else
 					{
 					HandleErrorList(startupErrors);
-					System.Console.ReadKey(true); //xxx 
+					
+					#if PAUSE_ON_ERROR
+						pauseBeforeExit = true;
+					#endif
 					}
 				}
 
 			catch (Exception e)
 				{  
 				HandleException(e);  
-				System.Console.ReadKey(true); //xxx 
+				
+				#if PAUSE_ON_ERROR
+					pauseBeforeExit = true;
+				#endif
 				}
 				
 			finally
@@ -229,8 +252,24 @@ namespace GregValure.NaturalDocs.CLI
 				Engine.Instance.Dispose(gracefulExit);
 				}
 				
-			System.Console.WriteLine("= Entire program time: " + ((DateTime.Now.Ticks - startProgram)/10000)); // xxx
-			//System.Console.ReadKey(true); //xxx 
+			#if SHOW_EXECUTION_TIME
+
+				endProgram = DateTime.Now.Ticks;
+
+				System.Console.WriteLine();
+				System.Console.WriteLine("Processing time: {0:#,0}k ticks", (endProcessing - startProcessing) / 1000);
+				System.Console.WriteLine("     Total time: {0:#,0}k ticks", (endProgram - startProgram) / 1000);
+
+			#endif
+
+			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
+				if (pauseBeforeExit)
+					{
+					System.Console.WriteLine();
+					System.Console.WriteLine("Press any key to continue...");
+					System.Console.ReadKey(true);
+					}
+			#endif
 			}
 			
 			

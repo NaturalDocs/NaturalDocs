@@ -1,0 +1,17 @@
+﻿
+Macros: Compilation Symbols
+_______________________________________________________________________________
+
+
+	SHOW_EXECUTION_TIME - If defined, shows the number of ticks the program has run for.  This surrounds <Main()>
+														 so it does not include the time it takes Windows and .NET to load the program, nor does
+														 it include any static variable initialization.  It does however include <Engine.Instance's>
+														 initialization and all processing done within it.
+
+	PAUSE_ON_ERROR - If defined, the console will require a key press before exiting when an error occurs.  This is
+											mainly used when running it from Visual Studio and you don't want the console window to
+											disappear.
+
+	PAUSE_BEFORE_EXIT - If defined, the console will require a key press before exiting, regardless of whether an
+												 error has occurred or not.  This is mainly used when running it from Visual Studio and you
+												 don't want the console window to disappear.
