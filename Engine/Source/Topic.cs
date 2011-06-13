@@ -36,6 +36,7 @@ namespace GregValure.NaturalDocs.Engine
 			codeLineNumber = 0;
 			title = null;
 			body = null;
+			prototype = null;
 			symbol = new Symbol();
 			endingSymbolID = 0;
 			topicTypeID = 0;
@@ -65,6 +66,7 @@ namespace GregValure.NaturalDocs.Engine
 				// String comparisons, most likely to be different			
 				title != other.title ||
 				symbol != other.symbol ||
+				prototype != other.prototype ||
 
 				// Rest of the integer comparisons, not likely to be different
 				fileID != other.fileID ||
@@ -215,6 +217,18 @@ namespace GregValure.NaturalDocs.Engine
 				{  return body;  }
 			set
 				{  body = value;  }
+			}
+
+
+		/* Property: Prototype
+		 * The plain text prototype of the topic, or null if it doesn't exist.
+		 */
+		public string Prototype
+			{
+			get
+				{  return prototype;  }
+			set
+				{  prototype = value;  }
 			}
 			
 			
@@ -379,7 +393,12 @@ namespace GregValure.NaturalDocs.Engine
 		 * The body of the comment, or null if not specified.
 		 */
 		protected string body;
-		
+
+		/* var: prototype
+		 * The plain-text prototype of the topic, or null if not present.
+		 */
+		protected string prototype;
+
 		/* var: symbol
 		 * The <Symbol> of the topic, or null if not specified.
 		 */

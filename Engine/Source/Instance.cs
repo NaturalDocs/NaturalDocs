@@ -331,7 +331,7 @@ namespace GregValure.NaturalDocs.Engine
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
-		public const string VersionString = "2.0 (Development Release 03-13-2011)";
+		public const string VersionString = "2.0 (Development Release 06-13-2011)";
 		
 		
 		/* Property: Version

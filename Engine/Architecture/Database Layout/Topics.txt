@@ -72,6 +72,15 @@ Column: Body
 	The body of the topic, if any.
 	
 	
+Column: Prototype
+
+	(SQL Prototype)
+		Prototype TEXT
+	(end)
+	
+	The plain-text prototype of the topic, if any.
+	
+	
 Column: Symbol
 
 	(SQL Prototype)
