@@ -520,8 +520,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				PossibleDocumentationComment comment = parser.PossibleDocumentationComments[commentIndex];
 
-				// Advance the topic index to the last one in this comment.  If there are multiple topics in a comment only the
-				// last one gets a prototype search.
+				// Advance the topic index to the last one before the end of this comment.  If there are multiple topics in a 
+				// comment only the last one gets a prototype search.
 
 				while (topicIndex + 1 < parser.CommentTopics.Count && 
 							parser.CommentTopics[topicIndex + 1].CommentLineNumber < comment.End.LineNumber)
@@ -538,8 +538,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// Build the bounds for the prototype search and perform it.
 
 				Tokenization.LineIterator startCode = comment.End;
-				startCode.Next();
-
 				Tokenization.LineIterator endCode;
 
 				if (commentIndex + 1 < parser.PossibleDocumentationComments.Count)
@@ -556,7 +554,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will set xxx
 		 */
 		protected virtual void GetPrototype (Topic topic, Tokenization.LineIterator startCode, Tokenization.LineIterator endCode)
-			{
+			{ 
 			}
 			
 		
