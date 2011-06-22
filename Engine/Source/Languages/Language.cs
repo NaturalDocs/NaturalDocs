@@ -90,7 +90,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			javadocBlockCommentStringPairs = null;
 			xmlLineCommentStrings = null;
 			memberOperator = ".";
-			prototypeEnders = null;
+			topicTypesToPrototypeEnders = null;
 			lineExtender = null;
 			enumValue = EnumValues.Global;			
 			flags = 0;
@@ -263,37 +263,46 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 			
 		/* Function: GetPrototypeEnders
-		 * Returns an array of strings representing the prototype enders for the passed topic type, or null if there
-		 * are none.
+		 * Returns the <PrototypeEnders> for the passed topic type, or null if there are none.
 		 */
-		public string[] GetPrototypeEnders (int topicTypeID)
+		public PrototypeEnders GetPrototypeEnders (int topicTypeID)
 			{
-			if (prototypeEnders == null)
+			if (topicTypesToPrototypeEnders == null)
 				{  return null;  }
 			else
-				{  return prototypeEnders[topicTypeID];  }
+				{  return topicTypesToPrototypeEnders[topicTypeID];  }
 			}
 			
 		/* Function: SetPrototypeEnders
-		 * Sets the array of strings representing the prototype enders for the passed topic type.
+		 * Sets the <PrototypeEnders> for the passed topic type.
 		 */
-		public void SetPrototypeEnders (int topicTypeID, string[] prototypeEnderStrings)
+		public void SetPrototypeEnders (int topicTypeID, PrototypeEnders prototypeEnders)
 			{
-			if (prototypeEnderStrings == null || prototypeEnderStrings.Length == 0)
+			// Simplify prototypeEnders
+			if (prototypeEnders != null)
 				{
-				if (prototypeEnders != null)
+				if (prototypeEnders.Symbols != null && prototypeEnders.Symbols.Length == 0)
+					{  prototypeEnders.Symbols = null;  }
+
+				if (prototypeEnders.Symbols == null && prototypeEnders.IncludeLineBreaks == false)
+					{  prototypeEnders = null;  }
+				}
+
+			if (prototypeEnders == null)
+				{
+				if (topicTypesToPrototypeEnders != null)
 					{
-					prototypeEnders.Remove(topicTypeID);
-					if (prototypeEnders.Count == 0)
-						{  prototypeEnders = null;  }
+					topicTypesToPrototypeEnders.Remove(topicTypeID);
+					if (topicTypesToPrototypeEnders.Count == 0)
+						{  topicTypesToPrototypeEnders = null;  }
 					}
 				}
 			else
 				{
-				if (prototypeEnders == null)
-					{  prototypeEnders = new Dictionary<int,string[]>();  }
+				if (topicTypesToPrototypeEnders == null)
+					{  topicTypesToPrototypeEnders = new Dictionary<int, PrototypeEnders>();  }
 					
-				prototypeEnders[topicTypeID] = prototypeEnderStrings;
+				topicTypesToPrototypeEnders[topicTypeID] = prototypeEnders;
 				}
 			}
 			
@@ -302,12 +311,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public int[] GetTopicTypesWithPrototypeEnders()
 			{
-			if (prototypeEnders == null)
+			if (topicTypesToPrototypeEnders == null)
 				{  return null;  }
 			else
 				{
-				int[] result = new int[ prototypeEnders.Keys.Count ];
-				prototypeEnders.Keys.CopyTo(result, 0);
+				int[] result = new int[ topicTypesToPrototypeEnders.Keys.Count ];
+				topicTypesToPrototypeEnders.Keys.CopyTo(result, 0);
 				return result;  
 				}
 			}
@@ -434,7 +443,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 							StringArraysAreEqual (language1.lineCommentStrings, language2.lineCommentStrings) &&
 							StringPairArraysAreEqual (language1.blockCommentStringPairs, language2.blockCommentStringPairs) &&
-							PrototypeEndersAreEqual (language1.prototypeEnders, language2.prototypeEnders) &&
+							PrototypeEndersAreEqual (language1.topicTypesToPrototypeEnders, language2.topicTypesToPrototypeEnders) &&
 							StringPairArraysAreEqual (language1.javadocLineCommentStringPairs, language2.javadocLineCommentStringPairs) &&
 							StringPairArraysAreEqual (language1.javadocBlockCommentStringPairs, language2.javadocBlockCommentStringPairs) &&
 							StringArraysAreEqual (language1.xmlLineCommentStrings, language2.xmlLineCommentStrings) );
@@ -512,20 +521,26 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* Function: PrototypeEndersAreEqual
 		 * Compares two prototype ender dictionaries.  Is case sensitive and safe to use with nulls.
 		 */
-		protected static bool PrototypeEndersAreEqual (Dictionary<int, string[]> prototypeEnders1, 
-																			Dictionary<int, string[]> prototypeEnders2)
+		protected static bool PrototypeEndersAreEqual (Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders1, 
+																							 Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders2)
 			{
-			if (prototypeEnders1 == null && prototypeEnders2 == null)
+			if (topicTypesToPrototypeEnders1 == null && topicTypesToPrototypeEnders2 == null)
 				{  return true;  }
-			else if (prototypeEnders1 == null || prototypeEnders2 == null)
+			else if (topicTypesToPrototypeEnders1 == null || topicTypesToPrototypeEnders2 == null)
 				{  return false;  }
-			else if (prototypeEnders1.Count != prototypeEnders2.Count)
+			else if (topicTypesToPrototypeEnders1.Count != topicTypesToPrototypeEnders2.Count)
 				{  return false;  }
 			else
 				{
-				foreach (KeyValuePair<int, string[]> prototypeEnders1Pair in prototypeEnders1)
+				foreach (KeyValuePair<int, PrototypeEnders> prototypeEnders1Pair in topicTypesToPrototypeEnders1)
 					{
-					if (!StringArraysAreEqual(prototypeEnders1Pair.Value, prototypeEnders2[ prototypeEnders1Pair.Key ]))
+					PrototypeEnders prototypeEnders2Value = topicTypesToPrototypeEnders2[ prototypeEnders1Pair.Key ];
+
+					if (prototypeEnders2Value == null)
+						{  return false;  }
+
+					if (prototypeEnders1Pair.Value.IncludeLineBreaks != prototypeEnders2Value.IncludeLineBreaks &&
+						!StringArraysAreEqual(prototypeEnders1Pair.Value.Symbols, prototypeEnders2Value.Symbols) )
 						{  return false;  }
 					}
 					
@@ -604,11 +619,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected string memberOperator;
 		
-		/* object: prototypeEnders
-		 * A dictionary mapping topic type IDs to arrays of symbols representing their prototype enders.  Line breaks are
-		 * represented with "\n".
+		/* object: topicTypesToPrototypeEnders
+		 * A dictionary mapping topic type IDs to <PrototypeEnders>.
 		 */
-		protected Dictionary<int, string[]> prototypeEnders;
+		protected Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders;
 		
 		/* string: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.
@@ -624,5 +638,91 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * A combination of <FlagValues> describing the language.
 		 */
 		protected LanguageFlags flags;
+		}
+
+
+	/* Class: GregValure.NaturalDocs.Engine.Languages.PrototypeEnders
+	 * ___________________________________________________________________________
+	 * 
+	 * A simple class to hold information about what can end a prototype.
+	 */
+	public class PrototypeEnders
+		{
+		/* Constructor: PrototypeEnders
+		 */
+		public PrototypeEnders ()
+			{
+			IncludeLineBreaks = false;
+			Symbols = null;
+			}
+
+		/* Constructor: PrototypeEnders
+		 * Creates the object with the passed symbols and line break flag.  The symbols array should not include "\n".  Use the
+		 * ender strings constructor to convert arrays with "\n" automatically.
+		 */
+		public PrototypeEnders (string[] symbols, bool includeLineBreaks)
+			{
+			Symbols = symbols;
+			IncludeLineBreaks = includeLineBreaks;
+			}
+
+		/* Constructor: PrototypeEnders
+		 * Creates the object with the passed ender strings, automatically converting them to <Symbols> and the 
+		 * <IncludeLineBreaks> flag.
+		 */
+		public PrototypeEnders (string[] enderStrings)
+			{
+			if (enderStrings == null || enderStrings.Length == 0)
+				{
+				Symbols = null;
+				IncludeLineBreaks = false;
+				return;
+				}
+
+			int lengthWithoutLineBreaks = 0;
+
+			foreach (string enderString in enderStrings)
+				{
+				if (enderString != "\\n" && enderString != "\\N")
+					{  lengthWithoutLineBreaks++;  }
+				}
+
+			if (enderStrings.Length == lengthWithoutLineBreaks)
+				{
+				Symbols = enderStrings;
+				IncludeLineBreaks = false;
+				}
+			else if (lengthWithoutLineBreaks == 0)
+				{
+				Symbols = null;
+				IncludeLineBreaks = true;
+				}
+			else
+				{
+				Symbols = new string[lengthWithoutLineBreaks];
+				int symbolIndex = 0;
+
+				foreach (string enderString in enderStrings)
+					{
+					if (enderString != "\\n" && enderString != "\\N")
+						{
+						Symbols[symbolIndex] = enderString;
+						symbolIndex++;
+						}
+					}
+
+				IncludeLineBreaks = true;
+				}
+			}
+
+		/* Property: IncludeLineBreaks
+		 * Whether line breaks end prototypes.
+		 */
+		public bool IncludeLineBreaks;
+
+		/* Property: Symbols
+		 * An array of symbol strings that end prototypes, or null if none.  Line breaks are not included.
+		 */
+		public string[] Symbols;
 		}
 	}

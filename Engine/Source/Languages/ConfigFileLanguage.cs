@@ -43,7 +43,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			lineCommentStrings = null;
 			blockCommentStringPairs = null;
 			memberOperator = null;
-			prototypeEnders = null;
+			prototypeEndersList = null;
 			lineExtender = null;
 			enumValue = null;
 			}
@@ -227,22 +227,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  lineExtender = value;  }
 			}
 			
-		/* Function: GetPrototypeEnders
-		 * Returns an array of strings representing the prototype enders for the passed topic type, or null if there
-		 * are none.
+		/* Function: GetPrototypeEnderStrings
+		 * Returns the prototype ender strings for the passed topic type, or null if there are none.  If line breaks are supported they
+		 * will appear in this list as "\n".
 		 */
-		public string[] GetPrototypeEnders (string topicTypeName)
+		public string[] GetPrototypeEnderStrings (string topicTypeName)
 			{
-			if (prototypeEnders == null)
+			if (prototypeEndersList == null)
 				{  return null;  }
 			else
 				{  
 				string lcTopicTypeName = topicTypeName.ToLower();
 				
-				for (int i = 0; i < prototypeEnders.Count; i++)
+				for (int i = 0; i < prototypeEndersList.Count; i++)
 					{
-					if (lcTopicTypeName == prototypeEnders[i].TopicType.ToLower())
-						{  return prototypeEnders[i].PrototypeEnders;  }
+					if (lcTopicTypeName == prototypeEndersList[i].TopicTypeName.ToLower())
+						{  return prototypeEndersList[i].EnderStrings;  }
 					}
 					
 				return null;
@@ -250,57 +250,60 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 			
 		/* Function: SetPrototypeEnders
-		 * Sets the array of strings representing the prototype enders for the passed topic type.
+		 * Sets the prototype ender strings for the passed topic type.  If line breaks are supported they should be included in the
+		 * array as "\n".
 		 */
-		public void SetPrototypeEnders (string topicTypeName, string[] prototypeEnderStrings)
+		public void SetPrototypeEnderStrings (string topicTypeName, string[] prototypeEnderStrings)
 			{
+			if (prototypeEnderStrings != null && prototypeEnderStrings.Length == 0)
+				{  prototypeEnderStrings = null;  }
+
 			// Attempting to remove an entry should be rare, so we can deal with the potential performance hit of creating and
 			// deleting a list every time we try to remove from an empty list.  The code simplification is worth it.
-			if (prototypeEnders == null)
-				{  prototypeEnders = new List<PrototypeEndersEntry>();  }
+			if (prototypeEndersList == null)
+				{  prototypeEndersList = new List<ConfigFilePrototypeEnders>();  }
 					
 			string lcTopicTypeName = topicTypeName.ToLower();
 			bool found = false;
 				
-			for (int i = 0; i < prototypeEnders.Count; i++)
+			for (int i = 0; i < prototypeEndersList.Count; i++)
 				{
-				if (lcTopicTypeName == prototypeEnders[i].TopicType.ToLower())
+				if (lcTopicTypeName == prototypeEndersList[i].TopicTypeName.ToLower())
 					{
-					if (prototypeEnderStrings == null || prototypeEnderStrings.Length == 0)
-						{  prototypeEnders.RemoveAt(i);  }
+					if (prototypeEnderStrings == null)
+						{  prototypeEndersList.RemoveAt(i);  }
 					else
-						{  prototypeEnders[i].PrototypeEnders = prototypeEnderStrings;  }
+						{  prototypeEndersList[i].EnderStrings = prototypeEnderStrings;  }
 					
 					found = true;
 					break;
 					}
 				}
 					
-			if (found == false)
-				{
-				PrototypeEndersEntry entry = new PrototypeEndersEntry();
-				entry.TopicType = topicTypeName;
-				entry.PrototypeEnders = prototypeEnderStrings;
-				
-				prototypeEnders.Add(entry);
+			if (found == false && prototypeEnderStrings != null)
+				{  
+				ConfigFilePrototypeEnders prototypeEnders = new ConfigFilePrototypeEnders();
+				prototypeEnders.TopicTypeName = topicTypeName;
+				prototypeEnders.EnderStrings = prototypeEnderStrings;
+				prototypeEndersList.Add(prototypeEnders);  
 				}
-			else if (prototypeEnders.Count == 0)
-				{  prototypeEnders = null;  }
+			else if (prototypeEndersList.Count == 0)
+				{  prototypeEndersList = null;  }
 			}
 			
-		/* Function: GetTopicTypesWithPrototypeEnders
+		/* Function: GetTopicTypeNamesWithPrototypeEnders
 		 * Returns an array of all the topic types that have prototype enders defined, or null if none.
 		 */
-		public string[] GetTopicTypesWithPrototypeEnders()
+		public string[] GetTopicTypeNamesWithPrototypeEnders()
 			{
-			if (prototypeEnders == null)
+			if (prototypeEndersList == null)
 				{  return null;  }
 			else
 				{
-				string[] result = new string[ prototypeEnders.Count ];
+				string[] result = new string[ prototypeEndersList.Count ];
 				
-				for (int i = 0; i < prototypeEnders.Count; i++)
-					{  result[i] = prototypeEnders[i].TopicType;  }
+				for (int i = 0; i < prototypeEndersList.Count; i++)
+					{  result[i] = prototypeEndersList[i].TopicTypeName;  }
 				
 				return result;  
 				}
@@ -333,23 +336,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		
 		/* Function: FixPrototypeEnderTopicTypeCapitalization
 		 * Replaces the list of topic types with prototype enders with versions that have alternate capitalization but are otherwise
-		 * equal.  You pass to it an array of names in the same order as returned by <GetTopicTypesWithPrototypeEnders()>.
+		 * equal.  You pass to it an array of names in the same order as returned by <GetTopicTypeNamesWithPrototypeEnders()>.
 		 */
-		public void FixPrototypeEnderTopicTypeCapitalization (string[] newTopicTypes)
+		public void FixPrototypeEnderTopicTypeCapitalization (string[] newTopicTypeNames)
 			{
-			if (newTopicTypes.Length != prototypeEnders.Count)
+			if (newTopicTypeNames.Length != prototypeEndersList.Count)
 				{  throw new InvalidOperationException();  }
 				
-			for (int i = 0; i < prototypeEnders.Count; i++)
+			for (int i = 0; i < prototypeEndersList.Count; i++)
 				{
-				if (string.Compare(newTopicTypes[i], prototypeEnders[i].TopicType, true) != 0)
+				if (string.Compare(newTopicTypeNames[i], prototypeEndersList[i].TopicTypeName, true) != 0)
 					{  
-					throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEnders[i].TopicType,
-																														newTopicTypes[i],
+					throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEndersList[i].TopicTypeName,
+																														newTopicTypeNames[i],
 																														"ConfigFileLanguage topic type");  
 					}
 					
-				prototypeEnders[i].TopicType = newTopicTypes[i];
+				prototypeEndersList[i].TopicTypeName = newTopicTypeNames[i];
 				}
 			}
 			
@@ -423,11 +426,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected string memberOperator;
 		
-		/* object: prototypeEnders
-		 * A list of <PrototypeEndersEntries> mapping topic type strings to arrays of symbols representing their prototype 
-		 * enders.  Line breaks are represented with "\n".  Will be null if not set.
+		/* object: prototypeEndersList
+		 * A list of <ConfigFilePrototypeEnders> mapping topic type strings to arrays of ender strings.  Line breaks are 
+		 * represented with "\n".  Will be null if not set.
 		 */
-		protected List<PrototypeEndersEntry> prototypeEnders;
+		protected List<ConfigFilePrototypeEnders> prototypeEndersList;
 		
 		/* string: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.  Will be null if not set.
@@ -442,24 +445,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Internal Types
-		// __________________________________________________________________________
-
-		
-		/**
-		 * An entry in <prototypeEnders>.
-		 */
-		protected class PrototypeEndersEntry
+		/* Class: GregValure.NaturalDocs.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
+		* __________________________________________________________________________
+		*/
+		protected class ConfigFilePrototypeEnders
 			{
-			public PrototypeEndersEntry()
+			public ConfigFilePrototypeEnders()
 				{
-				TopicType = null;
-				PrototypeEnders = null;
+				TopicTypeName = null;
+				EnderStrings = null;
 				}
 			
-			public string TopicType;
-			public string[] PrototypeEnders;
+			public string TopicTypeName;
+
+			/* var: EnderStrings
+			 * An array of ender strings which may be symbols and/or "\n".
+			 */
+			public string[] EnderStrings;
 			}
+
 		}
 	
 	}

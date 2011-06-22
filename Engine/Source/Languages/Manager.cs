@@ -192,7 +192,8 @@
  *			The attributes are self-explanitory.  The comment symbols repeat until a null string is reached.
  *			
  *			> [Int32: Topic Type ID]
- *			> [String: Prototype Ender] [] ... [String: null]
+ *			> [Byte: Include Line Breaks (1 or 0)]
+ *			> [String: Prototype Ender Symbol] [] ... [String: null]
  *			> ...
  *			> [Int32: 0]
  *			
@@ -707,9 +708,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  language.EnumValue = (Language.EnumValues)configFileLanguage.EnumValue;  }
 				}
 				
-			string[] topicTypesWithPrototypeEnders = configFileLanguage.GetTopicTypesWithPrototypeEnders();
+			string[] topicTypeNamesWithPrototypeEnders = configFileLanguage.GetTopicTypeNamesWithPrototypeEnders();
 			
-			if (topicTypesWithPrototypeEnders != null)
+			if (topicTypeNamesWithPrototypeEnders != null)
 				{
 				if (language.Type != Language.LanguageType.BasicSupport)
 					{	
@@ -718,7 +719,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 				else
 					{
-					foreach (string topicTypeName in topicTypesWithPrototypeEnders)
+					foreach (string topicTypeName in topicTypeNamesWithPrototypeEnders)
 						{
 						TopicTypes.TopicType topicType = Engine.Instance.TopicTypes.FromName(topicTypeName);
 						
@@ -733,7 +734,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							language.SetPrototypeEnders(topicType.ID, configFileLanguage.GetPrototypeEnders(topicTypeName));
+							string[] prototypeEnderStrings = configFileLanguage.GetPrototypeEnderStrings(topicTypeName);
+							PrototypeEnders prototypeEnders = new PrototypeEnders(prototypeEnderStrings);
+							language.SetPrototypeEnders(topicType.ID, prototypeEnders);
 							}
 						}
 					}
@@ -865,16 +868,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					configFileLanguage.FixNameCapitalization( languages[configFileLanguage.Name].Name );
 					}
 				
-				string[] prototypeEnderTopicTypes = configFileLanguage.GetTopicTypesWithPrototypeEnders();
+				string[] prototypeEnderTopicTypeNames = configFileLanguage.GetTopicTypeNamesWithPrototypeEnders();
 				
-				if (prototypeEnderTopicTypes != null)
+				if (prototypeEnderTopicTypeNames != null)
 					{
-					for (int i = 0; i < prototypeEnderTopicTypes.Length; i++)
+					for (int i = 0; i < prototypeEnderTopicTypeNames.Length; i++)
 						{
-						prototypeEnderTopicTypes[i] = Engine.Instance.TopicTypes.FromName( prototypeEnderTopicTypes[i] ).Name;
+						prototypeEnderTopicTypeNames[i] = Engine.Instance.TopicTypes.FromName( prototypeEnderTopicTypeNames[i] ).Name;
 						}
 						
-					configFileLanguage.FixPrototypeEnderTopicTypeCapitalization( prototypeEnderTopicTypes );
+					configFileLanguage.FixPrototypeEnderTopicTypeCapitalization( prototypeEnderTopicTypeNames );
 					}
 				}
 			}
@@ -958,8 +961,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* Function: LoadFile
 		 * 
 		 * Loads the passed configuration file and parses it.  Redundant information will be simplified out, such as an Alter
-		 * Language section that applies to a language defined in the same file.  It will also convert "\N" prototype enders to
-		 * "\n".
+		 * Language section that applies to a language defined in the same file.
 		 * 
 		 * Parameters:
 		 * 
@@ -1391,15 +1393,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						else
 							{
 							string topicType = match.Groups[1].Value;
-							string[] enders = value.Split(space);
-							
-							for (int i = 0; i < enders.Length; i++)
-								{
-								if (enders[i] == "\\N")
-									{  enders[i] = "\\n";  }
-								}
-							
-							currentLanguage.SetPrototypeEnders(topicType, enders);
+							string[] enderStrings = value.Split(space);
+
+							currentLanguage.SetPrototypeEnderStrings(topicType, enderStrings);
 							}
 						}
 						
@@ -1665,23 +1661,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{  output.AppendLine("Under Type");  }
 					}
 				
-				string[] prototypeEnderTypes = language.GetTopicTypesWithPrototypeEnders();
+				string[] topicTypeNamesWithPrototypeEnders = language.GetTopicTypeNamesWithPrototypeEnders();
 				
-				if (prototypeEnderTypes != null)
+				if (topicTypeNamesWithPrototypeEnders != null)
 					{
 					SaveFile_LineBreakOnGroupChange(4, ref oldGroupNumber, output);
 
-					foreach (string prototypeEnderType in prototypeEnderTypes)
+					foreach (string topicTypeName in topicTypeNamesWithPrototypeEnders)
 						{
-						string[] prototypeEnders = language.GetPrototypeEnders(prototypeEnderType);
+						string[] prototypeEnderStrings = language.GetPrototypeEnderStrings(topicTypeName);
 						
-						if (prototypeEnders.Length == 1)
+						if (prototypeEnderStrings.Length == 1)
 							{  
-							output.AppendLine( "   " + prototypeEnderType + " Prototype Ender: " + prototypeEnders[0] );  
+							output.AppendLine( "   " + topicTypeName + " Prototype Ender: " + prototypeEnderStrings[0] );  
 							}
 						else
 							{  
-							output.AppendLine( "   " + prototypeEnderType + " Prototype Enders: " + string.Join(" ", prototypeEnders) );  
+							output.AppendLine( "   " + topicTypeName + " Prototype Enders: " + string.Join(" ", prototypeEnderStrings) );  
 							}
 						}
 					}
@@ -1764,7 +1760,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// [String: XML Line Comment Symbol] [] ... [String: null]
 					
 					// [Int32: Topic Type ID]
-					// [String: Prototype Ender] [] ... [String: null]
+					// [Byte: Include Line Breaks (1 or 0)]
+					// [String: Prototype Ender Symbol] [] ... [String: null]
 					// ...
 					// [Int32: 0]
 					
@@ -1807,7 +1804,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							  topicTypeID != 0;
 							  topicTypeID = file.ReadInt32())
 							{
-							language.SetPrototypeEnders(topicTypeID, LoadBinaryFile_ReadStringArray(file));
+							bool includeLineBreaks = (file.ReadByte() == 1);
+							string[] enderSymbols = LoadBinaryFile_ReadStringArray(file);
+
+							language.SetPrototypeEnders(topicTypeID, new PrototypeEnders(enderSymbols, includeLineBreaks));
 							}
 						
 						languages.Add(language);
@@ -1954,7 +1954,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// [String: XML Line Comment Symbol] [] ... [String: null]
 				
 				// [Int32: Topic Type ID]
-				// [String: Prototype Ender] [] ... [String: null]
+				// [Byte: Include Line Breaks (0 or 1)]
+				// [String: Prototype Ender Symbol] [] ... [String: null]
 				// ...
 				// [Int32: 0]
 				
@@ -1982,8 +1983,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						foreach (int topicType in topicTypes)
 							{
+							PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topicType);
+
 							file.WriteInt32(topicType);
-							SaveBinaryFile_WriteStringArray(file, language.GetPrototypeEnders(topicType));
+							file.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
+							SaveBinaryFile_WriteStringArray(file, prototypeEnders.Symbols);
 							}
 						}
 					file.WriteInt32(0);					
