@@ -14,7 +14,7 @@
 
 
 using System;
-using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Comments;
 
@@ -300,7 +300,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			else
 				{
 				if (topicTypesToPrototypeEnders == null)
-					{  topicTypesToPrototypeEnders = new Dictionary<int, PrototypeEnders>();  }
+					{  topicTypesToPrototypeEnders = new SafeDictionary<int, PrototypeEnders>();  }
 					
 				topicTypesToPrototypeEnders[topicTypeID] = prototypeEnders;
 				}
@@ -521,8 +521,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* Function: PrototypeEndersAreEqual
 		 * Compares two prototype ender dictionaries.  Is case sensitive and safe to use with nulls.
 		 */
-		protected static bool PrototypeEndersAreEqual (Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders1, 
-																							 Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders2)
+		protected static bool PrototypeEndersAreEqual (SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders1, 
+																								  SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders2)
 			{
 			if (topicTypesToPrototypeEnders1 == null && topicTypesToPrototypeEnders2 == null)
 				{  return true;  }
@@ -532,7 +532,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return false;  }
 			else
 				{
-				foreach (KeyValuePair<int, PrototypeEnders> prototypeEnders1Pair in topicTypesToPrototypeEnders1)
+				foreach (System.Collections.Generic.KeyValuePair<int, PrototypeEnders> prototypeEnders1Pair in topicTypesToPrototypeEnders1)
 					{
 					PrototypeEnders prototypeEnders2Value = topicTypesToPrototypeEnders2[ prototypeEnders1Pair.Key ];
 
@@ -622,7 +622,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* object: topicTypesToPrototypeEnders
 		 * A dictionary mapping topic type IDs to <PrototypeEnders>.
 		 */
-		protected Dictionary<int, PrototypeEnders> topicTypesToPrototypeEnders;
+		protected SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders;
 		
 		/* string: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.

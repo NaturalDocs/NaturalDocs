@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A generic lookup table for mapping strings to other objects.  This is preferable to a Dictionary<string, object> class
- * because
+ * because:
  * 
  * - It has case sensitivity and Unicode normalization flags.
  * - Reading non-existant keys returns null instead of throwing an exception.

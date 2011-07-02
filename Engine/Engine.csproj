@@ -57,6 +57,8 @@
     <Compile Include="Source\CodeDB\Lock.cs" />
     <Compile Include="Source\CodeDB\Manager.cs" />
     <Compile Include="Source\CodeDB\Manager.SQL.cs" />
+    <Compile Include="Source\Collections\SafeStack.cs" />
+    <Compile Include="Source\Collections\SafeDictionary.cs" />
     <Compile Include="Source\Collections\SortedStringTable.cs" />
     <Compile Include="Source\Collections\StringSet.cs" />
     <Compile Include="Source\Collections\StringTable.cs" />
