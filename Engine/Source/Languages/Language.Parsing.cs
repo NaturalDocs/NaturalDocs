@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Comments;
 
@@ -551,10 +552,128 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: GetPrototype
-		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will set xxx
+		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will set <Topic.Prototoype>.
 		 */
-		protected virtual void GetPrototype (Topic topic, Tokenization.LineIterator startCode, Tokenization.LineIterator endCode)
-			{ 
+		protected virtual void GetPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
+			{
+			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.TopicTypeID);
+
+			if (prototypeEnders == null)
+				{  return;  }
+
+			System.Text.StringBuilder partialPrototype = null;
+
+			TokenIterator start = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
+			TokenIterator iterator = start;
+			TokenIterator limit = endCode.FirstToken(LineBoundsMode.Everything);
+
+			SafeStack<char> brackets = new SafeStack<char>();
+
+			while (iterator < limit)
+				{
+				// If in a string...
+				if (brackets.Peek() == '"')
+					{
+					if (iterator.Character == '\\')
+						{  iterator.Next(2);  }
+					else 
+						{
+						if (iterator.Character == '"')
+							{  brackets.Pop();  }
+						
+						iterator.Next();
+						}
+					}
+
+				else if (prototypeEnders.IncludeLineBreaks)
+					{
+					throw new Exception("not supported yet"); //xxx
+					if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
+						{
+						// add existing code to prototype stringbuilder
+						// add space to prototype stringbuilder
+						// reset startPrototype
+						// skip all whitespace and comments to the end of the line if you can
+						}
+					}
+
+				// If we're on an ender symbol and we're not in a bracket...
+				// We test this before opening brackets so the opening symbols can be used as enders.
+				else if (prototypeEnders.Symbols != null && brackets.Count == 0 && 
+							 iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols))
+					{
+					break;
+					}
+
+				// If we're on an opening bracket or quote...
+				// We don't test for < because the code might be defining an operator overload.
+				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{' || iterator.Character == '"')
+					{
+					brackets.Push(iterator.Character);
+					iterator.Next();
+					}
+
+				// If we're on a closing bracket that matches the last opening one...
+				// We already handled quotes at the beginning of the loop.
+				else if ((iterator.Character == ')' && brackets.Peek() == '(') ||
+							  (iterator.Character == ']' && brackets.Peek() == '[') ||
+							  (iterator.Character == '}' && brackets.Peek() == '{') )
+					{
+					brackets.Pop();
+					iterator.Next();
+					}
+
+				// handle comments?
+				// convert line breaks to spaces
+
+				else
+					{  iterator.Next();  }
+				}
+
+			Tokenizer tokenizer = start.Tokenizer;
+			string rejectedPrototype = null; //xxx
+
+			// If we needed to build the prototype in chunks...
+			if (partialPrototype != null)
+				{
+				if (start < iterator)
+					{  tokenizer.AppendTextBetweenTo(start, iterator, partialPrototype);  }
+
+				string prototype = partialPrototype.ToString();
+
+				if (prototype.Contains(topic.Title))
+					{  topic.Prototype = prototype;  }
+				else
+					{  rejectedPrototype = prototype;  } //xxx
+				}
+
+			// If we didn't need partialPrototype and everything's just between the iterators... 
+			else
+				{
+				if (tokenizer.ContainsTextBetween(topic.Title, false, start, iterator))
+					{  topic.Prototype = tokenizer.TextBetween(start, iterator);  }
+				else
+					{  rejectedPrototype = tokenizer.TextBetween(start, iterator);  }  //xxx
+				}
+
+			if (topic.Prototype != null)
+				{  topic.Prototype = topic.Prototype.Trim();  }
+
+			//xxx
+			if (topic.Prototype != null)
+				{
+				System.Console.WriteLine();
+				System.Console.WriteLine("/-------------------------------\\");
+				System.Console.WriteLine(topic.Prototype);
+				System.Console.WriteLine("\\-------------------------------/");
+				}
+			else
+				{
+				System.Console.WriteLine();
+				System.Console.WriteLine("/xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\");
+				System.Console.WriteLine(rejectedPrototype.Trim());
+				System.Console.WriteLine("\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxx/");
+				}
 			}
 			
 		
