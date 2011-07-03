@@ -660,8 +660,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			get
 				{  
-				// Including /../ because it returns the file name as well.  Path will simplify it out.
-				return System.Reflection.Assembly.GetExecutingAssembly().Location + "/../Config";  
+				// Including /../ because it returns the file name as well.  The Path class will simplify it out.
+				return Path.GetExecutingAssembly() + "/../Config";  
 				}
 			}
 			
@@ -673,8 +673,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			get
 				{  
-				// Including /../ because it returns the file name as well.  Path will simplify it out.
-				return System.Reflection.Assembly.GetExecutingAssembly().Location + "/../Styles";  
+				// Including /../ because it returns the file name as well.  The Path class will simplify it out.
+				return Path.GetExecutingAssembly() + "/../Styles";  
 				}
 			}
 			
