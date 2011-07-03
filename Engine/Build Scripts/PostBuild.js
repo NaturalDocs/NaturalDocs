@@ -2,8 +2,9 @@
 	Script: Natural Docs Engine Post-Build Script
 
 	Parameters:
-		targetComponent - "Engine", "CLI", etc.
-		buildType - "Debug" or "Release".
+		componentFolder - The root folder of all components, such as "F:\Projects\Natural Docs 2\Components\".
+											 It is assumed that it can reach any other component by adding the component's folder name.
+		outputFolder - The folder to use as an output target, such as "F:\Projects\Natural Docs 2\Components\Engine\bin\Debug\".
 */
 
 
@@ -15,32 +16,23 @@
 // FileSystem object
 var fs = new ActiveXObject("Scripting.FileSystemObject");
 
-// var: targetComponent
-// The target component, such as "Engine" or "CLI".
-var targetComponent = WScript.Arguments(0);
+// var: componentFolder
+var componentFolder = WScript.Arguments(0);
 
-// var: buildType
-// The current build configuration. "Debug" or "Release".
-var buildType = WScript.Arguments(1);
+// var: outputFolder
+var outputFolder = WScript.Arguments(1);
 
 
-
-// Group: Path Functions
-// ____________________________________________________________________________
-
-
-// Function: OutputPathOf
-// Returns the full output path of the passed component and the current build configuration.
-function OutputPathOf (component)
+if (!fs.folderExists(componentFolder))
 	{
-	return "F:\\Projects\\Natural Docs 2\\Components\\" + component + "\\bin\\" + buildType;
+	WScript.Echo("Component folder " + componentFolder + " doesn't exist.");
+	WScript.Quit(1);
 	}
 
-// Function: ResourcePathOf
-// Returns the full resource path of the passed component.
-function ResourcePathOf (component)
+if (!fs.folderExists(outputFolder))
 	{
-	return "F:\\Projects\\Natural Docs 2\\Components\\" + component + "\\Resources";
+	WScript.Echo("Output folder " + outputFolder + " doesn't exist.");
+	WScript.Quit(1);
 	}
 
 
@@ -49,38 +41,45 @@ function ResourcePathOf (component)
 // ____________________________________________________________________________
 
 
-// Function: CopyResourceFolder
-// Copies the resource folder of the passed component to the output folder of the target component.
-function CopyResourceFolder (resourceComponent, folder)
+// Function: ResourceFolderOf
+// Returns the full resource path of the passed component.
+function ResourceFolderOf (component)
 	{
-	fs.CopyFolder( ResourcePathOf(resourceComponent) + "\\" + folder, OutputPathOf(targetComponent) + "\\" + folder, true );
+	return componentFolder + component + "\\Resources\\";
+	}
+
+
+// Function: CopyResourceFolder
+// Copies the resource folder of the passed component to the output folder.
+function CopyResourceFolder (component, subfolder)
+	{
+	var resourceFolder = ResourceFolderOf(component) + subfolder;
+
+	if (!fs.folderExists(resourceFolder))
+		{
+		WScript.Echo("Resource folder " + resourceFolder + " doesn't exist.");
+		WScript.Quit(1);
+		}
+
+	fs.CopyFolder( resourceFolder, outputFolder + subfolder, true );
 	}
 
 
 // Function: CopyResourceFiles
 // Copies the contents of the resource folder of the passed component to the output folder of the target component.
-function CopyResourceFiles (resourceComponent, folder)
+function CopyResourceFiles (component, subfolder)
 	{
-	fs.CopyFile( ResourcePathOf(resourceComponent) + "\\" + folder + "\\*.*", OutputPathOf(targetComponent), true );
+	var resourceFolder = ResourceFolderOf(component) + subfolder;
+
+	if (!fs.folderExists(resourceFolder))
+		{
+		WScript.Echo("Resource folder " + resourceFolder + " doesn't exist.");
+		WScript.Quit(1);
+		}
+
+	fs.CopyFile( resourceFolder + "\\*.*", outputFolder, true );
 	}
 
-
-
-// Group: Parameter Validation
-// ____________________________________________________________________________
-
-
-if (buildType != "Debug" && buildType != "Release")
-	{
-	WScript.Echo("Unsupported build type " + buildType);
-	WScript.Quit(1);
-	}
-
-if (!fs.folderExists(OutputPathOf(targetComponent)))
-	{
-	WScript.Echo("Target component " + targetComponent + " doesn't exist.");
-	WScript.Quit(1);
-	}
 
 
 
