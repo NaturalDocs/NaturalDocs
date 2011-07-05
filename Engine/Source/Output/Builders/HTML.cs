@@ -168,8 +168,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Look up special topic type IDs
 
-			bool ignore;
-			TopicTypes.TopicType topicType = Instance.TopicTypes.FromKeyword("File", out ignore);
+			TopicTypes.TopicType topicType = Instance.TopicTypes.FromKeyword("File");
 
 			if (topicType != null)
 				{  fileTopicTypeID = topicType.ID;  }
@@ -179,7 +178,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			foreach (string nonCodeKeyword in nonCodeKeywords)
 				{
-				topicType = Instance.TopicTypes.FromKeyword(nonCodeKeyword, out ignore);
+				topicType = Instance.TopicTypes.FromKeyword(nonCodeKeyword);
 
 				if (topicType != null)
 					{  nonCodeTopicTypeIDs.Add(topicType.ID);  }

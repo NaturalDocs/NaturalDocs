@@ -1051,6 +1051,16 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 
 
 		/* Function: FromKeyword
+		 * Returns the <TopicType> associated with the passed keyword, or null if none.
+		 */
+		public TopicType FromKeyword (string keyword)
+			{
+			bool ignore;
+			return FromKeyword(keyword, out ignore);
+			}
+
+
+		/* Function: FromKeyword
 		 * Returns the <TopicType> associated with the passed keyword, or null if none.  Also returns whether it was singular
 		 * or plural.
 		 */
