@@ -631,7 +631,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			Tokenizer tokenizer = start.Tokenizer;
-			string rejectedPrototype = null; //xxx
 
 			// If we needed to build the prototype in chunks...
 			if (partialPrototype != null)
@@ -643,8 +642,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				if (prototype.Contains(topic.Title))
 					{  topic.Prototype = prototype;  }
-				else
-					{  rejectedPrototype = prototype;  } //xxx
 				}
 
 			// If we didn't need partialPrototype and everything's just between the iterators... 
@@ -652,28 +649,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				if (tokenizer.ContainsTextBetween(topic.Title, false, start, iterator))
 					{  topic.Prototype = tokenizer.TextBetween(start, iterator);  }
-				else
-					{  rejectedPrototype = tokenizer.TextBetween(start, iterator);  }  //xxx
 				}
 
 			if (topic.Prototype != null)
 				{  topic.Prototype = topic.Prototype.Trim();  }
-
-			//xxx
-			if (topic.Prototype != null)
-				{
-				System.Console.WriteLine();
-				System.Console.WriteLine("/-------------------------------\\");
-				System.Console.WriteLine(topic.Prototype);
-				System.Console.WriteLine("\\-------------------------------/");
-				}
-			else
-				{
-				System.Console.WriteLine();
-				System.Console.WriteLine("/xxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\");
-				System.Console.WriteLine(rejectedPrototype.Trim());
-				System.Console.WriteLine("\\xxxxxxxxxxxxxxxxxxxxxxxxxxxxx/");
-				}
 			}
 			
 		
