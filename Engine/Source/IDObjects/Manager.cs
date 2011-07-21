@@ -146,7 +146,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			get
 				{
-				if (id >= objectsByID.Count)
+				if (id < 0 || id >= objectsByID.Count)
 					{  return null;  }
 				else
 					{  return objectsByID[id];  }
