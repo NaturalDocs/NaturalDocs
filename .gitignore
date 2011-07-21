@@ -5,5 +5,5 @@ Thumbs.db
 *.csproj.user
 bin/
 obj/
-Compiled/
+* - Actual Output.txt
 Engine/Resources/Tests/Scratchpad.txt
