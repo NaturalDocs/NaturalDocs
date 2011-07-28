@@ -210,15 +210,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 
 		/* Function: MatchesAnyAcrossTokens
-		 * Returns whether the any of the passed strings match the tokens at the current position.  The string comparison 
-		 * can span multiple tokens, which allows you to test against things like "//" which would be two tokens.  However,
-		 * the string must still match complete tokens so "// some" won't match "// something".  Returns false if the 
-		 * iterator is out of bounds.
+		 * Determines whether any of the passed strings match the tokens at the current position, returning the match's
+		 * array index if true or -1 if not.  The string comparison can span multiple tokens, which allows you to test 
+		 * against things like "//" which would be two tokens.  However, the string must still match complete tokens so 
+		 * "// some" won't match "// something".
 		 */
-		public bool MatchesAnyAcrossTokens (IList<string> text, bool ignoreCase = false)
+		public int MatchesAnyAcrossTokens (IList<string> text, bool ignoreCase = false)
 			{
 			if (!IsInBounds)
-				{  return false;  }
+				{  return -1;  }
 				
 			for (int i = 0; i < text.Count; i++)
 				{
@@ -226,24 +226,23 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				// check for every iteration.
 				if (TokensInCharacters(text[i].Length) != -1 &&
 					 String.Compare(tokenizer.RawText, rawTextIndex, text[i], 0, text[i].Length, ignoreCase) == 0)
-					{  return true;  }
+					{  return i;  }
 				}
 
-			return false;
+			return -1;
 			}
 
 
 		/* Function: MatchesAnyPairAcrossTokens
-		 * Determines whether the any of the passed string pairs match the tokens at the current position.  Only the odd
-		 * entries are tested against the current position, and if there's a match, returns the entry immediately following it.
-		 * Returns null if no match was found.  The string comparison can span multiple tokens, which allows you to test against 
-		 * things like "//" which would be two tokens.  However, the string must still match complete tokens so "// some" won't
-		 * match "// something".  Returns false if the iterator is out of bounds.
+		 * Determines whether any of the passed string pairs match the tokens at the current position, returning the match's
+		 * array index if true or -1 if not.  Only the first of each pair are tested against the current position.  The string 
+		 * comparison can span multiple tokens, which allows you to test against things like "/*" which would be two tokens.  
+		 * However, the string must still match complete tokens so "/* some" won't match "/* something".
 		 */
-		public string MatchesAnyPairAcrossTokens (IList<string> text, bool ignoreCase = false)
+		public int MatchesAnyPairAcrossTokens (IList<string> text, bool ignoreCase = false)
 			{
 			if (!IsInBounds)
-				{  return null;  }
+				{  return -1;  }
 			if (text.Count % 2 != 0)
 				{  throw new Exceptions.ArrayDidntHaveEvenLength("symbol pairs");  }
 				
@@ -251,10 +250,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{
 				if (TokensInCharacters(text[i].Length) != -1 &&
 					 String.Compare(tokenizer.RawText, rawTextIndex, text[i], 0, text[i].Length, ignoreCase) == 0)
-					{  return text[i+1];  }
+					{  return i;  }
 				}
 
-			return null;
+			return -1;
 			}
 
 

@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Comments;
@@ -181,11 +182,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		//
 		// Comments must be alone on a line to be a candidate for documentation, meaning that the comment symbol must be the 
 		// first non-whitespace character on a line, and in the case of block comments, nothing but whitespace may trail the closing
-		// symbol.  The latter rule is important because a comment may start correctly but not end so, as in this prototype with splint 
+		// symbol.  The latter rule is important because a comment may start correctly but not end so, as in this prototype with Splint 
 		// annotation:
 		// 
 		// > int get_array(integer_t id,
 		// >               /*@out@*/ array_t array);
+		//
+		// Speaking of which, block comments surrounded by @ symbols are not included because they're Splint comments.  Not
+		// including them in the possible documentation comments list means the Splint comment below won't end prototype detection.
+		//
+		// > void initialize ()
+		// >    /*@globals undef globnum,
+		// >               undef globname @*/
+		// >    { ... }
 		//
 		// It also goes through the code line by line in a simple manner, not accounting for things like strings, so if a language contains
 		// a multiline string whose content looks like a language comment it will be interpreted as one.  This isn't ideal but is accepted
@@ -272,7 +281,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							
 								if (GetPossibleDocumentationComments_GetUntil (parser, BlockCommentStringPairs[i+1],
 																											  ref lineIterator, comment) )
-									{  parser.PossibleDocumentationComments.Add(comment);  }
+									{  
+									bool isSplint = false;
+
+									if (comment.Start.FirstToken(LineBoundsMode.CommentContent).Character == '@')
+										 {
+										 LineIterator lastLine = comment.End;
+										 lastLine.Previous();
+
+										 TokenIterator lastToken, ignore;
+										 lastLine.GetBounds(LineBoundsMode.CommentContent, out ignore, out lastToken);
+										 lastToken.Previous();
+
+										 if (lastToken.Character == '@')
+											{  isSplint = true;  }
+										 }
+
+									if (!isSplint)
+										{  parser.PossibleDocumentationComments.Add(comment);  }
+									}
 							
 								foundComment = true;
 								}
@@ -561,98 +588,255 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (prototypeEnders == null)
 				{  return;  }
 
-			System.Text.StringBuilder partialPrototype = null;
+			StringBuilder prototype = new StringBuilder();
+			Tokenizer tokenizer = startCode.Tokenizer;
 
 			TokenIterator start = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 			TokenIterator iterator = start;
-			TokenIterator limit = endCode.FirstToken(LineBoundsMode.Everything);
+			TokenIterator limit = endCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
 			SafeStack<char> brackets = new SafeStack<char>();
+			bool lastWasWhitespace = true;
+			bool lineHasExtender = false;
+			int blockCommentIndex = -1;
+
+			bool goodPrototype = false;
 
 			while (iterator < limit)
 				{
-				// If in a string...
+
+				// Inside a String
+
 				if (brackets.Peek() == '"')
 					{
+					// No whitespace condensation while in a string.  We also don't have to worry about maintaining
+					// lastWasWhitespace until we're leaving it.
+
 					if (iterator.Character == '\\')
-						{  iterator.Next(2);  }
+						{  
+						prototype.Append('\\');
+						iterator.Next();  
+						iterator.AppendTokenTo(prototype);
+						iterator.Next();
+						}
 					else 
 						{
 						if (iterator.Character == '"')
-							{  brackets.Pop();  }
+							{  
+							brackets.Pop();  
+							lastWasWhitespace = false;
+							}
 						
+						iterator.AppendTokenTo(prototype);
 						iterator.Next();
 						}
 					}
 
-				else if (prototypeEnders.IncludeLineBreaks)
+
+				// Line Break
+
+				else if (iterator.FundamentalType == FundamentalType.LineBreak)
 					{
-					throw new Exception("not supported yet"); //xxx
-					if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
+					if (prototypeEnders.IncludeLineBreaks && !lineHasExtender)
+						{  
+						goodPrototype = true;
+						break;  
+						}
+
+					else
 						{
-						// add existing code to prototype stringbuilder
-						// add space to prototype stringbuilder
-						// reset startPrototype
-						// skip all whitespace and comments to the end of the line if you can
+						if (lastWasWhitespace == false)
+							{
+							prototype.Append(' ');
+							lastWasWhitespace = true;
+							}
+
+						iterator.Next();
+						lineHasExtender = false;
 						}
 					}
 
-				// If we're on an ender symbol and we're not in a bracket...
-				// We test this before opening brackets so the opening symbols can be used as enders.
-				else if (prototypeEnders.Symbols != null && brackets.Count == 0 && 
-							 iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols))
+
+				// Line Extender
+
+				else if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
 					{
+					// If the line extender is an underscore we don't want to include it if it's adjacent to any text because
+					// it's probably part of an identifier.
+
+					bool partOfIdentifier = false;
+
+					if (LineExtender == "_")
+						{
+						TokenIterator temp = iterator;
+
+						temp.Previous();
+						if (temp.FundamentalType == FundamentalType.Text || temp.Character == '_')
+							{  partOfIdentifier = true;  }
+
+						temp.Next(2);
+						if (temp.FundamentalType == FundamentalType.Text || temp.Character == '_')
+							{  partOfIdentifier = true;  }
+						}
+
+					if (partOfIdentifier)
+						{
+						iterator.AppendTokenTo(prototype);
+						iterator.Next();
+						lastWasWhitespace = false;
+						}
+					else
+						{
+						lineHasExtender = true;
+
+						// We don't want it in the output so treat it like whitespace
+						if (lastWasWhitespace == false)
+							{
+							prototype.Append(' ');
+							lastWasWhitespace = true;
+							}
+
+						iterator.Next();
+						}
+					}
+
+
+				// Ender Symbol, not in a bracket
+
+				// We test this before looking for opening brackets so the opening symbols can be used as enders.
+				else if (prototypeEnders.Symbols != null && brackets.Count == 0 && 
+							 iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols) != -1)
+					{
+					goodPrototype = true;
 					break;
 					}
 
-				// If we're on an opening bracket or quote...
-				// We don't test for < because the code might be defining an operator overload.
+				
+				// Line Comment
+
+				// We test this before looking for opening brackets in case the opening symbols are used for comments.
+				else if (LineCommentStrings != null && iterator.MatchesAnyAcrossTokens(LineCommentStrings) != -1)
+					{
+					// Treat it as whitespace and skip to the next line break.  We're only dealing with Splint for block comments.
+					do
+						{  iterator.Next();  }
+					while (iterator.FundamentalType != FundamentalType.LineBreak && iterator < limit);
+
+					if (lastWasWhitespace == false)
+						{
+						prototype.Append(' ');
+						lastWasWhitespace = true;
+						}
+					}
+
+
+				// Block Comment
+
+				// We test this before looking for opening brackets in case the opening symbols are used for comments.
+				else if (BlockCommentStringPairs != null && 
+							 (blockCommentIndex = iterator.MatchesAnyPairAcrossTokens(BlockCommentStringPairs)) != -1)
+					{
+					string openingSymbol = BlockCommentStringPairs[blockCommentIndex];
+					string closingSymbol = BlockCommentStringPairs[blockCommentIndex+1];
+
+					iterator.NextByCharacters(openingSymbol.Length);
+					TokenIterator commentContentStart = iterator;
+
+					while (iterator.MatchesAcrossTokens(closingSymbol) == false && iterator < limit)
+						{  iterator.Next();  }
+
+					TokenIterator commentContentEnd = iterator;
+
+					if (iterator < limit)
+						{  iterator.NextByCharacters(closingSymbol.Length);  }
+
+					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
+					if (tokenizer.MatchTextBetween(acceptablePrototypeCommentRegex, 
+																			 commentContentStart, commentContentEnd).Success)
+						{
+						prototype.Append(openingSymbol);
+
+						string commentContent = tokenizer.TextBetween(commentContentStart, commentContentEnd);
+						commentContent = commentContent.Replace('\r', ' ');
+						commentContent = commentContent.Replace('\n', ' ');
+						commentContent = commentContent.CondenseWhitespace();
+
+						prototype.Append(commentContent);
+						prototype.Append(closingSymbol);
+						lastWasWhitespace = false;
+						}
+					else
+						{
+						if (lastWasWhitespace == false)
+							{
+							prototype.Append(' ');
+							lastWasWhitespace = true;
+							}
+						}
+					}
+
+
+				// Opening Bracket or Quote
+
+				// We don't test for < because there might be an unbalanced pair as part of an operator overload.
 				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{' || iterator.Character == '"')
 					{
 					brackets.Push(iterator.Character);
+					iterator.AppendTokenTo(prototype);
 					iterator.Next();
+					lastWasWhitespace = false;
 					}
 
-				// If we're on a closing bracket that matches the last opening one...
+
+				// Closing Bracket, matching the last opening one
+
 				// We already handled quotes at the beginning of the loop.
-				else if ((iterator.Character == ')' && brackets.Peek() == '(') ||
+				else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
 							  (iterator.Character == ']' && brackets.Peek() == '[') ||
 							  (iterator.Character == '}' && brackets.Peek() == '{') )
 					{
 					brackets.Pop();
+					iterator.AppendTokenTo(prototype);
+					iterator.Next();
+					lastWasWhitespace = false;
+					}
+
+
+				// Whitespace
+
+				else if (iterator.FundamentalType == FundamentalType.Whitespace)
+					{
+					if (lastWasWhitespace == false)
+						{
+						prototype.Append(' ');
+						lastWasWhitespace = true;
+						}
+
 					iterator.Next();
 					}
 
-				// handle comments?
-				// convert line breaks to spaces
+
+				// Everything Else
 
 				else
-					{  iterator.Next();  }
+					{
+					iterator.AppendTokenTo(prototype);
+					lastWasWhitespace = false;
+					iterator.Next();  
+					}
 				}
 
-			Tokenizer tokenizer = start.Tokenizer;
-
-			// If we needed to build the prototype in chunks...
-			if (partialPrototype != null)
+			if (goodPrototype)
 				{
-				if (start < iterator)
-					{  tokenizer.AppendTextBetweenTo(start, iterator, partialPrototype);  }
+				// Strip trailing space
+				if (lastWasWhitespace && prototype.Length > 0)
+					{  prototype.Remove(prototype.Length - 1, 1);  }
 
-				string prototype = partialPrototype.ToString();
+				string prototypeString = prototype.ToString();
 
-				if (prototype.Contains(topic.Title))
-					{  topic.Prototype = prototype;  }
+				if (prototypeString.IndexOf(topic.UndecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
+					{  topic.Prototype = prototypeString;  }
 				}
-
-			// If we didn't need partialPrototype and everything's just between the iterators... 
-			else
-				{
-				if (tokenizer.ContainsTextBetween(topic.Title, false, start, iterator))
-					{  topic.Prototype = tokenizer.TextBetween(start, iterator);  }
-				}
-
-			if (topic.Prototype != null)
-				{  topic.Prototype = topic.Prototype.Trim();  }
 			}
 			
 		

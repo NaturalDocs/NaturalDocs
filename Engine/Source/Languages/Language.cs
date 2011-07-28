@@ -638,6 +638,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * A combination of <FlagValues> describing the language.
 		 */
 		protected LanguageFlags flags;
+
+		static protected Regex.Comments.AcceptablePrototypeComments acceptablePrototypeCommentRegex
+			= new Regex.Comments.AcceptablePrototypeComments();
 		}
 
 
