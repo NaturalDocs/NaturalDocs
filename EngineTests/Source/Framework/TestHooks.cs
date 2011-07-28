@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.TestHooks
+ * Class: GregValure.NaturalDocs.EngineTests.Framework.TestHooks
  * ____________________________________________________________________________
  * 
  * Provides access to the major testing points in the engine.  All functions assume the engine has already been started.
