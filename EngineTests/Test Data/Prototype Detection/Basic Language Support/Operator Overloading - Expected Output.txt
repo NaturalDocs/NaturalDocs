@@ -1,0 +1,3 @@
+int operator< (LineIterator a, LineIterator b)
+-----
+LineIterator operator<< (LineIterator input)

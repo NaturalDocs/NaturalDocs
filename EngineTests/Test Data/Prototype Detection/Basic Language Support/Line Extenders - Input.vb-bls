@@ -1,0 +1,32 @@
+
+Line extenders should be recognized and allow prototype detection to continue.  However, they 
+should not appear in the output.
+
+Comments should be allowed to appear after them without screwing up the detection.
+
+If the extender is an underscore, it should be allowed to appear in identifiers without being seen
+as an extender.
+
+--- Test Data
+
+' Function: SomeFunctionName
+Function SomeFunctionName (x, _
+										y)
+End Function
+
+' Function: SomeFunctionName2
+Function SomeFunctionName2 (x, _ ' This is x
+										  y) ' This is y
+End Function
+
+' Function: _SomeFunctionName3_
+Function _SomeFunctionName3_ (x, y)
+End Function
+
+' Function: SomeFunctionName_4
+Function SomeFunctionName_4 (x, y)
+End Function
+
+' Function: __SomeFunctionName___5__
+Function __SomeFunctionName___5__ (x, y)
+End Function

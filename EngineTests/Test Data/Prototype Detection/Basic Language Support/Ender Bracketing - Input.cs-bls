@@ -1,0 +1,14 @@
+
+Prototype enders appearing inside brackets, quotes, and comments shouldn't count.
+
+The syntax below isn't really valid but it doesn't matter since this is basic language support.
+
+--- Test Data
+
+/* Function: TestFunction
+*/
+public static bool TestFunction (int[1;2{}] a, //;{}
+										   /*;{}*/ int(1;2{}) b = ";{}",
+										   int[({;})] c)
+	{
+	}

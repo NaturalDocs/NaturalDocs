@@ -1,0 +1,7 @@
+(No prototype detected)
+-----
+(No prototype detected)
+-----
+(No prototype detected)
+-----
+public void GoodFunctionA ()

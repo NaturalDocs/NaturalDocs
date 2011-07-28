@@ -1,0 +1,30 @@
+
+/* Function: BadFunctionA
+	This prototype doesn't match the name so it shouldn't appear.
+*/
+public bool BadFunctionX () { }
+
+/* Function: BadFunctionB
+	The name is there but it comes after an ender so it shouldn't appear.
+*/
+{ }
+public bool BadFunctionB () { }
+
+/* Function: BadFunctionC
+	The name is there but another comment ends the search before it hits an ender so it shouldn't appear.
+*/
+public bool BadFunctionC ()
+// I ruin everything :D
+{ }
+
+/* Function: GoodFunctionA
+	It should be able to recover and pick up good prototypes after all these problems.
+*/
+public bool GoodFunctionA () { }
+
+/* Function: GoodFunctionB
+	Splint comments are the exception to BadFunctionC's rule.
+*/
+public bool GoodFunctionB ()
+/*@acceptable-comment@*/
+{ }

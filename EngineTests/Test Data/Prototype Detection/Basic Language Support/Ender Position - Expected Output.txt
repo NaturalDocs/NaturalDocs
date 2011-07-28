@@ -1,0 +1,9 @@
+(No prototype detected)
+-----
+(No prototype detected)
+-----
+(No prototype detected)
+-----
+public bool GoodFunctionA ()
+-----
+public bool GoodFunctionB () /*@acceptable-comment@*/

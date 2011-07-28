@@ -1,0 +1,11 @@
+
+Parenthesis should be allowed in the topic title and they shouldn't prevent a prototype from 
+appearing if it doesn't match the code exactly.
+
+--- Test Data
+
+/* Function: SomeFunctionName (2)
+*/
+public void SomeFunctionName (int x)
+	{
+	}

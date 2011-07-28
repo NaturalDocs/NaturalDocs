@@ -1,0 +1,21 @@
+
+Multiple topics can appear in a comment.  The prototype should be detected for the last one.
+
+--- Test Data
+
+/* Function: BadFunctionA
+	Should not appear.
+	
+	Function: BadFunctionB
+*/
+public void BadFunctionA ()
+	{
+	}
+
+/* Function: BadFunctionC
+
+	Function: GoodFunctionA
+*/
+public void GoodFunctionA ()
+	{
+	}

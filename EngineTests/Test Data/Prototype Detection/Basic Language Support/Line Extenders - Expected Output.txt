@@ -1,0 +1,9 @@
+Function SomeFunctionName (x, y)
+-----
+Function SomeFunctionName2 (x, y)
+-----
+Function _SomeFunctionName3_ (x, y)
+-----
+Function SomeFunctionName_4 (x, y)
+-----
+Function __SomeFunctionName___5__ (x, y)

@@ -1,0 +1,7 @@
+void SomeFunction (int a, int b)
+-----
+/*@falsewhennull@*/ bool SplintFunction(/*@null@*/ char* a, /*@in@*/ int* b, /*@out@*/ int* c)
+-----
+/*@only@*/ /*@null@*/ void* SplintFunction2 (int *x) /*@modifies *x@*/ /*@globals undef globnum, undef globname @*/
+-----
+int SplintLikeFunction (/*IN*/ int a, /* in/out */ int b, int c, /* Ref */ int d)

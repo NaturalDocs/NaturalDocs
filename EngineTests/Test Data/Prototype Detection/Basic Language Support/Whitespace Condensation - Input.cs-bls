@@ -1,0 +1,15 @@
+
+All whitespace should be condensed into a single space, including line breaks.  However,
+whitespace should never be condensed while it's in a string.  The parser must be able to
+handle escaped quotes.
+
+There are exactly three spaces in every place in the strings that should be preserved.
+
+--- Test Data
+
+/* Function: SomeFunctionName
+*/
+	 public    void	SomeFunctionName   (string x   = "Multiple   spaces   here",
+													  string y =   "\"Handle   \"   escaped   \"   chars   \"")
+		{
+		}
