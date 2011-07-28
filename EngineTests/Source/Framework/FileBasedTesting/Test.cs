@@ -120,7 +120,19 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			else
 				{  output = actualOutput;  }
 
-			System.IO.File.WriteAllText(actualOutputFile, output);
+			string oldOutput = null;
+
+			try
+				{  
+				// May not exist
+				oldOutput = System.IO.File.ReadAllText(actualOutputFile);  
+				}
+			catch
+				{  }
+
+			// We don't want to change the time stamps every time, so only write when necessary.
+			if (oldOutput == null || oldOutput != output)
+				{  System.IO.File.WriteAllText(actualOutputFile, output);  }
 			}
 
 
