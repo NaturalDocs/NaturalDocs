@@ -12,6 +12,7 @@
 	Substitutions:
 
 		`MenuBackgroundColor = #E0E0E0
+		`HeaderBackgroundColor = #7070C0
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
@@ -53,7 +54,7 @@ td {
 */
 
 #NDHeader {
-	background-color: #7070C0;
+	background-color: `HeaderBackgroundColor;
 	position: fixed;
 	padding: .55em .65em;
 	z-index: 5;
@@ -335,7 +336,7 @@ body.NDContentPage {
 
 body.NDOtherPage {
 	padding: 3em 5em;
-	background-color: `MenuBackgroundColor;
+	background-color: #EEEEEE;
 	}
 
 	.OHomePage {
