@@ -43,8 +43,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		static TestEngine ()
 			{
 			testDataFolder = null;
-			temporaryFolder = null;
-			configFolder = null;
+			keepConfigFolder = true;
+			keepOutputFolder = false;
 			}
 
 
@@ -55,9 +55,15 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		 * If you pass a relative path it will take the executing assembly path, skip up until it passes "bin", move into the "Test Data"
 		 * subfolder, and then make the path relative to that.  This is because it's meant to be run from a Visual Studio source tree, 
 		 * so from C:\Project\bin\debug\EngineTests.dll it will look for C:\Project\Test Data\[test folder].
+		 * 
+		 * If preserveInputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public static void Start (Path folder)
+		public static void Start (Path folder, bool preserveOutputFolder = false)
 			{
+			// Stupid, but we can't use "this" in static classes.
+			keepOutputFolder = preserveOutputFolder;
+
+
 			// Resolve and validate the test folder
 
 			if (folder.IsRelative)
@@ -77,20 +83,36 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 			testDataFolder = folder;
 
 
-			// Make temporary folders and see if there's a config folder already.
+			// See if we're using a temporary configuration or not.  KeepConfigFolder's value affects what ConfigFolder returns.
 
-			temporaryFolder = testDataFolder + "/ND Temp";
-			
-			if (System.IO.Directory.Exists(testDataFolder + "/ND Config"))
-				{  configFolder = testDataFolder + "/ND Config";  }
-			else
+			keepConfigFolder = true;
+
+			if (!System.IO.Directory.Exists(ConfigFolder))
+				{  keepConfigFolder = false;  }
+
+
+			// Clear out old data before start.
+
+			try
+				{  System.IO.Directory.Delete(TemporaryFolderRoot, true);  }
+			catch
+				{ }
+
+			if (keepOutputFolder)
 				{
-				configFolder = temporaryFolder + "/Config";
-				System.IO.Directory.CreateDirectory(configFolder);
+				// Still need to clear it out so we can make a fresh copy.  We just won't delete it afterwards.
+				try
+					{  System.IO.Directory.Delete(HTMLOutputFolder, true);  }
+				catch
+					{ }
 				}
 
-			System.IO.Directory.CreateDirectory(HTMLOutputFolder);
+
+			// Create new folders.  These functions do nothing if they already exist, they won't throw exceptions.
+
+			System.IO.Directory.CreateDirectory(ConfigFolder);
 			System.IO.Directory.CreateDirectory(WorkingDataFolder);
+			System.IO.Directory.CreateDirectory(HTMLOutputFolder);
 
 
 			// INITIALIZE ZE ENGINE!
@@ -146,12 +168,14 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 				Engine.Instance.Dispose(true);
 
 				try
-					{  System.IO.Directory.Delete(temporaryFolder, true);  }
+					{  System.IO.Directory.Delete(TemporaryFolderRoot, true);  }
 				catch
 					{  }
 
+				// We don't have to worry about keepOutputFolder because it would be part of the temporary folder if we
+				// weren't and out of it if we were.
+
 				testDataFolder = null;
-				temporaryFolder = null;
 				}
 			}
 
@@ -168,19 +192,35 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		public static Path HTMLOutputFolder
 			{
 			get
-				{  return temporaryFolder + "/HTML Output";  }
+				{  
+				if (keepOutputFolder)
+					{  return testDataFolder + "/HTML Output";  }
+				else
+					{  return TemporaryFolderRoot + "/HTML Output";  }
+				}
 			}
 
 		public static Path ConfigFolder
 			{
 			get
-				{  return configFolder;  }
+				{  
+				if (keepConfigFolder)
+					{  return testDataFolder + "/ND Config";  }
+				else
+					{  return TemporaryFolderRoot + "/ND Config";  }
+				}
 			}
 
 		public static Path WorkingDataFolder
 			{
 			get
-				{  return temporaryFolder + "/Working Data";  }
+				{  return TemporaryFolderRoot + "/Working Data";  }
+			}
+
+		public static Path TemporaryFolderRoot
+			{
+			get
+				{  return testDataFolder + "/ND Temp";  }
 			}
 
 
@@ -188,8 +228,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		// __________________________________________________________________________
 
 		private static Path testDataFolder;
-		private static Path temporaryFolder;
-		private static Path configFolder;
+		private static bool keepConfigFolder;
+		private static bool keepOutputFolder;
 
 		}
 	}
