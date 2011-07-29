@@ -42,7 +42,7 @@
 # Input
 # ------------------------------------------------------------------------
 
-Source Folder: ..\ND Temp\Input
+Source Folder: ..
 
 
 # This is where you specify what files and folders Natural Docs should be
@@ -84,7 +84,7 @@ Source Folder: ..\ND Temp\Input
 # Output
 # ------------------------------------------------------------------------
 
-HTML Output Folder: ..\ND Temp\Output
+HTML Output Folder: ..\ND Temp\HTML Output
 
 
 # This is where you specify what kind of documentation you want Natural Docs

@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Source\Framework\FileBasedTesting\TestResult.cs" />
     <Compile Include="Source\Framework\FileBasedTesting\Test.cs" />
+    <Compile Include="Source\Framework\TestEngine.cs" />
     <Compile Include="Source\Framework\TestHooks.cs" />
     <Compile Include="Source\Framework\FileBasedTesting\Tester.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

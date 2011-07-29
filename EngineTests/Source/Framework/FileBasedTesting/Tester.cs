@@ -105,86 +105,16 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 		 */
 		public void RunFolder (Path testFolder)
 			{
-			// Resolve and validate the test folder
-
-			Path testFolderAsEntered = testFolder;
-
-			if (testFolder.IsRelative)
-				{
-				string assemblyPath = Path.GetExecutingAssembly();
-				int binIndex = assemblyPath.IndexOf("/bin/");
-
-				if (binIndex == -1)
-					{  Assert.Fail("Couldn't find bin folder in " + assemblyPath);  }
-
-				testFolder = assemblyPath.Substring(0, binIndex) + "/Test Data/" + testFolder;
-				}
-
-			if (System.IO.Directory.Exists(testFolder) == false)
-				{  Assert.Fail("Cannot locate test folder " + testFolder);  }
-
-
-			// Make temporary folders and see if there's a config folder already.
-
-			Path temporaryFolder = testFolder + "/ND Temp";
-			
-			System.IO.Directory.CreateDirectory(temporaryFolder);
-			System.IO.Directory.CreateDirectory(temporaryFolder + "/Input");
-			System.IO.Directory.CreateDirectory(temporaryFolder + "/Output");
-			System.IO.Directory.CreateDirectory(temporaryFolder + "/Working Data");
-
-			Path configFolder;
-
-			if (System.IO.Directory.Exists(testFolder + "/ND Config"))
-				{  configFolder = testFolder + "/ND Config";  }
-			else
-				{
-				configFolder = temporaryFolder + "/Config";
-				System.IO.Directory.CreateDirectory(configFolder);
-				}
-
-
 			List<TestResult> testResults = new List<TestResult>();
 			int failureCount = 0;
 
-
-			// INITIALIZE ZE ENGINE!
-
-			Engine.Instance.Create();
+			TestEngine.Start(testFolder);
 
 			try
 				{
-				Engine.Instance.Config.ProjectConfigFolder = configFolder;
-				Engine.Instance.Config.WorkingDataFolder = temporaryFolder + "/Working Data";
-
-				Engine.Instance.Config.CommandLineConfig.Entries.Add(
-					new Engine.Config.Entries.InputFolder(temporaryFolder + "/Input", Engine.Files.InputType.Source)
-					);
-				Engine.Instance.Config.CommandLineConfig.Entries.Add(
-					new Engine.Config.Entries.HTMLOutputFolder(temporaryFolder + "/Output")
-					);
-
-				Engine.Errors.ErrorList startupErrors = new Engine.Errors.ErrorList();
-				if (!Engine.Instance.Start(startupErrors))
-					{
-					StringBuilder message = new StringBuilder();
-					message.Append("Could not start the Natural Docs engine for testing:");
-
-					foreach (var error in startupErrors)
-						{  
-						message.Append("\n - ");
-						if (error.File != null)
-							{  message.Append(error.File + " line " + error.LineNumber + ": ");  }
-						message.Append(error.Message);
-						}
-
-					Assert.Fail(message.ToString());
-					}
-
-
 				// Iterate through files
 
-				string[] files = System.IO.Directory.GetFiles(testFolder);
+				string[] files = System.IO.Directory.GetFiles(TestEngine.InputFolder);
 				Test test = new Test();
 
 				foreach (string file in files)
@@ -209,12 +139,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 
 			finally
 				{
-				Engine.Instance.Dispose(true);
-
-				try
-					{  System.IO.Directory.Delete(temporaryFolder, true);  }
-				catch
-					{  }
+				TestEngine.Dispose();
 				}
 
 
@@ -222,13 +147,13 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 
 			if (testResults.Count == 0)
 				{
-				Assert.Fail("There were no tests found in " + testFolder);
+				Assert.Fail("There were no tests found in " + TestEngine.InputFolder);
 				}
 			else if (failureCount > 0)
 				{
 				StringBuilder message = new StringBuilder();
 				message.Append(failureCount.ToString() + " out of " + testResults.Count + " test" + (testResults.Count == 1 ? "" : "s") + 
-												  " failed for " + testFolderAsEntered + ':');
+												  " failed for " + testFolder + ':');
 
 				foreach (TestResult testResult in testResults)
 					{  
