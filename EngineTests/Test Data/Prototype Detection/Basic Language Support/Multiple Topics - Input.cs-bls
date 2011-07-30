@@ -1,7 +1,12 @@
 
-Multiple topics can appear in a comment.  The prototype should be detected for the last one.
+/* Multiple Topics
+	___________________________________________________________________________
 
---- Test Data
+	Multiple topics can appear in a comment.  The prototype should be detected for the last 
+	one.
+
+*/
+
 
 /* Function: BadFunctionA
 	Should not appear.

@@ -34,7 +34,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			actualOutputFile = null;
 
 			input = null;
-			description = null;
 			expectedOutput = null;
 			actualOutput = null;
 			testException = null;
@@ -60,16 +59,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			actualOutputFile = inputFile.ParentFolder + '/' + name + " - Actual Output.txt";
 
 			input = System.IO.File.ReadAllText(inputFile);
-
-			var match = startTestDataRegex.Match(input);
-
-			if (match.Success)
-				{
-				description = input.Substring(0, match.Index);
-				input = input.Substring(match.Index + match.Length);
-				}
-			else
-				{  description = null;  }
 
 			try
 				{  expectedOutput = System.IO.File.ReadAllText(expectedOutputFile);  }
@@ -207,15 +196,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 				{  return input;  }
 			}
 
-		/* Property: Description
-		 * The description found in <InputFile>, if any.  Otherwise null.
-		 */
-		public string Description
-			{
-			get
-				{  return description;  }
-			}
-
 		/* Property: ExpectedOutput
 		 * The contents of <ExpectedOutputFile>, or null if that file didn't exist.
 		 */
@@ -278,11 +258,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 		 */
 		protected string input;
 
-		/* var: description
-		 * The description found in <InputFile>, if any.  Otherwise null.
-		 */
-		protected string description;
-
 		/* var: expectedOutput
 		 * The contents of <ExpectedOutputFile>, or null if that file didn't exist.
 		 */
@@ -298,14 +273,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 		 */
 		protected Exception testException;
 
-		/* var: startTestDataRegex
-		 * This matches the divider between an input file's description and test data.
-		 */
-		static protected System.Text.RegularExpressions.Regex startTestDataRegex = new System.Text.RegularExpressions.Regex(
-																																			 @"(?:\r\n|\r|\n)[-=]{3,} *Test ?(?:Data)? *[-=]* *(?:\r\n|\r|\n)", 
-																																			 System.Text.RegularExpressions.RegexOptions.Compiled |
-																																			 System.Text.RegularExpressions.RegexOptions.IgnoreCase |
-																																			 System.Text.RegularExpressions.RegexOptions.Singleline);
 		}
 
 	}

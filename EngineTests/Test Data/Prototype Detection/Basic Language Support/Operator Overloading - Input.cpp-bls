@@ -1,8 +1,13 @@
 
-Some languages allow operator overloading.  We do not want < or << to be detected as an opening bracket
-as that would prevent the prototype enders from being detected in these cases.
+/* Operator Overloading
+	___________________________________________________________________________
 
---- Test Data
+	Some languages allow operator overloading.  We do not want < or << to be detected as 
+	an opening bracket as that would prevent the prototype enders from being detected in 
+	these cases.
+
+*/
+
 
 /* Function: operator<
 */

@@ -1,8 +1,12 @@
 
-Although many languages are case-sensitive, such as the C# which we're using for our example,
-it's preferable to allow the comments to match even if the case doesn't.
+/* Case Insensitivity
+	___________________________________________________________________________
 
---- Test Data
+	Although many languages are case-sensitive, such as the C# which we're using for this 
+	example, it's preferable to allow the comments to match even if the case doesn't.
+
+*/
+
 
 /* Function: somefunctionname
 */

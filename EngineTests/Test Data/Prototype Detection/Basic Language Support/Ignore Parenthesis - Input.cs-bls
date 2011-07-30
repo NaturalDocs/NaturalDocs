@@ -1,8 +1,12 @@
 
-Parenthesis should be allowed in the topic title and they shouldn't prevent a prototype from 
-appearing if it doesn't match the code exactly.
+/* Ignore Parenthesis
+	___________________________________________________________________________
 
---- Test Data
+	Parenthesis should be allowed in the topic title and they shouldn't prevent a prototype 
+	from appearing if it doesn't match the code exactly.
+
+*/
+
 
 /* Function: SomeFunctionName (2)
 */

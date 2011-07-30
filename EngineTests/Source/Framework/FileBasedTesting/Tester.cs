@@ -27,10 +27,6 @@
  *		
  *		Any files matching this format will be considered a test.
  *		
- *		If the file contains a line in the format "--- Test" or "--- Test Data", everything above will be considered the <Description>
- *		and everything below the actual test data.  This allows you to explain the test rationale and expected outcomes directly
- *		in the test file.
- *		
  *		> [Test Name] - Expected Output.txt
  *		
  *		The expected output generated for the test.

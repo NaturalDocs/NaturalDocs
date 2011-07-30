@@ -1,11 +1,15 @@
 
-Most comments should be removed from prototypes.
+// Comments
+// ___________________________________________________________________________
+//
+// Most comments should be removed from prototypes.
+//
+// One exception is Splint annotation (splint.org) which uses comments such as /*@out@*/.  
+// We want this to appear in the output as if it were any other modifier.  We also want to 
+// make sure it doesn't end the prototype search if it's the first thing on the line or alone on 
+// a line.
+//
 
-One exception is Splint annotation (splint.org) which uses comments such as /*@out@*/.  We want 
-this to appear in the output as if it were any other modifier.  We also want to make sure it doesn't end 
-the prototype search if it's the first thing on the line or alone on a line.
-
---- Test Data
 
 /* Function: SomeFunction
 */

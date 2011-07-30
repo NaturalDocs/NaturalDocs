@@ -1,11 +1,13 @@
 
-Prototype enders appearing inside brackets, quotes, and comments shouldn't count.
+/* Ender Bracketing
+	___________________________________________________________________________
 
-The syntax below isn't really valid but it doesn't matter since this is basic language support.
+	Prototype enders appearing inside brackets, quotes, and comments shouldn't count.
 
---- Test Data
+*/
 
 /* Function: TestFunction
+	The syntax below isn't really valid but it doesn't matter since this is basic language support.
 */
 public static bool TestFunction (int[1;2{}] a, //;{}
 										   /*;{}*/ int(1;2{}) b = ";{}",

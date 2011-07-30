@@ -1,13 +1,15 @@
 
-Line extenders should be recognized and allow prototype detection to continue.  However, they 
-should not appear in the output.
+' Line Extenders
+' _____________________________________________________________________________
+'
+' Line extenders should be recognized and allow prototype detection to continue.  However, 
+' they should not appear in the output.
+'
+' Comments should be allowed to appear after them without screwing up the detection.
+'
+' If the extender is an underscore, it should be allowed to appear in identifiers without being 
+' seen as an extender.
 
-Comments should be allowed to appear after them without screwing up the detection.
-
-If the extender is an underscore, it should be allowed to appear in identifiers without being seen
-as an extender.
-
---- Test Data
 
 ' Function: SomeFunctionName
 Function SomeFunctionName (x, _
