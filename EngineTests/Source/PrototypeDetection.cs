@@ -22,44 +22,40 @@ using GregValure.NaturalDocs.EngineTests.Framework;
 namespace GregValure.NaturalDocs.EngineTests
 	{
 	[TestFixture]
-	public class PrototypeDetection : Framework.FileBasedTesting.Tester
+	public class PrototypeDetection : Framework.SourceToTopics
 		{
 
 		[Test]
 		public void BasicLanguageSupport ()
 			{
-			RunFolder("Prototype Detection/Basic Language Support");
+			TestFolder("Prototype Detection/Basic Language Support");
 			}
 
-		public override string Run (string input, string inputFileExtension)
+		public override string OutputOf (IList<Topic> topics)
 			{
-			IList<Topic> topics = TestHooks.SourceCodeToTopics(input, inputFileExtension);
-
-			if (topics == null)
+			if (topics == null || topics.Count == 0)
 				{  return "(No topics found)";  }
-			else 
+
+			StringBuilder output = new StringBuilder();
+
+			for (int i = 0; i < topics.Count; i++)
 				{
-				StringBuilder output = new StringBuilder();
+				// We manually use \n because calling AppendLine() will use \r\n, which conflicts with the plain
+				// \n's in the prototypes.
 
-				for (int i = 0; i < topics.Count; i++)
-					{
-					// We manually use \n because calling AppendLine() will use \r\n, which conflicts with the plain
-					// \n's in the prototypes.
+				if (i != 0)
+					{  output.Append("-----\n");  }
 
-					if (i != 0)
-						{  output.Append("-----\n");  }
-
-					if (topics[i].Prototype == null)
-						{  output.Append("(No prototype detected)\n");  }
-					else
-						{  
-						output.Append(topics[i].Prototype);  
-						output.Append('\n');
-						}
+				if (topics[i].Prototype == null)
+					{  output.Append("(No prototype detected)\n");  }
+				else
+					{  
+					output.Append(topics[i].Prototype);  
+					output.Append('\n');
 					}
-
-				return output.ToString();
 				}
+
+			return output.ToString();
 			}
 
 		}

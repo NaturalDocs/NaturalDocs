@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting.TestResult
+ * Class: GregValure.NaturalDocs.EngineTests.Framework.TestResult
  * ____________________________________________________________________________
  * 
  * A class storing the result of a single <Test>.
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
+namespace GregValure.NaturalDocs.EngineTests.Framework
 	{
 	public class TestResult
 		{

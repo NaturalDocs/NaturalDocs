@@ -1,8 +1,15 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting.Test
+ * Class: GregValure.NaturalDocs.EngineTests.Framework.Test
  * ____________________________________________________________________________
  * 
  * A class storing information about a single file-based test.
+ * 
+ * Usage:
+ * 
+ *		- When iterating through the test data folder, use <IsInputFile()> to find the test files.
+ *		- Pass them to <Load()>.
+ *		- External code should then run the test and either set <ActualOutput> or <TestException>.
+ *		- Call <SaveOutput()> to write the result to disk.
  * 
  */
 
@@ -15,7 +22,7 @@ using System;
 using GregValure.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
+namespace GregValure.NaturalDocs.EngineTests.Framework
 	{
 	public class Test
 		{
@@ -33,10 +40,18 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			expectedOutputFile = null;
 			actualOutputFile = null;
 
-			input = null;
 			expectedOutput = null;
 			actualOutput = null;
 			testException = null;
+			}
+
+
+		/* Function: IsInputFile
+		 *	 A static function that determines whether the passed file is a test input file.
+		 */
+		public static bool IsInputFile (Path file)
+			{
+			return file.NameWithoutPathOrExtension.EndsWith(" - Input");
 			}
 		
 
@@ -58,8 +73,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			expectedOutputFile = inputFile.ParentFolder + '/' + name + " - Expected Output.txt";
 			actualOutputFile = inputFile.ParentFolder + '/' + name + " - Actual Output.txt";
 
-			input = System.IO.File.ReadAllText(inputFile);
-
 			try
 				{  expectedOutput = System.IO.File.ReadAllText(expectedOutputFile);  }
 			catch (System.IO.FileNotFoundException)
@@ -71,8 +84,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 
 
 		/* Function: SaveOutput
-		 * Saves <ActualOutput> to the relevant file.  If <ActualOutput> is null or an exception was thrown it will contain
-		 * a note explaining that.
+		 * Saves <ActualOutput> to the relevant file.  If <ActualOutput> is null or an exception was stored in <TestException>
+		 * it will contain a note explaining that.
 		 */
 		 public void SaveOutput ()
 			{
@@ -125,10 +138,10 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			}
 
 
-		/* Function: GetTestResult
+		/* Function: ToTestResult
 		 * Returns a <TestResult> object made from the current test.
 		 */
-		public TestResult GetTestResult ()
+		public TestResult ToTestResult ()
 			{
 			return new TestResult(name, Passed);
 			}
@@ -185,15 +198,6 @@ namespace GregValure.NaturalDocs.EngineTests.Framework.FileBasedTesting
 			{
 			get
 				{  return actualOutputFile;  }
-			}
-
-		/* Property: Input
-		 * The contents of <InputFile>, minus the description header if present.
-		 */
-		public string Input
-			{
-			get
-				{  return input;  }
 			}
 
 		/* Property: ExpectedOutput

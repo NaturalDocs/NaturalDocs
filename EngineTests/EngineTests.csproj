@@ -46,11 +46,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Framework\FileBasedTesting\TestResult.cs" />
-    <Compile Include="Source\Framework\FileBasedTesting\Test.cs" />
+    <Compile Include="Source\Framework\TestResult.cs" />
+    <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\TestEngine.cs" />
-    <Compile Include="Source\Framework\TestHooks.cs" />
-    <Compile Include="Source\Framework\FileBasedTesting\Tester.cs" />
+    <Compile Include="Source\Framework\SourceToTopics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\PrototypeDetection.cs" />
   </ItemGroup>
