@@ -2,8 +2,9 @@
  * Class: GregValure.NaturalDocs.EngineTests.Framework.SourceToTopics
  * ____________________________________________________________________________
  * 
- * A base class for unit tests where sample source files are loaded from a folder, output is generated from
- * their <Topics>, and that output is compared to files containing the expected output.
+ * A base class for unit tests where sample source files are loaded from a folder, converted to <Topics>, and the 
+ * portions of those <Topics> being tested are saved to files and compared to other files containing the 
+ * expected result.
  * 
  * Usage:
  * 
