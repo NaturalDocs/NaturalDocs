@@ -155,6 +155,15 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		 */
 		public static void Run ()
 			{
+			Engine.Instance.Files.WorkOnAddingAllFiles( Engine.Delegates.NeverCancel );
+			Engine.Instance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
+							
+			Engine.Instance.Files.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
+
+			Engine.Instance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
+			Engine.Instance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
+						
+			Engine.Instance.Cleanup(Delegates.NeverCancel);
 			}
 
 
@@ -197,6 +206,20 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 					{  return testDataFolder + "/HTML Output";  }
 				else
 					{  return TemporaryFolderRoot + "/HTML Output";  }
+				}
+			}
+
+		public static Engine.Output.Builders.HTML HTMLBuilder
+			{
+			get
+				{
+				foreach (var builder in Engine.Instance.Output.Builders)
+					{
+					if (builder is Engine.Output.Builders.HTML)
+						{  return (Engine.Output.Builders.HTML)builder;  }
+					}
+
+				return null;
 				}
 			}
 

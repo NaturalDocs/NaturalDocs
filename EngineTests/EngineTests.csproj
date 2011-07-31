@@ -46,6 +46,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Framework\SourceToHTML.cs" />
     <Compile Include="Source\Framework\TestResult.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\TestEngine.cs" />

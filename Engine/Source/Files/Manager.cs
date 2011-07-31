@@ -208,6 +208,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		// Group: Information Functions
 		// __________________________________________________________________________
 		#region Information Functions
+
 			
 		/* Function: FromID
 		 * Returns the <File> associated with the passed file ID, or null if there isn't one.
@@ -217,6 +218,21 @@ namespace GregValure.NaturalDocs.Engine.Files
 			lock (writeLock)
 				{
 				return files[fileID];
+				}
+			}
+			
+		/* Function: FromPath
+		 * Returns the <File> associated with the passed file <Path>, or null if there isn't one.  The <Path> must be
+		 * absolute.
+		 */
+		public File FromPath (Path filePath)
+			{
+			if (filePath.IsRelative)
+				{  throw new InvalidOperationException();  }
+
+			lock (writeLock)
+				{
+				return files[filePath];
 				}
 			}
 			
