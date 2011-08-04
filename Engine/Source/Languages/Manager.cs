@@ -268,7 +268,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			shebangStrings = new SortedStringTable<Language>(ShebangStringsIgnoreCase, ShebangStringsAreNormalized,
 																					new ShebangStringComparer());
 			
-			predefinedLanguages = new Language[3];
+			predefinedLanguages = new Language[2];
 			
 			predefinedLanguages[0] = new Language("Text File");
 			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
@@ -277,12 +277,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			predefinedLanguages[1] = new Language("Shebang Script");
 			predefinedLanguages[1].Type = Language.LanguageType.Container;
 			predefinedLanguages[1].Predefined = true;
-			
-			predefinedLanguages[2] = new Language("C#");
-			predefinedLanguages[2].Type = Language.LanguageType.BasicSupport;
-			predefinedLanguages[2].Predefined = true;
-			predefinedLanguages[2].JavadocBlockCommentStringPairs = new string[] { "/**", "*/" };
-			predefinedLanguages[2].XMLLineCommentStrings = new string[] { "///" };
 			}
 			
 			
@@ -464,22 +458,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			List<string> deletedLanguageNames = new List<string>();
 			
 			foreach (Language language in languages)
+				{
+				if (language.InConfigFiles == false)
 					{
-					if (language.InConfigFiles == false)
-						{
-						deletedLanguageNames.Add(language.Name);
+					deletedLanguageNames.Add(language.Name);
 			        
-						// Check this flag so we don't set it to changed if we're deleting a predefined language that wasn't in the binary
-						// file.
-						if (language.InBinaryFile == true)
-							{  changed = true;  }
-						}
+					// Check this flag so we don't set it to changed if we're deleting a predefined language that wasn't in the binary
+					// file.
+					if (language.InBinaryFile == true)
+						{  changed = true;  }
 					}
+				}
 				
 			foreach (string deletedLanguageName in deletedLanguageNames)
-			    {
-			    languages.Remove(deletedLanguageName);
-			    }
+				{
+				languages.Remove(deletedLanguageName);
+				}
 				
 				
 			// Everything is okay at this point.  Save the files again to reformat them.  If the project file didn't exist, saving it 
@@ -495,6 +489,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			    {  success = false;  };
 			
 			
+			// Generate alternate comment styles.  We don't want these included in the config files but we do want them in the
+			// binary files in case the generation method changes in a future version.
+
+			foreach (Language language in languages)
+				{  language.GenerateAlternateCommentStyles();  }
+
 			
 			// Compare the structures with the binary ones to see if anything changed.
 
@@ -503,9 +503,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			    binaryExtensions.Count != extensions.Count ||
 			    binaryShebangStrings.Count != shebangStrings.Count || 
 			    binaryIgnoredExtensions.Count != ignoredExtensions.Count)
-			    {
-			    changed = true;
-			    }
+			   {
+			   changed = true;
+			   }
 			else if (changed == false)
 			    {
 			    // Do a detailed comparison now.
