@@ -1,0 +1,23 @@
+
+--[[ Topic: Plain comment 1/5
+Body
+]]--
+
+--[[ Topic: Plain comment 2/5 ]]--
+
+-- Topic: Plain comment 3/5
+-- Body
+
+-- Topic: Plain comment 4/5
+
+---------------------
+-- Topic: Plain comment 5/5
+-- Body
+
+--- Topic: Javadoc comment 1/1
+-- Body
+
+--- Topic: XML comment 1/1
+--- Body
+
+--- Topic: Ambiguous comment 1/1

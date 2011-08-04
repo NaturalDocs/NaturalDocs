@@ -1,0 +1,40 @@
+- Plain comment, lines 2-4:
+
+  - Topic "Plain comment 1/5", line 2:
+    - <p>Body</p>
+
+- Plain comment, line 6:
+
+  - Topic "Plain comment 2/5", line 6:
+    - (No body detected)
+
+- Plain comment, lines 8-9:
+
+  - Topic "Plain comment 3/5", line 8:
+    - <p>Body</p>
+
+- Plain comment, line 11:
+
+  - Topic "Plain comment 4/5", line 11:
+    - (No body detected)
+
+- Plain comment, lines 13-15:
+
+  - Topic "Plain comment 5/5", line 14:
+    - <p>Body</p>
+
+- Javadoc comment, lines 17-18:
+
+  - Topic "Javadoc comment 1/1", line 17:
+    - <p>Body</p>
+
+- XML comment, lines 20-21:
+
+  - Topic "XML comment 1/1", line 20:
+    - <p>Body</p>
+
+- Javadoc+XML comment, line 23:
+
+  - Topic "Ambiguous comment 1/1", line 23:
+    - (No body detected)
+

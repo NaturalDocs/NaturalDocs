@@ -1,0 +1,48 @@
+
+(* Topic: Plain comment 1/9
+Body
+*)
+
+(* Topic: Plain comment 2/9
+ * Body
+ *)
+
+(* Topic: Plain comment 3/9 *)
+
+// Topic: Plain comment 4/9
+// Body
+
+// Topic: Plain comment 5/9
+
+(*********
+ * Topic: Plain comment 6/9
+ * Body
+ *)
+
+///////////////////
+// Topic: Plain comment 7/9
+// Body
+
+{ Topic: Plain comment 8/9
+Body
+}
+
+{ Topic: Plain comment 9/9 }
+
+(** Topic: Javadoc comment 1/4
+Body
+*)
+
+(** Topic: Javadoc comment 2/4
+ * Body
+ *)
+
+(** Topic: Javadoc comment 3/4 *)
+
+/// Topic: Javadoc comment 4/4
+// Body
+
+/// Topic: XML comment 1/1
+/// Body
+
+/// Topic: Ambiguous comment 1/1

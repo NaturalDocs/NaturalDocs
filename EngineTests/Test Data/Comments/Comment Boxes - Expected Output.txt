@@ -1,0 +1,40 @@
+- Plain comment, lines 2-5:
+
+  - Topic "Vertical line", line 3:
+    - <p>Body</p>
+
+- Plain comment, lines 7-8:
+
+  - Topic "Wide vertical line", line 7:
+    - <p>Body</p>
+
+- Plain comment, lines 10-16:
+
+  - Topic "Horizontal lines", line 10:
+    - <p>Body 1</p><p>Body 2</p><p>Body 3</p>
+
+- Plain comment, lines 18-21:
+
+  - Topic "Full box", line 19:
+    - <p>Body</p>
+
+- Plain comment, lines 23-27:
+
+  - Topic "Full box with corner symbols", line 24:
+    - <p>Body</p>
+
+- Plain comment, lines 29-33:
+
+  - Topic "Full box with corner symbols 2", line 30:
+    - <p>Body</p>
+
+- Plain comment, lines 35-39:
+
+  - Topic "Full box with corner symbols 3", line 36:
+    - <p>Body</p>
+
+- Plain comment, lines 41-48:
+
+  - Topic "Partial Box", line 43:
+    - <p>Body</p>
+
