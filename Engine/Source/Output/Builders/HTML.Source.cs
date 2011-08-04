@@ -211,14 +211,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{
 						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
 						// Webkit browsers won't wrap on it.
-						html.Append('\u200B');
+						html.Append("&#8203;");
 						}
 
 					appendedSoFar = endOfSection;
 					}
 
 				html.Append("</span>");
-				html.Append('\u200B');  // zero-width space for wrapping
+				html.Append("&#8203;");  // zero-width space for wrapping
 
 				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
 				}
@@ -418,7 +418,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
 
 					html.EntityEncodeAndAppend( target.Substring(0, endOfProtocolIndex) );
-					html.Append('\u200B');  // Zero width space
+					html.Append("&#8203;");  // Zero width space
 					startIndex = endOfProtocolIndex;
 					}
 
@@ -437,7 +437,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
 
 					html.EntityEncodeAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
-					html.Append('\u200B');  // Zero width space
+					html.Append("&#8203;");  // Zero width space
 					html.EntityEncodeAndAppend(target[breakIndex]);
 
 					startIndex = breakIndex + 1;
