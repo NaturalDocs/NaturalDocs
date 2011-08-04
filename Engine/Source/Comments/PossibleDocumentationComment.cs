@@ -26,7 +26,8 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		 */
 		public PossibleDocumentationComment ()
 			{
-			type = Type.Plain;
+			javadoc = false;
+			xml = false;
 			start = new Tokenization.LineIterator();
 			end = new Tokenization.LineIterator();
 			}
@@ -37,15 +38,29 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 		
 		
-		/* Property: Type
-		 * The comment type.  Note that this only refers to the comment symbols, not its actual content.
+		/* Property: Javadoc
+		 * Whether the comment could possibly contain Javadoc content.  This doesn't mean that it does, just that
+		 * it could.  It's possible for both this and <XML> to be true.
 		 */
-		public Type Type
+		public bool Javadoc
 			{
 			get
-				{  return type;  }
+				{  return javadoc;  }
 			set
-				{  type = value;  }
+				{  javadoc = value;  }
+			}
+			
+			
+		/* Property: XML
+		 * Whether the comment could possibly contain XML content.  This doesn't mean that it does, just that
+		 * it could.  It's possible for both this and <Javadoc> to be true.
+		 */
+		public bool XML
+			{
+			get
+				{  return xml;  }
+			set
+				{  xml = value;  }
 			}
 			
 			
@@ -78,10 +93,15 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 		
 		
-		/* var: type
-		 * The comment type.
+		/* var: javadoc
+		 * Whether the comment could possibly contain Javadoc content.
 		 */
-		protected Type type;
+		protected bool javadoc;
+
+		/* var: xml
+		 * Whether the comment could possibly contain XML content.
+		 */
+		protected bool xml;
 		
 		/* var: start
 		 * The first line of the comment.

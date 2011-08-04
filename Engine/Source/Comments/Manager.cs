@@ -61,26 +61,19 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			// need to be taken out.
 			lineFinder.MarkTextBoxes(comment);
 			
-			if (comment.Type == Type.Plain)
-				{
-				return naturalDocsParser.Parse(comment, topics, true);
-				}
-				
-			else if (comment.Type == Type.XML)
-				{
-				// XXX - Parse with XML
-				}
-				
-			else if (comment.Type == Type.Javadoc)
-				{
-				// If the first line is a header it's still Natural Docs content.
-				if (naturalDocsParser.Parse(comment, topics, true) == true)
-					{  return true;  }
+			// If the first line is a header it's Natural Docs content regardless of comment style.
+			if (naturalDocsParser.Parse(comment, topics, true) == true)
+				{  return true;  }
 					
-				// XXX - Otherwise if the topic contains @tags parse with Javadoc.
+			if (comment.Javadoc || comment.XML)
+				{
+				// XXX - If the comment is Javadoc and it contains @tags parse with Javadoc.
+				// XXX - If the comment is XML and it contains <tags> parse with XML.
+				// XXX - Note that both may be set if the comment style is ambiguous.
 				
-				// Otherwise treat as a headerless Natural Docs topic.
-				return naturalDocsParser.Parse(comment, topics, false);
+				// Otherwise if it's Javadoc and there's no @tags treat it as a headerless Natural Docs comment.
+				if (comment.Javadoc)
+					{  return naturalDocsParser.Parse(comment, topics, false);  }
 				}
 				
 			return false;
