@@ -140,6 +140,25 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
+		/* Function: PreviousByCharacters
+		 * 
+		 * Moves backwards by the passed number of characters, returning false if we're past the first token.
+		 * 
+		 * This throws an exception if backing up by the passed number of characters would cause the iterator to not 
+		 * fall evenly on a token boundary.  It is assumed that this function will primarily be used after a positive result 
+		 * from <MatchesAcrossTokens()> or <TokensInPreviousCharacters()> which would cause this to not be an issue.
+		 */
+		public bool PreviousByCharacters (int characters)
+			{
+			int tokensInCharacters = TokensInPreviousCharacters(characters);
+			
+			if (tokensInCharacters == -1)
+				{  throw new InvalidOperationException();  }
+				
+			return Previous(tokensInCharacters);
+			}
+			
+			
 		/* Function: TokensInCharacters
 		 * Returns the number of tokens between the current position and the passed number of characters.  If advancing
 		 * by the character count would not land on a token boundary this returns -1.
@@ -160,6 +179,33 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				}
 				
 			if (characterCount == 0)  // i landing one past the last token is okay
+				{  return tokenCount;  }
+			else
+				{  return -1;  }
+			}
+			
+			
+		/* Function: TokensInPreviousCharacters
+		 * Returns the number of tokens between the current position and the passed number of characters before it.  If 
+		 * going backwards by the character count would not land on a token boundary this returns -1.
+		 */
+		public int TokensInPreviousCharacters (int characterCount)
+			{
+			// We want to accept if the iterator is one past the last token
+			if (!IsInBounds && tokenIndex != tokenizer.TokenCount)
+				{  return -1;  }
+				
+			int i = tokenIndex;
+			int tokenCount = 0;
+			
+			while (characterCount > 0 && i > 0)
+				{
+				i--;
+				characterCount -= tokenizer.TokenLengths[i];
+				tokenCount++;
+				}
+				
+			if (characterCount == 0)
 				{  return tokenCount;  }
 			else
 				{  return -1;  }
