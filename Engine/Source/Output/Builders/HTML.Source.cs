@@ -142,6 +142,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							}
 					#endif
 
+					if (topic.Prototype != null)
+						{
+						html.Append("\r\n ");
+						BuildPrototype(topic, html);
+						}
+
 					if (topic.Body != null)
 						{
 						html.Append("\r\n ");
@@ -223,6 +229,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
 				}
 
+			html.Append("</div>");
+			}
+
+
+		/* Function: BuildPrototype
+		 */
+		protected void BuildPrototype (Topic topic, StringBuilder html)
+			{
+			html.Append("<div class=\"NDPrototype\">");
+			html.EntityEncodeAndAppend(topic.Prototype);
 			html.Append("</div>");
 			}
 

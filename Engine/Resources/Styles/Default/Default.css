@@ -283,6 +283,37 @@ body.NDContentPage {
 		padding: .5em;
 		}
 
+	.NDPrototype {
+		font: 10pt `CodeFontFamily;
+		border: 1px solid #808080;
+		margin: 0 5ex 1em 5ex;
+		padding: .75ex 1.2ex;
+		}
+
+		.TFunction .NDPrototype,
+		.TConstructor .NDPrototype,
+		.TDestructor .NDPrototype,
+		.TOperator .NDPrototype {
+			background-color: #F4F4F4; border-color: #D8D8D8 }
+
+		.TProperty .NDPrototype {
+			background-color: #F4F4FF; border-color: #D8D8F4 }
+
+		.TVariable .NDPrototype {
+			background-color: #FFFFEC; border-color: #E4E4B8 }
+
+		.TConstant .NDPrototype {
+			background-color: #DCDCDC; border-color: #B4B4B4 }
+
+		.TType .NDPrototype,
+		.TEnumeration .NDPrototype,
+		.TDelegate .NDPrototype {
+			background-color: #FFF6E8; border-color: #F0D8A0;
+			}
+
+		.TEvent .NDPrototype {
+			background-color: #F2FAF2; border-color: #D2E0D2 }
+
 
 
 

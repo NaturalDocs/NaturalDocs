@@ -102,6 +102,8 @@ _______________________________________________________________________________
 				<qualifier>Package.Package.</qualifier>Title
 			</CTitle>
 
+			<NDPrototype>...</NDPrototype>
+
 			<CBody>
 
 				<CHeading>Heading</CHeading>
@@ -146,6 +148,19 @@ _______________________________________________________________________________
 (end)
 
 If the browser is Internet Explorer 6 through 8, the default style's JavaScript will add an IE6, IE7, or IE8 class to the body.
+
+
+
+Topic: Prototype
+_______________________________________________________________________________
+
+(start code)
+
+	<NDPrototype>
+	</NDPrototype>
+
+(end)
+
 
 
 Topic: Other Page

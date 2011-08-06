@@ -121,7 +121,13 @@ Language: C#
 
    Class Prototype Enders: ; {
    Function Prototype Enders: ; {
+   Constructor Prototype Enders: ; {
+   Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
+	Property Prototype Enders: ; {
+	Constant Prototype Enders: ; =
+	Enumeration Prototype Enders: {
+	Event Prototype Enders: ; =
 
 
 Language: Java
