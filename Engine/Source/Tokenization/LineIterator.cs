@@ -460,28 +460,18 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 		public override bool Equals (object other)
 			{
-			if (other == null || (other is LineIterator) == false)
-				{  return false;  }
-			else
-				{
-				return ( (object)tokenizer == (object)((LineIterator)other).tokenizer && 
-							lineIndex == ((LineIterator)other).lineIndex);
-				} 
+			// Since it's a struct, it will never equal an object.
+			return false;
 			}
 
 		public override int GetHashCode ()
 			{
 			return lineIndex.GetHashCode();
 			}
-			
+
 		public static bool operator== (LineIterator a, LineIterator b)
 			{
-			if ((object)a == null && (object)b == null)
-				{  return true;  }
-			else if ((object)a == null || (object)b == null)
-				{  return false;  }
-			else
-				{  return ( (object)a.tokenizer == (object)b.tokenizer && a.lineIndex == b.lineIndex );  }
+			return (a.tokenizer == b.tokenizer && a.lineIndex == b.lineIndex);
 			}
 			
 		public static bool operator!= (LineIterator a, LineIterator b)
@@ -491,9 +481,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		public static bool operator> (LineIterator a, LineIterator b)
 			{
-			if ((object)a == null || (object)b == null)
+			if (a.tokenizer == null || b.tokenizer == null)
 				{  throw new NullReferenceException();  }
-			if ((object)a.tokenizer != (object)b.tokenizer)
+			if (a.tokenizer != b.tokenizer)
 				{  throw new Engine.Exceptions.RelativeCompareOfIteratorsNotOnSameBase();  }
 				
 			return (a.lineIndex > b.lineIndex);
@@ -501,9 +491,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		public static bool operator>= (LineIterator a, LineIterator b)
 			{
-			if ((object)a == null || (object)b == null)
+			if (a.tokenizer == null || b.tokenizer == null)
 				{  throw new NullReferenceException();  }
-			if ((object)a.tokenizer != (object)b.tokenizer)
+			if (a.tokenizer != b.tokenizer)
 				{  throw new Engine.Exceptions.RelativeCompareOfIteratorsNotOnSameBase();  }
 				
 			return (a.lineIndex >= b.lineIndex);

@@ -500,13 +500,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 		public override bool Equals (object other)
 			{
-			if (other == null || (other is TokenIterator) == false)
-				{  return false;  }
-			else
-				{
-				return ( (object)tokenizer == (object)((TokenIterator)other).tokenizer && 
-							tokenIndex == ((TokenIterator)other).tokenIndex );
-				} 
+			// Since it's a struct, it will never equal an object.
+			return false;
 			}
 
 		public override int GetHashCode ()
@@ -516,12 +511,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		public static bool operator== (TokenIterator a, TokenIterator b)
 			{
-			if ((object)a == null && (object)b == null)
-				{  return true;  }
-			else if ((object)a == null || (object)b == null)
-				{  return false;  }
-			else
-				{  return ( (object)a.tokenizer == (object)b.tokenizer && a.tokenIndex == b.tokenIndex );  }
+			return (a.tokenizer == b.tokenizer && a.tokenIndex == b.tokenIndex);
 			}
 			
 		public static bool operator!= (TokenIterator a, TokenIterator b)
@@ -531,9 +521,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		public static bool operator> (TokenIterator a, TokenIterator b)
 			{
-			if ((object)a == null || (object)b == null)
+			if (a.tokenizer == null || b.tokenizer == null)
 				{  throw new NullReferenceException();  }
-			if ((object)a.tokenizer != (object)b.tokenizer)
+			if (a.tokenizer != b.tokenizer)
 				{  throw new Engine.Exceptions.RelativeCompareOfIteratorsNotOnSameBase();  }
 				
 			return (a.tokenIndex > b.tokenIndex);
@@ -541,9 +531,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		public static bool operator>= (TokenIterator a, TokenIterator b)
 			{
-			if ((object)a == null || (object)b == null)
+			if (a.tokenizer == null || b.tokenizer == null)
 				{  throw new NullReferenceException();  }
-			if ((object)a.tokenizer != (object)b.tokenizer)
+			if (a.tokenizer != b.tokenizer)
 				{  throw new Engine.Exceptions.RelativeCompareOfIteratorsNotOnSameBase();  }
 				
 			return (a.tokenIndex >= b.tokenIndex);
