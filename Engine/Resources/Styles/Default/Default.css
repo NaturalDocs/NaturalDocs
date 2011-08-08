@@ -290,6 +290,10 @@ body.NDContentPage {
 		padding: .75ex 1.2ex;
 		}
 
+
+	/* Prototype Colors
+		___________________________________________________
+	*/
 		.TFunction .NDPrototype,
 		.TConstructor .NDPrototype,
 		.TDestructor .NDPrototype,
@@ -314,6 +318,20 @@ body.NDContentPage {
 		.TEvent .NDPrototype {
 			background-color: #E8F8E8; border-color: #C0DCC0 }
 
+
+	/* Syntax Highlighting
+		___________________________________________________
+	*/
+		.SHComment {
+			color: #808080;
+			}
+		.SHKeyword {
+			color: #880000;
+			}
+		.SHNumber,
+		.SHString {
+			color: #000088;
+			}
 
 
 

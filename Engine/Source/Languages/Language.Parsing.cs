@@ -11,8 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Comments;
+using GregValure.NaturalDocs.Engine.Tokenization;
+using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
 namespace GregValure.NaturalDocs.Engine.Languages
@@ -160,8 +161,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: ParsePrototype
+		 * Converts a raw text prototype into a <ParsedPrototype>, optionally applying syntax highlighting to the contained
+		 * <Tokenizer> as well.
 		 */
-		public virtual ParsedPrototype ParsePrototype (string rawPrototype)
+		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID, bool syntaxHighlight = false)
 			{
 			ParsedPrototype prototype = new ParsedPrototype(rawPrototype);
 			SafeStack<char> brackets = null;
@@ -187,53 +190,66 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  iterator.Next();  }
 				}
 
-			if (brackets == null)
-				{  return prototype;  }
-
-			prototype.AddStartOfParameter(iterator);
-
-			while (iterator.IsInBounds)
+			if (brackets != null)
 				{
-				if (brackets.Count == 1 && (iterator.Character == ',' || iterator.Character == ';'))
-					{
-					iterator.Next();
-					prototype.AddStartOfParameter(iterator);
-					}
+				prototype.AddStartOfParameter(iterator);
 
-				// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
-				// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
-				// as a parameter divider.
-				else if (iterator.Character == '(' || iterator.Character == '[' || 
-							  iterator.Character == '{' || iterator.Character == '<')
+				while (iterator.IsInBounds)
 					{
-					brackets.Push(iterator.Character);
-					iterator.Next();
-					}
-
-				else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
-								(iterator.Character == ']' && brackets.Peek() == '[') ||
-								(iterator.Character == '}' && brackets.Peek() == '{') ||
-								(iterator.Character == '>' && brackets.Peek() == '<') )
-					{
-					brackets.Pop();
-					
-					if (brackets.Count == 0)
+					if (brackets.Count == 1 && (iterator.Character == ',' || iterator.Character == ';'))
 						{
-						prototype.AddEndOfParameters(iterator);
-						break;
+						iterator.Next();
+						prototype.AddStartOfParameter(iterator);
 						}
+
+					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
+					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
+					// as a parameter divider.
+					else if (iterator.Character == '(' || iterator.Character == '[' || 
+								  iterator.Character == '{' || iterator.Character == '<')
+						{
+						brackets.Push(iterator.Character);
+						iterator.Next();
+						}
+
+					else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
+									(iterator.Character == ']' && brackets.Peek() == '[') ||
+									(iterator.Character == '}' && brackets.Peek() == '{') ||
+									(iterator.Character == '>' && brackets.Peek() == '<') )
+						{
+						brackets.Pop();
+					
+						if (brackets.Count == 0)
+							{
+							prototype.AddEndOfParameters(iterator);
+							break;
+							}
+						else
+							{  iterator.Next();  }
+						}
+
+					else if (TryToSkipComment(ref iterator) || TryToSkipString(ref iterator))
+						{  }
+
 					else
 						{  iterator.Next();  }
 					}
-
-				else if (TryToSkipComment(ref iterator) || TryToSkipString(ref iterator))
-					{  }
-
-				else
-					{  iterator.Next();  }
 				}
 
+			if (syntaxHighlight)
+				{  SyntaxHighlight(prototype.Tokenizer, topicTypeID);  }
+
 			return prototype;
+			}
+
+
+		/* Function: SyntaxHighlight
+		 * Applies <SyntaxHighlightingTypes> to the passed tokenized content.  If it's for a prototype you can pass the
+		 * topic type ID, or leave it zero if it's just for general code.
+		 */
+		public virtual void SyntaxHighlight (Tokenizer content, int topicTypeID = 0)
+			{
+			SimpleSyntaxHighlight(content, defaultKeywords);
 			}
 
 
@@ -950,6 +966,69 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: SimpleSyntaxHighlight
+		 */
+		protected void SimpleSyntaxHighlight (Tokenizer content, StringSet keywords)
+			{
+			TokenIterator iterator = content.FirstToken;
+			
+			while (iterator.IsInBounds)
+				{
+				TokenIterator originalPosition = iterator;
+
+				if (TryToSkipComment(ref iterator))
+					{
+					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
+					}
+				else if (TryToSkipString(ref iterator))
+					{
+					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
+					}
+				else if (iterator.FundamentalType == FundamentalType.Text)
+					{
+					if (iterator.Character >= '0' && iterator.Character <= '9')
+						{
+						iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+						iterator.Next();
+
+						if (iterator.Character == '.')
+							{
+							iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+							iterator.Next();
+
+							if (iterator.Character >= '0' && iterator.Character <= '9')
+								{
+								iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+								iterator.Next();
+								}
+							}
+						else
+							{
+							TokenIterator prev = originalPosition;
+							prev.Previous();
+
+							// For contants like .25 instead of 0.25.
+							if (prev.Character == '.')
+								{  prev.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
+							}
+						}
+
+					else // not digits
+						{
+						// Note that this won't catch keywords with underscores in them, like wchar_t.
+
+						if (keywords.Contains(iterator.String))
+							{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+						iterator.Next();
+						}
+					}
+				else
+					{  iterator.Next();  }
+				}
+			}
+
+
 		/* Function: TryToSkipWhitespace
 		 * If the iterator is on whitespace or a comment, move past it and return true.
 		 */
@@ -1099,6 +1178,42 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// Return true even if the iterator reached the end of the content before finding a closing quote.
 			return true;
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+		/* var: defaultKeywords
+		 * A set of the default keywords for basic language support across all languages.
+		 */
+		static protected StringSet defaultKeywords = new StringSet(false, false, new string[] {
+
+			// This isn't comprehensive but should cover most languages.
+
+			"int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64",
+			"signed", "unsigned", "integer", "long", "ulong", "short", "ushort", "real", "float", "double", "decimal",
+			"float32", "float64", "float80", "void", "char", "string", "byte", "ubyte", "sbyte", "bool", "boolean",
+			"var", "true", "false", "null", "undefined",
+
+			"function", "operator", "delegate", "event", "enum", "typedef",
+
+			"class", "struct", "interface", "template", "package", "union", "namespace",
+
+			"extends", "implements", "import", "export", "extern", "native", "override", "overload", "explicit", "implicit",
+			"super", "base", "my", "our", "require",
+
+			"public", "private", "protected", "internal", "static", "virtual", "abstract", "friend", 
+			"inline", "using", "final", "sealed", "register", "volatile",
+
+			"ref", "in", "out", "inout", "const", "constant", "get", "set",
+
+			"if", "else", "elif", "elseif", "for", "foreach", "each", "do", "while", "switch", "case", "with", "in",
+			"break", "continue", "next", "return", "goto",
+			"try", "catch", "throw", "finally", "throws", "lock", "eval",
+
+			"new", "delete", "sizeof"
+			});
 
 		}
 	}

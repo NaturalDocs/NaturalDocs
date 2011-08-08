@@ -247,23 +247,23 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  html.EntityEncodeAndAppend(topic.Prototype);  }
 			else
 				{
-				ParsedPrototype prototype = language.ParsePrototype(topic.Prototype);
+				ParsedPrototype prototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
 				TokenIterator start, end;
 				
 				prototype.GetBeforeParameters(out start, out end);
-				html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+				BuildSyntaxHighlightedText(start, end, html);
 
 				for (int i = 0; i < prototype.NumberOfParameters; i++)
 					{
 					html.Append("<br>&nbsp;&nbsp;&nbsp;"); //xxx
 					prototype.GetParameter(i, out start, out end);
-					html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+					BuildSyntaxHighlightedText(start, end, html);
 					}
 
 				if (prototype.GetAfterParameters(out start, out end))
 					{
 					html.Append("<br>&nbsp;&nbsp;&nbsp;");
-					html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+					BuildSyntaxHighlightedText(start, end, html);
 					}
 				}
 
@@ -500,6 +500,78 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			// xxx
 			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+			}
+
+
+		/* Function: BuildSyntaxHighlightedText
+		 */
+		protected void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder html)
+			{
+			while (iterator < end)
+				{
+				TokenIterator startStretch = iterator;
+				TokenIterator endStretch = iterator;
+				endStretch.Next();
+
+				SyntaxHighlightingType stretchType = startStretch.SyntaxHighlightingType;
+
+				for (;;)
+					{
+					if (endStretch == end)
+						{  break;  }
+					else if (endStretch.SyntaxHighlightingType == stretchType)
+						{  endStretch.Next();  }
+
+					// We can include unhighlighted whitespace if there's content of the same type beyond it.  This prevents
+					// unnecessary span tags.
+					else if (stretchType != SyntaxHighlightingType.Null &&
+								 endStretch.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
+								 endStretch.FundamentalType == FundamentalType.Whitespace)
+						{
+						TokenIterator lookahead = endStretch;
+
+						do 
+							{  lookahead.Next();  }
+						while (lookahead.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
+									lookahead.FundamentalType == FundamentalType.Whitespace &&
+									lookahead < end);
+
+						if (lookahead.SyntaxHighlightingType == stretchType)
+							{
+							endStretch = lookahead;
+							endStretch.Next();
+							}
+						else
+							{  break;  }
+						}
+
+					else
+						{  break;  }
+					}
+
+				switch (stretchType)
+					{
+					case SyntaxHighlightingType.Comment:
+						html.Append("<span class=\"SHComment\">");
+						break;
+					case SyntaxHighlightingType.Keyword:
+						html.Append("<span class=\"SHKeyword\">");
+						break;
+					case SyntaxHighlightingType.Number:
+						html.Append("<span class=\"SHNumber\">");
+						break;
+					case SyntaxHighlightingType.String:
+						html.Append("<span class=\"SHString\">");
+						break;
+					}
+
+				html.EntityEncodeAndAppend(iterator.Tokenizer.TextBetween(startStretch, endStretch));
+
+				if (stretchType != SyntaxHighlightingType.Null)
+					{  html.Append("</span>");  }
+
+				iterator = endStretch;
+				}
 			}
 
 
