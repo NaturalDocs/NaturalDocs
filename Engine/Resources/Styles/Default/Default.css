@@ -294,25 +294,25 @@ body.NDContentPage {
 		.TConstructor .NDPrototype,
 		.TDestructor .NDPrototype,
 		.TOperator .NDPrototype {
-			background-color: #F4F4F4; border-color: #D8D8D8 }
+			background-color: #F2F2F2; border-color: #D8D8D8 }
 
 		.TProperty .NDPrototype {
-			background-color: #F4F4FF; border-color: #D8D8F4 }
+			background-color: #F0F0FE; border-color: #CBCBD8 }
 
 		.TVariable .NDPrototype {
-			background-color: #FFFFEC; border-color: #E4E4B8 }
+			background-color: #FAFAE0; border-color: #DFDFB8 }
 
 		.TConstant .NDPrototype {
-			background-color: #DCDCDC; border-color: #B4B4B4 }
+			background-color: #D8D8D8; border-color: #B0B0B0 }
 
 		.TType .NDPrototype,
 		.TEnumeration .NDPrototype,
 		.TDelegate .NDPrototype {
-			background-color: #FFF6E8; border-color: #F0D8A0;
+			background-color: #FAEED8; border-color: #E0CCA4;
 			}
 
 		.TEvent .NDPrototype {
-			background-color: #F2FAF2; border-color: #D2E0D2 }
+			background-color: #E8F8E8; border-color: #C0DCC0 }
 
 
 
