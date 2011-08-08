@@ -47,6 +47,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				rawText = null;
 				tokenLengths = null;
 				commentParsingTypes = null;
+				syntaxHighlightingTypes = null;
 				lines = null;
 				startingLineNumber = 1;
 				}
@@ -89,6 +90,11 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				result.commentParsingTypes = new CommentParsingType[result.tokenLengths.Count];
 				Array.Copy(commentParsingTypes, start.TokenIndex, result.commentParsingTypes, 0, result.tokenLengths.Count);
 				}
+			if (syntaxHighlightingTypes != null)
+				{  
+				result.syntaxHighlightingTypes = new SyntaxHighlightingType[result.tokenLengths.Count];
+				Array.Copy(syntaxHighlightingTypes, start.TokenIndex, result.syntaxHighlightingTypes, 0, result.tokenLengths.Count);
+				}
 
 			return result;
 			}
@@ -103,7 +109,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		public Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
 		    {
 			Tokenizer result = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything), 
-																						  end.FirstToken(LineBoundsMode.Everything) );
+																					end.FirstToken(LineBoundsMode.Everything) );
 
 			result.lines = lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
 			
@@ -222,6 +228,63 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			commentParsingTypes[tokenIndex] = type;
 			}
 			
+		/* Function: SyntaxHighlightingTypeAt
+		 * Returns the <SyntaxHighlightingType> at the passed token index.
+		 */
+		public SyntaxHighlightingType SyntaxHighlightingTypeAt (int tokenIndex)
+			{
+			if (syntaxHighlightingTypes == null || tokenIndex < 0 || tokenIndex >= syntaxHighlightingTypes.Length)
+				{  return SyntaxHighlightingType.Null;  }
+			else
+				{  return syntaxHighlightingTypes[tokenIndex];  }
+			}
+
+		/* Function: SetSyntaxHighlightingTypeAt
+		 * Changes the <SyntaxHighlightingType> at the passed token index.
+		 */
+		public void SetSyntaxHighlightingTypeAt (int tokenIndex, SyntaxHighlightingType type)
+			{
+			if (syntaxHighlightingTypes == null)
+				{  syntaxHighlightingTypes = new SyntaxHighlightingType[tokenLengths.Count];  }
+
+			if (tokenIndex < 0 || tokenIndex >= syntaxHighlightingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+
+			syntaxHighlightingTypes[tokenIndex] = type;
+			}
+			
+		/* Function: SetSyntaxHighlightingTypeBetween
+		 * Changes the <SyntaxHighlightingType> of all the tokens between the two passed indexes.  The
+		 * token at the ending index will not be changed.
+		 */
+		public void SetSyntaxHighlightingTypeBetween (int startingIndex, int endingIndex, SyntaxHighlightingType type)
+			{
+			if (syntaxHighlightingTypes == null)
+				{  syntaxHighlightingTypes = new SyntaxHighlightingType[tokenLengths.Count];  }
+
+			if (startingIndex < 0 || endingIndex > syntaxHighlightingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+			if (startingIndex > endingIndex)
+				{  throw new InvalidOperationException();  }
+
+			for (int i = startingIndex; i < endingIndex; i++)
+				{  syntaxHighlightingTypes[i] = type;  }
+			}
+			
+			
+		/* Function: SetSyntaxHighlightingTypeBetween
+		 * Changes the <SyntaxHighlightingType> of all the tokens between the two passed iterators.  The
+		 * token at the ending iterator will not be changed.
+		 */
+		public void SetSyntaxHighlightingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+																							 SyntaxHighlightingType type)
+			{
+			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
+				{  throw new InvalidOperationException();  }
+
+			SetSyntaxHighlightingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
+			}
+			
 			
 			
 		// Group: Static Functions
@@ -277,6 +340,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			// Random guess, almost definitely too low, but that's better than being too high.  Will still be closer than the default.
 			tokenLengths = new List<byte>(8 + (input.Length / 20));
 			commentParsingTypes = null;
+			syntaxHighlightingTypes = null;
 			lines = null;
 			startingLineNumber = newStartingLineNumber;
 			
@@ -528,6 +592,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
 		 */
 		protected CommentParsingType[] commentParsingTypes;
+
+		/* var: syntaxHighlightingTypes
+		 * A list of <SyntaxHighlightingTypes> that are set for each token.  The array indexes correspond to those in
+		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
+		 */
+		protected SyntaxHighlightingType[] syntaxHighlightingTypes;
 		
 		/* var: lines
 		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null 

@@ -348,6 +348,36 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 			
+		/* Function: SetSyntaxHighlightingTypeByCharacters
+		 * 
+		 * Changes the <SyntaxHighlightingType> of the tokens encompassed by the passed number of characters.
+		 * 
+		 * This throws an exception if the number of characters does not evenly fall on a token boundary.  It
+		 * is assumed that this function will primarily be used after a positive result from <MatchesAcrossTokens()>
+		 * or <TokensInCharacters()> which would cause this to not be an issue.
+		 */
+		public void SetSyntaxHighlightingTypeByCharacters (SyntaxHighlightingType newType, int characters)
+			{
+			int tokenCount = TokensInCharacters(characters);
+			
+			if (tokenCount == -1)
+				{  throw new InvalidOperationException();  }
+			else if (tokenCount == 1)
+				{  SyntaxHighlightingType = newType;  }
+			else
+				{
+				TokenIterator iterator = this;
+				
+				while (tokenCount > 0)
+					{
+					iterator.SyntaxHighlightingType = newType;
+					iterator.Next();
+					tokenCount--;
+					}
+				}
+			}
+
+			
 			
 			
 		// Group: Protected/Internal Functions
@@ -424,6 +454,18 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return tokenizer.CommentParsingTypeAt(tokenIndex);  }
 			set
 				{  tokenizer.SetCommentParsingTypeAt(tokenIndex, value);  }
+			}
+			
+		/* Property: SyntaxHighlightingType
+		 * The <SyntaxHighlightingType> of the current token, or <SyntaxHighlightingType.Null> if it hasn't been set or the
+		 * iterator is out of bounds.
+		 */
+		public SyntaxHighlightingType SyntaxHighlightingType
+			{
+			get
+				{  return tokenizer.SyntaxHighlightingTypeAt(tokenIndex);  }
+			set
+				{  tokenizer.SetSyntaxHighlightingTypeAt(tokenIndex, value);  }
 			}
 			
 		/* Property: LineNumber

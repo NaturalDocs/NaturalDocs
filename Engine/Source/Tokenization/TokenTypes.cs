@@ -54,4 +54,19 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		URL, EMail
 		}
 
+
+	/* Enum: SyntaxHighlightingType
+	 * 
+	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
+	 * Keyword - A reserved word, like "int".
+	 * Number - A numeric constant, like "12", "0xFF", or "-1.5".  The format doesn't matter.
+	 * String - A string.  Also covers char constants for languages that have them.
+	 * Comment - A comment, both symols and content.
+	 */
+	public enum SyntaxHighlightingType :  byte
+		{
+		Null = 0,
+		Keyword, Number, String, Comment
+		}
+
 	}
