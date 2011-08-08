@@ -121,6 +121,7 @@
     <Compile Include="Source\Output\Style.cs" />
     <Compile Include="Source\Output\Styles\FileSource.cs" />
     <Compile Include="Source\Output\Styles\HTMLStyle.cs" />
+    <Compile Include="Source\ParsedPrototype.cs" />
     <Compile Include="Source\Path.cs" />
     <Compile Include="Source\Files\File.cs" />
     <Compile Include="Source\Files\FileFlags.cs" />

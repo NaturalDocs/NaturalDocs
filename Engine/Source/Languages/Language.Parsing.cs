@@ -159,6 +159,84 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: ParsePrototype
+		 */
+		public virtual ParsedPrototype ParsePrototype (string rawPrototype)
+			{
+			ParsedPrototype prototype = new ParsedPrototype(rawPrototype);
+			SafeStack<char> brackets = null;
+
+
+			// Search for the first opening bracket or brace.
+
+			TokenIterator iterator = prototype.Tokenizer.FirstToken;
+
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == '(' || iterator.Character == '{')
+					{
+					brackets = new SafeStack<char>();
+					brackets.Push(iterator.Character);
+					iterator.Next();
+					break;
+					}
+				else if (TryToSkipComment(ref iterator) ||
+							  TryToSkipString(ref iterator))
+					{  }
+				else
+					{  iterator.Next();  }
+				}
+
+			if (brackets == null)
+				{  return prototype;  }
+
+			prototype.AddStartOfParameter(iterator);
+
+			while (iterator.IsInBounds)
+				{
+				if (brackets.Count == 1 && (iterator.Character == ',' || iterator.Character == ';'))
+					{
+					iterator.Next();
+					prototype.AddStartOfParameter(iterator);
+					}
+
+				// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
+				// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
+				// as a parameter divider.
+				else if (iterator.Character == '(' || iterator.Character == '[' || 
+							  iterator.Character == '{' || iterator.Character == '<')
+					{
+					brackets.Push(iterator.Character);
+					iterator.Next();
+					}
+
+				else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
+								(iterator.Character == ']' && brackets.Peek() == '[') ||
+								(iterator.Character == '}' && brackets.Peek() == '{') ||
+								(iterator.Character == '>' && brackets.Peek() == '<') )
+					{
+					brackets.Pop();
+					
+					if (brackets.Count == 0)
+						{
+						prototype.AddEndOfParameters(iterator);
+						break;
+						}
+					else
+						{  iterator.Next();  }
+					}
+
+				else if (TryToSkipComment(ref iterator) || TryToSkipString(ref iterator))
+					{  }
+
+				else
+					{  iterator.Next();  }
+				}
+
+			return prototype;
+			}
+
+
 			
 		// Group: Overridable Parsing Stages
 		// Override these stages in subclasses as necessary.
@@ -239,8 +317,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						for (int i = 0; comment == null && i < JavadocBlockCommentStringPairs.Length; i += 2)
 							{
-							comment = GetBlockComment(parser, lineIterator, JavadocBlockCommentStringPairs[i],
-																				  JavadocBlockCommentStringPairs[i+1], true);
+							comment = TryToGetPDBlockComment(parser, lineIterator, JavadocBlockCommentStringPairs[i],
+																										 JavadocBlockCommentStringPairs[i+1], true);
 							}
 
 						if (comment != null)
@@ -254,8 +332,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						for (int i = 0; comment == null && i < BlockCommentStringPairs.Length; i += 2)
 							{
-							comment = GetBlockComment(parser, lineIterator, BlockCommentStringPairs[i], BlockCommentStringPairs[i+1],
-																				  false);
+							comment = TryToGetPDBlockComment(parser, lineIterator, BlockCommentStringPairs[i], 
+																										 BlockCommentStringPairs[i+1], false);
 							}
 
 						// Skip Splint comments so that they can appear in prototypes.
@@ -280,7 +358,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						for (int i = 0; comment == null && i < XMLLineCommentStrings.Length; i++)
 							{
-							comment = GetLineComment(parser, lineIterator, XMLLineCommentStrings[i], XMLLineCommentStrings[i], true);
+							comment = TryToGetPDLineComment(parser, lineIterator, XMLLineCommentStrings[i],
+																									  XMLLineCommentStrings[i], true);
 							}
 
 						if (comment != null)
@@ -301,8 +380,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 						for (int i = 0; javadocComment == null && i < JavadocLineCommentStringPairs.Length; i += 2)
 							{
-							javadocComment = GetLineComment(parser, lineIterator, JavadocLineCommentStringPairs[i],
-																							  JavadocLineCommentStringPairs[i+1], true);
+							javadocComment = TryToGetPDLineComment(parser, lineIterator, JavadocLineCommentStringPairs[i],
+																													  JavadocLineCommentStringPairs[i+1], true);
 							}
 
 						if (javadocComment != null)
@@ -332,7 +411,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						for (int i = 0; comment == null && i < LineCommentStrings.Length; i++)
 							{
-							comment = GetLineComment(parser, lineIterator, LineCommentStrings[i], LineCommentStrings[i], false);
+							comment = TryToGetPDLineComment(parser, lineIterator, LineCommentStrings[i], LineCommentStrings[i], false);
 							}
 						}
 					
@@ -349,129 +428,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					
 					}
 				}
-			}
-
-		/* Function: GetBlockComment
-		 * 
-		 * If the line iterator is on the starting symbol of a block comment, return it as a <PossibleDocumentationComment>
-		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on the opening comment
-		 * symbol or there is content after the closing comment symbol making it unsuitable as a documentation comment,
-		 * returns null.
-		 * 
-		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol for this
-		 * function to succeed.  This allows you to specifically detect something like /** without also matching /******.
-		 */
-		protected PossibleDocumentationComment GetBlockComment (ParseState parser, LineIterator lineIterator, 
-																													  string openingSymbol, string closingSymbol,
-																													  bool openingMustBeAlone)
-			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-
-			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
-				{  return null;  }
-
-			if (openingMustBeAlone)
-				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(openingSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
-				}
-
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
-			comment.Start = lineIterator;
-
-			for (;;)
-				{
-				if (parser.Cancelled || !lineIterator.IsInBounds)
-					{  return null;  }
-					
-				TokenIterator closingSymbolIterator;
-				
-				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
-					{
-					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
-
-					while (closingSymbolIterator.FundamentalType == FundamentalType.Whitespace)
-						{  closingSymbolIterator.Next();  }
-
-					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
-						 closingSymbolIterator.FundamentalType != FundamentalType.Null)
-						{  return null;  }
-
-					lineIterator.Next();
-					comment.End = lineIterator;
-					break;
-					}
-
-				lineIterator.Next();
-				}
-			
-			// Success.  Mark the symbols before returning.
-			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
-
-			TokenIterator lastToken;
-			lineIterator.Previous();
-			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
-			lastToken.PreviousByCharacters(closingSymbol.Length);
-			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
-
-			return comment;
-			}
-
-			
-		/* Function: GetLineComment
-		 * 
-		 * If the line iterator is on a line comment, return it and all connected line comments as a 
-		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  Returns null
-		 * otherwise.
-		 * 
-		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
-		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
-		 * required.  If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol for this
-		 * function to succeed.  This allows you to specifically detect something like ## without also matching #######.
-		 */
-		protected PossibleDocumentationComment GetLineComment (ParseState parser, LineIterator lineIterator, 
-																													string firstSymbol, string remainderSymbol,
-																													bool openingMustBeAlone)
-			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-
-			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
-				{  return null;  }
-
-			if (openingMustBeAlone)
-				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(firstSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
-				}
-
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
-			comment.Start = lineIterator;
-			lineIterator.Next();
-
-			// Since we're definitely returning a comment (barring the operation being cancelled) we can mark the comment
-			// symbols as we go rather than waiting until the end.
-			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
-
-			while (lineIterator.IsInBounds)
-				{
-				if (parser.Cancelled)
-					{  return null;  }
-
-				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-					
-				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
-					{  break;  }
-
-				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
-				lineIterator.Next();
-				}
-			
-			comment.End = lineIterator;
-			return comment;
 			}
 
 			
@@ -577,44 +533,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			SafeStack<char> brackets = new SafeStack<char>();
 			bool lastWasWhitespace = true;
 			bool lineHasExtender = false;
-			int blockCommentIndex = -1;
+			string openingSymbol = null;
+			string closingSymbol = null;
 
 			bool goodPrototype = false;
 
 			while (iterator < limit)
 				{
-
-				// Inside a String
-
-				if (brackets.Peek() == '"')
-					{
-					// No whitespace condensation while in a string.  We also don't have to worry about maintaining
-					// lastWasWhitespace until we're leaving it.
-
-					if (iterator.Character == '\\')
-						{  
-						prototype.Append('\\');
-						iterator.Next();  
-						iterator.AppendTokenTo(prototype);
-						iterator.Next();
-						}
-					else 
-						{
-						if (iterator.Character == '"')
-							{  
-							brackets.Pop();  
-							lastWasWhitespace = false;
-							}
-						
-						iterator.AppendTokenTo(prototype);
-						iterator.Next();
-						}
-					}
+				TokenIterator originalIterator = iterator;
 
 
 				// Line Break
 
-				else if (iterator.FundamentalType == FundamentalType.LineBreak)
+				if (iterator.FundamentalType == FundamentalType.LineBreak)
 					{
 					if (prototypeEnders.IncludeLineBreaks && !lineHasExtender)
 						{  
@@ -694,12 +625,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// Line Comment
 
 				// We test this before looking for opening brackets in case the opening symbols are used for comments.
-				else if (LineCommentStrings != null && iterator.MatchesAnyAcrossTokens(LineCommentStrings) != -1)
+				else if (TryToSkipLineComment(ref iterator))
 					{
-					// Treat it as whitespace and skip to the next line break.  We're only dealing with Splint for block comments.
-					do
-						{  iterator.Next();  }
-					while (iterator.FundamentalType != FundamentalType.LineBreak && iterator < limit);
+					// Treat it as whitespace.  We're only dealing with Splint for block comments.
 
 					if (lastWasWhitespace == false)
 						{
@@ -712,26 +640,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// Block Comment
 
 				// We test this before looking for opening brackets in case the opening symbols are used for comments.
-				else if (BlockCommentStringPairs != null && 
-							 (blockCommentIndex = iterator.MatchesAnyPairAcrossTokens(BlockCommentStringPairs)) != -1)
+				else if (TryToSkipBlockComment(ref iterator, out openingSymbol, out closingSymbol))
 					{
-					string openingSymbol = BlockCommentStringPairs[blockCommentIndex];
-					string closingSymbol = BlockCommentStringPairs[blockCommentIndex+1];
-
-					iterator.NextByCharacters(openingSymbol.Length);
-					TokenIterator commentContentStart = iterator;
-
-					while (iterator.MatchesAcrossTokens(closingSymbol) == false && iterator < limit)
-						{  iterator.Next();  }
+					TokenIterator commentContentStart = originalIterator;
+					commentContentStart.NextByCharacters(openingSymbol.Length);
 
 					TokenIterator commentContentEnd = iterator;
-
-					if (iterator < limit)
-						{  iterator.NextByCharacters(closingSymbol.Length);  }
+					commentContentEnd.PreviousByCharacters(closingSymbol.Length);
 
 					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
 					if (tokenizer.MatchTextBetween(acceptablePrototypeCommentRegex, 
-																			 commentContentStart, commentContentEnd).Success)
+																				 commentContentStart, commentContentEnd).Success)
 						{
 						prototype.Append(openingSymbol);
 
@@ -755,10 +674,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 
 
-				// Opening Bracket or Quote
+				// Strings
+
+				else if (TryToSkipString(ref iterator))
+					{
+					// This also avoids whitespace condensation while in a string.
+
+					tokenizer.AppendTextBetweenTo(originalIterator, iterator, prototype);
+					lastWasWhitespace = false;
+					}
+
+
+				// Opening Bracket
 
 				// We don't test for < because there might be an unbalanced pair as part of an operator overload.
-				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{' || iterator.Character == '"')
+				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{')
 					{
 					brackets.Push(iterator.Character);
 					iterator.AppendTokenTo(prototype);
@@ -769,7 +699,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				// Closing Bracket, matching the last opening one
 
-				// We already handled quotes at the beginning of the loop.
 				else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
 							  (iterator.Character == ']' && brackets.Peek() == '[') ||
 							  (iterator.Character == '}' && brackets.Peek() == '{') )
@@ -804,6 +733,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					iterator.Next();  
 					}
 				}
+
+			// If the iterator ran past the limit, that means something like a string or a block comment was not closed before it
+			// reached the limit.  Consider the prototype bad.
+			if (iterator > limit)
+				{  goodPrototype = false;  }
 
 			if (goodPrototype)
 				{
@@ -884,6 +818,286 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (topic.Symbol == null)
 					{  topic.Symbol = Symbol.FromPlainText (topic.UndecoratedTitle);  }
 				}
+			}
+
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
+		/* Function: TryToGetPDBlockComment
+		 * 
+		 * If the line iterator is on the starting symbol of a block comment, return it as a <PossibleDocumentationComment>
+		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on the opening comment
+		 * symbol or there is content after the closing comment symbol making it unsuitable as a documentation comment,
+		 * returns null.
+		 * 
+		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol for this
+		 * function to succeed.  This allows you to specifically detect something like /** without also matching /******.
+		 */
+		protected PossibleDocumentationComment TryToGetPDBlockComment (ParseState parser, LineIterator lineIterator, 
+																																				  string openingSymbol, string closingSymbol,
+																																				  bool openingMustBeAlone)
+			{
+			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
+				{  return null;  }
+
+			if (openingMustBeAlone)
+				{
+				TokenIterator nextToken = firstToken;
+				nextToken.NextByCharacters(openingSymbol.Length);
+				if (nextToken.FundamentalType == FundamentalType.Symbol)
+					{  return null;  }
+				}
+
+			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+
+			for (;;)
+				{
+				if (parser.Cancelled || !lineIterator.IsInBounds)
+					{  return null;  }
+					
+				TokenIterator closingSymbolIterator;
+				
+				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
+					{
+					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
+
+					while (closingSymbolIterator.FundamentalType == FundamentalType.Whitespace)
+						{  closingSymbolIterator.Next();  }
+
+					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
+						 closingSymbolIterator.FundamentalType != FundamentalType.Null)
+						{  return null;  }
+
+					lineIterator.Next();
+					comment.End = lineIterator;
+					break;
+					}
+
+				lineIterator.Next();
+				}
+			
+			// Success.  Mark the symbols before returning.
+			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+
+			TokenIterator lastToken;
+			lineIterator.Previous();
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
+			lastToken.PreviousByCharacters(closingSymbol.Length);
+			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+
+			return comment;
+			}
+
+			
+		/* Function: TryToGetPDLineComment
+		 * 
+		 * If the line iterator is on a line comment, return it and all connected line comments as a 
+		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  Returns null
+		 * otherwise.
+		 * 
+		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
+		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
+		 * required.  If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol for this
+		 * function to succeed.  This allows you to specifically detect something like ## without also matching #######.
+		 */
+		protected PossibleDocumentationComment TryToGetPDLineComment (ParseState parser, LineIterator lineIterator, 
+																																				string firstSymbol, string remainderSymbol,
+																																				bool openingMustBeAlone)
+			{
+			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
+				{  return null;  }
+
+			if (openingMustBeAlone)
+				{
+				TokenIterator nextToken = firstToken;
+				nextToken.NextByCharacters(firstSymbol.Length);
+				if (nextToken.FundamentalType == FundamentalType.Symbol)
+					{  return null;  }
+				}
+
+			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+			lineIterator.Next();
+
+			// Since we're definitely returning a comment (barring the operation being cancelled) we can mark the comment
+			// symbols as we go rather than waiting until the end.
+			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
+
+			while (lineIterator.IsInBounds)
+				{
+				if (parser.Cancelled)
+					{  return null;  }
+
+				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+					
+				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
+					{  break;  }
+
+				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
+				lineIterator.Next();
+				}
+			
+			comment.End = lineIterator;
+			return comment;
+			}
+
+
+		/* Function: TryToSkipWhitespace
+		 * If the iterator is on whitespace or a comment, move past it and return true.
+		 */
+		protected bool TryToSkipWhitespace (ref TokenIterator iterator, bool includeLineBreaks = true)
+			{
+			bool success = false;
+
+			for (;;)
+				{
+				if (iterator.FundamentalType == FundamentalType.Whitespace ||
+					 (includeLineBreaks == true && iterator.FundamentalType == FundamentalType.LineBreak) )
+					{
+					iterator.Next();
+					success = true;
+					}
+				else if (TryToSkipComment(ref iterator))
+					{  success = true;  }
+				else
+					{  break;  }
+				}
+
+			return success;
+			}
+
+
+		/* Function: TryToSkipComment
+		 * If the iterator is on a comment symbol, moves past it and returns true.  If you need information about the specific type of
+		 * comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()> individually.
+		 */
+		protected bool TryToSkipComment (ref TokenIterator iterator)
+			{
+			return ( TryToSkipLineComment(ref iterator) || TryToSkipBlockComment(ref iterator) );
+			}
+
+
+		/* Function: TryToSkipLineComment
+		 * If the iterator is on a line comment symbol, moves the iterator past it, provides information about the comment, and returns
+		 * true.  It will not skip the line break after the comment since that may be relevant to the calling code.
+		 */
+		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol)
+			{
+			if (LineCommentStrings == null)
+				{
+				commentSymbol = null;
+				return false;
+				}
+
+			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(LineCommentStrings);
+
+			if (commentSymbolIndex == -1)
+				{
+				commentSymbol = null;
+				return false;
+				}
+
+			commentSymbol = LineCommentStrings[commentSymbolIndex];
+			iterator.NextByCharacters(commentSymbol.Length);
+
+			while (iterator.FundamentalType != FundamentalType.LineBreak)
+				{  iterator.Next();  }
+
+			return true;
+			}
+
+
+		/* Function: TryToSkipLineComment
+		 * If the iterator is on a line comment symbol, moves the iterator past it and returns true.  It will not skip the line break 
+		 * after the comment since that may be relevant to the calling code.
+		 */
+		protected bool TryToSkipLineComment (ref TokenIterator iterator)
+			{
+			string ignore;
+			return TryToSkipLineComment(ref iterator, out ignore);
+			}
+
+
+		/* Function: TryToSkipBlockComment
+		 * If the iterator is on an opening block comment symbol, moves the iterator past it, provides information about the comment,
+		 * and returns true.
+		 */
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol)
+			{
+			if (BlockCommentStringPairs == null)
+				{
+				openingSymbol = null;
+				closingSymbol = null;
+				return false;
+				}
+
+			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(BlockCommentStringPairs);
+
+			if (openingCommentSymbolIndex == -1)
+				{
+				openingSymbol = null;
+				closingSymbol = null;
+				return false;
+				}
+
+			openingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex];
+			closingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex + 1];
+			iterator.NextByCharacters(openingSymbol.Length);
+
+			while (iterator.IsInBounds && iterator.MatchesAcrossTokens(closingSymbol) == false)
+				{  iterator.Next();  }
+
+			if (iterator.IsInBounds)
+				{  iterator.NextByCharacters(closingSymbol.Length);  }
+
+			// Return true even if the iterator reached the end of the content before finding a closing symbol.
+			return true;
+			}
+
+
+		/* Function: TryToSkipBlockComment
+		 * If the iterator is on an opening block comment symbol, moves the iterator past it and returns true.
+		 */
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator)
+			{
+			string ignore1, ignore2;
+			return TryToSkipBlockComment (ref iterator, out ignore1, out ignore2);
+			}
+
+
+		/* Function: TryToSkipString
+		 * If the iterator is on a quote symbol, moves the iterator past the entire string and returns true.
+		 */
+		protected bool TryToSkipString (ref TokenIterator iterator)
+			{
+			if (iterator.Character != '"')
+				{  return false;  }
+
+			iterator.Next();
+
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == '"')
+					{
+					iterator.Next();
+					break;
+					}
+				else if (iterator.Character == '\\')
+					{  iterator.Next(2);  }
+				else 
+					{  iterator.Next();  }
+				}
+
+			// Return true even if the iterator reached the end of the content before finding a closing quote.
+			return true;
 			}
 
 		}

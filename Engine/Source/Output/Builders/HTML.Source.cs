@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using GregValure.NaturalDocs.Engine.Languages;
+using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
@@ -238,7 +240,33 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildPrototype (Topic topic, StringBuilder html)
 			{
 			html.Append("<div class=\"NDPrototype\">");
-			html.EntityEncodeAndAppend(topic.Prototype);
+
+			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+
+			if (language == null)
+				{  html.EntityEncodeAndAppend(topic.Prototype);  }
+			else
+				{
+				ParsedPrototype prototype = language.ParsePrototype(topic.Prototype);
+				TokenIterator start, end;
+				
+				prototype.GetBeforeParameters(out start, out end);
+				html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+
+				for (int i = 0; i < prototype.NumberOfParameters; i++)
+					{
+					html.Append("<br>&nbsp;&nbsp;&nbsp;"); //xxx
+					prototype.GetParameter(i, out start, out end);
+					html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+					}
+
+				if (prototype.GetAfterParameters(out start, out end))
+					{
+					html.Append("<br>&nbsp;&nbsp;&nbsp;");
+					html.EntityEncodeAndAppend( prototype.Tokenizer.TextBetween(start, end) );
+					}
+				}
+
 			html.Append("</div>");
 			}
 
