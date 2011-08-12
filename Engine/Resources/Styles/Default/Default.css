@@ -30,6 +30,11 @@
 
 */
 
+/* Needed to allow full height gradients on the home page. */
+html {
+	height: 100%; 
+	}
+
 body.NDIndexPage {
 	background-color: #C0C0C0;
 	margin: 0; padding: 0;
@@ -379,83 +384,97 @@ body.NDContentPage {
 
 
 
-/* Other Content
+/* Home Page
 	___________________________________________________________________________
 */
 
-body.NDOtherPage {
-	padding: 3em 5em;
-	background-color: #EEEEEE;
+body.NDHomePage {
+	padding: 0; margin: 0;
+	background-color: `MenuBackgroundColor;
+	background-image: -moz-linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor); /* FF3.6+ */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, `HeaderBackgroundColor), color-stop(100%, `MenuBackgroundColor)); /* Chrome, Safari4+ */
+	background-image: -webkit-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* Chrome10+, Safari5.1+ */
+	background-image: -o-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* Opera11.10+ */
+	background-image: -ms-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* IE10+ */
+
+	/* Strings don't get backtick substitutions so manually add in the IE values */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7070C0', endColorstr='#E0E0E0', GradientType=0 ); /* IE6-9 */
+	background-image: linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* W3C */
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	height: 100%;
 	}
 
-	.OHomePage {
-		max-width: 70ex;
-		margin: 0 auto;
-		}
-
-	.OTitle,
-	.OSubTitle,
-	.OCopyright,
-	.OTimeStamp,
-	.OGeneratedBy,
-	.OHomePage p {
+	.HTitle,
+	.HSubTitle,
+	.HCopyright,
+	.HTimeStamp,
+	.HGeneratedBy,
+	.NDHomePage p {
 		text-align: center;
 		}
 
-	.OHeader {
-		margin-bottom: 3.25em;
+	.HFrame {
+		/* Firefox 4 puts extra vertical space on the page if you do this with .HHeader margin-top instead */
+		padding: 4em 5em .5em 5em;
+		}
+
+	.HHeader {
+		max-width: 25em;
+		margin: 0 auto 3em auto;
 		padding: 1.5em 2em;
 		background-color: #FFFFFF;
 
 		/* Firefox doesn't support plain border-radius until 4. */
 		/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
 		/* Opera 11 supports plain border-radius. */
-		-moz-border-radius: 5ex;
-		-webkit-border-radius: 5ex;
-		border-radius: 5ex;
+		-moz-border-radius: 15ex;
+		-webkit-border-radius: 15ex;
+		border-radius: 15ex;
 
 		/* Firefox doesn't support plain box-shadow until 4. */
 		/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
 		/* Opera 11 supports plain box-shadow. */
-		-moz-box-shadow: 0 .75ex 1.5ex #606060;
-		-webkit-box-shadow: 0 .75ex 1.5ex #606060;
-		box-shadow: 0 .75ex 1.5ex #606060;
+		-moz-box-shadow: 0 .75ex 1.5ex #383838;
+		-webkit-box-shadow: 0 .75ex 1.5ex #383838;
+		box-shadow: 0 .75ex 1.5ex #383838;
 		}
 
 		/* IE doesn't support any kind of border radius or box shadow until 9. */
-		.IE8 .OHeader,
-		.IE7 .OHeader,
-		.IE6 .OHeader {
-			border: 2px solid #B0B0B0;
+		.IE8 .HHeader,
+		.IE7 .HHeader,
+		.IE6 .HHeader {
+			border: 2px solid #505050;
 			}
 
-		.OTitle {
+		.HTitle {
 			font: small-caps 24pt `ProjectTitleFontFamily;
 			line-height: 85%;
 			}
-		.OSubTitle {
+		.HSubTitle {
 			font: 13pt `ProjectSubTitleFontFamily;
-			margin-top: .25em;
+			padding-top: .25em;
 			line-height: 85%;
 			}
 
-	.OHomePage p {
+	.NDHomePage p {
 		font: 10pt `ParagraphFontFamily;
 		}
 
-	.OFooter {
-		margin: 3.5em auto 0 auto;
+	.HFooter {
+		margin: 0 auto;
+		margin-top: 3.5em;
 		font: 8pt `ParagraphFontFamily;
 		}
-		.OFooter div {
+		.HFooter div {
 			margin-bottom: .8em;
-			color: #707070;
+			color: #505050;
 			}
-		.OFooter a:link,
-		.OFooter a:visited,
-		.OFooter a:hover,
-		.OFooter a:active {
-			color: #707070;
+		.HFooter a:link,
+		.HFooter a:visited,
+		.HFooter a:hover,
+		.HFooter a:active {
+			color: #505050;
 			}
 
 
