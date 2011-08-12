@@ -348,6 +348,8 @@ var NDMenu = new function ()
 				else
 					{  name = member[`Name];  }
 
+				name += "<span class=\"MFolderArrow\">\u25B8</span>";
+
 				var targetPath = (result.newPath.length == 0 ? i : result.newPath.join(",") + "," + i);
 
 				var htmlEntry = document.createElement("a");

@@ -107,6 +107,7 @@ td {
 		display: block;
 		font: 10pt `MenuFontFamily;
 		padding: .4ex 1.5ex .4ex 3ex;
+		clear: both;
 		}
 	.MEntry,
 	a.MEntry {
@@ -135,16 +136,14 @@ td {
 		border-bottom-style: dashed;
 		color: #B0B0B0;
 		}
-
-	.MFolder.Child:after {
-		content: " ▸";
+	.MFolder.Child {
+		padding-right: 1ex;
 		}
 
-		/* IE can't do :after elements prior to 8 */
-		.IE6 .MFolder.Child,
-		.IE7 .MFolder.Child {
-			background: url("images/menu-folder-arrow.gif") no-repeat 97% center;
-			}
+	.MFolderArrow {
+		float: right;
+		padding-left: .75ex;
+		}
 
 	.MFolder.Selected {
 		font-weight: bold;

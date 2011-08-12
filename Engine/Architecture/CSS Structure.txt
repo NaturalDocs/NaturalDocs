@@ -70,6 +70,7 @@ _______________________________________________________________________________
 
 			<MFolder MEntry Child>
 				Name
+				<span class="MFolderArrow">[arrow charater]</span>
 			</MFolder>
 
 			<MLoadingNotice>
