@@ -107,7 +107,6 @@ td {
 		display: block;
 		font: 10pt `MenuFontFamily;
 		padding: .4ex 1.5ex .4ex 3ex;
-		clear: both;
 		}
 	.MEntry,
 	a.MEntry {
@@ -137,13 +136,19 @@ td {
 		color: #B0B0B0;
 		}
 	.MFolder.Child {
-		padding-right: 1ex;
+		padding-right: 2.5ex;
 		}
 
-	.MFolderArrow {
-		float: right;
-		padding-left: .75ex;
+	.MFolderIcon {
+		position: absolute;
+		right: 0;
+		background: url("images/menu-folder-arrow.png") center center no-repeat;
+		width: 6px; height: 7px;
+		padding: .8em 1.2em 0 0;
 		}
+		.IE6 .MFolderIcon {
+			padding-top: 0;
+			}
 
 	.MFolder.Selected {
 		font-weight: bold;
@@ -390,15 +395,23 @@ body.NDContentPage {
 body.NDHomePage {
 	padding: 0; margin: 0;
 	background-color: `MenuBackgroundColor;
-	background-image: -moz-linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor); /* FF3.6+ */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, `HeaderBackgroundColor), color-stop(100%, `MenuBackgroundColor)); /* Chrome, Safari4+ */
-	background-image: -webkit-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* Chrome10+, Safari5.1+ */
-	background-image: -o-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* Opera11.10+ */
-	background-image: -ms-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* IE10+ */
 
-	/* Strings don't get backtick substitutions so manually add in the IE values */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7070C0', endColorstr='#E0E0E0', GradientType=0 ); /* IE6-9 */
-	background-image: linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%); /* W3C */
+	/* Firefox 3.6, 4, 5 */
+	background-image: -moz-linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor);
+
+	/* Chrome 12, 13, Safari 4, 5 */
+	/* Chrome also supports -webkit-linear-gradient but Safari doesn't.  5.1 supposedly does though. */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(`HeaderBackgroundColor), to(`MenuBackgroundColor));
+
+	/* Opera 11.5 */
+	background-image: -o-linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor);
+
+	/* IE 6, 7, 8, 9 */
+	/* IE 10 supposedly supports -ms-linear-gradient. */
+	/* Strings don't get checked for backtick substitutions so set the colors manually. */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7070C0', endColorstr='#E0E0E0', GradientType=0 );
+
+	background-image: linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	height: 100%;
@@ -443,7 +456,7 @@ body.NDHomePage {
 		.IE8 .HHeader,
 		.IE7 .HHeader,
 		.IE6 .HHeader {
-			border: 2px solid #505050;
+			border: 3px solid #505050;
 			}
 
 		.HTitle {
@@ -453,7 +466,6 @@ body.NDHomePage {
 		.HSubTitle {
 			font: 13pt `ProjectSubTitleFontFamily;
 			padding-top: .25em;
-			line-height: 85%;
 			}
 
 	.NDHomePage p {

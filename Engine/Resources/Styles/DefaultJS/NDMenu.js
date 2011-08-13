@@ -341,14 +341,12 @@ var NDMenu = new function ()
 				}
 			else  // `InlineFolder, `DynamicFolder.  `RootFolder won't be in a member list.
 				{
-				var name;
+				var name = "<div class=\"MFolderIcon\"></div>";
 				
 				if (typeof(member[`Name]) == "object")
-					{  name = member[`Name][0];  }
+					{  name += member[`Name][0];  }
 				else
-					{  name = member[`Name];  }
-
-				name += "<span class=\"MFolderArrow\">\u25B8</span>";
+					{  name += member[`Name];  }
 
 				var targetPath = (result.newPath.length == 0 ? i : result.newPath.join(",") + "," + i);
 

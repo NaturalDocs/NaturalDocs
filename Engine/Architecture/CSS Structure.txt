@@ -69,8 +69,8 @@ _______________________________________________________________________________
 			</MFile>
 
 			<MFolder MEntry Child>
+				<MFolderIcon></MFolderIcon>
 				Name
-				<span class="MFolderArrow">[arrow charater]</span>
 			</MFolder>
 
 			<MLoadingNotice>
