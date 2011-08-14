@@ -167,19 +167,24 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID, bool syntaxHighlight = false)
 			{
 			ParsedPrototype prototype = new ParsedPrototype(rawPrototype);
-			SafeStack<char> brackets = null;
 
 
 			// Search for the first opening bracket or brace.
 
 			TokenIterator iterator = prototype.Tokenizer.FirstToken;
+			char closingBracket = '\0';
 
 			while (iterator.IsInBounds)
 				{
-				if (iterator.Character == '(' || iterator.Character == '{')
+				if (iterator.Character == '(')
 					{
-					brackets = new SafeStack<char>();
-					brackets.Push(iterator.Character);
+					closingBracket = ')';
+					iterator.Next();
+					break;
+					}
+				else if (iterator.Character == '{')
+					{
+					closingBracket = '}';
 					iterator.Next();
 					break;
 					}
@@ -190,45 +195,30 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  iterator.Next();  }
 				}
 
-			if (brackets != null)
+			if (closingBracket != '\0')
 				{
 				prototype.AddStartOfParameter(iterator);
 
 				while (iterator.IsInBounds)
 					{
-					if (brackets.Count == 1 && (iterator.Character == ',' || iterator.Character == ';'))
+					if (iterator.Character == ',' || iterator.Character == ';')
 						{
 						iterator.Next();
 						prototype.AddStartOfParameter(iterator);
 						}
 
+					else if (iterator.Character == closingBracket)
+						{
+						prototype.AddEndOfParameters(iterator);
+						break;
+						}
+
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (iterator.Character == '(' || iterator.Character == '[' || 
-								  iterator.Character == '{' || iterator.Character == '<')
-						{
-						brackets.Push(iterator.Character);
-						iterator.Next();
-						}
-
-					else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
-									(iterator.Character == ']' && brackets.Peek() == '[') ||
-									(iterator.Character == '}' && brackets.Peek() == '{') ||
-									(iterator.Character == '>' && brackets.Peek() == '<') )
-						{
-						brackets.Pop();
-					
-						if (brackets.Count == 0)
-							{
-							prototype.AddEndOfParameters(iterator);
-							break;
-							}
-						else
-							{  iterator.Next();  }
-						}
-
-					else if (TryToSkipComment(ref iterator) || TryToSkipString(ref iterator))
+					else if (TryToSkipBlock(ref iterator, true) || 
+								 TryToSkipComment(ref iterator) || 
+								 TryToSkipString(ref iterator))
 						{  }
 
 					else
@@ -704,6 +694,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// Opening Bracket
 
 				// We don't test for < because there might be an unbalanced pair as part of an operator overload.
+				// We don't use TryToSkipBlock() because it wouldn't condense whitespace and remove comments.
 				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{')
 					{
 					brackets.Push(iterator.Character);
@@ -1153,18 +1144,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipString
-		 * If the iterator is on a quote symbol, moves the iterator past the entire string and returns true.
+		 * If the iterator is on a quote or apostrophe, moves the iterator past the entire string and returns true.
 		 */
 		protected bool TryToSkipString (ref TokenIterator iterator)
 			{
-			if (iterator.Character != '"')
+			if (iterator.Character != '"' && iterator.Character != '\'')
 				{  return false;  }
 
+			char quoteCharacter = iterator.Character;
 			iterator.Next();
 
 			while (iterator.IsInBounds)
 				{
-				if (iterator.Character == '"')
+				if (iterator.Character == quoteCharacter)
 					{
 					iterator.Next();
 					break;
@@ -1176,6 +1168,52 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			// Return true even if the iterator reached the end of the content before finding a closing quote.
+			return true;
+			}
+
+
+		/* Function: TryToSkipBlock
+		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
+		 * nested blocks, strings, and comments, but otherwise doesn't parse the underlying code.  You must specify
+		 * whether to include < as an opening symbol because it may be relevant in some places (template definitions)
+		 * but detrimental in others (general code where < could mean less than and not have a closing >.)
+		 */
+		 protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
+			{
+			if (iterator.Character != '(' && iterator.Character != '[' && iterator.Character != '{' &&
+				 (iterator.Character != '<' || includeAngleBrackets == false) )
+				{  return false;  }
+
+			SafeStack<char> symbols = new SafeStack<char>();
+			symbols.Push(iterator.Character);
+			iterator.Next();
+
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{' ||
+					 (iterator.Character == '<' && includeAngleBrackets) )
+					{
+					symbols.Push(iterator.Character);
+					iterator.Next();
+					}
+				else if ( (iterator.Character == ')' && symbols.Peek() == '(') ||
+							  (iterator.Character == ']' && symbols.Peek() == '[') ||
+							  (iterator.Character == '}' && symbols.Peek() == '{') ||
+							  (iterator.Character == '>' && symbols.Peek() == '<') )
+					{
+					symbols.Pop();
+					iterator.Next();
+
+					if (symbols.Count == 0)
+						{  break;  }
+					}
+				else if (TryToSkipString(ref iterator) ||
+							 TryToSkipComment(ref iterator))
+					{  }
+				else
+					{  iterator.Next();  }
+				}
+
 			return true;
 			}
 
