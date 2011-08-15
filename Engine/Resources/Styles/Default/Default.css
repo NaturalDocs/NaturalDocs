@@ -435,6 +435,7 @@ body.NDHomePage {
 		max-width: 25em;
 		margin: 0 auto 3em auto;
 		padding: 1.5em 2em;
+		overflow: hidden;
 		background-color: #FFFFFF;
 
 		/* Firefox doesn't support plain border-radius until 4. */
@@ -456,7 +457,9 @@ body.NDHomePage {
 		.IE8 .HHeader,
 		.IE7 .HHeader,
 		.IE6 .HHeader {
-			border: 3px solid #505050;
+			border-style: solid;
+			border-width: 1px 3px 3px 1px;
+			border-color: #808080 #505050 #505050 #808080;
 			}
 
 		.HTitle {
