@@ -48,6 +48,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				tokenLengths = null;
 				commentParsingTypes = null;
 				syntaxHighlightingTypes = null;
+				prototypeParsingTypes = null;
 				lines = null;
 				startingLineNumber = 1;
 				}
@@ -94,6 +95,11 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  
 				result.syntaxHighlightingTypes = new SyntaxHighlightingType[result.tokenLengths.Count];
 				Array.Copy(syntaxHighlightingTypes, start.TokenIndex, result.syntaxHighlightingTypes, 0, result.tokenLengths.Count);
+				}
+			if (prototypeParsingTypes != null)
+				{  
+				result.prototypeParsingTypes = new PrototypeParsingType[result.tokenLengths.Count];
+				Array.Copy(prototypeParsingTypes, start.TokenIndex, result.prototypeParsingTypes, 0, result.tokenLengths.Count);
 				}
 
 			return result;
@@ -283,6 +289,64 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  throw new InvalidOperationException();  }
 
 			SetSyntaxHighlightingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
+			}
+			
+			
+		/* Function: PrototypeParsingTypeAt
+		 * Returns the <PrototypeParsingType> at the passed token index.
+		 */
+		public PrototypeParsingType PrototypeParsingTypeAt (int tokenIndex)
+			{
+			if (prototypeParsingTypes == null || tokenIndex < 0 || tokenIndex >= prototypeParsingTypes.Length)
+				{  return PrototypeParsingType.Null;  }
+			else
+				{  return prototypeParsingTypes[tokenIndex];  }
+			}
+
+		/* Function: SetPrototypeParsingTypeAt
+		 * Changes the <PrototypeParsingType> at the passed token index.
+		 */
+		public void SetPrototypeParsingTypeAt (int tokenIndex, PrototypeParsingType type)
+			{
+			if (prototypeParsingTypes == null)
+				{  prototypeParsingTypes = new PrototypeParsingType[tokenLengths.Count];  }
+
+			if (tokenIndex < 0 || tokenIndex >= prototypeParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+
+			prototypeParsingTypes[tokenIndex] = type;
+			}
+			
+		/* Function: SetPrototypeParsingTypeBetween
+		 * Changes the <PrototypeParsingType> of all the tokens between the two passed indexes.  The
+		 * token at the ending index will not be changed.
+		 */
+		public void SetPrototypeParsingTypeBetween (int startingIndex, int endingIndex, PrototypeParsingType type)
+			{
+			if (prototypeParsingTypes == null)
+				{  prototypeParsingTypes = new PrototypeParsingType[tokenLengths.Count];  }
+
+			if (startingIndex < 0 || endingIndex > prototypeParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+			if (startingIndex > endingIndex)
+				{  throw new InvalidOperationException();  }
+
+			for (int i = startingIndex; i < endingIndex; i++)
+				{  prototypeParsingTypes[i] = type;  }
+			}
+			
+			
+		/* Function: SetPrototypeParsingTypeBetween
+		 * Changes the <PrototypeParsingType> of all the tokens between the two passed iterators.  The
+		 * token at the ending iterator will not be changed.
+		 */
+		public void SetPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+																							 PrototypeParsingType type)
+			{
+			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
+				{  throw new InvalidOperationException();  }
+
+			SetPrototypeParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
 			}
 			
 			
@@ -598,6 +662,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
 		 */
 		protected SyntaxHighlightingType[] syntaxHighlightingTypes;
+		
+		/* var: prototypeParsingTypes
+		 * A list of <PrototypeParsingTypes> that are set for each token.  The array indexes correspond to those in
+		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
+		 */
+		protected PrototypeParsingType[] prototypeParsingTypes;
 		
 		/* var: lines
 		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null 

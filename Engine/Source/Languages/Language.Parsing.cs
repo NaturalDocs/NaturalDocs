@@ -166,12 +166,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID, bool syntaxHighlight = false)
 			{
-			ParsedPrototype prototype = new ParsedPrototype(rawPrototype);
+			Tokenizer prototype = new Tokenizer(rawPrototype);
 
 
 			// Search for the first opening bracket or brace.
 
-			TokenIterator iterator = prototype.Tokenizer.FirstToken;
+			TokenIterator iterator = prototype.FirstToken;
 			char closingBracket = '\0';
 
 			while (iterator.IsInBounds)
@@ -179,13 +179,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (iterator.Character == '(')
 					{
 					closingBracket = ')';
-					iterator.Next();
 					break;
 					}
 				else if (iterator.Character == '{')
 					{
 					closingBracket = '}';
-					iterator.Next();
 					break;
 					}
 				else if (TryToSkipComment(ref iterator) ||
@@ -195,21 +193,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  iterator.Next();  }
 				}
 
+
+			// If we found some, separate out parameters
+
 			if (closingBracket != '\0')
 				{
-				prototype.AddStartOfParameter(iterator);
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				iterator.Next();
 
 				while (iterator.IsInBounds)
 					{
 					if (iterator.Character == ',' || iterator.Character == ';')
 						{
+						iterator.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
 						iterator.Next();
-						prototype.AddStartOfParameter(iterator);
 						}
 
 					else if (iterator.Character == closingBracket)
 						{
-						prototype.AddEndOfParameters(iterator);
+						iterator.PrototypeParsingType = PrototypeParsingType.EndOfParams;
 						break;
 						}
 
@@ -226,10 +228,30 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 				}
 
-			if (syntaxHighlight)
-				{  SyntaxHighlight(prototype.Tokenizer, topicTypeID);  }
 
-			return prototype;
+			// If we have any, parse the parameters.
+
+			// We use ParsedPrototype.GetParameter() instead of trying to build it into the loop above because ParsedPrototype 
+			// does things like trimming whitespace and ignoring empty parenthesis.
+
+			ParsedPrototype parsedPrototype = new ParsedPrototype(prototype);
+
+			if (parsedPrototype.NumberOfParameters > 0)
+				{
+				TokenIterator start, end;
+
+				for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+					{
+					parsedPrototype.GetParameter(i, out start, out end);
+					ParsePrototypeParameter(start, end, topicTypeID);
+					}
+				}
+
+
+			if (syntaxHighlight)
+				{  SyntaxHighlight(prototype, topicTypeID);  }
+
+			return parsedPrototype;
 			}
 
 
@@ -829,195 +851,369 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Support Functions
+		// Group: Prototype Parsing Support Functions
 		// __________________________________________________________________________
 
 
-		/* Function: TryToGetPDBlockComment
-		 * 
-		 * If the line iterator is on the starting symbol of a block comment, return it as a <PossibleDocumentationComment>
-		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on the opening comment
-		 * symbol or there is content after the closing comment symbol making it unsuitable as a documentation comment,
-		 * returns null.
-		 * 
-		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol for this
-		 * function to succeed.  This allows you to specifically detect something like /** without also matching /******.
+			/* Function: ParsePrototypeParameter
+		 * Marks the tokens in the parameter specified by the bounds with <CommentParsingTypes>.
 		 */
-		protected PossibleDocumentationComment TryToGetPDBlockComment (ParseState parser, LineIterator lineIterator, 
-																																				  string openingSymbol, string closingSymbol,
-																																				  bool openingMustBeAlone)
+		protected void ParsePrototypeParameter (TokenIterator start, TokenIterator end, int topicTypeID)
 			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+			// Pass 1: Count the number of "words" in the parameter and determine whether it has a colon, and is thus a
+			// Pascal-style parameter.  Pascal can define more than one parameter per type ("x, y: int") but as long as there's
+			// only one word in the first one it will still be interpreted as we want it.
 
-			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
-				{  return null;  }
+			int words = 0;
+			int wordsBeforeColon = 0;
+			bool hasColon = false;
 
-			if (openingMustBeAlone)
+			TokenIterator iterator = start;
+
+			while (iterator < end)
 				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(openingSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
-				}
-
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
-			comment.Start = lineIterator;
-
-			for (;;)
-				{
-				if (parser.Cancelled || !lineIterator.IsInBounds)
-					{  return null;  }
-					
-				TokenIterator closingSymbolIterator;
-				
-				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
+				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":=") || 
+				    iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 					{
-					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
-
-					while (closingSymbolIterator.FundamentalType == FundamentalType.Whitespace)
-						{  closingSymbolIterator.Next();  }
-
-					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
-						 closingSymbolIterator.FundamentalType != FundamentalType.Null)
-						{  return null;  }
-
-					lineIterator.Next();
-					comment.End = lineIterator;
 					break;
 					}
-
-				lineIterator.Next();
-				}
-			
-			// Success.  Mark the symbols before returning.
-			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
-
-			TokenIterator lastToken;
-			lineIterator.Previous();
-			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
-			lastToken.PreviousByCharacters(closingSymbol.Length);
-			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
-
-			return comment;
-			}
-
-			
-		/* Function: TryToGetPDLineComment
-		 * 
-		 * If the line iterator is on a line comment, return it and all connected line comments as a 
-		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  Returns null
-		 * otherwise.
-		 * 
-		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
-		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
-		 * required.  If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol for this
-		 * function to succeed.  This allows you to specifically detect something like ## without also matching #######.
-		 */
-		protected PossibleDocumentationComment TryToGetPDLineComment (ParseState parser, LineIterator lineIterator, 
-																																				string firstSymbol, string remainderSymbol,
-																																				bool openingMustBeAlone)
-			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-
-			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
-				{  return null;  }
-
-			if (openingMustBeAlone)
-				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(firstSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
-				}
-
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
-			comment.Start = lineIterator;
-			lineIterator.Next();
-
-			// Since we're definitely returning a comment (barring the operation being cancelled) we can mark the comment
-			// symbols as we go rather than waiting until the end.
-			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
-
-			while (lineIterator.IsInBounds)
-				{
-				if (parser.Cancelled)
-					{  return null;  }
-
-				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
-					
-				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
-					{  break;  }
-
-				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
-				lineIterator.Next();
-				}
-			
-			comment.End = lineIterator;
-			return comment;
-			}
-
-
-		/* Function: SimpleSyntaxHighlight
-		 */
-		protected void SimpleSyntaxHighlight (Tokenizer content, StringSet keywords)
-			{
-			TokenIterator iterator = content.FirstToken;
-			
-			while (iterator.IsInBounds)
-				{
-				TokenIterator originalPosition = iterator;
-
-				if (TryToSkipComment(ref iterator))
+				else if (iterator.Character == ':')
 					{
-					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
+					hasColon = true;
+					wordsBeforeColon = words;
+					iterator.Next();
 					}
-				else if (TryToSkipString(ref iterator))
+				else if (TryToSkipTypeOrVarName(ref iterator) ||
+							 TryToSkipComment(ref iterator) ||
+							 TryToSkipString(ref iterator) ||
+							 TryToSkipBlock(ref iterator, true))
 					{
-					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
+					// If there was a comment in the prototype, that means it specifically wasn't filtered out because it was something
+					// significant like a Splint comment or /*out*/.  Treat it like a modifier.
+
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it anyway
+					// just so it doesn't lose its mind if one occurs.
+
+					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
+					// treat it as a modifier.  
+
+					words++;
 					}
-				else if (iterator.FundamentalType == FundamentalType.Text)
+
+				// Skip over whitespace plus any unexpected random symbols that appear.
+				else
 					{
-					if (iterator.Character >= '0' && iterator.Character <= '9')
+					iterator.Next();
+					}
+				}
+
+
+			// Pass 2: Mark tokens.  If we don't have a colon and thus have C-style parameters, the order of words goes
+			// [modifier] [modifier] [type] [name], starting from the right.  So typeless languages that only have one word will
+			// have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
+			// they're sharing a type declaration will also have it correctly interpreted as the name.
+
+			if (hasColon == false)
+				{
+				iterator = start;
+
+				TokenIterator startWord = iterator;
+				TokenIterator endWord = iterator;
+				bool markWord = false;
+
+				while (iterator < end)
+					{
+					startWord = iterator;
+					markWord = false;
+
+					if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":=") || 
+						 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 						{
-						iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+						break;
+						}
+					else if (TryToSkipTypeOrVarName(ref iterator) ||
+								 TryToSkipComment(ref iterator) ||
+								 TryToSkipString(ref iterator) ||
+								 TryToSkipBlock(ref iterator, true))
+						{
+						markWord = true;
+						endWord = iterator;
+						}
+					else
+						{
 						iterator.Next();
+						}
 
-						if (iterator.Character == '.')
-							{
-							iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
-							iterator.Next();
+					if (markWord)
+						{
+						if (words >= 3)
+							{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						else if (words == 2)
+							{  
+							MarkType(startWord, endWord);  
 
-							if (iterator.Character >= '0' && iterator.Character <= '9')
+							// Go back and change any trailing * or & to name prefixes because even if they're textually attached to the type
+							// (int* x) they're actually part of the name in C++ (int *x).
+
+							endWord.Previous();
+
+							while (endWord >= startWord && (endWord.Character == '*' || endWord.Character == '&'))
 								{
-								iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
-								iterator.Next();
+								endWord.PrototypeParsingType = PrototypeParsingType.NamePrefix_PartOfType;
+								endWord.Previous();
 								}
 							}
-						else
-							{
-							TokenIterator prev = originalPosition;
-							prev.Previous();
+						else if (words == 1)
+							{  MarkName(startWord, endWord);  }
 
-							// For contants like .25 instead of 0.25.
-							if (prev.Character == '.')
-								{  prev.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
-							}
-						}
-
-					else // not digits
-						{
-						// Note that this won't catch keywords with underscores in them, like wchar_t.
-
-						if (keywords.Contains(iterator.String))
-							{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
-
-						iterator.Next();
+						words--;
 						}
 					}
-				else
-					{  iterator.Next();  }
+				}
+
+			// If we do have a colon, the order of words goes [name]: [modifier] [modifier] [type], the type portion starting
+			// from the right.
+			else
+				{
+				// xxx need to do pascal shit
 				}
 			}
+
+
+		/* Function: MarkType
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for variable types.
+		 */
+		protected void MarkType (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
+			TokenIterator qualifierEnd = start;
+
+			while (iterator < end && iterator.FundamentalType != FundamentalType.Text && iterator.Character != '_')
+				{  iterator.Next();  }
+
+			while (iterator < end)
+				{
+				if (iterator.Character == '.')
+					{
+					iterator.Next();
+					qualifierEnd = iterator;
+					}
+				else if (iterator.MatchesAcrossTokens("::"))
+					{
+					iterator.Next(2);
+					qualifierEnd = iterator;
+					}
+				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
+					{
+					iterator.Next();
+					}
+				else
+					{  break;  }
+				}
+
+			Tokenizer tokenizer = start.Tokenizer;
+
+			if (qualifierEnd > start)
+				{  tokenizer.SetPrototypeParsingTypeBetween(start, qualifierEnd, PrototypeParsingType.TypeQualifier);  }
+			if (iterator > qualifierEnd)
+				{  tokenizer.SetPrototypeParsingTypeBetween(qualifierEnd, iterator, PrototypeParsingType.Type);  }
+			if (iterator < end)
+				{  MarkTypeSuffix(iterator, end);  }
+			}
+
+
+		/* Function: MarkTypeSuffix
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for variable type suffixes.  Opening and closing
+		 * brackets will be searched for nested types.
+		 */
+		protected void MarkTypeSuffix (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
+			TokenIterator prevIterator;
+
+			while (iterator < end)
+				{
+				prevIterator = iterator;
+
+				if (TryToSkipBlock(ref iterator, true))
+					{
+					prevIterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;
+					prevIterator.Next();
+
+					iterator.Previous();
+					iterator.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;
+
+					MarkTypeSuffixParamList(prevIterator, iterator);
+
+					iterator.Next();
+					}
+				else
+					{
+					iterator.PrototypeParsingType = PrototypeParsingType.TypeSuffix;
+					iterator.Next();
+					}
+				}
+			}
+
+
+		/* Function: MarkTypeSuffixParamList
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for parameter lists appearing in a variable type suffix.
+		 * This is used for things like finding the classes in "List<ClassA, ClassB>".
+		 */
+		protected void MarkTypeSuffixParamList (TokenIterator start, TokenIterator end)
+			{
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+				TokenIterator startOfType = iterator;
+
+				while (iterator < end && iterator.Character != ',' && iterator.Character != ';')
+					{  
+					if (TryToSkipTypeOrVarName(ref iterator) ||
+						 TryToSkipComment(ref iterator) ||
+						 TryToSkipString(ref iterator) ||
+						 TryToSkipBlock(ref iterator, true))
+						{  }
+					else
+						{  iterator.Next();  }
+					}
+
+				TokenIterator endOfType = iterator;
+
+				while (startOfType.FundamentalType == FundamentalType.Whitespace && startOfType < endOfType)
+					{  startOfType.Next();  }
+
+				TokenIterator temp = endOfType;
+				temp.Previous();
+
+				while (temp.FundamentalType == FundamentalType.Whitespace && temp > startOfType)
+					{
+					endOfType = temp;
+					temp.Previous();
+					}
+
+				if (endOfType > startOfType)
+					{  MarkTypeSuffixParam(startOfType, endOfType);  }
+
+				iterator.Next();
+				}
+			}
+
+
+		/* Function: MarkTypeSuffixParam
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for a variable type suffix parameter.
+		 */
+		protected void MarkTypeSuffixParam (TokenIterator start, TokenIterator end)
+			{
+			// Pass 1: Count the number of "words" in the parameter.
+
+			int words = 0;
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+				if (TryToSkipTypeOrVarName(ref iterator) ||
+					 TryToSkipComment(ref iterator) ||
+					 TryToSkipString(ref iterator) ||
+					 TryToSkipBlock(ref iterator, true))
+					{
+					// If there was a comment in the prototype, that means it specifically wasn't filtered out because it was something
+					// significant like a Splint comment or /*out*/.  Treat it like a modifier.
+
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it anyway
+					// just so it doesn't lose its mind if one occurs.
+
+					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
+					// treat it as a modifier.  
+
+					words++;
+					}
+
+				// Skip over whitespace plus any unexpected random symbols that appear.
+				else
+					{
+					iterator.Next();
+					}
+				}
+
+
+			// Pass 2: Mark tokens.
+
+			iterator = start;
+
+			TokenIterator startWord = iterator;
+			TokenIterator endWord = iterator;
+			bool markWord = false;
+
+			while (iterator < end)
+				{
+				startWord = iterator;
+				markWord = false;
+
+				if (TryToSkipTypeOrVarName(ref iterator) ||
+					 TryToSkipComment(ref iterator) ||
+					 TryToSkipString(ref iterator) ||
+					 TryToSkipBlock(ref iterator, true))
+					{
+					markWord = true;
+					endWord = iterator;
+					}
+				else
+					{
+					iterator.Next();
+					}
+
+				if (markWord)
+					{
+					if (words >= 2)
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+					else if (words == 1)
+						{  MarkType(startWord, endWord);  }
+
+					words--;
+					}
+				}
+			}
+
+
+		/* Function: MarkName
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for variable names.
+		 */
+		protected void MarkName (TokenIterator start, TokenIterator end)
+			{
+			while (start < end && start.FundamentalType != FundamentalType.Text && start.Character != '_')
+				{
+				start.PrototypeParsingType = PrototypeParsingType.NamePrefix_PartOfType;
+				start.Next();
+				}
+
+			while (start < end)
+				{
+				if (start.FundamentalType == FundamentalType.Text || start.Character == '_' || start.Character == '.')
+					{
+					start.PrototypeParsingType = PrototypeParsingType.Name;
+					start.Next();
+					}
+				else if (start.MatchesAcrossTokens("::"))
+					{
+					start.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.Name, 2);
+					start.Next(2);
+					}
+				else
+					{  break;  }
+				}
+
+			if (start < end)
+				{
+				start.Tokenizer.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.NameSuffix_PartOfType);
+				}
+			}
+
+
+
+		// Group: General Parsing Support Functions
+		// __________________________________________________________________________
 
 
 		/* Function: TryToSkipWhitespace
@@ -1215,6 +1411,237 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			return true;
+			}
+
+
+		/* Function: TryToSkipTypeOrVarName
+		 * If the iterator is on what could be a complex type or variable name, moves the iterator past it and returns true.
+		 * This supports things like name, $name, PkgA::Class*, int[], and List<List<void*, float>>.  It does not include anything
+		 * separated by a space, so modifiers like unsigned and const have to be handled separately.
+		 */
+		protected bool TryToSkipTypeOrVarName (ref TokenIterator iterator)
+			{
+			// Carets designate pointers in Pascal
+			if (iterator.FundamentalType == FundamentalType.Text ||
+				 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' || iterator.Character == '^' ||
+				 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%')
+				{
+				iterator.Next();
+
+				for (;;)
+					{
+					// Add dot to our previous list
+					if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '.' ||
+						 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' || iterator.Character == '^' ||
+						 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%')
+						{  iterator.Next();  }
+
+					else if (iterator.MatchesAcrossTokens("::"))
+						{  iterator.Next(2);  }
+
+					// Handle array or template brackets
+					else if (TryToSkipBlock(ref iterator, true))
+						{  }
+
+					else
+						{  break;  }
+					}
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
+		// Group: Other Support Functions
+		// __________________________________________________________________________
+
+
+		/* Function: TryToGetPDBlockComment
+		 * 
+		 * If the line iterator is on the starting symbol of a block comment, return it as a <PossibleDocumentationComment>
+		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on the opening comment
+		 * symbol or there is content after the closing comment symbol making it unsuitable as a documentation comment,
+		 * returns null.
+		 * 
+		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol for this
+		 * function to succeed.  This allows you to specifically detect something like /** without also matching /******.
+		 */
+		protected PossibleDocumentationComment TryToGetPDBlockComment (ParseState parser, LineIterator lineIterator, 
+																																				  string openingSymbol, string closingSymbol,
+																																				  bool openingMustBeAlone)
+			{
+			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
+				{  return null;  }
+
+			if (openingMustBeAlone)
+				{
+				TokenIterator nextToken = firstToken;
+				nextToken.NextByCharacters(openingSymbol.Length);
+				if (nextToken.FundamentalType == FundamentalType.Symbol)
+					{  return null;  }
+				}
+
+			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+
+			for (;;)
+				{
+				if (parser.Cancelled || !lineIterator.IsInBounds)
+					{  return null;  }
+					
+				TokenIterator closingSymbolIterator;
+				
+				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
+					{
+					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
+
+					while (closingSymbolIterator.FundamentalType == FundamentalType.Whitespace)
+						{  closingSymbolIterator.Next();  }
+
+					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
+						 closingSymbolIterator.FundamentalType != FundamentalType.Null)
+						{  return null;  }
+
+					lineIterator.Next();
+					comment.End = lineIterator;
+					break;
+					}
+
+				lineIterator.Next();
+				}
+			
+			// Success.  Mark the symbols before returning.
+			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+
+			TokenIterator lastToken;
+			lineIterator.Previous();
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
+			lastToken.PreviousByCharacters(closingSymbol.Length);
+			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+
+			return comment;
+			}
+
+			
+		/* Function: TryToGetPDLineComment
+		 * 
+		 * If the line iterator is on a line comment, return it and all connected line comments as a 
+		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  Returns null
+		 * otherwise.
+		 * 
+		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
+		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
+		 * required.  If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol for this
+		 * function to succeed.  This allows you to specifically detect something like ## without also matching #######.
+		 */
+		protected PossibleDocumentationComment TryToGetPDLineComment (ParseState parser, LineIterator lineIterator, 
+																																				string firstSymbol, string remainderSymbol,
+																																				bool openingMustBeAlone)
+			{
+			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
+				{  return null;  }
+
+			if (openingMustBeAlone)
+				{
+				TokenIterator nextToken = firstToken;
+				nextToken.NextByCharacters(firstSymbol.Length);
+				if (nextToken.FundamentalType == FundamentalType.Symbol)
+					{  return null;  }
+				}
+
+			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+			lineIterator.Next();
+
+			// Since we're definitely returning a comment (barring the operation being cancelled) we can mark the comment
+			// symbols as we go rather than waiting until the end.
+			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
+
+			while (lineIterator.IsInBounds)
+				{
+				if (parser.Cancelled)
+					{  return null;  }
+
+				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+					
+				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
+					{  break;  }
+
+				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, remainderSymbol.Length);
+				lineIterator.Next();
+				}
+			
+			comment.End = lineIterator;
+			return comment;
+			}
+
+
+		/* Function: SimpleSyntaxHighlight
+		 */
+		protected void SimpleSyntaxHighlight (Tokenizer content, StringSet keywords)
+			{
+			TokenIterator iterator = content.FirstToken;
+			
+			while (iterator.IsInBounds)
+				{
+				TokenIterator originalPosition = iterator;
+
+				if (TryToSkipComment(ref iterator))
+					{
+					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
+					}
+				else if (TryToSkipString(ref iterator))
+					{
+					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
+					}
+				else if (iterator.FundamentalType == FundamentalType.Text)
+					{
+					if (iterator.Character >= '0' && iterator.Character <= '9')
+						{
+						iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+						iterator.Next();
+
+						if (iterator.Character == '.')
+							{
+							iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+							iterator.Next();
+
+							if (iterator.Character >= '0' && iterator.Character <= '9')
+								{
+								iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
+								iterator.Next();
+								}
+							}
+						else
+							{
+							TokenIterator prev = originalPosition;
+							prev.Previous();
+
+							// For contants like .25 instead of 0.25.
+							if (prev.Character == '.')
+								{  prev.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
+							}
+						}
+
+					else // not digits
+						{
+						// Note that this won't catch keywords with underscores in them, like wchar_t.
+
+						if (keywords.Contains(iterator.String))
+							{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+
+						iterator.Next();
+						}
+					}
+				else
+					{  iterator.Next();  }
+				}
 			}
 
 

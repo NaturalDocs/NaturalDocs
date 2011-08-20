@@ -2,44 +2,22 @@
  * Class: GregValure.NaturalDocs.Engine.ParsedPrototype
  * ____________________________________________________________________________
  * 
- * A class representing a prototype that has been parsed into its component pieces.
+ * A class that wraps a <Tokenizer> for a prototype that's been marked with <PrototypeParsingTypes>, providing easier 
+ * access to things like parameter lines.
  * 
  * Usage:
  * 
- *		- Create the object for the prototype.
- *		- If necessary, add markers for the start of each parameter from left to right with <AddStartOfParameter()>.  They 
- *		  *must* be added in order.
- *		- If necessary, add a marker for the end of the parameter list with <AddEndOfParameters()>.  If this is called at all,
- *		  it *must* be called after all parameters have been marked.
- *		  
- * Examples:
+ *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
+ *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingTypes.StartOfParams>
+ *		and <PrototypeParsingTypes.ParamSeparator>.  Likewise, you can't get anything from <GetParameterName()> unless
+ *		you also have tokens marked with <PrototypeParsingTypes.Name>.  However, you can set the parameter divider tokens,
+ *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
+ *		<PrototypeParsingTypes.Name>.
  * 
- *		> void Function (int x, int y)
- *		
- *		- "void Function ("
- *		- <AddStartOfParameter()>
- *		- "int x,"
- *		- <AddStartOfParameter()>
- *		- " int y"
- *		- <AddEndOfParameters()>.
- *		- ")"
- *		
- *		It is okay to do these:
- *		
- *		> void Function ()
- *		
- *		- "void Function ("
- *		- <AddStartOfParameter()>
- *		- <AddEndOfParameters()>
- *		- ")"
- *		
- *		> void Function ( )
- *		
- *		- "void Function ("
- *		- <AddStartOfParameter()>
- *		- " "
- *		- <AddEndOfParameters()>
- *		- ")"
+ *		An important thing to remember though is that the parameter divisions are calculated once and saved.  Only call
+ *		functions like <GetParameter()> after *ALL* the separator tokens (<PrototypeParsingTypes.StartOfParams>,
+ *		<PrototypeParsingTypes.ParamSeparator>, and <PrototypeParsingTypes.EndOfParams>) are set and will not change
+ *		going forward.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -62,177 +40,412 @@ namespace GregValure.NaturalDocs.Engine
 		
 		
 		/* Constructor: ParsedPrototype
+		 * Creates a new parsed prototype.
 		 */
-		public ParsedPrototype (Tokenizer tokenizedPrototype)
+		public ParsedPrototype (Tokenizer prototype)
 			{
-			tokenizer = tokenizedPrototype;
-			parameterDividers = null;
-			endOfParametersDivider = tokenizer.LastToken;
-			needCleanup = false;
+			tokenizer = prototype;
+			sectionBounds = null;
 			}
 
-		/* Constructor: ParsedPrototype
-		 * If you already have the prototype in tokenized form it's more efficient to call the other constructor.
-		 */
-		public ParsedPrototype (string prototype)
-			{
-			tokenizer = new Tokenizer(prototype);
-			parameterDividers = null;
-			endOfParametersDivider = tokenizer.LastToken;
-			needCleanup = false;
-			}
 			
-		
-		/* Function: AddStartOfParameter
-		 * Adds a marker designating the start of a parameter.  You are required to add these left to right and only call
-		 * <AddEndOfParameters()> after all parameters are done.  Parameters should be started after the opening parenthesis 
-		 * of the parameter list and after the comma dividing one from another, or whatever the convention of the language is.
-		 */
-		public void AddStartOfParameter (TokenIterator iterator)
-			{
-			if (parameterDividers == null)
-				{  parameterDividers = new List<TokenIterator>();  }
-
-			parameterDividers.Add(iterator);
-			needCleanup = true;
-			}
-
-		/* Function: AddEndOfParameters
-		 * Adds a marker designating the end of the parameter list.  You can only call this after all parameters are marked
-		 * with <AddStartOfParameter()>.  You are not required to call this if it's not relevant.  Also, you can call this if there's
-		 * only whitespace between the start of the last parameter and this point and it will detect it automatically.
-		 */
-		public void AddEndOfParameters (TokenIterator iterator)
-			{
-			// Ignore it if there's no parameters.
-			if (parameterDividers == null)
-				{  return;  }
-
-			endOfParametersDivider = iterator;
-			needCleanup = true;
-			}
-			
-		/* Function: Cleanup
-		 * Goes through the dividers and removes any that would cause a section of only whitespace.
-		 */
-		protected void Cleanup ()
-			{
-			if (parameterDividers != null)
-				{
-				// Check if there's any content between the start of the last parameter and the end of the parameters so
-				// we can handle cases like "Function ()" and "Function ( )".  If the end of the parameters was never set it
-				// will be at the end of the tokenizer so we don't have to account for that.
-
-				TokenIterator iterator = parameterDividers[ parameterDividers.Count -1 ];
-				bool hasContent = false;
-
-				while (iterator < endOfParametersDivider)
-					{
-					if (iterator.FundamentalType != FundamentalType.Whitespace)
-						{  
-						hasContent = true;  
-						break;
-						}
-					else
-						{  iterator.Next();  }
-					}
-
-				if (!hasContent)
-					{  
-					if (parameterDividers.Count == 1)
-						{  parameterDividers = null;  }
-					else
-						{  parameterDividers.RemoveAt( parameterDividers.Count - 1 );  }
-					}
-				}
-
-			// If there's no parameters the end of parameter divider becomes useless so we reset it.  This is a separate if
-			// statement instead of an else because parameterDividers may have been changed to null above.
-			if (parameterDividers == null)
-				{  endOfParametersDivider = tokenizer.LastToken;  }
-
-			needCleanup = false;
-			}
-
-
 		/* Function: GetBeforeParameters
-		 * Returns the bounds of the section of the prototype prior to the parameters.  If there are no parameters, this will
-		 * return the bound of the entire prototype.
+		 * Returns the bounds of the section of the prototype prior to the parameters.  If it has parameters, it will include the 
+		 * starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this will return the 
+		 * bounds of the entire prototype.
 		 */
 		public void GetBeforeParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (needCleanup)
-				{  Cleanup();  }
+			if (sectionBounds == null)
+				{  CalculateSectionBounds();  }
 
 			start = tokenizer.FirstToken;
+			start.Next(sectionBounds[0]);
 
-			if (parameterDividers == null)
-				{  end = tokenizer.LastToken;  }
-			else
-				{  end = parameterDividers[0];  }
+			end = tokenizer.FirstToken;
+			end.Next(sectionBounds[1]);
 			}
 
 
 		/* Function: GetParameter
 		 * Returns the bounds of the numbered parameter and whether or not it exists.  Numbers start at zero.
 		 */
-		public bool GetParameter (int index, out TokenIterator start, out TokenIterator end, bool trimWhitespace = true)
+		public bool GetParameter (int index, out TokenIterator start, out TokenIterator end)
 			{
-			if (needCleanup)
-				{  Cleanup();  }
+			if (sectionBounds == null)
+				{  CalculateSectionBounds();  }
 
-			if (parameterDividers == null || index >= parameterDividers.Count)
+			if (index >= NumberOfParameters)
 				{
 				start = tokenizer.LastToken;
 				end = tokenizer.LastToken;
 				return false;
 				}
-			
-			start = parameterDividers[index];
+			else
+				{			
+				start = tokenizer.FirstToken;
+				start.Next(sectionBounds[2 + (index * 2)]);
 
-			if (index + 1 == parameterDividers.Count)
+				end = tokenizer.FirstToken;
+				end.Next(sectionBounds[3 + (index * 2)]);
+
+				return true;
+				}
+			}
+
+
+		/* Function: GetParameterName
+		 * Returns the bounds of the name of the passed parameter, or false if it couldn't find it.
+		 */
+		public bool GetParameterName (int index, out TokenIterator start, out TokenIterator end)
+			{
+			TokenIterator paramStart, paramEnd;
+
+			if (!GetParameter(index, out paramStart, out paramEnd))
 				{  
-				// If it was never set it will be on the last token, which is still what we want.
-				end = endOfParametersDivider;  
+				start = paramEnd;
+				end = paramEnd;
+				return false;  
+				}
+
+			start = paramStart;
+
+			while (start < paramEnd && start.PrototypeParsingType != PrototypeParsingType.Name)
+				{  start.Next();  }
+
+			if (start < paramEnd)
+				{
+				end = start;
+
+				do
+					{  end.Next();  }
+				while (end.PrototypeParsingType == PrototypeParsingType.Name && end < paramEnd);
+
+				return true;
 				}
 			else
-				{  end = parameterDividers[index + 1];  }
+				{  
+				start = paramEnd;
+				end = paramEnd;
+				return false;  
+				}
+			}
 
-			if (trimWhitespace)
+
+		/* Function: GetFullParameterType
+		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This includes modifiers and type
+		 * suffixes.  If there's any additional type information that appears after the name (int x[12]) that will be returned in the
+		 * extension.
+		 */
+		public bool GetFullParameterType (int index, out TokenIterator start, out TokenIterator end, 
+																			out TokenIterator extensionStart, out TokenIterator extensionEnd)
+			{
+			TokenIterator paramStart, paramEnd;
+
+			if (!GetParameter(index, out paramStart, out paramEnd))
+				{  
+				start = paramEnd;
+				end = paramEnd;
+				extensionStart = paramEnd;
+				extensionEnd = paramEnd;
+				return false;  
+				}
+
+			start = paramStart;
+			PrototypeParsingType type = start.PrototypeParsingType;
+
+			while (start < paramEnd && 
+						type != PrototypeParsingType.Type &&
+						type != PrototypeParsingType.TypeModifier &&
+						type != PrototypeParsingType.TypeQualifier &&
+						type != PrototypeParsingType.NamePrefix_PartOfType)
+				{  start.Next();  }
+
+			if (start < paramEnd)
 				{
+				end = start;
+				int nestLevel = 0;
+
+				do
+					{  
+					if (end.PrototypeParsingType == PrototypeParsingType.OpeningTypeSuffix)
+						{  nestLevel++;  }
+					else if (end.PrototypeParsingType == PrototypeParsingType.ClosingTypeSuffix)
+						{  nestLevel--;  }
+
+					end.Next();
+					type = end.PrototypeParsingType;
+					}
+				while ( (nestLevel > 0 ||
+							  type == PrototypeParsingType.Type ||
+							  type == PrototypeParsingType.TypeModifier ||
+							  type == PrototypeParsingType.TypeQualifier ||
+							  type == PrototypeParsingType.OpeningTypeSuffix ||
+							  type == PrototypeParsingType.ClosingTypeSuffix ||
+							  type == PrototypeParsingType.TypeSuffix ||
+							  type == PrototypeParsingType.NamePrefix_PartOfType ||
+							  end.FundamentalType == FundamentalType.Whitespace) &&
+							end < paramEnd);
+
+				// Find an extension if there is one.
+				extensionStart = end;
+
+				while (extensionStart < paramEnd &&
+							 extensionStart.PrototypeParsingType != PrototypeParsingType.NameSuffix_PartOfType)
+					{  extensionStart.Next();  }
+
+				extensionEnd = extensionStart;
+
+				while (extensionEnd < paramEnd &&
+							 extensionEnd.PrototypeParsingType == PrototypeParsingType.NameSuffix_PartOfType)
+					{  extensionEnd.Next();  }
+
+				// Trim trailing whitespace from the regular type
 				TokenIterator temp = end;
 				temp.Previous();
 
-				while (temp.FundamentalType == FundamentalType.Whitespace && temp >= start)
-					{  
+				while (temp.FundamentalType == FundamentalType.Whitespace)
+					{
 					end = temp;
 					temp.Previous();
 					}
 
-				while (start.FundamentalType == FundamentalType.Whitespace && start < end)
-					{  start.Next();  }
+				return true;
+				}
+			else
+				{  
+				start = paramEnd;
+				end = paramEnd;
+				extensionStart = paramEnd;
+				extensionEnd = paramEnd;
+				return false;  
+				}
+			}
+
+
+		/* Function: GetBaseParameterType
+		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
+		 * suffixes.
+		 */
+		public bool GetBaseParameterType (int index, out TokenIterator start, out TokenIterator end)
+			{
+			TokenIterator paramStart, paramEnd;
+
+			if (!GetParameter(index, out paramStart, out paramEnd))
+				{  
+				start = paramEnd;
+				end = paramEnd;
+				return false;  
 				}
 
-			return true;
+			// First search for an explicit type, like "int".
+			start = paramStart;
+
+			while (start < paramEnd && 
+						start.PrototypeParsingType != PrototypeParsingType.Type &&
+						start.PrototypeParsingType != PrototypeParsingType.TypeQualifier)
+				{  start.Next();  }
+
+			if (start < paramEnd)
+				{
+				end = start;
+
+				do
+					{  end.Next();  }
+				while ((end.PrototypeParsingType == PrototypeParsingType.Type ||
+							 end.PrototypeParsingType == PrototypeParsingType.TypeQualifier) &&
+							end < paramEnd);
+
+				return true;
+				}
+			else
+				{
+				// If there's no explicit type, seach for a name prefix like "$", "@", or "%".
+				start = paramStart;
+
+				while (start < paramEnd && 
+							start.PrototypeParsingType != PrototypeParsingType.NamePrefix_PartOfType)
+					{  start.Next();  }
+
+				if (start < paramEnd)
+					{
+					end = start;
+
+					do
+						{  end.Next();  }
+					while (end.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType &&
+								end < paramEnd);
+
+					return true;
+					}
+				else
+					{  
+					start = paramEnd;
+					end = paramEnd;
+					return false;  
+					}
+				}
 			}
 
 
 		/* Function: GetAfterParameters
-		 * Returns the bounds of the section of the prototype after the parameters and whether it exists.
+		 * Returns the bounds of the section of the prototype after the parameters and whether it exists.  If it does
+		 * exist, the bounds will include the closing symbol of the parameter list such as the closing parenthesis.
 		 */
 		public bool GetAfterParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (needCleanup)
-				{  Cleanup();  }
+			if (sectionBounds == null)
+				{  CalculateSectionBounds();  }
 
-			start = endOfParametersDivider;
-			end = tokenizer.LastToken;
+			if (NumberOfParameters == 0)
+				{
+				start = tokenizer.LastToken;
+				end = tokenizer.LastToken;
+				return false;
+				}
+			else
+				{
+				start = tokenizer.FirstToken;
+				start.Next( sectionBounds[ sectionBounds.Length - 2 ] );
 
-			return (start != end);
+				end = tokenizer.FirstToken;
+				end.Next( sectionBounds[ sectionBounds.Length - 1 ] );
+
+				return true;
+				}
 			}
 			
 
+		/* Function: CalculateSectionBounds
+		 */
+		protected void CalculateSectionBounds ()
+			{
+			// Count the parameters
+
+			int numberOfParameters = 0;
+			TokenIterator iterator = tokenizer.FirstToken;
+
+			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+				{  iterator.Next();  }
+
+			if (iterator.IsInBounds)
+				{
+				bool hasNonWhitespace = false;
+
+				iterator.Next();
+				numberOfParameters++;
+
+				while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+					{
+					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{  numberOfParameters++;  }
+					if (iterator.FundamentalType != FundamentalType.Whitespace)
+						{  hasNonWhitespace = true;  }
+
+					iterator.Next();
+					}
+
+				// Ignore empty parameter groups like Function() and Function( ).
+				if (numberOfParameters == 1 && hasNonWhitespace == false)
+					{  numberOfParameters = 0;  }
+				}
+
+
+			// Create the bounds array
+
+			if (numberOfParameters == 0)
+				{
+				sectionBounds = new int[2];
+
+				TokenIterator start = tokenizer.FirstToken;
+				TokenIterator end = tokenizer.LastToken;
+
+				TrimWhitespace(ref start, ref end);
+
+				sectionBounds[0] = start.TokenIndex;
+				sectionBounds[1] = end.TokenIndex;
+				}
+
+			else
+				{
+				sectionBounds = new int[ (numberOfParameters * 2) + 4 ];
+
+				TokenIterator start, end;
+
+				iterator = tokenizer.FirstToken;
+				start = iterator;
+
+				while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+					{  iterator.Next();  }
+
+				// Include StartOfParams in the first segment
+				iterator.Next();
+				end = iterator;
+
+				TrimWhitespace(ref start, ref end);
+				sectionBounds[0] = start.TokenIndex;
+				sectionBounds[1] = end.TokenIndex;
+
+				int boundsIndex = 2;
+
+				do
+					{
+					start = iterator;
+
+					while (iterator.IsInBounds && 
+								iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+								iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
+						{  iterator.Next();  }
+
+					// Include ParamSeparator in the segment
+					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{  iterator.Next();  }
+
+					end = iterator;
+
+					TrimWhitespace(ref start, ref end);
+
+					sectionBounds[boundsIndex] = start.TokenIndex;
+					sectionBounds[boundsIndex+1] = end.TokenIndex;
+					boundsIndex += 2;
+					}
+				while (iterator.IsInBounds && 
+							iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams);
+
+				// Section after the parameters.  If there is none, these will both be on the end of the tokenizer and we add
+				// them anyway.
+
+				start = iterator;
+				end = tokenizer.LastToken;
+
+				TrimWhitespace(ref start, ref end);
+
+				sectionBounds[boundsIndex] = start.TokenIndex;
+				sectionBounds[boundsIndex+1] = end.TokenIndex;
+				}
+			}
+
+
+		/* Function: TrimWhitespace
+		 * Shrinks the passed bounds to exclude whitespace on the edges.
+		 */
+		protected void TrimWhitespace (ref TokenIterator start, ref TokenIterator end)
+			{
+			TokenIterator temp = end;
+			temp.Previous();
+
+			while (temp.FundamentalType == FundamentalType.Whitespace && temp >= start)
+				{  
+				end = temp;
+				temp.Previous();
+				}
+
+			while (start.FundamentalType == FundamentalType.Whitespace && start < end)
+				{  start.Next();  }
+			}
 			
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 		
@@ -252,14 +465,14 @@ namespace GregValure.NaturalDocs.Engine
 		public int NumberOfParameters
 			{
 			get
-				{
-				if (needCleanup)
-					{  Cleanup();  }
+				{  
+				if (sectionBounds == null)
+					{  CalculateSectionBounds();  }
 
-				if (parameterDividers == null)
+				if (sectionBounds.Length == 2)
 					{  return 0;  }
 				else
-					{  return parameterDividers.Count;  }
+					{  return (sectionBounds.Length / 2) - 2;  }
 				}
 			}
 			
@@ -273,24 +486,12 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected Tokenizer tokenizer;
 
-		/* var: parameterDividers
-		 * A list of <TokenIterators> representing the dividers between each parameter, or null if there are no parameters.
-		 * Each iterator should be on the first character of the parameter.
+		/* var: sectionBounds
+		 * An array of token indexes representing the start and stop of each section of the prototype, or null if it hasn't been
+		 * calculated yet.  The first pair will be the start and stop of the section before the parameters.  If parameters exist,
+		 * a subsequent pair will exist for each parameter and then one final one for the section after the parameters.
 		 */
-		protected List<TokenIterator> parameterDividers;
-		
-		/* var: endOfParametersDivider
-		 * A <TokenIterator> serving as the divider for where the last parameter ends and where the remainder of the 
-		 * prototype begins.  It should be on the first character past the end of the last parameter.  If there are no parameters
-		 * or there is no content past the end of the last one, this will be set to one past the last token in <tokenizer>.
-		 */
-		protected TokenIterator endOfParametersDivider;
-
-		/* var: needCleanup
-		 * Whether any of the dividers need to be cleaned, meaning removing them if they're not dividing anything but 
-		 * whitespace.
-		 */
-		protected bool needCleanup;
+		protected int[] sectionBounds;
 
 		}
 	}

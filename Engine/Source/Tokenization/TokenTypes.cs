@@ -57,6 +57,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 	/* Enum: SyntaxHighlightingType
 	 * 
+	 * The type of token it is as is relevant to prototype parsing.
+	 * 
 	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 * Keyword - A reserved word, like "int".
 	 * Number - A numeric constant, like "12", "0xFF", or "-1.5".  The format doesn't matter.
@@ -67,6 +69,47 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		{
 		Null = 0,
 		Keyword, Number, String, Comment
+		}
+
+
+	/* Enum: PrototypeParsingType
+	 * 
+	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
+	 * 
+	 * StartOfParams - The start of a parameter list, such as an opening parenthesis.
+	 * EndOfParams - The end of a parameter list, such as a closing parenthesis.
+	 * ParamSeparator - A separator between parameters, such as a comma.
+	 * 
+	 * TypeModifier - A separate word modifying a type, such as "const" in "const int".
+	 * TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
+	 * Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
+	 * OpeningTypeSuffix - An opening symbol after a type, such as "[" in "int[]" or "<" in "List<int>".
+	 * ClosingTypeSuffix - A closing symbol after a type, such as "]" in "int[]" or ">" in "List<int>".
+	 * TypeSuffix - A neutral symbol after a type, such as "^" in "integer^".
+	 * 
+	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such
+	 *												 as ":" in "x: int".  In languages that simply use a space this type won't appear.
+	 *											 
+	 * NamePrefix_PartOfType - Any symbols appearing before a name, such as "*" in "int *x" or "$" in "$x", that are actually
+	 *													  part of its type.  It doesn't matter if it's textually attached to the type ("int* x") because that
+	 *													  still means the same thing ("int *x") in C++.
+	 * Name - The name of the parameter or the code element being defined by the prototype.
+	 * NameSuffix_PartOfType - Any symbols appearing after a name, such as "[]" in "int x[]", that are actually part of its type.  
+	 *														Unlike with types, we don't have to distinguish between opening and closing symbols to search
+	 *														for nested types.
+	 * 
+	 */
+	public enum PrototypeParsingType :  byte
+		{
+		Null = 0,
+
+		StartOfParams, EndOfParams, ParamSeparator,
+
+		TypeModifier, TypeQualifier, Type, OpeningTypeSuffix, ClosingTypeSuffix, TypeSuffix,
+
+		NameTypeSeparator, 
+		
+		NamePrefix_PartOfType, Name, NameSuffix_PartOfType
 		}
 
 	}
