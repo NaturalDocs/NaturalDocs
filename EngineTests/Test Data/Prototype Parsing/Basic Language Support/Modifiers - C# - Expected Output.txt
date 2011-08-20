@@ -1,0 +1,15 @@
+- Before Parameters: [Test] static virtual int FunctionName (
+
+  - Parameter 1: ref PkgA.PkgB.Class x,
+    - Name: x
+    - Full Type: ref PkgA.PkgB.Class
+    - Base Type: PkgA.PkgB.Class
+    - Link Candidates: PkgA.PkgB.Class
+
+  - Parameter 2: out List<int> y
+    - Name: y
+    - Full Type: out List<int>
+    - Base Type: List
+    - Link Candidates: List, int
+
+- After Parameters: )

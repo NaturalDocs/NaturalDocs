@@ -1,0 +1,13 @@
+
+// Function: FunctionA
+Procedure FunctionA;
+	Begin;
+	End;
+
+// Function: FunctionB
+Function FunctionB (x: integer, y: string): integer;
+	Begin
+	End;
+ 
+// Function: FunctionC
+Function FunctionC (x, y: integer, z: string): integer; Forward;

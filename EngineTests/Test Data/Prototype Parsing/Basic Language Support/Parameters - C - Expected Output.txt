@@ -1,0 +1,51 @@
+- No Parameters: int FunctionName ()
+-----
+- No Parameters: int FunctionName2 ( )
+-----
+- Before Parameters: void FunctionName3 (
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+
+  - Parameter 2: float y
+    - Name: y
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+
+- After Parameters: )
+-----
+- Before Parameters: void FunctionName4 (
+
+  - Parameter 1: int x_1,
+    - Name: x_1
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+
+  - Parameter 2: int __y2__
+    - Name: __y2__
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+
+- After Parameters: )
+-----
+- Before Parameters: virtual void FunctionName5 (
+
+  - Parameter 1: int* x,
+    - Name: x
+    - Full Type: int*
+    - Base Type: int
+    - Link Candidates: int
+
+  - Parameter 2: int y[12]
+    - Name: y
+    - Full Type: int[12]
+    - Base Type: int
+    - Link Candidates: int
+
+- After Parameters: ) = 0

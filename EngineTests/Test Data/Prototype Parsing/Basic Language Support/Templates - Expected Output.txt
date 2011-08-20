@@ -1,0 +1,25 @@
+- Before Parameters: int FunctionName (
+
+  - Parameter 1: List<int> x
+    - Name: x
+    - Full Type: List<int>
+    - Base Type: List
+    - Link Candidates: List, int
+
+- After Parameters: )
+-----
+- Before Parameters: void FunctionName2 (
+
+  - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x,
+    - Name: x
+    - Full Type: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>>
+    - Base Type: System.Collections.Generic.Dictionary
+    - Link Candidates: System.Collections.Generic.Dictionary, Nullable, int, Map, string, Object
+
+  - Parameter 2: int y
+    - Name: y
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+
+- After Parameters: )

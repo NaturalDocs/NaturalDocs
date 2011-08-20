@@ -1,0 +1,6 @@
+
+// Function: FunctionName
+[Test]
+static virtual int FunctionName (ref PkgA.PkgB.Class x, out List<int> y)
+	{
+	}

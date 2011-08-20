@@ -1,0 +1,25 @@
+- No Parameters: sub FunctionA ()
+-----
+- No Parameters: sub FunctionB ( )
+-----
+- Before Parameters: sub FunctionC (
+
+  - Parameter 1: $x,
+    - Name: x
+    - Full Type: $
+    - Base Type: $
+    - Link Candidates: (not detected)
+
+  - Parameter 2: %y,
+    - Name: y
+    - Full Type: %
+    - Base Type: %
+    - Link Candidates: (not detected)
+
+  - Parameter 3: @z
+    - Name: z
+    - Full Type: @
+    - Base Type: @
+    - Link Candidates: (not detected)
+
+- After Parameters: )

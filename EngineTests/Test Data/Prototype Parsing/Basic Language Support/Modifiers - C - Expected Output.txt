@@ -1,0 +1,15 @@
+- Before Parameters: virtual int FunctionName (
+
+  - Parameter 1: /*@out@*/ const Namespace::Class** x,
+    - Name: x
+    - Full Type: /*@out@*/ const Namespace::Class**
+    - Base Type: Namespace::Class
+    - Link Candidates: Namespace::Class
+
+  - Parameter 2: unsigned int &y
+    - Name: y
+    - Full Type: unsigned int &
+    - Base Type: int
+    - Link Candidates: int
+
+- After Parameters: ) /*@globals undef globnum, undef globname @*/

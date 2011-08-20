@@ -1,0 +1,11 @@
+
+/* Function: FunctionName
+
+	- Splint comments should be included as modifiers.
+	- * and & should be part of the type regardless of whether it appears with the type or the name.
+*/
+virtual int FunctionName (/*@out@*/ const Namespace::Class** x, unsigned int &y)
+	/*@globals undef globnum,
+					 undef globname @*/
+	{
+	}

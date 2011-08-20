@@ -1,0 +1,35 @@
+- No Parameters: function FunctionA ()
+-----
+- No Parameters: function FunctionB ( )
+-----
+- Before Parameters: function FunctionC (
+
+  - Parameter 1: x,
+    - Name: x
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (not detected)
+
+  - Parameter 2: y
+    - Name: y
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (not detected)
+
+- After Parameters: )
+-----
+- Before Parameters: function FunctionD (
+
+  - Parameter 1: x_1,
+    - Name: x_1
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (not detected)
+
+  - Parameter 2: __y2__
+    - Name: __y2__
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (not detected)
+
+- After Parameters: )

@@ -1,0 +1,17 @@
+
+# This is fake Perl but we don't care.  We're testing Perl-like languages that use name prefix symbols as types
+
+# Function: FunctionA
+sub FunctionA ()
+	{
+	}
+
+# Function: FunctionB
+sub FunctionB ( )
+	{
+	}
+
+# Function: FunctionC
+sub FunctionC ($x, %y, @z)
+	{
+	}

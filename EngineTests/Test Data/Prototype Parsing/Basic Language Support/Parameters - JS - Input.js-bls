@@ -1,0 +1,20 @@
+
+// Function: FunctionA
+function FunctionA ()
+	{
+	}
+
+// Function: FunctionB
+function FunctionB ( )
+	{
+	}
+
+// Function: FunctionC
+function FunctionC (x, y)
+	{
+	}
+
+// Function: FunctionD
+function FunctionD (x_1, __y2__)
+	{
+	}

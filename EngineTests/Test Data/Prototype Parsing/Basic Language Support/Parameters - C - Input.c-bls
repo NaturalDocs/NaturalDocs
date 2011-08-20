@@ -1,0 +1,24 @@
+
+// Function: FunctionName
+int FunctionName ()
+	{
+	}
+
+// Function: FunctionName2
+int FunctionName2 ( )
+	{
+	}
+
+// Function: FunctionName3
+void FunctionName3 (int x, float y)
+	{
+	}
+
+// Function: FunctionName4
+void FunctionName4 (int x_1, int __y2__)
+	{
+	}
+
+// Function: FunctionName5
+virtual void FunctionName5 (int* x, int y[12]) = 0;
+
