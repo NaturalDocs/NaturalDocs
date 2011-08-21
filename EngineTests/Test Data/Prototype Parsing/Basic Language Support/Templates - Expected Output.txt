@@ -5,21 +5,24 @@
     - Full Type: List<int>
     - Base Type: List
     - Link Candidates: List, int
+    - Default Value: (not detected)
 
 - After Parameters: )
 -----
 - Before Parameters: void FunctionName2 (
 
-  - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x,
+  - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x = null,
     - Name: x
     - Full Type: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>>
     - Base Type: System.Collections.Generic.Dictionary
     - Link Candidates: System.Collections.Generic.Dictionary, Nullable, int, Map, string, Object
+    - Default Value: null
 
-  - Parameter 2: int y
+  - Parameter 2: int y = 12
     - Name: y
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
+    - Default Value: 12
 
 - After Parameters: )

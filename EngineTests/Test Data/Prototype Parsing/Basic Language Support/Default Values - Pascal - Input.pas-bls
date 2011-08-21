@@ -1,0 +1,7 @@
+
+(* Function: FunctionName
+	Commas, colons, and brackets in the default values should not screw up the parameter breaks.
+*)
+Procedure FunctionName (x: string := "),;:[<{ \" ),;:[<{", y: integer[] := [1,2,3], z: integer := 6);
+	Begin
+	End;

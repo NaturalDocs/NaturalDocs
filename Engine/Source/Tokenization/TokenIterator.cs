@@ -94,6 +94,26 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				
 			return Next(tokensInCharacters);
 			}
+
+
+		/* Function: NextPastWhitespace
+		 * Moves forward until past all whitespace tokens.
+		 */
+		public void NextPastWhitespace ()
+			{
+			while (FundamentalType == FundamentalType.Whitespace)
+				{  Next();  }
+			}
+			
+			
+		/* Function: NextPastWhitespace
+		 * Moves forward until past all whitespace tokens or the limit is reached.
+		 */
+		public void NextPastWhitespace (TokenIterator limit)
+			{
+			while (FundamentalType == FundamentalType.Whitespace && this < limit)
+				{  Next();  }
+			}
 			
 			
 		/* Function: Previous (count)
@@ -159,6 +179,38 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
+		/* Function: PreviousPastWhitespace
+		 * Moves backwards until past all whitespace tokens.
+		 */
+		public void PreviousPastWhitespace ()
+			{
+			TokenIterator temp = this;
+			temp.Previous();
+
+			while (temp.FundamentalType == FundamentalType.Whitespace)
+				{  
+				this = temp;
+				temp.Previous();
+				}
+			}
+
+
+		/* Function: PreviousPastWhitespace
+		 * Moves backwards until past all whitespace tokens or it reaches the limit.
+		 */
+		public void PreviousPastWhitespace (TokenIterator limit)
+			{
+			TokenIterator temp = this;
+			temp.Previous();
+
+			while (temp.FundamentalType == FundamentalType.Whitespace && temp >= limit)
+				{  
+				this = temp;
+				temp.Previous();
+				}
+			}
+
+
 		/* Function: TokensInCharacters
 		 * Returns the number of tokens between the current position and the passed number of characters.  If advancing
 		 * by the character count would not land on a token boundary this returns -1.

@@ -5,11 +5,13 @@
     - Full Type: ref PkgA.PkgB.Class
     - Base Type: PkgA.PkgB.Class
     - Link Candidates: PkgA.PkgB.Class
+    - Default Value: (not detected)
 
   - Parameter 2: out List<int> y
     - Name: y
     - Full Type: out List<int>
     - Base Type: List
     - Link Candidates: List, int
+    - Default Value: (not detected)
 
 - After Parameters: )

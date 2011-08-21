@@ -1,0 +1,24 @@
+- Before Parameters: void FunctionName (
+
+  - Parameter 1: string x = "),;[<{ \" ),;[<{",
+    - Name: x
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: "),;[<{ \" ),;[<{"
+
+  - Parameter 2: int[] y = [1,2,3],
+    - Name: y
+    - Full Type: int[]
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: [1,2,3]
+
+  - Parameter 3: int z = 6
+    - Name: z
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: 6
+
+- After Parameters: )

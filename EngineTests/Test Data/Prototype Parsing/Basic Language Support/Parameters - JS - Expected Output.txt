@@ -9,12 +9,14 @@
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (not detected)
+    - Default Value: (not detected)
 
   - Parameter 2: y
     - Name: y
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (not detected)
+    - Default Value: (not detected)
 
 - After Parameters: )
 -----
@@ -25,11 +27,13 @@
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (not detected)
+    - Default Value: (not detected)
 
   - Parameter 2: __y2__
     - Name: __y2__
     - Full Type: (not detected)
     - Base Type: (not detected)
     - Link Candidates: (not detected)
+    - Default Value: (not detected)
 
 - After Parameters: )

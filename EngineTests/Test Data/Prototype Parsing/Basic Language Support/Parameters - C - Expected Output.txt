@@ -9,12 +9,14 @@
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
 
   - Parameter 2: float y
     - Name: y
     - Full Type: float
     - Base Type: float
     - Link Candidates: float
+    - Default Value: (not detected)
 
 - After Parameters: )
 -----
@@ -25,12 +27,14 @@
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
 
   - Parameter 2: int __y2__
     - Name: __y2__
     - Full Type: int
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
 
 - After Parameters: )
 -----
@@ -41,11 +45,20 @@
     - Full Type: int*
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
 
-  - Parameter 2: int y[12]
+  - Parameter 2: int y[12],
     - Name: y
     - Full Type: int[12]
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: char* z = ""
+    - Name: z
+    - Full Type: char*
+    - Base Type: char
+    - Link Candidates: char
+    - Default Value: ""
 
 - After Parameters: ) = 0

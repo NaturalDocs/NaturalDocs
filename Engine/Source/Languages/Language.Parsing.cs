@@ -977,6 +977,40 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				// xxx need to do pascal shit
 				}
+
+
+			// Default value is the same, regardless of C or Pascal ordering.  If one exists, the iterator should have been left on it.
+
+			bool hasDefaultValue = false;
+
+			if (iterator.Character == '=')
+				{  
+				iterator.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  
+				iterator.Next();
+				hasDefaultValue = true;
+				}
+			else if (iterator.MatchesAcrossTokens(":="))
+				{  
+				iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.DefaultValueSeparator, 2);
+				iterator.Next(2);
+				hasDefaultValue = true;
+				}
+
+			if (hasDefaultValue)
+				{
+				iterator.NextPastWhitespace(end);
+
+				TokenIterator defaultValueStart = iterator;
+				TokenIterator defaultValueEnd = iterator;
+
+				while (defaultValueEnd < end && defaultValueEnd.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
+					{  defaultValueEnd.Next();  }
+
+				defaultValueEnd.PreviousPastWhitespace(defaultValueStart);
+
+				if (defaultValueEnd != defaultValueStart)
+					{  start.Tokenizer.SetPrototypeParsingTypeBetween(defaultValueStart, defaultValueEnd, PrototypeParsingType.DefaultValue);  }
+				}
 			}
 
 
@@ -1081,17 +1115,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				TokenIterator endOfType = iterator;
 
-				while (startOfType.FundamentalType == FundamentalType.Whitespace && startOfType < endOfType)
-					{  startOfType.Next();  }
-
-				TokenIterator temp = endOfType;
-				temp.Previous();
-
-				while (temp.FundamentalType == FundamentalType.Whitespace && temp > startOfType)
-					{
-					endOfType = temp;
-					temp.Previous();
-					}
+				endOfType.PreviousPastWhitespace(startOfType);
+				startOfType.NextPastWhitespace(endOfType);
 
 				if (endOfType > startOfType)
 					{  MarkTypeSuffixParam(startOfType, endOfType);  }
@@ -1499,8 +1524,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
 
-					while (closingSymbolIterator.FundamentalType == FundamentalType.Whitespace)
-						{  closingSymbolIterator.Next();  }
+					closingSymbolIterator.NextPastWhitespace();
 
 					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
 						 closingSymbolIterator.FundamentalType != FundamentalType.Null)

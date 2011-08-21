@@ -12,6 +12,6 @@ sub FunctionB ( )
 	}
 
 # Function: FunctionC
-sub FunctionC ($x, %y, @z)
+sub FunctionC ($x, %y, @z = [ ])
 	{
 	}

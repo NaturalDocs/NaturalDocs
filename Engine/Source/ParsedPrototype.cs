@@ -201,14 +201,7 @@ namespace GregValure.NaturalDocs.Engine
 					{  extensionEnd.Next();  }
 
 				// Trim trailing whitespace from the regular type
-				TokenIterator temp = end;
-				temp.Previous();
-
-				while (temp.FundamentalType == FundamentalType.Whitespace)
-					{
-					end = temp;
-					temp.Previous();
-					}
+				end.PreviousPastWhitespace(start);
 
 				return true;
 				}
@@ -285,6 +278,34 @@ namespace GregValure.NaturalDocs.Engine
 					return false;  
 					}
 				}
+			}
+
+
+		/* Function: GetDefaultValue
+		 * Returns the bounds of the default value of the passed parameter, or false if it doesn't exist.
+		 */
+		public bool GetDefaultValue (int index, out TokenIterator start, out TokenIterator end)
+			{
+			TokenIterator paramStart, paramEnd;
+
+			if (!GetParameter(index, out paramStart, out paramEnd))
+				{  
+				start = paramEnd;
+				end = paramEnd;
+				return false;  
+				}
+
+			start = paramStart;
+
+			while (start < paramEnd && start.PrototypeParsingType != PrototypeParsingType.DefaultValue)
+				{  start.Next();  }
+
+			end = start;
+
+			while (end < paramEnd && end.PrototypeParsingType == PrototypeParsingType.DefaultValue)
+				{  end.Next();  }
+
+			return (start != end);
 			}
 
 
@@ -431,17 +452,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected void TrimWhitespace (ref TokenIterator start, ref TokenIterator end)
 			{
-			TokenIterator temp = end;
-			temp.Previous();
-
-			while (temp.FundamentalType == FundamentalType.Whitespace && temp >= start)
-				{  
-				end = temp;
-				temp.Previous();
-				}
-
-			while (start.FundamentalType == FundamentalType.Whitespace && start < end)
-				{  start.Next();  }
+			end.PreviousPastWhitespace(start);
+			start.NextPastWhitespace(end);
 			}
 			
 

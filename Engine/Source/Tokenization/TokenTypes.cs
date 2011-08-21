@@ -97,6 +97,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * NameSuffix_PartOfType - Any symbols appearing after a name, such as "[]" in "int x[]", that are actually part of its type.  
 	 *														Unlike with types, we don't have to distinguish between opening and closing symbols to search
 	 *														for nested types.
+	 *														
+	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
+	 * DefaultValue - The default value of the parameter.
 	 * 
 	 */
 	public enum PrototypeParsingType :  byte
@@ -109,7 +112,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 		NameTypeSeparator, 
 		
-		NamePrefix_PartOfType, Name, NameSuffix_PartOfType
+		NamePrefix_PartOfType, Name, NameSuffix_PartOfType,
+
+		DefaultValueSeparator, DefaultValue
 		}
 
 	}

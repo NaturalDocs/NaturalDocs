@@ -1,0 +1,7 @@
+
+/* Function: FunctionName
+	Commas and brackets in the default values should not screw up the parameter breaks.
+*/
+void FunctionName (string x = "),;[<{ \" ),;[<{", int[] y = [1,2,3], int z = 6)
+	{
+	}

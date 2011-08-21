@@ -5,11 +5,13 @@
     - Full Type: /*@out@*/ const Namespace::Class**
     - Base Type: Namespace::Class
     - Link Candidates: Namespace::Class
+    - Default Value: (not detected)
 
   - Parameter 2: unsigned int &y
     - Name: y
     - Full Type: unsigned int &
     - Base Type: int
     - Link Candidates: int
+    - Default Value: (not detected)
 
 - After Parameters: ) /*@globals undef globnum, undef globname @*/

@@ -127,6 +127,12 @@ namespace GregValure.NaturalDocs.EngineTests
 								{  output.Append("(not detected)");  }
 
 							output.AppendLine();
+
+							if (parsedPrototype.GetDefaultValue(paramIndex, out start, out end))
+								{  output.AppendLine("    - Default Value: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+							else
+								{  output.AppendLine("    - Default Value: (not detected)");  }
+
 							output.AppendLine();
 							}
 
