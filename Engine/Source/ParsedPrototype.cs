@@ -159,7 +159,10 @@ namespace GregValure.NaturalDocs.Engine
 						type != PrototypeParsingType.TypeModifier &&
 						type != PrototypeParsingType.TypeQualifier &&
 						type != PrototypeParsingType.NamePrefix_PartOfType)
-				{  start.Next();  }
+				{  
+				start.Next();  
+				type = start.PrototypeParsingType;
+				}
 
 			if (start < paramEnd)
 				{
@@ -487,7 +490,71 @@ namespace GregValure.NaturalDocs.Engine
 					{  return (sectionBounds.Length / 2) - 2;  }
 				}
 			}
+
+
+		/* Property: PascalStyle
+		 * Whether this prototype uses Pascal-style parameters ("x: int") instead of C-style ("int x").  If it has no parameters or
+		 * no types this will be false.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
+		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
+		 */
+		public bool PascalStyle
+			{
+			get
+				{
+				int numberOfParameters = NumberOfParameters;
+
+				for (int i = 0; i < numberOfParameters; i++)
+					{
+					bool foundName = false;
+					bool foundType = false;
+					bool foundSeparator = false;
+
+					TokenIterator start, end;
+					GetParameter(i, out start, out end);
+
+					while (start < end)
+						{
+						PrototypeParsingType type = start.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.Name)
+							{
+							if (foundType)
+								{  return false;  }
+							else
+								{  foundName = true;  }
+							}
+						else if (type == PrototypeParsingType.Type)
+							{
+							if (foundName && foundSeparator)
+								{  return true;  }
+							else
+								{  foundType = true;  }
+							}
+						else if (type == PrototypeParsingType.NameTypeSeparator)
+							{
+							foundSeparator = true;
+							}
+
+						start.Next();
+						}
+					}
+
+				return false;
+				}
+			}
 			
+
+		/* Property: CStyle
+		 * Whether this prototype uses C-style parameters ("int x") instead of Pascal-style ("x: int").  If it has no parameters or
+		 * no types this will be true.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
+		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
+		 */
+		public bool CStyle
+			{
+			get
+				{  return !PascalStyle;  }
+			}
+
 
 		
 		// Group: Variables

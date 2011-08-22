@@ -1,0 +1,44 @@
+- No Parameters: Procedure FunctionA
+-----
+- Before Parameters: Function FunctionB (
+
+  - Parameter 1: x: integer,
+    - Name: x
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: y: string
+    - Name: y
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+-----
+- Before Parameters: Function FunctionC (
+
+  - Parameter 1: x_2,
+    - Name: x_2
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (not detected)
+    - Default Value: (not detected)
+
+  - Parameter 2: __y3__: integer,
+    - Name: __y3__
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 3: z: string := ""
+    - Name: z
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: ""
+
+- After Parameters: ): integer

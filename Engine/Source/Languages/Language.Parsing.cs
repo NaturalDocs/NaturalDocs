@@ -855,14 +855,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 
-			/* Function: ParsePrototypeParameter
+		/* Function: ParsePrototypeParameter
 		 * Marks the tokens in the parameter specified by the bounds with <CommentParsingTypes>.
 		 */
 		protected void ParsePrototypeParameter (TokenIterator start, TokenIterator end, int topicTypeID)
 			{
-			// Pass 1: Count the number of "words" in the parameter and determine whether it has a colon, and is thus a
-			// Pascal-style parameter.  Pascal can define more than one parameter per type ("x, y: int") but as long as there's
-			// only one word in the first one it will still be interpreted as we want it.
+			// Pass 1: Count the number of "words" in the parameter and determine whether it has a colon, and is thus a Pascal-style 
+			// parameter.  We'll figure out how to interpret the words in the second pass.  Pascal can define more than one parameter 
+			// per type ("x, y: int") but as long as there's only one word in the first one it will still be interpreted as we want it.
+			//
+			// If they exist, also mark the colon as a name/type separator and mark the default value.
 
 			int words = 0;
 			int wordsBeforeColon = 0;
@@ -872,16 +874,50 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			while (iterator < end)
 				{
-				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":=") || 
-				    iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":="))
 					{
+					if (iterator.Character == '=')
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;
+						iterator.Next();
+						}
+					else
+						{
+						iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.DefaultValueSeparator, 2);
+						iterator.Next(2);
+						}
+
+					iterator.NextPastWhitespace(end);
+
+					TokenIterator endOfDefaultValue = end;
+					TokenIterator temp = end;
+					temp.Previous();
+
+					while (temp >= iterator && temp.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{
+						endOfDefaultValue = temp;
+						temp.Previous();
+						}
+
+					endOfDefaultValue.PreviousPastWhitespace(iterator);
+
+					if (iterator < endOfDefaultValue)
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
+
 					break;
 					}
+
+				// Can only check for this after checking for :=
 				else if (iterator.Character == ':')
 					{
 					hasColon = true;
 					wordsBeforeColon = words;
+					iterator.PrototypeParsingType = PrototypeParsingType.NameTypeSeparator;
 					iterator.Next();
+					}
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					{
+					break;
 					}
 				else if (TryToSkipTypeOrVarName(ref iterator) ||
 							 TryToSkipComment(ref iterator) ||
@@ -908,9 +944,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 
-			// Pass 2: Mark tokens.  If we don't have a colon and thus have C-style parameters, the order of words goes
-			// [modifier] [modifier] [type] [name], starting from the right.  So typeless languages that only have one word will
-			// have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
+			// Pass 2: Mark the "words" we counted from the first pass.  If we don't have a colon and thus have C-style parameters, 
+			// the order of words goes [modifier] [modifier] [type] [name], starting from the right.  Typeless languages that only have
+			// one word will have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
 			// they're sharing a type declaration will also have it correctly interpreted as the name.
 
 			if (hasColon == false)
@@ -926,7 +962,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					startWord = iterator;
 					markWord = false;
 
-					if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":=") || 
+					if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
 						 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 						{
 						break;
@@ -975,41 +1011,70 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// from the right.
 			else
 				{
-				// xxx need to do pascal shit
-				}
+				iterator = start;
+				TokenIterator startWord = iterator;
 
+				// First word is the name no matter what.
 
-			// Default value is the same, regardless of C or Pascal ordering.  If one exists, the iterator should have been left on it.
+				if (TryToSkipTypeOrVarName(ref iterator) ||
+					 TryToSkipComment(ref iterator) ||
+					 TryToSkipString(ref iterator) ||
+					 TryToSkipBlock(ref iterator, true))
+					{  }
+				else
+					{  iterator.Next();  }
 
-			bool hasDefaultValue = false;
+				TokenIterator endWord = iterator;
+				MarkName(startWord, endWord);
 
-			if (iterator.Character == '=')
-				{  
-				iterator.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  
-				iterator.Next();
-				hasDefaultValue = true;
-				}
-			else if (iterator.MatchesAcrossTokens(":="))
-				{  
-				iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.DefaultValueSeparator, 2);
-				iterator.Next(2);
-				hasDefaultValue = true;
-				}
+				// Skip everything else to the first word past the separator.  There may not be a separator or type for this parameter though.
 
-			if (hasDefaultValue)
-				{
+				while (iterator < end && iterator.PrototypeParsingType != PrototypeParsingType.NameTypeSeparator)
+					{  iterator.Next();  }
+
+				while (iterator < end && iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+					{  iterator.Next();  }
+
 				iterator.NextPastWhitespace(end);
 
-				TokenIterator defaultValueStart = iterator;
-				TokenIterator defaultValueEnd = iterator;
+				// Mark words in the type section as [modifier] [modifier] [type].
 
-				while (defaultValueEnd < end && defaultValueEnd.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
-					{  defaultValueEnd.Next();  }
+				words -= wordsBeforeColon;
+				bool markWord = false;
 
-				defaultValueEnd.PreviousPastWhitespace(defaultValueStart);
+				while (iterator < end)
+					{
+					startWord = iterator;
+					markWord = false;
 
-				if (defaultValueEnd != defaultValueStart)
-					{  start.Tokenizer.SetPrototypeParsingTypeBetween(defaultValueStart, defaultValueEnd, PrototypeParsingType.DefaultValue);  }
+					if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+						 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{
+						break;
+						}
+					else if (TryToSkipTypeOrVarName(ref iterator) ||
+								 TryToSkipComment(ref iterator) ||
+								 TryToSkipString(ref iterator) ||
+								 TryToSkipBlock(ref iterator, true))
+						{
+						markWord = true;
+						endWord = iterator;
+						}
+					else
+						{
+						iterator.Next();
+						}
+
+					if (markWord)
+						{
+						if (words >= 2)
+							{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						else if (words == 1)
+							{  MarkType(startWord, endWord);  }
+
+						words--;
+						}
+					}
 				}
 			}
 

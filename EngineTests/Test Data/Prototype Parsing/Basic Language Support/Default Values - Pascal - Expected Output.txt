@@ -1,0 +1,24 @@
+- Before Parameters: Procedure FunctionName (
+
+  - Parameter 1: x: string := "),;:[<{ \" ),;:[<{",
+    - Name: x
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: "),;:[<{ \" ),;:[<{"
+
+  - Parameter 2: y: integer[] := [1,2,3],
+    - Name: y
+    - Full Type: integer[]
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: [1,2,3]
+
+  - Parameter 3: z: integer := 6
+    - Name: z
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: 6
+
+- After Parameters: )
