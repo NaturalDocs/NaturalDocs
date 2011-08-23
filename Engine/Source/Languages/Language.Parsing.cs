@@ -1511,19 +1511,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipTypeOrVarName (ref TokenIterator iterator)
 			{
-			// Carets designate pointers in Pascal
 			if (iterator.FundamentalType == FundamentalType.Text ||
-				 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' || iterator.Character == '^' ||
+				 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' ||
 				 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%')
 				{
 				iterator.Next();
 
 				for (;;)
 					{
-					// Add dot to our previous list
+					// Add dot to our previous list.  Also ^ for Pascal pointers and ? for C# nullable types.
 					if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '.' ||
 						 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' || iterator.Character == '^' ||
-						 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%')
+						 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%' ||
+						 iterator.Character == '^' || iterator.Character == '?')
 						{  iterator.Next();  }
 
 					else if (iterator.MatchesAcrossTokens("::"))

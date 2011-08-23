@@ -1,0 +1,24 @@
+- Before Parameters: int FunctionName (
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: bool? y,
+    - Name: y
+    - Full Type: bool?
+    - Base Type: bool
+    - Link Candidates: bool
+    - Default Value: (not detected)
+
+  - Parameter 3: int? z = null
+    - Name: z
+    - Full Type: int?
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: null
+
+- After Parameters: )

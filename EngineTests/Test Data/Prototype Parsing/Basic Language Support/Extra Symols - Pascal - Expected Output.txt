@@ -1,0 +1,24 @@
+- Before Parameters: Function FunctionA (
+
+  - Parameter 1: x: integer,
+    - Name: x
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: y: string^,
+    - Name: y
+    - Full Type: string^
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 3: z: string^ := 0
+    - Name: z
+    - Full Type: string^
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: 0
+
+- After Parameters: ): integer
