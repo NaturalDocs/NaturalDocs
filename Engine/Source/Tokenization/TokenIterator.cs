@@ -595,6 +595,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				}
 			}
 			
+		/* Property: TokenIndex
+		 * The current index into <Tokenizer.Tokens>.
+		 */
+		public int TokenIndex
+			{
+			get
+				{  return tokenIndex;  }
+			}
+
 		/* Property: IsInBounds
 		 * Whether the iterator is not past the beginning or end of the list of tokens.
 		 */
@@ -611,21 +620,6 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{  return tokenizer;  }
-			}
-
-			
-			
-		// Group: Internal Properties
-		// __________________________________________________________________________
-		
-			
-		/* Property: TokenIndex
-		 * The current index into <Tokenizer.Tokens>.
-		 */
-		internal int TokenIndex
-			{
-			get
-				{  return tokenIndex;  }
 			}
 			
 			
