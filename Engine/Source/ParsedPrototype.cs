@@ -46,6 +46,7 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			tokenizer = prototype;
 			sectionBounds = null;
+			isPascal = null;
 			}
 
 			
@@ -501,6 +502,9 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				if (isPascal != null)
+					{  return (bool)isPascal;  }
+
 				int numberOfParameters = NumberOfParameters;
 
 				for (int i = 0; i < numberOfParameters; i++)
@@ -519,14 +523,20 @@ namespace GregValure.NaturalDocs.Engine
 						if (type == PrototypeParsingType.Name)
 							{
 							if (foundType)
-								{  return false;  }
+								{  
+								isPascal = false;
+								return false;  
+								}
 							else
 								{  foundName = true;  }
 							}
 						else if (type == PrototypeParsingType.Type)
 							{
 							if (foundName && foundSeparator)
-								{  return true;  }
+								{  
+								isPascal = true;
+								return true;  
+								}
 							else
 								{  foundType = true;  }
 							}
@@ -539,6 +549,7 @@ namespace GregValure.NaturalDocs.Engine
 						}
 					}
 
+				isPascal = false;
 				return false;
 				}
 			}
@@ -571,6 +582,11 @@ namespace GregValure.NaturalDocs.Engine
 		 * a subsequent pair will exist for each parameter and then one final one for the section after the parameters.
 		 */
 		protected int[] sectionBounds;
+
+		/* var: isPascal
+		 * Whether the prototype is Pascal-style instead of C-style.  Will be null if it hasn't been determined yet.
+		 */
+		protected bool? isPascal;
 
 		}
 	}
