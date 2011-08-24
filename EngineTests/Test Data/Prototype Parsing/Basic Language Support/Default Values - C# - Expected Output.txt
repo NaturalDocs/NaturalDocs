@@ -7,9 +7,9 @@
     - Link Candidates: string
     - Default Value: "),;[<{ \" ),;[<{"
 
-  - Parameter 2: int[] y = [1,2,3],
+  - Parameter 2: int[,,] y = [1,2,3],
     - Name: y
-    - Full Type: int[]
+    - Full Type: int[,,]
     - Base Type: int
     - Link Candidates: int
     - Default Value: [1,2,3]
