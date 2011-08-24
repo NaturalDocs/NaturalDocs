@@ -300,7 +300,7 @@ body.NDContentPage {
 		}
 
 
-	/* Prototype Colors
+	/* Prototypes
 		___________________________________________________
 	*/
 		.TFunction .NDPrototype,
@@ -326,6 +326,46 @@ body.NDContentPage {
 
 		.TEvent .NDPrototype {
 			background-color: #E8F8E8; border-color: #C0DCC0 }
+
+		/* Highlight all links when hovering over the prototype since it may not be obvious that you can click things. */
+		.NDPrototype:hover a:link,
+		.NDPrototype:hover a:visited {
+			border-bottom: 1px dotted !important;
+			text-decoration: none !important;
+			}
+		
+		/* Stay with border-bottom on hover since switching between that and underline makes the line jump up and down. */
+		.NDPrototype:hover a:link,
+		.NDPrototype:hover a:visited {
+			border-bottom: 1px solid !important;
+			text-decoration: none !important;
+			}
+
+		table.PParams {
+			margin: 0 0 0 3.5ex;
+			padding: 0; 
+			border: 0 none; 
+			border-spacing: 0;
+			}
+		table.PParams td {
+			margin: 0; 
+			padding: 0; 
+			border: 0 none;
+			}
+
+		.CStyle .PModifierQualifier,
+		.PDefaultValue,
+		.PDefaultValueSeparator {
+			opacity: 0.4;
+			}
+		.CStyle .PModifierQualifier,
+		.CStyle .PNamePrefix {
+			text-align: right;
+			}
+		
+		table.PParams tr:hover td {
+			font-weight: bold !important;
+			}
 
 
 	/* Syntax Highlighting

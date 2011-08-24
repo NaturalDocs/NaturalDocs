@@ -253,21 +253,76 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				prototype.GetBeforeParameters(out start, out end);
 				BuildSyntaxHighlightedText(start, end, html);
 
-				for (int i = 0; i < prototype.NumberOfParameters; i++)
+				HTMLPrototypeColumns paramColumns = new HTMLPrototypeColumns(prototype);
+				HTMLPrototypeColumns.ColumnType type;
+
+				// Rather than just iterate through, we'll build a table in memory so we can omit unused columns.
+				string[,] paramHTML = new string[prototype.NumberOfParameters, paramColumns.NumberOfColumns];
+				bool[] usedColumns = new bool[paramColumns.NumberOfColumns];
+
+				for (int p = 0; p < prototype.NumberOfParameters; p++)
 					{
-					html.Append("<br>&nbsp;&nbsp;&nbsp;"); //xxx
-					prototype.GetParameter(i, out start, out end);
-					BuildSyntaxHighlightedText(start, end, html);
+					for (int c = 0; c < paramColumns.NumberOfColumns; c++)
+						{
+						if (paramColumns.GetColumn(p, c, out start, out end, out type))
+							{
+							usedColumns[c] = true;
+							paramHTML[p,c] = BuildPrototypeParameterCell(start, end, type, prototype);
+							}
+						}
 					}
+
+				html.Append("<table class=\"PParams " + (prototype.CStyle ? "CStyle" : "PascalStyle") + "\">");
+
+				for (int p = 0; p < prototype.NumberOfParameters; p++)
+					{
+					html.Append("<tr>");
+
+					for (int c = 0; c < paramColumns.NumberOfColumns; c++)
+						{
+						if (usedColumns[c])
+							{  html.Append(paramHTML[p,c] ?? "<td></td>");  }
+						}
+
+					html.Append("</tr>");
+					}
+
+				html.Append("</table>");
 
 				if (prototype.GetAfterParameters(out start, out end))
 					{
-					html.Append("<br>&nbsp;&nbsp;&nbsp;");
+					html.Append("&nbsp;&nbsp;&nbsp;");
 					BuildSyntaxHighlightedText(start, end, html);
 					}
 				}
 
 			html.Append("</div>");
+			}
+
+
+		/* Function: BuildPrototypeParameterCell
+		 */
+		protected string BuildPrototypeParameterCell (TokenIterator start, TokenIterator end, HTMLPrototypeColumns.ColumnType type,
+																								 ParsedPrototype prototype)
+			{
+			StringBuilder html = new StringBuilder("<td class=\"P");
+			html.Append(type.ToString());
+			html.Append("\">");
+
+			BuildSyntaxHighlightedText(start, end, html);
+
+			if (type == HTMLPrototypeColumns.ColumnType.TypeNameSeparator ||
+				 type == HTMLPrototypeColumns.ColumnType.DefaultValueSeparator)
+				{  html.Append("&nbsp;");  }
+			else if (end.FundamentalType == FundamentalType.Whitespace &&
+						  (type == HTMLPrototypeColumns.ColumnType.Name ||
+						   type == HTMLPrototypeColumns.ColumnType.ModifierQualifier ||
+							type == HTMLPrototypeColumns.ColumnType.Type) )
+				{  html.Append("&nbsp;");  }
+
+			html.Append("</td>");
+
+			return html.ToString();
 			}
 
 
