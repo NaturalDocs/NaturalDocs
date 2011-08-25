@@ -1545,24 +1545,37 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else if (TryToSkipBlock(ref iterator, true))
 						{  }
 
-					// Catch freestanding symbols like "int * x".  However, cut off after the symbol so we don't include the x in "int *x".
+					// Catch freestanding symbols and consts like "int * x" and "int* const x".  However, cut off after the symbol so we don't 
+					// include the x in "int *x".
 					else if (iterator.FundamentalType == FundamentalType.Whitespace)
 						{
 						TokenIterator lookahead = iterator;
+						lookahead.NextPastWhitespace();
+						bool acceptableSuffix;
 
-						for (;;)
+						do
 							{
-							while (lookahead.FundamentalType == FundamentalType.Whitespace)
-								{  lookahead.Next();  }
+							acceptableSuffix = false;
 
 							if (lookahead.Character == '*' || lookahead.Character == '&' || lookahead.Character == '^')
 								{
 								lookahead.Next();
-								iterator = lookahead;
+								acceptableSuffix = true;
 								}
-							else
-								{  break;  }
+							else if (lookahead.MatchesToken("const"))
+								{
+								lookahead.Next();
+								if (lookahead.Character != '_')
+									{  acceptableSuffix = true;  }
+								}
+
+							if (acceptableSuffix)
+								{
+								iterator = lookahead;
+								lookahead.NextPastWhitespace();
+								}
 							}
+						while (acceptableSuffix);
 
 						break;
 						}
