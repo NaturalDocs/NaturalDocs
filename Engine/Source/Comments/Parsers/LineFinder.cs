@@ -306,12 +306,24 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			TokenIterator start, end;
 			line.GetBounds(LineBoundsMode.CommentContent, out start, out end);
 			
-			char symbol;
-			int symbolCount;
+			char symbolA, symbolB, symbolC;
+			int symbolACount, symbolBCount, symbolCCount;
 			
-			bool lineResult = CountSymbols(ref start, end, out symbol, out symbolCount);
+			bool lineResult = CountSymbolLine(ref start, end, out symbolA, out symbolB, out symbolC, 
+																				out symbolACount, out symbolBCount, out symbolCCount);
 			
-			return (lineResult == true && symbolCount >= 4 && start == end);
+			// Return false if it's not the only thing on the line.
+			if (lineResult == false || start != end)
+				{  return false;  }
+				
+			else if (symbolACount >= 4 && (symbolBCount == 0 || (symbolBCount <= 3 && symbolCCount == 0)))
+				{  return true;  }
+					
+			else if (symbolACount <= 3 && symbolBCount >= 4 && (symbolCCount == 0 || symbolCCount <= 3))
+				{  return true;  }
+
+			else
+				{  return false;  }
 			}
 			
 			

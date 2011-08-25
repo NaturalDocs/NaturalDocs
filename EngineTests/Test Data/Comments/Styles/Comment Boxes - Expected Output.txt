@@ -13,28 +13,33 @@
   - Topic "Horizontal lines", line 10:
     - <p>Body 1</p><p>Body 2</p><p>Body 3</p>
 
-- Plain comment, lines 18-21:
+- Plain comment, lines 18-24:
 
-  - Topic "Full box", line 19:
+  - Topic "Horizontal lines with enders", line 18:
+    - <p>Body</p><p>Above style is used in Cities3D</p>
+
+- Plain comment, lines 26-29:
+
+  - Topic "Full box", line 27:
     - <p>Body</p>
 
-- Plain comment, lines 23-27:
+- Plain comment, lines 31-35:
 
-  - Topic "Full box with corner symbols", line 24:
+  - Topic "Full box with corner symbols", line 32:
     - <p>Body</p>
 
-- Plain comment, lines 29-33:
+- Plain comment, lines 37-41:
 
-  - Topic "Full box with corner symbols 2", line 30:
+  - Topic "Full box with corner symbols 2", line 38:
     - <p>Body</p>
 
-- Plain comment, lines 35-39:
+- Plain comment, lines 43-47:
 
-  - Topic "Full box with corner symbols 3", line 36:
+  - Topic "Full box with corner symbols 3", line 44:
     - <p>Body</p>
 
-- Plain comment, lines 41-48:
+- Plain comment, lines 49-56:
 
-  - Topic "Partial Box", line 43:
+  - Topic "Partial Box", line 51:
     - <p>Body</p>
 
