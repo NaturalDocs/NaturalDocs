@@ -28,5 +28,11 @@ namespace GregValure.NaturalDocs.EngineTests
 			TestFolder("HTML Generation/Topic Titles", "div", "CTitle");
 			}
 
+		[Test]
+		public void Prototypes ()
+			{
+			TestFolder("HTML Generation/Prototypes", "div", "NDPrototype");
+			}
+
 		}
 	}

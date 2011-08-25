@@ -232,32 +232,6 @@ Topic Type: Delegate
       delegate, delegates
 
 
-Topic Type: Constructor
-
-   Display Name from Locale: Topics.txt.Constructor.DisplayName
-   Plural Display Name from Locale: Topics.txt.Constructor.PluralDisplayName
-
-   Index: with Function
-   Break Lists: Yes
-   List Position: 4500
-
-   Keywords:
-      constructor, constructors
-
-
-Topic Type: Destructor
-
-   Display Name from Locale: Topics.txt.Destructor.DisplayName
-   Plural Display Name from Locale: Topics.txt.Destructor.PluralDisplayName
-
-   Index: with Function
-   Break Lists: Yes
-   List Position: 4600
-
-   Keywords:
-      destructor, destructors
-
-
 Topic Type: Function
 
    Display Name from Locale: Topics.txt.Function.DisplayName
@@ -265,7 +239,7 @@ Topic Type: Function
 
    Break Lists: Yes
    List Position: 4700
-   Can Change To: Constructor, Destructor, Operator, Delegate, Event
+   Can Change To: Operator, Delegate, Event
 
    Keywords:
       function, functions
@@ -277,6 +251,8 @@ Topic Type: Function
       sub, subs
       method, methods
       callback, callbacks
+      constructor, constructors
+      destructor, destructors
 
 
 Topic Type: Operator

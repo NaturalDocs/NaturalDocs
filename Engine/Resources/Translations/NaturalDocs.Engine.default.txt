@@ -317,10 +317,6 @@ Topics.txt.Group.DisplayName: Group
 Topics.txt.Group.PluralDisplayName: Groups
 Topics.txt.Function.DisplayName: Function
 Topics.txt.Function.PluralDisplayName: Functions
-Topics.txt.Constructor.DisplayName: Constructor
-Topics.txt.Constructor.PluralDisplayName: Constructors
-Topics.txt.Destructor.DisplayName: Destructor
-Topics.txt.Destructor.PluralDisplayName: Destructors
 Topics.txt.Operator.DisplayName: Operator
 Topics.txt.Operator.PluralDisplayName: Operators
 Topics.txt.Variable.DisplayName: Variable
