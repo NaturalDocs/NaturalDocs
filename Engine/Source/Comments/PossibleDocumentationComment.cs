@@ -86,6 +86,21 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			set
 				{  end = value;  }
 			}
+
+
+		/* Property: String
+		 * The entire comment as a string.  Primarily used to aid debugging.
+		 */
+		public string String
+			{
+			get
+				{
+				Tokenization.TokenIterator firstToken = start.FirstToken(Tokenization.LineBoundsMode.Everything);
+				Tokenization.TokenIterator endToken = end.FirstToken(Tokenization.LineBoundsMode.Everything);
+
+				return firstToken.Tokenizer.TextBetween(firstToken, endToken);
+				}
+			}
 			
 			
 			
