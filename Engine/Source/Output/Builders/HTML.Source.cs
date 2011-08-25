@@ -257,7 +257,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				HTMLPrototypeColumns.ColumnType type;
 
 				// Rather than just iterate through, we'll build a table in memory so we can omit unused columns.
-				string[,] paramHTML = new string[prototype.NumberOfParameters, paramColumns.NumberOfColumns];
+				string[,] cellContents = new string[prototype.NumberOfParameters, paramColumns.NumberOfColumns];
 				bool[] usedColumns = new bool[paramColumns.NumberOfColumns];
 
 				for (int p = 0; p < prototype.NumberOfParameters; p++)
@@ -267,10 +267,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (paramColumns.GetColumn(p, c, out start, out end, out type))
 							{
 							usedColumns[c] = true;
-							paramHTML[p,c] = BuildPrototypeParameterCell(start, end, type, prototype);
+							cellContents[p,c] = BuildPrototypeParameterCellContents(start, end, type);
 							}
 						}
 					}
+
+				int firstUsedCell = 0;
+				while (firstUsedCell < usedColumns.Length && usedColumns[firstUsedCell] == false )
+					{  firstUsedCell++;  }
+
+				int lastUsedCell = usedColumns.Length - 1;
+				while (lastUsedCell > 0 && usedColumns[lastUsedCell] == false)
+					{  lastUsedCell--;  }
 
 				html.Append("<table class=\"PParams " + (prototype.CStyle ? "CStyle" : "PascalStyle") + "\">");
 
@@ -281,7 +289,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					for (int c = 0; c < paramColumns.NumberOfColumns; c++)
 						{
 						if (usedColumns[c])
-							{  html.Append(paramHTML[p,c] ?? "<td></td>");  }
+							{  
+							string extraClass = null;
+
+							if (c == firstUsedCell && c == lastUsedCell)
+								{  extraClass = "first last";  }
+							else if (c == firstUsedCell)
+								{  extraClass = "first";  }
+							else if (c == lastUsedCell)
+								{  extraClass = "last";  }
+
+							BuildPrototypeParameterCell(cellContents[p,c], html, paramColumns.ColumnOrder[c], extraClass);
+							}
 						}
 
 					html.Append("</tr>");
@@ -300,29 +319,57 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildPrototypeParameterCell
+		/* Function: BuildPrototypeParameterCellContents
 		 */
-		protected string BuildPrototypeParameterCell (TokenIterator start, TokenIterator end, HTMLPrototypeColumns.ColumnType type,
-																								 ParsedPrototype prototype)
+		protected string BuildPrototypeParameterCellContents (TokenIterator start, TokenIterator end, HTMLPrototypeColumns.ColumnType type)
 			{
-			StringBuilder html = new StringBuilder("<td class=\"P");
-			html.Append(type.ToString());
-			html.Append("\">");
+			StringBuilder html = new StringBuilder();
 
 			BuildSyntaxHighlightedText(start, end, html);
 
 			if (type == HTMLPrototypeColumns.ColumnType.TypeNameSeparator ||
 				 type == HTMLPrototypeColumns.ColumnType.DefaultValueSeparator)
 				{  html.Append("&nbsp;");  }
+
 			else if (end.FundamentalType == FundamentalType.Whitespace &&
 						  (type == HTMLPrototypeColumns.ColumnType.Name ||
 						   type == HTMLPrototypeColumns.ColumnType.ModifierQualifier ||
 							type == HTMLPrototypeColumns.ColumnType.Type) )
 				{  html.Append("&nbsp;");  }
 
-			html.Append("</td>");
-
 			return html.ToString();
+			}
+
+
+		/* Function: BuildPrototypeParameterCell
+		 */
+		protected void BuildPrototypeParameterCell (string contents, StringBuilder html, HTMLPrototypeColumns.ColumnType type, 
+																							  string extraClass = null)
+			{
+			if (contents == null)
+				{
+				if (extraClass == null)
+					{  html.Append("<td></td>");  }
+				else
+					{  html.Append("<td class=\"" + extraClass + "\"></td>");  }
+				}
+			else
+				{
+				html.Append("<td class=\"P");
+				html.Append(type.ToString());
+
+				if (extraClass != null)
+					{
+					html.Append(' ');
+					html.Append(extraClass);
+					}
+
+				html.Append("\">");
+
+				html.Append(contents);
+
+				html.Append("</td>");
+				}
 			}
 
 
