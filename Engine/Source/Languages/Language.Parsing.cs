@@ -1689,7 +1689,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					content.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
 					}
-				else if (iterator.FundamentalType == FundamentalType.Text)
+				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 					{
 					if (iterator.Character >= '0' && iterator.Character <= '9')
 						{
@@ -1720,12 +1720,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					else // not digits
 						{
-						// Note that this won't catch keywords with underscores in them, like wchar_t.
+						TokenIterator endOfIdentifier = iterator;
+						
+						do
+							{  endOfIdentifier.Next();  }
+						while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+									endOfIdentifier.Character == '_');
 
-						if (keywords.Contains(iterator.String))
-							{  iterator.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+						string identifier = iterator.Tokenizer.TextBetween(iterator, endOfIdentifier);
 
-						iterator.Next();
+						if (keywords.Contains(identifier))
+							{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
+
+						iterator.NextByCharacters(identifier.Length);
 						}
 					}
 				else
@@ -1747,8 +1754,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			"int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64",
 			"signed", "unsigned", "integer", "long", "ulong", "short", "ushort", "real", "float", "double", "decimal",
-			"float32", "float64", "float80", "void", "char", "string", "byte", "ubyte", "sbyte", "bool", "boolean",
-			"var", "true", "false", "null", "undefined",
+			"float32", "float64", "float80", "void", "char", "string", "wchar", "wchar_t", "byte", "ubyte", "sbyte", 
+			"bool", "boolean", "true", "false", "null", "undefined", "var",
 
 			"function", "operator", "delegate", "event", "enum", "typedef",
 
