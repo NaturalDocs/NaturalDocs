@@ -1,0 +1,13 @@
+
+/* Function: Test
+	Body
+*/
+public void Test (int x)
+	{
+	}
+
+// Function: Test2
+// Body
+public bool Test2 ()
+	{
+	}

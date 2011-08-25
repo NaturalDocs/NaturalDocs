@@ -25,9 +25,15 @@ namespace GregValure.NaturalDocs.EngineTests
 		{
 
 		[Test]
-		public void All ()
+		public void Styles ()
 			{
-			TestFolder("Comments");
+			TestFolder("Comments/Styles");
+			}
+
+		[Test]
+		public void Encodings ()
+			{
+			TestFolder("Comments/Encodings");
 			}
 
 		public override string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
