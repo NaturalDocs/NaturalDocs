@@ -991,12 +991,24 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							// Go back and change any trailing * or & to name prefixes because even if they're textually attached to the type
 							// (int* x) they're actually part of the name in C++ (int *x).
 
-							endWord.Previous();
+							TokenIterator namePrefix = endWord;
+							namePrefix.Previous();
 
-							while (endWord >= startWord && (endWord.Character == '*' || endWord.Character == '&'))
+							if (namePrefix >= startWord && (namePrefix.Character == '*' || namePrefix.Character == '&' || namePrefix.Character == '^'))
 								{
-								endWord.PrototypeParsingType = PrototypeParsingType.NamePrefix_PartOfType;
-								endWord.Previous();
+								for (;;)
+									{
+									TokenIterator temp = namePrefix;
+									temp.PreviousPastWhitespace(startWord);
+									temp.Previous();
+
+									if (temp >= startWord && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
+										{  namePrefix = temp;  }
+									else
+										{  break;  }
+									}
+
+								startWord.Tokenizer.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
 								}
 							}
 						else if (words == 1)
@@ -1532,6 +1544,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// Handle array or template brackets
 					else if (TryToSkipBlock(ref iterator, true))
 						{  }
+
+					// Catch freestanding symbols like "int * x".  However, cut off after the symbol so we don't include the x in "int *x".
+					else if (iterator.FundamentalType == FundamentalType.Whitespace)
+						{
+						TokenIterator lookahead = iterator;
+
+						for (;;)
+							{
+							while (lookahead.FundamentalType == FundamentalType.Whitespace)
+								{  lookahead.Next();  }
+
+							if (lookahead.Character == '*' || lookahead.Character == '&' || lookahead.Character == '^')
+								{
+								lookahead.Next();
+								iterator = lookahead;
+								}
+							else
+								{  break;  }
+							}
+
+						break;
+						}
 
 					else
 						{  break;  }

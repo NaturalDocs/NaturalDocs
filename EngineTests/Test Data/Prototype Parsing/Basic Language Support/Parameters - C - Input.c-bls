@@ -22,3 +22,7 @@ void FunctionName4 (int x_1, int __y2__)
 // Function: FunctionName5
 virtual void FunctionName5 (int* x, int y[12], char* z = "") = 0;
 
+// Function: FunctionName6
+void FunctionName6 (int * a, int *b, int* c, int ** d, int **e, int** f, int * * g)
+	{
+	}

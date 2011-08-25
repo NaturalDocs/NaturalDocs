@@ -62,3 +62,56 @@
     - Default Value: ""
 
 - After Parameters: ) = 0
+-----
+- Before Parameters: void FunctionName6 (
+
+  - Parameter 1: int * a,
+    - Name: a
+    - Full Type: int *
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: int *b,
+    - Name: b
+    - Full Type: int *
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: int* c,
+    - Name: c
+    - Full Type: int*
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 4: int ** d,
+    - Name: d
+    - Full Type: int **
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 5: int **e,
+    - Name: e
+    - Full Type: int **
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 6: int** f,
+    - Name: f
+    - Full Type: int**
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 7: int * * g
+    - Name: g
+    - Full Type: int * *
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: )
