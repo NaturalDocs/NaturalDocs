@@ -22,14 +22,14 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		
-		protected OutputEntry (Path folder) : base ()
+		protected OutputEntry (Path folder, Path configFile = default(Path), int lineNumber = -1) : base (configFile, lineNumber)
 			{
 			this.folder = folder;
 			this.number = 0;
 			this.projectInfo = new ProjectInfo();
 
 			if (folder.IsRelative)
-				{  throw new Exception("HTMLOutputFolder must use absolute paths.");  }
+				{  throw new Exception("OutputEntry must use absolute paths.");  }
 			}
 
 		

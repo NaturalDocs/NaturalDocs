@@ -20,7 +20,7 @@ namespace GregValure.NaturalDocs.Engine.Config.Entries
 		// Group: Functions
 		// __________________________________________________________________________
 		
-		public IgnoredSourceFolderPattern (string pattern) : base ()
+		public IgnoredSourceFolderPattern (string pattern, Path configFile = default(Path), int lineNumber = -1) : base (configFile, lineNumber)
 			{
 			this.pattern = pattern;
 			}

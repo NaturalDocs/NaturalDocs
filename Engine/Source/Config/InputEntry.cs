@@ -22,7 +22,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		
-		protected InputEntry (Files.InputType newInputType) : base ()
+		protected InputEntry (Files.InputType newInputType, Path configFile = default(Path), int lineNumber = -1) : base (configFile, lineNumber)
 			{
 			inputType = newInputType;
 			name = null;

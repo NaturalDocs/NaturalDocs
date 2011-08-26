@@ -423,6 +423,16 @@ namespace GregValure.NaturalDocs.Engine
 				{  return version;  }
 			}
 			
+		
+		/* Property: FileName
+		 * The <Path> to the open file, or null if none.
+		 */
+		public Path FileName
+			{
+			get
+				{  return fileName;  }
+			}
+
 			
 		/* Property: LineNumber
 		 * Returns the line number of the last line returned by <Get()>, or zero if it hasn't been called yet.

@@ -549,7 +549,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (folderPath.IsRelative)
 					{  folderPath = configFilePath.ParentFolder + "/" + folderPath;  }
 
-				Entries.InputFolder entry = new Entries.InputFolder(folderPath, Files.InputType.Source);
+				Entries.InputFolder entry = new Entries.InputFolder(folderPath, Files.InputType.Source, configFile.FileName, configFile.LineNumber);
 				int number = 0;
 
 				if (int.TryParse(match.Groups[1].Value, out number))
@@ -557,9 +557,6 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 				// We add it regardless of whether the folder exists so that later properties don't cause errors.
 				configFileData.Entries.Add(entry);
-
-				if (System.IO.Directory.Exists(folderPath) == false)
-					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderDoesNotExist(folder)", folderPath) );  }
 
 				return true;
 				}
@@ -576,7 +573,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (folderPath.IsRelative)
 					{  folderPath = configFilePath.ParentFolder + "/" + folderPath;  }
 
-				Entries.InputFolder entry = new Entries.InputFolder(folderPath, Files.InputType.Image);
+				Entries.InputFolder entry = new Entries.InputFolder(folderPath, Files.InputType.Image, configFile.FileName, configFile.LineNumber);
 				int number = 0;
 
 				if (int.TryParse(match.Groups[1].Value, out number))
@@ -584,9 +581,6 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 				// We add it regardless of whether the folder exists so that later properties don't cause errors.
 				configFileData.Entries.Add(entry);
-
-				if (System.IO.Directory.Exists(folderPath) == false)
-					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderDoesNotExist(folder)", folderPath) );  }
 
 				return true;
 				}
@@ -601,13 +595,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (folderPath.IsRelative)
 					{  folderPath = configFilePath.ParentFolder + "/" + folderPath;  }
 
-				Entries.HTMLOutputFolder entry = new Entries.HTMLOutputFolder(folderPath);
+				Entries.HTMLOutputFolder entry = new Entries.HTMLOutputFolder(folderPath, configFile.FileName, configFile.LineNumber);
 
 				// We add it regardless of whether the folder exists so that later properties don't cause errors.
 				configFileData.Entries.Add(entry);
-
-				if (System.IO.Directory.Exists(folderPath) == false)
-					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folderPath) );  }
 
 				return true;
 				}
@@ -622,13 +613,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (folderPath.IsRelative)
 					{  folderPath = configFilePath.ParentFolder + "/" + folderPath;  }
 
-				Entries.XMLOutputFolder entry = new Entries.XMLOutputFolder(folderPath);
+				Entries.XMLOutputFolder entry = new Entries.XMLOutputFolder(folderPath, configFile.FileName, configFile.LineNumber);
 
 				// We add it regardless of whether the folder exists so that later properties don't cause errors.
 				configFileData.Entries.Add(entry);
-
-				if (System.IO.Directory.Exists(folderPath) == false)
-					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folderPath) );  }
 
 				return true;
 				}
@@ -643,13 +631,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (folderPath.IsRelative)
 					{  folderPath = configFilePath.ParentFolder + "/" + folderPath;  }
 
-				Entries.IgnoredSourceFolder entry = new Entries.IgnoredSourceFolder(folderPath);
+				Entries.IgnoredSourceFolder entry = new Entries.IgnoredSourceFolder(folderPath, configFile.FileName, configFile.LineNumber);
 
 				// We add it regardless of whether the folder exists so that later properties don't cause errors.
 				configFileData.Entries.Add(entry);
-
-				if (System.IO.Directory.Exists(folderPath) == false)
-					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredSourceFolderDoesNotExist(folder)", folderPath) );  }
 
 				return true;
 				}

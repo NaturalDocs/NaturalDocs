@@ -25,10 +25,28 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		
-		protected Entry ()
+		protected Entry (Path configFile = default(Path), int lineNumber = -1)
 			{
+			this.configFile = configFile;
+			this.lineNumber = lineNumber;
 			}
 			
+
+		/* Function: Validate
+		 * 
+		 * Checks this entry's configuration to make sure it's valid, such as checking whether a path exists.  If it's not valid it will
+		 * return false and place errors on the list.
+		 * 
+		 * Why not do this directly in <ConfigFileParser>?  Well, suppose you have <Project.txt> with an invalid input folder entry.
+		 * However, the user specifies the input folders on the command line so it will be ignored.  We don't want to post an error in 
+		 * this case.  If we did they would have to correct Project.txt every time they changed the paths on the command line, and 
+		 * the whole point of keeping the command line options is so people don't have to use Project.txt if they don't want to.
+		 */
+		public virtual bool Validate (Errors.ErrorList errorList)
+			{
+			return true;
+			}
+
 			
 		/* Function: IsSameFundamentalEntry
 		 * Returns whether this entry is fundamentally the same as the passed one, meaning any identifying properties will be the
@@ -48,6 +66,46 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public virtual void CopyUnsetPropertiesFrom (Entry other)
 			{
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: ConfigFile
+		 * The configuration file that defined this property, or null if none.
+		 */
+		public Path ConfigFile
+			{
+			get
+				{  return configFile;  }
+			}
+
+		/* Property: LineNumber
+		 * The line number of <ConfigFile> where this property was defined, or -1 if not relevant.
+		 */
+		public int LineNumber
+			{
+			get
+				{  return lineNumber;  }
+			}
+
+
+		
+		// Group: Variables
+		// __________________________________________________________________________
+
+
+		/* var: configFile
+		 * The file that defined this property, or null if none.
+		 */
+		protected Path configFile;
+
+		/* var: lineNumber
+		 * The line number in <configFile> where this property was defined, or -1 if not relevant.
+		 */
+		protected int lineNumber;
 		
 		}
 	}

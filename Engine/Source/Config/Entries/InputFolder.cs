@@ -23,12 +23,32 @@ namespace GregValure.NaturalDocs.Engine.Config.Entries
 		// __________________________________________________________________________
 
 		
-		public InputFolder (Path folder, Files.InputType inputType) : base (inputType)
+		public InputFolder (Path folder, Files.InputType inputType, Path configFile = default(Path), int lineNumber = -1)
+			: base (inputType, configFile, lineNumber)
 			{
 			this.folder = folder;
 
 			if (folder.IsRelative)
 				{  throw new Exception("InputFolder entry must use absolute paths.");  }
+			}
+
+		public override bool Validate(Errors.ErrorList errorList)
+			{
+			if (System.IO.Directory.Exists(folder) == false)
+				{  
+				if (inputType == Files.InputType.Source)
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
+					}
+
+				return false;
+				}
+
+			return true;
 			}
 
 		public override bool IsSameFundamentalEntry (Entry other)

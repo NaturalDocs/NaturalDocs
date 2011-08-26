@@ -261,6 +261,12 @@ namespace GregValure.NaturalDocs.Engine.Config
 				success = false;
 				}
 
+			foreach (Entry entry in commandLineConfig.Entries)
+				{
+				if (entry.Validate(errorList) == false)
+					{  success = false;  }
+				}
+
 			if (success == false)
 				{  return false;  }
 

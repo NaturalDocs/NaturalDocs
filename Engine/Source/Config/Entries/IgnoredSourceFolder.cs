@@ -21,12 +21,23 @@ namespace GregValure.NaturalDocs.Engine.Config.Entries
 		// Group: Functions
 		// __________________________________________________________________________
 		
-		public IgnoredSourceFolder (Path folder) : base ()
+		public IgnoredSourceFolder (Path folder, Path configFile = default(Path), int lineNumber = -1) : base (configFile, lineNumber)
 			{
 			this.folder = folder;
 
 			if (folder.IsRelative)
 				{  throw new Exception("IgnoredSourceFolder entry must use absolute paths.");  }
+			}
+
+		public override bool Validate(Errors.ErrorList errorList)
+			{
+			if (System.IO.Directory.Exists(folder) == false)
+				{  
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
+				return false;
+				}
+
+			return true;
 			}
 
 			

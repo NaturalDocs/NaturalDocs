@@ -18,8 +18,19 @@ namespace GregValure.NaturalDocs.Engine.Config.Entries
 	public class XMLOutputFolder : OutputEntry
 		{
 		
-		public XMLOutputFolder (Path folder) : base (folder)
+		public XMLOutputFolder (Path folder, Path configFile = default(Path), int lineNumber = -1) : base (folder, configFile, lineNumber)
 			{
+			}
+
+		public override bool Validate(Errors.ErrorList errorList)
+			{
+			if (System.IO.Directory.Exists(folder) == false)
+				{  
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
+				return false;
+				}
+
+			return true;
 			}
 
 		public override bool IsSameFundamentalEntry (Entry other)

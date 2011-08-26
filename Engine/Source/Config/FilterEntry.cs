@@ -18,7 +18,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 	abstract public class FilterEntry : Entry
 		{
 		
-		protected FilterEntry () : base ()
+		protected FilterEntry (Path configFile = default(Path), int lineNumber = -1) : base (configFile, lineNumber)
 			{
 			}
 		
