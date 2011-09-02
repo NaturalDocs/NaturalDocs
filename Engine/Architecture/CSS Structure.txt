@@ -155,23 +155,94 @@ If the browser is Internet Explorer 6 through 8, the default style's JavaScript 
 Topic: Prototype
 _______________________________________________________________________________
 
+No Parameter Form:
+
+(start code)
+
+	<NDPrototype NoParameterForm>
+		content
+	</NDPrototype NoParameterForm>
+
+(end)
+
+
+Short Form:
+
 (start code)
 
 	<NDPrototype>
-		<table PParams CStyle/PascalStyle>
+		<table>
 			<tr>
-				<td PType>column</td PType>
-				<td PType>column</td PType>
-				...
-			</tr><tr>
-				...
+
+				<td PBeforeParameters>
+					...
+				</td PBeforeParameters>
+
+				<td PParametersParentCell>
+					[Parameter Table]
+				</td PParametersParentCell>
+
+				<td PAfterParameters>
+					...
+				</td PAfterParameters>
+
 			</tr>
-		</table PParams CStyle/PascalStyle>
+		</table>
 	</NDPrototype>
 
 (end)
 
-PType:
+
+Long Form:
+
+(start code)
+
+	<NDPrototype>
+		<table>
+			<tr>
+
+				<td PBeforeParameters>
+					...
+				</td PBeforeParameters>
+
+			</tr><tr>
+
+				<td PParametersParentCell>
+					[Parameter Table]
+				</td PParametersParentCell>
+
+			</tr><tr>
+
+				<td PAfterParameters>
+					...
+				</td PAfterParameters>
+
+			</tr>
+		</table>
+	</NDPrototype>
+
+(end)
+
+
+Parameter Table:
+
+(start code)
+
+		<table PParameters CStyle/PascalStyle>
+			<tr>
+				<td PType>type<PTypeSuffix>suffix</PTypeSuffix></td PType>
+
+				<td P[ColumnType]>column</td P[ColumnType]>
+				<td P[ColumnType]>column</td P[ColumnType]>
+				...
+			</tr><tr>
+				...
+			</tr>
+		</table PParameters CStyle/PascalStyle>
+
+(end code)
+
+P[ColumnType]:
 
 	PModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
 	PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style

@@ -292,150 +292,156 @@ body.NDContentPage {
 		padding: .5em;
 		}
 
+
+
+
+
+/* Prototypes
+	___________________________________________________________________________
+*/
+
+	/*  Colors  */
+
+	.TFunction .NDPrototype,
+	.TConstructor .NDPrototype,
+	.TDestructor .NDPrototype,
+	.TOperator .NDPrototype {
+		background-color: #F2F2F2; border-color: #D8D8D8 }
+
+	.TProperty .NDPrototype {
+		background-color: #F0F0FE; border-color: #CBCBD8 }
+
+	.TVariable .NDPrototype {
+		background-color: #FAFAE0; border-color: #DFDFB8 }
+
+	.TConstant .NDPrototype {
+		background-color: #D8D8D8; border-color: #B0B0B0 }
+
+	.TType .NDPrototype,
+	.TEnumeration .NDPrototype,
+	.TDelegate .NDPrototype {
+		background-color: #FAEED8; border-color: #E0CCA4;
+		}
+
+	.TEvent .NDPrototype {
+		background-color: #E8F8E8; border-color: #C0DCC0 }
+
+
+	/*  Sizing and Spacing  */
+
 	.NDPrototype {
 		font: 10pt `CodeFontFamily;
 		border: 1px solid #808080;
 		margin: 0 5ex 1em 5ex;
-		padding: .75ex 1.2ex;
+		padding: .75ex 1.25ex 1.25ex 1.25ex;
+		overflow: auto;
+		}
+
+	.NDPrototype table {
+		width: 100%;
+		margin: 0;
+		padding: 0; 
+		border: 0 none; 
+		border-spacing: 0;
+		}
+	.NDPrototype td {
+		margin: 0; 
+		padding: 0; 
+		border: 0 none;
+		white-space: nowrap;
+		}
+	.NDPrototype td.PDefaultValue {
+		white-space: normal;
+		}
+
+	.LongForm table.PParameters td.last,
+	.ShortForm td.PAfterParameters {
+		width: 100%;
+		}
+	.LongForm table.PParameters td.first,
+	.LongForm td.PAfterParameters {
+		padding-left: 3.5ex;
+		}
+	.ShortForm td.PAfterParameters {
+		vertical-align: bottom;
 		}
 
 
-	/* Prototypes
-		___________________________________________________
-	*/
+	/*  Highlighting  */
 
-		/*  Colors  */
-
-		.TFunction .NDPrototype,
-		.TConstructor .NDPrototype,
-		.TDestructor .NDPrototype,
-		.TOperator .NDPrototype {
-			background-color: #F2F2F2; border-color: #D8D8D8 }
-
-		.TProperty .NDPrototype {
-			background-color: #F0F0FE; border-color: #CBCBD8 }
-
-		.TVariable .NDPrototype {
-			background-color: #FAFAE0; border-color: #DFDFB8 }
-
-		.TConstant .NDPrototype {
-			background-color: #D8D8D8; border-color: #B0B0B0 }
-
-		.TType .NDPrototype,
-		.TEnumeration .NDPrototype,
-		.TDelegate .NDPrototype {
-			background-color: #FAEED8; border-color: #E0CCA4;
+	.PParameters tr:hover {
+		background-color: white;
+		}
+		/* Doesn't start working until IE8 */
+		.IE6 .PParameters tr:hover,
+		.IE7 .PParameters tr:hover {
+			background-color: transparent;
 			}
 
-		.TEvent .NDPrototype {
-			background-color: #E8F8E8; border-color: #C0DCC0 }
+	/* Highlight all links when hovering over the prototype since it may not be obvious that you can click things. */
+	.NDPrototype:hover a:link,
+	.NDPrototype:hover a:visited {
+		border-bottom: 1px dotted !important;
+		text-decoration: none !important;
+		}
+	
+	/* Stay with border-bottom on hover since switching between that and underline makes the line jump up and down. */
+	.NDPrototype:hover a:hover,
+	.NDPrototype:hover a:active {
+		border-bottom: 1px solid !important;
+		text-decoration: none !important;
+		}
 
-
-		/*  Sizing and Spacing  */
-
-		.NDPrototype {
-			overflow: auto;
-			}
-
-		table.PParams {
-			margin: 0;
-			padding: 0; 
-			border: 0 none; 
-			border-spacing: 0;
-			}
-		table.PParams td {
-			margin: 0; 
-			padding: 0; 
-			border: 0 none;
-			}
-
-		table.PParams,
-		table.PParams td.last {
-			width: 100%;
-			}
-		table.PParams td.first {
-			padding-left: 3.5ex;
-			}
-
-		table.PParams td {
-			white-space: nowrap;
-			}
-		table.PParams td.PDefaultValue {
-			white-space: normal;
-			}
-
-
-		/*  Highlighting  */
-
-		table.PParams tr:hover {
-			background-color: white;
-			}
-			/* Doesn't start working until IE8 */
-			.IE6 table.PParams tr:hover,
-			.IE7 table.PParams tr:hover {
-				background-color: transparent;
-				}
-
-		/* Highlight all links when hovering over the prototype since it may not be obvious that you can click things. */
-		.NDPrototype:hover a:link,
-		.NDPrototype:hover a:visited {
-			border-bottom: 1px dotted !important;
+		/* Doesn't work in IE until 9.  Underline is better than nothing. */
+		.IE6 .NDPrototype:hover a:link,
+		.IE6 .NDPrototype:hover a:visited,
+		.IE7 .NDPrototype:hover a:link,
+		.IE7 .NDPrototype:hover a:visited,
+		.IE8 .NDPrototype:hover a:link,
+		.IE8 .NDPrototype:hover a:visited {
+			border-bottom: 0 none !important;
 			text-decoration: none !important;
 			}
-		
-		/* Stay with border-bottom on hover since switching between that and underline makes the line jump up and down. */
-		.NDPrototype:hover a:hover,
-		.NDPrototype:hover a:active {
-			border-bottom: 1px solid !important;
-			text-decoration: none !important;
+		.IE6 .NDPrototype:hover a:hover,
+		.IE6 .NDPrototype:hover a:active,
+		.IE7 .NDPrototype:hover a:hover,
+		.IE7 .NDPrototype:hover a:active,
+		.IE8 .NDPrototype:hover a:hover,
+		.IE8 .NDPrototype:hover a:active {
+			border-bottom: 0 none !important;
+			text-decoration: underline !important;
 			}
 
-			/* Doesn't work in IE until 9.  Underline is better than nothing. */
-			.IE6 .NDPrototype:hover a:link,
-			.IE6 .NDPrototype:hover a:visited,
-			.IE7 .NDPrototype:hover a:link,
-			.IE7 .NDPrototype:hover a:visited,
-			.IE8 .NDPrototype:hover a:link,
-			.IE8 .NDPrototype:hover a:visited {
-				border-bottom: 0 none !important;
-				text-decoration: none !important;
-				}
-			.IE6 .NDPrototype:hover a:hover,
-			.IE6 .NDPrototype:hover a:active,
-			.IE7 .NDPrototype:hover a:hover,
-			.IE7 .NDPrototype:hover a:active,
-			.IE8 .NDPrototype:hover a:hover,
-			.IE8 .NDPrototype:hover a:active {
-				border-bottom: 0 none !important;
-				text-decoration: underline !important;
-				}
+
+	.CStyle .PModifierQualifier,
+	.PDefaultValue,
+	.PDefaultValueSeparator {
+		opacity: 0.45;
+		}
+	.CStyle .PModifierQualifier,
+	.CStyle .PNamePrefix {
+		text-align: right;
+		}
+	
 
 
-		.CStyle .PModifierQualifier,
-		.PDefaultValue,
-		.PDefaultValueSeparator {
-			opacity: 0.45;
-			}
-		.CStyle .PModifierQualifier,
-		.CStyle .PNamePrefix {
-			text-align: right;
-			}
-		
 
 
-	/* Syntax Highlighting
-		___________________________________________________
-	*/
-		.SHComment {
-			color: #808080;
-			}
-		.SHKeyword {
-			color: #880000;
-			}
-		.SHNumber,
-		.SHString {
-			color: #000088;
-			}
+/* Syntax Highlighting
+	___________________________________________________
+*/
+
+.SHComment {
+	color: #808080;
+	}
+.SHKeyword {
+	color: #880000;
+	}
+.SHNumber,
+.SHString {
+	color: #000088;
+	}
+
 
 
 

@@ -239,137 +239,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildPrototype (Topic topic, StringBuilder html)
 			{
-			html.Append("<div class=\"NDPrototype\">");
-
-			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
-
-			if (language == null)
-				{  html.EntityEncodeAndAppend(topic.Prototype);  }
-			else
-				{
-				ParsedPrototype prototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
-				TokenIterator start, end;
-				
-				prototype.GetBeforeParameters(out start, out end);
-				BuildSyntaxHighlightedText(start, end, html);
-
-				HTMLPrototypeColumns paramColumns = new HTMLPrototypeColumns(prototype);
-				HTMLPrototypeColumns.ColumnType type;
-
-				// Rather than just iterate through, we'll build a table in memory so we can omit unused columns.
-				string[,] cellContents = new string[prototype.NumberOfParameters, paramColumns.NumberOfColumns];
-				bool[] usedColumns = new bool[paramColumns.NumberOfColumns];
-
-				for (int p = 0; p < prototype.NumberOfParameters; p++)
-					{
-					for (int c = 0; c < paramColumns.NumberOfColumns; c++)
-						{
-						if (paramColumns.GetColumn(p, c, out start, out end, out type))
-							{
-							usedColumns[c] = true;
-							cellContents[p,c] = BuildPrototypeParameterCellContents(start, end, type);
-							}
-						}
-					}
-
-				int firstUsedCell = 0;
-				while (firstUsedCell < usedColumns.Length && usedColumns[firstUsedCell] == false )
-					{  firstUsedCell++;  }
-
-				int lastUsedCell = usedColumns.Length - 1;
-				while (lastUsedCell > 0 && usedColumns[lastUsedCell] == false)
-					{  lastUsedCell--;  }
-
-				html.Append("<table class=\"PParams " + (prototype.CStyle ? "CStyle" : "PascalStyle") + "\">");
-
-				for (int p = 0; p < prototype.NumberOfParameters; p++)
-					{
-					html.Append("<tr>");
-
-					for (int c = 0; c < paramColumns.NumberOfColumns; c++)
-						{
-						if (usedColumns[c])
-							{  
-							string extraClass = null;
-
-							if (c == firstUsedCell && c == lastUsedCell)
-								{  extraClass = "first last";  }
-							else if (c == firstUsedCell)
-								{  extraClass = "first";  }
-							else if (c == lastUsedCell)
-								{  extraClass = "last";  }
-
-							BuildPrototypeParameterCell(cellContents[p,c], html, paramColumns.ColumnOrder[c], extraClass);
-							}
-						}
-
-					html.Append("</tr>");
-					}
-
-				html.Append("</table>");
-
-				if (prototype.GetAfterParameters(out start, out end))
-					{
-					html.Append("&nbsp;&nbsp;&nbsp;");
-					BuildSyntaxHighlightedText(start, end, html);
-					}
-				}
-
-			html.Append("</div>");
-			}
-
-
-		/* Function: BuildPrototypeParameterCellContents
-		 */
-		protected string BuildPrototypeParameterCellContents (TokenIterator start, TokenIterator end, HTMLPrototypeColumns.ColumnType type)
-			{
-			StringBuilder html = new StringBuilder();
-
-			BuildSyntaxHighlightedText(start, end, html);
-
-			if (type == HTMLPrototypeColumns.ColumnType.TypeNameSeparator ||
-				 type == HTMLPrototypeColumns.ColumnType.DefaultValueSeparator)
-				{  html.Append("&nbsp;");  }
-
-			else if (end.FundamentalType == FundamentalType.Whitespace &&
-						  (type == HTMLPrototypeColumns.ColumnType.Name ||
-						   type == HTMLPrototypeColumns.ColumnType.ModifierQualifier ||
-							type == HTMLPrototypeColumns.ColumnType.Type) )
-				{  html.Append("&nbsp;");  }
-
-			return html.ToString();
-			}
-
-
-		/* Function: BuildPrototypeParameterCell
-		 */
-		protected void BuildPrototypeParameterCell (string contents, StringBuilder html, HTMLPrototypeColumns.ColumnType type, 
-																							  string extraClass = null)
-			{
-			if (contents == null)
-				{
-				if (extraClass == null)
-					{  html.Append("<td></td>");  }
-				else
-					{  html.Append("<td class=\"" + extraClass + "\"></td>");  }
-				}
-			else
-				{
-				html.Append("<td class=\"P");
-				html.Append(type.ToString());
-
-				if (extraClass != null)
-					{
-					html.Append(' ');
-					html.Append(extraClass);
-					}
-
-				html.Append("\">");
-
-				html.Append(contents);
-
-				html.Append("</td>");
-				}
+			HTMLPrototype prototypeBuilder = new HTMLPrototype(this);
+			prototypeBuilder.Build(topic, html);
 			}
 
 
@@ -607,7 +478,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Function: BuildSyntaxHighlightedText
 		 */
-		protected void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder html)
+		protected internal void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder html)
 			{
 			while (iterator < end)
 				{

@@ -35,6 +35,22 @@ namespace GregValure.NaturalDocs.Engine
 	public class ParsedPrototype
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: ParameterStyle
+		 * 
+		 * C - A C-style prototype with parameters in a form similar to "int x = 12".
+		 * Pascal - A Pascal-style prototype with parameters in a form similar to "x: int := 12".
+		 * 
+		 * Typeless prototypes will be returned as C-style.
+		 */
+		public enum ParameterStyle : byte
+			{  C, Pascal  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -46,7 +62,7 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			tokenizer = prototype;
 			sectionBounds = null;
-			isPascal = null;
+			style = null;
 			}
 
 			
@@ -493,17 +509,17 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Property: PascalStyle
-		 * Whether this prototype uses Pascal-style parameters ("x: int") instead of C-style ("int x").  If it has no parameters or
-		 * no types this will be false.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
+		/* Property: Style
+		 * The format of the prototype, such as C-style parameters ("int x") or Pascal-style ("x: int").  If it has no parameters or
+		 * no types this will return C.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
 		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
 		 */
-		public bool PascalStyle
+		public ParameterStyle Style
 			{
 			get
 				{
-				if (isPascal != null)
-					{  return (bool)isPascal;  }
+				if (style != null)
+					{  return (ParameterStyle)style;  }
 
 				int numberOfParameters = NumberOfParameters;
 
@@ -524,8 +540,8 @@ namespace GregValure.NaturalDocs.Engine
 							{
 							if (foundType)
 								{  
-								isPascal = false;
-								return false;  
+								style = ParameterStyle.C;
+								return ParameterStyle.C;
 								}
 							else
 								{  foundName = true;  }
@@ -534,8 +550,8 @@ namespace GregValure.NaturalDocs.Engine
 							{
 							if (foundName && foundSeparator)
 								{  
-								isPascal = true;
-								return true;  
+								style = ParameterStyle.Pascal;
+								return ParameterStyle.Pascal;
 								}
 							else
 								{  foundType = true;  }
@@ -549,21 +565,9 @@ namespace GregValure.NaturalDocs.Engine
 						}
 					}
 
-				isPascal = false;
-				return false;
+				style = ParameterStyle.C;
+				return ParameterStyle.C;
 				}
-			}
-			
-
-		/* Property: CStyle
-		 * Whether this prototype uses C-style parameters ("int x") instead of Pascal-style ("x: int").  If it has no parameters or
-		 * no types this will be true.  Tokens must be marked with <PrototypeParsingType.Name>, <PrototypeParsingType.Type>,
-		 * and <PrototypeParsingType.NameTypeSeparator> for this to work.
-		 */
-		public bool CStyle
-			{
-			get
-				{  return !PascalStyle;  }
 			}
 
 
@@ -583,10 +587,10 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected int[] sectionBounds;
 
-		/* var: isPascal
-		 * Whether the prototype is Pascal-style instead of C-style.  Will be null if it hasn't been determined yet.
+		/* var: style
+		 * The prototype format, or null if it hasn't been determined yet.
 		 */
-		protected bool? isPascal;
+		protected ParameterStyle? style;
 
 		}
 	}
