@@ -56,7 +56,7 @@ namespace GregValure.NaturalDocs.EngineTests
 
 					if (numberOfParameters == 0)
 						{
-						parsedPrototype.GetBeforeParameters(out start, out end);
+						parsedPrototype.GetCompletePrototype(out start, out end);
 						output.AppendLine("- No Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
 						}
 					else

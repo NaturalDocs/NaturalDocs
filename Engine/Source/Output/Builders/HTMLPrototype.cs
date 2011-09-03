@@ -141,7 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			BuildShortForm(); //xxx
+			BuildLongForm(); //xxx
 			}
 
 
@@ -487,7 +487,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput.Append("<div class=\"NDPrototype NoParameterForm\">");
 
 			TokenIterator start, end;
-			parsedPrototype.GetBeforeParameters(out start, out end);
+			parsedPrototype.GetCompletePrototype(out start, out end);
 
 			htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);
 

@@ -65,6 +65,18 @@ namespace GregValure.NaturalDocs.Engine
 			style = null;
 			}
 
+
+		/* Function: GetCompletePrototype
+		 * Returns the bounds of the complete prototype, minus whitespace.
+		 */
+		public void GetCompletePrototype (out TokenIterator start, out TokenIterator end)
+			{
+			start = tokenizer.FirstToken;
+			end = tokenizer.LastToken;
+
+			TrimWhitespace(ref start, ref end);
+			}
+
 			
 		/* Function: GetBeforeParameters
 		 * Returns the bounds of the section of the prototype prior to the parameters.  If it has parameters, it will include the 
@@ -79,8 +91,8 @@ namespace GregValure.NaturalDocs.Engine
 			start = tokenizer.FirstToken;
 			start.Next(sectionBounds[0]);
 
-			end = tokenizer.FirstToken;
-			end.Next(sectionBounds[1]);
+			end = start;
+			end.Next(sectionBounds[1] - sectionBounds[0]);
 			}
 
 
@@ -95,16 +107,19 @@ namespace GregValure.NaturalDocs.Engine
 			if (index >= NumberOfParameters)
 				{
 				start = tokenizer.LastToken;
-				end = tokenizer.LastToken;
+				end = start;
 				return false;
 				}
 			else
-				{			
-				start = tokenizer.FirstToken;
-				start.Next(sectionBounds[2 + (index * 2)]);
+				{
+				int startIndex = sectionBounds[2 + (index * 2)];
+				int endIndex = sectionBounds[3 + (index * 2)];
 
-				end = tokenizer.FirstToken;
-				end.Next(sectionBounds[3 + (index * 2)]);
+				start = tokenizer.FirstToken;
+				start.Next(startIndex);
+
+				end = start;
+				end.Next(endIndex - startIndex);
 
 				return true;
 				}
@@ -338,19 +353,22 @@ namespace GregValure.NaturalDocs.Engine
 			if (sectionBounds == null)
 				{  CalculateSectionBounds();  }
 
-			if (NumberOfParameters == 0)
+			if (sectionBounds.Length < 4)
 				{
 				start = tokenizer.LastToken;
-				end = tokenizer.LastToken;
+				end = start;
 				return false;
 				}
 			else
 				{
-				start = tokenizer.FirstToken;
-				start.Next( sectionBounds[ sectionBounds.Length - 2 ] );
+				int startIndex = sectionBounds[sectionBounds.Length - 2];
+				int endIndex = sectionBounds[sectionBounds.Length - 1];
 
-				end = tokenizer.FirstToken;
-				end.Next( sectionBounds[ sectionBounds.Length - 1 ] );
+				start = tokenizer.FirstToken;
+				start.Next(startIndex);
+
+				end = start;
+				end.Next(endIndex - startIndex);
 
 				return true;
 				}
@@ -364,6 +382,7 @@ namespace GregValure.NaturalDocs.Engine
 			// Count the parameters
 
 			int numberOfParameters = 0;
+			bool hasStartOfParams = false;
 			TokenIterator iterator = tokenizer.FirstToken;
 
 			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
@@ -371,6 +390,7 @@ namespace GregValure.NaturalDocs.Engine
 
 			if (iterator.IsInBounds)
 				{
+				hasStartOfParams = true;
 				bool hasNonWhitespace = false;
 
 				iterator.Next();
@@ -394,7 +414,7 @@ namespace GregValure.NaturalDocs.Engine
 
 			// Create the bounds array
 
-			if (numberOfParameters == 0)
+			if (hasStartOfParams == false)
 				{
 				sectionBounds = new int[2];
 
@@ -405,6 +425,41 @@ namespace GregValure.NaturalDocs.Engine
 
 				sectionBounds[0] = start.TokenIndex;
 				sectionBounds[1] = end.TokenIndex;
+				}
+
+			else if (numberOfParameters == 0)
+				{
+				sectionBounds = new int[4];
+
+				TokenIterator start, end;
+
+				iterator = tokenizer.FirstToken;
+				start = iterator;
+
+				while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+					{  iterator.Next();  }
+
+				// Include StartOfParams in the first segment
+				iterator.Next();
+				end = iterator;
+
+				TrimWhitespace(ref start, ref end);
+
+				sectionBounds[0] = start.TokenIndex;
+				sectionBounds[1] = end.TokenIndex;
+
+				iterator = end;
+
+				while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+					{  iterator.Next();  }
+
+				start = iterator;
+				end = tokenizer.LastToken;
+
+				TrimWhitespace(ref start, ref end);
+
+				sectionBounds[2] = start.TokenIndex;
+				sectionBounds[3] = end.TokenIndex;
 				}
 
 			else
@@ -501,7 +556,7 @@ namespace GregValure.NaturalDocs.Engine
 				if (sectionBounds == null)
 					{  CalculateSectionBounds();  }
 
-				if (sectionBounds.Length == 2)
+				if (sectionBounds.Length <= 4)
 					{  return 0;  }
 				else
 					{  return (sectionBounds.Length / 2) - 2;  }
@@ -583,7 +638,8 @@ namespace GregValure.NaturalDocs.Engine
 		/* var: sectionBounds
 		 * An array of token indexes representing the start and stop of each section of the prototype, or null if it hasn't been
 		 * calculated yet.  The first pair will be the start and stop of the section before the parameters.  If parameters exist,
-		 * a subsequent pair will exist for each parameter and then one final one for the section after the parameters.
+		 * a subsequent pair will exist for each parameter and then one final one for the section after the parameters.  If there
+		 * are only two pairs that means there was an empty parameter list such as "Function()".
 		 */
 		protected int[] sectionBounds;
 
