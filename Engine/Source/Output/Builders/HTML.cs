@@ -1437,6 +1437,30 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			return fromFile.ParentFolder.MakeRelative(toFile).ToURL();
 			}
+
+
+
+		// Group: Topic Type Functions
+		// __________________________________________________________________________
+
+
+		/* Function: IsFileTopicType
+		 * Returns whether the passed topic type ID is the "File" type.
+		 */
+		public bool IsFileTopicType (int topicTypeID)
+			{
+			return (topicTypeID == fileTopicTypeID);
+			}
+
+
+		/* Function: IsCodeTopicType
+		 * Returns whether the passed topic type ID is a code type, as opposed to non-code types like Topic.
+		 * This is *not* definitive.  It only filters out known non-code types, assuming everything else is code.
+		 */
+		public bool IsCodeTopicType (int topicTypeID)
+			{
+			return (nonCodeTopicTypeIDs.Contains(topicTypeID) == false);
+			}
 			
 			
 			
@@ -1529,17 +1553,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static char[] restrictedPathCharacters = { ':', '#', ';', '&' };
 
-		/* var: breakURLCharacters
-		 * An array of characters that cause an inline URL to wrap.
-		 */
-		public static char[] breakURLCharacters = { '.', '/', '#', '?', '&' };
-
-		/* var: maxUnbrokenURLCharacters
-		 * The longest stretch between <breakURLCharacters> that can occur unbroken in an inline URL.  Formatting attempts
-		 * to break on those characters as it looks cleaner, but this limit forces it to happen if they don't occur.
-		 */
-		public const int maxUnbrokenURLCharacters = 35;
-
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.
 		 */
@@ -1571,9 +1584,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			return null;
 			}
-
-		static protected Regex.Output.HTML.FileSplitSymbols FileSplitSymbolsRegex = new Regex.Output.HTML.FileSplitSymbols();
-		static protected Regex.Output.HTML.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.Output.HTML.CodeSplitSymbols();
 
 		}
 

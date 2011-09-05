@@ -78,6 +78,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				else // (topics.Count != 0)
 					{
 					StringBuilder html = new StringBuilder("\r\n\r\n");
+					HTMLTopic topicBuilder = new HTMLTopic(this);
 						
 					for (int i = 0; i < topics.Count; i++)
 						{  
@@ -88,7 +89,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						else if (i == topics.Count - 1)
 							{  extraClass = "last";  }
 
-						BuildTopic(topics[i], html, extraClass);  
+						topicBuilder.Build(topics[i], html, extraClass);  
 						html.Append("\r\n\r\n");
 						}
 							
@@ -117,362 +118,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (haveDBLock)
 					{  accessor.ReleaseLock();  }
 				}
-			}
-
-
-		/* Function: BuildTopic
-		 */
-		protected void BuildTopic (Topic topic, StringBuilder html, string extraClass = null)
-			{
-			string topicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string languageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
-
-			html.Append(
-				"<div class=\"CTopic T" + topicTypeName + " L" + languageName + (extraClass == null ? "" : ' ' + extraClass) + "\">" +
-
-					"\r\n ");
-					BuildTitle(topic, html);
-
-					#if SHOW_NDMARKUP
-						if (topic.Body != null)
-							{
-							html.Append(
-							"\r\n " +
-							"<div class=\"CBodyNDMarkup\">" +
-								topic.Body.ToHTML() +
-							"</div>");
-							}
-					#endif
-
-					if (topic.Prototype != null)
-						{
-						html.Append("\r\n ");
-						BuildPrototype(topic, true, html);
-						}
-
-					if (topic.Body != null)
-						{
-						html.Append("\r\n ");
-						BuildBody(topic, html);
-						}
-
-				html.Append(
-				"\r\n" +
-				"</div>"
-				);
-			}
-
-
-		/* Function: BuildTitle
-		 */
-		protected void BuildTitle (Topic topic, StringBuilder html)
-			{
-			MatchCollection splitSymbols = null;
-
-			if (topic.TopicTypeID == fileTopicTypeID)
-				{  splitSymbols = FileSplitSymbolsRegex.Matches(topic.Title);  }
-			else if (nonCodeTopicTypeIDs.Contains(topic.TopicTypeID) == false)
-				{  splitSymbols = CodeSplitSymbolsRegex.Matches(topic.Title);  }
-
-			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);
-
-
-			// Don't count separators on the end of the string.
-
-			if (splitCount > 0)
-				{
-				int endOfString = topic.Title.Length;
-
-				for (int i = splitCount - 1; i >= 0; i--)
-					{
-					if (splitSymbols[i].Index + splitSymbols[i].Length == endOfString)
-						{
-						splitCount--;
-						endOfString = splitSymbols[i].Index;
-						}
-					else
-						{  break;  }
-					}
-				}
-
-
-			// Build the HTML.
-
-			html.Append("<div class=\"CTitle\">");
-
-			if (splitCount == 0)
-				{
-				html.Append( topic.Title.ToHTML() );
-				}
-			else
-				{
-				int appendedSoFar = 0;
-				html.Append("<span class=\"qualifier\">");
-
-				for (int i = 0; i < splitCount; i++)
-					{
-					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
-					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
-					html.Append( titleSection.ToHTML() );
-
-					if (i < splitCount - 1)
-						{
-						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
-						// Webkit browsers won't wrap on it.
-						html.Append("&#8203;");
-						}
-
-					appendedSoFar = endOfSection;
-					}
-
-				html.Append("</span>");
-				html.Append("&#8203;");  // zero-width space for wrapping
-
-				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
-				}
-
-			html.Append("</div>");
-			}
-
-
-		/* Function: BuildPrototype
-		 */
-		protected void BuildPrototype (Topic topic, bool addLinks, StringBuilder html)
-			{
-			HTMLPrototype prototypeBuilder = new HTMLPrototype(this);
-			prototypeBuilder.Build(topic, addLinks, html);
-			}
-
-
-		/* Function: BuildBody
-		 */
-		protected void BuildBody (Topic topic, StringBuilder html)
-			{
-			html.Append("<div class=\"CBody\">");
-
-			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
-
-			while (iterator.IsInBounds)
-				{
-				switch (iterator.Type)
-					{
-					case NDMarkup.Iterator.ElementType.Text:
-						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
-							{  iterator.AppendTo(html);  }
-						else
-							{  html.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
-						break;
-
-					case NDMarkup.Iterator.ElementType.ParagraphTag:
-					case NDMarkup.Iterator.ElementType.BulletListTag:
-					case NDMarkup.Iterator.ElementType.BulletListItemTag:
-					case NDMarkup.Iterator.ElementType.BoldTag:
-					case NDMarkup.Iterator.ElementType.ItalicsTag:
-					case NDMarkup.Iterator.ElementType.UnderlineTag:
-					case NDMarkup.Iterator.ElementType.LTEntityChar:
-					case NDMarkup.Iterator.ElementType.GTEntityChar:
-					case NDMarkup.Iterator.ElementType.AmpEntityChar:
-					case NDMarkup.Iterator.ElementType.QuoteEntityChar:
-						iterator.AppendTo(html);
-						break;
-
-					case NDMarkup.Iterator.ElementType.HeadingTag:
-						if (iterator.IsOpeningTag)
-							{  html.Append("<div class=\"CHeading\">");  }
-						else
-							{  html.Append("</div>");  }
-						break;
-
-					case NDMarkup.Iterator.ElementType.PreTag:
-						// Because we can assume the NDMarkup is valid, we can assume it's an opening tag and that we will run
-						// into a closing tag.
-
-						html.Append("<pre>");
-
-						for (;;)
-							{
-							iterator.Next();
-
-							if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag)
-								{  break;  }
-							else
-								{  
-								// Includes PreLineBreakTags
-								iterator.AppendTo(html);  
-								}
-							}
-
-						html.Append("</pre>");
-						break;
-
-					case NDMarkup.Iterator.ElementType.DefinitionListTag:
-						if (iterator.IsOpeningTag)
-							{  html.Append("<table class=\"CDefinitionList\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");  }
-						else
-							{  html.Append("</table>");  }
-						break;
-
-					case NDMarkup.Iterator.ElementType.DefinitionListEntryTag:
-						if (iterator.IsOpeningTag)
-							{  html.Append("<tr><td class=\"CDLEntry\">");  }
-						else
-							{  html.Append("</td>");  }
-						break;
-
-					case NDMarkup.Iterator.ElementType.DefinitionListDefinitionTag:
-						if (iterator.IsOpeningTag)
-							{  html.Append("<td class=\"CDLDefinition\">");  }
-						else
-							{  html.Append("</td></tr>");  }
-						break;
-
-					case NDMarkup.Iterator.ElementType.LinkTag:
-						string type = iterator.Property("type");
-
-						if (type == "email")
-							{  BuildEMailLink(iterator, html);  }
-						else if (type == "url")
-							{  BuildURLLink(iterator, html);  }
-						else // type == "naturaldocs"
-							{  BuildNaturalDocsLink(iterator, html);  }
-
-						break;
-
-					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
-						html.Append( "<i>" + iterator.String.ToHTML() + "</i>" );
-						break;
-					}
-
-				iterator.Next();
-				}
-
-			html.Append("</div>");
-			}
-
-
-		/* Function: BuildEMailLink
-		 */
-		protected void BuildEMailLink (NDMarkup.Iterator iterator, StringBuilder html)
-			{
-			string address = iterator.Property("target");
-			int atIndex = address.IndexOf('@');
-			int cutPoint1 = atIndex / 2;
-			int cutPoint2 = (atIndex+1) + ((address.Length - (atIndex+1)) / 2);
-			
-			html.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
-			html.Append("'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
-			html.Append("'+'\\u0040'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
-			html.Append("'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
-			html.Append("';return false;\">");
-
-			string text = iterator.Property("text");
-
-			if (text != null)
-				{  html.EntityEncodeAndAppend(text);  }
-			else
-				{
-				html.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
-				html.Append("<span style=\"display: none\">[xxx]</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(cutPoint1, atIndex - cutPoint1) ));
-				html.Append("<span>&#64;</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
-				html.Append("<span style=\"display: none\">[xxx]</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(cutPoint2, address.Length - cutPoint2) ));
-				}
-
-			html.Append("</a>");
-			}
-
-		/* Function: EMailSegmentForJavaScriptString
-		 */
-		protected string EMailSegmentForJavaScriptString (string segment)
-			{
-			segment = segment.StringEscape();
-			segment = segment.Replace(".", "\\u002e");
-			return segment;
-			}
-
-		/* Function: EMailSegmentForHTML
-		 */
-		protected string EMailSegmentForHTML (string segment)
-			{
-			segment = segment.EntityEncode();
-			segment = segment.Replace(".", "&#46;");
-			return segment;
-			}
-
-		/* Function: BuildURLLink
-		 */
-		protected void BuildURLLink (NDMarkup.Iterator iterator, StringBuilder html)
-			{
-			string target = iterator.Property("target");
-			html.Append("<a href=\"");
-				html.EntityEncodeAndAppend(target);
-			html.Append("\" target=\"_top\">");
-
-			string text = iterator.Property("text");
-
-			if (text != null)
-				{  html.EntityEncodeAndAppend(text);  }
-			else
-				{
-				int startIndex = 0;
-				int breakIndex;
-
-				// Skip the protocol and any following slashes since we don't want a break after every slash in http:// or
-				// file:///.
-
-				int endOfProtocolIndex = target.IndexOf(':');
-
-				if (endOfProtocolIndex != -1)
-					{
-					do
-						{  endOfProtocolIndex++;  }
-					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
-
-					html.EntityEncodeAndAppend( target.Substring(0, endOfProtocolIndex) );
-					html.Append("&#8203;");  // Zero width space
-					startIndex = endOfProtocolIndex;
-					}
-
-				for (;;)
-					{
-					breakIndex = target.IndexOfAny(breakURLCharacters, startIndex);
-
-					if (breakIndex == -1)
-						{
-						if (target.Length - startIndex > maxUnbrokenURLCharacters)
-							{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
-						else
-							{  break;  }
-						}
-					else if (breakIndex - startIndex > maxUnbrokenURLCharacters)
-						{  breakIndex = startIndex + maxUnbrokenURLCharacters;  }
-
-					html.EntityEncodeAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
-					html.Append("&#8203;");  // Zero width space
-					html.EntityEncodeAndAppend(target[breakIndex]);
-
-					startIndex = breakIndex + 1;
-					}
-
-				html.EntityEncodeAndAppend( target.Substring(startIndex) );
-				}
-
-			html.Append("</a>");
-			}
-
-
-		/* Function: BuildNaturalDocsLink
-		 */
-		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator, StringBuilder html)
-			{
-			// xxx
-			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
 			}
 
 
@@ -544,6 +189,89 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  html.Append("</span>");  }
 
 				iterator = endStretch;
+				}
+			}
+
+
+		/* Function: BuildTypeLinkedAndSyntaxHighlightedText
+		 * Converts the text between the iterators to HTML with syntax highlighting applied and any tokens marked with
+		 * <PrototypeParsingType.Type> and <PrototypeParsingType.TypeQualifier> having links.  If extendTypeSearch is
+		 * true, it will search beyond the bounds of the iterators to get the complete type.  This allows you to format only
+		 * a portion of the link with this function yet still have the link go to the complete destination.
+		 */
+		protected internal void BuildTypeLinkedAndSyntaxHighlightedText (TokenIterator start, TokenIterator end, StringBuilder html,
+																															  bool extendTypeSearch = false)
+			{
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
+					 iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
+					{
+					TokenIterator textStart = iterator;
+					TokenIterator textEnd = iterator;
+
+					do
+						{  textEnd.Next();  }
+					while (textEnd < end &&
+								(textEnd.PrototypeParsingType == PrototypeParsingType.Type ||
+								 textEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier) );
+
+					// If the type is a keyword, assume it's a built-in type and thus doesn't get a link.
+					if (start.SyntaxHighlightingType == SyntaxHighlightingType.Keyword)
+						{
+						BuildSyntaxHighlightedText(textStart, textEnd, html);
+						}
+					else
+						{
+						TokenIterator symbolStart = textStart;
+						TokenIterator symbolEnd = textEnd;
+
+						if (extendTypeSearch && symbolStart == start)
+							{
+							TokenIterator temp = symbolStart;
+							temp.Previous();
+
+							while (temp.IsInBounds &&
+										(temp.PrototypeParsingType == PrototypeParsingType.Type ||
+										 temp.PrototypeParsingType == PrototypeParsingType.TypeQualifier))
+								{
+								symbolStart = temp;
+								temp.Previous();
+								}
+							}
+
+						if (extendTypeSearch && symbolEnd == end)
+							{
+							while (symbolEnd.IsInBounds &&
+										(symbolEnd.PrototypeParsingType == PrototypeParsingType.Type ||
+										 symbolEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier))
+								{  symbolEnd.Next();  }
+							}
+
+						html.Append("<a href=\"about:"); //xxx
+						html.EntityEncodeAndAppend(start.Tokenizer.TextBetween(symbolStart, symbolEnd));
+						html.Append("\">");
+						BuildSyntaxHighlightedText(textStart, textEnd, html);
+						html.Append("</a>");
+						}
+
+					iterator = textEnd;
+					}
+
+				else // not on a type
+					{
+					TokenIterator startText = iterator;
+
+					do
+						{  iterator.Next();  }
+					while (iterator < end && 
+								iterator.PrototypeParsingType != PrototypeParsingType.Type &&
+								iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier);
+
+					BuildSyntaxHighlightedText(startText, iterator, html);
+					}
 				}
 			}
 

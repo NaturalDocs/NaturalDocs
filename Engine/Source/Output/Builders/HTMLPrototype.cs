@@ -14,6 +14,13 @@
  *		parsing so you might as well move the functions in there to make it cleaner, right?
  * 
  * 
+ * Topic: Usage
+ *		
+ *		- Create a HTMLPrototype object.
+ *		- Call <Build()>.
+ *		- The object can be reused on different prototypes by calling <Build()> again.
+ * 
+ * 
  * Threading: Not Thread Safe
  * 
  *		This class is only designed to be used by one thread at a time.  It has an internal state that is used during a call to
@@ -64,23 +71,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 
-		// Group: Static Functions
-		// __________________________________________________________________________
-
-
-		/* Function: Build
-		 * Builds the HTML for the <Topic's> prototype and appends it to the passed StringBuilder.  This is functionally
-		 * equivalent to creating a HTMLPrototype object, calling Build() on it, and then releasing it.  It's preferable to
-		 * reuse HTMLPrototype objects to avoid memory churn, but this is a simpler call for when that's not possible.
-		 */
-		public static void Build (Builders.HTML htmlBuilder, Topic topic, bool addLinks, StringBuilder htmlOutput)
-			{
-			HTMLPrototype htmlPrototype = new HTMLPrototype(htmlBuilder);
-			htmlPrototype.Build(topic, addLinks, htmlOutput);
-			}
-
-
-		// Group: Instance Functions
+		// Group: Functions
 		// __________________________________________________________________________
 
 
@@ -394,7 +385,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			StringBuilder html = new StringBuilder();
 
-			BuildLinkedAndHighlightedText(start, end, html);
+			htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html, true);
 
 			if (type == ColumnType.TypeNameSeparator ||
 				 type == ColumnType.DefaultValueSeparator)
@@ -492,7 +483,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			TokenIterator start, end;
 			parsedPrototype.GetCompletePrototype(out start, out end);
 
-			BuildLinkedAndHighlightedText(start, end);
+			htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
 
 			htmlOutput.Append("</div>");
 			}
@@ -508,7 +499,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetBeforeParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PBeforeParameters\">");
-				BuildLinkedAndHighlightedText(start, end);
+				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
 			htmlOutput.Append("</td>");
 
 			htmlOutput.Append("<td class=\"PParametersParentCell\">");
@@ -518,7 +509,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PAfterParameters\">");
-				BuildLinkedAndHighlightedText(start, end);
+				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
 			htmlOutput.Append("</td>");
 
 			htmlOutput.Append("</tr></table></div>");
@@ -535,7 +526,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetBeforeParameters(out start, out end);
 
 			htmlOutput.Append("<tr><td class=\"PBeforeParameters\">");
-				BuildLinkedAndHighlightedText(start, end);
+				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
 			htmlOutput.Append("</td></tr>");
 
 			htmlOutput.Append("<tr><td class=\"PParametersParentCell\">");
@@ -545,102 +536,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<tr><td class=\"PAfterParameters\">");
-				BuildLinkedAndHighlightedText(start, end);
+				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
 			htmlOutput.Append("</td></tr>");
 
 			htmlOutput.Append("</table></div>");
-			}
-
-
-		/* Function: BuildLinkedAndHighlightedText
-		 * Will only add links if <addLinks> is true.  If output is null it will be added to <htmlOutput>.
-		 */
-		protected void BuildLinkedAndHighlightedText (TokenIterator start, TokenIterator end, StringBuilder output = null)
-			{
-			if (output == null)
-				{  output = htmlOutput;  }
-
-			if (!addLinks)
-				{
-				htmlBuilder.BuildSyntaxHighlightedText(start, end, output);
-				return;
-				}
-
-			TokenIterator iterator = start;
-
-			while (iterator < end)
-				{
-				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
-					 iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
-					{
-					TokenIterator textStart = iterator;
-					TokenIterator textEnd = iterator;
-
-					do
-						{  textEnd.Next();  }
-					while (textEnd < end &&
-								(textEnd.PrototypeParsingType == PrototypeParsingType.Type ||
-								 textEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier) );
-
-					TokenIterator symbolStart = textStart;
-					TokenIterator symbolEnd = textEnd;
-
-					// The symbol may extend beyond the bounds we're formatting.  For example, we may just be formatting a
-					// qualifier which has its own cell, but we need the rest of the symbol from other cells to create the link.
-
-					if (symbolStart == start)
-						{
-						TokenIterator temp = symbolStart;
-						temp.Previous();
-
-						while (temp.IsInBounds &&
-									(temp.PrototypeParsingType == PrototypeParsingType.Type ||
-									 temp.PrototypeParsingType == PrototypeParsingType.TypeQualifier))
-							{
-							symbolStart = temp;
-							temp.Previous();
-							}
-						}
-
-					if (symbolEnd == end)
-						{
-						while (symbolEnd.IsInBounds &&
-									(symbolEnd.PrototypeParsingType == PrototypeParsingType.Type ||
-									 symbolEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier))
-							{  symbolEnd.Next();  }
-						}
-
-					string symbolText = parsedPrototype.Tokenizer.TextBetween(symbolStart, symbolEnd);
-
-					if (language.IsBuiltInType(symbolText))
-						{
-						htmlBuilder.BuildSyntaxHighlightedText(textStart, textEnd, output);
-						}
-					else
-						{
-						output.Append("<a href=\"about:"); //xxx
-						output.EntityEncodeAndAppend(symbolText);
-						output.Append("\">");
-						htmlBuilder.BuildSyntaxHighlightedText(textStart, textEnd, output);
-						output.Append("</a>");
-						}
-
-					iterator = textEnd;
-					}
-
-				else // not on a type
-					{
-					TokenIterator startText = iterator;
-
-					do
-						{  iterator.Next();  }
-					while (iterator < end && 
-								iterator.PrototypeParsingType != PrototypeParsingType.Type &&
-								iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier);
-
-					htmlBuilder.BuildSyntaxHighlightedText(startText, iterator, output);
-					}
-				}
 			}
 
 
