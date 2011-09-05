@@ -369,15 +369,6 @@ body.NDContentPage {
 
 	/*  Highlighting  */
 
-	.PParameters tr:hover {
-		background-color: white;
-		}
-		/* Doesn't start working until IE8 */
-		.IE6 .PParameters tr:hover,
-		.IE7 .PParameters tr:hover {
-			background-color: transparent;
-			}
-
 	/* Links default back to black so we don't screw up the syntax highlighting. */
 	.NDPrototype a:link,
 	.NDPrototype a:visited,
