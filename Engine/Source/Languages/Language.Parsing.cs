@@ -265,6 +265,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: IsBuiltInType
+		 * Returns whether the type string is a built-in type such as "int" as opposed to a user-defined type.
+		 */
+		public bool IsBuiltInType (string type)
+			{
+			return defaultKeywords.Contains(type);
+			}
+
+
 			
 		// Group: Overridable Parsing Stages
 		// Override these stages in subclasses as necessary.

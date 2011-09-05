@@ -378,40 +378,21 @@ body.NDContentPage {
 			background-color: transparent;
 			}
 
+	/* Links default back to black so we don't screw up the syntax highlighting. */
+	.NDPrototype a:link,
+	.NDPrototype a:visited,
+	.NDPrototype a:hover,
+	.NDPrototype a:active {
+		color: #000000;
+		}
+
 	/* Highlight all links when hovering over the prototype since it may not be obvious that you can click things. */
 	.NDPrototype:hover a:link,
-	.NDPrototype:hover a:visited {
-		border-bottom: 1px dotted !important;
-		text-decoration: none !important;
-		}
-	
-	/* Stay with border-bottom on hover since switching between that and underline makes the line jump up and down. */
+	.NDPrototype:hover a:visited,
 	.NDPrototype:hover a:hover,
 	.NDPrototype:hover a:active {
-		border-bottom: 1px solid !important;
-		text-decoration: none !important;
+		text-decoration: underline;
 		}
-
-		/* Doesn't work in IE until 9.  Underline is better than nothing. */
-		.IE6 .NDPrototype:hover a:link,
-		.IE6 .NDPrototype:hover a:visited,
-		.IE7 .NDPrototype:hover a:link,
-		.IE7 .NDPrototype:hover a:visited,
-		.IE8 .NDPrototype:hover a:link,
-		.IE8 .NDPrototype:hover a:visited {
-			border-bottom: 0 none !important;
-			text-decoration: none !important;
-			}
-		.IE6 .NDPrototype:hover a:hover,
-		.IE6 .NDPrototype:hover a:active,
-		.IE7 .NDPrototype:hover a:hover,
-		.IE7 .NDPrototype:hover a:active,
-		.IE8 .NDPrototype:hover a:hover,
-		.IE8 .NDPrototype:hover a:active {
-			border-bottom: 0 none !important;
-			text-decoration: underline !important;
-			}
-
 
 	.CStyle .PModifierQualifier,
 	.PDefaultValue,

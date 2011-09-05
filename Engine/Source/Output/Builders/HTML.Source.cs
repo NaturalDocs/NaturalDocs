@@ -147,7 +147,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (topic.Prototype != null)
 						{
 						html.Append("\r\n ");
-						BuildPrototype(topic, html);
+						BuildPrototype(topic, true, html);
 						}
 
 					if (topic.Body != null)
@@ -237,10 +237,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Function: BuildPrototype
 		 */
-		protected void BuildPrototype (Topic topic, StringBuilder html)
+		protected void BuildPrototype (Topic topic, bool addLinks, StringBuilder html)
 			{
 			HTMLPrototype prototypeBuilder = new HTMLPrototype(this);
-			prototypeBuilder.Build(topic, html);
+			prototypeBuilder.Build(topic, addLinks, html);
 			}
 
 

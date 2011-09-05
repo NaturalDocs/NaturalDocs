@@ -1548,7 +1548,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: AllPageTypeNames
 		 * A static array of simple A-Z names with each index corresponding to those in <AllPageTypes>.
 		 */
-		public  static string[] AllPageTypeNames = { "All", "Frame", "Content", "Home" };
+		public static string[] AllPageTypeNames = { "All", "Frame", "Content", "Home" };
 
 		/* Function: PageTypeNameOf
 		 * Translates a <PageType> into a string.
