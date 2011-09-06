@@ -191,6 +191,26 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: EqualsTextBetween
+		 * Returns whether the text between the two iterators matches the passed string exactly.
+		 */
+		public bool EqualsTextBetween (string searchText, bool ignoreCase, TokenIterator start, TokenIterator end)
+			{
+			#if DEBUG
+				if (start.Tokenizer != this || end.Tokenizer != this)
+					{  throw new InvalidOperationException();  }
+				if (!start.IsInBounds || start > end)
+					{  throw new ArgumentOutOfRangeException();  }
+			#endif
+
+			if (end.RawTextIndex - start.RawTextIndex != searchText.Length)
+				{  return false;  }
+
+			StringComparison compareMode = (ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture);
+			return (rawText.IndexOf(searchText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex, compareMode) == start.RawTextIndex);
+			}
+
+
 
 		// Group: Type Functions
 		// __________________________________________________________________________
