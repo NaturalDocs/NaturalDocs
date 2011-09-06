@@ -1,0 +1,5 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public void</span> FunctionA ()</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public int</span> VarA</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public static int</span> VarB</div>
