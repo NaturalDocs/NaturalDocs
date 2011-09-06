@@ -369,6 +369,11 @@ body.NDContentPage {
 		vertical-align: bottom;
 		}
 
+	.CDLEntryType {
+		font: 8pt `CodeFontFamily;
+		white-space: nowrap;
+		}
+
 
 	/*  Highlighting  */
 
@@ -376,7 +381,11 @@ body.NDContentPage {
 	.NDPrototype a:link,
 	.NDPrototype a:visited,
 	.NDPrototype a:hover,
-	.NDPrototype a:active {
+	.NDPrototype a:active,
+	.CDLEntryType a:link,
+	.CDLEntryType a:visited,
+	.CDLEntryType a:hover,
+	.CDLEntryType a:active {
 		color: #000000;
 		}
 
@@ -384,7 +393,11 @@ body.NDContentPage {
 	.NDPrototype:hover a:link,
 	.NDPrototype:hover a:visited,
 	.NDPrototype:hover a:hover,
-	.NDPrototype:hover a:active {
+	.NDPrototype:hover a:active,
+	.CDLEntry:hover .CDLEntryType a:link,
+	.CDLEntry:hover .CDLEntryType a:visited,
+	.CDLEntry:hover .CDLEntryType a:hover,
+	.CDLEntry:hover .CDLEntryType a:active {
 		text-decoration: underline;
 		}
 

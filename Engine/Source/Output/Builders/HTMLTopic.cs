@@ -207,6 +207,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
 
+			bool underParameterHeading = false;
+			string parameterListSymbol = null;
+
 			while (iterator.IsInBounds)
 				{
 				switch (iterator.Type)
@@ -233,7 +236,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					case NDMarkup.Iterator.ElementType.HeadingTag:
 						if (iterator.IsOpeningTag)
-							{  html.Append("<div class=\"CHeading\">");  }
+							{  
+							html.Append("<div class=\"CHeading\">");
+							underParameterHeading = (iterator.Property("type") == "parameters");
+							}
 						else
 							{  html.Append("</div>");  }
 						break;
@@ -269,9 +275,67 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					case NDMarkup.Iterator.ElementType.DefinitionListEntryTag:
 						if (iterator.IsOpeningTag)
-							{  html.Append("<tr><td class=\"CDLEntry\">");  }
+							{  
+							html.Append("<tr><td class=\"CDLEntry\">");
+							parameterListSymbol = null;
+
+							if (underParameterHeading)
+								{
+								NDMarkup.Iterator temp = iterator;
+								temp.Next();
+
+								StringBuilder symbol = new StringBuilder();
+
+								while (temp.IsInBounds && temp.Type != NDMarkup.Iterator.ElementType.DefinitionListEntryTag)
+									{
+									if (temp.Type == NDMarkup.Iterator.ElementType.Text)
+										{  temp.AppendTo(symbol);  }
+
+									temp.Next();  
+									}
+
+								if (symbol.Length > 0)
+									{  parameterListSymbol = symbol.ToString();  }
+								}
+							}
 						else
-							{  html.Append("</td>");  }
+							{  
+							if (parameterListSymbol != null)
+								{
+								TokenIterator start, end;
+								int matchedParameter = -1;
+
+								for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)	
+									{
+									parsedPrototype.GetParameterName(i, out start, out end);
+
+									if (parsedPrototype.Tokenizer.ContainsTextBetween(parameterListSymbol, true, start, end)) //xxx
+										{
+										matchedParameter = i;
+										break;
+										}
+									}
+
+								if (matchedParameter != -1)
+									{
+									TokenIterator extensionStart, extensionEnd;
+									parsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
+																										  out extensionStart, out extensionEnd);
+
+									if (start < end || extensionStart < extensionEnd)
+										{
+										html.Append("<div class=\"CDLEntryType\">");
+									
+										htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html);
+										htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(extensionStart, extensionEnd, html);
+
+										html.Append("</div>");
+										}
+									}
+								}
+
+							html.Append("</td>");
+							}
 						break;
 
 					case NDMarkup.Iterator.ElementType.DefinitionListDefinitionTag:

@@ -127,6 +127,7 @@ _______________________________________________________________________________
                <tr>
                   <td CDLEntry>
                         Entry
+								<CDLEntryType>Type</CDLEntryType>?
                   </td CDLEntry>
                   <td CDLDescription>
                         Description
