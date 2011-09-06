@@ -91,7 +91,7 @@ try
 	{  CopyResourceFiles("Engine", "SQLite");  }
 catch (e)
 	{  
-	WScript.Echo("Could not copy SQLite files.\nThis may happen if NUnit is open.");  
+	WScript.Echo("Could not copy SQLite files.\n\nThis may happen if NUnit is open.");  
 	// Continue anyway since they rarely change.
 	}
 

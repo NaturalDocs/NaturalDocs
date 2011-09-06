@@ -112,7 +112,7 @@ Topic: Top-Level Block Tags
 		> <dl>
 		>    <de>Entry</de>
 		>    <dd><p>Definition</p></dd>
-		>    <de definesymbol="[symbol]"? prototype="[type]"?>Entry</de>
+		>    <de definesymbol="[symbol]"?>Entry</de>
 		>    <dd>
 		>       <p>Paragraph in definition</p>
 		>       <p>Paragraph in definition</p>
@@ -123,9 +123,6 @@ Topic: Top-Level Block Tags
 		
 		The definesymbol attribute is used for enums and Natural Docs' list topics, and contains the full symbol name being defined.
 		The type will be determined by the topic's type.
-		
-		The prototype attribute is used for function parameters, allowing their type ("int" or "out ClassName*") to appear alongside
-		the parameter name in the output.  Only the type is included, the variable name and any default values are not.
 		
 		Definitions will always contain paragraph tags regardless of whether or not there are multiple paragraphs in it.  They can contain 
 		inline formatting like underlining and links, but not other top level tags like headings and images.
