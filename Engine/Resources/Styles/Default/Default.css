@@ -47,7 +47,17 @@ a:hover, a:active {
 	text-decoration: underline;
 	}
 
+table {
+	margin: 0;
+	padding: 0; 
+	border: 0 none; 
+	border-spacing: 0;
+	}
 td {
+	margin: 0;
+	padding: 0; 
+	border: 0 none; 
+	border-spacing: 0;
 	vertical-align: top;
 	}
 
@@ -339,15 +349,8 @@ body.NDContentPage {
 
 	.NDPrototype table {
 		width: 100%;
-		margin: 0;
-		padding: 0; 
-		border: 0 none; 
-		border-spacing: 0;
 		}
 	.NDPrototype td {
-		margin: 0; 
-		padding: 0; 
-		border: 0 none;
 		white-space: nowrap;
 		}
 	.NDPrototype td.PDefaultValue {

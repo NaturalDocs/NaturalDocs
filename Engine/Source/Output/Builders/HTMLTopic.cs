@@ -262,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					case NDMarkup.Iterator.ElementType.DefinitionListTag:
 						if (iterator.IsOpeningTag)
-							{  html.Append("<table class=\"CDefinitionList\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">");  }
+							{  html.Append("<table class=\"CDefinitionList\">");  }
 						else
 							{  html.Append("</table>");  }
 						break;
