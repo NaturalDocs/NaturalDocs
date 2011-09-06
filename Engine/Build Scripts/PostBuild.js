@@ -87,7 +87,14 @@ function CopyResourceFiles (component, subfolder)
 // ____________________________________________________________________________
 
 
-CopyResourceFiles("Engine", "SQLite");
+try
+	{  CopyResourceFiles("Engine", "SQLite");  }
+catch (e)
+	{  
+	WScript.Echo("Could not copy SQLite files.\nThis may happen if NUnit is open.");  
+	// Continue anyway since they rarely change.
+	}
+
 CopyResourceFiles("Engine", "License");
 
 CopyResourceFolder("Engine", "Config");
