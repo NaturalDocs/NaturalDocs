@@ -1,10 +1,10 @@
 
 /* Function: FunctionName
-	Description
+	Everything should highlight and link in the parameters the same way they do in the prototype.
 
 	Parameters:
 		x - Something
-		y - Should syntax highlight and link just like the prototype
+		y - Something
 		z - Something else
 */
 public void FunctionName (int x, out List<float, MyClass> y, Package.Class z = null)

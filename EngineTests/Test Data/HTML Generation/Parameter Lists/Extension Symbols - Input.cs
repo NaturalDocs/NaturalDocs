@@ -5,9 +5,11 @@
 	as part of the type.
 
 	Parameters:
-		x - Something
-		y - Something else
+		a - Something
+		b - Something else
+		c - Something
+		d - Something else
 */
-public void FunctionName (int[] x, int y[])
+public void FunctionName (int[] a, int b[], int* c, int *d)
 	{
 	}

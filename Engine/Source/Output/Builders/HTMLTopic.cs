@@ -300,7 +300,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							}
 						else
 							{  
-							if (parameterListSymbol != null)
+							if (parameterListSymbol != null && topic.Prototype != null)
 								{
 								TokenIterator start, end;
 								int matchedParameter = -1;
