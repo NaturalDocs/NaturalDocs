@@ -294,6 +294,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 									temp.Next();  
 									}
 
+								int firstNonSymbolIndex = 0;
+								while (firstNonSymbolIndex < symbol.Length)
+									{
+									char charAtIndex = symbol[firstNonSymbolIndex];
+
+									if (charAtIndex != '$' && charAtIndex != '@' && charAtIndex != '%')
+										{  break;  }
+
+									firstNonSymbolIndex++;
+									}
+
+								if (firstNonSymbolIndex > 0)
+									{  symbol.Remove(0, firstNonSymbolIndex);  }
+
 								if (symbol.Length > 0)
 									{  parameterListSymbol = symbol.ToString();  }
 								}
@@ -309,7 +323,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 									{
 									parsedPrototype.GetParameterName(i, out start, out end);
 
-									if (parsedPrototype.Tokenizer.ContainsTextBetween(parameterListSymbol, true, start, end)) //xxx
+									if (parsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end))
 										{
 										matchedParameter = i;
 										break;
@@ -322,7 +336,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 									parsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
 																										  out extensionStart, out extensionEnd);
 
-									if (start < end || extensionStart < extensionEnd)
+									if (start < end && 
+										// Don't include single symbol types
+										 (end.RawTextIndex - start.RawTextIndex > 1 ||
+										   (start.Character != '$' && start.Character != '@' && start.Character != '%')) )
 										{
 										html.Append("<div class=\"CDLEntryType\">");
 									
