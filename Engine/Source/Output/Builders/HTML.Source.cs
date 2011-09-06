@@ -219,7 +219,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								 textEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier) );
 
 					// If the type is a keyword, assume it's a built-in type and thus doesn't get a link.
-					if (start.SyntaxHighlightingType == SyntaxHighlightingType.Keyword)
+					if (textStart.SyntaxHighlightingType == SyntaxHighlightingType.Keyword)
 						{
 						BuildSyntaxHighlightedText(textStart, textEnd, html);
 						}
