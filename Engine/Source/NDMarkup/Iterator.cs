@@ -18,7 +18,7 @@ using System.Text;
 
 namespace GregValure.NaturalDocs.Engine.NDMarkup
 	{
-	public class Iterator
+	public struct Iterator
 		{
 
 		// Group: Types
@@ -106,7 +106,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 		 * Determines which <ElementType> the iterator is currently on, setting <elementType>, <elementLength>, and if
 		 * appropriate, <isOpeningTag>.
 		 */
-		protected void DetermineElement ()
+		private void DetermineElement ()
 			{
 			if (index >= content.Length)
 				{
@@ -340,42 +340,42 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 		/* var: content
 		 * The <NDMarkup>-formatted string being iterated over.
 		 */
-		protected string content;
+		private string content;
 
 		/* var: index
 		 * The current position into <content>.
 		 */
-		protected int index;
+		private int index;
 								
 		/* var: elementType
 		 * The current element.
 		 */
-		protected ElementType type;
+		private ElementType type;
 
 		/* var: elementLength
 		 * The length of the current element.
 		 */
-		protected int length;
+		private int length;
 
 		/* var: isOpeningTag
 		 * If the <ElementType> is a tag, whether it is an opening or closing tag.  The value is undefined if the iterator is on
 		 * a non-tag element or a standalone tag element.
 		 */
-		protected bool isOpeningTag;
+		private bool isOpeningTag;
 
 
 
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static char[] SpaceOrClosingBracket = { ' ', '>' };
-		protected static char[] AmpersandOrOpeningBracket = { '&', '<' };
+		private static char[] SpaceOrClosingBracket = { ' ', '>' };
+		private static char[] AmpersandOrOpeningBracket = { '&', '<' };
 
-		protected static Collections.StringTable<ElementType> TagNameToElementType = null;
-		protected static Collections.StringTable<ElementType> EntityCharToElementType = null;
+		private static Collections.StringTable<ElementType> TagNameToElementType = null;
+		private static Collections.StringTable<ElementType> EntityCharToElementType = null;
 
 		#if DEBUG
-			protected static System.Text.RegularExpressions.Regex TagValidationRegex
+			private static System.Text.RegularExpressions.Regex TagValidationRegex
 				= new System.Text.RegularExpressions.Regex("^</?[a-z]+(?: [a-z]+=\"[^<>\"]*\")*>$", 
 																								  System.Text.RegularExpressions.RegexOptions.Compiled | 
 																								  System.Text.RegularExpressions.RegexOptions.Singleline);
