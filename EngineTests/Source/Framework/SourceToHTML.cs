@@ -38,6 +38,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 
@@ -92,7 +93,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		 * Unless you override <ExtractHTML()>, the output will be all the tags that match the passed tag name and, if specified, the
 		 * passed class name.
 		 */
-		public void TestFolder (Path testFolder, string tagName, string className = null)
+		public void TestFolder (Path testFolder, string tagName, string className = null, bool reformatHTML = false)
 			{
 			List<TestResult> testResults = new List<TestResult>();
 			int failureCount = 0;
@@ -125,8 +126,12 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 							Path htmlFile = TestEngine.HTMLBuilder.Source_OutputFile(fileInfo.ID);
 
 							string html = System.IO.File.ReadAllText(htmlFile);
+							html = ExtractHTML(html, tagName, className);
 
-							test.ActualOutput = ExtractHTML(html, tagName, className); 
+							if (reformatHTML)
+								{  html = ReformatHTML(html);  }
+
+							test.ActualOutput = html;
 							}
 						catch (Exception e)
 							{  test.TestException = e;  }
@@ -272,6 +277,74 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 			return ( (content[classIndex - 1] == '"' || content[classIndex - 1] == ' ') &&
 							(content[classIndex + className.Length] == '"' || content[classIndex + className.Length] == ' ') );
 			}
+
+
+		/* Function: ReformatHTML
+		 * Pretty-prints the passed HTML to make it more human readable.  Currently only affects tables.
+		 */
+		protected string ReformatHTML (string input)
+			{
+			StringBuilder output = new StringBuilder();
+
+			int currentIndex = 0;
+			int indent = 0;
+			int indentAmount = 3;
+			bool newLine = false;
+
+			for (;;)
+				{
+				var tag = TableTagsRegex.Match(input, currentIndex);
+
+				if (tag.Success == false)
+					{  break;  }
+
+				if (tag.Value.StartsWith("</tr") || tag.Value.StartsWith("</table"))
+					{
+					if (newLine == false)
+						{
+						output.AppendLine();
+						newLine = true;
+						}
+					indent -= indentAmount;
+					}
+
+				if (newLine && indent > 0)
+					{  output.Append(' ', indent);  }
+
+				if (tag.Index > currentIndex)
+					{  output.Append(input, currentIndex, tag.Index - currentIndex);  }
+
+				output.Append(tag.Value);
+				currentIndex = tag.Index + tag.Value.Length;
+
+				if (tag.Value.StartsWith("<table") || tag.Value.StartsWith("<tr"))
+					{
+					output.AppendLine();
+					newLine = true;
+					indent += indentAmount;
+					}
+				else if (tag.Value.StartsWith("</td"))
+					{
+					output.AppendLine();
+					newLine = true;
+					}
+				else
+					{  newLine = false;  }
+
+
+				}
+
+			if (currentIndex < input.Length)
+				{  output.Append(input, currentIndex, input.Length - currentIndex);  }
+
+			return output.ToString();
+			}
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
 			
 		}
 	}

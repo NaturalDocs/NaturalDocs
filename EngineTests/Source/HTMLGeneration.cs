@@ -31,7 +31,7 @@ namespace GregValure.NaturalDocs.EngineTests
 		[Test]
 		public void Prototypes ()
 			{
-			TestFolder("HTML Generation/Prototypes", "div", "NDPrototype");
+			TestFolder("HTML Generation/Prototypes", "div", "NDPrototype", true);
 			}
 
 		[Test]
