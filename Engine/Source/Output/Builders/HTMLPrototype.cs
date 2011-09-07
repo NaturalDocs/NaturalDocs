@@ -385,7 +385,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			StringBuilder html = new StringBuilder();
 
-			htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html, true);
+			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
+			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
+			if (type == ColumnType.Name)
+				{  html.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
+			else
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html, true);  }
 
 			if (type == ColumnType.TypeNameSeparator ||
 				 type == ColumnType.DefaultValueSeparator)
