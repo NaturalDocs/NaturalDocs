@@ -397,6 +397,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							type == ColumnType.Type) )
 				{  html.Append("&nbsp;");  }
 
+			// Insert a space after the type in cases of "int* x" because the star won't get a trailing space.
+			else if (type == ColumnType.Type && end.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType)
+				{  html.Append("&nbsp;");  }
+
 			return html.ToString();
 			}
 
