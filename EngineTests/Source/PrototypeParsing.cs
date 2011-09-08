@@ -29,7 +29,7 @@ namespace GregValure.NaturalDocs.EngineTests
 		[Test]
 		public void BasicLanguageSupport ()
 			{
-			TestFolder("Prototype Parsing/Basic Language Support");
+			TestFolder("Prototype Parsing/Basic Language Support", "Shared ND Config/Basic Language Support");
 			}
 
 		public override string OutputOf (IList<Topic> topics)

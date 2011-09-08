@@ -25,19 +25,19 @@ namespace GregValure.NaturalDocs.EngineTests
 		[Test]
 		public void TopicTitles ()
 			{
-			TestFolder("HTML Generation/Topic Titles", "div", "CTitle");
+			TestFolder("HTML Generation/Topic Titles", null, "div", "CTitle");
 			}
 
 		[Test]
 		public void Prototypes ()
 			{
-			TestFolder("HTML Generation/Prototypes/Basic Language Support", "div", "NDPrototype", true);
+			TestFolder("HTML Generation/Prototypes/Basic Language Support", "Shared ND Config/Basic Language Support", "div", "NDPrototype", true);
 			}
 
 		[Test]
 		public void ParameterLists ()
 			{
-			TestFolder("HTML Generation/Parameter Lists", "div", "CBody");
+			TestFolder("HTML Generation/Parameter Lists", null, "div", "CBody");
 			}
 
 		}

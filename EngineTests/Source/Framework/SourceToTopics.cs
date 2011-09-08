@@ -79,12 +79,12 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		 * subfolder, and then make the path relative to that.  This is because it's meant to be run from a Visual Studio source tree, 
 		 * so from C:\Project\bin\debug\EngineTests.dll it will look for C:\Project\Test Data\[test folder].
 		 */
-		public void TestFolder (Path testFolder)
+		public void TestFolder (Path testFolder, Path projectConfigFolder = default(Path))
 			{
 			List<TestResult> testResults = new List<TestResult>();
 			int failureCount = 0;
 
-			TestEngine.Start(testFolder);
+			TestEngine.Start(testFolder, projectConfigFolder);
 
 			try
 				{

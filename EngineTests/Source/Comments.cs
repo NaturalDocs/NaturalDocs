@@ -27,13 +27,13 @@ namespace GregValure.NaturalDocs.EngineTests
 		[Test]
 		public void Styles ()
 			{
-			TestFolder("Comments/Styles");
+			TestFolder("Comments/Styles", "Shared ND Config/Basic Language Support");
 			}
 
 		[Test]
 		public void Encodings ()
 			{
-			TestFolder("Comments/Encodings");
+			TestFolder("Comments/Encodings", "Shared ND Config/Basic Language Support");
 			}
 
 		public override string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics)

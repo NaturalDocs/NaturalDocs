@@ -43,7 +43,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		static TestEngine ()
 			{
 			testDataFolder = null;
-			keepConfigFolder = true;
+			projectConfigFolder = null;
 			keepOutputFolder = false;
 			}
 
@@ -52,21 +52,28 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		 * 
 		 * Starts <Engine.Instance> using the passed folder of test data.
 		 * 
-		 * If you pass a relative path it will take the executing assembly path, skip up until it passes "bin", move into the "Test Data"
-		 * subfolder, and then make the path relative to that.  This is because it's meant to be run from a Visual Studio source tree, 
-		 * so from C:\Project\bin\debug\EngineTests.dll it will look for C:\Project\Test Data\[test folder].
+		 * If the test data folder is relative it will take the executing assembly path, skip up until it passes "bin", move into the 
+		 * "Test Data" subfolder, and then make the path relative to that.  This is because it's meant to be run from a Visual 
+		 * Studio source tree, so from C:\Project\bin\debug\EngineTests.dll it will look for C:\Project\Test Data\[test folder].
+		 * 
+		 * If projectConfigFolder is relative it follows the same rules as the test data folder.  If it's not specified all defaults will
+		 * be used as if the project didn't have any configuration files defined.
 		 * 
 		 * If preserveInputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public static void Start (Path folder, bool preserveOutputFolder = false)
+		public static void Start (Path pTestDataFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false)
 			{
 			// Stupid, but we can't use "this" in static classes.
-			keepOutputFolder = preserveOutputFolder;
+			testDataFolder = pTestDataFolder;
+			projectConfigFolder = pProjectConfigFolder;
+			keepOutputFolder = pKeepOutputFolder;
 
 
-			// Resolve and validate the test folder
+			// Resolve and validate the folders
 
-			if (folder.IsRelative)
+			Path baseTestDataFolder;
+
+			if (testDataFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
 				{
 				string assemblyPath = Path.GetExecutingAssembly();
 				int binIndex = assemblyPath.IndexOf("/bin/");
@@ -74,21 +81,20 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 				if (binIndex == -1)
 					{  throw new Exception("Couldn't find bin folder in " + assemblyPath);  }
 
-				folder = assemblyPath.Substring(0, binIndex) + "/Test Data/" + folder;
+				baseTestDataFolder = assemblyPath.Substring(0, binIndex) + "/Test Data";
 				}
 
-			if (System.IO.Directory.Exists(folder) == false)
-				{  throw new Exception("Cannot locate test folder " + folder);  }
+			if (testDataFolder.IsRelative)
+				{  testDataFolder = baseTestDataFolder + '/' + testDataFolder;  }
 
-			testDataFolder = folder;
+			if (System.IO.Directory.Exists(testDataFolder) == false)
+				{  throw new Exception("Cannot locate test folder " + testDataFolder);  }
 
+			if (projectConfigFolder != null && projectConfigFolder.IsRelative)
+				{  projectConfigFolder = baseTestDataFolder + '/' + projectConfigFolder;  }
 
-			// See if we're using a temporary configuration or not.  KeepConfigFolder's value affects what ConfigFolder returns.
-
-			keepConfigFolder = true;
-
-			if (!System.IO.Directory.Exists(ConfigFolder))
-				{  keepConfigFolder = false;  }
+			if (projectConfigFolder != null && System.IO.Directory.Exists(projectConfigFolder) == false)
+				{  throw new Exception("Cannot locate config folder " + projectConfigFolder);  }
 
 
 			// Clear out old data before start.
@@ -110,7 +116,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 
 			// Create new folders.  These functions do nothing if they already exist, they won't throw exceptions.
 
-			System.IO.Directory.CreateDirectory(ConfigFolder);
+			System.IO.Directory.CreateDirectory(ProjectConfigFolder);
 			System.IO.Directory.CreateDirectory(WorkingDataFolder);
 			System.IO.Directory.CreateDirectory(HTMLOutputFolder);
 
@@ -119,7 +125,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 
 			Engine.Instance.Create();
 
-			Engine.Instance.Config.ProjectConfigFolder = ConfigFolder;
+			Engine.Instance.Config.ProjectConfigFolder = ProjectConfigFolder;
 			Engine.Instance.Config.WorkingDataFolder = WorkingDataFolder;
 
 			Engine.Instance.Config.CommandLineConfig.Entries.Add(
@@ -223,12 +229,12 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 				}
 			}
 
-		public static Path ConfigFolder
+		public static Path ProjectConfigFolder
 			{
 			get
 				{  
-				if (keepConfigFolder)
-					{  return testDataFolder + "/ND Config";  }
+				if (projectConfigFolder != null)
+					{  return projectConfigFolder;  }
 				else
 					{  return TemporaryFolderRoot + "/ND Config";  }
 				}
@@ -251,7 +257,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		// __________________________________________________________________________
 
 		private static Path testDataFolder;
-		private static bool keepConfigFolder;
+		private static Path projectConfigFolder;
 		private static bool keepOutputFolder;
 
 		}

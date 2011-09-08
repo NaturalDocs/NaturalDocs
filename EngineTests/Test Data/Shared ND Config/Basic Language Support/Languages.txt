@@ -32,6 +32,7 @@ Language: C# (Basic Language Support)
 
    Class Prototype Enders: ; {
    Function Prototype Enders: ; {
+   Property Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
 
@@ -48,6 +49,18 @@ Language: C (Basic Language Support)
 
    Class Prototype Enders: ; {
    Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: Perl (Basic Language Support)
+
+   Extensions: pl-bls pm-bls
+
+   Simple Identifier: PerlBLS
+
+   Line Comment: #
+
+   Function Prototype Ender: {
    Variable Prototype Enders: ; =
 
 
@@ -75,6 +88,58 @@ Language: JavaScript (Basic Language Support)
 
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
+
+
+Language: Java (Basic Language Support)
+
+   Extension: java-bls
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Value: Under Type
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+   Class Prototype Enders: { ;
+
+
+Language: Pascal (Basic Language Support)
+
+   Extension: pas-bls
+
+   Simple Identifier: PascalBLS
+
+   Line Comment: //
+   Block Comment: { } (* *)
+
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; :=
+
+
+Language: SQL (Basic Language Support)
+
+   Extension: sql-bls
+
+   Simple Identifier: SQLBLS
+
+   Line Comment: --
+   Block Comment: /* */
+   Enum Value: Global
+
+   Function Prototype Enders: , ; ) as As AS is Is IS
+   Variable Prototype Enders: , ; ) := default Default DEFAULT
+   Database Index Prototype Enders: , ; )
+   Database Trigger Prototype Enders: begin Begin BEGIN as As AS
+
+
+Language: Lua (Basic Language Support)
+
+   Extension: lua-bls
+
+   Simple Identifier: LuaBLS
+
+   Line Comment: --
+   Block Comment: --[[ ]]--
 
 
 # These settings define the languages Natural Docs knows how to parse.  You

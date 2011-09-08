@@ -42,7 +42,7 @@
 # Input
 # ------------------------------------------------------------------------
 
-Source Folder: ..
+Source Folder: ..\..\Prototype Parsing\Basic Language Support
 
 
 # This is where you specify what files and folders Natural Docs should be
@@ -84,7 +84,7 @@ Source Folder: ..
 # Output
 # ------------------------------------------------------------------------
 
-HTML Output Folder: ..\HTML Output
+HTML Output Folder: ..\..\Prototype Parsing\Basic Language Support\ND Temp\HTML Output
 
 
 # This is where you specify what kind of documentation you want Natural Docs
