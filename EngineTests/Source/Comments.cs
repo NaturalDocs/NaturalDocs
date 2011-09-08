@@ -27,7 +27,7 @@ namespace GregValure.NaturalDocs.EngineTests
 		[Test]
 		public void Styles ()
 			{
-			TestFolder("Comments/Styles", "Shared ND Config/Basic Language Support");
+			TestFolder("Comments/Styles/Basic Language Support", "Shared ND Config/Basic Language Support");
 			}
 
 		[Test]
