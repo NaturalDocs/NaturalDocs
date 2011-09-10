@@ -427,11 +427,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				{  throw new Exceptions.StringNotInValidFormat(input, this);  }
 
 
-			// First parse the string to validate it and determine the array size.
+			// First parse the string to perform basic validation and determine the array size.
 
 			int arraySize = 2;
 			int number;
-			int lastNumber = 0;
 			int inputIndex = 1;
 			bool secondNumber = false;
 						
@@ -450,12 +449,9 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					inputIndex++;
 					}
 					
-				// lastNumber starting at zero prevents it from being added.
-				if (inputIndex >= input.Length || number <= lastNumber)
+				if (inputIndex >= input.Length)
 					{  throw new Exceptions.StringNotInValidFormat(input, this);  }
 					
-				lastNumber = number;
-				
 				if (input[inputIndex] == '}')
 					{  break;  }
 				else if (input[inputIndex] == ',')
@@ -479,7 +475,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				}
 				
 				
-			// If we're here the string is valid enough to parse, though it still may contain things like "3-5,6-9" which should be "3-9".
+			// If we're here the string is valid enough to parse, though it still may contain errors like "3-5,6-9" which should be "3-9".
 			
 			if (numberPairs == null || numberPairs.Length < arraySize || numberPairs.Length - arraySize >= NumberPairShrinkThreshold)
 				{  numberPairs = new int[arraySize];  }
