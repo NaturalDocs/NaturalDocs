@@ -2,10 +2,14 @@
  * Class: GregValure.NaturalDocs.EngineTests.Framework.SourceToTopics
  * ____________________________________________________________________________
  * 
- * A base class for unit tests where sample source files are loaded from a folder, converted to <Topics>, and the 
- * portions of those <Topics> being tested are saved to files and compared to other files containing the 
+ * A base class for automated tests where sample source files are loaded from a folder, converted to <Topics>, 
+ * and the portions of those <Topics> being tested are saved to files and compared to other files containing the 
  * expected result.
  * 
+ * The benefit of this approach is that you never have to hand code the output.  You can run the tests without
+ *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
+ *	 expected output file.
+ *
  * Usage:
  * 
  *		- Derive a class that has the [TestFixture] attribute.
@@ -15,15 +19,6 @@
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't,
  *		  that file doesn't exist, or an exception was thrown, the test will fail.
- *	
- * Tips:
- * 
- *		- If you need to define project config files for when Natural Docs runs, create a folder called "ND Config" in
- *		  the test folder.
- *		  
- *		- The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *		  an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *		  expected output file.
  *		
  */
 

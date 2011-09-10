@@ -2,31 +2,25 @@
  * Class: GregValure.NaturalDocs.EngineTests.Framework.SourceToHTML
  * ____________________________________________________________________________
  * 
- * A base class for unit tests where sample source files are run through Natural Docs normally, generating HTML
- * output, and then portions of the HTML are extracted, saved to files, and compared to other files containing
+ * A base class for automated tests where sample source files are run through Natural Docs normally, generating 
+ * HTML output, and then portions of the HTML are extracted, saved to files, and compared to other files containing
  * the expected output.
  * 
+ *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
+ *	 an expected output file, look over the actual output file, and if it's acceptable rename it to become the
+ *	 expected output file.
  * 
  * Usage:
  * 
  *		- Derive a class that has the [TestFixture] attribute.
- *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files.
- *		- 
+ *		- Create a function with the [Test] attribute that calls <TestFolder()>, pointing it to the input files and 
+ *		   specifying which parts of the generated HTML should be extracted.
  *		- All files in the test folder in the format "[Test Name] - Input.[extension]" will have portions of its HTML
  *		  extracted when NUnit runs.
  *		- A corresponding file "[Test Name] - Actual Output.txt" will be created for each one.
  *		- If it matches the contents of the file "[Test Name] - Expected Output.txt", the test will pass.  If it doesn't or
  *		  that file doesn't exist, the test will fail.
  *		- The full generated output will remain in a folder called "HTML Output" if you want to look at it.
- *	
- * Tips:
- * 
- *		- If you need to define project config files for when Natural Docs runs, create a folder called "ND Config" in
- *		  the test folder.
- *		  
- *		- The benefit of this approach is that you never have to hand code the output.  You can run the tests without
- *		  an expected output file, look over the actual output file, and if it's acceptable rename it to become the
- *		  expected output file.
  *		
  */
 
