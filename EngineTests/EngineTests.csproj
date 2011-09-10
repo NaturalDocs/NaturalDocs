@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -47,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\Framework\TextCommands.cs" />
+    <Compile Include="Source\NumberSet.cs" />
     <Compile Include="Source\PrototypeParsing.cs" />
     <Compile Include="Source\Framework\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\HTMLGeneration.cs" />

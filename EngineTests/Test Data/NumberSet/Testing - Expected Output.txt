@@ -1,0 +1,32 @@
+
+{5,10-20}
+= {5,10-20} Lowest Available: 1, Highest Used: 20, Count: 12
+
+
+// Single
+5?
+true
+
+// Left range edge
+10?
+true
+
+// Right range edge
+20?
+true
+
+// range middle
+15?
+true
+
+// Missing off left
+3?
+false
+
+// Missing off right
+25?
+false
+
+// Missing in middle
+7?
+false

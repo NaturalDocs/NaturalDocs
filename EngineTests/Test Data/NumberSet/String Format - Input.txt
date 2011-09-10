@@ -1,0 +1,80 @@
+
+// Empty set
+// --------------------------
+
+{}
+
+
+// Single items
+// --------------------------
+
+{4}
+
+{1,3,9,16,101}
+
+
+// Groups
+// --------------------------
+
+{1-9}
+
+{2-5,9-21,23-29}
+
+
+// Mixed
+// --------------------------
+
+{4,9-16,21}
+
+{1-9,11,13-55}
+
+
+// Invalid sets
+// --------------------------
+
+// Can't have zero
+{0-4,6}
+{0,9-21}
+
+// Can't have negative numbers
+{-5}
+{-1-3}
+{-5--1}
+
+// Can't have spaces or invalid characters
+{5, 7}
+{q}
+{9f}
+
+// Can't have symbols in wrong context
+{,12}
+{5,9,}
+{5,9-}
+{1,,5}
+{1--5}
+{,}
+{-}
+
+
+// Incorrect format
+// --------------------------
+// The stuff below may seem overly sensitive.  We can obviously interpret the input correctly without any data loss
+// if we wanted to.  However, this isn't a format that should ever be written by hand.  It's only available to aid in
+// debugging, testing, and storing number sets in text fields.  If the format is ever wrong in one of the ways below
+// it means the object's internal state has broken.
+
+
+// Can't have uncombined series
+{1,2}
+{4-9,10-12}
+{4-9,10}
+
+// Can't have overlapping series
+{1-5,4-16}
+
+// Can't have unordered numbers
+{6,3}
+{12-14,6-9}
+
+// Can't have unordered pairs
+{16-13}

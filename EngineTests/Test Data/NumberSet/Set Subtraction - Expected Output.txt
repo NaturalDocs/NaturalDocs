@@ -1,0 +1,80 @@
+
+// Remove first, middle, end with singles
+{5,10,15,20,25}
+= {5,10,15,20,25} Lowest Available: 1, Highest Used: 25, Count: 5
+
+-{5,15,25}
+= {10,20} Lowest Available: 1, Highest Used: 20, Count: 2
+
+
+// Remove first, middle, end with ranges
+{5,10,15,20,25}
+= {5,10,15,20,25} Lowest Available: 1, Highest Used: 25, Count: 5
+
+-{3-5,13-17,25-30}
+= {10,20} Lowest Available: 1, Highest Used: 20, Count: 2
+
+
+// Remove multple singles with range
+{5,10,15,20}
+= {5,10,15,20} Lowest Available: 1, Highest Used: 20, Count: 4
+
+-{8-18}
+= {5,20} Lowest Available: 1, Highest Used: 20, Count: 2
+
+
+// Remove ranges with ranges
+{10-20,30-40,50-60,70-80,90-100,110-120,130-140}
+= {10-20,30-40,50-60,70-80,90-100,110-120,130-140} Lowest Available: 1, Highest Used: 140, Count: 77
+
+-{10-20,45-65,85-100,130-145}
+= {30-40,70-80,110-120} Lowest Available: 1, Highest Used: 120, Count: 33
+
+
+// Clip ranges with singles
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
+-{20,30}
+= {10-19,31-40} Lowest Available: 1, Highest Used: 40, Count: 20
+
+
+// Split ranges with singles
+{10-20}
+= {10-20} Lowest Available: 1, Highest Used: 20, Count: 11
+
+-{15}
+= {10-14,16-20} Lowest Available: 1, Highest Used: 20, Count: 10
+
+
+// Split range with multiple singles
+{10-20}
+= {10-20} Lowest Available: 1, Highest Used: 20, Count: 11
+
+-{12,15,18,20}
+= {10-11,13-14,16-17,19} Lowest Available: 1, Highest Used: 19, Count: 7
+
+
+// Clip ranges with ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
+-{15-25,27-35}
+= {10-14,36-40} Lowest Available: 1, Highest Used: 40, Count: 10
+
+
+// Remove and clip ranges with range
+{10-20,30-40,50-60}
+= {10-20,30-40,50-60} Lowest Available: 1, Highest Used: 60, Count: 33
+
+-{15-55}
+= {10-14,56-60} Lowest Available: 1, Highest Used: 60, Count: 10
+
+
+// Ignore misses
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
+-{2,4-5,21,25-28,41,43-50}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+

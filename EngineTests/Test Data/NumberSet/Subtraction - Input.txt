@@ -1,0 +1,78 @@
+
+{5,10,15,20}
+
+// Remove first
+-5
+
+// Remove middle
+-15
+
+// Remove last
+-20
+
+// Remove only
+-10
+
+
+{5-10,20-30,40-50}
+
+// Left shrink first
+-5
+
+// Left shrink middle
+-20
+
+// Left shrink last
+-40
+
+
+{5-10,20-30,40-50}
+
+// Right shrink first
+-10
+
+// Right shrink middle
+-30
+
+// Right shrink last
+-50
+
+
+{1-3,10-20,30-40}
+
+// Split into singles
+-2
+
+// Split into ranges
+-15
+
+// Split singles from range
+-31
+-39
+
+
+{5,10-20}
+
+// Ignore missing before
+-1
+
+// Ignore missing after
+-25
+
+// Ignore missing near left edge
+-4
+
+// Ignore missing near right edge
+-6
+
+// Ignore missing near left range edge
+-9
+
+// Ignore missing near right range edge
+-21
+
+
+{}
+
+// Remove from empty set
+-5

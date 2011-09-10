@@ -1,0 +1,182 @@
+
+// Empty set
+// --------------------------
+
+{}
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+
+// Single items
+// --------------------------
+
+{4}
+= {4} Lowest Available: 1, Highest Used: 4, Count: 1
+
+
+{1,3,9,16,101}
+= {1,3,9,16,101} Lowest Available: 2, Highest Used: 101, Count: 5
+
+
+
+// Groups
+// --------------------------
+
+{1-9}
+= {1-9} Lowest Available: 10, Highest Used: 9, Count: 9
+
+
+{2-5,9-21,23-29}
+= {2-5,9-21,23-29} Lowest Available: 1, Highest Used: 29, Count: 24
+
+
+
+// Mixed
+// --------------------------
+
+{4,9-16,21}
+= {4,9-16,21} Lowest Available: 1, Highest Used: 21, Count: 10
+
+
+{1-9,11,13-55}
+= {1-9,11,13-55} Lowest Available: 10, Highest Used: 55, Count: 53
+
+
+
+// Invalid sets
+// --------------------------
+
+// Can't have zero
+{0-4,6}
+Exception: The string "{0-4,6}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{0,9-21}
+Exception: The string "{0,9-21}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have negative numbers
+{-5}
+Exception: The string "{-5}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{-1-3}
+Exception: The string "{-1-3}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{-5--1}
+Exception: The string "{-5--1}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have spaces or invalid characters
+{5, 7}
+Exception: The string "{5, 7}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{q}
+Exception: The string "{q}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{9f}
+Exception: The string "{9f}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have symbols in wrong context
+{,12}
+Exception: The string "{,12}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{5,9,}
+Exception: The string "{5,9,}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{5,9-}
+Exception: The string "{5,9-}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{1,,5}
+Exception: The string "{1,,5}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{1--5}
+Exception: The string "{1--5}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{,}
+Exception: The string "{,}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{-}
+Exception: The string "{-}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+
+// Incorrect format
+// --------------------------
+// The stuff below may seem overly sensitive.  We can obviously interpret the input correctly without any data loss
+// if we wanted to.  However, this isn't a format that should ever be written by hand.  It's only available to aid in
+// debugging, testing, and storing number sets in text fields.  If the format is ever wrong in one of the ways below
+// it means the object's internal state has broken.
+
+
+// Can't have uncombined series
+{1,2}
+Exception: The string "{1,2}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{4-9,10-12}
+Exception: The string "{4-9,10-12}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{4-9,10}
+Exception: The string "{4-9,10}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have overlapping series
+{1-5,4-16}
+Exception: The string "{1-5,4-16}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have unordered numbers
+{6,3}
+Exception: The string "{6,3}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+{12-14,6-9}
+Exception: The string "{12-14,6-9}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+// Can't have unordered pairs
+{16-13}
+Exception: The string "{16-13}" is not in a valid format for NumberSet.
+(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+

@@ -1,0 +1,23 @@
+
+{5,10-20}
+
+// Single
+5?
+
+// Left range edge
+10?
+
+// Right range edge
+20?
+
+// range middle
+15?
+
+// Missing off left
+3?
+
+// Missing off right
+25?
+
+// Missing in middle
+7?
