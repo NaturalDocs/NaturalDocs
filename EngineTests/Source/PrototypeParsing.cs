@@ -49,7 +49,7 @@ namespace GregValure.NaturalDocs.EngineTests
 				else
 					{  
 					var language = Engine.Instance.Languages.FromID(topics[topicIndex].LanguageID);
-					var parsedPrototype = language.ParsePrototype(topics[topicIndex].Prototype, topics[topicIndex].TopicTypeID);
+					var parsedPrototype = language.GetParser().ParsePrototype(topics[topicIndex].Prototype, topics[topicIndex].TopicTypeID);
 					
 					TokenIterator start, end, extensionStart, extensionEnd;
 					int numberOfParameters = parsedPrototype.NumberOfParameters;

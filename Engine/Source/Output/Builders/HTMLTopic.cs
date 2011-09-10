@@ -59,6 +59,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			topic = null;
 			parsedPrototype = null;
 			language = null;
+			languageParser = null;
 			htmlPrototypeBuilder = null;
 			}
 
@@ -77,9 +78,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
+			// Reuse the parser if we can.
+			if (languageParser == null || languageParser.Language != language)
+				{  languageParser = language.GetParser();  }
+
 			if (topic.Prototype != null)
 				{
-				parsedPrototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
 
 				if (htmlPrototypeBuilder == null)
 					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
@@ -541,6 +546,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * The <Languages.Language> of the prototype.
 		 */
 		protected Languages.Language language;
+
+		/* var: languageParser
+		 * A <Languages.Parser> associated with <language>.
+		 */
+		protected Languages.Parser languageParser;
 
 		/* var: htmlPrototypeBuilder
 		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Note that you

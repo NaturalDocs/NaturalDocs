@@ -85,6 +85,7 @@
     <Compile Include="Source\Config\Manager.cs" />
     <Compile Include="Source\Config\OutputEntry.cs" />
     <Compile Include="Source\Config\PropertyResult.cs" />
+    <Compile Include="Source\Languages\Parser.cs" />
     <Compile Include="Source\Languages\PrototypeEnders.cs" />
     <Compile Include="Source\NDMarkup\Exceptions\InvalidTag.cs" />
     <Compile Include="Source\NDMarkup\Exceptions\InvalidMarkup.cs" />
@@ -146,9 +147,7 @@
     <Compile Include="Source\Languages\AccessLevel.cs" />
     <Compile Include="Source\Languages\ConfigFileLanguage.cs" />
     <Compile Include="Source\Languages\Language.cs" />
-    <Compile Include="Source\Languages\Language.Parsing.cs" />
     <Compile Include="Source\Languages\Manager.cs" />
-    <Compile Include="Source\Languages\ParseState.cs" />
     <Compile Include="Source\Languages\ShebangStringComparer.cs" />
     <Compile Include="Source\Locale.cs" />
     <Compile Include="Source\StringBuilderExtensions.cs" />

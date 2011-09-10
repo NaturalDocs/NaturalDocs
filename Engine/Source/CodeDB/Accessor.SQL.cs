@@ -299,7 +299,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
 		 */
-		public void UpdateTopicsInFile (int fileID, List<Topic> newTopics, CancelDelegate cancelled)
+		public void UpdateTopicsInFile (int fileID, IList<Topic> newTopics, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 

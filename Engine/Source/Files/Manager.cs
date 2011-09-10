@@ -814,7 +814,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		 * should NOT already hold a lock.
 		 */
 		public ReleaseClaimedFileReason ProcessChangedFile (File file, Engine.CodeDB.Accessor codeDBAccessor, 
-																										CancelDelegate cancelDelegate)
+																												CancelDelegate cancelDelegate)
 			{
 
 			// Source files
@@ -837,11 +837,15 @@ namespace GregValure.NaturalDocs.Engine.Files
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 				
-				List<Topic> topics = null;
+				IList<Topic> topics = null;
 
 				if (content != null)
 					{  
-					language.Parse(content, file.ID, cancelDelegate, out topics);  
+					// It would be nice to share a single parser via WorkOnProcessingChanges() since 90% of the source files are going to
+					// be from the same language.  They're reusable, it's just that every thread needs their own since they're not thread safe.
+					// I don't see how to do it in a way that isn't really ugly so I'm keeping code cleanliness ahead of what might be a 
+					// premature optimization anyway.
+					language.GetParser().Parse(content, file.ID, cancelDelegate, out topics);  
 					}
 					
 				if (cancelDelegate())

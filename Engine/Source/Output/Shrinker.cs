@@ -26,6 +26,20 @@ namespace GregValure.NaturalDocs.Engine.Output
 		// Group: Functions
 		// __________________________________________________________________________
 
+		static Shrinker ()
+			{
+			jsLanguage = new Languages.Language("JavaScript");
+			jsLanguage.LineCommentStrings = new string[] { "//" };
+			jsLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+
+			cssLanguage = new Languages.Language("CSS");
+			cssLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+
+			keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
+			substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
+			substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
+			}
+
 		public Shrinker ()
 			{
 			source = null;
@@ -42,11 +56,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			Languages.Language jsLanguage = new Languages.Language("JavaScript");
-			jsLanguage.LineCommentStrings = new string[] { "//" };
-			jsLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
-
-			List<PossibleDocumentationComment> comments = jsLanguage.GetComments(source);
+			IList<PossibleDocumentationComment> comments = jsLanguage.GetParser().GetComments(source);
 
 			foreach (PossibleDocumentationComment comment in comments)
 				{  ProcessComment(comment);  }
@@ -131,10 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			Languages.Language cssLanguage = new Languages.Language("CSS");
-			cssLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
-
-			List<PossibleDocumentationComment> comments = cssLanguage.GetComments(source);
+			IList<PossibleDocumentationComment> comments = cssLanguage.GetParser().GetComments(source);
 
 			foreach (PossibleDocumentationComment comment in comments)
 				{  ProcessComment(comment);  }
@@ -512,10 +519,12 @@ namespace GregValure.NaturalDocs.Engine.Output
 		// Group: Static Variables
 		// __________________________________________________________________________
 
+		protected static Languages.Language jsLanguage;
+		protected static Languages.Language cssLanguage;
 
-		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
-		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
-		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
+		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex;
+		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex;
+		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex;
 
 		}
 	}

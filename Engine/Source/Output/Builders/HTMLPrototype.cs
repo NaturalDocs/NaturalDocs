@@ -103,7 +103,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput = output;
 
 			language = Engine.Instance.Languages.FromID(topic.LanguageID);
-			parsedPrototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+
+			// Reuse the parser if we can.
+			if (languageParser == null || languageParser.Language != language)
+				{  languageParser = language.GetParser();  }
+
+			parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
 
 			if (parsedPrototype.NumberOfParameters == 0)
 				{
@@ -616,6 +621,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * The <Languages.Language> of the prototype.
 		 */
 		protected Languages.Language language;
+
+		/* var: languageParser
+		 * A <Languages.Parser> associated with <language>.
+		 */
+		protected Languages.Parser languageParser;
 
 		/* var: columnIndexes
 		 * An array of symbol indexes representing the starting position of each column.  The indexes are taken from 

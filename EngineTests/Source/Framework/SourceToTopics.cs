@@ -103,8 +103,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 
 							string code = System.IO.File.ReadAllText(test.InputFile);
 
-							List<Topic> topics;
-							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics);
+							IList<Topic> topics;
+							language.GetParser().Parse(code, -1, Engine.Delegates.NeverCancel, out topics);
 
 							test.ActualOutput = OutputOf(topics);  
 							}
