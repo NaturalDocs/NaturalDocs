@@ -1,0 +1,10 @@
+
+// Function: FuncA
+Function FuncA (): MyClass;
+	Begin;
+	End;
+
+// Function: FuncB
+Function FuncB (a: Class2, b: Pkg.MyClass): Pkg.MyClass<int, Class2>;
+	Begin;
+	End;

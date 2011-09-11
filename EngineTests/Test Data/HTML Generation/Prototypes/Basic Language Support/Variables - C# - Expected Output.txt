@@ -1,0 +1,5 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> <a href="about:MyClass">MyClass</a> VarA</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public static</span> <a href="about:Pkg.MyClass">Pkg.MyClass</a>&lt;<span class="SHKeyword">int</span>, <a href="about:Class2">Class2</a>&gt; VarB</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> <a href="about:Pkg.MyClass">Pkg.MyClass</a>[] PropA</div>

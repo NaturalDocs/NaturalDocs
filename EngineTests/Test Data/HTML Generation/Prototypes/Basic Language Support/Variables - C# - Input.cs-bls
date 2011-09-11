@@ -1,0 +1,16 @@
+
+/* Var: VarA
+*/
+public MyClass VarA;
+
+/* Var: VarB
+*/
+public static Pkg.MyClass<int, Class2> VarB = null;
+
+/* Property: PropA
+*/
+public Pkg.MyClass[] PropA
+	{
+	get { }
+	set { }
+	}

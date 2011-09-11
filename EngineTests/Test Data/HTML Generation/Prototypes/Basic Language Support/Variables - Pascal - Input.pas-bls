@@ -1,0 +1,6 @@
+
+// Var: VarA
+public VarA: MyClass;
+
+// Var: VarB
+VarB: Pkg.MyClass<int, Class2> := null;

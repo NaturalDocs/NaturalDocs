@@ -1,0 +1,10 @@
+
+/* Function: FuncA
+*/
+public MyClass FuncA()
+	{  }
+
+/* Function: FuncB
+*/
+public static Pkg.MyClass<int, Class2> FuncB(Class2 a, Pkg.MyClass b)
+	{  }
