@@ -236,7 +236,7 @@ namespace GregValure.NaturalDocs.Engine
 					{  extensionEnd.Next();  }
 
 				// Trim trailing whitespace from the regular type
-				end.PreviousPastWhitespace(start);
+				end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
 
 				return true;
 				}
@@ -527,7 +527,7 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected void TrimWhitespace (ref TokenIterator start, ref TokenIterator end)
 			{
-			end.PreviousPastWhitespace(start);
+			end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
 			start.NextPastWhitespace(end);
 			}
 			

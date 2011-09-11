@@ -28,6 +28,20 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	{
 	public struct TokenIterator
 		{
+
+		// Group: Types
+		// __________________________________________________________________________
+
+		/* Enum: PreviousPastWhitespaceMode
+		 * The method to use when using <PreviousPastWhitespace()>.
+		 * 
+		 * EndingBounds - The iterator is treated as an ending bounds, a limit to another iterator.
+		 * Iterator - The iterator is treated as an independent iterator.
+		 */
+		public enum PreviousPastWhitespaceMode : byte
+			{  EndingBounds, Iterator  }
+
+
 		
 		// Group: Functions
 		// __________________________________________________________________________
@@ -180,33 +194,73 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 			
 		/* Function: PreviousPastWhitespace
+		 * 
 		 * Moves backwards until past all whitespace tokens.
+		 * 
+		 * Parameters:
+		 * 
+		 *		mode - If set to <PreviousPastWhitespaceMode.EndingBounds>, the iterator will move until the *previous* token is
+		 *					 no longer whitespace, paying no attention to the token the iterator is on.  This is useful if you're using it as the 
+		 *					 ending bounds relative to another iterator and want to trim trailing whitespace off.
+		 *					 
+		 *					 If set to <PreviousPastWhitespaceMode.Iterator>, the iterator will move until the *current* token is no longer
+		 *					 whitespace.  This is useful if you're using it as an independent iterator and want it to be on a non-whitespace
+		 *					 token.
 		 */
-		public void PreviousPastWhitespace ()
+		public void PreviousPastWhitespace (PreviousPastWhitespaceMode mode)
 			{
-			TokenIterator temp = this;
-			temp.Previous();
+			if (mode == PreviousPastWhitespaceMode.Iterator)
+				{
+				while (FundamentalType == Tokenization.FundamentalType.Whitespace)
+					{  Previous();  }
+				}
 
-			while (temp.FundamentalType == FundamentalType.Whitespace)
-				{  
-				this = temp;
+			else if (mode == PreviousPastWhitespaceMode.EndingBounds)
+				{
+				TokenIterator temp = this;
 				temp.Previous();
+
+				while (temp.FundamentalType == FundamentalType.Whitespace)
+					{  
+					this = temp;
+					temp.Previous();
+					}
 				}
 			}
 
 
 		/* Function: PreviousPastWhitespace
+		 * 
 		 * Moves backwards until past all whitespace tokens or it reaches the limit.
+		 * 
+		 * Parameters:
+		 * 
+		 *		mode - If set to <PreviousPastWhitespaceMode.EndingBounds>, the iterator will move until the *previous* token is
+		 *					 no longer whitespace, paying no attention to the token the iterator is on.  This is useful if you're using it as the 
+		 *					 ending bounds relative to another iterator and want to trim trailing whitespace off.
+		 *					 
+		 *					 If set to <PreviousPastWhitespaceMode.Iterator>, the iterator will move until the *current* token is no longer
+		 *					 whitespace.  This is useful if you're using it as an independent iterator and want it to be on a non-whitespace
+		 *					 token.
 		 */
-		public void PreviousPastWhitespace (TokenIterator limit)
+		public void PreviousPastWhitespace (PreviousPastWhitespaceMode mode, TokenIterator limit)
 			{
-			TokenIterator temp = this;
-			temp.Previous();
+			if (mode == PreviousPastWhitespaceMode.Iterator)
+				{
+				while (FundamentalType == Tokenization.FundamentalType.Whitespace && this > limit)
+					{  Previous();  }
+				}
 
-			while (temp.FundamentalType == FundamentalType.Whitespace && temp >= limit)
-				{  
-				this = temp;
+			else if (mode == PreviousPastWhitespaceMode.EndingBounds)
+				{
+				TokenIterator temp = this;
 				temp.Previous();
+
+				while (temp.FundamentalType == FundamentalType.Whitespace && temp >= limit)
+					{  
+					this = temp;
+					temp.Previous();
+					}
 				}
 			}
 

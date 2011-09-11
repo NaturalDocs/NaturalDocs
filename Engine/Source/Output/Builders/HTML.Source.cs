@@ -154,7 +154,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 									lookahead.FundamentalType == FundamentalType.Whitespace &&
 									lookahead < end);
 
-						if (lookahead.SyntaxHighlightingType == stretchType)
+						if (lookahead < end && lookahead.SyntaxHighlightingType == stretchType)
 							{
 							endStretch = lookahead;
 							endStretch.Next();

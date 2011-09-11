@@ -305,6 +305,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							 type == PrototypeParsingType.TypeSuffix ||
 							 type == PrototypeParsingType.OpeningTypeSuffix ||
 							 type == PrototypeParsingType.ClosingTypeSuffix ||
+							 type == PrototypeParsingType.ParamSeparator ||
 							 type == PrototypeParsingType.Null ||
 							 typeNesting > 0))
 					{  
@@ -376,7 +377,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			type = ColumnOrder[columnIndex];
 
-			end.PreviousPastWhitespace(start);
+			end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
 			start.NextPastWhitespace(end);
 
 			return (end > start);

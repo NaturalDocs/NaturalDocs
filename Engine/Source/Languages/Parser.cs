@@ -232,12 +232,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			Reset();
 			source = new Tokenizer(rawPrototype);
+			ParsedPrototype parsedPrototype = new ParsedPrototype(source);
 
 
-			// Search for the first opening bracket or brace.
+			// Search for the first opening bracket or brace.  Also be on the lookout for anything that would indicate this is a
+			// class prototype.
 
 			TokenIterator iterator = source.FirstToken;
 			char closingBracket = '\0';
+			bool hasClassKeywords = false;
 
 			while (iterator.IsInBounds)
 				{
@@ -251,6 +254,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					closingBracket = '}';
 					break;
 					}
+				else if (iterator.MatchesToken("class") || iterator.MatchesToken("interface") || iterator.MatchesToken("package") ||
+							 iterator.MatchesToken("struct"))
+					{
+					iterator.Next();
+
+					if (iterator.Character != '_')
+						{  hasClassKeywords = true;  }
+					}
 				else if (TryToSkipComment(ref iterator) ||
 							  TryToSkipString(ref iterator))
 					{  }
@@ -259,7 +270,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 
-			// If we found some, separate out parameters
+			// If we found brackets, it's either a function prototype or a class prototype that includes members.  
+			// Separate out the parameters/members.
 
 			if (closingBracket != '\0')
 				{
@@ -291,27 +303,85 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else
 						{  iterator.Next();  }
 					}
-				}
+				
 
+				// If we have any, parse the parameters.
 
-			// If we have any, parse the parameters.
+				// We use ParsedPrototype.GetParameter() instead of trying to build it into the loop above because ParsedPrototype 
+				// does things like trimming whitespace and ignoring empty parenthesis.
 
-			// We use ParsedPrototype.GetParameter() instead of trying to build it into the loop above because ParsedPrototype 
-			// does things like trimming whitespace and ignoring empty parenthesis.
-
-			ParsedPrototype parsedPrototype = new ParsedPrototype(source);
-
-			if (parsedPrototype.NumberOfParameters > 0)
-				{
-				TokenIterator start, end;
-
-				for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+				if (parsedPrototype.NumberOfParameters > 0)
 					{
-					parsedPrototype.GetParameter(i, out start, out end);
-					ParsePrototypeParameter(start, end, topicTypeID);
+					TokenIterator start, end;
+
+					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+						{
+						parsedPrototype.GetParameter(i, out start, out end);
+						ParsePrototypeParameter(start, end, topicTypeID);
+						}
+					}
+
+
+				// If we have a function we need to mark the return value.
+
+				if (hasClassKeywords == false)
+					{
+					TokenIterator start, end;
+					parsedPrototype.GetAfterParameters(out start, out end);
+
+					// Exclude the closing bracket
+					start.Next();
+					start.NextPastWhitespace(end);
+
+					// If there's a colon immediately after the parameters, it's a Pascal-style function.  Mark the return value after it 
+					// the same as the part of a parameter after the colon.
+					if (start < end && start.Character == ':')
+						{  
+						start.Next();
+						start.NextPastWhitespace();
+
+						if (start < end)
+							{  MarkPascalParameterAfterColon(start, end, topicTypeID);  }
+						}
+
+					// Otherwise it's a C-style function.  Mark the part before the parameters as if it was a parameter to get the return
+					// value.
+					else
+						{  
+						parsedPrototype.GetBeforeParameters(out start, out end);
+
+						// Exclude the opening bracket
+						end.Previous();
+						end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
+
+						if (start < end)
+							{  MarkCParameter(start, end, topicTypeID);  }
+						}
+					}
+
+				else
+					{
+					// if it's a class xxx
 					}
 				}
 
+
+			// If it's a class without brackets, we need to mark any inherited members.
+
+			else if (hasClassKeywords)
+				{
+				//xxx
+				}
+
+
+			// If it's not a class and there's no brackets, it's a variable or property.  Mark it like a parameter.
+
+			else
+				{
+				TokenIterator start, end;
+				parsedPrototype.GetCompletePrototype(out start, out end);
+				ParsePrototypeParameter(start, end, topicTypeID);
+				}
 
 			if (syntaxHighlight)
 				{  
@@ -976,7 +1046,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						temp.Previous();
 						}
 
-					endOfDefaultValue.PreviousPastWhitespace(iterator);
+					endOfDefaultValue.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, iterator);
 
 					if (iterator < endOfDefaultValue)
 						{  source.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
@@ -996,7 +1066,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					break;
 					}
-				else if (TryToSkipTypeOrVarName(ref iterator) ||
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
 							 TryToSkipComment(ref iterator) ||
 							 TryToSkipString(ref iterator) ||
 							 TryToSkipBlock(ref iterator, true))
@@ -1028,72 +1098,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			if (hasColon == false)
 				{
-				iterator = start;
-
-				TokenIterator startWord = iterator;
-				TokenIterator endWord = iterator;
-				bool markWord = false;
-
-				while (iterator < end)
-					{
-					startWord = iterator;
-					markWord = false;
-
-					if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
-						 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{
-						break;
-						}
-					else if (TryToSkipTypeOrVarName(ref iterator) ||
-								 TryToSkipComment(ref iterator) ||
-								 TryToSkipString(ref iterator) ||
-								 TryToSkipBlock(ref iterator, true))
-						{
-						markWord = true;
-						endWord = iterator;
-						}
-					else
-						{
-						iterator.Next();
-						}
-
-					if (markWord)
-						{
-						if (words >= 3)
-							{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
-						else if (words == 2)
-							{  
-							MarkType(startWord, endWord);  
-
-							// Go back and change any trailing * or & to name prefixes because even if they're textually attached to the type
-							// (int* x) they're actually part of the name in C++ (int *x).
-
-							TokenIterator namePrefix = endWord;
-							namePrefix.Previous();
-
-							if (namePrefix >= startWord && (namePrefix.Character == '*' || namePrefix.Character == '&' || namePrefix.Character == '^'))
-								{
-								for (;;)
-									{
-									TokenIterator temp = namePrefix;
-									temp.PreviousPastWhitespace(startWord);
-									temp.Previous();
-
-									if (temp >= startWord && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
-										{  namePrefix = temp;  }
-									else
-										{  break;  }
-									}
-
-								source.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
-								}
-							}
-						else if (words == 1)
-							{  MarkName(startWord, endWord);  }
-
-						words--;
-						}
-					}
+				MarkCParameter(start, end, topicTypeID, words);
 				}
 
 			// If we do have a colon, the order of words goes [name]: [modifier] [modifier] [type], the type portion starting
@@ -1101,68 +1106,211 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			else
 				{
 				iterator = start;
-				TokenIterator startWord = iterator;
-
-				// First word is the name no matter what.
-
-				if (TryToSkipTypeOrVarName(ref iterator) ||
-					 TryToSkipComment(ref iterator) ||
-					 TryToSkipString(ref iterator) ||
-					 TryToSkipBlock(ref iterator, true))
-					{  }
-				else
-					{  iterator.Next();  }
-
-				TokenIterator endWord = iterator;
-				MarkName(startWord, endWord);
-
-				// Skip everything else to the first word past the separator.  There may not be a separator or type for this parameter though.
 
 				while (iterator < end && iterator.PrototypeParsingType != PrototypeParsingType.NameTypeSeparator)
 					{  iterator.Next();  }
 
+				MarkPascalParameterBeforeColon(start, iterator, topicTypeID, wordsBeforeColon);
+
 				while (iterator < end && iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
 					{  iterator.Next();  }
 
-				iterator.NextPastWhitespace(end);
+				MarkPascalParameterAfterColon(iterator, end, topicTypeID, words - wordsBeforeColon);
+				}
+			}
 
-				// Mark words in the type section as [modifier] [modifier] [type].
 
-				words -= wordsBeforeColon;
-				bool markWord = false;
+		/* Function: CountParameterWords
+		 * Returns the number of "words" between the bounds.
+		 */
+		protected int CountParameterWords (TokenIterator start, TokenIterator end, int topicTypeID)
+			{
+			TokenIterator iterator = start;
+			int words = 0;
 
-				while (iterator < end)
+			while (iterator < end)
+				{
+				if (TryToSkipTypeOrVarName(ref iterator, end) ||
+					 TryToSkipComment(ref iterator) ||
+					 TryToSkipString(ref iterator) ||
+					 TryToSkipBlock(ref iterator, true))
 					{
-					startWord = iterator;
-					markWord = false;
+					words++;
+					}
 
-					if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
-						 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{
-						break;
-						}
-					else if (TryToSkipTypeOrVarName(ref iterator) ||
-								 TryToSkipComment(ref iterator) ||
-								 TryToSkipString(ref iterator) ||
-								 TryToSkipBlock(ref iterator, true))
-						{
-						markWord = true;
-						endWord = iterator;
-						}
-					else
-						{
-						iterator.Next();
-						}
+				// Skip over whitespace plus any unexpected random symbols that appear.
+				else
+					{
+					iterator.Next();
+					}
+				}
 
-					if (markWord)
-						{
-						if (words >= 2)
-							{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
-						else if (words == 1)
-							{  MarkType(startWord, endWord);  }
+			return words;
+			}
 
-						words--;
+
+		/* Function: MarkCParameter
+		 * Marks the tokens in the C-style parameter specified by the bounds with <CommentParsingTypes>.  This function will also
+		 * work correctly for typeless parameters and Pascal-style parameters that don't have a type.  If you leave the word count
+		 * -1 it will use <CountParameterWords()> to determine it itself.
+		 */
+		protected void MarkCParameter (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+			{
+			if (words == -1)
+				{  words = CountParameterWords(start, end, topicTypeID);  }
+
+			// The order of words goes [modifier] [modifier] [type] [name], starting from the right.  Typeless languages that only have
+			// one word will have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
+			// they're sharing a type declaration will also have it correctly interpreted as the name.
+
+			TokenIterator iterator = start;
+
+			TokenIterator startWord = iterator;
+			TokenIterator endWord = iterator;
+			bool markWord = false;
+
+			while (iterator < end)
+				{
+				startWord = iterator;
+				markWord = false;
+
+				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+						iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					{
+					break;
+					}
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+							 TryToSkipComment(ref iterator) ||
+							 TryToSkipString(ref iterator) ||
+							 TryToSkipBlock(ref iterator, true))
+					{
+					markWord = true;
+					endWord = iterator;
+					}
+				else
+					{
+					iterator.Next();
+					}
+
+				if (markWord)
+					{
+					if (words >= 3)
+						{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+					else if (words == 2)
+						{  
+						MarkType(startWord, endWord);  
+
+						// Go back and change any trailing * or & to name prefixes because even if they're textually attached to the type
+						// (int* x) they're actually part of the name in C++ (int *x).
+
+						TokenIterator namePrefix = endWord;
+						namePrefix.Previous();
+
+						if (namePrefix >= startWord && (namePrefix.Character == '*' || namePrefix.Character == '&' || namePrefix.Character == '^'))
+							{
+							for (;;)
+								{
+								TokenIterator temp = namePrefix;
+								temp.Previous();
+								temp.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.Iterator, startWord);
+
+								if (temp >= startWord && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
+									{  namePrefix = temp;  }
+								else
+									{  break;  }
+								}
+
+							source.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
+							}
 						}
+					else if (words == 1)
+						{  MarkName(startWord, endWord);  }
+
+					words--;
+					}
+				}
+			}
+
+
+		/* Function: MarkPascalParameterBeforeColon
+		 * Marks the tokens in the Pascal-style parameter specified by the bounds with <CommentParsingTypes>.  The bounds
+		 * contain the part of the prototype prior to the colon.  If the word count is -1 it will determine it itself with 
+		 * <CountParameterWords()>.
+		 */
+		protected void MarkPascalParameterBeforeColon (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+			{
+			if (words == -1)
+				{  words = CountParameterWords(start, end, topicTypeID);  }
+
+			TokenIterator iterator = start;
+			TokenIterator startWord = iterator;
+
+			// First word is the name no matter what.
+
+			if (TryToSkipTypeOrVarName(ref iterator, end) ||
+					TryToSkipComment(ref iterator) ||
+					TryToSkipString(ref iterator) ||
+					TryToSkipBlock(ref iterator, true))
+				{  }
+			else
+				{  iterator.Next();  }
+
+			TokenIterator endWord = iterator;
+			MarkName(startWord, endWord);
+
+			// Ignore everything else before the colon.
+			}
+
+
+		/* Function: MarkPascalParameterAfterColon
+		 * Marks the tokens in the Pascal-style parameter specified by the bounds with <CommentParsingTypes>.  The bounds
+		 * contain the part of the prototype after the colon.  If the word count is -1 it will determine it itself with
+		 * <CountParameterWords()>.
+		 */
+		protected void MarkPascalParameterAfterColon (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+			{
+			if (words == -1)
+				{  words = CountParameterWords(start, end, topicTypeID);  }
+
+			TokenIterator iterator = start;
+			TokenIterator startWord = iterator;
+			TokenIterator endWord = iterator;
+
+			// Mark words in the type section as [modifier] [modifier] [type].
+
+			bool markWord = false;
+
+			while (iterator < end)
+				{
+				startWord = iterator;
+				markWord = false;
+
+				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+					 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					{
+					break;
+					}
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+							 TryToSkipComment(ref iterator) ||
+							 TryToSkipString(ref iterator) ||
+							 TryToSkipBlock(ref iterator, true))
+					{
+					markWord = true;
+					endWord = iterator;
+					}
+				else
+					{
+					iterator.Next();
+					}
+
+				if (markWord)
+					{
+					if (words >= 2)
+						{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+					else if (words == 1)
+						{  MarkType(startWord, endWord);  }
+
+					words--;
 					}
 				}
 			}
@@ -1256,7 +1404,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				while (iterator < end && iterator.Character != ',' && iterator.Character != ';')
 					{  
-					if (TryToSkipTypeOrVarName(ref iterator) ||
+					if (TryToSkipTypeOrVarName(ref iterator, end) ||
 						 TryToSkipComment(ref iterator) ||
 						 TryToSkipString(ref iterator) ||
 						 TryToSkipBlock(ref iterator, true))
@@ -1267,7 +1415,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				TokenIterator endOfType = iterator;
 
-				endOfType.PreviousPastWhitespace(startOfType);
+				endOfType.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, startOfType);
 				startOfType.NextPastWhitespace(endOfType);
 
 				if (endOfType > startOfType)
@@ -1290,7 +1438,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			while (iterator < end)
 				{
-				if (TryToSkipTypeOrVarName(ref iterator) ||
+				if (TryToSkipTypeOrVarName(ref iterator, end) ||
 					 TryToSkipComment(ref iterator) ||
 					 TryToSkipString(ref iterator) ||
 					 TryToSkipBlock(ref iterator, true))
@@ -1328,7 +1476,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				startWord = iterator;
 				markWord = false;
 
-				if (TryToSkipTypeOrVarName(ref iterator) ||
+				if (TryToSkipTypeOrVarName(ref iterator, end) ||
 					 TryToSkipComment(ref iterator) ||
 					 TryToSkipString(ref iterator) ||
 					 TryToSkipBlock(ref iterator, true))
@@ -1592,19 +1740,24 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipTypeOrVarName
+		 * 
 		 * If the iterator is on what could be a complex type or variable name, moves the iterator past it and returns true.
 		 * This supports things like name, $name, PkgA::Class*, int[], and List<List<void*, float>>.  It does not include anything
 		 * separated by a space, so modifiers like unsigned and const have to be handled separately.
+		 * 
+		 * A limit is required since this will swallow a block following an identifier and that may not be desired or expected.  If you
+		 * genuinely don't need a limit, set it to <Tokenizer.LastToken>.
 		 */
-		protected bool TryToSkipTypeOrVarName (ref TokenIterator iterator)
+		protected bool TryToSkipTypeOrVarName (ref TokenIterator iterator, TokenIterator limit)
 			{
-			if (iterator.FundamentalType == FundamentalType.Text ||
-				 iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' ||
-				 iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%')
+			if (iterator < limit &&
+				 (iterator.FundamentalType == FundamentalType.Text ||
+				  iterator.Character == '_' || iterator.Character == '*' || iterator.Character == '&' ||
+				  iterator.Character == '$' || iterator.Character == '@' || iterator.Character == '%') )
 				{
 				iterator.Next();
 
-				for (;;)
+				while (iterator < limit)
 					{
 					// Add dot to our previous list.  Also ^ for Pascal pointers and ? for C# nullable types.
 					if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '.' ||
@@ -1628,7 +1781,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						lookahead.NextPastWhitespace();
 						bool acceptableSuffix;
 
-						do
+						while (lookahead < limit)
 							{
 							acceptableSuffix = false;
 
@@ -1649,8 +1802,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								iterator = lookahead;
 								lookahead.NextPastWhitespace();
 								}
+							else
+								{  break;  }
 							}
-						while (acceptableSuffix);
 
 						break;
 						}
