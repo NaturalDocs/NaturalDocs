@@ -1,8 +1,14 @@
 - No Parameters: int FunctionName ()
+  - Link Candidates: int
 -----
 - No Parameters: int FunctionName2 ( )
+  - Link Candidates: int
 -----
-- Before Parameters: void FunctionName3 (
+- No Parameters: int FunctionName3()
+  - Link Candidates: int
+-----
+- Before Parameters: void FunctionName4 (
+  - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -19,8 +25,30 @@
     - Default Value: (not detected)
 
 - After Parameters: )
+  - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName4 (
+- Before Parameters: void FunctionName5(
+  - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: float y
+    - Name: y
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionName6 (
+  - Link Candidates: void
 
   - Parameter 1: int x_1,
     - Name: x_1
@@ -37,8 +65,10 @@
     - Default Value: (not detected)
 
 - After Parameters: )
+  - Link Candidates: (none)
 -----
-- Before Parameters: virtual void FunctionName5 (
+- Before Parameters: virtual void FunctionName7 (
+  - Link Candidates: void
 
   - Parameter 1: int* x,
     - Name: x
@@ -62,3 +92,4 @@
     - Default Value: ""
 
 - After Parameters: ) = 0
+  - Link Candidates: (none)

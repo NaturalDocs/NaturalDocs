@@ -1,6 +1,8 @@
 - No Parameters: Procedure FunctionA
+  - Link Candidates: Procedure
 -----
 - Before Parameters: Function FunctionB (
+  - Link Candidates: (none)
 
   - Parameter 1: x: integer,
     - Name: x
@@ -17,14 +19,36 @@
     - Default Value: (not detected)
 
 - After Parameters: ): integer
+  - Link Candidates: integer
 -----
-- Before Parameters: Function FunctionC (
+- Before Parameters: Function FunctionC(
+  - Link Candidates: (none)
+
+  - Parameter 1: x: integer,
+    - Name: x
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: y: string
+    - Name: y
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer
+-----
+- Before Parameters: Function FunctionD (
+  - Link Candidates: (none)
 
   - Parameter 1: x_2,
     - Name: x_2
     - Full Type: (not detected)
     - Base Type: (not detected)
-    - Link Candidates: (not detected)
+    - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: __y3__: integer,
@@ -42,3 +66,4 @@
     - Default Value: ""
 
 - After Parameters: ): integer
+  - Link Candidates: integer

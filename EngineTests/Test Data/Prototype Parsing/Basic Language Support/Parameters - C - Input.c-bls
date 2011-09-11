@@ -10,14 +10,28 @@ int FunctionName2 ( )
 	}
 
 // Function: FunctionName3
-void FunctionName3 (int x, float y)
+int FunctionName3()
 	{
 	}
 
 // Function: FunctionName4
-void FunctionName4 (int x_1, int __y2__)
+void FunctionName4 (int x, float y)
 	{
 	}
 
-// Function: FunctionName5
-virtual void FunctionName5 (int* x, int y[12], char* z = "") = 0;
+/* Function: FunctionName5
+	We need a test with the parethesis attached to the function name because in the past the code
+	that skipped the identifier would skip the parenthesis as part of it (like it should with var[]) thus
+	screwing up the parameter list.
+*/
+void FunctionName5(int x, float y)
+	{
+	}
+
+// Function: FunctionName6
+void FunctionName6 (int x_1, int __y2__)
+	{
+	}
+
+// Function: FunctionName7
+virtual void FunctionName7 (int* x, int y[12], char* z = "") = 0;

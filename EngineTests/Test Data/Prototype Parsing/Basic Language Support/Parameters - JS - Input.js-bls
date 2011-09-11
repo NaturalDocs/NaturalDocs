@@ -10,11 +10,21 @@ function FunctionB ( )
 	}
 
 // Function: FunctionC
-function FunctionC (x, y)
+function FunctionC()
 	{
 	}
 
 // Function: FunctionD
-function FunctionD (x_1, __y2__)
+function FunctionD (x, y)
+	{
+	}
+
+// Function: FunctionE
+function FunctionE(x, y)
+	{
+	}
+
+// Function: FunctionF
+function FunctionF (x_1, __y2__)
 	{
 	}

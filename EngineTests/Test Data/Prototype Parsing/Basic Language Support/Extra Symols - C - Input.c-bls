@@ -1,22 +1,30 @@
 
 // Function: FunctionName
-void FunctionName (int * a, int* b, int *c, int ** d, int** e, int **f, int * * g, int* * h, int * *i)
+void** FunctionName (int * a, int* b, int *c, int ** d, int** e, int **f, int * * g, int* * h, int * *i)
 	{
 	}
 
 /* Function: FunctionName2
 	C and D mean "constant pointer to a constant int".
 */
-void FunctionName2 (const int * a, int * const b, const int * const c, int const * const d)
+const int* FunctionName2 (const int * a, int * const b, const int * const c, int const * const d)
 	{
 	}
 
 // Function: FunctionName3
-void FunctionName3 (const int* a, int* const b, const int* const c, int const* const d)
+int* const FunctionName3 (const int* a, int* const b, const int* const c, int const* const d)
 	{
 	}
 
 // Function: FunctionName4
-void FunctionName4 (const int *a, int *const b, const int *const c, int const *const d)
+int const * const FunctionName4 (const int *a, int *const b, const int *const c, int const *const d)
 	{
 	}
+
+// Function: FunctionName5
+~FunctionName5 ()
+	{
+	}
+
+// Function: FunctionName6
+virtual ~FunctionName6 () = 0;

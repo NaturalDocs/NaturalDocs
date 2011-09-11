@@ -1,5 +1,6 @@
 
 // Function: FunctionA
-Function FunctionA (x: integer, y: string^, z: string^ := 0): integer;
+Function FunctionA (x: integer, y: string^, z: string^ := 0): integer^;
 	Begin
 	End;
+

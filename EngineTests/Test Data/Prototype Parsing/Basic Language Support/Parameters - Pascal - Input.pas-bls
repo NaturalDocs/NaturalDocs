@@ -10,4 +10,9 @@ Function FunctionB (x: integer, y: string): integer;
 	End;
  
 // Function: FunctionC
-Function FunctionC (x_2, __y3__: integer, z: string := ""): integer; Forward;
+Function FunctionC(x: integer, y: string): integer;
+	Begin
+	End;
+ 
+// Function: FunctionD
+Function FunctionD (x_2, __y3__: integer, z: string := ""): integer; Forward;

@@ -12,6 +12,16 @@ sub FunctionB ( )
 	}
 
 # Function: FunctionC
-sub FunctionC ($x, %y, @z = [ ])
+sub FunctionC()
+	{
+	}
+
+# Function: FunctionD
+sub FunctionD ($x, %y, @z = [ ])
+	{
+	}
+
+# Function: FunctionE
+sub FunctionE($x, %y, @z = [ ])
 	{
 	}

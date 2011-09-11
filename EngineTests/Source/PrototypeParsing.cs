@@ -58,11 +58,17 @@ namespace GregValure.NaturalDocs.EngineTests
 						{
 						parsedPrototype.GetCompletePrototype(out start, out end);
 						output.AppendLine("- No Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						output.Append("  - Link Candidates: ");
+						AppendLinkCandidates(start, end, output);
+						output.AppendLine();
 						}
 					else
 						{
 						parsedPrototype.GetBeforeParameters(out start, out end);
 						output.AppendLine("- Before Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						output.Append("  - Link Candidates: ");
+						AppendLinkCandidates(start, end, output);
+						output.AppendLine();
 						output.AppendLine();
 
 						for (int paramIndex = 0; paramIndex < numberOfParameters; paramIndex++)
@@ -93,39 +99,9 @@ namespace GregValure.NaturalDocs.EngineTests
 								{  output.AppendLine("    - Base Type: (not detected)");  }
 
 							parsedPrototype.GetParameter(paramIndex, out start, out end);
-							int linkableTypes = 0;
 
 							output.Append("    - Link Candidates: ");
-							TokenIterator iterator = start;
-							TokenIterator linkableTypeStart = start;
-
-							for (;;)
-								{
-								while (iterator < end && 
-											iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
-											iterator.PrototypeParsingType != PrototypeParsingType.Type)
-									{  iterator.Next();  }
-
-								if (iterator >= end)
-									{  break;  }
-
-								linkableTypeStart = iterator;
-
-								while (iterator < end &&
-											 (iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-											  iterator.PrototypeParsingType == PrototypeParsingType.Type) )
-									{  iterator.Next();  }
-
-								if (linkableTypes > 0)
-									{  output.Append(", ");  }
-
-								parsedPrototype.Tokenizer.AppendTextBetweenTo(linkableTypeStart, iterator, output);
-								linkableTypes++;
-								}
-
-							if (linkableTypes == 0)
-								{  output.Append("(not detected)");  }
-
+							AppendLinkCandidates(start, end, output);
 							output.AppendLine();
 
 							if (parsedPrototype.GetDefaultValue(paramIndex, out start, out end))
@@ -138,6 +114,9 @@ namespace GregValure.NaturalDocs.EngineTests
 
 						parsedPrototype.GetAfterParameters(out start, out end);
 						output.AppendLine("- After Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						output.Append("  - Link Candidates: ");
+						AppendLinkCandidates(start, end, output);
+						output.AppendLine();
 						}
 					}
 				}
@@ -145,5 +124,38 @@ namespace GregValure.NaturalDocs.EngineTests
 			return output.ToString();
 			}
 
+		void AppendLinkCandidates (TokenIterator start, TokenIterator end, StringBuilder output)
+			{
+			TokenIterator iterator = start;
+			TokenIterator linkableTypeStart = start;
+			int linkableTypes = 0;
+
+			for (;;)
+				{
+				while (iterator < end && 
+							iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
+							iterator.PrototypeParsingType != PrototypeParsingType.Type)
+					{  iterator.Next();  }
+
+				if (iterator >= end)
+					{  break;  }
+
+				linkableTypeStart = iterator;
+
+				while (iterator < end &&
+								(iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
+								iterator.PrototypeParsingType == PrototypeParsingType.Type) )
+					{  iterator.Next();  }
+
+				if (linkableTypes > 0)
+					{  output.Append(", ");  }
+
+				start.Tokenizer.AppendTextBetweenTo(linkableTypeStart, iterator, output);
+				linkableTypes++;
+				}
+
+			if (linkableTypes == 0)
+				{  output.Append("(none)");  }
+			}
 		}
 	}

@@ -1,39 +1,68 @@
 - No Parameters: function FunctionA ()
+  - Link Candidates: function
 -----
 - No Parameters: function FunctionB ( )
+  - Link Candidates: function
 -----
-- Before Parameters: function FunctionC (
+- No Parameters: function FunctionC()
+  - Link Candidates: function
+-----
+- Before Parameters: function FunctionD (
+  - Link Candidates: function
 
   - Parameter 1: x,
     - Name: x
     - Full Type: (not detected)
     - Base Type: (not detected)
-    - Link Candidates: (not detected)
+    - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: y
     - Name: y
     - Full Type: (not detected)
     - Base Type: (not detected)
-    - Link Candidates: (not detected)
+    - Link Candidates: (none)
     - Default Value: (not detected)
 
 - After Parameters: )
+  - Link Candidates: (none)
 -----
-- Before Parameters: function FunctionD (
+- Before Parameters: function FunctionE(
+  - Link Candidates: function
+
+  - Parameter 1: x,
+    - Name: x
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: y
+    - Name: y
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: function FunctionF (
+  - Link Candidates: function
 
   - Parameter 1: x_1,
     - Name: x_1
     - Full Type: (not detected)
     - Base Type: (not detected)
-    - Link Candidates: (not detected)
+    - Link Candidates: (none)
     - Default Value: (not detected)
 
   - Parameter 2: __y2__
     - Name: __y2__
     - Full Type: (not detected)
     - Base Type: (not detected)
-    - Link Candidates: (not detected)
+    - Link Candidates: (none)
     - Default Value: (not detected)
 
 - After Parameters: )
+  - Link Candidates: (none)

@@ -1,4 +1,5 @@
 - Before Parameters: Function FunctionA (
+  - Link Candidates: (none)
 
   - Parameter 1: x: integer,
     - Name: x
@@ -21,4 +22,5 @@
     - Link Candidates: string
     - Default Value: 0
 
-- After Parameters: ): integer
+- After Parameters: ): integer^
+  - Link Candidates: integer
