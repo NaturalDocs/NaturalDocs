@@ -1,0 +1,45 @@
+- Before Parameters: int operator< (
+  - Link Candidates: int
+
+  - Parameter 1: LineIterator a,
+    - Name: a
+    - Full Type: LineIterator
+    - Base Type: LineIterator
+    - Link Candidates: LineIterator
+    - Default Value: (not detected)
+
+  - Parameter 2: LineIterator b
+    - Name: b
+    - Full Type: LineIterator
+    - Base Type: LineIterator
+    - Link Candidates: LineIterator
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: LineIterator operator<< (
+  - Link Candidates: LineIterator
+
+  - Parameter 1: LineIterator input
+    - Name: input
+    - Full Type: LineIterator
+    - Base Type: LineIterator
+    - Link Candidates: LineIterator
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: ObjectC operator+ (
+  - Link Candidates: ObjectC
+
+  - Parameter 1: ObjectC other
+    - Name: other
+    - Full Type: ObjectC
+    - Base Type: ObjectC
+    - Link Candidates: ObjectC
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)

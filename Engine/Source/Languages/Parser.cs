@@ -1769,8 +1769,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else if (iterator.MatchesAcrossTokens("::"))
 						{  iterator.Next(2);  }
 
+					else if (iterator.Character == '<')
+						{
+						TokenIterator temp = iterator;
+						temp.Previous();
+						temp.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+						if (temp.MatchesToken("operator") || TryToSkipBlock(ref iterator, true) == false)
+							{  
+							do
+								{  iterator.Next();  }
+							while (iterator.Character == '<');
+							}
+						}
+
 					// Handle array or template brackets
-					else if (TryToSkipBlock(ref iterator, true))
+					else if (TryToSkipBlock(ref iterator, false))
 						{  }
 
 					// Catch freestanding symbols and consts like "int * x" and "int* const x".  However, cut off after the symbol so we don't 
