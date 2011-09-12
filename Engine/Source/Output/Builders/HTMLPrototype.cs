@@ -377,7 +377,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			type = ColumnOrder[columnIndex];
 
-			end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
+			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 			start.NextPastWhitespace(end);
 
 			return (end > start);

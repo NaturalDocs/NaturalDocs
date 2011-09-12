@@ -162,6 +162,7 @@
     <Compile Include="Source\StringExtensions.cs" />
     <Compile Include="Source\Symbol.cs" />
     <Compile Include="Source\Thread.cs" />
+    <Compile Include="Source\Tokenization\PreviousPastWhitespaceMode.cs" />
     <Compile Include="Source\Tokenization\Line.cs" />
     <Compile Include="Source\Tokenization\LineBoundsMode.cs" />
     <Compile Include="Source\Tokenization\LineIterator.cs" />

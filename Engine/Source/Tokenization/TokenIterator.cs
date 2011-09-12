@@ -29,20 +29,6 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	public struct TokenIterator
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-		/* Enum: PreviousPastWhitespaceMode
-		 * The method to use when using <PreviousPastWhitespace()>.
-		 * 
-		 * EndingBounds - The iterator is treated as an ending bounds, a limit to another iterator.
-		 * Iterator - The iterator is treated as an independent iterator.
-		 */
-		public enum PreviousPastWhitespaceMode : byte
-			{  EndingBounds, Iterator  }
-
-
-		
 		// Group: Functions
 		// __________________________________________________________________________
 		

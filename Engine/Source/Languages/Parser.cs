@@ -352,7 +352,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 						// Exclude the opening bracket
 						end.Previous();
-						end.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, start);
+						end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 						if (start < end)
 							{  MarkCParameter(start, end, topicTypeID);  }
@@ -1046,7 +1046,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						temp.Previous();
 						}
 
-					endOfDefaultValue.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, iterator);
+					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, iterator);
 
 					if (iterator < endOfDefaultValue)
 						{  source.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
@@ -1212,7 +1212,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								{
 								TokenIterator temp = namePrefix;
 								temp.Previous();
-								temp.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.Iterator, startWord);
+								temp.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, startWord);
 
 								if (temp >= startWord && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
 									{  namePrefix = temp;  }
@@ -1415,7 +1415,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				TokenIterator endOfType = iterator;
 
-				endOfType.PreviousPastWhitespace(TokenIterator.PreviousPastWhitespaceMode.EndingBounds, startOfType);
+				endOfType.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfType);
 				startOfType.NextPastWhitespace(endOfType);
 
 				if (endOfType > startOfType)
