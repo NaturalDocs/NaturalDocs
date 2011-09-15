@@ -140,7 +140,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			BuildLongForm(); //xxx
+			BuildShortForm();
 			}
 
 

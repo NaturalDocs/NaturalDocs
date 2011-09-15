@@ -1,7 +1,6 @@
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PType first"><a href="about:List">List</a>&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
@@ -11,15 +10,13 @@
             <td class="PName last">y</td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>
 -----
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PModifierQualifier first"><a href="about:System.Collections.Generic.Dictionary">System.Collections.Generic.</a></td>
@@ -35,7 +32,6 @@
             <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>

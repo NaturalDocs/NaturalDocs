@@ -1,7 +1,6 @@
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
@@ -41,15 +40,13 @@
             <td class="PName last">i</td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>
 -----
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
@@ -57,15 +54,13 @@
             <td class="PName last">a</td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>
 -----
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName3 (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
@@ -73,15 +68,13 @@
             <td class="PName last">a</td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>
 -----
-<div class="NDPrototype LongForm"><table>
+<div class="NDPrototype ShortForm"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName4 (</td>
-   </tr><tr>
       <td class="PParametersParentCell"><table class="PParameters CStyle">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
@@ -89,7 +82,6 @@
             <td class="PName last">a</td>
          </tr>
       </table></td>
-   </tr><tr>
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div>
