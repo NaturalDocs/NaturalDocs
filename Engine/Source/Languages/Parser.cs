@@ -240,7 +240,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			TokenIterator iterator = source.FirstToken;
 			char closingBracket = '\0';
-			bool hasClassKeywords = false;
 
 			while (iterator.IsInBounds)
 				{
@@ -253,14 +252,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					closingBracket = '}';
 					break;
-					}
-				else if (iterator.MatchesToken("class") || iterator.MatchesToken("interface") || iterator.MatchesToken("package") ||
-							 iterator.MatchesToken("struct"))
-					{
-					iterator.Next();
-
-					if (iterator.Character != '_')
-						{  hasClassKeywords = true;  }
 					}
 				else if (TryToSkipComment(ref iterator) ||
 							  TryToSkipString(ref iterator))
@@ -310,10 +301,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// We use ParsedPrototype.GetParameter() instead of trying to build it into the loop above because ParsedPrototype 
 				// does things like trimming whitespace and ignoring empty parenthesis.
 
+				TokenIterator start, end;
+
 				if (parsedPrototype.NumberOfParameters > 0)
 					{
-					TokenIterator start, end;
-
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
@@ -322,59 +313,42 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 
 
-				// If we have a function we need to mark the return value.
+				// Mark the return value of functions.
 
-				if (hasClassKeywords == false)
-					{
-					TokenIterator start, end;
-					parsedPrototype.GetAfterParameters(out start, out end);
+				parsedPrototype.GetAfterParameters(out start, out end);
 
-					// Exclude the closing bracket
+				// Exclude the closing bracket
+				start.Next();
+				start.NextPastWhitespace(end);
+
+				// If there's a colon immediately after the parameters, it's a Pascal-style function.  Mark the return value after it 
+				// the same as the part of a parameter after the colon.
+				if (start < end && start.Character == ':')
+					{  
 					start.Next();
-					start.NextPastWhitespace(end);
+					start.NextPastWhitespace();
 
-					// If there's a colon immediately after the parameters, it's a Pascal-style function.  Mark the return value after it 
-					// the same as the part of a parameter after the colon.
-					if (start < end && start.Character == ':')
-						{  
-						start.Next();
-						start.NextPastWhitespace();
-
-						if (start < end)
-							{  MarkPascalParameterAfterColon(start, end, topicTypeID);  }
-						}
-
-					// Otherwise it's a C-style function.  Mark the part before the parameters as if it was a parameter to get the return
-					// value.
-					else
-						{  
-						parsedPrototype.GetBeforeParameters(out start, out end);
-
-						// Exclude the opening bracket
-						end.Previous();
-						end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-						if (start < end)
-							{  MarkCParameter(start, end, topicTypeID);  }
-						}
+					if (start < end)
+						{  MarkPascalParameterAfterColon(start, end, topicTypeID);  }
 					}
 
+				// Otherwise it's a C-style function.  Mark the part before the parameters as if it was a parameter to get the return
+				// value.
 				else
-					{
-					// if it's a class xxx
+					{  
+					parsedPrototype.GetBeforeParameters(out start, out end);
+
+					// Exclude the opening bracket
+					end.Previous();
+					end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+					if (start < end)
+						{  MarkCParameter(start, end, topicTypeID);  }
 					}
 				}
 
-
-			// If it's a class without brackets, we need to mark any inherited members.
-
-			else if (hasClassKeywords)
-				{
-				//xxx
-				}
-
-
-			// If it's not a class and there's no brackets, it's a variable or property.  Mark it like a parameter.
+			
+			// If there's no brackets, it's a variable or property.  Mark it like a parameter.
 
 			else
 				{
