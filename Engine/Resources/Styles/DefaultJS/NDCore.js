@@ -23,8 +23,70 @@ var NDCore = new function ()
 	{
 
 
+	// Group: Selection Functions
+	// ____________________________________________________________________________
+
+
+	/* Function: GetElementsByClassName
+
+		Returns an array of HTML elements matching the passed class name.  IE 8 and earlier don't have the native DOM function
+		so this simulates it.
+
+		The tag hint is used to help optimize the IE version since it uses getElementsByTagName and this will cut down the number
+		of results it has to sift through.  However, you must remember that it's a hint and not a filter -- you can't rely on the results 
+		only being elements of that tag type because it won't apply when using the native DOM function.
+	*/
+	this.GetElementsByClassName = function (className, tagHint)
+		{
+		if (document.getElementsByClassName)
+			{  return document.getElementsByClassName(className);  }
+		
+		if (!tagHint)
+			{  tagHint = "*";  }
+
+		var tagArray = document.getElementsByTagName(tagHint);
+		var matchArray = new Array();
+
+		var tagIndex = 0;
+		var matchIndex = 0;
+
+		while (tagIndex < tagArray.length)
+			{
+			if (this.HasClass(tagArray[tagIndex], className))
+				{
+				matchArray[matchIndex] = tagArray[tagIndex];
+				matchIndex++;
+				}
+
+			tagIndex++;
+			}
+
+		return matchArray;
+		};
+
+
+
 	// Group: Class Functions
 	// ____________________________________________________________________________
+
+
+	/* Function: HasClass
+		Returns whether the passed HTML element uses the passed class.
+	*/
+	this.HasClass = function (element, targetClassName)
+		{
+		var index = element.className.indexOf(targetClassName);
+
+		if (index != -1)
+			{
+			if ( (index == 0 || element.className.charAt(index - 1) == ' ') &&
+				 (index + targetClassName.length == element.className.length ||
+				  element.className.charAt(index + targetClassName.length) == ' ') )
+				{  return true;  }
+			}
+
+		return false;
+		};
 
 
 	/* Function: AddClass

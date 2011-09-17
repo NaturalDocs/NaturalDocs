@@ -347,18 +347,19 @@ body.NDContentPage {
 		overflow: auto;
 		}
 
-	.NDPrototype table {
-		width: 100%;
-		}
 	.NDPrototype td {
 		white-space: nowrap;
 		}
-	.NDPrototype td.PDefaultValue {
+
+	/* Only long form can wrap.  Otherwise the JS to convert between the two 
+		won't be able to measure the short form correctly. */
+	.NDPrototype.LongForm td.PBeforeParameters,
+	.NDPrototype.LongForm td.PAfterParameters,
+	.NDPrototype.LongForm td.PDefaultValue {
 		white-space: normal;
 		}
 
-	.LongForm table.PParameters td.last,
-	.ShortForm td.PAfterParameters {
+	.LongForm table.PParameters td.last {
 		width: 100%;
 		}
 	.LongForm table.PParameters td.first,

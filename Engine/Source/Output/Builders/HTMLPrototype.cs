@@ -140,6 +140,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
+			// Default to short form so the length can be measured by the JavaScript.  The JS will convert them to long form
+			// if necessary.
 			BuildShortForm();
 			}
 
