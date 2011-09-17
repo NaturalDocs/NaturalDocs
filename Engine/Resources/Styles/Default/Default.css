@@ -363,7 +363,7 @@ body.NDContentPage {
 		width: 100%;
 		}
 	.LongForm table.PParameters td.first,
-	.LongForm td.PAfterParameters {
+	.LongForm.CStyle td.PAfterParameters {
 		padding-left: 3.5ex;
 		}
 	.ShortForm td.PAfterParameters {
