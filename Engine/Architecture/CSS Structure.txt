@@ -160,9 +160,9 @@ No Parameter Form:
 
 (start code)
 
-	<NDPrototype NoParameterForm>
+	<NDPrototype NoParameterForm #NDPrototype[ID]>
 		content
-	</NDPrototype NoParameterForm>
+	</NDPrototype NoParameterForm #NDPrototype[ID]>
 
 (end)
 
@@ -171,7 +171,7 @@ Short Form:
 
 (start code)
 
-	<NDPrototype>
+	<NDPrototype ShortForm #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -189,7 +189,7 @@ Short Form:
 
 			</tr>
 		</table>
-	</NDPrototype>
+	</NDPrototype ShortForm #NDPrototype[ID]>
 
 (end)
 
@@ -198,7 +198,7 @@ Long Form:
 
 (start code)
 
-	<NDPrototype>
+	<NDPrototype LongForm #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -220,7 +220,7 @@ Long Form:
 
 			</tr>
 		</table>
-	</NDPrototype>
+	</NDPrototype LongForm #NDPrototype[ID]>
 
 (end)
 

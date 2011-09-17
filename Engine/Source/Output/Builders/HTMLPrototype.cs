@@ -493,7 +493,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildNoParameterForm ()
 			{
-			htmlOutput.Append("<div class=\"NDPrototype NoParameterForm\">");
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NoParameterForm\">");
 
 			TokenIterator start, end;
 			parsedPrototype.GetCompletePrototype(out start, out end);
@@ -508,7 +508,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildShortForm ()
 			{
-			htmlOutput.Append("<div class=\"NDPrototype ShortForm\"><table><tr>");
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype ShortForm\"><table><tr>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);
@@ -535,7 +535,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildLongForm ()
 			{
-			htmlOutput.Append("<div class=\"NDPrototype LongForm\"><table>");
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype LongForm\"><table>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);

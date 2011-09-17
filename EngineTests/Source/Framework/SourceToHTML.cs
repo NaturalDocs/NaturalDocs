@@ -274,7 +274,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 
 
 		/* Function: ReformatHTML
-		 * Pretty-prints the passed HTML to make it more human readable.  Currently only affects tables.
+		 * - Pretty-prints tables to make it more human readable.
+		 * - Removes numbered IDs like NDPrototype364 so changing ID numbers don't affect the expected output.
 		 */
 		protected string ReformatHTML (string input)
 			{
@@ -331,7 +332,10 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 			if (currentIndex < input.Length)
 				{  output.Append(input, currentIndex, input.Length - currentIndex);  }
 
-			return output.ToString();
+			string outputString = output.ToString();
+			outputString = IDNumbersRegex.Replace(outputString, "");
+
+			return outputString;
 			}
 
 
@@ -339,6 +343,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 		// __________________________________________________________________________
 
 		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
+		static protected Regex IDNumbersRegex = new Regex(" id=\"NDPrototype[0-9]+\"", RegexOptions.Compiled | RegexOptions.Singleline);
 			
 		}
 	}
