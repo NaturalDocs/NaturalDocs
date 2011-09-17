@@ -1,7 +1,7 @@
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><a href="about:List">List</a>&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
             <td class="PName last">x,&nbsp;</td>
@@ -14,10 +14,10 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PModifierQualifier first"><a href="about:System.Collections.Generic.Dictionary">System.Collections.Generic.</a></td>
             <td class="PType"><a href="about:System.Collections.Generic.Dictionary">Dictionary</a>&lt;<a href="about:Nullable">Nullable</a>&lt;<span class="SHKeyword">int</span>&gt;, <a href="about:Map">Map</a>&lt;<span class="SHKeyword">string</span>, <a href="about:Object">Object</a>[]&gt;&gt;&nbsp;</td>

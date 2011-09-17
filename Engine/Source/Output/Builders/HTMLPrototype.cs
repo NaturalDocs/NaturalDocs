@@ -461,7 +461,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			while (lastUsedCell > 0 && columnWidths[lastUsedCell] == 0)
 				{  lastUsedCell--;  }
 
-			htmlOutput.Append("<table class=\"PParameters " + parsedPrototype.Style.ToString() + "Style\">");
+			htmlOutput.Append("<table class=\"PParameters\">");
 
 			for (int p = 0; p < parsedPrototype.NumberOfParameters; p++)
 				{
@@ -510,7 +510,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildShortForm ()
 			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype ShortForm\"><table><tr>");
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype ShortForm " +
+				parsedPrototype.Style.ToString() + "Style\"><table><tr>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);
@@ -537,7 +538,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildLongForm ()
 			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype LongForm\"><table>");
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype LongForm " +
+				parsedPrototype.Style.ToString() + "Style\"><table>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);

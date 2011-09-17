@@ -171,7 +171,7 @@ Short Form:
 
 (start code)
 
-	<NDPrototype ShortForm #NDPrototype[ID]>
+	<NDPrototype ShortForm CStyle/PascalStyle #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -189,7 +189,7 @@ Short Form:
 
 			</tr>
 		</table>
-	</NDPrototype ShortForm #NDPrototype[ID]>
+	</NDPrototype ShortForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)
 
@@ -198,7 +198,7 @@ Long Form:
 
 (start code)
 
-	<NDPrototype LongForm #NDPrototype[ID]>
+	<NDPrototype LongForm CStyle/PascalStyle #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -220,7 +220,7 @@ Long Form:
 
 			</tr>
 		</table>
-	</NDPrototype LongForm #NDPrototype[ID]>
+	</NDPrototype LongForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)
 
@@ -229,7 +229,7 @@ Parameter Table:
 
 (start code)
 
-		<table PParameters CStyle/PascalStyle>
+		<table PParameters>
 			<tr>
 				<td PType>type<PTypeSuffix>suffix</PTypeSuffix></td PType>
 
@@ -239,7 +239,7 @@ Parameter Table:
 			</tr><tr>
 				...
 			</tr>
-		</table PParameters CStyle/PascalStyle>
+		</table PParameters>
 
 (end code)
 

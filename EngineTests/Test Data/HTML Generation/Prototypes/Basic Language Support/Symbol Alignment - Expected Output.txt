@@ -1,7 +1,7 @@
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
@@ -44,10 +44,10 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
@@ -58,10 +58,10 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName3 (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
@@ -72,10 +72,10 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName4 (</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>

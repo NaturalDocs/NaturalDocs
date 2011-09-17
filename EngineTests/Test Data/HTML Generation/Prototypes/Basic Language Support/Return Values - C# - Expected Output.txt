@@ -1,9 +1,9 @@
 <div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> <a href="about:MyClass">MyClass</a> FuncA()</div>
 -----
-<div class="NDPrototype ShortForm"><table>
+<div class="NDPrototype ShortForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> <a href="about:Pkg.MyClass">Pkg.MyClass</a>&lt;<span class="SHKeyword">int</span>, <a href="about:Class2">Class2</a>&gt; FuncB(</td>
-      <td class="PParametersParentCell"><table class="PParameters CStyle">
+      <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="first"></td>
             <td class="PType"><a href="about:Class2">Class2</a>&nbsp;</td>
