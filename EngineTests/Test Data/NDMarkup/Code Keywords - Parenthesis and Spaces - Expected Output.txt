@@ -1,0 +1,9 @@
+<p>All permutations of the (start code) keywords that use language names, but this time using languages that have spaces in their names.</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Visual Basic</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Start Visual Basic</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Start Visual Basic Code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Visual Basic code</pre><p>After</p>

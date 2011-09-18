@@ -1,0 +1,52 @@
+
+File: Code Keywords - Parethesis and Aliases
+_______________________________________________________________________________
+
+All permutations of the (start code) keywords that use language names, but this time using 
+their aliases instead of their actual names.
+
+
+
+Topic: A
+
+	Before
+
+	(JS)
+	JS
+	(end JS)
+
+	After
+
+
+Topic: B
+
+	Before
+
+	(start VB)
+	Start VB
+	(end VB)
+
+	After
+
+
+Topic: C
+
+	Before
+
+	(start PL/SQL code)
+	Start PL/SQL Code
+	(end PL/SQL code)
+
+	After
+
+
+Topic: D
+
+	Before
+
+	(AS code)
+	AS code
+	(end AS code)
+
+	After
+

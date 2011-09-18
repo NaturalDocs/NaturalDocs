@@ -1,0 +1,9 @@
+<p>All permutations of the (start code) keywords that use language names, but this time using their aliases instead of their actual names.</p>
+-----
+<p>Before</p><pre type="code" language="JavaScript">JS</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Start VB</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="SQL">Start PL/SQL Code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="ActionScript">AS code</pre><p>After</p>

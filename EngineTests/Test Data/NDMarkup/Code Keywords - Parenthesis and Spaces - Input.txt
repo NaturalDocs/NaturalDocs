@@ -1,0 +1,52 @@
+
+File: Code Keywords - Parethesis and Spaces
+_______________________________________________________________________________
+
+All permutations of the (start code) keywords that use language names, but this time using 
+languages that have spaces in their names.
+
+
+
+Topic: A
+
+	Before
+
+	(Visual Basic)
+	Visual Basic
+	(end Visual Basic)
+
+	After
+
+
+Topic: B
+
+	Before
+
+	(start Visual Basic)
+	Start Visual Basic
+	(end Visual Basic)
+
+	After
+
+
+Topic: C
+
+	Before
+
+	(start Visual Basic code)
+	Start Visual Basic Code
+	(end Visual Basic code)
+
+	After
+
+
+Topic: D
+
+	Before
+
+	(Visual Basic code)
+	Visual Basic code
+	(end Visual Basic code)
+
+	After
+

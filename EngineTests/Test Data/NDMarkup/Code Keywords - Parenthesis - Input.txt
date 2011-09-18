@@ -1,0 +1,73 @@
+
+File: Code Keywords - Parenthesis
+_______________________________________________________________________________
+
+All permutations of the (start code) keywords.
+
+
+
+Topic: A
+	
+	Before
+
+	(code)
+	Code
+	(end)
+
+	After
+
+
+Topic: B
+
+	Before
+
+	(Perl)
+	Perl
+	(end Perl)
+
+	After
+
+
+Topic: C
+
+	Before
+
+	(start code)
+	Start Code
+	(end code)
+
+	After
+
+
+Topic: D
+
+	Before
+
+	(start C#)
+	Start C#
+	(end C#)
+
+	After
+
+
+Topic: E
+
+	Before
+
+	(start JavaScript code)
+	Start JavaScript Code
+	(end JavaScript code)
+
+	After
+
+
+Topic: G
+
+	Before
+
+	(Python code)
+	Python code
+	(end Python code)
+
+	After
+
