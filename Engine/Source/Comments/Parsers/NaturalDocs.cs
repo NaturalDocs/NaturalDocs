@@ -831,27 +831,44 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{  return true;  }
 			
 			
-			// Try matching an end keyword and a type, like "(end code)".  Since there may be multiple spaces in the parenthesis
-			// and some may belong to the keywords, we have to test them all as a dividing line.
-			
-			int index = betweenParens.IndexOf(' ');
-			
-			while (index != -1)
+			// These are the possibilities we're testing for:
+			//    - (end code)
+			//    - (end Perl)
+			//    - (end Perl code)
+			// Plus all forms above using "prototype" instead of "code".
+
+			// Since there may be multiple spaces in the parenthesis and some may belong to the keyword or language,
+			// we have to test all permutations of spaces as dividers.
+
+			for (int firstSpace = betweenParens.IndexOf(' '); firstSpace != -1; 
+				   firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
 				{
-				string endKeyword = betweenParens.Substring(0, index);
+				string firstPart = betweenParens.Substring(0, firstSpace);
 				
-				if (IsEndBlockKeyword(endKeyword))
+				if (IsEndBlockKeyword(firstPart))
 					{
-					string blockKeyword = betweenParens.Substring(index + 1);
+					string secondPart = betweenParens.Substring(firstSpace + 1);
+					
 					BlockType blockType;
-					
-					if (IsBlockType(blockKeyword, out blockType))
+					if (IsBlockType(secondPart, out blockType))
 						{  return true;  }
+						
+					Language language = Engine.Instance.Languages.FromName(secondPart);
+					if (language != null)
+						{  return true;  }
+						
+					for (int secondSpace = secondPart.IndexOf(' '); secondSpace != -1; 
+						   secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
+						{
+						language = Engine.Instance.Languages.FromName( secondPart.Substring(0, secondSpace) );
+						
+						if (language != null && 
+							IsBlockType(secondPart.Substring(secondSpace+1), out blockType))
+							{  return true;  }
+						}
 					}
-					
-				index = betweenParens.IndexOf(' ', index + 1);
 				}
-				
+
 			return false;
 			}
 			
