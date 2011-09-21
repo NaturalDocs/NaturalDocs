@@ -1573,7 +1573,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			commentSymbol = language.LineCommentStrings[commentSymbolIndex];
 			iterator.NextByCharacters(commentSymbol.Length);
 
-			while (iterator.FundamentalType != FundamentalType.LineBreak)
+			while (iterator.IsInBounds && iterator.FundamentalType != FundamentalType.LineBreak)
 				{  iterator.Next();  }
 
 			return true;
@@ -2002,7 +2002,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						if (keywords.Contains(identifier))
 							{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
 
-						iterator.NextByCharacters(identifier.Length);
+						iterator = endOfIdentifier;
 						}
 					}
 				else
