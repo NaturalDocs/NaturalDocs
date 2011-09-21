@@ -1,0 +1,28 @@
+
+File: Code Line Breaks and Entity Chars
+_______________________________________________________________________________
+
+
+Topic: A
+	
+	Before
+
+	(code)
+	First line
+	< > & "
+	Third line
+	(end)
+
+	After
+
+
+Topic: B
+	
+	Before
+
+	> First line
+	> < > & "
+	> Third line
+
+	After
+ 

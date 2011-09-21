@@ -127,68 +127,76 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			while (iterator < end)
 				{
-				TokenIterator startStretch = iterator;
-				TokenIterator endStretch = iterator;
-				endStretch.Next();
-
-				SyntaxHighlightingType stretchType = startStretch.SyntaxHighlightingType;
-
-				for (;;)
+				if (iterator.FundamentalType == FundamentalType.LineBreak)
 					{
-					if (endStretch == end)
-						{  break;  }
-					else if (endStretch.SyntaxHighlightingType == stretchType)
-						{  endStretch.Next();  }
+					html.Append("<br />");
+					iterator.Next();
+					}
+				else
+					{
+					TokenIterator startStretch = iterator;
+					TokenIterator endStretch = iterator;
+					endStretch.Next();
 
-					// We can include unhighlighted whitespace if there's content of the same type beyond it.  This prevents
-					// unnecessary span tags.
-					else if (stretchType != SyntaxHighlightingType.Null &&
-								 endStretch.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
-								 endStretch.FundamentalType == FundamentalType.Whitespace)
+					SyntaxHighlightingType stretchType = startStretch.SyntaxHighlightingType;
+
+					for (;;)
 						{
-						TokenIterator lookahead = endStretch;
+						if (endStretch == end || endStretch.FundamentalType == FundamentalType.LineBreak)
+							{  break;  }
+						else if (endStretch.SyntaxHighlightingType == stretchType)
+							{  endStretch.Next();  }
 
-						do 
-							{  lookahead.Next();  }
-						while (lookahead.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
-									lookahead.FundamentalType == FundamentalType.Whitespace &&
-									lookahead < end);
-
-						if (lookahead < end && lookahead.SyntaxHighlightingType == stretchType)
+						// We can include unhighlighted whitespace if there's content of the same type beyond it.  This prevents
+						// unnecessary span tags.
+						else if (stretchType != SyntaxHighlightingType.Null &&
+									 endStretch.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
+									 endStretch.FundamentalType == FundamentalType.Whitespace)
 							{
-							endStretch = lookahead;
-							endStretch.Next();
+							TokenIterator lookahead = endStretch;
+
+							do 
+								{  lookahead.Next();  }
+							while (lookahead.SyntaxHighlightingType == SyntaxHighlightingType.Null &&
+										lookahead.FundamentalType == FundamentalType.Whitespace &&
+										lookahead < end);
+
+							if (lookahead < end && lookahead.SyntaxHighlightingType == stretchType)
+								{
+								endStretch = lookahead;
+								endStretch.Next();
+								}
+							else
+								{  break;  }
 							}
+
 						else
 							{  break;  }
 						}
 
-					else
-						{  break;  }
+					switch (stretchType)
+						{
+						case SyntaxHighlightingType.Comment:
+							html.Append("<span class=\"SHComment\">");
+							break;
+						case SyntaxHighlightingType.Keyword:
+							html.Append("<span class=\"SHKeyword\">");
+							break;
+						case SyntaxHighlightingType.Number:
+							html.Append("<span class=\"SHNumber\">");
+							break;
+						case SyntaxHighlightingType.String:
+							html.Append("<span class=\"SHString\">");
+							break;
+						}
+
+					html.EntityEncodeAndAppend(iterator.Tokenizer.TextBetween(startStretch, endStretch));
+
+					if (stretchType != SyntaxHighlightingType.Null)
+						{  html.Append("</span>");  }
+
+					iterator = endStretch;
 					}
-
-				switch (stretchType)
-					{
-					case SyntaxHighlightingType.Comment:
-						html.Append("<span class=\"SHComment\">");
-						break;
-					case SyntaxHighlightingType.Keyword:
-						html.Append("<span class=\"SHKeyword\">");
-						break;
-					case SyntaxHighlightingType.Number:
-						html.Append("<span class=\"SHNumber\">");
-						break;
-					case SyntaxHighlightingType.String:
-						html.Append("<span class=\"SHString\">");
-						break;
-					}
-
-				html.EntityEncodeAndAppend(iterator.Tokenizer.TextBetween(startStretch, endStretch));
-
-				if (stretchType != SyntaxHighlightingType.Null)
-					{  html.Append("</span>");  }
-
-				iterator = endStretch;
 				}
 			}
 

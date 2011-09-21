@@ -250,22 +250,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.PreTag:
-						// Because we can assume the NDMarkup is valid, we can assume it's an opening tag and that we will run
-						// into a closing tag.
+
+						string preType = iterator.Property("type");
+						string preLanguageName = iterator.Property("language");
+
+						iterator.Next();
+						NDMarkup.Iterator startOfCode = iterator;
+
+						// Because we can assume the NDMarkup is valid, we can assume we were on an opening tag and that we will 
+						// run into a closing tag before the end of the text.  We can also assume the next pre tag is a closing tag.
+
+						while (iterator.Type != NDMarkup.Iterator.ElementType.PreTag)
+							{  iterator.Next();  }
+
+						string ndMarkupCode = topic.Body.Substring(startOfCode.RawTextIndex, iterator.RawTextIndex - startOfCode.RawTextIndex);
+						string textCode = NDMarkupCodeToText(ndMarkupCode);
 
 						html.Append("<pre>");
 
-						for (;;)
+						if (preType == "code")
 							{
-							iterator.Next();
+							Languages.Language preLanguage = null;
 
-							if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag)
-								{  break;  }
-							else
-								{  
-								// Includes PreLineBreakTags
-								iterator.AppendTo(html);  
-								}
+							if (preLanguageName != null)
+								{  preLanguage = Engine.Instance.Languages.FromName(preLanguageName);  }
+
+							if (preLanguage == null)
+								{  preLanguage = language;  }
+
+							Tokenizer code = new Tokenizer(textCode);
+							preLanguage.GetParser().SyntaxHighlight(code);
+							htmlBuilder.BuildSyntaxHighlightedText(code.FirstToken, code.LastToken, html);
+							}
+						else
+							{  
+							string htmlCode = textCode.EntityEncode();
+							htmlCode = StringExtensions.LineBreakRegex.Replace(htmlCode, "<br />");
+							html.Append(htmlCode);
 							}
 
 						html.Append("</pre>");
@@ -368,11 +389,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.LinkTag:
-						string type = iterator.Property("type");
+						string linkType = iterator.Property("type");
 
-						if (type == "email")
+						if (linkType == "email")
 							{  BuildEMailLink(iterator);  }
-						else if (type == "url")
+						else if (linkType == "url")
 							{  BuildURLLink(iterator);  }
 						else // type == "naturaldocs"
 							{  BuildNaturalDocsLink(iterator);  }
@@ -514,6 +535,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			// xxx
 			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+			}
+
+
+		/* Function: NDMarkupCodeToText
+		 * Converts code sections in <NDMarkup> back to plain text, decoding entity chars and converting line breaks
+		 * to \n.
+		 */
+		protected string NDMarkupCodeToText (string input)
+			{
+			string output = input.Replace("<br>", "\n");
+			output = output.EntityDecode();
+			return output;
 			}
 
 

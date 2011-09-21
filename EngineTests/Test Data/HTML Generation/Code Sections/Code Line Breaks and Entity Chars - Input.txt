@@ -1,0 +1,41 @@
+
+File: Code Line Breaks and Entity Chars
+_______________________________________________________________________________
+
+
+Topic: A
+	
+	Before
+
+	(code)
+	// Code section
+	< > & " "
+	int x = 12;
+	(end)
+
+	After
+
+
+Topic: B
+	
+	Before
+
+	(table)
+	// Table section
+	< > & " "
+	int x = 12;
+	(end)
+
+	After
+
+
+Topic: C
+	
+	Before
+
+	> Anonymous section
+	> < > & " "
+	> int x = 12;
+
+	After
+ 

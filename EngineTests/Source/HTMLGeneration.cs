@@ -40,5 +40,11 @@ namespace GregValure.NaturalDocs.EngineTests
 			TestFolder("HTML Generation/Parameter Lists", null, "div", "CBody");
 			}
 
+		[Test]
+		public void CodeSections ()
+			{
+			TestFolder("HTML Generation/Code Sections", null, "pre");
+			}
+
 		}
 	}
