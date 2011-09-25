@@ -94,6 +94,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Build
+		 * Builds the HTML for the <Topic's> prototype and returns it as a string.  If the string is going to be appended to
+		 * a StringBuilder, it is more efficient to use the other function.
+		 */
+		public string Build (Topic topic, bool addLinks)
+			{
+			StringBuilder output = new StringBuilder();
+			Build(topic, addLinks, output);
+			return output.ToString();
+			}
+
+
+		/* Function: Build
 		 * Builds the HTML for the <Topic's> prototype and appends it to the passed StringBuilder.
 		 */
 		public void Build (Topic topic, bool addLinks, StringBuilder output)

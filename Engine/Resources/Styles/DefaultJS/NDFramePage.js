@@ -434,7 +434,7 @@ var NDFramePage = new function ()
 			//    `FileHash = 1
 
 	/* var: hashPath
-		If <hashType> is `FileHash, the path portion of the hash, shuch as "File2:Folder/Folder/Source.cs".
+		If <hashType> is `FileHash, the path portion of the hash, such as "File2:Folder/Folder/Source.cs".
 	*/
 
 	/* var: hashAnchor

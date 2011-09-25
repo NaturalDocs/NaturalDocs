@@ -6,8 +6,37 @@
  * File: Source Metadata
  * 
  *		Each source file that has a content file built for it will also have a metadata file.  It's in the same location and 
- *		has the same file name, only substituting .html for .js.  When executed, this file will pass the source file's title to
- *		<NDFramePage.OnPageTitleLoaded()>.
+ *		has the same file name, only substituting .html for .js.
+ *		
+ *		Page Title:
+ *		
+ *			When executed, this file will pass the source file's title to <NDFramePage.OnPageTitleLoaded()>.
+ *			
+ *		Summary:
+ *		
+ *			When executed, this file will pass the source file's summary to <NDSummary.OnSummaryLoaded()>.
+ *			
+ *			The summary info is an array with these members:
+ *			
+ *				topicTypeIDNames - A table mapping numeric topic type IDs to HTML names.
+ *				inSourceOrder - An array of integer pairs describing the summary in the order in which they appear in the
+ *											 source file.  The first integer of each pair is the index into the summary data of the entry, 
+ *											 and the second is the indent level starting from zero.  Not every summary entry may be 
+ *											 present in this ordering.
+ *				byNameAndType - An array of integer pairs similar to bySourceOrder but ordered by name and grouped
+ *												  by type.
+ *				byName - An array of integer pairs similar to bySourceOrder but ordered by name.
+ *			
+ *			The summary entries is an array of entries, each of which is an array with these members:
+ *			
+ *				topicID - A numeric ID for the topic, unique across the whole project.  This may be undefined if it's an
+ *								 auto-generated grouping.
+ *				topicTypeID - A numeric ID for the topic type, the name of which can be retrieved from the summary info.
+ *				nameHTML - The name of the topic in HTML.
+ *				prototypeHTML - The topic's prototype in HTML, or undefined if none.
+ *				summaryHTML - The topic's summary text in HTML, or undefined if none.
+ *				symbol - The topic's symbol in the hash path, which will also be its anchor on the content page.  This
+ *								 may be undefined if it's an auto-generated grouping.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -289,7 +318,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildMetaData (int fileID, IList<Topic> topics, string title)
 			{
 			string hashPath = Source_OutputFileHashPath(fileID);
-
 			System.IO.StreamWriter metadataFile = CreateTextFileAndPath( Source_MetaDataFile(fileID) );
 
 			try
@@ -297,11 +325,144 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				metadataFile.Write(
 					"NDFramePage.OnPageTitleLoaded(\"" + hashPath.StringEscape() + "\", \"" + title.StringEscape() + "\");"
 					);
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+					metadataFile.WriteLine();
+				#endif
+
+				metadataFile.Write("NDSummary.OnSummaryLoaded([");
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+					metadataFile.Write("   ");
+				#endif
+
+				metadataFile.Write(BuildSummaryTopicTypeIDNames(topics));
+				metadataFile.Write(',');
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+					metadataFile.Write("   ");
+				#endif
+
+				metadataFile.Write("[],");  // xxx inSourceOrder
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+					metadataFile.Write("   ");
+				#endif
+
+				metadataFile.Write("[],");  // xxx byNameAndType
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+					metadataFile.Write("   ");
+				#endif
+
+				metadataFile.Write("[]");  // xxx byName
+
+				#if DONT_SHRINK_FILES
+					metadataFile.WriteLine();
+				#endif
+
+				metadataFile.Write("],");
+				
+				metadataFile.Write(BuildSummaryEntries(topics));
+
+				metadataFile.Write(");");  // xxx still need summary entries
 				}
 			finally
 				{
 				metadataFile.Dispose();
 				}
+			}
+
+
+		/* Function: BuildSummaryTopicTypeIDNames
+		 * Returns it as a string containing a JavaScript array literal.
+		 */
+		protected string BuildSummaryTopicTypeIDNames (IList<Topic> topics)
+			{
+			StringBuilder output = new StringBuilder("{");
+			IDObjects.NumberSet usedTopicTypeIDs = new IDObjects.NumberSet();
+
+			for (int i = 0; i < topics.Count; i++)
+				{
+				Topic topic = topics[i];
+
+				if (usedTopicTypeIDs.Contains(topic.TopicTypeID) == false)
+					{
+					if (i > 0)
+						{  output.Append(',');  }
+
+					output.Append(topic.TopicTypeID);
+					output.Append(":\"");
+					output.EntityEncodeAndAppend(Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Name);
+					output.Append('"');
+
+					usedTopicTypeIDs.Add(topic.TopicTypeID);
+					}
+				}
+
+			output.Append('}');
+			return output.ToString();
+			}
+
+
+		/* Function: BuildSummaryEntries
+		 * Returns it as a string containing a JavaScript array literal.
+		 */
+		protected string BuildSummaryEntries (IList<Topic> topics)
+			{
+			StringBuilder output = new StringBuilder("[");
+			HTMLPrototype htmlPrototype = new HTMLPrototype(this);
+
+			#if DONT_SHRINK_FILES
+				output.AppendLine();
+			#endif
+
+			for (int i = 0; i < topics.Count; i++)
+				{
+				Topic topic = topics[i];
+
+				#if DONT_SHRINK_FILES
+					output.Append("   ");
+				#endif
+
+				output.Append('[');
+				output.Append(topic.TopicID);
+				output.Append(',');
+				output.Append(topic.TopicTypeID);
+				output.Append(",\"");
+				output.StringEscapeAndAppend(topic.Title.ToHTML());
+				output.Append("\",");
+
+				if (topic.Prototype != null)
+					{
+					output.Append('"');
+					output.StringEscapeAndAppend( htmlPrototype.Build(topic, false) );
+					output.Append('"');
+					}
+				else
+					{  output.Append("undefined");  }
+
+				output.Append(',');
+				output.Append("\"summary" + topic.TopicID + "\""); // xxx
+				output.Append(',');
+				output.Append("\"hashsymbol" + topic.TopicID + "\""); // xxx
+				output.Append(']');
+
+				if (i < topics.Count - 1)
+					{  output.Append(',');  }
+
+				#if DONT_SHRINK_FILES
+					output.AppendLine();
+				#endif
+				}
+
+			output.Append(']');
+			return output.ToString();
 			}
 
 
