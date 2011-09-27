@@ -256,6 +256,25 @@ P[ColumnType]:
 
 
 
+Topic: Tool Tip
+_______________________________________________________________________________
+
+(start text)
+
+	<CToolTip T[Type] L[Language]>
+
+		<NDPrototype>...</NDPrototype>
+
+		<CSummary>Paragraph text</CSummary>
+
+	</CToolTip>
+
+(end)
+
+The summary paragraph will not have separate <p> tags.
+
+
+
 Topic: Home Page
 _______________________________________________________________________________
 

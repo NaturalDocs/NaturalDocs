@@ -2,7 +2,7 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLTopic
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build <Topics> for <Output.Builders.HTML>.
+ * A reusable helper class to build <Topics> and tooltips for <Output.Builders.HTML>.
  * 
  * Why a Separate Class?:
  * 
@@ -17,7 +17,7 @@
  * Topic: Usage
  *		
  *		- Create a HTMLTopic object.
- *		- Call <Build()>.
+ *		- Call <Build()> or <BuildToolTip()>.
  *		- The object can be reused on different <Topics> by calling <Build()> again.
  * 
  * 
@@ -61,6 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			language = null;
 			languageParser = null;
 			htmlPrototypeBuilder = null;
+			isToolTip = false;
 			}
 
 
@@ -75,6 +76,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			this.topic = topic;
 			this.html = output;
+			isToolTip = false;
 
 			language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
@@ -130,6 +132,57 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				"\r\n" +
 				"</div>"
 				);
+			}
+
+
+		/* Function: BuildToolTip
+		 * Builds the HTML for the <Topic's> tooltip and returns it as a string.  If the topic shoudn't have a tooltip it will
+		 * return null.
+		 */
+		public string BuildToolTip (Topic topic)
+			{
+			if (topic.Prototype == null && topic.Summary == null)
+				{  return null;  }
+
+
+			// Setup
+
+			this.topic = topic;
+			this.html = new StringBuilder();
+			isToolTip = true;
+
+			language = Engine.Instance.Languages.FromID(topic.LanguageID);
+
+			// Reuse the parser if we can.
+			if (languageParser == null || languageParser.Language != language)
+				{  languageParser = language.GetParser();  }
+
+			if (topic.Prototype != null)
+				{
+				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+
+				if (htmlPrototypeBuilder == null)
+					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
+				}
+
+
+			// Core
+
+			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleLanguageName = language.SimpleIdentifier;
+
+			// No line breaks and indentation because this will be embedded in JavaScript strings.
+			html.Append("<div class=\"CToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
+
+				if (topic.Prototype != null)
+					{  htmlPrototypeBuilder.Build(topic, true, html);  }
+
+				if (topic.Summary != null)
+					{  BuildSummary();  }
+
+			html.Append("</div>");
+
+			return html.ToString();
 			}
 
 
@@ -412,6 +465,55 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: BuildSummary
+		 */
+		protected void BuildSummary ()
+			{
+			html.Append("<div class=\"CSummary\">");
+
+			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Summary);
+
+			while (iterator.IsInBounds)
+				{
+				switch (iterator.Type)
+					{
+					case NDMarkup.Iterator.ElementType.Text:
+						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
+							{  iterator.AppendTo(html);  }
+						else
+							{  html.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
+						break;
+
+					case NDMarkup.Iterator.ElementType.BoldTag:
+					case NDMarkup.Iterator.ElementType.ItalicsTag:
+					case NDMarkup.Iterator.ElementType.UnderlineTag:
+					case NDMarkup.Iterator.ElementType.LTEntityChar:
+					case NDMarkup.Iterator.ElementType.GTEntityChar:
+					case NDMarkup.Iterator.ElementType.AmpEntityChar:
+					case NDMarkup.Iterator.ElementType.QuoteEntityChar:
+						iterator.AppendTo(html);
+						break;
+
+					case NDMarkup.Iterator.ElementType.LinkTag:
+						string linkType = iterator.Property("type");
+
+						if (linkType == "email")
+							{  BuildEMailLink(iterator);  }
+						else if (linkType == "url")
+							{  BuildURLLink(iterator);  }
+						else // type == "naturaldocs"
+							{  BuildNaturalDocsLink(iterator);  }
+
+						break;
+					}
+
+				iterator.Next();
+				}
+
+			html.Append("</div>");
+			}
+
+
 		/* Function: BuildEMailLink
 		 */
 		protected void BuildEMailLink (NDMarkup.Iterator iterator)
@@ -421,15 +523,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			int cutPoint1 = atIndex / 2;
 			int cutPoint2 = (atIndex+1) + ((address.Length - (atIndex+1)) / 2);
 			
-			html.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
-			html.Append("'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
-			html.Append("'+'\\u0040'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
-			html.Append("'+'");
-			html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
-			html.Append("';return false;\">");
+			if (!isToolTip)
+				{
+				html.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
+				html.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
+				html.Append("'+'");
+				html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
+				html.Append("'+'\\u0040'+'");
+				html.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
+				html.Append("'+'");
+				html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
+				html.Append("';return false;\">");
+				}
 
 			string text = iterator.Property("text");
 
@@ -446,7 +551,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				html.Append( EMailSegmentForHTML( address.Substring(cutPoint2, address.Length - cutPoint2) ));
 				}
 
-			html.Append("</a>");
+			if (!isToolTip)
+				{  html.Append("</a>");  }
 			}
 
 		/* Function: EMailSegmentForJavaScriptString
@@ -472,9 +578,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildURLLink (NDMarkup.Iterator iterator)
 			{
 			string target = iterator.Property("target");
-			html.Append("<a href=\"");
-				html.EntityEncodeAndAppend(target);
-			html.Append("\" target=\"_top\">");
+
+			if (!isToolTip)
+				{
+				html.Append("<a href=\"");
+					html.EntityEncodeAndAppend(target);
+				html.Append("\" target=\"_top\">");
+				}
 
 			string text = iterator.Property("text");
 
@@ -525,7 +635,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				html.EntityEncodeAndAppend( target.Substring(startIndex) );
 				}
 
-			html.Append("</a>");
+			if (!isToolTip)
+				{  html.Append("</a>");  }
 			}
 
 
@@ -534,6 +645,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator)
 			{
 			// xxx
+			// remember to check istooltip
 			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
 			}
 
@@ -591,6 +703,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * previous run.
 		 */
 		protected HTMLPrototype htmlPrototypeBuilder;
+
+		/* var: isToolTip
+		 * Whether we're building a tooltip instead of a full topic.
+		 */
+		protected bool isToolTip;
 
 
 
