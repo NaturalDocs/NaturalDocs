@@ -1,0 +1,28 @@
+
+Topic: Test 1
+
+	Heading:
+
+		Paragraphs appearing under a heading should still be accepted.
+
+
+Topic: Test 2
+
+	(SQL Prototype)
+		Field TEXT NOT NULL
+	(end)
+
+	Paragraphs appearing under prototypes should still be accepted.
+
+
+Topic: Test 3
+
+	Prototype:
+
+		(SQL Prototype)
+			Field TEXT NOT NULL
+		(end)
+
+	Description:
+
+		Paragraphs appearing under both, including multiple headings, should be accepted.

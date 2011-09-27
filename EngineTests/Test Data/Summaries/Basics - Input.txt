@@ -1,0 +1,7 @@
+
+Topic: Test
+
+	This is the first paragraph.  It should appear as the summary even though it has multiple
+	lines and sentences.
+
+	This is the second paragraph.  It should not be part of the summary.

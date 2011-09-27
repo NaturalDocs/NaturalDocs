@@ -37,7 +37,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<Topic> topics = new List<Topic>();
 			
 			using (SQLite.Query query = connection.Query("SELECT TopicID, LanguageID, CommentLineNumber, CodeLineNumber, Title, " +
-																					 " Body, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags " +
+																					 " Body, Summary, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags " +
 																		   "FROM Topics WHERE FileID = ? " +
 																		   "ORDER BY CommentLineNumber ASC", fileID))
 				{
@@ -51,12 +51,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.CodeLineNumber = query.IntColumn(3);
 					topic.Title = query.StringColumn(4);
 					topic.Body = query.StringColumn(5);
-					topic.Prototype = query.StringColumn(6);
-					topic.Symbol = Symbol.FromSymbolString( query.StringColumn(7) );
-					topic.EndingSymbolID = query.IntColumn(8);
-					topic.TopicTypeID = query.IntColumn(9);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(10);
-					topic.TagString = query.StringColumn(11);
+					topic.Summary = query.StringColumn(6);
+					topic.Prototype = query.StringColumn(7);
+					topic.Symbol = Symbol.FromSymbolString( query.StringColumn(8) );
+					topic.EndingSymbolID = query.IntColumn(9);
+					topic.TopicTypeID = query.IntColumn(10);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(11);
+					topic.TagString = query.StringColumn(12);
 
 					topic.FileID = fileID;
 					
@@ -86,6 +87,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
+		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		EndingSymbolID - Must be zero.  This will be automatically assigned and the <Topic> updated.
@@ -105,6 +107,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				RequireNonZero("CodeLineNumber", topic.CodeLineNumber);
 				RequireContent("Title", topic.Title);
 				// Body
+				// Summary
 				// Prototype
 				RequireContent("Symbol", topic.Symbol);			
 				RequireZero("EndingSymbolID", topic.EndingSymbolID);
@@ -141,11 +144,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 				
 			connection.Execute("INSERT INTO Topics (TopicID, FileID, LanguageID, CommentLineNumber, CodeLineNumber, " +
-																	" Title, Body, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags) " +
-																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+																	" Title, Body, Summary, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags) " +
+																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 										topic.TopicID, topic.FileID, topic.LanguageID, topic.CommentLineNumber, topic.CodeLineNumber,
-										topic.Title, topic.Body, topic.Prototype, topic.Symbol, topic.EndingSymbolID, topic.TopicTypeID,
-										(int)topic.AccessLevel, topic.TagString);
+										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.EndingSymbolID, 
+										topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString);
 			
 			Engine.Instance.CodeDB.UsedTopicIDs.Add(topic.TopicID);
 			
@@ -241,6 +244,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				// CodeLineNumber
 				// Title
 				// Body
+				// Summary
 				// Prototype
 				// Symbol
 				RequireNonZero("EndingSymbolID", topic.EndingSymbolID);
@@ -292,6 +296,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
+		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		EndingSymbolID - Must be zero.  These will be automatically assigned and the <Topics> updated.

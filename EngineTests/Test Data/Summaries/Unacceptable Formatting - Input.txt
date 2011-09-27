@@ -1,0 +1,30 @@
+
+Topic: Test 1
+
+	- Topics starting with bullets aren't acceptable.
+
+	This paragraph should not be in the summary.
+
+
+Topic: Test 2
+
+	Symbol - Topics starting with definition lists aren't acceptable.
+
+	This paragraph should not be in the summary.
+
+
+Topic: Test 3
+
+	(start code)
+		// Code sections that aren't prototypes aren't acceptable
+	(end)
+
+	This paragraph should not be in the summary.
+
+
+Topic: Test 4
+
+	> // Code sections that aren't prototypes aren't acceptable
+
+	This paragraph should not be in the summary.
+

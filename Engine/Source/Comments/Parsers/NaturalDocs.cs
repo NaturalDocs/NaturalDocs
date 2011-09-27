@@ -324,6 +324,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 *		- CommentLineNumber
 		 *		- Title, unless doesn't require header
 		 *		- Body, if present
+		 *		- Summary, if available
 		 *		- TopicTypeID, unless doesn't require header
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
@@ -1415,6 +1416,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 		/* Function: ParseBody
 		 * Parses the content between two <LineIterators> and adds its content to the <Topic> in <NDMarkup> as its body.
+		 * Also extracts the summary from it and adds it to the <Topic>.
 		 */
 		protected void ParseBody (LineIterator firstContentLine, LineIterator endOfContent, Topic topic)
 			{
@@ -1722,7 +1724,69 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 				
 			if (body.Length > 0)
-				{  topic.Body = body.ToString();  }
+				{  
+				topic.Body = body.ToString();
+				ExtractSummary(topic);
+				}
+			}
+
+
+		/* Function: ExtractSummary
+		 * If the <Topic> has a body, attempts to extract a summary from it and set <Topic.Summary>.
+		 */
+		protected bool ExtractSummary (Topic topic)
+			{
+			if (topic.Body == null)
+				{  return false;  }
+
+			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+
+			while (iterator.IsInBounds)
+				{
+				// Allow headings to come before the opening paragraph.
+				// We can assume the NDMarkup is valid, so we can assume this is an opening tag and we'll hit a closing tag.
+				if (iterator.Type == NDMarkup.Iterator.ElementType.HeadingTag)
+					{
+					do
+						{  iterator.Next();  }
+					while (iterator.Type != NDMarkup.Iterator.ElementType.HeadingTag);
+
+					iterator.Next();
+					}
+
+				// Also allow prototypes to come before the openiing paragraph.
+				else if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag && iterator.Property("type") == "prototype")
+					{
+					do
+						{  iterator.Next();  }
+					while (iterator.Type != NDMarkup.Iterator.ElementType.PreTag);
+
+					iterator.Next();
+					}
+
+				// Extract the entire openng paragraph for the summary, unlike Natural Docs 1.x which only used the first sentence.
+				else if (iterator.Type == NDMarkup.Iterator.ElementType.ParagraphTag)
+					{
+					// Don't include the opening <p> in the summary.
+					iterator.Next();
+
+					int startingIndex = iterator.RawTextIndex;
+
+					while (iterator.Type != NDMarkup.Iterator.ElementType.ParagraphTag)
+						{  iterator.Next();  }
+
+					// Iterator is now on the closing </p>.
+
+					topic.Summary = topic.Body.Substring(startingIndex, iterator.RawTextIndex - startingIndex);
+					return true;
+					}
+
+				// If we hit any other tag before a paragraph, there is no summary.
+				else
+					{  break;  }
+				}
+
+			return false;
 			}
 			
 			

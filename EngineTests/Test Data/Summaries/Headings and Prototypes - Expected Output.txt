@@ -1,0 +1,5 @@
+Paragraphs appearing under a heading should still be accepted.
+-----
+Paragraphs appearing under prototypes should still be accepted.
+-----
+Paragraphs appearing under both, including multiple headings, should be accepted.

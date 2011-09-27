@@ -1,0 +1,7 @@
+
+Topic: Test
+
+	Formatting such as *bold* and _underline_ and <links> should not affect the summary.  Here's
+	a *second* _sentence_ with <them> too.
+
+	This is a second paragraph which shouldn't be included.

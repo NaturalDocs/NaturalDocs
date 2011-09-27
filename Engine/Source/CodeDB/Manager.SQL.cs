@@ -39,6 +39,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																		   "CodeLineNumber INTEGER NOT NULL, " +
 																		   "Title TEXT NOT NULL, " +
 																		   "Body TEXT, " +
+																			"Summary TEXT, " +
 																			"Prototype TEXT, " +
 																		   "Symbol TEXT NOT NULL, " +
 																		   "EndingSymbolID INTEGER NOT NULL, " +

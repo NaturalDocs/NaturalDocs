@@ -36,6 +36,7 @@ namespace GregValure.NaturalDocs.Engine
 			codeLineNumber = 0;
 			title = null;
 			body = null;
+			summary = null;
 			prototype = null;
 			symbol = new Symbol();
 			endingSymbolID = 0;
@@ -65,6 +66,7 @@ namespace GregValure.NaturalDocs.Engine
 
 				// String comparisons, most likely to be different			
 				title != other.title ||
+				summary != other.summary ||
 				symbol != other.symbol ||
 				prototype != other.prototype ||
 
@@ -217,6 +219,18 @@ namespace GregValure.NaturalDocs.Engine
 				{  return body;  }
 			set
 				{  body = value;  }
+			}
+
+
+		/* Property: Summary
+		 * The summary of the topic's comment in <NDMarkup>, or null if it hasn't been set.
+		 */
+		public string Summary
+			{
+			get
+				{  return summary;  }
+			set
+				{  summary = value;  }
 			}
 
 
@@ -393,6 +407,11 @@ namespace GregValure.NaturalDocs.Engine
 		 * The body of the comment, or null if not specified.
 		 */
 		protected string body;
+
+		/* var: summary
+		 * The summary of the comment, or null if not specified.
+		 */
+		protected string summary;
 
 		/* var: prototype
 		 * The plain-text prototype of the topic, or null if not present.
