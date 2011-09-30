@@ -284,9 +284,9 @@ var NDCore = new function ()
 		return path.substr(0, lastSeparator + 1) + filename + ".html";
 		};
 
-	/* Function: FileHashPathToMetaDataPath
+	/* Function: FileHashPathToSummaryPath
 	*/
-	this.FileHashPathToMetaDataPath = function (hashPath)
+	this.FileHashPathToSummaryPath = function (hashPath)
 		{
 		var prefix = hashPath.match(/^File([0-9]*):/);
 		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
@@ -295,7 +295,21 @@ var NDCore = new function ()
 		var filename = path.substr(lastSeparator + 1);
 		filename = filename.replace(/\./g, '-');
 		
-		return path.substr(0, lastSeparator + 1) + filename + ".js";
+		return path.substr(0, lastSeparator + 1) + filename + "-Summary.js";
+		};
+
+	/* Function: FileHashPathToSummaryTooltipsPath
+	*/
+	this.FileHashPathToSummaryTooltipsPath = function (hashPath)
+		{
+		var prefix = hashPath.match(/^File([0-9]*):/);
+		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
+
+		var lastSeparator = path.lastIndexOf('/');
+		var filename = path.substr(lastSeparator + 1);
+		filename = filename.replace(/\./g, '-');
+		
+		return path.substr(0, lastSeparator + 1) + filename + "-SummaryTooltips.js";
 		};
 
 

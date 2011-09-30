@@ -13,21 +13,24 @@
 
 	Substitutions:
 
-		Summary Info Members:
+		Summary Language Members:
 
-			`TopicTypeIDNames = 0
-			`InSourceOrder = 1
-			`ByNameAndType = 2
-			`ByName = 3
+			`Language_NameHTML = 0
+			`Language_SimpleIdentifier = 1
+
+		Summary Topic Types Members:
+
+			`TopicType_PluralNameHTML = 0
+			`TopicType_SimpleIdentifier = 1
 
 		Summary Entry Members:
 
-			`TopicID = 0
-			`TopicTypeID = 1
-			`NameHTML = 2
-			`PrototypeHTML = 3
-			`SummaryHTML = 4
-			`Symbol = 5
+			`Entry_TopicID = 0
+			`Entry_LanguageIndex = 1
+			`Entry_TopicTypeIndex = 2
+			`Entry_NameHTML = 3
+			`Entry_Symbol = 4
+
 */
 
 "use strict";
@@ -58,16 +61,33 @@ var NDSummary = new function ()
 		{
 		var head = document.getElementsByTagName("head")[0];
 
-		// Remove the previous loader if there was one.
+
+		// Remove the previous loaders if there are any.
+
 		var loader = document.getElementById("NDSummaryLoader");
 
 		if (loader)
 			{  head.removeChild(loader);  }
 
-		// Create a new one.
+		loader = document.getElementById("NDSummaryTooltipsLoader");
+
+		if (loader)
+			{  head.removeChild(loader);  }
+
+
+		// Reset the state
+
+		this.summaryLanguages = undefined;
+		this.summaryTopicTypes = undefined;
+		this.summaryEntries = undefined;
+		this.summaryTooltips = undefined;
+
+
+		// Create a new summary loader.  We don't load the tooltips until the summary is complete to
+		// avoid having to wait for a potentially large file.
 
 		var script = document.createElement("script");
-		script.src = NDCore.FileHashPathToMetaDataPath(hashPath);
+		script.src = NDCore.FileHashPathToSummaryPath(hashPath);
 		script.type = "text/javascript";
 		script.id = "NDSummaryLoader";
 
@@ -77,13 +97,38 @@ var NDSummary = new function ()
 
 	/* Function: OnSummaryLoaded
 	*/
-	this.OnSummaryLoaded = function (hashPath, summaryInfo, summaryEntries)
+	this.OnSummaryLoaded = function (hashPath, summaryLanguages, summaryTopicTypes, summaryEntries)
 		{
-		if (hashPath == NDPageFrame.hashPath)
+		if (hashPath == NDFramePage.hashPath)
 			{  
-			this.summaryInfo = summaryInfo;
+			this.summaryLanguages = summaryLanguages;
+			this.summaryTopicTypes = summaryTopicTypes;
 			this.summaryEntries = summaryEntries;
+
 			this.UpdateSummary();  
+
+
+			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
+
+			var head = document.getElementsByTagName("head")[0];
+
+			var script = document.createElement("script");
+			script.src = NDCore.FileHashPathToSummaryTooltipsPath(hashPath);
+			script.type = "text/javascript";
+			script.id = "NDSummaryTooltipsLoader";
+
+			head.appendChild(script);
+			}
+		};
+
+
+	/* Function: OnSummaryTooltipsLoaded
+	*/
+	this.OnSummaryTooltipsLoaded = function (hashPath, summaryTooltips)
+		{
+		if (hashPath == NDFramePage.hashPath)
+			{  
+			this.summaryTooltips = summaryTooltips;
 			}
 		};
 
@@ -102,11 +147,19 @@ var NDSummary = new function ()
 	// ________________________________________________________________________
 
 
-	/* var: summaryInfo
+	/* var: summaryLanguages
 	*/
-		// this.summaryInfo = undefined;
+		// this.summaryLanguages = undefined;
+
+	/* var: summaryTopicTypes
+	*/
+		// this.summaryTopicTypes = undefined;
 
 	/* var: summaryEntries
 	*/
 		// this.summaryEntries = undefined;
+
+	/* var: summaryTooltips
+	*/
+		// this.summaryTooltips = undefined;
 	};
