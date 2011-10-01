@@ -190,69 +190,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildTitle ()
 			{
-			MatchCollection splitSymbols = null;
-
-			if (htmlBuilder.IsFileTopicType(topic.TopicTypeID))
-				{  splitSymbols = FileSplitSymbolsRegex.Matches(topic.Title);  }
-			else if (htmlBuilder.IsCodeTopicType(topic.TopicTypeID))
-				{  splitSymbols = CodeSplitSymbolsRegex.Matches(topic.Title);  }
-
-			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);
-
-
-			// Don't count separators on the end of the string.
-
-			if (splitCount > 0)
-				{
-				int endOfString = topic.Title.Length;
-
-				for (int i = splitCount - 1; i >= 0; i--)
-					{
-					if (splitSymbols[i].Index + splitSymbols[i].Length == endOfString)
-						{
-						splitCount--;
-						endOfString = splitSymbols[i].Index;
-						}
-					else
-						{  break;  }
-					}
-				}
-
-
-			// Build the HTML.
-
 			html.Append("<div class=\"CTitle\">");
-
-			if (splitCount == 0)
-				{
-				html.Append( topic.Title.ToHTML() );
-				}
-			else
-				{
-				int appendedSoFar = 0;
-				html.Append("<span class=\"qualifier\">");
-
-				for (int i = 0; i < splitCount; i++)
-					{
-					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
-					string titleSection = topic.Title.Substring(appendedSoFar, endOfSection - appendedSoFar);
-					html.Append( titleSection.ToHTML() );
-
-					if (i < splitCount - 1)
-						{
-						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
-						// Webkit browsers won't wrap on it.
-						html.Append("&#8203;");
-						}
-
-					appendedSoFar = endOfSection;
-					}
-
-				html.Append("</span>&#8203;");  // zero-width space for wrapping
-
-				html.Append( topic.Title.Substring(appendedSoFar).ToHTML() );
-				}
-
+			htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, html);
 			html.Append("</div>");
 			}
 
@@ -725,9 +664,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * to break on those characters as it looks cleaner, but this limit forces it to happen if they don't occur.
 		 */
 		protected const int MaxUnbrokenURLCharacters = 35;
-
-		static protected Regex.Output.HTML.FileSplitSymbols FileSplitSymbolsRegex = new Regex.Output.HTML.FileSplitSymbols();
-		static protected Regex.Output.HTML.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.Output.HTML.CodeSplitSymbols();
 
 		}
 	}

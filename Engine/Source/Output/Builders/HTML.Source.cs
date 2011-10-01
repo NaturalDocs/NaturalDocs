@@ -119,6 +119,94 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+
+		// Group: Shared HTML Generation Functions
+		// __________________________________________________________________________
+
+
+		/* Function: BuildWrappedTitle
+		 * Builds a title with zero-width spaces added so that long identifiers wrap.  Will also add a span surrounding the qualifiers
+		 * with a "qualifier" CSS class.  The HTML will be appended to the StringBuilder, but you must provide your own surrounding
+		 * div if required.
+		 */
+		protected internal void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
+			{
+			MatchCollection splitSymbols = null;
+
+			if (IsFileTopicType(topicTypeID))
+				{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
+			else if (IsCodeTopicType(topicTypeID))
+				{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
+
+			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);
+
+
+			// Don't count separators on the end of the string.
+
+			if (splitCount > 0)
+				{
+				int endOfString = title.Length;
+
+				for (int i = splitCount - 1; i >= 0; i--)
+					{
+					if (splitSymbols[i].Index + splitSymbols[i].Length == endOfString)
+						{
+						splitCount--;
+						endOfString = splitSymbols[i].Index;
+						}
+					else
+						{  break;  }
+					}
+				}
+
+
+			// Build the HTML.
+
+			if (splitCount == 0)
+				{
+				output.Append(title.ToHTML());
+				}
+			else
+				{
+				int appendedSoFar = 0;
+				output.Append("<span class=\"qualifier\">");
+
+				for (int i = 0; i < splitCount; i++)
+					{
+					int endOfSection = splitSymbols[i].Index + splitSymbols[i].Length;
+					string titleSection = title.Substring(appendedSoFar, endOfSection - appendedSoFar);
+					output.Append( titleSection.ToHTML() );
+
+					if (i < splitCount - 1)
+						{
+						// Insert a zero-width space for wrapping.  We have to put the final one outside the closing </span> or 
+						// Webkit browsers won't wrap on it.
+						output.Append("&#8203;");
+						}
+
+					appendedSoFar = endOfSection;
+					}
+
+				output.Append("</span>&#8203;");  // zero-width space for wrapping
+
+				output.Append( title.Substring(appendedSoFar).ToHTML() );
+				}
+			}
+
+
+		/* Function: BuildWrappedTitle
+		 * Builds a title with zero-width spaces added so that long identifiers wrap.  Will also add a span surrounding the qualifiers
+		 * with a "qualifier" CSS class.  The HTML will be returned as a string, but you must provide your own surrounding div if
+		 * required.  If the string will be directly appended to a StringBuilder, it is more efficient to use the other form.
+		 */
+		protected internal string BuildWrappedTitle (string title, int topicTypeID)
+			{
+			StringBuilder temp = new StringBuilder();
+			BuildWrappedTitle(title, topicTypeID, temp);
+			return temp.ToString();
+			}
+
+
 		/* Function: BuildSyntaxHighlightedText
 		 */
 		protected internal void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder html)
@@ -279,13 +367,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					BuildSyntaxHighlightedText(startText, iterator, html);
 					}
 				}
-			}
-
-
-		/* Function: BuildMetaData
-		 */
-		protected void BuildMetaData (int fileID, IList<Topic> topics, string title)
-			{
 			}
 
 
@@ -502,6 +583,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				sourceFilesToRebuild.Add(topic.FileID);
 				}
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		static protected Regex.Output.HTML.FileSplitSymbols FileSplitSymbolsRegex = new Regex.Output.HTML.FileSplitSymbols();
+		static protected Regex.Output.HTML.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.Output.HTML.CodeSplitSymbols();
 
 		}
 	}
