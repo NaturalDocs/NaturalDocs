@@ -348,7 +348,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 
 				output.Append(",\"");
-				output.StringEscapeAndAppend(topic.Title.ToHTML());
+				output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );
 				output.Append("\",\"");
 				output.Append("hashsymbol" + topic.TopicID); // xxx
 				output.Append("\"]");
