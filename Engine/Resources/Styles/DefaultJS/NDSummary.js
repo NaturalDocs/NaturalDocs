@@ -178,7 +178,9 @@ var NDSummary = new function ()
 	this.GoToAnchor = function (anchor)
 		{
 		var frame = document.getElementById("CFrame");
-		frame.contentWindow.location.hash = "#" + anchor;
+
+		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
+		frame.contentWindow.location = NDFramePage.contentPath + "#" + anchor;
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		frame.contentWindow.focus();
