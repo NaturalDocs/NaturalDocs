@@ -179,6 +179,9 @@ var NDSummary = new function ()
 		{
 		var frame = document.getElementById("CFrame");
 		frame.contentWindow.location.hash = "#" + anchor;
+
+		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+		frame.contentWindow.focus();
 		};
 
 
