@@ -12,19 +12,26 @@
 
 	Substitutions:
 
-		`MenuBackgroundColor = #E0E0E0
 		`HeaderBackgroundColor = #7070C0
+
+		`MenuBackgroundColor = #E0E0E0
+
+		`SummaryBackgroundColor = #FFFFF0
+		`SummaryRightBorderColor = #E4E4B0
+		`SummaryLeftBorderColor = #C0C0C0
+		`SummaryHoverBackgroundColor = #F6F6DA
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
 		`MessageTextColor = #787800
 
-		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
-		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
-		`MenuFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
-		`CodeFontFamily = Consolas, "Courier New", monospace
 		`ProjectTitleFontFamily = "Palatino Linotype", Palatino, Georgia, serif
 		`ProjectSubTitleFontFamily = Georgia, serif
+		`MenuFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
+		`SummaryFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
+		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
+		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
+		`CodeFontFamily = Consolas, "Courier New", monospace
 
 		`TextLinkColor = #880000
 		`TextLinkActiveColor = #F04040
@@ -172,6 +179,66 @@ td {
 		}
 
 
+
+
+
+/* Summary
+	___________________________________________________________________________
+*/
+
+#NDSummary {
+	background-color: `SummaryBackgroundColor;
+	border-right: 1px solid `SummaryRightBorderColor;
+	border-left: 1px solid `SummaryLeftBorderColor;
+	position: fixed;
+	z-index: 3;
+	overflow: auto;
+	width: 30ex;
+	}
+
+	#NDSummary a:hover,
+	#NDSummary a:active {
+		text-decoration: none;
+		}
+
+	.SLoadingNotice {
+		height: 20px;
+		background: URL("images/summary-loading.gif") no-repeat center bottom;
+		}
+
+	.SEntry {
+		display: block;
+		font: 10pt `SummaryFontFamily;
+		padding: 0 1.5ex 0 4.5ex;
+		}
+	.SEntry.first { margin-top: 1ex !important; }
+	.SEntry.last { margin-bottom: 1ex; }
+
+	.SEntry,
+	a.SEntry {
+		color: #404020;
+		}
+	a.SEntry:hover,
+	a.SEntry:active {
+		background-color: `SummaryHoverBackgroundColor;
+		}
+	.SEntry .qualifier {
+		color: #707054;
+		font-weight: normal;
+		}
+
+	.SEntry.TClass,
+	.SEntry.TInterface {
+		font-size: 11pt;
+		font-weight: bold;
+		padding-left: 1.25ex;
+		margin: 1.5ex 0 .5ex 0;
+		}
+	.SEntry.TGroup {
+		font-weight: bold;
+		padding-left: 3ex;
+		margin: 1ex 0 .2ex 0;
+		}
 
 
 

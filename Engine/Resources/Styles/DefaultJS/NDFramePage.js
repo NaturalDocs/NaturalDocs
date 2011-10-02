@@ -64,6 +64,7 @@ var NDFramePage = new function ()
 			document.getElementById("NDHeader").style.position = "absolute";
 			document.getElementById("NDFooter").style.position = "absolute";
 			document.getElementById("NDMenu").style.position = "absolute";
+			document.getElementById("NDSummary").style.position = "absolute";
 			document.getElementById("NDContent").style.position = "absolute";
 			document.getElementById("NDMessages").style.position = "absolute";
 			}
@@ -78,15 +79,22 @@ var NDFramePage = new function ()
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 			}
 
+		this.topmostPanel = `FilePanel;
+		this.summaryPanelIsExpanded = true;
 
-		window.onresize = this.OnResize;
+		// OnResize will position all the page elements for the first time.
 		this.OnResize();
+		window.onresize = this.OnResize;
 
+		// Start the navigation objects.  It's okay that the hash variables aren't filled in yet.  They do not read them
+		// directly from this class but get them from functions like GoToFileHashPath().
 		NDMenu.Start();
 		NDSummary.Start();
 
-		this.AddHashChangeHandler();
+		// OnHashChange will call DecodeHash which will fill in all the hash variables.  It will then set the navigation
+		// objects to the proper location.
 		this.OnHashChange();
+		this.AddHashChangeHandler();
 		};
 
 
@@ -100,6 +108,7 @@ var NDFramePage = new function ()
 		var header = document.getElementById("NDHeader");
 		var footer = document.getElementById("NDFooter");
 		var menu = document.getElementById("NDMenu");
+		var summary = document.getElementById("NDSummary");
 		var content = document.getElementById("NDContent");
 		var messages = document.getElementById("NDMessages");
 
@@ -113,9 +122,11 @@ var NDFramePage = new function ()
 		NDCore.SetToAbsolutePosition(footer, undefined, height - footerHeight, undefined, undefined);
 
 		var menuWidth = menu.offsetWidth;
+		var summaryWidth = Math.floor(menuWidth * 1.25);
 
 		NDCore.SetToAbsolutePosition(menu, 0, headerHeight, menuWidth, height - headerHeight - footerHeight);
-		NDCore.SetToAbsolutePosition(content, menuWidth, headerHeight, width - menuWidth, height - headerHeight - footerHeight);
+		NDCore.SetToAbsolutePosition(summary, menuWidth, headerHeight, summaryWidth, height - headerHeight - footerHeight);
+		NDCore.SetToAbsolutePosition(content, menuWidth + summaryWidth, headerHeight, width - menuWidth - summaryWidth, height - headerHeight - footerHeight);
 
 		NDCore.SetToAbsolutePosition(messages, menuWidth, 0, width - menuWidth, undefined);
 		};
@@ -202,20 +213,22 @@ var NDFramePage = new function ()
 		{
 		this.DecodeHash();
 
+		// Set the content page
 		var frame = document.getElementById("CFrame");
 		frame.contentWindow.location.replace(this.contentPath);
 
-		// Set focus to the iframe so that keyboard scrolling works without clicking over to it.
+		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		frame.contentWindow.focus();
 
 		if (this.hashType == `FileHash)
 			{  
 			NDMenu.GoToFileHashPath(this.hashPath);  
 			NDSummary.GoToFileHashPath(this.hashPath);
+			// NDSummary will load the metadata file that calls UpdatePageTitle().
 			}
 		else
 			{  
-			// Call it manually since there's no metadata file to do it.
+			// Update the page title manually since there's no metadata to do it.
 			this.UpdatePageTitle();  
 
 			// Reset back to the default state.
@@ -423,6 +436,36 @@ var NDFramePage = new function ()
 		The project title in HTML.
 	*/
 
+	/* var: contentPath
+		This will be the path to the output file used for the content area of the page.
+	*/
+
+
+	// Group: Panel Variables
+	// ________________________________________________________________________
+
+	/* var: topmostPanel
+		Which of the panels is on top, which will be one of:
+
+		`FilePanel - The source file panel.
+		`ClassPanel - The class panel.
+		`SummaryPanel - The summary panel if it's collapsed into the other two.  If it's open side by side the
+								topmost panel will always be one of the other two.
+	*/
+		// Substitutions:
+		//		`FilePanel = 0
+		//		`ClassPanel = 1
+		//		`SummaryPanel = 2
+
+
+	/* var: summaryPanelIsExpanded
+		Whether the summary panel is side by side with the other two instead of collapsed into a tab.
+	*/
+
+
+	// Group: Hash Variables
+	// ________________________________________________________________________
+
 	/* var: hashType
 		The type of the hash path, which will be one of:
 
@@ -440,10 +483,6 @@ var NDFramePage = new function ()
 	/* var: hashAnchor
 		If <hashType> is  `FileHash, the anchor within the <hashPath> file that should be used.  In the example
 		"File2:Folder/Folder/Source.cs:Function", this would be "Function".
-	*/
-
-	/* var: contentPath
-		This will be the path to the output file used for the content area of the page.
 	*/
 
 	/* var: hashChangePoller

@@ -973,6 +973,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					"</div>" +
 				"</div>" +
 
+				"<div id=\"NDSummary\">" +
+					"<div id=\"SContent\">" +
+					"</div>" +
+				"</div>" +
+
 				"<div id=\"NDContent\">" +
 
 					// We can theoretically replace this with an object tag which will let us go back to HTML Strict, but it's more trouble

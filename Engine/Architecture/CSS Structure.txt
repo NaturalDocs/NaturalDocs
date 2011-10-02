@@ -90,6 +90,30 @@ _______________________________________________________________________________
 
 
 
+Topic: Summary
+_______________________________________________________________________________
+
+(start text)
+
+	<#NDSummary>
+		<#SContent>
+
+			<SEntry T[TopicType] L[Language]>
+				Name
+			</SEntry>
+
+			...
+
+			<SLoadingNotice>
+			</SLoadingNotice>
+
+		</#SContent>
+	</#NDSummary>
+
+(end)
+
+
+
 Topic: Content Page
 _______________________________________________________________________________
 

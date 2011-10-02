@@ -99,6 +99,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = language.SimpleIdentifier;
 
 			html.Append(
+				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 

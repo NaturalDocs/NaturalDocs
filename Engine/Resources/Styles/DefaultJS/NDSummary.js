@@ -51,6 +51,7 @@ var NDSummary = new function ()
 	*/
 	this.Start = function ()
 		{
+		this.UpdateSummary();
 		};
 
 
@@ -137,8 +138,47 @@ var NDSummary = new function ()
 	*/
 	this.UpdateSummary = function ()
 		{
+		var newContent = document.createElement("div");
+		newContent.id = "SContent";
+
 		if (this.summaryEntries == undefined)
-			{  return;  }
+			{  
+			var loadingNotice = document.createElement("div");
+			loadingNotice.className = "SLoadingNotice";
+			newContent.appendChild(loadingNotice);
+			}
+		else
+			{
+			for (var i = 0; i < this.summaryEntries.length; i++)
+				{
+				var entry = this.summaryEntries[i];
+				var entryHTML = document.createElement("a");
+
+				var classString = "SEntry" + 
+					" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
+					" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
+					(i == 0 ? " first" : "") +
+					(i == this.summaryEntries.length - 1 ? " last" : "");
+
+				entryHTML.className = classString;
+				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(\"" + entry[`Entry_Symbol] + "\")");
+				entryHTML.innerHTML = entry[`Entry_NameHTML];
+
+				newContent.appendChild(entryHTML);
+				}
+			}
+
+		var oldContent = document.getElementById("SContent");
+		oldContent.parentNode.replaceChild(newContent, oldContent);
+		};
+
+
+	/* Function: GoToAnchor
+	*/
+	this.GoToAnchor = function (anchor)
+		{
+		var frame = document.getElementById("CFrame");
+		frame.contentWindow.location.hash = "#" + anchor;
 		};
 
 

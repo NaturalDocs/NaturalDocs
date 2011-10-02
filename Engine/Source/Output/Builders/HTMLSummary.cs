@@ -350,7 +350,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append(",\"");
 				output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );
 				output.Append("\",\"");
-				output.Append("hashsymbol" + topic.TopicID); // xxx
+				output.Append("Topic" + topic.TopicID);
 				output.Append("\"]");
 
 				if (topicIndex < topics.Count - 1)
