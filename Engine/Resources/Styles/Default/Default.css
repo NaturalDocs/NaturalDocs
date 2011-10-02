@@ -209,21 +209,30 @@ td {
 	.SEntry {
 		display: block;
 		font: 10pt `SummaryFontFamily;
-		padding: 0 1.5ex 0 4.5ex;
+		padding: .15ex 1.5ex .15ex 3.5ex;
 		}
-	.SEntry.first { margin-top: 1ex !important; }
-	.SEntry.last { margin-bottom: 1ex; }
+	.SEntry.first { margin-top: 1ex; }
+	.SEntry.last { margin-bottom: 2ex; }
 
 	.SEntry,
 	a.SEntry {
-		color: #404020;
+		color: #707058;
+		}
+	.SEntry.TClass,
+	a.SEntry.TClass,
+	.SEntry.TInterface,
+	a.SEntry.TInterface {
+		color: #585840;
+		}
+	.SEntry.TGroup,
+	a.SEntry.TGroup {
+		color: #646450;
 		}
 	a.SEntry:hover,
 	a.SEntry:active {
 		background-color: `SummaryHoverBackgroundColor;
 		}
 	.SEntry .qualifier {
-		color: #707054;
 		font-weight: normal;
 		}
 
@@ -232,12 +241,23 @@ td {
 		font-size: 11pt;
 		font-weight: bold;
 		padding-left: 1.25ex;
+		padding-top: .75ex;
+		padding-bottom: .75ex;
 		margin: 1.5ex 0 .5ex 0;
+		line-height: 120%;
+		border-bottom: 1px solid `SummaryRightBorderColor;
+		}
+	.SEntry.TClass.first,
+	.SEntry.TInterface.first {
+		margin-top: 0;
 		}
 	.SEntry.TGroup {
 		font-weight: bold;
-		padding-left: 3ex;
-		margin: 1ex 0 .2ex 0;
+		padding-left: 1.75ex;
+		padding-top: .5ex;
+		padding-bottom: .5ex;
+		margin: 1ex 0 0 0;
+		line-height: 120%;
 		}
 
 
@@ -261,8 +281,8 @@ td {
 
 body.NDContentPage {
 	background-color: #FFFFFF;
-	margin: .5em 1em;
-	padding: 0;
+	padding: .5em 1em;
+	margin: 0;
 	}
 
 	.CTopic {
