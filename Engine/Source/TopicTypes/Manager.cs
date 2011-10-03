@@ -2420,7 +2420,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		/* var: RequiredTopicTypes
 		 * An array containing all the topic type names that must be defined in order for Natural Docs to run.
 		 */
-		public static string[] RequiredTopicTypes = { "Information" };
+		public static string[] RequiredTopicTypes = { "Information", "Group" };
 		
 		
 
