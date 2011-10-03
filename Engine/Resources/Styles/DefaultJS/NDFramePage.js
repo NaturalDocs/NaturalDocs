@@ -10,9 +10,9 @@
 	Such documentation is not covered by Natural Docs' copyright and licensing,
 	and may have its own copyright and distribution terms as decided by its author.
 
-	This file includes code derived from jQuery HashChange Event, which is 
-	Copyright © 2010 "Cowboy" Ben Alman.  jQuery HashChange Event may be 
-	obtained separately under the MIT license or the GNU General Public License (GPL).  
+	This file includes code derived from jQuery HashChange Event, which is
+	Copyright © 2010 "Cowboy" Ben Alman.  jQuery HashChange Event may be
+	obtained separately under the MIT license or the GNU General Public License (GPL).
 	However, this combined product is still licensed under the terms of the AGPLv3.
 
 */
@@ -59,7 +59,7 @@ var NDFramePage = new function ()
 			{
 			// IE 6 doesn't like fixed positioning the way other browsers do.
 
-			document.getElementsByTagName("html")[0].style.overflow = "hidden";  
+			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 
 			document.getElementById("NDHeader").style.position = "absolute";
 			document.getElementById("NDFooter").style.position = "absolute";
@@ -68,12 +68,12 @@ var NDFramePage = new function ()
 			document.getElementById("NDContent").style.position = "absolute";
 			document.getElementById("NDMessages").style.position = "absolute";
 			}
-		
+
 		if (ieVersion !== undefined)
 			{
-			// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always 
-			// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does 
-			// do it on a different computer even though they're both running the same version and are both XP.  Weird.  
+			// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always
+			// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does
+			// do it on a different computer even though they're both running the same version and are both XP.  Weird.
 			// Since it shouldn't have any detrimental effect, add it for all IE versions just to be safe.
 
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
@@ -122,7 +122,7 @@ var NDFramePage = new function ()
 		NDCore.SetToAbsolutePosition(footer, undefined, height - footerHeight, undefined, undefined);
 
 		var menuWidth = menu.offsetWidth;
-		var summaryWidth = Math.floor(menuWidth * 1.25);
+		var summaryWidth = Math.floor(menuWidth * 1.1);
 
 		NDCore.SetToAbsolutePosition(menu, 0, headerHeight, menuWidth, height - headerHeight - footerHeight);
 		NDCore.SetToAbsolutePosition(summary, menuWidth, headerHeight, summaryWidth, height - headerHeight - footerHeight);
@@ -148,7 +148,7 @@ var NDFramePage = new function ()
 		this.OnResize();
 		};
 
-	
+
 	/* Function: CloseMessages
 	*/
 	this.CloseMessages = function ()
@@ -158,7 +158,7 @@ var NDFramePage = new function ()
 		};
 
 
-	
+
 	// Group: Hash and Navigation Functions
 	// ________________________________________________________________________
 
@@ -221,15 +221,15 @@ var NDFramePage = new function ()
 		frame.contentWindow.focus();
 
 		if (this.hashType == `FileHash)
-			{  
-			NDMenu.GoToFileHashPath(this.hashPath);  
+			{
+			NDMenu.GoToFileHashPath(this.hashPath);
 			NDSummary.GoToFileHashPath(this.hashPath);
 			// NDSummary will load the metadata file that calls UpdatePageTitle().
 			}
 		else
-			{  
+			{
 			// Update the page title manually since there's no metadata to do it.
-			this.UpdatePageTitle();  
+			this.UpdatePageTitle();
 
 			// Reset back to the default state.
 			NDMenu.GoToFileHashPath("");
@@ -289,15 +289,15 @@ var NDFramePage = new function ()
 			if (!NDCore.IsIE())
 				{
 				this.hashChangePoller.Start = function ()
-					{  
-					this.Poll();  
+					{
+					this.Poll();
 					};
 
 				this.hashChangePoller.Stop = function ()
 					{
 					if (this.timeoutID != undefined)
-						{  
-						clearTimeout(this.timeoutID);  
+						{
+						clearTimeout(this.timeoutID);
 						this.timeoutID = undefined;
 						}
 					};
@@ -305,9 +305,9 @@ var NDFramePage = new function ()
 				this.hashChangePoller.Poll = function ()
 					{
 					if (!NDCore.SameHash(location.hash, this.lastHash))
-						{  
+						{
 						this.lastHash = location.hash;
-						NDFramePage.OnHashChange();  
+						NDFramePage.OnHashChange();
 						}
 
 					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
@@ -324,7 +324,7 @@ var NDFramePage = new function ()
 					// Create a hidden iframe for history handling.
 					var iframeElement = document.createElement("iframe");
 
-					// Attempt to make it as hidden as possible by using techniques from 
+					// Attempt to make it as hidden as possible by using techniques from
 					// http://www.paciellogroup.com/blog/?p=604
 					iframeElement.title = "empty";
 					iframeElement.tabindex = -1;
@@ -335,21 +335,21 @@ var NDFramePage = new function ()
 
 					this.firstRun = true;
 
-					iframeElement.attachEvent("onload", 
-						function () 
+					iframeElement.attachEvent("onload",
+						function ()
 							{
 							if (NDFramePage.hashChangePoller.firstRun)
 								{
 								NDFramePage.hashChangePoller.firstRun = false;
-								NDFramePage.hashChangePoller.SetHistory(location.hash);  
+								NDFramePage.hashChangePoller.SetHistory(location.hash);
 
 								NDFramePage.hashChangePoller.Poll();
 								}
 							}
 						);
 
-					// jQuery HashChange Event does some stuff I'm not 100% clear on to "append iframe after 
-					// the end of the body to prevent unnecessary initial page scrolling (yes, this works)."  Bah, 
+					// jQuery HashChange Event does some stuff I'm not 100% clear on to "append iframe after
+					// the end of the body to prevent unnecessary initial page scrolling (yes, this works)."  Bah,
 					// screw it, let's just go with straightforward.
 					document.body.appendChild(iframeElement);
 
@@ -359,11 +359,11 @@ var NDFramePage = new function ()
 					// prettify the back/next history menu entries.  Since IE sometimes
 					// errors with "Unspecified error" the very first time this is set
 					// (yes, very useful) wrap this with a try/catch block.
-					document.onpropertychange = function () 
+					document.onpropertychange = function ()
 						{
-						if (event.propertyName == "title") 
-							{  
-							try 
+						if (event.propertyName == "title")
+							{
+							try
 								{  NDFramePage.hashChangePoller.iframe.document.title = document.title;  }
 							catch(e)
 								{  }
@@ -372,7 +372,7 @@ var NDFramePage = new function ()
 					};
 
 				// No Stop method since an IE6/7 iframe was created.  Even
-				// without an event handler the polling loop would still be necessary 
+				// without an event handler the polling loop would still be necessary
 				// for back/next to work at all!
 				this.hashChangePoller.Stop = function () { };
 
@@ -387,7 +387,7 @@ var NDFramePage = new function ()
 						{
 						this.lastHash = location.hash;
 						this.SetHistory(hash, historyHash);
-						NDFramePage.OnHashChange();  
+						NDFramePage.OnHashChange();
 						}
 
 					// If historyHash changed, which covers back and forward buttons

@@ -14,7 +14,7 @@
 
 		`HeaderBackgroundColor = #7070C0
 		`MenuBackgroundColor = #E0E0E0
-		`SummaryBackgroundColor = #FFFFF0
+		`SummaryBackgroundColor = #F8F8F8
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
@@ -23,7 +23,6 @@
 		`ProjectTitleFontFamily = "Palatino Linotype", Palatino, Georgia, serif
 		`ProjectSubTitleFontFamily = Georgia, serif
 		`MenuFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
-		`SummaryFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
 		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`CodeFontFamily = Consolas, "Courier New", monospace
@@ -35,7 +34,7 @@
 
 /* Needed to allow full height gradients on the home page. */
 html {
-	height: 100%; 
+	height: 100%;
 	}
 
 body.NDIndexPage {
@@ -52,14 +51,14 @@ a:hover, a:active {
 
 table {
 	margin: 0;
-	padding: 0; 
-	border: 0 none; 
+	padding: 0;
+	border: 0 none;
 	border-spacing: 0;
 	}
 td {
 	margin: 0;
-	padding: 0; 
-	border: 0 none; 
+	padding: 0;
+	border: 0 none;
 	border-spacing: 0;
 	vertical-align: top;
 	}
@@ -184,8 +183,8 @@ td {
 
 #NDSummary {
 	background-color: `SummaryBackgroundColor;
-	border-right: 1px solid #E4E4B0;
-	border-left: 1px solid #C0C0C0;
+	border-right: 1px solid #E8E8E8;
+	border-left: 1px solid #D8D8D8;
 	position: fixed;
 	z-index: 3;
 	overflow: auto;
@@ -204,53 +203,43 @@ td {
 
 	.SEntry {
 		display: block;
-		font: 10pt `SummaryFontFamily;
-		padding: .1ex 1.5ex .1ex 3.5ex;
+		font: 10pt `ParagraphFontFamily;
+		padding: 0 1.5ex 0 3.5ex;
 		}
 	.SEntry.first { margin-top: 1ex; }
 	.SEntry.last { margin-bottom: 2ex; }
 
 	.SEntry {
-		color: #707058;
-		}
-	.SEntry.TClass,
-	.SEntry.TInterface {
-		color: #606060;
-		}
-	.SEntry.TGroup {
-		color: #606060;
-		}
-	a.SEntry:hover,
-	a.SEntry:active {
-		background-color: #F6F6DA;
-		}
-	.SEntry .qualifier {
-		font-weight: normal;
+		color: #808080;
 		}
 
 	.SEntry.TClass,
 	.SEntry.TInterface {
-		font-size: 11pt;
-		font-weight: bold;
+		font: bold 11pt `HeadingFontFamily;
+		color: #727272;
 		padding-left: 1.25ex;
 		padding-top: .75ex;
 		padding-bottom: .75ex;
 		margin: 2.5ex 0 .5ex 0;
 		line-height: 120%;
-		border-bottom: 1px solid #969696;
+		border-bottom: 1px solid #D4D4D4;
 		}
 		.SEntry.TClass.first,
 		.SEntry.TInterface.first {
 			border-top: 0 none;
 			margin-top: 0;
 			}
+		.SEntry .qualifier {
+			font-weight: normal;
+			}
 
 	.SEntry.TGroup {
-		font-weight: bold;
+		font: bold 10pt `HeadingFontFamily;
+		color: #727272;
 		padding-left: 1.5ex;
-		padding-top: .5ex;
-		padding-bottom: .5ex;
-		margin: 2.5ex 0 0 0;
+		padding-top: .25ex;
+		padding-bottom: .25ex;
+		margin: 1.25ex 0 0 0;
 		line-height: 120%;
 		}
 		.SEntry.TClass + .SEntry.TGroup,
@@ -258,11 +247,19 @@ td {
 			margin-top: .75ex;
 			}
 
+	a.SEntry:hover,
+	a.SEntry:active {
+		background-color: #ECECEC;
+		}
+
+
+
 
 
 /* Content
 	___________________________________________________________________________
 */
+
 
 #NDContent {
 	position: fixed;
@@ -361,7 +358,7 @@ body.NDContentPage {
 			padding: 0 2ex .5em 0;
 			min-width: 18%;
 
-			/* This makes the first line of the entry's Trebuchet line up with the first line of the definition's Tahoma 
+			/* This makes the first line of the entry's Trebuchet line up with the first line of the definition's Tahoma
 				pretty well in all font sizes. */
 			line-height: 123%;
 			}
@@ -411,7 +408,7 @@ body.NDContentPage {
 		white-space: nowrap;
 		}
 
-	/* Only long form can wrap.  Otherwise the JS to convert between the two 
+	/* Only long form can wrap.  Otherwise the JS to convert between the two
 		won't be able to measure the short form correctly. */
 	.NDPrototype.LongForm td.PBeforeParameters,
 	.NDPrototype.LongForm td.PAfterParameters,
@@ -472,7 +469,7 @@ body.NDContentPage {
 		text-align: right;
 		}
 
-	
+
 
 
 
@@ -485,44 +482,53 @@ body.NDContentPage {
 .TConstructor .NDPrototype,
 .TDestructor .NDPrototype,
 .TOperator .NDPrototype {
-	background-color: #F2F2F2; 
-	border-color: #D8D8D8; 
+	background-color: #F2F2F2;
+	border-color: #D8D8D8;
 	}
 
 .TProperty .NDPrototype {
-	background-color: #F0F0FE; 
+	background-color: #F0F0FE;
 	border-color: #CBCBD8 ;
 	}
-
-	.SEntry.TProperty {
-		color: #7070A8;
+	.TProperty.SEntry {
+		color: #8888D8;
 		}
 
 .TVariable .NDPrototype {
-	background-color: #FAFAE0; 
+	background-color: #FAFAE0;
 	border-color: #DFDFB8;
 	}
-
-	.SEntry.TVariable {
-		color: #909050;
+	.TVariable.SEntry {
+		color: #A0A030;
 		}
 
 .TConstant .NDPrototype {
-	background-color: #D8D8D8; 
+	background-color: #D8D8D8;
 	border-color: #B0B0B0;
 	}
+	.TConstant.SEntry {
+		color: #505050;
+		}
 
 .TType .NDPrototype,
 .TEnumeration .NDPrototype,
 .TDelegate .NDPrototype {
-	background-color: #FAEED8; 
+	background-color: #FAEED8;
 	border-color: #E0CCA4;
 	}
+	.TType.SEntry,
+	.TEnumeration.SEntry,
+	.TDelegate.SEntry {
+		color: #B89470;
+		}
 
 .TEvent .NDPrototype {
-	background-color: #E8F8E8; 
+	background-color: #E8F8E8;
 	border-color: #C0DCC0;
 	}
+	.TEvent.SEntry {
+		color: #70A470;
+		}
 
 
 
