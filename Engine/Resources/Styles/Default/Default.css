@@ -13,13 +13,8 @@
 	Substitutions:
 
 		`HeaderBackgroundColor = #7070C0
-
 		`MenuBackgroundColor = #E0E0E0
-
 		`SummaryBackgroundColor = #FFFFF0
-		`SummaryRightBorderColor = #E4E4B0
-		`SummaryLeftBorderColor = #C0C0C0
-		`SummaryHoverBackgroundColor = #F6F6DA
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
@@ -186,10 +181,11 @@ td {
 	___________________________________________________________________________
 */
 
+
 #NDSummary {
 	background-color: `SummaryBackgroundColor;
-	border-right: 1px solid `SummaryRightBorderColor;
-	border-left: 1px solid `SummaryLeftBorderColor;
+	border-right: 1px solid #E4E4B0;
+	border-left: 1px solid #C0C0C0;
 	position: fixed;
 	z-index: 3;
 	overflow: auto;
@@ -209,28 +205,24 @@ td {
 	.SEntry {
 		display: block;
 		font: 10pt `SummaryFontFamily;
-		padding: .15ex 1.5ex .15ex 3.5ex;
+		padding: .1ex 1.5ex .1ex 3.5ex;
 		}
 	.SEntry.first { margin-top: 1ex; }
 	.SEntry.last { margin-bottom: 2ex; }
 
-	.SEntry,
-	a.SEntry {
+	.SEntry {
 		color: #707058;
 		}
 	.SEntry.TClass,
-	a.SEntry.TClass,
-	.SEntry.TInterface,
-	a.SEntry.TInterface {
-		color: #585840;
+	.SEntry.TInterface {
+		color: #606060;
 		}
-	.SEntry.TGroup,
-	a.SEntry.TGroup {
-		color: #646450;
+	.SEntry.TGroup {
+		color: #606060;
 		}
 	a.SEntry:hover,
 	a.SEntry:active {
-		background-color: `SummaryHoverBackgroundColor;
+		background-color: #F6F6DA;
 		}
 	.SEntry .qualifier {
 		font-weight: normal;
@@ -243,22 +235,28 @@ td {
 		padding-left: 1.25ex;
 		padding-top: .75ex;
 		padding-bottom: .75ex;
-		margin: 1.5ex 0 .5ex 0;
+		margin: 2.5ex 0 .5ex 0;
 		line-height: 120%;
-		border-bottom: 1px solid `SummaryRightBorderColor;
+		border-bottom: 1px solid #969696;
 		}
-	.SEntry.TClass.first,
-	.SEntry.TInterface.first {
-		margin-top: 0;
-		}
+		.SEntry.TClass.first,
+		.SEntry.TInterface.first {
+			border-top: 0 none;
+			margin-top: 0;
+			}
+
 	.SEntry.TGroup {
 		font-weight: bold;
-		padding-left: 1.75ex;
+		padding-left: 1.5ex;
 		padding-top: .5ex;
 		padding-bottom: .5ex;
-		margin: 1ex 0 0 0;
+		margin: 2.5ex 0 0 0;
 		line-height: 120%;
 		}
+		.SEntry.TClass + .SEntry.TGroup,
+		.SEntry.TInterface + .SEntry.TGroup {
+			margin-top: .75ex;
+			}
 
 
 
@@ -398,32 +396,6 @@ body.NDContentPage {
 	___________________________________________________________________________
 */
 
-	/*  Colors  */
-
-	.TFunction .NDPrototype,
-	.TConstructor .NDPrototype,
-	.TDestructor .NDPrototype,
-	.TOperator .NDPrototype {
-		background-color: #F2F2F2; border-color: #D8D8D8 }
-
-	.TProperty .NDPrototype {
-		background-color: #F0F0FE; border-color: #CBCBD8 }
-
-	.TVariable .NDPrototype {
-		background-color: #FAFAE0; border-color: #DFDFB8 }
-
-	.TConstant .NDPrototype {
-		background-color: #D8D8D8; border-color: #B0B0B0 }
-
-	.TType .NDPrototype,
-	.TEnumeration .NDPrototype,
-	.TDelegate .NDPrototype {
-		background-color: #FAEED8; border-color: #E0CCA4;
-		}
-
-	.TEvent .NDPrototype {
-		background-color: #E8F8E8; border-color: #C0DCC0 }
-
 
 	/*  Sizing and Spacing  */
 
@@ -499,13 +471,65 @@ body.NDContentPage {
 	.CStyle .PNamePrefix {
 		text-align: right;
 		}
+
 	
+
+
+
+/* Prototype and Summary Colors
+	___________________________________________________________________________
+*/
+
+
+.TFunction .NDPrototype,
+.TConstructor .NDPrototype,
+.TDestructor .NDPrototype,
+.TOperator .NDPrototype {
+	background-color: #F2F2F2; 
+	border-color: #D8D8D8; 
+	}
+
+.TProperty .NDPrototype {
+	background-color: #F0F0FE; 
+	border-color: #CBCBD8 ;
+	}
+
+	.SEntry.TProperty {
+		color: #7070A8;
+		}
+
+.TVariable .NDPrototype {
+	background-color: #FAFAE0; 
+	border-color: #DFDFB8;
+	}
+
+	.SEntry.TVariable {
+		color: #909050;
+		}
+
+.TConstant .NDPrototype {
+	background-color: #D8D8D8; 
+	border-color: #B0B0B0;
+	}
+
+.TType .NDPrototype,
+.TEnumeration .NDPrototype,
+.TDelegate .NDPrototype {
+	background-color: #FAEED8; 
+	border-color: #E0CCA4;
+	}
+
+.TEvent .NDPrototype {
+	background-color: #E8F8E8; 
+	border-color: #C0DCC0;
+	}
+
 
 
 
 
 /* Syntax Highlighting
-	___________________________________________________
+	___________________________________________________________________________
 */
 
 .SHComment {
