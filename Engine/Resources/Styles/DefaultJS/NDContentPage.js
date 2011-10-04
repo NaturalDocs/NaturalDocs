@@ -43,7 +43,7 @@ var NDContentPage = new function ()
 		this.CalculateShortFormPrototypeWidths();
 		this.ReformatPrototypes();
 
-		window.onresize = this.OnResize;
+		window.onresize = function () {  NDContentPage.OnResize();  }
 		};
 
 
@@ -51,13 +51,11 @@ var NDContentPage = new function ()
 	*/
 	this.OnResize = function ()
 		{
-		// Called by browser so you can't rely on "this".
-
 		// Limit reformatting to avoid unnecessary CPU usage.  Some pages may have a lot of prototypes.  However, don't reset
 		// the timeout on each event because otherwise we have to wait until the user completely stops dragging.
-		if (NDContentPage.reformatPrototypesTimeout == undefined)
+		if (this.reformatPrototypesTimeout == undefined)
 			{
-			NDContentPage.reformatPrototypesTimeout = setTimeout("NDContentPage.ReformatPrototypes()", 200);
+			this.reformatPrototypesTimeout = setTimeout("NDContentPage.ReformatPrototypes()", 200);
 			}
 		};
 

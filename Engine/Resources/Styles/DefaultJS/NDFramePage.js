@@ -82,9 +82,10 @@ var NDFramePage = new function ()
 		this.topmostPanel = `FilePanel;
 		this.summaryPanelIsExpanded = true;
 
-		// OnResize will position all the page elements for the first time.
-		this.OnResize();
-		window.onresize = this.OnResize;
+		this.DecodeHash();
+
+		this.UpdateLayout();
+		window.onresize = function () {  NDFramePage.OnResize();  };
 
 		// Start the navigation objects.  It's okay that the hash variables aren't filled in yet.  They do not read them
 		// directly from this class but get them from functions like GoToFileHashPath().
@@ -95,40 +96,6 @@ var NDFramePage = new function ()
 		// objects to the proper location.
 		this.OnHashChange();
 		this.AddHashChangeHandler();
-		};
-
-
-	/* Function: OnResize
-	*/
-	this.OnResize = function ()
-		{
-		var width = NDCore.WindowClientWidth();
-		var height = NDCore.WindowClientHeight();
-
-		var header = document.getElementById("NDHeader");
-		var footer = document.getElementById("NDFooter");
-		var menu = document.getElementById("NDMenu");
-		var summary = document.getElementById("NDSummary");
-		var content = document.getElementById("NDContent");
-		var messages = document.getElementById("NDMessages");
-
-		NDCore.SetToAbsolutePosition(header, 0, 0, width, undefined);
-		NDCore.SetToAbsolutePosition(footer, 0, undefined, width, undefined);
-
-		var headerHeight = header.offsetHeight;
-		var footerHeight = footer.offsetHeight;
-
-		// We needed separate calls to set the footer's Y position and width since wrapping may change its height.
-		NDCore.SetToAbsolutePosition(footer, undefined, height - footerHeight, undefined, undefined);
-
-		var menuWidth = menu.offsetWidth;
-		var summaryWidth = Math.floor(menuWidth * 1.1);
-
-		NDCore.SetToAbsolutePosition(menu, 0, headerHeight, menuWidth, height - headerHeight - footerHeight);
-		NDCore.SetToAbsolutePosition(summary, menuWidth, headerHeight, summaryWidth, height - headerHeight - footerHeight);
-		NDCore.SetToAbsolutePosition(content, menuWidth + summaryWidth, headerHeight, width - menuWidth - summaryWidth, height - headerHeight - footerHeight);
-
-		NDCore.SetToAbsolutePosition(messages, menuWidth, 0, width - menuWidth, undefined);
 		};
 
 
@@ -211,7 +178,13 @@ var NDFramePage = new function ()
 	*/
 	this.OnHashChange = function ()
 		{
+		var oldHashType = this.hashType;
+
 		this.DecodeHash();
+
+		// Moving to or away from home affects the summary panel's visibility so we may need to update the layout.
+		if (this.hashType != oldHashType)
+			{  this.UpdateLayout();  }
 
 		// Set the content page
 		var frame = document.getElementById("CFrame");
@@ -307,7 +280,7 @@ var NDFramePage = new function ()
 					if (!NDCore.SameHash(location.hash, this.lastHash))
 						{
 						this.lastHash = location.hash;
-						NDFramePage.OnHashChange();
+						this.OnHashChange();
 						}
 
 					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
@@ -429,6 +402,99 @@ var NDFramePage = new function ()
 
 
 
+	// Group: Layout Functions
+	// ________________________________________________________________________
+
+
+	/* Function: OnResize
+	*/
+	this.OnResize = function ()
+		{
+		this.UpdateLayout();
+		};
+
+
+	/* Function: UpdateLayout
+		Positions all elements on the page.
+	*/
+	this.UpdateLayout = function ()
+		{
+		var fullWidth = NDCore.WindowClientWidth();
+		var fullHeight = NDCore.WindowClientHeight();
+
+		var header = document.getElementById("NDHeader");
+		var footer = document.getElementById("NDFooter");
+		var menu = document.getElementById("NDMenu");
+		var summary = document.getElementById("NDSummary");
+		var content = document.getElementById("NDContent");
+		var messages = document.getElementById("NDMessages");
+
+		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
+		NDCore.SetToAbsolutePosition(footer, 0, undefined, fullWidth, undefined);
+
+		var headerHeight = header.offsetHeight;
+		var footerHeight = footer.offsetHeight;
+
+		// We needed separate calls to set the footer's Y position and width since wrapping may change its height.
+		NDCore.SetToAbsolutePosition(footer, undefined, fullHeight - footerHeight, undefined, undefined);
+
+		var remainingHeight = fullHeight - headerHeight - footerHeight;
+		var remainingWidth = fullWidth;
+		var currentX = 0;
+
+		// The order of operations below is very important.  Block has to be set before checking the offset width or it
+		// might return zero.  It also has to be set before setting the position or Firefox will sometimes not show
+		// scrollbars on the summary panel when navigating back and forth between the home page where it's hidden
+		// and regular pages where it's not.
+
+		if (this.MenuIsVisible())
+			{
+			menu.style.display = "block";
+			NDCore.SetToAbsolutePosition(menu, currentX, headerHeight, undefined, remainingHeight);
+
+			currentX += menu.offsetWidth;
+			remainingWidth -= menu.offsetWidth;
+			}
+		else
+			{
+			menu.style.display = "none";
+			}
+
+		if (this.SummaryIsVisible())
+			{
+			summary.style.display = "block";
+			NDCore.SetToAbsolutePosition(summary, currentX, headerHeight, undefined, remainingHeight);
+
+			currentX += summary.offsetWidth;
+			remainingWidth -= summary.offsetWidth;
+			}
+		else
+			{
+			summary.style.display = "none";
+			}
+
+		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
+		NDCore.SetToAbsolutePosition(messages, currentX, 0, remainingWidth, undefined);
+		};
+
+
+	/* Function: MenuIsVisible
+	*/
+	this.MenuIsVisible = function ()
+		{
+		return true;
+		};
+
+
+	/* Function: SummaryIsVisible
+	*/
+	this.SummaryIsVisible = function ()
+		{
+		return (this.hashType != `HomeHash && (this.summaryPanelIsExpanded || this.topmostPanel == `SummaryPanel));
+		};
+
+
+
 	// Group: Variables
 	// ________________________________________________________________________
 
@@ -441,7 +507,8 @@ var NDFramePage = new function ()
 	*/
 
 
-	// Group: Panel Variables
+
+	// Group: Layout Variables
 	// ________________________________________________________________________
 
 	/* var: topmostPanel
@@ -461,6 +528,7 @@ var NDFramePage = new function ()
 	/* var: summaryPanelIsExpanded
 		Whether the summary panel is side by side with the other two instead of collapsed into a tab.
 	*/
+
 
 
 	// Group: Hash Variables
