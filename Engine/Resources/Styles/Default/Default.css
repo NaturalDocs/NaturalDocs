@@ -30,6 +30,19 @@
 		`TextLinkColor = #880000
 		`TextLinkActiveColor = #F04040
 
+	Z-Indexes:
+
+		NDMessages - 9999
+
+		NDMenuSizer/NDSummarySizer - 101
+		NDContentCover - 100
+
+		NDHeader - 5
+		NDFooter - 4
+		NDMenu - 3
+		NDSummary - 2
+		NDContent - 1
+
 */
 
 /* Needed to allow full height gradients on the home page. */
@@ -186,7 +199,7 @@ td {
 	border-right: 1px solid #E8E8E8;
 	border-left: 1px solid #D8D8D8;
 	position: fixed;
-	z-index: 3;
+	z-index: 2;
 	overflow: auto;
 	width: 30ex;
 	}
@@ -252,6 +265,40 @@ td {
 		background-color: #ECECEC;
 		}
 
+
+
+
+
+/* Sizers
+	___________________________________________________________________________
+*/
+
+#NDMenuSizer,
+#NDSummarySizer {
+	position: fixed;
+	cursor: e-resize;
+	width: .8ex;
+	z-index: 101;
+	}
+
+#NDMenuSizer:hover,
+#NDMenuSizer.Dragging,
+#NDSummarySizer:hover,
+#NDSummarySizer.Dragging {
+	background-color: #EAEAEA;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #989898;
+	}
+
+#NDContentCover {
+	position: fixed;
+	z-index: 100;
+
+	/* Background image is required.  If it's set to "transparent" or isn't specified IE will send some events
+		through to what's being covered.  Even though the image is transparent and doesn't repeat the entire
+		div is still treated as opaque.  */
+	background: url("images/transparent.gif") no-repeat;
+	}
 
 
 
@@ -710,7 +757,7 @@ body.NDHomePage {
 #NDMessages {
 	background-color: `MessageBackgroundColor;
 	position: fixed;
-	z-index: 99;
+	z-index: 9999;
 	overflow: auto;
 	max-height: 33%;
 	display: none;

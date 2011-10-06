@@ -61,12 +61,11 @@ var NDFramePage = new function ()
 
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 
-			document.getElementById("NDHeader").style.position = "absolute";
-			document.getElementById("NDFooter").style.position = "absolute";
-			document.getElementById("NDMenu").style.position = "absolute";
-			document.getElementById("NDSummary").style.position = "absolute";
-			document.getElementById("NDContent").style.position = "absolute";
-			document.getElementById("NDMessages").style.position = "absolute";
+			var elements = [ "NDHeader", "NDFooter", "NDMenu", "NDMenuSizer", "NDSummary", "NDSummarySizer",
+									 "NDContent", "NDMessages" ];
+
+			for (var i = 0; i < elements.length; i++)
+				{  document.getElementById(elements[i]).style.position = "absolute";  }
 			}
 
 		if (ieVersion !== undefined)
@@ -78,6 +77,8 @@ var NDFramePage = new function ()
 
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 			}
+
+		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
 
 		this.topmostPanel = `FilePanel;
 		this.summaryPanelIsExpanded = true;
@@ -425,7 +426,9 @@ var NDFramePage = new function ()
 		var header = document.getElementById("NDHeader");
 		var footer = document.getElementById("NDFooter");
 		var menu = document.getElementById("NDMenu");
+		var menuSizer = document.getElementById("NDMenuSizer");
 		var summary = document.getElementById("NDSummary");
+		var summarySizer = document.getElementById("NDSummarySizer");
 		var content = document.getElementById("NDContent");
 		var messages = document.getElementById("NDMessages");
 
@@ -454,10 +457,14 @@ var NDFramePage = new function ()
 
 			currentX += menu.offsetWidth;
 			remainingWidth -= menu.offsetWidth;
+
+			menuSizer.style.display = "block";
+			NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
 			}
 		else
 			{
 			menu.style.display = "none";
+			menuSizer.style.display = "none";
 			}
 
 		if (this.SummaryIsVisible())
@@ -467,10 +474,14 @@ var NDFramePage = new function ()
 
 			currentX += summary.offsetWidth;
 			remainingWidth -= summary.offsetWidth;
+
+			summarySizer.style.display = "block";
+			NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
 			}
 		else
 			{
 			summary.style.display = "none";
+			summarySizer.style.display = "none";
 			}
 
 		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
@@ -491,6 +502,108 @@ var NDFramePage = new function ()
 	this.SummaryIsVisible = function ()
 		{
 		return (this.hashType != `HomeHash && (this.summaryPanelIsExpanded || this.topmostPanel == `SummaryPanel));
+		};
+
+
+	/* Function: OnMouseDown
+	*/
+	this.OnMouseDown = function (event)
+		{
+		if (event == undefined)
+			{  event = window.event;  }
+
+		var target = event.target || event.srcElement;
+
+		if (target.id == "NDMenuSizer" || target.id == "NDSummarySizer")
+			{
+			var element;
+
+			if (target.id == "NDMenuSizer")
+				{  element = document.getElementById("NDMenu");  }
+			else
+				{  element = document.getElementById("NDSummary");  }
+
+			this.sizerDragging =
+				{
+				"sizer": target,
+				"element": element,
+				"originalSizerX": target.offsetLeft,
+				"originalElementWidth": element.offsetWidth,
+				"originalClientX": event.clientX
+				};
+
+			NDCore.AddClass(target, "Dragging");
+
+			document.onmousemove = function (e) {  return NDFramePage.OnSizerMouseMove(e);  };
+			document.onmouseup = function (e) {  return NDFramePage.OnSizerMouseUp(e);  };
+			document.onselectstart = function () {  return false;  };  // Helps IE
+
+			// We need a div to cover the content iframe or else if you drag too fast over it IE will send some of the messages
+			// to the iframe instead.  The z-index is set in CSS to be between the sizers and everything else.
+			var contentCover = document.createElement("div");
+			contentCover.id = "NDContentCover";
+
+			// Must be appended before calling SetToAbsolutePosition or it won't position properly.
+			document.body.appendChild(contentCover);
+
+			NDCore.SetToAbsolutePosition(contentCover, 0, 0, NDCore.WindowClientWidth(), NDCore.WindowClientHeight());
+
+			return false;
+			}
+		else
+			{  return true;  }
+		};
+
+
+	/* Function: OnSizerMouseMove
+	*/
+	this.OnSizerMouseMove = function (event)
+		{
+		if (event == undefined)
+			{  event = window.event;  }
+
+		var offset = event.clientX - this.sizerDragging.originalClientX;
+		var windowClientWidth = NDCore.WindowClientWidth();
+
+		// Sanity checks
+		if (this.sizerDragging.sizer.id == "NDMenuSizer")
+			{
+			if (this.sizerDragging.originalSizerX + offset < 0)
+				{  offset = 0 - this.sizerDragging.originalSizerX;  }
+			else if (this.sizerDragging.originalSizerX + offset + this.sizerDragging.sizer.offsetWidth > windowClientWidth)
+				{  offset = windowClientWidth - this.sizerDragging.sizer.offsetWidth - this.sizerDragging.originalSizerX;  }
+			}
+		else // "NDSummarySizer"
+			{
+			var menuSizer = document.getElementById("NDMenuSizer");
+			var leftLimit = menuSizer.offsetLeft + menuSizer.offsetWidth;
+
+			if (this.sizerDragging.originalSizerX + offset < leftLimit)
+				{  offset = leftLimit - this.sizerDragging.originalSizerX;  }
+			else if (this.sizerDragging.originalSizerX + offset + this.sizerDragging.sizer.offsetWidth > windowClientWidth)
+				{  offset = windowClientWidth - this.sizerDragging.sizer.offsetWidth - this.sizerDragging.originalSizerX;  }
+			}
+
+		NDCore.SetToAbsolutePosition(this.sizerDragging.sizer, this.sizerDragging.originalSizerX + offset, undefined, undefined, undefined);
+		NDCore.SetToAbsolutePosition(this.sizerDragging.element, undefined, undefined, this.sizerDragging.originalElementWidth + offset, undefined);
+
+		this.UpdateLayout();
+		};
+
+
+	/* Function: OnSizerMouseUp
+	*/
+	this.OnSizerMouseUp = function (event)
+		{
+		// Doesn't work if you use undefined.  Must be null.
+		document.onmousemove = null;
+		document.onmouseup = null;
+		document.onselectstart = null;
+
+		document.body.removeChild(document.getElementById("NDContentCover"));
+
+		NDCore.RemoveClass(this.sizerDragging.sizer, "Dragging");
+		this.sizerDragging = undefined;
 		};
 
 
@@ -527,6 +640,17 @@ var NDFramePage = new function ()
 
 	/* var: summaryPanelIsExpanded
 		Whether the summary panel is side by side with the other two instead of collapsed into a tab.
+	*/
+
+	/* var: sizerDragging
+
+		If we're currently dragging a sizer, this will be an object with these members:
+
+		sizer - The sizer DOM element.
+		element - The DOM element the sizer is stretching.
+		originalSizerX - The sizer's original X position.
+		originalElementWidth - The element's original width.
+		originalClientX - The mouse's original X position.
 	*/
 
 

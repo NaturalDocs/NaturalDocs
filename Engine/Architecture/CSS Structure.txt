@@ -27,8 +27,13 @@ _______________________________________________________________________________
 			<#HSubTitle>...</#HSubTitle>
 		</#NDHeader>
 
-		<#NDMenu>
-		</#NDMenu>
+		<#NDMenu>...</#NDMenu>
+
+		<#NDMenuSizer Dragging?>...</#NDMenuSizer>
+
+		<#NDSummary>...</#NDSummary>
+
+		<#NDSummarySizer Dragging?>...</#NDSummarySizer>
 
 		<#NDContent>
 			<iframe #CFrame></iframe>
