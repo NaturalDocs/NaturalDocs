@@ -611,6 +611,7 @@ body.NDContentPage {
 	border-width: 1px 2px 2px 1px;;
 	border-color: `ToolTipBorderColor;
 	padding: 1ex;
+	overflow: hidden;
 
 	/* Firefox doesn't support plain border-radius until 4. */
 	/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
@@ -629,6 +630,7 @@ body.NDContentPage {
 
 	.NDToolTip .NDPrototype {
 		margin: 0;
+		overflow: hidden;
 		}
 
 	.TTSummary {

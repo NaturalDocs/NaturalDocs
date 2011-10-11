@@ -37,15 +37,15 @@ var NDCore = new function ()
 		of results it has to sift through.  However, you must remember that it's a hint and not a filter -- you can't rely on the results 
 		only being elements of that tag type because it won't apply when using the native DOM function.
 	*/
-	this.GetElementsByClassName = function (className, tagHint)
+	this.GetElementsByClassName = function (baseElement, className, tagHint)
 		{
-		if (document.getElementsByClassName)
-			{  return document.getElementsByClassName(className);  }
+		if (baseElement.getElementsByClassName)
+			{  return baseElement.getElementsByClassName(className);  }
 		
 		if (!tagHint)
 			{  tagHint = "*";  }
 
-		var tagArray = document.getElementsByTagName(tagHint);
+		var tagArray = baseElement.getElementsByTagName(tagHint);
 		var matchArray = new Array();
 
 		var tagIndex = 0;
@@ -355,6 +355,65 @@ var NDCore = new function ()
 
 		if (ieVersion >= 6 && ieVersion <= 8)  // 7 covers IE8 in IE7 compatibility mode
 			{  this.AddClass(document.body, "IE" + ieVersion);  }
+		};
+
+
+
+	// Group: Prototype Functions
+	// ________________________________________________________________________
+
+
+	/* Function: ChangePrototypeToLongForm
+		Changes the passed NDPrototype element to use the long form.  The prototype *must* be in the short form.
+	*/
+	this.ChangePrototypeToLongForm = function (prototype)
+		{
+		var newPrototype = document.createElement("div");
+		newPrototype.id = prototype.id;
+		newPrototype.className = prototype.className;
+
+		this.RemoveClass(newPrototype, "ShortForm");
+		this.AddClass(newPrototype, "LongForm");
+
+		var table = prototype.firstChild;
+		var newTable = document.createElement("table");
+		newPrototype.appendChild(newTable);
+
+		var newRow = newTable.insertRow(-1);
+		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
+
+		newRow = newTable.insertRow(-1);
+		newRow.appendChild(table.rows[0].cells[1].cloneNode(true));
+
+		newRow = newTable.insertRow(-1);
+		newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
+
+		prototype.parentNode.replaceChild(newPrototype, prototype);
+		};
+
+	
+	/* Function: ChangePrototypeToShortForm
+		Changes the passed NDPrototype element to use the short form.  The prototype *must* be in the long form.
+	*/
+	this.ChangePrototypeToShortForm = function (prototype)
+		{
+		var newPrototype = document.createElement("div");
+		newPrototype.id = prototype.id;
+		newPrototype.className = prototype.className;
+
+		this.RemoveClass(newPrototype, "LongForm");
+		this.AddClass(newPrototype, "ShortForm");
+
+		var table = prototype.firstChild;
+		var newTable = document.createElement("table");
+		newPrototype.appendChild(newTable);
+
+		var newRow = newTable.insertRow(-1);
+		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
+		newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
+		newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
+
+		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
 
 	};

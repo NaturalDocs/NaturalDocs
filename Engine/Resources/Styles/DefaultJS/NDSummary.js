@@ -31,6 +31,10 @@
 			`Entry_NameHTML = 3
 			`Entry_Symbol = 4
 
+		Other
+
+			`ToolTipDelay = 350
+
 */
 
 "use strict";
@@ -52,6 +56,12 @@ var NDSummary = new function ()
 	this.Start = function ()
 		{
 		this.UpdateSummary();
+
+		this.toolTipHolder = document.createElement("div");
+		this.toolTipHolder.style.display = "none";
+		this.toolTipHolder.style.position = "fixed";
+		this.toolTipHolder.style.zIndex = 21;  // documented in default.css
+		document.body.appendChild(this.toolTipHolder);
 		};
 
 
@@ -70,7 +80,7 @@ var NDSummary = new function ()
 		if (loader)
 			{  head.removeChild(loader);  }
 
-		loader = document.getElementById("NDSummaryTooltipsLoader");
+		loader = document.getElementById("NDSummaryToolTipsLoader");
 
 		if (loader)
 			{  head.removeChild(loader);  }
@@ -81,7 +91,7 @@ var NDSummary = new function ()
 		this.summaryLanguages = undefined;
 		this.summaryTopicTypes = undefined;
 		this.summaryEntries = undefined;
-		this.summaryTooltips = undefined;
+		this.summaryToolTips = undefined;
 
 
 		// Create a new summary loader.  We don't load the tooltips until the summary is complete to
@@ -114,22 +124,22 @@ var NDSummary = new function ()
 			var head = document.getElementsByTagName("head")[0];
 
 			var script = document.createElement("script");
-			script.src = NDCore.FileHashPathToSummaryTooltipsPath(hashPath);
+			script.src = NDCore.FileHashPathToSummaryToolTipsPath(hashPath);
 			script.type = "text/javascript";
-			script.id = "NDSummaryTooltipsLoader";
+			script.id = "NDSummaryToolTipsLoader";
 
 			head.appendChild(script);
 			}
 		};
 
 
-	/* Function: OnSummaryTooltipsLoaded
+	/* Function: OnSummaryToolTipsLoaded
 	*/
-	this.OnSummaryTooltipsLoaded = function (hashPath, summaryTooltips)
+	this.OnSummaryToolTipsLoaded = function (hashPath, summaryToolTips)
 		{
 		if (hashPath == NDFramePage.hashPath)
 			{  
-			this.summaryTooltips = summaryTooltips;
+			this.summaryToolTips = summaryToolTips;
 			}
 		};
 
@@ -149,6 +159,9 @@ var NDSummary = new function ()
 			}
 		else
 			{
+			var mouseOverHandler = function (e) {  NDSummary.OnEntryMouseOver(e);  };
+			var mouseOutHandler = function (e) {  NDSummary.OnEntryMouseOut(e);  };
+
 			for (var i = 0; i < this.summaryEntries.length; i++)
 				{
 				var entry = this.summaryEntries[i];
@@ -160,9 +173,12 @@ var NDSummary = new function ()
 					(i == 0 ? " first" : "") +
 					(i == this.summaryEntries.length - 1 ? " last" : "");
 
+				entryHTML.id = "SEntry" + entry[`Entry_TopicID];
 				entryHTML.className = classString;
 				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(\"" + entry[`Entry_Symbol] + "\")");
 				entryHTML.innerHTML = entry[`Entry_NameHTML];
+				entryHTML.onmouseover = mouseOverHandler;
+				entryHTML.onmouseout = mouseOutHandler;
 
 				newContent.appendChild(entryHTML);
 				}
@@ -187,6 +203,139 @@ var NDSummary = new function ()
 		};
 
 
+	/* Function: OnEntryMouseOver
+	*/
+	this.OnEntryMouseOver = function (event)
+		{
+		if (event == undefined)
+			{  event = window.event;  }
+
+		var entry = event.target || event.srcElement;
+		var id = this.GetTopicIDFromDOMID(entry.id);
+
+		if (this.showingToolTip != id)
+			{  
+			this.ResetToolTip();		
+	
+			if (this.summaryToolTips == undefined)
+				{
+				this.showingToolTip = id;
+				// OnSummaryToolTipsLoaded() will handle it.
+				}
+			else if (this.summaryToolTips[id] != undefined)
+				{
+				this.showingToolTip = id;
+				this.toolTipTimeout = setTimeout(function ()
+					{
+					clearTimeout(this.toolTipTimeout);
+					this.toolTipTimeout = undefined;
+
+					NDSummary.ShowToolTip(); 
+					}, `ToolTipDelay);
+				}
+			}
+		};
+	
+
+	/* Function: OnEntryMouseOut
+	*/
+	this.OnEntryMouseOut = function (event)
+		{
+		if (event == undefined)
+			{  event = window.event;  }
+
+		var entry = event.target || event.srcElement;
+		var id = this.GetTopicIDFromDOMID(entry.id);
+
+		if (this.showingToolTip == id)
+			{  this.ResetToolTip();  }
+		};
+
+
+	/* Function: GetTopicIDFromDOMID
+		Extracts the topic ID from the DOM ID, such as SEntry123, and returns it as a number.  Returns -1 if it 
+		couldn't find it.
+	*/
+	this.GetTopicIDFromDOMID = function (domID)
+		{
+		// Extract from "SEntry123".
+		var id = parseInt(domID.substr(6), 10);
+
+		if (id != NaN && id > 0)
+			{  return id;  }
+		else
+			{  return -1;  }
+		};
+
+
+	/* Function: ShowToolTip
+		Displays the tooltip specified in <showingToolTip>.  Assumes <summaryToolTips> is loaded and an entry already
+		exists for <showingToolTip>.
+	*/
+	this.ShowToolTip = function ()
+		{
+		var entry = document.getElementById("SEntry" + this.showingToolTip);
+
+		this.toolTipHolder.innerHTML = this.summaryToolTips[this.showingToolTip];
+		this.toolTipHolder.style.display = "block";
+
+		// The entry's offsets are relative to the summary block, so we have to add them in.
+		var summaryBlock = document.getElementById("NDSummary");
+
+		var x = summaryBlock.offsetLeft + entry.offsetLeft + entry.offsetWidth;
+		var y = summaryBlock.offsetTop + entry.offsetTop - summaryBlock.scrollTop;
+		var newWidth = undefined;
+		var maxWidth = NDCore.WindowClientWidth() - x;
+
+		if (this.toolTipHolder.offsetWidth > maxWidth)
+			{  newWidth = maxWidth;  }
+		// Otherwise leave undefined which will make SetToAbsolutePosition() leave it alone.
+
+		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
+
+		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
+		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "ShortForm") &&
+			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
+			{
+			NDCore.ChangePrototypeToLongForm(prototypes[0]);
+			}
+
+		// Make sure the bottom doesn't go off the visible page.  We do this in a separate step because
+		// setting the width may have changed the height due to wrapping.
+		if (y + this.toolTipHolder.offsetHeight > NDCore.WindowClientHeight())
+			{
+			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight;
+
+			if (newY < 0)
+				{  newY = 0;  }
+
+			NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
+			}
+		};
+
+
+	/* Function: ResetToolTip
+	*/
+	this.ResetToolTip = function ()
+		{
+		if (this.showingToolTip != undefined)
+			{
+			this.toolTipHolder.style.display = "none";
+
+			// Reset the width.  It may have been set to make sure the tooltip fits entirely inside the window.
+			// We want to allow it to get bigger if the window has more room again.
+			this.toolTipHolder.style.width = null;
+
+			this.showingToolTip = undefined;
+			}
+		if (this.toolTipTimeout != undefined)
+			{
+			clearTimeout(this.toolTipTimeout);
+			this.toolTipTimeout = undefined;
+			}
+		};
+	
+
 
 	// Group: Variables
 	// ________________________________________________________________________
@@ -194,17 +343,27 @@ var NDSummary = new function ()
 
 	/* var: summaryLanguages
 	*/
-		// this.summaryLanguages = undefined;
 
 	/* var: summaryTopicTypes
 	*/
-		// this.summaryTopicTypes = undefined;
 
 	/* var: summaryEntries
 	*/
-		// this.summaryEntries = undefined;
 
-	/* var: summaryTooltips
+	/* var: summaryToolTips
+		A hash mapping topic IDs to the complete HTML of the tooltip.
 	*/
-		// this.summaryTooltips = undefined;
+
+	/* var: showingToolTip
+		The topic ID of the tooltip being displayed, or undefined if none.
+	*/
+
+	/* var: toolTipHolder
+		The DOM element which contains the tooltip.  If none is being shown it will exist but be set to 
+		display: none.
+	*/
+
+	/* var: toolTipTimeout
+		The timeout used to display the tooltip.
+	*/
 	};

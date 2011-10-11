@@ -88,7 +88,7 @@ var NDContentPage = new function ()
 	*/
 	this.CalculateShortFormPrototypeWidths = function ()
 		{
-		var prototypes = NDCore.GetElementsByClassName("NDPrototype", "div");
+		var prototypes = NDCore.GetElementsByClassName(document, "NDPrototype", "div");
 
 		for (var i = 0; i < prototypes.length; i++)
 			{
@@ -111,7 +111,7 @@ var NDContentPage = new function ()
 	*/
 	this.ReformatPrototypes = function ()
 		{
-		var prototypes = NDCore.GetElementsByClassName("NDPrototype", "div");
+		var prototypes = NDCore.GetElementsByClassName(document, "NDPrototype", "div");
 
 		for (var i = 0; i < prototypes.length; i++)
 			{
@@ -135,9 +135,9 @@ var NDContentPage = new function ()
 			availableWidth--;
 
 			if (availableWidth >= shortFormWidth && NDCore.HasClass(prototypes[i], "LongForm"))
-				{  this.ChangePrototypeToShortForm(prototypes[i]);  }
+				{  NDCore.ChangePrototypeToShortForm(prototypes[i]);  }
 			else if (availableWidth < shortFormWidth && NDCore.HasClass(prototypes[i], "ShortForm"))
-				{  this.ChangePrototypeToLongForm(prototypes[i]);  }
+				{  NDCore.ChangePrototypeToLongForm(prototypes[i]);  }
 			}
 
 		if (this.reformatPrototypesTimeout != undefined)
@@ -145,60 +145,6 @@ var NDContentPage = new function ()
 			clearTimeout(this.reformatPrototypesTimeout);
 			this.reformatPrototypesTimeout = undefined;
 			}
-		};
-
-
-	/* Function: ChangePrototypeToLongForm
-		Changes the passed NDPrototype element to use the long form.  The prototype *must* be in the short form.
-	*/
-	this.ChangePrototypeToLongForm = function (prototype)
-		{
-		var newPrototype = document.createElement("div");
-		newPrototype.id = prototype.id;
-		newPrototype.className = prototype.className;
-
-		NDCore.RemoveClass(newPrototype, "ShortForm");
-		NDCore.AddClass(newPrototype, "LongForm");
-
-		var table = prototype.firstChild;
-		var newTable = document.createElement("table");
-		newPrototype.appendChild(newTable);
-
-		var newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
-
-		newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[1].cloneNode(true));
-
-		newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
-
-		prototype.parentNode.replaceChild(newPrototype, prototype);
-		};
-
-	
-	/* Function: ChangePrototypeToShortForm
-		Changes the passed NDPrototype element to use the short form.  The prototype *must* be in the long form.
-	*/
-	this.ChangePrototypeToShortForm = function (prototype)
-		{
-		var newPrototype = document.createElement("div");
-		newPrototype.id = prototype.id;
-		newPrototype.className = prototype.className;
-
-		NDCore.RemoveClass(newPrototype, "LongForm");
-		NDCore.AddClass(newPrototype, "ShortForm");
-
-		var table = prototype.firstChild;
-		var newTable = document.createElement("table");
-		newPrototype.appendChild(newTable);
-
-		var newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
-		newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
-		newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
-
-		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
 
 
