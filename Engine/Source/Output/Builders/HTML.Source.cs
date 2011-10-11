@@ -49,7 +49,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					
 					DeleteOutputFileIfExists(Source_OutputFile(fileID));
 					DeleteOutputFileIfExists(Source_SummaryFile(fileID));
-					DeleteOutputFileIfExists(Source_SummaryTooltipsFile(fileID));
+					DeleteOutputFileIfExists(Source_SummaryToolTipsFile(fileID));
 
 					lock (writeLock)
 						{
@@ -87,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					BuildFile(outputPath, title, html.ToString(), PageType.Content);
 
 					HTMLSummary summaryBuilder = new HTMLSummary(this);
-					summaryBuilder.Build(topics, title, Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryTooltipsFile(fileID));
+					summaryBuilder.Build(topics, title, Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryToolTipsFile(fileID));
 
 					lock (writeLock)
 						{
@@ -452,10 +452,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: Source_SummaryTooltipsFileNameOnly
+		/* Function: Source_SummaryToolTipsFileNameOnly
 		 * Returns the summary tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public static Path Source_SummaryTooltipsFileNameOnly (Path filename)
+		public static Path Source_SummaryToolTipsFileNameOnly (Path filename)
 			{
 			string nameString = filename.NameWithoutPath.ToString();
 
@@ -463,7 +463,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			nameString = nameString.Replace('.', '-');
 			
 			nameString = SanitizePathString(nameString);
-			return nameString + "-SummaryTooltips.js";
+			return nameString + "-SummaryToolTips.js";
 			}
 
 
@@ -535,11 +535,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: Source_SummaryTooltipsFile
+		/* Function: Source_SummaryToolTipsFile
 		 * Returns the summary tooltips file path of the passed source file ID, or null if none.  It may be null if the <FileSource> 
 		 * that created it no longer exists.
 		 */
-		public Path Source_SummaryTooltipsFile (int fileID)
+		public Path Source_SummaryToolTipsFile (int fileID)
 			{
 			Files.File file = Engine.Instance.Files.FromID(fileID);
 			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
@@ -550,7 +550,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			Path relativePath = fileSource.MakeRelative(file.FileName);
 
 			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
-						 Source_SummaryTooltipsFileNameOnly(relativePath.NameWithoutPath);
+						 Source_SummaryToolTipsFileNameOnly(relativePath.NameWithoutPath);
 			}
 
 

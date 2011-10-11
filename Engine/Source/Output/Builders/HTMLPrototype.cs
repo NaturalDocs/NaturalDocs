@@ -409,8 +409,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
 				{  html.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
-			else
+			else if (addLinks)
 				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html, true);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, html);  }
 
 			if (type == ColumnType.TypeNameSeparator ||
 				 type == ColumnType.DefaultValueSeparator)
@@ -512,7 +514,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			TokenIterator start, end;
 			parsedPrototype.GetCompletePrototype(out start, out end);
 
-			htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
+			if (addLinks)
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
 
 			htmlOutput.Append("</div>");
 			}
@@ -529,7 +534,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetBeforeParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PBeforeParameters\">");
-				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
+
+			if (addLinks)
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+
 			htmlOutput.Append("</td>");
 
 			htmlOutput.Append("<td class=\"PParametersParentCell\">");
@@ -539,7 +549,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PAfterParameters\">");
-				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
+
+			if (addLinks)
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+
 			htmlOutput.Append("</td>");
 
 			htmlOutput.Append("</tr></table></div>");
@@ -557,7 +572,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetBeforeParameters(out start, out end);
 
 			htmlOutput.Append("<tr><td class=\"PBeforeParameters\">");
-				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
+
+			if (addLinks)
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+
 			htmlOutput.Append("</td></tr>");
 
 			htmlOutput.Append("<tr><td class=\"PParametersParentCell\">");
@@ -567,7 +587,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<tr><td class=\"PAfterParameters\">");
-				htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);
+
+			if (addLinks)
+				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+			else
+				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+
 			htmlOutput.Append("</td></tr>");
 
 			htmlOutput.Append("</table></div>");

@@ -173,10 +173,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = language.SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
-			html.Append("<div class=\"CToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
+			html.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
 
 				if (topic.Prototype != null)
-					{  htmlPrototypeBuilder.Build(topic, true, html);  }
+					{  htmlPrototypeBuilder.Build(topic, false, html);  }
 
 				if (topic.Summary != null)
 					{  BuildSummary();  }
@@ -409,7 +409,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSummary ()
 			{
-			html.Append("<div class=\"CSummary\">");
+			html.Append("<div class=\"TTSummary\">");
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Summary);
 

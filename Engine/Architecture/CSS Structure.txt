@@ -290,13 +290,13 @@ _______________________________________________________________________________
 
 (start text)
 
-	<CToolTip T[Type] L[Language]>
+	<NDToolTip T[Type] L[Language]>
 
 		<NDPrototype>...</NDPrototype>
 
-		<CSummary>Paragraph text</CSummary>
+		<TTSummary>Paragraph text</TTSummary>
 
-	</CToolTip>
+	</NDToolTip>
 
 (end)
 

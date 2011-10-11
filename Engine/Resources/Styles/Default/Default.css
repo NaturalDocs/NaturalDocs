@@ -16,6 +16,9 @@
 		`MenuBackgroundColor = #E0E0E0
 		`SummaryBackgroundColor = #F8F8F8
 
+		`ToolTipBackgroundColor = #FFFFF0
+		`ToolTipBorderColor = #A0A000
+
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
 		`MessageTextColor = #787800
@@ -36,6 +39,9 @@
 
 		NDMenuSizer/NDSummarySizer - 101
 		NDContentCover - 100
+
+		SToolTipHolder - 21
+		CToolTipHolder - 20
 
 		NDHeader - 5
 		NDFooter - 4
@@ -193,7 +199,6 @@ td {
 	___________________________________________________________________________
 */
 
-
 #NDSummary {
 	background-color: `SummaryBackgroundColor;
 	border-right: 1px solid #E8E8E8;
@@ -306,7 +311,6 @@ td {
 /* Content
 	___________________________________________________________________________
 */
-
 
 #NDContent {
 	position: fixed;
@@ -440,7 +444,6 @@ body.NDContentPage {
 	___________________________________________________________________________
 */
 
-
 	/*  Sizing and Spacing  */
 
 	.NDPrototype {
@@ -524,7 +527,6 @@ body.NDContentPage {
 	___________________________________________________________________________
 */
 
-
 .TFunction .NDPrototype,
 .TConstructor .NDPrototype,
 .TDestructor .NDPrototype,
@@ -595,6 +597,48 @@ body.NDContentPage {
 .SHString {
 	color: #000088;
 	}
+
+
+
+
+/* Tool Tips
+	___________________________________________________________________________
+*/
+
+.NDToolTip {
+	background-color: `ToolTipBackgroundColor;
+	border-style: solid;
+	border-width: 1px 2px 2px 1px;;
+	border-color: `ToolTipBorderColor;
+	padding: 1ex;
+
+	/* Firefox doesn't support plain border-radius until 4. */
+	/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
+	/* Opera 11 supports plain border-radius. */
+/*	-moz-border-radius: 1ex;
+	-webkit-border-radius: 1ex;
+	border-radius: 1ex;
+*/
+	/* Firefox doesn't support plain box-shadow until 4. */
+	/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
+	/* Opera 11 supports plain box-shadow. */
+	-moz-box-shadow: 0 .75ex 1.5ex #383838;
+	-webkit-box-shadow: 0 .75ex 1.5ex #383838;
+	box-shadow: 0 .25ex .25ex #808080;
+	}
+
+	.NDToolTip .NDPrototype {
+		margin: 0;
+		}
+
+	.TTSummary {
+		font: 10pt `ParagraphFontFamily;
+		max-width: 75ex;
+		}
+
+	.NDPrototype + .TTSummary {
+		margin-top: .5em;
+		}
 
 
 

@@ -52,14 +52,14 @@
  *								 may be undefined if it's an auto-generated grouping.
  *				
  * 
- * File: SummaryTooltips.js
+ * File: SummaryToolTips.js
  * 
  *		Each source file that contains content will also have a summary tooltips file which uses the same path, only ending
- *		in -SummaryTooltips.js instead of .html.  This is separate from <Summary.js> so that it can load and the file summary
+ *		in -SummaryToolTips.js instead of .html.  This is separate from <Summary.js> so that it can load and the file summary
  *		can be rendered in the browser immediately.  The tooltips can get large so they're loaded in a separate file only after
  *		the summary has been rendered.
  *		
- *		When executed, this file calls <NDSummary.OnSummaryTooltipsLoaded()>.  The tooltips are an object mapping the
+ *		When executed, this file calls <NDSummary.OnSummaryToolTipsLoaded()>.  The tooltips are an object mapping the
  *		topic IDs to a HTML tooltip.
  */
 
@@ -104,7 +104,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Build
 		 * Builds the JavaScript metadata for the <Topic> and appends it to the passed StringBuilder.
 		 */
-		public void Build (IList<Topic> topics, string fileTitle, string fileHashPath, Path summaryPath, Path summaryTooltipsPath)
+		public void Build (IList<Topic> topics, string fileTitle, string fileHashPath, Path summaryPath, Path summaryToolTipsPath)
 			{
 			this.output = new StringBuilder();
 			this.fileTitle = fileTitle;
@@ -160,15 +160,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  summaryFile.Dispose();  }
 
 
-			// SummaryTooltips.js
+			// SummaryToolTips.js
 
 			output.Remove(0, output.Length);
 
 			output.Append(
-				"NDSummary.OnSummaryTooltipsLoaded(\"" + fileHashPath.StringEscape() + "\","
+				"NDSummary.OnSummaryToolTipsLoaded(\"" + fileHashPath.StringEscape() + "\","
 				);
 
-			BuildSummaryTooltips();
+			BuildSummaryToolTips();
 
 			#if DONT_SHRINK_FILES
 				output.AppendLine();
@@ -177,12 +177,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			output.Append(");");
 
-			System.IO.StreamWriter summaryTooltipsFile = htmlBuilder.CreateTextFileAndPath(summaryTooltipsPath);
+			System.IO.StreamWriter summaryToolTipsFile = htmlBuilder.CreateTextFileAndPath(summaryToolTipsPath);
 
 			try
-				{  summaryTooltipsFile.Write(output.ToString());  }
+				{  summaryToolTipsFile.Write(output.ToString());  }
 			finally
-				{  summaryTooltipsFile.Dispose();  }
+				{  summaryToolTipsFile.Dispose();  }
 			}
 
 
@@ -368,9 +368,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildSummaryTooltips
+		/* Function: BuildSummaryToolTips
 		 */
-		protected void BuildSummaryTooltips ()
+		protected void BuildSummaryToolTips ()
 			{
 			#if DONT_SHRINK_FILES
 				output.AppendLine();
@@ -383,9 +383,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				Topic topic = topics[topicIndex];
-				string tooltipHTML = htmlTopic.BuildToolTip(topic);
+				string toolTipHTML = htmlTopic.BuildToolTip(topic);
 
-				if (tooltipHTML != null)
+				if (toolTipHTML != null)
 					{
 					if (!first)
 						{
@@ -399,7 +399,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					output.Append(topic.TopicID);
 					output.Append(":\"");
-					output.StringEscapeAndAppend(tooltipHTML);
+					output.StringEscapeAndAppend(toolTipHTML);
 					output.Append('"');
 
 					first = false;
