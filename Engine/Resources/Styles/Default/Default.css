@@ -617,10 +617,9 @@ body.NDContentPage {
 	overflow: hidden;
 
 	/* Firefox doesn't support plain border-radius until 4. */
-	/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
+	/* Chrome supports plain border-radius since 8, and Safari since 5. */
 	/* Opera 11 supports plain border-radius. */
 	-moz-border-radius: 1ex;
-	-webkit-border-radius: 1ex;
 	border-radius: 1ex;
 
 	/* Firefox doesn't support plain box-shadow until 4. */
@@ -743,10 +742,9 @@ body.NDHomePage {
 		background-color: #FFFFFF;
 
 		/* Firefox doesn't support plain border-radius until 4. */
-		/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
+		/* Chrome supports plain border-radius since 8, and Safari since 5. */
 		/* Opera 11 supports plain border-radius. */
 		-moz-border-radius: 15ex;
-		-webkit-border-radius: 15ex;
 		border-radius: 15ex;
 
 		/* Firefox doesn't support plain box-shadow until 4. */
