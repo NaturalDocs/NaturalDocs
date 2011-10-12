@@ -76,6 +76,9 @@ var NDCore = new function ()
 	*/
 	this.HasClass = function (element, targetClassName)
 		{
+		if (element.className == undefined)
+			{  return false;  }
+
 		var index = element.className.indexOf(targetClassName);
 
 		if (index != -1)
@@ -95,6 +98,12 @@ var NDCore = new function ()
 	*/
 	this.AddClass = function (element, newClassName)
 		{
+		if (element.className == undefined)
+			{
+			element.className = newClassName;
+			return;
+			}
+
 		var index = element.className.indexOf(newClassName);
 
 		if (index != -1)
@@ -117,6 +126,9 @@ var NDCore = new function ()
 	*/
 	this.RemoveClass = function (element, targetClassName)
 		{
+		if (element.className == undefined)
+			{  return;  }
+
 		var index = element.className.indexOf(targetClassName);
 
 		while (index != -1)
