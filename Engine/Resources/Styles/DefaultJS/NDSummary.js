@@ -186,6 +186,16 @@ var NDSummary = new function ()
 				entryHTML.onmouseover = mouseOverHandler;
 				entryHTML.onmouseout = mouseOutHandler;
 
+				// Unfortunately, hovering over the qualifier span in the title counts as moving off the underlying entry.
+				// We need to add the event handlers to the qualifier as well.
+				var entryHTMLChild = entryHTML.firstChild;
+
+				if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "qualifier"))
+					{
+					entryHTMLChild.onmouseover = mouseOverHandler;
+					entryHTMLChild.onmouseout = mouseOutHandler;
+					}
+
 				newContent.appendChild(entryHTML);
 				}
 			}
@@ -221,27 +231,42 @@ var NDSummary = new function ()
 			{  event = window.event;  }
 
 		var entry = event.target || event.srcElement;
+
+		if (NDCore.HasClass(entry, "qualifier"))
+			{  entry = entry.parentNode;  }
+		
 		var id = this.GetTopicIDFromDOMID(entry.id);
 
 		if (this.showingToolTip != id)
 			{  
 			this.ResetToolTip();		
+			this.showingToolTip = id;
 	
 			if (this.summaryToolTips == undefined)
 				{
-				this.showingToolTip = id;
 				// OnSummaryToolTipsLoaded() will handle it.
 				}
 			else if (this.summaryToolTips[id] != undefined)
 				{
-				this.showingToolTip = id;
-				this.toolTipTimeout = setTimeout(function ()
+				// If we're going to display the same tooltip we previously did, skip the delay.  This prevents the
+				// tooltip from (visibly) flickering when moving between the qualifier of an entry and the rest of it.
+				if (id == this.lastToolTip)
 					{
-					clearTimeout(this.toolTipTimeout);
-					this.toolTipTimeout = undefined;
+					this.ShowToolTip();
+					}
 
-					NDSummary.ShowToolTip(); 
-					}, `ToolTipDelay);
+				// Otherwise only show the tooltip on a delay.  This prevents a lot of visual noise when moving the
+				// mouse quickly over a summary as tooltips don't pop in and out of existence for split seconds.
+				else
+					{
+					this.toolTipTimeout = setTimeout(function ()
+						{
+						clearTimeout(this.toolTipTimeout);
+						this.toolTipTimeout = undefined;
+
+						NDSummary.ShowToolTip(); 
+						}, `ToolTipDelay);
+					}
 				}
 			}
 		};
@@ -255,6 +280,10 @@ var NDSummary = new function ()
 			{  event = window.event;  }
 
 		var entry = event.target || event.srcElement;
+
+		if (NDCore.HasClass(entry, "qualifier"))
+			{  entry = entry.parentNode;  }
+
 		var id = this.GetTopicIDFromDOMID(entry.id);
 
 		if (this.showingToolTip == id)
@@ -336,8 +365,10 @@ var NDSummary = new function ()
 			// We want to allow it to get bigger if the window has more room again.
 			this.toolTipHolder.style.width = null;
 
+			this.lastToolTip = this.showingToolTip;
 			this.showingToolTip = undefined;
 			}
+
 		if (this.toolTipTimeout != undefined)
 			{
 			clearTimeout(this.toolTipTimeout);
@@ -366,6 +397,10 @@ var NDSummary = new function ()
 
 	/* var: showingToolTip
 		The topic ID of the tooltip being displayed, or undefined if none.
+	*/
+
+	/* var: lastToolTip
+		The topic ID of the tooltip that was last shown.  Only relevant when <showingToolTip> is undefined.
 	*/
 
 	/* var: toolTipHolder
