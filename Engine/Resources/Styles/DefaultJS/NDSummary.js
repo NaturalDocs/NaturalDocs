@@ -199,6 +199,10 @@ var NDSummary = new function ()
 	*/
 	this.GoToAnchor = function (anchor)
 		{
+		// First kill the tool tip.  If it was open and they clicked the entry, obviously they want the whole topic
+		// and the tool tip is just in the way now.
+		this.ResetToolTip();
+
 		var frame = document.getElementById("CFrame");
 
 		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
