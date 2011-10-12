@@ -55,17 +55,22 @@ var NDFramePage = new function ()
 
 		var ieVersion = NDCore.IEVersion();
 
+		// IE 6 doesn't like fixed positioning the way other browsers do.
 		if (ieVersion == 6)
 			{
-			// IE 6 doesn't like fixed positioning the way other browsers do.
-
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 
-			var elements = [ "NDHeader", "NDFooter", "NDMenu", "NDMenuSizer", "NDSummary", "NDSummarySizer",
-									 "NDContent", "NDMessages" ];
+			var elements = [ "NDHeader", "NDFooter", "NDMenu", "NDSummary", "NDContent", "NDMessages" ];
 
 			for (var i = 0; i < elements.length; i++)
 				{  document.getElementById(elements[i]).style.position = "absolute";  }
+			}
+
+		// Resizing is flaky on IE prior to 8
+		if (ieVersion < 8)
+			{
+			document.getElementById("NDMenuSizer").style.display = "none";
+			document.getElementById("NDSummarySizer").style.display = "none";
 			}
 
 		if (ieVersion !== undefined)
@@ -420,6 +425,9 @@ var NDFramePage = new function ()
 	*/
 	this.UpdateLayout = function ()
 		{
+		var ieVersion = NDCore.IEVersion();
+		var useSizers = (ieVersion == undefined || ieVersion >= 8);
+
 		var fullWidth = NDCore.WindowClientWidth();
 		var fullHeight = NDCore.WindowClientHeight();
 
@@ -458,8 +466,11 @@ var NDFramePage = new function ()
 			currentX += menu.offsetWidth;
 			remainingWidth -= menu.offsetWidth;
 
-			menuSizer.style.display = "block";
-			NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
+			if (useSizers)
+				{
+				menuSizer.style.display = "block";
+				NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
+				}
 			}
 		else
 			{
@@ -475,8 +486,11 @@ var NDFramePage = new function ()
 			currentX += summary.offsetWidth;
 			remainingWidth -= summary.offsetWidth;
 
-			summarySizer.style.display = "block";
-			NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
+			if (useSizers)
+				{
+				summarySizer.style.display = "block";
+				NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
+				}
 			}
 		else
 			{

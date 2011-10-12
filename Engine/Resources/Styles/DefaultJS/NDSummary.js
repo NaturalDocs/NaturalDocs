@@ -57,9 +57,15 @@ var NDSummary = new function ()
 		{
 		this.UpdateSummary();
 
+		var ieVersion = NDCore.IEVersion();
+
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
+
+		if (ieVersion != undefined && ieVersion == 6)
+			{  this.toolTipHolder.style.position = "absolute";  }
+
 		this.toolTipHolder.style.zIndex = 21;  // documented in default.css
 		document.body.appendChild(this.toolTipHolder);
 		};

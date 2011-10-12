@@ -15,9 +15,7 @@
 		`HeaderBackgroundColor = #7070C0
 		`MenuBackgroundColor = #E0E0E0
 		`SummaryBackgroundColor = #F8F8F8
-
 		`ToolTipBackgroundColor = #FFFFF0
-		`ToolTipBorderColor = #A0A000
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
@@ -230,6 +228,11 @@ td {
 	.SEntry {
 		color: #808080;
 		}
+		
+		/* IE6 doesn't understand .X.Y selectors so the colors get screwed up.  Force them to the default. */
+		.IE6 .SEntry {
+			color: #808080 !important;
+			}
 
 	.SEntry.TClass,
 	.SEntry.TInterface {
@@ -608,24 +611,24 @@ body.NDContentPage {
 .NDToolTip {
 	background-color: `ToolTipBackgroundColor;
 	border-style: solid;
-	border-width: 1px 2px 2px 1px;;
-	border-color: `ToolTipBorderColor;
+	border-width: 1px;
+	border-color: #A0A000 #606000 #606000 #A0A000;
 	padding: 1ex;
 	overflow: hidden;
 
 	/* Firefox doesn't support plain border-radius until 4. */
 	/* Chrome supports plain border-radius since 8, but Safari doesn't until 5. */
 	/* Opera 11 supports plain border-radius. */
-/*	-moz-border-radius: 1ex;
+	-moz-border-radius: 1ex;
 	-webkit-border-radius: 1ex;
 	border-radius: 1ex;
-*/
+
 	/* Firefox doesn't support plain box-shadow until 4. */
 	/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
 	/* Opera 11 supports plain box-shadow. */
-	-moz-box-shadow: 0 .75ex 1.5ex #383838;
-	-webkit-box-shadow: 0 .75ex 1.5ex #383838;
-	box-shadow: 0 .25ex .25ex #808080;
+	-moz-box-shadow: .15ex .25ex .4ex #606060;
+	-webkit-box-shadow: .15ex .25ex .4ex #606060;
+	box-shadow: .15ex .25ex .4ex #606060;
 	}
 
 	.NDToolTip .NDPrototype {
