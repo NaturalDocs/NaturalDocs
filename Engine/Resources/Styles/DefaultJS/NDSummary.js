@@ -146,6 +146,10 @@ var NDSummary = new function ()
 		if (hashPath == NDFramePage.hashPath)
 			{  
 			this.summaryToolTips = summaryToolTips;
+
+			// The user may already be hovering over a summary entry by the time the tooltips are loaded.
+			if (this.showingToolTip != undefined)
+				{  this.ShowToolTip();  }
 			}
 		};
 
