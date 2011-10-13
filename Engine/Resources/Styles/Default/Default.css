@@ -102,8 +102,9 @@ td {
 		}
 	#HSubTitle {
 		font: 10pt `ProjectSubTitleFontFamily;
-		color: #B0B0B0;
+		color: #C8C8C8;
 		margin-left: .65em;
+		text-shadow: 0 .1ex .3ex #202020;
 		}
 
 
