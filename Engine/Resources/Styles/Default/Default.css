@@ -238,7 +238,11 @@ td {
 		}
 
 	.SEntry.TClass,
-	.SEntry.TInterface {
+	.SEntry.TInterface,
+	.SEntry.TStruct,
+	.SEntry.TSection,
+	.SEntry.TDatabase,
+	.SEntry.TDatabaseTable {
 		font: bold 11pt `HeadingFontFamily;
 		color: #727272;
 		padding-left: 1.25ex;
@@ -249,7 +253,11 @@ td {
 		border-bottom: 1px solid #D4D4D4;
 		}
 		.SEntry.TClass.first,
-		.SEntry.TInterface.first {
+		.SEntry.TInterface.first,
+		.SEntry.TStruct.first
+		.SEntry.TSection.first,
+		.SEntry.TDatabase.first,
+		.SEntry.TDatabaseTable.first {
 			border-top: 0 none;
 			margin-top: 0;
 			}
@@ -534,15 +542,11 @@ body.NDContentPage {
 */
 
 .TFunction .NDPrototype,
-.TConstructor .NDPrototype,
-.TDestructor .NDPrototype,
 .TOperator .NDPrototype {
 	background-color: #F2F2F2;
 	border-color: #D8D8D8;
 	}
 	.TFunction .SEntryIcon,
-	.TConstructor .SEntryIcon,
-	.TDestructor .SEntryIcon,
 	.TOperator .SEntryIcon {
 		border: 1px solid #C0C0C0;
 		background-color: #E4E4E4;
@@ -557,11 +561,13 @@ body.NDContentPage {
 		background-color: #DCDCFF;
 		}
 
-.TVariable .NDPrototype {
+.TVariable .NDPrototype,
+.TDatabaseField .NDPrototype {
 	background-color: #FAFAE0;
 	border-color: #DFDFB8;
 	}
-	.TVariable .SEntryIcon {
+	.TVariable .SEntryIcon,
+	.TDatabaseField .SEntryIcon {
 		border: 1px solid #C8C8A0;
 		background-color: #E8E8B8;
 		}
