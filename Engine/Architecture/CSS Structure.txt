@@ -104,6 +104,7 @@ _______________________________________________________________________________
 		<#SContent>
 
 			<SEntry T[TopicType] L[Language]>
+				<SEntryIcon></SEntryIcon>
 				Name
 			</SEntry>
 

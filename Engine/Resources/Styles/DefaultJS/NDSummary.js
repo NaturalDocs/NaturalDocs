@@ -45,7 +45,7 @@
 
 */
 var NDSummary = new function ()
-	{ 
+	{
 
 	// Group: Functions
 	// ________________________________________________________________________
@@ -117,12 +117,12 @@ var NDSummary = new function ()
 	this.OnSummaryLoaded = function (hashPath, summaryLanguages, summaryTopicTypes, summaryEntries)
 		{
 		if (hashPath == NDFramePage.hashPath)
-			{  
+			{
 			this.summaryLanguages = summaryLanguages;
 			this.summaryTopicTypes = summaryTopicTypes;
 			this.summaryEntries = summaryEntries;
 
-			this.UpdateSummary();  
+			this.UpdateSummary();
 
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
@@ -144,7 +144,7 @@ var NDSummary = new function ()
 	this.OnSummaryToolTipsLoaded = function (hashPath, summaryToolTips)
 		{
 		if (hashPath == NDFramePage.hashPath)
-			{  
+			{
 			this.summaryToolTips = summaryToolTips;
 
 			// The user may already be hovering over a summary entry by the time the tooltips are loaded.
@@ -162,7 +162,7 @@ var NDSummary = new function ()
 		newContent.id = "SContent";
 
 		if (this.summaryEntries == undefined)
-			{  
+			{
 			var loadingNotice = document.createElement("div");
 			loadingNotice.className = "SLoadingNotice";
 			newContent.appendChild(loadingNotice);
@@ -177,7 +177,7 @@ var NDSummary = new function ()
 				var entry = this.summaryEntries[i];
 				var entryHTML = document.createElement("a");
 
-				var classString = "SEntry" + 
+				var classString = "SEntry" +
 					" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
 					" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
 					(i == 0 ? " first" : "") +
@@ -186,7 +186,7 @@ var NDSummary = new function ()
 				entryHTML.id = "SEntry" + entry[`Entry_TopicID];
 				entryHTML.className = classString;
 				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(\"" + entry[`Entry_Symbol] + "\")");
-				entryHTML.innerHTML = entry[`Entry_NameHTML];
+				entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
 				entryHTML.onmouseover = mouseOverHandler;
 				entryHTML.onmouseout = mouseOutHandler;
 
@@ -238,14 +238,14 @@ var NDSummary = new function ()
 
 		if (NDCore.HasClass(entry, "qualifier"))
 			{  entry = entry.parentNode;  }
-		
+
 		var id = this.GetTopicIDFromDOMID(entry.id);
 
 		if (this.showingToolTip != id)
-			{  
-			this.ResetToolTip();		
+			{
+			this.ResetToolTip();
 			this.showingToolTip = id;
-	
+
 			if (this.summaryToolTips == undefined)
 				{
 				// OnSummaryToolTipsLoaded() will handle it.
@@ -268,13 +268,13 @@ var NDSummary = new function ()
 						clearTimeout(this.toolTipTimeout);
 						this.toolTipTimeout = undefined;
 
-						NDSummary.ShowToolTip(); 
+						NDSummary.ShowToolTip();
 						}, `ToolTipDelay);
 					}
 				}
 			}
 		};
-	
+
 
 	/* Function: OnEntryMouseOut
 	*/
@@ -296,7 +296,7 @@ var NDSummary = new function ()
 
 
 	/* Function: GetTopicIDFromDOMID
-		Extracts the topic ID from the DOM ID, such as SEntry123, and returns it as a number.  Returns -1 if it 
+		Extracts the topic ID from the DOM ID, such as SEntry123, and returns it as a number.  Returns -1 if it
 		couldn't find it.
 	*/
 	this.GetTopicIDFromDOMID = function (domID)
@@ -379,7 +379,7 @@ var NDSummary = new function ()
 			this.toolTipTimeout = undefined;
 			}
 		};
-	
+
 
 
 	// Group: Variables
@@ -408,7 +408,7 @@ var NDSummary = new function ()
 	*/
 
 	/* var: toolTipHolder
-		The DOM element which contains the tooltip.  If none is being shown it will exist but be set to 
+		The DOM element which contains the tooltip.  If none is being shown it will exist but be set to
 		display: none.
 	*/
 

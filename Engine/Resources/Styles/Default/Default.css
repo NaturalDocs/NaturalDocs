@@ -228,11 +228,14 @@ td {
 	.SEntry {
 		color: #808080;
 		}
-		
-		/* IE6 doesn't understand .X.Y selectors so the colors get screwed up.  Force them to the default. */
-		.IE6 .SEntry {
-			color: #808080 !important;
-			}
+
+	.SEntryIcon {
+		position: absolute;
+		left: 1.9ex;
+		width: .8ex;
+		height: .8em;
+		margin-top: 2px;
+		}
 
 	.SEntry.TClass,
 	.SEntry.TInterface {
@@ -537,29 +540,39 @@ body.NDContentPage {
 	background-color: #F2F2F2;
 	border-color: #D8D8D8;
 	}
+	.TFunction .SEntryIcon,
+	.TConstructor .SEntryIcon,
+	.TDestructor .SEntryIcon,
+	.TOperator .SEntryIcon {
+		border: 1px solid #C0C0C0;
+		background-color: #E4E4E4;
+		}
 
 .TProperty .NDPrototype {
 	background-color: #F0F0FE;
 	border-color: #CBCBD8 ;
 	}
-	.TProperty.SEntry {
-		color: #8888D8;
+	.TProperty .SEntryIcon {
+		border: 1px solid #B8B8E0;
+		background-color: #DCDCFF;
 		}
 
 .TVariable .NDPrototype {
 	background-color: #FAFAE0;
 	border-color: #DFDFB8;
 	}
-	.TVariable.SEntry {
-		color: #A0A030;
+	.TVariable .SEntryIcon {
+		border: 1px solid #C8C8A0;
+		background-color: #E8E8B8;
 		}
 
 .TConstant .NDPrototype {
 	background-color: #D8D8D8;
 	border-color: #B0B0B0;
 	}
-	.TConstant.SEntry {
-		color: #505050;
+	.TConstant .SEntryIcon {
+		border: 1px solid #A8A8A8;
+		background-color: #CCCCCC;
 		}
 
 .TType .NDPrototype,
@@ -568,18 +581,20 @@ body.NDContentPage {
 	background-color: #FAEED8;
 	border-color: #E0CCA4;
 	}
-	.TType.SEntry,
-	.TEnumeration.SEntry,
-	.TDelegate.SEntry {
-		color: #B89470;
+	.TType .SEntryIcon,
+	.TEnumeration .SEntryIcon,
+	.TDelegate .SEntryIcon {
+		border: 1px solid #D0C0A0;
+		background-color: #F0E0C0;
 		}
 
 .TEvent .NDPrototype {
 	background-color: #E8F8E8;
 	border-color: #C0DCC0;
 	}
-	.TEvent.SEntry {
-		color: #70A470;
+	.TEvent .SEntryIcon {
+		border: 1px solid #A8C4A8;
+		background-color: #D0E8D0;
 		}
 
 
