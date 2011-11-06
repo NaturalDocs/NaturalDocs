@@ -255,7 +255,7 @@ td {
 		}
 		.SEntry.TClass.first,
 		.SEntry.TInterface.first,
-		.SEntry.TStruct.first
+		.SEntry.TStruct.first,
 		.SEntry.TSection.first,
 		.SEntry.TDatabase.first,
 		.SEntry.TDatabaseTable.first {
@@ -559,7 +559,7 @@ body.NDContentPage {
 	}
 	.TProperty .SEntryIcon {
 		border: 1px solid #B8B8E0;
-		background-color: #DCDCFF;
+		background-color: #D6D6FF;
 		}
 
 .TVariable .NDPrototype,
