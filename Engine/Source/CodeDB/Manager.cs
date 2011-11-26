@@ -26,9 +26,9 @@
  * 
  *		Externally, this class is thread safe so long as each thread uses its own <Accessor>.
  *		
- *		For <Accessors>, all uses of the database connection must be managed by <DatabaseLock>.  <UsedTopicIDs> and
- *		<UsedEndingSymbolIDs> are only relevant when making changes to the database, so they are managed by
- *		<DatabaseLock> as well.
+ *		For the <Accessor> implementation, all uses of the database connection must be managed by <DatabaseLock>.  
+ *		<UsedTopicIDs> and <UsedEndingSymbolIDs> are only relevant when making changes to the database, so they are 
+ *		managed by <DatabaseLock> as well.
  *		
  *		The change watchers, on the other hand, have their own lock since they may be accessed independently.  You may 
  *		attempt to acquire the list with <LockChangeWatchers()> while holding <DatabaseLock>, but not vice versa.
