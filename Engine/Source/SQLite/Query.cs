@@ -108,7 +108,14 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 				else if (value is double)
 					{  result = API.BindDouble(statementHandle, index, (double)value);  }
 				else
-					{  result = API.BindText(statementHandle, index, value.ToString());  }
+					{  
+					string stringValue = value.ToString();
+
+					if (stringValue == null)
+						{  result = API.BindNull(statementHandle, index);  }
+					else
+						{  result = API.BindText(statementHandle, index, stringValue);  }
+					}
 					
 				if (result != API.Result.OK)
 					{  throw new Exceptions.UnexpectedResult("Could not bind value to statement", result);  }
