@@ -899,7 +899,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				string prototypeString = prototype.ToString();
 
-				if (prototypeString.IndexOf(topic.UndecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
+				string undecoratedTitle = topic.Title;
+				int trailingParenthesisIndex = Symbols.ParameterString.GetEndingParenthesisIndex(undecoratedTitle);
+
+				if (trailingParenthesisIndex != -1)
+					{  undecoratedTitle = undecoratedTitle.Substring(0, trailingParenthesisIndex).TrimEnd();  }
+
+				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
 					{  topic.Prototype = prototypeString;  }
 				}
 			}

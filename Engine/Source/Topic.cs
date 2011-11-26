@@ -47,7 +47,6 @@ namespace GregValure.NaturalDocs.Engine
 			tags = null;
 			
 			usesPluralKeyword = false;
-			undecoratedTitle = null;
 			}
 			
 			
@@ -58,7 +57,7 @@ namespace GregValure.NaturalDocs.Engine
 		 * 
 		 * <TopicID> and <EndingSymbolID> are not included in the comparison because it's assumed that you would be
 		 * comparing Topics from a parse, where they would not be set, to Topics from the database, where they would.
-		 * <UndecoratedTitle> and <UsesPluralKeyword> are also not compared because they are not database fields.
+		 * <UsesPluralKeyword> is also not compared because it is not a database field.
 		 */
 		public DatabaseCompareResult DatabaseCompare (Topic other)
 			{
@@ -340,33 +339,6 @@ namespace GregValure.NaturalDocs.Engine
 		// __________________________________________________________________________
 		
 					
-		/* Property: UndecoratedTitle
-		 * 
-		 * An alternate version of <Title> with any decorations that shouldn't be considered part of its <Symbol> removed.
-		 * For example, Natural Docs comment titles that end with parenthesis will have them stripped.  If this isn't set or is
-		 * null, reading this will return <Title>.
-		 * 
-		 * This isn't included in the database because this should already be reflected in <Symbol> by the time it gets there.
-		 */
-		public string UndecoratedTitle
-			{
-			get
-				{
-				if (undecoratedTitle == null)
-					{  return title;  }
-				else
-					{  return undecoratedTitle;  }
-				}
-			set
-				{
-				if (value == null || value == title)
-					{  undecoratedTitle = null;  }
-				else
-					{  undecoratedTitle = value;  }
-				}
-			}			
-
-
 		/* Property: UsesPluralKeyword
 		 * 
 		 * Whether the topic is a Natural Docs topic which uses the plural keyword form.
@@ -467,12 +439,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * A set of the tags applied to this topic.  May or may not be null if there are none.
 		 */
 		protected IDObjects.NumberSet tags;
-		
-		/* var: undecoratedTitle
-		 * This can be set to an alternate version of <Title> which has all decorations removed, such as trailing parethesis in 
-		 * Natural Docs comments.  Null otherwise.
-		 */
-		protected string undecoratedTitle;
 				
 		}
 	}

@@ -328,7 +328,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 *		- TopicTypeID, unless doesn't require header
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
-		 *		- UndecoratedTitle, if different
 		 *		- UsesPluralKeyword, unless doesn't require header
 		 */
 		public bool Parse (PossibleDocumentationComment comment, List<Topic> topics, bool requireHeader)
@@ -462,7 +461,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 *		- TopicTypeID
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
-		 *		- UndecoratedTitle, if different.
 		 *		- UsesPluralKeyword
 		 */
 		protected bool IsTopicLine (LineIterator lineIterator, out Topic topic)
@@ -616,25 +614,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{  
 				foreach (int tagID in tagIDs)
 					{  topic.AddTagID(tagID);  }
-				}
-				
-			// Strip parenthesis for undecorated title.
-			if (topic.Title[ topic.Title.Length - 1 ] == ')')
-				{
-				int openingParenIndex = topic.Title.LastIndexOf('(');
-				if (openingParenIndex != -1)
-					{
-					int endOfUndecorated = openingParenIndex - 1;
-					
-					while (endOfUndecorated >= 0 &&
-							 (topic.Title[endOfUndecorated] == ' ' || topic.Title[endOfUndecorated] == '\t') )
-						{  endOfUndecorated--;  }
-						
-					if (endOfUndecorated >= 0)
-						{
-						topic.UndecoratedTitle = topic.Title.Substring(0, endOfUndecorated + 1);
-						}
-					}
 				}
 				
 			return true;
