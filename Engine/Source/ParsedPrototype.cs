@@ -56,23 +56,11 @@ namespace GregValure.NaturalDocs.Engine
 		
 		
 		/* Constructor: ParsedPrototype
-		 * Creates a new parsed prototype from a <Tokenizer>.
+		 * Creates a new parsed prototype.
 		 */
 		public ParsedPrototype (Tokenizer prototype)
 			{
 			tokenizer = prototype;
-			sectionBounds = null;
-			style = null;
-			}
-
-
-		/* Constructor: ParsedPrototype
-		 * Creates a new parsed prototype from a text string.  If you already have the prototype in a <Tokenizer>, it is
-		 * more efficient to use the other constructor.
-		 */
-		public ParsedPrototype (string prototype)
-			{
-			tokenizer = new Tokenizer(prototype);
 			sectionBounds = null;
 			style = null;
 			}
