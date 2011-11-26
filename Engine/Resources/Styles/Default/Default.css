@@ -243,7 +243,8 @@ td {
 	.SEntry.TStruct,
 	.SEntry.TSection,
 	.SEntry.TDatabase,
-	.SEntry.TDatabaseTable {
+	.SEntry.TDatabaseTable,
+	.SEntry.TFile.first {
 		font: bold 11pt `HeadingFontFamily;
 		color: #727272;
 		padding-left: 1.25ex;
@@ -258,7 +259,8 @@ td {
 		.SEntry.TStruct.first,
 		.SEntry.TSection.first,
 		.SEntry.TDatabase.first,
-		.SEntry.TDatabaseTable.first {
+		.SEntry.TDatabaseTable.first,
+		.SEntry.TFile.first {
 			border-top: 0 none;
 			margin-top: 0;
 			}
@@ -366,9 +368,10 @@ body.NDContentPage {
 
 	.TClass .CTitle,
 	.TInterface .CTitle,
+	.TStruct .CTitle,
+	.TSection .CTitle,
 	.TDatabase .CTitle,
 	.TDatabaseTable .CTitle,
-	.TSection .CTitle,
 	.TFile.first .CTitle {
 		font-size: 20pt;
 		border-color: #A8A8A8;
