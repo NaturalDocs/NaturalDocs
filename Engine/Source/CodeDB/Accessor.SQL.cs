@@ -101,26 +101,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void AddTopic (Topic topic)
 			{
+			RequireZero("AddTopic", "TopicID", topic.TopicID);
+			RequireNonZero("AddTopic", "FileID", topic.FileID);
+			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
+			RequireNonZero("AddTopic", "CommentLineNumber", topic.CommentLineNumber);
+			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
+			RequireContent("AddTopic", "Title", topic.Title);
+			// Body
+			// Summary
+			// Prototype
+			RequireContent("AddTopic", "Symbol", topic.Symbol);
+			// Parameters
+			RequireZero("AddTopic", "EndingSymbolID", topic.EndingSymbolID);
+			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
+			// AccessLevel
+			// TagString
+			
 			RequireAtLeast(LockType.ReadWrite);
 
-			StartTopicValidation(topic, "AddTopic");
-				RequireZero("TopicID", topic.TopicID);
-				RequireNonZero("FileID", topic.FileID);
-				RequireNonZero("LanguageID", topic.LanguageID);
-				RequireNonZero("CommentLineNumber", topic.CommentLineNumber);
-				RequireNonZero("CodeLineNumber", topic.CodeLineNumber);
-				RequireContent("Title", topic.Title);
-				// Body
-				// Summary
-				// Prototype
-				RequireContent("Symbol", topic.Symbol);
-				// Parameters
-				RequireZero("EndingSymbolID", topic.EndingSymbolID);
-				RequireNonZero("TopicTypeID", topic.TopicTypeID);
-				// AccessLevel
-				// TagString
-			EndTopicValidation();
-			
 			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
 			EndingSymbol endingSymbol = topic.Symbol.EndingSymbol;
 			
@@ -239,25 +237,23 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void DeleteTopic (Topic topic)
 			{
-			RequireAtLeast(LockType.ReadWrite);
+			RequireNonZero("DeleteTopic", "TopicID", topic.TopicID);
+			// FileID
+			// LanguageID
+			// CommentLineNumber
+			// CodeLineNumber
+			// Title
+			// Body
+			// Summary
+			// Prototype
+			// Symbol
+			// Parameters
+			RequireNonZero("DeleteTopic", "EndingSymbolID", topic.EndingSymbolID);
+			// TopicTypeID
+			// AccessLevel
+			// TagString
 
-			StartTopicValidation(topic, "DeleteTopic");
-				RequireNonZero("TopicID", topic.TopicID);
-				// FileID
-				// LanguageID
-				// CommentLineNumber
-				// CodeLineNumber
-				// Title
-				// Body
-				// Summary
-				// Prototype
-				// Symbol
-				// Parameters
-				RequireNonZero("EndingSymbolID", topic.EndingSymbolID);
-				// TopicTypeID
-				// AccessLevel
-				// TagString
-			EndTopicValidation();
+			RequireAtLeast(LockType.ReadWrite);
 
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);

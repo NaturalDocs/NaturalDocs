@@ -76,9 +76,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			inTransaction = false;
-			
-			topicForValidation = null;
-			operationForValidation = null;
 			}
 			
 			
@@ -204,50 +201,31 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exceptions.LockMinimumNotMet(lockHeld, minimum);  }
 			}
 			
-		/* Function: StartTopicValidation
-		 * Starts validation for a <Topic> so that you can use functions like <RequireZero()>.
-		 */
-		protected void StartTopicValidation (Topic topic, string operationName)
-			{
-			topicForValidation = topic;
-			operationForValidation = operationName;
-			}
-			
-		/* Function: EndTopicValidation
-		 * Ends validation for a <Topic> started with <StartTopicValidation()>.
-		 */
-		protected void EndTopicValidation ()
-			{
-			topicForValidation = null;
-			operationForValidation = null;
-			}
-			
 		/* Function: RequireZero
-		 * Throws an exception if a <Topic's> field is not zero.  Must be used with <StartTopicValidation()> and <EndTopicValidation()>.
+		 * Throws an exception if a <Topic's> field is not zero.
 		 */
-		protected void RequireZero (string fieldName, int value)
+		protected void RequireZero (string operation, string fieldName, int value)
 			{
 			if (value != 0)
-				{  throw new Exceptions.TopicValueMustBeZero(operationForValidation, fieldName);  }
+				{  throw new Exceptions.TopicValueMustBeZero(operation, fieldName);  }
 			}
 			
 		/* Function: RequireNonZero
-		 * Throws an exception if a <Topic's> field is zero.  Must be used with <StartTopicValidation()> and <EndTopicValidation()>.
+		 * Throws an exception if a <Topic's> field is zero.
 		 */
-		protected void RequireNonZero (string fieldName, int value)
+		protected void RequireNonZero (string operation, string fieldName, int value)
 			{
 			if (value == 0)
-				{  throw new Exceptions.TopicValueMustBeNonZero(operationForValidation, fieldName);  }
+				{  throw new Exceptions.TopicValueMustBeNonZero(operation, fieldName);  }
 			}
 			
 		/* Function: RequireContent
-		 * Throws an exception if a <Topic's> field is null or an empty string.  Must be used with <StartTopicValidation()> and 
-		 * <EndTopicValidation()>.
+		 * Throws an exception if a <Topic's> field is null or an empty string.
 		 */
-		protected void RequireContent (string fieldName, string value)
+		protected void RequireContent (string operation, string fieldName, string value)
 			{
 			if (String.IsNullOrEmpty(value))
-				{  throw new Exceptions.TopicStringMustHaveContent(operationForValidation, fieldName);  }
+				{  throw new Exceptions.TopicStringMustHaveContent(operation, fieldName);  }
 			}			
 
 
@@ -291,15 +269,5 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected bool inTransaction;
 		
-		/* var: topicForValidation
-		 * The <Topic> being validated, or null if one isn't.
-		 */
-		protected Topic topicForValidation;
-		
-		/* var: operationForValidation
-		 * The name of the operation which something is being validated for, or null if nothing is.
-		 */
-		protected string operationForValidation;
-				
 		}
 	}
