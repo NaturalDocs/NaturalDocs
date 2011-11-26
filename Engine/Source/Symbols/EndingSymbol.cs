@@ -32,14 +32,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 			
-		/* Function: FromEndingSymbol
+		/* Function: FromExportedString
 		 * Creates an EndingSymbol from the passed string which originally came from another EndingSymbol object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving EndingSymbols
 		 * that were stored as plain text in a database or other data file.
 		 */
-		static public EndingSymbol FromEndingSymbol (string newEndingSymbol)
+		static public EndingSymbol FromExportedString (string exportedEndingSymbol)
 		   {
-		   EndingSymbol endingSymbol = new EndingSymbol(newEndingSymbol);
+		   EndingSymbol endingSymbol = new EndingSymbol(exportedEndingSymbol);
 		   return endingSymbol;
 		   }
 			

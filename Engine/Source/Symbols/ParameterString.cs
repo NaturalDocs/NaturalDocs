@@ -90,22 +90,22 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: FromParameterString
+		/* Function: FromExportedString
 		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving ParameterStrings
 		 * that were stored as plain text in a database or other data file.
 		 */
-		public static ParameterString FromParameterString (string parameterString)
+		public static ParameterString FromExportedString (string exportedParameterString)
 			{
-			return new ParameterString(parameterString);
+			return new ParameterString(exportedParameterString);
 			}
 
 
-		/* Function: FromPlainTextStrings
-		 * Creates a ParameterString from a list of individual plain text parameter strings.  The strings should be the type of each
+		/* Function: FromParameterTypes
+		 * Creates a ParameterString from a list of individual plain text parameter types.  The strings should be the type of each
 		 * parameter only and not include the name or default value.
 		 */
-		public static ParameterString FromPlainTextStrings (IList<string> parameterStrings)
+		public static ParameterString FromParameterTypes (IList<string> parameterStrings)
 			{
 			System.Text.StringBuilder output = new System.Text.StringBuilder();
 
@@ -121,18 +121,16 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: FromPlainTextString
-		 * Creates a ParameterString from a single plain text string, such as "(int, int)".  This is useful when this is the only way
-		 * to get a parameter string, such as when it appears in a topic title, but should not be relied on if avoidable, such as 
-		 * when generating them from a prototype.  In the case of prototypes it should be parsed into a <ParsedPrototype> and 
-		 * the parameter types fed into <FromPlainTextStrings()>.
+		/* Function: FromParenthesisString
+		 * Creates a ParameterString from a parenthesis string, such as "(int, int)".  You can extract them from a plain text string
+		 * with <GetEndingParenthesisIndex()>.
 		 */
-		public static ParameterString FromPlainTextString (string input)
+		public static ParameterString FromParenthesisString (string input)
 			{
 			input = input.Trim();
 
 			if (input.Length < 2 || input[0] != '(' || input[input.Length - 1] != ')')
-				{  throw new Exception("Plain text parameter strings must be surrounded by parethesis.");  }
+				{  throw new FormatException();  }
 
 			input = input.Substring(1, input.Length - 2);  // Strip surrounding parenthesis.
 			input = input.Trim();

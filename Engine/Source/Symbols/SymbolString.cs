@@ -48,10 +48,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * 
 		 * If the string ends in parenthesis they will be separated off from the string and returned in the parenthesis variable.  
 		 * They will not be part of the resulting SymbolString.  The string is still in its raw form so to become a <ParameterString> it
-		 * would need to be passed to <ParameterString.FromPlainText()>.  If there's no parenthesis the variable will be null.
+		 * would need to be passed to <ParameterString.FromParenthesisString()>.  If there's no parenthesis the variable will be null.
 		 * 
 		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
-		 * from another SymbolString object, use <FromSymbolString()>.
+		 * from another SymbolString object, use <FromExportedString()>.
 		 */
 		static public SymbolString FromPlainText (string textSymbol, out string parenthesis)
 			{
@@ -83,14 +83,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 			
-		/* Function: FromSymbolString
+		/* Function: FromExportedString
 		 * Creates a SymbolString from the passed string which originally came from another SymbolString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving SymbolStrings
 		 * that were stored as plain text in a database or other data file.  All other uses should call <FromPlainText()> instead.
 		 */
-		static public SymbolString FromSymbolString (string newSymbolString)
+		static public SymbolString FromExportedString (string exportedSymbolString)
 			{
-			SymbolString symbolString = new SymbolString(newSymbolString);
+			SymbolString symbolString = new SymbolString(exportedSymbolString);
 			return symbolString;
 			}
 			

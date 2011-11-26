@@ -989,7 +989,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// Parenthesis in the title takes precedence over the prototype.
 					if (parenthesis != null)
 						{  
-						topic.Parameters = ParameterString.FromPlainTextString(parenthesis);  
+						topic.Parameters = ParameterString.FromParenthesisString(parenthesis);  
 						}
 
 					else if (topic.Prototype != null)
@@ -1010,7 +1010,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
 								}
 
-							topic.Parameters = ParameterString.FromPlainTextStrings(parameterTypes);
+							topic.Parameters = ParameterString.FromParameterTypes(parameterTypes);
 							}
 						}
 					}

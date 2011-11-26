@@ -55,8 +55,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Body = query.StringColumn(5);
 					topic.Summary = query.StringColumn(6);
 					topic.Prototype = query.StringColumn(7);
-					topic.Symbol = SymbolString.FromSymbolString( query.StringColumn(8) );
-					topic.Parameters = ParameterString.FromParameterString( query.StringColumn(9) );
+					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(8) );
+					topic.Parameters = ParameterString.FromExportedString( query.StringColumn(9) );
 					topic.EndingSymbolID = query.IntColumn(10);
 					topic.TopicTypeID = query.IntColumn(11);
 					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(12);
