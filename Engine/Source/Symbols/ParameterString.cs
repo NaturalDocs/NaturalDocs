@@ -45,6 +45,51 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Function: GetEndingParenthesisIndex
+		 * If a plain text string ends in parenthesis, returns the index of the opening parenthesis character.  Returns -1 otherwise.
+		 */
+		public static int GetEndingParenthesisIndex (string input)
+			{
+			input = input.TrimEnd();
+
+			if (input.Length >= 2 && input[input.Length - 1] == ')')
+				{
+				// We have to count parenthesis so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
+				// "(paren) text2 (paren2)".  We also want to handle nested parenthesis.
+
+				// The start position LastIndexOfAny() takes is the character at the end of the string to be examined first.
+				// The count is the number of characters to examine, so it's one higher as index 4 goes for 5 characters: indexes 0, 1, 2,
+				// 3, and 4.  The character at the start position is examined, it's not a limit.
+				int nextParen = input.LastIndexOfAny(parenthesisChars, input.Length - 2, input.Length - 1);
+				int nesting = 1;
+				
+				while (nextParen != -1)
+					{
+					if (input[nextParen] == ')')
+						{  nesting++;  }
+					else if (input[nextParen] == '(')
+						{  
+						nesting--;  
+						
+						if (nesting == 0)
+							{  break;  }
+						}
+
+					nextParen = input.LastIndexOfAny(parenthesisChars, nextParen - 1, nextParen);
+					}
+
+				// We want nextParen to be greater than zero so we don't include cases where the entire title is surrounded
+				// by parenthesis.
+				if (nesting == 0 && nextParen > 0)
+					{
+					return nextParen;
+					}
+				}
+
+			return -1;
+			}
+
+
 		/* Function: FromParameterString
 		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving ParameterStrings
@@ -299,6 +344,11 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * An array containing all forms of braces, comma, and semicolon.
 		 */
 		static private char[] bracesAndParamSeparators = new char[] { '(', '[', '{', '<', ')', ']', '}', '>', ',', ';' };
+
+		/* var: parenthesisChars
+		 * An array containing the opening and closing parenthesis characters.
+		 */
+		static private char[] parenthesisChars = new char[] { '(', ')' };
 
 		}
 	}

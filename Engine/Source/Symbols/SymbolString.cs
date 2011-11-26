@@ -55,42 +55,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static public SymbolString FromPlainText (string textSymbol, out string parenthesis)
 			{
-			parenthesis = null;
-			textSymbol = textSymbol.TrimEnd();
+			int parenthesisIndex = ParameterString.GetEndingParenthesisIndex(textSymbol);
 
-			if (textSymbol.Length >= 2 && textSymbol[textSymbol.Length - 1] == ')')
+			if (parenthesisIndex == -1)
+				{  parenthesis = null;  }
+			else
 				{
-				// If the symbol ends in a closing parenthesis, separate the parenthetical from the rest of the symbol.  However, we have 
-				// to count parenthesis so it correctly removes "(paren2)" from "text (paren) text2 (paren2)" and not "(paren) text2 (paren2)".
-				// We also want to handle nested parenthesis.  Yes this is overengineered.
-
-				// The start position on LastIndexOfAny is the index at the end of the string to examine first.
-				// The count is the number of characters to examine, so it's one more as index 3 goes for 4 characters: indexes 0 1 2 and 3.
-				int nextParen = textSymbol.LastIndexOfAny(parenthesisChars, textSymbol.Length - 2, textSymbol.Length - 1);
-				int nesting = 1;
-				
-				while (nextParen != -1)
-					{
-					if (textSymbol[nextParen] == ')')
-						{  nesting++;  }
-					else if (textSymbol[nextParen] == '(')
-						{  
-						nesting--;  
-						
-						if (nesting == 0)
-							{  break;  }
-						}
-
-					nextParen = textSymbol.LastIndexOfAny(parenthesisChars, nextParen - 1, nextParen);
-					}
-
-				// We want nextParen to be greater than zero so we don't include cases where the entire title is surrounded
-				// by parenthesis.
-				if (nesting == 0 && nextParen > 0)
-					{
-					parenthesis = textSymbol.Substring(nextParen);
-					textSymbol = textSymbol.Substring(0, nextParen).TrimEnd();
-					}
+				parenthesis = textSymbol.Substring(parenthesisIndex);
+				textSymbol = textSymbol.Substring(0, parenthesisIndex);
 				}
 
 			SymbolString symbolString = new SymbolString(textSymbol);
@@ -374,9 +346,5 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static private char[] startingSeparatorCharsAndWhitespace = new char[] { ' ', '\t', ':', '-', '.', SeparatorChar };
 
-		/* var: parenthesisChars
-		 * An array containing the opening and closing parenthesis characters.
-		 */
-		static private char[] parenthesisChars = new char[] { '(', ')' };
 		}
 	}
