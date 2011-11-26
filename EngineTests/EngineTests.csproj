@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\Symbols.cs" />
     <Compile Include="Source\Summaries.cs" />
     <Compile Include="Source\Framework\TextCommands.cs" />
     <Compile Include="Source\NDMarkup.cs" />

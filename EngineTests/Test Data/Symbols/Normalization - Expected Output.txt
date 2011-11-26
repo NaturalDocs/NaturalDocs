@@ -1,0 +1,23 @@
+Symbol: Case SENSitivity
+Ending Symbol: case sensitivity
+Parameters: (none)
+-----
+Symbol: Separator|Normalization|Separator|Normalization
+Ending Symbol: normalization
+Parameters: (none)
+-----
+Symbol: Separator|Condensation
+Ending Symbol: condensation
+Parameters: (none)
+-----
+Symbol: Whitespace condensation whitespace condensation
+Ending Symbol: whitespace condensation whitespace condensation
+Parameters: (none)
+-----
+Symbol: Whitespace-removal,whitespace"removal"123|456
+Ending Symbol: 456
+Parameters: (none)
+-----
+Symbol: Separators|Separted|by whitespace
+Ending Symbol: by whitespace
+Parameters: (none)

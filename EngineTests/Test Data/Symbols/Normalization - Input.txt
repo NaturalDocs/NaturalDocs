@@ -1,0 +1,28 @@
+
+Topic: Case SENSitivity
+
+	All text characters should retain their case.
+
+
+Topic: Separator.Normalization::Separator->Normalization
+
+	All of the above separators should be standardized.
+
+
+Topic: ..Separator...Condensation..
+
+	Multiple separators should be condensed into one.  Separators appearing on the edges
+	should be removed.
+
+
+Topic: Whitespace condensation    whitespace		condensation
+
+	Spaces and tabs between text characters should be condensed into a single space.
+
+
+Topic: Whitespace - removal, whitespace "removal " 123. 456
+
+	Spaces and tabs that don't separate text characters should be removed.
+
+
+Topic: . .Separators . . Separted::  ::by whitespace . .

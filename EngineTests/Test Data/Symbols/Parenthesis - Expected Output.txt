@@ -1,0 +1,27 @@
+Symbol: Parenthesis Following Title
+Ending Symbol: parenthesis following title
+Parameters: with|commas
+-----
+Symbol: Parenthesis Following Title
+Ending Symbol: parenthesis following title
+Parameters: without commas
+-----
+Symbol: FunctionWithPrototype
+Ending Symbol: functionwithprototype
+Parameters: int|float
+-----
+Symbol: FunctionWithElaboratePrototype
+Ending Symbol: functionwithelaborateprototype
+Parameters: int|float|List
+-----
+Symbol: FunctionWithoutPrototype
+Ending Symbol: functionwithoutprototype
+Parameters: (none)
+-----
+Symbol: FunctionWithoutPrototypeWithParenthesesInTitle
+Ending Symbol: functionwithoutprototypewithparenthesesintitle
+Parameters: title|parenthesis
+-----
+Symbol: FunctionWithPrototypeAndParenthesisInTitle
+Ending Symbol: functionwithprototypeandparenthesisintitle
+Parameters: title|parenthesis

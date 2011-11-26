@@ -1,0 +1,87 @@
+Symbol: (Parenthesis Surrounding Entire Title)
+Ending Symbol: (parenthesis surrounding entire title)
+Parameters: (none)
+-----
+Symbol: Parethesis(in middle)of title
+Ending Symbol: parethesis(in middle)of title
+Parameters: (none)
+-----
+Symbol: Parenthesis(in middle)and following title
+Ending Symbol: parenthesis(in middle)and following title
+Parameters: with|commas
+-----
+Symbol: Parenthesis(in middle)and following title
+Ending Symbol: parenthesis(in middle)and following title
+Parameters: without commas
+-----
+Symbol: Nested parens 1
+Ending Symbol: nested parens 1
+Parameters: (following)
+-----
+Symbol: Nested parens 2
+Ending Symbol: nested parens 2
+Parameters: a(b)c
+-----
+Symbol: Nested parens and commas
+Ending Symbol: nested parens and commas
+Parameters: a|(b,c)|d
+-----
+Symbol: No opening paren)
+Ending Symbol: no opening paren)
+Parameters: (none)
+-----
+Symbol: Mismatched parens 1(
+Ending Symbol: mismatched parens 1(
+Parameters: following
+-----
+Symbol: Mismatched parens 2(following))
+Ending Symbol: mismatched parens 2(following))
+Parameters: (none)
+-----
+Symbol: )
+Ending Symbol: )
+Parameters: (none)
+-----
+Symbol: (
+Ending Symbol: (
+Parameters: (none)
+-----
+Symbol: ()
+Ending Symbol: ()
+Parameters: (none)
+-----
+Symbol: ()
+Ending Symbol: ()
+Parameters: (none)
+-----
+Symbol: ()
+Ending Symbol: ()
+Parameters: (none)
+-----
+Symbol: (
+Ending Symbol: (
+Parameters: (none)
+-----
+Symbol: )
+Ending Symbol: )
+Parameters: (none)
+-----
+Symbol: Comma traps 1
+Ending Symbol: comma traps 1
+Parameters: |a
+-----
+Symbol: Comma traps 2
+Ending Symbol: comma traps 2
+Parameters: a|
+-----
+Symbol: Comma traps 3
+Ending Symbol: comma traps 3
+Parameters: a||b
+-----
+Symbol: Comma traps 4
+Ending Symbol: comma traps 4
+Parameters: |
+-----
+Symbol: Separators|in|parethesis
+Ending Symbol: parethesis
+Parameters: x.y

@@ -1,0 +1,18 @@
+
+Function: GlobalFunction
+
+Function: Scope::In::Title
+
+Class: Package::Class
+
+	Function: ClassMemberFunction
+
+	File: AlwaysGlobalAppearingInsideClass
+
+	Var: ClassMemberVar
+
+	Function: Scope::In::Title::Member
+
+Section: Return to Global Scope
+
+Function: GlobalFunction2
