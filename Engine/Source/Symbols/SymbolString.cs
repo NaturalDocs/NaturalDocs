@@ -1,0 +1,382 @@
+﻿/* 
+ * Struct: GregValure.NaturalDocs.Engine.Symbols.SymbolString
+ * ____________________________________________________________________________
+ * 
+ * A struct encapsulating a symbol string, which is a normalized way of representing a hierarchal code element 
+ * or topic, such as "PackageA.PackageB.FunctionC".
+ */
+
+// This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
+// Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
+// Refer to License.txt for the complete details
+
+
+using System;
+using GregValure.NaturalDocs.Engine.Tokenization;
+
+
+namespace GregValure.NaturalDocs.Engine.Symbols
+	{
+	public struct SymbolString : IComparable
+		{
+		
+		// Group: Constants
+		// __________________________________________________________________________
+
+		/* Constant: SeparatorChar
+		 * The character used to separate symbol segments.
+		 */
+		public const char SeparatorChar = '\x1F';
+
+
+
+		// Group: Functions
+		// __________________________________________________________________________
+		
+		
+		/* Function: SymbolString
+		 */
+		private SymbolString (string newSymbolString)
+			{
+			symbolString = newSymbolString;
+			}
+
+			
+		/* Function: FromPlainText
+		 * 
+		 * Creates a SymbolString from the passed string of plain text.
+		 * 
+		 * If the string ends in parenthesis they will be separated off from the string and returned in the parenthesis variable.  
+		 * They will not be part of the resulting SymbolString.  The string is still in its raw form so to become a <ParameterString> it
+		 * would need to be passed to <ParameterString.FromPlainText()>.  If there's no parenthesis the variable will be null.
+		 * 
+		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
+		 * from another SymbolString object, use <FromSymbolString()>.
+		 */
+		static public SymbolString FromPlainText (string textSymbol, out string parenthesis)
+			{
+			parenthesis = null;
+			textSymbol = textSymbol.TrimEnd();
+
+			if (textSymbol.Length >= 2 && textSymbol[textSymbol.Length - 1] == ')')
+				{
+				// If the symbol ends in a closing parenthesis, separate the parenthetical from the rest of the symbol.  However, we have 
+				// to count parenthesis so it correctly removes "(paren2)" from "text (paren) text2 (paren2)" and not "(paren) text2 (paren2)".
+				// We also want to handle nested parenthesis.  Yes this is overengineered.
+
+				// The start position on LastIndexOfAny is the index at the end of the string to examine first.
+				// The count is the number of characters to examine, so it's one more as index 3 goes for 4 characters: indexes 0 1 2 and 3.
+				int nextParen = textSymbol.LastIndexOfAny(parenthesisChars, textSymbol.Length - 2, textSymbol.Length - 1);
+				int nesting = 1;
+				
+				while (nextParen != -1)
+					{
+					if (textSymbol[nextParen] == ')')
+						{  nesting++;  }
+					else if (textSymbol[nextParen] == '(')
+						{  
+						nesting--;  
+						
+						if (nesting == 0)
+							{  break;  }
+						}
+
+					nextParen = textSymbol.LastIndexOfAny(parenthesisChars, nextParen - 1, nextParen);
+					}
+
+				// We want nextParen to be greater than zero so we don't include cases where the entire title is surrounded
+				// by parenthesis.
+				if (nesting == 0 && nextParen > 0)
+					{
+					parenthesis = textSymbol.Substring(nextParen);
+					textSymbol = textSymbol.Substring(0, nextParen).TrimEnd();
+					}
+				}
+
+			SymbolString symbolString = new SymbolString(textSymbol);
+			symbolString.Normalize();
+
+			// If a symbol string is normalized to nothing yet it had parenthesis (think "::()") put them back together and redo.
+			// This should be a rare edge case but we want to handle it.  We never want a null symbol string with a valid 
+			// parenthesis string.
+			if (symbolString.symbolString == null && parenthesis != null)
+				{
+				symbolString = new SymbolString(textSymbol + parenthesis);
+				symbolString.Normalize();
+
+				parenthesis = null;
+				}
+			
+			return symbolString;
+			}
+
+			
+		/* Function: FromSymbolString
+		 * Creates a SymbolString from the passed string which originally came from another SymbolString object.  This skips 
+		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving SymbolStrings
+		 * that were stored as plain text in a database or other data file.  All other uses should call <FromPlainText()> instead.
+		 */
+		static public SymbolString FromSymbolString (string newSymbolString)
+			{
+			SymbolString symbolString = new SymbolString(newSymbolString);
+			return symbolString;
+			}
+			
+		
+		
+		// Group: Properties
+		// __________________________________________________________________________
+		
+		
+		/* Property: EndingSymbol
+		 * Returns the <EndingSymbol> of the symbol string.  So for "PackageA.PackageB.FunctionC" this will return
+		 * an <EndingSymbol> for "functionc".  Remember that unlike SymbolStrings, <EndingSymbols> are case-insensitive.
+		 */
+		public EndingSymbol EndingSymbol
+			{
+			get
+				{
+				int lastSeparator = symbolString.LastIndexOf(SeparatorChar);
+				
+				if (lastSeparator == -1)
+					{  return EndingSymbol.FromSymbolStringSegment(symbolString);  }
+				else
+					{  return EndingSymbol.FromSymbolStringSegment(symbolString.Substring(lastSeparator + 1));  }
+				}
+			}
+						
+			
+			
+		// Group: Operators
+		// __________________________________________________________________________
+		
+		
+		/* operator: operator string
+		 * A cast operator to covert the symbol to a string.
+		 */
+		public static implicit operator string (SymbolString symbol)
+			{
+			return symbol.symbolString;
+			}
+						
+		/* Operator: operator ==
+		 */
+		public static bool operator== (SymbolString a, object b)
+			{
+			// We need to make the operator compare against object intead of another SymbolString in order to support
+			// directly comparing against null.
+			return a.Equals(b);
+			}
+
+		/* Operator: operator !=
+		 */
+		public static bool operator!= (SymbolString a, object b)
+			{
+			return !(a.Equals(b));
+			}
+
+		/* Operator: operator +
+		 * Concatenates the two SymbolStrings.
+		 */
+		public static SymbolString operator+ (SymbolString a, SymbolString b)
+			{
+			// Since they're both normalized already we can safely take this shortcut.
+			return new SymbolString(a.symbolString + SeparatorChar + b.symbolString);
+			}
+
+		/* Function: ToString
+		 * Returns the SymbolString as a string.
+		 */
+		public override string ToString ()
+			{
+			return symbolString;
+			}
+			
+		/* Function: GetHashCode
+		 */
+		public override int GetHashCode ()
+			{
+			return symbolString.GetHashCode();
+			}
+
+		/* Function: Equals
+		 */
+		public override bool Equals (object other)
+			{
+			if (other == null)
+				{  return (symbolString == null);  }
+			else if (other is SymbolString)
+				{  return (symbolString == ((SymbolString)other).symbolString);  }
+			else if (other is string)
+				{  return (symbolString == (string)other);  }
+			else
+				{  return false;  }
+			}
+			
+		/* Function: CompareTo
+		 */
+		public int CompareTo (object other)
+			{
+			return symbolString.CompareTo(other);
+			}
+		
+			
+			
+		// Group: Private Functions
+		// __________________________________________________________________________
+		
+		
+		/* Function: Normalize
+		 * 
+		 * Normalizes <symbolString>.
+		 * 
+		 *		- Applies canonical normalization to Unicode (FormC).
+		 *		- Removes all existing instances of <SeparatorChar>.
+		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
+		 *		- Whitespace not removed is condensed into a single space.
+		 *		- Replaces the common package separator symbols (. :: ->) with <SeparatorChar>.
+		 *		- Multiple consecutive separators are condensed into one.
+		 *		- Separators on the edges are removed.
+		 */
+		private void Normalize ()
+			{
+			if (symbolString == null)
+				{  return;  }
+
+			symbolString = symbolString.Trim();
+
+			if (symbolString == "")
+				{
+				symbolString = null;
+				return;
+				}
+				
+			symbolString = symbolString.Normalize(System.Text.NormalizationForm.FormC);  // Canonical decomposition and recombination
+
+			int nextChar = symbolString.IndexOfAny(startingSeparatorCharsAndWhitespace);
+
+			if (nextChar == -1)
+				{  return;  }
+			
+			System.Text.StringBuilder normalizedString = new System.Text.StringBuilder(symbolString.Length);
+			int index = 0;
+			
+			// Set to true if we just added a separator, so we don't want to add another one right after it.  Starts at true since
+			// we don't want one to lead off the symbol.
+			bool ignoreSeparator = true;
+			
+			// Set to true if we just passed whitespace, since we only want to add it to the normalized string if it's between two 
+			// text characters.  We also want to condense multiple characters to a single space.
+			bool addWhitespace = false;
+			
+			do
+				{
+				if (nextChar > index)
+					{
+					if (addWhitespace && normalizedString.Length > 0 &&
+						Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == FundamentalType.Text &&
+						Tokenizer.FundamentalTypeOf( symbolString[index] ) == FundamentalType.Text)
+						{
+						normalizedString.Append(' ');
+						}
+					
+					normalizedString.Append(symbolString, index, nextChar - index);
+					ignoreSeparator = false;
+					addWhitespace = false;
+					}
+
+				if (symbolString[nextChar] == SeparatorChar)
+					{
+					// Ignore, doesn't affect anything.
+					index = nextChar + 1;
+					}				
+				else if (symbolString[nextChar] == ' ' || symbolString[nextChar] == '\t')
+					{  
+					addWhitespace = true;
+					// doesn't affect ignoreSeparator
+					index = nextChar + 1;  
+					}
+				else if (symbolString[nextChar] == '.')
+					{
+					if (!ignoreSeparator)
+						{
+						normalizedString.Append(SeparatorChar);
+						ignoreSeparator = true;
+						addWhitespace = false;
+						}
+						
+					index = nextChar + 1;
+					}
+				else if (index + 1 < symbolString.Length && 
+							( (symbolString[nextChar] == ':' && symbolString[nextChar + 1] == ':') ||
+								(symbolString[nextChar] == '-' && symbolString[nextChar + 1] == '>') )
+							)
+					{
+					if (!ignoreSeparator)
+						{
+						normalizedString.Append(SeparatorChar);
+						ignoreSeparator = true;
+						addWhitespace = false;
+						}
+						
+						index = nextChar + 2;
+						}
+					else
+						{
+						normalizedString.Append(symbolString[nextChar]);
+						ignoreSeparator = false;
+						addWhitespace = false;
+						index = nextChar + 1;
+						}
+				
+					nextChar = symbolString.IndexOfAny(startingSeparatorCharsAndWhitespace, index);
+					}
+			while (nextChar != -1);
+			
+			if (index < symbolString.Length)
+				{
+				if (addWhitespace && normalizedString.Length > 0 &&
+					Tokenizer.FundamentalTypeOf( normalizedString[normalizedString.Length - 1] ) == FundamentalType.Text &&
+					Tokenizer.FundamentalTypeOf( symbolString[index] ) == FundamentalType.Text)
+					{
+					normalizedString.Append(' ');
+					}
+				
+				normalizedString.Append(symbolString, index, symbolString.Length - index);
+				}
+				
+			if (normalizedString.Length > 0 && normalizedString[ normalizedString.Length - 1 ] == SeparatorChar)
+				{
+				normalizedString.Remove( normalizedString.Length - 1, 1 );
+				}
+				
+			if (normalizedString.Length == 0)
+				{  symbolString = null;  }
+			else
+				{  symbolString = normalizedString.ToString();  }
+			}
+
+
+			
+		
+		// Group: Variables
+		// __________________________________________________________________________
+		
+		
+		/* string: symbolString
+		 * The symbol, _always_ in normalized form.
+		 */
+		private string symbolString;
+	
+		/* var: startingSeparatorCharsAndWhitespace
+		 * An array containing the whitespace characters, <SeparatorChar>, and the first characters of all the possible 
+		 * text separators.
+		 */
+		static private char[] startingSeparatorCharsAndWhitespace = new char[] { ' ', '\t', ':', '-', '.', SeparatorChar };
+
+		/* var: parenthesisChars
+		 * An array containing the opening and closing parenthesis characters.
+		 */
+		static private char[] parenthesisChars = new char[] { '(', ')' };
+		}
+	}

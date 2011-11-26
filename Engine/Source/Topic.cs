@@ -11,6 +11,7 @@
 
 
 using System;
+using GregValure.NaturalDocs.Engine.Symbols;
 
 
 namespace GregValure.NaturalDocs.Engine
@@ -38,7 +39,8 @@ namespace GregValure.NaturalDocs.Engine
 			body = null;
 			summary = null;
 			prototype = null;
-			symbol = new Symbol();
+			symbol = new SymbolString();
+			parameters = new ParameterString();
 			endingSymbolID = 0;
 			topicTypeID = 0;
 			accessLevel = Languages.AccessLevel.Unknown;
@@ -69,6 +71,7 @@ namespace GregValure.NaturalDocs.Engine
 				summary != other.summary ||
 				symbol != other.symbol ||
 				prototype != other.prototype ||
+				parameters != other.parameters ||
 
 				// Rest of the integer comparisons, not likely to be different
 				fileID != other.fileID ||
@@ -247,14 +250,26 @@ namespace GregValure.NaturalDocs.Engine
 			
 			
 		/* Property: Symbol
-		 * The symbol of the topic, or null if it hasn't been set.
+		 * The fully resolved symbol of the topic, or null if it hasn't been set.
 		 */
-		public Symbol Symbol
+		public SymbolString Symbol
 			{
 			get
 				{  return symbol;  }
 			set
 				{  symbol = value;  }
+			}
+
+
+		/* Property: Parameters
+		 * The parameter string associated with the topic, or null if none.
+		 */
+		public ParameterString Parameters
+			{
+			get
+				{  return parameters;  }
+			set
+				{  parameters = value;  }
 			}
 			
 			
@@ -419,10 +434,15 @@ namespace GregValure.NaturalDocs.Engine
 		protected string prototype;
 
 		/* var: symbol
-		 * The <Symbol> of the topic, or null if not specified.
+		 * The topic's fully resolved symbol, or null if not specified.
 		 */
-		protected Symbol symbol;
+		protected SymbolString symbol;
 		
+		/* var: parameters
+		 * The parameters of the symbol, or null if none.
+		 */
+		protected ParameterString parameters;
+
 		/* var: endingSymbolID
 		 * The ending symbol ID of the topic, or zero if not specified.
 		 */

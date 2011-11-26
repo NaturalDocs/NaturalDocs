@@ -161,7 +161,9 @@
     <Compile Include="Source\SQLite\Exceptions\UnexpectedResult.cs" />
     <Compile Include="Source\SQLite\Query.cs" />
     <Compile Include="Source\StringExtensions.cs" />
-    <Compile Include="Source\Symbol.cs" />
+    <Compile Include="Source\Symbols\ParameterString.cs" />
+    <Compile Include="Source\Symbols\EndingSymbol.cs" />
+    <Compile Include="Source\Symbols\SymbolString.cs" />
     <Compile Include="Source\Thread.cs" />
     <Compile Include="Source\Tokenization\PreviousPastWhitespaceMode.cs" />
     <Compile Include="Source\Tokenization\Line.cs" />

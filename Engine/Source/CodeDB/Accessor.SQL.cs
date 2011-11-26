@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Symbols;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
@@ -37,7 +38,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<Topic> topics = new List<Topic>();
 			
 			using (SQLite.Query query = connection.Query("SELECT TopicID, LanguageID, CommentLineNumber, CodeLineNumber, Title, " +
-																					 " Body, Summary, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags " +
+																					 " Body, Summary, Prototype, Symbol, Parameters, EndingSymbolID, TopicTypeID, " +
+																					 "AccessLevel, Tags " +
 																		   "FROM Topics WHERE FileID = ? " +
 																		   "ORDER BY CommentLineNumber ASC", fileID))
 				{
@@ -53,11 +55,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Body = query.StringColumn(5);
 					topic.Summary = query.StringColumn(6);
 					topic.Prototype = query.StringColumn(7);
-					topic.Symbol = Symbol.FromSymbolString( query.StringColumn(8) );
-					topic.EndingSymbolID = query.IntColumn(9);
-					topic.TopicTypeID = query.IntColumn(10);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(11);
-					topic.TagString = query.StringColumn(12);
+					topic.Symbol = SymbolString.FromSymbolString( query.StringColumn(8) );
+					topic.Parameters = ParameterString.FromParameterString( query.StringColumn(9) );
+					topic.EndingSymbolID = query.IntColumn(10);
+					topic.TopicTypeID = query.IntColumn(11);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(12);
+					topic.TagString = query.StringColumn(13);
 
 					topic.FileID = fileID;
 					
@@ -90,6 +93,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
+		 *		Parameters - Can be null.  Will not be automatically generated though.
 		 *		EndingSymbolID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
@@ -109,7 +113,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				// Body
 				// Summary
 				// Prototype
-				RequireContent("Symbol", topic.Symbol);			
+				RequireContent("Symbol", topic.Symbol);
+				// Parameters
 				RequireZero("EndingSymbolID", topic.EndingSymbolID);
 				RequireNonZero("TopicTypeID", topic.TopicTypeID);
 				// AccessLevel
@@ -117,7 +122,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			EndTopicValidation();
 			
 			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
-			Symbol endingSymbol = topic.Symbol.LastSegment;
+			EndingSymbol endingSymbol = topic.Symbol.EndingSymbol;
 			
 			using (SQLite.Query query = connection.Query("SELECT EndingSymbolID FROM EndingSymbols " +
 																		   "WHERE EndingSymbol = ?", endingSymbol))
@@ -126,9 +131,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{  
 					topic.EndingSymbolID = query.IntColumn(0);  
 					
-					// It's possible for a topic to retain its ending symbol while otherwise changing too dramatically to use 
-					// UpdateTopic().  Since the topic would need to be deleted and readded, it's a worthwhile optimization to remove
-					// the ending symbol ID from the list to check in case it's there.
+					// If a topic changes too much for UpdateTopic() but keeps its ending symbol, the old topic will be removed and the
+					// updated topic will be added as new.  The removal will cause the ending symbol to be added to the list to be checked
+					// for deletion, so it's a worthwhile optimization to remove the ending symbol ID from that list here.
 					Engine.Instance.CodeDB.EndingSymbolIDsToCheckForDeletion.Remove(topic.EndingSymbolID);
 					}
 				}
@@ -143,11 +148,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				Engine.Instance.CodeDB.UsedEndingSymbolIDs.Add(topic.EndingSymbolID);
 				}
 				
-			connection.Execute("INSERT INTO Topics (TopicID, FileID, LanguageID, CommentLineNumber, CodeLineNumber, " +
-																	" Title, Body, Summary, Prototype, Symbol, EndingSymbolID, TopicTypeID, AccessLevel, Tags) " +
-																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			connection.Execute("INSERT INTO Topics (TopicID, FileID, LanguageID, CommentLineNumber, CodeLineNumber, Title, Body, " +
+																	" Summary, Prototype, Symbol, Parameters, EndingSymbolID, TopicTypeID, AccessLevel, Tags) " +
+																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 										topic.TopicID, topic.FileID, topic.LanguageID, topic.CommentLineNumber, topic.CodeLineNumber,
-										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.EndingSymbolID, 
+										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, topic.EndingSymbolID, 
 										topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString);
 			
 			Engine.Instance.CodeDB.UsedTopicIDs.Add(topic.TopicID);
@@ -247,6 +252,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				// Summary
 				// Prototype
 				// Symbol
+				// Parameters
 				RequireNonZero("EndingSymbolID", topic.EndingSymbolID);
 				// TopicTypeID
 				// AccessLevel
@@ -299,6 +305,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
+		 *		Parameters - Can be null.  Will not be automatically generated though.
 		 *		EndingSymbolID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.

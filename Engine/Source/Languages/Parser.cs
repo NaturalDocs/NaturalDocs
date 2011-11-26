@@ -37,7 +37,9 @@ using System.Collections.Generic;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Comments;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
+using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
 namespace GregValure.NaturalDocs.Engine.Languages
@@ -949,8 +951,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			
 		/* Function: GenerateRemainingSymbols
 		 * 
-		 * Generates <Symbols> for any <Topics> which do not already have one.  As code topics always have symbols and any comment
-		 * that was merged with one would inherit it, this only applies to the Natural Docs topics which were not merged with a code element.
+		 * Generates <Topic.Symbol> and <Topic.Parameters> for any <Topics> which don't already have one.  As code topics always 
+		 * have symbols and any comment that was merged with one would inherit it, this only applies to the Natural Docs topics which 
+		 * were not merged with a code element.
 		 * 
 		 * The default implementation will follow a combination of the code topics' scope and the Natural Docs scoping rules.  Basically, the
 		 * Natural Docs scoping rules only apply between code topics, so entire classes can be defined between real elements but members
@@ -959,14 +962,63 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected virtual void GenerateRemainingSymbols ()
 			{
-			// XXX - This currently doesn't follow any scoping rules at all, it just gets it from the title.  We'll do it properly later.
 			// XXX - When doing code scope, remember there has to be a scope record in parser.  Just going by the code topics won't tell
-			// you when the scope ends.
+			// you when the scope ends.  Also, you don't want to carry ND topic scoping across code topics.
+
+			SymbolString scope = new SymbolString();
+
+			// Generating parsed prototypes resets the parser state, so we'll create a new one on demand if we need it.
+			Parser prototypeParser = null;
 			
 			foreach (Topic topic in mergedTopics)
 				{
+				TopicType topicType = Instance.TopicTypes.FromID(topic.TopicTypeID);
+
 				if (topic.Symbol == null)
-					{  topic.Symbol = Symbol.FromPlainText (topic.UndecoratedTitle);  }
+					{  
+					string parenthesis = null;
+					topic.Symbol = SymbolString.FromPlainText(topic.Title, out parenthesis);
+
+					if (scope != null &&
+						topicType.Scope != TopicType.ScopeValue.AlwaysGlobal &&
+						topicType.Scope != TopicType.ScopeValue.End)
+						{  
+						topic.Symbol = scope + topic.Symbol;  
+						}
+
+					// Parenthesis in the title takes precedence over the prototype.
+					if (parenthesis != null)
+						{  
+						topic.Parameters = ParameterString.FromPlainTextString(parenthesis);  
+						}
+
+					else if (topic.Prototype != null)
+						{
+						if (prototypeParser == null)
+							{  prototypeParser = language.GetParser();  }
+
+						ParsedPrototype parsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, false);
+						
+						if (parsedPrototype.NumberOfParameters > 0)
+							{
+							string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
+							TokenIterator start, end;
+
+							for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+								{
+								parsedPrototype.GetBaseParameterType(i, out start, out end);
+								parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
+								}
+
+							topic.Parameters = ParameterString.FromPlainTextStrings(parameterTypes);
+							}
+						}
+					}
+
+				if (topicType.Scope == TopicType.ScopeValue.Start)
+					{  scope = topic.Symbol;  }
+				else if (topicType.Scope == TopicType.ScopeValue.End)
+					{  scope = new SymbolString();  }
 				}
 			}
 

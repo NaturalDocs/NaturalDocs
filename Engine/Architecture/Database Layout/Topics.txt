@@ -96,8 +96,16 @@ Column: Symbol
 		Symbol TEXT NOT NULL
 	(end)
 	
-	The fully resolved, normalized symbol of the topic.  Hierarchy separators will be replaced by the 0x1F character,
-	but the elements will retain their case.
+	The fully resolved, normalized <Symbols.SymbolString> of the topic.
+	
+	
+Column: Parameters
+
+	(SQL Prototype)
+		Parameters TEXT
+	(end)
+	
+	The fully resolved, normalized <Symbols.ParameterString> of the topic.
 	
 	
 Column: EndingSymbolID
