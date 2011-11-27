@@ -422,62 +422,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: Source_OutputFileNameOnly
-		 * Returns the output file name of the passed file.  Any path attached to it will be ignored and not included in the result.
-		 */
-		public static Path Source_OutputFileNameOnly (Path filename)
-			{
-			string nameString = filename.NameWithoutPath.ToString();
-
-			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
-			// the last extension.  Dots in folder names are okay though.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + ".html";
-			}
-
-
-		/* Function: Source_SummaryFileNameOnly
-		 * Returns the summary file name of the passed file.  Any path attached to it will be ignored and not included in the result.
-		 */
-		public static Path Source_SummaryFileNameOnly (Path filename)
-			{
-			string nameString = filename.NameWithoutPath.ToString();
-
-			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + "-Summary.js";
-			}
-
-
-		/* Function: Source_SummaryToolTipsFileNameOnly
-		 * Returns the summary tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
-		 */
-		public static Path Source_SummaryToolTipsFileNameOnly (Path filename)
-			{
-			string nameString = filename.NameWithoutPath.ToString();
-
-			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + "-SummaryToolTips.js";
-			}
-
-
-		/* Function: Source_OutputFileNameOnlyHashPath
-		 * Returns the hash path of the passed file.  Any path attached to it will be ignored and not included in the result.
-		 */
-		public string Source_OutputFileNameOnlyHashPath (Path filename)
-			{
-			string nameString = filename.NameWithoutPath.ToString();
-			return SanitizePath(nameString);
-			}
-
-
 		/* Function: Source_OutputFile
 		 * Returns the output path of the passed source file ID, or null if none.  It may be null if the <FileSource> that created
 		 * it no longer exists.
@@ -517,6 +461,32 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: Source_OutputFileNameOnly
+		 * Returns the output file name of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public static Path Source_OutputFileNameOnly (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
+			// the last extension.  Dots in folder names are okay though.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + ".html";
+			}
+
+
+		/* Function: Source_OutputFileNameOnlyHashPath
+		 * Returns the hash path of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public string Source_OutputFileNameOnlyHashPath (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+			return SanitizePath(nameString);
+			}
+
+
 		/* Function: Source_SummaryFile
 		 * Returns the summary file path of the passed source file ID, or null if none.  It may be null if the <FileSource> that 
 		 * created it no longer exists.
@@ -536,6 +506,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Function: Source_SummaryFileNameOnly
+		 * Returns the summary file name of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public static Path Source_SummaryFileNameOnly (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + "-Summary.js";
+			}
+
+
 		/* Function: Source_SummaryToolTipsFile
 		 * Returns the summary tooltips file path of the passed source file ID, or null if none.  It may be null if the <FileSource> 
 		 * that created it no longer exists.
@@ -552,6 +537,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
 						 Source_SummaryToolTipsFileNameOnly(relativePath.NameWithoutPath);
+			}
+
+
+		/* Function: Source_SummaryToolTipsFileNameOnly
+		 * Returns the summary tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public static Path Source_SummaryToolTipsFileNameOnly (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + "-SummaryToolTips.js";
 			}
 
 
