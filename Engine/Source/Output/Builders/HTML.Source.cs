@@ -410,8 +410,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  result.Append(number);  }
 
 			result.Append(':');
-					
-			if (relativeFolder != null)
+
+			// Since we're building a string we can't rely on Path to simplify out ./					
+			if (relativeFolder != null && relativeFolder != ".")
 				{
 				result.Append(SanitizePath(relativeFolder).ToURL());
 				result.Append('/');
