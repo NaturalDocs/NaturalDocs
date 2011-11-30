@@ -71,6 +71,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.TopicTypes;
 
@@ -317,6 +318,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("   ");
 			#endif
 
+			StringSet usedAnchors = new StringSet(false, false);
 			output.Append('[');
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
@@ -350,7 +352,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append(",\"");
 				output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );
 				output.Append("\",\"");
-				output.Append("Topic" + topic.TopicID);
+				output.StringEscapeAndAppend( Builders.HTML.Source_Anchor(topic, true, usedAnchors) );
 				output.Append("\"]");
 
 				if (topicIndex < topics.Count - 1)

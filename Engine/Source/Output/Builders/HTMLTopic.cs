@@ -37,6 +37,7 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 
@@ -67,9 +68,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Function: Build
 		 * Builds the HTML for the <Topic> and appends it to the passed StringBuilder.  If desired, you can add a CSS
-		 * class to include in the HTML.
+		 * class to include in the HTML.  If you're building a series of Topics, pass a usedAnchors <StringSet> to make
+		 * sure there's no duplicates generated.  Generated anchors will be added to the set automatically.
 		 */
-		public void Build (Topic topic, StringBuilder output, string extraClass = null)
+		public void Build (Topic topic, StringBuilder output, string extraClass = null, StringSet usedAnchors = null)
 			{
 
 			// Setup
@@ -99,7 +101,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = language.SimpleIdentifier;
 
 			html.Append(
-				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
+				"<a name=\"" + Builders.HTML.Source_Anchor(topic, true, usedAnchors) + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
