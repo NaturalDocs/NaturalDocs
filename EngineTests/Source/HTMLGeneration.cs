@@ -46,5 +46,11 @@ namespace GregValure.NaturalDocs.EngineTests
 			TestFolder("HTML Generation/Code Sections", null, "pre");
 			}
 
+		[Test]
+		public void Anchors ()
+			{
+			TestFolder("HTML Generation/Anchors", null, "a");
+			}
+
 		}
 	}
