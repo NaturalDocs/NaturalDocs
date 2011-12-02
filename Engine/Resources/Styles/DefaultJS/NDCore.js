@@ -446,3 +446,23 @@ String.prototype.StartsWith = function (other)
 
 	return (this.length >= other.length && this.substr(0, other.length) == other);
 	};
+
+
+/* Function: String.EntityDecode
+	Returns the string with entity chars like &amp; replaced with their original characters.  Only substitutes characters
+	found in <GregValure.NaturalDocs.Engine.StringExtensions.EntityEncode()>.
+*/
+String.prototype.EntityDecode = function ()
+	{
+	// DEPENDENCY: Must update this whenever StringExtensions.EntityEncode() is changed.
+
+	var output = this;
+
+	// Using string constants instead of regular expressions doesn't allow a global substitution.
+	output = output.replace(/&lt;/g, "<");
+	output = output.replace(/&gt;/g, ">");
+	output = output.replace(/&quot;/g, "\"");
+	output = output.replace(/&amp;/g, "&");
+
+	return output;
+	};

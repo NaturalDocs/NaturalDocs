@@ -138,6 +138,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public static string EntityEncode (this char input)
 			{
+			// DEPENDENCY: Must update Styles/NDCore.js String.EntityDecode() if this function changes.
+
 			if (input == '"')
 				{  return "&quot;";  }
 			else if (input == '&')
