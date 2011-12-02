@@ -12,6 +12,8 @@
  *		- Output file paths cannot contain the hash character as it would truncate any URL based on it.
  *		- Output file paths cannot contain the semicolon or ampersand characters as not all browsers can load files with
  *		  them in the path.
+ *		- Output file paths cannot contain the percent sign as it would conflict with URI encoding.
+ *		- Output file paths can contain spaces but they are replaced anyway to keep URLs contiguous.
  *		
  * 
  * File: Config.nd
@@ -1560,7 +1562,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* var: restrictedPathCharacters
 		 * An array of characters that cannot appear in output paths according to <Path Restrictions>.
 		 */
-		public static char[] restrictedPathCharacters = { ':', '#', ';', '&' };
+		public static char[] restrictedPathCharacters = { ':', '#', ';', '&', '%', ' ' };
 
 		/* var: AllPageTypes
 		 * A static array of all the choices in <PageType>.
