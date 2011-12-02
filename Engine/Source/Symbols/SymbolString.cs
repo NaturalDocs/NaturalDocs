@@ -279,7 +279,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 						
 					index = nextChar + 1;
 					}
-				else if (index + 1 < symbolString.Length && 
+				else if (nextChar + 1 < symbolString.Length && 
 							( (symbolString[nextChar] == ':' && symbolString[nextChar + 1] == ':') ||
 								(symbolString[nextChar] == '-' && symbolString[nextChar + 1] == '>') )
 							)
