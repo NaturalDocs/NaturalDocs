@@ -1,0 +1,237 @@
+
+Title: Case Insensitivity
+_______________________________________________________________________________
+
+Whenever the algorithm changes the output HTML needs to be tested in every browser.  Every topic 
+has a long body so that you can easily check if the browser correctly navigates to it.
+
+
+	Case Sensitive Anchors:
+
+		Internet Explorer cannot handle case sensitive anchors, meaning it won't distinguish between
+		#member and #Member.  This is annoying because it means URLs will be uglier when you have
+		two anchors that differ only in case, such as for a private variable and it's public property.  Alas.
+
+		It's been changed, but this is left here for reference.
+
+		IE 9 - Failed
+		IE 8 - Failed
+		IE 7 - Failed
+		IE 6 - Failed
+		Firefox 8 - Passed
+		Firefox 5 - Passed
+		Firefox 4 - Passed
+		Firefox 3.6 - Passed
+		Chrome 15 - Passed
+		Chrome 12 - Passed
+		Opera 11.5 - Passed
+		Safari 5 - Passed
+
+
+	Case Insensitive Anchors:
+
+		Results now that anchor duplicate checking is case insensitive.
+
+		IE 9 - Passed
+		IE 8 - Passed
+		IE 7 - Passed
+		IE 6 - Passed
+		Firefox 8 - Passed
+		Firefox 5 - Passed
+		Firefox 4 - Passed
+		Firefox 3.6 - Passed
+		Chrome 15 - Passed
+		Chrome 12 - Passed
+		Opera 11.5 - Passed
+		Safari 5 - Passed
+
+
+
+Topic: Case Sensitivity Test
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+	1
+
+
+Topic: case sensitivity test
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+	2
+
+
+Topic: CASE SENSITIVITY TEST
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+
+	3
+

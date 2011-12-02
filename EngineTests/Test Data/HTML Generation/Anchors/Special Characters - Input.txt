@@ -1,0 +1,528 @@
+
+Title: Special Characters
+_______________________________________________________________________________
+
+Whenever the algorithm changes or new tests are introduced here, the output HTML needs to be tested
+in every browser.  Every topic has a long body so that you can easily check if the browser correctly
+navigates to it.
+
+	IE 9 - Passed
+	IE 8 - Passed
+	IE 7 - Passed
+	IE 6 - Passed
+	Firefox 8 - Passed
+	Firefox 5 - Passed
+	Firefox 4 - Passed
+	Firefox 3.6 - Passed
+	Chrome 15 - Passed
+	Chrome 12 - Passed
+	Opera 11.5 - Passed
+	Safari 5 - Passed
+
+
+Topic: Question Mark?
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+	Question Mark
+
+
+Topic: "Quotes"
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+	Quotes
+
+
+Topic: Some%Reserved#URL/Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+	Some Reserved URL Characters
+
+
+Topic: Colon:
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+	Colon
+
+
+Topic: <Angle Brackets>
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+	Angle Brackets
+
+
+Topic: (Full Parenthesis)
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+	Full Parenthesis
+
+
+Topic: Ending (Parenthesis)
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+	Ending Parenthesis
+
+
+Topic: URI %3D Confusion
+
+	%3D is a valid URI substitution, but since it appears in the text we need to make sure it's escaped
+	properly and appears like that in the output.  It also needs to generate an anchor all browsers can
+	navigate to.  It should NOT appear as an equals sign anywhere.
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
+
+	URI Confusion
