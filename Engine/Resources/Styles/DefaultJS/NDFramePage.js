@@ -145,6 +145,8 @@ var NDFramePage = new function ()
 		// will return the whole thing.
 		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
 
+		hash = decodeURI(hash);
+
 		if (NDCore.IsFileHashPath(hash))
 			{
 			this.hashType = `FileHash;
