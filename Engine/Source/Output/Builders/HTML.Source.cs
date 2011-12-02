@@ -64,7 +64,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					StringBuilder html = new StringBuilder("\r\n\r\n");
 					HTMLTopic topicBuilder = new HTMLTopic(this);
-					StringSet usedAnchors = new StringSet(false, false);
+
+					// Must use a case-insensitive StringSet because IE 6-9 doesn't treat anchors that only differ in case as different.
+					StringSet usedAnchors = new StringSet(true, false);
 						
 					for (int i = 0; i < topics.Count; i++)
 						{  

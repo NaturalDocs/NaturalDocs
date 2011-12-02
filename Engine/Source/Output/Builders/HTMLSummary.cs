@@ -318,7 +318,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("   ");
 			#endif
 
-			StringSet usedAnchors = new StringSet(false, false);
+			// Must use a case-insensitive StringSet because IE 6-9 doesn't treat anchors that only differ in case as different.
+			StringSet usedAnchors = new StringSet(true, false);
 			output.Append('[');
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
