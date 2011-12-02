@@ -219,6 +219,8 @@ var NDSummary = new function ()
 
 		var frame = document.getElementById("CFrame");
 
+		anchor = anchor.EntityDecode();
+
 		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
 		frame.contentWindow.location = NDFramePage.contentPath + "#" + anchor;
 
