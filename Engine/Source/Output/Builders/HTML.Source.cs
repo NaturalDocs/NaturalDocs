@@ -582,6 +582,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			anchor.Replace('\t', ' ');
 
+			// Remove percent signs so they don't conflict with URI encoding.
+			anchor.Replace('%', ' ');
+
 			// Remove all whitespace unless it separates two text characters.  Replace the ones that remain with underscores.
 			int i = 0;
 			while (i < anchor.Length)
