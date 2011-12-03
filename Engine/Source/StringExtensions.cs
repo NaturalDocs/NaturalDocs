@@ -39,6 +39,32 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			return WhitespaceCharsRegex.Replace(input, "");
 			}
+
+		/* Function: NormalizeLineBreaks
+		 * Replaces all line breaks in a string with the native platform's format, which is CRLF for Windows and LF for Mac/Linux.
+		 */
+		static public string NormalizeLineBreaks (this string input)
+			{
+			bool hasCR = (input.IndexOf('\r') != -1);
+			bool hasLF = (input.IndexOf('\n') != -1);
+
+			if (Config.Manager.UsingUnix)
+				{
+				if (hasCR)
+					{  return input.Replace("\r", "");  }
+				else
+					{  return input;  }
+				}
+			else // Windows
+				{
+				if (hasCR && hasLF)
+					{  return input;  }
+				else if (hasCR)
+					{  return input.Replace("\r", "\r\n");  }
+				else // hasLF
+					{  return input.Replace("\n", "\r\n");  }
+				}
+			}
 		
 		/* Function: NormalizeKey
 		 * Converts the string to a version suitable for use as the key in a table according to the passed parameters.  If 
