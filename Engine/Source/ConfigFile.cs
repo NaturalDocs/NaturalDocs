@@ -664,28 +664,41 @@ namespace GregValure.NaturalDocs.Engine
 
 		/* Function: SaveIfDifferent
 		 * 
-		 * Saves the passed content to the file if it's different than what's already there.  Checking the existing content prevents
-		 * unnecessary writes and timestamp changes.  Returns whether it was successful.
+		 * Saves the passed content to the file if it's meaningfully different than what's already there.  Checking the existing content 
+		 * prevents unnecessary writes and timestamp changes.  Returns whether it was successful.
 		 * 
 		 * If noErrorOnFail is set, it will return false if it fails but perform no other action.  If it is not set, an error message will be
 		 * added to the list as well.
 		 */
-		public static bool SaveIfDifferent (Path filename, string newContent, bool noErrorOnFail, Errors.ErrorList errorList)
+		public static bool SaveIfDifferent (Path filename, string newContent, bool noErrorOnFail, Errors.ErrorList errorList = null)
 			{
-			string existingFileContent = null;
+			string existingContent = null;
 			try
-				{  existingFileContent = System.IO.File.ReadAllText(filename, System.Text.Encoding.UTF8);  }
+				{  existingContent = System.IO.File.ReadAllText(filename, System.Text.Encoding.UTF8);  }
 			catch
 				{
 				// Ignore.  If we can't read it, chances are we can't write to it either so let that error handling take care of it.
 				}
+
+			// We don't want to rewrite the file just for line break differences.  This would cause unnecessary file changes when
+			// using version control systems across multiple platforms.
+			string newContentNormalized = newContent.NormalizeLineBreaks();
+			string existingContentNormalized = (existingContent == null ? null : existingContent.NormalizeLineBreaks());
+
+			// We also don't want to rewrite the file just for Format: line differences.  This prevents unnecessary file changes in 
+			// version control systems when the contents of two files are the same except for "Format: 2.0" versus "Format: 2.0.1".
+			newContentNormalized = FormatLineRegex.Replace(newContentNormalized, "");
+			existingContentNormalized = (existingContent == null ? null : FormatLineRegex.Replace(existingContentNormalized, ""));
 				
-			if (newContent == existingFileContent)
+			if (newContentNormalized == existingContentNormalized)
 				{  return true;  }
 			else
 				{
 				try
-					{  System.IO.File.WriteAllText(filename, newContent, System.Text.Encoding.UTF8);  }
+					{  
+					// Write out the regular content, NOT the normalized content.
+					System.IO.File.WriteAllText(filename, newContent, System.Text.Encoding.UTF8);  
+					}
 				catch
 					{
 					if (!noErrorOnFail)
@@ -754,6 +767,9 @@ namespace GregValure.NaturalDocs.Engine
 		 * An array of braces characters for use with IndexOfAny(char[]).
 		 */
 		static protected char[] BracesChars = new char[] { '{', '}' };
+
+
+		static public Regex.Config.FormatLine FormatLineRegex = new Regex.Config.FormatLine();
 									
 		}
 	}
