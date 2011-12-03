@@ -133,7 +133,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 				{  }
 
 			// We don't want to change the time stamps every time, so only write when necessary.
-			if (oldOutput == null || oldOutput != output)
+			if (oldOutput == null || oldOutput.NormalizeLineBreaks() != output.NormalizeLineBreaks())
 				{  System.IO.File.WriteAllText(actualOutputFile, output);  }
 			}
 
