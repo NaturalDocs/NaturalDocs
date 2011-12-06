@@ -29,7 +29,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedEndingSymbolIDs) VALUES (?,?,?)", 
 										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
-			usedEndingSymbolIDs.Clear();
 			
 			
 			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +  // Automatic index
@@ -43,17 +42,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																			"Prototype TEXT, " +
 																		   "Symbol TEXT NOT NULL, " +
 																			"Parameters TEXT, " +
-																		   "EndingSymbolID INTEGER NOT NULL, " +
+																		   "EndingSymbol TEXT NOT NULL, " +
 																		   "TopicTypeID INTEGER NOT NULL, " +
 																		   "AccessLevel INTEGER NOT NULL, " +
 																		   "Tags TEXT )");
 																	   
-			connection.Execute("CREATE INDEX TopicsFileCommentIndex ON Topics (FileID, CommentLineNumber)");
-			connection.Execute("CREATE INDEX TopicsEndingSymbolID ON Topics (EndingSymbolID)");
-			
-			
-			connection.Execute("CREATE TABLE EndingSymbols (EndingSymbolID INTEGER PRIMARY KEY NOT NULL, " +  // Automatic index
-																				 "EndingSymbol TEXT UNIQUE NOT NULL )");  // Automatic index
+			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)");
+			connection.Execute("CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)");
 			}
 
 
@@ -75,16 +70,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves various system variables from the database.  This currently includes:
 		 * 
 		 *		- <UsedTopicIDs>
-		 *		- <UsedEndingSymbolIDs>
 		 */
 		protected void LoadSystemVariables ()
 			{
-			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedEndingSymbolIDs from System"))
+			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs from System"))
 				{
 				query.Step();
 				
 				usedTopicIDs.FromString( query.StringColumn(0) );
-				usedEndingSymbolIDs.FromString( query.StringColumn(1) );
 				}
 			}
 			
@@ -94,8 +87,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void SaveSystemVariablesAndVersion ()
 			{
-			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedEndingSymbolIDs=?",
-										Engine.Instance.VersionString, usedTopicIDs.ToString(), usedEndingSymbolIDs.ToString());
+			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?", 
+												Engine.Instance.VersionString, usedTopicIDs.ToString());
 			}
 			
 
@@ -103,67 +96,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 * Cleans up any stray data associated with the database, assuming all documentation is up to date.  You can pass a
 		 * <CancelDelegate> if you'd like to interrupt this process early.
-		 * 
-		 * This goes through all the ending symbol IDs used by topics which have been deleted to see if any of them are no
-		 * longer in use and thus can be deleted as well.
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
-			bool writeLock = false;
-			databaseLock.GetReadPossibleWriteLock(false);
-			
-			try
-				{
-				if (cancelDelegate() || endingSymbolIDsToCheckForDeletion.IsEmpty)
-					{  return;  }
-					
-				List<int> endingSymbolIDsToRemove = new List<int>();
-				
-				using (SQLite.Query query = connection.Query("SELECT TopicID from Topics where EndingSymbolID = ? LIMIT 1"))
-					{
-					foreach (int endingSymbolID in endingSymbolIDsToCheckForDeletion)
-						{
-						if (cancelDelegate())
-							{  return;  }
-						
-						query.BindValues(endingSymbolID);
-						
-						if (query.Step() == false)
-							{  endingSymbolIDsToRemove.Add(endingSymbolID);  }
-							
-						query.Reset(true);
-						}
-					}
-					
-				if (endingSymbolIDsToRemove.Count > 0)
-					{
-					databaseLock.UpgradeToReadWriteLock(false);
-					writeLock = true;
-					
-					using (SQLite.Query query = connection.Query("DELETE FROM EndingSymbols WHERE EndingSymbolID = ?"))
-						{
-						foreach (int endingSymbolID in endingSymbolIDsToRemove)
-							{
-							if (cancelDelegate())
-								{  return;  }
-							
-							query.BindValues(endingSymbolID);
-							query.Step();
-							query.Reset(true);
-							
-							endingSymbolIDsToCheckForDeletion.Remove(endingSymbolID);  
-							}
-						}
-					}
-				
-				}
-			finally
-				{
-				if (writeLock)
-					{  databaseLock.ReleaseReadWriteLock(false);  }
-				else
-					{  databaseLock.ReleaseReadPossibleWriteLock(false);  }
-				}
+			// This used to clean up ending symbol IDs.  That was removed from the database so currently there's nothing to do.
+			// We keep this function around anyway because this may change in the future.
 			}
 			
 			

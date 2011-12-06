@@ -74,8 +74,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			databaseLock = new Lock();
 			usedTopicIDs = new IDObjects.NumberSet();
-			usedEndingSymbolIDs = new IDObjects.NumberSet();
-			endingSymbolIDsToCheckForDeletion = new IDObjects.NumberSet();
 			
 			changeWatchers = new List<IChangeWatcher>();
 			}
@@ -217,7 +215,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				connection = null;
 
 				usedTopicIDs.Clear();
-				usedEndingSymbolIDs.Clear();
 				
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
 
@@ -251,28 +248,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{  return usedTopicIDs;  }
-			}
-			
-			
-		/* Property: UsedEndingSymbolIDs
-		 * An <IDObjects.NumberSet> of all the used symbol IDs in <CodeDB.EndingSymbols>.  Its use is governed by 
-		 * <DatabaseLock>.
-		 */
-		internal IDObjects.NumberSet UsedEndingSymbolIDs
-			{
-			get
-				{  return usedEndingSymbolIDs;  }
-			}
-			
-			
-		/* Property: EndingSymbolIDsToCheckForDeletion
-		 * An <IDObjects.NumberSet> of all the ending symbol IDs that have had a topic deleted, and thus need to be checked to
-		 * see if there are any more that use it.  Its use is governed by <DatabaseLock>.
-		 */
-		internal IDObjects.NumberSet EndingSymbolIDsToCheckForDeletion
-			{
-			get
-				{  return endingSymbolIDsToCheckForDeletion;  }
 			}
 			
 			
@@ -322,16 +297,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected IDObjects.NumberSet usedTopicIDs;
 		
-		/* var: usedEndingSymbolIDs
-		 */
-		protected IDObjects.NumberSet usedEndingSymbolIDs;
-		
-		/* var: endingSymbolIDsToCheckForDeletion
-		 * An <IDObjects.NumberSet> of ending symbol IDs that have lost a reference.  Cleanup needs to check whether
-		 * their database entries have any other references and thus whether they can be removed.
-		 */
-		protected IDObjects.NumberSet endingSymbolIDsToCheckForDeletion;
-
 		/* var: changeWatchers
 		 * A list of objects that are watching the database for changes.  If there are none, the list will be empty
 		 * rather than null.

@@ -108,13 +108,13 @@ Column: Parameters
 	The fully resolved, normalized <Symbols.ParameterString> of the topic.
 	
 	
-Column: EndingSymbolID
+Column: EndingSymbol
 
 	(SQL Prototype)
-		EndingSymbolID INTEGER NOT NULL
+		EndingSymbol TEXT NOT NULL
 	(end)
 	
-	The <CodeDB.EndingSymbols> ID for the ending symbol that matches <Symbol>.
+	The <Symbols.EndingSymbol> that's derived from <Symbol>.
 	
 	
 Column: TopicTypeID

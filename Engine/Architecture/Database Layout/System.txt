@@ -23,15 +23,3 @@ Column: UsedTopicIDs
 
 	A string containing the <GregValure.NaturalDocs.Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.  
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
-	
-	
-Column: UsedEndingSymbolIDs
-
-	(SQL Prototype)
-		UsedEndingSymbolIDs TEXT NOT NULL
-	(end)
-
-	A string containing the <GregValure.NaturalDocs.Engine.IDObjects.NumberSet> for all the used ending symbol IDs in 
-	<CodeDB.EndingSymbols>.  This is only used for storage between Natural Docs executions.  It is not continually updated during 
-	execution.
-	

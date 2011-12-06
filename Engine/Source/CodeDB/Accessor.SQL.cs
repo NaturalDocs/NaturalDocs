@@ -38,8 +38,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<Topic> topics = new List<Topic>();
 			
 			using (SQLite.Query query = connection.Query("SELECT TopicID, LanguageID, CommentLineNumber, CodeLineNumber, Title, " +
-																					 " Body, Summary, Prototype, Symbol, Parameters, EndingSymbolID, TopicTypeID, " +
-																					 "AccessLevel, Tags " +
+																					 " Body, Summary, Prototype, Symbol, Parameters, TopicTypeID, AccessLevel, Tags " +
 																		   "FROM Topics WHERE FileID = ? " +
 																		   "ORDER BY CommentLineNumber ASC", fileID))
 				{
@@ -57,10 +56,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Prototype = query.StringColumn(7);
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(8) );
 					topic.Parameters = ParameterString.FromExportedString( query.StringColumn(9) );
-					topic.EndingSymbolID = query.IntColumn(10);
-					topic.TopicTypeID = query.IntColumn(11);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(12);
-					topic.TagString = query.StringColumn(13);
+					topic.TopicTypeID = query.IntColumn(10);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(11);
+					topic.TagString = query.StringColumn(12);
 
 					topic.FileID = fileID;
 					
@@ -94,7 +92,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		Parameters - Can be null.  Will not be automatically generated though.
-		 *		EndingSymbolID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -112,7 +109,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			RequireContent("AddTopic", "Symbol", topic.Symbol);
 			// Parameters
-			RequireZero("AddTopic", "EndingSymbolID", topic.EndingSymbolID);
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -120,37 +116,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 
 			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
-			EndingSymbol endingSymbol = topic.Symbol.EndingSymbol;
 			
-			using (SQLite.Query query = connection.Query("SELECT EndingSymbolID FROM EndingSymbols " +
-																		   "WHERE EndingSymbol = ?", endingSymbol))
-				{
-				if (query.Step())
-					{  
-					topic.EndingSymbolID = query.IntColumn(0);  
-					
-					// If a topic changes too much for UpdateTopic() but keeps its ending symbol, the old topic will be removed and the
-					// updated topic will be added as new.  The removal will cause the ending symbol to be added to the list to be checked
-					// for deletion, so it's a worthwhile optimization to remove the ending symbol ID from that list here.
-					Engine.Instance.CodeDB.EndingSymbolIDsToCheckForDeletion.Remove(topic.EndingSymbolID);
-					}
-				}
-				
-			if (topic.EndingSymbolID == 0)
-				{
-				topic.EndingSymbolID = Engine.Instance.CodeDB.UsedEndingSymbolIDs.LowestAvailable;
-				
-				connection.Execute("INSERT INTO EndingSymbols (EndingSymbolID, EndingSymbol) VALUES (?, ?)", 
-											topic.EndingSymbolID, endingSymbol);
-											
-				Engine.Instance.CodeDB.UsedEndingSymbolIDs.Add(topic.EndingSymbolID);
-				}
-				
 			connection.Execute("INSERT INTO Topics (TopicID, FileID, LanguageID, CommentLineNumber, CodeLineNumber, Title, Body, " +
-																	" Summary, Prototype, Symbol, Parameters, EndingSymbolID, TopicTypeID, AccessLevel, Tags) " +
+																	" Summary, Prototype, Symbol, Parameters, EndingSymbol, TopicTypeID, AccessLevel, Tags) " +
 																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 										topic.TopicID, topic.FileID, topic.LanguageID, topic.CommentLineNumber, topic.CodeLineNumber,
-										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, topic.EndingSymbolID, 
+										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, topic.Symbol.EndingSymbol, 
 										topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString);
 			
 			Engine.Instance.CodeDB.UsedTopicIDs.Add(topic.TopicID);
@@ -248,7 +219,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			// Symbol
 			// Parameters
-			RequireNonZero("DeleteTopic", "EndingSymbolID", topic.EndingSymbolID);
 			// TopicTypeID
 			// AccessLevel
 			// TagString
@@ -258,8 +228,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);
 			
-			Engine.Instance.CodeDB.EndingSymbolIDsToCheckForDeletion.Add(topic.EndingSymbolID);
-
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
 			
 			try
@@ -302,7 +270,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		Parameters - Can be null.  Will not be automatically generated though.
-		 *		EndingSymbolID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -338,7 +305,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							{
 							foundMatch = true;
 							newTopic.TopicID = oldTopics[i].TopicID;
-							newTopic.EndingSymbolID = oldTopics[i].EndingSymbolID;
 							oldTopics.RemoveAt(i);
 							}
 						else if (result == Topic.DatabaseCompareResult.EqualExceptLineNumbersAndBody)
@@ -353,7 +319,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							foundMatch = true;
 							UpdateTopic(oldTopics[i], newTopic.CommentLineNumber, newTopic.CodeLineNumber, newTopic.Body);
 							newTopic.TopicID = oldTopics[i].TopicID;
-							newTopic.EndingSymbolID = oldTopics[i].EndingSymbolID;
 							oldTopics.RemoveAt(i);
 							}
 						}

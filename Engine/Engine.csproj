@@ -183,7 +183,6 @@
     <Content Include="Architecture\Code Conventions.txt" />
     <Content Include="Architecture\Compilation Symbols.txt" />
     <Content Include="Architecture\CSS Structure.txt" />
-    <Content Include="Architecture\Database Layout\EndingSymbols.txt" />
     <Content Include="Architecture\Database Layout\System.txt" />
     <Content Include="Architecture\Database Layout\Topics.txt" />
     <Content Include="Architecture\File Parsing.txt" />

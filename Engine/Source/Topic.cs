@@ -41,7 +41,6 @@ namespace GregValure.NaturalDocs.Engine
 			prototype = null;
 			symbol = new SymbolString();
 			parameters = new ParameterString();
-			endingSymbolID = 0;
 			topicTypeID = 0;
 			accessLevel = Languages.AccessLevel.Unknown;
 			tags = null;
@@ -55,9 +54,9 @@ namespace GregValure.NaturalDocs.Engine
 		 * Compares two topics, returning whether they are equal, not equal, or equal except for line numbers and <Body>.
 		 * The latter is an important distinction because it allows use of <CodeDB.Accessor.UpdateTopic()>.
 		 * 
-		 * <TopicID> and <EndingSymbolID> are not included in the comparison because it's assumed that you would be
-		 * comparing Topics from a parse, where they would not be set, to Topics from the database, where they would.
-		 * <UsesPluralKeyword> is also not compared because it is not a database field.
+		 * <TopicID> is not included in the comparison because it's assumed that you would be comparing Topics from a parse, 
+		 * where they would not be set, to Topics from the database, where they would.  <UsesPluralKeyword> is also not 
+		 * compared because it is not a database field.
 		 */
 		public DatabaseCompareResult DatabaseCompare (Topic other)
 			{
@@ -272,18 +271,6 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
-		/* Property: EndingSymbolID
-		 * The ID of the topic's ending symbol, as found in <CodeDB.EndingSymbols>, or zero if it hasn't been set.
-		 */
-		public int EndingSymbolID
-			{
-			get
-				{  return endingSymbolID;  }
-			set
-				{  endingSymbolID = value;  }
-			}
-			
-			
 		/* Property: TopicTypeID
 		 * The ID of the topic's type, or zero if it hasn't been set.
 		 */
@@ -414,11 +401,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * The parameters of the symbol, or null if none.
 		 */
 		protected ParameterString parameters;
-
-		/* var: endingSymbolID
-		 * The ending symbol ID of the topic, or zero if not specified.
-		 */
-		protected int endingSymbolID;
 
 		/* var: topicTypeID
 		 * The ID number of the topic's type, or zero if not specified.
