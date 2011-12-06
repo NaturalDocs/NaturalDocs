@@ -10,9 +10,6 @@
  *		- Retrieve this object from <CodeDB.Manager.GetAccessor()> or <CodeDB.Manager.GetPriorityAccessor()>.
  *		
  *		- Use the <Lock Functions> and the <Topic Functions> to manipulate the database.
- *		
- *		- If you've made changes, check <NeedCleanupAfterChanges> before exiting and if necessary, acquire a
- *		  read/future write lock and call <CleanupAfterChanges()>.
  * 
  * 
  * Multithreading: Thread Safety Notes
