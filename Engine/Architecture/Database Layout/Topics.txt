@@ -5,6 +5,11 @@ _______________________________________________________________________________
 The table that contains all the topics found by Natural Docs.
 
 
+
+Group: Columns
+_______________________________________________________________________________
+
+
 Column: TopicID
 
 	(SQL Prototype)
@@ -132,7 +137,8 @@ Column: AccessLevel
 		AccessLevel INTEGER NOT NULL
 	(end)
 	
-	The access level of the topic, such as public or protected.  The value is managed by <GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
+	The access level of the topic, such as public or protected.  The value is managed by 
+	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	
 Column: Tags
@@ -143,3 +149,31 @@ Column: Tags
 	
 	A number set of all the tags applied to this topic, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
 	Is a string encoding of a <GregValure.NaturalDocs.Engine.IDObjects.NumberSet>.
+
+
+
+Group: Indexes
+_______________________________________________________________________________
+
+
+Index: TopicsByID
+
+	(SQL Prototype)
+		TopicID INTEGER PRIMARY KEY NOT NULL
+	(end)
+
+	Automatically created by TopicID being defined as a primary key.
+
+
+Index: TopicsByFile
+
+	(SQL Prototype)
+		CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)
+	(end)
+
+
+Index: TopicsByEndingSymbol
+
+	(SQL Prototype)
+		CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)
+	(end)
