@@ -428,6 +428,148 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 			
 			
+		/* Function: LinkInterpretations
+		 * 
+		 * Generates a list of possible interpretations for the passed target of a ND link, or null if there are none.
+		 * 
+		 * If includeLiteral is set, an interpretation will be added to the list without any at links or plural/possessive conversions applied.
+		 * The return value will therefore never be null.
+		 */
+		public List<LinkInterpretation> LinkInterpretations (string linkText, bool includeLiteral, bool allowAtLinks, bool allowPluralsAndPossessives)
+			{
+			List<LinkInterpretation> interpretations = null;
+			string input = linkText.CondenseWhitespace();
+			
+			
+			if (includeLiteral)
+				{
+				interpretations = new List<LinkInterpretation>();
+				
+				LinkInterpretation interpretation = new LinkInterpretation();
+				interpretation.Target = input;
+				interpretations.Add(interpretation);
+				}
+			
+			
+			if (allowAtLinks)
+				{
+				for (int firstSpace = input.IndexOf(' '); firstSpace != -1; firstSpace = input.IndexOf(' ', firstSpace + 1))
+					{
+					for (int secondSpace = input.IndexOf(' ', firstSpace + 1); secondSpace != -1; secondSpace = input.IndexOf(' ', secondSpace + 1))
+						{
+						string keyword = input.Substring(firstSpace + 1, secondSpace - (firstSpace + 1));
+						
+						if (IsAtLinkKeyword(keyword))
+							{
+							if (interpretations == null)
+								{  interpretations = new List<LinkInterpretation>();  }
+							
+							LinkInterpretation interpretation = new LinkInterpretation();
+							interpretation.Text = input.Substring(0, firstSpace);
+							interpretation.Target = input.Substring(secondSpace + 1);
+							interpretation.AtKeywordPosition = firstSpace + 1;
+							
+							interpretations.Add(interpretation);
+							}
+						}
+					}
+				}
+				
+				
+			// We only generate plural and possessive interpretations from the input string because it doesn't make sense to use both an "at"
+			// link and a plural or possessive form in the same link.
+			
+			if (allowPluralsAndPossessives)
+				{
+				string nInput = input.Normalize(System.Text.NormalizationForm.FormC);
+				string lcnInput = nInput.ToLower();
+				
+				List<String> pluralConversions = conversionLists[(int)ConversionListIndex.PluralConversions];
+				List<String> possessiveConversions = conversionLists[(int)ConversionListIndex.PossessiveConversions];
+
+				// We use -2 to signify none, since we also want to test each plural conversion without any possessive conversion applied.
+				for (int possessiveIndex = -2; possessiveIndex < possessiveConversions.Count; possessiveIndex += 2)
+					{
+					string nWithoutPossessive, lcnWithoutPossessive;
+					
+					if (possessiveIndex == -2)
+						{  
+						nWithoutPossessive = nInput;
+						lcnWithoutPossessive = lcnInput;
+						}
+					else if (lcnInput.EndsWith(possessiveConversions[possessiveIndex]))
+						{
+						nWithoutPossessive = nInput.Substring(0, nInput.Length - possessiveConversions[possessiveIndex].Length);
+						lcnWithoutPossessive = lcnInput.Substring(0, lcnInput.Length - possessiveConversions[possessiveIndex].Length);
+						
+						if (possessiveConversions[possessiveIndex+1] != null)
+							{  
+							nWithoutPossessive += possessiveConversions[possessiveIndex+1];
+							lcnWithoutPossessive += possessiveConversions[possessiveIndex+1];  
+							}
+						}
+					else
+						{  
+						nWithoutPossessive = null;
+						lcnWithoutPossessive = null;  
+						}
+						
+					if (nWithoutPossessive != null)
+						{
+						// Again -2 signifies none, since we also want each possessive conversion without any plural conversion applied.
+						for (int pluralIndex = -2; pluralIndex < pluralConversions.Count; pluralIndex += 2)
+							{
+							string nWithoutEither;
+							
+							if (pluralIndex == -2)
+								{
+								// Skip when we're missing both.  We have that on the list already.
+								if (possessiveIndex == -2)
+									{  nWithoutEither = null;  }
+								else
+									{  nWithoutEither = nWithoutPossessive;  }
+								}	
+														
+							else if (lcnWithoutPossessive.EndsWith(pluralConversions[pluralIndex]))
+								{
+								nWithoutEither = nWithoutPossessive.Substring(0, nWithoutPossessive.Length - pluralConversions[pluralIndex].Length);
+								
+								if (pluralConversions[pluralIndex+1] != null)
+									{  nWithoutEither += pluralConversions[pluralIndex+1];  }
+								}
+								
+							else
+								{  nWithoutEither = null;  }
+								
+							// We also check for empty because a conversion may render it so.  Think of removing the trailing S from a link that was
+							// only an S.							
+							if (!String.IsNullOrEmpty(nWithoutEither))
+								{
+								if (interpretations == null)
+									{  interpretations = new List<LinkInterpretation>();  }
+
+								LinkInterpretation interpretation = new LinkInterpretation();
+								
+								interpretation.Text = input;
+								interpretation.Target = nWithoutEither;
+								
+								if (pluralIndex != -2)
+									{  interpretation.PluralConversionIndex = pluralIndex;  }
+								if (possessiveIndex != -2)
+									{  interpretation.PossessiveConversionIndex = possessiveIndex;  }
+									
+								interpretations.Add(interpretation);
+								}
+							}
+						}
+					}
+				}
+				
+			
+			return interpretations;
+			}
+
+
 			
 		// Group: Protected Functions
 		// __________________________________________________________________________
@@ -1248,148 +1390,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected bool IsAtLinkKeyword (string keyword)
 			{
 			return sets[(int)SetIndex.AtLinkKeywords].Contains(keyword);
-			}
-			
-			
-		/* Function: LinkInterpretations
-		 * 
-		 * Generates a list of possible interpretations for the passed target of a ND link, or null if there are none.
-		 * 
-		 * If includeLiteral is set, an interpretation will be added to the list without any at links or plural/possessive conversions applied.
-		 * The return value will therefore never be null.
-		 */
-		protected List<LinkInterpretation> LinkInterpretations (string linkText, bool includeLiteral, bool allowAtLinks, bool allowPluralsAndPossessives)
-			{
-			List<LinkInterpretation> interpretations = null;
-			string input = linkText.CondenseWhitespace();
-			
-			
-			if (includeLiteral)
-				{
-				interpretations = new List<LinkInterpretation>();
-				
-				LinkInterpretation interpretation = new LinkInterpretation();
-				interpretation.Target = input;
-				interpretations.Add(interpretation);
-				}
-			
-			
-			if (allowAtLinks)
-				{
-				for (int firstSpace = input.IndexOf(' '); firstSpace != -1; firstSpace = input.IndexOf(' ', firstSpace + 1))
-					{
-					for (int secondSpace = input.IndexOf(' ', firstSpace + 1); secondSpace != -1; secondSpace = input.IndexOf(' ', secondSpace + 1))
-						{
-						string keyword = input.Substring(firstSpace + 1, secondSpace - (firstSpace + 1));
-						
-						if (IsAtLinkKeyword(keyword))
-							{
-							if (interpretations == null)
-								{  interpretations = new List<LinkInterpretation>();  }
-							
-							LinkInterpretation interpretation = new LinkInterpretation();
-							interpretation.Text = input.Substring(0, firstSpace);
-							interpretation.Target = input.Substring(secondSpace + 1);
-							interpretation.AtKeywordPosition = firstSpace + 1;
-							
-							interpretations.Add(interpretation);
-							}
-						}
-					}
-				}
-				
-				
-			// We only generate plural and possessive interpretations from the input string because it doesn't make sense to use both an "at"
-			// link and a plural or possessive form in the same link.
-			
-			if (allowPluralsAndPossessives)
-				{
-				string nInput = input.Normalize(System.Text.NormalizationForm.FormC);
-				string lcnInput = nInput.ToLower();
-				
-				List<String> pluralConversions = conversionLists[(int)ConversionListIndex.PluralConversions];
-				List<String> possessiveConversions = conversionLists[(int)ConversionListIndex.PossessiveConversions];
-
-				// We use -2 to signify none, since we also want to test each plural conversion without any possessive conversion applied.
-				for (int possessiveIndex = -2; possessiveIndex < possessiveConversions.Count; possessiveIndex += 2)
-					{
-					string nWithoutPossessive, lcnWithoutPossessive;
-					
-					if (possessiveIndex == -2)
-						{  
-						nWithoutPossessive = nInput;
-						lcnWithoutPossessive = lcnInput;
-						}
-					else if (lcnInput.EndsWith(possessiveConversions[possessiveIndex]))
-						{
-						nWithoutPossessive = nInput.Substring(0, nInput.Length - possessiveConversions[possessiveIndex].Length);
-						lcnWithoutPossessive = lcnInput.Substring(0, lcnInput.Length - possessiveConversions[possessiveIndex].Length);
-						
-						if (possessiveConversions[possessiveIndex+1] != null)
-							{  
-							nWithoutPossessive += possessiveConversions[possessiveIndex+1];
-							lcnWithoutPossessive += possessiveConversions[possessiveIndex+1];  
-							}
-						}
-					else
-						{  
-						nWithoutPossessive = null;
-						lcnWithoutPossessive = null;  
-						}
-						
-					if (nWithoutPossessive != null)
-						{
-						// Again -2 signifies none, since we also want each possessive conversion without any plural conversion applied.
-						for (int pluralIndex = -2; pluralIndex < pluralConversions.Count; pluralIndex += 2)
-							{
-							string nWithoutEither;
-							
-							if (pluralIndex == -2)
-								{
-								// Skip when we're missing both.  We have that on the list already.
-								if (possessiveIndex == -2)
-									{  nWithoutEither = null;  }
-								else
-									{  nWithoutEither = nWithoutPossessive;  }
-								}	
-														
-							else if (lcnWithoutPossessive.EndsWith(pluralConversions[pluralIndex]))
-								{
-								nWithoutEither = nWithoutPossessive.Substring(0, nWithoutPossessive.Length - pluralConversions[pluralIndex].Length);
-								
-								if (pluralConversions[pluralIndex+1] != null)
-									{  nWithoutEither += pluralConversions[pluralIndex+1];  }
-								}
-								
-							else
-								{  nWithoutEither = null;  }
-								
-							// We also check for empty because a conversion may render it so.  Think of removing the trailing S from a link that was
-							// only an S.							
-							if (!String.IsNullOrEmpty(nWithoutEither))
-								{
-								if (interpretations == null)
-									{  interpretations = new List<LinkInterpretation>();  }
-
-								LinkInterpretation interpretation = new LinkInterpretation();
-								
-								interpretation.Text = input;
-								interpretation.Target = nWithoutEither;
-								
-								if (pluralIndex != -2)
-									{  interpretation.PluralConversionIndex = pluralIndex;  }
-								if (possessiveIndex != -2)
-									{  interpretation.PossessiveConversionIndex = possessiveIndex;  }
-									
-								interpretations.Add(interpretation);
-								}
-							}
-						}
-					}
-				}
-				
-			
-			return interpretations;
 			}
 			
 

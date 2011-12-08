@@ -96,6 +96,17 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			}
 			
 			
+		/* Property: NaturalDocsParser
+		 * A reference to <Parsers.NaturalDocs> so that other code can call <Parsers.NaturalDocs.LinkInterpretations()>.
+		 */
+		public Parsers.NaturalDocs NaturalDocsParser
+			{
+			get
+				{  return naturalDocsParser;  }
+			}
+			
+			
+
 		// Group: Variables
 		// __________________________________________________________________________
 
