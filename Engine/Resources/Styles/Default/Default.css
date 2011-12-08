@@ -16,6 +16,10 @@
 		`MenuBackgroundColor = #E0E0E0
 		`SummaryBackgroundColor = #F8F8F8
 		`ToolTipBackgroundColor = #FFFFF0
+		`ContentBackgroundColor = #FFFFFF
+
+		`MenuSummaryBorderColor = #D8D8D8
+		`SummaryContentBorderColor = #E8E8E8
 
 		`MessageBackgroundColor = #FFFFF0
 		`MessageBorderColor = #A0A000
@@ -200,8 +204,8 @@ td {
 
 #NDSummary {
 	background-color: `SummaryBackgroundColor;
-	border-right: 1px solid #E8E8E8;
-	border-left: 1px solid #D8D8D8;
+	border-left: 1px solid `MenuSummaryBorderColor;
+	border-right: 1px solid `SummaryContentBorderColor;
 	position: fixed;
 	z-index: 2;
 	overflow: auto;
@@ -304,12 +308,15 @@ td {
 	}
 
 #NDMenuSizer:hover,
-#NDMenuSizer.Dragging,
+#NDMenuSizer.Dragging {
+	background-color: `SummaryBackgroundColor;
+	border-left: 1px solid `MenuSummaryBorderColor;
+	border-right: 1px solid `MenuSummaryBorderColor;
+	}
 #NDSummarySizer:hover,
 #NDSummarySizer.Dragging {
-	background-color: #EAEAEA;
-	border-left: 1px solid #FFFFFF;
-	border-right: 1px solid #989898;
+	background-color: `ContentBackgroundColor;
+	border-right: 1px solid `SummaryContentBorderColor;
 	}
 
 #NDContentCover {
@@ -343,7 +350,7 @@ td {
 
 
 body.NDContentPage {
-	background-color: #FFFFFF;
+	background-color: `ContentBackgroundColor;
 	padding: .5em 1em;
 	margin: 0;
 	}
