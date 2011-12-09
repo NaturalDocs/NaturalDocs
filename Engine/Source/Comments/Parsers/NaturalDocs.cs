@@ -132,7 +132,34 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		
 		// Group: Types
 		// __________________________________________________________________________
-		
+
+
+		/* enum: LinkInterpretationFlags
+		 * 
+		 * Options you can pass to <LinkInterpretations()>.
+		 * 
+		 * ExcludeLiteral - If set, the unaltered input string will not be added as one of the interpretations.  Only alternate
+		 *								 interpretations such as "at" links or plural/possessive conversions will be included, provided the 
+		 *								 relevant flags are set.
+		 *	 AllowAtLinks - If set, it will see if the input string can be interpreted as an "at" link such as 
+		 *								"<web site at http://www.naturaldocs.org>" and add any possibilities to the list.  There may be
+		 *								more than one, or there may be none.
+		 *	 AllowPluralsAndPossessives - If set, it will see if the input string can be interpreted as a plural form of another
+		 *														 word, and if so will add possible singular forms to the list.  There may be more than
+		 *														 one, or there may be none.
+		 *	 FromOriginalText - If set, specifies that the input string comes from the originaltext property of a <NDMarkup>
+		 *									  link and is surrounded by angle brackets which should be ignored.  If not set, it assumes the
+		 *									  input string is just the content of the link.
+		 */
+		[Flags]
+		public enum LinkInterpretationFlags : byte
+			{
+			ExcludeLiteral = 0x01,
+			AllowAtLinks = 0x02,
+			AllowPluralsAndPossessives = 0x04,
+			FromOriginalText = 0x08
+			}
+
 		
 		/* enum: BlockType
 		 * 
@@ -430,18 +457,25 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 		/* Function: LinkInterpretations
 		 * 
-		 * Generates a list of possible interpretations for the passed target of a ND link, or null if there are none.
+		 * Generates a list of possible interpretations for the passed target of a Natural Docs link, or null if there are none.  If
+		 * <LinkInterpretationFlags.ExcludeLiteral> is not set it will always return a list of at least one interpretation.
 		 * 
-		 * If includeLiteral is set, an interpretation will be added to the list without any at links or plural/possessive conversions applied.
-		 * The return value will therefore never be null.
+		 * If <LinkInterpretationFlags.ExcludeLiteral> is not set, the literal interpretation will always appear as the first entry
+		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
+		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 */
-		public List<LinkInterpretation> LinkInterpretations (string linkText, bool includeLiteral, bool allowAtLinks, bool allowPluralsAndPossessives)
+		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags)
 			{
 			List<LinkInterpretation> interpretations = null;
 			string input = linkText.CondenseWhitespace();
 			
+			if ((flags & LinkInterpretationFlags.FromOriginalText) != 0 && input.Length > 2 &&
+				 input[0] == '<' && input[input.Length - 1] == '>')
+				{
+				input = input.Substring(1, input.Length - 2);
+				}
 			
-			if (includeLiteral)
+			if ((flags & LinkInterpretationFlags.ExcludeLiteral) == 0)
 				{
 				interpretations = new List<LinkInterpretation>();
 				
@@ -451,7 +485,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				}
 			
 			
-			if (allowAtLinks)
+			if ((flags & LinkInterpretationFlags.AllowAtLinks) != 0)
 				{
 				for (int firstSpace = input.IndexOf(' '); firstSpace != -1; firstSpace = input.IndexOf(' ', firstSpace + 1))
 					{
@@ -479,7 +513,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			// We only generate plural and possessive interpretations from the input string because it doesn't make sense to use both an "at"
 			// link and a plural or possessive form in the same link.
 			
-			if (allowPluralsAndPossessives)
+			if ((flags & LinkInterpretationFlags.AllowPluralsAndPossessives) != 0)
 				{
 				string nInput = input.Normalize(System.Text.NormalizationForm.FormC);
 				string lcnInput = nInput.ToLower();
@@ -2588,7 +2622,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 									{
 									// See if we can interpret the link as an "at" URL or e-mail address.  We can accept the first interpretation
 									// we find.
-									List<LinkInterpretation> interpretations = LinkInterpretations(tagContent, false, true, false);
+									List<LinkInterpretation> interpretations = LinkInterpretations(tagContent, LinkInterpretationFlags.AllowAtLinks |
+																																										LinkInterpretationFlags.ExcludeLiteral);
 									bool found = false;
 									
 									if (interpretations != null)
