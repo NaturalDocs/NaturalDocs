@@ -32,9 +32,9 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			{
 			target = null;
 			text = null;
-			atKeywordPosition = -1;
-			pluralConversionIndex = -1;
-			possessiveConversionIndex = -1;
+			namedLink = false;
+			pluralConversion = false;
+			possessiveConversion = false;
 			}
 						
 			
@@ -70,64 +70,37 @@ namespace GregValure.NaturalDocs.Engine.Comments
 				{  text = value;  }
 			}
 
-		/* Property: UsesAtKeyword
-		 * Whether this interpretation is made with an "at" keyword.
+		/* Property: NamedLink
+		 * Whether the interpretation was made with a named link.
 		 */
-		public bool UsesAtKeyword
+		public bool NamedLink
 			{
 			get
-				{  return (atKeywordPosition == -1);  }
-			}
-			
-		/* Property: AtKeywordPosition
-		 * The index into the original target string of where the "at" keyword appears, or -1 if it doesn't.
-		 */
-		public int AtKeywordPosition
-			{
-			get
-				{  return atKeywordPosition;  }
+				{  return namedLink;  }
 			set
-				{  atKeywordPosition = value;  }
+				{  namedLink = value;  }
 			}
 
-		/* Property: UsesPluralConversion
-		 * Whether this interpretation is made with a plural conversion.
+		/* Property: PluralConversion
+		 * Whether this interpretation was made with a plural conversion.
 		 */
-		public bool UsesPluralConversion
+		public bool PluralConversion
 			{
 			get
-				{  return (pluralConversionIndex == -1);  }
-			}
-			
-		/* Property: PluralConversionIndex
-		 * The index into the list of plural conversions of the one that was applied, or -1 if one wasn't.
-		 */
-		public int PluralConversionIndex
-			{
-			get
-				{  return pluralConversionIndex;  }
+				{  return pluralConversion;  }
 			set
-				{  pluralConversionIndex = value;  }
+				{  pluralConversion = value;  }
 			}
 
-		/* Property: UsesPossessiveConversion
+		/* Property: PossessiveConversion
 		 * Whether this interpretation uses a possessive conversion.
 		 */
-		public bool UsesPossessiveConversion
+		public bool PossessiveConversion
 			{
 			get
-				{  return (possessiveConversionIndex == -1);  }
-			}
-			
-		/* Property: PossessiveConversionIndex
-		 * The index into the list of possessive conversions of the one that was applied, or -1 if one wasn't.
-		 */
-		public int PossessiveConversionIndex
-			{
-			get
-				{  return possessiveConversionIndex;  }
+				{  return possessiveConversion;  }
 			set	
-				{  possessiveConversionIndex = value;  }
+				{  possessiveConversion = value;  }
 			}
 
 		/* Property: IsLiteral
@@ -136,7 +109,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		public bool IsLiteral
 			{
 			get
-				{  return (!UsesAtKeyword && !UsesPluralConversion && !UsesPossessiveConversion);  }
+				{  return (!NamedLink && !PluralConversion && !PossessiveConversion);  }
 			}
 			
 			
@@ -155,20 +128,20 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		 */
 		protected string text;
 		
-		/* var: atKeywordPosition
-		 * The position in the original target string where the "at" keyword appeared, or -1 if none.
+		/* var: namedLink
+		 * Whether the interpretation was made with a named link.
 		 */
-		protected int atKeywordPosition;
+		protected bool namedLink;
 		
-		/* var: pluralConversionIndex
-		 * The index into the list of possible plural conversions that was applied, or -1 if none.
+		/* var: pluralConversion
+		 * Whether the interpretation was made with a plural conversion.
 		 */
-		protected int pluralConversionIndex;
+		protected bool pluralConversion;
 		
-		/* var: possessiveConversionIndex
-		 * The index into the list of possible possessive conversions that was applied, or -1 if none.
+		/* var: possessiveConversion
+		 * Whether the interpretation was made with a possessive conversion.
 		 */
-		protected int possessiveConversionIndex;
+		protected bool possessiveConversion;
 		
 		}
 	}

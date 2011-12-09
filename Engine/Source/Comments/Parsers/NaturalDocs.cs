@@ -40,7 +40,7 @@
  *		A table mapping one string to another.  Each key can only have one value, so anything specified multiple times
  *		will overwrite the previous value.
  * 
- * 		Block Types - The second word for lines like "(start code)" or the only word for lines like "(code)".  Possible values
+ * 	Block Types - The second word for lines like "(start code)" or the only word for lines like "(code)".  Possible values
  * 						   are "generic" for when there is no special behavior, "code" for source code and any additional
  * 						   formatting that may entail, and "prototype" for manually specifying prototypes.
  *		
@@ -139,11 +139,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * Options you can pass to <LinkInterpretations()>.
 		 * 
 		 * ExcludeLiteral - If set, the unaltered input string will not be added as one of the interpretations.  Only alternate
-		 *								 interpretations such as "at" links or plural/possessive conversions will be included, provided the 
+		 *								 interpretations such as named links or plural/possessive conversions will be included, provided the 
 		 *								 relevant flags are set.
-		 *	 AllowAtLinks - If set, it will see if the input string can be interpreted as an "at" link such as 
-		 *								"<web site at http://www.naturaldocs.org>" and add any possibilities to the list.  There may be
-		 *								more than one, or there may be none.
+		 *	 AllowNamedLinks - If set, it will see if the input string can be interpreted as a named link such as 
+		 *										"<web site at http://www.naturaldocs.org>" or "<web site: http://www.naturaldocs.org>",
+		 *										and if so will add any possibilities to the list.  There may be more than one, or there may be none.
 		 *	 AllowPluralsAndPossessives - If set, it will see if the input string can be interpreted as a plural form of another
 		 *														 word, and if so will add possible singular forms to the list.  There may be more than
 		 *														 one, or there may be none.
@@ -155,7 +155,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		public enum LinkInterpretationFlags : byte
 			{
 			ExcludeLiteral = 0x01,
-			AllowAtLinks = 0x02,
+			AllowNamedLinks = 0x02,
 			AllowPluralsAndPossessives = 0x04,
 			FromOriginalText = 0x08
 			}
@@ -485,8 +485,36 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				}
 			
 			
-			if ((flags & LinkInterpretationFlags.AllowAtLinks) != 0)
+			if ((flags & LinkInterpretationFlags.AllowNamedLinks) != 0)
 				{
+				int colon = input.IndexOf(':');
+
+				if (colon > 0)  // Filters out zero and -1
+					{
+					// Need to check for URL protocols so the colon in <http://www.naturaldocs.org> doesn't make it get interpreted 
+					// as a named link.  Same with the colon in <web site at http://www.naturaldocs.org>.
+					int space = input.LastIndexOf(' ', colon - 1);
+					string beforeColon;
+
+					if (space == -1)
+						{  beforeColon = input.Substring(0, colon);  }
+					else
+						{  beforeColon = input.Substring(space + 1, colon - (space + 1));  }
+						
+					if (!IsURLProtocol(beforeColon) && String.Compare(beforeColon, "mailto", true) != 0)
+						{
+						if (interpretations == null)
+							{  interpretations = new List<LinkInterpretation>();  }
+							
+						LinkInterpretation interpretation = new LinkInterpretation();
+						interpretation.Text = input.Substring(0, colon).TrimEnd();
+						interpretation.Target = input.Substring(colon + 1).TrimStart();
+						interpretation.NamedLink = true;
+							
+						interpretations.Add(interpretation);
+						}
+					}
+
 				for (int firstSpace = input.IndexOf(' '); firstSpace != -1; firstSpace = input.IndexOf(' ', firstSpace + 1))
 					{
 					for (int secondSpace = input.IndexOf(' ', firstSpace + 1); secondSpace != -1; secondSpace = input.IndexOf(' ', secondSpace + 1))
@@ -501,7 +529,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 							LinkInterpretation interpretation = new LinkInterpretation();
 							interpretation.Text = input.Substring(0, firstSpace);
 							interpretation.Target = input.Substring(secondSpace + 1);
-							interpretation.AtKeywordPosition = firstSpace + 1;
+							interpretation.NamedLink = true;
 							
 							interpretations.Add(interpretation);
 							}
@@ -510,7 +538,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				}
 				
 				
-			// We only generate plural and possessive interpretations from the input string because it doesn't make sense to use both an "at"
+			// We only generate plural and possessive interpretations from the input string because it doesn't make sense to use both a named
 			// link and a plural or possessive form in the same link.
 			
 			if ((flags & LinkInterpretationFlags.AllowPluralsAndPossessives) != 0)
@@ -588,9 +616,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 								interpretation.Target = nWithoutEither;
 								
 								if (pluralIndex != -2)
-									{  interpretation.PluralConversionIndex = pluralIndex;  }
+									{  interpretation.PluralConversion = true;  }
 								if (possessiveIndex != -2)
-									{  interpretation.PossessiveConversionIndex = possessiveIndex;  }
+									{  interpretation.PossessiveConversion = true;  }
 									
 								interpretations.Add(interpretation);
 								}
@@ -2620,9 +2648,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 									
 								else
 									{
-									// See if we can interpret the link as an "at" URL or e-mail address.  We can accept the first interpretation
+									// See if we can interpret the link as a named URL or e-mail address.  We can accept the first interpretation
 									// we find.
-									List<LinkInterpretation> interpretations = LinkInterpretations(tagContent, LinkInterpretationFlags.AllowAtLinks |
+									List<LinkInterpretation> interpretations = LinkInterpretations(tagContent, LinkInterpretationFlags.AllowNamedLinks |
 																																										LinkInterpretationFlags.ExcludeLiteral);
 									bool found = false;
 									
