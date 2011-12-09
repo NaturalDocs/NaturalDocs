@@ -1,22 +1,43 @@
 
 /* Operator Overloading
 	___________________________________________________________________________
-
-	Some languages allow operator overloading.  We do not want < or << to be detected as 
-	an opening bracket as that would prevent the prototype enders from being detected in 
-	these cases.
-
 */
 
 
 /* Function: operator<
+	We don't want < to be seen as an opening bracket as that would prevent the prototype enders from
+	being detected.
 */
 int operator< (LineIterator a, LineIterator b)
 	{
 	}
 
 /* Function: operator<<
+	We don't want << to be seen as opening brackets as that would prevent the prototype enders from
+	being detected.
 */
 LineIterator operator<< (LineIterator input)
+	{
+	}
+
+/* Function: operator +
+	We want to allow a space between "operator" and the symbol even if it doesn't appear that way in
+	the code.
+*/
+int operator+ (int a, int b)
+	{
+	}
+
+/* Function: Operator -
+	Also with case-insensitivity.
+*/
+int operator- (int a, int b)
+	{
+	}
+
+/* Function: operator*
+	Also with the space in the prototype.
+*/
+int operator * (int a, int b)
 	{
 	}

@@ -1,3 +1,9 @@
 int operator< (LineIterator a, LineIterator b)
 -----
 LineIterator operator<< (LineIterator input)
+-----
+int operator+ (int a, int b)
+-----
+int operator- (int a, int b)
+-----
+int operator * (int a, int b)

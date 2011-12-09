@@ -907,6 +907,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
 					{  topic.Prototype = prototypeString;  }
+
+				// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
+				else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
+					{
+					string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
+					string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
+
+					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) != -1)
+						{  topic.Prototype = prototypeString;  }
+					}
 				}
 			}
 			
@@ -2174,6 +2184,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		static protected Regex.Comments.AcceptablePrototypeComments acceptablePrototypeCommentRegex
 			= new Regex.Comments.AcceptablePrototypeComments();
+
+		static protected Regex.Languages.ExtraOperatorWhitespace extraOperatorWhitespaceRegex
+			= new Regex.Languages.ExtraOperatorWhitespace();
 
 		}
 	}
