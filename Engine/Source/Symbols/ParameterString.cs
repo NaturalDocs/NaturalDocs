@@ -6,6 +6,8 @@
  * section of a code element or topic, such as "(int, int)" in "PackageA.PackageB.FunctionC(int, int)".  When
  * generated from prototypes, ParameterStrings only store the types of each parameter, not the names or default 
  * values.
+ * 
+ * The encoding uses SeparatorChars.Level1.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -29,7 +31,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* Constant: SeparatorChar
 		 * The character used to separate parameter strings.
 		 */
-		public const char SeparatorChar = SymbolString.SeparatorChar;
+		public const char SeparatorChar = SeparatorChars.Level1;
 
 
 
@@ -256,7 +258,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * that must be done by the calling code.
 		 * 
 		 *		- Applies canonical normalization to Unicode (FormC).
-		 *		- Removes all existing instances of <SeparatorChar>.
+		 *		- Removes all existing instances of the <SeparatorChars>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
 		 *		- Whitespace not removed is condensed into a single space.
 		 *		- Unlike <SymbolString>, does NOT replace the common package separator symbols (. :: ->) with <SeparatorChar>.
@@ -295,7 +297,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					addWhitespace = false;
 					}
 
-				if (parameter[nextChar] == SeparatorChar)
+				if (parameter[nextChar] >= SeparatorChars.LowestValue && parameter[nextChar] <= SeparatorChars.HighestValue)
 					{
 					// Ignore, doesn't affect anything.
 					index = nextChar + 1;
@@ -334,9 +336,11 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		private string parameterString;
 	
 		/* var: separatorCharAndWhitespace
-		 * An array containing the whitespace characters and <SeparatorChar>.
+		 * An array containing the whitespace and separator characters.
 		 */
-		static private char[] separatorCharAndWhitespace = new char[] { ' ', '\t', SeparatorChar };
+		static private char[] separatorCharAndWhitespace = new char[] { ' ', '\t', 
+																															  SeparatorChars.Level1, SeparatorChars.Level2,
+																															  SeparatorChars.Level3, SeparatorChars.Level4 };
 
 		/* var: bracesAndParamSeparators
 		 * An array containing all forms of braces, comma, and semicolon.

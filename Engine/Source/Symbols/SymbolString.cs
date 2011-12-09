@@ -4,6 +4,8 @@
  * 
  * A struct encapsulating a symbol string, which is a normalized way of representing a hierarchal code element 
  * or topic, such as "PackageA.PackageB.FunctionC".
+ * 
+ * The encoding uses <SeparatorChars.Level1>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -26,7 +28,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* Constant: SeparatorChar
 		 * The character used to separate symbol segments.
 		 */
-		public const char SeparatorChar = '\x1F';
+		public const char SeparatorChar = SeparatorChars.Level1;
 
 
 
@@ -203,7 +205,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * Normalizes <symbolString>.
 		 * 
 		 *		- Applies canonical normalization to Unicode (FormC).
-		 *		- Removes all existing instances of <SeparatorChar>.
+		 *		- Removes all existing instances of the <SeparatorChars>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
 		 *		- Whitespace not removed is condensed into a single space.
 		 *		- Replaces the common package separator symbols (. :: ->) with <SeparatorChar>.
@@ -257,7 +259,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					addWhitespace = false;
 					}
 
-				if (symbolString[nextChar] == SeparatorChar)
+				if (symbolString[nextChar] >= SeparatorChars.LowestValue && symbolString[nextChar] <= SeparatorChars.HighestValue)
 					{
 					// Ignore, doesn't affect anything.
 					index = nextChar + 1;
@@ -341,10 +343,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		private string symbolString;
 	
 		/* var: startingSeparatorCharsAndWhitespace
-		 * An array containing the whitespace characters, <SeparatorChar>, and the first characters of all the possible 
+		 * An array containing the whitespace characters, separator characters, and the first characters of all the possible 
 		 * text separators.
 		 */
-		static private char[] startingSeparatorCharsAndWhitespace = new char[] { ' ', '\t', ':', '-', '.', SeparatorChar };
+		static private char[] startingSeparatorCharsAndWhitespace = new char[] { ' ', '\t', ':', '-', '.', 
+																																			  SeparatorChars.Level1, SeparatorChars.Level2,
+																																			  SeparatorChars.Level3, SeparatorChars.Level4 };
 
 		}
 	}
