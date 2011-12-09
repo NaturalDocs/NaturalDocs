@@ -1,0 +1,101 @@
+
+File: Links - URLs and E-Mail
+_______________________________________________________________________________
+
+
+Topic: Appearing Bare in Text
+	
+	Blah http://www.naturaldocs.org blah blah ftp://ftp.naturaldocs.org blah
+	blah https://naturaldocs.org/something/file.cgi?param1=1&param2=%3d#anchor blah
+	blah email@address.com blah blah e_mail+with.symbols@add-ress.com blah
+	blah mailto:email@address.com blah blah mailto:e_mail+with.symbols@add-ress.com blah
+	blah file:///C:\Temp\File.txt blah blah file:///c:/Temp/File.txt blah 
+	blah file:///C|\Temp\File.txt blah blah file:///c|/Temp/File.txt blah.
+	
+
+Topic: Appearing Bare on Own Line
+	
+	http://www.naturaldocs.org
+
+	ftp://ftp.naturaldocs.org
+
+	https://naturaldocs.org/something/file.cgi?param1=1&param2=%3d#anchor
+
+	email@address.com
+
+	e_mail+with.symbols@add-ress.com
+
+	mailto:email@address.com
+
+	mailto:e_mail+with.symbols@add-ress.com
+
+	file:///C:\Temp\File.txt
+
+	file:///c:/Temp/File.txt
+
+	file:///C|\Temp\File.txt
+
+	file:///c|/Temp/File.txt
+ 
+
+Topic: Appearing in Angle Brackets
+
+	- <http://www.naturaldocs.org>
+	- <ftp://ftp.naturaldocs.org>
+	- <https://naturaldocs.org/something/file.cgi?param1=1&param2=%3d#anchor>
+	- <email@address.com>
+	- <e_mail+with.symbols@add-ress.com>
+	- <mailto:email@address.com>
+	- <mailto:e_mail+with.symbols@add-ress.com>
+	- <file:///C:\Temp\File.txt>
+	- <file:///c:/Temp/File.txt>
+	- <file:///C|\Temp\File.txt>
+	- <file:///c|/Temp/File.txt>
+
+
+Topic: Named with "at"
+
+	- <my web site at http://www.naturaldocs.org>
+	- <the FTP site at ftp://ftp.naturaldocs.org>
+	- <another site at https://naturaldocs.org/something/file.cgi?param1=1&param2=%3d#anchor>
+	- <e-mail me 1 at email@address.com>
+	- <e-mail me 2 at e_mail+with.symbols@add-ress.com>
+	- <e-mail me 3 at mailto:email@address.com>
+	- <e-mail me 4 at mailto:e_mail+with.symbols@add-ress.com>
+	- <file 1 at file:///C:\Temp\File.txt>
+	- <file 2 at file:///c:/Temp/File.txt>
+	- <file 3 at file:///C|\Temp\File.txt>
+	- <file 4 at file:///c|/Temp/File.txt>
+
+
+Topic: Named with Colon
+
+	- <my web site: http://www.naturaldocs.org>
+	- <the FTP site: ftp://ftp.naturaldocs.org>
+	- <e-mail me 1: email@address.com>
+	- <e-mail me 2: e_mail+with.symbols@add-ress.com>
+	- <e-mail me 3: mailto:email@address.com>
+	- <e-mail me 4: mailto:e_mail+with.symbols@add-ress.com>
+	- <file 1: file:///C:\Temp\File.txt>
+	- <file 2: file:///c:/Temp/File.txt>
+	- <file 3: file:///C|\Temp\File.txt>
+	- <file 4: file:///c|/Temp/File.txt>
+
+
+Topic: Bare Text Traps
+
+	Symbol that are part of the sentence structure should not become part of bare links.
+
+	Text in parenthesis (http://www.naturaldocs.org) and (email@address.com).
+
+	Text in quotes "http://www.naturaldocs.org" and "email@address.com".
+
+	Ending with period http://www.naturaldocs.org.  And email@address.com.
+
+	Ending with comma http://www.naturaldocs.org, and email@address.com, and stuff.
+	
+	Ending with exclamation point http://www.naturaldocs.org!  And email@address.com!
+
+	Ending with question mark http://www.naturaldocs.org?  And email@address.com?
+
+	Ending with a combo ("http://www.naturaldocs.org.")  And (email@address.com.)
