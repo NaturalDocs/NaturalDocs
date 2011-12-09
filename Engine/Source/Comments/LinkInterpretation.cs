@@ -69,6 +69,15 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			set
 				{  text = value;  }
 			}
+
+		/* Property: UsesAtKeyword
+		 * Whether this interpretation is made with an "at" keyword.
+		 */
+		public bool UsesAtKeyword
+			{
+			get
+				{  return (atKeywordPosition == -1);  }
+			}
 			
 		/* Property: AtKeywordPosition
 		 * The index into the original target string of where the "at" keyword appears, or -1 if it doesn't.
@@ -79,6 +88,15 @@ namespace GregValure.NaturalDocs.Engine.Comments
 				{  return atKeywordPosition;  }
 			set
 				{  atKeywordPosition = value;  }
+			}
+
+		/* Property: UsesPluralConversion
+		 * Whether this interpretation is made with a plural conversion.
+		 */
+		public bool UsesPluralConversion
+			{
+			get
+				{  return (pluralConversionIndex == -1);  }
 			}
 			
 		/* Property: PluralConversionIndex
@@ -91,6 +109,15 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			set
 				{  pluralConversionIndex = value;  }
 			}
+
+		/* Property: UsesPossessiveConversion
+		 * Whether this interpretation uses a possessive conversion.
+		 */
+		public bool UsesPossessiveConversion
+			{
+			get
+				{  return (possessiveConversionIndex == -1);  }
+			}
 			
 		/* Property: PossessiveConversionIndex
 		 * The index into the list of possessive conversions of the one that was applied, or -1 if one wasn't.
@@ -101,6 +128,15 @@ namespace GregValure.NaturalDocs.Engine.Comments
 				{  return possessiveConversionIndex;  }
 			set	
 				{  possessiveConversionIndex = value;  }
+			}
+
+		/* Property: IsLiteral
+		 * Whether this interpretation is not made from an "at" keyword, plural, or possessive conversion.
+		 */
+		public bool IsLiteral
+			{
+			get
+				{  return (!UsesAtKeyword && !UsesPluralConversion && !UsesPossessiveConversion);  }
 			}
 			
 			
