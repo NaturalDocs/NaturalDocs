@@ -140,13 +140,13 @@ Topic: Top-Level Block Tags
 			
 		Internal Links:
 		
-			> <link type="naturaldocs" originaltext="[text]" target="[target]">
+			> <link type="naturaldocs" originaltext="[text]">
 			
-			Natural Docs links are single tags instead of wrappers.  The link text and target are both determined by the target property
-			since it can be interpreted multiple ways.  For example, a target of "a at b" can be interpreted as text "a" target "b", or as both
-			being "a at b".  It is also subject to Natural Docs' plural and possessive processing, so target "objects" will always have text 
-			"objects" but may have an actual target of "objects" or "object".  If none of the possible interpretations resolve it will place
-			originaltext in the output.
+			Natural Docs links are standalone tags instead of wrappers.  The link text can be interpreted multiple ways so there is no target
+			or text properties.  Instead you must pass originaltext to <Engine.Comments.Parsers.NaturalDocs.LinkInterpretations()> to get all
+			the possibilities.  For example, "a at b" can be interpreted as text "a" target "b", or as both being "a at b".  Natural Docs' may
+			also apply plural and possessive processing, so target "objects" will always have text "objects" but may have an actual target 
+			of "objects" or "object".  If none of the possible interpretations resolve it will place originaltext in the output.
 			
 			
 		URL and E-Mail Links:
@@ -154,8 +154,8 @@ Topic: Top-Level Block Tags
 			> <link type="url" target="[url]" text="[text]"?>
 			> <link type="email" target="[address]" text="[text]"?>
 			
-			URL and e-mail links are also standalone tags, mainly for consistency with Natural Docs links.  If the text property is not 
-			specified it will be the same as the target.
+			URL and e-mail links are also standalone tags, mainly for consistency with Natural Docs links.  However, they have definite target
+			and text properties.  If the text property is not specified it will be the same as the target.
 			
 			
 		Image Links:

@@ -2693,9 +2693,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 										{
 										output.Append("<link type=\"naturaldocs\" originaltext=\"&lt;");
 										output.EntityEncodeAndAppend(tagContent);
-										output.Append("&gt;\" target=\"");
-										output.EntityEncodeAndAppend(tagContent);
-										output.Append("\">");
+										output.Append("&gt;\">");
 										}
 									}
 								}

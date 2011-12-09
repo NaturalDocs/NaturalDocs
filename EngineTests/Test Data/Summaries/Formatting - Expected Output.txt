@@ -1,1 +1,1 @@
-Formatting such as <b>bold</b> and <u>underline</u> and <link type="naturaldocs" originaltext="&lt;links&gt;" target="links"> should not affect the summary.  Here's a <b>second</b> <u>sentence</u> with <link type="naturaldocs" originaltext="&lt;them&gt;" target="them"> too.
+Formatting such as <b>bold</b> and <u>underline</u> and <link type="naturaldocs" originaltext="&lt;links&gt;"> should not affect the summary.  Here's a <b>second</b> <u>sentence</u> with <link type="naturaldocs" originaltext="&lt;them&gt;"> too.
