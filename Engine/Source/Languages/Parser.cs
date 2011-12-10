@@ -917,6 +917,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) != -1)
 						{  topic.Prototype = prototypeString;  }
 					}
+
+				// If ".prototype." is in the string, make another attempt to see if we can match with it removed.
+				else
+					{
+					int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
+
+					if (prototypeIndex != -1)
+						{
+						// We want to keep the trailing period so String.prototype.Function becomes String.Function.
+						string prototypeString2 = prototypeString.Substring(0, prototypeIndex) + 
+																	  prototypeString.Substring(prototypeIndex + 10);
+
+						if (prototypeString2.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
+							{  topic.Prototype = prototypeString;  }
+						}
+					}
 				}
 			}
 			

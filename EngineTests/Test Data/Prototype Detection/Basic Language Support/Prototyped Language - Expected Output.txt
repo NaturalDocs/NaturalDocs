@@ -1,0 +1,11 @@
+function String.prototype.ExtensionFunction ()
+-----
+String.prototype.ExtensionFunction2 = function ()
+-----
+function String.Prototype.ExtensionFunction3 ()
+-----
+function String.prototype.ExtensionFunction4 ()
+-----
+String.prototype.ExtensionFunction5 = function ()
+-----
+function String.prototype.ExtensionFunction6 ()

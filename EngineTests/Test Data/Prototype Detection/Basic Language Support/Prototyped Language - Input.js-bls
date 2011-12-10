@@ -1,0 +1,45 @@
+
+/* Prototyped Language
+	___________________________________________________________________________
+
+	When adding members to a prototype in a language like JavaScript, you shouldn't be required to
+	include "prototype" in the topic title for it to match.  It will be supported if you do though.
+*/
+
+
+/* Function: String.ExtensionFunction
+*/
+function String.prototype.ExtensionFunction ()
+	{
+	}
+
+/* Function: String.ExtensionFunction2
+*/
+String.prototype.ExtensionFunction2 = function ()
+	{
+	}
+
+/* Function: String.ExtensionFunction3
+	Case-insensitivity should still apply.
+*/
+function String.Prototype.ExtensionFunction3 ()
+	{
+	}
+
+/* Function: String.prototype.ExtensionFunction4
+*/
+function String.prototype.ExtensionFunction4 ()
+	{
+	}
+
+/* Function: String.prototype.ExtensionFunction5
+*/
+String.prototype.ExtensionFunction5 = function ()
+	{
+	}
+
+/* Function: String.Prototype.ExtensionFunction6
+*/
+function String.prototype.ExtensionFunction6 ()
+	{
+	}
