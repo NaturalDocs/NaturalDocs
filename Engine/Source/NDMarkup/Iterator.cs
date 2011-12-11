@@ -32,19 +32,22 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 			OutOfBounds,
 			Text,
 
-			LTEntityChar, GTEntityChar, QuoteEntityChar, AmpEntityChar,
+			LowestEntityValue,
 
+				LTEntityChar, GTEntityChar, QuoteEntityChar, AmpEntityChar,
+
+			HighestEntityValue,
 			LowestTagValue,
 
-			ParagraphTag,
-			HeadingTag,
-			PreTag, PreLineBreakTag,
-			ImageTag,
-			BulletListTag, BulletListItemTag,
-			DefinitionListTag, DefinitionListEntryTag, DefinitionListDefinitionTag,
+				ParagraphTag,
+				HeadingTag,
+				PreTag, PreLineBreakTag,
+				ImageTag,
+				BulletListTag, BulletListItemTag,
+				DefinitionListTag, DefinitionListEntryTag, DefinitionListDefinitionTag,
 
-			BoldTag, ItalicsTag, UnderlineTag,
-			LinkTag,
+				BoldTag, ItalicsTag, UnderlineTag,
+				LinkTag,
 
 			HighestTagValue
 			}
@@ -87,24 +90,25 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 
 
 		/* Constructor: Iterator
-		 * Instance constructor.
+		 * Instance constructor.  If you pass an offset other than zero, it *must* land on the opening angle bracket of a tag.
+		 * This guarantees there is no weird behavior resulting from starting in the middle of an element or tag, and is really the
+		 * only reason you should start at somewhere other than the first character anyway.
 		 */
-		public Iterator (string ndMarkup)
+		public Iterator (string ndMarkup, int offset = 0)
 			{
 			content = ndMarkup;
-			index = 0;
+			index = -1;
 
 			type = ElementType.OutOfBounds;
 			length = 0;
 			isOpeningTag = false;
 
-			DetermineElement();
+			GoToRawTextIndex(offset);
 			}
 
 
 		/* Function: DetermineElement
-		 * Determines which <ElementType> the iterator is currently on, setting <elementType>, <elementLength>, and if
-		 * appropriate, <isOpeningTag>.
+		 * Determines which <ElementType> the iterator is currently on, setting <type>, <length>, and if appropriate, <isOpeningTag>.
 		 */
 		private void DetermineElement ()
 			{
@@ -184,7 +188,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 
 
 		/* Function: Next
-		 * Moves the iterator forward, returning whether it's still in bounds.
+		 * Moves the iterator forward by the passed number of elements, returning whether it's still in bounds.
 		 */
 		public bool Next (int count = 1)
 			{
@@ -203,14 +207,51 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 			}
 
 
+		/* Function: GoToRawTextIndex
+		 * Moves the iterator to the passed character offset in the string.  If the offset is not zero, it *must* land on the 
+		 * opening angle bracket of a tag.  The only reason you should be using this function is to move to a tag you found 
+		 * by searching the string, and enforcing this restriction prevents weird behavior that could result from starting in the 
+		 * middle of an element or tag.  It will throw an exception otherwise.
+		 */
+		public void GoToRawTextIndex (int charOffset)
+			{
+			index = charOffset;
+
+			if (charOffset != 0 && content[charOffset] != '<')
+				{  throw new InvalidOperationException();  }
+
+			DetermineElement();
+			}
+
+
 		/* Function: AppendTo
 		 * Appends the current element string to the passed StringBuilder.  This is more efficient than appending
-		 * <ElementString> because it works from the original memory instead of making an intermediate copy.
+		 * <String> because it works from the original memory instead of making an intermediate copy.
 		 */
 		public void AppendTo (StringBuilder stringBuilder)
 			{
 			if (length != 0)
 				{  stringBuilder.Append(content, index, length);  }
+			}
+
+
+		/* Function: EntityDecodeAndAppendTo
+		 * Appends the current element string to the passed StringBuilder.  If the current element is an entity
+		 * character, it will append the decoded character.  This is more efficient than decoding and appending
+		 * <String> because it works from the original memory instead of making an intermediate copy.
+		 */
+		public void EntityDecodeAndAppendTo (StringBuilder stringBuilder)
+			{
+			if (type == ElementType.LTEntityChar)
+				{  stringBuilder.Append('<');  }
+			else if (type == ElementType.GTEntityChar)
+				{  stringBuilder.Append('>');  }
+			else if (type == ElementType.AmpEntityChar)
+				{  stringBuilder.Append('&');  }
+			else if (type == ElementType.QuoteEntityChar)
+				{  stringBuilder.Append('"');  }
+			else
+				{  AppendTo(stringBuilder);  }
 			}
 
 
@@ -347,19 +388,19 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 		 */
 		private int index;
 								
-		/* var: elementType
+		/* var: type
 		 * The current element.
 		 */
 		private ElementType type;
 
-		/* var: elementLength
+		/* var: length
 		 * The length of the current element.
 		 */
 		private int length;
 
 		/* var: isOpeningTag
-		 * If the <ElementType> is a tag, whether it is an opening or closing tag.  The value is undefined if the iterator is on
-		 * a non-tag element or a standalone tag element.
+		 * If the <Type> is a tag, whether it is an opening or closing tag.  The value is undefined if the iterator is on a non-tag 
+		 * element or a standalone tag element.
 		 */
 		private bool isOpeningTag;
 
