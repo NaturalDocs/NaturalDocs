@@ -113,6 +113,24 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Property: ScopeIsGlobal
+		 * Whether the scope is global.  This is more efficient than checking <Scope> against null as it doesn't have
+		 * to create a <SymbolString> to return.
+		 */
+		public bool ScopeIsGlobal
+			{
+			get
+				{
+				if (contextString == null)
+					{  return true;  }
+				else if (contextString[0] == SeparatorChar)
+					{  return true;  }
+				else
+					{  return false;  }
+				}
+			}
+
+
 		/* Function: ClearUsingStatements
 		 * Removes all "using" statements from the context.
 		 */
