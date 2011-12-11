@@ -147,6 +147,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (Cancelled)
 				{  return ParseResult.Cancelled;  }
 
+			ApplyCommentPrototypes();
+			
+			if (Cancelled)
+				{  return ParseResult.Cancelled;  }
+
 			foreach (Topic topic in mergedTopics)
 				{
 				topic.FileID = fileID;
@@ -613,7 +618,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *
 		 * Default Implementation:
 		 *
-		 * The default implementation uses <CommentTopics> and the language's prototype enders to gather  prototypes for languages 
+		 * The default implementation uses <CommentTopics> and the language's prototype enders to gather prototypes for languages 
 		 * with basic support.  It basically takes the code between the end of the comment topic and the next one (or the next entry in 
 		 * <PossibleDocumentationComments>) and if it finds the topic title before it finds an ender, the prototype will be the code 
 		 * between the topic and the ender.  You can override this function to do real language processing for full support.
@@ -977,6 +982,101 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			else
 				{
 				// XXX: topic merging
+				}
+			}
+
+
+		/* Function: ApplyCommentPrototypes
+		 * Goes through <mergedTopics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
+		 * sets them as the topic prototype.  If there's an existing prototype taken from the code it will be replaced.
+		 */
+		protected virtual void ApplyCommentPrototypes ()
+			{
+			StringBuilder stringBuilder = null;
+
+			foreach (Topic topic in mergedTopics)
+				{
+				if (topic.Body == null)
+					{  continue;  }
+
+				int prototypeStartIndex = topic.Body.IndexOf("<pre type=\"prototype\"");
+
+				if (prototypeStartIndex == -1)
+					{  continue;  }
+
+				NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body, prototypeStartIndex);
+				string prototypeLanguage = iterator.Property("language");
+
+				if (stringBuilder == null)
+					{  stringBuilder = new StringBuilder();  }
+				else
+					{  stringBuilder.Remove(0, stringBuilder.Length);  }
+
+				for (;;)
+					{
+					iterator.Next();
+
+					// Since we can assume NDMarkup is valid, we can assume we'll hit another pre tag before the end of the body
+					// and that it will be the closing one.
+					if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag)
+						{  break;  }
+					else if (iterator.Type == NDMarkup.Iterator.ElementType.PreLineBreakTag)
+						{  stringBuilder.Append('\n');  }
+					else
+						{  iterator.EntityDecodeAndAppendTo(stringBuilder);  }
+					}
+
+				iterator.Next();  // Past closing pre tag
+				int prototypeEndIndex = iterator.RawTextIndex;
+
+				topic.Prototype = stringBuilder.ToString();
+
+
+				// Check if there's a header immediately before it.
+
+				int headingStartIndex = -1;
+				int headingEndIndex = -1;
+
+				if (prototypeStartIndex >= 5 && string.Compare(topic.Body, prototypeStartIndex - 4, "</h>", 0, 4) == 0)
+					{
+					headingEndIndex = prototypeStartIndex;
+					headingStartIndex = topic.Body.LastIndexOf("<h", headingEndIndex - 5);  // We can assume it exists.
+					}
+
+
+				// Build the body without the prototype and possibly the heading.  The iterator was left after the closing pre tag of the
+				// prototype.
+
+				stringBuilder.Remove(0, stringBuilder.Length);  // Reuse
+
+				// Remove the heading tag if there was nothing after the prototype or it's immediately followed by another heading.  In
+				// other words, this heading contained nothing but the prototype.  Remember that headingStartIndex is only set if there
+				// was nothing between it and the prototype.
+				if (headingStartIndex != -1 && (iterator.IsInBounds == false || iterator.Type == NDMarkup.Iterator.ElementType.HeadingTag))
+					{
+					if (headingStartIndex > 0)
+						{  stringBuilder.Append(topic.Body, 0, headingStartIndex);  }
+					}
+				else
+					{
+					if (prototypeStartIndex > 0)
+						{  stringBuilder.Append(topic.Body, 0, prototypeStartIndex);  }
+					}
+
+				if (prototypeEndIndex < topic.Body.Length)
+					{  stringBuilder.Append(topic.Body, prototypeEndIndex, topic.Body.Length - prototypeEndIndex);  }
+
+				if (stringBuilder.Length == 0)
+					{  topic.Body = null;  }
+				else
+					{  topic.Body = stringBuilder.ToString();  }
+
+
+				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document SQL
+				// in text files.
+
+				if (prototypeLanguage != null)
+					{  topic.LanguageID = Instance.Languages.FromName(prototypeLanguage).ID;  }
 				}
 			}
 			
