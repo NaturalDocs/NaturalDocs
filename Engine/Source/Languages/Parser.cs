@@ -997,9 +997,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// XXX - When doing code scope, remember there has to be a scope record in parser.  Just going by the code topics won't tell
 			// you when the scope ends.  Also, you don't want to carry ND topic scoping across code topics.
 
-			SymbolString scope = new SymbolString();
+			ContextString context = new ContextString();
 
-			// Generating parsed prototypes resets the parser state, so we'll create a new one on demand if we need it.
+			// Generating parsed prototypes resets the parser state, so we'll create a separate parser on demand if we need it.
 			Parser prototypeParser = null;
 			
 			foreach (Topic topic in mergedTopics)
@@ -1011,11 +1011,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					string parenthesis = null;
 					topic.Symbol = SymbolString.FromPlainText(topic.Title, out parenthesis);
 
-					if (scope != null &&
+					if (context.ScopeIsGlobal == false &&
 						topicType.Scope != TopicType.ScopeValue.AlwaysGlobal &&
 						topicType.Scope != TopicType.ScopeValue.End)
 						{  
-						topic.Symbol = scope + topic.Symbol;  
+						topic.Symbol = context.Scope + topic.Symbol;  
 						}
 
 					// Parenthesis in the title takes precedence over the prototype.
@@ -1048,9 +1048,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 
 				if (topicType.Scope == TopicType.ScopeValue.Start)
-					{  scope = topic.Symbol;  }
+					{  context.Scope = topic.Symbol;  }
 				else if (topicType.Scope == TopicType.ScopeValue.End)
-					{  scope = new SymbolString();  }
+					{  context.Scope = new SymbolString();  }
 				}
 			}
 
