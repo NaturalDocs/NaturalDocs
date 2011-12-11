@@ -1,0 +1,11 @@
+void SyntaxTest1 ()
+-----
+void SyntaxTest2 ()
+-----
+void SyntaxTest3 ()
+-----
+void SyntaxTest4 ()
+-----
+void CompletelyDifferentName ()
+-----
+void ReplacesCodePrototype (int x)

@@ -1,0 +1,15 @@
+(No body detected)
+-----
+(No body detected)
+-----
+<p>Since there's content in this topic before the prototype, it should remain in the output.</p>
+-----
+<ul><li><p>The same should apply for non-paragraph formatting like bullet lists.</p></li></ul>
+-----
+<p>Since there's content in this topic after the prototype, it should remain in the output.</p>
+-----
+<dl><de>Blah</de><dd><p>The same should apply for non-paragraph formatting like definition lists.</p></dd></dl>
+-----
+<h>Heading Below</h><p>Since there's no content underneath &quot;Heading Above&quot; after the manual prototype is removed, the heading should be removed as well.  &quot;Heading Below&quot; should remain.</p>
+-----
+<h>Heading Above</h><p>Since there's content undernead &quot;Heading Above&quot; after the manual prototype is removed, it should remain in the output.</p>

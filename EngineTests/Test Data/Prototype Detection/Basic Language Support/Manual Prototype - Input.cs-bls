@@ -1,0 +1,55 @@
+
+/* Manual Prototypes
+	___________________________________________________________________________
+
+	You can specify prototypes manually with (start prototype) or similar.  They don't have to match the
+	topic title and if there's a code prototype available it should replace it.
+
+*/
+
+
+/* Function: SyntaxTest1
+
+	(prototype)
+		void SyntaxTest1 ()
+	(end)
+*/
+
+/* Function: SyntaxTest2
+
+	(start prototype)
+		void SyntaxTest2 ()
+	(end)
+*/
+
+/* Function: SyntaxTest3
+
+	(c# prototype)
+		void SyntaxTest3 ()
+	(end)
+*/
+
+/* Function: SyntaxTest4
+
+	(start c# prototype)
+		void SyntaxTest4 ()
+	(end)
+*/
+
+/* Function: NameMismatch
+	This should still result in a prototype.
+
+	(prototype)
+		void CompletelyDifferentName ()
+	(end)
+*/
+
+/* Function: CodePrototypeOverride
+
+	(prototype)
+		void ReplacesCodePrototype (int x)
+	(end)
+*/
+void CodePrototypeOverride (float y)
+	{
+	}
