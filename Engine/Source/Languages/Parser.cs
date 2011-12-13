@@ -147,17 +147,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (Cancelled)
 				{  return ParseResult.Cancelled;  }
 
-			ApplyCommentPrototypes();
-			
-			if (Cancelled)
-				{  return ParseResult.Cancelled;  }
-
 			foreach (Topic topic in mergedTopics)
 				{
 				topic.FileID = fileID;
 				topic.LanguageID = language.ID;
 				}
+
+			if (Cancelled)
+				{  return ParseResult.Cancelled;  }
 								
+			// LanguageID needs to be applied before ApplyCommentPrototypes
+			ApplyCommentPrototypes();
+			
+			if (Cancelled)
+				{  return ParseResult.Cancelled;  }
+
 			GenerateRemainingSymbols();
 				
 			// Need to do one last check anyway, because the previous function could have quit early because of a cancellation.
@@ -727,7 +731,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
 					{
-					// If the line extender is an underscore we don't want to include it if it's adjacent to any text because
+					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
 					// it's probably part of an identifier.
 
 					bool partOfIdentifier = false;
@@ -942,6 +946,182 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 			
 		
+		/* Function: NormalizePrototype
+		 * 
+		 * Puts the passed prototype in a form that's appropriate for the rest of the program.  It assumes the syntax is valid.
+		 * 
+		 * - Whitespace will be condensed.
+		 * - Most comments will be removed, excluding things like Splint comments.
+		 * - Line breaks will be removed, including extension characters if the language has them.
+		 */
+		protected virtual string NormalizePrototype (string stringInput)
+			{
+			Tokenizer input = new Tokenizer(stringInput);
+			StringBuilder output = new StringBuilder(stringInput.Length);
+
+			TokenIterator start = input.FirstToken;
+			TokenIterator iterator = start;
+			TokenIterator end = input.LastToken;
+
+			bool lastWasWhitespace = true;
+			string openingSymbol, closingSymbol;
+
+			while (iterator < end)
+				{
+				TokenIterator originalIterator = iterator;
+
+
+				// Line Break
+
+				if (iterator.FundamentalType == FundamentalType.LineBreak)
+					{
+					if (lastWasWhitespace == false)
+						{
+						output.Append(' ');
+						lastWasWhitespace = true;
+						}
+
+					iterator.Next();
+					}
+
+
+				// Line Extender
+
+				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
+					{
+					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
+					// it's probably part of an identifier.
+
+					bool partOfIdentifier = false;
+
+					if (language.LineExtender == "_")
+						{
+						TokenIterator temp = iterator;
+
+						temp.Previous();
+						if (temp.FundamentalType == FundamentalType.Text || temp.Character == '_')
+							{  partOfIdentifier = true;  }
+
+						temp.Next(2);
+						if (temp.FundamentalType == FundamentalType.Text || temp.Character == '_')
+							{  partOfIdentifier = true;  }
+						}
+
+					if (partOfIdentifier)
+						{
+						iterator.AppendTokenTo(output);
+						iterator.Next();
+						lastWasWhitespace = false;
+						}
+					else
+						{
+						// We don't want it in the output so treat it like whitespace
+						if (lastWasWhitespace == false)
+							{
+							output.Append(' ');
+							lastWasWhitespace = true;
+							}
+
+						iterator.Next();
+						}
+					}
+
+
+				// Line Comment
+
+				// We test this before looking for opening brackets in case the opening symbols are used for comments.
+				else if (TryToSkipLineComment(ref iterator))
+					{
+					// Treat it as whitespace.  We're only dealing with Splint for block comments.
+
+					if (lastWasWhitespace == false)
+						{
+						output.Append(' ');
+						lastWasWhitespace = true;
+						}
+					}
+
+
+				// Block Comment
+
+				// We test this before looking for opening brackets in case the opening symbols are used for comments.
+				else if (TryToSkipBlockComment(ref iterator, out openingSymbol, out closingSymbol))
+					{
+					TokenIterator commentContentStart = originalIterator;
+					commentContentStart.NextByCharacters(openingSymbol.Length);
+
+					TokenIterator commentContentEnd = iterator;
+					commentContentEnd.PreviousByCharacters(closingSymbol.Length);
+
+					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
+					if (input.MatchTextBetween(acceptablePrototypeCommentRegex, 
+																	  commentContentStart, commentContentEnd).Success)
+						{
+						output.Append(openingSymbol);
+
+						string commentContent = input.TextBetween(commentContentStart, commentContentEnd);
+						commentContent = commentContent.Replace('\r', ' ');
+						commentContent = commentContent.Replace('\n', ' ');
+						commentContent = commentContent.CondenseWhitespace();
+
+						output.Append(commentContent);
+						output.Append(closingSymbol);
+						lastWasWhitespace = false;
+						}
+					else
+						{
+						if (lastWasWhitespace == false)
+							{
+							output.Append(' ');
+							lastWasWhitespace = true;
+							}
+						}
+					}
+
+
+				// Strings
+
+				else if (TryToSkipString(ref iterator))
+					{
+					// This also avoids whitespace condensation while in a string.
+
+					input.AppendTextBetweenTo(originalIterator, iterator, output);
+					lastWasWhitespace = false;
+					}
+
+
+				// Whitespace
+
+				else if (iterator.FundamentalType == FundamentalType.Whitespace)
+					{
+					if (lastWasWhitespace == false)
+						{
+						output.Append(' ');
+						lastWasWhitespace = true;
+						}
+
+					iterator.Next();
+					}
+
+
+				// Everything Else
+
+				else
+					{
+					iterator.AppendTokenTo(output);
+					lastWasWhitespace = false;
+					iterator.Next();  
+					}
+				}
+
+			// Strip trailing space
+			if (lastWasWhitespace && output.Length > 0)
+				{  output.Remove(output.Length - 1, 1);  }
+
+			return output.ToString();
+			}
+			
+		
 		/* Function: MergeTopics
 		 * 
 		 * Combines the topics in <CodeTopics> and <CommentTopics> into a single list and places the result in <MergedTopics>.   
@@ -993,6 +1173,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		protected virtual void ApplyCommentPrototypes ()
 			{
 			StringBuilder stringBuilder = null;
+			Parser prototypeParser = null;
 
 			foreach (Topic topic in mergedTopics)
 				{
@@ -1029,7 +1210,29 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				iterator.Next();  // Past closing pre tag
 				int prototypeEndIndex = iterator.RawTextIndex;
 
-				topic.Prototype = stringBuilder.ToString();
+
+				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document SQL
+				// in text files.
+
+				if (prototypeLanguage != null)
+					{  topic.LanguageID = Instance.Languages.FromName(prototypeLanguage).ID;  }
+
+
+				// Normalize and apply.
+
+				string prototypeString = stringBuilder.ToString();
+
+				if (topic.LanguageID == Language.ID)
+					{  prototypeString = NormalizePrototype(prototypeString);  }
+				else
+					{
+					if (prototypeParser == null || prototypeParser.Language.ID != topic.LanguageID)
+						{  prototypeParser = Instance.Languages.FromID(topic.LanguageID).GetParser();  }
+
+					prototypeString = prototypeParser.NormalizePrototype(prototypeString);
+					}
+
+				topic.Prototype = prototypeString;
 
 
 				// Check if there's a header immediately before it.
@@ -1070,13 +1273,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  topic.Body = null;  }
 				else
 					{  topic.Body = stringBuilder.ToString();  }
-
-
-				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document SQL
-				// in text files.
-
-				if (prototypeLanguage != null)
-					{  topic.LanguageID = Instance.Languages.FromName(prototypeLanguage).ID;  }
 				}
 			}
 			
