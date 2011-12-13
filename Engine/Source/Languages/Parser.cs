@@ -297,9 +297,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
-					else if (TryToSkipBlock(ref iterator, true) || 
-								 TryToSkipComment(ref iterator) || 
-								 TryToSkipString(ref iterator))
+					else if (TryToSkipComment(ref iterator) || 
+								 TryToSkipString(ref iterator) ||
+								 TryToSkipBlock(ref iterator, true))
 						{  }
 
 					else
@@ -675,7 +675,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: GetPrototype
-		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will set <Topic.Prototoype>.
+		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
+		 * <Topic.Prototoype>.
 		 */
 		protected virtual void GetPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
 			{
@@ -684,24 +685,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (prototypeEnders == null)
 				{  return;  }
 
-			StringBuilder prototype = new StringBuilder();
-
 			TokenIterator start = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 			TokenIterator iterator = start;
 			TokenIterator limit = endCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
-			SafeStack<char> brackets = new SafeStack<char>();
-			bool lastWasWhitespace = true;
 			bool lineHasExtender = false;
-			string openingSymbol = null;
-			string closingSymbol = null;
-
 			bool goodPrototype = false;
 
 			while (iterator < limit)
 				{
-				TokenIterator originalIterator = iterator;
-
 
 				// Line Break
 
@@ -712,15 +704,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						goodPrototype = true;
 						break;  
 						}
-
 					else
 						{
-						if (lastWasWhitespace == false)
-							{
-							prototype.Append(' ');
-							lastWasWhitespace = true;
-							}
-
 						iterator.Next();
 						lineHasExtender = false;
 						}
@@ -749,150 +734,38 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							{  partOfIdentifier = true;  }
 						}
 
-					if (partOfIdentifier)
-						{
-						iterator.AppendTokenTo(prototype);
-						iterator.Next();
-						lastWasWhitespace = false;
-						}
-					else
-						{
-						lineHasExtender = true;
+					if (!partOfIdentifier)
+						{  lineHasExtender = true;  }
 
-						// We don't want it in the output so treat it like whitespace
-						if (lastWasWhitespace == false)
-							{
-							prototype.Append(' ');
-							lastWasWhitespace = true;
-							}
-
-						iterator.Next();
-						}
+					iterator.Next();
 					}
 
 
 				// Ender Symbol, not in a bracket
 
 				// We test this before looking for opening brackets so the opening symbols can be used as enders.
-				else if (prototypeEnders.Symbols != null && brackets.Count == 0 && 
-							 iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols) != -1)
+				else if (prototypeEnders.Symbols != null && iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols) != -1)
 					{
 					goodPrototype = true;
 					break;
 					}
 
 				
-				// Line Comment
+				// Comments, Strings, and Brackets
 
-				// We test this before looking for opening brackets in case the opening symbols are used for comments.
-				else if (TryToSkipLineComment(ref iterator))
+				// We test comments before brackets in case the opening symbols are used for comments.
+				// We don't include < when skipping brackets because there might be an unbalanced pair as part of an operator overload.
+				else if (TryToSkipComment(ref iterator) ||
+							 TryToSkipString(ref iterator) ||
+							 TryToSkipBlock(ref iterator, false))
 					{
-					// Treat it as whitespace.  We're only dealing with Splint for block comments.
-
-					if (lastWasWhitespace == false)
-						{
-						prototype.Append(' ');
-						lastWasWhitespace = true;
-						}
-					}
-
-
-				// Block Comment
-
-				// We test this before looking for opening brackets in case the opening symbols are used for comments.
-				else if (TryToSkipBlockComment(ref iterator, out openingSymbol, out closingSymbol))
-					{
-					TokenIterator commentContentStart = originalIterator;
-					commentContentStart.NextByCharacters(openingSymbol.Length);
-
-					TokenIterator commentContentEnd = iterator;
-					commentContentEnd.PreviousByCharacters(closingSymbol.Length);
-
-					// Allow certain comments to appear in the output, such as those for Splint.  See splint.org.
-					if (source.MatchTextBetween(acceptablePrototypeCommentRegex, 
-																			 commentContentStart, commentContentEnd).Success)
-						{
-						prototype.Append(openingSymbol);
-
-						string commentContent = source.TextBetween(commentContentStart, commentContentEnd);
-						commentContent = commentContent.Replace('\r', ' ');
-						commentContent = commentContent.Replace('\n', ' ');
-						commentContent = commentContent.CondenseWhitespace();
-
-						prototype.Append(commentContent);
-						prototype.Append(closingSymbol);
-						lastWasWhitespace = false;
-						}
-					else
-						{
-						if (lastWasWhitespace == false)
-							{
-							prototype.Append(' ');
-							lastWasWhitespace = true;
-							}
-						}
-					}
-
-
-				// Strings
-
-				else if (TryToSkipString(ref iterator))
-					{
-					// This also avoids whitespace condensation while in a string.
-
-					source.AppendTextBetweenTo(originalIterator, iterator, prototype);
-					lastWasWhitespace = false;
-					}
-
-
-				// Opening Bracket
-
-				// We don't test for < because there might be an unbalanced pair as part of an operator overload.
-				// We don't use TryToSkipBlock() because it wouldn't condense whitespace and remove comments.
-				else if (iterator.Character == '(' || iterator.Character == '[' || iterator.Character == '{')
-					{
-					brackets.Push(iterator.Character);
-					iterator.AppendTokenTo(prototype);
-					iterator.Next();
-					lastWasWhitespace = false;
-					}
-
-
-				// Closing Bracket, matching the last opening one
-
-				else if ( (iterator.Character == ')' && brackets.Peek() == '(') ||
-							  (iterator.Character == ']' && brackets.Peek() == '[') ||
-							  (iterator.Character == '}' && brackets.Peek() == '{') )
-					{
-					brackets.Pop();
-					iterator.AppendTokenTo(prototype);
-					iterator.Next();
-					lastWasWhitespace = false;
-					}
-
-
-				// Whitespace
-
-				else if (iterator.FundamentalType == FundamentalType.Whitespace)
-					{
-					if (lastWasWhitespace == false)
-						{
-						prototype.Append(' ');
-						lastWasWhitespace = true;
-						}
-
-					iterator.Next();
 					}
 
 
 				// Everything Else
 
 				else
-					{
-					iterator.AppendTokenTo(prototype);
-					lastWasWhitespace = false;
-					iterator.Next();  
-					}
+					{  iterator.Next();  }
 				}
 
 			// If the iterator ran past the limit, that means something like a string or a block comment was not closed before it
@@ -902,11 +775,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			if (goodPrototype)
 				{
-				// Strip trailing space
-				if (lastWasWhitespace && prototype.Length > 0)
-					{  prototype.Remove(prototype.Length - 1, 1);  }
-
-				string prototypeString = prototype.ToString();
+				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 				string undecoratedTitle = topic.Title;
 				int trailingParenthesisIndex = Symbols.ParameterString.GetEndingParenthesisIndex(undecoratedTitle);
@@ -914,38 +783,63 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (trailingParenthesisIndex != -1)
 					{  undecoratedTitle = undecoratedTitle.Substring(0, trailingParenthesisIndex).TrimEnd();  }
 
-				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
-					{  topic.Prototype = prototypeString;  }
+
+				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
+					{  
+					// goodPrototype remains true.
+					}
 
 				// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
 				else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
 					{
 					string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
+					string prototypeString = start.Tokenizer.TextBetween(start, iterator);
 					string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
 
-					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) != -1)
-						{  topic.Prototype = prototypeString;  }
+					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) == -1)
+						{  goodPrototype = false;  }
 					}
 
 				// If ".prototype." is in the string, make another attempt to see if we can match with it removed.
-				else
+				else if (start.Tokenizer.ContainsTextBetween(".prototype.", true, start, iterator))
 					{
+					string prototypeString = start.Tokenizer.TextBetween(start, iterator);
 					int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
 
-					if (prototypeIndex != -1)
-						{
-						// We want to keep the trailing period so String.prototype.Function becomes String.Function.
-						string prototypeString2 = prototypeString.Substring(0, prototypeIndex) + 
-																	  prototypeString.Substring(prototypeIndex + 10);
+					// We want to keep the trailing period so String.prototype.Function becomes String.Function.
+					prototypeString = prototypeString.Substring(0, prototypeIndex) + prototypeString.Substring(prototypeIndex + 10);
 
-						if (prototypeString2.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
-							{  topic.Prototype = prototypeString;  }
-						}
+					if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) == -1)
+						{  goodPrototype = false;  }
 					}
+
+				else
+					{  goodPrototype = false;  }
+				}
+
+			if (goodPrototype)
+				{
+				Tokenizer prototype = start.Tokenizer.CreateFromIterators(start, iterator);
+				topic.Prototype = NormalizePrototype(prototype);
 				}
 			}
 			
 		
+		/* Function: NormalizePrototype
+		 * 
+		 * Puts the passed prototype in a form that's appropriate for the rest of the program.  It assumes the syntax is valid.  If
+		 * you already have the input in a <Tokenizer>, it is more efficient to call <NormalizePrototype(tokenizer)>.
+		 * 
+		 * - Whitespace will be condensed.
+		 * - Most comments will be removed, excluding things like Splint comments.
+		 * - Line breaks will be removed, including extension characters if the language has them.
+		 */
+		protected virtual string NormalizePrototype (string input)
+			{
+			return NormalizePrototype(new Tokenizer(input));
+			}
+
+
 		/* Function: NormalizePrototype
 		 * 
 		 * Puts the passed prototype in a form that's appropriate for the rest of the program.  It assumes the syntax is valid.
@@ -954,10 +848,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * - Most comments will be removed, excluding things like Splint comments.
 		 * - Line breaks will be removed, including extension characters if the language has them.
 		 */
-		protected virtual string NormalizePrototype (string stringInput)
+		protected virtual string NormalizePrototype (Tokenizer input)
 			{
-			Tokenizer input = new Tokenizer(stringInput);
-			StringBuilder output = new StringBuilder(stringInput.Length);
+			StringBuilder output = new StringBuilder(input.RawText.Length);
 
 			TokenIterator start = input.FirstToken;
 			TokenIterator iterator = start;
@@ -1921,8 +1814,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipComment
+		 * 
 		 * If the iterator is on a comment symbol, moves past it and returns true.  If you need information about the specific type of
 		 * comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()> individually.
+		 * 
+		 * Important:
+		 * 
+		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
+		 * 
+		 *		- <TryToSkipComment()>
+		 *		- <TryToSkipString()>
+		 *		- <TryToSkipBlock()>
+		 * 
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *		want the parser to interpret it as a string and search for a closing quote.
+		 *		
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *		interpret the comment content as code.
 		 */
 		protected bool TryToSkipComment (ref TokenIterator iterator)
 			{
@@ -2019,7 +1927,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipString
+		 * 
 		 * If the iterator is on a quote or apostrophe, moves the iterator past the entire string and returns true.
+		 * 
+		 * Important:
+		 * 
+		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
+		 * 
+		 *		- <TryToSkipComment()>
+		 *		- <TryToSkipString()>
+		 *		- <TryToSkipBlock()>
+		 * 
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *		want the parser to interpret it as a string and search for a closing quote.
+		 *		
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *		interpret the comment content as code.
 		 */
 		protected bool TryToSkipString (ref TokenIterator iterator)
 			{
@@ -2048,10 +1971,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipBlock
+		 * 
 		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
 		 * nested blocks, strings, and comments, but otherwise doesn't parse the underlying code.  You must specify
 		 * whether to include < as an opening symbol because it may be relevant in some places (template definitions)
 		 * but detrimental in others (general code where < could mean less than and not have a closing >.)
+		 * 
+		 * Important:
+		 * 
+		 *		When you're skipping over generic code without interpreting it, these functions should always be called in this order:
+		 * 
+		 *		- <TryToSkipComment()>
+		 *		- <TryToSkipString()>
+		 *		- <TryToSkipBlock()>
+		 * 
+		 *		You want to check for comments before strings because Visual Basic uses the ' character for comments and you don't 
+		 *		want the parser to interpret it as a string and search for a closing quote.
+		 *		
+		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
+		 *		interpret the comment content as code.
 		 */
 		 protected bool TryToSkipBlock (ref TokenIterator iterator, bool includeAngleBrackets)
 			{
@@ -2082,8 +2020,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					if (symbols.Count == 0)
 						{  break;  }
 					}
-				else if (TryToSkipString(ref iterator) ||
-							 TryToSkipComment(ref iterator))
+				// TryToSkipComment has to come first so ' comments in VB don't get interpreted as strings.
+				else if (TryToSkipComment(ref iterator) ||
+							 TryToSkipString(ref iterator))
 					{  }
 				else
 					{  iterator.Next();  }
