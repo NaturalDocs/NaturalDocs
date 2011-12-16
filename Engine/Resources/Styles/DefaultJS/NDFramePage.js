@@ -87,6 +87,8 @@ var NDFramePage = new function ()
 
 		this.topmostPanel = `FilePanel;
 		this.summaryPanelIsExpanded = true;
+		// this.desiredMenuWidth = undefined;
+		// this.desiredSummaryWidth = undefined;
 
 		this.DecodeHash();
 
@@ -468,6 +470,9 @@ var NDFramePage = new function ()
 			currentX += menu.offsetWidth;
 			remainingWidth -= menu.offsetWidth;
 
+			if (this.desiredMenuWidth == undefined)
+				{  this.desiredMenuWidth = menu.offsetWidth;  }
+
 			if (useSizers)
 				{
 				menuSizer.style.display = "block";
@@ -487,6 +492,9 @@ var NDFramePage = new function ()
 
 			currentX += summary.offsetWidth;
 			remainingWidth -= summary.offsetWidth;
+
+			if (this.desiredSummaryWidth == undefined)
+				{  this.desiredSummaryWidth = summary.offsetWidth;  }
 
 			if (useSizers)
 				{
@@ -603,6 +611,11 @@ var NDFramePage = new function ()
 		NDCore.SetToAbsolutePosition(this.sizerDragging.sizer, this.sizerDragging.originalSizerX + offset, undefined, undefined, undefined);
 		NDCore.SetToAbsolutePosition(this.sizerDragging.element, undefined, undefined, this.sizerDragging.originalElementWidth + offset, undefined);
 
+		if (this.sizerDragging.sizer.id == "NDMenuSizer")
+			{  this.desiredMenuWidth = document.getElementById("NDMenu").offsetWidth;  }
+		else // "NDSummarySizer
+			{  this.desiredSummaryWidth = document.getElementById("NDSummary").offsetWidth;  }
+
 		this.UpdateLayout();
 		};
 
@@ -620,6 +633,103 @@ var NDFramePage = new function ()
 
 		NDCore.RemoveClass(this.sizerDragging.sizer, "Dragging");
 		this.sizerDragging = undefined;
+		};
+
+
+	/* Function: SizeSummaryToContent
+		Resizes the summary panel to fit its content.  If the summary content is wider than <desiredSummaryWidth> by no 
+		more than <`ExpansionFactor>, the summary will be expanded to show it without a horizontal scrollbar.  Otherwise it 
+		will be set to <desiredSummaryWidth>.  This is to be called by <NDSummary> whenever it's content changes.
+	*/
+	this.SizeSummaryToContent = function ()
+		{
+		this.SizePanelToContent(document.getElementById("NDSummary"), this.desiredSummaryWidth);
+		};
+
+
+	// We decided not to implement similar functionality for NDMenu, though it can be supported just as easily.  Just create
+	// SizeMenuToContent() and call it from NDMenu.Update().
+
+
+	/* Function: SizePanelToContent
+		Resizes the passed panel to fit its content.  If the panel content is wider than desiredOffsetWidth by no more than 
+		<`ExpansionFactor>, the panel will be expanded to show it without a horizontal scrollbar.  Otherwise it will be set to 
+		desiredOffsetWidth.
+	*/
+	this.SizePanelToContent = function (panel, desiredOffsetWidth)
+		{
+		// For reference:
+		//    clientWidth/Height - Size of visible content area
+		//    offsetWidth/Height - Size of visible content area plus scrollbars and borders
+		//    scrollWidth/Height - Size of content
+
+		// This may happen the first time the panel is loaded if it happens before the first UpdateLayout().
+		if (this.desiredSummaryWidth == undefined)
+			{  return;  }
+
+		var resized = false;
+
+		// If there's no horizontal scroll bar... 
+		// (scrollWidth will never be less than clientWidth, even if the content doesn't need all the room.)
+		if (panel.clientWidth == panel.scrollWidth)
+			{  
+			// and we're already at the desired width, there's nothing to do.
+			if (panel.offsetWidth == desiredOffsetWidth)
+				{  return;  }
+			else
+				{
+				// The panel is different than the desired width, meaning it was automatically expanded for the previous
+				// content.  There's no way for us to determine the minimum content width to only shrink it down when
+				// necessary, so we have to reset it and then determine if we need to expand it again.
+				NDCore.SetToAbsolutePosition(panel, undefined, undefined, desiredOffsetWidth, undefined);
+				resized = true;
+				}
+			}
+		// else
+			// If there is a horizontal scrollbar, that means scrollWidth is set to the minimum content width and we can
+			// continue regardless of whether the panel is the desired size.
+
+		var newOffsetWidth = panel.scrollWidth;
+
+		// Do we have a vertical scroll bar?
+		if (panel.scrollHeight > panel.clientHeight)
+			{  
+			// If so factor it in.  offset - client will include the left and right border widths too.
+			newOffsetWidth += panel.offsetWidth - panel.clientWidth;  
+			}
+		else
+			{
+			// If not just factor in the border widths.  This only works if they're specified in px in the CSS.
+			newOffsetWidth += NDCore.GetComputedPixelWidth(panel, "borderLeftWidth") +
+										 NDCore.GetComputedPixelWidth(panel, "borderRightWidth");
+			}
+
+		// At this point newOffsetWidth is either the same as desiredOffsetWidth or is a larger value representing the 
+		// minimum content size.  Search your heart, you know it to be true.  Or just work through all the possibilities in
+		// the above code.  Whatever.
+
+		if (newOffsetWidth != desiredOffsetWidth)
+			{
+			// Okay, so we're larger than the desired width.  Add a few pixels for padding.
+			newOffsetWidth += 3;
+
+			// See if automatically expanding to this size would exceed the maximum.  We only want to nudge the panel
+			// size a bit beyond where the user dragged it to in order to avoid an unnecessary horizontal scroll bar.  If the
+			// panel content is larger by a fair amount, scrolling is better.
+			if (newOffsetWidth / desiredOffsetWidth > `ExpansionFactor)
+				{
+				newOffsetWidth = desiredOffsetWidth;
+				}
+			
+			if (panel.offsetWidth != newOffsetWidth)
+				{  
+				NDCore.SetToAbsolutePosition(panel, undefined, undefined, newOffsetWidth, undefined);  
+				resized = true;
+				}
+			}
+
+		if (resized)
+			{  this.UpdateLayout();  }
 		};
 
 
@@ -668,6 +778,24 @@ var NDFramePage = new function ()
 		originalElementWidth - The element's original width.
 		originalClientX - The mouse's original X position.
 	*/
+
+	/* var: desiredMenuWidth
+		The width the menu panel should use, or undefined to use the default.  The actual menu width can be 
+		slightly larger if needed to show the content without a horizontal scrollbar.
+	*/
+
+	/* var: desiredSummaryWidth
+		The width the summary panel should use, or undefined to use the default.  The actual summary width 
+		can be slightly larger if needed to show the content without a horizontal scrollbar.
+	*/
+
+	/* var: `ExpansionFactor
+		This substitution is how much the menu or summary panel may be automatically expanded by.  If the
+		content is larger than the desired width times this factor it will stay at the desired width and use a
+		scrollbar instead.  To allow a 15% expansion set the value to 1.15.
+	*/
+		// Substitutions:
+		// `ExpansionFactor = 1.15
 
 
 

@@ -206,9 +206,11 @@ var NDSummary = new function ()
 
 		var oldContent = document.getElementById("SContent");
 		oldContent.parentNode.replaceChild(newContent, oldContent);
+
+		NDFramePage.SizeSummaryToContent();
 		};
 
-
+	
 	/* Function: GoToAnchor
 	*/
 	this.GoToAnchor = function (anchor)
