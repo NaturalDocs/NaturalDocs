@@ -197,8 +197,6 @@ var NDCore = new function ()
 	*/
 	this.SetToAbsolutePosition = function (element, x, y, width, height)
 		{
-		var pxRegex = /^([0-9]+)px$/i;
-
 		if (x != undefined && element.offsetLeft != x)
 			{  element.style.left = x + "px";  }
 		if (y != undefined && element.offsetTop != y)
@@ -211,7 +209,7 @@ var NDCore = new function ()
 			{
 			// If the width isn't already specified in pixels, set it to pixels.  We can't figure out the difference between the style
 			// and offset widths otherwise.  This might cause an extra resize, but only the first time.
-			if (!pxRegex.test(element.style.width))
+			if (!this.pxRegex.test(element.style.width))
 				{  
 				element.style.width = width + "px";  
 
@@ -232,7 +230,7 @@ var NDCore = new function ()
 		// Copypasta for height
 		if (height != undefined && element.offsetHeight != height)
 			{
-			if (!pxRegex.test(element.style.height))
+			if (!this.pxRegex.test(element.style.height))
 				{  
 				element.style.height = height + "px";  
 
@@ -427,6 +425,71 @@ var NDCore = new function ()
 
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
+
+
+
+	// Group: Style Functions
+	// ________________________________________________________________________
+
+
+	/* Function: GetComputedStyle
+		Returns the computed CSS style for the passed element in a browser-neutral way.  It first tries the element's 
+		inline styles in case it overrides them, and if not, retrieves the results created from the style sheets.  Returns 
+		undefined if it's not set.
+	*/
+	this.GetComputedStyle = function (element, style)
+		{
+		// First try inline.
+		var result = element.style[style];
+
+		// All tested browsers return an empty string if it's not set.
+		if (result != "")
+			{  return result;  }
+
+		// Now try computed.  This was tested to work in Firefox 3.6+, Chrome 12+, and Opera 11.6.
+		// IE works starting with 9 but 6-8 are out of luck.
+		// Online docs say Safari only supports document.defaultView.getComputedStyle(), but Safari 5 handles this fine.
+		if (window.getComputedStyle)
+			{
+			return window.getComputedStyle(element, "")[style];
+			}
+
+		// IE 6-8 method
+		else if (element.currentStyle)
+			{
+			return element.currentStyle[style];
+			}
+
+		else
+			{  
+			return undefined;
+			}
+		};
+
+	/* Function: GetComputedPixelWidth
+		Similar to <GetComputedStyle()> except that it returns the property as an integer representing the pixel width.
+		If the CSS property is in any format other than "#px" it will return zero, so it can't decode "#em", "#ex", etc.
+	*/
+	this.GetComputedPixelWidth = function (element, style)
+		{
+		var result = this.GetComputedStyle(element, style);
+
+		if (this.pxRegex.test(result))
+			{  return parseInt(RegExp.$1, 10);  }
+		else
+			{  return 0;  }
+		};
+
+
+
+	// Group: Variables
+	// ________________________________________________________________________
+
+
+	/* var: pxRegex
+		A regular expression that can interpret "12px" styles, leaving the integer in the RegExp.$1 variable.
+	*/
+	this.pxRegex = /^([0-9]+)px$/i;
 
 	};
 
