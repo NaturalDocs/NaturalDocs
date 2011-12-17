@@ -23,32 +23,54 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		protected void CreateDatabase ()
 			{
 			connection.Execute("CREATE TABLE System (Version TEXT NOT NULL, " +
-																		"UsedTopicIDs TEXT NOT NULL, " +
-																		"UsedEndingSymbolIDs TEXT NOT NULL )");
+																							"UsedTopicIDs TEXT NOT NULL, " +
+																							"UsedEndingSymbolIDs TEXT NOT NULL )");
 			
 			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedEndingSymbolIDs) VALUES (?,?,?)", 
 										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
 			
 			
-			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +  // Automatic index
-																		   "FileID INTEGER NOT NULL, " +
-																		   "LanguageID INTEGER NOT NULL, " +
-																		   "CommentLineNumber INTEGER NOT NULL, " +
-																		   "CodeLineNumber INTEGER NOT NULL, " +
-																		   "Title TEXT NOT NULL, " +
-																		   "Body TEXT, " +
-																			"Summary TEXT, " +
-																			"Prototype TEXT, " +
-																		   "Symbol TEXT NOT NULL, " +
-																			"Parameters TEXT, " +
-																		   "EndingSymbol TEXT NOT NULL, " +
-																		   "TopicTypeID INTEGER NOT NULL, " +
-																		   "AccessLevel INTEGER NOT NULL, " +
-																		   "Tags TEXT )");
+			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +
+																							"FileID INTEGER NOT NULL, " +
+																							"LanguageID INTEGER NOT NULL, " +
+																							"CommentLineNumber INTEGER NOT NULL, " +
+																							"CodeLineNumber INTEGER NOT NULL, " +
+																							"Title TEXT NOT NULL, " +
+																							"Body TEXT, " +
+																							"Summary TEXT, " +
+																							"Prototype TEXT, " +
+																							"Symbol TEXT NOT NULL, " +
+																							"Parameters TEXT, " +
+																							"EndingSymbol TEXT NOT NULL, " +
+																							"TopicTypeID INTEGER NOT NULL, " +
+																							"AccessLevel INTEGER NOT NULL, " +
+																							"Tags TEXT )");
 																	   
 			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)");
 			connection.Execute("CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)");
+
+
+			connection.Execute("CREATE TABLE Links (LinkID INTEGER PRIMARY KEY NOT NULL, " +
+																						"Type INTEGER NOT NULL, " +
+																						"Text TEXT NOT NULL, " +
+																						"Parameters TEXT, " +
+																						"Context TEXT, " +
+																						"FileID INTEGER NOT NULL, " +
+																						"LanguageID INTEGER NOT NULL, " +
+																						"EndingSymbol TEXT NOT NULL, " +
+																						"TargetTopicID INTEGER, " +
+																						"TargetScore INTEGER )");
+																	   
+			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, Text, Parameters, Context)");
+			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
+
+
+			connection.Execute("CREATE TABLE AlternateLinkEndingSymbols (LinkID INTEGER NOT NULL, " +
+																																"EndingSymbol TEXT NOT NULL, " +
+																																"PRIMARY KEY (LinkID, EndingSymbol) )");
+																	   
+			connection.Execute("CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)");
 			}
 
 
