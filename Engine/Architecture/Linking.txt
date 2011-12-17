@@ -1,0 +1,125 @@
+﻿
+Title: Linking
+_______________________________________________________________________________
+
+Topic: Topic Symbols
+
+	Every topic generates a symbol.  It represents it's fully resolved name in the code, so a topic "Function (int, int)" 
+	appearing in "Namespace::Class" would conceptually have the symbol "Namespace::Class::Function (int, int)".  
+	Conceptually, because in reality symbols are normalized and parameters are separate:
+	
+	- Member operators are replaced by a standard character, which we'll represent in this document with |, so the part 
+		before the parenthesis is actually "Namespace|Class|Function".  It would be the same for "Namespace.Class.Function".
+	- Unnecessary whitespace is removed, which is usually any whitespace not in between two letters.
+	- Parenthesis appearing in the topic title are removed, normalized, and stored separately as the symbol's parameters.  In 
+	  this case it would be converted to "int|int".
+	- If no parenthesis appear in the topic title and the topic has a prototype with typed parameters, those types become the 
+	  symbol's parameters.  Something documented with "Function: FunctionName" that has a prototype of
+	  "void FunctionName (int x, float y)" will have a generated parameter string "int|float".
+		- Note that this means if you put your own parenthesis in the topic title, they will override the prototype.  It's 
+		  recommended that people not do this.
+	- Case is preserved regardless of whether the underlying language is case sensitive.
+	- Leading and trailing member operators are removed.  Multiple consecutive ones are condensed.
+
+	Topics will also store the ID of the class they appear in, but note that the fully resolved symbol may go more than one
+	level deeper than the class.  This is so if you define "File.txt" or "This vs. That" topics in "MyClass", the periods don't 
+	cause Natural Docs to assume there's "MyClass.File" and "MyClass.This vs" classes.  In C# you can also use 
+	"Interface.Function" to define a particular interface's function when a class implements multiple interfaces which use the
+	same function name.  In all these cases the extra periods will still be converted in the symbol as if they represented nested
+	classes, as it would be difficult to resolve links otherwise, but the topics are still associated with the class they appeared
+	in.  This means the topic symbol will usually be a superstring of the class symbol, but you can't assume there's no
+	member operators beyond it.  
+	
+	On a similar note there could also be "always global" topics associated with a class.  The symbol will be global but the
+	topic will still have the ID of the class it appears in, and the symbol will not be a superstring of the class's symbol at all.
+
+	The last section of the symbol sans parenthesis is called the ending symbol, so for "Namespace::Class::Function (int, int)"
+	it would be "Function".  These are converted to lowercase for case insensitivity and stored in an additional field to allow 
+	links to look up every topic that uses a particular ending symbol in order to find possible matches regardless of case, scope, 
+	or parameters.
+
+
+Topic: Link Types
+
+	There are three types of links that must be handled:
+
+	Text Links - When someone writes "<Class.Member>" in a comment.
+	Class Parent Links - When a class defines a parent, such as "class Child : ParentClass".
+	Type Links - For linking types appearing in function and variable prototypes back to their definition.
+ 
+	All three types of links depend on context to be resolved, such as what scope they're appearing in and what "using" 
+	statements are in effect.  Yes, even class parent links as C# applies "using" statements to them.
+
+
+Topic: Resolving Links
+
+	When a new link needs to be resolved, it first generates a normalized symbol and parameters based on the link text.  
+	This is exactly the same process topic symbols go through: the parenthesis are separated off and normalized as the
+	parameters, the remaining text is normalized as the symbol, and the ending segment of the symbol is converted into a
+	case insensitive ending symbol.
+	
+	If we're resolving a text link we have to be able to handle plural and possessive forms of the word, so singular forms of
+	the ending symbol are generated.  They may not all exist or make sense as they're just guesses.  For example, "leaves" 
+	can be translated into "leave", "leav", "leafe", and "leaf" as the plural of all those words could be "leaves".  A more 
+	sophisticated analysis to try to weed out things like "leav" isn't necessary as we can just rely on there being no targets 
+	defined for them.  All possible singular forms are also lowercase for case insensitivity like the ending symbol.
+
+	The database is queried for all topics that use the ending symbol or its possible singular forms.  Each topic is given a
+	numerical score based on many factors:
+		
+		- Whether the topic matches the original ending symbol or a possible singular form.  Exact matches take precedence 
+		  over generated singular forms.
+		- How good a match the scope is.  "<Function()>" prefers to resolve to a topic in its own class before globals or topics 
+		  found via "using" statements.  This is also used to weed out impossible matches.
+		- Whether the topic is the same language as the topic the link is in.  For text links same language matches take
+		  precedence over cross-language matches.  For class parent and type links this separates out impossible matches.
+		- How good the parameter match is.  If someone writes "<Function()>" it prefers parameterless targets, whereas
+		  "<Function(int,int)>" tries to find the best match possible.
+		- Whether the case matches.  For text links exact case matches take precedence over others.  For class parent and
+		  type links it depends on whether the language is case sensitive or not.
+		- Whether the topic has a prototype or body and how long.  This is used to distinguish between multiple definitions of
+		  the same symbol, such as partial classes in C#.  Hopefully only one will be documented and that's the one we want to
+		  link to.
+
+	The best target for the link is chosen and stored in the database.  Links are identified by the unique combination of normalized
+	symbol, normalized parameters (if any) "using" statements (if any) defining file ID, and defining class ID.  If two or more 
+	links appearing in the code create the same combination of those elements they're considered the same link, but if even one
+	differs they're separate.  Why?
+
+		- Links are used for resolving.
+			- If two links appear in the exact same context with the exact same attributes, they will always resolve to the same 
+			  target and so storing them individually doesn't serve a purpose.
+			- If two otherwise equivalent links have different cases, defining classes, or "using" statements they have the possibility
+			  of resolving differently and must be handled individually.
+
+		- Links are used for differential output building.
+			- If a link's definition changes you need to know the class the link was defined in so that the output file for that class
+			  can be marked for rebuilding.
+			- If a link's definition changes you also need to know the file that link was defined in so that the output file for that
+			  source file can be marked for rebuilding.  Thus two otherwise equivalent links that appear in two separate source files
+			  must be treated as two separate links.
+			- Nothing requires links to be tracked per topic.  Tracking per class/file combination is sufficient and results in fewer
+			  links in the database.
+
+
+Topic: Maintaining Links
+
+	When a new link is created, it is resolved as described in <Resolving Links> and stored along with its definition in 
+	<CodeDB.Links>.  For text links that have generated singular forms, those forms are stored in 
+	<CodeDB.AlternateLinkEndingSymbols>.  This happens even if the link didn't resolve to anything.
+	
+	If a link is deleted it is simply removed from the database.  Since changes to the context results in a completely different link 
+	as far as the database is concerned, adding or removing a "using" statement is handled by the old forms of the links being 
+	treated as removed and the new forms being treated as new.
+
+	If a topic changes, it is able to retrieve all links that could possibly resolve to it with <CodeDB.Links> and
+	<CodeDB.AlternateLinkEndingSymbols>.  It can then generate its score for those links to see whether it serves as a better 
+	target for any of them.  If so the link's target is updated and its file/class it's defined in are marked for rebuilding.
+
+	If a topic is removed, it retrieves all links that have it as its target.  Those links are marked for reresolving and its file/class 
+	marked for rebuilding.  The links are reresolved because it may resolve to a different target now instead of being undefined.
+
+	If a topic is added, it retrieves all links that could possibly resolve to it and generates its score to see whether it serves as
+	a better target for any of them.  If so the link's target is updated and its file/class are marked for rebuilding.  The fact that
+	ending symbols are in the database for all links and their possible singular forms regardless of whether any topics exist for
+	them means that a new topic will be able to find existing unresolved links that it could satisfy.
