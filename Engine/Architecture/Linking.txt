@@ -43,7 +43,7 @@ Topic: Link Types
 
 	There are three types of links that must be handled:
 
-	Text Links - When someone writes "<Class.Member>" in a comment.
+	Natural Docs Links - When someone writes "<Class.Member>" in a comment.
 	Class Parent Links - When a class defines a parent, such as "class Child : ParentClass".
 	Type Links - For linking types appearing in function and variable prototypes back to their definition.
  
@@ -51,55 +51,90 @@ Topic: Link Types
 	statements are in effect.  Yes, even class parent links as C# applies "using" statements to them.
 
 
-Topic: Resolving Links
+Topic: Scoring Links
 
-	When a new link needs to be resolved, it first generates a normalized symbol and parameters based on the link text.  
-	This is exactly the same process topic symbols go through: the parenthesis are separated off and normalized as the
-	parameters, the remaining text is normalized as the symbol, and the ending segment of the symbol is converted into a
-	case insensitive ending symbol.
+	Type and Class Parent Links:
+
+	Type and Class Parent links are simpler as they are meant to be exact.  There are no plurals, possessives, "at" naming,
+	or parameters to worry about.  When a new link needs to be resolved, it first generates a normalized symbol based on 
+	the link text.  This is exactly the same process topic symbols go through, except these types of links won't have parethesis 
+	to strip off.  A case insensitive ending symbol is also generated, and these two values are stored in the link's database
+	record.
 	
-	If we're resolving a text link we have to be able to handle plural and possessive forms of the word, so singular forms of
-	the ending symbol are generated.  They may not all exist or make sense as they're just guesses.  For example, "leaves" 
-	can be translated into "leave", "leav", "leafe", and "leaf" as the plural of all those words could be "leaves".  A more 
-	sophisticated analysis to try to weed out things like "leav" isn't necessary as we can just rely on there being no targets 
-	defined for them.  All possible singular forms are also lowercase for case insensitivity like the ending symbol.
-
-	The database is queried for all topics that use the ending symbol or its possible singular forms.  Each topic is given a
-	numerical score based on many factors:
+	The database is queried for all topics that use the ending symbol and match the language ID, as cross-language linking isn't
+	appropriate here.  Each topic is given a numerical score based on many factors:
 		
-		- Whether the topic matches the original ending symbol or a possible singular form.  Exact matches take precedence 
-		  over generated singular forms.
-		- How good a match the scope is.  "<Function()>" prefers to resolve to a topic in its own class before globals or topics 
-		  found via "using" statements.  This is also used to weed out impossible matches.
-		- Whether the topic is the same language as the topic the link is in.  For text links same language matches take
-		  precedence over cross-language matches.  For class parent and type links this separates out impossible matches.
-		- How good the parameter match is.  If someone writes "<Function()>" it prefers parameterless targets, whereas
-		  "<Function(int,int)>" tries to find the best match possible.
-		- Whether the case matches.  For text links exact case matches take precedence over others.  For class parent and
-		  type links it depends on whether the language is case sensitive or not.
+		- How good a match the scope is.  A link prefers to resolve to a topic in its own class before globals or topics found via 
+		  "using" statements.  This is also used to weed out impossible matches.
+		- Whether the case matches, depending on the language's case sensitivity setting.  Some languages are case sensitive,
+		  some are not, and if it's not known then it will favor case sensitive matches but accept both.
+		- Whether the topic type is appropriate for the link.  Type links need to go to type topics, and class parent links need to
+		  go to classes.
 		- Whether the topic has a prototype or body and how long.  This is used to distinguish between multiple definitions of
 		  the same symbol, such as partial classes in C#.  Hopefully only one will be documented and that's the one we want to
 		  link to.
 
-	The best target for the link is chosen and stored in the database.  Links are identified by the unique combination of normalized
-	symbol, normalized parameters (if any) "using" statements (if any) defining file ID, and defining class ID.  If two or more 
-	links appearing in the code create the same combination of those elements they're considered the same link, but if even one
+
+	Natural Docs Links:
+
+	There are multiple ways to interpret Natural Docs links, so the original link text is stored in the database.  We generate all
+	the possible interpretations as needed rather than storing each possibility in the database.
+
+	First, like topic symbols, the parenthesis are separated off and normalized as the parameters.
+	
+	Next, the remaining text is searched for "at" keywords, which may result in multiple interpretations.  "X at Y" can be
+	interpreted as a link named X that goes to Y, or as a link that goes to the literal symbol "X at Y".  Similarly, "X at Y at Z"
+	can be "X" -> "Y at Z", or "X at Y" -> "Z", or the literal "X at Y at Z".
+
+	For each interpretation, the target text is normalized as the symbol, and the ending segment of the symbol is converted into
+	a case insensitive ending symbol.
+	
+	Next each ending symbol is checked for the possibility of being a plural and/or possessive form.  If so, additional interpretations 
+	are generated to handle the singular forms and are stored in the database in <CodeDB.AlternateLinkEndingSymbols>.  They 
+	may not all exist or make sense as they're just guesses.  For example, "leaves" can be translated into "leave", "leav", "leafe", 
+	and "leaf" as the plural of all those words could be "leaves".  A more sophisticated analysis to try to weed out things like "leav" 
+	isn't necessary as we can just rely on there being no targets defined for them.  All possible singular forms are also lowercase 
+	for case insensitivity like the ending symbol.
+
+	The database is queried for all topics that use the ending symbol or any of its possible singular forms.  Each topic is given a
+	numerical score based on many factors:
+		
+		- Whether the topic matches the original ending symbol or a possible singular form.  Exact matches take precedence 
+		  over generated singular forms.
+		- How good a match the scope is.  A link prefers to resolve to a topic in its own class before globals or topics found via
+		  "using" statements.  This is also used to weed out impossible matches.
+		- Whether the topic is the same language as the topic the link is in.  Same language matches take precedence, but
+		  cross-language links are allowed for Natural Docs links.
+		- How good the parameter match is.  If someone writes "<Function()>" it prefers parameterless targets, whereas
+		  "<Function(int,int)>" tries to find the best match possible.
+		- Whether the case matches.  Case sensitive matches take precedence, but case insensitive matches are accepted
+		  for Natural Docs links.
+		- Whether the topic has a prototype or body and how long.  This is used to distinguish between multiple definitions of
+		  the same symbol, such as partial classes in C#.  Hopefully only one will be documented and that's the one we want to
+		  link to.
+
+
+Topic: Resolving Links
+
+	The best target for the link is chosen based on score and stored in the link's database record.  Links are identified by the 
+	unique combination of normalized symbol, context, type, defining file ID, defining class ID, and language ID.  If two or more 
+	links appearing in the code create the same combination of those elements they're considered the same link, but if even one 
 	differs they're separate.  Why?
 
-		- Links are used for resolving.
-			- If two links appear in the exact same context with the exact same attributes, they will always resolve to the same 
-			  target and so storing them individually doesn't serve a purpose.
-			- If two otherwise equivalent links have different cases, defining classes, or "using" statements they have the possibility
-			  of resolving differently and must be handled individually.
+	- Links are used for resolving.
+		- If two links appear in the exact same context with the exact same attributes, they will always resolve to the same 
+			target and so storing them individually doesn't serve a purpose.
+		- If two otherwise equivalent links have different cases, defining classes, or contexts they have the possibility of resolving
+		  differently and must be handled individually.
 
-		- Links are used for differential output building.
-			- If a link's definition changes you need to know the class the link was defined in so that the output file for that class
-			  can be marked for rebuilding.
-			- If a link's definition changes you also need to know the file that link was defined in so that the output file for that
-			  source file can be marked for rebuilding.  Thus two otherwise equivalent links that appear in two separate source files
-			  must be treated as two separate links.
-			- Nothing requires links to be tracked per topic.  Tracking per class/file combination is sufficient and results in fewer
-			  links in the database.
+	- Links are used for differential output building.
+		- If a link's definition changes you need to know the class the link was defined in so that the output file for that class
+			can be marked for rebuilding.
+		- If a link's definition changes you also need to know the file that link was defined in so that the output file for that
+			source file can be marked for rebuilding.  Thus two otherwise equivalent links that appear in two separate source files
+			must be treated as two separate links.
+		- Nothing requires links to be tracked per topic.  Tracking per class/file combination is sufficient and results in fewer
+			links in the database.
 
 
 Topic: Maintaining Links

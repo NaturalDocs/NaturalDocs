@@ -23,19 +23,17 @@ Column: Type
 		Type INTEGER NOT NULL
 	(end)
 
-
-Column: Text
-
-	(SQL Prototype)
-		Text TEXT NOT NULL
-	(end)
+	The type of link it is.  The value will be from <Engine.Links.LinkType>.
 
 
-Column: Parameters
+Column: TextOrSymbol
 
 	(SQL Prototype)
-		Parameters TEXT
+		TextOrSymbol TEXT NOT NULL
 	(end)
+
+	If this is a Natural Docs link, this will be the plain text of the link.  If this is a type or class parent link, it 
+	will be the symbol normalized as a <Symbols.SymbolString>.
 
 
 Column: Context
@@ -43,6 +41,8 @@ Column: Context
 	(SQL Prototype)
 		Context TEXT
 	(end)
+
+	The context the link appears in, encoded with <Engine.Symbols.ContextString>.
 
 
 Column: FileID
@@ -64,6 +64,9 @@ Column: EndingSymbol
 	(SQL Prototype)
 		EndingSymbol TEXT NOT NULL
 	(end)
+
+	The ending segment of <TextOrSymbol>.  If this is a Natural Docs links, there may be additional ending 
+	symbols that apply to this link in <CodeDB.AlternateLinkEndingSymbols>.
 
 
 Column: TargetTopicID
@@ -97,17 +100,21 @@ Index: LinksByID
 Index: LinksByProperties
 
 	(SQL Prototype)
-		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, Text, Parameters, Context)
+		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, LanguageID, TextOrSymbol, Context)
 	(end)
 
 	Links that share all these properties are considered the same link as they will always resolve the
 	exact same way.  If even one of these is different between two links there's the possibility of them
 	resolving differently and they must be treated separately.
 
-	You will never look things up by only some of the columns in this index, so it isn't important to optimize
-	the order from that perspective.  However, we can still optimize the index by putting the easy to sort
-	numeric columns before the text columns, and the higher cardinality FileID and Text columns before the
-	lower cardinality Type and Context columns.
+	We optimize the index by putting the easy to sort numeric columns before the text columns, and the 
+	higher cardinality FileID and TextOrSymbol columns before the lower cardinality Type, LanguageID, and 
+	Context columns.
+
+
+Index: LinksByFile
+
+	This is covered by having FileID be the first column in <LinksByProperties>.
 
 
 Index: LinksByEndingSymbols

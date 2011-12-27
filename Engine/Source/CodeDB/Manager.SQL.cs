@@ -53,8 +53,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			connection.Execute("CREATE TABLE Links (LinkID INTEGER PRIMARY KEY NOT NULL, " +
 																						"Type INTEGER NOT NULL, " +
-																						"Text TEXT NOT NULL, " +
-																						"Parameters TEXT, " +
+																						"TextOrSymbol TEXT NOT NULL, " +
 																						"Context TEXT, " +
 																						"FileID INTEGER NOT NULL, " +
 																						"LanguageID INTEGER NOT NULL, " +
@@ -62,7 +61,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																						"TargetTopicID INTEGER, " +
 																						"TargetScore INTEGER )");
 																	   
-			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, Text, Parameters, Context)");
+			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, LanguageID, TextOrSymbol, Context)");
 			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
 
 
