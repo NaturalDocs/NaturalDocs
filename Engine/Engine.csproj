@@ -87,6 +87,9 @@
     <Compile Include="Source\Config\PropertyResult.cs" />
     <Compile Include="Source\Languages\Parser.cs" />
     <Compile Include="Source\Languages\PrototypeEnders.cs" />
+    <Compile Include="Source\Links\LinkSet.cs" />
+    <Compile Include="Source\Links\Link.cs" />
+    <Compile Include="Source\Links\LinkType.cs" />
     <Compile Include="Source\NDMarkup\Exceptions\InvalidTag.cs" />
     <Compile Include="Source\NDMarkup\Exceptions\InvalidMarkup.cs" />
     <Compile Include="Source\NDMarkup\Iterator.cs" />
