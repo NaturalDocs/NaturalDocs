@@ -88,7 +88,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (topic.Prototype != null)
 				{
-				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+				languageParser.SyntaxHighlight(parsedPrototype);
 
 				if (htmlPrototypeBuilder == null)
 					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
@@ -162,7 +163,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (topic.Prototype != null)
 				{
-				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+				languageParser.SyntaxHighlight(parsedPrototype);
 
 				if (htmlPrototypeBuilder == null)
 					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }

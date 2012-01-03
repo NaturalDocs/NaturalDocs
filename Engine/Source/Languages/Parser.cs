@@ -239,7 +239,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Converts a raw text prototype into a <ParsedPrototype>, optionally applying syntax highlighting to the contained
 		 * <Tokenizer> as well.
 		 */
-		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID, bool syntaxHighlight = false)
+		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID)
 			{
 			Reset();
 			source = new Tokenizer(rawPrototype);
@@ -368,26 +368,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				ParsePrototypeParameter(start, end, topicTypeID);
 				}
 
-			if (syntaxHighlight)
-				{  
-				// Using the public-facing SyntaxHighlight function resets the parse state, but we don't need it anymore.
-				SyntaxHighlight(source, topicTypeID);  
-				}
-
 			return parsedPrototype;
 			}
 
 
 		/* Function: SyntaxHighlight
-		 * Applies <SyntaxHighlightingTypes> to the passed tokenized content.  If it's for a prototype you can pass the
-		 * topic type ID, or leave it zero if it's just for general code.
+		 * Applies <SyntaxHighlightingTypes> to the tokenized content.
 		 */
-		public virtual void SyntaxHighlight (Tokenizer source, int topicTypeID = 0)
+		public virtual void SyntaxHighlight (Tokenizer source)
 			{
 			Reset();
 			this.source = source;
 
 			SimpleSyntaxHighlight();
+			}
+
+
+		/* Function: SyntaxHighlight
+		 * Applies <SyntaxHighlightingTypes> to the <ParsedPrototype>.
+		 */
+		public void SyntaxHighlight (ParsedPrototype prototype)
+			{
+			SyntaxHighlight(prototype.Tokenizer);
 			}
 
 
@@ -1218,7 +1220,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						if (prototypeParser == null)
 							{  prototypeParser = language.GetParser();  }
 
-						ParsedPrototype parsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, false);
+						ParsedPrototype parsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
 						
 						if (parsedPrototype.NumberOfParameters > 0)
 							{

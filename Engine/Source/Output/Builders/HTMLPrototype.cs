@@ -120,7 +120,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (languageParser == null || languageParser.Language != language)
 				{  languageParser = language.GetParser();  }
 
-			parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID, true);
+			parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+			languageParser.SyntaxHighlight(parsedPrototype);
 
 			if (parsedPrototype.NumberOfParameters == 0)
 				{
