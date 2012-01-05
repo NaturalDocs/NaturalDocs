@@ -46,6 +46,7 @@ namespace GregValure.NaturalDocs.Engine
 			tags = null;
 			
 			usesPluralKeyword = false;
+			parsedPrototype = null;
 			}
 			
 			
@@ -55,8 +56,8 @@ namespace GregValure.NaturalDocs.Engine
 		 * The latter is an important distinction because it allows use of <CodeDB.Accessor.UpdateTopic()>.
 		 * 
 		 * <TopicID> is not included in the comparison because it's assumed that you would be comparing Topics from a parse, 
-		 * where they would not be set, to Topics from the database, where they would.  <UsesPluralKeyword> is also not 
-		 * compared because it is not a database field.
+		 * where they would not be set, to Topics from the database, where they would.  <Temporary Properties> are also not 
+		 * compared because they do not correspond to database fields.
 		 */
 		public DatabaseCompareResult DatabaseCompare (Topic other)
 			{
@@ -243,7 +244,10 @@ namespace GregValure.NaturalDocs.Engine
 			get
 				{  return prototype;  }
 			set
-				{  prototype = value;  }
+				{  
+				prototype = value;  
+				parsedPrototype = null;
+				}
 			}
 			
 			
@@ -321,8 +325,7 @@ namespace GregValure.NaturalDocs.Engine
 			
 			
 		// Group: Temporary Properties
-		// These properties aid in processing but are not stored in the database.  They will only be set when topics are parsed out 
-		// of the source files.
+		// These properties aid in processing but are not stored in the database.
 		// __________________________________________________________________________
 		
 					
@@ -340,9 +343,46 @@ namespace GregValure.NaturalDocs.Engine
 			set
 				{  usesPluralKeyword = value;  }
 			}
+
+
+		/* Property: ParsedPrototype
+		 * 
+		 * If <Prototype> is not null, this will be it in <ParsedPrototype> form.
+		 * 
+		 * This is generated automatically the first time it is accessed.  However, if desired you can also use the assignment to
+		 * pre-generate them.
+		 */
+		public ParsedPrototype ParsedPrototype
+			{
+			get
+				{
+				if (parsedPrototype != null)
+					{  return parsedPrototype;  }
+				if (prototype == null)
+					{  return null;  }
+
+				parsedPrototype = Engine.Instance.Languages.FromID(languageID).GetParser().ParsePrototype(prototype, topicTypeID);
+
+				return parsedPrototype;
+				}
+
+			set
+				{
+				#if DEBUG
+					if (prototype == null)
+						{  throw new InvalidOperationException("Can't assign a ParsedPrototype to a Topic when Prototype is null.");  }
+					if (parsedPrototype == null)
+						{  throw new InvalidOperationException("Can't assign a null ParsedPrototype to a Topic.");  }
+					if (parsedPrototype.Tokenizer.RawText != prototype)
+						{  throw new InvalidOperationException("Can't assign a ParsedPrototype to a Topic when it doesn't match Prototype.");  }
+				#endif
+
+				parsedPrototype = value;
+				}
+			}
+
 			
-			
-		
+
 		// Group: Variables
 		// __________________________________________________________________________
 		
@@ -411,6 +451,11 @@ namespace GregValure.NaturalDocs.Engine
 		 * Whether the topic is a Natural Docs comment which uses the plural form of a keyword.
 		 */
 		protected bool usesPluralKeyword;
+
+		/* var: parsedPrototype
+		 * The <prototype> in <ParsedPrototype> form, or null if <prototype> is null or it hasn't been generated yet.
+		 */
+		protected ParsedPrototype parsedPrototype;
 		
 		/* var: accessLevel
 		 * The access level of the topic.
