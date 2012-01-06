@@ -371,9 +371,9 @@ namespace GregValure.NaturalDocs.Engine
 				#if DEBUG
 					if (prototype == null)
 						{  throw new InvalidOperationException("Can't assign a ParsedPrototype to a Topic when Prototype is null.");  }
-					if (parsedPrototype == null)
+					if (value == null)
 						{  throw new InvalidOperationException("Can't assign a null ParsedPrototype to a Topic.");  }
-					if (parsedPrototype.Tokenizer.RawText != prototype)
+					if (value.Tokenizer.RawText != prototype)
 						{  throw new InvalidOperationException("Can't assign a ParsedPrototype to a Topic when it doesn't match Prototype.");  }
 				#endif
 
