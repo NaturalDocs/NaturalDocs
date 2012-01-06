@@ -1220,17 +1220,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						if (prototypeParser == null)
 							{  prototypeParser = language.GetParser();  }
 
-						ParsedPrototype parsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+						topic.ParsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
 						
-						if (parsedPrototype.NumberOfParameters > 0)
+						if (topic.ParsedPrototype.NumberOfParameters > 0)
 							{
-							string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
+							string[] parameterTypes = new string[topic.ParsedPrototype.NumberOfParameters];
 							TokenIterator start, end;
 
-							for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+							for (int i = 0; i < topic.ParsedPrototype.NumberOfParameters; i++)
 								{
-								parsedPrototype.GetBaseParameterType(i, out start, out end);
-								parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
+								topic.ParsedPrototype.GetBaseParameterType(i, out start, out end);
+								parameterTypes[i] = topic.ParsedPrototype.Tokenizer.TextBetween(start, end);
 								}
 
 							topic.Parameters = ParameterString.FromParameterTypes(parameterTypes);
