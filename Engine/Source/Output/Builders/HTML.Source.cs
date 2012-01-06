@@ -39,7 +39,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			try
 				{
-				IList<Topic> topics = accessor.GetTopicsInFile(fileID, cancelDelegate);
+				IList<Topic> topics = accessor.GetTopicsInFile(fileID, cancelDelegate, CodeDB.Accessor.GetTopicsFlags.ParsePrototypes |
+																																			  CodeDB.Accessor.GetTopicsFlags.HighlightPrototypes);
 				
 				if (cancelDelegate())
 					{  return;  }

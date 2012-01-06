@@ -18,6 +18,7 @@
  *		
  *		- Create a HTMLTopic object.
  *		- Call <Build()> or <BuildToolTip()>.
+ *			- Note that this class will not add syntax highlighting to prototypes.  You must do that beforehand.
  *		- The object can be reused on different <Topics> by calling <Build()> again.
  * 
  * 
@@ -58,18 +59,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			html = null;
 			topic = null;
-			parsedPrototype = null;
-			language = null;
-			languageParser = null;
-			htmlPrototypeBuilder = null;
+			cachedHTMLPrototypeBuilder = null;
 			isToolTip = false;
 			}
 
 
 		/* Function: Build
-		 * Builds the HTML for the <Topic> and appends it to the passed StringBuilder.  If desired, you can add a CSS
-		 * class to include in the HTML.  If you're building a series of Topics, pass a usedAnchors <StringSet> to make
-		 * sure there's no duplicates generated.  Generated anchors will be added to the set automatically.
+		 * 
+		 * Builds the HTML for the <Topic> and appends it to the passed StringBuilder.
+		 * 
+		 * Parameters:
+		 * 
+		 *		topic - The <Topic> to build.
+		 *		output - The StringBuilder that the output will be appended to.
+		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
+		 *		usedAnchors - A <StringSet> to make sure there's no duplicate anchors generated when building a series of 
+		 *								  <Topics>.  New anchors will not match anything in this set and will be added to it automatically.
+		 *								  
+		 * Notes:
+		 * 
+		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
+		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public void Build (Topic topic, StringBuilder output, string extraClass = null, StringSet usedAnchors = null)
 			{
@@ -80,26 +90,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.html = output;
 			isToolTip = false;
 
-			language = Engine.Instance.Languages.FromID(topic.LanguageID);
-
-			// Reuse the parser if we can.
-			if (languageParser == null || languageParser.Language != language)
-				{  languageParser = language.GetParser();  }
-
-			if (topic.Prototype != null)
-				{
-				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
-				languageParser.SyntaxHighlight(parsedPrototype);
-
-				if (htmlPrototypeBuilder == null)
-					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
-				}
-
 
 			// Core
 
 			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = language.SimpleIdentifier;
+			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			html.Append(
 				"<a name=\"" + Builders.HTML.Source_Anchor(topic, true, usedAnchors) + "\"></a>" +
@@ -123,7 +118,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (topic.Prototype != null)
 						{
 						html.Append("\r\n ");
-						htmlPrototypeBuilder.Build(topic, true, html);
+
+						if (cachedHTMLPrototypeBuilder == null)
+							{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
+
+						cachedHTMLPrototypeBuilder.Build(topic, true, html);
 						}
 
 					if (topic.Body != null)
@@ -140,8 +139,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: BuildToolTip
+		 * 
 		 * Builds the HTML for the <Topic's> tooltip and returns it as a string.  If the topic shoudn't have a tooltip it will
 		 * return null.
+		 *								  
+		 * Notes:
+		 * 
+		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
+		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public string BuildToolTip (Topic topic)
 			{
@@ -155,32 +160,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.html = new StringBuilder();
 			isToolTip = true;
 
-			language = Engine.Instance.Languages.FromID(topic.LanguageID);
-
-			// Reuse the parser if we can.
-			if (languageParser == null || languageParser.Language != language)
-				{  languageParser = language.GetParser();  }
-
-			if (topic.Prototype != null)
-				{
-				parsedPrototype = languageParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
-				languageParser.SyntaxHighlight(parsedPrototype);
-
-				if (htmlPrototypeBuilder == null)
-					{  htmlPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
-				}
-
 
 			// Core
 
 			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = language.SimpleIdentifier;
+			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
 			html.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
 
 				if (topic.Prototype != null)
-					{  htmlPrototypeBuilder.Build(topic, false, html);  }
+					{  
+					if (cachedHTMLPrototypeBuilder == null)
+						{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
+
+					cachedHTMLPrototypeBuilder.Build(topic, false, html);  
+					}
 
 				if (topic.Summary != null)
 					{  BuildSummary();  }
@@ -270,10 +265,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							Languages.Language preLanguage = null;
 
 							if (preLanguageName != null)
-								{  preLanguage = Engine.Instance.Languages.FromName(preLanguageName);  }
+								{  
+								// This can return null if the language name is unrecognized.
+								preLanguage = Engine.Instance.Languages.FromName(preLanguageName);  
+								}
 
 							if (preLanguage == null)
-								{  preLanguage = language;  }
+								{  preLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);  }
 
 							Tokenizer code = new Tokenizer(textCode);
 							preLanguage.GetParser().SyntaxHighlight(code);
@@ -342,11 +340,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								TokenIterator start, end;
 								int matchedParameter = -1;
 
-								for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)	
+								for (int i = 0; i < topic.ParsedPrototype.NumberOfParameters; i++)	
 									{
-									parsedPrototype.GetParameterName(i, out start, out end);
+									topic.ParsedPrototype.GetParameterName(i, out start, out end);
 
-									if (parsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end))
+									if (topic.ParsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end))
 										{
 										matchedParameter = i;
 										break;
@@ -356,8 +354,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								if (matchedParameter != -1)
 									{
 									TokenIterator extensionStart, extensionEnd;
-									parsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
-																										  out extensionStart, out extensionEnd);
+									topic.ParsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
+																													out extensionStart, out extensionEnd);
 
 									if (start < end && 
 										// Don't include single symbol types
@@ -626,27 +624,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected Topic topic;
 
-		/* var: parsedPrototype
-		 * The prototype as a <ParsedPrototype> object.
+		/* var: cachedHTMLPrototypeBuilder
+		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Since this
+		 * class can be reused to build multiple <Topics>, and <HTMLPrototypeBuilders> can be reused to build
+		 * multiple prototypes, one is stored with the class so it can be reused between runs.
 		 */
-		protected ParsedPrototype parsedPrototype;
-
-		/* var: language
-		 * The <Languages.Language> of the prototype.
-		 */
-		protected Languages.Language language;
-
-		/* var: languageParser
-		 * A <Languages.Parser> associated with <language>.
-		 */
-		protected Languages.Parser languageParser;
-
-		/* var: htmlPrototypeBuilder
-		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Note that you
-		 * should always check <Topic.Prototype> for null instead of this, as this may still contain an object from a
-		 * previous run.
-		 */
-		protected HTMLPrototype htmlPrototypeBuilder;
+		protected Builders.HTMLPrototype cachedHTMLPrototypeBuilder;
 
 		/* var: isToolTip
 		 * Whether we're building a tooltip instead of a full topic.
