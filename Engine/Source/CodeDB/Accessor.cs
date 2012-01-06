@@ -58,6 +58,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			ReadPossibleWrite = 2,
 			ReadWrite = 3
 			}
+
+
+		/* Enum: GetTopicsFlags
+		 * 
+		 * Flags that can be applied to functions that retrieve <Topics> from the database.
+		 * 
+		 * ParsePrototypes - Pre-generate a <ParsedPrototype> for each <Topic>.  If you know you're going to need
+		 *									  them it is more efficient to generate them all at once with a single parser than to generate
+		 *									  each one on demand.
+		 * HighlightPrototypes - Applies syntax highlighting to each <Topic's> <ParsedPrototype>.  This must be used in
+		 *											combination with <ParsePrototypes>.
+		 */
+		[Flags]
+		public enum GetTopicsFlags : byte
+			{
+			ParsePrototypes = 0x01,
+			HighlightPrototypes = 0x02
+			}
 			
 			
 		
@@ -73,6 +91,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			inTransaction = false;
+			cachedParser = null;
 			}
 			
 			
@@ -266,5 +285,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected bool inTransaction;
 		
+		/* var: cachedParser
+		 * 
+		 * A parser used for things like parsing and highlighting prototypes in <GetTopicsInFile()>.  This starts off as null
+		 * and is created the first time it's needed.  It is only good for one language so you must check it's language ID before
+		 * using it.  If you need a parser for a different language you must create one and can store it here for future use.
+		 * 
+		 * This is stored in the class because most of the <Topics> retrieved over an accessor's lifetime will be from the same 
+		 * language, so we can cache a parser here to drastically limit how often new ones are created and deleted.  Since
+		 * multiple threads cannot share accessors we don't have to worry about locking this variable.
+		 */
+		protected Languages.Parser cachedParser;
+
 		}
 	}

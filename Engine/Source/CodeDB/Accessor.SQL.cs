@@ -31,7 +31,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled)
+		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, GetTopicsFlags flags = 0)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -61,6 +61,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.TagString = query.StringColumn(12);
 
 					topic.FileID = fileID;
+
+					if (topic.Prototype != null && (flags & GetTopicsFlags.ParsePrototypes) != 0)
+						{
+						// 95% of the time all the topics in a file are going to be from the same language, so this is very
+						// efficient.  It will create the parser the first time and reuse it for the rest of the topics.
+						if (cachedParser == null || cachedParser.Language.ID != topic.LanguageID)
+							{  cachedParser = Engine.Instance.Languages.FromID(topic.LanguageID).GetParser();  }
+
+						topic.ParsedPrototype = cachedParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+
+						if ((flags & GetTopicsFlags.HighlightPrototypes) != 0)
+							{  cachedParser.SyntaxHighlight(topic.ParsedPrototype);  }
+						}
 					
 					topics.Add(topic);
 					}
