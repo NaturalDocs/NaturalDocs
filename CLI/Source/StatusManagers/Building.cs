@@ -21,10 +21,13 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 		public Building (int updateInterval) : base (updateInterval)
 			{
 			lastPercentage = 0;
+			totalUnitsOfWork = 0;
 			}
 
 		public override void Start ()
 			{
+			totalUnitsOfWork = Engine.Instance.Output.UnitsOfWorkRemaining();
+
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartOutputBuilding")
 				);
@@ -34,9 +37,18 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 
 		protected override void Update (Object sender, System.Timers.ElapsedEventArgs args)
 			{
-			int newPercentage = 0;
+			long unitsOfWorkRemaining = Engine.Instance.Output.UnitsOfWorkRemaining();
+
+			// Sanity check since as it runs a builder can add tasks to the list of things it needs to do.
+			if (unitsOfWorkRemaining > totalUnitsOfWork)
+				{  unitsOfWorkRemaining = totalUnitsOfWork;  }
+
+			long unitsOfWorkDone = totalUnitsOfWork - unitsOfWorkRemaining;
+			int newPercentage = (int)((100 * unitsOfWorkDone) / totalUnitsOfWork);
 			
-			if (newPercentage != lastPercentage)
+			// Another sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
+			// for the percentage to just stall until it catches up again as that's less confusing to the user.
+			if (newPercentage > lastPercentage)
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.OutputBuildingUpdate(percent)", newPercentage)
@@ -57,6 +69,7 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 		
 		
 		protected int lastPercentage;
-		
+		protected long totalUnitsOfWork;
+
 		}
 	}

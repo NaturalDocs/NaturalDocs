@@ -154,6 +154,21 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 			
 
+		/* Function: UnitsOfWorkRemaining
+		 * Returns a number representing how much work the builders have left to do.  What tasks the units represent can vary,
+		 * so this is intended simply to allow a percentage to be calculated.
+		 */
+		public long UnitsOfWorkRemaining ()
+			{
+			long value = 0;
+
+			foreach (Builder builder in builders)
+				{  value += builder.UnitsOfWorkRemaining();  }
+
+			return value;
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________

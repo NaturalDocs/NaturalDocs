@@ -93,19 +93,26 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		{
 
 		/* enum: BuildFlags
+		 * 
 		 * Flags that specify what parts of the HTML output structure still need to be built.
 		 * 
-		 * FramePage - index.html
-		 * MainStyleFiles - main.css and main.js
+		 * BuildFramePage - index.html
+		 * BuildMainStyleFiles - main.css and main.js
 		 * 
-		 * FileMenu - files.js
+		 * BuildFileMenu - files.js
+		 * 
+		 * CheckFoldersForDeletion - Processing <foldersToCheckForDeletion>.  You can't simply check if the variable is
+		 *														 empty because the task isn't parallelizable.  It may have contents but another thread
+		 *														 is already working on it, in which case this flag will be reset.
 		 */
 		[Flags]
 		protected enum BuildFlags : byte {
-			FramePage = 0x01,
-			MainStyleFiles = 0x02,
+			BuildFramePage = 0x01,
+			BuildMainStyleFiles = 0x02,
 
-			FileMenu = 0x04
+			BuildFileMenu = 0x04,
+
+			CheckFoldersForDeletion = 0x08
 			}
 
 
@@ -152,7 +159,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			sourceFilesWithContent = null;
 			foldersToCheckForDeletion = null;
 			buildFlags = 0;
-			claimedTaskFlags = 0;
+			unitsOfWorkInProgress = 0;
 
 			config = configEntry;
 			styles = null;
@@ -217,7 +224,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Set the default build flags
 
-			buildFlags = BuildFlags.FramePage | BuildFlags.MainStyleFiles;
+			buildFlags = BuildFlags.BuildFramePage | BuildFlags.BuildMainStyleFiles;
 			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
 			// If you ever make this differential, remember that FramePage depends on the project name and other
 			// information.
@@ -270,7 +277,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (Engine.Instance.Config.RebuildAllOutput)
 				{  
-				buildFlags |= BuildFlags.FileMenu;
+				buildFlags |= BuildFlags.BuildFileMenu;
+				}
+			if (foldersToCheckForDeletion.IsEmpty == false)
+				{
+				buildFlags |= BuildFlags.CheckFoldersForDeletion;
 				}
 
 
@@ -515,7 +526,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
-				buildFlags |= BuildFlags.FileMenu;
+				buildFlags |= BuildFlags.BuildFileMenu;
 				}
 
 
@@ -660,36 +671,46 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build frame page
 
-					if ((buildFlags & BuildFlags.FramePage) != 0)
+					if ((buildFlags & BuildFlags.BuildFramePage) != 0)
 						{
-						buildFlags &= ~BuildFlags.FramePage;
+						buildFlags &= ~BuildFlags.BuildFramePage;
+						unitsOfWorkInProgress += UnitsOfWork_FramePage;
+
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
 						BuildFramePage(cancelDelegate);
 
+						lock (writeLock)
+							{  unitsOfWorkInProgress -= UnitsOfWork_FramePage;  }
+
 						if (cancelDelegate())
 							{
 							lock (writeLock)
-								{  buildFlags |= BuildFlags.FramePage;  }
+								{  buildFlags |= BuildFlags.BuildFramePage;  }
 							}
 						}
 
 
 					// Build main style files
 						
-					else if ((buildFlags & BuildFlags.MainStyleFiles) != 0)
+					else if ((buildFlags & BuildFlags.BuildMainStyleFiles) != 0)
 						{
-						buildFlags &= ~BuildFlags.MainStyleFiles;
+						buildFlags &= ~BuildFlags.BuildMainStyleFiles;
+						unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;
+
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
 						BuildMainStyleFiles(cancelDelegate);
 
+						lock (writeLock)
+							{  unitsOfWorkInProgress -= UnitsOfWork_MainStyleFiles;  }
+
 						if (cancelDelegate())
 							{
 							lock (writeLock)
-								{  buildFlags |= BuildFlags.MainStyleFiles;  }
+								{  buildFlags |= BuildFlags.BuildMainStyleFiles;  }
 							}
 						}
 
@@ -700,6 +721,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{
 						int sourceFileToRebuild = sourceFilesToRebuild.Highest;
 						sourceFilesToRebuild.Remove(sourceFileToRebuild);
+						unitsOfWorkInProgress += UnitsOfWork_SourceFile;
 						
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -709,6 +731,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							
 						BuildSourceFile(sourceFileToRebuild, accessor, cancelDelegate);
 						
+						lock (writeLock)
+							{  unitsOfWorkInProgress -= UnitsOfWork_SourceFile;  }
+
 						if (cancelDelegate())
 							{
 							lock (writeLock)
@@ -756,40 +781,41 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
 					// while the other thread gets it by walking up the child's tree.
 
-					if ( (claimedTaskFlags & ClaimedTaskFlags.CheckFoldersForDeletion) == 0 &&
-						 foldersToCheckForDeletion.IsEmpty == false)
+					if ((buildFlags & BuildFlags.CheckFoldersForDeletion) != 0)
 						{
-						claimedTaskFlags |= ClaimedTaskFlags.CheckFoldersForDeletion;
+						buildFlags &= ~BuildFlags.CheckFoldersForDeletion;
 
-						try
+						while (!cancelDelegate() && foldersToCheckForDeletion.IsEmpty == false)
 							{
-							while (!cancelDelegate())
-								{
-								Path folder = foldersToCheckForDeletion.RemoveOne();
+							Path folder = foldersToCheckForDeletion.RemoveOne();
+							unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion;
 
-								Monitor.Exit(writeLock);
-								haveLock = false;
+							Monitor.Exit(writeLock);
+							haveLock = false;
 
-								if (folder == null)
-									{  break;  }
+							DeleteEmptyFolders(folder);
 
-								DeleteEmptyFolders(folder);
+							Monitor.Enter(writeLock);
+							haveLock = true;
 
-								Monitor.Enter(writeLock);
-								haveLock = true;
-								}
+							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
 							}
-						finally
-							{  claimedTaskFlags &= ~ClaimedTaskFlags.CheckFoldersForDeletion;  }
+
+						// Reset the flag if it was cancelled with entries still left to do.
+						if (foldersToCheckForDeletion.IsEmpty == false)
+							{  buildFlags |= BuildFlags.CheckFoldersForDeletion;  }
+
+						Monitor.Exit(writeLock);
+						haveLock = false;
 						}
 
 
 					// Build file menu
 
-					else if ( (buildFlags & BuildFlags.FileMenu) != 0 &&
-								  (claimedTaskFlags & ClaimedTaskFlags.BuildFileMenu) == 0)
+					else if ((buildFlags & BuildFlags.BuildFileMenu) != 0)
 						{
-						claimedTaskFlags |= ClaimedTaskFlags.BuildFileMenu;
+						buildFlags &= ~BuildFlags.BuildFileMenu;
+						unitsOfWorkInProgress += UnitsOfWork_FileMenu;
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -799,10 +825,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						Monitor.Enter(writeLock);
 						haveLock = true;
 
-						claimedTaskFlags &= ~ClaimedTaskFlags.BuildFileMenu;
+						unitsOfWorkInProgress -= UnitsOfWork_FileMenu;
 
-						if (!cancelDelegate())
-							{  buildFlags &= ~BuildFlags.FileMenu;  }
+						if (cancelDelegate())
+							{  buildFlags |= BuildFlags.BuildFileMenu;  }
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -825,6 +851,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 			
+
+		override public long UnitsOfWorkRemaining ()
+			{
+			long value = 0;
+
+			lock (writeLock)
+				{
+				value += sourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
+				value += foldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
+
+				if ((buildFlags & BuildFlags.BuildFramePage) != 0)
+					{  value += UnitsOfWork_FramePage;  }
+				if ((buildFlags & BuildFlags.BuildMainStyleFiles) != 0)
+					{  value += UnitsOfWork_MainStyleFiles;  }
+				if ((buildFlags & BuildFlags.BuildFileMenu) != 0)
+					{  value += UnitsOfWork_FileMenu;  }
+
+				value += unitsOfWorkInProgress;
+				}
+
+			return value;
+			}
+
 
 			
 		// Group: Builder Functions
@@ -1494,6 +1543,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* Constants: UnitsOfWork Constants
+		 * 
+		 * The values for each task when calculating <UnitsOfWorkRemaining()>.
+		 * 
+		 *		UnitsOfWork_SourceFile - How much building a single source file costs.
+		 *		UnitsOfWork_FramePage - How much building index.html costs.
+		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
+		 *		UnitsOfWork_FileMenu - How much building the source file menu costs.
+		 *		UnitsOfWork_FolderToCheckForDeletion - How much checking a single folder for deletion costs.
+		 */
+		protected const long UnitsOfWork_SourceFile = 10;
+		protected const long UnitsOfWork_FramePage = 1;
+		protected const long UnitsOfWork_MainStyleFiles = 1;
+		protected const long UnitsOfWork_FileMenu = 10;
+		protected const long UnitsOfWork_FolderToCheckForDeletion = 1;
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 		
@@ -1515,7 +1586,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected IDObjects.NumberSet sourceFilesWithContent;
 		
 		/* var: foldersToCheckForDeletion
-		 * A set of folders that have had files removed, and thus should be deleted if empty.
+		 * A set of folders that have had files removed, and thus should be deleted if empty.  Note that threads should check
+		 * <buildFlags> to see if this task is needed rather than checking if this set is empty.  It may not be empty but have
+		 * another thread working on it, and the task is not parallelizable.
 		 */
 		protected StringSet foldersToCheckForDeletion;
 
@@ -1524,10 +1597,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected BuildFlags buildFlags;
 
-		/* var: claimedTaskFlags
-		 * Flags specifying which unparallelizable tasks are already claimed by a thread.
+		/* var: unitsOfWorkInProgress
+		 * 
+		 * A running total of the units of work of tasks that are currently in progress.  This should be incremented by one of
+		 * the <UnitsOfWork constants> whenever a task is claimed and decremented when it is released.
+		 * 
+		 * Why is this necessary?  When calculating a total for <UnitsOfWorkRemaining()> we can only detect unclaimed
+		 * tasks from variables like <sourceFilesToRebuild> as each source file will be removed from that list as soon as a 
+		 * thread starts working on it.  This is necessary to prevent another thread from claiming the same file.  We want to
+		 * keep it in <UnitsOfWorkRemaining()> until it's completed so we maintain this variable to add to it.
 		 */
-		protected ClaimedTaskFlags claimedTaskFlags;
+		protected long unitsOfWorkInProgress;
 
 		/* var: config
 		 */

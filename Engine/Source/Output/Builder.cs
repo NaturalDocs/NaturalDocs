@@ -79,6 +79,13 @@ namespace GregValure.NaturalDocs.Engine.Output
 		virtual public void Cleanup (CancelDelegate cancelDelegate)
 			{
 			}
+
+
+		/* Function: UnitsOfWorkRemaining
+		 * Returns a number representing how much work the builder has left to do.  Building the HTML output for a single source 
+		 * file is counted as 10 units so everything else should be scored relative to that.
+		 */
+		abstract public long UnitsOfWorkRemaining ();
 			
 			
 			

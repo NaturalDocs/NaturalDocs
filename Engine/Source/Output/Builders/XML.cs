@@ -43,6 +43,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
 			}
+
+
+		public override long UnitsOfWorkRemaining ()
+			{
+			return 0;
+			}
 			
 			
 		

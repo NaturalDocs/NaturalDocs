@@ -524,7 +524,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			else
 				{
 				System.IO.File.Delete(outputStyleFile);  
-				foldersToCheckForDeletion.Add(outputStyleFile.ParentFolder);
+
+				lock (writeLock)
+					{
+					foldersToCheckForDeletion.Add(outputStyleFile.ParentFolder);
+					buildFlags |= BuildFlags.CheckFoldersForDeletion;
+					}
+
 				return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;
 				}
 			}

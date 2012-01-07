@@ -57,7 +57,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Remove(fileID) == true)
-							{  buildFlags |= BuildFlags.FileMenu;  }
+							{  buildFlags |= BuildFlags.BuildFileMenu;  }
 						}
 					}
 
@@ -98,7 +98,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Add(fileID) == true)
-							{  buildFlags |= BuildFlags.FileMenu;  }
+							{  buildFlags |= BuildFlags.BuildFileMenu;  }
 						}
 					}
 				}
@@ -119,8 +119,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			if (outputFile != null && System.IO.File.Exists(outputFile))
 				{  
-				System.IO.File.Delete(outputFile);  
-				foldersToCheckForDeletion.Add(outputFile.ParentFolder);
+				System.IO.File.Delete(outputFile);
+
+				lock (writeLock)
+					{
+					foldersToCheckForDeletion.Add(outputFile.ParentFolder);
+					buildFlags |= BuildFlags.CheckFoldersForDeletion;
+					}
 				}
 			}
 
