@@ -144,15 +144,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (Cancelled)
 				{  return ParseResult.Cancelled;  }
 				
-			GetCodeTopics();
+			if (language.Type == Languages.Language.LanguageType.FullSupport)
+				{
+				GetCodeTopics();
 			
-			if (Cancelled)
-				{  return ParseResult.Cancelled; }
+				if (Cancelled)
+					{  return ParseResult.Cancelled; }
 				
-			MergeTopics();
+				MergeTopics();
 			
-			if (Cancelled)
-				{  return ParseResult.Cancelled;  }
+				if (Cancelled)
+					{  return ParseResult.Cancelled;  }
+				}
+			else
+				{
+				AddPrototypes();
+
+				if (Cancelled)
+					{  return ParseResult.Cancelled;  }
+
+				mergedTopics = commentTopics;
+				commentTopics = null;
+				}
 
 			foreach (Topic topic in mergedTopics)
 				{
@@ -652,18 +665,26 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Goes through the file looking for code elements that should be included in the output and creates a list in <CodeTopics>.  
 		 * If there are none, CodeTopics will be set to an empty list.
 		 *
-		 * Default Implementation:
-		 *
-		 * The default implementation uses <CommentTopics> and the language's prototype enders to gather prototypes for languages 
-		 * with basic support.  It basically takes the code between the end of the comment topic and the next one (or the next entry in 
-		 * <PossibleDocumentationComments>) and if it finds the topic title before it finds an ender, the prototype will be the code 
-		 * between the topic and the ender.  You can override this function to do real language processing for full support.
-		 *
-		 * This function does the basic looping of the search but throws the actual prototype detection to <GetPrototype()>.
-		 * This makes it easier for tweaks to be implemented for certain languages that have unique prototype formats but don't 
-		 * have full language support.
+		 * This will only be called for languages with full support.  The default implementation throws an exception since all classes
+		 * implementing full support must override this function.
 		 */
 		protected virtual void GetCodeTopics ()
+			{
+			throw new NotImplementedException();
+			}
+
+
+		/* Function: AddPrototypes
+		 * 
+		 * Adds prototypes to the <CommentTopics> for languages with basic support.  It examines the code between the end of 
+		 * each comment topic and the next one (or the next entry in <PossibleDocumentationComments>) and if it finds the topic 
+		 * title before it finds one of the language's prototype enders the prototype will be set to the code between the topic and 
+		 * the ender.
+		 *
+		 * This function does the basic looping of the search but throws the actual prototype detection to <AddPrototype()>, so
+		 * languages with basic support can just override that instead to implement tweaks.
+		 */
+		protected virtual void AddPrototypes ()
 			{
 			codeTopics = new List<Topic>();
 
@@ -701,16 +722,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  endCode = source.LastLine;  }
 
-				GetPrototype(commentTopics[topicIndex], startCode, endCode);
+				AddPrototype(commentTopics[topicIndex], startCode, endCode);
 				}
 			}
 
 
-		/* Function: GetPrototype
+		/* Function: AddPrototype
 		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
 		 * <Topic.Prototoype>.
 		 */
-		protected virtual void GetPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
+		protected virtual void AddPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
 			{
 			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.TopicTypeID);
 
