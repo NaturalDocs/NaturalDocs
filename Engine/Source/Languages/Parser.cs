@@ -121,6 +121,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		virtual public ParseResult Parse (Tokenizer tokenizedSourceCode, int fileID, CancelDelegate cancelDelegate, 
 																	  out IList<Topic> topics)
 			{ 
+			if (language.Type == Languages.Language.LanguageType.Container)
+				{
+				// xxx
+				topics = null;  
+				return ParseResult.Success;
+				}
+
 			Reset();
 			topics = null;
 			
@@ -231,9 +238,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public IList<PossibleDocumentationComment> GetComments (Tokenizer tokenizedSourceCode)
 			{
+			if (language.Type == Languages.Language.LanguageType.Container)
+				{  return new List<PossibleDocumentationComment>();  }  //xxx
+
 			Reset();
 			source = tokenizedSourceCode;
-			
+
 			GetPossibleDocumentationComments();
 
 			foreach (PossibleDocumentationComment comment in possibleDocumentationComments)
@@ -255,6 +265,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID)
 			{
+			if (language.Type == Languages.Language.LanguageType.Container)
+				{  throw new NotImplementedException();  }  //xxx
+
 			Reset();
 			source = new Tokenizer(rawPrototype);
 			ParsedPrototype parsedPrototype = new ParsedPrototype(source);
@@ -391,6 +404,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public virtual void SyntaxHighlight (Tokenizer source)
 			{
+			if (language.Type == Languages.Language.LanguageType.Container)
+				{  return;  }  //xxx
+
 			Reset();
 			this.source = source;
 
