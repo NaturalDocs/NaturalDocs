@@ -173,10 +173,24 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  
 				topics = mergedTopics;  
 
-				// Set it to null so the parser doesn't reuse the list that was returned.
+				// Set mergedTopics to null so the parser doesn't reuse the list that was returned.
 				mergedTopics = null;
+
+				// Pre-generate any ParsedPrototypes that still need it.  We do this at the very end of the parsing process because
+				// calling ParsePrototype() resets the parser.  The only variable we need to keep at this point has just been moved 
+				// into topics, so it's safe for ParsePrototype() to stomp all over the parsing state.
+				foreach (Topic topic in topics)
+					{
+					if (topic.Prototype != null && topic.IsParsedPrototypeGenerated == false)
+						{
+						topic.ParsedPrototype = ParsePrototype(topic.Prototype, topic.TopicTypeID);
+
+						if (Cancelled)
+							{  return ParseResult.Cancelled;  }
+						}
+					}
 				}
-				
+			
 			return ParseResult.Success;
 			}
 
