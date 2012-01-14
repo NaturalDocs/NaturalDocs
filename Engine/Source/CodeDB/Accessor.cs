@@ -91,7 +91,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			inTransaction = false;
-			cachedParser = null;
 			}
 			
 			
@@ -284,18 +283,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Whether a transaction is in effect.
 		 */
 		protected bool inTransaction;
-		
-		/* var: cachedParser
-		 * 
-		 * A parser used for things like parsing and highlighting prototypes in <GetTopicsInFile()>.  This starts off as null
-		 * and is created the first time it's needed.  It is only good for one language so you must check it's language ID before
-		 * using it.  If you need a parser for a different language you must create one and can store it here for future use.
-		 * 
-		 * This is stored in the class because most of the <Topics> retrieved over an accessor's lifetime will be from the same 
-		 * language, so we can cache a parser here to drastically limit how often new ones are created and deleted.  Since
-		 * multiple threads cannot share accessors we don't have to worry about locking this variable.
-		 */
-		protected Languages.Parser cachedParser;
 
 		}
 	}

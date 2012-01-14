@@ -104,7 +104,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 							string code = System.IO.File.ReadAllText(test.InputFile);
 
 							IList<Topic> topics;
-							language.GetParser().Parse(code, -1, Engine.Delegates.NeverCancel, out topics);
+							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics);
 
 							test.ActualOutput = OutputOf(topics);  
 							}

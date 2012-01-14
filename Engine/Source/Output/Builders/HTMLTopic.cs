@@ -274,7 +274,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								{  preLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);  }
 
 							Tokenizer code = new Tokenizer(textCode);
-							preLanguage.GetParser().SyntaxHighlight(code);
+							preLanguage.SyntaxHighlight(code);
 							htmlBuilder.BuildSyntaxHighlightedText(code.FirstToken, code.LastToken, html);
 							}
 						else

@@ -191,19 +191,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: GetParser
-		 * 
-		 * Creates and returns a <Parser> object for this language.  Each call generates a new object, so you should reuse them 
-		 * whenever possible.  However, <Parsers> are not thread safe so each thread should have its own.
-		 * 
-		 * When implementing full language support, you can override this function to return a subclassed <Parser>.
-		 */
-		public virtual Parser GetParser ()
-			{
-			return new Parser(this);
-			}
-
-
 			
 		// Group: Language Properties
 		// __________________________________________________________________________

@@ -48,8 +48,7 @@ namespace GregValure.NaturalDocs.EngineTests
 					{  output.AppendLine("(No prototype detected)");  }
 				else
 					{  
-					var language = Engine.Instance.Languages.FromID(topics[topicIndex].LanguageID);
-					var parsedPrototype = language.GetParser().ParsePrototype(topics[topicIndex].Prototype, topics[topicIndex].TopicTypeID);
+					var parsedPrototype = topics[topicIndex].ParsedPrototype;
 					
 					TokenIterator start, end, extensionStart, extensionEnd;
 					int numberOfParameters = parsedPrototype.NumberOfParameters;

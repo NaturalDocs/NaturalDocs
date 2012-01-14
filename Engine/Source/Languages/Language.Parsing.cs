@@ -1,30 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.Parser
- * ____________________________________________________________________________
- * 
- * A reusable helper class to handle <Language> parsing tasks.
- * 
- * Why a Separate Class?:
- * 
- *		Parsing is broken up into a lot of  functions and there's context information that needs to be passed back and forth
- *		between them.  These can't be instance variables in <Language> because it needs to support multiple concurrent 
- *		parsing threads.  Passing these structures around individually quickly becomes unwieldy.  If you bundle the context 
- *		up into a single object to pass around, then you've already paid for the extra allocation and you might as well put 
- *		the functions in it as well.
- * 
- * 
- * Topic: Usage
- *		
- *		- Create a Parser object.
- *		- Call any functions you need, such as <Parse()> or <GetComments()>.
- * 
- * 
- * Threading: Not Thread Safe
- * 
- *		This class is only designed to be used by one thread at a time.  It has an internal state that is used during parsing
- *		functions and no other functions should be called until it's completed.  Instead each thread should create its own
- *		object.
- * 
+ * Class: GregValure.NaturalDocs.Engine.Languages.Language
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
@@ -44,7 +19,7 @@ using GregValure.NaturalDocs.Engine.TopicTypes;
 
 namespace GregValure.NaturalDocs.Engine.Languages
 	{
-	public class Parser
+	public partial class Language
 		{
 		
 		// Group: Types
@@ -64,16 +39,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Public Functions
+		// Group: Public Parsing Functions
 		// __________________________________________________________________________
-		
-		
-		/* Function: Parser
-		 */
-		public Parser (Language language)
-			{
-			this.language = language;
-			}
 	
 
 		/* Function: Parse
@@ -97,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{ 
 			topics = null;
 
-			if (language.Type == Languages.Language.LanguageType.Container)
+			if (Type == LanguageType.Container)
 				{  return ParseResult.Success;  }  // xxx
 			
 			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
@@ -110,7 +77,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
-			if (language.Type == Languages.Language.LanguageType.FullSupport)
+			if (Type == LanguageType.FullSupport)
 				{
 				IList<Topic> codeTopics = GetCodeTopics(source);
 			
@@ -135,7 +102,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			foreach (Topic topic in topics)
 				{
 				topic.FileID = fileID;
-				topic.LanguageID = language.ID;
+				topic.LanguageID = this.ID;
 				}
 
 			if (cancelDelegate())
@@ -148,16 +115,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 			GenerateRemainingSymbols(topics);
-				
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
-		
-			foreach (Topic topic in topics)
-				{
-				if (topic.Prototype != null && topic.IsParsedPrototypeGenerated == false)
-					{  topic.ParsedPrototype = ParsePrototype(topic.Prototype, topic.TopicTypeID);  }
-				}
-			
+							
 			return ParseResult.Success;
 			}
 
@@ -198,7 +156,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public IList<PossibleDocumentationComment> GetComments (Tokenizer source)
 			{
-			if (language.Type == Languages.Language.LanguageType.Container)
+			if (Type == LanguageType.Container)
 				{  return new List<PossibleDocumentationComment>();  }  //xxx
 
 			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
@@ -216,7 +174,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
 			{
-			if (language.Type == Languages.Language.LanguageType.Container)
+			if (Type == LanguageType.Container)
 				{  throw new NotImplementedException();  }  //xxx
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
@@ -354,7 +312,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public virtual void SyntaxHighlight (Tokenizer source)
 			{
-			if (language.Type == Languages.Language.LanguageType.Container)
+			if (Type == LanguageType.Container)
 				{  return;  }  //xxx
 
 			SimpleSyntaxHighlight(source);
@@ -426,7 +384,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
 
-			if (language.Type == Language.LanguageType.TextFile)
+			if (Type == LanguageType.TextFile)
 				{
 				PossibleDocumentationComment comment = new PossibleDocumentationComment();
 				comment.Start = source.FirstLine;
@@ -451,12 +409,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// We also test block comments in general ahead of line comments because in Lua the line comments are a
 					// substring of them: -- versus --[[ and ]]--.
 				
-					if (language.JavadocBlockCommentStringPairs != null)
+					if (JavadocBlockCommentStringPairs != null)
 						{
-						for (int i = 0; comment == null && i < language.JavadocBlockCommentStringPairs.Length; i += 2)
+						for (int i = 0; comment == null && i < JavadocBlockCommentStringPairs.Length; i += 2)
 							{
-							comment = TryToGetPDBlockComment(lineIterator, language.JavadocBlockCommentStringPairs[i],
-																										 language.JavadocBlockCommentStringPairs[i+1], true);
+							comment = TryToGetPDBlockComment(lineIterator, JavadocBlockCommentStringPairs[i], 
+																								 JavadocBlockCommentStringPairs[i+1], true);
 							}
 
 						if (comment != null)
@@ -466,12 +424,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					
 					// Plain block comments
 					
-					if (comment == null && language.BlockCommentStringPairs != null)
+					if (comment == null && BlockCommentStringPairs != null)
 						{
-						for (int i = 0; comment == null && i < language.BlockCommentStringPairs.Length; i += 2)
+						for (int i = 0; comment == null && i < BlockCommentStringPairs.Length; i += 2)
 							{
-							comment = TryToGetPDBlockComment(lineIterator, language.BlockCommentStringPairs[i], 
-																										 language.BlockCommentStringPairs[i+1], false);
+							comment = TryToGetPDBlockComment(lineIterator, BlockCommentStringPairs[i], 
+																								 BlockCommentStringPairs[i+1], false);
 							}
 
 						// Skip Splint comments so that they can appear in prototypes.
@@ -492,12 +450,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					
 					// XML line comments
 
-					if (comment == null && language.XMLLineCommentStrings != null)
+					if (comment == null && XMLLineCommentStrings != null)
 						{
-						for (int i = 0; comment == null && i < language.XMLLineCommentStrings.Length; i++)
+						for (int i = 0; comment == null && i < XMLLineCommentStrings.Length; i++)
 							{
-							comment = TryToGetPDLineComment(lineIterator, language.XMLLineCommentStrings[i],
-																									  language.XMLLineCommentStrings[i], true);
+							comment = TryToGetPDLineComment(lineIterator, XMLLineCommentStrings[i],
+																							  XMLLineCommentStrings[i], true);
 							}
 
 						if (comment != null)
@@ -512,14 +470,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// vertical line for the remainder, so leave it as XML.  Unless the comment is only one line long, in which case it's
 					// genuinely ambiguous.
 				
-					if ( (comment == null || comment.XML == true) && language.JavadocLineCommentStringPairs != null)
+					if ( (comment == null || comment.XML == true) && JavadocLineCommentStringPairs != null)
 						{
 						PossibleDocumentationComment javadocComment = null;
 
-						for (int i = 0; javadocComment == null && i < language.JavadocLineCommentStringPairs.Length; i += 2)
+						for (int i = 0; javadocComment == null && i < JavadocLineCommentStringPairs.Length; i += 2)
 							{
-							javadocComment = TryToGetPDLineComment(lineIterator, language.JavadocLineCommentStringPairs[i],
-																													  language.JavadocLineCommentStringPairs[i+1], true);
+							javadocComment = TryToGetPDLineComment(lineIterator, JavadocLineCommentStringPairs[i],
+																											 JavadocLineCommentStringPairs[i+1], true);
 							}
 
 						if (javadocComment != null)
@@ -545,11 +503,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					// Plain line comments
 				
-					if (comment == null && language.LineCommentStrings != null)
+					if (comment == null && LineCommentStrings != null)
 						{
-						for (int i = 0; comment == null && i < language.LineCommentStrings.Length; i++)
+						for (int i = 0; comment == null && i < LineCommentStrings.Length; i++)
 							{
-							comment = TryToGetPDLineComment(lineIterator, language.LineCommentStrings[i], language.LineCommentStrings[i], false);
+							comment = TryToGetPDLineComment(lineIterator, LineCommentStrings[i], LineCommentStrings[i], false);
 							}
 						}
 					
@@ -659,7 +617,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected virtual void AddBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
 			{
-			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.TopicTypeID);
+			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.TopicTypeID);
 
 			if (prototypeEnders == null)
 				{  return;  }
@@ -693,14 +651,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				// Line Extender
 
-				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
+				else if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
 					{
 					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
 					// it's probably part of an identifier.
 
 					bool partOfIdentifier = false;
 
-					if (language.LineExtender == "_")
+					if (LineExtender == "_")
 						{
 						TokenIterator temp = iterator;
 
@@ -859,14 +817,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				// Line Extender
 
-				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
+				else if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
 					{
 					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
 					// it's probably part of an identifier.
 
 					bool partOfIdentifier = false;
 
-					if (language.LineExtender == "_")
+					if (LineExtender == "_")
 						{
 						TokenIterator temp = iterator;
 
@@ -1043,7 +1001,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		protected virtual void ApplyCommentPrototypes (IList<Topic> topics)
 			{
 			StringBuilder stringBuilder = null;
-			Parser prototypeParser = null;
 
 			foreach (Topic topic in topics)
 				{
@@ -1097,15 +1054,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				string prototypeString = stringBuilder.ToString();
 
-				if (topic.LanguageID == Language.ID)
+				if (topic.LanguageID == this.ID)
 					{  prototypeString = NormalizePrototype(prototypeString);  }
 				else
-					{
-					if (prototypeParser == null || prototypeParser.Language.ID != topic.LanguageID)
-						{  prototypeParser = Instance.Languages.FromID(topic.LanguageID).GetParser();  }
-
-					prototypeString = prototypeParser.NormalizePrototype(prototypeString);
-					}
+					{  prototypeString = Instance.Languages.FromID(topic.LanguageID).NormalizePrototype(prototypeString);  }
 
 				topic.Prototype = prototypeString;
 
@@ -1170,9 +1122,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			ContextString context = new ContextString();
 
-			// Generating parsed prototypes resets the parser state, so we'll create a separate parser on demand if we need it.
-			Parser prototypeParser = null;
-			
 			foreach (Topic topic in topics)
 				{
 				TopicType topicType = Instance.TopicTypes.FromID(topic.TopicTypeID);
@@ -1197,11 +1146,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					else if (topic.Prototype != null)
 						{
-						if (prototypeParser == null)
-							{  prototypeParser = language.GetParser();  }
-
-						topic.ParsedPrototype = prototypeParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
-						
 						if (topic.ParsedPrototype.NumberOfParameters > 0)
 							{
 							string[] parameterTypes = new string[topic.ParsedPrototype.NumberOfParameters];
@@ -1826,13 +1770,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol)
 			{
-			if (language.LineCommentStrings == null)
+			if (LineCommentStrings == null)
 				{
 				commentSymbol = null;
 				return false;
 				}
 
-			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(language.LineCommentStrings);
+			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(LineCommentStrings);
 
 			if (commentSymbolIndex == -1)
 				{
@@ -1840,7 +1784,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			commentSymbol = language.LineCommentStrings[commentSymbolIndex];
+			commentSymbol = LineCommentStrings[commentSymbolIndex];
 			iterator.NextByCharacters(commentSymbol.Length);
 
 			while (iterator.IsInBounds && iterator.FundamentalType != FundamentalType.LineBreak)
@@ -1867,14 +1811,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol)
 			{
-			if (language.BlockCommentStringPairs == null)
+			if (BlockCommentStringPairs == null)
 				{
 				openingSymbol = null;
 				closingSymbol = null;
 				return false;
 				}
 
-			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(language.BlockCommentStringPairs);
+			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(BlockCommentStringPairs);
 
 			if (openingCommentSymbolIndex == -1)
 				{
@@ -1883,8 +1827,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			openingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex];
-			closingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex + 1];
+			openingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex];
+			closingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex + 1];
 			iterator.NextByCharacters(openingSymbol.Length);
 
 			while (iterator.IsInBounds && iterator.MatchesAcrossTokens(closingSymbol) == false)
@@ -2311,32 +2255,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 			
-		// Group: Properties
-		// __________________________________________________________________________
-		
-		
-		/* Property: Language
-		 * The <Language> associated with this parser.
-		 */
-		public Language Language
-			{
-			get
-				{  return language;  }
-			}
-			
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-		
-
-		/* var: language
-		 * The <Language> object associated with this parser.
-		 */
-		protected Language language;
-		
-
-
 		// Group: Static Variables
 		// __________________________________________________________________________
 

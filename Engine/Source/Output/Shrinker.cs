@@ -56,7 +56,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = jsLanguage.GetParser().GetComments(source);
+			IList<PossibleDocumentationComment> comments = jsLanguage.GetComments(source);
 
 			foreach (PossibleDocumentationComment comment in comments)
 				{  ProcessComment(comment);  }
@@ -141,7 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = cssLanguage.GetParser().GetComments(source);
+			IList<PossibleDocumentationComment> comments = cssLanguage.GetComments(source);
 
 			foreach (PossibleDocumentationComment comment in comments)
 				{  ProcessComment(comment);  }

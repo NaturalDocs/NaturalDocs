@@ -64,15 +64,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					if (topic.Prototype != null && (flags & GetTopicsFlags.ParsePrototypes) != 0)
 						{
-						// 95% of the time all the topics in a file are going to be from the same language, so this is very
-						// efficient.  It will create the parser the first time and reuse it for the rest of the topics.
-						if (cachedParser == null || cachedParser.Language.ID != topic.LanguageID)
-							{  cachedParser = Engine.Instance.Languages.FromID(topic.LanguageID).GetParser();  }
+						Languages.Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
-						topic.ParsedPrototype = cachedParser.ParsePrototype(topic.Prototype, topic.TopicTypeID);
+						topic.ParsedPrototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID);
 
 						if ((flags & GetTopicsFlags.HighlightPrototypes) != 0)
-							{  cachedParser.SyntaxHighlight(topic.ParsedPrototype);  }
+							{  language.SyntaxHighlight(topic.ParsedPrototype);  }
 						}
 					
 					topics.Add(topic);

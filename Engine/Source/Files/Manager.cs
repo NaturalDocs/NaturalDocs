@@ -840,13 +840,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 				IList<Topic> topics = null;
 
 				if (content != null)
-					{  
-					// It would be nice to share a single parser via WorkOnProcessingChanges() since 90% of the source files are going to
-					// be from the same language.  They're reusable, it's just that every thread needs their own since they're not thread safe.
-					// I don't see how to do it in a way that isn't really ugly so I'm keeping code cleanliness ahead of what might be a 
-					// premature optimization anyway.
-					language.GetParser().Parse(content, file.ID, cancelDelegate, out topics);  
-					}
+					{  language.Parse(content, file.ID, cancelDelegate, out topics);  }
 					
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }

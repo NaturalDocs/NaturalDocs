@@ -361,7 +361,7 @@ namespace GregValure.NaturalDocs.Engine
 				if (prototype == null)
 					{  return null;  }
 
-				parsedPrototype = Engine.Instance.Languages.FromID(languageID).GetParser().ParsePrototype(prototype, topicTypeID);
+				parsedPrototype = Engine.Instance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);
 
 				return parsedPrototype;
 				}
@@ -382,17 +382,6 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Property: IsParsedPrototypeGenerated
-		 * Whether a <ParsedPrototype> has been pre-generated for this topic.  You can't simply check <ParsedPrototype> for null 
-		 * since it's demand-generated, so if you're interested in pre-generating them you can check this instead.
-		 */
-		public bool IsParsedPrototypeGenerated
-			{
-			get
-				{  return (parsedPrototype != null);  }
-			}
-
-			
 
 		// Group: Variables
 		// __________________________________________________________________________
