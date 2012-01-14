@@ -2350,7 +2350,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			"int", "int8", "int16", "int32", "int64", "uint", "uint8", "uint16", "uint32", "uint64",
 			"signed", "unsigned", "integer", "long", "ulong", "short", "ushort", "real", "float", "double", "decimal",
 			"float32", "float64", "float80", "void", "char", "string", "wchar", "wchar_t", "byte", "ubyte", "sbyte", 
-			"bool", "boolean", "true", "false", "null", "undefined", "var",
+			"bool", "boolean", "true", "false", "null", "undef", "undefined", "var",
 
 			"function", "operator", "delegate", "event", "enum", "typedef",
 
@@ -2364,7 +2364,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			"ref", "in", "out", "inout", "const", "constant", "get", "set",
 
-			"if", "else", "elif", "elseif", "for", "foreach", "each", "do", "while", "switch", "case", "with", "in",
+			"if", "else", "elif", "elseif", "then", "for", "foreach", "each", "do", "while", "switch", "case", "with", "in",
 			"break", "continue", "next", "return", "goto",
 			"try", "catch", "throw", "finally", "throws", "lock", "eval",
 
