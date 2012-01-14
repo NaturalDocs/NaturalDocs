@@ -64,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Functions
+		// Group: Public Functions
 		// __________________________________________________________________________
 		
 		
@@ -73,32 +73,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public Parser (Language language)
 			{
 			this.language = language;
-			source = null;
-			cancelDelegate = Delegates.NeverCancel;
-			
-			possibleDocumentationComments = null;
-			commentTopics = null;
-			codeTopics = null;
-			mergedTopics = null;
-			}
-	
-
-		/* Function: Reset
-		 * Resets all the parse state variables so a new parsing function can start fresh.
-		 */
-		protected void Reset ()
-			{
-			source = null;
-			cancelDelegate = Delegates.NeverCancel;
-			
-			if (possibleDocumentationComments != null)
-				{  possibleDocumentationComments.Clear();  }
-			if (commentTopics != null)
-				{  commentTopics.Clear();  }
-			if (codeTopics != null)
-				{  codeTopics.Clear();  }
-			if (mergedTopics != null)
-				{  mergedTopics.Clear();  }
 			}
 	
 
@@ -108,107 +82,80 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
-		public ParseResult Parse (string sourceCodeString, int fileID, CancelDelegate cancelDelegate, out IList<Topic> topics)
+		public ParseResult Parse (string source, int fileID, CancelDelegate cancelDelegate, out IList<Topic> topics)
 			{
-			return Parse( new Tokenizer(sourceCodeString), fileID, cancelDelegate, out topics );
+			return Parse(new Tokenizer(source), fileID, cancelDelegate, out topics);
 			}
 			
 			
 		/* Function: Parse
-		 * Parses the tokenized source code and returns it as a list of <Topics>.  The list will be null if there are no topics or parsing was
-		 * interrupted.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
+		 * Parses the tokenized source code and returns it as a list of <Topics>.  The list will be empty if there are no topics.  Set 
+		 * cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.  If parsing is cancelled, the value of
+		 * the topic list is undefined.
 		 */
-		virtual public ParseResult Parse (Tokenizer tokenizedSourceCode, int fileID, CancelDelegate cancelDelegate, 
-																	  out IList<Topic> topics)
+		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, out IList<Topic> topics)
 			{ 
-			if (language.Type == Languages.Language.LanguageType.Container)
-				{
-				// xxx
-				topics = null;  
-				return ParseResult.Success;
-				}
-
-			Reset();
 			topics = null;
+
+			if (language.Type == Languages.Language.LanguageType.Container)
+				{  return ParseResult.Success;  }  // xxx
 			
-			source = tokenizedSourceCode;
-			this.cancelDelegate = cancelDelegate;
+			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
 			
-			GetPossibleDocumentationComments();
-			
-			if (Cancelled)
+			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 				
-			ParsePossibleDocumentationComments();
+			IList<Topic> commentTopics = ParsePossibleDocumentationComments(possibleDocumentationComments);
 			
-			if (Cancelled)
+			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
-				
+
 			if (language.Type == Languages.Language.LanguageType.FullSupport)
 				{
-				GetCodeTopics();
+				IList<Topic> codeTopics = GetCodeTopics(source);
 			
-				if (Cancelled)
+				if (cancelDelegate())
 					{  return ParseResult.Cancelled; }
 				
-				MergeTopics();
+				topics = MergeTopics(commentTopics, codeTopics);
 			
-				if (Cancelled)
+				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
 				}
 			else
 				{
-				AddPrototypes();
+				AddBasicPrototypes(source, commentTopics, possibleDocumentationComments);
 
-				if (Cancelled)
+				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
 
-				mergedTopics = commentTopics;
-				commentTopics = null;
+				topics = commentTopics;
 				}
 
-			foreach (Topic topic in mergedTopics)
+			foreach (Topic topic in topics)
 				{
 				topic.FileID = fileID;
 				topic.LanguageID = language.ID;
 				}
 
-			if (Cancelled)
+			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 								
-			// LanguageID needs to be applied before ApplyCommentPrototypes
-			ApplyCommentPrototypes();
+			// LanguageID needs to be set before ApplyCommentPrototypes
+			ApplyCommentPrototypes(topics);
 			
-			if (Cancelled)
+			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
-			GenerateRemainingSymbols();
+			GenerateRemainingSymbols(topics);
 				
-			// Need to do one last check anyway, because the previous function could have quit early because of a cancellation.
-			if (Cancelled)
+			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 		
-		
-			if (mergedTopics.Count > 0)
-				{  
-				topics = mergedTopics;  
-
-				// Set mergedTopics to null so the parser doesn't reuse the list that was returned.
-				mergedTopics = null;
-
-				// Pre-generate any ParsedPrototypes that still need it.  We do this at the very end of the parsing process because
-				// calling ParsePrototype() resets the parser.  The only variable we need to keep at this point has just been moved 
-				// into topics, so it's safe for ParsePrototype() to stomp all over the parsing state.
-				foreach (Topic topic in topics)
-					{
-					if (topic.Prototype != null && topic.IsParsedPrototypeGenerated == false)
-						{
-						topic.ParsedPrototype = ParsePrototype(topic.Prototype, topic.TopicTypeID);
-
-						if (Cancelled)
-							{  return ParseResult.Cancelled;  }
-						}
-					}
+			foreach (Topic topic in topics)
+				{
+				if (topic.Prototype != null && topic.IsParsedPrototypeGenerated == false)
+					{  topic.ParsedPrototype = ParsePrototype(topic.Prototype, topic.TopicTypeID);  }
 				}
 			
 			return ParseResult.Success;
@@ -230,9 +177,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
-		public IList<PossibleDocumentationComment> GetComments (string sourceCode)
+		public IList<PossibleDocumentationComment> GetComments (string source)
 			{
-			return GetComments( new Tokenizer(sourceCode) );
+			return GetComments(new Tokenizer(source));
 			}
 
 
@@ -249,47 +196,37 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
 		 * will also be marked as <CommentParsingType.CommentDecoration>.
 		 */
-		public IList<PossibleDocumentationComment> GetComments (Tokenizer tokenizedSourceCode)
+		public IList<PossibleDocumentationComment> GetComments (Tokenizer source)
 			{
 			if (language.Type == Languages.Language.LanguageType.Container)
 				{  return new List<PossibleDocumentationComment>();  }  //xxx
 
-			Reset();
-			source = tokenizedSourceCode;
-
-			GetPossibleDocumentationComments();
+			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
+			var lineFinder = Engine.Instance.Comments.LineFinder;
 
 			foreach (PossibleDocumentationComment comment in possibleDocumentationComments)
-				{
-				Engine.Instance.Comments.LineFinder.MarkTextBoxes(comment);
-				}
+				{  lineFinder.MarkTextBoxes(comment);  }
 
-			// Set it to null so the parser doesn't reuse the list that was returned.
-			var result = possibleDocumentationComments;
-			possibleDocumentationComments = null;
-
-			return result;
+			return possibleDocumentationComments;
 			}
 
 
 		/* Function: ParsePrototype
-		 * Converts a raw text prototype into a <ParsedPrototype>, optionally applying syntax highlighting to the contained
-		 * <Tokenizer> as well.
+		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
-		public virtual ParsedPrototype ParsePrototype (string rawPrototype, int topicTypeID)
+		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
 			{
 			if (language.Type == Languages.Language.LanguageType.Container)
 				{  throw new NotImplementedException();  }  //xxx
 
-			Reset();
-			source = new Tokenizer(rawPrototype);
-			ParsedPrototype parsedPrototype = new ParsedPrototype(source);
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
+			ParsedPrototype parsedPrototype = new ParsedPrototype(tokenizedPrototype);
 
 
 			// Search for the first opening bracket or brace.  Also be on the lookout for anything that would indicate this is a
 			// class prototype.
 
-			TokenIterator iterator = source.FirstToken;
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
 			char closingBracket = '\0';
 
 			while (iterator.IsInBounds)
@@ -420,10 +357,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (language.Type == Languages.Language.LanguageType.Container)
 				{  return;  }  //xxx
 
-			Reset();
-			this.source = source;
-
-			SimpleSyntaxHighlight();
+			SimpleSyntaxHighlight(source);
 			}
 
 
@@ -453,9 +387,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			
 		// Function: GetPossibleDocumentationComments
 		// 
-		// Goes through the file looking for comments that could possibly contain documentation and retrieves them as a list in
+		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list of
 		// <PossibleDocumentationComments>.  These comments are not guaranteed to have documentation in them, just to be
-		// acceptable candidates for them.  If there are no comments, PossibleDocumentationComments will be set to an empty list.
+		// acceptable candidates for them.  If there are no comments, it will return an empty list.
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
 		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.
@@ -488,9 +422,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the 
 		// parser gets tripped up on something like an unmatched brace.
 		//
-		virtual protected void GetPossibleDocumentationComments ()
+		virtual protected IList<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
-			possibleDocumentationComments = new List<PossibleDocumentationComment>();
+			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
 
 			if (language.Type == Language.LanguageType.TextFile)
 				{
@@ -506,9 +440,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				while (lineIterator.IsInBounds)
 					{
-					if (Cancelled)
-						{  return;  }
-				
 					PossibleDocumentationComment comment = null;
 				
 				
@@ -635,66 +566,61 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					
 					}
 				}
+
+			return possibleDocumentationComments;
 			}
 
 			
 		/* Function: ParsePossibleDocumentationComments
 		 * 
-		 * Converts the raw comments in <ParseState.PossibleDocumentationComments> to <ParseState.CommentTopics>.
-		 * If there are none, CommentTopics will be set to an empty list.
+		 * Converts the <PossibleDocumentationComments> to <Topics>.  If there are none, it will return an empty list.
 		 * 
 		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()>.  There
 		 * should be no need to change it.
 		 */
-		protected virtual void ParsePossibleDocumentationComments ()
+		protected virtual IList<Topic> ParsePossibleDocumentationComments (IList<PossibleDocumentationComment> possibleDocumentationComments)
 			{
-			commentTopics = new List<Topic>();
+			List<Topic> commentTopics = new List<Topic>();
 				
 			foreach (PossibleDocumentationComment comment in possibleDocumentationComments)
 				{
 				Engine.Instance.Comments.Parse(comment, commentTopics);
-				
-				if (Cancelled)
-					{  return;  }
 				}
+
+			return commentTopics;
 			}
 
 
 		/* Function: GetCodeTopics
 		 * 
-		 * Goes through the file looking for code elements that should be included in the output and creates a list in <CodeTopics>.  
-		 * If there are none, CodeTopics will be set to an empty list.
+		 * Goes through the file looking for code elements that should be included in the output and returns a list of <Topics>.  If
+		 * there are none, it will return an empty list.
 		 *
 		 * This will only be called for languages with full support.  The default implementation throws an exception since all classes
 		 * implementing full support must override this function.
 		 */
-		protected virtual void GetCodeTopics ()
+		protected virtual IList<Topic> GetCodeTopics (Tokenizer source)
 			{
 			throw new NotImplementedException();
 			}
 
 
-		/* Function: AddPrototypes
+		/* Function: AddBasicPrototypes
 		 * 
-		 * Adds prototypes to the <CommentTopics> for languages with basic support.  It examines the code between the end of 
-		 * each comment topic and the next one (or the next entry in <PossibleDocumentationComments>) and if it finds the topic 
-		 * title before it finds one of the language's prototype enders the prototype will be set to the code between the topic and 
-		 * the ender.
+		 * Adds prototypes to the <Topics> for languages with basic support.  It examines the code between the end of each
+		 * comment topic and the next one (or the next <PossibleDocumentationComment>) and if it finds the topic title before it 
+		 * finds one of the language's prototype enders the prototype will be set to the code between the topic and the ender.
 		 *
-		 * This function does the basic looping of the search but throws the actual prototype detection to <AddPrototype()>, so
-		 * languages with basic support can just override that instead to implement tweaks.
+		 * This function does the basic looping of the search but throws the individual prototype detection to <AddBasicPrototype()>,
+		 * so languages with basic support can just override that to implement tweaks instead.
 		 */
-		protected virtual void AddPrototypes ()
+		protected virtual void AddBasicPrototypes (Tokenizer source, IList<Topic> commentTopics, 
+																					 IList<PossibleDocumentationComment> possibleDocumentationComments)
 			{
-			codeTopics = new List<Topic>();
-
 			int topicIndex = 0;
 
 			for (int commentIndex = 0; commentIndex < possibleDocumentationComments.Count; commentIndex++)
 				{
-				if (Cancelled)
-					{  return;  }
-
 				PossibleDocumentationComment comment = possibleDocumentationComments[commentIndex];
 
 				// Advance the topic index to the last one before the end of this comment.  If there are multiple topics in a 
@@ -722,16 +648,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  endCode = source.LastLine;  }
 
-				AddPrototype(commentTopics[topicIndex], startCode, endCode);
+				AddBasicPrototype(commentTopics[topicIndex], startCode, endCode);
 				}
 			}
 
 
-		/* Function: AddPrototype
+		/* Function: AddBasicPrototype
 		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
 		 * <Topic.Prototoype>.
 		 */
-		protected virtual void AddPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
+		protected virtual void AddBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
 			{
 			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.TopicTypeID);
 
@@ -1069,59 +995,57 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			
 		
 		/* Function: MergeTopics
-		 * 
-		 * Combines the topics in <CodeTopics> and <CommentTopics> into a single list and places the result in <MergedTopics>.   
-		 * CodeTopics and CommentTopics will be set to null afterwards.  Headerless topics that don't match a code topic will be
-		 * removed.
-		 * 
-		 * Note that this is a destructive act.  The <Topics> that were in CodeTopics and CommentTopics may have been modified 
-		 * and placed in MergedTopics rather than new ones being created.  As such, you should not rely on or have reference to any 
-		 * <Topic> on those two lists after calling this function.
+		 * Combines the code <Topics> and comment <Topics> and returns them as a single list.  Headerless comment topics that don't 
+		 * match a code topic will be removed.
 		 */
-		protected virtual void MergeTopics ()
+		protected virtual IList<Topic> MergeTopics (IList<Topic> commentTopics, IList<Topic> codeTopics)
 			{
-			// The code topics should already be in perfect form so if there's no comment topics to deal with, move the list as is.
-			// This also covers if both topic lists are empty as it will just make the empty code list become the empty merged list.	
+			// The code topics should already be in perfect form so if there's no comment topics to deal with, copy the list as is.
+			// This also covers if both topic lists are empty.  We can't simply return commentTopics because the calling code may
+			// not expect the two variables to reference the same list and changing one would have the unexpected side effect
+			// of changing the other.
 			if (commentTopics.Count == 0)
 				{  
-				mergedTopics = codeTopics;  
-				codeTopics = null;
-				commentTopics = null;
+				List<Topic> mergedTopics = new List<Topic>(codeTopics.Count);
+
+				foreach (Topic codeTopic in codeTopics)
+					{  mergedTopics.Add(codeTopic);  }
+
+				return mergedTopics;
 				}
 				
-			// If there's comment topics but no code topics, all we need to do is punt any headerless topics.
+			// If there's comment topics but no code topics, all we need to do is remove any headerless topics.
 			else if (codeTopics.Count == 0)
 				{
-				mergedTopics = commentTopics;
-				commentTopics = null;
-				
-				int i = 0;
-				while (i < mergedTopics.Count)
+				List<Topic> mergedTopics = new List<Topic>(commentTopics.Count);
+
+				foreach (Topic commentTopic in commentTopics)
 					{
-					if (mergedTopics[i].Title == null)
-						{  mergedTopics.RemoveAt(i);  }
-					else
-						{  i++;  }
+					if (commentTopic.Title != null)
+						{  mergedTopics.Add(commentTopic);  }
 					}
+
+				return mergedTopics;
 				}
 			
 			else
 				{
-				// XXX: topic merging
+				// XXX: actual merging
+				throw new NotImplementedException();
 				}
 			}
 
 
 		/* Function: ApplyCommentPrototypes
-		 * Goes through <mergedTopics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
+		 * Goes through the <Topics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
 		 * sets them as the topic prototype.  If there's an existing prototype taken from the code it will be replaced.
 		 */
-		protected virtual void ApplyCommentPrototypes ()
+		protected virtual void ApplyCommentPrototypes (IList<Topic> topics)
 			{
 			StringBuilder stringBuilder = null;
 			Parser prototypeParser = null;
 
-			foreach (Topic topic in mergedTopics)
+			foreach (Topic topic in topics)
 				{
 				if (topic.Body == null)
 					{  continue;  }
@@ -1157,11 +1081,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				int prototypeEndIndex = iterator.RawTextIndex;
 
 
-				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document SQL
-				// in text files.
+				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document
+				// SQL in text files.
 
 				if (prototypeLanguage != null)
-					{  topic.LanguageID = Instance.Languages.FromName(prototypeLanguage).ID;  }
+					{  
+					Language languageObject = Instance.Languages.FromName(prototypeLanguage);
+
+					if (languageObject != null)
+						{  topic.LanguageID = languageObject.ID;  }
+					}
 
 
 				// Normalize and apply.
@@ -1234,7 +1163,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * would otherwise pick up their scope from the code.  Also, if this comes from a basic language support parser, there will be no
 		 * code scope so Natural Docs' rules will apply to the whole thing.
 		 */
-		protected virtual void GenerateRemainingSymbols ()
+		protected virtual void GenerateRemainingSymbols (IList<Topic> topics)
 			{
 			// XXX - When doing code scope, remember there has to be a scope record in parser.  Just going by the code topics won't tell
 			// you when the scope ends.  Also, you don't want to carry ND topic scoping across code topics.
@@ -1244,7 +1173,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// Generating parsed prototypes resets the parser state, so we'll create a separate parser on demand if we need it.
 			Parser prototypeParser = null;
 			
-			foreach (Topic topic in mergedTopics)
+			foreach (Topic topic in topics)
 				{
 				TopicType topicType = Instance.TopicTypes.FromID(topic.TopicTypeID);
 
@@ -1349,7 +1278,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, iterator);
 
 					if (iterator < endOfDefaultValue)
-						{  source.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
 
 					break;
 					}
@@ -1495,7 +1424,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (markWord)
 					{
 					if (words >= 3)
-						{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
 					else if (words == 2)
 						{  
 						MarkType(startWord, endWord);  
@@ -1520,7 +1449,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 									{  break;  }
 								}
 
-							source.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
+							namePrefix.Tokenizer.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
 							}
 						}
 					else if (words == 1)
@@ -1606,7 +1535,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (markWord)
 					{
 					if (words >= 2)
-						{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
 					else if (words == 1)
 						{  MarkType(startWord, endWord);  }
 
@@ -1648,9 +1577,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			if (qualifierEnd > start)
-				{  source.SetPrototypeParsingTypeBetween(start, qualifierEnd, PrototypeParsingType.TypeQualifier);  }
+				{  start.Tokenizer.SetPrototypeParsingTypeBetween(start, qualifierEnd, PrototypeParsingType.TypeQualifier);  }
 			if (iterator > qualifierEnd)
-				{  source.SetPrototypeParsingTypeBetween(qualifierEnd, iterator, PrototypeParsingType.Type);  }
+				{  qualifierEnd.Tokenizer.SetPrototypeParsingTypeBetween(qualifierEnd, iterator, PrototypeParsingType.Type);  }
 			if (iterator < end)
 				{  MarkTypeSuffix(iterator, end);  }
 			}
@@ -1792,7 +1721,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (markWord)
 					{
 					if (words >= 2)
-						{  source.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
 					else if (words == 1)
 						{  MarkType(startWord, endWord);  }
 
@@ -1831,7 +1760,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			if (start < end)
 				{
-				source.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.NameSuffix_PartOfType);
+				start.Tokenizer.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.NameSuffix_PartOfType);
 				}
 			}
 
@@ -2180,6 +2109,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+
 		// Group: Other Support Functions
 		// __________________________________________________________________________
 
@@ -2216,7 +2146,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			for (;;)
 				{
-				if (Cancelled || !lineIterator.IsInBounds)
+				if (!lineIterator.IsInBounds)
 					{  return null;  }
 					
 				TokenIterator closingSymbolIterator;
@@ -2290,9 +2220,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			while (lineIterator.IsInBounds)
 				{
-				if (Cancelled)
-					{  return null;  }
-
 				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 					
 				if (firstToken.MatchesAcrossTokens(remainderSymbol) == false)
@@ -2312,7 +2239,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * comments or strings, and there's nothing like unquoted regular expressions to confuse a simple parser.  If no
 		 * keywords are passed it uses <defaultKeywords>.
 		 */
-		protected void SimpleSyntaxHighlight (StringSet keywords = null)
+		protected void SimpleSyntaxHighlight (Tokenizer source, StringSet keywords = null)
 			{
 			if (keywords == null)
 				{  keywords = defaultKeywords;  }
@@ -2388,16 +2315,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 		
-		/* Property: Cancelled
-		 * Whether parsing should be interrupted midway.
-		 */
-		public bool Cancelled
-			{
-			get
-				{  return cancelDelegate();  }
-			}
-
-
 		/* Property: Language
 		 * The <Language> associated with this parser.
 		 */
@@ -2417,37 +2334,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * The <Language> object associated with this parser.
 		 */
 		protected Language language;
-
-		/* var: source
-		 * The source code in a <Tokenizer>.
-		 */
-		protected Tokenizer source;
-			
-		/* var: cancelDelegate
-		 * The delegate that controls whether parsing should be interrupted midway.  Use <Delegates.NeverCancel>l if it's not 
-		 * necessary.
-		 */
-		protected CancelDelegate cancelDelegate;
-			
-		/* var: possibleDocumentationComments
-		 * A list of <PossibleDocumentationComment>s retrieved from <source>.
-		 */
-		protected List<PossibleDocumentationComment> possibleDocumentationComments;
-		
-		/* var: commentTopics
-		 * A list of <Topics> generated by the source file's comments.
-		 */
-		protected List<Topic> commentTopics;
-		
-		/* var: codeTopics
-		 * A list of <Topics> generated by the source file's code.
-		 */
-		protected List<Topic> codeTopics;
-		
-		/* var: mergedTopics
-		 * A list of <Topics> created by merging <CommentTopics> and <CodeTopics>.
-		 */
-		protected List<Topic> mergedTopics;
 		
 
 
