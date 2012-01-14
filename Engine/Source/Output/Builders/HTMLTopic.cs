@@ -18,7 +18,6 @@
  *		
  *		- Create a HTMLTopic object.
  *		- Call <Build()> or <BuildToolTip()>.
- *			- Note that this class will not add syntax highlighting to prototypes.  You must do that beforehand.
  *		- The object can be reused on different <Topics> by calling <Build()> again.
  * 
  * 
@@ -75,11 +74,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
 		 *		usedAnchors - A <StringSet> to make sure there's no duplicate anchors generated when building a series of 
 		 *								  <Topics>.  New anchors will not match anything in this set and will be added to it automatically.
-		 *								  
-		 * Notes:
-		 * 
-		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
-		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public void Build (Topic topic, StringBuilder output, string extraClass = null, StringSet usedAnchors = null)
 			{
@@ -139,14 +133,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: BuildToolTip
-		 * 
 		 * Builds the HTML for the <Topic's> tooltip and returns it as a string.  If the topic shoudn't have a tooltip it will
 		 * return null.
-		 *								  
-		 * Notes:
-		 * 
-		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
-		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public string BuildToolTip (Topic topic)
 			{

@@ -18,7 +18,6 @@
  *		
  *		- Create a HTMLPrototype object.
  *		- Call <Build()>.
- *			- Note that this class will not add syntax highlighting to the prototype.  You must do that beforehand.
  *		- The object can be reused on different prototypes by calling <Build()> again.
  * 
  * 
@@ -95,14 +94,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Build
-		 * 
 		 * Builds the HTML for the <Topic's> prototype and returns it as a string.  If the string is going to be appended to
 		 * a StringBuilder, it is more efficient to use the other function.
-		 * 
-		 * Notes:
-		 * 
-		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
-		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public string Build (Topic topic, bool addLinks)
 			{
@@ -113,13 +106,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Build
-		 * 
 		 * Builds the HTML for the <Topic's> prototype and appends it to the passed StringBuilder.
-		 * 
-		 * Notes:
-		 * 
-		 *		Adding syntax highlighting to the <Topic> prototype is the responsibility of the calling code.  This class will apply
-		 *		syntax highlighting to the HTML if it's present but will not add it on its own.
 		 */
 		public void Build (Topic topic, bool addLinks, StringBuilder output)
 			{
@@ -129,6 +116,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			language = Engine.Instance.Languages.FromID(topic.LanguageID);
 			parsedPrototype = topic.ParsedPrototype;
+
+			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
+				{  language.SyntaxHighlight(parsedPrototype);  }
 
 			if (parsedPrototype.NumberOfParameters == 0)
 				{

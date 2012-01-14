@@ -58,24 +58,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			ReadPossibleWrite = 2,
 			ReadWrite = 3
 			}
-
-
-		/* Enum: GetTopicsFlags
-		 * 
-		 * Flags that can be applied to functions that retrieve <Topics> from the database.
-		 * 
-		 * ParsePrototypes - Pre-generate a <ParsedPrototype> for each <Topic>.  If you know you're going to need
-		 *									  them it is more efficient to generate them all at once with a single parser than to generate
-		 *									  each one on demand.
-		 * HighlightPrototypes - Applies syntax highlighting to each <Topic's> <ParsedPrototype>.  This must be used in
-		 *											combination with <ParsePrototypes>.
-		 */
-		[Flags]
-		public enum GetTopicsFlags : byte
-			{
-			ParsePrototypes = 0x01,
-			HighlightPrototypes = 0x02
-			}
 			
 			
 		

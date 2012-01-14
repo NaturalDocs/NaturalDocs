@@ -31,7 +31,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, GetTopicsFlags flags = 0)
+		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -62,16 +62,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					topic.FileID = fileID;
 
-					if (topic.Prototype != null && (flags & GetTopicsFlags.ParsePrototypes) != 0)
-						{
-						Languages.Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
-
-						topic.ParsedPrototype = language.ParsePrototype(topic.Prototype, topic.TopicTypeID);
-
-						if ((flags & GetTopicsFlags.HighlightPrototypes) != 0)
-							{  language.SyntaxHighlight(topic.ParsedPrototype);  }
-						}
-					
 					topics.Add(topic);
 					}
 				}

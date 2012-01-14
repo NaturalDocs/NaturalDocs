@@ -626,6 +626,15 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return new LineIterator(this, Lines.Count, tokenLengths.Count, rawText.Length);  }
 			}
 
+		/* Function: HasSyntaxHighlighting
+		 * Whether syntax highlighting has been applied.
+		 */
+		public bool HasSyntaxHighlighting
+			{
+			get
+				{  return (syntaxHighlightingTypes != null);  }
+			}
+
 
 			
 		// Group: Protected/Internal Properties
