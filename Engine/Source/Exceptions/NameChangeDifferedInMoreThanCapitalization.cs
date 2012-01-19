@@ -5,7 +5,7 @@
  * Thrown when something is renamed and the new name differs in more than just capitalization when it is not allowed to.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 

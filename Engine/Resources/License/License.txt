@@ -2,7 +2,7 @@
 Title: License
 _______________________________________________________________________________
 
-Natural Docs is Copyright © 2003-2011 Greg Valure.  Natural Docs is licensed under version 3 of the GNU
+Natural Docs is Copyright © 2003-2012 Greg Valure.  Natural Docs is licensed under version 3 of the GNU
 Affero General Public License (AGPL).
 
 Portions of Natural Docs may be distributed with generated documentation files in order to help them function,

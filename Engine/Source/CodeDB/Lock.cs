@@ -19,7 +19,7 @@
  * logic is meant to be encapsulated in another class, so this one omits it for efficiency.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2011 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
