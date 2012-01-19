@@ -646,7 +646,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					if (prototypeEnders2Value == null)
 						{  return false;  }
 
-					if (prototypeEnders1Pair.Value.IncludeLineBreaks != prototypeEnders2Value.IncludeLineBreaks &&
+					if (prototypeEnders1Pair.Value.IncludeLineBreaks != prototypeEnders2Value.IncludeLineBreaks ||
 						!StringArraysAreEqual(prototypeEnders1Pair.Value.Symbols, prototypeEnders2Value.Symbols) )
 						{  return false;  }
 					}
