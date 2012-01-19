@@ -105,7 +105,7 @@ Language: C/C++
    Enum Value: Under Parent
 
    Class Prototype Enders: ; {
-   Function Prototype Enders: ; {
+   Function Prototype Enders: ; { :
    Variable Prototype Enders: ; =
 
 
@@ -120,7 +120,7 @@ Language: C#
    Enum Value: Under Type
 
    Class Prototype Enders: ; {
-   Function Prototype Enders: ; {
+   Function Prototype Enders: ; { :
    Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
 	Property Prototype Enders: ; {
