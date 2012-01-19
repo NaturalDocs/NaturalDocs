@@ -148,7 +148,7 @@ var NDSummary = new function ()
 			this.summaryToolTips = summaryToolTips;
 
 			// The user may already be hovering over a summary entry by the time the tooltips are loaded.
-			if (this.showingToolTip != undefined)
+			if (this.showingToolTip != undefined && summaryToolTips[this.showingToolTip] != undefined)
 				{  this.ShowToolTip();  }
 			}
 		};
