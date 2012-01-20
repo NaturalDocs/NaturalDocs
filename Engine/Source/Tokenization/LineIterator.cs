@@ -29,13 +29,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		// __________________________________________________________________________
 		
 		
-		/* Function: Next (count)
-		 * Moves forward the specified number of lines, returning false if we've moved past the end.
+		/* Function: Next
+		 * Moves forward the specified number of lines, returning false if we've moved past the end.  You can use this with
+		 * negative numbers to move backwards.
 		 */
 		public bool Next (int count = 1)
 			{
 			if (count < 0)
-				{  throw new InvalidOperationException();  }
+				{  return Previous(-count);  }
 				
 			if (lineIndex < 0)
 				{
@@ -67,13 +68,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
-		/* Function: Previous (count)
-		 * Moves backwards the specified number of lines, returning false if we've move past the beginning.
+		/* Function: Previous
+		 * Moves backwards the specified number of lines, returning false if we've move past the beginning.  You can use this with
+		 * negative numbers to move forward.
 		 */
 		public bool Previous (int count = 1)
 			{
 			if (count < 0)
-				{  throw new InvalidOperationException();  }
+				{  return Next(-count);  }
 				
 			if (lineIndex > tokenizer.Lines.Count)
 				{

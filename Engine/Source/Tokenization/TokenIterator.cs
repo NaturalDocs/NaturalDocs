@@ -33,13 +33,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		// __________________________________________________________________________
 		
 		
-		/* Function: Next (count)
-		 * Moves forward the passed number of tokens, returning false if we're past the last token.
+		/* Function: Next
+		 * Moves forward the passed number of tokens, returning false if we're past the last token.  You can use this with
+		 * negative numbers to move backwards.
 		 */
 		public bool Next (int count = 1)
 			{
 			if (count < 0)
-				{  throw new InvalidOperationException();  }
+				{  return Previous(-count);  }
 				
 			if (tokenIndex < 0)
 				{
@@ -79,7 +80,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		/* Function: NextByCharacters
 		 * 
-		 * Moves forward by the passed number of characters, returning false if we're past the last token.
+		 * Moves forward by the passed number of characters, returning false if we're past the last token.  You can use this
+		 * with negative numbers to move backwards.
 		 * 
 		 * This throws an exception if advancing by the passed number of characters would cause the iterator to not fall
 		 * evenly on a token boundary.  It is assumed that this function will primarily be used after a positive result from 
@@ -87,6 +89,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public bool NextByCharacters (int characters)
 			{
+			if (characters < 0)
+				{  return PreviousByCharacters(-characters);  }
+
 			int tokensInCharacters = TokensInCharacters(characters);
 			
 			if (tokensInCharacters == -1)
@@ -116,13 +121,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 			
 			
-		/* Function: Previous (count)
-		 * Moves backwards the passed number of tokens, returning false if we're past the first token.
+		/* Function: Previous
+		 * Moves backwards the passed number of tokens, returning false if we're past the first token.  You can use this with
+		 * negative numbers to move forward.
 		 */
 		public bool Previous (int count = 1)
 			{
 			if (count < 0)
-				{  throw new InvalidOperationException();  }
+				{  return Next(-count);  }
 				
 			if (tokenIndex > tokenizer.TokenCount)
 				{
@@ -162,7 +168,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			
 		/* Function: PreviousByCharacters
 		 * 
-		 * Moves backwards by the passed number of characters, returning false if we're past the first token.
+		 * Moves backwards by the passed number of characters, returning false if we're past the first token.  You can use
+		 * this with negative numbers to move forward.
 		 * 
 		 * This throws an exception if backing up by the passed number of characters would cause the iterator to not 
 		 * fall evenly on a token boundary.  It is assumed that this function will primarily be used after a positive result 
@@ -170,6 +177,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		public bool PreviousByCharacters (int characters)
 			{
+			if (characters < 0)
+				{  return NextByCharacters(-characters);  }
+
 			int tokensInCharacters = TokensInPreviousCharacters(characters);
 			
 			if (tokensInCharacters == -1)
