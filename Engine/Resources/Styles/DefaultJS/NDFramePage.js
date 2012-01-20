@@ -637,9 +637,9 @@ var NDFramePage = new function ()
 
 
 	/* Function: SizeSummaryToContent
-		Resizes the summary panel to fit its content.  If the summary content is wider than <desiredSummaryWidth> by no 
-		more than <`ExpansionFactor>, the summary will be expanded to show it without a horizontal scrollbar.  Otherwise it 
-		will be set to <desiredSummaryWidth>.  This is to be called by <NDSummary> whenever it's content changes.
+		Resizes the summary panel to try to show its content without a horizontal scrollbar.  The new width will have a 
+		minimum of <desiredSummaryWidth> and a maximum of <desiredSummaryWidth> times <`ExpansionFactor>.  This 
+		is to be called by <NDSummary> whenever it's content changes.
 	*/
 	this.SizeSummaryToContent = function ()
 		{
@@ -647,14 +647,13 @@ var NDFramePage = new function ()
 		};
 
 
-	// We decided not to implement similar functionality for NDMenu, though it can be supported just as easily.  Just create
+	// I decided not to implement similar functionality for NDMenu, though it can be supported just as easily.  Just create
 	// SizeMenuToContent() and call it from NDMenu.Update().
 
 
 	/* Function: SizePanelToContent
-		Resizes the passed panel to fit its content.  If the panel content is wider than desiredOffsetWidth by no more than 
-		<`ExpansionFactor>, the panel will be expanded to show it without a horizontal scrollbar.  Otherwise it will be set to 
-		desiredOffsetWidth.
+		Resizes the passed panel to try to show its content without a horizontal scrollbar.  The new width will have a
+		minimum of desiredOffsetWidth and a maximum of desiredOffsetWidth times <`ExpansionFactor>.
 	*/
 	this.SizePanelToContent = function (panel, desiredOffsetWidth)
 		{
@@ -705,20 +704,18 @@ var NDFramePage = new function ()
 			}
 
 		// At this point newOffsetWidth is either the same as desiredOffsetWidth or is a larger value representing the 
-		// minimum content size.  Search your heart, you know it to be true.  Or just work through all the possibilities in
-		// the above code.  Whatever.
+		// minimum content size.  Search your feelings, you know it to be true.  Or just work through all the possibilities
+		// in the above code.  Whatever.
 
 		if (newOffsetWidth != desiredOffsetWidth)
 			{
 			// Okay, so we're larger than the desired width.  Add a few pixels for padding.
 			newOffsetWidth += 3;
 
-			// See if automatically expanding to this size would exceed the maximum.  We only want to nudge the panel
-			// size a bit beyond where the user dragged it to in order to avoid an unnecessary horizontal scroll bar.  If the
-			// panel content is larger by a fair amount, scrolling is better.
+			// See if automatically expanding to this size would exceed the maximum.
 			if (newOffsetWidth / desiredOffsetWidth > `ExpansionFactor)
 				{
-				newOffsetWidth = desiredOffsetWidth;
+				newOffsetWidth = Math.floor(desiredOffsetWidth * `ExpansionFactor);
 				}
 			
 			if (panel.offsetWidth != newOffsetWidth)
@@ -790,12 +787,11 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: `ExpansionFactor
-		This substitution is how much the menu or summary panel may be automatically expanded by.  If the
-		content is larger than the desired width times this factor it will stay at the desired width and use a
-		scrollbar instead.  To allow a 15% expansion set the value to 1.15.
+		This substitution is the maximum amount the menu or summary panel may be automatically expanded by.
+		To allow a 15% expansion, set the value to 1.15.
 	*/
 		// Substitutions:
-		// `ExpansionFactor = 1.15
+		// `ExpansionFactor = 1.333
 
 
 
