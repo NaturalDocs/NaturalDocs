@@ -105,7 +105,7 @@ Language: C/C++
    Enum Value: Under Parent
 
    Class Prototype Enders: ; {
-   Function Prototype Enders: ; { :
+   Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
 
