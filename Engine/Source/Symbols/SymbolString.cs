@@ -154,8 +154,15 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public static SymbolString operator+ (SymbolString a, SymbolString b)
 			{
-			// Since they're both normalized already we can safely take this shortcut.
-			return new SymbolString(a.symbolString + SeparatorChar + b.symbolString);
+			if (a.symbolString == null)
+				{  return b;  }
+			else if (b.symbolString == null)
+				{  return a;  }
+			else
+				{
+				// Since they're both normalized already we can safely take this shortcut.
+				return new SymbolString(a.symbolString + SeparatorChar + b.symbolString);
+				}
 			}
 
 		/* Function: ToString
