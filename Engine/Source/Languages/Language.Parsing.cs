@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Comments;
+using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.TopicTypes;
@@ -44,78 +45,219 @@ namespace GregValure.NaturalDocs.Engine.Languages
 	
 
 		/* Function: Parse
-		 * Parses the source code as a string and returns it as a list of <Topics>.  The list will be null if there are no topics or parsing was
-		 * interrupted.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
+		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Both of these will be empty 
+		 * but not null if there weren't any.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 * 
 		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		 */
-		public ParseResult Parse (string source, int fileID, CancelDelegate cancelDelegate, out IList<Topic> topics)
+		public ParseResult Parse (string source, int fileID, CancelDelegate cancelDelegate, 
+													 out IList<Topic> topics, out LinkSet classParentLinks)
 			{
-			return Parse(new Tokenizer(source), fileID, cancelDelegate, out topics);
+			return Parse(new Tokenizer(source), fileID, cancelDelegate, out topics, out classParentLinks);
 			}
 			
 			
 		/* Function: Parse
-		 * Parses the tokenized source code and returns it as a list of <Topics>.  The list will be empty if there are no topics.  Set 
-		 * cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.  If parsing is cancelled, the value of
-		 * the topic list is undefined.
+		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Both of these will be empty 
+		 * but not null if there weren't any.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
-		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, out IList<Topic> topics)
-			{ 
-			topics = null;
-
+		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
+																  out IList<Topic> topics, out LinkSet classParentLinks)
+			{
 			if (Type == LanguageType.Container)
-				{  return ParseResult.Success;  }  // xxx
-			
+				{
+				// xxx not handled yet
+				topics = new List<Topic>();
+				classParentLinks = new LinkSet();  
+				return ParseResult.Success;  
+				}
+
+			topics = null;
+			classParentLinks = null;
+
+
+			// Find all the comments that could have documentation.
+
 			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
 			
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
-				
-			IList<Topic> commentTopics = ParsePossibleDocumentationComments(possibleDocumentationComments);
 			
+
+			// Extract Topics from them.  This could include Javadoc, XML, and headerless Natural Docs comments.
+				
+			IList<Topic> commentTopics = GetCommentTopics(possibleDocumentationComments);
+			
+			foreach (Topic commentTopic in commentTopics)
+			   {
+			   commentTopic.FileID = fileID;
+			   commentTopic.LanguageID = this.ID;
+			   }
+
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
-			if (Type == LanguageType.FullSupport)
-				{
-				IList<Topic> codeTopics = GetCodeTopics(source);
-			
-				if (cancelDelegate())
-					{  return ParseResult.Cancelled; }
-				
-				topics = MergeTopics(commentTopics, codeTopics);
-			
-				if (cancelDelegate())
-					{  return ParseResult.Cancelled;  }
-				}
-			else
+
+			// For basic language support, add prototypes via our language-neutral algorithm.
+
+			if (Type == LanguageType.BasicSupport)
 				{
 				AddBasicPrototypes(source, commentTopics, possibleDocumentationComments);
 
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
-
-				topics = commentTopics;
 				}
 
-			foreach (Topic topic in topics)
+
+			// Scan the comments for "Prototype:" headings.  Apply comment prototypes, overwriting the existing prototypes if 
+			// necessary, and remove them from the body.
+
+			ApplyCommentPrototypes(commentTopics);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Convert our Topic list to CodePoints.  Topics only store line numbers, so we'll move a LineIterator to each one to
+			// get the character position CodePoint needs.
+
+			List<CodePoint> commentCodePoints = new List<CodePoint>(commentTopics.Count);
+			LineIterator lineIterator = source.FirstLine;
+
+			foreach (Topic commentTopic in commentTopics)
 				{
-				topic.FileID = fileID;
-				topic.LanguageID = this.ID;
+				lineIterator.Next(commentTopic.CommentLineNumber - lineIterator.LineNumber);
+
+				CodePoint commentCodePoint = new CodePoint(lineIterator, CodePoint.Flags.InComments);
+				commentCodePoint.Topic = commentTopic;
+
+				commentCodePoints.Add(commentCodePoint);
 				}
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
-								
-			// LanguageID needs to be set before ApplyCommentPrototypes
-			ApplyCommentPrototypes(topics);
-			
+
+
+			// Generate topic symbols and apply context settings according to topic scoping rules.  This only applies to Natural Docs
+			// topics with headers as Javadoc, MS XML, and headerless Natural Docs comments don't have titles to generate symbols
+			// from nor topic types to get scoping information from.  We will remove them later if they aren't combined with any code
+			// topics which do have these things.
+
+			GenerateCommentContextAndSymbols(commentCodePoints);
+
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
-			GenerateRemainingSymbols(topics);
-							
+
+			// xxx apply comment class parents
+
+
+			// For full language support, get code points from the source.
+
+			IList<CodePoint> sourceCodePoints;
+
+			if (Type == LanguageType.FullSupport)
+				{
+				sourceCodePoints = GetSourceCodePoints(source);
+
+				foreach (CodePoint sourceCodePoint in sourceCodePoints)
+					{
+					if (sourceCodePoint.Topic != null)
+						{  sourceCodePoint.Topic.FileID = fileID;  }  
+					}
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+				}
+			else
+				{  sourceCodePoints = new List<CodePoint>();  }
+
+
+			// Merge the source and comment code points into one list.  We're not combining topics yet.
+
+			List<CodePoint> codePoints = new List<CodePoint>(commentCodePoints.Count + sourceCodePoints.Count);
+
+			int sourceCPIndex = 0;
+			int commentCPIndex = 0;
+
+			for (;;)
+				{
+				if (commentCPIndex < commentCodePoints.Count)
+					{
+					if (sourceCPIndex < sourceCodePoints.Count &&
+						 sourceCodePoints[sourceCPIndex].CharOffset < commentCodePoints[commentCPIndex].CharOffset)
+						{
+						codePoints.Add(sourceCodePoints[sourceCPIndex]);
+						sourceCPIndex++;
+						}
+					else
+						{
+						codePoints.Add(commentCodePoints[commentCPIndex]);
+						commentCPIndex++;
+						}
+					}
+				else if (sourceCPIndex < sourceCodePoints.Count)
+					{
+					codePoints.Add(sourceCodePoints[sourceCPIndex]);
+					sourceCPIndex++;
+					}
+				else
+					{  break;  }
+				}
+
+
+			// xxx apply class/group tags/access levels to children
+
+
+			// xxx combine topics
+
+
+			// Extract the topics and parent links from the code points, and filter out any headerless topics.  This removes Javadoc, 
+			// MS XML, and headerless Natural Docs comments that weren't combined with a source topic.
+
+			List<Topic> finalTopics = new List<Topic>();
+			LinkSet finalClassParentLinks = new LinkSet();
+
+			foreach (CodePoint codePoint in codePoints)
+				{
+				if (codePoint.Topic != null && codePoint.Topic.Title != null)
+					{  finalTopics.Add(codePoint.Topic);  }
+
+				if (codePoint.ClassParentLinks != null)
+					{
+					foreach (Link link in codePoint.ClassParentLinks)
+						{  finalClassParentLinks.Add(link);  }
+					}
+				}
+
+
+			// Sanity check the generated topics.
+
+			#if DEBUG
+			foreach (Topic topic in finalTopics)
+				{
+				string missingProperties = "";
+
+				if (topic.FileID == 0)
+					{  missingProperties += " FileID";  }
+				if (topic.LanguageID == 0)
+					{  missingProperties += " LanguageID";  }
+				if (topic.Symbol == null)
+					{  missingProperties += " Symbol";  }
+				if (topic.Title == null)
+					{  missingProperties += " Title";  }
+				if (topic.TopicTypeID == 0)
+					{  missingProperties += " TopicTypeID";  }
+
+				if (missingProperties != "")
+					{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }
+				}
+			#endif
+
+
+			topics = finalTopics;
+			classParentLinks = finalClassParentLinks;
+
 			return ParseResult.Success;
 			}
 
@@ -529,14 +671,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 			
-		/* Function: ParsePossibleDocumentationComments
+		/* Function: GetCommentTopics
 		 * 
-		 * Converts the <PossibleDocumentationComments> to <Topics>.  If there are none, it will return an empty list.
+		 * Finds and parses all <Topics> in the <PossibleDocumentationComments>.  If there are none, it will return an empty list.
 		 * 
 		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()>.  There
 		 * should be no need to change it.
 		 */
-		protected virtual IList<Topic> ParsePossibleDocumentationComments (IList<PossibleDocumentationComment> possibleDocumentationComments)
+		protected virtual IList<Topic> GetCommentTopics (IList<PossibleDocumentationComment> possibleDocumentationComments)
 			{
 			List<Topic> commentTopics = new List<Topic>();
 				
@@ -549,15 +691,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: GetCodeTopics
+		/* Function: GetSourceCodePoints
 		 * 
-		 * Goes through the file looking for code elements that should be included in the output and returns a list of <Topics>.  If
-		 * there are none, it will return an empty list.
+		 * Goes through the file looking for code elements that should be included in the output and returns a list of <CodePoints>.
+		 * If there are none, it will return an empty list.
 		 *
 		 * This will only be called for languages with full support.  The default implementation throws an exception since all classes
 		 * implementing full support must override this function.
 		 */
-		protected virtual IList<Topic> GetCodeTopics (Tokenizer source)
+		protected virtual IList<CodePoint> GetSourceCodePoints (Tokenizer source)
 			{
 			throw new NotImplementedException();
 			}
@@ -950,48 +1092,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			return output.ToString();
 			}
-			
-		
-		/* Function: MergeTopics
-		 * Combines the code <Topics> and comment <Topics> and returns them as a single list.  Headerless comment topics that don't 
-		 * match a code topic will be removed.
-		 */
-		protected virtual IList<Topic> MergeTopics (IList<Topic> commentTopics, IList<Topic> codeTopics)
-			{
-			// The code topics should already be in perfect form so if there's no comment topics to deal with, copy the list as is.
-			// This also covers if both topic lists are empty.  We can't simply return commentTopics because the calling code may
-			// not expect the two variables to reference the same list and changing one would have the unexpected side effect
-			// of changing the other.
-			if (commentTopics.Count == 0)
-				{  
-				List<Topic> mergedTopics = new List<Topic>(codeTopics.Count);
-
-				foreach (Topic codeTopic in codeTopics)
-					{  mergedTopics.Add(codeTopic);  }
-
-				return mergedTopics;
-				}
-				
-			// If there's comment topics but no code topics, all we need to do is remove any headerless topics.
-			else if (codeTopics.Count == 0)
-				{
-				List<Topic> mergedTopics = new List<Topic>(commentTopics.Count);
-
-				foreach (Topic commentTopic in commentTopics)
-					{
-					if (commentTopic.Title != null)
-						{  mergedTopics.Add(commentTopic);  }
-					}
-
-				return mergedTopics;
-				}
-			
-			else
-				{
-				// XXX: actual merging
-				throw new NotImplementedException();
-				}
-			}
 
 
 		/* Function: ApplyCommentPrototypes
@@ -1102,70 +1202,83 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  topic.Body = stringBuilder.ToString();  }
 				}
 			}
+
 			
-			
-		/* Function: GenerateRemainingSymbols
-		 * 
-		 * Generates <Topic.Symbol> and <Topic.Parameters> for any <Topics> which don't already have one.  As code topics always 
-		 * have symbols and any comment that was merged with one would inherit it, this only applies to the Natural Docs topics which 
-		 * were not merged with a code element.
-		 * 
-		 * The default implementation will follow a combination of the code topics' scope and the Natural Docs scoping rules.  Basically, the
-		 * Natural Docs scoping rules only apply between code topics, so entire classes can be defined between real elements but members
-		 * would otherwise pick up their scope from the code.  Also, if this comes from a basic language support parser, there will be no
-		 * code scope so Natural Docs' rules will apply to the whole thing.
+		/* Function: GenerateCommentContextAndSymbols
+		 * Generates <CodePoint.Context>, <Topic.Symbol>, and <Topic.Parameters> for a list of <CodePoints> generated from comments.
+		 * This will only apply to Natural Docs topics with headers and will follow topic scoping rules.  Javadoc, MS XML, and headerless
+		 * Natural Docs topics will be skipped as they don't have titles to generate symbols from nor topic types to get scoping information
+		 * from.
 		 */
-		protected virtual void GenerateRemainingSymbols (IList<Topic> topics)
+		protected virtual void GenerateCommentContextAndSymbols (IList<CodePoint> commentCodePoints)
 			{
-			// XXX - When doing code scope, remember there has to be a scope record in parser.  Just going by the code topics won't tell
-			// you when the scope ends.  Also, you don't want to carry ND topic scoping across code topics.
+			SymbolString currentClass = new SymbolString();
 
-			ContextString context = new ContextString();
-
-			foreach (Topic topic in topics)
+			foreach (CodePoint codePoint in commentCodePoints)
 				{
-				TopicType topicType = Instance.TopicTypes.FromID(topic.TopicTypeID);
+				if (codePoint.Topic != null && codePoint.Topic.TopicTypeID != 0 && codePoint.Topic.Title != null)
+					{
+					TopicType topicType = Instance.TopicTypes.FromID(codePoint.Topic.TopicTypeID);
+					ContextString tempContext;
 
-				if (topic.Symbol == null)
-					{  
 					string parenthesis = null;
-					topic.Symbol = SymbolString.FromPlainText(topic.Title, out parenthesis);
+					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parenthesis);
 
-					if (context.ScopeIsGlobal == false &&
-						topicType.Scope != TopicType.ScopeValue.AlwaysGlobal &&
-						topicType.Scope != TopicType.ScopeValue.End)
-						{  
-						topic.Symbol = context.Scope + topic.Symbol;  
+					switch (topicType.Scope)
+						{
+						case TopicType.ScopeValue.Start:
+							codePoint.Topic.Symbol = symbol;
+							codePoint.ContextChanged = true;
+
+							tempContext = codePoint.Context;
+							tempContext.Scope = symbol;
+							codePoint.Context = tempContext;
+
+							currentClass = symbol;
+							break;
+
+						case TopicType.ScopeValue.End:
+							codePoint.Topic.Symbol = symbol;
+							codePoint.ContextChanged = true;
+
+							tempContext = codePoint.Context;
+							tempContext.Scope = new SymbolString();
+							codePoint.Context = tempContext;
+
+							currentClass = new SymbolString();
+							break;
+
+						case TopicType.ScopeValue.Normal:
+							codePoint.Topic.Symbol = currentClass + symbol;
+							break;
+
+						case TopicType.ScopeValue.AlwaysGlobal:
+							codePoint.Topic.Symbol = symbol;
+							break;
 						}
 
 					// Parenthesis in the title takes precedence over the prototype.
 					if (parenthesis != null)
 						{  
-						topic.Parameters = ParameterString.FromParenthesisString(parenthesis);  
+						codePoint.Topic.Parameters = ParameterString.FromParenthesisString(parenthesis);  
 						}
 
-					else if (topic.Prototype != null)
+					else if (codePoint.Topic.Prototype != null && codePoint.Topic.ParsedPrototype.NumberOfParameters > 0)
 						{
-						if (topic.ParsedPrototype.NumberOfParameters > 0)
+						ParsedPrototype parsedPrototype = codePoint.Topic.ParsedPrototype;
+
+						string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
+						TokenIterator start, end;
+
+						for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 							{
-							string[] parameterTypes = new string[topic.ParsedPrototype.NumberOfParameters];
-							TokenIterator start, end;
-
-							for (int i = 0; i < topic.ParsedPrototype.NumberOfParameters; i++)
-								{
-								topic.ParsedPrototype.GetBaseParameterType(i, out start, out end);
-								parameterTypes[i] = topic.ParsedPrototype.Tokenizer.TextBetween(start, end);
-								}
-
-							topic.Parameters = ParameterString.FromParameterTypes(parameterTypes);
+							parsedPrototype.GetBaseParameterType(i, out start, out end);
+							parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
 							}
+
+						codePoint.Topic.Parameters = ParameterString.FromParameterTypes(parameterTypes);
 						}
 					}
-
-				if (topicType.Scope == TopicType.ScopeValue.Start)
-					{  context.Scope = topic.Symbol;  }
-				else if (topicType.Scope == TopicType.ScopeValue.End)
-					{  context.Scope = new SymbolString();  }
 				}
 			}
 

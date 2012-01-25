@@ -69,6 +69,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.Engine.Files
@@ -838,9 +839,10 @@ namespace GregValure.NaturalDocs.Engine.Files
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 				
 				IList<Topic> topics = null;
+				LinkSet links = null;
 
 				if (content != null)
-					{  language.Parse(content, file.ID, cancelDelegate, out topics);  }
+					{  language.Parse(content, file.ID, cancelDelegate, out topics, out links);  }
 					
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }

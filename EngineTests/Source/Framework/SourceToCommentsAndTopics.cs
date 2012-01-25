@@ -34,6 +34,7 @@ using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Comments;
 using GregValure.NaturalDocs.Engine.Languages;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.EngineTests.Framework
@@ -107,7 +108,8 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 							IList<PossibleDocumentationComment> comments = language.GetComments(code);
 
 							IList<Topic> topics;
-							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics);
+							LinkSet classParentLinks;
+							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 							test.ActualOutput = OutputOf(comments, topics);  
 							}
