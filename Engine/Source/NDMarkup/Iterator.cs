@@ -215,12 +215,71 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 		 */
 		public void GoToRawTextIndex (int charOffset)
 			{
-			index = charOffset;
-
 			if (charOffset != 0 && content[charOffset] != '<')
 				{  throw new InvalidOperationException();  }
 
+			index = charOffset;
 			DetermineElement();
+			}
+
+
+		/* Function: GoToFirstTag
+		 * 
+		 * Moves the iterator to the first instance of the passed tag, returning whether it was successful.  If it wasn't, the
+		 * iterator will be placed out of bounds.
+		 * 
+		 * You may pass an entire tag, such as "<b>", or you may pass a fragment to allow for arbitrary properties, such as
+		 * "<link" or "<link type="naturaldocs"".  The first character must be an opening bracket.
+		 */
+		public bool GoToFirstTag (string tag)
+			{
+			int tagIndex = content.IndexOf(tag);
+
+			if (tagIndex == -1)
+				{
+				index = content.Length;
+				type = ElementType.OutOfBounds;
+				length = 0;
+
+				return false;
+				}
+			else
+				{  
+				GoToRawTextIndex(tagIndex);
+				return true;
+				}
+			}
+
+
+		/* Function: GoToNextTag
+		 * 
+		 * Moves the iterator to the next instance of the passed tag, returning whether it was successful.  If it wasn't, the
+		 * iterator will be placed out of bounds.  It starts the search after the current position so you can call this repeatedly 
+		 * until it returns false.
+		 * 
+		 * You may pass an entire tag, such as "<b>", or you may pass a fragment to allow for arbitrary properties, such as
+		 * "<link" or "<link type="naturaldocs"".  The first character must be an opening bracket.
+		 */
+		public bool GoToNextTag (string tag)
+			{
+			if (type == ElementType.OutOfBounds)
+				{  return false;  }
+
+			int tagIndex = content.IndexOf(tag, index + length);
+
+			if (tagIndex == -1)
+				{
+				index = content.Length;
+				type = ElementType.OutOfBounds;
+				length = 0;
+
+				return false;
+				}
+			else
+				{  
+				GoToRawTextIndex(tagIndex);
+				return true;
+				}
 			}
 
 
