@@ -45,7 +45,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 									 EventAccessor eventAccessor);
 		
 		/* Function: OnDeleteTopic
-		 * Called after a topic is deleted from the database.
+		 * Called before a topic is deleted from the database.
 		 */
 		void OnDeleteTopic (Topic topic, EventAccessor eventAccessor);
 		

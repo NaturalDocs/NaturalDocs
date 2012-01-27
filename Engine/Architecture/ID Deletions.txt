@@ -29,10 +29,8 @@ Topic: File IDs
 Topic: Topic IDs
 
 	Topic IDs are assigned by <CodeDB.Manager>.  New ones are assigned when an accessor adds one to the database,
-	and the IDs are removed immediately when it deletes them.  However, the accessor needs to have a write lock on
-	the database in order to perform the deletion, and that lock is not released until after the notification event is fired 
-	and handled.  So while the ID will already be deleted at the time of the event handlers, it could not possibly be 
-	reassigned until after they have completed.
+	and the IDs are removed immediately when it deletes them.  However, they will still exist while the 
+	<CodeDB.IChangeWatchers> are being notified.
 	
 	Builders should not need deleted topic IDs to stick around.  They should be translating the add/change/delete events
 	into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event

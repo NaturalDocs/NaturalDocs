@@ -241,9 +241,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			RequireAtLeast(LockType.ReadWrite);
 
-			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
-			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);
-			
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
 			
 			try
@@ -260,6 +257,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				Engine.Instance.CodeDB.ReleaseChangeWatchers();
 				}
+
+			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
+			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);
 			}
 			
 			
