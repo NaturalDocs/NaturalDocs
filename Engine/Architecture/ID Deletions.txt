@@ -35,13 +35,3 @@ Topic: Topic IDs
 	Builders should not need deleted topic IDs to stick around.  They should be translating the add/change/delete events
 	into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
 	notification.
-	
-	
-Topic: Ending Symbol IDs 
-
-	Ending Symbol IDs should not be used anywhere except internally by <CodeDB.Manager>.  As such there should be
-	no external references to them.
-	
-	Regardless, when a topic is deleted the ending symbol ID is put on a list to be checked for deletion during 
-	<CodeDB.Manager.Cleanup()>.  So deleted IDs stick around until then simply because we're delaying the effort of
-	determining whether they're actually deleted or not until then.
