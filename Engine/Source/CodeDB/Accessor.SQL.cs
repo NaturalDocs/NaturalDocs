@@ -204,22 +204,38 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		
 		 * Topic Requirements:
 		 * 
-		 *		- The topic must have been retrieved from the database, and thus have all its fields set.
+		 *		The topic must have been retrieved from the database, and thus have all its fields set.  It's important because
+		 *		it will be passed to the change watchers which may need them.
+		 *		
+		 *		TopicID - Must be set.
+		 *		FileID - Must be set.
+		 *		LanguageID - Must be set.
+		 *		CommentLineNumber - Must be set.
+		 *		CodeLineNumber - Must be set.
+		 *		Title - Must be set.
+		 *		Body - Can be null.
+		 *		Summary - Can be null.
+		 *		Prototype - Can be null.
+		 *		Symbol - Must be set.
+		 *		Parameters - Can be null.
+		 *		TopicTypeID - Must be set.
+		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
+		 *		TagString - Can be null.
 		 */
 		public void DeleteTopic (Topic topic)
 			{
 			RequireNonZero("DeleteTopic", "TopicID", topic.TopicID);
-			// FileID
-			// LanguageID
-			// CommentLineNumber
-			// CodeLineNumber
-			// Title
+			RequireNonZero("DeleteTopic", "FileID", topic.FileID);
+			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
+			RequireNonZero("DeleteTopic", "CommentLineNumber", topic.CommentLineNumber);
+			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
+			RequireContent("DeleteTopic", "Title", topic.Title);
 			// Body
 			// Summary
 			// Prototype
-			// Symbol
+			RequireContent("DeleteTopic", "Symbol", topic.Symbol);
 			// Parameters
-			// TopicTypeID
+			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
 
