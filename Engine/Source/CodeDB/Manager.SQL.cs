@@ -24,9 +24,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			connection.Execute("CREATE TABLE System (Version TEXT NOT NULL, " +
 																							"UsedTopicIDs TEXT NOT NULL, " +
-																							"UsedEndingSymbolIDs TEXT NOT NULL )");
+																							"UsedContextIDs TEXT NOT NULL )");
 			
-			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedEndingSymbolIDs) VALUES (?,?,?)", 
+			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedContextIDs) VALUES (?,?,?)", 
 										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
 			
@@ -70,6 +70,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																																"PRIMARY KEY (LinkID, EndingSymbol) )");
 																	   
 			connection.Execute("CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)");
+
+
+			connection.Execute("CREATE TABLE Contexts (ContextID INTEGER PRIMARY KEY NOT NULL, " +
+																							  "ContextString TEXT NOT NULL, " +
+																							  "ReferenceCount INTEGER NOT NULL )");
+																	   
+			connection.Execute("CREATE INDEX ContextsByContextString ON Contexts (ContextString)");
 			}
 
 
@@ -91,14 +98,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves various system variables from the database.  This currently includes:
 		 * 
 		 *		- <UsedTopicIDs>
+		 *		- <UsedContextIDs>
 		 */
 		protected void LoadSystemVariables ()
 			{
-			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs from System"))
+			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedContextIDs from System"))
 				{
 				query.Step();
 				
 				usedTopicIDs.FromString( query.StringColumn(0) );
+				usedContextIDs.FromString( query.StringColumn(1) );
 				}
 			}
 			
@@ -108,8 +117,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void SaveSystemVariablesAndVersion ()
 			{
-			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?", 
-												Engine.Instance.VersionString, usedTopicIDs.ToString());
+			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedContextIDs=?", 
+												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedContextIDs.ToString());
 			}
 			
 

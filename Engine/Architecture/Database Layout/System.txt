@@ -21,5 +21,15 @@ Column: UsedTopicIDs
 		UsedTopicIDs TEXT NOT NULL
 	(end)
 
-	A string containing the <GregValure.NaturalDocs.Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.  
-	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
+	A string containing the <Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.  This is only used 
+	for storage between Natural Docs executions.  It is not continually updated during execution.
+	
+	
+Column: UsedContextIDs
+
+	(SQL Prototype)
+		UsedContextIDs TEXT NOT NULL
+	(end)
+
+	A string containing the <Engine.IDObjects.NumberSet> for all the used context IDs in <CodeDB.Contexts>.  This is only
+	used for storage between Natural Docs executions.  It is not continually updated during execution.

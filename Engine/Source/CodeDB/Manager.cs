@@ -27,7 +27,7 @@
  *		Externally, this class is thread safe so long as each thread uses its own <Accessor>.
  *		
  *		For the <Accessor> implementation, all uses of the database connection must be managed by <DatabaseLock>.  
- *		<UsedTopicIDs> and <UsedEndingSymbolIDs> are only relevant when making changes to the database, so they are 
+ *		<UsedTopicIDs> and <UsedContextIDs> are only relevant when making changes to the database, so they are 
  *		managed by <DatabaseLock> as well.
  *		
  *		The change watchers, on the other hand, have their own lock since they may be accessed independently.  You may 
@@ -74,6 +74,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			databaseLock = new Lock();
 			usedTopicIDs = new IDObjects.NumberSet();
+			usedContextIDs = new IDObjects.NumberSet();
 			
 			changeWatchers = new List<IChangeWatcher>();
 			}
@@ -296,6 +297,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* var: usedTopicIDs
 		 */
 		protected IDObjects.NumberSet usedTopicIDs;
+
+		/* var: usedContextIDs
+		 */
+		protected IDObjects.NumberSet usedContextIDs;
 		
 		/* var: changeWatchers
 		 * A list of objects that are watching the database for changes.  If there are none, the list will be empty

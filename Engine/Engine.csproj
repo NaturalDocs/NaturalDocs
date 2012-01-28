@@ -188,6 +188,7 @@
   <ItemGroup>
     <Content Include="Architecture\Code Conventions.txt" />
     <Content Include="Architecture\Compilation Symbols.txt" />
+    <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Linking.txt" />
     <Content Include="Architecture\CSS Structure.txt" />
     <Content Include="Architecture\Database Layout\AlternateLinkEndingSymbols.txt" />

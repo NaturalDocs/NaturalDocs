@@ -1,0 +1,63 @@
+﻿
+Database Table: CodeDB.Contexts
+_______________________________________________________________________________
+
+The table that contains all of the contexts used by <Topics> and <Links>.
+
+These are stored in a separate table and managed with IDs instead of being stored inline with the <Topics> and
+<Links> because there would be a lot of data duplication otherwise.  In languages like C# there may be a lot of
+"use" statements in effect for a file.  We wouldn't want this non-trivial string to be duplicated for every topic and 
+link in that file because it would waste a lot of memory.
+
+
+
+Group: Columns
+_______________________________________________________________________________
+
+
+Column: ContextID
+
+	(SQL Prototype)
+		ContextID INTEGER PRIMARY KEY NOT NULL
+	(end)
+	
+	The context identifier.
+	
+	
+Column: ContextString
+
+	(SQL Prototype)
+		ContextString TEXT NOT NULL
+	(end)
+	
+	The context, encoded with <Engine.Symbols.ContextString>.
+
+
+Column: ReferenceCount
+
+	(SQL Prototype)
+		ReferenceCount INTEGER NOT NULL
+	(end)
+
+	The number of times this context is used.
+
+
+
+Group: Indexes
+_______________________________________________________________________________
+
+
+Index: ContextsByID
+
+	(SQL Prototype)
+		ContextID INTEGER PRIMARY KEY NOT NULL
+	(end)
+
+	Automatically created by ContextID being defined as a primary key.
+
+
+Index: ContextsByContextString
+
+	(SQL Prototype)
+		CREATE INDEX ContextsByContextString ON Contexts (ContextString)
+	(end)
