@@ -725,8 +725,6 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					{
 					if (testPairIndex == lastPairIndex)
 						{  return lastPairIndex + 2;  }
-					else if (firstPairIndex == lastPairIndex - 2)
-						{  firstPairIndex += 2;  }
 					else
 						{  firstPairIndex = testPairIndex + 2;  }
 					}
