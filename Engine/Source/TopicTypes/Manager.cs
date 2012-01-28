@@ -336,8 +336,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			{
 			// Topic type names aren't normalized because they're only referenced in other config files.  Tags and keywords are
 			// referenced in source files so they should be more tolerant.
-			topicTypes = new IDObjects.Manager<TopicType>(TopicTypeNamesIgnoreCase, TopicTypeNamesAreNormalized);
-			tags = new IDObjects.Manager<Tag>(TagsIgnoreCase, TagsAreNormalized);
+			topicTypes = new IDObjects.Manager<TopicType>(TopicTypeNamesIgnoreCase, TopicTypeNamesAreNormalized, false);
+			tags = new IDObjects.Manager<Tag>(TagsIgnoreCase, TagsAreNormalized, false);
 			
 			singularKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);
 			pluralKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);

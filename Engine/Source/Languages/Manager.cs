@@ -262,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public Manager ()
 			{
-			languages = new IDObjects.Manager<Language>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized);
+			languages = new IDObjects.Manager<Language>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized, false);
 			aliases = new StringTable<Language>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized);
 			extensions = new StringTable<Language>(ExtensionsIgnoreCase, ExtensionsAreNormalized);
 			shebangStrings = new SortedStringTable<Language>(ShebangStringsIgnoreCase, ShebangStringsAreNormalized,

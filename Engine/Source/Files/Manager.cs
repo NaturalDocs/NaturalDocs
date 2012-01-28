@@ -113,7 +113,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 			filters = new List<Filter>();
 			claimedFolderPrefixes = new StringSet(true, false);			
 
-			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false );
+			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false, false );
 			unprocessedChangedFileIDs = new IDObjects.NumberSet();
 			unprocessedDeletedFileIDs = new IDObjects.NumberSet();
 			claimedFileIDs = new IDObjects.NumberSet();
@@ -1271,7 +1271,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		 */
 		public static bool LoadBinaryFile (Path filename, out IDObjects.Manager<File> files)
 			{
-			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false );
+			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false, false );
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;

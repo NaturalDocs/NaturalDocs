@@ -33,12 +33,29 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		
 		
 		/* Function: Manager
+		 * 
+		 * Creates a new IDObject manager.
+		 * 
+		 * Parameters:
+		 * 
+		 *		ignoreCase - If set, object names will be compared in a case-insensitive manner.
+		 *		
+		 *		normalize - If set, object names will be compared with Unicode compatibility normalization applied (FormKC).
+		 *		
+		 *		sparse - If false, it assumes the manager will be handling objects with low and mostly consecutive ID numbers.
+		 *						This allows it to store them in an array where the index maps directly to the ID number, which is very
+		 *						fast.  However, if there are going to be large gaps in the IDs stored this will waste a lot of memory.
+		 *						
+		 *						If true, it assumes the manager will be handling objects with high and/or non-consecutive ID numbers
+		 *						with large gaps between the values.  This means it will store them in a sorted array and use a binary
+		 *						search for lookups and insertions.  This is slower but more memory efficient.
 		 */
-		public Manager (bool ignoreCase, bool normalize)
+		public Manager (bool ignoreCase, bool normalize, bool sparse)
 			{
 			usedIDs = new IDObjects.NumberSet();
 			objectsByID = new List<IDObjectType>();
 			objectsByName = new StringTable<IDObjectType>(ignoreCase, normalize);
+			this.sparse = sparse;
 			}
 		
 		
@@ -51,38 +68,46 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			if (string.IsNullOrEmpty(newObject.Name))
 				{  throw new ArgumentException("Tried to add an IDObject that didn't have a name set.");  }
-			if (objectsByName.ContainsKey(newObject.Name))
+			else if (Contains(newObject.Name))
 				{  throw new InvalidOperationException("Tried to add an IDObject with a name that was already used.");  }
-			if (newObject.ID != 0 && newObject.ID < objectsByID.Count && objectsByID[newObject.ID] != null)
-				{  throw new InvalidOperationException("Tried to add an IDObject with an ID that was already used.");  }
-				
+
 			if (newObject.ID == 0)
 				{  newObject.ID = usedIDs.LowestAvailable;  }
+			else if (Contains(newObject.ID))
+				{  throw new InvalidOperationException("Tried to add an IDObject with an ID that was already used.");  }
 				
 			usedIDs.Add(newObject.ID);
 				
 			objectsByName.Add(newObject.Name, newObject);
 			
-			if (newObject.ID < objectsByID.Count)
+			if (!sparse)
 				{
-				objectsByID[newObject.ID] = newObject;
-				}
-			else
-				{
-				// If it's more than one past the end of the array we need to pad it with nulls.
-				if (newObject.ID > objectsByID.Count)
+				if (newObject.ID < objectsByID.Count)
 					{
-					// If it's higher than the capacity, manually update it because we don't want it to reallocate more than once if it's
-					// far past the end of it.
-					if (newObject.ID >= objectsByID.Capacity)
-						{  objectsByID.Capacity = newObject.ID + 1;  }
-						
-					// Add null entries until we're right before the one we want to add.
-					for (int i = objectsByID.Count; i < newObject.ID; i++)
-						{  objectsByID.Add(null);  }
+					objectsByID[newObject.ID] = newObject;
 					}
+				else
+					{
+					// If it's more than one past the end of the array we need to pad it with nulls.
+					if (newObject.ID > objectsByID.Count)
+						{
+						// If it's significantly higher than the capacity, manually update it because we don't want it to reallocate more than 
+						// once.
+						if (newObject.ID >= objectsByID.Capacity * 2)
+							{  objectsByID.Capacity = newObject.ID + 1;  }
+						
+						// Add null entries until we're right before the one we want to add.
+						for (int i = objectsByID.Count; i < newObject.ID; i++)
+							{  objectsByID.Add(null);  }
+						}
 
-				objectsByID.Add(newObject);
+					objectsByID.Add(newObject);
+					}
+				}
+
+			else // sparse
+				{
+				objectsByID.Insert(~BinarySearch(newObject.ID), newObject);
 				}
 			}
 			
@@ -93,13 +118,17 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Remove (string name)
 			{
-			IDObjects.Base obj = this[name];
+			IDObjects.Base obj = objectsByName[name];
 			
 			if (obj == null)
 				{  return false;  }
 			else
 				{
-				objectsByID[obj.ID] = null;
+				if (!sparse)
+					{  objectsByID[obj.ID] = null;  }
+				else
+					{  objectsByID.RemoveAt(BinarySearch(obj.ID));  }
+
 				objectsByName.Remove(name);
 				usedIDs.Remove(obj.ID);
 				
@@ -114,17 +143,38 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Remove (int id)
 			{
-			IDObjects.Base obj = this[id];
-			
-			if (obj == null)
-				{  return false;  }
-			else
+			if (!sparse)
 				{
-				objectsByID[id] = null;
-				objectsByName.Remove(obj.Name);
-				usedIDs.Remove(id);
+				IDObjects.Base obj = objectsByID[id];
+			
+				if (obj == null)
+					{  return false;  }
+				else
+					{
+					objectsByID[id] = null;
+					objectsByName.Remove(obj.Name);
+					usedIDs.Remove(id);
 				
-				return true;
+					return true;
+					}
+				}
+
+			else // sparse
+				{
+				int position = BinarySearch(id);
+
+				if (position < 0)
+					{  return false;  }
+				else
+					{
+					IDObjects.Base obj = objectsByID[position];
+
+					objectsByID.RemoveAt(position);
+					objectsByName.Remove(obj.Name);
+					usedIDs.Remove(id);
+
+					return true;
+					}
 				}
 			}
 			
@@ -146,10 +196,22 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			get
 				{
-				if (id < 0 || id >= objectsByID.Count)
-					{  return null;  }
-				else
-					{  return objectsByID[id];  }
+				if (!sparse)
+					{
+					if (id < 0 || id >= objectsByID.Count)
+						{  return null;  }
+					else
+						{  return objectsByID[id];  }
+					}
+				else // sparse
+					{
+					int position = BinarySearch(id);
+					
+					if (position >= 0)
+						{  return objectsByID[position];  }
+					else
+						{  return null;  }
+					}
 				}
 			}
 		
@@ -168,10 +230,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Contains (int id)
 			{
-			if (id >= objectsByID.Count)
-				{  return false;  }
-			else
-				{  return (objectsByID[id] != null);  }
+			return usedIDs.Contains(id);
 			}
 			
 			
@@ -184,6 +243,57 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			objectsByID.Clear();
 			objectsByName.Clear();
 			}
+
+
+		/* Function: BinarySearch
+		 * 
+		 * Searches <objectsByID> for the passed ID.  If it finds it, the return value will be zero or positive representing the
+		 * index of the item.  If it doesn't, the return value will be the bitwise complement of the index the item should be
+		 * inserted at.  This is consistent with the system used by System.Collections.Generic.List.BinarySearch().
+		 * 
+		 * Why not just use the system function with a custom comparer?  Because it only looks up items by object, which
+		 * means every time you would want to look up an item by its ID you would need to allocate a temporary object,
+		 * which is ridiculously inefficient.
+		 */
+		protected int BinarySearch (int id)
+			{
+			if (objectsByID.Count == 0)
+				{  return ~0;  }
+
+			int firstIndex = 0;
+			int lastIndex = objectsByID.Count - 1;  // lastIndex is inclusive.
+			
+			for (;;)
+				{
+				int testIndex = (firstIndex + lastIndex) / 2;
+				
+				if (id == objectsByID[testIndex].ID)
+					{  
+					return testIndex;  
+					}
+
+				else if (id < objectsByID[testIndex].ID)
+					{
+					if (testIndex == firstIndex)
+						{  return ~testIndex;  }
+					else
+						{  lastIndex = testIndex - 1;  }
+					}
+					
+				else // (id > objectsByID[testIndex].ID)
+					{
+					if (testIndex == lastIndex)
+						{  return ~(lastIndex + 1);  }
+					else
+						{  firstIndex = testIndex + 1;  }
+					}
+				}
+			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
 			
 			
 		/* Property: Count
@@ -226,17 +336,22 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		protected internal IDObjects.NumberSet usedIDs;
 		
-		
 		/* var: objectsByID
-		 * An array of objects where the index location corresponds to its numeric ID.
+		 * An array of objects.  If <sparse> is false, the index location corresponds to its numeric ID.  If <sparse> is true, the
+		 * objects will be in ID order but you have to use a binary search to find the ID you want.
 		 */
 		protected List<IDObjectType> objectsByID;
-	
 		
 		/* var: objectsByName
 		 * A <StringTable> translating textual names to their objects.
 		 */
 		protected StringTable<IDObjectType> objectsByName;
+
+		/* var: sparse
+		 * Whether <objectsByID> is sparse or not.
+		 */
+		protected bool sparse;
+
 		}
 		
 		
@@ -293,6 +408,5 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		protected Manager<IDObjectType> manager;
 		protected NumberSetEnumerator numberSetEnumerator;
 		}
-	 
 	 
 	}
