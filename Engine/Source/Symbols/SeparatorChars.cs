@@ -39,13 +39,20 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public const char Level4 = '\x1C';
 
-		/* Constant: LowestValue
-		 * The lowest value of all the separator characters so that you can check for them with a range.
+		/* Constant: Escape
+		 * A charater that is guaranteed to never appear in strings that use these separator chars.  Use this as a first character 
+		 * when storing special values in string fields that must also store symbols.  Doing so will guarantee the value will not
+		 * conflict with a legitimate symbols, plus you'll get an exception if you try to import it into a symbol class.
 		 */
-		public const char LowestValue = Level4;
+		public const char Escape = '\x1B';
+
+		/* Constant: LowestValue
+		 * The lowest value of all the separator characters so that you can check for them with a range.  This includes <Escape>.
+		 */
+		public const char LowestValue = Escape;
 
 		/* Constant: HighestValue
-		 * The highest value of all the separator characters so that you can check for them with a range.
+		 * The highest value of all the separator characters so that you can check for them with a range.  This includes <Escape>.
 		 */
 		public const char HighestValue = Level1;
 

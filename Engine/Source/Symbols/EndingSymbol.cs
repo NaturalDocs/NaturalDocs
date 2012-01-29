@@ -33,14 +33,25 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			
 		/* Function: FromExportedString
+		 * 
 		 * Creates an EndingSymbol from the passed string which originally came from another EndingSymbol object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving EndingSymbols
 		 * that were stored as plain text in a database or other data file.
+		 * 
+		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
+		 * not be interpreted as an EndingSymbol.  Null is acceptable however.
 		 */
 		static public EndingSymbol FromExportedString (string exportedEndingSymbol)
 		   {
-		   EndingSymbol endingSymbol = new EndingSymbol(exportedEndingSymbol);
-		   return endingSymbol;
+			if (exportedEndingSymbol != null)
+				{
+				if (exportedEndingSymbol.Length == 0)
+					{  exportedEndingSymbol = null;  }
+				else if (exportedEndingSymbol[0] == SeparatorChars.Escape)
+					{  throw new FormatException("You cannot convert an escaped string to an EndingSymbol.");  }
+				}
+
+		   return new EndingSymbol(exportedEndingSymbol);
 		   }
 			
 		
@@ -55,8 +66,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		   if (symbolStringSegment != null)
 				{  symbolStringSegment = symbolStringSegment.ToLower();  }
 
-			EndingSymbol endingSymbol = new EndingSymbol(symbolStringSegment);
-		   return endingSymbol;
+			return new EndingSymbol(symbolStringSegment);
 		   }
 			
 		

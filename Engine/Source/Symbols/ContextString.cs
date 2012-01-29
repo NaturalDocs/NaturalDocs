@@ -46,14 +46,25 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			
 		/* Function: FromExportedString
+		 * 
 		 * Creates a ContextString from the passed string which originally came from another ContextString object.  This assumes
 		 * the string is already be in the proper format.  Only use this when retrieving ContextStrings that were stored as plain text 
 		 * in a database or other data file.
+		 * 
+		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
+		 * not be interpreted as a ContextString.  Null is acceptable however.
 		 */
 		static public ContextString FromExportedString (string exportedContextString)
 			{
-			ContextString contextString = new ContextString(exportedContextString);
-			return contextString;
+			if (exportedContextString != null)
+				{
+				if (exportedContextString.Length == 0)
+					{  exportedContextString = null;  }
+				else if (exportedContextString[0] == SeparatorChars.Escape)
+					{  throw new FormatException("You cannot convert an escaped string to a ContextString.");  }
+				}
+
+			return new ContextString(exportedContextString);
 			}
 			
 		

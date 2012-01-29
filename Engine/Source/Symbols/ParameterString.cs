@@ -96,12 +96,24 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 
 		/* Function: FromExportedString
+		 * 
 		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving ParameterStrings
 		 * that were stored as plain text in a database or other data file.
+		 * 
+		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
+		 * not be interpreted as a ParameterString.  Null is acceptable however.
 		 */
 		public static ParameterString FromExportedString (string exportedParameterString)
 			{
+			if (exportedParameterString != null)
+				{
+				if (exportedParameterString.Length == 0)
+					{  exportedParameterString = null;  }
+				else if (exportedParameterString[0] == SeparatorChars.Escape)
+					{  throw new FormatException("You cannot convert an escaped string to a ParameterString.");  }
+				}
+
 			return new ParameterString(exportedParameterString);
 			}
 
@@ -270,7 +282,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * that must be done by the calling code.
 		 * 
 		 *		- Applies canonical normalization to Unicode (FormC).
-		 *		- Removes all existing instances of the <SeparatorChars>.
+		 *		- Removes all existing instances of the <SeparatorChars>, including <SeparatorChar.Escape>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
 		 *		- Whitespace not removed is condensed into a single space.
 		 *		- Unlike <SymbolString>, does NOT replace the common package separator symbols (. :: ->) with <SeparatorChar>.
@@ -287,7 +299,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				
 			parameter = parameter.Normalize(System.Text.NormalizationForm.FormC);  // Canonical decomposition and recombination
 
-			int nextChar = parameter.IndexOfAny(separatorCharAndWhitespace);
+			int nextChar = parameter.IndexOfAny(separatorCharsAndWhitespace);
 			int index = 0;
 			
 			// Set to true if we just passed whitespace, since we only want to add it to the normalized string if it's between two 
@@ -320,7 +332,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					index = nextChar + 1;  
 					}
 
-				nextChar = parameter.IndexOfAny(separatorCharAndWhitespace, index);
+				nextChar = parameter.IndexOfAny(separatorCharsAndWhitespace, index);
 				}
 			
 			if (index < parameter.Length)
@@ -350,9 +362,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* var: separatorCharAndWhitespace
 		 * An array containing the whitespace and separator characters.
 		 */
-		static private char[] separatorCharAndWhitespace = new char[] { ' ', '\t', 
-																															  SeparatorChars.Level1, SeparatorChars.Level2,
-																															  SeparatorChars.Level3, SeparatorChars.Level4 };
+		static private char[] separatorCharsAndWhitespace = new char[] { ' ', '\t', 
+																																SeparatorChars.Level1, SeparatorChars.Level2,
+																																SeparatorChars.Level3, SeparatorChars.Level4,
+																																SeparatorChars.Escape };
 
 		/* var: bracesAndParamSeparators
 		 * An array containing all forms of braces, comma, and semicolon.
