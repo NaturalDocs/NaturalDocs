@@ -31,8 +31,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet ()
 			{
-			numberPairs = new int[2];
-			numberPairsUsedLength = 0;
+			ranges = new NumberRange[1];
+			usedRanges = 0;
 			}
 			
 		/* Constructor: NumberSet
@@ -40,8 +40,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet (string input)
 			{
-			numberPairs = null;
-			numberPairsUsedLength = 0;
+			ranges = null;
+			usedRanges = 0;
 			
 			FromString(input);
 			}
@@ -51,8 +51,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet (BinaryFile input)
 			{
-			numberPairs = null;
-			numberPairsUsedLength = 0;
+			ranges = null;
+			usedRanges = 0;
 			
 			FromBinaryFile(input);
 			}
@@ -62,64 +62,64 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet (NumberSet toCopy)
 			{
-			numberPairs = null;
-			numberPairsUsedLength = 0;
+			ranges = null;
+			usedRanges = 0;
 
 			Duplicate(toCopy);
 			}
 			
 			
 		/* Function: Add
-		 * Adds the specified number to the set.  Returns true if the number didn't already exist in the set and was added, false
-		 * if it was already in the set.
+		 * Adds the specified number to the set.  Returns true if the number didn't already exist in the set and was 
+		 * added, false if it was already in the set.
 		 */
 		public bool Add (int number)
 			{
 			if (number < 1)
 				{  throw new ArgumentException("Can't add zero or negative numbers to an ID number set.");  }
 			
-			int pairIndex = FindPairIndex(number);
+			int index = FindRangeIndex(number);
 			
-			// If the pair index is in the existing array, meaning the number is in the indexed pair or should be
-			// inserted right before it...
-			if (pairIndex < numberPairsUsedLength)
+			// If the index is in the existing array, meaning the number is in the indexed range or should be inserted right
+			// before it...
+			if (index < usedRanges)
 				{
 				
-				// If the number is already in the indexed pair...
-				if (number >= numberPairs[pairIndex] && number <= numberPairs[pairIndex + 1])
+				// If the number is already in the indexed range...
+				if (number >= ranges[index].Low && number <= ranges[index].High)
 					{  return false;  }
 					
-				// If the number is one lower than the lower bounds of the indexed pair...
-				else if (number == numberPairs[pairIndex] - 1)
+				// If the number is one lower than the lower bounds of the indexed range...
+				else if (number == ranges[index].Low - 1)
 					{
-					numberPairs[pairIndex]--;
+					ranges[index].Low--;
 					
-					// If it's not the first pair and now the lower bounds is only one higher than the prior pair's upper
+					// If it's not the first range and now the lower bounds is only one higher than the prior range's upper
 					// bounds...
-					if (pairIndex > 0 && numberPairs[pairIndex - 1] == numberPairs[pairIndex] - 1)
+					if (index > 0 && ranges[index - 1].High == ranges[index].Low - 1)
 						{  
-						numberPairs[pairIndex - 1] = numberPairs[pairIndex + 1];
-						DeleteAtIndex(pairIndex);
+						ranges[index - 1].High = ranges[index].High;
+						DeleteAtIndex(index);
 						}
 
 					return true;
 					}
 					
-				// If it's not the first pair and the number is one higher than the upper bounds of the previous pair...
-				else if (pairIndex > 0 && number == numberPairs[pairIndex - 1] + 1)
+				// If it's not the first range and the number is one higher than the upper bounds of the previous range...
+				else if (index > 0 && number == ranges[index - 1].High + 1)
 					{
-					numberPairs[pairIndex - 1]++;
-					// We don't have to check if we need to combine the prior pair with the indexed because we already
+					ranges[index - 1].High++;
+					// We don't have to check if we need to combine the prior range with the indexed because we already
 					// checked if it's one lower than the indexed's lower bounds.
 					return true;
 					}
 					
-				// If it's not one off from the indexed or prior pair...
+				// If it's not one off from the indexed or prior range...
 				else
 					{
-					InsertAtIndex(pairIndex);
-					numberPairs[pairIndex] = number;
-					numberPairs[pairIndex+1] = number;
+					InsertAtIndex(index);
+					ranges[index].Low = number;
+					ranges[index].High = number;
 					return true;
 					}
 
@@ -130,18 +130,18 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				{
 				
 				// If the there is at least one pair in the array and the number is one higher than it's upper bounds...
-				if (pairIndex > 0 && number == numberPairs[pairIndex - 1] + 1)
+				if (index > 0 && number == ranges[index - 1].High + 1)
 					{
-					numberPairs[pairIndex - 1]++;
+					ranges[index - 1].High++;
 					return true;
 					}
 					
 				// If the array is empty or it's more than one past the prior's upper bounds...
 				else
 					{
-					InsertAtIndex(pairIndex);
-					numberPairs[pairIndex] = number;
-					numberPairs[pairIndex + 1] = number;
+					InsertAtIndex(index);
+					ranges[index].Low = number;
+					ranges[index].High = number;
 					return true;
 					}
 					
@@ -155,45 +155,45 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Remove (int number)
 			{
-			int pairIndex = FindPairIndex(number);
+			int index = FindRangeIndex(number);
 			
 			// If the number is inside the existing array...
-			if (pairIndex < numberPairsUsedLength)
+			if (index < usedRanges)
 				{
 				
-				// If the number is the lower bounds of the pair, which also captures pairs for a single number...
-				if (number == numberPairs[pairIndex])
+				// If the number is the lower bounds of the range, which also captures ranges for a single number...
+				if (number == ranges[index].Low)
 					{
-					// If the pair is for a single number...
-					if (number == numberPairs[pairIndex + 1])
-						{  DeleteAtIndex(pairIndex);  }
+					// If the range is for a single number...
+					if (number == ranges[index].High)
+						{  DeleteAtIndex(index);  }
 						
 					else
-						{  numberPairs[pairIndex]++;  }
+						{  ranges[index].Low++;  }
 						
 					return true;
 					}
 					
 				// If the number is the upper bounds of the pair and the pair isn't for a single number...
-				else if (number == numberPairs[pairIndex + 1])
+				else if (number == ranges[index].High)
 					{
-					numberPairs[pairIndex + 1]--;
+					ranges[index].High--;
 					return true;
 					}
 					
-				// If the number is in the middle of the pair somewhere...
-				else if (number > numberPairs[pairIndex])
+				// If the number is in the middle of the range somewhere...
+				else if (number > ranges[index].Low)
 					{
-					InsertAtIndex(pairIndex + 2);
-					numberPairs[pairIndex + 3] = numberPairs[pairIndex + 1];
-					numberPairs[pairIndex + 1] = number - 1;
-					numberPairs[pairIndex + 2] = number + 1;
+					InsertAtIndex(index + 1);
+					ranges[index + 1].High = ranges[index].High;
+					ranges[index + 1].Low = number + 1;
+					ranges[index].High = number - 1;
 					
 					return true;
 					}
 					
-				// Otherwise the number is lower than the lower bounds of the pair, meaning it's past the beginning of the
-				// set or between pairs.  It's not present in the set so ignore it.
+				// Otherwise the number is lower than the lower bounds of the range, meaning it's past the beginning of the
+				// set or between ranges.  It's not present in the set so ignore it.
 				else
 					{  return false;  }
 
@@ -213,51 +213,51 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			int position = 0;
 			int setToRemovePosition = 0;
 			
-			while (position < numberPairsUsedLength && setToRemovePosition < setToRemove.numberPairsUsedLength)
+			while (position < usedRanges && setToRemovePosition < setToRemove.usedRanges)
 				{
 				
 				// If the lower bounds is less than the removal lower bounds...
-				if (numberPairs[position] < setToRemove.numberPairs[setToRemovePosition])
+				if (ranges[position].Low < setToRemove.ranges[setToRemovePosition].Low)
 					{
 					
 					// If the upper bounds is also less than the removal lower bounds, advance the position.
-					if (numberPairs[position + 1] < setToRemove.numberPairs[setToRemovePosition])
-						{  position += 2;  }
+					if (ranges[position].High < setToRemove.ranges[setToRemovePosition].Low)
+						{  position++;  }
 						
-					// The upper bounds is somewhere in or past the removal pair.  If it is less than or equal to the removal
-					// upper bounds, we can just truncate this pair.
-					else if (numberPairs[position + 1] <= setToRemove.numberPairs[setToRemovePosition + 1])
+					// The upper bounds is somewhere in or past the removal range.  If it is less than or equal to the removal
+					// upper bounds, we can just truncate this range.
+					else if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
 						{
-						numberPairs[position + 1] = setToRemove.numberPairs[setToRemovePosition] - 1;
-						position += 2;
+						ranges[position].High = setToRemove.ranges[setToRemovePosition].Low - 1;
+						position++;
 						}
 						
-					// The upper bounds is past the removal pair.  Split it.
+					// The upper bounds is past the removal range.  Split it.
 					else
 						{
-						InsertAtIndex(position + 2);
-						numberPairs[position + 3] = numberPairs[position + 1];
-						numberPairs[position + 1] = setToRemove.numberPairs[setToRemovePosition] - 1;
-						numberPairs[position + 2] = setToRemove.numberPairs[setToRemovePosition + 1] + 1;
+						InsertAtIndex(position + 1);
+						ranges[position + 1].High = ranges[position].High;
+						ranges[position + 1].Low = setToRemove.ranges[setToRemovePosition].High + 1;
+						ranges[position].High = setToRemove.ranges[setToRemovePosition].Low - 1;
 						
-						position += 2;
-						setToRemovePosition += 2;
+						position++;
+						setToRemovePosition++;
 						}
 					}
 					
 				// If the lower bounds is equal to the removal lower bounds...
-				else if (numberPairs[position] == setToRemove.numberPairs[setToRemovePosition])
+				else if (ranges[position].Low == setToRemove.ranges[setToRemovePosition].Low)
 					{
 					
-					// If the upper bounds is less than or equal to the removal upper bounds, remove the pair entirely.
-					if (numberPairs[position + 1] <= setToRemove.numberPairs[setToRemovePosition + 1])
+					// If the upper bounds is less than or equal to the removal upper bounds, remove the range entirely.
+					if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
 						{  DeleteAtIndex(position);  }
 						
-					// The upper bounds is greater than the removal upper bounds, truncate the pair.
+					// The upper bounds is greater than the removal upper bounds, truncate the range.
 					else
 						{
-						numberPairs[position] = setToRemove.numberPairs[setToRemovePosition + 1] + 1;
-						setToRemovePosition += 2;
+						ranges[position].Low = setToRemove.ranges[setToRemovePosition].High + 1;
+						setToRemovePosition++;
 						}
 					
 					}
@@ -267,19 +267,19 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					{
 					
 					// If the lower bounds is also greater than the removal upper bounds, advance the removal.
-					if (numberPairs[position] > setToRemove.numberPairs[setToRemovePosition + 1])
-						{  setToRemovePosition += 2;  }
+					if (ranges[position].Low > setToRemove.ranges[setToRemovePosition].High)
+						{  setToRemovePosition++;  }
 						
-					// The removal upper bounds is in or past the pair.  If it's greater than or equal to the upper bounds,
-					// remove the pair.
-					else if (numberPairs[position + 1] <= setToRemove.numberPairs[setToRemovePosition + 1])
+					// The removal upper bounds is in or past the range.  If it's greater than or equal to the upper bounds,
+					// remove the range.
+					else if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
 						{  DeleteAtIndex(position);  }
 						
-					// Since it's less than the upper bounds, truncate the pair.
+					// Since it's less than the upper bounds, truncate the range.
 					else
 						{
-						numberPairs[position] = setToRemove.numberPairs[setToRemovePosition + 1] + 1;
-						setToRemovePosition += 2;
+						ranges[position].Low = setToRemove.ranges[setToRemovePosition].High + 1;
+						setToRemovePosition++;
 						}
 						
 					}
@@ -293,11 +293,11 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Contains (int number)
 			{
-			int pairIndex = FindPairIndex(number);
+			int index = FindRangeIndex(number);
 			
-			if (pairIndex >= numberPairsUsedLength)
+			if (index >= usedRanges)
 				{  return false;  }
-			else if (number >= numberPairs[pairIndex] && number <= numberPairs[pairIndex + 1])
+			else if (number >= ranges[index].Low && number <= ranges[index].High)
 				{  return true;  }
 			else
 				{  return false;  }
@@ -309,10 +309,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public void Clear ()
 			{
-			numberPairsUsedLength = 0;
+			usedRanges = 0;
 			
-			if (numberPairs.Length >= NumberPairShrinkThreshold)
-				{  numberPairs = new int[2];  }
+			if (ranges.Length >= RangeShrinkThreshold)
+				{  ranges = new NumberRange[1];  }
 			}
 
 
@@ -323,14 +323,14 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			// DEPENDENCY: This has to be able to be called from the constructor when numberPairs is null.
 
-			if (numberPairs == null || numberPairs.Length < other.numberPairsUsedLength || 
-				 numberPairs.Length - other.numberPairsUsedLength >= NumberPairShrinkThreshold)
+			if (ranges == null || ranges.Length < other.usedRanges || 
+				 ranges.Length - other.usedRanges >= RangeShrinkThreshold)
 				{
-				numberPairs = new int[other.numberPairsUsedLength];
+				ranges = new NumberRange[other.usedRanges];
 				}
 
-			numberPairsUsedLength = other.numberPairsUsedLength;
-			Array.Copy(other.numberPairs, numberPairs, numberPairsUsedLength);
+			usedRanges = other.usedRanges;
+			Array.Copy(other.ranges, ranges, usedRanges);
 			}
 			
 			
@@ -342,13 +342,14 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				{  return true;  }
 			else if ((object)setA == null || (object)setB == null)
 				{  return false;  }
-			else if (setA.numberPairsUsedLength != setB.numberPairsUsedLength)
+			else if (setA.usedRanges != setB.usedRanges)
 				{  return false;  }
 			else
 				{
-				for (int i = 0; i < setA.numberPairsUsedLength; i++)
+				for (int i = 0; i < setA.usedRanges; i++)
 					{
-					if (setA.numberPairs[i] != setB.numberPairs[i])
+					if (setA.ranges[i].Low != setB.ranges[i].Low ||
+						 setA.ranges[i].High != setB.ranges[i].High)
 						{  return false;  }
 					}
 					
@@ -387,17 +388,17 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			output.Append('{');
 			
-			for (uint i = 0; i < numberPairsUsedLength; i += 2)
+			for (int i = 0; i < usedRanges; i++)
 				{
 				if (i > 0)
 					{  output.Append(',');  }
 					
-				output.Append(numberPairs[i]);
+				output.Append(ranges[i].Low);
 				
-				if (numberPairs[i + 1] != numberPairs[i])
+				if (ranges[i].High != ranges[i].Low)
 					{
 					output.Append('-');
-					output.Append(numberPairs[i + 1]);
+					output.Append(ranges[i].High);
 					}
 				}
 				
@@ -418,8 +419,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			if (string.IsNullOrEmpty(input) || input == EmptySetString)
 				{
-				numberPairs = new int[2];
-				numberPairsUsedLength = 0;
+				ranges = new NumberRange[1];
+				usedRanges = 0;
 				return;
 				}
 				
@@ -429,7 +430,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 
 			// First parse the string to perform basic validation and determine the array size.
 
-			int arraySize = 2;
+			int arraySize = 1;
 			int number;
 			int inputIndex = 1;
 			bool secondNumber = false;
@@ -456,7 +457,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					{  break;  }
 				else if (input[inputIndex] == ',')
 					{  
-					arraySize += 2;  
+					arraySize++;  
 					secondNumber = false;
 					inputIndex++;
 					}
@@ -477,13 +478,13 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				
 			// If we're here the string is valid enough to parse, though it still may contain errors like "3-5,6-9" which should be "3-9".
 			
-			if (numberPairs == null || numberPairs.Length < arraySize || numberPairs.Length - arraySize >= NumberPairShrinkThreshold)
-				{  numberPairs = new int[arraySize];  }
+			if (ranges == null || ranges.Length < arraySize || ranges.Length - arraySize >= RangeShrinkThreshold)
+				{  ranges = new NumberRange[arraySize];  }
 				
-			numberPairsUsedLength = arraySize;
+			usedRanges = arraySize;
 			
 			inputIndex = 1;
-			int pairIndex = 0;
+			int rangeIndex = 0;
 			secondNumber = false;
 			
 			for (;;)
@@ -498,33 +499,29 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					inputIndex++;
 					}
 				
-				numberPairs[pairIndex] = number;
+				if (secondNumber)
+					{  ranges[rangeIndex].High = number;  }
+				else
+					{  ranges[rangeIndex].Low = number;  }
 				
 				if (input[inputIndex] == '}')
 					{  
 					if (secondNumber == false)
-						{  
-						pairIndex++;
-						numberPairs[pairIndex] = number;
-						}
+						{  ranges[rangeIndex].High = number;  }
 						
 					break;
 					}
 				else if (input[inputIndex] == ',')
 					{  
 					if (secondNumber == false)
-						{  
-						pairIndex++;
-						numberPairs[pairIndex] = number;
-						}
+						{  ranges[rangeIndex].High = number;  }
 
-					pairIndex++;  
+					rangeIndex++;  
 					secondNumber = false;
 					inputIndex++;
 					}
 				else // (input[inputIndex] == '-')
 					{  
-					pairIndex++;
 					inputIndex++;
 					secondNumber = true;
 					}
@@ -533,7 +530,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			// Catch any remaining errors like "3-5,6-9".
 			if (!Validate())
 				{  
-				numberPairsUsedLength = 0;
+				usedRanges = 0;
 				throw new Exceptions.StringNotInValidFormat(input, this);  
 				}
 			}
@@ -544,15 +541,18 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public void ToBinaryFile (BinaryFile binaryFile)
 			{
-			// [int32: numbers] - Like numberPairsUsedLength, a count of integers, not of pairs.
+			// [int32: ranges]
 			// [int32: low] [int32: high]
 			// [int32: low] [int32: high]
 			// ...
 
-			binaryFile.WriteInt32(numberPairsUsedLength);
+			binaryFile.WriteInt32(usedRanges);
 
-			for (int i = 0; i < numberPairsUsedLength; i++)
-				{  binaryFile.WriteInt32(numberPairs[i]);  }
+			for (int i = 0; i < usedRanges; i++)
+				{  
+				binaryFile.WriteInt32(ranges[i].Low);
+				binaryFile.WriteInt32(ranges[i].High);
+				}
 			}
 
 
@@ -563,50 +563,53 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			// DEPENDENCY: This has to be able to be called from the constructor when numberPairs is null.
 
-			// [int32: numbers] - Like numberPairsUsedLength, a count of integers, not of pairs.
+			// [int32: ranges]
 			// [int32: low] [int32: high]
 			// [int32: low] [int32: high]
 			// ...
 
 			int length = binaryFile.ReadInt32();
 
-			if (length < 0 || length % 2 != 0)
+			if (length < 0)
 				{  throw new FormatException();  }
 
-			if (numberPairs == null || numberPairs.Length < length || numberPairs.Length - length >= NumberPairShrinkThreshold)
+			if (ranges == null || ranges.Length < length || ranges.Length - length >= RangeShrinkThreshold)
 				{  
 				if (length == 0)
-					{  numberPairs = new int[2];  }
+					{  ranges = new NumberRange[1];  }
 				else
-					{  numberPairs = new int[length];  }
+					{  ranges = new NumberRange[length];  }
 				}
 
-			numberPairsUsedLength = length;
+			usedRanges = length;
 
 			for (int i = 0; i < length; i++)
-				{  numberPairs[i] = binaryFile.ReadInt32();  }
+				{  
+				ranges[i].Low = binaryFile.ReadInt32();  
+				ranges[i].High = binaryFile.ReadInt32();
+				}
 
 			if (!Validate())
 				{  
-				numberPairsUsedLength = 0;
+				usedRanges = 0;
 				throw new FormatException();  
 				}
 			}
 
 
 		/* Function: Validate
-		 * Checks whether <numberPairs> is in the proper format to be used.
+		 * Checks whether <ranges> is in the proper format to be used.
 		 */
 		protected bool Validate()
 			{
-			if (numberPairsUsedLength < 0 || numberPairsUsedLength % 2 != 0)
+			if (usedRanges < 0)
 				{  return false;  }
 
-			for (int i = 0; i < numberPairsUsedLength; i += 2)
+			for (int i = 0; i < usedRanges; i++)
 				{
-				if (numberPairs[i] <= 0 || numberPairs[i+1] < numberPairs[i])
+				if (ranges[i].Low <= 0 || ranges[i].High < ranges[i].Low)
 					{  return false;  }
-				if (i > 0 && numberPairs[i] <= numberPairs[i-1] + 1)
+				if (i > 0 && ranges[i].Low <= ranges[i-1].High + 1)
 					{  return false;  }
 				}
 
@@ -625,7 +628,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		public bool IsEmpty
 			{
 			get
-				{  return (numberPairsUsedLength == 0);  }
+				{  return (usedRanges == 0);  }
 			}
 			
 			
@@ -636,12 +639,12 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			get
 				{
-				if (numberPairsUsedLength == 0)
+				if (usedRanges == 0)
 					{  return 1;  }
-				else if (numberPairs[0] > 1)
+				else if (ranges[0].Low > 1)
 					{  return 1;  }
 				else
-					{  return numberPairs[1] + 1;  }
+					{  return ranges[0].High + 1;  }
 				}
 			}
 			
@@ -653,10 +656,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			get
 				{
-				if (numberPairsUsedLength == 0)
+				if (usedRanges == 0)
 					{  return 0;  }
 				else
-					{  return numberPairs[numberPairsUsedLength - 1];  }
+					{  return ranges[usedRanges - 1].High;  }
 				}
 			}
 			
@@ -671,10 +674,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 				int count = 0;
 				int index = 0;
 				
-				while (index < numberPairsUsedLength)
+				while (index < usedRanges)
 					{
-					count += (numberPairs[index + 1] - numberPairs[index] + 1);
-					index += 2;
+					count += (ranges[index].High - ranges[index].Low + 1);
+					index++;
 					}
 					
 				return count;
@@ -688,108 +691,101 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		// __________________________________________________________________________
 		
 		
-		/* Function: FindPairIndex
-		 * Finds the pair that would hold the passed number and returns its index into the array.  If the number is
-		 * not in the array, it returns the index of the pair above it (the insertion point if a new pair were to be
-		 * created.)  If it's lower than any pair, it returns zero.  If it's higher than any pair, it returns the index past
-		 * the last pair so you must check the result against <numberPairsUsedLength>.
+		/* Function: FindRangeIndex
+		 * Finds the <NumberRange> that would hold the passed number and returns its index into the array.  If 
+		 * the number is not in the array, it returns the index of the range above it (the insertion point if a new 
+		 * range were to be created.)  If it's lower than any range, it returns zero.  If it's higher than any range, 
+		 * it returns the index past the last range so you must check the result against <usedRanges>.
 		 */
-		protected int FindPairIndex (int number)
+		protected int FindRangeIndex (int number)
 			{
-			if (numberPairsUsedLength == 0)
+			if (usedRanges == 0)
 				{  return 0;  }
 			
-			int firstPairIndex = 0;
-			int lastPairIndex = numberPairsUsedLength - 2;  // lastPairIndex is inclusive.
+			int firstIndex = 0;
+			int lastIndex = usedRanges - 1;  // lastRangeIndex is inclusive.
 			
 			for (;;)
 				{
-				// Find the midpoint.
-				int testPairIndex = (firstPairIndex + lastPairIndex) / 2;
+				int testIndex = (firstIndex + lastIndex) / 2;
 				
-				unchecked
+				if (number < ranges[testIndex].Low)
 					{
-					// Use FFFE to enforce that the result is even.
-					testPairIndex &= (int)0xFFFFFFFE;
-					}
-				
-				if (number < numberPairs[testPairIndex])
-					{
-					if (testPairIndex == firstPairIndex)
-						{  return testPairIndex;  }
+					if (testIndex == firstIndex)
+						{  return testIndex;  }
 					else
-						{  lastPairIndex = testPairIndex - 2;  }
+						{  lastIndex = testIndex - 1;  }
 					}
 					
-				else if (number > numberPairs[testPairIndex + 1])
+				else if (number > ranges[testIndex].High)
 					{
-					if (testPairIndex == lastPairIndex)
-						{  return lastPairIndex + 2;  }
+					if (testIndex == lastIndex)
+						{  return lastIndex + 1;  }
 					else
-						{  firstPairIndex = testPairIndex + 2;  }
+						{  firstIndex = testIndex + 1;  }
 					}
 					
-				else // number is in the pair
+				else // number is in the range
 					{
-					return testPairIndex;
+					return testIndex;
 					}
 				}
 			}
 			
 			
 		/* Function: InsertAtIndex
-		 * Creates a space in <numberPairs> for a new pair at the specified index.  If necessary, will reallocate
+		 * Creates a space in <ranges> for a new <NumberRange> at the specified index.  If necessary, will reallocate
 		 * the array.  The values in the new space are undefined.
 		 */
 		protected void InsertAtIndex (int index)
 			{
-			if (numberPairsUsedLength == numberPairs.Length)
+			if (usedRanges == ranges.Length)
 				{
-				int[] newArray = new int[ numberPairs.Length + NumberPairGrowLength ];
+				NumberRange[] newArray = new NumberRange[ ranges.Length + RangeGrowLength ];
 
 				if (index > 0)
-					{  Array.Copy( numberPairs, 0, newArray, 0, index );  }
-				if (index < numberPairsUsedLength)
-					{  Array.Copy( numberPairs, index, newArray, index + 2, numberPairsUsedLength - index);  }
+					{  Array.Copy( ranges, 0, newArray, 0, index );  }
+				if (index < usedRanges)
+					{  Array.Copy( ranges, index, newArray, index + 1, usedRanges - index);  }
 					
-				numberPairs = newArray;
-				numberPairsUsedLength += 2;
+				ranges = newArray;
+				usedRanges++;
 				}
 				
 			else  // we don't have to reallocate the array
 				{
 				// This is safe to use with overlapping regions of the same array.
-				if (index < numberPairsUsedLength)
-					{  Array.Copy( numberPairs, index, numberPairs, index + 2, numberPairsUsedLength - index);  }
+				if (index < usedRanges)
+					{  Array.Copy( ranges, index, ranges, index + 1, usedRanges - index);  }
 					
-				numberPairsUsedLength += 2;
+				usedRanges++;
 				}
 			}
 			
 			
 		/* Function: DeleteAtIndex
-		 * Deletes a pair from <numberPairs> at the specified index and moves everything else down.
+		 * Deletes a <NumberRange> from <ranges> at the specified index and moves everything else down.
 		 */
 		protected void DeleteAtIndex (int index)
 			{
 			// Shrink the array if necessary.
-			if (numberPairs.Length - numberPairsUsedLength - 2 >= NumberPairShrinkThreshold)
+			if (ranges.Length - usedRanges - 1 >= RangeShrinkThreshold)
 				{
-				int[] newArray = new int[numberPairsUsedLength - 2];
+				NumberRange[] newArray = new NumberRange[usedRanges - 1];
 				
 				if (index > 0)
-					{  Array.Copy( numberPairs, newArray, index);  }
-				if (index + 2 < numberPairsUsedLength)
-					{  Array.Copy( numberPairs, index + 2, newArray, index, numberPairsUsedLength - index - 2 );  }
+					{  Array.Copy( ranges, newArray, index);  }
+				if (index + 1 < usedRanges)
+					{  Array.Copy( ranges, index + 1, newArray, index, usedRanges - index - 1 );  }
 					
-				numberPairs = newArray;
+				ranges = newArray;
 				}
 				
 			// Otherwise just move everything down.  This is safe to use with overlapping regions of the same array.
-			else if (index != numberPairsUsedLength - 2)
-				{  Array.Copy( numberPairs, index + 2, numberPairs, index, numberPairsUsedLength - index - 2);  }
+			else if (index != usedRanges - 1)
+				{  Array.Copy( ranges, index + 1, ranges, index, usedRanges - index - 1);  }
 				
-			numberPairsUsedLength -= 2;
+			usedRanges--;
 			}
 			
 			
@@ -831,20 +827,20 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		// __________________________________________________________________________
 			
 			
-		/* array: numberPairs
+		/* array: ranges
 		 * 
-		 * An array of the used numbers stored as pairs, with the first being the lower bounds of a consecutive
-		 * stretch and the second the upper bounds.  The bounds are inclusive.  So the numbers 1, 2, 3, 4, 8, 11,
-		 * and 12 would be stored as 1,4,8,8,11,12, representing 1-4,8,11-12.
+		 * An array of <NumberRanges> representing used numbers.  The bounds are inclusive.  Single digits are stored as
+		 * a range with the high and low bounds being the same.
+		 * 
+		 * For example, the numbers 1, 2, 3, 4, 8, 11, 12 would be stored as [1,4],[8,8],[11,12] representing 1-4,8,11-12.
 		 */
-		protected internal int[] numberPairs;
+		protected internal NumberRange[] ranges;
 		
 		
-		/* var: numberPairsUsedLength
-		 * The length of the *used* array in <numberPairs> since the array may be larger than the content.  To get 
-		 * the memory size use <numberPairs>.Length instead.
+		/* var: usedRanges
+		 * The length of the *used* array in <ranges> since the array may be larger than the content.
 		 */
-		protected internal int numberPairsUsedLength;
+		protected internal int usedRanges;
 		
 		
 		
@@ -852,15 +848,15 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		// __________________________________________________________________________
 		
 		
-		/* Constant: NumberPairGrowLength
-		 * The number of array entries to add when the content outstrips the array.  Must be even.
+		/* Constant: RangeGrowLength
+		 * The number of array entries to add when the content outstrips the array.
 		 */
-		protected const int NumberPairGrowLength = 8;
+		protected const int RangeGrowLength = 4;
 		
-		/* Constant: NumberPairShrinkThreshold
-		 * The number of unused entries that must be present before the class shrinks the array.  Must be even.
+		/* Constant: RangeShrinkThreshold
+		 * The number of unused entries that must be present before the class shrinks the array.
 		 */
-		protected const int NumberPairShrinkThreshold = 24;
+		protected const int RangeShrinkThreshold = 12;
 
 		}
 
@@ -883,14 +879,14 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			{
 			numberSet = newNumberSet;
 			currentNumber = 0;
-			numberPairIndex = -2;
+			numberRangeIndex = -1;
 			}
 			
 		public int Current
 			{
 			get
 				{
-				if (numberPairIndex == -2 || numberPairIndex >= numberSet.numberPairsUsedLength)
+				if (numberRangeIndex == -1 || numberRangeIndex >= numberSet.usedRanges)
 					{  throw new InvalidOperationException();  }
 				else
 					{  return currentNumber;  }
@@ -911,21 +907,21 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 		public bool MoveNext()
 			{
-			if (numberPairIndex >= numberSet.numberPairsUsedLength)
+			if (numberRangeIndex >= numberSet.usedRanges)
 				{  return false;  }
 				
-			if (numberPairIndex == -2 || currentNumber == numberSet.numberPairs[ numberPairIndex + 1 ])
+			if (numberRangeIndex == -1 || currentNumber == numberSet.ranges[numberRangeIndex].High)
 				{
-				numberPairIndex += 2;
+				numberRangeIndex++;
 				
-				if (numberPairIndex >= numberSet.numberPairsUsedLength)
+				if (numberRangeIndex >= numberSet.usedRanges)
 					{  
 					currentNumber = 0;
 					return false;  
 					}
 				else
 					{
-					currentNumber = numberSet.numberPairs[ numberPairIndex ];
+					currentNumber = numberSet.ranges[numberRangeIndex].Low;
 					return true;
 					}
 				}
@@ -940,7 +936,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		public void Reset()
 			{
 			currentNumber = 0;
-			numberPairIndex = -2;
+			numberRangeIndex = -1;
 			}
 			
 		public void Dispose()
@@ -950,8 +946,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		protected NumberSet numberSet;
 		protected int currentNumber;
 		
-		// var: numberPairIndex
-		// The index into <NumberSet.numberPairs>, or -2 if we're before the first one.  Will always be set to the first item of a pair.
-		protected int numberPairIndex;
+		// var: numberRangeIndex
+		// The index into <NumberSet.ranges>, or -1 if we're before the first one.  Will always be set to the first item of a pair.
+		protected int numberRangeIndex;
 		}
 	}
