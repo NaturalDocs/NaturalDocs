@@ -73,6 +73,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			inTransaction = false;
+			contextIDCache = new ContextIDCache();
 			}
 			
 			
@@ -177,6 +178,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 				
 			lockHeld = LockType.None;
+			
+			// No longer valid because another accessor may change the values while we don't hold a lock.
+			contextIDCache.Clear();
 			}
 
 			
@@ -265,6 +269,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Whether a transaction is in effect.
 		 */
 		protected bool inTransaction;
+
+		/* var: contextIDCache
+		 * A cache mapping contexts to their IDs.  This is useful because contexts are going to be reused many times
+		 * throughout a file and this way we don't have to hit the database for each individual Topic added.  This is only
+		 * valid while we have a database lock so it's cleared automatically by <ReleaseLock()>.
+		 */
+		protected ContextIDCache contextIDCache;
 
 		}
 	}
