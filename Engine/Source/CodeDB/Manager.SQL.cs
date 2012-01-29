@@ -75,7 +75,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			connection.Execute("CREATE TABLE Contexts (ContextID INTEGER PRIMARY KEY NOT NULL, " +
-																							  "ContextString TEXT NOT NULL, " +
+																							  "ContextString TEXT, " +
 																							  "ReferenceCount INTEGER NOT NULL )");
 																	   
 			connection.Execute("CREATE INDEX ContextsByContextString ON Contexts (ContextString)");

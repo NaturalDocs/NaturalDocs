@@ -27,7 +27,7 @@ Column: ContextID
 Column: ContextString
 
 	(SQL Prototype)
-		ContextString TEXT NOT NULL
+		ContextString TEXT
 	(end)
 	
 	The context, encoded with <Engine.Symbols.ContextString>.
