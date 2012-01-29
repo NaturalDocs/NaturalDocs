@@ -2,10 +2,9 @@
  * Class: GregValure.NaturalDocs.Engine.Collections.StringSet
  * ____________________________________________________________________________
  * 
- * A general lookup table for tracking the existence of strings in a set, i.e. an existence hash.  This is preferable to 
- * a Dictionary class because
+ * A general lookup table for tracking the existence of strings in a set.  This is preferable to a HashSet class 
+ * because
  * 
- * - It has a more straightforward interface for the intended purpose.
  * - It supports case sensitivity and Unicode normalization flags.
  * - It has a constructor that allows you to initialize it with an array of strings.
  * - Supports <IBinaryFileObject>.
@@ -23,8 +22,9 @@ using System.Collections.Generic;
 
 namespace GregValure.NaturalDocs.Engine.Collections
 	{
-	public class StringSet : System.Collections.Generic.Dictionary<string, bool>, System.Collections.IEnumerable, IBinaryFileObject
+	public class StringSet : System.Collections.Generic.HashSet<string>, IBinaryFileObject
 		{
+
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -67,10 +67,9 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: Add
 		 * Adds a new string to the set.  Nothing happens if the string is already in it.
 		 */
-		public void Add (string key)
+		new public void Add (string key)
 			{
-			// We do this so it doesn't throw an exception if the value already exists.
-			this[ key.NormalizeKey(ignoreCase, normalizeUnicode) ] = true;
+			base.Add( key.NormalizeKey(ignoreCase, normalizeUnicode) );
 			}
 			
 			
@@ -86,12 +85,12 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: Contains
 		 * Returns whether the string exists in the set.  Always returns false for null.
 		 */
-		public bool Contains (string key)
+		new public bool Contains (string key)
 			{
 			if (key == null)
 				{  return false;  }
 				
-			return ContainsKey( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			return base.Contains( key.NormalizeKey(ignoreCase, normalizeUnicode) );
 			}
 
 
@@ -103,13 +102,13 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			var enumerator = GetEnumerator();
 
 			if (enumerator.MoveNext() == false)
-				{  return null;  }
+			   {  return null;  }
 			else
-				{
-				string result = (string)enumerator.Current;
-				Remove(result);
-				return result;
-				}
+			   {
+			   string result = enumerator.Current;
+			   Remove(result);
+			   return result;
+			   }
 			}
 
 
@@ -121,18 +120,8 @@ namespace GregValure.NaturalDocs.Engine.Collections
 				{  return true;  }
 			else if ((object)set1 == null || (object)set2 == null)
 				{  return false;  }
-			else if (set1.Count != set2.Count)
-				{  return false;  }
 			else
-				{
-				foreach (string item in set1)
-					{
-					if (set2.Contains(item) == false)
-						{  return false;  }
-					}
-				
-				return true;
-				}
+				{  return set1.SetEquals(set2);  }
 			}
 			
 		
@@ -163,15 +152,6 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			}
 			
 			
-		/* Function: GetEnumerator
-		 * Returns an enumerator.  This is just an interface function which allows the class to be used with foreach statements.
-		 */
-		new public System.Collections.IEnumerator GetEnumerator()
-			{
-			return new StringSetEnumerator(this);
-			}
-
-
 		/* Function: ToBinaryFile
 		 * Writes the contents of the string set to the passed binary file.
 		 */
@@ -183,7 +163,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			// [String: null]
 
 			foreach (string member in this)
-				{  binaryFile.WriteString(member);  }
+			   {  binaryFile.WriteString(member);  }
 
 			binaryFile.WriteString(null);
 			}
@@ -202,7 +182,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			// [String: null]
 
 			for (string member = binaryFile.ReadString(); member != null; member = binaryFile.ReadString())
-				{  Add(member);  }
+			   {  Add(member);  }
 			}
 
 
@@ -236,36 +216,5 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 */
 		protected bool normalizeUnicode;
 			
-		}
-		
-		
-		
-	/* ___________________________________________________________________________
-	 * 
-	 * Class: GregValure.NaturalDocs.Engine.Collections.StringSetEnumerator
-	 * ___________________________________________________________________________
-	 * 
-	 * A class to allow <StringSets> to be used with the foreach statement.
-	 */
-	class StringSetEnumerator : System.Collections.IEnumerator
-		{
-		public StringSetEnumerator (StringSet set)
-			{
-			enumerator = ((Dictionary<string, bool>)set).GetEnumerator();
-			}
-			
-		public object Current
-			{
-			get
-				{  return enumerator.Current.Key;  }
-			}
-			
-		public bool MoveNext()
-			{  return enumerator.MoveNext();  }
-			
-		public void Reset()
-			{  throw new System.NotSupportedException();  }
-			
-		protected Dictionary<string, bool>.Enumerator enumerator;
 		}
 	}
