@@ -39,9 +39,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		
 		/* Function: ContextString
 		 */
-		private ContextString (string newSymbolString)
+		private ContextString (string newContextString)
 			{
-			contextString = newSymbolString;
+			contextString = newContextString;
 			}
 
 			
@@ -240,7 +240,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public override int GetHashCode ()
 			{
-			return contextString.GetHashCode();
+			if (contextString == null)
+				{  return 0;  }
+			else
+				{  return contextString.GetHashCode();  }
 			}
 
 		/* Function: Equals

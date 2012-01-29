@@ -52,7 +52,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		static internal EndingSymbol FromSymbolStringSegment (string symbolStringSegment)
 		   {
 			// The only difference in normalization between this and SymbolString is that EndingStrings are case-insensitive.
-		   EndingSymbol endingSymbol = new EndingSymbol(symbolStringSegment.ToLower());
+		   if (symbolStringSegment != null)
+				{  symbolStringSegment = symbolStringSegment.ToLower();  }
+
+			EndingSymbol endingSymbol = new EndingSymbol(symbolStringSegment);
 		   return endingSymbol;
 		   }
 			
@@ -65,9 +68,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* operator: operator string
 		 * A cast operator to covert the symbol to a string.
 		 */
-		public static implicit operator string (EndingSymbol endingSymbol)
+		public static implicit operator string (EndingSymbol endingSymbolObject)
 		   {
-		   return endingSymbol.endingSymbol;
+		   return endingSymbolObject.endingSymbol;
 		   }
 						
 		/* Operator: operator ==
@@ -98,7 +101,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public override int GetHashCode ()
 		   {
-		   return endingSymbol.GetHashCode();
+			if (endingSymbol == null)
+				{  return 0;  }
+		   else
+				{  return endingSymbol.GetHashCode();  }
 		   }
 
 		/* Function: Equals

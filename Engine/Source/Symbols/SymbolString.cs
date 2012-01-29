@@ -57,6 +57,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static public SymbolString FromPlainText (string textSymbol, out string parenthesis)
 			{
+			if (textSymbol == null)
+				{  throw new NullReferenceException();  }
+
 			int parenthesisIndex = ParameterString.GetEndingParenthesisIndex(textSymbol);
 
 			if (parenthesisIndex == -1)
@@ -110,6 +113,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			{
 			get
 				{
+				if (symbolString == null)
+					{  return new EndingSymbol();  }
+
 				int lastSeparator = symbolString.LastIndexOf(SeparatorChar);
 				
 				if (lastSeparator == -1)
@@ -177,7 +183,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public override int GetHashCode ()
 			{
-			return symbolString.GetHashCode();
+			if (symbolString == null)
+				{  return 0;  }
+			else
+				{  return symbolString.GetHashCode();  }
 			}
 
 		/* Function: Equals

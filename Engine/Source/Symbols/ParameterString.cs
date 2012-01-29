@@ -52,6 +52,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public static int GetEndingParenthesisIndex (string input)
 			{
+			if (input == null)
+				{  return -1;  }
+
 			input = input.TrimEnd();
 
 			if (input.Length >= 2 && input[input.Length - 1] == ')')
@@ -109,6 +112,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public static ParameterString FromParameterTypes (IList<string> parameterStrings)
 			{
+			if (parameterStrings.Count == 0)
+				{  return new ParameterString();  }
+
 			System.Text.StringBuilder output = new System.Text.StringBuilder();
 
 			for (int i = 0; i < parameterStrings.Count; i++)
@@ -129,6 +135,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public static ParameterString FromParenthesisString (string input)
 			{
+			if (input == null)
+				{  throw new NullReferenceException();  }
+
 			input = input.Trim();
 
 			if (input.Length < 2 || input[0] != '(' || input[input.Length - 1] != ')')
@@ -222,7 +231,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		public override int GetHashCode ()
 			{
-			return parameterString.GetHashCode();
+			if (parameterString == null)
+				{  return 0;  }
+			else
+				{  return parameterString.GetHashCode();  }
 			}
 
 		/* Function: Equals
