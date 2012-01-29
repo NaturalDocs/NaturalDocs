@@ -314,15 +314,19 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		
 		
 		// Function: GetEnumerator
-		IEnumerator<IDObjectType> System.Collections.Generic.IEnumerable<IDObjectType>.GetEnumerator()
+		IEnumerator<IDObjectType> IEnumerable<IDObjectType>.GetEnumerator()
 			{
-			return new ManagerEnumerator<IDObjectType>(this);
+			foreach (IDObjectType obj in objectsByID)
+				{
+				if (obj != null)
+					{  yield return obj;  }
+				}
 			}
 			
 		// Function: GetEnumerator
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 			{
-			return new ManagerEnumerator<IDObjectType>(this);
+			return ((IEnumerable<IDObjectType>)this).GetEnumerator();
 			}
 		
 		
@@ -353,60 +357,4 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		protected bool sparse;
 
 		}
-		
-		
-		
-		
-	/* ___________________________________________________________________________
-	 * 
-	 * Class: GregValure.NaturalDocs.Engine.IDObjects.ManagerEnumerator
-	 * ___________________________________________________________________________
-	 * 
-	 * An enumerator class that allows <IDObjects.Manager> to be used with foreach statements.
-	 * 
-	 */
-	 
-	 public class ManagerEnumerator<IDObjectType> : IEnumerator<IDObjectType> where IDObjectType: IDObjects.Base
-		{
-		
-		public ManagerEnumerator (Manager<IDObjectType> newManager)
-			{
-			manager = newManager;
-			numberSetEnumerator = ((IEnumerable<int>)newManager.usedIDs).GetEnumerator();
-			}
-			
-		IDObjectType System.Collections.Generic.IEnumerator<IDObjectType>.Current
-			{
-			get
-				{
-				return manager[ numberSetEnumerator.Current ];
-				}
-			}
-			
-		object System.Collections.IEnumerator.Current
-			{
-			get
-				{
-				return manager[ numberSetEnumerator.Current ];
-				}
-			}
-			
-		public bool MoveNext()
-			{
-			return numberSetEnumerator.MoveNext();
-			}
-			
-		public void Reset()
-			{
-			numberSetEnumerator.Reset();
-			}
-			
-		public void Dispose()
-			{
-			}
-			
-		protected Manager<IDObjectType> manager;
-		protected IEnumerator<int> numberSetEnumerator;
-		}
-	 
 	}
