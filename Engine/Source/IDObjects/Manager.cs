@@ -372,7 +372,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		public ManagerEnumerator (Manager<IDObjectType> newManager)
 			{
 			manager = newManager;
-			numberSetEnumerator = newManager.usedIDs.GetEnumerator();
+			numberSetEnumerator = ((IEnumerable<int>)newManager.usedIDs).GetEnumerator();
 			}
 			
 		IDObjectType System.Collections.Generic.IEnumerator<IDObjectType>.Current
@@ -406,7 +406,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			}
 			
 		protected Manager<IDObjectType> manager;
-		protected NumberSetEnumerator numberSetEnumerator;
+		protected IEnumerator<int> numberSetEnumerator;
 		}
 	 
 	}
