@@ -38,11 +38,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		void OnAddTopic (Topic topic, EventAccessor eventAccessor);
 		
 		/* Function: OnUpdateTopic
-		 * Called after a topic has been update in the database.  The <Topic> object will be in the state it was before the
-		 * change, and the parameters will contain the new values.
+		 * Called after a topic has been updated in the database.
 		 */
-		void OnUpdateTopic (Topic oldTopic, int newCommentLineNumber, int newCodeLineNumber, string newBody, 
-									 EventAccessor eventAccessor);
+		void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor);
 		
 		/* Function: OnDeleteTopic
 		 * Called before a topic is deleted from the database.

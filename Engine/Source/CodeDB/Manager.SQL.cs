@@ -32,10 +32,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			
 			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +
-																							"FileID INTEGER NOT NULL, " +
-																							"LanguageID INTEGER NOT NULL, " +
-																							"CommentLineNumber INTEGER NOT NULL, " +
-																							"CodeLineNumber INTEGER NOT NULL, " +
 																							"Title TEXT NOT NULL, " +
 																							"Body TEXT, " +
 																							"Summary TEXT, " +
@@ -45,7 +41,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"EndingSymbol TEXT NOT NULL, " +
 																							"TopicTypeID INTEGER NOT NULL, " +
 																							"AccessLevel INTEGER NOT NULL, " +
-																							"Tags TEXT )");
+																							"Tags TEXT, " +
+																							"FileID INTEGER NOT NULL, " +
+																							"CommentLineNumber INTEGER NOT NULL, " +
+																							"CodeLineNumber INTEGER NOT NULL, " +
+																							"LanguageID INTEGER NOT NULL, " +
+																							"PrototypeContextID INTEGER NOT NULL, " +
+																							"BodyContextID INTEGER NOT NULL )");
 																	   
 			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)");
 			connection.Execute("CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)");

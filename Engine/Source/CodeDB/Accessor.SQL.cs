@@ -37,30 +37,43 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			List<Topic> topics = new List<Topic>();
 			
-			using (SQLite.Query query = connection.Query("SELECT TopicID, LanguageID, CommentLineNumber, CodeLineNumber, Title, " +
-																					 " Body, Summary, Prototype, Symbol, Parameters, TopicTypeID, AccessLevel, Tags " +
-																		   "FROM Topics WHERE FileID = ? " +
-																		   "ORDER BY CommentLineNumber ASC", fileID))
+			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, " +
+																									"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																									//"LanguageID, PContexts.ContextString, PrototypeContextID, " + xxx
+																									"LanguageID, NULL, PrototypeContextID, " +
+																									//"BContexts.ContextString, BodyContextID " +
+																									"NULL, BodyContextID " +
+																								"FROM Topics " + //, Contexts AS PContexts, Contexts AS BContexts " +
+																								"WHERE FileID = ? " + //AND " +
+																									//"PContexts.ContextID = PrototypeContextID AND " +
+																									//"BContexts.ContextID = BodyContextID " +
+																								"ORDER BY CommentLineNumber ASC", fileID))
 				{
 				while (query.Step() && !cancelled())
 					{
 					Topic topic = new Topic();
 					
 					topic.TopicID = query.IntColumn(0);
-					topic.LanguageID = query.IntColumn(1);
-					topic.CommentLineNumber = query.IntColumn(2);
-					topic.CodeLineNumber = query.IntColumn(3);
-					topic.Title = query.StringColumn(4);
-					topic.Body = query.StringColumn(5);
-					topic.Summary = query.StringColumn(6);
-					topic.Prototype = query.StringColumn(7);
-					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(8) );
-					topic.Parameters = ParameterString.FromExportedString( query.StringColumn(9) );
-					topic.TopicTypeID = query.IntColumn(10);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(11);
-					topic.TagString = query.StringColumn(12);
+					topic.Title = query.StringColumn(1);
+					topic.Body = query.StringColumn(2);
+					topic.Summary = query.StringColumn(3);
+					topic.Prototype = query.StringColumn(4);
+					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
+					topic.Parameters = ParameterString.FromExportedString( query.StringColumn(6) );
+
+					topic.TopicTypeID = query.IntColumn(7);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
+					topic.TagString = query.StringColumn(9);
 
 					topic.FileID = fileID;
+					topic.CommentLineNumber = query.IntColumn(10);
+					topic.CodeLineNumber = query.IntColumn(11);
+
+					topic.LanguageID = query.IntColumn(12);
+					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
+					topic.PrototypeContextID = query.IntColumn(14);
+					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
+					topic.BodyContextID = query.IntColumn(16);
 
 					topics.Add(topic);
 					}
@@ -82,10 +95,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Topic Requirements:
 		 * 
 		 *		TopicID - Must be zero.  This will be automatically assigned and the <Topic> updated.
-		 *		FileID - Must be set.
-		 *		LanguageID - Must be set.
-		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
-		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
 		 *		Summary - Can be null.
@@ -95,14 +104,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
+		 *		FileID - Must be set.
+		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		LanguageID - Must be set.
+		 *		PrototypeContext - Can be null, which means global with no "using" statements.
+		 *		PrototypeContextID - Must be zero.  This will be automatically assigned and the <Topic> updated.
+		 *		BodyContext - Can be null, which means global with no "using" statements.
+		 *		BodyContextID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 */
 		public void AddTopic (Topic topic)
 			{
 			RequireZero("AddTopic", "TopicID", topic.TopicID);
-			RequireNonZero("AddTopic", "FileID", topic.FileID);
-			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
-			RequireNonZero("AddTopic", "CommentLineNumber", topic.CommentLineNumber);
-			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireContent("AddTopic", "Title", topic.Title);
 			// Body
 			// Summary
@@ -112,17 +125,30 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
+			RequireNonZero("AddTopic", "FileID", topic.FileID);
+			RequireNonZero("AddTopic", "CommentLineNumber", topic.CommentLineNumber);
+			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
+			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
+			// PrototypeContext
+			//xxxRequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
+			// BodyContext
+			//xxxRequireZero("BodyContext", "BodyContextID", topic.BodyContextID);
 			
 			RequireAtLeast(LockType.ReadWrite);
 
 			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
+
+			// xxx determine context ids
 			
-			connection.Execute("INSERT INTO Topics (TopicID, FileID, LanguageID, CommentLineNumber, CodeLineNumber, Title, Body, " +
-																	" Summary, Prototype, Symbol, Parameters, EndingSymbol, TopicTypeID, AccessLevel, Tags) " +
-																	" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-										topic.TopicID, topic.FileID, topic.LanguageID, topic.CommentLineNumber, topic.CodeLineNumber,
-										topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, topic.Symbol.EndingSymbol, 
-										topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString);
+			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, EndingSymbol, " +
+													"TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, LanguageID, " +
+													"PrototypeContextID, BodyContextID) " +
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, 
+												topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, topic.FileID, 
+												topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
+												topic.BodyContextID										 
+												);
 			
 			Engine.Instance.CodeDB.UsedTopicIDs.Add(topic.TopicID);
 			
@@ -148,28 +174,45 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 		/* Function: UpdateTopic
 		 * 
-		 * Performs minor updates to an existing <Topic> in the database.  If a topic has changed more substantially than the parameters
-		 * allow, you cannot use this function.  You must delete the old topic and add it as a new one instead.
+		 * Performs minor updates to an existing <Topic> in the database as determined by <Topic.DatabaseCompare()>.  If
+		 * <Topic.DatabaseCompare()> returns <Topic.DatabaseCompareResult.Different> instead of
+		 * <Topic.DatabaseCompareResult.Similar_WontAffectLinking> you cannot use this function.  You must delete the old topic
+		 * and add it as a new one instead.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 *		
-		 * Parameter Requirements:
+		 * Topic Requirements:
 		 * 
-		 *		Topic - The topic must have been retrieved from the database and thus have all its fields set.  The body and line numbers
-		 *				   will be replaced in the object with the passed values.
-		 *		CommentLineNumber - Must be set.  If you read it from a <Topic> it will automatically return CodeLineNumber if it isn't set.
-		 *		CodeLineNumber - Must be set.  If you read it from a <Topic> it will automatically return CommentLineNumber if it isn't set.
-		 *		Body - Can be null.
+		 *		- newTopic must have all properties filled in *except* certain IDs, as in <AddTopic()>.
+		 *		  - As in <AddTopic()>, these IDs will be filled in for you.
+		 *		- oldTopic must have all properties filled in *including* certain IDs, as in <DeleteTopic()>.
+		 *		- The topics must be similar enough that <Topic.DatabaseCompare()> returns 
+		 *			<Topic.DatabaseCompareResult.Similar_WontAffectLinking>.
 		 */
-		public void UpdateTopic (Topic topic, int newCommentLineNumber, int newCodeLineNumber, string newBody)
+		public void UpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
 			{
+			// Sanity check
+			#if DEBUG
+			Topic.ChangeFlags flags;
+			if (oldTopic.DatabaseCompare(newTopic, out flags) != Topic.DatabaseCompareResult.Similar_WontAffectLinking)
+				{  throw new InvalidOperationException("UpdateTopic can only be used with similar topics that won't affect linking.");  }
+			#endif
+
 			RequireAtLeast(LockType.ReadWrite);
 
-			connection.Execute("UPDATE Topics SET CommentLineNumber=?, CodeLineNumber=?, Body=? WHERE TopicID = ?",
-										 newCommentLineNumber, newCodeLineNumber, newBody, topic.TopicID);
-			// Don't update the fields yet since the change notification requires the old one.
+			// DEPENDENCY: This must update all fields marked relevant in Topic.DatabaseCompare().  If that function changes this one
+			// must change as well.
+
+			newTopic.TopicID = oldTopic.TopicID;
+			// xxx contexts
+
+			connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
+													"PrototypeContextID=?, BodyContextID=? " +
+												"WHERE TopicID = ?",
+												newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
+												newTopic.PrototypeContextID, newTopic.BodyContextID, oldTopic.TopicID);
 
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
 			
@@ -180,17 +223,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					EventAccessor eventAccessor = new EventAccessor(this);
 					
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnUpdateTopic(topic, newCommentLineNumber, newCodeLineNumber, newBody, eventAccessor);  }
+						{  changeWatcher.OnUpdateTopic(oldTopic, newTopic, changeFlags, eventAccessor);  }
 					}
 				}
 			finally
 				{
 				Engine.Instance.CodeDB.ReleaseChangeWatchers();
 				}
-				
-			topic.CommentLineNumber = newCommentLineNumber;
-			topic.CodeLineNumber = newCodeLineNumber;
-			topic.Body = newBody;
 			}
 			
 			
@@ -208,10 +247,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		it will be passed to the change watchers which may need them.
 		 *		
 		 *		TopicID - Must be set.
-		 *		FileID - Must be set.
-		 *		LanguageID - Must be set.
-		 *		CommentLineNumber - Must be set.
-		 *		CodeLineNumber - Must be set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
 		 *		Summary - Can be null.
@@ -221,14 +256,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
+		 *		FileID - Must be set.
+		 *		CommentLineNumber - Must be set.
+		 *		CodeLineNumber - Must be set.
+		 *		LanguageID - Must be set.
+		 *		PrototypeContext - Can be null, which means global with no "using" statements.
+		 *		PrototypeContextID - Must be set.
+		 *		BodyContext - Can be null, which means global with no "using" statements.
+		 *		BodyContextID - Must be set.
 		 */
 		public void DeleteTopic (Topic topic)
 			{
 			RequireNonZero("DeleteTopic", "TopicID", topic.TopicID);
-			RequireNonZero("DeleteTopic", "FileID", topic.FileID);
-			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
-			RequireNonZero("DeleteTopic", "CommentLineNumber", topic.CommentLineNumber);
-			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireContent("DeleteTopic", "Title", topic.Title);
 			// Body
 			// Summary
@@ -238,6 +277,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
+			RequireNonZero("DeleteTopic", "FileID", topic.FileID);
+			RequireNonZero("DeleteTopic", "CommentLineNumber", topic.CommentLineNumber);
+			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
+			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
+			// PrototypeContext, null is a valid value
+			//xxxRequireNonZero("DeleteTopic", "PrototypeContextID", topic.PrototypeContextID);
+			// BodyContext, null is a valid value
+			//xxxRequireNonZero("DeleteTopic", "BodyContextID", topic.BodyContextID);
 
 			RequireAtLeast(LockType.ReadWrite);
 
@@ -260,6 +307,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);
+
+			// xxx context ids
 			}
 			
 			
@@ -276,10 +325,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Topic Requirements:
 		 * 
 		 *		TopicID - Must be zero.  These will be automatically assigned and the <Topics> updated.
-		 *		FileID - Must match the parameter.
-		 *		LanguageID - Must be set.
-		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
-		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		Title - Must be set.
 		 *		Body - Can be null.
 		 *		Summary - Can be null.
@@ -289,6 +334,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
+		 *		FileID - Must match the parameter.
+		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		LanguageID - Must be set.
+		 *		PrototypeContext - Can be null, which means global with no "using" statements.
+		 *		PrototypeContextID - Must be zero.  These will be automatically assigned and the <Topics> updated.
+		 *		BodyContext - Can be null, which means global with no "using" statements.
+		 *		BodyContextID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 */
 		public void UpdateTopicsInFile (int fileID, IList<Topic> newTopics, CancelDelegate cancelled)
 			{
@@ -315,15 +368,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldTopics.Count; i++)
 						{
-						Topic.DatabaseCompareResult result = newTopic.DatabaseCompare(oldTopics[i]);
+						Topic.ChangeFlags changeFlags;
+						Topic.DatabaseCompareResult result = newTopic.DatabaseCompare(oldTopics[i], out changeFlags);
 						
-						if (result == Topic.DatabaseCompareResult.Equal)
+						if (result == Topic.DatabaseCompareResult.Same)
 							{
 							foundMatch = true;
 							newTopic.TopicID = oldTopics[i].TopicID;
+							newTopic.PrototypeContextID = oldTopics[i].PrototypeContextID;
+							newTopic.BodyContextID = oldTopics[i].BodyContextID;
 							oldTopics.RemoveAt(i);
 							}
-						else if (result == Topic.DatabaseCompareResult.EqualExceptLineNumbersAndBody)
+						else if (result == Topic.DatabaseCompareResult.Similar_WontAffectLinking)
 							{
 							if (madeChanges == false)
 								{
@@ -333,8 +389,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 								}
 								
 							foundMatch = true;
-							UpdateTopic(oldTopics[i], newTopic.CommentLineNumber, newTopic.CodeLineNumber, newTopic.Body);
-							newTopic.TopicID = oldTopics[i].TopicID;
+							UpdateTopic(oldTopics[i], newTopic, changeFlags);
 							oldTopics.RemoveAt(i);
 							}
 						}

@@ -18,9 +18,56 @@ namespace GregValure.NaturalDocs.Engine
 	{
 	public class Topic
 		{
-		
-		public enum DatabaseCompareResult
-			{  Equal, NotEqual, EqualExceptLineNumbersAndBody  }
+
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: DatabaseCompareResult
+		 * 
+		 * The result of two <Topics> being compared with <DatabaseCompare()>.
+		 * 
+		 *		Same - The topics are exactly the same.
+		 *		Different - The topics are different in substantial ways.
+		 *		Similar_WontAffectLinking - The topics differ in some fields, but in such a way as to not affect 
+		 *														  linking if one were substituted for another.
+		 */
+		public enum DatabaseCompareResult : byte
+			{  Same, Different, Similar_WontAffectLinking  }
+
+
+		/* Enum: ChangeFlags
+		 * A bitfield that represents all the properties that were changed.  Note that this only applies when
+		 * <DatabaseCompareResult.Similar_WontAffectLinking> is returned.  However, to prevent coding mistakes,
+		 * all fields will be set to true when <DatabaseCompareResult.Different> is returned.
+		 */
+		[Flags]
+		public enum ChangeFlags : ushort
+			{
+			Title = 0x0001,
+			Body = 0x0002,
+			Summary = 0x0004,
+			Prototype = 0x0008,
+			Symbol = 0x0010,
+			Parameters = 0x0020,
+
+			TopicTypeID = 0x0040,
+			AccessLevel = 0x0080,
+			Tags = 0x0100,
+
+			LanguageID = 0x0200,
+			CommentLineNumber = 0x0400,
+			CodeLineNumber = 0x0800,
+			
+			FileID = 0x1000,
+			PrototypeContext = 0x2000,
+			BodyContext = 0x4000,
+
+			All = Title | Body | Summary | Prototype | Symbol | Parameters |
+					 TopicTypeID | AccessLevel | Tags |
+					 LanguageID | CommentLineNumber | CodeLineNumber |
+					 FileID | PrototypeContext | BodyContext
+			}
 			
 			
 			
@@ -31,69 +78,129 @@ namespace GregValure.NaturalDocs.Engine
 		public Topic ()
 			{
 			topicID = 0;
-			fileID = 0;
-			languageID = 0;
-			commentLineNumber = 0;
-			codeLineNumber = 0;
+
 			title = null;
 			body = null;
 			summary = null;
 			prototype = null;
+			parsedPrototype = null;
 			symbol = new SymbolString();
 			parameters = new ParameterString();
+
 			topicTypeID = 0;
+			usesPluralKeyword = false;
 			accessLevel = Languages.AccessLevel.Unknown;
 			tags = null;
+
+			languageID = 0;
+			commentLineNumber = 0;
+			codeLineNumber = 0;
 			
-			usesPluralKeyword = false;
-			parsedPrototype = null;
+			fileID = 0;
+			prototypeContext = new ContextString();
+			prototypeContextID = 0;
+			bodyContext = new ContextString();
+			bodyContextID = 0;
 			}
 			
 			
 		/* Function: DatabaseCompare
 		 * 
-		 * Compares two topics, returning whether they are equal, not equal, or equal except for line numbers and <Body>.
-		 * The latter is an important distinction because it allows use of <CodeDB.Accessor.UpdateTopic()>.
+		 * Compares two topics, returning whether they are the same, different, or similar enough that one can be substituted
+		 * for the other without affecting linking.  Similar allows use of <CodeDB.Accessor.UpdateTopic()>.
 		 * 
-		 * <TopicID> is not included in the comparison because it's assumed that you would be comparing Topics from a parse, 
-		 * where they would not be set, to Topics from the database, where they would.  <Temporary Properties> are also not 
-		 * compared because they do not correspond to database fields.
+		 * If it returns <DatabaseCompareResult.Similar_WontAffectLinking>, changeFlags will also be set noting which specific
+		 * fields have changed.  This isn't done with <DatabaseCompareResult.Different>, but all the flags will be set to true
+		 * anyway to prevent errors.
+		 * 
+		 * <TopicID>, <PrototypeContextID>, and <BodyContextID> are not included in the comparison because it's assumed that 
+		 * you would be comparing Topics from a parse, where they would not be set, to Topics from the database, where they 
+		 * would.  <Temporary Properties> are also not compared because they do not correspond to database fields.
 		 */
-		public DatabaseCompareResult DatabaseCompare (Topic other)
+		public DatabaseCompareResult DatabaseCompare (Topic other, out ChangeFlags changeFlags)
 			{
-			if (	// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
+			// topicID - Wouldn't be known coming from a parse.
+
+			// title - Important in linking.
+			// body - Important in linking because links may favor topics with a longer body length.
+			// summary - Not important in linking.
+			// prototype - Important in linking because links may favor topics that have a prototype.
+			// parsedPrototype - Not a database field.
+			// symbol - Important in linking.
+			// parameters - Important in linking.
+
+			// topicTypeID - Important in linking.
+			// usesPluralKeyword - Not a database field.
+			// accessLevel - Important in linking.
+			// tags - Important in linking.
+
+			// languageID - Important in linking.
+			// commentLineNumber - Not imporant in linking.
+			// codeLineNumber - Not important in linking.
+			
+			// fileID - Not important in linking, but return Different anyway because the same topic in two different files 
+			//				  are considered two separate topics.
+			// prototypeContext - Not important in linking.
+			// prototypeContextID - Wouldn't be known coming from a parse.
+			// bodyContext - Not important in linking.
+			// bodyContextID - Wouldn't be known coming from a parse.
+
+			if (	
+				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
 				topicTypeID != other.topicTypeID ||
 				accessLevel != other.accessLevel ||
 
 				// String comparisons, most likely to be different			
 				title != other.title ||
-				summary != other.summary ||
-				symbol != other.symbol ||
-				prototype != other.prototype ||
 				parameters != other.parameters ||
+				body != other.body ||
+				prototype != other.prototype ||
+				symbol != other.symbol ||
 
 				// Rest of the integer comparisons, not likely to be different
 				fileID != other.fileID ||
 				languageID != other.languageID)
-				{  return DatabaseCompareResult.NotEqual;  }
+				{  
+				changeFlags = ChangeFlags.All;
+				return DatabaseCompareResult.Different;  
+				}
 				
 			if (tags == null || tags.IsEmpty)
 				{
 				if (other.tags != null && other.tags.IsEmpty == false)
-					{  return DatabaseCompareResult.NotEqual;  }
+					{  
+					changeFlags = ChangeFlags.All;
+					return DatabaseCompareResult.Different;  
+					}
 				}
-			else if (other.tags == null || other.tags.IsEmpty)
-				{  return DatabaseCompareResult.NotEqual;  }
-			else if (tags != other.tags)
-				{  return DatabaseCompareResult.NotEqual;  }
-			
-			// Compare line number properties instead of variables so we get the substitution
-			if (CodeLineNumber != other.CodeLineNumber ||
-				CommentLineNumber != other.CommentLineNumber ||
-				body != other.Body)
-				{  return DatabaseCompareResult.EqualExceptLineNumbersAndBody;  }
-				
-			return DatabaseCompareResult.Equal;
+			else if (other.tags == null || other.tags.IsEmpty || tags != other.tags)
+				{
+				changeFlags = ChangeFlags.All;  
+				return DatabaseCompareResult.Different;  
+				}
+
+
+			// Now we're either Same or Similar.  We want to collect exactly what's different for Similar.
+			changeFlags = 0;
+
+			// DEPENDENCY: CodeDB.Accessor.UpdateTopic() must update all fields that are relevant here.  If this function changes 
+			// that one must change as well.
+
+			if (summary != other.summary)
+				{  changeFlags |= ChangeFlags.Summary;  }
+			if (commentLineNumber != other.commentLineNumber)
+				{  changeFlags |= ChangeFlags.CommentLineNumber;  }
+			if (codeLineNumber != other.codeLineNumber)
+				{  changeFlags |= ChangeFlags.CodeLineNumber;  }
+			if (prototypeContext != other.prototypeContext)
+				{  changeFlags |= ChangeFlags.PrototypeContext;  }
+			if (bodyContext != other.bodyContext)
+				{  changeFlags |= ChangeFlags.BodyContext;  }
+
+			if (changeFlags == 0)
+				{  return DatabaseCompareResult.Same;  }
+			else
+				{  return DatabaseCompareResult.Similar_WontAffectLinking;  }
 			}
 
 
@@ -137,66 +244,6 @@ namespace GregValure.NaturalDocs.Engine
 				{  return topicID;  }
 			set
 				{  topicID = value;  }
-			}
-			
-			
-		/* Property: FileID
-		 * The ID number of the source file this topic appears in, or zero if it hasn't been set.
-		 */
-		public int FileID
-			{
-			get
-				{  return fileID;  }
-			set
-				{  fileID = value;  }
-			}
-			
-			
-		/* Property: LanguageID
-		 * The ID number of the language of this topic, or zero if it hasn't been set.
-		 */
-		public int LanguageID
-			{
-			get
-				{  return languageID;  }
-			set
-				{  languageID = value;  }
-			}
-			
-			
-		/* Property: CommentLineNumber
-		 * The line number the topic's comment begins on, if any.  If it has not been set, this will return <CodeLineNumber>.
-		 * If neither of them have been set, this will return zero.
-		 */
-		public int CommentLineNumber
-			{
-			get
-				{
-				if (commentLineNumber == 0)
-					{  return codeLineNumber;  }
-				else
-					{  return commentLineNumber;  }
-				}
-			set
-				{  commentLineNumber = value;  }
-			}
-			
-			
-		/* Property: CodeLineNumber
-		 * The line number the topic's code element begins on, if any.  If it has not been set, this will return <CommentLineNumber>.
-		 * If neither of them have been set, this will return zero.
-		 */
-		public int CodeLineNumber
-			{
-			get
-				{
-				if (codeLineNumber == 0)
-					{  return commentLineNumber;  }
-				else
-					{  return codeLineNumber;  }
-				}
-			set
-				{  codeLineNumber = value;  }
 			}
 			
 			
@@ -322,7 +369,114 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 
+		/* Property: FileID
+		 * The ID number of the source file this topic appears in, or zero if it hasn't been set.
+		 */
+		public int FileID
+			{
+			get
+				{  return fileID;  }
+			set
+				{  fileID = value;  }
+			}
 			
+			
+		/* Property: CommentLineNumber
+		 * The line number the topic's comment begins on, if any.  If it has not been set, this will return <CodeLineNumber>.
+		 * If neither of them have been set, this will return zero.
+		 */
+		public int CommentLineNumber
+			{
+			get
+				{
+				if (commentLineNumber == 0)
+					{  return codeLineNumber;  }
+				else
+					{  return commentLineNumber;  }
+				}
+			set
+				{  commentLineNumber = value;  }
+			}
+			
+			
+		/* Property: CodeLineNumber
+		 * The line number the topic's code element begins on, if any.  If it has not been set, this will return <CommentLineNumber>.
+		 * If neither of them have been set, this will return zero.
+		 */
+		public int CodeLineNumber
+			{
+			get
+				{
+				if (codeLineNumber == 0)
+					{  return commentLineNumber;  }
+				else
+					{  return codeLineNumber;  }
+				}
+			set
+				{  codeLineNumber = value;  }
+			}
+			
+			
+		/* Property: LanguageID
+		 * The ID number of the language of this topic, or zero if it hasn't been set.
+		 */
+		public int LanguageID
+			{
+			get
+				{  return languageID;  }
+			set
+				{  languageID = value;  }
+			}
+
+
+		/* Property: PrototypeContext
+		 * The <ContextString> that all prototype links should use.
+		 */
+		public ContextString PrototypeContext
+			{
+			get
+				{  return prototypeContext;  }
+			set
+				{  prototypeContext = value;  }
+			}
+
+
+		/* Property: PrototypeContextID
+		 * The ID of <PrototypeContext> if known, or zero if not.
+		 */
+		public int PrototypeContextID
+			{
+			get
+				{  return prototypeContextID;  }
+			set
+				{  prototypeContextID = value;  }
+			}
+
+
+		/* Property: BodyContext
+		 * The <ContextString> that all body links should use.
+		 */
+		public ContextString BodyContext
+			{
+			get
+				{  return bodyContext;  }
+			set
+				{  bodyContext = value;  }
+			}
+			
+			
+		/* Property: BodyContextID
+		 * The ID of <BodyContext> if known, or zero if not.
+		 */
+		public int BodyContextID
+			{
+			get
+				{  return bodyContextID;  }
+			set
+				{  bodyContextID = value;  }
+			}
+
+
 			
 		// Group: Temporary Properties
 		// These properties aid in processing but are not stored in the database.
@@ -378,26 +532,6 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected int topicID;
 		
-		/* var: fileID
-		 * The ID of the source file this topic appears in, or zero if not specified.
-		 */
-		protected int fileID;
-
-		/* var: languageID
-		 * The ID of the topic's language, or zero if not specified.
-		 */
-		protected int languageID;
-		
-		/* var: commentLineNumber
-		 * The line number the comment appears on, or zero if not specified.
-		 */
-		protected int commentLineNumber;
-
-		/* var: codeLineNumber
-		 * The line number the actual code element appears on, or zero if not specified.
-		 */
-		protected int codeLineNumber;
-		
 		/* var: title
 		 * The title of the comment, or null if not specified.
 		 */
@@ -418,6 +552,11 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected string prototype;
 
+		/* var: parsedPrototype
+		 * The <prototype> in <ParsedPrototype> form, or null if <prototype> is null or it hasn't been generated yet.
+		 */
+		protected ParsedPrototype parsedPrototype;
+		
 		/* var: symbol
 		 * The topic's fully resolved symbol, or null if not specified.
 		 */
@@ -438,11 +577,6 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected bool usesPluralKeyword;
 
-		/* var: parsedPrototype
-		 * The <prototype> in <ParsedPrototype> form, or null if <prototype> is null or it hasn't been generated yet.
-		 */
-		protected ParsedPrototype parsedPrototype;
-		
 		/* var: accessLevel
 		 * The access level of the topic.
 		 */
@@ -453,5 +587,45 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected IDObjects.NumberSet tags;
 				
+		/* var: fileID
+		 * The ID of the source file this topic appears in, or zero if not specified.
+		 */
+		protected int fileID;
+
+		/* var: commentLineNumber
+		 * The line number the comment appears on, or zero if not specified.
+		 */
+		protected int commentLineNumber;
+
+		/* var: codeLineNumber
+		 * The line number the actual code element appears on, or zero if not specified.
+		 */
+		protected int codeLineNumber;
+		
+		/* var: languageID
+		 * The ID of the topic's language, or zero if not specified.
+		 */
+		protected int languageID;
+
+		/* var: prototypeContext
+		 * The <ContextString> that all prototype links should use.
+		 */
+		protected ContextString prototypeContext;
+
+		/* var: prototypeContextID
+		 * The ID of <prototypeContext> if known, or zero if not.
+		 */
+		protected int prototypeContextID;
+
+		/* var: bodyContext
+		 * The <ContextString> that all body links should use.
+		 */
+		protected ContextString bodyContext;
+		
+		/* var: bodyContextID
+		 * The ID of <bodyContext> if known, or zero if not.
+		 */
+		protected int bodyContextID;
+
 		}
 	}

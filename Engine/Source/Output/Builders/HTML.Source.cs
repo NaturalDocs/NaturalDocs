@@ -691,12 +691,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, int newCommentLineNumber, int newCodeLineNumber, string newBody, 
-															CodeDB.EventAccessor eventAccessor)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags,
+																		CodeDB.EventAccessor eventAccessor)
 			{
-			lock (writeLock)
+			// We don't care about line number changes.  They don't affect the output.
+			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber);
+
+			if (changeFlags != 0)
 				{
-				sourceFilesToRebuild.Add(oldTopic.FileID);
+				lock (writeLock)
+					{
+					sourceFilesToRebuild.Add(oldTopic.FileID);
+					}
 				}
 			}
 

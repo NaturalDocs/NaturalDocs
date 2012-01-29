@@ -60,8 +60,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, int newCommentLineNumber, int newCodeLineNumber, string newBody, 
-															CodeDB.EventAccessor eventAccessor)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags,
+																		CodeDB.EventAccessor eventAccessor)
 			{
 			}
 

@@ -19,46 +19,6 @@ Column: TopicID
 	The topic identifier.
 	
 	
-Column: FileID
-
-	(SQL Prototype)
-		FileID INTEGER NOT NULL
-	(end)
-	
-	The ID of the file it appears in, as managed by <GregValure.NaturalDocs.Engine.Files.Manager>.
-	
-
-Column: LanguageID
-
-	(SQL Prototype)
-		LanguageID INTEGER NOT NULL
-	(end)
-	
-	The ID of the topic's language, as managed by <GregValure.NaturalDocs.Engine.Languages.Manager>.  If the
-	file it appears in is a container file (such as .cgi or .asp) the ID will be for the embedded language, not the
-	container.
-	
-	
-Column: CommentLineNumber
-
-	(SQL Prototype)
-		CommentLineNumber INTEGER NOT NULL
-	(end)
-	
-	The line number the topic's comment appears on.  If the topic doesn't have a comment, it will be the same
-	as <CodeLineNumber>.
-	
-	
-Column: CodeLineNumber
-	
-	(SQL Prototype)
-		CodeLineNumber INTEGER NOT NULL
-	(end)
-	
-	The line number the topic's code element appears on.  If the topic doesn't have a code element, it will be
-	the same as <CommentLineNumber>.
-	
-	
 Column: Title
 
 	(SQL Prototype)
@@ -151,6 +111,64 @@ Column: Tags
 	Is a string encoding of a <GregValure.NaturalDocs.Engine.IDObjects.NumberSet>.
 
 
+Column: FileID
+
+	(SQL Prototype)
+		FileID INTEGER NOT NULL
+	(end)
+	
+	The ID of the file it appears in, as managed by <GregValure.NaturalDocs.Engine.Files.Manager>.
+	
+
+Column: CommentLineNumber
+
+	(SQL Prototype)
+		CommentLineNumber INTEGER NOT NULL
+	(end)
+	
+	The line number the topic's comment appears on.  If the topic doesn't have a comment, it will be the same
+	as <CodeLineNumber>.
+	
+	
+Column: CodeLineNumber
+	
+	(SQL Prototype)
+		CodeLineNumber INTEGER NOT NULL
+	(end)
+	
+	The line number the topic's code element appears on.  If the topic doesn't have a code element, it will be
+	the same as <CommentLineNumber>.
+	
+	
+Column: LanguageID
+
+	(SQL Prototype)
+		LanguageID INTEGER NOT NULL
+	(end)
+	
+	The ID of the topic's language, as managed by <GregValure.NaturalDocs.Engine.Languages.Manager>.  If the
+	file it appears in is a container file (such as .cgi or .asp) the ID will be for the embedded language, not the
+	container.
+	
+	
+Column: PrototypeContextID
+
+	(SQL Prototype)
+		PrototypeContextID INTEGER NOT NULL
+	(end)
+	
+	The ID of the context any prototype links should appear in.
+	
+	
+Column: BodyContextID
+
+	(SQL Prototype)
+		BodyContextID INTEGER NOT NULL
+	(end)
+	
+	The ID of the context any body links should appear in.
+	
+	
 
 Group: Indexes
 _______________________________________________________________________________
