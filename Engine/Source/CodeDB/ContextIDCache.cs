@@ -36,19 +36,38 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			Add(cacheEntry);
 			}
 
-		/* Function: FromID
-		 */
-		public ContextIDCacheEntry FromID (int contextID)
+		new public ContextIDCacheEntry this [string name]
 			{
-			return this[contextID];
+			get
+				{
+				if (name == null)
+					{  name = NullStandIn;  }
+
+				return base[name];  
+				}
 			}
 
-		/* Function: FromString
-		 */
-		public ContextIDCacheEntry FromString (Symbols.ContextString contextString)
+		new public bool Remove (string name)
 			{
-			return this[contextString];
+			if (name == null)
+				{  name = NullStandIn;  }
+
+			return base.Remove(name);
 			}
+
+		new public bool Contains (string name)
+			{
+			if (name == null)
+				{  name = NullStandIn;  }
+
+			return base.Contains(name);
+			}
+
+		/* var: NullStandIn
+		 * A string to use in place of null, since <Symbols.ContextStrings> can be null but IDObjects must have Name
+		 * set.  It uses <Symbols.SeparatorChars.Escape> to make sure it doesn't conflict with any actual context strings.
+		 */
+		internal static string NullStandIn = Symbols.SeparatorChars.Escape + "null";
 
 		}
 
@@ -66,7 +85,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		override public string Name
 			{
 			get
-				{  return contextString;  }
+				{  
+				if (contextString == null)
+					{  return ContextIDCache.NullStandIn;  }
+				else
+					{  return contextString;  }
+				}
 			}
 
 		/* Property: String
