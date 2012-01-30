@@ -26,14 +26,27 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 		/* Function: Add
+		 * Adds a context ID/string pair to the cache.  It is okay to call this repeatedly for the same entry.
 		 */
 		public void Add (int contextID, Symbols.ContextString contextString)
 			{
-			ContextIDCacheEntry cacheEntry = new ContextIDCacheEntry();
-			cacheEntry.ID = contextID;
-			cacheEntry.String = contextString;
+			// Sanity check
+			#if DEBUG
+			if (Contains(contextID) && this[contextID].String != contextString)
+				{  
+				throw new Exception("Tried to add \"" + contextString + "\" to ContextIDCache under ID " + contextID + 
+														" when the ID was already used for \"" + this[contextID].String + "\".");
+				}
+			#endif
 
-			Add(cacheEntry);
+			if (!Contains(contextID))
+				{
+				ContextIDCacheEntry cacheEntry = new ContextIDCacheEntry();
+				cacheEntry.ID = contextID;
+				cacheEntry.String = contextString;
+
+				Add(cacheEntry);
+				}
 			}
 
 		new public ContextIDCacheEntry this [string name]
