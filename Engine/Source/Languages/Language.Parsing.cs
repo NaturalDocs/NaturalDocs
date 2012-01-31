@@ -1205,21 +1205,27 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			
 		/* Function: GenerateCommentContextAndSymbols
-		 * Generates <CodePoint.Context>, <Topic.Symbol>, and <Topic.Parameters> for a list of <CodePoints> generated from comments.
-		 * This will only apply to Natural Docs topics with headers and will follow topic scoping rules.  Javadoc, MS XML, and headerless
-		 * Natural Docs topics will be skipped as they don't have titles to generate symbols from nor topic types to get scoping information
-		 * from.
+		 * Fills in context and symbol fields for a list of <CodePoints> and <Topics> generated from comments.  This will only apply 
+		 * to Natural Docs topics with headers and will follow topic scoping rules.  Javadoc, MS XML, and headerless Natural Docs 
+		 * topics will be skipped as they don't have titles to generate symbols from nor topic types to get scoping information from.
+		 * 
+		 * Specifically, these fields are filled in:
+		 * 
+		 *		- <CodePoint.Context>
+		 *		- <Topic.PrototypeContext>
+		 *		- <Topic.BodyContext>
+		 *		- <Topic.Symbol>
+		 *		- <Topic.Parameters>
 		 */
 		protected virtual void GenerateCommentContextAndSymbols (IList<CodePoint> commentCodePoints)
 			{
-			SymbolString currentClass = new SymbolString();
+			ContextString currentContext = new ContextString();
 
 			foreach (CodePoint codePoint in commentCodePoints)
 				{
 				if (codePoint.Topic != null && codePoint.Topic.TopicTypeID != 0 && codePoint.Topic.Title != null)
 					{
 					TopicType topicType = Instance.TopicTypes.FromID(codePoint.Topic.TopicTypeID);
-					ContextString tempContext;
 
 					string parenthesis = null;
 					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parenthesis);
@@ -1227,33 +1233,58 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					switch (topicType.Scope)
 						{
 						case TopicType.ScopeValue.Start:
+
 							codePoint.Topic.Symbol = symbol;
+
+							// Classes are treated as global
+							currentContext.Scope = new SymbolString();
+							codePoint.Topic.PrototypeContext = currentContext;
+
+							// but the body is under the new scope so it can link to members easily.
+							currentContext.Scope = symbol;
+							codePoint.Topic.BodyContext = currentContext;
+
 							codePoint.ContextChanged = true;
+							codePoint.Context = currentContext;
 
-							tempContext = codePoint.Context;
-							tempContext.Scope = symbol;
-							codePoint.Context = tempContext;
-
-							currentClass = symbol;
 							break;
 
 						case TopicType.ScopeValue.End:
+
 							codePoint.Topic.Symbol = symbol;
+
+							// Everything is global
+							currentContext.Scope = new SymbolString();
+							codePoint.Topic.PrototypeContext = currentContext;
+							codePoint.Topic.BodyContext = currentContext;
+
 							codePoint.ContextChanged = true;
+							codePoint.Context = currentContext;
 
-							tempContext = codePoint.Context;
-							tempContext.Scope = new SymbolString();
-							codePoint.Context = tempContext;
-
-							currentClass = new SymbolString();
 							break;
 
 						case TopicType.ScopeValue.Normal:
-							codePoint.Topic.Symbol = currentClass + symbol;
+
+							codePoint.Topic.Symbol = currentContext.Scope + symbol;
+
+							codePoint.Topic.PrototypeContext = currentContext;
+							codePoint.Topic.BodyContext = currentContext;
+
 							break;
 
 						case TopicType.ScopeValue.AlwaysGlobal:
+
+							// The topic is global without affecting the current context
 							codePoint.Topic.Symbol = symbol;
+
+							ContextString globalContext = currentContext;
+							globalContext.Scope = new SymbolString();
+
+							codePoint.Topic.PrototypeContext = globalContext;
+
+							// However, we allow the body to retain the current context for linking
+							codePoint.Topic.BodyContext = currentContext;
+
 							break;
 						}
 
