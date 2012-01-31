@@ -252,6 +252,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Property: UsedContextIDs
+		 * An <IDObjects.NumberSet> of all the used context IDs in <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal IDObjects.NumberSet UsedContextIDs
+			{
+			get
+				{  return usedContextIDs;  }
+			}
+			
+			
 			
 		// Group: Accessor Functions
 		// These functions are internal and are only meant for use by <Accessor>.

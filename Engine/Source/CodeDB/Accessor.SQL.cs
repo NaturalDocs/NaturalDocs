@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Symbols;
 
 
@@ -39,14 +40,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, " +
 																									"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																									//"LanguageID, PContexts.ContextString, PrototypeContextID, " + xxx
-																									"LanguageID, NULL, PrototypeContextID, " +
-																									//"BContexts.ContextString, BodyContextID " +
-																									"NULL, BodyContextID " +
-																								"FROM Topics " + //, Contexts AS PContexts, Contexts AS BContexts " +
-																								"WHERE FileID = ? " + //AND " +
-																									//"PContexts.ContextID = PrototypeContextID AND " +
-																									//"BContexts.ContextID = BodyContextID " +
+																									"LanguageID, PContexts.ContextString, PrototypeContextID, " +
+																									"BContexts.ContextString, BodyContextID " +
+																								"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
+																								"WHERE FileID = ? AND " +
+																									"PContexts.ContextID = PrototypeContextID AND " +
+																									"BContexts.ContextID = BodyContextID " +
 																								"ORDER BY CommentLineNumber ASC", fileID))
 				{
 				while (query.Step() && !cancelled())
@@ -76,6 +75,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.BodyContextID = query.IntColumn(16);
 
 					topics.Add(topic);
+
+					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
+					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
 					}
 				}
 			
@@ -130,15 +132,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
 			// PrototypeContext
-			//xxxRequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
+			RequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
 			// BodyContext
-			//xxxRequireZero("BodyContext", "BodyContextID", topic.BodyContextID);
+			RequireZero("BodyContext", "BodyContextID", topic.BodyContextID);
 			
 			RequireAtLeast(LockType.ReadWrite);
 
 			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
-
-			// xxx determine context ids
+			GetOrCreateContextIDs(topic);
 			
 			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, EndingSymbol, " +
 													"TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, LanguageID, " +
@@ -206,7 +207,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// must change as well.
 
 			newTopic.TopicID = oldTopic.TopicID;
-			// xxx contexts
+			
+			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
+				{
+				newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
+				newTopic.BodyContextID = oldTopic.BodyContextID;
+				}
+			else
+				{
+				GetOrCreateContextIDs(newTopic);
+				}
 
 			connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
 													"PrototypeContextID=?, BodyContextID=? " +
@@ -282,9 +292,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
 			// PrototypeContext, null is a valid value
-			//xxxRequireNonZero("DeleteTopic", "PrototypeContextID", topic.PrototypeContextID);
+			RequireNonZero("DeleteTopic", "PrototypeContextID", topic.PrototypeContextID);
 			// BodyContext, null is a valid value
-			//xxxRequireNonZero("DeleteTopic", "BodyContextID", topic.BodyContextID);
+			RequireNonZero("DeleteTopic", "BodyContextID", topic.BodyContextID);
 
 			RequireAtLeast(LockType.ReadWrite);
 
@@ -465,6 +475,277 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					}
 
 				CommitTransaction();
+				}
+			}
+
+
+
+		// Group: Context Functions
+		// __________________________________________________________________________
+
+
+		/* Function: GetOrCreateContextIDs
+		 * 
+		 * Retrieves the context IDs for <Topic.PrototypeContext> and <Topic.BodyContext> if they are not already set.
+		 * If existing IDs cannot be found, they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
+		 *		
+		 * Topic Requirements:
+		 * 
+		 *		PrototypeContext - Can be null, which means global with no "using" statements.
+		 *		PrototypeContextID - If zero PrototypeContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		BodyContext - Can be null, which means global with no "using" statements.
+		 *		BodyContextID - If zero BodyContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 */
+		public void GetOrCreateContextIDs (Topic topic)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+
+			// Cache or create any missing context IDs.  Since there's only two fields to check we'll handle this by hand to minimize 
+			// memory instead of creating a HashSet or List.
+
+			if (topic.PrototypeContextID == 0)
+				{
+				if (topic.BodyContextID == 0 && topic.BodyContext != topic.PrototypeContext)
+					{
+					ContextString[] contexts = new ContextString[2] { topic.PrototypeContext, topic.BodyContext };
+					CacheOrCreateContextIDs(contexts);
+					}
+				else
+					{
+					ContextString[] contexts = new ContextString[1] { topic.PrototypeContext };
+					CacheOrCreateContextIDs(contexts);
+					}
+				}
+			else if (topic.BodyContextID == 0)
+				{
+				ContextString[] contexts = new ContextString[1] { topic.BodyContext };
+				CacheOrCreateContextIDs(contexts);
+				}
+			else
+				{  return;  }
+
+
+			// Fill in the Topic.
+
+			if (topic.PrototypeContextID == 0)
+				{  topic.PrototypeContextID = contextIDCache[topic.PrototypeContext].ID;  }
+
+			if (topic.BodyContextID == 0)
+				{  topic.BodyContextID = contextIDCache[topic.BodyContext].ID;  }
+			}
+
+
+		/* Function: GetOrCreateContextIDs
+		 * 
+		 * Retrieves the context IDs for each <Topic's> PrototypeContext and BodyContext if they are not already set.  If existing
+		 * IDs cannot be found, they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
+		 *		
+		 * Topic Requirements:
+		 * 
+		 *		PrototypeContext - Can be null, which means global with no "using" statements.
+		 *		PrototypeContextID - If zero PrototypeContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		BodyContext - Can be null, which means global with no "using" statements.
+		 *		BodyContextID - If zero BodyContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 */
+		public void GetOrCreateContextIDs (IEnumerable<Topic> topics)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+
+			// Cache or create any missing context IDs.  There may be none so create the HashSet on demand.
+
+			// HashSet handles null ContextStrings fine.
+			HashSet<ContextString> contexts = null;
+
+			foreach (Topic topic in topics)
+				{
+				if (contexts == null && (topic.PrototypeContextID == 0 || topic.BodyContextID == 0))
+					{  contexts = new HashSet<ContextString>();  }
+
+				if (topic.PrototypeContextID == 0)
+					{  contexts.Add(topic.PrototypeContext);  }
+
+				if (topic.BodyContextID == 0)
+					{  contexts.Add(topic.BodyContext);  }
+				}
+
+			if (contexts != null)
+				{  CacheOrCreateContextIDs(contexts);  }
+			else
+				{  return;  }
+
+
+			// Fill in the Topics.
+
+			foreach (Topic topic in topics)
+				{
+				if (topic.PrototypeContextID == 0)
+					{  topic.PrototypeContextID = contextIDCache[topic.PrototypeContext].ID;  }
+
+				if (topic.BodyContextID == 0)
+					{  topic.BodyContextID = contextIDCache[topic.BodyContext].ID;  }
+				}
+			}
+
+
+		/* Function: CacheOrCreateContextIDs
+		 * 
+		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDCache>.  If they don't exist in the 
+		 * database they will be created.
+		 * 
+		 * If the collection you pass in doesn't support null strings you can set plusNullContext to true and it will be included.
+		 * If it does support them you are fine just including it in the collection and leaving plusNullContext false, even if there 
+		 * may be one in the collection.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
+		 */
+		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings, bool plusNullContext = false)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			
+			// Create a list of all contextStrings not already in the cache.  Since it's possible that they'll all be in the cache we
+			// create the list object on demand.
+
+			List<string> uncachedContextStrings = null;
+
+			foreach (string contextString in contextStrings)
+				{
+				if (contextIDCache.Contains(contextString) == false)
+					{
+					if (contextString == null)
+						{  plusNullContext = true;  }
+					else
+						{  
+						if (uncachedContextStrings == null)
+							{  uncachedContextStrings = new List<string>();  }
+
+						uncachedContextStrings.Add(contextString);  
+						}
+					}
+				}
+
+			if (plusNullContext && contextIDCache.Contains(null))
+				{  plusNullContext = false;  }
+
+
+			// Can we quit early?
+
+			if (uncachedContextStrings == null && plusNullContext == false)
+				{  return;  }
+
+
+			// Create a query to lookup the uncached contexts in the database.  They may exist there.
+
+			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ContextID, ContextString FROM Contexts WHERE");
+			string[] queryParams = null;
+			bool firstWhere = true;
+
+			if (uncachedContextStrings != null)
+				{
+				for (int i = 0; i < uncachedContextStrings.Count; i++)
+					{
+					if (!firstWhere)
+						{  queryText.Append(" OR");  }
+
+					queryText.Append(" ContextString=?");
+					firstWhere = false;
+					}
+
+				queryParams = uncachedContextStrings.ToArray();
+				}
+
+			if (plusNullContext)
+				{
+				if (!firstWhere)
+					{  queryText.Append(" OR");  }
+
+				queryText.Append(" ContextString IS NULL");
+				firstWhere = false;
+				}
+
+
+			// Run the query to fill in the cache with whatever already exists in the database.
+
+			using (SQLite.Query query = (queryParams == null ? connection.Query(queryText.ToString()) :
+																										 connection.Query(queryText.ToString(), queryParams) ))
+				{
+			   while (query.Step())
+			      {  contextIDCache.Add( query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)) );  }
+			   }
+
+
+			// Pare down our list of uncached context strings.
+
+			if (uncachedContextStrings != null)
+				{
+				int i = 0;
+				while (i < uncachedContextStrings.Count)
+					{
+					if (contextIDCache.Contains(uncachedContextStrings[i]))
+						{  uncachedContextStrings.RemoveAt(i);  }
+					else
+						{  i++;  }
+					}
+
+				if (uncachedContextStrings.Count == 0)
+					{  uncachedContextStrings = null;  }
+				}
+
+			if (plusNullContext && contextIDCache.Contains(null))
+				{  plusNullContext = false;  }
+
+
+			// Can we quit now?
+
+			if (uncachedContextStrings == null && plusNullContext == false)
+				{  return;  }
+
+
+			// Create anything we still need.
+
+			RequireAtLeast(LockType.ReadWrite);
+
+			using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
+																								 "VALUES (?, ?, 0)") )
+				{
+				if (plusNullContext)
+					{
+					int id = Engine.Instance.CodeDB.UsedContextIDs.LowestAvailable;
+
+					query.BindValues(id, null);
+					query.Step();
+					query.Reset(true);
+
+					Engine.Instance.CodeDB.UsedContextIDs.Add(id);
+					contextIDCache.Add(id, new ContextString());
+					}
+
+				if (uncachedContextStrings != null)
+					{
+					foreach (string contextString in uncachedContextStrings)
+						{
+						int id = Engine.Instance.CodeDB.UsedContextIDs.LowestAvailable;
+
+						query.BindValues(id, contextString);
+						query.Step();
+						query.Reset(true);
+
+						Engine.Instance.CodeDB.UsedContextIDs.Add(id);
+						contextIDCache.Add(id, ContextString.FromExportedString(contextString));
+						}
+					}
 				}
 			}
 
