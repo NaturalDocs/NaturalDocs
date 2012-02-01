@@ -47,6 +47,7 @@
     <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
     <Compile Include="Source\CodeDB\ChangeNotifier.cs" />
     <Compile Include="Source\CodeDB\ContextIDCache.cs" />
+    <Compile Include="Source\CodeDB\ContextChangeCache.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.cs" />
     <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
     <Compile Include="Source\CodeDB\Exceptions\LockMinimumNotMet.cs" />
