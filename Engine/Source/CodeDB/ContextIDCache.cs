@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.ContextCache
+ * Class: GregValure.NaturalDocs.Engine.CodeDB.ContextIDCache
  * ____________________________________________________________________________
  * 
  * A class that provides a local cache of context ID mappings.
