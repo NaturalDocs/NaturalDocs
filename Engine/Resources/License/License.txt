@@ -5,10 +5,10 @@ _______________________________________________________________________________
 Natural Docs is Copyright © 2003-2012 Greg Valure.  Natural Docs is licensed under version 3 of the GNU
 Affero General Public License (AGPL).
 
-Portions of Natural Docs may be distributed with generated documentation files in order to help them function,
-such as JavaScript, CSS, and image files.  These individual files retain their copyright and licensing terms, but 
-they do not apply to the remainder of the generated documentation.  All other generated documentation files 
-remain under the copyright and distribution terms decided by its author(s).
+Portions of Natural Docs are automatically included with generated documentation in order to help it function,
+such as JavaScript, CSS, and image files.  These included files retain the copyright and licensing terms of 
+Natural Docs, but those terms do not apply to the remainder of the generated documentation.  All other
+generated documentation files remain under the copyright and distribution terms decided by its author.
 
 Incorporated Code:
 
