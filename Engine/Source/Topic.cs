@@ -188,10 +188,16 @@ namespace GregValure.NaturalDocs.Engine
 
 			if (summary != other.summary)
 				{  changeFlags |= ChangeFlags.Summary;  }
-			if (commentLineNumber != other.commentLineNumber)
+
+			// It's important to compare the properties and not the variables here.  Both variables may not have been set by the 
+			// parser, in which case the properties can return substitute values.  Both variables will always be set when topics are 
+			// retrieved from the database, so unless you compare them to the properties with the substitutions applied the topics 
+			// may be seen as as unequal when they're not.
+			if (CommentLineNumber != other.CommentLineNumber)
 				{  changeFlags |= ChangeFlags.CommentLineNumber;  }
-			if (codeLineNumber != other.codeLineNumber)
+			if (CodeLineNumber != other.CodeLineNumber)
 				{  changeFlags |= ChangeFlags.CodeLineNumber;  }
+
 			if (prototypeContext != other.prototypeContext)
 				{  changeFlags |= ChangeFlags.PrototypeContext;  }
 			if (bodyContext != other.bodyContext)
