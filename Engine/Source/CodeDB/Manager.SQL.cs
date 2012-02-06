@@ -123,18 +123,5 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedContextIDs.ToString());
 			}
 			
-
-		/* Function: Cleanup
-		 * 
-		 * Cleans up any stray data associated with the database, assuming all documentation is up to date.  You can pass a
-		 * <CancelDelegate> if you'd like to interrupt this process early.
-		 */
-		public void Cleanup (CancelDelegate cancelDelegate)
-			{
-			// This used to clean up ending symbol IDs.  That was removed from the database so currently there's nothing to do.
-			// We keep this function around anyway because this may change in the future.
-			}
-			
-			
 		}
 	}

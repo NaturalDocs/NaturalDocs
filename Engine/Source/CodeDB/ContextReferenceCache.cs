@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.ContextChangeCache
+ * Class: GregValure.NaturalDocs.Engine.CodeDB.ContextReferenceCache
  * ____________________________________________________________________________
  * 
  * A class that stores changes to context ID reference counts in memory so they don't have to hit the 
@@ -18,7 +18,7 @@
  *		  
  *		- When it's time to flush the cache...
  *		
- *			- Use foreach to iterate through the <ContextChangeCacheEntries>.
+ *			- Use foreach to iterate through the <ContextReferenceCacheEntries>.
  *		
  *			- Find the database reference count for any entries where it's unknown.
  *			
@@ -37,12 +37,12 @@ using System;
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
 	{
-	public class ContextChangeCache : IDObjects.Manager<ContextChangeCacheEntry>
+	public class ContextReferenceCache : IDObjects.Manager<ContextReferenceCacheEntry>
 		{
 		
-		/* Constructor: ContextChangeCache
+		/* Constructor: ContextReferenceCache
 		 */
-		public ContextChangeCache() : base (false, false, true)
+		public ContextReferenceCache() : base (false, false, true)
 			{
 			}
 
@@ -59,24 +59,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (Contains(contextID) && this[contextID].String != contextString)
 				{  
-				throw new Exception("Passed \"" + contextString + "\" to ContextChangeCache with ID " + contextID + 
+				throw new Exception("Passed \"" + contextString + "\" to ContextReferenceCache with ID " + contextID + 
 														" when the ID was already used for \"" + this[contextID].String + "\".");
 				}
 			#endif
 
-			ContextChangeCacheEntry cacheEntry = this[contextID];
+			ContextReferenceCacheEntry cacheEntry = this[contextID];
 
 			if (cacheEntry == null)
 				{
-				cacheEntry = new ContextChangeCacheEntry();
+				cacheEntry = new ContextReferenceCacheEntry();
 				cacheEntry.ID = contextID;
 				cacheEntry.String = contextString;
-				cacheEntry.ReferenceChange = 1;
+				cacheEntry.Change = 1;
 
 				this.Add(cacheEntry);
 				}
 			else
-				{  cacheEntry.ReferenceChange++;  }
+				{  cacheEntry.Change++;  }
 			}
 
 
@@ -92,24 +92,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (Contains(contextID) && this[contextID].String != contextString)
 				{  
-				throw new Exception("Passed \"" + contextString + "\" to ContextChangeCache with ID " + contextID + 
+				throw new Exception("Passed \"" + contextString + "\" to ContextReferenceCache with ID " + contextID + 
 														" when the ID was already used for \"" + this[contextID].String + "\".");
 				}
 			#endif
 
-			ContextChangeCacheEntry cacheEntry = this[contextID];
+			ContextReferenceCacheEntry cacheEntry = this[contextID];
 
 			if (cacheEntry == null)
 				{
-				cacheEntry = new ContextChangeCacheEntry();
+				cacheEntry = new ContextReferenceCacheEntry();
 				cacheEntry.ID = contextID;
 				cacheEntry.String = contextString;
-				cacheEntry.ReferenceChange = -1;
+				cacheEntry.Change = -1;
 
 				this.Add(cacheEntry);
 				}
 			else
-				{  cacheEntry.ReferenceChange--;  }
+				{  cacheEntry.Change--;  }
 			}
 
 
@@ -134,34 +134,34 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  
 				if (this[contextID].String != contextString)
 					{
-					throw new Exception("Passed \"" + contextString + "\" to ContextChangeCache with ID " + contextID + 
+					throw new Exception("Passed \"" + contextString + "\" to ContextReferenceCache with ID " + contextID + 
 															" when the ID was already used for \"" + this[contextID].String + "\".");
 					}
-				if (this[contextID].DatabaseReferencesKnown && this[contextID].DatabaseReferences != databaseReferences)
+				if (this[contextID].DatabaseCountKnown && this[contextID].DatabaseCount != databaseReferences)
 					{
 					throw new Exception("Tried to set DatabaseReferences to " + databaseReferences + " on \"" + contextString + "\"" +
-															" when the cache thought it was already " + this[contextID].DatabaseReferences + ".");
+															" when the cache thought it was already " + this[contextID].DatabaseCount + ".");
 					}
 				}
 			#endif
 
-			ContextChangeCacheEntry cacheEntry = this[contextID];
+			ContextReferenceCacheEntry cacheEntry = this[contextID];
 
 			if (cacheEntry == null)
 				{
-				cacheEntry = new ContextChangeCacheEntry();
+				cacheEntry = new ContextReferenceCacheEntry();
 				cacheEntry.ID = contextID;
 				cacheEntry.String = contextString;
-				cacheEntry.ReferenceChange = 0;
+				cacheEntry.Change = 0;
 
 				this.Add(cacheEntry);
 				}
 
-			cacheEntry.DatabaseReferences = databaseReferences;
+			cacheEntry.DatabaseCount = databaseReferences;
 			}
 
 
-		new public ContextChangeCacheEntry this [string name]
+		new public ContextReferenceCacheEntry this [string name]
 			{
 			get
 				{
@@ -200,18 +200,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 	/* ___________________________________________________________________________
 	 * 
-	 *	 Class: Gregalure.NaturalDocs.Engine.CodeDB.ContextChangeCacheEntry
+	 *	 Class: Gregalure.NaturalDocs.Engine.CodeDB.ContextReferenceCacheEntry
 	 *	 __________________________________________________________________________
 	 */
 
 
-	public class ContextChangeCacheEntry : IDObjects.Base
+	public class ContextReferenceCacheEntry : IDObjects.Base
 		{
-		public ContextChangeCacheEntry () : base ()
+		public ContextReferenceCacheEntry () : base ()
 			{
 			contextString = new Symbols.ContextString();
-			referenceChange = 0;
-			databaseReferences = -1;
+			change = 0;
+			databaseCount = -1;
 			}
 
 		override public string Name
@@ -219,7 +219,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			get
 				{  
 				if (contextString == null)
-					{  return ContextChangeCache.NullStandIn;  }
+					{  return ContextReferenceCache.NullStandIn;  }
 				else
 					{  return contextString;  }
 				}
@@ -235,44 +235,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  contextString = value;  }
 			}
 
-		/* Property: ReferenceChange
+		/* Property: Change
 		 * The change to the reference count on this context ID.  If it's positive, that many references were added.  If
-		 * it's negative, that many were removed.  This value is added to <DatabaseReferences> to get the final reference
-		 * count, but <DatabaseReferences> may be unknown until preparing to flush the cache.
+		 * it's negative, that many were removed.  This value is added to <DatabaseCount> to get the final reference
+		 * count, but <DatabaseCount> may be unknown until preparing to flush the cache.
 		 */
-		public int ReferenceChange
+		public int Change
 			{
 			get
-				{  return referenceChange;  }
+				{  return change;  }
 			set
-				{  referenceChange = value;  }
+				{  change = value;  }
 			}
 
-		/* Property: DatabaseReferences
+		/* Property: DatabaseCount
 		 * The number of references this context ID has according to what's stored in the database.  This will be -1 if
-		 * it's not known yet.  Once it's known, <ReferenceChange> must be added to it to get the final value.
+		 * it's not known yet.  Once it's known, <Change> must be added to it to get the final value.
 		 */
-		public int DatabaseReferences
+		public int DatabaseCount
 			{
 			get
-				{  return databaseReferences;  }
+				{  return databaseCount;  }
 			set
-				{  databaseReferences = value;  }
+				{  databaseCount = value;  }
 			}
 
-		/* Property: DatabaseReferencesKnown
-		 * Whether <DatabaseReferences> was retrieved from the database or is unknown.  Is the equivalent of testing
-		 * <DatabaseReferences> for -1.
+		/* Property: DatabaseCountKnown
+		 * Whether <DatabaseCount> was retrieved from the database or is unknown.  Is the equivalent of testing
+		 * <DatabaseCount> for -1.
 		 */
-		public bool DatabaseReferencesKnown
+		public bool DatabaseCountKnown
 			{
 			get
-				{  return (databaseReferences != -1);  }
+				{  return (databaseCount != -1);  }
 			}
 
 		protected Symbols.ContextString contextString;
-		protected int referenceChange;
-		protected int databaseReferences;
+		protected int change;
+		protected int databaseCount;
 
 		}
 	}

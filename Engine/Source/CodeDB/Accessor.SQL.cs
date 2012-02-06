@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Symbols;
 
@@ -138,7 +139,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			RequireAtLeast(LockType.ReadWrite);
 
-			topic.TopicID = Engine.Instance.CodeDB.UsedTopicIDs.LowestAvailable;
+			var codeDB = Engine.Instance.CodeDB;
+
+			topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
 			GetOrCreateContextIDs(topic);
 			
 			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, EndingSymbol, " +
@@ -151,10 +154,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 												topic.BodyContextID										 
 												);
 			
-			Engine.Instance.CodeDB.UsedTopicIDs.Add(topic.TopicID);
+			codeDB.UsedTopicIDs.Add(topic.TopicID);
+
+			codeDB.ContextReferenceCache.AddReference(topic.PrototypeContextID, topic.PrototypeContext);
+			codeDB.ContextReferenceCache.AddReference(topic.BodyContextID, topic.BodyContext);
 			
 			
-			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
 			
 			try
 				{
@@ -168,7 +174,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				Engine.Instance.CodeDB.ReleaseChangeWatchers();
+				codeDB.ReleaseChangeWatchers();
 				}
 			}
 
@@ -223,6 +229,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 												"WHERE TopicID = ?",
 												newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
 												newTopic.PrototypeContextID, newTopic.BodyContextID, oldTopic.TopicID);
+
+			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
+				{
+				var referenceCache = Engine.Instance.CodeDB.ContextReferenceCache;
+
+				referenceCache.RemoveReference(oldTopic.PrototypeContextID, oldTopic.PrototypeContext);
+				referenceCache.RemoveReference(oldTopic.BodyContextID, oldTopic.BodyContext);
+				referenceCache.AddReference(newTopic.PrototypeContextID, newTopic.PrototypeContext);
+				referenceCache.AddReference(newTopic.BodyContextID, newTopic.BodyContext);
+				}
+
 
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
 			
@@ -298,7 +315,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			RequireAtLeast(LockType.ReadWrite);
 
-			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
+			var codeDB = Engine.Instance.CodeDB;
+
+			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
 			
 			try
 				{
@@ -312,13 +331,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				Engine.Instance.CodeDB.ReleaseChangeWatchers();
+				codeDB.ReleaseChangeWatchers();
 				}
 
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
-			Engine.Instance.CodeDB.UsedTopicIDs.Remove(topic.TopicID);
+			
+			codeDB.UsedTopicIDs.Remove(topic.TopicID);
 
-			// xxx context ids
+			codeDB.ContextReferenceCache.RemoveReference(topic.PrototypeContextID, topic.PrototypeContext);
+			codeDB.ContextReferenceCache.RemoveReference(topic.BodyContextID, topic.BodyContext);
 			}
 			
 			
@@ -604,7 +625,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 * If the collection you pass in doesn't support null strings you can set plusNullContext to true and it will be included.
 		 * If it does support them you are fine just including it in the collection and leaving plusNullContext false, even if there 
-		 * may be one in the collection.
+		 * might be one in the collection.
 		 * 
 		 * Requirements:
 		 * 
@@ -612,6 +633,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings, bool plusNullContext = false)
 			{
+			// Remember that contextIDCache is local to the accessor and doesn't need any locking.
+			// ContextReferenceCache is part of CodeDB.Manager and requires a database lock.
+
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			
@@ -646,7 +670,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return;  }
 
 
-			// Create a query to lookup the uncached contexts in the database.  They may exist there.
+			// Create a query to lookup the uncached contexts in the database.  The IDs may already exist there.
 
 			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ContextID, ContextString FROM Contexts WHERE");
 			string[] queryParams = null;
@@ -715,6 +739,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create anything we still need.
 
+			// DEPENDENCY: FlushContextReferenceCache() assumes *every* newly created context ID will have an entry in 
+			// CodeDB.ContextReferenceCache with database references set to zero.
+
 			RequireAtLeast(LockType.ReadWrite);
 
 			using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
@@ -730,6 +757,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					Engine.Instance.CodeDB.UsedContextIDs.Add(id);
 					contextIDCache.Add(id, new ContextString());
+
+					Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, new ContextString(), 0);
 					}
 
 				if (uncachedContextStrings != null)
@@ -744,9 +773,207 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 						Engine.Instance.CodeDB.UsedContextIDs.Add(id);
 						contextIDCache.Add(id, ContextString.FromExportedString(contextString));
+
+						Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, ContextString.FromExportedString(contextString), 0);
 						}
 					}
 				}
+			}
+
+
+		/* Function: FlushContextReferenceCache
+		 * 
+		 * Applies anything waiting in <CodeDB.Manager.ContextReferenceCache> to the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If the database needs to be updated it will be upgraded automatically.
+		 */
+		public void FlushContextReferenceCache (CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			ContextReferenceCache cache = Instance.CodeDB.ContextReferenceCache;
+
+
+			// Figure out which IDs we need to get database counts for.
+
+			// DEPENDENCY:
+			//
+			// - This assumes CacheOrCreateContextIDs() will create an entry in CodeDB.ContextReferenceCache for *every* newly
+			//   created context ID with the database reference count set to zero.
+			//
+			// - This also assumes that this function deletes every context ID record with zero references from the database, and
+			//   the zero reference entry in ContextReferenceCache will exist until then.
+			//
+			// - Therefore, we can assume that there will be no zero reference records in the database that aren't also represented
+			//   in ContextReferenceCache with a known database reference count of zero.
+			//
+			// - Therefore, any cache entry with an unknown number of database references has a non-zero number in the database.
+			//
+			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references 
+			//   were added and removed) and the database reference count is unknown.  This will not result it any zero reference
+			//   records getting stranded in the database.
+
+			IDObjects.NumberSet idsToLookup = new IDObjects.NumberSet();
+
+			foreach (ContextReferenceCacheEntry cacheEntry in cache)
+				{
+				if (cacheEntry.DatabaseCountKnown == false && cacheEntry.Change != 0)
+					{  idsToLookup.Add(cacheEntry.ID);  }
+				}
+
+
+			// Build the query to fill in the cache.  We can take advantage of being able to browse a number set by range instead of 
+			// just by individual ID.
+
+			if (idsToLookup.IsEmpty == false)
+				{
+				StringBuilder queryText = new StringBuilder("SELECT ContextID, ContextString, ReferenceCount FROM Contexts WHERE ");
+				List<object> queryParams = new List<object>();
+
+				foreach (IDObjects.NumberRange range in idsToLookup.Ranges)
+					{
+					if (queryParams.Count > 0)
+						{  queryText.Append("OR ");  }
+
+					if (range.Low == range.High)
+						{
+						queryText.Append("ContextID=? ");
+						queryParams.Add(range.Low);
+						}
+					else
+						{
+						queryText.Append("(ContextID >= ? AND ContextID <= ?) ");
+						queryParams.Add(range.Low);
+						queryParams.Add(range.High);
+						}
+					}
+
+				if (cancelled())
+					{  return;  }
+
+
+				// Run the query to fill in the cache.
+			
+				// ContextReferenceCache is governed by the same lock as the database, so we need read/write to change it even
+				// though we're not changing records yet.
+				RequireAtLeast(LockType.ReadWrite);
+
+				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+					{
+					while (query.Step())
+						{
+						cache.SetDatabaseReferences(query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)),
+																				query.IntColumn(2));
+
+						if (cancelled())
+							{  return;  }
+						}
+					}
+
+				} // if idsToLookup isn't empty
+
+
+			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
+			// second pass.
+			
+			BeginTransaction();
+
+			// Reuse the NumberSet object.
+			IDObjects.NumberSet idsToDelete = idsToLookup;
+			idsToLookup = null;
+			idsToDelete.Clear();
+
+			using (SQLite.Query updateQuery = connection.Query("UPDATE Contexts SET ReferenceCount=? WHERE ContextID=?"))
+				{
+				foreach (ContextReferenceCacheEntry cacheEntry in cache)
+					{
+					// Sanity checks
+					#if DEBUG
+					if (cacheEntry.DatabaseCountKnown == false && cacheEntry.Change != 0)
+						{  
+						throw new Exception("ContextReferenceCache entry " + cacheEntry.ID + ", \"" + cacheEntry.String + 
+																"\" not properly filled in before flushing.");  
+						}
+					if (cacheEntry.DatabaseCountKnown == true && cacheEntry.DatabaseCount + cacheEntry.Change < 0)
+						{  
+						throw new Exception("ContextReferenceCache entry " + cacheEntry.ID + ", \"" + cacheEntry.String +
+																"\" led to a negative reference count.");  
+						}
+					#endif
+
+					if (cacheEntry.DatabaseCountKnown)
+						{
+						if (cacheEntry.DatabaseCount + cacheEntry.Change == 0)
+							{
+							idsToDelete.Add(cacheEntry.ID);
+							}
+						else if (cacheEntry.Change != 0)
+							{
+							updateQuery.BindValues(cacheEntry.DatabaseCount + cacheEntry.Change, cacheEntry.ID);
+							updateQuery.Step();
+							updateQuery.Reset(true);
+
+							// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+							// can't remove the entry from the set while we're iterating through it.
+							cacheEntry.DatabaseCount += cacheEntry.Change;
+							cacheEntry.Change = 0;
+							}
+
+						if (cancelled())
+							{  
+							CommitTransaction();
+							return;
+							}
+						}
+					}
+				}
+
+
+			// Delete the database records that need it.  Why a second pass?  It avoids these problems of doing it in one:
+			//
+			//    - Operation is cancelled, you have entries in the cache that aren't in the database anymore because you couldn't
+			//      remove them while iterating through it.
+			//    - Operation is cancelled, you took the ID out of CodeDB.Manager.UsedContextIDs but there are still entries in the
+			//      cache that reference it because you couldn't remove them while iterating through it.
+			//    - Operation is cancelled, you didn't take the ID out of CodeDB.Manager.UsedContextIDs to avoid above but now
+			//      you have unused IDs marked as used.
+			//
+			// All of the above could be coded around, it's just more complicated.  Also, it's more efficient to pack it all into one
+			// query rather than crossing the boundaries between C# and SQLite for every record individually.
+			
+			if (idsToDelete.IsEmpty == false)
+				{
+				StringBuilder queryText = new StringBuilder("DELETE FROM Contexts WHERE ");
+				List<object> queryParams = new List<object>();
+
+				foreach (IDObjects.NumberRange range in idsToDelete.Ranges)
+					{
+					if (queryParams.Count > 0)
+						{  queryText.Append("OR ");  }
+
+					if (range.Low == range.High)
+						{
+						queryText.Append("ContextID=? ");
+						queryParams.Add(range.Low);
+						}
+					else
+						{
+						queryText.Append("(ContextID >= ? AND ContextID <= ?) ");
+						queryParams.Add(range.Low);
+						queryParams.Add(range.High);
+						}
+					}
+
+				connection.Execute(queryText.ToString(), queryParams.ToArray());
+				Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
+
+				} // if idsToDelete isn't empty
+
+
+			CommitTransaction();
+			cache.Clear();
 			}
 
 

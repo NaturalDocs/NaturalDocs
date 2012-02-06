@@ -17,7 +17,10 @@
  *		- The change watchers will receive notifications of any modifications the accessors perform.  They can be added and
  *		  removed while the module is running.
  *		  
- *		- Each <Accessor> must be disposed before disposing the database manager.
+ *		- Each <Accessor> must be disposed before disposing of the database manager.
+ *		
+ *		- Disposing of the manager will automatically call <Cleanup()>, though if you have some idle time in which the 
+ *		  documentation is completely updated you may call it ahead of time.
  *		  
  * 
  * Multithreading: Thread Safety Notes
@@ -75,6 +78,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			databaseLock = new Lock();
 			usedTopicIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
+			contextReferenceCache = new ContextReferenceCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
 			}
@@ -209,13 +213,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (databaseLock.IsLocked)
 					{  throw new Exception("Attempted to dispose of database when there were still locks held.");  }
-					
+				
+				Cleanup(Delegates.NeverCancel);
 				SaveSystemVariablesAndVersion();
 					
 				connection.Dispose();
 				connection = null;
 
 				usedTopicIDs.Clear();
+				usedContextIDs.Clear();
+				contextReferenceCache.Clear();
 				
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
 
@@ -225,6 +232,35 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Function: Cleanup
+		 * 
+		 * Cleans up any stray data associated with the database, assuming all documentation is up to date.  You can pass a
+		 * <CancelDelegate> if you'd like to interrupt this process early.
+		 * 
+		 * <Dispose()> will call this function automatically so it's not strictly necessary to call it manually, though it's good
+		 * practice to.  If you have idle time in which the documentation is completely up to date, calling this then instead of
+		 * leaving it for <Dispose()> will allow the engine to shut down faster.
+		 */
+		public void Cleanup (CancelDelegate cancelDelegate)
+			{
+			FlushContextReferenceCache(cancelDelegate);
+			}
+
+
+		/* Function: FlushContextReferenceCache
+		 * Applies any changes waiting in <ContextReferenceCache> to the database.
+		 */
+		protected void FlushContextReferenceCache (CancelDelegate cancelDelegate)
+			{
+			using (Accessor accessor = GetAccessor())
+				{
+				accessor.GetReadPossibleWriteLock();
+				accessor.FlushContextReferenceCache(cancelDelegate);
+				accessor.ReleaseLock();
+				}
+			}
+
+
 			
 		// Group: Accessor Properties
 		// These properties are internal and are only meant for use by <Accessor>.
@@ -241,7 +277,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return databaseLock;  }
 			}
 			
-			
 		/* Property: UsedTopicIDs
 		 * An <IDObjects.NumberSet> of all the used topic IDs in <CodeDB.Topics>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -251,7 +286,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return usedTopicIDs;  }
 			}
 			
-			
 		/* Property: UsedContextIDs
 		 * An <IDObjects.NumberSet> of all the used context IDs in <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -259,6 +293,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{  return usedContextIDs;  }
+			}
+
+		/* Property: ContextReferenceCache
+		 * A cache of all the reference count changes to <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal ContextReferenceCache ContextReferenceCache
+			{
+			get
+				{  return contextReferenceCache;  }
 			}
 			
 			
@@ -311,6 +354,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* var: usedContextIDs
 		 */
 		protected IDObjects.NumberSet usedContextIDs;
+
+		/* var: contextReferenceCache
+		 * A cache of all the reference count changes to be applied to <CodeDB.Contexts>.
+		 */
+		protected ContextReferenceCache contextReferenceCache;
 		
 		/* var: changeWatchers
 		 * A list of objects that are watching the database for changes.  If there are none, the list will be empty
