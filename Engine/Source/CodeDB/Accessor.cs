@@ -203,30 +203,39 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 		/* Function: RequireZero
-		 * Throws an exception if a <Topic's> field is not zero.
+		 * Throws an exception if the value is not zero.
 		 */
 		protected void RequireZero (string operation, string fieldName, int value)
 			{
 			if (value != 0)
-				{  throw new Exceptions.TopicValueMustBeZero(operation, fieldName);  }
+				{  throw new Exceptions.FieldMustBeZero(operation, fieldName);  }
 			}
 			
 		/* Function: RequireNonZero
-		 * Throws an exception if a <Topic's> field is zero.
+		 * Throws an exception if the value is zero.
 		 */
 		protected void RequireNonZero (string operation, string fieldName, int value)
 			{
 			if (value == 0)
-				{  throw new Exceptions.TopicValueMustBeNonZero(operation, fieldName);  }
+				{  throw new Exceptions.FieldMustBeNonZero(operation, fieldName);  }
 			}
 			
+		/* Function: RequireNull
+		 * Throws an exception if the value is not null.
+		 */
+		protected void RequireNull (string operation, string fieldName, string value)
+			{
+			if (value != null)
+				{  throw new Exceptions.FieldMustBeNull(operation, fieldName);  }
+			}			
+
 		/* Function: RequireContent
-		 * Throws an exception if a <Topic's> field is null or an empty string.
+		 * Throws an exception if the value is null or an empty string.
 		 */
 		protected void RequireContent (string operation, string fieldName, string value)
 			{
 			if (String.IsNullOrEmpty(value))
-				{  throw new Exceptions.TopicStringMustHaveContent(operation, fieldName);  }
+				{  throw new Exceptions.FieldMustHaveContent(operation, fieldName);  }
 			}			
 
 

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
 
 
@@ -135,7 +136,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// PrototypeContext
 			RequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
 			// BodyContext
-			RequireZero("BodyContext", "BodyContextID", topic.BodyContextID);
+			RequireZero("AddTopic", "BodyContextID", topic.BodyContextID);
 			
 			RequireAtLeast(LockType.ReadWrite);
 

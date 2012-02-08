@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Exceptions.TopicValueMustBeNonZero
+ * Class: GregValure.NaturalDocs.Engine.CodeDB.Exceptions.FieldMustBeNonZero
  * ____________________________________________________________________________
  * 
- * Thrown when a <Topic's> field isn't correct for the operation you're trying to attempt.
+ * Thrown when a field isn't correct for the operation you're trying to attempt.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -15,10 +15,10 @@ using System;
 
 namespace GregValure.NaturalDocs.Engine.CodeDB.Exceptions
 	{
-	public class TopicValueMustBeNonZero : Exception
+	public class FieldMustBeNonZero : Exception
 		{
-		public TopicValueMustBeNonZero (string operation, string fieldName)
-			: base ( "Topic's " + fieldName + " must be non-zero to use " + operation + '.' )
+		public FieldMustBeNonZero (string operation, string fieldName)
+			: base ( "The " + fieldName + " field must be non-zero to use " + operation + '.' )
 			{
 			}
 		}
