@@ -139,6 +139,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireZero("AddTopic", "BodyContextID", topic.BodyContextID);
 			
 			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
 
 			var codeDB = Engine.Instance.CodeDB;
 
@@ -159,6 +160,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			codeDB.ContextReferenceCache.AddReference(topic.PrototypeContextID, topic.PrototypeContext);
 			codeDB.ContextReferenceCache.AddReference(topic.BodyContextID, topic.BodyContext);
+
+			CommitTransaction();
 			
 			
 			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
@@ -209,6 +212,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			#endif
 
 			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
 
 			// DEPENDENCY: This must update all fields marked relevant in Topic.DatabaseCompare().  If that function changes this one
 			// must change as well.
@@ -240,6 +244,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				referenceCache.AddReference(newTopic.PrototypeContextID, newTopic.PrototypeContext);
 				referenceCache.AddReference(newTopic.BodyContextID, newTopic.BodyContext);
 				}
+
+			CommitTransaction();
 
 
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
@@ -335,12 +341,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				codeDB.ReleaseChangeWatchers();
 				}
 
+			BeginTransaction();
+
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
 			codeDB.UsedTopicIDs.Remove(topic.TopicID);
 
 			codeDB.ContextReferenceCache.RemoveReference(topic.PrototypeContextID, topic.PrototypeContext);
 			codeDB.ContextReferenceCache.RemoveReference(topic.BodyContextID, topic.BodyContext);
+
+			CommitTransaction();
 			}
 			
 			
@@ -744,6 +754,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// CodeDB.ContextReferenceCache with database references set to zero.
 
 			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
 
 			using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
 																								 "VALUES (?, ?, 0)") )
@@ -779,6 +790,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						}
 					}
 				}
+
+			CommitTransaction();
 			}
 
 
