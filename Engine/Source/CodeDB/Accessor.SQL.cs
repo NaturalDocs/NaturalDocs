@@ -460,7 +460,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			catch
 				{
-				if (madeChanges == true && inTransaction)
+				if (madeChanges == true && transactionLevel > 0)
 					{  RollbackTransactionForException();  }
 					
 				throw;
@@ -985,9 +985,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		
 		/* Function: BeginTransaction
 		 * 
-		 * Starts a new transaction.  Note that transactions MUST BE COMMITTED except in error conditions like exceptions.
-		 * There are other changes to Natural Docs' state that occur with each change independently of transactions so they
-		 * cannot be rolled back with the database.
+		 * Starts a new transaction.  Transactions can be nested within one another.
+		 * 
+		 * All transactions MUST BE COMMITTED except in error conditions like exceptions.  There are other changes to 
+		 * Natural Docs' state that occur with each change independently of transactions so they cannot be rolled back 
+		 * with the database.  Also, SQLite doesn't support nested transactions, that's an abstraction implemented by this
+		 * class.
 		 * 
 		 * Requirements:
 		 * 
@@ -995,13 +998,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void BeginTransaction ()
 			{
-			RequireAtLeast(LockType.ReadWrite);
-			
-			if (inTransaction)
-				{  throw new Exception("Tried to create a transaction when one was already in effect.");  }
-				
-			connection.Execute("BEGIN IMMEDIATE TRANSACTION");
-			inTransaction = true;
+			if (transactionLevel == 0)
+				{
+				RequireAtLeast(LockType.ReadWrite);
+				connection.Execute("BEGIN IMMEDIATE TRANSACTION");
+				}
+
+			transactionLevel++;
 			}
 			
 		/* Function: CommitTransaction
@@ -1014,13 +1017,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void CommitTransaction ()
 			{
-			RequireAtLeast(LockType.ReadWrite);
-			
-			if (!inTransaction)
-				{  throw new Exception("Tried to commit a transaction when one was not in effect.");  } 
-			
-			connection.Execute("COMMIT TRANSACTION");
-			inTransaction = false;
+			if (transactionLevel == 1)
+				{
+				RequireAtLeast(LockType.ReadWrite);
+				connection.Execute("COMMIT TRANSACTION");
+				}
+
+			transactionLevel--;
 			}
 
 		/* Function: RollbackTransactionForException
@@ -1037,10 +1040,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void RollbackTransactionForException ()
 			{
-			if (inTransaction)
+			if (transactionLevel != 0)
 				{  
 				connection.Execute("ROLLBACK TRANSACTION");
-				inTransaction = false;
+				transactionLevel = 0;
 				}
 			}
 

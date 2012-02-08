@@ -72,7 +72,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			this.connection = connection;
 			lockHeld = LockType.None;
 			this.priority = priority;
-			inTransaction = false;
+			transactionLevel = 0;
 			contextIDCache = new ContextIDCache();
 			}
 			
@@ -83,7 +83,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			if (connection != null)
 				{
-				if (inTransaction)
+				if (transactionLevel > 0)
 					{  throw new Exception ("Attempted to dispose of an Accessor while in a transaction.");  }
 
 				if (lockHeld != LockType.None)
@@ -274,10 +274,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected bool priority;
 		
-		/* var: inTransaction
-		 * Whether a transaction is in effect.
+		/* var: transactionLevel
+		 * How many nested transactions we are in, or zero if none.
 		 */
-		protected bool inTransaction;
+		protected int transactionLevel;
 
 		/* var: contextIDCache
 		 * A cache mapping contexts to their IDs.  This is useful because contexts are going to be reused many times
