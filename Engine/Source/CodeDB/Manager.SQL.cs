@@ -24,11 +24,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			connection.Execute("CREATE TABLE System (Version TEXT NOT NULL, " +
 																							"UsedTopicIDs TEXT NOT NULL, " +
+																							"UsedLinkIDs TEXT NOT NULL, " +
 																							"UsedContextIDs TEXT NOT NULL )");
 			
-			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedContextIDs) VALUES (?,?,?)", 
-										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
+			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedLinkIDs, UsedContextIDs) VALUES (?,?,?,?)", 
+										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString,
+										IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
+			usedLinkIDs.Clear();
+			usedContextIDs.Clear();
 			
 			
 			connection.Execute("CREATE TABLE Topics (TopicID INTEGER PRIMARY KEY NOT NULL, " +
@@ -104,12 +108,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void LoadSystemVariables ()
 			{
-			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedContextIDs from System"))
+			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedLinkIDs, UsedContextIDs from System"))
 				{
 				query.Step();
 				
 				usedTopicIDs.FromString( query.StringColumn(0) );
-				usedContextIDs.FromString( query.StringColumn(1) );
+				usedLinkIDs.FromString( query.StringColumn(1) );
+				usedContextIDs.FromString( query.StringColumn(2) );
 				}
 			}
 			
@@ -119,8 +124,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void SaveSystemVariablesAndVersion ()
 			{
-			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedContextIDs=?", 
-												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedContextIDs.ToString());
+			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedLinkIDs=?, UsedContextIDs=?", 
+												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedLinkIDs.ToString(), usedContextIDs.ToString());
 			}
 			
 		}

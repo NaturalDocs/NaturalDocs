@@ -77,6 +77,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			databaseLock = new Lock();
 			usedTopicIDs = new IDObjects.NumberSet();
+			usedLinkIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
 			contextReferenceCache = new ContextReferenceCache();
 			
@@ -286,6 +287,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return usedTopicIDs;  }
 			}
 			
+		/* Property: UsedLinkIDs
+		 * An <IDObjects.NumberSet> of all the used link IDs in <CodeDB.Links>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal IDObjects.NumberSet UsedLinkIDs
+			{
+			get
+				{  return usedLinkIDs;  }
+			}
+			
 		/* Property: UsedContextIDs
 		 * An <IDObjects.NumberSet> of all the used context IDs in <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -350,6 +360,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* var: usedTopicIDs
 		 */
 		protected IDObjects.NumberSet usedTopicIDs;
+
+		/* var: usedLinkIDs
+		 */
+		protected IDObjects.NumberSet usedLinkIDs;
 
 		/* var: usedContextIDs
 		 */
