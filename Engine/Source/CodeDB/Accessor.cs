@@ -275,7 +275,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		protected bool priority;
 		
 		/* var: transactionLevel
-		 * How many nested transactions we are in, or zero if none.
+		 * How many nested transactions we are in, or zero if none.  If -1, the transaction was broken with an exception.
 		 */
 		protected int transactionLevel;
 

@@ -1001,7 +1001,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Starts a new transaction.  Transactions can be nested within one another.
 		 * 
 		 * All transactions MUST BE COMMITTED except in error conditions like exceptions.  There are other changes to 
-		 * Natural Docs' state that occur with each change independently of transactions so they cannot be rolled back 
+		 * Natural Docs' state that occur with each change independent of transactions so they would not be rolled back 
 		 * with the database.  Also, SQLite doesn't support nested transactions, that's an abstraction implemented by this
 		 * class.
 		 * 
@@ -1011,7 +1011,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void BeginTransaction ()
 			{
-			if (transactionLevel == 0)
+			if (transactionLevel == -1)
+				{  throw new Exception("Cannot start a new transaction after one was broken by an exception.");  }
+
+			else if (transactionLevel == 0)
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				connection.Execute("BEGIN IMMEDIATE TRANSACTION");
@@ -1030,7 +1033,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void CommitTransaction ()
 			{
-			if (transactionLevel == 1)
+			if (transactionLevel == -1)
+				{  throw new Exception("Cannot commit a transaction after one was broken by an exception.");  }
+
+			else if (transactionLevel == 0)
+				{  throw new Exception("Tried to commit a non-existent transaction.");  }
+
+			else if (transactionLevel == 1)
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				connection.Execute("COMMIT TRANSACTION");
@@ -1045,7 +1054,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * you can roll back a transaction because there are other state changes within Natural Docs that occur and would
 		 * not be reverted with the database.  This function only exists so that you can get out of the transaction if an
 		 * exception occurs, which prevents an additional exception from occurring if you try to dispose of the Accessor
-		 * while a transaction is still in effect.
+		 * while a transaction is still in effect.  You cannot start a new transaction after this occurs, you should be exiting
+		 * the program.
 		 * 
 		 * Requirements:
 		 * 
@@ -1053,11 +1063,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void RollbackTransactionForException ()
 			{
-			if (transactionLevel != 0)
-				{  
-				connection.Execute("ROLLBACK TRANSACTION");
-				transactionLevel = 0;
-				}
+			if (transactionLevel >= 1)
+				{  connection.Execute("ROLLBACK TRANSACTION");  }
+
+			transactionLevel = -1;
 			}
 
 		}
