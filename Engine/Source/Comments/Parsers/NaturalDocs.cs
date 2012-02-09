@@ -123,6 +123,7 @@ using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 using GregValure.NaturalDocs.Engine.Languages;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.Engine.Comments.Parsers

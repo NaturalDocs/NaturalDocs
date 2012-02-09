@@ -1,12 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.LinkInterpretation
+ * Class: GregValure.NaturalDocs.Engine.Links.LinkInterpretation
  * ____________________________________________________________________________
  * 
  * A class representing a possible interpretation of a Natural Docs link in <NDMarkup>.
- * 
- * Some of the properties seem overly specific, like <PluralConversionIndex>, but they must be recorded so that
- * it's possible to score these interpretations on a consistent scale.  Although which conversion has a lower index
- * may be arbitrary, at least it allows them to always rank in the same position on a list.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -17,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments
+namespace GregValure.NaturalDocs.Engine.Links
 	{
 	public class LinkInterpretation
 		{
