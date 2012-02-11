@@ -121,9 +121,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
+using GregValure.NaturalDocs.Engine.Symbols;
 
 
 namespace GregValure.NaturalDocs.Engine.Comments.Parsers
@@ -465,7 +466,47 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
 		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 */
-		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags)
+		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parenthesis)
+			{
+			string input = linkText.CondenseWhitespace();
+			
+			if ((flags & LinkInterpretationFlags.FromOriginalText) != 0 && input.Length > 2 &&
+				 input[0] == '<' && input[input.Length - 1] == '>')
+				{
+				input = input.Substring(1, input.Length - 2);
+
+				// Remove the flag so we can pass the rest of them to LinkInterpretations_ParenthesisAlreadyRemoved().
+				flags &= LinkInterpretationFlags.FromOriginalText;
+				}
+
+			int endingParenthesisIndex = ParameterString.GetEndingParenthesisIndex(input);
+
+			if (endingParenthesisIndex == -1)
+				{  parenthesis = null;  }
+			else
+				{
+				parenthesis = input.Substring(endingParenthesisIndex);
+				input = input.Substring(0, endingParenthesisIndex).TrimEnd();
+				}
+
+			return LinkInterpretations_DontStripParenthesis(input, flags);
+			}
+
+
+		/* Function: LinkInterpretations_DontStripParenthesis
+		 * 
+		 * Generates a list of possible interpretations for the passed target of a Natural Docs link, or null if there are none.  If
+		 * <LinkInterpretationFlags.ExcludeLiteral> is not set it will always return a list of at least one interpretation.
+		 * 
+		 * If <LinkInterpretationFlags.ExcludeLiteral> is not set, the literal interpretation will always appear as the first entry
+		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
+		 * consistent order, meaning every call with the same input will generate the same list in the same order.
+		 * 
+		 * We use this awkward function name because 90% of the time you need to handle parenthesis, or at least strip them
+		 * off.  If we just made an overload of <LinkInterpretations()> without the out parameter people would use this one by 
+		 * accident.  By attaching _DontStripParenthesis it forces you to only use this one if you know what you're doing.
+		 */
+		public List<LinkInterpretation> LinkInterpretations_DontStripParenthesis (string linkText, LinkInterpretationFlags flags)
 			{
 			List<LinkInterpretation> interpretations = null;
 			string input = linkText.CondenseWhitespace();
@@ -475,7 +516,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				input = input.Substring(1, input.Length - 2);
 				}
-			
+
+
 			if ((flags & LinkInterpretationFlags.ExcludeLiteral) == 0)
 				{
 				interpretations = new List<LinkInterpretation>();
@@ -2649,9 +2691,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 									
 								else
 									{
-									// See if we can interpret the link as a named URL or e-mail address.  We can accept the first interpretation
-									// we find.
-									List<LinkInterpretation> interpretations = LinkInterpretations(tagContent, LinkInterpretationFlags.AllowNamedLinks |
+									// See if we can interpret the link as a named URL or e-mail address.  We can accept the first interpretation we find.
+									List<LinkInterpretation> interpretations = LinkInterpretations_DontStripParenthesis(tagContent, 
+																																										LinkInterpretationFlags.AllowNamedLinks |
 																																										LinkInterpretationFlags.ExcludeLiteral);
 									bool found = false;
 									

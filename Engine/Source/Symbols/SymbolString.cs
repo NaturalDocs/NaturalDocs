@@ -88,6 +88,29 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 			
+		/* Function: FromPlainText_ParenthesisAlreadyRemoved
+		 * 
+		 * Creates a SymbolString from the passed string of plain text where the parenthesis have already been removed.
+		 * 
+		 * We use this awkward function name because 90% of the time you need to handle parenthesis, or at least strip them
+		 * off.  If we just made an overload of <FromPlainText()> without the out parameter people would use this one by accident.
+		 * By attaching _ParethesisAlreadyRemoved it forces you to only use this one if you know what you're doing.
+		 * 
+		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
+		 * from another SymbolString object, use <FromExportedString()>.
+		 */
+		static public SymbolString FromPlainText_ParenthesisAlreadyRemoved (string textSymbol)
+			{
+			if (textSymbol == null)
+				{  throw new NullReferenceException();  }
+
+			SymbolString symbolString = new SymbolString(textSymbol);
+			symbolString.Normalize();
+
+			return symbolString;
+			}
+
+			
 		/* Function: FromExportedString
 		 * 
 		 * Creates a SymbolString from the passed string which originally came from another SymbolString object.  This skips 

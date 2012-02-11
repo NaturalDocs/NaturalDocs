@@ -115,7 +115,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 		
 		
 		/* var: target
+		 * 
 		 * The link target.
+		 * 
+		 * This isn't a SymbolString because LinkInterpretations may be used to find named URL and e-mail links, not
+		 * just Natural Docs links, and the target shouldn't be normalized in those cases.
 		 */
 		protected string target;
 		
