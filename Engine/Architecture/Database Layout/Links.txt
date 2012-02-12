@@ -36,13 +36,13 @@ Column: TextOrSymbol
 	will be the symbol normalized as a <Symbols.SymbolString>.
 
 
-Column: Context
+Column: ContextID
 
 	(SQL Prototype)
-		Context TEXT
+		ContextID INTEGER NOT NULL
 	(end)
 
-	The context the link appears in, encoded with <Engine.Symbols.ContextString>.
+	The ID of the context the link appears in.
 
 
 Column: FileID
@@ -100,16 +100,12 @@ Index: LinksByID
 Index: LinksByProperties
 
 	(SQL Prototype)
-		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, LanguageID, TextOrSymbol, Context)
+		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, Type, LanguageID, TextOrSymbol)
 	(end)
 
 	Links that share all these properties are considered the same link as they will always resolve the
 	exact same way.  If even one of these is different between two links there's the possibility of them
 	resolving differently and they must be treated separately.
-
-	We optimize the index by putting the easy to sort numeric columns before the text columns, and the 
-	higher cardinality FileID and TextOrSymbol columns before the lower cardinality Type, LanguageID, and 
-	Context columns.
 
 
 Index: LinksByFile

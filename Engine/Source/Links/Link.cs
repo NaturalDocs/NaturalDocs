@@ -29,6 +29,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 			type = LinkType.NaturalDocs;
 			textOrSymbol = null;
 			context = new ContextString();
+			contextID = 0;
 			fileID = 0;
 			languageID = 0;
 			endingSymbol = new EndingSymbol();
@@ -187,6 +188,18 @@ namespace GregValure.NaturalDocs.Engine.Links
 			set
 				{  context = value;  }
 			}
+
+
+		/* Property: ContextID
+		 * The ID of <Context> if known, or zero if not.
+		 */
+		public int ContextID
+			{
+			get
+				{  return contextID;  }
+			set
+				{  contextID = value;  }
+			}
 			
 			
 		/* Property: FileID
@@ -275,6 +288,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 		 * The context the link appears in.
 		 */
 		protected Symbols.ContextString context;
+
+		/* var: contextID
+		 * The ID of <context> if known, or zero if not.
+		 */
+		protected int contextID;
 		
 		/* var: fileID
 		 * The ID number of the file that defines this link.

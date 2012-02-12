@@ -60,14 +60,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE TABLE Links (LinkID INTEGER PRIMARY KEY NOT NULL, " +
 																						"Type INTEGER NOT NULL, " +
 																						"TextOrSymbol TEXT NOT NULL, " +
-																						"Context TEXT, " +
+																						"ContextID INTEGER NOT NULL, " +
 																						"FileID INTEGER NOT NULL, " +
 																						"LanguageID INTEGER NOT NULL, " +
 																						"EndingSymbol TEXT NOT NULL, " +
 																						"TargetTopicID INTEGER, " +
 																						"TargetScore INTEGER )");
 																	   
-			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, Type, LanguageID, TextOrSymbol, Context)");
+			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, Type, LanguageID, TextOrSymbol)");
 			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
 
 
