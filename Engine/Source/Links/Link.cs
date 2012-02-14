@@ -56,6 +56,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 		 */
 		public int CompareIDPropertiesTo (Link other)
 			{
+			// DEPENDENCY: What CopyNonIDPropertiesFrom() does depends on what this compares.
+
 			int result = textOrSymbol.CompareTo(other.textOrSymbol);
 
 			if (result != 0)
@@ -86,6 +88,22 @@ namespace GregValure.NaturalDocs.Engine.Links
 				{  return (fileID - other.fileID);  }
 
 			return (languageID - other.languageID);
+			}
+
+
+		/* Function: CopyNonIDPropertiesFrom
+		 * Makes this link copy all the properties not tested by <CompareIDPropertiesTo()> and <SameIDPropertiesAs()> from 
+		 * the passed link.
+		 */
+		public void CopyNonIDPropertiesFrom (Link other)
+			{
+			// DEPENDENCY: What this copies depends on what CompareIDPropertiesTo() does not.
+
+			linkID = other.LinkID;
+			contextID = other.ContextID;
+			endingSymbol = other.EndingSymbol;
+			targetTopicID = other.TargetTopicID;
+			targetScore = other.TargetScore;
 			}
 
 

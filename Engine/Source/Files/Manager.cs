@@ -818,11 +818,13 @@ namespace GregValure.NaturalDocs.Engine.Files
 																												CancelDelegate cancelDelegate)
 			{
 
-			// Source files
+			// Process source files
 			
 			if (file.Type == FileType.Source)
 				{
-				Engine.Languages.Language language = Engine.Instance.Languages.FromFileName(file.FileName);
+
+				// Try to read the file from disk
+
 				string content = null;
 				
 				try
@@ -837,7 +839,11 @@ namespace GregValure.NaturalDocs.Engine.Files
 					
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+
+
+				// Parse the file for topics and class parent links
 				
+				Engine.Languages.Language language = Engine.Instance.Languages.FromFileName(file.FileName);
 				IList<Topic> topics = null;
 				LinkSet links = null;
 
@@ -846,19 +852,40 @@ namespace GregValure.NaturalDocs.Engine.Files
 					
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+
+
+				// Parse the topic bodies for Natural Docs links
+
+				if (topics != null && topics.Count > 0)
+					{
+					foreach (Topic topic in topics)
+						{
+						if (topic.Body != null)
+							{
+							ExtractBodyLinks(topic, links);
+
+							if (cancelDelegate())
+								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+							}
+						}
+					}
 					
+
+				// Update the database
+
 				codeDBAccessor.GetReadPossibleWriteLock();
 					
 				try
 					{
 					if (topics != null && topics.Count > 0)  
-						{  
-						codeDBAccessor.UpdateTopicsInFile(file.ID, topics, cancelDelegate);  
-						}
+						{  codeDBAccessor.UpdateTopicsInFile(file.ID, topics, cancelDelegate);  }
 					else
-						{  
-						codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  
-						}
+						{  codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  }
+
+					if (links != null && links.Count > 0)  
+						{  codeDBAccessor.UpdateLinksInFile(file.ID, links, cancelDelegate);  }
+					else
+						{  codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);  }
 					}
 				finally
 					{  codeDBAccessor.ReleaseLock();  }
@@ -871,7 +898,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 				}
 
 
-			// Style files
+			// Process style files
 
 			else if (file.Type == FileType.Style)
 				{
@@ -896,7 +923,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 				}
 
 
-			// Image files
+			// Process image files
 									
 			else
 				{
@@ -920,7 +947,10 @@ namespace GregValure.NaturalDocs.Engine.Files
 				codeDBAccessor.GetReadPossibleWriteLock();
 				
 				try
-					{  codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  }
+					{  
+					codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);
+					codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);
+					}
 				finally
 					{  codeDBAccessor.ReleaseLock();  }
 				
@@ -1226,6 +1256,39 @@ namespace GregValure.NaturalDocs.Engine.Files
 
 		// Group: Misc Functions
 		// __________________________________________________________________________
+
+
+		/* Function: ExtractBodyLinks
+		 * Goes through the body of the passed <Topic> and adds any Natural Docs links it finds in the <NDMarkup> to <LinkSet>.
+		 */
+		protected void ExtractBodyLinks (Topic topic, LinkSet linkSet)
+			{
+			if (topic.Body != null)
+				{
+				NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+
+				if (iterator.GoToFirstTag("<link type=\"naturaldocs\""))
+					{
+					do
+						{
+						Link link = new Link();
+
+						// ignore LinkID
+						link.Type = LinkType.NaturalDocs;
+						link.Text = iterator.Property("originaltext");
+						link.Context = topic.BodyContext;
+						link.FileID = topic.FileID;
+						link.LanguageID = topic.LanguageID;
+						// ignore EndingSymbol
+						// ignore TargetTopicID
+						// ignore TargetScore
+
+						linkSet.Add(link);
+						}
+					while (iterator.GoToNextTag("<link type=\"naturaldocs\""));
+					}
+				}
+			}
 
 			
 		/* Function: Cleanup

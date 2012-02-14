@@ -385,7 +385,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		BodyContext - Can be null, which means global with no "using" statements.
 		 *		BodyContextID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 */
-		public void UpdateTopicsInFile (int fileID, IList<Topic> newTopics, CancelDelegate cancelled)
+		public void UpdateTopicsInFile (int fileID, IEnumerable<Topic> newTopics, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
@@ -460,7 +460,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						}
 						
 					foreach (Topic oldTopic in oldTopics)
-						{  DeleteTopic(oldTopic);  }
+						{  
+						if (cancelled())
+							{  break;  }
+
+						DeleteTopic(oldTopic);  
+						}
 					}
 					
 				if (madeChanges == true)
@@ -512,6 +517,354 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 
+		// Group: Link Functions
+		// __________________________________________________________________________
+
+
+		/* Function: GetLinksInFile
+		 * 
+		 * Retrieves a list of all the links present in the passed file ID.  If there are none it will return an empty list.  Pass a 
+		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetLinksInFile (int fileID, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<Link> links = new List<Link>();
+			
+			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
+																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
+																								"FROM Links, Contexts " +
+																								"WHERE Links.FileID = ? AND " +
+																									"Contexts.ContextID = Links.ContextID ",
+																								fileID))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Link link = new Link();
+					
+					link.LinkID = query.IntColumn(0);
+					link.Type = (LinkType)query.IntColumn(1);
+					link.TextOrSymbol = query.StringColumn(2);
+					link.ContextID = query.IntColumn(3);
+					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
+					link.LanguageID = query.IntColumn(5);
+					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
+					link.TargetTopicID = query.IntColumn(7);
+					link.TargetScore = query.IntColumn(8);
+
+					link.FileID = fileID;
+
+					links.Add(link);
+
+					contextIDCache.Add(link.ContextID, link.Context);
+					}
+				}
+			
+			return links;
+			}
+
+
+		/* Function: AddLink
+		 * 
+		 * Adds a <Link> to the database.  Assumes it doesn't already exist.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 * 
+		 * Link Requirements:
+		 * 
+		 *		LinkID - Must be zero.  This will be automatically assigned and the <Link> updated.
+		 *		Type - Must be set.
+		 *		TextOrSymbol - Must be set.
+		 *		Context - Can be null, which means global with no "using" statements.
+		 *		ContextID - Must be zero.  This will be automatically assigned and the <Link> updated.
+		 *		FileID - Must be set.
+		 *		LanguageID - Must be set.
+		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
+		 *		TargetTopicID - Must be zero.
+		 *		TargetScore - Must be zero.
+		 */
+		public void AddLink (Link link)
+			{
+			RequireZero("AddLink", "LinkID", link.LinkID);
+			// Type - enum so will always be set
+			RequireContent("AddLink", "TextOrSymbol", link.TextOrSymbol);
+			// Context
+			RequireZero("AddLink", "ContextID", link.ContextID);
+			RequireNonZero("AddLink", "FileID", link.FileID);
+			RequireNonZero("AddLink", "LanguageID", link.LanguageID);
+
+			#if DEBUG
+			// Allow EndingSymbol to be null, but if it's not, it must match.
+			if ( (link.Type == LinkType.Type || link.Type == LinkType.ClassParent) &&
+				  link.EndingSymbol != null && link.EndingSymbol != link.Symbol.EndingSymbol)
+				{  throw new Exception("Link.EndingSymbol didn't match Link.Symbol.EndingSymbol in AddLink");  }
+			#endif
+
+			RequireZero("AddLink", "TargetTopicID", link.TargetTopicID);
+			RequireZero("AddLink", "TargetScore", link.TargetScore);
+
+			StringSet alternateEndingSymbols = null;
+
+			if (link.Type == LinkType.NaturalDocs)
+				{
+				string parenthesis;
+
+				// Since we're not setting Flags.ExcludeLiteral the list will always have at least one entry.
+				// Set Flags.AllowPluralsAndPossessives to get alternate ending symbols (children = children, child)
+				// We don't need to set Flags.AllowNamedLinks because we only need the ending symbols, which will be the same either way.
+				// For example, <x at y> and <x: y> will still always end up with y as the ending symbol regardless of whether you search for
+				// named links or not, so we can avoid the extra processing.
+				List<LinkInterpretation> linkInterpretations = 
+					Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
+																												out parenthesis);
+
+				alternateEndingSymbols = new StringSet(false, false);
+
+				foreach (LinkInterpretation linkInterpretation in linkInterpretations)
+					{
+					SymbolString symbol = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(linkInterpretation.Target);
+					alternateEndingSymbols.Add(symbol.EndingSymbol);
+					}
+
+				link.EndingSymbol = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(linkInterpretations[0].Target).EndingSymbol;
+				alternateEndingSymbols.Remove(link.EndingSymbol);
+				}
+			else
+				{  link.EndingSymbol = link.Symbol.EndingSymbol;  }
+			
+
+			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
+
+			var codeDB = Engine.Instance.CodeDB;
+
+			link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
+			GetOrCreateContextIDs(link);
+			
+			connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
+													"TargetTopicID, TargetScore) " +
+			                           "VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)",
+			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol
+			                           );
+			
+			codeDB.UsedLinkIDs.Add(link.LinkID);
+			codeDB.ContextReferenceCache.AddReference(link.ContextID, link.Context);
+
+			if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
+				{
+				foreach (string alternateEndingSymbol in alternateEndingSymbols)
+				   {
+				   connection.Execute("INSERT INTO AlternateLinkEndingSymbols (LinkID, EndingSymbol) VALUES (?, ?)",
+				                              link.LinkID, alternateEndingSymbol
+				                              );
+				   }
+				}
+
+			CommitTransaction();
+			}
+			
+			
+		/* Function: DeleteLink
+		 * 
+		 * Removes a <Link> from the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 * 
+		 * Link Requirements:
+		 * 
+		 *		The link must have been retrieved from the database, and thus have all its fields set.
+		 * 
+		 *		LinkID - Must be set.
+		 *		Type - Must be set.
+		 *		TextOrSymbol - Must be set.
+		 *		Context - Can be null, which means global with no "using" statements.
+		 *		ContextID - Must be set.
+		 *		FileID - Must be set.
+		 *		LanguageID - Must be set.
+		 *		EndingSymbol - Must be set.
+		 *		TargetTopicID - Can be zero, which means the link is unresolved.
+		 *		TargetScore - Can be zero, which means the link is unresolved.
+		 */
+		public void DeleteLink (Link link)
+			{
+			RequireNonZero("DeleteLink", "LinkID", link.LinkID);
+			// Type - enum so will always be set
+			RequireContent("DeleteLink", "TextOrSymbol", link.TextOrSymbol);
+			// Context
+			RequireNonZero("DeleteLink", "ContextID", link.ContextID);
+			RequireNonZero("DeleteLink", "FileID", link.FileID);
+			RequireNonZero("DeleteLink", "LanguageID", link.LanguageID);
+			RequireContent("DeleteLink", "EndingSymbol", link.EndingSymbol);
+			// TargetTopicID
+			// TargetScore
+
+			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
+
+			var codeDB = Engine.Instance.CodeDB;
+
+			connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
+			
+			codeDB.UsedLinkIDs.Remove(link.LinkID);
+			codeDB.ContextReferenceCache.RemoveReference(link.ContextID, link.Context);
+
+			if (link.Type == LinkType.NaturalDocs)
+				{
+				connection.Execute("DELETE FROM AlternateLinkEndingSymbols WHERE LinkID=?", link.LinkID);
+				}
+
+			CommitTransaction();
+			}
+			
+			
+		/* Function: UpdateLinksInFile
+		 * 
+		 * Replaces all the links in the database under the passed file ID with the passed list.  It will query the existing links 
+		 * itself, perform a comparison, and call <AddLink()> and <DeleteLink()> as necessary.  Pass a <CancelDelegate> if
+		 * you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If any changes occur, it will be upgraded automatically.
+		 * 
+		 * Link Requirements:
+		 * 
+		 *		LinkID - Must be zero.  This will be automatically assigned and the <Link> updated.
+		 *		Type - Must be set.
+		 *		TextOrSymbol - Must be set.
+		 *		Context - Can be null, which means global with no "using" statements.
+		 *		ContextID - Must be zero.  This will be automatically assigned and the <Link> updated.
+		 *		FileID - Must be set.
+		 *		LanguageID - Must be set.
+		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
+		 *		TargetTopicID - Must be zero.
+		 *		TargetScore - Must be zero.
+		 */
+		public void UpdateLinksInFile (int fileID, IEnumerable<Link> newLinks, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			foreach (Link newLink in newLinks)
+				{
+				if (newLink.FileID != fileID)
+					{  throw new Exception ("Can't update links in file if the file IDs don't match.");  }
+				// We'll leave the rest of the topic field validation to AddLink() and DeleteLink().
+				}
+			
+			List<Link> oldLinks = GetLinksInFile(fileID, cancelled);
+			bool madeChanges = false;
+			
+			try
+				{
+				
+				foreach (Link newLink in newLinks)
+					{
+					if (cancelled())
+						{  break;  }
+						
+					bool foundMatch = false;
+					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
+						{
+						if (newLink.SameIDPropertiesAs(oldLinks[i]))
+							{
+							foundMatch = true;
+							newLink.CopyNonIDPropertiesFrom(oldLinks[i]);
+							oldLinks.RemoveAt(i);
+							}
+						}
+						
+					if (foundMatch == false)
+						{
+						if (madeChanges == false)
+							{
+							RequireAtLeast(LockType.ReadWrite);
+							BeginTransaction();
+							madeChanges = true;
+							}
+							
+						AddLink(newLink);
+						}
+					}
+					
+				// All matches would have been removed, so anything left in oldLinks was deleted.
+				if (oldLinks.Count > 0 && !cancelled())
+					{
+					if (madeChanges == false)
+						{
+						RequireAtLeast(LockType.ReadWrite);
+						BeginTransaction();
+						madeChanges = true;
+						}
+						
+					foreach (Link oldLink in oldLinks)
+						{  
+						if (cancelled())
+							{  break;  }
+
+						DeleteLink(oldLink);  
+						}
+					}
+					
+				if (madeChanges == true)
+					{
+					CommitTransaction();
+					}
+				}
+			catch
+				{
+				if (madeChanges == true && transactionLevel > 0)
+					{  RollbackTransactionForException();  }
+					
+				throw;
+				}
+			}
+
+
+		/* Function: DeleteLinksInFile
+		 * 
+		 * Deletes all the links in the database under the passed file ID.  Pass a <CancelDelegate> if you'd like to be able to
+		 * interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If any deletions occur, it will be upgraded automatically.
+		 */
+		public void DeleteLinksInFile (int fileID, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+			
+			List<Link> links = GetLinksInFile(fileID, cancelled);
+			
+			if (links.Count > 0 && !cancelled())
+				{
+				RequireAtLeast(LockType.ReadWrite);
+				BeginTransaction();
+					
+				foreach (Link link in links)
+					{  
+					DeleteLink(link);
+					
+					if (cancelled())
+						{  break;  }
+					}
+
+				CommitTransaction();
+				}
+			}
+
+
+
 		// Group: Context Functions
 		// __________________________________________________________________________
 
@@ -543,21 +896,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (topic.PrototypeContextID == 0)
 				{
 				if (topic.BodyContextID == 0 && topic.BodyContext != topic.PrototypeContext)
-					{
-					ContextString[] contexts = new ContextString[2] { topic.PrototypeContext, topic.BodyContext };
-					CacheOrCreateContextIDs(contexts);
-					}
+					{  CacheOrCreateContextIDs(topic.PrototypeContext, topic.BodyContext);  }
 				else
-					{
-					ContextString[] contexts = new ContextString[1] { topic.PrototypeContext };
-					CacheOrCreateContextIDs(contexts);
-					}
+					{  CacheOrCreateContextIDs(topic.PrototypeContext);  }
 				}
 			else if (topic.BodyContextID == 0)
-				{
-				ContextString[] contexts = new ContextString[1] { topic.BodyContext };
-				CacheOrCreateContextIDs(contexts);
-				}
+				{  CacheOrCreateContextIDs(topic.BodyContext);  }
 			else
 				{  return;  }
 
@@ -626,6 +970,32 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (topic.BodyContextID == 0)
 					{  topic.BodyContextID = contextIDCache[topic.BodyContext].ID;  }
 				}
+			}
+
+
+		/* Function: GetOrCreateContextIDs
+		 * 
+		 * Retrieves the context ID for <Link.Context> if it's not already set.  If an existing ID cannot be found, it will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If a new context is created, it will be upgraded automatically.
+		 *		
+		 * Link Requirements:
+		 * 
+		 *		Context - Can be null, which means global with no "using" statements.
+		 *		ContextID - If zero Context will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 */
+		public void GetOrCreateContextIDs (Link link)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			if (link.ContextID != 0)
+				{  return;  }
+
+			CacheOrCreateContextIDs(link.Context);
+
+			link.ContextID = contextIDCache[link.Context].ID;
 			}
 
 
@@ -792,6 +1162,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 			CommitTransaction();
+			}
+
+
+		/* Function: CacheOrCreateContextIDs
+		 * 
+		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDCache>.  If they don't exist in the 
+		 * database they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
+		 */
+		protected void CacheOrCreateContextIDs (params ContextString[] contextStrings)
+			{
+			CacheOrCreateContextIDs(contextStrings, false);
 			}
 
 
