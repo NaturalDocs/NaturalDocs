@@ -476,7 +476,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				input = input.Substring(1, input.Length - 2);
 
 				// Remove the flag so we can pass the rest of them to LinkInterpretations_ParenthesisAlreadyRemoved().
-				flags &= LinkInterpretationFlags.FromOriginalText;
+				flags &= ~LinkInterpretationFlags.FromOriginalText;
 				}
 
 			int endingParenthesisIndex = ParameterString.GetEndingParenthesisIndex(input);
