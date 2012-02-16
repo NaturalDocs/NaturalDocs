@@ -69,6 +69,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																	   
 			connection.Execute("CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, Type, LanguageID, TextOrSymbol)");
 			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
+			connection.Execute("CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)");
 
 
 			connection.Execute("CREATE TABLE AlternateLinkEndingSymbols (LinkID INTEGER NOT NULL, " +

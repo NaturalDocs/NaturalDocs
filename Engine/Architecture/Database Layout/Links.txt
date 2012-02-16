@@ -118,3 +118,10 @@ Index: LinksByEndingSymbols
 	(SQL Prototype)
 		CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)
 	(end)
+
+
+Index: LinksByTargetTopicID
+
+	(SQL Prototype)
+		CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)
+	(end)
