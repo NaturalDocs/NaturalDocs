@@ -20,6 +20,12 @@
  *		
  *		> 21?
  *		Does the number exist in the set?
+ *		
+ *		> +{4-5}
+ *		Adds another set.
+ *		
+ *		> -{8-9}
+ *		Subtracts a set.
  * 
  */
 
@@ -73,6 +79,13 @@ namespace GregValure.NaturalDocs.EngineTests
 					else if (command.StartsWith("{"))
 						{  
 						set.FromString(braces);
+						showSet = true;
+						}
+					else if (command.StartsWith("+{"))
+						{
+						Engine.IDObjects.NumberSet temp = new Engine.IDObjects.NumberSet();
+						temp.FromString(braces);
+						set.Add(temp);
 						showSet = true;
 						}
 					else if (command.StartsWith("+"))

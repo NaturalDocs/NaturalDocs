@@ -1,0 +1,198 @@
+
+// Add to first, middle, end with singles
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{5,25,45}
+= {5,10-20,25,30-40,45} Lowest Available: 1, Highest Used: 45, Count: 25
+
+
+// Add leading edges with singles
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{9,29}
+= {9-20,29-40} Lowest Available: 1, Highest Used: 40, Count: 24
+
+
+{10,30}
+= {10,30} Lowest Available: 1, Highest Used: 30, Count: 2
+
++{9,29}
+= {9-10,29-30} Lowest Available: 1, Highest Used: 30, Count: 4
+
+
+// Add trailing edges with singles
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{21,41}
+= {10-21,30-41} Lowest Available: 1, Highest Used: 41, Count: 24
+
+
+{20,40}
+= {20,40} Lowest Available: 1, Highest Used: 40, Count: 2
+
++{21,41}
+= {20-21,40-41} Lowest Available: 1, Highest Used: 41, Count: 4
+
+
+
+// Add first, middle, end with ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{5-8,22-26,45-48}
+= {5-8,10-20,22-26,30-40,45-48} Lowest Available: 1, Highest Used: 48, Count: 35
+
+
+// Add leading edges with ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{8-9,25-29}
+= {8-20,25-40} Lowest Available: 1, Highest Used: 40, Count: 29
+
+
+{10,30}
+= {10,30} Lowest Available: 1, Highest Used: 30, Count: 2
+
++{8-9,25-29}
+= {8-10,25-30} Lowest Available: 1, Highest Used: 30, Count: 9
+
+
+// Add trailing edges with ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{21-25,41-45}
+= {10-25,30-45} Lowest Available: 1, Highest Used: 45, Count: 32
+
+
+{20,40}
+= {20,40} Lowest Available: 1, Highest Used: 40, Count: 2
+
++{21-25,41-45}
+= {20-25,40-45} Lowest Available: 1, Highest Used: 45, Count: 12
+
+
+
+// Add leading overlapping ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{5-15,25-35}
+= {5-20,25-40} Lowest Available: 1, Highest Used: 40, Count: 32
+
+
+{10,30}
+= {10,30} Lowest Available: 1, Highest Used: 30, Count: 2
+
++{5-10,25-30}
+= {5-10,25-30} Lowest Available: 1, Highest Used: 30, Count: 12
+
+
+// Add trailing overlapping ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{15-25,35-45}
+= {10-25,30-45} Lowest Available: 1, Highest Used: 45, Count: 32
+
+
+{20,40}
+= {20,40} Lowest Available: 1, Highest Used: 40, Count: 2
+
++{15-20,35-40}
+= {15-20,35-40} Lowest Available: 1, Highest Used: 40, Count: 12
+
+
+
+// Add encompassing ranges
+{10-20,30-40,50-60}
+= {10-20,30-40,50-60} Lowest Available: 1, Highest Used: 60, Count: 33
+
++{5-22,28-42,48-62}
+= {5-22,28-42,48-62} Lowest Available: 1, Highest Used: 62, Count: 48
+
+
+{10,30,50}
+= {10,30,50} Lowest Available: 1, Highest Used: 50, Count: 3
+
++{5-15,25-35,45-55}
+= {5-15,25-35,45-55} Lowest Available: 1, Highest Used: 55, Count: 33
+
+
+
+// Add joining ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{21-29}
+= {10-40} Lowest Available: 1, Highest Used: 40, Count: 31
+
+
+{10,30}
+= {10,30} Lowest Available: 1, Highest Used: 30, Count: 2
+
++{11-29}
+= {10-30} Lowest Available: 1, Highest Used: 30, Count: 21
+
+
+// Add joining singles
+{10-19,21-30}
+= {10-19,21-30} Lowest Available: 1, Highest Used: 30, Count: 20
+
++{20}
+= {10-30} Lowest Available: 1, Highest Used: 30, Count: 21
+
+
+
+// Add redundant ranges
+{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{10-20,30-40}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
++{12-18,32-38}
+= {10-20,30-40} Lowest Available: 1, Highest Used: 40, Count: 22
+
+
+// Add redundant singles
+{10-20,30,40-50}
+= {10-20,30,40-50} Lowest Available: 1, Highest Used: 50, Count: 23
+
++{10,15,20,30,40,45,50}
+= {10-20,30,40-50} Lowest Available: 1, Highest Used: 50, Count: 23
+
+
+
+// Add multiply encompassing ranges
+{10-20,30-40,50-60}
+= {10-20,30-40,50-60} Lowest Available: 1, Highest Used: 60, Count: 33
+
++{5-65}
+= {5-65} Lowest Available: 1, Highest Used: 65, Count: 61
+
+
+{10,30-40,60}
+= {10,30-40,60} Lowest Available: 1, Highest Used: 60, Count: 13
+
++{5-65}
+= {5-65} Lowest Available: 1, Highest Used: 65, Count: 61
+
+
+{10-20,30-40,50-60,70-80}
+= {10-20,30-40,50-60,70-80} Lowest Available: 1, Highest Used: 80, Count: 44
+
++{15-75}
+= {10-80} Lowest Available: 1, Highest Used: 80, Count: 71
+
+
+{10-20,30,40-50,60,70-80}
+= {10-20,30,40-50,60,70-80} Lowest Available: 1, Highest Used: 80, Count: 35
+
++{15-75}
+= {10-80} Lowest Available: 1, Highest Used: 80, Count: 71
+
