@@ -150,6 +150,92 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			}
 			
 			
+		/* Function: Add
+		 * Adds the contents of an entire set from this one.
+		 */
+		public void Add (NumberSet setToAdd)
+			{
+			int position = 0;
+			int setToAddPosition = 0;
+
+			while (position < usedRanges && setToAddPosition < setToAdd.usedRanges)
+				{
+				// Remember that these are structs, so to update the list you have to update the original struct, not this one.
+				NumberRange range = ranges[position];
+				NumberRange rangeToAdd = setToAdd.ranges[setToAddPosition];
+
+				// If the range starts below or on the range to add...
+				if (range.Low <= rangeToAdd.Low)
+					{
+					// If the entire range is below the range to add, we can just advance.
+					if (range.High < rangeToAdd.Low - 1)
+						{  position++;  }
+
+					// If the entire range to add is within the existing range, we can just advance that.
+					else if (range.High >= rangeToAdd.High)
+						{  setToAddPosition++;  }
+
+					// The range to add extends past the existing one.  If it covers the gap between it and the next existing one, 
+					// merge them.
+					else if (position + 1 < usedRanges && ranges[position+1].Low <= rangeToAdd.High + 1)
+						{
+						ranges[position].High = ranges[position+1].High;
+						DeleteAtIndex(position+1);
+						// Go through the loop again without advancing since the range to add may merge multiple ranges into
+						// this one.
+						}
+					
+					// There are no more existing ranges or it doesn't cause them to connect.  Extend the existing one.
+					else
+						{  
+						ranges[position].High = rangeToAdd.High;
+						setToAddPosition++;
+
+						// We can advance this too.  The range we just added won't intersect with the next range to add, if there is one.
+						// The range we just altered won't either because it now has the same high value.
+						position++;
+						}
+					}
+
+				// If the range starts above the range to add...
+				else // range.Low > rangeToAdd.Low
+					{
+					// If the range to add extends into the existing range, extend it.
+					if (rangeToAdd.High >= range.Low - 1)
+						{
+						ranges[position].Low = rangeToAdd.Low;
+						// Go through the loop again without advancing.
+						}
+
+					// The range to add is below the existing range, insert it.
+					else
+						{
+						InsertAtIndex(position);
+						ranges[position].Low = rangeToAdd.Low;
+						ranges[position].High = rangeToAdd.High;
+
+						position++;
+						setToAddPosition++;
+						}
+					}
+				}
+
+			// If there's still more ranges left to add, add them to the end.
+
+			while (setToAddPosition < setToAdd.usedRanges)
+				{
+				NumberRange rangeToAdd = setToAdd.ranges[setToAddPosition];
+				position = usedRanges;
+
+				InsertAtIndex(position);
+				ranges[position].Low = rangeToAdd.Low;
+				ranges[position].High = rangeToAdd.High;
+
+				setToAddPosition++;
+				}
+			}
+
+
 		/* Function: Remove
 		 * Removes the specified number from the set.  Returns true if the number existed in the set and was removed, false if
 		 * it wasn't part of the set.
@@ -216,20 +302,23 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			
 			while (position < usedRanges && setToRemovePosition < setToRemove.usedRanges)
 				{
+				// Remember that these are structs, so to update the list you have to update the original struct, not this one.
+				NumberRange range = ranges[position];
+				NumberRange rangeToRemove = setToRemove.ranges[setToRemovePosition];
 				
 				// If the lower bounds is less than the removal lower bounds...
-				if (ranges[position].Low < setToRemove.ranges[setToRemovePosition].Low)
+				if (range.Low < rangeToRemove.Low)
 					{
 					
 					// If the upper bounds is also less than the removal lower bounds, advance the position.
-					if (ranges[position].High < setToRemove.ranges[setToRemovePosition].Low)
+					if (range.High < rangeToRemove.Low)
 						{  position++;  }
 						
 					// The upper bounds is somewhere in or past the removal range.  If it is less than or equal to the removal
 					// upper bounds, we can just truncate this range.
-					else if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
+					else if (range.High <= rangeToRemove.High)
 						{
-						ranges[position].High = setToRemove.ranges[setToRemovePosition].Low - 1;
+						ranges[position].High = rangeToRemove.Low - 1;
 						position++;
 						}
 						
@@ -237,9 +326,9 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					else
 						{
 						InsertAtIndex(position + 1);
-						ranges[position + 1].High = ranges[position].High;
-						ranges[position + 1].Low = setToRemove.ranges[setToRemovePosition].High + 1;
-						ranges[position].High = setToRemove.ranges[setToRemovePosition].Low - 1;
+						ranges[position + 1].High = range.High;
+						ranges[position + 1].Low = rangeToRemove.High + 1;
+						ranges[position].High = rangeToRemove.Low - 1;
 						
 						position++;
 						setToRemovePosition++;
@@ -247,17 +336,17 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					}
 					
 				// If the lower bounds is equal to the removal lower bounds...
-				else if (ranges[position].Low == setToRemove.ranges[setToRemovePosition].Low)
+				else if (range.Low == rangeToRemove.Low)
 					{
 					
 					// If the upper bounds is less than or equal to the removal upper bounds, remove the range entirely.
-					if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
+					if (range.High <= rangeToRemove.High)
 						{  DeleteAtIndex(position);  }
 						
 					// The upper bounds is greater than the removal upper bounds, truncate the range.
 					else
 						{
-						ranges[position].Low = setToRemove.ranges[setToRemovePosition].High + 1;
+						ranges[position].Low = rangeToRemove.High + 1;
 						setToRemovePosition++;
 						}
 					
@@ -268,18 +357,18 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					{
 					
 					// If the lower bounds is also greater than the removal upper bounds, advance the removal.
-					if (ranges[position].Low > setToRemove.ranges[setToRemovePosition].High)
+					if (range.Low > rangeToRemove.High)
 						{  setToRemovePosition++;  }
 						
 					// The removal upper bounds is in or past the range.  If it's greater than or equal to the upper bounds,
 					// remove the range.
-					else if (ranges[position].High <= setToRemove.ranges[setToRemovePosition].High)
+					else if (range.High <= rangeToRemove.High)
 						{  DeleteAtIndex(position);  }
 						
 					// Since it's less than the upper bounds, truncate the range.
 					else
 						{
-						ranges[position].Low = setToRemove.ranges[setToRemovePosition].High + 1;
+						ranges[position].Low = rangeToRemove.High + 1;
 						setToRemovePosition++;
 						}
 						
@@ -847,7 +936,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			// We're much more conservative about shrinking than growing because we'll actually end up using more memory until the 
 			// next garbage collection, so the savings have to be significant.
 			if (arrayLength > 8 && dataLength <= arrayLength / 8)
-				{  
+				{
 				if (dataLength < 4)
 					{  return 4;  }
 				else
