@@ -4,7 +4,7 @@
  * 
  * A variation of .NET's Dictionary class that uses null returns instead of exceptions.
  * 
- * - Reading non-existant keys returns null (or the default for value types) instead of throwing an exception.
+ * - Reading non-existent keys returns null (or the default for value types) instead of throwing an exception.
  * - Using <Add()> on a preexisting key overwrites the value instead of throwing an exception.
  * 
  */

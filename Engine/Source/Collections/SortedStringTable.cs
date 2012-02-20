@@ -6,7 +6,7 @@
  * SortedDictionary<string, object> class because
  * 
  * - It has case sensitivity and Unicode normalization flags.
- * - Reading non-existant keys returns null instead of throwing an exception.
+ * - Reading non-existent keys returns null instead of throwing an exception.
  * - Using <Add()> on a preexisting key overwrites the value instead of throwing an exception.
  * 
  */
