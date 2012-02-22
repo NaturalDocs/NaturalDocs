@@ -100,7 +100,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					if (index > 0 && ranges[index - 1].High == ranges[index].Low - 1)
 						{  
 						ranges[index - 1].High = ranges[index].High;
-						DeleteAtIndex(index);
+						RemoveAtIndex(index);
 						}
 
 					return true;
@@ -180,7 +180,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					else if (position + 1 < usedRanges && ranges[position+1].Low <= rangeToAdd.High + 1)
 						{
 						ranges[position].High = ranges[position+1].High;
-						DeleteAtIndex(position+1);
+						RemoveAtIndex(position+1);
 						// Go through the loop again without advancing since the range to add may merge multiple ranges into
 						// this one.
 						}
@@ -253,7 +253,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					{
 					// If the range is for a single number...
 					if (number == ranges[index].High)
-						{  DeleteAtIndex(index);  }
+						{  RemoveAtIndex(index);  }
 						
 					else
 						{  ranges[index].Low++;  }
@@ -341,7 +341,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					
 					// If the upper bounds is less than or equal to the removal upper bounds, remove the range entirely.
 					if (range.High <= rangeToRemove.High)
-						{  DeleteAtIndex(position);  }
+						{  RemoveAtIndex(position);  }
 						
 					// The upper bounds is greater than the removal upper bounds, truncate the range.
 					else
@@ -363,7 +363,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					// The removal upper bounds is in or past the range.  If it's greater than or equal to the upper bounds,
 					// remove the range.
 					else if (range.High <= rangeToRemove.High)
-						{  DeleteAtIndex(position);  }
+						{  RemoveAtIndex(position);  }
 						
 					// Since it's less than the upper bounds, truncate the range.
 					else
@@ -900,10 +900,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			}
 			
 			
-		/* Function: DeleteAtIndex
-		 * Deletes a <NumberRange> from <ranges> at the specified index and moves everything else down.
+		/* Function: RemoveAtIndex
+		 * Removes a <NumberRange> from <ranges> at the specified index and moves everything else down.
 		 */
-		protected void DeleteAtIndex (int index)
+		protected void RemoveAtIndex (int index)
 			{
 			int shouldShrinkTo = ShouldShrinkTo(ranges.Length, usedRanges - 1);
 
@@ -970,13 +970,13 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 * 
 		 * For example, the numbers 1, 2, 3, 4, 8, 11, 12 would be stored as [1,4],[8,8],[11,12] representing 1-4,8,11-12.
 		 */
-		protected internal NumberRange[] ranges;
+		protected NumberRange[] ranges;
 		
 		
 		/* var: usedRanges
 		 * The length of the *used* array in <ranges> since the array may be larger than the content.
 		 */
-		protected internal int usedRanges;
+		protected int usedRanges;
 
 		}
 	}

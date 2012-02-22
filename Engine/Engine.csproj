@@ -66,6 +66,7 @@
     <Compile Include="Source\Collections\StringSet.cs" />
     <Compile Include="Source\Collections\StringTable.cs" />
     <Compile Include="Source\Collections\StringToStringTable.cs" />
+    <Compile Include="Source\IDObjects\SparseNumberSet.cs" />
     <Compile Include="Source\Links\LinkInterpretation.cs" />
     <Compile Include="Source\Comments\Manager.cs" />
     <Compile Include="Source\Comments\Parser.cs" />
