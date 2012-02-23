@@ -113,6 +113,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private Result sqlite3_bind_int (IntPtr statementHandle, int index, int value);
 		
+		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
+		extern static private Result sqlite3_bind_int64 (IntPtr statementHandle, int index, long value);
+		
 		#if SQLITE_UTF16
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private Result sqlite3_bind_text16 (IntPtr statementHandle, int index, [MarshalAs(UnmanagedType.LPWStr)] string value, 
@@ -134,6 +137,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private int sqlite3_column_int (IntPtr statementHandle, int column);
+		
+		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
+		extern static private long sqlite3_column_int64 (IntPtr statementHandle, int column);
 		
 		#if SQLITE_UTF16
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
@@ -196,6 +202,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		static public Result BindInt (IntPtr statementHandle, int index, int value)
 			{  return sqlite3_bind_int(statementHandle, index, value);  }
 		
+		static public Result BindInt64 (IntPtr statementHandle, int index, long value)
+			{  return sqlite3_bind_int64(statementHandle, index, value);  }
+		
 		static public Result BindText (IntPtr statementHandle, int index, string value)
 			{  
 			#if SQLITE_UTF16
@@ -219,6 +228,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 
 		static public int ColumnInt (IntPtr statementHandle, int column)
 			{  return sqlite3_column_int (statementHandle, column);  }
+			
+		static public long ColumnInt64 (IntPtr statementHandle, int column)
+			{  return sqlite3_column_int64 (statementHandle, column);  }
 			
 		static public string ColumnText (IntPtr statementHandle, int column)
 			{

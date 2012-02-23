@@ -105,6 +105,8 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 					{  result = API.BindInt(statementHandle, index, (int)value);  }
 				else if (value is string)
 					{  result = API.BindText(statementHandle, index, (string)value);  }  
+				else if (value is long)
+					{  result = API.BindInt64(statementHandle, index, (long)value);  }
 				else if (value is double)
 					{  result = API.BindDouble(statementHandle, index, (double)value);  }
 				else
@@ -153,6 +155,12 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		 */
 		public string StringColumn (int columnIndex)
 			{  return API.ColumnText(statementHandle, columnIndex);  }
+			
+		/* Function: LongColumn
+		 * Returns the value of a 64-bit integer column in a row found by <Step()>.  The column indexes start at zero.
+		 */
+		public long LongColumn (int columnIndex)
+			{  return API.ColumnInt64(statementHandle, columnIndex);  }
 			
 		/* Function: DoubleColumn
 		 * Returns the value of a double (floating point) column in a row found by <Step()>.  The column indexes 
