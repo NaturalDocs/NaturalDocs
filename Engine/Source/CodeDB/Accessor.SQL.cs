@@ -377,23 +377,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE ");
 				List<object> queryParams = new List<object>();
 
-				foreach (IDObjects.NumberRange range in linksAffected.Ranges)
-					{
-					if (queryParams.Count > 0)
-						{  queryText.Append("OR ");  }
-
-					if (range.Low == range.High)
-						{
-						queryText.Append("LinkID=? ");
-						queryParams.Add(range.Low);
-						}
-					else
-						{
-						queryText.Append("(LinkID >= ? AND LinkID <= ?) ");
-						queryParams.Add(range.Low);
-						queryParams.Add(range.High);
-						}
-					}
+				AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
 				connection.Execute(queryText.ToString(), queryParams.ToArray());
 
@@ -1290,37 +1274,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Build the query to fill in the cache.  We can take advantage of being able to browse a number set by range instead of 
-			// just by individual ID.
+			// Fill in the cache.
 
 			if (idsToLookup.IsEmpty == false)
 				{
 				StringBuilder queryText = new StringBuilder("SELECT ContextID, ContextString, ReferenceCount FROM Contexts WHERE ");
 				List<object> queryParams = new List<object>();
 
-				foreach (IDObjects.NumberRange range in idsToLookup.Ranges)
-					{
-					if (queryParams.Count > 0)
-						{  queryText.Append("OR ");  }
-
-					if (range.Low == range.High)
-						{
-						queryText.Append("ContextID=? ");
-						queryParams.Add(range.Low);
-						}
-					else
-						{
-						queryText.Append("(ContextID >= ? AND ContextID <= ?) ");
-						queryParams.Add(range.Low);
-						queryParams.Add(range.High);
-						}
-					}
+				AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToLookup, queryText, queryParams);
 
 				if (cancelled())
 					{  return;  }
-
-
-				// Run the query to fill in the cache.
 			
 				// ContextReferenceCache is governed by the same lock as the database, so we need read/write to change it even
 				// though we're not changing records yet.
@@ -1414,23 +1378,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				StringBuilder queryText = new StringBuilder("DELETE FROM Contexts WHERE ");
 				List<object> queryParams = new List<object>();
 
-				foreach (IDObjects.NumberRange range in idsToDelete.Ranges)
-					{
-					if (queryParams.Count > 0)
-						{  queryText.Append("OR ");  }
-
-					if (range.Low == range.High)
-						{
-						queryText.Append("ContextID=? ");
-						queryParams.Add(range.Low);
-						}
-					else
-						{
-						queryText.Append("(ContextID >= ? AND ContextID <= ?) ");
-						queryParams.Add(range.Low);
-						queryParams.Add(range.High);
-						}
-					}
+				AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToDelete, queryText, queryParams);
 
 				connection.Execute(queryText.ToString(), queryParams.ToArray());
 				Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
@@ -1519,6 +1467,69 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  connection.Execute("ROLLBACK TRANSACTION");  }
 
 			transactionLevel = -1;
+			}
+
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
+		/* Function: AppendWhereClause_ColumnIsInNumberSet
+		 * 
+		 * Generates a SQL WHERE clause for testing that a column's value is contained in a number set.  It will be appended to 
+		 * the passed StringBuilder and list of parameters.
+		 * 
+		 * For example, calling this with the NumberSet {2,5-8} would add 
+		 * 
+		 *		> (Column=? OR (Column >= ? AND Column <= ?))
+		 * 
+		 * to the end of the query and 2, 5, and 8 to the list of parameters.
+		 * 
+		 * 
+		 * Parameters:
+		 * 
+		 *		columnName - The name of the column to test against the NumberSet.
+		 *		numberSet - The <IDObjects.NumberSet> to use in the query.
+		 *		queryText - The query being built.  The new text is appended to it, so it must already contain a query up to the
+		 *							  WHERE clause, including already having the WHERE keyword.
+		 *		queryParams - The parameter list for the query being built.  The new numbers are appended to it, so it must already
+		 *									contain the parameters for any question marks appearing earlier in the query.
+		 */
+		protected void AppendWhereClause_ColumnIsInNumberSet (string columnName, IDObjects.NumberSet numberSet, 
+																												  StringBuilder queryText, List<object> queryParams)
+			{
+			#if DEBUG
+			if (queryText.ToString().IndexOf(" WHERE", StringComparison.CurrentCultureIgnoreCase) == -1)
+				{  throw new Exception("The query text must already have a WHERE keyword before callling AppendWhereClause_ functions.");  }
+			#endif
+
+			// Surround the entire clause with parenthesis and spaces to be safe.
+			queryText.Append(" (");
+
+			bool firstParam = true;
+
+			foreach (IDObjects.NumberRange range in numberSet.Ranges)
+				{
+				if (firstParam)
+					{  firstParam = false;  }
+				else
+					{  queryText.Append(" OR ");  }
+
+				if (range.Low == range.High)
+					{
+					queryText.Append(columnName + "=?");
+					queryParams.Add(range.Low);
+					}
+				else
+					{
+					queryText.Append("(" + columnName + ">=? AND " + columnName + "<=?)");
+					queryParams.Add(range.Low);
+					queryParams.Add(range.High);
+					}
+				}
+
+			queryText.Append(") ");
 			}
 
 		}
