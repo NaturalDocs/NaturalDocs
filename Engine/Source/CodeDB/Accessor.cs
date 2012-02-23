@@ -211,6 +211,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exceptions.FieldMustBeZero(operation, fieldName);  }
 			}
 			
+		/* Function: RequireZero
+		 * Throws an exception if the value is not zero.
+		 */
+		protected void RequireZero (string operation, string fieldName, long value)
+			{
+			if (value != 0)
+				{  throw new Exceptions.FieldMustBeZero(operation, fieldName);  }
+			}
+			
 		/* Function: RequireNonZero
 		 * Throws an exception if the value is zero.
 		 */

@@ -604,7 +604,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.LanguageID = query.IntColumn(5);
 					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
 					link.TargetTopicID = query.IntColumn(7);
-					link.TargetScore = query.IntColumn(8);
+					link.TargetScore = query.LongColumn(8);
 
 					link.FileID = fileID;
 

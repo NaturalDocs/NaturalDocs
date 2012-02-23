@@ -72,15 +72,19 @@ Column: EndingSymbol
 Column: TargetTopicID
 
 	(SQL Prototype)
-		TargetTopicID INTEGER
+		TargetTopicID INTEGER NOT NULL
 	(end)
+
+	The topic ID this link resolves to, or zero if none.
 
 
 Column: TargetScore
 
 	(SQL Prototype)
-		TargetScore INTEGER
+		TargetScore INTEGER NOT NULL
 	(end)
+
+	The score of the link to <TargetTopicID>, or zero if there is none.  This is a 64-bit value.
 
 
 

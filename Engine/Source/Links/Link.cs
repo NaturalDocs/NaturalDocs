@@ -272,7 +272,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 		/* Property: TargetScore
 		 * If <TargetTopicID> is set, the numeric score of the match.
 		 */
-		public int TargetScore
+		public long TargetScore
 			{
 			get
 				{  return targetScore;  }
@@ -336,7 +336,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 		/* var: targetScore
 		 * If <targetTopicID> is set, the numeric score of the match.
 		 */
-		protected int targetScore;
+		protected long targetScore;
 				
 		}
 	}
