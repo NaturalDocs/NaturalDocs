@@ -58,6 +58,7 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Collections;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
@@ -74,11 +75,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public Manager ()
 			{
 			connection = null;
-			
 			databaseLock = new Lock();
+
 			usedTopicIDs = new IDObjects.NumberSet();
 			usedLinkIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
+
+			linksToResolve = new IDObjects.NumberSet();
+			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet>();
 			contextReferenceCache = new ContextReferenceCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
@@ -222,7 +226,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				connection = null;
 
 				usedTopicIDs.Clear();
+				usedLinkIDs.Clear();
 				usedContextIDs.Clear();
+
+				linksToResolve.Clear();
+				newTopicsByEndingSymbol.Clear();
 				contextReferenceCache.Clear();
 				
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
@@ -305,6 +313,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return usedContextIDs;  }
 			}
 
+		/* Property: LinksToResolve
+		 * An <IDObjects.NumberSet> of all the link IDs in <CodeDB.Links> that have changed and need to be resolved again.
+		 * Note that this is not the complete set of all unresolved links; some links may have previously resolved to nothing and
+		 * there may have been no changes made that could affect them.
+		 */
+		internal IDObjects.NumberSet LinksToResolve
+			{
+			get
+				{  return linksToResolve;  }
+			}
+
+		/* Property: NewTopicsByEndingSymbol
+		 * 
+		 * Keeps track of all newly created <Topics>.  The keys are the <Symbols.EndingSymbols> the topics use, and the values
+		 * are <IDObjects.SparseNumberSets> of all the topic IDs associated with that ending symbol.  This is used for resolving 
+		 * links.
+		 * 
+		 * Rationale:
+		 * 
+		 *		When a new <Topic> is created, it might serve as a better definition for existing links.  We don't want to reresolve
+		 *		the links as soon as the topic is created because there may be multiple topics that affect the same links and we'd 
+		 *		be wasting effort.  Instead we store which topics are new and do this after parsing is complete.
+		 *		
+		 *		We can't store the <Topic> objects themselves because when doing a non-differential run every topic will be new and 
+		 *		we'd end up storing the entire documentation structure in memory.  Instead we store the topic IDs and look up the 
+		 *		<Topics> again when it's time to resolve links.
+		 *		
+		 *		We store them by ending symbol instead of in one NumberSet so that we can reresolve links in batches.  Topics that 
+		 *		have the same ending symbol will be candidates for the same group of links, so we can query those topics and links
+		 *		into memory, reresolve them all at once, and then move on to the next ending symbol.  If we stored a single NumberSet
+		 *		of topic IDs we'd have to handle the topics one by one and query for each topic's links separately.
+		 */
+		internal SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> NewTopicsByEndingSymbol
+			{
+			get
+				{  return newTopicsByEndingSymbol;  }
+			}
+
 		/* Property: ContextReferenceCache
 		 * A cache of all the reference count changes to <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -368,6 +414,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* var: usedContextIDs
 		 */
 		protected IDObjects.NumberSet usedContextIDs;
+
+		/* var: linksToResolve
+		 */
+		protected IDObjects.NumberSet linksToResolve;
+
+		/* var: newTopicsByEndingSymbol
+		 */
+		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> newTopicsByEndingSymbol;
 
 		/* var: contextReferenceCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Contexts>.

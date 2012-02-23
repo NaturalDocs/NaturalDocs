@@ -158,11 +158,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			codeDB.UsedTopicIDs.Add(topic.TopicID);
 
+			IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+			if (newTopicsForEndingSymbol == null)
+				{
+				newTopicsForEndingSymbol = new IDObjects.SparseNumberSet();
+				codeDB.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
+				}
+			newTopicsForEndingSymbol.Add(topic.TopicID);
+
 			codeDB.ContextReferenceCache.AddReference(topic.PrototypeContextID, topic.PrototypeContext);
 			codeDB.ContextReferenceCache.AddReference(topic.BodyContextID, topic.BodyContext);
 
 			CommitTransaction();
 			
+
+			// Notify change watchers
 			
 			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
 			
@@ -248,6 +258,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			CommitTransaction();
 
 
+			// Notify change watchers
+
 			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
 			
 			try
@@ -324,6 +336,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			var codeDB = Engine.Instance.CodeDB;
 
+
+			// Notify the change watchers BEFORE we actually perform the deletion.
+
 			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
 			
 			try
@@ -341,11 +356,61 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				codeDB.ReleaseChangeWatchers();
 				}
 
+
+			// Find any links that resolve to this topic.
+
+			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
+
+			using (SQLite.Query query = connection.Query("SELECT LinkID FROM Links WHERE TargetTopicID=?", topic.TopicID))
+				{
+				while (query.Step())
+					{  linksAffected.Add( query.IntColumn(0) );  }
+				}
+
+
+			// Reset these links back to unresolved and add them to linksToResolve.
+
 			BeginTransaction();
+
+			if (linksAffected.IsEmpty == false)
+				{
+				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE ");
+				List<object> queryParams = new List<object>();
+
+				foreach (IDObjects.NumberRange range in linksAffected.Ranges)
+					{
+					if (queryParams.Count > 0)
+						{  queryText.Append("OR ");  }
+
+					if (range.Low == range.High)
+						{
+						queryText.Append("LinkID=? ");
+						queryParams.Add(range.Low);
+						}
+					else
+						{
+						queryText.Append("(LinkID >= ? AND LinkID <= ?) ");
+						queryParams.Add(range.Low);
+						queryParams.Add(range.High);
+						}
+					}
+
+				connection.Execute(queryText.ToString(), queryParams.ToArray());
+
+				codeDB.LinksToResolve.Add(linksAffected);
+				}
+
+
+			// Delete the actual topic.
 
 			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
 			codeDB.UsedTopicIDs.Remove(topic.TopicID);
+
+			// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
+			IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+			if (newTopicsForEndingSymbol != null)
+				{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
 			codeDB.ContextReferenceCache.RemoveReference(topic.PrototypeContextID, topic.PrototypeContext);
 			codeDB.ContextReferenceCache.RemoveReference(topic.BodyContextID, topic.BodyContext);
@@ -657,6 +722,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			                           );
 			
 			codeDB.UsedLinkIDs.Add(link.LinkID);
+			codeDB.LinksToResolve.Add(link.LinkID);
 			codeDB.ContextReferenceCache.AddReference(link.ContextID, link.Context);
 
 			if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
@@ -717,6 +783,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
 			
 			codeDB.UsedLinkIDs.Remove(link.LinkID);
+			codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
 			codeDB.ContextReferenceCache.RemoveReference(link.ContextID, link.Context);
 
 			if (link.Type == LinkType.NaturalDocs)
