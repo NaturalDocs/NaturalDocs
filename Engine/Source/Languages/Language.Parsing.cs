@@ -856,12 +856,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-				string undecoratedTitle = topic.Title;
-				int trailingParenthesisIndex = Symbols.ParameterString.GetEndingParenthesisIndex(undecoratedTitle);
-
-				if (trailingParenthesisIndex != -1)
-					{  undecoratedTitle = undecoratedTitle.Substring(0, trailingParenthesisIndex).TrimEnd();  }
-
+				string undecoratedTitle, parenthesis;
+				Symbols.ParameterString.SplitFromEndingParethesis(topic.Title, out undecoratedTitle, out parenthesis);
 
 				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
 					{  

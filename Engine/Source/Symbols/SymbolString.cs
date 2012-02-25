@@ -60,17 +60,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			if (textSymbol == null)
 				{  throw new NullReferenceException();  }
 
-			int parenthesisIndex = ParameterString.GetEndingParenthesisIndex(textSymbol);
+			string undecoratedTextSymbol;
+			ParameterString.SplitFromEndingParethesis(textSymbol, out undecoratedTextSymbol, out parenthesis);
 
-			if (parenthesisIndex == -1)
-				{  parenthesis = null;  }
-			else
-				{
-				parenthesis = textSymbol.Substring(parenthesisIndex);
-				textSymbol = textSymbol.Substring(0, parenthesisIndex);
-				}
-
-			SymbolString symbolString = new SymbolString(textSymbol);
+			SymbolString symbolString = new SymbolString(undecoratedTextSymbol);
 			symbolString.Normalize();
 
 			// If a symbol string is normalized to nothing yet it had parenthesis (think "::()") put them back together and redo.
@@ -78,7 +71,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			// parenthesis string.
 			if (symbolString.symbolString == null && parenthesis != null)
 				{
-				symbolString = new SymbolString(textSymbol + parenthesis);
+				symbolString = new SymbolString(textSymbol);
 				symbolString.Normalize();
 
 				parenthesis = null;

@@ -95,6 +95,27 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Function: SplitFromEndingParenthesis
+		 * If a plain text string ends in parenthesis, returns them and the rest of the text as separate strings.  If it doesn't, it will
+		 * return the original string and null.
+		 */
+		public static void SplitFromEndingParethesis (string input, out string output, out string parenthesis)
+			{
+			int index = GetEndingParenthesisIndex(input);
+
+			if (index == -1)
+				{
+				output = input;
+				parenthesis = null;
+				}
+			else
+				{
+				output = input.Substring(0, index).TrimEnd();
+				parenthesis = input.Substring(index);
+				}
+			}
+
+
 		/* Function: FromExportedString
 		 * 
 		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 

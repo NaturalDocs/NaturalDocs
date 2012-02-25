@@ -479,17 +479,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				flags &= ~LinkInterpretationFlags.FromOriginalText;
 				}
 
-			int endingParenthesisIndex = ParameterString.GetEndingParenthesisIndex(input);
+			string prefix;
+			ParameterString.SplitFromEndingParethesis(input, out prefix, out parenthesis);
 
-			if (endingParenthesisIndex == -1)
-				{  parenthesis = null;  }
-			else
-				{
-				parenthesis = input.Substring(endingParenthesisIndex);
-				input = input.Substring(0, endingParenthesisIndex).TrimEnd();
-				}
-
-			return LinkInterpretations_DontStripParenthesis(input, flags);
+			return LinkInterpretations_DontStripParenthesis(prefix, flags);
 			}
 
 
