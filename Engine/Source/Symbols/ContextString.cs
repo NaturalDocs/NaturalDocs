@@ -68,6 +68,137 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 			
 		
+		/* Function: GetUsingStatements
+		 * Returns the "using" statements as a list, or null if there are none.
+		 */
+		public IList<SymbolString> GetUsingStatements()
+			{
+			if (contextString == null)
+				{  return null;  }
+
+			int separatorIndex = contextString.IndexOf(SeparatorChar);
+
+			if (separatorIndex == -1)
+				{  return null;  }
+
+			List<SymbolString> usingStatements = new List<SymbolString>();
+
+			for (;;)
+				{
+				int nextSeparatorIndex = contextString.IndexOf(SeparatorChar, separatorIndex + 1);
+
+				if (nextSeparatorIndex == -1)
+					{
+					usingStatements.Add( SymbolString.FromExportedString( contextString.Substring(separatorIndex + 1) ) );
+					break;
+					}
+				else
+					{
+					usingStatements.Add( SymbolString.FromExportedString( 
+						contextString.Substring(separatorIndex + 1, nextSeparatorIndex - (separatorIndex + 1))
+						) );
+					separatorIndex = nextSeparatorIndex;
+					}
+				}
+
+			return usingStatements;
+			}
+						
+			
+ 		/* Function: AddUsingStatement
+		 * Adds a "using" statement to the context.  It does not remove or replace any of the existing ones.
+		 */
+		public void AddUsingStatement (SymbolString usingStatement)
+			{
+			if (contextString == null)
+				{  contextString = SeparatorChar + usingStatement;  }
+			else
+				{  contextString += SeparatorChar + usingStatement;  }
+			}
+
+
+		/* Function: ClearUsingStatements
+		 * Removes all "using" statements from the context.
+		 */
+		public void ClearUsingStatements()
+			{
+			if (contextString == null)
+				{  return;  }
+
+			int separatorIndex = contextString.IndexOf(SeparatorChar);
+
+			if (separatorIndex == -1)
+				{  return;  }
+			else if (separatorIndex == 0)
+				{  contextString = null;  }
+			else
+				{  contextString = contextString.Substring(0, separatorIndex);  }
+			}
+
+
+		/* Function: RawTextScope
+		 * Retrieves the bounds of the scope part of <RawText>.  Returns true if there is a scope, false if it's global.
+		 * This function is useful if you need to compare something to many ContextStrings and don't want to constantly
+		 * create intermediate strings.
+		 */
+		public bool RawTextScope (out int index, out int length)
+			{
+			if (contextString == null || contextString[0] == SeparatorChar)
+				{
+				index = 0;
+				length = 0;
+				return false;
+				}
+			else
+				{
+				index = 0;
+				length = contextString.IndexOf(SeparatorChar);
+
+				if (length == -1)
+					{  length = contextString.Length;  }
+
+				return true;
+				}
+			}
+
+
+		/* Function: RawTextUsingStatement
+		 * Retrieves the <RawText> bounds of the selected "using" statement.  If there isn't a "using" statement for the passed
+		 * index, it will return false.  This function is useful if you need to compare something against many ContextStrings and
+		 * don't want to constantly create intermediate strings and lists.
+		 */
+		 public bool RawTextUsingStatement (int statementIndex, out int rawTextIndex, out int rawTextLength)
+			{
+			rawTextIndex = 0;
+			rawTextLength = 0;
+
+			if (contextString == null)
+				{  return false;  }
+
+			int count = statementIndex;
+			int index = contextString.IndexOf(SeparatorChar);  // To get past the scope
+
+			while (index != -1 && count > 0)
+				{
+				index = contextString.IndexOf(SeparatorChar, index + 1);
+				count--;
+				}
+
+			if (index == -1)
+				{  return false;  }
+
+			rawTextIndex = index + 1;
+
+			index = contextString.IndexOf(SeparatorChar, rawTextIndex);
+
+			if (index == -1)
+				{  rawTextLength = contextString.Length - rawTextIndex;  }
+			else
+				{  rawTextLength = index - rawTextIndex;  }
+
+			return true;
+			}
+
 		
 		// Group: Properties
 		// __________________________________________________________________________
@@ -142,74 +273,16 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: ClearUsingStatements
-		 * Removes all "using" statements from the context.
+		/* Property: RawText
+		 * Returns the raw string for use with functions like <RawTextScope()> and <RawTextUsingStatement()>.
 		 */
-		public void ClearUsingStatements()
+		public string RawText
 			{
-			if (contextString == null)
-				{  return;  }
-
-			int separatorIndex = contextString.IndexOf(SeparatorChar);
-
-			if (separatorIndex == -1)
-				{  return;  }
-			else if (separatorIndex == 0)
-				{  contextString = null;  }
-			else
-				{  contextString = contextString.Substring(0, separatorIndex);  }
+			get
+				{  return contextString;  }
 			}
 
 
-		/* Function: AddUsingStatement
-		 * Adds a "using" statement to the context.  It does not remove or replace any of the existing ones.
-		 */
-		public void AddUsingStatement (SymbolString usingStatement)
-			{
-			if (contextString == null)
-				{  contextString = SeparatorChar + usingStatement;  }
-			else
-				{  contextString += SeparatorChar + usingStatement;  }
-			}
-
-
-		/* Function: GetUsingStatements
-		 * Returns the "using" statements as a list, or null if there are none.
-		 */
-		public IList<SymbolString> GetUsingStatements()
-			{
-			if (contextString == null)
-				{  return null;  }
-
-			int separatorIndex = contextString.IndexOf(SeparatorChar);
-
-			if (separatorIndex == -1)
-				{  return null;  }
-
-			List<SymbolString> usingStatements = new List<SymbolString>();
-
-			for (;;)
-				{
-				int nextSeparatorIndex = contextString.IndexOf(SeparatorChar, separatorIndex + 1);
-
-				if (nextSeparatorIndex == -1)
-					{
-					usingStatements.Add( SymbolString.FromExportedString( contextString.Substring(separatorIndex + 1) ) );
-					break;
-					}
-				else
-					{
-					usingStatements.Add( SymbolString.FromExportedString( 
-						contextString.Substring(separatorIndex + 1, nextSeparatorIndex - (separatorIndex + 1))
-						) );
-					separatorIndex = nextSeparatorIndex;
-					}
-				}
-
-			return usingStatements;
-			}
-						
-			
 			
 		// Group: Operators
 		// __________________________________________________________________________
