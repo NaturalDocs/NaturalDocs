@@ -152,6 +152,38 @@ namespace GregValure.NaturalDocs.Engine
 			return MultipleWhitespaceCharsRegex.Replace(input, "&nbsp; ");
 			}
 
+
+		/* Function: Count
+		 * Returns the number of times the passed character appears in the string.
+		 */
+		static public int Count (this string input, char character)
+			{
+			return input.Count(character, 0, input.Length);
+			}
+
+
+		/* Function: Count
+		 * Returns the number of times the passed character appears in the string segment.
+		 */
+		static public int Count (this string input, char character, int index, int length)
+			{
+			int endingIndex = index + length;
+			int count = 0;
+
+			while (index < endingIndex)
+				{
+				int match = input.IndexOf(character, index, endingIndex - index);
+
+				if (match == -1)
+					{  break;  }
+
+				count++;
+				index = match + 1;
+				}
+
+			return count;
+			}
+
 		
 
 		// Group: Entity and Escapement Functions
