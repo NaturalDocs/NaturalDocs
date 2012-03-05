@@ -712,6 +712,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  language.EnumValue = (Language.EnumValues)configFileLanguage.EnumValue;  }
 				}
+
+			if (configFileLanguage.CaseSensitive != null)
+				{
+				if (language.Type != Language.LanguageType.BasicSupport && language.Type != Language.LanguageType.TextFile)
+					{  
+					Start_CantDefinePropertyError(configFileLanguage, language.Type, sourceFile, "Case Sensitive", errorList);  
+					success = false;
+					}
+				else
+					{  language.CaseSensitive = (bool)configFileLanguage.CaseSensitive;  }
+				}
 				
 			string[] topicTypeNamesWithPrototypeEnders = configFileLanguage.GetTopicTypeNamesWithPrototypeEnders();
 			
