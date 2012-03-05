@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.PrototypeParsing
+ * Class: GregValure.NaturalDocs.Engine.Tests.PrototypeParsing
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can parse prototypes correctly.
@@ -17,10 +17,10 @@ using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
 	public class PrototypeParsing : Framework.SourceToTopics

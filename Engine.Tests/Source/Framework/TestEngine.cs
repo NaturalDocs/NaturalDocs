@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.TestEngine
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestEngine
  * ____________________________________________________________________________
  * 
  * A class that simplifies configuring and running <Engine.Instance> for tests.
@@ -30,7 +30,7 @@ using System.Text;
 using GregValure.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework
+namespace GregValure.NaturalDocs.Engine.Tests.Framework
 	{
 	public static class TestEngine
 		{
@@ -82,7 +82,7 @@ namespace GregValure.NaturalDocs.EngineTests.Framework
 				if (binIndex == -1)
 					{  throw new Exception("Couldn't find Components folder in " + assemblyPath);  }
 
-				baseTestDataFolder = assemblyPath.Substring(0, binIndex) + "/Components/EngineTests/Test Data";
+				baseTestDataFolder = assemblyPath.Substring(0, binIndex) + "/Components/Engine.Tests/Test Data";
 				}
 
 			if (testDataFolder.IsRelative)

@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.NDMarkup
+ * Class: GregValure.NaturalDocs.Engine.Tests.Symbols
  * ____________________________________________________________________________
  * 
- * File-based tests to make sure Natural Docs can convert comments to <NDMarkup> correctly.
+ * File-based tests to make sure Natural Docs can generate symbols correctly.
  * 
  */
 
@@ -16,19 +16,20 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Symbols;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
-	public class NDMarkup : Framework.SourceToTopics
+	public class Symbols : Framework.SourceToTopics
 		{
 
 		[Test]
 		public void All ()
 			{
-			TestFolder("NDMarkup");
+			TestFolder("Symbols", "Shared ND Config/Basic Language Support");
 			}
 
 		public override string OutputOf (IList<Topic> topics)
@@ -43,10 +44,13 @@ namespace GregValure.NaturalDocs.EngineTests
 				if (i != 0)
 					{  output.AppendLine("-----");  }
 
-				if (topics[i].Body == null)
-					{  output.AppendLine("(No body detected)");  }
+				output.AppendLine("Symbol: " + topics[i].Symbol.ToString().Replace(SymbolString.SeparatorChar, '|'));
+				output.AppendLine("Ending Symbol: " + topics[i].Symbol.EndingSymbol.ToString());
+
+				if (topics[i].Parameters != null)
+					{  output.AppendLine("Parameters: " + topics[i].Parameters.ToString().Replace(ParameterString.SeparatorChar, '|'));  }
 				else
-					{  output.AppendLine(topics[i].Body);  }
+					{  output.AppendLine("Parameters: (none)");  }
 				}
 
 			return output.ToString();

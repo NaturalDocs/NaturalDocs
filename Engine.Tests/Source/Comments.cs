@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Comments
+ * Class: GregValure.NaturalDocs.Engine.Tests.Comments
  * ____________________________________________________________________________
  * 
  */
@@ -15,10 +15,10 @@ using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Comments;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
 	public class Comments : Framework.SourceToCommentsAndTopics

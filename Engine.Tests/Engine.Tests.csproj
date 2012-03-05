@@ -8,8 +8,8 @@
     <ProjectGuid>{1D2F367F-A491-417F-A66A-76E49DA9BD78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EngineTests</RootNamespace>
-    <AssemblyName>EngineTests</AssemblyName>
+    <RootNamespace>NaturalDocs.Engine.Tests</RootNamespace>
+    <AssemblyName>NaturalDocs.Engine.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\LinkScoring.cs" />
     <Compile Include="Source\Symbols.cs" />
     <Compile Include="Source\Summaries.cs" />
     <Compile Include="Source\Framework\TextCommands.cs" />

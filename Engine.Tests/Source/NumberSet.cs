@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.NumberSet
+ * Class: GregValure.NaturalDocs.Engine.Tests.NumberSet
  * ____________________________________________________________________________
  * 
  * A class to test <Engine.IDObjects.NumberSet>.
@@ -40,10 +40,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
 	public class NumberSet : Framework.TextCommands

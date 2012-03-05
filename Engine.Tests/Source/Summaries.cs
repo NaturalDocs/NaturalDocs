@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Symbols
+ * Class: GregValure.NaturalDocs.Engine.Tests.Summaries
  * ____________________________________________________________________________
  * 
- * File-based tests to make sure Natural Docs can generate symbols correctly.
+ * File-based tests to make sure Natural Docs can extract summaries from comments correctly.
  * 
  */
 
@@ -16,20 +16,19 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
-	public class Symbols : Framework.SourceToTopics
+	public class Summaries : Framework.SourceToTopics
 		{
 
 		[Test]
 		public void All ()
 			{
-			TestFolder("Symbols", "Shared ND Config/Basic Language Support");
+			TestFolder("Summaries");
 			}
 
 		public override string OutputOf (IList<Topic> topics)
@@ -44,13 +43,10 @@ namespace GregValure.NaturalDocs.EngineTests
 				if (i != 0)
 					{  output.AppendLine("-----");  }
 
-				output.AppendLine("Symbol: " + topics[i].Symbol.ToString().Replace(SymbolString.SeparatorChar, '|'));
-				output.AppendLine("Ending Symbol: " + topics[i].Symbol.EndingSymbol.ToString());
-
-				if (topics[i].Parameters != null)
-					{  output.AppendLine("Parameters: " + topics[i].Parameters.ToString().Replace(ParameterString.SeparatorChar, '|'));  }
+				if (topics[i].Summary == null)
+					{  output.AppendLine("(No summary detected)");  }
 				else
-					{  output.AppendLine("Parameters: (none)");  }
+					{  output.AppendLine(topics[i].Summary);  }
 				}
 
 			return output.ToString();

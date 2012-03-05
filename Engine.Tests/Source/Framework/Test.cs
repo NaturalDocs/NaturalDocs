@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.Test
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.Test
  * ____________________________________________________________________________
  * 
  * A class storing information about a single file-based test.
@@ -22,7 +22,7 @@ using System;
 using GregValure.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework
+namespace GregValure.NaturalDocs.Engine.Tests.Framework
 	{
 	public class Test
 		{

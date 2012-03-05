@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.HTMLGeneration
+ * Class: GregValure.NaturalDocs.Engine.Tests.HTMLGeneration
  * ____________________________________________________________________________
  * 
  * File-based tests to check Natural Docs' HTML generation.
@@ -13,10 +13,10 @@
 
 using System;
 using NUnit.Framework;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
 	public class HTMLGeneration : Framework.SourceToHTML

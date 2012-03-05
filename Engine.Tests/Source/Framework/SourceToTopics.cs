@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.SourceToTopics
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.SourceToTopics
  * ____________________________________________________________________________
  * 
  * A base class for automated tests where sample source files are loaded from a folder, converted to <Topics>, 
@@ -36,7 +36,7 @@ using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework
+namespace GregValure.NaturalDocs.Engine.Tests.Framework
 	{
 	public abstract class SourceToTopics
 		{

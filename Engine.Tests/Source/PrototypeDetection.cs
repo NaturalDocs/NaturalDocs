@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.PrototypeDetection
+ * Class: GregValure.NaturalDocs.Engine.Tests.PrototypeDetection
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can detect prototypes correctly.
@@ -16,10 +16,10 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.EngineTests.Framework;
+using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.EngineTests
+namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
 	public class PrototypeDetection : Framework.SourceToTopics

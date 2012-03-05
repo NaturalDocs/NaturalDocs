@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.EngineTests.Framework.SourceToHTML
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.SourceToHTML
  * ____________________________________________________________________________
  * 
  * A base class for automated tests where sample source files are run through Natural Docs normally, generating 
@@ -37,7 +37,7 @@ using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.EngineTests.Framework
+namespace GregValure.NaturalDocs.Engine.Tests.Framework
 	{
 	public abstract class SourceToHTML
 		{
