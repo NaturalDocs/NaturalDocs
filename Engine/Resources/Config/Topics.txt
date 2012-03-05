@@ -323,7 +323,7 @@ Topic Type: Variable
    Display Name from Locale: Topics.txt.Variable.DisplayName
    Plural Display Name from Locale: Topics.txt.Variable.PluralDisplayName
 
-   Variable Type: Yes
+	Variable Type: No
    List Position: 5300
    Can Change To: Constant, Property, Event, Database Field
 
