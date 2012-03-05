@@ -77,12 +77,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			if (testDataFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
 				{
 				string assemblyPath = Path.GetExecutingAssembly();
-				int binIndex = assemblyPath.IndexOf("/Components/");
+				int binIndex = assemblyPath.IndexOf("Components");
 
 				if (binIndex == -1)
 					{  throw new Exception("Couldn't find Components folder in " + assemblyPath);  }
 
-				baseTestDataFolder = assemblyPath.Substring(0, binIndex) + "/Components/Engine.Tests/Test Data";
+				baseTestDataFolder = assemblyPath.Substring(0, binIndex) + "Components/Engine.Tests/Test Data";
 				}
 
 			if (testDataFolder.IsRelative)

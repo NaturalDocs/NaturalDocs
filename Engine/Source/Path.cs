@@ -428,7 +428,14 @@ namespace GregValure.NaturalDocs.Engine
 			string assemblyPath = Uri.UnescapeDataString(uri.Path);
 
 			Path result = new Path();
-			result.pathString = assemblyPath;  // This will already be properly normalized
+
+			// The above code always returns a path with slashes, even on Windows.  However, we can assume it's otherwise
+			// properly normalized so just do a quick search and replace if it's needed.
+			if (Engine.Config.Manager.PathSeparatorCharacter == '/')
+				{  result.pathString = assemblyPath;  }
+			else
+				{  result.pathString = assemblyPath.Replace('/', Engine.Config.Manager.PathSeparatorCharacter);  }
+
 			return result;
 			}
 			
