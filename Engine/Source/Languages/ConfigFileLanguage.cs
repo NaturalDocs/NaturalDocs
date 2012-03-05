@@ -46,6 +46,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			prototypeEndersList = null;
 			lineExtender = null;
 			enumValue = null;
+			caseSensitive = null;
 			}
 			
 			
@@ -319,7 +320,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return enumValue;  }
 			set
 				{  enumValue = value;  }
-			}			
+			}
+
+
+		/* Property: CaseSensitive
+		 * Whether the language's identifiers are case sensitive.  Will be null if not set.
+		 */
+		public bool? CaseSensitive
+			{
+			get
+				{  return caseSensitive;  }
+			set
+				{  caseSensitive = value;  }
+			}
 		
 
 		/* Function: FixNameCapitalization
@@ -441,6 +454,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * How the language handles enum values.  Will be null if not set.
 		 */
 		protected Language.EnumValues? enumValue;
+
+		/* var: caseSensitive
+		 * Whether the language's identifiers are case sensitive.  Will be null if not set.
+		 */
+		protected bool? caseSensitive;
 		
 
 

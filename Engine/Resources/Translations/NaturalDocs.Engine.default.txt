@@ -566,6 +566,7 @@ Languages.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
 Languages.txt.NeedAddReplaceWhenAlteringLanguage(keyword): You need to use Add {0} or Replace {0} when altering a language.
 Languages.txt.BlockCommentsMustHaveAnEvenNumberOfSymbols: Block Comments must have an even number of symbols.
 Languages.txt.InvalidEnumValue(value): "{0}" is not a valid Enum Value.
+Languages.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Languages.txt.AlteredLanguageDoesntExist(name): The language you are trying to alter, "{0}", doesn't exist.
 Languages.txt.LanguageAlreadyExists(name): The language "{0}" already exists.  Use Alter Language or choose a different name.
 Languages.txt.PrototypeEnderTopicTypeDoesntExist(name): The topic type "{0}" doesn't exist.
@@ -674,6 +675,10 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    under parent - Values are under the enum's parent, referenced as
 #                 'class.value'.
 #
+# Case Sensitive: [yes|no]
+#    Defines whether the language's identifiers are case sensitive.  The
+#    default is yes.
+#
 # [Topic Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
 #    immediately following the topic type.  It stops when it reaches one of
@@ -749,6 +754,10 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 #                 'class.enum.value'.
 #    under parent - Values are under the enum's parent, referenced as
 #                 'class.value'.
+#
+# Case Sensitive: [yes|no]
+#    Defines whether the language's identifiers are case sensitive.  The
+#    default is yes.
 #
 # [Topic Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code

@@ -114,6 +114,10 @@
  *			under type - Values are under the enum type, referenced as 'class.enum.value'.
  *			under parent - Values are under the enum's parent, referenced as 'class.value'.
  *			
+ *			> Case Sensitive: [yes|no]
+ *			
+ *			Whether the language's identifiers are case sensitive.  Defaults to yes.
+ *			
  * 
  *		Deprecated Language Properties:
  *		
@@ -143,7 +147,7 @@
  *		
  *			- Ignore Prefixes, Perl Package, and Full Language Support properties are deprecated.
  *			- Package Separator was renamed Member Operator, although the original will still be accepted.
- *			- Added Simple Identifier, Alias.
+ *			- Added Simple Identifier, Alias, Case Sensitive.
  *		
  *		1.32:
  *		
@@ -181,6 +185,7 @@
  *			> [String: Simple Identifier]
  *			> [String: Alias] [] ... [String: null]
  *			> [Byte: Enum Values]
+ *			> [Byte: Case Sensitive (1 or 0)]
  *			> [String: Member Operator Symbol]
  *			> [String: Line Extender Symbol]
  *			> [String: Line Comment Symbol] [] ... [String: null]
@@ -1018,7 +1023,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				Regex.Languages.PrototypeEnders prototypeEndersRegex = new Regex.Languages.PrototypeEnders();
 				Regex.Languages.ShebangStrings shebangStringsRegex = new Regex.Languages.ShebangStrings();
 				Regex.Languages.MemberOperator memberOperatorRegex = new Regex.Languages.MemberOperator();
+				Regex.Languages.CaseSensitive caseSensitiveRegex = new Regex.Languages.CaseSensitive();
 				Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
+				Regex.Config.Yes yesRegex = new Regex.Config.Yes();
+				Regex.Config.No noRegex = new Regex.Config.No();
 				
 				System.Text.RegularExpressions.Match match;
 				
@@ -1382,6 +1390,29 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						
 						
 					//
+					// Case Sensitive
+					//
+					
+					else if (caseSensitiveRegex.IsMatch(lcIdentifier))
+						{
+						string lcValue = value.ToLower();
+						
+						if (currentLanguage == null)
+							{  LoadFile_NeedsLanguageError(file, identifier);  }
+						else if (yesRegex.IsMatch(lcValue))
+							{  currentLanguage.CaseSensitive = true;  }
+						else if (noRegex.IsMatch(lcValue))
+							{  currentLanguage.CaseSensitive = false;  }
+						else
+							{
+							file.AddError(
+								Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedValue(keyword, value)", "Case Sensitive", value)
+								);
+							}
+						}
+						
+						
+					//
 					// Prototype Enders
 					//
 					
@@ -1660,6 +1691,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else // Language.EnumValues.UnderType
 						{  output.AppendLine("Under Type");  }
 					}
+				if (language.CaseSensitive != null)
+					{  
+					SaveFile_LineBreakOnGroupChange(3, ref oldGroupNumber, output);
+					output.AppendLine("   Case Sensitive: " + ((language.CaseSensitive != null && (bool)language.CaseSensitive == true) ? "Yes" : "No"));  
+					}
 				
 				string[] topicTypeNamesWithPrototypeEnders = language.GetTopicTypeNamesWithPrototypeEnders();
 				
@@ -1751,6 +1787,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// [Byte: Type]
 					// [String: Simple Identifier]
 					// [Byte: Enum Values]
+					// [Byte: Case Sensitive (1 or 0)]
 					// [String: Member Operator Symbol]
 					// [String: Line Extender Symbol]
 					// [String: Line Comment Symbol] [] ... [String: null]
@@ -1789,7 +1826,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							{  language.EnumValue = (Language.EnumValues)rawEnumValue;  }
 						else
 							{  result = false;  }
-							
+						
+						language.CaseSensitivity = (file.ReadByte() == 1 ? Language.CaseSensitive.Yes : Language.CaseSensitive.No);	
 						
 						language.MemberOperator = file.ReadString();
 						language.LineExtender = file.ReadString();
@@ -1945,6 +1983,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// [Byte: Type]
 				// [String: Simple Identifier]
 				// [Byte: Enum Values]
+				// [Byte: Case Sensitive (1 or 0)]
 				// [String: Member Operator Symbol]
 				// [String: Line Extender Symbol]
 				// [String: Line Comment Symbol] [] ... [String: null]
@@ -1969,6 +2008,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					file.WriteByte( (byte)language.Type );
 					file.WriteString( language.SimpleIdentifier );
 					file.WriteByte( (byte)language.EnumValue );
+					file.WriteByte( (byte)(language.CaseSensitivity == Language.CaseSensitive.Yes ? 1 : 0) );
 					file.WriteString( language.MemberOperator );
 					file.WriteString( language.LineExtender );
 					

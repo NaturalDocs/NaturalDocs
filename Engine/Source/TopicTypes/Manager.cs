@@ -1183,8 +1183,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				Regex.TopicTypes.BreakLists breakListsRegex = new Regex.TopicTypes.BreakLists();
 				Regex.TopicTypes.Keywords keywordsRegex = new Regex.TopicTypes.Keywords();
 				Regex.CondensedWhitespaceCommaSeparator commaSeparatorRegex = new Regex.CondensedWhitespaceCommaSeparator();
-				Regex.TopicTypes.Yes yesRegex = new Regex.TopicTypes.Yes();
-				Regex.TopicTypes.No noRegex = new Regex.TopicTypes.No();
+				Regex.Config.Yes yesRegex = new Regex.Config.Yes();
+				Regex.Config.No noRegex = new Regex.Config.No();
 				Regex.TopicTypes.ScopeStart startRegex = new Regex.TopicTypes.ScopeStart();
 				Regex.TopicTypes.ScopeEnd endRegex = new Regex.TopicTypes.ScopeEnd();
 				Regex.TopicTypes.ScopeAlwaysGlobal alwaysGlobalRegex = new Regex.TopicTypes.ScopeAlwaysGlobal();
