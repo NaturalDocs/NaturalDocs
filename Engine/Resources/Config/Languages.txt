@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 01-26-2009)
+﻿Format: 2.0 (Development Release 01-28-2012)
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
@@ -8,15 +8,278 @@
 
 
 # Languages
-#-------------------------------------------------------------------------
-# These define the languages Natural Docs knows how to parse.
-#
-# Unlike other Natural Docs configuration files, in this file all comments
-# MUST be alone on a line.  Some languages deal with the # character, so you
-# cannot put comments on the same line as content.
-#
-# Also, all lists are separated with spaces, not commas, again because some
-# languages may need to use them.
+# ------------------------------------------------------------------------
+# The syntax reference is after the definitions.
+
+Language: Text File
+
+   Extension: txt
+
+   Case Sensitive: No
+
+
+Language: Shebang Script
+
+   Extension: cgi
+
+
+Language: C/C++
+
+   Extensions: c cpp cxx h hpp hxx
+
+   Simple Identifier: C
+   Aliases: C C++
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: ::
+   Enum Value: Under Parent
+   Case Sensitive: Yes
+
+   Class Prototype Enders: ; {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: C#
+
+   Extension: cs
+
+   Simple Identifier: CSharp
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Value: Under Type
+   Case Sensitive: Yes
+
+   Class Prototype Enders: ; {
+   Function Prototype Enders: ; { :
+   Operator Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+   Property Prototype Enders: ; {
+   Constant Prototype Enders: ; =
+   Enumeration Prototype Ender: {
+   Event Prototype Enders: ; =
+
+
+Language: Java
+
+   Extension: java
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Value: Under Type
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: JavaScript
+
+   Extension: js
+
+   Alias: JS
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Value: Under Type
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: Perl
+
+   Extensions: pl pm
+   Shebang String: perl
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: Python
+
+   Extension: py
+   Shebang String: python
+
+   Line Comment: #
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Function Prototype Ender: :
+   Variable Prototype Ender: =
+
+
+Language: PHP
+
+   Extensions: inc php php3 php4 phtml
+   Shebang String: php
+
+   Line Comment: // #
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: SQL
+
+   Extension: sql
+
+   Alias: PL/SQL
+
+   Line Comment: --
+   Block Comment: /* */
+   Enum Value: Global
+   Case Sensitive: No
+
+   Function Prototype Enders: , ; ) as As AS is Is IS
+   Variable Prototype Enders: , ; ) := default Default DEFAULT
+   Database Index Prototype Enders: , ; )
+   Database Trigger Prototype Enders: begin Begin BEGIN as As AS
+
+
+Language: Visual Basic
+
+   Extensions: vb vbs bas cls frm
+
+   Alias: VB
+
+   Line Comment: '
+   Line Extender: _
+   Enum Value: Under Type
+   Case Sensitive: No
+
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n =
+
+
+Language: Pascal
+
+   Extension: pas
+
+   Line Comment: //
+   Block Comment: { } (* *)
+   Case Sensitive: No
+
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; =
+
+
+Language: Assembly
+
+   Extension: asm
+
+   Alias: ASM
+
+   Line Comment: ;
+   Line Extender: \
+	Case Sensitive: No
+
+   Variable Prototype Ender: \n
+
+
+Language: Ada
+
+   Extensions: ada ads adb
+
+   Line Comment: --
+   Case Sensitive: No
+
+   Function Prototype Enders: ; is Is IS
+   Variable Prototype Enders: ; :=
+
+
+Language: Tcl
+
+   Extensions: tcl exp
+   Shebang Strings: tclsh wish expect
+
+   Line Comment: #
+   Member Operator: ::
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; \n
+
+
+Language: Ruby
+
+   Extension: rb
+   Shebang String: ruby
+
+   Line Comment: #
+   Line Extender: \
+   Enum Value: Under Parent
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; \n
+   Variable Prototype Enders: ; \n =
+
+
+Language: Makefile
+
+   Extensions: mk mak make
+
+   Line Comment: #
+
+
+Language: ActionScript
+
+   Extensions: as mxml
+
+   Alias: AS
+
+   Line Comment: //
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: ColdFusion
+
+   Extensions: cfm cfml cfc
+
+   Line Comment: //
+   Block Comment: <!--- ---> /* */
+
+   Function Prototype Enders: { <
+
+
+Language: R
+
+   Extension: r
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Enders: { ;
+   Variable Prototype Enders: <- = ; \n
+
+
+Language: Fortran
+
+   Extensions: f90 f95 f03
+
+   Line Comment: !
+   Line Extender: &
+   Case Sensitive: No
+
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n = =>
+
+
+# These settings define the languages Natural Docs knows how to parse.  Note
+# that all lists are space separated so that commas can be used as values.
 #
 # Language: [name]
 #    Defines a new language.  Its name can use any characters.
@@ -50,8 +313,8 @@
 #
 #
 # Properties for Basic Language Support Only
-#-------------------------------------------------------------------------
-# If you're adding your own language to Natural Docs, you must define these.
+# ------------------------------------------------------------------------
+# If you're adding your own language to Natural Docs you must define these.
 #
 # Line Comments: [symbol] [symbol] ...
 #    Defines a space-separated list of symbols that are used for line comments,
@@ -76,255 +339,11 @@
 #    under parent - Values are under the enum's parent, referenced as
 #                 'class.value'.
 #
+# Case Sensitive: [yes|no]
+#    Defines whether the language's identifiers are case sensitive.  The
+#    default is yes.
+#
 # [Topic Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
 #    immediately following the topic type.  It stops when it reaches one of
 #    these symbols.  Use \n for line breaks.
-
-
-Language: Text File
-
-   Extension: txt
-
-
-Language: Shebang Script
-
-   Extension: cgi
-
-
-Language: C/C++
-
-   Extensions: c cpp cxx h hpp hxx
-
-   Simple Identifier: C
-   Aliases: C C++
-
-   Line Comment: //
-   Block Comment: /* */
-   Member Operator: ::
-   Enum Value: Under Parent
-
-   Class Prototype Enders: ; {
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-
-
-Language: C#
-
-   Extension: cs
-
-   Simple Identifier: CSharp
-
-   Line Comment: //
-   Block Comment: /* */
-   Enum Value: Under Type
-
-   Class Prototype Enders: ; {
-   Function Prototype Enders: ; { :
-   Operator Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-	Property Prototype Enders: ; {
-	Constant Prototype Enders: ; =
-	Enumeration Prototype Enders: {
-	Event Prototype Enders: ; =
-
-
-Language: Java
-
-   Extension: java
-
-   Line Comment: //
-   Block Comment: /* */
-   Enum Value: Under Type
-
-   Function Prototype Ender: {
-   Variable Prototype Enders: ; =
-
-
-Language: JavaScript
-
-   Extension: js
-
-   Alias: JS
-
-   Line Comment: //
-   Block Comment: /* */
-   Enum Value: Under Type
-
-   Function Prototype Ender: {
-   Variable Prototype Enders: ; =
-
-
-Language: Perl
-
-   Extensions: pl pm
-   Shebang String: perl
-
-   Line Comment: #
-
-   Function Prototype Ender: {
-   Variable Prototype Enders: ; =
-
-
-Language: Python
-
-   Extension: py
-   Shebang String: python
-
-   Line Comment: #
-   Line Extender: \
-
-   Function Prototype Ender: :
-   Variable Prototype Ender: =
-
-
-Language: PHP
-
-   Extensions: inc php php3 php4 phtml
-   Shebang String: php
-
-   Line Comment: // #
-   Block Comment: /* */
-
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-
-
-Language: SQL
-
-   Extension: sql
-   
-   Alias: PL/SQL
-
-   Line Comment: --
-   Block Comment: /* */
-   Enum Value: Global
-
-   Function Prototype Enders: , ; ) as As AS is Is IS
-   Variable Prototype Enders: , ; ) := default Default DEFAULT
-   Database Index Prototype Enders: , ; )
-   Database Trigger Prototype Enders: begin Begin BEGIN as As AS
-
-
-Language: Visual Basic
-
-   Extensions: vb vbs bas cls frm
-
-   Alias: VB
-
-   Line Comment: '
-   Line Extender: _
-   Enum Value: Under Type
-
-   Function Prototype Ender: \n
-   Variable Prototype Enders: \n =
-
-
-Language: Pascal
-
-   Extension: pas
-
-   Line Comment: //
-   Block Comment: { } (* *)
-
-   Function Prototype Ender: ;
-   Variable Prototype Enders: ; =
-
-
-Language: Assembly
-
-   Extension: asm
-
-   Alias: ASM
-
-   Line Comment: ;
-   Line Extender: \
-
-   Variable Prototype Ender: \n
-
-
-Language: Ada
-
-   Extensions: ada ads adb
-
-   Line Comment: --
-
-   Function Prototype Enders: ; is Is IS
-   Variable Prototype Enders: ; :=
-
-
-Language: Tcl
-
-   Extensions: tcl exp
-   Shebang Strings: tclsh wish expect
-
-   Line Comment: #
-   Member Operator: ::
-   Line Extender: \
-
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; \n
-
-
-Language: Ruby
-
-   Extension: rb
-   Shebang String: ruby
-
-   Line Comment: #
-   Line Extender: \
-   Enum Value: Under Parent
-
-   Function Prototype Enders: ; \n
-   Variable Prototype Enders: ; \n =
-
-
-Language: Makefile
-
-   Extensions: mk mak make
-
-   Line Comment: #
-
-
-Language: ActionScript
-
-   Extensions: as mxml
-
-   Alias: AS
-
-   Line Comment: //
-   Block Comment: /* */
-
-   Function Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-
-
-Language: ColdFusion
-
-   Extensions: cfm cfml cfc
-
-   Line Comment: //
-   Block Comment: <!--- ---> /* */
-
-   Function Prototype Enders: { <
-
-
-Language: R
-
-   Extension: r
-
-   Line Comment: #
-
-   Function Prototype Enders: { ;
-   Variable Prototype Enders: <- = ; \n
-
-
-Language: Fortran
-
-   Extensions: f90 f95 f03
-
-   Line Comment: !
-   Line Extender: &
-
-   Function Prototype Ender: \n
-   Variable Prototype Enders: \n = =>
