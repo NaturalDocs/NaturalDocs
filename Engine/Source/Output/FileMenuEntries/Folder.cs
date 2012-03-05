@@ -24,7 +24,8 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 
 		public Folder (Path newPathFragment) : base ()
 			{
-			pathFragment = newPathFragment;
+			// Use the property since it does some processing to the value.
+			PathFragment = newPathFragment;
 			}
 
 
@@ -42,7 +43,16 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 			get
 				{  return pathFragment;  }
 			set
-				{  pathFragment = value;  }
+				{  
+				pathFragment = value;
+
+				sortString = pathFragment.ToString();
+
+				// If there are multiple levels to the path, only sort by the top one.  This prevents "aa" from appearing above "a\b".
+				int separatorIndex = sortString.IndexOf(Engine.Config.Manager.PathSeparatorCharacter);
+				if (separatorIndex != -1)
+					{  sortString = sortString.Substring(0, separatorIndex);  }
+				}
 			}
 
 		/* Property: IsDynamicFolder
@@ -86,7 +96,7 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 		override public string SortString
 			{  
 			get
-				{  return pathFragment;  }
+				{  return sortString;  }
 			}
 
 
@@ -94,5 +104,6 @@ namespace GregValure.NaturalDocs.Engine.Output.FileMenuEntries
 		// __________________________________________________________________________
 
 		protected Path pathFragment;
+		protected string sortString;
 		}
 	}
