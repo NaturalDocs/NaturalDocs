@@ -54,6 +54,10 @@
       <Project>{1D2F367F-A491-417F-A66A-76E49DA9BD78}</Project>
       <Name>Engine.Tests</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine\Engine.csproj">
+      <Project>{F7569B05-FFFD-4084-8F33-760F3E1916CD}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

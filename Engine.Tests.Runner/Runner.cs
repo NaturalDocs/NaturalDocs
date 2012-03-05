@@ -3,7 +3,8 @@
  * ____________________________________________________________________________
  * 
  * A simple class to run NUnit tests from a Visual Studio console project which allows you to set breakpoints
- * in the tests and debug them.
+ * in the tests and debug them.  You can pass a test or group of tests to run as a command line option,
+ * such as "LinkScoring", or not pass anything to run all tests.
  * 
  */
 
@@ -13,14 +14,37 @@
 
 
 using System;
+using GregValure.NaturalDocs.Engine;
 
 namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	class Runner
 		{
-		static void Main (string[] args)
+		static void Main (string[] commandLineOptions)
 			{
-			NUnit.ConsoleRunner.Runner.Main(args);
+			try
+				{
+				Path assemblyPath = Path.GetExecutingAssembly();
+				Path dllPath = assemblyPath.ParentFolder + "/NaturalDocs.Engine.Tests.dll";
+
+				string[] runnerParams;
+
+				if (commandLineOptions.Length == 0)
+					{  
+					runnerParams = new string[1] { dllPath };
+					}
+				else
+					{
+					string testParam = "/fixture:GregValure.NaturalDocs.Engine.Tests." + commandLineOptions[0];
+					runnerParams = new string[2] { testParam, dllPath };
+					}
+
+				NUnit.ConsoleRunner.Runner.Main(runnerParams);
+				}
+			catch (Exception e)
+				{
+				System.Console.WriteLine("Exception: " + e.Message);
+				}
 
 			System.Console.WriteLine();
 			System.Console.WriteLine("Press any key to continue...");
