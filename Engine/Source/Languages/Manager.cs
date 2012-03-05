@@ -1827,7 +1827,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						else
 							{  result = false;  }
 						
-						language.CaseSensitivity = (file.ReadByte() == 1 ? Language.CaseSensitive.Yes : Language.CaseSensitive.No);	
+						language.CaseSensitive = (file.ReadByte() == 1);	
 						
 						language.MemberOperator = file.ReadString();
 						language.LineExtender = file.ReadString();
@@ -2008,7 +2008,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					file.WriteByte( (byte)language.Type );
 					file.WriteString( language.SimpleIdentifier );
 					file.WriteByte( (byte)language.EnumValue );
-					file.WriteByte( (byte)(language.CaseSensitivity == Language.CaseSensitive.Yes ? 1 : 0) );
+					file.WriteByte( (byte)(language.CaseSensitive ? 1 : 0) );
 					file.WriteString( language.MemberOperator );
 					file.WriteString( language.LineExtender );
 					

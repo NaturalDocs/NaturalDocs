@@ -48,23 +48,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{  FullSupport, BasicSupport, TextFile, Container  };
 		
 		
-		/* Enum: CaseSensitive
-		 * 
-		 * An enum representing whether a language is case sensitive or not.
-		 * 
-		 * Yes - The language is case sensitive.
-		 * No - The language is not case sensitive.
-		 * Unknown - The language's case sensitivity is unknown.  In this case the code should accept case
-		 *						 insensitive matches but prefer case sensitive ones.
-		 */
-		public enum CaseSensitive : byte
-			{
-			Unknown = 0,
-			Yes,
-			No
-			}
-
-	
 		/* Enum: LanguageFlags
 		 * 
 		 * InSystemFile - Set if the language was defined in the system config file <Languages.txt>.
@@ -110,7 +93,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			topicTypesToPrototypeEnders = null;
 			lineExtender = null;
 			enumValue = EnumValues.Global;
-			caseSensitivity = CaseSensitive.Unknown;
+			caseSensitive = true;
 			flags = 0;
 			}
 
@@ -428,15 +411,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Property: CaseSensitivity
-		 * Whether the language is case sensitive or not.
+		/* Property: CaseSensitive
+		 * Whether the language's identifiers are case sensitive.
 		 */
-		public CaseSensitive CaseSensitivity
+		public bool CaseSensitive
 			{
 			get
-				{  return caseSensitivity;  }
+				{  return caseSensitive;  }
 			set
-				{  caseSensitivity = value;  }
+				{  caseSensitive = value;  }
 			}
 
 			
@@ -541,7 +524,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				return ( language1.ID == language2.ID &&
 							language1.Type == language2.Type &&
 							language1.EnumValue == language2.EnumValue &&
-							language1.CaseSensitivity == language2.CaseSensitivity &&
+							language1.CaseSensitive == language2.CaseSensitive &&
 						  
 							language1.Name == language2.Name &&
 							language1.SimpleIdentifier == language2.SimpleIdentifier &&
@@ -741,10 +724,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected EnumValues enumValue;
 
-		/* var: caseSensitivity
+		/* var: caseSensitive
 		 * Whether the language is case sensitive or not.
 		 */
-		protected CaseSensitive caseSensitivity;
+		protected bool caseSensitive;
 		
 		/* var: flags
 		 * A combination of <FlagValues> describing the language.
