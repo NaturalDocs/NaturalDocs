@@ -33,7 +33,7 @@ namespace GregValure.NaturalDocs.Engine.Config.Entries
 			{
 			if (System.IO.Directory.Exists(folder) == false)
 				{  
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredSourceFolderDoesNotExist(folder)", folder), configFile, lineNumber );  
 				return false;
 				}
 
