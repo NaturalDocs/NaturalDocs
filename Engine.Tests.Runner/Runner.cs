@@ -53,6 +53,26 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 				NUnit.ConsoleRunner.Runner.Main(runnerParams);
 
+				#if PAUSE_ON_ERROR
+					// Check the generated XML file for errors
+					Path xmlPath = assemblyPath.ParentFolder + "/TestResult.xml";
+					string xmlContent = System.IO.File.ReadAllText(xmlPath);
+
+					//<test-results 
+					//		name="F:\Projects\Natural Docs 2\Components\Engine.Tests.Runner\bin\Debug\NaturalDocs.Engine.Tests.dll"
+					//		total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0"
+					//		date="2012-03-06" time="11:02:19"
+					//>
+					var match = System.Text.RegularExpressions.Regex.Match(xmlContent, @"<test-results.+errors=\""([0-9]+)\"".+failures=\""([0-9]+)\"".*>");
+					if (match.Success)
+						{
+						if (match.Groups[1].Value != "0" || match.Groups[2].Value != "0")
+							{  pauseBeforeExit = true;  }
+						}
+					else
+						{  throw new Exception("Could not find test results in " + xmlPath);  }
+				#endif
+
 				System.Console.WriteLine("-------------------------");
 				}
 			catch (Exception e)
