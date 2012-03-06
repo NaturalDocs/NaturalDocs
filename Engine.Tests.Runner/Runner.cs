@@ -22,8 +22,20 @@ namespace GregValure.NaturalDocs.Engine.Tests
 		{
 		static void Main (string[] commandLineOptions)
 			{
+			#if PAUSE_BEFORE_EXIT
+				bool pauseBeforeExit = true;
+			#elif PAUSE_ON_ERROR
+				bool pauseBeforeExit = false;
+			#endif
+
 			try
 				{
+				System.Console.WriteLine();
+				System.Console.WriteLine("Natural Docs Engine Tests");
+				System.Console.WriteLine("Version " + Engine.Instance.VersionString);
+				System.Console.WriteLine("-------------------------");
+				System.Console.WriteLine();
+
 				Path assemblyPath = Path.GetExecutingAssembly();
 				Path dllPath = assemblyPath.ParentFolder + "/NaturalDocs.Engine.Tests.dll";
 
@@ -40,15 +52,28 @@ namespace GregValure.NaturalDocs.Engine.Tests
 					}
 
 				NUnit.ConsoleRunner.Runner.Main(runnerParams);
+
+				System.Console.WriteLine("-------------------------");
 				}
 			catch (Exception e)
 				{
+				#if PAUSE_ON_ERROR
+					pauseBeforeExit = true;
+				#endif
+
+				System.Console.WriteLine("-------------------------");
+				System.Console.WriteLine();
 				System.Console.WriteLine("Exception: " + e.Message);
 				}
 
-			System.Console.WriteLine();
-			System.Console.WriteLine("Press any key to continue...");
-			System.Console.ReadKey(false);
+			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
+				if (pauseBeforeExit)
+					{
+					System.Console.WriteLine();
+					System.Console.WriteLine("Press any key to continue...");
+					System.Console.ReadKey(false);
+					}
+			#endif
 			}
 		}
 	}
