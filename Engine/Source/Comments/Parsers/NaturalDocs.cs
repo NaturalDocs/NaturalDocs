@@ -525,30 +525,35 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				int colon = input.IndexOf(':');
 
-				if (colon > 0)  // Filters out zero and -1
+				while (colon != -1)
 					{
-					// Need to check for URL protocols so the colon in <http://www.naturaldocs.org> doesn't make it get interpreted 
-					// as a named link.  Same with the colon in <web site at http://www.naturaldocs.org>.
-					int space = input.LastIndexOf(' ', colon - 1);
-					string beforeColon;
-
-					if (space == -1)
-						{  beforeColon = input.Substring(0, colon);  }
-					else
-						{  beforeColon = input.Substring(space + 1, colon - (space + 1));  }
-						
-					if (!IsURLProtocol(beforeColon) && String.Compare(beforeColon, "mailto", true) != 0)
+					if (colon != 0 && colon != input.Length - 1)
 						{
-						if (interpretations == null)
-							{  interpretations = new List<LinkInterpretation>();  }
+						// Need to check for URL protocols so the colon in <http://www.naturaldocs.org> doesn't make it get interpreted 
+						// as a named link.  Same with the colon in <web site at http://www.naturaldocs.org>.
+						int space = input.LastIndexOf(' ', colon - 1);
+						string wordBeforeColon;
+
+						if (space == -1)
+							{  wordBeforeColon = input.Substring(0, colon);  }
+						else
+							{  wordBeforeColon = input.Substring(space + 1, colon - (space + 1));  }
+						
+						if (!IsURLProtocol(wordBeforeColon) && String.Compare(wordBeforeColon, "mailto", true) != 0)
+							{
+							if (interpretations == null)
+								{  interpretations = new List<LinkInterpretation>();  }
 							
-						LinkInterpretation interpretation = new LinkInterpretation();
-						interpretation.Text = input.Substring(0, colon).TrimEnd();
-						interpretation.Target = input.Substring(colon + 1).TrimStart();
-						interpretation.NamedLink = true;
+							LinkInterpretation interpretation = new LinkInterpretation();
+							interpretation.Text = input.Substring(0, colon).TrimEnd();
+							interpretation.Target = input.Substring(colon + 1).TrimStart();
+							interpretation.NamedLink = true;
 							
-						interpretations.Add(interpretation);
+							interpretations.Add(interpretation);
+							}
 						}
+
+					colon = input.IndexOf(':', colon + 1);
 					}
 
 				for (int firstSpace = input.IndexOf(' '); firstSpace != -1; firstSpace = input.IndexOf(' ', firstSpace + 1))
