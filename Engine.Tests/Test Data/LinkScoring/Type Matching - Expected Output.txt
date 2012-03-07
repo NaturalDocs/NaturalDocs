@@ -1,0 +1,111 @@
+// This tests type matching.  Class parent and type links can only resolve to topics that have those
+// attributes set and are in the same language.
+
+// Same language, class parent link, class topic
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same language, class parent link, non-class topic
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different language, class parent link, class topic
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+Java ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different language, class parent link, non-class topic
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Java ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Same language, type link, type topic
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Name
+
+C# Type Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same language, type link, non-type topic
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# Type Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different language, type link, type topic
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Name
+
+Java Type Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different language, type link, non-type topic
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Java Type Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

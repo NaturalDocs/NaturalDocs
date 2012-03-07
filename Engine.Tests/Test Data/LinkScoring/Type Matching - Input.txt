@@ -1,0 +1,94 @@
+
+// This tests type matching.  Class parent and type links can only resolve to topics that have those
+// attributes set and are in the same language.
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+
+// Same language, class parent link, class topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Class"
+Link.LanguageName = "C#"
+Link.Type = "ClassParent"
+
+score
+
+
+// Same language, class parent link, non-class topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Function"
+Link.LanguageName = "C#"
+Link.Type = "ClassParent"
+
+score
+
+
+// Different language, class parent link, class topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Class"
+Link.LanguageName = "Java"
+Link.Type = "ClassParent"
+
+score
+
+
+// Different language, class parent link, non-class topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Function"
+Link.LanguageName = "Java"
+Link.Type = "ClassParent"
+
+score
+
+
+// Same language, type link, type topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Type"
+Link.LanguageName = "C#"
+Link.Type = "Type"
+
+score
+
+
+// Same language, type link, non-type topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Function"
+Link.LanguageName = "C#"
+Link.Type = "Type"
+
+score
+
+
+// Different language, type link, type topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Type"
+Link.LanguageName = "Java"
+Link.Type = "Type"
+
+score
+
+
+// Different language, type link, non-type topic
+// ____________________________________________________________________________
+
+Topic.LanguageName = "C#"
+Topic.Keyword = "Function"
+Link.LanguageName = "Java"
+Link.Type = "Type"
+
+score

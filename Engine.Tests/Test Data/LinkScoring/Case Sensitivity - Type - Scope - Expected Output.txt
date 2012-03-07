@@ -1,0 +1,167 @@
+// These tests score type links where the topic title and link text always match, but the case
+// differences appear in the scope.  The rules for type links are more rigid in that cross language
+// links are not allowed and if the language is case sensitive that is a requirement instead of a
+// preference.
+
+// Same case sensitive language, case matches
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+C# Type Link: Name
+   Scope: Scope
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case sensitive language, case differs
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+C# Type Link: Name
+   Scope: scope
+
+☓☓☓ No Match ☓☓☓
+
+// Different case sensitive languages, case matches
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+Java Type Link: Name
+   Scope: Scope
+
+☓☓☓ No Match ☓☓☓
+
+// Different case sensitive languages, case differs
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+Java Type Link: Name
+   Scope: scope
+
+☓☓☓ No Match ☓☓☓
+
+// Same case insensitive language, case matches
+// ____________________________________________________________________________
+
+Visual Basic Type Topic: Name
+   Symbol: Scope.Name
+
+Visual Basic Type Link: Name
+   Scope: Scope
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case insensitive language, case differs
+// ____________________________________________________________________________
+
+Visual Basic Type Topic: Name
+   Symbol: Scope.Name
+
+Visual Basic Type Link: Name
+   Scope: scope
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case insensitive languages, case matches
+// ____________________________________________________________________________
+
+Visual Basic Type Topic: Name
+   Symbol: Scope.Name
+
+Pascal Type Link: Name
+   Scope: Scope
+
+☓☓☓ No Match ☓☓☓
+
+// Different case insensitive languages, case differs
+// ____________________________________________________________________________
+
+Visual Basic Type Topic: Name
+   Symbol: Scope.Name
+
+Pascal Type Link: Name
+   Scope: scope
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case sensitive, case matches
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+Pascal Type Link: Name
+   Scope: Scope
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case sensitive, case differs
+// ____________________________________________________________________________
+
+C# Type Topic: Name
+   Symbol: Scope.Name
+
+Pascal Type Link: Name
+   Scope: scope
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case insensitive, case matches
+// ____________________________________________________________________________
+
+Pascal Type Topic: Name
+   Symbol: Scope.Name
+
+C# Type Link: Name
+   Scope: Scope
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case insensitive, case differs
+// ____________________________________________________________________________
+
+Pascal Type Topic: Name
+   Symbol: Scope.Name
+
+C# Type Link: Name
+   Scope: scope
+
+☓☓☓ No Match ☓☓☓
+

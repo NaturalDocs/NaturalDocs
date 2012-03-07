@@ -1,0 +1,126 @@
+
+// Links should be able to walk up the scope, with local being scored higher than global.
+
+// Simple link in scope, topic scope in title
+// ____________________________________________________________________________
+
+Link.Text = "Name"
+Link.Scope = "A.B.C"
+Topic.Title = "A.B.C.Name"
+
+score
+
+Topic.Title = "A.B.Name"
+
+score
+
+Topic.Title = "A.Name"
+
+score
+
+Topic.Title = "Name"
+
+score
+
+
+// Simple link in scope, simple topic in scope
+// ____________________________________________________________________________
+
+Link.Text = "Name"
+Link.Scope = "A.B.C"
+Topic.Title = "Name"
+Topic.Scope = "A.B.C"
+
+score
+
+Topic.Scope = "A.B"
+
+score
+
+Topic.Scope = "A"
+
+score
+
+Topic.Scope = null
+
+score
+
+
+// Link scope in title
+// ____________________________________________________________________________
+
+Link.Text = "A.B.C.Name"
+Link.Scope = null
+Topic.Title = "A.B.C.Name"
+
+score
+
+
+// Link in scope title and in scope
+// ____________________________________________________________________________
+
+Link.Text = "C.Name"
+Link.Scope = "A.B"
+Topic.Title = "A.B.C.Name"
+
+score
+
+
+// Won't match because of scope, even though ending symbols match
+// ____________________________________________________________________________
+
+Link.Text = "Name"
+Link.Scope = "A.B"
+Topic.Title = "A.B.C.Name"
+Topic.Scope = null
+
+score
+
+Link.Text = "Name"
+Link.Scope = "A.B"
+Topic.Title = "Name"
+Topic.Scope = "A.B.C"
+
+score
+
+Link.Text = "A.B.Name"
+Link.Scope = null
+Topic.Title = "A.B.C.Name"
+Topic.Scope = null
+
+score
+
+Link.Text = "A.B.Name"
+Link.Scope = null
+Topic.Title = "Name"
+Topic.Scope = "A.B.C"
+
+score
+
+Link.Text = "Name"
+Link.Scope = "A.B"
+Topic.Title = "B.Name"
+Topic.Scope = null
+
+score
+
+Link.Text = "Name"
+Link.Scope = "A.B"
+Topic.Title = "Name"
+Topic.Scope = "B"
+
+score
+
+Link.Text = "A.B.Name"
+Link.Scope = null
+Topic.Title = "B.Name"
+Topic.Scope = null
+
+score
+
+Link.Text = "A.B.Name"
+Link.Scope = null
+Topic.Title = "Name"
+Topic.Scope = "B"
+
+score

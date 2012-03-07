@@ -1,0 +1,123 @@
+
+// Named links should work, but they should have lower interpretation scores than the original.
+// The exact match flag should remain on though.
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+Link.Text = "Text at Name"
+
+score
+
+Link.Text = "Text: Name"
+
+score
+
+// It should handle naming symbols appearing in the topic title.
+// ____________________________________________________________________________
+
+Topic.Title = "A at B"
+Link.Text = "A at B"
+
+score
+
+Link.Text = "Text at A at B"
+
+score
+
+Link.Text = "Text: A at B"
+
+score
+
+Topic.Title = "A: B"
+Link.Text = "A: B"
+
+score
+
+Link.Text = "Text at A: B"
+
+score
+
+Link.Text = "Text: A: B"
+
+score
+
+// It should handle naming symbols appearing in the link text.
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "A at B at Name"
+
+score
+
+Link.Text = "A at B: Name"
+
+score
+
+Link.Text = "A: B at Name"
+
+score
+
+Link.Text = "A: B: Name"
+
+score
+
+// How about both?
+// ____________________________________________________________________________
+
+Topic.Title = "C at D"
+Link.Text = "A at B at C at D"
+
+score
+
+Link.Text = "A at B: C at D"
+
+score
+
+Link.Text = "A: B at C at D"
+
+score
+
+Link.Text = "A: B: C at D"
+
+score
+
+Topic.Title = "C: D"
+Link.Text = "A at B at C: D"
+
+score
+
+Link.Text = "A at B: C: D"
+
+score
+
+Link.Text = "A: B at C: D"
+
+score
+
+Link.Text = "A: B: C: D"
+
+score
+
+// Plurals and possessives are not allowed in named links though.
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Text at Names"
+
+score
+
+Link.Text = "Text: Names"
+
+score
+
+Link.Text = "Text at Name's"
+
+score
+
+Link.Text = "Text: Name's"
+
+score

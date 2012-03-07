@@ -1,0 +1,42 @@
+// Same language
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different languages
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+SQL NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+

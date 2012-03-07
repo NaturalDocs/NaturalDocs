@@ -1,0 +1,133 @@
+// Exact matches should always score higher than alternate interpretations
+// ____________________________________________________________________________
+
+C# Function Topic: Name's
+   Symbol: Name's
+
+C# NaturalDocs Link: Name's
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name's
+   Scope: Global
+
+Match score: 6FFF FFFF FFF4 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   2 - Interpretation index
+      (61 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Each interpretation should have a unique score.  It doesn't really matter which one is
+// higher or lower, just that they're distinct, consistent, and the exact match is the highest.
+// ____________________________________________________________________________
+
+C# Function Topic: Knives
+   Symbol: Knives
+
+C# NaturalDocs Link: Knives
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Knive
+   Symbol: Knive
+
+C# NaturalDocs Link: Knives
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Kniv
+   Symbol: Kniv
+
+C# NaturalDocs Link: Knives
+   Scope: Global
+
+Match score: 6FFF FFFF FFF4 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   2 - Interpretation index
+      (61 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Knife
+   Symbol: Knife
+
+C# NaturalDocs Link: Knives
+   Scope: Global
+
+Match score: 6FFF FFFF FFEC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   4 - Interpretation index
+      (59 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Knif
+   Symbol: Knif
+
+C# NaturalDocs Link: Knives
+   Scope: Global
+
+Match score: 6FFF FFFF FFF0 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   3 - Interpretation index
+      (60 score)
+   ☐ - Body
+   ☐ - Prototype
+

@@ -1,0 +1,148 @@
+
+// These tests score Natural Docs links.
+
+Link.Type = "NaturalDocs"
+
+
+// Same case sensitive language, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+score
+
+
+// Same case sensitive language, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+score
+
+
+// Different case sensitive languages, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Java"
+
+score
+
+
+// Different case sensitive languages, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Java"
+
+score
+
+
+// Same case insensitive language, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Visual Basic"
+
+score
+
+
+// Same case insensitive language, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Visual Basic"
+
+score
+
+
+// Different case insensitive languages, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Different case insensitive languages, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case sensitive, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case sensitive, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case insensitive, case matches
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+Topic.LanguageName = "Pascal"
+Link.LanguageName = "C#"
+
+score
+
+
+// Mixed languages, target is case insensitive, case differs
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "name"
+
+Topic.LanguageName = "Pascal"
+Link.LanguageName = "C#"
+
+score

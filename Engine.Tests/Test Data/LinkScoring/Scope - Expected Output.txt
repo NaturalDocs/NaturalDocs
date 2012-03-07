@@ -1,0 +1,261 @@
+// Links should be able to walk up the scope, with local being scored higher than global.
+
+// Simple link in scope, topic scope in title
+// ____________________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: A.B.Name
+   Symbol: A.B.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FEFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   1 - Scope index
+      (1022 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: A.Name
+   Symbol: A.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FDFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   2 - Scope index
+      (1021 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FCFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   3 - Scope index
+      (1020 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Simple link in scope, simple topic in scope
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: A.B.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FEFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   1 - Scope index
+      (1022 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: A.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FDFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   2 - Scope index
+      (1021 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B.C
+
+Match score: 7FFF FFFF FCFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   3 - Scope index
+      (1020 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Link scope in title
+// ____________________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: A.B.C.Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Link in scope title and in scope
+// ____________________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: A.B
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Won't match because of scope, even though ending symbols match
+// ____________________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: A.B.Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: A.B.Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: B.Name
+   Symbol: B.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Name
+   Symbol: B.Name
+
+C# NaturalDocs Link: Name
+   Scope: A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: B.Name
+   Symbol: B.Name
+
+C# NaturalDocs Link: A.B.Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Name
+   Symbol: B.Name
+
+C# NaturalDocs Link: A.B.Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

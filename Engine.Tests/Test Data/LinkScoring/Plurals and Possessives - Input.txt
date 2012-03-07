@@ -1,0 +1,76 @@
+
+// Plurals should work, but they should have lower interpretation scores than the original.
+// Also, the exact match flag should be off.
+// ____________________________________________________________________________
+
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+Link.Text = "Names"
+
+score
+
+Topic.Title = "Fox"
+Link.Text = "Foxes"
+
+score
+
+Topic.Title = "Child"
+Link.Text = "Children"
+
+score
+
+Topic.Title = "Alumnus"
+Link.Text = "Alumni"
+
+score
+
+// The same should go for possessives
+// ____________________________________________________________________________
+
+Link.Text = "Alumnus"
+
+score
+
+Link.Text = "Alumnus's"
+
+score
+
+Link.Text = "Alumnus'"
+
+score
+
+// Possessives with Unicode quotes
+// ____________________________________________________________________________
+
+Link.Text = "Alumnus’s"
+
+score
+
+Link.Text = "Alumnus’"
+
+score
+
+// Plurals and possessives combined
+// ____________________________________________________________________________
+
+Link.Text = "Alumni's"
+
+score
+
+// Plurals and possessives are only allowed with Natural Docs links
+// ____________________________________________________________________________
+
+Link.Type = "NaturalDocs"
+
+score
+
+Link.Type = "ClassParent"
+
+score
+
+Link.Type = "Type"
+
+score

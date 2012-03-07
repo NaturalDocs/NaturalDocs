@@ -1,0 +1,165 @@
+// These tests score class parent links.  The rules are more rigid in that cross language links are not allowed
+// and if the language is case sensitive that is a requirement instead of a preference.
+
+// Same case sensitive language, case matches
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case sensitive language, case differs
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different case sensitive languages, case matches
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+Java ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different case sensitive languages, case differs
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+Java ClassParent Link: name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Same case insensitive language, case matches
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Visual Basic ClassParent Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case insensitive language, case differs
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Visual Basic ClassParent Link: name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case insensitive languages, case matches
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Pascal ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Different case insensitive languages, case differs
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Pascal ClassParent Link: name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case sensitive, case matches
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+Pascal ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case sensitive, case differs
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+Pascal ClassParent Link: name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case insensitive, case matches
+// ____________________________________________________________________________
+
+Pascal Class Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: Name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Mixed languages, target is case insensitive, case differs
+// ____________________________________________________________________________
+
+Pascal Class Topic: Name
+   Symbol: Name
+
+C# ClassParent Link: name
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

@@ -1,0 +1,248 @@
+// Plurals should work, but they should have lower interpretation scores than the original.
+// Also, the exact match flag should be off.
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Names
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Fox
+   Symbol: Fox
+
+C# NaturalDocs Link: Foxes
+   Scope: Global
+
+Match score: 6FFF FFFF FFF4 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   2 - Interpretation index
+      (61 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Child
+   Symbol: Child
+
+C# NaturalDocs Link: Children
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumni
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// The same should go for possessives
+// ____________________________________________________________________________
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumnus
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumnus's
+   Scope: Global
+
+Match score: 6FFF FFFF FFF4 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   2 - Interpretation index
+      (61 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumnus'
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Possessives with Unicode quotes
+// ____________________________________________________________________________
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumnus’s
+   Scope: Global
+
+Match score: 6FFF FFFF FFF4 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   2 - Interpretation index
+      (61 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumnus’
+   Scope: Global
+
+Match score: 6FFF FFFF FFF8 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   1 - Interpretation index
+      (62 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Plurals and possessives combined
+// ____________________________________________________________________________
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumni's
+   Scope: Global
+
+Match score: 6FFF FFFF FFF0 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   3 - Interpretation index
+      (60 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Plurals and possessives are only allowed with Natural Docs links
+// ____________________________________________________________________________
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# NaturalDocs Link: Alumni's
+   Scope: Global
+
+Match score: 6FFF FFFF FFF0 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☐ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   3 - Interpretation index
+      (60 score)
+   ☐ - Body
+   ☐ - Prototype
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# ClassParent Link: Alumni's
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Alumnus
+   Symbol: Alumnus
+
+C# Type Link: Alumni's
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

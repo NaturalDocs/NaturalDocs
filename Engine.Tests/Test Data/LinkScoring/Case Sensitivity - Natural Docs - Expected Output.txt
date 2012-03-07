@@ -1,0 +1,254 @@
+// These tests score Natural Docs links.
+
+// Same case sensitive language, case matches
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case sensitive language, case differs
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: name
+   Scope: Global
+
+Match score: 5FFF FFFF FFFC 0001
+   ☒ - Language
+   ☐ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case sensitive languages, case matches
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Java NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case sensitive languages, case differs
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Java NaturalDocs Link: name
+   Scope: Global
+
+Match score: 1FFF FFFF FFFC 0001
+   ☐ - Language
+   ☐ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case insensitive language, case matches
+// ____________________________________________________________________________
+
+Visual Basic Function Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Same case insensitive language, case differs
+// ____________________________________________________________________________
+
+Visual Basic Function Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: name
+   Scope: Global
+
+Match score: 7FFF FFFF FFFC 0001
+   ☒ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case insensitive languages, case matches
+// ____________________________________________________________________________
+
+Visual Basic Function Topic: Name
+   Symbol: Name
+
+Pascal NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Different case insensitive languages, case differs
+// ____________________________________________________________________________
+
+Visual Basic Function Topic: Name
+   Symbol: Name
+
+Pascal NaturalDocs Link: name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Mixed languages, target is case sensitive, case matches
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Pascal NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Mixed languages, target is case sensitive, case differs
+// ____________________________________________________________________________
+
+C# Function Topic: Name
+   Symbol: Name
+
+Pascal NaturalDocs Link: name
+   Scope: Global
+
+Match score: 1FFF FFFF FFFC 0001
+   ☐ - Language
+   ☐ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Mixed languages, target is case insensitive, case matches
+// ____________________________________________________________________________
+
+Pascal Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+
+// Mixed languages, target is case insensitive, case differs
+// ____________________________________________________________________________
+
+Pascal Function Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: name
+   Scope: Global
+
+Match score: 3FFF FFFF FFFC 0001
+   ☐ - Language
+   ☒ - Capitalization
+   ☒ - Exact text
+   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   0 - Scope index
+      (1023 score)
+   0 - Interpretation index
+      (63 score)
+   ☐ - Body
+   ☐ - Prototype
+

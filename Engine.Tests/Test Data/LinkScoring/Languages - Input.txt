@@ -1,0 +1,19 @@
+
+// Same language
+// ____________________________________________________________________________
+
+Topic.Title = "Name";
+Link.Text = "Name";
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+score
+
+
+// Different languages
+// ____________________________________________________________________________
+
+Link.LanguageName = "SQL"
+
+score

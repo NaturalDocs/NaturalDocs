@@ -1,0 +1,37 @@
+
+// Exact matches should always score higher than alternate interpretations
+// ____________________________________________________________________________
+
+Topic.Title = "Name's"
+Link.Text = "Name's"
+
+score
+
+Topic.Title = "Name"
+
+score
+
+// Each interpretation should have a unique score.  It doesn't really matter which one is
+// higher or lower, just that they're distinct, consistent, and the exact match is the highest.
+// ____________________________________________________________________________
+
+Topic.Title = "Knives"
+Link.Text = "Knives"
+
+score
+
+Topic.Title = "Knive"
+
+score
+
+Topic.Title = "Kniv"
+
+score
+
+Topic.Title = "Knife"
+
+score
+
+Topic.Title = "Knif"
+
+score

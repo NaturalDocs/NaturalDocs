@@ -1,0 +1,154 @@
+
+// These tests score type links where the topic title and link text always match, but the case
+// differences appear in the scope.  The rules for type links are more rigid in that cross language
+// links are not allowed and if the language is case sensitive that is a requirement instead of a
+// preference.
+
+Topic.Title = "Name"
+Topic.Keyword = "Type"
+Link.Text = "Name"
+Link.Type = "Type"
+
+
+// Same case sensitive language, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+score
+
+
+// Same case sensitive language, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+score
+
+
+// Different case sensitive languages, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Java"
+
+score
+
+
+// Different case sensitive languages, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Java"
+
+score
+
+
+// Same case insensitive language, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Visual Basic"
+
+score
+
+
+// Same case insensitive language, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Visual Basic"
+
+score
+
+
+// Different case insensitive languages, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Different case insensitive languages, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "Visual Basic"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case sensitive, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case sensitive, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "Pascal"
+
+score
+
+
+// Mixed languages, target is case insensitive, case matches
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "Scope"
+
+Topic.LanguageName = "Pascal"
+Link.LanguageName = "C#"
+
+score
+
+
+// Mixed languages, target is case insensitive, case differs
+// ____________________________________________________________________________
+
+Topic.Scope = "Scope"
+Link.Scope = "scope"
+
+Topic.LanguageName = "Pascal"
+Link.LanguageName = "C#"
+
+score
