@@ -136,12 +136,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: RawTextScope
+		/* Function: GetRawTextScope
 		 * Retrieves the bounds of the scope part of <RawText>.  Returns true if there is a scope, false if it's global.
 		 * This function is useful if you need to compare something to many ContextStrings and don't want to constantly
 		 * create intermediate strings.
 		 */
-		public bool RawTextScope (out int index, out int length)
+		public bool GetRawTextScope (out int index, out int length)
 			{
 			if (contextString == null || contextString[0] == SeparatorChar)
 				{
@@ -162,12 +162,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: RawTextUsingStatement
+		/* Function: GetRawTextUsingStatement
 		 * Retrieves the <RawText> bounds of the selected "using" statement.  If there isn't a "using" statement for the passed
 		 * index, it will return false.  This function is useful if you need to compare something against many ContextStrings and
 		 * don't want to constantly create intermediate strings and lists.
 		 */
-		 public bool RawTextUsingStatement (int statementIndex, out int rawTextIndex, out int rawTextLength)
+		 public bool GetRawTextUsingStatement (int statementIndex, out int rawTextIndex, out int rawTextLength)
 			{
 			rawTextIndex = 0;
 			rawTextLength = 0;
@@ -274,7 +274,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 
 		/* Property: RawText
-		 * Returns the raw string for use with functions like <RawTextScope()> and <RawTextUsingStatement()>.
+		 * Returns the raw string for use with functions like <GetRawTextScope()> and <GetRawTextUsingStatement()>.
 		 */
 		public string RawText
 			{
