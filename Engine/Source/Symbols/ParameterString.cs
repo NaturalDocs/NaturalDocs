@@ -224,6 +224,26 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			
 			
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: NumberOfParameters
+		 * The number of parameters in the string.
+		 */
+		public int NumberOfParameters
+			{
+			get
+				{
+				if (parameterString == null)
+					{  return 0;  }
+				else
+					{  return parameterString.Count(SeparatorChar) + 1;  }
+				}
+			}
+
+
+
 		// Group: Operators
 		// __________________________________________________________________________
 		
@@ -380,6 +400,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		private string parameterString;
 	
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
 		/* var: separatorCharAndWhitespace
 		 * An array containing the whitespace and separator characters.
 		 */
