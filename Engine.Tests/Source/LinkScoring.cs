@@ -305,9 +305,6 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 						topic.Symbol = topicSymbol;
 
-						if (parenthesis != null)
-							{  topic.Parameters = ParameterString.FromParenthesisString(parenthesis);  }
-							
 						if (link.Type == LinkType.Type || link.Type == LinkType.ClassParent)
 							{
 							if (linkIsPlainText)
@@ -337,9 +334,13 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						output.AppendLine(topicLanguage.Name + " " + topicType.Name + " Topic: " + topic.Title);
 						output.AppendLine("   Symbol: " + topic.Symbol.ToString().Replace(Engine.Symbols.SymbolString.SeparatorChar, '.'));
 
-						if (topic.Parameters != null)
+						if (topic.TitleParameters != null)
 							{
-							output.AppendLine("   Parameters: " + topic.Parameters.ToString().Replace(Engine.Symbols.ParameterString.SeparatorChar, ','));
+							output.AppendLine("   Title Parameters: " + topic.TitleParameters.ToString().Replace(Engine.Symbols.ParameterString.SeparatorChar, ','));
+							}
+						if (topic.PrototypeParameters != null)
+							{
+							output.AppendLine("   Prototype Parameters: " + topic.PrototypeParameters.ToString().Replace(Engine.Symbols.ParameterString.SeparatorChar, ','));
 							}
 						if (topic.Prototype != null)
 							{  output.AppendLine("   Prototype: " + topic.Prototype);  }

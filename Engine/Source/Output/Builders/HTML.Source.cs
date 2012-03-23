@@ -614,9 +614,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			// Add parameters if present
-			if (topic.Parameters != null)
+			if (topic.TitleParameters != null || topic.PrototypeParameters != null)
 				{
-				string parameterString = topic.Parameters.ToString();
+				ParameterString parameters = topic.TitleParameters;
+				
+				if (parameters == null)
+					{  parameters = topic.PrototypeParameters;  }
+
+				string parameterString = parameters.ToString();
 
 				// Doesn't need to be any more elaborate than this because we can assume tab characters and unnecessary spaces
 				// have already been filtered out by ParameterString's normalization.

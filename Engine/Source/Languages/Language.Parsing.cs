@@ -1283,28 +1283,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 							break;
 						}
-
-					// Parenthesis in the title takes precedence over the prototype.
-					if (parenthesis != null)
-						{  
-						codePoint.Topic.Parameters = ParameterString.FromParenthesisString(parenthesis);  
-						}
-
-					else if (codePoint.Topic.Prototype != null && codePoint.Topic.ParsedPrototype.NumberOfParameters > 0)
-						{
-						ParsedPrototype parsedPrototype = codePoint.Topic.ParsedPrototype;
-
-						string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
-						TokenIterator start, end;
-
-						for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
-							{
-							parsedPrototype.GetBaseParameterType(i, out start, out end);
-							parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
-							}
-
-						codePoint.Topic.Parameters = ParameterString.FromParameterTypes(parameterTypes);
-						}
 					}
 				}
 			}

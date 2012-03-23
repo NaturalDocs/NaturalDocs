@@ -49,27 +49,26 @@ namespace GregValure.NaturalDocs.Engine
 			Summary = 0x0004,
 			Prototype = 0x0008,
 			Symbol = 0x0010,
-			Parameters = 0x0020,
 
-			TopicTypeID = 0x0040,
-			AccessLevel = 0x0080,
-			Tags = 0x0100,
+			TopicTypeID = 0x0020,
+			AccessLevel = 0x0040,
+			Tags = 0x0080,
 
-			LanguageID = 0x0200,
-			CommentLineNumber = 0x0400,
-			CodeLineNumber = 0x0800,
+			LanguageID = 0x0100,
+			CommentLineNumber = 0x0200,
+			CodeLineNumber = 0x0400,
 			
-			FileID = 0x1000,
-			PrototypeContext = 0x2000,
-			BodyContext = 0x4000,
+			FileID = 0x0800,
+			PrototypeContext = 0x1000,
+			BodyContext = 0x2000,
 
-			All = Title | Body | Summary | Prototype | Symbol | Parameters |
+			All = Title | Body | Summary | Prototype | Symbol |
 					 TopicTypeID | AccessLevel | Tags |
 					 LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
 			}
-			
-			
+
+
 			
 		// Group: Functions
 		// __________________________________________________________________________
@@ -85,7 +84,10 @@ namespace GregValure.NaturalDocs.Engine
 			prototype = null;
 			parsedPrototype = null;
 			symbol = new SymbolString();
-			parameters = new ParameterString();
+			titleParameters = new ParameterString();
+			titleParametersGenerated = false;
+			prototypeParameters = new ParameterString();
+			prototypeParametersGenerated = false;
 
 			topicTypeID = 0;
 			usesPluralKeyword = false;
@@ -127,7 +129,8 @@ namespace GregValure.NaturalDocs.Engine
 			// prototype - Important in linking because links may favor topics that have a prototype.
 			// parsedPrototype - Not a database field.
 			// symbol - Important in linking.
-			// parameters - Important in linking.
+			// titleParameters - Not a database field.
+			// prototypeParameters - Not a database field.
 
 			// topicTypeID - Important in linking.
 			// usesPluralKeyword - Not a database field.
@@ -152,7 +155,6 @@ namespace GregValure.NaturalDocs.Engine
 
 				// String comparisons, most likely to be different			
 				title != other.title ||
-				parameters != other.parameters ||
 				body != other.body ||
 				prototype != other.prototype ||
 				symbol != other.symbol ||
@@ -261,7 +263,10 @@ namespace GregValure.NaturalDocs.Engine
 			get
 				{  return title;  }
 			set
-				{  title = value;  }
+				{  
+				title = value;
+				titleParametersGenerated = false;
+				}
 			}
 			
 			
@@ -300,6 +305,7 @@ namespace GregValure.NaturalDocs.Engine
 				{  
 				prototype = value;  
 				parsedPrototype = null;
+				prototypeParametersGenerated = false;
 				}
 			}
 			
@@ -316,18 +322,6 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Property: Parameters
-		 * The parameter string associated with the topic, or null if none.
-		 */
-		public ParameterString Parameters
-			{
-			get
-				{  return parameters;  }
-			set
-				{  parameters = value;  }
-			}
-			
-			
 		/* Property: TopicTypeID
 		 * The ID of the topic's type, or zero if it hasn't been set.
 		 */
@@ -506,11 +500,7 @@ namespace GregValure.NaturalDocs.Engine
 
 
 		/* Property: ParsedPrototype
-		 * 
 		 * If <Prototype> is not null, this will be it in <ParsedPrototype> form.
-		 * 
-		 * This is generated automatically the first time it is accessed.  However, if desired you can also use the assignment to
-		 * pre-generate them.
 		 */
 		public ParsedPrototype ParsedPrototype
 			{
@@ -528,6 +518,65 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Property: TitleParameters
+		 * The parameters found in the title, as opposed to the prototype, or null if none.
+		 */
+		public ParameterString TitleParameters
+			{
+			get
+				{
+				if (!titleParametersGenerated)
+					{
+					int parenthesisIndex = ParameterString.GetEndingParenthesisIndex(title);
+
+					if (parenthesisIndex == -1)
+						{  titleParameters = new ParameterString();  }
+					else
+						{  titleParameters = ParameterString.FromParenthesisString(title.Substring(parenthesisIndex));  }
+
+					titleParametersGenerated = true;
+					}
+
+				return titleParameters;
+				}
+			}
+			
+			
+		/* Property: PrototypeParameters
+		 * The parameters found in the prototype, or null if none.
+		 */
+		public ParameterString PrototypeParameters
+			{
+			get
+				{
+				if (!prototypeParametersGenerated)
+					{
+					ParsedPrototype parsedPrototype = ParsedPrototype;
+
+					if (parsedPrototype == null || parsedPrototype.NumberOfParameters == 0)
+						{  prototypeParameters = new ParameterString();  }
+					else
+						{
+						string[] parameterTypes = new string[parsedPrototype.NumberOfParameters];
+						Tokenization.TokenIterator start, end;
+
+						for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+							{
+							parsedPrototype.GetBaseParameterType(i, out start, out end);
+							parameterTypes[i] = parsedPrototype.Tokenizer.TextBetween(start, end);
+							}
+
+						prototypeParameters = ParameterString.FromParameterTypes(parameterTypes);
+						}
+
+					prototypeParametersGenerated = true;
+					}
+
+				return prototypeParameters;
+				}
+			}
+			
+			
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -567,12 +616,27 @@ namespace GregValure.NaturalDocs.Engine
 		 * The topic's fully resolved symbol, or null if not specified.
 		 */
 		protected SymbolString symbol;
-		
-		/* var: parameters
-		 * The parameters of the symbol, or null if none.
-		 */
-		protected ParameterString parameters;
 
+		/* var: titleParameters
+		 * Any parameters found in the title, as opposed to the prototype.
+		 */
+		protected ParameterString titleParameters;
+
+		/* var: titleParametersGenerated
+		 * Whether <titleParameters> was generated, as it's done on demand and stored.
+		 */
+		protected bool titleParametersGenerated;
+		
+		/* var: prototypeParameters
+		 * Any parameters found in the prototype.
+		 */
+		protected ParameterString prototypeParameters;
+
+		/* var: prototypeParametersGenerated
+		 * Whether <prototypeParameters> was generated, as it's done on demand and stored.
+		 */
+		protected bool prototypeParametersGenerated;
+		
 		/* var: topicTypeID
 		 * The ID number of the topic's type, or zero if not specified.
 		 */

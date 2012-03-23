@@ -47,10 +47,15 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				output.AppendLine("Symbol: " + topics[i].Symbol.ToString().Replace(SymbolString.SeparatorChar, '|'));
 				output.AppendLine("Ending Symbol: " + topics[i].Symbol.EndingSymbol.ToString());
 
-				if (topics[i].Parameters != null)
-					{  output.AppendLine("Parameters: " + topics[i].Parameters.ToString().Replace(ParameterString.SeparatorChar, '|'));  }
+				if (topics[i].TitleParameters != null)
+					{  output.AppendLine("Title Parameters: " + topics[i].TitleParameters.ToString().Replace(ParameterString.SeparatorChar, '|'));  }
 				else
-					{  output.AppendLine("Parameters: (none)");  }
+					{  output.AppendLine("Title Parameters: (none)");  }
+
+				if (topics[i].PrototypeParameters != null)
+					{  output.AppendLine("Prototype Parameters: " + topics[i].PrototypeParameters.ToString().Replace(ParameterString.SeparatorChar, '|'));  }
+				else
+					{  output.AppendLine("Prototype Parameters: (none)");  }
 				}
 
 			return output.ToString();

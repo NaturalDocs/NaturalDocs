@@ -64,15 +64,6 @@ Column: Symbol
 	The fully resolved, normalized <Symbols.SymbolString> of the topic.
 	
 	
-Column: Parameters
-
-	(SQL Prototype)
-		Parameters TEXT
-	(end)
-	
-	The fully resolved, normalized <Symbols.ParameterString> of the topic.
-	
-	
 Column: EndingSymbol
 
 	(SQL Prototype)

@@ -1,35 +1,44 @@
 Symbol: GlobalFunction
 Ending Symbol: globalfunction
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Scope|In|Title
 Ending Symbol: title
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Package|Class
 Ending Symbol: class
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Package|Class|ClassMemberFunction
 Ending Symbol: classmemberfunction
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: AlwaysGlobalAppearingInsideClass
 Ending Symbol: alwaysglobalappearinginsideclass
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Package|Class|ClassMemberVar
 Ending Symbol: classmembervar
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Package|Class|Scope|In|Title|Member
 Ending Symbol: member
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: Return to Global Scope
 Ending Symbol: return to global scope
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)
 -----
 Symbol: GlobalFunction2
 Ending Symbol: globalfunction2
-Parameters: (none)
+Title Parameters: (none)
+Prototype Parameters: (none)

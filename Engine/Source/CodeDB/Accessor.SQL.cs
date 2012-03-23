@@ -40,7 +40,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			List<Topic> topics = new List<Topic>();
 			
-			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, " +
+			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, " +
 																									"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																									"LanguageID, PContexts.ContextString, PrototypeContextID, " +
 																									"BContexts.ContextString, BodyContextID " +
@@ -60,21 +60,20 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Summary = query.StringColumn(3);
 					topic.Prototype = query.StringColumn(4);
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
-					topic.Parameters = ParameterString.FromExportedString( query.StringColumn(6) );
 
-					topic.TopicTypeID = query.IntColumn(7);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
-					topic.TagString = query.StringColumn(9);
+					topic.TopicTypeID = query.IntColumn(6);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(7);
+					topic.TagString = query.StringColumn(8);
 
 					topic.FileID = fileID;
-					topic.CommentLineNumber = query.IntColumn(10);
-					topic.CodeLineNumber = query.IntColumn(11);
+					topic.CommentLineNumber = query.IntColumn(9);
+					topic.CodeLineNumber = query.IntColumn(10);
 
-					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
-					topic.PrototypeContextID = query.IntColumn(14);
-					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
-					topic.BodyContextID = query.IntColumn(16);
+					topic.LanguageID = query.IntColumn(11);
+					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(12) );
+					topic.PrototypeContextID = query.IntColumn(13);
+					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(14) );
+					topic.BodyContextID = query.IntColumn(15);
 
 					topics.Add(topic);
 
@@ -104,7 +103,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
-		 *		Parameters - Can be null.  Will not be automatically generated though.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -125,7 +123,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Summary
 			// Prototype
 			RequireContent("AddTopic", "Symbol", topic.Symbol);
-			// Parameters
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -146,11 +143,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
 			GetOrCreateContextIDs(topic);
 			
-			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, Parameters, EndingSymbol, " +
+			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, EndingSymbol, " +
 													"TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, LanguageID, " +
 													"PrototypeContextID, BodyContextID) " +
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.Parameters, 
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, 
 												topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, topic.FileID, 
 												topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
 												topic.BodyContextID										 
@@ -298,7 +295,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
-		 *		Parameters - Can be null.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -319,7 +315,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Summary
 			// Prototype
 			RequireContent("DeleteTopic", "Symbol", topic.Symbol);
-			// Parameters
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -421,7 +416,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
-		 *		Parameters - Can be null.  Will not be automatically generated though.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
