@@ -11,13 +11,11 @@ Topic: Topic Symbols
 	- Member operators are replaced by a standard character, which we'll represent in this document with |, so the part 
 		before the parentheses is actually "Namespace|Class|Function".  It would be the same for "Namespace.Class.Function".
 	- Unnecessary whitespace is removed, which is usually any whitespace not in between two letters.
-	- Parentheses appearing in the topic title are removed, normalized, and stored separately as the symbol's parameters.  In 
+	- Parentheses appearing in the topic title are removed, normalized, and stored separately as the title parameters.  In 
 	  this case it would be converted to "int|int".
-	- If no parentheses appear in the topic title and the topic has a prototype with typed parameters, those types become the 
-	  symbol's parameters.  Something documented with "Function: FunctionName" that has a prototype of
-	  "void FunctionName (int x, float y)" will have a generated parameter string "int|float".
-		- Note that this means if you put your own parentheses in the topic title, they will override the prototype.  It's 
-		  recommended that people not do this.
+	- If the topic has a prototype with typed parameters, those types become the prototype parameters.  Something 
+	  documented with "Function: FunctionName" that has a prototype of "void FunctionName (int x, float y)" will have a generated 
+	  parameter string "int|float".
 	- Case is preserved regardless of whether the underlying language is case sensitive.
 	- Leading and trailing member operators are removed.  Multiple consecutive ones are condensed.
 
