@@ -1,0 +1,24 @@
+
+/* Topic: Parentheses Following Title (with, commas)
+*/
+
+/* Topic: Parentheses Following Title (without commas)
+*/
+
+/* Function: FunctionWithPrototype
+*/
+int FunctionWithPrototype (int x, float y) { }
+
+/* Function: FunctionWithElaboratePrototype
+*/
+int FunctionWithElaboratePrototype (ref int x, float y = 12.4, List<string> z = null) { }
+
+/* Function: FunctionWithoutPrototype
+*/
+
+/* Function: FunctionWithoutPrototypeWithParenthesesInTitle (title, parentheses)
+*/
+
+/* Function: FunctionWithPrototypeAndParenthesesInTitle (title, parentheses)
+*/
+int FunctionWithPrototypeAndParenthesesInTitle (int x, float y) { }

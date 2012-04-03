@@ -6,11 +6,11 @@
 -----
 <a name="Test(3)"></a>
 -----
-<a name="Test(with_parenthesis)"></a>
+<a name="Test(with_parentheses)"></a>
 -----
-<a name="Test(with_parenthesis)(2)"></a>
+<a name="Test(with_parentheses)(2)"></a>
 -----
-<a name="Test(with_parenthesis)(3)"></a>
+<a name="Test(with_parentheses)(3)"></a>
 -----
 <a name="Test_with_Numbers(2)"></a>
 -----

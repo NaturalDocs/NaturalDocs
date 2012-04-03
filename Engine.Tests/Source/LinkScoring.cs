@@ -200,7 +200,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							else
 								{  
 								ContextString temp = topic.PrototypeContext;
-								temp.Scope = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(valueString);
+								temp.Scope = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(valueString);
 								topic.PrototypeContext = temp;
 								}
 							}
@@ -268,7 +268,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							else
 								{
 								ContextString temp = link.Context;
-								temp.Scope = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(valueString);
+								temp.Scope = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(valueString);
 								link.Context = temp;
 								}
 							}
@@ -292,8 +292,8 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 						// Calculate fields
 
-						string parenthesis;
-						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parenthesis);
+						string parentheses;
+						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parentheses);
 
 						var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
@@ -309,7 +309,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							{
 							if (linkIsPlainText)
 								{
-								SymbolString linkSymbol = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(link.TextOrSymbol);
+								SymbolString linkSymbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(link.TextOrSymbol);
 								link.TextOrSymbol = linkSymbol.ToString();
 								link.EndingSymbol = linkSymbol.EndingSymbol;
 								linkIsPlainText = false;
@@ -397,7 +397,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							// L - Whether the topic matches the link's language.
 							// C - Whether the topic and link's capitalization match if it matters to the language.
 							// E - Whether the text is an exact match with no plural or possessive conversions applied.
-							// T - Whether the link parenthesis exactly match the topic title parenthesis
+							// T - Whether the link parentheses exactly match the topic title parentheses
 							// P - How well the parameters match.
 							// S - How high on the scope list the symbol match is.
 							// I - How high on the interpretation list (named/plural/possessive) the match is.

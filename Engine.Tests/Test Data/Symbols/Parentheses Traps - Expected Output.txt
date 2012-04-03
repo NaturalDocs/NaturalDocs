@@ -1,20 +1,20 @@
-Symbol: (Parenthesis Surrounding Entire Title)
-Ending Symbol: (parenthesis surrounding entire title)
+Symbol: (Parentheses Surrounding Entire Title)
+Ending Symbol: (parentheses surrounding entire title)
 Title Parameters: (none)
 Prototype Parameters: (none)
 -----
-Symbol: Parethesis(in middle)of title
-Ending Symbol: parethesis(in middle)of title
+Symbol: Parentheses(in middle)of title
+Ending Symbol: parentheses(in middle)of title
 Title Parameters: (none)
 Prototype Parameters: (none)
 -----
-Symbol: Parenthesis(in middle)and following title
-Ending Symbol: parenthesis(in middle)and following title
+Symbol: Parentheses(in middle)and following title
+Ending Symbol: parentheses(in middle)and following title
 Title Parameters: with|commas
 Prototype Parameters: (none)
 -----
-Symbol: Parenthesis(in middle)and following title
-Ending Symbol: parenthesis(in middle)and following title
+Symbol: Parentheses(in middle)and following title
+Ending Symbol: parentheses(in middle)and following title
 Title Parameters: without commas
 Prototype Parameters: (none)
 -----

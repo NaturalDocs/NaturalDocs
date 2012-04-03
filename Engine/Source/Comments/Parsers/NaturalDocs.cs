@@ -466,7 +466,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
 		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 */
-		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parenthesis)
+		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parentheses)
 			{
 			string input = linkText.CondenseWhitespace();
 			
@@ -475,18 +475,18 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				input = input.Substring(1, input.Length - 2);
 
-				// Remove the flag so we can pass the rest of them to LinkInterpretations_ParenthesisAlreadyRemoved().
+				// Remove the flag so we can pass the rest of them to LinkInterpretations_ParenthesesAlreadyRemoved().
 				flags &= ~LinkInterpretationFlags.FromOriginalText;
 				}
 
 			string prefix;
-			ParameterString.SplitFromEndingParethesis(input, out prefix, out parenthesis);
+			ParameterString.SplitFromEndingParetheses(input, out prefix, out parentheses);
 
-			return LinkInterpretations_DontStripParenthesis(prefix, flags);
+			return LinkInterpretations_DontStripParentheses(prefix, flags);
 			}
 
 
-		/* Function: LinkInterpretations_DontStripParenthesis
+		/* Function: LinkInterpretations_DontStripParentheses
 		 * 
 		 * Generates a list of possible interpretations for the passed target of a Natural Docs link, or null if there are none.  If
 		 * <LinkInterpretationFlags.ExcludeLiteral> is not set it will always return a list of at least one interpretation.
@@ -495,11 +495,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
 		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 * 
-		 * We use this awkward function name because 90% of the time you need to handle parenthesis, or at least strip them
+		 * We use this awkward function name because 90% of the time you need to handle parentheses, or at least strip them
 		 * off.  If we just made an overload of <LinkInterpretations()> without the out parameter people would use this one by 
-		 * accident.  By attaching _DontStripParenthesis it forces you to only use this one if you know what you're doing.
+		 * accident.  By attaching _DontStripParentheses it forces you to only use this one if you know what you're doing.
 		 */
-		public List<LinkInterpretation> LinkInterpretations_DontStripParenthesis (string linkText, LinkInterpretationFlags flags)
+		public List<LinkInterpretation> LinkInterpretations_DontStripParentheses (string linkText, LinkInterpretationFlags flags)
 			{
 			List<LinkInterpretation> interpretations = null;
 			string input = linkText.CondenseWhitespace();
@@ -866,8 +866,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: IsParenTagLine
-		 * Returns true if the entire line is enclosed in parenthesis and satisfies a few other requirements to be suitable for a
-		 * parenthetical tag like "(start code)" or "(see image.jpg)".  Will return the contents of the parenthesis with all whitespace
+		 * Returns true if the entire line is enclosed in parentheses and satisfies a few other requirements to be suitable for a
+		 * parenthetical tag like "(start code)" or "(see image.jpg)".  Will return the contents of the parentheses with all whitespace
 		 * condensed.
 		 */
 		protected bool IsParenTagLine (LineIterator lineIterator, out string content)
@@ -897,7 +897,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			string betweenParens = lineIterator.Tokenizer.TextBetween(firstToken, lastToken);
 																											
-			if (betweenParens.IndexOfAny(ParenthesisChars) != -1)
+			if (betweenParens.IndexOfAny(ParenthesesChars) != -1)
 				{
 				content = null;
 				return false;
@@ -986,7 +986,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			//    - (Perl code)
 			// Plus all forms above using "prototype" instead of "code".
 			
-			// Since there may be multiple spaces in the parenthesis and some may belong to the keyword or language,
+			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 						
 			for (int firstSpace = betweenParens.IndexOf(' '); firstSpace != -1; 
@@ -1062,7 +1062,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			//    - (end Perl code)
 			// Plus all forms above using "prototype" instead of "code".
 
-			// Since there may be multiple spaces in the parenthesis and some may belong to the keyword or language,
+			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 
 			for (int firstSpace = betweenParens.IndexOf(' '); firstSpace != -1; 
@@ -1310,7 +1310,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 		/* Function: IsImageTagContent
 		 * Returns whether the passed string is the content of an image tag, like "see image.jpg".  It validates the file name against
-		 * the registered extensions in <Files.FileSources.Folder>.  The string must not contain the parenthesis.  If it is tag content 
+		 * the registered extensions in <Files.FileSources.Folder>.  The string must not contain the parentheses.  If it is tag content 
 		 * it will also returns the keyword and file name.
 		 */
 		protected bool IsImageTagContent (string betweenParens, out string keyword, out Path file)
@@ -2082,7 +2082,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * Goes through the passed <Tokenizer> and marks angle brackets with <CommentParsingType.PossibleOpeningTag> and 
 		 * <CommentParsingType.PossibleClosingTag> if they can possibly be interpreted as links.  Call <MarkPossibleFormattingTags()>
 		 * prior to this in order to allow links to be tolerant of formatting tags surrounding them.  Call
-		 * <MarkPossibleInlineImageTags()> after this so marked parenthesis don't screw it up.
+		 * <MarkPossibleInlineImageTags()> after this so marked parentheses don't screw it up.
 		 */
 		protected void MarkPossibleLinkTags (Tokenizer tokenizer)
 			{
@@ -2199,9 +2199,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			
 		/* Function: MarkPossibleInlineImageTags
-		 * Goes through the passed <Tokenizer> and marks parenthesis with <CommentParsingType.PossibleOpeningTag> and 
+		 * Goes through the passed <Tokenizer> and marks parentheses with <CommentParsingType.PossibleOpeningTag> and 
 		 * <CommentParsingType.PossibleClosingTag> if they can possibly be used for inline images.  This does NOT validate
-		 * the content of the parenthesis, merely that they are acceptable candidates.
+		 * the content of the parentheses, merely that they are acceptable candidates.
 		 */
 		protected void MarkPossibleInlineImageTags (Tokenizer tokenizer)
 			{
@@ -2267,7 +2267,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * Goes through the passed <Tokenizer> and converts all angle brackets marked as <CommentParsingType.PossibleOpeningTag> and 
 		 * <CommentParsingType.PossibleClosingTag> to <CommentParsingType.OpeningTag>, <CommentParsingType.ClosingTag>, or back 
 		 * to <CommentParsingType.Null>.  It makes sure every opening tag has a closing tag and removes possible tag markings on other 
-		 * symbols between them.  Call this before <FinalizeInlineImageTags()> and <FinalizeFormattingTags()> because parenthesis, asterisks,
+		 * symbols between them.  Call this before <FinalizeInlineImageTags()> and <FinalizeFormattingTags()> because parentheses, asterisks,
 		 * and underscores can be part of a link's content.
 		 */
 		protected void FinalizeLinkTags (Tokenizer tokenizer)
@@ -2327,7 +2327,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		/* Function: FinalizeInlineImageTags
-		 * Goes through the passed <Tokenizer> and converts all parenthesis marked as <CommentParsingType.PossibleOpeningTag> and 
+		 * Goes through the passed <Tokenizer> and converts all parentheses marked as <CommentParsingType.PossibleOpeningTag> and 
 		 * <CommentParsingType.PossibleClosingTag> to <CommentParsingType.OpeningTag>, <CommentParsingType.ClosingTag>, or 
 		 * back to <CommentParsingType.Null>.  It makes sure every opening tag has a closing tag, the content is in the right format, and 
 		 * removes possible tag markings on other symbols between them.  Call this before <FinalizeFormattingTags()> because asterisks 
@@ -2690,7 +2690,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 								else
 									{
 									// See if we can interpret the link as a named URL or e-mail address.  We can accept the first interpretation we find.
-									List<LinkInterpretation> interpretations = LinkInterpretations_DontStripParenthesis(tagContent, 
+									List<LinkInterpretation> interpretations = LinkInterpretations_DontStripParentheses(tagContent, 
 																																										LinkInterpretationFlags.AllowNamedLinks |
 																																										LinkInterpretationFlags.ExcludeLiteral);
 									bool found = false;
@@ -3359,10 +3359,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected List<string>[] conversionLists;
 	
-		/* var: ParenthesisChars 
-		 * An array of the parenthesis characters, for use with IndexOfAny(char[]).
+		/* var: ParenthesesChars 
+		 * An array of the parentheses characters, for use with IndexOfAny(char[]).
 		 */
-		protected static char[] ParenthesisChars = { '(', ')' };
+		protected static char[] ParenthesesChars = { '(', ')' };
 
 
 		protected static LineEndProbablyEndsSentence LineEndProbablyEndsSentenceRegex = new LineEndProbablyEndsSentence();

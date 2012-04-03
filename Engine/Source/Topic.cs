@@ -527,12 +527,12 @@ namespace GregValure.NaturalDocs.Engine
 				{
 				if (!titleParametersGenerated)
 					{
-					int parenthesisIndex = ParameterString.GetEndingParenthesisIndex(title);
+					int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(title);
 
-					if (parenthesisIndex == -1)
+					if (parenthesesIndex == -1)
 						{  titleParameters = new ParameterString();  }
 					else
-						{  titleParameters = ParameterString.FromParenthesisString(title.Substring(parenthesisIndex));  }
+						{  titleParameters = ParameterString.FromParenthesesString(title.Substring(parenthesesIndex));  }
 
 					titleParametersGenerated = true;
 					}

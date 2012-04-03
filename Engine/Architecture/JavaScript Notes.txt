@@ -71,5 +71,5 @@ Topic: Substitutions
 
 		This lets you include text that will be in the native language of each Natural Docs user.  The substitution will be a JavaScript
 		string that includes the quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a 
-		JavaScript string representation of the identifier.  You cannot pass parameters to the identifiers with parenthesis.
+		JavaScript string representation of the identifier.  You cannot pass parameters to the identifiers with parentheses.
 	

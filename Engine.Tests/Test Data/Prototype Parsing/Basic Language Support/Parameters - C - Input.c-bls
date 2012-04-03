@@ -21,7 +21,7 @@ void FunctionName4 (int x, float y)
 
 /* Function: FunctionName5
 	We need a test with the parethesis attached to the function name because in the past the code
-	that skipped the identifier would skip the parenthesis as part of it (like it should with var[]) thus
+	that skipped the identifier would skip the parentheses as part of it (like it should with var[]) thus
 	screwing up the parameter list.
 */
 void FunctionName5(int x, float y)

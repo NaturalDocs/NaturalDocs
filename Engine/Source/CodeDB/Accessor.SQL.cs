@@ -657,7 +657,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
-				string parenthesis;
+				string parentheses;
 
 				// Since we're not setting Flags.ExcludeLiteral the list will always have at least one entry.
 				// Set Flags.AllowPluralsAndPossessives to get alternate ending symbols (children = children, child)
@@ -668,17 +668,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
-																												out parenthesis);
+																												out parentheses);
 
 				alternateEndingSymbols = new StringSet(false, false);
 
 				foreach (LinkInterpretation linkInterpretation in linkInterpretations)
 					{
-					SymbolString symbol = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(linkInterpretation.Target);
+					SymbolString symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(linkInterpretation.Target);
 					alternateEndingSymbols.Add(symbol.EndingSymbol);
 					}
 
-				link.EndingSymbol = SymbolString.FromPlainText_ParenthesisAlreadyRemoved(linkInterpretations[0].Target).EndingSymbol;
+				link.EndingSymbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(linkInterpretations[0].Target).EndingSymbol;
 				alternateEndingSymbols.Remove(link.EndingSymbol);
 				}
 			else
@@ -1498,7 +1498,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exception("The query text must already have a WHERE keyword before callling AppendWhereClause_ functions.");  }
 			#endif
 
-			// Surround the entire clause with parenthesis and spaces to be safe.
+			// Surround the entire clause with parentheses and spaces to be safe.
 			queryText.Append(" (");
 
 			bool firstParam = true;

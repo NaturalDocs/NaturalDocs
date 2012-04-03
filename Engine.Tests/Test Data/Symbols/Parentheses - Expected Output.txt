@@ -1,10 +1,10 @@
-Symbol: Parenthesis Following Title
-Ending Symbol: parenthesis following title
+Symbol: Parentheses Following Title
+Ending Symbol: parentheses following title
 Title Parameters: with|commas
 Prototype Parameters: (none)
 -----
-Symbol: Parenthesis Following Title
-Ending Symbol: parenthesis following title
+Symbol: Parentheses Following Title
+Ending Symbol: parentheses following title
 Title Parameters: without commas
 Prototype Parameters: (none)
 -----
@@ -25,10 +25,10 @@ Prototype Parameters: (none)
 -----
 Symbol: FunctionWithoutPrototypeWithParenthesesInTitle
 Ending Symbol: functionwithoutprototypewithparenthesesintitle
-Title Parameters: title|parenthesis
+Title Parameters: title|parentheses
 Prototype Parameters: (none)
 -----
-Symbol: FunctionWithPrototypeAndParenthesisInTitle
-Ending Symbol: functionwithprototypeandparenthesisintitle
-Title Parameters: title|parenthesis
+Symbol: FunctionWithPrototypeAndParenthesesInTitle
+Ending Symbol: functionwithprototypeandparenthesesintitle
+Title Parameters: title|parentheses
 Prototype Parameters: int|float

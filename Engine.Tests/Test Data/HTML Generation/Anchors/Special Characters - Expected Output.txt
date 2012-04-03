@@ -10,8 +10,8 @@
 -----
 <a name="&lt;Angle_Brackets&gt;"></a>
 -----
-<a name="(Full_Parenthesis)"></a>
+<a name="(Full_Parentheses)"></a>
 -----
-<a name="Ending(Parenthesis)"></a>
+<a name="Ending(Parentheses)"></a>
 -----
 <a name="URI_3D_Confusion"></a>

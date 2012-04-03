@@ -13,11 +13,11 @@
 	Topic: Test
 
 
-	Topic: Test (with parenthesis)
+	Topic: Test (with parentheses)
 
-	Topic: Test (with parenthesis)
+	Topic: Test (with parentheses)
 
-	Topic: Test (with parenthesis)
+	Topic: Test (with parentheses)
 
 
 	Topic: Test with Numbers(2)

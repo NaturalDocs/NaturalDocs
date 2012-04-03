@@ -387,7 +387,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				// If we have any, parse the parameters.
 
 				// We use ParsedPrototype.GetParameter() instead of trying to build it into the loop above because ParsedPrototype 
-				// does things like trimming whitespace and ignoring empty parenthesis.
+				// does things like trimming whitespace and ignoring empty parentheses.
 
 				TokenIterator start, end;
 
@@ -856,8 +856,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-				string undecoratedTitle, parenthesis;
-				Symbols.ParameterString.SplitFromEndingParethesis(topic.Title, out undecoratedTitle, out parenthesis);
+				string undecoratedTitle, parentheses;
+				Symbols.ParameterString.SplitFromEndingParetheses(topic.Title, out undecoratedTitle, out parentheses);
 
 				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
 					{  
@@ -1223,8 +1223,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					TopicType topicType = Instance.TopicTypes.FromID(codePoint.Topic.TopicTypeID);
 
-					string parenthesis = null;
-					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parenthesis);
+					string parentheses = null;
+					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parentheses);
 
 					switch (topicType.Scope)
 						{

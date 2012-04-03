@@ -47,10 +47,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: GetEndingParenthesisIndex
-		 * If a plain text string ends in parenthesis, returns the index of the opening parenthesis character.  Returns -1 otherwise.
+		/* Function: GetEndingParenthesesIndex
+		 * If a plain text string ends in parentheses, returns the index of the opening parenthesis character.  Returns -1 otherwise.
 		 */
-		public static int GetEndingParenthesisIndex (string input)
+		public static int GetEndingParenthesesIndex (string input)
 			{
 			if (input == null)
 				{  return -1;  }
@@ -59,13 +59,13 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			if (input.Length >= 2 && input[input.Length - 1] == ')')
 				{
-				// We have to count parenthesis so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
-				// "(paren) text2 (paren2)".  We also want to handle nested parenthesis.
+				// We have to count parentheses so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
+				// "(paren) text2 (paren2)".  We also want to handle nested parentheses.
 
 				// The start position LastIndexOfAny() takes is the character at the end of the string to be examined first.
 				// The count is the number of characters to examine, so it's one higher as index 4 goes for 5 characters: indexes 0, 1, 2,
 				// 3, and 4.  The character at the start position is examined, it's not a limit.
-				int nextParen = input.LastIndexOfAny(parenthesisChars, input.Length - 2, input.Length - 1);
+				int nextParen = input.LastIndexOfAny(parenthesesChars, input.Length - 2, input.Length - 1);
 				int nesting = 1;
 				
 				while (nextParen != -1)
@@ -80,11 +80,11 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 							{  break;  }
 						}
 
-					nextParen = input.LastIndexOfAny(parenthesisChars, nextParen - 1, nextParen);
+					nextParen = input.LastIndexOfAny(parenthesesChars, nextParen - 1, nextParen);
 					}
 
 				// We want nextParen to be greater than zero so we don't include cases where the entire title is surrounded
-				// by parenthesis.
+				// by parentheses.
 				if (nesting == 0 && nextParen > 0)
 					{
 					return nextParen;
@@ -95,23 +95,23 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: SplitFromEndingParenthesis
-		 * If a plain text string ends in parenthesis, returns them and the rest of the text as separate strings.  If it doesn't, it will
+		/* Function: SplitFromEndingParentheses
+		 * If a plain text string ends in parentheses, returns them and the rest of the text as separate strings.  If it doesn't, it will
 		 * return the original string and null.
 		 */
-		public static void SplitFromEndingParethesis (string input, out string output, out string parenthesis)
+		public static void SplitFromEndingParetheses (string input, out string output, out string parentheses)
 			{
-			int index = GetEndingParenthesisIndex(input);
+			int index = GetEndingParenthesesIndex(input);
 
 			if (index == -1)
 				{
 				output = input;
-				parenthesis = null;
+				parentheses = null;
 				}
 			else
 				{
 				output = input.Substring(0, index).TrimEnd();
-				parenthesis = input.Substring(index);
+				parentheses = input.Substring(index);
 				}
 			}
 
@@ -162,11 +162,11 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: FromParenthesisString
-		 * Creates a ParameterString from a parenthesis string, such as "(int, int)".  You can extract them from a plain text string
-		 * with <GetEndingParenthesisIndex()>.
+		/* Function: FromParenthesesString
+		 * Creates a ParameterString from a parentheses string, such as "(int, int)".  You can extract them from a plain text string
+		 * with <GetEndingParenthesesIndex()>.
 		 */
-		public static ParameterString FromParenthesisString (string input)
+		public static ParameterString FromParenthesesString (string input)
 			{
 			if (input == null)
 				{  throw new NullReferenceException();  }
@@ -176,7 +176,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			if (input.Length < 2 || input[0] != '(' || input[input.Length - 1] != ')')
 				{  throw new FormatException();  }
 
-			input = input.Substring(1, input.Length - 2);  // Strip surrounding parenthesis.
+			input = input.Substring(1, input.Length - 2);  // Strip surrounding parentheses.
 			input = input.Trim();
 
 			if (input == "")
@@ -184,7 +184,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			System.Text.StringBuilder output = new System.Text.StringBuilder(input.Length);
 
-			// Ignore separators appearing within braces.  We've already filtered out the surrounding parenthesis and we shouldn't
+			// Ignore separators appearing within braces.  We've already filtered out the surrounding parentheses and we shouldn't
 			// have to worry about quotes because we should only have types, not default values.
 			Collections.SafeStack<char> braces = new Collections.SafeStack<char>();
 
@@ -419,10 +419,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static private char[] bracesAndParamSeparators = new char[] { '(', '[', '{', '<', ')', ']', '}', '>', ',', ';' };
 
-		/* var: parenthesisChars
-		 * An array containing the opening and closing parenthesis characters.
+		/* var: parenthesesChars
+		 * An array containing the opening and closing parentheses characters.
 		 */
-		static private char[] parenthesisChars = new char[] { '(', ')' };
+		static private char[] parenthesesChars = new char[] { '(', ')' };
 
 		}
 	}

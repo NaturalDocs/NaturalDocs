@@ -1,8 +1,8 @@
 
-/* Ignore Parenthesis
+/* Ignore Parentheses
 	___________________________________________________________________________
 
-	Parenthesis should be allowed in the topic title and they shouldn't prevent a prototype 
+	Parentheses should be allowed in the topic title and they shouldn't prevent a prototype
 	from appearing if it doesn't match the code exactly.
 
 */

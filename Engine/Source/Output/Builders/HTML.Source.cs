@@ -575,16 +575,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// We want to work from Topic.Title instead of Topic.Symbol so that we can use the separator characters as originally
 			// written, as opposed to having them normalized and condensed in the anchor.  This means we have to strip the parethesis
-			// ourselves as they'll be attached later via Topic.Parameters.  If we didn't and the parenthesis came from the title instead
+			// ourselves as they'll be attached later via Topic.Parameters.  If we didn't and the parentheses came from the title instead
 			// of the prototype we'd end up with two copies in the anchor.
-			int parenthesisIndex = Symbols.ParameterString.GetEndingParenthesisIndex(topic.Title);
+			int parenthesesIndex = Symbols.ParameterString.GetEndingParenthesesIndex(topic.Title);
 
-			if (parenthesisIndex == -1)
+			if (parenthesesIndex == -1)
 				{  anchor = new StringBuilder(topic.Title);  }
 			else
 				{
-				anchor = new StringBuilder(parenthesisIndex);
-				anchor.Append(topic.Title, 0, parenthesisIndex);
+				anchor = new StringBuilder(parenthesesIndex);
+				anchor.Append(topic.Title, 0, parenthesesIndex);
 				}
 
 			anchor.Replace('\t', ' ');

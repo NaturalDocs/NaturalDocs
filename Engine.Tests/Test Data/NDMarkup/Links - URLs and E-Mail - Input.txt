@@ -86,7 +86,7 @@ Topic: Bare Text Traps
 
 	Symbol that are part of the sentence structure should not become part of bare links.
 
-	Text in parenthesis (http://www.naturaldocs.org) and (email@address.com).
+	Text in parentheses (http://www.naturaldocs.org) and (email@address.com).
 
 	Text in quotes "http://www.naturaldocs.org" and "email@address.com".
 

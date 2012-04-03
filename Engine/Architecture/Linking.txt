@@ -9,14 +9,14 @@ Topic: Topic Symbols
 	Conceptually, because in reality symbols are normalized and parameters are separate:
 	
 	- Member operators are replaced by a standard character, which we'll represent in this document with |, so the part 
-		before the parenthesis is actually "Namespace|Class|Function".  It would be the same for "Namespace.Class.Function".
+		before the parentheses is actually "Namespace|Class|Function".  It would be the same for "Namespace.Class.Function".
 	- Unnecessary whitespace is removed, which is usually any whitespace not in between two letters.
-	- Parenthesis appearing in the topic title are removed, normalized, and stored separately as the symbol's parameters.  In 
+	- Parentheses appearing in the topic title are removed, normalized, and stored separately as the symbol's parameters.  In 
 	  this case it would be converted to "int|int".
-	- If no parenthesis appear in the topic title and the topic has a prototype with typed parameters, those types become the 
+	- If no parentheses appear in the topic title and the topic has a prototype with typed parameters, those types become the 
 	  symbol's parameters.  Something documented with "Function: FunctionName" that has a prototype of
 	  "void FunctionName (int x, float y)" will have a generated parameter string "int|float".
-		- Note that this means if you put your own parenthesis in the topic title, they will override the prototype.  It's 
+		- Note that this means if you put your own parentheses in the topic title, they will override the prototype.  It's 
 		  recommended that people not do this.
 	- Case is preserved regardless of whether the underlying language is case sensitive.
 	- Leading and trailing member operators are removed.  Multiple consecutive ones are condensed.
@@ -33,7 +33,7 @@ Topic: Topic Symbols
 	On a similar note there could also be "always global" topics associated with a class.  The symbol will be global but the
 	topic will still have the ID of the class it appears in, and the symbol will not be a superstring of the class's symbol at all.
 
-	The last section of the symbol sans parenthesis is called the ending symbol, so for "Namespace::Class::Function (int, int)"
+	The last section of the symbol sans parentheses is called the ending symbol, so for "Namespace::Class::Function (int, int)"
 	it would be "Function".  These are converted to lowercase for case insensitivity and stored in an additional field to allow 
 	links to look up every topic that uses a particular ending symbol in order to find possible matches regardless of case, scope, 
 	or parameters.
@@ -80,7 +80,7 @@ Topic: Scoring Links
 	There are multiple ways to interpret Natural Docs links, so the original link text is stored in the database.  We generate all
 	the possible interpretations as needed rather than storing each possibility in the database.
 
-	First, like topic symbols, the parenthesis are separated off and normalized as the parameters.
+	First, like topic symbols, the parentheses are separated off and normalized as the parameters.
 	
 	Next, the remaining text is searched for "at" keywords, which may result in multiple interpretations.  "X at Y" can be
 	interpreted as a link named X that goes to Y, or as a link that goes to the literal symbol "X at Y".  Similarly, "X at Y at Z"

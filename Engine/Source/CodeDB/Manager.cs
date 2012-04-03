@@ -306,7 +306,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// L - Whether the topic matches the link's language.
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// E - Whether the text is an exact match with no plural or possessive conversions applied.
-			// T - Whether the link parenthesis exactly match the topic title parenthesis
+			// T - Whether the link parentheses exactly match the topic title parentheses
 			// P - How well the parameters match.
 			// S - How high on the scope list the symbol match is.
 			// I - How high on the interpretation list (named/plural/possessive) the match is.
@@ -365,8 +365,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				// Test the literal interpretation since we always want it to be index zero.
 
-				string parenthesis;
-				bestInterpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText(link.Text, out parenthesis));
+				string parentheses;
+				bestInterpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText(link.Text, out parentheses));
 				bestInterpretationIndex = 0;
 
 				// Add E if there was a match.
@@ -386,7 +386,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						if (!interpretation.IsLiteral)
 							{
 							interpretationScore = ScoreInterpretation(topic, link, 
-																										SymbolString.FromPlainText_ParenthesisAlreadyRemoved(interpretation.Target));
+																										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretation.Target));
 
 							if (interpretationScore != 0)
 								{
@@ -440,7 +440,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			// ====TPPP PPPPPPPP PPPPPPPP P======= ======== =------- -------- -------=
-			// T - Whether the link parenthesis exactly match the topic title parenthesis.
+			// T - Whether the link parentheses exactly match the topic title parentheses.
 			// P - How well the parameters match.
 
 			// xxx we'll come back to this

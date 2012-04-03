@@ -1,11 +1,11 @@
 
-Topic: (Parenthesis Surrounding Entire Title)
+Topic: (Parentheses Surrounding Entire Title)
 
-Topic: Parethesis (in middle) of title
+Topic: Parentheses (in middle) of title
 
-Topic: Parenthesis (in middle) and following title (with, commas)
+Topic: Parentheses (in middle) and following title (with, commas)
 
-Topic: Parenthesis (in middle) and following title (without commas)
+Topic: Parentheses (in middle) and following title (without commas)
 
 Topic: Nested parens 1 ((following))
 
