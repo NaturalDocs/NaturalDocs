@@ -4,6 +4,8 @@
 // Simple link in scope, topic scope in title
 // ____________________________________________________________________________
 
+show scope
+
 Link.Text = "Name"
 Link.Scope = "A.B.C"
 Topic.Title = "A.B.C.Name"

@@ -3,6 +3,8 @@
 // Also, the exact match flag should be off.
 // ____________________________________________________________________________
 
+show interpretation
+
 Topic.Title = "Name"
 Link.Text = "Name"
 

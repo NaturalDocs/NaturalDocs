@@ -5,6 +5,7 @@
 Topic.Title = "Name"
 Link.Text = "Name"
 Link.Type = "NaturalDocs"
+show language, capitalization
 
 
 // Same case sensitive language, case matches

@@ -8,19 +8,9 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
       (63 score)
 
 C# Function Topic: Name
@@ -29,20 +19,10 @@ C# Function Topic: Name
 C# NaturalDocs Link: Names
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Fox
    Symbol: Fox
@@ -50,20 +30,10 @@ C# Function Topic: Fox
 C# NaturalDocs Link: Foxes
    Scope: Global
 
-Match score: 6FFF FFFF FEBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    2 - Interpretation index
       (61 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Child
    Symbol: Child
@@ -71,20 +41,10 @@ C# Function Topic: Child
 C# NaturalDocs Link: Children
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Alumnus
    Symbol: Alumnus
@@ -92,20 +52,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumni
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // The same should go for possessives
 // ____________________________________________________________________________
@@ -116,19 +66,9 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumnus
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
       (63 score)
 
 C# Function Topic: Alumnus
@@ -137,20 +77,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumnus's
    Scope: Global
 
-Match score: 6FFF FFFF FEBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    2 - Interpretation index
       (61 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Alumnus
    Symbol: Alumnus
@@ -158,20 +88,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumnus'
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Possessives with Unicode quotes
 // ____________________________________________________________________________
@@ -182,20 +102,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumnus’s
    Scope: Global
 
-Match score: 6FFF FFFF FEBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    2 - Interpretation index
       (61 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Alumnus
    Symbol: Alumnus
@@ -203,20 +113,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumnus’
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Plurals and possessives combined
 // ____________________________________________________________________________
@@ -227,20 +127,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumni's
    Scope: Global
 
-Match score: 6FFF FFFF FE3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    3 - Interpretation index
       (60 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Plurals and possessives are only allowed with Natural Docs links
 // ____________________________________________________________________________
@@ -251,20 +141,10 @@ C# Function Topic: Alumnus
 C# NaturalDocs Link: Alumni's
    Scope: Global
 
-Match score: 6FFF FFFF FE3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    3 - Interpretation index
       (60 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Alumnus
    Symbol: Alumnus

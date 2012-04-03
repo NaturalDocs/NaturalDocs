@@ -2,6 +2,8 @@
 // This tests type matching.  Class parent and type links can only resolve to topics that have those
 // attributes set and are in the same language.
 
+show language
+
 Topic.Title = "Name"
 Link.Text = "Name"
 

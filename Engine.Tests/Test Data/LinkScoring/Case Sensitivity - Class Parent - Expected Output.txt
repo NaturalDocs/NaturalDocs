@@ -10,20 +10,9 @@ C# Class Topic: Name
 C# ClassParent Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
+Match score:
    ☒ - Language
    ☒ - Capitalization
-   ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
-   0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Same case sensitive language, case differs
 // ____________________________________________________________________________
@@ -67,20 +56,9 @@ Visual Basic Class Topic: Name
 Visual Basic ClassParent Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
+Match score:
    ☒ - Language
    ☒ - Capitalization
-   ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
-   0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Same case insensitive language, case differs
 // ____________________________________________________________________________
@@ -91,20 +69,9 @@ Visual Basic Class Topic: Name
 Visual Basic ClassParent Link: name
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
+Match score:
    ☒ - Language
    ☒ - Capitalization
-   ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
-   0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Different case insensitive languages, case matches
 // ____________________________________________________________________________

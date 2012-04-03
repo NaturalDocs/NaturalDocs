@@ -4,6 +4,7 @@
 
 Topic.Title = "Name";
 Link.Text = "Name";
+show language
 
 Topic.LanguageName = "C#"
 Link.LanguageName = "C#"

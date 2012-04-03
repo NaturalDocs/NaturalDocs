@@ -4,6 +4,7 @@
 
 Topic.Keyword = "Type"
 Link.Type = "Type"
+show language, capitalization
 
 
 // Same case sensitive language, case matches

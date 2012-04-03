@@ -2,6 +2,8 @@
 // Exact matches should always score higher than alternate interpretations
 // ____________________________________________________________________________
 
+show interpretation
+
 Topic.Title = "Name's"
 Link.Text = "Name's"
 

@@ -3,6 +3,7 @@
 
 Topic.Title="Name"
 Link.Text="Name"
+show body, prototype
 
 score
 

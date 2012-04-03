@@ -8,6 +8,7 @@ Topic.Title = "Name"
 Topic.Keyword = "Type"
 Link.Text = "Name"
 Link.Type = "Type"
+show language, capitalization
 
 
 // Same case sensitive language, case matches

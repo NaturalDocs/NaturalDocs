@@ -7,19 +7,9 @@ C# Function Topic: Name's
 C# NaturalDocs Link: Name's
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
       (63 score)
 
 C# Function Topic: Name
@@ -28,20 +18,10 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name's
    Scope: Global
 
-Match score: 6FFF FFFF FEBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    2 - Interpretation index
       (61 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Each interpretation should have a unique score.  It doesn't really matter which one is
 // higher or lower, just that they're distinct, consistent, and the exact match is the highest.
@@ -53,19 +33,9 @@ C# Function Topic: Knives
 C# NaturalDocs Link: Knives
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
       (63 score)
 
 C# Function Topic: Knive
@@ -74,20 +44,10 @@ C# Function Topic: Knive
 C# NaturalDocs Link: Knives
    Scope: Global
 
-Match score: 6FFF FFFF FF3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    1 - Interpretation index
       (62 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Kniv
    Symbol: Kniv
@@ -95,20 +55,10 @@ C# Function Topic: Kniv
 C# NaturalDocs Link: Knives
    Scope: Global
 
-Match score: 6FFF FFFF FEBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    2 - Interpretation index
       (61 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Knife
    Symbol: Knife
@@ -116,20 +66,10 @@ C# Function Topic: Knife
 C# NaturalDocs Link: Knives
    Scope: Global
 
-Match score: 6FFF FFFF FDBF 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    4 - Interpretation index
       (59 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 C# Function Topic: Knif
    Symbol: Knif
@@ -137,18 +77,8 @@ C# Function Topic: Knif
 C# NaturalDocs Link: Knives
    Scope: Global
 
-Match score: 6FFF FFFF FE3F 0001
-   ☒ - Language
-   ☒ - Capitalization
+Match score:
    ☐ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
    3 - Interpretation index
       (60 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 

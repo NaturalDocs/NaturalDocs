@@ -4,6 +4,7 @@
 
 Topic.Keyword = "Class"
 Link.Type = "ClassParent"
+show language, capitalization
 
 
 // Same case sensitive language, case matches

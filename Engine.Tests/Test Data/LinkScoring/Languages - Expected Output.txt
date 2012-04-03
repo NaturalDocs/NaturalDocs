@@ -7,20 +7,8 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFBF 0001
+Match score:
    ☒ - Language
-   ☒ - Capitalization
-   ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
-   0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
 // Different languages
 // ____________________________________________________________________________
@@ -31,18 +19,6 @@ C# Function Topic: Name
 SQL NaturalDocs Link: Name
    Scope: Global
 
-Match score: 3FFF FFFF FFBF 0001
+Match score:
    ☐ - Language
-   ☒ - Capitalization
-   ☒ - Exact text
-   ☒ - Topic title parentheses
-   ☒☒☒☒☒☒☒☒☒☒ - Parameters
-   0 - Scope index
-      (1023 score)
-   0 - Interpretation index
-      (63 score)
-   ☐ - Body
-   ☐ - Prototype
-   0 - Same symbol in same file index
-      (63 score)
 
