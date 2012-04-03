@@ -299,19 +299,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// numeric values so the characteristics are ordered by priority.
 
 			// Format:
-			// 0LCEPPPP PPPPPPPP PPPPPPPP PPPPPPSS SSSSSSSS IIIIIIBb bbbbbbbb Rrrrrrr1
+			// 0LCETPPP PPPPPPPP PPPPPPPP PSSSSSSS SSSIIIII IBFFFFFF Rbbbbbbb brrrrrr1
 
 			// 0 - The first bit is zero to make sure the number is positive.
 
 			// L - Whether the topic matches the link's language.
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// E - Whether the text is an exact match with no plural or possessive conversions applied.
+			// T - Whether the link parenthesis exactly match the topic title parenthesis
 			// P - How well the parameters match.
 			// S - How high on the scope list the symbol match is.
 			// I - How high on the interpretation list (named/plural/possessive) the match is.
 			// B - Whether the topic has a body
-			// b - The length of the body divided by 16.
+			// F - How high on the list of topics that define the same symbol in the same file this is.
 			// R - Whether the topic has a prototype.
+			// b - The length of the body divided by 16.
 			// r - The length of the prototype divided by 16.
 
 			// 1 - The final bit is one to make sure a match will never be zero.
@@ -341,12 +343,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  score |= 0x4000000000000000;  }
 			else if (link.Type == LinkType.ClassParent || link.Type == LinkType.Type)
 				{  return 0;  }
-
-			if ((score | 0x3FFFFFFFFFFFFFFF) < minimumScore)
+			else if (minimumScore > 0x3FFFFFFFFFFFFFFF)
 				{  return -1;  }
 
 
-			// ==CE---- -------- -------- ------SS SSSSSSSS IIIIII-- -------- -------=
+			// ==CE---- -------- -------- -SSSSSSS SSSIIIII I------- -------- -------=
 			// Now we have to go through the interpretations to figure out the fields that could change based on them.
 			// C and S will be handled by ScoreInterpretation().  E and I will be handled here.
 
@@ -430,45 +431,53 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  bestInterpretationIndex = 63;  }
 
 			long bestInterpretationBits = 63 - bestInterpretationIndex;
-			bestInterpretationBits <<= 18;
+			bestInterpretationBits <<= 23;
 
 			score |= bestInterpretationBits;
 
-			if ((score | 0x0FFFFFFC0003FFFF) < minimumScore)
+			if ((score | 0x0FFFFF80007FFFFF) < minimumScore)
 				{  return -1;  }
 
 
-			// ====PPPP PPPPPPPP PPPPPPPP PPPPPP== ======== ======-- -------- -------=
+			// ====TPPP PPPPPPPP PPPPPPPP P======= ======== =------- -------- -------=
+			// T - Whether the link parenthesis exactly match the topic title parenthesis.
 			// P - How well the parameters match.
 
 			// xxx we'll come back to this
-			score |= 0x0FFFFFFC00000000;
+			score |= 0x0FFFFF8000000000;
 
 
-			// ======== ======== ======== ======== ======== ======Bb bbbbbbbb -------=
+			// ======== ======== ======== ======== ======== =-FFFFFF -------- -------=
+			// F - How high on the list of topics that define the same symbol in the same file this is.
+
+			// xxx we'll come back to this
+			score |= 0x00000000003F0000;
+
+
+			// ======== ======== ======== ======== ======== =B====== -bbbbbbb b------=
 			// B - Whether the topic has a body
 			// b - The length of the body divided by 16.
 			//    0-15 = 0
 			//    16-31 = 1
 			//    ...
-			//    8160-8175 = 510
-			//    8176+ = 511
+			//		4064-4079 = 254
+			//		4080+ = 255
 
 			if (topic.Body != null)
 				{
 				long bodyBits = topic.Body.Length / 16;
 
-				if (bodyBits > 511)
-					{  bodyBits = 511;  }
+				if (bodyBits > 255)
+					{  bodyBits = 255;  }
 
-				bodyBits <<= 8;
-				bodyBits |= 0x0000000000020000;
+				bodyBits <<= 7;
+				bodyBits |= 0x0000000000400000;
 
 				score |= bodyBits;
 				}
 
 
-			// ======== ======== ======== ======== ======== ======== ======== Rrrrrrr=
+			// ======== ======== ======== ======== ======== ======== R======= =rrrrrr=
 			// R - Whether the topic has a prototype.
 			// r - The length of the prototype divided by 16.
 			//    0-15 = 0
@@ -485,7 +494,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{  prototypeBits = 63;  }
 
 				prototypeBits <<= 1;
-				prototypeBits |= 0x0000000000000080;
+				prototypeBits |= 0x0000000000008000;
 
 				score |= prototypeBits;
 				}
@@ -502,7 +511,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		private long ScoreInterpretation (Topic topic, Link link, SymbolString interpretation)
 			{
-			// --C----- -------- -------- ------SS SSSSSSSS -------- -------- -------1
+			// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// S - How high on the scope list the symbol match is.
 
@@ -674,14 +683,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				}
 
-			// --=----- -------- -------- ------SS SSSSSSSS -------- -------- -------=
+			// --=----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
 			// Encode the scope index.  We want lower indexes to have a higher score.
 
 			if (scopeListIndex > 1023)
 				{  scopeListIndex = 1023;  }
 
 			long scopeListBits = 1023 - scopeListIndex;
-			scopeListBits <<= 24;
+			scopeListBits <<= 29;
 
 			score |= scopeListBits;
 
@@ -694,9 +703,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public int GetInterpretationIndex (long linkScore)
 			{
-			// -------- -------- -------- -------- -------- IIIIII-- -------- --------
-			linkScore &= 0x0000000000FC0000;
-			linkScore >>= 10;
+			// -------- -------- -------- -------- ---IIIII I------- -------- --------
+			linkScore &= 0x000000001F800000;
+			linkScore >>= 23;
 
 			return 63 - (int)linkScore;
 			}

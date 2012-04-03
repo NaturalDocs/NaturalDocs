@@ -9,17 +9,20 @@ C# Function Topic: A.B.C.Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: A.B.Name
    Symbol: A.B.Name
@@ -27,17 +30,20 @@ C# Function Topic: A.B.Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FEFC 0001
+Match score: 7FFF FFFF DFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    1 - Scope index
       (1022 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: A.Name
    Symbol: A.Name
@@ -45,17 +51,20 @@ C# Function Topic: A.Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FDFC 0001
+Match score: 7FFF FFFF BFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    2 - Scope index
       (1021 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -63,17 +72,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FCFC 0001
+Match score: 7FFF FFFF 9FBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    3 - Scope index
       (1020 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Simple link in scope, simple topic in scope
 // ____________________________________________________________________________
@@ -84,17 +96,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: A.B.Name
@@ -102,17 +117,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FEFC 0001
+Match score: 7FFF FFFF DFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    1 - Scope index
       (1022 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: A.Name
@@ -120,17 +138,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FDFC 0001
+Match score: 7FFF FFFF BFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    2 - Scope index
       (1021 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -138,17 +159,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: A.B.C
 
-Match score: 7FFF FFFF FCFC 0001
+Match score: 7FFF FFFF 9FBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    3 - Scope index
       (1020 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Link scope in title
 // ____________________________________________________________________________
@@ -159,17 +183,20 @@ C# Function Topic: A.B.C.Name
 C# NaturalDocs Link: A.B.C.Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Link in scope title and in scope
 // ____________________________________________________________________________
@@ -180,17 +207,20 @@ C# Function Topic: A.B.C.Name
 C# NaturalDocs Link: C.Name
    Scope: A.B
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Won't match because of scope, even though ending symbols match
 // ____________________________________________________________________________

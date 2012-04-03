@@ -10,17 +10,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Same case sensitive language, case differs
 // ____________________________________________________________________________
@@ -31,17 +34,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: scope
 
-Match score: 5FFF FFFF FFFC 0001
+Match score: 5FFF FFFF FFBF 0001
    ☒ - Language
    ☐ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Different case sensitive languages, case matches
 // ____________________________________________________________________________
@@ -52,17 +58,20 @@ C# Function Topic: Name
 Java NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Different case sensitive languages, case differs
 // ____________________________________________________________________________
@@ -73,17 +82,20 @@ C# Function Topic: Name
 Java NaturalDocs Link: Name
    Scope: scope
 
-Match score: 1FFF FFFF FFFC 0001
+Match score: 1FFF FFFF FFBF 0001
    ☐ - Language
    ☐ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Same case insensitive language, case matches
 // ____________________________________________________________________________
@@ -94,17 +106,20 @@ Visual Basic Function Topic: Name
 Visual Basic NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Same case insensitive language, case differs
 // ____________________________________________________________________________
@@ -115,17 +130,20 @@ Visual Basic Function Topic: Name
 Visual Basic NaturalDocs Link: Name
    Scope: scope
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Different case insensitive languages, case matches
 // ____________________________________________________________________________
@@ -136,17 +154,20 @@ Visual Basic Function Topic: Name
 Pascal NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Different case insensitive languages, case differs
 // ____________________________________________________________________________
@@ -157,17 +178,20 @@ Visual Basic Function Topic: Name
 Pascal NaturalDocs Link: Name
    Scope: scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Mixed languages, target is case sensitive, case matches
 // ____________________________________________________________________________
@@ -178,17 +202,20 @@ C# Function Topic: Name
 Pascal NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Mixed languages, target is case sensitive, case differs
 // ____________________________________________________________________________
@@ -199,17 +226,20 @@ C# Function Topic: Name
 Pascal NaturalDocs Link: Name
    Scope: scope
 
-Match score: 1FFF FFFF FFFC 0001
+Match score: 1FFF FFFF FFBF 0001
    ☐ - Language
    ☐ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Mixed languages, target is case insensitive, case matches
 // ____________________________________________________________________________
@@ -220,17 +250,20 @@ Pascal Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 // Mixed languages, target is case insensitive, case differs
 // ____________________________________________________________________________
@@ -241,15 +274,18 @@ Pascal Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: scope
 
-Match score: 3FFF FFFF FFFC 0001
+Match score: 3FFF FFFF FFBF 0001
    ☐ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 

@@ -6,17 +6,20 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 0001
+Match score: 7FFF FFFF FFBF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☐ - Body
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -25,11 +28,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFE 0001
+Match score: 7FFF FFFF FFFF 0001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -37,6 +41,8 @@ Match score: 7FFF FFFF FFFE 0001
    ☒ - Body
       (0 score, 0-15 characters)
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -45,11 +51,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFE 0601
+Match score: 7FFF FFFF FFFF 0301
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -57,6 +64,8 @@ Match score: 7FFF FFFF FFFE 0601
    ☒ - Body
       (6 score, 96-111 characters)
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -65,11 +74,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFE 3E01
+Match score: 7FFF FFFF FFFF 1F01
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -77,6 +87,8 @@ Match score: 7FFF FFFF FFFE 3E01
    ☒ - Body
       (62 score, 992-1007 characters)
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -85,18 +97,21 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFF FF01
+Match score: 7FFF FFFF FFFF 7F81
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
       (63 score)
    ☒ - Body
-      (511 score, 8176+ characters)
+      (255 score, 4080+ characters)
    ☐ - Prototype
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -105,11 +120,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 0081
+Match score: 7FFF FFFF FFBF 8001
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -117,6 +133,8 @@ Match score: 7FFF FFFF FFFC 0081
    ☐ - Body
    ☒ - Prototype
       (0 score, 0-15 characters)
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -125,11 +143,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 008D
+Match score: 7FFF FFFF FFBF 800D
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -137,6 +156,8 @@ Match score: 7FFF FFFF FFFC 008D
    ☐ - Body
    ☒ - Prototype
       (6 score, 96-111 characters)
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -145,11 +166,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 00FD
+Match score: 7FFF FFFF FFBF 807D
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -157,6 +179,8 @@ Match score: 7FFF FFFF FFFC 00FD
    ☐ - Body
    ☒ - Prototype
       (62 score, 992-1007 characters)
+   0 - Same symbol in same file index
+      (63 score)
 
 C# Function Topic: Name
    Symbol: Name
@@ -165,11 +189,12 @@ C# Function Topic: Name
 C# NaturalDocs Link: Name
    Scope: Global
 
-Match score: 7FFF FFFF FFFC 00FF
+Match score: 7FFF FFFF FFBF 807F
    ☒ - Language
    ☒ - Capitalization
    ☒ - Exact text
-   ☒☒☒☒☒☒☒☒☒☒☒☒☒ - Parameters
+   ☒ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
    0 - Scope index
       (1023 score)
    0 - Interpretation index
@@ -177,4 +202,6 @@ Match score: 7FFF FFFF FFFC 00FF
    ☐ - Body
    ☒ - Prototype
       (63 score, 1008+ characters)
+   0 - Same symbol in same file index
+      (63 score)
 
