@@ -407,6 +407,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If any changes occur, it will be upgraded automatically.
+		 *		- The new topics must be in comment line order.
 		 * 
 		 * Topic Requirements:
 		 * 
@@ -430,15 +431,23 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void UpdateTopicsInFile (int fileID, IEnumerable<Topic> newTopics, CancelDelegate cancelled)
 			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
+			#if DEBUG
+			int previousCommentLineNumber = 0;
 
 			foreach (Topic newTopic in newTopics)
 				{
 				if (newTopic.FileID != fileID)
 					{  throw new Exception ("Can't update topics in file if the file IDs don't match.");  }
+				if (newTopic.CommentLineNumber < previousCommentLineNumber)
+					{  throw new Exception ("Topics passed to UpdateTopicsInFile() must be in comment line order.");  }
 				// We'll leave the rest of the topic field validation to AddTopic(), DeleteTopic(), and UpdateTopic().
+
+				previousCommentLineNumber = newTopic.CommentLineNumber;
 				}
+			#endif
 			
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
 			List<Topic> oldTopics = GetTopicsInFile(fileID, cancelled);
 			bool madeChanges = false;
 			
