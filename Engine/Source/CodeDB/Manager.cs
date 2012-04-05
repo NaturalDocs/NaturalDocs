@@ -450,8 +450,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// ======== ======== ======== ======== ======== =-FFFFFF -------- -------=
 			// F - How high on the list of topics that define the same symbol in the same file this is.
 
-			// xxx we'll come back to this
-			score |= 0x00000000003F0000;
+			long symbolDefinitionBits = topic.SymbolDefinitionNumber;
+
+			if (symbolDefinitionBits > 63)
+				{  symbolDefinitionBits = 63;  }
+
+			symbolDefinitionBits = 63 - symbolDefinitionBits;
+			symbolDefinitionBits <<= 16;
+
+			score |= symbolDefinitionBits;
 
 
 			// ======== ======== ======== ======== ======== =B====== -bbbbbbb b------=
