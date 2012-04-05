@@ -49,20 +49,21 @@ namespace GregValure.NaturalDocs.Engine
 			Summary = 0x0004,
 			Prototype = 0x0008,
 			Symbol = 0x0010,
+			SymbolDefinitonNumber = 0x0020,
 
-			TopicTypeID = 0x0020,
-			AccessLevel = 0x0040,
-			Tags = 0x0080,
+			TopicTypeID = 0x0040,
+			AccessLevel = 0x0080,
+			Tags = 0x0100,
 
-			LanguageID = 0x0100,
-			CommentLineNumber = 0x0200,
-			CodeLineNumber = 0x0400,
+			LanguageID = 0x0200,
+			CommentLineNumber = 0x0400,
+			CodeLineNumber = 0x0800,
 			
-			FileID = 0x0800,
-			PrototypeContext = 0x1000,
-			BodyContext = 0x2000,
+			FileID = 0x1000,
+			PrototypeContext = 0x2000,
+			BodyContext = 0x4000,
 
-			All = Title | Body | Summary | Prototype | Symbol |
+			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber |
 					 TopicTypeID | AccessLevel | Tags |
 					 LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
@@ -84,6 +85,7 @@ namespace GregValure.NaturalDocs.Engine
 			prototype = null;
 			parsedPrototype = null;
 			symbol = new SymbolString();
+			symbolDefinitionNumber = 0;
 			titleParameters = new ParameterString();
 			titleParametersGenerated = false;
 			prototypeParameters = new ParameterString();
@@ -129,6 +131,7 @@ namespace GregValure.NaturalDocs.Engine
 			// prototype - Important in linking because links may favor topics that have a prototype.
 			// parsedPrototype - Not a database field.
 			// symbol - Important in linking.
+			// symbolDefinitonNumber - Important in linking.
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
 
@@ -160,6 +163,7 @@ namespace GregValure.NaturalDocs.Engine
 				symbol != other.symbol ||
 
 				// Rest of the integer comparisons, not likely to be different
+				symbolDefinitionNumber != other.symbolDefinitionNumber ||
 				fileID != other.fileID ||
 				languageID != other.languageID)
 				{  
@@ -319,6 +323,20 @@ namespace GregValure.NaturalDocs.Engine
 				{  return symbol;  }
 			set
 				{  symbol = value;  }
+			}
+
+
+		/* Property: SymbolDefinitionNumber
+		 * Every unique <Symbol> defined in a file is given a number, the first one being one.  Every duplicate definition
+		 * of the same symbol will receive an incremented number based on the source file order.  This will be zero if it
+		 * hasn't been determined yet.
+		 */
+		public int SymbolDefinitionNumber
+			{
+			get
+				{  return symbolDefinitionNumber;  }
+			set
+				{  symbolDefinitionNumber = value;  }
 			}
 
 
@@ -616,6 +634,13 @@ namespace GregValure.NaturalDocs.Engine
 		 * The topic's fully resolved symbol, or null if not specified.
 		 */
 		protected SymbolString symbol;
+
+		/* var: symbolDefinitionNumber
+		 * Every unique <symbol> defined in a file is given a number, the first one being one.  Every duplicate definition
+		 * of the same symbol will receive an incremented number based on the source file order.  This will be zero if it
+		 * hasn't been determined yet.
+		 */
+		protected int symbolDefinitionNumber;
 
 		/* var: titleParameters
 		 * Any parameters found in the title, as opposed to the prototype.

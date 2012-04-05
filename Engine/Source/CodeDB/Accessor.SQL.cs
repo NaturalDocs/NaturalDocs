@@ -40,7 +40,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			List<Topic> topics = new List<Topic>();
 			
-			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, " +
+			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
 																									"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																									"LanguageID, PContexts.ContextString, PrototypeContextID, " +
 																									"BContexts.ContextString, BodyContextID " +
@@ -60,20 +60,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Summary = query.StringColumn(3);
 					topic.Prototype = query.StringColumn(4);
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
+					topic.SymbolDefinitionNumber = query.IntColumn(6);
 
-					topic.TopicTypeID = query.IntColumn(6);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(7);
-					topic.TagString = query.StringColumn(8);
+					topic.TopicTypeID = query.IntColumn(7);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
+					topic.TagString = query.StringColumn(9);
 
 					topic.FileID = fileID;
-					topic.CommentLineNumber = query.IntColumn(9);
-					topic.CodeLineNumber = query.IntColumn(10);
+					topic.CommentLineNumber = query.IntColumn(10);
+					topic.CodeLineNumber = query.IntColumn(11);
 
-					topic.LanguageID = query.IntColumn(11);
-					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(12) );
-					topic.PrototypeContextID = query.IntColumn(13);
-					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(14) );
-					topic.BodyContextID = query.IntColumn(15);
+					topic.LanguageID = query.IntColumn(12);
+					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
+					topic.PrototypeContextID = query.IntColumn(14);
+					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
+					topic.BodyContextID = query.IntColumn(16);
 
 					topics.Add(topic);
 
@@ -103,6 +104,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
+		 *		SymbolDefinitionNumber - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -123,6 +125,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Summary
 			// Prototype
 			RequireContent("AddTopic", "Symbol", topic.Symbol);
+			RequireNonZero("AddTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -143,11 +146,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
 			GetOrCreateContextIDs(topic);
 			
-			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, EndingSymbol, " +
-													"TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, LanguageID, " +
-													"PrototypeContextID, BodyContextID) " +
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, 
+			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
+													"EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
+													"LanguageID, PrototypeContextID, BodyContextID) " +
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
 												topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, topic.FileID, 
 												topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
 												topic.BodyContextID										 
@@ -295,6 +298,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
+		 *		SymbolDefinitionNumber - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -315,6 +319,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Summary
 			// Prototype
 			RequireContent("DeleteTopic", "Symbol", topic.Symbol);
+			RequireNonZero("DeleteTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -417,6 +422,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Summary - Can be null.
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
+		 *		SymbolDefinitionNumber - Can be zero.  These will be regenerated regardless of whether they were previously set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -429,7 +435,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		BodyContext - Can be null, which means global with no "using" statements.
 		 *		BodyContextID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 */
-		public void UpdateTopicsInFile (int fileID, IEnumerable<Topic> newTopics, CancelDelegate cancelled)
+		public void UpdateTopicsInFile (int fileID, IList<Topic> newTopics, CancelDelegate cancelled)
 			{
 			#if DEBUG
 			int previousCommentLineNumber = 0;
@@ -445,6 +451,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				previousCommentLineNumber = newTopic.CommentLineNumber;
 				}
 			#endif
+
+			// Generate new symbol definition numbers
+			for (int i = 0; i < newTopics.Count; i++)
+				{
+				newTopics[i].SymbolDefinitionNumber = 1;
+
+				for (int prev = i - 1; prev >= 0; prev--)
+					{
+					if (newTopics[prev].Symbol == newTopics[i].Symbol)
+						{
+						newTopics[i].SymbolDefinitionNumber = newTopics[prev].SymbolDefinitionNumber + 1;
+						break;
+						}
+					}
+				}
 			
 			RequireAtLeast(LockType.ReadPossibleWrite);
 

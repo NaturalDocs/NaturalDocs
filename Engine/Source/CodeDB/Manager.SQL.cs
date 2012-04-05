@@ -41,6 +41,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"Summary TEXT, " +
 																							"Prototype TEXT, " +
 																							"Symbol TEXT NOT NULL, " +
+																							"SymbolDefinitionNumber INTEGER NOT NULL, " +
 																							"EndingSymbol TEXT NOT NULL, " +
 																							"TopicTypeID INTEGER NOT NULL, " +
 																							"AccessLevel INTEGER NOT NULL, " +

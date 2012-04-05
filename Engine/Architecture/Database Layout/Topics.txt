@@ -63,7 +63,17 @@ Column: Symbol
 	
 	The fully resolved, normalized <Symbols.SymbolString> of the topic.
 	
-	
+
+Column: SymbolDefinitionNumber
+
+	(SQL Prototype)
+		SymbolDefinitionNumber INTEGER NOT NULL
+	(end)
+
+	Every unique <Symbol> defined in a file is given a number, the first one being one.  Every duplicate definition
+	of the same symbol will receive an incremented number based on the source file order.
+
+
 Column: EndingSymbol
 
 	(SQL Prototype)
