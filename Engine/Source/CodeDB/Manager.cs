@@ -285,7 +285,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * If scoring a Natural Docs link you must pass a list of alternate interpretations if there are any.  The list doesn't need to
 		 * include the literal form.
 		 */
-		public long ScoreLink (Link link, Topic topic, int minimumScore = 0, List<LinkInterpretation> alternateInterpretations = null)
+		public long ScoreLink (Link link, Topic topic, long minimumScore = 0, List<LinkInterpretation> alternateInterpretations = null)
 			{
 			// DEPENDENCY: These functions depend on the score's internal format:
 			//    - CodeDB.Manager.ScoreInterpretation()
