@@ -61,7 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				{  throw new NullReferenceException();  }
 
 			string undecoratedTextSymbol;
-			ParameterString.SplitFromEndingParetheses(textSymbol, out undecoratedTextSymbol, out parentheses);
+			ParameterString.SplitFromEndingParentheses(textSymbol, out undecoratedTextSymbol, out parentheses);
 
 			SymbolString symbolString = new SymbolString(undecoratedTextSymbol);
 			symbolString.Normalize();
@@ -87,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * 
 		 * We use this awkward function name because 90% of the time you need to handle parentheses, or at least strip them
 		 * off.  If we just made an overload of <FromPlainText()> without the out parameter people would use this one by accident.
-		 * By attaching _ParethesisAlreadyRemoved it forces you to only use this one if you know what you're doing.
+		 * By attaching _ParenthesesAlreadyRemoved it forces you to only use this one if you know what you're doing.
 		 * 
 		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
 		 * from another SymbolString object, use <FromExportedString()>.

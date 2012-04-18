@@ -30,7 +30,7 @@
  *			>
  *			> 2.1.1 (Customized 04-04-2007)
  *			
- *			Interim releases are the version number followed by the status and date in parethesis.  The date
+ *			Interim releases are the version number followed by the status and date in parentheses.  The date
  *			always has leading zeroes.  The status description can only be A-Z and spaces, no unicode or other stuff.
  *			If it's unrecognized it's treated the same as a development release.
  *			

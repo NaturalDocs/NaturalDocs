@@ -480,7 +480,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				}
 
 			string prefix;
-			ParameterString.SplitFromEndingParetheses(input, out prefix, out parentheses);
+			ParameterString.SplitFromEndingParentheses(input, out prefix, out parentheses);
 
 			return LinkInterpretations_DontStripParentheses(prefix, flags);
 			}

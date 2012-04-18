@@ -55,7 +55,7 @@ Topic: Scoring Links
 
 	Type and Class Parent links are simpler as they are meant to be exact.  There are no plurals, possessives, "at" naming,
 	or parameters to worry about.  When a new link needs to be resolved, it first generates a normalized symbol based on 
-	the link text.  This is exactly the same process topic symbols go through, except these types of links won't have parethesis 
+	the link text.  This is exactly the same process topic symbols go through, except these types of links won't have parentheses 
 	to strip off.  A case insensitive ending symbol is also generated, and these two values are stored in the link's database
 	record.
 	

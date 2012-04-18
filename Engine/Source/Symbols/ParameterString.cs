@@ -99,7 +99,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * If a plain text string ends in parentheses, returns them and the rest of the text as separate strings.  If it doesn't, it will
 		 * return the original string and null.
 		 */
-		public static void SplitFromEndingParetheses (string input, out string output, out string parentheses)
+		public static void SplitFromEndingParentheses (string input, out string output, out string parentheses)
 			{
 			int index = GetEndingParenthesesIndex(input);
 

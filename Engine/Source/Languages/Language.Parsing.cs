@@ -857,7 +857,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 				string undecoratedTitle, parentheses;
-				Symbols.ParameterString.SplitFromEndingParetheses(topic.Title, out undecoratedTitle, out parentheses);
+				Symbols.ParameterString.SplitFromEndingParentheses(topic.Title, out undecoratedTitle, out parentheses);
 
 				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
 					{  
