@@ -536,6 +536,19 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Property: HasTitleParameters
+		 * Whether there are any parameters in the title.  Unlike testing <TitleParameters> against null, this also distinguishes
+		 * between titles with empty parentheses and titles with none.
+		 */
+		public bool HasTitleParameters
+			{
+			get
+				{
+				return (ParameterString.GetEndingParenthesesIndex(title) != -1);
+				}
+			}
+			
+			
 		/* Property: TitleParameters
 		 * The parameters found in the title, as opposed to the prototype, or null if none.
 		 */
