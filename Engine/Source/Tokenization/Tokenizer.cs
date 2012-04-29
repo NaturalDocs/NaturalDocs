@@ -380,7 +380,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		static public FundamentalType FundamentalTypeOf (char character)
 			{
-			// DEPENDENCY: If this changes, Load() must change to match.
+			// DEPENDENCY: If this implementation changes, these functions must change to match:
+			//		- Tokenizer.Load()
+			//		- SimpleTokenIterator.GetTokenLength()
 			
 			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
@@ -438,7 +440,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{
 				character = rawText[index];
 				
-				// DEPENDENCY: If this changes, FundamentalTypeOf() must change to match.
+				// DEPENDENCY: This must match the implementation of FundamentalTypeOf().
 				
 				// Text
 				

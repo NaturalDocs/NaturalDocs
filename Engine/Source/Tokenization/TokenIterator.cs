@@ -341,6 +341,36 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: MatchesToken
+		 * Returns whether the current token matches the one at the passed iterator.  Returns false if either iterator 
+		 * is out of bounds.
+		 */
+		public bool MatchesToken (TokenIterator other, bool ignoreCase = false)
+			{
+			if (!IsInBounds || !other.IsInBounds)
+				{  return false;  }
+				
+			return ( RawTextLength == other.RawTextLength &&
+						   String.Compare(tokenizer.RawText, rawTextIndex, other.tokenizer.RawText, other.rawTextIndex, 
+														RawTextLength, ignoreCase) == 0 );
+			}
+			
+			
+		/* Function: MatchesToken
+		 * Returns whether the current token matches the one at the passed iterator.  Returns false if either iterator 
+		 * is out of bounds.
+		 */
+		public bool MatchesToken (SimpleTokenIterator other, bool ignoreCase = false)
+			{
+			if (!IsInBounds || !other.IsInBounds)
+				{  return false;  }
+				
+			return ( RawTextLength == other.RawTextLength &&
+						   String.Compare(tokenizer.RawText, rawTextIndex, other.RawText, other.RawTextIndex, 
+														RawTextLength, ignoreCase) == 0 );
+			}
+			
+			
 		/* Function: MatchesAcrossTokens
 		 * Returns whether the passed string matches the tokens at the current position.  The string comparison can 
 		 * span multiple tokens, which allows you to test against things like "//" which would be two tokens.  However,
