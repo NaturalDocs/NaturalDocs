@@ -62,6 +62,7 @@ using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
+using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
@@ -322,6 +323,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// For type and class parent links, the topic type MUST have the relevant attribute set to be possible.
 
 			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+			var language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
 			if ( (link.Type == LinkType.ClassParent && topicType.ClassHierarchy == false) ||
 				  (link.Type == LinkType.Type && topicType.VariableType == false) )
@@ -442,9 +444,65 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// ====TPPP PPPPPPPP PPPPPPPP P======= ======== =------- -------- -------=
 			// T - Whether the link parentheses exactly match the topic title parentheses.
 			// P - How well the parameters match.
+			
+			// Both of these only apply to Natural Docs links that have parentheses.
+			if (link.Type == LinkType.NaturalDocs)
+				{  
+				int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(link.Text);
 
-			// xxx we'll come back to this
-			score |= 0x0FFFFF8000000000;
+				if (parenthesesIndex != -1)
+					{
+					string linkParentheses = link.Text.Substring(parenthesesIndex);
+					ParameterString linkParameters = ParameterString.FromParenthesesString(linkParentheses);
+
+					// If the topic title has parentheses as well, the link parentheses must match them exactly.  We
+					// don't do fuzzy matching with topic title parentheses.
+					if (topic.HasTitleParameters && string.Compare(linkParameters, topic.TitleParameters, !language.CaseSensitive) == 0)
+						{  
+						score |= 0x0800000000000000;
+						// We can skip the prototype match since this outweighs it.  Also, we don't want two link targets
+						// where the topic title parentheses are matched to be distinguished by the prototype parameters.
+						// We'll let it fall through to lower properties in the score.
+						}
+					else
+						{
+						// Score the first nine parameters.
+						for (int i = 0; i < 9; i++)
+							{
+							long paramScore = ScoreParameter(topic.ParsedPrototype, linkParameters, i, !language.CaseSensitive);
+
+							if (paramScore == -1)
+								{  return 0;  }
+
+							paramScore <<= 39 + ((9 - i) * 2);
+							score |= paramScore;
+							}
+
+						// The tenth is special.  It's possible that functions may have more than ten parameters, so we go
+						// through the rest of them and use the lowest score we get.
+
+						long lastParamScore = ScoreParameter(topic.ParsedPrototype, linkParameters, 9, !language.CaseSensitive);
+						int maxParameters = linkParameters.NumberOfParameters;
+
+						if (topic.ParsedPrototype != null && topic.ParsedPrototype.NumberOfParameters > maxParameters)
+							{  maxParameters = topic.ParsedPrototype.NumberOfParameters;  }
+
+						for (int i = 10; i < maxParameters; i++)
+							{
+							long paramScore = ScoreParameter(topic.ParsedPrototype, linkParameters, i, !language.CaseSensitive);
+
+							if (paramScore < lastParamScore)
+								{  lastParamScore = paramScore;  }
+							}
+
+						if (lastParamScore == -1)
+							{  return 0;  }
+
+						lastParamScore <<= 39;
+						score |= lastParamScore;
+						}
+					}
+				}
 
 
 			// ======== ======== ======== ======== ======== =-FFFFFF -------- -------=
@@ -715,6 +773,151 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			linkScore >>= 23;
 
 			return 63 - (int)linkScore;
+			}
+
+
+		/* Function: ScoreParameter
+		 * Returns a two bit value representing how well the parameters match, or -1 if they match so poorly that the link and
+		 * the target shouldn't be considered a match at all.
+		 */
+		private long ScoreParameter (ParsedPrototype prototype, ParameterString linkParameters, int index, bool ignoreCase)
+			{
+			// -1 - The link has a parameter but the prototype does not.
+			// 00 - The prototype has a parameter but the link does not.  This allows links on partial parameters.
+			// 00 - They both have parameters but do not match at all.
+			// 01 - The link doesn't have a parameter but the prototype has one with a default value set.
+			// 10 - The parameters match except for qualifiers or modifiers like "unsigned".
+			// 11 - The parameters match completely, by type or by name, or both don't exist.
+
+			SimpleTokenIterator linkParamStart, linkParamEnd;
+			TokenIterator prototypeParamStart, prototypeParamEnd;
+
+			bool hasLinkParam = linkParameters.GetParameter(index, out linkParamStart, out linkParamEnd);
+			bool hasPrototypeParam;
+			
+			if (prototype == null)
+				{
+				hasPrototypeParam = false;
+
+				// To shut the compiler up.
+				prototypeParamStart = new TokenIterator();
+				prototypeParamEnd = new TokenIterator();
+				}
+			else
+				{  hasPrototypeParam = prototype.GetParameter(index, out prototypeParamStart, out prototypeParamEnd);  }
+
+			if (!hasLinkParam)
+				{
+				if (!hasPrototypeParam)
+					{  return 3;  }
+				else
+					{  
+					// There is a prototype parameter but not a link parameter.  This will be 0 or 1 depending on whether the 
+					// prototype parameter has a default value.
+
+					while (prototypeParamStart < prototypeParamEnd)
+						{
+						if (prototypeParamStart.PrototypeParsingType == PrototypeParsingType.DefaultValue)
+							{  return 1;  }
+
+						prototypeParamStart.Next();
+						}
+
+					return 0;
+					}
+				}
+
+			else // hasLinkParam == true
+				{
+				if (hasPrototypeParam == false)
+					{  return -1;  }
+
+				// Both the link and the prototype have parameters at index.
+
+				bool typeMatch = false;
+				bool typeMismatch = false;
+				bool typeModifierMismatch = false;
+				bool nameMatch = false;
+				bool nameMismatch = false;
+
+				int suffixLevel = 0;
+
+				while (prototypeParamStart < prototypeParamEnd)
+					{
+					var type = prototypeParamStart.PrototypeParsingType;
+
+					// We want any mismatches that occur nested in type suffixes to be scored as a modifier mismatch.
+					if (type == PrototypeParsingType.OpeningTypeSuffix)
+						{  suffixLevel++;  }
+					else if (type == PrototypeParsingType.ClosingTypeSuffix)
+						{  suffixLevel--;  }
+					else if (suffixLevel > 0)
+						{  type = PrototypeParsingType.TypeSuffix;  }
+
+					switch (type)
+						{
+						case PrototypeParsingType.TypeModifier:
+						case PrototypeParsingType.TypeQualifier:
+						case PrototypeParsingType.OpeningTypeSuffix:
+						case PrototypeParsingType.ClosingTypeSuffix:
+						case PrototypeParsingType.TypeSuffix:
+						case PrototypeParsingType.NamePrefix_PartOfType:
+						case PrototypeParsingType.NameSuffix_PartOfType: 
+
+							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
+								{  
+								linkParamStart.Next();  
+								linkParamStart.NextPastWhitespace();
+								}
+							else
+								{  typeModifierMismatch = true;  }
+							break;
+
+						case PrototypeParsingType.Type:
+
+							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
+								{  
+								typeMatch = true;  
+
+								linkParamStart.Next();  
+								linkParamStart.NextPastWhitespace();
+								}
+							else
+								{  typeMismatch = true;  }
+							break;
+
+						case PrototypeParsingType.Name:
+
+							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
+								{  
+								nameMatch = true;  
+
+								linkParamStart.Next();  
+								linkParamStart.NextPastWhitespace();
+								}
+							else
+								{  nameMismatch = true;  }
+							break;
+						}
+
+					prototypeParamStart.Next();
+					prototypeParamStart.NextPastWhitespace();
+					}
+
+				if (linkParamStart < linkParamEnd)
+					{  return 0;  }
+				if (nameMatch && !nameMismatch)
+					{  return 3;  }
+				if (typeMatch && !typeMismatch)
+					{
+					if (!typeModifierMismatch)
+						{  return 3;  }
+					else
+						{  return 2;  }
+					}
+
+				return 0;
+				}
 			}
 
 
