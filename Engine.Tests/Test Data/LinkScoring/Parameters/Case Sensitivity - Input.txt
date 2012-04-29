@@ -1,0 +1,45 @@
+
+show parameters
+
+// Case sensitive language
+// ____________________________________________________________________________
+
+Topic.LanguageName="C#"
+Link.LanguageName="C#"
+
+Topic.Title="MyFunc"
+Topic.Prototype="void MyFunc (int x, StringBuilder y, List<ClassName> z)"
+
+Link.Text="MyFunc (int, StringBuilder, List<ClassName>)"
+
+score
+
+Link.Text="MyFunc (int, stringbuilder, list<classname>)"
+
+score
+
+Link.Text="MyFunc (int, StringBuilder, List<classname>)"
+
+score
+
+
+// Case insensitive language
+// ____________________________________________________________________________
+
+Topic.LanguageName="Pascal"
+Link.LanguageName="Pascal"
+
+Topic.Title="MyFunc"
+Topic.Prototype="Procedure MyFunc (x: int; y: StringBuilder; z: List<ClassName>)"
+
+Link.Text="MyFunc (int; StringBuilder; List<ClassName>)"
+
+score
+
+Link.Text="MyFunc (int; stringbuilder; list<classname>)"
+
+score
+
+Link.Text="MyFunc (int; StringBuilder; List<classname>)"
+
+score

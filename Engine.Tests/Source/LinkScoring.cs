@@ -76,6 +76,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 		public void All ()
 			{
 			TestFolder("LinkScoring");
+			TestFolder("LinkScoring/Parameters");
 			}
 
 		public override string OutputOf (IList<string> commands)

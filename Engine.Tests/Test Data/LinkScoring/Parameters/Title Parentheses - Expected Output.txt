@@ -1,0 +1,133 @@
+C# Function Topic: Parens(int,float)
+   Symbol: Parens
+   Title Parameters: int,float
+
+C# NaturalDocs Link: Parens(int,float)
+   Scope: Global
+
+Match score:
+   ☒ - Topic title parentheses
+   ☐☐☐☐☐☐☐☐☐☐ - Parameters
+
+// It must tolerate whitespace differences
+// ____________________________________________________________________________
+
+C# Function Topic: Parens (int,float)
+   Symbol: Parens
+   Title Parameters: int,float
+
+C# NaturalDocs Link: Parens( int, float )
+   Scope: Global
+
+Match score:
+   ☒ - Topic title parentheses
+   ☐☐☐☐☐☐☐☐☐☐ - Parameters
+
+// All matches must be exact.  It does not do fuzzy matching like it does with prototypes.
+// ____________________________________________________________________________
+
+C# Function Topic: Parens (int, float)
+   Symbol: Parens
+   Title Parameters: int,float
+
+C# NaturalDocs Link: Parens (int)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Parens (int, float)
+   Symbol: Parens
+   Title Parameters: int,float
+
+C# NaturalDocs Link: Parens (float)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Parens (int, float)
+   Symbol: Parens
+   Title Parameters: int,float
+
+C# NaturalDocs Link: Parens (int, float, bool)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Parens
+   Symbol: Parens
+
+C# NaturalDocs Link: Parens()
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: Parens
+   Symbol: Parens
+
+C# NaturalDocs Link: Parens(int)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: Parens (const int)
+   Symbol: Parens
+   Title Parameters: const int
+
+C# NaturalDocs Link: Parens (int)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// It does accommodate the language's case sensitivity though.
+// ____________________________________________________________________________
+
+C# Function Topic: Parens (MyClass)
+   Symbol: Parens
+   Title Parameters: MyClass
+
+C# NaturalDocs Link: Parens (myclass)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+Pascal Function Topic: Parens (MyClass)
+   Symbol: Parens
+   Title Parameters: MyClass
+
+Pascal NaturalDocs Link: Parens (myclass)
+   Scope: Global
+
+Match score:
+   ☒ - Topic title parentheses
+   ☐☐☐☐☐☐☐☐☐☐ - Parameters
+
+// Title matches must override prototoype matches
+// ____________________________________________________________________________
+
+Pascal Function Topic: Parens (int)
+   Symbol: Parens
+   Title Parameters: int
+   Prototype Parameters: float
+   Prototype: void Parens (float x)
+
+Pascal NaturalDocs Link: Parens (int)
+   Scope: Global
+
+Match score:
+   ☒ - Topic title parentheses
+   ☐☐☐☐☐☐☐☐☐☐ - Parameters
+
+Pascal Function Topic: Parens (int)
+   Symbol: Parens
+   Title Parameters: int
+   Prototype: void Parens ()
+
+Pascal NaturalDocs Link: Parens (int)
+   Scope: Global
+
+Match score:
+   ☒ - Topic title parentheses
+   ☐☐☐☐☐☐☐☐☐☐ - Parameters
+

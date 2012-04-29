@@ -1,0 +1,123 @@
+// Exact match
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (unsigned int; System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Missing pieces
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (int; StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (unsigned int; StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒↑☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (int; System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Wrong pieces
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (const int; System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☒☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (unsigned int; System.Whatever.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☐☒☒☒☒☒☒☒☒ - Parameters
+
+// Extra pieces
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: unsigned int; y: System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (const unsigned int; out System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+
+// Some pieces
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: out unsigned int; y: out System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (unsigned int; System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (x: out unsigned int; y: out System.Text.StringBuilder)
+
+Pascal NaturalDocs Link: MyFunc (out int; out StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+

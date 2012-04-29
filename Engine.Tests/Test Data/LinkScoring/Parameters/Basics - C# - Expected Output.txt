@@ -1,0 +1,89 @@
+// Links should match by type
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc (int, float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Links should also match by name
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc (x, y)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// We allow links which have fewer parameters than the prototype to go through.  We want to allow linking with
+// partial parameter lists.  However, links with more matches should have a higher score.
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc ()
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc (int)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☐☒☒☒☒☒☒☒☒ - Parameters
+
+// We also allow links that are completely wrong, because the user or language may be specifying them in a weird
+// way and having the correct number of parameters should count for something.  However, this should have a low
+// score.
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc (bool, string)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+
+// We do not allow links with more parameters than the prototype though, as there's no way this was intended as 
+// the target.
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int x, float y)
+
+C# NaturalDocs Link: MyFunc (int, float, bool)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

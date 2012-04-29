@@ -1,0 +1,58 @@
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (x: int; y: float := 2.12; z: bool := false)
+
+Pascal NaturalDocs Link: MyFunc ()
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐↓↓☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (x: int; y: float := 2.12; z: bool := false)
+
+Pascal NaturalDocs Link: MyFunc (int)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒↓↓☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (x: int; y: float := 2.12; z: bool := false)
+
+Pascal NaturalDocs Link: MyFunc (int; float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒↓☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (x: int; y: float := 2.12; z: bool := false)
+
+Pascal NaturalDocs Link: MyFunc (int; float; bool)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (x: int; y: float := 2.12; z: bool := false)
+
+Pascal NaturalDocs Link: MyFunc (int; float; bool; string)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

@@ -1,0 +1,58 @@
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (int x, float y = 2.12, bool z = false)
+
+C# NaturalDocs Link: MyFunc ()
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐↓↓☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (int x, float y = 2.12, bool z = false)
+
+C# NaturalDocs Link: MyFunc (int)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒↓↓☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (int x, float y = 2.12, bool z = false)
+
+C# NaturalDocs Link: MyFunc (int, float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒↓☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (int x, float y = 2.12, bool z = false)
+
+C# NaturalDocs Link: MyFunc (int, float, bool)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,bool
+   Prototype: void MyFunc (int x, float y = 2.12, bool z = false)
+
+C# NaturalDocs Link: MyFunc (int, float, bool, string)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+

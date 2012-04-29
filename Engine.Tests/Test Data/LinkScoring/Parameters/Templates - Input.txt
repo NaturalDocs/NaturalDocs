@@ -1,0 +1,27 @@
+
+show parameters
+
+
+Topic.Title="MyFunc"
+Topic.Prototype="void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)"
+
+
+Link.Text="MyFunc (System.Collections.Generic.List<int>, Table<float, string>)"
+
+score
+
+Link.Text="MyFunc (List<int>, Table<float, string>)"
+
+score
+
+Link.Text="MyFunc (List<>, Table<>)"
+
+score
+
+Link.Text="MyFunc (List, Table)"
+
+score
+
+Link.Text="MyFunc (System.Collections.Generic.List<float>, Table<bool, int>)"
+
+score

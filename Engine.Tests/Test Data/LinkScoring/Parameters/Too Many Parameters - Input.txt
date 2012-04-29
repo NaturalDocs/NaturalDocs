@@ -1,0 +1,72 @@
+
+// The tenth parameter in the score should be the lowest value of all parameters ten and later.
+
+show parameters
+
+Topic.Title="MyFunc"
+Topic.Prototype="void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)"
+
+
+// Exact match
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int, const float)"
+
+score
+
+
+// Missing eleventh, takes advantage of default value
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int)"
+
+score
+
+
+// Missing modifier on eleventh
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int, float)"
+
+score
+
+
+// Eleventh completely wrong
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int, string)"
+
+score
+
+
+// Twelve parameters in link
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int, const float, string)"
+
+score
+
+
+// Tenth wrong, eleventh matches
+// ____________________________________________________________________________
+
+Topic.Prototype="void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, const int x10, const float x11 = 12)"
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, string, const float)"
+
+score
+
+
+// Tenth partial, eleventh matches
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int, const float)"
+
+score
+
+
+// Tenth partial, eleventh default value
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, int, int, int, int, int, int, int, int, int)"
+
+score

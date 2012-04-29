@@ -1,0 +1,120 @@
+// The tenth parameter in the score should be the lowest value of all parameters ten and later.
+
+// Exact match
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, const float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Missing eleventh, takes advantage of default value
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒↓ - Parameters
+
+// Missing modifier on eleventh
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒↑ - Parameters
+
+// Eleventh completely wrong
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, string)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☐ - Parameters
+
+// Twelve parameters in link
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, const float, string)
+   Scope: Global
+
+☓☓☓ No Match ☓☓☓
+
+// Tenth wrong, eleventh matches
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, const int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, string, const float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☐ - Parameters
+
+// Tenth partial, eleventh matches
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, const int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, const float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒↑ - Parameters
+
+// Tenth partial, eleventh default value
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,int,int,int,int,int,int,int,int,int,float
+   Prototype: void MyFunc (int x1, int x2, int x3, int x4, int x5, int x6, int x7, int x8, int x9, const int x10, const float x11 = 12)
+
+C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒↓ - Parameters
+

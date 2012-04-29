@@ -1,0 +1,123 @@
+// Exact match
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (unsigned int, System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Missing pieces
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (int, StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (unsigned int, StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (int, System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑☒☒☒☒☒☒☒☒☒ - Parameters
+
+// Wrong pieces
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (const int, System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (unsigned int, System.Whatever.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☐☒☒☒☒☒☒☒☒ - Parameters
+
+// Extra pieces
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (unsigned int x, System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (const unsigned int, out System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+
+// Some pieces
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (out unsigned int x, out System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (unsigned int, System.Text.StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,System.Text.StringBuilder
+   Prototype: void MyFunc (out unsigned int x, out System.Text.StringBuilder y)
+
+C# NaturalDocs Link: MyFunc (out int, out StringBuilder)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+

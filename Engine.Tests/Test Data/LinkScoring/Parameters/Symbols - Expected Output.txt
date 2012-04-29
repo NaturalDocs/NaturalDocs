@@ -1,0 +1,128 @@
+// Pointers and references
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int& x, float** y)
+
+C# NaturalDocs Link: MyFunc (int, float)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int& x, float** y)
+
+C# NaturalDocs Link: MyFunc (int&, float**)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int& x, float** y)
+
+C# NaturalDocs Link: MyFunc (int&, float*)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float
+   Prototype: void MyFunc (int& x, float** y)
+
+C# NaturalDocs Link: MyFunc (int*, float&)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+
+// Arrays
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (int, float, string, bool)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑↑↑☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (int[], float[], string[], bool[])
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒↑↑☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (int[], float[], string[12], bool[9])
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (w, x, y, z)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+// We'll support "bool z[9]" == "z[9]", but we're not going to worry about "string[12] y" = "y[12]".
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (w, x[], y, z[])
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,float,string,bool
+   Prototype: void MyFunc (int[] w, float x[], string[12] y, bool z[9])
+
+C# NaturalDocs Link: MyFunc (w, x[], y, z[9])
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+

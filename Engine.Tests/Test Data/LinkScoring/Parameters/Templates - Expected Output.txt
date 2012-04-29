@@ -1,0 +1,60 @@
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: System.Collections.Generic.List,Table
+   Prototype: void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)
+
+C# NaturalDocs Link: MyFunc (System.Collections.Generic.List<int>, Table<float, string>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: System.Collections.Generic.List,Table
+   Prototype: void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)
+
+C# NaturalDocs Link: MyFunc (List<int>, Table<float, string>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: System.Collections.Generic.List,Table
+   Prototype: void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)
+
+C# NaturalDocs Link: MyFunc (List<>, Table<>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: System.Collections.Generic.List,Table
+   Prototype: void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)
+
+C# NaturalDocs Link: MyFunc (List, Table)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ↑↑☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: System.Collections.Generic.List,Table
+   Prototype: void MyFunc (System.Collections.Generic.List<int> x, Table<float, string> y)
+
+C# NaturalDocs Link: MyFunc (System.Collections.Generic.List<float>, Table<bool, int>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☐☐☒☒☒☒☒☒☒☒ - Parameters
+

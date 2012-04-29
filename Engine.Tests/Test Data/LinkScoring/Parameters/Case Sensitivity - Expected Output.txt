@@ -1,0 +1,78 @@
+// Case sensitive language
+// ____________________________________________________________________________
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: void MyFunc (int x, StringBuilder y, List<ClassName> z)
+
+C# NaturalDocs Link: MyFunc (int, StringBuilder, List<ClassName>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: void MyFunc (int x, StringBuilder y, List<ClassName> z)
+
+C# NaturalDocs Link: MyFunc (int, stringbuilder, list<classname>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☐☐☒☒☒☒☒☒☒ - Parameters
+
+C# Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: void MyFunc (int x, StringBuilder y, List<ClassName> z)
+
+C# NaturalDocs Link: MyFunc (int, StringBuilder, List<classname>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☐☒☒☒☒☒☒☒ - Parameters
+
+// Case insensitive language
+// ____________________________________________________________________________
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: Procedure MyFunc (x: int; y: StringBuilder; z: List<ClassName>)
+
+Pascal NaturalDocs Link: MyFunc (int; StringBuilder; List<ClassName>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: Procedure MyFunc (x: int; y: StringBuilder; z: List<ClassName>)
+
+Pascal NaturalDocs Link: MyFunc (int; stringbuilder; list<classname>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+
+Pascal Function Topic: MyFunc
+   Symbol: MyFunc
+   Prototype Parameters: int,StringBuilder,List
+   Prototype: Procedure MyFunc (x: int; y: StringBuilder; z: List<ClassName>)
+
+Pascal NaturalDocs Link: MyFunc (int; StringBuilder; List<classname>)
+   Scope: Global
+
+Match score:
+   ☐ - Topic title parentheses
+   ☒☒☒☒☒☒☒☒☒☒ - Parameters
+

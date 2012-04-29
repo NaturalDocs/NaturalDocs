@@ -1,0 +1,78 @@
+
+show parameters
+
+Topic.Title="Parens(int,float)"
+Link.Text="Parens(int,float)"
+
+score
+
+
+// It must tolerate whitespace differences
+// ____________________________________________________________________________
+
+Topic.Title="Parens (int,float)"
+Link.Text="Parens( int, float )"
+
+score
+
+
+// All matches must be exact.  It does not do fuzzy matching like it does with prototypes.
+// ____________________________________________________________________________
+
+Topic.Title="Parens (int, float)"
+Link.Text="Parens (int)"
+
+score
+
+Link.Text="Parens (float)"
+
+score
+
+Link.Text="Parens (int, float, bool)"
+
+score
+
+Topic.Title="Parens"
+Link.Text="Parens()"
+
+score
+
+Link.Text="Parens(int)"
+
+score
+
+Topic.Title="Parens (const int)"
+Link.Text="Parens (int)"
+
+score
+
+
+// It does accommodate the language's case sensitivity though.
+// ____________________________________________________________________________
+
+Topic.Title="Parens (MyClass)"
+Link.Text="Parens (myclass)"
+
+Topic.LanguageName="C#"
+Link.LanguageName="C#"
+
+score
+
+Topic.LanguageName="Pascal"
+Link.LanguageName="Pascal"
+
+score
+
+
+// Title matches must override prototoype matches
+// ____________________________________________________________________________
+
+Topic.Title="Parens (int)"
+Link.Text="Parens (int)"
+Topic.Prototype="void Parens (float x)"
+
+score
+
+Topic.Prototype="void Parens ()"
+
+score

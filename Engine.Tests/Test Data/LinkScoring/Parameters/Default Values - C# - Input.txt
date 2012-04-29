@@ -1,0 +1,29 @@
+
+show parameters
+
+Topic.LanguageName="C#"
+Link.LanguageName="C#"
+
+Topic.Title="MyFunc"
+Topic.Prototype="void MyFunc (int x, float y = 2.12, bool z = false)"
+
+
+Link.Text="MyFunc ()"
+
+score
+
+Link.Text="MyFunc (int)"
+
+score
+
+Link.Text="MyFunc (int, float)"
+
+score
+
+Link.Text="MyFunc (int, float, bool)"
+
+score
+
+Link.Text="MyFunc (int, float, bool, string)"
+
+score

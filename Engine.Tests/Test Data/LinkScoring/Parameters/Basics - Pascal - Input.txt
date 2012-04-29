@@ -1,0 +1,58 @@
+
+// Link parameters should work with semicolons in addition to commas.
+
+show parameters
+
+Topic.LanguageName="Pascal"
+Link.LanguageName="Pascal"
+
+Topic.Title="MyFunc"
+Topic.Prototype="Procedure MyFunc (x: int; y: float)"
+
+
+// Links should match by type
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int; float)"
+
+score
+
+
+// Links should also match by name
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (x; y)"
+
+score
+
+
+// We allow links which have fewer parameters than the prototype to go through.  We want to allow linking with
+// partial parameter lists.  However, links with more matches should have a higher score.
+// ____________________________________________________________________________
+
+Link.Text="MyFunc ()"
+
+score
+
+Link.Text="MyFunc (int)"
+
+score
+
+
+// We also allow links that are completely wrong, because the user or language may be specifying them in a weird
+// way and having the correct number of parameters should count for something.  However, this should have a low
+// score.
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (bool; string)"
+
+score
+
+
+// We do not allow links with more parameters than the prototype though, as there's no way this was intended as 
+// the target.
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int; float; bool)"
+
+score

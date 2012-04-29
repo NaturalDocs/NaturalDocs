@@ -1,0 +1,66 @@
+
+show parameters
+
+Topic.LanguageName="C#"
+Link.LanguageName="C#"
+
+Topic.Title="MyFunc"
+Topic.Prototype="void MyFunc (unsigned int x, System.Text.StringBuilder y)"
+
+
+// Exact match
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (unsigned int, System.Text.StringBuilder)"
+
+score
+
+
+// Missing pieces
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (int, StringBuilder)"
+
+score
+
+Link.Text="MyFunc (unsigned int, StringBuilder)"
+
+score
+
+Link.Text="MyFunc (int, System.Text.StringBuilder)"
+
+score
+
+
+// Wrong pieces
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (const int, System.Text.StringBuilder)"
+
+score
+
+Link.Text="MyFunc (unsigned int, System.Whatever.StringBuilder)"
+
+score
+
+
+// Extra pieces
+// ____________________________________________________________________________
+
+Link.Text="MyFunc (const unsigned int, out System.Text.StringBuilder)"
+
+score
+
+
+// Some pieces
+// ____________________________________________________________________________
+
+Topic.Prototype="void MyFunc (out unsigned int x, out System.Text.StringBuilder y)"
+
+Link.Text="MyFunc (unsigned int, System.Text.StringBuilder)"
+
+score
+
+Link.Text="MyFunc (out int, out StringBuilder)"
+
+score
