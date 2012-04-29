@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 
@@ -220,6 +221,45 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			NormalizeAndAppend(input.Substring(startParam), output);
 
 			return new ParameterString(output.ToString());
+			}
+
+
+		/* Function: GetParameter
+		 * Returns the bounds of the numbered parameter and whether or not it exists.  Numbers start at zero.
+		 */
+		public bool GetParameter (int parameterIndex, out SimpleTokenIterator start, out SimpleTokenIterator end)
+			{
+			if (parameterString == null)
+				{
+				start = new SimpleTokenIterator();
+				end = new SimpleTokenIterator();
+				return false;
+				}
+
+			int parameterCharIndex = 0;
+
+			for (int i = 0; i < parameterIndex; i++)
+				{
+				int separatorCharIndex = parameterString.IndexOf(SeparatorChar, parameterCharIndex);
+
+				if (separatorCharIndex == -1)
+					{  
+					start = new SimpleTokenIterator();
+					end = new SimpleTokenIterator();
+					return false;
+					}
+
+				parameterCharIndex = separatorCharIndex + 1;
+				}
+
+			int endCharIndex = parameterString.IndexOf(SeparatorChar, parameterCharIndex);
+
+			if (endCharIndex == -1)
+				{  endCharIndex = parameterString.Length;  }
+
+			start = new SimpleTokenIterator(parameterString, parameterCharIndex);
+			end = new SimpleTokenIterator(parameterString, endCharIndex);
+			return true;
 			}
 
 			
