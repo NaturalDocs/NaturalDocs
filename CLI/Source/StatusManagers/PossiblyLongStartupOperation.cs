@@ -19,53 +19,44 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 	public class PossiblyLongStartupOperation : StatusManager
 		{
 		
-		public PossiblyLongStartupOperation (int updateInterval) : base (updateInterval)
+		// Group: Functions
+		// __________________________________________________________________________
+
+
+		public PossiblyLongStartupOperation () : base (0, Application.DelayedMessageThreshold)
 			{
 			operationName = null;
-			displayedMessage = false;
 			}
 
 		public void Start (string operationName)
 			{
 			this.operationName = operationName;
-			displayedMessage = false;
-				
 			base.Start();
 			}
 
-		protected override void Update (Object sender, System.Timers.ElapsedEventArgs args)
+		protected override void ShowStartMessage ()
 			{
-			if (operationName != null && displayedMessage == false)
-				{
-				displayedMessage = true;
-			
-				// Operation names are subject to change arbitrarily, so we can't guarantee there's an entry for it in the translation
-				// file.  Substitute null if it's missing and just don't display a message.
-				string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.Start" + operationName, null);
+			// Operation names are subject to change arbitrarily, so we can't guarantee there's an entry for it in the translation
+			// file.  Substitute null if it's missing and just don't display a message.
+			string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.Start" + operationName, null);
 
-				if (message != null)
-					{  System.Console.WriteLine(message);  }
-				}
+			if (message != null)
+				{  System.Console.WriteLine(message);  }
 			}
 
-		public override void End()
+		protected override void ShowEndMessage ()
 			{
-			base.End();
+			string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.End" + operationName, null);
 
-			if (operationName != null && displayedMessage == true)
-				{
-				string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.End" + operationName, null);
-
-				if (message != null)
-					{  System.Console.WriteLine(message);  }
-
-				operationName = null;
-				}
+			if (message != null)
+				{  System.Console.WriteLine(message);  }
 			}
 		
 		
+		// Group: Variables
+		// __________________________________________________________________________
+
 		protected string operationName;
-		protected bool displayedMessage;
 		
 		}
 	}

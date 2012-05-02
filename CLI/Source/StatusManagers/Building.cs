@@ -18,24 +18,26 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 	public class Building : StatusManager
 		{
 		
-		public Building (int updateInterval) : base (updateInterval)
+		// Group: Functions
+		// __________________________________________________________________________
+
+
+		public Building () : base (Application.StatusInterval)
 			{
 			lastPercentage = 0;
 			totalUnitsOfWork = 0;
 			}
 
-		public override void Start ()
+		protected override void ShowStartMessage ()
 			{
 			totalUnitsOfWork = Engine.Instance.Output.UnitsOfWorkRemaining();
 
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartOutputBuilding")
 				);
-				
-			base.Start();
 			}
 
-		protected override void Update (Object sender, System.Timers.ElapsedEventArgs args)
+		protected override void ShowUpdateMessage ()
 			{
 			long unitsOfWorkRemaining = Engine.Instance.Output.UnitsOfWorkRemaining();
 
@@ -58,15 +60,16 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				}
 			}
 
-		public override void End ()
+		protected override void ShowEndMessage ()
 			{
-			base.End();
-
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.EndOutputBuilding")
 				);
 			}
 		
+
+		// Group: Variables
+		// __________________________________________________________________________
 		
 		protected int lastPercentage;
 		protected long totalUnitsOfWork;

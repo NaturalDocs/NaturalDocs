@@ -21,7 +21,7 @@ namespace GregValure.NaturalDocs.Engine
 		
 		/* Function: OnStartPossiblyLongOperation
 		 * Called whenever an operation is starting that *might* take a long time.  In some cases it will be over instantaneously,
-		 * in others it could cause a significant, user-noticeable delay.  The operation name iwill be one of the following, but you
+		 * in others it could cause a significant, user-noticeable delay.  The operation name will be one of the following, but you
 		 * must design the watcher code for any possibility because future versions may add new operation names:
 		 * 
 		 *    "PurgingOutputWorkingData" - Output temporary files are being deleted.  If there are a lot of them, such as many folders

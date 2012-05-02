@@ -23,25 +23,24 @@ namespace GregValure.NaturalDocs.CLI
 		
 		public EngineStartupWatcher ()
 			{
-			possiblyLongStartupOperationWatcher = 
-				new StatusManagers.PossiblyLongStartupOperation(Application.LongOperationMessageDelay);
+			status = new StatusManagers.PossiblyLongStartupOperation();
 			}
 
 		public void OnStartPossiblyLongOperation (string operationName)
 			{
-			possiblyLongStartupOperationWatcher.Start(operationName);
+			status.Start(operationName);
 			}
 		
 		public void OnEndPossiblyLongOperation ()
 			{
-			possiblyLongStartupOperationWatcher.End();
+			status.End();
 			}
 		
 
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected StatusManagers.PossiblyLongStartupOperation possiblyLongStartupOperationWatcher;
+		protected StatusManagers.PossiblyLongStartupOperation status;
 		
 		}
 	}

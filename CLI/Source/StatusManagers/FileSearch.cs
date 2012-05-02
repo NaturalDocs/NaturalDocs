@@ -17,8 +17,12 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 	{
 	public class FileSearch : StatusManager
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
+
 		
-		public FileSearch (int updateInterval) : base (updateInterval)
+		public FileSearch () : base (Application.StatusInterval)
 			{
 			status = new Engine.Files.AddAllFilesStatus();
 			
@@ -26,16 +30,14 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 			lastSourceFoldersFound = 0;
 			}
 
-		public override void Start ()
+		protected override void ShowStartMessage ()
 			{
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileSearch")
 				);
-				
-			base.Start();
 			}
 
-		protected override void Update (Object sender, System.Timers.ElapsedEventArgs args)
+		protected override void ShowUpdateMessage ()
 			{
 			Engine.Instance.Files.GetAddAllFilesStatus(ref status);
 			
@@ -50,10 +52,8 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				}
 			}
 
-		public override void End ()
+		protected override void ShowEndMessage ()
 			{
-			base.End();
-			
 			Engine.Instance.Files.GetAddAllFilesStatus(ref status);
 
 			System.Console.WriteLine(

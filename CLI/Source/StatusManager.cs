@@ -9,20 +9,29 @@
  * Deriving a Status Manager:
  * 
  *		- Create a class with this as a parent.
- *		- <Start()> should be overridden to capture the state of whatever you're tracking and post a starting
- *		  message if necessary.  It should always call the base class's Start() as well.
- *		- <End()> should be overridden to post an ending message if necessary.  It should always call the base
- *		  class's End() as well.
- *		- <Update()> should be overridden to check the state of whatever you're tracking, compare it against
- *		  its local copy, and post a status message if it's different.  Since this will be called by a timer, realize
- *		  that it will be executed in a different thread.
+ *		
+ *		- If you're not using hideIfShorterThan you can override <ShowStartMessage()> to capture the initial state of 
+ *		  whatever you're tracking and also show the start message.
  *		  
+ *		- If you are using hideIfShorterThan, override <Start()> to capture the initial state and override <ShowStartMessage()>
+ *		  to show the starting message, as the call to <ShowStartMessage()> will be delayed.  Remember to call the base
+ *		  class's <Start()> from your own.
+ *		  
+ *		- <ShowUpdateMessage()> can be overridden to check the state of whatever you're tracking, compare it against 
+ *		  its local copy, and post a status message if it's different.  Since this will be called by a timer, realize that it will be 
+ *		  executed in a different thread.
+ *		  
+ *		- <ShowEndMessage()> can be overridden to post an ending message.
+ *		
  * Using a Status Manager:
  * 
  *		- Create the object.
+ *		
  *		- Start the task you want to track and then call <Start()>.  It's only possible to start the status manager
  *		  first if it's capable of fully reading the task's state before it starts.
+ *		  
  *		- <Update()> will be called automatically by an internal timer.  You don't have to worry about it.
+ *		
  *		- When the task finishes call <End()>.
  */
 
@@ -49,51 +58,87 @@ namespace GregValure.NaturalDocs.CLI
 		 * 
 		 * Parameters:
 		 * 
-		 *		updateInterval - The number of milliseconds between status updates if the task takes a long time.
+		 *		updateInterval - The number of milliseconds between status updates if the task takes a long time.  If this
+		 *									  is zero, only start and end messages will be displayed.
+		 *		hideIfShorterThan - The number of milliseconds where if the task starts and finishes within this time, no
+		 *											status is displayed at all.  Zero means always show a status.
 		 */
-		public StatusManager (int updateInterval)
+		public StatusManager (int updateInterval, int hideIfShorterThan = 0)
 			{
-			timer = new System.Timers.Timer();
-			timer.Enabled = false;
-			timer.AutoReset = true;
-			timer.Interval = updateInterval;
-			timer.Elapsed += new System.Timers.ElapsedEventHandler(Update);
+			this.updateInterval = updateInterval;
+			this.hideIfShorterThan = hideIfShorterThan;
+
+			if (updateInterval > 0 || hideIfShorterThan > 0)
+				{
+				timer = new System.Timers.Timer();
+				timer.Enabled = false;
+				timer.Elapsed += new System.Timers.ElapsedEventHandler(Update);
+
+				if (hideIfShorterThan > 0)
+					{
+					timer.AutoReset = false;
+					timer.Interval = hideIfShorterThan;
+					}
+				else // updateInterval > 0
+					{
+					timer.AutoReset = true;
+					timer.Interval = updateInterval;
+					}
+				}
+			else
+				{  timer = null;  }
 			}
 
 
 		/* Function: Start
-		 * 
-		 * Displays the initial status message, if any, and starts monitoring the task.
-		 * 
-		 * If you override this function, make sure the new version calls the base class's version.
+		 * Starts monitoring the task.  If you override this function make sure to call the base class's version.
 		 */
-		public virtual void Start()
+		virtual public void Start()
 			{
-			timer.Start();
+			if (hideIfShorterThan == 0)
+				{  ShowStartMessage();  }
+
+			if (timer != null)
+				{  timer.Start();  }
 			}
 		
 
 		/* Function: Update
-		 * 
 		 * Called periodically to update the status message.  This is handled automatically, you don't need to manually
 		 * call it.
-		 * 
-		 * If you override this function, be aware that it executes in a separate system thread used by the timer.
 		 */
-		protected virtual void Update(Object sender, System.Timers.ElapsedEventArgs args)
+		protected void Update(Object sender, System.Timers.ElapsedEventArgs args)
 			{
+			if (hideIfShorterThan > 0)
+				{
+				ShowStartMessage();
+				hideIfShorterThan = 0;
+
+				if (updateInterval > 0)
+					{
+					timer.AutoReset = true;
+					timer.Interval = updateInterval;
+
+					timer.Start();
+					}
+				}
+			else
+				{
+				ShowUpdateMessage();
+				}
 			}
 			
 		
 		/* Function: End
-		 * 
-		 * Ends monitoring and displays a final status message if appropriate.
-		 * 
-		 * If you override this function, make sure the new version calls the base class's version.
+		 * Ends monitoring.
 		 */
-		public virtual void End()
+		public void End()
 			{
-			timer.Stop();
+			if (timer != null)
+				{  timer.Stop();  }
+
+			if (hideIfShorterThan == 0)
+				{  ShowEndMessage();  }
 			}
 			
 			
@@ -109,6 +154,33 @@ namespace GregValure.NaturalDocs.CLI
 				}
 			}
 			
+
+		/* Function: ShowStartMessage
+		 * Override this function to display a message at the start of a task.  If hideIfShorterThan was specified, this will
+		 * only be called if the task runs too long.  Otherwise it will always be called.
+		 */
+		protected virtual void ShowStartMessage ()
+			{
+			}
+
+
+		/* Function: ShowUpdateMessage
+		 * Override this function to display a progress message if the task runs too long.  This can be called many times or
+		 * not at all.
+		 */
+		protected virtual void ShowUpdateMessage ()
+			{
+			}
+
+
+		/* Function: ShowEndMessage
+		 * Override this function to display a message at the end of a task.  If hideIfShorterThan was specified, this will only
+		 * be called if the task ran too long.  Otherwise it will always be called.
+		 */
+		protected virtual void ShowEndMessage ()
+			{
+			}
+
 		
 		
 		// Group: Variables
@@ -119,6 +191,18 @@ namespace GregValure.NaturalDocs.CLI
 		 * The timer used to call <Update()>.
 		 */
 		protected System.Timers.Timer timer;
+
+		/* var: updateInterval
+		 * The number of milliseconds between status updates if the task takes a long time.  If this is zero, only
+		 * start and end messages will be displayed.
+		 */
+		protected int updateInterval;
+
+		/* var: hideIfShorterThan
+		 * The number of milliseconds where if the task starts and completes within this interval, no status is
+		 * displayed at all.  This will also be set to zero if it was specified and the task ran long.
+		 */
+		protected int hideIfShorterThan;
 		
 		}
 	}

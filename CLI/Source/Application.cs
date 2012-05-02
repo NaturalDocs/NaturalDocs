@@ -46,12 +46,12 @@ namespace GregValure.NaturalDocs.CLI
 		/* Constant: StatusInterval
 		 * The amount of time in milliseconds that must go by before a status update.
 		 */
-		private const int StatusInterval = 5000;
+		public const int StatusInterval = 5000;
 			
-		/* Constant: LongOperationMessageDelay
-		 * The amount of time in milliseconds that must go by before a possibly long operation warrants a status update.
+		/* Constant: DelayedMessageThreshold
+		 * The amount of time in milliseconds that certain operations must take before they warrant a status update.
 		 */
-		internal const int LongOperationMessageDelay = 1500;
+		public const int DelayedMessageThreshold = 1500;
 			
 						
 
@@ -110,7 +110,7 @@ namespace GregValure.NaturalDocs.CLI
 
 						// File Search
 						
-						using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch(StatusInterval) )
+						using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch() )
 							{
 							statusManager.Start();
 							
@@ -145,7 +145,7 @@ namespace GregValure.NaturalDocs.CLI
 						for (int i = 0; i < parsers.Length; i++)
 							{  parsers[i] = new Threads.Parser(i + 1);  }
 						
-						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(StatusInterval) )
+						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing() )
 							{
 							statusManager.Start();
 							
@@ -173,7 +173,7 @@ namespace GregValure.NaturalDocs.CLI
 							finalizers[i] = new Threads.Finalizer(i + 1);  
 							}
 						
-						using ( StatusManagers.Building statusManager = new StatusManagers.Building(StatusInterval) )
+						using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
 							{
 							statusManager.Start();
 							

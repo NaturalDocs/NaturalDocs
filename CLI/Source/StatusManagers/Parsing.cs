@@ -17,15 +17,19 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 	{
 	public class Parsing : StatusManager
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
+
 		
-		public Parsing (int updateInterval) : base (updateInterval)
+		public Parsing () : base (Application.StatusInterval)
 			{
 			status = new Engine.Files.ProcessChangesStatus();
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
 			}
 
-		public override void Start ()
+		protected override void ShowStartMessage ()
 			{
 			NaturalDocs.Engine.Instance.Files.GetProcessChangesStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
@@ -58,11 +62,9 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 											 status.ChangedFilesRemaining, status.DeletedFilesRemaining)
 					);
 				}
-				
-			base.Start();
 			}
 
-		protected override void Update (Object sender, System.Timers.ElapsedEventArgs args)
+		protected override void ShowUpdateMessage ()
 			{
 			if (totalFilesToProcess == 0)
 				{  return;  }
@@ -82,10 +84,8 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				}
 			}
 
-		public override void End ()
+		protected override void ShowEndMessage ()
 			{
-			base.End();
-
 			if (totalFilesToProcess > 0)
 				{
 				System.Console.WriteLine(
