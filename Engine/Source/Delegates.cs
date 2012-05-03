@@ -31,5 +31,10 @@ namespace GregValure.NaturalDocs.Engine
 	 * A delegate that returns a bool of whether to cancel an operation or not.
 	 */
 	public delegate bool CancelDelegate ();
+
+	/* Delegate: CancellableTask
+	 * A task that can be cancelled by a <CancelDelegate>.
+	 */
+	public delegate void CancellableTask (CancelDelegate cancel);
 		
 	}

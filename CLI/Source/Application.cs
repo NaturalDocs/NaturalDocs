@@ -106,7 +106,7 @@ namespace GregValure.NaturalDocs.CLI
 						#if SHOW_EXECUTION_TIME
 							startProcessing = System.DateTime.Now.Ticks;
 						#endif
-						
+
 
 						// File Search
 						
@@ -114,7 +114,7 @@ namespace GregValure.NaturalDocs.CLI
 							{
 							statusManager.Start();
 							
-							Engine.Instance.Files.WorkOnAddingAllFiles( Engine.Delegates.NeverCancel );
+							Multithread("File Adder", Engine.Instance.Files.WorkOnAddingAllFiles);
 							
 							statusManager.End();
 							}
@@ -141,61 +141,27 @@ namespace GregValure.NaturalDocs.CLI
 							
 						// Parsing
 						
-						Threads.Parser[] parsers = new Threads.Parser[ Engine.Instance.Config.BackgroundThreadsPerTask ];
-						for (int i = 0; i < parsers.Length; i++)
-							{  parsers[i] = new Threads.Parser(i + 1);  }
-						
 						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing() )
 							{
 							statusManager.Start();
-							
-							foreach (Threads.Parser parser in parsers)
-								{  parser.Start();  }
-								
-							foreach (Threads.Parser parser in parsers)
-								{  parser.Join();  }
+
+							Multithread("Parser", Engine.Instance.Files.WorkOnProcessingChanges);							
 							
 							statusManager.End();
 							}
-							
-						foreach (Threads.Parser parser in parsers)
-							{  parser.ThrowExceptions();  }
 							
 							
 						// Building
 						
-						Threads.Builder[] builders = new Threads.Builder[ Engine.Instance.Config.BackgroundThreadsPerTask ];
-						Threads.Finalizer[] finalizers = new Threads.Finalizer[ Engine.Instance.Config.BackgroundThreadsPerTask ];
-
-						for (int i = 0; i < builders.Length; i++)
-							{  
-							builders[i] = new Threads.Builder(i + 1);  
-							finalizers[i] = new Threads.Finalizer(i + 1);  
-							}
-						
 						using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
 							{
 							statusManager.Start();
-							
-							foreach (Threads.Builder builder in builders)
-								{  builder.Start();  }
-								
-							foreach (Threads.Builder builder in builders)
-								{  builder.Join();  }
-							
-							foreach (Threads.Finalizer finalizer in finalizers)
-								{  finalizer.Start();  }
-								
-							foreach (Threads.Finalizer finalizer in finalizers)
-								{  finalizer.Join();  }
+
+							Multithread("Builder", Engine.Instance.Output.WorkOnUpdatingOutput);
+							Multithread("Finalizer", Engine.Instance.Output.WorkOnFinalizingOutput);							
 							
 							statusManager.End();
 							}
-							
-						foreach (Threads.Builder builder in builders)
-							{  builder.ThrowExceptions();  }
-						foreach (Threads.Finalizer finalizer in finalizers)
-							{  finalizer.ThrowExceptions();  }
 							
 							
 						// End
@@ -273,6 +239,45 @@ namespace GregValure.NaturalDocs.CLI
 			}
 			
 			
+		/* Function: Multithread
+		 * 
+		 * Executes the task across multiple threads.  The function passed must be suitably thread safe.  This
+		 * function will not return until the task is complete.
+		 * 
+		 * Parameters:
+		 * 
+		 *		threadName - What the execution threads should be named.  "Thread #" will be appended so "Builder" will lead to 
+		 *								 names like "Builder Thread 3".  This is important to specify because thread names are reported in 
+		 *								 exceptions and crash reports.
+		 *		task - The task to execute.  This must be thread safe.
+		 */
+		static public void Multithread (string threadName, CancellableTask task)
+			{
+			Engine.Thread[] threads = new Engine.Thread[ Engine.Instance.Config.BackgroundThreadsPerTask ];
+
+			for (int i = 0; i < threads.Length; i++)
+				{  
+				Engine.Thread thread = new Engine.Thread();
+
+				thread.Name = threadName + " Thread " + (i + 1);
+				thread.Task = task;
+				thread.CancelDelegate = Engine.Delegates.NeverCancel;
+				thread.Priority = System.Threading.ThreadPriority.BelowNormal;
+
+				threads[i] = thread;
+				}
+
+			foreach (var thread in threads)
+				{  thread.Start();  }
+
+			foreach (var thread in threads)
+				{  thread.Join();  }
+
+			foreach (var thread in threads)
+				{  thread.ThrowExceptions();  }
+			}
+
+
 		/* Function: ParseCommandLine
 		 * 
 		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine's> modules.  If there were 

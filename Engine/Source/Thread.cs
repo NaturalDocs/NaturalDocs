@@ -4,22 +4,6 @@
  * 
  * A base class for all engine threads.
  * 
- * 
- * Topic: Usage
- * 
- *		- Derive a class from this one and override <Run()> to do what you want.
- *		
- *		- The code in <Run()> should periodically check <Cancelled> and abort what it's doing if set.
- *		
- *		- If the code in <Run()> needs to sleep on a synchronization object, it should also sleep on <WhenCancelled>
- *		  so that it will wake up if it's cancelled.
- *		
- *		- External code should create the object from a derived class, call <Start()> to begin, and <Join()> to wait
- *		  for it to end.  The external code should call <ThrowExceptions()> after the thread has ended so that any
- *		  exceptions it causes get passed on to the parent thread.
- *		  
- *		- The parent code can call <SendCancelMessage()> to cause it to stop early, provided the worker code
- *		  checks it.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -42,29 +26,21 @@ namespace GregValure.NaturalDocs.Engine
 		
 		/* Constructor: Thread
 		 */
-		public Thread (string threadName, ThreadPriority priority, bool isBackground)
+		public Thread ()
 			{
-			cancelled = false;
-			WhenCancelled = new System.Threading.ManualResetEvent(false);
-			exception = null;
-			
 			thread = new System.Threading.Thread ( this.InternalStart );
-			thread.Name = threadName;
-			thread.Priority = priority;
-			thread.IsBackground = isBackground;
+			task = null;
+			cancelDelegate = Delegates.NeverCancel;
+			exception = null;
 			}
-			
-			
+
+
 		/* Function: Start
 		 * Starts the thread, just like System.Threading.Thread.Start().  If the thread was previously cancelled, it clears
 		 * the cancelled flag and restarts it.  *Do not override this function.*  You need to override <Run()> instead.
 		 */
 		public void Start ()
 			{
-			cancelled = false;
-			WhenCancelled.Reset();
-			exception = null;
-			
 			thread.Start();
 			}
 
@@ -80,31 +56,44 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Function: SendCancelMessage
-		 * 
-		 * Signals that the thread's operation should be cancelled.  This does not result in the immediate suspension
-		 * of the thread.  Rather, it sets <Cancelled> so that the next time the thread checks it, it will stop.  This 
-		 * allows a more graceful shutdown but risks the thread continuing for a significant period of time if the 
-		 * worker code does not check the flag often enough.
-		 * 
-		 * Why a separate function instead of making <Cancelled> writable?  To make it much more clear in the 
-		 * calling code that it does not result in an immediate cancellation.
+		/* Function: ThrowExceptions
+		 * If the thread terminated with an exception, throw it.  Otherwise it does nothing.  This should only be 
+		 * called by the parent thread.
 		 */
-		public void SendCancelMessage ()
+		public void ThrowExceptions ()
 			{
-			cancelled = true;
-			WhenCancelled.Set();
+			if (exception != null)
+				{  throw exception;  }
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
 			
-			
-		/* Property: Cancelled
-		 * Whether a cancel message has been sent to this thread.  Does *not* return whether the thread is still
-		 * running.
+		/* Property: Task
 		 */
-		public bool Cancelled
+		public CancellableTask Task
 			{
 			get
-				{  return cancelled;  }
+				{  return task;  }
+			set
+				{  task = value;  }
+			}
+
+
+		/* Property: CancelDelegate
+		 * The function that determines whether the thread should be cancelled.  The <Task> will call this periodically to see if it
+		 * should stop, and if so will do so gracefully.  As such it does not immediately halt the thread's execution and depends on
+		 * the <Task> honoring it.
+		 */
+		public CancelDelegate CancelDelegate
+			{
+			get
+				{  return cancelDelegate;  }
+			set
+				{  cancelDelegate = value;  }
 			}
 			
 			
@@ -115,9 +104,22 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{  return thread.Name;  }
+			set
+				{  thread.Name = value;  }
 			}
-			
-			
+
+
+		/* Property: Priority
+		 */
+		public ThreadPriority Priority
+			{
+			get
+				{  return thread.Priority;  }
+			set
+				{  thread.Priority = value;  }
+			}
+
+
 		/* Property: Exception
 		 * The exception the thread terminated on, or null if none.
 		 */
@@ -128,33 +130,23 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
-		/* Property: ThrowExceptions
-		 * If the thread terminated with an exception, throw it.  Otherwise it does nothing.  This should only be 
-		 * called by the parent thread.
-		 */
-		public void ThrowExceptions ()
-			{
-			if (exception != null)
-				{  throw exception;  }
-			}
-		
-	
-				
 			
 
-		// Group: Protected Functions
+		// Group: Private Functions
 		// __________________________________________________________________________
 		
 		
 		/* Function: InternalStart
-		 * The function that's mapped as the starting function for <thread>.  This wraps <Run()> to provide
-		 * exception handling.
+		 * The function that's mapped as the starting function for <thread>.  This executes <task> and traps exceptions.
 		 */
-		protected void InternalStart ()
+		private void InternalStart ()
 			{
+			exception = null;
+
 			try
 				{
-				Run();
+				if (task != null)
+					{  task(cancelDelegate);  }
 				}
 			catch (System.Exception e)
 				{
@@ -167,53 +159,30 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
-		/* Function: Run
-		 * The virtual function you should override to do whatever you need the thread to do.
-		 */
-		protected virtual void Run ()
-			{
-			}
-			
-			
-			
-			
-		// Group: Thread Synchronization Objects
-		// __________________________________________________________________________
-			
-			
-		/* var: WhenCancelled
-		 * 
-		 * A synchronization object that triggers when the thread is cancelled.  Sleep on this in addition to external 
-		 * synchronization objects so the thread will wake up if it's cancelled while asleep.
-		 * 
-		 * This is protected because external code should not set it directly.  Rather, it should call <SendCancelMessage()>
-		 * which will set this as well as <Cancelled>.
-		 */
-		protected System.Threading.ManualResetEvent WhenCancelled;
-			
-			
-			
-			
+
 		// Group: Variables
 		// __________________________________________________________________________
 		
 		
-		/* object: thread
+		/* var: thread
 		 * The thread this class is wrapping.
 		 */
 		protected System.Threading.Thread thread;
-	
-		
-		/* bool: cancelled
-		 * The flag that specifies if the thread's operation is to be cancelled.  This allows the thread to check its status quickly
-		 * during long operations that may need to be cancelled while in progress.
+
+		/* var: task
+		 * The task being run by the thread.
 		 */
-		protected volatile bool cancelled;
-		
-		
-		/* object: exception
+		protected CancellableTask task;
+
+		/* var: cancelDelegate
+		 * The delegate that determines whether the task should be cancelled.
+		 */
+		protected CancelDelegate cancelDelegate;
+	
+		/* var: exception
 		 * If the thread terminated because of an exception it will be stored here.
 		 */
 		protected Engine.Exceptions.Thread exception;
+
 		}
 	}
