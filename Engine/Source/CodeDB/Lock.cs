@@ -49,7 +49,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void GetReadOnlyLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
 				if (!priority)
@@ -128,9 +128,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void UpgradeToReadWriteLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
+				state = State.WaitingForReadWrite;
+
 				while (activeLocks > 1)
 					{  Monitor.Wait(monitor);  }
 					
@@ -150,7 +152,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void DowngradeToReadPossibleWriteLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
 				state = State.ReadOnlyAndReadPossibleWrite;
@@ -168,7 +170,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void ReleaseReadOnlyLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
 				activeLocks--;
@@ -191,7 +193,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void ReleaseReadPossibleWriteLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
 				activeLocks--;
@@ -219,7 +221,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void ReleaseReadWriteLock (bool priority)
 			{
 			Monitor.Enter(monitor);
-			
+
 			try
 				{
 				activeLocks = 0;
