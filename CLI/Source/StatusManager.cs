@@ -71,19 +71,13 @@ namespace GregValure.NaturalDocs.CLI
 			if (updateInterval > 0 || hideIfShorterThan > 0)
 				{
 				timer = new System.Timers.Timer();
-				timer.Enabled = false;
 				timer.Elapsed += new System.Timers.ElapsedEventHandler(Update);
+				timer.AutoReset = false;
 
 				if (hideIfShorterThan > 0)
-					{
-					timer.AutoReset = false;
-					timer.Interval = hideIfShorterThan;
-					}
+					{  timer.Interval = hideIfShorterThan;  }
 				else // updateInterval > 0
-					{
-					timer.AutoReset = true;
-					timer.Interval = updateInterval;
-					}
+					{  timer.Interval = updateInterval;  }
 				}
 			else
 				{  timer = null;  }
@@ -116,15 +110,14 @@ namespace GregValure.NaturalDocs.CLI
 
 				if (updateInterval > 0)
 					{
-					timer.AutoReset = true;
 					timer.Interval = updateInterval;
-
 					timer.Start();
 					}
 				}
 			else
 				{
 				ShowUpdateMessage();
+				timer.Start();
 				}
 			}
 			
