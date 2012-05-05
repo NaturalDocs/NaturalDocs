@@ -90,6 +90,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			contextReferenceCache = new ContextReferenceCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
+			reparsingEverything = false;
 			}
 			
 			
@@ -181,6 +182,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{  System.IO.File.Delete(databaseFile);  }
 					
 				Engine.Instance.Config.ReparseEverything = true;
+				reparsingEverything = true;
 					
 				connection.Open(databaseFile, true);
 				CreateDatabase();
@@ -915,11 +917,30 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			while (!cancelled())
 				{
+				// We'll piggyback on the accessor's database lock to access the state variables.
 				accessor.GetReadPossibleWriteLock();
 
 				try
 					{
-					// We'll piggyback on the accessor's database lock to access these variables.
+					if (reparsingEverything)
+						{
+						accessor.UpgradeToReadWriteLock();
+
+						// If we're reparsing everything, that means all links will be readded to the database as new and all of them
+						// will be handled by linksToResolve.  We don't have to worry about new topics changing the definition of 
+						// unchanged links so we can clear this out to lessen the workload.
+						newTopicsByEndingSymbol.Clear();
+
+						// We change this back to false afterwards so that any changes that occur after we started resolving will be 
+						// treated differentially.  Once something is taken off linksToResolve we can no longer guarantee that new
+						// topics won't affect anything.
+						reparsingEverything = false;
+
+						// DEPENDENCY: ResolvingUnitsOfWorkRemaining() depends on this behavior.
+
+						// Leave the lock as read/write.
+						}
+
 					if (!linksToResolve.IsEmpty)
 						{
 						accessor.UpgradeToReadWriteLock();
@@ -1097,7 +1118,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			try
 				{
 				units += linksToResolve.Count;
-				units += newTopicsByEndingSymbol.Count;
+
+				// Only add newTopicsByEndingSymbol if we're building differentially.  This will be cleared by WorkOnResolvingLinks()
+				// if not.  We don't clear it here to avoid needing anything more than a read only lock.
+				if (!reparsingEverything)
+					{  units += newTopicsByEndingSymbol.Count;  }
+
+				// DEPENDENCY: This depends on WorkOnResolvingLinks() clearing the variable when reparsingEverything is set.
 				}
 			finally
 				{  databaseLock.ReleaseReadOnlyLock(false);  }
@@ -1269,6 +1296,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * rather than null.
 		 */
 		protected List<IChangeWatcher> changeWatchers;
+
+		/* var: reparsingEverything
+		 * If this flag is set we are reparsing the entire codebase.  Knowing this makes resolving easier.  However, we use this
+		 * flag instead of checking <Config.Manager.ReparseEverything> because that is only valid on startup.  Once we start
+		 * resolving this flag gets set back to false so that future changes are recorded differentially.
+		 */
+		protected bool reparsingEverything;
 		
 		}
 	}
