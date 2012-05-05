@@ -22,7 +22,7 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public ResolvingLinks () : base (Application.StatusInterval, Application.DelayedMessageThreshold)
+		public ResolvingLinks () : base (Application.StatusInterval)
 			{
 			lastPercentage = 0;
 			totalUnitsOfWork = 0;
