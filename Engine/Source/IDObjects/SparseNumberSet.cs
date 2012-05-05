@@ -128,7 +128,8 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		IEnumerator<int> IEnumerable<int>.GetEnumerator ()
 			{
-			return (IEnumerator<int>)ids.GetEnumerator();
+			foreach (int id in ids)
+				{  yield return id;  }
 			}
 
 
