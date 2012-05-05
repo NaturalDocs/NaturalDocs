@@ -218,7 +218,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void Dispose ()
 			{
-			if (connection != null)
+			if (connection != null && connection.IsOpen)
 				{
 				if (databaseLock.IsLocked)
 					{  throw new Exception("Attempted to dispose of database when there were still locks held.");  }
@@ -1269,6 +1269,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * rather than null.
 		 */
 		protected List<IChangeWatcher> changeWatchers;
-			
+		
 		}
 	}
