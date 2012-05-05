@@ -124,24 +124,18 @@ namespace GregValure.NaturalDocs.CLI
 							
 						
 						// Rebuild notice
+
+						string alternateStartMessage = null;
 						
 						if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
-							{  
-							System.Console.WriteLine(
-								Engine.Locale.Get("NaturalDocs.CLI", "Status.RebuildEverythingByRequest")
-								);
-							}
+							{  alternateStartMessage = "Status.RebuildEverythingByRequest";  }
 						else if (Engine.Instance.Config.ReparseEverything && Engine.Instance.Config.RebuildAllOutput)
-							{
-							System.Console.WriteLine(
-								Engine.Locale.Get("NaturalDocs.CLI", "Status.RebuildEverythingAutomatically")
-								);
-							}
+							{  alternateStartMessage = "Status.RebuildEverythingAutomatically";  }
 							
 							
 						// Parsing
 						
-						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing() )
+						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
 							{
 							statusManager.Start();
 

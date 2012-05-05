@@ -22,11 +22,12 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public Parsing () : base (Application.StatusInterval)
+		public Parsing (string alternateStartMessage) : base (Application.StatusInterval)
 			{
 			status = new Engine.Files.ProcessChangesStatus();
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
+			this.alternateStartMessage = alternateStartMessage;
 			}
 
 		protected override void ShowStartMessage ()
@@ -34,7 +35,13 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 			NaturalDocs.Engine.Instance.Files.GetProcessChangesStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
 			
-			if (status.ChangedFilesRemaining == 0)
+			if (alternateStartMessage != null)
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", alternateStartMessage)
+					);
+				}
+			else if (status.ChangedFilesRemaining == 0)
 				{			
 				if (status.DeletedFilesRemaining == 0)
 					{
@@ -83,16 +90,6 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				lastPercentage = newPercentage;
 				}
 			}
-
-		protected override void ShowEndMessage ()
-			{
-			if (totalFilesToProcess > 0)
-				{
-				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.EndFileParsing")
-					);
-				}
-			}
 			
 			
 		// Group: Variables
@@ -101,6 +98,7 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 		protected Engine.Files.ProcessChangesStatus status;
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
+		protected string alternateStartMessage;
 		
 		}
 	}

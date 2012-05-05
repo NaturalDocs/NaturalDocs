@@ -44,14 +44,6 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				{  System.Console.WriteLine(message);  }
 			}
 
-		protected override void ShowEndMessage ()
-			{
-			string message = Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.LongStartupOperation.End" + operationName, null);
-
-			if (message != null)
-				{  System.Console.WriteLine(message);  }
-			}
-		
 		
 		// Group: Variables
 		// __________________________________________________________________________

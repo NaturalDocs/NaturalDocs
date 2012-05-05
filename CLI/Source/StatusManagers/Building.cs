@@ -60,13 +60,6 @@ namespace GregValure.NaturalDocs.CLI.StatusManagers
 				}
 			}
 
-		protected override void ShowEndMessage ()
-			{
-			System.Console.WriteLine(
-				Engine.Locale.Get("NaturalDocs.CLI", "Status.EndOutputBuilding")
-				);
-			}
-		
 
 		// Group: Variables
 		// __________________________________________________________________________
