@@ -42,6 +42,9 @@ Status.StartFileParsing(deleted): {0:#,0} {0s?files were:file was} deleted.  Upd
 Status.FileParsingUpdate(percent): ...{0}% complete
 Status.EndFileParsing: Finished updating.
 Status.NoChanges: No changes detected.
+Status.StartLinkResolving: Resolving links...
+Status.LinkResolvingUpdate(percent): ...{0}% complete
+Status.EndLinkResolving: Finished resolving.
 Status.StartOutputBuilding: Building documentation...
 Status.OutputBuildingUpdate(percent): ...{0}% complete
 Status.EndOutputBuilding: Finished building.

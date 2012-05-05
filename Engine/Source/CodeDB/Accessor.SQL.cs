@@ -87,6 +87,162 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Function: GetTopicsByID
+		 * 
+		 * Retrieves all the <Topics> present in a list of topic IDs.  If there are none it will return an empty list.  Pass a <CancelDelegate> if 
+		 * you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<Topic> topics = new List<Topic>();
+			
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
+																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																								"LanguageID, PContexts.ContextString, PrototypeContextID, " +
+																								"BContexts.ContextString, BodyContextID, FileID " +
+																							"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
+																							"WHERE " +
+																								"PContexts.ContextID = PrototypeContextID AND " +
+																								"BContexts.ContextID = BodyContextID AND (");
+			List<object> queryParameters = new List<object>();
+
+			bool isFirst = true;
+			foreach (int topicID in topicIDs)
+				{
+				if (!isFirst)
+					{  queryText.Append("OR ");  }
+				else
+					{  isFirst = false;  }
+
+				queryText.Append("TopicID=? ");
+				queryParameters.Add(topicID);
+				}
+
+			queryText.Append(')');
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Topic topic = new Topic();
+					
+					topic.TopicID = query.IntColumn(0);
+					topic.Title = query.StringColumn(1);
+					topic.Body = query.StringColumn(2);
+					topic.Summary = query.StringColumn(3);
+					topic.Prototype = query.StringColumn(4);
+					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
+					topic.SymbolDefinitionNumber = query.IntColumn(6);
+
+					topic.TopicTypeID = query.IntColumn(7);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
+					topic.TagString = query.StringColumn(9);
+
+					topic.CommentLineNumber = query.IntColumn(10);
+					topic.CodeLineNumber = query.IntColumn(11);
+
+					topic.LanguageID = query.IntColumn(12);
+					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
+					topic.PrototypeContextID = query.IntColumn(14);
+					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
+					topic.BodyContextID = query.IntColumn(16);
+					topic.FileID = query.IntColumn(17);
+
+					topics.Add(topic);
+
+					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
+					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+					}
+				}
+			
+			return topics;
+			}
+			
+			
+		/* Function: GetTopicsByEndingSymbol
+		 * 
+		 * Retrieves a list of all the topics which use one of the passed <EndingSymbols>.  If there are none it will return an empty
+		 * list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<Topic> topics = new List<Topic>();
+			
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
+																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																								"LanguageID, PContexts.ContextString, PrototypeContextID, " +
+																								"BContexts.ContextString, BodyContextID, FileID " +
+																							"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
+																							"WHERE " +
+																								"PContexts.ContextID = PrototypeContextID AND " +
+																								"BContexts.ContextID = BodyContextID AND (");
+			List<object> queryParameters = new List<object>();
+
+			bool isFirst = true;
+			foreach (EndingSymbol endingSymbol in endingSymbols)
+				{
+				if (!isFirst)
+					{  queryText.Append("OR ");  }
+				else
+					{  isFirst = false;  }
+
+				queryText.Append("EndingSymbol=? ");
+				queryParameters.Add(endingSymbol.ToString());
+				}
+
+			queryText.Append(')');
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Topic topic = new Topic();
+					
+					topic.TopicID = query.IntColumn(0);
+					topic.Title = query.StringColumn(1);
+					topic.Body = query.StringColumn(2);
+					topic.Summary = query.StringColumn(3);
+					topic.Prototype = query.StringColumn(4);
+					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
+					topic.SymbolDefinitionNumber = query.IntColumn(6);
+
+					topic.TopicTypeID = query.IntColumn(7);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
+					topic.TagString = query.StringColumn(9);
+
+					topic.CommentLineNumber = query.IntColumn(10);
+					topic.CodeLineNumber = query.IntColumn(11);
+
+					topic.LanguageID = query.IntColumn(12);
+					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
+					topic.PrototypeContextID = query.IntColumn(14);
+					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
+					topic.BodyContextID = query.IntColumn(16);
+					topic.FileID = query.IntColumn(17);
+
+					topics.Add(topic);
+
+					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
+					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+					}
+				}
+			
+			return topics;
+			}
+			
+			
 		/* Function: AddTopic
 		 * 
 		 * Adds a <Topic> to the database.  Assumes it doesn't exist; if it does, you need to use <UpdateTopic()> or call <DeleteTopic()> 
@@ -594,6 +750,49 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
+		/* Function: GetLinkByID
+		 * 
+		 * Retrieves a link by its ID.  Assumes the link already exists.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public Link GetLinkByID (int linkID)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			Link link = new Link();
+			
+			using (SQLite.Query query = connection.Query("SELECT FileID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
+																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
+																								"FROM Links, Contexts " +
+																								"WHERE Links.LinkID = ? AND " +
+																									"Contexts.ContextID = Links.ContextID ",
+																								linkID))
+				{
+				if (query.Step())
+					{
+					link.FileID = query.IntColumn(0);
+					link.Type = (LinkType)query.IntColumn(1);
+					link.TextOrSymbol = query.StringColumn(2);
+					link.ContextID = query.IntColumn(3);
+					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
+					link.LanguageID = query.IntColumn(5);
+					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
+					link.TargetTopicID = query.IntColumn(7);
+					link.TargetScore = query.LongColumn(8);
+
+					link.LinkID = linkID;
+
+					contextIDCache.Add(link.ContextID, link.Context);
+					}
+				}
+			
+			return link;
+			}
+
+
 		/* Function: GetLinksInFile
 		 * 
 		 * Retrieves a list of all the links present in the passed file ID.  If there are none it will return an empty list.  Pass a 
@@ -638,6 +837,111 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					}
 				}
 			
+			return links;
+			}
+
+
+		/* Function: GetLinksByEndingSymbol
+		 * 
+		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches 
+		 * <CodeDB.AlternateLinkEndingSymbols> so the actual <Link> object may not have the passed <EndingSymbol> as a property.
+		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or 
+		 * <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetLinksByEndingSymbol (EndingSymbol endingSymbol, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<Link> links = new List<Link>();
+			
+			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
+																									"LanguageID, FileID, TargetTopicID, TargetScore " +
+																								"FROM Links, Contexts " +
+																								"WHERE Links.EndingSymbol = ? AND " +
+																									"Contexts.ContextID = Links.ContextID ",
+																								endingSymbol.ToString()))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Link link = new Link();
+					
+					link.LinkID = query.IntColumn(0);
+					link.Type = (LinkType)query.IntColumn(1);
+					link.TextOrSymbol = query.StringColumn(2);
+					link.ContextID = query.IntColumn(3);
+					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
+					link.LanguageID = query.IntColumn(5);
+					link.FileID = query.IntColumn(6);
+					link.TargetTopicID = query.IntColumn(7);
+					link.TargetScore = query.LongColumn(8);
+
+					link.EndingSymbol = endingSymbol;
+
+					links.Add(link);
+
+					contextIDCache.Add(link.ContextID, link.Context);
+					}
+				}
+
+			IDObjects.SparseNumberSet alternateLinkIDs = new IDObjects.SparseNumberSet();
+			
+			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternateLinkEndingSymbols " +
+																								"WHERE EndingSymbol = ?", endingSymbol.ToString()))
+				{
+				while (query.Step() && !cancelled())
+					{  alternateLinkIDs.Add( query.IntColumn(0) );  }
+				}
+
+			if (!alternateLinkIDs.IsEmpty)
+				{
+				StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
+																									"LanguageID, FileID, EndingSymbol, TargetTopicID, TargetScore " +
+																								"FROM Links, Contexts " +
+																								"WHERE Contexts.ContextID = Links.ContextID AND (");
+				List<object> queryParameters = new List<object>();
+
+				bool isFirst = true;
+				foreach (int alternateLinkID in alternateLinkIDs)
+					{
+					if (!isFirst)
+						{  queryText.Append("OR ");  }
+					else
+						{  isFirst = false;  }
+
+					queryText.Append("LinkID=? ");
+					queryParameters.Add(alternateLinkID);
+					}
+
+				queryText.Append(')');
+
+				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
+					{
+					while (query.Step() && !cancelled())
+						{
+						Link link = new Link();
+					
+						link.LinkID = query.IntColumn(0);
+						link.Type = (LinkType)query.IntColumn(1);
+						link.TextOrSymbol = query.StringColumn(2);
+						link.ContextID = query.IntColumn(3);
+						link.Context = ContextString.FromExportedString( query.StringColumn(4) );
+						link.LanguageID = query.IntColumn(5);
+						link.FileID = query.IntColumn(6);
+						link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(7) );
+						link.TargetTopicID = query.IntColumn(8);
+						link.TargetScore = query.LongColumn(9);
+
+						links.Add(link);
+
+						contextIDCache.Add(link.ContextID, link.Context);
+						}
+					}
+				}
+
 			return links;
 			}
 
@@ -936,6 +1240,56 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				CommitTransaction();
 				}
+			}
+
+
+		/* Function: GetAlternateLinkEndingSymbols
+		 * 
+		 * Retrieves the list of alternate <EndingSymbols> for a link ID.  It will not include the <EndingSymbol> stored in the <Link>
+		 * itself.  If there are no alternate symbols it will return null.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<EndingSymbol> GetAlternateLinkEndingSymbols (int linkID)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+
+			List<EndingSymbol> endingSymbols = null;
+
+			using (SQLite.Query query = connection.Query("SELECT EndingSymbol " +
+																								"FROM AlternateLinkEndingSymbols " +
+																								"WHERE LinkID = ?", 
+																								linkID))
+				{
+				while (query.Step())
+					{
+					if (endingSymbols == null)
+						{  endingSymbols = new List<EndingSymbol>();  }
+
+					endingSymbols.Add( EndingSymbol.FromExportedString(query.StringColumn(0)) );
+					}
+				}
+
+			return endingSymbols;
+			}
+
+
+		/* Function: UpdateLinkTarget
+		 * 
+		 * Updates the score and interpretation of a link in the database.  Assumes both IDs already exist.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 */
+		public void UpdateLinkTarget (Link link)
+			{
+			RequireAtLeast(LockType.ReadWrite);
+
+			connection.Execute("UPDATE Links SET TargetTopicID=?, TargetScore=? " +
+												  "WHERE LinkID = ?", link.TargetTopicID, link.TargetScore, link.LinkID);
 			}
 
 

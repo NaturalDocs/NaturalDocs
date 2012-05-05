@@ -274,6 +274,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		// Group: Link Functions
+		// __________________________________________________________________________
+
+
 		/* Function: ScoreLink
 		 * 
 		 * Generates a numeric score representing how well the <Topic> serves as a match for the <Link>.  Higher scores are
@@ -283,10 +287,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return 
 		 * -1.
 		 * 
-		 * If scoring a Natural Docs link you must pass a list of alternate interpretations if there are any.  The list doesn't need to
-		 * include the literal form.
+		 * If scoring a Natural Docs link you must pass a list of interpretations.  It must include the literal form.
 		 */
-		public long ScoreLink (Link link, Topic topic, long minimumScore = 0, List<LinkInterpretation> alternateInterpretations = null)
+		public long ScoreLink (Link link, Topic topic, long minimumScore = 0, List<LinkInterpretation> interpretations = null)
 			{
 			// DEPENDENCY: These functions depend on the score's internal format:
 			//    - CodeDB.Manager.ScoreInterpretation()
@@ -360,51 +363,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// S - How high on the scope list the symbol match is.
 			// I - How high on the interpretation list (named/plural/possessive) the match is.
 
-			long bestInterpretationScore;
-			int bestInterpretationIndex;
+			long bestInterpretationScore = 0;
+			int bestInterpretationIndex = 0;
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
-				// Test the literal interpretation since we always want it to be index zero.
-
-				string parentheses;
-				bestInterpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText(link.Text, out parentheses));
-				bestInterpretationIndex = 0;
-
-				// Add E if there was a match.
-				if (bestInterpretationScore != 0)
-					{  bestInterpretationScore |= 0x1000000000000000;  }
-
-
-				// Test the alternates, filtering out the literal in case it is there too.
-
-				if (alternateInterpretations != null)
+				for (int i = 0; i < interpretations.Count; i++)
 					{
-					long interpretationScore;
-					int interpretationIndex = 1;
+					long interpretationScore = ScoreInterpretation(topic, link, 
+																											  SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretations[i].Target));
 
-					foreach (LinkInterpretation interpretation in alternateInterpretations)
+					if (interpretationScore != 0)
 						{
-						if (!interpretation.IsLiteral)
-							{
-							interpretationScore = ScoreInterpretation(topic, link, 
-																										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretation.Target));
+						// Add E if there were no plurals or possessives.  Named links are okay.
+						if (interpretations[i].PluralConversion == false && interpretations[i].PossessiveConversion == false)
+							{  interpretationScore |= 0x1000000000000000;  }
 
-							if (interpretationScore != 0)
-								{
-								// Add E if there were no plurals or possessives.  Named links are okay.
-								if (interpretation.PluralConversion == false && interpretation.PossessiveConversion == false)
-									{  interpretationScore |= 0x1000000000000000;  }
-
-								if (interpretationScore > bestInterpretationScore)
-									{  
-									bestInterpretationScore = interpretationScore;  
-									bestInterpretationIndex = interpretationIndex;
-									}
-								}
-
-							// We don't increment this for the literals we skip.
-							interpretationIndex++;
+						if (interpretationScore > bestInterpretationScore)
+							{  
+							bestInterpretationScore = interpretationScore;
+							bestInterpretationIndex = i;
 							}
 						}
 					}
@@ -918,6 +896,213 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				return 0;
 				}
+			}
+
+
+		/* Function: WorkOnResolvingLinks
+		 * 
+		 * Works on the task of resolving links due to topics changing or new links being added.  This is a parallelizable 
+		 * task so multiple threads can call this function and the work will be divided up between them.
+		 * 
+		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working 
+		 * on this then the task is complete, but if there are multiple threads the task isn't complete until they all have 
+		 * returned.  This one may have returned because there was no more work for this thread to do, but other threads 
+		 * are still working.
+		 */
+		public void WorkOnResolvingLinks (CancelDelegate cancelled)
+			{
+			Accessor accessor = GetAccessor();
+
+			while (!cancelled())
+				{
+				accessor.GetReadPossibleWriteLock();
+
+				try
+					{
+					// We'll piggyback on the accessor's database lock to access these variables.
+					if (!linksToResolve.IsEmpty)
+						{
+						accessor.UpgradeToReadWriteLock();
+
+						int linkID = linksToResolve.Highest;
+						linksToResolve.Remove(linkID);
+
+						accessor.DowngradeToReadPossibleWriteLock();
+
+						ResolveLink(linkID, accessor);
+						}
+
+					else if (newTopicsByEndingSymbol.Count > 0)
+						{
+						accessor.UpgradeToReadWriteLock();
+
+						var enumerator = newTopicsByEndingSymbol.GetEnumerator();
+						enumerator.MoveNext();  // It's not positioned on the first element by default.
+
+						EndingSymbol endingSymbol = enumerator.Current.Key;
+						IDObjects.SparseNumberSet topicIDs = enumerator.Current.Value;
+
+						newTopicsByEndingSymbol.Remove(endingSymbol);
+
+						accessor.DowngradeToReadPossibleWriteLock();
+
+						ResolveNewTopics(topicIDs, endingSymbol, accessor);
+						}
+
+					else
+						{  break;  }
+					}
+
+				finally
+					{  accessor.ReleaseLock();  }
+				}
+			}
+
+
+		/* Function: ResolveLink
+		 * 
+		 * Calculates a new target for the passed link ID.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If the link target changes it will be upgraded automatically.
+		 *		
+		 */
+		protected void ResolveLink (int linkID, Accessor accessor)
+			{
+			Link link = accessor.GetLinkByID(linkID);
+			List<EndingSymbol> endingSymbols = accessor.GetAlternateLinkEndingSymbols(linkID);
+
+			if (endingSymbols == null)
+				{  endingSymbols = new List<EndingSymbol>();  }
+
+			endingSymbols.Add(link.EndingSymbol);
+
+			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel);
+
+			List<LinkInterpretation> alternateInterpretations = null;
+
+			if (link.Type == LinkType.NaturalDocs)
+				{
+				string ignore;
+				alternateInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
+																												out ignore);
+
+				}
+	
+			int bestMatchID = 0;
+			long bestMatchScore = 0;
+
+			foreach (Topic topic in topics)
+				{
+				long score = ScoreLink(link, topic, bestMatchScore, alternateInterpretations);
+
+				if (score > bestMatchScore)
+					{
+					bestMatchID = topic.TopicID;
+					bestMatchScore = score;
+					}
+				}
+
+			if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
+				{
+				link.TargetTopicID = bestMatchID;
+				link.TargetScore = bestMatchScore;
+
+				accessor.UpdateLinkTarget(link);
+				}
+			}
+
+
+		/* Function: ResolveNewTopics
+		 * 
+		 * Goes through the IDs of newly created <Topics> and sees if they serve as better targets for any existing
+		 * links.
+		 * 
+		 * Parameters:
+		 * 
+		 *		topicIDs - The set of IDs to check.  Every <Topic> represented here must have the same <EndingSymbol>.
+		 *		endingSymbol - The <EndingSymbol> shared by all of the topic IDs.
+		 *		accessor - The <Accessor> used for the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If the link changes it will be upgraded automatically.
+		 *		
+		 */
+		protected void ResolveNewTopics (IDObjects.SparseNumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
+			{
+			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel);
+			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel);
+
+			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 
+			// because we can generate alternate interpretations only once per link.
+
+			foreach (Link link in links)
+				{
+				List<LinkInterpretation> alternateInterpretations = null;
+
+				if (link.Type == LinkType.NaturalDocs)
+					{
+					string ignore;
+					alternateInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
+																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
+																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
+																													out ignore);
+
+					}
+	
+				int bestMatchID = link.TargetTopicID;
+				long bestMatchScore = link.TargetScore;
+
+				foreach (Topic topic in topics)
+					{
+					// No use rescoring the existing target.
+					if (topic.TopicID != link.TargetTopicID)
+						{
+						long score = ScoreLink(link, topic, bestMatchScore, alternateInterpretations);
+
+						if (score > bestMatchScore)
+							{
+							bestMatchID = topic.TopicID;
+							bestMatchScore = score;
+							}
+						}
+					}
+
+				if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
+					{
+					link.TargetTopicID = bestMatchID;
+					link.TargetScore = bestMatchScore;
+
+					accessor.UpdateLinkTarget(link);
+					}
+				}
+			}
+
+
+		/* Function: ResolvingUnitsOfWorkRemaining
+		 * Returns a number representing how much work is left to be done by <WorkOnResolvingLinks()>.  What tasks the 
+		 * units represent can vary, so this is intended simply to allow a percentage to be calculated.
+		 */
+		public long ResolvingUnitsOfWorkRemaining ()
+			{
+			long units = 0;
+			databaseLock.GetReadOnlyLock(false);
+
+			try
+				{
+				units += linksToResolve.Count;
+				units += newTopicsByEndingSymbol.Count;
+				}
+			finally
+				{  databaseLock.ReleaseReadOnlyLock(false);  }
+
+			return units;
 			}
 
 

@@ -396,8 +396,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							string ignore;
 							interpretations = Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol, 
 																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks | 
-																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives | 
-																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.ExcludeLiteral,
+																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																								out ignore);
 							}
 

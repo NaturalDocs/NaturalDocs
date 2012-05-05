@@ -69,6 +69,7 @@
     <Compile Include="Source\StatusManagers\PossiblyLongStartupOperation.cs" />
     <Compile Include="Source\StatusManagers\FileSearch.cs" />
     <Compile Include="Source\StatusManagers\Parsing.cs" />
+    <Compile Include="Source\StatusManagers\ResolvingLinks.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Architecture\Compilation Symbols.txt" />

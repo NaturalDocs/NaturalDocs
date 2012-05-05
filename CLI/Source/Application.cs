@@ -151,6 +151,18 @@ namespace GregValure.NaturalDocs.CLI
 							}
 							
 							
+						// Resolving
+						
+						using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
+							{
+							statusManager.Start();
+
+							Multithread("Resolver", Engine.Instance.CodeDB.WorkOnResolvingLinks);
+							
+							statusManager.End();
+							}
+							
+							
 						// Building
 						
 						using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
