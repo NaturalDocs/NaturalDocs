@@ -185,7 +185,7 @@ var NDSummary = new function ()
 
 				entryHTML.id = "SEntry" + entry[`Entry_TopicID];
 				entryHTML.className = classString;
-				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(\"" + entry[`Entry_Symbol] + "\")");
+				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(" + entry[`Entry_TopicID] + ")");
 				entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
 				entryHTML.onmouseover = mouseOverHandler;
 				entryHTML.onmouseout = mouseOutHandler;
@@ -213,7 +213,7 @@ var NDSummary = new function ()
 	
 	/* Function: GoToAnchor
 	*/
-	this.GoToAnchor = function (anchor)
+	this.GoToAnchor = function (topicID)
 		{
 		// First kill the tool tip.  If it was open and they clicked the entry, obviously they want the whole topic
 		// and the tool tip is just in the way now.
@@ -221,10 +221,8 @@ var NDSummary = new function ()
 
 		var frame = document.getElementById("CFrame");
 
-		anchor = anchor.EntityDecode();
-
 		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
-		frame.contentWindow.location = NDFramePage.contentPath + "#" + anchor;
+		frame.contentWindow.location = NDFramePage.contentPath + "#Topic" + topicID;
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		frame.contentWindow.focus();

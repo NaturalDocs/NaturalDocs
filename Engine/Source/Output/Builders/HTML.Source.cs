@@ -99,9 +99,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					StringBuilder html = new StringBuilder("\r\n\r\n");
 					HTMLTopic topicBuilder = new HTMLTopic(this);
 
-					// Must use a case-insensitive StringSet because IE 6-9 doesn't treat anchors that only differ in case as different.
-					StringSet usedAnchors = new StringSet(true, false);
-						
 					for (int i = 0; i < topics.Count; i++)
 						{  
 						string extraClass = null;
@@ -111,7 +108,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						else if (i == topics.Count - 1)
 							{  extraClass = "last";  }
 
-						topicBuilder.Build(topics[i], links, linkTargets, html, extraClass, usedAnchors);  
+						topicBuilder.Build(topics[i], links, linkTargets, html, extraClass);  
 						html.Append("\r\n\r\n");
 						}
 							
@@ -600,10 +597,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Source_Anchor
-		 * Returns an anchor built from the passed <Topic>.  If you supply a usedAnchors set, it will avoid duplicating anything
-		 * found in it.  The return value will be added to it automatically.
+		 * Returns an anchor built from the passed <Topic>.
 		 */
-		public static string Source_Anchor (Topic topic, bool includeClass = true, Collections.StringSet usedAnchors = null)
+		public static string Source_Anchor (Topic topic, bool includeClass = true)
 			{
 			StringBuilder anchor;
 
@@ -690,30 +686,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Entity encode so we don't have to worry about quotes and such appearing in the anchor and ruining its use
 			// in tags.
-			string anchorString = anchor.ToString().EntityEncode();
-
-			// Avoid duplicates
-			if (usedAnchors != null)
-				{
-				if (usedAnchors.Contains(anchorString))
-					{
- 					int number = 2;
-					string extendedAnchorString;
-
-					do
-						{  
-						extendedAnchorString = anchorString + '(' + number + ')';
-						number++;
-						}
-					while (usedAnchors.Contains(extendedAnchorString));
-
-					anchorString = extendedAnchorString;
-					}
-
-				usedAnchors.Add(anchorString);
-				}
-
-			return anchorString;
+			return anchor.ToString().EntityEncode();
 			}
 
 

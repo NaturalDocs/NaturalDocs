@@ -48,8 +48,7 @@
  *				languageIndex - The topic's language as an index into the languages array.
  *				topicTypeIndex - The topic type as an index into the topic types array.
  *				nameHTML - The name of the topic in HTML.
- *				symbol - The topic's symbol in the hash path, which will also be its anchor on the content page.  This
- *								 may be undefined if it's an auto-generated grouping.
+ *				symbol - The topic's symbol in the hash path.
  *				
  * 
  * File: SummaryToolTips.js
@@ -318,8 +317,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("   ");
 			#endif
 
-			// Must use a case-insensitive StringSet because IE 6-9 doesn't treat anchors that only differ in case as different.
-			StringSet usedAnchors = new StringSet(true, false);
 			output.Append('[');
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
@@ -353,7 +350,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append(",\"");
 				output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );
 				output.Append("\",\"");
-				output.StringEscapeAndAppend( Builders.HTML.Source_Anchor(topic, true, usedAnchors) );
+				output.StringEscapeAndAppend( Builders.HTML.Source_Anchor(topic, true) );
 				output.Append("\"]");
 
 				if (topicIndex < topics.Count - 1)

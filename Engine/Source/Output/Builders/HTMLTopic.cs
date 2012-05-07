@@ -76,11 +76,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 *		linkTargets - A list of <Topics> that must contain any topics used as targets in the links.
 		 *		output - The StringBuilder that the output will be appended to.
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
-		 *		usedAnchors - A <StringSet> to make sure there's no duplicate anchors generated when building a series of 
-		 *								  <Topics>.  New anchors will not match anything in this set and will be added to it automatically.
 		 */
 		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output, 
-										 string extraClass = null, StringSet usedAnchors = null)
+										 string extraClass = null)
 			{
 
 			// Setup
@@ -98,7 +96,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			html.Append(
-				"<a name=\"" + Builders.HTML.Source_Anchor(topic, true, usedAnchors) + "\"></a>" +
+				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
@@ -656,7 +654,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				if (targetTopic.FileID == topic.FileID)
 					{
-					html.Append("<a href=\"#" + Builders.HTML.Source_Anchor(targetTopic) + "\">");
+					html.Append("<a href=\"#Topic" + targetTopic.TopicID + "\">");
 					}
 				else
 					{
