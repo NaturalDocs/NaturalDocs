@@ -126,6 +126,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			queryText.Append(')');
 
+			if (queryParameters.Count == 0)
+				{  return topics;  }
+
 			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
 				{
 				while (query.Step() && !cancelled())
