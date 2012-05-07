@@ -746,7 +746,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* Function: GetInterpretationIndex
 		 * Retrieves the interpretation index from a link score.
 		 */
-		public int GetInterpretationIndex (long linkScore)
+		static public int GetInterpretationIndex (long linkScore)
 			{
 			// -------- -------- -------- -------- ---IIIII I------- -------- --------
 			linkScore &= 0x000000001F800000;
