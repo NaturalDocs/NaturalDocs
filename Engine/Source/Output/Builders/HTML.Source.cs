@@ -15,6 +15,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
+using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.TopicTypes;
@@ -43,7 +44,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				
 				if (cancelDelegate())
 					{  return;  }
+				
 					
+				// Delete the file if there are no topics.
+
 				if (topics.Count == 0)
 					{
 					accessor.ReleaseLock();
@@ -60,8 +64,38 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
-				else // (topics.Count != 0)
+				
+				// Build the file if it has topics
+				
+				else
 					{
+
+					// Get links and their targets
+
+					IList<Link> links = accessor.GetLinksInFile(fileID, cancelDelegate);
+
+					if (cancelDelegate())
+						{  return;  }
+
+					IDObjects.SparseNumberSet linkTargetIDs = new IDObjects.SparseNumberSet();
+
+					foreach (Link link in links)
+						{
+						if (link.TargetTopicID != 0)
+							{  linkTargetIDs.Add(link.TargetTopicID);  }
+						}
+
+					IList<Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate);
+
+					if (cancelDelegate())
+						{  return;  }
+
+					accessor.ReleaseLock();
+					haveDBLock = false;
+
+
+					// Build the HTML for the list of topics
+
 					StringBuilder html = new StringBuilder("\r\n\r\n");
 					HTMLTopic topicBuilder = new HTMLTopic(this);
 
@@ -77,12 +111,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						else if (i == topics.Count - 1)
 							{  extraClass = "last";  }
 
-						topicBuilder.Build(topics[i], html, extraClass, usedAnchors);  
+						topicBuilder.Build(topics[i], links, linkTargets, html, extraClass, usedAnchors);  
 						html.Append("\r\n\r\n");
 						}
 							
-					accessor.ReleaseLock();
-					haveDBLock = false;
+
+					// Build the full HTML files
 
 					Path outputPath = Source_OutputFile(fileID);
 

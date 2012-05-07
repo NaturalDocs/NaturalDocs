@@ -35,9 +35,11 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 
@@ -70,17 +72,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Parameters:
 		 * 
 		 *		topic - The <Topic> to build.
+		 *		links - A list of <Links> that must contain any links found in the <Topic>.
+		 *		linkTargets - A list of <Topics> that must contain any topics used as targets in the links.
 		 *		output - The StringBuilder that the output will be appended to.
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
 		 *		usedAnchors - A <StringSet> to make sure there's no duplicate anchors generated when building a series of 
 		 *								  <Topics>.  New anchors will not match anything in this set and will be added to it automatically.
 		 */
-		public void Build (Topic topic, StringBuilder output, string extraClass = null, StringSet usedAnchors = null)
+		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output, 
+										 string extraClass = null, StringSet usedAnchors = null)
 			{
 
 			// Setup
 
 			this.topic = topic;
+			this.links = links;
+			this.linkTargets = linkTargets;
 			this.html = output;
 			isToolTip = false;
 
@@ -147,7 +154,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.topic = topic;
 			this.html = new StringBuilder();
 			isToolTip = true;
-
+			this.links = new List<Link>(); //xxx
+			this.linkTargets = new List<Topic>(); //xxx
 
 			// Core
 
@@ -574,9 +582,91 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildNaturalDocsLink (NDMarkup.Iterator iterator)
 			{
-			// xxx
-			// remember to check istooltip
-			html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+			// Create a link object with the identifying properties needed to look it up in the list of links.
+
+			Link linkStub = new Link();
+			linkStub.Type = LinkType.NaturalDocs;
+			linkStub.Text = iterator.Property("originaltext");
+			linkStub.Context = topic.BodyContext;
+			linkStub.ContextID = topic.BodyContextID;
+			linkStub.FileID = topic.FileID;
+			linkStub.LanguageID = topic.LanguageID;
+
+
+			// Find the actual link so we can find it's target.
+
+			Link fullLink = null;
+
+			foreach (Link link in links)
+				{
+				if (link.SameIDPropertiesAs(linkStub))
+					{
+					fullLink = link;
+					break;
+					}
+				}
+
+			if (fullLink == null)
+				{  fullLink = linkStub;  } //xxx
+
+
+			// If it has a target, find its topic object.
+
+			Topic targetTopic = null;
+
+			if (fullLink.TargetTopicID != 0)
+				{
+				foreach (Topic linkTarget in linkTargets)
+					{
+					if (linkTarget.TopicID == fullLink.TargetTopicID)
+						{
+						targetTopic = linkTarget;
+						break;
+						}
+					}
+				}
+
+
+			// If it has a target, also find its interpretation.
+
+			LinkInterpretation linkInterpretation = null;
+
+			if (fullLink.TargetScore != 0)
+				{
+				string ignore;
+				List<LinkInterpretation> linkInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
+																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
+																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
+																					  out ignore);
+
+				linkInterpretation = linkInterpretations[ CodeDB.Manager.GetInterpretationIndex(fullLink.TargetScore) ];
+				}
+
+
+			if (targetTopic == null)
+				{
+				html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				}
+			else if (isToolTip)
+				{
+				html.EntityEncodeAndAppend(linkInterpretation.Text);
+				}
+			else
+				{
+				if (targetTopic.FileID == topic.FileID)
+					{
+					html.Append("<a href=\"#" + Builders.HTML.Source_Anchor(targetTopic) + "\">");
+					}
+				else
+					{
+					// xxx
+					html.Append("<a href=\"#xxx\">");
+					}
+
+				html.EntityEncodeAndAppend(linkInterpretation.Text);
+				html.Append("</a>");
+				}
 			}
 
 
@@ -611,6 +701,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * The <Topic> that contains the prototype we're building.
 		 */
 		protected Topic topic;
+
+		/* var: links
+		 * A list of <Links> that will contain any links needed by <topic>.
+		 */
+		protected IList<Link> links;
+
+		/* var: linkTargets
+		 * A list of <Topics> that will contain any topics used as targets in <links>.
+		 */
+		protected IList<Topic> linkTargets;
 
 		/* var: cachedHTMLPrototypeBuilder
 		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Since this
