@@ -255,71 +255,26 @@ var NDCore = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: SameHash
-		Returns whether the two passed hashes are functionally the same.  The difference between this 
-		and a straight string comparison is that "#", "", and undefined are equal.
+	/* Function: NormalizeHash
+
+		Returns a normalized version of the passed hash string.
+
+		- The leading hash symbol will be removed if present.
+		- URL encoded characters will be decoded.
+		- Undefined, empty strings, and empty hashes will all be converted to an empty string so they compare as equal.
+
 	*/
-	this.SameHash = function (hashA, hashB)
+	this.NormalizeHash = function (hashString)
 		{
-		if (hashA === hashB)
-			{  return true;  }
+		if (hashString == undefined)
+			{  return "";  }
 
-		if (hashA === "" || hashA === "#")
-			{  hashA = undefined;  }
-		if (hashB === "" || hashB === "#")
-			{  hashB = undefined;  }
+		// IE 6 and 7 don't support hashString[0], so use substr(0,1).
+		if (hashString.substr(0,1) == "#")
+			{  hashString = hashString.substr(1);  }
 
-		return (hashA === hashB);
-		};
-
-
-	/* Function: IsFileHashPath
-	*/
-	this.IsFileHashPath = function (hashPath)
-		{
-		return (hashPath.match(/^File[0-9]*:/) != null);
-		};
-
-	/* Function: FileHashPathToContentPath
-	*/
-	this.FileHashPathToContentPath = function (hashPath)
-		{
-		var prefix = hashPath.match(/^File([0-9]*):/);
-		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
-
-		var lastSeparator = path.lastIndexOf('/');
-		var filename = path.substr(lastSeparator + 1);
-		filename = filename.replace(/\./g, '-');
-		
-		return path.substr(0, lastSeparator + 1) + filename + ".html";
-		};
-
-	/* Function: FileHashPathToSummaryPath
-	*/
-	this.FileHashPathToSummaryPath = function (hashPath)
-		{
-		var prefix = hashPath.match(/^File([0-9]*):/);
-		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
-
-		var lastSeparator = path.lastIndexOf('/');
-		var filename = path.substr(lastSeparator + 1);
-		filename = filename.replace(/\./g, '-');
-		
-		return path.substr(0, lastSeparator + 1) + filename + "-Summary.js";
-		};
-
-	/* Function: FileHashPathToSummaryToolTipsPath
-	*/
-	this.FileHashPathToSummaryToolTipsPath = function (hashPath)
-		{
-		var prefix = hashPath.match(/^File([0-9]*):/);
-		var path = "files" + prefix[1] + "/" + hashPath.substr(prefix[0].length);
-
-		var lastSeparator = path.lastIndexOf('/');
-		var filename = path.substr(lastSeparator + 1);
-		filename = filename.replace(/\./g, '-');
-		
-		return path.substr(0, lastSeparator + 1) + filename + "-SummaryToolTips.js";
+		hashString = decodeURI(hashString);
+		return hashString;
 		};
 
 
@@ -528,4 +483,138 @@ String.prototype.EntityDecode = function ()
 	output = output.replace(/&amp;/g, "&");
 
 	return output;
+	};
+
+
+/*
+	Class: NDLocation
+	___________________________________________________________________________
+
+	A class encompassing all the information decoded from a Natural Docs hash path.
+
+*/
+function NDLocation (hashString)
+	{
+
+	// Group: Private Functions
+	// ________________________________________________________________________
+
+
+	/* Private Function: Constructor
+	 */
+	this.Constructor = function (hashString)
+		{
+		this.hashString = NDCore.NormalizeHash(hashString);
+
+		if (this.hashString.match(/^File[0-9]*:/) != null)
+			{
+			this.type = "File";
+
+			// The first colon after File:, which will always exist if we're a file hash path.
+			var pathSeparator = this.hashString.indexOf(':', 4);
+
+			// The first colon after the path, which may or may not exist.
+			var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
+
+			if (memberSeparator == -1)
+				{
+				this.path = this.hashString;
+				}
+			else
+				{
+				this.path = this.hashString.substr(0, memberSeparator);
+				this.member = this.hashString.substr(memberSeparator + 1);
+
+				if (this.member == "")
+					{  this.member = undefined;  }
+				}
+
+			this.AddFileURLs();
+			}
+		else
+			{
+			// All empty and invalid hashes show the home page.
+			this.type = "Home";
+			this.AddHomeURLs();
+			}
+		};
+
+
+	/* Private Function: AddHomeURLs
+		Adds the contentPage property to the location object.  The object's type must be "Home".
+	*/
+	this.AddHomeURLs = function ()
+		{
+		this.contentPage = "other/home.html";
+		};
+
+	
+	/* Private Function: AddFileURLs
+		Adds the contentPage, summaryFile, and summaryTTFile properties to the location object.  The object's type
+		must be "File".
+	*/
+	this.AddFileURLs = function ()
+		{
+		var pathPrefix = this.path.match(/^File([0-9]*):/);
+		var basePath = "files" + pathPrefix[1] + "/" + this.path.substr(pathPrefix[0].length);
+
+		var lastSeparator = basePath.lastIndexOf('/');
+		var filename = basePath.substr(lastSeparator + 1);
+		filename = filename.replace(/\./g, '-');
+		
+		basePath = basePath.substr(0, lastSeparator + 1) + filename;
+
+		this.contentPage = basePath + ".html";
+		this.summaryFile = basePath + "-Summary.js";
+		this.summaryTTFile = basePath + "-SummaryToolTips.js";
+
+		if (this.member != undefined)
+			{  this.contentPage += '#' + this.member;  }
+		};
+
+
+
+	// Group: Universal Variables
+	// These variables will always be present.
+	// ___________________________________________________________________________
+
+
+	/*
+		var: type
+		A string representing the type of location it is, such as "Home" or "File".  Code should be able to
+		handle unknown strings as the types may be expanded in the future.
+
+		var: hashString
+		The full normalized hash string.
+
+		var: contentPage
+		The URL to the content page.
+	*/
+
+
+
+	// Group: File Hash Variables
+	// These variables will be present if <type> is set to "File".
+	// ___________________________________________________________________________
+
+
+	/*
+		var: path
+		The path to the source file, such as "File:Folder/Folder/Source.cs".
+
+		var: member
+		The member of the file, such as "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member".
+		This will be undefined if one was not specified in the hash path.
+
+		var: summaryFile
+		The URL to the summary data file.
+
+		var: summaryTTFile
+		The URL to the summary tooltips data file.
+	*/
+
+
+	// Call the constructor now that all the members are prepared.
+	this.Constructor(hashString);
+
 	};

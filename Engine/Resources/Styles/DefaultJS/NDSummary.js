@@ -34,6 +34,7 @@
 		Other
 
 			`ToolTipDelay = 350
+			`LoadingNoticeDelay = 250
 
 */
 
@@ -55,14 +56,11 @@ var NDSummary = new function ()
 	*/
 	this.Start = function ()
 		{
-		this.UpdateSummary();
-
-		var ieVersion = NDCore.IEVersion();
-
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
 
+		var ieVersion = NDCore.IEVersion();
 		if (ieVersion != undefined && ieVersion == 6)
 			{  this.toolTipHolder.style.position = "absolute";  }
 
@@ -71,44 +69,78 @@ var NDSummary = new function ()
 		};
 
 
-	/* Function: GoToFileHashPath
-		Changes the current summary to the passed hash string, such as "File2:folder/folder/file.cs".
+	/* Function: OnLocationChange
+
+		Called by <NDFramePage> whenever the location hash changes.
+
+		Parameters:
+
+			oldLocation - The <NDLocation> we were previously at, or undefined if there is none because this is the
+							   first call after the page is loaded.
+			newLocation - The <NDLocation> we are navigating to.
 	*/
-	this.GoToFileHashPath = function (hashPath)
+	this.OnLocationChange = function (oldLocation, newLocation)
 		{
-		var head = document.getElementsByTagName("head")[0];
+		if (newLocation.type == "File")
+			{
+			// It's possible we've navigated to a different member of the same file, so check to see if we need to do anything.
+			if (oldLocation == undefined || oldLocation.type != "File" || oldLocation.path != newLocation.path)
+				{
+
+				// Reset the state
+
+				this.summaryLanguages = undefined;
+				this.summaryTopicTypes = undefined;
+				this.summaryEntries = undefined;
+				this.summaryToolTips = undefined;
 
 
-		// Remove the previous loaders if there are any.
+				// If this is the first build of the summary, build the empty one right away to put up the loading notice.
+				if (oldLocation == undefined)
+					{  this.Build();  }
 
-		var loader = document.getElementById("NDSummaryLoader");
+				// If there's already a summary up, wait a short delay before replacing it with a loading notice.  If the data comes 
+				// back fast enough this will allow us to transition directly from the old summary to the new one without causing a
+				// visible flicker.  This is important when running docs from the hard drive.
+				else if (this.delayedLoadingTimeout == undefined)
+					{
+					this.delayedLoadingTimeout = setTimeout( function ()
+						{
+						if (NDSummary.summaryLanguages == undefined) 
+							{  NDSummary.Build();  }
 
-		if (loader)
-			{  head.removeChild(loader);  }
+						clearTimeout(NDSummary.delayedLoadingTimout);
+						NDSummary.delayedLoadingTimeout = undefined;
+						}, 
+						`LoadingNoticeDelay);
+					}
 
-		loader = document.getElementById("NDSummaryToolTipsLoader");
+				
+				// Remove the previous loaders if there are any.
 
-		if (loader)
-			{  head.removeChild(loader);  }
+				var head = document.getElementsByTagName("head")[0];
+				var loader = document.getElementById("NDSummaryLoader");
+
+				if (loader)
+					{  head.removeChild(loader);  }
+
+				loader = document.getElementById("NDSummaryToolTipsLoader");
+
+				if (loader)
+					{  head.removeChild(loader);  }
 
 
-		// Reset the state
+				// Create a new summary loader.  We don't load the tooltips until the summary is complete to
+				// avoid having to wait for a potentially large file.
 
-		this.summaryLanguages = undefined;
-		this.summaryTopicTypes = undefined;
-		this.summaryEntries = undefined;
-		this.summaryToolTips = undefined;
+				var script = document.createElement("script");
+				script.src = newLocation.summaryFile;
+				script.type = "text/javascript";
+				script.id = "NDSummaryLoader";
 
-
-		// Create a new summary loader.  We don't load the tooltips until the summary is complete to
-		// avoid having to wait for a potentially large file.
-
-		var script = document.createElement("script");
-		script.src = NDCore.FileHashPathToSummaryPath(hashPath);
-		script.type = "text/javascript";
-		script.id = "NDSummaryLoader";
-
-		head.appendChild(script);
+				head.appendChild(script);
+				}
+			}
 		};
 
 
@@ -116,13 +148,13 @@ var NDSummary = new function ()
 	*/
 	this.OnSummaryLoaded = function (hashPath, summaryLanguages, summaryTopicTypes, summaryEntries)
 		{
-		if (hashPath == NDFramePage.hashPath)
+		if (hashPath == NDFramePage.currentLocation.path)
 			{
 			this.summaryLanguages = summaryLanguages;
 			this.summaryTopicTypes = summaryTopicTypes;
 			this.summaryEntries = summaryEntries;
 
-			this.UpdateSummary();
+			this.Build();
 
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
@@ -130,7 +162,7 @@ var NDSummary = new function ()
 			var head = document.getElementsByTagName("head")[0];
 
 			var script = document.createElement("script");
-			script.src = NDCore.FileHashPathToSummaryToolTipsPath(hashPath);
+			script.src = NDFramePage.currentLocation.summaryTTFile;
 			script.type = "text/javascript";
 			script.id = "NDSummaryToolTipsLoader";
 
@@ -143,7 +175,7 @@ var NDSummary = new function ()
 	*/
 	this.OnSummaryToolTipsLoaded = function (hashPath, summaryToolTips)
 		{
-		if (hashPath == NDFramePage.hashPath)
+		if (hashPath == NDFramePage.currentLocation.path)
 			{
 			this.summaryToolTips = summaryToolTips;
 
@@ -154,9 +186,9 @@ var NDSummary = new function ()
 		};
 
 
-	/* Function: UpdateSummary
+	/* Function: Build
 	*/
-	this.UpdateSummary = function ()
+	this.Build = function ()
 		{
 		var newContent = document.createElement("div");
 		newContent.id = "SContent";
@@ -207,7 +239,9 @@ var NDSummary = new function ()
 		var oldContent = document.getElementById("SContent");
 		oldContent.parentNode.replaceChild(newContent, oldContent);
 
-		NDFramePage.SizeSummaryToContent();
+		// Don't resize on the loading notice to avoid unnecessary jumpiness.
+		if (this.summaryEntries != undefined)
+			{  NDFramePage.SizeSummaryToContent();  }
 		};
 
 	
@@ -222,7 +256,7 @@ var NDSummary = new function ()
 		var frame = document.getElementById("CFrame");
 
 		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
-		frame.contentWindow.location = NDFramePage.contentPath + "#Topic" + topicID;
+		frame.contentWindow.location = NDFramePage.currentLocation.contentPage + "#Topic" + topicID;
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		frame.contentWindow.focus();
@@ -416,5 +450,9 @@ var NDSummary = new function ()
 
 	/* var: toolTipTimeout
 		The timeout used to display the tooltip.
+	*/
+
+	/* var: delayedLoadingTimeout
+		The timeout used to avoid displaying the loading notification on short transitions.
 	*/
 	};

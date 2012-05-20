@@ -55,7 +55,7 @@ var NDFramePage = new function ()
 
 		var ieVersion = NDCore.IEVersion();
 
-		// IE 6 doesn't like fixed positioning the way other browsers do.
+		// IE 6 doesn't like fixed positioning the way other browsers do.  It works with absolute positioning though.
 		if (ieVersion == 6)
 			{
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
@@ -66,7 +66,7 @@ var NDFramePage = new function ()
 				{  document.getElementById(elements[i]).style.position = "absolute";  }
 			}
 
-		// Resizing is flaky on IE prior to 8
+		// Resizing is flaky on IE prior to 8, so just disable it.
 		if (ieVersion < 8)
 			{
 			document.getElementById("NDMenuSizer").style.display = "none";
@@ -83,27 +83,19 @@ var NDFramePage = new function ()
 			document.getElementsByTagName("html")[0].style.overflow = "hidden";
 			}
 
-		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
-
-		this.topmostPanel = `FilePanel;
-		this.summaryPanelIsExpanded = true;
-		// this.desiredMenuWidth = undefined;
-		// this.desiredSummaryWidth = undefined;
-
-		this.DecodeHash();
-
-		this.UpdateLayout();
 		window.onresize = function () {  NDFramePage.OnResize();  };
+		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
+		this.AddHashChangeHandler();
 
-		// Start the navigation objects.  It's okay that the hash variables aren't filled in yet.  They do not read them
-		// directly from this class but get them from functions like GoToFileHashPath().
 		NDMenu.Start();
 		NDSummary.Start();
 
-		// OnHashChange will call DecodeHash which will fill in all the hash variables.  It will then set the navigation
-		// objects to the proper location.
 		this.OnHashChange();
-		this.AddHashChangeHandler();
+
+		// this.desiredMenuWidth = undefined;
+		// this.desiredSummaryWidth = undefined;
+
+		this.UpdateLayout();
 		};
 
 
@@ -138,85 +130,45 @@ var NDFramePage = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: DecodeHash
-		Converts the hash into the variables <hashType>, <hashPath>, <contentPath>, and <hashAnchor>.
-	*/
-	this.DecodeHash = function ()
-		{
-		// Strip the hash symbol and everything before.  If there's no hash symbol, indexOf returning -1 means substr
-		// will return the whole thing.
-		var hash = location.hash.substr(location.hash.indexOf("#") + 1);
-
-		hash = decodeURI(hash);
-
-		if (NDCore.IsFileHashPath(hash))
-			{
-			this.hashType = `FileHash;
-
-			// The first colon after File:, which will always exist if we're a file hash path.
-			var anchorSeparator = hash.indexOf(':');
-
-			// The second colon for the anchor, which may or may not exist.
-			anchorSeparator = hash.indexOf(':', anchorSeparator + 1);
-
-			if (anchorSeparator == -1)
-				{
-				this.hashPath = hash;
-				this.hashAnchor = undefined;
-				}
-			else
-				{
-				this.hashPath = hash.substr(0, anchorSeparator);
-				this.hashArchor = hash.substr(anchorSeparator + 1);
-				}
-
-			this.contentPath = NDCore.FileHashPathToContentPath(this.hashPath);
-			}
-
-		else
-			{
-			// All empty and invalid hashes show the home page.
-			this.hashType = `HomeHash;
-			this.hashPath = undefined;
-			this.hashAnchor = undefined;
-			this.contentPath = "other/home.html";
-			}
-		};
-
-
 	/* Function: OnHashChange
 	*/
 	this.OnHashChange = function ()
 		{
-		var oldHashType = this.hashType;
+		var oldLocation = this.currentLocation;
+		this.currentLocation = new NDLocation(location.hash);
 
-		this.DecodeHash();
 
-		// Moving to or away from home affects the summary panel's visibility so we may need to update the layout.
-		if (this.hashType != oldHashType)
+		// We need to update the layout if the location changes the visibility of the summary panel.
+
+		var oldLocationHasSummary = (oldLocation != undefined && oldLocation.summaryFile != undefined);
+		var currentLocationHasSummary = (this.currentLocation.summaryFile != undefined);
+
+		if (oldLocationHasSummary != currentLocationHasSummary)
 			{  this.UpdateLayout();  }
 
+
 		// Set the content page
+
 		var frame = document.getElementById("CFrame");
-		frame.contentWindow.location.replace(this.contentPath);
+		frame.contentWindow.location.replace(this.currentLocation.contentPage);
+
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+
 		frame.contentWindow.focus();
 
-		if (this.hashType == `FileHash)
-			{
-			NDMenu.GoToFileHashPath(this.hashPath);
-			NDSummary.GoToFileHashPath(this.hashPath);
-			// NDSummary will load the metadata file that calls UpdatePageTitle().
-			}
-		else
-			{
-			// Update the page title manually since there's no metadata to do it.
-			this.UpdatePageTitle();
 
-			// Reset back to the default state.
-			NDMenu.GoToFileHashPath("");
-			}
+		// Notify the panels
+
+		NDMenu.OnLocationChange(oldLocation, this.currentLocation);
+		NDSummary.OnLocationChange(oldLocation, this.currentLocation);
+
+
+		// Normally the page title will be updated by the summary metadata file, but we have to do it manually if the new 
+		// location won't have a summary, such as the home page.
+
+		if (this.currentLocation.summaryFile == undefined)
+			{  this.UpdatePageTitle();  }
 		};
 
 
@@ -225,7 +177,7 @@ var NDFramePage = new function ()
 	*/
 	this.OnPageTitleLoaded = function (hashPath, title)
 		{
-		if (hashPath == this.hashPath)
+		if (this.currentLocation.hashString == hashPath)
 			{  this.UpdatePageTitle(title);  }
 		};
 
@@ -253,7 +205,6 @@ var NDFramePage = new function ()
 		// though the event isn't supported, so also test document.documentMode.
 		if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7))
 			{
-			// If we don't do it this way the "this" parameter doesn't get set.
 			window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 			}
 
@@ -287,7 +238,7 @@ var NDFramePage = new function ()
 
 				this.hashChangePoller.Poll = function ()
 					{
-					if (!NDCore.SameHash(location.hash, this.lastHash))
+					if (location.hash != this.lastHash)
 						{
 						this.lastHash = location.hash;
 						this.OnHashChange();
@@ -366,7 +317,7 @@ var NDFramePage = new function ()
 					var historyHash = this.GetHistory();
 
 					// If location.hash changed, which covers mouse clicks and manual editing
-					if (!NDCore.SameHash(hash, this.lastHash))
+					if (hash != this.lastHash)
 						{
 						this.lastHash = location.hash;
 						this.SetHistory(hash, historyHash);
@@ -374,7 +325,7 @@ var NDFramePage = new function ()
 						}
 
 					// If historyHash changed, which covers back and forward buttons
-					else if (!NDCore.SameHash(historyHash, this.lastHash))
+					else if (historyHash != this.lastHash)
 						{
 						location.href = location.href.replace( /#.*/, '' ) + historyHash;
 						}
@@ -389,7 +340,7 @@ var NDFramePage = new function ()
 
 				this.hashChangePoller.SetHistory = function (hash, historyHash)
 					{
-					if (!NDCore.SameHash(hash, historyHash))
+					if (hash != historyHash)
 						{
 						// Update iframe with any initial document.title that might be set.
 						this.iframe.document.title = document.title;
@@ -525,7 +476,7 @@ var NDFramePage = new function ()
 	*/
 	this.SummaryIsVisible = function ()
 		{
-		return (this.hashType != `HomeHash && (this.summaryPanelIsExpanded || this.topmostPanel == `SummaryPanel));
+		return (this.currentLocation != undefined && this.currentLocation.summaryFile != undefined);
 		};
 
 
@@ -734,36 +685,23 @@ var NDFramePage = new function ()
 	// Group: Variables
 	// ________________________________________________________________________
 
+	/* var: currentLocation
+		A <NDLocation> representing the current hash path location.
+	*/
+
 	/* var: projectTitle
 		The project title in HTML.
 	*/
 
-	/* var: contentPath
-		This will be the path to the output file used for the content area of the page.
+	/* var: hashChangePoller
+		An object to assist with hash change polling on browsers that don't support onhashchange.  Only used in
+		<AddHashChangeHandler()>.
 	*/
 
 
 
 	// Group: Layout Variables
 	// ________________________________________________________________________
-
-	/* var: topmostPanel
-		Which of the panels is on top, which will be one of:
-
-		`FilePanel - The source file panel.
-		`ClassPanel - The class panel.
-		`SummaryPanel - The summary panel if it's collapsed into the other two.  If it's open side by side the
-								topmost panel will always be one of the other two.
-	*/
-		// Substitutions:
-		//		`FilePanel = 0
-		//		`ClassPanel = 1
-		//		`SummaryPanel = 2
-
-
-	/* var: summaryPanelIsExpanded
-		Whether the summary panel is side by side with the other two instead of collapsed into a tab.
-	*/
 
 	/* var: sizerDragging
 
@@ -786,40 +724,11 @@ var NDFramePage = new function ()
 		can be slightly larger if needed to show the content without a horizontal scrollbar.
 	*/
 
-	/* var: `ExpansionFactor
+	/* Constant: `ExpansionFactor
 		This substitution is the maximum amount the menu or summary panel may be automatically expanded by.
 		To allow a 15% expansion, set the value to 1.15.
 	*/
 		// Substitutions:
 		// `ExpansionFactor = 1.333
-
-
-
-	// Group: Hash Variables
-	// ________________________________________________________________________
-
-	/* var: hashType
-		The type of the hash path, which will be one of:
-
-		`HomeHash - An empty hash or any unrecognized hash format which cause the home page to show up.
-		`FileHash - A file location, such as "File2:Folder/Folder/Source.cs:Function".
-	*/
-			// Substitutions:
-			//    `HomeHash = 0
-			//    `FileHash = 1
-
-	/* var: hashPath
-		If <hashType> is `FileHash, the path portion of the hash, such as "File2:Folder/Folder/Source.cs".
-	*/
-
-	/* var: hashAnchor
-		If <hashType> is  `FileHash, the anchor within the <hashPath> file that should be used.  In the example
-		"File2:Folder/Folder/Source.cs:Function", this would be "Function".
-	*/
-
-	/* var: hashChangePoller
-		An object to assist with hash change polling on browsers that don't support onhashchange.  Only used in
-		<AddHashChangeHandler()>.
-	*/
 
 	};
