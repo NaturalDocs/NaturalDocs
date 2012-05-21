@@ -605,7 +605,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			if (fullLink == null)
-				{  fullLink = linkStub;  } //xxx
+				{  fullLink = linkStub;  } //xxx tooltips
 
 
 			// If it has a target, find its topic object.
@@ -652,15 +652,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			else
 				{
-				if (targetTopic.FileID == topic.FileID)
-					{
-					html.Append("<a href=\"#Topic" + targetTopic.TopicID + "\">");
-					}
-				else
-					{
-					// xxx
-					html.Append("<a href=\"#xxx\">");
-					}
+				// Changing just the hash path will cause it to use the iframe's location so we need to build a relative link back
+				// to index.html.
+
+				Path currentOutputFolder = htmlBuilder.Source_OutputFile(topic.FileID).ParentFolder;
+				Path indexFile = htmlBuilder.OutputFolder + "/index.html";
+				Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
+
+				html.Append("<a href=\"" + pathToIndex.ToURL() + 
+															 '#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
+															 ':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" target=\"_top\">");
 
 				html.EntityEncodeAndAppend(linkInterpretation.Text);
 				html.Append("</a>");
