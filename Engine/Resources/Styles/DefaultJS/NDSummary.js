@@ -217,7 +217,7 @@ var NDSummary = new function ()
 
 				entryHTML.id = "SEntry" + entry[`Entry_TopicID];
 				entryHTML.className = classString;
-				entryHTML.setAttribute("href", "javascript:NDSummary.GoToAnchor(" + entry[`Entry_TopicID] + ")");
+				entryHTML.setAttribute("href", "#" + NDFramePage.currentLocation.path + ":" + entry[`Entry_Symbol]);
 				entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
 				entryHTML.onmouseover = mouseOverHandler;
 				entryHTML.onmouseout = mouseOutHandler;

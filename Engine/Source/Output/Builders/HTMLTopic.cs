@@ -96,7 +96,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			html.Append(
-				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
+				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true) + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
