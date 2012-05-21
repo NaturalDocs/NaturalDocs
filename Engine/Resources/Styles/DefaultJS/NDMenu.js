@@ -194,10 +194,26 @@ var NDMenu = new function ()
 			}
 
 		var oldMenuContent = document.getElementById("MContent");
-		oldMenuContent.parentNode.replaceChild(htmlMenu, oldMenuContent);
+		var menuParent = oldMenuContent.parentNode;
+		menuParent.replaceChild(htmlMenu, oldMenuContent);
 
 		if (result.completed)
 			{
+			if (result.selectedFile)
+				{  
+				// Scroll the selected file into view.  Check if it's necessary first because scrollIntoView() may change the scroll 
+				// position even if the element is already visible and we don't want it to be jumpy.
+
+				// If the element's bottom is lower than the extent of the visible menu...
+				if (result.selectedFile.offsetTop + result.selectedFile.offsetHeight > menuParent.scrollTop + menuParent.clientHeight)
+					{  result.selectedFile.scrollIntoView(false);  }
+
+				// If the element's top is higher than the extent of the visible menu...
+				else if (result.selectedFile.offsetTop < menuParent.scrollTop)
+					{  result.selectedFile.scrollIntoView(true);  }
+				}
+
+
 			this.pathBeingBuilt = undefined;
 			this.CleanUpFileMenuSections();
 			}
@@ -216,6 +232,7 @@ var NDMenu = new function ()
 
 			completed - Bool.  Whether it was able to build the complete menu as opposed to just part.
 			needToLoad - The ID of the menu section that needs to be loaded, or undefined if none.
+			selectedFile - The DOM element of the selected file, or undefined if none.
 
 	*/
 	this.BuildEntries = function (htmlMenu, path)
@@ -224,6 +241,7 @@ var NDMenu = new function ()
 			{ 
 			completed: false
 			// needToLoad: undefined
+			// selectedFile: undefined
 			};
 
 		var pathSoFar = [ ];
@@ -352,6 +370,7 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = member[`Name];
 
 					htmlMenu.appendChild(htmlEntry);
+					result.selectedFile = htmlEntry;
 					}
 				else
 					{
