@@ -177,7 +177,7 @@ var NDFramePage = new function ()
 	*/
 	this.OnPageTitleLoaded = function (hashPath, title)
 		{
-		if (this.currentLocation.hashString == hashPath)
+		if (this.currentLocation.path == hashPath)
 			{  this.UpdatePageTitle(title);  }
 		};
 
