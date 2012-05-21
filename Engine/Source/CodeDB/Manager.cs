@@ -913,69 +913,70 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void WorkOnResolvingLinks (CancelDelegate cancelled)
 			{
-			Accessor accessor = GetAccessor();
-
-			while (!cancelled())
+			using (Accessor accessor = GetAccessor())
 				{
-				// We'll piggyback on the accessor's database lock to access the state variables.
-				accessor.GetReadPossibleWriteLock();
-
-				try
+				while (!cancelled())
 					{
-					if (reparsingEverything)
+					// We'll piggyback on the accessor's database lock to access the state variables.
+					accessor.GetReadPossibleWriteLock();
+
+					try
 						{
-						accessor.UpgradeToReadWriteLock();
+						if (reparsingEverything)
+							{
+							accessor.UpgradeToReadWriteLock();
 
-						// If we're reparsing everything, that means all links will be readded to the database as new and all of them
-						// will be handled by linksToResolve.  We don't have to worry about new topics changing the definition of 
-						// unchanged links so we can clear this out to lessen the workload.
-						newTopicsByEndingSymbol.Clear();
+							// If we're reparsing everything, that means all links will be readded to the database as new and all of them
+							// will be handled by linksToResolve.  We don't have to worry about new topics changing the definition of 
+							// unchanged links so we can clear this out to lessen the workload.
+							newTopicsByEndingSymbol.Clear();
 
-						// We change this back to false afterwards so that any changes that occur after we started resolving will be 
-						// treated differentially.  Once something is taken off linksToResolve we can no longer guarantee that new
-						// topics won't affect anything.
-						reparsingEverything = false;
+							// We change this back to false afterwards so that any changes that occur after we started resolving will be 
+							// treated differentially.  Once something is taken off linksToResolve we can no longer guarantee that new
+							// topics won't affect anything.
+							reparsingEverything = false;
 
-						// DEPENDENCY: ResolvingUnitsOfWorkRemaining() depends on this behavior.
+							// DEPENDENCY: ResolvingUnitsOfWorkRemaining() depends on this behavior.
 
-						// Leave the lock as read/write.
+							// Leave the lock as read/write.
+							}
+
+						if (!linksToResolve.IsEmpty)
+							{
+							accessor.UpgradeToReadWriteLock();
+
+							int linkID = linksToResolve.Highest;
+							linksToResolve.Remove(linkID);
+
+							accessor.DowngradeToReadPossibleWriteLock();
+
+							ResolveLink(linkID, accessor);
+							}
+
+						else if (newTopicsByEndingSymbol.Count > 0)
+							{
+							accessor.UpgradeToReadWriteLock();
+
+							var enumerator = newTopicsByEndingSymbol.GetEnumerator();
+							enumerator.MoveNext();  // It's not positioned on the first element by default.
+
+							EndingSymbol endingSymbol = enumerator.Current.Key;
+							IDObjects.SparseNumberSet topicIDs = enumerator.Current.Value;
+
+							newTopicsByEndingSymbol.Remove(endingSymbol);
+
+							accessor.DowngradeToReadPossibleWriteLock();
+
+							ResolveNewTopics(topicIDs, endingSymbol, accessor);
+							}
+
+						else
+							{  break;  }
 						}
 
-					if (!linksToResolve.IsEmpty)
-						{
-						accessor.UpgradeToReadWriteLock();
-
-						int linkID = linksToResolve.Highest;
-						linksToResolve.Remove(linkID);
-
-						accessor.DowngradeToReadPossibleWriteLock();
-
-						ResolveLink(linkID, accessor);
-						}
-
-					else if (newTopicsByEndingSymbol.Count > 0)
-						{
-						accessor.UpgradeToReadWriteLock();
-
-						var enumerator = newTopicsByEndingSymbol.GetEnumerator();
-						enumerator.MoveNext();  // It's not positioned on the first element by default.
-
-						EndingSymbol endingSymbol = enumerator.Current.Key;
-						IDObjects.SparseNumberSet topicIDs = enumerator.Current.Value;
-
-						newTopicsByEndingSymbol.Remove(endingSymbol);
-
-						accessor.DowngradeToReadPossibleWriteLock();
-
-						ResolveNewTopics(topicIDs, endingSymbol, accessor);
-						}
-
-					else
-						{  break;  }
+					finally
+						{  accessor.ReleaseLock();  }
 					}
-
-				finally
-					{  accessor.ReleaseLock();  }
 				}
 			}
 
