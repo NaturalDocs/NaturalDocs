@@ -468,7 +468,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parentheses)
 			{
-			string input = linkText.CondenseWhitespace();
+			string input = linkText.Trim();
 			
 			if ((flags & LinkInterpretationFlags.FromOriginalText) != 0 && input.Length > 2 &&
 				 input[0] == '<' && input[input.Length - 1] == '>')
@@ -479,10 +479,41 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				flags &= ~LinkInterpretationFlags.FromOriginalText;
 				}
 
-			string prefix;
-			ParameterString.SplitFromEndingParentheses(input, out prefix, out parentheses);
+			int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(input);
+			bool spaceBeforeParentheses;
+			string inputWithoutParentheses;
 
-			return LinkInterpretations_DontStripParentheses(prefix, flags);
+			if (parenthesesIndex == -1)
+				{
+				inputWithoutParentheses = input;
+				parentheses = null;
+				spaceBeforeParentheses = false;
+				}
+			else
+				{
+				inputWithoutParentheses = input.Substring(0, parenthesesIndex);
+				parentheses = input.Substring(parenthesesIndex);
+				spaceBeforeParentheses = (input[parenthesesIndex - 1] == ' ');
+				}
+
+			List<LinkInterpretation> result = LinkInterpretations_DontStripParentheses(inputWithoutParentheses, flags);
+
+			// Put the parentheses back on the literal.
+			if (parentheses != null)
+				{
+				foreach (LinkInterpretation interpretation in result)
+					{
+					if (interpretation.IsLiteral)
+						{
+						if (spaceBeforeParentheses)
+							{  interpretation.Text += ' ';  }
+
+						interpretation.Text += parentheses;
+						}
+					}
+				}
+
+			return result;
 			}
 
 
