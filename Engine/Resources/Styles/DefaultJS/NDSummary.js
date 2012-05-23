@@ -275,21 +275,22 @@ var NDSummary = new function ()
 					}
 				}
 
+			var frame = document.getElementById("CFrame");
+			var targetLocation = NDFramePage.currentLocation.contentPage;
+
+			// Replace the symbol anchor with the Topic# anchor.  If we didn't find the entry in the summary, we
+			// still want to load the base page.
+			var hashIndex = targetLocation.indexOf('#');
+			if (hashIndex != -1)
+				{  targetLocation = targetLocation.substr(0, hashIndex);  }
+
 			if (topicID != -1)
-				{
-				var frame = document.getElementById("CFrame");
-				var targetLocation = NDFramePage.currentLocation.contentPage;
+				{  targetLocation += "#Topic" + topicID;  }
 
-				// Replace the symbol anchor with the Topic# anchor.
-				var hashIndex = targetLocation.indexOf('#');
-				if (hashIndex != -1)
-					{  targetLocation = targetLocation.substr(0, hashIndex);  }
+			frame.contentWindow.location = targetLocation;
 
-				frame.contentWindow.location = targetLocation + "#Topic" + topicID;
-
-				// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
-				frame.contentWindow.focus();
-				}
+			// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+			frame.contentWindow.focus();
 			}
 		};
 
