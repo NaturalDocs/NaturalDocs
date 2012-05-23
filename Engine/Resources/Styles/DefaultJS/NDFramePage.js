@@ -150,7 +150,20 @@ var NDFramePage = new function ()
 		// Set the content page
 
 		var frame = document.getElementById("CFrame");
-		frame.contentWindow.location.replace(this.currentLocation.contentPage);
+
+		// Internet Explorer treats anchors as case-insensitive.  If the hash path has a member we won't do the navigation here
+		// because it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation 
+		// with a Topic# anchor.
+		if (NDCore.IsIE() && this.currentLocation.type == "File" && this.currentLocation.member != undefined)
+			{
+			// Do nothing.  We can't even go to the base page here and let the summary replace it with the anchor because they don't
+			// always occur in the right order.
+			}
+		else
+			{  
+			// Everything else is case sensitive and can go right to the target without waiting for the summary to load.
+			frame.contentWindow.location.replace(this.currentLocation.contentPage);
+			}
 
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.

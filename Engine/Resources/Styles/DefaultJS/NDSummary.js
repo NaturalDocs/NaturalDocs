@@ -140,6 +140,8 @@ var NDSummary = new function ()
 
 				head.appendChild(script);
 				}
+
+			this.FinishIENavigation();
 			}
 		};
 
@@ -155,6 +157,7 @@ var NDSummary = new function ()
 			this.summaryEntries = summaryEntries;
 
 			this.Build();
+			this.FinishIENavigation();
 
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
@@ -245,21 +248,45 @@ var NDSummary = new function ()
 		};
 
 	
-	/* Function: GoToAnchor
+	/* Function: FinishIENavigation
+		In some cases the content iframe can't be set by <NDFramePage.OnHashChange()> because Internet Explorer uses
+		case-insensitive anchors.  This function will set the iframe in a way that works with IE in these situations.
 	*/
-	this.GoToAnchor = function (topicID)
+	this.FinishIENavigation = function ()
 		{
-		// First kill the tool tip.  If it was open and they clicked the entry, obviously they want the whole topic
-		// and the tool tip is just in the way now.
-		this.ResetToolTip();
+		if (NDCore.IsIE() && 
+			this.summaryEntries != undefined &&
+			NDFramePage.currentLocation != undefined && 
+			NDFramePage.currentLocation.type == "File" &&
+			NDFramePage.currentLocation.member != undefined)
+			{
+			var topicID = -1;
 
-		var frame = document.getElementById("CFrame");
+			for (var i = 0; i < this.summaryEntries.length; i++)
+				{
+				if (this.summaryEntries[i][`Entry_Symbol] == NDFramePage.currentLocation.member)
+					{
+					topicID = this.summaryEntries[i][`Entry_TopicID];
+					break;
+					}
+				}
 
-		// Chrome doesn't let you replace just the hash, so rebuild an entirely new URL using NDFramePage.
-		frame.contentWindow.location = NDFramePage.currentLocation.contentPage + "#Topic" + topicID;
+			if (topicID != -1)
+				{
+				var frame = document.getElementById("CFrame");
+				var targetLocation = NDFramePage.currentLocation.contentPage;
 
-		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
-		frame.contentWindow.focus();
+				// Replace the symbol anchor with the Topic# anchor.
+				var hashIndex = targetLocation.indexOf('#');
+				if (hashIndex != -1)
+					{  targetLocation = targetLocation.substr(0, hashIndex);  }
+
+				frame.contentWindow.location = targetLocation + "#Topic" + topicID;
+
+				// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+				frame.contentWindow.focus();
+				}
+			}
 		};
 
 

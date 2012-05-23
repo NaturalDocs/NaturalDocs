@@ -97,6 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			html.Append(
 				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true) + "\"></a>" +
+				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
