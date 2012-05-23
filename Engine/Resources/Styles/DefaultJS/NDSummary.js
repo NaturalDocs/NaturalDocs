@@ -81,6 +81,10 @@ var NDSummary = new function ()
 	*/
 	this.OnLocationChange = function (oldLocation, newLocation)
 		{
+		// First kill the tool tip.  If it was open and they clicked an entry, obviously they want the whole topic
+		// and the tool tip is just in the way now.
+		this.ResetToolTip();
+
 		if (newLocation.type == "File")
 			{
 			// It's possible we've navigated to a different member of the same file, so check to see if we need to do anything.
