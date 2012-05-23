@@ -138,6 +138,14 @@ var NDFramePage = new function ()
 		this.currentLocation = new NDLocation(location.hash);
 
 
+		// Update the poller for IE browsers that support the onhashchange event to prevent this function from
+		// being called twice.  The poller will therefore only catch navigation that the event doesn't fire for,
+		// like moving from "Member" to "member".
+
+		if (this.hashChangePoller != undefined)
+			{  this.hashChangePoller.lastHash = location.hash;  }
+
+
 		// We need to update the layout if the location changes the visibility of the summary panel.
 
 		var oldLocationHasSummary = (oldLocation != undefined && oldLocation.summaryFile != undefined);
@@ -212,17 +220,19 @@ var NDFramePage = new function ()
 	*/
 	this.AddHashChangeHandler = function ()
 		{
-		// If the browser supports onhashchange...
-
 		// Note that IE8 running in IE7 compatibility mode reports true for "onhashchange" in window even
 		// though the event isn't supported, so also test document.documentMode.
-		if ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7))
+		var supportsOnHashChange = ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7));
+
+		// Add a straightforward hash change handler if the browser supports it.
+		if (supportsOnHashChange)
 			{
 			window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 			}
 
-		// If browser doesn't support onhashchange...
-		else
+		// Add a poller if the browser doesn't, or is IE.  We need it for IE even when it supports onhashchange because it 
+		// treats anchors as case-insensitive, so the event won't fire when navigating from "Member" to "member".
+		if (!supportsOnHashChange || NDCore.IsIE())
 			{
 			this.hashChangePoller = {
 				// timeoutID: undefined,
@@ -232,8 +242,9 @@ var NDFramePage = new function ()
 				lastHash: location.hash
 				};
 
-			// Non-IE browsers that don't support onhashchange can use a straightforward polling loop of the hash.
-			if (!NDCore.IsIE())
+			// Non-IE browsers that don't support onhashchange and IE versions that do can use a straightforward polling 
+			// loop of the hash.
+			if (!NDCore.IsIE() || supportsOnHashChange)
 				{
 				this.hashChangePoller.Start = function ()
 					{
@@ -254,14 +265,14 @@ var NDFramePage = new function ()
 					if (location.hash != this.lastHash)
 						{
 						this.lastHash = location.hash;
-						this.OnHashChange();
+						NDFramePage.OnHashChange();
 						}
 
 					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
 					};
 				}
 
-			else  // IE
+			else  // IE versions that don't support onhashchange
 				{
 				// Not only do IE6/7 need the "magical" iframe treatment, but so does IE8
 				// when running in IE7 compatibility mode.
