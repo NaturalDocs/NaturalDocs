@@ -63,11 +63,21 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 			while (tagIndex != -1)
 				{
-				if (output.Length != 0)
-					{  output.Append("\r\n-----\r\n");  }
-
 				int endOfClosingTag = FindEndOfClosingTag(html, tagIndex, tagName);
-				output.Append(html, tagIndex, endOfClosingTag - tagIndex);
+				string tag = html.Substring(tagIndex, endOfClosingTag - tagIndex);
+
+				// Filter out Topic# tags.
+				if (tag.StartsWith("<a name=\"Topic"))
+					{  
+					// Ignore
+					}
+				else
+					{
+					if (output.Length != 0)
+						{  output.Append("\r\n-----\r\n");  }
+
+					output.Append(tag);
+					}
 
 				tagIndex = FindNextTag(html, endOfClosingTag, tagName, className);
 				}
