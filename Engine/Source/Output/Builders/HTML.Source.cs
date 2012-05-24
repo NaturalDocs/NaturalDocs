@@ -622,7 +622,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Remove percent signs so they don't conflict with URI encoding.
 			hashPath.Replace('%', ' ');
 
-			// Remove all whitespace unless it separates two text characters.
+			// Remove all whitespace unless it separates two text characters.  Replace what remains with underscores.
 			int i = 0;
 			while (i < hashPath.Length)
 				{
@@ -633,7 +633,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					else if (Tokenizer.FundamentalTypeOf(hashPath[i - 1]) == FundamentalType.Text &&
 								 Tokenizer.FundamentalTypeOf(hashPath[i + 1]) == FundamentalType.Text)
 						{
-						hashPath[i] = ' ';
+						hashPath[i] = '_';
 						i++;
 						}
 					else
