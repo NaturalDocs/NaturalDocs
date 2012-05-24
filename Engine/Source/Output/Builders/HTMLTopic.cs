@@ -96,7 +96,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			html.Append(
-				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true) + "\"></a>" +
+				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true).EntityEncode() + "\"></a>" +
 				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
@@ -139,10 +139,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: BuildToolTip
+		 * 
 		 * Builds the HTML for the <Topic's> tooltip and returns it as a string.  If the topic shoudn't have a tooltip it will
 		 * return null.
+		 * 
+		 * Parameters:
+		 * 
+		 *		topic - The <Topic> to build the tooltip for.
+		 *		links - A list of <Links> that must contain any links found in the <Topic>.
 		 */
-		public string BuildToolTip (Topic topic)
+		public string BuildToolTip (Topic topic, IList<Link> links)
 			{
 			if (topic.Prototype == null && topic.Summary == null)
 				{  return null;  }
@@ -153,8 +159,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.topic = topic;
 			this.html = new StringBuilder();
 			isToolTip = true;
-			this.links = new List<Link>(); //xxx
-			this.linkTargets = new List<Topic>(); //xxx
+			this.links = links;
+			this.linkTargets = null;
 
 			// Core
 
@@ -592,7 +598,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			linkStub.LanguageID = topic.LanguageID;
 
 
-			// Find the actual link so we can find it's target.
+			// Find the actual link so we know if it resolved to anything.
 
 			Link fullLink = null;
 
@@ -605,68 +611,77 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
+			#if DEBUG
 			if (fullLink == null)
-				{  fullLink = linkStub;  } //xxx tooltips
+				{  throw new Exception("All links in a topic must be in the list passed to HTMLTopic.");  }
+			#endif
 
 
-			// If it has a target, find its topic object.
+			// If it didn't resolve, we just output the original text and we're done.
 
-			Topic targetTopic = null;
-
-			if (fullLink.TargetTopicID != 0)
+			if (fullLink.TargetTopicID == 0)
 				{
-				foreach (Topic linkTarget in linkTargets)
-					{
-					if (linkTarget.TopicID == fullLink.TargetTopicID)
-						{
-						targetTopic = linkTarget;
-						break;
-						}
-					}
+				html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				return;
 				}
 
 
-			// If it has a target, also find its interpretation.
+			// If it did resolve, find the interpretation that was used.  If it was a named link it would affect the link text.
 
 			LinkInterpretation linkInterpretation = null;
 
-			if (fullLink.TargetScore != 0)
-				{
-				string ignore;
-				List<LinkInterpretation> linkInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
+			string ignore;
+			List<LinkInterpretation> linkInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
 																					  out ignore);
 
-				linkInterpretation = linkInterpretations[ CodeDB.Manager.GetInterpretationIndex(fullLink.TargetScore) ];
+			linkInterpretation = linkInterpretations[ CodeDB.Manager.GetInterpretationIndex(fullLink.TargetScore) ];
+
+
+			// If it's a tooltip, that's all we need.  We don't need to find the Topic because we're not creating an actual link;
+			// you can't click on tooltips.  We just needed to know what the text should be.
+
+			if (isToolTip)
+				{
+				html.EntityEncodeAndAppend(linkInterpretation.Text);
+				return;
 				}
 
 
+			// If it's not a tooltip we need to find Topic it resolved to.
+
+			Topic targetTopic = null;
+
+			foreach (Topic linkTarget in linkTargets)
+				{
+				if (linkTarget.TopicID == fullLink.TargetTopicID)
+					{
+					targetTopic = linkTarget;
+					break;
+					}
+				}
+
+			#if DEBUG
 			if (targetTopic == null)
-				{
-				html.EntityEncodeAndAppend(iterator.Property("originaltext"));
-				}
-			else if (isToolTip)
-				{
-				html.EntityEncodeAndAppend(linkInterpretation.Text);
-				}
-			else
-				{
-				// Changing just the hash path will cause it to use the iframe's location so we need to build a relative link back
-				// to index.html.
+				{  throw new Exception("All links targets for a topic must be in the list passed to HTMLTopic.");  }
+			#endif
 
-				Path currentOutputFolder = htmlBuilder.Source_OutputFile(topic.FileID).ParentFolder;
-				Path indexFile = htmlBuilder.OutputFolder + "/index.html";
-				Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
 
-				html.Append("<a href=\"" + pathToIndex.ToURL() + 
-															 '#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
-															 ':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" target=\"_top\">");
+			// Now build the actual link.  It can't just be the hash path because it would use the iframe's location, so we also
+			// need a relative path back to index.html.
 
-				html.EntityEncodeAndAppend(linkInterpretation.Text);
-				html.Append("</a>");
-				}
+			Path currentOutputFolder = htmlBuilder.Source_OutputFile(topic.FileID).ParentFolder;
+			Path indexFile = htmlBuilder.OutputFolder + "/index.html";
+			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
+
+			html.Append("<a href=\"" + pathToIndex.ToURL() + 
+														'#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
+														':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" target=\"_top\">");
+
+			html.EntityEncodeAndAppend(linkInterpretation.Text);
+			html.Append("</a>");
 			}
 
 

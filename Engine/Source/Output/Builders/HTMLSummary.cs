@@ -73,6 +73,7 @@ using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.TopicTypes;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
@@ -102,14 +103,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Build
+		 * 
 		 * Builds the JavaScript metadata for the <Topic> and appends it to the passed StringBuilder.
+		 * 
+		 * Parameters:
+		 * 
+		 *		topics - The <Topics> that appear in this file.
+		 *		links - A list of <Links> that includes everything that appears in the topic bodies.
+		 *		fileTitle - The title of the file.
+		 *		fileHashPath - The hash path of the file.
+		 *		summaryPath - A path to the summary metadata file to build.
+		 *		summaryToolTipsPath - A path to the summary tooltips metadata file to build.
 		 */
-		public void Build (IList<Topic> topics, string fileTitle, string fileHashPath, Path summaryPath, Path summaryToolTipsPath)
+		public void Build (IList<Topic> topics, IList<Link> links, string fileTitle, string fileHashPath, Path summaryPath, Path summaryToolTipsPath)
 			{
 			this.output = new StringBuilder();
 			this.fileTitle = fileTitle;
 			this.fileHashPath = fileHashPath;
 			this.topics = topics;
+			this.links = links;
 			
 			usedLanguages.Clear();
 			usedTopicTypes.Clear();
@@ -383,7 +395,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				Topic topic = topics[topicIndex];
-				string toolTipHTML = htmlTopic.BuildToolTip(topic);
+				string toolTipHTML = htmlTopic.BuildToolTip(topic, links);
 
 				if (toolTipHTML != null)
 					{
@@ -437,6 +449,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * The <Topic> list for the file we're building.
 		 */
 		protected IList<Topic> topics;
+
+		/* var: links
+		 * A list of <Links> that includes everything appearing in <topics>.
+		 */
+		protected IList<Link> links;
 
 		/* var: htmlTopic
 		 * A <HTMLTopic> to build tooltips.

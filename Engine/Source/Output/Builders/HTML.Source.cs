@@ -123,7 +123,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					BuildFile(outputPath, title, html.ToString(), PageType.Content);
 
 					HTMLSummary summaryBuilder = new HTMLSummary(this);
-					summaryBuilder.Build(topics, title, Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryToolTipsFile(fileID));
+					summaryBuilder.Build(topics, links, title, 
+														 Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryToolTipsFile(fileID));
 
 					lock (writeLock)
 						{
