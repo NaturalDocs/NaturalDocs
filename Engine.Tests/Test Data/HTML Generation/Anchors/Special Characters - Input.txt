@@ -10,13 +10,12 @@ navigates to it.
 	IE 8 - Passed
 	IE 7 - Passed
 	IE 6 - Passed
-	Firefox 8 - Passed
-	Firefox 5 - Passed
-	Firefox 4 - Passed
+	Firefox 12 - Passed
+	Firefox 9 - Passed
 	Firefox 3.6 - Passed
-	Chrome 15 - Passed
-	Chrome 12 - Passed
-	Opera 11.5 - Passed
+	Chrome 19 - Passed
+	Chrome 17 - Passed
+	Opera 11.6 - Passed
 	Safari 5 - Passed
 
 
@@ -335,130 +334,67 @@ Topic: <Angle Brackets>
 	Angle Brackets
 
 
-Topic: (Full Parentheses)
+Topic: (Parentheses)
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
+	Parentheses
 
-	Full Parentheses
-
-
-Topic: Ending (Parentheses)
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
-
-	Ending Parentheses
+	Parentheses
 
 
 Topic: URI %3D Confusion

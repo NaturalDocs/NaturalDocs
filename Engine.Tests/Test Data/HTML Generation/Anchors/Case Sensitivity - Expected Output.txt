@@ -1,7 +1,7 @@
-<a name="Case_Insensitivity"></a>
+<a name="Case_Sensitivity"></a>
 -----
 <a name="Case_Sensitivity_Test"></a>
 -----
-<a name="case_sensitivity_test(2)"></a>
+<a name="case_sensitivity_test"></a>
 -----
-<a name="CASE_SENSITIVITY_TEST(3)"></a>
+<a name="CASE_SENSITIVITY_TEST"></a>
