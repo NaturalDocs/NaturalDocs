@@ -58,8 +58,8 @@ html {
 	height: 100%;
 	}
 
-body.NDIndexPage {
-	background-color: #C0C0C0;
+body.NDFramePage {
+	background-color: `MenuBackgroundColor;
 	margin: 0; padding: 0;
 	}
 
@@ -84,6 +84,15 @@ td {
 	vertical-align: top;
 	}
 
+#NDLoadingNotice {
+	height: 40px;
+	background: URL("images/menu-loading.gif") no-repeat center center;
+	}
+#NDJavaScriptRequiredNotice {
+	margin: 20px;
+	text-align: center;
+	font: 10pt `ParagraphFontFamily;
+	}
 
 
 
@@ -93,7 +102,6 @@ td {
 
 #NDHeader {
 	background-color: `HeaderBackgroundColor;
-	position: fixed;
 	padding: .55em .65em;
 	z-index: 5;
 	}
@@ -121,10 +129,10 @@ td {
 
 #NDMenu {
 	background-color: `MenuBackgroundColor;
-	position: fixed;
 	z-index: 3;
 	overflow: auto;
 	width: 30ex;
+	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
 
 	#NDMenu a:hover,
@@ -206,10 +214,10 @@ td {
 	background-color: `SummaryBackgroundColor;
 	border-left: 1px solid `MenuSummaryBorderColor;
 	border-right: 1px solid `SummaryContentBorderColor;
-	position: fixed;
 	z-index: 2;
 	overflow: auto;
 	width: 30ex;
+	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
 
 	#NDSummary a:hover,
@@ -301,7 +309,6 @@ td {
 
 #NDMenuSizer,
 #NDSummarySizer {
-	position: fixed;
 	cursor: e-resize;
 	width: .8ex;
 	z-index: 101;
@@ -337,9 +344,9 @@ td {
 */
 
 #NDContent {
-	position: fixed;
 	z-index: 1;
 	overflow: hidden;
+	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
 
 	#CFrame {
@@ -685,7 +692,6 @@ body.NDContentPage {
 
 #NDFooter {
 	background-color: `MenuBackgroundColor;
-	position: fixed;
 	font: 7pt `MenuFontFamily;
 	padding: .1em 1ex;
 	text-align: right;
@@ -835,7 +841,6 @@ body.NDHomePage {
 
 #NDMessages {
 	background-color: `MessageBackgroundColor;
-	position: fixed;
 	z-index: 9999;
 	overflow: auto;
 	max-height: 33%;

@@ -49,53 +49,85 @@ var NDFramePage = new function ()
 	*/
 	this.Start = function ()
 		{
+		var ieVersion = NDCore.IEVersion();
+
+		
 		// The default title of the page is the project title.  Save a copy before we mess with it.
+		
 		this.projectTitle = document.title;
 
 
-		var ieVersion = NDCore.IEVersion();
+		// Transition the page from our static default loading screen to the active layout.
+
+		var loadingNotice = document.getElementById("NDLoadingNotice");
+		loadingNotice.parentNode.removeChild(loadingNotice);
+
+		// True or false determines whether it will be made visible later.
+		var pageElements = {
+			NDHeader: true,
+			NDFooter: true,
+			NDMenu: true, 
+			NDSummary: false, // UpdateLayout() will enable this if necessary
+			NDContent: true,
+			NDMessages: false,
+			NDMenuSizer: true, // Needs to be visible, but is styled as transparent unless hovered over
+			NDSummarySizer: true // Needs to be visible, but is styled as transparent unless hovered over
+			};
+		var pageElementPositioning = "fixed";
 
 		// IE 6 doesn't like fixed positioning the way other browsers do.  It works with absolute positioning though.
 		if (ieVersion == 6)
-			{
-			document.getElementsByTagName("html")[0].style.overflow = "hidden";
-
-			var elements = [ "NDHeader", "NDFooter", "NDMenu", "NDSummary", "NDContent", "NDMessages" ];
-
-			for (var i = 0; i < elements.length; i++)
-				{  document.getElementById(elements[i]).style.position = "absolute";  }
-			}
+			{  pageElementPositioning = "absolute";  }
 
 		// Resizing is flaky on IE prior to 8, so just disable it.
 		if (ieVersion < 8)
 			{
 			document.getElementById("NDMenuSizer").style.display = "none";
+			delete pageElements.NDMenuSizer;
+
 			document.getElementById("NDSummarySizer").style.display = "none";
+			delete pageElements.NDSummarySizer;
 			}
 
+		// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always
+		// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does
+		// do it on a different computer even though they're both running the same version and are both XP.  Weird.
+		// Since it shouldn't have any detrimental effect, add it for all IE versions just to be safe.
 		if (ieVersion !== undefined)
+			{  document.getElementsByTagName("html")[0].style.overflow = "hidden";  }
+
+		// Done with the browser tweaks.  Update the layout.
+		for (var pageElementName in pageElements)
 			{
-			// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always
-			// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does
-			// do it on a different computer even though they're both running the same version and are both XP.  Weird.
-			// Since it shouldn't have any detrimental effect, add it for all IE versions just to be safe.
+			var domElement = document.getElementById(pageElementName);
+			domElement.style.position = pageElementPositioning;
 
-			document.getElementsByTagName("html")[0].style.overflow = "hidden";
+			if (pageElements[pageElementName] == true)
+				{  domElement.style.display = "block";  }
 			}
-
-		window.onresize = function () {  NDFramePage.OnResize();  };
-		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
-		this.AddHashChangeHandler();
-
-		NDMenu.Start();
-		NDSummary.Start();
-
-		this.OnHashChange();
 
 		// this.desiredMenuWidth = undefined;
 		// this.desiredSummaryWidth = undefined;
 
 		this.UpdateLayout();
+
+
+		// Attach event handlers
+
+		window.onresize = function () {  NDFramePage.OnResize();  };
+		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
+		this.AddHashChangeHandler();
+
+
+		// Start panels
+
+		NDMenu.Start();
+		NDSummary.Start();
+
+
+		// Load the hash location, if any.
+
+		this.OnHashChange();
 		};
 
 

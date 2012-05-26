@@ -27,6 +27,14 @@ _______________________________________________________________________________
 			<#HSubTitle>...</#HSubTitle>
 		</#NDHeader>
 
+		<#NDLoadingNotice>
+			(visible by default, removed by scripts once loaded)
+		</#NDLoadingNotice>
+
+		<#NDJavaScriptRequiredNotice>
+			(only visible when JavaScript is disabled)
+		</#NDJavaScriptRequiredNotice>
+
 		<#NDMenu>...</#NDMenu>
 
 		<#NDMenuSizer Dragging?>...</#NDMenuSizer>
