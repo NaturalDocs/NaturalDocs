@@ -623,6 +623,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Remove percent signs so they don't conflict with URI encoding.
 			hashPath.Replace('%', ' ');
 
+			// Remove question marks because IE 6 will truncate the hash string if it appears in one.
+			hashPath.Replace('?', ' ');
+
 			// Remove all whitespace unless it separates two text characters.  Replace what remains with underscores.
 			int i = 0;
 			while (i < hashPath.Length)
