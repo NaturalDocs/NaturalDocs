@@ -407,10 +407,10 @@ var NDSummary = new function ()
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
-		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "ShortForm") &&
+		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
-			NDCore.ChangePrototypeToLongForm(prototypes[0]);
+			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);
 			}
 
 		// Make sure the bottom doesn't go off the visible page.  We do this in a separate step because

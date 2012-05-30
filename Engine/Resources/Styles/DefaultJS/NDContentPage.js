@@ -48,7 +48,7 @@ var NDContentPage = new function ()
 		// IE 7 doesn't return the proper measurements for prototype reformatting.
 		if (ieVersion == undefined || ieVersion >= 8)
 			{
-			this.CalculateShortFormPrototypeWidths();
+			this.CalculateWideFormPrototypeWidths();
 			this.ReformatPrototypes();
 
 			window.onresize = function () {  NDContentPage.OnResize();  }
@@ -123,23 +123,23 @@ var NDContentPage = new function ()
 		};
 
 	
-	/* Function: CalculateShortFormPrototypeWidths
-		Goes through all the short form prototypes and records their widths into <shortFormPrototypeWidths>.
+	/* Function: CalculateWideFormPrototypeWidths
+		Goes through all the wide form prototypes and records their widths into <wideFormPrototypeWidths>.
 	*/
-	this.CalculateShortFormPrototypeWidths = function ()
+	this.CalculateWideFormPrototypeWidths = function ()
 		{
 		var prototypes = NDCore.GetElementsByClassName(document, "NDPrototype", "div");
 
 		for (var i = 0; i < prototypes.length; i++)
 			{
-			if (NDCore.HasClass(prototypes[i], "ShortForm"))
+			if (NDCore.HasClass(prototypes[i], "WideForm"))
 				{
 				var id = this.GetPrototypeIDNumber(prototypes[i]);
 
 				if (id != -1)
 					{  
 					// First child is the layout table.
-					this.shortFormPrototypeWidths[id] = prototypes[i].firstChild.offsetWidth;  
+					this.wideFormPrototypeWidths[id] = prototypes[i].firstChild.offsetWidth;  
 					}
 				}
 			}
@@ -147,7 +147,7 @@ var NDContentPage = new function ()
 
 
 	/* Function: ReformatPrototypes
-		Switches each prototype between the short and long form depending on the amount of space it has.
+		Switches each prototype between the wide and narrow form depending on the amount of space it has.
 	*/
 	this.ReformatPrototypes = function ()
 		{
@@ -160,9 +160,9 @@ var NDContentPage = new function ()
 			if (id == -1)
 				{  continue;  }
 
-			var shortFormWidth = this.shortFormPrototypeWidths[id];
+			var wideFormWidth = this.wideFormPrototypeWidths[id];
 
-			if (shortFormWidth == null || shortFormWidth <= 0)
+			if (wideFormWidth == null || wideFormWidth <= 0)
 				{  continue;  }
 
 			var availableWidth = prototypes[i].offsetWidth;
@@ -174,10 +174,10 @@ var NDContentPage = new function ()
 			// Remove an extra pixel since some browsers add the scrollbar when they're exactly equal.
 			availableWidth--;
 
-			if (availableWidth >= shortFormWidth && NDCore.HasClass(prototypes[i], "LongForm"))
-				{  NDCore.ChangePrototypeToShortForm(prototypes[i]);  }
-			else if (availableWidth < shortFormWidth && NDCore.HasClass(prototypes[i], "ShortForm"))
-				{  NDCore.ChangePrototypeToLongForm(prototypes[i]);  }
+			if (availableWidth >= wideFormWidth && NDCore.HasClass(prototypes[i], "NarrowForm"))
+				{  NDCore.ChangePrototypeToWideForm(prototypes[i]);  }
+			else if (availableWidth < wideFormWidth && NDCore.HasClass(prototypes[i], "WideForm"))
+				{  NDCore.ChangePrototypeToNarrowForm(prototypes[i]);  }
 			}
 
 		if (this.reformatPrototypesTimeout != undefined)
@@ -291,10 +291,10 @@ var NDContentPage = new function ()
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
-		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "ShortForm") &&
+		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
-			NDCore.ChangePrototypeToLongForm(prototypes[0]);
+			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);
 			}
 
 		// If we can't fit the tooltip on the page underneath the link, see if we can do it above.  We only do this
@@ -344,10 +344,10 @@ var NDContentPage = new function ()
 	// ________________________________________________________________________
 
 
-	/* var: shortFormPrototypeWidths
-		Maps prototype ID numbers to the pixel widths of their short form.
+	/* var: wideFormPrototypeWidths
+		Maps prototype ID numbers to the pixel widths of their wide form.
 	*/
-	this.shortFormPrototypeWidths = { };
+	this.wideFormPrototypeWidths = { };
 
 	/* var: reformatPrototypesTimeout
 		The ID of the prototype reflow timeout if one is running.

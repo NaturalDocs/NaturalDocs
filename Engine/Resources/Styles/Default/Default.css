@@ -490,22 +490,22 @@ body.NDContentPage {
 		white-space: nowrap;
 		}
 
-	/* Only long form can wrap.  Otherwise the JS to convert between the two
-		won't be able to measure the short form correctly. */
-	.NDPrototype.LongForm td.PBeforeParameters,
-	.NDPrototype.LongForm td.PAfterParameters,
-	.NDPrototype.LongForm td.PDefaultValue {
+	/* Only narrow form can wrap.  Otherwise the JS to convert between the two
+		won't be able to measure the wide form correctly. */
+	.NDPrototype.NarrowForm td.PBeforeParameters,
+	.NDPrototype.NarrowForm td.PAfterParameters,
+	.NDPrototype.NarrowForm td.PDefaultValue {
 		white-space: normal;
 		}
 
-	.LongForm table.PParameters td.last {
+	.NarrowForm table.PParameters td.last {
 		width: 100%;
 		}
-	.LongForm table.PParameters td.first,
-	.LongForm.CStyle td.PAfterParameters {
+	.NarrowForm table.PParameters td.first,
+	.NarrowForm.CStyle td.PAfterParameters {
 		padding-left: 3.5ex;
 		}
-	.ShortForm td.PAfterParameters {
+	.WideForm td.PAfterParameters {
 		vertical-align: bottom;
 		}
 

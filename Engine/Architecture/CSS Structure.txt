@@ -205,11 +205,11 @@ No Parameter Form:
 (end)
 
 
-Short Form:
+Wide Form:
 
 (start code)
 
-	<NDPrototype ShortForm CStyle/PascalStyle #NDPrototype[ID]>
+	<NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -227,16 +227,16 @@ Short Form:
 
 			</tr>
 		</table>
-	</NDPrototype ShortForm CStyle/PascalStyle #NDPrototype[ID]>
+	</NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)
 
 
-Long Form:
+Narrow Form:
 
 (start code)
 
-	<NDPrototype LongForm CStyle/PascalStyle #NDPrototype[ID]>
+	<NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
 		<table>
 			<tr>
 
@@ -258,7 +258,7 @@ Long Form:
 
 			</tr>
 		</table>
-	</NDPrototype LongForm CStyle/PascalStyle #NDPrototype[ID]>
+	</NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)
 

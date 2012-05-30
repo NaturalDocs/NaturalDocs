@@ -150,9 +150,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			// Default to short form so the length can be measured by the JavaScript.  The JS will convert them to long form
+			// Default to wide form so the length can be measured by the JavaScript.  The JS will convert them to narrow form
 			// if necessary.
-			BuildShortForm();
+			BuildWideForm();
 			}
 
 
@@ -521,11 +521,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildShortForm
+		/* Function: BuildWideForm
 		 */
-		protected void BuildShortForm ()
+		protected void BuildWideForm ()
 			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype ShortForm " +
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype WideForm " +
 				parsedPrototype.Style.ToString() + "Style\"><table><tr>");
 
 			TokenIterator start, end;
@@ -559,11 +559,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: BuildLongForm
+		/* Function: BuildNarrowForm
 		 */
-		protected void BuildLongForm ()
+		protected void BuildNarrowForm ()
 			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype LongForm " +
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NarrowForm " +
 				parsedPrototype.Style.ToString() + "Style\"><table>");
 
 			TokenIterator start, end;

@@ -328,17 +328,17 @@ var NDCore = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: ChangePrototypeToLongForm
-		Changes the passed NDPrototype element to use the long form.  The prototype *must* be in the short form.
+	/* Function: ChangePrototypeToNarrowForm
+		Changes the passed NDPrototype element to use the narrow form.  The prototype *must* be in the wide form.
 	*/
-	this.ChangePrototypeToLongForm = function (prototype)
+	this.ChangePrototypeToNarrowForm = function (prototype)
 		{
 		var newPrototype = document.createElement("div");
 		newPrototype.id = prototype.id;
 		newPrototype.className = prototype.className;
 
-		this.RemoveClass(newPrototype, "ShortForm");
-		this.AddClass(newPrototype, "LongForm");
+		this.RemoveClass(newPrototype, "WideForm");
+		this.AddClass(newPrototype, "NarrowForm");
 
 		var table = prototype.firstChild;
 		var newTable = document.createElement("table");
@@ -357,17 +357,17 @@ var NDCore = new function ()
 		};
 
 	
-	/* Function: ChangePrototypeToShortForm
-		Changes the passed NDPrototype element to use the short form.  The prototype *must* be in the long form.
+	/* Function: ChangePrototypeToWideForm
+		Changes the passed NDPrototype element to use the wide form.  The prototype *must* be in the narrow form.
 	*/
-	this.ChangePrototypeToShortForm = function (prototype)
+	this.ChangePrototypeToWideForm = function (prototype)
 		{
 		var newPrototype = document.createElement("div");
 		newPrototype.id = prototype.id;
 		newPrototype.className = prototype.className;
 
-		this.RemoveClass(newPrototype, "LongForm");
-		this.AddClass(newPrototype, "ShortForm");
+		this.RemoveClass(newPrototype, "NarrowForm");
+		this.AddClass(newPrototype, "WideForm");
 
 		var table = prototype.firstChild;
 		var newTable = document.createElement("table");
