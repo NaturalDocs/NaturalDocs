@@ -388,6 +388,7 @@ var NDSummary = new function ()
 		var entry = document.getElementById("SEntry" + this.showingToolTip);
 
 		this.toolTipHolder.innerHTML = this.summaryToolTips[this.showingToolTip];
+		this.toolTipHolder.style.visibility = "hidden";
 		this.toolTipHolder.style.display = "block";
 
 		// The entry's offsets are relative to the summary block, so we have to add them in.
@@ -404,6 +405,7 @@ var NDSummary = new function ()
 
 		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
 
+		// Switch prototype styles if it's getting clipped.
 		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
 		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "ShortForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
@@ -422,6 +424,8 @@ var NDSummary = new function ()
 
 			NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
 			}
+
+		this.toolTipHolder.style.visibility = "visible";
 		};
 
 
