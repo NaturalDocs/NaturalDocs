@@ -678,7 +678,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			html.Append("<a href=\"" + pathToIndex.ToURL() + 
 														'#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
-														':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" target=\"_top\">");
+														':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" " +
+											"target=\"_top\" " +
+											"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
+											"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
+										">");
 
 			html.EntityEncodeAndAppend(linkInterpretation.Text);
 			html.Append("</a>");

@@ -844,6 +844,71 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetNaturalDocsLinksInFiles
+		 * 
+		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.  
+		 * Pass a  <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetNaturalDocsLinksInFiles (IEnumerable<int> fileIDs, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<Link> links = new List<Link>();
+			
+			StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
+																								"FileID, LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
+																							"FROM Links, Contexts " +
+																							"WHERE Links.Type=? " +
+																								"AND Contexts.ContextID = Links.ContextID " +
+																								"AND (");
+			List<object> queryParams = new List<object>();
+			queryParams.Add((int)LinkType.NaturalDocs);
+
+			bool isFirst = true;
+			foreach (int fileID in fileIDs)
+				{
+				if (!isFirst)
+					{  queryText.Append(" OR ");  }
+				else
+					{  isFirst = false;  }
+
+				queryText.Append("Links.FileID=? ");
+				queryParams.Add(fileID);
+				}
+
+			queryText.Append(')');
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Link link = new Link();
+					
+					link.LinkID = query.IntColumn(0);
+					link.Type = (LinkType)query.IntColumn(1);
+					link.TextOrSymbol = query.StringColumn(2);
+					link.ContextID = query.IntColumn(3);
+					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
+					link.FileID = query.IntColumn(5);
+					link.LanguageID = query.IntColumn(6);
+					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(7) );
+					link.TargetTopicID = query.IntColumn(8);
+					link.TargetScore = query.LongColumn(9);
+
+					links.Add(link);
+
+					contextIDCache.Add(link.ContextID, link.Context);
+					}
+				}
+			
+			return links;
+			}
+
+
 		/* Function: GetLinksByEndingSymbol
 		 * 
 		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches 

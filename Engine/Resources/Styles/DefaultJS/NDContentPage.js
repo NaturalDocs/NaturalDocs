@@ -15,6 +15,10 @@
 	obtained separately under the MIT license or the GNU General Public License (GPL).  
 	However, this combined product is still licensed under the terms of the AGPLv3.
 
+	Substitutions:
+
+		`ToolTipDelay = 350
+
 */
 
 "use strict";
@@ -35,15 +39,51 @@ var NDContentPage = new function ()
 	*/
 	this.Start = function ()
 		{
+		var ieVersion = NDCore.IEVersion();
+
+
+		// Resize prototypes to better fit the window.
+
 		// Using onresize completely freezes IE 6, not worth figuring out why.
 		// IE 7 doesn't return the proper measurements for prototype reformatting.
-		if (NDCore.IsIE() && NDCore.IEVersion() < 8)
-			{  return;  }
+		if (ieVersion == undefined || ieVersion >= 8)
+			{
+			this.CalculateShortFormPrototypeWidths();
+			this.ReformatPrototypes();
 
-		this.CalculateShortFormPrototypeWidths();
-		this.ReformatPrototypes();
+			window.onresize = function () {  NDContentPage.OnResize();  }
+			}
 
-		window.onresize = function () {  NDContentPage.OnResize();  }
+
+		// Create the tooltip holder.
+
+		this.toolTipHolder = document.createElement("div");
+		this.toolTipHolder.style.display = "none";
+		this.toolTipHolder.style.position = "fixed";
+
+		if (ieVersion == 6)
+			{  this.toolTipHolder.style.position = "absolute";  }
+
+		this.toolTipHolder.style.zIndex = 20;  // documented in default.css
+		document.body.appendChild(this.toolTipHolder);
+
+
+		// Load the tool tips
+
+		var ttLocation = location.href;
+
+		var hashIndex = ttLocation.indexOf('#');
+		if (hashIndex != -1)
+			{  ttLocation = ttLocation.substr(0, hashIndex);  }
+
+		// Replace .html with -ToolTips.js
+		ttLocation = ttLocation.substr(0, ttLocation.length - 5) + "-ToolTips.js";
+
+		var script = document.createElement("script");
+		script.src = ttLocation;
+		script.type = "text/javascript";
+
+		document.getElementsByTagName("head")[0].appendChild(script);
 		};
 
 
@@ -149,6 +189,157 @@ var NDContentPage = new function ()
 
 
 
+	// Group: Tool Tip Functions
+	// ________________________________________________________________________
+
+
+	/* Function: OnToolTipsLoaded
+	*/
+	this.OnToolTipsLoaded = function (toolTips)
+		{
+		this.toolTips = toolTips;
+
+		if (this.showingToolTip != undefined && this.toolTips[this.showingToolTip] != undefined)
+			{  this.ShowToolTip();  }
+		}
+
+
+	/* Function: OnLinkMouseOver
+	*/
+	this.OnLinkMouseOver = function (event, toolTipID)
+		{
+		var domLink = event.target || event.srcElement;
+
+		if (this.showingToolTip != toolTipID)
+			{
+			this.ResetToolTip();
+			this.showingToolTip = toolTipID;
+			this.domLinkShowingToolTip = domLink;
+
+			if (this.toolTips == undefined)
+				{
+				// OnToolTipsLoaded() will handle it.
+				}
+			else if (this.toolTips[toolTipID] != undefined)
+				{
+				this.toolTipTimeout = setTimeout(function ()
+					{
+					clearTimeout(this.toolTipTimeout);
+					this.toolTipTimeout = undefined;
+
+					NDContentPage.ShowToolTip();
+					}, `ToolTipDelay);
+				}
+			}
+		};
+
+
+	/* Function: OnLinkMouseOut
+	*/
+	this.OnLinkMouseOut = function (event)
+		{
+		var domLink = event.target || event.srcElement;
+
+		if (this.domLinkShowingToolTip == domLink)
+			{  this.ResetToolTip();  }
+		};
+
+
+	/* Function: ShowToolTip
+		Displays the tooltip specified in <showingToolTip>.  Assumes <toolTips> is loaded and an entry already
+		exists for <showingToolTip>.
+	*/
+	this.ShowToolTip = function ()
+		{
+		// IE 6's positioning is all screwy and it's not worth trying to figure out.
+		if (NDCore.IsIE() && NDCore.IEVersion() < 7)
+			{  return;  }
+
+		this.toolTipHolder.innerHTML = this.toolTips[this.showingToolTip];
+		this.toolTipHolder.style.visibility = "hidden";
+		this.toolTipHolder.style.display = "block";
+
+		// We need to reset the x position so that width measurements are taken correctly.
+		NDCore.SetToAbsolutePosition(this.toolTipHolder, 0, undefined, undefined, undefined);
+
+		// In Firefox and IE, scrollTop is applied to the html node (document.body.parentNode).
+		// In Chrome, scrollTop is applied to document.body.
+		var scrollParent = document.body;
+		if (scrollParent.scrollTop == 0)
+			{  scrollParent = scrollParent.parentNode;  }
+
+		var x = this.domLinkShowingToolTip.offsetLeft;
+		var y = this.domLinkShowingToolTip.offsetTop + this.domLinkShowingToolTip.offsetHeight -
+					scrollParent.scrollTop + 5;
+		var newWidth = undefined;
+
+		// If the tooltip goes off the edge of the page, shift it left.  We also want a two pixel border on each side.
+		if (x + this.toolTipHolder.offsetWidth + 2 > document.body.offsetWidth)
+			{  
+			x = document.body.offsetWidth - this.toolTipHolder.offsetWidth - 2;  
+
+			// If x is now negative because the tooltip is too large for the page, force it to the page width.
+			if (x < 2)
+				{
+				x = 2;
+				newWidth = document.body.offsetWidth - 4;
+				}
+			}
+		// Otherwise leave newWidth undefined which will make SetToAbsolutePosition() leave it alone.
+
+		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
+
+		// Switch prototype styles if it's getting clipped.
+		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
+		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "ShortForm") &&
+			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
+			{
+			NDCore.ChangePrototypeToLongForm(prototypes[0]);
+			}
+
+		// If we can't fit the tooltip on the page underneath the link, see if we can do it above.  We only do this
+		// if the whole thing can fit though.  It's better to have just the top part than the bottom part.
+		// Chrome, IE, and Firefox all use the html element here (document.body.parentNode).
+		if (y + this.toolTipHolder.offsetHeight + 2 > document.body.parentNode.offsetHeight)
+			{
+			var newY = this.domLinkShowingToolTip.offsetTop - this.toolTipHolder.offsetHeight -
+							  scrollParent.scrollTop - 5;
+
+			if (newY >= 0)
+				{
+				NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
+				}
+			}
+
+		this.toolTipHolder.style.visibility = "visible";
+		};
+
+
+	/* Function: ResetToolTip
+	*/
+	this.ResetToolTip = function ()
+		{
+		if (this.showingToolTip != undefined)
+			{
+			this.toolTipHolder.style.display = "none";
+
+			// Reset the width.  It may have been set to make sure the tooltip fits entirely inside the window.
+			// We want to allow it to get bigger if the window has more room again.
+			this.toolTipHolder.style.width = null;
+
+			this.lastToolTip = this.showingToolTip;
+			this.showingToolTip = undefined;
+			}
+
+		if (this.toolTipTimeout != undefined)
+			{
+			clearTimeout(this.toolTipTimeout);
+			this.toolTipTimeout = undefined;
+			}
+		};
+
+	
+	
 	// Group: Variables
 	// ________________________________________________________________________
 
@@ -158,11 +349,34 @@ var NDContentPage = new function ()
 	*/
 	this.shortFormPrototypeWidths = { };
 
-
 	/* var: reformatPrototypesTimeout
 		The ID of the prototype reflow timeout if one is running.
 	*/
-	// this.reformatPrototypesTimeout = undefined;
 
+	/* var: toolTips
+		A hash mapping topic IDs to the complete HTML of the tooltip.  Will be undefined if they haven't
+		been loaded yet.
+	*/		
+
+	/* var: showingToolTip
+		The topic ID of the tooltip being displayed, or undefined if none.
+	*/
+
+	/* var: domLinkShowingToolTip
+		If <showingToolTip> is true, this is the DOM element doing it.
+	*/
+
+	/* var: lastToolTip
+		The topic ID of the tooltip that was last shown.  Only relevant when <showingToolTip> is undefined.
+	*/
+
+	/* var: toolTipHolder
+		The DOM element which contains the tooltip.  If none is being shown it will exist but be set to
+		display: none.
+	*/
+
+	/* var: toolTipTimeout
+		The timeout used to display the tooltip.
+	*/
 
 	};

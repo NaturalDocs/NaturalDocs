@@ -2,6 +2,11 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
+ * File: ToolTips.js
+ * 
+ *		Each source file that contains content will also have a tooltips file which uses the same path, only ending in
+ *		-ToolTips.js instead of .html.  When executed, this file calls <NDContentPage.OnToolTipsLoaded()>.  The 
+ *		tooltips are an object mapping the topic IDs to a HTML tooltip.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -54,6 +59,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					haveDBLock = false;
 					
 					DeleteOutputFileIfExists(Source_OutputFile(fileID));
+					DeleteOutputFileIfExists(Source_ToolTipsFile(fileID));
 					DeleteOutputFileIfExists(Source_SummaryFile(fileID));
 					DeleteOutputFileIfExists(Source_SummaryToolTipsFile(fileID));
 
@@ -90,6 +96,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (cancelDelegate())
 						{  return;  }
 
+					// We also need to get the link targets for links appearing inside the link targets.  Wut?  When you 
+					// have a resolved link, a tooltip shows up when you hover over it.  The tooltip is built from the link
+					// targets for the file.  However, if the summary appearing in the tooltip contains any Natural Docs 
+					// links, we need their targets to know what text to show (originaltext, named links, etc.)
+
+					IDObjects.SparseNumberSet inceptionFileIDs = new IDObjects.SparseNumberSet();
+
+					foreach (Topic linkTarget in linkTargets)
+						{
+						if (linkTarget.Summary != null && linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1)
+							{  inceptionFileIDs.Add(linkTarget.FileID);  }
+						}
+
+					IList<Link> inceptionLinks = null;
+					
+					if (!inceptionFileIDs.IsEmpty)
+						{  inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  }
+
+					if (cancelDelegate())
+						{  return;  }
+
 					accessor.ReleaseLock();
 					haveDBLock = false;
 
@@ -121,6 +148,48 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					string title = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
 
 					BuildFile(outputPath, title, html.ToString(), PageType.Content);
+
+
+					// Build the tooltips file
+
+					using (System.IO.StreamWriter file = CreateTextFileAndPath(Source_ToolTipsFile(fileID)))
+						{
+						file.Write("NDContentPage.OnToolTipsLoaded({");
+
+						#if DONT_SHRINK_FILES
+							file.WriteLine();
+						#endif
+
+						for (int i = 0; i < linkTargets.Count; i++)
+							{
+							Topic topic = linkTargets[i];
+							string toolTipHTML = topicBuilder.BuildToolTip(topic, inceptionLinks);
+
+							if (toolTipHTML != null)
+								{
+								#if DONT_SHRINK_FILES
+									file.Write("   ");
+								#endif
+
+								file.Write(topic.TopicID);
+								file.Write(":\"");
+								file.Write(toolTipHTML.StringEscape());
+								file.Write('"');
+
+								if (i != linkTargets.Count - 1)
+									{  file.Write(',');  }
+
+								#if DONT_SHRINK_FILES
+									file.WriteLine();
+								#endif
+								}
+							}
+
+						file.Write("});");
+						}
+
+
+					// Build summary and summary tooltips metadata files
 
 					HTMLSummary summaryBuilder = new HTMLSummary(this);
 					summaryBuilder.Build(topics, links, title, 
@@ -526,6 +595,40 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			string nameString = filename.NameWithoutPath.ToString();
 			return SanitizePath(nameString);
+			}
+
+
+		/* Function: Source_ToolTipsFile
+		 * Returns the tooltips file path of the passed source file ID, or null if none.  It may be null if the <FileSource> 
+		 * that created it no longer exists.
+		 */
+		public Path Source_ToolTipsFile (int fileID)
+			{
+			Files.File file = Engine.Instance.Files.FromID(fileID);
+			Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+			if (fileSource == null)
+				{  return null;  }
+
+			Path relativePath = fileSource.MakeRelative(file.FileName);
+
+			return Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + 
+						 Source_ToolTipsFileNameOnly(relativePath.NameWithoutPath);
+			}
+
+
+		/* Function: Source_ToolTipsFileNameOnly
+		 * Returns the tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
+		 */
+		public static Path Source_ToolTipsFileNameOnly (Path filename)
+			{
+			string nameString = filename.NameWithoutPath.ToString();
+
+			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
+			nameString = nameString.Replace('.', '-');
+			
+			nameString = SanitizePathString(nameString);
+			return nameString + "-ToolTips.js";
 			}
 
 
