@@ -268,9 +268,10 @@ var NDContentPage = new function ()
 		if (scrollParent.scrollTop == 0)
 			{  scrollParent = scrollParent.parentNode;  }
 
-		var x = this.domLinkShowingToolTip.offsetLeft;
-		var y = this.domLinkShowingToolTip.offsetTop + this.domLinkShowingToolTip.offsetHeight -
-					scrollParent.scrollTop + 5;
+		var linkOffsets = NDCore.GetFullOffsets(this.domLinkShowingToolTip);
+
+		var x = linkOffsets.offsetLeft;
+		var y = linkOffsets.offsetTop + this.domLinkShowingToolTip.offsetHeight - scrollParent.scrollTop + 5;
 		var newWidth = undefined;
 
 		// If the tooltip goes off the edge of the page, shift it left.  We also want a two pixel border on each side.
@@ -302,8 +303,7 @@ var NDContentPage = new function ()
 		// Chrome, IE, and Firefox all use the html element here (document.body.parentNode).
 		if (y + this.toolTipHolder.offsetHeight + 2 > document.body.parentNode.offsetHeight)
 			{
-			var newY = this.domLinkShowingToolTip.offsetTop - this.toolTipHolder.offsetHeight -
-							  scrollParent.scrollTop - 5;
+			var newY = linkOffsets.offsetTop - this.toolTipHolder.offsetHeight - scrollParent.scrollTop - 5;
 
 			if (newY >= 0)
 				{

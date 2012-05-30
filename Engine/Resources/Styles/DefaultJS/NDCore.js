@@ -250,6 +250,26 @@ var NDCore = new function ()
 		};
 
 
+	/* Function: GetFullOffsets
+		Returns an object with the cumulative offsetTop and offsetLeft of the passed DOM element, going all the
+		way up to the page body.
+	*/
+	this.GetFullOffsets = function (element)
+		{
+		var result = { offsetTop: element.offsetTop, offsetLeft: element.offsetLeft };
+		element = element.offsetParent;
+
+		while (element != undefined && element.nodeName != "BODY")
+			{
+			result.offsetTop += element.offsetTop;
+			result.offsetLeft += element.offsetLeft;
+			element = element.offsetParent;
+			}
+
+		return result;
+		};
+
+
 
 	// Group: Hash and Path Functions
 	// ________________________________________________________________________
