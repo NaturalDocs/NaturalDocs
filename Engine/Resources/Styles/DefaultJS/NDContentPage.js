@@ -201,7 +201,7 @@ var NDContentPage = new function ()
 
 		if (this.showingToolTip != undefined && this.toolTips[this.showingToolTip] != undefined)
 			{  this.ShowToolTip();  }
-		}
+		};
 
 
 	/* Function: OnLinkMouseOver
