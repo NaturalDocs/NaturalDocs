@@ -48,7 +48,6 @@
     <Compile Include="Source\CodeDB\ChangeNotifier.cs" />
     <Compile Include="Source\CodeDB\ContextIDCache.cs" />
     <Compile Include="Source\CodeDB\ContextReferenceCache.cs" />
-    <Compile Include="Source\CodeDB\EventAccessor.cs" />
     <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
     <Compile Include="Source\CodeDB\Exceptions\FieldMustBeNull.cs" />
     <Compile Include="Source\CodeDB\Exceptions\LockMinimumNotMet.cs" />

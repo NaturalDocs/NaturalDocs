@@ -15,8 +15,6 @@
  *		This interface is used for receiving notifications when the database has changed.  As such, these functions can
  *		be called from any possible thread.  Make sure any structures you interact with are thread safe.
  *		
- *		Do NOT attempt to access CodeDB except through the passed <EventAccessor>.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -35,17 +33,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* Function: OnAddTopic
 		 * Called after a topic is added to the database.
 		 */
-		void OnAddTopic (Topic topic, EventAccessor eventAccessor);
+		void OnAddTopic (Topic topic);
 		
 		/* Function: OnUpdateTopic
 		 * Called after a topic has been updated in the database.
 		 */
-		void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor);
+		void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags);
 		
 		/* Function: OnDeleteTopic
 		 * Called before a topic is deleted from the database.
 		 */
-		void OnDeleteTopic (Topic topic, EventAccessor eventAccessor);
+		void OnDeleteTopic (Topic topic);
 		
 		}
 	}

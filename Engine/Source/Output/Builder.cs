@@ -126,12 +126,11 @@ namespace GregValure.NaturalDocs.Engine.Output
 		// __________________________________________________________________________
 		
 		
-		abstract public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
+		abstract public void OnAddTopic (Topic topic);
 
-		abstract public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags,
-																		 CodeDB.EventAccessor eventAccessor);
+		abstract public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags);
 
-		abstract public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
+		abstract public void OnDeleteTopic (Topic topic);
 
 
 

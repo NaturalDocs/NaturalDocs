@@ -56,16 +56,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		override public void OnAddTopic (Topic topic)
 			{
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags,
-																		CodeDB.EventAccessor eventAccessor)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
 			{
 			}
 
-		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		override public void OnDeleteTopic (Topic topic)
 			{
 			}
 

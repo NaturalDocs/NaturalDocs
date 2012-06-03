@@ -24,17 +24,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			}
 
-		public void OnAddTopic (Topic topic, EventAccessor eventAccessor)
+		public void OnAddTopic (Topic topic)
 			{
 			System.Console.WriteLine("--- Added " + topic.Title + AddPath(topic.FileID));
 			}
 
-		public void OnUpdateTopic (Topic oldTopic, int newCommentLineNumber, int newCodeLineNumber, string newBody, EventAccessor eventAccessor)
+		public void OnUpdateTopic (Topic oldTopic, int newCommentLineNumber, int newCodeLineNumber, string newBody)
 			{
 			System.Console.WriteLine("--- Updated " + oldTopic.Title + AddPath(oldTopic.FileID));
 			}
 
-		public void OnDeleteTopic (Topic topic, EventAccessor eventAccessor)
+		public void OnDeleteTopic (Topic topic)
 			{
 			System.Console.WriteLine("--- Deleted " + topic.Title + AddPath(topic.FileID));
 			}

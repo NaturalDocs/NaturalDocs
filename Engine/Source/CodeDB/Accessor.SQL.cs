@@ -339,10 +339,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
-					EventAccessor eventAccessor = new EventAccessor(this);
-					
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnAddTopic(topic, eventAccessor);  }
+						{  changeWatcher.OnAddTopic(topic);  }
 					}
 				}
 			finally
@@ -425,10 +423,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
-					EventAccessor eventAccessor = new EventAccessor(this);
-					
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnUpdateTopic(oldTopic, newTopic, changeFlags, eventAccessor);  }
+						{  changeWatcher.OnUpdateTopic(oldTopic, newTopic, changeFlags);  }
 					}
 				}
 			finally
@@ -504,10 +500,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
-					EventAccessor eventAccessor = new EventAccessor(this);
-					
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnDeleteTopic(topic, eventAccessor);  }
+						{  changeWatcher.OnDeleteTopic(topic);  }
 					}
 				}
 			finally

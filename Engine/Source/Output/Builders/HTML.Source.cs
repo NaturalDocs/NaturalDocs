@@ -626,7 +626,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		override public void OnAddTopic (Topic topic)
 			{
 			lock (writeLock)
 				{
@@ -634,8 +634,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags,
-																		CodeDB.EventAccessor eventAccessor)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
 			{
 			// We don't care about line number changes.  They don't affect the output.
 			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber);
@@ -649,7 +648,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		override public void OnDeleteTopic (Topic topic)
 			{
 			lock (writeLock)
 				{
