@@ -188,11 +188,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				CreateDatabase();
 				}
 				
-			
-			#if SHOW_TOPIC_CHANGES
-				AddChangeWatcher( new ChangeNotifier() );
-			#endif
-				
 			return true;
 			}
 			

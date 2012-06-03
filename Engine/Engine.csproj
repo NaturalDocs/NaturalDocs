@@ -45,7 +45,6 @@
     <Compile Include="Source\BinaryFile.cs" />
     <Compile Include="Source\CodeDB\Accessor.cs" />
     <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
-    <Compile Include="Source\CodeDB\ChangeNotifier.cs" />
     <Compile Include="Source\CodeDB\ContextIDCache.cs" />
     <Compile Include="Source\CodeDB\ContextReferenceCache.cs" />
     <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
