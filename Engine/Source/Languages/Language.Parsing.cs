@@ -479,6 +479,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: IsBuiltInType
+		 * Returns whether the text between the iterators is a built-in type such as "int" as opposed to a user-defined 
+		 * type.
+		 */
+		public bool IsBuiltInType (TokenIterator start, TokenIterator end)
+			{
+			return IsBuiltInType( start.Tokenizer.TextBetween(start, end) );
+			}
+
+
 			
 		// Group: Overridable Parsing Stages
 		// Override these stages in subclasses as necessary.
