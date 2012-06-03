@@ -69,7 +69,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Symbols;
+using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.Files
@@ -854,7 +857,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 
 
-				// Parse the topic bodies for Natural Docs links
+				// Parse the topic bodies for Natural Docs links and the prototypes for type links
 
 				if (topics != null && topics.Count > 0)
 					{
@@ -863,6 +866,14 @@ namespace GregValure.NaturalDocs.Engine.Files
 						if (topic.Body != null)
 							{
 							ExtractBodyLinks(topic, links);
+
+							if (cancelDelegate())
+								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+							}
+
+						if (topic.Prototype != null)
+							{
+							ExtractTypeLinks(topic, links);
 
 							if (cancelDelegate())
 								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
@@ -1263,20 +1274,70 @@ namespace GregValure.NaturalDocs.Engine.Files
 		 */
 		protected void ExtractBodyLinks (Topic topic, LinkSet linkSet)
 			{
-			if (topic.Body != null)
-				{
-				NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+			if (topic.Body == null)
+				{  return;  }
 
-				if (iterator.GoToFirstTag("<link type=\"naturaldocs\""))
+			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+
+			if (iterator.GoToFirstTag("<link type=\"naturaldocs\""))
+				{
+				do
 					{
+					Link link = new Link();
+
+					// ignore LinkID
+					link.Type = LinkType.NaturalDocs;
+					link.Text = iterator.Property("originaltext");
+					link.Context = topic.BodyContext;
+					// ignore contextID
+					link.FileID = topic.FileID;
+					link.LanguageID = topic.LanguageID;
+					// ignore EndingSymbol
+					// ignore TargetTopicID
+					// ignore TargetScore
+
+					linkSet.Add(link);
+					}
+				while (iterator.GoToNextTag("<link type=\"naturaldocs\""));
+				}
+			}
+
+			
+		/* Function: ExtractTypeLinks
+		 * Goes through the prototype of the passed <Topic> and adds any type links it finds to <LinkSet>.
+		 */
+		protected void ExtractTypeLinks (Topic topic, LinkSet linkSet)
+			{
+			if (topic.Prototype == null)
+				{  return;  }
+
+			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+
+			TokenIterator symbolStart = topic.ParsedPrototype.Tokenizer.FirstToken;
+			TokenIterator symbolEnd;
+
+			while (symbolStart.IsInBounds)
+				{
+				if (symbolStart.PrototypeParsingType == PrototypeParsingType.Type ||
+					 symbolStart.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
+					{
+					symbolEnd = symbolStart;
+						
 					do
+						{  symbolEnd.Next();  }
+					while (symbolEnd.PrototypeParsingType == PrototypeParsingType.Type ||
+								symbolEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier);
+
+					if (language.IsBuiltInType(symbolStart, symbolEnd) == false)
 						{
 						Link link = new Link();
 
 						// ignore LinkID
-						link.Type = LinkType.NaturalDocs;
-						link.Text = iterator.Property("originaltext");
-						link.Context = topic.BodyContext;
+						link.Type = LinkType.Type;
+						link.Symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved( 
+																										symbolStart.Tokenizer.TextBetween(symbolStart, symbolEnd) );
+						link.Context = topic.PrototypeContext;
+						// ignore contextID
 						link.FileID = topic.FileID;
 						link.LanguageID = topic.LanguageID;
 						// ignore EndingSymbol
@@ -1285,8 +1346,12 @@ namespace GregValure.NaturalDocs.Engine.Files
 
 						linkSet.Add(link);
 						}
-					while (iterator.GoToNextTag("<link type=\"naturaldocs\""));
+
+					symbolStart = symbolEnd;
 					}
+
+				else
+					{  symbolStart.Next();  }
 				}
 			}
 

@@ -45,7 +45,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
 	{
-	public class HTMLTopic
+	public class HTMLTopic : HTMLElement
 		{
 
 		// Group: Functions
@@ -54,12 +54,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Constructor: HTMLTopic
 		 */
-		public HTMLTopic (Builders.HTML htmlBuilder)
+		public HTMLTopic (Builders.HTML htmlBuilder) : base (htmlBuilder)
 			{
-			this.htmlBuilder = htmlBuilder;
-
-			html = null;
-			topic = null;
 			cachedHTMLPrototypeBuilder = null;
 			isToolTip = false;
 			}
@@ -86,7 +82,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.topic = topic;
 			this.links = links;
 			this.linkTargets = linkTargets;
-			this.html = output;
+			this.htmlOutput = output;
 			isToolTip = false;
 
 
@@ -95,7 +91,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
-			html.Append(
+			htmlOutput.Append(
 				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true).EntityEncode() + "\"></a>" +
 				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
@@ -117,21 +113,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					if (topic.Prototype != null)
 						{
-						html.Append("\r\n ");
+						htmlOutput.Append("\r\n ");
 
 						if (cachedHTMLPrototypeBuilder == null)
 							{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
 
-						cachedHTMLPrototypeBuilder.Build(topic, true, html);
+						cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);
 						}
 
 					if (topic.Body != null)
 						{
-						html.Append("\r\n ");
+						htmlOutput.Append("\r\n ");
 						BuildBody();
 						}
 
-				html.Append(
+				htmlOutput.Append(
 				"\r\n" +
 				"</div>"
 				);
@@ -157,7 +153,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Setup
 
 			this.topic = topic;
-			this.html = new StringBuilder();
+			this.htmlOutput = new StringBuilder();
 			isToolTip = true;
 			this.links = links;
 			this.linkTargets = null;
@@ -168,22 +164,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
-			html.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
+			htmlOutput.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
 
 				if (topic.Prototype != null)
 					{  
 					if (cachedHTMLPrototypeBuilder == null)
 						{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
 
-					cachedHTMLPrototypeBuilder.Build(topic, false, html);  
+					cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  
 					}
 
 				if (topic.Summary != null)
 					{  BuildSummary();  }
 
-			html.Append("</div>");
+			htmlOutput.Append("</div>");
 
-			return html.ToString();
+			return htmlOutput.ToString();
 			}
 
 
@@ -191,9 +187,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildTitle ()
 			{
-			html.Append("<div class=\"CTitle\">");
-			htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, html);
-			html.Append("</div>");
+			htmlOutput.Append("<div class=\"CTitle\">");
+			htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
+			htmlOutput.Append("</div>");
 			}
 
 
@@ -201,7 +197,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildBody ()
 			{
-			html.Append("<div class=\"CBody\">");
+			htmlOutput.Append("<div class=\"CBody\">");
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
 
@@ -214,9 +210,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					case NDMarkup.Iterator.ElementType.Text:
 						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
-							{  iterator.AppendTo(html);  }
+							{  iterator.AppendTo(htmlOutput);  }
 						else
-							{  html.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
+							{  htmlOutput.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.ParagraphTag:
@@ -229,17 +225,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					case NDMarkup.Iterator.ElementType.GTEntityChar:
 					case NDMarkup.Iterator.ElementType.AmpEntityChar:
 					case NDMarkup.Iterator.ElementType.QuoteEntityChar:
-						iterator.AppendTo(html);
+						iterator.AppendTo(htmlOutput);
 						break;
 
 					case NDMarkup.Iterator.ElementType.HeadingTag:
 						if (iterator.IsOpeningTag)
 							{  
-							html.Append("<div class=\"CHeading\">");
+							htmlOutput.Append("<div class=\"CHeading\">");
 							underParameterHeading = (iterator.Property("type") == "parameters");
 							}
 						else
-							{  html.Append("</div>");  }
+							{  htmlOutput.Append("</div>");  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.PreTag:
@@ -259,7 +255,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						string ndMarkupCode = topic.Body.Substring(startOfCode.RawTextIndex, iterator.RawTextIndex - startOfCode.RawTextIndex);
 						string textCode = NDMarkupCodeToText(ndMarkupCode);
 
-						html.Append("<pre>");
+						htmlOutput.Append("<pre>");
 
 						if (preType == "code")
 							{
@@ -276,31 +272,32 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 							Tokenizer code = new Tokenizer(textCode);
 							preLanguage.SyntaxHighlight(code);
-							htmlBuilder.BuildSyntaxHighlightedText(code.FirstToken, code.LastToken, html);
+							BuildSyntaxHighlightedText(code.FirstToken, code.LastToken);
 							}
 						else
 							{  
 							string htmlCode = textCode.EntityEncode();
 							htmlCode = StringExtensions.LineBreakRegex.Replace(htmlCode, "<br />");
-							html.Append(htmlCode);
+							htmlOutput.Append(htmlCode);
 							}
 
-						html.Append("</pre>");
+						htmlOutput.Append("</pre>");
 						break;
 
 					case NDMarkup.Iterator.ElementType.DefinitionListTag:
 						if (iterator.IsOpeningTag)
-							{  html.Append("<table class=\"CDefinitionList\">");  }
+							{  htmlOutput.Append("<table class=\"CDefinitionList\">");  }
 						else
-							{  html.Append("</table>");  }
+							{  htmlOutput.Append("</table>");  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.DefinitionListEntryTag:
 						if (iterator.IsOpeningTag)
 							{  
-							html.Append("<tr><td class=\"CDLEntry\">");
+							htmlOutput.Append("<tr><td class=\"CDLEntry\">");
 							parameterListSymbol = null;
 
+							// If we're using a Parameters: heading, store the entry symbol in parameterListSymbol
 							if (underParameterHeading)
 								{
 								NDMarkup.Iterator temp = iterator;
@@ -316,6 +313,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 									temp.Next();  
 									}
 
+								// If the entry name starts with any combination of $, @, or % characters, strip them off.
 								int firstNonSymbolIndex = 0;
 								while (firstNonSymbolIndex < symbol.Length)
 									{
@@ -336,6 +334,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							}
 						else
 							{  
+							// See if parameterListSymbol matches any of the prototype parameter names
 							if (parameterListSymbol != null && topic.Prototype != null)
 								{
 								TokenIterator start, end;
@@ -352,6 +351,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 										}
 									}
 
+								// If so, include the type under the entry in the HTML
 								if (matchedParameter != -1)
 									{
 									TokenIterator extensionStart, extensionEnd;
@@ -363,25 +363,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 										 (end.RawTextIndex - start.RawTextIndex > 1 ||
 										   (start.Character != '$' && start.Character != '@' && start.Character != '%')) )
 										{
-										html.Append("<div class=\"CDLEntryType\">");
+										htmlOutput.Append("<div class=\"CDLEntryType\">");
 									
-										htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html);
-										htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(extensionStart, extensionEnd, html);
+										BuildTypeLinkedAndSyntaxHighlightedText(start, end);
+										BuildTypeLinkedAndSyntaxHighlightedText(extensionStart, extensionEnd);
 
-										html.Append("</div>");
+										htmlOutput.Append("</div>");
 										}
 									}
 								}
 
-							html.Append("</td>");
+							htmlOutput.Append("</td>");
 							}
 						break;
 
 					case NDMarkup.Iterator.ElementType.DefinitionListDefinitionTag:
 						if (iterator.IsOpeningTag)
-							{  html.Append("<td class=\"CDLDefinition\">");  }
+							{  htmlOutput.Append("<td class=\"CDLDefinition\">");  }
 						else
-							{  html.Append("</td></tr>");  }
+							{  htmlOutput.Append("</td></tr>");  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.LinkTag:
@@ -397,14 +397,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
-						html.Append( "<i>" + iterator.String.ToHTML() + "</i>" );
+						htmlOutput.Append( "<i>" + iterator.String.ToHTML() + "</i>" );
 						break;
 					}
 
 				iterator.Next();
 				}
 
-			html.Append("</div>");
+			htmlOutput.Append("</div>");
 			}
 
 
@@ -412,7 +412,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSummary ()
 			{
-			html.Append("<div class=\"TTSummary\">");
+			htmlOutput.Append("<div class=\"TTSummary\">");
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Summary);
 
@@ -422,9 +422,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					case NDMarkup.Iterator.ElementType.Text:
 						if (topic.Body.IndexOf("  ", iterator.RawTextIndex, iterator.Length) == -1)
-							{  iterator.AppendTo(html);  }
+							{  iterator.AppendTo(htmlOutput);  }
 						else
-							{  html.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
+							{  htmlOutput.Append( iterator.String.ConvertMultipleWhitespaceChars() );  }
 						break;
 
 					case NDMarkup.Iterator.ElementType.BoldTag:
@@ -434,7 +434,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					case NDMarkup.Iterator.ElementType.GTEntityChar:
 					case NDMarkup.Iterator.ElementType.AmpEntityChar:
 					case NDMarkup.Iterator.ElementType.QuoteEntityChar:
-						iterator.AppendTo(html);
+						iterator.AppendTo(htmlOutput);
 						break;
 
 					case NDMarkup.Iterator.ElementType.LinkTag:
@@ -453,7 +453,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				iterator.Next();
 				}
 
-			html.Append("</div>");
+			htmlOutput.Append("</div>");
 			}
 
 
@@ -468,34 +468,34 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			
 			if (!isToolTip)
 				{
-				html.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
-				html.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
-				html.Append("'+'");
-				html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
-				html.Append("'+'\\u0040'+'");
-				html.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
-				html.Append("'+'");
-				html.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
-				html.Append("';return false;\">");
+				htmlOutput.Append("<a href=\"#\" onclick=\"javascript:location.href='ma\\u0069'+'lto\\u003a'+'");
+				htmlOutput.Append( EMailSegmentForJavaScriptString( address.Substring(0, cutPoint1) ));
+				htmlOutput.Append("'+'");
+				htmlOutput.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint1, atIndex - cutPoint1) ));
+				htmlOutput.Append("'+'\\u0040'+'");
+				htmlOutput.Append( EMailSegmentForJavaScriptString( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
+				htmlOutput.Append("'+'");
+				htmlOutput.Append( EMailSegmentForJavaScriptString( address.Substring(cutPoint2, address.Length - cutPoint2) ));
+				htmlOutput.Append("';return false;\">");
 				}
 
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  html.EntityEncodeAndAppend(text);  }
+				{  htmlOutput.EntityEncodeAndAppend(text);  }
 			else
 				{
-				html.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
-				html.Append("<span style=\"display: none\">[xxx]</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(cutPoint1, atIndex - cutPoint1) ));
-				html.Append("<span>&#64;</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
-				html.Append("<span style=\"display: none\">[xxx]</span>");
-				html.Append( EMailSegmentForHTML( address.Substring(cutPoint2, address.Length - cutPoint2) ));
+				htmlOutput.Append( EMailSegmentForHTML( address.Substring(0, cutPoint1) ));
+				htmlOutput.Append("<span style=\"display: none\">[xxx]</span>");
+				htmlOutput.Append( EMailSegmentForHTML( address.Substring(cutPoint1, atIndex - cutPoint1) ));
+				htmlOutput.Append("<span>&#64;</span>");
+				htmlOutput.Append( EMailSegmentForHTML( address.Substring(atIndex + 1, cutPoint2 - (atIndex + 1)) ));
+				htmlOutput.Append("<span style=\"display: none\">[xxx]</span>");
+				htmlOutput.Append( EMailSegmentForHTML( address.Substring(cutPoint2, address.Length - cutPoint2) ));
 				}
 
 			if (!isToolTip)
-				{  html.Append("</a>");  }
+				{  htmlOutput.Append("</a>");  }
 			}
 
 		/* Function: EMailSegmentForJavaScriptString
@@ -524,15 +524,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (!isToolTip)
 				{
-				html.Append("<a href=\"");
-					html.EntityEncodeAndAppend(target);
-				html.Append("\" target=\"_top\">");
+				htmlOutput.Append("<a href=\"");
+					htmlOutput.EntityEncodeAndAppend(target);
+				htmlOutput.Append("\" target=\"_top\">");
 				}
 
 			string text = iterator.Property("text");
 
 			if (text != null)
-				{  html.EntityEncodeAndAppend(text);  }
+				{  htmlOutput.EntityEncodeAndAppend(text);  }
 			else
 				{
 				int startIndex = 0;
@@ -549,8 +549,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  endOfProtocolIndex++;  }
 					while (endOfProtocolIndex < target.Length && target[endOfProtocolIndex] == '/');
 
-					html.EntityEncodeAndAppend( target.Substring(0, endOfProtocolIndex) );
-					html.Append("&#8203;");  // Zero width space
+					htmlOutput.EntityEncodeAndAppend( target.Substring(0, endOfProtocolIndex) );
+					htmlOutput.Append("&#8203;");  // Zero width space
 					startIndex = endOfProtocolIndex;
 					}
 
@@ -568,18 +568,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					else if (breakIndex - startIndex > MaxUnbrokenURLCharacters)
 						{  breakIndex = startIndex + MaxUnbrokenURLCharacters;  }
 
-					html.EntityEncodeAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
-					html.Append("&#8203;");  // Zero width space
-					html.EntityEncodeAndAppend(target[breakIndex]);
+					htmlOutput.EntityEncodeAndAppend( target.Substring(startIndex, breakIndex - startIndex) );
+					htmlOutput.Append("&#8203;");  // Zero width space
+					htmlOutput.EntityEncodeAndAppend(target[breakIndex]);
 
 					startIndex = breakIndex + 1;
 					}
 
-				html.EntityEncodeAndAppend( target.Substring(startIndex) );
+				htmlOutput.EntityEncodeAndAppend( target.Substring(startIndex) );
 				}
 
 			if (!isToolTip)
-				{  html.Append("</a>");  }
+				{  htmlOutput.Append("</a>");  }
 			}
 
 
@@ -621,7 +621,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (fullLink.TargetTopicID == 0)
 				{
-				html.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				htmlOutput.EntityEncodeAndAppend(iterator.Property("originaltext"));
 				return;
 				}
 
@@ -645,7 +645,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (isToolTip)
 				{
-				html.EntityEncodeAndAppend(linkInterpretation.Text);
+				htmlOutput.EntityEncodeAndAppend(linkInterpretation.Text);
 				return;
 				}
 
@@ -676,7 +676,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			Path indexFile = htmlBuilder.OutputFolder + "/index.html";
 			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
 
-			html.Append("<a href=\"" + pathToIndex.ToURL() + 
+			htmlOutput.Append("<a href=\"" + pathToIndex.ToURL() + 
 														'#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
 														':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" " +
 											"target=\"_top\" " +
@@ -684,8 +684,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 											"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
 										">");
 
-			html.EntityEncodeAndAppend(linkInterpretation.Text);
-			html.Append("</a>");
+			htmlOutput.EntityEncodeAndAppend(linkInterpretation.Text);
+			htmlOutput.Append("</a>");
 			}
 
 
@@ -705,31 +705,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// Group: Variables
 		// __________________________________________________________________________
 
-
-		/* var: htmlBuilder
-		 * The parent <Output.Builders.HTML> object.
-		 */
-		protected Builders.HTML htmlBuilder;
-
-		/* var: html
-		 * The StringBuilder we want to append the prototype to.
-		 */
-		protected StringBuilder html;
-
-		/* var: topic
-		 * The <Topic> that contains the prototype we're building.
-		 */
-		protected Topic topic;
-
-		/* var: links
-		 * A list of <Links> that will contain any links needed by <topic>.
-		 */
-		protected IList<Link> links;
-
-		/* var: linkTargets
-		 * A list of <Topics> that will contain any topics used as targets in <links>.
-		 */
-		protected IList<Topic> linkTargets;
 
 		/* var: cachedHTMLPrototypeBuilder
 		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Since this

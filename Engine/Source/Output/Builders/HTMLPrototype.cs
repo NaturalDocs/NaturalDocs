@@ -35,13 +35,15 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
+using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
 	{
-	public class HTMLPrototype
+	public class HTMLPrototype : HTMLElement
 		{
 
 		// Group: Types
@@ -77,12 +79,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Constructor: HTMLPrototype
 		 */
-		public HTMLPrototype (Builders.HTML htmlBuilder)
+		public HTMLPrototype (Builders.HTML htmlBuilder) : base (htmlBuilder)
 			{
-			this.htmlBuilder = htmlBuilder;
-
-			htmlOutput = null;
-			topic = null;
 			parsedPrototype = null;
 			language = null;
 			columnIndexes = null;
@@ -94,24 +92,36 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Build
+		 * 
 		 * Builds the HTML for the <Topic's> prototype and returns it as a string.  If the string is going to be appended to
 		 * a StringBuilder, it is more efficient to use the other function.
+		 * 
+		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
+		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
+		 * links, set both to null.
 		 */
-		public string Build (Topic topic, bool addLinks)
+		public string Build (Topic topic, IList<Link> links, IList<Topic> linkTargets)
 			{
 			StringBuilder output = new StringBuilder();
-			Build(topic, addLinks, output);
+			Build(topic, links, linkTargets, output);
 			return output.ToString();
 			}
 
 
 		/* Function: Build
+		 * 
 		 * Builds the HTML for the <Topic's> prototype and appends it to the passed StringBuilder.
+		 * 
+		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
+		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
+		 * links, set both to null.
 		 */
-		public void Build (Topic topic, bool addLinks, StringBuilder output)
+		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output)
 			{
 			this.topic = topic;
-			this.addLinks = addLinks;
+			this.addLinks = (links != null && linkTargets != null);
+			this.links = links;
+			this.linkTargets = linkTargets;
 			htmlOutput = output;
 
 			language = Engine.Instance.Languages.FromID(topic.LanguageID);
@@ -408,9 +418,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (type == ColumnType.Name)
 				{  html.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
 			else if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, html, true);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, html);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, html);  }
+				{  BuildSyntaxHighlightedText(start, end, html);  }
 
 			if (type == ColumnType.TypeNameSeparator ||
 				 type == ColumnType.DefaultValueSeparator)
@@ -513,9 +523,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			parsedPrototype.GetCompletePrototype(out start, out end);
 
 			if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildSyntaxHighlightedText(start, end);  }
 
 			htmlOutput.Append("</div>");
 			}
@@ -534,9 +544,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput.Append("<td class=\"PBeforeParameters\">");
 
 			if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildSyntaxHighlightedText(start, end);  }
 
 			htmlOutput.Append("</td>");
 
@@ -549,9 +559,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput.Append("<td class=\"PAfterParameters\">");
 
 			if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildSyntaxHighlightedText(start, end);  }
 
 			htmlOutput.Append("</td>");
 
@@ -572,9 +582,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput.Append("<tr><td class=\"PBeforeParameters\">");
 
 			if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildSyntaxHighlightedText(start, end);  }
 
 			htmlOutput.Append("</td></tr>");
 
@@ -587,9 +597,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			htmlOutput.Append("<tr><td class=\"PAfterParameters\">");
 
 			if (addLinks)
-				{  htmlBuilder.BuildTypeLinkedAndSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
 			else
-				{  htmlBuilder.BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  BuildSyntaxHighlightedText(start, end);  }
 
 			htmlOutput.Append("</td></tr>");
 
@@ -636,21 +646,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// Group: Variables
 		// __________________________________________________________________________
 
-
-		/* var: htmlBuilder
-		 * The parent <Output.Builders.HTML> object.
-		 */
-		protected Builders.HTML htmlBuilder;
-
-		/* var: htmlOutput
-		 * The StringBuilder we want to append the prototype to.
-		 */
-		protected StringBuilder htmlOutput;
-
-		/* var: topic
-		 * The <Topic> that contains the prototype we're building.
-		 */
-		protected Topic topic;
 
 		/* var: parsedPrototype
 		 * The prototype as a <ParsedPrototype> object.
