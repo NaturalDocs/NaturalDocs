@@ -70,6 +70,48 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Enum: IgnoreFields
+		 * 
+		 * When querying topics from the database, not all fields may be needed in all circumstances.  This is a
+		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
+		 * in debug builds, if you try to access any of these fields an exception will be thrown.
+		 * 
+		 * Fields can be specified individually, but these precombined values are also available:
+		 * 
+		 *		OnlyContextIDs - Combines PrototypeContext and BodyContext but leaves their IDs in place.  If you're
+		 *										comparing two topics from a database where the IDs are guaranteed to be set, this
+		 *										prevents an extra lookup.
+		 */
+		[Flags]
+		public enum IgnoreFields : uint
+			{
+			None = 0x00000000,
+
+			TopicID = 0x00000001,
+			Title = 0x00000002,
+			Body = 0x00000004,
+
+			Summary = 0x00000010,
+			Prototype = 0x00000020,
+			Symbol = 0x00000040,
+			SymbolDefinitionNumber = 0x00000080,
+			TopicTypeID = 0x00000100,
+			AccessLevel = 0x00000200,
+			Tags = 0x00000400,
+			FileID = 0x00000800,
+			CommentLineNumber = 0x00001000,
+			CodeLineNumber = 0x00002000,
+			LanguageID = 0x00004000,
+			PrototypeContext = 0x00008000,
+			PrototypeContextID = 0x00010000,
+			BodyContext = 0x00020000,
+			BodyContextID = 0x00040000,
+
+			OnlyContextIDs = PrototypeContext | BodyContext,
+			OnlyBodyLength = Body
+			}
+
+
 			
 		// Group: Functions
 		// __________________________________________________________________________
@@ -105,6 +147,8 @@ namespace GregValure.NaturalDocs.Engine
 			prototypeContextID = 0;
 			bodyContext = new ContextString();
 			bodyContextID = 0;
+
+			ignoredFields = IgnoreFields.None;
 			}
 			
 			
@@ -150,6 +194,11 @@ namespace GregValure.NaturalDocs.Engine
 			// prototypeContextID - Wouldn't be known coming from a parse.
 			// bodyContext - Not important in linking.
 			// bodyContextID - Wouldn't be known coming from a parse.
+
+			#if DEBUG
+			if (ignoredFields != IgnoreFields.None || other.ignoredFields != IgnoreFields.None)
+				{  throw new InvalidOperationException("Cannot compare topics that have ignored fields.");  }
+			#endif
 
 			if (	
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
@@ -221,6 +270,11 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public void AddTagID (int tagID)
 			{
+			#if DEBUG
+			if ((ignoredFields & IgnoreFields.Tags) != 0)
+				{  throw new InvalidOperationException("Tried to access AddTagID when tags were ignored.");  }
+			#endif
+
 			if (tags == null)
 				{  tags = new IDObjects.NumberSet();  }
 				
@@ -233,6 +287,11 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool HasTagID (int tagID)
 			{
+			#if DEBUG
+			if ((ignoredFields & IgnoreFields.Tags) != 0)
+				{  throw new InvalidOperationException("Tried to access HasTagID when tags were ignored.");  }
+			#endif
+
 			if (tags == null)
 				{  return false;  }
 				
@@ -253,9 +312,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int TopicID
 			{
 			get
-				{  return topicID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicID) != 0)
+					{  throw new InvalidOperationException("Tried to access TopicID when that field was ignored.");  }
+				#endif
+
+				return topicID;  
+				}
 			set
-				{  topicID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicID) != 0)
+					{  throw new InvalidOperationException("Tried to access TopicID when that field was ignored.");  }
+				#endif
+
+				topicID = value;  
+				}
 			}
 			
 			
@@ -265,9 +338,21 @@ namespace GregValure.NaturalDocs.Engine
 		public string Title
 			{
 			get
-				{  return title;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Title) != 0)
+					{  throw new InvalidOperationException("Tried to access Title when that field was ignored.");  }
+				#endif
+
+				return title;  
+				}
 			set
 				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Title) != 0)
+					{  throw new InvalidOperationException("Tried to access Title when that field was ignored.");  }
+				#endif
+
 				title = value;
 				titleParametersGenerated = false;
 				}
@@ -280,9 +365,23 @@ namespace GregValure.NaturalDocs.Engine
 		public string Body
 			{
 			get
-				{  return body;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Body) != 0)
+					{  throw new InvalidOperationException("Tried to access Body when that field was ignored.");  }
+				#endif
+
+				return body;  
+				}
 			set
-				{  body = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Body) != 0)
+					{  throw new InvalidOperationException("Tried to access Body when that field was ignored.");  }
+				#endif
+
+				body = value;  
+				}
 			}
 
 
@@ -292,9 +391,23 @@ namespace GregValure.NaturalDocs.Engine
 		public string Summary
 			{
 			get
-				{  return summary;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Summary) != 0)
+					{  throw new InvalidOperationException("Tried to access Summary when that field was ignored.");  }
+				#endif
+
+				return summary;  
+				}
 			set
-				{  summary = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Summary) != 0)
+					{  throw new InvalidOperationException("Tried to access Summary when that field was ignored.");  }
+				#endif
+
+				summary = value;  
+				}
 			}
 
 
@@ -304,9 +417,21 @@ namespace GregValure.NaturalDocs.Engine
 		public string Prototype
 			{
 			get
-				{  return prototype;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Prototype) != 0)
+					{  throw new InvalidOperationException("Tried to access Prototype when that field was ignored.");  }
+				#endif
+
+				return prototype;  
+				}
 			set
 				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Prototype) != 0)
+					{  throw new InvalidOperationException("Tried to access Prototype when that field was ignored.");  }
+				#endif
+
 				prototype = value;  
 				parsedPrototype = null;
 				prototypeParametersGenerated = false;
@@ -320,9 +445,23 @@ namespace GregValure.NaturalDocs.Engine
 		public SymbolString Symbol
 			{
 			get
-				{  return symbol;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Symbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
+				#endif
+
+				return symbol;  
+				}
 			set
-				{  symbol = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Symbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
+				#endif
+
+				symbol = value;  
+				}
 			}
 
 
@@ -334,9 +473,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int SymbolDefinitionNumber
 			{
 			get
-				{  return symbolDefinitionNumber;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.SymbolDefinitionNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access SymbolDefinitionNumber when that field was ignored.");  }
+				#endif
+
+				return symbolDefinitionNumber;
+				}
 			set
-				{  symbolDefinitionNumber = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.SymbolDefinitionNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access SymbolDefinitionNumber when that field was ignored.");  }
+				#endif
+
+				symbolDefinitionNumber = value;  
+				}
 			}
 
 
@@ -346,9 +499,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int TopicTypeID
 			{
 			get
-				{  return topicTypeID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access TopicTypeID when that field was ignored.");  }
+				#endif
+
+				return topicTypeID;  
+				}
 			set
-				{  topicTypeID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access TopicTypeID when that field was ignored.");  }
+				#endif
+
+				topicTypeID = value;  
+				}
 			}
 			
 			
@@ -358,9 +525,23 @@ namespace GregValure.NaturalDocs.Engine
 		public Languages.AccessLevel AccessLevel
 			{
 			get
-				{  return accessLevel;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.AccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access AccessLevel when that field was ignored.");  }
+				#endif
+
+				return accessLevel;  
+				}
 			set
-				{  accessLevel = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.AccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access AccessLevel when that field was ignored.");  }
+				#endif
+
+				accessLevel = value;  
+				}
 			}
 			
 			
@@ -372,6 +553,11 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Tags) != 0)
+					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
+				#endif
+
 				if (tags != null && !tags.IsEmpty)
 					{  return tags.ToString();  }
 				else
@@ -379,6 +565,11 @@ namespace GregValure.NaturalDocs.Engine
 				}
 			set
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Tags) != 0)
+					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
+				#endif
+
 				if (tags != null)
 					{  tags.FromString(value);  }
 				else if (!String.IsNullOrEmpty(value) && value != IDObjects.NumberSet.EmptySetString)
@@ -393,9 +584,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int FileID
 			{
 			get
-				{  return fileID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FileID) != 0)
+					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
+				#endif
+
+				return fileID;  
+				}
 			set
-				{  fileID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FileID) != 0)
+					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
+				#endif
+
+				fileID = value;  
+				}
 			}
 			
 			
@@ -407,13 +612,25 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.CommentLineNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access CommentLineNumber when that field was ignored.");  }
+				#endif
+
 				if (commentLineNumber == 0)
 					{  return codeLineNumber;  }
 				else
 					{  return commentLineNumber;  }
 				}
 			set
-				{  commentLineNumber = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.CommentLineNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access CommentLineNumber when that field was ignored.");  }
+				#endif
+
+				commentLineNumber = value;  
+				}
 			}
 			
 			
@@ -425,13 +642,25 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.CodeLineNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access CodeLineNumber when that field was ignored.");  }
+				#endif
+
 				if (codeLineNumber == 0)
 					{  return commentLineNumber;  }
 				else
 					{  return codeLineNumber;  }
 				}
 			set
-				{  codeLineNumber = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.CodeLineNumber) != 0)
+					{  throw new InvalidOperationException("Tried to access CodeLineNumber when that field was ignored.");  }
+				#endif
+
+				codeLineNumber = value;  
+				}
 			}
 			
 			
@@ -441,9 +670,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int LanguageID
 			{
 			get
-				{  return languageID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
+					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
+				#endif
+
+				return languageID;  
+				}
 			set
-				{  languageID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
+					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
+				#endif
+
+				languageID = value;  
+				}
 			}
 
 
@@ -453,9 +696,23 @@ namespace GregValure.NaturalDocs.Engine
 		public ContextString PrototypeContext
 			{
 			get
-				{  return prototypeContext;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.PrototypeContext) != 0)
+					{  throw new InvalidOperationException("Tried to access PrototypeContext when that field was ignored.");  }
+				#endif
+
+				return prototypeContext;  
+				}
 			set
-				{  prototypeContext = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.PrototypeContext) != 0)
+					{  throw new InvalidOperationException("Tried to access PrototypeContext when that field was ignored.");  }
+				#endif
+
+				prototypeContext = value;  
+				}
 			}
 
 
@@ -465,9 +722,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int PrototypeContextID
 			{
 			get
-				{  return prototypeContextID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.PrototypeContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access PrototypeContextID when that field was ignored.");  }
+				#endif
+
+				return prototypeContextID;  
+				}
 			set
-				{  prototypeContextID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.PrototypeContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access PrototypeContextID when that field was ignored.");  }
+				#endif
+
+				prototypeContextID = value;  
+				}
 			}
 
 
@@ -477,9 +748,23 @@ namespace GregValure.NaturalDocs.Engine
 		public ContextString BodyContext
 			{
 			get
-				{  return bodyContext;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyContext) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyContext when that field was ignored.");  }
+				#endif
+
+				return bodyContext;  
+				}
 			set
-				{  bodyContext = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyContext) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyContext when that field was ignored.");  }
+				#endif
+
+				bodyContext = value;  
+				}
 			}
 			
 			
@@ -489,9 +774,23 @@ namespace GregValure.NaturalDocs.Engine
 		public int BodyContextID
 			{
 			get
-				{  return bodyContextID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyContextID when that field was ignored.");  }
+				#endif
+
+				return bodyContextID;  
+				}
 			set
-				{  bodyContextID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyContextID when that field was ignored.");  }
+				#endif
+
+				bodyContextID = value;  
+				}
 			}
 
 
@@ -500,6 +799,25 @@ namespace GregValure.NaturalDocs.Engine
 		// These properties aid in processing but are not stored in the database.
 		// __________________________________________________________________________
 		
+
+		/* Property: IgnoredFields
+		 * 
+		 * When querying topics from the database, not all fields may be needed in all situations.  The database
+		 * may accept <IgnoreFields> flags to skip retrieving parts of them.  If that's done, the flags should also
+		 * be set here so that in debug builds an exception will be thrown if you try to access those properties.
+		 * 
+		 * IgnoredFields defaults to <IgnoreFields.None> so that topics created by parsing don't have to worry
+		 * about them.
+		 * 
+		 */
+		public IgnoreFields IgnoredFields
+			{
+			get
+				{  return ignoredFields;  }
+			set
+				{  ignoredFields = value;  }
+			}
+
 					
 		/* Property: UsesPluralKeyword
 		 * 
@@ -524,6 +842,11 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Prototype) != 0)
+					{  throw new InvalidOperationException("Tried to access ParsedPrototype when the prototype was ignored.");  }
+				#endif
+
 				if (parsedPrototype != null)
 					{  return parsedPrototype;  }
 				if (prototype == null)
@@ -544,6 +867,11 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Title) != 0)
+					{  throw new InvalidOperationException("Tried to access HasTitleParameters when the title was ignored.");  }
+				#endif
+
 				return (ParameterString.GetEndingParenthesesIndex(title) != -1);
 				}
 			}
@@ -556,6 +884,11 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Tags) != 0)
+					{  throw new InvalidOperationException("Tried to access TitleParameters when the title was ignored.");  }
+				#endif
+
 				if (!titleParametersGenerated)
 					{
 					int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(title);
@@ -580,6 +913,11 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Prototype) != 0)
+					{  throw new InvalidOperationException("Tried to access PrototypeParameters when the prototype was ignored.");  }
+				#endif
+
 				if (!prototypeParametersGenerated)
 					{
 					ParsedPrototype parsedPrototype = ParsedPrototype;
@@ -734,6 +1072,11 @@ namespace GregValure.NaturalDocs.Engine
 		 * The ID of <bodyContext> if known, or zero if not.
 		 */
 		protected int bodyContextID;
+
+		/* var: ignoredFields
+		 * The <IgnoreFields> applied to this object.
+		 */
+		protected IgnoreFields ignoredFields;
 
 		}
 	}

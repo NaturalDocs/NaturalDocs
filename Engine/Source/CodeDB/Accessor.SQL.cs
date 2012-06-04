@@ -30,11 +30,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process,
 		 * or <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
+		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
+		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled)
+		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -80,6 +84,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
 					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+
+					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
+					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
+					topic.IgnoredFields = ignoreFields;
 					}
 				}
 			
@@ -92,11 +100,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves all the <Topics> present in a list of topic IDs.  If there are none it will return an empty list.  Pass a <CancelDelegate> if 
 		 * you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
+		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
+		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled)
+		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled, 
+																	 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -161,6 +174,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
 					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+
+					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
+					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
+					topic.IgnoredFields = ignoreFields;
 					}
 				}
 			
@@ -173,11 +190,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves a list of all the topics which use one of the passed <EndingSymbols>.  If there are none it will return an empty
 		 * list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
+		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
+		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled)
+		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled, 
+																						 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -239,6 +261,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
 					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+
+					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
+					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
+					topic.IgnoredFields = ignoreFields;
 					}
 				}
 			
