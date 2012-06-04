@@ -90,7 +90,7 @@ namespace GregValure.NaturalDocs.Engine
 			TopicID = 0x00000001,
 			Title = 0x00000002,
 			Body = 0x00000004,
-
+			BodyLength = 0x00000008,
 			Summary = 0x00000010,
 			Prototype = 0x00000020,
 			Symbol = 0x00000040,
@@ -123,6 +123,7 @@ namespace GregValure.NaturalDocs.Engine
 
 			title = null;
 			body = null;
+			bodyLength = 0;
 			summary = null;
 			prototype = null;
 			parsedPrototype = null;
@@ -380,7 +381,41 @@ namespace GregValure.NaturalDocs.Engine
 					{  throw new InvalidOperationException("Tried to access Body when that field was ignored.");  }
 				#endif
 
-				body = value;  
+				body = value;
+
+				if (body != null)
+					{  bodyLength = body.Length;  }
+				else
+					{  bodyLength = 0;  }
+				}
+			}
+
+
+		/* Property: BodyLength
+		 * The length of the topic's body.  If <Body> is set this is the equivalent of checking its Length property.
+		 * However, if <IgnoreField.Body> is on you can use this to still have its length retrieved from the database.
+		 */
+		public int BodyLength
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyLength) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyLength when that field was ignored.");  }
+				#endif
+
+				return bodyLength;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.BodyLength) != 0)
+					{  throw new InvalidOperationException("Tried to access BodyLength when that field was ignored.");  }
+				if (body != null && body.Length != value)
+					{  throw new InvalidOperationException("Tried to set BodyLength when Body was defined and has a different length.");  }
+				#endif
+
+				bodyLength = value;
 				}
 			}
 
@@ -965,6 +1000,12 @@ namespace GregValure.NaturalDocs.Engine
 		 * The body of the comment, or null if not specified.
 		 */
 		protected string body;
+
+		/* var: bodyLength
+		 * The length of <body>.  This is a separate field because it may be desirable to just have the length of the
+		 * body without actually retrieving the body from the database.
+		 */
+		protected int bodyLength;
 
 		/* var: summary
 		 * The summary of the comment, or null if not specified.

@@ -505,7 +505,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (topic.Body != null)
 				{
-				long bodyBits = topic.Body.Length / 16;
+				long bodyBits = topic.BodyLength / 16;
 
 				if (bodyBits > 255)
 					{  bodyBits = 255;  }
