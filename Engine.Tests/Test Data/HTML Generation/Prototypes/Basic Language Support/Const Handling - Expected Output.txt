@@ -1,4 +1,4 @@
-<div class="NDPrototype ShortForm CStyle"><table>
+<div class="NDPrototype WideForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -28,7 +28,7 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm CStyle"><table>
+<div class="NDPrototype WideForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -58,7 +58,7 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm CStyle"><table>
+<div class="NDPrototype WideForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName3 (</td>
       <td class="PParametersParentCell"><table class="PParameters">

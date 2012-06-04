@@ -1,3 +1,3 @@
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> VarA: <a href="about:MyClass">MyClass</a></div>
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> VarA: MyClass</div>
 -----
-<div class="NDPrototype NoParameterForm">VarB: <a href="about:Pkg.MyClass">Pkg.MyClass</a>&lt;<span class="SHKeyword">int</span>, <a href="about:Class2">Class2</a>&gt;</div>
+<div class="NDPrototype NoParameterForm">VarB: Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</div>

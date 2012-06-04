@@ -1,9 +1,9 @@
-<div class="NDPrototype ShortForm CStyle"><table>
+<div class="NDPrototype WideForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
-            <td class="PType first"><a href="about:List">List</a>&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
+            <td class="PType first">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
             <td class="PName last">x,&nbsp;</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>[]&nbsp;</td>
@@ -14,13 +14,13 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype ShortForm CStyle"><table>
+<div class="NDPrototype WideForm CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
-            <td class="PModifierQualifier first"><a href="about:System.Collections.Generic.Dictionary">System.Collections.Generic.</a></td>
-            <td class="PType"><a href="about:System.Collections.Generic.Dictionary">Dictionary</a>&lt;<a href="about:Nullable">Nullable</a>&lt;<span class="SHKeyword">int</span>&gt;, <a href="about:Map">Map</a>&lt;<span class="SHKeyword">string</span>, <a href="about:Object">Object</a>[]&gt;&gt;&nbsp;</td>
+            <td class="PModifierQualifier first">System.Collections.Generic.</td>
+            <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
             <td class="PName">x&nbsp;</td>
             <td class="PDefaultValueSeparator">=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span>,</td>

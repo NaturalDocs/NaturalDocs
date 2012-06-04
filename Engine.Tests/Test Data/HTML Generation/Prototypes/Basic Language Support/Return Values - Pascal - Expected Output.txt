@@ -1,19 +1,19 @@
-<div class="NDPrototype NoParameterForm">Function FuncA (): <a href="about:MyClass">MyClass</a></div>
+<div class="NDPrototype NoParameterForm">Function FuncA (): MyClass</div>
 -----
-<div class="NDPrototype ShortForm PascalStyle"><table>
+<div class="NDPrototype WideForm PascalStyle"><table>
    <tr>
       <td class="PBeforeParameters">Function FuncB (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PName first">a</td>
             <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><a href="about:Class2">Class2</a>,&nbsp;</td>
+            <td class="PType last">Class2,&nbsp;</td>
          </tr><tr>
             <td class="PName first">b</td>
             <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last"><a href="about:Pkg.MyClass">Pkg.MyClass</a></td>
+            <td class="PType last">Pkg.MyClass</td>
          </tr>
       </table></td>
-      <td class="PAfterParameters">): <a href="about:Pkg.MyClass">Pkg.MyClass</a>&lt;<span class="SHKeyword">int</span>, <a href="about:Class2">Class2</a>&gt;</td>
+      <td class="PAfterParameters">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</td>
    </tr>
 </table></div>
