@@ -24,6 +24,126 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 		
 		
+		/* Function: GetTopics
+		 * 
+		 * A generic function for retrieving all the <Topics> that satisfy the passed WHERE clause.  If there are none it will return 
+		 * an empty list.
+		 * 
+		 * Parameters:
+		 * 
+		 *		whereClause - The SQL WHERE clause to apply to the query, such as "FileID=?".
+		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "CommentLineNumber ASC", or null if none.
+		 *		clauseParameters - Any parameters needed for question marks in the WHERE and ORDER BY clauses, or null if none.
+		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
+		 *							 need to.
+		 *		ignoreFields - If you don't need every property in the <Topic> object you can set this to filter some out.  Not every
+		 *								 flag will be respected by the query but some that will save a lot of memory or processing time may be.
+		 *								 In debug builds <Topic> will enforce these settings regardless of whether the query filled them in or not 
+		 *								 to prevent programming errors.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		protected List<Topic> GetTopics (string whereClause, string orderByClause, object[] clauseParameters,
+																	 CancelDelegate cancelled, Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+
+			List<Topic> topics = new List<Topic>();
+
+			bool ignoreBody = ((ignoreFields & Topic.IgnoreFields.Body) != 0);
+			bool ignoreContexts = ((ignoreFields & (Topic.IgnoreFields.BodyContext | Topic.IgnoreFields.PrototypeContext)) != 0);
+						
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
+																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																								"LanguageID, PrototypeContextID, BodyContextID, FileID ");
+
+			if (!ignoreBody)
+				{  queryText.Append(", Body ");  }
+			else
+				{  queryText.Append(", length(Body) ");  }
+
+			if (!ignoreContexts)
+				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
+																								
+			queryText.Append("FROM Topics ");
+			
+			if (!ignoreContexts)
+				{  queryText.Append(", Contexts AS PContexts, Contexts AS BContexts ");  }
+				
+			queryText.Append("WHERE ");
+			
+			if (!ignoreContexts)
+				{
+				queryText.Append("PContexts.ContextID = PrototypeContextID AND " +
+												 "BContexts.ContextID = BodyContextID AND ");
+				}
+
+			queryText.Append('(');
+			queryText.Append(whereClause);
+			queryText.Append(')');
+
+			if (orderByClause != null)
+				{
+				queryText.Append(" ORDER BY ");
+				queryText.Append(orderByClause);
+				}
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), clauseParameters))
+				{
+				while (query.Step() && !cancelled())
+					{
+					Topic topic = new Topic();
+					
+					topic.TopicID = query.IntColumn(0);
+					topic.Title = query.StringColumn(1);
+					topic.Summary = query.StringColumn(2);
+					topic.Prototype = query.StringColumn(3);
+					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(4) );
+					topic.SymbolDefinitionNumber = query.IntColumn(5);
+
+					topic.TopicTypeID = query.IntColumn(6);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(7);
+					topic.TagString = query.StringColumn(8);
+
+					topic.CommentLineNumber = query.IntColumn(9);
+					topic.CodeLineNumber = query.IntColumn(10);
+
+					topic.LanguageID = query.IntColumn(11);
+					topic.PrototypeContextID = query.IntColumn(12);
+					topic.BodyContextID = query.IntColumn(13);
+					topic.FileID = query.IntColumn(14);
+
+					if (!ignoreBody)
+						{  topic.Body = query.StringColumn(15);  }
+					else
+						{  topic.BodyLength = query.IntColumn(15);  }
+
+					if (!ignoreContexts)
+						{
+						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(16) );
+						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(17) );
+						}
+
+					topics.Add(topic);
+
+					if (!ignoreContexts)
+						{
+						contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
+						contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+						}
+
+					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
+					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
+					topic.IgnoredFields = ignoreFields;
+					}
+				}
+			
+			return topics;
+			}
+			
+			
 		/* Function: GetTopicsInFile
 		 * 
 		 * Retrieves a list of all the topics present in the passed file ID.  The list will be in comment line number order.
@@ -40,58 +160,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
-			RequireAtLeast(LockType.ReadOnly);
-			
-			List<Topic> topics = new List<Topic>();
-			
-			using (SQLite.Query query = connection.Query("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																									"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																									"LanguageID, PContexts.ContextString, PrototypeContextID, " +
-																									"BContexts.ContextString, BodyContextID " +
-																								"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
-																								"WHERE FileID = ? AND " +
-																									"PContexts.ContextID = PrototypeContextID AND " +
-																									"BContexts.ContextID = BodyContextID " +
-																								"ORDER BY CommentLineNumber ASC", fileID))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Topic topic = new Topic();
-					
-					topic.TopicID = query.IntColumn(0);
-					topic.Title = query.StringColumn(1);
-					topic.Body = query.StringColumn(2);
-					topic.Summary = query.StringColumn(3);
-					topic.Prototype = query.StringColumn(4);
-					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
-					topic.SymbolDefinitionNumber = query.IntColumn(6);
+			object[] clauseParams = new object[1];
+			clauseParams[0] = fileID;
 
-					topic.TopicTypeID = query.IntColumn(7);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
-					topic.TagString = query.StringColumn(9);
-
-					topic.FileID = fileID;
-					topic.CommentLineNumber = query.IntColumn(10);
-					topic.CodeLineNumber = query.IntColumn(11);
-
-					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
-					topic.PrototypeContextID = query.IntColumn(14);
-					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
-					topic.BodyContextID = query.IntColumn(16);
-
-					topics.Add(topic);
-
-					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
-					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
-
-					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
-					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
-					topic.IgnoredFields = ignoreFields;
-					}
-				}
-			
-			return topics;
+			return GetTopics("FileID=?", "CommentLineNumber ASC", clauseParams, cancelled, ignoreFields);
 			}
 			
 			
@@ -111,77 +183,25 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled, 
 																	 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
-			RequireAtLeast(LockType.ReadOnly);
-			
-			List<Topic> topics = new List<Topic>();
-			
-			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																								"LanguageID, PContexts.ContextString, PrototypeContextID, " +
-																								"BContexts.ContextString, BodyContextID, FileID " +
-																							"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
-																							"WHERE " +
-																								"PContexts.ContextID = PrototypeContextID AND " +
-																								"BContexts.ContextID = BodyContextID AND (");
-			List<object> queryParameters = new List<object>();
+			StringBuilder whereClause = new StringBuilder();
+			List<object> clauseParameters = new List<object>();
 
 			bool isFirst = true;
 			foreach (int topicID in topicIDs)
 				{
-				if (!isFirst)
-					{  queryText.Append("OR ");  }
-				else
+				if (isFirst)
 					{  isFirst = false;  }
+				else
+					{  whereClause.Append("OR ");  }
 
-				queryText.Append("TopicID=? ");
-				queryParameters.Add(topicID);
+				whereClause.Append("TopicID=? ");
+				clauseParameters.Add(topicID);
 				}
 
-			queryText.Append(')');
+			if (clauseParameters.Count == 0)
+				{  return new List<Topic>();  }
 
-			if (queryParameters.Count == 0)
-				{  return topics;  }
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Topic topic = new Topic();
-					
-					topic.TopicID = query.IntColumn(0);
-					topic.Title = query.StringColumn(1);
-					topic.Body = query.StringColumn(2);
-					topic.Summary = query.StringColumn(3);
-					topic.Prototype = query.StringColumn(4);
-					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
-					topic.SymbolDefinitionNumber = query.IntColumn(6);
-
-					topic.TopicTypeID = query.IntColumn(7);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
-					topic.TagString = query.StringColumn(9);
-
-					topic.CommentLineNumber = query.IntColumn(10);
-					topic.CodeLineNumber = query.IntColumn(11);
-
-					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
-					topic.PrototypeContextID = query.IntColumn(14);
-					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
-					topic.BodyContextID = query.IntColumn(16);
-					topic.FileID = query.IntColumn(17);
-
-					topics.Add(topic);
-
-					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
-					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
-
-					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
-					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
-					topic.IgnoredFields = ignoreFields;
-					}
-				}
-			
-			return topics;
+			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, ignoreFields);
 			}
 			
 			
@@ -201,74 +221,22 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled, 
 																						 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
 			{
-			RequireAtLeast(LockType.ReadOnly);
-			
-			List<Topic> topics = new List<Topic>();
-			
-			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																								"LanguageID, PContexts.ContextString, PrototypeContextID, " +
-																								"BContexts.ContextString, BodyContextID, FileID " +
-																							"FROM Topics, Contexts AS PContexts, Contexts AS BContexts " +
-																							"WHERE " +
-																								"PContexts.ContextID = PrototypeContextID AND " +
-																								"BContexts.ContextID = BodyContextID AND (");
-			List<object> queryParameters = new List<object>();
+			StringBuilder whereClause = new StringBuilder();
+			List<object> clauseParameters = new List<object>();
 
 			bool isFirst = true;
 			foreach (EndingSymbol endingSymbol in endingSymbols)
 				{
-				if (!isFirst)
-					{  queryText.Append("OR ");  }
-				else
+				if (isFirst)
 					{  isFirst = false;  }
+				else
+					{  whereClause.Append("OR ");  }
 
-				queryText.Append("EndingSymbol=? ");
-				queryParameters.Add(endingSymbol.ToString());
+				whereClause.Append("EndingSymbol=? ");
+				clauseParameters.Add(endingSymbol.ToString());
 				}
 
-			queryText.Append(')');
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Topic topic = new Topic();
-					
-					topic.TopicID = query.IntColumn(0);
-					topic.Title = query.StringColumn(1);
-					topic.Body = query.StringColumn(2);
-					topic.Summary = query.StringColumn(3);
-					topic.Prototype = query.StringColumn(4);
-					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(5) );
-					topic.SymbolDefinitionNumber = query.IntColumn(6);
-
-					topic.TopicTypeID = query.IntColumn(7);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
-					topic.TagString = query.StringColumn(9);
-
-					topic.CommentLineNumber = query.IntColumn(10);
-					topic.CodeLineNumber = query.IntColumn(11);
-
-					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(13) );
-					topic.PrototypeContextID = query.IntColumn(14);
-					topic.BodyContext = ContextString.FromExportedString( query.StringColumn(15) );
-					topic.BodyContextID = query.IntColumn(16);
-					topic.FileID = query.IntColumn(17);
-
-					topics.Add(topic);
-
-					contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
-					contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
-
-					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
-					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
-					topic.IgnoredFields = ignoreFields;
-					}
-				}
-			
-			return topics;
+			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, ignoreFields);
 			}
 			
 			

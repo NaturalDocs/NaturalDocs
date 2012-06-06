@@ -503,7 +503,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			//		4064-4079 = 254
 			//		4080+ = 255
 
-			if (topic.Body != null)
+			// Use BodyLength so we can exclude Body from the query.
+			if (topic.BodyLength > 0)
 				{
 				long bodyBits = topic.BodyLength / 16;
 
@@ -995,7 +996,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			endingSymbols.Add(link.EndingSymbol);
 
-			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel);
+			// We only need the body's length, not its contents.
+			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel, 
+																												 Topic.IgnoreFields.Body | Topic.IgnoreFields.Contexts);
 
 			List<LinkInterpretation> alternateInterpretations = null;
 
@@ -1052,7 +1055,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void ResolveNewTopics (IDObjects.SparseNumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
 			{
-			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel);
+			// We only need the body's length, not its contents.
+			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel, 
+																							  Topic.IgnoreFields.Body | Topic.IgnoreFields.Contexts);
 			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel);
 
 			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 

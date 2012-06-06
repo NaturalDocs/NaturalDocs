@@ -75,12 +75,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * When querying topics from the database, not all fields may be needed in all circumstances.  This is a
 		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
 		 * in debug builds, if you try to access any of these fields an exception will be thrown.
-		 * 
-		 * Fields can be specified individually, but these precombined values are also available:
-		 * 
-		 *		OnlyContextIDs - Combines PrototypeContext and BodyContext but leaves their IDs in place.  If you're
-		 *										comparing two topics from a database where the IDs are guaranteed to be set, this
-		 *										prevents an extra lookup.
 		 */
 		[Flags]
 		public enum IgnoreFields : uint
@@ -107,8 +101,7 @@ namespace GregValure.NaturalDocs.Engine
 			BodyContext = 0x00020000,
 			BodyContextID = 0x00040000,
 
-			OnlyContextIDs = PrototypeContext | BodyContext,
-			OnlyBodyLength = Body
+			Contexts = PrototypeContext | BodyContext
 			}
 
 
