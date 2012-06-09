@@ -445,6 +445,9 @@ body.NDContentPage {
 				pretty well in all font sizes. */
 			line-height: 123%;
 			}
+		.CDLEntryType {
+			opacity: 0.5;
+			}
 		td.CDLDefinition p {
 			text-indent: 0;
 			}
