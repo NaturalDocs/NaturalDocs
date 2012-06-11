@@ -626,7 +626,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		override public void OnAddTopic (Topic topic)
+		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			lock (writeLock)
 				{
@@ -634,26 +634,74 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
+																		 CodeDB.EventAccessor eventAccessor)
 			{
-			// We don't care about line number changes.  They don't affect the output.
-			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber);
+			// We don't care about line number changes.  They don't affect the output.  We also don't care about context
+			// changes.  They might affect links but if they do it will be handled in OnChangeLinkTarget().
+			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber |
+											 Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext);
 
 			if (changeFlags != 0)
 				{
 				lock (writeLock)
 					{
 					sourceFilesToRebuild.Add(oldTopic.FileID);
+
+					// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
+					// to this topic.
+					if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
+													  Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
+						{
+						IDObjects.SparseNumberSet fileIDs;
+						eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out fileIDs);
+
+						if (fileIDs != null)
+							{  sourceFilesToRebuild.Add(fileIDs);  }
+						}
 					}
 				}
 			}
 
-		override public void OnDeleteTopic (Topic topic)
+		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
 				}
+			}
+
+		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
+			{
+			}
+		
+		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
+			{
+			sourceFilesToRebuild.Add(link.FileID);
+
+			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
+			// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
+
+			// Why do we have to do this if links aren't used in tooltips?  Because how it's resolved can affect it's appearance.
+			// It will show up as "link" versus "<link>" if it's resolved or not, and "a at b" versus "a" depending on if it resolves to
+			// the topic "a at b" or the topic "b".
+
+			// Why don't we do this for type links?  Because unlike Natural Docs links, type links don't change in appearance
+			// based on whether they're resolved or not.  Therefore the logic that we don't have to worry about it because links
+			// don't appear in tooltips holds true.
+
+			if (link.Type == LinkType.NaturalDocs)
+				{
+				IDObjects.SparseNumberSet fileIDs;
+				eventAccessor.GetInfoOnLinksToTopicsWithNDLinkInSummary(link, out fileIDs);
+
+				if (fileIDs != null)
+					{  sourceFilesToRebuild.Add(fileIDs);  }
+				}
+			}
+		
+		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
+			{
 			}
 
 

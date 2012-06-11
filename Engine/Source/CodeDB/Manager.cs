@@ -1029,10 +1029,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
 				{
+				int oldTargetTopicID = link.TargetTopicID;
 				link.TargetTopicID = bestMatchID;
 				link.TargetScore = bestMatchScore;
 
-				accessor.UpdateLinkTarget(link);
+				accessor.UpdateLinkTarget(link, oldTargetTopicID);
 				}
 			}
 
@@ -1098,10 +1099,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
 					{
+					int oldTargetTopicID = link.TargetTopicID;
 					link.TargetTopicID = bestMatchID;
 					link.TargetScore = bestMatchScore;
 
-					accessor.UpdateLinkTarget(link);
+					accessor.UpdateLinkTarget(link, oldTargetTopicID);
 					}
 				}
 			}

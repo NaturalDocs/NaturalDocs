@@ -11,6 +11,7 @@
 
 
 using System;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
@@ -56,17 +57,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		override public void OnAddTopic (Topic topic)
+		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags)
+		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
+																		 CodeDB.EventAccessor eventAccessor)
 			{
 			}
 
-		override public void OnDeleteTopic (Topic topic)
+		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			}
+
+		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
+			{
+			}
+		
+		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
+			{
+			}
+		
+		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
+			{
+			}
+
 
 
 		// Group: Variables

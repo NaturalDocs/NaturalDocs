@@ -333,8 +333,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnAddTopic(topic);  }
+						{  changeWatcher.OnAddTopic(topic, eventAccessor);  }
 					}
 				}
 			finally
@@ -417,8 +419,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnUpdateTopic(oldTopic, newTopic, changeFlags);  }
+						{  changeWatcher.OnUpdateTopic(oldTopic, newTopic, changeFlags, eventAccessor);  }
 					}
 				}
 			finally
@@ -494,8 +498,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (changeWatchers.Count > 0)
 					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnDeleteTopic(topic);  }
+						{  changeWatcher.OnDeleteTopic(topic, eventAccessor);  }
 					}
 				}
 			finally
@@ -1111,6 +1117,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 			CommitTransaction();
+
+
+			// Notify change watchers
+			
+			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnAddLink(link, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				codeDB.ReleaseChangeWatchers();
+				}
 			}
 			
 			
@@ -1151,9 +1177,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// TargetScore
 
 			RequireAtLeast(LockType.ReadWrite);
-			BeginTransaction();
 
 			var codeDB = Engine.Instance.CodeDB;
+
+
+			// Notify the change watchers BEFORE we actually perform the deletion.
+
+			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnDeleteLink(link, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				codeDB.ReleaseChangeWatchers();
+				}
+
+
+			// Perform the deletion.
+
+			BeginTransaction();
 
 			connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
 			
@@ -1347,12 +1397,34 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
-		public void UpdateLinkTarget (Link link)
+		public void UpdateLinkTarget (Link link, int oldTargetTopicID)
 			{
 			RequireAtLeast(LockType.ReadWrite);
 
+			var codeDB = Engine.Instance.CodeDB;
+
 			connection.Execute("UPDATE Links SET TargetTopicID=?, TargetScore=? " +
 												  "WHERE LinkID = ?", link.TargetTopicID, link.TargetScore, link.LinkID);
+
+
+			// Notify change watchers
+			
+			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnChangeLinkTarget(link, oldTargetTopicID, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				codeDB.ReleaseChangeWatchers();
+				}
 			}
 
 

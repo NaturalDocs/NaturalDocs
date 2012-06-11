@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Links;
 
 
 namespace GregValure.NaturalDocs.Engine.Output
@@ -126,11 +127,18 @@ namespace GregValure.NaturalDocs.Engine.Output
 		// __________________________________________________________________________
 		
 		
-		abstract public void OnAddTopic (Topic topic);
+		abstract public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
 
-		abstract public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags);
+		abstract public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
+																		 CodeDB.EventAccessor eventAccessor);
 
-		abstract public void OnDeleteTopic (Topic topic);
+		abstract public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
+
+		abstract public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor);
+		
+		abstract public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor);
+		
+		abstract public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor);
 
 
 

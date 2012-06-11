@@ -194,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Enforces a minimum lock level for an operation.  If a read/write lock is required and a read/possible write lock is held, it will be 
 		 * upgraded automatically.  Otherwise if the lock held does not meet the minimum it will throw an exception.
 		 */
-		protected void RequireAtLeast (LockType minimum)
+		protected internal void RequireAtLeast (LockType minimum)
 			{
 			if (lockHeld == LockType.ReadPossibleWrite && minimum == LockType.ReadWrite)
 				{  UpgradeToReadWriteLock();  }
@@ -252,6 +252,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// Group: Properties
 		// __________________________________________________________________________
 		
+
+		/* Property: Connection
+		 * This accessor's connection to the database.  Only to be used by <EventAccessor>.
+		 */
+		internal SQLite.Connection Connection
+			{
+			get
+				{  return connection;  }
+			}
 		
 		/* Property: LockHeld
 		 * The type of lock currently held, if any.
