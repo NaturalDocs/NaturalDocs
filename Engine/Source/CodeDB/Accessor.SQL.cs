@@ -1063,6 +1063,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				List<LinkInterpretation> linkInterpretations = 
 					Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
+																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
 																												out parentheses);
 
