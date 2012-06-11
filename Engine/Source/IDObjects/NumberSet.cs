@@ -236,6 +236,19 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			}
 
 
+		/* Function: Add
+		 * Adds the contents of an entire set from this one.
+		 */
+		public void Add (SparseNumberSet setToAdd)
+			{
+			// Since SparseNumberSet doesn't store ranges we'll just add its members individually.  This could be optimized by 
+			// walking through them together and combining as you go since they're both sorted, but SparseNumberSet should 
+			// only be used with small sets anyway so it's not worth the effort.
+			foreach (int number in setToAdd)
+				{  Add(number);  }
+			}
+
+
 		/* Function: Remove
 		 * Removes the specified number from the set.  Returns true if the number existed in the set and was removed, false if
 		 * it wasn't part of the set.
