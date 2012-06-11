@@ -677,6 +677,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		
 		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
 			{
+			// If this is triggered by the first resolution of a new link, we don't have to do anything.  The file that contains this
+			// link must have changed to create it, so it should already be on the build list.  If it appears in the summary of any
+			// topics, that means the summary must have changed since this link didn't exist before and rebuilding any tooltips 
+			// will be handled by the topic events.
+			if (oldTargetTopicID == UnresolvedTargetTopicID.NewLink)
+				{  return;  }
+
 			sourceFilesToRebuild.Add(link.FileID);
 
 			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
