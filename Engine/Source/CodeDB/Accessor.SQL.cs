@@ -521,7 +521,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (linksAffected.IsEmpty == false)
 				{
-				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE ");
+				// We set these fields to -1 in the database for two reasons.  First, we can't set them to zero in case they become
+				// unresolved.  If we did that the other code would see the new target is zero, just like the old target, and not fire a 
+				// change event.  Second, we can't leave them set on the old target because this topic ID is going to be removed from
+				// usedTopicIDs and thus might be reassigned.  If purely by chance the link resolves to whatever is now using the old 
+				// topic ID it also wouldn't fire a change event.  So instead we set them to -1 which is invalid and thus will always
+				// trigger a change event.
+				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=-1, TargetScore=-1 WHERE ");
 				List<object> queryParams = new List<object>();
 
 				AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
