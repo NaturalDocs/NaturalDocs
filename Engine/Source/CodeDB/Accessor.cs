@@ -247,6 +247,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exceptions.FieldMustHaveContent(operation, fieldName);  }
 			}			
 
+		/* Function: RequireValue
+		 * Throws an exception if the field value doesn't match the expected value.
+		 */
+		protected void RequireValue (string operation, string fieldName, int fieldValue, int expectedValue)
+			{
+			if (fieldValue != expectedValue)
+				{  throw new Exceptions.FieldMustBeValue(operation, fieldName, expectedValue);  }
+			}
 
 
 		// Group: Properties

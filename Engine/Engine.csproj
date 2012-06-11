@@ -50,6 +50,7 @@
     <Compile Include="Source\CodeDB\EventAccessor.SQL.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.cs" />
     <Compile Include="Source\CodeDB\Exceptions\BadLockChange.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\FieldMustBeValue.cs" />
     <Compile Include="Source\CodeDB\Exceptions\FieldMustBeNull.cs" />
     <Compile Include="Source\CodeDB\Exceptions\LockMinimumNotMet.cs" />
     <Compile Include="Source\CodeDB\Exceptions\FieldMustHaveContent.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="Source\CodeDB\Exceptions\FieldMustBeZero.cs" />
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
+    <Compile Include="Source\Links\UnresolvedTargetTopicID.cs" />
     <Compile Include="Source\CodeDB\Lock.cs" />
     <Compile Include="Source\CodeDB\Manager.cs" />
     <Compile Include="Source\CodeDB\Manager.SQL.cs" />

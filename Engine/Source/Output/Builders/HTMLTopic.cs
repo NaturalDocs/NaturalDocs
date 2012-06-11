@@ -619,7 +619,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// If it didn't resolve, we just output the original text and we're done.
 
-			if (fullLink.TargetTopicID == 0)
+			if (!fullLink.IsResolved)
 				{
 				htmlOutput.EntityEncodeAndAppend(iterator.Property("originaltext"));
 				return;

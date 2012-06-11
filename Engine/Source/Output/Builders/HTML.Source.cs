@@ -87,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					foreach (Link link in links)
 						{
-						if (link.TargetTopicID != 0)
+						if (link.IsResolved)
 							{  linkTargetIDs.Add(link.TargetTopicID);  }
 						}
 

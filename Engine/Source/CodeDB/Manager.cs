@@ -1013,7 +1013,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				}
 	
-			int bestMatchID = 0;
+			int bestMatchID = UnresolvedTargetTopicID.NoTarget;
 			long bestMatchScore = 0;
 
 			foreach (Topic topic in topics)

@@ -251,7 +251,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 						// If it didn't resolve, we just output the original text.
 
-						if (fullLink.TargetTopicID == 0)
+						if (!fullLink.IsResolved)
 							{
 							BuildSyntaxHighlightedText(textStart, textEnd, output);
 							}

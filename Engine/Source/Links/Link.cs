@@ -33,7 +33,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 			fileID = 0;
 			languageID = 0;
 			endingSymbol = new EndingSymbol();
-			targetTopicID = 0;
+			targetTopicID = UnresolvedTargetTopicID.NewLink;
 			targetScore = 0;
 			}
 			
@@ -257,8 +257,19 @@ namespace GregValure.NaturalDocs.Engine.Links
 			}
 
 
+		/* Property: IsResolved
+		 * Whether the link has a target topic.  Is equivalent to testing whether <TargetTopicID> is greater than zero.
+		 */
+		public bool IsResolved
+			{
+			get
+				{  return (targetTopicID > 0);  }
+			}
+
+
 		/* Property: TargetTopicID
-		 * The ID number of the <Topic> the link resolves to, or zero if none or it hasn't been determined yet.
+		 * The ID number of the <Topic> the link resolves to.  If it's unresolved, it will be zero or a negative number
+		 * corresponding to one of the values of <UnresolvedTargetTopicID>.
 		 */
 		public int TargetTopicID
 			{
@@ -329,7 +340,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 		protected Symbols.EndingSymbol endingSymbol;
 
 		/* var: targetTopicID
-		 * The ID number of the <Topic> the link resolves to, or zero if none or it hasn't been determined yet.
+		 * The ID number of the <Topic> the link resolves to.  If unresolved, it will be zero or a negative number
+		 * corresponding to one of the values of <UnresolvedTargetTopicID>.
 		 */
 		protected int targetTopicID;
 

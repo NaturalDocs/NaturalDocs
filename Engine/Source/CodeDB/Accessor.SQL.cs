@@ -527,14 +527,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (linksAffected.IsEmpty == false)
 				{
-				// We set these fields to -1 in the database for two reasons.  First, we can't set them to zero in case they become
-				// unresolved.  If we did that the other code would see the new target is zero, just like the old target, and not fire a 
-				// change event.  Second, we can't leave them set on the old target because this topic ID is going to be removed from
-				// usedTopicIDs and thus might be reassigned.  If purely by chance the link resolves to whatever is now using the old 
-				// topic ID it also wouldn't fire a change event.  So instead we set them to -1 which is invalid and thus will always
-				// trigger a change event.
-				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=-1, TargetScore=-1 WHERE ");
+				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=?, TargetScore=0 WHERE ");
 				List<object> queryParams = new List<object>();
+				queryParams.Add(UnresolvedTargetTopicID.TargetDeleted);
 
 				AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
@@ -1032,7 +1027,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		FileID - Must be set.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
-		 *		TargetTopicID - Must be zero.
+		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
 		 *		TargetScore - Must be zero.
 		 */
 		public void AddLink (Link link)
@@ -1052,7 +1047,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exception("Link.EndingSymbol didn't match Link.Symbol.EndingSymbol in AddLink");  }
 			#endif
 
-			RequireZero("AddLink", "TargetTopicID", link.TargetTopicID);
+			RequireValue("AddLink", "TargetTopicID", link.TargetTopicID, UnresolvedTargetTopicID.NewLink);
 			RequireZero("AddLink", "TargetScore", link.TargetScore);
 
 			StringSet alternateEndingSymbols = null;
@@ -1098,8 +1093,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
 													"TargetTopicID, TargetScore) " +
-			                           "VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0)",
-			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol
+			                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)",
+			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol,
+												UnresolvedTargetTopicID.NewLink
 			                           );
 			
 			codeDB.UsedLinkIDs.Add(link.LinkID);
@@ -1160,8 +1156,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		FileID - Must be set.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Must be set.
-		 *		TargetTopicID - Can be zero, which means the link is unresolved.
-		 *		TargetScore - Can be zero, which means the link is unresolved.
+		 *		TargetTopicID - Can be any value.
+		 *		TargetScore - Can be any value.
 		 */
 		public void DeleteLink (Link link)
 			{
@@ -1240,7 +1236,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		FileID - Must be set.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
-		 *		TargetTopicID - Must be zero.
+		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
 		 *		TargetScore - Must be zero.
 		 */
 		public void UpdateLinksInFile (int fileID, IEnumerable<Link> newLinks, CancelDelegate cancelled)
