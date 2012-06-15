@@ -894,6 +894,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 			return true;
 			}
+
+
+		/* Function: IsEnum
+		 * Returns whether the topic uses an enum topic type.
+		 */
+		protected bool IsEnum (Topic topic)
+			{
+			var enumTopicType = Engine.Instance.TopicTypes.FromKeyword("enum");
+			return (enumTopicType != null && topic.TopicTypeID == enumTopicType.ID);
+			}
 			
 			
 		/* Function: IsParenTagLine
@@ -1678,8 +1688,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</dd>");
 						}
 
-					bool isEnum = (topic.TopicTypeID == Engine.Instance.TopicTypes.FromKeyword("enum"));						
-					bool isSymbol = ( (isEnum || topic.UsesPluralKeyword) && headingType != HeadingType.Parameters);
+					bool isSymbol = ( (IsEnum(topic) || topic.UsesPluralKeyword) && headingType != HeadingType.Parameters);
 						
 					if (isSymbol)
 						{  body.Append("<ds>");  }
