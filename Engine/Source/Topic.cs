@@ -50,21 +50,22 @@ namespace GregValure.NaturalDocs.Engine
 			Prototype = 0x0008,
 			Symbol = 0x0010,
 			SymbolDefinitonNumber = 0x0020,
+			IsEmbedded = 0x0040,
 
-			TopicTypeID = 0x0040,
-			AccessLevel = 0x0080,
-			Tags = 0x0100,
+			TopicTypeID = 0x0080,
+			AccessLevel = 0x0100,
+			Tags = 0x0200,
 
-			LanguageID = 0x0200,
-			CommentLineNumber = 0x0400,
-			CodeLineNumber = 0x0800,
+			LanguageID = 0x0400,
+			CommentLineNumber = 0x0800,
+			CodeLineNumber = 0x1000,
 			
-			FileID = 0x1000,
-			PrototypeContext = 0x2000,
-			BodyContext = 0x4000,
+			FileID = 0x2000,
+			PrototypeContext = 0x4000,
+			BodyContext = 0x8000,
 
 			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber |
-					 TopicTypeID | AccessLevel | Tags |
+					 IsEmbedded | TopicTypeID | AccessLevel | Tags |
 					 LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
 			}
@@ -89,17 +90,18 @@ namespace GregValure.NaturalDocs.Engine
 			Prototype = 0x00000020,
 			Symbol = 0x00000040,
 			SymbolDefinitionNumber = 0x00000080,
-			TopicTypeID = 0x00000100,
-			AccessLevel = 0x00000200,
-			Tags = 0x00000400,
-			FileID = 0x00000800,
-			CommentLineNumber = 0x00001000,
-			CodeLineNumber = 0x00002000,
-			LanguageID = 0x00004000,
-			PrototypeContext = 0x00008000,
-			PrototypeContextID = 0x00010000,
-			BodyContext = 0x00020000,
-			BodyContextID = 0x00040000,
+			IsEmbedded = 0x00000100,
+			TopicTypeID = 0x00000200,
+			AccessLevel = 0x00000400,
+			Tags = 0x00000800,
+			FileID = 0x00001000,
+			CommentLineNumber = 0x00002000,
+			CodeLineNumber = 0x00004000,
+			LanguageID = 0x00008000,
+			PrototypeContext = 0x00010000,
+			PrototypeContextID = 0x00020000,
+			BodyContext = 0x00040000,
+			BodyContextID = 0x00080000,
 
 			Contexts = PrototypeContext | BodyContext
 			}
@@ -122,6 +124,7 @@ namespace GregValure.NaturalDocs.Engine
 			parsedPrototype = null;
 			symbol = new SymbolString();
 			symbolDefinitionNumber = 0;
+			isEmbedded = false;
 			titleParameters = new ParameterString();
 			titleParametersGenerated = false;
 			prototypeParameters = new ParameterString();
@@ -170,6 +173,7 @@ namespace GregValure.NaturalDocs.Engine
 			// parsedPrototype - Not a database field.
 			// symbol - Important in linking.
 			// symbolDefinitonNumber - Important in linking.
+			// isEmbedded - Not important in linking.
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
 
@@ -237,6 +241,8 @@ namespace GregValure.NaturalDocs.Engine
 
 			if (summary != other.summary)
 				{  changeFlags |= ChangeFlags.Summary;  }
+			if (isEmbedded != other.isEmbedded)
+				{  changeFlags |= ChangeFlags.IsEmbedded;  }
 
 			// It's important to compare the properties and not the variables here.  Both variables may not have been set by the 
 			// parser, in which case the properties can return substitute values.  Both variables will always be set when topics are 
@@ -517,6 +523,35 @@ namespace GregValure.NaturalDocs.Engine
 				#endif
 
 				symbolDefinitionNumber = value;  
+				}
+			}
+
+
+		/* Property: IsEmbedded
+		 * Whether this topic is embedded in a prior topic.  This is used to support lists.  Entries that appear in definition 
+		 * lists within a list topic will get their own <Topic> objects to allow for linking, but they will not appear in the 
+		 * output because they are already covered by the parent.  Embedded topics will always come after their parent
+		 * in a list of topics, so the last non-embedded topic is the parent.
+		 */
+		public bool IsEmbedded
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.IsEmbedded) != 0)
+					{  throw new InvalidOperationException("Tried to access IsEmbedded when that field was ignored.");  }
+				#endif
+
+				return isEmbedded;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.IsEmbedded) != 0)
+					{  throw new InvalidOperationException("Tried to access IsEmbedded when that field was ignored.");  }
+				#endif
+
+				isEmbedded = value;
 				}
 			}
 
@@ -1026,6 +1061,14 @@ namespace GregValure.NaturalDocs.Engine
 		 * hasn't been determined yet.
 		 */
 		protected int symbolDefinitionNumber;
+
+		/* var: isEmbedded
+		 * Whether this topic is embedded in a prior topic.  This is used to support lists.  Entries that appear in definition 
+		 * lists within a list topic will get their own <Topic> objects to allow for linking, but they will not appear in the 
+		 * output because they are already covered by the parent.  Embedded topics will always come after their parent
+		 * in a list of topics, so the last non-embedded topic is the parent.
+		 */
+		protected bool isEmbedded;
 
 		/* var: titleParameters
 		 * Any parameters found in the title, as opposed to the prototype.

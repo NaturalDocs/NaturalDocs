@@ -56,8 +56,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			bool ignoreContexts = ((ignoreFields & (Topic.IgnoreFields.BodyContext | Topic.IgnoreFields.PrototypeContext)) != 0);
 						
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																								"TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																								"LanguageID, PrototypeContextID, BodyContextID, FileID ");
+																						  "IsEmbedded, TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																						  "LanguageID, PrototypeContextID, BodyContextID, FileID ");
 
 			if (!ignoreBody)
 				{  queryText.Append(", Body ");  }
@@ -102,28 +102,29 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Prototype = query.StringColumn(3);
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(4) );
 					topic.SymbolDefinitionNumber = query.IntColumn(5);
+					topic.IsEmbedded = (query.IntColumn(6) == 1);
 
-					topic.TopicTypeID = query.IntColumn(6);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(7);
-					topic.TagString = query.StringColumn(8);
+					topic.TopicTypeID = query.IntColumn(7);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
+					topic.TagString = query.StringColumn(9);
 
-					topic.CommentLineNumber = query.IntColumn(9);
-					topic.CodeLineNumber = query.IntColumn(10);
+					topic.CommentLineNumber = query.IntColumn(10);
+					topic.CodeLineNumber = query.IntColumn(11);
 
-					topic.LanguageID = query.IntColumn(11);
-					topic.PrototypeContextID = query.IntColumn(12);
-					topic.BodyContextID = query.IntColumn(13);
-					topic.FileID = query.IntColumn(14);
+					topic.LanguageID = query.IntColumn(12);
+					topic.PrototypeContextID = query.IntColumn(13);
+					topic.BodyContextID = query.IntColumn(14);
+					topic.FileID = query.IntColumn(15);
 
 					if (!ignoreBody)
-						{  topic.Body = query.StringColumn(15);  }
+						{  topic.Body = query.StringColumn(16);  }
 					else
-						{  topic.BodyLength = query.IntColumn(15);  }
+						{  topic.BodyLength = query.IntColumn(16);  }
 
 					if (!ignoreContexts)
 						{
-						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(16) );
-						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(17) );
+						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(17) );
+						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(18) );
 						}
 
 					topics.Add(topic);
@@ -258,6 +259,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Must be set.
+		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -279,6 +281,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			RequireContent("AddTopic", "Symbol", topic.Symbol);
 			RequireNonZero("AddTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
+			// IsEmbedded
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -300,12 +303,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			GetOrCreateContextIDs(topic);
 			
 			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-													"EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
+													"IsEmbedded, EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
 													"LanguageID, PrototypeContextID, BodyContextID) " +
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
-												topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, topic.FileID, 
-												topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
+												(topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, 
+												topic.FileID, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
 												topic.BodyContextID										 
 												);
 			
@@ -393,10 +396,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 			connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
-													"PrototypeContextID=?, BodyContextID=? " +
+													"PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
 												"WHERE TopicID = ?",
 												newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
-												newTopic.PrototypeContextID, newTopic.BodyContextID, oldTopic.TopicID);
+												newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
+												oldTopic.TopicID);
 
 			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
 				{
@@ -452,6 +456,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Must be set.
+		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.
@@ -473,6 +478,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			RequireContent("DeleteTopic", "Symbol", topic.Symbol);
 			RequireNonZero("DeleteTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
+			// IsEmbedded
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
 			// TagString
@@ -577,6 +583,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Can be zero.  These will be regenerated regardless of whether they were previously set.
+		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
 		 *		TagString - Can be null.

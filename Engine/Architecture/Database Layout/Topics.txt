@@ -74,6 +74,17 @@ Column: SymbolDefinitionNumber
 	of the same symbol will receive an incremented number based on the source file order.
 
 
+Column: IsEmbedded
+
+	(SQL Prototype)
+		IsEmbedded INTEGER NOT NULL
+	(end)
+
+	Whether this topic is embedded in a prior topic, stored as 1 or 0.  This is used to support lists.  Entries that 
+	appear in definition lists within a list topic will get their own record to allow for linking, but they will not appear
+	in the output because they are already covered by the parent.
+
+
 Column: EndingSymbol
 
 	(SQL Prototype)
