@@ -110,9 +110,9 @@ Topic: Top-Level Block Tags
 	Definition Lists:
 
 		> <dl>
-		>    <de>Entry</de>
+		>    <de>Regular Entry</de>
 		>    <dd><p>Definition</p></dd>
-		>    <de definesymbol="[symbol]"?>Entry</de>
+		>    <ds>Symbol Entry</ds>
 		>    <dd>
 		>       <p>Paragraph in definition</p>
 		>       <p>Paragraph in definition</p>
@@ -121,8 +121,7 @@ Topic: Top-Level Block Tags
 		
 		Entries may not contain paragraph tags or additional formatting.
 		
-		The definesymbol attribute is used for enums and Natural Docs' list topics, and contains the full symbol name being defined.
-		The type will be determined by the topic's type.
+		Symbol entries are used for enums and Natural Docs' list topics.
 		
 		Definitions will always contain paragraph tags regardless of whether or not there are multiple paragraphs in it.  They can contain 
 		inline formatting like underlining and links, but not other top level tags like headings and images.

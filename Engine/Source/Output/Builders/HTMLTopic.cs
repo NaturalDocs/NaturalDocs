@@ -292,6 +292,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						break;
 
 					case NDMarkup.Iterator.ElementType.DefinitionListEntryTag:
+					case NDMarkup.Iterator.ElementType.DefinitionListSymbolTag:
 						if (iterator.IsOpeningTag)
 							{  
 							htmlOutput.Append("<tr><td class=\"CDLEntry\">");
@@ -305,7 +306,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 								StringBuilder symbol = new StringBuilder();
 
-								while (temp.IsInBounds && temp.Type != NDMarkup.Iterator.ElementType.DefinitionListEntryTag)
+								while (temp.IsInBounds && 
+											temp.Type != NDMarkup.Iterator.ElementType.DefinitionListEntryTag &&
+											temp.Type != NDMarkup.Iterator.ElementType.DefinitionListSymbolTag)
 									{
 									if (temp.Type == NDMarkup.Iterator.ElementType.Text)
 										{  temp.AppendTo(symbol);  }

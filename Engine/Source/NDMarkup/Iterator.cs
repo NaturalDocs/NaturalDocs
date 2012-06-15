@@ -44,7 +44,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 				PreTag, PreLineBreakTag,
 				ImageTag,
 				BulletListTag, BulletListItemTag,
-				DefinitionListTag, DefinitionListEntryTag, DefinitionListDefinitionTag,
+				DefinitionListTag, DefinitionListEntryTag, DefinitionListSymbolTag, DefinitionListDefinitionTag,
 
 				BoldTag, ItalicsTag, UnderlineTag,
 				LinkTag,
@@ -74,6 +74,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 			TagNameToElementType.Add("li", ElementType.BulletListItemTag);
 			TagNameToElementType.Add("dl", ElementType.DefinitionListTag);
 			TagNameToElementType.Add("de", ElementType.DefinitionListEntryTag);
+			TagNameToElementType.Add("ds", ElementType.DefinitionListSymbolTag);
 			TagNameToElementType.Add("dd", ElementType.DefinitionListDefinitionTag);
 			TagNameToElementType.Add("b", ElementType.BoldTag);
 			TagNameToElementType.Add("i", ElementType.ItalicsTag);

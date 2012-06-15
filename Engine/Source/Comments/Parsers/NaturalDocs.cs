@@ -1541,6 +1541,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			bool prevParagraphLineEndsSentence = false;
 			int definitionIndent = -1;
 			List<int> bulletIndents = null;
+			HeadingType headingType = HeadingType.Generic;
 			
 			// Temp storage for the Is functions.
 			BlockType blockType;
@@ -1548,7 +1549,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			char leadingCharacter;
 			string tempString, tempString2;
 			Path filePath;
-			HeadingType headingType;
 			Language language;
 			
 			while (line < endOfContent)
@@ -1677,10 +1677,23 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						CloseParagraph(ref paragraph, body);
 						body.Append("</dd>");
 						}
+
+					bool isEnum = (topic.TopicTypeID == Engine.Instance.TopicTypes.FromKeyword("enum"));						
+					bool isSymbol = ( (isEnum || topic.UsesPluralKeyword) && headingType != HeadingType.Parameters);
 						
-					body.Append("<de>");
+					if (isSymbol)
+						{  body.Append("<ds>");  }
+					else
+						{  body.Append("<de>");  }
+
 					body.EntityEncodeAndAppend(tempString);
-					body.Append("</de><dd><p>");
+
+					if (isSymbol)
+						{  body.Append("</ds>");  }
+					else
+						{  body.Append("</de>");  }
+
+					body.Append("<dd><p>");
 					
 					if (paragraph == null)
 						{  paragraph = new StringBuilder();  }
