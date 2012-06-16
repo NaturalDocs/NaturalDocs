@@ -741,6 +741,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 							commentTopics[topicIndex + 1].CommentLineNumber < comment.End.LineNumber)
 					{  topicIndex++;  }
 
+				// Now back up past any embedded topics.  We don't want the last embedded topic to get the prototype
+				// instead of the parent topic.
+
+				while (topicIndex < commentTopics.Count && commentTopics[topicIndex].IsEmbedded && 
+							topicIndex > 0 && commentTopics[topicIndex - 1].CommentLineNumber >= comment.Start.LineNumber)
+					{  topicIndex--;  }
+
 				if (topicIndex >= commentTopics.Count ||
 					 commentTopics[topicIndex].CommentLineNumber < comment.Start.LineNumber ||
 					 commentTopics[topicIndex].CommentLineNumber > comment.End.LineNumber)
@@ -750,6 +757,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 
 				// If it already has a prototype, probably from one embedded in a comment, don't search for a new one.
+
 				if (commentTopics[topicIndex].Prototype != null)
 					{  continue;  }
 
