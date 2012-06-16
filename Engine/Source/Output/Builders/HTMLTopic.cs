@@ -103,7 +103,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					#if SHOW_NDMARKUP
 						if (topic.Body != null)
 							{
-							html.Append(
+							htmlOutput.Append(
 							"\r\n " +
 							"<div class=\"CBodyNDMarkup\">" +
 								topic.Body.ToHTML() +
