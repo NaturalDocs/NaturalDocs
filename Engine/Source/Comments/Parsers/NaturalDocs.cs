@@ -252,97 +252,106 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		public override bool Start (Errors.ErrorList errors)
 		    {
-		    bool loadFileResult = LoadFile( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt", errors,
-		                                                 out sets, out tables, out conversionLists);
+
+			 // Load configuration files
+
+			bool loadFileResult = LoadFile( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt", errors,
+																	out sets, out tables, out conversionLists);
 													 
-		    if (loadFileResult == false )
-		        {  return false;  }
+			if (loadFileResult == false )
+				{  return false;  }
 								
-		    if (Engine.Instance.Config.ReparseEverything == false)
-		        {
-		        StringSet[] binarySets;
-		        StringTable<byte>[] binaryTables;
-		        List<string>[] binaryConversionLists;
-		        
-		        bool loadBinaryFileResult = LoadBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
-		                                                                 out binarySets, out binaryTables, out binaryConversionLists );
+			if (Engine.Instance.Config.ReparseEverything == false)
+				{
+				StringSet[] binarySets;
+				StringTable<byte>[] binaryTables;
+				List<string>[] binaryConversionLists;
+
+				bool loadBinaryFileResult = LoadBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
+																							out binarySets, out binaryTables, out binaryConversionLists );
 																		 
-		        if (loadBinaryFileResult == false)
-		            {  Engine.Instance.Config.ReparseEverything = true;  }
+				if (loadBinaryFileResult == false)
+					{  Engine.Instance.Config.ReparseEverything = true;  }
 					
-		        // Try quick compares before full ones
-		        else if (sets.Length != binarySets.Length ||
-						  tables.Length != binaryTables.Length ||
-						  conversionLists.Length != binaryConversionLists.Length)
-		            {  Engine.Instance.Config.ReparseEverything = true;  }
+				// Try quick compares before full ones
+				else if (sets.Length != binarySets.Length ||
+							 tables.Length != binaryTables.Length ||
+							 conversionLists.Length != binaryConversionLists.Length)
+					{  Engine.Instance.Config.ReparseEverything = true;  }
 
-		        else
-		            {
-		            bool equal = true;
-		            
-		            for (int i = 0; i < sets.Length && equal; i++)	
+				else
+					{
+					bool equal = true;
+
+					for (int i = 0; i < sets.Length && equal; i++)	
+						{
+						if (sets[i].Count != binarySets[i].Count)
+							{  equal = false;  }
+						else
 							{
-							if (sets[i].Count != binarySets[i].Count)
-								{  equal = false;  }
-							else
+							foreach (string setMember in sets[i])
 								{
-								foreach (string setMember in sets[i])
+								if (!binarySets[i].Contains(setMember))
 									{
-									if (!binarySets[i].Contains(setMember))
-										{
-										equal = false;
-										break;
-										}
+									equal = false;
+									break;
 									}
 								}
 							}
+						}
 						
-						for (int i = 0; i < tables.Length && equal; i++)
+					for (int i = 0; i < tables.Length && equal; i++)
+						{
+						if (tables[i].Count != binaryTables[i].Count)
+							{  equal = false;  }
+						else
 							{
-							if (tables[i].Count != binaryTables[i].Count)
-								{  equal = false;  }
-							else
+							foreach (KeyValuePair<string, byte> pair in tables[i])
 								{
-								foreach (KeyValuePair<string, byte> pair in tables[i])
+								if (binaryTables[i][pair.Key] != pair.Value)	
 									{
-									if (binaryTables[i][pair.Key] != pair.Value)	
-										{
-										equal = false;
-										break;
-										}
+									equal = false;
+									break;
 									}
 								}
 							}
+						}
 						
-						for (int i = 0; i < conversionLists.Length && equal; i++)
+					for (int i = 0; i < conversionLists.Length && equal; i++)
+						{
+						if (conversionLists[i].Count != binaryConversionLists[i].Count)
+							{  equal = false;  }
+						else
 							{
-							if (conversionLists[i].Count != binaryConversionLists[i].Count)
-								{  equal = false;  }
-							else
+							for (int x = 0; x < conversionLists[i].Count; x++)
 								{
-								for (int x = 0; x < conversionLists[i].Count; x++)
+								if (conversionLists[i][x] != binaryConversionLists[i][x])
 									{
-									if (conversionLists[i][x] != binaryConversionLists[i][x])
-										{
-										equal = false;
-										break;
-										}
+									equal = false;
+									break;
 									}
 								}
 							}
+						}
 						
-						if (equal == false)
-							{  Engine.Instance.Config.ReparseEverything = true;  }
-		            }
-		        }
+					if (equal == false)
+						{  Engine.Instance.Config.ReparseEverything = true;  }
+					}
+				}
 		        
-		    ConfigFile.TryToRemoveErrorAnnotations( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt" );
+			ConfigFile.TryToRemoveErrorAnnotations( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt" );
 				
-		    SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
-		                         sets, tables, conversionLists );
+			SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
+										sets, tables, conversionLists );
 
-		    return true;
-		    }
+
+			// Look up important types
+
+			enumTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
+			constantTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("constant");
+
+			return true;
+			}
 		    
 		    
 		/* Function: Parse
@@ -358,6 +367,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
 		 *		- UsesPluralKeyword, unless doesn't require header
+		 *		- IsEmbedded
 		 */
 		public bool Parse (PossibleDocumentationComment comment, List<Topic> topics, bool requireHeader)
 			{
@@ -415,6 +425,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						{  ParseBody(firstContentLine, lineIterator, currentTopic);  }
 						
 					topics.Add(currentTopic);
+					ExtractEmbeddedTopics(currentTopic, topics);
 					
 					currentTopic = nextTopic;
 					nextTopic = null;
@@ -452,6 +463,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{  ParseBody(firstContentLine, lineIterator, currentTopic);  }
 				
 			topics.Add(currentTopic);
+			ExtractEmbeddedTopics(currentTopic, topics);
 
 			return true;			
 			}
@@ -896,16 +908,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: IsEnum
-		 * Returns whether the topic uses an enum topic type.
-		 */
-		protected bool IsEnum (Topic topic)
-			{
-			var enumTopicType = Engine.Instance.TopicTypes.FromKeyword("enum");
-			return (enumTopicType != null && topic.TopicTypeID == enumTopicType.ID);
-			}
-			
-			
 		/* Function: IsParenTagLine
 		 * Returns true if the entire line is enclosed in parentheses and satisfies a few other requirements to be suitable for a
 		 * parenthetical tag like "(start code)" or "(see image.jpg)".  Will return the contents of the parentheses with all whitespace
@@ -1688,7 +1690,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</dd>");
 						}
 
-					bool isSymbol = ( (IsEnum(topic) || topic.UsesPluralKeyword) && headingType != HeadingType.Parameters);
+					bool isSymbol = ( (topic.UsesPluralKeyword || topic.TopicTypeID == enumTopicTypeID) && headingType != HeadingType.Parameters);
 						
 					if (isSymbol)
 						{  body.Append("<ds>");  }
@@ -1889,7 +1891,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 					}
 
-				// Also allow prototypes to come before the openiing paragraph.
+				// Also allow prototypes to come before the opening paragraph.
 				else if (iterator.Type == NDMarkup.Iterator.ElementType.PreTag && iterator.Property("type") == "prototype")
 					{
 					do
@@ -2864,6 +2866,74 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					}
 				}
 			}
+
+
+		/* Function: ExtractEmbeddedTopics
+		 * Goes through the topic body to find any definition list symbols and adds them to the list as separate topics.
+		 * Since embedded topics must appear immediately after their parent topic, this must be called while the passed
+		 * topic is at the end of the list.
+		 */
+		protected void ExtractEmbeddedTopics (Topic topic, IList<Topic> topicList)
+			{
+			#if DEBUG
+			if (topic != topicList[topicList.Count - 1])
+				{  throw new Exception ("ExtractEmbeddedTopics requires the topic to be the last on the list.");  }
+			#endif
+
+			if (topic.Body == null)
+				{  return;  }
+
+			if (topic.UsesPluralKeyword == false && topic.TopicTypeID != enumTopicTypeID)
+				{
+				#if DEBUG
+				if (topic.Body.IndexOf("<ds>") != -1)
+					{  
+					throw new Exception ("ExtractEmbeddedTopics found definition symbols in topic " + topic.Title + " even though it's doesn't " +
+															"have a plural keyword and is not an enum.");
+					}
+				#endif
+
+				return;
+				}
+
+			int symbolIndex = topic.Body.IndexOf("<ds>");
+			int lineNumberOffset = 1;
+
+			while (symbolIndex != -1)
+				{
+				int endSymbolIndex = topic.Body.IndexOf("</ds>", symbolIndex + 4);
+				int definitionIndex = endSymbolIndex + 5;
+
+				#if DEBUG
+				if (topic.Body.Substring(definitionIndex, 4) != "<dd>")
+					{  throw new Exception ("The assumption that a <dd> would appear immediately after a </ds> failed for some reason.");  }
+				#endif
+
+				int endDefinitionIndex = topic.Body.IndexOf("</dd>", definitionIndex + 4);
+
+				Topic embeddedTopic = new Topic();
+				embeddedTopic.Title = topic.Body.Substring(symbolIndex + 4, endSymbolIndex - (symbolIndex + 4)).EntityDecode();
+				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
+				embeddedTopic.IsEmbedded = true;
+
+				if (topic.TopicTypeID == enumTopicTypeID && constantTopicTypeID != 0)
+					{  embeddedTopic.TopicTypeID = constantTopicTypeID;  }
+				else
+					{  embeddedTopic.TopicTypeID = topic.TopicTypeID;  }
+
+				embeddedTopic.AccessLevel = topic.AccessLevel;
+				embeddedTopic.TagString = topic.TagString;
+				embeddedTopic.CommentLineNumber = topic.CommentLineNumber + lineNumberOffset;
+
+				ExtractSummary(embeddedTopic);
+
+				topicList.Add(embeddedTopic);
+
+				lineNumberOffset++;
+
+				symbolIndex = topic.Body.IndexOf("<ds>", endDefinitionIndex + 5);
+				}
+			}
 			
 			
 			
@@ -3411,6 +3481,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * composed in Unicode (FormC).  Use <ConversionListIndex> for indexes to get particular tables.
 		 */
 		protected List<string>[] conversionLists;
+
+		/* var: enumTopicTypeID
+		 * The ID of the topic type that uses the "enum" keyword, or zero if none.
+		 */
+		protected int enumTopicTypeID;
+
+		/* var: constantTopicTypeID
+		 * The ID of the topic type that uses the "constant" keyword, or zero if none.
+		 */
+		protected int constantTopicTypeID;
 	
 		/* var: ParenthesesChars 
 		 * An array of the parentheses characters, for use with IndexOfAny(char[]).

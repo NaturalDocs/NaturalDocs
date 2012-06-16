@@ -1107,9 +1107,20 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		protected virtual void ApplyCommentPrototypes (IList<Topic> topics)
 			{
 			StringBuilder stringBuilder = null;
+			int replaceEmbeddedLanguageID = 0;
 
 			foreach (Topic topic in topics)
 				{
+				// If a topic changed its language ID by having a comment prototype, make sure it applies to any embedded topics
+				// that immediately follow it as well.
+				if (topic.IsEmbedded)
+					{
+					if (replaceEmbeddedLanguageID != 0)
+						{  topic.LanguageID = replaceEmbeddedLanguageID;  }
+					}
+				else
+					{  replaceEmbeddedLanguageID = 0;  }
+
 				if (topic.Body == null)
 					{  continue;  }
 
@@ -1152,7 +1163,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					Language languageObject = Instance.Languages.FromName(prototypeLanguage);
 
 					if (languageObject != null)
-						{  topic.LanguageID = languageObject.ID;  }
+						{  
+						topic.LanguageID = languageObject.ID;
+						replaceEmbeddedLanguageID = languageObject.ID;
+						}
 					}
 
 
@@ -1221,11 +1235,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *		- <Topic.PrototypeContext>
 		 *		- <Topic.BodyContext>
 		 *		- <Topic.Symbol>
-		 *		- <Topic.Parameters>
 		 */
 		protected virtual void GenerateCommentContextAndSymbols (IList<CodePoint> commentCodePoints)
 			{
 			ContextString currentContext = new ContextString();
+			Topic lastNonEmbeddedTopic = null;
+			int enumTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
 
 			foreach (CodePoint codePoint in commentCodePoints)
 				{
@@ -1236,62 +1251,92 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					string parentheses = null;
 					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parentheses);
 
-					switch (topicType.Scope)
+					bool partOfEnum;
+
+					if (codePoint.Topic.IsEmbedded)
 						{
-						case TopicType.ScopeValue.Start:
+						partOfEnum = (lastNonEmbeddedTopic.TopicTypeID == enumTopicTypeID);
+						}
+					else
+						{  
+						lastNonEmbeddedTopic = codePoint.Topic;  
+						partOfEnum = false;
+						}
 
-							codePoint.Topic.Symbol = symbol;
+					if ( (partOfEnum && enumValue == EnumValues.UnderParent) ||
+						  (!partOfEnum && topicType.Scope == TopicType.ScopeValue.Normal) )
+						{
+						codePoint.Topic.Symbol = currentContext.Scope + symbol;
 
-							// Classes are treated as global
-							currentContext.Scope = new SymbolString();
-							codePoint.Topic.PrototypeContext = currentContext;
+						codePoint.Topic.PrototypeContext = currentContext;
+						codePoint.Topic.BodyContext = currentContext;
+						}
 
-							// but the body is under the new scope so it can link to members easily.
-							currentContext.Scope = symbol;
-							codePoint.Topic.BodyContext = currentContext;
+					else if ( (partOfEnum && enumValue == EnumValues.Global) ||
+								  (!partOfEnum && topicType.Scope == TopicType.ScopeValue.AlwaysGlobal) )
+						{
+						// The topic is global without affecting the current context
+						codePoint.Topic.Symbol = symbol;
 
-							codePoint.ContextChanged = true;
-							codePoint.Context = currentContext;
+						ContextString globalContext = currentContext;
+						globalContext.Scope = new SymbolString();
 
-							break;
+						codePoint.Topic.PrototypeContext = globalContext;
 
-						case TopicType.ScopeValue.End:
+						// However, we allow the body to retain the current context for linking
+						codePoint.Topic.BodyContext = currentContext;
+						}
 
-							codePoint.Topic.Symbol = symbol;
+					else if (partOfEnum && enumValue == EnumValues.UnderType)
+						{
+						codePoint.Topic.Symbol = lastNonEmbeddedTopic.Symbol + symbol;
 
-							// Everything is global
-							currentContext.Scope = new SymbolString();
-							codePoint.Topic.PrototypeContext = currentContext;
-							codePoint.Topic.BodyContext = currentContext;
+						ContextString enumContext = currentContext;
+						enumContext.Scope = lastNonEmbeddedTopic.Symbol;
 
-							codePoint.ContextChanged = true;
-							codePoint.Context = currentContext;
+						codePoint.Topic.PrototypeContext = currentContext;
+						codePoint.Topic.BodyContext = enumContext;
+						}
 
-							break;
+					else if (topicType.Scope == TopicType.ScopeValue.Start)
+						{
+						codePoint.Topic.Symbol = symbol;
 
-						case TopicType.ScopeValue.Normal:
+						// Classes are treated as global
+						currentContext.Scope = new SymbolString();
+						codePoint.Topic.PrototypeContext = currentContext;
 
-							codePoint.Topic.Symbol = currentContext.Scope + symbol;
+						// but the body is under the new scope so it can link to members easily.
+						currentContext.Scope = symbol;
+						codePoint.Topic.BodyContext = currentContext;
 
-							codePoint.Topic.PrototypeContext = currentContext;
-							codePoint.Topic.BodyContext = currentContext;
+						codePoint.ContextChanged = true;
+						codePoint.Context = currentContext;
+						}
 
-							break;
+					else // (topicType.Scope == TopicType.ScopeValue.End)
+						{
+						codePoint.Topic.Symbol = symbol;
 
-						case TopicType.ScopeValue.AlwaysGlobal:
+						// Everything is global
+						currentContext.Scope = new SymbolString();
+						codePoint.Topic.PrototypeContext = currentContext;
+						codePoint.Topic.BodyContext = currentContext;
 
-							// The topic is global without affecting the current context
-							codePoint.Topic.Symbol = symbol;
+						codePoint.ContextChanged = true;
+						codePoint.Context = currentContext;
+						}
 
-							ContextString globalContext = currentContext;
-							globalContext.Scope = new SymbolString();
+					// If it's an enum topic where the values are under the type, replace the body context with one that
+					// includes the symbol name.
+					if (codePoint.Topic.IsEmbedded == false && 
+						 codePoint.Topic.TopicTypeID == enumTopicTypeID &&
+						 enumValue == EnumValues.UnderType)
+						{
+						ContextString bodyContext = currentContext;
+						bodyContext.Scope = codePoint.Topic.Symbol;
 
-							codePoint.Topic.PrototypeContext = globalContext;
-
-							// However, we allow the body to retain the current context for linking
-							codePoint.Topic.BodyContext = currentContext;
-
-							break;
+						codePoint.Topic.BodyContext = bodyContext;
 						}
 					}
 				}
