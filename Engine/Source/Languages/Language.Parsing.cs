@@ -98,7 +98,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// For basic language support, add prototypes via our language-neutral algorithm.
+			// Scan the comments for "Prototype:" headings, applying them as the prototypes and removing them from the body.
+
+			ApplyCommentPrototypes(commentTopics);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// For basic language support, fill in additional prototypes via our language-neutral algorithm.
 
 			if (Type == LanguageType.BasicSupport)
 				{
@@ -107,15 +115,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
 				}
-
-
-			// Scan the comments for "Prototype:" headings.  Apply comment prototypes, overwriting the existing prototypes if 
-			// necessary, and remove them from the body.
-
-			ApplyCommentPrototypes(commentTopics);
-
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
 
 
 			// Convert our Topic list to CodePoints.  Topics only store line numbers, so we'll move a LineIterator to each one to
@@ -723,6 +722,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *
 		 * This function does the basic looping of the search but throws the individual prototype detection to <AddBasicPrototype()>,
 		 * so languages with basic support can just override that to implement tweaks instead.
+		 * 
+		 * This function will not apply a prototype to a <Topic> that already has one.
 		 */
 		protected virtual void AddBasicPrototypes (Tokenizer source, IList<Topic> commentTopics, 
 																					 IList<PossibleDocumentationComment> possibleDocumentationComments)
@@ -747,6 +748,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// We're out of topics or the one we're on isn't in this comment.
 					continue;  
 					}
+
+				// If it already has a prototype, probably from one embedded in a comment, don't search for a new one.
+				if (commentTopics[topicIndex].Prototype != null)
+					{  continue;  }
 
 				// Build the bounds for the prototype search and perform it.
 
@@ -1102,7 +1107,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: ApplyCommentPrototypes
 		 * Goes through the <Topics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
-		 * sets them as the topic prototype.  If there's an existing prototype taken from the code it will be replaced.
+		 * sets them as the topic prototype.
 		 */
 		protected virtual void ApplyCommentPrototypes (IList<Topic> topics)
 			{
