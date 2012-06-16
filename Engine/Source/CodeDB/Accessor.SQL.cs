@@ -611,6 +611,59 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				previousCommentLineNumber = newTopic.CommentLineNumber;
 				}
+
+
+			// Validate that embedded topics match bodies with definition lists that define symbols.
+
+			Topic lastNonEmbeddedTopic = null;
+			int lastNonEmbeddedTopicSymbolCount = 0;
+			int embeddedTopicsInARow = 0;
+
+			foreach (Topic newTopic in newTopics)
+				{
+				if (newTopic.IsEmbedded)
+					{
+					if (lastNonEmbeddedTopic == null)
+						{  throw new Exception ("Embedded topics must follow non-embedded topics in a file.");  }
+
+					embeddedTopicsInARow++;
+
+					if (embeddedTopicsInARow > lastNonEmbeddedTopicSymbolCount)
+						{  
+						throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
+																  "topics but more than that followed it in the list.");  
+						}
+					}
+				else // not embedded
+					{
+					if (lastNonEmbeddedTopic != null && embeddedTopicsInARow < lastNonEmbeddedTopicSymbolCount)
+						{  
+						throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
+																  "topics but " + embeddedTopicsInARow + " followed it in the list.");  
+						}
+
+					lastNonEmbeddedTopic = newTopic;
+					lastNonEmbeddedTopicSymbolCount = 0;
+					embeddedTopicsInARow = 0;
+
+					if (newTopic.Body != null)
+						{
+						int index = newTopic.Body.IndexOf("<ds>");
+
+						while (index != -1)
+							{
+							lastNonEmbeddedTopicSymbolCount++;
+							index = newTopic.Body.IndexOf("<ds>", index + 1);
+							}
+						}
+					}
+				}
+
+			if (lastNonEmbeddedTopic != null && embeddedTopicsInARow < lastNonEmbeddedTopicSymbolCount)
+				{  
+				throw new Exception ("Topic " + lastNonEmbeddedTopic.Title + " has " + lastNonEmbeddedTopicSymbolCount + " embedded " +
+															"topics but " + embeddedTopicsInARow + " followed it in the list.");  
+				}
 			#endif
 
 			// Generate new symbol definition numbers
