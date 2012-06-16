@@ -126,17 +126,26 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					StringBuilder html = new StringBuilder("\r\n\r\n");
 					HTMLTopic topicBuilder = new HTMLTopic(this);
 
-					for (int i = 0; i < topics.Count; i++)
+					// We don't put embedded topics in the output, so we need to find the last non-embedded one so
+					// that the "last" CSS tag is correctly applied.
+					int lastNonEmbeddedTopic = topics.Count - 1;
+					while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
+						{  lastNonEmbeddedTopic--;  }
+
+					for (int i = 0; i <= lastNonEmbeddedTopic; i++)
 						{  
 						string extraClass = null;
 
 						if (i == 0)
 							{  extraClass = "first";  }
-						else if (i == topics.Count - 1)
+						else if (i == lastNonEmbeddedTopic)
 							{  extraClass = "last";  }
 
-						topicBuilder.Build(topics[i], links, linkTargets, html, extraClass);  
-						html.Append("\r\n\r\n");
+						if (topics[i].IsEmbedded == false)
+							{
+							topicBuilder.Build(topics[i], links, linkTargets, html, topics, i + 1, extraClass);  
+							html.Append("\r\n\r\n");
+							}
 						}
 							
 

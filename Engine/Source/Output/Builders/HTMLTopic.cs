@@ -71,10 +71,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 *		links - A list of <Links> that must contain any links found in the <Topic>.
 		 *		linkTargets - A list of <Topics> that must contain any topics used as targets in the links.
 		 *		output - The StringBuilder that the output will be appended to.
+		 *		embeddedTopics - A list of <Topics> that contains any embedded <Topics> defined by this one.
+		 *		embeddedTopicIndex - The index into embeddedTopics to start at.
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
 		 */
 		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output, 
-										 string extraClass = null)
+										IList<Topic> embeddedTopics, int embeddedTopicIndex = 0, string extraClass = null)
 			{
 
 			// Setup
@@ -83,6 +85,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			this.links = links;
 			this.linkTargets = linkTargets;
 			this.htmlOutput = output;
+			this.embeddedTopics = embeddedTopics;
+			this.embeddedTopicIndex = embeddedTopicIndex;
 			isToolTip = false;
 
 
@@ -297,6 +301,23 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							{  
 							htmlOutput.Append("<tr><td class=\"CDLEntry\">");
 							parameterListSymbol = null;
+
+							// Create anchors for symbols.  We are assuming there are enough embedded topics for each <ds>
+							// tag and that they follow their parent topic in order.
+							if (iterator.Type == NDMarkup.Iterator.ElementType.DefinitionListSymbolTag)
+								{
+								#if DEBUG
+									if (embeddedTopics == null || embeddedTopicIndex >= embeddedTopics.Count ||
+										 embeddedTopics[embeddedTopicIndex].IsEmbedded == false)
+										{  throw new Exception ("There are not enough embedded topics to build the definition list.");  }
+								#endif
+
+								htmlOutput.Append(
+									"<a name=\"" + Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], true).EntityEncode() + "\"></a>" +
+									"<a name=\"Topic" + embeddedTopics[embeddedTopicIndex].TopicID + "\"></a>");
+
+								embeddedTopicIndex++;
+								}
 
 							// If we're using a Parameters: heading, store the entry symbol in parameterListSymbol
 							if (underParameterHeading)
@@ -720,6 +741,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Whether we're building a tooltip instead of a full topic.
 		 */
 		protected bool isToolTip;
+
+		/* var: embeddedTopics
+		 * A list of <Topics> that contains any that are embedded in the one we are building.
+		 */
+		protected IList<Topic> embeddedTopics;
+
+		/* var: embeddedTopicIndex
+		 * The entry in <embeddedTopics> where the next one resides.
+		 */
+		protected int embeddedTopicIndex;
 
 
 
