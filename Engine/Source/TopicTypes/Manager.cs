@@ -1102,6 +1102,19 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			return topicTypes[id];
 			}
 			
+		/* Function: IDFromKeyword
+		 * Returns the topic type ID associated with the passed keyword, or zero if none.
+		 */
+		public int IDFromKeyword (string keyword)
+			{
+			TopicType topicType = FromKeyword(keyword);
+
+			if (topicType != null)
+				{  return topicType.ID;  }
+			else
+				{  return 0;  }
+			}
+
 		/* Function: TagFromName
 		 * Returns the <Tag> associated with the passed name, or null if none.
 		 */
