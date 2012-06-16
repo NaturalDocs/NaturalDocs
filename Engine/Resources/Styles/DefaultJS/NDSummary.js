@@ -214,32 +214,36 @@ var NDSummary = new function ()
 			for (var i = 0; i < this.summaryEntries.length; i++)
 				{
 				var entry = this.summaryEntries[i];
-				var entryHTML = document.createElement("a");
 
-				var classString = "SEntry" +
-					" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
-					" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
-					(i == 0 ? " first" : "") +
-					(i == this.summaryEntries.length - 1 ? " last" : "");
-
-				entryHTML.id = "SEntry" + entry[`Entry_TopicID];
-				entryHTML.className = classString;
-				entryHTML.setAttribute("href", "#" + NDFramePage.currentLocation.path + ":" + entry[`Entry_Symbol]);
-				entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
-				entryHTML.onmouseover = mouseOverHandler;
-				entryHTML.onmouseout = mouseOutHandler;
-
-				// Unfortunately, hovering over the qualifier span in the title counts as moving off the underlying entry.
-				// We need to add the event handlers to the qualifier as well.
-				var entryHTMLChild = entryHTML.firstChild;
-
-				if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "qualifier"))
+				if (entry[`Entry_NameHTML] != undefined)
 					{
-					entryHTMLChild.onmouseover = mouseOverHandler;
-					entryHTMLChild.onmouseout = mouseOutHandler;
-					}
+					var entryHTML = document.createElement("a");
 
-				newContent.appendChild(entryHTML);
+					var classString = "SEntry" +
+						" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
+						" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
+						(i == 0 ? " first" : "") +
+						(i == this.summaryEntries.length - 1 ? " last" : "");
+
+					entryHTML.id = "SEntry" + entry[`Entry_TopicID];
+					entryHTML.className = classString;
+					entryHTML.setAttribute("href", "#" + NDFramePage.currentLocation.path + ":" + entry[`Entry_Symbol]);
+					entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
+					entryHTML.onmouseover = mouseOverHandler;
+					entryHTML.onmouseout = mouseOutHandler;
+
+					// Unfortunately, hovering over the qualifier span in the title counts as moving off the underlying entry.
+					// We need to add the event handlers to the qualifier as well.
+					var entryHTMLChild = entryHTML.firstChild;
+
+					if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "qualifier"))
+						{
+						entryHTMLChild.onmouseover = mouseOverHandler;
+						entryHTMLChild.onmouseout = mouseOutHandler;
+						}
+
+					newContent.appendChild(entryHTML);
+					}
 				}
 			}
 

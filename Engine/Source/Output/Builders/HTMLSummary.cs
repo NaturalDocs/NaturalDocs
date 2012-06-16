@@ -47,7 +47,7 @@
  *				topicID - A numeric ID for the topic, unique across the whole project.
  *				languageIndex - The topic's language as an index into the languages array.
  *				topicTypeIndex - The topic type as an index into the topic types array.
- *				nameHTML - The name of the topic in HTML.
+ *				nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
  *				symbol - The topic's symbol in the hash path.
  *				
  * 
@@ -359,9 +359,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
+				output.Append(",");
+
+				if (topic.IsEmbedded == false)
+					{  
+					output.Append('"');
+					output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
+					output.Append('"');
+					}
+				else
+					{  output.Append("undefined");  }
+
 				output.Append(",\"");
-				output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );
-				output.Append("\",\"");
 				output.StringEscapeAndAppend( Builders.HTML.Source_TopicHashPath(topic, true) );
 				output.Append("\"]");
 
@@ -395,26 +404,30 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				Topic topic = topics[topicIndex];
-				string toolTipHTML = htmlTopic.BuildToolTip(topic, links);
 
-				if (toolTipHTML != null)
+				if (topic.IsEmbedded == false)
 					{
-					if (!first)
+					string toolTipHTML = htmlTopic.BuildToolTip(topic, links);
+
+					if (toolTipHTML != null)
 						{
-						output.Append(',');
+						if (!first)
+							{
+							output.Append(',');
 
-						#if DONT_SHRINK_FILES
-							output.AppendLine();
-							output.Append("   ");
-						#endif
+							#if DONT_SHRINK_FILES
+								output.AppendLine();
+								output.Append("   ");
+							#endif
+							}
+
+						output.Append(topic.TopicID);
+						output.Append(":\"");
+						output.StringEscapeAndAppend(toolTipHTML);
+						output.Append('"');
+
+						first = false;
 						}
-
-					output.Append(topic.TopicID);
-					output.Append(":\"");
-					output.StringEscapeAndAppend(toolTipHTML);
-					output.Append('"');
-
-					first = false;
 					}
 				}
 
