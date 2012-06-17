@@ -1553,7 +1553,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			bool prevParagraphLineEndsSentence = false;
 			int definitionIndent = -1;
 			List<int> bulletIndents = null;
-			HeadingType headingType = HeadingType.Generic;
+			HeadingType lastHeadingType = HeadingType.Generic;
 			
 			// Temp storage for the Is functions.
 			BlockType blockType;
@@ -1562,6 +1562,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			string tempString, tempString2;
 			Path filePath;
 			Language language;
+			HeadingType headingType;
 			
 			while (line < endOfContent)
 				{
@@ -1690,7 +1691,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</dd>");
 						}
 
-					bool isSymbol = ( (topic.UsesPluralKeyword || topic.TopicTypeID == enumTopicTypeID) && headingType != HeadingType.Parameters);
+					bool isSymbol = ( (topic.UsesPluralKeyword || topic.TopicTypeID == enumTopicTypeID) && 
+													lastHeadingType != HeadingType.Parameters);
 						
 					if (isSymbol)
 						{  body.Append("<ds>");  }
@@ -1797,6 +1799,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					
 					// We want to be able to start new things directly under headings as if they were blank lines.
 					prevLineBlank = true;  // Deliberate!
+
+					// We need a separate variable for lastHeadingType because IsHeading has to set the "out" variable whether
+					// it's successful or not.  If we used one variable it would be overwritten every time we checked a line to see
+					// if it's a heading.
+					lastHeadingType = headingType;
+
 					line.Next();
 					}
 					
