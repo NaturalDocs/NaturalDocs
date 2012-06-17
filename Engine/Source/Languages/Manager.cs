@@ -1693,7 +1693,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (language.EnumValue != null)
 					{  
 					SaveFile_LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.Append("   Enum Value: ");
+					output.Append("   Enum Values: ");
 					
 					if (language.EnumValue == Language.EnumValues.Global)
 						{  output.AppendLine("Global");  }

@@ -33,7 +33,7 @@ Language: C/C++
    Line Comment: //
    Block Comment: /* */
    Member Operator: ::
-   Enum Value: Under Parent
+   Enum Values: Under Parent
    Case Sensitive: Yes
 
    Class Prototype Enders: ; {
@@ -49,7 +49,7 @@ Language: C#
 
    Line Comment: //
    Block Comment: /* */
-   Enum Value: Under Type
+   Enum Values: Under Type
    Case Sensitive: Yes
 
    Class Prototype Enders: ; {
@@ -68,7 +68,7 @@ Language: Java
 
    Line Comment: //
    Block Comment: /* */
-   Enum Value: Under Type
+   Enum Values: Under Type
    Case Sensitive: Yes
 
    Function Prototype Ender: {
@@ -83,7 +83,7 @@ Language: JavaScript
 
    Line Comment: //
    Block Comment: /* */
-   Enum Value: Under Type
+   Enum Values: Under Type
    Case Sensitive: Yes
 
    Function Prototype Ender: {
@@ -136,7 +136,7 @@ Language: SQL
 
    Line Comment: --
    Block Comment: /* */
-   Enum Value: Global
+   Enum Values: Global
    Case Sensitive: No
 
    Function Prototype Enders: , ; ) as As AS is Is IS
@@ -153,7 +153,7 @@ Language: Visual Basic
 
    Line Comment: '
    Line Extender: _
-   Enum Value: Under Type
+   Enum Values: Under Type
    Case Sensitive: No
 
    Function Prototype Ender: \n
@@ -217,7 +217,7 @@ Language: Ruby
 
    Line Comment: #
    Line Extender: \
-   Enum Value: Under Parent
+   Enum Values: Under Parent
    Case Sensitive: Yes
 
    Function Prototype Enders: ; \n
