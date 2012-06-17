@@ -28,12 +28,16 @@ Language: C# (Basic Language Support)
    Line Comment: //
    Block Comment: /* */
    Member Operator: .
-   Enum Value: Under Type
+   Enum Values: Under Type
 
    Class Prototype Enders: ; {
-   Function Prototype Enders: ; {
-   Property Prototype Enders: ; {
+   Function Prototype Enders: ; { :
+   Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
+   Property Prototype Enders: ; {
+   Constant Prototype Enders: ; =
+   Enumeration Prototype Ender: {
+   Event Prototype Enders: ; =
 
 
 Language: C (Basic Language Support)
@@ -45,7 +49,7 @@ Language: C (Basic Language Support)
    Line Comment: //
    Block Comment: /* */
    Member Operator: ::
-   Enum Value: Under Parent
+   Enum Values: Under Parent
 
    Class Prototype Enders: ; {
    Function Prototype Enders: ; {
@@ -72,7 +76,7 @@ Language: Visual Basic (Basic Language Support)
 
    Line Comment: '
    Line Extender: _
-   Enum Value: Under Type
+   Enum Values: Under Type
 
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
@@ -84,7 +88,7 @@ Language: JavaScript (Basic Language Support)
 
    Line Comment: //
    Block Comment: /* */
-   Enum Value: Under Type
+   Enum Values: Under Type
 
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
@@ -96,7 +100,7 @@ Language: Java (Basic Language Support)
 
    Line Comment: //
    Block Comment: /* */
-   Enum Value: Under Type
+   Enum Values: Under Type
 
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
@@ -124,7 +128,7 @@ Language: SQL (Basic Language Support)
 
    Line Comment: --
    Block Comment: /* */
-   Enum Value: Global
+   Enum Values: Global
 
    Function Prototype Enders: , ; ) as As AS is Is IS
    Variable Prototype Enders: , ; ) := default Default DEFAULT

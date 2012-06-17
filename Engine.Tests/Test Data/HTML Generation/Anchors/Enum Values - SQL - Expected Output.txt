@@ -1,0 +1,9 @@
+<a name="ParentClass"></a>
+-----
+<a name="ParentClass.EnumType"></a>
+-----
+<a name="Value1"></a>
+-----
+<a name="Value2"></a>
+-----
+<a name="Value3"></a>

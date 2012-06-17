@@ -1,0 +1,1 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> <span class="SHKeyword">enum</span> EnumType</div>

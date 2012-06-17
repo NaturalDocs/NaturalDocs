@@ -1,0 +1,15 @@
+<a name="ParentClass"></a>
+-----
+<a name="ParentClass.Writing_Functions"></a>
+-----
+<a name="ParentClass.WriteInt"></a>
+-----
+<a name="ParentClass.WriteFloat"></a>
+-----
+<a name="ParentClass.WriteString"></a>
+-----
+<a name="ParentClass.WriteBool"></a>
+-----
+<a name="ParentClass.WriteChar"></a>
+-----
+<a name="ParentClass.SingularKeyword"></a>

@@ -1,0 +1,9 @@
+<a name="ParentClass"></a>
+-----
+<a name="ParentClass::EnumType"></a>
+-----
+<a name="ParentClass::Value1"></a>
+-----
+<a name="ParentClass::Value2"></a>
+-----
+<a name="ParentClass::Value3"></a>
