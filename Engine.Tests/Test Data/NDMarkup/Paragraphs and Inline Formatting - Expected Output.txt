@@ -1,0 +1,7 @@
+(No body detected)
+-----
+<p>First line.  Second line, without blank line.</p><p>Third line, with blank line.</p>
+-----
+<p>A &quot; paragraph &amp; with &lt; entity &gt; chars.</p>
+-----
+<p>A sentence with a bold <b>word</b> or <b>group of words</b> or (<b>group of words with punctuation</b>.)</p><p>When the asterisks * have spaces * or aren't on*the*edges they don't count.</p><p>A sentence with <u>underline</u> and <u>underline with spaces</u> and <u>underline with underscores</u> and (<u>with punctuation</u>.)</p><p>When there aren't underscores on_the_edges they don't count.  Same with _ having spaces _ around them.</p>

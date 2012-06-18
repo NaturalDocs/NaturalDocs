@@ -1,0 +1,5 @@
+(No body detected)
+-----
+<pre type="code">Shared indentation should be removed.<br>Shared indentation should be removed.<br>    Relative indentation should be preserved.<br>        Relative indentation should be preserved.</pre>
+-----
+<pre type="code">        First line indented.<br>        Second line indented.<br>            Third line more indented.<br>Fourth line that's less indented than the rest.</pre>

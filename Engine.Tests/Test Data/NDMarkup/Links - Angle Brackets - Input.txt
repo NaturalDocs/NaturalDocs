@@ -1,0 +1,19 @@
+
+File: Links - Angle Brackets
+_______________________________________________________________________________
+
+Paragraph with a <simple link> to something.
+
+Paragraph with a (<simple link>.) and "<punctuation>?"
+
+Paragraph with a <potentially named link: blah> and another <potentially named link at blah>.
+
+Links cannot be confused by <arrow->operators> inside them.
+
+Links can allow limited <plural>s and <plural>es outside of them.
+
+Links can allow limited <possessives>' and <possessive>'s outside of them.
+
+Angle brackets with text immediately<before> and <after>them aren't recognized.
+
+Angle bracks with < spaces > between them and their inner text aren't recognized.

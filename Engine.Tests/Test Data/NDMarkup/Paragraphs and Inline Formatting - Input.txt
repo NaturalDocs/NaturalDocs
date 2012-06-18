@@ -1,0 +1,27 @@
+
+File: Paragraphs and Inline Formatting
+_______________________________________________________________________________
+
+
+Topic: Paragraphs
+	
+	First line.
+	Second line, without blank line.
+
+	Third line, with blank line.
+
+
+Topic: Entity Chars
+
+	A " paragraph & with < entity > chars.
+
+
+Topic: Bold and Underline
+
+	A sentence with a bold *word* or *group of words* or (*group of words with punctuation*.)
+
+	When the asterisks * have spaces * or aren't on*the*edges they don't count.
+
+	A sentence with _underline_ and _underline with spaces_ and _underline_with_underscores_ and (_with_punctuation_.)
+
+	When there aren't underscores on_the_edges they don't count.  Same with _ having spaces _ around them.

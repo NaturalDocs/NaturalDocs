@@ -1,0 +1,150 @@
+
+File: Bullet List Paragraphs
+_______________________________________________________________________________
+
+
+Topic: Basics
+
+- Bullet.
+
+  Indented continuation paragraph.
+
+  Indented continuation paragraph 2.
+
+Unindented separate paragraph.
+
+  Indented paragraph after bullet list is over.
+
+
+Topic: Multi level lists, two space indents
+
+	- Base level 1
+
+	  Base level 2
+
+	  - Two spaces 1
+
+	    Two spaces 2
+
+	    - Four spaces 1
+
+	      Four spaces 2
+
+	      - Six spaces 1
+
+	        Six spaces 2
+
+	    Two spaces 3
+
+	  Base level 3
+
+
+Topic: Multi level lists, three space indents
+
+	- Base level 1
+
+	  Base level 2
+
+	   - Three spaces 1
+
+	     Three spaces 2
+
+	      - Six spaces 1
+
+	        Six spaces 2
+
+	         - Nine spaces 1
+
+	           Nine spaces 2
+
+	     Three spaces 3
+
+	  Base level 3
+
+
+Topic: Multi level lists, four space indents
+
+	- Base level 1
+
+	  Base level 2
+
+	    - Four spaces 1
+
+	      Four spaces 2
+
+	        - Eight spaces 1
+
+	          Eight spaces 2
+
+	            - Twelve spaces 1
+
+	              Twelve spaces 2
+
+	      Four spaces 3
+
+	  Base level 3
+
+
+Topic: Multi level lists, tab indents
+
+	- Base level 1
+
+	  Base level 2
+
+		- One tab 1
+
+		  One tab 2
+
+			- Two tabs 1
+
+			  Two tabs 2
+
+				- Three tabs 1
+
+				  Three tabs 2
+
+		  One tab 3
+
+	  Base level 3
+
+
+Topic: Multi level lists, inconsistent indents
+
+	- Base level 1
+
+	  - Two spaces 1
+
+	      - Six spaces 1
+
+	         - Nine spaces 1
+
+	           Nine spaces 2
+
+	        Six spaces 2
+
+	    Two spaces 2
+
+	  Base level 2
+
+
+Topic: Imperfect matches
+
+	- Base level
+
+	     - Five spaces
+
+	          - Ten spaces
+
+	             Eleven spaces
+
+	               Thirteen spaces
+
+	        Six spaces
+
+	          Eight spaces
+
+	   One space
+
+	      Four spaces
+
+

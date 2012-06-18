@@ -1,0 +1,48 @@
+
+File: Definition Lists
+_______________________________________________________________________________
+
+
+Topic: Single lines, no separation
+	
+	A - aaa aaa aaa.
+	B - bbb bbb bbb.
+	C - ccc ccc ccc.
+
+
+Topic: Single lines, separation
+
+	A - aaa aaa aaa.
+
+	B - bbb bbb bbb.
+
+	C - ccc ccc ccc.
+
+
+Topic: Multiple lines, no indent
+
+	A - aaa aaa aaa
+	aaa aaa aaa.
+	B - bbb bbb bbb
+	bbb bbb bbb.
+
+	zzz zzz zzz.
+
+
+Topic: Multiple lines, indent, and multiple paragraphs
+
+	A - aaa aaa aaa
+	  aaa aaa aaa.
+	B - bbb bbb bbb
+	  bbb bbb bbb.
+
+	  bbb bbb bbb
+	  bbb bbb bbb.
+
+	zzz zzz zzz.
+
+
+Topic: Blank line above list is required
+
+	zzz zzz zzz.
+	A - aaa aaa aaa.

@@ -38,15 +38,21 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 			StringBuilder output = new StringBuilder();
 
+			bool isFirst = true;
 			for (int i = 0; i < topics.Count; i++)
 				{
-				if (i != 0)
-					{  output.AppendLine("-----");  }
+				if (topics[i].IsEmbedded == false)
+					{
+					if (isFirst)
+						{  isFirst = false;  }
+					else
+						{  output.AppendLine("-----");  }
 
-				if (topics[i].Body == null)
-					{  output.AppendLine("(No body detected)");  }
-				else
-					{  output.AppendLine(topics[i].Body);  }
+					if (topics[i].Body == null)
+						{  output.AppendLine("(No body detected)");  }
+					else
+						{  output.AppendLine(topics[i].Body);  }
+					}
 				}
 
 			return output.ToString();

@@ -1,0 +1,42 @@
+
+File: List Topics and Enums
+_______________________________________________________________________________
+
+
+Functions: Function List
+	
+	A - aaa aaa aaa.
+	B - bbb bbb bbb.
+	C - ccc ccc ccc.
+
+	Parameters:
+
+		D - Items under a parameters heading should not become symbols.
+		E - eee eee eee.
+		F - fff fff fff.
+
+	Something Else:
+
+		G - Switching to another heading should create symbols again.
+		H - hhh hhh hhh.
+		I - iii iii iii.
+
+
+Enum: Enumeration
+
+	A - aaa aaa aaa.
+	B - bbb bbb bbb.
+	C - ccc ccc ccc.
+
+	Parameters:
+
+		D - Items under a parameters heading should not become symbols.
+		E - eee eee eee.
+		F - fff fff fff.
+
+	Something Else:
+
+		G - Switching to another heading should create symbols again.
+		H - hhh hhh hhh.
+		I - iii iii iii.
+s

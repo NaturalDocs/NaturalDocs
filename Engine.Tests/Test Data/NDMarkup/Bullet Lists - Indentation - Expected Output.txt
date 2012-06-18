@@ -1,0 +1,13 @@
+(No body detected)
+-----
+<ul><li><p>Base level 1</p></li><li><p>Base level 2</p><ul><li><p>Two spaces 1</p></li><li><p>Two spaces 2</p><ul><li><p>Four spaces 1</p></li><li><p>Four spaces 2</p><ul><li><p>Six spaces 1</p></li><li><p>Six spaces 2</p></li></ul></li></ul></li><li><p>Two spaces 3</p></li></ul></li><li><p>Base level 3</p></li></ul>
+-----
+<ul><li><p>Base level 1</p></li><li><p>Base level 2</p><ul><li><p>Three spaces 1</p></li><li><p>Three spaces 2</p><ul><li><p>Six spaces 1</p></li><li><p>Six spaces 2</p><ul><li><p>Nine spaces 1</p></li><li><p>Nine spaces 2</p></li></ul></li></ul></li><li><p>Three spaces 3</p></li></ul></li><li><p>Base level 3</p></li></ul>
+-----
+<ul><li><p>Base level 1</p></li><li><p>Base level 2</p><ul><li><p>Four spaces 1</p></li><li><p>Four spaces 2</p><ul><li><p>Eight spaces 1</p></li><li><p>Eight spaces 2</p><ul><li><p>Twelve spaces 1</p></li><li><p>Twelve spaces 2</p></li></ul></li></ul></li><li><p>Four spaces 3</p></li></ul></li><li><p>Base level 3</p></li></ul>
+-----
+<ul><li><p>Base level 1</p></li><li><p>Base level 2</p><ul><li><p>One tab 1</p></li><li><p>One tab 2</p><ul><li><p>Two tabs 1</p></li><li><p>Two tabs 2</p><ul><li><p>Three tabs 1</p></li><li><p>Three tabs 2</p></li></ul></li></ul></li><li><p>One tab 3</p></li></ul></li><li><p>Base level 3</p></li></ul>
+-----
+<ul><li><p>Base level 1</p><ul><li><p>Two spaces 1</p><ul><li><p>Six spaces 1</p><ul><li><p>Nine spaces 1</p></li><li><p>Nine spaces 2</p></li></ul></li><li><p>Six spaces 2</p></li></ul></li><li><p>Two spaces 2</p></li></ul></li><li><p>Base level 2</p></li></ul>
+-----
+<ul><li><p>Base level</p><ul><li><p>Five spaces</p><ul><li><p>Ten spaces</p></li><li><p>Eight spaces</p></li></ul></li><li><p>Six spaces</p></li><li><p>Four spaces</p></li></ul></li><li><p>One space</p></li></ul>
