@@ -10,11 +10,6 @@
 	Such documentation is not covered by Natural Docs' copyright and licensing,
 	and may have its own copyright and distribution terms as decided by its author.
 
-	This file includes code derived from jQuery HashChange Event, which is 
-	Copyright © 2010 "Cowboy" Ben Alman.  jQuery HashChange Event may be 
-	obtained separately under the MIT license or the GNU General Public License (GPL).  
-	However, this combined product is still licensed under the terms of the AGPLv3.
-
 	Substitutions:
 
 		`ToolTipDelay = 350
