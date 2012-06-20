@@ -319,107 +319,135 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
-			// main-[filter].js
+			// main.js
 
-			Shrinker shrinker = new Shrinker();
+			StringBuilder[] jsLinks = new StringBuilder[ AllPageTypes.Length ];
+			StringBuilder[] jsOnLoads = new StringBuilder[ AllPageTypes.Length ];
 
-			for (int filterIndex = 0; filterIndex < Builders.HTML.AllPageTypes.Length; filterIndex++)
+			foreach (HTMLStyle style in styles)
 				{
-				if (cancelDelegate())
-					{  return;  }
-
-				PageType filter = Builders.HTML.AllPageTypes[filterIndex];
-				string filterName = Builders.HTML.PageTypeNameOf(filter);
-
-
-				System.Text.StringBuilder jsOutput = new System.Text.StringBuilder();
-
-				jsOutput.Append("\"use strict\";function NDLoadJS_" + filterName + " (relativePrefix) {");
-
-				jsOutput.Append("var links = [");
-				int linkCount = 0;
-
-				foreach (HTMLStyle style in styles)
+				if (style.Links != null)
 					{
-					if (style.Links != null)
+					foreach (var link in style.Links)
 						{
-						for (int i = 0; i < style.Links.Count; i++)
+						string extension = link.File.Extension.ToLower();
+
+						if (extension == "js" || extension == "json")
 							{
-							string extension = style.Links[i].File.Extension.ToLower();
+							if (jsLinks[(int)link.Type] == null)
+								{  jsLinks[(int)link.Type] = new StringBuilder();  }
+							else
+								{  jsLinks[(int)link.Type].Append(", ");  }
 
-							if (style.Links[i].Type == filter && (extension == "js" || extension == "json"))
-								{
-								if (linkCount > 0)
-									{  jsOutput.Append(',');  }
-
-								Path outputPath = Styles_OutputFile(style.Folder + "/" + style.Links[i].File);
-								Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
-								jsOutput.Append("\"" + relativeOutputPath.ToURL() + "\"");
-
-								linkCount++;
-								}
+							Path outputPath = Styles_OutputFile(style.Folder + "/" + link.File);
+							Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
+							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
 						}
 					}
 
-				jsOutput.Append("];");
+				if (style.OnLoad != null)
+					{
+					foreach (var onLoadStatement in style.OnLoad)
+						{
+						if (jsOnLoads[(int)onLoadStatement.Type] == null)
+							{  jsOnLoads[(int)onLoadStatement.Type] = new StringBuilder();  }
 
-				jsOutput.Append(
+						jsOnLoads[(int)onLoadStatement.Type].Append("      ");
+						jsOnLoads[(int)onLoadStatement.Type].Append(onLoadStatement.Statement);
+						jsOnLoads[(int)onLoadStatement.Type].Append(";\n");
+						}
+					}
+				}
+
+			StringBuilder jsOutput = new System.Text.StringBuilder(
+				"\"use strict\";\n" +
+				"\n" +
+				"var NDGlobal = new function ()\n" +
+				"   {\n");
+				
+			for (int i = 0; i < AllPageTypes.Length; i++)
+				{
+				jsOutput.Append("   this.JSLinks_" + AllPageTypeNames[i] + " = [ ");
+
+				if (jsLinks[i] != null)
+					{  jsOutput.Append( jsLinks[i].ToString() );  }
+
+				jsOutput.Append(" ];\n");
+				}
+
+
+			jsOutput.Append(
+				"\n" +
+				"   this.LoadJS = function (pageType, relativePrefix)\n" +
+				"      {\n" +
+				"      this.LoadJSArray(this.JSLinks_All, relativePrefix);\n" +
+				"      this.LoadJSArray(this['JSLinks_' + pageType], relativePrefix);\n" +
+				"      };\n" +
+				"\n" +
+				"   this.LoadJSArray = function (links, relativePrefix)\n" +
+				"      {\n" +
+
 					// WebKit, and I'm guessing KHTML just to be safe, doesn't import scripts included the other way in time
 					// for their functions to be accessible to body.OnLoad().
-					"if (navigator.userAgent.indexOf('KHTML') != -1)" +
-						"{" +
-						"for (var i = 0; i < links.length; i++)" +
-							"{" +
-							"document.write('<script type=\"text/javascript\" src=\"' + relativePrefix + links[i] + '\"></script>');" +
-							"}" +
-						"}" +
+
+				"      if (navigator.userAgent.indexOf('KHTML') != -1)\n" +
+				"         {\n" +
+				"         for (var i = 0; i < links.length; i++)\n" +
+				"            {\n" +
+				"            document.write('<script type=\"text/javascript\" src=\"' + relativePrefix + links[i] + '\"></script>');\n" +
+				"            }\n" +
+				"         }\n" +
 
 					// The proper way.
-					"else" +
-						"{" +
-						"var head = document.getElementsByTagName('head')[0];" +
 
-						"for (var i = 0; i < links.length; i++)" +
-							"{" +
-							"var script = document.createElement('script');" +
-							"script.src = relativePrefix + links[i];" +
-							"script.type = 'text/javascript';" +
+				"      else\n" +
+				"         {\n" +
+				"         var head = document.getElementsByTagName('head')[0];\n" +
+				"         \n" +
+				"         for (var i = 0; i < links.length; i++)\n" +
+				"            {\n" +
+				"            var script = document.createElement('script');\n" +
+				"            script.src = relativePrefix + links[i];\n" +
+				"            script.type = 'text/javascript';\n" +
+				"            \n" +
+				"            head.appendChild(script);\n" +
+				"            }\n" +
+				"         }\n" +
+				"      };\n" +
+				"\n" +
+				"   this.OnLoad = function (pageType)\n" +
+				"      {\n" +
+				"      this.OnLoad_All();\n" +
+				"      this['OnLoad_' + pageType]();\n" +
+				"      };\n");
 
-							"head.appendChild(script);" +
-							"}" +
-						"}"
-					);
 
-				jsOutput.Append('}');
+			for (int i = 0; i < AllPageTypes.Length; i++)
+				{
+				jsOutput.Append(
+				"\n" +
+				"   this.OnLoad_" + AllPageTypeNames[i] + " = function ()\n" +
+				"      {\n");
 
-				if (linkCount == 0)
-					{
-					jsOutput.Remove(0, jsOutput.Length);
-					jsOutput.Append("\"use strict\";function NDLoadJS_" + filterName + " (relativePrefix) { }");
-					}
+				if (jsOnLoads[i] != null)
+					{  jsOutput.Append( jsOnLoads[i].ToString() );  }
 
-				jsOutput.Append("function NDOnLoad_" + filterName + " () {");
-
-				foreach (HTMLStyle style in styles)
-					{
-					if (style.OnLoad != null)
-						{
-						foreach (HTMLStyleOnLoadStatement onLoadStatement in style.OnLoad)
-							{
-							if (onLoadStatement.Type == filter)
-								{
-								jsOutput.Append(onLoadStatement.Statement);
-								jsOutput.Append(';');
-								}
-							}
-						}
-					}
-
-				jsOutput.Append('}');
-
-				System.IO.File.WriteAllText(Styles_OutputFolder() + "/main-" + filterName.ToLower() + ".js", shrinker.ShrinkJS(jsOutput.ToString()));
+				jsOutput.Append(
+				"      };\n");
 				}
+
+			jsOutput.Append(
+				"   };\n");
+
+			string jsOutputString = jsOutput.ToString();
+
+			#if !DONT_SHRINK_FILES
+				Shrinker shrinker = new Shrinker();
+				jsOutputString = shrinker.ShrinkJS(jsOutputString);
+			#endif
+
+			System.IO.File.WriteAllText(Styles_OutputFolder() + "/main.js", jsOutputString);
 			}
 
 

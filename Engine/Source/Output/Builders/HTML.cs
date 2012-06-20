@@ -906,20 +906,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main.css") +
 								"\">");
 
-							string allName = PageTypeNameOf(PageType.All);
-							string typeName = PageTypeNameOf(pageType);
-
-							string allJSRelativeURL = MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main-" + allName.ToLower() + ".js");
-							string typeJSRelativeURL = MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main-" + typeName.ToLower() + ".js");
-							string jsRelativePrefix = allJSRelativeURL.Substring(0, allJSRelativeURL.Length - allName.Length - 8);
-
+							string pageTypeName = PageTypeNameOf(pageType);
+							string jsRelativePrefix = MakeRelativeURL(outputPath, Styles_OutputFolder()) + '/';
 
 							file.Write(
-							"<script type=\"text/javascript\" src=\"" + allJSRelativeURL + "\"></script>" +
-							"<script type=\"text/javascript\" src=\"" + typeJSRelativeURL + "\"></script>" +
+							"<script type=\"text/javascript\" src=\"" + jsRelativePrefix + "main.js\"></script>" +
 							"<script type=\"text/javascript\">" +
-								"NDLoadJS_" + allName + "('" + jsRelativePrefix + "');" +
-								"NDLoadJS_" + typeName + "('" + jsRelativePrefix + "');" +
+								"NDGlobal.LoadJS(\"" + pageTypeName + "\", \"" + jsRelativePrefix + "\");" +
 							"</script>" +
 
 						"</head>" + 
@@ -933,8 +926,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							"<!-- saved from url=(0026)http://www.naturaldocs.org -->" +
 							"\r\n\r\n" +
 
-						"<body onload=\"NDOnLoad_" + allName + "();NDOnLoad_" + typeName + "();\" " +
-									 "class=\"NDPage ND" + typeName + "Page\">" +
+						"<body onload=\"NDGlobal.OnLoad('" + pageTypeName + "');\" " +
+									 "class=\"NDPage ND" + pageTypeName + "Page\">" +
 
 							pageContentHTML +
 								
