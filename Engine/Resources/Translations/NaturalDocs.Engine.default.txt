@@ -31,8 +31,10 @@ HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
 
 HTML.JavaScriptRequiredNotice: Please enable JavaScript to view this documentation.
 
-HTML.RootFolderName: Files
+HTML.RootFolderName: Files xxx
 HTML.Close: Close
+
+Menu.Files: Files
 
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan

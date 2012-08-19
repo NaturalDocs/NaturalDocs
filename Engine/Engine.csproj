@@ -114,6 +114,7 @@
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
+    <Compile Include="Source\Output\Builders\HTMLMenu.cs" />
     <Compile Include="Source\Output\Builders\HTMLElement.cs" />
     <Compile Include="Source\Output\Builders\HTMLSummary.cs" />
     <Compile Include="Source\Output\Builders\HTMLTopic.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
+    <Compile Include="Source\Output\Menu.cs" />
     <Compile Include="Source\Output\FileMenuEntries\HTMLRootFolder.cs" />
     <Compile Include="Source\Output\FileMenuEntries\RootFolder.cs" />
     <Compile Include="Source\Output\FileMenuEntries\IHTMLEntry.cs" />
@@ -134,6 +136,12 @@
     <Compile Include="Source\Output\FileMenuEntries\FileSource.cs" />
     <Compile Include="Source\Output\FileMenuEntries\File.cs" />
     <Compile Include="Source\Output\FileMenuEntries\Entry.cs" />
+    <Compile Include="Source\Output\MenuEntries\Base\Container.cs" />
+    <Compile Include="Source\Output\MenuEntries\Base\Entry.cs" />
+    <Compile Include="Source\Output\MenuEntries\Base\Target.cs" />
+    <Compile Include="Source\Output\MenuEntries\File\File.cs" />
+    <Compile Include="Source\Output\MenuEntries\File\FileSource.cs" />
+    <Compile Include="Source\Output\MenuEntries\File\Folder.cs" />
     <Compile Include="Source\Output\Shrinker.cs" />
     <Compile Include="Source\Output\Style.cs" />
     <Compile Include="Source\Output\Styles\FileSource.cs" />

@@ -78,6 +78,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Output.Styles;
 
 
@@ -136,11 +137,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected void BuildFileMenu (CancelDelegate cancelDelegate)
 			{
 			HTMLFileMenu fileMenu = new HTMLFileMenu();
+			HTMLMenu newMenu = new HTMLMenu(this);
 
 			foreach (Files.FileSource fileSource in Instance.Files.FileSources)
 				{
 				if (fileSource.Type == Files.InputType.Source)
-					{  fileMenu.AddFileSource(fileSource);  }
+					{  
+					fileMenu.AddFileSource(fileSource);  
+					newMenu.AddFileSource(fileSource);
+					}
 				}
 
 			foreach (int fileID in sourceFilesWithContent)
@@ -150,6 +155,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				Files.File file = Instance.Files.FromID(fileID);
 				fileMenu.AddFile(file);
+				newMenu.AddFile(file);
 				}
 
 			fileMenu.Condense();
@@ -198,6 +204,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
+			StringTable<IDObjects.NumberSet> usedFileNames = newMenu.Build();
+
 
 			// Clear out any old menu files that are no longer in use.
 
@@ -216,6 +224,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			fileMenuRootFolderIDs.Duplicate(fileMenu.RootFolderIDs);
+
+			// xxx clear out unused data files in new menu
+
 			}
 
 
@@ -227,9 +238,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Property: FileMenu_OutputFolder
 		 * The folder that holds all the menu JavaScript files.
 		 */
-		protected Path FileMenu_OutputFolder
+		public Path FileMenu_OutputFolder
 			{
-			get
+			get // xxx
 				{  return OutputFolder + "/menu";  }
 			}
 
@@ -237,8 +248,34 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Returns the path of the file menu JavaScript file with the passed ID number.
 		 */
 		protected Path FileMenu_DataFile (int id)
-			{
+			{ // xxx
 			return OutputFolder + "/menu/files" + (id == 1 ? "" : id.ToString()) + ".js";
+			}
+
+		/* Property: Menu_DataFolder
+		 * The folder that holds all the menu JavaScript files.
+		 */
+		public Path Menu_DataFolder
+			{
+			get
+				{  return OutputFolder + "/menu";  }
+			}
+
+		/* Function: Menu_DataFileNameOnly
+		 * Returns the file name of the JavaScript data file with the passed type and ID number.
+		 */
+		public Path Menu_DataFileNameOnly (string type, int id)
+			{
+			// xxx just to differentiate from the regular menu files until we're ready to use them
+			return "xxx" + type + (id == 1 ? "" : id.ToString()) + ".js";
+			}
+
+		/* Function: Menu_DataFile
+		 * Returns the path of the JavaScript data file with the passed type and ID number.
+		 */
+		public Path Menu_DataFile (string type, int id)
+			{
+			return OutputFolder + "/menu/" + Menu_DataFileNameOnly(type, id);
 			}
 
 

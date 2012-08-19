@@ -99,7 +99,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * BuildFramePage - index.html
 		 * BuildMainStyleFiles - main.css and main.js
 		 * 
-		 * BuildFileMenu - files.js
+		 * BuildMenu - The data files for the menu.
 		 * 
 		 * CheckFoldersForDeletion - Processing <foldersToCheckForDeletion>.  You can't simply check if the variable is
 		 *														 empty because the task isn't parallelizable.  It may have contents but another thread
@@ -109,8 +109,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected enum BuildFlags : byte {
 			BuildFramePage = 0x01,
 			BuildMainStyleFiles = 0x02,
-
-			BuildFileMenu = 0x04,
+			BuildMenu = 0x04,
 
 			CheckFoldersForDeletion = 0x08
 			}
@@ -225,7 +224,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Set the default build flags
 
 			buildFlags = BuildFlags.BuildFramePage | BuildFlags.BuildMainStyleFiles;
-			// FileMenu only gets rebuilt if changes are detected in sourceFilesWithContent.
+			// The menu only gets rebuilt if changes are detected in sourceFilesWithContent.
 			// If you ever make this differential, remember that FramePage depends on the project name and other
 			// information.
 
@@ -277,7 +276,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (Engine.Instance.Config.RebuildAllOutput)
 				{  
-				buildFlags |= BuildFlags.BuildFileMenu;
+				buildFlags |= BuildFlags.BuildMenu;
 				}
 			if (foldersToCheckForDeletion.IsEmpty == false)
 				{
@@ -526,7 +525,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
-				buildFlags |= BuildFlags.BuildFileMenu;
+				buildFlags |= BuildFlags.BuildMenu;
 				}
 
 
@@ -812,10 +811,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build file menu
 
-					else if ((buildFlags & BuildFlags.BuildFileMenu) != 0)
+					else if ((buildFlags & BuildFlags.BuildMenu) != 0)
 						{
-						buildFlags &= ~BuildFlags.BuildFileMenu;
-						unitsOfWorkInProgress += UnitsOfWork_FileMenu;
+						buildFlags &= ~BuildFlags.BuildMenu;
+						unitsOfWorkInProgress += UnitsOfWork_Menu;
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -825,10 +824,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						Monitor.Enter(writeLock);
 						haveLock = true;
 
-						unitsOfWorkInProgress -= UnitsOfWork_FileMenu;
+						unitsOfWorkInProgress -= UnitsOfWork_Menu;
 
 						if (cancelDelegate())
-							{  buildFlags |= BuildFlags.BuildFileMenu;  }
+							{  buildFlags |= BuildFlags.BuildMenu;  }
 
 						Monitor.Exit(writeLock);
 						haveLock = false;
@@ -865,8 +864,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  value += UnitsOfWork_FramePage;  }
 				if ((buildFlags & BuildFlags.BuildMainStyleFiles) != 0)
 					{  value += UnitsOfWork_MainStyleFiles;  }
-				if ((buildFlags & BuildFlags.BuildFileMenu) != 0)
-					{  value += UnitsOfWork_FileMenu;  }
+				if ((buildFlags & BuildFlags.BuildMenu) != 0)
+					{  value += UnitsOfWork_Menu;  }
 
 				value += unitsOfWorkInProgress;
 				}
@@ -1557,13 +1556,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 *		UnitsOfWork_SourceFile - How much building a single source file costs.
 		 *		UnitsOfWork_FramePage - How much building index.html costs.
 		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
-		 *		UnitsOfWork_FileMenu - How much building the source file menu costs.
+		 *		UnitsOfWork_Menu - How much building the menu costs.
 		 *		UnitsOfWork_FolderToCheckForDeletion - How much checking a single folder for deletion costs.
 		 */
 		protected const long UnitsOfWork_SourceFile = 10;
 		protected const long UnitsOfWork_FramePage = 1;
 		protected const long UnitsOfWork_MainStyleFiles = 1;
-		protected const long UnitsOfWork_FileMenu = 10;
+		protected const long UnitsOfWork_Menu = 10;
 		protected const long UnitsOfWork_FolderToCheckForDeletion = 1;
 
 

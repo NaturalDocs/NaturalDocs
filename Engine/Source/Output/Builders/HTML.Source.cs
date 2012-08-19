@@ -66,7 +66,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Remove(fileID) == true)
-							{  buildFlags |= BuildFlags.BuildFileMenu;  }
+							{  buildFlags |= BuildFlags.BuildMenu;  }
 						}
 					}
 
@@ -207,7 +207,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (writeLock)
 						{
 						if (sourceFilesWithContent.Add(fileID) == true)
-							{  buildFlags |= BuildFlags.BuildFileMenu;  }
+							{  buildFlags |= BuildFlags.BuildMenu;  }
 						}
 					}
 				}
@@ -545,6 +545,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			return nameString + "-SummaryToolTips.js";
 			}
 
+
+		/* Function: Source_HashPathPrefix
+		 */
+		public static string Source_HashPathPrefix ()
+			{
+			return "File";
+			}
 
 		/* Function: Source_TopicHashPath
 		 * Returns a hash path representing a specific <Topic> within an output file.
