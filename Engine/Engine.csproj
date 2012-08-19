@@ -206,6 +206,7 @@
     <Content Include="Architecture\Code Conventions.txt" />
     <Content Include="Architecture\Compilation Symbols.txt" />
     <Content Include="Architecture\Database Layout\Contexts.txt" />
+    <Content Include="Architecture\Styles\JavaScript SummaryData.txt" />
     <Content Include="Architecture\Styles\JavaScript ToolTip Data.txt" />
     <Content Include="Architecture\Styles\JavaScript Menu Data.txt" />
     <Content Include="Architecture\Linking.txt" />

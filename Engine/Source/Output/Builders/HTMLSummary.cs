@@ -2,8 +2,8 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLSummary
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript ToolTip Data>
- * for the output format.
+ * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript Summary Data>
+ * and <JavaScript ToolTip Data> for the output formats.
  * 
  * Topic: Usage
  *		
@@ -17,39 +17,6 @@
  *		<Build()>, and another <Build()> should not be started until it's completed.  Instead each thread should create its 
  *		own object.
  * 
- * 
- * File: Summary.js
- * 
- *		Each source file that has a content file built for it will also have a JavaScript summary file.  It's in the same location
- *		and has the same file name, only ending with -Summary.js instead of .html.
- *		
- *		Page Title:
- *		
- *			When executed, it will pass the source file's title to <NDFramePage.OnPageTitleLoaded()>.
- *			
- *		Summary:
- *		
- *			When executed, it will also pass the source file's summary to <NDSummary.OnSummaryLoaded()>.
- *			
- *			Summary languages is an array of the languages used in the summary.  They appear in the order in which they should
- *			appear in the output.  Each language is an array with these members:
- *			
- *				nameHTML - The name of the language in HTML.
- *				simpleIdentifier - A simplified version of the name which can be used in CSS classes.
- *				
- *			Summary topic types is an array of the topic types used in the summary.  They appear in the order in which they should
- *			appear in the output.  Each topic type is an array with these members:
- *			
- *				pluralNameHTML - The plural name of the language in HTML.
- *				simpleIdentifier - A simplified version of the name which can be used in CSS classes.
- *			
- *			Summary entries is an array of entries, each of which is an array with these members:
- *			
- *				topicID - A numeric ID for the topic, unique across the whole project.
- *				languageIndex - The topic's language as an index into the languages array.
- *				topicTypeIndex - The topic type as an index into the topic types array.
- *				nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
- *				symbol - The topic's symbol in the hash path.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
