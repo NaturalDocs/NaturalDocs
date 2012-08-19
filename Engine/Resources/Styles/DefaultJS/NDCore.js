@@ -531,6 +531,9 @@ function NDLocation (hashString)
 		{
 		this.hashString = NDCore.NormalizeHash(hashString);
 
+		// DEPENDENCY: type must use the same strings as menu/tabs.js.
+		// DEPENDENCY: type must use strings safe for including in CSS names.
+
 		if (this.hashString.match(/^File[0-9]*:/) != null)
 			{
 			this.type = "File";

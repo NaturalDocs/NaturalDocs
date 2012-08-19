@@ -57,6 +57,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public StringTable<IDObjects.NumberSet> Build ()
 			{
+
+			// Build menu files
+
 			StringTable<IDObjects.NumberSet> outputFiles = new StringTable<IDObjects.NumberSet>(false, false);
 
 			if (RootFileMenu != null)
@@ -79,6 +82,56 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				SegmentMenu(RootFileMenu, "files", outputFiles);
 				BuildOutput(RootFileMenu);
 				}
+
+
+			// Build tab information file
+
+			StringBuilder tabInformation = new StringBuilder("NDMenu.OnTabsLoaded([");
+			#if DONT_SHRINK_FILES
+				tabInformation.Append('\n');
+			#endif
+
+			List<MenuEntries.Base.Container> tabContainers = new List<MenuEntries.Base.Container>();
+			List<string> tabTypes = new List<string>();
+
+			// DEPENDENCY: tabTypes must use the same strings as the NDLocation JavaScript class.
+			// DEPENDENCY: tabTypes must use strings safe for including in CSS names.
+
+			if (RootFileMenu != null)
+				{
+				tabContainers.Add(RootFileMenu);
+				tabTypes.Add("File");
+				}
+
+			for (int i = 0; i < tabContainers.Count; i++)
+				{
+				#if DONT_SHRINK_FILES
+					tabInformation.Append(' ', IndentSpaces);
+				#endif
+
+				tabInformation.Append("[\"");
+				tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
+				tabInformation.Append("\",\"");
+				tabInformation.Append(tabTypes[i]);
+				tabInformation.Append("\",\"");
+				tabInformation.StringEscapeAndAppend( (tabContainers[i].ExtraData as ContainerEntryExtraData).DataFileName );
+				tabInformation.Append("\"]");
+
+				if (i < tabContainers.Count - 1)
+					{  tabInformation.Append(',');  }
+
+				#if DONT_SHRINK_FILES
+					tabInformation.Append('\n');
+				#endif
+				}
+
+			#if DONT_SHRINK_FILES
+				tabInformation.Append(' ', IndentSpaces);
+			#endif
+			tabInformation.Append("]);");
+
+			System.IO.File.WriteAllText( htmlBuilder.Menu_DataFile("tabs", 1), tabInformation.ToString() );
+
 
 			return outputFiles;
 			}

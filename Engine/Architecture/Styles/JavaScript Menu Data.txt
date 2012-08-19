@@ -13,19 +13,22 @@ _______________________________________________________________________________
 		the function NDMenu.OnTabsLoaded() that looks like this:
 
 		> NDMenu.OnTabsLoaded([
-		>    [ "Files", "files.js", "Files" ],
-		>    [ "Classes", "classes.js", "Classes" ]
+		>    [ "Files", "File", "files.js" ],
+		>    [ "Classes", "Class", "classes.js" ]
 		>    ]);
 
 		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:
 
-		> [ "HTML Name", "filewithcontents.js", "CSSName" ]
+		> [ "HTML Name", "Type", "filewithcontents.js" ]
 
-		The first member is the display name in HTML.  The second is the file which contains the data for that particular tab.  It's
-		stored in the menu subfolder of the output folder, just like tabs.js.  The third is a string that's safe to use as part of a CSS 
-		identifier.  In English this will probably be the same as the HTML name, but it's present anyway because in other languages it 
-		may differ and having this separate member makes sure CSS files work across all languages.  It will also remove any problem
-		causing characters like spaces if there should happen to be any.
+		The first member is the display name in HTML.
+		
+		The second member is a string representing the type of tab it is.  If you're using the DefaultJS style, this will map directly to
+		<NDLocation.type> so you can tell which one should be selected for a given location.  It will be safe to include as part of a
+		CSS name and it will stay consistent across languages.
+		
+		The third member is the file which contains the data for that particular tab.  It's stored in the menu subfolder of the output 
+		folder, just like tabs.js.
 
 
 	Topic: Menu Sections
