@@ -247,8 +247,13 @@ var NDSummary = new function ()
 				}
 			}
 
+		var summaryContainer = document.getElementById("NDSummary");
 		var oldContent = document.getElementById("SContent");
-		oldContent.parentNode.replaceChild(newContent, oldContent);
+
+		if (oldContent != undefined)
+			{  summaryContainer.replaceChild(newContent, oldContent);  }
+		else
+			{  summaryContainer.appendChild(newContent);  }
 
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)

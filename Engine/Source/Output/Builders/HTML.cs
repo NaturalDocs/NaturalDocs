@@ -1009,18 +1009,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					"</div>" +
 				"</noscript>" +
 
-				"<div id=\"NDMenu\">" +
-					"<div id=\"MContent\">" +
-					"</div>" +
-				"</div>" +
-
+				"<div id=\"NDMenu\"></div>" +
 				"<div id=\"NDMenuSizer\"></div>" +
 
-				"<div id=\"NDSummary\">" +
-					"<div id=\"SContent\">" +
-					"</div>" +
-				"</div>" +
-
+				"<div id=\"NDSummary\"></div>" +
 				"<div id=\"NDSummarySizer\"></div>" +
 
 				"<div id=\"NDContent\">" +

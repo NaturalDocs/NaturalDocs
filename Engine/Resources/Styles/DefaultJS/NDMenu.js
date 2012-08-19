@@ -181,21 +181,25 @@ var NDMenu = new function ()
 		// Reset.  Calls to GetFileMenuSection() will recalculate this.
 		this.firstUnusedFileMenuSection = 0;
 
-		var htmlMenu = document.createElement("div");
-		htmlMenu.id = "MContent";
+		var newMenuContent = document.createElement("div");
+		newMenuContent.id = "MContent";
 
-		var result = this.BuildEntries(htmlMenu, this.pathBeingBuilt);
+		var result = this.BuildEntries(newMenuContent, this.pathBeingBuilt);
 
 		if (!result.completed)
 			{
 			var htmlEntry = document.createElement("div");
 			htmlEntry.className = "MLoadingNotice";
-			htmlMenu.appendChild(htmlEntry);
+			newMenuContent.appendChild(htmlEntry);
 			}
 
+		var menuContainer = document.getElementById("NDMenu");
 		var oldMenuContent = document.getElementById("MContent");
-		var menuParent = oldMenuContent.parentNode;
-		menuParent.replaceChild(htmlMenu, oldMenuContent);
+
+		if (oldMenuContent != undefined)
+			{  menuContainer.replaceChild(newMenuContent, oldMenuContent);  }
+		else
+			{  menuContainer.appendChild(newMenuContent);  }
 
 		if (result.completed)
 			{
@@ -205,11 +209,11 @@ var NDMenu = new function ()
 				// position even if the element is already visible and we don't want it to be jumpy.
 
 				// If the element's bottom is lower than the extent of the visible menu...
-				if (result.selectedFile.offsetTop + result.selectedFile.offsetHeight > menuParent.scrollTop + menuParent.clientHeight)
+				if (result.selectedFile.offsetTop + result.selectedFile.offsetHeight > menuContainer.scrollTop + menuContainer.clientHeight)
 					{  result.selectedFile.scrollIntoView(false);  }
 
 				// If the element's top is higher than the extent of the visible menu...
-				else if (result.selectedFile.offsetTop < menuParent.scrollTop)
+				else if (result.selectedFile.offsetTop < menuContainer.scrollTop)
 					{  result.selectedFile.scrollIntoView(true);  }
 				}
 
