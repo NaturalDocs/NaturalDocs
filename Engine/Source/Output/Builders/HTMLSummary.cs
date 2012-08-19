@@ -2,7 +2,8 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLSummary
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.
+ * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript ToolTip Data>
+ * for the output format.
  * 
  * Topic: Usage
  *		
@@ -49,17 +50,6 @@
  *				topicTypeIndex - The topic type as an index into the topic types array.
  *				nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
  *				symbol - The topic's symbol in the hash path.
- *				
- * 
- * File: SummaryToolTips.js
- * 
- *		Each source file that contains content will also have a summary tooltips file which uses the same path, only ending
- *		in -SummaryToolTips.js instead of .html.  This is separate from <Summary.js> so that it can load and the file summary
- *		can be rendered in the browser immediately.  The tooltips can get large so they're loaded in a separate file only after
- *		the summary has been rendered.
- *		
- *		When executed, this file calls <NDSummary.OnSummaryToolTipsLoaded()>.  The tooltips are an object mapping the
- *		topic IDs to a HTML tooltip.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -177,7 +167,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			output.Remove(0, output.Length);
 
 			output.Append(
-				"NDSummary.OnSummaryToolTipsLoaded(\"" + fileHashPath.StringEscape() + "\","
+				"NDSummary.OnToolTipsLoaded(\"" + fileHashPath.StringEscape() + "\",{"
 				);
 
 			BuildSummaryToolTips();
@@ -187,7 +177,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("   ");
 			#endif
 
-			output.Append(");");
+			output.Append("});");
 
 			System.IO.StreamWriter summaryToolTipsFile = htmlBuilder.CreateTextFileAndPath(summaryToolTipsPath);
 
@@ -398,7 +388,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("   ");
 			#endif
 
-			output.Append('{');
 			bool first = true;
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
@@ -430,8 +419,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 				}
-
-			output.Append('}');
 			}
 
 

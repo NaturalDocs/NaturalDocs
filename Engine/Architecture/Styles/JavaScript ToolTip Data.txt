@@ -1,0 +1,39 @@
+﻿
+Title: JavaScript ToolTip Data
+_______________________________________________________________________________
+
+	Topic: Content ToolTips
+
+		A file is generated that contains the tooltips to every link that appears in a content file.  It is stored in a separate file 
+		instead of being appended to the content so that the page will finish loading and fire its OnLoad() handler without waiting
+		for the tooltip information which may be large and slow it down.
+
+		The file is in the same folder as the generated HTML and shares the same name except ending with -ToolTips.js.  So for
+		SourceFile-cs.html the tooltips file will be SourceFile-cs-ToolTips.js.
+
+		The file contains a call to NDContentPage.OnToolTipsLoaded(), passing the content as a hash that maps the numeric
+		topic IDs to the tooltip HTML:
+
+		> NDContentPage.OnToolTipsLoaded({
+		>    1234: "<div class=\"NDToolTip\">...</div>",
+		>    1235: "<div class=\"NDToolTip\">...</div>",
+		>    1236: "<div class=\"NDToolTip\">...</div>"
+		>    });
+
+		The file is not linked to the page automatically, so if it's desired the content page's JavaScript must load it manually.
+
+
+	Topic: Summary ToolTips
+
+		A similar file is generated that contains the tooltips to every entry that appears in a content file's summary.  It is also stored 
+		in a separate file but with a -SummaryToolTips.js extension.  In this case it's a separate file so that the summary data file can
+		be loaded and the summary generated quickly, as the tooltips may be large and would slow it down.
+
+		The call is to NDSummary.OnToolTipsLoaded() but it is otherwise the same as the content tooltips file:
+
+		> NDSummary.OnToolTipsLoaded({
+		>    1234: "<div class=\"NDToolTip\">...</div>",
+		>    1235: "<div class=\"NDToolTip\">...</div>",
+		>    1236: "<div class=\"NDToolTip\">...</div>"
+		>    });
+

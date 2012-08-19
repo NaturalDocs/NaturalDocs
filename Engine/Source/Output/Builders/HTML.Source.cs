@@ -2,11 +2,7 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
- * File: ToolTips.js
- * 
- *		Each source file that contains content will also have a tooltips file which uses the same path, only ending in
- *		-ToolTips.js instead of .html.  When executed, this file calls <NDContentPage.OnToolTipsLoaded()>.  The 
- *		tooltips are an object mapping the topic IDs to a HTML tooltip.
+ * See <JavaScript ToolTip Data> for the output format.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -194,6 +190,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								}
 							}
 
+						#if DONT_SHRINK_FILES
+							file.Write("   ");
+						#endif
 						file.Write("});");
 						}
 

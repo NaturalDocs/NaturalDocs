@@ -178,9 +178,9 @@ var NDSummary = new function ()
 		};
 
 
-	/* Function: OnSummaryToolTipsLoaded
+	/* Function: OnToolTipsLoaded
 	*/
-	this.OnSummaryToolTipsLoaded = function (hashPath, summaryToolTips)
+	this.OnToolTipsLoaded = function (hashPath, summaryToolTips)
 		{
 		if (hashPath == NDFramePage.currentLocation.path)
 			{
@@ -325,7 +325,7 @@ var NDSummary = new function ()
 
 			if (this.summaryToolTips == undefined)
 				{
-				// OnSummaryToolTipsLoaded() will handle it.
+				// OnToolTipsLoaded() will handle it.
 				}
 			else if (this.summaryToolTips[id] != undefined)
 				{
