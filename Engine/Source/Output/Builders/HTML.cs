@@ -898,7 +898,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							file.Write(
 							"<script type=\"text/javascript\" src=\"" + jsRelativePrefix + "main.js\"></script>" +
 							"<script type=\"text/javascript\">" +
-								"NDGlobal.LoadJS(\"" + pageTypeName + "\", \"" + jsRelativePrefix + "\");" +
+								"NDLoader.LoadJS(\"" + pageTypeName + "\", \"" + jsRelativePrefix + "\");" +
 							"</script>" +
 
 						"</head>" + 
@@ -912,7 +912,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							"<!-- saved from url=(0026)http://www.naturaldocs.org -->" +
 							"\r\n\r\n" +
 
-						"<body onload=\"NDGlobal.OnLoad('" + pageTypeName + "');\" " +
+						"<body onload=\"NDLoader.OnLoad('" + pageTypeName + "');\" " +
 									 "class=\"NDPage ND" + pageTypeName + "Page\">" +
 
 							pageContentHTML +

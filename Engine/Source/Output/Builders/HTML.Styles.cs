@@ -350,12 +350,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					foreach (var onLoadStatement in style.OnLoad)
 						{
-						if (jsOnLoads[(int)onLoadStatement.Type] == null)
-							{  jsOnLoads[(int)onLoadStatement.Type] = new StringBuilder();  }
+						StringBuilder onLoadStatementsForType = jsOnLoads[(int)onLoadStatement.Type];
 
-						jsOnLoads[(int)onLoadStatement.Type].Append("      ");
-						jsOnLoads[(int)onLoadStatement.Type].Append(onLoadStatement.Statement);
-						jsOnLoads[(int)onLoadStatement.Type].Append(";\n");
+						if (onLoadStatementsForType == null)
+							{  
+							onLoadStatementsForType = new StringBuilder();
+							jsOnLoads[(int)onLoadStatement.Type] = onLoadStatementsForType;  
+							}
+
+						onLoadStatementsForType.Append("      ");
+						onLoadStatementsForType.Append(onLoadStatement.Statement);
+
+						if (onLoadStatementsForType[ onLoadStatementsForType.Length - 1 ] != ';')
+							{  onLoadStatementsForType.Append(';');  }
+
+						onLoadStatementsForType.Append('\n');
 						}
 					}
 				}
@@ -363,7 +372,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			StringBuilder jsOutput = new System.Text.StringBuilder(
 				"\"use strict\";\n" +
 				"\n" +
-				"var NDGlobal = new function ()\n" +
+				"var NDLoader = new function ()\n" +
 				"   {\n");
 				
 			for (int i = 0; i < AllPageTypes.Length; i++)
