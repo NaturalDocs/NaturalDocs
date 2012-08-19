@@ -521,6 +521,11 @@ function NDLocation (hashString)
 
 
 	/* Private Function: Constructor
+
+		You do not need to call this function.  Simply call "new NDLocation(hashString)" and this will be called automatically.
+
+		This will set <hashString>, <type>, <path>, and <member>.  AddURLs will set <contentPage>, <summaryFile>,
+		and <summaryTTFile>.
 	 */
 	this.Constructor = function (hashString)
 		{
@@ -561,7 +566,8 @@ function NDLocation (hashString)
 
 
 	/* Private Function: AddHomeURLs
-		Adds the contentPage property to the location object.  The object's type must be "Home".
+		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
+		must be "Home".
 	*/
 	this.AddHomeURLs = function ()
 		{
@@ -570,7 +576,7 @@ function NDLocation (hashString)
 
 	
 	/* Private Function: AddFileURLs
-		Adds the contentPage, summaryFile, and summaryTTFile properties to the location object.  The object's type
+		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
 		must be "File".
 	*/
 	this.AddFileURLs = function ()
@@ -594,43 +600,58 @@ function NDLocation (hashString)
 
 
 
-	// Group: Universal Variables
-	// These variables will always be present.
+	// Group: Variables
 	// ___________________________________________________________________________
 
 
 	/*
-		var: type
-		A string representing the type of location it is, such as "Home" or "File".  Code should be able to
-		handle unknown strings as the types may be expanded in the future.
-
 		var: hashString
 		The full normalized hash string.
 
-		var: contentPage
-		The URL to the content page.
-	*/
+		
+		var: type
+
+		A string representing the type of location this is.
+		
+		Possible Values:
+		
+			- "Home"
+			- "File"
+			- "Class"
+			- "Database"
+			
+			Code should be able to handle strings that don't appear on this list as the types may be expanded in the future.
 
 
-
-	// Group: File Hash Variables
-	// These variables will be present if <type> is set to "File".
-	// ___________________________________________________________________________
-
-
-	/*
 		var: path
-		The path to the source file, such as "File:Folder/Folder/Source.cs".
+
+		If <hashString> can be split into a path and member, this will be the path.
+		
+		Examples:
+		
+			File - "File:Folder/Folder/Source.cs"
+			Class - "CSharp_Class:Namespace.Namespace.Class".
+
 
 		var: member
-		The member of the file, such as "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member".
-		This will be undefined if one was not specified in the hash path.
+
+		If <hashString> can be split into a path and member and a member is specified, this will be the member.  Some
+		hashes will only include a <path> and not a member.
+		
+		Examples:
+		
+			File - "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member".
+			Class - "Member" in "CSharp_Class:Namespace.Namespace.Class:Member".
+
+
+		var: contentPage
+		The URL to the content page.
 
 		var: summaryFile
-		The URL to the summary data file.
+		The URL to the summary data file, or undefined if none.
 
 		var: summaryTTFile
-		The URL to the summary tooltips data file.
+		The URL to the summary tooltips data file, or undefined if none.
 	*/
 
 
