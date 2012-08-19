@@ -115,19 +115,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* enum: ClaimedTaskFlags
-		 * Flags that specify which unparallelizable tasks are already being worked on by thread.
-		 * 
-		 * BuildFileMenu - A thread is updating files.js.
-		 * CheckFoldersForDeletion - A thread is going through <foldersToCheckForDeletion>.
-		 */
-		 [Flags]
-		 protected enum ClaimedTaskFlags : byte {
-			BuildFileMenu = 0x01,
-			CheckFoldersForDeletion = 0x02
-			}
-
-
 		/* enum: PageType
 		 * Used for specifying the type of page something applies to.
 		 * 
