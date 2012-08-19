@@ -1,0 +1,32 @@
+﻿
+Title: Substitutions
+_______________________________________________________________________________
+
+	Natural Docs includes a simple substitution engine for JavaScript and CSS files.
+
+	Topic: Direct Substitutions
+
+		If you include a comment with the heading "Substitutions:" in it, anything under that heading will be scanned for substitution 
+		definitions, which take this form:
+
+		> /* Substitutions:
+		>  * `Name1 = value1
+		>  * `Name2 = value2
+		>  */
+
+		Now anywhere you put "`Name1" in the code it will be replaced by "value1".  This is a literal substitution so the value can
+		be anything: a string, an integer, a snippet of code.  The name must be preceded by a backtick and can only contain ASCII
+		letters, numbers, underscores, and dots.  All substitutions are per file, so substitutions defined in one file will not apply to 
+		others.  Any backtick entries that aren't recognized will be left as is in the output.
+
+	Topic: Locale Substitutions
+
+		You can also embed strings from the Engine.NaturalDocs locale file ([ND Dir]/Translations/NaturalDocs.Engine.[locale].txt)
+		by following the backtick with "Locale" and putting the identifier in braces:
+
+		> var title = `Locale{Identifier}
+
+		This lets you include text that will be in the native language of each Natural Docs user.  The substitution will be a JavaScript
+		string that includes the quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a 
+		JavaScript string representation of the identifier.  You cannot pass parameters to the identifiers with parentheses.
+	

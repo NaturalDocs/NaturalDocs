@@ -2,7 +2,8 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.
+ * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
+ * for the output format.
  * 
  * 
  * Usage:
@@ -17,45 +18,6 @@
  *		This class is only designed to be used by one thread at a time.  It has an internal state that is used during a call to
  *		<Build()>, and another <Build()> should not be started until it's completed.  Instead each thread should create its 
  *		own object.
- * 
- * 
- * File: Menu Data Files
- * 
- *		The menu data is stored in multiple files which can have names like files2.js or classes.js.  When executed, they call
- *		<NDMenu.OnMenuSectionLoaded()>, passing the part of the menu it stores as an array of entries.  Each entry is itself 
- *		an array whose first value is its type.
- *		
- *		Target Entries:
- *		
- *			> [1, "HTML Title", "Hash Path"]
- *			> [1, "HTML Title"]
- *			
- *			Target entries represent a content page, such as a source file or class.  The first value is always 1, and the second
- *			value is the title in HTML.
- *			
- *			The third value is the hash path and is optional.  If it isn't specified, that means it's the same as the title.  The hash 
- *			path only represents the last portion of the path, such as "SourceFile.cs" in "File:Folder/Folder/SourceFile.cs", so to 
- *			get the full path you must concatenate it to its container's hash path.
- *			
- *		Container Entries:
- *		
- *			> [2, "HTML Title", "Partial Hash Path", [ members ]]
- *			> [2, "HTML Title", "Partial Hash Path", "MenuDataFileName.js" ]
- *			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", [ members ]]
- *			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "MenuDataFileName.js"]
- *		
- *			Container entries represent another layer of the menu, such as a file folder.  The first value is always 2.
- *			
- *			The second value is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
- *			the menu has been condensed and multiple layers of containers have been combined into one.
- *			
- *			The third value is the hash path, which is the absolute path of everything up to the last element, such as "File:Path/Path/" 
- *			or "CSharpClass:Namespace.Namespace.".  It will never be relative so you don't have to climb up the hierarchy to 
- *			construct the full path.  It includes the trailing separator symbol so the target hash path can be concatenated directly 
- *			on to it.
- *			
- *			The fourth value is its members and they may be specified inline as an array or be a string representing the data file they
- *			are stored in.  It will not include a path.
  *		
  */
 
@@ -179,7 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				string fileName = (containerToBuild.ExtraData as ContainerEntryExtraData).DataFileName;
 				
 				StringBuilder output = new StringBuilder();
-				output.Append("NDMenu.OnMenuSectionLoaded(\"");
+				output.Append("NDMenu.OnSectionLoaded(\"");
 				output.StringEscapeAndAppend(fileName);
 				output.Append("\",[");
 

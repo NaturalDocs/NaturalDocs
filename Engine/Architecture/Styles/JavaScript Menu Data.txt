@@ -1,0 +1,69 @@
+﻿
+Title: JavaScript Menu Data
+_______________________________________________________________________________
+
+	Natural Docs generates the menu as JavaScript files located in the menu subfolder of the output folder.  These files are not
+	linked to the HTML by default so any style files that need them are responsible for loading them.  If you include the DefaultJS
+	style this will be handled by <NDMenu>.
+
+
+	Topic: Tab Information
+
+		Information about which tabs are available in the menu is stored in [Output Folder]\menu\tabs.js.  The file contains a call to
+		the function NDMenu.OnTabsLoaded() that looks like this:
+
+		> NDMenu.OnTabsLoaded([
+		>    [ "Files", "files.js", "Files" ],
+		>    [ "Classes", "classes.js", "Classes" ]
+		>    ]);
+
+		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:
+
+		> [ "HTML Name", "filewithcontents.js", "CSSName" ]
+
+		The first member is the display name in HTML.  The second is the file which contains the data for that particular tab.  It's
+		stored in the menu subfolder of the output folder, just like tabs.js.  The third is a string that's safe to use as part of a CSS 
+		identifier.  In English this will probably be the same as the HTML name, but it's present anyway because in other languages it 
+		may differ and having this separate member makes sure CSS files work across all languages.  It will also remove any problem
+		causing characters like spaces if there should happen to be any.
+
+
+	Topic: Menu Sections
+
+		The menu data is stored in multiple files which can have names like files2.js or classes.js.  When executed, they call
+		NDMenu.OnSectionLoaded(), passing the file name and part of the menu it stores as an array of entries.  Each entry is itself 
+		an array whose first value is its type.
+
+		> NDMenu.OnSectionLoaded( "files2.js", [ ... ] );
+		
+		Target Entries:
+		
+			> [1, "HTML Title", "Hash Path"]
+			> [1, "HTML Title"]
+			
+			Target entries represent a content page, such as a source file or class.  The first value is always 1, and the second
+			value is the title in HTML.
+			
+			The third value is the hash path and is optional.  If it isn't specified, that means it's the same as the title.  The hash 
+			path only represents the last portion of the path, such as "SourceFile.cs" in "File:Folder/Folder/SourceFile.cs", so to 
+			get the full path you must concatenate it to its container's hash path.
+			
+		Container Entries:
+		
+			> [2, "HTML Title", "Partial Hash Path", [ members ]]
+			> [2, "HTML Title", "Partial Hash Path", "menudatafilename.js" ]
+			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", [ members ]]
+			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "menudatafilename.js"]
+	
+			Container entries represent another layer of the menu, such as a file folder.  The first value is always 2.
+			
+			The second value is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
+			the menu has been condensed and multiple layers of containers have been combined into one.
+			
+			The third value is the hash path, which is the absolute path of everything up to the last element, such as "File:Path/Path/" 
+			or "CSharpClass:Namespace.Namespace.".  It will never be relative so you don't have to climb up the hierarchy to 
+			construct the full path.  It includes the trailing separator symbol so the target hash path can be concatenated directly 
+			on to it.
+			
+			The fourth value is its members and they may be specified inline as an array or be a string representing the data file they
+			are stored in.  It will not include a path.
