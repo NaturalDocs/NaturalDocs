@@ -74,11 +74,7 @@ var NDContentPage = new function ()
 		// Replace .html with -ToolTips.js
 		ttLocation = ttLocation.substr(0, ttLocation.length - 5) + "-ToolTips.js";
 
-		var script = document.createElement("script");
-		script.src = ttLocation;
-		script.type = "text/javascript";
-
-		document.getElementsByTagName("head")[0].appendChild(script);
+		NDCore.LoadJavaScript(ttLocation);
 		};
 
 

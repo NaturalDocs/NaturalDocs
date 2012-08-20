@@ -137,12 +137,7 @@ var NDSummary = new function ()
 				// Create a new summary loader.  We don't load the tooltips until the summary is complete to
 				// avoid having to wait for a potentially large file.
 
-				var script = document.createElement("script");
-				script.src = newLocation.summaryFile;
-				script.type = "text/javascript";
-				script.id = "NDSummaryLoader";
-
-				head.appendChild(script);
+				NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");
 				}
 
 			this.FinishIENavigation();
@@ -166,14 +161,7 @@ var NDSummary = new function ()
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
 
-			var head = document.getElementsByTagName("head")[0];
-
-			var script = document.createElement("script");
-			script.src = NDFramePage.currentLocation.summaryTTFile;
-			script.type = "text/javascript";
-			script.id = "NDSummaryToolTipsLoader";
-
-			head.appendChild(script);
+			NDCore.LoadJavaScript(NDFramePage.currentLocation.summaryTTFile, "NDSummaryToolTipsLoader");
 			}
 		};
 

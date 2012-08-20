@@ -155,6 +155,26 @@ var NDCore = new function ()
 
 
 
+	// Group: JavaScript Loading Functions
+	// ________________________________________________________________________
+
+
+	/* Function: LoadJavaScript
+		Dynamically adds a script tag to the document head which loads the JavaScript file at the path.  If desired you can give
+		it an ID so you can remove the tag later.
+	*/
+	this.LoadJavaScript = function (path, id)
+		{
+		var script = document.createElement("script");
+		script.src = path;
+		script.type = "text/javascript";
+		script.id = id;
+
+		document.getElementsByTagName("head")[0].appendChild(script);
+		};
+
+
+
 	// Group: Positioning Functions
 	// ________________________________________________________________________
 

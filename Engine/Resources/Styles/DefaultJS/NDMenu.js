@@ -478,12 +478,7 @@ var NDMenu = new function ()
 			Ready: false
 			});
 
-		var script = document.createElement("script");
-		script.src = "menu/files" + (id == 1 ? "" : id) + ".js";
-		script.type = "text/javascript";
-		script.id = "NDFileMenuLoader" + id;
-
-		document.getElementsByTagName("head")[0].appendChild(script);
+		NDCore.LoadJavaScript("menu/files" + (id == 1 ? "" : id) + ".js", "NDFileMenuLoader" + id);
 		};
 
 
