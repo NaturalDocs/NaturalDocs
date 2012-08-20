@@ -18,6 +18,9 @@
 		`ToolTipBackgroundColor = #FFFFF0
 		`ContentBackgroundColor = #FFFFFF
 
+		`MenuLineColor = #C0C0C0
+		`MenuHoverColor = #ECECEC
+
 		`MenuSummaryBorderColor = #D8D8D8
 		`SummaryContentBorderColor = #E8E8E8
 
@@ -145,6 +148,80 @@ td {
 		background: URL("images/menu-loading.gif") no-repeat center bottom;
 		}
 
+	#MTabBar {
+		background-color: `MenuLineColor;
+		}
+
+	.MTab {
+		background-color: `MenuBackgroundColor;
+		border-right: 1px solid `MenuLineColor;
+		border-bottom: 1px solid `MenuLineColor;
+		display: inline-block;
+		padding: 2px 5px;
+		}
+	.MTab:hover {
+		background-color: `MenuHoverColor;
+		}
+	.MTab.Selected {
+		border-bottom: 1px solid `MenuBackgroundColor;
+		}
+	a.MTab:active {
+		outline: 0;
+		}
+
+	.MTabIcon {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		position: relative;
+		top: 3px;
+		}
+	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.png") center center no-repeat;  }
+	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.png") center center no-repeat;  }
+	#MDatabaseTab .MTabIcon {  background: url("images/menu-tab-database.png") center center no-repeat;  }
+
+	.MTabTitle {
+		display: inline-block;
+		color: #606060;
+		font: italic 10pt `MenuFontFamily;
+		margin: 0 4px;
+		}
+
+	.MTab {
+		opacity: .55;
+		}
+	.MTab.Selected,
+	.MTab:hover {
+		opacity: 1;
+		}
+
+	/* IE 6-8 can't handle opacity so use background color instead.  Opacity is preferable for other browsers because it will */
+	/* affect the text and icon too.  We don't bother changing the text color here because then it wouldn't match the icon. */
+	.IE6 .MTab,
+	.IE7 .MTab,
+	.IE8 .MTab {
+		background-color: #D0D0D0;
+		}
+	.IE6 .MTab.Selected,
+	.IE7 .MTab.Selected,
+	.IE8 .MTab.Selected {
+		background-color: `MenuBackgroundColor;
+		}
+	.IE6 .MTab:hover,
+	.IE7 .MTab:hover,
+	.IE8 .MTab:hover {
+		background-color: `MenuHoverColor;
+		}
+
+	/* We do this to hide the title, but keep the element there so that the tab box is affected by the text height. */
+	/* Chrome can't handle a width of zero, so we do 1px and then cancel it out with the margin. */
+	.MTab.Narrow .MTabTitle {
+		width: 1px;
+		margin: 0 -1px 0 0;
+		visibility: hidden;
+		}
+
+
 	.MEntry {
 		display: block;
 		font: 10pt `MenuFontFamily;
@@ -156,14 +233,14 @@ td {
 		}
 	a.MEntry:hover,
 	a.MEntry:active {
-		background-color: #ECECEC;
+		background-color: `MenuHoverColor;
 		}
 
 	.MFolder {
 		font-weight: bold;
 		}
 	.MFolder.Parent {
-		border-bottom: 1px solid #C0C0C0;
+		border-bottom: 1px solid `MenuLineColor;
 		}
 	.MFolder.Parent,
 	a.MFolder.Parent {

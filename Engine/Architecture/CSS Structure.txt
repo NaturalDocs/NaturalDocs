@@ -70,6 +70,16 @@ JavaScript class included in the DefaultJS style.  Other styles may or may not u
 (start text)
 
 	<#NDMenu>
+		
+		<#MTabBar>
+
+			<a MTab #M[Type]Tab Selected? Wide/Narrow?>
+				<MTabIcon></MTabIcon>
+				<MTabTitle>Title</MTabTitle>
+			</a MTab>
+
+		</#MTabBar>
+
 		<#MContent>
 
 			<MFolder MEntry Parent Root Selected?>

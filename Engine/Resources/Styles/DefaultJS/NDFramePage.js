@@ -485,6 +485,8 @@ var NDFramePage = new function ()
 				menuSizer.style.display = "block";
 				NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
 				}
+
+			NDMenu.OnUpdateLayout();
 			}
 		else
 			{

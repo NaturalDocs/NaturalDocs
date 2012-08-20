@@ -13,6 +13,17 @@
 	
 	Substitutions:
 
+		Tab Members, from data file:
+
+		`Tab_HTMLName = 0
+		`Tab_Type = 1
+		`Tab_DataFile = 2
+
+		Tab Members, added by code:
+
+		`Tab_WideWidth = 3
+		`Tab_NarrowWidth = 4
+
 		Entry Types:
 
 		`RootFolder = 0
@@ -111,6 +122,24 @@ var NDMenu = new function ()
 
 		this.fileMenuSections = [ ];
 		this.firstUnusedFileMenuSection = 0;
+
+		this.selectedTab = "File";  // xxx
+
+
+		// Create the sub-containers since they have to be in the right order regardless of the order their data is loaded in.
+
+		var menuContainer = document.getElementById("NDMenu");
+
+		var menuTabBar = document.createElement("div");
+		menuTabBar.id = "MTabBar";
+		menuContainer.appendChild(menuTabBar);
+
+		var menuContent = document.createElement("div");
+		menuContent.id = "MContent";
+		menuContainer.appendChild(menuContent);
+
+
+		NDCore.LoadJavaScript("menu/xxxtabs.js");
 		};
 
 
@@ -193,13 +222,10 @@ var NDMenu = new function ()
 			newMenuContent.appendChild(htmlEntry);
 			}
 
-		var menuContainer = document.getElementById("NDMenu");
 		var oldMenuContent = document.getElementById("MContent");
+		var menuContainer = oldMenuContent.parentNode;
 
-		if (oldMenuContent != undefined)
-			{  menuContainer.replaceChild(newMenuContent, oldMenuContent);  }
-		else
-			{  menuContainer.appendChild(newMenuContent);  }
+		menuContainer.replaceChild(newMenuContent, oldMenuContent);
 
 		if (result.completed)
 			{
@@ -530,6 +556,145 @@ var NDMenu = new function ()
 		};
 
 
+	/* Function: OnTabsLoaded
+	*/
+	this.OnTabsLoaded = function (tabs)
+		{
+		this.tabs = tabs;
+
+		var tabBar = document.getElementById("MTabBar");
+
+		for (var i = 0; i < tabs.length; i++)
+			{
+			var tab = document.createElement("a");
+			tab.id = "M" + tabs[i][`Tab_Type] + "Tab";
+			tab.className = "MTab Wide";
+			tab.setAttribute("href", "javascript:NDMenu.SelectTab(\"" + tabs[i][`Tab_Type] + "\");");
+			tab.innerHTML = "<span class=\"MTabIcon\"></span><span class=\"MTabTitle\">" + tabs[i][`Tab_HTMLName] + "</span>";
+
+			// We can't get the tab's width until it's added to the tab bar.  However, we don't want the tab bar to grow to multiple lines
+			// when detecting all the widths, so we temporarily set them all to absolute positioning.
+			tab.style.position = "absolute";
+			tab.style.visibility = "hidden";
+
+			tabBar.appendChild(tab);
+
+			tabs[i][`Tab_WideWidth] = tab.offsetWidth;
+			tab.className = "MTab Narrow";
+			tabs[i][`Tab_NarrowWidth] = tab.offsetWidth;
+
+			if (tabs[i][`Tab_Type] == this.selectedTab)
+				{  tab.className += " Selected";  }
+			}
+	
+		// Resize them while they're still hidden.  Being absolutely positioned won't affect it.
+		this.ResizeTabs();
+
+		// Undo the temporary properties.
+		for (var i = 0; i < tabs.length; i++)
+			{
+			var tab = this.GetTabElement(tabs[i][`Tab_Type]);
+			tab.style.position = "static";
+			tab.style.visibility = "visible";
+			}
+		};
+
+
+	/* Function: ResizeTabs
+	*/
+	this.ResizeTabs = function ()
+		{
+		var menu = document.getElementById("NDMenu");
+		var menuWidth = menu.clientWidth;
+
+		var allWideWidth = 0;
+		var selectedWideWidth = 0;
+
+		for (var i = 0; i < this.tabs.length; i++)
+			{
+			allWideWidth += this.tabs[i][`Tab_WideWidth];
+
+			if (this.tabs[i][`Tab_Type] == this.selectedTab)
+				{  selectedWideWidth += this.tabs[i][`Tab_WideWidth];  }
+			else
+				{  selectedWideWidth += this.tabs[i][`Tab_NarrowWidth];  }
+			}
+
+		for (var i = 0; i < this.tabs.length; i++)
+			{
+			var makeWide;
+
+			if (allWideWidth <= menuWidth)
+				{  makeWide = true;  }
+			else if (selectedWideWidth <= menuWidth)
+				{  makeWide = (this.tabs[i][`Tab_Type] == this.selectedTab);  }
+			else // go all narrow
+				{  makeWide = false;  }
+
+			var tab = this.GetTabElement(this.tabs[i][`Tab_Type]);
+
+			if (makeWide)
+				{
+				if (NDCore.HasClass(tab, "Narrow"))
+					{
+					NDCore.RemoveClass(tab, "Narrow");
+					NDCore.AddClass(tab, "Wide");
+					}
+				}
+			else
+				{
+				if (NDCore.HasClass(tab, "Wide"))
+					{
+					NDCore.RemoveClass(tab, "Wide");
+					NDCore.AddClass(tab, "Narrow");
+					}
+				}
+			}
+		};
+
+
+	/* Function: OnUpdateLayout
+	*/
+	this.OnUpdateLayout = function ()
+		{
+		if (this.tabs != undefined)
+			{  this.ResizeTabs();  }
+		};
+
+
+	/* Function: SelectTab
+	*/
+	this.SelectTab = function (newSelection)
+		{
+		if (newSelection != this.selectedTab)
+			{
+			var tab = this.GetTabElement(this.selectedTab);
+			NDCore.RemoveClass(tab, "Selected");
+
+			tab = this.GetTabElement(newSelection);
+			NDCore.AddClass(tab, "Selected");
+
+			this.selectedTab = newSelection;
+
+			// If only the selected tab has its text visible we need to call this to change which ones are wide and narrow.
+			this.ResizeTabs();
+			}
+
+		// Move focus to the content frame so it still has keyboard navigation and we remove the ugly dotted line around the
+		// tab that appears in Firefox.
+		document.getElementById("CFrame").contentWindow.focus();
+		};
+
+	
+	/* Function: GetTabElement
+		Returns the DOM element for the tab of the passed type.
+	*/
+	this.GetTabElement = function (type)
+		{
+		return document.getElementById("M" + type + "Tab");
+		};
+
+
 
 	// Group: Variables
 	// ________________________________________________________________________
@@ -549,6 +714,14 @@ var NDMenu = new function ()
 	/* var: firstUnusedFileMenuSection
 		An index into <fileMenuSections> of the first entry that was not accessed via <GetFileMenuSection()> in the
 		last call to <Build()>.
+	*/
+
+	/* var: tabs
+		An array of all the tab information.
+	*/
+
+	/* var: selectedTab
+		The type string of the currently selected tab.
 	*/
 
 	};
