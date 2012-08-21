@@ -138,6 +138,11 @@ td {
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
 
+	/* The tab bar causes a horizontal scroll bar on IE7 for some inexplicable reason. */
+	.IE7 #NDMenu {
+		overflow: hidden;
+		}
+
 	#NDMenu a:hover,
 	#NDMenu a:active {
 		text-decoration: none;
@@ -158,41 +163,18 @@ td {
 		border-bottom: 1px solid `MenuLineColor;
 		display: inline-block;
 		padding: 2px 5px;
+		opacity: .55;
 		}
 	.MTab:hover {
 		background-color: `MenuHoverColor;
+		opacity: 1;
 		}
 	.MTab.Selected {
 		border-bottom: 1px solid `MenuBackgroundColor;
+		opacity: 1;
 		}
 	a.MTab:active {
 		outline: 0;
-		}
-
-	.MTabIcon {
-		display: inline-block;
-		width: 16px;
-		height: 16px;
-		position: relative;
-		top: 3px;
-		}
-	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.png") center center no-repeat;  }
-	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.png") center center no-repeat;  }
-	#MDatabaseTab .MTabIcon {  background: url("images/menu-tab-database.png") center center no-repeat;  }
-
-	.MTabTitle {
-		display: inline-block;
-		color: #606060;
-		font: italic 10pt `MenuFontFamily;
-		margin: 0 4px;
-		}
-
-	.MTab {
-		opacity: .55;
-		}
-	.MTab.Selected,
-	.MTab:hover {
-		opacity: 1;
 		}
 
 	/* IE 6-8 can't handle opacity so use background color instead.  Opacity is preferable for other browsers because it will */
@@ -213,12 +195,40 @@ td {
 		background-color: `MenuHoverColor;
 		}
 
+	.MTabIcon {
+		display: inline-block;
+		width: 16px;
+		height: 16px;
+		position: relative;
+		top: 3px;
+		}
+	.IE7 .MTabIcon,
+	.IE6 .MTabIcon {
+		top: 0;
+		}
+	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.png") center center no-repeat;  }
+	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.png") center center no-repeat;  }
+	#MDatabaseTab .MTabIcon {  background: url("images/menu-tab-database.png") center center no-repeat;  }
+
+	.MTabTitle {
+		display: inline-block;
+		color: #606060;
+		font: italic 10pt `MenuFontFamily;
+		margin: 0 4px;
+		}
+
+
 	/* We do this to hide the title, but keep the element there so that the tab box is affected by the text height. */
 	/* Chrome can't handle a width of zero, so we do 1px and then cancel it out with the margin. */
 	.MTab.Narrow .MTabTitle {
 		width: 1px;
 		margin: 0 -1px 0 0;
 		visibility: hidden;
+		}
+
+	/* IE6 can't handle it at all.  Hiding the text and having uneven heights is less sucky than the alternative. */
+	.IE6 .MTab.Narrow .MTabTitle {
+		display: none;
 		}
 
 

@@ -624,9 +624,9 @@ var NDMenu = new function ()
 			{
 			var makeWide;
 
-			if (allWideWidth <= menuWidth)
+			if (allWideWidth < menuWidth)
 				{  makeWide = true;  }
-			else if (selectedWideWidth <= menuWidth)
+			else if (selectedWideWidth < menuWidth)
 				{  makeWide = (this.tabs[i][`Tab_Type] == this.selectedTab);  }
 			else // go all narrow
 				{  makeWide = false;  }
