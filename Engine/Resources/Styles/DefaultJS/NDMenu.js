@@ -926,13 +926,13 @@ function NDMenuOffsetPathIterator (pathObject)
 
 
 	/* Function: Next
-		Moves the iterator forward one place in the path, returning whether it's still in bounds.
+		Moves the iterator forward one place in the path.
 	*/
 	this.Next = function ()
 		{
 		// If we're past the end of the path...
 		if (this.pathIndex >= this.pathObject.path.length)
-			{  return false;  }
+			{  return;  }
 
 		// If we're in the path but past what's loaded...
 		else if (this.currentContainer == undefined)
@@ -973,8 +973,6 @@ function NDMenuOffsetPathIterator (pathObject)
 					{  this.needToLoad = undefined;  }
 				}
 			}
-
-		return (this.pathIndex <= this.pathObject.path.length);
 		};
 
 
@@ -1043,14 +1041,14 @@ function NDMenuOffsetPathIterator (pathObject)
 		// However, if there's only one past it, we need to know whether it's a file or a folder to know whether this one selected
 		// or not.
 		var lookahead = this.Duplicate();
+		lookahead.Next();
 
-		if (lookahead.Next() == `Nav_NeedToLoad)
+		if (lookahead.NavigationType() == `Nav_NeedToLoad)
 			{
 			this.needToLoad = lookahead.NeedToLoad();
 			return `Nav_NeedToLoad;
-			}
-		
-		if (lookahead.CurrentEntry()[`Entry_Type] == `EntryType_Container)
+			}		
+		else if (lookahead.CurrentEntry()[`Entry_Type] == `EntryType_Container)
 			{  return `Nav_ParentFolder;  }
 		else
 			{  return `Nav_SelectedParentFolder;  }
