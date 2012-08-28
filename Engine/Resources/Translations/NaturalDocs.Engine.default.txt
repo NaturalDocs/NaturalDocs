@@ -61,17 +61,6 @@ TimeStamp.ShortMonth11: Nov
 TimeStamp.Month12: December
 TimeStamp.ShortMonth12: Dec
 
-HTML.HomeParagraph(projectTitle, projectSubTitle).multiline {{{
-This is the source documentation for {0}.
-Use the menu on the left to navigate by file or class.
-}}}
-HTML.HomeParagraph(projectTitle).multiline {{{
-Use the menu on the left to navigate by file or class.
-}}}
-HTML.HomeParagraph.multiline {{{
-Use the menu on the left to navigate by file or class.
-}}}
-
 
 
 #
@@ -129,7 +118,6 @@ ConfigFile.ErrorPrefix: ERROR:
 ConfigFile.ErrorInThisFile: There is an error in this file.  Search for ERROR to find it.
 ConfigFile.ErrorsInThisFile(count): There are {0} errors in this file.  Search for ERROR to find them.
 ConfigFile.ErrorsInThisFileRegex: ^# There (?:is an error|are [0-9]+ errors) in this file\.  Search for ERROR to find (?:it|them)\.
-
 
 
 

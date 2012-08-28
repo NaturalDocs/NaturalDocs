@@ -1097,22 +1097,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					content.Append("</div>");
 
-				string welcome;
-
-				if (config.ProjectInfo.Subtitle != null)
-					{  
-					welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph(projectTitle, projectSubTitle).multiline", 
-																											config.ProjectInfo.Title, config.ProjectInfo.Subtitle);
-					}
-				else if (config.ProjectInfo.Title != null)
-					{  welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph(projectTitle).multiline", config.ProjectInfo.Title);  }
-				else
-					{  welcome = Locale.Get("NaturalDocs.Engine", "HTML.HomeParagraph.multiline");  }
-
 				content.Append(
-					"\r\n\r\n" +
-					"<p>" + welcome.ToHTML() + "</p>" +
-
 					"\r\n\r\n" +
 					"<div class=\"HFooter\">");
 
