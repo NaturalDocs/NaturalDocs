@@ -545,13 +545,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: Source_HashPathPrefix
-		 */
-		public static string Source_HashPathPrefix ()
-			{
-			return "File";
-			}
-
 		/* Function: Source_TopicHashPath
 		 * Returns a hash path representing a specific <Topic> within an output file.
 		 */

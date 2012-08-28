@@ -82,6 +82,11 @@ JavaScript class included in the DefaultJS style.  Other styles may or may not u
 
 		<#MContent>
 
+			<MTabAsFolder #M[Type]Tab MEntry>
+				<MTabIcon></MTabIcon>
+				<MTabTitle>Title</MTabTitle>
+			</MTabAsFolder>
+
 			<MFolder MEntry Parent Root Selected?>
 				Name
 			</MFolder>

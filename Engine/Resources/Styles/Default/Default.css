@@ -173,7 +173,8 @@ td {
 		border-bottom: 1px solid `MenuBackgroundColor;
 		opacity: 1;
 		}
-	a.MTab:active {
+	a.MTab:active,
+	a.MTab:focus {
 		outline: 0;
 		}
 
@@ -217,7 +218,6 @@ td {
 		margin: 0 4px;
 		}
 
-
 	/* We do this to hide the title, but keep the element there so that the tab box is affected by the text height. */
 	/* Chrome can't handle a width of zero, so we do 1px and then cancel it out with the margin. */
 	.MTab.Narrow .MTabTitle {
@@ -244,6 +244,10 @@ td {
 	a.MEntry:hover,
 	a.MEntry:active {
 		background-color: `MenuHoverColor;
+		}
+
+	.MTabAsFolder {
+		padding-left: 1ex;
 		}
 
 	.MFolder {

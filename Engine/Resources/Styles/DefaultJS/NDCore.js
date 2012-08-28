@@ -161,7 +161,7 @@ var NDCore = new function ()
 
 	/* Function: LoadJavaScript
 		Dynamically adds a script tag to the document head which loads the JavaScript file at the path.  If desired you can give
-		it an ID so you can remove the tag later.
+		it an ID so you can remove the tag later.  Returns a reference to the DOM object.
 	*/
 	this.LoadJavaScript = function (path, id)
 		{
@@ -171,6 +171,8 @@ var NDCore = new function ()
 		script.id = id;
 
 		document.getElementsByTagName("head")[0].appendChild(script);
+
+		return script;
 		};
 
 

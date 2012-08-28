@@ -13,21 +13,24 @@ _______________________________________________________________________________
 		the function NDMenu.OnTabsLoaded() that looks like this:
 
 		> NDMenu.OnTabsLoaded([
-		>    [ "Files", "File", "files.js" ],
-		>    [ "Classes", "Class", "classes.js" ]
+		>    [ "File", "Files", "File:Folder/", "files.js" ],
+		>    [ "Class", "Classes", undefined, "classes.js" ]
 		>    ]);
 
 		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:
 
-		> [ "HTML Name", "Type", "filewithcontents.js" ]
+		> [ "Type", "HTML Title", "Hash Path", "filewithcontents.js" ]
 
-		The first member is the display name in HTML.
-		
-		The second member is a string representing the type of tab it is.  If you're using the DefaultJS style, this will map directly to
+		The first member is a string representing the type of tab it is.  If you're using the DefaultJS style, this will map directly to
 		<NDLocation.type> so you can tell which one should be selected for a given location.  It will be safe to include as part of a
 		CSS name and it will stay consistent across languages.
+
+		The second member is the title in HTML.
 		
-		The third member is the file which contains the data for that particular tab.  It's stored in the menu subfolder of the output 
+		The third member is the hash path, which may be undefined.  If the menu was condensed containers that had hash paths
+		may have been combined with the root container, giving the tab a hash path.
+		
+		The fourth member is the file which contains the data for that particular tab.  It's stored in the menu subfolder of the output 
 		folder, just like tabs.js.
 
 

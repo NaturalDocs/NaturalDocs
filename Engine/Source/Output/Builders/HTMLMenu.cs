@@ -105,16 +105,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			for (int i = 0; i < tabContainers.Count; i++)
 				{
+				ContainerEntryExtraData extraData = (ContainerEntryExtraData)tabContainers[i].ExtraData;
+
 				#if DONT_SHRINK_FILES
 					tabInformation.Append(' ', IndentSpaces);
 				#endif
 
 				tabInformation.Append("[\"");
-				tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
-				tabInformation.Append("\",\"");
 				tabInformation.Append(tabTypes[i]);
 				tabInformation.Append("\",\"");
-				tabInformation.StringEscapeAndAppend( (tabContainers[i].ExtraData as ContainerEntryExtraData).DataFileName );
+				tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
+				tabInformation.Append("\",");
+
+				if (extraData.HashPath == null)
+					{  tabInformation.Append("undefined");  }
+				else
+					{
+					tabInformation.Append('"');
+					tabInformation.StringEscapeAndAppend(extraData.HashPath);
+					tabInformation.Append('"');
+					}
+
+				tabInformation.Append(",\"");
+				tabInformation.StringEscapeAndAppend(extraData.DataFileName );
 				tabInformation.Append("\"]");
 
 				if (i < tabContainers.Count - 1)
@@ -411,6 +424,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				this.jsonBeforeMembers = null;
 				this.jsonAfterMembers = null;
 				this.dataFileName = null;
+				this.hashPath = null;
 				}
 
 			/* Function: GenerateJSON
@@ -460,12 +474,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				// Hash path
 
-				output.Append(",\"");
+				output.Append(',');
 
 				if (menuEntry is MenuEntries.File.FileSource)
 					{
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)menuEntry;
-					output.StringEscapeAndAppend( htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number ));
+					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number );
 					}
 				else if (menuEntry is MenuEntries.File.Folder)
 					{
@@ -484,20 +498,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					MenuEntries.File.Folder folderEntry = (MenuEntries.File.Folder)menuEntry;
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)container;
 
-					output.StringEscapeAndAppend( 
-						htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, folderEntry.PathFromFileSource )
-						);
+					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, folderEntry.PathFromFileSource );
 					}
 				else if (menuEntry == menu.RootFileMenu)
 					{
-					output.StringEscapeAndAppend(Builders.HTML.Source_HashPathPrefix());
+					hashPath = null;
 					}
 				#if DEBUG
 				else
 					{  throw new Exception ("Could not generate JSON for container " + menuEntry.Title + ".");  }
 				#endif
 
-				output.Append("\",");
+				if (hashPath == null)
+					{  output.Append("undefined");  }
+				else
+					{  
+					output.Append('"');
+					output.StringEscapeAndAppend(hashPath);
+					output.Append('"');
+					}
+
+				output.Append(',');
 
 				jsonBeforeMembers = output.ToString();
 				jsonAfterMembers = "]";
@@ -549,6 +570,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  return jsonAfterMembers;  }
 				}
 
+			/* Property: HashPath
+			 * The hash path of the container, or null if none.  This will only be available after <GenerateJSON()> is called.
+			 */
+			public string HashPath
+				{
+				get
+					{  return hashPath;  }
+				}
+
+
 
 			// Group: Variables
 			// _________________________________________________________________________
@@ -573,6 +604,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			 * not include a path.  If this container doesn't start a new data file, this will be null.
 			 */
 			protected string dataFileName;
+
+			/* var: hashPath
+			 * The hash path of the container, or null if none.  This will only be available after <GenerateJSON()> is called.
+			 */
+			protected string hashPath;
 
 			}
 
