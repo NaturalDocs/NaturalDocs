@@ -155,6 +155,13 @@ var NDMenu = new function ()
 	*/
 	this.OnLocationChange = function (oldLocation, newLocation)
 		{
+		// If we're on the Home tab and there's only one, automatically select it.
+		if (newLocation.type == "Home" && this.tabs != undefined && this.tabs.length == 1)
+			{  
+			this.GoToOffsets([0]);  
+			return;
+			}
+
 		if (oldLocation == undefined || oldLocation.type != newLocation.type)
 			{
 			this.UpdateTabs(newLocation.type);
@@ -301,11 +308,44 @@ var NDMenu = new function ()
 			{	
 			navigationType = iterator.NavigationType();
 
-			if (navigationType == `Nav_SelectedTab)
+			if (navigationType == `Nav_NeedToLoad)
 				{  
-				// The tab bar will show it so we don't add anything here.
+				result.needToLoad = iterator.needToLoad;  
+				return result;
+				}
+
+			else if (navigationType == `Nav_SelectedFile || navigationType == `Nav_EndOfPath)
+				{  break;  }
+
+			else if (iterator.InTabs())
+				{  
 				pathSoFar.push(iterator.CurrentContainerIndex());
-				iterator.Next();  
+
+				// If there's only one tab we display it the same as a parent folder.  There's no benefit to having it be visually
+				// distinct with an icon.
+				if (this.tabs.length == 1)
+					{
+					if (navigationType == `Nav_SelectedParentFolder)
+						{
+						var htmlEntry = document.createElement("div");
+						htmlEntry.className = "MEntry MFolder Selected";
+						htmlEntry.innerHTML = iterator.CurrentEntry()[`Tab_HTMLTitle];
+
+						htmlMenu.appendChild(htmlEntry);
+						}
+					else
+						{
+						var htmlEntry = document.createElement("a");
+						htmlEntry.className = "MEntry MFolder Parent";
+						htmlEntry.setAttribute("href", "javascript:NDMenu.GoToOffsets([" + pathSoFar.join(",") + "])");
+						htmlEntry.innerHTML = iterator.CurrentEntry()[`Tab_HTMLTitle];
+
+						htmlMenu.appendChild(htmlEntry);
+						}
+					}
+				// If there's more than one the tab bar will show it so we don't add anything here.
+
+				iterator.Next();
 				}
 
 			else if (navigationType == `Nav_ParentFolder || navigationType == `Nav_SelectedParentFolder)
@@ -340,8 +380,6 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
-					iterator.Next();
-					break;
 					}
 				else
 					{
@@ -351,18 +389,10 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
-					iterator.Next();
 					}
-				}
 
-			else if (navigationType == `Nav_NeedToLoad)
-				{  
-				result.needToLoad = iterator.needToLoad;  
-				return result;
+				iterator.Next();
 				}
-
-			else if (navigationType == `Nav_SelectedFile || navigationType == `Nav_EndOfPath)
-				{  break;  }
 
 			else
 				{  throw "Unexpected navigation type " + navigationType;  }
@@ -375,8 +405,9 @@ var NDMenu = new function ()
 		var selectedFolderHashPath = iterator.CurrentContainerHashPath();
 		var selectedFileIndex = iterator.CurrentContainerIndex();  // will be undefined if there's no selection
 
-		// Build the tabs as folders if none are selected.
-		if (selectedFolder == this.tabs)
+		// Build the tabs as folders if none are selected.  We don't have to worry about building it as a regular folder when
+		// there is only one tab because we will have navigated to it automatically.
+		if (iterator.InTabs())
 			{
 			for (var i = 0; i < this.tabs.length; i++)
 				{
@@ -615,7 +646,11 @@ var NDMenu = new function ()
 			tab.style.visibility = "visible";
 			}
 
-		this.Build();
+		// If we're on the Home tab and there's only one, automatically select it.
+		if ((this.selectedTab == undefined || this.selectedTab == "Home") && this.tabs.length == 1)
+			{  this.GoToOffsets([0]);  }
+		else
+			{  this.Build();  }
 		};
 
 
@@ -732,7 +767,7 @@ var NDMenu = new function ()
 	*/
 	this.ShouldTabsShow = function ()
 		{
-		return (this.tabs !== undefined && 
+		return (this.tabs !== undefined && this.tabs.length > 1 &&
 				   this.selectedTab != undefined && this.selectedTab != "Home");
 		};
 
@@ -980,9 +1015,8 @@ function NDMenuOffsetPathIterator (pathObject)
 
 		Returns what the current position represents, which will be one of these values:
 
-		`Nav_SelectedTab - The iterator is pointing to the selected tab entry.
-		`Nav_ParentFolder - The iterator is pointing to a parent folder, though not the currently selected one.
-		`Nav_SelectedParentFolder - The iterator is pointing to the currently selected parent folder.
+		`Nav_ParentFolder - The iterator is pointing to a parent folder or tab, though not the currently selected one.
+		`Nav_SelectedParentFolder - The iterator is pointing to the currently selected parent folder or tab.
 		`Nav_SelectedFile - The iterator is pointing to the currently selected file.
 		`Nav_NeedToLoad - The iterator is pointing to a part of the menu hasn't been loaded yet.  The file to load will be stored in 
 									  <NeedToLoad()>.
@@ -992,11 +1026,8 @@ function NDMenuOffsetPathIterator (pathObject)
 
 			- The iterator can start with `Nav_EndOfPath if there is no tab selected, or `Nav_NeedToLoad if the tab information
 			  isn't loaded.
-			- Otherwise the first result will always be `Nav_SelectedTab.
-			- The iterator can then go straight into `Nav_EndOfPath if no files or folders are selected.  There is no guarantee of a file 
-			  or folder selection.
-			- If there are folders in the path, all but the last will be `Nav_ParentFolder and the last will be `Nav_SelectedParentFolder.
-			  This is regardless of whether there is also a file selected or not.
+			- If there are folders or tabs in the path, all but the last will be `Nav_ParentFolder and the last will be 
+			  `Nav_SelectedParentFolder.  This is regardless of whether there is also a file selected or not.
 			- If there is a file selected it will return `Nav_SelectedFile, but there does not need to be so it may go straight from
 			  `Nav_SelectedParentFolder to `Nav_EndOfPath.
 			- It can return `Nav_NeedToLoad at any time.
@@ -1004,7 +1035,6 @@ function NDMenuOffsetPathIterator (pathObject)
 	this.NavigationType = function ()
 		{
 		/* Substitutions:
-			`Nav_SelectedTab = 0
 			`Nav_ParentFolder = 1
 			`Nav_SelectedParentFolder = 2
 			`Nav_SelectedFile = 3
@@ -1022,12 +1052,9 @@ function NDMenuOffsetPathIterator (pathObject)
 		if (this.pathIndex >= this.pathObject.path.length)
 			{  return `Nav_EndOfPath;  }
 
-		if (this.pathIndex == 0)
-			{  return `Nav_SelectedTab;  }
-
 		var currentEntry = this.currentContainer[ this.pathObject.path[ this.pathIndex ] ];
 
-		if (currentEntry[`Entry_Type] == `EntryType_Target)
+		if (this.InTabs() == false && currentEntry[`Entry_Type] == `EntryType_Target)
 			{  return `Nav_SelectedFile;  }
 
 		// So we're at a container.  If it's the last part of the path we know it's selected.
@@ -1115,6 +1142,15 @@ function NDMenuOffsetPathIterator (pathObject)
 	this.CurrentContainerHashPath = function ()
 		{
 		return this.currentContainerHashPath;
+		};
+
+
+	/* Function: InTabs
+		Returns whether is in the tabs instead of a menu folder.
+	*/
+	this.InTabs = function ()
+		{
+		return (this.pathIndex == 0);
 		};
 
 
