@@ -24,6 +24,7 @@
 
 		`Tab_WideWidth = 4
 		`Tab_NarrowWidth = 5
+		`Tab_LastOffsets = 6
 
 		Entries:
 
@@ -119,7 +120,7 @@ var NDMenu = new function ()
 		this.firstUnusedMenuSection = 0;
 
 		// this.tabs = undefined;
-		// this.selectedTab = undefined;
+		// this.selectedTabType = undefined;
 
 
 		// Create the sub-containers since they have to be in the right order regardless of the order their data is loaded in.
@@ -189,7 +190,7 @@ var NDMenu = new function ()
 				{  
 				newSelectedTab = this.tabs[ offsets[0] ][`Tab_Type];  
 
-				if (newSelectedTab != this.selectedTab)
+				if (newSelectedTab != this.selectedTabType)
 					{  this.UpdateTabs(newSelectedTab);  }
 				}
 			}
@@ -300,6 +301,7 @@ var NDMenu = new function ()
 		var pathSoFar = [ ];
 		var iterator = path.GetIterator();
 		var navigationType;
+		var selectedTab;
 
 
 		// Generate the list of folders up to and including the selected one.
@@ -320,6 +322,7 @@ var NDMenu = new function ()
 			else if (iterator.InTabs())
 				{  
 				pathSoFar.push(iterator.CurrentContainerIndex());
+				selectedTab = iterator.CurrentEntry();
 
 				// If there's only one tab we display it the same as a parent folder.  There's no benefit to having it be visually
 				// distinct with an icon.
@@ -329,7 +332,7 @@ var NDMenu = new function ()
 						{
 						var htmlEntry = document.createElement("div");
 						htmlEntry.className = "MEntry MFolder Selected";
-						htmlEntry.innerHTML = iterator.CurrentEntry()[`Tab_HTMLTitle];
+						htmlEntry.innerHTML = selectedTab[`Tab_HTMLTitle];
 
 						htmlMenu.appendChild(htmlEntry);
 						}
@@ -337,8 +340,8 @@ var NDMenu = new function ()
 						{
 						var htmlEntry = document.createElement("a");
 						htmlEntry.className = "MEntry MFolder Parent";
-						htmlEntry.setAttribute("href", "javascript:NDMenu.GoToOffsets([" + pathSoFar.join(",") + "])");
-						htmlEntry.innerHTML = iterator.CurrentEntry()[`Tab_HTMLTitle];
+						htmlEntry.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + selectedTab[`Tab_Type] + "\")");
+						htmlEntry.innerHTML = selectedTab[`Tab_HTMLTitle];
 
 						htmlMenu.appendChild(htmlEntry);
 						}
@@ -479,6 +482,16 @@ var NDMenu = new function ()
 			}
 
 		result.completed = true;
+
+		// If we managed to completely build the path, meaning we didn't do a partial one because sections needed to be loaded,
+		// save the offsets for the tab.  This lets us go back and forth between tabs without losing our place.  The offsets do NOT
+		// include the selected file if there is any.  This is by design.  If a file was selected and we switch to another tab and back
+		// without navigating, we'd use NDFramePage.currentLocation instead.  If a file was selected, we switched to another tab,
+		// navigated, and then switched back, we would want the version that doesn't have the file selection because it's not
+		// relevant anymore and would render the menu entry unclickable.
+		if (selectedTab != undefined)
+			{  selectedTab[`Tab_LastOffsets] = pathSoFar;  }
+
 		return result;
 		};
 
@@ -628,7 +641,7 @@ var NDMenu = new function ()
 			tab.className = "MTab Narrow";
 			tabs[i][`Tab_NarrowWidth] = tab.offsetWidth;
 
-			if (tabs[i][`Tab_Type] == this.selectedTab)
+			if (tabs[i][`Tab_Type] == this.selectedTabType)
 				{  tab.className += " Selected";  }
 			}
 	
@@ -647,7 +660,7 @@ var NDMenu = new function ()
 			}
 
 		// If we're on the Home tab and there's only one, automatically select it.
-		if ((this.selectedTab == undefined || this.selectedTab == "Home") && this.tabs.length == 1)
+		if ((this.selectedTabType == undefined || this.selectedTabType == "Home") && this.tabs.length == 1)
 			{  this.GoToOffsets([0]);  }
 		else
 			{  this.Build();  }
@@ -656,18 +669,18 @@ var NDMenu = new function ()
 
 	/* Function: UpdateTabs
 		Changes which tab is displayed in the tab bar, but does not do anything else like rebuild the menu underneath.  Will
-		replace <selectedTab> with the parameter.
+		replace <selectedTabType> with the parameter.
 	*/
-	this.UpdateTabs = function (newSelection)
+	this.UpdateTabs = function (newTabType)
 		{
-		if (newSelection == this.selectedTab)
+		if (newTabType == this.selectedTabType)
 			{  return;  }
 
 		if (this.tabs != undefined)
 			{
-			if (this.selectedTab != undefined)
+			if (this.selectedTabType != undefined)
 				{
-				var tab = this.GetTabElement(this.selectedTab);
+				var tab = this.GetTabElement(this.selectedTabType);
 				
 				// Have to check if tab is undefined because it could be migrating off a path that doesn't have a corresponding tab, 
 				// like "Home".
@@ -675,9 +688,9 @@ var NDMenu = new function ()
 					{  NDCore.RemoveClass(tab, "Selected");  }
 				}
 
-			if (newSelection != undefined)
+			if (newTabType != undefined)
 				{
-				var tab = this.GetTabElement(newSelection);
+				var tab = this.GetTabElement(newTabType);
 
 				if (tab != undefined)
 					{  NDCore.AddClass(tab, "Selected");  }
@@ -686,7 +699,7 @@ var NDMenu = new function ()
 
 		// Changing tabs may change the tab bar's visibility, such as moving from "Home" to "File".
 		var wasShowing = this.ShouldTabsShow();
-		this.selectedTab = newSelection;
+		this.selectedTabType = newTabType;
 		var shouldShow = this.ShouldTabsShow();
  
 		if (wasShowing != shouldShow)
@@ -722,7 +735,7 @@ var NDMenu = new function ()
 			{
 			allWideWidth += this.tabs[i][`Tab_WideWidth];
 
-			if (this.tabs[i][`Tab_Type] == this.selectedTab)
+			if (this.tabs[i][`Tab_Type] == this.selectedTabType)
 				{  selectedWideWidth += this.tabs[i][`Tab_WideWidth];  }
 			else
 				{  selectedWideWidth += this.tabs[i][`Tab_NarrowWidth];  }
@@ -735,7 +748,7 @@ var NDMenu = new function ()
 			if (allWideWidth < menuWidth)
 				{  makeWide = true;  }
 			else if (selectedWideWidth < menuWidth)
-				{  makeWide = (this.tabs[i][`Tab_Type] == this.selectedTab);  }
+				{  makeWide = (this.tabs[i][`Tab_Type] == this.selectedTabType);  }
 			else // go all narrow
 				{  makeWide = false;  }
 
@@ -768,7 +781,7 @@ var NDMenu = new function ()
 	this.ShouldTabsShow = function ()
 		{
 		return (this.tabs !== undefined && this.tabs.length > 1 &&
-				   this.selectedTab != undefined && this.selectedTab != "Home");
+				   this.selectedTabType != undefined && this.selectedTabType != "Home");
 		};
 
 
@@ -782,21 +795,40 @@ var NDMenu = new function ()
 
 	/* Function: GoToTab
 	*/
-	this.GoToTab = function (newSelection)
+	this.GoToTab = function (newTabType)
 		{
 		var tabIndex;
 
 		for (var i = 0; i < this.tabs.length; i++)
 			{
-			if (this.tabs[i][`Tab_Type] == newSelection)
+			if (this.tabs[i][`Tab_Type] == newTabType)
 				{
 				tabIndex = i;
 				break;
 				}
 			}
 
-		// Go to the tab's root folder regardless of whether it was already selected or not.
-		this.GoToOffsets( [ tabIndex ] );
+		// If they clicked the tab heading while it was already active, return to the root.
+		if (this.selectedTabType == newTabType)
+			{  this.GoToOffsets( [ tabIndex ] );  }
+
+		// If the tab wasn't active but they clicked on the one representing the current location, such as if they opened a File, switched
+		// to the Classes tab and then switched back, reload the current location.  This will include the file selection highlight which
+		// `Tab_LastOffset wouldn't have.
+		else if (newTabType == NDFramePage.currentLocation.type)
+			{  
+			this.UpdateTabs(newTabType);
+			this.Build( new NDMenuHashPath(NDFramePage.currentLocation.type, NDFramePage.currentLocation.path) );
+			}
+
+		// If the tab wasn't active and doesn't represent the current location, try to display the last saved offsets.  These don't include
+		// the file selection.  This lets people switch back and forth between tabs without losing their place.
+		else if (this.tabs[tabIndex][`Tab_LastOffsets] != undefined)
+			{  this.GoToOffsets(this.tabs[tabIndex][`Tab_LastOffsets]);  }
+
+		// If there's no saved offsets, just start at the root.
+		else
+			{  this.GoToOffsets( [ tabIndex ] );  }
 		};
 
 	
@@ -834,7 +866,7 @@ var NDMenu = new function ()
 		An array of all the tab information.
 	*/
 
-	/* var: selectedTab
+	/* var: selectedTabType
 		The type string of the currently selected tab.
 	*/
 
