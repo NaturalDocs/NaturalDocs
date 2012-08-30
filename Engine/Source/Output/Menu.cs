@@ -282,13 +282,13 @@ namespace GregValure.NaturalDocs.Engine.Output
 		//   }
 
 
-		///* Function: Sort
-		// * Sorts the <FileSourceEntries> and all folders contained within them.
-		// */
-		//public void Sort ()
-		//   {
-		//   rootFolder.Sort();
-		//   }
+		/* Function: Sort
+		 * Sorts the menu entries.  Should only be done after everything is added to the menu.
+		 */
+		public void Sort ()
+		   {
+		   rootFileMenu.Sort();
+		   }
 
 
 		///* Function: ForEach

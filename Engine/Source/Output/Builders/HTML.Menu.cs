@@ -164,6 +164,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return;  }
 
 			fileMenu.Sort();
+			newMenu.Sort();
 
 			if (cancelDelegate())
 				{  return;  }

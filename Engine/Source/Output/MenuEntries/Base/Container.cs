@@ -35,7 +35,7 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 		 */
 		public void Sort ()
 			{
-			members.Sort();
+			members.Sort(CompareMembers);
 
 			foreach (Base.Entry member in members)
 				{
@@ -43,6 +43,29 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 					{  (member as Base.Container).Sort();  }
 				}
 			}
+
+		/* Function: CompareMembers
+		 */
+		static protected int CompareMembers (Base.Entry a, Base.Entry b)
+			{
+			int result = String.Compare(a.Title, b.Title, true);
+
+			if (result != 0)
+				{  return result;  }
+
+			result = String.Compare(a.Title, b.Title, false);
+
+			if (result != 0)
+				{  return result;  }
+
+			if (a is Base.Container)
+				{  return (b is Base.Container ? 0 : 1);  }
+			else if (b is Base.Container)
+				{  return (a is Base.Container ? 0 : -1);  }
+			else
+				{  return 0;  }
+			}
+
 
 
 		// Group: Properties
