@@ -159,6 +159,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			fileMenu.Condense();
+			newMenu.Condense();
 			
 			if (cancelDelegate())
 				{  return;  }

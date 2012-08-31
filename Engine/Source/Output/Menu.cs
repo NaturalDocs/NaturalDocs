@@ -203,6 +203,24 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   }
 
 
+		/* Function: Condense
+		 *	 Removes unnecessary levels in the menu.  Only call this function after everything has been added.
+		 */
+		public void Condense ()
+			{
+			isCondensed = true;
+
+			rootFileMenu.Condense();
+
+			// If there's only one file source we can remove the top level container.
+			if (rootFileMenu.Members.Count == 1)
+				{  
+				rootFileMenu.Members[0].Title = rootFileMenu.Title;
+				rootFileMenu = (MenuEntries.Base.Container)rootFileMenu.Members[0];
+				}
+			}
+
+
 		///* Function: Condense
 		// * Condenses unnecessary folder levels, turning "FolderA" and "FolderB" into "FolderA/FolderB" if A contains nothing
 		// * other than B.  Will also remove file source entries that do not have content.

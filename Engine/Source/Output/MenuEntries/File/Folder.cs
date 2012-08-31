@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Collections.Generic;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
@@ -29,6 +30,29 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
 			this.pathFromFileSource = pathFromFileSource;
 			this.Title = pathFromFileSource.NameWithoutPath;
 			}
+
+		override public void Condense ()
+			{
+			CondenseContainersInMembers();
+
+			if (Members.Count == 1 && Members[0] is Folder)
+				{
+				Folder subFolder = (Members[0] as Folder);
+
+				Members = subFolder.Members;
+
+				if (CondensedTitles == null)
+					{  CondensedTitles = new List<string>();  }
+
+				CondensedTitles.Add(subFolder.Title);
+
+				if (subFolder.CondensedTitles != null)
+					{  CondensedTitles.AddRange(subFolder.CondensedTitles);  }
+
+				pathFromFileSource = subFolder.pathFromFileSource;
+				}
+			}
+
 
 
 		// Group: Properties

@@ -45,6 +45,7 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 			}
 
 		/* Function: CompareMembers
+		 * The function used for sorting members.
 		 */
 		static protected int CompareMembers (Base.Entry a, Base.Entry b)
 			{
@@ -67,6 +68,33 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 			}
 
 
+		/* Function: Condense
+		 * 
+		 * An overridable function to handle condensing unnecessary levels into this one.  By default this will not alter the
+		 * menu itself, but it will call Condense() on any subcontainers in case they implement it.
+		 * 
+		 * A simple way to implement this function is to call <CondenseContainersInMembers()> first, check to see if you
+		 * have only one container as a member, and then implement the logic to combine them if so.
+		 */
+		public virtual void Condense ()
+			{
+			CondenseContainersInMembers();
+			}
+
+
+		/* Function: CondenseContainersInMembers
+		 * Goes through the members of this container and calls <Condense()> on each one that is also a container.
+		 */
+		protected void CondenseContainersInMembers ()
+			{
+			foreach (Base.Entry member in members)
+				{
+				if (member is Base.Container)
+					{  (member as Base.Container).Condense();  }
+				}
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -75,19 +103,23 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 		 * The list of members this entry contains.  The entire list may be replaced with another one, which is
 		 * useful when merging containers.
 		 */
-		public IList<Base.Entry> Members
+		public List<Base.Entry> Members
 			{  
 			get
 				{  return members;  }
+			set
+				{  members = value;  }
 			}
 
 		/* Property: CondensedTitles
 		 * If another container was condensed into this one, this will be a list of their titles.  Otherwise null.
 		 */
-		public IList<string> CondensedTitles
+		public List<string> CondensedTitles
 			{
 			get
 				{  return condensedTitles;  }
+			set
+				{  condensedTitles = value;  }
 			}
 
 

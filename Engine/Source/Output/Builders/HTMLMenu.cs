@@ -457,18 +457,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				else
 					{
-					output.Append('[');
+					output.Append("[\"");
+					output.StringEscapeAndAppend(menuEntry.Title.ToHTML());
+					output.Append('"');
 
 					foreach (string condensedTitle in menuEntry.CondensedTitles)
 						{
-						output.Append('"');
+						output.Append(",\"");
 						output.StringEscapeAndAppend(condensedTitle.ToHTML());
-						output.Append("\",");
+						output.Append('"');
 						}
 
-					output.Append('"');
-					output.StringEscapeAndAppend(menuEntry.Title.ToHTML());
-					output.Append("\"]");
+					output.Append(']');
 					}
 
 
