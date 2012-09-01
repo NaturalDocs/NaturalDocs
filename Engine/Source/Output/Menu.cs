@@ -6,10 +6,11 @@
  * 
  * Usage:
  * 
- *		- Add all <Files.FileSources> with <AddFileSource()>.  This must be done before adding files with <AddFile()>.
- *		- Add all <Files.Files> with <AddFile()>.
- *		- If desired, condense unnecessary folder levels with <Condense()>.
- *		- If desired, sort the members with <Sort()>.
+ *		- Add all file sources with <AddFileSource()>.  This must be done before adding files with <AddFile()>.
+ *		- Add all files with <AddFile()>.
+ *		- If desired, condense unnecessary folder levels with <Condense()>.  You cannot add more entries after calling
+ *		  this.
+ *		- Sort the members with <Sort()>.
  *		
  */
 
@@ -26,24 +27,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 	{
 	public class Menu
 		{
-
-		//// Group: Types
-		//// __________________________________________________________________________
-
-		///* Enum: ForEachMethod
-		// * 
-		// * The ways to traverse the menu with <ForEach()>.
-		// * 
-		// * Linear - ForEach will walk through the menu as if it were displaying a fully expanded tree line by
-		// *					line.  The parent will be done, then all its children, then back to the parent's next sibling.
-		// * ChildrenFirst - ForEach will walk through all children before performing the action on any parent, which
-		// *							  allows things like output generation where the parent's output depends on the children's
-		// *							  output being already made.
-		// */
-		//public enum ForEachMethod : byte
-		//   {  Linear, ChildrenFirst  }
-
-
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -129,7 +112,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 
 		/* Function: AddFile
-		 * Adds a <Files.File> to the tree.  Its corresponding <File.FileSource> must have been added with <AddFileSource()>
+		 * Adds a file to the tree.  Its corresponding file source must have been added with <AddFileSource()>
 		 * before calling this function.
 		 */
 		public void AddFile (Files.File file)
@@ -221,85 +204,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 			}
 
 
-		///* Function: Condense
-		// * Condenses unnecessary folder levels, turning "FolderA" and "FolderB" into "FolderA/FolderB" if A contains nothing
-		// * other than B.  Will also remove file source entries that do not have content.
-		// */
-		//public void Condense ()
-		//   {
-		//   int fileSourceIndex = 0;
-		//   while (fileSourceIndex < rootFolder.Members.Count)
-		//      {
-		//      FileMenuEntries.FileSource fileSourceEntry = (FileMenuEntries.FileSource)rootFolder.Members[fileSourceIndex];
-
-		//      if (fileSourceEntry.Members.Count == 0)
-		//         {  rootFolder.Members.RemoveAt(fileSourceIndex);  }
-		//      else
-		//         {
-		//         for (int i = 0; i < fileSourceEntry.Members.Count; i++)
-		//            {
-		//            var member = fileSourceEntry.Members[i];
-
-		//            if (member is FileMenuEntries.Folder)
-		//               {  
-		//               var replacement = CondenseFolder((FileMenuEntries.Folder)member);
-
-		//               if (replacement != null)
-		//                  {  
-		//                  replacement.Parent = fileSourceEntry;
-		//                  fileSourceEntry.Members[i] = replacement;  
-		//                  }
-		//               }
-		//            }
-
-		//         if (fileSourceEntry.Members.Count == 1 && fileSourceEntry.Members[0] is FileMenuEntries.Folder)
-		//            {  
-		//            fileSourceEntry.PathFragment = (fileSourceEntry.Members[0] as FileMenuEntries.Folder).PathFragment;
-		//            fileSourceEntry.Members = (fileSourceEntry.Members[0] as FileMenuEntries.Folder).Members;  
-
-		//            foreach (var member in fileSourceEntry.Members)
-		//               {  member.Parent = fileSourceEntry;  }
-		//            }
-
-		//         fileSourceIndex++;
-		//         }
-		//      }
-		//   }
-
-		///* Function: CondenseFolder
-		// * A support function for <Condense()>, this first tries to recursively condense any subfolders in the passed entry, 
-		// * and then if it itself needs to be condensed it will return the entry it should be replaced with.  If the entry should 
-		// * stay in the menu it will return null.
-		// */
-		//protected FileMenuEntries.Folder CondenseFolder (FileMenuEntries.Folder folderEntry)
-		//   {
-		//   for (int i = 0; i < folderEntry.Members.Count; i++)
-		//      {
-		//      var member = folderEntry.Members[i];
-
-		//      if (member is FileMenuEntries.Folder)
-		//         {  
-		//         var replacement = CondenseFolder((FileMenuEntries.Folder)member);
-
-		//         if (replacement != null)
-		//            {  
-		//            replacement.Parent = folderEntry;
-		//            folderEntry.Members[i] = replacement;  
-		//            }
-		//         }
-		//      }
-
-		//   if (folderEntry.Members.Count == 1 && folderEntry.Members[0] is FileMenuEntries.Folder)
-		//      {
-		//      var member = (FileMenuEntries.Folder)folderEntry.Members[0];
-		//      member.PathFragment = folderEntry.PathFragment + "/" + member.PathFragment;
-		//      return member;
-		//      }
-		//   else
-		//      {  return null;  }
-		//   }
-
-
 		/* Function: Sort
 		 * Sorts the menu entries.  Should only be done after everything is added to the menu.
 		 */
@@ -307,36 +211,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   {
 		   rootFileMenu.Sort();
 		   }
-
-
-		///* Function: ForEach
-		// * Performs an action on every element in the menu.
-		// */
-		//public void ForEach (Action<FileMenuEntries.Entry> action, ForEachMethod method = ForEachMethod.Linear)
-		//   {
-		//   ForEach(action, method, rootFolder);
-		//   }
-
-		///* Function: ForEach
-		// * A recursive helper function for the public ForEach function.
-		// */
-		//protected void ForEach (Action<FileMenuEntries.Entry> action, ForEachMethod method, 
-		//                                 FileMenuEntries.Container container)
-		//   {
-		//   if (method == ForEachMethod.Linear)
-		//      {  action(container);  }
-
-		//   foreach (var member in container.Members)
-		//      {
-		//      if (member is FileMenuEntries.Container)
-		//         {  ForEach(action, method, (FileMenuEntries.Container)member);  }
-		//      else
-		//         {  action(member);  }
-		//      }
-
-		//   if (method == ForEachMethod.ChildrenFirst)
-		//      {  action(container);  }
-		//   }
 
 
 
