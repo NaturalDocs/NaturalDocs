@@ -1369,7 +1369,7 @@ function NDMenuHashPath (type, hashPath)
 
 						if (typeof member[`Entry_Members] == "string")	
 							{
-							container = NDMenu.MenuSection(container[`Entry_Members]);
+							container = NDMenu.MenuSection(member[`Entry_Members]);
 
 							if (container === undefined)
 								{
