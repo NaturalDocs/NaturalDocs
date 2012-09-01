@@ -65,21 +65,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (RootFileMenu != null)
 				{  
 				GenerateJSON(RootFileMenu);
-
-
-				// Assign the root the first files ID.
-
-				IDObjects.NumberSet numberSet = new IDObjects.NumberSet();
-				numberSet.Add(1);
-
-				outputFiles.Add("files", numberSet);
-
-				(RootFileMenu.ExtraData as ContainerEntryExtraData).DataFileName = htmlBuilder.Menu_DataFileNameOnly("files", 1);
-
-
-				// Segment and build.
-
-				SegmentMenu(RootFileMenu, "files", outputFiles);
+				SegmentMenu(RootFileMenu, "files", ref outputFiles);
 				BuildOutput(RootFileMenu);
 				}
 
@@ -181,9 +167,111 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Segments the menu into smaller pieces and generates data file names.
 		 */
 		protected void SegmentMenu (MenuEntries.Base.Container container, string dataFileType, 
-																  StringTable<IDObjects.NumberSet> usedDataFiles)
+															  ref StringTable<IDObjects.NumberSet> usedDataFiles)
 			{
-			// xxx
+			// Generate the data file name for this container.
+
+			IDObjects.NumberSet usedDataFileNumbers = usedDataFiles[dataFileType];
+
+			if (usedDataFileNumbers == null)
+				{
+				usedDataFileNumbers = new IDObjects.NumberSet();
+				usedDataFiles.Add(dataFileType, usedDataFileNumbers);
+				}
+			
+			int dataFileNumber = usedDataFileNumbers.LowestAvailable;
+			usedDataFileNumbers.Add(dataFileNumber);
+
+			ContainerEntryExtraData extraData = (ContainerEntryExtraData)container.ExtraData;
+			extraData.DataFileName = htmlBuilder.Menu_DataFileNameOnly(dataFileType, dataFileNumber);
+
+
+			// The data file has to include all the members in this container no matter what.
+
+			int containerJSONSize = extraData.JSONBeforeMembers.Length + extraData.JSONAfterMembers.Length + 
+														extraData.JSONLengthOfMembers;
+
+			List<MenuEntries.Base.Container> subContainers = null;
+
+			foreach (var member in container.Members)
+				{
+				if (member is MenuEntries.Base.Container)
+					{
+					if (subContainers == null)
+						{  subContainers = new List<MenuEntries.Base.Container>();  }
+
+					subContainers.Add((MenuEntries.Base.Container)member);
+					}
+				}
+
+
+			// Now start including the contents of subcontainers until we reach the size limit.  We're going breadth-first instead of
+			// depth first.
+
+			List<MenuEntries.Base.Container> nextSubContainers = null;
+
+			for (;;)
+				{
+				if (subContainers == null || subContainers.Count == 0)
+					{
+					if (nextSubContainers == null || nextSubContainers.Count == 0)
+						{  break;  }
+					else
+						{
+						subContainers = nextSubContainers;
+						nextSubContainers = null;
+						}
+					}
+
+				// Add subcontainers to the file in the order from smallest to largest.  This prevents one very large container early
+				// in the list from causing all the other ones to be broken out into separate files.
+				// DEPENDENCY: ContainerEntryExtraData.JSONLengthOfMembers must cache its value for this algorithm to be efficient.
+
+				int smallestSubContainerIndex = 0;
+				int smallestSubContainerSize = (subContainers[0].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers;
+
+				for (int i = 1; i < subContainers.Count; i++)
+					{
+					if ((subContainers[i].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers < smallestSubContainerSize)
+						{
+						smallestSubContainerIndex = i;
+						smallestSubContainerSize = (subContainers[i].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers;
+						}
+					}
+
+				containerJSONSize += smallestSubContainerSize;
+
+				if (containerJSONSize > SegmentLength)
+					{  break;  }
+
+				foreach (var member in subContainers[smallestSubContainerIndex].Members)
+					{
+					if (member is MenuEntries.Base.Container)
+						{
+						if (nextSubContainers == null)
+							{  nextSubContainers = new List<MenuEntries.Base.Container>();  }
+
+						nextSubContainers.Add((MenuEntries.Base.Container)member);
+						}
+					}
+
+				subContainers.RemoveAt(smallestSubContainerIndex);
+				}
+
+
+			// Now recurse through any remaining subcontainers so they get their own files.
+
+			if (subContainers != null)
+				{
+				foreach (var subContainer in subContainers)
+					{  SegmentMenu(subContainer, dataFileType, ref usedDataFiles);  }
+				}
+
+			if (nextSubContainers != null)
+				{
+				foreach (var subContainer in nextSubContainers)
+					{  SegmentMenu(subContainer, dataFileType, ref usedDataFiles);  }
+				}
 			}
 
 
@@ -314,6 +402,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected int IndentSpaces = 3;
 
+		/* const: SegmentLength
+		 * The amount of data to try to fit in each JSON file before splitting it off into another one.  This will be
+		 * artificially low in debug builds to better test the loading mechanism.
+		 */
+		#if DEBUG
+			protected const int SegmentLength = 1024*3;
+		#else
+			protected const int SegmentLength = 1024*32;
+		#endif
 
 
 
@@ -423,6 +520,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				this.menuEntry = menuEntry;
 				this.jsonBeforeMembers = null;
 				this.jsonAfterMembers = null;
+				this.jsonLengthOfMembers = -1;
 				this.dataFileName = null;
 				this.hashPath = null;
 				}
@@ -570,6 +668,39 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  return jsonAfterMembers;  }
 				}
 
+			/* Property: JSONLengthOfMembers
+			 * The calculated total JSON length of all members stored directly in this container.  It does NOT recurse into deeper
+			 * containers.
+			 */
+			public int JSONLengthOfMembers
+				{
+				get
+					{
+					// DEPENDENCY: HTMLMenu.SegmentMenu expects this value to only be calculated once despite repeated calls for 
+					// its algorithm to be efficient.
+
+					if (jsonLengthOfMembers != -1)
+						{  return jsonLengthOfMembers;  }
+
+					jsonLengthOfMembers = 0;
+
+					foreach (var member in menuEntry.Members)
+						{
+						if (member is MenuEntries.Base.Target)
+							{
+							jsonLengthOfMembers += (member.ExtraData as TargetEntryExtraData).JSON.Length;
+							}
+						else // container
+							{
+							ContainerEntryExtraData extraData = (ContainerEntryExtraData)member.ExtraData;
+							jsonLengthOfMembers += extraData.JSONBeforeMembers.Length + extraData.JSONAfterMembers.Length;
+							}
+						}
+
+					return jsonLengthOfMembers;
+					}
+				}
+
 			/* Property: HashPath
 			 * The hash path of the container, or null if none.  This will only be available after <GenerateJSON()> is called.
 			 */
@@ -598,6 +729,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			 * The generated JSON for this entry, after the point where its members would be inserted.
 			 */
 			protected string jsonAfterMembers;
+
+			/* var: jsonLengthOfMembers
+			 * The calculated total JSON length of all members directly stored in this container, or -1 if it hasn't been
+			 * calculated yet.  It does NOT recurse into deeper levels.
+			 */
+			protected int jsonLengthOfMembers;
 
 			/* var: dataFileName
 			 * If this container starts a new data file this will be its file name, such as "files2.js" or "classes.js".  It will
