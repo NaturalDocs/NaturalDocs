@@ -91,7 +91,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			for (int i = 0; i < tabContainers.Count; i++)
 				{
-				ContainerEntryExtraData extraData = (ContainerEntryExtraData)tabContainers[i].ExtraData;
+				ContainerExtraData extraData = (ContainerExtraData)tabContainers[i].ExtraData;
 
 				#if DONT_SHRINK_FILES
 					tabInformation.Append(' ', IndentSpaces);
@@ -141,7 +141,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void GenerateJSON (MenuEntries.Base.Container container)
 			{
-			ContainerEntryExtraData containerExtraData = new ContainerEntryExtraData(container);
+			ContainerExtraData containerExtraData = new ContainerExtraData(container);
 			container.ExtraData = containerExtraData;
 
 			containerExtraData.GenerateJSON(htmlBuilder, this);
@@ -150,7 +150,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				if (member is MenuEntries.Base.Target)
 					{
-					TargetEntryExtraData targetExtraData = new TargetEntryExtraData((MenuEntries.Base.Target)member);
+					TargetExtraData targetExtraData = new TargetExtraData((MenuEntries.Base.Target)member);
 					member.ExtraData = targetExtraData;
 
 					targetExtraData.GenerateJSON(htmlBuilder, this);
@@ -182,7 +182,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			int dataFileNumber = usedDataFileNumbers.LowestAvailable;
 			usedDataFileNumbers.Add(dataFileNumber);
 
-			ContainerEntryExtraData extraData = (ContainerEntryExtraData)container.ExtraData;
+			ContainerExtraData extraData = (ContainerExtraData)container.ExtraData;
 			extraData.DataFileName = htmlBuilder.Menu_DataFileNameOnly(dataFileType, dataFileNumber);
 
 
@@ -225,17 +225,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				// Add subcontainers to the file in the order from smallest to largest.  This prevents one very large container early
 				// in the list from causing all the other ones to be broken out into separate files.
-				// DEPENDENCY: ContainerEntryExtraData.JSONLengthOfMembers must cache its value for this algorithm to be efficient.
+				// DEPENDENCY: ContainerExtraData.JSONLengthOfMembers must cache its value for this algorithm to be efficient.
 
 				int smallestSubContainerIndex = 0;
-				int smallestSubContainerSize = (subContainers[0].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers;
+				int smallestSubContainerSize = (subContainers[0].ExtraData as ContainerExtraData).JSONLengthOfMembers;
 
 				for (int i = 1; i < subContainers.Count; i++)
 					{
-					if ((subContainers[i].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers < smallestSubContainerSize)
+					if ((subContainers[i].ExtraData as ContainerExtraData).JSONLengthOfMembers < smallestSubContainerSize)
 						{
 						smallestSubContainerIndex = i;
-						smallestSubContainerSize = (subContainers[i].ExtraData as ContainerEntryExtraData).JSONLengthOfMembers;
+						smallestSubContainerSize = (subContainers[i].ExtraData as ContainerExtraData).JSONLengthOfMembers;
 						}
 					}
 
@@ -276,13 +276,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: BuildOutput
-		 * Generates the output file for the container.  It must have <ContainerEntryExtraData.DataFileName> set.  If it finds
+		 * Generates the output file for the container.  It must have <ContainerExtraData.DataFileName> set.  If it finds
 		 * any sub-containers that also have that set, it will recursively generate files for them as well.
 		 */
 		protected void BuildOutput (MenuEntries.Base.Container container)
 			{
 			#if DEBUG
-			if (container.ExtraData == null || (container.ExtraData as ContainerEntryExtraData).StartsNewDataFile == false)
+			if (container.ExtraData == null || (container.ExtraData as ContainerExtraData).StartsNewDataFile == false)
 				{  throw new Exception ("BuildOutput() can only be called on containers with DataFileName set.");  }
 			#endif
 
@@ -292,7 +292,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			while (containersToBuild.Count > 0)
 				{
 				MenuEntries.Base.Container containerToBuild = containersToBuild.Pop();
-				string fileName = (containerToBuild.ExtraData as ContainerEntryExtraData).DataFileName;
+				string fileName = (containerToBuild.ExtraData as ContainerExtraData).DataFileName;
 				
 				StringBuilder output = new StringBuilder();
 				output.Append("NDMenu.OnSectionLoaded(\"");
@@ -334,12 +334,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (member is MenuEntries.Base.Target)
 					{
-					TargetEntryExtraData targetExtraData = (TargetEntryExtraData)member.ExtraData;
+					TargetExtraData targetExtraData = (TargetExtraData)member.ExtraData;
 					output.Append(targetExtraData.JSON);
 					}
 				else if (member is MenuEntries.Base.Container)
 					{
-					ContainerEntryExtraData containerExtraData = (ContainerEntryExtraData)member.ExtraData;
+					ContainerExtraData containerExtraData = (ContainerExtraData)member.ExtraData;
 					output.Append(containerExtraData.JSONBeforeMembers);
 
 					if (containerExtraData.StartsNewDataFile)
@@ -416,22 +416,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.TargetEntryExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.TargetExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <HTMLMenu> in each menu entry via the 
 		 * ExtraData property.
 		 * 
 		 */
-		private class TargetEntryExtraData
+		private class TargetExtraData
 			{
 
 			// Group: Functions
 			// _________________________________________________________________________
 
-			/* Function: TargetEntryExtraData
+			/* Function: TargetExtraData
 			 */
-			public TargetEntryExtraData (MenuEntries.Base.Target menuEntry)
+			public TargetExtraData (MenuEntries.Base.Target menuEntry)
 				{
 				this.menuEntry = menuEntry;
 				this.json = null;
@@ -502,20 +502,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.ContainerEntryExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.ContainerExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <HTMLMenu> in each menu entry via the 
 		 * ExtraData property.
 		 * 
 		 */
-		private class ContainerEntryExtraData
+		private class ContainerExtraData
 			{
 
 			// Group: Functions
 			// _________________________________________________________________________
 
-			public ContainerEntryExtraData (MenuEntries.Base.Container menuEntry)
+			public ContainerExtraData (MenuEntries.Base.Container menuEntry)
 				{
 				this.menuEntry = menuEntry;
 				this.jsonBeforeMembers = null;
@@ -688,11 +688,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{
 						if (member is MenuEntries.Base.Target)
 							{
-							jsonLengthOfMembers += (member.ExtraData as TargetEntryExtraData).JSON.Length;
+							jsonLengthOfMembers += (member.ExtraData as TargetExtraData).JSON.Length;
 							}
 						else // container
 							{
-							ContainerEntryExtraData extraData = (ContainerEntryExtraData)member.ExtraData;
+							ContainerExtraData extraData = (ContainerExtraData)member.ExtraData;
 							jsonLengthOfMembers += extraData.JSONBeforeMembers.Length + extraData.JSONAfterMembers.Length;
 							}
 						}
