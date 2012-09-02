@@ -589,7 +589,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (menuEntry is MenuEntries.File.FileSource)
 					{
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)menuEntry;
-					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number );
+					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number,
+																															  fileSourceEntry.CondensedPathFromFileSource );
 					}
 				else if (menuEntry is MenuEntries.File.Folder)
 					{
@@ -608,7 +609,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					MenuEntries.File.Folder folderEntry = (MenuEntries.File.Folder)menuEntry;
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)container;
 
-					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, folderEntry.PathFromFileSource );
+					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, 
+																															  folderEntry.PathFromFileSource );
 					}
 				else if (menuEntry == menu.RootFileMenu)
 					{
