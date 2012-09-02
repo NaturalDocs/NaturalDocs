@@ -139,8 +139,8 @@ var NDMenu = new function ()
 
 
 		// Replace with this line to simulate latency:
-		// setTimeout("NDCore.LoadJavaScript(\"menu/xxxtabs.js\", \"NDMenuTabsLoader\");", 1500);
-		NDCore.LoadJavaScript("menu/xxxtabs.js", "NDMenuTabsLoader");
+		// setTimeout("NDCore.LoadJavaScript(\"menu/tabs.js\", \"NDMenuTabsLoader\");", 1500);
+		NDCore.LoadJavaScript("menu/tabs.js", "NDMenuTabsLoader");
 		};
 
 

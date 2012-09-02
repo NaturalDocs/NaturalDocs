@@ -57,6 +57,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public StringTable<IDObjects.NumberSet> Build ()
 			{
+			try
+				{  
+				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
+				System.IO.Directory.CreateDirectory(htmlBuilder.Menu_DataFolder);  
+				}
+			catch
+				{
+				throw new Exceptions.UserFriendly( 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", htmlBuilder.Menu_DataFolder) 
+					);
+				}
+
 
 			// Build menu files
 

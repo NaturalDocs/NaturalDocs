@@ -503,7 +503,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 
-				if (System.IO.Directory.Exists(FileMenu_OutputFolder))
+				if (System.IO.Directory.Exists(Menu_DataFolder))
 					{  
 					if (!saidPurgingOutputFiles)
 						{
@@ -512,7 +512,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 					try
-						{  System.IO.Directory.Delete(FileMenu_OutputFolder, true);  }
+						{  System.IO.Directory.Delete(Menu_DataFolder, true);  }
 					catch (Exception e)
 						{
 						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -814,7 +814,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildFileMenu(cancelDelegate);
+						BuildMenu(cancelDelegate);
 
 						Monitor.Enter(writeLock);
 						haveLock = true;
