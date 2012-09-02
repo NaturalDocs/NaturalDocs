@@ -576,8 +576,7 @@ var NDMenu = new function ()
 				this.menuSections[i].ready = true;
 
 				// We don't need the loader anymore.
-				var domLoader = document.getElementById(this.menuSections[i].domLoaderID);
-				domLoader.parentNode.removeChild(domLoader);
+				NDCore.RemoveScriptElement(this.menuSections[i].domLoaderID);
 
 				break;
 				}
@@ -618,8 +617,7 @@ var NDMenu = new function ()
 		{
 		this.tabs = tabs;
 
-		var tabsLoader = document.getElementById("NDMenuTabsLoader");
-		tabsLoader.parentNode.removeChild(tabsLoader);
+		NDCore.RemoveScriptElement("NDMenuTabsLoader");
 
 		var tabBar = document.getElementById("MTabBar");
 

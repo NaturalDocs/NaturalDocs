@@ -161,7 +161,7 @@ var NDCore = new function ()
 
 	/* Function: LoadJavaScript
 		Dynamically adds a script tag to the document head which loads the JavaScript file at the path.  If desired you
-		can give it an ID so you can remove the tag later.
+		can give it an ID so you can remove the tag with <RemoveScriptElement()> later.
 	*/
 	this.LoadJavaScript = function (path, id)
 		{
@@ -175,6 +175,37 @@ var NDCore = new function ()
 		// This intentionally does not return the script element.  In IE8 the data file's callback may fire before this function
 		// returns, thus whatever was going to store the script element may be undefined when other code doesn't expect
 		// it to be.  Instead you need to use the ID parameter which will always work.
+		};
+
+
+	/* Function: RemoveScriptElement
+		Removes a script element from the document using the passed ID.  This incorporates some browser-specific logic
+		so it is better to use this function instead of doing it manually.
+	*/
+	this.RemoveScriptElement = function (id)
+		{
+		var script = document.getElementById(id);
+
+		if (this.IEVersion() == 6)
+			{  
+			// Remove the node on a delay so IE6 doesn't crash.  I'm guessing the reason this crashes is that if you remove
+			// the node from its callback function, you're removing the script while it's still executing.  All other browsers
+			// handle this fine though, including IE7+.
+
+			// This actually causes a race condition because you're assuming you won't try to load another script with the 
+			// same ID before this fires.  However, this isn't likely to happen in my code and IE6 is on its way out, so I'm 
+			// willing to live with this.  I'm not going to move mountains to continue to support IE6.  As long as you don't
+			// reuse the same ID from its callback function you should be fine.
+
+			// You might think that this also causes a race condition in that you're assuming the callback function will return 
+			// before this fires.  It doesn't simply because JavaScript executes as a single thread, so even if the timeout expires
+			// before the callback is done the event handler still has to wait for all scripts to complete before it can execute.
+			// I tested this with IE6 and it's why it's safe to use a timeout of 1.
+
+			setTimeout(function () { script.parentNode.removeChild(script); }, 1);
+			}
+		else
+			{  script.parentNode.removeChild(script);  }
 		};
 
 
