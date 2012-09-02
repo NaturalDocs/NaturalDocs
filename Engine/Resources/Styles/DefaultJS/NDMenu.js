@@ -554,7 +554,7 @@ var NDMenu = new function ()
 			file: file,
 			contents: undefined,
 			ready: false
-			}
+			};
 
 		this.menuSections.push(entry);
 
