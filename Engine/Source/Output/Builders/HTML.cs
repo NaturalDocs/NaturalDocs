@@ -1341,7 +1341,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					fileIDsToBuild = binaryFile.ReadNumberSet();
 					fileIDsWithContent = binaryFile.ReadNumberSet();
-					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
+					foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.IgnoreCaseInPaths, false);
 
 					// [String: Data File Type] [NumberSet: Data File Numbers]
 					// [String: Data File Type] [NumberSet: Data File Numbers]
@@ -1409,7 +1409,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				binaryFile.WriteNumberSet(fileIDsToBuild);
 				binaryFile.WriteNumberSet(fileIDsWithContent);
-				binaryFile.WriteObject(foldersToCheckForDeletion);
+				binaryFile.WriteStringSet(foldersToCheckForDeletion);
 
 				// [String: Data File Type] [NumberSet: Data File Numbers]
 				// [String: Data File Type] [NumberSet: Data File Numbers]

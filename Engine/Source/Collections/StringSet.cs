@@ -7,7 +7,6 @@
  * 
  * - It supports case sensitivity and Unicode normalization flags.
  * - It has a constructor that allows you to initialize it with an array of strings.
- * - Supports <IBinaryFileObject>.
  * 
  */
 
@@ -22,7 +21,7 @@ using System.Collections.Generic;
 
 namespace GregValure.NaturalDocs.Engine.Collections
 	{
-	public class StringSet : System.Collections.Generic.HashSet<string>, IBinaryFileObject
+	public class StringSet : System.Collections.Generic.HashSet<string>
 		{
 
 		// Group: Functions
@@ -49,18 +48,6 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			
 			foreach (string member in members)
 				{  Add(member);  }
-			}
-			
-			
-		/* Function: StringSet
-		 * Creates a set and reads the members from the passed <BinaryFile>.
-		 */
-		public StringSet (bool ignoreCase, bool normalizeUnicode, BinaryFile binaryFile)
-			{
-			this.ignoreCase = ignoreCase;
-			this.normalizeUnicode = normalizeUnicode;
-			
-			FromBinaryFile(binaryFile);
 			}
 			
 			
@@ -172,9 +159,9 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: FromBinaryFile
 		 * Reads the contents of the string set from the passed binary file.
 		 */
-		public void FromBinaryFile (BinaryFile binaryFile)
+		static public StringSet FromBinaryFile (BinaryFile binaryFile, bool ignoreCase, bool normalizeUnicode)
 			{
-			Clear();
+			StringSet stringSet = new StringSet(ignoreCase, normalizeUnicode);
 
 			// [String: member]
 			// [String: member]
@@ -182,7 +169,9 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			// [String: null]
 
 			for (string member = binaryFile.ReadString(); member != null; member = binaryFile.ReadString())
-			   {  Add(member);  }
+			   {  stringSet.Add(member);  }
+
+			return stringSet;
 			}
 
 
@@ -215,6 +204,37 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 * Whether the set uses Unicode normalization.
 		 */
 		protected bool normalizeUnicode;
-			
+
 		}
+			
+
+
+
+
+	/* ___________________________________________________________________________
+	 * 
+	 * Class: GregValure.NaturalDocs.Engine.Collections.StringSet_BinaryFileExtensions
+	 * ___________________________________________________________________________
+	 * 
+	 */
+	public static class StringSet_BinaryFileExtensions
+		{
+		/* Function: ReadStringSet
+		 * An extension method to <BinaryFile> which reads a string set from it.  Call with 
+		 * "stringSet = binaryFile.ReadStringSet(ignoreCase, normalizeUnicode);"
+		 */
+		static public StringSet ReadStringSet (this BinaryFile binaryFile, bool ignoreCase, bool normalizeUnicode)
+			{
+			return StringSet.FromBinaryFile(binaryFile, ignoreCase, normalizeUnicode);
+			}
+
+		/* Function: WriteStringSet
+		 * An extension method to <BinaryFile> which writes the string set to it.  Call with "binaryFile.WriteStringSet(stringSet);"
+		 */
+		static public void WriteStringSet (this BinaryFile binaryFile, StringSet stringSet)
+			{
+			stringSet.ToBinaryFile(binaryFile);
+			}
+		}
+
 	}
