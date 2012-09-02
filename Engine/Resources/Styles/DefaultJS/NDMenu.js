@@ -553,12 +553,13 @@ var NDMenu = new function ()
 		var entry = {
 			file: file,
 			contents: undefined,
-			ready: false
+			ready: false,
+			domLoaderID: "NDMenuLoader_" + file.replace(/[^a-z0-9]/gi, "_")
 			};
 
 		this.menuSections.push(entry);
 
-		entry.domLoader = NDCore.LoadJavaScript("menu/" + file);
+		NDCore.LoadJavaScript("menu/" + file, entry.domLoaderID);
 		};
 
 
@@ -575,8 +576,8 @@ var NDMenu = new function ()
 				this.menuSections[i].ready = true;
 
 				// We don't need the loader anymore.
-				this.menuSections[i].domLoader.parentNode.removeChild(this.menuSections[i].domLoader);
-				this.menuSections[i].domLoader = undefined;
+				var domLoader = document.getElementById(this.menuSections[i].domLoaderID);
+				domLoader.parentNode.removeChild(domLoader);
 
 				break;
 				}
@@ -890,8 +891,8 @@ var NDMenu = new function ()
 		True if the data has been loaded and is ready to use.  False if the data has been requested but is not ready 
 		yet.  If the data has not been requested it simply would not have a NDMenuSection object for it.
 
-		var: domLoader
-		A reference to the DOM script object that's loading this file.
+		var: domLoaderID
+		The ID of the DOM script object that's loading this file.
 
 */
 

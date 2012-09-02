@@ -160,8 +160,8 @@ var NDCore = new function ()
 
 
 	/* Function: LoadJavaScript
-		Dynamically adds a script tag to the document head which loads the JavaScript file at the path.  If desired you can give
-		it an ID so you can remove the tag later.  Returns a reference to the DOM object.
+		Dynamically adds a script tag to the document head which loads the JavaScript file at the path.  If desired you
+		can give it an ID so you can remove the tag later.
 	*/
 	this.LoadJavaScript = function (path, id)
 		{
@@ -172,7 +172,9 @@ var NDCore = new function ()
 
 		document.getElementsByTagName("head")[0].appendChild(script);
 
-		return script;
+		// This intentionally does not return the script element.  In IE8 the data file's callback may fire before this function
+		// returns, thus whatever was going to store the script element may be undefined when other code doesn't expect
+		// it to be.  Instead you need to use the ID parameter which will always work.
 		};
 
 
