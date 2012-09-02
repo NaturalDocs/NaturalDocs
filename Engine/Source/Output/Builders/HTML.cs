@@ -91,6 +91,7 @@ using System.Threading;
 using GregValure.NaturalDocs.Engine.Files;
 
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.IDObjects;
 using GregValure.NaturalDocs.Engine.Output.Styles;
 
 
@@ -1338,8 +1339,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// [NumberSet: Source File IDs with Content]
 					// [StringSet: Folders to Check for Deletion]
 
-					fileIDsToBuild = new IDObjects.NumberSet(binaryFile);
-					fileIDsWithContent = new IDObjects.NumberSet(binaryFile);
+					fileIDsToBuild = binaryFile.ReadNumberSet();
+					fileIDsWithContent = binaryFile.ReadNumberSet();
 					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
 
 					// [String: Data File Type] [NumberSet: Data File Numbers]
@@ -1352,7 +1353,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					while (dataFileType != null)
 						{
-						IDObjects.NumberSet dataFileNumbers = new IDObjects.NumberSet(binaryFile);
+						IDObjects.NumberSet dataFileNumbers = binaryFile.ReadNumberSet();
 						usedDataFiles.Add(dataFileType, dataFileNumbers);
 
 						dataFileType = binaryFile.ReadString();
@@ -1406,8 +1407,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// [NumberSet: Source File IDs with Content]
 				// [StringSet: Folders to Check for Deletion]
 
-				binaryFile.WriteObject(fileIDsToBuild);
-				binaryFile.WriteObject(fileIDsWithContent);
+				binaryFile.WriteNumberSet(fileIDsToBuild);
+				binaryFile.WriteNumberSet(fileIDsWithContent);
 				binaryFile.WriteObject(foldersToCheckForDeletion);
 
 				// [String: Data File Type] [NumberSet: Data File Numbers]
@@ -1418,7 +1419,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				foreach (var dataFilePair in usedDataFiles)
 					{
 					binaryFile.WriteString(dataFilePair.Key);
-					dataFilePair.Value.ToBinaryFile(binaryFile);
+					binaryFile.WriteNumberSet(dataFilePair.Value);
 					}
 
 				binaryFile.WriteString(null);

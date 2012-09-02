@@ -106,6 +106,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves various system variables from the database.  This currently includes:
 		 * 
 		 *		- <UsedTopicIDs>
+		 *		- <UsedLinkIDs>
 		 *		- <UsedContextIDs>
 		 */
 		protected void LoadSystemVariables ()
@@ -114,9 +115,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				query.Step();
 				
-				usedTopicIDs.FromString( query.StringColumn(0) );
-				usedLinkIDs.FromString( query.StringColumn(1) );
-				usedContextIDs.FromString( query.StringColumn(2) );
+				usedTopicIDs = IDObjects.NumberSet.FromString( query.StringColumn(0) );
+				usedLinkIDs = IDObjects.NumberSet.FromString( query.StringColumn(1) );
+				usedContextIDs = IDObjects.NumberSet.FromString( query.StringColumn(2) );
 				}
 			}
 			

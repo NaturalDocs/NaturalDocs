@@ -633,10 +633,7 @@ namespace GregValure.NaturalDocs.Engine
 					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
 				#endif
 
-				if (tags != null)
-					{  tags.FromString(value);  }
-				else if (!String.IsNullOrEmpty(value) && value != IDObjects.NumberSet.EmptySetString)
-					{  tags = new IDObjects.NumberSet(value);  }
+				tags = IDObjects.NumberSet.FromString(value);
 				}
 			}
 			
