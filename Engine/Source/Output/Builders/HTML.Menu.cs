@@ -206,29 +206,39 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			StringTable<IDObjects.NumberSet> usedFileNames = newMenu.Build();
+			StringTable<IDObjects.NumberSet> newMenuDataFiles = newMenu.Build();
 
 
 			// Clear out any old menu files that are no longer in use.
 
-			foreach (int oldID in fileMenuRootFolderIDs)
+			lock (writeLock)
 				{
-				if (fileMenu.RootFolderIDs.Contains(oldID) == false)
+				foreach (var usedMenuDataFileInfo in usedMenuDataFiles)
 					{
-					try
-						{  System.IO.File.Delete(FileMenu_DataFile(oldID));  }
-					catch (Exception e)
+					string type = usedMenuDataFileInfo.Key;
+					IDObjects.NumberSet oldNumbers = usedMenuDataFileInfo.Value;
+					IDObjects.NumberSet newNumbers = newMenuDataFiles[type];
+
+					if (newNumbers != null)
+						{  
+						// It's okay that we're altering the original NumberSet, we're throwing it out later.
+						oldNumbers.Remove(newNumbers);  
+						}
+
+					foreach (int oldNumber in oldNumbers)
 						{
-						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-							{  throw;  }
+						try
+							{  System.IO.File.Delete(Menu_DataFile(type, oldNumber));  }
+						catch (Exception e)
+							{
+							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+								{  throw;  }
+							}
 						}
 					}
+
+				usedMenuDataFiles = newMenuDataFiles;
 				}
-
-			fileMenuRootFolderIDs.Duplicate(fileMenu.RootFolderIDs);
-
-			// xxx clear out unused data files in new menu
-
 			}
 
 

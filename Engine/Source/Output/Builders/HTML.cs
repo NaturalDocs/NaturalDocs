@@ -62,9 +62,16 @@
  *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
  *		to completion this should be an empty set.
  * 
- *		> [NumberSet: File Menu Root Folder IDs]
+ *		> [String: Data File Type] [NumberSet: Data File Numbers]
+ *		> [String: Data File Type] [NumberSet: Data File Numbers]
+ *		> ...
+ *		> [String: null]
  *		
- *		The IDs used building the file menu.  This allows us to clean up old JS data files if we're using less than before.
+ *		A list of the data files that were created to build the menu, stored as string-NumberSet pairs that repeats until there
+ *		is a null string.  This allows us to clean up old data files if we're using fewer than before.
+ *		
+ *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
+ *		stored as "files" and {1-3}.
  *		
  */
 
@@ -149,7 +156,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			config = configEntry;
 			styles = null;
-			fileMenuRootFolderIDs = null;
+			usedMenuDataFiles = null;
 
 			fileTopicTypeID = -1;
 			nonCodeTopicTypeIDs = new IDObjects.NumberSet();
@@ -242,14 +249,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
 																										 out sourceFilesToRebuild, out sourceFilesWithContent, 
-																										 out foldersToCheckForDeletion, out fileMenuRootFolderIDs);
+																										 out foldersToCheckForDeletion, out usedMenuDataFiles);
 				}
 			else
 				{
 				sourceFilesToRebuild = new IDObjects.NumberSet();
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
-				fileMenuRootFolderIDs = new IDObjects.NumberSet();
+				usedMenuDataFiles = new StringTable<IDObjects.NumberSet>(false, false);
 				}
 
 			if (!hasBinaryBuildStateFile)
@@ -632,7 +639,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			try
 				{
 				SaveBinaryBuildStateFile( config.OutputWorkingDataFolder + "/BuildState.nd", sourceFilesToRebuild, sourceFilesWithContent,
-																  foldersToCheckForDeletion, fileMenuRootFolderIDs );
+																  foldersToCheckForDeletion, usedMenuDataFiles );
 				}
 			catch 
 				{  }
@@ -1311,12 +1318,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static bool LoadBinaryBuildStateFile (Path filename, out IDObjects.NumberSet fileIDsToBuild, 
 																					 out IDObjects.NumberSet fileIDsWithContent, out StringSet foldersToCheckForDeletion,
-																					 out IDObjects.NumberSet fileMenuRootFolderIDs)
+																					 out StringTable<IDObjects.NumberSet> usedDataFiles)
 			{
 			fileIDsToBuild = null;
 			fileIDsWithContent = null;
 			foldersToCheckForDeletion = null;
-			fileMenuRootFolderIDs = null;
+			usedDataFiles = null;
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -1330,12 +1337,26 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [StringSet: Folders to Check for Deletion]
-					// [NumberSet: File Menu Root Folder IDs]
 
 					fileIDsToBuild = new IDObjects.NumberSet(binaryFile);
 					fileIDsWithContent = new IDObjects.NumberSet(binaryFile);
 					foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false, binaryFile);
-					fileMenuRootFolderIDs = new IDObjects.NumberSet(binaryFile);
+
+					// [String: Data File Type] [NumberSet: Data File Numbers]
+					// [String: Data File Type] [NumberSet: Data File Numbers]
+					// ...
+					// [String: null]
+
+					usedDataFiles = new StringTable<IDObjects.NumberSet>(false, false);
+					string dataFileType = binaryFile.ReadString();
+
+					while (dataFileType != null)
+						{
+						IDObjects.NumberSet dataFileNumbers = new IDObjects.NumberSet(binaryFile);
+						usedDataFiles.Add(dataFileType, dataFileNumbers);
+
+						dataFileType = binaryFile.ReadString();
+						}
 					}
 				}
 			catch
@@ -1360,10 +1381,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				else
 					{  foldersToCheckForDeletion.Clear();  }
 
-				if (fileMenuRootFolderIDs == null)
-					{  fileMenuRootFolderIDs = new IDObjects.NumberSet();  }
+				if (usedDataFiles == null)
+					{  usedDataFiles = new StringTable<IDObjects.NumberSet>(false, false);  }
 				else
-					{  fileMenuRootFolderIDs.Clear();  }
+					{  usedDataFiles.Clear();  }
 				}
 
 			return result;
@@ -1375,7 +1396,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		public static void SaveBinaryBuildStateFile (Path filename, IDObjects.NumberSet fileIDsToBuild, 
 																							IDObjects.NumberSet fileIDsWithContent, StringSet foldersToCheckForDeletion,
-																							IDObjects.NumberSet fileMenuRootFolderIDs)
+																							StringTable<IDObjects.NumberSet> usedDataFiles)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -1384,12 +1405,23 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [StringSet: Folders to Check for Deletion]
-				// [NumberSet: File Menu Root Folder IDs]
 
 				binaryFile.WriteObject(fileIDsToBuild);
 				binaryFile.WriteObject(fileIDsWithContent);
 				binaryFile.WriteObject(foldersToCheckForDeletion);
-				binaryFile.WriteObject(fileMenuRootFolderIDs);
+
+				// [String: Data File Type] [NumberSet: Data File Numbers]
+				// [String: Data File Type] [NumberSet: Data File Numbers]
+				// ...
+				// [String: null]
+
+				foreach (var dataFilePair in usedDataFiles)
+					{
+					binaryFile.WriteString(dataFilePair.Key);
+					dataFilePair.Value.ToBinaryFile(binaryFile);
+					}
+
+				binaryFile.WriteString(null);
 				}
 			}
 
@@ -1584,10 +1616,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected List<Styles.HTMLStyle> styles;
 
-		/* var: fileMenuRootFolderIDs
-		 * The IDs used by the <FileMenu> to build <files.js>.
+		/* var: usedMenuDataFiles
+		 * The data files created the last time the menu was built.  It maps strings like "files" and "classes" to NumberSets,
+		 * so files.js, files2.js, and files3.js would map to "files" and {1-3}.
 		 */
-		protected IDObjects.NumberSet fileMenuRootFolderIDs;
+		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
 
 		/* var: fileTopicTypeID
 		 * A reference to the <TopicType> ID of the "file" keyword, or -1 if it isn't defined.
