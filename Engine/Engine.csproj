@@ -101,7 +101,6 @@
     <Compile Include="Source\NDMarkup\Exceptions\InvalidTag.cs" />
     <Compile Include="Source\NDMarkup\Exceptions\InvalidMarkup.cs" />
     <Compile Include="Source\NDMarkup\Iterator.cs" />
-    <Compile Include="Source\IBinaryFileObject.cs" />
     <Compile Include="Source\Delegates.cs" />
     <Compile Include="Source\Errors\Error.cs" />
     <Compile Include="Source\Errors\ErrorList.cs" />

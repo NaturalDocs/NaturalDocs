@@ -9,7 +9,6 @@
  * 
  *		- Handles the header and version string.
  *		- Allows null strings to be written.  Never returns empty strings, only nulls.
- *		- Allows arbitrary objects to be read/written with <IBinaryFileObject>.
  * 
  * 
  * Topic: File Format
@@ -174,7 +173,6 @@ namespace GregValure.NaturalDocs.Engine
 				}
 			}
 			
-			
 
 		/* Functions: Reading Functions
 		 * Returns the specified type from a binary file open for reading.
@@ -189,8 +187,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * ReadInt64 - Reads a signed 64-bit integer.
 		 * ReadUInt64 - Reads an unsigned 64-bit integer.
 		 * ReadString - Reads a string.  Returns null for empty strings.
-		 * ReadObject - Reads an object that supports <IBinaryFileObject>.  The object must already exist, 
-		 *							  this function just replaces its contents with the one from the file.
 		 */
 		public sbyte ReadInt8()
 			{  return fileReader.ReadSByte();  }
@@ -222,14 +218,6 @@ namespace GregValure.NaturalDocs.Engine
 			return result;
 			}
 
-		public void ReadObject (ref IBinaryFileObject target)
-			{
-			if (target == null)
-				{  throw new ArgumentException();  }
-
-			target.FromBinaryFile(this);
-			}
-
 
 		/* Functions: Writing Functions
 		 * Writes the specified type to a binary file open for writing.
@@ -244,7 +232,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * WriteInt64 - Writes a signed 64-bit integer.
 		 * WriteUInt64 - Writes an unsigned 64-bit integer.
 		 * WriteString - Writes a string.  Empty strings are encoded as nulls.
-		 * WriteObject - Writes an object that supports <IBinaryFileObject>.
 		 */
 		public void WriteInt8 (sbyte value)
 			{  fileWriter.Write(value);  }
@@ -272,11 +259,6 @@ namespace GregValure.NaturalDocs.Engine
 				{  value = "";  }
 				
 			fileWriter.Write(value);  
-			}
-
-		public void WriteObject (IBinaryFileObject value)
-			{
-			value.ToBinaryFile(this);
 			}
 
 
