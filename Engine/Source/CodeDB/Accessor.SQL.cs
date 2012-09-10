@@ -131,8 +131,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					if (!ignoreContexts)
 						{
-						contextIDCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
-						contextIDCache.Add(topic.BodyContextID, topic.BodyContext);
+						contextIDLookupCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
+						contextIDLookupCache.Add(topic.BodyContextID, topic.BodyContext);
 						}
 
 					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
@@ -843,7 +843,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					link.LinkID = linkID;
 
-					contextIDCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.ContextID, link.Context);
 					}
 				}
 			
@@ -891,7 +891,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.ContextID, link.Context);
 					}
 				}
 			
@@ -956,7 +956,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.ContextID, link.Context);
 					}
 				}
 			
@@ -1006,7 +1006,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.ContextID, link.Context);
 					}
 				}
 
@@ -1060,7 +1060,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 						links.Add(link);
 
-						contextIDCache.Add(link.ContextID, link.Context);
+						contextIDLookupCache.Add(link.ContextID, link.Context);
 						}
 					}
 				}
@@ -1529,10 +1529,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Fill in the Topic.
 
 			if (topic.PrototypeContextID == 0)
-				{  topic.PrototypeContextID = contextIDCache[topic.PrototypeContext].ID;  }
+				{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
 
 			if (topic.BodyContextID == 0)
-				{  topic.BodyContextID = contextIDCache[topic.BodyContext].ID;  }
+				{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
 			}
 
 
@@ -1585,10 +1585,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			foreach (Topic topic in topics)
 				{
 				if (topic.PrototypeContextID == 0)
-					{  topic.PrototypeContextID = contextIDCache[topic.PrototypeContext].ID;  }
+					{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
 
 				if (topic.BodyContextID == 0)
-					{  topic.BodyContextID = contextIDCache[topic.BodyContext].ID;  }
+					{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
 				}
 			}
 
@@ -1615,13 +1615,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			CacheOrCreateContextIDs(link.Context);
 
-			link.ContextID = contextIDCache[link.Context].ID;
+			link.ContextID = contextIDLookupCache[link.Context];
 			}
 
 
 		/* Function: CacheOrCreateContextIDs
 		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDCache>.  If they don't exist in the 
+		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in the 
 		 * database they will be created.
 		 * 
 		 * If the collection you pass in doesn't support null strings you can set plusNullContext to true and it will be included.
@@ -1634,7 +1634,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings, bool plusNullContext = false)
 			{
-			// Remember that contextIDCache is local to the accessor and doesn't need any locking.
+			// Remember that contextIDLookupCache is local to the accessor and doesn't need any locking.
 			// ContextReferenceCache is part of CodeDB.Manager and requires a database lock.
 
 			RequireAtLeast(LockType.ReadPossibleWrite);
@@ -1643,25 +1643,25 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Create a list of all contextStrings not already in the cache.  Since it's possible that they'll all be in the cache we
 			// create the list object on demand.
 
-			List<string> uncachedContextStrings = null;
+			List<ContextString> uncachedContextStrings = null;
 
-			foreach (string contextString in contextStrings)
+			foreach (var contextString in contextStrings)
 				{
-				if (contextIDCache.Contains(contextString) == false)
+				if (contextIDLookupCache.Contains(contextString) == false)
 					{
 					if (contextString == null)
 						{  plusNullContext = true;  }
 					else
 						{  
 						if (uncachedContextStrings == null)
-							{  uncachedContextStrings = new List<string>();  }
+							{  uncachedContextStrings = new List<ContextString>();  }
 
 						uncachedContextStrings.Add(contextString);  
 						}
 					}
 				}
 
-			if (plusNullContext && contextIDCache.Contains(null))
+			if (plusNullContext && contextIDLookupCache.Contains(null))
 				{  plusNullContext = false;  }
 
 
@@ -1679,6 +1679,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (uncachedContextStrings != null)
 				{
+				queryParams = new string[uncachedContextStrings.Count];
+
 				for (int i = 0; i < uncachedContextStrings.Count; i++)
 					{
 					if (!firstWhere)
@@ -1686,9 +1688,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					queryText.Append(" ContextString=?");
 					firstWhere = false;
-					}
 
-				queryParams = uncachedContextStrings.ToArray();
+					queryParams[i] = uncachedContextStrings[i].ToString();
+					}
 				}
 
 			if (plusNullContext)
@@ -1707,7 +1709,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																										 connection.Query(queryText.ToString(), queryParams) ))
 				{
 			   while (query.Step())
-			      {  contextIDCache.Add( query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)) );  }
+			      {  contextIDLookupCache.Add( query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)) );  }
 			   }
 
 
@@ -1718,7 +1720,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				int i = 0;
 				while (i < uncachedContextStrings.Count)
 					{
-					if (contextIDCache.Contains(uncachedContextStrings[i]))
+					if (contextIDLookupCache.Contains(uncachedContextStrings[i]))
 						{  uncachedContextStrings.RemoveAt(i);  }
 					else
 						{  i++;  }
@@ -1728,7 +1730,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{  uncachedContextStrings = null;  }
 				}
 
-			if (plusNullContext && contextIDCache.Contains(null))
+			if (plusNullContext && contextIDLookupCache.Contains(null))
 				{  plusNullContext = false;  }
 
 
@@ -1758,7 +1760,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					query.Reset(true);
 
 					Engine.Instance.CodeDB.UsedContextIDs.Add(id);
-					contextIDCache.Add(id, new ContextString());
+					contextIDLookupCache.Add(id, new ContextString());
 
 					Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, new ContextString(), 0);
 					}
@@ -1774,7 +1776,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						query.Reset(true);
 
 						Engine.Instance.CodeDB.UsedContextIDs.Add(id);
-						contextIDCache.Add(id, ContextString.FromExportedString(contextString));
+						contextIDLookupCache.Add(id, ContextString.FromExportedString(contextString));
 
 						Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, ContextString.FromExportedString(contextString), 0);
 						}
@@ -1787,8 +1789,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 		/* Function: CacheOrCreateContextIDs
 		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDCache>.  If they don't exist in the 
-		 * database they will be created.
+		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in
+		 * the database they will be created.
 		 * 
 		 * Requirements:
 		 * 

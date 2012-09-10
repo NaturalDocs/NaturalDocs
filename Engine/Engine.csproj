@@ -45,7 +45,6 @@
     <Compile Include="Source\BinaryFile.cs" />
     <Compile Include="Source\CodeDB\Accessor.cs" />
     <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
-    <Compile Include="Source\CodeDB\ContextIDCache.cs" />
     <Compile Include="Source\CodeDB\ContextReferenceCache.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.SQL.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="Source\CodeDB\Exceptions\FieldMustBeZero.cs" />
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
+    <Compile Include="Source\CodeDB\IDLookupCache.cs" />
     <Compile Include="Source\Links\UnresolvedTargetTopicID.cs" />
     <Compile Include="Source\CodeDB\Lock.cs" />
     <Compile Include="Source\CodeDB\Manager.cs" />

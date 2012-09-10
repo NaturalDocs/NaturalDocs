@@ -73,7 +73,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			transactionLevel = 0;
-			contextIDCache = new ContextIDCache();
+			contextIDLookupCache = new IDLookupCache<Symbols.ContextString>();
 			}
 			
 			
@@ -180,7 +180,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			
 			// No longer valid because another accessor may change the values while we don't hold a lock.
-			contextIDCache.Clear();
+			contextIDLookupCache.Clear();
 			}
 
 			
@@ -305,12 +305,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected int transactionLevel;
 
-		/* var: contextIDCache
+		/* var: contextIDLookupCache
 		 * A cache mapping contexts to their IDs.  This is useful because contexts are going to be reused many times
 		 * throughout a file and this way we don't have to hit the database for each individual Topic added.  This is only
 		 * valid while we have a database lock so it's cleared automatically by <ReleaseLock()>.
 		 */
-		protected ContextIDCache contextIDCache;
+		protected IDLookupCache<Symbols.ContextString> contextIDLookupCache;
 
 		}
 	}
