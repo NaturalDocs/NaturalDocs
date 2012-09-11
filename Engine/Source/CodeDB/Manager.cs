@@ -87,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			linksToResolve = new IDObjects.NumberSet();
 			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet>();
-			contextReferenceCache = new ContextReferenceCache();
+			contextIDReferenceChangeCache = new ReferenceChangeCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
 			reparsingEverything = false;
@@ -232,7 +232,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				linksToResolve.Clear();
 				newTopicsByEndingSymbol.Clear();
-				contextReferenceCache.Clear();
+				contextIDReferenceChangeCache.Clear();
 				
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
 
@@ -253,19 +253,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
-			FlushContextReferenceCache(cancelDelegate);
+			FlushContextIDReferenceChangeCache(cancelDelegate);
 			}
 
 
-		/* Function: FlushContextReferenceCache
-		 * Applies any changes waiting in <ContextReferenceCache> to the database.
+		/* Function: FlushContextIDReferenceChangeCache
+		 * Applies any changes waiting in <ContextIDReferenceChangeCache> to the database.
 		 */
-		protected void FlushContextReferenceCache (CancelDelegate cancelDelegate)
+		protected void FlushContextIDReferenceChangeCache (CancelDelegate cancelDelegate)
 			{
 			using (Accessor accessor = GetAccessor())
 				{
 				accessor.GetReadPossibleWriteLock();
-				accessor.FlushContextReferenceCache(cancelDelegate);
+				accessor.FlushContextIDReferenceChangeCache(cancelDelegate);
 				accessor.ReleaseLock();
 				}
 			}
@@ -1217,13 +1217,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return newTopicsByEndingSymbol;  }
 			}
 
-		/* Property: ContextReferenceCache
+		/* Property: ContextIDReferenceChangeCache
 		 * A cache of all the reference count changes to <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
 		 */
-		internal ContextReferenceCache ContextReferenceCache
+		internal ReferenceChangeCache ContextIDReferenceChangeCache
 			{
 			get
-				{  return contextReferenceCache;  }
+				{  return contextIDReferenceChangeCache;  }
 			}
 			
 			
@@ -1289,10 +1289,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> newTopicsByEndingSymbol;
 
-		/* var: contextReferenceCache
+		/* var: contextIDReferenceChangeCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Contexts>.
 		 */
-		protected ContextReferenceCache contextReferenceCache;
+		protected ReferenceChangeCache contextIDReferenceChangeCache;
 		
 		/* var: changeWatchers
 		 * A list of objects that are watching the database for changes.  If there are none, the list will be empty

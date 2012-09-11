@@ -322,8 +322,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			newTopicsForEndingSymbol.Add(topic.TopicID);
 
-			codeDB.ContextReferenceCache.AddReference(topic.PrototypeContextID, topic.PrototypeContext);
-			codeDB.ContextReferenceCache.AddReference(topic.BodyContextID, topic.BodyContext);
+			codeDB.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
+			codeDB.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
 
 			CommitTransaction();
 			
@@ -404,12 +404,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
 				{
-				var referenceCache = Engine.Instance.CodeDB.ContextReferenceCache;
+				var referenceCache = Engine.Instance.CodeDB.ContextIDReferenceChangeCache;
 
-				referenceCache.RemoveReference(oldTopic.PrototypeContextID, oldTopic.PrototypeContext);
-				referenceCache.RemoveReference(oldTopic.BodyContextID, oldTopic.BodyContext);
-				referenceCache.AddReference(newTopic.PrototypeContextID, newTopic.PrototypeContext);
-				referenceCache.AddReference(newTopic.BodyContextID, newTopic.BodyContext);
+				referenceCache.RemoveReference(oldTopic.PrototypeContextID);
+				referenceCache.RemoveReference(oldTopic.BodyContextID);
+				referenceCache.AddReference(newTopic.PrototypeContextID);
+				referenceCache.AddReference(newTopic.BodyContextID);
 				}
 
 			CommitTransaction();
@@ -556,8 +556,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (newTopicsForEndingSymbol != null)
 				{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
-			codeDB.ContextReferenceCache.RemoveReference(topic.PrototypeContextID, topic.PrototypeContext);
-			codeDB.ContextReferenceCache.RemoveReference(topic.BodyContextID, topic.BodyContext);
+			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
+			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
 
 			CommitTransaction();
 			}
@@ -1160,7 +1160,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			codeDB.UsedLinkIDs.Add(link.LinkID);
 			codeDB.LinksToResolve.Add(link.LinkID);
-			codeDB.ContextReferenceCache.AddReference(link.ContextID, link.Context);
+			codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
 
 			if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
 				{
@@ -1265,7 +1265,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			codeDB.UsedLinkIDs.Remove(link.LinkID);
 			codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
-			codeDB.ContextReferenceCache.RemoveReference(link.ContextID, link.Context);
+			codeDB.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
@@ -1635,7 +1635,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings, bool plusNullContext = false)
 			{
 			// Remember that contextIDLookupCache is local to the accessor and doesn't need any locking.
-			// ContextReferenceCache is part of CodeDB.Manager and requires a database lock.
+			// ContextIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
 
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
@@ -1742,8 +1742,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create anything we still need.
 
-			// DEPENDENCY: FlushContextReferenceCache() assumes *every* newly created context ID will have an entry in 
-			// CodeDB.ContextReferenceCache with database references set to zero.
+			// DEPENDENCY: FlushContextIDReferenceChangeCache() assumes *every* newly created context ID will have an 
+			// entry in CodeDB.ContextIDReferenceChangeCache with database references set to zero.
 
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
@@ -1762,7 +1762,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					Engine.Instance.CodeDB.UsedContextIDs.Add(id);
 					contextIDLookupCache.Add(id, new ContextString());
 
-					Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, new ContextString(), 0);
+					Engine.Instance.CodeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 					}
 
 				if (uncachedContextStrings != null)
@@ -1778,7 +1778,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						Engine.Instance.CodeDB.UsedContextIDs.Add(id);
 						contextIDLookupCache.Add(id, ContextString.FromExportedString(contextString));
 
-						Engine.Instance.CodeDB.ContextReferenceCache.SetDatabaseReferences(id, ContextString.FromExportedString(contextString), 0);
+						Engine.Instance.CodeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 						}
 					}
 				}
@@ -1802,33 +1802,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
-		/* Function: FlushContextReferenceCache
+		/* Function: FlushContextIDReferenceChangeCache
 		 * 
-		 * Applies anything waiting in <CodeDB.Manager.ContextReferenceCache> to the database.
+		 * Applies anything waiting in <CodeDB.Manager.ContextIDReferenceChangeCache> to the database.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If the database needs to be updated it will be upgraded automatically.
 		 */
-		public void FlushContextReferenceCache (CancelDelegate cancelled)
+		public void FlushContextIDReferenceChangeCache (CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			ContextReferenceCache cache = Instance.CodeDB.ContextReferenceCache;
+			ReferenceChangeCache cache = Instance.CodeDB.ContextIDReferenceChangeCache;
 
 
 			// Figure out which IDs we need to get database counts for.
 
 			// DEPENDENCY:
 			//
-			// - This assumes CacheOrCreateContextIDs() will create an entry in CodeDB.ContextReferenceCache for *every* newly
-			//   created context ID with the database reference count set to zero.
+			// - This assumes CacheOrCreateContextIDs() will create an entry in CodeDB.ContextIDReferenceChangeCache for *every*
+			//    newly created context ID with the database reference count set to zero.
 			//
 			// - This also assumes that this function deletes every context ID record with zero references from the database, and
-			//   the zero reference entry in ContextReferenceCache will exist until then.
+			//   the zero reference entry in ContextIDReferenceChangeCache will exist until then.
 			//
 			// - Therefore, we can assume that there will be no zero reference records in the database that aren't also represented
-			//   in ContextReferenceCache with a known database reference count of zero.
+			//   in ContextIDReferenceChangeCache with a known database reference count of zero.
 			//
 			// - Therefore, any cache entry with an unknown number of database references has a non-zero number in the database.
 			//
@@ -1838,9 +1838,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			IDObjects.NumberSet idsToLookup = new IDObjects.NumberSet();
 
-			foreach (ContextReferenceCacheEntry cacheEntry in cache)
+			foreach (var cacheEntry in cache)
 				{
-				if (cacheEntry.DatabaseCountKnown == false && cacheEntry.Change != 0)
+				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
 				}
 
@@ -1849,7 +1849,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			if (idsToLookup.IsEmpty == false)
 				{
-				StringBuilder queryText = new StringBuilder("SELECT ContextID, ContextString, ReferenceCount FROM Contexts WHERE ");
+				StringBuilder queryText = new StringBuilder("SELECT ContextID, ReferenceCount FROM Contexts WHERE ");
 				List<object> queryParams = new List<object>();
 
 				AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToLookup, queryText, queryParams);
@@ -1857,16 +1857,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (cancelled())
 					{  return;  }
 			
-				// ContextReferenceCache is governed by the same lock as the database, so we need read/write to change it even
-				// though we're not changing records yet.
+				// ContextIDReferenceChangeCache is governed by the same lock as the database, so we need read/write to change it 
+				// even though we're not changing records yet.
 				RequireAtLeast(LockType.ReadWrite);
 
 				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
 					{
 					while (query.Step())
 						{
-						cache.SetDatabaseReferences(query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)),
-																				query.IntColumn(2));
+						cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
 
 						if (cancelled())
 							{  return;  }
@@ -1888,38 +1887,39 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			using (SQLite.Query updateQuery = connection.Query("UPDATE Contexts SET ReferenceCount=? WHERE ContextID=?"))
 				{
-				foreach (ContextReferenceCacheEntry cacheEntry in cache)
+				foreach (var cacheEntry in cache)
 					{
 					// Sanity checks
 					#if DEBUG
-					if (cacheEntry.DatabaseCountKnown == false && cacheEntry.Change != 0)
+					if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 						{  
-						throw new Exception("ContextReferenceCache entry " + cacheEntry.ID + ", \"" + cacheEntry.String + 
-																"\" not properly filled in before flushing.");  
+						throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
+															  " was not properly filled in before flushing.");  
 						}
-					if (cacheEntry.DatabaseCountKnown == true && cacheEntry.DatabaseCount + cacheEntry.Change < 0)
+					if (cacheEntry.DatabaseReferenceCountKnown == true && 
+						 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
 						{  
-						throw new Exception("ContextReferenceCache entry " + cacheEntry.ID + ", \"" + cacheEntry.String +
-																"\" led to a negative reference count.");  
+						throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
+															  " led to a negative reference count.");  
 						}
 					#endif
 
-					if (cacheEntry.DatabaseCountKnown)
+					if (cacheEntry.DatabaseReferenceCountKnown)
 						{
-						if (cacheEntry.DatabaseCount + cacheEntry.Change == 0)
+						if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
 							{
 							idsToDelete.Add(cacheEntry.ID);
 							}
-						else if (cacheEntry.Change != 0)
+						else if (cacheEntry.ReferenceChange != 0)
 							{
-							updateQuery.BindValues(cacheEntry.DatabaseCount + cacheEntry.Change, cacheEntry.ID);
+							updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
 							updateQuery.Step();
 							updateQuery.Reset(true);
 
 							// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
 							// can't remove the entry from the set while we're iterating through it.
-							cacheEntry.DatabaseCount += cacheEntry.Change;
-							cacheEntry.Change = 0;
+							cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
+							cacheEntry.ReferenceChange = 0;
 							}
 
 						if (cancelled())
