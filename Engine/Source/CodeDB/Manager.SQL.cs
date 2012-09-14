@@ -80,6 +80,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)");
 
 
+			connection.Execute("CREATE TABLE Classes (ClassID INTEGER PRIMARY KEY NOT NULL, " +
+																							"Hierarchy INTEGER NOT NULL, " +
+																							"LanguageID INTEGER NOT NULL, " +
+																							"Symbol TEXT NOT NULL, " +
+																							"ReferenceCount INTEGER NOT NULL )");
+																	   
+			connection.Execute("CREATE INDEX ClassesByHierarchyAndSymbol ON Classes (Hierarchy, Symbol)");
+
+
 			connection.Execute("CREATE TABLE Contexts (ContextID INTEGER PRIMARY KEY NOT NULL, " +
 																							  "ContextString TEXT, " +
 																							  "ReferenceCount INTEGER NOT NULL )");

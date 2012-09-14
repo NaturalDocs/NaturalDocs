@@ -1,0 +1,90 @@
+﻿
+Database Table: CodeDB.Classes
+_______________________________________________________________________________
+
+The table that contains all of the classes used by <Topics>.  The Classes table also represents other hierarchies
+such as databases.
+
+
+
+Group: Columns
+_______________________________________________________________________________
+
+
+Column: ClassID
+
+	(SQL Prototype)
+		ClassID INTEGER PRIMARY KEY NOT NULL
+	(end)
+	
+	The class identifier.
+
+
+Column: Hierarchy
+
+	(SQL Prototype)
+		Hierarchy INTEGER NOT NULL
+	(end)
+
+	Which hierarchy the class belongs to.  It will be one of these values, which match the values of
+	<Engine.Symbols.ClassString.HierarchyType>:
+
+	1 - Classes
+	2 - Database
+
+
+Column: LanguageID
+
+	(SQL Prototype)
+		LanguageID INTEGER NOT NULL
+	(end)
+
+	The identifier of the language the class appears in, or zero if it's not relevant to the <Hierarchy>.
+	
+	
+Column: Symbol
+
+	(SQL Prototype)
+		Symbol TEXT NOT NULL
+	(end)
+	
+	The symbol, encoded with <Engine.Symbols.SymbolString>.  Note that this is NOT encoded with
+	<Engine.Symbols.ClassString>, as that combines it with the hierarchy and language ID.
+
+
+Column: ReferenceCount
+
+	(SQL Prototype)
+		ReferenceCount INTEGER NOT NULL
+	(end)
+
+	The number of times this class is used.
+
+
+
+Group: Indexes
+_______________________________________________________________________________
+
+
+Index: ClassesByID
+
+	(SQL Prototype)
+		ClassID INTEGER PRIMARY KEY NOT NULL
+	(end)
+
+	Automatically created by ClassID being defined as a primary key.
+
+
+Index: ClassesByHierarchyAndSymbol
+
+	(SQL Prototype)
+		CREATE INDEX ClassesByHierarchyAndSymbol ON Classes (Hierarchy, Symbol)
+	(end)
+
+	The values are in this order because:
+
+	- Building the menu will just need all classes by hierarchy and nothing else.
+	- Looking up a class ID will require hierarchy, symbol, and language ID.  However, there will only
+	   occasionally be the same symbol defined in multiple languages, and even then there wouldn't
+		be many entries for it.
+	- Language ID also isn't relevant if you're specifically looking up a database entry.
