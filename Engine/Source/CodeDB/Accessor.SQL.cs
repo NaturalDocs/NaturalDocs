@@ -1845,6 +1845,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
+			// We have to do this before filling in the cache because ContextIDReferenceChangeCache is governed by the same lock 
+			// as the database, so we need read/write to change it even though we're not changing actual records yet.
+
+			RequireAtLeast(LockType.ReadWrite);
+
+
 			// Fill in the cache.
 
 			if (idsToLookup.IsEmpty == false)
@@ -1857,10 +1863,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (cancelled())
 					{  return;  }
 			
-				// ContextIDReferenceChangeCache is governed by the same lock as the database, so we need read/write to change it 
-				// even though we're not changing records yet.
-				RequireAtLeast(LockType.ReadWrite);
-
 				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
 					{
 					while (query.Step())
