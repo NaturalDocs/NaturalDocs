@@ -73,6 +73,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			this.priority = priority;
 			transactionLevel = 0;
+
+			classIDLookupCache = new IDLookupCache<Symbols.ClassString>();
 			contextIDLookupCache = new IDLookupCache<Symbols.ContextString>();
 			}
 			
@@ -180,6 +182,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			lockHeld = LockType.None;
 			
 			// No longer valid because another accessor may change the values while we don't hold a lock.
+			classIDLookupCache.Clear();
 			contextIDLookupCache.Clear();
 			}
 
@@ -304,6 +307,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * How many nested transactions we are in, or zero if none.  If -1, the transaction was broken with an exception.
 		 */
 		protected int transactionLevel;
+
+		/* var: classIDLookupCache
+		 * A cache mapping <Symbols.ClassStrings> to their IDs.  This is useful because ClassStrings are going to be reused 
+		 * many times throughout a file and this way we don't have to hit the database for each individual Topic added.  This 
+		 * is only valid while we have a database lock so it's cleared automatically by <ReleaseLock()>.
+		 */
+		protected IDLookupCache<Symbols.ClassString> classIDLookupCache;
 
 		/* var: contextIDLookupCache
 		 * A cache mapping contexts to their IDs.  This is useful because contexts are going to be reused many times

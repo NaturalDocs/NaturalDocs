@@ -25,13 +25,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			connection.Execute("CREATE TABLE System (Version TEXT NOT NULL, " +
 																							"UsedTopicIDs TEXT NOT NULL, " +
 																							"UsedLinkIDs TEXT NOT NULL, " +
+																							"UsedClassIDs TEXT NOT NULL, " +
 																							"UsedContextIDs TEXT NOT NULL )");
 			
-			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedLinkIDs, UsedContextIDs) VALUES (?,?,?,?)", 
-										Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString,
-										IDObjects.NumberSet.EmptySetString);
+			connection.Execute("INSERT INTO System (Version, UsedTopicIDs, UsedLinkIDs, UsedClassIDs, UsedContextIDs) VALUES (?,?,?,?,?)", 
+												Engine.Instance.VersionString, IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString,
+												IDObjects.NumberSet.EmptySetString, IDObjects.NumberSet.EmptySetString);
 			usedTopicIDs.Clear();
 			usedLinkIDs.Clear();
+			usedClassIDs.Clear();
 			usedContextIDs.Clear();
 			
 			
@@ -116,17 +118,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- <UsedTopicIDs>
 		 *		- <UsedLinkIDs>
+		 *		- <UsedClassIDs>
 		 *		- <UsedContextIDs>
 		 */
 		protected void LoadSystemVariables ()
 			{
-			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedLinkIDs, UsedContextIDs from System"))
+			using (SQLite.Query query = connection.Query("SELECT UsedTopicIDs, UsedLinkIDs, UsedClassIDs, UsedContextIDs from System"))
 				{
 				query.Step();
 				
 				usedTopicIDs = IDObjects.NumberSet.FromString( query.StringColumn(0) );
 				usedLinkIDs = IDObjects.NumberSet.FromString( query.StringColumn(1) );
-				usedContextIDs = IDObjects.NumberSet.FromString( query.StringColumn(2) );
+				usedClassIDs = IDObjects.NumberSet.FromString( query.StringColumn(2) );
+				usedContextIDs = IDObjects.NumberSet.FromString( query.StringColumn(3) );
 				}
 			}
 			
@@ -136,8 +140,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void SaveSystemVariablesAndVersion ()
 			{
-			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedLinkIDs=?, UsedContextIDs=?", 
-												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedLinkIDs.ToString(), usedContextIDs.ToString());
+			connection.Execute("UPDATE System SET Version=?, UsedTopicIDs=?, UsedLinkIDs=?, UsedClassIDs=?, UsedContextIDs=?", 
+												Engine.Instance.VersionString, usedTopicIDs.ToString(), usedLinkIDs.ToString(), usedClassIDs.ToString(),
+												usedContextIDs.ToString());
 			}
 			
 		}

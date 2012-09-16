@@ -35,6 +35,16 @@ Column: UsedLinkIDs
 	for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
+Column: UsedClassIDs
+
+	(SQL Prototype)
+		UsedClassIDs TEXT NOT NULL
+	(end)
+
+	A string containing the <Engine.IDObjects.NumberSet> for all the used class IDs in <CodeDB.Classes>.  This is only
+	used for storage between Natural Docs executions.  It is not continually updated during execution.
+	
+	
 Column: UsedContextIDs
 
 	(SQL Prototype)

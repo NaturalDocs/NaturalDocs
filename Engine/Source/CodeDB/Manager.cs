@@ -83,10 +83,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			usedTopicIDs = new IDObjects.NumberSet();
 			usedLinkIDs = new IDObjects.NumberSet();
+			usedClassIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
 
 			linksToResolve = new IDObjects.NumberSet();
 			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet>();
+
+			classIDReferenceChangeCache = new ReferenceChangeCache();
 			contextIDReferenceChangeCache = new ReferenceChangeCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
@@ -228,10 +231,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				usedTopicIDs.Clear();
 				usedLinkIDs.Clear();
+				usedClassIDs.Clear();
 				usedContextIDs.Clear();
 
 				linksToResolve.Clear();
 				newTopicsByEndingSymbol.Clear();
+
+				classIDReferenceChangeCache.Clear();
 				contextIDReferenceChangeCache.Clear();
 				
 				SQLite.API.Result shutdownResult = SQLite.API.ShutDown();
@@ -253,22 +259,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
-			FlushContextIDReferenceChangeCache(cancelDelegate);
-			}
-
-
-		/* Function: FlushContextIDReferenceChangeCache
-		 * Applies any changes waiting in <ContextIDReferenceChangeCache> to the database.
-		 */
-		protected void FlushContextIDReferenceChangeCache (CancelDelegate cancelDelegate)
-			{
 			using (Accessor accessor = GetAccessor())
 				{
 				accessor.GetReadPossibleWriteLock();
+				accessor.FlushClassIDReferenceChangeCache(cancelDelegate);
 				accessor.FlushContextIDReferenceChangeCache(cancelDelegate);
 				accessor.ReleaseLock();
 				}
 			}
+
 
 
 		// Group: Link Functions
@@ -1170,6 +1169,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return usedLinkIDs;  }
 			}
 			
+		/* Property: UsedClassIDs
+		 * An <IDObjects.NumberSet> of all the used class IDs in <CodeDB.Classes>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal IDObjects.NumberSet UsedClassIDs
+			{
+			get
+				{  return usedClassIDs;  }
+			}
+
 		/* Property: UsedContextIDs
 		 * An <IDObjects.NumberSet> of all the used context IDs in <CodeDB.Contexts>.  Its use is governed by <DatabaseLock>.
 		 */
@@ -1215,6 +1223,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{  return newTopicsByEndingSymbol;  }
+			}
+
+		/* Property: ClassIDReferenceChangeCache
+		 * A cache of all the reference count changes to <CodeDB.Classes>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal ReferenceChangeCache ClassIDReferenceChangeCache
+			{
+			get
+				{  return classIDReferenceChangeCache;  }
 			}
 
 		/* Property: ContextIDReferenceChangeCache
@@ -1277,6 +1294,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected IDObjects.NumberSet usedLinkIDs;
 
+		/* var: usedClassIDs
+		 */
+		protected IDObjects.NumberSet usedClassIDs;
+
 		/* var: usedContextIDs
 		 */
 		protected IDObjects.NumberSet usedContextIDs;
@@ -1289,6 +1310,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> newTopicsByEndingSymbol;
 
+		/* var: classIDReferenceChangeCache
+		 * A cache of all the reference count changes to be applied to <CodeDB.Classes>.
+		 */
+		protected ReferenceChangeCache classIDReferenceChangeCache;
+		
 		/* var: contextIDReferenceChangeCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Contexts>.
 		 */

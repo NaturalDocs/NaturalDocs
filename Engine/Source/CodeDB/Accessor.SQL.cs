@@ -1485,6 +1485,303 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 
+		// Group: Class Functions
+		// __________________________________________________________________________
+
+
+		/* Function: CacheOrCreateClassIDs
+		 * 
+		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
+		 * database they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
+		 */
+		protected void CacheOrCreateClassIDs (IEnumerable<ClassString> classStrings)
+			{
+			// Remember that classIDLookupCache is local to the accessor and doesn't need any locking.
+			// ClassIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
+
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			
+			// Create a list of all classStrings not already in the cache.  Since it's possible that they'll all be in the cache we
+			// create the list object on demand.
+
+			List<ClassString> uncachedClassStrings = null;
+
+			foreach (var classString in classStrings)
+				{
+				if (classString != null && classIDLookupCache.Contains(classString) == false)
+					{
+					if (uncachedClassStrings == null)
+						{  uncachedClassStrings = new List<ClassString>();  }
+
+					uncachedClassStrings.Add(classString);  
+					}
+				}
+
+
+			// Can we quit early?
+
+			if (uncachedClassStrings == null)
+				{  return;  }
+
+
+			// Create a query to lookup the uncached classes in the database.  The IDs may already exist there.
+
+			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, Hierachy, LanguageID, Symbol " + 
+																																		 "FROM Classes WHERE");
+			string[] queryParams = new string[uncachedClassStrings.Count];
+
+			for (int i = 0; i < uncachedClassStrings.Count; i++)
+				{
+				if (i != 0)
+					{  queryText.Append(" OR");  }
+
+				queryText.Append(" ClassString=?");
+				queryParams[i] = uncachedClassStrings[i].ToString();
+				}
+
+
+			// Run the query to fill in the cache with whatever already exists in the database.
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
+				{
+			   while (query.Step())
+			      {  
+					ClassString classString = ClassString.FromParameters( (ClassString.HierarchyType)query.IntColumn(1),
+																													 query.IntColumn(2),
+																													 SymbolString.FromExportedString(query.StringColumn(3)) );
+
+					classIDLookupCache.Add( query.IntColumn(0), classString );  
+					}
+			   }
+
+
+			// Pare down our list of uncached class strings.
+
+			int j = 0;  // the compiler complains if we use i
+			while (j < uncachedClassStrings.Count)
+				{
+				if (classIDLookupCache.Contains(uncachedClassStrings[j]))
+					{  uncachedClassStrings.RemoveAt(j);  }
+				else
+					{  j++;  }
+				}
+
+
+			// Can we quit now?
+
+			if (uncachedClassStrings.Count == 0)
+				{  return;  }
+
+
+			// Create anything we still need.
+
+			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an 
+			// entry in CodeDB.ClassIDReferenceChangeCache with database references set to zero.
+
+			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
+
+			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, Hierarchy, LanguageID, Symbol, ReferenceCount) " +
+																								 "VALUES (?, ?, ?, ?, 0)") )
+				{
+				var codeDB = Engine.Instance.CodeDB;
+
+				foreach (var classString in uncachedClassStrings)
+					{
+					int id = codeDB.UsedClassIDs.LowestAvailable;
+
+					query.BindValues(id, (int)classString.Hierarchy, classString.LanguageID, classString.Symbol.ToString());
+					query.Step();
+					query.Reset(true);
+
+					codeDB.UsedClassIDs.Add(id);
+					classIDLookupCache.Add(id, classString);
+
+					codeDB.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+					}
+				}
+
+			CommitTransaction();
+			}
+
+
+		/* Function: FlushClassIDReferenceChangeCache
+		 * 
+		 * Applies anything waiting in <CodeDB.Manager.ClassIDReferenceChangeCache> to the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If the database needs to be updated it will be upgraded automatically.
+		 */
+		public void FlushClassIDReferenceChangeCache (CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			ReferenceChangeCache cache = Instance.CodeDB.ClassIDReferenceChangeCache;
+
+
+			// Figure out which IDs we need to get database counts for.
+
+			// DEPENDENCY:
+			//
+			// - This assumes CacheOrCreateClassIDs() will create an entry in CodeDB.ClassIDReferenceChangeCache for *every*
+			//    newly created class ID with the database reference count set to zero.
+			//
+			// - This also assumes that this function deletes every class ID record with zero references from the database, and
+			//   the zero reference entry in ClassIDReferenceChangeCache will exist until then.
+			//
+			// - Therefore, we can assume that there will be no zero reference records in the database that aren't also represented
+			//   in ClassIDReferenceChangeCache with a known database reference count of zero.
+			//
+			// - Therefore, any cache entry with an unknown number of database references has a non-zero number in the database.
+			//
+			// - Therefore, we can ignore cache entries where the reference count change is zero (equal numbers of references 
+			//   were added and removed) and the database reference count is unknown.  This will not result it any zero reference
+			//   records getting stranded in the database.
+
+			IDObjects.NumberSet idsToLookup = new IDObjects.NumberSet();
+			bool hasChanges = false;
+
+			foreach (var cacheEntry in cache)
+				{
+				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
+					{  idsToLookup.Add(cacheEntry.ID);  }
+
+				// Also see if there are changes in the cache at all, since we can avoid a read/write lock if not.  A ReferenceChange
+				// of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we have to remove.
+				if (cacheEntry.ReferenceChange != 0 || cacheEntry.DatabaseReferenceCount == 0)
+					{  hasChanges = true;  }
+				}
+
+			if (hasChanges == false)
+				{  return;  }
+
+
+			// We have to do this before filling in the cache because ClassIDReferenceChangeCache is governed by the same lock 
+			// as the database, so we need read/write to change it even though we're not changing actual records yet.
+
+			RequireAtLeast(LockType.ReadWrite);
+
+
+			// Fill in the cache.
+
+			if (idsToLookup.IsEmpty == false)
+				{
+				StringBuilder queryText = new StringBuilder("SELECT ClassID, ReferenceCount FROM Classes WHERE ");
+				List<object> queryParams = new List<object>();
+
+				AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToLookup, queryText, queryParams);
+
+				if (cancelled())
+					{  return;  }
+
+				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+					{
+					while (query.Step())
+						{
+						cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
+
+						if (cancelled())
+							{  return;  }
+						}
+					}
+
+				} // if idsToLookup isn't empty
+
+
+			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
+			// second pass.
+			
+			BeginTransaction();
+
+			// Reuse the NumberSet object.
+			IDObjects.NumberSet idsToDelete = idsToLookup;
+			idsToLookup = null;
+			idsToDelete.Clear();
+
+			using (SQLite.Query updateQuery = connection.Query("UPDATE Classes SET ReferenceCount=? WHERE ClassID=?"))
+				{
+				foreach (var cacheEntry in cache)
+					{
+					// Sanity checks
+					#if DEBUG
+					if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
+						{  
+						throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
+															  " was not properly filled in before flushing.");  
+						}
+					if (cacheEntry.DatabaseReferenceCountKnown == true && 
+						 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
+						{  
+						throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
+															  " led to a negative reference count.");  
+						}
+					#endif
+
+					if (cacheEntry.DatabaseReferenceCountKnown)
+						{
+						if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
+							{
+							idsToDelete.Add(cacheEntry.ID);
+							}
+						else if (cacheEntry.ReferenceChange != 0)
+							{
+							updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
+							updateQuery.Step();
+							updateQuery.Reset(true);
+
+							// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+							// can't remove the entry from the set while we're iterating through it.
+							cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
+							cacheEntry.ReferenceChange = 0;
+							}
+
+						if (cancelled())
+							{  
+							CommitTransaction();
+							return;
+							}
+						}
+					}
+				}
+
+
+			// Delete the database records that need it.  Why a second pass?  It avoids these problems of doing it in one:
+			//
+			//    - Operation is cancelled, you have entries in the cache that aren't in the database anymore because you couldn't
+			//      remove them while iterating through it.
+			//    - Operation is cancelled, you took the ID out of CodeDB.Manager.UsedClassIDs but there are still entries in the
+			//      cache that reference it because you couldn't remove them while iterating through it.
+			//    - Operation is cancelled, you didn't take the ID out of CodeDB.Manager.UsedClassIDs to avoid above but now
+			//      you have unused IDs marked as used.
+			//
+			// All of the above could be coded around, it's just more complicated.  Also, it's more efficient to pack it all into one
+			// query rather than crossing the boundaries between C# and SQLite for every record individually.
+			
+			if (idsToDelete.IsEmpty == false)
+				{
+				StringBuilder queryText = new StringBuilder("DELETE FROM Classes WHERE ");
+				List<object> queryParams = new List<object>();
+
+				AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToDelete, queryText, queryParams);
+
+				connection.Execute(queryText.ToString(), queryParams.ToArray());
+				Engine.Instance.CodeDB.UsedClassIDs.Remove(idsToDelete);
+
+				} // if idsToDelete isn't empty
+
+
+			CommitTransaction();
+			cache.Clear();
+			}
+
+
+
 		// Group: Context Functions
 		// __________________________________________________________________________
 
