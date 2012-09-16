@@ -78,13 +78,12 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						}
 					else if (command.StartsWith("{"))
 						{  
-						set.FromString(braces);
+						set = Engine.IDObjects.NumberSet.FromString(braces);
 						showSet = true;
 						}
 					else if (command.StartsWith("+{"))
 						{
-						Engine.IDObjects.NumberSet temp = new Engine.IDObjects.NumberSet();
-						temp.FromString(braces);
+						Engine.IDObjects.NumberSet temp = Engine.IDObjects.NumberSet.FromString(braces);
 						set.Add(temp);
 						showSet = true;
 						}
@@ -95,8 +94,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						}
 					else if (command.StartsWith("-{"))
 						{
-						Engine.IDObjects.NumberSet temp = new Engine.IDObjects.NumberSet();
-						temp.FromString(braces);
+						Engine.IDObjects.NumberSet temp = Engine.IDObjects.NumberSet.FromString(braces);
 						set.Remove(temp);
 						showSet = true;
 						}
