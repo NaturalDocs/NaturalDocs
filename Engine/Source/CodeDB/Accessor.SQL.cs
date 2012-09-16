@@ -1751,34 +1751,36 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
 																								 "VALUES (?, ?, 0)") )
 				{
+				var codeDB = Engine.Instance.CodeDB;
+
 				if (plusNullContext)
 					{
-					int id = Engine.Instance.CodeDB.UsedContextIDs.LowestAvailable;
+					int id = codeDB.UsedContextIDs.LowestAvailable;
 
 					query.BindValues(id, null);
 					query.Step();
 					query.Reset(true);
 
-					Engine.Instance.CodeDB.UsedContextIDs.Add(id);
+					codeDB.UsedContextIDs.Add(id);
 					contextIDLookupCache.Add(id, new ContextString());
 
-					Engine.Instance.CodeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+					codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 					}
 
 				if (uncachedContextStrings != null)
 					{
 					foreach (string contextString in uncachedContextStrings)
 						{
-						int id = Engine.Instance.CodeDB.UsedContextIDs.LowestAvailable;
+						int id = codeDB.UsedContextIDs.LowestAvailable;
 
 						query.BindValues(id, contextString);
 						query.Step();
 						query.Reset(true);
 
-						Engine.Instance.CodeDB.UsedContextIDs.Add(id);
+						codeDB.UsedContextIDs.Add(id);
 						contextIDLookupCache.Add(id, ContextString.FromExportedString(contextString));
 
-						Engine.Instance.CodeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 						}
 					}
 				}
@@ -1837,12 +1839,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			//   records getting stranded in the database.
 
 			IDObjects.NumberSet idsToLookup = new IDObjects.NumberSet();
+			bool hasChanges = false;
 
 			foreach (var cacheEntry in cache)
 				{
 				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
+
+				// Also see if there are changes in the cache at all, since we can avoid a read/write lock if not.  A ReferenceChange
+				// of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we have to remove.
+				if (cacheEntry.ReferenceChange != 0 || cacheEntry.DatabaseReferenceCount == 0)
+					{  hasChanges = true;  }
 				}
+
+			if (hasChanges == false)
+				{  return;  }
 
 
 			// We have to do this before filling in the cache because ContextIDReferenceChangeCache is governed by the same lock 
