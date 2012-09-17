@@ -27,7 +27,7 @@ Column: Hierarchy
 	(end)
 
 	Which hierarchy the class belongs to.  It will be one of these values, which match the values of
-	<Engine.Symbols.ClassString.HierarchyType>:
+	<GregValure.NaturalDocs.Engine.Symbols.ClassString.HierarchyType>:
 
 	1 - Classes
 	2 - Database
