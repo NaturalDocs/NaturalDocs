@@ -777,7 +777,7 @@ namespace GregValure.NaturalDocs.Engine
 
 
 		/* Property: PrototypeContextID
-		 * The ID of <PrototypeContext> if known, or zero if not.
+		 * The ID of <PrototypeContext>, or zero if <PrototypeContext> is null or its ID is unknown.
 		 */
 		public int PrototypeContextID
 			{
@@ -799,6 +799,17 @@ namespace GregValure.NaturalDocs.Engine
 
 				prototypeContextID = value;  
 				}
+			}
+
+
+		/* Property: PrototypeContextIDKnown
+		 * Whether <PrototypeContextID> is known, which basically tests whether <PrototypeContextID> is zero when
+		 * <PrototypeContext> is not null.
+		 */
+		public bool PrototypeContextIDKnown
+			{
+			get
+				{  return (prototypeContextID != 0 || prototypeContext == null);  }
 			}
 
 
@@ -829,7 +840,7 @@ namespace GregValure.NaturalDocs.Engine
 			
 			
 		/* Property: BodyContextID
-		 * The ID of <BodyContext> if known, or zero if not.
+		 * The ID of <BodyContext>, or zero if <BodyContext> is null or its ID is unknown.
 		 */
 		public int BodyContextID
 			{
@@ -851,6 +862,17 @@ namespace GregValure.NaturalDocs.Engine
 
 				bodyContextID = value;  
 				}
+			}
+
+
+		/* Property: BodyContextIDKnown
+		 * Whether <BodyContextID> is known, which basically tests whether <BodyContextID> is zero when <BodyContext>
+		 * is not null.
+		 */
+		public bool BodyContextIDKnown
+			{
+			get
+				{  return (bodyContextID != 0 || bodyContext == null);  }
 			}
 
 
@@ -1133,7 +1155,7 @@ namespace GregValure.NaturalDocs.Engine
 		protected ContextString prototypeContext;
 
 		/* var: prototypeContextID
-		 * The ID of <prototypeContext> if known, or zero if not.
+		 * The ID of <prototypeContext>, or zero if its null or its ID is unknown.
 		 */
 		protected int prototypeContextID;
 
@@ -1143,7 +1165,7 @@ namespace GregValure.NaturalDocs.Engine
 		protected ContextString bodyContext;
 		
 		/* var: bodyContextID
-		 * The ID of <bodyContext> if known, or zero if not.
+		 * The ID of <bodyContext>, or zero if its null or its ID is unknown.
 		 */
 		protected int bodyContextID;
 

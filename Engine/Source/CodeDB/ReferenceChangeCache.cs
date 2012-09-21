@@ -5,6 +5,8 @@
  * A class that stores changes to reference counts in memory so they don't have to hit the database on 
  * every operation.
  * 
+ * This class ignores all operations on ID zero.
+ * 
  * Usage:
  * 
  *		- Create the cache.
@@ -49,14 +51,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: AddReference
-		 * Increases the reference count of the passed object ID.
+		 * Increases the reference count of the passed object ID.  This is ignored if the ID is zero.
 		 */
 		public void AddReference (int objectID)
 			{
-			#if DEBUG
 			if (objectID == 0)
-				{  throw new Exception("Context ID must not be zero");  }
-			#endif
+				{  return;  }
 
 			int entryIndex = BinarySearch(objectID);
 
@@ -72,14 +72,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 		/* Function: RemoveReference
-		 * Decreases the reference count of the passed object ID.
+		 * Decreases the reference count of the passed object ID.  This is ignored if the ID is zero.
 		 */
 		public void RemoveReference (int objectID)
 			{
-			#if DEBUG
 			if (objectID == 0)
-				{  throw new Exception("Context ID must not be zero");  }
-			#endif
+				{  return;  }
 
 			int entryIndex = BinarySearch(objectID);
 
@@ -105,10 +103,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public void SetDatabaseReferenceCount (int objectID, int databaseReferences)
 			{
-			#if DEBUG
 			if (objectID == 0)
-				{  throw new Exception("Context ID must not be zero");  }
-			#endif
+				{  return;  }
 
 			int entryIndex = BinarySearch(objectID);
 
@@ -188,6 +184,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 		public ReferenceChangeEntry (int objectID)
 			{
+			#if DEBUG
+			if (objectID == 0)
+				{  throw new Exception("Cannot create a reference change entry for ID zero.");  }
+			#endif 
+
 			id = objectID;
 			referenceChange = 0;
 			databaseReferenceCount = -1;

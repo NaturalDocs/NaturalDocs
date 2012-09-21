@@ -70,16 +70,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			queryText.Append("FROM Topics ");
 			
 			if (!ignoreContexts)
-				{  queryText.Append(", Contexts AS PContexts, Contexts AS BContexts ");  }
+				{  
+				queryText.Append("LEFT OUTER JOIN Contexts AS PContexts ON PContexts.ContextID = PrototypeContextID " +
+													"LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");  
+				}
 				
 			queryText.Append("WHERE ");
 			
-			if (!ignoreContexts)
-				{
-				queryText.Append("PContexts.ContextID = PrototypeContextID AND " +
-												 "BContexts.ContextID = BodyContextID AND ");
-				}
-
 			queryText.Append('(');
 			queryText.Append(whereClause);
 			queryText.Append(')');
@@ -112,8 +109,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.CodeLineNumber = query.IntColumn(11);
 
 					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContextID = query.IntColumn(13);
-					topic.BodyContextID = query.IntColumn(14);
+					topic.PrototypeContextID = query.IntColumn(13);  // will automatically convert to zero if null
+					topic.BodyContextID = query.IntColumn(14);  // will automatically convert to zero if null
 					topic.FileID = query.IntColumn(15);
 
 					if (!ignoreBody)
@@ -131,8 +128,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					if (!ignoreContexts)
 						{
-						contextIDLookupCache.Add(topic.PrototypeContextID, topic.PrototypeContext);
-						contextIDLookupCache.Add(topic.BodyContextID, topic.BodyContext);
+						contextIDLookupCache.Add(topic.PrototypeContext, topic.PrototypeContextID);
+						contextIDLookupCache.Add(topic.BodyContext, topic.BodyContextID);
 						}
 
 					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
@@ -824,9 +821,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			using (SQLite.Query query = connection.Query("SELECT FileID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
 																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links, Contexts " +
-																								"WHERE Links.LinkID = ? AND " +
-																									"Contexts.ContextID = Links.ContextID ",
+																								"FROM Links " +
+																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
+																								"WHERE Links.LinkID = ? ",
 																								linkID))
 				{
 				if (query.Step())
@@ -834,7 +831,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.FileID = query.IntColumn(0);
 					link.Type = (LinkType)query.IntColumn(1);
 					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);
+					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
 					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
 					link.LanguageID = query.IntColumn(5);
 					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
@@ -843,7 +840,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					link.LinkID = linkID;
 
-					contextIDLookupCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.Context, link.ContextID);
 					}
 				}
 			
@@ -868,9 +865,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
 																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links, Contexts " +
-																								"WHERE Links.FileID = ? AND " +
-																									"Contexts.ContextID = Links.ContextID ",
+																								"FROM Links " +
+																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
+																								"WHERE Links.FileID = ? ",
 																								fileID))
 				{
 				while (query.Step() && !cancelled())
@@ -880,7 +877,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.LinkID = query.IntColumn(0);
 					link.Type = (LinkType)query.IntColumn(1);
 					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);
+					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
 					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
 					link.LanguageID = query.IntColumn(5);
 					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
@@ -891,7 +888,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDLookupCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.Context, link.ContextID);
 					}
 				}
 			
@@ -916,9 +913,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
 																								"FileID, LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																							"FROM Links, Contexts " +
+																							"FROM Links " +
+																								"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
 																							"WHERE Links.Type=? " +
-																								"AND Contexts.ContextID = Links.ContextID " +
 																								"AND (");
 			List<object> queryParams = new List<object>();
 			queryParams.Add((int)LinkType.NaturalDocs);
@@ -946,7 +943,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.LinkID = query.IntColumn(0);
 					link.Type = (LinkType)query.IntColumn(1);
 					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);
+					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
 					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
 					link.FileID = query.IntColumn(5);
 					link.LanguageID = query.IntColumn(6);
@@ -956,7 +953,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDLookupCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.Context, link.ContextID);
 					}
 				}
 			
@@ -983,9 +980,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
 																									"LanguageID, FileID, TargetTopicID, TargetScore " +
-																								"FROM Links, Contexts " +
-																								"WHERE Links.EndingSymbol = ? AND " +
-																									"Contexts.ContextID = Links.ContextID ",
+																								"FROM Links " +
+																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
+																								"WHERE Links.EndingSymbol = ? ",
 																								endingSymbol.ToString()))
 				{
 				while (query.Step() && !cancelled())
@@ -995,7 +992,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.LinkID = query.IntColumn(0);
 					link.Type = (LinkType)query.IntColumn(1);
 					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);
+					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
 					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
 					link.LanguageID = query.IntColumn(5);
 					link.FileID = query.IntColumn(6);
@@ -1006,7 +1003,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					links.Add(link);
 
-					contextIDLookupCache.Add(link.ContextID, link.Context);
+					contextIDLookupCache.Add(link.Context, link.ContextID);
 					}
 				}
 
@@ -1023,8 +1020,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
 																									"LanguageID, FileID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links, Contexts " +
-																								"WHERE Contexts.ContextID = Links.ContextID AND (");
+																								"FROM Links " +
+																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
+																								"WHERE (");
 				List<object> queryParameters = new List<object>();
 
 				bool isFirst = true;
@@ -1050,7 +1048,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						link.LinkID = query.IntColumn(0);
 						link.Type = (LinkType)query.IntColumn(1);
 						link.TextOrSymbol = query.StringColumn(2);
-						link.ContextID = query.IntColumn(3);
+						link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
 						link.Context = ContextString.FromExportedString( query.StringColumn(4) );
 						link.LanguageID = query.IntColumn(5);
 						link.FileID = query.IntColumn(6);
@@ -1060,7 +1058,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 						links.Add(link);
 
-						contextIDLookupCache.Add(link.ContextID, link.Context);
+						contextIDLookupCache.Add(link.Context, link.ContextID);
 						}
 					}
 				}
@@ -1150,14 +1148,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
 			GetOrCreateContextIDs(link);
-			
+
 			connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
 													"TargetTopicID, TargetScore) " +
 			                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)",
-			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol,
+			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol.ToString(),
 												UnresolvedTargetTopicID.NewLink
 			                           );
-			
+
 			codeDB.UsedLinkIDs.Add(link.LinkID);
 			codeDB.LinksToResolve.Add(link.LinkID);
 			codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
@@ -1529,7 +1527,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  return;  }
 
 
-			// Create a query to lookup the uncached classes in the database.  The IDs may already exist there.
+			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
 
 			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, Hierachy, LanguageID, Symbol " + 
 																																		 "FROM Classes WHERE");
@@ -1555,7 +1553,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																													 query.IntColumn(2),
 																													 SymbolString.FromExportedString(query.StringColumn(3)) );
 
-					classIDLookupCache.Add( query.IntColumn(0), classString );  
+					classIDLookupCache.Add(classString, query.IntColumn(0));  
 					}
 			   }
 
@@ -1600,7 +1598,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					query.Reset(true);
 
 					codeDB.UsedClassIDs.Add(id);
-					classIDLookupCache.Add(id, classString);
+					classIDLookupCache.Add(classString, id);
 
 					codeDB.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 					}
@@ -1623,6 +1621,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			ReferenceChangeCache cache = Instance.CodeDB.ClassIDReferenceChangeCache;
+
+			if (cache.Count == 0)
+				{  return;  }
 
 
 			// Figure out which IDs we need to get database counts for.
@@ -1652,9 +1653,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
 
-				// Also see if there are changes in the cache at all, since we can avoid a read/write lock if not.  A ReferenceChange
-				// of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we have to remove.
-				if (cacheEntry.ReferenceChange != 0 || cacheEntry.DatabaseReferenceCount == 0)
+				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A 
+				// ReferenceChange of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we 
+				// have to remove.
+				if (cacheEntry.ReferenceChange != 0 || 
+					 (cacheEntry.DatabaseReferenceCountKnown && cacheEntry.DatabaseReferenceCount == 0) )
 					{  hasChanges = true;  }
 				}
 
@@ -1690,8 +1693,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							{  return;  }
 						}
 					}
-
-				} // if idsToLookup isn't empty
+				}
 
 
 			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
@@ -1751,17 +1753,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Delete the database records that need it.  Why a second pass?  It avoids these problems of doing it in one:
-			//
-			//    - Operation is cancelled, you have entries in the cache that aren't in the database anymore because you couldn't
-			//      remove them while iterating through it.
-			//    - Operation is cancelled, you took the ID out of CodeDB.Manager.UsedClassIDs but there are still entries in the
-			//      cache that reference it because you couldn't remove them while iterating through it.
-			//    - Operation is cancelled, you didn't take the ID out of CodeDB.Manager.UsedClassIDs to avoid above but now
-			//      you have unused IDs marked as used.
-			//
-			// All of the above could be coded around, it's just more complicated.  Also, it's more efficient to pack it all into one
-			// query rather than crossing the boundaries between C# and SQLite for every record individually.
+			// Delete zero-reference database records.
 			
 			if (idsToDelete.IsEmpty == false)
 				{
@@ -1772,8 +1764,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				connection.Execute(queryText.ToString(), queryParams.ToArray());
 				Engine.Instance.CodeDB.UsedClassIDs.Remove(idsToDelete);
-
-				} // if idsToDelete isn't empty
+				}
 
 
 			CommitTransaction();
@@ -1798,9 +1789,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Topic Requirements:
 		 * 
 		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If zero PrototypeContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
+		 *												  If it's already non-zero this is a no-op.
 		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If zero BodyContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
+		 *										 non-zero this is a no-op.
 		 */
 		public void GetOrCreateContextIDs (Topic topic)
 			{
@@ -1810,14 +1803,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Cache or create any missing context IDs.  Since there's only two fields to check we'll handle this by hand to minimize 
 			// memory instead of creating a HashSet or List.
 
-			if (topic.PrototypeContextID == 0)
+			if (topic.PrototypeContextIDKnown == false)
 				{
-				if (topic.BodyContextID == 0 && topic.BodyContext != topic.PrototypeContext)
+				if (topic.BodyContextIDKnown == false && topic.BodyContext != topic.PrototypeContext)
 					{  CacheOrCreateContextIDs(topic.PrototypeContext, topic.BodyContext);  }
 				else
 					{  CacheOrCreateContextIDs(topic.PrototypeContext);  }
 				}
-			else if (topic.BodyContextID == 0)
+			else if (topic.BodyContextIDKnown == false)
 				{  CacheOrCreateContextIDs(topic.BodyContext);  }
 			else
 				{  return;  }
@@ -1825,10 +1818,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Fill in the Topic.
 
-			if (topic.PrototypeContextID == 0)
+			if (topic.PrototypeContextIDKnown == false)
 				{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
 
-			if (topic.BodyContextID == 0)
+			if (topic.BodyContextIDKnown == false)
 				{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
 			}
 
@@ -1845,9 +1838,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Topic Requirements:
 		 * 
 		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If zero PrototypeContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
+		 *												  If it's already non-zero this is a no-op.
 		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If zero BodyContext will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
+		 *										 non-zero this is a no-op.
 		 */
 		public void GetOrCreateContextIDs (IEnumerable<Topic> topics)
 			{
@@ -1856,19 +1851,25 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Cache or create any missing context IDs.  There may be none so create the HashSet on demand.
 
-			// HashSet handles null ContextStrings fine.
 			HashSet<ContextString> contexts = null;
 
-			foreach (Topic topic in topics)
+			foreach (var topic in topics)
 				{
-				if (contexts == null && (topic.PrototypeContextID == 0 || topic.BodyContextID == 0))
-					{  contexts = new HashSet<ContextString>();  }
+				if (topic.PrototypeContextIDKnown == false)
+					{  
+					if (contexts == null)
+						{  contexts = new HashSet<ContextString>();  }
 
-				if (topic.PrototypeContextID == 0)
-					{  contexts.Add(topic.PrototypeContext);  }
+					contexts.Add(topic.PrototypeContext);  
+					}
 
-				if (topic.BodyContextID == 0)
-					{  contexts.Add(topic.BodyContext);  }
+				if (topic.BodyContextIDKnown == false)
+					{  
+					if (contexts == null)
+						{  contexts = new HashSet<ContextString>();  }
+
+					contexts.Add(topic.BodyContext);  
+					}
 				}
 
 			if (contexts != null)
@@ -1879,12 +1880,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Fill in the Topics.
 
-			foreach (Topic topic in topics)
+			foreach (var topic in topics)
 				{
-				if (topic.PrototypeContextID == 0)
+				if (topic.PrototypeContextIDKnown == false)
 					{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
 
-				if (topic.BodyContextID == 0)
+				if (topic.BodyContextIDKnown == false)
 					{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
 				}
 			}
@@ -1901,13 +1902,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Link Requirements:
 		 * 
 		 *		Context - Can be null, which means global with no "using" statements.
-		 *		ContextID - If zero Context will be looked up and an ID assigned.  If non-zero no lookup will occur.
+		 *		ContextID - If this is zero and Context is not null, ContextID will be looked up or created.  If it's already non-zero this
+		 *								is a no-op.
 		 */
 		public void GetOrCreateContextIDs (Link link)
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			if (link.ContextID != 0)
+			if (link.ContextIDKnown)
 				{  return;  }
 
 			CacheOrCreateContextIDs(link.Context);
@@ -1921,15 +1923,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in the 
 		 * database they will be created.
 		 * 
-		 * If the collection you pass in doesn't support null strings you can set plusNullContext to true and it will be included.
-		 * If it does support them you are fine just including it in the collection and leaving plusNullContext false, even if there 
-		 * might be one in the collection.
-		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
 		 */
-		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings, bool plusNullContext = false)
+		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings)
 			{
 			// Remember that contextIDLookupCache is local to the accessor and doesn't need any locking.
 			// ContextIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
@@ -1944,96 +1942,61 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			foreach (var contextString in contextStrings)
 				{
-				if (contextIDLookupCache.Contains(contextString) == false)
+				if (contextString != null && contextIDLookupCache.Contains(contextString) == false)
 					{
-					if (contextString == null)
-						{  plusNullContext = true;  }
-					else
-						{  
-						if (uncachedContextStrings == null)
-							{  uncachedContextStrings = new List<ContextString>();  }
+					if (uncachedContextStrings == null)
+						{  uncachedContextStrings = new List<ContextString>();  }
 
-						uncachedContextStrings.Add(contextString);  
-						}
+					uncachedContextStrings.Add(contextString);  
 					}
 				}
-
-			if (plusNullContext && contextIDLookupCache.Contains(null))
-				{  plusNullContext = false;  }
 
 
 			// Can we quit early?
 
-			if (uncachedContextStrings == null && plusNullContext == false)
+			if (uncachedContextStrings == null)
 				{  return;  }
 
 
-			// Create a query to lookup the uncached contexts in the database.  The IDs may already exist there.
+			// Create a query to lookup the uncached contexts in the database.  The IDs may already be assigned.
 
 			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ContextID, ContextString FROM Contexts WHERE");
-			string[] queryParams = null;
-			bool firstWhere = true;
+			string[] queryParams = new string[uncachedContextStrings.Count];
 
-			if (uncachedContextStrings != null)
+			for (int i = 0; i < uncachedContextStrings.Count; i++)
 				{
-				queryParams = new string[uncachedContextStrings.Count];
-
-				for (int i = 0; i < uncachedContextStrings.Count; i++)
-					{
-					if (!firstWhere)
-						{  queryText.Append(" OR");  }
-
-					queryText.Append(" ContextString=?");
-					firstWhere = false;
-
-					queryParams[i] = uncachedContextStrings[i].ToString();
-					}
-				}
-
-			if (plusNullContext)
-				{
-				if (!firstWhere)
+				if (i != 0)
 					{  queryText.Append(" OR");  }
 
-				queryText.Append(" ContextString IS NULL");
-				firstWhere = false;
+				queryText.Append(" ContextString=?");
+				queryParams[i] = uncachedContextStrings[i].ToString();
 				}
 
 
 			// Run the query to fill in the cache with whatever already exists in the database.
 
-			using (SQLite.Query query = (queryParams == null ? connection.Query(queryText.ToString()) :
-																										 connection.Query(queryText.ToString(), queryParams) ))
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
 				{
 			   while (query.Step())
-			      {  contextIDLookupCache.Add( query.IntColumn(0), ContextString.FromExportedString(query.StringColumn(1)) );  }
+			      {  contextIDLookupCache.Add( ContextString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );  }
 			   }
 
 
 			// Pare down our list of uncached context strings.
 
-			if (uncachedContextStrings != null)
+			int j = 0;  // the compiler complains if we use i
+			while (j < uncachedContextStrings.Count)
 				{
-				int i = 0;
-				while (i < uncachedContextStrings.Count)
-					{
-					if (contextIDLookupCache.Contains(uncachedContextStrings[i]))
-						{  uncachedContextStrings.RemoveAt(i);  }
-					else
-						{  i++;  }
-					}
-
-				if (uncachedContextStrings.Count == 0)
-					{  uncachedContextStrings = null;  }
+				if (contextIDLookupCache.Contains(uncachedContextStrings[j]))
+					{  uncachedContextStrings.RemoveAt(j);  }
+				else
+					{  j++;  }
 				}
-
-			if (plusNullContext && contextIDLookupCache.Contains(null))
-				{  plusNullContext = false;  }
 
 
 			// Can we quit now?
 
-			if (uncachedContextStrings == null && plusNullContext == false)
+			if (uncachedContextStrings.Count == 0)
 				{  return;  }
 
 
@@ -2050,35 +2013,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				var codeDB = Engine.Instance.CodeDB;
 
-				if (plusNullContext)
+				foreach (var contextString in uncachedContextStrings)
 					{
 					int id = codeDB.UsedContextIDs.LowestAvailable;
 
-					query.BindValues(id, null);
+					query.BindValues(id, contextString);
 					query.Step();
 					query.Reset(true);
 
 					codeDB.UsedContextIDs.Add(id);
-					contextIDLookupCache.Add(id, new ContextString());
+					contextIDLookupCache.Add(contextString, id);
 
 					codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-					}
-
-				if (uncachedContextStrings != null)
-					{
-					foreach (string contextString in uncachedContextStrings)
-						{
-						int id = codeDB.UsedContextIDs.LowestAvailable;
-
-						query.BindValues(id, contextString);
-						query.Step();
-						query.Reset(true);
-
-						codeDB.UsedContextIDs.Add(id);
-						contextIDLookupCache.Add(id, ContextString.FromExportedString(contextString));
-
-						codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-						}
 					}
 				}
 
@@ -2097,7 +2043,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void CacheOrCreateContextIDs (params ContextString[] contextStrings)
 			{
-			CacheOrCreateContextIDs(contextStrings, false);
+			CacheOrCreateContextIDs((IEnumerable<ContextString>)contextStrings);
 			}
 
 
@@ -2114,6 +2060,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			ReferenceChangeCache cache = Instance.CodeDB.ContextIDReferenceChangeCache;
+
+			if (cache.Count == 0)
+				{  return;  }
 
 
 			// Figure out which IDs we need to get database counts for.
@@ -2143,9 +2092,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 					{  idsToLookup.Add(cacheEntry.ID);  }
 
-				// Also see if there are changes in the cache at all, since we can avoid a read/write lock if not.  A ReferenceChange
-				// of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we have to remove.
-				if (cacheEntry.ReferenceChange != 0 || cacheEntry.DatabaseReferenceCount == 0)
+				// Also see if there are changes in the cache at all, since we can avoid waiting for a read/write lock if not.  A 
+				// ReferenceChange of zero still counts if DatabaseReferenceCount is also zero because that's an empty record we
+				// have to remove.
+				if (cacheEntry.ReferenceChange != 0 || 
+					 (cacheEntry.DatabaseReferenceCountKnown && cacheEntry.DatabaseReferenceCount == 0) )
 					{  hasChanges = true;  }
 				}
 
@@ -2181,8 +2132,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							{  return;  }
 						}
 					}
-
-				} // if idsToLookup isn't empty
+				}
 
 
 			// Update the database records that need it, but just collect the IDs of the database records to be deleted for a 
@@ -2242,17 +2192,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Delete the database records that need it.  Why a second pass?  It avoids these problems of doing it in one:
-			//
-			//    - Operation is cancelled, you have entries in the cache that aren't in the database anymore because you couldn't
-			//      remove them while iterating through it.
-			//    - Operation is cancelled, you took the ID out of CodeDB.Manager.UsedContextIDs but there are still entries in the
-			//      cache that reference it because you couldn't remove them while iterating through it.
-			//    - Operation is cancelled, you didn't take the ID out of CodeDB.Manager.UsedContextIDs to avoid above but now
-			//      you have unused IDs marked as used.
-			//
-			// All of the above could be coded around, it's just more complicated.  Also, it's more efficient to pack it all into one
-			// query rather than crossing the boundaries between C# and SQLite for every record individually.
+			// Delete zero-reference database records.
 			
 			if (idsToDelete.IsEmpty == false)
 				{
@@ -2263,8 +2203,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				connection.Execute(queryText.ToString(), queryParams.ToArray());
 				Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
-
-				} // if idsToDelete isn't empty
+				}
 
 
 			CommitTransaction();

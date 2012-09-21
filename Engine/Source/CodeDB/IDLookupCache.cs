@@ -4,12 +4,8 @@
  * 
  * A class that provides a local cache of string to ID mappings.
  * 
- * This is preferable to a <Engine.Collections.StringTable> because it doesn't need the key normalization.
- * This is preferable to a System.Collections.Generic.Dictionary because we need to accept null strings
- * as valid keys.  However, like <Engine.Collections.StringTable>:
- * 
- * - Reading non-existent keys returns null instead of throwing an exception.
- * - Using <Add()> on a preexisting key overwrites the value instead of throwing an exception.
+ * This is preferable to a <Engine.Collections.StringTable> because it doesn't need the key normalization
+ * and it has different behavior when dealing with preexisting, missing, or null keys.
  * 
  */
 
@@ -27,107 +23,79 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		{
 		
 		/* Function: Add
-		 * Adds a new ID to the table, overwriting the previous value if it already existed.
+		 * Adds a new ID to the table.  If the key already existed, the ID must match the existing value or it will throw
+		 * an exception.  You cannot add the null key.
 		 */
-		public void Add (int id, LookupType key)
+		public void Add (LookupType key, int id)
 			{
-			// Sanity check
-			#if DEBUG
-			string stringKey = StringKey(key);
-
-			if (ContainsKey(stringKey) && this[stringKey] != id)
-				{  
-				throw new Exception("Tried to add \"" + stringKey + "\" to IDLookupCache with ID " + id + 
-														" when it was already added with ID " + this[stringKey] + ".");
-				}
-			#endif
-
-			// We do this so it doesn't throw an exception if the value already exists.
-			this[ StringKey(key) ] = id;
+			// Let the index operator handle the logic.
+			this[key] = id;
 			}
 			
 			
 		/* Function: Remove
-		 * Removes a value from the table.  Returns whether the key was present in the table or not.  It does not throw an
-		 * exception if it did not exist.
+		 * Removes a value from the table.  Will not throw an exception if it did not exist.
 		 */
-		public bool Remove (LookupType key)
+		public void Remove (LookupType key)
 			{
-			return base.Remove( StringKey(key) );
+			if (key != null)
+				{  base.Remove(key.ToString());  }
 			}
 			
 			
 		/* Function: Contains
-		 * Returns whether the table contains a specific key.
+		 * Returns whether the table contains a specific key.  Will always return true for null.
 		 */
 		public bool Contains (LookupType key)
 			{
-			return base.ContainsKey( StringKey(key) );
+			if (key == null)
+				{  return true;  }
+			else
+				{  return base.ContainsKey(key.ToString());  }
 			}
 
 
-		/* Function: Contains
-		 * Returns whether the table contains a specific key.  This is only defined to allow null lookups.
-		 */
-		public bool Contains (object key)
-			{
-			#if DEBUG
-			if (key != null)
-				{  throw new Exception("Can only use IDLookupCache.Contains(object) with null.");  }
-			#endif
-
-			return base.ContainsKey(NullStandIn);
-			}
-			
-			
 		/* Operator: this
-		 * An index operator.  When getting, returns zero if the key doesn't exist instead of throwing an exception.  When setting,
-		 * creates an entry for the key or overwrites the existing one if it doesn't exist.
+		 * An index operator.  When getting, this will throw an exception if the key doesn't exist.  Getting a null
+		 * key will always return zero.  When setting, if there's a preexisting value for the key it must match the 
+		 * new value.  You cannot set a null key to anything other than zero.
 		 */
 		public int this [LookupType key]
 			{
 			get
 				{
-				// We do this to make it so it doesn't throw an exception if the key doesn't exist.
-				int id;
-				bool success = TryGetValue( StringKey(key), out id);
-				
-				if (success)
-					{  return id;  }
-				else
+				string stringKey = key.ToString();
+
+				if (stringKey == null)
 					{  return 0;  }
+				else
+					{
+					// Will throw an exception if the key doesn't exist.
+					return base[stringKey];
+					}
 				}
 			set
 				{  
-				base[ StringKey(key) ] = value;  
+				string stringKey = key.ToString();
+
+				if (stringKey == null)
+					{
+					#if DEBUG
+					if (value != 0)
+						{  throw new Exception("Tried to assign a non-zero value to the null key.");  }
+					#endif
+					}
+				else
+					{  
+					#if DEBUG
+					if (ContainsKey(stringKey) && base[stringKey] != value)
+						{  throw new Exception("Tried to assign " + value + " to \"" + stringKey + "\" when it was already set to " + base[stringKey] + ".");  }
+					#endif
+
+					base[stringKey] = value;  
+					}
 				}
 			}
-			
-			
-		/* Function: StringKey
-		 * Returns a string version of the key to use with the Dictionary, converting it to <NullStandIn> if necessary.
-		 */
-		protected string StringKey (LookupType key)
-			{
-			string stringKey = key.ToString();
-
-			if (stringKey == null)
-				{  stringKey = NullStandIn;  }
-
-			return stringKey;
-			}
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-
-		/* var: NullStandIn
-		 * A string to use in place of null, since the lookup types can be null but the Dictionary class doesn't allow null keys.
-		 * It uses <Symbols.SeparatorChars.Escape> to make sure it doesn't conflict with any actual keys.
-		 */
-		protected static string NullStandIn = Symbols.SeparatorChars.Escape + "null";
 		
 		}
 	}

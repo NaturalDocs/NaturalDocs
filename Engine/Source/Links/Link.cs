@@ -218,6 +218,16 @@ namespace GregValure.NaturalDocs.Engine.Links
 			set
 				{  contextID = value;  }
 			}
+
+
+		/* Property: ContextIDKnown
+		 * Whether <ContextID> is known, which basically tests whether <ContextID> is zero when <Context> is not null.
+		 */
+		public bool ContextIDKnown
+			{
+			get
+				{  return (contextID != 0 || context == null);  }
+			}
 			
 			
 		/* Property: FileID
