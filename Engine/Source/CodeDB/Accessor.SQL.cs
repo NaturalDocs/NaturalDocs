@@ -31,8 +31,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 * Parameters:
 		 * 
-		 *		whereClause - The SQL WHERE clause to apply to the query, such as "FileID=?".
-		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "CommentLineNumber ASC", or null if none.
+		 *		whereClause - The SQL WHERE clause to apply to the query, such as "Topics.FileID=?".  It's recommended that you
+		 *								  add the table name to fully qualify columns.
+		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "Topics.CommentLineNumber ASC", or null if 
+		 *									 none.  It's recommended that you add the table name to fully qualify columns.
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE and ORDER BY clauses, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *							 need to.
@@ -53,21 +55,31 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<Topic> topics = new List<Topic>();
 
 			bool ignoreBody = ((ignoreFields & Topic.IgnoreFields.Body) != 0);
+			bool ignoreClass = ((ignoreFields & Topic.IgnoreFields.ClassString) != 0);
 			bool ignoreContexts = ((ignoreFields & (Topic.IgnoreFields.BodyContext | Topic.IgnoreFields.PrototypeContext)) != 0);
 						
-			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																						  "IsEmbedded, TopicTypeID, AccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																						  "LanguageID, PrototypeContextID, BodyContextID, FileID ");
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Topics.Symbol, SymbolDefinitionNumber, " +
+																							  "Topics.ClassID, IsEmbedded, TopicTypeID, AccessLevel, Tags, " +
+																							  "CommentLineNumber, CodeLineNumber, Topics.LanguageID, " +
+																							  "PrototypeContextID, BodyContextID, FileID ");
 
 			if (!ignoreBody)
 				{  queryText.Append(", Body ");  }
 			else
 				{  queryText.Append(", length(Body) ");  }
 
+			if (!ignoreClass)
+				{  queryText.Append(", Classes.Hierarchy, Classes.LanguageID, Classes.Symbol ");  }
+
 			if (!ignoreContexts)
 				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
 																								
 			queryText.Append("FROM Topics ");
+
+			if (!ignoreClass)
+				{
+				queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = Topics.ClassID ");
+				}
 			
 			if (!ignoreContexts)
 				{  
@@ -99,32 +111,53 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Prototype = query.StringColumn(3);
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(4) );
 					topic.SymbolDefinitionNumber = query.IntColumn(5);
-					topic.IsEmbedded = (query.IntColumn(6) == 1);
+					topic.ClassID = query.IntColumn(6);
+					topic.IsEmbedded = (query.IntColumn(7) == 1);
 
-					topic.TopicTypeID = query.IntColumn(7);
-					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(8);
-					topic.TagString = query.StringColumn(9);
+					topic.TopicTypeID = query.IntColumn(8);
+					topic.AccessLevel = (Languages.AccessLevel)query.IntColumn(9);
+					topic.TagString = query.StringColumn(10);
 
-					topic.CommentLineNumber = query.IntColumn(10);
-					topic.CodeLineNumber = query.IntColumn(11);
+					topic.CommentLineNumber = query.IntColumn(11);
+					topic.CodeLineNumber = query.IntColumn(12);
 
-					topic.LanguageID = query.IntColumn(12);
-					topic.PrototypeContextID = query.IntColumn(13);  // will automatically convert to zero if null
-					topic.BodyContextID = query.IntColumn(14);  // will automatically convert to zero if null
-					topic.FileID = query.IntColumn(15);
+					topic.LanguageID = query.IntColumn(13);
+					topic.PrototypeContextID = query.IntColumn(14);  // will automatically convert to zero if null
+					topic.BodyContextID = query.IntColumn(15);  // will automatically convert to zero if null
+					topic.FileID = query.IntColumn(16);
 
 					if (!ignoreBody)
-						{  topic.Body = query.StringColumn(16);  }
+						{  topic.Body = query.StringColumn(17);  }
 					else
-						{  topic.BodyLength = query.IntColumn(16);  }
+						{  topic.BodyLength = query.IntColumn(17);  }
+
+					int columnIndex = 18;
+
+					if (!ignoreClass)
+						{
+						if (topic.ClassID != 0)
+							{
+							topic.ClassString = ClassString.FromParameters( (ClassString.HierarchyType)query.IntColumn(columnIndex), 
+																													query.IntColumn(columnIndex + 1),
+																													SymbolString.FromExportedString(query.StringColumn(columnIndex + 2)) );
+							}
+
+						columnIndex += 3;
+						}
 
 					if (!ignoreContexts)
 						{
-						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(17) );
-						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(18) );
+						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(columnIndex) );
+						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(columnIndex + 1) );
+						columnIndex += 2;
 						}
 
 					topics.Add(topic);
+
+					if (!ignoreClass)
+						{
+						classIDLookupCache.Add(topic.ClassString, topic.ClassID);
+						}
 
 					if (!ignoreContexts)
 						{
@@ -137,7 +170,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.IgnoredFields = ignoreFields;
 					}
 				}
-			
+
 			return topics;
 			}
 			
@@ -161,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			object[] clauseParams = new object[1];
 			clauseParams[0] = fileID;
 
-			return GetTopics("FileID=?", "CommentLineNumber ASC", clauseParams, cancelled, ignoreFields);
+			return GetTopics("Topics.FileID=?", "Topics.CommentLineNumber ASC", clauseParams, cancelled, ignoreFields);
 			}
 			
 			
@@ -192,7 +225,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				else
 					{  whereClause.Append("OR ");  }
 
-				whereClause.Append("TopicID=? ");
+				whereClause.Append("Topics.TopicID=? ");
 				clauseParameters.Add(topicID);
 				}
 
@@ -230,7 +263,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				else
 					{  whereClause.Append("OR ");  }
 
-				whereClause.Append("EndingSymbol=? ");
+				whereClause.Append("Topics.EndingSymbol=? ");
 				clauseParameters.Add(endingSymbol.ToString());
 				}
 
@@ -256,6 +289,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Must be set.
+		 *		ClassString - Can be null, which means it is global and doesn't define a class.
+		 *		ClassID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
@@ -278,6 +313,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			RequireContent("AddTopic", "Symbol", topic.Symbol);
 			RequireNonZero("AddTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
+			// ClassString
+			RequireZero("AddTopic", "ClassID", topic.ClassID);
 			// IsEmbedded
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
@@ -297,16 +334,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			var codeDB = Engine.Instance.CodeDB;
 
 			topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
+			GetOrCreateClassID(topic);
 			GetOrCreateContextIDs(topic);
 			
-			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
+			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
 													"IsEmbedded, EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
 													"LanguageID, PrototypeContextID, BodyContextID) " +
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
-												(topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, (int)topic.AccessLevel, topic.TagString, 
-												topic.FileID, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID,
-												topic.BodyContextID										 
+												topic.ClassID, (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
+												(int)topic.AccessLevel, topic.TagString, topic.FileID, topic.CommentLineNumber, topic.CodeLineNumber, 
+												topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
 												);
 			
 			codeDB.UsedTopicIDs.Add(topic.TopicID);
@@ -319,6 +357,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			newTopicsForEndingSymbol.Add(topic.TopicID);
 
+			codeDB.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
 			codeDB.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
 			codeDB.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
 
@@ -377,29 +416,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
+			bool classChanged = ((changeFlags & Topic.ChangeFlags.Class) != 0);
+			bool contextsChanged = ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) != 0 );
+
+
 			// DEPENDENCY: This must update all fields marked relevant in Topic.DatabaseCompare().  If that function changes this one
 			// must change as well.
 
 			newTopic.TopicID = oldTopic.TopicID;
 			
-			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
+			if (classChanged)
+				{  GetOrCreateClassID(newTopic);  }
+			else
+				{  newTopic.ClassID = oldTopic.ClassID;  }
+
+			if (contextsChanged)
+				{  GetOrCreateContextIDs(newTopic);  }
+			else
 				{
 				newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
 				newTopic.BodyContextID = oldTopic.BodyContextID;
 				}
-			else
-				{
-				GetOrCreateContextIDs(newTopic);
-				}
 
 			connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
-													"PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
+													"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
 												"WHERE TopicID = ?",
 												newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
-												newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
+												newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
 												oldTopic.TopicID);
 
-			if ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) == 0)
+			if (classChanged)
+				{
+				var referenceCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
+
+				referenceCache.RemoveReference(oldTopic.ClassID);
+				referenceCache.AddReference(newTopic.ClassID);
+				}
+
+			if (contextsChanged)
 				{
 				var referenceCache = Engine.Instance.CodeDB.ContextIDReferenceChangeCache;
 
@@ -453,6 +507,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Must be set.
+		 *		ClassString - Can be null, which means it is global and doesn't define a class.
+		 *		ClassID - Must be set.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
@@ -475,6 +531,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Prototype
 			RequireContent("DeleteTopic", "Symbol", topic.Symbol);
 			RequireNonZero("DeleteTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
+			// ClassString
+			if (topic.ClassString != null)
+				{  RequireNonZero("DeleteTopic", "ClassID", topic.ClassID);  }
 			// IsEmbedded
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// AccessLevel
@@ -484,9 +543,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
 			// PrototypeContext, null is a valid value
-			RequireNonZero("DeleteTopic", "PrototypeContextID", topic.PrototypeContextID);
+			if (topic.PrototypeContext != null)
+				{  RequireNonZero("DeleteTopic", "PrototypeContextID", topic.PrototypeContextID);  }
 			// BodyContext, null is a valid value
-			RequireNonZero("DeleteTopic", "BodyContextID", topic.BodyContextID);
+			if (topic.BodyContext != null)
+				{  RequireNonZero("DeleteTopic", "BodyContextID", topic.BodyContextID);  }
 
 			RequireAtLeast(LockType.ReadWrite);
 
@@ -553,6 +614,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (newTopicsForEndingSymbol != null)
 				{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
+			codeDB.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
 			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
 			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
 
@@ -580,6 +642,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Prototype - Can be null.
 		 *		Symbol - Must be set.
 		 *		SymbolDefinitionNumber - Can be zero.  These will be regenerated regardless of whether they were previously set.
+		 *		ClassString - Can be null, which means its global and does not define a class.
+		 *		ClassID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		AccessLevel - Optional.  <Topic> gives it a default value if not set.
@@ -701,6 +765,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							{
 							foundMatch = true;
 							newTopic.TopicID = oldTopics[i].TopicID;
+							newTopic.ClassID = oldTopics[i].ClassID;
 							newTopic.PrototypeContextID = oldTopics[i].PrototypeContextID;
 							newTopic.BodyContextID = oldTopics[i].BodyContextID;
 							oldTopics.RemoveAt(i);
@@ -1487,6 +1552,83 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
+		/* Function: GetOrCreateClassID
+		 * 
+		 * Retrieves the ID for <Topic.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
+		 *		
+		 * Topic Requirements:
+		 * 
+		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
+		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
+		 *						 is a no-op.
+		 */
+		public void GetOrCreateClassID (Topic topic)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			if (topic.ClassIDKnown == false)
+				{  
+				CacheOrCreateClassIDs(topic.ClassString);
+				topic.ClassID = classIDLookupCache[topic.ClassString];
+				}
+			}
+
+
+		/* Function: GetOrCreateClassIDs
+		 * 
+		 * Retrieves the class IDs for each <Topic's> ClassString if they are not already set.  If existing IDs cannot be found, 
+		 * they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new class IDs are created, it will be upgraded automatically.
+		 *		
+		 * Topic Requirements:
+		 * 
+		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
+		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
+		 *						 is a no-op.
+		 */
+		public void GetOrCreateClassIDs (IEnumerable<Topic> topics)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+
+			// Cache or create any missing class IDs.  There may be none so create the HashSet on demand.
+
+			HashSet<ClassString> classes = null;
+
+			foreach (var topic in topics)
+				{
+				if (topic.ClassIDKnown == false)
+					{  
+					if (classes == null)
+						{  classes = new HashSet<ClassString>();  }
+
+					classes.Add(topic.ClassString);  
+					}
+				}
+
+			if (classes != null)
+				{  CacheOrCreateClassIDs(classes);  }
+			else
+				{  return;  }
+
+
+			// Fill in the Topics.
+
+			foreach (var topic in topics)
+				{
+				if (topic.ClassIDKnown == false)
+					{  topic.ClassID = classIDLookupCache[topic.ClassString];  }
+				}
+			}
+
+
 		/* Function: CacheOrCreateClassIDs
 		 * 
 		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
@@ -1605,6 +1747,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 			CommitTransaction();
+			}
+
+
+		/* Function: CacheOrCreateClassIDs
+		 * 
+		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
+		 * database they will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
+		 */
+		protected void CacheOrCreateClassIDs (params ClassString[] classStrings)
+			{
+			CacheOrCreateClassIDs((IEnumerable<ClassString>)classStrings);
 			}
 
 

@@ -42,30 +42,31 @@ namespace GregValure.NaturalDocs.Engine
 		 * all fields will be set to true when <DatabaseCompareResult.Different> is returned.
 		 */
 		[Flags]
-		public enum ChangeFlags : ushort
+		public enum ChangeFlags : uint
 			{
-			Title = 0x0001,
-			Body = 0x0002,
-			Summary = 0x0004,
-			Prototype = 0x0008,
-			Symbol = 0x0010,
-			SymbolDefinitonNumber = 0x0020,
-			IsEmbedded = 0x0040,
+			Title = 0x00000001,
+			Body = 0x00000002,
+			Summary = 0x00000004,
+			Prototype = 0x00000008,
+			Symbol = 0x00000010,
+			SymbolDefinitonNumber = 0x00000020,
+			Class = 0x00000040,
+			IsEmbedded = 0x00000080,
 
-			TopicTypeID = 0x0080,
-			AccessLevel = 0x0100,
-			Tags = 0x0200,
+			TopicTypeID = 0x00000100,
+			AccessLevel = 0x00000200,
+			Tags = 0x00000400,
 
-			LanguageID = 0x0400,
-			CommentLineNumber = 0x0800,
-			CodeLineNumber = 0x1000,
+			LanguageID = 0x00000800,
+			CommentLineNumber = 0x00001000,
+			CodeLineNumber = 0x00002000,
 			
-			FileID = 0x2000,
-			PrototypeContext = 0x4000,
-			BodyContext = 0x8000,
+			FileID = 0x00004000,
+			PrototypeContext = 0x00008000,
+			BodyContext = 0x00010000,
 
 			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber |
-					 IsEmbedded | TopicTypeID | AccessLevel | Tags |
+					 Class | IsEmbedded | TopicTypeID | AccessLevel | Tags |
 					 LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
 			}
@@ -90,18 +91,20 @@ namespace GregValure.NaturalDocs.Engine
 			Prototype = 0x00000020,
 			Symbol = 0x00000040,
 			SymbolDefinitionNumber = 0x00000080,
-			IsEmbedded = 0x00000100,
-			TopicTypeID = 0x00000200,
-			AccessLevel = 0x00000400,
-			Tags = 0x00000800,
-			FileID = 0x00001000,
-			CommentLineNumber = 0x00002000,
-			CodeLineNumber = 0x00004000,
-			LanguageID = 0x00008000,
-			PrototypeContext = 0x00010000,
-			PrototypeContextID = 0x00020000,
-			BodyContext = 0x00040000,
-			BodyContextID = 0x00080000,
+			ClassString = 0x00000100,
+			ClassID = 0x00000200,
+			IsEmbedded = 0x00000400,
+			TopicTypeID = 0x00000800,
+			AccessLevel = 0x00001000,
+			Tags = 0x00002000,
+			FileID = 0x00004000,
+			CommentLineNumber = 0x00008000,
+			CodeLineNumber = 0x00010000,
+			LanguageID = 0x00020000,
+			PrototypeContext = 0x00040000,
+			PrototypeContextID = 0x00080000,
+			BodyContext = 0x00100000,
+			BodyContextID = 0x00200000,
 
 			Contexts = PrototypeContext | BodyContext
 			}
@@ -124,6 +127,8 @@ namespace GregValure.NaturalDocs.Engine
 			parsedPrototype = null;
 			symbol = new SymbolString();
 			symbolDefinitionNumber = 0;
+			classString = new ClassString();
+			classID = 0;
 			isEmbedded = false;
 			titleParameters = new ParameterString();
 			titleParametersGenerated = false;
@@ -158,9 +163,9 @@ namespace GregValure.NaturalDocs.Engine
 		 * fields have changed.  This isn't done with <DatabaseCompareResult.Different>, but all the flags will be set to true
 		 * anyway to prevent errors.
 		 * 
-		 * <TopicID>, <PrototypeContextID>, and <BodyContextID> are not included in the comparison because it's assumed that 
-		 * you would be comparing Topics from a parse, where they would not be set, to Topics from the database, where they 
-		 * would.  <Temporary Properties> are also not compared because they do not correspond to database fields.
+		 * <TopicID>, <ClassID>, <PrototypeContextID>, and <BodyContextID> are not included in the comparison because it's 
+		 * assumed that you would be comparing Topics from a parse, where they would not be set, to Topics from the database,
+		 * where they would.  <Temporary Properties> are also not compared because they do not correspond to database fields.
 		 */
 		public DatabaseCompareResult DatabaseCompare (Topic other, out ChangeFlags changeFlags)
 			{
@@ -173,6 +178,8 @@ namespace GregValure.NaturalDocs.Engine
 			// parsedPrototype - Not a database field.
 			// symbol - Important in linking.
 			// symbolDefinitonNumber - Important in linking.
+			// classString - Not important in linking.  Changes in class would be reflected in symbol.
+			// classID - Wouldn't be known coming from a parse.
 			// isEmbedded - Not important in linking.
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
@@ -241,6 +248,8 @@ namespace GregValure.NaturalDocs.Engine
 
 			if (summary != other.summary)
 				{  changeFlags |= ChangeFlags.Summary;  }
+			if (classString != other.classString)
+				{  changeFlags |= ChangeFlags.Class;  }
 			if (isEmbedded != other.isEmbedded)
 				{  changeFlags |= ChangeFlags.IsEmbedded;  }
 
@@ -524,6 +533,68 @@ namespace GregValure.NaturalDocs.Engine
 
 				symbolDefinitionNumber = value;  
 				}
+			}
+
+
+		/* Property: ClassString
+		 * The <ClassString> that this topic defines or is a part of.
+		 */
+		public ClassString ClassString
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassString) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
+				#endif
+
+				return classString;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassString) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
+				#endif
+
+				classString = value;  
+				}
+			}
+
+
+		/* Property: ClassID
+		 * The ID of <ClassString>, or zero if <ClassString> is null or its ID is unknown.
+		 */
+		public int ClassID
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
+				#endif
+
+				return classID;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
+				#endif
+
+				classID = value;  
+				}
+			}
+
+
+		/* Property: ClassIDKnown
+		 * Whether <ClassID> is known, which basically tests whether <ClassID> is zero when <ClassString> is not null.
+		 */
+		public bool ClassIDKnown
+			{
+			get
+				{  return (classID != 0 || classString == null);  }
 			}
 
 
@@ -1081,6 +1152,16 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected int symbolDefinitionNumber;
 
+		/* var: classString
+		 * The <ClassString> this topic defines or is a part of.
+		 */
+		protected ClassString classString;
+
+		/* var: classID
+		 * The ID of <classString>, or zero if it's null or its ID is unknown.
+		 */
+		protected int classID;
+
 		/* var: isEmbedded
 		 * Whether this topic is embedded in a prior topic.  This is used to support lists.  Entries that appear in definition 
 		 * lists within a list topic will get their own <Topic> objects to allow for linking, but they will not appear in the 
@@ -1155,7 +1236,7 @@ namespace GregValure.NaturalDocs.Engine
 		protected ContextString prototypeContext;
 
 		/* var: prototypeContextID
-		 * The ID of <prototypeContext>, or zero if its null or its ID is unknown.
+		 * The ID of <prototypeContext>, or zero if it's null or its ID is unknown.
 		 */
 		protected int prototypeContextID;
 
@@ -1165,7 +1246,7 @@ namespace GregValure.NaturalDocs.Engine
 		protected ContextString bodyContext;
 		
 		/* var: bodyContextID
-		 * The ID of <bodyContext>, or zero if its null or its ID is unknown.
+		 * The ID of <bodyContext>, or zero if it's null or its ID is unknown.
 		 */
 		protected int bodyContextID;
 

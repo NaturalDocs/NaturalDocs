@@ -74,6 +74,15 @@ Column: SymbolDefinitionNumber
 	of the same symbol will receive an incremented number based on the source file order.
 
 
+Column: ClassID
+
+	(SQL Prototype)
+		ClassID INTEGER NOT NULL
+	(end)
+
+	The ID of the class this topic creates or is a member of, or zero if it's global.
+
+
 Column: IsEmbedded
 
 	(SQL Prototype)
@@ -169,7 +178,7 @@ Column: PrototypeContextID
 		PrototypeContextID INTEGER NOT NULL
 	(end)
 	
-	The ID of the context any prototype links should appear in.
+	The ID of the context any prototype links should appear in, or zero for the global context.
 	
 	
 Column: BodyContextID
@@ -178,7 +187,7 @@ Column: BodyContextID
 		BodyContextID INTEGER NOT NULL
 	(end)
 	
-	The ID of the context any body links should appear in.
+	The ID of the context any body links should appear in, or zero for the global context.
 	
 	
 
@@ -199,6 +208,13 @@ Index: TopicsByFile
 
 	(SQL Prototype)
 		CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)
+	(end)
+
+
+Index: TopicsByClass
+
+	(SQL Prototype)
+		CREATE INDEX TopicsByClass ON Topics (ClassID)
 	(end)
 
 
