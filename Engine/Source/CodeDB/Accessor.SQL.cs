@@ -1671,17 +1671,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
 
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, Hierachy, LanguageID, Symbol " + 
+			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, Hierarchy, LanguageID, Symbol " + 
 																																		 "FROM Classes WHERE");
-			string[] queryParams = new string[uncachedClassStrings.Count];
+			object[] queryParams = new object[uncachedClassStrings.Count * 3];
 
 			for (int i = 0; i < uncachedClassStrings.Count; i++)
 				{
 				if (i != 0)
 					{  queryText.Append(" OR");  }
 
-				queryText.Append(" ClassString=?");
-				queryParams[i] = uncachedClassStrings[i].ToString();
+				queryText.Append(" (Hierarchy=? AND LanguageID=? AND Symbol=?)");
+				queryParams[(i*3)] = (int)uncachedClassStrings[i].Hierarchy;
+				queryParams[(i*3)+1] = uncachedClassStrings[i].LanguageID;
+				queryParams[(i*3)+2] = uncachedClassStrings[i].Symbol.ToString();
 				}
 
 
