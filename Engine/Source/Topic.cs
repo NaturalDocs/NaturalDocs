@@ -106,7 +106,8 @@ namespace GregValure.NaturalDocs.Engine
 			BodyContext = 0x00100000,
 			BodyContextID = 0x00200000,
 
-			Contexts = PrototypeContext | BodyContext
+			Contexts = PrototypeContext | BodyContext,
+			Class = ClassString | ClassID
 			}
 
 
