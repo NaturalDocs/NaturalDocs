@@ -58,9 +58,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			bool ignoreClass = ((ignoreFields & Topic.IgnoreFields.ClassString) != 0);
 			bool ignoreContexts = ((ignoreFields & (Topic.IgnoreFields.BodyContext | Topic.IgnoreFields.PrototypeContext)) != 0);
 						
-			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Topics.Symbol, SymbolDefinitionNumber, " +
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
 																							  "Topics.ClassID, IsEmbedded, TopicTypeID, AccessLevel, Tags, " +
-																							  "CommentLineNumber, CodeLineNumber, Topics.LanguageID, " +
+																							  "CommentLineNumber, CodeLineNumber, LanguageID, " +
 																							  "PrototypeContextID, BodyContextID, FileID ");
 
 			if (!ignoreBody)
@@ -69,7 +69,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  queryText.Append(", length(Body) ");  }
 
 			if (!ignoreClass)
-				{  queryText.Append(", Classes.Hierarchy, Classes.LanguageID, Classes.Symbol ");  }
+				{  queryText.Append(", Classes.ClassString ");  }
 
 			if (!ignoreContexts)
 				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
@@ -136,13 +136,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					if (!ignoreClass)
 						{
 						if (topic.ClassID != 0)
-							{
-							topic.ClassString = ClassString.FromParameters( (ClassString.HierarchyType)query.IntColumn(columnIndex), 
-																													query.IntColumn(columnIndex + 1),
-																													SymbolString.FromExportedString(query.StringColumn(columnIndex + 2)) );
-							}
+							{  topic.ClassString = ClassString.FromExportedString(query.StringColumn(columnIndex));  }
 
-						columnIndex += 3;
+						columnIndex++;
 						}
 
 					if (!ignoreContexts)
@@ -155,9 +151,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topics.Add(topic);
 
 					if (!ignoreClass)
-						{
-						classIDLookupCache.Add(topic.ClassString, topic.ClassID);
-						}
+						{  classIDLookupCache.Add(topic.ClassString, topic.ClassID);  }
 
 					if (!ignoreContexts)
 						{
@@ -1671,19 +1665,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
 
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, Hierarchy, LanguageID, Symbol " + 
-																																		 "FROM Classes WHERE");
-			object[] queryParams = new object[uncachedClassStrings.Count * 3];
+			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, ClassString FROM Classes WHERE");
+			object[] queryParams = new object[uncachedClassStrings.Count];
 
 			for (int i = 0; i < uncachedClassStrings.Count; i++)
 				{
 				if (i != 0)
 					{  queryText.Append(" OR");  }
 
-				queryText.Append(" (Hierarchy=? AND LanguageID=? AND Symbol=?)");
-				queryParams[(i*3)] = (int)uncachedClassStrings[i].Hierarchy;
-				queryParams[(i*3)+1] = uncachedClassStrings[i].LanguageID;
-				queryParams[(i*3)+2] = uncachedClassStrings[i].Symbol.ToString();
+				queryText.Append(" ClassString=?");
+				queryParams[i] = uncachedClassStrings[i].ToString();
 				}
 
 
@@ -1693,11 +1684,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 			   while (query.Step())
 			      {  
-					ClassString classString = ClassString.FromParameters( (ClassString.HierarchyType)query.IntColumn(1),
-																													 query.IntColumn(2),
-																													 SymbolString.FromExportedString(query.StringColumn(3)) );
-
-					classIDLookupCache.Add(classString, query.IntColumn(0));  
+					classIDLookupCache.Add( ClassString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );
 					}
 			   }
 
@@ -1728,8 +1715,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, Hierarchy, LanguageID, Symbol, ReferenceCount) " +
-																								 "VALUES (?, ?, ?, ?, 0)") )
+			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, Hierarchy, ReferenceCount) " +
+																								"VALUES (?, ?, ?, 0)") )
 				{
 				var codeDB = Engine.Instance.CodeDB;
 
@@ -1737,7 +1724,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{
 					int id = codeDB.UsedClassIDs.LowestAvailable;
 
-					query.BindValues(id, (int)classString.Hierarchy, classString.LanguageID, classString.Symbol.ToString());
+					query.BindValues(id, classString.ToString(), (int)classString.Hierarchy);
 					query.Step();
 					query.Reset(true);
 

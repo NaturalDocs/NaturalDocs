@@ -20,36 +20,29 @@ Column: ClassID
 	The class identifier.
 
 
+Column: ClassString
+
+	(SQL Prototype)
+		ClassString TEXT NOT NULL
+	(end)
+	
+	The class information encoded with <Engine.Symbols.ClassString>.
+
+
 Column: Hierarchy
 
 	(SQL Prototype)
 		Hierarchy INTEGER NOT NULL
 	(end)
 
-	Which hierarchy the class belongs to.  It will be one of these values, which match the values of
+	Which hierarchy the class belongs to.  Although this information is encoded in <ClassString>, also having it
+	as a separate column allows you to use it as a filter in a query.
+	
+	It will be one of these values, which match the values of 
 	<GregValure.NaturalDocs.Engine.Symbols.ClassString.HierarchyType>:
 
 	1 - Classes
 	2 - Database
-
-
-Column: LanguageID
-
-	(SQL Prototype)
-		LanguageID INTEGER NOT NULL
-	(end)
-
-	The identifier of the language the class appears in, or zero if it's not relevant to the <Hierarchy>.
-	
-	
-Column: Symbol
-
-	(SQL Prototype)
-		Symbol TEXT NOT NULL
-	(end)
-	
-	The symbol, encoded with <Engine.Symbols.SymbolString>.  Note that this is NOT encoded with
-	<Engine.Symbols.ClassString>, as that combines it with the hierarchy and language ID.
 
 
 Column: ReferenceCount
@@ -75,16 +68,15 @@ Index: ClassesByID
 	Automatically created by ClassID being defined as a primary key.
 
 
-Index: ClassesByHierarchyAndSymbol
+Index: ClassesByString
 
 	(SQL Prototype)
-		CREATE INDEX ClassesByHierarchyAndSymbol ON Classes (Hierarchy, Symbol)
+		CREATE INDEX ClassesByString ON Classes (ClassString)
 	(end)
 
-	The values are in this order because:
 
-	- Building the menu will just need all classes by hierarchy and nothing else.
-	- Looking up a class ID will require hierarchy, symbol, and language ID.  However, there will only
-	   occasionally be the same symbol defined in multiple languages, and even then there wouldn't
-		be many entries for it.
-	- Language ID also isn't relevant if you're specifically looking up a database entry.
+Index: ClassesByHierarchy
+
+	(SQL Prototype)
+		CREATE INDEX ClassesByHierarchy ON Classes (Hierarchy)
+	(end)
