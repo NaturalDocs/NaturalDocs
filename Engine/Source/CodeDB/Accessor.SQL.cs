@@ -38,50 +38,47 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE and ORDER BY clauses, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *							 need to.
-		 *		ignoreFields - If you don't need every property in the <Topic> object you can set this to filter some out.  Not every
-		 *								 flag will be respected by the query but some that will save a lot of memory or processing time may be.
-		 *								 In debug builds <Topic> will enforce these settings regardless of whether the query filled them in or not 
-		 *								 to prevent programming errors.
+		 *		getTopicFlags - If you don't need every property in the <Topic> object you can use this to filter some out to save 
+		 *									 memory or processing time.  In debug builds <Topic> will enforce these settings to prevent programming 
+		 *									 errors.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
 		protected List<Topic> GetTopics (string whereClause, string orderByClause, object[] clauseParameters,
-																	 CancelDelegate cancelled, Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
+																	 CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
 			List<Topic> topics = new List<Topic>();
 
-			bool ignoreBody = ((ignoreFields & Topic.IgnoreFields.Body) != 0);
-			bool ignoreClass = ((ignoreFields & Topic.IgnoreFields.ClassString) != 0);
-			bool ignoreContexts = ((ignoreFields & (Topic.IgnoreFields.BodyContext | Topic.IgnoreFields.PrototypeContext)) != 0);
+			bool bodyLengthOnly = ((getTopicFlags & GetTopicFlags.BodyLengthOnly) != 0);
+			bool lookupClasses = ((getTopicFlags & GetTopicFlags.DontLookupClasses) == 0);
+			bool lookupContexts = ((getTopicFlags & GetTopicFlags.DontLookupContexts) == 0);
 						
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
 																							  "Topics.ClassID, IsEmbedded, TopicTypeID, AccessLevel, Tags, " +
 																							  "CommentLineNumber, CodeLineNumber, LanguageID, " +
 																							  "PrototypeContextID, BodyContextID, FileID ");
 
-			if (!ignoreBody)
-				{  queryText.Append(", Body ");  }
-			else
+			if (bodyLengthOnly)
 				{  queryText.Append(", length(Body) ");  }
+			else
+				{  queryText.Append(", Body ");  }
 
-			if (!ignoreClass)
+			if (lookupClasses)
 				{  queryText.Append(", Classes.ClassString ");  }
 
-			if (!ignoreContexts)
+			if (lookupContexts)
 				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
 																								
 			queryText.Append("FROM Topics ");
 
-			if (!ignoreClass)
-				{
-				queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = Topics.ClassID ");
-				}
+			if (lookupClasses)
+				{  queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = Topics.ClassID ");  }
 			
-			if (!ignoreContexts)
+			if (lookupContexts)
 				{  
 				queryText.Append("LEFT OUTER JOIN Contexts AS PContexts ON PContexts.ContextID = PrototypeContextID " +
 													"LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");  
@@ -126,14 +123,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.BodyContextID = query.IntColumn(15);  // will automatically convert to zero if null
 					topic.FileID = query.IntColumn(16);
 
-					if (!ignoreBody)
-						{  topic.Body = query.StringColumn(17);  }
-					else
+					if (bodyLengthOnly)
 						{  topic.BodyLength = query.IntColumn(17);  }
+					else
+						{  topic.Body = query.StringColumn(17);  }
 
 					int columnIndex = 18;
 
-					if (!ignoreClass)
+					if (lookupClasses)
 						{
 						if (topic.ClassID != 0)
 							{  topic.ClassString = ClassString.FromExportedString(query.StringColumn(columnIndex));  }
@@ -141,7 +138,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						columnIndex++;
 						}
 
-					if (!ignoreContexts)
+					if (lookupContexts)
 						{
 						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(columnIndex) );
 						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(columnIndex + 1) );
@@ -150,18 +147,25 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					topics.Add(topic);
 
-					if (!ignoreClass)
+					if (lookupClasses)
 						{  classIDLookupCache.Add(topic.ClassString, topic.ClassID);  }
 
-					if (!ignoreContexts)
+					if (lookupContexts)
 						{
 						contextIDLookupCache.Add(topic.PrototypeContext, topic.PrototypeContextID);
 						contextIDLookupCache.Add(topic.BodyContext, topic.BodyContextID);
 						}
 
-					// Set this last so that we don't cause exceptions by filling in fields that should have been ignored.  From
-					// this point forward it will be enforced, including preventing access to ones we filled in unnecessarily.
-					topic.IgnoredFields = ignoreFields;
+					Topic.IgnoreFields ignoredFields = Topic.IgnoreFields.None;
+
+					if (bodyLengthOnly)
+						{  ignoredFields |= Topic.IgnoreFields.Body;  }
+					if (!lookupClasses)
+						{  ignoredFields |= Topic.IgnoreFields.ClassString;  }
+					if (!lookupContexts)
+						{  ignoredFields |= Topic.IgnoreFields.PrototypeContext | Topic.IgnoreFields.BodyContext;  }
+
+					topic.IgnoredFields = ignoredFields;
 					}
 				}
 
@@ -183,12 +187,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
+		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			object[] clauseParams = new object[1];
 			clauseParams[0] = fileID;
 
-			return GetTopics("Topics.FileID=?", "Topics.CommentLineNumber ASC", clauseParams, cancelled, ignoreFields);
+			return GetTopics("Topics.FileID=?", "Topics.CommentLineNumber ASC", clauseParams, cancelled, getTopicFlags);
 			}
 			
 			
@@ -206,7 +210,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled, 
-																	 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
+																	 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			StringBuilder whereClause = new StringBuilder();
 			List<object> clauseParameters = new List<object>();
@@ -226,7 +230,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (clauseParameters.Count == 0)
 				{  return new List<Topic>();  }
 
-			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, ignoreFields);
+			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, getTopicFlags);
 			}
 			
 			
@@ -244,7 +248,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled, 
-																						 Topic.IgnoreFields ignoreFields = Topic.IgnoreFields.None)
+																						 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			StringBuilder whereClause = new StringBuilder();
 			List<object> clauseParameters = new List<object>();
@@ -261,7 +265,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				clauseParameters.Add(endingSymbol.ToString());
 				}
 
-			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, ignoreFields);
+			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, getTopicFlags);
 			}
 			
 			

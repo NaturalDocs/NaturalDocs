@@ -60,6 +60,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Enum: GetTopicFlags
+		 * 
+		 * When querying topics from the database, not all fields may be needed in all circumstances.  This is a
+		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Topic>, 
+		 * so if you try to access any of these fields an exception will be thrown.
+		 * 
+		 * Everything - All <Topic> fields will be retrieved from the database.
+		 * 
+		 * DontLookupClasses - Only <Topic.ClassID> will be retrieved.  It will not look up <Topic.ClassString> which
+		 *											will prevent a table join if you don't need it.
+		 *	 DontLookupContexts - Only <Topic.PrototypeContextID> and <Topic.BodyContextID> will be retrieved.  It
+		 *											  will not look up <Topic.PrototypeContext> or <Topic.BodyContext> which will prevent
+		 *											  table joins if you don't need them.
+		 *	 BodyLengthOnly - Only <Topic.BodyLength> will be retrieved.  It will not retrieve <Topic.Body> which will
+		 *									  prevent unnecessary memory use if you don't need it.
+		 */
+		[Flags]
+		public enum GetTopicFlags : byte
+			{
+			Everything = 0x00,
+
+			DontLookupClasses = 0x01,
+			DontLookupContexts = 0x02,
+			BodyLengthOnly = 0x04
+			}
+
+
 		
 		// Group: Functions
 		// __________________________________________________________________________
