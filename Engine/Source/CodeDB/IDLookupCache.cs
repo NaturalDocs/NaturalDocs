@@ -2,10 +2,12 @@
  * Class: GregValure.NaturalDocs.Engine.CodeDB.IDLookupCache
  * ____________________________________________________________________________
  * 
- * A class that provides a local cache of string to ID mappings.
+ * A class that provides a local cache of string to ID mappings.  The string class must implement
+ * <Collections.ILookupKey>.
  * 
  * This is preferable to a <Engine.Collections.StringTable> because it doesn't need the key normalization
- * and it has different behavior when dealing with preexisting, missing, or null keys.
+ * and it has different behavior when dealing with preexisting, missing, or null keys.  It also uses
+ * <Collections.ILookupKey> to allow for per-item case insensitivity like in <Symbols.ClassStrings>.
  * 
  */
 
@@ -19,7 +21,7 @@ using System;
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
 	{
-	public class IDLookupCache<LookupType> : System.Collections.Generic.Dictionary<string, int>
+	public class IDLookupCache<LookupType> : System.Collections.Generic.Dictionary<string, int> where LookupType: Collections.ILookupKey
 		{
 		
 		/* Function: Add
@@ -39,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void Remove (LookupType key)
 			{
 			if (key != null)
-				{  base.Remove(key.ToString());  }
+				{  base.Remove(key.LookupKey);  }
 			}
 			
 			
@@ -51,7 +53,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (key == null)
 				{  return true;  }
 			else
-				{  return base.ContainsKey(key.ToString());  }
+				{  return base.ContainsKey(key.LookupKey);  }
 			}
 
 
@@ -64,7 +66,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{
-				string stringKey = key.ToString();
+				string stringKey = key.LookupKey;
 
 				if (stringKey == null)
 					{  return 0;  }
@@ -76,7 +78,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			set
 				{  
-				string stringKey = key.ToString();
+				string stringKey = key.LookupKey;
 
 				if (stringKey == null)
 					{

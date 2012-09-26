@@ -85,11 +85,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			connection.Execute("CREATE TABLE Classes (ClassID INTEGER PRIMARY KEY NOT NULL, " +
-																							"ClassString TEXT NOT NULL, " +
+																							"ClassString TEXT, " +
+																							"LookupKey TEXT NOT NULL, " +
 																							"Hierarchy INTEGER NOT NULL, " +
 																							"ReferenceCount INTEGER NOT NULL )");
 																	   
-			connection.Execute("CREATE INDEX ClassesByString ON Classes (ClassString)");
+			connection.Execute("CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)");
 			connection.Execute("CREATE INDEX ClassesByHierarchy ON Classes (Hierarchy)");
 
 

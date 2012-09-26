@@ -20,9 +20,8 @@ using System.Collections.Generic;
 
 namespace GregValure.NaturalDocs.Engine.Symbols
 	{
-	public struct ContextString : IComparable
+	public struct ContextString : IComparable, Collections.ILookupKey
 		{
-		
 		// Group: Constants
 		// __________________________________________________________________________
 
@@ -277,6 +276,16 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * Returns the raw string for use with functions like <GetRawTextScope()> and <GetRawTextUsingStatement()>.
 		 */
 		public string RawText
+			{
+			get
+				{  return contextString;  }
+			}
+
+
+		/* Property: LookupKey
+		 * The key to use with <CodeDB.IDLookupCache>.
+		 */
+		public string LookupKey
 			{
 			get
 				{  return contextString;  }

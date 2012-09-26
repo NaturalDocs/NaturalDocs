@@ -68,7 +68,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  queryText.Append(", Body ");  }
 
 			if (lookupClasses)
-				{  queryText.Append(", Classes.ClassString ");  }
+				{  queryText.Append(", ifnull(Classes.ClassString, Classes.LookupKey) ");  }
 
 			if (lookupContexts)
 				{  queryText.Append(", PContexts.ContextString, BContexts.ContextString ");  }
@@ -1669,7 +1669,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
 
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, ClassString FROM Classes WHERE");
+			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, ifnull(ClassString, LookupKey) " + 
+																																					 "FROM Classes WHERE");
 			object[] queryParams = new object[uncachedClassStrings.Count];
 
 			for (int i = 0; i < uncachedClassStrings.Count; i++)
@@ -1677,8 +1678,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				if (i != 0)
 					{  queryText.Append(" OR");  }
 
-				queryText.Append(" ClassString=?");
-				queryParams[i] = uncachedClassStrings[i].ToString();
+				queryText.Append(" LookupKey=?");
+				queryParams[i] = uncachedClassStrings[i].LookupKey;
 				}
 
 
@@ -1719,8 +1720,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, Hierarchy, ReferenceCount) " +
-																								"VALUES (?, ?, ?, 0)") )
+			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, Hierarchy, ReferenceCount) " +
+																								"VALUES (?, ?, ?, ?, 0)") )
 				{
 				var codeDB = Engine.Instance.CodeDB;
 
@@ -1728,7 +1729,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{
 					int id = codeDB.UsedClassIDs.LowestAvailable;
 
-					query.BindValues(id, classString.ToString(), (int)classString.Hierarchy);
+					query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
+													  classString.LookupKey, (int)classString.Hierarchy);
 					query.Step();
 					query.Reset(true);
 

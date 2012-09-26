@@ -23,10 +23,23 @@ Column: ClassID
 Column: ClassString
 
 	(SQL Prototype)
-		ClassString TEXT NOT NULL
+		ClassString TEXT
 	(end)
 	
-	The class information encoded with <Engine.Symbols.ClassString>.
+	The class information encoded with <Engine.Symbols.ClassString>.  If this is the same as <LookupKey> this
+	will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or 
+	"coalesce(ClassString, LookupKey)" in the select statement.
+
+
+Column: LookupKey
+
+	(SQL Prototype)
+		LookupKey TEXT NOT NULL
+	(end)
+
+	This is the same as <ClassString>, except that if the language is case insensitive the symbol portion will be in 
+	lowercase.  You look up records with this key to allow for case insensitivity but you use <ClassString> so you 
+	can preserve the case as it was entered.
 
 
 Column: Hierarchy
@@ -68,10 +81,10 @@ Index: ClassesByID
 	Automatically created by ClassID being defined as a primary key.
 
 
-Index: ClassesByString
+Index: ClassesByLookupKey
 
 	(SQL Prototype)
-		CREATE INDEX ClassesByString ON Classes (ClassString)
+		CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)
 	(end)
 
 

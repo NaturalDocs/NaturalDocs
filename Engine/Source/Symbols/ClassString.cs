@@ -15,11 +15,12 @@
 
 
 using System;
+using System.Text;
 
 
 namespace GregValure.NaturalDocs.Engine.Symbols
 	{
-	public struct ClassString : IComparable
+	public struct ClassString : IComparable, Collections.ILookupKey
 		{
 
 		// Group: Types
@@ -57,9 +58,10 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		
 		/* Function: ClassString
 		 */
-		private ClassString (string newClassString)
+		private ClassString (string newClassString, string newLookupKey)
 			{
 			classString = newClassString;
+			lookupKey = newLookupKey;
 			}
 
 			
@@ -73,36 +75,62 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			// SymbolString plus hierarchy, language ID, and separator.  It's almost definitely only going to use one char for the
 			// language ID, but allocating a second one just to be certain isn't a big deal.
-			System.Text.StringBuilder classString = new System.Text.StringBuilder(symbol.ToString().Length + 4);
+			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 4);
+
+			bool caseSensitive = Engine.Instance.Languages.FromID(languageID).CaseSensitive;
 
 			if (hierarchy == HierarchyType.Class)
-				{  classString.Append('C');  }
+				{  
+				if (caseSensitive)
+					{  stringBuilder.Append('C');  }
+				else
+					{  stringBuilder.Append('c');  }
+				}
 			else // (hierarchy == HierarchyType.Database)
-				{  classString.Append('D');  }
+				{  
+				if (caseSensitive)
+					{  stringBuilder.Append('D');  }
+				else
+					{  stringBuilder.Append('d');  }
+				}
 
 			do
 				{
 				int value = languageID & 0x0000003F;
 
 				if (value < 10)
-					{  classString.Append((char)('0' + value));  }
+					{  stringBuilder.Append((char)('0' + value));  }
 				else if (value < 36)
-					{  classString.Append((char)('A' + (value - 10)));  }
+					{  stringBuilder.Append((char)('A' + (value - 10)));  }
 				else if (value < 62)
-					{  classString.Append((char)('a' + (value - 36)));  }
+					{  stringBuilder.Append((char)('a' + (value - 36)));  }
 				else if (value == 62)
-					{  classString.Append('!');  }
+					{  stringBuilder.Append('!');  }
 				else // (value == 63)
-					{  classString.Append('@');  }
+					{  stringBuilder.Append('@');  }
 
 				languageID >>= 6;
 				}
 			while (languageID > 0);
 
-			classString.Append(SeparatorChar);
-			classString.Append(symbol.ToString());
+			stringBuilder.Append(SeparatorChar);
 
-			return new ClassString(classString.ToString());
+			string symbolString = symbol.ToString();
+			stringBuilder.Append(symbolString);
+
+			string classString = stringBuilder.ToString();
+			string lookupKey;
+
+			if (caseSensitive)
+				{  lookupKey = classString;  }
+			else
+				{
+				stringBuilder.Remove(stringBuilder.Length - symbolString.Length, symbolString.Length);
+				stringBuilder.Append(symbolString.ToLower());
+				lookupKey = stringBuilder.ToString();
+				}
+
+			return new ClassString(classString, lookupKey);
 			}
 
 
@@ -117,15 +145,33 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static public ClassString FromExportedString (string exportedClassString)
 			{
-			if (exportedClassString != null)
+			if (exportedClassString == null || exportedClassString.Length == 0)
+				{  return new ClassString(null, null);  }
+
+			if (exportedClassString[0] == SeparatorChars.Escape)
+				{  throw new FormatException("You cannot convert an escaped string to a ClassString.");  }
+
+			string classString = exportedClassString;
+			string lookupKey;
+
+			if (classString[0] >= 'A' && classString[0] <= 'Z')
+				{  lookupKey = classString;  }
+			else
 				{
-				if (exportedClassString.Length == 0)
-					{  exportedClassString = null;  }
-				else if (exportedClassString[0] == SeparatorChars.Escape)
-					{  throw new FormatException("You cannot convert an escaped string to a ClassString.");  }
+				StringBuilder stringBuilder = new StringBuilder(classString.Length);
+
+				int separatorIndex = classString.IndexOf(SeparatorChar);
+				stringBuilder.Append(classString, 0, separatorIndex + 1);
+
+				// Turning the entire thing to lowercase requires one allocation and only adds a few extra characters of work.
+				// If we extracted a substring then turned that into lowercase it would require two allocations.
+				string lowercaseClassString = classString.ToLower();
+				stringBuilder.Append(lowercaseClassString, separatorIndex + 1, lowercaseClassString.Length - (separatorIndex + 1));
+
+				lookupKey = stringBuilder.ToString();
 				}
 
-			return new ClassString(exportedClassString);
+			return new ClassString(classString, lookupKey);
 			}
 			
 		
@@ -158,9 +204,9 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			{
 			get
 				{
-				if (classString == null || classString[0] == 'C')
+				if (classString == null || classString[0] == 'C' || classString[0] == 'c')
 					{  return HierarchyType.Class;  }
-				else if (classString[0] == 'D')
+				else if (classString[0] == 'D' || classString[0] == 'd')
 					{  return HierarchyType.Database;  }
 				else
 					{  throw new FormatException();  }
@@ -209,6 +255,16 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Property: LookupKey
+		 * The key to use with <CodeDB.IDLookupCache>.
+		 */
+		public string LookupKey
+			{
+			get
+				{  return lookupKey;  }
+			}
+
+
 			
 		// Group: Operators
 		// __________________________________________________________________________
@@ -223,6 +279,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 						
 		/* Operator: operator ==
+		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
 		public static bool operator== (ClassString a, object b)
 			{
@@ -232,6 +289,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 		/* Operator: operator !=
+		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
 		public static bool operator!= (ClassString a, object b)
 			{
@@ -239,7 +297,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 		/* Function: ToString
-		 * Returns the ContextString as a string.
+		 * Returns the ContextString as a string.  This is always case sensitive, unlike <LookupKey>.
 		 */
 		public override string ToString ()
 			{
@@ -247,34 +305,37 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 			
 		/* Function: GetHashCode
+		 * This is generated from <LookupKey> instead of <ToString()>.
 		 */
 		public override int GetHashCode ()
 			{
-			if (classString == null)
+			if (lookupKey == null)
 				{  return 0;  }
 			else
-				{  return classString.GetHashCode();  }
+				{  return lookupKey.GetHashCode();  }
 			}
 
 		/* Function: Equals
+		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
 		public override bool Equals (object other)
 			{
 			if (other == null)
-				{  return (classString == null);  }
+				{  return (lookupKey == null);  }
 			else if (other is ClassString)
-				{  return (classString == ((ClassString)other).classString);  }
+				{  return (lookupKey == ((ClassString)other).lookupKey);  }
 			else if (other is string)
-				{  return (classString == (string)other);  }
+				{  return (lookupKey == (string)other);  }
 			else
 				{  return false;  }
 			}
 			
 		/* Function: CompareTo
+		 * This compares using <LookupKey> instead of <ToString()>.
 		 */
 		public int CompareTo (object other)
 			{
-			return classString.CompareTo(other);
+			return lookupKey.CompareTo(other);
 			}
 		
 			
@@ -287,7 +348,8 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * 
 		 * The combined class string.
 		 * 
-		 * - The first character will be 'C' for class or 'D' for database.
+		 * - The first character will be 'C' or 'c' for class or 'D' or 'd' for database.
+		 *   - Uppercase means the language is case sensitive, lowercase means it's not.
 		 * - Next will be the language ID encoded in base64 using the following charset: 0-9, A-Z, a-z, !, @.
 		 *   - The encoding is little endian, so the first characters are the lowest order bits.  This is just for ease
 		 *      of encoding since it's unlikely we'll need more than one char in practice.
@@ -299,6 +361,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * - Next will be an embedded <SymbolString> representing the class.
 		 */
 		private string classString;
+
+		/* string: lookupKey
+		 * If the language is case sensitive, this will be the same as <classString>.  If it's not, this will be <classString>
+		 * with the <SymbolString> part in lowercase.
+		 */
+		private string lookupKey;
 	
 		}
 	}
