@@ -6,7 +6,6 @@
  * 
  * Usage:
  * 
- *		- Add all file sources with <AddFileSource()>.  This must be done before adding files with <AddFile()>.
  *		- Add all files with <AddFile()>.
  *		- If desired, condense unnecessary folder levels with <Condense()>.  You cannot add more entries after calling
  *		  this.
@@ -39,81 +38,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   }
 
 
-		/* Function: AddFileSource
-		 * Adds a <Files.FileSource> to the tree.  This must be done for all FileSources before calling <AddFile()>.
-		 */
-		public void AddFileSource (Files.FileSource fileSource)
-		   {
-			#if DEBUG
-			if (isCondensed)
-				{  throw new Exception("Cannot add a new FileSource to the menu once it's been condensed.");  }
-			#endif
-
-			if (rootFileMenu == null)
-				{
-				rootFileMenu = new MenuEntries.Base.Container();
-				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
-				}
-
-		   MenuEntries.File.FileSource fileSourceEntry = new MenuEntries.File.FileSource(fileSource);
-		   fileSourceEntry.Parent = rootFileMenu;
-
-		   rootFileMenu.Members.Add(fileSourceEntry);
-		   }
-
-
-		/* Function: FindFileSourceOf
-		 * Finds the FileSource entry that contains the passed file.  This can only be used after all FileSources have
-		 * been added with <AddFileSource()>.
-		 */
-		public MenuEntries.File.FileSource FindFileSourceOf (Files.File file)
-			{
-			#if DEBUG
-			if (rootFileMenu == null || rootFileMenu.Members == null || rootFileMenu.Members.Count == 0)
-				{  throw new Exception("Tried to use FindFileSourceOf() before any FileSources were added to the menu.");  }
-			#endif
-
-			// If the menu only had one file source and it was condensed, the root file entry may have been replaced
-			// by that file source.
-			if (rootFileMenu is MenuEntries.File.FileSource)
-				{
-				MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)rootFileMenu;
-
-				#if DEBUG
-				if (fileSourceEntry.WrappedFileSource.Contains(file.FileName) == false)
-					{  throw new Exception("Could not find the file source of file " + file.FileName + " in the menu.");  }
-				#endif
-
-				return fileSourceEntry;
-				}
-
-			// We're assuming that the only other possibility is a container with a flat list of FileSources.  If we later allow 
-			// FileSources to be put in nested groups this will need to be updated.
-			else
-				{
-				foreach (var member in rootFileMenu.Members)
-					{
-					if (member is MenuEntries.File.FileSource)
-						{
-						MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)member;
-						
-						if (fileSourceEntry.WrappedFileSource.Contains(file.FileName))
-							{  return fileSourceEntry;  }
-						}
-					}
-
-				#if DEBUG
-				throw new Exception("Could not find the file source of file " + file.FileName + " in the menu.");
-				#else
-				return null;  // This should never happen if the class was used correctly.
-				#endif
-				}
-			}
-
-
 		/* Function: AddFile
-		 * Adds a file to the tree.  Its corresponding file source must have been added with <AddFileSource()>
-		 * before calling this function.
+		 * Adds a file to the menu tree.
 		 */
 		public void AddFile (Files.File file)
 		   {
@@ -125,13 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		   // Find which file source owns this file and generate a relative path to it.
 
-		   MenuEntries.File.FileSource fileSourceEntry = FindFileSourceOf(file);
-
-			#if DEBUG
-			if (fileSourceEntry == null)
-				{  throw new Exception("Couldn't find the file source of " + file.FileName + " in the menu.");  }
-			#endif
-
+		   MenuEntries.File.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
 		   Path relativePath = fileSourceEntry.WrappedFileSource.MakeRelative(file.FileName);
 
 
@@ -211,6 +131,91 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   {
 		   rootFileMenu.Sort();
 		   }
+
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
+		/* Function: FindOrCreateFileSourceEntryOf
+		 * Finds or creates the file source entry associated with the passed file.
+		 */
+		protected MenuEntries.File.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
+			{
+			var fileSource = Engine.Instance.Files.FileSourceOf(file);
+			var fileSourceEntry = FindFileSourceEntry(fileSource);
+
+			if (fileSourceEntry == null)
+				{  fileSourceEntry = CreateFileSourceEntry(fileSource);  }
+
+			return fileSourceEntry;
+			}
+
+
+		/* Function: CreateFileSourceEntry
+		 * Creates an entry for the file source, adds it to the menu, and returns it.  It will also create the <rootFileMenu> 
+		 * container if necessary.
+		 */
+		protected MenuEntries.File.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
+		   {
+			#if DEBUG
+			if (FindFileSourceEntry(fileSource) != null)
+				{  throw new Exception ("Tried to create a file source entry that already existed in the menu.");  }
+			#endif
+
+			if (rootFileMenu == null)
+				{
+				rootFileMenu = new MenuEntries.Base.Container();
+				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
+				}
+
+		   MenuEntries.File.FileSource fileSourceEntry = new MenuEntries.File.FileSource(fileSource);
+		   fileSourceEntry.Parent = rootFileMenu;
+
+		   rootFileMenu.Members.Add(fileSourceEntry);
+			return fileSourceEntry;
+		   }
+
+
+		/* Function: FindFileSourceEntry
+		 * Returns the menu entry that contains the passed file source, or null if there isn't one yet.
+		 */
+		protected MenuEntries.File.FileSource FindFileSourceEntry (Files.FileSource fileSource)
+			{
+			if (rootFileMenu == null)
+				{  return null;  }
+
+			// If the menu only had one file source and it was condensed, the root file entry may have been replaced
+			// by that file source.
+			else if (rootFileMenu is MenuEntries.File.FileSource)
+				{
+				MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)rootFileMenu;
+
+				if (fileSourceEntry.WrappedFileSource == fileSource)
+					{  return fileSourceEntry;  }
+				else
+					{  return null;  }
+				}
+
+			// We're assuming that the only other possibility is a container with a flat list of FileSources.  If we later allow 
+			// FileSources to be put in nested groups this will need to be updated.
+			else
+				{
+				foreach (var member in rootFileMenu.Members)
+					{
+					if (member is MenuEntries.File.FileSource)
+						{
+						MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)member;
+						
+						if (fileSourceEntry.WrappedFileSource == fileSource)
+							{  return fileSourceEntry;  }
+						}
+					}
+
+				return null;
+				}
+			}
 
 
 

@@ -28,12 +28,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			HTMLMenu htmlMenu = new HTMLMenu(this);
 
-			foreach (Files.FileSource fileSource in Instance.Files.FileSources)
-				{
-				if (fileSource.Type == Files.InputType.Source)
-					{  htmlMenu.AddFileSource(fileSource);  }
-				}
-
 			lock (writeLock)
 				{
 				foreach (int fileID in sourceFilesWithContent)
