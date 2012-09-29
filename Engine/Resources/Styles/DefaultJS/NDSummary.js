@@ -243,6 +243,8 @@ var NDSummary = new function ()
 		else
 			{  summaryContainer.appendChild(newContent);  }
 
+		newContent.scrollIntoView(true);
+		
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)
 			{  NDFramePage.SizeSummaryToContent();  }
