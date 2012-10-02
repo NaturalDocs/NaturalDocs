@@ -820,7 +820,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						Monitor.Exit(writeLock);
 						haveLock = false;
 
-						BuildMenu(cancelDelegate);
+						if (accessor == null)
+							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+
+						BuildMenu(accessor, cancelDelegate);
 
 						Monitor.Enter(writeLock);
 						haveLock = true;

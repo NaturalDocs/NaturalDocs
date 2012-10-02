@@ -10,7 +10,9 @@
 
 
 using System;
+using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Symbols;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
@@ -24,9 +26,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		/* Function: BuildMenu
 		 */
-		protected void BuildMenu (CancelDelegate cancelDelegate)
+		protected void BuildMenu (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			HTMLMenu htmlMenu = new HTMLMenu(this);
+
+
+			// Build file menu
 
 			lock (writeLock)
 				{
@@ -38,6 +43,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					htmlMenu.AddFile(Instance.Files.FromID(fileID));
 					}
 				}
+
+
+			// Build class menu
+
+			List<ClassString> classStrings = null;
+
+			accessor.GetReadOnlyLock();
+			try
+				{  classStrings = accessor.GetClasses(ClassString.HierarchyType.Class, cancelDelegate);  }
+			finally
+				{  accessor.ReleaseLock();  }
+
+			foreach (var classString in classStrings)
+				{
+				if (cancelDelegate())
+					{  return;  }
+
+				htmlMenu.AddClass(classString);
+				}
+
+
+			// Condense, sort, and build
 
 			htmlMenu.Condense();
 			
@@ -53,6 +80,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (cancelDelegate())
 				{  return;  }
+
 
 			// Clear out any old menu files that are no longer in use.
 

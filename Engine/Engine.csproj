@@ -113,6 +113,7 @@
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
+    <Compile Include="Source\Output\Builders\HTML.Class.cs" />
     <Compile Include="Source\Output\Builders\HTMLMenu.cs" />
     <Compile Include="Source\Output\Builders\HTMLElement.cs" />
     <Compile Include="Source\Output\Builders\HTMLSummary.cs" />

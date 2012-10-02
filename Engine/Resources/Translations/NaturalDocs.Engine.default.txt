@@ -35,6 +35,7 @@ HTML.RootFolderName: Files xxx
 HTML.Close: Close
 
 Menu.Files: Files
+Menu.Classes: Classes
 
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan

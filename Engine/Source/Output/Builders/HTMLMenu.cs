@@ -53,7 +53,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Build
 		 * Generates JSON files for all entries in the menu.  It returns a <StringTable> mapping the file type strings ("files", 
 		 * "classes", etc.) to a <IDObjects.NumberSet> representing all the files that were generated.  So "files.js", "files2.js",
-		 * and "files3.js" would map to "files" -> [1-3].
+		 * and "files3.js" would map to "files" -> {1-3}.
 		 */
 		public StringTable<IDObjects.NumberSet> Build ()
 			{
@@ -81,6 +81,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				BuildOutput(RootFileMenu);
 				}
 
+			if (RootClassMenu != null)
+				{
+				GenerateJSON(RootClassMenu);
+				SegmentMenu(RootClassMenu, "classes", ref outputFiles);
+				BuildOutput(RootClassMenu);
+				}
+
 
 			// Build tab information file
 
@@ -99,6 +106,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				tabContainers.Add(RootFileMenu);
 				tabTypes.Add("File");
+				}
+			if (RootClassMenu != null)
+				{
+				tabContainers.Add(RootClassMenu);
+				tabTypes.Add("Class");
 				}
 
 			for (int i = 0; i < tabContainers.Count; i++)
@@ -125,7 +137,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 
 				tabInformation.Append(",\"");
-				tabInformation.StringEscapeAndAppend(extraData.DataFileName );
+				tabInformation.StringEscapeAndAppend(extraData.DataFileName);
 				tabInformation.Append("\"]");
 
 				if (i < tabContainers.Count - 1)
@@ -453,11 +465,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			 */
 			public void GenerateJSON (Builders.HTML htmlBuilder, HTMLMenu menu)
 				{
-				#if DEBUG
-				if ((menuEntry is MenuEntries.File.File) == false)
-					{  throw new Exception("HTMLMenu can only generate JSON for target entries that are files.");  }
-				#endif
-
 				StringBuilder output = new StringBuilder();
 
 				output.Append("[1,\"");
@@ -467,7 +474,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				output.Append('"');
 
-				string hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath( (menuEntry as MenuEntries.File.File).WrappedFile.FileName );
+				string hashPath;
+				
+				if (menuEntry is MenuEntries.File.File)
+					{  hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath( (menuEntry as MenuEntries.File.File).WrappedFile.FileName );  }
+				else if (menuEntry is MenuEntries.Class.Class)
+					{  hashPath = htmlBuilder.Class_OutputFileNameOnlyHashPath( (menuEntry as MenuEntries.Class.Class).WrappedClassString );  }
+				#if DEBUG
+				else
+					{  throw new Exception ("Don't know how to generate JSON for target \"" + menuEntry.Title + "\".");  }
+				#endif
 
 				if (hashPath != htmlTitle)
 					{
@@ -541,11 +557,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			 */
 			public void GenerateJSON (Builders.HTML htmlBuilder, HTMLMenu menu)
 				{
-				#if DEBUG
-				if (menuEntry is MenuEntries.File.Folder && menuEntry.Parent == null)
-					{  throw new Exception("Parent must be defined before generating JSON for a folder.");  }
-				#endif
-
 				StringBuilder output = new StringBuilder();
 
 				output.Append("[2,");
@@ -555,7 +566,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (menuEntry.CondensedTitles == null)
 					{
-					// xxx This is for single file sources that don't have titles.  This shouldn't be necessary once condensing is turned on.
 					if (menuEntry.Title == null)
 						{  output.Append("undefined");  }
 					else
@@ -590,11 +600,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)menuEntry;
 					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number,
-																															  fileSourceEntry.CondensedPathFromFileSource );
+																													  fileSourceEntry.CondensedPathFromFileSource );
 					}
 				else if (menuEntry is MenuEntries.File.Folder)
 					{
 					MenuEntries.Base.Container container = menuEntry.Parent;
+
+					#if DEBUG
+					if (container == null)
+						{  throw new Exception ("Parent must be defined when generating JSON for menu folder \"" + menuEntry.Title + "\".");  }
+					#endif
 
 					while ((container is MenuEntries.File.FileSource) == false)
 						{
@@ -602,7 +617,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 						#if DEBUG
 						if (container == null)
-							{  throw new Exception ("Couldn't find a file source among the folder's parents when generating JSON.");  }
+							{  throw new Exception ("Couldn't find a file source among the folder \"" + menuEntry.Title + "\"'s parents when generating JSON.");  }
 						#endif
 						}
 
@@ -610,15 +625,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)container;
 
 					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, 
-																															  folderEntry.PathFromFileSource );
+																													  folderEntry.PathFromFileSource );
 					}
-				else if (menuEntry == menu.RootFileMenu)
+				else if (menuEntry is MenuEntries.Class.Language)
+					{
+					hashPath = htmlBuilder.Class_OutputFolderHashPath( (menuEntry as MenuEntries.Class.Language).WrappedLanguage );
+					}
+				else if (menuEntry is MenuEntries.Class.Scope)
+					{
+					MenuEntries.Base.Container container = menuEntry.Parent;
+
+					#if DEBUG
+					if (container == null)
+						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + menuEntry.Title + "\".");  }
+					#endif
+
+					while ((container is MenuEntries.Class.Language) == false)
+						{
+						container = container.Parent;
+
+						#if DEBUG
+						if (container == null)
+							{  throw new Exception ("Couldn't find a language among the scope \"" + menuEntry.Title + "\"'s parents when generating JSON.");  }
+						#endif
+						}
+
+					MenuEntries.Class.Scope scopeEntry = (MenuEntries.Class.Scope)menuEntry;
+					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)container;
+
+					hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
+					}
+				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu)
 					{
 					hashPath = null;
 					}
 				#if DEBUG
 				else
-					{  throw new Exception ("Could not generate JSON for container " + menuEntry.Title + ".");  }
+					{  throw new Exception ("Don't know how to generate JSON for container \"" + menuEntry.Title + "\".");  }
 				#endif
 
 				if (hashPath == null)
