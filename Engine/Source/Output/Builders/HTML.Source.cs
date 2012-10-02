@@ -370,7 +370,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// Since we're building a string we can't rely on Path to simplify out ./					
 			if (relativeFolder != null && relativeFolder != ".")
 				{
-				result.Append(SanitizePath(relativeFolder).ToURL());
+				result.Append(SanitizePath(relativeFolder.ToURL()));
 				result.Append('/');
 				}
 
@@ -420,16 +420,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Source_OutputFileNameOnly
 		 * Returns the output file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public static Path Source_OutputFileNameOnly (Path filename)
+		public Path Source_OutputFileNameOnly (Path filename)
 			{
 			string nameString = filename.NameWithoutPath.ToString();
-
-			// We can't have dots in the file name because Apache will try to execute Script.pl.html even though .pl is not
-			// the last extension.  Dots in folder names are okay though.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + ".html";
+			return SanitizePath(nameString, true) + ".html";
 			}
 
 
@@ -465,15 +459,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Source_ToolTipsFileNameOnly
 		 * Returns the tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public static Path Source_ToolTipsFileNameOnly (Path filename)
+		public Path Source_ToolTipsFileNameOnly (Path filename)
 			{
 			string nameString = filename.NameWithoutPath.ToString();
-
-			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + "-ToolTips.js";
+			return SanitizePath(nameString, true) + "-ToolTips.js";
 			}
 
 
@@ -499,15 +488,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Source_SummaryFileNameOnly
 		 * Returns the summary file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public static Path Source_SummaryFileNameOnly (Path filename)
+		public Path Source_SummaryFileNameOnly (Path filename)
 			{
 			string nameString = filename.NameWithoutPath.ToString();
-
-			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + "-Summary.js";
+			return SanitizePath(nameString, true) + "-Summary.js";
 			}
 
 
@@ -533,15 +517,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		/* Function: Source_SummaryToolTipsFileNameOnly
 		 * Returns the summary tooltips file name of the passed file.  Any path attached to it will be ignored and not included in the result.
 		 */
-		public static Path Source_SummaryToolTipsFileNameOnly (Path filename)
+		public Path Source_SummaryToolTipsFileNameOnly (Path filename)
 			{
 			string nameString = filename.NameWithoutPath.ToString();
-
-			// This is just for consistency with Source_OutputFileNameOnly.  I'm not sure if we actually need it.
-			nameString = nameString.Replace('.', '-');
-			
-			nameString = SanitizePathString(nameString);
-			return nameString + "-SummaryToolTips.js";
+			return SanitizePath(nameString, true) + "-SummaryToolTips.js";
 			}
 
 
@@ -568,13 +547,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			hashPath.Replace('\t', ' ');
 
-			// Remove percent signs so they don't conflict with URI encoding.
-			hashPath.Replace('%', ' ');
-
-			// Remove question marks because IE 6 will truncate the hash string if it appears in one.
-			hashPath.Replace('?', ' ');
-
-			// Remove all whitespace unless it separates two text characters.  Replace what remains with underscores.
+			// Remove all whitespace unless it separates two text characters.
 			int i = 0;
 			while (i < hashPath.Length)
 				{
@@ -584,10 +557,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  hashPath.Remove(i, 1);  }
 					else if (Tokenizer.FundamentalTypeOf(hashPath[i - 1]) == FundamentalType.Text &&
 								 Tokenizer.FundamentalTypeOf(hashPath[i + 1]) == FundamentalType.Text)
-						{
-						hashPath[i] = '_';
-						i++;
-						}
+						{  i++;  }
 					else
 						{  hashPath.Remove(i, 1);  }
 					}
@@ -618,6 +588,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					string classSymbol = fullSymbol.Substring(0, fullSymbol.Length - titleSymbol.Length);
 					string memberOperator = Engine.Instance.Languages.FromID(topic.LanguageID).MemberOperator;
+
+					// We only support :: and . in hash paths.  Default to . for anything else.
+					if (memberOperator != "::")
+						{  memberOperator = ".";  }
+
 					classSymbol = classSymbol.Replace(SymbolString.SeparatorChar.ToString(), memberOperator);
 
 					// The class symbol should already have a trailing member operator.
@@ -625,7 +600,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			return hashPath.ToString();
+			return SanitizePath(hashPath.ToString());
 			}
 
 

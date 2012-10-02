@@ -476,7 +476,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (style != null)
 				{  
 				result.Append('/');
-				result.Append(SanitizePathString(style.Name));
+				result.Append(SanitizePath(style.Name));
 				}
 			
 			return result.ToString();
@@ -492,7 +492,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (style.Contains(originalStyleFile))
 					{
 					Path relativeStyleFile = style.MakeRelative(originalStyleFile);
-					return OutputFolder + "/styles/" + SanitizePathString(style.Name) + "/" + SanitizePath(relativeStyleFile);
+					return OutputFolder + "/styles/" + SanitizePath(style.Name) + "/" + SanitizePath(relativeStyleFile);
 					}
 				}
 
