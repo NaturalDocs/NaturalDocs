@@ -463,7 +463,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		/* Class: GregValure.NaturalDocs.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
+		/* Class: GregValure.NaturalDocs.Engine.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
 		* __________________________________________________________________________
 		*/
 		protected class ConfigFilePrototypeEnders
