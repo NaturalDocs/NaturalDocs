@@ -1248,9 +1248,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *		- <Topic.PrototypeContext>
 		 *		- <Topic.BodyContext>
 		 *		- <Topic.Symbol>
+		 *		- <Topic.ClassString>
 		 */
 		protected virtual void GenerateCommentContextAndSymbols (IList<CodePoint> commentCodePoints)
 			{
+			ClassString currentClass = new ClassString();
 			ContextString currentContext = new ContextString();
 			Topic lastNonEmbeddedTopic = null;
 			int enumTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
@@ -1281,6 +1283,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						codePoint.Topic.Symbol = currentContext.Scope + symbol;
 
+						codePoint.Topic.ClassString = currentClass;
 						codePoint.Topic.PrototypeContext = currentContext;
 						codePoint.Topic.BodyContext = currentContext;
 						}
@@ -1290,7 +1293,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						// The topic is global without affecting the current context
 						codePoint.Topic.Symbol = symbol;
+						codePoint.Topic.ClassString = new ClassString();
 
+						// Blank out the scope for the topic's scope but leave any using statements
 						ContextString globalContext = currentContext;
 						globalContext.Scope = new SymbolString();
 
@@ -1303,6 +1308,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else if (partOfEnum && enumValue == EnumValues.UnderType)
 						{
 						codePoint.Topic.Symbol = lastNonEmbeddedTopic.Symbol + symbol;
+						codePoint.Topic.ClassString = currentClass;
 
 						ContextString enumContext = currentContext;
 						enumContext.Scope = lastNonEmbeddedTopic.Symbol;
@@ -1314,6 +1320,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					else if (topicType.Scope == TopicType.ScopeValue.Start)
 						{
 						codePoint.Topic.Symbol = symbol;
+
+						currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.id, symbol);
+						codePoint.Topic.ClassString = currentClass;
 
 						// Classes are treated as global
 						currentContext.Scope = new SymbolString();
@@ -1333,6 +1342,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 						// Everything is global
 						currentContext.Scope = new SymbolString();
+						currentClass = new ClassString();
+
+						codePoint.Topic.ClassString = currentClass;
 						codePoint.Topic.PrototypeContext = currentContext;
 						codePoint.Topic.BodyContext = currentContext;
 
