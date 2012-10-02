@@ -125,6 +125,9 @@
     <Compile Include="Source\Output\MenuEntries\Base\Container.cs" />
     <Compile Include="Source\Output\MenuEntries\Base\Entry.cs" />
     <Compile Include="Source\Output\MenuEntries\Base\Target.cs" />
+    <Compile Include="Source\Output\MenuEntries\Class\Class.cs" />
+    <Compile Include="Source\Output\MenuEntries\Class\Scope.cs" />
+    <Compile Include="Source\Output\MenuEntries\Class\Language.cs" />
     <Compile Include="Source\Output\MenuEntries\File\File.cs" />
     <Compile Include="Source\Output\MenuEntries\File\FileSource.cs" />
     <Compile Include="Source\Output\MenuEntries\File\Folder.cs" />
