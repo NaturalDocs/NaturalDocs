@@ -37,3 +37,29 @@ Topic: Naming
 		  <CancelDelegate> parameters so they can be interrupted, and are designed so that more than one thread can call the
 		  function and they will split the workload between them.  However, if the multithreading model is not desired, they can
 		  be called from a single thread with <Delegates.NeverCancel> and it will behave as a normal function.
+
+
+Topic: Dependency Comments
+
+	Sometimes functions depend on assumed behaviors in other functions, implementation details that may not be obvious from 
+	the outside.  Normally you wouldn't want to tightly couple function implementations like this but it may be important for efficiency,
+	and part of the feature's design was FunctionA doing X specifically so FunctionB can do Y.  When this happens, _both_ functions 
+	_must_ contain a dependency comment:
+
+	> void FunctionA ()
+	>    {
+	>    // DEPENDENCY: FunctionB() assumes this function does X so that it can do Y.
+	>    ...
+	>    }
+	>
+	> void FunctionB ()
+	>    {
+	>    // DEPENDENCY: This assumes FunctionA() does X so that we can do Y.
+	>    ...
+	>    }
+
+	Each comment _must_ explicitly name the other functions involved and explain the behavior.  This is so when someone 
+	changes one of the functions, it's obvious which other functions depend on the behavior, what that behavior is, and why.
+	Then the programmer won't inadvertantly change that behavior without being aware of the side effects, and if it needs to 
+	be changed anyway they can update the dependent functions.  These comments also start with "DEPENDENCY:" by convention 
+	to make them stand out more and and be easier to search for.
