@@ -1,12 +1,12 @@
 <a name="Special_Characters"></a>
 -----
-<a name="Question_Mark"></a>
+<a name="Question_Mark_"></a>
 -----
 <a name="&quot;Quotes&quot;"></a>
 -----
-<a name="Some_Reserved#URL/Characters"></a>
+<a name="Some_Reserved_URL/Characters"></a>
 -----
-<a name="Colon:"></a>
+<a name="Colon_"></a>
 -----
 <a name="&lt;Angle_Brackets&gt;"></a>
 -----
