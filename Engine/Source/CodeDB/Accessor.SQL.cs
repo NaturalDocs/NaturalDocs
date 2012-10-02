@@ -1550,6 +1550,51 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
+		/* Function: GetClasses
+		 * 
+		 * Retrieves a list of all the classes defined in the database with the passed hierarchy.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ClassString> GetClasses (ClassString.HierarchyType hierarchy, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+
+			List<ClassString> classes = new List<ClassString>();
+			var changeCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
+
+
+			// DEPENDENCY: This function assumes that CacheOrCreateClassIDs() immediately puts a record in the database for
+			// new class IDs, and thus selecting all records from the database will give us all classes, even if the change cache
+			// hasn't been flushed yet.
+
+			using (SQLite.Query query = connection.Query("SELECT ClassID, ifnull(ClassString,LookupKey), ReferenceCount " +
+																								"FROM Classes WHERE Hierarchy = ?", (int)hierarchy))
+				{
+				while (query.Step())
+					{
+					int classID = query.IntColumn(0);
+					ClassString classString = ClassString.FromExportedString(query.StringColumn(1));
+					int referenceCount = query.IntColumn(2);
+
+					var changes = changeCache.ChangesFor(classID);
+					if (changes != null)
+						{  referenceCount += changes.ReferenceChange;  }
+
+					if (referenceCount > 0)
+						{  classes.Add(classString);  }
+					
+					if (cancelled())
+						{  break;  }
+					}
+				}
+
+			return classes;
+			}
+
+
 		/* Function: GetOrCreateClassID
 		 * 
 		 * Retrieves the ID for <Topic.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
@@ -1713,6 +1758,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			// Create anything we still need.
+
+			// DEPENDENCY: GetClasses() assumes *every* newly created class ID will have a record in the database,
+			// even if the change cache hasn't been flushed yet.
 
 			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an 
 			// entry in CodeDB.ClassIDReferenceChangeCache with database references set to zero.

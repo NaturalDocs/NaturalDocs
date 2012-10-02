@@ -120,6 +120,20 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: ChangesFor
+		 * Returns the <ReferenceChangeEntry> for the passed ID, or null if there is none.
+		 */
+		public ReferenceChangeEntry ChangesFor (int id)
+			{
+			int entryIndex = BinarySearch(id);
+
+			if (entryIndex >= 0)
+				{  return this[entryIndex];  }
+			else
+				{  return null;  }
+			}
+
+
 		/* Function: BinarySearch
 		 * 
 		 * Searches the list for the passed object ID.  If it finds it, the return value will be zero or positive representing the
