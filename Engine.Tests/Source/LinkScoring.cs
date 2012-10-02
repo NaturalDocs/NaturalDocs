@@ -355,7 +355,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
 						output.AppendLine(topicLanguage.Name + " " + topicType.Name + " Topic: " + topic.Title);
-						output.AppendLine("   Symbol: " + topic.Symbol.ToString().Replace(Engine.Symbols.SymbolString.SeparatorChar, '.'));
+						output.AppendLine("   Symbol: " + topic.Symbol.FormatWithSeparator('.'));
 
 						if (topic.TitleParameters != null)
 							{
@@ -382,7 +382,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						if (link.Context.ScopeIsGlobal)
 							{  output.AppendLine("   Scope: Global");  }
 						else
-							{  output.AppendLine("   Scope: " + link.Context.Scope.ToString().Replace(Engine.Symbols.SymbolString.SeparatorChar, '.'));  }
+							{  output.AppendLine("   Scope: " + link.Context.Scope.FormatWithSeparator('.'));  }
 
 						output.AppendLine();
 

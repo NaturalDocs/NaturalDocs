@@ -44,7 +44,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				if (i != 0)
 					{  output.AppendLine("-----");  }
 
-				output.AppendLine("Symbol: " + topics[i].Symbol.ToString().Replace(SymbolString.SeparatorChar, '|'));
+				output.AppendLine("Symbol: " + topics[i].Symbol.FormatWithSeparator('|'));
 				output.AppendLine("Ending Symbol: " + topics[i].Symbol.EndingSymbol.ToString());
 
 				if (topics[i].TitleParameters != null)

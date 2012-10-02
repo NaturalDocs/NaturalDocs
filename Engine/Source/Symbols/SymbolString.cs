@@ -125,6 +125,42 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			return new SymbolString(exportedSymbolString);
 			}
+
+
+		/* Function: SplitSegments
+		 * Returns the symbol as an array of individual segments.
+		 */
+		public string[] SplitSegments ()
+			{
+			if (symbolString == null)
+				{  return new string[0];  }
+			else
+				{  return symbolString.Split(SeparatorChar);  }
+			}
+			
+		
+		/* Function: FormatWithSeparator
+		 * Returns the symbol as a string using the passed separator character.
+		 */
+		public string FormatWithSeparator (char newSeparator)
+			{
+			if (symbolString == null)
+				{  return null;  }
+			else
+				{  return symbolString.Replace(SeparatorChar, newSeparator);  }
+			}
+			
+		
+		/* Function: FormatWithSeparator
+		 * Returns the symbol as a string using the passed separator string.
+		 */
+		public string FormatWithSeparator (string newSeparator)
+			{
+			if (symbolString == null)
+				{  return null;  }
+			else
+				{  return symbolString.Replace(SeparatorChar.ToString(), newSeparator);  }
+			}
 			
 		
 		
@@ -133,22 +169,55 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		
 		
 		/* Property: EndingSymbol
-		 * Returns the <EndingSymbol> of the symbol string.  So for "PackageA.PackageB.FunctionC" this will return
-		 * an <EndingSymbol> for "functionc".  Remember that unlike SymbolStrings, <EndingSymbols> are case-insensitive.
+		 * Returns the <EndingSymbol> of the symbol string.  Unlike <LastSegment> and SymbolStrings in general,
+		 * <EndingSymbols> are case-insensitive.  So for "PackageA.PackageB.FunctionC" this will return an 
+		 * <EndingSymbol> for "functionc".  
 		 */
 		public EndingSymbol EndingSymbol
 			{
 			get
+				{  return EndingSymbol.FromSymbolStringSegment(LastSegment);  }
+			}
+						
+			
+		/* Property: LastSegment
+		 * Returns the last segment of the symbol string.  Unlike <EndingSymbol> this is case sensitive, so for 
+		 * "PackageA.PackageB.FunctionC" this will return "FunctionC".
+		 */
+		public string LastSegment
+			{
+			get
 				{
 				if (symbolString == null)
-					{  return new EndingSymbol();  }
+					{  return null;  }
 
 				int lastSeparator = symbolString.LastIndexOf(SeparatorChar);
 				
 				if (lastSeparator == -1)
-					{  return EndingSymbol.FromSymbolStringSegment(symbolString);  }
+					{  return symbolString.ToString();  }
 				else
-					{  return EndingSymbol.FromSymbolStringSegment(symbolString.Substring(lastSeparator + 1));  }
+					{  return symbolString.Substring(lastSeparator + 1);  }
+				}
+			}
+						
+			
+		/* Property: WithoutLastSegment
+		 * Returns the symbol without its last segment, which is its parent scope, or null if there is only one segment.
+		 * For "PackageA.PackageB.FunctionC" this will return "PackageA.PackageB".
+		 */
+		public SymbolString WithoutLastSegment
+			{
+			get
+				{
+				if (symbolString == null)
+					{  return new SymbolString();  }
+
+				int lastSeparator = symbolString.LastIndexOf(SeparatorChar);
+				
+				if (lastSeparator == -1)
+					{  return new SymbolString();  }
+				else
+					{  return new SymbolString(symbolString.Substring(0, lastSeparator));  }
 				}
 			}
 						
