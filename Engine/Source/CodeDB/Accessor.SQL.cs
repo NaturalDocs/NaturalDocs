@@ -1286,7 +1286,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Type - enum so will always be set
 			RequireContent("DeleteLink", "TextOrSymbol", link.TextOrSymbol);
 			// Context
-			RequireNonZero("DeleteLink", "ContextID", link.ContextID);
+			if (link.Context != null)
+				{  RequireNonZero("DeleteLink", "ContextID", link.ContextID);  }
 			RequireNonZero("DeleteLink", "FileID", link.FileID);
 			RequireNonZero("DeleteLink", "LanguageID", link.LanguageID);
 			RequireContent("DeleteLink", "EndingSymbol", link.EndingSymbol);
