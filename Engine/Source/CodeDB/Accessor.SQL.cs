@@ -326,40 +326,48 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// BodyContext
 			RequireZero("AddTopic", "BodyContextID", topic.BodyContextID);
 			
+			var codeDB = Engine.Instance.CodeDB;
+
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			var codeDB = Engine.Instance.CodeDB;
-
-			topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
-			GetOrCreateClassID(topic);
-			GetOrCreateContextIDs(topic);
-			
-			connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
-													"IsEmbedded, EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
-													"LanguageID, PrototypeContextID, BodyContextID) " +
-												"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-												topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
-												topic.ClassID, (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
-												(int)topic.AccessLevel, topic.TagString, topic.FileID, topic.CommentLineNumber, topic.CodeLineNumber, 
-												topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
-												);
-			
-			codeDB.UsedTopicIDs.Add(topic.TopicID);
-
-			IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-			if (newTopicsForEndingSymbol == null)
+			try
 				{
-				newTopicsForEndingSymbol = new IDObjects.SparseNumberSet();
-				codeDB.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
+				topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
+				GetOrCreateClassID(topic);
+				GetOrCreateContextIDs(topic);
+			
+				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
+														"IsEmbedded, EndingSymbol, TopicTypeID, AccessLevel, Tags, FileID, CommentLineNumber, CodeLineNumber, " +
+														"LanguageID, PrototypeContextID, BodyContextID) " +
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
+													topic.ClassID, (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
+													(int)topic.AccessLevel, topic.TagString, topic.FileID, topic.CommentLineNumber, topic.CodeLineNumber, 
+													topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
+													);
+			
+				codeDB.UsedTopicIDs.Add(topic.TopicID);
+
+				IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				if (newTopicsForEndingSymbol == null)
+					{
+					newTopicsForEndingSymbol = new IDObjects.SparseNumberSet();
+					codeDB.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
+					}
+				newTopicsForEndingSymbol.Add(topic.TopicID);
+
+				codeDB.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
+				codeDB.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
+				codeDB.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
+
+				CommitTransaction();
 				}
-			newTopicsForEndingSymbol.Add(topic.TopicID);
-
-			codeDB.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
-			codeDB.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
-			codeDB.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
-
-			CommitTransaction();
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 			
 
 			// Notify change watchers
@@ -411,58 +419,64 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new InvalidOperationException("UpdateTopic can only be used with similar topics that won't affect linking.");  }
 			#endif
 
-			RequireAtLeast(LockType.ReadWrite);
-			BeginTransaction();
-
 			bool classChanged = ((changeFlags & Topic.ChangeFlags.Class) != 0);
 			bool contextsChanged = ( (changeFlags & (Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext)) != 0 );
 
+			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
 
-			// DEPENDENCY: This must update all fields marked relevant in Topic.DatabaseCompare().  If that function changes this one
-			// must change as well.
+			try
+				{
+				// DEPENDENCY: This must update all fields marked relevant in Topic.DatabaseCompare().  If that function changes this one
+				// must change as well.
 
-			newTopic.TopicID = oldTopic.TopicID;
+				newTopic.TopicID = oldTopic.TopicID;
 			
-			if (classChanged)
-				{  GetOrCreateClassID(newTopic);  }
-			else
-				{  newTopic.ClassID = oldTopic.ClassID;  }
+				if (classChanged)
+					{  GetOrCreateClassID(newTopic);  }
+				else
+					{  newTopic.ClassID = oldTopic.ClassID;  }
 
-			if (contextsChanged)
-				{  GetOrCreateContextIDs(newTopic);  }
-			else
-				{
-				newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
-				newTopic.BodyContextID = oldTopic.BodyContextID;
+				if (contextsChanged)
+					{  GetOrCreateContextIDs(newTopic);  }
+				else
+					{
+					newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
+					newTopic.BodyContextID = oldTopic.BodyContextID;
+					}
+
+				connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
+														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
+													"WHERE TopicID = ?",
+													newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
+													newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
+													oldTopic.TopicID);
+
+				if (classChanged)
+					{
+					var referenceCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
+
+					referenceCache.RemoveReference(oldTopic.ClassID);
+					referenceCache.AddReference(newTopic.ClassID);
+					}
+
+				if (contextsChanged)
+					{
+					var referenceCache = Engine.Instance.CodeDB.ContextIDReferenceChangeCache;
+
+					referenceCache.RemoveReference(oldTopic.PrototypeContextID);
+					referenceCache.RemoveReference(oldTopic.BodyContextID);
+					referenceCache.AddReference(newTopic.PrototypeContextID);
+					referenceCache.AddReference(newTopic.BodyContextID);
+					}
+
+				CommitTransaction();
 				}
-
-			connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
-													"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
-												"WHERE TopicID = ?",
-												newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
-												newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
-												oldTopic.TopicID);
-
-			if (classChanged)
+			catch
 				{
-				var referenceCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
-
-				referenceCache.RemoveReference(oldTopic.ClassID);
-				referenceCache.AddReference(newTopic.ClassID);
+				RollbackTransactionForException();
+				throw;
 				}
-
-			if (contextsChanged)
-				{
-				var referenceCache = Engine.Instance.CodeDB.ContextIDReferenceChangeCache;
-
-				referenceCache.RemoveReference(oldTopic.PrototypeContextID);
-				referenceCache.RemoveReference(oldTopic.BodyContextID);
-				referenceCache.AddReference(newTopic.PrototypeContextID);
-				referenceCache.AddReference(newTopic.BodyContextID);
-				}
-
-			CommitTransaction();
-
 
 			// Notify change watchers
 
@@ -583,40 +597,48 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Reset these links back to unresolved and add them to linksToResolve.
-
 			BeginTransaction();
 
-			if (linksAffected.IsEmpty == false)
+			try
 				{
-				StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=?, TargetScore=0 WHERE ");
-				List<object> queryParams = new List<object>();
-				queryParams.Add(UnresolvedTargetTopicID.TargetDeleted);
+				// Reset these links back to unresolved and add them to linksToResolve.
 
-				AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
+				if (linksAffected.IsEmpty == false)
+					{
+					StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=?, TargetScore=0 WHERE ");
+					List<object> queryParams = new List<object>();
+					queryParams.Add(UnresolvedTargetTopicID.TargetDeleted);
 
-				connection.Execute(queryText.ToString(), queryParams.ToArray());
+					AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
-				codeDB.LinksToResolve.Add(linksAffected);
-				}
+					connection.Execute(queryText.ToString(), queryParams.ToArray());
+
+					codeDB.LinksToResolve.Add(linksAffected);
+					}
 
 
-			// Delete the actual topic.
+				// Delete the actual topic.
 
-			connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
+				connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
-			codeDB.UsedTopicIDs.Remove(topic.TopicID);
+				codeDB.UsedTopicIDs.Remove(topic.TopicID);
 
-			// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-			IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-			if (newTopicsForEndingSymbol != null)
-				{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
+				// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
+				IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				if (newTopicsForEndingSymbol != null)
+					{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
-			codeDB.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
-			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
-			codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
+				codeDB.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
+				codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
+				codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
 
-			CommitTransaction();
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 			}
 			
 			
@@ -822,7 +844,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			catch
 				{
-				if (madeChanges == true && transactionLevel > 0)
+				if (madeChanges == true)
 					{  RollbackTransactionForException();  }
 					
 				throw;
@@ -849,16 +871,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				BeginTransaction();
+				
+				try
+					{	
+					foreach (Topic topic in topics)
+						{  
+						DeleteTopic(topic);
 					
-				foreach (Topic topic in topics)
-					{  
-					DeleteTopic(topic);
-					
-					if (cancelled())
-						{  break;  }
-					}
+						if (cancelled())
+							{  break;  }
+						}
 
-				CommitTransaction();
+					CommitTransaction();
+					}
+				catch
+					{
+					RollbackTransactionForException();
+					throw;
+					}
 				}
 			}
 
@@ -1204,36 +1234,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  link.EndingSymbol = link.Symbol.EndingSymbol;  }
 			
 
+			var codeDB = Engine.Instance.CodeDB;
+
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			var codeDB = Engine.Instance.CodeDB;
-
-			link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
-			GetOrCreateContextIDs(link);
-
-			connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
-													"TargetTopicID, TargetScore) " +
-			                           "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)",
-			                           link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol.ToString(),
-												UnresolvedTargetTopicID.NewLink
-			                           );
-
-			codeDB.UsedLinkIDs.Add(link.LinkID);
-			codeDB.LinksToResolve.Add(link.LinkID);
-			codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
-
-			if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
+			try
 				{
-				foreach (string alternateEndingSymbol in alternateEndingSymbols)
-				   {
-				   connection.Execute("INSERT INTO AlternateLinkEndingSymbols (LinkID, EndingSymbol) VALUES (?, ?)",
-				                              link.LinkID, alternateEndingSymbol
-				                              );
-				   }
-				}
+				link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
+				GetOrCreateContextIDs(link);
 
-			CommitTransaction();
+				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
+														"TargetTopicID, TargetScore) " +
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)",
+													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol.ToString(),
+													UnresolvedTargetTopicID.NewLink
+													);
+
+				codeDB.UsedLinkIDs.Add(link.LinkID);
+				codeDB.LinksToResolve.Add(link.LinkID);
+				codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
+
+				if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
+					{
+					foreach (string alternateEndingSymbol in alternateEndingSymbols)
+						{
+						connection.Execute("INSERT INTO AlternateLinkEndingSymbols (LinkID, EndingSymbol) VALUES (?, ?)",
+															link.LinkID, alternateEndingSymbol
+															);
+						}
+					}
+
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 
 
 			// Notify change watchers
@@ -1323,18 +1361,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			BeginTransaction();
 
-			connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
-			
-			codeDB.UsedLinkIDs.Remove(link.LinkID);
-			codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
-			codeDB.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
-
-			if (link.Type == LinkType.NaturalDocs)
+			try
 				{
-				connection.Execute("DELETE FROM AlternateLinkEndingSymbols WHERE LinkID=?", link.LinkID);
-				}
+				connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
+			
+				codeDB.UsedLinkIDs.Remove(link.LinkID);
+				codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
+				codeDB.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
 
-			CommitTransaction();
+				if (link.Type == LinkType.NaturalDocs)
+					{
+					connection.Execute("DELETE FROM AlternateLinkEndingSymbols WHERE LinkID=?", link.LinkID);
+					}
+
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 			}
 			
 			
@@ -1433,7 +1479,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			catch
 				{
-				if (madeChanges == true && transactionLevel > 0)
+				if (madeChanges == true)
 					{  RollbackTransactionForException();  }
 					
 				throw;
@@ -1460,16 +1506,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				RequireAtLeast(LockType.ReadWrite);
 				BeginTransaction();
+				
+				try
+					{	
+					foreach (Link link in links)
+						{  
+						DeleteLink(link);
 					
-				foreach (Link link in links)
-					{  
-					DeleteLink(link);
-					
-					if (cancelled())
-						{  break;  }
-					}
+						if (cancelled())
+							{  break;  }
+						}
 
-				CommitTransaction();
+					CommitTransaction();
+					}
+				catch
+					{
+					RollbackTransactionForException();
+					throw;
+					}
 				}
 			}
 
@@ -1769,28 +1823,36 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, Hierarchy, ReferenceCount) " +
-																								"VALUES (?, ?, ?, ?, 0)") )
+			try
 				{
-				var codeDB = Engine.Instance.CodeDB;
-
-				foreach (var classString in uncachedClassStrings)
+				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, Hierarchy, ReferenceCount) " +
+																									"VALUES (?, ?, ?, ?, 0)") )
 					{
-					int id = codeDB.UsedClassIDs.LowestAvailable;
+					var codeDB = Engine.Instance.CodeDB;
 
-					query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
-													  classString.LookupKey, (int)classString.Hierarchy);
-					query.Step();
-					query.Reset(true);
+					foreach (var classString in uncachedClassStrings)
+						{
+						int id = codeDB.UsedClassIDs.LowestAvailable;
 
-					codeDB.UsedClassIDs.Add(id);
-					classIDLookupCache.Add(classString, id);
+						query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
+														  classString.LookupKey, (int)classString.Hierarchy);
+						query.Step();
+						query.Reset(true);
 
-					codeDB.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						codeDB.UsedClassIDs.Add(id);
+						classIDLookupCache.Add(classString, id);
+
+						codeDB.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						}
 					}
-				}
 
-			CommitTransaction();
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 			}
 
 
@@ -1902,73 +1964,82 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			BeginTransaction();
 
-			// Reuse the NumberSet object.
-			IDObjects.NumberSet idsToDelete = idsToLookup;
-			idsToLookup = null;
-			idsToDelete.Clear();
-
-			using (SQLite.Query updateQuery = connection.Query("UPDATE Classes SET ReferenceCount=? WHERE ClassID=?"))
+			try
 				{
-				foreach (var cacheEntry in cache)
+				// Reuse the NumberSet object.
+				IDObjects.NumberSet idsToDelete = idsToLookup;
+				idsToLookup = null;
+				idsToDelete.Clear();
+
+				using (SQLite.Query updateQuery = connection.Query("UPDATE Classes SET ReferenceCount=? WHERE ClassID=?"))
 					{
-					// Sanity checks
-					#if DEBUG
-					if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
-						{  
-						throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
-															  " was not properly filled in before flushing.");  
-						}
-					if (cacheEntry.DatabaseReferenceCountKnown == true && 
-						 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
-						{  
-						throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
-															  " led to a negative reference count.");  
-						}
-					#endif
-
-					if (cacheEntry.DatabaseReferenceCountKnown)
+					foreach (var cacheEntry in cache)
 						{
-						if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
-							{
-							idsToDelete.Add(cacheEntry.ID);
-							}
-						else if (cacheEntry.ReferenceChange != 0)
-							{
-							updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
-							updateQuery.Step();
-							updateQuery.Reset(true);
-
-							// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
-							// can't remove the entry from the set while we're iterating through it.
-							cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
-							cacheEntry.ReferenceChange = 0;
-							}
-
-						if (cancelled())
+						// Sanity checks
+						#if DEBUG
+						if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 							{  
-							CommitTransaction();
-							return;
+							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
+																  " was not properly filled in before flushing.");  
+							}
+						if (cacheEntry.DatabaseReferenceCountKnown == true && 
+							 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
+							{  
+							throw new Exception("ClassIDReferenceChangeCache entry " + cacheEntry.ID + 
+																  " led to a negative reference count.");  
+							}
+						#endif
+
+						if (cacheEntry.DatabaseReferenceCountKnown)
+							{
+							if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
+								{
+								idsToDelete.Add(cacheEntry.ID);
+								}
+							else if (cacheEntry.ReferenceChange != 0)
+								{
+								updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
+								updateQuery.Step();
+								updateQuery.Reset(true);
+
+								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+								// can't remove the entry from the set while we're iterating through it.
+								cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
+								cacheEntry.ReferenceChange = 0;
+								}
+
+							if (cancelled())
+								{  
+								CommitTransaction();
+								return;
+								}
 							}
 						}
 					}
-				}
 
 
-			// Delete zero-reference database records.
+				// Delete zero-reference database records.
 			
-			if (idsToDelete.IsEmpty == false)
+				if (idsToDelete.IsEmpty == false)
+					{
+					StringBuilder queryText = new StringBuilder("DELETE FROM Classes WHERE ");
+					List<object> queryParams = new List<object>();
+
+					AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToDelete, queryText, queryParams);
+
+					connection.Execute(queryText.ToString(), queryParams.ToArray());
+					Engine.Instance.CodeDB.UsedClassIDs.Remove(idsToDelete);
+					}
+
+
+				CommitTransaction();
+				}
+			catch
 				{
-				StringBuilder queryText = new StringBuilder("DELETE FROM Classes WHERE ");
-				List<object> queryParams = new List<object>();
-
-				AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToDelete, queryText, queryParams);
-
-				connection.Execute(queryText.ToString(), queryParams.ToArray());
-				Engine.Instance.CodeDB.UsedClassIDs.Remove(idsToDelete);
+				RollbackTransactionForException();
+				throw;
 				}
 
-
-			CommitTransaction();
 			cache.Clear();
 			}
 
@@ -2209,27 +2280,35 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
-			using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
-																								 "VALUES (?, ?, 0)") )
+			try
 				{
-				var codeDB = Engine.Instance.CodeDB;
-
-				foreach (var contextString in uncachedContextStrings)
+				using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
+																									 "VALUES (?, ?, 0)") )
 					{
-					int id = codeDB.UsedContextIDs.LowestAvailable;
+					var codeDB = Engine.Instance.CodeDB;
 
-					query.BindValues(id, contextString);
-					query.Step();
-					query.Reset(true);
+					foreach (var contextString in uncachedContextStrings)
+						{
+						int id = codeDB.UsedContextIDs.LowestAvailable;
 
-					codeDB.UsedContextIDs.Add(id);
-					contextIDLookupCache.Add(contextString, id);
+						query.BindValues(id, contextString);
+						query.Step();
+						query.Reset(true);
 
-					codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						codeDB.UsedContextIDs.Add(id);
+						contextIDLookupCache.Add(contextString, id);
+
+						codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						}
 					}
-				}
 
-			CommitTransaction();
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 			}
 
 
@@ -2341,73 +2420,82 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 			BeginTransaction();
 
-			// Reuse the NumberSet object.
-			IDObjects.NumberSet idsToDelete = idsToLookup;
-			idsToLookup = null;
-			idsToDelete.Clear();
-
-			using (SQLite.Query updateQuery = connection.Query("UPDATE Contexts SET ReferenceCount=? WHERE ContextID=?"))
+			try
 				{
-				foreach (var cacheEntry in cache)
+				// Reuse the NumberSet object.
+				IDObjects.NumberSet idsToDelete = idsToLookup;
+				idsToLookup = null;
+				idsToDelete.Clear();
+
+				using (SQLite.Query updateQuery = connection.Query("UPDATE Contexts SET ReferenceCount=? WHERE ContextID=?"))
 					{
-					// Sanity checks
-					#if DEBUG
-					if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
-						{  
-						throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
-															  " was not properly filled in before flushing.");  
-						}
-					if (cacheEntry.DatabaseReferenceCountKnown == true && 
-						 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
-						{  
-						throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
-															  " led to a negative reference count.");  
-						}
-					#endif
-
-					if (cacheEntry.DatabaseReferenceCountKnown)
+					foreach (var cacheEntry in cache)
 						{
-						if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
-							{
-							idsToDelete.Add(cacheEntry.ID);
-							}
-						else if (cacheEntry.ReferenceChange != 0)
-							{
-							updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
-							updateQuery.Step();
-							updateQuery.Reset(true);
-
-							// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
-							// can't remove the entry from the set while we're iterating through it.
-							cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
-							cacheEntry.ReferenceChange = 0;
-							}
-
-						if (cancelled())
+						// Sanity checks
+						#if DEBUG
+						if (cacheEntry.DatabaseReferenceCountKnown == false && cacheEntry.ReferenceChange != 0)
 							{  
-							CommitTransaction();
-							return;
+							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
+																  " was not properly filled in before flushing.");  
+							}
+						if (cacheEntry.DatabaseReferenceCountKnown == true && 
+							 cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange < 0)
+							{  
+							throw new Exception("ContextIDReferenceChangeCache entry " + cacheEntry.ID + 
+																  " led to a negative reference count.");  
+							}
+						#endif
+
+						if (cacheEntry.DatabaseReferenceCountKnown)
+							{
+							if (cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange == 0)
+								{
+								idsToDelete.Add(cacheEntry.ID);
+								}
+							else if (cacheEntry.ReferenceChange != 0)
+								{
+								updateQuery.BindValues(cacheEntry.DatabaseReferenceCount + cacheEntry.ReferenceChange, cacheEntry.ID);
+								updateQuery.Step();
+								updateQuery.Reset(true);
+
+								// Update the cache entry so it stays valid in case the operation is cancelled before the cache is emptied.  We 
+								// can't remove the entry from the set while we're iterating through it.
+								cacheEntry.DatabaseReferenceCount += cacheEntry.ReferenceChange;
+								cacheEntry.ReferenceChange = 0;
+								}
+
+							if (cancelled())
+								{  
+								CommitTransaction();
+								return;
+								}
 							}
 						}
 					}
-				}
 
 
-			// Delete zero-reference database records.
+				// Delete zero-reference database records.
 			
-			if (idsToDelete.IsEmpty == false)
+				if (idsToDelete.IsEmpty == false)
+					{
+					StringBuilder queryText = new StringBuilder("DELETE FROM Contexts WHERE ");
+					List<object> queryParams = new List<object>();
+
+					AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToDelete, queryText, queryParams);
+
+					connection.Execute(queryText.ToString(), queryParams.ToArray());
+					Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
+					}
+
+
+				CommitTransaction();
+				}
+			catch
 				{
-				StringBuilder queryText = new StringBuilder("DELETE FROM Contexts WHERE ");
-				List<object> queryParams = new List<object>();
-
-				AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToDelete, queryText, queryParams);
-
-				connection.Execute(queryText.ToString(), queryParams.ToArray());
-				Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
+				RollbackTransactionForException();
+				throw;
 				}
 
-
-			CommitTransaction();
 			cache.Clear();
 			}
 
