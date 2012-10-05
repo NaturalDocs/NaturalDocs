@@ -123,9 +123,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				tabInformation.Append("[\"");
 				tabInformation.Append(tabTypes[i]);
-				tabInformation.Append("\",\"");
-				tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
 				tabInformation.Append("\",");
+
+				if (tabContainers[i].CondensedTitles == null)
+					{
+					tabInformation.Append('"');
+					tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
+					tabInformation.Append('"');
+					}
+				else
+					{
+					tabInformation.Append("[\"");
+					tabInformation.StringEscapeAndAppend( tabContainers[i].Title.ToHTML() );
+					tabInformation.Append('"');
+
+					foreach (var condensedTitle in tabContainers[i].CondensedTitles)
+						{
+						tabInformation.Append(",\"");
+						tabInformation.StringEscapeAndAppend( condensedTitle.ToHTML() );
+						tabInformation.Append('"');
+						}
+
+					tabInformation.Append(']');
+					}
+
+				tabInformation.Append(',');
 
 				if (extraData.HashPath == null)
 					{  tabInformation.Append("undefined");  }
@@ -629,7 +651,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				else if (menuEntry is MenuEntries.Class.Language)
 					{
-					hashPath = htmlBuilder.Class_OutputFolderHashPath( (menuEntry as MenuEntries.Class.Language).WrappedLanguage );
+					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)menuEntry;
+
+					hashPath = htmlBuilder.Class_OutputFolderHashPath( languageEntry.WrappedLanguage,
+																													languageEntry.CondensedScopeString );
 					}
 				else if (menuEntry is MenuEntries.Class.Scope)
 					{

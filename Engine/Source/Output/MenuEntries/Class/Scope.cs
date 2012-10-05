@@ -12,6 +12,7 @@
 
 
 using System;
+using System.Collections.Generic;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
@@ -31,26 +32,27 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
 			}
 
 		override public void Condense ()
-			{ // xxx
-			//CondenseContainersInMembers();
+			{
+			CondenseContainersInMembers();
 
-			//if (Members.Count == 1 && Members[0] is Folder)
-			//   {
-			//   Folder subFolder = (Members[0] as Folder);
+			if (Members.Count == 1 && Members[0] is Scope)
+			   {
+			   Scope childScope = (Members[0] as Scope);
 
-			//   Members = subFolder.Members;
+			   Members = childScope.Members;
 
-			//   if (CondensedTitles == null)
-			//      {  CondensedTitles = new List<string>();  }
+			   if (CondensedTitles == null)
+			      {  CondensedTitles = new List<string>();  }
 
-			//   CondensedTitles.Add(subFolder.Title);
+			   CondensedTitles.Add(childScope.Title);
 
-			//   if (subFolder.CondensedTitles != null)
-			//      {  CondensedTitles.AddRange(subFolder.CondensedTitles);  }
+			   if (childScope.CondensedTitles != null)
+			      {  CondensedTitles.AddRange(childScope.CondensedTitles);  }
 
-			//   pathFromFileSource = subFolder.pathFromFileSource;
-			//   }
+			   scopeString = childScope.scopeString;
+			   }
 			}
+
 
 		// Group: Properties
 		// __________________________________________________________________________

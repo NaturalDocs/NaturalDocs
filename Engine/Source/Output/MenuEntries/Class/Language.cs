@@ -31,25 +31,25 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
 			}
 
 		override public void Condense ()
-			{ // xxx
-			//CondenseContainersInMembers();
+			{
+			CondenseContainersInMembers();
 
-			//if (Members.Count == 1 && Members[0] is Folder)
-			//   {
-			//   Folder subFolder = (Members[0] as Folder);
+			if (Members.Count == 1 && Members[0] is Scope)
+			   {
+			   Scope childScope = (Members[0] as Scope);
 
-			//   Members = subFolder.Members;
+			   Members = childScope.Members;
 
-			//   if (CondensedTitles == null)
-			//      {  CondensedTitles = new List<string>();  }
+			   if (CondensedTitles == null)
+			      {  CondensedTitles = new List<string>();  }
 
-			//   CondensedTitles.Add(subFolder.Title);
+			   CondensedTitles.Add(childScope.Title);
 
-			//   if (subFolder.CondensedTitles != null)
-			//      {  CondensedTitles.AddRange(subFolder.CondensedTitles);  }
+			   if (childScope.CondensedTitles != null)
+			      {  CondensedTitles.AddRange(childScope.CondensedTitles);  }
 
-			//   condensedPathFromFileSource = subFolder.PathFromFileSource;
-			//   }
+			   condensedScopeString = childScope.WrappedScopeString;
+				}
 			}
 
 
@@ -65,6 +65,16 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
 				{  return language;  }
 			}
 
+		/* Property: CondensedScopeString
+		 * If this language had a scope condensed into it, this will be the scope <Symbols.SymbolString> associated 
+		 * with that entry.
+		 */
+		public Symbols.SymbolString CondensedScopeString
+			{
+			get
+				{  return condensedScopeString;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -72,6 +82,10 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
 		/* var: language
 		 */
 		protected Languages.Language language;
+
+		/* var: condensedScopeString
+		 */
+		protected Symbols.SymbolString condensedScopeString;
 
 		}
 	}

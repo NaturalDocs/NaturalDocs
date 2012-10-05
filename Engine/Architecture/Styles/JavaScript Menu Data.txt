@@ -19,13 +19,15 @@ _______________________________________________________________________________
 
 		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:
 
-		> [ "Type", "HTML Title", "Hash Path", "filewithcontents.js" ]
+		> [ "Type", "HTML Title", "Hash Path", "FileWithContents.js" ]
+		> [ "Type", ["HTML Title", "HTML Title 2", "HTML Title 3"], "Hash Path", "FileWithContents.js" ]
 
 		The first member is a string representing the type of tab it is.  If you're using the DefaultJS style, this will map directly to
 		<NDLocation.type> so you can tell which one should be selected for a given location.  It will be safe to include as part of a
 		CSS name and it will stay consistent across languages.
 
-		The second member is the title in HTML.
+		The second member is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
+		the menu has been condensed and multiple layers of containers have been combined into it.
 		
 		The third member is the hash path, which may be undefined.  If the menu was condensed containers that had hash paths
 		may have been combined with the root container, giving the tab a hash path.
@@ -57,9 +59,9 @@ _______________________________________________________________________________
 		Container Entries:
 		
 			> [2, "HTML Title", "Partial Hash Path", [ members ]]
-			> [2, "HTML Title", "Partial Hash Path", "menudatafilename.js" ]
+			> [2, "HTML Title", "Partial Hash Path", "MenuDataFileName.js" ]
 			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", [ members ]]
-			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "menudatafilename.js"]
+			> [2, ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "MenuDataFileName.js"]
 	
 			Container entries represent another layer of the menu, such as a file folder.  The first value is always 2.
 			

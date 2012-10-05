@@ -182,8 +182,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 				// If there's only one file source we can remove the top level container.
 				if (rootFileMenu.Members.Count == 1)
 					{  
-					rootFileMenu.Members[0].Title = rootFileMenu.Title;
-					rootFileMenu = (MenuEntries.Base.Container)rootFileMenu.Members[0];
+					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)rootFileMenu.Members[0];
+
+					// Overwrite the file source name with the tab title, especially since it might not be defined if there was only one.
+					// We don't need an unnecessary level for a single file source.
+					fileSourceEntry.Title = rootFileMenu.Title;
+
+					// Get rid of unnecessary levels as there's no point in displaying them.
+					fileSourceEntry.CondensedTitles = null;
+
+					rootFileMenu = fileSourceEntry;
 					}
 				}
 
@@ -194,8 +202,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 				// If there's only one language we can remove the top level container.
 				if (rootClassMenu.Members.Count == 1)
 					{  
-					rootClassMenu.Members[0].Title = rootClassMenu.Title;
-					rootClassMenu = (MenuEntries.Base.Container)rootClassMenu.Members[0];
+					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)rootClassMenu.Members[0];
+
+					// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
+					// for the language.
+					languageEntry.Title = rootClassMenu.Title;
+
+					// However, we are going to keep CondensedTitles because we want all scope levels to be visible, even if
+					// they're empty.
+
+					rootClassMenu = languageEntry;
 					}
 				}
 

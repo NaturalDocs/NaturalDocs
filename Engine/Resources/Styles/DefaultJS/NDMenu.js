@@ -324,15 +324,44 @@ var NDMenu = new function ()
 				pathSoFar.push(iterator.CurrentContainerIndex());
 				selectedTab = iterator.CurrentEntry();
 
-				// If there's only one tab we display it the same as a parent folder.  There's no benefit to having it be visually
-				// distinct with an icon.
-				if (this.tabs.length == 1)
+
+				// If there's multiple titles, create empty parent folders.
+
+				if (typeof(selectedTab[`Tab_HTMLTitle]) == "object")
+					{
+					// We start at 1 instead of 0 because the first string is the tab title.  If there's more than one tab then this
+					// is already taken care of by the tab bar.  If there's only one tab but it has multiple titles then the later
+					// titles can serve as the click target to return to the root and there's no need for the tab title as a parent
+					// folder anymore.
+
+					for (var i = 1; i < selectedTab[`Tab_HTMLTitle].length - 1; i++)
+						{
+						var htmlEntry = document.createElement("div");
+						htmlEntry.className = "MEntry MFolder Parent Empty";
+						htmlEntry.innerHTML = selectedTab[`Tab_HTMLTitle][i];
+
+						htmlMenu.appendChild(htmlEntry);
+						}
+					}
+
+				
+				// If there's multiple titles we still have to display the last one as a parent folder.  If there's only one tab we
+				// also have to display that as a parent folder because we're not showing the tab bar.
+
+				var title;
+
+				if (typeof(selectedTab[`Tab_HTMLTitle]) == "object")
+					{  title = selectedTab[`Tab_HTMLTitle][ selectedTab[`Tab_HTMLTitle].length - 1 ];  }
+				else if (this.tabs.length == 1)
+					{  title = selectedTab[`Tab_HTMLTitle];  }
+
+				if (title != undefined)
 					{
 					if (navigationType == `Nav_SelectedParentFolder)
 						{
 						var htmlEntry = document.createElement("div");
 						htmlEntry.className = "MEntry MFolder Selected";
-						htmlEntry.innerHTML = selectedTab[`Tab_HTMLTitle];
+						htmlEntry.innerHTML = title;
 
 						htmlMenu.appendChild(htmlEntry);
 						}
@@ -341,12 +370,11 @@ var NDMenu = new function ()
 						var htmlEntry = document.createElement("a");
 						htmlEntry.className = "MEntry MFolder Parent";
 						htmlEntry.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + selectedTab[`Tab_Type] + "\")");
-						htmlEntry.innerHTML = selectedTab[`Tab_HTMLTitle];
+						htmlEntry.innerHTML = title;
 
 						htmlMenu.appendChild(htmlEntry);
 						}
 					}
-				// If there's more than one the tab bar will show it so we don't add anything here.
 
 				iterator.Next();
 				}
@@ -418,10 +446,15 @@ var NDMenu = new function ()
 				htmlEntry.className = "MEntry MTabAsFolder";
 				htmlEntry.id = "M" + this.tabs[i][`Tab_Type] + "Tab";
 				htmlEntry.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + this.tabs[i][`Tab_Type] + "\")");
+
+				var tabTitle = this.tabs[i][`Tab_HTMLTitle];
+				if (typeof(tabTitle) == "object")
+					{  tabTitle = tabTitle[0];  }
+
 				htmlEntry.innerHTML =
 					"<span class=\"MFolderIcon\"></span>" +
 					"<span class=\"MTabIcon\"></span>" +
-					"<span class=\"MTabTitle\">" + this.tabs[i][`Tab_HTMLTitle] + "</span>";
+					"<span class=\"MTabTitle\">" + tabTitle + "</span>";
 
 				htmlMenu.appendChild(htmlEntry);
 				}
@@ -627,7 +660,12 @@ var NDMenu = new function ()
 			tab.id = "M" + tabs[i][`Tab_Type] + "Tab";
 			tab.className = "MTab Wide";
 			tab.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + tabs[i][`Tab_Type] + "\");");
-			tab.innerHTML = "<span class=\"MTabIcon\"></span><span class=\"MTabTitle\">" + tabs[i][`Tab_HTMLTitle] + "</span>";
+
+			var tabTitle = tabs[i][`Tab_HTMLTitle];
+			if (typeof(tabTitle) == "object")
+				{  tabTitle = tabTitle[0];  }
+
+			tab.innerHTML = "<span class=\"MTabIcon\"></span><span class=\"MTabTitle\">" + tabTitle + "</span>";
 
 			// We can't get the tab's width until it's added to the tab bar.  However, we don't want the tab bar to grow to multiple lines
 			// when detecting all the widths, so we temporarily set them all to absolute positioning.

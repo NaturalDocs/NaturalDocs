@@ -41,13 +41,8 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
 
 				Members = subFolder.Members;
 
-				if (CondensedTitles == null)
-					{  CondensedTitles = new List<string>();  }
-
-				CondensedTitles.Add(subFolder.Title);
-
-				if (subFolder.CondensedTitles != null)
-					{  CondensedTitles.AddRange(subFolder.CondensedTitles);  }
+				// We ignore any titles it had, condensed or otherwise, to get rid of unnecessary subfolders.
+				// We want to go straight into the topmost folder that had content.
 
 				condensedPathFromFileSource = subFolder.PathFromFileSource;
 				}
