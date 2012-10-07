@@ -1605,19 +1605,20 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
-		/* Function: GetClasses
+		/* Function: GetClassesByID
 		 * 
-		 * Retrieves a list of all the classes defined in the database with the passed hierarchy.
+		 * Retrieves a list of all the classes defined in the database within the passed NumberSet.  Pass a <CancelDelegate> if you'd
+		 * like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<ClassString> GetClasses (ClassString.HierarchyType hierarchy, CancelDelegate cancelled)
+		public List<KeyValuePair<int, ClassString>> GetClassesByID (IDObjects.NumberSet ids, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
-			List<ClassString> classes = new List<ClassString>();
+			List<KeyValuePair<int, ClassString>> classes = new List<KeyValuePair<int, ClassString>>();
 			var changeCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
 
 
@@ -1625,8 +1626,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// new class IDs, and thus selecting all records from the database will give us all classes, even if the change cache
 			// hasn't been flushed yet.
 
-			using (SQLite.Query query = connection.Query("SELECT ClassID, ifnull(ClassString,LookupKey), ReferenceCount " +
-																								"FROM Classes WHERE Hierarchy = ?", (int)hierarchy))
+			StringBuilder queryText = new StringBuilder("SELECT ClassID, ifnull(ClassString,LookupKey), ReferenceCount " +
+																								  "FROM Classes WHERE ");
+			List<object> queryParams = new List<object>();
+
+			AppendWhereClause_ColumnIsInNumberSet("ClassID", ids, queryText, queryParams);
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
 				{
 				while (query.Step())
 					{
@@ -1639,8 +1645,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						{  referenceCount += changes.ReferenceChange;  }
 
 					if (referenceCount > 0)
-						{  classes.Add(classString);  }
-					
+						{  classes.Add( new KeyValuePair<int, ClassString>(classID, classString));  }
+
 					if (cancelled())
 						{  break;  }
 					}
@@ -1814,7 +1820,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create anything we still need.
 
-			// DEPENDENCY: GetClasses() assumes *every* newly created class ID will have a record in the database,
+			// DEPENDENCY: GetClassesByID() assumes *every* newly created class ID will have a record in the database, 
 			// even if the change cache hasn't been flushed yet.
 
 			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an 

@@ -47,20 +47,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Build class menu
 
-			List<ClassString> classStrings = null;
+			List<KeyValuePair<int, ClassString>> classes = null;
 
 			accessor.GetReadOnlyLock();
 			try
-				{  classStrings = accessor.GetClasses(ClassString.HierarchyType.Class, cancelDelegate);  }
+				{  classes = accessor.GetClassesByID(classFilesWithContent, cancelDelegate);  }
 			finally
 				{  accessor.ReleaseLock();  }
 
-			foreach (var classString in classStrings)
+			foreach (KeyValuePair<int, ClassString> classEntry in classes)
 				{
 				if (cancelDelegate())
 					{  return;  }
 
-				htmlMenu.AddClass(classString);
+				htmlMenu.AddClass(classEntry.Value);
 				}
 
 
