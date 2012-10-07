@@ -1608,7 +1608,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* Function: GetClassesByID
 		 * 
 		 * Retrieves a list of all the classes defined in the database within the passed NumberSet.  Pass a <CancelDelegate> if you'd
-		 * like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * like to be able to interrupt this process, or <Delegates.NeverCancel> if not.  If some of the classes have been deleted this
+		 * will still return values for them until <Cleanup()> is called.
 		 * 
 		 * Requirements:
 		 * 
@@ -1619,14 +1620,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadOnly);
 
 			List<KeyValuePair<int, ClassString>> classes = new List<KeyValuePair<int, ClassString>>();
-			var changeCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
 
 
 			// DEPENDENCY: This function assumes that CacheOrCreateClassIDs() immediately puts a record in the database for
-			// new class IDs, and thus selecting all records from the database will give us all classes, even if the change cache
-			// hasn't been flushed yet.
+			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed 
+			// yet.
 
-			StringBuilder queryText = new StringBuilder("SELECT ClassID, ifnull(ClassString,LookupKey), ReferenceCount " +
+			StringBuilder queryText = new StringBuilder("SELECT ClassID, ifnull(ClassString,LookupKey) " +
 																								  "FROM Classes WHERE ");
 			List<object> queryParams = new List<object>();
 
@@ -1638,15 +1638,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{
 					int classID = query.IntColumn(0);
 					ClassString classString = ClassString.FromExportedString(query.StringColumn(1));
-					int referenceCount = query.IntColumn(2);
 
-					var changes = changeCache.ChangesFor(classID);
-					if (changes != null)
-						{  referenceCount += changes.ReferenceChange;  }
-
-					if (referenceCount > 0)
-						{  classes.Add( new KeyValuePair<int, ClassString>(classID, classString));  }
-
+					classes.Add( new KeyValuePair<int, ClassString>(classID, classString));
+					
 					if (cancelled())
 						{  break;  }
 					}

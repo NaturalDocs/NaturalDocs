@@ -35,3 +35,11 @@ Topic: Topic IDs
 	Builders should not need deleted topic IDs to stick around.  They should be translating the add/change/delete events
 	into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
 	notification.
+
+
+Topic: Class IDs
+
+	Class IDs are assigned by <CodeDB.Manager>.  They behave more like <file IDs> than <topic IDs> in that they
+	stick around even after all references are removed and only go away permanently once <CodeDB.Manager.Cleanup()>
+	is called.  This is because builders may be keeping a set of class IDs to rebuild later and will need to be able to look
+	up their <ClassStrings> even after the change notification was processed.
