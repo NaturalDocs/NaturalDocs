@@ -1825,8 +1825,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			try
 				{
-				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, Hierarchy, ReferenceCount) " +
-																									"VALUES (?, ?, ?, ?, 0)") )
+				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) " +
+																									"VALUES (?, ?, ?, 0)") )
 					{
 					var codeDB = Engine.Instance.CodeDB;
 
@@ -1835,7 +1835,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						int id = codeDB.UsedClassIDs.LowestAvailable;
 
 						query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
-														  classString.LookupKey, (int)classString.Hierarchy);
+														  classString.LookupKey);
 						query.Step();
 						query.Reset(true);
 

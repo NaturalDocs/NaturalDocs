@@ -42,22 +42,6 @@ Column: LookupKey
 	can preserve the case as it was entered.
 
 
-Column: Hierarchy
-
-	(SQL Prototype)
-		Hierarchy INTEGER NOT NULL
-	(end)
-
-	Which hierarchy the class belongs to.  Although this information is encoded in <ClassString>, also having it
-	as a separate column allows you to use it as a filter in a query.
-	
-	It will be one of these values, which match the values of 
-	<GregValure.NaturalDocs.Engine.Symbols.ClassString.HierarchyType>:
-
-	1 - Classes
-	2 - Database
-
-
 Column: ReferenceCount
 
 	(SQL Prototype)
@@ -85,11 +69,4 @@ Index: ClassesByLookupKey
 
 	(SQL Prototype)
 		CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)
-	(end)
-
-
-Index: ClassesByHierarchy
-
-	(SQL Prototype)
-		CREATE INDEX ClassesByHierarchy ON Classes (Hierarchy)
 	(end)
