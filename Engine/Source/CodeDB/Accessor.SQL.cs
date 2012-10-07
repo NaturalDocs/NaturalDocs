@@ -179,9 +179,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process,
 		 * or <Delegates.NeverCancel> if not.
 		 * 
-		 * If you don't need every property in the <Topic> object you can set <Topic.IgnoreFields> to filter some out.  Not every
-		 * flag will be respected by the query but some that will save a lot of memory or processing time may be.  In debug builds
-		 * <Topic> will enforce these settings regardless of whether the query filled them in or not to prevent programming errors.
+		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save
+		 * memory or processing time.
 		 * 
 		 * Requirements:
 		 * 
