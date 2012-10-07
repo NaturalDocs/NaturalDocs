@@ -614,6 +614,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
+
+				if (topic.ClassID != 0)
+					{  classFilesToRebuild.Add(topic.ClassID);  }
 				}
 			}
 
@@ -630,6 +633,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				lock (writeLock)
 					{
 					sourceFilesToRebuild.Add(oldTopic.FileID);
+
+					if (oldTopic.ClassID != 0)
+						{  classFilesToRebuild.Add(oldTopic.ClassID);  }
+					if (newTopic.ClassID != 0)
+						{  classFilesToRebuild.Add(newTopic.ClassID);  }
 
 					// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
 					// to this topic.
@@ -651,6 +659,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
+
+				if (topic.ClassID != 0)
+					{  classFilesToRebuild.Add(topic.ClassID);  }
 				}
 			}
 
