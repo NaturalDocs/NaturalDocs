@@ -195,6 +195,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Function: GetTopicsInClass
+		 * 
+		 * Retrieves a list of all the topics present in the passed class ID.  The topics will be grouped by file, and within each group
+		 * they will be in comment line number order.  The files will be in no particular order.  If there are no topics it will return an 
+		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save memory
+		 * or processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Topic> GetTopicsInClass (int classID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
+			{
+			object[] clauseParams = new object[1];
+			clauseParams[0] = classID;
+
+			string orderBy = "Topics.FileID, Topics.CommentLineNumber ASC";
+
+			#if DEBUG
+			// Oh, you thought we were fucking around when we said the files would be in no particular order, did you?  No no my friend,
+			// we are not.
+			System.Random random = new Random();
+			orderBy = "Topics.FileID " + (random.Next(0, 2) == 0 ? "ASC" : "DESC") + ", Topics.CommentLineNumber ASC";
+
+			// What the hell?  Okay, so it's possible for files to always get the same file ID relative to each other.  If Platform A always
+			// returns the files in a folder in alphabetical order, file 1 could always have a lower ID than file 2 and thus always appear
+			// first when ordering the query by file ID.  If this happens to be the desired order then it can lead to code which appears
+			// to behave correctly but actually doesn't -- it's depending on a side effect that isn't guaranteed.  It's only when someone 
+			// runs it on Platform B where the files are returned in any order that this screws up and leads to unpredictable output.  So
+			// instead we guarantee it's your problem NOW to force you handle it correctly.
+			#endif
+
+			return GetTopics("Topics.ClassID=?", orderBy, clauseParams, cancelled, getTopicFlags);
+			}
+			
+			
 		/* Function: GetTopicsByID
 		 * 
 		 * Retrieves all the <Topics> present in a list of topic IDs.  If there are none it will return an empty list.  Pass a <CancelDelegate> if 
@@ -1604,6 +1642,34 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
+		/* Function: GetClassByID
+		 * 
+		 * Retrieves the class with the passed ID.  Even if a class has been deleted this will still return a <ClassString> until
+		 * <Cleanup()> is called.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public ClassString GetClassByID (int classID)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+
+
+			// DEPENDENCY: This function assumes that CacheOrCreateClassIDs() immediately puts a record in the database for
+			// new class IDs, and thus selecting it from the database will work even if the change cache hasn't been flushed yet.
+
+			using (SQLite.Query query = connection.Query("SELECT ifnull(ClassString,LookupKey) " +
+																										"FROM Classes WHERE ClassID=?", classID))
+				{
+				if (query.Step())
+					{  return ClassString.FromExportedString(query.StringColumn(0));  }
+				else
+					{  return new ClassString();  }
+				}
+			}
+
+
 		/* Function: GetClassesByID
 		 * 
 		 * Retrieves a list of all the classes defined in the database within the passed NumberSet.  Pass a <CancelDelegate> if you'd
@@ -1813,8 +1879,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Create anything we still need.
 
-			// DEPENDENCY: GetClassesByID() assumes *every* newly created class ID will have a record in the database, 
-			// even if the change cache hasn't been flushed yet.
+			// DEPENDENCY: GetClassByID() and GetClassesByID() assume *every* newly created class ID will have a record
+			// in the database, even if the change cache hasn't been flushed yet.
 
 			// DEPENDENCY: FlushClassIDReferenceChangeCache() assumes *every* newly created class ID will have an 
 			// entry in CodeDB.ClassIDReferenceChangeCache with database references set to zero.

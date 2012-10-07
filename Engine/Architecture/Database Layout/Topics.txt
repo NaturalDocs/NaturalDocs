@@ -214,7 +214,7 @@ Index: TopicsByFile
 Index: TopicsByClass
 
 	(SQL Prototype)
-		CREATE INDEX TopicsByClass ON Topics (ClassID)
+		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, CommentLineNumber)
 	(end)
 
 
