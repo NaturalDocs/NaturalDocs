@@ -36,6 +36,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSourceFile (int fileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
+			#if DEBUG
+			if (accessor.LockHeld != CodeDB.Accessor.LockType.None)
+				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
+			#endif
+
 			accessor.GetReadOnlyLock();
 			bool haveDBLock = true;
 
