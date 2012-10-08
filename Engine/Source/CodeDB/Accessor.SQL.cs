@@ -49,6 +49,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		protected List<Topic> GetTopics (string whereClause, string orderByClause, object[] clauseParameters,
 																	 CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
+			#if DEBUG
+			if (whereClause == null)
+				{  throw new Exception ("You must define a WHERE clause when calling GetTopics().");  }
+			#endif 
+
 			RequireAtLeast(LockType.ReadOnly);
 
 			List<Topic> topics = new List<Topic>();
@@ -119,8 +124,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.CodeLineNumber = query.IntColumn(12);
 
 					topic.LanguageID = query.IntColumn(13);
-					topic.PrototypeContextID = query.IntColumn(14);  // will automatically convert to zero if null
-					topic.BodyContextID = query.IntColumn(15);  // will automatically convert to zero if null
+					topic.PrototypeContextID = query.IntColumn(14);
+					topic.BodyContextID = query.IntColumn(15);
 					topic.FileID = query.IntColumn(16);
 
 					if (bodyLengthOnly)
@@ -1054,7 +1059,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* Function: GetNaturalDocsLinksInFiles
 		 * 
 		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.  
-		 * Pass a  <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
 		 * Requirements:
 		 * 
