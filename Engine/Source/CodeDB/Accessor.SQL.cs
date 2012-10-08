@@ -935,6 +935,76 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
+		/* Function: GetLinks
+		 * 
+		 * A generic function for retrieving all the <Links> that satisfy the passed WHERE clause.  If there are none it will return 
+		 * an empty list.
+		 * 
+		 * Parameters:
+		 * 
+		 *		whereClause - The SQL WHERE clause to apply to the query, such as "Links.FileID=?".  It's recommended that you
+		 *									  add the table name to fully qualify columns.
+		 *		clauseParameters - Any parameters needed for question marks in the WHERE clause, or null if none.
+		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
+		 *							 need to.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		protected List<Link> GetLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled)
+			{
+			#if DEBUG
+			if (whereClause == null)
+				{  throw new Exception ("You must define a WHERE clause when calling GetLinks().");  }
+			#endif 
+
+			RequireAtLeast(LockType.ReadOnly);
+
+			List<Link> links = new List<Link>();
+
+			StringBuilder queryText = new StringBuilder("SELECT LinkID, FileID, LanguageID, Type, TextOrSymbol, EndingSymbol, " +
+																										"Links.ContextID, Contexts.ContextString, " +
+																										"Links.ClassID, ifnull(Classes.ClassString, Classes.LookupKey), " +
+																										"TargetTopicID, TargetScore " +
+																									"FROM Links " +
+																										"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
+																										"LEFT OUTER JOIN Classes ON Classes.ClassID = Links.ClassID " +
+																									"WHERE ");
+			queryText.Append('(');
+			queryText.Append(whereClause);
+			queryText.Append(')');
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), clauseParameters))
+				{
+				while (query.Step())
+					{
+					Link link = new Link();
+
+					link.LinkID = query.IntColumn(0);
+					link.FileID = query.IntColumn(1);
+					link.LanguageID = query.IntColumn(2);
+					link.Type = (LinkType)query.IntColumn(3);
+					link.TextOrSymbol = query.StringColumn(4);
+					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(5) );
+					link.ContextID = query.IntColumn(6);
+					link.Context = ContextString.FromExportedString( query.StringColumn(7) );
+					link.ClassID = query.IntColumn(8);
+					link.ClassString = ClassString.FromExportedString( query.StringColumn(9) );
+					link.TargetTopicID = query.IntColumn(10);
+					link.TargetScore = query.LongColumn(11);
+
+					links.Add(link);
+
+					contextIDLookupCache.Add(link.Context, link.ContextID);
+					classIDLookupCache.Add(link.ClassString, link.ClassID);
+					}
+				}
+			
+			return links;
+			}
+
+
 		/* Function: GetLinkByID
 		 * 
 		 * Retrieves a link by its ID.  Assumes the link already exists.
@@ -947,34 +1017,17 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			Link link = new Link();
-			
-			using (SQLite.Query query = connection.Query("SELECT FileID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
-																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links " +
-																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																								"WHERE Links.LinkID = ? ",
-																								linkID))
-				{
-				if (query.Step())
-					{
-					link.FileID = query.IntColumn(0);
-					link.Type = (LinkType)query.IntColumn(1);
-					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
-					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
-					link.LanguageID = query.IntColumn(5);
-					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
-					link.TargetTopicID = query.IntColumn(7);
-					link.TargetScore = query.LongColumn(8);
+			object[] parameters = new object[1];
+			parameters[0] = linkID;
 
-					link.LinkID = linkID;
-
-					contextIDLookupCache.Add(link.Context, link.ContextID);
-					}
-				}
+			List<Link> links = GetLinks("Links.LinkID=?", parameters, Delegates.NeverCancel);
 			
-			return link;
+			#if DEBUG
+			if (links.Count == 0)
+				{  throw new Exception ("Tried to look up link ID " + linkID + " which doesn't exist.");  }
+			#endif
+
+			return links[0];
 			}
 
 
@@ -991,38 +1044,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			List<Link> links = new List<Link>();
-			
-			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
-																									"LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links " +
-																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																								"WHERE Links.FileID = ? ",
-																								fileID))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Link link = new Link();
-					
-					link.LinkID = query.IntColumn(0);
-					link.Type = (LinkType)query.IntColumn(1);
-					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
-					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
-					link.LanguageID = query.IntColumn(5);
-					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(6) );
-					link.TargetTopicID = query.IntColumn(7);
-					link.TargetScore = query.LongColumn(8);
+			object[] parameters = new object[1];
+			parameters[0] = fileID;
 
-					link.FileID = fileID;
-
-					links.Add(link);
-
-					contextIDLookupCache.Add(link.Context, link.ContextID);
-					}
-				}
-			
-			return links;
+			return GetLinks("Links.FileID=?", parameters, cancelled);
 			}
 
 
@@ -1039,55 +1064,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			List<Link> links = new List<Link>();
-			
-			StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
-																								"FileID, LanguageID, EndingSymbol, TargetTopicID, TargetScore " +
-																							"FROM Links " +
-																								"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																							"WHERE Links.Type=? " +
-																								"AND (");
-			List<object> queryParams = new List<object>();
-			queryParams.Add((int)LinkType.NaturalDocs);
+			StringBuilder whereClause = new StringBuilder("Links.Type=? AND (");
+
+			List<object> whereParams = new List<object>();
+			whereParams.Add( (int)LinkType.NaturalDocs );
 
 			bool isFirst = true;
 			foreach (int fileID in fileIDs)
 				{
 				if (!isFirst)
-					{  queryText.Append(" OR ");  }
+					{  whereClause.Append(" OR ");  }
 				else
 					{  isFirst = false;  }
 
-				queryText.Append("Links.FileID=? ");
-				queryParams.Add(fileID);
+				whereClause.Append("Links.FileID=? ");
+				whereParams.Add(fileID);
 				}
 
-			queryText.Append(')');
+			whereClause.Append(')');
 
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Link link = new Link();
-					
-					link.LinkID = query.IntColumn(0);
-					link.Type = (LinkType)query.IntColumn(1);
-					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
-					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
-					link.FileID = query.IntColumn(5);
-					link.LanguageID = query.IntColumn(6);
-					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(7) );
-					link.TargetTopicID = query.IntColumn(8);
-					link.TargetScore = query.LongColumn(9);
-
-					links.Add(link);
-
-					contextIDLookupCache.Add(link.Context, link.ContextID);
-					}
-				}
-			
-			return links;
+			return GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled);
 			}
 
 
@@ -1106,91 +1102,48 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			List<Link> links = new List<Link>();
-			
-			using (SQLite.Query query = connection.Query("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
-																									"LanguageID, FileID, TargetTopicID, TargetScore " +
-																								"FROM Links " +
-																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																								"WHERE Links.EndingSymbol = ? ",
-																								endingSymbol.ToString()))
-				{
-				while (query.Step() && !cancelled())
-					{
-					Link link = new Link();
-					
-					link.LinkID = query.IntColumn(0);
-					link.Type = (LinkType)query.IntColumn(1);
-					link.TextOrSymbol = query.StringColumn(2);
-					link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
-					link.Context = ContextString.FromExportedString( query.StringColumn(4) );
-					link.LanguageID = query.IntColumn(5);
-					link.FileID = query.IntColumn(6);
-					link.TargetTopicID = query.IntColumn(7);
-					link.TargetScore = query.LongColumn(8);
 
-					link.EndingSymbol = endingSymbol;
+			// Get links which have it as their primary ending symbol
 
-					links.Add(link);
+			object[] parameters = new object[1];
+			parameters[0] = endingSymbol.ToString();
 
-					contextIDLookupCache.Add(link.Context, link.ContextID);
-					}
-				}
+			List<Link> links = GetLinks("Links.EndingSymbol=?", parameters, cancelled);
+
+
+			// Find link IDs that have it as an alternate ending symbol
 
 			IDObjects.SparseNumberSet alternateLinkIDs = new IDObjects.SparseNumberSet();
 			
 			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternateLinkEndingSymbols " +
-																								"WHERE EndingSymbol = ?", endingSymbol.ToString()))
+																										"WHERE EndingSymbol = ?", endingSymbol.ToString()))
 				{
 				while (query.Step() && !cancelled())
 					{  alternateLinkIDs.Add( query.IntColumn(0) );  }
 				}
 
+
+			// Get the links that have it as an alternate ending symbol
+
 			if (!alternateLinkIDs.IsEmpty)
 				{
-				StringBuilder queryText = new StringBuilder("SELECT LinkID, Type, TextOrSymbol, Links.ContextID, Contexts.ContextString, " +
-																									"LanguageID, FileID, EndingSymbol, TargetTopicID, TargetScore " +
-																								"FROM Links " +
-																									"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																								"WHERE (");
-				List<object> queryParameters = new List<object>();
+				StringBuilder whereClause = new StringBuilder();
+				List<object> whereParams = new List<object>();
 
 				bool isFirst = true;
 				foreach (int alternateLinkID in alternateLinkIDs)
 					{
 					if (!isFirst)
-						{  queryText.Append("OR ");  }
+						{  whereClause.Append("OR ");  }
 					else
 						{  isFirst = false;  }
 
-					queryText.Append("LinkID=? ");
-					queryParameters.Add(alternateLinkID);
+					whereClause.Append("LinkID=? ");
+					whereParams.Add(alternateLinkID);
 					}
 
-				queryText.Append(')');
-
-				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParameters.ToArray()))
-					{
-					while (query.Step() && !cancelled())
-						{
-						Link link = new Link();
-					
-						link.LinkID = query.IntColumn(0);
-						link.Type = (LinkType)query.IntColumn(1);
-						link.TextOrSymbol = query.StringColumn(2);
-						link.ContextID = query.IntColumn(3);  // will automatically convert to zero if null
-						link.Context = ContextString.FromExportedString( query.StringColumn(4) );
-						link.LanguageID = query.IntColumn(5);
-						link.FileID = query.IntColumn(6);
-						link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(7) );
-						link.TargetTopicID = query.IntColumn(8);
-						link.TargetScore = query.LongColumn(9);
-
-						links.Add(link);
-
-						contextIDLookupCache.Add(link.Context, link.ContextID);
-						}
-					}
+				List<Link> alternateLinks = GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled);
+				links.AddRange(alternateLinks);
 				}
 
 			return links;
@@ -1213,6 +1166,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Context - Can be null, which means global with no "using" statements.
 		 *		ContextID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		FileID - Must be set.
+		 *		ClassString - Can be null, which means not part of a class.
+		 *		ClassID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
 		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
@@ -1226,6 +1181,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// Context
 			RequireZero("AddLink", "ContextID", link.ContextID);
 			RequireNonZero("AddLink", "FileID", link.FileID);
+			// ClassString
+			RequireZero("AddLink", "ClassID", link.ClassID);
 			RequireNonZero("AddLink", "LanguageID", link.LanguageID);
 
 			#if DEBUG
@@ -1280,17 +1237,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
 				GetOrCreateContextIDs(link);
+				GetOrCreateClassID(link);
 
-				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, LanguageID, EndingSymbol, " +
+				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetScore) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)",
-													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.LanguageID, link.EndingSymbol.ToString(),
-													UnresolvedTargetTopicID.NewLink
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)",
+													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.ClassID, link.LanguageID, 
+													link.EndingSymbol.ToString(), UnresolvedTargetTopicID.NewLink
 													);
 
 				codeDB.UsedLinkIDs.Add(link.LinkID);
 				codeDB.LinksToResolve.Add(link.LinkID);
 				codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
+				codeDB.ClassIDReferenceChangeCache.AddReference(link.ClassID);
 
 				if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
 					{
@@ -1350,6 +1309,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		Context - Can be null, which means global with no "using" statements.
 		 *		ContextID - Must be set.
 		 *		FileID - Must be set.
+		 *		ClassString - Can be null, which means not part of a class.
+		 *		ClassID - Must be set.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Must be set.
 		 *		TargetTopicID - Can be any value.
@@ -1364,6 +1325,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (link.Context != null)
 				{  RequireNonZero("DeleteLink", "ContextID", link.ContextID);  }
 			RequireNonZero("DeleteLink", "FileID", link.FileID);
+			// ClassString
+			if (link.ClassString != null)
+				{  RequireNonZero("DeleteLink", "ClassID", link.ClassID);  }
 			RequireNonZero("DeleteLink", "LanguageID", link.LanguageID);
 			RequireContent("DeleteLink", "EndingSymbol", link.EndingSymbol);
 			// TargetTopicID
@@ -1405,6 +1369,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				codeDB.UsedLinkIDs.Remove(link.LinkID);
 				codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
 				codeDB.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
+				codeDB.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
 
 				if (link.Type == LinkType.NaturalDocs)
 					{
@@ -1788,6 +1753,32 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				if (topic.ClassIDKnown == false)
 					{  topic.ClassID = classIDLookupCache[topic.ClassString];  }
+				}
+			}
+
+
+		/* Function: GetOrCreateClassID
+		 * 
+		 * Retrieves the ID for <Link.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
+		 *		
+		 * Topic Requirements:
+		 * 
+		 *		ClassString - Can be null, which means the link is global and doesn't create a class.
+		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
+		 *						 is a no-op.
+		 */
+		public void GetOrCreateClassID (Link link)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			if (link.ClassIDKnown == false)
+				{  
+				CacheOrCreateClassIDs(link.ClassString);
+				link.ClassID = classIDLookupCache[link.ClassString];
 				}
 			}
 

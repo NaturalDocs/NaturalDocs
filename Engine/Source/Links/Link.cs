@@ -31,6 +31,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 			context = new ContextString();
 			contextID = 0;
 			fileID = 0;
+			classString = new ClassString();
+			classID = 0;
 			languageID = 0;
 			endingSymbol = new EndingSymbol();
 			targetTopicID = UnresolvedTargetTopicID.NewLink;
@@ -39,8 +41,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 			
 			
 		/* Function: SameIDPropertiesAs
-		 * Returns whether the identifying properties of the link (<Type>, <TextOrSymbol>, <Context>, <FileID>, <LanguageID>)
-		 * are the same as the passed one.
+		 * Returns whether the identifying properties of the link (<Type>, <TextOrSymbol>, <Context>, <FileID>, <ClassString>, 
+		 * <LanguageID>) are the same as the passed one.
 		 */
 		public bool SameIDPropertiesAs (Link other)
 			{
@@ -81,6 +83,24 @@ namespace GregValure.NaturalDocs.Engine.Links
 			if (result != 0)
 				{  return result;  }
 
+			if (classString == null)
+				{
+				if (other.classString == null)
+					{  result = 0;  }
+				else
+					{  result = -1;  }
+				}
+			else 
+				{
+				if (other.classString == null)
+					{  result = 1;  }
+				else
+					{  result = classString.ToString().CompareTo(other.classString.ToString());  }
+				}
+
+			if (result != 0)
+				{  return result;  }
+
 			if (type != other.type)
 				{  return (type - other.type);  }
 
@@ -101,6 +121,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 
 			linkID = other.LinkID;
 			contextID = other.ContextID;
+			classID = other.ClassID;
 			endingSymbol = other.EndingSymbol;
 			targetTopicID = other.TargetTopicID;
 			targetScore = other.TargetScore;
@@ -209,7 +230,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 
 
 		/* Property: ContextID
-		 * The ID of <Context> if known, or zero if not.
+		 * The ID of <Context> if known, or zero if not.  It will also be zero if <Context> is null.
 		 */
 		public int ContextID
 			{
@@ -239,6 +260,40 @@ namespace GregValure.NaturalDocs.Engine.Links
 				{  return fileID;  }
 			set
 				{  fileID = value;  }
+			}
+			
+			
+		/* Property: ClassString
+		 * The class the link appears in.
+		 */
+		public Symbols.ClassString ClassString
+			{
+			get
+				{  return classString;  }
+			set
+				{  classString = value;  }
+			}
+
+
+		/* Property: ClassID
+		 * The ID of <ClassString> if known, or zero if not.  It will also be zero if <ClassString> is null.
+		 */
+		public int ClassID
+			{
+			get
+				{  return classID;  }
+			set
+				{  classID = value;  }
+			}
+
+
+		/* Property: ClassIDKnown
+		 * Whether <ClassID> is known, which basically tests whether <ClassID> is zero when <ClassString> is not null.
+		 */
+		public bool ClassIDKnown
+			{
+			get
+				{  return (classID != 0 || classString == null);  }
 			}
 			
 			
@@ -337,6 +392,16 @@ namespace GregValure.NaturalDocs.Engine.Links
 		 * The ID number of the file that defines this link.
 		 */
 		protected int fileID;
+
+		/* var: classString
+		 * The class this link appears in.
+		 */
+		protected Symbols.ClassString classString;
+
+		/* var: classID
+		 * The ID of <classString> if known, or zero if not.
+		 */
+		protected int classID;
 		
 		/* var: languageID
 		 * The ID number of the language of the topic that defines this link.

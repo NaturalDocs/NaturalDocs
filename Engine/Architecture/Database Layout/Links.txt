@@ -52,6 +52,13 @@ Column: FileID
 	(end)
 
 
+Column: ClassID
+
+	(SQL Prototype)
+		ClassID INTEGER NOT NULL
+	(end)
+
+
 Column: LanguageID
 
 	(SQL Prototype)
@@ -105,7 +112,7 @@ Index: LinksByID
 Index: LinksByProperties
 
 	(SQL Prototype)
-		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, Type, LanguageID, TextOrSymbol)
+		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, ClassID, Type, LanguageID, TextOrSymbol)
 	(end)
 
 	Links that share all these properties are considered the same link as they will always resolve the
@@ -116,6 +123,13 @@ Index: LinksByProperties
 Index: LinksByFile
 
 	This is covered by having FileID be the first column in <LinksByProperties>.
+
+
+Index: LinksByClass
+
+	(SQL Prototype)
+		CREATE INDEX LinksByClass ON Links (ClassID)
+	(end)
 
 
 Index: LinksByEndingSymbols
