@@ -193,6 +193,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public List<Topic> GetTopicsInFile (int fileID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
+			RequireAtLeast(LockType.ReadOnly);
+
 			object[] clauseParams = new object[1];
 			clauseParams[0] = fileID;
 
@@ -215,6 +217,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		public List<Topic> GetTopicsInClass (int classID, CancelDelegate cancelled, GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
+			RequireAtLeast(LockType.ReadOnly);
+
 			object[] clauseParams = new object[1];
 			clauseParams[0] = classID;
 
@@ -254,6 +258,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled, 
 																	 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
+			RequireAtLeast(LockType.ReadOnly);
+
 			StringBuilder whereClause = new StringBuilder();
 			List<object> clauseParameters = new List<object>();
 
@@ -292,6 +298,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public List<Topic> GetTopicsByEndingSymbol (IEnumerable<EndingSymbol> endingSymbols, CancelDelegate cancelled, 
 																						 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
+			RequireAtLeast(LockType.ReadOnly);
+
 			StringBuilder whereClause = new StringBuilder();
 			List<object> clauseParameters = new List<object>();
 
@@ -1582,8 +1590,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			var codeDB = Engine.Instance.CodeDB;
 
-			connection.Execute("UPDATE Links SET TargetTopicID=?, TargetScore=? " +
-												  "WHERE LinkID = ?", link.TargetTopicID, link.TargetScore, link.LinkID);
+			BeginTransaction();
+			try
+				{
+				connection.Execute("UPDATE Links SET TargetTopicID=?, TargetScore=? " +
+													  "WHERE LinkID = ?", link.TargetTopicID, link.TargetScore, link.LinkID);
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
 
 
 			// Notify change watchers
