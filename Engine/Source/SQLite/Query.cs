@@ -204,12 +204,13 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 			{
 			if (statementHandle != IntPtr.Zero)
 				{
-				API.Result finalizeResult = API.Finalize (statementHandle);
+				// We don't need to worry about the return value from Finalize().  According to the SQLite docs, it returns
+				// whatever the most recent evaluation of the statement returned, so an error here doesn't mean the
+				// finalization failed.
+				API.Finalize (statementHandle);
+
 				statementHandle = IntPtr.Zero;
 				connectionHandle = IntPtr.Zero;
-				
-				if (strictRulesApply == false && finalizeResult != API.Result.OK)
-					{  throw new Exceptions.UnexpectedResult("Could not close SQL statement.", finalizeResult);  }
 				}	
 			}
 		
