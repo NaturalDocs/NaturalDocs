@@ -109,20 +109,11 @@ Index: LinksByID
 	Automatically created by LinkID being defined as a primary key.
 
 
-Index: LinksByProperties
+Index: LinksByFileAndType
 
 	(SQL Prototype)
-		CREATE UNIQUE INDEX LinksByProperties ON Links (FileID, ContextID, ClassID, Type, LanguageID, TextOrSymbol)
+		CREATE INDEX LinksByFileAndType ON Links (FileID, Type)
 	(end)
-
-	Links that share all these properties are considered the same link as they will always resolve the
-	exact same way.  If even one of these is different between two links there's the possibility of them
-	resolving differently and they must be treated separately.
-
-
-Index: LinksByFile
-
-	This is covered by having FileID be the first column in <LinksByProperties>.
 
 
 Index: LinksByClass
