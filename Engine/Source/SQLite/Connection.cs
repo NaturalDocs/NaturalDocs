@@ -117,7 +117,7 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 			catch
 				{
 				// We have to close the handle even if OpenV2() failed, according to the API.
-				API.Close(handle);
+				API.CloseV2(handle);
 				handle = IntPtr.Zero;
 				databaseFile = null;
 				
@@ -226,7 +226,7 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 			{
 			if (handle != IntPtr.Zero)
 				{
-				API.Result closeResult = API.Close(handle);
+				API.Result closeResult = API.CloseV2(handle);
 				handle = IntPtr.Zero;
 				databaseFile = null;
 				

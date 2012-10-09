@@ -93,7 +93,7 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 																	 OpenOption options, IntPtr vfs);
 
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
-		extern static private Result sqlite3_close (IntPtr connectionHandle);
+		extern static private Result sqlite3_close_v2 (IntPtr connectionHandle);
 
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
@@ -179,8 +179,8 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		static public Result OpenV2 (string filename, out IntPtr connectionHandle, OpenOption options)
 			{  return sqlite3_open_v2(filename, out connectionHandle, options, IntPtr.Zero);  }
 
-		static public Result Close (IntPtr connectionHandle)
-			{  return sqlite3_close(connectionHandle);  }
+		static public Result CloseV2 (IntPtr connectionHandle)
+			{  return sqlite3_close_v2(connectionHandle);  }
 
 		static public Result ExtendedResultCodes (IntPtr connectionHandle, bool onoff)
 			{  return sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
