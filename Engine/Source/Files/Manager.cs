@@ -1291,6 +1291,8 @@ namespace GregValure.NaturalDocs.Engine.Files
 					link.Context = topic.BodyContext;
 					// ignore contextID
 					link.FileID = topic.FileID;
+					link.ClassString = topic.ClassString;
+					// ignore classID
 					link.LanguageID = topic.LanguageID;
 					// ignore EndingSymbol
 					// ignore TargetTopicID
@@ -1339,6 +1341,8 @@ namespace GregValure.NaturalDocs.Engine.Files
 						link.Context = topic.PrototypeContext;
 						// ignore contextID
 						link.FileID = topic.FileID;
+						link.ClassString = topic.ClassString;
+						// ignore classID
 						link.LanguageID = topic.LanguageID;
 						// ignore EndingSymbol
 						// ignore TargetTopicID

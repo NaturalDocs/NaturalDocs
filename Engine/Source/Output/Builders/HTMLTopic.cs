@@ -619,6 +619,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			linkStub.Context = topic.BodyContext;
 			linkStub.ContextID = topic.BodyContextID;
 			linkStub.FileID = topic.FileID;
+			linkStub.ClassString = topic.ClassString;
+			linkStub.ClassID = topic.ClassID;
 			linkStub.LanguageID = topic.LanguageID;
 
 
