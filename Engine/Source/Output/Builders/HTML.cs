@@ -22,6 +22,18 @@
  *			the last extension.  Dots in folder names and hash paths are okay though.
  *		
  * 
+ * Multithreading: Thread Safety Notes
+ * 
+ *		> Accessor's database Lock -> writeLock
+ * 
+ *		Externally, this class is thread safe as functions use <writeLock> to control access to internal variables.
+ *		
+ *		Interally, if code needs both a database lock and <writeLock> it must acquire the database lock first.  It also 
+ *		must not upgrade the database lock from read/possible write to read/write while holding <writeLock>, as there
+ *		may be a thread with a read-only accessor waiting for <writeLock>.  Acquiring and releasing <writeLock> while 
+ *		holding a database lock is fine as long as no changes will be made to it.
+ *		
+ * 
  * File: Config.nd
  * 
  *		A file used to store information about the configuration as of last time this output target was built.
@@ -691,6 +703,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				for (;;)
 					{
+					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(writeLock);
 					haveLock = true;
 					
@@ -823,6 +836,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				for (;;)
 					{
+					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(writeLock);
 					haveLock = true;
 					
