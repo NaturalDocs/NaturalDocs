@@ -1582,7 +1582,12 @@ namespace GregValure.NaturalDocs.Engine.Files
 			foreach (int id in claimedFileIDs)
 				{  files[id].LastModified = zero;  }
 					
-			SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Files.nd", files );
+			try
+				{
+				SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Files.nd", files );
+				}
+			catch
+				{  }
 			}
 			
 			
