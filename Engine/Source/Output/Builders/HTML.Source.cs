@@ -643,16 +643,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						{  classFilesToRebuild.Add(oldTopic.ClassID);  }
 					if (newTopic.ClassID != 0)
 						{  classFilesToRebuild.Add(newTopic.ClassID);  }
+					}
 
-					// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
-					// to this topic.
-					if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
-													  Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
-						{
-						IDObjects.SparseNumberSet fileIDs;
-						eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out fileIDs);
+				// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
+				// to this topic.
+				if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
+													Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
+					{
+					IDObjects.SparseNumberSet fileIDs;
+					eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out fileIDs);
 
-						if (fileIDs != null)
+					if (fileIDs != null)
+						{  
+						lock (writeLock)
 							{  sourceFilesToRebuild.Add(fileIDs);  }
 						}
 					}
