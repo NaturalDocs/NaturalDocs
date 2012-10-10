@@ -79,8 +79,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Get links and their targets
 
-					// We can't skip looking up classes and contexts here because later code will be trying to compare generated 
-					// links to the ones in this list.
+					// We can't skip looking up classes and contexts here.  Later code will be trying to compare generated 
+					// links to the ones in this list and that requires them having all their properties.
 					IList<Link> links = accessor.GetLinksInFile(fileID, cancelDelegate);
 
 					if (cancelDelegate())
@@ -99,10 +99,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (cancelDelegate())
 						{  return;  }
 
-					// We also need to get the link targets for links appearing inside the link targets.  Wut?  When you 
-					// have a resolved link, a tooltip shows up when you hover over it.  The tooltip is built from the link
-					// targets for the file.  However, if the summary appearing in the tooltip contains any Natural Docs 
-					// links, we need their targets to know what text to show (originaltext, named links, etc.)
+					// We also need to get any links appearing inside the link targets.  Wut?  When you have a resolved link, 
+					// a tooltip shows up when you hover over it.  The tooltip is built from the link targets we just retrieved.  
+					// However, if the summary appearing in the tooltip contains any Natural Docs links, we need to know if
+					// they're resolved and how to know what text to show (originaltext, named links, etc.)  Links don't store
+					// which topic they appear in, but they do store the file, so gather the file IDs of the link targets that
+					// have Natural Docs links in the summaries and get all the links in those files.
 
 					IDObjects.SparseNumberSet inceptionFileIDs = new IDObjects.SparseNumberSet();
 
