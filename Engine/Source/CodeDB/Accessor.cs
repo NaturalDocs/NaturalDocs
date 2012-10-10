@@ -87,6 +87,29 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Enum: GetLinkFlags
+		 * 
+		 * When querying links from the database, not all fields may be needed in all circumstances.  This is a
+		 * bitfield that allows you to specify which fields can be ignored.  In debug builds this is enforced by <Link>, 
+		 * so if you try to access any of these fields an exception will be thrown.
+		 * 
+		 * Everything - All <Link> fields will be retrieved from the database.
+		 * 
+		 * DontLookupClasses - Only <Link.ClassID> will be retrieved.  It will not look up <Link.ClassString> which
+		 *											will prevent a table join if you don't need it.
+		 *	 DontLookupContexts - Only <Link.ContextID> will be retrieved.  It will not look up <Link.Context> which 
+		 *												will prevent a table join if you don't need it.
+		 */
+		[Flags]
+		public enum GetLinkFlags : byte
+			{
+			Everything = 0x00,
+
+			DontLookupClasses = 0x01,
+			DontLookupContexts = 0x02
+			}
+
+
 		
 		// Group: Functions
 		// __________________________________________________________________________

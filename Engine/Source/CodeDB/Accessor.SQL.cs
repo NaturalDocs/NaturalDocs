@@ -128,49 +128,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.BodyContextID = query.IntColumn(15);
 					topic.FileID = query.IntColumn(16);
 
+					topic.IgnoredFields = Topic.IgnoreFields.None;
+
 					if (bodyLengthOnly)
-						{  topic.BodyLength = query.IntColumn(17);  }
+						{  
+						topic.BodyLength = query.IntColumn(17);  
+						topic.IgnoredFields |= Topic.IgnoreFields.Body;
+						}
 					else
 						{  topic.Body = query.StringColumn(17);  }
 
-					int columnIndex = 18;
+					int nextColumn = 18;
 
 					if (lookupClasses)
 						{
-						if (topic.ClassID != 0)
-							{  topic.ClassString = ClassString.FromExportedString(query.StringColumn(columnIndex));  }
-
-						columnIndex++;
+						topic.ClassString = ClassString.FromExportedString( query.StringColumn(nextColumn) );
+						nextColumn++;
 						}
+					else
+						{  topic.IgnoredFields |= Topic.IgnoreFields.ClassString;  }
 
 					if (lookupContexts)
 						{
-						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(columnIndex) );
-						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(columnIndex + 1) );
-						columnIndex += 2;
+						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(nextColumn) );
+						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(nextColumn + 1) );
+						nextColumn += 2;
 						}
+					else
+						{  topic.IgnoredFields |= Topic.IgnoreFields.PrototypeContext | Topic.IgnoreFields.BodyContext;  }
 
 					topics.Add(topic);
 
 					if (lookupClasses)
 						{  classIDLookupCache.Add(topic.ClassString, topic.ClassID);  }
-
 					if (lookupContexts)
 						{
 						contextIDLookupCache.Add(topic.PrototypeContext, topic.PrototypeContextID);
 						contextIDLookupCache.Add(topic.BodyContext, topic.BodyContextID);
 						}
-
-					Topic.IgnoreFields ignoredFields = Topic.IgnoreFields.None;
-
-					if (bodyLengthOnly)
-						{  ignoredFields |= Topic.IgnoreFields.Body;  }
-					if (!lookupClasses)
-						{  ignoredFields |= Topic.IgnoreFields.ClassString;  }
-					if (!lookupContexts)
-						{  ignoredFields |= Topic.IgnoreFields.PrototypeContext | Topic.IgnoreFields.BodyContext;  }
-
-					topic.IgnoredFields = ignoredFields;
 					}
 				}
 
@@ -960,12 +955,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE clause, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
 		 *							 need to.
+		 *		getLinkFlags - If you don't need every property in the <Link> object you can use this to filter some out to save 
+		 *								  processing time.  In debug builds <Link> will enforce these settings to prevent programming errors.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		protected List<Link> GetLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled)
+		protected List<Link> GetLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled,
+																GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			#if DEBUG
 			if (whereClause == null)
@@ -976,21 +974,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			List<Link> links = new List<Link>();
 
+			bool lookupClasses = ((getLinkFlags & GetLinkFlags.DontLookupClasses) == 0);
+			bool lookupContexts = ((getLinkFlags & GetLinkFlags.DontLookupContexts) == 0);
+
 			StringBuilder queryText = new StringBuilder("SELECT LinkID, FileID, LanguageID, Type, TextOrSymbol, EndingSymbol, " +
-																										"Links.ContextID, Contexts.ContextString, " +
-																										"Links.ClassID, ifnull(Classes.ClassString, Classes.LookupKey), " +
-																										"TargetTopicID, TargetScore " +
-																									"FROM Links " +
-																										"LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID " +
-																										"LEFT OUTER JOIN Classes ON Classes.ClassID = Links.ClassID " +
-																									"WHERE ");
+																								"Links.ContextID, Links.ClassID, TargetTopicID, TargetScore ");
+
+			if (lookupClasses)
+				{  queryText.Append(", ifnull(Classes.ClassString, Classes.LookupKey) ");  }
+			if (lookupContexts)
+				{  queryText.Append(", Contexts.ContextString ");  }
+
+			queryText.Append("FROM Links ");
+
+			if (lookupClasses)
+				{  queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = Links.ClassID ");  }
+			if (lookupContexts)
+				{  queryText.Append("LEFT OUTER JOIN Contexts ON Contexts.ContextID = Links.ContextID ");  }
+
+			queryText.Append("WHERE ");
+			
 			queryText.Append('(');
 			queryText.Append(whereClause);
 			queryText.Append(')');
 
 			using (SQLite.Query query = connection.Query(queryText.ToString(), clauseParameters))
 				{
-				while (query.Step())
+				while (query.Step() && !cancelled())
 					{
 					Link link = new Link();
 
@@ -1001,16 +1011,36 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.TextOrSymbol = query.StringColumn(4);
 					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(5) );
 					link.ContextID = query.IntColumn(6);
-					link.Context = ContextString.FromExportedString( query.StringColumn(7) );
-					link.ClassID = query.IntColumn(8);
-					link.ClassString = ClassString.FromExportedString( query.StringColumn(9) );
-					link.TargetTopicID = query.IntColumn(10);
-					link.TargetScore = query.LongColumn(11);
+					link.ClassID = query.IntColumn(7);
+					link.TargetTopicID = query.IntColumn(8);
+					link.TargetScore = query.LongColumn(9);
+
+					link.IgnoredFields = Link.IgnoreFields.None;
+
+					int nextColumn = 10;
+
+					if (lookupClasses)
+						{
+						link.ClassString = ClassString.FromExportedString( query.StringColumn(nextColumn) );
+						nextColumn++;
+						}
+					else
+						{  link.IgnoredFields |= Link.IgnoreFields.ClassString;  }
+
+					if (lookupContexts)
+						{
+						link.Context = ContextString.FromExportedString( query.StringColumn(nextColumn) );
+						nextColumn++;
+						}
+					else
+						{  link.IgnoredFields |= Link.IgnoreFields.Context;  }
 
 					links.Add(link);
 
-					contextIDLookupCache.Add(link.Context, link.ContextID);
-					classIDLookupCache.Add(link.ClassString, link.ClassID);
+					if (lookupClasses)
+						{  classIDLookupCache.Add(link.ClassString, link.ClassID);  }
+					if (lookupContexts)
+						{  contextIDLookupCache.Add(link.Context, link.ContextID);  }
 					}
 				}
 			
@@ -1022,18 +1052,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 * Retrieves a link by its ID.  Assumes the link already exists.
 		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public Link GetLinkByID (int linkID)
+		public Link GetLinkByID (int linkID, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
 			object[] parameters = new object[1];
 			parameters[0] = linkID;
 
-			List<Link> links = GetLinks("Links.LinkID=?", parameters, Delegates.NeverCancel);
+			List<Link> links = GetLinks("Links.LinkID=?", parameters, Delegates.NeverCancel, getLinkFlags);
 			
 			#if DEBUG
 			if (links.Count == 0)
@@ -1049,18 +1082,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves a list of all the links present in the passed file ID.  If there are none it will return an empty list.  Pass a 
 		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetLinksInFile (int fileID, CancelDelegate cancelled)
+		public List<Link> GetLinksInFile (int fileID, CancelDelegate cancelled, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
 			object[] parameters = new object[1];
 			parameters[0] = fileID;
 
-			return GetLinks("Links.FileID=?", parameters, cancelled);
+			return GetLinks("Links.FileID=?", parameters, cancelled, getLinkFlags);
 			}
 
 
@@ -1069,11 +1105,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.  
 		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetNaturalDocsLinksInFiles (IEnumerable<int> fileIDs, CancelDelegate cancelled)
+		public List<Link> GetNaturalDocsLinksInFiles (IEnumerable<int> fileIDs, CancelDelegate cancelled, 
+																						GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -1096,7 +1136,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			whereClause.Append(')');
 
-			return GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled);
+			return GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled, getLinkFlags);
 			}
 
 
@@ -1107,11 +1147,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or 
 		 * <Delegates.NeverCancel> if not.
 		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
 		 * Requirements:
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetLinksByEndingSymbol (EndingSymbol endingSymbol, CancelDelegate cancelled)
+		public List<Link> GetLinksByEndingSymbol (EndingSymbol endingSymbol, CancelDelegate cancelled,
+																					GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
