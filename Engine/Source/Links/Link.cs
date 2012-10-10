@@ -18,7 +18,37 @@ namespace GregValure.NaturalDocs.Engine.Links
 	{
 	public class Link
 		{
+
+		// Group: Types
+		// __________________________________________________________________________
 		
+		/* Enum: IgnoreFields
+		 * 
+		 * When querying links from the database, not all fields may be needed in all circumstances.  This is a
+		 * bitfield that allows you to specify which fields can be ignored.  This is also stored in the object so that,
+		 * in debug builds, if you try to access any of these fields an exception will be thrown.
+		 */
+		[Flags]
+		public enum IgnoreFields : ushort
+			{
+			None = 0x0000,
+
+			LinkID = 0x0001,
+			Type = 0x0002,
+			TextOrSymbol = 0x0004,
+			Context = 0x0008,
+			ContextID = 0x0010,
+			FileID = 0x0020,
+			ClassString = 0x0040,
+			ClassID = 0x0080,
+			LanguageID = 0x0100,
+			EndingSymbol = 0x0200,
+			TargetTopicID = 0x0400,
+			TargetScore = 0x0800
+			}
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -37,6 +67,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 			endingSymbol = new EndingSymbol();
 			targetTopicID = UnresolvedTargetTopicID.NewLink;
 			targetScore = 0;
+
+			ignoredFields = IgnoreFields.None;
 			}
 			
 			
@@ -59,6 +91,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int CompareIDPropertiesTo (Link other)
 			{
 			// DEPENDENCY: What CopyNonIDPropertiesFrom() does depends on what this compares.
+
+			#if DEBUG
+			if (ignoredFields != IgnoreFields.None || other.ignoredFields != IgnoreFields.None)
+				{  throw new InvalidOperationException("Cannot compare links that have ignored fields.");  }
+			#endif
 
 			int result = textOrSymbol.CompareTo(other.textOrSymbol);
 
@@ -139,9 +176,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int LinkID
 			{
 			get
-				{  return linkID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LinkID) != 0)
+					{  throw new InvalidOperationException("Tried to access LinkID when that field was ignored.");  }
+				#endif
+
+				return linkID;  
+				}
 			set
-				{  linkID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LinkID) != 0)
+					{  throw new InvalidOperationException("Tried to access LinkID when that field was ignored.");  }
+				#endif
+
+				linkID = value;  
+				}
 			}
 			
 			
@@ -151,9 +202,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public LinkType Type
 			{
 			get
-				{  return type;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Type) != 0)
+					{  throw new InvalidOperationException("Tried to access Type when that field was ignored.");  }
+				#endif
+
+				return type;  
+				}
 			set
-				{  type = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Type) != 0)
+					{  throw new InvalidOperationException("Tried to access Type when that field was ignored.");  }
+				#endif
+
+				type = value;  
+				}
 			}
 			
 			
@@ -165,9 +230,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public string TextOrSymbol
 			{
 			get
-				{  return textOrSymbol;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access TextOrSymbol when that field was ignored.");  }
+				#endif
+
+				return textOrSymbol;  
+				}
 			set
-				{  textOrSymbol = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access TextOrSymbol when that field was ignored.");  }
+				#endif
+
+				textOrSymbol = value;  
+				}
 			}
 
 
@@ -179,6 +258,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Text when that field was ignored.");  }
+				#endif
+
 				if (type != LinkType.NaturalDocs)
 					{  throw new InvalidOperationException();  }
 
@@ -186,6 +270,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 				}
 			set
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Text when that field was ignored.");  }
+				#endif
+
 				if (type != LinkType.NaturalDocs)
 					{  throw new InvalidOperationException();  }
 
@@ -202,6 +291,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 			{
 			get
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
+				#endif
+
 				if (type == LinkType.NaturalDocs)
 					{  throw new InvalidOperationException();  }
 
@@ -209,6 +303,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 				}
 			set
 				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TextOrSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access Symbol when that field was ignored.");  }
+				#endif
+
 				if (type == LinkType.NaturalDocs)
 					{  throw new InvalidOperationException();  }
 
@@ -223,9 +322,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public Symbols.ContextString Context
 			{
 			get
-				{  return context;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Context) != 0)
+					{  throw new InvalidOperationException("Tried to access Context when that field was ignored.");  }
+				#endif
+
+				return context;  
+				}
 			set
-				{  context = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Context) != 0)
+					{  throw new InvalidOperationException("Tried to access Context when that field was ignored.");  }
+				#endif
+
+				context = value;  
+				}
 			}
 
 
@@ -235,9 +348,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int ContextID
 			{
 			get
-				{  return contextID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access ContextID when that field was ignored.");  }
+				#endif
+
+				return contextID;  
+				}
 			set
-				{  contextID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ContextID) != 0)
+					{  throw new InvalidOperationException("Tried to access ContextID when that field was ignored.");  }
+				#endif
+
+				contextID = value;  
+				}
 			}
 
 
@@ -257,9 +384,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int FileID
 			{
 			get
-				{  return fileID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FileID) != 0)
+					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
+				#endif
+
+				return fileID;  
+				}
 			set
-				{  fileID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FileID) != 0)
+					{  throw new InvalidOperationException("Tried to access FileID when that field was ignored.");  }
+				#endif
+
+				fileID = value;  
+				}
 			}
 			
 			
@@ -269,9 +410,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public Symbols.ClassString ClassString
 			{
 			get
-				{  return classString;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassString) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
+				#endif
+
+				return classString;  
+				}
 			set
-				{  classString = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassString) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassString when that field was ignored.");  }
+				#endif
+
+				classString = value;  
+				}
 			}
 
 
@@ -281,9 +436,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int ClassID
 			{
 			get
-				{  return classID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
+				#endif
+
+				return classID;  
+				}
 			set
-				{  classID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.ClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access ClassID when that field was ignored.");  }
+				#endif
+
+				classID = value;  
+				}
 			}
 
 
@@ -303,9 +472,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int LanguageID
 			{
 			get
-				{  return languageID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
+					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
+				#endif
+
+				return languageID;  
+				}
 			set
-				{  languageID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.LanguageID) != 0)
+					{  throw new InvalidOperationException("Tried to access LanguageID when that field was ignored.");  }
+				#endif
+
+				languageID = value;  
+				}
 			}
 
 
@@ -316,9 +499,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public Symbols.EndingSymbol EndingSymbol
 			{
 			get
-				{  return endingSymbol;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.EndingSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access EndingSymbol when that field was ignored.");  }
+				#endif
+
+				return endingSymbol;  
+				}
 			set
-				{  endingSymbol = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.EndingSymbol) != 0)
+					{  throw new InvalidOperationException("Tried to access EndingSymbol when that field was ignored.");  }
+				#endif
+
+				endingSymbol = value;  
+				}
 			}
 
 
@@ -339,9 +536,23 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public int TargetTopicID
 			{
 			get
-				{  return targetTopicID;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetTopicID) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetTopicID when that field was ignored.");  }
+				#endif
+
+				return targetTopicID;  
+				}
 			set
-				{  targetTopicID = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetTopicID) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetTopicID when that field was ignored.");  }
+				#endif
+
+				targetTopicID = value;  
+				}
 			}
 
 
@@ -351,11 +562,44 @@ namespace GregValure.NaturalDocs.Engine.Links
 		public long TargetScore
 			{
 			get
-				{  return targetScore;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
+				#endif
+
+				return targetScore;  
+				}
 			set
-				{  targetScore = value;  }
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetScore) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetScore when that field was ignored.");  }
+				#endif
+
+				targetScore = value;  
+				}
 			}			
 			
+
+		/* Property: IgnoredFields
+		 * 
+		 * When querying links from the database, not all fields may be needed in all situations.  The database
+		 * may accept <IgnoreFields> flags to skip retrieving parts of them.  If that's done, the flags should also
+		 * be set here so that in debug builds an exception will be thrown if you try to access those properties.
+		 * 
+		 * IgnoredFields defaults to <IgnoreFields.None> so that links created by parsing don't have to worry
+		 * about them.
+		 * 
+		 */
+		public IgnoreFields IgnoredFields
+			{
+			get
+				{  return ignoredFields;  }
+			set
+				{  ignoredFields = value;  }
+			}
+
 
 		
 		// Group: Variables
@@ -425,5 +669,9 @@ namespace GregValure.NaturalDocs.Engine.Links
 		 */
 		protected long targetScore;
 				
+		/* var: ignoredFields
+		 * The <IgnoreFields> applied to this object.
+		 */
+		protected IgnoreFields ignoredFields;
 		}
 	}
