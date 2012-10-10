@@ -98,6 +98,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
 
+		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
+		extern static private Result sqlite3_busy_timeout(IntPtr connectionHandle, int milliseconds);
+
 		#if SQLITE_UTF16
 		[DllImport ("NaturalDocs.Engine.SQLite.dll")]
 		extern static private Result sqlite3_prepare16_v2 (IntPtr connectionHandle, 
@@ -184,6 +187,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 
 		static public Result ExtendedResultCodes (IntPtr connectionHandle, bool onoff)
 			{  return sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
+
+		static public Result BusyTimeout (IntPtr connectionHandle, int milliseconds)
+			{  return sqlite3_busy_timeout(connectionHandle, milliseconds);  }
 
 		static public Result PrepareV2 (IntPtr connectionHandle, string statementText, out IntPtr statementHandle)
 			{  

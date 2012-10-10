@@ -87,6 +87,9 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 
 				// Don't check the result since it's not a big deal if this fails.
 				API.ExtendedResultCodes(handle, true);
+
+				// Even with proper locking it's possible for queries to return Busy, even when all the threads are only reading.  Alas.
+				API.BusyTimeout(handle, BusyTimeoutInMS);
 				
 				// No point in using SQLite's case-insensitivity since it only applies to ASCII characters.
 				Execute("PRAGMA case_sensitive_like = 1");
@@ -251,6 +254,16 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		 * The database file path.
 		 */
 		protected Path databaseFile;
+
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* Constant: BusyTimeoutInMS
+		 */
+		protected const int BusyTimeoutInMS = 2000;
 		
 		}
 	}
