@@ -1321,7 +1321,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						codePoint.Topic.Symbol = symbol;
 
-						currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.id, symbol);
+						currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, this.CaseSensitive, symbol);
 						codePoint.Topic.ClassString = currentClass;
 
 						// Classes are treated as global

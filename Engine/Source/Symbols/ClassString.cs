@@ -68,16 +68,15 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* Function: FromParameters
 		 * Creates a ClassString from the passed parameters.
 		 */
-		static public ClassString FromParameters (HierarchyType hierarchy, int languageID, SymbolString symbol)
+		static public ClassString FromParameters (HierarchyType hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
 			{
 			if (symbol == null)
 				{  throw new NullReferenceException();  }
 
 			// SymbolString plus hierarchy, language ID, and separator.  It's almost definitely only going to use one char for the
-			// language ID, but allocating a second one just to be certain isn't a big deal.
+			// language ID, but getting room for a second one just to be certain isn't a big deal when we're already paying for the
+			// allocation.
 			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 4);
-
-			bool caseSensitive = Engine.Instance.Languages.FromID(languageID).CaseSensitive;
 
 			if (hierarchy == HierarchyType.Class)
 				{  
@@ -253,6 +252,18 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				return languageID;
 				}
 			}
+
+
+		/* Property: CaseSensitive
+		 * 
+		 * Fooled you.  There actually is no CaseSensitive property.  You don't have to worry about handling case sensitivity
+		 * yourself, just use <LookupKey> for comparisons instead.
+		 * 
+		 * Why is there no CaseSensitive property?  Because if there was somebody might mistakenly take it to mean they 
+		 * should lowercase the string for comparisons instead of using <LookupKey>.  That's bad, as the part that encodes 
+		 * <LanguageID> is always case sensitive and would be corrupted.  So this note serves as a warning for the people
+		 * who might be looking for it.
+		 */
 
 
 		/* Property: LookupKey
