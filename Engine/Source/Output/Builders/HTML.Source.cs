@@ -79,6 +79,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Get links and their targets
 
+					// We can't skip looking up classes and contexts here because later code will be trying to compare generated 
+					// links to the ones in this list.
 					IList<Link> links = accessor.GetLinksInFile(fileID, cancelDelegate);
 
 					if (cancelDelegate())
@@ -113,7 +115,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					IList<Link> inceptionLinks = null;
 					
 					if (!inceptionFileIDs.IsEmpty)
-						{  inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  }
+						{  
+						// Can't skip looking up classes and contexts here either.
+						inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  
+						}
 
 					if (cancelDelegate())
 						{  return;  }

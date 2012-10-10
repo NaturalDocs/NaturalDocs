@@ -987,7 +987,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void ResolveLink (int linkID, Accessor accessor)
 			{
-			Link link = accessor.GetLinkByID(linkID);
+			Link link = accessor.GetLinkByID(linkID, Accessor.GetLinkFlags.DontLookupClasses);
 			List<EndingSymbol> endingSymbols = accessor.GetAlternateLinkEndingSymbols(linkID);
 
 			if (endingSymbols == null)
@@ -1062,7 +1062,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							  Accessor.GetTopicFlags.BodyLengthOnly |
 																							  Accessor.GetTopicFlags.DontLookupClasses |
 																							  Accessor.GetTopicFlags.DontLookupContexts);
-			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel);
+			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel,
+																										 Accessor.GetLinkFlags.DontLookupClasses);
 
 			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 
 			// because we can generate alternate interpretations only once per link.
