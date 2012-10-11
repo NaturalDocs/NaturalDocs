@@ -614,6 +614,33 @@ function NDLocation (hashString)
 
 			this.AddFileURLs();
 			}
+
+		else if (this.hashString.match(/^[A-Z]+Class:/i) != null)
+			{
+			this.type = "Class";
+
+			// The first colon after File:, which will always exist if we're a file hash path.
+			var pathSeparator = this.hashString.indexOf(':', 4);
+
+			// The first colon after the path, which may or may not exist.
+			var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
+
+			if (memberSeparator == -1)
+				{
+				this.path = this.hashString;
+				}
+			else
+				{
+				this.path = this.hashString.substr(0, memberSeparator);
+				this.member = this.hashString.substr(memberSeparator + 1);
+
+				if (this.member == "")
+					{  this.member = undefined;  }
+				}
+
+			this.AddClassURLs();
+			}
+
 		else
 			{
 			// All empty and invalid hashes show the home page.
@@ -647,6 +674,26 @@ function NDLocation (hashString)
 		filename = filename.replace(/\./g, '-');
 		
 		basePath = basePath.substr(0, lastSeparator + 1) + filename;
+
+		this.contentPage = basePath + ".html";
+		this.summaryFile = basePath + "-Summary.js";
+		this.summaryTTFile = basePath + "-SummaryToolTips.js";
+
+		if (this.member != undefined)
+			{  this.contentPage += '#' + this.member;  }
+		};
+
+
+	/* Private Function: AddClassURLs
+		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
+		must be "File".
+	*/
+	this.AddClassURLs = function ()
+		{
+		var pathPrefix = this.path.match(/^([A-Z]+)Class:/i);
+		var basePath = "classes/" + pathPrefix[1] + "/" + this.path.substr(pathPrefix[0].length);
+
+		basePath = basePath.replace(/\.|::/g, "/");
 
 		this.contentPage = basePath + ".html";
 		this.summaryFile = basePath + "-Summary.js";

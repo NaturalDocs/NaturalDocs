@@ -1100,6 +1100,29 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetLinksInClass
+		 * 
+		 * Retrieves a list of all the links present in the passed class ID.  If there are none it will return an empty list.  Pass a 
+		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetLinksInClass (int classID, CancelDelegate cancelled, GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = classID;
+
+			return GetLinks("Links.ClassID=?", parameters, cancelled, getLinkFlags);
+			}
+
+
 		/* Function: GetNaturalDocsLinksInFiles
 		 * 
 		 * Retrieves a list of all the Natural Docs links present in the passed file IDs.  If there are none it will return an empty list.  

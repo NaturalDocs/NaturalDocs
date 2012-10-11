@@ -85,63 +85,60 @@ var NDSummary = new function ()
 		// and the tool tip is just in the way now.
 		this.ResetToolTip();
 
-		if (newLocation.type == "File")
+		// It's possible we've navigated to a different member of the same file, so check to see if we need to do anything.
+		if (oldLocation == undefined || oldLocation.type != newLocation.type || oldLocation.path != newLocation.path)
 			{
-			// It's possible we've navigated to a different member of the same file, so check to see if we need to do anything.
-			if (oldLocation == undefined || oldLocation.type != "File" || oldLocation.path != newLocation.path)
+
+			// Reset the state
+
+			this.summaryLanguages = undefined;
+			this.summaryTopicTypes = undefined;
+			this.summaryEntries = undefined;
+			this.summaryToolTips = undefined;
+
+
+			// If this is the first build of the summary, build the empty one right away to put up the loading notice.
+			if (oldLocation == undefined)
+				{  this.Build();  }
+
+			// If there's already a summary up, wait a short delay before replacing it with a loading notice.  If the data comes 
+			// back fast enough this will allow us to transition directly from the old summary to the new one without causing a
+			// visible flicker.  This is important when running docs from the hard drive.
+			else if (this.delayedLoadingTimeout == undefined)
 				{
-
-				// Reset the state
-
-				this.summaryLanguages = undefined;
-				this.summaryTopicTypes = undefined;
-				this.summaryEntries = undefined;
-				this.summaryToolTips = undefined;
-
-
-				// If this is the first build of the summary, build the empty one right away to put up the loading notice.
-				if (oldLocation == undefined)
-					{  this.Build();  }
-
-				// If there's already a summary up, wait a short delay before replacing it with a loading notice.  If the data comes 
-				// back fast enough this will allow us to transition directly from the old summary to the new one without causing a
-				// visible flicker.  This is important when running docs from the hard drive.
-				else if (this.delayedLoadingTimeout == undefined)
+				this.delayedLoadingTimeout = setTimeout( function ()
 					{
-					this.delayedLoadingTimeout = setTimeout( function ()
-						{
-						if (NDSummary.summaryLanguages == undefined) 
-							{  NDSummary.Build();  }
+					if (NDSummary.summaryLanguages == undefined) 
+						{  NDSummary.Build();  }
 
-						clearTimeout(NDSummary.delayedLoadingTimout);
-						NDSummary.delayedLoadingTimeout = undefined;
-						}, 
-						`LoadingNoticeDelay);
-					}
-
-				
-				// Remove the previous loaders if there are any.
-
-				var head = document.getElementsByTagName("head")[0];
-				var loader = document.getElementById("NDSummaryLoader");
-
-				if (loader)
-					{  head.removeChild(loader);  }
-
-				loader = document.getElementById("NDSummaryToolTipsLoader");
-
-				if (loader)
-					{  head.removeChild(loader);  }
-
-
-				// Create a new summary loader.  We don't load the tooltips until the summary is complete to
-				// avoid having to wait for a potentially large file.
-
-				NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");
+					clearTimeout(NDSummary.delayedLoadingTimout);
+					NDSummary.delayedLoadingTimeout = undefined;
+					}, 
+					`LoadingNoticeDelay);
 				}
 
-			this.FinishIENavigation();
+			
+			// Remove the previous loaders if there are any.
+
+			var head = document.getElementsByTagName("head")[0];
+			var loader = document.getElementById("NDSummaryLoader");
+
+			if (loader)
+				{  head.removeChild(loader);  }
+
+			loader = document.getElementById("NDSummaryToolTipsLoader");
+
+			if (loader)
+				{  head.removeChild(loader);  }
+
+
+			// Create a new summary loader.  We don't load the tooltips until the summary is complete to
+			// avoid having to wait for a potentially large file.
+
+			NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");
 			}
+
+		this.FinishIENavigation();
 		};
 
 

@@ -798,7 +798,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
 							
-						//BuildClassFile(classFileToRebuild, accessor, cancelDelegate);
+						BuildClassFile(classFileToRebuild, accessor, cancelDelegate);
 						
 						lock (writeLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_ClassFile;  }
