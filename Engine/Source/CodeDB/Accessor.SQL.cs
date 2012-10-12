@@ -1741,6 +1741,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			List<KeyValuePair<int, ClassString>> classes = new List<KeyValuePair<int, ClassString>>();
 
+			if (ids.IsEmpty)
+				{  return classes;  }
+
 
 			// DEPENDENCY: This function assumes that CacheOrCreateClassIDs() immediately puts a record in the database for
 			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed 
