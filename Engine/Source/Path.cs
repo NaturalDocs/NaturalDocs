@@ -470,16 +470,22 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public static bool operator== (Path a, Path b)
 			{
-			// Since these are structs we don't have to worry about null objects.
-			return (String.Compare(a.pathString, b.pathString, Engine.Config.Manager.IgnoreCaseInPaths) == 0);
+			return (Compare(a, b) == 0);
 			}
 
 		/* Operator: operator !=
 		 */
 		public static bool operator!= (Path a, Path b)
 			{
+			return (Compare(a, b) != 0);
+			}
+
+		/* Function: Compare
+		 */
+		public static int Compare (Path a, Path b)
+			{
 			// Since these are structs we don't have to worry about null objects.
-			return (String.Compare(a.pathString, b.pathString, Engine.Config.Manager.IgnoreCaseInPaths) != 0);
+			return String.Compare(a.pathString, b.pathString, Engine.Config.Manager.IgnoreCaseInPaths);
 			}
 
 		/* Function: ToString
