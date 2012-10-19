@@ -290,6 +290,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// DEPENDENCY: These functions depend on the score's internal format:
 			//    - CodeDB.Manager.ScoreInterpretation()
 			//    - CodeDB.Manager.GetInterpretationIndex()
+			//    - CodeDB.Manager.ScoreParameter()
+			//    - CodeDB.Manager.ScoreTopic()
 			//    - EngineTests.LinkScoring
 
 			// Other than that the score's format should be treated as opaque.  Nothing beyond these functions should try to 
@@ -479,73 +481,23 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// ======== ======== ======== ======== ======== =-FFFFFF -------- -------=
-			// F - How high on the list of topics that define the same symbol in the same file this is.
+			// ======== ======== ======== ======== ======== =BFFFFFF Rbbbbbbb brrrrrr=
+			// Finish off the score with the topic properties.
 
-			long symbolDefinitionBits = topic.SymbolDefinitionNumber;
-
-			if (symbolDefinitionBits > 63)
-				{  symbolDefinitionBits = 63;  }
-
-			symbolDefinitionBits = 63 - symbolDefinitionBits;
-			symbolDefinitionBits <<= 16;
-
-			score |= symbolDefinitionBits;
-
-
-			// ======== ======== ======== ======== ======== =B====== -bbbbbbb b------=
 			// B - Whether the topic has a body
-			// b - The length of the body divided by 16.
-			//    0-15 = 0
-			//    16-31 = 1
-			//    ...
-			//		4064-4079 = 254
-			//		4080+ = 255
-
-			// Use BodyLength so we can exclude Body from the query.
-			if (topic.BodyLength > 0)
-				{
-				long bodyBits = topic.BodyLength / 16;
-
-				if (bodyBits > 255)
-					{  bodyBits = 255;  }
-
-				bodyBits <<= 7;
-				bodyBits |= 0x0000000000400000;
-
-				score |= bodyBits;
-				}
-
-
-			// ======== ======== ======== ======== ======== ======== R======= =rrrrrr=
+			// F - How high on the list of topics that define the same symbol in the same file this is.
 			// R - Whether the topic has a prototype.
+			// b - The length of the body divided by 16.
 			// r - The length of the prototype divided by 16.
-			//    0-15 = 0
-			//    16-31 = 1
-			//    ...
-			//    992-1007 = 62
-			//    1008+ = 63
 
-			if (topic.Prototype != null)
-				{
-				long prototypeBits = topic.Prototype.Length / 16;
-
-				if (prototypeBits > 63)
-					{  prototypeBits = 63;  }
-
-				prototypeBits <<= 1;
-				prototypeBits |= 0x0000000000008000;
-
-				score |= prototypeBits;
-				}
-
+			score |= ScoreTopic(topic);
 
 			return score;
 			}
 
 
 		/* Function: ScoreInterpretation
-		 * A function used by <ScoreLink()> to determine the C and S fields of the score for the passed interpretation. Only
+		 * A function used by <ScoreLink()> to determine the C and S fields of the score for the passed interpretation.  Only
 		 * those fields and the trailing 1 will be set in the returned score.  If the interpretation doesn't match, it will return
 		 * zero.
 		 */
@@ -893,6 +845,90 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				return 0;
 				}
+			}
+
+
+		/* Function: ScoreTopic
+		 * Generates the portions of the score which depend on the topic properties only and not how well they match a link.
+		 * These are the B, F, R, b, and r components which are used for breaking ties when multiple topics would otherwise 
+		 * satisfy a link equally.  This is also used in class views where there are multiple definitions of the same code element 
+		 * and it must decide which one to display.  Using this function for that will make it more consistent with how links will
+		 * resolve.
+		 */
+		public static long ScoreTopic (Topic topic)
+			{
+			// -------- -------- -------- -------- -------- -BFFFFFF Rbbbbbbb brrrrrr1
+			// B - Whether the topic has a body
+			// F - How high on the list of topics that define the same symbol in the same file this is.
+			// R - Whether the topic has a prototype.
+			// b - The length of the body divided by 16.
+			// r - The length of the prototype divided by 16.
+
+			long score = 0x0000000000000001;
+
+
+			// -------- -------- -------- -------- -------- --FFFFFF -------- -------=
+			// F - How high on the list of topics that define the same symbol in the same file this is.
+
+			long symbolDefinitionBits = topic.SymbolDefinitionNumber;
+
+			if (symbolDefinitionBits > 63)
+				{  symbolDefinitionBits = 63;  }
+
+			symbolDefinitionBits = 63 - symbolDefinitionBits;
+			symbolDefinitionBits <<= 16;
+
+			score |= symbolDefinitionBits;
+
+
+			// -------- -------- -------- -------- -------- -B====== -bbbbbbb b------=
+			// B - Whether the topic has a body
+			// b - The length of the body divided by 16.
+			//    0-15 = 0
+			//    16-31 = 1
+			//    ...
+			//		4064-4079 = 254
+			//		4080+ = 255
+
+			// Use BodyLength so we can exclude Body from the query.
+			if (topic.BodyLength > 0)
+				{
+				long bodyBits = topic.BodyLength / 16;
+
+				if (bodyBits > 255)
+					{  bodyBits = 255;  }
+
+				bodyBits <<= 7;
+				bodyBits |= 0x0000000000400000;
+
+				score |= bodyBits;
+				}
+
+
+			// -------- -------- -------- -------- -------- -======= R======= =rrrrrr=
+			// R - Whether the topic has a prototype.
+			// r - The length of the prototype divided by 16.
+			//    0-15 = 0
+			//    16-31 = 1
+			//    ...
+			//    992-1007 = 62
+			//    1008+ = 63
+
+			if (topic.Prototype != null)
+				{
+				long prototypeBits = topic.Prototype.Length / 16;
+
+				if (prototypeBits > 63)
+					{  prototypeBits = 63;  }
+
+				prototypeBits <<= 1;
+				prototypeBits |= 0x0000000000008000;
+
+				score |= prototypeBits;
+				}
+
+
+			return score;
 			}
 
 
