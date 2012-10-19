@@ -2,7 +2,6 @@
  * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
- * See <JavaScript ToolTip Data> for the output format.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
