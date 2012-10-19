@@ -13,6 +13,7 @@ using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB

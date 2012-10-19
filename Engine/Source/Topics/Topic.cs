@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Topic
+ * Class: GregValure.NaturalDocs.Engine.Topics.Topic
  * ____________________________________________________________________________
  * 
  * A class encapsulating all the information available about a topic.
@@ -14,7 +14,7 @@ using System;
 using GregValure.NaturalDocs.Engine.Symbols;
 
 
-namespace GregValure.NaturalDocs.Engine
+namespace GregValure.NaturalDocs.Engine.Topics
 	{
 	public class Topic
 		{

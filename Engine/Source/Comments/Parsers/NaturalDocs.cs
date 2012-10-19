@@ -120,11 +120,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 using GregValure.NaturalDocs.Engine.Symbols;
+using GregValure.NaturalDocs.Engine.Tokenization;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.Comments.Parsers

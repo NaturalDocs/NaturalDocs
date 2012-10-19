@@ -12,6 +12,7 @@
 
 using System;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders

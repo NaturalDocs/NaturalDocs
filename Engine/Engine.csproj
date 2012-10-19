@@ -187,7 +187,7 @@
     <Compile Include="Source\Tokenization\TokenIterator.cs" />
     <Compile Include="Source\Tokenization\Tokenizer.cs" />
     <Compile Include="Source\Tokenization\TokenTypes.cs" />
-    <Compile Include="Source\Topic.cs" />
+    <Compile Include="Source\Topics\Topic.cs" />
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
     <Compile Include="Source\TopicTypes\ConfigFileTopicType.cs" />

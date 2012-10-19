@@ -29,8 +29,9 @@ using System.Collections.Generic;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
-using GregValure.NaturalDocs.Engine.TopicTypes;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Topics;
+using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders

@@ -17,6 +17,7 @@ using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Tests.Framework;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.Tests

@@ -34,6 +34,7 @@ using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.Tests.Framework
