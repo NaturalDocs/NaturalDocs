@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\LinkScoring.cs" />
     <Compile Include="Source\Symbols.cs" />
     <Compile Include="Source\Summaries.cs" />
@@ -58,7 +59,6 @@
     <Compile Include="Source\Framework\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\HTMLGeneration.cs" />
     <Compile Include="Source\Framework\SourceToHTML.cs" />
-    <Compile Include="Source\Framework\TestResult.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\TestEngine.cs" />
     <Compile Include="Source\Framework\SourceToTopics.cs" />

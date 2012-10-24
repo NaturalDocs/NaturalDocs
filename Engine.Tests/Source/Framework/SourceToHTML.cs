@@ -100,29 +100,24 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 */
 		public void TestFolder (Path testFolder, Path projectConfigFolder, string tagName, string className = null, bool reformatHTML = false)
 			{
-			List<TestResult> testResults = new List<TestResult>();
-			int failureCount = 0;
-
-			TestEngine.Start(testFolder, projectConfigFolder, true);
+			TestList allTests = new TestList();
+			TestEngine.Start(testFolder, projectConfigFolder);
 
 			try
 				{
 				TestEngine.Run();
 
-
-				// Iterate through files
-
+				// Build a test for each input file we find
 				string[] files = System.IO.Directory.GetFiles(TestEngine.InputFolder);
-				Test test = new Test();
 
 				foreach (string file in files)
 					{
 					if (Test.IsInputFile(file))
 						{
-						test.Load(file);
+						Test test = Test.FromInputFile(file);
 
 						try
-							{  
+							{
 							var fileInfo = Engine.Instance.Files.FromPath(file);
 
 							if (fileInfo == null)
@@ -136,46 +131,25 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 							if (reformatHTML)
 								{  html = ReformatHTML(html);  }
 
-							test.ActualOutput = html;
+							test.SetActualOutput(html);
 							}
 						catch (Exception e)
 							{  test.TestException = e;  }
 
-						test.SaveOutput();  // Even if an exception was thrown.
-						testResults.Add(test.ToTestResult());
-
-						if (test.Passed == false)
-							{  failureCount++;  }
+						test.Run();
+						allTests.Add(test);
 						}
 					}
 				}
 
 			finally
-				{
-				TestEngine.Dispose();
-				}
+				{  TestEngine.Dispose();  }
 
 
-			// Build status message
-
-			if (testResults.Count == 0)
-				{
-				Assert.Fail("There were no tests found in " + TestEngine.InputFolder);
-				}
-			else if (failureCount > 0)
-				{
-				StringBuilder message = new StringBuilder();
-				message.Append(failureCount.ToString() + " out of " + testResults.Count + " test" + (testResults.Count == 1 ? "" : "s") + 
-												  " failed for " + testFolder + ':');
-
-				foreach (TestResult testResult in testResults)
-					{  
-					if (testResult.Passed == false)
-						{  message.Append("\n - " + testResult.Name);  }
-					}
-
-				Assert.Fail(message.ToString());
-				}
+			if (allTests.Count == 0)
+				{  Assert.Fail("There were no tests found in " + TestEngine.InputFolder);  }
+			else if (allTests.Passed == false)
+				{  Assert.Fail(allTests.BuildFailureMessage());  }
 			}
 
 
