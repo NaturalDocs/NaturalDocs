@@ -40,7 +40,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				{
 				if (test.Passed == false)
 					{  
-					failedTests.Append(" - " + test.Name  + "\n");
+					failedTests.Append(" - " + test.Name);
+
+					if (test.TestResult != Test.TestResults.DoesNotMatchExpectedOutput)
+						{  failedTests.Append(": " + test.TestResultExplanation);  }
+
+					failedTests.Append("\n");
 					failureCount++;
 					failedTestFolder = test.ExpectedOutputFile.ParentFolder;
 					}

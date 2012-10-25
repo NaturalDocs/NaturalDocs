@@ -40,8 +40,30 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 	public class Test
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* enum: TestResults
+		 * The result of the test.  Any value other than Passed means it failed.
+		 */
+		public enum TestResults : byte
+			{
+			Passed = 0,
+
+			TestNotRunYet = 1,
+
+			DoesNotMatchExpectedOutput = 2,
+			ExpectedOutputFileDoesNotExist = 3,
+			ActualOutputFileDoesNotExist = 4,
+			ExceptionThrown = 5
+			}
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
+
 
 		/* Constructor: Test
 		 */
@@ -56,8 +78,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			actualOutput = null;
 			testException = null;
 
-			passed = false;
-			testWasRun = false;
+			testResult = TestResults.TestNotRunYet;
 			}
 
 
@@ -135,7 +156,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 */
 		public void Run ()
 			{
-			if (testWasRun)
+			if (testResult != TestResults.TestNotRunYet)
 				{  return;  }
 
 
@@ -147,32 +168,17 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				{
 				try
 					{  actualOutput = System.IO.File.ReadAllText(actualOutputFile);  }
+
 				catch (Exception e)
 					{
 					if (e is System.IO.FileNotFoundException || e is System.IO.DirectoryNotFoundException)
-						{  throw new Exception("Could not find actual output file " + actualOutputFile + ".");  }
-					else if (e is System.IO.IOException)
-						{  throw new Exception ("Could not open actual output file " + actualOutputFile + ".", e);  }
+						{  
+						testResult = TestResults.ActualOutputFileDoesNotExist;  
+						return;
+						}
 					else
 						{  throw;  }
 					}
-				}
-
-
-			// Load expected output
-
-			string expectedOutput;
-
-			try
-				{  expectedOutput = System.IO.File.ReadAllText(expectedOutputFile);  }
-			catch (Exception e)
-				{
-				if (e is System.IO.FileNotFoundException || e is System.IO.DirectoryNotFoundException)
-					{  throw new Exception("Could not find expected output file " + expectedOutputFile + ".");  }
-				else if (e is System.IO.IOException)
-					{  throw new Exception ("Could not open expected output file " + expectedOutputFile + ".", e);  }
-				else
-					{  throw;  }
 				}
 
 
@@ -199,6 +205,9 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				actualOutput +=
 					"Stack trace:\n\n" +
 					testException.StackTrace + "\n";
+
+				testResult = TestResults.ExceptionThrown;
+				// Don't return yet so we can save this as the actual output file.
 				}
 
 			else if (actualOutput == null || actualOutput == "")
@@ -208,20 +217,16 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				}
 
 
-			// Run the actual test
-
-			passed = (expectedOutput.NormalizeLineBreaks() == actualOutput.NormalizeLineBreaks());
-			testWasRun = true;
-
-
-			// Save actual output if necessary
+			// Save actual output.  We do this before loading the expected output file because we want to save the 
+			// generated output even if the expected output file doesn't exist.
 
 			string oldOutput = null;
 
 			try
 				{  
-				// May not exist, don't throw exceptions if we can't read it.  If it was required to exist because SetActualOutput() 
-				// was never called, exceptions for that would have been thrown at the beginning of the function.
+				// The actual output file may not previously exist, so don't throw exceptions if we can't read it.  If it was 
+				// required to exist because SetActualOutput() was never called, that would have been handled earlier in
+				// the function.
 				oldOutput = System.IO.File.ReadAllText(actualOutputFile);  
 				}
 			catch
@@ -230,6 +235,37 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			// We don't want to change the time stamps every time we run, so only write when necessary.
 			if (oldOutput == null || oldOutput.NormalizeLineBreaks() != actualOutput.NormalizeLineBreaks())
 				{  System.IO.File.WriteAllText(actualOutputFile, actualOutput);  }
+
+			// If we were delaying returning on failure because we wanted to save the output anyway, do so now.
+			if (testResult != TestResults.TestNotRunYet)
+				{  return;  }
+
+
+			// Load expected output
+
+			string expectedOutput;
+
+			try
+				{  expectedOutput = System.IO.File.ReadAllText(expectedOutputFile);  }
+
+			catch (Exception e)
+				{
+				if (e is System.IO.FileNotFoundException || e is System.IO.DirectoryNotFoundException)
+					{  
+					testResult = TestResults.ExpectedOutputFileDoesNotExist;
+					return;
+					}
+				else
+					{  throw;  }
+				}
+
+
+			// Run the actual test
+
+			if (expectedOutput.NormalizeLineBreaks() == actualOutput.NormalizeLineBreaks())
+				{  testResult = TestResults.Passed;  }
+			else
+				{  testResult = TestResults.DoesNotMatchExpectedOutput;  }
 			}
 
 
@@ -332,11 +368,29 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			{
 			get
 				{
-				if (testWasRun == false)
+				if (testResult == TestResults.TestNotRunYet)
 					{  throw new Exception("Cannot access Test.Passed before the test was run.");  }
 
-				return passed;
+				return (testResult == TestResults.Passed);
 				}
+			}
+
+		/* Property: TestResult
+		 * A more detailed explanation of what happened with the test.
+		 */
+		public TestResults TestResult
+			{
+			get
+				{  return testResult;  }
+			}
+			
+		/* Property: TestResultExplanation
+		 * Returns a plain text explanation of <TestResult>.
+		 */
+		public string TestResultExplanation
+			{
+			get
+				{  return TestResultStrings[(int)testResult];  }
 			}
 
 		/* Property: Name
@@ -423,15 +477,27 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 */
 		protected Exception testException;
 
-		/* var: passed
-		 * Whether the test has passed.  This value is only valid if <testWasRun> is true.
+		/* var: testResult
+		 * The result of the test.
 		 */
-		protected bool passed;
+		protected TestResults testResult;
 
-		/* var: testWasRun
-		 * WHether the test was executed.
-		 */
-		protected bool testWasRun;
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+		static protected string[] TestResultStrings = 
+			{
+			"Passed",
+
+			"Test not run yet",
+
+			"Does not match expected output",
+			"Expected output file missing",
+			"Actual output file missing",
+			"Exception thrown"
+			};
 
 		}
 
