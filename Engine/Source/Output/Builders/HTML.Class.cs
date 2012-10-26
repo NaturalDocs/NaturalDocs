@@ -168,9 +168,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				   // Build the full HTML files
 
 				   Path outputPath = Class_OutputFile(classString);
-
-				   // Can't get this from outputPath because it may have substituted characters to satisfy the path restrictions.
-				   string title = classString.ToString(); // xxx get from title topic
+				   string title = topics[0].Symbol.LastSegment;
 
 				   BuildFile(outputPath, title, html.ToString(), PageType.Content);
 
