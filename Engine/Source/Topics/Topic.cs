@@ -306,6 +306,19 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Function: ToString
+		 * This is only available to aid debugging in Visual Studio.  When you have a list of objects it puts the result of
+		 * ToString() next to each one.  You should not rely on it for anything else.
+		 */
+		override public string ToString ()
+			{
+			if (isEmbedded)
+				{  return "> " + title;  }
+			else
+				{  return title;  }
+			}
+
+
 
 
 		// Group: Database Properties

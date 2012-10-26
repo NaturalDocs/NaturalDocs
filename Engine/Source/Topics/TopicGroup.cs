@@ -60,6 +60,19 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Function: ToString
+		 * This is only available to aid debugging in Visual Studio.  When you have a list of objects it puts the result of
+		 * ToString() next to each one.  You should not rely on it for anything else.
+		 */
+		override public string ToString ()
+			{
+			if (header != null)
+				{  return header.Title;  }
+			else
+				{  return "(no header)";  }
+			}
+
+
 
 		// Group: Protected Functions
 		// __________________________________________________________________________
