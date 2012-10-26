@@ -1,0 +1,25 @@
+____________________
+
+ListCombining2
+[public partial class ListCombining2]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   FunctionB1
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionB2
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionB3
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionA1
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionA2
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionA3
+   <p>Documented individually with a longer description so should appear in the output.</p>

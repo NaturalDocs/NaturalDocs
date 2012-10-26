@@ -47,7 +47,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\ClassCombining.cs" />
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\Framework\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\LinkScoring.cs" />
     <Compile Include="Source\Symbols.cs" />

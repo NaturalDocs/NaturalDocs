@@ -1,0 +1,46 @@
+____________________
+
+GroupCombining
+[public partial class GroupCombining]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Alpha Functions
+   --------------------
+
+      InAlphaFunctionsA
+
+      InAlphaFunctionsB
+
+      InAlphaFunctionsC
+      <p>These functions should be appended to the end of the first file's Alpha Functions.</p>
+
+      InAlphaFunctionsD
+
+   --------------------
+   Beta Functions
+   --------------------
+
+      InBetaFunctionsA
+
+      InBetaFunctionsB
+
+   --------------------
+   Theta Functions
+   --------------------
+
+      InThetaFunctionsA
+      <p>These functions don't match an existing group and should be added to the end of the list.</p>
+
+      InThetaFunctionsB
+
+   --------------------
+   Omega Functions
+   --------------------
+
+      InOmegaFunctionsA
+      <p>These functions don't match an existing group and should be added to the end of the list.</p>
+
+      InOmegaFunctionsB

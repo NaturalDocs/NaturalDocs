@@ -1,0 +1,27 @@
+____________________
+
+EmptyGroupRemoval
+[public partial class EmptyGroupRemoval]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Alpha Functions
+   --------------------
+
+      FunctionA
+      <p>There should be no Beta Functions group because all its members were combined into the first file.</p>
+
+      FunctionB
+
+      FunctionC
+
+      FunctionD
+
+   --------------------
+   Theta Functions
+   --------------------
+
+      FunctionE
+      <p>There should be a Theta Functions group because there was one remaining member after the rest were combined.</p>

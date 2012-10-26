@@ -1,0 +1,65 @@
+____________________
+
+GroupOrdering
+[public partial class GroupOrdering]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Types
+   --------------------
+
+      TypeA
+
+      TypeB
+
+   --------------------
+   Beta Types
+   --------------------
+
+      BetaTypeA
+      <p>This group should be inserted after the existing type group in the primary file even though this will change the order of the groups from the original file.</p>
+
+      BetaTypeB
+
+   --------------------
+   Alpha Functions
+   --------------------
+
+      InAlphaFunctionsA
+
+      InAlphaFunctionsB
+
+   --------------------
+   Properties
+   --------------------
+
+      PropertyA
+
+      PropertyB
+
+   --------------------
+   Beta Functions
+   --------------------
+
+      InBetaFunctionsA
+
+      InBetaFunctionsB
+
+   --------------------
+   Theta Functions
+   --------------------
+
+      InThetaFunctionsA
+      <p>This group should be inserted after the LAST function group in the primary file.</p>
+
+      InThetaFunctionsB
+
+   --------------------
+   Variables
+   --------------------
+
+      VariableA
+
+      VariableB

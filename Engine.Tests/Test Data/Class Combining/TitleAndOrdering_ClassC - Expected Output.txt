@@ -1,0 +1,13 @@
+____________________
+
+TitleAndOrdering_ClassC
+[public partial class TitleAndOrdering_ClassC]
+<p>The class definition from Input File C has the description and should be chosen.  It's function should appear first in the combined list.  Other class's functions should appear in file name order.</p>
+____________________
+
+
+   FromInputFileC
+
+   FromInputFileA
+
+   FromInputFileB

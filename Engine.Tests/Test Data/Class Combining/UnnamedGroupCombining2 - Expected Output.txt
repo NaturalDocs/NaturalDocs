@@ -1,0 +1,32 @@
+____________________
+
+UnnamedGroupCombining2
+[public partial class UnnamedGroupCombining2]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Alpha Functions
+   --------------------
+
+      InAlphaFunctionsA
+
+      InAlphaFunctionsB
+
+   --------------------
+   Beta Functions
+   --------------------
+
+      InBetaFunctionsA
+
+      InBetaFunctionsB
+
+   --------------------
+   Functions
+   --------------------
+
+      UngroupedFunctionA
+      <p>Since there is no group titled Functions a new one should be created automatically even though it didn't exist any of the original files.</p>
+
+      UngroupedFunctionB

@@ -1,0 +1,14 @@
+____________________
+
+EnumCombining
+[public partial class EnumCombining]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   EnumA
+   <p>This version should be selected because it's the only one that's documented.</p>
+
+   EnumB
+   <p>This version should be selected because it has documented values even though the body length is otherwise shorter.</p><dl><ds>Value1</ds><dd><p>Description</p></dd><ds>Value2</ds><dd><p>Description</p></dd><ds>Value3</ds><dd><p>Description</p></dd></dl>
+

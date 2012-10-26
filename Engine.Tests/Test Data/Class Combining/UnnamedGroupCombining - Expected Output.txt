@@ -1,0 +1,36 @@
+____________________
+
+UnnamedGroupCombining
+[public partial class UnnamedGroupCombining]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Alpha Functions
+   --------------------
+
+      InAlphaFunctionsA
+
+      InAlphaFunctionsB
+
+   --------------------
+   Functions
+   --------------------
+
+      InFunctionsA
+
+      InFunctionsB
+
+      UngroupedFunctionA
+      <p>Since there is a group titled Functions these should be appended to it.</p>
+
+      UngroupedFunctionB
+
+   --------------------
+   Beta Functions
+   --------------------
+
+      InBetaFunctionsA
+
+      InBetaFunctionsB

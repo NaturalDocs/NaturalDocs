@@ -1,0 +1,14 @@
+____________________
+
+ListCombining
+[public partial class ListCombining]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   Functions_ListInFileA
+   <p>These functions are documented as a list in File A but individually in File B.  Only the list should remain.</p><dl><ds>FunctionA1</ds><dd><p>Description</p></dd><ds>FunctionA2</ds><dd><p>Description</p></dd><ds>FunctionA3</ds><dd><p>Description</p></dd></dl>
+
+   Functions_ListInFileB
+   <p>These functions are documented as a list in File B but individually in File A.  Only the list should remain.</p><dl><ds>FunctionB1</ds><dd><p>Description</p></dd><ds>FunctionB2</ds><dd><p>Description</p></dd><ds>FunctionB3</ds><dd><p>Description</p></dd></dl>
+

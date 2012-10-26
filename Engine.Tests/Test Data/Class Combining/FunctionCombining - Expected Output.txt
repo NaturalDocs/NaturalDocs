@@ -1,0 +1,22 @@
+____________________
+
+FunctionCombining
+[public partial class FunctionCombining]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   MatchA
+   [public void MatchA ()]
+   <p>These functions should combine as they have no parameters.</p>
+
+   MatchB
+   [public int MatchB (int value, string value2)]
+   <p>These functions should combine as they have similar parameters</p>
+
+   MismatchC
+   [public bool MismatchC (float value)]
+   <p>Two copies of this function should exist since they don't match.</p>
+
+   MismatchC
+   [public bool MismatchC (double value)]

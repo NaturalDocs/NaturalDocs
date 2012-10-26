@@ -1,0 +1,26 @@
+____________________
+
+ListCombining3
+[public partial class ListCombining3]
+<p>Description to make this the first file.</p>
+____________________
+
+
+   Functions_ListInFileA
+   <p>These functions are documented as a list in File A but only two are documented individually in File B.  Since the entire list can't be removed, it should stay in the output despite the duplication.</p><dl><ds>FunctionA1</ds><dd><p>Description</p></dd><ds>FunctionA2</ds><dd><p>Description</p></dd><ds>FunctionA3</ds><dd><p>Description</p></dd></dl>
+
+   FunctionB1
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionB3
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionA1
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   FunctionA3
+   <p>Documented individually with a longer description so should appear in the output.</p>
+
+   Functions_ListInFileB
+   <p>These functions are documented as a list in File B but only two are documented individually in File A.  Since the entire list can't be removed, it should stay in the output despite the duplication.</p><dl><ds>FunctionB1</ds><dd><p>Description</p></dd><ds>FunctionB2</ds><dd><p>Description</p></dd><ds>FunctionB3</ds><dd><p>Description</p></dd></dl>
+
