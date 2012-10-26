@@ -489,6 +489,33 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: IsSameCodeElement
+		 * Returns whether the two topics represent the same code element.  For example, the same function appearing
+		 * in C++ header and source files, or the same C# class defined across multiple files with the "partial" keyword.
+		 */
+		public bool IsSameCodeElement (Topic topicA, Topic topicB)
+			{
+			if (topicA.LanguageID != topicB.LanguageID)
+				{  return false;  }
+
+			#if DEBUG
+			if (topicA.LanguageID != this.ID)
+				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
+			#endif
+
+			if (topicA.Symbol != topicB.Symbol)
+				{  return false;  }
+
+			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same topic type.
+			if (topicA.TopicTypeID != topicB.TopicTypeID)
+				{  return false;  }
+
+			// So now we have two topics of the same language, symbol, and type.  Now the assumption is they're the same
+			// unless they're distinguished by parameters.
+			return (topicA.PrototypeParameters == topicB.PrototypeParameters);
+			}
+
+
 			
 		// Group: Overridable Parsing Stages
 		// Override these stages in subclasses as necessary.

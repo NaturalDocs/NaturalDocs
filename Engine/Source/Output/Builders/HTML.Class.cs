@@ -239,12 +239,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
+
+		// Group: Merging Functions
+		// __________________________________________________________________________
+
+
 		/* Function: MergeClassTopics
 		 * Takes a list of <Topics> that come from the same class but multiple source files and combines them into a
 		 * single coherent list.  It assumes all topics from a single file will be consecutive, but otherwise the groups of
 		 * topics can be in any order.
 		 */
-		protected void MergeClassTopics (List<Topic> topics)
+		public void MergeClassTopics (List<Topic> topics)
 			{
 			if (topics.Count == 0)
 				{  return;  }
@@ -277,6 +282,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			var files = Engine.Instance.Files;
 			var topicTypes = Engine.Instance.TopicTypes;
+			var enumTopicTypeID = topicTypes.IDFromKeyword("enum");
+			var groupTopicTypeID = topicTypes.IDFromKeyword("group");
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -369,9 +376,182 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
+			// Merge any duplicate topics into the list.  This is used for things like header vs. source definitions in C++.
+
+			// First we go through the primary topic list to handle removing list topics and merging individual topics into list
+			// topics in the remaining topic list.  Everything else will be handled when iterating through the remaining topic list.
+
+			int topicIndex = 0;
+			while (topicIndex < topics.Count)
+				{
+				var topic = topics[topicIndex];
+
+				// Ignore group topics
+				if (topic.TopicTypeID == groupTopicTypeID)
+					{  
+					topicIndex++;  
+					continue;
+					}
+
+				int embeddedTopicCount = CountEmbeddedTopics(topics, topicIndex);
+
+
+				// We don't need to worry about enums until we do remaining topics.
+
+				if (topic.TopicTypeID == enumTopicTypeID)
+					{  topicIndex += 1 + embeddedTopicCount;  }
+
+
+				// If it's not an enum and it's a standalone topic see if it will merge with an embedded topic in the remaining topic
+				// list.  We don't have to worry about merging with standalone topics until we do the remaining topic list.
+
+				else if (embeddedTopicCount == 0)
+					{
+					int duplicateIndex = FindDuplicateTopic(topic, remainingTopics);
+
+					if (duplicateIndex == -1)
+						{  topicIndex++;  }
+					else if (remainingTopics[duplicateIndex].IsEmbedded &&
+								  CodeDB.Manager.ScoreTopic(topic) < CodeDB.Manager.ScoreTopic(remainingTopics[duplicateIndex]))
+						{  topics.RemoveAt(topicIndex);  }
+					else
+						{  topicIndex++;  }
+					}
+
+
+				// If it's not an enum and we're at a list topic, only remove it if EVERY member has a better definition in the other
+				// list.  We can't pluck them out individually.  If even one is documented here that isn't documented elsewhere we
+				// keep the entire thing in even if that leads to some duplicates.
+
+				else
+					{
+					bool allHaveBetterMatches = true;
+
+					for (int i = 0; i < embeddedTopicCount; i++)
+						{
+						Topic embeddedTopic = topics[topicIndex + 1 + i];
+						int duplicateIndex = FindDuplicateTopic(embeddedTopic, remainingTopics);
+
+						if (duplicateIndex == -1 ||
+							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(remainingTopics[duplicateIndex]))
+							{
+							allHaveBetterMatches = false;
+							break;
+							}
+						}
+
+					if (allHaveBetterMatches)
+						{  topics.RemoveRange(topicIndex, 1 + embeddedTopicCount);  }
+					else
+						{  topicIndex += 1 + embeddedTopicCount;  }
+					}
+				}
+
+
+			// Now do a more comprehensive merge of the remaining topics into the primary topic list.
+
+			int remainingTopicIndex = 0;
+			while (remainingTopicIndex < remainingTopics.Count)
+				{
+				var remainingTopic = remainingTopics[remainingTopicIndex];
+
+				// Ignore group topics
+				if (remainingTopic.TopicTypeID == groupTopicTypeID)
+					{  
+					remainingTopicIndex++;  
+					continue;
+					}
+
+				int embeddedTopicCount = CountEmbeddedTopics(remainingTopics, remainingTopicIndex);
+
+
+				// If we're merging enums, the one with the most embedded topics (documented values) wins.  In practice one
+				// should be documented and one shouldn't be, so this will be any number versus zero.
+
+				if (remainingTopic.TopicTypeID == enumTopicTypeID)
+					{
+					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics);
+
+					if (duplicateIndex == -1)
+						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
+					else
+						{
+						int duplicateEmbeddedTopicCount = CountEmbeddedTopics(topics, duplicateIndex);
+
+						if (embeddedTopicCount > duplicateEmbeddedTopicCount ||
+							 ( embeddedTopicCount == duplicateEmbeddedTopicCount &&
+								CodeDB.Manager.ScoreTopic(remainingTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]) ) )
+							{
+							topics.RemoveRange(duplicateIndex, 1 + duplicateEmbeddedTopicCount);
+							topics.InsertRange(duplicateIndex, remainingTopics.GetRange(remainingTopicIndex, 1 + embeddedTopicCount));
+							}
+
+						remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);
+						}
+					}
+
+
+				// If it's not an enum and it's a standalone topic the one with the best score wins.
+
+				else if (embeddedTopicCount == 0)
+					{
+					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics);
+
+					if (duplicateIndex == -1)
+						{  remainingTopicIndex++;  }
+					else if (CodeDB.Manager.ScoreTopic(remainingTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]))
+						{  
+						if (topics[duplicateIndex].IsEmbedded)
+							{  
+							// Just leave them both in
+							remainingTopicIndex++;  
+							}
+						else
+							{
+							topics[duplicateIndex] = remainingTopic;  
+							remainingTopics.RemoveAt(remainingTopicIndex);
+							}
+						}
+					else
+						{  remainingTopics.RemoveAt(remainingTopicIndex);  }
+					}
+
+
+				// If it's not an enum and we're at a list topic, only remove it if EVERY member has a better definition in the other
+				// list.  We can't pluck them out individually.  If even one is documented here that isn't documented elsewhere we
+				// keep the entire thing in even if that leads to some duplicates.
+
+				else
+					{
+					bool allHaveBetterMatches = true;
+
+					for (int i = 0; i < embeddedTopicCount; i++)
+						{
+						Topic embeddedTopic = remainingTopics[remainingTopicIndex + 1 + i];
+						int duplicateIndex = FindDuplicateTopic(embeddedTopic, topics);
+
+						if (duplicateIndex == -1 ||
+							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]))
+							{
+							allHaveBetterMatches = false;
+							break;
+							}
+						}
+
+					if (allHaveBetterMatches)
+						{  remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);  }
+					else
+						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
+					}
+				}
+
+
 			// Generate groups from the topic lists.
 
-			var groupedTopics = GetTopicGroups(topics, 1);  // Start at 1 to skip the class topic
+			// Start at 1 to skip the class topic.
+			// Don't group by file ID because topics from other files may have been combined into the list.
+			var groupedTopics = GetTopicGroups(topics, 1, false);
+
 			var groupedRemainingTopics = GetTopicGroups(remainingTopics);
 
 
@@ -483,7 +663,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// If there are titled groups, see if we can add them to the end of existing groups.  However, only do
 			// this if TitleMatchesType is set.  It's okay to put random functions into the group "Functions" but
-			// not into something more specific.
+			// not into something more specific.  If there aren't appropriate groups to do this with, create new ones.
 
 			else
 				{
@@ -539,15 +719,50 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 				}
+			}
 
-			// xxx also condense duplicates, like for partial classes and header/source files
+
+		/* Function: FindDuplicateTopic
+		 * Returns the index of a topic that defines the same code element as the passed one, or -1 if there isn't
+		 * any.  Topics are considered duplicates if <Language.IsSameCodeElement> returns true.
+		 */
+		protected int FindDuplicateTopic (Topic topic, IList<Topic> listToSearch)
+			{
+			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+
+			for (int i = 0; i < listToSearch.Count; i++)
+				{
+				if (language.IsSameCodeElement(topic, listToSearch[i]))
+					{  return i;  }
+				}
+
+			return -1;
+			}
+
+
+		/* Function: CountEmbeddedTopics
+		 * Returns the number of embedded topics that follow the one at list index.
+		 */
+		protected int CountEmbeddedTopics (IList<Topic> topicList, int index)
+			{
+			#if DEBUG
+			if (topicList[index].IsEmbedded)
+				{  throw new Exception("The topic at the index passed to CountEmbeddedTopics() must not itself be embedded.");  }
+			#endif
+
+			int endOfEmbeddedTopics = index + 1;
+
+			while (endOfEmbeddedTopics < topicList.Count && topicList[endOfEmbeddedTopics].IsEmbedded)
+				{  endOfEmbeddedTopics++;  }
+
+			return endOfEmbeddedTopics - index - 1;
 			}
 
 
 		/* Function: GetTopicGroups
 		 * Returns a list of <TopicGroups> for the passed <Topics>.
 		 */
-		protected GroupedTopics GetTopicGroups (List<Topic> topics, int startingIndex = 0)
+		protected GroupedTopics GetTopicGroups (List<Topic> topics, int startingIndex = 0, bool groupByFileID = true)
 			{
 			GroupedTopics groupedTopics = new GroupedTopics(topics);
 
@@ -562,7 +777,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				i++;
 
-				while (i < topics.Count && topics[i].FileID == fileID && topics[i].TopicTypeID != groupTopicTypeID)
+				while (i < topics.Count && 
+							(topics[i].FileID == fileID || !groupByFileID) && 
+							topics[i].TopicTypeID != groupTopicTypeID)
 					{
 					groupCount++;
 					i++;
