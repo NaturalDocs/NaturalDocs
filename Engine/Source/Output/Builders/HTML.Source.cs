@@ -212,7 +212,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build summary and summary tooltips metadata files
 
-					HTMLSummary summaryBuilder = new HTMLSummary(this);
+					JSSummaryData summaryBuilder = new JSSummaryData(this);
 					summaryBuilder.Build(topics, links, title, 
 														 Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryToolTipsFile(fileID));
 

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLSummary
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.JSSummaryData
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript Summary Data>
@@ -7,7 +7,7 @@
  * 
  * Topic: Usage
  *		
- *		- Create a HTMLSummary object.
+ *		- Create a JSSummaryData object.
  *		- Call <Build()>.
  *		- The object can be reused on different <Topics> by calling <Build()> again.
  * 
@@ -36,16 +36,16 @@ using GregValure.NaturalDocs.Engine.TopicTypes;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
-	public class HTMLSummary
+	public class JSSummaryData
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: HTMLSummary
+		/* Constructor: JSSummaryData
 		 */
-		public HTMLSummary (Builders.HTML htmlBuilder)
+		public JSSummaryData (Builders.HTML htmlBuilder)
 			{
 			this.htmlBuilder = htmlBuilder;
 
