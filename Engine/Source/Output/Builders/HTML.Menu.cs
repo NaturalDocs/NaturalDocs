@@ -29,7 +29,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildMenu (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			HTMLMenu htmlMenu = new HTMLMenu(this);
+			JSMenuData jsMenuData = new JSMenuData(this);
 
 
 			// Build file menu
@@ -41,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (cancelDelegate())
 						{  return;  }
 
-					htmlMenu.AddFile(Instance.Files.FromID(fileID));
+					jsMenuData.AddFile(Instance.Files.FromID(fileID));
 					}
 				}
 
@@ -61,23 +61,23 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (cancelDelegate())
 					{  return;  }
 
-				htmlMenu.AddClass(classEntry.Value);
+				jsMenuData.AddClass(classEntry.Value);
 				}
 
 
 			// Condense, sort, and build
 
-			htmlMenu.Condense();
+			jsMenuData.Condense();
 			
 			if (cancelDelegate())
 				{  return;  }
 
-			htmlMenu.Sort();
+			jsMenuData.Sort();
 
 			if (cancelDelegate())
 				{  return;  }
 
-			StringTable<IDObjects.NumberSet> newMenuDataFiles = htmlMenu.Build();
+			StringTable<IDObjects.NumberSet> newMenuDataFiles = jsMenuData.Build();
 
 			if (cancelDelegate())
 				{  return;  }

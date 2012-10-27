@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLMenu
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.JSMenuData
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
@@ -35,16 +35,16 @@ using GregValure.NaturalDocs.Engine.Output.MenuEntries;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
-	public class HTMLMenu : Menu
+	public class JSMenuData : Menu
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: HTMLMenu
+		/* Constructor: JSMenuData
 		 */
-		public HTMLMenu (Builders.HTML htmlBuilder) : base ()
+		public JSMenuData (Builders.HTML htmlBuilder) : base ()
 			{
 			this.htmlBuilder = htmlBuilder;
 			}
@@ -462,10 +462,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.TargetExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.JSMenuData.TargetExtraData
 		 * ____________________________________________________________________________
 		 * 
-		 * A class used to store extra information needed by <HTMLMenu> in each menu entry via the 
+		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 
 		 * ExtraData property.
 		 * 
 		 */
@@ -485,7 +485,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 			/* Function: GenerateJSON
 			 */
-			public void GenerateJSON (Builders.HTML htmlBuilder, HTMLMenu menu)
+			public void GenerateJSON (Builders.HTML htmlBuilder, JSMenuData menu)
 				{
 				StringBuilder output = new StringBuilder();
 
@@ -552,10 +552,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu.ContainerExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.JSMenuData.ContainerExtraData
 		 * ____________________________________________________________________________
 		 * 
-		 * A class used to store extra information needed by <HTMLMenu> in each menu entry via the 
+		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 
 		 * ExtraData property.
 		 * 
 		 */
@@ -577,7 +577,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 			/* Function: GenerateJSON
 			 */
-			public void GenerateJSON (Builders.HTML htmlBuilder, HTMLMenu menu)
+			public void GenerateJSON (Builders.HTML htmlBuilder, JSMenuData menu)
 				{
 				StringBuilder output = new StringBuilder();
 
@@ -758,7 +758,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 				{
 				get
 					{
-					// DEPENDENCY: HTMLMenu.SegmentMenu expects this value to only be calculated once despite repeated calls for 
+					// DEPENDENCY: JSMenuData.SegmentMenu expects this value to only be calculated once despite repeated calls for 
 					// its algorithm to be efficient.
 
 					if (jsonLengthOfMembers != -1)
