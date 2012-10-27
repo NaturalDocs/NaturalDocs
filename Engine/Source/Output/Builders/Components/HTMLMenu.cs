@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLMenu
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLMenu
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
@@ -33,7 +33,7 @@ using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Output.MenuEntries;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
 	public class HTMLMenu : Menu
 		{

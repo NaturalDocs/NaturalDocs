@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLElement
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLElement
  * ____________________________________________________________________________
  * 
  * A base class for helper classes that build certain HTML elements.
@@ -29,7 +29,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
 	public class HTMLElement
 		{

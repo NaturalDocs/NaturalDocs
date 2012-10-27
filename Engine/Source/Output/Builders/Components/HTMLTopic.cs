@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLTopic
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopic
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build <Topics> and tooltips for <Output.Builders.HTML>.
@@ -44,7 +44,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
 	public class HTMLTopic : HTMLElement
 		{
@@ -121,7 +121,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						htmlOutput.Append("\r\n ");
 
 						if (cachedHTMLPrototypeBuilder == null)
-							{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
+							{  cachedHTMLPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
 
 						cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);
 						}
@@ -174,7 +174,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (topic.Prototype != null)
 					{  
 					if (cachedHTMLPrototypeBuilder == null)
-						{  cachedHTMLPrototypeBuilder = new Builders.HTMLPrototype(htmlBuilder);  }
+						{  cachedHTMLPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
 
 					cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  
 					}
@@ -738,7 +738,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * class can be reused to build multiple <Topics>, and <HTMLPrototypeBuilders> can be reused to build
 		 * multiple prototypes, one is stored with the class so it can be reused between runs.
 		 */
-		protected Builders.HTMLPrototype cachedHTMLPrototypeBuilder;
+		protected HTMLPrototype cachedHTMLPrototypeBuilder;
 
 		/* var: isToolTip
 		 * Whether we're building a tooltip instead of a full topic.

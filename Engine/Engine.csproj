@@ -114,11 +114,11 @@
     <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
     <Compile Include="Source\Output\Builders\HTML.Class.cs" />
-    <Compile Include="Source\Output\Builders\HTMLMenu.cs" />
-    <Compile Include="Source\Output\Builders\HTMLElement.cs" />
-    <Compile Include="Source\Output\Builders\HTMLSummary.cs" />
-    <Compile Include="Source\Output\Builders\HTMLTopic.cs" />
-    <Compile Include="Source\Output\Builders\HTMLPrototype.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLMenu.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLElement.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLSummary.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLTopic.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLPrototype.cs" />
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />

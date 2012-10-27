@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLPrototype
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLPrototype
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build prototypes for <Output.Builders.HTML>.
@@ -42,7 +42,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
 	public class HTMLPrototype : HTMLElement
 		{

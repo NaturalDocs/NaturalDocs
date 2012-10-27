@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Output.Builders.Components;
 using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
