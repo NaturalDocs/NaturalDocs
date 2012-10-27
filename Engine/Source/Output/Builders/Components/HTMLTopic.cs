@@ -46,7 +46,7 @@ using GregValure.NaturalDocs.Engine.Topics;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
-	public class HTMLTopic : HTMLElement
+	public class HTMLTopic : HTMLComponent
 		{
 
 		// Group: Functions

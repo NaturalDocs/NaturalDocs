@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLElement
+ * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLComponent
  * ____________________________________________________________________________
  * 
- * A base class for helper classes that build certain HTML elements.
+ * A base class for HTML components.
  * 
- * Some elements require a lot of context information, so we store it all in an object to make it easier to manage.  They
- * also share some functionality so we can put that in the base class as well.
+ * Some components require a lot of context information, so we store it all in an object to make it easier to manage.
+ * They also share some functionality so we can put that in the base class as well.
  * 
  * 
  * Threading: Not Thread Safe
@@ -31,16 +31,16 @@ using GregValure.NaturalDocs.Engine.Topics;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
-	public class HTMLElement
+	public class HTMLComponent
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: HTMLElement
+		/* Constructor: HTMLComponent
 		 */
-		public HTMLElement (Builders.HTML htmlBuilder)
+		public HTMLComponent (Builders.HTML htmlBuilder)
 			{
 			this.htmlBuilder = htmlBuilder;
 
@@ -248,7 +248,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 						#if DEBUG
 						if (fullLink == null)
-							{  throw new Exception("All links in a topic must be in the list passed to HTMLElement.");  }
+							{  throw new Exception("All links in a topic must be in the list passed to HTMLComponent.");  }
 						#endif
 
 
@@ -276,7 +276,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 							#if DEBUG
 							if (targetTopic == null)
-								{  throw new Exception("All links targets for a topic must be in the list passed to HTMLElement.");  }
+								{  throw new Exception("All links targets for a topic must be in the list passed to HTMLComponent.");  }
 							#endif
 
 

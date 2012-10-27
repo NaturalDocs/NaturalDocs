@@ -115,7 +115,7 @@
     <Compile Include="Source\IStartupWatcher.cs" />
     <Compile Include="Source\Output\Builders\HTML.Class.cs" />
     <Compile Include="Source\Output\Builders\Components\JSMenuData.cs" />
-    <Compile Include="Source\Output\Builders\Components\HTMLElement.cs" />
+    <Compile Include="Source\Output\Builders\Components\HTMLComponent.cs" />
     <Compile Include="Source\Output\Builders\Components\JSSummaryData.cs" />
     <Compile Include="Source\Output\Builders\Components\HTMLTopic.cs" />
     <Compile Include="Source\Output\Builders\Components\HTMLPrototype.cs" />

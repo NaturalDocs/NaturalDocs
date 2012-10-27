@@ -44,7 +44,7 @@ using GregValure.NaturalDocs.Engine.Topics;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 	{
-	public class HTMLPrototype : HTMLElement
+	public class HTMLPrototype : HTMLComponent
 		{
 
 		// Group: Types
