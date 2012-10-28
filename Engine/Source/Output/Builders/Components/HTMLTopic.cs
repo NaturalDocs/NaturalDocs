@@ -8,7 +8,7 @@
  * 
  *		When each section of the topic is created (title, prototype, body, etc.) there's a lot of context information that needs
  *		to be passed back and forth.  Some of it isn't obvious, such as the body needing access to the <ParsedPrototype>
- *		in order to add types under documented parameters.  These can't be instance variables in <Builder.HTML> because
+ *		in order to add types under documented parameters.  These can't be instance variables in <Builders.HTML> because
  *		it needs to support multiple concurrent building threads.  Passing these structures around individually becomes
  *		unwieldy.  If you bundle the context up into a single object to pass around, then you might as well put the functions
  *		in it as well, so here we are.

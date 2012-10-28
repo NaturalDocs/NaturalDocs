@@ -8,7 +8,7 @@
  * 
  *		Well, building a HTML prototype isn't straightforward.  There's a lot of parsing stages and this keeps them separate
  *		and organized.  More importantly, the parsing stages have to pass a lot of data between them.  You can't store it
- *		in instance variables in <HTML.Builder> because multiple threads may be calling the build functions at the same time.
+ *		in instance variables in <Builders.HTML> because multiple threads may be calling the build functions at the same time.
  *		Passing the structures around individually as function parameters quickly becomes unwieldy.  If you bundle them into
  *		a single object to pass around, well then you've already introduced a separate object allocation just for prototype
  *		parsing so you might as well move the functions in there to make it cleaner, right?
