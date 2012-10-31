@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A base class for automated tests where sample source files are run through Natural Docs normally and then the 
- * <Topcis> are extracted by class and combined.  The portions of those <Topics> being tested are saved to files 
+ * <Topics> are extracted by class and combined.  The portions of those <Topics> being tested are saved to files 
  * and compared to other files containing the  expected result.
  * 
  *	 The benefit of this approach is that you never have to hand code the output.  You can run the tests without
@@ -98,7 +98,10 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 						{
 						for (;;)
 							{
-							List<Topic> classTopics = accessor.GetTopicsInClass(classID, Engine.Delegates.NeverCancel);
+							Engine.Output.Builders.Components.HTMLTopicPages.Class classPage = 
+								new Output.Builders.Components.HTMLTopicPages.Class(TestEngine.HTMLBuilder, accessor, classID);
+
+							List<Topic> classTopics = classPage.GetTopics(Delegates.NeverCancel);
 
 							if (classTopics == null || classTopics.Count == 0)
 								{  break;  }
@@ -112,7 +115,6 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 							try
 								{
-								TestEngine.HTMLBuilder.MergeClassTopics(classTopics);
 								test.SetActualOutput( OutputOf(classTopics) );
 								}
 							catch (Exception e)

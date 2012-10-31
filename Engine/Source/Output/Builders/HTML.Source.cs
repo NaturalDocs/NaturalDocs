@@ -42,192 +42,34 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			accessor.GetReadOnlyLock();
-			bool haveDBLock = true;
+			Components.HTMLTopicPages.File page = new Components.HTMLTopicPages.File(this, accessor, fileID);
 
-			try
+			bool hasTopics = page.Build(cancelDelegate);
+
+			if (cancelDelegate())
+				{  return;  }
+
+
+			if (hasTopics)
 				{
-				IList<Topic> topics = accessor.GetTopicsInFile(fileID, cancelDelegate);
-				
-				if (cancelDelegate())
-					{  return;  }
-				
-					
-				// Delete the file if there are no topics.
-
-				if (topics.Count == 0)
+				lock (writeLock)
 					{
-					accessor.ReleaseLock();
-					haveDBLock = false;
-					
-					DeleteOutputFileIfExists(Source_OutputFile(fileID));
-					DeleteOutputFileIfExists(Source_ToolTipsFile(fileID));
-					DeleteOutputFileIfExists(Source_SummaryFile(fileID));
-					DeleteOutputFileIfExists(Source_SummaryToolTipsFile(fileID));
-
-					lock (writeLock)
-						{
-						if (sourceFilesWithContent.Remove(fileID) == true)
-							{  buildFlags |= BuildFlags.BuildMenu;  }
-						}
-					}
-
-				
-				// Build the file if it has topics
-				
-				else
-					{
-
-					// Get links and their targets
-
-					// We can't skip looking up classes and contexts here.  Later code will be trying to compare generated 
-					// links to the ones in this list and that requires them having all their properties.
-					IList<Link> links = accessor.GetLinksInFile(fileID, cancelDelegate);
-
-					if (cancelDelegate())
-						{  return;  }
-
-					IDObjects.SparseNumberSet linkTargetIDs = new IDObjects.SparseNumberSet();
-
-					foreach (Link link in links)
-						{
-						if (link.IsResolved)
-							{  linkTargetIDs.Add(link.TargetTopicID);  }
-						}
-
-					IList<Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate);
-
-					if (cancelDelegate())
-						{  return;  }
-
-					// We also need to get any links appearing inside the link targets.  Wut?  When you have a resolved link, 
-					// a tooltip shows up when you hover over it.  The tooltip is built from the link targets we just retrieved.  
-					// However, if the summary appearing in the tooltip contains any Natural Docs links, we need to know if
-					// they're resolved and how to know what text to show (originaltext, named links, etc.)  Links don't store
-					// which topic they appear in, but they do store the file, so gather the file IDs of the link targets that
-					// have Natural Docs links in the summaries and get all the links in those files.
-
-					IDObjects.SparseNumberSet inceptionFileIDs = new IDObjects.SparseNumberSet();
-
-					foreach (Topic linkTarget in linkTargets)
-						{
-						if (linkTarget.Summary != null && linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1)
-							{  inceptionFileIDs.Add(linkTarget.FileID);  }
-						}
-
-					IList<Link> inceptionLinks = null;
-					
-					if (!inceptionFileIDs.IsEmpty)
-						{  
-						// Can't skip looking up classes and contexts here either.
-						inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  
-						}
-
-					if (cancelDelegate())
-						{  return;  }
-
-					accessor.ReleaseLock();
-					haveDBLock = false;
-
-
-					// Build the HTML for the list of topics
-
-					StringBuilder html = new StringBuilder("\r\n\r\n");
-					HTMLTopic topicBuilder = new HTMLTopic(this);
-
-					// We don't put embedded topics in the output, so we need to find the last non-embedded one so
-					// that the "last" CSS tag is correctly applied.
-					int lastNonEmbeddedTopic = topics.Count - 1;
-					while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
-						{  lastNonEmbeddedTopic--;  }
-
-					for (int i = 0; i <= lastNonEmbeddedTopic; i++)
-						{  
-						string extraClass = null;
-
-						if (i == 0)
-							{  extraClass = "first";  }
-						else if (i == lastNonEmbeddedTopic)
-							{  extraClass = "last";  }
-
-						if (topics[i].IsEmbedded == false)
-							{
-							topicBuilder.Build(topics[i], links, linkTargets, html, topics, i + 1, extraClass);  
-							html.Append("\r\n\r\n");
-							}
-						}
-							
-
-					// Build the full HTML files
-
-					Path outputPath = Source_OutputFile(fileID);
-
-					// Can't get this from outputPath because it may have substituted characters to satisfy the path restrictions.
-					string title = Instance.Files.FromID(fileID).FileName.NameWithoutPath;
-
-					BuildFile(outputPath, title, html.ToString(), PageType.Content);
-
-
-					// Build the tooltips file
-
-					using (System.IO.StreamWriter file = CreateTextFileAndPath(Source_ToolTipsFile(fileID)))
-						{
-						file.Write("NDContentPage.OnToolTipsLoaded({");
-
-						#if DONT_SHRINK_FILES
-							file.WriteLine();
-						#endif
-
-						for (int i = 0; i < linkTargets.Count; i++)
-							{
-							Topic topic = linkTargets[i];
-							string toolTipHTML = topicBuilder.BuildToolTip(topic, inceptionLinks);
-
-							if (toolTipHTML != null)
-								{
-								#if DONT_SHRINK_FILES
-									file.Write("   ");
-								#endif
-
-								file.Write(topic.TopicID);
-								file.Write(":\"");
-								file.Write(toolTipHTML.StringEscape());
-								file.Write('"');
-
-								if (i != linkTargets.Count - 1)
-									{  file.Write(',');  }
-
-								#if DONT_SHRINK_FILES
-									file.WriteLine();
-								#endif
-								}
-							}
-
-						#if DONT_SHRINK_FILES
-							file.Write("   ");
-						#endif
-						file.Write("});");
-						}
-
-
-					// Build summary and summary tooltips metadata files
-
-					JSSummaryData summaryBuilder = new JSSummaryData(this);
-					summaryBuilder.Build(topics, links, title, 
-														 Source_OutputFileHashPath(fileID), Source_SummaryFile(fileID), Source_SummaryToolTipsFile(fileID));
-
-					lock (writeLock)
-						{
-						if (sourceFilesWithContent.Add(fileID) == true)
-							{  buildFlags |= BuildFlags.BuildMenu;  }
-						}
+					if (sourceFilesWithContent.Add(fileID) == true)
+						{  buildFlags |= BuildFlags.BuildMenu;  }
 					}
 				}
-				
-			finally
-				{ 
-				if (haveDBLock)
-					{  accessor.ReleaseLock();  }
+			else
+				{
+				DeleteOutputFileIfExists(page.OutputFile);
+				DeleteOutputFileIfExists(page.ToolTipsFile);
+				DeleteOutputFileIfExists(page.SummaryFile);
+				DeleteOutputFileIfExists(page.SummaryToolTipsFile);
+
+				lock (writeLock)
+					{
+					if (sourceFilesWithContent.Remove(fileID) == true)
+						{  buildFlags |= BuildFlags.BuildMenu;  }
+					}
 				}
 			}
 

@@ -958,7 +958,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		protected void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
+		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
 			{
 			using (System.IO.StreamWriter file = CreateTextFileAndPath(outputPath))
 				{
