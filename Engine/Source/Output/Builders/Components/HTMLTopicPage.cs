@@ -140,7 +140,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 				// Build the HTML for the list of topics
 
 				StringBuilder html = new StringBuilder("\r\n\r\n");
-				HTMLTopic topicBuilder = new HTMLTopic(htmlBuilder);
+				HTMLTopic topicBuilder = new HTMLTopic(this);
 
 				// We don't put embedded topics in the output, so we need to find the last non-embedded one so
 				// that the "last" CSS tag is correctly applied.
@@ -214,7 +214,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 				// Build summary and summary tooltips files
 
-				JSSummaryData summaryBuilder = new JSSummaryData(htmlBuilder);
+				JSSummaryData summaryBuilder = new JSSummaryData(this);
 				summaryBuilder.Build(topics, links, PageTitle, OutputFileHashPath, SummaryFile, SummaryToolTipsFile);
 
 				return true;
@@ -251,6 +251,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		public abstract List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
 
 
+		/* Function: GetLinkTarget
+		 * Returns a <HTMLTopicPage> for the target of a link which resolves to the passed <Topic>.
+		 */
+		public abstract HTMLTopicPage GetLinkTarget (Topic targetTopic);
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: HTMLBuilder
+		 * The <Builders.HTML> associated with this topic page.
+		 */
+		public Builders.HTML HTMLBuilder
+			{
+			get
+				{  return htmlBuilder;  }
+			}
+
+
 
 		// Group: Abstract Properties
 		// __________________________________________________________________________
@@ -259,6 +280,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		/* Property: PageTitle
 		 */
 		abstract public string PageTitle
+			{  get;  }
+
+		/* Function: IncludeClassInTopicHashPaths
+		 * Whether to include the class in the topic part of hash paths.  For example, you would want "#Class:MyClass:Member" 
+		 * instead of "#Class:MyClass:MyClass.Member".  However, you would want "#File:MyFile.cs:MyClass.Member" instead of
+		 * "#File:MyFile.cs:Member".
+		 */
+		public abstract bool IncludeClassInTopicHashPaths
 			{  get;  }
 
 		/* Property: OutputFile

@@ -18,7 +18,8 @@
  *		
  *		- Create a HTMLPrototype object.
  *		- Call <Build()>.
- *		- The object can be reused on different prototypes by calling <Build()> again.
+ *		- The object can be reused on different prototypes by calling <Build()> again as long as they come from the same
+ *		  <HTMLTopicPage>.
  * 
  * 
  * Threading: Not Thread Safe
@@ -80,7 +81,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* Constructor: HTMLPrototype
 		 */
-		public HTMLPrototype (Builders.HTML htmlBuilder) : base (htmlBuilder)
+		public HTMLPrototype (HTMLTopicPage topicPage) : base (topicPage)
 			{
 			parsedPrototype = null;
 			language = null;

@@ -40,9 +40,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* Constructor: HTMLComponent
 		 */
-		public HTMLComponent (Builders.HTML htmlBuilder)
+		public HTMLComponent (HTMLTopicPage topicPage)
 			{
-			this.htmlBuilder = htmlBuilder;
+			this.topicPage = topicPage;
 
 			htmlOutput = null;
 			topic = null;
@@ -283,13 +283,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 							// Now build the actual link.  It can't just be the hash path because it would use the iframe's location, so we 
 							// also need a relative path back to index.html.
 
-							Path currentOutputFolder = htmlBuilder.Source_OutputFile(topic.FileID).ParentFolder;
-							Path indexFile = htmlBuilder.OutputFolder + "/index.html";
+							Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
+							Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
 							Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
 
+							HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
+
 							output.Append("<a href=\"" + pathToIndex.ToURL() + 
-																		'#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
-																		':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" " +
+																'#' + targetTopicPage.OutputFileHashPath + 
+																':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
 															"target=\"_top\" " +
 															"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
 															"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
@@ -320,15 +322,39 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: TopicPage
+		 * The <HTMLTopicPage> this component appears in.
+		 */
+		public HTMLTopicPage TopicPage
+			{
+			get
+				{  return topicPage;  }
+			}
+
+
+		/* Property: HTMLBuilder
+		 * The <Builders.HTML> associated with this component.
+		 */
+		public Builders.HTML HTMLBuilder
+			{
+			get
+				{  return topicPage.HTMLBuilder;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 
-		/* var: htmlBuilder
-		 * The parent <Output.Builders.HTML> object.
+		/* var: topicPage
+		 * The <HTMLTopicPage> that this object appears in.
 		 */
-		protected Builders.HTML htmlBuilder;
+		protected HTMLTopicPage topicPage;
 
 		/* var: htmlOutput
 		 * The StringBuilder we want to append the output to.

@@ -118,6 +118,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 			}
 
 
+		/* Function: GetLinkTarget
+		 */
+		public override HTMLTopicPage GetLinkTarget (Topic targetTopic)
+			{
+			// We want to stay in the class view if we can, but since there's no generated page for globals we have to
+			// switch to the file view for them.
+
+			if (targetTopic.ClassID != 0)
+				{  return new HTMLTopicPages.Class (htmlBuilder, targetTopic.ClassID, targetTopic.ClassString);  }
+			else
+				{  return new HTMLTopicPages.File (htmlBuilder, targetTopic.FileID);  }
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -129,6 +143,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 			{
 			get
 				{  return classString.Symbol.LastSegment;  }
+			}
+
+		/* Property: IncludeClassInTopicHashPaths
+		 */
+		override public bool IncludeClassInTopicHashPaths
+			{
+			get
+				{  return false;  }
 			}
 
 		/* Property: OutputFile

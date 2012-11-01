@@ -18,7 +18,8 @@
  *		
  *		- Create a HTMLTopic object.
  *		- Call <Build()> or <BuildToolTip()>.
- *		- The object can be reused on different <Topics> by calling <Build()> again.
+ *		- The object can be reused on different <Topics> by calling <Build()> again as long as they come from the same 
+ *		  <HTMLTopicPage>.
  * 
  * 
  * Threading: Not Thread Safe
@@ -55,7 +56,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* Constructor: HTMLTopic
 		 */
-		public HTMLTopic (Builders.HTML htmlBuilder) : base (htmlBuilder)
+		public HTMLTopic (HTMLTopicPage topicPage) : base (topicPage)
 			{
 			cachedHTMLPrototypeBuilder = null;
 			isToolTip = false;
@@ -97,7 +98,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			htmlOutput.Append(
-				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, true).EntityEncode() + "\"></a>" +
+				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths).EntityEncode() + "\"></a>" +
 				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
@@ -121,7 +122,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 						htmlOutput.Append("\r\n ");
 
 						if (cachedHTMLPrototypeBuilder == null)
-							{  cachedHTMLPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
+							{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
 
 						cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);
 						}
@@ -174,7 +175,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 				if (topic.Prototype != null)
 					{  
 					if (cachedHTMLPrototypeBuilder == null)
-						{  cachedHTMLPrototypeBuilder = new HTMLPrototype(htmlBuilder);  }
+						{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
 
 					cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  
 					}
@@ -193,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		protected void BuildTitle ()
 			{
 			htmlOutput.Append("<div class=\"CTitle\">");
-			htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
+			HTMLBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
 			htmlOutput.Append("</div>");
 			}
 
@@ -314,7 +315,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 								#endif
 
 								htmlOutput.Append(
-									"<a name=\"" + Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], true).EntityEncode() + "\"></a>" +
+									"<a name=\"" + Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], topicPage.IncludeClassInTopicHashPaths).EntityEncode() + "\"></a>" +
 									"<a name=\"Topic" + embeddedTopics[embeddedTopicIndex].TopicID + "\"></a>");
 
 								embeddedTopicIndex++;
@@ -699,13 +700,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 			// Now build the actual link.  It can't just be the hash path because it would use the iframe's location, so we also
 			// need a relative path back to index.html.
 
-			Path currentOutputFolder = htmlBuilder.Source_OutputFile(topic.FileID).ParentFolder;
-			Path indexFile = htmlBuilder.OutputFolder + "/index.html";
+			Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
+			Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
 			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
 
+			HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
+
 			htmlOutput.Append("<a href=\"" + pathToIndex.ToURL() + 
-														'#' + htmlBuilder.Source_OutputFileHashPath(targetTopic.FileID) + 
-														':' + Builders.HTML.Source_TopicHashPath(targetTopic, true) + "\" " +
+														'#' + targetTopicPage.OutputFileHashPath + 
+														':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
 											"target=\"_top\" " +
 											"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
 											"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +

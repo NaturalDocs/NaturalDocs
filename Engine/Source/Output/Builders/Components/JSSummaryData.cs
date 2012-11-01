@@ -45,16 +45,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 		/* Constructor: JSSummaryData
 		 */
-		public JSSummaryData (Builders.HTML htmlBuilder)
+		public JSSummaryData (HTMLTopicPage topicPage)
 			{
-			this.htmlBuilder = htmlBuilder;
+			this.topicPage = topicPage;
 
 			output = null;
 			fileTitle = null;
 			fileHashPath = null;
 			topics = null;
 
-			htmlTopic = new HTMLTopic(htmlBuilder);
+			htmlTopic = new HTMLTopic(topicPage);
 			usedLanguages = new List<Language>();
 			usedTopicTypes = new List<TopicType>();
 			}
@@ -122,7 +122,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 			output.Append(");");
 
 
-			System.IO.StreamWriter summaryFile = htmlBuilder.CreateTextFileAndPath(summaryPath);
+			System.IO.StreamWriter summaryFile = HTMLBuilder.CreateTextFileAndPath(summaryPath);
 
 			try
 				{  summaryFile.Write(output.ToString());  }
@@ -147,7 +147,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 			output.Append("});");
 
-			System.IO.StreamWriter summaryToolTipsFile = htmlBuilder.CreateTextFileAndPath(summaryToolTipsPath);
+			System.IO.StreamWriter summaryToolTipsFile = HTMLBuilder.CreateTextFileAndPath(summaryToolTipsPath);
 
 			try
 				{  summaryToolTipsFile.Write(output.ToString());  }
@@ -322,14 +322,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 				if (topic.IsEmbedded == false)
 					{  
 					output.Append('"');
-					output.StringEscapeAndAppend( htmlBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
+					output.StringEscapeAndAppend( HTMLBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
 					output.Append('"');
 					}
 				else
 					{  output.Append("undefined");  }
 
 				output.Append(",\"");
-				output.StringEscapeAndAppend( Builders.HTML.Source_TopicHashPath(topic, true) );
+				output.StringEscapeAndAppend( Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths) );
 				output.Append("\"]");
 
 				if (topicIndex < topics.Count - 1)
@@ -391,14 +391,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: HTMLBuilder
+		 * The <Builders.HTML> associated with this object.
+		 */
+		public Builders.HTML HTMLBuilder
+			{
+			get
+				{  return topicPage.HTMLBuilder;  }
+			}
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 
 
-		/* var: htmlBuilder
-		 * The parent <Output.Builders.HTML> object.
+		/* var: topicPage
+		 * The <HTMLTopicPage> associated with this summary file.
 		 */
-		protected Builders.HTML htmlBuilder;
+		protected HTMLTopicPage topicPage;
 
 		/* var: output
 		 * The JavaScript being generated.

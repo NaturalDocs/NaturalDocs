@@ -91,6 +91,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 			}
 
 
+		/* Function: GetLinkTarget
+		 */
+		public override HTMLTopicPage GetLinkTarget (Topic targetTopic)
+			{
+			return new HTMLTopicPages.File (htmlBuilder, targetTopic.FileID);
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -102,6 +110,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 			{
 			get
 				{  return Instance.Files.FromID(fileID).FileName.NameWithoutPath;  }
+			}
+
+		/* Property: IncludeClassInTopicHashPaths
+		 */
+		override public bool IncludeClassInTopicHashPaths
+			{
+			get
+				{  return true;  }
 			}
 
 		/* Property: OutputFile
