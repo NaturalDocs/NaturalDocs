@@ -33,16 +33,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 
 		/* Constructor: File
 		 */
-		public File (Builders.HTML htmlBuilder, CodeDB.Accessor accessor, int fileID) : base (htmlBuilder, accessor)
+		public File (Builders.HTML htmlBuilder, int fileID) : base (htmlBuilder)
 			{
 			this.fileID = fileID;
 			}
 
 
 		/* Function: GetTopics
+		 * 
 		 * Retrieves the <Topics> in the file.  If there are no topics it will return an empty list.
+		 * 
+		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
+		 * If it already has a lock it will use it and not release it.
 		 */
-		public override List<Topic> GetTopics (CancelDelegate cancelDelegate)
+		public override List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
@@ -62,9 +66,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 
 
 		/* Function: GetLinks
+		 * 
 		 * Retrieves the <Links> appearing in the file.  If there are no links it will return an empty list.
+		 * 
+		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
+		 * If it already has a lock it will use it and not release it.
 		 */
-		public override List<Link> GetLinks (CancelDelegate cancelDelegate)
+		public override List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)

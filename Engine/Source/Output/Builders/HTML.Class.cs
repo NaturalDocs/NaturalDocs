@@ -41,9 +41,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildClassFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			Components.HTMLTopicPages.Class page = new Components.HTMLTopicPages.Class(this, accessor, classID);
+			Components.HTMLTopicPages.Class page = new Components.HTMLTopicPages.Class(this, classID);
 
-			bool hasTopics = page.Build(cancelDelegate);
+			bool hasTopics = page.Build(accessor, cancelDelegate);
 
 			if (cancelDelegate())
 				{  return;  }

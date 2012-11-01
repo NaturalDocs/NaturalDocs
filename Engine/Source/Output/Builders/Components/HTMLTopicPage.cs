@@ -42,12 +42,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 
 		/* Constructor: HTMLTopicPage
-		 * Creates a new HTMLTopicPage object.  The accessor may or may not already have a lock on the database.
+		 * Creates a new HTMLTopicPage object.
 		 */
-		public HTMLTopicPage (Builders.HTML htmlBuilder, CodeDB.Accessor accessor)
+		public HTMLTopicPage (Builders.HTML htmlBuilder)
 			{
 			this.htmlBuilder = htmlBuilder;
-			this.accessor = accessor;
 			}
 
 
@@ -56,12 +55,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		 * Builds the page and its supporting JSON files.  Returns whether there was any content.  It will also return false
 		 * if it was interrupted by the <CancelDelegate>.
 		 * 
-		 * If the <CodeDB.Accessor> passed to the constructor didn't have a lock, this function will automatically acquire 
-		 * and release a read-only lock.  This is the preferred way of using this function as the lock will only be held during
-		 * the data querying stage and will be released before writing output to disk.  If a lock was already held it will use
-		 * it and not release it.
+		 * If the <CodeDB.Accessor> doesn't have a lock, this function will automatically acquire and release a read-only lock.
+		 * This is the preferred way of using this function as the lock will only be held during the data querying stage and will be 
+		 * released before writing output to disk.  If it already has a lock it will use it and not release it.
 		 */
-		public bool Build (CancelDelegate cancelDelegate)
+		public bool Build (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			bool releaseDBLock = false;
 
@@ -73,7 +71,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 			try
 				{
-				List<Topic> topics = GetTopics(cancelDelegate);
+				List<Topic> topics = GetTopics(accessor, cancelDelegate);
 				
 				if (topics.Count == 0 || cancelDelegate())
 					{  return false;  }
@@ -83,7 +81,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 				// We can't skip looking up classes and contexts here.  Later code will be trying to compare generated 
 				// links to the ones in this list and that requires them having all their properties.
-				List<Link> links = GetLinks(cancelDelegate);
+				List<Link> links = GetLinks(accessor, cancelDelegate);
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -239,18 +237,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		 * 
 		 * Retrieves the <Topics> for the page's location.  If there are no topics it will return an empty list.
 		 * 
-		 * When implementing this function note that the class's accessor may or may not already have a lock.
+		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
 		 */
-		public abstract List<Topic> GetTopics (CancelDelegate cancelDelegate);
+		public abstract List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
 
 
 		/* Function: GetLinks
 		 * 
 		 * Retrieves the <Links> appearing in the page's location.  If there are no links it will return an empty list.
 		 * 
-		 * When implementing this function note that the class's accessor may or may not already have a lock.
+		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
 		 */
-		public abstract List<Link> GetLinks (CancelDelegate cancelDelegate);
+		public abstract List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
 
 
 
@@ -298,10 +296,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 		 * The <Builders.HTML> associated with this object.
 		 */
 		protected Builders.HTML htmlBuilder;
-
-		/* var: accessor
-		 */
-		protected CodeDB.Accessor accessor;
 
 		}
 	}

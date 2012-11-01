@@ -35,32 +35,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 
 
 		/* Constructor: Class
+		 * Creates a new class topic page.  Note that if you plan to use this object only for the path properties, you
+		 * MUST pass the <ClassString> that is associated with the class ID.  If you are going to call one of the functions
+		 * that takes a <CodeDB.Accessor> first, the object can look it up itself.
 		 */
-		public Class (Builders.HTML htmlBuilder, CodeDB.Accessor accessor, int classID) : base (htmlBuilder, accessor)
+		public Class (Builders.HTML htmlBuilder, int classID, ClassString classString = default(ClassString)) : base (htmlBuilder)
 			{
 			this.classID = classID;
-
-			bool releaseLock = false;
-			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
-				{
-				accessor.GetReadOnlyLock();
-				releaseLock = true;
-				}
-
-			try
-				{  classString = accessor.GetClassByID(classID);  }
-			finally
-				{
-				if (releaseLock)
-					{  accessor.ReleaseLock();  }
-				}
+			this.classString = classString;
 			}
 
 
 		/* Function: GetTopics
+		 * 
 		 * Retrieves the <Topics> in the class.  If there are no topics it will return an empty list.
+		 * 
+		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
+		 * If it already has a lock it will use it and not release it.
 		 */
-		public override List<Topic> GetTopics (CancelDelegate cancelDelegate)
+		public override List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
@@ -72,7 +65,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 			List<Topic> topics = null;
 			
 			try
-				{  topics = accessor.GetTopicsInClass(classID, cancelDelegate);  }
+				{  
+				if (classString == null)
+					{  classString = accessor.GetClassByID(classID);  }
+
+				topics = accessor.GetTopicsInClass(classID, cancelDelegate);  
+				}
 			finally
 				{
 				if (releaseLock)
@@ -86,9 +84,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 
 
 		/* Function: GetLinks
+		 * 
 		 * Retrieves the <Links> appearing in the class.  If there are no links it will return an empty list.
+		 * 
+		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
+		 * If it already has a lock it will use it and not release it.
 		 */
-		public override List<Link> GetLinks (CancelDelegate cancelDelegate)
+		public override List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
@@ -97,13 +99,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 				releaseLock = true;
 				}
 
+			List<Link> links = null;
+
 			try
-				{  return accessor.GetLinksInClass(classID, cancelDelegate);  }
+				{  
+				if (classString == null)
+					{  classString = accessor.GetClassByID(classID);  }
+
+				links = accessor.GetLinksInClass(classID, cancelDelegate);  
+				}
 			finally
 				{
 				if (releaseLock)
 					{  accessor.ReleaseLock();  }
 				}
+
+			return links;
 			}
 
 
@@ -125,7 +136,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public Path OutputFile
 		   {  
 			get
-				{  return htmlBuilder.Class_OutputFile(classString);  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				return htmlBuilder.Class_OutputFile(classString);  
+				}
 			}
 
 		/* Property: OutputFileHashPath
@@ -133,7 +151,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public string OutputFileHashPath
 			{
 			get
-				{  return htmlBuilder.Class_OutputFileHashPath(classString);  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				return htmlBuilder.Class_OutputFileHashPath(classString);  
+				}
 			}
 
 		/* Property: ToolTipsFile
@@ -141,7 +166,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public Path ToolTipsFile
 		   {  
 			get
-				{  return htmlBuilder.Class_ToolTipsFile(classString);  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				return htmlBuilder.Class_ToolTipsFile(classString);  
+				}
 			}
 
 		/* Property: SummaryFile
@@ -149,7 +181,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public Path SummaryFile
 		   {  
 			get
-				{  return htmlBuilder.Class_SummaryFile(classString);  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				return htmlBuilder.Class_SummaryFile(classString);  
+				}
 			}
 
 		/* Property: SummaryToolTipsFile
@@ -157,7 +196,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public Path SummaryToolTipsFile
 		   {  
 			get
-				{  return htmlBuilder.Class_SummaryToolTipsFile(classString);  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				return htmlBuilder.Class_SummaryToolTipsFile(classString);  
+				}
 			}
 
 

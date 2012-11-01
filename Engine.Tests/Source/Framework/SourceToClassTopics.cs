@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
@@ -99,15 +100,14 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 						for (;;)
 							{
 							Engine.Output.Builders.Components.HTMLTopicPages.Class classPage = 
-								new Output.Builders.Components.HTMLTopicPages.Class(TestEngine.HTMLBuilder, accessor, classID);
+								new Output.Builders.Components.HTMLTopicPages.Class(TestEngine.HTMLBuilder, classID);
 
-							List<Topic> classTopics = classPage.GetTopics(Delegates.NeverCancel);
+							List<Topic> classTopics = classPage.GetTopics(accessor, Delegates.NeverCancel);
 
 							if (classTopics == null || classTopics.Count == 0)
 								{  break;  }
 
-							var classString = classTopics[0].ClassString;
-							string testName = classString.Symbol.FormatWithSeparator(".");
+							string testName = classTopics[0].ClassString.Symbol.FormatWithSeparator(".");
 							Path outputFilePath = Test.ActualOutputFileOf(testName, TestEngine.InputFolder);
 
 							Test test = Test.FromActualOutputFile(outputFilePath);
