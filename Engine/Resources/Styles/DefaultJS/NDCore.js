@@ -592,52 +592,14 @@ function NDLocation (hashString)
 		if (this.hashString.match(/^File[0-9]*:/) != null)
 			{
 			this.type = "File";
-
-			// The first colon after File:, which will always exist if we're a file hash path.
-			var pathSeparator = this.hashString.indexOf(':', 4);
-
-			// The first colon after the path, which may or may not exist.
-			var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
-
-			if (memberSeparator == -1)
-				{
-				this.path = this.hashString;
-				}
-			else
-				{
-				this.path = this.hashString.substr(0, memberSeparator);
-				this.member = this.hashString.substr(memberSeparator + 1);
-
-				if (this.member == "")
-					{  this.member = undefined;  }
-				}
-
+			this.SplitPathAndMember();
 			this.AddFileURLs();
 			}
 
 		else if (this.hashString.match(/^[A-Z]+Class:/i) != null)
 			{
 			this.type = "Class";
-
-			// The first colon after File:, which will always exist if we're a file hash path.
-			var pathSeparator = this.hashString.indexOf(':', 4);
-
-			// The first colon after the path, which may or may not exist.
-			var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
-
-			if (memberSeparator == -1)
-				{
-				this.path = this.hashString;
-				}
-			else
-				{
-				this.path = this.hashString.substr(0, memberSeparator);
-				this.member = this.hashString.substr(memberSeparator + 1);
-
-				if (this.member == "")
-					{  this.member = undefined;  }
-				}
-
+			this.SplitPathAndMember();
 			this.AddClassURLs();
 			}
 
@@ -650,6 +612,32 @@ function NDLocation (hashString)
 		};
 
 
+	/* Private Function: SplitPathAndMember
+		Generates <path> and <member> from <hashString> assuming <hashString> is in a relevant format.
+	*/
+	this.SplitPathAndMember = function ()
+		{
+		// The first colon after the path type, such as File: or CSharpClass:.  This should always exist.
+		var pathSeparator = this.hashString.indexOf(':');
+
+		// The first colon after the path, which may or may not exist.
+		var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
+
+		if (memberSeparator == -1)
+			{
+			this.path = this.hashString;
+			}
+		else
+			{
+			this.path = this.hashString.substr(0, memberSeparator);
+			this.member = this.hashString.substr(memberSeparator + 1);
+
+			if (this.member == "")
+				{  this.member = undefined;  }
+			}
+		};
+
+	
 	/* Private Function: AddHomeURLs
 		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
 		must be "Home".
