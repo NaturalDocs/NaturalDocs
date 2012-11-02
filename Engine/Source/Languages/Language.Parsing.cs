@@ -1321,21 +1321,20 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						// The topic is global without affecting the current context
 						codePoint.Topic.Symbol = symbol;
-						codePoint.Topic.ClassString = new ClassString();
 
 						// However, it's possible for an enum to be part of a class but have its values set to global.
 						// In this case we leave the symbol global but still give it the same class ID as the enum 
-						// because we want them to appear together in the output's class view.
-						if (partOfEnum)
-							{  codePoint.Topic.ClassString = currentClass;  }
+						// because we want them to appear together in the output's class view.  The same goes for
+						// Always Global topics that were documented as part of a class.
+						codePoint.Topic.ClassString = currentClass;
 
-						// Blank out the scope for the topic's scope but leave any using statements
+						// Blank out the scope for the prototype context but leave any using statements
 						ContextString globalContext = currentContext;
 						globalContext.Scope = new SymbolString();
 
 						codePoint.Topic.PrototypeContext = globalContext;
 
-						// However, we allow the body to retain the current context for linking
+						// However, allow the body to retain the scope for linking
 						codePoint.Topic.BodyContext = currentContext;
 						}
 
