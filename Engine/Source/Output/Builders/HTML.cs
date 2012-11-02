@@ -1550,7 +1550,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * it could replace things like the colon that separates hash path sections or the colon that follows the drive letter in 
 		 * Windows.
 		 */
-		protected static string SanitizePath (string input, bool replaceDots = false)
+		public static string SanitizePath (string input, bool replaceDots = false)
 			{
 			if (input.IndexOfAny(restrictedPathChars) == -1 && (replaceDots == false || input.IndexOf('.') == -1))
 				{  return input;  }

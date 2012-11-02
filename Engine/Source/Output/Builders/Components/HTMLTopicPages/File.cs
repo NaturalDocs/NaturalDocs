@@ -120,44 +120,175 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 				{  return true;  }
 			}
 
+
+
+		// Group: Path Properties
+		// __________________________________________________________________________
+
+
 		/* Property: OutputFile
+		 * The path of the topic page's output file, or null if none.  It may be null if the <FileSource> that created
+		 * it no longer exists.
 		 */
 		override public Path OutputFile
 		   {  
 			get
-				{  return htmlBuilder.Source_OutputFile(fileID);  }
+				{  
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+				if (fileSource == null)
+					{  return null;  }
+
+				Path relativePath = fileSource.MakeRelative(file.FileName);
+
+				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + OutputFileNameOnly;
+				}
 			}
 
 		/* Property: OutputFileHashPath
+		 * The hash path of the topic page, or null if none.  It may be null if the <FileSource> that created it no longer exists.
 		 */
 		override public string OutputFileHashPath
 			{
 			get
-				{  return htmlBuilder.Source_OutputFileHashPath(fileID);  }
+				{  
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+				if (fileSource == null)
+					{  return null;  }
+
+				Path relativePath = fileSource.MakeRelative(file.FileName);
+
+				// OutputFolderHashPath already includes the trailing symbol so we don't need + '/' +
+				return htmlBuilder.Source_OutputFolderHashPath(fileSource.Number, relativePath.ParentFolder) + OutputFileNameOnlyHashPath;
+				}
+			}
+
+		/* Property: OutputFileNameOnly
+		 * The output file name of topic page without the path.
+		 */
+		public Path OutputFileNameOnly
+			{
+			get
+				{
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				string nameString = file.FileName.NameWithoutPath.ToString();
+				return Builders.HTML.SanitizePath(nameString, true) + ".html";
+				}
+			}
+
+
+		/* Property: OutputFileNameOnlyHashPath
+		 * The file name portion of the topic page's hash path.
+		 */
+		public string OutputFileNameOnlyHashPath
+			{
+			get
+				{
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				string nameString = file.FileName.NameWithoutPath.ToString();
+				return Builders.HTML.SanitizePath(nameString);
+				}
 			}
 
 		/* Property: ToolTipsFile
+		 * The path of the topic page's tool tips file, or null if none.  It may be null if the <FileSource> that created it no longer exists.
 		 */
 		override public Path ToolTipsFile
 		   {  
 			get
-				{  return htmlBuilder.Source_ToolTipsFile(fileID);  }
+				{  
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+				if (fileSource == null)
+					{  return null;  }
+
+				Path relativePath = fileSource.MakeRelative(file.FileName);
+
+				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + ToolTipsFileNameOnly;
+				}
+			}
+
+		/* Property: ToolTipsFileNameOnly
+		 * The file name of the topic page's tool tips file without the path.
+		 */
+		public Path ToolTipsFileNameOnly
+			{
+			get
+				{
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				string nameString = file.FileName.NameWithoutPath.ToString();
+				return Builders.HTML.SanitizePath(nameString, true) + "-ToolTips.js";
+				}
 			}
 
 		/* Property: SummaryFile
+		 * The path of the topic page's summary file, or null if none.  It may be null if the <FileSource> that created it no longer 
+		 * exists.
 		 */
 		override public Path SummaryFile
 		   {  
 			get
-				{  return htmlBuilder.Source_SummaryFile(fileID);  }
+				{  
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+				if (fileSource == null)
+					{  return null;  }
+
+				Path relativePath = fileSource.MakeRelative(file.FileName);
+
+				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + SummaryFileNameOnly;
+				}
+			}
+
+		/* Property: SummaryFileNameOnly
+		 * The file name of the topic page's summary file without the path.
+		 */
+		public Path SummaryFileNameOnly
+			{
+			get
+				{
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				string nameString = file.FileName.NameWithoutPath.ToString();
+				return Builders.HTML.SanitizePath(nameString, true) + "-Summary.js";
+				}
 			}
 
 		/* Property: SummaryToolTipsFile
+		 * The path of the topic page's summary tool tips file, or null if none.  It may be null if the <FileSource> that created it
+		 * no longer exists.
 		 */
 		override public Path SummaryToolTipsFile
 		   {  
 			get
-				{  return htmlBuilder.Source_SummaryToolTipsFile(fileID);  }
+				{  
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+
+				if (fileSource == null)
+					{  return null;  }
+
+				Path relativePath = fileSource.MakeRelative(file.FileName);
+
+				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + SummaryToolTipsFileNameOnly;
+				}
+			}
+
+		/* Property: SummaryToolTipsFileNameOnly
+		 * The file name of the topic page's summary tool tips file without the path.
+		 */
+		public Path SummaryToolTipsFileNameOnly
+			{
+			get
+				{
+				Files.File file = Engine.Instance.Files.FromID(fileID);
+				string nameString = file.FileName.NameWithoutPath.ToString();
+				return Builders.HTML.SanitizePath(nameString, true) + "-SummaryToolTips.js";
+				}
 			}
 
 

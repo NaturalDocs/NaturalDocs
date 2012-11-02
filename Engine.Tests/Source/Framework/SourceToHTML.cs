@@ -123,7 +123,10 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 							if (fileInfo == null)
 								{  throw new Exception("Could not get file info of " + file);  }
 
-							Path htmlFile = TestEngine.HTMLBuilder.Source_OutputFile(fileInfo.ID);
+							Engine.Output.Builders.Components.HTMLTopicPages.File fileTopicPage = 
+								new Output.Builders.Components.HTMLTopicPages.File(TestEngine.HTMLBuilder, fileInfo.ID);
+
+							Path htmlFile = fileTopicPage.OutputFile;
 
 							string html = System.IO.File.ReadAllText(htmlFile);
 							html = ExtractHTML(html, tagName, className);

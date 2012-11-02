@@ -499,9 +499,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 				string hashPath;
 				
 				if (menuEntry is MenuEntries.File.File)
-					{  hashPath = htmlBuilder.Source_OutputFileNameOnlyHashPath( (menuEntry as MenuEntries.File.File).WrappedFile.FileName );  }
+					{  
+					MenuEntries.File.File fileMenuEntry = (MenuEntries.File.File)menuEntry;
+					HTMLTopicPages.File fileTopicPage = new HTMLTopicPages.File(htmlBuilder, fileMenuEntry.WrappedFile.ID);
+					hashPath = fileTopicPage.OutputFileNameOnlyHashPath;  
+					}
 				else if (menuEntry is MenuEntries.Class.Class)
-					{  hashPath = htmlBuilder.Class_OutputFileNameOnlyHashPath( (menuEntry as MenuEntries.Class.Class).WrappedClassString );  }
+					{  
+					MenuEntries.Class.Class classMenuEntry = (MenuEntries.Class.Class)menuEntry;
+					HTMLTopicPages.Class classTopicPage = new HTMLTopicPages.Class(htmlBuilder, classString: classMenuEntry.WrappedClassString);
+					hashPath = classTopicPage.OutputFileNameOnlyHashPath;  
+					}
 				#if DEBUG
 				else
 					{  throw new Exception ("Don't know how to generate JSON for target \"" + menuEntry.Title + "\".");  }

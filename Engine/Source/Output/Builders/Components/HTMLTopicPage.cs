@@ -71,6 +71,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 			try
 				{
+				// DEPENDENCY: HTMLTopicPages.Class assumes that this function will call a database function before using any path
+				// properties.
+
 				List<Topic> topics = GetTopics(accessor, cancelDelegate);
 				
 				if (topics.Count == 0 || cancelDelegate())

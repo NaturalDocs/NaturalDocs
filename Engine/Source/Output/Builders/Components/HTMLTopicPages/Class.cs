@@ -35,15 +35,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 
 
 		/* Constructor: Class
-		 * Creates a new class topic page.  Note that if you plan to use this object only for the path properties, you
-		 * MUST pass the <ClassString> that is associated with the class ID.  If you are going to call one of the functions
-		 * that takes a <CodeDB.Accessor> first, the object can look it up itself.
+		 * 
+		 * Creates a new class topic page.  Which features are available depend on which parameters you pass.
+		 * 
+		 * - If you pass a <ClassString> AND a class ID, all features are available immediately.
+		 * - If you only pass a <ClassString>, then only the <path properties> are available.
+		 * - If you only pass a class ID, then only the <database functions> are available.
+		 *		- The <path properties> will be available after one of the <database functions> is called as they will look up the
+		 *			<ClassString>.
+		 *		- It is safe to call <HTMLTopicPage.Build()> when you only passed a class ID.
 		 */
-		public Class (Builders.HTML htmlBuilder, int classID, ClassString classString = default(ClassString)) : base (htmlBuilder)
+		public Class (Builders.HTML htmlBuilder, int classID = 0, ClassString classString = default(ClassString)) : base (htmlBuilder)
 			{
+			// DEPENDENCY: This class assumes HTMLTopicPage.Build() will call a database function before using any path properties.
+
 			this.classID = classID;
 			this.classString = classString;
 			}
+
+
+
+		// Group: Database Functions
+		// __________________________________________________________________________
 
 
 		/* Function: GetTopics
@@ -55,6 +68,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		 */
 		public override List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
+			#if DEBUG
+			if (classID <= 0)
+				{  throw new Exception("You cannot use HTMLTopicPages.Class.GetTopics when classID is not set.");  }
+			#endif
+
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
 				{
@@ -92,6 +110,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		 */
 		public override List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
+			#if DEBUG
+			if (classID <= 0)
+				{  throw new Exception("You cannot use HTMLTopicPages.Class.GetLinks when classID is not set.");  }
+			#endif
+
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
 				{
@@ -142,7 +165,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 		override public string PageTitle
 			{
 			get
-				{  return classString.Symbol.LastSegment;  }
+				{  
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use HTMLTopicPages.Class.PageTitle when classString is not set.");  }
+				#endif
+
+				return classString.Symbol.LastSegment;  
+				}
 			}
 
 		/* Property: IncludeClassInTopicHashPaths
@@ -153,7 +183,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 				{  return false;  }
 			}
 
+
+
+		// Group: Path Properties
+		// __________________________________________________________________________
+
+
 		/* Property: OutputFile
+		 * The path of the topic page's output file.
 		 */
 		override public Path OutputFile
 		   {  
@@ -164,11 +201,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				return htmlBuilder.Class_OutputFile(classString);  
+				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+
+				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
 				}
 			}
 
 		/* Property: OutputFileHashPath
+		 * The hash path of the topic page.
 		 */
 		override public string OutputFileHashPath
 			{
@@ -179,11 +219,51 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				return htmlBuilder.Class_OutputFileHashPath(classString);  
+				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+
+				// OutputFolderHashPath already includes the trailing separator so we can just concatenate them.
+				return htmlBuilder.Class_OutputFolderHashPath(language, classString.Symbol.WithoutLastSegment) + 
+							 OutputFileNameOnlyHashPath;
+				}
+			}
+
+		/* Property: OutputFileNameOnly
+		 * The output file name of topic page without the path.
+		 */
+		public Path OutputFileNameOnly
+			{
+			get
+				{
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				string nameString = classString.Symbol.LastSegment;
+				return Builders.HTML.SanitizePath(nameString, true) + ".html";
+				}
+			}
+
+
+		/* Property: OutputFileNameOnlyHashPath
+		 * The file name portion of the topic page's hash path.
+		 */
+		public string OutputFileNameOnlyHashPath
+			{
+			get
+				{
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				string nameString = classString.Symbol.LastSegment;
+				return Builders.HTML.SanitizePath(nameString);
 				}
 			}
 
 		/* Property: ToolTipsFile
+		 * The path of the topic page's tool tips file.
 		 */
 		override public Path ToolTipsFile
 		   {  
@@ -194,11 +274,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				return htmlBuilder.Class_ToolTipsFile(classString);  
+				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+
+				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
+				}
+			}
+
+		/* Property: ToolTipsFileNameOnly
+		 * The file name of the topic page's tool tips file without the path.
+		 */
+		public Path ToolTipsFileNameOnly
+			{
+			get
+				{
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				string nameString = classString.Symbol.LastSegment;
+				return Builders.HTML.SanitizePath(nameString, true) + "-ToolTips.js";
 				}
 			}
 
 		/* Property: SummaryFile
+		 * The path of the topic page's summary file.
 		 */
 		override public Path SummaryFile
 		   {  
@@ -209,11 +309,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				return htmlBuilder.Class_SummaryFile(classString);  
+				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+
+				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
+				}
+			}
+
+		/* Property: SummaryFileNameOnly
+		 * The file name of the topic page's summary file without the path.
+		 */
+		public Path SummaryFileNameOnly
+			{
+			get
+				{
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				string nameString = classString.Symbol.LastSegment;
+				return Builders.HTML.SanitizePath(nameString, true) + "-Summary.js";
 				}
 			}
 
 		/* Property: SummaryToolTipsFile
+		 * The path of the topic page's summary tool tips file.
 		 */
 		override public Path SummaryToolTipsFile
 		   {  
@@ -224,7 +344,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				return htmlBuilder.Class_SummaryToolTipsFile(classString);  
+				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+
+				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + 
+							 SummaryToolTipsFileNameOnly;
+				}
+			}
+
+		/* Property: SummaryToolTipsFileNameOnly
+		 * The file name of the topic page's summary tool tips file without the path.
+		 */
+		public Path SummaryToolTipsFileNameOnly
+			{
+			get
+				{
+				#if DEBUG
+				if (classString == null)
+					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				#endif
+
+				string nameString = classString.Symbol.LastSegment;
+				return Builders.HTML.SanitizePath(nameString, true) + "-SummaryToolTips.js";
 				}
 			}
 
