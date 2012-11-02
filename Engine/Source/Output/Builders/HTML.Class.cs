@@ -15,7 +15,7 @@ using System.Text;
 using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Output.Builders.Components;
+using GregValure.NaturalDocs.Engine.Output.Components;
 using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Topics;
 using GregValure.NaturalDocs.Engine.TopicTypes;

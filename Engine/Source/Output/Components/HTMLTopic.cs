@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopic
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopic
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build <Topics> and tooltips for <Output.Builders.HTML>.
@@ -45,7 +45,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
+namespace GregValure.NaturalDocs.Engine.Output.Components
 	{
 	public class HTMLTopic : HTMLComponent
 		{

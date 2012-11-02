@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLComponent
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLComponent
  * ____________________________________________________________________________
  * 
  * A base class for HTML components.
@@ -29,7 +29,7 @@ using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
+namespace GregValure.NaturalDocs.Engine.Output.Components
 	{
 	public class HTMLComponent
 		{

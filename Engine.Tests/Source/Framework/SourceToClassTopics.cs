@@ -99,8 +99,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 						{
 						for (;;)
 							{
-							Engine.Output.Builders.Components.HTMLTopicPages.Class classPage = 
-								new Output.Builders.Components.HTMLTopicPages.Class(TestEngine.HTMLBuilder, classID);
+							Engine.Output.Components.HTMLTopicPages.Class classPage = 
+								new Output.Components.HTMLTopicPages.Class(TestEngine.HTMLBuilder, classID);
 
 							List<Topic> classTopics = classPage.GetTopics(accessor, Delegates.NeverCancel);
 

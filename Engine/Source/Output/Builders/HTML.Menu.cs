@@ -12,7 +12,7 @@
 using System;
 using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Output.Builders.Components;
+using GregValure.NaturalDocs.Engine.Output.Components;
 using GregValure.NaturalDocs.Engine.Symbols;
 
 

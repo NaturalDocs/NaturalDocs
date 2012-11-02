@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPage
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPage
  * ____________________________________________________________________________
  * 
  * A base class for components that build a page of <Topics> for <Output.Builders.HTML>.
@@ -32,7 +32,7 @@ using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
+namespace GregValure.NaturalDocs.Engine.Output.Components
 	{
 	public abstract class HTMLTopicPage
 		{

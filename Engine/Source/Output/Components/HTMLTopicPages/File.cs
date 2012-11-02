@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPages.File
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages.File
  * ____________________________________________________________________________
  * 
  * Creates a <HTMLTopicPage> for a source file.
@@ -22,7 +22,7 @@ using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPages
+namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 	{
 	public class File : HTMLTopicPage
 		{

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPages.Class
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages.Class
  * ____________________________________________________________________________
  * 
  * Creates a <HTMLTopicPage> for a class.
@@ -25,7 +25,7 @@ using GregValure.NaturalDocs.Engine.Topics;
 using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components.HTMLTopicPages
+namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 	{
 	public class Class : HTMLTopicPage
 		{

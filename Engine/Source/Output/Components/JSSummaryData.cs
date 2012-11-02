@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.JSSummaryData
+ * Class: GregValure.NaturalDocs.Engine.Output.Components.JSSummaryData
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript Summary Data>
@@ -34,7 +34,7 @@ using GregValure.NaturalDocs.Engine.Topics;
 using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
+namespace GregValure.NaturalDocs.Engine.Output.Components
 	{
 	public class JSSummaryData
 		{
