@@ -53,7 +53,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		   // Find which file source owns this file and generate a relative path to it.
 
-		   MenuEntries.File.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
+		   MenuEntries.Files.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
 		   Path relativePath = fileSourceEntry.WrappedFileSource.MakeRelative(file.FileName);
 
 
@@ -69,7 +69,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		   // Create the file entry and find out where it goes.  Create new folder levels as necessary.
 
-		   MenuEntries.File.File fileEntry = new MenuEntries.File.File(file);
+		   MenuEntries.Files.File fileEntry = new MenuEntries.Files.File(file);
 		   MenuEntries.Base.Container container = fileSourceEntry;
 
 		   foreach (string pathSegment in pathSegments)
@@ -79,23 +79,23 @@ namespace GregValure.NaturalDocs.Engine.Output
 				if (container == fileSourceEntry)
 					{  pathFromFileSource = pathSegment;  }
 				else
-					{  pathFromFileSource = (container as MenuEntries.File.Folder).PathFromFileSource + '/' + pathSegment;  }
+					{  pathFromFileSource = (container as MenuEntries.Files.Folder).PathFromFileSource + '/' + pathSegment;  }
 
-		      MenuEntries.File.Folder folderEntry = null;
+		      MenuEntries.Files.Folder folderEntry = null;
 
 		      foreach (var member in container.Members)
 		         {
-		         if (member is MenuEntries.File.Folder && 
-		             (member as MenuEntries.File.Folder).PathFromFileSource == pathFromFileSource)
+		         if (member is MenuEntries.Files.Folder && 
+		             (member as MenuEntries.Files.Folder).PathFromFileSource == pathFromFileSource)
 		            {  
-		            folderEntry = (MenuEntries.File.Folder)member;
+		            folderEntry = (MenuEntries.Files.Folder)member;
 		            break;
 		            }
 		         }
 
 		      if (folderEntry == null)
 		         {
-		         folderEntry = new MenuEntries.File.Folder(pathFromFileSource);
+		         folderEntry = new MenuEntries.Files.Folder(pathFromFileSource);
 		         folderEntry.Parent = container;
 		         container.Members.Add(folderEntry);
 		         }
@@ -121,7 +121,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		   // Find which language owns this file and split the symbol into its segments.
 
-		   MenuEntries.Class.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
+		   MenuEntries.Classes.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
 			bool ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
 
 		   string[] classSegments = classString.Symbol.SplitSegments();
@@ -129,7 +129,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		   // Create the class and find out where it goes.  Create new scope containers as necessary.
 
-		   MenuEntries.Class.Class classEntry = new MenuEntries.Class.Class(classString);
+		   MenuEntries.Classes.Class classEntry = new MenuEntries.Classes.Class(classString);
 		   MenuEntries.Base.Container container = languageEntry;
 			string scopeSoFar = null;
 
@@ -143,21 +143,21 @@ namespace GregValure.NaturalDocs.Engine.Output
 				else
 					{  scopeSoFar += Symbols.SymbolString.SeparatorChar + classSegment;  }
 
-		      MenuEntries.Class.Scope scopeEntry = null;
+		      MenuEntries.Classes.Scope scopeEntry = null;
 
 		      foreach (var member in container.Members)
 		         {
-		         if (member is MenuEntries.Class.Scope && 
-		             string.Compare((member as MenuEntries.Class.Scope).WrappedScopeString, scopeSoFar, ignoreCase) == 0)
+		         if (member is MenuEntries.Classes.Scope && 
+		             string.Compare((member as MenuEntries.Classes.Scope).WrappedScopeString, scopeSoFar, ignoreCase) == 0)
 		            {  
-		            scopeEntry = (MenuEntries.Class.Scope)member;
+		            scopeEntry = (MenuEntries.Classes.Scope)member;
 		            break;
 		            }
 		         }
 
 		      if (scopeEntry == null)
 		         {
-		         scopeEntry = new MenuEntries.Class.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar));
+		         scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar));
 		         scopeEntry.Parent = container;
 		         container.Members.Add(scopeEntry);
 		         }
@@ -182,7 +182,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				// If there's only one file source we can remove the top level container.
 				if (rootFileMenu.Members.Count == 1)
 					{  
-					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)rootFileMenu.Members[0];
+					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu.Members[0];
 
 					// Overwrite the file source name with the tab title, especially since it might not be defined if there was only one.
 					// We don't need an unnecessary level for a single file source.
@@ -202,7 +202,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				// If there's only one language we can remove the top level container.
 				if (rootClassMenu.Members.Count == 1)
 					{  
-					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)rootClassMenu.Members[0];
+					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu.Members[0];
 
 					// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
 					// for the language.
@@ -240,7 +240,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: FindOrCreateFileSourceEntryOf
 		 * Finds or creates the file source entry associated with the passed file.
 		 */
-		protected MenuEntries.File.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
+		protected MenuEntries.Files.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
 			{
 			var fileSource = Engine.Instance.Files.FileSourceOf(file);
 			var fileSourceEntry = FindFileSourceEntry(fileSource);
@@ -256,7 +256,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * Creates an entry for the file source, adds it to the menu, and returns it.  It will also create the <rootFileMenu> 
 		 * container if necessary.
 		 */
-		protected MenuEntries.File.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
+		protected MenuEntries.Files.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
 		   {
 			#if DEBUG
 			if (FindFileSourceEntry(fileSource) != null)
@@ -269,7 +269,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
 				}
 
-		   MenuEntries.File.FileSource fileSourceEntry = new MenuEntries.File.FileSource(fileSource);
+		   MenuEntries.Files.FileSource fileSourceEntry = new MenuEntries.Files.FileSource(fileSource);
 		   fileSourceEntry.Parent = rootFileMenu;
 		   rootFileMenu.Members.Add(fileSourceEntry);
 
@@ -280,16 +280,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: FindFileSourceEntry
 		 * Returns the menu entry that contains the passed file source, or null if there isn't one yet.
 		 */
-		protected MenuEntries.File.FileSource FindFileSourceEntry (Files.FileSource fileSource)
+		protected MenuEntries.Files.FileSource FindFileSourceEntry (Files.FileSource fileSource)
 			{
 			if (rootFileMenu == null)
 				{  return null;  }
 
 			// If the menu only had one file source and it was condensed, the root file entry may have been replaced
 			// by that file source.
-			else if (rootFileMenu is MenuEntries.File.FileSource)
+			else if (rootFileMenu is MenuEntries.Files.FileSource)
 				{
-				MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)rootFileMenu;
+				MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu;
 
 				if (fileSourceEntry.WrappedFileSource == fileSource)
 					{  return fileSourceEntry;  }
@@ -303,9 +303,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 				{
 				foreach (var member in rootFileMenu.Members)
 					{
-					if (member is MenuEntries.File.FileSource)
+					if (member is MenuEntries.Files.FileSource)
 						{
-						MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)member;
+						MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)member;
 						
 						if (fileSourceEntry.WrappedFileSource == fileSource)
 							{  return fileSourceEntry;  }
@@ -320,7 +320,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: FindOrCreateLanguageEntryOf
 		 * Finds or creates the language entry associated with the passed ClassString.
 		 */
-		protected MenuEntries.Class.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
+		protected MenuEntries.Classes.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
 			{
 			var language = Engine.Instance.Languages.FromID(classString.LanguageID);
 			var languageEntry = FindLanguageEntry(language);
@@ -336,7 +336,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * Creates an entry for the language, adds it to the class menu, and returns it.  It will also create the <rootClassMenu> 
 		 * container if necessary.
 		 */
-		protected MenuEntries.Class.Language CreateLanguageEntry (Languages.Language language)
+		protected MenuEntries.Classes.Language CreateLanguageEntry (Languages.Language language)
 		   {
 			#if DEBUG
 			if (FindLanguageEntry(language) != null)
@@ -349,7 +349,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 				rootClassMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Classes");
 				}
 
-		   MenuEntries.Class.Language languageEntry = new MenuEntries.Class.Language(language);
+		   MenuEntries.Classes.Language languageEntry = new MenuEntries.Classes.Language(language);
 		   languageEntry.Parent = rootClassMenu;
 		   rootClassMenu.Members.Add(languageEntry);
 
@@ -360,16 +360,16 @@ namespace GregValure.NaturalDocs.Engine.Output
 		/* Function: FindLanguageEntry
 		 * Returns the entry that contains the passed language, or null if there isn't one yet.
 		 */
-		protected MenuEntries.Class.Language FindLanguageEntry (Languages.Language language)
+		protected MenuEntries.Classes.Language FindLanguageEntry (Languages.Language language)
 			{
 			if (rootClassMenu == null)
 				{  return null;  }
 
 			// If the menu only had one language and it was condensed, the root class entry may have been replaced
 			// by that language.
-			else if (rootClassMenu is MenuEntries.Class.Language)
+			else if (rootClassMenu is MenuEntries.Classes.Language)
 				{
-				MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)rootClassMenu;
+				MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu;
 
 				if (languageEntry.WrappedLanguage == language)
 					{  return languageEntry;  }
@@ -382,9 +382,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 				{
 				foreach (var member in rootClassMenu.Members)
 					{
-					if (member is MenuEntries.Class.Language)
+					if (member is MenuEntries.Classes.Language)
 						{
-						MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)member;
+						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)member;
 						
 						if (languageEntry.WrappedLanguage == language)
 							{  return languageEntry;  }
@@ -405,7 +405,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.File.FileSources> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
 		public MenuEntries.Base.Container RootFileMenu
@@ -419,7 +419,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * 
 		 * The root container of all class-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Class.Languages> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
 		public MenuEntries.Base.Container RootClassMenu
@@ -438,7 +438,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.File.FileSources> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
 		protected MenuEntries.Base.Container rootFileMenu;
@@ -447,7 +447,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * 
 		 * The root container of all class-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Class.Languages> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
 		 * after condensation it may be a language if there was only one.
 		 */
 		protected MenuEntries.Base.Container rootClassMenu;

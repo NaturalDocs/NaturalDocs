@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.File.FileSource
+ * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Files.FileSource
  * ____________________________________________________________________________
  * 
  * A container that represents a <Files.FileSource> in <Menu>.
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
+namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Files
 	{
 	public class FileSource : Base.Container
 		{
@@ -24,7 +24,7 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
 
 		/* Function: FileSource
 		 */
-		public FileSource (Files.FileSource fileSource) : base ()
+		public FileSource (Engine.Files.FileSource fileSource) : base ()
 			{
 			this.fileSource = fileSource;
 
@@ -54,9 +54,9 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
 
 
 		/* Property: WrappedFileSource
-		 * The <Files.FileSource> associated with this entry.
+		 * The <Engine.Files.FileSource> associated with this entry.
 		 */
-		public Files.FileSource WrappedFileSource
+		public Engine.Files.FileSource WrappedFileSource
 			{
 			get
 				{  return fileSource;  }
@@ -79,7 +79,7 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
 
 		/* var: fileSource
 		 */
-		protected Files.FileSource fileSource;
+		protected Engine.Files.FileSource fileSource;
 
 		/* var: condensedPathFromFileSource
 		 */

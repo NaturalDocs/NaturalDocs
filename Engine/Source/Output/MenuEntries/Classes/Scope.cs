@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Class.Scope
+ * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes.Scope
  * ____________________________________________________________________________
  * 
  * Represents a scope in <Menu>, aka a container for all classes appearing at the same level of the
@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
+namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes
 	{
 	public class Scope : Base.Container
 		{

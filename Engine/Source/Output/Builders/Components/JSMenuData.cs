@@ -498,15 +498,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 				string hashPath;
 				
-				if (menuEntry is MenuEntries.File.File)
+				if (menuEntry is MenuEntries.Files.File)
 					{  
-					MenuEntries.File.File fileMenuEntry = (MenuEntries.File.File)menuEntry;
+					MenuEntries.Files.File fileMenuEntry = (MenuEntries.Files.File)menuEntry;
 					HTMLTopicPages.File fileTopicPage = new HTMLTopicPages.File(htmlBuilder, fileMenuEntry.WrappedFile.ID);
 					hashPath = fileTopicPage.OutputFileNameOnlyHashPath;  
 					}
-				else if (menuEntry is MenuEntries.Class.Class)
+				else if (menuEntry is MenuEntries.Classes.Class)
 					{  
-					MenuEntries.Class.Class classMenuEntry = (MenuEntries.Class.Class)menuEntry;
+					MenuEntries.Classes.Class classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
 					HTMLTopicPages.Class classTopicPage = new HTMLTopicPages.Class(htmlBuilder, classString: classMenuEntry.WrappedClassString);
 					hashPath = classTopicPage.OutputFileNameOnlyHashPath;  
 					}
@@ -626,13 +626,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 
 				output.Append(',');
 
-				if (menuEntry is MenuEntries.File.FileSource)
+				if (menuEntry is MenuEntries.Files.FileSource)
 					{
-					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)menuEntry;
+					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)menuEntry;
 					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number,
 																													  fileSourceEntry.CondensedPathFromFileSource );
 					}
-				else if (menuEntry is MenuEntries.File.Folder)
+				else if (menuEntry is MenuEntries.Files.Folder)
 					{
 					MenuEntries.Base.Container container = menuEntry.Parent;
 
@@ -641,7 +641,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 						{  throw new Exception ("Parent must be defined when generating JSON for menu folder \"" + menuEntry.Title + "\".");  }
 					#endif
 
-					while ((container is MenuEntries.File.FileSource) == false)
+					while ((container is MenuEntries.Files.FileSource) == false)
 						{
 						container = container.Parent;
 
@@ -651,20 +651,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 						#endif
 						}
 
-					MenuEntries.File.Folder folderEntry = (MenuEntries.File.Folder)menuEntry;
-					MenuEntries.File.FileSource fileSourceEntry = (MenuEntries.File.FileSource)container;
+					MenuEntries.Files.Folder folderEntry = (MenuEntries.Files.Folder)menuEntry;
+					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)container;
 
 					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, 
 																													  folderEntry.PathFromFileSource );
 					}
-				else if (menuEntry is MenuEntries.Class.Language)
+				else if (menuEntry is MenuEntries.Classes.Language)
 					{
-					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)menuEntry;
+					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)menuEntry;
 
 					hashPath = htmlBuilder.Class_OutputFolderHashPath( languageEntry.WrappedLanguage,
 																													languageEntry.CondensedScopeString );
 					}
-				else if (menuEntry is MenuEntries.Class.Scope)
+				else if (menuEntry is MenuEntries.Classes.Scope)
 					{
 					MenuEntries.Base.Container container = menuEntry.Parent;
 
@@ -673,7 +673,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + menuEntry.Title + "\".");  }
 					#endif
 
-					while ((container is MenuEntries.Class.Language) == false)
+					while ((container is MenuEntries.Classes.Language) == false)
 						{
 						container = container.Parent;
 
@@ -683,8 +683,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders.Components
 						#endif
 						}
 
-					MenuEntries.Class.Scope scopeEntry = (MenuEntries.Class.Scope)menuEntry;
-					MenuEntries.Class.Language languageEntry = (MenuEntries.Class.Language)container;
+					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)menuEntry;
+					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)container;
 
 					hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
 					}

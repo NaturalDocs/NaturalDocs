@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.File.File
+ * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes.Class
  * ____________________________________________________________________________
  * 
- * Represents a file in <Menu>.
+ * Represents a class in <Menu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -13,40 +13,40 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
+namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes
 	{
-	public class File : Base.Target
+	public class Class : Base.Target
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		/* Function: File
+		/* Function: Class
 		 */
-		public File (Files.File file) : base ()
+		public Class (Symbols.ClassString classString) : base ()
 			{
-			this.file = file;
-			this.Title = file.FileName.NameWithoutPath;
+			this.classString = classString;
+			this.Title = classString.Symbol.LastSegment;
 			}
 
 
 		// Group: Properties
 		// __________________________________________________________________________
 
-		/* Property: WrappedFile
-		 * The <Files.File> associated with this entry.
+		/* Property: WrappedClassString
+		 * The <Symbols.ClassString> associated with this entry.
 		 */
-		public Files.File WrappedFile
+		public Symbols.ClassString WrappedClassString
 			{
 			get
-				{  return file;  }
+				{  return classString;  }
 			}
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Files.File file;
+		protected Symbols.ClassString classString;
 
 		}
 	}

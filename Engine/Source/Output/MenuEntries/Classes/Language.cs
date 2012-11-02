@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Class.Language
+ * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes.Language
  * ____________________________________________________________________________
  * 
  * A container that represents a language in <Menu>.
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Class
+namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes
 	{
 	public class Language : Base.Container
 		{

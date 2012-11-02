@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.File.Folder
+ * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Files.Folder
  * ____________________________________________________________________________
  * 
  * Represents a folder or group of folders in a <Menu>.  It will only represent a group of folders
@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.File
+namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Files
 	{
 	public class Folder : Base.Container
 		{
