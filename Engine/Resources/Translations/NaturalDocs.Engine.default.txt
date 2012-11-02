@@ -348,7 +348,6 @@ Topics.txt.TagsCannotContain(char): Tags cannot contain the {0} character.
 Topics.txt.TopicTypeAlreadyExists(name): The topic type "{0}" already exists.  Use Alter Topic Type or choose a different name.
 Topics.txt.AlteredTopicTypeDoesntExist(name): The topic type you are trying to alter, "{0}", doesn't exist.
 Topics.txt.IndexWithTopicTypeDoesntExist(name): The topic type you are trying to index with, "{0}", doesn't exist.
-Topics.txt.CanChangeToTopicTypeDoesntExist(name): The topic type "{0}" doesn't exist.
 Topics.txt.NoMoreThanTwoKeywordsOnALine: There cannot be more than two keywords on a line.  The first is singular, the second is plural.
 Topics.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a line.
 Topics.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used after a Topic Type or Alter Topic Type keyword.
@@ -470,12 +469,6 @@ Topics.txt.SystemTopicTypesReference.multiline {{{
 # List Position: [number]
 #    A number representing where this topic type should appear relative to the
 #    other types in a list, such as in HTML summaries.
-#
-# Can Change To: [topic type], [topic type] ...
-#    Lets Natural Docs change the topic type if you use a keyword from this
-#    one but Natural Docs thinks it should be a different one on the list.
-#    This is what lets you document constructors with function keywords, for
-#    example.  Only works with full language support and the built in types.
 #
 # Keywords:
 #    [keyword]

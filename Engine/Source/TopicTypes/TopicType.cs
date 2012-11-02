@@ -91,7 +91,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			variableType = false;
 			breakLists = false;
 			listPosition = 0;
-			canChangeTo = null;
 			flags = 0;
 			}
 			
@@ -250,40 +249,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			set
 				{  listPosition = value;  }
 			}
-			
-		/* Property: CanChangeToArray
-		 * An array of topic type IDs that this one can be changed to, or null if none.
-		 */
-		public int[] CanChangeToArray
-			{
-			get
-				{  return canChangeTo;  }
-			set
-				{
-				if (value != null && value.Length > 0)
-					{  canChangeTo = value;  }
-				else
-					{  canChangeTo = null;  }
-				}
-			}
-			
-		/* Function: CanChangeTo
-		 * Returns whether this topic type can be changed to the passed ID.
-		 */
-		public bool CanChangeTo (int id)
-			{
-			if (canChangeTo == null)
-				{  return false;  }
-				
-			foreach (int canChangeToID in canChangeTo)
-				{
-				if (id == canChangeToID)
-					{  return true;  }
-				}
-				
-			return false;
-			}
-			
+
 			
 		
 		// Group: Flags
@@ -367,44 +333,19 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			else
 				{
 				// Deliberately does not include Flags
-				bool result = (type1.ID == type2.ID &&
-									type1.Index == type2.Index &&
-									type1.Scope == type2.Scope &&
-									type1.ClassHierarchy == type2.ClassHierarchy &&
-									type1.VariableType == type2.VariableType &&
-									type1.BreakLists == type2.BreakLists &&
-									type1.ListPosition == type2.ListPosition &&
-									(type1.Index != IndexValue.IndexWith || type1.IndexWith == type2.IndexWith) &&
+				return (type1.ID == type2.ID &&
+							  type1.Index == type2.Index &&
+							  type1.Scope == type2.Scope &&
+							  type1.ClassHierarchy == type2.ClassHierarchy &&
+							  type1.VariableType == type2.VariableType &&
+							  type1.BreakLists == type2.BreakLists &&
+							  type1.ListPosition == type2.ListPosition &&
+							  (type1.Index != IndexValue.IndexWith || type1.IndexWith == type2.IndexWith) &&
 
-									type1.Name == type2.Name &&
-									type1.DisplayName == type2.DisplayName &&
-									type1.PluralDisplayName == type2.PluralDisplayName &&
-									type1.SimpleIdentifier == type2.SimpleIdentifier);
-									
-				if (result == true)
-					{
-					if (type1.CanChangeToArray == null && type2.CanChangeToArray == null)
-						{  result = true;  }
-					else if (type1.CanChangeToArray == null || type2.CanChangeToArray == null)
-						{  result = false;  }
-					else if (type1.CanChangeToArray.Length != type2.CanChangeToArray.Length)
-						{  result = false;  }
-					else
-						{
-						foreach (int id in type1.CanChangeToArray)
-							{
-							if (type2.CanChangeTo(id) == false)
-								{  
-								result = false;
-								break; 
-								}
-							}
-							
-						result = true;
-						}
-					}
-					
-				return result;
+							  type1.Name == type2.Name &&
+							  type1.DisplayName == type2.DisplayName &&
+							  type1.PluralDisplayName == type2.PluralDisplayName &&
+							  type1.SimpleIdentifier == type2.SimpleIdentifier);
 				}
 			}
 			
@@ -500,12 +441,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * it was not set.  <ListPosition> will always return a value though.
 		 */
 		protected int listPosition;
-		
-		/* var: canChangeTo
-		 * An array of the topic type IDs this type can change to, or null if none.
-		 */
-		protected int[] canChangeTo;
-		
+			
 		/* var: flags
 		 * A combination of <FlagValues> describing the type.
 		 */

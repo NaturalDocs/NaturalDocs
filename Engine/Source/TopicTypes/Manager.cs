@@ -121,11 +121,6 @@
  *			An integer representing where this topic type should appear relative to other types in a list, such as in HTML 
  *			summaries.
  *			
- *			> Can Change To: [topic type], [topic type] ...
- *			
- *			A list of topic types this one can be changed to if Natural Docs thinks that's what you're really documenting.  This is what
- *			lets you document constructors with function keywords, for example.
- *			
  *			> [Add] Keyword[s]:
  *			>    [keyword]
  *			>    [keyword], [plural keyword]
@@ -158,7 +153,7 @@
  *		2.0:
  *		
  *			- Added Display Name, Plural Display Name, synonyms, and their "from Locale" variants.
- *			- Added Variable Type, Simple Identifier, Can Change To, and List Position.
+ *			- Added Variable Type, Simple Identifier, and List Position.
  *			- All values now support Unicode characters, except for Simple Identifier.
  *			- Can Group With and Page Title if First are deprecated.
  *			- Added "with [topic type]" value to Index property.
@@ -203,7 +198,6 @@
  *			> [String: Plural Display Name]
  *			> [String: Simple Identifier]
  *			> [Int32: List Position]
- *			> [Int32: Can Change To ID] [] ... [Int32: 0]
  *			> [Byte: Flags]
  *			> [Int32: Index With ID]?
  *			
@@ -965,34 +959,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			if (configFileTopicType.ListPosition != null)
 				{  topicType.ListPosition = (int)configFileTopicType.ListPosition;  }
 				
-			if (configFileTopicType.CanChangeToArray != null)
-				{
-				int[] canChangeToIDs = new int[ configFileTopicType.CanChangeToArray.Length ];
-				
-				for (int i = 0; i < configFileTopicType.CanChangeToArray.Length; i++)
-					{
-					TopicType changeTopicType = topicTypes[ configFileTopicType.CanChangeToArray[i] ];
-
-					if (changeTopicType == null)
-						{
-						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.CanChangeToTopicTypeDoesntExist(name)", 
-											configFileTopicType.CanChangeToArray[i]),
-							sourceFile, configFileTopicType.LineNumber 
-							);
-							
-						canChangeToIDs[i] = 0;
-						success = false;
-						}
-					else
-						{
-						canChangeToIDs[i] = changeTopicType.ID;
-						}
-					}
-					
-				topicType.CanChangeToArray = canChangeToIDs;
-				}
-				
 				
 			// Keywords
 			
@@ -1037,17 +1003,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					{
 					configFileTopicTypes[i].IndexWith = topicTypes[ configFileTopicTypes[i].IndexWith ].Name;
 					}
-					
-				if (configFileTopicTypes[i].CanChangeToArray != null)
-					{
-					for (int n = 0; n < configFileTopicTypes[i].CanChangeToArray.Length; n++)
-						{
-						configFileTopicTypes[i].CanChangeToArray[n] = topicTypes[ configFileTopicTypes[i].CanChangeToArray[n] ].Name;
-						}
-					}
 				}
 			}
-
 
 
 		/* Function: FromKeyword
@@ -1708,23 +1665,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						
 
 
-					// 
-					// Can Change To
-					//
-					
-					else if (identifier == "can change to")
-						{
-						if (currentTopicType == null)
-							{  LoadFile_NeedsTopicTypeError(file, identifier);  }
-						else
-							{
-							string[] topicTypeNamesArray = commaSeparatorRegex.Split(value);
-							currentTopicType.CanChangeToArray = topicTypeNamesArray;
-							}
-						}
-						
-
-
 					//
 					// Keywords
 					//
@@ -1811,7 +1751,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Function: SaveFile
-		 * List<string>
+		 * 
 		 * Saves the passed information into a configuration file if it's different from the one on disk.
 		 * 
 		 * Parameters:
@@ -2015,13 +1955,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					output.AppendLine("   List Position: " + (int)topicType.ListPosition);
 					}
 					
-				if (topicType.CanChangeToArray != null)
-					{
-					SaveFile_LineBreakOnGroupChange(2, ref oldGroupNumber, output);
-
-					output.AppendLine("   Can Change To: " + String.Join(", ", topicType.CanChangeToArray));
-					}
-					
 				if (topicType.Keywords.Count != 0)
 					{
 					SaveFile_LineBreakOnGroupChange(3, ref oldGroupNumber, output);
@@ -2127,7 +2060,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					// [String: Plural Display Name]
 					// [String: Simple Identifier]
 					// [Int32: List Position]
-					// [Int32: Can Change To ID] [] ... [Int32: 0]
 					// [Byte: Flags]
 					// [Int32: Index With ID]?
 					// ...
@@ -2145,21 +2077,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						topicType.PluralDisplayName = file.ReadString();
 						topicType.SimpleIdentifier = file.ReadString();
 						topicType.ListPosition = file.ReadInt32();
-						
-						int canChangeToID = file.ReadInt32();
-						if (canChangeToID != 0)
-							{
-							List<int> canChangeTo = new List<int>();
-							
-							do
-								{
-								canChangeTo.Add(canChangeToID);
-								canChangeToID = file.ReadInt32();
-								}
-							while (canChangeToID != 0);
-							
-							topicType.CanChangeToArray = canChangeTo.ToArray();
-							}
 						
 						BinaryFileTopicTypeFlags flags = (BinaryFileTopicTypeFlags)file.ReadByte();
 						BinaryFileTopicTypeFlags indexFlags = flags & BinaryFileTopicTypeFlags.IndexMask;
@@ -2314,7 +2231,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				// [String: Plural Display Name]
 				// [String: Simple Identifier]
 				// [Int32: List Position]
-				// [Int32: Can Change To ID] [] ... [Int32: 0]
 				// [Byte: Flags]
 				// [Int32: Index With ID]?
 				// ...
@@ -2328,13 +2244,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					file.WriteString( topicType.PluralDisplayName );
 					file.WriteString( topicType.SimpleIdentifier );
 					file.WriteInt32( topicType.ListPosition );
-					
-					if (topicType.CanChangeToArray != null)
-						{
-						foreach (int canChangeToID in topicType.CanChangeToArray)
-							{  file.WriteInt32(canChangeToID);  }
-						}
-					file.WriteInt32(0);
 					
 					BinaryFileTopicTypeFlags flags = 0;
 					
@@ -2417,12 +2326,10 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			}
 			
 
-
 		
 		// Group: Public Static Variables
 		// __________________________________________________________________________
-
-
+		
 
 		/* var: BannedKeywordChars
 		 * An array containing all the characters that cannot appear in keywords.  Best used with String.IndexOfAny().
@@ -2435,8 +2342,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 */
 		public static string[] RequiredTopicTypes = { "Information", "Group" };
 		
-		
-
 
 	
 		// Group: Variables

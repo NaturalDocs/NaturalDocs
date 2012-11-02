@@ -45,7 +45,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			variableType = null;
 			breakLists = null;
 			listPosition = null;
-			canChangeTo = null;
 			keywords = new List<string>();
 			}
 			
@@ -247,22 +246,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  listPosition = value;  }
 			}
 			
-		/* Property: CanChangeToArray
-		 * A list of topic type names that this one can be changed to, or null if none.
-		 */
-		public string[] CanChangeToArray
-			{
-			get
-				{  return canChangeTo;  }
-			set
-				{
-				if (value != null && value.Length > 0)
-					{  canChangeTo = value;  }
-				else
-					{  canChangeTo = null;  }
-				}
-			}
-			
 		/* Property: Keywords
 		 * An array of keywords this topic type defines.  It will never be null.  The array's values are arranged in pairs, with
 		 * odd ones being the singular form and even ones being the plural.  If there is no plural form for a keyword, it's even
@@ -367,11 +350,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * An integer representing where this topic type should appear relative to other types in a list, or null if it's not defined.
 		 */
 		protected int? listPosition;
-		
-		/* var: canChangeTo
-		 * An array of topic type names this one can be changed to, or null if none.
-		 */
-		protected string[] canChangeTo;
 		
 		/* array: keywords
 		 * An array of keyword pairs.  Odd indexes are singular forms, even are plural.  An even entry will be null if a plural
