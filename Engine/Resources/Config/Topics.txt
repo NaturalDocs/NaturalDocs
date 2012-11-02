@@ -26,7 +26,6 @@ Topic Type: Class
    Scope: Start
    Class Hierarchy: Yes
    Variable Type: Yes
-   List Position: 1100
 
    Keywords:
       class, classes
@@ -42,7 +41,6 @@ Topic Type: Interface
    Index: with Class
    Scope: Start
    Class Hierarchy: Yes
-   List Position: 1200
 
    Keywords:
       interface, interfaces
@@ -57,7 +55,6 @@ Topic Type: Struct
    Scope: Start
    Class Hierarchy: Yes
    Variable Type: Yes
-   List Position: 1300
 
    Keywords:
       struct, structs
@@ -71,7 +68,6 @@ Topic Type: Section
 
    Index: No
    Scope: End
-   List Position: 2100
 
    Keywords:
       section
@@ -84,7 +80,6 @@ Topic Type: Group
    Plural Display Name from Locale: Topics.txt.Group.PluralDisplayName
 
    Index: No
-   List Position: 2200
 
    Keywords:
       group
@@ -96,7 +91,6 @@ Topic Type: Information
    Plural Display Name from Locale: Topics.txt.Information.PluralDisplayName
 
    Index: No
-   List Position: 3100
 
    Keywords:
       topic, topics
@@ -109,7 +103,6 @@ Topic Type: File
    Plural Display Name from Locale: Topics.txt.File.PluralDisplayName
 
    Scope: Always Global
-   List Position: 3200
 
    Keywords:
       file, files
@@ -126,7 +119,6 @@ Topic Type: Type
    Plural Display Name from Locale: Topics.txt.Type.PluralDisplayName
 
    Variable Type: Yes
-   List Position: 4100
 
    Keywords:
       type, types
@@ -140,7 +132,6 @@ Topic Type: Enumeration
 
    Index: with Type
    Variable Type: Yes
-   List Position: 4200
 
    Keywords:
       enum, enums
@@ -154,7 +145,6 @@ Topic Type: Delegate
 
    Index: with Type
    Variable Type: Yes
-   List Position: 4300
 
    Keywords:
       delegate, delegates
@@ -166,7 +156,6 @@ Topic Type: Function
    Plural Display Name from Locale: Topics.txt.Function.PluralDisplayName
 
    Break Lists: Yes
-   List Position: 4700
 
    Keywords:
       function, functions
@@ -189,7 +178,6 @@ Topic Type: Operator
 
    Index: with Function
    Break Lists: Yes
-   List Position: 4800
 
    Keywords:
       operator, operators
@@ -199,8 +187,6 @@ Topic Type: Macro
 
    Display Name from Locale: Topics.txt.Macro.DisplayName
    Plural Display Name from Locale: Topics.txt.Macro.PluralDisplayName
-
-   List Position: 4900
 
    Keywords:
       define, defines
@@ -214,7 +200,6 @@ Topic Type: Property
    Plural Display Name from Locale: Topics.txt.Property.PluralDisplayName
 
    Index: with Function
-   List Position: 5000
 
    Keywords:
       property, properties
@@ -226,8 +211,6 @@ Topic Type: Event
    Display Name from Locale: Topics.txt.Event.DisplayName
    Plural Display Name from Locale: Topics.txt.Event.PluralDisplayName
 
-   List Position: 5100
-
    Keywords:
       event, events
 
@@ -236,8 +219,6 @@ Topic Type: Constant
 
    Display Name from Locale: Topics.txt.Constant.DisplayName
    Plural Display Name from Locale: Topics.txt.Constant.PluralDisplayName
-
-   List Position: 5200
 
    Keywords:
       constant, constants
@@ -250,7 +231,6 @@ Topic Type: Variable
    Plural Display Name from Locale: Topics.txt.Variable.PluralDisplayName
 
    Variable Type: No
-   List Position: 5300
 
    Keywords:
       variable, variables
@@ -302,8 +282,6 @@ Topic Type: Database
    Display Name from Locale: Topics.txt.Database.DisplayName
    Plural Display Name from Locale: Topics.txt.Database.PluralDisplayName
 
-   List Position: 6100
-
    Keywords:
       database, databases
       db, dbs
@@ -315,7 +293,6 @@ Topic Type: Database Table
    Plural Display Name from Locale: Topics.txt.DatabaseTable.PluralDisplayName
 
    Scope: Start
-   List Position: 6200
 
    Keywords:
       table, tables
@@ -329,8 +306,6 @@ Topic Type: Database Field
 
    Display Name from Locale: Topics.txt.DatabaseField.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseField.PluralDisplayName
-
-   List Position: 6300
 
    Keywords:
       database field, database fields
@@ -350,7 +325,6 @@ Topic Type: Database View
    Plural Display Name from Locale: Topics.txt.DatabaseView.PluralDisplayName
 
    Scope: Start
-   List Position: 6400
 
    Keywords:
       view, views
@@ -364,8 +338,6 @@ Topic Type: Database Index
 
    Display Name from Locale: Topics.txt.DatabaseIndex.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseIndex.PluralDisplayName
-
-   List Position: 6500
 
    Keywords:
       index, indexes
@@ -396,8 +368,6 @@ Topic Type: Database Cursor
    Display Name from Locale: Topics.txt.DatabaseCursor.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseCursor.PluralDisplayName
 
-   List Position: 6600
-
    Keywords:
       cursor, cursors
       database cursor, database cursors
@@ -410,8 +380,6 @@ Topic Type: Database Trigger
 
    Display Name from Locale: Topics.txt.DatabaseTrigger.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseTrigger.PluralDisplayName
-
-   List Position: 6700
 
    Keywords:
       trigger, triggers
@@ -471,10 +439,6 @@ Topic Type: Database Trigger
 # Break Lists: [yes|no]
 #    Whether list topics should be broken into individual topics in the
 #    output.  Defaults to no.
-#
-# List Position: [number]
-#    A number representing where this topic type should appear relative to the
-#    other types in a list, such as in HTML summaries.
 #
 # Keywords:
 #    [keyword]

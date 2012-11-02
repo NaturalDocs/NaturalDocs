@@ -90,7 +90,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			classHierarchy = false;
 			variableType = false;
 			breakLists = false;
-			listPosition = 0;
 			flags = 0;
 			}
 			
@@ -234,22 +233,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  breakLists = value;  }
 			}
 			
-		/* Property: ListPosition
-		 * An integer representing where this topic type should appear relative to other types in a list.
-		 */
-		public int ListPosition
-			{
-			get
-				{
-				if (listPosition != 0)
-					{  return listPosition;  }
-				else
-					{  return ID + 1000000;  }
-				}
-			set
-				{  listPosition = value;  }
-			}
-
 			
 		
 		// Group: Flags
@@ -339,7 +322,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 							  type1.ClassHierarchy == type2.ClassHierarchy &&
 							  type1.VariableType == type2.VariableType &&
 							  type1.BreakLists == type2.BreakLists &&
-							  type1.ListPosition == type2.ListPosition &&
 							  (type1.Index != IndexValue.IndexWith || type1.IndexWith == type2.IndexWith) &&
 
 							  type1.Name == type2.Name &&
@@ -436,12 +418,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 */
 		protected bool breakLists;
 		
-		/* var: listPosition
-		 * An integer representing where this topic type should appear relative to other types in a list.  May be zero to indicate that
-		 * it was not set.  <ListPosition> will always return a value though.
-		 */
-		protected int listPosition;
-			
 		/* var: flags
 		 * A combination of <FlagValues> describing the type.
 		 */

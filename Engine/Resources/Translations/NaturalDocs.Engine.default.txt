@@ -358,7 +358,6 @@ Topics.txt.RequiredTopicTypeNotDefined(name): The topic type "{0}" must be defin
 Topics.txt.RequiredTopicTypesNotDefined(names): The following topic types must be defined: {0}.
 Topics.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
-Topics.txt.InvalidListPositionValue(value): The list position must be a number between one and one billion.
 
 Topics.txt.SystemHeader.multiline {{{
 # This is the main Natural Docs topics file.  If you change anything here, it
@@ -466,10 +465,6 @@ Topics.txt.SystemTopicTypesReference.multiline {{{
 #    Whether list topics should be broken into individual topics in the
 #    output.  Defaults to no.
 #
-# List Position: [number]
-#    A number representing where this topic type should appear relative to the
-#    other types in a list, such as in HTML summaries.
-#
 # Keywords:
 #    [keyword]
 #    [keyword], [plural keyword]
@@ -522,10 +517,6 @@ Topics.txt.ProjectTopicTypesReference.multiline {{{
 # Break Lists: [yes|no]
 #    Whether list topics should be broken into individual topics in the
 #    output.  Defaults to no.
-#
-# List Position: [number]
-#    A number representing where this topic type should appear relative to the
-#    other types in a list, such as in HTML summaries.
 #
 # Keywords:
 #    [keyword]

@@ -44,7 +44,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			classHierarchy = null;
 			variableType = null;
 			breakLists = null;
-			listPosition = null;
 			keywords = new List<string>();
 			}
 			
@@ -235,17 +234,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  breakLists = value;  }
 			}
 			
-		/* Property: ListPosition
-		 * An integer representing where this topic type should appear relative to other types in a list, or null if it's not defined.
-		 */
-		public int? ListPosition
-			{
-			get
-				{  return listPosition;  }
-			set
-				{  listPosition = value;  }
-			}
-			
 		/* Property: Keywords
 		 * An array of keywords this topic type defines.  It will never be null.  The array's values are arranged in pairs, with
 		 * odd ones being the singular form and even ones being the plural.  If there is no plural form for a keyword, it's even
@@ -345,11 +333,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * Whether lists topics should be broken into individual ones, or null if it is not defined.
 		 */
 		protected bool? breakLists;
-		
-		/* var: listPosition
-		 * An integer representing where this topic type should appear relative to other types in a list, or null if it's not defined.
-		 */
-		protected int? listPosition;
 		
 		/* array: keywords
 		 * An array of keyword pairs.  Odd indexes are singular forms, even are plural.  An even entry will be null if a plural

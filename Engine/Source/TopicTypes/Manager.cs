@@ -116,11 +116,6 @@
  *			
  *			Whether list topics should be broken into individual topics in the output.  Defaults to no.
  *			
- *			> List Position: [number]
- *			
- *			An integer representing where this topic type should appear relative to other types in a list, such as in HTML 
- *			summaries.
- *			
  *			> [Add] Keyword[s]:
  *			>    [keyword]
  *			>    [keyword], [plural keyword]
@@ -153,7 +148,7 @@
  *		2.0:
  *		
  *			- Added Display Name, Plural Display Name, synonyms, and their "from Locale" variants.
- *			- Added Variable Type, Simple Identifier, and List Position.
+ *			- Added Variable Type and Simple Identifier.
  *			- All values now support Unicode characters, except for Simple Identifier.
  *			- Can Group With and Page Title if First are deprecated.
  *			- Added "with [topic type]" value to Index property.
@@ -197,7 +192,6 @@
  *			> [String: Display Name]
  *			> [String: Plural Display Name]
  *			> [String: Simple Identifier]
- *			> [Int32: List Position]
  *			> [Byte: Flags]
  *			> [Int32: Index With ID]?
  *			
@@ -956,8 +950,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  topicType.VariableType = (bool)configFileTopicType.VariableType;  }
 			if (configFileTopicType.BreakLists != null)
 				{  topicType.BreakLists = (bool)configFileTopicType.BreakLists;  }
-			if (configFileTopicType.ListPosition != null)
-				{  topicType.ListPosition = (int)configFileTopicType.ListPosition;  }
 				
 				
 			// Keywords
@@ -1637,34 +1629,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						
 						
 						
-					// 
-					// List Position
-					//
-					
-					else if (identifier == "list position")
-						{
-						if (currentTopicType == null)
-							{  LoadFile_NeedsTopicTypeError(file, identifier);  }
-						else
-							{
-							int listPosition = 0;
-
-							if (Int32.TryParse(value, out listPosition) == false ||
-								listPosition < 1 || listPosition > 1000000000)
-								{
-								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.InvalidListPositionValue(value)", value)
-									);
-								}
-							else
-								{
-								currentTopicType.ListPosition = listPosition;
-								}
-							}
-						}
-						
-
-
 					//
 					// Keywords
 					//
@@ -1948,13 +1912,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						{  output.AppendLine("No");  }
 					}
 					
-				if (topicType.ListPosition != null)
-					{
-					SaveFile_LineBreakOnGroupChange(2, ref oldGroupNumber, output);
-
-					output.AppendLine("   List Position: " + (int)topicType.ListPosition);
-					}
-					
 				if (topicType.Keywords.Count != 0)
 					{
 					SaveFile_LineBreakOnGroupChange(3, ref oldGroupNumber, output);
@@ -2059,7 +2016,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					// [String: Display Name]
 					// [String: Plural Display Name]
 					// [String: Simple Identifier]
-					// [Int32: List Position]
 					// [Byte: Flags]
 					// [Int32: Index With ID]?
 					// ...
@@ -2076,7 +2032,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						topicType.DisplayName = file.ReadString();
 						topicType.PluralDisplayName = file.ReadString();
 						topicType.SimpleIdentifier = file.ReadString();
-						topicType.ListPosition = file.ReadInt32();
 						
 						BinaryFileTopicTypeFlags flags = (BinaryFileTopicTypeFlags)file.ReadByte();
 						BinaryFileTopicTypeFlags indexFlags = flags & BinaryFileTopicTypeFlags.IndexMask;
@@ -2230,7 +2185,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				// [String: Display Name]
 				// [String: Plural Display Name]
 				// [String: Simple Identifier]
-				// [Int32: List Position]
 				// [Byte: Flags]
 				// [Int32: Index With ID]?
 				// ...
@@ -2243,7 +2197,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					file.WriteString( topicType.DisplayName );
 					file.WriteString( topicType.PluralDisplayName );
 					file.WriteString( topicType.SimpleIdentifier );
-					file.WriteInt32( topicType.ListPosition );
 					
 					BinaryFileTopicTypeFlags flags = 0;
 					
