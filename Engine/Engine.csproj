@@ -194,6 +194,7 @@
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
     <Compile Include="Source\TopicTypes\ConfigFileTopicType.cs" />
+    <Compile Include="Source\TopicTypes\TopicTypeFlags.cs" />
     <Compile Include="Source\TopicTypes\Manager.cs" />
     <Compile Include="Source\TopicTypes\Tag.cs" />
     <Compile Include="Source\TopicTypes\TopicType.cs" />

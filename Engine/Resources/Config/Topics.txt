@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 09-16-2012)
+﻿Format: 2.0 (Development Release 11-04-2012)
 
 # This is the main Natural Docs topics file.  If you change anything here, it
 # will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
@@ -24,8 +24,7 @@ Topic Type: Class
    Plural Display Name from Locale: Topics.txt.Class.PluralDisplayName
 
    Scope: Start
-   Class Hierarchy: Yes
-   Variable Type: Yes
+   Flags: Code, Variable Type, Class Hierarchy
 
    Keywords:
       class, classes
@@ -40,7 +39,7 @@ Topic Type: Interface
 
    Index: with Class
    Scope: Start
-   Class Hierarchy: Yes
+   Flags: Code, Variable Type, Class Hierarchy
 
    Keywords:
       interface, interfaces
@@ -53,8 +52,7 @@ Topic Type: Struct
 
    Index: with Class
    Scope: Start
-   Class Hierarchy: Yes
-   Variable Type: Yes
+   Flags: Code, Variable Type, Class Hierarchy
 
    Keywords:
       struct, structs
@@ -68,6 +66,7 @@ Topic Type: Section
 
    Index: No
    Scope: End
+   Flags: Documentation
 
    Keywords:
       section
@@ -80,6 +79,7 @@ Topic Type: Group
    Plural Display Name from Locale: Topics.txt.Group.PluralDisplayName
 
    Index: No
+   Flags: Documentation
 
    Keywords:
       group
@@ -91,6 +91,7 @@ Topic Type: Information
    Plural Display Name from Locale: Topics.txt.Information.PluralDisplayName
 
    Index: No
+   Flags: Documentation
 
    Keywords:
       topic, topics
@@ -103,6 +104,7 @@ Topic Type: File
    Plural Display Name from Locale: Topics.txt.File.PluralDisplayName
 
    Scope: Always Global
+   Flags: File
 
    Keywords:
       file, files
@@ -118,7 +120,7 @@ Topic Type: Type
    Display Name from Locale: Topics.txt.Type.DisplayName
    Plural Display Name from Locale: Topics.txt.Type.PluralDisplayName
 
-   Variable Type: Yes
+   Flags: Code, Variable Type
 
    Keywords:
       type, types
@@ -131,7 +133,7 @@ Topic Type: Enumeration
    Plural Display Name from Locale: Topics.txt.Enumeration.PluralDisplayName
 
    Index: with Type
-   Variable Type: Yes
+   Flags: Code, Variable Type, Enum
 
    Keywords:
       enum, enums
@@ -144,7 +146,7 @@ Topic Type: Delegate
    Plural Display Name from Locale: Topics.txt.Delegate.PluralDisplayName
 
    Index: with Type
-   Variable Type: Yes
+   Flags: Code, Variable Type
 
    Keywords:
       delegate, delegates
@@ -155,6 +157,7 @@ Topic Type: Function
    Display Name from Locale: Topics.txt.Function.DisplayName
    Plural Display Name from Locale: Topics.txt.Function.PluralDisplayName
 
+   Flags: Code
    Break Lists: Yes
 
    Keywords:
@@ -177,6 +180,7 @@ Topic Type: Operator
    Plural Display Name from Locale: Topics.txt.Operator.PluralDisplayName
 
    Index: with Function
+   Flags: Code
    Break Lists: Yes
 
    Keywords:
@@ -187,6 +191,8 @@ Topic Type: Macro
 
    Display Name from Locale: Topics.txt.Macro.DisplayName
    Plural Display Name from Locale: Topics.txt.Macro.PluralDisplayName
+
+   Flags: Code
 
    Keywords:
       define, defines
@@ -200,6 +206,7 @@ Topic Type: Property
    Plural Display Name from Locale: Topics.txt.Property.PluralDisplayName
 
    Index: with Function
+   Flags: Code
 
    Keywords:
       property, properties
@@ -211,6 +218,8 @@ Topic Type: Event
    Display Name from Locale: Topics.txt.Event.DisplayName
    Plural Display Name from Locale: Topics.txt.Event.PluralDisplayName
 
+   Flags: Code
+
    Keywords:
       event, events
 
@@ -219,6 +228,8 @@ Topic Type: Constant
 
    Display Name from Locale: Topics.txt.Constant.DisplayName
    Plural Display Name from Locale: Topics.txt.Constant.PluralDisplayName
+
+   Flags: Code
 
    Keywords:
       constant, constants
@@ -230,7 +241,7 @@ Topic Type: Variable
    Display Name from Locale: Topics.txt.Variable.DisplayName
    Plural Display Name from Locale: Topics.txt.Variable.PluralDisplayName
 
-   Variable Type: No
+   Flags: Code
 
    Keywords:
       variable, variables
@@ -282,6 +293,9 @@ Topic Type: Database
    Display Name from Locale: Topics.txt.Database.DisplayName
    Plural Display Name from Locale: Topics.txt.Database.PluralDisplayName
 
+   Scope: Start
+   Flags: Code, Database Hierarchy
+
    Keywords:
       database, databases
       db, dbs
@@ -293,6 +307,7 @@ Topic Type: Database Table
    Plural Display Name from Locale: Topics.txt.DatabaseTable.PluralDisplayName
 
    Scope: Start
+   Flags: Code, Database Hierarchy
 
    Keywords:
       table, tables
@@ -306,6 +321,8 @@ Topic Type: Database Field
 
    Display Name from Locale: Topics.txt.DatabaseField.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseField.PluralDisplayName
+
+   Flags: Code
 
    Keywords:
       database field, database fields
@@ -325,6 +342,7 @@ Topic Type: Database View
    Plural Display Name from Locale: Topics.txt.DatabaseView.PluralDisplayName
 
    Scope: Start
+   Flags: Code, Database Hierarchy
 
    Keywords:
       view, views
@@ -338,6 +356,8 @@ Topic Type: Database Index
 
    Display Name from Locale: Topics.txt.DatabaseIndex.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseIndex.PluralDisplayName
+
+   Flags: Code
 
    Keywords:
       index, indexes
@@ -368,6 +388,8 @@ Topic Type: Database Cursor
    Display Name from Locale: Topics.txt.DatabaseCursor.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseCursor.PluralDisplayName
 
+   Flags: Code
+
    Keywords:
       cursor, cursors
       database cursor, database cursors
@@ -380,6 +402,8 @@ Topic Type: Database Trigger
 
    Display Name from Locale: Topics.txt.DatabaseTrigger.DisplayName
    Plural Display Name from Locale: Topics.txt.DatabaseTrigger.PluralDisplayName
+
+   Flags: Code
 
    Keywords:
       trigger, triggers
@@ -422,23 +446,27 @@ Topic Type: Database Trigger
 #
 # Scope: [normal|start|end|always global]
 #    How the topic affects scope.  Defaults to normal.
-#    normal - The topic stays within the current scope.
-#    start - The topic starts a new scope for all the topics beneath it, like
-#            class topics.
-#    end - The topic resets the scope back to global for all the topics
-#          beneath it, like section topics.
+#    normal        - The topic stays within the current scope.
+#    start         - The topic starts a new scope for all the topics beneath
+#                    it, like class topics.
+#    end           - The topic resets the scope back to global for all the
+#                    topics beneath it, like section topics.
 #    always global - The topic is defined as a global symbol, but does not
 #                    change the scope for any other topics.
 #
-# Class Hierarchy: [yes|no]
-#    Whether the topic is part of the class hierarchy.  Defaults to no.
-#
-# Variable Type: [yes|no]
-#    Whether the topic can be used as a variable type.  Defaults to no.
-#
-# Break Lists: [yes|no]
-#    Whether list topics should be broken into individual topics in the
-#    output.  Defaults to no.
+# Flags: [flag], [flag], ...
+#    A combination of settings that apply to the topic type.
+#    Code, File, or Documentation
+#        Whether it's used to describe a code element, a file, or is a
+#        standalone documentation comment.  Defaults to Code.
+#    Variable Type
+#        Whether it describes a code element that can be used as a variable's
+#        type.
+#    Class Hierarchy or Database Hierarchy
+#        Whether it describes a code element that should be included in the
+#        class or database hierarchy.  Requires Scope: Start.
+#    Enum
+#        Whether it describes an enum.
 #
 # Keywords:
 #    [keyword]

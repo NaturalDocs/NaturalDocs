@@ -104,13 +104,16 @@
  *			end - The topic resets the scope back to global for all the topics beneath it, like section topics.
  *			always global - The topic is defined as a global symbol, but does not change the scope for any other topics.
  *			
- *			> Class Hierarchy: [yes|no]
+ *			> Flags: [flag], [flag], ...
  *			
- *			Whether the topic is part of the class hierarchy.  Defaults to no.
+ *			Various flags that can be applied to the topic type.
  *			
- *			> Variable Type: [yes|no]
- *			
- *			Whether the topic can be used as a variable type.  Defaults to no.
+ *			Code, File, Documentation - Whether it's used to describe a code element, a file, or is a standalone documentation 
+ *																  comment.  Defaults to Code.
+ *			Variable Type - Whether it describes a code element that can be used as a variable's type.
+ *			Class Hierarchy, Database Hierarchy - Whether it describes a code element that should be included in the class or 
+ *																						database hierarchy.  Requires Scope: Start.
+ *			Enum - Whether it describes an enum.
  *			
  *			> Break List[s]: [yes|no]
  *			
@@ -142,15 +145,20 @@
  *			
  *			Whether the title of this topic becomes the page title if it is the first topic in a file.  Defaults to no.
  *			
+ *			> Class Hierarchy: [yes|no]
+ *			
+ *			No longer its own setting, this will be converted into the Flags value.
+ *			
  * 
  *		Revisions:
  * 
  *		2.0:
  *		
  *			- Added Display Name, Plural Display Name, synonyms, and their "from Locale" variants.
- *			- Added Variable Type and Simple Identifier.
+ *			- Added Simple Identifier and Flags.
  *			- All values now support Unicode characters, except for Simple Identifier.
  *			- Can Group With and Page Title if First are deprecated.
+ *			- Class Hierarchy is deprecated but will be converted into Flags.
  *			- Added "with [topic type]" value to Index property.
  *			- Replaced "Generic" as the default topic type with "Information".
  *			- Added Tags.
@@ -192,15 +200,18 @@
  *			> [String: Display Name]
  *			> [String: Plural Display Name]
  *			> [String: Simple Identifier]
- *			> [Byte: Flags]
+ *			> [Byte: Index]
  *			> [Int32: Index With ID]?
+ *			> [Byte: Scope]
+ *			> [Byte: Break Lists]
+ *			> [UInt16: Flags]
  *			
  *			The attributes include strings for the display and plural display names.  These are the computed strings, so if they
  *			weren't defined they'll still be here via whatever inheritance rules are in play.  If it's defined by the locale, it's the 
  *			resulting string that was retrieved from it.
  *			
- *			The flags are managed by <BinaryFileTopicTypeFlags>.  IndexWithID is the identifier of the topic type to index with and
- *			is only present if <BinaryFileTopicTypeFlags.IndexWith> is set.
+ *			IndexWithID is the identifier of the topic type to index with and is only present if Index is set to 
+ *			<TopicTypes.IndexValue.IndexWith>.
  *			
  *			> [String: Singular Keyword]
  *			> [Int32: Topic Type ID]
@@ -246,51 +257,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 	public class Manager
 		{
 		
-		// Group: Types
-		// __________________________________________________________________________
-		
-		
-		/* Enum: BinaryFileTopicTypeFlags
-		 * 
-		 * A number of bit flags encoding topic type attributes in <Topics.nd>.
-		 * 
-		 * IndexMask - Apply this mask to test against the index flags, since there are more than two values.
-		 * 
-		 * IndexYes - The type is indexed.
-		 * IndexNo - The type is not indexed.
-		 * IndexWith - The type is indexed with another type.
-		 * 
-		 * ScopeMask - Apply this mask to test against the scope flags, since there are more than two values.
-		 * 
-		 * ScopeNormal - The scope is normal.
-		 * ScopeStart - The type starts scope.
-		 * ScopeEnd - The type ends scope.
-		 * ScopeAlwaysGlobal - The type is global without affecting scope.
-		 * 
-		 * ClassHierarchy - If set, the type is part of the class hierarchy.
-		 * VariableType - If set, the type can be used as a variable type.
-		 * BreakLists - If set, lists of the type should be broken apart in the output.
-		 */
-		[Flags]
-		enum BinaryFileTopicTypeFlags : byte
-			{
-			IndexMask = 0x03,
-			IndexNo = 0x00,
-			IndexYes = 0x01,
-			IndexWith = 0x02,
-			
-			ScopeMask = 0x0C,
-			ScopeNormal = 0x00,
-			ScopeStart = 0x04,
-			ScopeEnd = 0x08,
-			ScopeAlwaysGlobal = 0x0C,
-			
-			ClassHierarchy = 0x10,
-			VariableType = 0x20,
-			BreakLists = 0x40
-			}
-			
-			
 		// Group: Constants
 		// __________________________________________________________________________
 		
@@ -399,7 +365,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						// not all, and we don't want the unset attributes influenced by the binary versions.
 						TopicType newTopicType = new TopicType(binaryTopicType.Name);
 						newTopicType.ID = binaryTopicType.ID;
-						newTopicType.InBinaryFile = true;
+						newTopicType.Flags.InBinaryFile = true;
 						
 						topicTypes.Add(newTopicType);
 						}
@@ -515,8 +481,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				}
 				
 				
-			// All the topic types have to exist in IDObjects.Manager before the properties are set because Index With and Can 
-			// Change To will need their IDs.  This pass only creates the types that were not already created by the binary file.
+			// All the topic types have to exist in IDObjects.Manager before the properties are set because Index With will need their 
+			// IDs.  This pass only creates the types that were not already created by the binary file.
 			
 			// We don't need to do separate passes for standard entries and alter entries because alter entries should only appear 
 			// in the project file and only apply to types in the system file.  Anything else is either an error (system file can't alter a 
@@ -548,7 +514,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			
 			foreach (TopicType topicType in topicTypes)
 				{
-				if (topicType.InConfigFiles == false)
+				if (topicType.Flags.InConfigFiles == false)
 					{
 					deletedIDs.Add(topicType.ID);
 					changed = true;
@@ -634,7 +600,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 							Path errorMessageFile;
 							List <ConfigFileTopicType> searchList;
 							
-							if (errorMessageTarget.InProjectFile)
+							if (errorMessageTarget.Flags.InProjectFile)
 								{
 								errorMessageFile = projectFile;
 								searchList = projectTopicTypeList;
@@ -844,7 +810,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{
 				// If altering a type that doesn't exist at all, or only exists in the binary files...
 				if ( topicTypes.Contains(configFileTopicType.Name) == false ||
-				     topicTypes[configFileTopicType.Name].InConfigFiles == false )
+				     topicTypes[configFileTopicType.Name].Flags.InConfigFiles == false )
 					{
 					errorList.Add( 
 						Locale.Get("NaturalDocs.Engine", "Topics.txt.AlteredTopicTypeDoesntExist(name)", configFileTopicType.Name),
@@ -860,7 +826,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				// Error if defining a type that already exists in the config files.  Having it exist from the binary file is fine.
 				if (topicTypes.Contains(configFileTopicType.Name))
 					{
-				    if (topicTypes[configFileTopicType.Name].InConfigFiles == true)
+				    if (topicTypes[configFileTopicType.Name].Flags.InConfigFiles == true)
 						{
 						errorList.Add( 
 							Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", configFileTopicType.Name),
@@ -877,9 +843,9 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					}
 					
 				if (isSystemFile)
-					{  topicTypes[configFileTopicType.Name].InSystemFile = true;  }
+					{  topicTypes[configFileTopicType.Name].Flags.InSystemFile = true;  }
 				else
-					{  topicTypes[configFileTopicType.Name].InProjectFile = true;  }
+					{  topicTypes[configFileTopicType.Name].Flags.InProjectFile = true;  }
 				}
 				
 			return true;
@@ -944,10 +910,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				
 			if (configFileTopicType.Scope != null)
 				{  topicType.Scope = (TopicType.ScopeValue)configFileTopicType.Scope;  }
-			if (configFileTopicType.ClassHierarchy != null)
-				{  topicType.ClassHierarchy = (bool)configFileTopicType.ClassHierarchy;  }
-			if (configFileTopicType.VariableType != null)
-				{  topicType.VariableType = (bool)configFileTopicType.VariableType;  }
+			if (configFileTopicType.Flags.AllConfigurationProperties != 0)
+				{  topicType.Flags.AllConfigurationProperties = configFileTopicType.Flags.AllConfigurationProperties;  }
 			if (configFileTopicType.BreakLists != null)
 				{  topicType.BreakLists = (bool)configFileTopicType.BreakLists;  }
 				
@@ -1134,30 +1098,34 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				List<string> currentKeywordList = null;
 				bool inTags = false;
 				
-				Regex.TopicTypes.IgnoreKeywords ignoreKeywordsRegex = new Regex.TopicTypes.IgnoreKeywords();
-				Regex.TopicTypes.AlterTopicType alterTopicTypeRegex = new Regex.TopicTypes.AlterTopicType();
-				Regex.TopicTypes.DisplayName displayNameRegex = new Regex.TopicTypes.DisplayName();
-				Regex.TopicTypes.PluralDisplayName pluralDisplayNameRegex = new Regex.TopicTypes.PluralDisplayName();
-				Regex.TopicTypes.DisplayNameFromLocale displayNameFromLocaleRegex = new Regex.TopicTypes.DisplayNameFromLocale();
-				Regex.TopicTypes.PluralDisplayNameFromLocale pluralDisplayNameFromLocaleRegex = new Regex.TopicTypes.PluralDisplayNameFromLocale();
-				Regex.TopicTypes.ClassHierarchy classHierarchyRegex = new Regex.TopicTypes.ClassHierarchy();
-				Regex.TopicTypes.VariableType variableTypeRegex = new Regex.TopicTypes.VariableType();
-				Regex.TopicTypes.BreakLists breakListsRegex = new Regex.TopicTypes.BreakLists();
-				Regex.TopicTypes.Keywords keywordsRegex = new Regex.TopicTypes.Keywords();
-				Regex.CondensedWhitespaceCommaSeparator commaSeparatorRegex = new Regex.CondensedWhitespaceCommaSeparator();
-				Regex.Config.Yes yesRegex = new Regex.Config.Yes();
-				Regex.Config.No noRegex = new Regex.Config.No();
-				Regex.TopicTypes.ScopeStart startRegex = new Regex.TopicTypes.ScopeStart();
-				Regex.TopicTypes.ScopeEnd endRegex = new Regex.TopicTypes.ScopeEnd();
-				Regex.TopicTypes.ScopeAlwaysGlobal alwaysGlobalRegex = new Regex.TopicTypes.ScopeAlwaysGlobal();
-				Regex.NonASCIILetters nonASCIILettersRegex = new Regex.NonASCIILetters();
-				Regex.TopicTypes.Tags tagsRegex = new Regex.TopicTypes.Tags();
+				var ignoreKeywordsRegex = new Regex.TopicTypes.IgnoreKeywords();
+				var alterTopicTypeRegex = new Regex.TopicTypes.AlterTopicType();
+				var displayNameRegex = new Regex.TopicTypes.DisplayName();
+				var pluralDisplayNameRegex = new Regex.TopicTypes.PluralDisplayName();
+				var displayNameFromLocaleRegex = new Regex.TopicTypes.DisplayNameFromLocale();
+				var pluralDisplayNameFromLocaleRegex = new Regex.TopicTypes.PluralDisplayNameFromLocale();
+				var flagsRegex = new Regex.TopicTypes.Flags();
+				var documentationRegex = new Regex.TopicTypes.Documentation();
+				var variableTypeRegex = new Regex.TopicTypes.VariableType();
+				var classHierarchyRegex = new Regex.TopicTypes.ClassHierarchy();
+				var databaseHierarchyRegex = new Regex.TopicTypes.DatabaseHierarchy();
+				var enumRegex = new Regex.TopicTypes.Enum();
+				var breakListsRegex = new Regex.TopicTypes.BreakLists();
+				var keywordsRegex = new Regex.TopicTypes.Keywords();
+				var commaSeparatorRegex = new Regex.CondensedWhitespaceCommaSeparator();
+				var yesRegex = new Regex.Config.Yes();
+				var noRegex = new Regex.Config.No();
+				var startRegex = new Regex.TopicTypes.ScopeStart();
+				var endRegex = new Regex.TopicTypes.ScopeEnd();
+				var alwaysGlobalRegex = new Regex.TopicTypes.ScopeAlwaysGlobal();
+				var nonASCIILettersRegex = new Regex.NonASCIILetters();
+				var tagsRegex = new Regex.TopicTypes.Tags();
 
 				while (file.Get(out identifier, out value))
 					{
 
 					//
-					// Keywords, tags, and all identifierless lines
+					// Identifierless lines
 					//
 					
 					if (identifier == null)
@@ -1244,7 +1212,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						inTags = false;
 						}
 						
-
 
 					//
 					// Ignore Keywords
@@ -1337,7 +1304,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 							fileTopicTypeNames.Add(value, currentTopicType);
 							}								
 						}
-						
 						
 						
 					//
@@ -1539,7 +1505,59 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						
 						
 					//
-					// Class Hierarchy
+					// Flags
+					//
+					
+					else if (flagsRegex.IsMatch(identifier))
+						{
+						if (currentTopicType != null)
+							{
+							value = value.ToLower();
+							
+							if (!string.IsNullOrEmpty(value))
+								{
+								string[] flagsArray = commaSeparatorRegex.Split(value);
+							
+								foreach (string flag in flagsArray)
+									{
+									if (flag == "code")
+										{  currentTopicType.Flags.Code = true;  }
+									else if (flag == "file")
+										{  currentTopicType.Flags.File = true;  }
+									else if (documentationRegex.IsMatch(flag))
+										{  currentTopicType.Flags.Documentation = true;  }
+									else if (variableTypeRegex.IsMatch(flag))
+										{  currentTopicType.Flags.VariableType = true;  }
+									else if (classHierarchyRegex.IsMatch(flag))
+										{  currentTopicType.Flags.ClassHierarchy = true;  }
+									else if (databaseHierarchyRegex.IsMatch(flag))
+										{  currentTopicType.Flags.DatabaseHierarchy = true;  }
+									else if (enumRegex.IsMatch(flag))
+										{  currentTopicType.Flags.Enum = true;  }
+									else if (string.IsNullOrEmpty(flag) == false)
+										{  
+										file.AddError(
+											Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Flags", flag)
+											);
+										}
+									}
+
+								List<string> flagErrors = currentTopicType.Flags.Validate(false, currentTopicType.Scope, "NaturalDocs.Engine");
+
+								if (flagErrors != null)
+									{
+									foreach (string flagError in flagErrors)
+										{  file.AddError(flagError);  }
+									}
+								}
+							}
+						else
+							{  LoadFile_NeedsTopicTypeError(file, identifier);  }
+						}
+					
+					
+					// 
+					// Class Hierarchy (deprecated, convert to flag)
 					//
 					
 					else if (classHierarchyRegex.IsMatch(identifier))
@@ -1550,46 +1568,16 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 							
 							if (yesRegex.IsMatch(value))
 								{
-								currentTopicType.ClassHierarchy = true;
+								currentTopicType.Flags.ClassHierarchy = true;
 								}
 							else if (noRegex.IsMatch(value))
 								{
-								currentTopicType.ClassHierarchy = false;
+								currentTopicType.Flags.ClassHierarchy = false;
 								}
 							else
 								{
 								file.AddError(
 									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Class Hierarchy", value)
-									);
-								}
-							}
-						else
-							{  LoadFile_NeedsTopicTypeError(file, identifier);  }
-						}
-						
-						
-					//
-					// Variable Type
-					// 
-					
-					else if (variableTypeRegex.IsMatch(identifier))
-						{
-						if (currentTopicType != null)
-							{
-							value = value.ToLower();
-							
-							if (yesRegex.IsMatch(value))
-								{
-								currentTopicType.VariableType = true;
-								}
-							else if (noRegex.IsMatch(value))
-								{
-								currentTopicType.VariableType = false;
-								}
-							else
-								{
-								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Variable Type", value)
 									);
 								}
 							}
@@ -1626,7 +1614,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						else
 							{  LoadFile_NeedsTopicTypeError(file, identifier);  }
 						}
-						
 						
 						
 					//
@@ -1666,7 +1653,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						}
 						
 						
-						
 					//
 					// Deprecated keywords: Can Group With, Page Title if First
 					//
@@ -1675,7 +1661,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						{
 						// Ignore and continue
 						}
-
 
 
 					//
@@ -1692,6 +1677,30 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					}  // while (file.Get)
 
 				file.Close();				
+				}
+
+
+			// Do a strict validation on all topic types that defined flags.
+
+			foreach (var topicType in fileTopicTypes)
+				{
+				if (topicType.Flags.AllConfigurationProperties != 0)
+					{
+					// We don't want to duplicate errors we already found, so only do this if it passes the non-strict test.
+					List<string> flagErrors = topicType.Flags.Validate(false, topicType.Scope, "NaturalDocs.Engine");
+
+					if (flagErrors == null)
+						{
+						topicType.Flags.AddImpliedFlags();
+						flagErrors = topicType.Flags.Validate(true, topicType.Scope, "NaturalDocs.Engine");
+
+						if (flagErrors != null)
+							{
+							foreach (string flagError in flagErrors)
+								{  errorList.Add(flagError, filename, topicType.LineNumber);  }
+							}
+						}
+					}
 				}
 				
 				
@@ -1876,28 +1885,31 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						{  output.AppendLine("Always Global");  }
 					}
 					
-				if (topicType.ClassHierarchy != null)
+				if (topicType.Flags.AllConfigurationProperties != 0)
 					{
 					SaveFile_LineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
-					output.Append("   Class Hierarchy: ");
+					output.Append("   Flags: ");
 					
-					if (topicType.ClassHierarchy == true)
-						{  output.AppendLine("Yes");  }
-					else
-						{  output.AppendLine("No");  }
-					}
-					
-				if (topicType.VariableType != null)
-					{
-					SaveFile_LineBreakOnGroupChange(2, ref oldGroupNumber, output);
+					if (topicType.Flags.Code)
+						{  output.Append("Code");  }
+					else if (topicType.Flags.File)
+						{  output.Append("File");  }
+					else if (topicType.Flags.Documentation)
+						{  output.Append("Documentation");  }
 
-					output.Append("   Variable Type: ");
-					
-					if (topicType.VariableType == true)
-						{  output.AppendLine("Yes");  }
-					else
-						{  output.AppendLine("No");  }
+					if (topicType.Flags.VariableType)
+						{  output.Append(", Variable Type");  }
+
+					if (topicType.Flags.ClassHierarchy)
+						{  output.Append(", Class Hierarchy");  }
+					else if (topicType.Flags.DatabaseHierarchy)
+						{  output.Append(", Database Hierarchy");  }
+
+					if (topicType.Flags.Enum)
+						{  output.Append(", Enum");  }
+
+					output.AppendLine();
 					}
 					
 				if (topicType.BreakLists != null)
@@ -2006,7 +2018,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						Tag tag = new Tag(tagName);
 						tag.ID = file.ReadInt32();
 						binaryTags.Add(tag);
-						
+
 						tagName = file.ReadString();
 						}
 						
@@ -2016,8 +2028,11 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					// [String: Display Name]
 					// [String: Plural Display Name]
 					// [String: Simple Identifier]
-					// [Byte: Flags]
+					// [Byte: Index]
 					// [Int32: Index With ID]?
+					// [Byte: Scope]
+					// [Byte: Break Lists]
+					// [UInt16: Flags]
 					// ...
 					// [String: null]
 						
@@ -2032,38 +2047,19 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 						topicType.DisplayName = file.ReadString();
 						topicType.PluralDisplayName = file.ReadString();
 						topicType.SimpleIdentifier = file.ReadString();
-						
-						BinaryFileTopicTypeFlags flags = (BinaryFileTopicTypeFlags)file.ReadByte();
-						BinaryFileTopicTypeFlags indexFlags = flags & BinaryFileTopicTypeFlags.IndexMask;
-						BinaryFileTopicTypeFlags scopeFlags = flags & BinaryFileTopicTypeFlags.ScopeMask;
-						
-						if (indexFlags == BinaryFileTopicTypeFlags.IndexYes)
-							{  topicType.Index = TopicType.IndexValue.Yes;  }
-						else if (indexFlags == BinaryFileTopicTypeFlags.IndexNo)
-							{  topicType.Index = TopicType.IndexValue.No;  }
-						else if (indexFlags == BinaryFileTopicTypeFlags.IndexWith)
-							{
-							topicType.Index = TopicType.IndexValue.IndexWith;
-							topicType.IndexWith = file.ReadInt32();
-							}
-						else
-							{  result = false;  }
-							
-						if (scopeFlags == BinaryFileTopicTypeFlags.ScopeNormal)
-							{  topicType.Scope = TopicType.ScopeValue.Normal;  }
-						else if (scopeFlags == BinaryFileTopicTypeFlags.ScopeStart)
-							{  topicType.Scope = TopicType.ScopeValue.Start;  }
-						else if (scopeFlags == BinaryFileTopicTypeFlags.ScopeEnd)
-							{  topicType.Scope = TopicType.ScopeValue.End;  }
-						else if (scopeFlags == BinaryFileTopicTypeFlags.ScopeAlwaysGlobal)
-							{  topicType.Scope = TopicType.ScopeValue.AlwaysGlobal;  }
-						else
-							{  result = false;  }
-							
-						topicType.ClassHierarchy = ( (flags & BinaryFileTopicTypeFlags.ClassHierarchy) != 0);
-						topicType.VariableType = ( (flags & BinaryFileTopicTypeFlags.VariableType) != 0);
-						topicType.BreakLists = ( (flags & BinaryFileTopicTypeFlags.BreakLists) != 0);
-						
+
+						// We don't have to validate the enum and flag values because they're only used to compare to the config file 
+						// versions, which are validated.  If these are invalid they'll just show up as changed.
+
+						topicType.Index = (TopicType.IndexValue)file.ReadByte();
+
+						if (topicType.Index == TopicType.IndexValue.IndexWith)
+							{  topicType.IndexWith = file.ReadInt32();  }
+
+						topicType.Scope = (TopicType.ScopeValue)file.ReadByte();
+						topicType.BreakLists = (file.ReadByte() != 0);
+						topicType.Flags.AllConfigurationProperties = (TopicTypeFlags.FlagValues)file.ReadUInt16();
+
 						binaryTopicTypes.Add(topicType);
 						topicTypeIDs.Add(topicType.ID);
 						
@@ -2185,8 +2181,11 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				// [String: Display Name]
 				// [String: Plural Display Name]
 				// [String: Simple Identifier]
-				// [Byte: Flags]
+				// [Byte: Index]
 				// [Int32: Index With ID]?
+				// [Byte: Scope]
+				// [Byte: Break Lists]
+				// [UInt16: Flags]
 				// ...
 				// [String: null]
 
@@ -2197,36 +2196,14 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 					file.WriteString( topicType.DisplayName );
 					file.WriteString( topicType.PluralDisplayName );
 					file.WriteString( topicType.SimpleIdentifier );
-					
-					BinaryFileTopicTypeFlags flags = 0;
-					
-					if (topicType.Index == TopicType.IndexValue.Yes)
-						{  flags |= BinaryFileTopicTypeFlags.IndexYes;  }
-					else if (topicType.Index == TopicType.IndexValue.No)
-						{  flags |= BinaryFileTopicTypeFlags.IndexNo;  }
-					else // (topicType.Index == TopicType.IndexValue.IndexWith)
-						{  flags |= BinaryFileTopicTypeFlags.IndexWith;  }
-						
-					if (topicType.Scope == TopicType.ScopeValue.Normal)
-						{  flags |= BinaryFileTopicTypeFlags.ScopeNormal;  }
-					else if (topicType.Scope == TopicType.ScopeValue.Start)
-						{  flags |= BinaryFileTopicTypeFlags.ScopeStart;  }
-					else if (topicType.Scope == TopicType.ScopeValue.End)
-						{  flags |= BinaryFileTopicTypeFlags.ScopeEnd;  }
-					else // (topicType.Scope == TopicType.ScopeValue.AlwaysGlobal)
-						{  flags |= BinaryFileTopicTypeFlags.ScopeAlwaysGlobal;  }
-						
-					if (topicType.ClassHierarchy == true)
-						{  flags |= BinaryFileTopicTypeFlags.ClassHierarchy;  }
-					if (topicType.VariableType == true)
-						{  flags |= BinaryFileTopicTypeFlags.VariableType;  }
-					if (topicType.BreakLists == true)
-						{  flags |= BinaryFileTopicTypeFlags.BreakLists;  }
-						
-					file.WriteByte( (byte)flags );
+					file.WriteByte( (byte)topicType.Index );
 					
 					if (topicType.Index == TopicType.IndexValue.IndexWith)
 						{  file.WriteInt32( topicType.IndexWith );  }
+
+					file.WriteByte( (byte)topicType.Scope );
+					file.WriteByte( (byte)(topicType.BreakLists ? 1 : 0) );
+					file.WriteUInt16( (ushort)topicType.Flags.AllConfigurationProperties );
 					}
 					
 				file.WriteString(null);

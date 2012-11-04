@@ -21,7 +21,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 	public class ConfigFileTopicType
 		{
 
-		// Group: Functions and Properties
+		// Group: Functions
 		// __________________________________________________________________________
 		
 		
@@ -46,6 +46,23 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			breakLists = null;
 			keywords = new List<string>();
 			}
+
+
+		/* Function: FixNameCapitalization
+		 * Replaces <Name> with a version with alternate capitalization but is otherwise equal.
+		 */
+		public void FixNameCapitalization (string newName)
+			{
+			if (string.Compare(name, newName, true) != 0)
+				{  throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileTopicType");  }
+				
+			name = newName;
+			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
 			
 			
 		/* Property: Name
@@ -201,28 +218,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  scope = value;  }
 			}
 			
-		/* Property: ClassHierarchy
-		 * Whether the topic type can be included in the class hierarchy, or null if it is not defined.
-		 */
-		public bool? ClassHierarchy
-			{
-			get
-				{  return classHierarchy;  }
-			set
-				{  classHierarchy = value;  }
-			}
-			
-		/* Property: VariableType
-		 * Whether the topic type can be used as a variable type, or null if it is not defined.
-		 */
-		public bool? VariableType
-			{
-			get
-				{  return variableType;  }
-			set
-				{  variableType = value;  }
-			}
-			
 		/* Property: BreakLists
 		 * Whether list topics should be broken into individual topics in the output, or null if it is not defined.
 		 */
@@ -248,16 +243,10 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			}
 			
 			
-		/* Function: FixNameCapitalization
-		 * Replaces <Name> with a version with alternate capitalization but is otherwise equal.
+		/* Variable: Flags
+		 * <TopicTypeFlags> as a public variable, so you can use it like a property.
 		 */
-		public void FixNameCapitalization (string newName)
-			{
-			if (string.Compare(name, newName, true) != 0)
-				{  throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileTopicType");  }
-				
-			name = newName;
-			}
+		public TopicTypeFlags Flags;
 			
 			
 		
@@ -339,5 +328,9 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * form is not defined.  The variable itself will never be null.
 		 */
 		protected List<string> keywords;
+
+		// Flags
+		// Also remember Flags is a public variable.
+
 		}
 	}

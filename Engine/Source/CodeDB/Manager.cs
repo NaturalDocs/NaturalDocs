@@ -327,8 +327,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 			var language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
-			if ( (link.Type == LinkType.ClassParent && topicType.ClassHierarchy == false) ||
-				  (link.Type == LinkType.Type && topicType.VariableType == false) )
+			if ( (link.Type == LinkType.ClassParent && topicType.Flags.ClassHierarchy == false) ||
+				  (link.Type == LinkType.Type && topicType.Flags.VariableType == false) )
 				{  return 0;  }
 
 

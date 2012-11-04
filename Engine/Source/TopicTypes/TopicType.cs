@@ -6,17 +6,6 @@
  * represent the final combined settings of a topic type rather than its entry in a config file.  For example, all fields are 
  * initialized to default values rather than null or Default, and it doesn't store the type's keywords.
  * 
- * 
- * Topic: Internal Design Notes
- * 
- *		- Why set <displayName> and <pluralDisplayName> to null?  Why not set them to default values in the constructor like
- *		   the rest of the variables?
- *		
- *		Because their default values change based on what was set.  <displayName's> default value is <name> no matter
- *		what so that can be done, but <pluralDisplayName's> default value is whatever <displayName> is.  If it's set in the
- *		constructor it gets set to <name> as well, but if <displayName> then gets changed it wouldn't affect 
- *		<pluralDisplayName>.
- * 
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
@@ -48,28 +37,9 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		public enum IndexValue : byte
 			{  Yes, No, IndexWith  };
 		
-		/* Enum: TopicTypeFlags
-		 * 
-		 * InSystemFile - Set if the topic type was defined in the system config file <Topics.txt>.
-		 * InProjectFile - Set if the topic type was defined in the project config file <Topics.txt>.  Not set for Alter TopicType.
-		 * 
-		 * InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
-		 * 
-		 * InBinaryFile - Set if the topic type appears in <Topics.nd>.
-		 */
-		protected enum TopicTypeFlags : byte
-			{
-			InSystemFile = 0x01,
-			InProjectFile = 0x02,
-			
-			InConfigFiles = InSystemFile | InProjectFile,
-			
-			InBinaryFile = 0x04
-			}
 		
 		
-		
-		// Group: Functions and Properties
+		// Group: Functions
 		// __________________________________________________________________________
 		
 		
@@ -79,20 +49,28 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			{
 			name = newName;
 			
-			// To indicate that they're not manually set.  Their properties will always return a value though.
+			// Null to indicate that they're not manually set.  Their properties will always return a value though.
 			displayName = null;
 			pluralDisplayName = null;
 			simpleIdentifier = null;
 			
+			// Why not set them to default values like name and the rest of the variables?  Because their default values change 
+			// based on what else was set.  displayName's default value is name no matter what so that could be done, but 
+			// pluralDisplayName's default value is whatever displayName is.  If it's set here it would get set to name as well, but 
+			// if displayName then gets changed it wouldn't carry over to pluralDisplayName.
+
 			index = IndexValue.Yes;
 			indexWith = 0;
 			scope = ScopeValue.Normal;
-			classHierarchy = false;
-			variableType = false;
 			breakLists = false;
-			flags = 0;
+			Flags = new TopicTypeFlags();
 			}
 			
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
 			
 		/* Property: Name
 		 * The name of the topic type, not to be confused with <DisplayName>.
@@ -200,28 +178,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  scope = value;  }
 			}
 			
-		/* Property: ClassHierarchy
-		 * Whether the topic type can be included in the class hierarchy.
-		 */
-		public bool ClassHierarchy
-			{
-			get
-				{  return classHierarchy;  }
-			set
-				{  classHierarchy = value;  }
-			}
-			
-		/* Property: VariableType
-		 * Whether the topic type can be used as a variable type.
-		 */
-		public bool VariableType
-			{
-			get
-				{  return variableType;  }
-			set
-				{  variableType = value;  }
-			}
-			
 		/* Property: BreakLists
 		 * Whether list topics should be broken into individual topics in the output.
 		 */
@@ -232,80 +188,21 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			set
 				{  breakLists = value;  }
 			}
-			
-			
-		
-		// Group: Flags
-		// These properties do not affect the equality operators.
-		// __________________________________________________________________________
-		
-		
-		/* Property: InSystemFile
-		 * Whether this topic type was defined in the system <Topics.txt> file.
+
+		/* Variable: Flags
+		 * <TopicTypeFlags> as a public variable, so you can use it like a property.
 		 */
-		public bool InSystemFile
-			{
-			get
-				{  return ( (flags & TopicTypeFlags.InSystemFile) != 0);  }
-			set
-				{  
-				if (value == true)
-					{  flags |= TopicTypeFlags.InSystemFile;  }
-				else
-					{  flags &= ~TopicTypeFlags.InSystemFile;  }
-				}
-			}
+		public TopicTypeFlags Flags;
+
 			
-		/* Property: InProjectFile
-		 * Whether this topic type was defined in the project <Topics.txt> file.
-		 */
-		public bool InProjectFile
-			{
-			get
-				{  return ( (flags & TopicTypeFlags.InProjectFile) != 0);  }
-			set
-				{  
-				if (value == true)
-					{  flags |= TopicTypeFlags.InProjectFile;  }
-				else
-					{  flags &= ~TopicTypeFlags.InProjectFile;  }
-				}
-			}
-			
-		/* Property: InConfigFiles
-		 * Whether this topic type was defined in either of the <Topics.txt> files.
-		 */
-		public bool InConfigFiles
-			{
-			get
-				{  return ( (flags & TopicTypeFlags.InConfigFiles) != 0);  }
-			}
-			
-		/* Property: InBinaryFile
-		 * Whether this topic type appears in <Topics.nd>.
-		 */
-		public bool InBinaryFile
-			{
-			get
-				{  return ( (flags & TopicTypeFlags.InBinaryFile) != 0);  }
-			set
-				{
-				if (value == true)
-					{  flags |= TopicTypeFlags.InBinaryFile;  }
-				else
-					{  flags &= ~TopicTypeFlags.InBinaryFile;  }
-				}
-			}
-			
-			
-			
-			
+						
 		// Group: Operators
 		// __________________________________________________________________________
 		
 		
 		/* Function: operator ==
-		 * Returns whether all the properties of the two topic types are equal, including Name and ID, but excluding flags.
+		 * Returns whether all the properties of the two topic types are equal, including Name and ID, but excluding 
+		 * <TopicTypeFlags.Location Properties>.
 		 */
 		public static bool operator == (TopicType type1, TopicType type2)
 			{
@@ -315,13 +212,11 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  return false;  }
 			else
 				{
-				// Deliberately does not include Flags
 				return (type1.ID == type2.ID &&
 							  type1.Index == type2.Index &&
 							  type1.Scope == type2.Scope &&
-							  type1.ClassHierarchy == type2.ClassHierarchy &&
-							  type1.VariableType == type2.VariableType &&
 							  type1.BreakLists == type2.BreakLists &&
+							  type1.Flags.AllConfigurationProperties == type2.Flags.AllConfigurationProperties &&
 							  (type1.Index != IndexValue.IndexWith || type1.IndexWith == type2.IndexWith) &&
 
 							  type1.Name == type2.Name &&
@@ -333,7 +228,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			
 		
 		/* Function: operator !=
-		 * Returns if any of the properties of the two topic types are inequal, including Name and ID, but excluding flags.
+		 * Returns if any of the properties of the two topic types are inequal, including Name and ID, but excluding
+		 * <TopicTypeFlags.Location Properties>.
 		 */
 		public static bool operator != (TopicType type1, TopicType type2)
 			{
@@ -403,24 +299,13 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 */
 		protected ScopeValue scope;
 		
-		/* var: classHierarchy
-		 * Whether the topic type can be included in the class hierarchy.
-		 */
-		protected bool classHierarchy;
-		
-		/* var: variableType
-		 * Whether the topic type can be used as a variable type.
-		 */
-		protected bool variableType;
-		
 		/* var: breakLists
 		 * Whether lists topics should be broken into individual ones.
 		 */
 		protected bool breakLists;
 		
-		/* var: flags
-		 * A combination of <FlagValues> describing the type.
-		 */
-		protected TopicTypeFlags flags;
+		// Flags
+		// Also remember Flags is a public variable.
+
 		}
 	}

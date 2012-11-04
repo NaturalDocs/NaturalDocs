@@ -359,6 +359,13 @@ Topics.txt.RequiredTopicTypesNotDefined(names): The following topic types must b
 Topics.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
 
+TopicTypeFlags.CantCombine(a,b): You cannot set both {0} and {1}.
+TopicTypeFlags.CantCombine(a,b,c): You cannot set {0}, {1}, and {2}.
+TopicTypeFlags.MustDefineOneOf(a,b): You must set either {0} or {1}.
+TopicTypeFlags.MustDefineOneOf(a,b,c): You must set either {0}, {1}, or {2}.
+TopicTypeFlags.MustDefineAWithB(a,b): You must set {0} with {1}.
+TopicTypeFlags.FlagRequiresScope(flag,scope): {0} requires Scope: {1}.
+
 Topics.txt.SystemHeader.multiline {{{
 # This is the main Natural Docs topics file.  If you change anything here, it
 # will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
@@ -447,23 +454,27 @@ Topics.txt.SystemTopicTypesReference.multiline {{{
 #
 # Scope: [normal|start|end|always global]
 #    How the topic affects scope.  Defaults to normal.
-#    normal - The topic stays within the current scope.
-#    start - The topic starts a new scope for all the topics beneath it, like
-#            class topics.
-#    end - The topic resets the scope back to global for all the topics 
-#          beneath it, like section topics.
+#    normal        - The topic stays within the current scope.
+#    start         - The topic starts a new scope for all the topics beneath
+#                    it, like class topics.
+#    end           - The topic resets the scope back to global for all the
+#                    topics beneath it, like section topics.
 #    always global - The topic is defined as a global symbol, but does not 
 #                    change the scope for any other topics.
 #
-# Class Hierarchy: [yes|no]
-#    Whether the topic is part of the class hierarchy.  Defaults to no.
-#
-# Variable Type: [yes|no]
-#    Whether the topic can be used as a variable type.  Defaults to no.
-#
-# Break Lists: [yes|no]
-#    Whether list topics should be broken into individual topics in the
-#    output.  Defaults to no.
+# Flags: [flag], [flag], ...
+#    A combination of settings that apply to the topic type.
+#    Code, File, or Documentation
+#        Whether it's used to describe a code element, a file, or is a
+#        standalone documentation comment.  Defaults to Code.
+#    Variable Type
+#        Whether it describes a code element that can be used as a variable's
+#        type.
+#    Class Hierarchy or Database Hierarchy
+#        Whether it describes a code element that should be included in the
+#        class or database hierarchy.  Requires Scope: Start.
+#    Enum
+#        Whether it describes an enum.
 #
 # Keywords:
 #    [keyword]
@@ -500,19 +511,27 @@ Topics.txt.ProjectTopicTypesReference.multiline {{{
 #
 # Scope: [normal|start|end|always global]
 #    How the topic affects scope.  Defaults to normal.
-#    normal - The topic stays within the current scope.
-#    start - The topic starts a new scope for all the topics beneath it, like
-#            class topics.
-#    end - The topic resets the scope back to global for all the topics 
-#          beneath it, like section topics.
+#    normal        - The topic stays within the current scope.
+#    start         - The topic starts a new scope for all the topics beneath
+#                    it, like class topics.
+#    end           - The topic resets the scope back to global for all the
+#                    topics beneath it, like section topics.
 #    always global - The topic is defined as a global symbol, but does not 
 #                    change the scope for any other topics.
 #
-# Class Hierarchy: [yes|no]
-#    Whether the topic is part of the class hierarchy.  Defaults to no.
-#
-# Variable Type: [yes|no]
-#    Whether the topic can be used as a variable type.  Defaults to no.
+# Flags: [flag], [flag], ...
+#    A combination of settings that apply to the topic type.
+#    Code, File, or Documentation
+#        Whether it's used to describe a code element, a file, or is a
+#        standalone documentation comment.  Defaults to Code.
+#    Variable Type
+#        Whether it describes a code element that can be used as a variable's
+#        type.
+#    Class Hierarchy or Database Hierarchy
+#        Whether it describes a code element that should be included in the
+#        class or database hierarchy.  Requires Scope: Start.
+#    Enum
+#        Whether it describes an enum.
 #
 # Break Lists: [yes|no]
 #    Whether list topics should be broken into individual topics in the
@@ -648,9 +667,9 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    Defines how enum values are referenced.  The default is global.
 #    global       - Values are always global, referenced as 'value'.
 #    under type   - Values are under the enum type, referenced as
-#                 'class.enum.value'.
+#                   'class.enum.value'.
 #    under parent - Values are under the enum's parent, referenced as
-#                 'class.value'.
+#                   'class.value'.
 #
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
@@ -728,9 +747,9 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 #    Defines how enum values are referenced.  The default is global.
 #    global       - Values are always global, referenced as 'value'.
 #    under type   - Values are under the enum type, referenced as
-#                 'class.enum.value'.
+#                   'class.enum.value'.
 #    under parent - Values are under the enum's parent, referenced as
-#                 'class.value'.
+#                   'class.value'.
 #
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
