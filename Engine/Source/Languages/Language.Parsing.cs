@@ -1353,11 +1353,20 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						codePoint.Topic.Symbol = symbol;
 
-						ClassString.HierarchyType hierarchyType = (topicType.Flags.DatabaseHierarchy ? ClassString.HierarchyType.Database :
-																																													  ClassString.HierarchyType.Class);
-
-						currentClass = ClassString.FromParameters(hierarchyType, this.ID, this.CaseSensitive, symbol);
-						codePoint.Topic.ClassString = currentClass;
+						if (topicType.Flags.ClassHierarchy)
+							{
+							currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, this.CaseSensitive, symbol);
+							codePoint.Topic.ClassString = currentClass;
+							}
+						else if (topicType.Flags.DatabaseHierarchy)
+							{
+							currentClass = ClassString.FromParameters(ClassString.HierarchyType.Database, 0, false, symbol);
+							codePoint.Topic.ClassString = currentClass;
+							}
+						else
+							{
+							currentClass = new ClassString();
+							}
 
 						// Classes are treated as global
 						currentContext.Scope = new SymbolString();

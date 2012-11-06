@@ -201,9 +201,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
-
-				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
+				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+					{
+					var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
+					}
+				else // Database
+					{  
+					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
+					}
 				}
 			}
 
@@ -219,11 +225,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+					{
+					var language = Engine.Instance.Languages.FromID(classString.LanguageID);
 
-				// OutputFolderHashPath already includes the trailing separator so we can just concatenate them.
-				return htmlBuilder.Class_OutputFolderHashPath(language, classString.Symbol.WithoutLastSegment) + 
-							 OutputFileNameOnlyHashPath;
+					// OutputFolderHashPath already includes the trailing separator so we can just concatenate them.
+					return htmlBuilder.Class_OutputFolderHashPath(language, classString.Symbol.WithoutLastSegment) + 
+								 OutputFileNameOnlyHashPath;
+					}
+				else // Database
+					{
+					return htmlBuilder.Database_OutputFolderHashPath(classString.Symbol.WithoutLastSegment) + 
+								 OutputFileNameOnlyHashPath;
+					}
 				}
 			}
 
@@ -274,9 +288,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
-
-				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
+				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+					{
+					var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
+					}
+				else // Database
+					{
+					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
+					}
 				}
 			}
 
@@ -309,9 +329,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
-
-				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
+				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+					{
+					var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
+					}
+				else
+					{
+					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
+					}
 				}
 			}
 
@@ -344,10 +370,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				var language = Engine.Instance.Languages.FromID(classString.LanguageID);
-
-				return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + 
-							 SummaryToolTipsFileNameOnly;
+				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+					{
+					var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + 
+								 SummaryToolTipsFileNameOnly;
+					}
+				else // Database
+					{
+					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + 
+								 SummaryToolTipsFileNameOnly;
+					}
 				}
 			}
 

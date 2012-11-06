@@ -142,6 +142,55 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			return result.ToString();
 			}
 
+		/* Function: Database_OutputFolder
+		 * 
+		 * Returns the output folder for database files, optionally for the partial symbol within it.
+		 * 
+		 * - If the partial symbol isn't specified, it returns the output folder for all database files.
+		 * - If partial symbol is specified, it returns the output folder for that symbol.
+		 */
+		public Path Database_OutputFolder (SymbolString partialSymbol = default(SymbolString))
+			{
+			StringBuilder result = new StringBuilder(OutputFolder);
+			result.Append("/database");  
+
+			if (partialSymbol != null)
+				{
+				result.Append('/');
+				string pathString = partialSymbol.FormatWithSeparator('/');
+				result.Append(SanitizePath(pathString));
+				}
+
+			return result.ToString();
+			}
+
+
+		/* Function: Database_OutputFolderHashPath
+		 * Returns the hash path of the output folder for database files, optionally for the partial symbol within.  The hash path will 
+		 * always include a trailing symbol so that the file name can simply be concatenated.
+		 * 
+		 * - If the partial symbol isn't specified, it returns the prefix for all database members.
+		 * - If the partial symbol is specified, it returns the hash path for that symbol.
+		 */
+		public string Database_OutputFolderHashPath (SymbolString partialSymbol = default(SymbolString))
+			{
+			if (partialSymbol == null)
+				{  return "Database:";  }
+			else
+				{
+				StringBuilder result = new StringBuilder("Database:");
+
+				if (partialSymbol != null)
+					{
+					string pathString = partialSymbol.FormatWithSeparator('.');
+					result.Append(SanitizePath(pathString));
+					result.Append('.');
+					}
+
+				return result.ToString();
+				}
+			}
+
 		}
 	}
 

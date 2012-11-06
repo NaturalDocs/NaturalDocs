@@ -438,11 +438,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
-			// If the binary file doesn't exist, we have to purge all the class files
+			// If the binary file doesn't exist, we have to purge all the class and database files
 
 			if (!hasBinaryBuildStateFile)
 				{
 				Start_PurgeFolder(Class_OutputFolder(), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Database_OutputFolder(), ref saidPurgingOutputFiles);
 				}
 
 
@@ -570,7 +571,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void Start_PurgeFolder (Path folder, ref bool saidPurgingOutputFiles)
 			{
-			if (System.IO.Directory.Exists(path))
+			if (System.IO.Directory.Exists(folder))
 				{  
 				if (!saidPurgingOutputFiles)
 					{

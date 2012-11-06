@@ -35,6 +35,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   {
 			rootFileMenu = null;
 			rootClassMenu = null;
+			rootDatabaseMenu = null;
 
 			isCondensed = false;
 		   }
@@ -119,18 +120,35 @@ namespace GregValure.NaturalDocs.Engine.Output
 			#endif
 
 
-		   // Find which language owns this file and split the symbol into its segments.
-
-		   MenuEntries.Classes.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
-			bool ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
-
 		   string[] classSegments = classString.Symbol.SplitSegments();
+
+		   MenuEntries.Base.Container container;
+			bool ignoreCase;
+
+			if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
+				{
+				MenuEntries.Classes.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
+
+				container = languageEntry;
+				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
+				}
+
+			else // Database
+				{
+				if (rootDatabaseMenu == null)
+					{
+					rootDatabaseMenu = new MenuEntries.Base.Container();
+					rootDatabaseMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Database");
+					}
+
+				container = rootDatabaseMenu;
+				ignoreCase = true;
+				}
 
 
 		   // Create the class and find out where it goes.  Create new scope containers as necessary.
 
 		   MenuEntries.Classes.Class classEntry = new MenuEntries.Classes.Class(classString);
-		   MenuEntries.Base.Container container = languageEntry;
 			string scopeSoFar = null;
 
 			// We only want to walk through the scope levels so we use length - 1 to ignore the last segment, which is the class name.
@@ -215,6 +233,33 @@ namespace GregValure.NaturalDocs.Engine.Output
 					}
 				}
 
+			if (rootDatabaseMenu != null)
+			   {
+			   rootDatabaseMenu.Condense();
+
+				// If the only top level entry is a scope we can merge it
+				if (rootDatabaseMenu.Members.Count == 1 && rootDatabaseMenu.Members[0] is MenuEntries.Classes.Scope)
+					{  
+					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)rootDatabaseMenu.Members[0];
+
+					// Move the scope title into CondensedTitles since we want it to be visible.
+					if (scopeEntry.CondensedTitles == null)
+						{
+						scopeEntry.CondensedTitles = new List<string>(1);
+						scopeEntry.CondensedTitles.Add(scopeEntry.Title);
+						}
+					else
+						{
+						scopeEntry.CondensedTitles.Insert(0, scopeEntry.Title);
+						}
+
+					// Now overwrite the original title with the tab title.
+					scopeEntry.Title = rootDatabaseMenu.Title;
+
+					rootDatabaseMenu = scopeEntry;
+					}
+			   }
+
 			isCondensed = true;
 			}
 
@@ -229,6 +274,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			if (rootClassMenu != null)
 				{  rootClassMenu.Sort();  }
+
+			if (rootDatabaseMenu != null)
+				{  rootDatabaseMenu.Sort();  }
 		   }
 
 
@@ -427,6 +475,17 @@ namespace GregValure.NaturalDocs.Engine.Output
 		   get
 		      {  return rootClassMenu;  }
 		   }
+
+
+		/* Property: RootDatabaseMenu
+		 * 
+		 * The root container of all database-based menu entries, or null if none.
+		 */
+		public MenuEntries.Base.Container RootDatabaseMenu
+			{
+			get
+				{  return rootDatabaseMenu;  }
+			}
 			
 
 
@@ -451,6 +510,12 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 * after condensation it may be a language if there was only one.
 		 */
 		protected MenuEntries.Base.Container rootClassMenu;
+
+		/* var: rootDatabaseMenu
+		 * 
+		 * The root container of all database-based menu entries, or null if none.
+		 */
+		protected MenuEntries.Base.Container rootDatabaseMenu;
 
 		/* var: isCondensed
 		 * Whether the menu tree has been condensed.

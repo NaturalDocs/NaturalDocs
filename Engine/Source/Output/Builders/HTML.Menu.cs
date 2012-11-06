@@ -46,7 +46,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
-			// Build class menu
+			// Build class and database menu
 
 			List<KeyValuePair<int, ClassString>> classes = null;
 

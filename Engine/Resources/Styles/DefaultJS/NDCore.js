@@ -603,6 +603,13 @@ function NDLocation (hashString)
 			this.AddClassURLs();
 			}
 
+		else if (this.hashString.substr(0,9).toLowerCase() == "database:")
+			{
+			this.type = "Database";
+			this.SplitPathAndMember();
+			this.AddDatabaseURLs();
+			}
+
 		else
 			{
 			// All empty and invalid hashes show the home page.
@@ -682,6 +689,25 @@ function NDLocation (hashString)
 		var basePath = "classes/" + pathPrefix[1] + "/" + this.path.substr(pathPrefix[0].length);
 
 		basePath = basePath.replace(/\.|::/g, "/");
+
+		this.contentPage = basePath + ".html";
+		this.summaryFile = basePath + "-Summary.js";
+		this.summaryTTFile = basePath + "-SummaryToolTips.js";
+
+		if (this.member != undefined)
+			{  this.contentPage += '#' + this.member;  }
+		};
+
+
+	/* Private Function: AddDatabaseURLs
+		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
+		must be "Database".
+	*/
+	this.AddDatabaseURLs = function ()
+		{
+		var basePath = "database/" + this.path.substr(9);
+
+		basePath = basePath.replace(/\./g, "/");
 
 		this.contentPage = basePath + ".html";
 		this.summaryFile = basePath + "-Summary.js";

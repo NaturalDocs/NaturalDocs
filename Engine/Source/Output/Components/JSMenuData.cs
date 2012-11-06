@@ -88,6 +88,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				BuildOutput(RootClassMenu);
 				}
 
+			if (RootDatabaseMenu != null)
+				{
+				GenerateJSON(RootDatabaseMenu);
+				SegmentMenu(RootDatabaseMenu, "database", ref outputFiles);
+				BuildOutput(RootDatabaseMenu);
+				}
+
 
 			// Build tab information file
 
@@ -111,6 +118,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				{
 				tabContainers.Add(RootClassMenu);
 				tabTypes.Add("Class");
+				}
+			if (RootDatabaseMenu != null)
+				{
+				tabContainers.Add(RootDatabaseMenu);
+				tabTypes.Add("Database");
 				}
 
 			for (int i = 0; i < tabContainers.Count; i++)
@@ -666,14 +678,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					}
 				else if (menuEntry is MenuEntries.Classes.Scope)
 					{
-					MenuEntries.Base.Container container = menuEntry.Parent;
+					MenuEntries.Base.Container container = menuEntry;
 
 					#if DEBUG
 					if (container == null)
 						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + menuEntry.Title + "\".");  }
 					#endif
 
-					while ((container is MenuEntries.Classes.Language) == false)
+					while ((container is MenuEntries.Classes.Language) == false && container != menu.RootDatabaseMenu)
 						{
 						container = container.Parent;
 
@@ -684,11 +696,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						}
 
 					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)menuEntry;
-					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)container;
 
-					hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
+					if (container == menu.RootDatabaseMenu)
+						{
+						hashPath = htmlBuilder.Database_OutputFolderHashPath(scopeEntry.WrappedScopeString);
+						}
+					else
+						{
+						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)container;
+						hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
+						}
 					}
-				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu)
+				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu || menuEntry == menu.RootDatabaseMenu)
 					{
 					hashPath = null;
 					}

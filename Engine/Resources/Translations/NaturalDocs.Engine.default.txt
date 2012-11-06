@@ -36,6 +36,7 @@ HTML.Close: Close
 
 Menu.Files: Files
 Menu.Classes: Classes
+Menu.Database: Database
 
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan
