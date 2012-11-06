@@ -1049,7 +1049,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			get
 				{
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.Tags) != 0)
+				if ((ignoredFields & IgnoreFields.Title) != 0)
 					{  throw new InvalidOperationException("Tried to access TitleParameters when the title was ignored.");  }
 				#endif
 
