@@ -1283,7 +1283,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			ClassString currentClass = new ClassString();
 			ContextString currentContext = new ContextString();
 			Topic lastNonEmbeddedTopic = null;
-			int enumTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
 
 			foreach (CodePoint codePoint in commentCodePoints)
 				{
@@ -1298,7 +1297,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					if (codePoint.Topic.IsEmbedded)
 						{
-						partOfEnum = (lastNonEmbeddedTopic.TopicTypeID == enumTopicTypeID);
+						partOfEnum = lastNonEmbeddedTopic.IsEnum;
 						}
 					else
 						{  
@@ -1354,7 +1353,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						codePoint.Topic.Symbol = symbol;
 
-						currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, this.CaseSensitive, symbol);
+						ClassString.HierarchyType hierarchyType = (topicType.Flags.DatabaseHierarchy ? ClassString.HierarchyType.Database :
+																																													  ClassString.HierarchyType.Class);
+
+						currentClass = ClassString.FromParameters(hierarchyType, this.ID, this.CaseSensitive, symbol);
 						codePoint.Topic.ClassString = currentClass;
 
 						// Classes are treated as global
@@ -1388,7 +1390,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// If it's an enum topic where the values are under the type, replace the body context with one that
 					// includes the symbol name.
 					if (codePoint.Topic.IsEmbedded == false && 
-						 codePoint.Topic.TopicTypeID == enumTopicTypeID &&
+						 codePoint.Topic.IsEnum &&
 						 enumValue == EnumValues.UnderType)
 						{
 						ContextString bodyContext = currentContext;

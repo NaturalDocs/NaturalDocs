@@ -106,10 +106,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected internal void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
 			{
 			MatchCollection splitSymbols = null;
+			var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
 
-			if (IsFileTopicType(topicTypeID))
+			if (topicType.Flags.File == true)
 				{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
-			else if (IsCodeTopicType(topicTypeID))
+			else if (topicType.Flags.Code == true)
 				{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
 
 			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);

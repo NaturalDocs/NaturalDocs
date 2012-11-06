@@ -1,0 +1,146 @@
+// These tests score Natural Docs links.
+
+// Case sensitive language, code topic, case matches
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case sensitive language, code topic, case differs
+// ____________________________________________________________________________
+
+C# Class Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☐ - Capitalization
+
+// Case sensitive language, file topic, case matches
+// ____________________________________________________________________________
+
+C# File Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case sensitive language, file topic, case differs
+// ____________________________________________________________________________
+
+C# File Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case sensitive language, documentation topic, case matches
+// ____________________________________________________________________________
+
+C# Information Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case sensitive language, documentation topic, case differs
+// ____________________________________________________________________________
+
+C# Information Topic: Name
+   Symbol: Name
+
+C# NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, code topic, case matches
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, code topic, case differs
+// ____________________________________________________________________________
+
+Visual Basic Class Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, file topic, case matches
+// ____________________________________________________________________________
+
+Visual Basic File Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, file topic, case differs
+// ____________________________________________________________________________
+
+Visual Basic File Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, documentation topic, case matches
+// ____________________________________________________________________________
+
+Visual Basic Information Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: Name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+
+// Case insensitive language, documentation topic, case differs
+// ____________________________________________________________________________
+
+Visual Basic Information Topic: Name
+   Symbol: Name
+
+Visual Basic NaturalDocs Link: name
+   Scope: Global
+
+Match score:
+   ☒ - Capitalization
+

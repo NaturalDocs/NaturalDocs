@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 09-16-2012)
+﻿Format: 2.0 (Development Release 11-04-2012)
 
 # This is the Natural Docs topics file for this project.  If you change anything
 # here, it will apply to THIS PROJECT ONLY.  You can edit the version in
@@ -60,19 +60,27 @@
 #
 # Scope: [normal|start|end|always global]
 #    How the topic affects scope.  Defaults to normal.
-#    normal - The topic stays within the current scope.
-#    start - The topic starts a new scope for all the topics beneath it, like
-#            class topics.
-#    end - The topic resets the scope back to global for all the topics
-#          beneath it, like section topics.
+#    normal        - The topic stays within the current scope.
+#    start         - The topic starts a new scope for all the topics beneath
+#                    it, like class topics.
+#    end           - The topic resets the scope back to global for all the
+#                    topics beneath it, like section topics.
 #    always global - The topic is defined as a global symbol, but does not
 #                    change the scope for any other topics.
 #
-# Class Hierarchy: [yes|no]
-#    Whether the topic is part of the class hierarchy.  Defaults to no.
-#
-# Variable Type: [yes|no]
-#    Whether the topic can be used as a variable type.  Defaults to no.
+# Flags: [flag], [flag], ...
+#    A combination of settings that apply to the topic type.
+#    Code, File, or Documentation
+#        Whether it's used to describe a code element, a file, or is a
+#        standalone documentation comment.  Defaults to Code.
+#    Variable Type
+#        Whether it describes a code element that can be used as a variable's
+#        type.
+#    Class Hierarchy or Database Hierarchy
+#        Whether it describes a code element that should be included in the
+#        class or database hierarchy.  Requires Scope: Start.
+#    Enum
+#        Whether it describes an enum.
 #
 # Break Lists: [yes|no]
 #    Whether list topics should be broken into individual topics in the

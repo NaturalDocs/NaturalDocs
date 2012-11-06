@@ -411,7 +411,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			var files = Engine.Instance.Files;
 			var topicTypes = Engine.Instance.TopicTypes;
-			var enumTopicTypeID = topicTypes.IDFromKeyword("enum");
 			var groupTopicTypeID = topicTypes.IDFromKeyword("group");
 
 
@@ -527,7 +526,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				// We don't need to worry about enums until we do remaining topics.
 
-				if (topic.TopicTypeID == enumTopicTypeID)
+				if (topic.IsEnum)
 					{  topicIndex += 1 + embeddedTopicCount;  }
 
 
@@ -597,7 +596,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				// If we're merging enums, the one with the most embedded topics (documented values) wins.  In practice one
 				// should be documented and one shouldn't be, so this will be any number versus zero.
 
-				if (remainingTopic.TopicTypeID == enumTopicTypeID)
+				if (remainingTopic.IsEnum)
 					{
 					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics);
 
@@ -828,8 +827,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 						generatedTopic.FileID = topics[0].FileID;
 						generatedTopic.LanguageID = topics[0].LanguageID;
 
-						groupedTopics.Topics.Add(generatedTopic);
-						groupedTopics.CreateGroup(groupedTopics.Topics.Count - 1, 1);
+						// In case there's nothing that defines the "group" keyword.
+						if (generatedTopic.TopicTypeID != 0)
+							{
+							groupedTopics.Topics.Add(generatedTopic);
+							groupedTopics.CreateGroup(groupedTopics.Topics.Count - 1, 1);
+							}
 
 						matchingGroupIndex = groupedTopics.Groups.Count - 1;
 						}

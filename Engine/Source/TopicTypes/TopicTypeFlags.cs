@@ -39,6 +39,7 @@
  *		- Implies Code.
  *		- Class Hierarchy implies Variable Type.
  *		- Used to determine which classes appear in the respective menus.
+ *		- Used to determine which topics can be used for class parent links.
  *		
  * Enum:
  * 

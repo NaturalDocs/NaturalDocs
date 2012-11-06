@@ -1,0 +1,132 @@
+
+// These tests score type links.
+
+Link.Type = "Type"
+show capitalization
+
+Topic.LanguageName = "C#"
+Link.LanguageName = "C#"
+
+
+// Case sensitive language, code topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "Class"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case sensitive language, code topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "Class"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score
+
+
+// Case sensitive language, file topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "File"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case sensitive language, file topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "File"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score
+
+
+// Case sensitive language, documentation topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "Topic"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case sensitive language, documentation topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "Topic"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score
+
+
+Topic.LanguageName = "VB"
+Link.LanguageName = "VB"
+
+
+// Case insensitive language, code topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "Class"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case insensitive language, code topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "Class"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score
+
+
+// Case insensitive language, file topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "File"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case insensitive language, file topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "File"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score
+
+
+// Case insensitive language, documentation topic, case matches
+// ____________________________________________________________________________
+
+Topic.Keyword = "Topic"
+Topic.Title = "Name"
+Link.Text = "Name"
+
+score
+
+
+// Case insensitive language, documentation topic, case differs
+// ____________________________________________________________________________
+
+Topic.Keyword = "Topic"
+Topic.Title = "Name"
+Link.Text = "name"
+
+score

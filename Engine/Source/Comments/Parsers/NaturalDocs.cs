@@ -345,12 +345,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
 										sets, tables, conversionLists );
 
-
-			// Look up important types
-
-			enumTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
-			constantTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("constant");
-
 			return true;
 			}
 		    
@@ -1692,8 +1686,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</dd>");
 						}
 
-					bool isSymbol = ( (topic.UsesPluralKeyword || topic.TopicTypeID == enumTopicTypeID) && 
-													lastHeadingType != HeadingType.Parameters);
+					bool isSymbol = ( (topic.UsesPluralKeyword || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
 						
 					if (isSymbol)
 						{  body.Append("<ds>");  }
@@ -2892,7 +2885,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			if (topic.Body == null)
 				{  return;  }
 
-			if (topic.UsesPluralKeyword == false && topic.TopicTypeID != enumTopicTypeID)
+			if (topic.UsesPluralKeyword == false && topic.IsEnum == false)
 				{
 				#if DEBUG
 				if (topic.Body.IndexOf("<ds>") != -1)
@@ -2907,6 +2900,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			int symbolIndex = topic.Body.IndexOf("<ds>");
 			int lineNumberOffset = 1;
+
+			int embeddedTopicTypeID = 0;
+
+			if (topic.IsEnum)
+				{  embeddedTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("constant");  }
+
+			// We do it this way in case there is no type that uses the "constant" keyword.
+			if (embeddedTopicTypeID == 0)
+				{  embeddedTopicTypeID = topic.TopicTypeID;  }
 
 			while (symbolIndex != -1)
 				{
@@ -2924,12 +2926,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				embeddedTopic.Title = topic.Body.Substring(symbolIndex + 4, endSymbolIndex - (symbolIndex + 4)).EntityDecode();
 				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
 				embeddedTopic.IsEmbedded = true;
-
-				if (topic.TopicTypeID == enumTopicTypeID && constantTopicTypeID != 0)
-					{  embeddedTopic.TopicTypeID = constantTopicTypeID;  }
-				else
-					{  embeddedTopic.TopicTypeID = topic.TopicTypeID;  }
-
+				embeddedTopic.TopicTypeID = embeddedTopicTypeID;
 				embeddedTopic.AccessLevel = topic.AccessLevel;
 				embeddedTopic.TagString = topic.TagString;
 				embeddedTopic.CommentLineNumber = topic.CommentLineNumber + lineNumberOffset;
@@ -3491,16 +3488,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected List<string>[] conversionLists;
 
-		/* var: enumTopicTypeID
-		 * The ID of the topic type that uses the "enum" keyword, or zero if none.
-		 */
-		protected int enumTopicTypeID;
-
-		/* var: constantTopicTypeID
-		 * The ID of the topic type that uses the "constant" keyword, or zero if none.
-		 */
-		protected int constantTopicTypeID;
-	
 		/* var: ParenthesesChars 
 		 * An array of the parentheses characters, for use with IndexOfAny(char[]).
 		 */

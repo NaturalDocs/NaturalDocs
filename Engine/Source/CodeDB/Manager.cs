@@ -64,6 +64,7 @@ using GregValure.NaturalDocs.Engine.Links;
 using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
+using GregValure.NaturalDocs.Engine.TopicTypes;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
@@ -541,52 +542,65 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			// --C----- -------- -------- -------- -------- -------- -------- -------=
-			// We may be able to determine C already.
-
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			//		Natural Docs links:
-			//			1 - Topic language is case sensitive, case matches
-			//			0 - Topic language is case sensitive, case differs
-			//			1 - Topic language is case insensitive, case matches
-			//			1 - Topic language is case insensitive, case differs
+			//			1 - Topic is documentation, case matches
+			//			1 - Topic is documentation, case differs
+			//			1 - Topic is file, case matches
+			//			1 - Topic is file, case differs
+			//			1 - Topic is code, topic language is case sensitive, case matches
+			//			0 - Topic is code, topic language is case sensitive, case differs
+			//			1 - Topic is code, topic language is case insensitive, case matches
+			//			1 - Topic is code, topic language is case insensitive, case differs
 			//		Type/Class Parent links:
-			//			We can assume they're the same language
-			//			1 - Language is case sensitive, case matches
-			//			X - Language is case sensitive, case differs
-			//			1 - Language is case insensitive, case matches
-			//			1 - Language is case insensitive, case differs
+			//			Assuming they're the same language...
+			//			X - Topic is documentation, case matches
+			//			X - Topic is documentation, case differs
+			//			X - Topic is file, case matches
+			//			X - Topic is file, case differs
+			//			1 - Topic is code, language is case sensitive, case matches
+			//			X - Topic is code, language is case sensitive, case differs
+			//			1 - Topic is code, language is case insensitive, case matches
+			//			1 - Topic is code, language is case insensitive, case differs
 
-			// xxx For Natural Docs links we want to distinguish between when the topic is code and documentation,
-			// as the case differing for documentation comments shouldn't matter regardless of the language setting.
+			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
+			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
-			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
-			bool cDependsOnScope;
+			bool cDependsOnCase = false;
 
-			// If the language is case insensitive...
-			if (language.CaseSensitive == false)
+			if (link.Type == LinkType.NaturalDocs)
 				{
-				// We set the flag no matter what.  We don't have to bother with a comparison.
-				score |= 0x2000000000000000;
-				cDependsOnScope = false;
+				if (topicType.Flags.Code && topicLanguage.CaseSensitive)
+					{  cDependsOnCase = true;  }
+				}
+			else // link is Type or ClassParent
+				{
+				if (topicType.Flags.Code && topic.LanguageID == link.LanguageID)
+					{
+					if (topicLanguage.CaseSensitive)
+						{  cDependsOnCase = true;  }
+					}
+				else
+					{  return 0;  }
 				}
 
-			// The language is case sensitive.  If the case matches...
-			else if (topicSymbolString.EndsWith(linkSymbolString))
-				{
-				// C depends on the scope matching case too.  Leave it unset for now.
-				cDependsOnScope = true;
-				}
+			// At this point if cDependsOnCase isn't set and the function didn't return zero already, C is definitely 1.
+			if (cDependsOnCase == false)
+				{  score |= 0x2000000000000000;  }
 
-			// The language is case sensitive and the case differs.
-			else
+			// cDependsOnCase is set but the case doesn't match...
+			else if (topicSymbolString.EndsWith(linkSymbolString) == false)
 				{
 				// It's a hard requirement for type and class parent links in case sensitive languages.
 				if (link.Type == LinkType.Type || link.Type == LinkType.ClassParent)
 					{  return 0;  }
 
-				// Otherwise C stays at zero no matter what.
-				cDependsOnScope = false;
+				// For Natural Docs links it's not, but turn off dependsOnCase so C stays zero.
+				cDependsOnCase = false;
 				}
+
+			// else cDependsOnCase is set and the case matches...
+				// We need to check that the scope's case matches as well, so don't set anything.
 
 			
 			// Now we need to determine if we can match the remaining scope to anything in the context.
@@ -614,7 +628,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					}
 
 				// Add in C if necessary.
-				if (cDependsOnScope)
+				if (cDependsOnCase)
 					{  score |= 0x2000000000000000;  }
 				}
 
@@ -661,7 +675,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																								  linkScopeLength - topicScopeLength);
 						}
 
-					if (cDependsOnScope)
+					if (cDependsOnCase)
 						{
 						if (string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, false) == 0)
 							{  score |= 0x2000000000000000;  }

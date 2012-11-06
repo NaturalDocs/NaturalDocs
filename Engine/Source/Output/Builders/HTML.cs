@@ -180,34 +180,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			config = configEntry;
 			styles = null;
 			usedMenuDataFiles = null;
-
-			fileTopicTypeID = -1;
-			nonCodeTopicTypeIDs = new IDObjects.NumberSet();
 			}
 
 
 		public override bool Start (Errors.ErrorList errorList)
 			{  
 			int errors = errorList.Count;
-
-
-			// Look up special topic type IDs
-
-			TopicTypes.TopicType topicType = Instance.TopicTypes.FromKeyword("File");
-
-			if (topicType != null)
-				{  fileTopicTypeID = topicType.ID;  }
-
-			// This list isn't meant to be definitive since people can just define their own topic types, but it helps.
-			string[] nonCodeKeywords = { "Topic", "File", "Group", "Section" };
-
-			foreach (string nonCodeKeyword in nonCodeKeywords)
-				{
-				topicType = Instance.TopicTypes.FromKeyword(nonCodeKeyword);
-
-				if (topicType != null)
-					{  nonCodeTopicTypeIDs.Add(topicType.ID);  }
-				}
 
 
 			// Validate the output folder.
@@ -1600,30 +1578,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 
-		// Group: Topic Type Functions
-		// __________________________________________________________________________
-
-
-		/* Function: IsFileTopicType
-		 * Returns whether the passed topic type ID is the "File" type.
-		 */
-		public bool IsFileTopicType (int topicTypeID)
-			{
-			return (topicTypeID == fileTopicTypeID);
-			}
-
-
-		/* Function: IsCodeTopicType
-		 * Returns whether the passed topic type ID is a code type, as opposed to non-code types like Topic.
-		 * This is *not* definitive.  It only filters out known non-code types, assuming everything else is code.
-		 */
-		public bool IsCodeTopicType (int topicTypeID)
-			{
-			return (nonCodeTopicTypeIDs.Contains(topicTypeID) == false);
-			}
-			
-			
-			
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -1736,17 +1690,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * so files.js, files2.js, and files3.js would map to "files" and {1-3}.
 		 */
 		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
-
-		/* var: fileTopicTypeID
-		 * A reference to the <TopicType> ID of the "file" keyword, or -1 if it isn't defined.
-		 */
-		protected int fileTopicTypeID;
-
-		/* var: nonCodeTopicTypeIDs
-		 * A set of the <TopicType> IDs which are definitely not code.  This list is NOT definitive, as people can always 
-		 * define their own topic types, but it's still helpful.
-		 */
-		protected IDObjects.NumberSet nonCodeTopicTypeIDs;
 
 
 

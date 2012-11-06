@@ -124,23 +124,21 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				}
 			else
 				{
-				int enumTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
-
 				// See if we can work our way through the group with only one topic type.
 
-				int typeID = topics[i].TopicTypeID;
+				Topic firstTopic = topics[i];
 				int typeCount = 1;
 				i++;
 
 				while (i < startingIndex + count)
 					{
-					if (topics[i].TopicTypeID == typeID)
+					if (topics[i].TopicTypeID == firstTopic.TopicTypeID)
 						{
 						i++;
 						typeCount++;
 						}
 					// We allow enum constants through without counting as a different type
-					else if (typeID == enumTypeID && topics[i].IsEmbedded)
+					else if (firstTopic.IsEnum && topics[i].IsEmbedded)
 						{
 						i++;
 						}
@@ -150,7 +148,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 				if (i >= startingIndex + count)
 					{
-					dominantTypeID = typeID;
+					dominantTypeID = firstTopic.TopicTypeID;
 					mixedTypes = false;
 					}
 				else
@@ -159,16 +157,16 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					// the groups that don't need it.
 
 					SafeDictionary<int, int> typeCounts = new SafeDictionary<int,int>();
-					typeCounts[typeID] = typeCount;
+					typeCounts[firstTopic.TopicTypeID] = typeCount;
 
-					bool lastNonEmbeddedWasEnum = (typeID == enumTypeID);
+					bool lastNonEmbeddedWasEnum = firstTopic.IsEnum;
 
 					while (i < startingIndex + count)
 						{
 						Topic topic = topics[i];
 
 						if (topic.IsEmbedded == false)
-							{  lastNonEmbeddedWasEnum = (topic.TopicTypeID == enumTypeID);  }
+							{  lastNonEmbeddedWasEnum = topic.IsEnum;  }
 
 						// Only count embedded topics towards the dominant one if they're not enum constants.
 						if (topic.IsEmbedded == false || lastNonEmbeddedWasEnum == false)

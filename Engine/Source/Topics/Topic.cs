@@ -1108,6 +1108,23 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				return prototypeParameters;
 				}
 			}
+
+
+		/* Property: IsEnum
+		 * Whether this topic uses a topic type that has the Enum flag set.  If <TopicTypeID> isn't set this will be false.
+		 */
+		public bool IsEnum
+			{
+			get
+				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access IsEnum when the topic type ID was ignored.");  }
+				#endif
+
+				return (topicTypeID != 0 && Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.Enum == true);
+				}
+			}
 			
 			
 
