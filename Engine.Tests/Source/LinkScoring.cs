@@ -169,7 +169,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							if (valueString == null)
 								{  throw new Exception("Topic.Keyword must be set to a string value.");  }
 
-							var topicType = Engine.Instance.TopicTypes.FromName(valueString);
+							var topicType = Engine.Instance.TopicTypes.FromKeyword(valueString);
 
 							if (topicType == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a keyword.");  }
