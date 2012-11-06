@@ -657,36 +657,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				}
 				
 				
-			// Make sure all the required types are defined.
-			
-			List<string> undefinedRequiredTypes = null;
-			
-			foreach (string requiredType in RequiredTopicTypes)
-				{
-				if (!topicTypes.Contains(requiredType))
-					{
-					if (undefinedRequiredTypes == null)
-						{  undefinedRequiredTypes = new List<string>();  }
-						
-					undefinedRequiredTypes.Add(requiredType);
-					}
-				}
-				
-			if (undefinedRequiredTypes != null)
-				{
-				string messageID;
-				if (undefinedRequiredTypes.Count == 1)
-					{  messageID = "Topics.txt.RequiredTopicTypeNotDefined(name)";  }
-				else
-					{  messageID = "Topics.txt.RequiredTopicTypesNotDefined(names)";  }
-					
-				string names = String.Join(", ", undefinedRequiredTypes.ToArray());
-					
-				errorList.Add( Locale.Get("NaturalDocs.Engine", messageID, names), systemFile, 0 );
-				return false;
-				}
-
-
 			// Everything is okay at this point.  Save the files again to reformat them.  If the project file didn't exist, saving it 
 			// with the empty structures we created will create it.
 			
@@ -2265,12 +2235,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * An array containing all the characters that cannot appear in keywords.  Best used with String.IndexOfAny().
 		 */
 		public static char[] BannedKeywordChars = { '{', '}', ',', '#', ':' };
-		
-		
-		/* var: RequiredTopicTypes
-		 * An array containing all the topic type names that must be defined in order for Natural Docs to run.
-		 */
-		public static string[] RequiredTopicTypes = { "Information", "Group" };
 		
 
 	

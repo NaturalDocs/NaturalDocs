@@ -354,8 +354,6 @@ Topics.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used
 Topics.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
 Topics.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Topics.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
-Topics.txt.RequiredTopicTypeNotDefined(name): The topic type "{0}" must be defined.
-Topics.txt.RequiredTopicTypesNotDefined(names): The following topic types must be defined: {0}.
 Topics.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
 
