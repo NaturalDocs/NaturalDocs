@@ -290,24 +290,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
-
-				if (System.IO.Directory.Exists(Styles_OutputFolder()))
-					{  
-					if (!saidPurgingOutputFiles)
-						{
-						Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-						saidPurgingOutputFiles = true;
-						}
-
-					try
-						{  System.IO.Directory.Delete(Styles_OutputFolder(), true);  }
-					catch (Exception e)
-						{
-						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-							{  throw;  }
-						}
-					}
-
+				Start_PurgeFolder(Styles_OutputFolder(), ref saidPurgingOutputFiles);
 				Engine.Instance.Output.ReparseStyleFiles = true;
 				}
 
@@ -330,24 +313,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					if (stillExists == false)
 						{  
-						Path folder = Styles_OutputFolder(previousStyle);
-
-						if (System.IO.Directory.Exists(folder))
-							{  
-							if (!saidPurgingOutputFiles)
-								{
-								Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-								saidPurgingOutputFiles = true;
-								}
-
-							try
-								{  System.IO.Directory.Delete(folder, true);  }
-							catch (Exception e)
-								{
-								if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-									{  throw;  }
-								}
-							}
+						Start_PurgeFolder(Styles_OutputFolder(previousStyle), ref saidPurgingOutputFiles);
 						}
 					}
 
@@ -393,19 +359,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					if (sourceOrImageOutputFolderRegex.IsMatch(outputFolder))
 						{
-						if (!saidPurgingOutputFiles)
-							{
-							Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-							saidPurgingOutputFiles = true;
-							}
-
-						try
-							{  System.IO.Directory.Delete(outputFolder, true);  }
-						catch (Exception e)
-							{
-							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-								{  throw;  }
-							}
+						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);
 						}
 					}
 				}
@@ -443,22 +397,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							throw new Exception("xxx");							// xxx image source
 							}
 
-						if (System.IO.Directory.Exists(outputFolder))
-							{  
-							if (!saidPurgingOutputFiles)
-								{
-								Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-								saidPurgingOutputFiles = true;
-								}
-
-							try
-								{  System.IO.Directory.Delete(outputFolder, true);  }
-							catch (Exception e)
-								{
-								if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-									{  throw;  }
-								}
-							}
+						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);
 						}
 					}
 
@@ -503,23 +442,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (!hasBinaryBuildStateFile)
 				{
-
-				if (System.IO.Directory.Exists(Class_OutputFolder()))
-					{  
-					if (!saidPurgingOutputFiles)
-						{
-						Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-						saidPurgingOutputFiles = true;
-						}
-
-					try
-						{  System.IO.Directory.Delete(Class_OutputFolder(), true);  }
-					catch (Exception e)
-						{
-						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-							{  throw;  }
-						}
-					}
+				Start_PurgeFolder(Class_OutputFolder(), ref saidPurgingOutputFiles);
 				}
 
 
@@ -527,24 +450,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (!hasBinaryBuildStateFile)
 				{
-
-				if (System.IO.Directory.Exists(Menu_DataFolder))
-					{  
-					if (!saidPurgingOutputFiles)
-						{
-						Instance.StartPossiblyLongOperation("PurgingOutputFiles");
-						saidPurgingOutputFiles = true;
-						}
-
-					try
-						{  System.IO.Directory.Delete(Menu_DataFolder, true);  }
-					catch (Exception e)
-						{
-						if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-							{  throw;  }
-						}
-					}
-
+				Start_PurgeFolder(Menu_DataFolder, ref saidPurgingOutputFiles);
 				buildFlags |= BuildFlags.BuildMenu;
 				}
 
@@ -655,6 +561,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			loadList.Add(style);
 
 			return (errorList.Count == errors);
+			}
+
+
+		/* Function: Start_PurgeFolder
+		 * A helper function used only by <Start()> which deletes a folder if it exists.  If it does exist and saidPurgingOutputFiles
+		 * is false, it will set the status message and set it to true.
+		 */
+		protected void Start_PurgeFolder (Path folder, ref bool saidPurgingOutputFiles)
+			{
+			if (System.IO.Directory.Exists(path))
+				{  
+				if (!saidPurgingOutputFiles)
+					{
+					Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+					saidPurgingOutputFiles = true;
+					}
+
+				try
+					{  System.IO.Directory.Delete(folder, true);  }
+				catch (Exception e)
+					{
+					if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+						{  throw;  }
+					}
+				}
 			}
 
 
