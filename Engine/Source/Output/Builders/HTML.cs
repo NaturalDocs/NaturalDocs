@@ -10,8 +10,7 @@
  *		These restrictions apply to both output file paths and to hash paths.  The JavaScript must be able to convert a
  *		hash path to a file path easily so they cannot have different restrictions.
  * 
- *		- Path segments cannot contain a single colon character as it would conflict with the URL hash format
- *		  "#File:[path]:[symbol]".  Double colons are allowed.
+ *		- Paths cannot contain the colon character as it would conflict with the URL hash format "#File:[path]:[symbol]".
  *		- Paths cannot contain the hash character.  File paths containing it would truncate the URL trying to load it.
  *		- Paths cannot contain the semicolon or ampersand characters as not all browsers can load files with them in the 
  *		   path.
@@ -1472,27 +1471,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  
 					if (restrictedPathChar != ':')
 						{  output.Replace(restrictedPathChar, '_');  }
+					else
+						{
+						output.Replace("::", ".");
+						output.Replace(':', '_');
+						}
 					}
 
 				if (replaceDots)
 					{  output.Replace('.', '-');  }
-
-				// We can still use input to get indexes for output because the translation has been 1:1 so there's no character
-				// shifts.  Don't know why StringBuilder doesn't have an IndexOf() function though.
-				int index = input.IndexOf(':');
-
-				while (index != -1)
-					{
-					if (index + 1 < input.Length && input[index+1] == ':')
-						{  
-						index = input.IndexOf(':', index + 2);  
-						}
-					else
-						{
-						output[index] = '_';
-						index = input.IndexOf(':', index + 1);
-						}
-					}
 
 				return output.ToString();
 				}

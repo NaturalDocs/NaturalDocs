@@ -128,15 +128,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (partialSymbol != null)
 				{
-				string memberOperator = language.MemberOperator;
-
-				// We only support :: and . in hash paths.  Default to . for anything else.
-				if (memberOperator != "::")
-					{  memberOperator = ".";  }
-
-				string pathString = partialSymbol.FormatWithSeparator(memberOperator);
+				string pathString = partialSymbol.FormatWithSeparator('.');
 				result.Append(SanitizePath(pathString));
-				result.Append(memberOperator);
+				result.Append('.');
 				}
 
 			return result.ToString();

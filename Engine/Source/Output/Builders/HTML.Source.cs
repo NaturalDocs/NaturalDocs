@@ -297,13 +297,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					 fullSymbol.Substring(fullSymbol.Length - titleSymbol.Length) == titleSymbol)
 					{
 					string classSymbol = fullSymbol.Substring(0, fullSymbol.Length - titleSymbol.Length);
-					string memberOperator = Engine.Instance.Languages.FromID(topic.LanguageID).MemberOperator;
-
-					// We only support :: and . in hash paths.  Default to . for anything else.
-					if (memberOperator != "::")
-						{  memberOperator = ".";  }
-
-					classSymbol = classSymbol.Replace(SymbolString.SeparatorChar.ToString(), memberOperator);
+					classSymbol = classSymbol.Replace(SymbolString.SeparatorChar, '.');
 
 					// The class symbol should already have a trailing member operator.
 					hashPath.Insert(0, classSymbol);
