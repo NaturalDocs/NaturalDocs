@@ -8,15 +8,15 @@
  * Usage:
  * 
  *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
- *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingTypes.StartOfParams>
- *		and <PrototypeParsingTypes.ParamSeparator>.  Likewise, you can't get anything from <GetParameterName()> unless
- *		you also have tokens marked with <PrototypeParsingTypes.Name>.  However, you can set the parameter divider tokens,
+ *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>
+ *		and <PrototypeParsingType.ParamSeparator>.  Likewise, you can't get anything from <GetParameterName()> unless
+ *		you also have tokens marked with <PrototypeParsingType.Name>.  However, you can set the parameter divider tokens,
  *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
- *		<PrototypeParsingTypes.Name>.
+ *		<PrototypeParsingType.Name>.
  * 
  *		An important thing to remember though is that the parameter divisions are calculated once and saved.  Only call
- *		functions like <GetParameter()> after *ALL* the separator tokens (<PrototypeParsingTypes.StartOfParams>,
- *		<PrototypeParsingTypes.ParamSeparator>, and <PrototypeParsingTypes.EndOfParams>) are set and will not change
+ *		functions like <GetParameter()> after *ALL* the separator tokens (<PrototypeParsingType.StartOfParams>,
+ *		<PrototypeParsingType.ParamSeparator>, and <PrototypeParsingType.EndOfParams>) are set and will not change
  *		going forward.
  */
 
