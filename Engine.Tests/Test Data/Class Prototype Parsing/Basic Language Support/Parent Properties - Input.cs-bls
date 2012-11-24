@@ -1,0 +1,17 @@
+
+// Class: Properties1
+public static class Properties1 : public Parent { }
+
+// Class: Properties2
+public class Properties2 base public Parent { }
+
+// Class: Properties3
+private class Properties3 : extends public Parent1, implements public Parent2 { }
+
+
+// Class: Metadata
+[Something] class Metadata inherit [Something else] Parent { }
+
+
+// Class: Templates
+class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int> { }

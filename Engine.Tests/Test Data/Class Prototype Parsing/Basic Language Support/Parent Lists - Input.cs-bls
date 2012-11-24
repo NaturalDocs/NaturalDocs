@@ -1,0 +1,237 @@
+
+// Class: Colon1
+class Colon1 : Parent { }
+
+// Class: Colon2_1
+class Colon2_1 : Parent1, Parent2 { }
+
+// Class: Colon2_2
+class Colon2_2 : Parent1; Parent2 { }
+
+
+// Class: Base1
+class Base1 base Parent { }
+
+// Class: Base2_1
+class Base2_1 base Parent1, Parent2 { }
+
+// Class: Base2_2
+class Base2_2 base Parent1; Parent2 { }
+
+
+// Class: ColonBase1
+class ColonBase1 : base Parent { }
+
+// Class: ColonBase2_1
+class ColonBase2_1 : base Parent1, Parent2 { }
+
+// Class: ColonBase2_2
+class ColonBase2_2 : base Parent1; Parent2 { }
+
+
+// Class: Inherit1
+class Inherit1 inherit Parent { }
+
+// Class: Inherit2_1
+class Inherit2_1 inherit Parent1, Parent2 { }
+
+// Class: Inherit2_2
+class Inherit2_2 inherit Parent1; Parent2 { }
+
+
+// Class: ColonInherit1
+class ColonInherit1 : inherit Parent { }
+
+// Class: ColonInherit2_1
+class ColonInherit2_1 : inherit Parent1, Parent2 { }
+
+// Class: ColonInherit2_2
+class ColonInherit2_2 : inherit Parent1; Parent2 { }
+
+
+// Class: Inherits1
+class Inherits1 inherits Parent { }
+
+// Class: Inherits2_1
+class Inherits2_1 inherits Parent1, Parent2 { }
+
+// Class: Inherits2_2
+class Inherits2_2 inherits Parent1; Parent2 { }
+
+
+// Class: ColonInherits1
+class ColonInherits1 : inherits Parent { }
+
+// Class: ColonInherits2_1
+class ColonInherits2_1 : inherits Parent1, Parent2 { }
+
+// Class: ColonInherits2_2
+class ColonInherits2_2 : inherits Parent1; Parent2 { }
+
+
+// Class: Implement1
+class Implement1 implement Parent { }
+
+// Class: Implement2_1
+class Implement2_1 implement Parent1, Parent2 { }
+
+// Class: Implement2_2
+class Implement2_2 implement Parent1; Parent2 { }
+
+
+// Class: ColonImplement1
+class ColonImplement1 : implement Parent { }
+
+// Class: ColonImplement2_1
+class ColonImplement2_1 : implement Parent1, Parent2 { }
+
+// Class: ColonImplement2_2
+class ColonImplement2_2 : implement Parent1; Parent2 { }
+
+
+// Class: Implements1
+class Implements1 implements Parent { }
+
+// Class: Implements2_1
+class Implements2_1 implements Parent1, Parent2 { }
+
+// Class: Implements2_2
+class Implements2_2 implements Parent1; Parent2 { }
+
+
+// Class: ColonImplements1
+class ColonImplements1 : implements Parent { }
+
+// Class: ColonImplements2_1
+class ColonImplements2_1 : implements Parent1, Parent2 { }
+
+// Class: ColonImplements2_2
+class ColonImplements2_2 : implements Parent1; Parent2 { }
+
+
+// Class: Extend1
+class Extend1 extend Parent { }
+
+// Class: Extend2_1
+class Extend2_1 extend Parent1, Parent2 { }
+
+// Class: Extend2_2
+class Extend2_2 extend Parent1; Parent2 { }
+
+
+// Class: ColonExtend1
+class ColonExtend1 : extend Parent { }
+
+// Class: ColonExtend2_1
+class ColonExtend2_1 : extend Parent1, Parent2 { }
+
+// Class: ColonExtend2_2
+class ColonExtend2_2 : extend Parent1; Parent2 { }
+
+
+// Class: Extends1
+class Extends1 extends Parent { }
+
+// Class: Extends2_1
+class Extends2_1 extends Parent1, Parent2 { }
+
+// Class: Extends2_2
+class Extends2_2 extends Parent1; Parent2 { }
+
+
+// Class: ColonExtends1
+class ColonExtends1 : extends Parent { }
+
+// Class: ColonExtends2_1
+class ColonExtends2_1 : extends Parent1, Parent2 { }
+
+// Class: ColonExtends2_2
+class ColonExtends2_2 : extends Parent1; Parent2 { }
+
+
+// Class: ExtendImplement2_1
+class ExtendImplement2_1 extend Parent1 implement Parent2 { }
+
+// Class: ExtendImplement2_2
+class ExtendImplement2_2 extend Parent1, implement Parent2 { }
+
+// Class: ExtendImplement2_3
+class ExtendImplement2_3 extend Parent1; implement Parent2 { }
+
+// Class: ExtendImplement3_1
+class ExtendImplement3_1 extend Parent1 implement Parent2, Parent3 { }
+
+// Class: ExtendImplement3_2
+class ExtendImplement3_2 extend Parent1, implement Parent2, Parent3 { }
+
+// Class: ExtendImplement3_3
+class ExtendImplement3_3 extend Parent1 implement Parent2; Parent3 { }
+
+// Class: ExtendImplement3_4
+class ExtendImplement3_4 extend Parent1; implement Parent2; Parent3 { }
+
+
+// Class: ColonExtendImplement2_1
+class ColonExtendImplement2_1 : extend Parent1 implement Parent2 { }
+
+// Class: ColonExtendImplement2_2
+class ColonExtendImplement2_2 : extend Parent1, implement Parent2 { }
+
+// Class: ColonExtendImplement2_3
+class ColonExtendImplement2_3 : extend Parent1; implement Parent2 { }
+
+// Class: ColonExtendImplement3_1
+class ColonExtendImplement3_1 : extend Parent1 implement Parent2, Parent3 { }
+
+// Class: ColonExtendImplement3_2
+class ColonExtendImplement3_2 : extend Parent1, implement Parent2, Parent3 { }
+
+// Class: ColonExtendImplement3_3
+class ColonExtendImplement3_3 : extend Parent1 implement Parent2; Parent3 { }
+
+// Class: ColonExtendImplement3_4
+class ColonExtendImplement3_4 : extend Parent1; implement Parent2; Parent3 { }
+
+
+// Class: ExtendsImplements2_1
+class ExtendsImplements2_1 extends Parent1 implements Parent2 { }
+
+// Class: ExtendsImplements2_2
+class ExtendsImplements2_2 extends Parent1, implements Parent2 { }
+
+// Class: ExtendsImplements2_3
+class ExtendsImplements2_3 extends Parent1; implements Parent2 { }
+
+// Class: ExtendsImplements3_1
+class ExtendsImplements3_1 extends Parent1 implements Parent2, Parent3 { }
+
+// Class: ExtendsImplements3_2
+class ExtendsImplements3_2 extends Parent1, implements Parent2, Parent3 { }
+
+// Class: ExtendsImplements3_3
+class ExtendsImplements3_3 extends Parent1 implements Parent2; Parent3 { }
+
+// Class: ExtendsImplements3_4
+class ExtendsImplements3_4 extends Parent1; implements Parent2; Parent3 { }
+
+
+// Class: ColonExtendsImplements2_1
+class ColonExtendsImplements2_1 : extends Parent1 implements Parent2 { }
+
+// Class: ColonExtendsImplements2_2
+class ColonExtendsImplements2_2 : extends Parent1, implements Parent2 { }
+
+// Class: ColonExtendsImplements2_3
+class ColonExtendsImplements2_3 : extends Parent1; implements Parent2 { }
+
+// Class: ColonExtendsImplements3_1
+class ColonExtendsImplements3_1 : extends Parent1 implements Parent2, Parent3 { }
+
+// Class: ColonExtendsImplements3_2
+class ColonExtendsImplements3_2 : extends Parent1, implements Parent2, Parent3 { }
+
+// Class: ColonExtendsImplements3_3
+class ColonExtendsImplements3_3 : extends Parent1 implements Parent2; Parent3 { }
+
+// Class: ColonExtendsImplements3_4
+class ColonExtendsImplements3_4 : extends Parent1; implements Parent2; Parent3 { }

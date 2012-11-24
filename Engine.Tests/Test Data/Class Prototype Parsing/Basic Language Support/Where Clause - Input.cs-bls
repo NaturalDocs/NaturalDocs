@@ -1,0 +1,6 @@
+
+// Class: WhereClause
+class WhereClause : Parent1<X>, Parent2<Y> where X : int, Y : new class { }
+
+// Class: Fake_where_clauses
+class Fake_where_clauses base where_Parent1, _where { }

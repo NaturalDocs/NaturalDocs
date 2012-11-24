@@ -1,0 +1,26 @@
+
+// Class: Plain
+class Plain { }
+
+// Class: WithModifiers
+public static interface WithModifiers { }
+
+// Class: Template
+class Template<T> { }
+
+// Class: NestedTemplates
+class NestedTemplates<List<X,Y>, Z> { }
+
+// Class: Metadata
+[Something]
+struct Metadata { }
+
+// Class: Qualifiers
+interface Package.Package.Qualifiers { }
+
+// Class: Qualifiers2
+interface Package::Package::Qualifiers2 { }
+
+// Class: Everything
+[Something: (value), {value}]
+public static class Package::Package.Everything<X, Y<Z>> { }

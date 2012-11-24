@@ -1,0 +1,24 @@
+class WhereClause : Parent1<X>, Parent2<Y> where X : int, Y : new class
+
+  - Name: WhereClause
+
+  - Parent 1: Parent1<X>
+    - Name: Parent1
+    - Template Suffix: <X>
+
+  - Parent 2: Parent2<Y> where X : int, Y : new class
+    - Name: Parent2
+    - Template Suffix: <Y>
+    - Post Modifiers: where X : int, Y : new class
+
+-----
+
+class Fake_where_clauses base where_Parent1, _where
+
+  - Name: Fake_where_clauses
+
+  - Parent 1: where_Parent1
+    - Name: where_Parent1
+
+  - Parent 2: _where
+    - Name: _where

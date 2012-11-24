@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Source\ClassCombining.cs" />
     <Compile Include="Source\Comments.cs" />
+    <Compile Include="Source\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Framework\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
     <Compile Include="Source\LinkScoring.cs" />

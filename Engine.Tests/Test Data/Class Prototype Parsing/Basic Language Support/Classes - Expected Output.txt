@@ -1,0 +1,59 @@
+class Plain
+
+  - Name: Plain
+  - No parents
+
+-----
+
+public static interface WithModifiers
+
+  - Name: WithModifiers
+  - Modifiers: public static
+  - No parents
+
+-----
+
+class Template<T>
+
+  - Name: Template
+  - Template Suffix: <T>
+  - No parents
+
+-----
+
+class NestedTemplates<List<X,Y>, Z>
+
+  - Name: NestedTemplates
+  - Template Suffix: <List<X,Y>, Z>
+  - No parents
+
+-----
+
+[Something] struct Metadata
+
+  - Name: Metadata
+  - Modifiers: [Something]
+  - No parents
+
+-----
+
+interface Package.Package.Qualifiers
+
+  - Name: Package.Package.Qualifiers
+  - No parents
+
+-----
+
+interface Package::Package::Qualifiers2
+
+  - Name: Package::Package::Qualifiers2
+  - No parents
+
+-----
+
+[Something: (value), {value}] public static class Package::Package.Everything<X, Y<Z>>
+
+  - Name: Package::Package.Everything
+  - Template Suffix: <X, Y<Z>>
+  - Modifiers: [Something: (value), {value}] public static
+  - No parents

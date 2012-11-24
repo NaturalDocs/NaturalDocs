@@ -1,0 +1,61 @@
+public static class Properties1 : public Parent
+
+  - Name: Properties1
+  - Modifiers: public static
+
+  - Parent 1: public Parent
+    - Name: Parent
+    - Modifiers: public
+
+-----
+
+public class Properties2 base public Parent
+
+  - Name: Properties2
+  - Modifiers: public
+
+  - Parent 1: public Parent
+    - Name: Parent
+    - Modifiers: public
+
+-----
+
+private class Properties3 : extends public Parent1, implements public Parent2
+
+  - Name: Properties3
+  - Modifiers: private
+
+  - Parent 1: public Parent1
+    - Name: Parent1
+    - Modifiers: public
+
+  - Parent 2: public Parent2
+    - Name: Parent2
+    - Modifiers: public
+
+-----
+
+[Something] class Metadata inherit [Something else] Parent
+
+  - Name: Metadata
+  - Modifiers: [Something]
+
+  - Parent 1: [Something else] Parent
+    - Name: Parent
+    - Modifiers: [Something else]
+
+-----
+
+class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int>
+
+  - Name: Templates
+  - Template Suffix: <int, float>
+
+  - Parent 1: public Parent1<char>
+    - Name: Parent1
+    - Template Suffix: <char>
+    - Modifiers: public
+
+  - Parent 2: Parent2 <List<int>, int>
+    - Name: Parent2
+    - Template Suffix: <List<int>, int>
