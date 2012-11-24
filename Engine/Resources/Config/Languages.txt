@@ -52,7 +52,9 @@ Language: C#
    Enum Values: Under Type
    Case Sensitive: Yes
 
-   Class Prototype Enders: ; {
+   Class Prototype Enders: {
+   Interface Prototype Enders: {
+   Struct Prototype Enders: {
    Function Prototype Enders: ; { :
    Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
