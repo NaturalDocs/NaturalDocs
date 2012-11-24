@@ -449,6 +449,378 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: ParseClassPrototype
+		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
+		 */
+		public virtual ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
+			{
+			if (Type == LanguageType.Container)
+				{  throw new NotImplementedException();  }  //xxx
+
+			if (Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+				{  return null;  }
+
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
+			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
+
+
+			// First walk through trying to find a class keyword.  We're rather permissive when it comes to modifiers to allow for things
+			// like splint comments and bracketed C# metadata.
+
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			for (;;)
+				{
+				if (iterator.IsInBounds == false)
+					{  return null;  }
+				else if (iterator.MatchesToken("class") || 
+						  iterator.MatchesToken("struct") || 
+						  iterator.MatchesToken("interface"))
+					{  
+					// Only count it as a keyword if it's surrounded by whitespace.  We don't want to get tripped up on a macro called
+					// external_class or something like that.
+
+					TokenIterator lookahead = iterator;
+					lookahead.Next();
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+
+					if (lookahead.FundamentalType == FundamentalType.Whitespace &&
+						 (lookbehind.IsInBounds == false || lookbehind.FundamentalType == FundamentalType.Whitespace) )
+						{  break;  }
+					else
+						{  iterator.Next();  }
+					}
+				else if (TryToSkipComment(ref iterator) ||
+						  TryToSkipString(ref iterator) ||
+						  TryToSkipBlock(ref iterator, true))
+					{  }
+				else
+					{  iterator.Next();  }
+				}
+
+			TokenIterator startOfModifiers = tokenizedPrototype.FirstToken;
+			TokenIterator endOfModifiers = iterator;
+
+			endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
+			startOfModifiers.NextPastWhitespace(endOfModifiers);
+
+			if (endOfModifiers > startOfModifiers)
+				{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+
+
+			// The iterator is on the keyword.  Get the name.
+
+			iterator.Next();
+			iterator.NextPastWhitespace();
+
+			TokenIterator startOfName = iterator;
+
+			for (;;)
+				{
+				if (iterator.FundamentalType == FundamentalType.Text ||
+					iterator.Character == '_' || iterator.Character == '.')
+					{  iterator.Next();  }
+				else if (iterator.MatchesAcrossTokens("::"))
+					{  iterator.Next(2);  }
+				else
+					{  break;  }
+				}
+
+			TokenIterator endOfName = iterator;
+
+			endOfName.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfName);
+			// We already moved startOfName past whitespace.
+
+			if (endOfName == startOfName)
+				{  return null;  }
+
+			tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfName, endOfName, ClassPrototypeParsingType.Name);
+
+
+			// Iterator is past the name.  Get the template information if there is any.
+
+			iterator.NextPastWhitespace();
+
+			if (iterator.Character == '<')
+				{
+				TokenIterator startOfTemplate = iterator;
+
+				if (TryToSkipBlock(ref iterator, true) == false)
+					{  return null;  }
+
+				tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfTemplate, iterator, ClassPrototypeParsingType.TemplateSuffix);
+
+				iterator.NextPastWhitespace();
+				}
+
+			
+			// We now have a valid prototype.  See if we can find any parents.  We won't be parsing them yet, we're just finding the
+			// separators.
+
+			// These are the types of things we're looking for.
+			// X : Y, Z
+			// X : inherit Y, Z
+			// X extends Y, Z
+			// X extends Y implements Z
+
+			bool getParents = false;
+
+			if (iterator.Character == ':')
+				{
+				TokenIterator lookahead = iterator;
+				bool doubleToken = false;
+
+				lookahead.Next();
+				lookahead.NextPastWhitespace();
+
+				if (lookahead.MatchesAnyToken(inheritanceKeywords) != -1)
+					{
+					lookahead.Next();
+
+					if (lookahead.FundamentalType == FundamentalType.Whitespace)
+						{  doubleToken = true;  }
+					}
+
+				if (doubleToken)
+					{
+					tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.StartOfParents);
+					iterator = lookahead;
+					}
+				else
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfParents;
+					iterator.Next();
+					iterator.NextPastWhitespace();
+					}
+
+				getParents = true;
+				}
+
+			else if (iterator.MatchesAnyToken(inheritanceKeywords) != -1)
+				{
+				TokenIterator lookahead = iterator;
+				lookahead.Next();
+
+				if (lookahead.FundamentalType == FundamentalType.Whitespace)
+					{
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfParents;
+					iterator = lookahead;
+					iterator.NextPastWhitespace();
+
+					getParents = true;
+					}
+				}
+
+			while (getParents && iterator.IsInBounds)
+				{
+				if (iterator.Character == ',' || iterator.Character == ';')
+					{
+					TokenIterator lookahead = iterator;
+					bool doubleToken = false;
+
+					lookahead.Next();
+					lookahead.NextPastWhitespace();
+
+					if (lookahead.MatchesAnyToken(inheritanceKeywords) != -1)
+						{
+						lookahead.Next();
+
+						if (lookahead.FundamentalType == FundamentalType.Whitespace)
+							{  doubleToken = true;  }
+						}
+
+					if (doubleToken)
+						{
+						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.ParentSeparator);
+						iterator = lookahead;
+						iterator.NextPastWhitespace();
+						}
+					else
+						{
+						iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.ParentSeparator;
+						iterator.Next();
+						iterator.NextPastWhitespace();
+						}
+					}
+				else if (iterator.MatchesAnyToken(inheritanceKeywords) != -1)
+					{
+					TokenIterator lookahead = iterator;
+					lookahead.Next();
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+
+					if (lookahead.Character != '_' && lookbehind.Character != '_')
+						{  iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.ParentSeparator;  }
+
+					iterator.Next();
+					}
+				else if (iterator.Character == '{')
+					{  
+					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  
+					getParents = false;
+					}
+				else if (iterator.MatchesToken("where"))
+					{
+					TokenIterator lookahead = iterator;
+					lookahead.Next();
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+
+					if (lookahead.Character != '_' && lookbehind.Character != '_')
+						{
+						while (lookahead.IsInBounds && lookahead.Character != '{')
+							{
+							if (TryToSkipComment(ref lookahead) ||
+								 TryToSkipString(ref lookahead) ||
+								 TryToSkipBlock(ref lookahead, true))
+								{  }
+							else
+								{  lookahead.Next();  }
+							}
+
+						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.Modifier);
+
+						if (lookahead.Character == '{')
+							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  }
+
+						getParents = false;
+						}
+					else
+						{  iterator.Next();  }
+					}
+				else if (TryToSkipComment(ref iterator) ||
+						  TryToSkipString(ref iterator) ||
+						  TryToSkipBlock(ref iterator, true))
+					{  }
+				else
+					{
+					iterator.Next();
+					}
+				}
+
+
+			// Now that we have our parents separated out, iterate through them to mark the names and modifiers.
+
+			for (int i = 0; i < parsedPrototype.NumberOfParents; i++)
+				{
+				TokenIterator startOfParent, endOfParent;
+				parsedPrototype.GetParent(i, out startOfParent, out endOfParent);
+
+
+				// Find the name, which will be the last acceptable word or the first one followed by template information.
+
+				startOfName = startOfParent;
+				endOfName = startOfParent;
+
+				iterator = startOfParent;
+
+				while (iterator < endOfParent)
+					{
+					if (iterator.MatchesToken("where"))
+						{
+						TokenIterator lookahead = iterator;
+						lookahead.Next();
+
+						TokenIterator lookbehind = iterator;
+						lookbehind.Previous();
+						
+						if ( (lookahead >= endOfParent || lookahead.Character != '_') && 
+							 (lookbehind < startOfParent || lookbehind.Character != '_') )
+							{
+							// We've reached a "where" clause so we can stop looking for a name.
+							break;
+							}
+						}
+
+					if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
+						{
+						startOfName = iterator;
+						endOfName = iterator;
+						endOfName.Next();
+
+						while (endOfName < endOfParent)
+							{
+							if (endOfName.FundamentalType == FundamentalType.Text || 
+								endOfName.Character == '.' || endOfName.Character == '_')
+								{  endOfName.Next();  }
+							else if (endOfName.MatchesAcrossTokens("::"))
+								{  endOfName.Next(2);  }
+							else
+								{  break;  }
+							}
+
+						iterator = endOfName;
+						iterator.NextPastWhitespace(endOfParent);
+
+						if (iterator.Character == '<' && iterator < endOfParent)
+							{
+							TokenIterator lookahead = iterator;
+							if (TryToSkipBlock(ref lookahead, true) == true && lookahead <= endOfParent)
+								{
+								// We've reached template information so we can stop looking for the name.
+								break;
+								}
+							}
+						}
+					else if (TryToSkipComment(ref iterator) ||
+							  TryToSkipString(ref iterator) ||
+							  TryToSkipBlock(ref iterator, true))
+						{  }
+					else
+						{  iterator.Next();  }
+					}
+
+
+				// Now mark the tokens
+
+				if (endOfName > startOfName)
+					{
+					tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfName, endOfName, ClassPrototypeParsingType.Name);
+
+					startOfModifiers = startOfParent;
+					endOfModifiers = startOfName;
+
+					endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
+					startOfModifiers.NextPastWhitespace(endOfModifiers);
+
+					if (endOfModifiers > startOfModifiers)
+						{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+
+					TokenIterator startOfTemplate = endOfName;
+					startOfTemplate.NextPastWhitespace(endOfParent);
+
+					TokenIterator endOfTemplate = startOfTemplate;
+					if (startOfTemplate < endOfParent && startOfTemplate.Character == '<' && 
+						TryToSkipBlock(ref endOfTemplate, true) == true && endOfTemplate <= endOfParent)
+						{
+						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfTemplate, endOfTemplate, ClassPrototypeParsingType.TemplateSuffix);
+						}
+					else
+						{
+						// Reset in case TryToSkipBlock() worked but it went past the parent.  
+						endOfTemplate = startOfTemplate;  
+						}
+
+					// There may also be modifiers after the name.
+					startOfModifiers = endOfTemplate;
+					endOfModifiers = endOfParent;
+
+					endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
+					startOfModifiers.NextPastWhitespace(endOfModifiers);
+
+					if (endOfModifiers > startOfModifiers)
+						{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+					}
+				}
+
+			return parsedPrototype;
+			}
+
+
 		/* Function: SyntaxHighlight
 		 * Applies <SyntaxHighlightingTypes> to the tokenized content.
 		 */
@@ -2516,8 +2888,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			"class", "struct", "interface", "template", "package", "union", "namespace",
 
-			"extends", "implements", "import", "export", "extern", "native", "override", "overload", "explicit", "implicit",
-			"super", "base", "my", "our", "require",
+			"base", "inherit", "inherits", "extend", "extends", "implement", "implements", 
+			"import", "export", "extern", "native", "override", "overload", "explicit", "implicit",
+			"super", "my", "our", "require",
 
 			"public", "private", "protected", "internal", "static", "virtual", "abstract", "friend", 
 			"inline", "using", "final", "sealed", "register", "volatile",
@@ -2530,6 +2903,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			"new", "delete", "sizeof"
 			});
+
+
+		/* var: inheritanceKeywords
+		 * A list of default keywords for searching for class parents across all languages.
+		 */
+		static protected string[] inheritanceKeywords = {
+			"base",
+			"inherit", "inherits",
+			"extend", "extends",
+			"implement", "implements"
+			};
 
 
 		static protected Regex.Comments.AcceptablePrototypeComments acceptablePrototypeCommentRegex

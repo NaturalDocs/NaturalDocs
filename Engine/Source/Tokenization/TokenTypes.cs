@@ -117,4 +117,33 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		DefaultValueSeparator, DefaultValue
 		}
 
+
+	/* Enum: ClassPrototypeParsingType
+	 * 
+	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
+	 * 
+	 * StartOfParents - The start of a parent list.
+	 * ParentSeparator - A separator between parents, such as a comma.
+	 * 
+	 * Modifier - A separate word modifying the class or parent, such as "public" or "static".
+	 * Name - The name of the class or parent excluding including qualifiers, such as "PkgA.PkgB.Class".
+	 * 
+	 * TemplateSuffix - Extra template information after a class or parent, such as "<T>" in "List<T>".
+	 * 
+	 * StartOfBody - The start of the class's body if it is present in the prototype.  Nothing beyond that is demarcated, including the end
+	 *								of the body.  This token is just present to indicate that the prototype does contain a body.
+	 */
+	public enum ClassPrototypeParsingType :  byte
+		{
+		Null = 0,
+
+		StartOfParents, ParentSeparator,
+
+		Modifier, Name,
+
+		TemplateSuffix,
+
+		StartOfBody
+		}
+
 	}

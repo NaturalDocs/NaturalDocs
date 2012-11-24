@@ -387,6 +387,30 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: MatchesAnyToken
+		 * Determines whether any of the passed strings match the token at the current position, returning the match's
+		 * array index if true or -1 if not.
+		 */
+		public int MatchesAnyToken (IList<string> text, bool ignoreCase = false)
+			{
+			if (!IsInBounds)
+				{  return -1;  }
+
+			int tokenLength = tokenizer.TokenLengths[tokenIndex];
+				
+			for (int i = 0; i < text.Count; i++)
+				{
+				// We do this instead of just passing each string to MatchesToken so we don't have to do a bounds check and
+				// token length lookup for every iteration.
+				if (text[i].Length == tokenLength &&
+					 String.Compare(tokenizer.RawText, rawTextIndex, text[i], 0, tokenLength, ignoreCase) == 0)
+					{  return i;  }
+				}
+
+			return -1;
+			}
+
+
 		/* Function: MatchesAnyAcrossTokens
 		 * Determines whether any of the passed strings match the tokens at the current position, returning the match's
 		 * array index if true or -1 if not.  The string comparison can span multiple tokens, which allows you to test 
@@ -540,6 +564,36 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 			
+		/* Function: SetClassPrototypeParsingTypeByCharacters
+		 * 
+		 * Changes the <ClassPrototypeParsingType> of the tokens encompassed by the passed number of characters.
+		 * 
+		 * This throws an exception if the number of characters does not evenly fall on a token boundary.  It
+		 * is assumed that this function will primarily be used after a positive result from <MatchesAcrossTokens()>
+		 * or <TokensInCharacters()> which would cause this to not be an issue.
+		 */
+		public void SetClassPrototypeParsingTypeByCharacters (ClassPrototypeParsingType newType, int characters)
+			{
+			int tokenCount = TokensInCharacters(characters);
+			
+			if (tokenCount == -1)
+				{  throw new InvalidOperationException();  }
+			else if (tokenCount == 1)
+				{  ClassPrototypeParsingType = newType;  }
+			else
+				{
+				TokenIterator iterator = this;
+				
+				while (tokenCount > 0)
+					{
+					iterator.ClassPrototypeParsingType = newType;
+					iterator.Next();
+					tokenCount--;
+					}
+				}
+			}
+
+			
 			
 			
 		// Group: Protected/Internal Functions
@@ -640,6 +694,18 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return tokenizer.PrototypeParsingTypeAt(tokenIndex);  }
 			set
 				{  tokenizer.SetPrototypeParsingTypeAt(tokenIndex, value);  }
+			}
+			
+		/* Property: ClassPrototypeParsingType
+		 * The <ClassPrototypeParsingType> of the current token, or <PrototypeParsingType.Null> if it hasn't been set or the
+		 * iterator is out of bounds.
+		 */
+		public ClassPrototypeParsingType ClassPrototypeParsingType
+			{
+			get
+				{  return tokenizer.ClassPrototypeParsingTypeAt(tokenIndex);  }
+			set
+				{  tokenizer.SetClassPrototypeParsingTypeAt(tokenIndex, value);  }
 			}
 			
 		/* Property: LineNumber

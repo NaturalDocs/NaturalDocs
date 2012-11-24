@@ -108,6 +108,21 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Enum: BuildFlags
+		 * Flags that store which build-on-demand fields have aready been generated.
+		 */
+		[Flags]
+		public enum BuildFlags : byte
+			{
+			None = 0x00,
+
+			ParsedPrototype = 0x01,
+			ParsedClassPrototype = 0x02,
+			TitleParameters = 0x04,
+			PrototypeParameters = 0x08
+			}
+
+
 			
 		// Group: Functions
 		// __________________________________________________________________________
@@ -123,15 +138,14 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			summary = null;
 			prototype = null;
 			parsedPrototype = null;
+			parsedClassPrototype = null;
 			symbol = new SymbolString();
 			symbolDefinitionNumber = 0;
 			classString = new ClassString();
 			classID = 0;
 			isEmbedded = false;
 			titleParameters = new ParameterString();
-			titleParametersGenerated = false;
 			prototypeParameters = new ParameterString();
-			prototypeParametersGenerated = false;
 
 			topicTypeID = 0;
 			usesPluralKeyword = false;
@@ -149,6 +163,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			bodyContextID = 0;
 
 			ignoredFields = IgnoreFields.None;
+			buildFlags = BuildFlags.None;
 			}
 			
 			
@@ -374,7 +389,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				#endif
 
 				title = value;
-				titleParametersGenerated = false;
+				buildFlags &= ~BuildFlags.TitleParameters;
 				}
 			}
 			
@@ -488,7 +503,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 				prototype = value;  
 				parsedPrototype = null;
-				prototypeParametersGenerated = false;
+				parsedClassPrototype = null;
+				buildFlags &= ~(BuildFlags.PrototypeParameters | BuildFlags.ParsedPrototype | BuildFlags.ParsedClassPrototype);
 				}
 			}
 			
@@ -1011,14 +1027,45 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access ParsedPrototype when the prototype was ignored.");  }
 				#endif
 
-				if (parsedPrototype != null)
-					{  return parsedPrototype;  }
-				if (prototype == null)
-					{  return null;  }
+				if ((buildFlags & BuildFlags.ParsedPrototype) == 0)
+					{  
+					if (prototype == null)
+						{  parsedPrototype = null;  }
+					else
+						{  parsedPrototype = Engine.Instance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
 
-				parsedPrototype = Engine.Instance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);
+					buildFlags |= BuildFlags.ParsedPrototype;
+					}
 
 				return parsedPrototype;
+				}
+			}
+
+
+		/* Property: ParsedClassPrototype
+		 * If <Prototype> is not null and the topic type is part of the class hierarchy, this will be the prototype in <ParsedClassPrototype> 
+		 * form.
+		 */
+		public ParsedClassPrototype ParsedClassPrototype
+			{
+			get
+				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Prototype) != 0)
+					{  throw new InvalidOperationException("Tried to access ParsedClassPrototype when the prototype was ignored.");  }
+				#endif
+
+				if ((buildFlags & BuildFlags.ParsedClassPrototype) == 0)
+					{  
+					if (prototype == null)
+						{  parsedClassPrototype = null;  }
+					else
+						{  parsedClassPrototype = Engine.Instance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
+
+					buildFlags |= BuildFlags.ParsedClassPrototype;
+					}
+
+				return parsedClassPrototype;
 				}
 			}
 
@@ -1053,7 +1100,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access TitleParameters when the title was ignored.");  }
 				#endif
 
-				if (!titleParametersGenerated)
+				if ((buildFlags & BuildFlags.TitleParameters) == 0)
 					{
 					int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(title);
 
@@ -1062,7 +1109,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					else
 						{  titleParameters = ParameterString.FromParenthesesString(title.Substring(parenthesesIndex));  }
 
-					titleParametersGenerated = true;
+					buildFlags |= BuildFlags.TitleParameters;
 					}
 
 				return titleParameters;
@@ -1082,7 +1129,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access PrototypeParameters when the prototype was ignored.");  }
 				#endif
 
-				if (!prototypeParametersGenerated)
+				if ((buildFlags & BuildFlags.PrototypeParameters) == 0)
 					{
 					ParsedPrototype parsedPrototype = ParsedPrototype;
 
@@ -1102,7 +1149,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 						prototypeParameters = ParameterString.FromParameterTypes(parameterTypes);
 						}
 
-					prototypeParametersGenerated = true;
+					buildFlags |= BuildFlags.PrototypeParameters;
 					}
 
 				return prototypeParameters;
@@ -1167,6 +1214,12 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 * The <prototype> in <ParsedPrototype> form, or null if <prototype> is null or it hasn't been generated yet.
 		 */
 		protected ParsedPrototype parsedPrototype;
+
+		/* var: parsedClassPrototype
+		 * The <prototype> in <ParsedClassPrototype> form, or null if <prototype> is null, it hasn't been generated yet,
+		 * or this isn't appropriate for the topic type.
+		 */
+		protected ParsedClassPrototype parsedClassPrototype;
 		
 		/* var: symbol
 		 * The topic's fully resolved symbol, or null if not specified.
@@ -1203,21 +1256,11 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 */
 		protected ParameterString titleParameters;
 
-		/* var: titleParametersGenerated
-		 * Whether <titleParameters> was generated, as it's done on demand and stored.
-		 */
-		protected bool titleParametersGenerated;
-		
 		/* var: prototypeParameters
 		 * Any parameters found in the prototype.
 		 */
 		protected ParameterString prototypeParameters;
 
-		/* var: prototypeParametersGenerated
-		 * Whether <prototypeParameters> was generated, as it's done on demand and stored.
-		 */
-		protected bool prototypeParametersGenerated;
-		
 		/* var: topicTypeID
 		 * The ID number of the topic's type, or zero if not specified.
 		 */
@@ -1282,6 +1325,12 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 * The <IgnoreFields> applied to this object.
 		 */
 		protected IgnoreFields ignoredFields;
+
+		/* var: buildFlags
+		 * Which build-on-demand fields have been generated.
+		 */
+		protected BuildFlags buildFlags;
+
 
 		}
 	}

@@ -49,6 +49,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				commentParsingTypes = null;
 				syntaxHighlightingTypes = null;
 				prototypeParsingTypes = null;
+				classPrototypeParsingTypes = null;
 				lines = null;
 				startingLineNumber = 1;
 				}
@@ -100,6 +101,11 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  
 				result.prototypeParsingTypes = new PrototypeParsingType[result.tokenLengths.Count];
 				Array.Copy(prototypeParsingTypes, start.TokenIndex, result.prototypeParsingTypes, 0, result.tokenLengths.Count);
+				}
+			if (classPrototypeParsingTypes != null)
+				{  
+				result.classPrototypeParsingTypes = new ClassPrototypeParsingType[result.tokenLengths.Count];
+				Array.Copy(classPrototypeParsingTypes, start.TokenIndex, result.classPrototypeParsingTypes, 0, result.tokenLengths.Count);
 				}
 
 			return result;
@@ -295,8 +301,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  syntaxHighlightingTypes[i] = type;  }
-			}
-			
+			}			
 			
 		/* Function: SetSyntaxHighlightingTypeBetween
 		 * Changes the <SyntaxHighlightingType> of all the tokens between the two passed iterators.  The
@@ -309,8 +314,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  throw new InvalidOperationException();  }
 
 			SetSyntaxHighlightingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
-			}
-			
+			}			
 			
 		/* Function: PrototypeParsingTypeAt
 		 * Returns the <PrototypeParsingType> at the passed token index.
@@ -353,8 +357,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 			for (int i = startingIndex; i < endingIndex; i++)
 				{  prototypeParsingTypes[i] = type;  }
-			}
-			
+			}			
 			
 		/* Function: SetPrototypeParsingTypeBetween
 		 * Changes the <PrototypeParsingType> of all the tokens between the two passed iterators.  The
@@ -367,6 +370,62 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  throw new InvalidOperationException();  }
 
 			SetPrototypeParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
+			}
+			
+		/* Function: ClassPrototypeParsingTypeAt
+		 * Returns the <ClassPrototypeParsingType> at the passed token index.
+		 */
+		public ClassPrototypeParsingType ClassPrototypeParsingTypeAt (int tokenIndex)
+			{
+			if (classPrototypeParsingTypes == null || tokenIndex < 0 || tokenIndex >= classPrototypeParsingTypes.Length)
+				{  return ClassPrototypeParsingType.Null;  }
+			else
+				{  return classPrototypeParsingTypes[tokenIndex];  }
+			}
+
+		/* Function: SetClassPrototypeParsingTypeAt
+		 * Changes the <ClassPrototypeParsingType> at the passed token index.
+		 */
+		public void SetClassPrototypeParsingTypeAt (int tokenIndex, ClassPrototypeParsingType type)
+			{
+			if (classPrototypeParsingTypes == null)
+				{  classPrototypeParsingTypes = new ClassPrototypeParsingType[tokenLengths.Count];  }
+
+			if (tokenIndex < 0 || tokenIndex >= classPrototypeParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+
+			classPrototypeParsingTypes[tokenIndex] = type;
+			}
+			
+		/* Function: SetClassPrototypeParsingTypeBetween
+		 * Changes the <ClassPrototypeParsingType> of all the tokens between the two passed indexes.  The
+		 * token at the ending index will not be changed.
+		 */
+		public void SetClassPrototypeParsingTypeBetween (int startingIndex, int endingIndex, ClassPrototypeParsingType type)
+			{
+			if (classPrototypeParsingTypes == null)
+				{  classPrototypeParsingTypes = new ClassPrototypeParsingType[tokenLengths.Count];  }
+
+			if (startingIndex < 0 || endingIndex > classPrototypeParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+			if (startingIndex > endingIndex)
+				{  throw new InvalidOperationException();  }
+
+			for (int i = startingIndex; i < endingIndex; i++)
+				{  classPrototypeParsingTypes[i] = type;  }
+			}			
+			
+		/* Function: SetClassPrototypeParsingTypeBetween
+		 * Changes the <ClassPrototypeParsingType> of all the tokens between the two passed iterators.  The
+		 * token at the ending iterator will not be changed.
+		 */
+		public void SetClassPrototypeParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+																											ClassPrototypeParsingType type)
+			{
+			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
+				{  throw new InvalidOperationException();  }
+
+			SetClassPrototypeParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
 			}
 			
 			
@@ -699,6 +758,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 * <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
 		 */
 		protected PrototypeParsingType[] prototypeParsingTypes;
+
+		/* var: classPrototypeParsingTypes
+		 * A list of <ClassPrototypeParsingTypes> that are set for each token.  The array indexes correspond to those
+		 * in <tokenLengths>.  This is created on demand, so if none have been assigned this will be null.
+		 */
+		protected ClassPrototypeParsingType[] classPrototypeParsingTypes;
 		
 		/* var: lines
 		 * The list of <Lines> generated for <rawText>.  This is generated on demand so this variable will be null 
