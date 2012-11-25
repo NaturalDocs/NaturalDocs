@@ -2886,11 +2886,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			"function", "operator", "delegate", "event", "enum", "typedef",
 
-			"class", "struct", "interface", "template", "package", "union", "namespace",
+			"class", "struct", "interface", "template", "package", "union", "namespace", "using",
 
 			"base", "inherit", "inherits", "extend", "extends", "implement", "implements", 
 			"import", "export", "extern", "native", "override", "overload", "explicit", "implicit",
-			"super", "my", "our", "require",
+			"super", "my", "our", "require", "this",
 
 			"public", "private", "protected", "internal", "static", "virtual", "abstract", "friend", 
 			"inline", "using", "final", "sealed", "register", "volatile",
@@ -2901,7 +2901,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			"break", "continue", "next", "return", "goto",
 			"try", "catch", "throw", "finally", "throws", "lock", "eval",
 
-			"new", "delete", "sizeof"
+			"new", "delete", "sizeof", "typeof"
 			});
 
 
