@@ -1145,32 +1145,39 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			TokenIterator start, end;
 			lineIterator.GetBounds(LineBoundsMode.CommentContent, out start, out end);
 			
+			bool definiteHeading = false;
+
+			heading = null;
+			headingType = HeadingType.Generic;
+
 			
-			// Must end with a colon and have content before it.
+			// The line must end with a colon and be right up against content.  If it ends with a double colon we can skip
+			// IsHeadingContent().
 			
 			end.Previous();
 			
-			if (start >= end || end.Character != ':')
-				{
-				heading = null;
-				headingType = HeadingType.Generic;
-				return false;
-				}
-				
+			if (end.Character != ':')
+				{  return false;  }
+
 			end.Previous();
-			
+
 			if (end.FundamentalType == FundamentalType.Whitespace)
-				{
-				heading = null;
-				headingType = HeadingType.Generic;
-				return false;
-				}
-				
-			end.Next();
+				{  return false;  }
+
+			else if (end.Character == ':')
+				{  definiteHeading = true;  }
+
+			else
+				{  end.Next();  }
 			
+
+			if (start >= end)
+				{  return false;  }
 			
-			// Cool.  Grab the content.
-			
+			if (!definiteHeading && IsHeadingContent(start, end) == false)
+				{  return false;  }
+
+
 			heading = lineIterator.Tokenizer.TextBetween(start, end);
 
 			if (tables[(int)TableIndex.SpecialHeadings].ContainsKey(heading))
@@ -1181,6 +1188,58 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			return true;
 			}
 			
+
+		/* Function: IsHeadingContent
+		 * Tests the capitalization of the text between the iterators to see whether the content should be interpreted as a
+		 * heading or left as plain text.  The iterators should not include the colon.
+		 */
+		protected bool IsHeadingContent (TokenIterator start, TokenIterator end)
+			{
+			bool isFirstWord = true;
+
+			while (start < end)
+				{
+				if (start.FundamentalType == FundamentalType.Text)
+					{
+					TokenIterator endOfWord = start;
+					endOfWord.Next();
+
+					while ( endOfWord < end && 
+								 (endOfWord.FundamentalType == FundamentalType.Text || endOfWord.Character == '_') )
+						{  endOfWord.Next();  }
+
+					if (IsHeadingWord(start, endOfWord, isFirstWord) == false)
+						{  return false;  }
+
+					start = endOfWord;
+					isFirstWord = false;
+					}
+				else
+					{  start.Next();  }
+				}
+
+			return true;
+			}
+
+			
+		/* Function: IsHeadingWord
+		 * Tests the capitalization of the single word between the iterators to see whether it should be interpreted as part of
+		 * a heading or plain text.  All words in a heading should pass this test for it to be seen as a heading.
+		 */
+		protected bool IsHeadingWord (TokenIterator start, TokenIterator end, bool isFirstWord)
+			{
+			// If it starts with an uppercase letter, number, symbol, or underscore it's okay.  We only need to do tests if it starts
+			// with a lowercase letter.
+			if (Char.IsLower(start.Character) == false)
+				{  return true;  }
+
+			// We'll accept short words as long as it's not the first.  This lets through "A and the B", "X or Y", etc.
+			if (!isFirstWord && (end.RawTextIndex - start.RawTextIndex) <= 4)
+				{  return true;  }
+
+			return false;
+			}
+
 			
 		/* Function: GetPreformattedLine
 		 * Returns the line specified by the <LineIterator> as a preformatted line, meaning all leading whitespace will be preserved
