@@ -1,0 +1,122 @@
+
+File: Headings
+_______________________________________________________________________________
+
+
+Topic: Simple Headings
+
+	Heading:
+
+		text
+
+	Longer Heading:
+
+		text
+
+
+Topic: Allow Short Lowercase Words
+
+	This and That:
+
+		text
+
+	X and the Y:
+
+		text
+
+
+Topic: Don't Allow Short Lowercase Words as the First Word
+
+	the Something:
+
+		text
+
+	a Something:
+
+		text
+
+
+Topic: Don't Get Confused by Numbers and Symbols
+
+	1111111111 Title:
+
+		text
+
+	1111111111 title:
+
+		text
+
+	1 Title:
+
+		text
+
+	1 title:
+
+		text
+
+	(This and That):
+
+		text
+
+	(this and that):
+
+		text
+
+	(the Something):
+
+		text
+
+
+Topic: Blank Line Above
+	Can be Skipped if it's the First Line in a Topic:
+
+		text
+	Not Allowed Otherwise:
+
+		text
+
+
+Topic: Special Headings
+
+	Parameters:
+
+		text
+
+	Parameter:
+
+		text
+
+	Params:
+
+		text
+
+	Param:
+
+		text
+
+	Arguments:
+
+		text
+
+	Argument:
+
+		text
+
+	Args:
+
+		text
+
+	Arg:
+
+		text
+
+
+Topic: Everything Allowed with Double Colons
+
+	all lowercase::
+
+		text
+
+	Parameters::
+
+		text

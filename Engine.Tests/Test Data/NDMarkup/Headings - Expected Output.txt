@@ -1,0 +1,15 @@
+(No body detected)
+-----
+<h>Heading</h><p>text</p><h>Longer Heading</h><p>text</p>
+-----
+<h>This and That</h><p>text</p><h>X and the Y</h><p>text</p>
+-----
+<p>the Something:</p><p>text</p><p>a Something:</p><p>text</p>
+-----
+<h>1111111111 Title</h><p>text</p><p>1111111111 title:</p><p>text</p><h>1 Title</h><p>text</p><p>1 title:</p><p>text</p><h>(This and That)</h><p>text</p><p>(this and that):</p><p>text</p><p>(the Something):</p><p>text</p>
+-----
+<h>Can be Skipped if it's the First Line in a Topic</h><p>text Not Allowed Otherwise:</p><p>text</p>
+-----
+<h type="parameters">Parameters</h><p>text</p><h type="parameters">Parameter</h><p>text</p><h type="parameters">Params</h><p>text</p><h type="parameters">Param</h><p>text</p><h type="parameters">Arguments</h><p>text</p><h type="parameters">Argument</h><p>text</p><h type="parameters">Args</h><p>text</p><h type="parameters">Arg</h><p>text</p>
+-----
+<h>all lowercase</h><p>text</p><h type="parameters">Parameters</h><p>text</p>
