@@ -164,7 +164,10 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 			// DEPENDENCY: This requires actualOutput to never be null if SetActualOutput() was called, even if it was passed 
 			// a null string.
-			if (actualOutput == null)
+
+			// Checking testException for null isn't just for efficiency.  If there was an exception thrown and the actual output file
+			// doesn't exist, not checking it would mean the exception message wouldn't get saved as the actual output.
+			if (actualOutput == null && testException == null)
 				{
 				try
 					{  actualOutput = System.IO.File.ReadAllText(actualOutputFile);  }
