@@ -58,6 +58,8 @@
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
     <Compile Include="Source\CodeDB\IDLookupCache.cs" />
+    <Compile Include="Source\Languages\Element.cs" />
+    <Compile Include="Source\Languages\ParentElement.cs" />
     <Compile Include="Source\ParsedClassPrototype.cs" />
     <Compile Include="Source\Links\UnresolvedTargetTopicID.cs" />
     <Compile Include="Source\CodeDB\Lock.cs" />

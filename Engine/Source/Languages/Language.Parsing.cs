@@ -1102,6 +1102,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: GetCodeElements
+		 * 
+		 * Goes through the file looking for code <Elements> that should be included in the output.  The result will be one 
+		 * <ParentElement> representing the root of the file and everything else will be its children.
+		 * 
+		 * If the language doesn't have full support this will return null.
+		 */
+		public virtual ParentElement GetCodeElements (Tokenizer source)
+			{
+			return null;
+			}
+
+
 		/* Function: GetSourceCodePoints
 		 * 
 		 * Goes through the file looking for code elements that should be included in the output and returns a list of <CodePoints>.
