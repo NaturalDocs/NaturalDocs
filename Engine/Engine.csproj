@@ -58,6 +58,7 @@
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
     <Compile Include="Source\CodeDB\IDLookupCache.cs" />
+    <Compile Include="Source\Languages\Parsers\CSharp.cs" />
     <Compile Include="Source\Languages\Element.cs" />
     <Compile Include="Source\Languages\ParentElement.cs" />
     <Compile Include="Source\ParsedClassPrototype.cs" />
@@ -228,6 +229,7 @@
     <Content Include="Resources\Config\Topics.txt" />
     <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
+    <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

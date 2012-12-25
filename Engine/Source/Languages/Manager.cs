@@ -273,7 +273,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			shebangStrings = new SortedStringTable<Language>(ShebangStringsIgnoreCase, ShebangStringsAreNormalized,
 																					new ShebangStringComparer());
 			
-			predefinedLanguages = new Language[2];
+			predefinedLanguages = new Language[3];
 			
 			predefinedLanguages[0] = new Language("Text File");
 			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
@@ -282,6 +282,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			predefinedLanguages[1] = new Language("Shebang Script");
 			predefinedLanguages[1].Type = Language.LanguageType.Container;
 			predefinedLanguages[1].Predefined = true;
+
+			predefinedLanguages[2] = new Languages.Parsers.CSharp();
+			predefinedLanguages[2].Predefined = true;
 			}
 			
 			
