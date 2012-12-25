@@ -716,6 +716,24 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			get
 				{  return lineNumber;  }
 			}
+
+		/* Property: CharNumber
+		 * The character number of the current token, or the one it left off on if it went out of bounds.  The first character is one,
+		 * not zero, and it is relative to the line, not the entire string.
+		 */
+		public int CharNumber
+			{
+			get
+				{
+				if (rawTextIndex == 0)
+					{  return 1;  }
+
+				int lastLineBreakIndex = tokenizer.RawText.LastIndexOfAny(Tokenizer.lineBreakChars, rawTextIndex - 1);
+
+				// If lastLineBreakIndex is -1 this returns rawTextIndex + 1, which is correct.
+				return (rawTextIndex - lastLineBreakIndex);
+				}
+			}
 			
 		/* Property: RawTextIndex
 		 * The offset of the current token into <Tokenizer.RawText>.  Will be zero if it went past the beginning, or the index 

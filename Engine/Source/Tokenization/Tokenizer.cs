@@ -439,9 +439,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		 */
 		static public FundamentalType FundamentalTypeOf (char character)
 			{
-			// DEPENDENCY: If this implementation changes, these functions must change to match:
+			// DEPENDENCY: If this implementation changes, these must change to match:
 			//		- Tokenizer.Load()
 			//		- SimpleTokenIterator.GetTokenLength()
+			//      - lineBreakChars
 			
 			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
@@ -774,5 +775,18 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		/* var: startingLineNumber
 		 */
 		protected int startingLineNumber;
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* var: lineBreakChars
+		 * An array of all the characters that count as <FundamentalType.LineBreak>.
+		 */
+		internal static char[] lineBreakChars = { '\r', '\n' };
+		// DEPENDENCY: This must match the implementation of FundamentalTypeOf().
+
 		}
 	}
