@@ -41,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		// Group: Public Parsing Functions
+		// Group: Functions
 		// __________________________________________________________________________
 	
 
@@ -99,7 +99,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Scan the comments for "Prototype:" headings, applying them as the prototypes and removing them from the body.
+			// Scan the comments for prototype blocks, applying them as the prototypes and removing them from the body.
 
 			ApplyCommentPrototypes(commentTopics);
 
@@ -875,16 +875,18 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
 			#endif
 
-			if (topicA.Symbol != topicB.Symbol)
-				{  return false;  }
-
 			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same topic type.
 			if (topicA.TopicTypeID != topicB.TopicTypeID)
 				{  return false;  }
 
+			bool ignoreCase = (Engine.Instance.Languages.FromID(topicA.LanguageID).CaseSensitive == false);
+
+			if (string.Compare(topicA.Symbol, topicB.Symbol, ignoreCase) != 0)
+				{  return false;  }
+
 			// So now we have two topics of the same language, symbol, and type.  Now the assumption is they're the same
 			// unless they're distinguished by parameters.
-			return (topicA.PrototypeParameters == topicB.PrototypeParameters);
+			return (string.Compare(topicA.PrototypeParameters, topicB.PrototypeParameters, ignoreCase) == 0);
 			}
 
 
