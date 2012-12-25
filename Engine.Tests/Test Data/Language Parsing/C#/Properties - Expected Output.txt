@@ -1,0 +1,27 @@
+[Root Element]
+- Child Language: C#
+- Access Level: Public
+- Default Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  Class: TestClass
+  class TestClass
+  (line 2, char 1)
+  - Default Child Access Level: Private
+  - Child Scope: TestClass
+    ---------------
+    Property: PropertyA
+    int PropertyA { get }
+    (line 4, char 2, child of TestClass)
+    ---------------
+    Property: PropertyB
+    protected int PropertyB { get; private set }
+    (line 10, char 2, child of TestClass)
+    ---------------
+    Property: PropertyC
+    [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+    (line 18, char 2, child of TestClass)
+    ---------------
+    Property: PropertyD
+    abstract int PropertyD { get; set }
+    (line 30, char 2, child of TestClass)

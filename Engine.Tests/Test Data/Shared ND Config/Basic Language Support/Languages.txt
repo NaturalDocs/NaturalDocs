@@ -30,9 +30,9 @@ Language: C# (Basic Language Support)
    Member Operator: .
    Enum Values: Under Type
 
-   Class Prototype Enders: {
-   Interface Prototype Enders: {
-   Struct Prototype Enders: {
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Struct Prototype Ender: {
    Function Prototype Enders: ; { :
    Operator Prototype Enders: ; {
    Variable Prototype Enders: ; =
