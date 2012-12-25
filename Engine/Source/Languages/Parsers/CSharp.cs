@@ -558,7 +558,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name == "event" ||
 				name == "implicit" ||
 				name == "explicit" ||
-				name == "enum")
+				name == "enum" ||
+				name == "void")
 				{  return false;  }
 
 			if (keyword == "destructor")
@@ -1826,6 +1827,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 */
 		static protected StringSet Keywords = new StringSet(false, false, new string[] {
 
+			// Listed in the C# reference's keywords section
+
 			"abstract", "as", "base", "bool", "break",
 			"byte", "case", "catch", "char", "checked",
 			"class", "const", "continue", "decimal", "default",
@@ -1843,9 +1846,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			"unsafe", "ushort", "using", "virtual", "void",
 			"volatile", "while",
 
-			// Contextual keywords
+			// Additional keywords found in the syntax reference
 
-			"get", "set", "var", "alias", "partial"
+			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value",
+
+			// Additional keywords for LINQ
+
+			"from", "let", "where", "join", "on", "equals", "into", "orderby", "ascending", "descending",
+			"select", "group", "by"
 
 			});
 
