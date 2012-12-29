@@ -94,6 +94,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator iterator = source.FirstToken;
 			GetCodeElements(ref iterator, rootElement);
 
+			iterator = source.LastToken;
+			rootElement.EndingLineNumber = iterator.LineNumber;
+			rootElement.EndingCharNumber = iterator.CharNumber;
+
 			return rootElement;
 			}
 
@@ -195,6 +199,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			GetCodeElements(ref iterator, namespaceElement, '}');
+
+			namespaceElement.EndingLineNumber = iterator.LineNumber;
+			namespaceElement.EndingCharNumber = iterator.CharNumber;
 
 			return true;
 			}
@@ -337,6 +344,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			iterator = lookahead;
 			iterator.Next();
 			GetCodeElements(ref iterator, classElement, '}');
+
+			classElement.EndingLineNumber = iterator.LineNumber;
+			classElement.EndingCharNumber = iterator.CharNumber;
 
 			return true;
 			}

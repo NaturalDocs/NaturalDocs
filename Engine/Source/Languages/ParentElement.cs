@@ -64,6 +64,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			defaultChildLanguageID = 0;
 			childContextString = new ContextString();
 			childContextStringSet = false;
+
+			endingLineNumber = -1;
+			endingCharNumber = -1;
 			}
 
 
@@ -203,6 +206,32 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Property: EndingLineNumber
+		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.  The first line number is one, 
+		 * not zero.
+		 */
+		public int EndingLineNumber
+			{
+			get
+				{  return endingLineNumber;  }
+			set
+				{  endingLineNumber = value;  }
+			}
+
+
+		/* Property: EndingCharNumber
+		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character number 
+		 * is one, not zero, and is relative to the line, not the file.
+		 */
+		public int EndingCharNumber
+			{
+			get
+				{  return endingCharNumber;  }
+			set
+				{  endingCharNumber = value;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -238,6 +267,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Whether <childContextString> is set for the current element.
 		 */
 		protected bool childContextStringSet;
+
+		/* var: endingLineNumber
+		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.
+		 */
+		protected int endingLineNumber;
+
+		/* var: endingCharNumber
+		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character is one, not 
+		 * zero, and is relative to <endingLineNumber>, not the file.
+		 */
+		protected int endingCharNumber;
 
 		}
 	}
