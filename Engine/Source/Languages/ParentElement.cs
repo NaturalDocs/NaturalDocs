@@ -57,8 +57,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		private void CommonInit ()
 			{
-			children = null;
-
 			parentAccessLevel = AccessLevel.Unknown;
 			defaultChildAccessLevel = AccessLevel.Unknown;
 			defaultChildLanguageID = 0;
@@ -70,51 +68,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: AddChild
-		 * Adds a child to this element.  You cannot mix embedded and non-embedded children.
-		 */
-		public void AddChild (Element child)
-			{
-			if (children == null)
-				{  children = new List<Element>();  }
-
-			children.Add(child);
-			child.Parent = this;
-
-			#if DEBUG
-			bool hasEmbedded = false;
-			bool hasNonEmbedded = false;
-
-			for (int i = 0; i < children.Count; i++)
-				{
-				if (children[i].Topic != null)
-					{
-					if (children[i].Topic.IsEmbedded)
-						{  hasEmbedded = true;  }
-					else
-						{  hasNonEmbedded = true;  }
-					}
-				}
-
-			if (hasEmbedded && hasNonEmbedded)
-				{  throw new Exception ("You cannot add both embedded and non-embedded elements to the same parent.");  }
-			#endif
-			}
-
-
 
 		// Group: Properties
 		// __________________________________________________________________________
-
-
-		/* Property: Children
-		 * The list of children this element has, or null if none.
-		 */
-		public List<Element> Children
-			{
-			get
-				{  return children;  }
-			}
 
 
 		/* Property: ParentAccessLevel
@@ -179,33 +135,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Property: AllElements
-		 * Returns an enumerator that can iterate through all <Elements> in the hierarchy.  It will return the current element,
-		 * then all its children and their children in a depth-first ordering.
-		 */
-		public IEnumerable<Element> AllElements
-			{
-			get
-				{
-				yield return this;
-
-				if (children != null)
-					{
-					foreach (Element child in children)
-						{
-						if (child is ParentElement)
-							{
-							foreach (Element grandchild in (child as ParentElement).AllElements)
-								{  yield return grandchild;  }
-							}
-						else
-							{  yield return child;  } 
-						}
-					}
-				}
-			}
-
-
 		/* Property: EndingLineNumber
 		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.  The first line number is one, 
 		 * not zero.
@@ -236,11 +165,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 
-
-		/* var: children
-		 * The list of children this element has, or null if none.
-		 */
-		protected List<Element> children;
 
 		/* var: parentAccessLevel
 		 * The access level of the parent, or <AccessLevel.Unknown> if it's not set.

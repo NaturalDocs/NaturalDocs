@@ -53,12 +53,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: OutputOf
 		 */
-		public string OutputOf (ParentElement rootElement)
+		public string OutputOf (List<Element> elements)
 			{
 			StringBuilder output = new StringBuilder();
 			bool isFirst = true;
 
-			foreach (var element in rootElement.AllElements)
+			foreach (var element in elements)
 				{
 				int indent = 0;
 				ParentElement parent = element.Parent;
@@ -207,12 +207,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 							string code = System.IO.File.ReadAllText(test.InputFile);
 							Tokenizer tokenizedCode = new Tokenizer(code);
-							ParentElement rootElement = language.GetCodeElements(tokenizedCode);
+							List<Element> codeElements = language.GetCodeElements(tokenizedCode);
 
-							if (rootElement == null)
+							if (codeElements == null)
 								{  throw new Exception("GetCodeElements() returned null.");  }
 
-							test.SetActualOutput( OutputOf(rootElement) );  
+							test.SetActualOutput( OutputOf(codeElements) );  
 							}
 						catch (Exception e)
 							{  test.TestException = e;  }
