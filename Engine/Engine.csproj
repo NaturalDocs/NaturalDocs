@@ -218,7 +218,7 @@
     <Content Include="Architecture\Database Layout\Links.txt" />
     <Content Include="Architecture\Database Layout\System.txt" />
     <Content Include="Architecture\Database Layout\Topics.txt" />
-    <Content Include="Architecture\File Parsing.txt" />
+    <Content Include="Architecture\File Processing.txt" />
     <Content Include="Architecture\ID Deletions.txt" />
     <Content Include="Architecture\Styles\File Shrinking.txt" />
     <Content Include="Architecture\NDMarkup.txt" />

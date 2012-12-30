@@ -1,0 +1,55 @@
+﻿
+Title: File Processing
+_______________________________________________________________________________
+
+This is a very broad overview and doesn't contain all the necessary details of the process.  Rather, use it as a
+framework to get oriented with the code and then delve into the specific areas you need.
+
+
+Topic: Setup
+
+	File sources are specified by <Project.txt> and/or the command line as managed by <Config.Manager>.
+	<Config.Manager.Start()> then converts each one into a <Files.FileSource> to be managed by <Files.Manager>.
+	
+	<Files.Manager.Start()> loads the previous state of all the source files from <Files.nd> and now holds all the file 
+	names and IDs as of the last run.
+	
+
+Topic: Initial Scan
+
+	Client code calls <Files.Manager.WorkOnAddingAllFiles()> which iterates through every file and adds it to 
+	<Files.Manager>.  If the file was previously unknown or the timestamp has changed, the file is new or changed.
+	
+	After this process, the client code calls <Files.Manager.DeleteFilesNotInFileSources()> to find which ones were 
+	deleted and mark them as such.
+	
+	
+Topic: Parsing
+
+	The client calls <Files.Manager.WorkOnProcessingChanges()>.  Every deleted file will have its information deleted
+	from the database.  Every new or changed file will have its language determined by <Languages.Manager>, be 
+	loaded from disk, be run through the appropriate <Languages.Language.Parse()> function, have the results compared 
+	to the database, and then the database will be updated.
+
+	
+Topic: Detecting Changes
+
+	The output builders do not monitor <Files.Manager> to detect changes.  Rather, they implement 
+	<CodeDB.IChangeWatcher> and add themselves to <CodeDB.Manager> before change processing starts.  When
+	<Files.Manager> updates the database to reflect changes in the source files, <CodeDB.Manager> will notify all its 
+	watchers of the net effect through functions like <CodeDB.IChangeWatcher.OnAddTopic()>.
+	
+	
+Topic: Building Output
+
+	Builders were also created by <Config.Manager>.  During the parsing pass, they collect the CodeDB changes as 
+	lists of files that need to be rebuilt.  They don't need to store every bit of information, such as the ID of every topic
+	that was changed, but the net effect it has on the building stage.  For example, if a new topic was added, they only
+	need to store the IDs of the source and class files that need to be updated because of it.
+
+	After all parsing is done, client code calls <Output.Manager.WorkOnUpdatingOutput()>.  This goes through all the
+	builders so they can recreate the output files that were affected by the changes they observed.  They can retrieve the 
+	updated topics from <CodeDB.Manager> which is why it was unnecessary to store every detail of every change.
+
+	Client code also calls <Output.Manager.WorkOnFinalizingOutput()> in case there is additional work that must be done
+	only after WorkOnUpdatingOutput() has completed.
