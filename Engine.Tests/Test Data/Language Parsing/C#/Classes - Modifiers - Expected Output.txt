@@ -26,7 +26,7 @@
   - Default Child Access Level: Internal
   - Child Scope: TestNamespace
     ---------------
-    Class: TestClass3
+    Class: TestNamespace.TestClass3
     TestNamespace.TestClass3
     [Attibute] internal protected class TestClass3
     (line 12, char 2, child of line 10)

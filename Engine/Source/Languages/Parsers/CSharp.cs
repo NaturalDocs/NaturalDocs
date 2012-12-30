@@ -338,7 +338,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (topicTypeID != 0)
 				{
 				Topic classTopic = new Topic();
-				classTopic.Title = name;
+				classTopic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
 				classTopic.Symbol = symbol;
 				classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				classTopic.TopicTypeID = topicTypeID;

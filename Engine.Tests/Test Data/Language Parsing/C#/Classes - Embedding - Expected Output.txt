@@ -17,17 +17,17 @@
   - Default Child Access Level: Internal
   - Child Scope: TestNamespace
     ---------------
-    Class: InsideOfNamespace
+    Class: TestNamespace.InsideOfNamespace
     TestNamespace.InsideOfNamespace
     class InsideOfNamespace
     (line 8, char 2, child of line 6)
     - Default Child Access Level: Private
     - Child Scope: TestNamespace.InsideOfNamespace
       ---------------
-      Class: InsideOfClass
+      Class: TestNamespace.InsideOfNamespace.InsideOfClass
       TestNamespace.InsideOfNamespace.InsideOfClass
       class InsideOfClass
-      (line 10, char 3, child of InsideOfNamespace)
+      (line 10, char 3, child of TestNamespace.InsideOfNamespace)
       - Default Child Access Level: Private
       - Child Scope: TestNamespace.InsideOfNamespace.InsideOfClass
     ---------------
@@ -37,7 +37,7 @@
     - Default Child Access Level: Internal
     - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2
       ---------------
-      Class: InsideOfEmbeddedNamespaces
+      Class: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
       TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
       class InsideOfEmbeddedNamespaces
       (line 17, char 3, child of line 15)
