@@ -5,15 +5,18 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   class TestClass
   (line 2, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Enumeration: EnumA
+    TestClass.EnumA
     public enum EnumA
     (line 4, char 2, child of TestClass)
     ---------------
     Enumeration: EnumB
+    TestClass.EnumB
     [Attribute] public enum EnumB : byte
     (line 7, char 2, child of TestClass)

@@ -5,15 +5,18 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   class TestClass
   (line 2, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Delegate: DelegateA
+    TestClass.DelegateA
     public delegate void DelegateA (int a)
     (line 4, char 2, child of TestClass)
     ---------------
     Delegate: DelegateB
+    TestClass.DelegateB
     [Attribute] protected internal delegate IList<T> DelegateB<in T> (params object[] x) where T: System.Collections.IEnumerable, new()
     (line 6, char 2, child of TestClass)

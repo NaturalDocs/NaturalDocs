@@ -5,27 +5,33 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   class TestClass
   (line 2, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Function: FunctionA
+    TestClass.FunctionA
     public void FunctionA ()
     (line 4, char 2, child of TestClass)
     ---------------
     Function: FunctionB
+    TestClass.FunctionB
     abstract int FunctionB (int a)
     (line 7, char 2, child of TestClass)
     ---------------
     Function: FunctionC
+    TestClass.FunctionC
     [Attribute] protected internal IList<T> FunctionC<T> () where T: System.Collections.IEnumerable
     (line 9, char 2, child of TestClass)
     ---------------
     Function: FunctionD
+    TestClass.FunctionD
     static int FunctionD (this string a, int b, params object[] c)
     (line 13, char 2, child of TestClass)
     ---------------
     Function: Interface.Interface.FunctionE
+    TestClass.Interface.Interface.FunctionE
     internal partial void Interface.Interface.FunctionE<T> () where T: new()
     (line 16, char 2, child of TestClass)

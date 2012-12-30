@@ -5,6 +5,7 @@
 - Child Scope: (global)
   ---------------
   Class: Child
+  Child
   public class Child : Parent
   (line 2, char 1)
   - Access Level: Public
@@ -12,6 +13,7 @@
   - Child Scope: Child
   ---------------
   Class: Child2
+  Child2
   public class Child2 : Parent2, Interface2, Interface3
   (line 6, char 1)
   - Access Level: Public

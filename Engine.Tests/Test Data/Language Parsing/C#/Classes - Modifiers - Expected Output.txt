@@ -5,6 +5,7 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   public static partial class TestClass
   (line 2, char 1)
   - Access Level: Public
@@ -12,6 +13,7 @@
   - Child Scope: TestClass
   ---------------
   Class: TestClass2
+  TestClass2
   internal sealed class TestClass2
   (line 6, char 1)
   - Access Level: Internal
@@ -25,8 +27,9 @@
   - Child Scope: TestNamespace
     ---------------
     Class: TestClass3
+    TestNamespace.TestClass3
     [Attibute] internal protected class TestClass3
     (line 12, char 2, child of line 10)
     - Access Level: ProtectedInternal
     - Default Child Access Level: Private
-    - Child Scope: TestClass3
+    - Child Scope: TestNamespace.TestClass3

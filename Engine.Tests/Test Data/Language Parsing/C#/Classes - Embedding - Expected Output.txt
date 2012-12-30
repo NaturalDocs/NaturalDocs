@@ -5,6 +5,7 @@
 - Child Scope: (global)
   ---------------
   Class: OutsideOfNamespace
+  OutsideOfNamespace
   class OutsideOfNamespace
   (line 2, char 1)
   - Default Child Access Level: Private
@@ -17,25 +18,28 @@
   - Child Scope: TestNamespace
     ---------------
     Class: InsideOfNamespace
+    TestNamespace.InsideOfNamespace
     class InsideOfNamespace
     (line 8, char 2, child of line 6)
     - Default Child Access Level: Private
-    - Child Scope: InsideOfNamespace
+    - Child Scope: TestNamespace.InsideOfNamespace
       ---------------
       Class: InsideOfClass
+      TestNamespace.InsideOfNamespace.InsideOfClass
       class InsideOfClass
       (line 10, char 3, child of InsideOfNamespace)
       - Default Child Access Level: Private
-      - Child Scope: InsideOfClass
+      - Child Scope: TestNamespace.InsideOfNamespace.InsideOfClass
     ---------------
     (no topic)
     (line 15, char 2, child of line 6)
     - Access Level: Public
     - Default Child Access Level: Internal
-    - Child Scope: EmbeddedNamespace1.EmbeddedNamespace2
+    - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2
       ---------------
       Class: InsideOfEmbeddedNamespaces
+      TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
       class InsideOfEmbeddedNamespaces
       (line 17, char 3, child of line 15)
       - Default Child Access Level: Private
-      - Child Scope: InsideOfEmbeddedNamespaces
+      - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces

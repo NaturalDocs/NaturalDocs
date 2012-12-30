@@ -5,18 +5,21 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   class TestClass
   (line 2, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestClass
   ---------------
   Struct: TestStruct
+  TestStruct
   struct TestStruct
   (line 6, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestStruct
   ---------------
   Interface: TestInterface
+  TestInterface
   interface TestInterface
   (line 10, char 1)
   - Default Child Access Level: Public

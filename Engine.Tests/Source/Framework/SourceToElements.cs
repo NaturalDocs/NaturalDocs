@@ -101,6 +101,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 					else
 						{  output.AppendLine(element.Topic.Title);  }
 
+					if (element.Topic.Symbol != null)
+						{
+						output.Append(' ', indent);
+						output.AppendLine(element.Topic.Symbol.FormatWithSeparator('.'));
+						}
+
 					if (element.Topic.Prototype != null)
 						{
 						output.Append(' ', indent);

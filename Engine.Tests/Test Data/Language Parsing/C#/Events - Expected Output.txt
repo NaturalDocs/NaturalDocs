@@ -5,27 +5,33 @@
 - Child Scope: (global)
   ---------------
   Class: TestClass
+  TestClass
   class TestClass
   (line 2, char 1)
   - Default Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Event: EventA
+    TestClass.EventA
     public event Delegate EventA
     (line 4, char 2, child of TestClass)
     ---------------
     Event: EventB
+    TestClass.EventB
     [Attribute] private event Delegate EventB
     (line 6, char 2, child of TestClass)
     ---------------
     Event: EventC
+    TestClass.EventC
     [Attribute] private event Delegate EventC
     (line 7, char 33, child of TestClass)
     ---------------
     Event: EventD
+    TestClass.EventD
     internal event Delegate EventD { add; remove }
     (line 9, char 2, child of TestClass)
     ---------------
     Event: EventE
+    TestClass.EventE
     [Attribute] internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
     (line 15, char 2, child of TestClass)
