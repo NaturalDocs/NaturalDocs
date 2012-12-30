@@ -57,6 +57,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		private void CommonInit ()
 			{
+			isRootElement = false;
+
 			parentAccessLevel = AccessLevel.Unknown;
 			defaultChildAccessLevel = AccessLevel.Unknown;
 			defaultChildLanguageID = 0;
@@ -68,9 +70,59 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: Contains
+		 * Whether the passed <Element> falls within the influence of this ParentElement.
+		 */
+		public bool Contains (Element element)
+			{
+			#if DEBUG
+			if (endingLineNumber == -1 || endingCharNumber == -1)
+				{  throw new Exception("Can't use ParentElement.Contains() if the ending line and char numbers weren't set.");  }
+			#endif
+
+			if (element.LineNumber > this.LineNumber && element.LineNumber < this.EndingLineNumber)
+				{  return true;  }
+			if (element.LineNumber < this.LineNumber || element.LineNumber > this.EndingLineNumber)
+				{  return false;  }
+
+			// If we're here it means the element's line number matches the starting or ending line number.
+
+			if (element.LineNumber == this.LineNumber)
+				{
+				if (element.CharNumber < this.CharNumber)
+					{  return false;  }
+				if (this.EndingLineNumber == this.LineNumber && element.CharNumber >= this.EndingCharNumber)
+					{  return false;  }
+
+				return true;
+				}
+			else // element.LineNumber == this.EndingLineNumber
+				{
+				if (element.CharNumber >= this.EndingCharNumber)
+					{  return false;  }
+				if (this.LineNumber == this.EndingLineNumber && element.CharNumber < this.CharNumber)
+					{  return false;  }
+
+				return true;
+				}
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
+
+
+		/* Property: IsRootElement
+		 * Whether this element is intended to be the root for the file.
+		 */
+		public bool IsRootElement
+			{
+			get
+				{  return isRootElement;  }
+			set
+				{  isRootElement = value;  }
+			}
 
 
 		/* Property: ParentAccessLevel
@@ -165,6 +217,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 
+
+		/* var: isRootElement
+		 * Whether this element is intended to be the file's root element.
+		 */
+		protected bool isRootElement;
 
 		/* var: parentAccessLevel
 		 * The access level of the parent, or <AccessLevel.Unknown> if it's not set.

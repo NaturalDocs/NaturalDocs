@@ -88,6 +88,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			List<Element> elements = new List<Element>();
 
 			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InCode);
+			rootElement.IsRootElement = true;
 			rootElement.ParentAccessLevel = AccessLevel.Public;
 			rootElement.DefaultChildAccessLevel = AccessLevel.Internal;
 			rootElement.DefaultChildLanguageID = this.ID;
@@ -96,7 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			elements.Add(rootElement);
 
 			TokenIterator iterator = source.FirstToken;
-			GetCodeElements(ref iterator, elements, rootElement);
+			GetCodeElements(ref iterator, elements);
 
 			iterator = source.LastToken;
 			rootElement.EndingLineNumber = iterator.LineNumber;
@@ -108,14 +109,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: GetCodeElements
 		 * 
-		 * Adds code elements to the list under the passed parent until it reaches the end of the file or optionally passes a specific character.  
-		 * This will recursively go into nested classes and namespaces.  The stop character must appear on its own and not inside a block, 
-		 * string, or comment, so to use '}' you must start past the opening brace.  The iterator will be left past the stop character or at the 
-		 * end of the file.
+		 * Adds code elements to the list until it reaches the end of the file or optionally passes a specific character.  This will 
+		 * recursively go into nested classes and namespaces.  The stop character must appear on its own and not inside a 
+		 * block, string, or comment, so to use '}' you must start past the opening brace.  The iterator will be left past the stop 
+		 * character or at the end of the file.
 		 * 
 		 * If you want to skip a block without searching for elements within it, use <GenericSkipUntilAfter()> instead.
 		 */
-		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement, char untilAfterChar = '\0')
+		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, char untilAfterChar = '\0')
 			{
 			while (iterator.IsInBounds)
 				{
@@ -128,14 +129,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipWhitespace(ref iterator) ||
 						  TryToSkipPreprocessingDirective(ref iterator) ||
 
-						  TryToGetNamespace(ref iterator, elements, parentElement) ||
-						  TryToGetClass(ref iterator, elements, parentElement) ||
-						  TryToGetFunction(ref iterator, elements, parentElement) ||
-						  TryToGetVariable(ref iterator, elements, parentElement) ||
-						  TryToGetProperty(ref iterator, elements, parentElement) ||
-						  TryToGetConstructor(ref iterator, elements, parentElement) ||
-						  TryToGetEnum(ref iterator, elements, parentElement) ||
-						  TryToGetConversionOperator(ref iterator, elements, parentElement) ||
+						  TryToGetNamespace(ref iterator, elements) ||
+						  TryToGetClass(ref iterator, elements) ||
+						  TryToGetFunction(ref iterator, elements) ||
+						  TryToGetVariable(ref iterator, elements) ||
+						  TryToGetProperty(ref iterator, elements) ||
+						  TryToGetConstructor(ref iterator, elements) ||
+						  TryToGetEnum(ref iterator, elements) ||
+						  TryToGetConversionOperator(ref iterator, elements) ||
 
 						  // We skip attributes after trying to get language elements because they may be part of one.
 						  // We have to skip attributes in this loop to begin with because they don't end like regular statements, so not having
@@ -157,9 +158,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToGetNamespace
 		 * Attempts to retrieve a namespace element.  If it was successful it will move the iterator past it, add it and its children to the
-		 * <Elements> list under the parent, and return true.  If it was not it will leave the iterator alone and return false;
+		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false;
 		 */
-		protected bool TryToGetNamespace (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetNamespace (ref TokenIterator iterator, List<Element> elements)
 			{
 			// See [9] and [B.2.6]
 
@@ -198,12 +199,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// We don't create topics for namespaces.
 
-			namespaceElement.Parent = parentElement;
 			elements.Add(namespaceElement);
 
 
 			iterator = lookahead;
-			GetCodeElements(ref iterator, elements, namespaceElement, '}');
+			GetCodeElements(ref iterator, elements, '}');
 
 			namespaceElement.EndingLineNumber = iterator.LineNumber;
 			namespaceElement.EndingCharNumber = iterator.CharNumber;
@@ -214,9 +214,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToGetClass
 		 * Attempts to retrieve a class, struct, or interface element.  If it was successful it will move the iterator past it, add it to the
-		 * <Elements> list under the parent, and return true.  If it was not it will leave the iterator alone and return false.
+		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetClass (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetClass (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Classes - See [10] and [B.2.7]
 			// Structs - See [11] and [B.2.8]
@@ -341,7 +341,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				classElement.Topic = classTopic;
 				}
 
-			classElement.Parent = parentElement;
 			elements.Add(classElement);
 
 
@@ -349,7 +348,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			iterator.Next();
-			GetCodeElements(ref iterator, elements, classElement, '}');
+			GetCodeElements(ref iterator, elements, '}');
 
 			classElement.EndingLineNumber = iterator.LineNumber;
 			classElement.EndingCharNumber = iterator.CharNumber;
@@ -360,10 +359,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToGetFunction
 		 * Attempts to retrieve a function, delegate, or operator other than a conversion or indexer.  If successful it will add an <Element> 
-		 * to the list under the parent, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return 
-		 * false.
+		 * to the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetFunction (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetFunction (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Functions (methods) - See [10.6] and [B.2.7]
 			// Delegates - See [15] and [B.2.12]
@@ -504,7 +502,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element functionElement = new Element(iterator, Element.Flags.InCode);
 				functionElement.Topic = functionTopic;
 
-				functionElement.Parent = parentElement;
 				elements.Add(functionElement);
 				}
 
@@ -527,10 +524,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToGetConstructor
-		 * Attempts to retrieve a constructor or destructor.  If successful it will add an <Element> to the list under the parent, move the 
-		 * iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		 * Attempts to retrieve a constructor or destructor.  If successful it will add an <Element> to the list, move the iterator past
+		 * it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetConstructor (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetConstructor (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Constructors - See [10.11] and [B.2.7]
 			// Destructors - See [10.13] and [B.2.7]
@@ -642,7 +639,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element functionElement = new Element(iterator, Element.Flags.InCode);
 				functionElement.Topic = functionTopic;
 
-				functionElement.Parent = parentElement;
 				elements.Add(functionElement);
 				}
 
@@ -665,10 +661,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToGetConversionOperator
-		 * Attempts to retrieve a conversion operator.  If successful it will add an <Element> to the list under the parent, move the 
-		 * iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		 * Attempts to retrieve a conversion operator.  If successful it will add an <Element> to the list, move the iterator past it, and 
+		 * return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetConversionOperator (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetConversionOperator (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Operators - See [10.10] and [B.2.7]
 
@@ -743,7 +739,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element operatorElement = new Element(iterator, Element.Flags.InCode);
 				operatorElement.Topic = operatorTopic;
 
-				operatorElement.Parent = parentElement;
 				elements.Add(operatorElement);
 				}
 
@@ -766,10 +761,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToGetVariable
-		 * Attempts to retrieve a variable, constant, or event declared like a variable.  If successful it will add one or more <Elements> to the
-		 * list under the parent, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		 * Attempts to retrieve a variable, constant, or event declared like a variable.  If successful it will add one or more <Elements> to
+		 * the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetVariable (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetVariable (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Variables (fields) - See [10.5] and [B.2.7]
 			// Constants - See [10.4] and [B.2.7]
@@ -856,7 +851,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element variableElement = new Element(iterator, Element.Flags.InCode);
 				variableElement.Topic = variableTopic;
 
-				variableElement.Parent = parentElement;
 				elements.Add(variableElement);
 				}
 
@@ -903,7 +897,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						Element newVariableElement = new Element(startOfNewName, Element.Flags.InCode);
 						newVariableElement.Topic = newVariableTopic;
 
-						newVariableElement.Parent = parentElement;
 						elements.Add(newVariableElement);
 						}
 					}
@@ -919,9 +912,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToGetProperty
 		 * Attempts to retrieve a property, indexer, or event declared like a property.  If successful it will add it as an <Element> to the
-		 * list under the parent, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		 * list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetProperty (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetProperty (ref TokenIterator iterator, List<Element> elements)
 			{
 			// Properties - See [10.7] and [B.2.7]
 			// Indexers - See [10.9] and [B.2.7]
@@ -1081,7 +1074,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element propertyElement = new Element(iterator, Element.Flags.InCode);
 				propertyElement.Topic = propertyTopic;
 
-				propertyElement.Parent = parentElement;
 				elements.Add(propertyElement);
 				}
 
@@ -1092,10 +1084,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToGetEnum
-		 * Attempts to retrieve an enum.  If successful it will add an <Element> to the list under the parent, move the iterator past it,
-		 * and return true.  If unsuccessful it will leave the iterator alone and return false.
+		 * Attempts to retrieve an enum.  If successful it will add an <Element> to the list, move the iterator past it, and return true.
+		 * If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetEnum (ref TokenIterator iterator, List<Element> elements, ParentElement parentElement)
+		protected bool TryToGetEnum (ref TokenIterator iterator, List<Element> elements)
 			{
 			// See [14] and [B.2.11]
 
@@ -1168,7 +1160,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Element enumElement = new Element(iterator, Element.Flags.InCode);
 				enumElement.Topic = enumTopic;
 
-				enumElement.Parent = parentElement;
 				elements.Add(enumElement);
 				}
 

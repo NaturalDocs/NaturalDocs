@@ -56,22 +56,29 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		public string OutputOf (List<Element> elements)
 			{
 			StringBuilder output = new StringBuilder();
-			bool isFirst = true;
 
-			foreach (var element in elements)
+			for (int i = 0; i < elements.Count; i++)
 				{
-				int indent = 0;
-				ParentElement parent = element.Parent;
+				Element element = elements[i];
+				ParentElement parentElement = null;
 
-				while (parent != null)
+				int indent = 0;
+
+				for (int j = i - 1; j >= 0; j--)
 					{
-					indent += 2;
-					parent = parent.Parent;
+					if (elements[j] is ParentElement)
+						{
+						if ( (elements[j] as ParentElement).Contains(element) )
+							{  
+							indent += 2;  
+							
+							if (parentElement == null)
+								{  parentElement = (ParentElement)elements[j];  }
+							}
+						}
 					}
 
-				if (isFirst)
-					{  isFirst = false;  }
-				else
+				if (i > 0)
 					{  
 					output.Append(' ', indent);
 					output.AppendLine("---------------");  
@@ -81,7 +88,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				// Topic
 
 				output.Append(' ', indent);
-				if (element.Parent == null)
+				if (element is ParentElement && (element as ParentElement).IsRootElement == true)
 					{  output.AppendLine("[Root Element]");  }
 				else if (element.Topic == null)
 					{  output.AppendLine("(no topic)");  }
@@ -104,20 +111,19 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 				// Position
 
-				if (element.Parent != null)
+				if (parentElement != null)
 					{
 					output.Append(' ', indent);
 					output.Append("(line " + element.LineNumber + ", char " + element.CharNumber);
 					
-					// Check Parent.Parent because we don't want to add this if it's a child of the root element.
-					if (element.Parent.Parent != null)
+					if (parentElement.IsRootElement == false)
 						{
 						output.Append(", child of ");
 
-						if (element.Parent.Topic != null && element.Parent.Topic.Title != null)
-							{  output.Append(element.Parent.Topic.Title);  }
+						if (parentElement.Topic != null && parentElement.Topic.Title != null)
+							{  output.Append(parentElement.Topic.Title);  }
 						else
-							{  output.Append("line " + element.Parent.LineNumber);  }
+							{  output.Append("line " + parentElement.LineNumber);  }
 						}
 
 					output.AppendLine(")");
@@ -128,34 +134,34 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 				if (element is ParentElement)
 					{
-					ParentElement parentElement = (ParentElement)element;
+					ParentElement elementAsParent = (ParentElement)element;
 
-					if (parentElement.DefaultChildLanguageID != 0)
+					if (elementAsParent.DefaultChildLanguageID != 0)
 						{
 						output.Append(' ', indent);
-						output.AppendLine("- Child Language: " + Engine.Instance.Languages.FromID(parentElement.DefaultChildLanguageID).Name);
+						output.AppendLine("- Child Language: " + Engine.Instance.Languages.FromID(elementAsParent.DefaultChildLanguageID).Name);
 						}
-					if (parentElement.ParentAccessLevel != AccessLevel.Unknown)
+					if (elementAsParent.ParentAccessLevel != AccessLevel.Unknown)
 						{
 						output.Append(' ', indent);
-						output.AppendLine("- Access Level: " + parentElement.ParentAccessLevel);
+						output.AppendLine("- Access Level: " + elementAsParent.ParentAccessLevel);
 						}
-					if (parentElement.DefaultChildAccessLevel != AccessLevel.Unknown)
+					if (elementAsParent.DefaultChildAccessLevel != AccessLevel.Unknown)
 						{
 						output.Append(' ', indent);
-						output.AppendLine("- Default Child Access Level: " + parentElement.DefaultChildAccessLevel);
+						output.AppendLine("- Default Child Access Level: " + elementAsParent.DefaultChildAccessLevel);
 						}
-					if (parentElement.ChildContextStringSet)
+					if (elementAsParent.ChildContextStringSet)
 						{
 						output.Append(' ', indent);
 						output.Append("- Child Scope: ");
 
-						if (parentElement.ChildContextString.ScopeIsGlobal)
+						if (elementAsParent.ChildContextString.ScopeIsGlobal)
 							{  output.AppendLine("(global)");  }
 						else
-							{  output.AppendLine(parentElement.ChildContextString.Scope.FormatWithSeparator('.'));  }
+							{  output.AppendLine(elementAsParent.ChildContextString.Scope.FormatWithSeparator('.'));  }
 
-						var usingStatements = parentElement.ChildContextString.GetUsingStatements();
+						var usingStatements = elementAsParent.ChildContextString.GetUsingStatements();
 
 						if (usingStatements != null)
 							{

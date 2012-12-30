@@ -67,8 +67,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			topic = null;
 			classParentLinks = null;
 
-			parent = null;
-
 			this.lineNumber = lineNumber;
 			this.charNumber = charNumber;
 			this.flags = flags;
@@ -106,18 +104,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return classParentLinks;  }
 			set
 				{  classParentLinks = value;  }
-			}
-
-
-		/* Property: Parent
-		 * The parent element, or null if none.
-		 */
-		public ParentElement Parent
-			{
-			get
-				{  return parent;  }
-			set
-				{  parent = value;  }
 			}
 
 
@@ -168,11 +154,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 		
-		/* var: parent
-		 * The parent element, or null if none.
-		 */
-		protected ParentElement parent;
-
 		/* var: lineNumber
 		 * The line number the element appears at.  The first line is one, not zero.
 		 */
