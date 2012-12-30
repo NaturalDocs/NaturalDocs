@@ -996,6 +996,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name.EndsWith(".this"))  // It may be InterfaceName.this[]
 				{
 				keyword = "operator";
+				name += "[]";
 
 				if (lookahead.Character != '[')
 					{  return false;  }
