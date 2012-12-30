@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine.Collections;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
@@ -92,12 +93,12 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			rootElement.ParentAccessLevel = AccessLevel.Public;
 			rootElement.DefaultChildAccessLevel = AccessLevel.Internal;
 			rootElement.DefaultChildLanguageID = this.ID;
-			rootElement.ChildContextString = new Symbols.ContextString();
+			rootElement.ChildContextString = new ContextString();
 
 			elements.Add(rootElement);
 
 			TokenIterator iterator = source.FirstToken;
-			GetCodeElements(ref iterator, elements);
+			GetCodeElements(ref iterator, elements, new SymbolString());
 
 			iterator = source.LastToken;
 			rootElement.EndingLineNumber = iterator.LineNumber;
@@ -116,7 +117,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * If you want to skip a block without searching for elements within it, use <GenericSkipUntilAfter()> instead.
 		 */
-		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, char untilAfterChar = '\0')
+		protected void GetCodeElements (ref TokenIterator iterator, List<Element> elements, SymbolString scope,
+																		 char untilAfterChar = '\0')
 			{
 			while (iterator.IsInBounds)
 				{
@@ -129,14 +131,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipWhitespace(ref iterator) ||
 						  TryToSkipPreprocessingDirective(ref iterator) ||
 
-						  TryToGetNamespace(ref iterator, elements) ||
-						  TryToGetClass(ref iterator, elements) ||
-						  TryToGetFunction(ref iterator, elements) ||
-						  TryToGetVariable(ref iterator, elements) ||
-						  TryToGetProperty(ref iterator, elements) ||
-						  TryToGetConstructor(ref iterator, elements) ||
-						  TryToGetEnum(ref iterator, elements) ||
-						  TryToGetConversionOperator(ref iterator, elements) ||
+						  TryToGetNamespace(ref iterator, elements, scope) ||
+						  TryToGetClass(ref iterator, elements, scope) ||
+						  TryToGetFunction(ref iterator, elements, scope) ||
+						  TryToGetVariable(ref iterator, elements, scope) ||
+						  TryToGetProperty(ref iterator, elements, scope) ||
+						  TryToGetConstructor(ref iterator, elements, scope) ||
+						  TryToGetEnum(ref iterator, elements, scope) ||
+						  TryToGetConversionOperator(ref iterator, elements, scope) ||
 
 						  // We skip attributes after trying to get language elements because they may be part of one.
 						  // We have to skip attributes in this loop to begin with because they don't end like regular statements, so not having
@@ -160,7 +162,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a namespace element.  If it was successful it will move the iterator past it, add it and its children to the
 		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false;
 		 */
-		protected bool TryToGetNamespace (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetNamespace (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// See [9] and [B.2.6]
 
@@ -189,8 +191,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Create the element
 
-			Symbols.ContextString childContext = new Symbols.ContextString();
-			childContext.Scope = Symbols.SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+
+			ContextString childContext = new ContextString();
+			childContext.Scope = symbol;
 
 			ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
 			namespaceElement.ChildContextString = childContext;
@@ -203,7 +207,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 			iterator = lookahead;
-			GetCodeElements(ref iterator, elements, '}');
+			GetCodeElements(ref iterator, elements, symbol, '}');
 
 			namespaceElement.EndingLineNumber = iterator.LineNumber;
 			namespaceElement.EndingCharNumber = iterator.CharNumber;
@@ -216,7 +220,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a class, struct, or interface element.  If it was successful it will move the iterator past it, add it to the
 		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetClass (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetClass (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Classes - See [10] and [B.2.7]
 			// Structs - See [11] and [B.2.8]
@@ -315,8 +319,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Create element
 
-			Symbols.ContextString childContext = new Symbols.ContextString();
-			childContext.Scope = Symbols.SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+
+			ContextString childContext = new ContextString();
+			childContext.Scope = symbol;
 
 			ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
 			classElement.ChildContextString = childContext;
@@ -333,6 +339,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic classTopic = new Topic();
 				classTopic.Title = name;
+				classTopic.Symbol = symbol;
 				classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				classTopic.TopicTypeID = topicTypeID;
 				classTopic.AccessLevel = accessLevel;
@@ -348,7 +355,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			iterator.Next();
-			GetCodeElements(ref iterator, elements, '}');
+			GetCodeElements(ref iterator, elements, symbol, '}');
 
 			classElement.EndingLineNumber = iterator.LineNumber;
 			classElement.EndingCharNumber = iterator.CharNumber;
@@ -361,7 +368,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a function, delegate, or operator other than a conversion or indexer.  If successful it will add an <Element> 
 		 * to the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetFunction (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetFunction (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Functions (methods) - See [10.6] and [B.2.7]
 			// Delegates - See [15] and [B.2.12]
@@ -494,6 +501,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic functionTopic = new Topic();
 				functionTopic.Title = name;
+				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				functionTopic.TopicTypeID = topicTypeID;
 				functionTopic.AccessLevel = accessLevel;
@@ -527,7 +535,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a constructor or destructor.  If successful it will add an <Element> to the list, move the iterator past
 		 * it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetConstructor (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetConstructor (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Constructors - See [10.11] and [B.2.7]
 			// Destructors - See [10.13] and [B.2.7]
@@ -631,6 +639,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic functionTopic = new Topic();
 				functionTopic.Title = name;
+				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
 				functionTopic.TopicTypeID = topicTypeID;
 				functionTopic.AccessLevel = accessLevel;
@@ -664,7 +673,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a conversion operator.  If successful it will add an <Element> to the list, move the iterator past it, and 
 		 * return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetConversionOperator (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetConversionOperator (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Operators - See [10.10] and [B.2.7]
 
@@ -731,6 +740,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic operatorTopic = new Topic();
 				operatorTopic.Title = name.ToString();
+				operatorTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(operatorTopic.Title);
 				operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				operatorTopic.TopicTypeID = topicTypeID;
 				operatorTopic.AccessLevel = accessLevel;
@@ -764,7 +774,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a variable, constant, or event declared like a variable.  If successful it will add one or more <Elements> to
 		 * the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetVariable (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetVariable (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Variables (fields) - See [10.5] and [B.2.7]
 			// Constants - See [10.4] and [B.2.7]
@@ -843,6 +853,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic variableTopic = new Topic();
 				variableTopic.Title = name;
+				variableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				variableTopic.TopicTypeID = topicTypeID;
 				variableTopic.AccessLevel = accessLevel;
@@ -889,6 +900,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						{
 						Topic newVariableTopic = new Topic();
 						newVariableTopic.Title = newName;
+						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(newName);
 						newVariableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfType) + " " + newName );
 						newVariableTopic.TopicTypeID = topicTypeID;
 						newVariableTopic.AccessLevel = accessLevel;
@@ -914,7 +926,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve a property, indexer, or event declared like a property.  If successful it will add it as an <Element> to the
 		 * list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetProperty (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetProperty (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// Properties - See [10.7] and [B.2.7]
 			// Indexers - See [10.9] and [B.2.7]
@@ -1066,6 +1078,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic propertyTopic = new Topic();
 				propertyTopic.Title = name;
+				propertyTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
 				propertyTopic.TopicTypeID = topicTypeID;
 				propertyTopic.AccessLevel = accessLevel;
@@ -1087,7 +1100,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Attempts to retrieve an enum.  If successful it will add an <Element> to the list, move the iterator past it, and return true.
 		 * If unsuccessful it will leave the iterator alone and return false.
 		 */
-		protected bool TryToGetEnum (ref TokenIterator iterator, List<Element> elements)
+		protected bool TryToGetEnum (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
 			{
 			// See [14] and [B.2.11]
 
@@ -1152,6 +1165,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic enumTopic = new Topic();
 				enumTopic.Title = name;
+				enumTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				enumTopic.TopicTypeID = topicTypeID;
 				enumTopic.AccessLevel = accessLevel;
