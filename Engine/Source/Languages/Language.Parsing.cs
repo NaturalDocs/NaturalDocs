@@ -2883,6 +2883,103 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: ValidateElements
+		 * Validates a list of <Elements> to make sure all the properties are set correctly, throwing an exception if not.  This
+		 * does nothing in non-debug builds.
+		 */
+		protected void ValidateElements (List<Element> elements)
+			{
+			#if DEBUG
+
+			int lastLineNumber = 0;
+			int lastCharNumber = 0;
+
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Element element = elements[i];
+
+
+				// Generate a name for error messages
+
+				string elementName = "(line " + element.LineNumber + ", char " + element.CharNumber + ")";
+
+				if (element.Topic != null && element.Topic.Title != null)
+					{  elementName = element.Topic.Title + " " + elementName;  }
+
+
+				// Make sure they're in order
+
+				if (element.LineNumber < lastLineNumber ||
+					 (element.LineNumber == lastLineNumber && element.CharNumber < lastCharNumber))
+					{  
+					throw new Exception("Element " + elementName + " doesn't appear in order.  " +
+															 "The previous element was at line " + lastLineNumber + ", char " + lastCharNumber + ".");  
+					}
+
+				lastLineNumber = element.LineNumber;
+				lastCharNumber = element.CharNumber;
+
+
+				if (element is ParentElement)
+					{  
+					ParentElement elementAsParent = (ParentElement)element;  
+
+
+					// Make sure root only applies to the first element.
+
+					if (elementAsParent.IsRootElement == true && i != 0)
+						{  
+						throw new Exception("IsRootElement was set on " + elementName + " which is at position " + i + " in the list.  " +
+																 "IsRootElement can only be set on the first member of a list.");  
+						}
+
+
+					// Make sure parents have their ending values set.
+
+					if (elementAsParent.EndingLineNumber == -1 || elementAsParent.EndingCharNumber == -1)
+						{  throw new Exception(elementName + " did not have its ending position properties set.");  }
+
+					if (elementAsParent.EndingLineNumber < elementAsParent.LineNumber ||
+						 (elementAsParent.EndingLineNumber == elementAsParent.LineNumber &&
+						  elementAsParent.EndingCharNumber < elementAsParent.CharNumber))
+						{  throw new Exception(elementName + "'s ending position was before its starting position.");  }
+
+
+					// Make sure ranges don't overlap badly.
+
+					for (int j = 0; j < i; j++)
+						{
+						if (elements[j] is ParentElement)
+							{
+							ParentElement previousParent = (ParentElement)elements[j];
+
+							// We only have to check if we're before the end of the previous parent to know we overlap.  We already made sure
+							// the elements are in order so this range can't be before the previous one.
+							if (elementAsParent.LineNumber < previousParent.EndingLineNumber ||
+								 (elementAsParent.LineNumber == previousParent.EndingLineNumber &&
+								  elementAsParent.CharNumber < previousParent.EndingCharNumber))
+								{
+								if (elementAsParent.EndingLineNumber > previousParent.EndingLineNumber ||
+									 (elementAsParent.EndingLineNumber == previousParent.EndingLineNumber &&
+									  elementAsParent.EndingCharNumber > previousParent.EndingCharNumber))
+									{
+									string previousParentName = "(line " + previousParent.LineNumber + ", char " + previousParent.CharNumber + ")";
+
+									if (previousParent.Topic != null && previousParent.Topic.Title != null)
+										{  previousParentName = previousParent.Topic.Title + " " + previousParentName;  }
+
+									throw new Exception(elementName + " starts in " + previousParentName + "'s range but extends past it.");
+									}
+								}
+							}
+						}
+					}
+				}
+
+			#endif
+			}
+
+
 			
 		// Group: Static Variables
 		// __________________________________________________________________________
