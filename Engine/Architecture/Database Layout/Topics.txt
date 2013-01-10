@@ -112,13 +112,23 @@ Column: TopicTypeID
 	The ID of the topic's type, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
 	
 	
-Column: AccessLevel
+Column: DeclaredAccessLevel
 
 	(SQL Prototype)
-		AccessLevel INTEGER NOT NULL
+		DeclaredAccessLevel INTEGER NOT NULL
 	(end)
 	
-	The access level of the topic, such as public or protected.  The value is managed by 
+	The declared access level of the topic, such as public or protected.  The value is managed by 
+	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
+	
+	
+Column: EffectiveAccessLevel
+
+	(SQL Prototype)
+		EffectiveAccessLevel INTEGER NOT NULL
+	(end)
+	
+	The effective access level of the topic, such as public or protected.  The value is managed by 
 	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	

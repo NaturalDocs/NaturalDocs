@@ -54,20 +54,21 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			IsEmbedded = 0x00000080,
 
 			TopicTypeID = 0x00000100,
-			AccessLevel = 0x00000200,
-			Tags = 0x00000400,
+			DeclaredAccessLevel = 0x00000200,
+			EffectiveAccessLevel = 0x00000400,
+			Tags = 0x00000800,
 
-			LanguageID = 0x00000800,
-			CommentLineNumber = 0x00001000,
-			CodeLineNumber = 0x00002000,
+			LanguageID = 0x00001000,
+			CommentLineNumber = 0x00002000,
+			CodeLineNumber = 0x00004000,
 			
-			FileID = 0x00004000,
-			PrototypeContext = 0x00008000,
-			BodyContext = 0x00010000,
+			FileID = 0x00008000,
+			PrototypeContext = 0x00010000,
+			BodyContext = 0x00020000,
 
 			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber |
-					 Class | IsEmbedded | TopicTypeID | AccessLevel | Tags |
-					 LanguageID | CommentLineNumber | CodeLineNumber |
+					 Class | IsEmbedded | TopicTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
+					 Tags | LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
 			}
 
@@ -95,16 +96,17 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			ClassID = 0x00000200,
 			IsEmbedded = 0x00000400,
 			TopicTypeID = 0x00000800,
-			AccessLevel = 0x00001000,
-			Tags = 0x00002000,
-			FileID = 0x00004000,
-			CommentLineNumber = 0x00008000,
-			CodeLineNumber = 0x00010000,
-			LanguageID = 0x00020000,
-			PrototypeContext = 0x00040000,
-			PrototypeContextID = 0x00080000,
-			BodyContext = 0x00100000,
-			BodyContextID = 0x00200000
+			DeclaredAccessLevel = 0x00001000,
+			EffectiveAccessLevel = 0x00002000,
+			Tags = 0x00004000,
+			FileID = 0x00008000,
+			CommentLineNumber = 0x00010000,
+			CodeLineNumber = 0x00020000,
+			LanguageID = 0x00040000,
+			PrototypeContext = 0x00080000,
+			PrototypeContextID = 0x00100000,
+			BodyContext = 0x00200000,
+			BodyContextID = 0x00400000
 			}
 
 
@@ -149,7 +151,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 			topicTypeID = 0;
 			usesPluralKeyword = false;
-			accessLevel = Languages.AccessLevel.Unknown;
+			declaredAccessLevel = Languages.AccessLevel.Unknown;
+			effectiveAccessLevel = Languages.AccessLevel.Unknown;
 			tags = null;
 
 			languageID = 0;
@@ -199,7 +202,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 			// topicTypeID - Important in linking.
 			// usesPluralKeyword - Not a database field.
-			// accessLevel - Important in linking.
+			// declaredAccessLevel - Important in linking.
+			// effectiveAccessLevel - Important in linking.
 			// tags - Important in linking.
 
 			// languageID - Important in linking.
@@ -221,7 +225,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			if (	
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
 				topicTypeID != other.topicTypeID ||
-				accessLevel != other.accessLevel ||
+				declaredAccessLevel != other.declaredAccessLevel ||
+				effectiveAccessLevel != other.effectiveAccessLevel ||
 
 				// String comparisons, most likely to be different			
 				title != other.title ||
@@ -680,28 +685,56 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 			
 			
-		/* Property: AccessLevel
-		 * The access level of the topic, or <Languages.AccessLevel.Unknown> if it isn't known or hasn't been set.
+		/* Property: DeclaredAccessLevel
+		 * The declared access level of the topic, or <Languages.AccessLevel.Unknown> if it isn't known or hasn't been set.
+		 * For a public member of an internal class, this would be public.
 		 */
-		public Languages.AccessLevel AccessLevel
+		public Languages.AccessLevel DeclaredAccessLevel
 			{
 			get
 				{  
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.AccessLevel) != 0)
-					{  throw new InvalidOperationException("Tried to access AccessLevel when that field was ignored.");  }
+				if ((ignoredFields & IgnoreFields.DeclaredAccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access DeclaredAccessLevel when that field was ignored.");  }
 				#endif
 
-				return accessLevel;  
+				return declaredAccessLevel;  
 				}
 			set
 				{  
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.AccessLevel) != 0)
-					{  throw new InvalidOperationException("Tried to access AccessLevel when that field was ignored.");  }
+				if ((ignoredFields & IgnoreFields.DeclaredAccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access DeclaredAccessLevel when that field was ignored.");  }
 				#endif
 
-				accessLevel = value;  
+				declaredAccessLevel = value;  
+				}
+			}
+			
+			
+		/* Property: EffectiveAccessLevel
+		 * The effective access level of the topic, or <Languages.AccessLevel.Unknown> if it isn't known or hasn't been set.  For a
+		 * public member of an internal class, this would be internal.
+		 */
+		public Languages.AccessLevel EffectiveAccessLevel
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.EffectiveAccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access EffectiveAccessLevel when that field was ignored.");  }
+				#endif
+
+				return effectiveAccessLevel;  
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.EffectiveAccessLevel) != 0)
+					{  throw new InvalidOperationException("Tried to access EffectiveAccessLevel when that field was ignored.");  }
+				#endif
+
+				effectiveAccessLevel = value;  
 				}
 			}
 			
@@ -1271,10 +1304,15 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 */
 		protected bool usesPluralKeyword;
 
-		/* var: accessLevel
-		 * The access level of the topic.
+		/* var: declaredAccessLevel
+		 * The declared access level of the topic.  For a public member of an internal class, this would be public.
 		 */
-		protected Languages.AccessLevel accessLevel;
+		protected Languages.AccessLevel declaredAccessLevel;
+
+		/* var: effectiveAccessLevel
+		 * The effective access level of the topic.  For a public member of an internal class, this would be internal.
+		 */
+		protected Languages.AccessLevel effectiveAccessLevel;
 		
 		/* var: tags
 		 * A set of the tags applied to this topic.  May or may not be null if there are none.

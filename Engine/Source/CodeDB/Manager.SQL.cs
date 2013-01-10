@@ -48,7 +48,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"IsEmbedded INTEGER NOT NULL, " +
 																							"EndingSymbol TEXT NOT NULL, " +
 																							"TopicTypeID INTEGER NOT NULL, " +
-																							"AccessLevel INTEGER NOT NULL, " +
+																							"DeclaredAccessLevel INTEGER NOT NULL, " +
+																							"EffectiveAccessLevel INTEGER NOT NULL, " +
 																							"Tags TEXT, " +
 																							"FileID INTEGER NOT NULL, " +
 																							"CommentLineNumber INTEGER NOT NULL, " +

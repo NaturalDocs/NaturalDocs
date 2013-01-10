@@ -891,7 +891,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			topic.UsesPluralKeyword = pluralKeyword;
 			
 			if (accessLevel != Languages.AccessLevel.Unknown)
-				{  topic.AccessLevel = accessLevel;  }
+				{  topic.DeclaredAccessLevel = accessLevel;  }
 
 			if (tagIDs != null)
 				{  
@@ -2986,7 +2986,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
 				embeddedTopic.IsEmbedded = true;
 				embeddedTopic.TopicTypeID = embeddedTopicTypeID;
-				embeddedTopic.AccessLevel = topic.AccessLevel;
+				embeddedTopic.DeclaredAccessLevel = topic.DeclaredAccessLevel;
 				embeddedTopic.TagString = topic.TagString;
 				embeddedTopic.CommentLineNumber = topic.CommentLineNumber + lineNumberOffset;
 

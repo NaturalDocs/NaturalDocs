@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Exceptions.FieldMustBeValue
+ * Class: GregValure.NaturalDocs.Engine.CodeDB.Exceptions.FieldMustNotBeValue
  * ____________________________________________________________________________
  * 
  * Thrown when a field isn't correct for the operation you're trying to attempt.
@@ -15,15 +15,15 @@ using System;
 
 namespace GregValure.NaturalDocs.Engine.CodeDB.Exceptions
 	{
-	public class FieldMustBeValue : Exception
+	public class FieldMustNotBeValue : Exception
 		{
-		public FieldMustBeValue (string operation, string fieldName, int expectedValue)
-			: base ( "The " + fieldName + " field must be " + expectedValue + " to use " + operation + '.' )
+		public FieldMustNotBeValue (string operation, string fieldName, int forbiddenValue)
+			: base ( "The " + fieldName + " field must not be " + forbiddenValue + " to use " + operation + '.' )
 			{
 			}
 
-		public FieldMustBeValue (string operation, string fieldName, string expectedValue)
-			: base ( "The " + fieldName + " field must be \"" + expectedValue + "\" to use " + operation + '.' )
+		public FieldMustNotBeValue (string operation, string fieldName, string forbiddenValue)
+			: base ( "The " + fieldName + " field must not be \"" + forbiddenValue + "\" to use " + operation + '.' )
 			{
 			}
 		}

@@ -309,6 +309,34 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exceptions.FieldMustBeValue(operation, fieldName, expectedValue);  }
 			}
 
+		/* Function: RequireValue
+		 * Throws an exception if the field value doesn't match the expected value.
+		 */
+		protected void RequireValue (string operation, string fieldName, string fieldValue, string expectedValue)
+			{
+			if (fieldValue != expectedValue)
+				{  throw new Exceptions.FieldMustBeValue(operation, fieldName, expectedValue);  }
+			}
+
+		/* Function: RequireNotValue
+		 * Throws an exception if the field value matches the forbidden value.
+		 */
+		protected void RequireNotValue (string operation, string fieldName, int fieldValue, int forbiddenValue)
+			{
+			if (fieldValue != forbiddenValue)
+				{  throw new Exceptions.FieldMustNotBeValue(operation, fieldName, forbiddenValue);  }
+			}
+
+		/* Function: RequireNotValue
+		 * Throws an exception if the field value matches the forbidden value.
+		 */
+		protected void RequireNotValue (string operation, string fieldName, string fieldValue, string forbiddenValue)
+			{
+			if (fieldValue != forbiddenValue)
+				{  throw new Exceptions.FieldMustNotBeValue(operation, fieldName, forbiddenValue);  }
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________

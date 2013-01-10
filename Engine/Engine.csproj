@@ -45,6 +45,7 @@
     <Compile Include="Source\BinaryFile.cs" />
     <Compile Include="Source\CodeDB\Accessor.cs" />
     <Compile Include="Source\CodeDB\Accessor.SQL.cs" />
+    <Compile Include="Source\CodeDB\Exceptions\FieldMustNotBeValue.cs" />
     <Compile Include="Source\CodeDB\ReferenceChangeCache.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.SQL.cs" />
     <Compile Include="Source\CodeDB\EventAccessor.cs" />
