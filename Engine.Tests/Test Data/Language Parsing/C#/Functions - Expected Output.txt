@@ -1,14 +1,13 @@
 [Root Element]
 - Child Language: C#
-- Access Level: Public
-- Default Child Access Level: Internal
+- Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
   Class: TestClass
   TestClass
   class TestClass
   (line 2, char 1)
-  - Default Child Access Level: Private
+  - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
     Function: FunctionA

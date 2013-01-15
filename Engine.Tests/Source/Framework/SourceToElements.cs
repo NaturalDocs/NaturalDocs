@@ -147,15 +147,15 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 						output.Append(' ', indent);
 						output.AppendLine("- Child Language: " + Engine.Instance.Languages.FromID(elementAsParent.DefaultChildLanguageID).Name);
 						}
-					if (elementAsParent.ParentAccessLevel != AccessLevel.Unknown)
+					if (elementAsParent.MaximumEffectiveChildAccessLevel != AccessLevel.Unknown)
 						{
 						output.Append(' ', indent);
-						output.AppendLine("- Access Level: " + elementAsParent.ParentAccessLevel);
+						output.AppendLine("- Maximum Effective Child Access Level: " + elementAsParent.MaximumEffectiveChildAccessLevel);
 						}
-					if (elementAsParent.DefaultChildAccessLevel != AccessLevel.Unknown)
+					if (elementAsParent.DefaultDeclaredChildAccessLevel != AccessLevel.Unknown)
 						{
 						output.Append(' ', indent);
-						output.AppendLine("- Default Child Access Level: " + elementAsParent.DefaultChildAccessLevel);
+						output.AppendLine("- Default Declared Child Access Level: " + elementAsParent.DefaultDeclaredChildAccessLevel);
 						}
 					if (elementAsParent.ChildContextStringSet)
 						{

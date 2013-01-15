@@ -59,8 +59,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			isRootElement = false;
 
-			parentAccessLevel = AccessLevel.Unknown;
-			defaultChildAccessLevel = AccessLevel.Unknown;
+			maximumEffectiveChildAccessLevel = AccessLevel.Unknown;
+			defaultDeclaredChildAccessLevel = AccessLevel.Unknown;
 			defaultChildLanguageID = 0;
 			childContextString = new ContextString();
 			childContextStringSet = false;
@@ -125,28 +125,30 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Property: ParentAccessLevel
-		 * The access level of the element if it's set, or <AccessLevel.Unknown> if not.  This is used for when the parent's
-		 * level influences the children.  For example, a class marked "internal" can have public members, but those members are
-		 * really internal from a global perspective.
+		/* Property: MaximumEffectiveChildAccessLevel
+		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For
+		 * example, a private class's children wolud have a maximum effective access level of private, even if they were declared
+		 * public.  Will be <AccessLevel.Unknown> if it's not set.
 		 */
-		public AccessLevel ParentAccessLevel
+		public AccessLevel MaximumEffectiveChildAccessLevel
 			{
 			get
-				{  return parentAccessLevel;  }
+				{  return maximumEffectiveChildAccessLevel;  }
 			set
-				{  parentAccessLevel = value;  }
+				{  maximumEffectiveChildAccessLevel = value;  }
 			}
 
-		/* Property: DefaultChildAccessLevel
-		 * The access level of this element's children if not otherwise specified.
+		/* Property: DefaultDeclaredChildAccessLevel
+		 * The default declared access level of this element's children if not otherwise specified.  This can be greater than
+		 * <MaximumEffectiveChildAccessLevel> because it's only the declared access level.  Will be <AccessLevel.Unknown> if
+		 * it's not set.
 		 */
-		public AccessLevel DefaultChildAccessLevel
+		public AccessLevel DefaultDeclaredChildAccessLevel
 			{
 			get
-				{  return defaultChildAccessLevel;  }
+				{  return defaultDeclaredChildAccessLevel;  }
 			set
-				{  defaultChildAccessLevel = value;  }
+				{  defaultDeclaredChildAccessLevel = value;  }
 			}
 
 		/* Property: DefaultChildLanguageID
@@ -223,15 +225,18 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected bool isRootElement;
 
-		/* var: parentAccessLevel
-		 * The access level of the parent, or <AccessLevel.Unknown> if it's not set.
+		/* var: maximumEffectiveChildAccessLevel
+		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For 
+		 * example, a private class's children would have a maximum effective access level of private, even if they were declared 
+		 * public.  Will be <AccessLevel.Unknown> if it's not set.
 		 */
-		protected AccessLevel parentAccessLevel;
+		protected AccessLevel maximumEffectiveChildAccessLevel;
 
-		/* var: defaultChildAccessLevel
-		 * The default access level of all children.
+		/* var: defaultDeclaredChildAccessLevel
+		 * The default declared access level of children.  This can be greater than <maximumEffectiveChildAccessLevel> because
+		 * it is only the declared access level.  Will be <AccessLevel.Unknown> if it's not set.
 		 */
-		protected AccessLevel defaultChildAccessLevel;
+		protected AccessLevel defaultDeclaredChildAccessLevel;
 
 		/* var: defaultChildLanguageID
 		 * The default language ID of all children, or zero if it's not set.

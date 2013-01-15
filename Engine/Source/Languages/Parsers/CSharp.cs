@@ -90,8 +90,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InCode);
 			rootElement.IsRootElement = true;
-			rootElement.ParentAccessLevel = AccessLevel.Public;
-			rootElement.DefaultChildAccessLevel = AccessLevel.Internal;
+			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 			rootElement.DefaultChildLanguageID = this.ID;
 			rootElement.ChildContextString = new ContextString();
 
@@ -198,8 +197,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
 			namespaceElement.ChildContextString = childContext;
-			namespaceElement.ParentAccessLevel = AccessLevel.Public;
-			namespaceElement.DefaultChildAccessLevel = AccessLevel.Internal;
+			namespaceElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 
 			// We don't create topics for namespaces.
 
@@ -326,12 +324,12 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
 			classElement.ChildContextString = childContext;
-			classElement.ParentAccessLevel = accessLevel;
+			classElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
 			if (keyword == "interface")
-				{  classElement.DefaultChildAccessLevel = AccessLevel.Public;  }
+				{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  }
 			else // "class" or "struct"
-				{  classElement.DefaultChildAccessLevel = AccessLevel.Private;  }
+				{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
 
 			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
 
