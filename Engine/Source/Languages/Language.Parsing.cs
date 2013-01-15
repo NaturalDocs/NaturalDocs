@@ -262,55 +262,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: GetComments
-		 * 
-		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
-		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
-		 * comments it will return an empty list.
-		 * 
-		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
-		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
-		 * 
-		 * All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
-		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
-		 * will also be marked as <CommentParsingType.CommentDecoration>.
-		 * 
-		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
-		 */
-		public IList<PossibleDocumentationComment> GetComments (string source)
-			{
-			return GetComments(new Tokenizer(source));
-			}
-
-
-		/* Function: GetComments
-		 * 
-		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
-		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
-		 * comments it will return an empty list.
-		 * 
-		 * This function is NOT required for the normal parsing of files.  Just calling <Parse()> is enough.  This function is only 
-		 * available to provide alternate uses of the parser, such as in <Output.Shrinker>.
-		 * 
-		 * All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
-		 * in the tokenizer.  This allows further operations to be done on them in a language independent manner.  Text boxes and lines
-		 * will also be marked as <CommentParsingType.CommentDecoration>.
-		 */
-		public IList<PossibleDocumentationComment> GetComments (Tokenizer source)
-			{
-			if (Type == LanguageType.Container)
-				{  return new List<PossibleDocumentationComment>();  }  //xxx
-
-			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
-			var lineFinder = Engine.Instance.Comments.LineFinder;
-
-			foreach (PossibleDocumentationComment comment in possibleDocumentationComments)
-				{  lineFinder.MarkTextBoxes(comment);  }
-
-			return possibleDocumentationComments;
-			}
-
-
 		/* Function: ParsePrototype
 		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
@@ -842,68 +793,33 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
-		/* Function: IsBuiltInType
-		 * Returns whether the type string is a built-in type such as "int" as opposed to a user-defined type.
-		 */
-		public bool IsBuiltInType (string type)
-			{
-			return defaultKeywords.Contains(type);
-			}
-
-
-		/* Function: IsBuiltInType
-		 * Returns whether the text between the iterators is a built-in type such as "int" as opposed to a user-defined 
-		 * type.
-		 */
-		public bool IsBuiltInType (TokenIterator start, TokenIterator end)
-			{
-			return IsBuiltInType( start.Tokenizer.TextBetween(start, end) );
-			}
-
-
-		/* Function: IsSameCodeElement
-		 * Returns whether the two topics represent the same code element.  For example, the same function appearing
-		 * in C++ header and source files, or the same C# class defined across multiple files with the "partial" keyword.
-		 */
-		public bool IsSameCodeElement (Topic topicA, Topic topicB)
-			{
-			if (topicA.LanguageID != topicB.LanguageID)
-				{  return false;  }
-
-			#if DEBUG
-			if (topicA.LanguageID != this.ID)
-				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
-			#endif
-
-			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same topic type.
-			if (topicA.TopicTypeID != topicB.TopicTypeID)
-				{  return false;  }
-
-			bool ignoreCase = (Engine.Instance.Languages.FromID(topicA.LanguageID).CaseSensitive == false);
-
-			if (string.Compare(topicA.Symbol, topicB.Symbol, ignoreCase) != 0)
-				{  return false;  }
-
-			// So now we have two topics of the same language, symbol, and type.  Now the assumption is they're the same
-			// unless they're distinguished by parameters.
-			return (string.Compare(topicA.PrototypeParameters, topicB.PrototypeParameters, ignoreCase) == 0);
-			}
-
-
-			
-		// Group: Overridable Parsing Stages
-		// Override these stages in subclasses as necessary.
-		// __________________________________________________________________________
-		
-			
 		// Function: GetPossibleDocumentationComments
 		// 
-		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list of
-		// <PossibleDocumentationComments>.  These comments are not guaranteed to have documentation in them, just to be
-		// acceptable candidates for them.  If there are no comments, it will return an empty list.
+		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
+		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		// comments it will return an empty list.
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
-		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.
+		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
+		// filter out text boxes and lines, use <Comments.Parsers.LineFinder>.
+		//
+		// If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
+		//
+		public List<PossibleDocumentationComment> GetPossibleDocumentationComments (string source)
+			{
+			return GetPossibleDocumentationComments(new Tokenizer(source));
+			}
+
+
+		// Function: GetPossibleDocumentationComments
+		// 
+		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
+		// comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		// comments it will return an empty list.
+		//
+		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
+		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
+		// filter out text boxes and lines, use <Comments.Parsers.LineFinder>.
 		//
 		// Default Implementation:
 		//
@@ -933,11 +849,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// an independent stage even when using full language support means comments don't disappear the way prototypes do if the 
 		// parser gets tripped up on something like an unmatched brace.
 		//
-		virtual protected IList<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+		virtual public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
 			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
 
-			if (Type == LanguageType.TextFile)
+			if (Type == LanguageType.Container)
+				{  throw new NotImplementedException();  }  //xxx
+
+			else if (Type == LanguageType.TextFile)
 				{
 				PossibleDocumentationComment comment = new PossibleDocumentationComment();
 				comment.Start = source.FirstLine;
@@ -1081,6 +1000,59 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			return possibleDocumentationComments;
 			}
 
+
+		/* Function: IsBuiltInType
+		 * Returns whether the type string is a built-in type such as "int" as opposed to a user-defined type.
+		 */
+		public bool IsBuiltInType (string type)
+			{
+			return defaultKeywords.Contains(type);
+			}
+
+
+		/* Function: IsBuiltInType
+		 * Returns whether the text between the iterators is a built-in type such as "int" as opposed to a user-defined 
+		 * type.
+		 */
+		public bool IsBuiltInType (TokenIterator start, TokenIterator end)
+			{
+			return IsBuiltInType( start.Tokenizer.TextBetween(start, end) );
+			}
+
+
+		/* Function: IsSameCodeElement
+		 * Returns whether the two topics represent the same code element.  For example, the same function appearing
+		 * in C++ header and source files, or the same C# class defined across multiple files with the "partial" keyword.
+		 */
+		public bool IsSameCodeElement (Topic topicA, Topic topicB)
+			{
+			if (topicA.LanguageID != topicB.LanguageID)
+				{  return false;  }
+
+			#if DEBUG
+			if (topicA.LanguageID != this.ID)
+				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
+			#endif
+
+			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same topic type.
+			if (topicA.TopicTypeID != topicB.TopicTypeID)
+				{  return false;  }
+
+			bool ignoreCase = (Engine.Instance.Languages.FromID(topicA.LanguageID).CaseSensitive == false);
+
+			if (string.Compare(topicA.Symbol, topicB.Symbol, ignoreCase) != 0)
+				{  return false;  }
+
+			// So now we have two topics of the same language, symbol, and type.  Now the assumption is they're the same
+			// unless they're distinguished by parameters.
+			return (string.Compare(topicA.PrototypeParameters, topicB.PrototypeParameters, ignoreCase) == 0);
+			}
+
+
+			
+		// Group: Parsing Stages
+		// __________________________________________________________________________
+		
 			
 		/* Function: GetCommentTopics
 		 * 

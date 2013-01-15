@@ -103,7 +103,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 							string code = System.IO.File.ReadAllText(test.InputFile);
 
-							IList<PossibleDocumentationComment> comments = language.GetComments(code);
+							IList<PossibleDocumentationComment> comments = language.GetPossibleDocumentationComments(code);
 
 							IList<Topic> topics;
 							LinkSet classParentLinks;

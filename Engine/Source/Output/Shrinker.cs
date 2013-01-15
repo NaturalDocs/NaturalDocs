@@ -56,9 +56,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = jsLanguage.GetComments(source);
+			IList<PossibleDocumentationComment> comments = jsLanguage.GetPossibleDocumentationComments(source);
 
-			foreach (PossibleDocumentationComment comment in comments)
+			foreach (var comment in comments)
 				{  ProcessComment(comment);  }
 
 			if (output.Length > 0)
@@ -141,9 +141,9 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = cssLanguage.GetComments(source);
+			IList<PossibleDocumentationComment> comments = cssLanguage.GetPossibleDocumentationComments(source);
 
-			foreach (PossibleDocumentationComment comment in comments)
+			foreach (var comment in comments)
 				{  ProcessComment(comment);  }
 
 			if (output.Length > 0)
@@ -225,6 +225,8 @@ namespace GregValure.NaturalDocs.Engine.Output
 		 */
 		protected void ProcessComment (PossibleDocumentationComment comment)
 			{
+			Engine.Instance.Comments.LineFinder.MarkTextBoxes(comment);
+
 			LineIterator iterator = comment.Start;
 
 			while (iterator < comment.End)
