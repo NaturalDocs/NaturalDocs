@@ -202,13 +202,15 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 			// topicTypeID - Important in linking.
 			// usesPluralKeyword - Not a database field.
-			// declaredAccessLevel - Important in linking.
-			// effectiveAccessLevel - Important in linking.
-			// tags - Important in linking.
+			// declaredAccessLevel - Not important in linking.
+			// effectiveAccessLevel - Not important in linking, but return Different anyway because it could affect visibility
+			//								   when building a filtered set of documentation.
+			// tags - Not important in linking, but return Different anyway because it could affect visibility when building a
+			//			 filtered set of documentation.
 
 			// languageID - Important in linking.
-			// commentLineNumber - Not imporant in linking.
-			// codeLineNumber - Not important in linking.
+			// commentLineNumber - Not imporant in linking.  SymbolDefinitionNumber will take care of the first being favored.
+			// codeLineNumber - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			
 			// fileID - Not important in linking, but return Different anyway because the same topic in two different files 
 			//				  are considered two separate topics.
@@ -225,7 +227,6 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			if (	
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
 				topicTypeID != other.topicTypeID ||
-				declaredAccessLevel != other.declaredAccessLevel ||
 				effectiveAccessLevel != other.effectiveAccessLevel ||
 
 				// String comparisons, most likely to be different			
@@ -268,6 +269,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  changeFlags |= ChangeFlags.Summary;  }
 			if (classString != other.classString)
 				{  changeFlags |= ChangeFlags.Class;  }
+			if (declaredAccessLevel != other.declaredAccessLevel)
+				{  changeFlags |= ChangeFlags.DeclaredAccessLevel;  }
 			if (isEmbedded != other.isEmbedded)
 				{  changeFlags |= ChangeFlags.IsEmbedded;  }
 

@@ -494,10 +494,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					newTopic.BodyContextID = oldTopic.BodyContextID;
 					}
 
-				connection.Execute("UPDATE Topics SET Summary=?, CommentLineNumber=?, CodeLineNumber=?, " +
+				connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, CommentLineNumber=?, CodeLineNumber=?, " +
 														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
 													"WHERE TopicID = ?",
-													newTopic.Summary, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
+													newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
 													newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
 													oldTopic.TopicID);
 
