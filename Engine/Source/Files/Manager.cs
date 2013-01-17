@@ -826,6 +826,17 @@ namespace GregValure.NaturalDocs.Engine.Files
 			
 			if (file.Type == FileType.Source)
 				{
+				#if SHOW_FILE_PARSING
+					System.Console.Write("Parsing " + file.FileName);
+
+					#if !SINGLE_CORE
+						if (System.Threading.Thread.CurrentThread.Name != null)
+							{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
+					#endif
+
+					System.Console.WriteLine("...");
+				#endif
+
 
 				// Try to read the file from disk
 
@@ -835,11 +846,26 @@ namespace GregValure.NaturalDocs.Engine.Files
 					{  content = System.IO.File.ReadAllText(file.FileName);  }
 
 				catch (System.IO.FileNotFoundException)
-					{  return ReleaseClaimedFileReason.FileDoesntExist;  }
+					{  
+					#if SHOW_FILE_PARSING
+					System.Console.WriteLine("...file not found");
+					#endif
+					return ReleaseClaimedFileReason.FileDoesntExist;  
+					}
 				catch (System.IO.DirectoryNotFoundException)
-					{  return ReleaseClaimedFileReason.FileDoesntExist;  }
+					{  
+					#if SHOW_FILE_PARSING
+					System.Console.WriteLine("...folder not found");
+					#endif
+					return ReleaseClaimedFileReason.FileDoesntExist;  
+					}
 				catch
-					{  return ReleaseClaimedFileReason.CantAccessFile;  }
+					{  
+					#if SHOW_FILE_PARSING
+					System.Console.WriteLine("...can't access file");
+					#endif
+					return ReleaseClaimedFileReason.CantAccessFile;  
+					}
 					
 				if (cancelDelegate())
 					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
@@ -862,6 +888,10 @@ namespace GregValure.NaturalDocs.Engine.Files
 
 				if (topics != null && topics.Count > 0)
 					{
+					#if SHOW_FILE_PARSING
+					System.Console.WriteLine("...found " + topics.Count + " topic" + (topics.Count == 1 ? "" : "s"));
+					#endif
+
 					foreach (Topic topic in topics)
 						{
 						if (topic.Body != null)
@@ -880,6 +910,12 @@ namespace GregValure.NaturalDocs.Engine.Files
 								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 							}
 						}
+					}
+				else
+					{
+					#if SHOW_FILE_PARSING
+					System.Console.WriteLine("...found no topics");
+					#endif
 					}
 					
 
