@@ -93,15 +93,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 			rootElement.DefaultChildLanguageID = this.ID;
 			rootElement.ChildContextString = new ContextString();
+			rootElement.EndingLineNumber = int.MaxValue;
+			rootElement.EndingCharNumber = int.MaxValue;
 
 			elements.Add(rootElement);
 
 			TokenIterator iterator = source.FirstToken;
 			GetCodeElements(ref iterator, elements, new SymbolString());
-
-			iterator = source.LastToken;
-			rootElement.EndingLineNumber = iterator.LineNumber;
-			rootElement.EndingCharNumber = iterator.CharNumber;
 
 			return elements;
 			}

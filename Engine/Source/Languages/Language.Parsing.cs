@@ -40,6 +40,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{  Success, Cancelled, SyntaxErrors  }
 
 
+		/* enum: ValidateElementsMode
+		 * CommentElements - Validates the results from <GetCommentElements()>.
+		 * CodeElements - Validates the results from <GetCodeElements()>.
+		 * Final - Validates the final list of <Elements> after all processing was performed.
+		 */
+		protected enum ValidateElementsMode : byte
+			{  CommentElements, CodeElements, Final  }
+
+
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -63,200 +72,188 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * but not null if there weren't any.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
 		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
-																  out IList<Topic> topics, out LinkSet classParentLinks)
+																	  out IList<Topic> topics, out LinkSet classParentLinks)
 			{
-			if (Type == LanguageType.Container)
-				{
-				// xxx not handled yet
-				topics = new List<Topic>();
-				classParentLinks = new LinkSet();  
-				return ParseResult.Success;  
-				}
-
+			List<Element> elements = null;
 			topics = null;
 			classParentLinks = null;
 
 
 			// Find all the comments that could have documentation.
 
-			IList<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
+			List<PossibleDocumentationComment> possibleDocumentationComments = GetPossibleDocumentationComments(source);
 			
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 			
 
-			// Extract Topics from them.  This could include Javadoc, XML, and headerless Natural Docs comments.
+			// Extract comment elements from them.  This could include Javadoc, XML, and headerless Natural Docs comments.
 				
-			IList<Topic> commentTopics = GetCommentTopics(possibleDocumentationComments);
+			List<Element> commentElements = GetCommentElements(possibleDocumentationComments);
 			
-			foreach (Topic commentTopic in commentTopics)
-			   {
-			   commentTopic.FileID = fileID;
-			   commentTopic.LanguageID = this.ID;
-			   }
+			#if DEBUG
+				ValidateElements(commentElements, ValidateElementsMode.CommentElements);
+			#endif
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
 
-			// Scan the comments for prototype blocks, applying them as the prototypes and removing them from the body.
+			// Fill in the declared access levels.  We do this before merging with the code elements so the defaults that come from the 
+			// comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will have the comment
+			// settings overwritten by the code settings.
 
-			ApplyCommentPrototypes(commentTopics);
-
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
-
-
-			// For basic language support, fill in additional prototypes via our language-neutral algorithm.
-
-			if (Type == LanguageType.BasicSupport)
-				{
-				AddBasicPrototypes(source, commentTopics, possibleDocumentationComments);
-
-				if (cancelDelegate())
-					{  return ParseResult.Cancelled;  }
-				}
-
-
-			// Convert our Topic list to CodePoints.  Topics only store line numbers, so we'll move a LineIterator to each one to
-			// get the character position CodePoint needs.
-
-			List<CodePoint> commentCodePoints = new List<CodePoint>(commentTopics.Count);
-			LineIterator lineIterator = source.FirstLine;
-
-			foreach (Topic commentTopic in commentTopics)
-				{
-				lineIterator.Next(commentTopic.CommentLineNumber - lineIterator.LineNumber);
-
-				CodePoint commentCodePoint = new CodePoint(lineIterator, CodePoint.Flags.InComments);
-				commentCodePoint.Topic = commentTopic;
-
-				commentCodePoints.Add(commentCodePoint);
-				}
+			ApplyDeclaredAccessLevels(commentElements);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
 
 
-			// Generate topic symbols and apply context settings according to topic scoping rules.  This only applies to Natural Docs
-			// topics with headers as Javadoc, MS XML, and headerless Natural Docs comments don't have titles to generate symbols
-			// from nor topic types to get scoping information from.  We will remove them later if they aren't combined with any code
-			// topics which do have these things.
-
-			GenerateCommentContextAndSymbols(commentCodePoints);
-
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
-
-
-			// xxx apply comment class parents
-
-
-			// For full language support, get code points from the source.
-
-			IList<CodePoint> sourceCodePoints;
+			// If we have full language support, get the code elements as well.
 
 			if (Type == LanguageType.FullSupport)
 				{
-				sourceCodePoints = GetSourceCodePoints(source);
+				List<Element> codeElements = GetCodeElements(source);
 
-				foreach (CodePoint sourceCodePoint in sourceCodePoints)
-					{
-					if (sourceCodePoint.Topic != null)
-						{  sourceCodePoint.Topic.FileID = fileID;  }  
-					}
+				#if DEBUG
+					ValidateElements(codeElements, ValidateElementsMode.CodeElements);
+				#endif
 
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
+
+
+				// Fill in the declared access levels.  This is done before merging so code elements aren't affected by comment settings.
+
+				ApplyDeclaredAccessLevels(codeElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// xxx combine the two
+				// xxx clear out headerless topics that don't merge
+				elements = commentElements;
+				codeElements = null;
+				commentElements = null;
+				RemoveHeaderlessTopics(elements);
 				}
-			else
-				{  sourceCodePoints = new List<CodePoint>();  }
 
 
-			// Merge the source and comment code points into one list.  We're not combining topics yet.
+			// If we have basic language support...
 
-			List<CodePoint> codePoints = new List<CodePoint>(commentCodePoints.Count + sourceCodePoints.Count);
-
-			int sourceCPIndex = 0;
-			int commentCPIndex = 0;
-
-			for (;;)
+			else if (Type == LanguageType.BasicSupport)
 				{
-				if (commentCPIndex < commentCodePoints.Count)
-					{
-					if (sourceCPIndex < sourceCodePoints.Count &&
-						 sourceCodePoints[sourceCPIndex].CharOffset < commentCodePoints[commentCPIndex].CharOffset)
-						{
-						codePoints.Add(sourceCodePoints[sourceCPIndex]);
-						sourceCPIndex++;
-						}
-					else
-						{
-						codePoints.Add(commentCodePoints[commentCPIndex]);
-						commentCPIndex++;
-						}
-					}
-				else if (sourceCPIndex < sourceCodePoints.Count)
-					{
-					codePoints.Add(sourceCodePoints[sourceCPIndex]);
-					sourceCPIndex++;
-					}
-				else
-					{  break;  }
+				
+				// Fill in additional prototypes via our language-neutral algorithm.
+	
+				AddBasicPrototypes(source, commentElements, possibleDocumentationComments);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Clear out headerless topics since there's no code topics to join them with.
+
+				RemoveHeaderlessTopics(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				elements = commentElements;
+				commentElements = null;
 				}
 
 
-			// xxx apply class/group tags/access levels to children
+			// If this is a text file just use the comment elements unaltered.
 
-
-			// xxx combine topics
-
-
-			// Extract the topics and parent links from the code points, and filter out any headerless topics.  This removes Javadoc, 
-			// MS XML, and headerless Natural Docs comments that weren't combined with a source topic.
-
-			List<Topic> finalTopics = new List<Topic>();
-			LinkSet finalClassParentLinks = new LinkSet();
-
-			foreach (CodePoint codePoint in codePoints)
+			else if (Type == LanguageType.TextFile)
 				{
-				if (codePoint.Topic != null && codePoint.Topic.Title != null)
-					{  finalTopics.Add(codePoint.Topic);  }
+				// We don't have to remove headerless topics because there's no way to specify them in text files.
 
-				if (codePoint.ClassParentLinks != null)
-					{
-					foreach (Link link in codePoint.ClassParentLinks)
-						{  finalClassParentLinks.Add(link);  }
-					}
+				elements = commentElements;
+				commentElements = null;
 				}
 
 
-			// Sanity check the generated topics.
+			// xxx Containers aren't supported yet so just return it as an empty file.
+
+			else // Type == LanguageType.Container
+				{
+				topics = new List<Topic>();
+				classParentLinks = new LinkSet();  
+				return ParseResult.Success;  
+				}
+
+
+			// Calculate the effective access levels.  This is done after merging code and comment topics so members are consistent.  For
+			// example, a public comment-only topic appearing in a private class needs to have an effective access level of private.
+
+			GenerateEffectiveAccessLevels(elements);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Apply file and language IDs.  This must be done before generating the remaining symbols because it needs to know the
+			// language to be able to look up the enum settings.
+
+			ApplyFileAndLanguageIDs(elements, fileID, this.ID);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Generate remaining symbols.
+
+			GenerateRemainingSymbols(elements);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Apply comment prototypes, which will overwrite any code prototypes that exist.
+
+			ApplyCommentPrototypes(elements);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Apply prototype and body contexts to topics
+
+			ApplyContexts(elements);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// xxx apply prototype class parents
+				// xxx make sure topic->element conversion searches class prototypes for them
+
 
 			#if DEBUG
-			foreach (Topic topic in finalTopics)
-				{
-				string missingProperties = "";
-
-				if (topic.FileID == 0)
-					{  missingProperties += " FileID";  }
-				if (topic.LanguageID == 0)
-					{  missingProperties += " LanguageID";  }
-				if (topic.Symbol == null)
-					{  missingProperties += " Symbol";  }
-				if (topic.Title == null)
-					{  missingProperties += " Title";  }
-				if (topic.TopicTypeID == 0)
-					{  missingProperties += " TopicTypeID";  }
-
-				if (missingProperties != "")
-					{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }
-				}
+				ValidateElements(elements, ValidateElementsMode.Final);
 			#endif
 
 
-			topics = finalTopics;
-			classParentLinks = finalClassParentLinks;
+			// Extract and return the topics and parent links
+
+			topics = new List<Topic>();
+			classParentLinks = new LinkSet();
+
+			foreach (var element in elements)
+			   {
+			   if (element.Topic != null)
+			      {  topics.Add(element.Topic);  }
+
+			   if (element.ClassParentLinks != null)
+			      {
+			      foreach (var link in element.ClassParentLinks)
+			         {  classParentLinks.Add(link);  }
+			      }
+			   }
 
 			return ParseResult.Success;
 			}
@@ -854,7 +851,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
 
 			if (Type == LanguageType.Container)
-				{  throw new NotImplementedException();  }  //xxx
+				{  
+				return new List<PossibleDocumentationComment>(); // xxx
+				}
 
 			else if (Type == LanguageType.TextFile)
 				{
@@ -1054,50 +1053,172 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 			
-		/* Function: GetCommentTopics
+		/* Function: GetCommentElements
 		 * 
-		 * Finds and parses all <Topics> in the <PossibleDocumentationComments>.  If there are none, it will return an empty list.
+		 * Goes through the <PossibleDocumentationComments> looking for comment <Elements> that should be included in the
+		 * output.  If there are none, it will return an empty list.
 		 * 
-		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()>.  There
-		 * should be no need to change it.
+		 * The default implementation sends each <PossibleDocumentationComment> to <Comments.Manager.Parse()> and then
+		 * converts the <Topics> to <Elements>.  There should be no need to change it.
 		 */
-		protected virtual IList<Topic> GetCommentTopics (IList<PossibleDocumentationComment> possibleDocumentationComments)
+		protected virtual List<Element> GetCommentElements (List<PossibleDocumentationComment> possibleDocumentationComments)
 			{
-			List<Topic> commentTopics = new List<Topic>();
+			List<Topic> topics = new List<Topic>();
 				
-			foreach (PossibleDocumentationComment comment in possibleDocumentationComments)
+			foreach (var comment in possibleDocumentationComments)
+				{  Engine.Instance.Comments.Parse(comment, topics);  }
+
+
+			// Convert the topics to elements.  Generate ranges for scoped topics and groups.
+
+			List<Element> elements = new List<Element>(topics.Count + 1);
+
+			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InComments);
+			rootElement.IsRootElement = true;
+			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;
+			rootElement.DefaultChildLanguageID = this.ID;
+			rootElement.EndingLineNumber = int.MaxValue;
+			rootElement.EndingCharNumber = int.MaxValue;
+
+			elements.Add(rootElement);
+
+			ParentElement lastClass = null;
+			ParentElement lastGroup = null;
+
+			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
+
+			int i = 0;
+			while (i < topics.Count)
 				{
-				Engine.Instance.Comments.Parse(comment, commentTopics);
+				Topic topic = topics[i];
+				TopicType topicType = null;
+
+				// Look up the topic type and end the previous class or group if necessary.
+				if (topic.TopicTypeID != 0)
+					{
+					topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+
+					if (topicType.Scope == TopicType.ScopeValue.Start ||
+						 topicType.Scope == TopicType.ScopeValue.End)
+						{
+						if (lastClass != null)
+							{
+							lastClass.EndingLineNumber = topic.CommentLineNumber;
+							lastClass.EndingCharNumber = 1;
+							lastClass = null;
+							}
+						}
+
+					if (topicType.Scope == TopicType.ScopeValue.Start ||
+						 topicType.Scope == TopicType.ScopeValue.End ||
+						 topicType.ID == groupTopicTypeID)
+						{
+						if (lastGroup != null)
+							{
+							lastGroup.EndingLineNumber = topic.CommentLineNumber;
+							lastGroup.EndingCharNumber = 1;
+							lastGroup = null;
+							}
+						}
+					}
+
+				// Embedded topics get a ParentElement and their children get regular Elements no matter what.
+				if (i + 1 < topics.Count && topics[i].IsEmbedded == true)
+					{
+					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
+					parentElement.Topic = topic;
+					parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
+					elements.Add(parentElement);
+					i++;
+
+					do
+						{
+						Element embeddedElement = new Element(topics[i].CommentLineNumber, 1, Element.Flags.InComments);
+						embeddedElement.Topic = topics[i];
+						elements.Add(embeddedElement);
+						i++;
+						}
+					while (i < topics.Count && topics[i].IsEmbedded == true);
+
+					if (i < topics.Count)
+						{
+						parentElement.EndingLineNumber = topics[i].CommentLineNumber;
+						parentElement.EndingCharNumber = 1;
+						}
+					else
+						{
+						parentElement.EndingLineNumber = topics[i - 1].CommentLineNumber + 1;
+						parentElement.EndingCharNumber = 1;
+						}
+					}
+
+				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they 
+				// have to be inherited by the topics that follow.
+				else if (topicType != null && 
+						  (topicType.Scope == TopicType.ScopeValue.Start || 
+						   topicType.Scope == TopicType.ScopeValue.End || 
+						   topicType.ID == groupTopicTypeID))
+					{
+					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
+					parentElement.Topic = topic;
+
+					if (topicType.ID == groupTopicTypeID)
+						{  
+						// Groups don't enfoce a maximum access level, they just set the default declared level.
+						parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
+						}
+					else // scope start or end
+						{  
+						parentElement.MaximumEffectiveChildAccessLevel = topic.DeclaredAccessLevel;
+						parentElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  
+						}
+
+					elements.Add(parentElement);
+					i++;
+
+					if (topicType.ID == groupTopicTypeID)
+						{  lastGroup = parentElement;  }
+					else
+						{  lastClass = parentElement;  }
+					}
+
+				// Other topics including headerless ones get regular Elements
+				else
+					{
+					Element element = new Element(topic.CommentLineNumber, 1, Element.Flags.InComments);
+					element.Topic = topic;
+					elements.Add(element);
+					i++;
+					}
 				}
 
-			return commentTopics;
+
+			// Close up any open parents.
+
+			if (lastClass != null)
+				{
+				lastClass.EndingLineNumber = possibleDocumentationComments[possibleDocumentationComments.Count - 1].End.LineNumber + 1;
+				lastClass.EndingCharNumber = 1;
+				}
+
+			if (lastGroup != null)
+				{
+				lastGroup.EndingLineNumber = possibleDocumentationComments[possibleDocumentationComments.Count - 1].End.LineNumber + 1;
+				lastGroup.EndingCharNumber = 1;
+				}
+
+			return elements;
 			}
 
 
 		/* Function: GetCodeElements
 		 * 
-		 * Goes through the file looking for code <Elements> that should be included in the output.  The result will include one 
-		 * <ParentElement> representing the root of the file and everything else will be its children.
-		 * 
-		 * If the language doesn't have full support this will return null.
+		 * Goes through the file looking for code <Elements> that should be included in the output.  If there are none or the language 
+		 * doesn't have full support, it will return an empty list.
 		 */
 		public virtual List<Element> GetCodeElements (Tokenizer source)
 			{
-			return null;
-			}
-
-
-		/* Function: GetSourceCodePoints
-		 * 
-		 * Goes through the file looking for code elements that should be included in the output and returns a list of <CodePoints>.
-		 * If there are none, it will return an empty list.
-		 *
-		 * This will only be called for languages with full support.  The default implementation throws an exception since all classes
-		 * implementing full support must override this function.
-		 */
-		protected virtual IList<CodePoint> GetSourceCodePoints (Tokenizer source)
-			{
-			throw new NotImplementedException();
+			return new List<Element>();
 			}
 
 
@@ -1112,32 +1233,36 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * This function will not apply a prototype to a <Topic> that already has one.
 		 */
-		protected virtual void AddBasicPrototypes (Tokenizer source, IList<Topic> commentTopics, 
-																					 IList<PossibleDocumentationComment> possibleDocumentationComments)
+		protected virtual void AddBasicPrototypes (Tokenizer source, List<Element> elements, 
+																  List<PossibleDocumentationComment> possibleDocumentationComments)
 			{
-			int topicIndex = 0;
+			int elementIndex = 0;
 
 			for (int commentIndex = 0; commentIndex < possibleDocumentationComments.Count; commentIndex++)
 				{
 				PossibleDocumentationComment comment = possibleDocumentationComments[commentIndex];
 
-				// Advance the topic index to the last one before the end of this comment.  If there are multiple topics in a 
+				// Advance the element index to the last one before the end of this comment.  If there are multiple topics in a 
 				// comment only the last one gets a prototype search.
 
-				while (topicIndex + 1 < commentTopics.Count && 
-							commentTopics[topicIndex + 1].CommentLineNumber < comment.End.LineNumber)
-					{  topicIndex++;  }
+				while (elementIndex + 1 < elements.Count && 
+						 elements[elementIndex + 1].LineNumber < comment.End.LineNumber)
+					{  elementIndex++;  }
 
 				// Now back up past any embedded topics.  We don't want the last embedded topic to get the prototype
 				// instead of the parent topic.
 
-				while (topicIndex < commentTopics.Count && commentTopics[topicIndex].IsEmbedded && 
-							topicIndex > 0 && commentTopics[topicIndex - 1].CommentLineNumber >= comment.Start.LineNumber)
-					{  topicIndex--;  }
+				while (elementIndex < elements.Count && 
+						 elements[elementIndex].Topic != null &&
+						 elements[elementIndex].Topic.IsEmbedded && 
+						 elementIndex > 0 && 
+						 elements[elementIndex - 1].LineNumber >= comment.Start.LineNumber)
+					{  elementIndex--;  }
 
-				if (topicIndex >= commentTopics.Count ||
-					 commentTopics[topicIndex].CommentLineNumber < comment.Start.LineNumber ||
-					 commentTopics[topicIndex].CommentLineNumber > comment.End.LineNumber)
+				if (elementIndex >= elements.Count ||
+					 elements[elementIndex].Topic == null ||
+					 elements[elementIndex].LineNumber < comment.Start.LineNumber ||
+					 elements[elementIndex].LineNumber > comment.End.LineNumber)
 					{  
 					// We're out of topics or the one we're on isn't in this comment.
 					continue;  
@@ -1145,7 +1270,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				// If it already has a prototype, probably from one embedded in a comment, don't search for a new one.
 
-				if (commentTopics[topicIndex].Prototype != null)
+				if (elements[elementIndex].Topic.Prototype != null)
 					{  continue;  }
 
 				// Build the bounds for the prototype search and perform it.
@@ -1158,7 +1283,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  endCode = source.LastLine;  }
 
-				AddBasicPrototype(commentTopics[topicIndex], startCode, endCode);
+				AddBasicPrototype(elements[elementIndex].Topic, startCode, endCode);
 				}
 			}
 
@@ -1504,25 +1629,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Goes through the <Topics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
 		 * sets them as the topic prototype.
 		 */
-		protected virtual void ApplyCommentPrototypes (IList<Topic> topics)
+		protected virtual void ApplyCommentPrototypes (List<Element> elements)
 			{
 			StringBuilder stringBuilder = null;
-			int replaceEmbeddedLanguageID = 0;
 
-			foreach (Topic topic in topics)
+			foreach (var element in elements)
 				{
-				// If a topic changed its language ID by having a comment prototype, make sure it applies to any embedded topics
-				// that immediately follow it as well.
-				if (topic.IsEmbedded)
-					{
-					if (replaceEmbeddedLanguageID != 0)
-						{  topic.LanguageID = replaceEmbeddedLanguageID;  }
-					}
-				else
-					{  replaceEmbeddedLanguageID = 0;  }
+				var topic = element.Topic;
 
-				if (topic.Body == null)
+				if (topic == null || topic.Body == null)
 					{  continue;  }
+
+
+				// Find the bounds of the prototype block and extract its content.
 
 				int prototypeStartIndex = topic.Body.IndexOf("<pre type=\"prototype\"");
 
@@ -1530,7 +1649,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  continue;  }
 
 				NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body, prototypeStartIndex);
-				string prototypeLanguage = iterator.Property("language");
 
 				if (stringBuilder == null)
 					{  stringBuilder = new StringBuilder();  }
@@ -1555,31 +1673,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				int prototypeEndIndex = iterator.RawTextIndex;
 
 
-				// If the prototype specified a language, use it to replace the topic one.  This allows you to do things like document
-				// SQL in text files.
+				// Apply it to the topic.  If it already had a prototype it will be overwritten.
 
-				if (prototypeLanguage != null)
-					{  
-					Language languageObject = Instance.Languages.FromName(prototypeLanguage);
-
-					if (languageObject != null)
-						{  
-						topic.LanguageID = languageObject.ID;
-						replaceEmbeddedLanguageID = languageObject.ID;
-						}
-					}
-
-
-				// Normalize and apply.
-
-				string prototypeString = stringBuilder.ToString();
-
-				if (topic.LanguageID == this.ID)
-					{  prototypeString = NormalizePrototype(prototypeString);  }
-				else
-					{  prototypeString = Instance.Languages.FromID(topic.LanguageID).NormalizePrototype(prototypeString);  }
-
-				topic.Prototype = prototypeString;
+				topic.Prototype = NormalizePrototype(stringBuilder.ToString());
 
 
 				// Check if there's a header immediately before it.
@@ -1624,150 +1720,556 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 			
-		/* Function: GenerateCommentContextAndSymbols
-		 * Fills in context and symbol fields for a list of <CodePoints> and <Topics> generated from comments.  This will only apply 
-		 * to Natural Docs topics with headers and will follow topic scoping rules.  Javadoc, MS XML, and headerless Natural Docs 
-		 * topics will be skipped as they don't have titles to generate symbols from nor topic types to get scoping information from.
-		 * 
-		 * Specifically, these fields are filled in:
-		 * 
-		 *		- <CodePoint.Context>
-		 *		- <Topic.PrototypeContext>
-		 *		- <Topic.BodyContext>
-		 *		- <Topic.Symbol>
-		 *		- <Topic.ClassString>
+		/* Function: RemoveHeaderlessTopics
+		 * Deletes any <Topics> which do not have the Title field set, which means they were headerless and they were never merged
+		 * with a code topic.  It will remove their <Elements> if they serve no other purpose.
 		 */
-		protected virtual void GenerateCommentContextAndSymbols (IList<CodePoint> commentCodePoints)
+		protected void RemoveHeaderlessTopics (List<Element> elements)
 			{
-			ClassString currentClass = new ClassString();
-			ContextString currentContext = new ContextString();
-			Topic lastNonEmbeddedTopic = null;
-
-			foreach (CodePoint codePoint in commentCodePoints)
+			int i = 0;
+			while (i < elements.Count)
 				{
-				if (codePoint.Topic != null && codePoint.Topic.TopicTypeID != 0 && codePoint.Topic.Title != null)
-					{
-					TopicType topicType = Instance.TopicTypes.FromID(codePoint.Topic.TopicTypeID);
+				Element element = elements[i];
 
-					string parentheses = null;
-					SymbolString symbol = SymbolString.FromPlainText(codePoint.Topic.Title, out parentheses);
-
-					bool partOfEnum;
-
-					if (codePoint.Topic.IsEmbedded)
-						{
-						partOfEnum = lastNonEmbeddedTopic.IsEnum;
+				if (element.Topic != null && element.Topic.Title == null)
+					{  
+					if ((element is ParentElement) == false && element.ClassParentLinks == null)
+						{  
+						elements.RemoveAt(i);  
 						}
 					else
 						{  
-						lastNonEmbeddedTopic = codePoint.Topic;  
-						partOfEnum = false;
+						element.Topic = null;
+						i++;  
 						}
+					}
+				else
+					{  i++;  }
+				}
+			}
 
-					if ( (partOfEnum && enumValue == EnumValues.UnderParent) ||
-						  (!partOfEnum && topicType.Scope == TopicType.ScopeValue.Normal) )
+
+		/* Function: ApplyFileAndLanguageIDs
+		 * Goes through all the <Elements> with <Topics> and applies the FileID and LanguageID properties.  All <Topics> will be set
+		 * to the passed FileID, but the LanguageID will be inherited from the <ParentElements>, or set to the default if none of them 
+		 * have one.
+		 */
+		protected void ApplyFileAndLanguageIDs (List<Element> elements, int defaultFileID, int defaultLanguageID)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Topic topic = elements[i].Topic;
+
+				if (topic != null)
+					{
+					if (topic.FileID == 0)
+						{  topic.FileID = defaultFileID;  }
+
+					if (topic.LanguageID == 0)
 						{
-						codePoint.Topic.Symbol = currentContext.Scope + symbol;
+						int parentIndex = FindElementParent(elements, i);
 
-						codePoint.Topic.ClassString = currentClass;
-						codePoint.Topic.PrototypeContext = currentContext;
-						codePoint.Topic.BodyContext = currentContext;
-						}
-
-					else if ( (partOfEnum && enumValue == EnumValues.Global) ||
-								  (!partOfEnum && topicType.Scope == TopicType.ScopeValue.AlwaysGlobal) )
-						{
-						// The topic is global without affecting the current context
-						codePoint.Topic.Symbol = symbol;
-
-						// However, it's possible for an enum to be part of a class but have its values set to global.
-						// In this case we leave the symbol global but still give it the same class ID as the enum 
-						// because we want them to appear together in the output's class view.  The same goes for
-						// Always Global topics that were documented as part of a class.
-						codePoint.Topic.ClassString = currentClass;
-
-						// Blank out the scope for the prototype context but leave any using statements
-						ContextString globalContext = currentContext;
-						globalContext.Scope = new SymbolString();
-
-						codePoint.Topic.PrototypeContext = globalContext;
-
-						// However, allow the body to retain the scope for linking
-						codePoint.Topic.BodyContext = currentContext;
-						}
-
-					else if (partOfEnum && enumValue == EnumValues.UnderType)
-						{
-						codePoint.Topic.Symbol = lastNonEmbeddedTopic.Symbol + symbol;
-						codePoint.Topic.ClassString = currentClass;
-
-						ContextString enumContext = currentContext;
-						enumContext.Scope = lastNonEmbeddedTopic.Symbol;
-
-						codePoint.Topic.PrototypeContext = currentContext;
-						codePoint.Topic.BodyContext = enumContext;
-						}
-
-					else if (topicType.Scope == TopicType.ScopeValue.Start)
-						{
-						codePoint.Topic.Symbol = symbol;
-
-						if (topicType.Flags.ClassHierarchy)
+						for (;;)
 							{
-							currentClass = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, this.CaseSensitive, symbol);
-							codePoint.Topic.ClassString = currentClass;
+							if (parentIndex == -1)
+								{
+								topic.LanguageID = defaultLanguageID;
+								break;
+								}
+							else if ((elements[parentIndex] as ParentElement).DefaultChildLanguageID != 0)
+								{
+								topic.LanguageID = (elements[parentIndex] as ParentElement).DefaultChildLanguageID;
+								break;
+								}
+							else
+								{  parentIndex = FindElementParent(elements, parentIndex);  }
 							}
-						else if (topicType.Flags.DatabaseHierarchy)
-							{
-							currentClass = ClassString.FromParameters(ClassString.HierarchyType.Database, 0, false, symbol);
-							codePoint.Topic.ClassString = currentClass;
-							}
-						else
-							{
-							currentClass = new ClassString();
-							}
-
-						// Classes are treated as global
-						currentContext.Scope = new SymbolString();
-						codePoint.Topic.PrototypeContext = currentContext;
-
-						// but the body is under the new scope so it can link to members easily.
-						currentContext.Scope = symbol;
-						codePoint.Topic.BodyContext = currentContext;
-
-						codePoint.ContextChanged = true;
-						codePoint.Context = currentContext;
-						}
-
-					else // (topicType.Scope == TopicType.ScopeValue.End)
-						{
-						codePoint.Topic.Symbol = symbol;
-
-						// Everything is global
-						currentContext.Scope = new SymbolString();
-						currentClass = new ClassString();
-
-						codePoint.Topic.ClassString = currentClass;
-						codePoint.Topic.PrototypeContext = currentContext;
-						codePoint.Topic.BodyContext = currentContext;
-
-						codePoint.ContextChanged = true;
-						codePoint.Context = currentContext;
-						}
-
-					// If it's an enum topic where the values are under the type, replace the body context with one that
-					// includes the symbol name.
-					if (codePoint.Topic.IsEmbedded == false && 
-						 codePoint.Topic.IsEnum &&
-						 enumValue == EnumValues.UnderType)
-						{
-						ContextString bodyContext = currentContext;
-						bodyContext.Scope = codePoint.Topic.Symbol;
-
-						codePoint.Topic.BodyContext = bodyContext;
 						}
 					}
 				}
+			}
+
+
+		/* Function: ApplyDeclaredAccessLevels
+		 * Makes sure all <Topics> have DeclaredAccessLevel set.  If one doesn't, it will be retrieved from the first <ParentElement> that
+		 * has DefaultDeclaredChildAccessLevel set.  If none do, it will be set to Public.
+		 */
+		protected void ApplyDeclaredAccessLevels (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Topic topic = elements[i].Topic;
+
+				if (topic != null && topic.DeclaredAccessLevel == AccessLevel.Unknown)
+					{
+					int parentIndex = FindElementParent(elements, i);
+
+					for (;;)
+						{
+						if (parentIndex == -1)
+							{
+							topic.DeclaredAccessLevel = AccessLevel.Public;
+							break;
+							}
+						else if ((elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel != AccessLevel.Unknown)
+							{
+							topic.DeclaredAccessLevel = (elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel;
+							break;
+							}
+						else
+							{  parentIndex = FindElementParent(elements, parentIndex);  }
+						}
+					}
+				}
+			}
+
+
+		/* Function: GenerateEffectiveAccessLevels
+		 * Calculates EffectiveAccessLevel for all <Topics> by combining its declared access level with the maximum effective access
+		 * levels found it its <ParentElements>.  It assumes all <Topics> already have DeclaredAccessLevel set.
+		 */
+		protected void GenerateEffectiveAccessLevels (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Topic topic = elements[i].Topic;
+
+				if (topic != null)
+					{
+					#if DEBUG
+					if (topic.DeclaredAccessLevel == AccessLevel.Unknown)
+						{  throw new Exception("GenerateEffectiveAccessLevels() requires DeclaredAccessLevel be set on all topics.");  }
+					#endif
+
+					topic.EffectiveAccessLevel = topic.DeclaredAccessLevel;
+
+					for (int parentIndex = FindElementParent(elements, i); 
+						  parentIndex != -1; 
+						  parentIndex = FindElementParent(elements, parentIndex))
+						{
+						topic.EffectiveAccessLevel = 
+							GenerateEffectiveAccessLevel(topic.EffectiveAccessLevel, (elements[parentIndex] as ParentElement).MaximumEffectiveChildAccessLevel);
+						}
+					}
+				}
+			}
+
+
+		/* Function: GenerateEffectiveAccessLevel
+		 * Combines the existing access level with the passed maximum and returns the new, limited level.  The current level must be set.  The
+		 * maximum level may be unknown in which case it has no effect.
+		 */
+		protected AccessLevel GenerateEffectiveAccessLevel (AccessLevel current, AccessLevel maximum)
+			{
+			#if DEBUG
+			if (current == AccessLevel.Unknown)
+				{  throw new Exception("Can't call GenerateEffectiveAccessLevel() with current set to Unknown.");  }
+			#endif
+
+
+			// We'll use this chart to make sure the logic covers all the bases.
+			// ---------------------------
+			// ➤ Public + Unknown maximum = Public
+			// ➤ Public + Public maximum = Public
+			// ☐ Public + Protected maximum = Protected
+			// ☐ Public + Internal maximum = Internal
+			// ☐ Public + Protected Internal maximum = Protected Internal
+			// ☐ Public + Private maximum = Private
+			// ---------------------------
+			// ➤ Protected + Unknown maximum = Protected
+			// ➤ Protected + Public maximum = Protected
+			// ☐ Protected + Protected maximum = Protected
+			// ☐ Protected + Internal maximum = Internal*
+			// ☐ Protected + Protected Internal maximum = Protected
+			// ☐ Protected + Private maximum = Private
+			// ---------------------------
+			// ➤ Internal + Unknown maximum = Internal
+			// ➤ Internal + Public maximum = Internal
+			// ☐ Internal + Protected maximum = Internal*
+			// ☐ Internal + Internal maximum = Internal
+			// ☐ Internal + Protected Internal maximum = Internal
+			// ☐ Internal + Private maximum = Private
+			// ---------------------------
+			// ➤ Protected Internal + Unknown maximum = Protected Internal
+			// ➤ Protected Internal + Public maximum = Protected Internal
+			// ☐ Protected Internal + Protected maximum = Protected
+			// ☐ Protected Internal + Internal maximum = Internal
+			// ☐ Protected Internal + Protected Internal maximum = Protected Internal
+			// ☐ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ➤ Private + Unknown maximum = Private
+			// ➤ Private + Public maximum = Private
+			// ☐ Private + Protected maximum = Private
+			// ☐ Private + Internal maximum = Private
+			// ☐ Private + Protected Internal maximum = Private
+			// ☐ Private + Private maximum = Private
+			// ---------------------------
+			// * This isn't entirely accurate from a code perspective.  It's really limited to the intersection of protected and internal (as opposed 
+			//    to being accessible to the union of protected and internal, which is what the "protected internal" access level is) but we have
+			//    to choose one, so internal it is.
+
+			if (maximum == AccessLevel.Unknown || 
+				maximum == AccessLevel.Public)
+				{  return current;  }
+
+
+			// ☒ Public + Unknown maximum = Public
+			// ☒ Public + Public maximum = Public
+			// ➤ Public + Protected maximum = Protected
+			// ➤ Public + Internal maximum = Internal
+			// ➤ Public + Protected Internal maximum = Protected Internal
+			// ➤ Public + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected + Unknown maximum = Protected
+			// ☒ Protected + Public maximum = Protected
+			// ☐ Protected + Protected maximum = Protected
+			// ☐ Protected + Internal maximum = Internal*
+			// ☐ Protected + Protected Internal maximum = Protected
+			// ☐ Protected + Private maximum = Private
+			// ---------------------------
+			// ☒ Internal + Unknown maximum = Internal
+			// ☒ Internal + Public maximum = Internal
+			// ☐ Internal + Protected maximum = Internal*
+			// ☐ Internal + Internal maximum = Internal
+			// ☐ Internal + Protected Internal maximum = Internal
+			// ☐ Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected Internal + Unknown maximum = Protected Internal
+			// ☒ Protected Internal + Public maximum = Protected Internal
+			// ☐ Protected Internal + Protected maximum = Protected
+			// ☐ Protected Internal + Internal maximum = Internal
+			// ☐ Protected Internal + Protected Internal maximum = Protected Internal
+			// ☐ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Private + Unknown maximum = Private
+			// ☒ Private + Public maximum = Private
+			// ☐ Private + Protected maximum = Private
+			// ☐ Private + Internal maximum = Private
+			// ☐ Private + Protected Internal maximum = Private
+			// ☐ Private + Private maximum = Private
+
+			else if (current == AccessLevel.Public)
+				{  return maximum;  }
+
+
+			// ☒ Public + Unknown maximum = Public
+			// ☒ Public + Public maximum = Public
+			// ☒ Public + Protected maximum = Protected
+			// ☒ Public + Internal maximum = Internal
+			// ☒ Public + Protected Internal maximum = Protected Internal
+			// ☒ Public + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected + Unknown maximum = Protected
+			// ☒ Protected + Public maximum = Protected
+			// ☐ Protected + Protected maximum = Protected
+			// ☐ Protected + Internal maximum = Internal*
+			// ☐ Protected + Protected Internal maximum = Protected
+			// ➤ Protected + Private maximum = Private
+			// ---------------------------
+			// ☒ Internal + Unknown maximum = Internal
+			// ☒ Internal + Public maximum = Internal
+			// ☐ Internal + Protected maximum = Internal*
+			// ☐ Internal + Internal maximum = Internal
+			// ☐ Internal + Protected Internal maximum = Internal
+			// ➤ Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected Internal + Unknown maximum = Protected Internal
+			// ☒ Protected Internal + Public maximum = Protected Internal
+			// ☐ Protected Internal + Protected maximum = Protected
+			// ☐ Protected Internal + Internal maximum = Internal
+			// ☐ Protected Internal + Protected Internal maximum = Protected Internal
+			// ➤ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Private + Unknown maximum = Private
+			// ☒ Private + Public maximum = Private
+			// ➤ Private + Protected maximum = Private
+			// ➤ Private + Internal maximum = Private
+			// ➤ Private + Protected Internal maximum = Private
+			// ➤ Private + Private maximum = Private
+
+			else if (current == AccessLevel.Private ||
+					  maximum == AccessLevel.Private)
+				{  return AccessLevel.Private;  }
+
+
+			// ☒ Public + Unknown maximum = Public
+			// ☒ Public + Public maximum = Public
+			// ☒ Public + Protected maximum = Protected
+			// ☒ Public + Internal maximum = Internal
+			// ☒ Public + Protected Internal maximum = Protected Internal
+			// ☒ Public + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected + Unknown maximum = Protected
+			// ☒ Protected + Public maximum = Protected
+			// ☐ Protected + Protected maximum = Protected
+			// ➤ Protected + Internal maximum = Internal*
+			// ☐ Protected + Protected Internal maximum = Protected
+			// ☒ Protected + Private maximum = Private
+			// ---------------------------
+			// ☒ Internal + Unknown maximum = Internal
+			// ☒ Internal + Public maximum = Internal
+			// ➤ Internal + Protected maximum = Internal*
+			// ➤ Internal + Internal maximum = Internal
+			// ➤ Internal + Protected Internal maximum = Internal
+			// ☒ Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected Internal + Unknown maximum = Protected Internal
+			// ☒ Protected Internal + Public maximum = Protected Internal
+			// ☐ Protected Internal + Protected maximum = Protected
+			// ➤ Protected Internal + Internal maximum = Internal
+			// ☐ Protected Internal + Protected Internal maximum = Protected Internal
+			// ☒ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Private + Unknown maximum = Private
+			// ☒ Private + Public maximum = Private
+			// ☒ Private + Protected maximum = Private
+			// ☒ Private + Internal maximum = Private
+			// ☒ Private + Protected Internal maximum = Private
+			// ☒ Private + Private maximum = Private
+
+			else if (current == AccessLevel.Internal ||
+					  maximum == AccessLevel.Internal)
+				{  return AccessLevel.Internal;  }
+
+
+			// ☒ Public + Unknown maximum = Public
+			// ☒ Public + Public maximum = Public
+			// ☒ Public + Protected maximum = Protected
+			// ☒ Public + Internal maximum = Internal
+			// ☒ Public + Protected Internal maximum = Protected Internal
+			// ☒ Public + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected + Unknown maximum = Protected
+			// ☒ Protected + Public maximum = Protected
+			// ➤ Protected + Protected maximum = Protected
+			// ☒ Protected + Internal maximum = Internal*
+			// ➤ Protected + Protected Internal maximum = Protected
+			// ☒ Protected + Private maximum = Private
+			// ---------------------------
+			// ☒ Internal + Unknown maximum = Internal
+			// ☒ Internal + Public maximum = Internal
+			// ☒ Internal + Protected maximum = Internal*
+			// ☒ Internal + Internal maximum = Internal
+			// ☒ Internal + Protected Internal maximum = Internal
+			// ☒ Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected Internal + Unknown maximum = Protected Internal
+			// ☒ Protected Internal + Public maximum = Protected Internal
+			// ➤ Protected Internal + Protected maximum = Protected
+			// ☒ Protected Internal + Internal maximum = Internal
+			// ☐ Protected Internal + Protected Internal maximum = Protected Internal
+			// ☒ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Private + Unknown maximum = Private
+			// ☒ Private + Public maximum = Private
+			// ☒ Private + Protected maximum = Private
+			// ☒ Private + Internal maximum = Private
+			// ☒ Private + Protected Internal maximum = Private
+			// ☒ Private + Private maximum = Private
+
+			else if (current == AccessLevel.Protected||
+					  maximum == AccessLevel.Protected)
+				{  return AccessLevel.Protected;  }
+
+
+			// ☒ Public + Unknown maximum = Public
+			// ☒ Public + Public maximum = Public
+			// ☒ Public + Protected maximum = Protected
+			// ☒ Public + Internal maximum = Internal
+			// ☒ Public + Protected Internal maximum = Protected Internal
+			// ☒ Public + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected + Unknown maximum = Protected
+			// ☒ Protected + Public maximum = Protected
+			// ☒ Protected + Protected maximum = Protected
+			// ☒ Protected + Internal maximum = Internal*
+			// ☒ Protected + Protected Internal maximum = Protected
+			// ☒ Protected + Private maximum = Private
+			// ---------------------------
+			// ☒ Internal + Unknown maximum = Internal
+			// ☒ Internal + Public maximum = Internal
+			// ☒ Internal + Protected maximum = Internal*
+			// ☒ Internal + Internal maximum = Internal
+			// ☒ Internal + Protected Internal maximum = Internal
+			// ☒ Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Protected Internal + Unknown maximum = Protected Internal
+			// ☒ Protected Internal + Public maximum = Protected Internal
+			// ☒ Protected Internal + Protected maximum = Protected
+			// ☒ Protected Internal + Internal maximum = Internal
+			// ➤ Protected Internal + Protected Internal maximum = Protected Internal
+			// ☒ Protected Internal + Private maximum = Private
+			// ---------------------------
+			// ☒ Private + Unknown maximum = Private
+			// ☒ Private + Public maximum = Private
+			// ☒ Private + Protected maximum = Private
+			// ☒ Private + Internal maximum = Private
+			// ☒ Private + Protected Internal maximum = Private
+			// ☒ Private + Private maximum = Private
+
+			else
+				{  return AccessLevel.ProtectedInternal;  }
+			}
+
+
+		/* Function: GenerateRemainingSymbols
+		 * 
+		 * Finds any <Topics> that don't have their symbols set and generates them.  It will also generate ChildContextStrings for
+		 * <ParentElements> where appropriate.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- This function assumes that all code element <Topics> have symbols and the only ones without them appear in the 
+		 *		  comments only.
+		 *		- This function assumes all headerless <Topics> have already been removed.
+		 *		- This function assumes all <Topics> have LanguageID set.
+		 */
+		protected void GenerateRemainingSymbols (List<Element> elements)
+			{
+			#if DEBUG
+			foreach (var element in elements)
+				{
+				if (element.Topic != null)
+					{
+					if (element.Topic.Symbol == null && (element.InCode == true || element.InComments == false))
+						{  throw new Exception("Only comment topics may have undefined symbols in GenerateRemainingSymbols().");  }
+					if (element.Topic.Title == null)
+						{  throw new Exception("Headerless topics must be removed before calling GenerateRemainingSymbols().");  }
+					if (element.Topic.LanguageID == 0)
+						{  throw new Exception("All topics must have LanguageID set before calling GenerateRemainingSymbols().");  }
+					}
+				}
+			#endif
+
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Element element = elements[i];
+
+				if (element.Topic != null && element.Topic.Symbol == null)
+					{
+
+					// Gather information
+
+					TopicType topicType = Engine.Instance.TopicTypes.FromID(element.Topic.TopicTypeID);
+
+					string ignore;
+					SymbolString topicSymbol = SymbolString.FromPlainText(element.Topic.Title, out ignore);
+
+					int parentIndex = FindElementParent(elements, i);
+					while (parentIndex != -1 && (elements[parentIndex] as ParentElement).ChildContextStringSet == false)
+						{  parentIndex = FindElementParent(elements, parentIndex);  }
+
+					ContextString parentContext;
+					if (parentIndex == -1)
+						{  parentContext = new ContextString();  }
+					else
+						{  parentContext = (elements[parentIndex] as ParentElement).ChildContextString;  }
+
+
+					// Set Topic.Symbol
+
+					if (topicType.Scope == TopicType.ScopeValue.Normal)
+						{  element.Topic.Symbol = parentContext.Scope + topicSymbol;  }
+					else // Scope is Start, End, or AlwaysGlobal
+						{  element.Topic.Symbol = topicSymbol;  }
+
+
+					// Set ParentElement.ChildContextString if appropriate
+
+					if (element is ParentElement)
+						{
+						EnumValues enumValue = 0;
+						if (topicType.Flags.Enum == true)
+							{  enumValue = Engine.Instance.Languages.FromID(element.Topic.LanguageID).EnumValue;  }
+							
+						if (topicType.Scope == TopicType.ScopeValue.Start ||
+						    (topicType.Flags.Enum == true && enumValue == EnumValues.UnderType))
+							{
+							// Copy the parent context in order to get the using statements, then overwrite the scope.
+							ContextString newContext = parentContext;
+							newContext.Scope = element.Topic.Symbol;
+							(element as ParentElement).ChildContextString = newContext;
+							}
+						else if (topicType.Scope == TopicType.ScopeValue.End ||
+									  (topicType.Flags.Enum == true && enumValue == EnumValues.Global))
+							{
+							// Copy the parent context in order to get the using statements, then overwrite the scope.
+							ContextString newContext = parentContext;
+							newContext.Scope = new SymbolString();
+							(element as ParentElement).ChildContextString = newContext;
+							}
+						else if (topicType.Flags.Enum == true && enumValue == EnumValues.UnderParent)
+							{
+							// Use the parent context so we get both the scope and the using statements.
+							(element as ParentElement).ChildContextString = parentContext;
+							}
+						// otherwise don't set ChildContextString
+						}
+					}
+				}
+			}
+
+
+		/* Function: ApplyContexts
+		 * Fills in each <Topic's> PrototypeContext and BodyContext settings.  For <ParentElements> the prototype will use next
+		 * higher <ContextString> and the body will use its own.  For other <Elements> they will both use their parents' contexts.
+		 */
+		protected void ApplyContexts (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Element element = elements[i];
+
+				if (element.Topic == null)
+					{  continue;  }
+
+				ContextString parentContext;
+
+				int parentIndex = FindElementParent(elements, i);
+				for (;;)
+					{
+					if (parentIndex == -1)
+						{
+						parentContext = new ContextString();
+						break;
+						}
+					else if ((elements[parentIndex] as ParentElement).ChildContextStringSet == true)
+						{
+						parentContext = (elements[parentIndex] as ParentElement).ChildContextString;
+						break;
+						}
+					else
+						{  parentIndex = FindElementParent(elements, parentIndex);  }
+					}
+
+				if (element is ParentElement && (element as ParentElement).ChildContextStringSet == true)
+					{
+					element.Topic.PrototypeContext = parentContext;
+					element.Topic.BodyContext = (element as ParentElement).ChildContextString;
+					}
+				else
+					{
+					element.Topic.PrototypeContext = parentContext;
+					element.Topic.BodyContext = parentContext;
+					}
+				}
+			}
+
+
+		/* Function: FindElementParent
+		 * Returns the index of the element's immediate parent, or -1 if there isn't one.
+		 */
+		protected int FindElementParent (List<Element> elements, int elementIndex)
+			{
+			Element element = elements[elementIndex];
+
+			for (int i = elementIndex - 1; i >= 0; i--)
+				{
+				if (elements[i] is ParentElement && (elements[i] as ParentElement).Contains(element))
+					{  return i;  }
+				}
+
+			return -1;
 			}
 
 
@@ -2859,7 +3361,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * Validates a list of <Elements> to make sure all the properties are set correctly, throwing an exception if not.  This
 		 * does nothing in non-debug builds.
 		 */
-		protected void ValidateElements (List<Element> elements)
+		protected void ValidateElements (List<Element> elements, ValidateElementsMode mode)
 			{
 			#if DEBUG
 
@@ -2945,6 +3447,37 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								}
 							}
 						}
+					}
+
+
+				if (mode == ValidateElementsMode.CodeElements && element.Topic != null)
+					{
+					if (element.Topic.Title == null)
+						{  throw new Exception("All topics returned by GetCodeElements() must have titles.");  }
+					if (element.Topic.Symbol == null)
+						{  throw new Exception("All topics returned by GetCodeElements() must have symbols.");  }
+					if (element.Topic.TopicTypeID == 0)
+						{  throw new Exception("All topics returned by GetCodeElements() must have topic type IDs.");  }
+					}
+
+				if (mode == ValidateElementsMode.Final && element.Topic != null)
+					{
+					Topic topic = element.Topic;
+					string missingProperties = "";
+
+					if (topic.FileID == 0)
+						{  missingProperties += " FileID";  }
+					if (topic.LanguageID == 0)
+						{  missingProperties += " LanguageID";  }
+					if (topic.Symbol == null)
+						{  missingProperties += " Symbol";  }
+					if (topic.Title == null)
+						{  missingProperties += " Title";  }
+					if (topic.TopicTypeID == 0)
+						{  missingProperties += " TopicTypeID";  }
+
+					if (missingProperties != "")
+						{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }
 					}
 				}
 

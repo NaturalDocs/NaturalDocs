@@ -97,7 +97,6 @@
     <Compile Include="Source\Config\OutputEntry.cs" />
     <Compile Include="Source\Config\PropertyResult.cs" />
     <Compile Include="Source\IDObjects\NumberRange.cs" />
-    <Compile Include="Source\Languages\CodePoint.cs" />
     <Compile Include="Source\Languages\Language.Parsing.cs" />
     <Compile Include="Source\Languages\PrototypeEnders.cs" />
     <Compile Include="Source\Links\LinkSet.cs" />
