@@ -323,7 +323,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 */
 		protected void RequireNotValue (string operation, string fieldName, int fieldValue, int forbiddenValue)
 			{
-			if (fieldValue != forbiddenValue)
+			if (fieldValue == forbiddenValue)
 				{  throw new Exceptions.FieldMustNotBeValue(operation, fieldName, forbiddenValue);  }
 			}
 
