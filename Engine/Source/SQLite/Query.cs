@@ -10,9 +10,9 @@
  *		- These objects should not be created directly.  Use <SQLite.Connection> functions instead which will return
  *		  them.
  *		
- *		- Once a statement is ready, call <Step()> to get the first row, if any.  Use functions like <IntColumn()> and
- *		  <StringColumn()> to get the values from the row. Continue calling <Step()> until you run out of rows or 
- *		  don't need any more.
+ *		- Once a statement is ready, call <Step()> to get the first row, if any.  You can use functions like <IntColumn()> 
+ *		  to retrieve values from the row at specific indexes, or functions like <NextIntColumn()> to iterate through them.
+ *		  Continue calling <Step()> until you run out of rows or don't need any more.
  *		  
  *		- If desired, you can call <Reset()> at any time to start over from the beginning.  You can also have it clear
  *		  the bindings so you can call <BindValues()> to run it again with new values.
@@ -48,6 +48,7 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 			{
 			statementHandle = IntPtr.Zero;
 			connectionHandle = IntPtr.Zero;
+			columnIndex = 0;
 			} 
 			
 		/* Destructor: ~Query
@@ -129,11 +130,12 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 			
 		/* Function: Step
 		 * Executes the statement until it returns a row or completes.  Returns true if it returns a row or false if
-		 * there are no more.
+		 * there are no more.  This also resets the column index used by functions like <NextIntColumn()>.
 		 */
 		public bool Step ()
 			{
 			API.Result result = API.Step(statementHandle);
+			columnIndex = 0;
 			
 			if (result == API.Result.Row)
 				{  return true;  }
@@ -168,6 +170,51 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		 */
 		public double DoubleColumn (int columnIndex)
 			{  return API.ColumnDouble(statementHandle, columnIndex);  }
+			
+			
+		/* Function: NextIntColumn
+		 * Returns the integer value of the next column in a row found by <Step()>.  NextColumn functions start at the first
+		 * column after each <Step()> and move to the next one on each call.
+		 */
+		public int NextIntColumn ()
+			{  
+			int result = IntColumn(columnIndex);
+			columnIndex++;
+			return result;
+			}
+			
+		/* Function: NextStringColumn
+		 * Returns the string value of the next column in a row found by <Step()>.  NextColumn functions start at the first
+		 * column after each <Step()> and move to the next one on each call.
+		 */
+		public string NextStringColumn ()
+			{  
+			string result = StringColumn(columnIndex);
+			columnIndex++;
+			return result;
+			}
+			
+		/* Function: NextLongColumn
+		 * Returns the 64-bit integer value of the next column in a row found by <Step()>.  NextColumn functions start at 
+		 * the first column after each <Step()> and move to the next one on each call.
+		 */
+		public long NextLongColumn ()
+			{  
+			long result = LongColumn(columnIndex);
+			columnIndex++;
+			return result;
+			}
+			
+		/* Function: NextDoubleColumn
+		 * Returns the double (floating point) value of the next column in a row found by <Step()>.  NextColumn functions 
+		 * start at the first column after each <Step()> and move to the next one on each call.
+		 */
+		public double NextDoubleColumn ()
+			{  
+			double result = DoubleColumn(columnIndex);
+			columnIndex++;
+			return result;
+			}
 			
 			
 		/* Function: Reset
@@ -231,5 +278,11 @@ namespace GregValure.NaturalDocs.Engine.SQLite
 		 * responsible for disposing of it.
 		 */
 		protected IntPtr connectionHandle;
+
+		/* var: columnIndex
+		 * The current column index when using functions like <NextIntColumn()>.
+		 */
+		protected int columnIndex;
+
 		}
 	}
