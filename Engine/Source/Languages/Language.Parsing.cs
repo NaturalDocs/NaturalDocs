@@ -221,8 +221,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Apply prototype and body contexts to topics
+			// Apply remaining properties
 
+			ApplyClassStrings(elements);
 			ApplyContexts(elements);
 
 			if (cancelDelegate())
@@ -1768,22 +1769,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					if (topic.LanguageID == 0)
 						{
 						int parentIndex = FindElementParent(elements, i);
+						while (parentIndex != -1 && (elements[parentIndex] as ParentElement).DefaultChildLanguageID == 0)
+							{  parentIndex = FindElementParent(elements, parentIndex);  }
 
-						for (;;)
-							{
-							if (parentIndex == -1)
-								{
-								topic.LanguageID = defaultLanguageID;
-								break;
-								}
-							else if ((elements[parentIndex] as ParentElement).DefaultChildLanguageID != 0)
-								{
-								topic.LanguageID = (elements[parentIndex] as ParentElement).DefaultChildLanguageID;
-								break;
-								}
-							else
-								{  parentIndex = FindElementParent(elements, parentIndex);  }
-							}
+						if (parentIndex == -1)
+							{  topic.LanguageID = defaultLanguageID;  }
+						else
+							{  topic.LanguageID = (elements[parentIndex] as ParentElement).DefaultChildLanguageID;  }
 						}
 					}
 				}
@@ -1803,22 +1795,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (topic != null && topic.DeclaredAccessLevel == AccessLevel.Unknown)
 					{
 					int parentIndex = FindElementParent(elements, i);
+					while (parentIndex != -1 && (elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel == AccessLevel.Unknown)
+						{  parentIndex = FindElementParent(elements, parentIndex);  }
 
-					for (;;)
-						{
-						if (parentIndex == -1)
-							{
-							topic.DeclaredAccessLevel = AccessLevel.Public;
-							break;
-							}
-						else if ((elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel != AccessLevel.Unknown)
-							{
-							topic.DeclaredAccessLevel = (elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel;
-							break;
-							}
-						else
-							{  parentIndex = FindElementParent(elements, parentIndex);  }
-						}
+					if (parentIndex == -1)
+						{  topic.DeclaredAccessLevel = AccessLevel.Public;  }
+					else
+						{  topic.DeclaredAccessLevel = (elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel;  }
 					}
 				}
 			}
@@ -2114,8 +2097,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: GenerateRemainingSymbols
 		 * 
-		 * Finds any <Topics> that don't have their symbols set and generates them.  It will also generate ChildContextStrings for
-		 * <ParentElements> where appropriate.
+		 * Finds any <Topics> that don't have their symbols set and generates them.  It will also generate <ClassStrings> and
+		 * <ContextStrings> for them when appropriate.
 		 * 
 		 * Requirements:
 		 * 
@@ -2144,16 +2127,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			for (int i = 0; i < elements.Count; i++)
 				{
 				Element element = elements[i];
+				Topic topic = element.Topic;
 
-				if (element.Topic != null && element.Topic.Symbol == null)
+				if (topic != null && topic.Symbol == null)
 					{
 
 					// Gather information
 
-					TopicType topicType = Engine.Instance.TopicTypes.FromID(element.Topic.TopicTypeID);
+					TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
 					string ignore;
-					SymbolString topicSymbol = SymbolString.FromPlainText(element.Topic.Title, out ignore);
+					SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out ignore);
 
 					int parentIndex = FindElementParent(elements, i);
 					while (parentIndex != -1 && (elements[parentIndex] as ParentElement).ChildContextStringSet == false)
@@ -2169,9 +2153,29 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					// Set Topic.Symbol
 
 					if (topicType.Scope == TopicType.ScopeValue.Normal)
-						{  element.Topic.Symbol = parentContext.Scope + topicSymbol;  }
+						{  topic.Symbol = parentContext.Scope + topicSymbol;  }
 					else // Scope is Start, End, or AlwaysGlobal
-						{  element.Topic.Symbol = topicSymbol;  }
+						{  topic.Symbol = topicSymbol;  }
+
+
+					// Set Topic.ClassString and ParentElement.DefaultChildClassString if appropriate
+
+					if (topicType.Scope == TopicType.ScopeValue.Start && 
+						  (topicType.Flags.ClassHierarchy == true || topicType.Flags.DatabaseHierarchy == true) )
+						{
+						ClassString.HierarchyType hierarchyType = (topicType.Flags.ClassHierarchy ? 
+																												ClassString.HierarchyType.Class :
+																												ClassString.HierarchyType.Database);
+						Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+
+						ClassString classString = ClassString.FromParameters(hierarchyType, language.ID, language.CaseSensitive, topicSymbol);
+
+						topic.ClassString = classString;
+
+						// Not guaranteed to be a ParentElement because you could be documenting classes in a list.
+						if (element is ParentElement)
+							{  (element as ParentElement).DefaultChildClassString = classString;  }
+						}
 
 
 					// Set ParentElement.ChildContextString if appropriate
@@ -2180,14 +2184,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{
 						EnumValues enumValue = 0;
 						if (topicType.Flags.Enum == true)
-							{  enumValue = Engine.Instance.Languages.FromID(element.Topic.LanguageID).EnumValue;  }
+							{  enumValue = Engine.Instance.Languages.FromID(topic.LanguageID).EnumValue;  }
 							
 						if (topicType.Scope == TopicType.ScopeValue.Start ||
 						    (topicType.Flags.Enum == true && enumValue == EnumValues.UnderType))
 							{
 							// Copy the parent context in order to get the using statements, then overwrite the scope.
 							ContextString newContext = parentContext;
-							newContext.Scope = element.Topic.Symbol;
+							newContext.Scope = topic.Symbol;
 							(element as ParentElement).ChildContextString = newContext;
 							}
 						else if (topicType.Scope == TopicType.ScopeValue.End ||
@@ -2226,21 +2230,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				ContextString parentContext;
 
 				int parentIndex = FindElementParent(elements, i);
-				for (;;)
-					{
-					if (parentIndex == -1)
-						{
-						parentContext = new ContextString();
-						break;
-						}
-					else if ((elements[parentIndex] as ParentElement).ChildContextStringSet == true)
-						{
-						parentContext = (elements[parentIndex] as ParentElement).ChildContextString;
-						break;
-						}
-					else
-						{  parentIndex = FindElementParent(elements, parentIndex);  }
-					}
+				while (parentIndex != -1 && (elements[parentIndex] as ParentElement).ChildContextStringSet == false)
+					{  parentIndex = FindElementParent(elements, parentIndex);  }
+
+				if (parentIndex == -1)
+					{  parentContext = new ContextString();  }
+				else
+					{  parentContext = (elements[parentIndex] as ParentElement).ChildContextString;  }
 
 				if (element is ParentElement && (element as ParentElement).ChildContextStringSet == true)
 					{
@@ -2252,6 +2248,29 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					element.Topic.PrototypeContext = parentContext;
 					element.Topic.BodyContext = parentContext;
 					}
+				}
+			}
+
+
+		/* Function: ApplyClassStrings
+		 * Makes sure each <Topic's> <ClassString> is set.  If any <Topic> doesn't have one it will search its <ParentElements>
+		 * for a default.
+		 */
+		protected void ApplyClassStrings (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Element element = elements[i];
+
+				if (element.Topic == null || element.Topic.ClassString != null)
+					{  continue;  }
+
+				int parentIndex = FindElementParent(elements, i);
+				while (parentIndex != -1 && (elements[parentIndex] as ParentElement).DefaultChildClassStringSet == false)
+					{  parentIndex = FindElementParent(elements, parentIndex);  }
+
+				if (parentIndex != -1)
+					{  element.Topic.ClassString = (elements[parentIndex] as ParentElement).DefaultChildClassString;  }
 				}
 			}
 

@@ -317,10 +317,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 
+			ClassString classString = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, true, symbol);
+
 			ContextString childContext = new ContextString();
 			childContext.Scope = symbol;
 
 			ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
+			classElement.DefaultChildClassString = classString;
 			classElement.ChildContextString = childContext;
 			classElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
@@ -336,6 +339,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				Topic classTopic = new Topic();
 				classTopic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
 				classTopic.Symbol = symbol;
+				classTopic.ClassString = classString;
 				classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				classTopic.TopicTypeID = topicTypeID;
 				classTopic.DeclaredAccessLevel = accessLevel;

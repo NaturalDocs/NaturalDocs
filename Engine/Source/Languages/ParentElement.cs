@@ -62,6 +62,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			maximumEffectiveChildAccessLevel = AccessLevel.Unknown;
 			defaultDeclaredChildAccessLevel = AccessLevel.Unknown;
 			defaultChildLanguageID = 0;
+			defaultChildClassString = new ClassString();
+			defaultChildClassStringSet = false;
 			childContextString = new ContextString();
 			childContextStringSet = false;
 
@@ -124,7 +126,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  isRootElement = value;  }
 			}
 
-
 		/* Property: MaximumEffectiveChildAccessLevel
 		 * The maximum effective access level children can attain, which is usually the effective access level of the parent.  For
 		 * example, a private class's children wolud have a maximum effective access level of private, even if they were declared
@@ -162,6 +163,32 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  defaultChildLanguageID = value;  }
 			}
 
+		/* Property: DefaultChildClassString
+		 * The default <ClassString> all children should use, if set.  Use <DefaultChildClassStringSet> to see if this value is 
+		 * relevant, as null can be a valid value.  Setting this value will automatically set <DefaultChildClassStringSet> to true.
+		 */
+		public ClassString DefaultChildClassString
+			{
+			get
+				{  return defaultChildClassString;  }
+			set
+				{  
+				defaultChildClassString = value;  
+				defaultChildClassStringSet = true;
+				}
+			}
+
+		/* Property: DefaultChildClassStringSet
+		 * Whether <DeaultChildClassString> was set for this element, and thus whether its value is relevant.
+		 */
+		public bool DefaultChildClassStringSet
+			{
+			get
+				{  return defaultChildClassStringSet;  }
+			set
+				{  defaultChildClassStringSet = value;  }
+			}
+
 		/* Property: ChildContextString
 		 * The <ContextString> all children should use, if set.  Use <ChildContextStringSet> to see if this value is relevant, as
 		 * null can be a valid value.  Setting this value will automatically set <ChildContextStringSet> to true.
@@ -178,7 +205,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 		/* Property: ChildContextStringSet
-		 * Whethe <ChildContextString> was set for this element, and thus whether its value is relevant.
+		 * Whether <ChildContextString> was set for this element, and thus whether its value is relevant.
 		 */
 		public bool ChildContextStringSet
 			{
@@ -187,7 +214,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			set
 				{  childContextStringSet = value;  }
 			}
-
 
 		/* Property: EndingLineNumber
 		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.  The first line number is one, 
@@ -200,7 +226,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			set
 				{  endingLineNumber = value;  }
 			}
-
 
 		/* Property: EndingCharNumber
 		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character number 
@@ -242,6 +267,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * The default language ID of all children, or zero if it's not set.
 		 */
 		protected int defaultChildLanguageID;
+
+		/* var: defaultChildClassString
+		 * The default <ClassString> to be used by children.
+		 */
+		protected ClassString defaultChildClassString;
+
+		/* var: defaultChildClassStringSet
+		 * Whether <defaultChildClassString> is set for the current element.
+		 */
+		protected bool defaultChildClassStringSet;
 
 		/* var: childContextString
 		 * The <ContextString> to be used by children.  Since null is a valid value, check <childContextStringSet> to see whether
