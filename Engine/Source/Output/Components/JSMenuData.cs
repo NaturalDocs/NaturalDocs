@@ -508,7 +508,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				output.Append('"');
 
-				string hashPath;
+				string hashPath = null;
 				
 				if (menuEntry is MenuEntries.Files.File)
 					{  
