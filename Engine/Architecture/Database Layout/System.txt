@@ -7,7 +7,7 @@ A simple, one-row table that stores various information about the database.
 
 Column: Version
 	
-	(SQL Prototype)
+	(Prototype)
 		Version TEXT NOT NULL
 	(end)
 	
@@ -17,7 +17,7 @@ Column: Version
 	
 Column: UsedTopicIDs
 
-	(SQL Prototype)
+	(Prototype)
 		UsedTopicIDs TEXT NOT NULL
 	(end)
 
@@ -27,7 +27,7 @@ Column: UsedTopicIDs
 	
 Column: UsedLinkIDs
 
-	(SQL Prototype)
+	(Prototype)
 		UsedLinkIDs TEXT NOT NULL
 	(end)
 
@@ -37,7 +37,7 @@ Column: UsedLinkIDs
 	
 Column: UsedClassIDs
 
-	(SQL Prototype)
+	(Prototype)
 		UsedClassIDs TEXT NOT NULL
 	(end)
 
@@ -47,7 +47,7 @@ Column: UsedClassIDs
 	
 Column: UsedContextIDs
 
-	(SQL Prototype)
+	(Prototype)
 		UsedContextIDs TEXT NOT NULL
 	(end)
 

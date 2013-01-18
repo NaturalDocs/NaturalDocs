@@ -12,7 +12,7 @@ _______________________________________________________________________________
 
 Column: TopicID
 
-	(SQL Prototype)
+	(Prototype)
 		TopicID INTEGER PRIMARY KEY NOT NULL
 	(end)
 	
@@ -21,7 +21,7 @@ Column: TopicID
 	
 Column: Title
 
-	(SQL Prototype)
+	(Prototype)
 		Title TEXT NOT NULL
 	(end)
 	
@@ -30,7 +30,7 @@ Column: Title
 	
 Column: Body
 
-	(SQL Prototype)
+	(Prototype)
 		Body TEXT
 	(end)
 	
@@ -39,7 +39,7 @@ Column: Body
 	
 Column: Summary
 
-	(SQL Prototype)
+	(Prototype)
 		Summary TEXT
 	(end)
 	
@@ -48,7 +48,7 @@ Column: Summary
 	
 Column: Prototype
 
-	(SQL Prototype)
+	(Prototype)
 		Prototype TEXT
 	(end)
 	
@@ -57,7 +57,7 @@ Column: Prototype
 	
 Column: Symbol
 
-	(SQL Prototype)
+	(Prototype)
 		Symbol TEXT NOT NULL
 	(end)
 	
@@ -66,7 +66,7 @@ Column: Symbol
 
 Column: SymbolDefinitionNumber
 
-	(SQL Prototype)
+	(Prototype)
 		SymbolDefinitionNumber INTEGER NOT NULL
 	(end)
 
@@ -76,7 +76,7 @@ Column: SymbolDefinitionNumber
 
 Column: ClassID
 
-	(SQL Prototype)
+	(Prototype)
 		ClassID INTEGER NOT NULL
 	(end)
 
@@ -85,7 +85,7 @@ Column: ClassID
 
 Column: IsEmbedded
 
-	(SQL Prototype)
+	(Prototype)
 		IsEmbedded INTEGER NOT NULL
 	(end)
 
@@ -96,7 +96,7 @@ Column: IsEmbedded
 
 Column: EndingSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		EndingSymbol TEXT NOT NULL
 	(end)
 	
@@ -105,7 +105,7 @@ Column: EndingSymbol
 	
 Column: TopicTypeID
 
-	(SQL Prototype)
+	(Prototype)
 		TopicTypeID INTEGER NOT NULL
 	(end)
 	
@@ -114,7 +114,7 @@ Column: TopicTypeID
 	
 Column: DeclaredAccessLevel
 
-	(SQL Prototype)
+	(Prototype)
 		DeclaredAccessLevel INTEGER NOT NULL
 	(end)
 	
@@ -124,7 +124,7 @@ Column: DeclaredAccessLevel
 	
 Column: EffectiveAccessLevel
 
-	(SQL Prototype)
+	(Prototype)
 		EffectiveAccessLevel INTEGER NOT NULL
 	(end)
 	
@@ -134,7 +134,7 @@ Column: EffectiveAccessLevel
 	
 Column: Tags
 
-	(SQL Prototype)
+	(Prototype)
 		Tags TEXT
 	(end)
 	
@@ -144,7 +144,7 @@ Column: Tags
 
 Column: FileID
 
-	(SQL Prototype)
+	(Prototype)
 		FileID INTEGER NOT NULL
 	(end)
 	
@@ -153,7 +153,7 @@ Column: FileID
 
 Column: CommentLineNumber
 
-	(SQL Prototype)
+	(Prototype)
 		CommentLineNumber INTEGER NOT NULL
 	(end)
 	
@@ -163,7 +163,7 @@ Column: CommentLineNumber
 	
 Column: CodeLineNumber
 	
-	(SQL Prototype)
+	(Prototype)
 		CodeLineNumber INTEGER NOT NULL
 	(end)
 	
@@ -173,7 +173,7 @@ Column: CodeLineNumber
 	
 Column: LanguageID
 
-	(SQL Prototype)
+	(Prototype)
 		LanguageID INTEGER NOT NULL
 	(end)
 	
@@ -184,7 +184,7 @@ Column: LanguageID
 	
 Column: PrototypeContextID
 
-	(SQL Prototype)
+	(Prototype)
 		PrototypeContextID INTEGER NOT NULL
 	(end)
 	
@@ -193,7 +193,7 @@ Column: PrototypeContextID
 	
 Column: BodyContextID
 
-	(SQL Prototype)
+	(Prototype)
 		BodyContextID INTEGER NOT NULL
 	(end)
 	
@@ -207,7 +207,7 @@ _______________________________________________________________________________
 
 Index: TopicsByID
 
-	(SQL Prototype)
+	(Prototype)
 		TopicID INTEGER PRIMARY KEY NOT NULL
 	(end)
 
@@ -216,20 +216,20 @@ Index: TopicsByID
 
 Index: TopicsByFile
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)
 	(end)
 
 
 Index: TopicsByClass
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, CommentLineNumber)
 	(end)
 
 
 Index: TopicsByEndingSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)
 	(end)

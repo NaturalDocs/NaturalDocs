@@ -987,7 +987,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 		/* Function: IsStartBlockLine
 		 * Returns whether the <LineIterator> is on a start block line like "(start code)", and if so, which <BlockType> it uses.
-		 * If it was a code or prototype block and a language was specified, also returns that <Language>.
+		 * If it was a code block and a language was specified, also returns that <Language>.
 		 */
 		protected bool IsStartBlockLine (LineIterator lineIterator, out BlockType blockType, out Language language)
 			{
@@ -1000,7 +1000,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				}
 			
 			
-			// Try matching the entire line, like "(code)" or "(Perl)".
+			// (code)
 			
 			if (IsBlockType(betweenParens, out blockType))
 				{  
@@ -1008,6 +1008,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				return true;  
 				}
 			
+
+			// (Perl)
+
 			language = Engine.Instance.Languages.FromName(betweenParens);
 			if (language != null)
 				{
@@ -1017,30 +1020,33 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 			
-			// These are the possibilities we're testing for:
-			//    - (start code)
-			//    - (start Perl)
-			//    - (start Perl code)
-			//    - (Perl code)
-			// Plus all forms above using "prototype" instead of "code".
-			
 			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 						
-			for (int firstSpace = betweenParens.IndexOf(' '); firstSpace != -1; 
+			for (int firstSpace = betweenParens.IndexOf(' '); 
+				  firstSpace != -1; 
 				  firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
 				{
 				string firstPart = betweenParens.Substring(0, firstSpace);
 				
+
+				// (start _____)
+
 				if (IsStartBlockKeyword(firstPart))
 					{
 					string secondPart = betweenParens.Substring(firstSpace + 1);
-					
+				
+				
+					// (start code)
+						
 					if (IsBlockType(secondPart, out blockType))
 						{  
 						language = null;
 						return true;  
 						}
+					
+					
+					// (start Perl)
 						
 					language = Engine.Instance.Languages.FromName(secondPart);
 					if (language != null)
@@ -1048,26 +1054,33 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						blockType = BlockType.Code;
 						return true;
 						}
+
+
+					// (start Perl code)
 						
-					for (int secondSpace = secondPart.IndexOf(' '); secondSpace != -1; 
+					for (int secondSpace = secondPart.IndexOf(' '); 
+						  secondSpace != -1; 
 						  secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
 						{
 						language = Engine.Instance.Languages.FromName( secondPart.Substring(0, secondSpace) );
 						
 						if (language != null && 
 							IsBlockType( secondPart.Substring(secondSpace+1), out blockType) &&
-							(blockType == BlockType.Code || blockType == BlockType.Prototype) )
+							blockType == BlockType.Code)
 							{  return true;  }
 						}
 					}
 					
 				else // firstPart isn't a start block keyword
 					{
+
+					// (Perl code)
+
 					language = Engine.Instance.Languages.FromName(firstPart);
 					
 					if (language != null &&
 						IsBlockType( betweenParens.Substring(firstSpace + 1), out blockType ) &&
-						(blockType == BlockType.Code || blockType == BlockType.Prototype) )
+						blockType == BlockType.Code)
 						{  return true;  }
 					}
 				}
@@ -1088,45 +1101,54 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{  return false;  }
 			
 			
-			// Try matching the entire line, like "(end)".
+			// (end)
 			
 			if (IsEndBlockKeyword(betweenParens))
 				{  return true;  }
 			
 			
-			// These are the possibilities we're testing for:
-			//    - (end code)
-			//    - (end Perl)
-			//    - (end Perl code)
-			// Plus all forms above using "prototype" instead of "code".
-
 			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 
-			for (int firstSpace = betweenParens.IndexOf(' '); firstSpace != -1; 
-				   firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
+			for (int firstSpace = betweenParens.IndexOf(' '); 
+				  firstSpace != -1; 
+				  firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
 				{
 				string firstPart = betweenParens.Substring(0, firstSpace);
 				
+
+				// (end _____)
+
 				if (IsEndBlockKeyword(firstPart))
 					{
 					string secondPart = betweenParens.Substring(firstSpace + 1);
 					
+
+					// (end code)
+
 					BlockType blockType;
 					if (IsBlockType(secondPart, out blockType))
 						{  return true;  }
 						
+
+					// (end Perl)
+
 					Language language = Engine.Instance.Languages.FromName(secondPart);
 					if (language != null)
 						{  return true;  }
 						
-					for (int secondSpace = secondPart.IndexOf(' '); secondSpace != -1; 
-						   secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
+
+					// (end Perl code)
+
+					for (int secondSpace = secondPart.IndexOf(' '); 
+						  secondSpace != -1; 
+						  secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
 						{
 						language = Engine.Instance.Languages.FromName( secondPart.Substring(0, secondSpace) );
 						
 						if (language != null && 
-							IsBlockType(secondPart.Substring(secondSpace+1), out blockType))
+							IsBlockType(secondPart.Substring(secondSpace+1), out blockType) &&
+							blockType == BlockType.Code)
 							{  return true;  }
 						}
 					}

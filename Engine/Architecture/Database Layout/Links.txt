@@ -12,14 +12,14 @@ _______________________________________________________________________________
 
 Column: LinkID
 	
-	(SQL Prototype)
+	(Prototype)
 		LinkID INTEGER PRIMARY KEY NOT NULL
 	(end)
 	
 	
 Column: Type
 
-	(SQL Prototype)
+	(Prototype)
 		Type INTEGER NOT NULL
 	(end)
 
@@ -28,7 +28,7 @@ Column: Type
 
 Column: TextOrSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		TextOrSymbol TEXT NOT NULL
 	(end)
 
@@ -38,7 +38,7 @@ Column: TextOrSymbol
 
 Column: ContextID
 
-	(SQL Prototype)
+	(Prototype)
 		ContextID INTEGER NOT NULL
 	(end)
 
@@ -47,28 +47,28 @@ Column: ContextID
 
 Column: FileID
 
-	(SQL Prototype)
+	(Prototype)
 		FileID INTEGER NOT NULL
 	(end)
 
 
 Column: ClassID
 
-	(SQL Prototype)
+	(Prototype)
 		ClassID INTEGER NOT NULL
 	(end)
 
 
 Column: LanguageID
 
-	(SQL Prototype)
+	(Prototype)
 		LanguageID INTEGER NOT NULL
 	(end)
 
 
 Column: EndingSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		EndingSymbol TEXT NOT NULL
 	(end)
 
@@ -78,7 +78,7 @@ Column: EndingSymbol
 
 Column: TargetTopicID
 
-	(SQL Prototype)
+	(Prototype)
 		TargetTopicID INTEGER NOT NULL
 	(end)
 
@@ -88,7 +88,7 @@ Column: TargetTopicID
 
 Column: TargetScore
 
-	(SQL Prototype)
+	(Prototype)
 		TargetScore INTEGER NOT NULL
 	(end)
 
@@ -102,7 +102,7 @@ _______________________________________________________________________________
 
 Index: LinksByID
 
-	(SQL Prototype)
+	(Prototype)
 		LinkID INTEGER PRIMARY KEY NOT NULL
 	(end)
 
@@ -111,27 +111,27 @@ Index: LinksByID
 
 Index: LinksByFileAndType
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX LinksByFileAndType ON Links (FileID, Type)
 	(end)
 
 
 Index: LinksByClass
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX LinksByClass ON Links (ClassID)
 	(end)
 
 
 Index: LinksByEndingSymbols
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)
 	(end)
 
 
 Index: LinksByTargetTopicID
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)
 	(end)

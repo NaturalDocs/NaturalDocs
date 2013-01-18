@@ -13,14 +13,14 @@ _______________________________________________________________________________
 
 Column: LinkID
 	
-	(SQL Prototype)
+	(Prototype)
 		LinkID INTEGER NOT NULL
 	(end)
 	
 	
 Column: EndingSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		EndingSymbol TEXT NOT NULL
 	(end)
 
@@ -32,7 +32,7 @@ _______________________________________________________________________________
 
 Index: AlternateLinkEndingSymbolsByIDAndSymbol
 
-	(SQL Prototype)
+	(Prototype)
 		PRIMARY KEY (LinkID, EndingSymbol)
 	(end)
 
@@ -42,6 +42,6 @@ Index: AlternateLinkEndingSymbolsByIDAndSymbol
 
 Index: AlternateLinkEndingSymbolsBySymbol
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)
 	(end)

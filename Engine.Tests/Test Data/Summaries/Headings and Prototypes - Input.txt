@@ -8,7 +8,7 @@ Topic: Test 1
 
 Topic: Test 2
 
-	(SQL Prototype)
+	(Prototype)
 		Field TEXT NOT NULL
 	(end)
 
@@ -19,7 +19,7 @@ Topic: Test 3
 
 	Prototype:
 
-		(SQL Prototype)
+		(Prototype)
 			Field TEXT NOT NULL
 		(end)
 

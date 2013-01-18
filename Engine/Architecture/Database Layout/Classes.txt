@@ -13,7 +13,7 @@ _______________________________________________________________________________
 
 Column: ClassID
 
-	(SQL Prototype)
+	(Prototype)
 		ClassID INTEGER PRIMARY KEY NOT NULL
 	(end)
 	
@@ -22,7 +22,7 @@ Column: ClassID
 
 Column: ClassString
 
-	(SQL Prototype)
+	(Prototype)
 		ClassString TEXT
 	(end)
 	
@@ -33,7 +33,7 @@ Column: ClassString
 
 Column: LookupKey
 
-	(SQL Prototype)
+	(Prototype)
 		LookupKey TEXT NOT NULL
 	(end)
 
@@ -44,7 +44,7 @@ Column: LookupKey
 
 Column: ReferenceCount
 
-	(SQL Prototype)
+	(Prototype)
 		ReferenceCount INTEGER NOT NULL
 	(end)
 
@@ -58,7 +58,7 @@ _______________________________________________________________________________
 
 Index: ClassesByID
 
-	(SQL Prototype)
+	(Prototype)
 		ClassID INTEGER PRIMARY KEY NOT NULL
 	(end)
 
@@ -67,6 +67,6 @@ Index: ClassesByID
 
 Index: ClassesByLookupKey
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)
 	(end)

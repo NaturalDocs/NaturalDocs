@@ -67,9 +67,9 @@ Topic: Top-Level Block Tags
 		>    Code
 		> </pre>
 		
-		The type may be optionally set to "code", in which case syntax highlighting may be applied, or "prototype", in which the 
-		contents should serve as the official prototype regardless of whether one was picked up automatically or not.  If the type 
-		is set a language may optionally be specified.  If it's not it's assumed to be the same as the topic's.
+		The type may be optionally set to "code", in which case syntax highlighting may be applied, or "prototype", in which case 
+		the contents should serve as the official prototype regardless of whether one was picked up automatically or not.  If the 
+		type is set to "code" a language may optionally be specified.  If it's not it's assumed to be the same as the topic's.
 		
 		Preformatted text is the *only* places where the <br> tag is used.  All other text will use <p> tags.
 		

@@ -17,7 +17,7 @@ _______________________________________________________________________________
 
 Column: ContextID
 
-	(SQL Prototype)
+	(Prototype)
 		ContextID INTEGER PRIMARY KEY NOT NULL
 	(end)
 	
@@ -26,7 +26,7 @@ Column: ContextID
 	
 Column: ContextString
 
-	(SQL Prototype)
+	(Prototype)
 		ContextString TEXT NOT NULL
 	(end)
 	
@@ -35,7 +35,7 @@ Column: ContextString
 
 Column: ReferenceCount
 
-	(SQL Prototype)
+	(Prototype)
 		ReferenceCount INTEGER NOT NULL
 	(end)
 
@@ -49,7 +49,7 @@ _______________________________________________________________________________
 
 Index: ContextsByID
 
-	(SQL Prototype)
+	(Prototype)
 		ContextID INTEGER PRIMARY KEY NOT NULL
 	(end)
 
@@ -58,6 +58,6 @@ Index: ContextsByID
 
 Index: ContextsByContextString
 
-	(SQL Prototype)
+	(Prototype)
 		CREATE INDEX ContextsByContextString ON Contexts (ContextString)
 	(end)
