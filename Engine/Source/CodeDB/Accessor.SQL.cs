@@ -108,54 +108,49 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{
 					Topic topic = new Topic();
 					
-					topic.TopicID = query.IntColumn(0);
-					topic.Title = query.StringColumn(1);
-					topic.Summary = query.StringColumn(2);
-					topic.Prototype = query.StringColumn(3);
-					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(4) );
-					topic.SymbolDefinitionNumber = query.IntColumn(5);
-					topic.ClassID = query.IntColumn(6);
-					topic.IsList = (query.IntColumn(7) == 1);
-					topic.IsEmbedded = (query.IntColumn(8) == 1);
+					topic.TopicID = query.NextIntColumn();
+					topic.Title = query.NextStringColumn();
+					topic.Summary = query.NextStringColumn();
+					topic.Prototype = query.NextStringColumn();
+					topic.Symbol = SymbolString.FromExportedString( query.NextStringColumn() );
+					topic.SymbolDefinitionNumber = query.NextIntColumn();
+					topic.ClassID = query.NextIntColumn();
+					topic.IsList = (query.NextIntColumn() == 1);
+					topic.IsEmbedded = (query.NextIntColumn() == 1);
 
-					topic.TopicTypeID = query.IntColumn(9);
-					topic.DeclaredAccessLevel = (Languages.AccessLevel)query.IntColumn(10);
-					topic.EffectiveAccessLevel = (Languages.AccessLevel)query.IntColumn(11);
-					topic.TagString = query.StringColumn(12);
+					topic.TopicTypeID = query.NextIntColumn();
+					topic.DeclaredAccessLevel = (Languages.AccessLevel)query.NextIntColumn();
+					topic.EffectiveAccessLevel = (Languages.AccessLevel)query.NextIntColumn();
+					topic.TagString = query.NextStringColumn();
 
-					topic.CommentLineNumber = query.IntColumn(13);
-					topic.CodeLineNumber = query.IntColumn(14);
+					topic.CommentLineNumber = query.NextIntColumn();
+					topic.CodeLineNumber = query.NextIntColumn();
 
-					topic.LanguageID = query.IntColumn(15);
-					topic.PrototypeContextID = query.IntColumn(16);
-					topic.BodyContextID = query.IntColumn(17);
-					topic.FileID = query.IntColumn(18);
+					topic.LanguageID = query.NextIntColumn();
+					topic.PrototypeContextID = query.NextIntColumn();
+					topic.BodyContextID = query.NextIntColumn();
+					topic.FileID = query.NextIntColumn();
 
 					topic.IgnoredFields = Topic.IgnoreFields.None;
 
 					if (bodyLengthOnly)
 						{  
-						topic.BodyLength = query.IntColumn(19);  
+						topic.BodyLength = query.NextIntColumn();  
 						topic.IgnoredFields |= Topic.IgnoreFields.Body;
 						}
 					else
-						{  topic.Body = query.StringColumn(19);  }
+						{  topic.Body = query.NextStringColumn();  }
 
-					int nextColumn = 20;
 
 					if (lookupClasses)
-						{
-						topic.ClassString = ClassString.FromExportedString( query.StringColumn(nextColumn) );
-						nextColumn++;
-						}
+						{  topic.ClassString = ClassString.FromExportedString( query.NextStringColumn() );  }
 					else
 						{  topic.IgnoredFields |= Topic.IgnoreFields.ClassString;  }
 
 					if (lookupContexts)
 						{
-						topic.PrototypeContext = ContextString.FromExportedString( query.StringColumn(nextColumn) );
-						topic.BodyContext = ContextString.FromExportedString( query.StringColumn(nextColumn + 1) );
-						nextColumn += 2;
+						topic.PrototypeContext = ContextString.FromExportedString( query.NextStringColumn() );
+						topic.BodyContext = ContextString.FromExportedString( query.NextStringColumn() );
 						}
 					else
 						{  topic.IgnoredFields |= Topic.IgnoreFields.PrototypeContext | Topic.IgnoreFields.BodyContext;  }
@@ -1021,34 +1016,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					{
 					Link link = new Link();
 
-					link.LinkID = query.IntColumn(0);
-					link.FileID = query.IntColumn(1);
-					link.LanguageID = query.IntColumn(2);
-					link.Type = (LinkType)query.IntColumn(3);
-					link.TextOrSymbol = query.StringColumn(4);
-					link.EndingSymbol = EndingSymbol.FromExportedString( query.StringColumn(5) );
-					link.ContextID = query.IntColumn(6);
-					link.ClassID = query.IntColumn(7);
-					link.TargetTopicID = query.IntColumn(8);
-					link.TargetScore = query.LongColumn(9);
+					link.LinkID = query.NextIntColumn();
+					link.FileID = query.NextIntColumn();
+					link.LanguageID = query.NextIntColumn();
+					link.Type = (LinkType)query.NextIntColumn();
+					link.TextOrSymbol = query.NextStringColumn();
+					link.EndingSymbol = EndingSymbol.FromExportedString( query.NextStringColumn() );
+					link.ContextID = query.NextIntColumn();
+					link.ClassID = query.NextIntColumn();
+					link.TargetTopicID = query.NextIntColumn();
+					link.TargetScore = query.NextLongColumn();
 
 					link.IgnoredFields = Link.IgnoreFields.None;
 
-					int nextColumn = 10;
-
 					if (lookupClasses)
-						{
-						link.ClassString = ClassString.FromExportedString( query.StringColumn(nextColumn) );
-						nextColumn++;
-						}
+						{  link.ClassString = ClassString.FromExportedString( query.NextStringColumn() );  }
 					else
 						{  link.IgnoredFields |= Link.IgnoreFields.ClassString;  }
 
 					if (lookupContexts)
-						{
-						link.Context = ContextString.FromExportedString( query.StringColumn(nextColumn) );
-						nextColumn++;
-						}
+						{  link.Context = ContextString.FromExportedString( query.NextStringColumn() );  }
 					else
 						{  link.IgnoredFields |= Link.IgnoreFields.Context;  }
 

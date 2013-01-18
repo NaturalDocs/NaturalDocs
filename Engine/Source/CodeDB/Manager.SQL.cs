@@ -132,10 +132,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				query.Step();
 				
-				usedTopicIDs = IDObjects.NumberSet.FromString( query.StringColumn(0) );
-				usedLinkIDs = IDObjects.NumberSet.FromString( query.StringColumn(1) );
-				usedClassIDs = IDObjects.NumberSet.FromString( query.StringColumn(2) );
-				usedContextIDs = IDObjects.NumberSet.FromString( query.StringColumn(3) );
+				usedTopicIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
+				usedLinkIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
+				usedClassIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
+				usedContextIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
 				}
 			}
 			
