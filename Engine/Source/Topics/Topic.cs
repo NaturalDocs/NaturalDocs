@@ -51,23 +51,24 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			Symbol = 0x00000010,
 			SymbolDefinitonNumber = 0x00000020,
 			Class = 0x00000040,
-			IsEmbedded = 0x00000080,
+			IsList = 0x00000080,
+			IsEmbedded = 0x00000100,
 
-			TopicTypeID = 0x00000100,
-			DeclaredAccessLevel = 0x00000200,
-			EffectiveAccessLevel = 0x00000400,
-			Tags = 0x00000800,
+			TopicTypeID = 0x00000200,
+			DeclaredAccessLevel = 0x00000400,
+			EffectiveAccessLevel = 0x00000800,
+			Tags = 0x00001000,
 
-			LanguageID = 0x00001000,
-			CommentLineNumber = 0x00002000,
-			CodeLineNumber = 0x00004000,
+			LanguageID = 0x00002000,
+			CommentLineNumber = 0x00004000,
+			CodeLineNumber = 0x00008000,
 			
-			FileID = 0x00008000,
-			PrototypeContext = 0x00010000,
-			BodyContext = 0x00020000,
+			FileID = 0x00010000,
+			PrototypeContext = 0x00020000,
+			BodyContext = 0x00040000,
 
-			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber |
-					 Class | IsEmbedded | TopicTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
+			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber | Class |
+					 IsList | IsEmbedded | TopicTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
 					 Tags | LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | PrototypeContext | BodyContext
 			}
@@ -94,19 +95,20 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			SymbolDefinitionNumber = 0x00000080,
 			ClassString = 0x00000100,
 			ClassID = 0x00000200,
-			IsEmbedded = 0x00000400,
-			TopicTypeID = 0x00000800,
-			DeclaredAccessLevel = 0x00001000,
-			EffectiveAccessLevel = 0x00002000,
-			Tags = 0x00004000,
-			FileID = 0x00008000,
-			CommentLineNumber = 0x00010000,
-			CodeLineNumber = 0x00020000,
-			LanguageID = 0x00040000,
-			PrototypeContext = 0x00080000,
-			PrototypeContextID = 0x00100000,
-			BodyContext = 0x00200000,
-			BodyContextID = 0x00400000
+			IsList = 0x00000400,
+			IsEmbedded = 0x00000800,
+			TopicTypeID = 0x00001000,
+			DeclaredAccessLevel = 0x00002000,
+			EffectiveAccessLevel = 0x00004000,
+			Tags = 0x00008000,
+			FileID = 0x00010000,
+			CommentLineNumber = 0x00020000,
+			CodeLineNumber = 0x00040000,
+			LanguageID = 0x00080000,
+			PrototypeContext = 0x00100000,
+			PrototypeContextID = 0x00200000,
+			BodyContext = 0x00400000,
+			BodyContextID = 0x00800000
 			}
 
 
@@ -145,12 +147,13 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			symbolDefinitionNumber = 0;
 			classString = new ClassString();
 			classID = 0;
+			isList = false;
 			isEmbedded = false;
 			titleParameters = new ParameterString();
 			prototypeParameters = new ParameterString();
 
 			topicTypeID = 0;
-			usesPluralKeyword = false;
+			isList = false;
 			declaredAccessLevel = Languages.AccessLevel.Unknown;
 			effectiveAccessLevel = Languages.AccessLevel.Unknown;
 			tags = null;
@@ -193,12 +196,13 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			duplicate.symbolDefinitionNumber = symbolDefinitionNumber;
 			duplicate.classString = classString;
 			duplicate.classID = classID;
+			duplicate.isList = isList;
 			duplicate.isEmbedded = isEmbedded;
 			duplicate.titleParameters = titleParameters;
 			duplicate.prototypeParameters = prototypeParameters;
 
 			duplicate.topicTypeID = topicTypeID;
-			duplicate.usesPluralKeyword = usesPluralKeyword;
+			duplicate.isList = isList;
 			duplicate.declaredAccessLevel = declaredAccessLevel;
 			duplicate.effectiveAccessLevel = effectiveAccessLevel;
 
@@ -253,6 +257,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			// symbolDefinitonNumber - Important in linking.
 			// classString - Not important in linking.  Changes in class would be reflected in symbol.
 			// classID - Wouldn't be known coming from a parse.
+			// isList - Not important in linking.
 			// isEmbedded - Not important in linking.
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
@@ -328,6 +333,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  changeFlags |= ChangeFlags.Class;  }
 			if (declaredAccessLevel != other.declaredAccessLevel)
 				{  changeFlags |= ChangeFlags.DeclaredAccessLevel;  }
+			if (isList != other.isList)
+				{  changeFlags |= ChangeFlags.IsList;  }
 			if (isEmbedded != other.isEmbedded)
 				{  changeFlags |= ChangeFlags.IsEmbedded;  }
 
@@ -690,9 +697,37 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Property: IsList
+		 * 
+		 * Whether this is a list topic used to document multiple elements.  This will not be set for enums, though it would be set
+		 * for a list of enums.
+		 */
+		public bool IsList
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.IsList) != 0)
+					{  throw new InvalidOperationException("Tried to access IsList when that field was ignored.");  }
+				#endif
+
+				return isList;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.IsList) != 0)
+					{  throw new InvalidOperationException("Tried to access IsList when that field was ignored.");  }
+				#endif
+
+				isList = value;
+				}
+			}
+
+
 		/* Property: IsEmbedded
-		 * Whether this topic is embedded in a prior topic.  This is used to support lists.  Entries that appear in definition 
-		 * lists within a list topic will get their own <Topic> objects to allow for linking, but they will not appear in the 
+		 * Whether this topic is embedded in a prior topic.  This is used for members of list and enum topics.  Entries that appear in 
+		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in the 
 		 * output because they are already covered by the parent.  Embedded topics will always come after their parent
 		 * in a list of topics, so the last non-embedded topic is the parent.
 		 */
@@ -1092,22 +1127,6 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 					
-		/* Property: UsesPluralKeyword
-		 * 
-		 * Whether the topic is a Natural Docs topic which uses the plural keyword form.
-		 * 
-		 * This isn't included in the database because any effects of this should already be reflected in <Body's> <NDMarkup>
-		 * by the time it gets there.
-		 */
-		public bool UsesPluralKeyword
-			{
-			get
-				{  return usesPluralKeyword;  }
-			set
-				{  usesPluralKeyword = value;  }
-			}
-
-
 		/* Property: ParsedPrototype
 		 * If <Prototype> is not null, this will be it in <ParsedPrototype> form.
 		 */
@@ -1336,10 +1355,16 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 */
 		protected int classID;
 
+		/* var: isList
+		 * Whether this is a list topic used to document multiple items.  This will not be set for enums, though it would be
+		 * set for a list of enums.
+		 */
+		protected bool isList;
+
 		/* var: isEmbedded
-		 * Whether this topic is embedded in a prior topic.  This is used to support lists.  Entries that appear in definition 
-		 * lists within a list topic will get their own <Topic> objects to allow for linking, but they will not appear in the 
-		 * output because they are already covered by the parent.  Embedded topics will always come after their parent
+		 * Whether this topic is embedded in a prior topic.  This is used for entries in lists and enums.  Entries that appear in 
+		 * definition lists within these topics will get their own <Topic> objects to allow for linking, but they will not appear in 
+		 * the output because they are already covered by the parent.  Embedded topics will always come after their parent
 		 * in a list of topics, so the last non-embedded topic is the parent.
 		 */
 		protected bool isEmbedded;
@@ -1359,11 +1384,6 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 */
 		protected int topicTypeID;
 		
-		/* var: usesPluralKeyword
-		 * Whether the topic is a Natural Docs comment which uses the plural form of a keyword.
-		 */
-		protected bool usesPluralKeyword;
-
 		/* var: declaredAccessLevel
 		 * The declared access level of the topic.  For a public member of an internal class, this would be public.
 		 */

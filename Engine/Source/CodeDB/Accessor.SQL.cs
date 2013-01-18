@@ -64,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			bool lookupContexts = ((getTopicFlags & GetTopicFlags.DontLookupContexts) == 0);
 						
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																							  "Topics.ClassID, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
+																							  "Topics.ClassID, IsList, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
 																							  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																							  "LanguageID, PrototypeContextID, BodyContextID, FileID ");
 
@@ -115,32 +115,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.Symbol = SymbolString.FromExportedString( query.StringColumn(4) );
 					topic.SymbolDefinitionNumber = query.IntColumn(5);
 					topic.ClassID = query.IntColumn(6);
-					topic.IsEmbedded = (query.IntColumn(7) == 1);
+					topic.IsList = (query.IntColumn(7) == 1);
+					topic.IsEmbedded = (query.IntColumn(8) == 1);
 
-					topic.TopicTypeID = query.IntColumn(8);
-					topic.DeclaredAccessLevel = (Languages.AccessLevel)query.IntColumn(9);
-					topic.EffectiveAccessLevel = (Languages.AccessLevel)query.IntColumn(10);
-					topic.TagString = query.StringColumn(11);
+					topic.TopicTypeID = query.IntColumn(9);
+					topic.DeclaredAccessLevel = (Languages.AccessLevel)query.IntColumn(10);
+					topic.EffectiveAccessLevel = (Languages.AccessLevel)query.IntColumn(11);
+					topic.TagString = query.StringColumn(12);
 
-					topic.CommentLineNumber = query.IntColumn(12);
-					topic.CodeLineNumber = query.IntColumn(13);
+					topic.CommentLineNumber = query.IntColumn(13);
+					topic.CodeLineNumber = query.IntColumn(14);
 
-					topic.LanguageID = query.IntColumn(14);
-					topic.PrototypeContextID = query.IntColumn(15);
-					topic.BodyContextID = query.IntColumn(16);
-					topic.FileID = query.IntColumn(17);
+					topic.LanguageID = query.IntColumn(15);
+					topic.PrototypeContextID = query.IntColumn(16);
+					topic.BodyContextID = query.IntColumn(17);
+					topic.FileID = query.IntColumn(18);
 
 					topic.IgnoredFields = Topic.IgnoreFields.None;
 
 					if (bodyLengthOnly)
 						{  
-						topic.BodyLength = query.IntColumn(18);  
+						topic.BodyLength = query.IntColumn(19);  
 						topic.IgnoredFields |= Topic.IgnoreFields.Body;
 						}
 					else
-						{  topic.Body = query.StringColumn(18);  }
+						{  topic.Body = query.StringColumn(19);  }
 
-					int nextColumn = 19;
+					int nextColumn = 20;
 
 					if (lookupClasses)
 						{
@@ -336,6 +337,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		SymbolDefinitionNumber - Must be set.
 		 *		ClassString - Can be null, which means it is global and doesn't define a class.
 		 *		ClassID - Must be zero.  This will be automatically assigned and the <Topic> updated.
+		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.
@@ -361,7 +363,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("AddTopic", "SymbolDefinitionNumber", topic.SymbolDefinitionNumber);
 			// ClassString
 			RequireZero("AddTopic", "ClassID", topic.ClassID);
-			// IsEmbedded
+
+			if (topic.IsList && topic.IsEmbedded)
+				{  throw new Exception("IsList and IsEmbedded cannot both be set on a topic.");  }
+
 			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
 			// DeclaredAccessLevel
 			RequireNotValue("AddTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
@@ -387,11 +392,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				GetOrCreateContextIDs(topic);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
-														"IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, Tags, FileID, " +
+														"IsList, IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, Tags, FileID, " +
 														"CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, BodyContextID) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
-													topic.ClassID, (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
+													topic.ClassID, (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
 													(int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, topic.CommentLineNumber, 
 													topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
 													);
@@ -495,11 +500,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					}
 
 				connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, CommentLineNumber=?, CodeLineNumber=?, " +
-														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsEmbedded=? " +
+														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsList=?, IsEmbedded=? " +
 													"WHERE TopicID = ?",
 													newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
-													newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsEmbedded ? 1 : 0),
-													oldTopic.TopicID);
+													newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsList ? 1 : 0), 
+													(newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
 
 				if (classChanged)
 					{
@@ -570,6 +575,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		SymbolDefinitionNumber - Must be set.
 		 *		ClassString - Can be null, which means it is global and doesn't define a class.
 		 *		ClassID - Must be set.
+		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.
@@ -596,7 +602,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// ClassString
 			if (topic.ClassString != null)
 				{  RequireNonZero("DeleteTopic", "ClassID", topic.ClassID);  }
-			// IsEmbedded
+
+			if (topic.IsList && topic.IsEmbedded)
+				{  throw new Exception("IsList and IsEmbedded cannot both be set on a topic.");  }
+
 			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
 			// DeclaredAccessLevel
 			RequireNotValue("DeleteTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
@@ -715,6 +724,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		SymbolDefinitionNumber - Can be zero.  These will be regenerated regardless of whether they were previously set.
 		 *		ClassString - Can be null, which means its global and does not define a class.
 		 *		ClassID - Must be zero.  These will be automatically assigned and the <Topics> updated.
+		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
 		 *		TopicTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.

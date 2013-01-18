@@ -888,7 +888,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			topic.CommentLineNumber = lineIterator.LineNumber;
 			topic.Title = tokenizer.RawText.Substring( afterColon.RawTextIndex, lineEndingIndex - afterColon.RawTextIndex );
 			topic.TopicTypeID = topicType.ID;
-			topic.UsesPluralKeyword = pluralKeyword;
+			topic.IsList = pluralKeyword;
 			
 			if (accessLevel != Languages.AccessLevel.Unknown)
 				{  topic.DeclaredAccessLevel = accessLevel;  }
@@ -1767,7 +1767,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</dd>");
 						}
 
-					bool isSymbol = ( (topic.UsesPluralKeyword || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
+					bool isSymbol = ( (topic.IsList || topic.IsEnum) && lastHeadingType != HeadingType.Parameters);
 						
 					if (isSymbol)
 						{  body.Append("<ds>");  }
@@ -2966,13 +2966,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			if (topic.Body == null)
 				{  return;  }
 
-			if (topic.UsesPluralKeyword == false && topic.IsEnum == false)
+			if (topic.IsList == false && topic.IsEnum == false)
 				{
 				#if DEBUG
 				if (topic.Body.IndexOf("<ds>") != -1)
 					{  
-					throw new Exception ("ExtractEmbeddedTopics found definition symbols in topic " + topic.Title + " even though it's doesn't " +
-															"have a plural keyword and is not an enum.");
+					throw new Exception ("ExtractEmbeddedTopics found definition symbols in topic " + topic.Title + " even though it isn't " +
+															"a list or an enum.");
 					}
 				#endif
 

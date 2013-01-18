@@ -45,6 +45,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"Symbol TEXT NOT NULL, " +
 																							"SymbolDefinitionNumber INTEGER NOT NULL, " +
 																							"ClassID INTEGER NOT NULL, " +
+																							"IsList INTEGER NOT NULL, " +
 																							"IsEmbedded INTEGER NOT NULL, " +
 																							"EndingSymbol TEXT NOT NULL, " +
 																							"TopicTypeID INTEGER NOT NULL, " +

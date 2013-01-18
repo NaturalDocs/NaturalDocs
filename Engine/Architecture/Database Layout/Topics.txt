@@ -83,15 +83,25 @@ Column: ClassID
 	The ID of the class this topic creates or is a member of, or zero if it's global.
 
 
+Column: IsList
+
+	(Prototype)
+		IsList INTEGER NOT NULL
+	(end)
+
+	Whether this is a list topic, stored as 1 or 0.  This will not be set for enum topics, though it could be set for a
+	list of enums.
+
+
 Column: IsEmbedded
 
 	(Prototype)
 		IsEmbedded INTEGER NOT NULL
 	(end)
 
-	Whether this topic is embedded in a prior topic, stored as 1 or 0.  This is used to support lists.  Entries that 
-	appear in definition lists within a list topic will get their own record to allow for linking, but they will not appear
-	in the output because they are already covered by the parent.
+	Whether this topic is embedded in a prior topic, stored as 1 or 0.  This is used for members of list topics or enums.
+	Entries that appear in definition lists within these topics will get their own record to allow for linking, but they will not 
+	appear in the output because they are already covered by the parent.
 
 
 Column: EndingSymbol

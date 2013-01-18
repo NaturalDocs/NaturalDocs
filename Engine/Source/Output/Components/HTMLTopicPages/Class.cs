@@ -104,12 +104,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			for (int i = 0; i < topics.Count; i++)
 				{
-				TopicType topicType = Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID);
 				bool remove = false;
 
-				if (topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy)
+				if (topics[i].IsList)
 					{
-					if (topics[i].Body != null && topics[i].Body.IndexOf("<ds") != -1)
+					TopicType topicType = Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID);
+
+					if (topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy)
 						{  remove = true;  }
 					}
 
