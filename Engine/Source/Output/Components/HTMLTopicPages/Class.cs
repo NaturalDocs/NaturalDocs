@@ -73,6 +73,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{  throw new Exception("You cannot use HTMLTopicPages.Class.GetTopics when classID is not set.");  }
 			#endif
 
+
+			// Retrieve the topics from the database.
+
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
 				{
@@ -95,7 +98,32 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  accessor.ReleaseLock();  }
 				}
 
+
+			// Filter out any list topics that are members of the hierarchy.  If someone documents classes as part of a list,
+			// we only want pages for the individual members, not the list topic.
+
+			for (int i = 0; i < topics.Count; i++)
+				{
+				TopicType topicType = Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID);
+				bool remove = false;
+
+				if (topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy)
+					{
+					if (topics[i].Body != null && topics[i].Body.IndexOf("<ds") != -1)
+						{  remove = true;  }
+					}
+
+				if (remove)
+					{  topics.RemoveAt(i);  }
+				else
+					{  i++;  }
+				}
+
+
+			// Merge the topics from multiple files into one coherent list.
+
 			MergeTopics(topics);
+
 
 			return topics;
 			}
@@ -440,7 +468,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			// If the first and last topic have the same file ID, that means the entire list does and we can return it as is.
 			if (topics[0].FileID == topics[topics.Count-1].FileID)
-				{  return;  }
+				{  
+				// We do still have to make sure the first topic isn't embedded though so that classes documented in lists will
+				// appear correctly.
+				if (topics[0].IsEmbedded)
+					{
+					topics[0] = topics[0].Duplicate();
+					topics[0].IsEmbedded = false;
+					}
+
+				return;  
+				}
 
 			var files = Engine.Instance.Files;
 			var topicTypes = Engine.Instance.TopicTypes;
@@ -523,6 +561,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			topics.AddRange( remainingTopics.GetRange(bestClassIndex, bestClassTopicCount) );
 			remainingTopics.RemoveRange(bestClassIndex, bestClassTopicCount);
+
+
+			// Make sure the first topic isn't embedded so that classes documented in lists still appear correctly.
+
+			if (topics[0].IsEmbedded)
+				{
+				topics[0] = topics[0].Duplicate();
+				topics[0].IsEmbedded = false;
+				}
 
 
 			// Delete all the other topics that define the class.  We don't need them anymore.
