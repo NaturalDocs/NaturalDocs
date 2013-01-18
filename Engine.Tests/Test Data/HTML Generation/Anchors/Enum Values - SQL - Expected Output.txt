@@ -7,3 +7,11 @@
 <a name="Value2"></a>
 -----
 <a name="Value3"></a>
+-----
+<a name="ParentClass.EnumList"></a>
+-----
+<a name="ParentClass.Enum1"></a>
+-----
+<a name="ParentClass.Enum2"></a>
+-----
+<a name="ParentClass.Enum3"></a>

@@ -35,4 +35,19 @@
 		Something2 - Blah
 		Something3 - Blah
 
+
+	Classes: ClassList
+
+		A bunch of classes documented with a plural keyword.  They should all get anchors but not appear under the
+		scope of ClassList or ParentClass.
+
+		Class1 - Blah
+		Class2 - Blah
+		Class3 - Blah
+
+
+	Function: FunctionAfterClassList
+
+		Classes documented as lists should not have scope that continues to later topics.  This should be global.
+
 */

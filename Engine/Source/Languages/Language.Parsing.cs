@@ -1155,7 +1155,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they 
 				// have to be inherited by the topics that follow.
-				else if (topicType != null && 
+				else if (topicType != null && topic.IsList == false &&
 						  (topicType.Scope == TopicType.ScopeValue.Start || 
 						   topicType.Scope == TopicType.ScopeValue.End || 
 						   topicType.ID == groupTopicTypeID))
@@ -2172,15 +2172,16 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 						topic.ClassString = classString;
 
-						// Not guaranteed to be a ParentElement because you could be documenting classes in a list.
-						if (element is ParentElement)
+						// Someone could have documented classes as a list, so it's not guaranteed to be a ParentElement as this may be a list
+						// member.  Also, DefaultChildClassString wouldn't be relevant for the list topic itself.
+						if (element is ParentElement && topic.IsList == false)
 							{  (element as ParentElement).DefaultChildClassString = classString;  }
 						}
 
 
 					// Set ParentElement.ChildContextString if appropriate
 
-					if (element is ParentElement)
+					if (element is ParentElement && topic.IsList == false)
 						{
 						EnumValues enumValue = 0;
 						if (topicType.Flags.Enum == true)
