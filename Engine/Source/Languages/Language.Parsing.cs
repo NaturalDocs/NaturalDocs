@@ -1123,7 +1123,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					}
 
 				// Embedded topics get a ParentElement and their children get regular Elements no matter what.
-				if (i + 1 < topics.Count && topics[i].IsEmbedded == true)
+				if (i + 1 < topics.Count && topics[i + 1].IsEmbedded == true)
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
 					parentElement.Topic = topic;
@@ -1627,7 +1627,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: ApplyCommentPrototypes
 		 * Goes through the <Topics> and looks for prototype code blocks.  If it finds any, it removes them from the body and
-		 * sets them as the topic prototype.
+		 * sets them as the topic prototype.  If the topic already had a prototype it will be overwritten.
 		 */
 		protected virtual void ApplyCommentPrototypes (List<Element> elements)
 			{
