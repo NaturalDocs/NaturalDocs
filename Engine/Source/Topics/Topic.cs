@@ -170,6 +170,63 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 			
 			
+		/* Function: Duplicate
+		 */
+		public Topic Duplicate ()
+			{
+			Topic duplicate = new Topic();
+
+			duplicate.topicID = topicID;
+
+			duplicate.title = title;
+			duplicate.body = body;
+			duplicate.bodyLength = bodyLength;
+			duplicate.summary = summary;
+			duplicate.prototype = prototype;
+
+			// It might be okay to copy these references, but it introduces a hidden dependency so let's not to play it safe.
+			// Let the duplicate generate its own copy.
+			duplicate.parsedPrototype = null;
+			duplicate.parsedClassPrototype = null;
+
+			duplicate.symbol = symbol;
+			duplicate.symbolDefinitionNumber = symbolDefinitionNumber;
+			duplicate.classString = classString;
+			duplicate.classID = classID;
+			duplicate.isEmbedded = isEmbedded;
+			duplicate.titleParameters = titleParameters;
+			duplicate.prototypeParameters = prototypeParameters;
+
+			duplicate.topicTypeID = topicTypeID;
+			duplicate.usesPluralKeyword = usesPluralKeyword;
+			duplicate.declaredAccessLevel = declaredAccessLevel;
+			duplicate.effectiveAccessLevel = effectiveAccessLevel;
+
+			if (tags == null)
+				{  duplicate.tags = null;  }
+			else
+				{  duplicate.tags = new IDObjects.NumberSet(tags);  }
+
+			duplicate.languageID = languageID;
+			duplicate.commentLineNumber = commentLineNumber;
+			duplicate.codeLineNumber = codeLineNumber;
+			
+			duplicate.fileID = fileID;
+			duplicate.prototypeContext = prototypeContext;
+			duplicate.prototypeContextID = prototypeContextID;
+			duplicate.bodyContext = bodyContext;
+			duplicate.bodyContextID = bodyContextID;
+
+			duplicate.ignoredFields = ignoredFields;
+			duplicate.buildFlags = buildFlags;
+
+			// Have to reset the flags for the parsed prototypes we didn't copy.
+			duplicate.buildFlags &= ~(BuildFlags.ParsedPrototype | BuildFlags.ParsedClassPrototype);
+
+			return duplicate;
+			}
+			
+			
 		/* Function: DatabaseCompare
 		 * 
 		 * Compares two topics, returning whether they are the same, different, or similar enough that one can be substituted
