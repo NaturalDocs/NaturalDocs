@@ -742,9 +742,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 *		- CommentLineNumber
 		 *		- Title
 		 *		- TopicTypeID
+		 *		- IsList
+		 *		- LanguageID, if specified
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
-		 *		- UsesPluralKeyword
 		 */
 		protected bool IsTopicLine (LineIterator lineIterator, out Topic topic)
 			{
@@ -824,10 +825,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{  return false;  }
 				
 
-			// Parse out the access level and tags.  Start with the full string before the keyword and work our way down to the
-			// first word.  This allows longer tags and access levels like "Protected Internal" to apply before shorter ones like
+			// Parse out the language, access level, and tags.  Start with the full string before the keyword and work our way down 
+			// to the first word.  This allows longer tags and access levels like "Protected Internal" to apply before shorter ones like
 			// "Protected" and "Internal".  One word can serve as both, so "Private" can be both a tag and a protection level.			
 			
+			int languageID = 0;
 			List<int> tagIDs = null;
 			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
 			
@@ -857,6 +859,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					if (IsAccessLevelTag(substring, out tempAccessLevel))
 						{
 						accessLevel = (Languages.AccessLevel)tempAccessLevel;
+						success = true;
+						}
+
+					Language language = Engine.Instance.Languages.FromName(substring);
+
+					if (language != null)
+						{
+						languageID = language.ID;
 						success = true;
 						}
 						
@@ -890,8 +900,8 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			topic.TopicTypeID = topicType.ID;
 			topic.IsList = pluralKeyword;
 			
-			if (accessLevel != Languages.AccessLevel.Unknown)
-				{  topic.DeclaredAccessLevel = accessLevel;  }
+			topic.DeclaredAccessLevel = accessLevel;
+			topic.LanguageID = languageID;
 
 			if (tagIDs != null)
 				{  
