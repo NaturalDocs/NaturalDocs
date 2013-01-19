@@ -223,6 +223,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			// Apply remaining properties
 
+			ApplyTags(elements);
 			ApplyClassStrings(elements);
 			ApplyContexts(elements);
 
@@ -1128,6 +1129,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
 					parentElement.Topic = topic;
+					parentElement.DefaultChildLanguageID = topic.LanguageID;
 					parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
 					elements.Add(parentElement);
 					i++;
@@ -1162,6 +1164,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
 					parentElement.Topic = topic;
+					parentElement.DefaultChildLanguageID = topic.LanguageID;
 
 					if (topicType.ID == groupTopicTypeID)
 						{  
@@ -2092,6 +2095,29 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			else
 				{  return AccessLevel.ProtectedInternal;  }
+			}
+
+
+		/* Function: ApplyTags
+		 * Makes sure all <Topics> inherit the tags of their parents.
+		 */
+		protected void ApplyTags (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				Topic topic = elements[i].Topic;
+
+				if (topic != null)
+					{
+					for (int parentIndex = FindElementParent(elements, i);
+						  parentIndex != -1;
+						  parentIndex = FindElementParent(elements, parentIndex))
+						{
+						if (elements[parentIndex].Topic != null)
+							{  topic.AddTagsFrom(elements[parentIndex].Topic);  }
+						}
+					}
+				}
 			}
 
 
