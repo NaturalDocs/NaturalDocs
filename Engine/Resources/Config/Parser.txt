@@ -89,12 +89,18 @@ Table: Special Headings
 
 
 Table: Access Level
-# Can be Public, Private, Protected, Internal
+# Can be Public, Private, Protected, Internal, ProtectedInternal
 
 	public -> public
 	private -> private
 	protected -> protected
 	internal -> internal
+	protected internal -> protectedinternal
+	internal protected -> protectedinternal
+	protected-internal -> protectedinternal
+	internal-protected -> protectedinternal
+	protectedinternal -> protectedinternal
+	internalprotected -> protectedinternal
 	
 	
 
