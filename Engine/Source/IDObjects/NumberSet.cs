@@ -164,10 +164,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet (NumberSet toCopy)
 			{
-			ranges = null;
-			usedRanges = 0;
+			ranges = new NumberRange[toCopy.usedRanges];
+			usedRanges = toCopy.usedRanges;
 
-			Duplicate(toCopy);
+			Array.Copy(toCopy.ranges, ranges, usedRanges);
 			}
 			
 
@@ -532,24 +532,6 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 			}
 
 
-		/* Function: Duplicate
-		 * Makes this number set have the same contents as the passed one.
-		 */
-		public void Duplicate (NumberSet other)
-			{
-			// DEPENDENCY: This has to be able to be called from the constructor when numberPairs is null.
-
-			if (ranges == null || ranges.Length < other.usedRanges || 
-				 ShouldShrinkTo(ranges.Length, other.usedRanges) < ranges.Length)
-				{
-				ranges = new NumberRange[other.usedRanges];
-				}
-
-			usedRanges = other.usedRanges;
-			Array.Copy(other.ranges, ranges, usedRanges);
-			}
-			
-			
 		/* Operator: operator==
 		 */
 		static public bool operator== (NumberSet setA, NumberSet setB)
