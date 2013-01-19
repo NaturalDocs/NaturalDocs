@@ -50,6 +50,7 @@
     <Compile Include="Source\ClassCombining.cs" />
     <Compile Include="Source\Comments.cs" />
     <Compile Include="Source\ClassPrototypeParsing.cs" />
+    <Compile Include="Source\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
     <Compile Include="Source\LanguageParsing.cs" />
     <Compile Include="Source\Framework\SourceToClassTopics.cs" />

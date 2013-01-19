@@ -1,0 +1,222 @@
+
+Class: UnspecifiedClass
+
+	Function: UnspecifiedFunction
+
+	API Function: APIFunction
+
+	Test Tag Function: TestTagFunction
+
+	API Test Tag Function: BothFunction
+
+
+	API Group: APIGroup
+
+		Function: UnspecifiedFunction2
+
+		API Function: APIFunction2
+
+		Test Tag Function: TestTagFunction2
+
+		API Test Tag Function: BothFunction2
+
+
+	Test Tag Group: TestTagGroup
+
+		Function: UnspecifiedFunction3
+
+		API Function: APIFunction3
+
+		Test Tag Function: TestTagFunction3
+
+		Test Tag API Function: BothFunction3
+
+
+	API Test Tag Group: BothGroup
+
+		Function: UnspecifiedFunction4
+
+		API Function: APIFunction4
+
+		Test Tag Function: TestTagFunction4
+
+		Test Tag API Function: BothFunction4
+
+
+	Group: UnspecifiedGroup
+
+		Function: UnspecifiedFunction5
+
+		API Function: APIFunction5
+
+		Test Tag Function: TestTagFunction5
+
+		Test Tag API Function: BothFunction5
+
+
+
+API Class: APIClass
+
+	Function: UnspecifiedFunction
+
+	API Function: APIFunction
+
+	Test Tag Function: TestTagFunction
+
+	API Test Tag Function: BothFunction
+
+
+	API Group: APIGroup
+
+		Function: UnspecifiedFunction2
+
+		API Function: APIFunction2
+
+		Test Tag Function: TestTagFunction2
+
+		API Test Tag Function: BothFunction2
+
+
+	Test Tag Group: TestTagGroup
+
+		Function: UnspecifiedFunction3
+
+		API Function: APIFunction3
+
+		Test Tag Function: TestTagFunction3
+
+		Test Tag API Function: BothFunction3
+
+
+	API Test Tag Group: BothGroup
+
+		Function: UnspecifiedFunction4
+
+		API Function: APIFunction4
+
+		Test Tag Function: TestTagFunction4
+
+		Test Tag API Function: BothFunction4
+
+
+	Group: UnspecifiedGroup
+
+		Function: UnspecifiedFunction5
+
+		API Function: APIFunction5
+
+		Test Tag Function: TestTagFunction5
+
+		Test Tag API Function: BothFunction5
+
+
+
+Test Tag Class: TestTagClass
+
+	Function: UnspecifiedFunction
+
+	API Function: APIFunction
+
+	Test Tag Function: TestTagFunction
+
+	API Test Tag Function: BothFunction
+
+
+	API Group: APIGroup
+
+		Function: UnspecifiedFunction2
+
+		API Function: APIFunction2
+
+		Test Tag Function: TestTagFunction2
+
+		API Test Tag Function: BothFunction2
+
+
+	Test Tag Group: TestTagGroup
+
+		Function: UnspecifiedFunction3
+
+		API Function: APIFunction3
+
+		Test Tag Function: TestTagFunction3
+
+		Test Tag API Function: BothFunction3
+
+
+	API Test Tag Group: BothGroup
+
+		Function: UnspecifiedFunction4
+
+		API Function: APIFunction4
+
+		Test Tag Function: TestTagFunction4
+
+		Test Tag API Function: BothFunction4
+
+
+	Group: UnspecifiedGroup
+
+		Function: UnspecifiedFunction5
+
+		API Function: APIFunction5
+
+		Test Tag Function: TestTagFunction5
+
+		Test Tag API Function: BothFunction5
+
+
+
+Test Tag API Class: BothClass
+
+	Function: UnspecifiedFunction
+
+	API Function: APIFunction
+
+	Test Tag Function: TestTagFunction
+
+	API Test Tag Function: BothFunction
+
+
+	API Group: APIGroup
+
+		Function: UnspecifiedFunction2
+
+		API Function: APIFunction2
+
+		Test Tag Function: TestTagFunction2
+
+		API Test Tag Function: BothFunction2
+
+
+	Test Tag Group: TestTagGroup
+
+		Function: UnspecifiedFunction3
+
+		API Function: APIFunction3
+
+		Test Tag Function: TestTagFunction3
+
+		Test Tag API Function: BothFunction3
+
+
+	API Test Tag Group: BothGroup
+
+		Function: UnspecifiedFunction4
+
+		API Function: APIFunction4
+
+		Test Tag Function: TestTagFunction4
+
+		Test Tag API Function: BothFunction4
+
+
+	Group: UnspecifiedGroup
+
+		Function: UnspecifiedFunction5
+
+		API Function: APIFunction5
+
+		Test Tag Function: TestTagFunction5
+
+		Test Tag API Function: BothFunction5

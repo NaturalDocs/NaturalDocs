@@ -1,0 +1,595 @@
+UnspecifiedClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+APIFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+APIFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+APIFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+APIFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+APIFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+APIFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+UnspecifiedFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+APIFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+TestTagFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+APIFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+APIFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+UnspecifiedFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+APIFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: Test Tag
+-----
+BothFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction4
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+UnspecifiedFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+APIFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+TestTagFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+BothFunction5
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag

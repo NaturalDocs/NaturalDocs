@@ -1,0 +1,107 @@
+
+Class: UnspecifiedClass
+An unspecified class that appears only in comments should be public.
+
+	Function: UnspecifiedFunction
+	An unspecified function that appears only in comments should be public.
+
+	Public Function: PublicFunction
+
+	Protected Function: ProtectedFunction
+
+	Private Function: PrivateFunction
+
+
+Public Class: PublicClass
+
+	Function: UnspecifiedFunction
+	An unspecified function that appears only in comments should be public.
+
+	Public Function: PublicFunction
+
+	Protected Function: ProtectedFunction
+
+	Private Function: PrivateFunction
+
+
+Private Class: PrivateClass
+Because it is a private class, the effective access level of each member should be private, even
+if the declared access level is less restrictive.
+
+	Function: UnspecifiedFunction
+
+	Public Function: PublicFunction
+
+	Protected Function: ProtectedFunction
+
+	Private Function: PrivateFunction
+
+
+Public Class: PublicClass2
+Access levels on groups should only effect functions with unspecified access levels.  They should
+not restrict the effective access level of children the way the class's access level does.
+
+	Public Group: PublicGroup
+
+		Function: UnspecifiedFunction
+
+		Public Function: PublicFunction
+
+		Protected Function: ProtectedFunction
+
+		Private Function: PrivateFunction
+
+	Protected Group: ProtectedGroup
+
+		Function: UnspecifiedFunction2
+
+		Public Function: PublicFunction2
+
+		Protected Function: ProtectedFunction2
+
+		Private Function: PrivateFunction2
+
+	Private Group: PrivateGroup
+
+		Function: UnspecifiedFunction3
+
+		Public Function: PublicFunction3
+
+		Protected Function: ProtectedFunction3
+
+		Private Function: PrivateFunction3
+
+
+Private Class: PrivateClass2
+Access levels on groups should only effect functions with unspecified access levels.  They should
+not restrict the effective access level of children the way the class's access level does.
+
+	Public Group: PublicGroup
+
+		Function: UnspecifiedFunction
+
+		Public Function: PublicFunction
+
+		Protected Function: ProtectedFunction
+
+		Private Function: PrivateFunction
+
+	Protected Group: ProtectedGroup
+
+		Function: UnspecifiedFunction2
+
+		Public Function: PublicFunction2
+
+		Protected Function: ProtectedFunction2
+
+		Private Function: PrivateFunction2
+
+	Private Group: PrivateGroup
+
+		Function: UnspecifiedFunction3
+
+		Public Function: PublicFunction3
+
+		Protected Function: ProtectedFunction3
+
+		Private Function: PrivateFunction3

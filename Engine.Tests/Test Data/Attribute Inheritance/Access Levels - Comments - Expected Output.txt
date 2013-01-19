@@ -1,0 +1,234 @@
+UnspecifiedClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicClass
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateClass
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicClass2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+ProtectedGroup
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PublicFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction2
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction2
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateGroup
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction3
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction3
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateClass2
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicGroup
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+UnspecifiedFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+ProtectedGroup
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+UnspecifiedFunction2
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PublicFunction2
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction2
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction2
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateGroup
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction3
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction3
+- Language: Text File
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction3
+- Language: Text File
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction3
+- Language: Text File
+- Declared Access Level: Private
+- Effective Access Level: Private
