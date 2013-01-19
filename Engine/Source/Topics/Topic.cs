@@ -156,7 +156,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			isList = false;
 			declaredAccessLevel = Languages.AccessLevel.Unknown;
 			effectiveAccessLevel = Languages.AccessLevel.Unknown;
-			tags = null;
+			tagIDs = null;
 
 			languageID = 0;
 			commentLineNumber = 0;
@@ -206,10 +206,10 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			duplicate.declaredAccessLevel = declaredAccessLevel;
 			duplicate.effectiveAccessLevel = effectiveAccessLevel;
 
-			if (tags == null)
-				{  duplicate.tags = null;  }
+			if (tagIDs == null)
+				{  duplicate.tagIDs = null;  }
 			else
-				{  duplicate.tags = new IDObjects.NumberSet(tags);  }
+				{  duplicate.tagIDs = new IDObjects.NumberSet(tagIDs);  }
 
 			duplicate.languageID = languageID;
 			duplicate.commentLineNumber = commentLineNumber;
@@ -306,15 +306,15 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				return DatabaseCompareResult.Different;  
 				}
 				
-			if (tags == null || tags.IsEmpty)
+			if (tagIDs == null || tagIDs.IsEmpty)
 				{
-				if (other.tags != null && other.tags.IsEmpty == false)
+				if (other.tagIDs != null && other.tagIDs.IsEmpty == false)
 					{  
 					changeFlags = ChangeFlags.All;
 					return DatabaseCompareResult.Different;  
 					}
 				}
-			else if (other.tags == null || other.tags.IsEmpty || tags != other.tags)
+			else if (other.tagIDs == null || other.tagIDs.IsEmpty || tagIDs != other.tagIDs)
 				{
 				changeFlags = ChangeFlags.All;  
 				return DatabaseCompareResult.Different;  
@@ -360,7 +360,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 
 		/* Function: AddTagID
-		 * Adds an individual tag ID to <TagString>.
+		 * Adds an individual tag ID to <TagIDs>.
 		 */
 		public void AddTagID (int tagID)
 			{
@@ -369,15 +369,31 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  throw new InvalidOperationException("Tried to access AddTagID when tags were ignored.");  }
 			#endif
 
-			if (tags == null)
-				{  tags = new IDObjects.NumberSet();  }
+			if (tagIDs == null)
+				{  tagIDs = new IDObjects.NumberSet();  }
 				
-			tags.Add(tagID);
+			tagIDs.Add(tagID);
+			}
+
+
+		/* Function: AddTagsFrom
+		 * Adds all the tags in the other <Topic> to this one.
+		 */
+		public void AddTagsFrom (Topic other)
+			{
+			if (other.tagIDs == null || other.tagIDs.IsEmpty)
+				{  return;  }
+
+			else if (tagIDs == null)
+				{  tagIDs = new IDObjects.NumberSet(other.tagIDs);  }
+
+			else
+				{  tagIDs.Add(other.tagIDs);  }
 			}
 
 
 		/* Function: HasTagID
-		 * Whether <TagString> contains an individual tag ID.
+		 * Whether <TagIDs> contains an individual tag ID.
 		 */
 		public bool HasTagID (int tagID)
 			{
@@ -386,10 +402,10 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  throw new InvalidOperationException("Tried to access HasTagID when tags were ignored.");  }
 			#endif
 
-			if (tags == null)
+			if (tagIDs == null)
 				{  return false;  }
 				
-			return tags.Contains(tagID);
+			return tagIDs.Contains(tagID);
 			}
 
 
@@ -834,6 +850,23 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 			
 			
+		/* Property: TagIDs
+		 * An <IDObjects.NumberSet> containing all the tag IDs applied to this topic, or null if none.
+		 */
+		public IDObjects.NumberSet TagIDs
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.Tags) != 0)
+					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
+				#endif
+
+				return tagIDs;  
+				}
+			}
+
+
 		/* Property: TagString
 		 * A string representation of an <IDObjects.NumberSet> containing all the tag IDs applied to this topic, or
 		 * null if there are no tags applied or it hasn't been set.
@@ -847,8 +880,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
 				#endif
 
-				if (tags != null && !tags.IsEmpty)
-					{  return tags.ToString();  }
+				if (tagIDs != null && !tagIDs.IsEmpty)
+					{  return tagIDs.ToString();  }
 				else
 					{  return null;  }
 				}
@@ -859,7 +892,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
 				#endif
 
-				tags = IDObjects.NumberSet.FromString(value);
+				tagIDs = IDObjects.NumberSet.FromString(value);
 				}
 			}
 			
@@ -1394,10 +1427,10 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 */
 		protected Languages.AccessLevel effectiveAccessLevel;
 		
-		/* var: tags
+		/* var: tagIDs
 		 * A set of the tags applied to this topic.  May or may not be null if there are none.
 		 */
-		protected IDObjects.NumberSet tags;
+		protected IDObjects.NumberSet tagIDs;
 				
 		/* var: fileID
 		 * The ID of the source file this topic appears in, or zero if not specified.
