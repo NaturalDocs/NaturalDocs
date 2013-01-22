@@ -82,31 +82,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  throw new Exception("Can't use ParentElement.Contains() if the ending line and char numbers weren't set.");  }
 			#endif
 
-			if (element.LineNumber > this.LineNumber && element.LineNumber < this.EndingLineNumber)
-				{  return true;  }
-			if (element.LineNumber < this.LineNumber || element.LineNumber > this.EndingLineNumber)
-				{  return false;  }
-
-			// If we're here it means the element's line number matches the starting or ending line number.
-
-			if (element.LineNumber == this.LineNumber)
-				{
-				if (element.CharNumber < this.CharNumber)
-					{  return false;  }
-				if (this.EndingLineNumber == this.LineNumber && element.CharNumber >= this.EndingCharNumber)
-					{  return false;  }
-
-				return true;
-				}
-			else // element.LineNumber == this.EndingLineNumber
-				{
-				if (element.CharNumber >= this.EndingCharNumber)
-					{  return false;  }
-				if (this.LineNumber == this.EndingLineNumber && element.CharNumber < this.CharNumber)
-					{  return false;  }
-
-				return true;
-				}
+			return (Position <= element.Position && EndingPosition > element.Position);
 			}
 
 
@@ -237,6 +213,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return endingCharNumber;  }
 			set
 				{  endingCharNumber = value;  }
+			}
+
+
+		/* Property: EndingPosition
+		 * An integer that combines <EndingLineNumber> and <EndingCharNumber> into one value so that they can be compared 
+		 * more easily.
+		 */
+		public ulong EndingPosition
+			{
+			get
+				{
+				return ((ulong)endingLineNumber << 32) | (uint)endingCharNumber;
+				}
 			}
 
 

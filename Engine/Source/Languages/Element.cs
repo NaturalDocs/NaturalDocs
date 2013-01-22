@@ -128,6 +128,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Property: Position
+		 * An integer that combines <LineNumber> and <CharNumber> into one value so that they can be compared more
+		 * easily.
+		 */
+		public ulong Position
+			{
+			get
+				{
+				return ((ulong)lineNumber << 32) | (uint)charNumber;
+				}
+			}
+
+
 		/* Property: InComments
 		 * Whether this element appears in the comments.  It is possible for both InComments and <InCode> to be set.
 		 */
