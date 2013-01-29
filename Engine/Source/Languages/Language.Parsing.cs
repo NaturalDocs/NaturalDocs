@@ -43,10 +43,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* enum: ValidateElementsMode
 		 * CommentElements - Validates the results from <GetCommentElements()>.
 		 * CodeElements - Validates the results from <GetCodeElements()>.
+		 * MergedElements - Validates the results of merging the code and comment elements.
 		 * Final - Validates the final list of <Elements> after all processing was performed.
 		 */
 		protected enum ValidateElementsMode : byte
-			{  CommentElements, CodeElements, Final  }
+			{  CommentElements, CodeElements, MergedElements, Final  }
 
 
 
@@ -137,6 +138,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				codeElements = null;
 				commentElements = null;
 				RemoveHeaderlessTopics(elements);
+
+				#if DEBUG
+					ValidateElements(elements, ValidateElementsMode.MergedElements);
+				#endif
 				}
 
 
@@ -1219,6 +1224,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * Goes through the file looking for code <Elements> that should be included in the output.  If there are none or the language 
 		 * doesn't have full support, it will return an empty list.
+		 * 
+		 * Implementation Requirements:
+		 * 
+		 *		Subclasses override this function as part of providing full language support.  Any <Topics> returned within these <Elements>
+		 *		must meet these requirements:
+		 *		
+		 *		- Every <Topic> must have a title set.
+		 *		- Every <Topic> must have a topic type ID set.
+		 *		- Every <Topic> must have a symbol set.
+		 *		- Each symbol must be fully resolved.  For example, a function appearing in a class must have the symbol "Class.Function".
+		 *		  Other code will not apply parent symbols to children.
+		 *		- You cannot return list <Topics>.  If you have multiple variables declared in one statement or something similar, you must
+		 *		  generate individual <Topics> for each one.
+		 *		- You cannot return embedded <Topics>.  This may change in the future only to allow enum members, but for now it is not
+		 *		  allowed at all.
 		 */
 		public virtual List<Element> GetCodeElements (Tokenizer source)
 			{
@@ -3504,6 +3524,64 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{  throw new Exception("All topics returned by GetCodeElements() must have symbols.");  }
 					if (element.Topic.TopicTypeID == 0)
 						{  throw new Exception("All topics returned by GetCodeElements() must have topic type IDs.");  }
+					if (element.Topic.IsList)
+						{  throw new Exception("GetCodeElements() cannot return list topics.");  }
+					if (element.Topic.IsEmbedded)
+						{  throw new Exception("GetCodeElements() cannot return embedded topics.");  }
+					}
+
+				if ((mode == ValidateElementsMode.CommentElements || 
+					 mode == ValidateElementsMode.MergedElements ||
+					 mode == ValidateElementsMode.Final) &&
+					element.Topic != null)
+					{
+					if (element.Topic.IsList || element.Topic.IsEnum)
+						{
+						int bodyEmbeddedTopics = 0;
+
+						if (element.Topic.Body != null)
+							{
+							for (int dsIndex = element.Topic.Body.IndexOf("<ds>");
+								  dsIndex != -1;
+								  dsIndex = element.Topic.Body.IndexOf("<ds>", dsIndex + 4))
+								{  bodyEmbeddedTopics++;  }
+							}
+
+						int elementEmbeddedTopics = 0;
+
+						for (int j = i + 1; j < elements.Count; j++)
+							{
+							if (elements[j].Topic != null && elements[j].Topic.IsEmbedded)
+								{  elementEmbeddedTopics++;  }
+							else
+								{  break;  }
+							}
+
+						if (bodyEmbeddedTopics != elementEmbeddedTopics)
+							{
+							throw new Exception("Element " + elementName + " had " + bodyEmbeddedTopics + " embedded topics in its body but " +
+														  elementEmbeddedTopics + " embedded topics following it in the elements.");
+							}
+						}
+
+					if (element.Topic.IsEmbedded)
+						{
+						bool foundParent = false;
+
+						for (int j = i - 1; j >= 0; j--)
+							{
+							if (elements[j].Topic == null)
+								{  break;  }
+							if (elements[j].Topic.IsEmbedded == false)
+								{
+								foundParent = (elements[j].Topic.IsList || elements[j].Topic.IsEnum);
+								break;
+								}
+							}
+
+						if (foundParent == false)
+							{  throw new Exception("Embedded element " + elementName + " did not follow a list or enum topic.");  }
+						}
 					}
 
 				if (mode == ValidateElementsMode.Final && element.Topic != null)
