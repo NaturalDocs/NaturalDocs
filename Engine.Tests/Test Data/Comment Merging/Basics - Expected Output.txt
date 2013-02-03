@@ -1,0 +1,11 @@
+Class: ClassName
+(comment line 2, code line 4)
+-----
+Function: FunctionWithoutACodeElement
+(comment line 7)
+-----
+Function: FunctionName
+(comment line 10, code line 12)
+-----
+Function: FunctionWithoutAComment
+(code line 16)

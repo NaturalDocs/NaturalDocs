@@ -1,0 +1,5 @@
+Class: ClassName
+(comment line 2)
+-----
+Function: FunctionName
+(comment line 5)

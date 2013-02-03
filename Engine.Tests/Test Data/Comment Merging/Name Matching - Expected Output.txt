@@ -1,0 +1,22 @@
+Class: ClassNameOnly
+(comment line 5, code line 7)
+-----
+Class: NamespaceA.NamespaceB.FullName
+(comment line 11, code line 13)
+-----
+Function: FunctionName
+(comment line 16, code line 18)
+-----
+Function: FunctionNameWithParentheses (2)
+(comment line 22, code line 24)
+-----
+Function: FunctionNameWithParentheses (int, float)
+(comment line 28, code line 31)
+<p>Contents of parentheses are ignored in title matching.  It doesn't matter that the parameters don't match.</p>
+-----
+Function: Mismatch_Comment
+(comment line 35)
+<p>Since the names don't match this should result in two independent topics.</p>
+-----
+Function: Mismatch_Code
+(code line 38)

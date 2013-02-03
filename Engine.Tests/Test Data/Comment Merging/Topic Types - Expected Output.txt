@@ -1,0 +1,34 @@
+Class: ClassName
+(comment line 2, code line 4)
+-----
+Information: FunctionA
+(comment line 7)
+<p>This uses a documentation topic type instead of a code topic type.  It shouldn't merge.</p>
+-----
+Function: FunctionA
+(code line 10)
+-----
+Group: FunctionB
+(comment line 14)
+<p>This uses a group topic type instead of a code topic type.  It shouldn't merge.</p>
+-----
+Function: FunctionB
+(code line 17)
+-----
+File: FunctionC
+(comment line 21)
+<p>This uses a file topic type instead of a code topic type.  It shouldn't merge.</p>
+-----
+Function: FunctionC
+(code line 24)
+-----
+Function List: FunctionD
+(comment line 28)
+<p>This uses a list topic type.  It shouldn't merge.</p>
+-----
+Function: FunctionD
+(code line 31)
+-----
+Variable: FunctionE
+(comment line 35, code line 39)
+<p>This uses a code topic type, so it should merge even though it's a different type than the code says it is.</p>

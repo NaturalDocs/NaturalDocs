@@ -1,0 +1,9 @@
+Class: Class_CodeAboveFirstComment
+(code line 2)
+-----
+Function: FunctionName
+(comment line 5, code line 8)
+<p>Just making sure these things won't trip up the matching algorithm.</p>
+-----
+Function: Class_CommentBelowLastCode
+(comment line 14)

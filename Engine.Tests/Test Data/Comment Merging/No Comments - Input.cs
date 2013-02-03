@@ -1,0 +1,7 @@
+
+class ClassName
+	{
+	void FunctionName ()
+		{
+		}
+	}

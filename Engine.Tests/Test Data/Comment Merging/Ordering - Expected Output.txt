@@ -1,0 +1,29 @@
+Class: Namespace.ClassFromOutsideNamespace
+(comment line 2, code line 6)
+-----
+Class: ClassName
+(comment line 11, code line 16)
+<p>This topic should attach to the class even though there's a topic between them.</p>
+-----
+Information: InterveningCommentOnlyTopic
+(comment line 14)
+-----
+Function: FunctionA
+(comment line 19, code line 27)
+<p>These topics should attach to the functions because they're in the proper order.</p>
+-----
+Function: FunctionB
+(comment line 22, code line 31)
+-----
+Function: FunctionC
+(comment line 24, code line 35)
+-----
+Function: FunctionD
+(comment line 39, code line 46)
+-----
+Function: FunctionE
+(code line 50)
+-----
+Function: FunctionF
+(comment line 41, code line 54)
+<p>This should attach to the function even though there's an undocumented function in between them because they're still in the proper order.</p>
