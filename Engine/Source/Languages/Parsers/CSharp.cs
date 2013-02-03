@@ -50,7 +50,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			LineCommentStrings = new string[] { "//" };
 			BlockCommentStringPairs = new string[] { "/*", "*/" };
-			JavadocLineCommentStringPairs = new string[] { "/**", "*/" };
+			JavadocBlockCommentStringPairs = new string[] { "/**", "*/" };
 			XMLLineCommentStrings = new string[] { "///" };
 
 			MemberOperator = ".";
