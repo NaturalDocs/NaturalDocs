@@ -132,12 +132,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  return ParseResult.Cancelled;  }
 
 
-				// xxx combine the two
-				// xxx clear out headerless topics that don't merge
-				elements = commentElements;
+				// Combine the two.
+
+				elements = MergeElements(commentElements, codeElements);
 				codeElements = null;
 				commentElements = null;
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Remove any headerless topics that weren't merged.
+
 				RemoveHeaderlessTopics(elements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
 
 				#if DEBUG
 					ValidateElements(elements, ValidateElementsMode.MergedElements);
@@ -1741,6 +1752,375 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  topic.Body = stringBuilder.ToString();  }
 				}
+			}
+
+
+		/* Function: MergeElements
+		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't use them 
+		 * after calling this function.
+		 */
+		protected List<Element> MergeElements (List<Element> commentElements, List<Element> codeElements)
+			{
+			if (codeElements == null || codeElements.Count == 0 || 
+				(codeElements.Count == 1 && codeElements[0] is ParentElement && (codeElements[0] as ParentElement).IsRootElement))
+				{  return commentElements;  }
+
+			if (commentElements == null || commentElements.Count == 0 || 
+				(commentElements.Count == 1 && commentElements[0] is ParentElement && (commentElements[0] as ParentElement).IsRootElement))
+				{  return codeElements;  }
+
+
+			// So now both codeElements and commentElements have at least one element of actual content.
+
+			List<Element> mergedElements = new List<Element>(codeElements.Count);
+			int codeIndex = 0;
+			int commentIndex = 0;
+
+
+			// Ignore the comment root element.  If there's a code root element we'll keep it.
+
+			if (commentElements[0] is ParentElement && (commentElements[0] as ParentElement).IsRootElement)
+				{  commentIndex++;  }
+
+			if (codeElements[0] is ParentElement && (codeElements[0] as ParentElement).IsRootElement)
+				{
+				mergedElements.Add(codeElements[0]);
+				codeIndex++;
+				}
+
+
+			// Comments must appear above what they document, so any code elements that appear before the first comment element 
+			// are added as is.
+
+			while (codeIndex < codeElements.Count && codeElements[codeIndex].Position < commentElements[commentIndex].Position)
+				{
+				mergedElements.Add(codeElements[codeIndex]);
+				codeIndex++;
+				}
+
+
+			// Now find and loop through block pairs.  The comment block is all the consecutive comments appearing until the next code 
+			// element.  The code block is that element and all consecutive elements appearing until the next comment element or the end
+			// of the file.
+
+			while (commentIndex < commentElements.Count && codeIndex < codeElements.Count)
+				{
+				int commentCount = 1;
+
+				while (commentIndex + commentCount < commentElements.Count &&
+						 commentElements[commentIndex + commentCount].Position < codeElements[codeIndex].Position)
+					{  commentCount++;  }
+
+				int codeCount = 1;
+
+				if (commentIndex + commentCount == commentElements.Count)
+					{  codeCount = codeElements.Count - codeIndex;  }
+				else
+					{
+					while (codeIndex + codeCount < codeElements.Count &&
+							 codeElements[codeIndex + codeCount].Position < commentElements[commentIndex + commentCount].Position)
+						{  codeCount++;  }
+					}
+
+
+				// First see if the last comment topic is headerless.  If so, it gets merged with the first code topic and everything else is
+				// added as is.
+				
+				int lastCommentIndex = commentIndex + commentCount - 1;
+
+				if (commentElements[lastCommentIndex].Topic != null &&
+					commentElements[lastCommentIndex].Topic.Title == null &&
+					CanMergeTopics(commentElements[lastCommentIndex].Topic, codeElements[codeIndex].Topic, true))
+					{
+					for (int i = commentIndex; i < lastCommentIndex; i++)
+						{  mergedElements.Add(commentElements[i]);  }
+
+					var mergedElement = codeElements[codeIndex];
+					mergedElement.InComments = true;
+					mergedElement.Topic = MergeTopics(commentElements[lastCommentIndex].Topic, codeElements[codeIndex].Topic);
+					mergedElements.Add(mergedElement);
+
+					for (int i = codeIndex + 1; i < codeIndex + codeCount; i++)
+						{  mergedElements.Add(codeElements[i]);  }
+
+					commentIndex += commentCount;
+					codeIndex += codeCount;
+					}
+
+
+				// Otherwise go through each comment element one by one, looking for the first match in the code topics.
+
+				else
+					{
+					while (commentCount > 0)
+						{
+						int matchingCodeIndex = -1;
+
+						for (int i = codeIndex; i < codeIndex + codeCount; i++)
+							{
+							if (CanMergeTopics(commentElements[commentIndex].Topic, codeElements[i].Topic, false))
+								{
+								matchingCodeIndex = i;
+								break;
+								}
+							}
+
+						// If there's no matching code element, add the comment element and continue.  All code elements are still
+						// candidates for the remaining comments.
+
+						if (matchingCodeIndex == -1)
+							{
+							mergedElements.Add(commentElements[commentIndex]);
+							commentIndex++;
+							commentCount--;
+
+							// Since we're using the code elements' positions, we may have to squish the comment element in beneath
+							// the last one to make sure the list is still in order.
+
+							if (mergedElements.Count > 1 &&
+								mergedElements[mergedElements.Count - 1].Position < mergedElements[mergedElements.Count - 2].Position)
+								{
+								mergedElements[mergedElements.Count - 1].LineNumber = mergedElements[mergedElements.Count - 2].LineNumber;
+								mergedElements[mergedElements.Count - 1].CharNumber = mergedElements[mergedElements.Count - 2].CharNumber + 1;
+								}
+							}
+
+						// If there is a matching code element...
+						else
+							{
+							// All code elements above it are added as is.  Comment and code elements must match in order to avoid weird
+							// side effects like members being pulled out of their parents' scope, so the code elements above it are no longer
+							// candidates for matching.
+
+							while (codeIndex < matchingCodeIndex)
+								{
+								mergedElements.Add(codeElements[codeIndex]);
+								codeIndex++;
+								codeCount--;
+								}
+
+							var mergedElement = codeElements[codeIndex];
+							mergedElement.InComments = true;
+							mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[codeIndex].Topic);
+							mergedElements.Add(mergedElement);
+
+							codeIndex++;
+							codeCount--;
+							commentIndex++;
+							commentCount--;
+							}
+						}
+
+
+					// If there's no more comment elements, add the rest of the code elements as is.
+
+					while (codeCount > 0)
+						{
+						mergedElements.Add(codeElements[codeIndex]);
+						codeIndex++;
+						codeCount--;
+						}
+					}
+
+				}
+
+
+			// Add any comment elements that appear after the last code element as is.
+
+			while (commentIndex < commentElements.Count)
+				{
+				mergedElements.Add(commentElements[commentIndex]);
+				commentIndex++;
+				}
+
+
+			// Now we may have to fix up the ranges of any comment only elements.
+
+			for (int i = 0; i < mergedElements.Count; i++)
+				{
+				if (mergedElements[i].InCode == false && mergedElements[i] is ParentElement)
+					{
+					ParentElement element = (ParentElement)mergedElements[i];
+
+					// First, it can't extend past the range of its parent.  This may happen if there's a group that appears in a class, which
+					// would normally extend to the next class or group, but the actual code class ends before that.
+
+					int parentIndex = FindElementParent(mergedElements, i);
+
+					if (parentIndex != -1)
+						{
+						ParentElement parentElement = (ParentElement)mergedElements[parentIndex];
+
+						if (element.EndingPosition > parentElement.EndingPosition)
+							{
+							element.EndingLineNumber = parentElement.EndingLineNumber;
+							element.EndingCharNumber = parentElement.EndingCharNumber;
+							}
+						}
+
+					// Next, if it has a topic that starts or ends scope, that scope only extends until the next code element.   Basically if
+					// you declare a comment-only class, you can add comment-only members to it but once an actual code element is
+					// reached the scope reverts back to the code.  This behavior doesn't apply to groups since we want to be able to use
+					// them with code elements.
+
+					if (element.Topic != null && element.Topic.TopicTypeID != 0)
+						{
+						var topicType = Engine.Instance.TopicTypes.FromID(element.Topic.TopicTypeID);
+
+						if (topicType.Scope == TopicType.ScopeValue.Start ||
+							topicType.Scope == TopicType.ScopeValue.End)
+							{
+							int nextCodeIndex = i + 1;
+
+							while (nextCodeIndex < mergedElements.Count && mergedElements[nextCodeIndex].InCode == false)
+								{  nextCodeIndex++;  }
+
+							if (nextCodeIndex < mergedElements.Count)
+								{
+								var nextCodeElement = mergedElements[nextCodeIndex];
+
+								if (element.EndingPosition > nextCodeElement.Position)
+									{
+									element.EndingLineNumber = nextCodeElement.LineNumber;
+									element.EndingCharNumber = nextCodeElement.CharNumber;
+									}
+								}
+							}
+						}
+					}
+				}
+
+
+			return mergedElements;
+			}
+
+
+		/* Function: CanMergeTopics
+		 * Returns whether the <Topics> match and can be merged.  It is safe to pass null to this function.  If either topic is null it will 
+		 * return false, even if both are.
+		 */
+		protected bool CanMergeTopics (Topic commentTopic, Topic codeTopic, bool allowHeaderlessTopics)
+			{
+			if (codeTopic == null || commentTopic == null)
+				{  return false;  }
+
+			// List topics should not be merged with code, only its members.
+			if (commentTopic.IsList)
+				{  return false;  }
+
+			if (commentTopic.Title == null)
+				{
+				return allowHeaderlessTopics;
+				}
+
+			else
+				{
+				#if DEBUG
+				if (commentTopic.TopicTypeID == 0)
+					{  throw new Exception ("All comment topics with titles must have topic type IDs before calling CanMergeTopics().");  }
+				#endif
+
+				// Documentation and file topics should not be merged with code.  Headerless topics are assumed to be code.
+				if (Engine.Instance.TopicTypes.FromID(commentTopic.TopicTypeID).Flags.Code == false)
+					{  return false;  }
+
+				#if DEBUG
+				if (codeTopic.Symbol == null)
+					{  throw new Exception ("All code topics must have symbols before calling CanMergeTopics().");  }
+				#endif
+
+				string ignore;
+				SymbolString commentSymbol = SymbolString.FromPlainText(commentTopic.Title, out ignore);
+
+				return (codeTopic.Symbol == commentSymbol ||
+						  codeTopic.Symbol.EndsWith(commentSymbol));
+				}
+			}
+
+
+		/* Function: MergeTopics
+		 * Combines the properties of the two <Topics> and returns a new one.
+		 */
+		protected Topic MergeTopics (Topic commentTopic, Topic codeTopic)
+			{
+			#if DEBUG
+			if (CanMergeTopics(commentTopic, codeTopic, true) == false)
+				{  throw new Exception ("Tried to merge topics that did not pass CanMergeTopics().");  }
+			#endif
+
+			Topic mergedTopic = new Topic();
+
+			// TopicID - Shouldn't be set on either.
+			
+			// Title - If the user specified one, we always want to use that.
+			if (commentTopic.Title != null)
+				{  mergedTopic.Title = commentTopic.Title;  }
+			else
+				{  mergedTopic.Title = codeTopic.Title;  }
+
+			// Body - Use the comment.
+			mergedTopic.Body = commentTopic.Body;
+
+			// Summary - Use the comment.
+			mergedTopic.Summary = commentTopic.Summary;
+
+			// Prototype - Use the code.  If there's one manually specified in the comment, ApplyCommentPrototypes() will overwrite it later.
+			mergedTopic.Prototype = codeTopic.Prototype;
+
+			// Symbol - Use the code, even if we replaced the title.
+			mergedTopic.Symbol = codeTopic.Symbol;
+
+			// SymbolDefinitionNumber - Shouldn't be set on either.
+
+			// ClassString - Use the code.
+			mergedTopic.ClassString = codeTopic.ClassString;
+
+			// ClassID - Shouldn't be set on either.
+
+			// IsList - Shouldn't be set on either as they shouldn't be merged.
+			#if DEBUG
+			if (commentTopic.IsList || codeTopic.IsList)
+				{  throw new Exception ("Tried to merge list topics.");  }
+			#endif
+
+			// IsEmbedded - Use the comment.  We want to be able to merge code topics into embedded comment topics.
+			mergedTopic.IsEmbedded = commentTopic.IsEmbedded;
+
+			// TopicTypeID - If the user specified one, we always want to use that.  We don't care if the topic type would normally switch the
+			//					   containing element between an Element and a ParentElement, or if the new type has a different scope setting.  We'll
+			//					   switch to the comment topic type but retain the code settings for those.
+			if (commentTopic.TopicTypeID != 0)
+				{  mergedTopic.TopicTypeID = commentTopic.TopicTypeID;  }
+			else
+				{  mergedTopic.TopicTypeID = codeTopic.TopicTypeID;  }
+
+			// DeclaredAccessLevel - Use the code.  The topic settings only apply when the topic only appears in the comments.
+			// xxx Copy when the language doesn't have native support for access levels, like JavaScript.
+			mergedTopic.DeclaredAccessLevel = codeTopic.DeclaredAccessLevel;
+
+			// EffectiveAccessLevel - Shouldn't be set on either.
+
+			// TagIDs - Use the comment.
+			mergedTopic.AddTagsFrom(commentTopic);
+
+			// FileID - Use the code.
+			mergedTopic.FileID = codeTopic.FileID;
+
+			// CommentLineNumber - Use the comment.
+			// CodeLineNumber - Use the code.
+			mergedTopic.CommentLineNumber = commentTopic.CommentLineNumber;
+			mergedTopic.CodeLineNumber = codeTopic.CodeLineNumber;
+
+			// LanguageID - Use the code.
+			mergedTopic.LanguageID = codeTopic.LanguageID;
+
+			// PrototypeContext - Use the code.	
+			mergedTopic.PrototypeContext = codeTopic.PrototypeContext;
+
+			// BodyContext - Use the code.
+			mergedTopic.BodyContext = codeTopic.BodyContext;
+
+			return mergedTopic;
 			}
 
 			

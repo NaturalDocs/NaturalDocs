@@ -161,6 +161,18 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			else
 				{  return symbolString.Replace(SeparatorChar.ToString(), newSeparator);  }
 			}
+
+
+		/* Function: EndsWith
+		 * Returns whether the end of the symbol matches the passed symbol, such as "PackageA.PackageB.Function" and "PackageB.Function".
+		 * It must match a complete segment, so "PackageA.PackageB.Function" will not match "B.Function".
+		 */
+		public bool EndsWith (SymbolString other)
+			{
+			return (symbolString.Length > other.symbolString.Length &&
+					  symbolString[symbolString.Length - other.symbolString.Length - 1] == SeparatorChar &&
+					  symbolString.EndsWith(other.symbolString));
+			}
 			
 		
 		

@@ -114,6 +114,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			get
 				{  return lineNumber;  }
+			set
+				{  lineNumber = value;  }
 			}
 
 
@@ -125,6 +127,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			get
 				{  return charNumber;  }
+			set
+				{  charNumber = value;  }
 			}
 
 
@@ -148,6 +152,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			get
 				{  return ((flags & Flags.InComments) != 0);  }
+			set
+				{
+				if (value == true)
+					{  flags |= Flags.InComments;  }
+				else
+					{  flags &= ~Flags.InComments;  }
+				}
 			}
 
 
@@ -159,6 +170,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			get
 				{  return ((flags & Flags.InCode) != 0);  }
+			set
+				{
+				if (value == true)
+					{  flags |= Flags.InCode;  }
+				else
+					{  flags &= ~Flags.InCode;  }
+				}
 			}
 
 
