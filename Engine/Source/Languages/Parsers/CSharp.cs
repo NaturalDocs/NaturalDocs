@@ -402,7 +402,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("event") ||
 					  lookahead.MatchesToken("implicit") ||
 					  lookahead.MatchesToken("explicit") ||
-					  lookahead.MatchesToken("enum"))
+					  lookahead.MatchesToken("enum") ||
+					  lookahead.MatchesToken("using"))
 				{  return false;  }
 
 			if (keyword == null)
@@ -582,7 +583,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name == "implicit" ||
 				name == "explicit" ||
 				name == "enum" ||
-				name == "void")
+				name == "void" ||
+				name == "using")
 				{  return false;  }
 
 			if (keyword == "destructor")
@@ -809,7 +811,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("implicit") ||
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
-					  lookahead.MatchesToken("delegate"))
+					  lookahead.MatchesToken("delegate") ||
+					  lookahead.MatchesToken("using"))
 				{  return false;  }
 
 			if (keyword == null)
@@ -960,7 +963,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("implicit") ||
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
-					  lookahead.MatchesToken("delegate"))
+					  lookahead.MatchesToken("delegate") ||
+					  lookahead.MatchesToken("using"))
 				{  return false;  }
 
 			if (keyword == null)
