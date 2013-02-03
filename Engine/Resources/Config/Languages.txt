@@ -47,22 +47,6 @@ Language: C#
 
    Simple Identifier: CSharp
 
-   Line Comment: //
-   Block Comment: /* */
-   Enum Values: Under Type
-   Case Sensitive: Yes
-
-   Class Prototype Enders: {
-   Interface Prototype Enders: {
-   Struct Prototype Enders: {
-   Function Prototype Enders: ; { :
-   Operator Prototype Enders: ; {
-   Variable Prototype Enders: ; =
-   Property Prototype Enders: ; {
-   Constant Prototype Enders: ; =
-   Enumeration Prototype Ender: {
-   Event Prototype Enders: ; =
-
 
 Language: Java
 

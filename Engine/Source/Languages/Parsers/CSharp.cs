@@ -46,7 +46,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public CSharp () : base ("C#")
 			{
-			Type = LanguageType.BasicSupport;  //xxx
+			Type = LanguageType.FullSupport;
 
 			LineCommentStrings = new string[] { "//" };
 			BlockCommentStringPairs = new string[] { "/*", "*/" };
