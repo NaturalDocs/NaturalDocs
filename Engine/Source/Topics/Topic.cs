@@ -342,14 +342,9 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  changeFlags |= ChangeFlags.IsList;  }
 			if (isEmbedded != other.isEmbedded)
 				{  changeFlags |= ChangeFlags.IsEmbedded;  }
-
-			// It's important to compare the properties and not the variables here.  Both variables may not have been set by the 
-			// parser, in which case the properties can return substitute values.  Both variables will always be set when topics are 
-			// retrieved from the database, so unless you compare them to the properties with the substitutions applied the topics 
-			// may be seen as as unequal when they're not.
-			if (CommentLineNumber != other.CommentLineNumber)
+			if (commentLineNumber != other.commentLineNumber)
 				{  changeFlags |= ChangeFlags.CommentLineNumber;  }
-			if (CodeLineNumber != other.CodeLineNumber)
+			if (codeLineNumber != other.codeLineNumber)
 				{  changeFlags |= ChangeFlags.CodeLineNumber;  }
 			if (filePosition != other.filePosition)
 				{  changeFlags |= ChangeFlags.FilePosition;  }
@@ -959,8 +954,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 						
 			
 		/* Property: CommentLineNumber
-		 * The line number the topic's comment begins on, if any.  If it has not been set, this will return <CodeLineNumber>.
-		 * If neither of them have been set, this will return zero.
+		 * The line number the topic's comment begins on, or zero if it hasn't been set yet or the topic doesn't have a comment.
 		 */
 		public int CommentLineNumber
 			{
@@ -971,10 +965,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access CommentLineNumber when that field was ignored.");  }
 				#endif
 
-				if (commentLineNumber == 0)
-					{  return codeLineNumber;  }
-				else
-					{  return commentLineNumber;  }
+				return commentLineNumber;
 				}
 			set
 				{  
@@ -989,8 +980,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			
 			
 		/* Property: CodeLineNumber
-		 * The line number the topic's code element begins on, if any.  If it has not been set, this will return <CommentLineNumber>.
-		 * If neither of them have been set, this will return zero.
+		 * The line number the topic's code element begins on, or zero if it hasn't been set yet or the topic doesn't have a code 
+		 * element.
 		 */
 		public int CodeLineNumber
 			{
@@ -1001,10 +992,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access CodeLineNumber when that field was ignored.");  }
 				#endif
 
-				if (codeLineNumber == 0)
-					{  return commentLineNumber;  }
-				else
-					{  return codeLineNumber;  }
+				return codeLineNumber;
 				}
 			set
 				{  
@@ -1480,12 +1468,12 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		protected int filePosition;
 
 		/* var: commentLineNumber
-		 * The line number the comment appears on, or zero if not specified.
+		 * The line number the comment appears on, or zero if not specified or the topic doesn't have one.
 		 */
 		protected int commentLineNumber;
 
 		/* var: codeLineNumber
-		 * The line number the actual code element appears on, or zero if not specified.
+		 * The line number the actual code element appears on, or zero if not specified or the topic doesn't have one.
 		 */
 		protected int codeLineNumber;
 		

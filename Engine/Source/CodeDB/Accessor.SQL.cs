@@ -340,8 +340,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TagString - Can be null.
 		 *		FileID - Must be set.
 		 *		FilePosition - Must be set.
-		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
-		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		CommentLineNumber - Can be zero.
+		 *		CodeLineNumber - Can be zero.
 		 *		LanguageID - Must be set.
 		 *		PrototypeContext - Can be null, which means global with no "using" statements.
 		 *		PrototypeContextID - Must be zero.  This will be automatically assigned and the <Topic> updated.
@@ -369,8 +369,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// TagString
 			RequireNonZero("AddTopic", "FileID", topic.FileID);
 			RequireNonZero("AddTopic", "FilePosition", topic.FilePosition);
-			RequireNonZero("AddTopic", "CommentLineNumber", topic.CommentLineNumber);
-			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
+			// CommentLineNumber
+			// CodeLineNumber
 			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
 			// PrototypeContext
 			RequireZero("AddTopic", "PrototypeContextID", topic.PrototypeContextID);
@@ -731,8 +731,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TagString - Can be null.
 		 *		FileID - Must match the parameter.
 		 *		FilePosition - Can be zero.  These will be regenerated regardless of whether they were previously set.
-		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
-		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
+		 *		CommentLineNumber - Can be zero.
+		 *		CodeLineNumber - Can be zero.
 		 *		LanguageID - Must be set.
 		 *		PrototypeContext - Can be null, which means global with no "using" statements.
 		 *		PrototypeContextID - Must be zero.  These will be automatically assigned and the <Topics> updated.
@@ -742,17 +742,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public void UpdateTopicsInFile (int fileID, IList<Topic> newTopics, CancelDelegate cancelled)
 			{
 			#if DEBUG
-			int previousCommentLineNumber = 0;
 
 			foreach (Topic newTopic in newTopics)
 				{
 				if (newTopic.FileID != fileID)
 					{  throw new Exception ("Can't update topics in file if the file IDs don't match.");  }
-				if (newTopic.CommentLineNumber < previousCommentLineNumber)
-					{  throw new Exception ("Topics passed to UpdateTopicsInFile() must be in comment line order.");  }
 				// We'll leave the rest of the topic field validation to AddTopic(), DeleteTopic(), and UpdateTopic().
-
-				previousCommentLineNumber = newTopic.CommentLineNumber;
 				}
 
 

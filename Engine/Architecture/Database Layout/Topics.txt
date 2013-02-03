@@ -178,8 +178,7 @@ Column: CommentLineNumber
 		CommentLineNumber INTEGER NOT NULL
 	(end)
 	
-	The line number the topic's comment appears on.  If the topic doesn't have a comment, it will be the same
-	as <CodeLineNumber>.
+	The line number the topic's comment appears on, or zero if it doesn't have one.
 	
 	
 Column: CodeLineNumber
@@ -188,8 +187,7 @@ Column: CodeLineNumber
 		CodeLineNumber INTEGER NOT NULL
 	(end)
 	
-	The line number the topic's code element appears on.  If the topic doesn't have a code element, it will be
-	the same as <CommentLineNumber>.
+	The line number the topic's code element appears on, or zero if it doesn't have one.
 	
 	
 Column: LanguageID
