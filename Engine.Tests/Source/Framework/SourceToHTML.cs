@@ -101,7 +101,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		public void TestFolder (Path testFolder, Path projectConfigFolder, string tagName, string className = null, bool reformatHTML = false)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testFolder, projectConfigFolder);
+			TestEngine.Start(testFolder, projectConfigFolder, true);
 
 			try
 				{
