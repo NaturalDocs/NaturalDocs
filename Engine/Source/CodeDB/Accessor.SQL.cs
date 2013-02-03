@@ -496,12 +496,21 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					newTopic.BodyContextID = oldTopic.BodyContextID;
 					}
 
-				connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, FilePosition=?, CommentLineNumber=?, CodeLineNumber=?, " +
-														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsList=?, IsEmbedded=? " +
-													"WHERE TopicID = ?",
-													newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.FilePosition, newTopic.CommentLineNumber, 
-													newTopic.CodeLineNumber, newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, 
-													(newTopic.IsList ? 1 : 0), (newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
+				// Short version for the most likely fields to change
+				if ((changeFlags & ~(Topic.ChangeFlags.FilePosition | Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber)) == 0)
+					{
+					connection.Execute("UPDATE Topics SET FilePosition=?, CommentLineNumber=?, CodeLineNumber=? WHERE TopicID = ?",
+												newTopic.FilePosition, newTopic.CommentLineNumber, newTopic.CodeLineNumber, oldTopic.TopicID);
+					}
+				else
+					{
+					connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, FilePosition=?, CommentLineNumber=?, CodeLineNumber=?, " +
+															"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsList=?, IsEmbedded=? " +
+														"WHERE TopicID = ?",
+														newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.FilePosition, newTopic.CommentLineNumber, 
+														newTopic.CodeLineNumber, newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, 
+														(newTopic.IsList ? 1 : 0), (newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
+					}
 
 				if (classChanged)
 					{
