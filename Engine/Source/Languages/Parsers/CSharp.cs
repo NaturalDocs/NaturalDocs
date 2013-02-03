@@ -54,7 +54,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			XMLLineCommentStrings = new string[] { "///" };
 
 			MemberOperator = ".";
-			EnumValue = EnumValues.UnderParent;
+			EnumValue = EnumValues.UnderType;
 			CaseSensitive = true;
 			}
 
