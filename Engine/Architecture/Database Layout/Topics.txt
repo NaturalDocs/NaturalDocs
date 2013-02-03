@@ -159,6 +159,17 @@ Column: FileID
 	(end)
 	
 	The ID of the file it appears in, as managed by <GregValure.NaturalDocs.Engine.Files.Manager>.
+
+
+Column: FilePosition
+
+	(Prototype)
+		FilePosition INTEGER NOT NULL
+	(end)
+
+	The relative position of the topic within the file.  The first one will be one and all following topics will have
+	higher numbers.  This is necessary to keep the order consistent because it may not be able to be determined
+	from <CommentLineNumber> and <CodeLineNumber>.
 	
 
 Column: CommentLineNumber
@@ -227,14 +238,14 @@ Index: TopicsByID
 Index: TopicsByFile
 
 	(Prototype)
-		CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)
+		CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)
 	(end)
 
 
 Index: TopicsByClass
 
 	(Prototype)
-		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, CommentLineNumber)
+		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)
 	(end)
 
 

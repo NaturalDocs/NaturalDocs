@@ -64,13 +64,14 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			CodeLineNumber = 0x00008000,
 			
 			FileID = 0x00010000,
-			PrototypeContext = 0x00020000,
-			BodyContext = 0x00040000,
+			FilePosition = 0x00020000,
+			PrototypeContext = 0x00040000,
+			BodyContext = 0x00080000,
 
 			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber | Class |
 					 IsList | IsEmbedded | TopicTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
 					 Tags | LanguageID | CommentLineNumber | CodeLineNumber |
-					 FileID | PrototypeContext | BodyContext
+					 FileID | FilePosition | PrototypeContext | BodyContext
 			}
 
 
@@ -102,13 +103,14 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			EffectiveAccessLevel = 0x00004000,
 			Tags = 0x00008000,
 			FileID = 0x00010000,
-			CommentLineNumber = 0x00020000,
-			CodeLineNumber = 0x00040000,
-			LanguageID = 0x00080000,
-			PrototypeContext = 0x00100000,
-			PrototypeContextID = 0x00200000,
-			BodyContext = 0x00400000,
-			BodyContextID = 0x00800000
+			FilePosition = 0x00020000,
+			CommentLineNumber = 0x00040000,
+			CodeLineNumber = 0x00080000,
+			LanguageID = 0x00100000,
+			PrototypeContext = 0x00200000,
+			PrototypeContextID = 0x00400000,
+			BodyContext = 0x00800000,
+			BodyContextID = 0x01000000
 			}
 
 
@@ -163,6 +165,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			codeLineNumber = 0;
 			
 			fileID = 0;
+			filePosition = 0;
 			prototypeContext = new ContextString();
 			prototypeContextID = 0;
 			bodyContext = new ContextString();
@@ -216,6 +219,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			duplicate.codeLineNumber = codeLineNumber;
 			
 			duplicate.fileID = fileID;
+			duplicate.filePosition = filePosition;
 			duplicate.prototypeContext = prototypeContext;
 			duplicate.prototypeContextID = prototypeContextID;
 			duplicate.bodyContext = bodyContext;
@@ -276,6 +280,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			
 			// fileID - Not important in linking, but return Different anyway because the same topic in two different files 
 			//				  are considered two separate topics.
+			// filePosition - Not important in linking.  SymbolDefinitionNumber will take care of the first being favored.
 			// prototypeContext - Not important in linking.
 			// prototypeContextID - Wouldn't be known coming from a parse.
 			// bodyContext - Not important in linking.
@@ -346,6 +351,8 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				{  changeFlags |= ChangeFlags.CommentLineNumber;  }
 			if (CodeLineNumber != other.CodeLineNumber)
 				{  changeFlags |= ChangeFlags.CodeLineNumber;  }
+			if (filePosition != other.filePosition)
+				{  changeFlags |= ChangeFlags.FilePosition;  }
 
 			if (prototypeContext != other.prototypeContext)
 				{  changeFlags |= ChangeFlags.PrototypeContext;  }
@@ -921,7 +928,35 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				fileID = value;  
 				}
 			}
-			
+
+
+		/* Property: FilePosition
+		 * The relative position of the topic in the file, or zero if it hasn't been set yet.  The first topic will be one, and every
+		 * subsequent one will have a higher number.  This is done because not every topic will have a <CommentLineNumber>
+		 * or a <CodeLineNumber> so the file order may not be determinable from them.
+		 */
+		public int FilePosition
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FilePosition) != 0)
+					{  throw new InvalidOperationException("Tried to access FilePosition when that field was ignored.");  }
+				#endif
+
+				return filePosition;
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.FilePosition) != 0)
+					{  throw new InvalidOperationException("Tried to access FilePosition when that field was ignored.");  }
+				#endif
+
+				filePosition = value;  
+				}
+			}
+						
 			
 		/* Property: CommentLineNumber
 		 * The line number the topic's comment begins on, if any.  If it has not been set, this will return <CodeLineNumber>.
@@ -1436,6 +1471,13 @@ namespace GregValure.NaturalDocs.Engine.Topics
 		 * The ID of the source file this topic appears in, or zero if not specified.
 		 */
 		protected int fileID;
+
+		/* var: filePosition
+		 * The relative position of the topic in the file, or zero if not specified.  One will be the first topic and subsequent
+		 * topics will have higher numbers.  This is done because the final position may not be determinable from 
+		 * <commentLineNumber> and <codeLineNumber>.
+		 */
+		protected int filePosition;
 
 		/* var: commentLineNumber
 		 * The line number the comment appears on, or zero if not specified.

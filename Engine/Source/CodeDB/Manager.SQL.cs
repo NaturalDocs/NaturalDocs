@@ -53,14 +53,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"EffectiveAccessLevel INTEGER NOT NULL, " +
 																							"Tags TEXT, " +
 																							"FileID INTEGER NOT NULL, " +
+																							"FilePosition INTEGER NOT NULL, " +
 																							"CommentLineNumber INTEGER NOT NULL, " +
 																							"CodeLineNumber INTEGER NOT NULL, " +
 																							"LanguageID INTEGER NOT NULL, " +
 																							"PrototypeContextID INTEGER NOT NULL, " +
 																							"BodyContextID INTEGER NOT NULL )");
 																	   
-			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, CommentLineNumber)");
-			connection.Execute("CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, CommentLineNumber)");
+			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)");
+			connection.Execute("CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)");
 			connection.Execute("CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)");
 
 

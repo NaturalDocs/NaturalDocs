@@ -34,7 +34,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		whereClause - The SQL WHERE clause to apply to the query, such as "Topics.FileID=?".  It's recommended that you
 		 *								  add the table name to fully qualify columns.
-		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "Topics.CommentLineNumber ASC", or null if 
+		 *		orderByClause - The SQL ORDER BY clause to apply to the query, such as "Topics.FilePosition ASC", or null if 
 		 *									 none.  It's recommended that you add the table name to fully qualify columns.
 		 *		clauseParameters - Any parameters needed for question marks in the WHERE and ORDER BY clauses, or null if none.
 		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
@@ -66,7 +66,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
 																							  "Topics.ClassID, IsList, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
 																							  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																							  "LanguageID, PrototypeContextID, BodyContextID, FileID ");
+																							  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
 			if (bodyLengthOnly)
 				{  queryText.Append(", length(Body) ");  }
@@ -130,6 +130,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					topic.PrototypeContextID = query.NextIntColumn();
 					topic.BodyContextID = query.NextIntColumn();
 					topic.FileID = query.NextIntColumn();
+					topic.FilePosition = query.NextIntColumn();
 
 					topic.IgnoredFields = Topic.IgnoreFields.None;
 
@@ -173,9 +174,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 		/* Function: GetTopicsInFile
 		 * 
-		 * Retrieves a list of all the topics present in the passed file ID.  The list will be in comment line number order.
-		 * If there are none it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process,
-		 * or <Delegates.NeverCancel> if not.
+		 * Retrieves a list of all the topics present in the passed file ID.  If there are none it will return an empty list.  Pass a 
+		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
 		 * 
 		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save
 		 * memory or processing time.
@@ -191,15 +191,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			object[] clauseParams = new object[1];
 			clauseParams[0] = fileID;
 
-			return GetTopics("Topics.FileID=?", "Topics.CommentLineNumber ASC", clauseParams, cancelled, getTopicFlags);
+			return GetTopics("Topics.FileID=?", "Topics.FilePosition ASC", clauseParams, cancelled, getTopicFlags);
 			}
 			
 			
 		/* Function: GetTopicsInClass
 		 * 
-		 * Retrieves a list of all the topics present in the passed class ID.  The topics will be grouped by file, and within each group
-		 * they will be in comment line number order.  The files will be in no particular order.  If there are no topics it will return an 
-		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * Retrieves a list of all the topics present in the passed class ID.  The topics will be grouped by file, but the files will be in no 
+		 * particular order.  If there are no topics it will return an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt 
+		 * this process, or <Delegates.NeverCancel> if not.
 		 * 
 		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save memory
 		 * or processing time.
@@ -215,13 +215,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			object[] clauseParams = new object[1];
 			clauseParams[0] = classID;
 
-			string orderBy = "Topics.FileID, Topics.CommentLineNumber ASC";
+			string orderBy = "Topics.FileID, Topics.FilePosition ASC";
 
 			#if DEBUG
 			// Oh, you thought we were fucking around when we said the files would be in no particular order, did you?  No no my friend,
 			// we are not.
 			System.Random random = new Random();
-			orderBy = "Topics.FileID " + (random.Next(0, 2) == 0 ? "ASC" : "DESC") + ", Topics.CommentLineNumber ASC";
+			orderBy = "Topics.FileID " + (random.Next(0, 2) == 0 ? "ASC" : "DESC") + ", Topics.FilePosition ASC";
 
 			// What the hell?  Okay, so it's possible for files to always get the same file ID relative to each other.  If Platform A always
 			// returns the files in a folder in alphabetical order, file 1 could always have a lower ID than file 2 and thus always appear
@@ -339,6 +339,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.
 		 *		FileID - Must be set.
+		 *		FilePosition - Must be set.
 		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		LanguageID - Must be set.
@@ -367,6 +368,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNotValue("AddTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
 			// TagString
 			RequireNonZero("AddTopic", "FileID", topic.FileID);
+			RequireNonZero("AddTopic", "FilePosition", topic.FilePosition);
 			RequireNonZero("AddTopic", "CommentLineNumber", topic.CommentLineNumber);
 			RequireNonZero("AddTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireNonZero("AddTopic", "LanguageID", topic.LanguageID);
@@ -388,12 +390,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
 														"IsList, IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, Tags, FileID, " +
-														"CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, BodyContextID) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+														"FilePosition, CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, BodyContextID) " +
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
 													topic.ClassID, (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
-													(int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, topic.CommentLineNumber, 
-													topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
+													(int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, topic.FilePosition,
+													topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
 													);
 			
 				codeDB.UsedTopicIDs.Add(topic.TopicID);
@@ -494,12 +496,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					newTopic.BodyContextID = oldTopic.BodyContextID;
 					}
 
-				connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, CommentLineNumber=?, CodeLineNumber=?, " +
+				connection.Execute("UPDATE Topics SET Summary=?, DeclaredAccessLevel=?, FilePosition=?, CommentLineNumber=?, CodeLineNumber=?, " +
 														"ClassID=?, PrototypeContextID=?, BodyContextID=?, IsList=?, IsEmbedded=? " +
 													"WHERE TopicID = ?",
-													newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.CommentLineNumber, newTopic.CodeLineNumber,
-													newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, (newTopic.IsList ? 1 : 0), 
-													(newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
+													newTopic.Summary, (int)newTopic.DeclaredAccessLevel, newTopic.FilePosition, newTopic.CommentLineNumber, 
+													newTopic.CodeLineNumber, newTopic.ClassID, newTopic.PrototypeContextID, newTopic.BodyContextID, 
+													(newTopic.IsList ? 1 : 0), (newTopic.IsEmbedded ? 1 : 0), oldTopic.TopicID);
 
 				if (classChanged)
 					{
@@ -577,6 +579,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.
 		 *		FileID - Must be set.
+		 *		FilePosition - Must be set.
 		 *		CommentLineNumber - Must be set.
 		 *		CodeLineNumber - Must be set.
 		 *		LanguageID - Must be set.
@@ -606,6 +609,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNotValue("DeleteTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
 			// TagString
 			RequireNonZero("DeleteTopic", "FileID", topic.FileID);
+			RequireNonZero("DeleteTopic", "FilePosition", topic.FilePosition);
 			RequireNonZero("DeleteTopic", "CommentLineNumber", topic.CommentLineNumber);
 			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
 			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
@@ -726,6 +730,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.
 		 *		FileID - Must match the parameter.
+		 *		FilePosition - Can be zero.  These will be regenerated regardless of whether they were previously set.
 		 *		CommentLineNumber - Must be set.  If CodeLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		CodeLineNumber - Must be set.  If CommentLineNumber is set, <Topic> will automatically set this to it if it's not otherwise set.
 		 *		LanguageID - Must be set.
@@ -804,9 +809,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			#endif
 
-			// Generate new symbol definition numbers
+			// Generate new file positions and symbol definition numbers
 			for (int i = 0; i < newTopics.Count; i++)
 				{
+				newTopics[i].FilePosition = i + 1;
 				newTopics[i].SymbolDefinitionNumber = 1;
 
 				for (int prev = i - 1; prev >= 0; prev--)
