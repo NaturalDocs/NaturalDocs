@@ -1888,26 +1888,66 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						// If there is a matching code element...
 						else
 							{
-							// All code elements above it are added as is.  Comment and code elements must match in order to avoid weird
-							// side effects like members being pulled out of their parents' scope, so the code elements above it are no longer
+							// Comment and code elements should match in order to avoid weird side effects like members being pulled out of their parents' 
+							// scope, so for non-list elements we enforce this.  We add all the code elements above the match as is; they are no longer 
 							// candidates for matching.
+							
+							// Ideally we would do this for list topics as well, but we make an exception for them.  List topics are for documenting lots of
+							// small elements in one place, which means they're much more likely to be far from their code elements, and forcing the user
+							// to document them in the order in which they're defined is too restricting.  We'll make it the user's responsibility to not
+							// document them in a way that would cause side effects.
 
-							while (codeIndex < matchingCodeIndex)
+							if (commentElements[commentIndex].Topic.IsEmbedded == false)
 								{
-								mergedElements.Add(codeElements[codeIndex]);
+								while (codeIndex < matchingCodeIndex)
+									{
+									mergedElements.Add(codeElements[codeIndex]);
+									codeIndex++;
+									codeCount--;
+									}
+
+								var mergedElement = codeElements[codeIndex];
+								mergedElement.InComments = true;
+								mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[codeIndex].Topic);
+								mergedElements.Add(mergedElement);
+
+								commentIndex++;
+								commentCount--;
 								codeIndex++;
 								codeCount--;
 								}
 
-							var mergedElement = codeElements[codeIndex];
-							mergedElement.InComments = true;
-							mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[codeIndex].Topic);
-							mergedElements.Add(mergedElement);
+							else // comment topic is embedded
+								{
+								// Use the comment element instead of the code element.
+								var mergedElement = commentElements[commentIndex];
+								mergedElement.InCode = true;
+								mergedElement.Topic = MergeTopics(commentElements[commentIndex].Topic, codeElements[matchingCodeIndex].Topic);
+								mergedElements.Add(mergedElement);
 
-							codeIndex++;
-							codeCount--;
-							commentIndex++;
-							commentCount--;
+								commentIndex++;
+								commentCount--;
+
+								// If the code element had a scope, we have to remove all its members.  This is so if you document a class as part of
+								// a list topic (maybe documenting a lot of little structs?) you don't get the members appearing independently.
+
+								if (codeElements[matchingCodeIndex] is ParentElement)
+									{
+									ParentElement parentElement = (ParentElement)codeElements[matchingCodeIndex];
+
+									while (matchingCodeIndex + 1 < codeElements.Count && parentElement.Contains(codeElements[matchingCodeIndex + 1]))
+										{
+										codeElements.RemoveAt(matchingCodeIndex + 1);
+
+										// The child elements may extend past the current block of code elements.
+										if (matchingCodeIndex + 1 < codeIndex + codeCount)
+											{  codeCount--;  }
+										}
+									}
+
+								codeElements.RemoveAt(matchingCodeIndex);
+								codeCount--;
+								}
 							}
 						}
 
