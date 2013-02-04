@@ -46,7 +46,13 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 				Topic topic = topics[i];
 
-				output.AppendLine(Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Name + (topic.IsList ? " List" : "") + ": " + topic.Title);
+				if (topic.IsEmbedded)
+					{  output.Append("Embedded ");  }
+				output.Append(Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Name);
+				if (topic.IsList)
+					{  output.Append(" List");  }
+				output.Append(": ");
+				output.AppendLine(topic.Title);
 
 				if (topic.CodeLineNumber != 0 && topic.CommentLineNumber != 0)
 					{  output.AppendLine("(comment line " + topic.CommentLineNumber + ", code line " + topic.CodeLineNumber + ")");  }
