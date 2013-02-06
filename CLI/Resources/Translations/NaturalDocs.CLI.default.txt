@@ -25,6 +25,11 @@ Status.Start(version).multiline {{{
 Natural Docs {0}
 ----------------------
 }}}
+Status.Start(version,subversion).multiline {{{
+Natural Docs {0}
+{1}
+----------------------
+}}}
 Status.End.multiline {{{
 Done.
 ----------------------

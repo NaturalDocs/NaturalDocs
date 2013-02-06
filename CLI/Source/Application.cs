@@ -96,17 +96,35 @@ namespace GregValure.NaturalDocs.CLI
 					bool rebuildAllOutputFromCommandLine = Engine.Instance.Config.RebuildAllOutput;
 					bool reparseEverythingFromCommandLine = Engine.Instance.Config.ReparseEverything;
 
+
 					// Heading
-						
-					System.Console.WriteLine();
-					System.Console.Write(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version).multiline", Engine.Instance.VersionString)
-						);
+
+					string version = Engine.Instance.VersionString;
+					int parenthesisIndex = version.IndexOf('(');
+
+					if (parenthesisIndex == -1)
+						{
+						System.Console.WriteLine();
+						System.Console.Write(
+							Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version).multiline", version)
+							);
+						}
+					else
+						{
+						string subversion = version.Substring(parenthesisIndex);
+						version = version.Substring(0, parenthesisIndex).TrimEnd();
+
+						System.Console.WriteLine();
+						System.Console.Write(
+							Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version,subversion).multiline", version, subversion)
+							);
+						}
 
 					NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
 
 					if (NaturalDocs.Engine.Instance.Start(startupErrors) == true)
 						{
+
 
 						// File Search
 						
