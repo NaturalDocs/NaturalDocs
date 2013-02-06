@@ -697,24 +697,25 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
-			// Name and type
+			// Type
 
 			if (lookahead.MatchesToken("implicit") == false &&
 				lookahead.MatchesToken("explicit") == false)
 				{  return false;  }
 
-			System.Text.StringBuilder name = new System.Text.StringBuilder(lookahead.String);
-
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
+
+
+			// Name
 
 			if (lookahead.MatchesToken("operator") == false)
 				{  return false;  }
 
-			name.Append(" operator ");
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
+			System.Text.StringBuilder name = new System.Text.StringBuilder("operator ");
 			TokenIterator startOfType = lookahead;
 
 			if (TryToSkipType(ref lookahead) == false)

@@ -35,12 +35,12 @@
     [Attribute] public static TestClass<T> operator<< (TestClass<T> a, TestClass<T> b)
     (line 15, char 2, child of TestClass)
     ---------------
-    Operator: implicit operator string
-    TestClass.implicit operator string
+    Operator: operator string
+    TestClass.operator string
     public static extern implicit operator string (TestClass input)
     (line 19, char 2, child of TestClass)
     ---------------
-    Operator: explicit operator List<string>
-    TestClass.explicit operator List<string>
+    Operator: operator List<string>
+    TestClass.operator List<string>
     public static explicit operator List<string> (TestClass input)
     (line 21, char 2, child of TestClass)
