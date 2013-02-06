@@ -134,21 +134,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 
 		/* Function: FromExportedString
-		 * 
 		 * Creates a ClassString from the passed string which originally came from another ClassString object.  This assumes the
 		 * string is already be in the proper format.  Only use this when retrieving ClassStrings that were stored as plain text 
 		 * in a database or other data file.
-		 * 
-		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
-		 * not be interpreted as a ClassString.  Null is acceptable however.
 		 */
 		static public ClassString FromExportedString (string exportedClassString)
 			{
 			if (exportedClassString == null || exportedClassString.Length == 0)
 				{  return new ClassString(null, null);  }
-
-			if (exportedClassString[0] == SeparatorChars.Escape)
-				{  throw new FormatException("You cannot convert an escaped string to a ClassString.");  }
 
 			string classString = exportedClassString;
 			string lookupKey;

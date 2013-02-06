@@ -118,23 +118,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 
 		/* Function: FromExportedString
-		 * 
 		 * Creates a ParameterString from the passed string which originally came from another ParameterString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving ParameterStrings
 		 * that were stored as plain text in a database or other data file.
-		 * 
-		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
-		 * not be interpreted as a ParameterString.  Null is acceptable however.
 		 */
 		public static ParameterString FromExportedString (string exportedParameterString)
 			{
-			if (exportedParameterString != null)
-				{
-				if (exportedParameterString.Length == 0)
-					{  exportedParameterString = null;  }
-				else if (exportedParameterString[0] == SeparatorChars.Escape)
-					{  throw new FormatException("You cannot convert an escaped string to a ParameterString.");  }
-				}
+			if (exportedParameterString != null && exportedParameterString.Length == 0)
+				{  exportedParameterString = null;  }
 
 			return new ParameterString(exportedParameterString);
 			}
@@ -363,7 +354,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * that must be done by the calling code.
 		 * 
 		 *		- Applies canonical normalization to Unicode (FormC).
-		 *		- Removes all existing instances of the <SeparatorChars>, including <SeparatorChar.Escape>.
+		 *		- Removes all existing instances of the <SeparatorChars>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
 		 *		- Whitespace not removed is condensed into a single space.
 		 *		- Unlike <SymbolString>, does NOT replace the common package separator symbols (. :: ->) with <SeparatorChar>.
@@ -451,8 +442,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static private char[] separatorCharsAndWhitespace = new char[] { ' ', '\t', 
 																																SeparatorChars.Level1, SeparatorChars.Level2,
-																																SeparatorChars.Level3, SeparatorChars.Level4,
-																																SeparatorChars.Escape };
+																																SeparatorChars.Level3, SeparatorChars.Level4 };
 
 		/* var: bracesAndParamSeparators
 		 * An array containing all forms of braces, comma, and semicolon.

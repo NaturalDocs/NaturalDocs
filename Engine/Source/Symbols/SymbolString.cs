@@ -105,23 +105,14 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			
 		/* Function: FromExportedString
-		 * 
 		 * Creates a SymbolString from the passed string which originally came from another SymbolString object.  This skips 
 		 * the normalization stage because it should already be in the proper format.  Only use this when retrieving SymbolStrings
 		 * that were stored as plain text in a database or other data file.  All other uses should call <FromPlainText()> instead.
-		 * 
-		 * This throws an exception if <SeparatorChars.Escape> is the first character, as that signifies a special string that should
-		 * not be interpreted as a SymbolString.  Null is acceptable however.
 		 */
 		static public SymbolString FromExportedString (string exportedSymbolString)
 			{
-			if (exportedSymbolString != null)
-				{
-				if (exportedSymbolString.Length == 0)
-					{  exportedSymbolString = null;  }
-				else if (exportedSymbolString[0] == SeparatorChars.Escape)
-					{  throw new FormatException("You cannot convert an escaped string to a SymbolString.");  }
-				}
+			if (exportedSymbolString != null && exportedSymbolString.Length == 0)
+				{  exportedSymbolString = null;  }
 
 			return new SymbolString(exportedSymbolString);
 			}
@@ -329,7 +320,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * Normalizes <symbolString>.
 		 * 
 		 *		- Applies canonical normalization to Unicode (FormC).
-		 *		- Removes all existing instances of the <SeparatorChars>, including <SeparatorChar.Escape>.
+		 *		- Removes all existing instances of the <SeparatorChars>.
 		 *		- Whitespace is removed unless it is between two text characters as defined by <Tokenizer.FundamentalTypeOf()>.
 		 *		- Whitespace not removed is condensed into a single space.
 		 *		- Replaces the common package separator symbols (. :: ->) with <SeparatorChar>.
@@ -472,8 +463,6 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 */
 		static private char[] startingSeparatorCharsAndWhitespace = new char[] { ' ', '\t', ':', '-', '.', 
 																																			  SeparatorChars.Level1, SeparatorChars.Level2,
-																																			  SeparatorChars.Level3, SeparatorChars.Level4,
-																																			  SeparatorChars.Escape };
-
+																																			  SeparatorChars.Level3, SeparatorChars.Level4 };
 		}
 	}
