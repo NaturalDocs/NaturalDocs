@@ -509,40 +509,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// S - How high on the scope list the symbol match is.
 
-			string topicSymbolString = topic.Symbol.ToString();
-			string linkSymbolString = interpretation.ToString();
+			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
+			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
 
-			// First see if a match is possible under any circumstances.  The interpretation has to match the end of the topic
-			// symbol or no amount of finagling with the scopes will work.
-
-			if (topicSymbolString.EndsWith(linkSymbolString, StringComparison.CurrentCultureIgnoreCase) == false)
-				{  return 0;  }
-
-
-			// Determine what part of the topic symbol remains to be matched against the link scope, if any.
-
-			int topicScopeIndex = 0;
-			int topicScopeLength = 0;
-
-			if (topicSymbolString.Length > linkSymbolString.Length)
-				{
-				// There has to be a separator before the link symbol to make sure we didn't cut a word in half.
-				if (topicSymbolString[topicSymbolString.Length - linkSymbolString.Length - 1] != SymbolString.SeparatorChar)
-					{  return 0;  }
-
-				topicScopeLength = topicSymbolString.Length - linkSymbolString.Length - 1;
-				}
-
-
-			// -------- -------- -------- -------- -------- -------- -------- -------1
-			// Our baseline.
-
-			long score = 0x0000000000000001;
-
-
-			// --C----- -------- -------- -------- -------- -------- -------- -------=
-			// C - Whether the topic and link's capitalization match if it matters to the language.
+			// Values of C:
 			//		Natural Docs links:
 			//			1 - Topic is documentation, case matches
 			//			1 - Topic is documentation, case differs
@@ -563,55 +534,36 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			//			1 - Topic is code, language is case insensitive, case matches
 			//			1 - Topic is code, language is case insensitive, case differs
 
-			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
-			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
-
-			bool cDependsOnCase = false;
-
-			if (link.Type == LinkType.NaturalDocs)
-				{
-				if (topicType.Flags.Code && topicLanguage.CaseSensitive)
-					{  cDependsOnCase = true;  }
-				}
-			else // link is Type or ClassParent
-				{
-				if (topicType.Flags.Code && topic.LanguageID == link.LanguageID)
-					{
-					if (topicLanguage.CaseSensitive)
-						{  cDependsOnCase = true;  }
-					}
-				else
-					{  return 0;  }
-				}
-
-			// At this point if cDependsOnCase isn't set and the function didn't return zero already, C is definitely 1.
-			if (cDependsOnCase == false)
-				{  score |= 0x2000000000000000;  }
-
-			// cDependsOnCase is set but the case doesn't match...
-			else if (topicSymbolString.EndsWith(linkSymbolString) == false)
-				{
-				// It's a hard requirement for type and class parent links in case sensitive languages.
-				if (link.Type == LinkType.Type || link.Type == LinkType.ClassParent)
-					{  return 0;  }
-
-				// For Natural Docs links it's not, but turn off dependsOnCase so C stays zero.
-				cDependsOnCase = false;
-				}
-
-			// else cDependsOnCase is set and the case matches...
-				// We need to check that the scope's case matches as well, so don't set anything.
-
+			bool caseFlagged;
+			bool caseRequired;
 			
-			// Now we need to determine if we can match the remaining scope to anything in the context.
+			if (link.Type == LinkType.NaturalDocs)
+				{  
+				caseRequired = false;
+				caseFlagged = (topicType.Flags.Code && topicLanguage.CaseSensitive);
+				}
+			else
+				{
+				if (topicType.Flags.Code == false)
+					{  return 0;  }
 
+				caseRequired = topicLanguage.CaseSensitive;  
+				caseFlagged = false;
+				}
+
+
+			// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
+			// Our baseline.
+
+			long score = 0x0000000000000001;
+				
 			int scopeListIndex;
 
-			if (topicScopeLength == 0)
-				{
-				// If there's no remaining scope to match, then we know we already match as a global symbol.  We still need to 
-				// figure out the scope list index though.
 
+			// If we match as a global symbol...
+
+			if (string.Compare(topic.Symbol, interpretation, !caseRequired) == 0)
+				{
 				if (link.Context.ScopeIsGlobal)
 					{  scopeListIndex = 0;  }
 				else
@@ -627,15 +579,22 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					scopeListIndex = dividers + 1;
 					}
 
-				// Add in C if necessary.
-				if (cDependsOnCase)
+				// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
+				// Apply C
+				if (!caseFlagged || string.Compare(topic.Symbol, interpretation, false) == 0)
 					{  score |= 0x2000000000000000;  }
 				}
 
-			else // there's remaining topic scope to match
+
+			// If the topic ends with the interepretation, such as "A.B.C.Name" and "Name"...
+
+			else if (topic.Symbol.EndsWith(interpretation, !caseRequired))
 				{
-				// So the situation is now that we had a partial match earlier, like "Name" matching "A.B.C.Name", leaving "A.B.C" as the
-				// remaining topic scope.  We need to see if Link's scope can completely encompass the remaining scope:
+				string topicSymbolString = topic.Symbol.ToString();
+				int topicScopeIndex = 0;
+				int topicScopeLength = topicSymbolString.Length - interpretation.ToString().Length - 1;
+
+				// See if the link's scope can completely encompass the remaining scope:
 				//    Topic A.B.C.Name + Link Name + Link Scope A.B.C = yes
 				//    Topic A.B.C.Name + Link Name + Link Scope A.B = no
 				//    Topic A.B.C.Name + Link Name + Link Scope A.B.C.D = yes, it can walk up the hierarchy
@@ -648,7 +607,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				// If the remaining topic scope is a substring or equal to the link scope...
 				if (topicScopeLength <= linkScopeLength && 
-					 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, true) == 0)
+					 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, !caseRequired) == 0)
 					{
 					if (topicScopeLength == linkScopeLength)
 						{
@@ -675,20 +634,19 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																								  linkScopeLength - topicScopeLength);
 						}
 
-					if (cDependsOnCase)
-						{
-						if (string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, false) == 0)
-							{  score |= 0x2000000000000000;  }
-
-						// It's a hard requirement for type and class parent links
-						else if (link.Type == LinkType.Type || link.Type == LinkType.ClassParent)
-							{  return 0;  }
-						}
+					// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
+					// Apply C
+					if (!caseFlagged || 
+						(topicSymbolString.EndsWith(interpretation, false, System.Globalization.CultureInfo.CurrentCulture) == true &&
+						 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, false) == 0) )
+						{  score |= 0x2000000000000000;  }
 					}
 				else
 					{  return 0;  }
-
 				}
+			else
+				{  return 0;  }
+
 
 			// --=----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
 			// Encode the scope index.  We want lower indexes to have a higher score.

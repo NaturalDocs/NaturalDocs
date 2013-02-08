@@ -154,15 +154,27 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Function: StartsWith
+		 * Returns whether the start of the symbol matches the passed symbol, such as "PackageA.PackageB.Function" and PackageA.PackageB".
+		 * It must match a complete segment, so "PackageA.PackageB.Function" will not match "PackageA.Package".
+		 */
+		public bool StartsWith (SymbolString other, bool ignoreCase = false)
+			{
+			return (symbolString.Length > other.symbolString.Length &&
+					  symbolString[other.symbolString.Length] == SeparatorChar &&
+					  symbolString.StartsWith(other.symbolString, ignoreCase, System.Globalization.CultureInfo.CurrentCulture));
+			}
+			
+		
 		/* Function: EndsWith
 		 * Returns whether the end of the symbol matches the passed symbol, such as "PackageA.PackageB.Function" and "PackageB.Function".
 		 * It must match a complete segment, so "PackageA.PackageB.Function" will not match "B.Function".
 		 */
-		public bool EndsWith (SymbolString other)
+		public bool EndsWith (SymbolString other, bool ignoreCase = false)
 			{
 			return (symbolString.Length > other.symbolString.Length &&
 					  symbolString[symbolString.Length - other.symbolString.Length - 1] == SeparatorChar &&
-					  symbolString.EndsWith(other.symbolString));
+					  symbolString.EndsWith(other.symbolString, ignoreCase, System.Globalization.CultureInfo.CurrentCulture));
 			}
 			
 		
