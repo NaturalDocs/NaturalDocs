@@ -1,0 +1,98 @@
+// Basic match
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+   Using: Add Prefix A.B.C
+
+Match score:
+   1 - Scope index
+      (1022 score)
+
+// Should not match because links shouldn't be able to walk down the hierarchy of using
+// statements like they can with scopes.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: Name
+   Scope: Global
+   Using: Add Prefix A.B.C.D
+
+☓☓☓ No Match ☓☓☓
+
+// Should work if part of hierarchy is in the link name.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: Global
+   Using: Add Prefix A.B
+
+Match score:
+   1 - Scope index
+      (1022 score)
+
+// Using statements come after all scope possibilities in the list.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: X.Y.Z
+   Using: Add Prefix A.B
+
+Match score:
+   4 - Scope index
+      (1019 score)
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: X.Y.Z
+   Using: Add Prefix Q
+   Using: Add Prefix R
+   Using: Add Prefix A.B
+
+Match score:
+   6 - Scope index
+      (1017 score)
+
+// Shouldn't match on substrings
+// ______________________________________________________________________
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: CC.Name
+   Scope: X.Y.Z
+   Using: Add Prefix A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: CC.Name
+   Scope: X.Y.Z
+   Using: Add Prefix A.BBB
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: X.Y.Z
+   Using: Add Prefix A.BB
+
+☓☓☓ No Match ☓☓☓
+

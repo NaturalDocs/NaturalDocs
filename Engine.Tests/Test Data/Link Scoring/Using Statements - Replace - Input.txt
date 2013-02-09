@@ -1,0 +1,71 @@
+
+show scope
+
+
+// Basic match
+// ______________________________________________________________________
+
+Topic.Title = "A.B.C.Name"
+Link.Text = "X.Y.Z.Name"
+Link.Using = Replace Prefix "X.Y.Z" with "A.B.C"
+
+score
+
+
+// Should not match because links shouldn't be able to walk down the hierarchy of using
+// statements like they can with scopes.
+// ______________________________________________________________________
+
+Link.Using = Replace Prefix "X.Y.Z" with "A.B.C.D"
+
+score
+
+
+// Should work if part of hierarchy is in the link name.
+// ______________________________________________________________________
+
+Link.Text = "X.Y.C.Name"
+Link.Using = Replace Prefix "X.Y" with "A.B"
+
+score
+
+
+// Using statements come after all scope possibilities in the list.
+// ______________________________________________________________________
+
+Link.Scope = "M.N.O"
+
+score
+
+Link.Using = Replace Prefix "R.S" with "T.U"
+Link.Using += Replace Prefix "X.Y" with "V.W"
+Link.Using += Replace Prefix "X.Y" with "A.B"
+
+score
+
+
+// Shouldn't match on substrings
+// ______________________________________________________________________
+
+Topic.Title = "A.BB.CC.Name"
+Link.Text = "X.YY.CC.Name"
+Link.Using = Replace Prefix "X.YY" with "A.B"
+
+score
+
+Link.Using = Replace Prefix "X.YY" with "A.BBB"
+
+score
+
+Link.Using = Replace Prefix "X.Y" with "A.BB"
+
+score
+
+Link.Using = Replace Prefix "X.YYY" with "A.BB"
+
+score
+
+Link.Text = "C.Name"
+Link.Using = Replace Prefix "X.YY" with "A.BB"
+
+score

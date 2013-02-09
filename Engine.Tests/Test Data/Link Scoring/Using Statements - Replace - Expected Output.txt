@@ -1,0 +1,116 @@
+// Basic match
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: X.Y.Z.Name
+   Scope: Global
+   Using: Replace Prefix X.Y.Z with A.B.C
+
+Match score:
+   1 - Scope index
+      (1022 score)
+
+// Should not match because links shouldn't be able to walk down the hierarchy of using
+// statements like they can with scopes.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: X.Y.Z.Name
+   Scope: Global
+   Using: Replace Prefix X.Y.Z with A.B.C.D
+
+☓☓☓ No Match ☓☓☓
+
+// Should work if part of hierarchy is in the link name.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: X.Y.C.Name
+   Scope: Global
+   Using: Replace Prefix X.Y with A.B
+
+Match score:
+   1 - Scope index
+      (1022 score)
+
+// Using statements come after all scope possibilities in the list.
+// ______________________________________________________________________
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: X.Y.C.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.Y with A.B
+
+Match score:
+   4 - Scope index
+      (1019 score)
+
+C# Function Topic: A.B.C.Name
+   Symbol: A.B.C.Name
+
+C# NaturalDocs Link: X.Y.C.Name
+   Scope: M.N.O
+   Using: Replace Prefix R.S with T.U
+   Using: Replace Prefix X.Y with V.W
+   Using: Replace Prefix X.Y with A.B
+
+Match score:
+   6 - Scope index
+      (1017 score)
+
+// Shouldn't match on substrings
+// ______________________________________________________________________
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: X.YY.CC.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.YY with A.B
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: X.YY.CC.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.YY with A.BBB
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: X.YY.CC.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.Y with A.BB
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: X.YY.CC.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.YYY with A.BB
+
+☓☓☓ No Match ☓☓☓
+
+C# Function Topic: A.BB.CC.Name
+   Symbol: A.BB.CC.Name
+
+C# NaturalDocs Link: C.Name
+   Scope: M.N.O
+   Using: Replace Prefix X.YY with A.BB
+
+☓☓☓ No Match ☓☓☓
+

@@ -24,6 +24,12 @@
  *			> Link.Type = "Natural Docs/Class Parent/Type"
  *			> Link.Text = "<FunctionName()>"
  *			> Link.Scope = "ClassName" or null
+ *			>
+ *			> Link.Using = add prefix "PackageA.PackageB"
+ *			> Link.Using = replace prefix "PackageA" with "PackageB"
+ *			> Link.Using = null
+ *			> Link.Using += add prefix "PackageA.PackageB"
+ *			> Link.Using += replace prefix "PackageA" with "PackageB"
  *		
  *		> Score
  *		Generates a score between the current link and topic settings.
@@ -102,8 +108,11 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				if (command.EndsWith(";"))
 					{  command = command.Substring(0, command.Length - 1).TrimEnd();  }
 
-				var match = GetPropertyRegex.Match(command);
+				Match match = GetPropertyRegex.Match(command);
 				string target, property, value, valueString;
+
+				Match addPrefixMatch = null;
+				Match replacePrefixMatch = null;
 
 				if (match.Success)
 					{
@@ -123,10 +132,23 @@ namespace GregValure.NaturalDocs.Engine.Tests
 					}
 				else
 					{
-					target = null;
-					property = null;
-					value = null;
-					valueString = null;
+					addPrefixMatch = AddPrefixRegex.Match(command);
+					replacePrefixMatch = ReplacePrefixRegex.Match(command);
+
+					if (addPrefixMatch.Success || replacePrefixMatch.Success)
+						{
+						target = "link";
+						property = "using";
+						value = null;
+						valueString = null;
+						}
+					else
+						{
+						target = null;
+						property = null;
+						value = null;
+						valueString = null;
+						}
 					}
 
 				var lcCommand = command.ToLower();
@@ -288,6 +310,57 @@ namespace GregValure.NaturalDocs.Engine.Tests
 								link.Context = temp;
 								}
 							}
+						else if (property == "using")
+							{
+							if (value == "null")
+								{
+								ContextString temp = link.Context;
+								temp.ClearUsingStatements();
+								link.Context = temp;
+								}
+							else if (addPrefixMatch != null && addPrefixMatch.Success)
+								{
+								string op = addPrefixMatch.Groups[1].ToString();
+								string add = addPrefixMatch.Groups[2].ToString();
+
+								ContextString temp = link.Context;
+
+								if (op == "=")
+									{  temp.ClearUsingStatements();  }
+
+								temp.AddUsingStatement(
+									UsingString.FromParameters(
+										UsingString.UsingType.AddPrefix, 
+										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(add)
+										)
+									);
+
+								link.Context = temp;
+								}
+							else if (replacePrefixMatch != null && replacePrefixMatch.Success)
+								{
+								string op = replacePrefixMatch.Groups[1].ToString();
+								string remove = replacePrefixMatch.Groups[2].ToString();
+								string add = replacePrefixMatch.Groups[3].ToString();
+
+								ContextString temp = link.Context;
+
+								if (op == "=")
+									{  temp.ClearUsingStatements();  }
+
+								temp.AddUsingStatement(
+									UsingString.FromParameters(
+										UsingString.UsingType.ReplacePrefix, 
+										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(add),
+										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(remove)
+										)
+									);
+
+								link.Context = temp;
+								}
+							else
+								{  throw new Exception("\"" + command + "\" is not a recognized Link.Using statement.");  }
+							}
 						else
 							{  throw new Exception("\"" + property + "\" is not recognized as a link property.");  }
 						// Leave lastWasLineBreak alone since we're not generating output.
@@ -384,6 +457,26 @@ namespace GregValure.NaturalDocs.Engine.Tests
 							{  output.AppendLine("   Scope: Global");  }
 						else
 							{  output.AppendLine("   Scope: " + link.Context.Scope.FormatWithSeparator('.'));  }
+
+						var usingStatements = link.Context.GetUsingStatements();
+
+						if (usingStatements != null)
+							{
+							foreach (var usingStatement in usingStatements)
+								{
+								if (usingStatement.Type == UsingString.UsingType.AddPrefix)
+									{  
+									output.AppendLine("   Using: Add Prefix " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));  
+									}
+								else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
+									{
+									output.AppendLine("   Using: Replace Prefix " + usingStatement.PrefixToRemove.FormatWithSeparator('.') +
+															  " with " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
+									}
+								else
+									{  throw new NotImplementedException("Unexpected using type " + usingStatement.Type);  }
+								}
+							}
 
 						output.AppendLine();
 
@@ -554,8 +647,12 @@ namespace GregValure.NaturalDocs.Engine.Tests
 			return output.ToString();
 			}
 
-		protected static Regex GetPropertyRegex = new Regex(@"^[ \t]*(Topic|Link).([a-z]+)[ \t]*=[ \t]*(null|"".*"")[ \t]*$", 
-																											RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+		protected static Regex GetPropertyRegex = new Regex(@"^[ \t]*(Topic|Link)\.([a-z]+)[ \t]*=[ \t]*(null|"".*"")[ \t]*$", 
+																				  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+		protected static Regex AddPrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Add Prefix ""(.*)""[ \t]*$", 
+																			  RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+		protected static Regex ReplacePrefixRegex = new Regex(@"^[ \t]*Link\.Using[ \t]*(\+?=)[ \t]*Replace Prefix ""(.*)"" with ""(.*)""[ \t]*$", 
+																					RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
 		}
 	}

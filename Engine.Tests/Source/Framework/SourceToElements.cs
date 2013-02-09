@@ -32,6 +32,7 @@ using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Languages;
 using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tokenization;
 using GregValure.NaturalDocs.Engine.Topics;
 
@@ -174,7 +175,21 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 							foreach (var usingStatement in usingStatements)
 								{
 								output.Append(' ', indent);
-								output.AppendLine("- Using Statement: " + usingStatement.FormatWithSeparator('.'));
+								output.Append("- Using Statement: ");
+
+								if (usingStatement.Type == UsingString.UsingType.AddPrefix)
+									{  
+									output.AppendLine("Add " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
+									}
+								else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
+									{  
+									output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') + 
+																		 " with " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
+									}
+								else
+									{
+									output.AppendLine("Unknown using type " + usingStatement.Type);
+									}
 								}
 							}
 						}

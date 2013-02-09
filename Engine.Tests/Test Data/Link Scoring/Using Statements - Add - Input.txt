@@ -1,0 +1,63 @@
+
+show scope
+
+
+// Basic match
+// ______________________________________________________________________
+
+Topic.Title = "A.B.C.Name"
+Link.Text = "Name"
+Link.Using = Add Prefix "A.B.C"
+
+score
+
+
+// Should not match because links shouldn't be able to walk down the hierarchy of using
+// statements like they can with scopes.
+// ______________________________________________________________________
+
+Link.Using = Add Prefix "A.B.C.D"
+
+score
+
+
+// Should work if part of hierarchy is in the link name.
+// ______________________________________________________________________
+
+Link.Text = "C.Name"
+Link.Using = Add Prefix "A.B"
+
+score
+
+
+// Using statements come after all scope possibilities in the list.
+// ______________________________________________________________________
+
+Link.Scope = "X.Y.Z"
+
+score
+
+Link.Using = Add Prefix "Q"
+Link.Using += Add Prefix "R"
+Link.Using += Add Prefix "A.B"
+
+score
+
+
+// Shouldn't match on substrings
+// ______________________________________________________________________
+
+Topic.Title = "A.BB.CC.Name"
+Link.Text = "CC.Name"
+Link.Using = Add Prefix "A.B"
+
+score
+
+Link.Using = Add Prefix "A.BBB"
+
+score
+
+Link.Text = "C.Name"
+Link.Using = Add Prefix "A.BB"
+
+score
