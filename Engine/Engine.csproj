@@ -181,6 +181,7 @@
     <Compile Include="Source\Symbols\ContextString.cs" />
     <Compile Include="Source\Symbols\ClassString.cs" />
     <Compile Include="Source\Collections\ILookupKey.cs" />
+    <Compile Include="Source\Symbols\UsingString.cs" />
     <Compile Include="Source\Symbols\SeparatorChars.cs" />
     <Compile Include="Source\Symbols\ParameterString.cs" />
     <Compile Include="Source\Symbols\EndingSymbol.cs" />

@@ -5,10 +5,10 @@
  * A struct encapsulating a context string, which is a normalized way of representing what scope and "using"
  * statements are active at a given point.
  * 
- * The encoding uses <SeparatorChars.Level2> since it encapsulates <SymbolStrings> which use 
- * <SeparatorChars.Level1>.
+ * The encoding uses <SeparatorChars.Level3> since it encapsulates <UsingStrings> which use 
+ * <SeparatorChars.Level2>.
  */
-
+ 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
@@ -28,7 +28,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* Constant: SeparatorChar
 		 * The character used to separate string components.
 		 */
-		public const char SeparatorChar = SeparatorChars.Level2;
+		public const char SeparatorChar = SeparatorChars.Level3;
 
 
 
@@ -61,7 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		/* Function: GetUsingStatements
 		 * Returns the "using" statements as a list, or null if there are none.
 		 */
-		public IList<SymbolString> GetUsingStatements()
+		public IList<UsingString> GetUsingStatements()
 			{
 			if (contextString == null)
 				{  return null;  }
@@ -71,7 +71,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			if (separatorIndex == -1)
 				{  return null;  }
 
-			List<SymbolString> usingStatements = new List<SymbolString>();
+			List<UsingString> usingStatements = new List<UsingString>();
 
 			for (;;)
 				{
@@ -79,12 +79,12 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 				if (nextSeparatorIndex == -1)
 					{
-					usingStatements.Add( SymbolString.FromExportedString( contextString.Substring(separatorIndex + 1) ) );
+					usingStatements.Add( UsingString.FromExportedString( contextString.Substring(separatorIndex + 1) ) );
 					break;
 					}
 				else
 					{
-					usingStatements.Add( SymbolString.FromExportedString( 
+					usingStatements.Add( UsingString.FromExportedString( 
 						contextString.Substring(separatorIndex + 1, nextSeparatorIndex - (separatorIndex + 1))
 						) );
 					separatorIndex = nextSeparatorIndex;
@@ -98,7 +98,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
  		/* Function: AddUsingStatement
 		 * Adds a "using" statement to the context.  It does not remove or replace any of the existing ones.
 		 */
-		public void AddUsingStatement (SymbolString usingStatement)
+		public void AddUsingStatement (UsingString usingStatement)
 			{
 			if (contextString == null)
 				{  contextString = SeparatorChar + usingStatement;  }

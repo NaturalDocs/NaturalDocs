@@ -290,7 +290,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		public long ScoreLink (Link link, Topic topic, long minimumScore = 0, List<LinkInterpretation> interpretations = null)
 			{
 			// DEPENDENCY: These functions depend on the score's internal format:
-			//    - CodeDB.Manager.ScoreInterpretation()
+			//    - CodeDB.Manager.ScoreInterpretation(), ScoreScopeIntertpretation(), ScoreUsingInterpretation()
 			//    - CodeDB.Manager.GetInterpretationIndex()
 			//    - CodeDB.Manager.ScoreParameter()
 			//    - CodeDB.Manager.ScoreTopic()
@@ -370,8 +370,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				for (int i = 0; i < interpretations.Count; i++)
 					{
-					long interpretationScore = ScoreInterpretation(topic, link, 
-																											  SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretations[i].Target));
+					long interpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretations[i].Target));
 
 					if (interpretationScore != 0)
 						{
@@ -504,6 +503,33 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * zero.
 		 */
 		private long ScoreInterpretation (Topic topic, Link link, SymbolString interpretation)
+			{
+			// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
+			// C - Whether the topic and link's capitalization match if it matters to the language.
+			// S - How high on the scope list the symbol match is.
+
+			long scopeScore = ScoreScopeInterpretation(topic, link, interpretation);
+
+			// S is always going to be higher for scopes than for using statements, so if there's a match and C is set we can
+			// quit early because there's no way a using statement is going to top it.
+			if (scopeScore > 0x3000000000000000)
+				{  return scopeScore;  }
+
+			long usingScore = ScoreUsingInterpretation(topic, link, interpretation);
+
+			if (scopeScore > usingScore)
+				{  return scopeScore;  }
+			else
+				{  return usingScore;  }
+			}
+
+
+		/* Function: ScoreScopeInterpretation
+		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation 
+		 * using only the scope.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation doesn't 
+		 * match using the scope, it will return zero.
+		 */
+		private long ScoreScopeInterpretation (Topic topic, Link link, SymbolString interpretation)
 			{
 			// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
 			// C - Whether the topic and link's capitalization match if it matters to the language.
@@ -660,6 +686,170 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			score |= scopeListBits;
 
 			return score;
+			}
+
+
+		/* Function: ScoreUsingInterpretation
+		 * A function used by <ScoreInterpretation()> to determine the C and S fields of the score for the passed interpretation 
+		 * using only the using statements.  Only those fields and the trailing 1 will be set in the returned score.  If the interpretation 
+		 * doesn't match using the using statements, it will return zero.
+		 */
+		private long ScoreUsingInterpretation (Topic topic, Link link, SymbolString interpretation)
+			{
+			// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
+			// C - Whether the topic and link's capitalization match if it matters to the language.
+			// S - How high on the scope list the symbol match is.
+
+			IList<UsingString> usingStrings = link.Context.GetUsingStatements();
+
+			if (usingStrings == null || usingStrings.Count == 0)
+				{  return 0;  }
+
+			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
+			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+
+
+			// Values of C:
+			//		Natural Docs links:
+			//			1 - Topic is documentation, case matches
+			//			1 - Topic is documentation, case differs
+			//			1 - Topic is file, case matches
+			//			1 - Topic is file, case differs
+			//			1 - Topic is code, topic language is case sensitive, case matches
+			//			0 - Topic is code, topic language is case sensitive, case differs
+			//			1 - Topic is code, topic language is case insensitive, case matches
+			//			1 - Topic is code, topic language is case insensitive, case differs
+			//		Type/Class Parent links:
+			//			Assuming they're the same language...
+			//			X - Topic is documentation, case matches
+			//			X - Topic is documentation, case differs
+			//			X - Topic is file, case matches
+			//			X - Topic is file, case differs
+			//			1 - Topic is code, language is case sensitive, case matches
+			//			X - Topic is code, language is case sensitive, case differs
+			//			1 - Topic is code, language is case insensitive, case matches
+			//			1 - Topic is code, language is case insensitive, case differs
+
+			bool caseFlagged;
+			bool caseRequired;
+			
+			if (link.Type == LinkType.NaturalDocs)
+				{  
+				caseRequired = false;
+				caseFlagged = (topicType.Flags.Code && topicLanguage.CaseSensitive);
+				}
+			else
+				{
+				if (topicType.Flags.Code == false)
+					{  return 0;  }
+
+				caseRequired = topicLanguage.CaseSensitive;  
+				caseFlagged = false;
+				}
+
+
+			// Find the scope list index to start at, since the actual scopes come before the using statements.
+			//    Scope list:
+			//       0 - A.B.C.Link
+			//       1 - A.B.Link
+			//       2 - A.Link
+			//       3 - Link
+			//       4 - Link + first using statement
+			// So if there's a scope, the starting index is the number of separators in the scope + 2.  Otherwise it's one.
+			//    Scope list:
+			//       0 - Link
+			//       1 - Link + first using statement
+
+			int scopeListIndex;
+
+			if (link.Context.ScopeIsGlobal)
+				{  scopeListIndex = 1;  }
+			else
+				{
+				int scopeIndex, scopeLength;
+				link.Context.GetRawTextScope(out scopeIndex, out scopeLength);
+
+				scopeListIndex = link.Context.RawText.Count(SymbolString.SeparatorChar, scopeIndex, scopeLength) + 2;
+				}
+
+
+			// Go through each using statement looking for the best score.
+
+			long bestScore = 0;
+
+			foreach (var usingString in usingStrings)
+				{
+				SymbolString newInterpretation;
+				bool newInterpretationPossible;
+
+				if (usingString.Type == UsingString.UsingType.AddPrefix)
+					{
+					newInterpretation = usingString.PrefixToAdd + interpretation;
+					newInterpretationPossible = true;
+					}
+				else if (usingString.Type == UsingString.UsingType.ReplacePrefix)
+					{
+					SymbolString prefixToRemove = usingString.PrefixToRemove;
+					string prefixToRemoveString = prefixToRemove.ToString();
+					string interpretationString = interpretation.ToString();
+
+					if (interpretationString.Length > prefixToRemoveString.Length &&
+						interpretation.StartsWith(prefixToRemove, !caseRequired))
+						{
+						newInterpretation = usingString.PrefixToAdd + SymbolString.FromExportedString(interpretationString.Substring(prefixToRemoveString.Length + 1));
+						newInterpretationPossible = true;
+						}
+					else
+						{  
+						newInterpretation = new SymbolString();  // to make the compiler shut up
+						newInterpretationPossible = false;  
+						}
+					}
+				else
+					{  throw new NotImplementedException();  }
+
+
+				if (newInterpretationPossible && string.Compare(newInterpretation, topic.Symbol, !caseRequired) == 0)
+					{
+					// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------1
+					// Our baseline.
+
+					long score = 0x0000000000000001;
+
+
+					// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
+					// Encode the scope index.  We want lower indexes to have a higher score.
+
+					if (scopeListIndex > 1023)
+						{  scopeListIndex = 1023;  }
+
+					long scopeListBits = 1023 - scopeListIndex;
+					scopeListBits <<= 29;
+
+					score |= scopeListBits;
+
+
+					// --C----- -------- -------- -======= ===----- -------- -------- -------=
+					// Determine C.  If C is set we can quit early because it would be impossible for a later using statement to
+					// generate a higher score.
+
+					if (!caseFlagged || string.Compare(newInterpretation, topic.Symbol, false) == 0)
+						{  
+						score |= 0x2000000000000000;  
+						bestScore = score;
+						break;
+						}
+					else
+						{
+						if (score > bestScore)
+							{  bestScore = score;  }
+						}
+					}
+
+				scopeListIndex++;
+				}
+
+			return bestScore;
 			}
 
 
