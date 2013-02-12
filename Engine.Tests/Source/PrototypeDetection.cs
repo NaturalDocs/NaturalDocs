@@ -26,11 +26,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class PrototypeDetection : Framework.SourceToTopics
 		{
 
-		[Test]
-		public void BasicLanguageSupport ()
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("Basic Language Support")]
+		public void BasicSupport ()
 			{
-			TestFolder("Prototype Detection/Basic Language Support", "Shared ND Config/Basic Language Support");
+			TestFolder("Languages/Basic Support/Prototype Detection", "Shared ND Config/Basic Language Support");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
