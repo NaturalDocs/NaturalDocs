@@ -26,11 +26,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class Summaries : Framework.SourceToTopics
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("Natural Docs Comments")]
 		public void All ()
 			{
-			TestFolder("Summaries");
+			TestFolder("Comments/Natural Docs/Summaries");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

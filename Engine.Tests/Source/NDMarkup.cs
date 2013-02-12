@@ -32,7 +32,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 		[Test, Category("Natural Docs Comments")]
 		public void NaturalDocs ()
 			{
-			TestFolder("Comments/Natural Docs");
+			TestFolder("Comments/Natural Docs/Parsing");
 			}
 
 
