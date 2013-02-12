@@ -79,12 +79,19 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class LinkScoring : Framework.TextCommands
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("General")]
 		public void All ()
 			{
-			TestFolder("Link Scoring");
-			TestFolder("Link Scoring/Parameters");
+			TestFolder("General/Link Scoring");
+			TestFolder("General/Link Scoring/Parameters");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<string> commands)
 			{
