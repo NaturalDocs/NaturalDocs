@@ -2234,6 +2234,33 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			for (int i = 0; i < elements.Count; i++)
 				{
+
+				// Check for ParentElements that have DefaultDeclaredChildAccessLevel set (meaning it's a parent that affects access
+				// levels like a class) but does not have MaximumEffectiveChildAccessLevel set (such as a class that does not have its
+				// own declared access level.)  In these cases we set the maximum to its parent's default.
+
+				if (elements[i] is ParentElement)
+					{
+					ParentElement elementAsParent = (ParentElement)elements[i];
+
+					if (elementAsParent.MaximumEffectiveChildAccessLevel == AccessLevel.Unknown &&
+						 elementAsParent.DefaultDeclaredChildAccessLevel != AccessLevel.Unknown)
+						{
+						int parentIndex = FindElementParent(elements, i);
+						while (parentIndex != -1 && (elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel == AccessLevel.Unknown)
+							{  parentIndex = FindElementParent(elements, parentIndex);  }
+
+						if (parentIndex != -1)
+							{
+							elementAsParent.MaximumEffectiveChildAccessLevel = 
+								(elements[parentIndex] as ParentElement).DefaultDeclaredChildAccessLevel;
+							}
+						}
+					}
+
+
+				// Now apply the parent's default to any Topics that do not have a declared access level already set.
+
 				Topic topic = elements[i].Topic;
 
 				if (topic != null && topic.DeclaredAccessLevel == AccessLevel.Unknown)

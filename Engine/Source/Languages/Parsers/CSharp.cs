@@ -92,6 +92,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			// using statements.
 			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InCode);
 			rootElement.IsRootElement = true;
+			rootElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
 			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 			rootElement.DefaultChildLanguageID = this.ID;
 			rootElement.ChildContextString = new ContextString();
@@ -276,7 +277,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			childContext.Scope = symbol;
 
 			ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
+			namespaceElement.DefaultChildLanguageID = this.ID;
 			namespaceElement.ChildContextString = childContext;
+			namespaceElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
 			namespaceElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 
 			// We don't create topics for namespaces.
@@ -405,6 +408,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			childContext.Scope = symbol;
 
 			ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
+			classElement.DefaultChildLanguageID = this.ID;
 			classElement.DefaultChildClassString = classString;
 			classElement.ChildContextString = childContext;
 			classElement.MaximumEffectiveChildAccessLevel = accessLevel;
@@ -424,6 +428,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				classTopic.ClassString = classString;
 				classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				classTopic.TopicTypeID = topicTypeID;
+				classTopic.LanguageID = this.ID;
 				classTopic.DeclaredAccessLevel = accessLevel;
 				classTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -587,6 +592,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				functionTopic.TopicTypeID = topicTypeID;
+				functionTopic.LanguageID = this.ID;
 				functionTopic.DeclaredAccessLevel = accessLevel;
 				functionTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -726,6 +732,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
 				functionTopic.TopicTypeID = topicTypeID;
+				functionTopic.LanguageID = this.ID;
 				functionTopic.DeclaredAccessLevel = accessLevel;
 				functionTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -828,6 +835,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				operatorTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(operatorTopic.Title);
 				operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				operatorTopic.TopicTypeID = topicTypeID;
+				operatorTopic.LanguageID = this.ID;
 				operatorTopic.DeclaredAccessLevel = accessLevel;
 				operatorTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -942,6 +950,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				variableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				variableTopic.TopicTypeID = topicTypeID;
+				variableTopic.LanguageID = this.ID;
 				variableTopic.DeclaredAccessLevel = accessLevel;
 				variableTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -989,6 +998,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(newName);
 						newVariableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfType) + " " + newName );
 						newVariableTopic.TopicTypeID = topicTypeID;
+						newVariableTopic.LanguageID = this.ID;
 						newVariableTopic.DeclaredAccessLevel = accessLevel;
 						newVariableTopic.CodeLineNumber = startOfNewName.LineNumber;
 
@@ -1169,6 +1179,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				propertyTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 				propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
 				propertyTopic.TopicTypeID = topicTypeID;
+				propertyTopic.LanguageID = this.ID;
 				propertyTopic.DeclaredAccessLevel = accessLevel;
 				propertyTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -1265,6 +1276,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				enumTopic.Symbol = symbol;
 				enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				enumTopic.TopicTypeID = topicTypeID;
+				enumTopic.LanguageID = this.ID;
 				enumTopic.DeclaredAccessLevel = accessLevel;
 				enumTopic.CodeLineNumber = iterator.LineNumber;
 
