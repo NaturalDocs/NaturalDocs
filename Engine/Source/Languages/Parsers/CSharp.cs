@@ -1165,31 +1165,42 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Create element
 
+			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+
+			ContextString childContext = new ContextString();
+			childContext.Scope = symbol;
+
+			ParentElement enumElement = new ParentElement(iterator, Element.Flags.InCode);
+			enumElement.ChildContextString = childContext;
+			enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
+
 			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
 
 			if (topicTypeID != 0)
 				{
 				Topic enumTopic = new Topic();
 				enumTopic.Title = name;
-				enumTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+				enumTopic.Symbol = symbol;
 				enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				enumTopic.TopicTypeID = topicTypeID;
 				enumTopic.DeclaredAccessLevel = accessLevel;
 				enumTopic.CodeLineNumber = iterator.LineNumber;
 
-				Element enumElement = new Element(iterator, Element.Flags.InCode);
 				enumElement.Topic = enumTopic;
-
-				elements.Add(enumElement);
 				}
+
+			elements.Add(enumElement);
 
 
 			//  Body
 
-			lookahead.Next();
-			GenericSkipUntilAfter(ref lookahead, '}');
-
 			iterator = lookahead;
+			iterator.Next();
+			GenericSkipUntilAfter(ref iterator, '}');
+
+			enumElement.EndingLineNumber = iterator.LineNumber;
+			enumElement.EndingCharNumber = iterator.CharNumber; 
+
 			return true;
 			}
 
