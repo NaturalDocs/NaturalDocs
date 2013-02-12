@@ -28,10 +28,10 @@ namespace GregValure.NaturalDocs.Engine.Tests
 		// Group: Tests
 		// __________________________________________________________________________
 
-		[Test]
-		public void Styles ()
+		[Test, Category("Basic Language Support")]
+		public void BasicSupport ()
 			{
-			TestFolder("Comments/Styles/Basic Language Support", "Shared ND Config/Basic Language Support");
+			TestFolder("Languages/Basic Support/Comment Detection", "Shared ND Config/Basic Language Support");
 			}
 
 		[Test, Category("General")]
