@@ -1,0 +1,47 @@
+Class_APITag
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API
+-----
+Function_NoTag
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API
+-----
+Function_TestTag
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API, Test Tag
+-----
+Function_APITag
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API
+-----
+Group_TestTag
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Tags: API, Test Tag
+-----
+Function_NoTag2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API, Test Tag
+-----
+Function_TestTag2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API, Test Tag
+-----
+Function_APITag2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Tags: API, Test Tag

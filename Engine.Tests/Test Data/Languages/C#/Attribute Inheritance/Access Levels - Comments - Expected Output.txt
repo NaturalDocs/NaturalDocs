@@ -1,0 +1,64 @@
+PublicClass
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Function_PublicTagUnspecifiedCode
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+Function_PublicTagPrivateCode
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicGroup
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedCommentFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PrivateCommentFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateGroup
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction2
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedCommentFunction2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicCommentFunction2
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public

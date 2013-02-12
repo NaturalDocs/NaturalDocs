@@ -27,11 +27,24 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class AttributeInheritance : Framework.SourceToTopics
 		{
 
-		[Test]
-		public void All ()
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("Basic Language Support")]
+		public void BasicSupport ()
 			{
-			TestFolder("Attribute Inheritance", "Shared ND Config/Basic Language Support");
+			TestFolder("Languages/Basic Support/Attribute Inheritance", "Shared ND Config/Tags");
 			}
+
+		[Test, Category("C#")]
+		public void CSharp ()
+			{
+			TestFolder("Languages/C#/Attribute Inheritance", "Shared ND Config/Tags");
+			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

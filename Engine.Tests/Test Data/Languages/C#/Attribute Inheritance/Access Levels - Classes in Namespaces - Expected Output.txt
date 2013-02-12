@@ -1,0 +1,199 @@
+Namespace.UnspecifiedClass
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Internal
+-----
+ProtectedFunction
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Internal
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+InternalFunction
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+ProtectedInternalFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Internal
+-----
+InternalProtectedFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Internal
+-----
+Namespace.PublicClass
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+InternalFunction
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+ProtectedInternalFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: ProtectedInternal
+-----
+InternalProtectedFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: ProtectedInternal
+-----
+Namespace.PrivateClass
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+InternalFunction
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Private
+-----
+ProtectedInternalFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Private
+-----
+InternalProtectedFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Private
+-----
+Namespace.ProtectedClass
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Protected
+-----
+ProtectedFunction
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+InternalFunction
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+ProtectedInternalFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Protected
+-----
+InternalProtectedFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Protected
+-----
+Namespace.InternalClass
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Internal
+-----
+ProtectedFunction
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Internal
+-----
+PrivateFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+InternalFunction
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+ProtectedInternalFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Internal
+-----
+InternalProtectedFunction
+- Language: C#
+- Declared Access Level: ProtectedInternal
+- Effective Access Level: Internal

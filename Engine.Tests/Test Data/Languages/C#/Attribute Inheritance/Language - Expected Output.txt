@@ -1,0 +1,49 @@
+Class_VBTagCSharpCode
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Function_NoTagCSharpCode
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+Function_NoTagNoCode
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Function_VBTagCSharpCode
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+Function_VBTagNoCode
+- Language: Visual Basic
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Group_SQLTag
+- Language: SQL
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Function_NoTagCSharpCode2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+Function_NoTagNoCode2
+- Language: SQL
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+Function_VBTagCSharpCode2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+Function_VBTagNoCode2
+- Language: Visual Basic
+- Declared Access Level: Public
+- Effective Access Level: Public

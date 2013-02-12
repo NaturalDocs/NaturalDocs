@@ -1,0 +1,49 @@
+UnspecifiedInterface
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Internal
+-----
+PublicInterface
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PrivateInterface
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedInterface
+- Language: C#
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Protected
+-----
+InternalInterface
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+-----
+UnspecifiedFunction
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Internal
