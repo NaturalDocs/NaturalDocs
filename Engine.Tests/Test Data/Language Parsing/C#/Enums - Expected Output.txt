@@ -14,8 +14,12 @@
     TestClass.EnumA
     public enum EnumA
     (line 4, char 2, child of TestClass)
+    - Maximum Effective Child Access Level: Public
+    - Child Scope: TestClass.EnumA
     ---------------
     Enumeration: EnumB
     TestClass.EnumB
     [Attribute] public enum EnumB : byte
     (line 7, char 2, child of TestClass)
+    - Maximum Effective Child Access Level: Public
+    - Child Scope: TestClass.EnumB

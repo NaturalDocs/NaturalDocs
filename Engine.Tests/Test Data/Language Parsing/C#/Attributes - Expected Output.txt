@@ -19,3 +19,5 @@
     TestClass.TestEnum
     [Attribute1] [Attribute2] [Attribute3] public enum TestEnum
     (line 19, char 2, child of TestClass)
+    - Maximum Effective Child Access Level: Public
+    - Child Scope: TestClass.TestEnum
