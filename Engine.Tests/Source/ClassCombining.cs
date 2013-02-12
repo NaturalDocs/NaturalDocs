@@ -27,11 +27,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class ClassCombining : Framework.SourceToClassTopics
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("General")]
 		public void All ()
 			{
-			TestFolder("Class Combining");
+			TestFolder("General/Class Combining");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
