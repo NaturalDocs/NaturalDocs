@@ -1,0 +1,44 @@
+TestClass
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+- Prototype Using Statement: Add System.Collections.Generic
+- Body Using Statement: Add System.Collections.Generic
+-----
+TestFunction
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Prototype Using Statement: Add System.Collections.Generic
+- Body Using Statement: Add System.Collections.Generic
+-----
+TestClass2
+- Language: C#
+- Declared Access Level: Internal
+- Effective Access Level: Internal
+- Prototype Using Statement: Add System.Collections.Generic
+- Body Using Statement: Add System.Collections.Generic
+- Body Using Statement: Replace Alias with System.Text
+-----
+TestFunction2
+- Language: C#
+- Declared Access Level: Private
+- Effective Access Level: Private
+- Prototype Using Statement: Add System.Collections.Generic
+- Prototype Using Statement: Replace Alias with System.Text
+- Body Using Statement: Add System.Collections.Generic
+- Body Using Statement: Replace Alias with System.Text
+-----
+TestClass3
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Prototype Using Statement: Add System.Collections.Generic
+- Body Using Statement: Add System.Collections.Generic
+-----
+TestFunction3
+- Language: C#
+- Declared Access Level: Public
+- Effective Access Level: Public
+- Prototype Using Statement: Add System.Collections.Generic
+- Body Using Statement: Add System.Collections.Generic

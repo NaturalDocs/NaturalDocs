@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
+using GregValure.NaturalDocs.Engine.Symbols;
 using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
@@ -67,9 +68,39 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 					output.AppendLine();
 					}
+
+				ShowUsingStatements(topics[i].PrototypeContext, "Prototype", output);
+				ShowUsingStatements(topics[i].BodyContext, "Body", output);
 				}
 
 			return output.ToString();
+			}
+
+		void ShowUsingStatements (ContextString context, string contextName, StringBuilder output)
+			{
+			if (context.HasUsingStatements)
+				{
+				var usingStatements = context.GetUsingStatements();
+
+				foreach (var usingStatement in usingStatements)
+					{
+					output.Append("- " + contextName + " Using Statement: ");
+
+					if (usingStatement.Type == UsingString.UsingType.AddPrefix)
+						{  
+						output.AppendLine("Add " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
+						}
+					else if (usingStatement.Type == UsingString.UsingType.ReplacePrefix)
+						{  
+						output.AppendLine("Replace " + usingStatement.PrefixToRemove.FormatWithSeparator('.') + 
+												  " with " + usingStatement.PrefixToAdd.FormatWithSeparator('.'));
+						}
+					else
+						{
+						output.AppendLine("Unknown using type " + usingStatement.Type);
+						}
+					}
+				}
 			}
 
 		}

@@ -175,7 +175,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 							foreach (var usingStatement in usingStatements)
 								{
 								output.Append(' ', indent);
-								output.Append("- Using Statement: ");
+								output.Append("- Child Using Statement: ");
 
 								if (usingStatement.Type == UsingString.UsingType.AddPrefix)
 									{  
