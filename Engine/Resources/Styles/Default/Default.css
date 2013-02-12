@@ -574,6 +574,7 @@ body.NDContentPage {
 
 	.NDPrototype {
 		font: 10pt `CodeFontFamily;
+		background-color: #FFFFFF;
 		border: 1px solid #808080;
 		margin: 0 5ex 1em 5ex;
 		padding: .75ex 1.25ex 1.25ex 1.25ex;
