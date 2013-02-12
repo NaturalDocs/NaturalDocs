@@ -62,6 +62,7 @@
     <Compile Include="Source\Languages\Parsers\CSharp.cs" />
     <Compile Include="Source\Languages\Element.cs" />
     <Compile Include="Source\Languages\ParentElement.cs" />
+    <Compile Include="Source\Output\Components\ClassView.cs" />
     <Compile Include="Source\ParsedClassPrototype.cs" />
     <Compile Include="Source\Links\UnresolvedTargetTopicID.cs" />
     <Compile Include="Source\CodeDB\Lock.cs" />
