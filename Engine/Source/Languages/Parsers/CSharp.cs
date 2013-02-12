@@ -1462,10 +1462,18 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				endOfIdentifier = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 
-				if (lookahead.Character != '.')
+				if (lookahead.Character == '.')
+					{  
+					lookahead.Next();  
+					}
+				else if (lookahead.MatchesAcrossTokens("::"))
+					{  
+					// :: can be used with "extern alias" identifiers.  See [9.3].
+					lookahead.Next(2);  
+					}
+				else
 					{  break;  }
 
-				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
 
