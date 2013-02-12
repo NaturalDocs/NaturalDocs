@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Comments
+ * Class: GregValure.NaturalDocs.Engine.Tests.CommentDetection
  * ____________________________________________________________________________
  * 
  */
@@ -22,8 +22,11 @@ using GregValure.NaturalDocs.Engine.Topics;
 namespace GregValure.NaturalDocs.Engine.Tests
 	{
 	[TestFixture]
-	public class Comments : Framework.SourceToCommentsAndTopics
+	public class CommentDetection : Framework.SourceToCommentsAndTopics
 		{
+
+		// Group: Tests
+		// __________________________________________________________________________
 
 		[Test]
 		public void Styles ()
@@ -31,11 +34,15 @@ namespace GregValure.NaturalDocs.Engine.Tests
 			TestFolder("Comments/Styles/Basic Language Support", "Shared ND Config/Basic Language Support");
 			}
 
-		[Test]
-		public void Encodings ()
+		[Test, Category("General")]
+		public void FileEncodings ()
 			{
-			TestFolder("Comments/Encodings", "Shared ND Config/Basic Language Support");
+			TestFolder("General/File Encodings", "Shared ND Config/Basic Language Support");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
 			{
