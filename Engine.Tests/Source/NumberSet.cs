@@ -49,11 +49,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class NumberSet : Framework.TextCommands
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("General")]
 		public void All ()
 			{
-			TestFolder("NumberSet");
+			TestFolder("General/NumberSet");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<string> commands)
 			{
