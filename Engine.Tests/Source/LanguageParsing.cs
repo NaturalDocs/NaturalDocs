@@ -22,10 +22,10 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class LanguageParsing : Framework.SourceToElements
 		{
 
-		[Test]
+		[Test, Category("C#")]
 		public void CSharp ()
 			{
-			TestFolder("Language Parsing/C#");
+			TestFolder("Languages/C#/Language Parsing");
 			}
 
 		}
