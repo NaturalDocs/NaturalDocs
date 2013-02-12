@@ -1,5 +1,6 @@
 [Root Element]
 - Child Language: C#
+- Maximum Effective Child Access Level: Public
 - Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
@@ -7,6 +8,7 @@
   TestClass
   [UntargetedAttribute] [UntargetedAttribute2("don't trip on this: )]", false)] class TestClass
   (line 7, char 1)
+  - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------

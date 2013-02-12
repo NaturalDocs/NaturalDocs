@@ -1,5 +1,6 @@
 [Root Element]
 - Child Language: C#
+- Maximum Effective Child Access Level: Public
 - Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
@@ -7,6 +8,7 @@
   Child
   public class Child : Parent
   (line 2, char 1)
+  - Child Language: C#
   - Maximum Effective Child Access Level: Public
   - Default Declared Child Access Level: Private
   - Child Scope: Child
@@ -15,6 +17,7 @@
   Child2
   public class Child2 : Parent2, Interface2, Interface3
   (line 6, char 1)
+  - Child Language: C#
   - Maximum Effective Child Access Level: Public
   - Default Declared Child Access Level: Private
   - Child Scope: Child2

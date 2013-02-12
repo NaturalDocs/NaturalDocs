@@ -1,5 +1,6 @@
 [Root Element]
 - Child Language: C#
+- Maximum Effective Child Access Level: Public
 - Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
@@ -7,11 +8,14 @@
   OutsideOfNamespace
   class OutsideOfNamespace
   (line 2, char 1)
+  - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: OutsideOfNamespace
   ---------------
   (no topic)
   (line 6, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
   - Default Declared Child Access Level: Internal
   - Child Scope: TestNamespace
     ---------------
@@ -19,6 +23,7 @@
     TestNamespace.InsideOfNamespace
     class InsideOfNamespace
     (line 8, char 2, child of line 6)
+    - Child Language: C#
     - Default Declared Child Access Level: Private
     - Child Scope: TestNamespace.InsideOfNamespace
       ---------------
@@ -26,11 +31,14 @@
       TestNamespace.InsideOfNamespace.InsideOfClass
       class InsideOfClass
       (line 10, char 3, child of TestNamespace.InsideOfNamespace)
+      - Child Language: C#
       - Default Declared Child Access Level: Private
       - Child Scope: TestNamespace.InsideOfNamespace.InsideOfClass
     ---------------
     (no topic)
     (line 15, char 2, child of line 6)
+    - Child Language: C#
+    - Maximum Effective Child Access Level: Public
     - Default Declared Child Access Level: Internal
     - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2
       ---------------
@@ -38,5 +46,6 @@
       TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces
       class InsideOfEmbeddedNamespaces
       (line 17, char 3, child of line 15)
+      - Child Language: C#
       - Default Declared Child Access Level: Private
       - Child Scope: TestNamespace.EmbeddedNamespace1.EmbeddedNamespace2.InsideOfEmbeddedNamespaces

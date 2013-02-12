@@ -1,5 +1,6 @@
 [Root Element]
 - Child Language: C#
+- Maximum Effective Child Access Level: Public
 - Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
@@ -7,6 +8,7 @@
   TestClass
   class TestClass
   (line 2, char 1)
+  - Child Language: C#
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
