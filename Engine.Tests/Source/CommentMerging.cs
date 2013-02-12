@@ -26,11 +26,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class CommentMerging : Framework.SourceToTopics
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("C#")]
 		public void All ()
 			{
-			TestFolder("Comment Merging");
+			TestFolder("Languages/C#/Comment Merging");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
