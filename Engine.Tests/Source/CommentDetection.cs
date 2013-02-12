@@ -34,6 +34,12 @@ namespace GregValure.NaturalDocs.Engine.Tests
 			TestFolder("Languages/Basic Support/Comment Detection", "Shared ND Config/Basic Language Support");
 			}
 
+		[Test, Category("C#")]
+		public void CSharp ()
+			{
+			TestFolder("Languages/C#/Comment Detection");
+			}
+
 		[Test, Category("General")]
 		public void FileEncodings ()
 			{

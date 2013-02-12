@@ -1,0 +1,45 @@
+- Plain comment, lines 2-5:
+
+  - Topic "Vertical line", line 3:
+    - <p>Body</p>
+
+- Plain comment, lines 7-8:
+
+  - Topic "Wide vertical line", line 7:
+    - <p>Body</p>
+
+- Plain comment, lines 10-16:
+
+  - Topic "Horizontal lines", line 10:
+    - <p>Body 1</p><p>Body 2</p><p>Body 3</p>
+
+- Plain comment, lines 18-24:
+
+  - Topic "Horizontal lines with enders", line 18:
+    - <p>Body</p><p>Above style is used in Cities3D</p>
+
+- Plain comment, lines 26-29:
+
+  - Topic "Full box", line 27:
+    - <p>Body</p>
+
+- Plain comment, lines 31-35:
+
+  - Topic "Full box with corner symbols", line 32:
+    - <p>Body</p>
+
+- Plain comment, lines 37-41:
+
+  - Topic "Full box with corner symbols 2", line 38:
+    - <p>Body</p>
+
+- Plain comment, lines 43-47:
+
+  - Topic "Full box with corner symbols 3", line 44:
+    - <p>Body</p>
+
+- Plain comment, lines 49-56:
+
+  - Topic "Partial Box", line 51:
+    - <p>Body</p>
+
