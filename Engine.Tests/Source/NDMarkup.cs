@@ -26,11 +26,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class NDMarkup : Framework.SourceToTopics
 		{
 
-		[Test]
-		public void All ()
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("Natural Docs Comments")]
+		public void NaturalDocs ()
 			{
-			TestFolder("NDMarkup");
+			TestFolder("Comments/Natural Docs");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
