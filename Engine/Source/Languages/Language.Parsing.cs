@@ -241,6 +241,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			ApplyTags(elements);
 			ApplyClassStrings(elements);
+			ApplyUsingStatements(elements);
 			ApplyContexts(elements);
 
 			if (cancelDelegate())
@@ -2564,7 +2565,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* Function: GenerateRemainingSymbols
 		 * 
 		 * Finds any <Topics> that don't have their symbols set and generates them.  It will also generate <ClassStrings> and
-		 * <ContextStrings> for them when appropriate.
+		 * <ParentElement.ChildContextStrings> when appropriate.
 		 * 
 		 * Requirements:
 		 * 
@@ -2645,7 +2646,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						}
 
 
-					// Set ParentElement.ChildContextString if appropriate
+					// Set ParentElement.ChildContextString if appropriate.  We don't want to copy using statements from parents
+					// though, that will be handled by ApplyUsingStatements().
 
 					if (element is ParentElement && topic.IsList == false)
 						{
@@ -2656,27 +2658,55 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						if (topicType.Scope == TopicType.ScopeValue.Start ||
 						    (topicType.Flags.Enum == true && enumValue == EnumValues.UnderType))
 							{
-							// Copy the parent context in order to get the using statements, then overwrite the scope.
-							ContextString newContext = parentContext;
+							ContextString newContext = new ContextString();
 							newContext.Scope = topic.Symbol;
 							(element as ParentElement).ChildContextString = newContext;
 							}
 						else if (topicType.Scope == TopicType.ScopeValue.End ||
-									  (topicType.Flags.Enum == true && enumValue == EnumValues.Global))
+								  (topicType.Flags.Enum == true && enumValue == EnumValues.Global))
 							{
-							// Copy the parent context in order to get the using statements, then overwrite the scope.
-							ContextString newContext = parentContext;
-							newContext.Scope = new SymbolString();
-							(element as ParentElement).ChildContextString = newContext;
+							(element as ParentElement).ChildContextString = new ContextString();
 							}
 						else if (topicType.Flags.Enum == true && enumValue == EnumValues.UnderParent)
 							{
-							// Use the parent context so we get both the scope and the using statements.
-							(element as ParentElement).ChildContextString = parentContext;
+							ContextString newContext = new ContextString();
+							newContext.Scope = parentContext.Scope;
+							(element as ParentElement).ChildContextString = newContext;
 							}
 						// otherwise don't set ChildContextString
 						}
 					}
+				}
+			}
+
+
+		/* Function: ApplyUsingStatements
+		 * Fills in each <ParentElement.ChildContextStrings's> using statements by combining them with every parents' statements.
+		 */
+		protected void ApplyUsingStatements (List<Element> elements)
+			{
+			for (int i = 0; i < elements.Count; i++)
+				{
+				if ((elements[i] is ParentElement) == false)
+					{  continue;  }
+
+				ParentElement elementAsParent = (ParentElement)elements[i];
+
+				if (elementAsParent.ChildContextStringSet == false)
+					{  continue;  }
+
+				int parentIndex = FindElementParent(elements, i);
+				while (parentIndex != -1 && (elements[parentIndex] as ParentElement).ChildContextStringSet == false)
+					{  parentIndex = FindElementParent(elements, parentIndex);  }
+
+				if (parentIndex == -1)
+					{  continue;  }
+
+				ParentElement parentElement = (ParentElement)elements[parentIndex];
+				
+				ContextString temp = elementAsParent.ChildContextString;
+				temp.InheritUsingStatementsFrom(parentElement.ChildContextString);
+				elementAsParent.ChildContextString = temp;
 				}
 			}
 

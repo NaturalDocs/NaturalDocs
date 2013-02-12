@@ -88,6 +88,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			{
 			List<Element> elements = new List<Element>();
 
+			// Having a root element is important for setting the default child access level and to provide a target for top-level
+			// using statements.
 			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InCode);
 			rootElement.IsRootElement = true;
 			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
@@ -128,6 +130,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipWhitespace(ref iterator) ||
 						  TryToSkipPreprocessingDirective(ref iterator) ||
 
+						  TryToGetUsingStatement(ref iterator, elements, scope) ||
 						  TryToGetNamespace(ref iterator, elements, scope) ||
 						  TryToGetClass(ref iterator, elements, scope) ||
 						  TryToGetFunction(ref iterator, elements, scope) ||
@@ -153,6 +156,85 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
+
+
+		/* Function: TryToGetUsingStatement
+		 * Attempts to retrieve a using statement.  If it was successful it will move the iterator past it, add it to the most recent 
+		 * <ParentElement>, and return true.  If it was not it will leave the iterator alone and return false;
+		 */
+		protected bool TryToGetUsingStatement (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+			{
+			// See [9.3] and [B.2.6]
+
+			if (iterator.MatchesToken("using") == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			TryToSkipWhitespace(ref lookahead);
+
+			string firstIdentifier = TryToGetIdentifier(ref lookahead);
+			if (firstIdentifier == null)
+				{  return false;  }
+
+			TryToSkipWhitespace(ref lookahead);
+
+			UsingString usingString;
+
+			if (lookahead.Character == '=')
+				{
+				lookahead.Next();
+
+				TryToSkipWhitespace(ref lookahead);
+
+				string secondIdentifier = TryToGetIdentifier(ref lookahead);
+				if (secondIdentifier == null)
+					{  return false;  }
+
+				usingString = UsingString.FromParameters(UsingString.UsingType.ReplacePrefix,
+																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(secondIdentifier),
+																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
+				}
+			else
+				{
+				usingString = UsingString.FromParameters(UsingString.UsingType.AddPrefix,
+																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
+				}
+
+			// Find the parent.  We can't use FindElementParent() because ending line/char numbers haven't been set yet.  Instead we'll
+			// find it manually, treating -1 as meaning it contains the current position.
+
+			int parentIndex = -1;
+				
+			for (int i = elements.Count - 1; i >= 0; i--)
+				{
+				if (elements[i] is ParentElement)
+					{
+					ParentElement parentElement = (ParentElement)elements[i];
+
+					if (parentElement.Position <= iterator.Position &&
+						(parentElement.EndingLineNumber == -1 ||
+						 parentElement.EndingPosition > iterator.Position))
+						{
+						parentIndex = i;
+						break;
+						}
+					}
+				}
+
+			if (parentIndex != -1)
+				{
+				ParentElement parentElement = (ParentElement)elements[parentIndex];
+
+				ContextString tempContext = parentElement.ChildContextString;
+				tempContext.AddUsingStatement(usingString);
+				parentElement.ChildContextString = tempContext;
+				}
+
+			iterator = lookahead;
+			return true;
+			}
 
 
 		/* Function: TryToGetNamespace

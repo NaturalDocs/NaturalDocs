@@ -735,6 +735,18 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				}
 			}
 			
+		/* Property: Position
+		 * An integer that combines <LineNumber> and <CharNumber> into one value so that they can be compared more
+		 * easily.
+		 */
+		public ulong Position
+			{
+			get
+				{
+				return ((ulong)lineNumber << 32) | (uint)CharNumber;
+				}
+			}
+
 		/* Property: RawTextIndex
 		 * The offset of the current token into <Tokenizer.RawText>.  Will be zero if it went past the beginning, or the index 
 		 * one past the last character if it went past the end.

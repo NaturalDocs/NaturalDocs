@@ -107,6 +107,38 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
+		/* Function: InheritUsingStatementsFrom
+		 * Adds all the "using" statements from the passed context to this one _before_ the existing ones.  It will not check for 
+		 * or remove duplicates.
+		 */
+		public void InheritUsingStatementsFrom (ContextString other)
+			{
+			if (other.HasUsingStatements == false)
+				{  return;  }
+
+			string otherUsingStatements;
+
+			if (other.contextString[0] == SeparatorChar)
+				{  otherUsingStatements = other.contextString;  }
+			else
+				{  otherUsingStatements = other.contextString.Substring( other.contextString.IndexOf(SeparatorChar) );  }
+
+			if (contextString == null)
+				{  contextString = otherUsingStatements;  }
+			else if (contextString[0] == SeparatorChar)
+				{  contextString = otherUsingStatements + contextString;  }
+			else
+				{
+				int firstSeparator = contextString.IndexOf(SeparatorChar);
+
+				if (firstSeparator == -1)
+					{  contextString += otherUsingStatements;  }
+				else
+					{  contextString = contextString.Substring(0, firstSeparator) + otherUsingStatements + contextString.Substring(firstSeparator);  }
+				}
+			}
+
+
 		/* Function: ClearUsingStatements
 		 * Removes all "using" statements from the context.
 		 */
@@ -259,6 +291,18 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					{  return true;  }
 				else
 					{  return false;  }
+				}
+			}
+
+
+		/* Property: HasUsingStatements
+		 * Whether the context contains using statements.
+		 */
+		public bool HasUsingStatements
+			{
+			get
+				{
+				return (contextString != null && contextString.IndexOf(SeparatorChar) != -1);
 				}
 			}
 
