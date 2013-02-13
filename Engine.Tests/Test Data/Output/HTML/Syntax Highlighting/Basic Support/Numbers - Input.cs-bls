@@ -53,4 +53,39 @@
 
 		(end)
 
+
+	Topic: Traps
+
+		The fact that the hex value ends in E shouldn't make it think the following token is part of
+		the number as an exponent.
+
+		(code)
+
+			int x = 0x000E+a;
+
+			int x = 0x000e-1;
+
+		(end)
+
+
+		The minus sign should be part of the number for -1 but not for x-1.
+
+		(code)
+
+			int x = -1;
+
+			int x = y-1;
+
+			int x = y -1;
+
+			int x = 1-1;
+
+			int x = 1 -1;
+
+			int x = (-1);
+
+			int x = 1 + -1;
+
+		(end)
+
 */
