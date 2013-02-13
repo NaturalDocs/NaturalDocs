@@ -154,6 +154,117 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: SyntaxHighlight
+		 */
+		override public void SyntaxHighlight (Tokenizer source)
+			{
+			TokenIterator iterator = source.FirstToken;
+
+			TokenIterator lastCodeToken = iterator.Tokenizer.LastToken;  // Default to out of bounds
+
+			while (iterator.IsInBounds)
+				{
+				TokenIterator originalPosition = iterator;
+
+				if (TryToSkipPreprocessingDirective(ref iterator))
+				   {
+				   source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.PreprocessingDirective);
+				   }
+				else if (TryToSkipComment(ref iterator))
+					{
+					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
+					}
+				else if (TryToSkipString(ref iterator))
+					{
+					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
+
+					lastCodeToken = iterator;
+					lastCodeToken.Previous();
+					}
+				else if (TryToSkipNumber(ref iterator))  // The default implementation is fine.
+					{
+					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Number);
+
+					lastCodeToken = iterator;
+					lastCodeToken.Previous();
+					}
+
+				// Determine if it's an attribute or an array bracket.  TryToSkipAttribute() won't check the context.
+				else if (iterator.Character == '[')
+				   {
+					bool isAttribute;
+
+					if (lastCodeToken.FundamentalType == FundamentalType.Null)
+						{  isAttribute = true;  }
+					else if (lastCodeToken.FundamentalType == FundamentalType.Text || lastCodeToken.Character == '_')
+						{  isAttribute = false;  }
+					else if (lastCodeToken.FundamentalType == FundamentalType.Symbol)
+						{
+						// If it follows any symbol other than ], it's an attribute.
+						// If it follows a ], copy what that symbol was already marked as since both arrays and attributes can
+						// be chained.  int[][] and [Test][Category("x")].
+						isAttribute = (lastCodeToken.Character != ']' || 
+												  lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
+						}
+					else
+						{  isAttribute = false;  }
+
+					if (isAttribute && TryToSkipAttribute(ref iterator))
+						{
+						source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.CSharpAttribute);
+						}
+					else
+						{
+						lastCodeToken = iterator;
+						iterator.Next();
+						}
+				   }
+
+				// Skip @ identifiers since things like @if shouldn't be highlighted as keywords.  We already covered @ strings above.
+				else if (iterator.Character == '@')
+					{
+					do
+						{  iterator.Next();  }
+					while (iterator.FundamentalType == FundamentalType.Text ||
+								iterator.Character == '_');
+
+					lastCodeToken = iterator;
+					lastCodeToken.Previous();
+					}
+
+				// Text.  Check for keywords.
+				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
+					{
+					TokenIterator endOfIdentifier = iterator;
+						
+					do
+						{  endOfIdentifier.Next();  }
+					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+							endOfIdentifier.Character == '_');
+
+					string identifier = source.TextBetween(iterator, endOfIdentifier);
+
+					if (Keywords.Contains(identifier))
+						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
+
+					iterator = endOfIdentifier;
+
+					lastCodeToken = iterator;
+					lastCodeToken.Previous();
+					}
+
+				else
+					{  
+					if (iterator.FundamentalType != FundamentalType.Whitespace &&
+						 iterator.FundamentalType != FundamentalType.LineBreak)
+						{  lastCodeToken = iterator;  }
+
+					iterator.Next();  
+					}
+				}
+			}
+
+
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
