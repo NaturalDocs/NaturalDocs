@@ -3553,9 +3553,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			TokenIterator lookahead = iterator;
 			bool passedPeriod = false;
 			bool lastCharWasE = false;
+			bool isHex = false;
 
 			if (lookahead.Character == '-')
-				{  lookahead.Next();  }
+				{  
+				// Distinguish between -1 and x-1
+
+				TokenIterator lookbehind = iterator;
+				lookbehind.Previous();
+
+				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+				if (lookbehind.FundamentalType == FundamentalType.Text || lookbehind.Character == '_')
+					{  return false;  }
+
+				lookahead.Next();  
+				}
 
 			if (lookahead.Character == '.')
 				{  
@@ -3564,7 +3577,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			if (lookahead.Character >= '0' && lookahead.Character <= '9')
-				{  
+				{
+				if (lookahead.Character == '0' && lookahead.RawTextLength > 1)
+					{
+					char secondChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex + 1 ];
+					isHex = (secondChar == 'x' || secondChar == 'X');
+					}
+
 				lookahead.Next();
 
 				char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
@@ -3592,7 +3611,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  lookahead = iterator;  }
 				}
 
-			if (lastCharWasE && (lookahead.Character == '-' || lookahead.Character == '+'))
+			if (lastCharWasE && !isHex && (lookahead.Character == '-' || lookahead.Character == '+'))
 				{
 				lookahead.Next();
 
