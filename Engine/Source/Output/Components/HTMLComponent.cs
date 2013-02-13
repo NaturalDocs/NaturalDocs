@@ -123,6 +123,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						case SyntaxHighlightingType.String:
 							output.Append("<span class=\"SHString\">");
 							break;
+						case SyntaxHighlightingType.PreprocessingDirective:
+							output.Append("<span class=\"SHPreprocessingDirective\">");
+							break;
+						case SyntaxHighlightingType.CSharpAttribute:
+							output.Append("<span class=\"SHCSharpAttribute\">");
+							break;
+						case SyntaxHighlightingType.Null:
+							break;
+						default:
+							// Add this just in case there's an unaccounted for type in the future.  This prevents the spans from
+							// being unbalanced until we handle it.
+							output.Append("<span>");
+							break;
 						}
 
 					output.EntityEncodeAndAppend(iterator.Tokenizer.TextBetween(startStretch, endStretch));

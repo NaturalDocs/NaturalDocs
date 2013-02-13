@@ -734,6 +734,13 @@ body.NDContentPage {
 .SHString {
 	color: #000088;
 	}
+.SHPreprocessingDirective {
+	color: #000000;
+	font-weight: bold;
+	}
+.SHCSharpAttribute {
+	color: #808000;
+	}
 
 
 

@@ -64,11 +64,14 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * Number - A numeric constant, like "12", "0xFF", or "-1.5".  The format doesn't matter.
 	 * String - A string.  Also covers char constants for languages that have them.
 	 * Comment - A comment, both symols and content.
+	 * PreprocessingDirective - A preprocessing directive such as "#define x".
+	 * CSharpAttribute - A C# attribute such as "[Flags]".
 	 */
 	public enum SyntaxHighlightingType :  byte
 		{
 		Null = 0,
-		Keyword, Number, String, Comment
+		Keyword, Number, String, Comment,
+		PreprocessingDirective, CSharpAttribute
 		}
 
 
