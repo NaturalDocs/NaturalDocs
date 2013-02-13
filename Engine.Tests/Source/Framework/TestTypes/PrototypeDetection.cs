@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.PrototypeDetection
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.PrototypeDetection
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can detect prototypes correctly.
@@ -20,24 +20,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class PrototypeDetection : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Basic Language Support")]
-		public void BasicSupport ()
-			{
-			TestFolder("Languages/Basic Support/Prototype Detection", "Shared ND Config/Basic Language Support");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

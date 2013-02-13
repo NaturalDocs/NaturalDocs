@@ -124,7 +124,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 								{  throw new Exception("Could not get file info of " + file);  }
 
 							Engine.Output.Components.HTMLTopicPages.File fileTopicPage = 
-								new Output.Components.HTMLTopicPages.File(TestEngine.HTMLBuilder, fileInfo.ID);
+								new Engine.Output.Components.HTMLTopicPages.File(TestEngine.HTMLBuilder, fileInfo.ID);
 
 							Path htmlFile = fileTopicPage.OutputFile;
 

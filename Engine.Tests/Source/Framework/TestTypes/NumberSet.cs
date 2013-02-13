@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.NumberSet
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.NumberSet
  * ____________________________________________________________________________
  * 
  * A class to test <Engine.IDObjects.NumberSet>.
@@ -43,24 +43,10 @@ using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Tests.Framework;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class NumberSet : Framework.TextCommands
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("General")]
-		public void All ()
-			{
-			TestFolder("General/NumberSet");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<string> commands)
 			{

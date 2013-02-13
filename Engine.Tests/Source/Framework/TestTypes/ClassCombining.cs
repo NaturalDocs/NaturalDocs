@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.ClassCombining
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.ClassCombining
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can merge topics from multiple files into a single coherent list
@@ -21,24 +21,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class ClassCombining : Framework.SourceToClassTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("General")]
-		public void All ()
-			{
-			TestFolder("General/Class Combining");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

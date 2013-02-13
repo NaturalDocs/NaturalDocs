@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Symbols
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.Symbols
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can generate symbols correctly.
@@ -21,24 +21,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class Symbols : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("General")]
-		public void All ()
-			{
-			TestFolder("General/Symbols", "Shared ND Config/Basic Language Support");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

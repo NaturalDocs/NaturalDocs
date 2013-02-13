@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.ClassPrototypeParsing
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.ClassPrototypeParsing
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can parse class prototypes correctly.
@@ -21,24 +21,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class ClassPrototypeParsing : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Basic Language Support")]
-		public void BasicSupport ()
-			{
-			TestFolder("Languages/Basic Support/Class Prototype Parsing", "Shared ND Config/Basic Language Support");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

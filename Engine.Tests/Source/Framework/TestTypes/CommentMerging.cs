@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.CommentMerging
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.CommentMerging
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can merge comment topics and code topics correctly.
@@ -20,24 +20,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class CommentMerging : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("C#")]
-		public void All ()
-			{
-			TestFolder("Languages/C#/Comment Merging");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

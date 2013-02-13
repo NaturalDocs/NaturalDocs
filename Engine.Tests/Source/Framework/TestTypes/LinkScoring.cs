@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.LinkScoring
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkScoring
  * ____________________________________________________________________________
  * 
  * A class to test <Engine.CodeDB.Manager.ScoreLink>.
@@ -73,25 +73,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class LinkScoring : Framework.TextCommands
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("General")]
-		public void All ()
-			{
-			TestFolder("General/Link Scoring");
-			TestFolder("General/Link Scoring/Parameters");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<string> commands)
 			{

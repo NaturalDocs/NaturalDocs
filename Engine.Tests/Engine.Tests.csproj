@@ -47,30 +47,49 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\ClassCombining.cs" />
-    <Compile Include="Source\CommentDetection.cs" />
-    <Compile Include="Source\ClassPrototypeParsing.cs" />
-    <Compile Include="Source\AttributeInheritance.cs" />
-    <Compile Include="Source\CommentMerging.cs" />
+    <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
+    <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
+    <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
+    <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
+    <Compile Include="Source\Framework\TestTypes\ClassPrototypeParsing.cs" />
+    <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
+    <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
-    <Compile Include="Source\LanguageParsing.cs" />
+    <Compile Include="Source\General\LinkScoring.cs" />
+    <Compile Include="Source\General\NumberSet.cs" />
+    <Compile Include="Source\General\Symbols.cs" />
+    <Compile Include="Source\Languages\Basic Support\PrototypeDetection.cs" />
+    <Compile Include="Source\Languages\Basic Support\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\C#\LanguageParsing.cs" />
     <Compile Include="Source\Framework\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
-    <Compile Include="Source\LinkScoring.cs" />
-    <Compile Include="Source\Symbols.cs" />
-    <Compile Include="Source\Summaries.cs" />
+    <Compile Include="Source\Framework\TestTypes\LinkScoring.cs" />
+    <Compile Include="Source\Framework\TestTypes\Symbols.cs" />
+    <Compile Include="Source\Framework\TestTypes\Summaries.cs" />
     <Compile Include="Source\Framework\TextCommands.cs" />
-    <Compile Include="Source\NDMarkup.cs" />
-    <Compile Include="Source\NumberSet.cs" />
-    <Compile Include="Source\PrototypeParsing.cs" />
+    <Compile Include="Source\Framework\TestTypes\NDMarkup.cs" />
+    <Compile Include="Source\Framework\TestTypes\NumberSet.cs" />
+    <Compile Include="Source\Framework\TestTypes\PrototypeParsing.cs" />
     <Compile Include="Source\Framework\SourceToCommentsAndTopics.cs" />
-    <Compile Include="Source\HTMLGeneration.cs" />
     <Compile Include="Source\Framework\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
     <Compile Include="Source\Framework\TestEngine.cs" />
     <Compile Include="Source\Framework\SourceToTopics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Source\PrototypeDetection.cs" />
+    <Compile Include="Source\Framework\TestTypes\PrototypeDetection.cs" />
+    <Compile Include="Source\General\ClassCombining.cs" />
+    <Compile Include="Source\General\FileEncodings.cs" />
+    <Compile Include="Source\Languages\Basic Support\AttributeInheritance.cs" />
+    <Compile Include="Source\Languages\Basic Support\ClassPrototypeParsing.cs" />
+    <Compile Include="Source\Languages\Basic Support\CommentDetection.cs" />
+    <Compile Include="Source\Languages\C#\AttributeInheritance.cs" />
+    <Compile Include="Source\Languages\C#\CommentDetection.cs" />
+    <Compile Include="Source\Languages\C#\CommentMerging.cs" />
+    <Compile Include="Source\Output\HTML\Anchors.cs" />
+    <Compile Include="Source\Output\HTML\CodeSections.cs" />
+    <Compile Include="Source\Output\HTML\ParameterLists.cs" />
+    <Compile Include="Source\Output\HTML\Prototypes\BasicLanguageSupport.cs" />
+    <Compile Include="Source\Output\HTML\TopicTitles.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -79,6 +98,7 @@
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(ProjectDir)..\Engine\Build Scripts\PostBuild.js" "$(SolutionDir)Components\" "$(TargetDir)"</PostBuildEvent>

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.CommentDetection
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.CommentDetection
  * ____________________________________________________________________________
  * 
  */
@@ -19,36 +19,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class CommentDetection : Framework.SourceToCommentsAndTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Basic Language Support")]
-		public void BasicSupport ()
-			{
-			TestFolder("Languages/Basic Support/Comment Detection", "Shared ND Config/Basic Language Support");
-			}
-
-		[Test, Category("C#")]
-		public void CSharp ()
-			{
-			TestFolder("Languages/C#/Comment Detection");
-			}
-
-		[Test, Category("General")]
-		public void FileEncodings ()
-			{
-			TestFolder("General/File Encodings", "Shared ND Config/Basic Language Support");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<PossibleDocumentationComment> comments, IList<Topic> topics)
 			{

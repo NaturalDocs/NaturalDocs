@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.NDMarkup
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.NDMarkup
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can convert comments to <NDMarkup> correctly.
@@ -20,24 +20,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class NDMarkup : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Natural Docs Comments")]
-		public void NaturalDocs ()
-			{
-			TestFolder("Comments/Natural Docs/Parsing");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

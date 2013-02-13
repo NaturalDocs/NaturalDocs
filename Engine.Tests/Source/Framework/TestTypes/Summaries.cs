@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Summaries
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.Summaries
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs can extract summaries from comments correctly.
@@ -20,24 +20,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class Summaries : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Natural Docs Comments")]
-		public void All ()
-			{
-			TestFolder("Comments/Natural Docs/Summaries");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{

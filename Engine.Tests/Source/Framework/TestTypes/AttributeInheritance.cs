@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.AttributeInheritance
+ * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.AttributeInheritance
  * ____________________________________________________________________________
  * 
  * File-based tests to make sure Natural Docs topics inherit certain attributes correctly.
@@ -21,30 +21,10 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
-	[TestFixture]
 	public class AttributeInheritance : Framework.SourceToTopics
 		{
-
-		// Group: Tests
-		// __________________________________________________________________________
-
-		[Test, Category("Basic Language Support")]
-		public void BasicSupport ()
-			{
-			TestFolder("Languages/Basic Support/Attribute Inheritance", "Shared ND Config/Tags");
-			}
-
-		[Test, Category("C#")]
-		public void CSharp ()
-			{
-			TestFolder("Languages/C#/Attribute Inheritance", "Shared ND Config/Tags");
-			}
-
-
-		// Group: Output
-		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
