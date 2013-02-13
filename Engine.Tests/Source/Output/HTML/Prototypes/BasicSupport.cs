@@ -12,7 +12,7 @@ using GregValure.NaturalDocs.Engine.Tests.Framework;
 namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 	{
 	[TestFixture]
-	public class BasicLanguageSupport : Framework.SourceToHTML
+	public class BasicSupport : Framework.SourceToHTML
 		{
 
 		[Test]

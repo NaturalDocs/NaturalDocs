@@ -88,7 +88,7 @@
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\CodeSections.cs" />
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
-    <Compile Include="Source\Output\HTML\Prototypes\BasicLanguageSupport.cs" />
+    <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
   </ItemGroup>
