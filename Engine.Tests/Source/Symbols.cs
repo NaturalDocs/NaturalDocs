@@ -27,11 +27,18 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class Symbols : Framework.SourceToTopics
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("General")]
 		public void All ()
 			{
-			TestFolder("Symbols", "Shared ND Config/Basic Language Support");
+			TestFolder("General/Symbols", "Shared ND Config/Basic Language Support");
 			}
+
+
+		// Group: Output
+		// __________________________________________________________________________
 
 		public override string OutputOf (IList<Topic> topics)
 			{
