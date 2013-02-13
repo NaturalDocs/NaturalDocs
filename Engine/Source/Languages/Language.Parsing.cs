@@ -3542,6 +3542,73 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: TryToSkipNumber
+		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
+		 */
+		protected bool TryToSkipNumber (ref TokenIterator iterator)
+			{
+			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || iterator.Character == '-' || iterator.Character == '.') == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			bool passedPeriod = false;
+			bool lastCharWasE = false;
+
+			if (lookahead.Character == '-')
+				{  lookahead.Next();  }
+
+			if (lookahead.Character == '.')
+				{  
+				lookahead.Next();  
+				passedPeriod = true;
+				}
+
+			if (lookahead.Character >= '0' && lookahead.Character <= '9')
+				{  
+				lookahead.Next();
+
+				char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
+				lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+				}
+			else
+				{  return false;  }
+
+			// We're definitely on a number, so apply the position in case the later lookaheads fail.
+			iterator = lookahead;
+
+			if (lookahead.Character == '.' && !passedPeriod)
+				{
+				lookahead.Next();
+
+				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+					{
+					lookahead.Next();
+					passedPeriod = true;
+
+					char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
+					lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+					}
+				else
+					{  lookahead = iterator;  }
+				}
+
+			if (lastCharWasE && (lookahead.Character == '-' || lookahead.Character == '+'))
+				{
+				lookahead.Next();
+
+				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+					{
+					lookahead.Next();
+					iterator = lookahead;
+					}
+				else
+					{  lookahead = iterator;  }
+				}
+
+			return true;
+			}
+
+
 		/* Function: TryToSkipBlock
 		 * 
 		 * If the iterator is on an opening symbol, moves it past the entire block and returns true.  This takes care of
@@ -3848,51 +3915,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{
 					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
 					}
+				else if (TryToSkipNumber(ref iterator))
+					{
+					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Number);
+					}
 				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 					{
-					if (iterator.Character >= '0' && iterator.Character <= '9')
-						{
-						iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
-						iterator.Next();
-
-						if (iterator.Character == '.')
-							{
-							iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
-							iterator.Next();
-
-							if (iterator.Character >= '0' && iterator.Character <= '9')
-								{
-								iterator.SyntaxHighlightingType = SyntaxHighlightingType.Number;
-								iterator.Next();
-								}
-							}
-						else
-							{
-							TokenIterator prev = originalPosition;
-							prev.Previous();
-
-							// For contants like .25 instead of 0.25.
-							if (prev.Character == '.')
-								{  prev.SyntaxHighlightingType = SyntaxHighlightingType.Number;  }
-							}
-						}
-
-					else // not digits
-						{
-						TokenIterator endOfIdentifier = iterator;
+					TokenIterator endOfIdentifier = iterator;
 						
-						do
-							{  endOfIdentifier.Next();  }
-						while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-									endOfIdentifier.Character == '_');
+					do
+						{  endOfIdentifier.Next();  }
+					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
+								endOfIdentifier.Character == '_');
 
-						string identifier = source.TextBetween(iterator, endOfIdentifier);
+					string identifier = source.TextBetween(iterator, endOfIdentifier);
 
-						if (keywords.Contains(identifier))
-							{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
+					if (keywords.Contains(identifier))
+						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
 
-						iterator = endOfIdentifier;
-						}
+					iterator = endOfIdentifier;
 					}
 				else
 					{  iterator.Next();  }
