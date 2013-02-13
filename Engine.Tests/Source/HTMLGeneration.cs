@@ -22,34 +22,37 @@ namespace GregValure.NaturalDocs.Engine.Tests
 	public class HTMLGeneration : Framework.SourceToHTML
 		{
 
-		[Test]
+		// Group: Tests
+		// __________________________________________________________________________
+
+		[Test, Category("HTML")]
 		public void TopicTitles ()
 			{
-			TestFolder("HTML Generation/Topic Titles", null, "div", "CTitle");
+			TestFolder("Output/HTML/Topic Titles", null, "div", "CTitle");
 			}
 
-		[Test]
+		[Test, Category("HTML")]
 		public void Prototypes ()
 			{
-			TestFolder("HTML Generation/Prototypes/Basic Language Support", "Shared ND Config/Basic Language Support", "div", "NDPrototype", true);
+			TestFolder("Output/HTML/Prototypes/Basic Support", "Shared ND Config/Basic Language Support", "div", "NDPrototype", true);
 			}
 
-		[Test]
+		[Test, Category("HTML")]
 		public void ParameterLists ()
 			{
-			TestFolder("HTML Generation/Parameter Lists", null, "div", "CBody");
+			TestFolder("Output/HTML/Parameter Lists", null, "div", "CBody");
 			}
 
-		[Test]
+		[Test, Category("HTML")]
 		public void CodeSections ()
 			{
-			TestFolder("HTML Generation/Code Sections", null, "pre");
+			TestFolder("Output/HTML/Code Sections", null, "pre");
 			}
 
-		[Test]
+		[Test, Category("HTML")]
 		public void Anchors ()
 			{
-			TestFolder("HTML Generation/Anchors", null, "a");
+			TestFolder("Output/HTML/Anchors", null, "a");
 			}
 
 		}
