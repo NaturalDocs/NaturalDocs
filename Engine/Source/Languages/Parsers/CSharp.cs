@@ -1834,12 +1834,17 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (lookbehind.IsInBounds && lookbehind.FundamentalType != FundamentalType.LineBreak)
 				{  return false;  }
 
-			// Technically only the enumerated preprocessing keywords are valid here, but we'll be tolerant and accept anything in the format. 
+			// Technically only the enumerated preprocessing keywords are valid here, but we'll be tolerant and accept anything in the format.
+			// Line comments (and only line comments) are allowed after directives.
 			do
 				{  iterator.Next();  }
-			while (iterator.IsInBounds && iterator.FundamentalType != FundamentalType.LineBreak);
+			while (iterator.IsInBounds && 
+						 iterator.FundamentalType != FundamentalType.LineBreak &&
+						 iterator.MatchesAcrossTokens("//") == false);
 
-			iterator.Next();
+			if (iterator.FundamentalType == FundamentalType.LineBreak)
+				{  iterator.Next();  }
+
 			return true;
 			}
 
