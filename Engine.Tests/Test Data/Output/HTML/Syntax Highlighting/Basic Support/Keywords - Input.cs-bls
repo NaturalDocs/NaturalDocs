@@ -1,0 +1,17 @@
+
+/*
+	Topic: Keywords
+
+		(code)
+
+		bool Function (string x)
+			{
+			if (x == null)
+				{  return true;  }
+			else
+				{  return false;  }
+			}
+
+		(end)
+
+*/
