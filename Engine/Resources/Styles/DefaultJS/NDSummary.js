@@ -409,11 +409,15 @@ var NDSummary = new function ()
 			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);
 			}
 
+		var footer = document.getElementById("NDFooter");
+
 		// Make sure the bottom doesn't go off the visible page.  We do this in a separate step because
-		// setting the width may have changed the height due to wrapping.
-		if (y + this.toolTipHolder.offsetHeight > NDCore.WindowClientHeight())
+		// setting the width may have changed the height due to wrapping.  We include the footer height not
+		// because we care about covering the footer, but because that serves as a good estimate for the
+		// URL popup you get in Firefox and Chrome.
+		if (y + this.toolTipHolder.offsetHeight + footer.offsetHeight + 2 > NDCore.WindowClientHeight())
 			{
-			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight;
+			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight - footer.offsetHeight - 2;
 
 			if (newY < 0)
 				{  newY = 0;  }
