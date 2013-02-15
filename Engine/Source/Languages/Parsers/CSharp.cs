@@ -265,6 +265,15 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: IsBuiltInType
+		 * Returns whether the type string is a built-in type such as "int" as opposed to a user-defined type.
+		 */
+		override public bool IsBuiltInType (string type)
+			{
+			return BuiltInTypes.Contains(type);
+			}
+
+
 
 		// Group: Parsing Functions
 		// __________________________________________________________________________
@@ -2129,5 +2138,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern"
 			};
 
+		/* var: BuiltInTypes
+		 */
+		static protected StringSet BuiltInTypes = new StringSet(false, false, new string[] {
+
+			"byte", "sbyte", "int", "uint", "short", "ushort", "long", "ulong", "float", "double", "decimal",
+			"char", "string", "bool", "void", "object", "dynamic"
+
+			});
 		}
 	}
