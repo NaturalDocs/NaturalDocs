@@ -32,10 +32,12 @@ Table: Block Types
 # The second word for lines like "(start code)" which have no special attributes.
 # Can be either Generic, Code, or Prototype
 
+	text -> generic
+	plain text -> generic
 	diagram -> generic
-	example -> generic
 	table -> generic
 	code -> code
+	example -> code
 	prototype -> prototype
 	
 	
