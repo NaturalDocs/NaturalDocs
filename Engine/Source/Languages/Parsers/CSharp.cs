@@ -166,25 +166,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				TokenIterator originalPosition = iterator;
 
-				if (TryToSkipPreprocessingDirective(ref iterator))
-				   {
-				   source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.PreprocessingDirective);
-				   }
-				else if (TryToSkipComment(ref iterator))
+				if (TryToSkipPreprocessingDirective(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight))
 					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
 					}
-				else if (TryToSkipString(ref iterator))
+				else if (TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+						  TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))  // The default implementation is fine.
 					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
-
-					lastCodeToken = iterator;
-					lastCodeToken.Previous();
-					}
-				else if (TryToSkipNumber(ref iterator))  // The default implementation is fine.
-					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Number);
-
 					lastCodeToken = iterator;
 					lastCodeToken.Previous();
 					}
@@ -204,14 +192,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						// If it follows a ], copy what that symbol was already marked as since both arrays and attributes can
 						// be chained.  int[][] and [Test][Category("x")].
 						isAttribute = (lastCodeToken.Character != ']' || 
-												  lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
+										   lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
 						}
 					else
 						{  isAttribute = false;  }
 
-					if (isAttribute && TryToSkipAttribute(ref iterator))
+					if (isAttribute && TryToSkipAttribute(ref iterator, mode: ParseMode.SyntaxHighlight))
 						{
-						source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.CSharpAttribute);
 						}
 					else
 						{
@@ -256,7 +243,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				else
 					{  
 					if (iterator.FundamentalType != FundamentalType.Whitespace &&
-						 iterator.FundamentalType != FundamentalType.LineBreak)
+						iterator.FundamentalType != FundamentalType.LineBreak)
 						{  lastCodeToken = iterator;  }
 
 					iterator.Next();  
@@ -1680,53 +1667,27 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToGetAttributes
-		 * Tries to retrieve a group of attributes which may be separated by whitespace.  If successful it will return the attributes as a
-		 * list of strings and move the iterator past it.  If not it will return null and leave the iterator alone.
-		 */
-		protected List<string> TryToGetAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any)
-			{
-			string attribute = TryToGetAttribute(ref iterator, type);
-
-			if (attribute == null)
-				{  return null;  }
-
-			List<string> attributes = new List<string>();
-			attributes.Add(attribute);
-
-			for (;;)
-				{
-				TokenIterator lookahead = iterator;
-				TryToSkipWhitespace(ref iterator);
-				attribute = TryToGetAttribute(ref lookahead, type);
-
-				if (attribute != null)
-					{  
-					attributes.Add(attribute);
-					iterator = lookahead;  
-					}
-				else
-					{  break;  }
-				}
-
-			return attributes;
-			}
-
-
 		/* Function: TryToSkipAttributes
+		 * 
 		 * Tries to move the iterator past a group of attributes which may be separated by whitespace.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any)
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (TryToSkipAttribute(ref iterator, type) == false)
+			if (TryToSkipAttribute(ref iterator, type, mode) == false)
 				{  return false;  }
 
 			for (;;)
 				{
 				TokenIterator lookahead = iterator;
-				TryToSkipWhitespace(ref lookahead);
+				TryToSkipWhitespace(ref lookahead, mode);
 
-				if (TryToSkipAttribute(ref lookahead, type) == true)
+				if (TryToSkipAttribute(ref lookahead, type, mode) == true)
 					{  iterator = lookahead;  }
 				else
 					{  break;  }
@@ -1736,27 +1697,18 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToGetAttribute
-		 * Tries to retrieve a single attribute.  If successful, it will move the iterator past the attribute and return it as a string.  If not, it will return
-		 * null and leave the iterator alone.  Note that there may be more than one attribute in a row, so use <TryToGetAttributes()> if you need to
-		 * get all of them.
-		 */
-		protected string TryToGetAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any)
-			{
-			TokenIterator startOfAttribute = iterator;
-
-			if (TryToSkipAttribute(ref iterator, type))
-				{  return iterator.Tokenizer.TextBetween(startOfAttribute, iterator);  }
-			else
-				{  return null;  }
-			}
-
-
 		/* Function: TryToSkipAttribute
+		 * 
 		 * Tries to move the iterator past a single attribute.  Note that there may be more than one attribute in a row, so use <TryToSkipAttributes()>
 		 * if you need to move past all of them.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any)
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '[')
 				{  return false;  }
@@ -1779,34 +1731,55 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					}
 				}
 
+			TokenIterator startOfAttribute = iterator;
+
 			iterator.Next();
 			GenericSkipUntilAfter(ref iterator, ']');
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfAttribute, iterator, SyntaxHighlightingType.CSharpAttribute);  }
 
 			return true;
 			}
 
 
 		/* Function: TryToSkipModifiers
+		 * 
 		 * Attempts to skip one or more modifiers such as "public" or "static".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- <Language.ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipModifiers (ref TokenIterator iterator)
+		protected bool TryToSkipModifiers (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			AccessLevel ignore;
-			return TryToSkipModifiers(ref iterator, out ignore);
+			return TryToSkipModifiers(ref iterator, out ignore, mode);
 			}
 
 
 		/* Function: TryToSkipModifiers
+		 * 
 		 * Attempts to skip one or more modifiers such as "public" or "static".  If they contained access modifiers it will return it, or <AccessLevel.Unknown>
 		 * if not.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- <Language.ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipModifiers (ref TokenIterator iterator, out AccessLevel accessLevel)
+		protected bool TryToSkipModifiers (ref TokenIterator iterator, out AccessLevel accessLevel, ParseMode mode = ParseMode.IterateOnly)
 			{
 			accessLevel = AccessLevel.Unknown;
 			TokenIterator lookahead = iterator;
 			bool foundAttributes = false;
 
-			while (iterator.IsInBounds)
+			while (lookahead.IsInBounds)
 				{
 				if (lookahead.MatchesToken("public"))
 					{  accessLevel = AccessLevel.Public;  }
@@ -1835,10 +1808,15 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				foundAttributes = true;
 
+				if (mode == ParseMode.SyntaxHighlight)
+					{  lookahead.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
+				else if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
 				lookahead.Next();
 				iterator = lookahead;
 
-				TryToSkipWhitespace(ref lookahead);
+				TryToSkipWhitespace(ref lookahead, mode);
 				}
 
 			return foundAttributes;
@@ -1940,8 +1918,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipPreprocessingDirective
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipPreprocessingDirective (ref TokenIterator iterator)
+		protected bool TryToSkipPreprocessingDirective (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '#')
 				{  return false;  }
@@ -1954,25 +1938,34 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (lookbehind.IsInBounds && lookbehind.FundamentalType != FundamentalType.LineBreak)
 				{  return false;  }
 
+			TokenIterator startOfDirective = iterator;
+
 			// Technically only the enumerated preprocessing keywords are valid here, but we'll be tolerant and accept anything in the format.
 			// Line comments (and only line comments) are allowed after directives.
 			do
 				{  iterator.Next();  }
 			while (iterator.IsInBounds && 
-						 iterator.FundamentalType != FundamentalType.LineBreak &&
-						 iterator.MatchesAcrossTokens("//") == false);
+					 iterator.FundamentalType != FundamentalType.LineBreak &&
+					 iterator.MatchesAcrossTokens("//") == false);
 
-			if (iterator.FundamentalType == FundamentalType.LineBreak)
-				{  iterator.Next();  }
-
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfDirective, iterator, SyntaxHighlightingType.PreprocessingDirective);  }
+			
 			return true;
 			}
 
 
 		/* Function: TryToSkipWhitespace
+		 * 
 		 * Includes comments.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipWhitespace (ref TokenIterator iterator)
+		protected bool TryToSkipWhitespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			int originalTokenIndex = iterator.TokenIndex;
 
@@ -1982,7 +1975,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					iterator.FundamentalType == FundamentalType.LineBreak)
 					{  iterator.Next();  }
 
-				else if (TryToSkipComment(ref iterator))
+				else if (TryToSkipComment(ref iterator, mode))
 					{  }
 
 				else
@@ -1994,28 +1987,41 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipComment
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		new protected bool TryToSkipComment (ref TokenIterator iterator)
+		new protected bool TryToSkipComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			return (TryToSkipLineComment(ref iterator) ||
-					  TryToSkipBlockComment(ref iterator));
+			return (TryToSkipLineComment(ref iterator, mode) ||
+					  TryToSkipBlockComment(ref iterator, mode));
 			}
 
 
 		/* Function: TryToSkipLineComment
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		new protected bool TryToSkipLineComment (ref TokenIterator iterator)
+		new protected bool TryToSkipLineComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.MatchesAcrossTokens("//"))
 				{
+				TokenIterator startOfComment = iterator;
 				iterator.NextByCharacters(2);
 
 				while (iterator.IsInBounds &&
 						 iterator.FundamentalType != FundamentalType.LineBreak)
 					{  iterator.Next();  }
 
-				if (iterator.FundamentalType == FundamentalType.LineBreak)
-					{  iterator.Next();  }
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
 
 				return true;
 				}
@@ -2025,11 +2031,18 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipBlockComment
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		new protected bool TryToSkipBlockComment (ref TokenIterator iterator)
+		new protected bool TryToSkipBlockComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.MatchesAcrossTokens("/*"))
 				{
+				TokenIterator startOfComment = iterator;
 				iterator.NextByCharacters(2);
 
 				while (iterator.IsInBounds &&
@@ -2039,6 +2052,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				if (iterator.MatchesAcrossTokens("*/"))
 					{  iterator.NextByCharacters(2);  }
 
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
+
 				return true;
 				}
 			else
@@ -2047,13 +2063,22 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipString
+		 * 
 		 * This covers string, @string, and character constants.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <Language.ParseMode.IterateOnly>
+		 *		- <Language.ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
 		 */
-		new protected bool TryToSkipString (ref TokenIterator iterator)
+		new protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character == '\"' || iterator.Character == '\'')
 				{
 				char closingChar = iterator.Character;
+
+				TokenIterator startOfString = iterator;
 				iterator.Next();
 
 				while (iterator.IsInBounds && iterator.Character != closingChar)
@@ -2065,11 +2090,16 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				iterator.Next();
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
+
 				return true;
 				}
 
 			else if (iterator.MatchesAcrossTokens("@\""))
 				{
+				TokenIterator startOfString = iterator;
 				iterator.NextByCharacters(2);
 
 				while (iterator.IsInBounds)
@@ -2083,6 +2113,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				iterator.Next();
+
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
+
 				return true;
 				}
 
