@@ -589,8 +589,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		TagString - Can be null.
 		 *		FileID - Must be set.
 		 *		FilePosition - Must be set.
-		 *		CommentLineNumber - Must be set.
-		 *		CodeLineNumber - Must be set.
+		 *		CommentLineNumber - Can be zero.
+		 *		CodeLineNumber - Can be zero.
 		 *		LanguageID - Must be set.
 		 *		PrototypeContext - Can be null, which means global with no "using" statements.
 		 *		PrototypeContextID - Must be set.
@@ -619,8 +619,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// TagString
 			RequireNonZero("DeleteTopic", "FileID", topic.FileID);
 			RequireNonZero("DeleteTopic", "FilePosition", topic.FilePosition);
-			RequireNonZero("DeleteTopic", "CommentLineNumber", topic.CommentLineNumber);
-			RequireNonZero("DeleteTopic", "CodeLineNumber", topic.CodeLineNumber);
+			// CommentLineNumber
+			// CodeLineNumber
 			RequireNonZero("DeleteTopic", "LanguageID", topic.LanguageID);
 			// PrototypeContext, null is a valid value
 			if (topic.PrototypeContext != null)
