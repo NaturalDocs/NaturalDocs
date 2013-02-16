@@ -28,6 +28,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 		
+		/* enum: ParseMode
+		 * 
+		 * What type of processing individual parsing functions will perform.  Not every mode is appropriate for every 
+		 * function, but passing an unsupported mode would just be the equivalent of using <IterateOnly>.
+		 * 
+		 * IterateOnly - The function will simply move the iterator past the tokens.
+		 * CreateElements - The function will create language <Elements> and add them to the list.
+		 * SyntaxHighlight - The function will apply <SyntaxHighlightingTypes> to the tokens.
+		 * ParsePrototype - The function will apply <PrototypeParsingTypes> to the tokens.
+		 * ParseClassPrototype - The function will apply <ClassPrototypeParsingTypes> to the tokens.
+		 */
+		public enum ParseMode : byte
+			{  IterateOnly, CreateElements, SyntaxHighlight, ParsePrototype, ParseClassPrototype  }
+
+
 		/* enum: ParseResult
 		 * 
 		 * The result of a <Parse()> operation.
@@ -3361,21 +3376,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 		/* Function: TryToSkipWhitespace
+		 * 
 		 * If the iterator is on whitespace or a comment, move past it and return true.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight> (for comments)
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipWhitespace (ref TokenIterator iterator, bool includeLineBreaks = true)
+		protected bool TryToSkipWhitespace (ref TokenIterator iterator, bool includeLineBreaks = true, ParseMode mode = ParseMode.IterateOnly)
 			{
 			bool success = false;
 
 			for (;;)
 				{
 				if (iterator.FundamentalType == FundamentalType.Whitespace ||
-					 (includeLineBreaks == true && iterator.FundamentalType == FundamentalType.LineBreak) )
+					(includeLineBreaks == true && iterator.FundamentalType == FundamentalType.LineBreak) )
 					{
 					iterator.Next();
 					success = true;
 					}
-				else if (TryToSkipComment(ref iterator))
+				else if (TryToSkipComment(ref iterator, mode))
 					{  success = true;  }
 				else
 					{  break;  }
@@ -3403,18 +3425,31 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *		
 		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
 		 *		interpret the comment content as code.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipComment (ref TokenIterator iterator)
+		protected bool TryToSkipComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			return ( TryToSkipLineComment(ref iterator) || TryToSkipBlockComment(ref iterator) );
+			return ( TryToSkipLineComment(ref iterator, mode) || TryToSkipBlockComment(ref iterator, mode) );
 			}
 
 
 		/* Function: TryToSkipLineComment
+		 * 
 		 * If the iterator is on a line comment symbol, moves the iterator past it, provides information about the comment, and 
 		 * returns true.  It will not skip the line break after the comment since that may be relevant to the calling code.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol)
+		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (LineCommentStrings == null)
 				{
@@ -3431,31 +3466,51 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 			commentSymbol = LineCommentStrings[commentSymbolIndex];
+
+			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(commentSymbol.Length);
 
 			while (iterator.IsInBounds && iterator.FundamentalType != FundamentalType.LineBreak)
 				{  iterator.Next();  }
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
 
 			return true;
 			}
 
 
 		/* Function: TryToSkipLineComment
+		 * 
 		 * If the iterator is on a line comment symbol, moves the iterator past it and returns true.  It will not skip the line break 
 		 * after the comment since that may be relevant to the calling code.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipLineComment (ref TokenIterator iterator)
+		protected bool TryToSkipLineComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			string ignore;
-			return TryToSkipLineComment(ref iterator, out ignore);
+			return TryToSkipLineComment(ref iterator, out ignore, mode);
 			}
 
 
 		/* Function: TryToSkipBlockComment
+		 * 
 		 * If the iterator is on an opening block comment symbol, moves the iterator past it, provides information about the 
 		 * comment, and returns true.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol)
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol, 
+															  ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (BlockCommentStringPairs == null)
 				{
@@ -3475,6 +3530,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			openingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex];
 			closingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex + 1];
+
+			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(openingSymbol.Length);
 
 			while (iterator.IsInBounds && iterator.MatchesAcrossTokens(closingSymbol) == false)
@@ -3483,18 +3540,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (iterator.IsInBounds)
 				{  iterator.NextByCharacters(closingSymbol.Length);  }
 
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
+
 			// Return true even if the iterator reached the end of the content before finding a closing symbol.
 			return true;
 			}
 
 
 		/* Function: TryToSkipBlockComment
+		 * 
 		 * If the iterator is on an opening block comment symbol, moves the iterator past it and returns true.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipBlockComment (ref TokenIterator iterator)
+		protected bool TryToSkipBlockComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			string ignore1, ignore2;
-			return TryToSkipBlockComment (ref iterator, out ignore1, out ignore2);
+			return TryToSkipBlockComment (ref iterator, out ignore1, out ignore2, mode);
 			}
 
 
@@ -3515,13 +3582,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 *		
 		 *		You want to check for comments before blocks because Pascal uses braces for comments and you don't want to 
 		 *		interpret the comment content as code.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipString (ref TokenIterator iterator)
+		protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '"' && iterator.Character != '\'')
 				{  return false;  }
 
 			char quoteCharacter = iterator.Character;
+
+			TokenIterator startOfString = iterator;
 			iterator.Next();
 
 			while (iterator.IsInBounds)
@@ -3537,15 +3612,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  iterator.Next();  }
 				}
 
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
+
 			// Return true even if the iterator reached the end of the content before finding a closing quote.
 			return true;
 			}
 
 
 		/* Function: TryToSkipNumber
+		 * 
 		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipNumber (ref TokenIterator iterator)
+		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || iterator.Character == '-' || iterator.Character == '.') == false)
 				{  return false;  }
@@ -3593,6 +3678,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return false;  }
 
 			// We're definitely on a number, so apply the position in case the later lookaheads fail.
+			TokenIterator startOfNumber = iterator;
 			iterator = lookahead;
 
 			if (lookahead.Character == '.' && !passedPeriod)
@@ -3623,6 +3709,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  lookahead = iterator;  }
 				}
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfNumber, iterator, SyntaxHighlightingType.Number);  }
 
 			return true;
 			}
@@ -3924,19 +4013,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			
 			while (iterator.IsInBounds)
 				{
-				TokenIterator originalPosition = iterator;
-
-				if (TryToSkipComment(ref iterator))
+				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight))
 					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Comment);
-					}
-				else if (TryToSkipString(ref iterator))
-					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.String);
-					}
-				else if (TryToSkipNumber(ref iterator))
-					{
-					source.SetSyntaxHighlightingTypeBetween(originalPosition, iterator, SyntaxHighlightingType.Number);
 					}
 				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 					{
@@ -3945,7 +4025,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					do
 						{  endOfIdentifier.Next();  }
 					while (endOfIdentifier.FundamentalType == FundamentalType.Text ||
-								endOfIdentifier.Character == '_');
+							 endOfIdentifier.Character == '_');
 
 					string identifier = source.TextBetween(iterator, endOfIdentifier);
 
