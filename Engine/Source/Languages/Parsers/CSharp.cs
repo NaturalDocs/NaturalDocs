@@ -611,12 +611,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Return type
 
-			if (lookahead.MatchesToken("void"))
-				{
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-				}
-			else if (TryToSkipType(ref lookahead) == false)
+			if (TryToSkipType(ref lookahead) == false)
 				{  return false;  }
 
 			TryToSkipWhitespace(ref lookahead);
@@ -778,7 +773,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name == "implicit" ||
 				name == "explicit" ||
 				name == "enum" ||
-				name == "void" ||
 				name == "using")
 				{  return false;  }
 
@@ -1005,8 +999,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{  keyword = "constant";  }
 			else if (lookahead.MatchesToken("event"))
 				{  keyword = "event";  }
-			else if (lookahead.MatchesToken("void") ||
-					  lookahead.MatchesToken("implicit") ||
+			else if (lookahead.MatchesToken("implicit") ||
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("delegate") ||
@@ -1159,7 +1152,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.MatchesToken("event"))
 				{  keyword = "event";  }
 			else if (lookahead.MatchesToken("const") ||
-					  lookahead.MatchesToken("void") ||
 					  lookahead.MatchesToken("implicit") ||
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
@@ -1492,7 +1484,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipType
-		 * Tries to move the iterator past a type, such as "int", "System.Collections.Generic.List<int>", or "int[]".
+		 * Tries to move the iterator past a type, such as "int", "System.Collections.Generic.List<int>", or "int[]".  This accepts
+		 * "void" as a valid type.
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator)
 			{
@@ -2169,7 +2162,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * to every code element (such as "sealed" not being revelant for constants) but it is okay for the parser to be over tolerant.
 		 */
 		static protected string[] NonAccessModifiers = new string[] {
-			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern"
+			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe"
 			};
 
 		/* var: BuiltInTypes

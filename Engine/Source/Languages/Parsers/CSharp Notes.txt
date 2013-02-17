@@ -32,6 +32,20 @@ _______________________________________________________________________________
 		See [3.5.2] for the full rules regarding these types of interactions.
 
 
+	Topic: Pointer Types and Unsafe Code
+
+		Unsafe code extensions are documented separately in [18] and [B.3], so looking at the syntax diagrams without them will give
+		an incomplete picture.  For example, void* is a valid type that can be used anywhere even though void would only be used in
+		function return values otherwise.
+
+		Also, look at this code:
+
+		> int* x, y;
+
+		In C++ that would mean int *x, int y as the asterisk is associated with the name.  In C# it means int* x, int* y as the asterisk
+		is associated with the type.
+
+
 
 Group: Unsupported Features
 _______________________________________________________________________________
