@@ -3409,8 +3409,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipComment
 		 * 
-		 * If the iterator is on a comment symbol, moves past it and returns true.  If you need information about the specific type of
-		 * comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()> individually.
+		 * If the iterator is on a comment symbol, moves it past the entire comment and returns true.  If you need information 
+		 * about  the specific type of comment it was, you need to call <TryToSkipLineComment()> and <TryToSkipBlockComment()> 
+		 * individually.
 		 * 
 		 * Important:
 		 * 
@@ -3440,7 +3441,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipLineComment
 		 * 
-		 * If the iterator is on a line comment symbol, moves the iterator past it, provides information about the comment, and 
+		 * If the iterator is on a line comment symbol, moves it past the entire comment, provides the symbol that was used, and 
 		 * returns true.  It will not skip the line break after the comment since that may be relevant to the calling code.
 		 * 
 		 * Supported Modes:
@@ -3482,7 +3483,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipLineComment
 		 * 
-		 * If the iterator is on a line comment symbol, moves the iterator past it and returns true.  It will not skip the line break 
+		 * If the iterator is on a line comment symbol, moves it past the entire comment and returns true.  It will not skip the line break 
 		 * after the comment since that may be relevant to the calling code.
 		 * 
 		 * Supported Modes:
@@ -3500,8 +3501,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipBlockComment
 		 * 
-		 * If the iterator is on an opening block comment symbol, moves the iterator past it, provides information about the 
-		 * comment, and returns true.
+		 * If the iterator is on an opening block comment symbol, moves it past the entire comment, provides the comment symbols that 
+		 * were used, and returns true.
 		 * 
 		 * Supported Modes:
 		 * 
@@ -3550,7 +3551,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipBlockComment
 		 * 
-		 * If the iterator is on an opening block comment symbol, moves the iterator past it and returns true.
+		 * If the iterator is on an opening block comment symbol, moves it past the entire comment and returns true.
 		 * 
 		 * Supported Modes:
 		 * 
@@ -3567,7 +3568,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 		/* Function: TryToSkipString
 		 * 
-		 * If the iterator is on a quote or apostrophe, moves the iterator past the entire string and returns true.
+		 * If the iterator is on a quote or apostrophe, moves it past the entire string and returns true.
 		 * 
 		 * Important:
 		 * 
