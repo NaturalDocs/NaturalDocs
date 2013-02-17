@@ -51,3 +51,23 @@
     TestClass.varH
     [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varH
     (line 16, char 66, child of TestClass)
+    ---------------
+    Variable: varI
+    TestClass.varI
+    int* varI
+    (line 18, char 2, child of TestClass)
+    ---------------
+    Variable: varJ
+    TestClass.varJ
+    int* varJ
+    (line 18, char 13, child of TestClass)
+    ---------------
+    Variable: varK
+    TestClass.varK
+    void* varK
+    (line 20, char 2, child of TestClass)
+    ---------------
+    Variable: varL
+    TestClass.varL
+    void* varL
+    (line 20, char 14, child of TestClass)

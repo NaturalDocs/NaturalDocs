@@ -10,6 +10,9 @@ class TestClass
 	private TestClass (int x, int y) : this (x)
 		{ }
 
+	unsafe public TestClass (int* x, void* y)
+		{ }
+
 	~TestClass ()
 		{ }
 

@@ -14,4 +14,7 @@ class TestClass
 		{  }
 
 	internal partial void Interface.Interface.FunctionE<T> () where T: new();
+
+	unsafe void* FunctionF (int* x)
+		{  }
 	}

@@ -29,4 +29,7 @@ class TestClass
 
 	abstract int PropertyD
 		{  get;  set;  }
+
+	unsafe abstract void* PropertyE
+		{  get;  set;  }
 	}

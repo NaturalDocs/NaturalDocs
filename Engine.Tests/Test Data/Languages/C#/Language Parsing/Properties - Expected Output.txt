@@ -31,3 +31,8 @@
     TestClass.PropertyD
     abstract int PropertyD { get; set }
     (line 30, char 2, child of TestClass)
+    ---------------
+    Property: PropertyE
+    TestClass.PropertyE
+    unsafe abstract void* PropertyE { get; set }
+    (line 33, char 2, child of TestClass)

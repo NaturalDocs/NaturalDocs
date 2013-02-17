@@ -36,3 +36,8 @@
     TestClass.Interface.Interface.FunctionE
     internal partial void Interface.Interface.FunctionE<T> () where T: new()
     (line 16, char 2, child of TestClass)
+    ---------------
+    Function: FunctionF
+    TestClass.FunctionF
+    unsafe void* FunctionF (int* x)
+    (line 18, char 2, child of TestClass)

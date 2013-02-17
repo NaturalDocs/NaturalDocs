@@ -14,4 +14,8 @@ class TestClass
 
 	[AttributeA][AttributeB(12)]
 	protected internal System.Text.StringBuilder varF, varG = null, varH;
+
+	int* varI, varJ;
+
+	void* varK, varL;
 	}

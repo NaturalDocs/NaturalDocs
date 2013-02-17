@@ -27,17 +27,22 @@
     private TestClass (int x, int y)
     (line 10, char 2, child of TestClass)
     ---------------
+    Function: TestClass
+    TestClass.TestClass
+    unsafe public TestClass (int* x, void* y)
+    (line 13, char 2, child of TestClass)
+    ---------------
     Function: ~TestClass
     TestClass.~TestClass
     ~TestClass ()
-    (line 13, char 2, child of TestClass)
+    (line 16, char 2, child of TestClass)
     ---------------
     Function: TestClass
     TestClass.TestClass
     extern static TestClass (float x)
-    (line 16, char 2, child of TestClass)
+    (line 19, char 2, child of TestClass)
     ---------------
     Function: ~TestClass
     TestClass.~TestClass
     extern ~TestClass ()
-    (line 18, char 2, child of TestClass)
+    (line 21, char 2, child of TestClass)
