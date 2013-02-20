@@ -59,6 +59,69 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: ParsePrototype
+		 * Converts a raw text prototype into a <ParsedPrototype>.
+		 */
+		public override ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
+			{
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
+			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
+			ParsedPrototype parsedPrototype = new ParsedPrototype(tokenizedPrototype);
+			bool parsed = false;
+
+			if (topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("function") ||
+				topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("delegate") ||
+				topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("operator"))
+			    {
+				parsed = TryToSkipFunction(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+			
+			if (!parsed &&
+				(topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("variable") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("constant") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("event")) )
+			    {
+				parsed = TryToSkipVariable(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+
+			if (!parsed &&
+				(topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("property") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("operator") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("function") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("event")) )
+			    {
+				parsed = TryToSkipProperty(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+
+			if (!parsed &&
+				(topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("function") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("constructor") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("destructor")) )
+			    {
+				parsed = TryToSkipConstructor(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+
+			if (!parsed &&
+				(topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("enum") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("type")) )
+			    {
+				parsed = TryToSkipEnum(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+
+			if (!parsed &&
+				(topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("operator") ||
+				 topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("function")) )
+			    {
+				parsed = TryToSkipConversionOperator(ref startOfPrototype, ParseMode.ParsePrototype);
+			    }
+
+			if (parsed)
+				{  return parsedPrototype;  }
+			else
+			    {  return base.ParsePrototype(stringPrototype, topicTypeID);  }
+			}
+
+
 		/* Function: GetCodeElements
 		 * 
 		 * Topic Properties:
@@ -131,15 +194,15 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				else if (TryToSkipWhitespace(ref iterator) ||
 						  TryToSkipPreprocessingDirective(ref iterator) ||
 
-						  TryToGetUsingStatement(ref iterator, elements, scope) ||
-						  TryToGetNamespace(ref iterator, elements, scope) ||
-						  TryToGetClass(ref iterator, elements, scope) ||
-						  TryToGetFunction(ref iterator, elements, scope) ||
-						  TryToGetVariable(ref iterator, elements, scope) ||
-						  TryToGetProperty(ref iterator, elements, scope) ||
-						  TryToGetConstructor(ref iterator, elements, scope) ||
-						  TryToGetEnum(ref iterator, elements, scope) ||
-						  TryToGetConversionOperator(ref iterator, elements, scope) ||
+						  TryToSkipUsingStatement(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipNamespace(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipClass(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipFunction(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipVariable(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipProperty(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipConstructor(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipEnum(ref iterator, ParseMode.CreateElements, elements, scope) ||
+						  TryToSkipConversionOperator(ref iterator, ParseMode.CreateElements, elements, scope) ||
 
 						  // We skip attributes after trying to get language elements because they may be part of one.
 						  // We have to skip attributes in this loop to begin with because they don't end like regular statements, so not having
@@ -266,13 +329,27 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		// __________________________________________________________________________
 
 
-		/* Function: TryToGetUsingStatement
-		 * Attempts to retrieve a using statement.  If it was successful it will move the iterator past it, add it to the most recent 
-		 * <ParentElement>, and return true.  If it was not it will leave the iterator alone and return false;
+		/* Function: TryToSkipUsingStatement
+		 * 
+		 * If the iterator is on a using statement, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements> it will
+		 * add it to the most recent <ParentElement>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetUsingStatement (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipUsingStatement (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+																SymbolString scope = default(SymbolString))
 			{
 			// See [9.3] and [B.2.6]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			if (iterator.MatchesToken("using") == false)
 				{  return false;  }
@@ -282,13 +359,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			TryToSkipWhitespace(ref lookahead);
 
-			string firstIdentifier = TryToGetIdentifier(ref lookahead);
-			if (firstIdentifier == null)
+			string firstIdentifier;
+			if (TryToSkipIdentifier(ref lookahead, out firstIdentifier) == false)
 				{  return false;  }
 
 			TryToSkipWhitespace(ref lookahead);
 
-			UsingString usingString;
+			UsingString usingString = default(UsingString);
 
 			if (lookahead.Character == '=')
 				{
@@ -296,48 +373,58 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				TryToSkipWhitespace(ref lookahead);
 
-				string secondIdentifier = TryToGetIdentifier(ref lookahead);
-				if (secondIdentifier == null)
+				string secondIdentifier;
+				if (TryToSkipIdentifier(ref lookahead, out secondIdentifier) == false)
 					{  return false;  }
 
-				usingString = UsingString.FromParameters(UsingString.UsingType.ReplacePrefix,
-																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(secondIdentifier),
-																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
-				}
-			else
-				{
-				usingString = UsingString.FromParameters(UsingString.UsingType.AddPrefix,
-																		 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
-				}
-
-			// Find the parent.  We can't use FindElementParent() because ending line/char numbers haven't been set yet.  Instead we'll
-			// find it manually, treating -1 as meaning it contains the current position.
-
-			int parentIndex = -1;
-				
-			for (int i = elements.Count - 1; i >= 0; i--)
-				{
-				if (elements[i] is ParentElement)
+				if (mode == ParseMode.CreateElements)
 					{
-					ParentElement parentElement = (ParentElement)elements[i];
-
-					if (parentElement.Position <= iterator.Position &&
-						(parentElement.EndingLineNumber == -1 ||
-						 parentElement.EndingPosition > iterator.Position))
-						{
-						parentIndex = i;
-						break;
-						}
+					usingString = UsingString.FromParameters(UsingString.UsingType.ReplacePrefix,
+																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(secondIdentifier),
+																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
+					}
+				}
+			else // not on '='
+				{
+				if (mode == ParseMode.CreateElements)
+					{
+					usingString = UsingString.FromParameters(UsingString.UsingType.AddPrefix,
+																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
 					}
 				}
 
-			if (parentIndex != -1)
-				{
-				ParentElement parentElement = (ParentElement)elements[parentIndex];
 
-				ContextString tempContext = parentElement.ChildContextString;
-				tempContext.AddUsingStatement(usingString);
-				parentElement.ChildContextString = tempContext;
+			if (mode == ParseMode.CreateElements)
+				{
+				// Find the parent.  We can't use FindElementParent() because ending line/char numbers haven't been set yet.  Instead we'll
+				// find it manually, treating -1 as meaning it contains the current position.
+
+				int parentIndex = -1;
+				
+				for (int i = elements.Count - 1; i >= 0; i--)
+					{
+					if (elements[i] is ParentElement)
+						{
+						ParentElement parentElement = (ParentElement)elements[i];
+
+						if (parentElement.Position <= iterator.Position &&
+							(parentElement.EndingLineNumber == -1 ||
+							 parentElement.EndingPosition > iterator.Position))
+							{
+							parentIndex = i;
+							break;
+							}
+						}
+					}
+
+				if (parentIndex != -1)
+					{
+					ParentElement parentElement = (ParentElement)elements[parentIndex];
+
+					ContextString tempContext = parentElement.ChildContextString;
+					tempContext.AddUsingStatement(usingString);
+					parentElement.ChildContextString = tempContext;
+					}
 				}
 
 			iterator = lookahead;
@@ -345,13 +432,27 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToGetNamespace
-		 * Attempts to retrieve a namespace element.  If it was successful it will move the iterator past it, add it and its children to the
-		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false;
+		/* Function: TryToSkipNamespace
+		 * 
+		 * If the iterator is on a namespace element, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
+		 * it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetNamespace (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipNamespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+														  SymbolString scope = default(SymbolString))
 			{
 			// See [9] and [B.2.6]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements.");  }
+			#endif
 
 			// Namespaces may not have attributes.  There may be global attributes above them in the file, but they do not apply to the 
 			// namespace itself.  Namespaces embedded in other namespaces do not have attributes at all.
@@ -363,9 +464,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name) == false)
 				{  return false;  }
 
 			TryToSkipWhitespace(ref lookahead);
@@ -378,37 +478,55 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Create the element
 
-			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+			if (mode == ParseMode.CreateElements)
+				{
+				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 
-			ContextString childContext = new ContextString();
-			childContext.Scope = symbol;
+				ContextString childContext = new ContextString();
+				childContext.Scope = symbol;
 
-			ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
-			namespaceElement.DefaultChildLanguageID = this.ID;
-			namespaceElement.ChildContextString = childContext;
-			namespaceElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
-			namespaceElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
+				ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
+				namespaceElement.DefaultChildLanguageID = this.ID;
+				namespaceElement.ChildContextString = childContext;
+				namespaceElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
+				namespaceElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
 
-			// We don't create topics for namespaces.
+				// We don't create topics for namespaces.
 
-			elements.Add(namespaceElement);
+				elements.Add(namespaceElement);
 
+				iterator = lookahead;
+				GetCodeElements(ref iterator, elements, symbol, '}');
 
-			iterator = lookahead;
-			GetCodeElements(ref iterator, elements, symbol, '}');
+				namespaceElement.EndingLineNumber = iterator.LineNumber;
+				namespaceElement.EndingCharNumber = iterator.CharNumber;
 
-			namespaceElement.EndingLineNumber = iterator.LineNumber;
-			namespaceElement.EndingCharNumber = iterator.CharNumber;
+				return true;
+				}
 
-			return true;
+			else // not ParseMode.CreateElements
+				{
+				iterator = lookahead;
+				GenericSkipUntilAfter(ref iterator, '}');
+				return true;
+				}
 			}
 
 
-		/* Function: TryToGetClass
-		 * Attempts to retrieve a class, struct, or interface element.  If it was successful it will move the iterator past it, add it to the
-		 * <Elements> list, and return true.  If it was not it will leave the iterator alone and return false.
+		/* Function: TryToSkipClass
+		 * 
+		 * If the iterator is on a class, struct, or interface element, moves it past it and returns true.  If the mode is set to 
+		 * <ParseMode.CreateElements> it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetClass (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+												  SymbolString scope = default(SymbolString))
 			{
 			// Classes - See [10] and [B.2.7]
 			// Structs - See [11] and [B.2.8]
@@ -418,12 +536,17 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			// only inherit interfaces, etc.) they are pretty small and for our purposes we can combine them into one parsing function.
 			// It's okay to be over tolerant.
 
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
+
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -432,7 +555,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			AccessLevel accessLevel;
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -441,24 +564,29 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.MatchesToken("class") == false &&
 				lookahead.MatchesToken("struct") == false &&
 				lookahead.MatchesToken("interface") == false)
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			string keyword = lookahead.String;
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
-				{  return false;  }
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
 
 			// Template signature
 
-			if (TryToSkipTemplateSignature(ref lookahead))
+			if (TryToSkipTemplateSignature(ref lookahead, mode, false))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -471,10 +599,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				for (;;)
 					{
-					TryToSkipIdentifier(ref lookahead);
+					TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Null);
 					TryToSkipWhitespace(ref lookahead);
 
-					if (TryToSkipTemplateSignature(ref lookahead))
+					if (TryToSkipTemplateSignature(ref lookahead, mode, true))
 						{  TryToSkipWhitespace(ref lookahead);  }
 
 					if (lookahead.Character != ',')
@@ -501,79 +629,118 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Start of body
 
-			if (lookahead.Character != '{')
-				{  return false;  }
+			if (lookahead.Character != '{' &&
+				lookahead.IsInBounds)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Create element
 
-			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
-
-			ClassString classString = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, true, symbol);
-
-			ContextString childContext = new ContextString();
-			childContext.Scope = symbol;
-
-			ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
-			classElement.DefaultChildLanguageID = this.ID;
-			classElement.DefaultChildClassString = classString;
-			classElement.ChildContextString = childContext;
-			classElement.MaximumEffectiveChildAccessLevel = accessLevel;
-
-			if (keyword == "interface")
-				{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  }
-			else // "class" or "struct"
-				{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
-
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
-
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements)
 				{
-				Topic classTopic = new Topic();
-				classTopic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
-				classTopic.Symbol = symbol;
-				classTopic.ClassString = classString;
-				classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-				classTopic.TopicTypeID = topicTypeID;
-				classTopic.LanguageID = this.ID;
-				classTopic.DeclaredAccessLevel = accessLevel;
-				classTopic.CodeLineNumber = iterator.LineNumber;
+				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 
-				classElement.Topic = classTopic;
+				ClassString classString = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, true, symbol);
+
+				ContextString childContext = new ContextString();
+				childContext.Scope = symbol;
+
+				ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
+				classElement.DefaultChildLanguageID = this.ID;
+				classElement.DefaultChildClassString = classString;
+				classElement.ChildContextString = childContext;
+				classElement.MaximumEffectiveChildAccessLevel = accessLevel;
+
+				if (keyword == "interface")
+					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  }
+				else // "class" or "struct"
+					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
+
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
+
+				if (topicTypeID != 0)
+					{
+					Topic classTopic = new Topic();
+					classTopic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
+					classTopic.Symbol = symbol;
+					classTopic.ClassString = classString;
+					classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
+					classTopic.TopicTypeID = topicTypeID;
+					classTopic.LanguageID = this.ID;
+					classTopic.DeclaredAccessLevel = accessLevel;
+					classTopic.CodeLineNumber = iterator.LineNumber;
+
+					classElement.Topic = classTopic;
+					}
+
+				elements.Add(classElement);
+
+
+				// Body
+
+				iterator = lookahead;
+
+				if (iterator.Character == '{')
+					{
+					iterator.Next();
+					GetCodeElements(ref iterator, elements, symbol, '}');
+					}
+
+				classElement.EndingLineNumber = iterator.LineNumber;
+				classElement.EndingCharNumber = iterator.CharNumber;
+
+				return true;
 				}
 
-			elements.Add(classElement);
+			else // mode isn't CreateElements
+				{
+				iterator = lookahead;
 
+				if (iterator.Character == '{')
+					{
+					iterator.Next();
+					GenericSkipUntilAfter(ref iterator, '}');
+					}
 
-			// Body
-
-			iterator = lookahead;
-			iterator.Next();
-			GetCodeElements(ref iterator, elements, symbol, '}');
-
-			classElement.EndingLineNumber = iterator.LineNumber;
-			classElement.EndingCharNumber = iterator.CharNumber;
-
-			return true;
+				return true;
+				}
 			}
 
 
-		/* Function: TryToGetFunction
-		 * Attempts to retrieve a function, delegate, or operator other than a conversion or indexer.  If successful it will add an <Element> 
-		 * to the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipFunction
+		 * 
+		 * If the iterator is on a function, delegate, or operator other than a conversion or indexer, moves it past it and returns true.  If the 
+		 * mode is set to <ParseMode.CreateElements> it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetFunction (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+													   SymbolString scope = default(SymbolString))
 			{
 			// Functions (methods) - See [10.6] and [B.2.7]
 			// Delegates - See [15] and [B.2.12]
 			// Operators - See [10.10] and [B.2.7]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -582,7 +749,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			AccessLevel accessLevel;
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -598,7 +765,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("explicit") ||
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("using"))
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			if (keyword == null)
 				{  keyword = "function";  }
@@ -611,18 +781,23 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Return type
 
-			if (TryToSkipType(ref lookahead) == false)
-				{  return false;  }
+			if (TryToSkipType(ref lookahead, mode) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
 
 			// Name
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
-				{  return false;  }
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -631,6 +806,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				keyword = "operator";
 				name += ' ';
+
+				TokenIterator startOfOperator = lookahead;
 
 				if (lookahead.MatchesToken("true") ||
 					lookahead.MatchesToken("false"))
@@ -648,23 +825,43 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						}
 					}
 
+				if (mode == ParseMode.ParsePrototype)
+					{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfOperator, lookahead, PrototypeParsingType.Name);  }
+
 				TryToSkipWhitespace(ref lookahead);
 				}
 
 
 			// Template signature
 
-			if (TryToSkipTemplateSignature(ref lookahead))
+			if (TryToSkipTemplateSignature(ref lookahead, mode, false))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Parameters
 
 			if (lookahead.Character != '(')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
 			lookahead.Next();
-			GenericSkipUntilAfter(ref lookahead, ')');
+			TryToSkipWhitespace(ref lookahead);
+
+			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
 
@@ -682,26 +879,37 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{  GenericSkip(ref lookahead, true);  }
 				}
 
+			if (lookahead.IsInBounds &&
+				lookahead.Character != '{' &&
+				lookahead.Character != ';')
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
 
 			// Create element
 
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
-
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements)
 				{
-				Topic functionTopic = new Topic();
-				functionTopic.Title = name;
-				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
-				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-				functionTopic.TopicTypeID = topicTypeID;
-				functionTopic.LanguageID = this.ID;
-				functionTopic.DeclaredAccessLevel = accessLevel;
-				functionTopic.CodeLineNumber = iterator.LineNumber;
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
 
-				Element functionElement = new Element(iterator, Element.Flags.InCode);
-				functionElement.Topic = functionTopic;
+				if (topicTypeID != 0)
+					{
+					Topic functionTopic = new Topic();
+					functionTopic.Title = name;
+					functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
+					functionTopic.TopicTypeID = topicTypeID;
+					functionTopic.LanguageID = this.ID;
+					functionTopic.DeclaredAccessLevel = accessLevel;
+					functionTopic.CodeLineNumber = iterator.LineNumber;
 
-				elements.Add(functionElement);
+					Element functionElement = new Element(iterator, Element.Flags.InCode);
+					functionElement.Topic = functionTopic;
+
+					elements.Add(functionElement);
+					}
 				}
 
 
@@ -714,29 +922,44 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
-			else
-				{  return false;  }
+			// Don't fail if it doesn't exist since we may be parsing a prototype.
+
 
 			iterator = lookahead;
 			return true;
 			}
 
 
-		/* Function: TryToGetConstructor
-		 * Attempts to retrieve a constructor or destructor.  If successful it will add an <Element> to the list, move the iterator past
-		 * it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipConstructor
+		 * 
+		 * If the iterator is on a constructor or destructor, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
+		 * it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetConstructor (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipConstructor (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
+														   SymbolString scope = default(SymbolString))
 			{
 			// Constructors - See [10.11] and [B.2.7]
 			// Destructors - See [10.13] and [B.2.7]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -744,7 +967,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			AccessLevel accessLevel;
 
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -755,6 +978,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.Character == '~')
 				{
 				keyword = "destructor";
+
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
+
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
@@ -764,17 +991,24 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			string name = TryToGetIdentifier(ref lookahead);
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
-			if (name == null ||
-				name == "delegate" ||
+			if (name == "delegate" ||
 				name == "const" ||
 				name == "event" ||
 				name == "implicit" ||
 				name == "explicit" ||
 				name == "enum" ||
 				name == "using")
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			if (keyword == "destructor")
 				{  name = "~" + name;  }
@@ -785,13 +1019,28 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			// Parameters
 
 			if (lookahead.Character != '(')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
 			lookahead.Next();
-			GenericSkipUntilAfter(ref lookahead, ')');
+			TryToSkipWhitespace(ref lookahead);
 
+			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+			lookahead.Next();
 			TokenIterator endOfPrototype = lookahead;
-
 			TryToSkipWhitespace(ref lookahead);
 
 
@@ -804,43 +1053,56 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				if (lookahead.MatchesToken("base") == false &&
 					lookahead.MatchesToken("this") == false)
-					{  return false;  }
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
 				if (lookahead.Character != '(')
-					{  return false;  }
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
 
 				lookahead.Next();
 				GenericSkipUntilAfter(ref lookahead, ')');
 				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (lookahead.Character != '{' &&
+			if (lookahead.IsInBounds &&
+				lookahead.Character != '{' &&
 				lookahead.Character != ';')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Create element
 
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
-
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements)
 				{
-				Topic functionTopic = new Topic();
-				functionTopic.Title = name;
-				functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
-				functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
-				functionTopic.TopicTypeID = topicTypeID;
-				functionTopic.LanguageID = this.ID;
-				functionTopic.DeclaredAccessLevel = accessLevel;
-				functionTopic.CodeLineNumber = iterator.LineNumber;
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
 
-				Element functionElement = new Element(iterator, Element.Flags.InCode);
-				functionElement.Topic = functionTopic;
+				if (topicTypeID != 0)
+					{
+					Topic functionTopic = new Topic();
+					functionTopic.Title = name;
+					functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
+					functionTopic.TopicTypeID = topicTypeID;
+					functionTopic.LanguageID = this.ID;
+					functionTopic.DeclaredAccessLevel = accessLevel;
+					functionTopic.CodeLineNumber = iterator.LineNumber;
 
-				elements.Add(functionElement);
+					Element functionElement = new Element(iterator, Element.Flags.InCode);
+					functionElement.Topic = functionTopic;
+
+					elements.Add(functionElement);
+					}
 				}
 
 
@@ -853,28 +1115,43 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
-			else
-				{  return false;  }
+			// Don't fail if it doesn't exist since we may be parsing a prototype.
+
 
 			iterator = lookahead;
 			return true;
 			}
 
 
-		/* Function: TryToGetConversionOperator
-		 * Attempts to retrieve a conversion operator.  If successful it will add an <Element> to the list, move the iterator past it, and 
-		 * return true.  If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipConversionOperator
+		 * 
+		 * If the iterator is on a conversion operator, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
+		 * it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetConversionOperator (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipConversionOperator (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
+																	 List<Element> elements = null, SymbolString scope = default(SymbolString))
 			{
 			// Operators - See [10.10] and [B.2.7]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -883,15 +1160,30 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			AccessLevel accessLevel;
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
-			// Type
+			// Keywords
 
 			if (lookahead.MatchesToken("implicit") == false &&
 				lookahead.MatchesToken("explicit") == false)
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.MatchesToken("operator") == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.Name;  }
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -899,51 +1191,81 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			if (lookahead.MatchesToken("operator") == false)
-				{  return false;  }
-
-			lookahead.Next();
-			TryToSkipWhitespace(ref lookahead);
-
 			System.Text.StringBuilder name = new System.Text.StringBuilder("operator ");
 			TokenIterator startOfType = lookahead;
 
-			if (TryToSkipType(ref lookahead) == false)
-				{  return false;  }
+			// IterateOnly so we don't mark it as a type when using ParseMode.ParsePrototype
+			if (TryToSkipType(ref lookahead, ParseMode.IterateOnly) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			iterator.Tokenizer.AppendTextBetweenTo(startOfType, lookahead, name);
+
+			if (mode == ParseMode.ParsePrototype)
+				{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfType, lookahead, PrototypeParsingType.Name);  }
+
 			TryToSkipWhitespace(ref lookahead);
 
 
 			// Parameters
 
 			if (lookahead.Character != '(')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
 			lookahead.Next();
-			GenericSkipUntilAfter(ref lookahead, ')');
 			TryToSkipWhitespace(ref lookahead);
+
+			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.IsInBounds &&
+				lookahead.Character != '{' &&
+				lookahead.Character != ';')
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Create element
 
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("operator");
-
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements)
 				{
-				Topic operatorTopic = new Topic();
-				operatorTopic.Title = name.ToString();
-				operatorTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(operatorTopic.Title);
-				operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-				operatorTopic.TopicTypeID = topicTypeID;
-				operatorTopic.LanguageID = this.ID;
-				operatorTopic.DeclaredAccessLevel = accessLevel;
-				operatorTopic.CodeLineNumber = iterator.LineNumber;
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("operator");
 
-				Element operatorElement = new Element(iterator, Element.Flags.InCode);
-				operatorElement.Topic = operatorTopic;
+				if (topicTypeID != 0)
+					{
+					Topic operatorTopic = new Topic();
+					operatorTopic.Title = name.ToString();
+					operatorTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(operatorTopic.Title);
+					operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
+					operatorTopic.TopicTypeID = topicTypeID;
+					operatorTopic.LanguageID = this.ID;
+					operatorTopic.DeclaredAccessLevel = accessLevel;
+					operatorTopic.CodeLineNumber = iterator.LineNumber;
 
-				elements.Add(operatorElement);
+					Element operatorElement = new Element(iterator, Element.Flags.InCode);
+					operatorElement.Topic = operatorTopic;
+
+					elements.Add(operatorElement);
+					}
 				}
 
 
@@ -956,30 +1278,45 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
-			else
-				{  return false;  }
+			// Don't fail if it doesn't exist since we may be parsing a prototype.
+
 
 			iterator = lookahead;
 			return true;
 			}
 
 
-		/* Function: TryToGetVariable
-		 * Attempts to retrieve a variable, constant, or event declared like a variable.  If successful it will add one or more <Elements> to
-		 * the list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipVariable
+		 * 
+		 * If the iterator is on a variable, constant, or event, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements>
+		 * it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetVariable (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipVariable (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+													 SymbolString scope = default(SymbolString))
 			{
 			// Variables (fields) - See [10.5] and [B.2.7]
 			// Constants - See [10.4] and [B.2.7]
 			// Events - See [10.8] and [B.2.7]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -987,7 +1324,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			AccessLevel accessLevel;
 
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1004,7 +1341,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("delegate") ||
 					  lookahead.MatchesToken("using"))
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			if (keyword == null)
 				{  keyword = "variable";  }
@@ -1017,8 +1357,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			if (TryToSkipType(ref lookahead) == false)
-				{  return false;  }
+			if (TryToSkipType(ref lookahead, mode) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TokenIterator endOfType = lookahead;
 			TryToSkipWhitespace(ref lookahead);
@@ -1026,24 +1369,30 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
-				{  return false;  }
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
-			if (lookahead.Character != ';' &&
+			if (lookahead.IsInBounds &&
+				lookahead.Character != ';' &&
 				lookahead.Character != ',' &&
 				lookahead.Character != '=')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Create element
 
 			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
 
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements && topicTypeID != 0)
 				{
 				Topic variableTopic = new Topic();
 				variableTopic.Title = name;
@@ -1061,17 +1410,25 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			
-			// Multiple declarations
+			// Multiple declarations and default values
 
 			while (lookahead.IsInBounds && lookahead.Character != ';')
 				{
 				if (lookahead.Character == '=')
 					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
+
 					lookahead.Next();
+					TokenIterator startOfDefaultValue = lookahead;
+
 					while (lookahead.IsInBounds && 
 							 lookahead.Character != ',' && 
 							 lookahead.Character != ';')
 						{  GenericSkip(ref lookahead);  }
+
+					if (mode == ParseMode.ParsePrototype)
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfDefaultValue, lookahead, PrototypeParsingType.DefaultValue);  }
 					}
 				else if (lookahead.Character == ',')
 					{
@@ -1080,18 +1437,19 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 					TokenIterator startOfNewName = lookahead;
 
-					string newName = TryToGetIdentifier(ref lookahead);
-					if (newName == null)
+					string newName;
+					if (TryToSkipIdentifier(ref lookahead, out newName, mode, PrototypeParsingType.Name) == false)
 						{  break;  }
 
 					TryToSkipWhitespace(ref lookahead);
 
-					if (lookahead.Character != ';' && 
+					if (lookahead.IsInBounds &&
+						lookahead.Character != ';' && 
 						lookahead.Character != ',' && 
 						lookahead.Character != '=')
 						{  break;  }
 
-					if (topicTypeID != 0)
+					if (mode == ParseMode.CreateElements && topicTypeID != 0)
 						{
 						Topic newVariableTopic = new Topic();
 						newVariableTopic.Title = newName;
@@ -1112,28 +1470,45 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{  break;  }
 				}
 
-			lookahead.Next();
+			if (lookahead.Character == ';')
+				{  lookahead.Next();  }
+
 			iterator = lookahead;
 			return true;
 			}
 
 
-		/* Function: TryToGetProperty
-		 * Attempts to retrieve a property, indexer, or event declared like a property.  If successful it will add it as an <Element> to the
-		 * list, move the iterator past it, and return true.  If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipProperty
+		 * 
+		 * If the iterator is on a property, indexer, or event declared like a property, moves it past it and returns true.  If the mode is set to
+		 * <ParseMode.CreateElements> it will add it to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetProperty (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipProperty (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+													  SymbolString scope = default(SymbolString))
 			{
 			// Properties - See [10.7] and [B.2.7]
 			// Indexers - See [10.9] and [B.2.7]
 			// Events - See [10.8] and [B.2.7]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1141,7 +1516,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			AccessLevel accessLevel;
 
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1157,7 +1532,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					  lookahead.MatchesToken("enum") ||
 					  lookahead.MatchesToken("delegate") ||
 					  lookahead.MatchesToken("using"))
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			if (keyword == null)
 				{  keyword = "property";  }
@@ -1170,18 +1548,23 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Type
 
-			if (TryToSkipType(ref lookahead) == false)
-				{  return false;  }
+			if (TryToSkipType(ref lookahead, mode) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
 
 			// Name
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
-				{  return false;  }
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -1195,13 +1578,25 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name += "[]";
 
 				if (lookahead.Character != '[')
-					{  return false;  }
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
+
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
-				if (TryToSkipParameters(ref lookahead, ']') == false)
-					{  return false;  }
+				if (TryToSkipParameters(ref lookahead, ']', mode) == false || lookahead.Character != ']')
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
+
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
 
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
@@ -1209,105 +1604,135 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 			if (lookahead.Character != '{')
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Build prototype
 
-			System.Text.StringBuilder prototype = new System.Text.StringBuilder();
-
-			iterator.Tokenizer.AppendTextBetweenTo(iterator, lookahead, prototype);
-			prototype.Append(" { ");
-
-			lookahead.Next();
-			TryToSkipWhitespace(ref lookahead);
-
-			bool firstAccessor = true;
-
-			while (lookahead.IsInBounds && lookahead.Character != '}')
+			if (mode == ParseMode.CreateElements)
 				{
-				TokenIterator startOfAccessor = lookahead;
-				
-				if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
-					{  TryToSkipWhitespace(ref lookahead);  }
+				System.Text.StringBuilder prototype = new System.Text.StringBuilder();
 
-				// Accessors may have their own access levels in properties (but not in events) but for the documentation we're always
-				// going to use the overall property's access level.
-				if (TryToSkipModifiers(ref lookahead))
-					{  TryToSkipWhitespace(ref lookahead);  }
-
-				if ( (keyword == "property" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-					 (keyword == "operator" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-					 (keyword == "event" && lookahead.MatchesToken("add") == false && lookahead.MatchesToken("remove") == false) )
-					{  return false;  }
+				iterator.Tokenizer.AppendTextBetweenTo(iterator, lookahead, prototype);
+				prototype.Append(" { ");
 
 				lookahead.Next();
-
-				if (!firstAccessor)
-					{  prototype.Append("; ");  }
-				else
-					{  firstAccessor = false;  }
-
-				iterator.Tokenizer.AppendTextBetweenTo(startOfAccessor, lookahead, prototype);
-
 				TryToSkipWhitespace(ref lookahead);
 
-				if (lookahead.Character == ';')
-					{  lookahead.Next();  }
-				else if (lookahead.Character == '{')
+				bool firstAccessor = true;
+
+				while (lookahead.IsInBounds && lookahead.Character != '}')
 					{
+					TokenIterator startOfAccessor = lookahead;
+				
+					if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+						{  TryToSkipWhitespace(ref lookahead);  }
+
+					// Accessors may have their own access levels in properties (but not in events) but for the documentation we're always
+					// going to use the overall property's access level.
+					if (TryToSkipModifiers(ref lookahead))
+						{  TryToSkipWhitespace(ref lookahead);  }
+
+					if ( (keyword == "property" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
+						 (keyword == "operator" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
+						 (keyword == "event" && lookahead.MatchesToken("add") == false && lookahead.MatchesToken("remove") == false) )
+						{  
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;  
+						}
+
 					lookahead.Next();
-					GenericSkipUntilAfter(ref lookahead, '}');
+
+					if (!firstAccessor)
+						{  prototype.Append("; ");  }
+					else
+						{  firstAccessor = false;  }
+
+					iterator.Tokenizer.AppendTextBetweenTo(startOfAccessor, lookahead, prototype);
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ';')
+						{  lookahead.Next();  }
+					else if (lookahead.Character == '{')
+						{
+						lookahead.Next();
+						GenericSkipUntilAfter(ref lookahead, '}');
+						}
+
+					TryToSkipWhitespace(ref lookahead);
 					}
 
-				TryToSkipWhitespace(ref lookahead);
+				lookahead.Next();
+				prototype.Append(" }");
+
+
+				// Create element
+
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
+
+				if (topicTypeID != 0)
+					{
+					Topic propertyTopic = new Topic();
+					propertyTopic.Title = name;
+					propertyTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+					propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
+					propertyTopic.TopicTypeID = topicTypeID;
+					propertyTopic.LanguageID = this.ID;
+					propertyTopic.DeclaredAccessLevel = accessLevel;
+					propertyTopic.CodeLineNumber = iterator.LineNumber;
+
+					Element propertyElement = new Element(iterator, Element.Flags.InCode);
+					propertyElement.Topic = propertyTopic;
+
+					elements.Add(propertyElement);
+					}
 				}
 
-			lookahead.Next();
-			prototype.Append(" }");
-
-
-			// Create element
-
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword(keyword);
-
-			if (topicTypeID != 0)
+			else // mode isn't CreateElements
 				{
-				Topic propertyTopic = new Topic();
-				propertyTopic.Title = name;
-				propertyTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
-				propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
-				propertyTopic.TopicTypeID = topicTypeID;
-				propertyTopic.LanguageID = this.ID;
-				propertyTopic.DeclaredAccessLevel = accessLevel;
-				propertyTopic.CodeLineNumber = iterator.LineNumber;
-
-				Element propertyElement = new Element(iterator, Element.Flags.InCode);
-				propertyElement.Topic = propertyTopic;
-
-				elements.Add(propertyElement);
+				// If mode is ParsePrototypes, we're not marking the accessors as if they were parameters.  Just skip everything.
+				lookahead.Next();
+				GenericSkipUntilAfter(ref lookahead, '}');
 				}
-
 
 			iterator = lookahead;
 			return true;
 			}
 
 
-		/* Function: TryToGetEnum
-		 * Attempts to retrieve an enum.  If successful it will add an <Element> to the list, move the iterator past it, and return true.
-		 * If unsuccessful it will leave the iterator alone and return false.
+		/* Function: TryToSkipEnum
+		 * 
+		 * If the iterator is on an enum, moves it past it and returns true.  If the mode is set to <ParseMode.CreateElements> it will add it
+		 * to the list of <Elements>.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.CreateElements>
+		 *			- The elements and scope parameters must be set.
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToGetEnum (ref TokenIterator iterator, List<Element> elements, SymbolString scope)
+		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
+												  SymbolString scope = default(SymbolString))
 			{
 			// See [14] and [B.2.11]
+
+			#if DEBUG
+			if (mode == ParseMode.CreateElements && elements == null)
+				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
+			#endif
 
 			TokenIterator lookahead = iterator;
 
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1315,14 +1740,17 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			AccessLevel accessLevel;
 
-			if (TryToSkipModifiers(ref lookahead, out accessLevel))
+			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Keyword
 
 			if (lookahead.MatchesToken("enum") == false)
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
@@ -1330,10 +1758,12 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Name
 
-			string name = TryToGetIdentifier(ref lookahead);
-
-			if (name == null)
-				{  return false;  }
+			string name;
+			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -1345,58 +1775,85 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
-				if (TryToSkipType(ref lookahead) == false)
-					{  return false;  }
+				if (TryToSkipType(ref lookahead, mode) == false)
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
 
 				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (lookahead.Character != '{')
-				{  return false;  }
+			if (lookahead.IsInBounds &&
+				lookahead.Character != '{')
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 
 			// Create element
 
-			SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
-
-			ContextString childContext = new ContextString();
-			childContext.Scope = symbol;
-
-			ParentElement enumElement = new ParentElement(iterator, Element.Flags.InCode);
-			enumElement.ChildContextString = childContext;
-			enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
-
-			int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
-
-			if (topicTypeID != 0)
+			if (mode == ParseMode.CreateElements)
 				{
-				Topic enumTopic = new Topic();
-				enumTopic.Title = name;
-				enumTopic.Symbol = symbol;
-				enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-				enumTopic.TopicTypeID = topicTypeID;
-				enumTopic.LanguageID = this.ID;
-				enumTopic.DeclaredAccessLevel = accessLevel;
-				enumTopic.CodeLineNumber = iterator.LineNumber;
+				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
 
-				enumElement.Topic = enumTopic;
+				ContextString childContext = new ContextString();
+				childContext.Scope = symbol;
+
+				ParentElement enumElement = new ParentElement(iterator, Element.Flags.InCode);
+				enumElement.ChildContextString = childContext;
+				enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
+
+				int topicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("enum");
+
+				if (topicTypeID != 0)
+					{
+					Topic enumTopic = new Topic();
+					enumTopic.Title = name;
+					enumTopic.Symbol = symbol;
+					enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
+					enumTopic.TopicTypeID = topicTypeID;
+					enumTopic.LanguageID = this.ID;
+					enumTopic.DeclaredAccessLevel = accessLevel;
+					enumTopic.CodeLineNumber = iterator.LineNumber;
+
+					enumElement.Topic = enumTopic;
+					}
+
+				elements.Add(enumElement);
+
+
+				//  Body
+
+				iterator = lookahead;
+
+				if (iterator.Character == '{')
+					{
+					iterator.Next();
+					GenericSkipUntilAfter(ref iterator, '}');
+
+					enumElement.EndingLineNumber = iterator.LineNumber;
+					enumElement.EndingCharNumber = iterator.CharNumber; 
+					}
+
+				return true;
 				}
+			
+			else // mode isn't CreateElements
+				{
+				iterator = lookahead;
 
-			elements.Add(enumElement);
+				if (iterator.Character == '{')
+					{
+					iterator.Next();
+					GenericSkipUntilAfter(ref iterator, '}');
+					}
 
-
-			//  Body
-
-			iterator = lookahead;
-			iterator.Next();
-			GenericSkipUntilAfter(ref iterator, '}');
-
-			enumElement.EndingLineNumber = iterator.LineNumber;
-			enumElement.EndingCharNumber = iterator.CharNumber; 
-
-			return true;
+				return true;
+				}
 			}
-
+			
 
 
 		// Group: Component Parsing Functions
@@ -1404,43 +1861,64 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipParameters
+		 * 
 		 * Tries to move the iterator past a comma-separated list of parameters ending at the closing symbol, which defaults to
 		 * a closing parenthesis.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameters (ref TokenIterator iterator, char closingSymbol = ')')
+		protected bool TryToSkipParameters (ref TokenIterator iterator, char closingSymbol = ')', ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
 			for (;;)
 				{
-				if (TryToSkipParameter(ref lookahead, closingSymbol) == false)
-					{  return false;  }
-
 				if (lookahead.Character == closingSymbol)
 					{
 					iterator = lookahead;
 					return true;
 					}
-				else if (lookahead.Character == ',')
+				else 
 					{
-					lookahead.Next();
-					TryToSkipWhitespace(ref lookahead);
+					if (TryToSkipParameter(ref lookahead, closingSymbol, mode) == false)
+						{  
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;  
+						}
+
+					if (lookahead.Character == ',')
+						{
+						if (mode == ParseMode.ParsePrototype)
+							{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+						}
 					}
-				else
-					{  return false;  }
 				}
 			}
 
 
 		/* Function: TryToSkipParameter
+		 * 
 		 * Tries to move the iterator past a parameter, such as "int x" or "IList<int> y = null".  The parameter ends at a comma or
 		 * the closing symbol, which defaults to a closing parenthesis.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameter (ref TokenIterator iterator, char closingSymbol = ')')
+		protected bool TryToSkipParameter (ref TokenIterator iterator, char closingSymbol = ')', ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly) == true)
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode) == true)
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 			if (lookahead.MatchesToken("ref") ||
@@ -1448,28 +1926,44 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				lookahead.MatchesToken("params") ||
 				lookahead.MatchesToken("this"))
 				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (TryToSkipType(ref lookahead) == false)
-				{  return false;  }
+			if (TryToSkipType(ref lookahead, mode) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
-			if (TryToSkipIdentifier(ref lookahead) == false)
-				{  return false;  }
+			if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Name) == false)
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 
 			TryToSkipWhitespace(ref lookahead);
 
 			if (lookahead.Character == '=')
 				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;  }
+
 				lookahead.Next();
+				TokenIterator startOfDefaultValue = lookahead;
 
 				while (lookahead.IsInBounds &&
 						 lookahead.Character != ',' &&
 						 lookahead.Character != closingSymbol)
 					{  GenericSkip(ref lookahead);  }
+
+				if (mode == ParseMode.ParsePrototype)
+					{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfDefaultValue, lookahead, PrototypeParsingType.DefaultValue);  }
 				}
 
 			if (lookahead.Character == ',' || 
@@ -1479,19 +1973,29 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				return true;
 				}
 			else
-				{  return false;  }
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
+				}
 			}
 
 
 		/* Function: TryToSkipType
+		 * 
 		 * Tries to move the iterator past a type, such as "int", "System.Collections.Generic.List<int>", or "int[]".  This accepts
 		 * "void" as a valid type.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipType (ref TokenIterator iterator)
+		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
-			if (TryToSkipIdentifier(ref lookahead) == false)
+			if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type) == false)
 				{  return false;  }
 
 			iterator = lookahead;
@@ -1499,12 +2003,15 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.Character == '?')
 				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeSuffix;  }
+
 				lookahead.Next();
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
 
-			if (TryToSkipTemplateSignature(ref lookahead))
+			if (TryToSkipTemplateSignature(ref lookahead, mode, true))
 				{
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
@@ -1512,6 +2019,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.Character == '*')
 				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeSuffix;  }
+
 				lookahead.Next();
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
@@ -1519,6 +2029,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			while (lookahead.Character == '[')
 				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;  }
+
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
@@ -1530,9 +2043,17 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				if (lookahead.Character == ']')
 					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;  }
+
 					lookahead.Next();
 					iterator = lookahead;
 					TryToSkipWhitespace(ref lookahead);
+					}
+				else if (lookahead.IsInBounds == false)
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;						
 					}
 				else
 					{  break;  }
@@ -1542,29 +2063,58 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToGetIdentifier
-		 * Attempts to an identifier, such as "X.Y.Z".  If successful it will return it as a string and move the iterator past it.  If not it will return
-		 * null and leave the iterator alone.  Use <TryToGetUnqualifiedIdentifier()> if you only want to retrieve a single segment.
+		/* Function: TryToSkipIdentifier
+		 * 
+		 * Attempts to skip past and retrieve an identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want to
+		 * retrieve a single segment.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
+		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected string TryToGetIdentifier (ref TokenIterator iterator)
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly, 
+													   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator start = iterator;
 
-			if (TryToSkipIdentifier(ref iterator))
-				{  return iterator.Tokenizer.TextBetween(start, iterator);  }
+			if (TryToSkipIdentifier(ref iterator, mode, prototypeParsingType))
+				{  
+				identifier = iterator.Tokenizer.TextBetween(start, iterator);
+				return true;
+				}
 			else
-				{  return null;  }
+				{  
+				identifier = null;  
+				return false;
+				}
 			}
 
 
 		/* Function: TryToSkipIdentifier
-		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <SkipUnqualifiedIdentifier()> if you only want
+		 * 
+		 * Tries to move the iterator past a qualified identifier, such as "X.Y.Z".  Use <TryToSkipUnqualifiedIdentifier()> if you only want
 		 * to skip a single segment.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
+		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipIdentifier (ref TokenIterator iterator)
+		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
+													   PrototypeParsingType prototypeParsingType = PrototypeParsingType.Name)
 			{
 			TokenIterator lookahead = iterator;
 			TokenIterator endOfIdentifier;
+			TokenIterator endOfQualifier = iterator;
 
 			for (;;)
 				{
@@ -1587,6 +2137,22 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{  break;  }
 
 				TryToSkipWhitespace(ref lookahead);
+				endOfQualifier = lookahead;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				if (prototypeParsingType == PrototypeParsingType.Type)
+					{
+					if (endOfQualifier > iterator)
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfQualifier, PrototypeParsingType.TypeQualifier);  }
+
+					iterator.Tokenizer.SetPrototypeParsingTypeBetween(endOfQualifier, endOfIdentifier, PrototypeParsingType.Type);
+					}
+				else
+					{
+					iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfIdentifier, prototypeParsingType);
+					}
 				}
 
 			iterator = endOfIdentifier;
@@ -1594,25 +2160,16 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: TryToGetUnqualifiedIdentifier
-		 * Attempts to retrieve a single unqualified identifier, which means only "X" would be returned for "X.Y.Z".  If successful it will return
-		 * it as a string and move the iterator past it.  If not it will return null and leave the iterator alone.
-		 */
-		protected string TryToGetUnqualifiedIdentifier (ref TokenIterator iterator)
-			{
-			TokenIterator start = iterator;
-
-			if (TryToSkipUnqualifiedIdentifier(ref iterator))
-				{  return iterator.Tokenizer.TextBetween(start, iterator);  }
-			else
-				{  return null;  }
-			}
-
-
 		/* Function: TryToSkipUnqualifiedIdentifier
+		 * 
 		 * Tries to move the iterator past a single unqualified identifier, which means only "X" in "X.Y.Z".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator)
+		protected bool TryToSkipUnqualifiedIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			TokenIterator lookahead = iterator;
 
@@ -1643,20 +2200,82 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 		/* Function: TryToSkipTemplateSignature
+		 * 
 		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- If isType is true, it will mark tokens with these types, including in nested templates:
+		 *				- <PrototypeParsingType.OpeningTypeSuffix>
+		 *				- <PrototypeParsingType.ClosingTypeSuffix>
+		 *				- <PrototypeParsingType.Type> 
+		 *				- <PrototypeParsingType.TypeQualifier>
+		 *				- <PrototypeParsingType.TypeModifier>
+		 *			- If isType is false, it will mark everything with <PrototypeParsingType.NameSuffix_PartOfType>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator)
+		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool isType = true)
 			{
 			if (iterator.Character != '<')
 				{  return false;  }
 
-			// If this is ever implemented to actually parse the signature, note that in interfaces and delegates there is an additional in/out 
-			// keyword that can optionally be applied to each one.  See [13.1.3]
+			TokenIterator lookahead = iterator;
 
-			iterator.Next();
-			GenericSkipUntilAfter(ref iterator, '>', true);
-			
-			return true;
+			if (mode == ParseMode.ParsePrototype && isType)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			while (lookahead.IsInBounds && lookahead.Character != '>')
+				{
+				for (;;)
+					{
+					// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.  See [13.1.3]
+					if (lookahead.MatchesToken("in") || 
+						lookahead.MatchesToken("out"))
+						{
+						if (mode == ParseMode.ParsePrototype && isType)
+							{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+						}
+
+					if (TryToSkipType(ref lookahead, mode) == false)
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character != ',')
+						{  break;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+			if (lookahead.Character == '>')
+				{
+				if (isType)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;  }
+				else
+					{  lookahead.Tokenizer.SetPrototypeParsingTypeBetween(iterator, lookahead, PrototypeParsingType.NameSuffix_PartOfType);  }
+
+				lookahead.Next();
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
 			}
 
 
@@ -1666,9 +2285,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- All attributes will be set to <PrototypeParsingType.TypeModifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1697,9 +2318,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- The attribute will be set to <PrototypeParsingType.TypeModifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1731,6 +2354,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.SyntaxHighlight)
 				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfAttribute, iterator, SyntaxHighlightingType.CSharpAttribute);  }
+			else if (mode == ParseMode.ParsePrototype)
+				{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfAttribute, iterator, PrototypeParsingType.TypeModifier);  }
 
 			return true;
 			}
@@ -1742,10 +2367,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- <Language.ParseMode.ParsePrototype>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- All modifiers will be set to <PrototypeParsingType.TypeModifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipModifiers (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1761,10 +2387,11 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- <Language.ParseMode.ParsePrototype>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- All modifiers will be set to <PrototypeParsingType.TypeModifier>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipModifiers (ref TokenIterator iterator, out AccessLevel accessLevel, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1914,9 +2541,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipPreprocessingDirective (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1954,9 +2581,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipWhitespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1983,9 +2610,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		new protected bool TryToSkipComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -1998,9 +2625,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		new protected bool TryToSkipLineComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -2027,9 +2654,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		new protected bool TryToSkipBlockComment (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -2061,9 +2688,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * 
 		 * Supported Modes:
 		 * 
-		 *		- <Language.ParseMode.IterateOnly>
-		 *		- <Language.ParseMode.SyntaxHighlight>
-		 *		- Everything else is treated as <Language.ParseMode.IterateOnly>.
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		new protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
@@ -2115,6 +2742,21 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: ResetTokensBetween
+		 * If the mode is <ParseMode.SyntaxHighlight>, <ParseMode.ParsePrototype>, or <ParseMode.ParseClassPrototype>, this will
+		 * reset the relevant tokens between the iterators back to null.  For other modes it has no effect.
+		 */
+		protected void ResetTokensBetween (TokenIterator start, TokenIterator end, ParseMode mode)
+			{
+			if (mode == ParseMode.SyntaxHighlight)
+				{  start.Tokenizer.SetSyntaxHighlightingTypeBetween(start, end, SyntaxHighlightingType.Null);  }
+			else if (mode == ParseMode.ParsePrototype)
+				{  start.Tokenizer.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.Null);  }
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  start.Tokenizer.SetClassPrototypeParsingTypeBetween(start, end, ClassPrototypeParsingType.Null);  }
 			}
 
 
