@@ -1,0 +1,14 @@
+- No Parameters: public event Delegate EventA
+  - Link Candidates: Delegate
+-----
+- No Parameters: [Attribute] private event Delegate EventB
+  - Link Candidates: Delegate
+-----
+- No Parameters: [Attribute] private event Delegate EventC
+  - Link Candidates: Delegate
+-----
+- No Parameters: internal event Delegate EventD { add; remove }
+  - Link Candidates: Delegate
+-----
+- No Parameters: [Attribute] internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
+  - Link Candidates: Delegate

@@ -1,0 +1,54 @@
+- No Parameters: public TestClass ()
+  - Link Candidates: (none)
+-----
+- Before Parameters: private TestClass (
+  - Link Candidates: (none)
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: private TestClass (
+  - Link Candidates: (none)
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: int y
+    - Name: y
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- No Parameters: ~TestClass ()
+  - Link Candidates: (none)
+-----
+- Before Parameters: extern static TestClass (
+  - Link Candidates: (none)
+
+  - Parameter 1: float x
+    - Name: x
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- No Parameters: extern ~TestClass ()
+  - Link Candidates: (none)

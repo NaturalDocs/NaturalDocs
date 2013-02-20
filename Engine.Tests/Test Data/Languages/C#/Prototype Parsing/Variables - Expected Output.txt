@@ -1,0 +1,23 @@
+- No Parameters: int varA
+  - Link Candidates: int
+-----
+- No Parameters: public int varB
+  - Link Candidates: int
+-----
+- No Parameters: private static List<int> varC
+  - Link Candidates: List, int
+-----
+- No Parameters: volatile string[] varD
+  - Link Candidates: string
+-----
+- No Parameters: [Attribute: Something("value")] int* varE
+  - Link Candidates: int
+-----
+- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varF
+  - Link Candidates: System.Text.StringBuilder
+-----
+- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varG
+  - Link Candidates: System.Text.StringBuilder
+-----
+- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varH
+  - Link Candidates: System.Text.StringBuilder

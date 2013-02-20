@@ -1,0 +1,129 @@
+- No Parameters: void Parameterless ()
+  - Link Candidates: void
+-----
+- Before Parameters: void Basic (
+  - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: string y
+    - Name: y
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: public static string Modifiers (
+  - Link Candidates: string
+
+  - Parameter 1: int? x,
+    - Name: x
+    - Full Type: int?
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: out string y
+    - Name: y
+    - Full Type: out string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: [Attribute][DllImport ("NaturalDocs.Engine.SQLite.dll")] extern static private bool Attributes_NoBraces (
+  - Link Candidates: bool
+
+  - Parameter 1: [MarshalAs(UnmanagedType.LPStr)] string x,
+    - Name: x
+    - Full Type: [MarshalAs(UnmanagedType.LPStr)] string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 2: [param: something("don't trip on this: )]){")][AnotherOne] int y,
+    - Name: y
+    - Full Type: [param: something("don't trip on this: )]){")][AnotherOne] int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: out int z
+    - Name: z
+    - Full Type: out int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void DefaultValues (
+  - Link Candidates: void
+
+  - Parameter 1: string x = "),;[<{ \" ),;[<{",
+    - Name: x
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value:  "),;[<{ \" ),;[<{"
+
+  - Parameter 2: int[,,] y = [1,2,3],
+    - Name: y
+    - Full Type: int[,,]
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value:  [1,2,3]
+
+  - Parameter 3: int z = 6
+    - Name: z
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value:  6
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: public List<int> Templates (
+  - Link Candidates: List, int
+
+  - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x = null,
+    - Name: x
+    - Full Type: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>>
+    - Base Type: System.Collections.Generic.Dictionary
+    - Link Candidates: System.Collections.Generic.Dictionary, Nullable, int, Map, string, Object
+    - Default Value:  null
+
+  - Parameter 2: int y = 12
+    - Name: y
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value:  12
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: public List<T1> WhereClause<T1,T2> (
+  - Link Candidates: List, T1
+
+  - Parameter 1: List<T2> x
+    - Name: x
+    - Full Type: List<T2>
+    - Base Type: List
+    - Link Candidates: List, T2
+    - Default Value: (not detected)
+
+- After Parameters: ) where T1: class, Interface, new () where T2: System.Collections.IEnumerable<T2>
+  - Link Candidates: (none)

@@ -1,0 +1,8 @@
+- No Parameters: public const int ConstA
+  - Link Candidates: int
+-----
+- No Parameters: [Attribute] private const string ConstB
+  - Link Candidates: string
+-----
+- No Parameters: [Attribute] private const string ConstC
+  - Link Candidates: string

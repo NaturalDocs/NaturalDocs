@@ -1,0 +1,11 @@
+- No Parameters: int PropertyA { get }
+  - Link Candidates: int
+-----
+- No Parameters: protected int PropertyB { get; private set }
+  - Link Candidates: int
+-----
+- No Parameters: [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  - Link Candidates: System.Text.StringBuilder
+-----
+- No Parameters: abstract int PropertyD { get; set }
+  - Link Candidates: int

@@ -1,0 +1,25 @@
+- Before Parameters: public delegate void DelegateA (
+  - Link Candidates: void
+
+  - Parameter 1: int a
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: [Attribute] protected internal delegate IList<T> DelegateB<in T> (
+  - Link Candidates: IList, T
+
+  - Parameter 1: params object[] x
+    - Name: x
+    - Full Type: params object[]
+    - Base Type: object
+    - Link Candidates: object
+    - Default Value: (not detected)
+
+- After Parameters: ) where T: System.Collections.IEnumerable, new()
+  - Link Candidates: (none)

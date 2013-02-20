@@ -1,0 +1,58 @@
+- Before Parameters: int this [
+  - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { get }
+  - Link Candidates: (none)
+-----
+- Before Parameters: protected int this [
+  - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { get; private set }
+  - Link Candidates: (none)
+-----
+- Before Parameters: [Attribute] internal System.Text.StringBuilder this [
+  - Link Candidates: System.Text.StringBuilder
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: int y
+    - Name: y
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  - Link Candidates: (none)
+-----
+- Before Parameters: abstract int this [
+  - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { get; set }
+  - Link Candidates: (none)

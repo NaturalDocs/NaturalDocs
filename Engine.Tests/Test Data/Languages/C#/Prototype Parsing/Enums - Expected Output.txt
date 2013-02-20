@@ -1,0 +1,5 @@
+- No Parameters: public enum EnumA
+  - Link Candidates: (none)
+-----
+- No Parameters: [Attribute] public enum EnumB : byte
+  - Link Candidates: byte
