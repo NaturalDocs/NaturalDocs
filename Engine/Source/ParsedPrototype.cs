@@ -49,6 +49,17 @@ namespace GregValure.NaturalDocs.Engine
 		public enum ParameterStyle : byte
 			{  C, Pascal  }
 
+		/* Enum: SectionType
+		 * 
+		 * BeforeParameters - The prototype prior to the parameters.  This will include the start of parameters symbol, such as
+		 *							   an opening parenthesis in C#.  If there are no parameters, this will be the entire prototype.
+		 *	Parameter - An individual parameter.  It may include the parameter separator symbol, such as a comma in C#.
+		 *	AfterParameters - The prototype after the parameters.  This will include the end of parameters symbol, such as a
+		 *							 closing parenthesis in C#.
+		 */
+		public enum SectionType : byte
+			{  BeforeParameters, Parameter, AfterParameters  }
+
 
 
 		// Group: Functions
@@ -61,7 +72,7 @@ namespace GregValure.NaturalDocs.Engine
 		public ParsedPrototype (Tokenizer prototype)
 			{
 			tokenizer = prototype;
-			sectionBounds = null;
+			sections = null;
 			style = null;
 			}
 
@@ -72,9 +83,10 @@ namespace GregValure.NaturalDocs.Engine
 		public void GetCompletePrototype (out TokenIterator start, out TokenIterator end)
 			{
 			start = tokenizer.FirstToken;
-			end = tokenizer.LastToken;
+			start.NextPastWhitespace();
 
-			TrimWhitespace(ref start, ref end);
+			end = tokenizer.LastToken;
+			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 			}
 
 			
@@ -85,14 +97,16 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public void GetBeforeParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (sectionBounds == null)
-				{  CalculateSectionBounds();  }
+			if (sections == null)
+				{  CalculateSections();  }
+
+			Section section = FindSection(SectionType.BeforeParameters);
 
 			start = tokenizer.FirstToken;
-			start.Next(sectionBounds[0]);
+			start.Next(section.StartIndex);
 
 			end = start;
-			end.Next(sectionBounds[1] - sectionBounds[0]);
+			end.Next(section.EndIndex - section.StartIndex);
 			}
 
 
@@ -101,10 +115,12 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetParameter (int index, out TokenIterator start, out TokenIterator end)
 			{
-			if (sectionBounds == null)
-				{  CalculateSectionBounds();  }
+			if (sections == null)
+				{  CalculateSections();  }
 
-			if (index >= NumberOfParameters)
+			Section section = FindSection(SectionType.Parameter, index);
+
+			if (section == null)
 				{
 				start = tokenizer.LastToken;
 				end = start;
@@ -112,14 +128,11 @@ namespace GregValure.NaturalDocs.Engine
 				}
 			else
 				{
-				int startIndex = sectionBounds[2 + (index * 2)];
-				int endIndex = sectionBounds[3 + (index * 2)];
-
 				start = tokenizer.FirstToken;
-				start.Next(startIndex);
+				start.Next(section.StartIndex);
 
 				end = start;
-				end.Next(endIndex - startIndex);
+				end.Next(section.EndIndex - section.StartIndex);
 
 				return true;
 				}
@@ -350,10 +363,12 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetAfterParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (sectionBounds == null)
-				{  CalculateSectionBounds();  }
+			if (sections == null)
+				{  CalculateSections();  }
 
-			if (sectionBounds.Length < 4)
+			Section section = FindSection(SectionType.AfterParameters);
+
+			if (section == null)
 				{
 				start = tokenizer.LastToken;
 				end = start;
@@ -361,174 +376,117 @@ namespace GregValure.NaturalDocs.Engine
 				}
 			else
 				{
-				int startIndex = sectionBounds[sectionBounds.Length - 2];
-				int endIndex = sectionBounds[sectionBounds.Length - 1];
-
 				start = tokenizer.FirstToken;
-				start.Next(startIndex);
+				start.Next(section.StartIndex);
 
 				end = start;
-				end.Next(endIndex - startIndex);
+				end.Next(section.EndIndex - section.StartIndex);
 
 				return true;
 				}
 			}
 			
 
-		/* Function: CalculateSectionBounds
+		/* Function: CalculateSections
 		 */
-		protected void CalculateSectionBounds ()
+		protected void CalculateSections ()
 			{
-			// Count the parameters
+			sections = new List<Section>();
 
-			int numberOfParameters = 0;
-			bool hasStartOfParams = false;
 			TokenIterator iterator = tokenizer.FirstToken;
+			iterator.NextPastWhitespace();
+
+
+			// Before parameters
+
+			Section section = new Section();
+			section.Type = SectionType.BeforeParameters;
+			section.StartIndex = iterator.TokenIndex;
 
 			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
 				{  iterator.Next();  }
 
+			if (iterator.IsInBounds == false)
+				{
+				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
+				return;
+				}
+
+			// Include the StartOfParams symbol in the section
+			iterator.Next();
+
+			section.EndIndex = iterator.TokenIndex;
+			sections.Add(section);
+
+			iterator.NextPastWhitespace();
+
+
+			// Parameters
+
+			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
+				{
+				section = new Section();
+				section.Type = SectionType.Parameter;
+				section.StartIndex = iterator.TokenIndex;
+
+				while (iterator.IsInBounds &&
+						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+						 iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
+					{  iterator.Next();  }
+
+				// Include the separator in the parameter block
+				if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					{  iterator.Next();  }
+
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
+
+				iterator.NextPastWhitespace();
+				}
+
+
+			// After parameters
+
 			if (iterator.IsInBounds)
 				{
-				hasStartOfParams = true;
-				bool hasNonWhitespace = false;
+				section = new Section();
+				section.Type = SectionType.AfterParameters;
+				section.StartIndex = iterator.TokenIndex;
 
-				iterator.Next();
-				numberOfParameters++;
+				iterator = tokenizer.LastToken;
+				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 
-				while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
-					{
-					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{  numberOfParameters++;  }
-					if (iterator.FundamentalType != FundamentalType.Whitespace)
-						{  hasNonWhitespace = true;  }
-
-					iterator.Next();
-					}
-
-				// Ignore empty parameter groups like Function() and Function( ).
-				if (numberOfParameters == 1 && hasNonWhitespace == false)
-					{  numberOfParameters = 0;  }
-				}
-
-
-			// Create the bounds array
-
-			if (hasStartOfParams == false)
-				{
-				sectionBounds = new int[2];
-
-				TokenIterator start = tokenizer.FirstToken;
-				TokenIterator end = tokenizer.LastToken;
-
-				TrimWhitespace(ref start, ref end);
-
-				sectionBounds[0] = start.TokenIndex;
-				sectionBounds[1] = end.TokenIndex;
-				}
-
-			else if (numberOfParameters == 0)
-				{
-				sectionBounds = new int[4];
-
-				TokenIterator start, end;
-
-				iterator = tokenizer.FirstToken;
-				start = iterator;
-
-				while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
-					{  iterator.Next();  }
-
-				// Include StartOfParams in the first segment
-				iterator.Next();
-				end = iterator;
-
-				TrimWhitespace(ref start, ref end);
-
-				sectionBounds[0] = start.TokenIndex;
-				sectionBounds[1] = end.TokenIndex;
-
-				iterator = end;
-
-				while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
-					{  iterator.Next();  }
-
-				start = iterator;
-				end = tokenizer.LastToken;
-
-				TrimWhitespace(ref start, ref end);
-
-				sectionBounds[2] = start.TokenIndex;
-				sectionBounds[3] = end.TokenIndex;
-				}
-
-			else
-				{
-				sectionBounds = new int[ (numberOfParameters * 2) + 4 ];
-
-				TokenIterator start, end;
-
-				iterator = tokenizer.FirstToken;
-				start = iterator;
-
-				while (iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
-					{  iterator.Next();  }
-
-				// Include StartOfParams in the first segment
-				iterator.Next();
-				end = iterator;
-
-				TrimWhitespace(ref start, ref end);
-				sectionBounds[0] = start.TokenIndex;
-				sectionBounds[1] = end.TokenIndex;
-
-				int boundsIndex = 2;
-
-				do
-					{
-					start = iterator;
-
-					while (iterator.IsInBounds && 
-								iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
-								iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
-						{  iterator.Next();  }
-
-					// Include ParamSeparator in the segment
-					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{  iterator.Next();  }
-
-					end = iterator;
-
-					TrimWhitespace(ref start, ref end);
-
-					sectionBounds[boundsIndex] = start.TokenIndex;
-					sectionBounds[boundsIndex+1] = end.TokenIndex;
-					boundsIndex += 2;
-					}
-				while (iterator.IsInBounds && 
-							iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams);
-
-				// Section after the parameters.  If there is none, these will both be on the end of the tokenizer and we add
-				// them anyway.
-
-				start = iterator;
-				end = tokenizer.LastToken;
-
-				TrimWhitespace(ref start, ref end);
-
-				sectionBounds[boundsIndex] = start.TokenIndex;
-				sectionBounds[boundsIndex+1] = end.TokenIndex;
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
 				}
 			}
 
 
-		/* Function: TrimWhitespace
-		 * Shrinks the passed bounds to exclude whitespace on the edges.
+		/* Function: FindSection
+		 * Returns the first section with the passed type, or if you passed an index, the nth section with that type.  If there are
+		 * none it will return null.  You must have called <CalculateSections()> at least once before using this function.
 		 */
-		protected void TrimWhitespace (ref TokenIterator start, ref TokenIterator end)
+		protected Section FindSection (SectionType type, int index = 0)
 			{
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-			start.NextPastWhitespace(end);
+			#if DEBUG
+			if (sections == null)
+				{  throw new Exception("Tried to call FindSection() before calling CalculateSections().");  }
+			#endif
+
+			foreach (Section section in sections)
+				{
+				if (section.Type == type)
+					{
+					if (index == 0)
+						{  return section;  }
+					else
+						{  index--;  }
+					}
+				}
+
+			return null;
 			}
 			
 
@@ -553,13 +511,18 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{  
-				if (sectionBounds == null)
-					{  CalculateSectionBounds();  }
+				if (sections == null)
+					{  CalculateSections();  }
 
-				if (sectionBounds.Length <= 4)
-					{  return 0;  }
-				else
-					{  return (sectionBounds.Length / 2) - 2;  }
+				int count = 0;
+
+				foreach (Section section in sections)
+					{
+					if (section.Type == SectionType.Parameter)
+						{  count++;  }
+					}
+
+				return count;
 				}
 			}
 
@@ -619,7 +582,7 @@ namespace GregValure.NaturalDocs.Engine
 						start.Next();
 						}
 					}
-
+					
 				style = ParameterStyle.C;
 				return ParameterStyle.C;
 				}
@@ -635,18 +598,35 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected Tokenizer tokenizer;
 
-		/* var: sectionBounds
-		 * An array of token indexes representing the start and stop of each section of the prototype, or null if it hasn't been
-		 * calculated yet.  The first pair will be the start and stop of the section before the parameters.  If parameters exist,
-		 * a subsequent pair will exist for each parameter and then one final one for the section after the parameters.  If there
-		 * are only two pairs that means there was an empty parameter list such as "Function()".
+		/* var: sections
+		 * A list of <Sections> representing chunks of the prototype, or null if it hasn't been calculated yet.
 		 */
-		protected int[] sectionBounds;
+		protected List<Section> sections;
 
 		/* var: style
 		 * The prototype format, or null if it hasn't been determined yet.
 		 */
 		protected ParameterStyle? style;
 
+
+
+		/* ___________________________________________________________________________
+		 * 
+		 * Class: GregValure.NaturalDocs.Engine.ParsedPrototype.Section
+		 * ___________________________________________________________________________
+		 */
+		protected class Section
+			{
+			public Section ()
+				{
+				StartIndex = 0;
+				EndIndex = 0;
+				Type = SectionType.BeforeParameters;
+				}
+			
+			public int StartIndex;
+			public int EndIndex;
+			public SectionType Type;
+			}
 		}
 	}
