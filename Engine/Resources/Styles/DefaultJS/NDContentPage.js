@@ -44,6 +44,18 @@ var NDContentPage = new function ()
 		if (ieVersion == undefined || ieVersion >= 8)
 			{
 			this.CalculateWideFormPrototypeWidths();
+
+			// Firefox will sometimes execute Start() too early and all the prototype widths will be zero.
+			// Check the widths, and if any of them are zero quit and retry a little later.
+			for (var key in this.wideFormPrototypeWidths)
+				{
+				if (this.wideFormPrototypeWidths[key] == 0)
+					{
+					setTimeout("NDContentPage.Start();", 200);
+					return;
+					}
+				}
+
 			this.ReformatPrototypes();
 
 			window.onresize = function () {  NDContentPage.OnResize();  }
