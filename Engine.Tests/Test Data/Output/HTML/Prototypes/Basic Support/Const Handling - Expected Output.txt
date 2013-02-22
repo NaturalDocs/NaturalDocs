@@ -6,17 +6,17 @@
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">a,&nbsp;</td>
+            <td class="PName last">a,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">b,&nbsp;</td>
+            <td class="PName last">b,</td>
          </tr><tr>
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span> * <span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">c,&nbsp;</td>
+            <td class="PName last">c,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> * <span class="SHKeyword">const</span>&nbsp;</td>
@@ -36,17 +36,17 @@
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">a,&nbsp;</td>
+            <td class="PName last">a,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">b,&nbsp;</td>
+            <td class="PName last">b,</td>
          </tr><tr>
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span>* <span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">c,&nbsp;</td>
+            <td class="PName last">c,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span>* <span class="SHKeyword">const</span>&nbsp;</td>
@@ -66,17 +66,17 @@
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">a,&nbsp;</td>
+            <td class="PName last">a,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">b,&nbsp;</td>
+            <td class="PName last">b,</td>
          </tr><tr>
             <td class="PModifierQualifier first"><span class="SHKeyword">const</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span> *<span class="SHKeyword">const</span>&nbsp;</td>
             <td></td>
-            <td class="PName last">c,&nbsp;</td>
+            <td class="PName last">c,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span> <span class="SHKeyword">const</span> *<span class="SHKeyword">const</span>&nbsp;</td>

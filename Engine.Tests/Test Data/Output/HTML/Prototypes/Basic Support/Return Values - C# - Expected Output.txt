@@ -7,7 +7,7 @@
          <tr>
             <td class="first"></td>
             <td class="PType">Class2&nbsp;</td>
-            <td class="PName last">a,&nbsp;</td>
+            <td class="PName last">a,</td>
          </tr><tr>
             <td class="PModifierQualifier first">Pkg.</td>
             <td class="PType">MyClass&nbsp;</td>

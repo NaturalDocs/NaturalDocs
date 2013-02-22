@@ -5,7 +5,7 @@
          <tr>
             <td class="PType first">List&lt;<span class="SHKeyword">int</span>&gt;&nbsp;</td>
             <td class="PNamePrefix">&amp;</td>
-            <td class="PName">x,&nbsp;</td>
+            <td class="PName">x,</td>
             <td></td>
             <td class="last"></td>
          </tr><tr>

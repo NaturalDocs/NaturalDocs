@@ -5,35 +5,35 @@
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">a,&nbsp;</td>
+            <td class="PName last">a,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">b,&nbsp;</td>
+            <td class="PName last">b,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">*</td>
-            <td class="PName last">c,&nbsp;</td>
+            <td class="PName last">c,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">**</td>
-            <td class="PName last">d,&nbsp;</td>
+            <td class="PName last">d,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">**</td>
-            <td class="PName last">e,&nbsp;</td>
+            <td class="PName last">e,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">**</td>
-            <td class="PName last">f,&nbsp;</td>
+            <td class="PName last">f,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">* *</td>
-            <td class="PName last">g,&nbsp;</td>
+            <td class="PName last">g,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">* *</td>
-            <td class="PName last">h,&nbsp;</td>
+            <td class="PName last">h,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PNamePrefix">* *</td>

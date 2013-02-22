@@ -7,7 +7,7 @@
          <tr>
             <td class="PName first">a</td>
             <td class="PTypeNameSeparator">:&nbsp;</td>
-            <td class="PType last">Class2,&nbsp;</td>
+            <td class="PType last">Class2,</td>
          </tr><tr>
             <td class="PName first">b</td>
             <td class="PTypeNameSeparator">:&nbsp;</td>
