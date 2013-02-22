@@ -24,8 +24,9 @@
 - After Parameters: ] { get; private set }
   - Link Candidates: (none)
 -----
-- Before Parameters: [Attribute] internal System.Text.StringBuilder this [
+- Before Parameters: internal System.Text.StringBuilder this [
   - Link Candidates: System.Text.StringBuilder
+  - Pre-Prototype Line: [Attribute]
 
   - Parameter 1: int x,
     - Name: x

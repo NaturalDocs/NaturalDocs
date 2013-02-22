@@ -1,8 +1,10 @@
 - No Parameters: public const int ConstA
   - Link Candidates: int
 -----
-- No Parameters: [Attribute] private const string ConstB
+- No Parameters: private const string ConstB
   - Link Candidates: string
+  - Pre-Prototype Line: [Attribute]
 -----
-- No Parameters: [Attribute] private const string ConstC
+- No Parameters: private const string ConstC
   - Link Candidates: string
+  - Pre-Prototype Line: [Attribute]

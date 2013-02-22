@@ -1,14 +1,17 @@
 - No Parameters: public event Delegate EventA
   - Link Candidates: Delegate
 -----
-- No Parameters: [Attribute] private event Delegate EventB
+- No Parameters: private event Delegate EventB
   - Link Candidates: Delegate
+  - Pre-Prototype Line: [Attribute]
 -----
-- No Parameters: [Attribute] private event Delegate EventC
+- No Parameters: private event Delegate EventC
   - Link Candidates: Delegate
+  - Pre-Prototype Line: [Attribute]
 -----
 - No Parameters: internal event Delegate EventD { add; remove }
   - Link Candidates: Delegate
 -----
-- No Parameters: [Attribute] internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
+- No Parameters: internal event Delegate EventE { [AddAttribute] add; [RemoveAttribute] remove }
   - Link Candidates: Delegate
+  - Pre-Prototype Line: [Attribute]

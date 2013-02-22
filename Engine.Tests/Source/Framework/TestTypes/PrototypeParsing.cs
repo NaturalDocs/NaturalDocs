@@ -54,6 +54,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);
 						output.AppendLine();
+						AppendPrePrototypeLines(parsedPrototype, output);
 						}
 					else
 						{
@@ -62,6 +63,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);
 						output.AppendLine();
+						AppendPrePrototypeLines(parsedPrototype, output);
 						output.AppendLine();
 
 						for (int paramIndex = 0; paramIndex < numberOfParameters; paramIndex++)
@@ -149,6 +151,20 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 			if (linkableTypes == 0)
 				{  output.Append("(none)");  }
+			}
+
+		void AppendPrePrototypeLines (ParsedPrototype prototype, StringBuilder output)
+			{
+			int numberOfLines = prototype.NumberOfPrePrototypeLines;
+			TokenIterator start, end;
+
+			for (int i = 0; i < numberOfLines; i++)
+				{
+				prototype.GetPrePrototypeLine(i, out start, out end);
+				output.Append("  - Pre-Prototype Line: ");
+				prototype.Tokenizer.AppendTextBetweenTo(start, end, output);
+				output.AppendLine();
+				}
 			}
 		}
 	}

@@ -57,8 +57,9 @@
 - After Parameters: )
   - Link Candidates: (none)
 -----
-- Before Parameters: [Attribute] public static TestClass<T> operator<< (
+- Before Parameters: public static TestClass<T> operator<< (
   - Link Candidates: TestClass, T
+  - Pre-Prototype Line: [Attribute]
 
   - Parameter 1: TestClass<T> a,
     - Name: a

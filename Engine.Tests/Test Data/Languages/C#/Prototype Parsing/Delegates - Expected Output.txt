@@ -11,8 +11,9 @@
 - After Parameters: )
   - Link Candidates: (none)
 -----
-- Before Parameters: [Attribute] protected internal delegate IList<T> DelegateB<in T> (
+- Before Parameters: protected internal delegate IList<T> DelegateB<in T> (
   - Link Candidates: IList, T
+  - Pre-Prototype Line: [Attribute]
 
   - Parameter 1: params object[] x
     - Name: x

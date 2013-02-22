@@ -4,8 +4,9 @@
 - No Parameters: protected int PropertyB { get; private set }
   - Link Candidates: int
 -----
-- No Parameters: [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+- No Parameters: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
   - Link Candidates: System.Text.StringBuilder
+  - Pre-Prototype Line: [Attribute]
 -----
 - No Parameters: abstract int PropertyD { get; set }
   - Link Candidates: int

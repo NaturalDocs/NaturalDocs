@@ -1,5 +1,6 @@
 - No Parameters: public enum EnumA
   - Link Candidates: (none)
 -----
-- No Parameters: [Attribute] public enum EnumB : byte
+- No Parameters: public enum EnumB : byte
   - Link Candidates: byte
+  - Pre-Prototype Line: [Attribute]

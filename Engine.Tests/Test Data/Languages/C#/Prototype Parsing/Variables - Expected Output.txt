@@ -10,14 +10,21 @@
 - No Parameters: volatile string[] varD
   - Link Candidates: string
 -----
-- No Parameters: [Attribute: Something("value")] int* varE
+- No Parameters: int* varE
   - Link Candidates: int
+  - Pre-Prototype Line: [Attribute: Something("value")]
 -----
-- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varF
+- No Parameters: protected internal System.Text.StringBuilder varF
   - Link Candidates: System.Text.StringBuilder
+  - Pre-Prototype Line: [AttributeA]
+  - Pre-Prototype Line: [AttributeB(12)]
 -----
-- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varG
+- No Parameters: protected internal System.Text.StringBuilder varG
   - Link Candidates: System.Text.StringBuilder
+  - Pre-Prototype Line: [AttributeA]
+  - Pre-Prototype Line: [AttributeB(12)]
 -----
-- No Parameters: [AttributeA][AttributeB(12)] protected internal System.Text.StringBuilder varH
+- No Parameters: protected internal System.Text.StringBuilder varH
   - Link Candidates: System.Text.StringBuilder
+  - Pre-Prototype Line: [AttributeA]
+  - Pre-Prototype Line: [AttributeB(12)]

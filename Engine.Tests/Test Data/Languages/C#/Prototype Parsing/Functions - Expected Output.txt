@@ -41,8 +41,10 @@
 - After Parameters: )
   - Link Candidates: (none)
 -----
-- Before Parameters: [Attribute][DllImport ("NaturalDocs.Engine.SQLite.dll")] extern static private bool Attributes_NoBraces (
+- Before Parameters: extern static private bool Attributes_NoBraces (
   - Link Candidates: bool
+  - Pre-Prototype Line: [Attribute]
+  - Pre-Prototype Line: [DllImport ("NaturalDocs.Engine.SQLite.dll")]
 
   - Parameter 1: [MarshalAs(UnmanagedType.LPStr)] string x,
     - Name: x
