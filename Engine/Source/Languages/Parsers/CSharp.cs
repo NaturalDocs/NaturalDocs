@@ -546,7 +546,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -740,7 +740,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -959,7 +959,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1151,7 +1151,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1316,7 +1316,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1508,7 +1508,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1732,7 +1732,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
@@ -1918,7 +1918,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			{
 			TokenIterator lookahead = iterator;
 
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode) == true)
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.TypeModifier) == true)
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 			if (lookahead.MatchesToken("ref") ||
@@ -2288,12 +2288,16 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- All attributes will be set to <PrototypeParsingType.TypeModifier>.
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
+		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
+		 *			  <PrototypeParsingType.TypeQualifier>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
+																			 ParseMode mode = ParseMode.IterateOnly,
+																			 PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
-			if (TryToSkipAttribute(ref iterator, type, mode) == false)
+			if (TryToSkipAttribute(ref iterator, type, mode, prototypeParsingType) == false)
 				{  return false;  }
 
 			for (;;)
@@ -2301,7 +2305,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				TokenIterator lookahead = iterator;
 				TryToSkipWhitespace(ref lookahead, mode);
 
-				if (TryToSkipAttribute(ref lookahead, type, mode) == true)
+				if (TryToSkipAttribute(ref lookahead, type, mode, prototypeParsingType) == true)
 					{  iterator = lookahead;  }
 				else
 					{  break;  }
@@ -2321,10 +2325,13 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- The attribute will be set to <PrototypeParsingType.TypeModifier>.
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>.
+		 *			  If set to <PrototypeParsingType.PrePrototypeLine>, it will also mark the first one with <PrototypeParsingType.StartOfPrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
+																			ParseMode mode = ParseMode.IterateOnly, 
+																			PrototypeParsingType prototypeParsingType = PrototypeParsingType.TypeModifier)
 			{
 			if (iterator.Character != '[')
 				{  return false;  }
@@ -2355,7 +2362,12 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			if (mode == ParseMode.SyntaxHighlight)
 				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfAttribute, iterator, SyntaxHighlightingType.CSharpAttribute);  }
 			else if (mode == ParseMode.ParsePrototype)
-				{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfAttribute, iterator, PrototypeParsingType.TypeModifier);  }
+				{  
+				iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfAttribute, iterator, prototypeParsingType);  
+
+				if (prototypeParsingType == PrototypeParsingType.PrePrototypeLine)
+					{  startOfAttribute.PrototypeParsingType = PrototypeParsingType.StartOfPrePrototypeLine;  }
+				}
 
 			return true;
 			}
