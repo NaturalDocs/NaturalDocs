@@ -450,7 +450,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						  (type == ColumnType.Name ||
 						   type == ColumnType.ModifierQualifier ||
 							type == ColumnType.Type) )
-				{  html.Append("&nbsp;");  }
+				{  
+				TokenIterator lookbehind = end;
+				lookbehind.Previous();
+
+				if (lookbehind.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
+					{  html.Append("&nbsp;");  }
+				}
 
 			// Insert a space after the type in cases of "int* x" because the star won't get a trailing space.
 			else if (type == ColumnType.Type && end.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType)
