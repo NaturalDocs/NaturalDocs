@@ -168,6 +168,24 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Function: BuildPrePrototypeLines
+		 */
+		protected void BuildPrePrototypeLines ()
+			{
+			int lineCount = parsedPrototype.NumberOfPrePrototypeLines;
+			TokenIterator start, end;
+
+			for (int i = 0; i < lineCount; i++)
+				{
+				parsedPrototype.GetPrePrototypeLine(i, out start, out end);
+
+				htmlOutput.Append("<div class=\"PPrePrototypeLine\">");
+				BuildSyntaxHighlightedText(start, end);
+				htmlOutput.Append("</div>");
+				}
+			}
+
+
 		/* Function: CalculateColumns
 		 * Fills in <columnIndexes> for the passed parameter.  If the parameter doesn't exist it will return false.
 		 */
@@ -521,6 +539,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			{
 			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NoParameterForm\">");
 
+			BuildPrePrototypeLines();
+
 			TokenIterator start, end;
 			parsedPrototype.GetCompletePrototype(out start, out end);
 
@@ -538,7 +558,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		protected void BuildWideForm ()
 			{
 			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype WideForm " +
-				parsedPrototype.Style.ToString() + "Style\"><table><tr>");
+				parsedPrototype.Style.ToString() + "Style\">");
+				
+			BuildPrePrototypeLines();
+			
+			htmlOutput.Append("<table><tr>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);
@@ -576,7 +600,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		protected void BuildNarrowForm ()
 			{
 			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NarrowForm " +
-				parsedPrototype.Style.ToString() + "Style\"><table>");
+				parsedPrototype.Style.ToString() + "Style\">");
+				
+			BuildPrePrototypeLines();
+
+			htmlOutput.Append("<table>");
 
 			TokenIterator start, end;
 			parsedPrototype.GetBeforeParameters(out start, out end);
@@ -679,7 +707,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		 * The HTML contents of each parameter cell, not including the td tags.  The first index is the parameter, the
 		 * second is the column.
 		 */
-		protected string [,] htmlCells;
+		protected string[,] htmlCells;
 
 		/* var: addLinks
 		 * Whether to add type links to the prototype.

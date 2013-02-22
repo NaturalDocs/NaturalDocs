@@ -415,7 +415,11 @@ var NDCore = new function ()
 		this.RemoveClass(newPrototype, "WideForm");
 		this.AddClass(newPrototype, "NarrowForm");
 
-		var table = prototype.firstChild;
+		var prePrototypeLines = NDCore.GetElementsByClassName(prototype, "PPrePrototypeLine", "div");
+		for (var i = 0; i < prePrototypeLines.length; i++)
+			{  newPrototype.appendChild(prePrototypeLines[i].cloneNode(true));  }
+
+		var table = prototype.getElementsByTagName("table")[0];
 		var newTable = document.createElement("table");
 		newPrototype.appendChild(newTable);
 
@@ -444,7 +448,11 @@ var NDCore = new function ()
 		this.RemoveClass(newPrototype, "NarrowForm");
 		this.AddClass(newPrototype, "WideForm");
 
-		var table = prototype.firstChild;
+		var prePrototypeLines = NDCore.GetElementsByClassName(prototype, "PPrePrototypeLine", "div");
+		for (var i = 0; i < prePrototypeLines.length; i++)
+			{  newPrototype.appendChild(prePrototypeLines[i].cloneNode(true));  }
+
+		var table = prototype.getElementsByTagName("table")[0];
 		var newTable = document.createElement("table");
 		newPrototype.appendChild(newTable);
 

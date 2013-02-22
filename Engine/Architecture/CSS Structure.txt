@@ -220,7 +220,13 @@ No Parameter Form:
 (start code)
 
 	<NDPrototype NoParameterForm #NDPrototype[ID]>
+
+		<PPrePrototypeLine>
+			...
+		</PPrePrototypeLine>
+
 		content
+
 	</NDPrototype NoParameterForm #NDPrototype[ID]>
 
 (end)
@@ -231,6 +237,11 @@ Wide Form:
 (start code)
 
 	<NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
+
+		<PPrePrototypeLine>
+			...
+		</PPrePrototypeLine>
+
 		<table>
 			<tr>
 

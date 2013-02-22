@@ -142,7 +142,7 @@ var NDContentPage = new function ()
 				if (id != -1)
 					{  
 					// First child is the layout table.
-					this.wideFormPrototypeWidths[id] = prototypes[i].firstChild.offsetWidth;  
+					this.wideFormPrototypeWidths[id] = prototypes[i].getElementsByTagName("table")[0].offsetWidth;  
 					}
 				}
 			}
