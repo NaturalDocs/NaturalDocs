@@ -51,6 +51,7 @@ namespace GregValure.NaturalDocs.Engine
 
 		/* Enum: SectionType
 		 * 
+		 * PrePrototypeLine - A line that should appear separately before the prototype.
 		 * BeforeParameters - The prototype prior to the parameters.  This will include the start of parameters symbol, such as
 		 *							   an opening parenthesis in C#.  If there are no parameters, this will be the entire prototype.
 		 *	Parameter - An individual parameter.  It may include the parameter separator symbol, such as a comma in C#.
@@ -58,7 +59,7 @@ namespace GregValure.NaturalDocs.Engine
 		 *							 closing parenthesis in C#.
 		 */
 		public enum SectionType : byte
-			{  BeforeParameters, Parameter, AfterParameters  }
+			{  PrePrototypeLine, BeforeParameters, Parameter, AfterParameters  }
 
 
 
@@ -77,16 +78,38 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: GetPrePrototypeLine
+		 * Returns the bounds of a numbered pre-prototype line.  Numbers start at zero.  It will return false if one does not
+		 * exist at that number.
+		 */
+		public bool GetPrePrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
+			{
+			return GetSectionBounds(SectionType.PrePrototypeLine, lineNumber, out start, out end);
+			}
+
+
 		/* Function: GetCompletePrototype
-		 * Returns the bounds of the complete prototype, minus whitespace.
+		 * Returns the bounds of the complete prototype, minus whitespace.  This does NOT include pre-prototype lines.
 		 */
 		public void GetCompletePrototype (out TokenIterator start, out TokenIterator end)
 			{
-			start = tokenizer.FirstToken;
-			start.NextPastWhitespace();
+			Section beforeParameters = FindSection(SectionType.BeforeParameters);
 
-			end = tokenizer.LastToken;
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+			start = tokenizer.FirstToken;
+			start.Next(beforeParameters.StartIndex);
+
+			Section afterParameters = FindSection(SectionType.AfterParameters);
+
+			end = start;
+
+			if (afterParameters == null)
+				{
+				end.Next(beforeParameters.EndIndex - beforeParameters.StartIndex);
+				}
+			else
+				{
+				end.Next(afterParameters.EndIndex - beforeParameters.StartIndex);
+				}
 			}
 
 			
@@ -97,45 +120,17 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public void GetBeforeParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (sections == null)
-				{  CalculateSections();  }
-
-			Section section = FindSection(SectionType.BeforeParameters);
-
-			start = tokenizer.FirstToken;
-			start.Next(section.StartIndex);
-
-			end = start;
-			end.Next(section.EndIndex - section.StartIndex);
+			GetSectionBounds(SectionType.BeforeParameters, 0, out start, out end);
 			}
 
 
 		/* Function: GetParameter
-		 * Returns the bounds of the numbered parameter and whether or not it exists.  Numbers start at zero.
+		 * Returns the bounds of a numbered parameter.  Numbers start at zero.  It will return false if one does not exist at that
+		 * number.
 		 */
-		public bool GetParameter (int index, out TokenIterator start, out TokenIterator end)
+		public bool GetParameter (int parameterNumber, out TokenIterator start, out TokenIterator end)
 			{
-			if (sections == null)
-				{  CalculateSections();  }
-
-			Section section = FindSection(SectionType.Parameter, index);
-
-			if (section == null)
-				{
-				start = tokenizer.LastToken;
-				end = start;
-				return false;
-				}
-			else
-				{
-				start = tokenizer.FirstToken;
-				start.Next(section.StartIndex);
-
-				end = start;
-				end.Next(section.EndIndex - section.StartIndex);
-
-				return true;
-				}
+			return GetSectionBounds(SectionType.Parameter, parameterNumber, out start, out end);
 			}
 
 
@@ -363,27 +358,7 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetAfterParameters (out TokenIterator start, out TokenIterator end)
 			{
-			if (sections == null)
-				{  CalculateSections();  }
-
-			Section section = FindSection(SectionType.AfterParameters);
-
-			if (section == null)
-				{
-				start = tokenizer.LastToken;
-				end = start;
-				return false;
-				}
-			else
-				{
-				start = tokenizer.FirstToken;
-				start.Next(section.StartIndex);
-
-				end = start;
-				end.Next(section.EndIndex - section.StartIndex);
-
-				return true;
-				}
+			return GetSectionBounds(SectionType.AfterParameters, 0, out start, out end);
 			}
 			
 
@@ -392,14 +367,34 @@ namespace GregValure.NaturalDocs.Engine
 		protected void CalculateSections ()
 			{
 			sections = new List<Section>();
+			Section section = null;
 
 			TokenIterator iterator = tokenizer.FirstToken;
 			iterator.NextPastWhitespace();
 
 
-			// Before parameters
+			// Pre-Prototype Lines
 
-			Section section = new Section();
+			while (iterator.IsInBounds && iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
+				{
+				section = new Section();
+				section.Type = SectionType.PrePrototypeLine;
+				section.StartIndex = iterator.TokenIndex;
+
+				iterator.Next();
+				while (iterator.IsInBounds && iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine)
+					{  iterator.Next();  }
+
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
+
+				iterator.NextPastWhitespace();
+				}
+
+
+			// Before Parameters
+
+			section = new Section();
 			section.Type = SectionType.BeforeParameters;
 			section.StartIndex = iterator.TokenIndex;
 
@@ -447,7 +442,7 @@ namespace GregValure.NaturalDocs.Engine
 				}
 
 
-			// After parameters
+			// After Parameters
 
 			if (iterator.IsInBounds)
 				{
@@ -464,16 +459,41 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: GetSectionBounds
+		 * Returns the bounds of the passed section and whether it exists.  An index of zero represents the first section of that
+		 * type, 1 represents the second, etc.
+		 */
+		protected bool GetSectionBounds (SectionType type, int index, out TokenIterator start, out TokenIterator end)
+			{
+			Section section = FindSection(type, index);
+
+			if (section == null)
+				{
+				start = tokenizer.LastToken;
+				end = start;
+				return false;
+				}
+			else
+				{
+				start = tokenizer.FirstToken;
+				start.Next(section.StartIndex);
+
+				end = start;
+				end.Next(section.EndIndex - section.StartIndex);
+
+				return true;
+				}
+			}
+
+
 		/* Function: FindSection
 		 * Returns the first section with the passed type, or if you passed an index, the nth section with that type.  If there are
 		 * none it will return null.  You must have called <CalculateSections()> at least once before using this function.
 		 */
 		protected Section FindSection (SectionType type, int index = 0)
 			{
-			#if DEBUG
 			if (sections == null)
-				{  throw new Exception("Tried to call FindSection() before calling CalculateSections().");  }
-			#endif
+				{  CalculateSections();  }
 
 			foreach (Section section in sections)
 				{
@@ -490,6 +510,26 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 
+		/* Function: CountSections
+		 * Returns the number of sections with the passed type.
+		 */
+		protected int CountSections (SectionType type)
+			{
+			if (sections == null)
+				{  CalculateSections();  }
+
+			int count = 0;
+
+			foreach (Section section in sections)
+				{
+				if (section.Type == type)
+					{  count++;  }
+				}
+
+			return count;
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________
@@ -505,24 +545,24 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Property: NumberOfPrePrototypeLines
+		 */
+		public int NumberOfPrePrototypeLines
+			{
+			get
+				{  
+				return CountSections(SectionType.PrePrototypeLine);
+				}
+			}
+
+
 		/* Property: NumberOfParameters
 		 */
 		public int NumberOfParameters
 			{
 			get
 				{  
-				if (sections == null)
-					{  CalculateSections();  }
-
-				int count = 0;
-
-				foreach (Section section in sections)
-					{
-					if (section.Type == SectionType.Parameter)
-						{  count++;  }
-					}
-
-				return count;
+				return CountSections(SectionType.Parameter);
 				}
 			}
 

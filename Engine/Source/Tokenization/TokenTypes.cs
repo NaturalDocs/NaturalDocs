@@ -79,6 +79,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * 
 	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 * 
+	 * StartOfPrePrototypeLine - The first token of a new pre-prototype line.  Each token marked with this starts a new line.
+	 * PrePrototypeLine - Part of a line that should be shown before the prototype.
+	 * 
 	 * StartOfParams - The start of a parameter list, such as an opening parenthesis.
 	 * EndOfParams - The end of a parameter list, such as a closing parenthesis.
 	 * ParamSeparator - A separator between parameters, such as a comma.
@@ -108,6 +111,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	public enum PrototypeParsingType :  byte
 		{
 		Null = 0,
+
+		StartOfPrePrototypeLine, PrePrototypeLine,
 
 		StartOfParams, EndOfParams, ParamSeparator,
 
