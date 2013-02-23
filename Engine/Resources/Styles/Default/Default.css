@@ -910,11 +910,11 @@ body.NDHomePage {
 
 		.HTitle {
 			font: small-caps 24pt `ProjectTitleFontFamily;
-			line-height: 85%;
+			line-height: 95%;
 			}
 		.HSubTitle {
 			font: 13pt `ProjectSubTitleFontFamily;
-			padding-top: .25em;
+			padding-top: .15em;
 			}
 
 	.NDHomePage p {
