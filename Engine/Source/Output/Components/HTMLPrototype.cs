@@ -186,6 +186,24 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Function: BuildPostPrototypeLines
+		 */
+		protected void BuildPostPrototypeLines ()
+			{
+			int lineCount = parsedPrototype.NumberOfPostPrototypeLines;
+			TokenIterator start, end;
+
+			for (int i = 0; i < lineCount; i++)
+				{
+				parsedPrototype.GetPostPrototypeLine(i, out start, out end);
+
+				htmlOutput.Append("<div class=\"PPostPrototypeLine\">");
+				BuildSyntaxHighlightedText(start, end);
+				htmlOutput.Append("</div>");
+				}
+			}
+
+
 		/* Function: CalculateColumns
 		 * Fills in <columnIndexes> for the passed parameter.  If the parameter doesn't exist it will return false.
 		 */
@@ -555,6 +573,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 				{  BuildSyntaxHighlightedText(start, end);  }
 
+			BuildPostPrototypeLines();
+
 			htmlOutput.Append("</div>");
 			}
 
@@ -595,9 +615,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 				{  BuildSyntaxHighlightedText(start, end);  }
 
-			htmlOutput.Append("</td>");
+			htmlOutput.Append("</td></tr></table>");
+			
+			BuildPostPrototypeLines();
 
-			htmlOutput.Append("</tr></table></div>");
+			htmlOutput.Append("</div>");
 			}
 
 
@@ -637,9 +659,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 				{  BuildSyntaxHighlightedText(start, end);  }
 
-			htmlOutput.Append("</td></tr>");
+			htmlOutput.Append("</td></tr></table>");
 
-			htmlOutput.Append("</table></div>");
+			BuildPostPrototypeLines();
+
+			htmlOutput.Append("</div>");
 			}
 
 

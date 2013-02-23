@@ -432,6 +432,10 @@ var NDCore = new function ()
 		newRow = newTable.insertRow(-1);
 		newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
 
+		var postPrototypeLines = NDCore.GetElementsByClassName(prototype, "PPostPrototypeLine", "div");
+		for (var i = 0; i < postPrototypeLines.length; i++)
+			{  newPrototype.appendChild(postPrototypeLines[i].cloneNode(true));  }
+
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
 
@@ -460,6 +464,10 @@ var NDCore = new function ()
 		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
 		newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
 		newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
+
+		var postPrototypeLines = NDCore.GetElementsByClassName(prototype, "PPostPrototypeLine", "div");
+		for (var i = 0; i < postPrototypeLines.length; i++)
+			{  newPrototype.appendChild(postPrototypeLines[i].cloneNode(true));  }
 
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};

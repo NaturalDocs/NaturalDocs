@@ -227,6 +227,10 @@ No Parameter Form:
 
 		content
 
+		<PPostPrototypeLine>
+			...
+		</PPostPrototypeLine>
+
 	</NDPrototype NoParameterForm #NDPrototype[ID]>
 
 (end)
@@ -259,6 +263,11 @@ Wide Form:
 
 			</tr>
 		</table>
+
+		<PPostPrototypeLine>
+			...
+		</PPostPrototypeLine>
+
 	</NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)
@@ -295,6 +304,11 @@ Narrow Form:
 
 			</tr>
 		</table>
+
+		<PPostPrototypeLine>
+			...
+		</PPostPrototypeLine>
+
 	</NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
 
 (end)

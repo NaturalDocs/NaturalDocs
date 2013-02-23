@@ -604,6 +604,10 @@ body.NDContentPage {
 		vertical-align: bottom;
 		}
 
+	.CStyle .PPostPrototypeLine {
+		padding-left: 3.5ex;
+		}
+
 	.CDLEntryType {
 		font: 8pt `CodeFontFamily;
 		white-space: nowrap;
