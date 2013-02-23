@@ -1,0 +1,3 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public enum</span> EnumA</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">public enum</span> EnumB : <span class="SHKeyword">byte</span></div>

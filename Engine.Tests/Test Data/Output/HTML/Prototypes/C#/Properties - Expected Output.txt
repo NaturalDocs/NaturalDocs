@@ -1,0 +1,7 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">int</span> PropertyA { <span class="SHKeyword">get</span> }</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">protected</span> <span class="SHKeyword">int</span> PropertyB { <span class="SHKeyword">get</span>; <span class="SHKeyword">private set</span> }</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">internal</span> System.Text.StringBuilder PropertyC { <span class="SHCSharpAttribute">[SetAttribute]</span> <span class="SHKeyword">protected internal set</span>; <span class="SHCSharpAttribute">[GetAttribute]</span> <span class="SHKeyword">internal get</span> }</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">abstract</span> <span class="SHKeyword">int</span> PropertyD { <span class="SHKeyword">get</span>; <span class="SHKeyword">set</span> }</div>

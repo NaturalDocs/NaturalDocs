@@ -1,0 +1,5 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public const</span> <span class="SHKeyword">int</span> ConstA</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">private const</span> <span class="SHKeyword">string</span> ConstB</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">private const</span> <span class="SHKeyword">string</span> ConstC</div>

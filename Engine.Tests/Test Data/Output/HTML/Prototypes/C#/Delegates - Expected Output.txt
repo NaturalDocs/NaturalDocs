@@ -1,0 +1,26 @@
+<div class="NDPrototype WideForm CStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">public delegate</span> <span class="SHKeyword">void</span> DelegateA (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+            <td class="PName last">a</td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div>
+-----
+<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">protected internal delegate</span> IList&lt;T&gt; DelegateB&lt;<span class="SHKeyword">in</span> T&gt; (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PModifierQualifier first"><span class="SHKeyword">params</span>&nbsp;</td>
+            <td class="PType"><span class="SHKeyword">object</span>[]&nbsp;</td>
+            <td class="PName last">x</td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">) </td>
+   </tr>
+</table><div class="PPostPrototypeLine"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>

@@ -1,0 +1,9 @@
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public event</span> Delegate EventA</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">private event</span> Delegate EventB</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">private event</span> Delegate EventC</div>
+-----
+<div class="NDPrototype NoParameterForm"><span class="SHKeyword">internal event</span> Delegate EventD { <span class="SHKeyword">add</span>; <span class="SHKeyword">remove</span> }</div>
+-----
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><span class="SHKeyword">internal event</span> Delegate EventE { <span class="SHCSharpAttribute">[AddAttribute]</span> <span class="SHKeyword">add</span>; <span class="SHCSharpAttribute">[RemoveAttribute]</span> <span class="SHKeyword">remove</span> }</div>
