@@ -389,7 +389,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 										 (end.RawTextIndex - start.RawTextIndex > 1 ||
 										   (start.Character != '$' && start.Character != '@' && start.Character != '%')) )
 										{
-										htmlOutput.Append("<div class=\"CDLEntryType\">");
+										htmlOutput.Append("<div class=\"CDLParameterType\">");
 									
 										BuildTypeLinkedAndSyntaxHighlightedText(start, end);
 										BuildTypeLinkedAndSyntaxHighlightedText(extensionStart, extensionEnd);

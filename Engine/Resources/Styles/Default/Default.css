@@ -536,7 +536,7 @@ body.NDContentPage {
 				pretty well in all font sizes. */
 			line-height: 123%;
 			}
-		.CDLEntryType {
+		.CDLParameterType {
 			opacity: 0.5;
 			}
 		td.CDLDefinition p {
@@ -608,7 +608,7 @@ body.NDContentPage {
 		padding-left: 3.5ex;
 		}
 
-	.CDLEntryType {
+	.CDLParameterType {
 		font: 8pt `CodeFontFamily;
 		white-space: nowrap;
 		}
@@ -621,10 +621,10 @@ body.NDContentPage {
 	.NDPrototype a:visited,
 	.NDPrototype a:hover,
 	.NDPrototype a:active,
-	.CDLEntryType a:link,
-	.CDLEntryType a:visited,
-	.CDLEntryType a:hover,
-	.CDLEntryType a:active {
+	.CDLParameterType a:link,
+	.CDLParameterType a:visited,
+	.CDLParameterType a:hover,
+	.CDLParameterType a:active {
 		color: #000000;
 		}
 
@@ -633,10 +633,10 @@ body.NDContentPage {
 	.NDPrototype:hover a:visited,
 	.NDPrototype:hover a:hover,
 	.NDPrototype:hover a:active,
-	.CDLEntry:hover .CDLEntryType a:link,
-	.CDLEntry:hover .CDLEntryType a:visited,
-	.CDLEntry:hover .CDLEntryType a:hover,
-	.CDLEntry:hover .CDLEntryType a:active {
+	.CDLEntry:hover .CDLParameterType a:link,
+	.CDLEntry:hover .CDLParameterType a:visited,
+	.CDLEntry:hover .CDLParameterType a:hover,
+	.CDLEntry:hover .CDLParameterType a:active {
 		text-decoration: underline;
 		}
 

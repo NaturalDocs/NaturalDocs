@@ -183,16 +183,17 @@ _______________________________________________________________________________
 				</ul>
 
 				<table CDescriptionList>
-               <tr>
-                  <td CDLEntry>
-                        Entry
-								<CDLEntryType>Type</CDLEntryType>?
-                  </td CDLEntry>
-                  <td CDLDescription>
-                        Description
-                  </td CDLDescription>
-               </tr>
-            </table CDescriptionList>
+					<tr>
+						<td CDLEntry>
+							Entry
+							<CDLParameterType>Type</CDLParameterType>?
+						</td CDLEntry>
+
+						<td CDLDescription>
+							Description
+						</td CDLDescription>
+					</tr>
+				</table CDescriptionList>
 
 				<pre>
 					Code<br>
