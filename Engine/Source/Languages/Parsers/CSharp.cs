@@ -249,14 +249,19 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						{  isAttribute = true;  }
 					else if (lastCodeToken.FundamentalType == FundamentalType.Text || lastCodeToken.Character == '_')
 						{  isAttribute = false;  }
-					else if (lastCodeToken.FundamentalType == FundamentalType.Symbol)
+					else if (lastCodeToken.Character == ']')
 						{
-						// If it follows any symbol other than ], it's an attribute.
 						// If it follows a ], copy what that symbol was already marked as since both arrays and attributes can
 						// be chained.  int[][] and [Test][Category("x")].
-						isAttribute = (lastCodeToken.Character != ']' || 
-										   lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
+						isAttribute = (lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
 						}
+					else if (lastCodeToken.Character == '(' ||
+							  lastCodeToken.Character == '[' ||
+							  lastCodeToken.Character == '{' ||
+							  lastCodeToken.Character == ',' ||
+							  lastCodeToken.Character == ';' ||
+							  lastCodeToken.Character == '}')
+						{  isAttribute = true;  }
 					else
 						{  isAttribute = false;  }
 
