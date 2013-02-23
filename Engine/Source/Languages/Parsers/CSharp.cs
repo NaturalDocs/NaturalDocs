@@ -616,15 +616,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Constraint clauses
 
-			if (lookahead.MatchesToken("where"))
-				{
-				// This is the last possible thing before the body, it can get somewhat elaborate, and we don't need to parse it for
-				// anything so let's just plow through to the brace instead.
-				lookahead.Next();
-
-				while (lookahead.IsInBounds && lookahead.Character != '{')
-					{  GenericSkip(ref lookahead, true);  }
-				}
+			while (TryToSkipWhereClause(ref lookahead, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Start of body
@@ -867,17 +860,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Constraint clauses
 
-			if (lookahead.MatchesToken("where"))
-				{
-				// This is the last possible thing before the body, it can get somewhat elaborate, and we don't need to parse it for
-				// anything so let's just plow through to the brace instead.
-				lookahead.Next();
+			while (TryToSkipWhereClause(ref lookahead, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
 
-				while (lookahead.IsInBounds && 
-						 lookahead.Character != '{' &&
-						 lookahead.Character != ';')
-					{  GenericSkip(ref lookahead, true);  }
-				}
 
 			if (lookahead.IsInBounds &&
 				lookahead.Character != '{' &&
@@ -2276,6 +2261,98 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
+			}
+
+
+		/* Function: TryToSkipWhereClause
+		 * 
+		 * Tries to move the iterator past a where clause, such as "where struct, new()".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- It will be marked with <PrototypeParsingType.StartOfPostPrototypeLine> and <PrototypeParsingType.PostPrototypeLine>.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipWhereClause (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// See [10.1.5] and [B.2.7]
+
+			if (iterator.MatchesToken("where") == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead) == false)
+				{  return false;  }
+
+			TryToSkipWhitespace(ref lookahead);
+
+			if (lookahead.Character != ':')
+				{  return false;  }
+
+			lookahead.Next();
+			TokenIterator endOfClause = lookahead;
+			TryToSkipWhitespace(ref lookahead);
+
+			for (;;)
+				{
+				if (lookahead.MatchesToken("class") ||
+					lookahead.MatchesToken("struct"))
+					{
+					lookahead.Next();
+					endOfClause = lookahead;
+
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else if (lookahead.MatchesToken("new"))
+					{
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character != '(')
+						{  return false;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character != ')')
+						{  return false;  }
+
+					lookahead.Next();
+					endOfClause = lookahead;
+
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else if (TryToSkipType(ref lookahead))
+					{
+					endOfClause = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{  return false;  }
+
+				if (lookahead.Character == ',')
+					{
+					lookahead.Next();
+					endOfClause = lookahead;
+					TryToSkipWhitespace(ref lookahead);
+					}
+				else
+					{  break;  }
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{
+				iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfClause, PrototypeParsingType.PostPrototypeLine);
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPostPrototypeLine;
+				}
+
+			iterator = endOfClause;
+			return true;
 			}
 
 
