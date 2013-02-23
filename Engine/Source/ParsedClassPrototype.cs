@@ -124,7 +124,7 @@ namespace GregValure.NaturalDocs.Engine
 
 
 		/* Function: GetPostModifiers
-		 * Gets the bounds of any modifiers that appear the class name, or returns false if there aren't any.
+		 * Gets the bounds of any modifiers that appear after the class name, or returns false if there aren't any.
 		 */
 		public bool GetPostModifiers (out TokenIterator start, out TokenIterator end)
 			{

@@ -138,7 +138,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * ParentSeparator - A separator between parents, such as a comma.
 	 * 
 	 * Modifier - A separate word modifying the class or parent, such as "public" or "static".
-	 * Name - The name of the class or parent excluding including qualifiers, such as "PkgA.PkgB.Class".
+	 * Name - The name of the class or parent including qualifiers, such as "PkgA.PkgB.Class".
 	 * 
 	 * TemplateSuffix - Extra template information after a class or parent, such as "<T>" in "List<T>".
 	 * 
