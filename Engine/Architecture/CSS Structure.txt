@@ -269,6 +269,11 @@ Narrow Form:
 (start code)
 
 	<NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
+
+		<PPrePrototypeLine>
+			...
+		</PPrePrototypeLine>
+
 		<table>
 			<tr>
 
