@@ -107,6 +107,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
 	 * DefaultValue - The default value of the parameter.
 	 * 
+	 * StartOfPostPrototypeLine - The first token of a new post-prototype line.  Each token marked with this starts a new line.
+	 * PostPrototypeLine - Part of a line that should be shown after the prototype.
 	 */
 	public enum PrototypeParsingType :  byte
 		{
@@ -122,7 +124,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		
 		NamePrefix_PartOfType, Name, NameSuffix_PartOfType,
 
-		DefaultValueSeparator, DefaultValue
+		DefaultValueSeparator, DefaultValue,
+
+		StartOfPostPrototypeLine, PostPrototypeLine
 		}
 
 

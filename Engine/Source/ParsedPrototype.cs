@@ -8,8 +8,8 @@
  * Usage:
  * 
  *		The functions and properties obviously rely on the relevant tokens being set.  You cannot expect a proper result from
- *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>
- *		and <PrototypeParsingType.ParamSeparator>.  Likewise, you can't get anything from <GetParameterName()> unless
+ *		<GetParameter()> or <NumberOfParameters> unless the tokens are marked with <PrototypeParsingType.StartOfParams>,
+ *		<PrototypeParsingType.ParamSeparator>, etc.  Likewise, you can't get anything from <GetParameterName()> unless
  *		you also have tokens marked with <PrototypeParsingType.Name>.  However, you can set the parameter divider tokens,
  *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
  *		<PrototypeParsingType.Name>.
@@ -57,9 +57,10 @@ namespace GregValure.NaturalDocs.Engine
 		 *	Parameter - An individual parameter.  It may include the parameter separator symbol, such as a comma in C#.
 		 *	AfterParameters - The prototype after the parameters.  This will include the end of parameters symbol, such as a
 		 *							 closing parenthesis in C#.
+		 *	PostPrototypeLine - A line that should appear separately after the prototype.
 		 */
 		public enum SectionType : byte
-			{  PrePrototypeLine, BeforeParameters, Parameter, AfterParameters  }
+			{  PrePrototypeLine, BeforeParameters, Parameter, AfterParameters, PostPrototypeLine  }
 
 
 
@@ -362,6 +363,16 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 
+		/* Function: GetPostPrototypeLine
+		 * Returns the bounds of a numbered post-prototype line.  Numbers start at zero.  It will return false if one does not
+		 * exist at that number.
+		 */
+		public bool GetPostPrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
+			{
+			return GetSectionBounds(SectionType.PostPrototypeLine, lineNumber, out start, out end);
+			}
+
+
 		/* Function: CalculateSections
 		 */
 		protected void CalculateSections ()
@@ -375,15 +386,17 @@ namespace GregValure.NaturalDocs.Engine
 
 			// Pre-Prototype Lines
 
-			while (iterator.IsInBounds && iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
+			while (iterator.IsInBounds && 
+					 iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
 				{
 				section = new Section();
 				section.Type = SectionType.PrePrototypeLine;
 				section.StartIndex = iterator.TokenIndex;
 
-				iterator.Next();
-				while (iterator.IsInBounds && iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine)
+				do
 					{  iterator.Next();  }
+				while (iterator.IsInBounds && 
+						 iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine);
 
 				section.EndIndex = iterator.TokenIndex;
 				sections.Add(section);
@@ -398,63 +411,109 @@ namespace GregValure.NaturalDocs.Engine
 			section.Type = SectionType.BeforeParameters;
 			section.StartIndex = iterator.TokenIndex;
 
-			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams)
+			while (iterator.IsInBounds && 
+					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams &&
+					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
 				{  iterator.Next();  }
 
-			if (iterator.IsInBounds == false)
+
+			if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
 				{
-				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
-				section.EndIndex = iterator.TokenIndex;
-				sections.Add(section);
-				return;
-				}
-
-			// Include the StartOfParams symbol in the section
-			iterator.Next();
-
-			section.EndIndex = iterator.TokenIndex;
-			sections.Add(section);
-
-			iterator.NextPastWhitespace();
-
-
-			// Parameters
-
-			while (iterator.IsInBounds && iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams)
-				{
-				section = new Section();
-				section.Type = SectionType.Parameter;
-				section.StartIndex = iterator.TokenIndex;
-
-				while (iterator.IsInBounds &&
-						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
-						 iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
-					{  iterator.Next();  }
-
-				// Include the separator in the parameter block
-				if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-					{  iterator.Next();  }
+				// Include the StartOfParams symbol in the section
+				iterator.Next();
 
 				section.EndIndex = iterator.TokenIndex;
 				sections.Add(section);
 
 				iterator.NextPastWhitespace();
+
+
+				// Parameters
+
+				while (iterator.IsInBounds && 
+						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+						 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
+					{
+					section = new Section();
+					section.Type = SectionType.Parameter;
+					section.StartIndex = iterator.TokenIndex;
+
+					while (iterator.IsInBounds &&
+							 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
+							 iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator &&
+							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
+						{  iterator.Next();  }
+
+					// Include the separator in the parameter block
+					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{  
+						iterator.Next();  
+						section.EndIndex = iterator.TokenIndex;
+						}
+					else
+						{
+						TokenIterator lookbehind = iterator;
+						lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
+						section.EndIndex = lookbehind.TokenIndex;
+						}
+
+					sections.Add(section);
+
+					iterator.NextPastWhitespace();
+					}
+
+
+				// After Parameters
+
+				if (iterator.IsInBounds &&
+					iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
+					{
+					section = new Section();
+					section.Type = SectionType.AfterParameters;
+					section.StartIndex = iterator.TokenIndex;
+
+					do
+						{  iterator.Next();  }
+					while (iterator.IsInBounds &&
+							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine);
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
+					section.EndIndex = lookbehind.TokenIndex;
+
+					sections.Add(section);
+					}
+				}
+
+			else // there was no StartOfParams
+				{
+				// We still have to finish the BeforeParameters section.
+				TokenIterator lookbehind = iterator;
+				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
+				section.EndIndex = lookbehind.TokenIndex;
+
+				sections.Add(section);
 				}
 
 
-			// After Parameters
+			// Post-Prototype Lines
 
-			if (iterator.IsInBounds)
+			while (iterator.IsInBounds && 
+					 iterator.PrototypeParsingType == PrototypeParsingType.StartOfPostPrototypeLine)
 				{
 				section = new Section();
-				section.Type = SectionType.AfterParameters;
+				section.Type = SectionType.PostPrototypeLine;
 				section.StartIndex = iterator.TokenIndex;
 
-				iterator = tokenizer.LastToken;
-				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+				do
+					{  iterator.Next();  }
+				while (iterator.IsInBounds && 
+						 iterator.PrototypeParsingType == PrototypeParsingType.PostPrototypeLine);
 
 				section.EndIndex = iterator.TokenIndex;
 				sections.Add(section);
+
+				iterator.NextPastWhitespace();
 				}
 			}
 
@@ -563,6 +622,17 @@ namespace GregValure.NaturalDocs.Engine
 			get
 				{  
 				return CountSections(SectionType.Parameter);
+				}
+			}
+
+
+		/* Property: NumberOfPostPrototypeLines
+		 */
+		public int NumberOfPostPrototypeLines
+			{
+			get
+				{  
+				return CountSections(SectionType.PostPrototypeLine);
 				}
 			}
 
