@@ -2191,7 +2191,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipTemplateSignature
 		 * 
-		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.
+		 * Tries to move the iterator past a template signature, such as "<int>" in "List<int>".  It can handle nested templates.  If isType is
+		 * false, it will move past the signature in template declarations, such as "<X, in Y>" in "class Template<X, in Y>".
 		 * 
 		 * Supported Modes:
 		 * 
@@ -2213,9 +2214,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			TokenIterator lookahead = iterator;
 
-			if (mode == ParseMode.ParsePrototype && isType)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;  }
-
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
@@ -2223,39 +2221,57 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				for (;;)
 					{
-					// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.  See [13.1.3]
-					if (lookahead.MatchesToken("in") || 
-						lookahead.MatchesToken("out"))
+					if (isType)
 						{
-						if (mode == ParseMode.ParsePrototype && isType)
-							{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+						if (TryToSkipType(ref lookahead, mode) == false)
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							return false;
+							}
+						}
+					else // not a type
+						{
+						// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.  See [13.1.3]
+						if (lookahead.MatchesToken("in") || 
+							lookahead.MatchesToken("out"))
+							{
+							lookahead.Next();
+							TryToSkipWhitespace(ref lookahead);
+							}
 
+						if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode) == false)
+							{
+							ResetTokensBetween(iterator, lookahead, mode);
+							return false;
+							}
+						}
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == ',')
+						{
 						lookahead.Next();
 						TryToSkipWhitespace(ref lookahead);
 						}
-
-					if (TryToSkipType(ref lookahead, mode) == false)
-						{
-						ResetTokensBetween(iterator, lookahead, mode);
-						return false;
-						}
-
-					TryToSkipWhitespace(ref lookahead);
-
-					if (lookahead.Character != ',')
+					else
 						{  break;  }
-
-					lookahead.Next();
-					TryToSkipWhitespace(ref lookahead);
 					}
 				}
 
 			if (lookahead.Character == '>')
 				{
-				if (isType)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;  }
-				else
-					{  lookahead.Tokenizer.SetPrototypeParsingTypeBetween(iterator, lookahead, PrototypeParsingType.NameSuffix_PartOfType);  }
+				if (mode == ParseMode.ParsePrototype)
+					{
+					if (isType)
+						{  
+						iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;  
+						}
+					else
+						{  
+						lookahead.Tokenizer.SetPrototypeParsingTypeBetween(iterator, lookahead, PrototypeParsingType.NameSuffix_PartOfType);  
+						}
+					}
 
 				lookahead.Next();
 				iterator = lookahead;
