@@ -18,7 +18,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Code Sections", null, "pre");
+			TestFolder("Output/HTML/Code Sections", null, "pre", outputTitle: "Code Section Tests");
 			}
 
 		}

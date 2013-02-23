@@ -18,7 +18,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Syntax Highlighting/C#", null, "pre");
+			TestFolder("Output/HTML/Syntax Highlighting/C#", null, "pre",
+							outputTitle: "Syntax Highlighting Tests", outputSubTitle: "C#");
 			}
 
 		}

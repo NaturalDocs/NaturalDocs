@@ -18,7 +18,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Prototypes/C#", null, "div", "NDPrototype", true);
+			TestFolder("Output/HTML/Prototypes/C#", null, "div", "NDPrototype", true,
+							outputTitle: "Prototype Tests", outputSubTitle: "C#");
 			}
 
 		}

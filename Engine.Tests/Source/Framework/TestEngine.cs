@@ -62,7 +62,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * 
 		 * If preserveInputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public static void Start (Path pInputFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false)
+		public static void Start (Path pInputFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false, 
+										 string outputTitle = null, string outputSubTitle = null)
 			{
 			// Stupid, but we can't use "this" in static classes.
 			inputFolder = pInputFolder;
@@ -159,9 +160,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			Engine.Instance.Config.CommandLineConfig.Entries.Add(
 				new Engine.Config.Entries.InputFolder(inputFolder, Engine.Files.InputType.Source)
 				);
-			Engine.Instance.Config.CommandLineConfig.Entries.Add(
-				new Engine.Config.Entries.HTMLOutputFolder(outputFolder)
-				);
+
+			var outputEntry = new Engine.Config.Entries.HTMLOutputFolder(outputFolder);
+			outputEntry.ProjectInfo.Title = outputTitle;
+			outputEntry.ProjectInfo.Subtitle = outputSubTitle;
+
+			Engine.Instance.Config.CommandLineConfig.Entries.Add(outputEntry);
 
 			Engine.Errors.ErrorList startupErrors = new Engine.Errors.ErrorList();
 

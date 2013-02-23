@@ -18,7 +18,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Topic Titles", null, "div", "CTitle");
+			TestFolder("Output/HTML/Topic Titles", null, "div", "CTitle",
+							outputTitle: "Topic Title Tests");
 			}
 
 		}

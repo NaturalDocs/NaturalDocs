@@ -98,10 +98,11 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * Unless you override <ExtractHTML()>, the output will be all the tags that match the passed tag name and, if specified, the
 		 * passed class name.
 		 */
-		public void TestFolder (Path testFolder, Path projectConfigFolder, string tagName, string className = null, bool reformatHTML = false)
+		public void TestFolder (Path testFolder, Path projectConfigFolder, string tagName, string className = null, 
+									   bool reformatHTML = false, string outputTitle = null, string outputSubTitle = null)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testFolder, projectConfigFolder, true);
+			TestEngine.Start(testFolder, projectConfigFolder, true, outputTitle, outputSubTitle);
 
 			try
 				{

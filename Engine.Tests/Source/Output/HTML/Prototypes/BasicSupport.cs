@@ -18,7 +18,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML.Prototypes
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Prototypes/Basic Support", "Shared ND Config/Basic Language Support", "div", "NDPrototype", true);
+			TestFolder("Output/HTML/Prototypes/Basic Support", "Shared ND Config/Basic Language Support", "div", 
+						   "NDPrototype", true, outputTitle: "Prototype Tests", outputSubTitle: "Basic Language Support");
 			}
 
 		}

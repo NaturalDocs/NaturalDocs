@@ -18,7 +18,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML
 		[Test]
 		public void All ()
 			{
-			TestFolder("Output/HTML/Anchors", null, "a");
+			TestFolder("Output/HTML/Anchors", null, "a", outputTitle: "Anchor Tests");
 			}
 
 		}
