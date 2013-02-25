@@ -59,7 +59,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 					string xmlContent = System.IO.File.ReadAllText(xmlPath);
 
 					//<test-results 
-					//		name="F:\Projects\Natural Docs 2\Components\Engine.Tests.Runner\bin\Debug\NaturalDocs.Engine.Tests.dll"
+					//		name="F:\Projects\Natural Docs 2\Source\Engine.Tests.Runner\bin\Debug\NaturalDocs.Engine.Tests.dll"
 					//		total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0"
 					//		date="2012-03-06" time="11:02:19"
 					//>

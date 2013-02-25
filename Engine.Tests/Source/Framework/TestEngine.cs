@@ -52,10 +52,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * 
 		 * Starts <Engine.Instance> using the passed folder of test data.
 		 * 
-		 * If the input folder is relative it will take the executing assembly path, skip up until it finds "Components", move 
-		 * into the "EngineTests\Test Data" subfolder, and then make the path relative to that.  This is because it assumes all 
-		 * the Natural Docs components will be subfolders of a shared Components folder, and Visual Studio or any other IDE
-		 * is running an executable found inside a component's subfolder.
+		 * If the test data folder is relative it will take the executing assembly path, skip up until it finds "Source", move into
+		 * the "Engine.Tests.Data" subfolder, and then make the path relative to that.
 		 * 
 		 * If projectConfigFolder is relative it follows the same rules as the test data folder.  If it's not specified all defaults will
 		 * be used as if the project didn't have any configuration files defined.
@@ -76,12 +74,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			if (inputFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
 				{
 				string assemblyPath = Path.GetExecutingAssembly();
-				int binIndex = assemblyPath.IndexOf("Components");
+				int binIndex = assemblyPath.IndexOf("Source");
 
 				if (binIndex == -1)
-					{  throw new Exception("Couldn't find Components folder in " + assemblyPath);  }
+					{  throw new Exception("Couldn't find Source folder in " + assemblyPath);  }
 
-				baseFolder = assemblyPath.Substring(0, binIndex) + "Components/Engine.Tests/Test Data";
+				baseFolder = assemblyPath.Substring(0, binIndex) + "Source/Engine.Tests.Data";
 				}
 
 

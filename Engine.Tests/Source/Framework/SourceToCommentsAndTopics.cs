@@ -73,10 +73,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * 
 		 * Tests all the input files contained in this folder.
 		 * 
-		 * If the test data folder is relative it will take the executing assembly path, skip up until it finds "Components", move 
-		 * into the "EngineTests\Test Data" subfolder, and then make the path relative to that.  This is because it assumes all 
-		 * the Natural Docs components will be subfolders of a shared Components folder, and Visual Studio or any other IDE
-		 * is running an executable found inside a component's subfolder.
+		 * If the test data folder is relative it will take the executing assembly path, skip up until it finds "Source", move into
+		 * the "Engine.Tests.Data" subfolder, and then make the path relative to that.
 		 */
 		public void TestFolder (Path testFolder, Path projectConfigFolder = default(Path))
 			{
