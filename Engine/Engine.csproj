@@ -250,7 +250,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)Build Scripts\PostBuild.js" "$(SolutionDir)Components\" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)Build Scripts\PostBuild.js" "$(SolutionDir)Source\" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -105,7 +105,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)..\Engine\Build Scripts\PostBuild.js" "$(SolutionDir)Components\" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>"$(ProjectDir)..\Engine\Build Scripts\PostBuild.js" "$(SolutionDir)Source\" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -2,9 +2,9 @@
 	Script: Natural Docs CLI Post-Build Script
 
 	Parameters:
-		componentFolder - The root folder of all components, such as "F:\Projects\Natural Docs 2\Components\".
-											 It is assumed that it can reach any other component by adding the component's folder name.
-		outputFolder - The folder to use as an output target, such as "F:\Projects\Natural Docs 2\Components\Engine\bin\Debug\".
+		sourceFolder - The root folder of all source files, such as "F:\Projects\Natural Docs 2\Source\".
+							It is assumed that it can reach any component by adding the component's folder name.
+		outputFolder - The folder to use as an output target, such as "F:\Projects\Natural Docs 2\Source\Engine\bin\Debug\".
 */
 
 
@@ -16,16 +16,16 @@
 // FileSystem object
 var fs = new ActiveXObject("Scripting.FileSystemObject");
 
-// var: componentFolder
-var componentFolder = WScript.Arguments(0);
+// var: sourceFolder
+var sourceFolder = WScript.Arguments(0);
 
 // var: outputFolder
 var outputFolder = WScript.Arguments(1);
 
 
-if (!fs.folderExists(componentFolder))
+if (!fs.folderExists(sourceFolder))
 	{
-	WScript.Echo("Component folder " + componentFolder + " doesn't exist.");
+	WScript.Echo("Source folder " + sourceFolder + " doesn't exist.");
 	WScript.Quit(1);
 	}
 
@@ -46,7 +46,7 @@ if (!fs.folderExists(outputFolder))
 // Returns the full resource path of the passed component.
 function ResourceFolderOf (component)
 	{
-	return componentFolder + component + "\\Resources\\";
+	return sourceFolder + component + "\\Resources\\";
 	}
 
 
