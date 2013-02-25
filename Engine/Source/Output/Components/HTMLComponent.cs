@@ -126,8 +126,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						case SyntaxHighlightingType.PreprocessingDirective:
 							output.Append("<span class=\"SHPreprocessingDirective\">");
 							break;
-						case SyntaxHighlightingType.CSharpAttribute:
-							output.Append("<span class=\"SHCSharpAttribute\">");
+						case SyntaxHighlightingType.Metadata:
+							output.Append("<span class=\"SHMetadata\">");
 							break;
 						case SyntaxHighlightingType.Null:
 							break;

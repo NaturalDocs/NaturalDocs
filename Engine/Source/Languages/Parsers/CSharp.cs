@@ -253,7 +253,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						{
 						// If it follows a ], copy what that symbol was already marked as since both arrays and attributes can
 						// be chained.  int[][] and [Test][Category("x")].
-						isAttribute = (lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.CSharpAttribute);
+						isAttribute = (lastCodeToken.SyntaxHighlightingType == SyntaxHighlightingType.Metadata);
 						}
 					else if (lastCodeToken.Character == '(' ||
 							  lastCodeToken.Character == '[' ||
@@ -2458,7 +2458,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			GenericSkipUntilAfter(ref iterator, ']');
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfAttribute, iterator, SyntaxHighlightingType.CSharpAttribute);  }
+				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfAttribute, iterator, SyntaxHighlightingType.Metadata);  }
 			else if (mode == ParseMode.ParsePrototype)
 				{  
 				iterator.Tokenizer.SetPrototypeParsingTypeBetween(startOfAttribute, iterator, prototypeParsingType);  

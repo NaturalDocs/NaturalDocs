@@ -65,13 +65,13 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * String - A string.  Also covers char constants for languages that have them.
 	 * Comment - A comment, both symols and content.
 	 * PreprocessingDirective - A preprocessing directive such as "#define x".
-	 * CSharpAttribute - A C# attribute such as "[Flags]".
+	 * Metadata - Code metadata such as the "[Flags]" attribute in C#.
 	 */
 	public enum SyntaxHighlightingType :  byte
 		{
 		Null = 0,
 		Keyword, Number, String, Comment,
-		PreprocessingDirective, CSharpAttribute
+		PreprocessingDirective, Metadata
 		}
 
 
