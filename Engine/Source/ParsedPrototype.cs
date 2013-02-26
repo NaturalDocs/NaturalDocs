@@ -49,6 +49,7 @@ namespace GregValure.NaturalDocs.Engine
 		public enum ParameterStyle : byte
 			{  C, Pascal  }
 
+
 		/* Enum: SectionType
 		 * 
 		 * PrePrototypeLine - A line that should appear separately before the prototype.
@@ -547,7 +548,7 @@ namespace GregValure.NaturalDocs.Engine
 
 		/* Function: FindSection
 		 * Returns the first section with the passed type, or if you passed an index, the nth section with that type.  If there are
-		 * none it will return null.  You must have called <CalculateSections()> at least once before using this function.
+		 * none it will return null.
 		 */
 		protected Section FindSection (SectionType type, int index = 0)
 			{
