@@ -1,6 +1,7 @@
 class Plain
 
   - Name: Plain
+  - Keyword: class
   - No parents
 
 -----
@@ -8,6 +9,7 @@ class Plain
 public static interface WithModifiers
 
   - Name: WithModifiers
+  - Keyword: interface
   - Modifiers: public static
   - No parents
 
@@ -17,6 +19,7 @@ class Template<T>
 
   - Name: Template
   - Template Suffix: <T>
+  - Keyword: class
   - No parents
 
 -----
@@ -25,6 +28,7 @@ class NestedTemplates<List<X,Y>, Z>
 
   - Name: NestedTemplates
   - Template Suffix: <List<X,Y>, Z>
+  - Keyword: class
   - No parents
 
 -----
@@ -32,6 +36,7 @@ class NestedTemplates<List<X,Y>, Z>
 [Something] struct Metadata
 
   - Name: Metadata
+  - Keyword: struct
   - Modifiers: [Something]
   - No parents
 
@@ -40,6 +45,7 @@ class NestedTemplates<List<X,Y>, Z>
 interface Package.Package.Qualifiers
 
   - Name: Package.Package.Qualifiers
+  - Keyword: interface
   - No parents
 
 -----
@@ -47,6 +53,7 @@ interface Package.Package.Qualifiers
 interface Package::Package::Qualifiers2
 
   - Name: Package::Package::Qualifiers2
+  - Keyword: interface
   - No parents
 
 -----
@@ -55,5 +62,6 @@ interface Package::Package::Qualifiers2
 
   - Name: Package::Package.Everything
   - Template Suffix: <X, Y<Z>>
+  - Keyword: class
   - Modifiers: [Something: (value), {value}] public static
   - No parents

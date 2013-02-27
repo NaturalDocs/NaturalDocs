@@ -1,6 +1,7 @@
 class WhereClause : Parent1<X>, Parent2<Y> where X : int, Y : new class
 
   - Name: WhereClause
+  - Keyword: class
   - Post Modifiers: where X : int, Y : new class
 
   - Parent 1: Parent1<X>
@@ -16,6 +17,7 @@ class WhereClause : Parent1<X>, Parent2<Y> where X : int, Y : new class
 class Fake_where_clauses base where_Parent1, _where
 
   - Name: Fake_where_clauses
+  - Keyword: class
 
   - Parent 1: where_Parent1
     - Name: where_Parent1

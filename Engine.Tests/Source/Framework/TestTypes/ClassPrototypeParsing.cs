@@ -59,6 +59,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 					if (parsedPrototype.GetTemplateSuffix(out start, out end))
 						{  output.AppendLine("  - Template Suffix: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+					if (parsedPrototype.GetKeyword(out start, out end))
+						{  output.AppendLine("  - Keyword: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 					if (parsedPrototype.GetModifiers(out start, out end))
 						{  output.AppendLine("  - Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 					if (parsedPrototype.GetPostModifiers(out start, out end))

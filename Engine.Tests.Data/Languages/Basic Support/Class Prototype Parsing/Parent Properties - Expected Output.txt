@@ -1,6 +1,7 @@
 public static class Properties1 : public Parent
 
   - Name: Properties1
+  - Keyword: class
   - Modifiers: public static
 
   - Parent 1: public Parent
@@ -12,6 +13,7 @@ public static class Properties1 : public Parent
 public class Properties2 base public Parent
 
   - Name: Properties2
+  - Keyword: class
   - Modifiers: public
 
   - Parent 1: public Parent
@@ -23,6 +25,7 @@ public class Properties2 base public Parent
 private class Properties3 : extends public Parent1, implements public Parent2
 
   - Name: Properties3
+  - Keyword: class
   - Modifiers: private
 
   - Parent 1: public Parent1
@@ -38,6 +41,7 @@ private class Properties3 : extends public Parent1, implements public Parent2
 [Something] class Metadata inherit [Something else] Parent
 
   - Name: Metadata
+  - Keyword: class
   - Modifiers: [Something]
 
   - Parent 1: [Something else] Parent
@@ -50,6 +54,7 @@ class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int>
 
   - Name: Templates
   - Template Suffix: <int, float>
+  - Keyword: class
 
   - Parent 1: public Parent1<char>
     - Name: Parent1

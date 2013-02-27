@@ -1,6 +1,7 @@
 class Colon1 : Parent
 
   - Name: Colon1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -10,6 +11,7 @@ class Colon1 : Parent
 class Colon2_1 : Parent1, Parent2
 
   - Name: Colon2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -22,6 +24,7 @@ class Colon2_1 : Parent1, Parent2
 class Colon2_2 : Parent1; Parent2
 
   - Name: Colon2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -34,6 +37,7 @@ class Colon2_2 : Parent1; Parent2
 class Base1 base Parent
 
   - Name: Base1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -43,6 +47,7 @@ class Base1 base Parent
 class Base2_1 base Parent1, Parent2
 
   - Name: Base2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -55,6 +60,7 @@ class Base2_1 base Parent1, Parent2
 class Base2_2 base Parent1; Parent2
 
   - Name: Base2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -67,6 +73,7 @@ class Base2_2 base Parent1; Parent2
 class ColonBase1 : base Parent
 
   - Name: ColonBase1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -76,6 +83,7 @@ class ColonBase1 : base Parent
 class ColonBase2_1 : base Parent1, Parent2
 
   - Name: ColonBase2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -88,6 +96,7 @@ class ColonBase2_1 : base Parent1, Parent2
 class ColonBase2_2 : base Parent1; Parent2
 
   - Name: ColonBase2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -100,6 +109,7 @@ class ColonBase2_2 : base Parent1; Parent2
 class Inherit1 inherit Parent
 
   - Name: Inherit1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -109,6 +119,7 @@ class Inherit1 inherit Parent
 class Inherit2_1 inherit Parent1, Parent2
 
   - Name: Inherit2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -121,6 +132,7 @@ class Inherit2_1 inherit Parent1, Parent2
 class Inherit2_2 inherit Parent1; Parent2
 
   - Name: Inherit2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -133,6 +145,7 @@ class Inherit2_2 inherit Parent1; Parent2
 class ColonInherit1 : inherit Parent
 
   - Name: ColonInherit1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -142,6 +155,7 @@ class ColonInherit1 : inherit Parent
 class ColonInherit2_1 : inherit Parent1, Parent2
 
   - Name: ColonInherit2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -154,6 +168,7 @@ class ColonInherit2_1 : inherit Parent1, Parent2
 class ColonInherit2_2 : inherit Parent1; Parent2
 
   - Name: ColonInherit2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -166,6 +181,7 @@ class ColonInherit2_2 : inherit Parent1; Parent2
 class Inherits1 inherits Parent
 
   - Name: Inherits1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -175,6 +191,7 @@ class Inherits1 inherits Parent
 class Inherits2_1 inherits Parent1, Parent2
 
   - Name: Inherits2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -187,6 +204,7 @@ class Inherits2_1 inherits Parent1, Parent2
 class Inherits2_2 inherits Parent1; Parent2
 
   - Name: Inherits2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -199,6 +217,7 @@ class Inherits2_2 inherits Parent1; Parent2
 class ColonInherits1 : inherits Parent
 
   - Name: ColonInherits1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -208,6 +227,7 @@ class ColonInherits1 : inherits Parent
 class ColonInherits2_1 : inherits Parent1, Parent2
 
   - Name: ColonInherits2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -220,6 +240,7 @@ class ColonInherits2_1 : inherits Parent1, Parent2
 class ColonInherits2_2 : inherits Parent1; Parent2
 
   - Name: ColonInherits2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -232,6 +253,7 @@ class ColonInherits2_2 : inherits Parent1; Parent2
 class Implement1 implement Parent
 
   - Name: Implement1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -241,6 +263,7 @@ class Implement1 implement Parent
 class Implement2_1 implement Parent1, Parent2
 
   - Name: Implement2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -253,6 +276,7 @@ class Implement2_1 implement Parent1, Parent2
 class Implement2_2 implement Parent1; Parent2
 
   - Name: Implement2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -265,6 +289,7 @@ class Implement2_2 implement Parent1; Parent2
 class ColonImplement1 : implement Parent
 
   - Name: ColonImplement1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -274,6 +299,7 @@ class ColonImplement1 : implement Parent
 class ColonImplement2_1 : implement Parent1, Parent2
 
   - Name: ColonImplement2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -286,6 +312,7 @@ class ColonImplement2_1 : implement Parent1, Parent2
 class ColonImplement2_2 : implement Parent1; Parent2
 
   - Name: ColonImplement2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -298,6 +325,7 @@ class ColonImplement2_2 : implement Parent1; Parent2
 class Implements1 implements Parent
 
   - Name: Implements1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -307,6 +335,7 @@ class Implements1 implements Parent
 class Implements2_1 implements Parent1, Parent2
 
   - Name: Implements2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -319,6 +348,7 @@ class Implements2_1 implements Parent1, Parent2
 class Implements2_2 implements Parent1; Parent2
 
   - Name: Implements2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -331,6 +361,7 @@ class Implements2_2 implements Parent1; Parent2
 class ColonImplements1 : implements Parent
 
   - Name: ColonImplements1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -340,6 +371,7 @@ class ColonImplements1 : implements Parent
 class ColonImplements2_1 : implements Parent1, Parent2
 
   - Name: ColonImplements2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -352,6 +384,7 @@ class ColonImplements2_1 : implements Parent1, Parent2
 class ColonImplements2_2 : implements Parent1; Parent2
 
   - Name: ColonImplements2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -364,6 +397,7 @@ class ColonImplements2_2 : implements Parent1; Parent2
 class Extend1 extend Parent
 
   - Name: Extend1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -373,6 +407,7 @@ class Extend1 extend Parent
 class Extend2_1 extend Parent1, Parent2
 
   - Name: Extend2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -385,6 +420,7 @@ class Extend2_1 extend Parent1, Parent2
 class Extend2_2 extend Parent1; Parent2
 
   - Name: Extend2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -397,6 +433,7 @@ class Extend2_2 extend Parent1; Parent2
 class ColonExtend1 : extend Parent
 
   - Name: ColonExtend1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -406,6 +443,7 @@ class ColonExtend1 : extend Parent
 class ColonExtend2_1 : extend Parent1, Parent2
 
   - Name: ColonExtend2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -418,6 +456,7 @@ class ColonExtend2_1 : extend Parent1, Parent2
 class ColonExtend2_2 : extend Parent1; Parent2
 
   - Name: ColonExtend2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -430,6 +469,7 @@ class ColonExtend2_2 : extend Parent1; Parent2
 class Extends1 extends Parent
 
   - Name: Extends1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -439,6 +479,7 @@ class Extends1 extends Parent
 class Extends2_1 extends Parent1, Parent2
 
   - Name: Extends2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -451,6 +492,7 @@ class Extends2_1 extends Parent1, Parent2
 class Extends2_2 extends Parent1; Parent2
 
   - Name: Extends2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -463,6 +505,7 @@ class Extends2_2 extends Parent1; Parent2
 class ColonExtends1 : extends Parent
 
   - Name: ColonExtends1
+  - Keyword: class
 
   - Parent 1: Parent
     - Name: Parent
@@ -472,6 +515,7 @@ class ColonExtends1 : extends Parent
 class ColonExtends2_1 : extends Parent1, Parent2
 
   - Name: ColonExtends2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -484,6 +528,7 @@ class ColonExtends2_1 : extends Parent1, Parent2
 class ColonExtends2_2 : extends Parent1; Parent2
 
   - Name: ColonExtends2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -496,6 +541,7 @@ class ColonExtends2_2 : extends Parent1; Parent2
 class ExtendImplement2_1 extend Parent1 implement Parent2
 
   - Name: ExtendImplement2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -508,6 +554,7 @@ class ExtendImplement2_1 extend Parent1 implement Parent2
 class ExtendImplement2_2 extend Parent1, implement Parent2
 
   - Name: ExtendImplement2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -520,6 +567,7 @@ class ExtendImplement2_2 extend Parent1, implement Parent2
 class ExtendImplement2_3 extend Parent1; implement Parent2
 
   - Name: ExtendImplement2_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -532,6 +580,7 @@ class ExtendImplement2_3 extend Parent1; implement Parent2
 class ExtendImplement3_1 extend Parent1 implement Parent2, Parent3
 
   - Name: ExtendImplement3_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -547,6 +596,7 @@ class ExtendImplement3_1 extend Parent1 implement Parent2, Parent3
 class ExtendImplement3_2 extend Parent1, implement Parent2, Parent3
 
   - Name: ExtendImplement3_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -562,6 +612,7 @@ class ExtendImplement3_2 extend Parent1, implement Parent2, Parent3
 class ExtendImplement3_3 extend Parent1 implement Parent2; Parent3
 
   - Name: ExtendImplement3_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -577,6 +628,7 @@ class ExtendImplement3_3 extend Parent1 implement Parent2; Parent3
 class ExtendImplement3_4 extend Parent1; implement Parent2; Parent3
 
   - Name: ExtendImplement3_4
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -592,6 +644,7 @@ class ExtendImplement3_4 extend Parent1; implement Parent2; Parent3
 class ColonExtendImplement2_1 : extend Parent1 implement Parent2
 
   - Name: ColonExtendImplement2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -604,6 +657,7 @@ class ColonExtendImplement2_1 : extend Parent1 implement Parent2
 class ColonExtendImplement2_2 : extend Parent1, implement Parent2
 
   - Name: ColonExtendImplement2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -616,6 +670,7 @@ class ColonExtendImplement2_2 : extend Parent1, implement Parent2
 class ColonExtendImplement2_3 : extend Parent1; implement Parent2
 
   - Name: ColonExtendImplement2_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -628,6 +683,7 @@ class ColonExtendImplement2_3 : extend Parent1; implement Parent2
 class ColonExtendImplement3_1 : extend Parent1 implement Parent2, Parent3
 
   - Name: ColonExtendImplement3_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -643,6 +699,7 @@ class ColonExtendImplement3_1 : extend Parent1 implement Parent2, Parent3
 class ColonExtendImplement3_2 : extend Parent1, implement Parent2, Parent3
 
   - Name: ColonExtendImplement3_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -658,6 +715,7 @@ class ColonExtendImplement3_2 : extend Parent1, implement Parent2, Parent3
 class ColonExtendImplement3_3 : extend Parent1 implement Parent2; Parent3
 
   - Name: ColonExtendImplement3_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -673,6 +731,7 @@ class ColonExtendImplement3_3 : extend Parent1 implement Parent2; Parent3
 class ColonExtendImplement3_4 : extend Parent1; implement Parent2; Parent3
 
   - Name: ColonExtendImplement3_4
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -688,6 +747,7 @@ class ColonExtendImplement3_4 : extend Parent1; implement Parent2; Parent3
 class ExtendsImplements2_1 extends Parent1 implements Parent2
 
   - Name: ExtendsImplements2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -700,6 +760,7 @@ class ExtendsImplements2_1 extends Parent1 implements Parent2
 class ExtendsImplements2_2 extends Parent1, implements Parent2
 
   - Name: ExtendsImplements2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -712,6 +773,7 @@ class ExtendsImplements2_2 extends Parent1, implements Parent2
 class ExtendsImplements2_3 extends Parent1; implements Parent2
 
   - Name: ExtendsImplements2_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -724,6 +786,7 @@ class ExtendsImplements2_3 extends Parent1; implements Parent2
 class ExtendsImplements3_1 extends Parent1 implements Parent2, Parent3
 
   - Name: ExtendsImplements3_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -739,6 +802,7 @@ class ExtendsImplements3_1 extends Parent1 implements Parent2, Parent3
 class ExtendsImplements3_2 extends Parent1, implements Parent2, Parent3
 
   - Name: ExtendsImplements3_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -754,6 +818,7 @@ class ExtendsImplements3_2 extends Parent1, implements Parent2, Parent3
 class ExtendsImplements3_3 extends Parent1 implements Parent2; Parent3
 
   - Name: ExtendsImplements3_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -769,6 +834,7 @@ class ExtendsImplements3_3 extends Parent1 implements Parent2; Parent3
 class ExtendsImplements3_4 extends Parent1; implements Parent2; Parent3
 
   - Name: ExtendsImplements3_4
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -784,6 +850,7 @@ class ExtendsImplements3_4 extends Parent1; implements Parent2; Parent3
 class ColonExtendsImplements2_1 : extends Parent1 implements Parent2
 
   - Name: ColonExtendsImplements2_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -796,6 +863,7 @@ class ColonExtendsImplements2_1 : extends Parent1 implements Parent2
 class ColonExtendsImplements2_2 : extends Parent1, implements Parent2
 
   - Name: ColonExtendsImplements2_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -808,6 +876,7 @@ class ColonExtendsImplements2_2 : extends Parent1, implements Parent2
 class ColonExtendsImplements2_3 : extends Parent1; implements Parent2
 
   - Name: ColonExtendsImplements2_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -820,6 +889,7 @@ class ColonExtendsImplements2_3 : extends Parent1; implements Parent2
 class ColonExtendsImplements3_1 : extends Parent1 implements Parent2, Parent3
 
   - Name: ColonExtendsImplements3_1
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -835,6 +905,7 @@ class ColonExtendsImplements3_1 : extends Parent1 implements Parent2, Parent3
 class ColonExtendsImplements3_2 : extends Parent1, implements Parent2, Parent3
 
   - Name: ColonExtendsImplements3_2
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -850,6 +921,7 @@ class ColonExtendsImplements3_2 : extends Parent1, implements Parent2, Parent3
 class ColonExtendsImplements3_3 : extends Parent1 implements Parent2; Parent3
 
   - Name: ColonExtendsImplements3_3
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -865,6 +937,7 @@ class ColonExtendsImplements3_3 : extends Parent1 implements Parent2; Parent3
 class ColonExtendsImplements3_4 : extends Parent1; implements Parent2; Parent3
 
   - Name: ColonExtendsImplements3_4
+  - Keyword: class
 
   - Parent 1: Parent1
     - Name: Parent1
