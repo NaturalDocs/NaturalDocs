@@ -6,10 +6,10 @@
 -----
 <div class="NDPrototype NoParameterForm"><span class="SHKeyword">volatile</span> <span class="SHKeyword">string</span>[] varD</div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute: Something(&quot;value&quot;)]</span></div><span class="SHKeyword">int</span>* varE</div>
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute: Something(&quot;value&quot;)]</span></div><span class="SHKeyword">int</span>* varE</div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varF</div>
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varF</div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varG</div>
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varG</div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varH</div>
+<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varH</div>

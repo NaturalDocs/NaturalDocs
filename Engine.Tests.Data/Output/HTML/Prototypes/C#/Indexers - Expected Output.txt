@@ -24,7 +24,7 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">internal</span> System.Text.StringBuilder <span class="SHKeyword">this</span> [</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -36,7 +36,7 @@
             <td class="PName last">y</td>
          </tr>
       </table></td>
-      <td class="PAfterParameters">] { <span class="SHCSharpAttribute">[SetAttribute]</span> <span class="SHKeyword">protected internal set</span>; <span class="SHCSharpAttribute">[GetAttribute]</span> <span class="SHKeyword">internal get</span> }</td>
+      <td class="PAfterParameters">] { <span class="SHMetadata">[SetAttribute]</span> <span class="SHKeyword">protected internal set</span>; <span class="SHMetadata">[GetAttribute]</span> <span class="SHKeyword">internal get</span> }</td>
    </tr>
 </table></div>
 -----

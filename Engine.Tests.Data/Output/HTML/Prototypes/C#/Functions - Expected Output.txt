@@ -34,16 +34,16 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><table>
+<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[DllImport (&quot;NaturalDocs.Engine.SQLite.dll&quot;)]</span></div><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">extern static private</span> <span class="SHKeyword">bool</span> Attributes_NoBraces (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
-            <td class="PModifierQualifier first"><span class="SHCSharpAttribute">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</td>
+            <td class="PModifierQualifier first"><span class="SHMetadata">[MarshalAs(UnmanagedType.LPStr)]</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">string</span>&nbsp;</td>
             <td class="PName last">x,</td>
          </tr><tr>
-            <td class="PModifierQualifier first"><span class="SHCSharpAttribute">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</td>
+            <td class="PModifierQualifier first"><span class="SHMetadata">[param: something(&quot;don't trip on this: )]){&quot;)][AnotherOne]</span>&nbsp;</td>
             <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
             <td class="PName last">y,</td>
          </tr><tr>

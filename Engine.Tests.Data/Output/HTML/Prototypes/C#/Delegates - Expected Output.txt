@@ -11,7 +11,7 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">protected internal delegate</span> IList&lt;T&gt; DelegateB&lt;<span class="SHKeyword">in</span> T&gt; (</td>
       <td class="PParametersParentCell"><table class="PParameters">

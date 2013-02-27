@@ -53,7 +53,7 @@
    </tr>
 </table></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHCSharpAttribute">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass&lt;T&gt; <span class="SHKeyword">operator</span>&lt;&lt; (</td>
       <td class="PParametersParentCell"><table class="PParameters">
