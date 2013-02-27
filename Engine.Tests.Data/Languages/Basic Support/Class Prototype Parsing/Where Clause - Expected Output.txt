@@ -1,15 +1,15 @@
 class WhereClause : Parent1<X>, Parent2<Y> where X : int, Y : new class
 
   - Name: WhereClause
+  - Post Modifiers: where X : int, Y : new class
 
   - Parent 1: Parent1<X>
     - Name: Parent1
     - Template Suffix: <X>
 
-  - Parent 2: Parent2<Y> where X : int, Y : new class
+  - Parent 2: Parent2<Y>
     - Name: Parent2
     - Template Suffix: <Y>
-    - Post Modifiers: where X : int, Y : new class
 
 -----
 
