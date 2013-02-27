@@ -78,6 +78,16 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: GetKeyword
+		 * Gets the bounds of the class keyword, such as "class", "struct", or "interface", or returns false if it couldn't find it.
+		 */
+		public bool GetKeyword (out TokenIterator start, out TokenIterator end)
+			{
+			return GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.Keyword,
+												 out start, out end);
+			}
+
+
 		/* Function: GetModifiers
 		 * Gets the bounds of any modifiers to the class, such as "static" or "public", or returns false if there aren't any.
 		 */

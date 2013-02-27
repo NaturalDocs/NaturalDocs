@@ -470,7 +470,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					if (lookahead.FundamentalType == FundamentalType.Whitespace &&
 						 (lookbehind.IsInBounds == false || lookbehind.FundamentalType == FundamentalType.Whitespace) )
-						{  break;  }
+						{  
+						iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;
+						break;  
+						}
 					else
 						{  iterator.Next();  }
 					}
