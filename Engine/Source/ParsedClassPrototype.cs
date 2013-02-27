@@ -39,6 +39,21 @@ namespace GregValure.NaturalDocs.Engine
 	public class ParsedClassPrototype
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
+		/* Enum: SectionType
+		 * 
+		 * BeforeParents - The prototype prior to the parents.  If there are no parents, this will be the entire prototype.
+		 *	Parent - An individual parent.  This will not include separators.
+		 *	AfterParents - The prototype after the parents.
+		 */
+		public enum SectionType : byte
+			{  BeforeParents, Parent, AfterParents  }
+
+
+
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -49,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine
 		public ParsedClassPrototype (Tokenizer prototype)
 			{
 			tokenizer = prototype;
-			dividers = null;
+			sections = null;
 			}
 
 
@@ -58,20 +73,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetName (out TokenIterator start, out TokenIterator end)
 			{
-			start = tokenizer.FirstToken;
-
-			while (start.IsInBounds &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end.ClassPrototypeParsingType == ClassPrototypeParsingType.Name)
-				{  end.Next();  }
-
-			return (end > start);
+			return GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.Name,
+												 out start, out end);
 			}
 
 
@@ -80,24 +83,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetModifiers (out TokenIterator start, out TokenIterator end)
 			{
-			start = tokenizer.FirstToken;
-
-			while (start.IsInBounds &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier ||
-					 end.FundamentalType == FundamentalType.Whitespace)
-				{  end.Next();  }
-
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-			return (end > start);
+			return GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.Modifier,
+												 out start, out end);
 			}
 
 
@@ -106,52 +93,18 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetTemplateSuffix (out TokenIterator start, out TokenIterator end)
 			{
-			start = tokenizer.FirstToken;
-
-			while (start.IsInBounds &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.TemplateSuffix &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end.ClassPrototypeParsingType == ClassPrototypeParsingType.TemplateSuffix)
-				{  end.Next();  }
-
-			return (end > start);
+			return GetTokensInSection(SectionType.BeforeParents, 0, ClassPrototypeParsingType.TemplateSuffix,
+												 out start, out end);
 			}
 
 
 		/* Function: GetPostModifiers
-		 * Gets the bounds of any modifiers that appear after the class name, or returns false if there aren't any.
+		 * Gets the bounds of any modifiers that appear after the class name and parents, or returns false if there aren't any.
 		 */
 		public bool GetPostModifiers (out TokenIterator start, out TokenIterator end)
 			{
-			start = tokenizer.FirstToken;
-
-			while (start.IsInBounds && 
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-				{  start.Next();  }
-
-			while (start.IsInBounds && 
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end.IsInBounds && 
-					 (end.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier || 
-					  end.FundamentalType == FundamentalType.Whitespace) )
-				{  end.Next();  }
-
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-			return (end > start);
+			return GetTokensInSection(SectionType.AfterParents, 0, ClassPrototypeParsingType.PostParentModifier,
+												 out start, out end);
 			}
 
 
@@ -160,35 +113,7 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetParent (int index, out TokenIterator start, out TokenIterator end)
 			{
-			if (dividers == null)
-				{  CalculateDividers();  }
-
-			if (index >= NumberOfParents)
-				{
-				start = tokenizer.LastToken;
-				end = start;
-				return false;
-				}
-			else
-				{
-				int startIndex = dividers[index] + 1;  // to skip the divider
-				int endIndex = dividers[index + 1];
-
-				start = tokenizer.FirstToken;
-				start.Next(startIndex);
-
-				end = start;
-				end.Next(endIndex - startIndex);
-
-				while (start < end && 
-						 (start.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfParents ||
-						  start.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator) )
-					{  start.Next();  }
-
-				TrimWhitespace(ref start, ref end);
-
-				return true;
-				}
+			return GetSectionBounds(SectionType.Parent, index, out start, out end);
 			}
 
 
@@ -197,26 +122,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetParentName (int index, out TokenIterator start, out TokenIterator end)
 			{
-			TokenIterator parentStart, parentEnd;
-
-			if (!GetParent(index, out parentStart, out parentEnd))
-				{  
-				start = parentEnd;
-				end = parentEnd;
-				return false;  
-				}
-
-			start = parentStart;
-
-			while (start < parentEnd && start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end < parentEnd && end.ClassPrototypeParsingType == ClassPrototypeParsingType.Name)
-				{  end.Next();  }
-
-			return (end > start);
+			return GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.Name,
+												 out start, out end);
 			}
 
 
@@ -225,32 +132,8 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetParentModifiers (int index, out TokenIterator start, out TokenIterator end)
 			{
-			TokenIterator parentStart, parentEnd;
-
-			if (!GetParent(index, out parentStart, out parentEnd))
-				{  
-				start = parentEnd;
-				end = parentEnd;
-				return false;  
-				}
-
-			start = parentStart;
-
-			while (start < parentEnd && 
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier &&
-					 start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end < parentEnd && 
-					(end.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier || 
-					 end.FundamentalType == FundamentalType.Whitespace) )
-				{  end.Next();  }
-
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-			return (end > start);
+			return GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.Modifier,
+												 out start, out end);
 			}
 
 
@@ -259,146 +142,200 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public bool GetParentTemplateSuffix (int index, out TokenIterator start, out TokenIterator end)
 			{
-			TokenIterator parentStart, parentEnd;
-
-			if (!GetParent(index, out parentStart, out parentEnd))
-				{  
-				start = parentEnd;
-				end = parentEnd;
-				return false;  
-				}
-
-			start = parentStart;
-
-			while (start < parentEnd && start.ClassPrototypeParsingType != ClassPrototypeParsingType.TemplateSuffix)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end < parentEnd && end.ClassPrototypeParsingType == ClassPrototypeParsingType.TemplateSuffix)
-				{  end.Next();  }
-
-			return (end > start);
+			return GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.TemplateSuffix,
+												 out start, out end);
 			}
 
 
-		/* Function: GetParentPostModifiers
-		 * Gets the bounds of modifiers appearing *after* the parent, or returns false if it couldn't find any.
+		/* Function: CalculateSections
 		 */
-		public bool GetParentPostModifiers (int index, out TokenIterator start, out TokenIterator end)
+		protected void CalculateSections ()
 			{
-			TokenIterator parentStart, parentEnd;
-
-			if (!GetParent(index, out parentStart, out parentEnd))
-				{  
-				start = parentEnd;
-				end = parentEnd;
-				return false;  
-				}
-
-			start = parentStart;
-
-			while (start < parentEnd && start.ClassPrototypeParsingType != ClassPrototypeParsingType.Name)
-				{  start.Next();  }
-
-			while (start < parentEnd && start.ClassPrototypeParsingType != ClassPrototypeParsingType.Modifier)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end < parentEnd && 
-						(end.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier || 
-						 end.FundamentalType == FundamentalType.Whitespace) )
-				{  end.Next();  }
-
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-			return (end > start);
-			}
+			sections = new List<Section>();
 
 
-		/* Function: CalculateDividers
-		 */
-		protected void CalculateDividers ()
-			{
+			// Before Parents
+
 			TokenIterator iterator = tokenizer.FirstToken;
+			iterator.NextPastWhitespace();
 
-			while (iterator.IsInBounds && iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents)
+			TokenIterator startOfSection = iterator;
+
+			Section section = new Section();
+			section.Type = SectionType.BeforeParents;
+			section.StartIndex = startOfSection.TokenIndex;
+
+			while (iterator.IsInBounds && 
+					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
+					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 				{  iterator.Next();  }
 
-			if (iterator.IsInBounds == false)
+			TokenIterator lookbehind = iterator;
+			lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+			section.EndIndex = lookbehind.TokenIndex;
+			sections.Add(section);
+
+
+			// Parents
+
+			if (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfParents)
 				{
-				dividers = new int[1];
-				dividers[0] = iterator.TokenIndex;
+				do
+					{  iterator.Next();  }
+				while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfParents);
+
+				iterator.NextPastWhitespace();
+
+				while (iterator.IsInBounds &&
+						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
+					{
+					startOfSection = iterator;
+
+					section = new Section();
+					section.Type = SectionType.Parent;
+					section.StartIndex = startOfSection.TokenIndex;
+
+					while (iterator.IsInBounds &&
+							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.ParentSeparator &&
+							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
+						{  iterator.Next();  }
+
+					lookbehind = iterator;
+					lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+					section.EndIndex = lookbehind.TokenIndex;
+					sections.Add(section);
+
+					if (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator)
+						{
+						do
+							{  iterator.Next();  }
+						while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator);
+
+						iterator.NextPastWhitespace();
+						}
+					}
 				}
-			else // we have StartOfParents
+
+
+			// After Parents
+
+			if (iterator.IsInBounds)
 				{
-				TokenIterator startOfParents = iterator;
+				section = new Section();
+				section.Type = SectionType.AfterParents;
+				section.StartIndex = iterator.TokenIndex;
 
-				do
-					{  iterator.Next();  }
-				while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfParents);
+				startOfSection = iterator;
+				iterator = tokenizer.LastToken;
+				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
 
-				int numberOfParents = 1;
-
-				while (iterator.IsInBounds && iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-					{
-					if (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator)
-						{  
-						numberOfParents++;  
-
-						do
-							{  iterator.Next();  }
-						while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator);
-						}
-					else
-						{
-						iterator.Next();
-						}
-					}
-
-				dividers = new int[numberOfParents + 1];
-				dividers[0] = startOfParents.TokenIndex;
-
-				int i = 1;
-				iterator = startOfParents;
-
-				do
-					{  iterator.Next();  }
-				while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfParents);
-
-				while (iterator.IsInBounds && iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
-					{
-					if (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator)
-						{
-						dividers[i] = iterator.TokenIndex;
-						i++;
-
-						do
-							{  iterator.Next();  }
-						while (iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.ParentSeparator);
-						}
-					else
-						{
-						iterator.Next();
-						}
-					}
-
-				// End of prototype or start of body
-				dividers[i] = iterator.TokenIndex;
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
 				}
 			}
 
 
-		/* Function: TrimWhitespace
-		 * Shrinks the passed bounds to exclude whitespace on the edges.
+		/* Function: GetTokensInSection
+		 * Returns the bounds of the first stretch of tokens of the specified type appearing within the passed section.
 		 */
-		protected void TrimWhitespace (ref TokenIterator start, ref TokenIterator end)
+		 protected bool GetTokensInSection (SectionType sectionType, int sectionIndex, ClassPrototypeParsingType tokenType,
+														  out TokenIterator start, out TokenIterator end)
 			{
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-			start.NextPastWhitespace(end);
+			TokenIterator sectionStart, sectionEnd;
+			GetSectionBounds(sectionType, sectionIndex, out sectionStart, out sectionEnd);
+
+			start = sectionStart;
+
+			while (start.IsInBounds &&
+					 start < sectionEnd &&
+					 start.ClassPrototypeParsingType != tokenType)
+				{  start.Next();  }
+
+			end = start;
+
+			while (end < sectionEnd &&
+					 end.ClassPrototypeParsingType == tokenType)
+				{  end.Next();  }
+
+			return (end > start);
+			}
+
+
+		/* Function: GetSectionBounds
+		 * Returns the bounds of the passed section and whether it exists.  An index of zero represents the first section of that
+		 * type, 1 represents the second, etc.
+		 */
+		protected bool GetSectionBounds (SectionType type, int index, out TokenIterator start, out TokenIterator end)
+			{
+			Section section = FindSection(type, index);
+
+			if (section == null)
+				{
+				start = tokenizer.LastToken;
+				end = start;
+				return false;
+				}
+			else
+				{
+				start = tokenizer.FirstToken;
+				start.Next(section.StartIndex);
+
+				end = start;
+				end.Next(section.EndIndex - section.StartIndex);
+
+				return true;
+				}
+			}
+
+
+		/* Function: FindSection
+		 * Returns the first section with the passed type, or if you passed an index, the nth section with that type.  If there are
+		 * none it will return null.
+		 */
+		protected Section FindSection (SectionType type, int index = 0)
+			{
+			if (sections == null)
+				{  CalculateSections();  }
+
+			foreach (Section section in sections)
+				{
+				if (section.Type == type)
+					{
+					if (index == 0)
+						{  return section;  }
+					else
+						{  index--;  }
+					}
+				}
+
+			return null;
 			}
 			
+
+		/* Function: CountSections
+		 * Returns the number of sections with the passed type.
+		 */
+		protected int CountSections (SectionType type)
+			{
+			if (sections == null)
+				{  CalculateSections();  }
+
+			int count = 0;
+
+			foreach (Section section in sections)
+				{
+				if (section.Type == type)
+					{  count++;  }
+				}
+
+			return count;
+			}
+
 
 
 		// Group: Properties
@@ -421,25 +358,7 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			get
 				{  
-				if (dividers == null)
-					{  CalculateDividers();  }
-
-				return dividers.Length - 1;
-				}
-			}
-
-
-		/* Property: HasBody
-		 */
-		public bool HasBody
-			{
-			get
-				{
-				if (dividers == null)
-					{  CalculateDividers();  }
-
-				int lastDivider = dividers[ dividers.Length - 1 ];
-				return (tokenizer.ClassPrototypeParsingTypeAt(lastDivider) == ClassPrototypeParsingType.StartOfBody);
+				return CountSections(SectionType.Parent);
 				}
 			}
 
@@ -453,17 +372,30 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		protected Tokenizer tokenizer;
 
-		/* var: dividers
-		 * 
-		 * An array of token indexes representing parent dividers in the prototype, or null if it hasn't been generated yet.  The 
-		 * first one represents the beginning of the parent list, the last one represents the beginning of the body or the end of 
-		 * the prototype, and each one in between a divider between parent entries.  If there are no parent entries it will only 
-		 * have one divider for the beginning of the body/end of the prototype.
-		 * 
-		 * There may be multiple consecutive separator tokens and this only stores the token index of the first one.  Therefore
-		 * you must make sure to skip StartOfParents and ParentDivider tokens at the beginning of each segment.
+		/* var: sections
+		 * A list of <Sections> representing chunks of the prototype, or null if it hasn't been calculated yet.
 		 */
-		protected int[] dividers;
+		protected List<Section> sections;
 
+
+
+		/* ___________________________________________________________________________
+		 * 
+		 * Class: GregValure.NaturalDocs.Engine.ParsedClassPrototype.Section
+		 * ___________________________________________________________________________
+		 */
+		protected class Section
+			{
+			public Section ()
+				{
+				StartIndex = 0;
+				EndIndex = 0;
+				Type = SectionType.BeforeParents;
+				}
+			
+			public int StartIndex;
+			public int EndIndex;
+			public SectionType Type;
+			}
 		}
 	}

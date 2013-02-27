@@ -142,6 +142,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 	 * 
 	 * TemplateSuffix - Extra template information after a class or parent, such as "<T>" in "List<T>".
 	 * 
+	 * PostParentModifier - Class modifiers appearing after the parent list, such as "where T: class".
+	 * 
 	 * StartOfBody - The start of the class's body if it is present in the prototype.  Nothing beyond that is demarcated, including the end
 	 *								of the body.  This token is just present to indicate that the prototype does contain a body.
 	 */
@@ -154,6 +156,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 		Modifier, Name,
 
 		TemplateSuffix,
+
+		PostParentModifier,
 
 		StartOfBody
 		}

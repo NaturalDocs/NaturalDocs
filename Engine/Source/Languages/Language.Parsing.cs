@@ -664,7 +664,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								{  lookahead.Next();  }
 							}
 
-						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.Modifier);
+						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.PostParentModifier);
 
 						if (lookahead.Character == '{')
 							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  }
