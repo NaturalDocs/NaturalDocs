@@ -2,7 +2,7 @@
 // Class: Plain
 class Plain { }
 
-// Class: WithModifiers
+// Interface: WithModifiers
 public static interface WithModifiers { }
 
 // Class: Template
@@ -11,14 +11,14 @@ class Template<T> { }
 // Class: NestedTemplates
 class NestedTemplates<List<X,Y>, Z> { }
 
-// Class: Metadata
+// Struct: Metadata
 [Something]
 struct Metadata { }
 
-// Class: Qualifiers
+// Interface: Qualifiers
 interface Package.Package.Qualifiers { }
 
-// Class: Qualifiers2
+// Interface: Qualifiers2
 interface Package::Package::Qualifiers2 { }
 
 // Class: Everything
