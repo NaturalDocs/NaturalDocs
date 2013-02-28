@@ -122,6 +122,33 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: ParseClassPrototype
+		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
+		 */
+		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
+			{
+			if (Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+				{  return null;  }
+
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
+			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
+			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
+			bool parsed = false;
+
+			if (topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("class") ||
+				topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("struct") ||
+				topicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("interface"))
+			    {
+				parsed = TryToSkipClass(ref startOfPrototype, ParseMode.ParseClassPrototype);
+			    }
+
+			if (parsed)
+				{  return parsedPrototype;  }
+			else
+			    {  return base.ParseClassPrototype(stringPrototype, topicTypeID);  }
+			}
+
+
 		/* Function: GetCodeElements
 		 * 
 		 * Topic Properties:
@@ -526,6 +553,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 * Supported Modes:
 		 * 
 		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParseClassPrototype>
 		 *		- <ParseMode.CreateElements>
 		 *			- The elements and scope parameters must be set.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -550,9 +578,15 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 
 			// Attributes
+
+			TokenIterator startOfModifiers = lookahead;
+			TokenIterator endOfModifiers = lookahead;
 			
 			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
-				{  TryToSkipWhitespace(ref lookahead);  }
+				{  
+				endOfModifiers = lookahead;
+				TryToSkipWhitespace(ref lookahead);  
+				}
 
 
 			// Modifiers
@@ -561,10 +595,17 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
 			if (TryToSkipModifiers(ref lookahead, out accessLevel, mode))
-				{  TryToSkipWhitespace(ref lookahead);  }
+				{  
+				endOfModifiers = lookahead;
+				TryToSkipWhitespace(ref lookahead);  
+				}
+
+			if (mode == ParseMode.ParseClassPrototype && 
+				endOfModifiers > startOfModifiers)
+				{  iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 
 
-			// Keyword and name
+			// Keyword
 
 			if (lookahead.MatchesToken("class") == false &&
 				lookahead.MatchesToken("struct") == false &&
@@ -576,8 +617,14 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			string keyword = lookahead.String;
 
+			if (mode == ParseMode.ParseClassPrototype)
+				{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;  }
+
 			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
+
+
+			// Name
 
 			string name;
 			if (TryToSkipIdentifier(ref lookahead, out name, mode, PrototypeParsingType.Name) == false)
@@ -599,6 +646,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.Character == ':')
 				{
+				if (mode == ParseMode.ParseClassPrototype)
+					{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfParents;  }
+
 				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 
@@ -613,6 +663,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					if (lookahead.Character != ',')
 						{  break;  }
 
+					if (mode == ParseMode.ParseClassPrototype)
+						{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.ParentSeparator;  }
+
 					lookahead.Next();
 					TryToSkipWhitespace(ref lookahead);
 					}
@@ -621,8 +674,19 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			// Constraint clauses
 
+			TokenIterator startOfConstraints = lookahead;
+			TokenIterator endOfConstraints = lookahead;
+
 			while (TryToSkipWhereClause(ref lookahead, mode))
-				{  TryToSkipWhitespace(ref lookahead);  }
+				{  
+				endOfConstraints = lookahead;
+				TryToSkipWhitespace(ref lookahead);  
+				}
+
+			if (endOfConstraints > startOfConstraints)
+				{
+				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfConstraints, endOfConstraints, ClassPrototypeParsingType.PostParentModifier);
+				}
 
 
 			// Start of body
@@ -699,6 +763,9 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 				if (iterator.Character == '{')
 					{
+					if (mode == ParseMode.ParseClassPrototype)
+						{  iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  }
+
 					iterator.Next();
 					GenericSkipUntilAfter(ref iterator, '}');
 					}
@@ -2065,6 +2132,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
 		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
 		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipIdentifier (ref TokenIterator iterator, out string identifier, ParseMode mode = ParseMode.IterateOnly, 
@@ -2097,6 +2166,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
 		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
 		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- The tokens will be marked with <ClassPrototypeParsingType.Name>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipIdentifier (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
@@ -2140,10 +2211,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					iterator.Tokenizer.SetPrototypeParsingTypeBetween(endOfQualifier, endOfIdentifier, PrototypeParsingType.Type);
 					}
 				else
-					{
-					iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfIdentifier, prototypeParsingType);
-					}
+					{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfIdentifier, prototypeParsingType);  }
 				}
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, endOfIdentifier, ClassPrototypeParsingType.Name);  }
 
 			iterator = endOfIdentifier;
 			return true;
@@ -2205,6 +2276,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 		 *				- <PrototypeParsingType.TypeQualifier>
 		 *				- <PrototypeParsingType.TypeModifier>
 		 *			- If isType is false, it will mark everything with <PrototypeParsingType.NameSuffix_PartOfType>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- All tokens will be marked with <ClassPrototypeParsingType.TemplateSuffix>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipTemplateSignature (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, bool isType = true)
@@ -2266,14 +2339,22 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						{  
 						iterator.PrototypeParsingType = PrototypeParsingType.OpeningTypeSuffix;
 						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeSuffix;  
+						lookahead.Next();
 						}
 					else
 						{  
+						lookahead.Next();
 						lookahead.Tokenizer.SetPrototypeParsingTypeBetween(iterator, lookahead, PrototypeParsingType.NameSuffix_PartOfType);  
 						}
 					}
+				else if (mode == ParseMode.ParseClassPrototype)
+					{
+					lookahead.Next();
+					lookahead.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.TemplateSuffix);
+					}
+				else
+					{  lookahead.Next();  }
 
-				lookahead.Next();
 				iterator = lookahead;
 				return true;
 				}
@@ -2287,13 +2368,16 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipWhereClause
 		 * 
-		 * Tries to move the iterator past a where clause, such as "where struct, new()".
+		 * Tries to move the iterator past a where clause, such as "where struct, new()".  This only covers a single where clause, so you
+		 * may have to call this in a loop to get them all.
 		 * 
 		 * Supported Modes:
 		 * 
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.ParsePrototype>
 		 *			- It will be marked with <PrototypeParsingType.StartOfPostPrototypeLine> and <PrototypeParsingType.PostPrototypeLine>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- It will be marked with <ClassPrototypeParsingType.PostParentModifier>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipWhereClause (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
@@ -2370,6 +2454,10 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfClause, PrototypeParsingType.PostPrototypeLine);
 				iterator.PrototypeParsingType = PrototypeParsingType.StartOfPostPrototypeLine;
+				}
+			else if (mode == ParseMode.ParseClassPrototype)
+				{
+				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, endOfClause, ClassPrototypeParsingType.PostParentModifier);
 				}
 
 			iterator = endOfClause;
