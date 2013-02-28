@@ -194,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		protected void BuildTitle ()
 			{
 			htmlOutput.Append("<div class=\"CTitle\">");
-			HTMLBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
+			BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
 			htmlOutput.Append("</div>");
 			}
 

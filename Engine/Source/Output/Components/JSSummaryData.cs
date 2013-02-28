@@ -322,7 +322,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				if (topic.IsEmbedded == false)
 					{  
 					output.Append('"');
-					output.StringEscapeAndAppend( HTMLBuilder.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
+					output.StringEscapeAndAppend( HTMLComponent.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
 					output.Append('"');
 					}
 				else
