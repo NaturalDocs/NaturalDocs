@@ -1,0 +1,63 @@
+class OneParent : Parent
+
+  - Name: OneParent
+  - Keyword: class
+
+  - Parent 1: Parent
+    - Name: Parent
+
+-----
+
+class ThreeParents : Parent1, Parent2, Parent3
+
+  - Name: ThreeParents
+  - Keyword: class
+
+  - Parent 1: Parent1
+    - Name: Parent1
+
+  - Parent 2: Parent2
+    - Name: Parent2
+
+  - Parent 3: Parent3
+    - Name: Parent3
+
+-----
+
+class ParentsWithQualifiers : X.Y.Parent1, A.B.Parent2
+
+  - Name: ParentsWithQualifiers
+  - Keyword: class
+
+  - Parent 1: X.Y.Parent1
+    - Name: X.Y.Parent1
+
+  - Parent 2: A.B.Parent2
+    - Name: A.B.Parent2
+
+-----
+
+class ParentTemplate : List<int>
+
+  - Name: ParentTemplate
+  - Keyword: class
+
+  - Parent 1: List<int>
+    - Name: List
+    - Template Suffix: <int>
+
+-----
+
+class TemplateWithQualifiedParentTemplates<X,Y> : System.Collections.Generic.IEnumerable<X>, Parent2<X,Y>
+
+  - Name: TemplateWithQualifiedParentTemplates
+  - Template Suffix: <X,Y>
+  - Keyword: class
+
+  - Parent 1: System.Collections.Generic.IEnumerable<X>
+    - Name: System.Collections.Generic.IEnumerable
+    - Template Suffix: <X>
+
+  - Parent 2: Parent2<X,Y>
+    - Name: Parent2
+    - Template Suffix: <X,Y>

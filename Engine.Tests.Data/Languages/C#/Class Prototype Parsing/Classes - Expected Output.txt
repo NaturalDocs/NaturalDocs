@@ -1,0 +1,42 @@
+class Plain
+
+  - Name: Plain
+  - Keyword: class
+  - No parents
+
+-----
+
+public static interface WithModifiers
+
+  - Name: WithModifiers
+  - Keyword: interface
+  - Modifiers: public static
+  - No parents
+
+-----
+
+class Template<T>
+
+  - Name: Template
+  - Template Suffix: <T>
+  - Keyword: class
+  - No parents
+
+-----
+
+[Something] struct Metadata
+
+  - Name: Metadata
+  - Keyword: struct
+  - Modifiers: [Something]
+  - No parents
+
+-----
+
+[Something("value", 2)] public static interface Everything<X, Y>
+
+  - Name: Everything
+  - Template Suffix: <X, Y>
+  - Keyword: interface
+  - Modifiers: [Something("value", 2)] public static
+  - No parents

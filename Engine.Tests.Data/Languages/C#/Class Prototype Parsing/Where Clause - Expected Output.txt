@@ -1,0 +1,34 @@
+class WhereClause<X> where X : struct
+
+  - Name: WhereClause
+  - Template Suffix: <X>
+  - Keyword: class
+  - Post Modifiers: where X : struct
+  - No parents
+
+-----
+
+class MultipleWhereClauses<X,Y> where X : BaseClass where Y : new(), class
+
+  - Name: MultipleWhereClauses
+  - Template Suffix: <X,Y>
+  - Keyword: class
+  - Post Modifiers: where X : BaseClass where Y : new(), class
+  - No parents
+
+-----
+
+class WhereClausesWithInheritance<X,Y> : Parent1<X>, Parent2<Y> where X : A.B.BaseClass, X.Y.Interface where Y : new(), class
+
+  - Name: WhereClausesWithInheritance
+  - Template Suffix: <X,Y>
+  - Keyword: class
+  - Post Modifiers: where X : A.B.BaseClass, X.Y.Interface where Y : new(), class
+
+  - Parent 1: Parent1<X>
+    - Name: Parent1
+    - Template Suffix: <X>
+
+  - Parent 2: Parent2<Y>
+    - Name: Parent2
+    - Template Suffix: <Y>

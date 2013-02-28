@@ -60,6 +60,7 @@
     <Compile Include="Source\General\Symbols.cs" />
     <Compile Include="Source\Languages\Basic Support\PrototypeDetection.cs" />
     <Compile Include="Source\Languages\Basic Support\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\C#\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\C#\LanguageParsing.cs" />
     <Compile Include="Source\Framework\SourceToClassTopics.cs" />
     <Compile Include="Source\Framework\TestList.cs" />
