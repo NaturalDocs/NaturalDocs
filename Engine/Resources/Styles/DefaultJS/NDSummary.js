@@ -221,7 +221,7 @@ var NDSummary = new function ()
 					// We need to add the event handlers to the qualifier as well.
 					var entryHTMLChild = entryHTML.firstChild;
 
-					if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "qualifier"))
+					if (entryHTMLChild != undefined && NDCore.HasClass(entryHTMLChild, "Qualifier"))
 						{
 						entryHTMLChild.onmouseover = mouseOverHandler;
 						entryHTMLChild.onmouseout = mouseOutHandler;
@@ -300,7 +300,7 @@ var NDSummary = new function ()
 
 		var entry = event.target || event.srcElement;
 
-		if (NDCore.HasClass(entry, "qualifier"))
+		if (NDCore.HasClass(entry, "Qualifier"))
 			{  entry = entry.parentNode;  }
 
 		var id = this.GetTopicIDFromDOMID(entry.id);
@@ -349,7 +349,7 @@ var NDSummary = new function ()
 
 		var entry = event.target || event.srcElement;
 
-		if (NDCore.HasClass(entry, "qualifier"))
+		if (NDCore.HasClass(entry, "Qualifier"))
 			{  entry = entry.parentNode;  }
 
 		var id = this.GetTopicIDFromDOMID(entry.id);
