@@ -654,6 +654,73 @@ body.NDContentPage {
 
 
 
+/* Class Prototypes
+	___________________________________________________________________________
+*/
+
+.NDClassPrototype {
+	margin: 0 4ex 1em 4ex;
+	}
+
+	.CPEntry {
+		border-width: 1px 2px 2px 1px; border-style: solid; border-color: #000000;
+		padding: .5ex 1ex;
+		margin-bottom: .5ex;
+		border-radius: 1ex;
+		background-color: #FFFFFF;
+		overflow: auto;
+		}
+
+	.NDClassPrototype .CPEntry.Parent {
+		margin-right: 3.5ex;
+		}
+	.NDClassPrototype.HasChildren .CPEntry.Parent {
+		margin-right: 7ex;
+		}
+
+	.NDClassPrototype.HasParents .CPEntry.Current {
+		margin-left: 3.5ex;
+		}
+	.NDClassPrototype.HasChildren .CPEntry.Current {
+		margin-right: 3.5ex;
+		}
+
+	.NDClassPrototype .CPEntry.Child {
+		margin-left: 3.5ex;
+		}
+	.NDClassPrototype.HasParents .CPEntry.Child {
+		margin-left: 7ex;
+		}
+
+	.CPName {
+		font: bold 11pt `HeadingFontFamily;
+		line-height: 110%;
+		}
+	.CPName .Qualifier,
+	.CPName .TemplateSignature {
+		font-weight: normal;
+		color: #282828;
+		}
+	.CPEntry.Parent .CPName,
+	.CPEntry.Child .CPName {
+		font-size: 10pt;
+		}
+	.CPEntry.Parent,
+	.CPEntry.Child {
+		opacity: .5;
+		}
+	.CPEntry .CPModifiers,
+	.CPEntry .CPPostModifiers {
+		font: 8pt `CodeFontFamily;
+		opacity: .5;
+		}
+	.CPEntry .CPPostModifiers {
+		margin-top: .1em;
+		}
+
+
+
+
 /* Prototype and Summary Colors
 	___________________________________________________________________________
 */
@@ -722,6 +789,17 @@ body.NDContentPage {
 
 
 
+.NDClassPrototype .CPEntry {
+	border-color: #686868;
+	background-color: #EAEAEA;
+	}
+
+.NDClassPrototype .CPEntry.TInterface {
+	border-color: #6868A0;
+	background-color: #EAEAFF;
+	}
+
+
 
 
 /* Syntax Highlighting
@@ -775,9 +853,14 @@ body.NDContentPage {
 	box-shadow: .15ex .25ex .4ex #606060;
 	}
 
-	.NDToolTip .NDPrototype {
+	.NDToolTip .NDPrototype,
+	.NDToolTip .NDClassPrototype {
 		margin: 0;
 		overflow: hidden;
+		}
+	.NDToolTip .NDClassPrototype .CPEntry {
+		margin-left: 0 !important;
+		margin-right: 0 !important;
 		}
 
 	.TTSummary {

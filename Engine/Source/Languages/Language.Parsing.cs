@@ -827,6 +827,15 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: SyntaxHighlight
+		 * Applies <SyntaxHighlightingTypes> to the <ParsedClassPrototype>.
+		 */
+		public void SyntaxHighlight (ParsedClassPrototype prototype)
+			{
+			SyntaxHighlight(prototype.Tokenizer);
+			}
+
+
 		// Function: GetPossibleDocumentationComments
 		// 
 		// Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 

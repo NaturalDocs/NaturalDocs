@@ -59,6 +59,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		public HTMLTopic (HTMLTopicPage topicPage) : base (topicPage)
 			{
 			cachedHTMLPrototypeBuilder = null;
+			cachedHTMLClassPrototypeBuilder = null;
 			isToolTip = false;
 			}
 
@@ -89,7 +90,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			this.htmlOutput = output;
 			this.embeddedTopics = embeddedTopics;
 			this.embeddedTopicIndex = embeddedTopicIndex;
-			isToolTip = false;
+			this.isToolTip = false;
 
 
 			// Core
@@ -120,11 +121,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					if (topic.Prototype != null)
 						{
 						htmlOutput.Append("\r\n ");
-
-						if (cachedHTMLPrototypeBuilder == null)
-							{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
-
-						cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);
+						BuildPrototype();
 						}
 
 					if (topic.Body != null)
@@ -160,7 +157,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			this.topic = topic;
 			this.htmlOutput = new StringBuilder();
-			isToolTip = true;
+			this.isToolTip = true;
 			this.links = links;
 			this.linkTargets = null;
 
@@ -173,12 +170,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			htmlOutput.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
 
 				if (topic.Prototype != null)
-					{  
-					if (cachedHTMLPrototypeBuilder == null)
-						{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
-
-					cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  
-					}
+					{  BuildPrototype();  }
 
 				if (topic.Summary != null)
 					{  BuildSummary();  }
@@ -196,6 +188,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			htmlOutput.Append("<div class=\"CTitle\">");
 			BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
 			htmlOutput.Append("</div>");
+			}
+
+
+		/* Function: BuildPrototype
+		 */
+		protected void BuildPrototype ()
+			{
+			bool builtPrototype = false;
+
+			if (Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
+				{
+				ParsedClassPrototype parsedClassPrototype = topic.ParsedClassPrototype;
+
+				if (parsedClassPrototype != null)
+					{
+					if (cachedHTMLClassPrototypeBuilder == null)
+						{  cachedHTMLClassPrototypeBuilder = new HTMLClassPrototype(topicPage);  }
+
+					if (isToolTip)
+						{  cachedHTMLClassPrototypeBuilder.Build(topic, true, null, null, htmlOutput);  }
+					else
+						{  cachedHTMLClassPrototypeBuilder.Build(topic, false, links, linkTargets, htmlOutput);  }
+
+					builtPrototype = true;
+					}
+				}
+
+			if (builtPrototype == false)
+				{
+				if (cachedHTMLPrototypeBuilder == null)
+					{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
+
+				if (isToolTip)
+					{  cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  }
+				else
+					{  cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);  }
+				}
 			}
 
 
@@ -742,6 +771,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		 * multiple prototypes, one is stored with the class so it can be reused between runs.
 		 */
 		protected HTMLPrototype cachedHTMLPrototypeBuilder;
+
+		/* var: cachedHTMLClassPrototypeBuilder
+		 * A <HTMLClassPrototype> object for building prototypes, or null if one hasn't been created yet.  Since 
+		 * this class can be reused to build multiple <Topics>, and <HTMLClassPrototypeBuilders> can be reused 
+		 * to build multiple prototypes, one is stored with the class so it can be reused between runs.
+		 */
+		protected HTMLClassPrototype cachedHTMLClassPrototypeBuilder;
 
 		/* var: isToolTip
 		 * Whether we're building a tooltip instead of a full topic.

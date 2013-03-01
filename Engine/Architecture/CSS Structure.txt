@@ -344,6 +344,31 @@ P[ColumnType]:
 	PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 	PDefaultValue - The default value.
 
+	
+
+Topic: Class Prototype
+_______________________________________________________________________________
+
+(start code)
+
+	<NDClassPrototype HasParents? HasChildren?>
+
+		<CPEntry T[TopicType] Current/Parent/Child>
+
+			<CPModifiers>text</CPModifiers>?
+
+			<CPName>
+				<Qualifier>Package.Package.</Qualifier>Title<TemplateSignature>signature</TemplateSignature>
+			</CPName>
+
+			<CPPostModifiers>text</CPPostModifiers>?
+
+		</CPEntry T[TopicType] Current/Parent/Child>
+
+	</NDClassPrototype HasParents? HasChildren?>
+
+(end)
+
 
 
 Topic: Tool Tip
