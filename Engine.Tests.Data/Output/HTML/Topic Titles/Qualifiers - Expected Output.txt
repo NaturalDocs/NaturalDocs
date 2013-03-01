@@ -1,13 +1,13 @@
 <div class="CTitle">Qualifiers</div>
 -----
-<div class="CTitle"><span class="qualifier">Qualifier.&#8203;Qualifier.</span>&#8203;Class</div>
+<div class="CTitle"><span class="Qualifier">Qualifier.&#8203;Qualifier.</span>&#8203;Class</div>
 -----
-<div class="CTitle"><span class="qualifier">Qualifier::&#8203;Qualifier::</span>&#8203;Class</div>
+<div class="CTitle"><span class="Qualifier">Qualifier::&#8203;Qualifier::</span>&#8203;Class</div>
 -----
-<div class="CTitle"><span class="qualifier">Qualifier::&#8203;Qualifier-&gt;</span>&#8203;Function</div>
+<div class="CTitle"><span class="Qualifier">Qualifier::&#8203;Qualifier-&gt;</span>&#8203;Function</div>
 -----
-<div class="CTitle"><span class="qualifier">Folder/&#8203;Folder/</span>&#8203;FileName.MoreFileName.js</div>
+<div class="CTitle"><span class="Qualifier">Folder/&#8203;Folder/</span>&#8203;FileName.MoreFileName.js</div>
 -----
 <div class="CTitle">Generic/Text Topic.And::More.</div>
 -----
-<div class="CTitle"><span class="qualifier">Folder/&#8203;Folder/</span>&#8203;Folder///</div>
+<div class="CTitle"><span class="Qualifier">Folder/&#8203;Folder/</span>&#8203;Folder///</div>
