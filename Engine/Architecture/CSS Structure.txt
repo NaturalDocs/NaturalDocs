@@ -159,7 +159,7 @@ _______________________________________________________________________________
 		<CTopic T[Type] L[Language] first/last?>
 
 			<CTitle>
-				<qualifier>Package.Package.</qualifier>Title
+				<Qualifier>Package.Package.</Qualifier>Title
 			</CTitle>
 
 			<NDPrototype>...</NDPrototype>

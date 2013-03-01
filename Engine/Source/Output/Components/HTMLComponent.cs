@@ -342,7 +342,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* Function: BuildWrappedTitle
 		 * Builds a title with zero-width spaces added so that long identifiers wrap.  Will also add a span surrounding the qualifiers
-		 * with a "qualifier" CSS class.  The HTML will be appended to the StringBuilder, but you must provide your own surrounding
+		 * with a "Qualifier" CSS class.  The HTML will be appended to the StringBuilder, but you must provide your own surrounding
 		 * div if required.
 		 */
 		static public void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
@@ -386,7 +386,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 				{
 				int appendedSoFar = 0;
-				output.Append("<span class=\"qualifier\">");
+				output.Append("<span class=\"Qualifier\">");
 
 				for (int i = 0; i < splitCount; i++)
 					{
@@ -413,7 +413,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* Function: BuildWrappedTitle
 		 * Builds a title with zero-width spaces added so that long identifiers wrap.  Will also add a span surrounding the qualifiers
-		 * with a "qualifier" CSS class.  The HTML will be returned as a string, but you must provide your own surrounding div if
+		 * with a "Qualifier" CSS class.  The HTML will be returned as a string, but you must provide your own surrounding div if
 		 * required.  If the string will be directly appended to a StringBuilder, it is more efficient to use the other form.
 		 */
 		static public string BuildWrappedTitle (string title, int topicTypeID)
