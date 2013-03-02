@@ -1,8 +1,20 @@
-public static class Properties1 : public Parent
+class Qualifiers : A.B.Parent1, X.Y.Parent2
+
+  - Name: Qualifiers
+  - Keyword: class
+
+  - Parent 1: A.B.Parent1
+    - Name: A.B.Parent1
+
+  - Parent 2: X.Y.Parent2
+    - Name: X.Y.Parent2
+
+-----
+
+class Properties1 : public Parent
 
   - Name: Properties1
   - Keyword: class
-  - Modifiers: public static
 
   - Parent 1: public Parent
     - Name: Parent
@@ -10,47 +22,33 @@ public static class Properties1 : public Parent
 
 -----
 
-public class Properties2 base public Parent
+class Properties2 inherit [Metadata] Parent
 
   - Name: Properties2
   - Keyword: class
-  - Modifiers: public
 
-  - Parent 1: public Parent
+  - Parent 1: [Metadata] Parent
     - Name: Parent
-    - Modifiers: public
+    - Modifiers: [Metadata]
 
 -----
 
-private class Properties3 : extends public Parent1, implements public Parent2
+class Properties3 : extends public Parent1, implements [Metadata] private A.B.Parent2
 
   - Name: Properties3
   - Keyword: class
-  - Modifiers: private
 
   - Parent 1: public Parent1
     - Name: Parent1
     - Modifiers: public
 
-  - Parent 2: public Parent2
-    - Name: Parent2
-    - Modifiers: public
+  - Parent 2: [Metadata] private A.B.Parent2
+    - Name: A.B.Parent2
+    - Modifiers: [Metadata] private
 
 -----
 
-[Something] class Metadata inherit [Something else] Parent
-
-  - Name: Metadata
-  - Keyword: class
-  - Modifiers: [Something]
-
-  - Parent 1: [Something else] Parent
-    - Name: Parent
-    - Modifiers: [Something else]
-
------
-
-class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int>
+class Templates<int, float> : public Parent1<char>, A.B.Parent2 <List<int>, int>
 
   - Name: Templates
   - Template Suffix: <int, float>
@@ -61,6 +59,6 @@ class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int>
     - Template Suffix: <char>
     - Modifiers: public
 
-  - Parent 2: Parent2 <List<int>, int>
-    - Name: Parent2
+  - Parent 2: A.B.Parent2 <List<int>, int>
+    - Name: A.B.Parent2
     - Template Suffix: <List<int>, int>

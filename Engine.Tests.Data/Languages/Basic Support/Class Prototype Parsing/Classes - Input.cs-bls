@@ -1,9 +1,21 @@
 
-// Class: Plain
-class Plain { }
+// Class: PlainClass
+class PlainClass { }
 
-// Interface: WithModifiers
-public static interface WithModifiers { }
+// Struct: PlainStruct
+struct PlainStruct { }
+
+// Interface: PlainInterface
+interface PlainInterface { }
+
+// Class: ClassWithModifiers
+public static class ClassWithModifiers { }
+
+// Struct: StructWithModifiers
+public static struct StructWithModifiers { }
+
+// Interface: InterfaceWithModifiers
+public static interface InterfaceWithModifiers { }
 
 // Class: Template
 class Template<T> { }

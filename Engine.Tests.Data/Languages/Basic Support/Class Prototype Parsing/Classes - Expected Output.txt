@@ -1,14 +1,48 @@
-class Plain
+class PlainClass
 
-  - Name: Plain
+  - Name: PlainClass
   - Keyword: class
   - No parents
 
 -----
 
-public static interface WithModifiers
+struct PlainStruct
 
-  - Name: WithModifiers
+  - Name: PlainStruct
+  - Keyword: struct
+  - No parents
+
+-----
+
+interface PlainInterface
+
+  - Name: PlainInterface
+  - Keyword: interface
+  - No parents
+
+-----
+
+public static class ClassWithModifiers
+
+  - Name: ClassWithModifiers
+  - Keyword: class
+  - Modifiers: public static
+  - No parents
+
+-----
+
+public static struct StructWithModifiers
+
+  - Name: StructWithModifiers
+  - Keyword: struct
+  - Modifiers: public static
+  - No parents
+
+-----
+
+public static interface InterfaceWithModifiers
+
+  - Name: InterfaceWithModifiers
   - Keyword: interface
   - Modifiers: public static
   - No parents

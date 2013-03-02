@@ -1,17 +1,15 @@
 
+// Class: Qualifiers
+class Qualifiers : A.B.Parent1, X.Y.Parent2 { }
+
 // Class: Properties1
-public static class Properties1 : public Parent { }
+class Properties1 : public Parent { }
 
 // Class: Properties2
-public class Properties2 base public Parent { }
+class Properties2 inherit [Metadata] Parent { }
 
 // Class: Properties3
-private class Properties3 : extends public Parent1, implements public Parent2 { }
-
-
-// Class: Metadata
-[Something] class Metadata inherit [Something else] Parent { }
-
+class Properties3 : extends public Parent1, implements [Metadata] private A.B.Parent2 { }
 
 // Class: Templates
-class Templates<int, float> : public Parent1<char>, Parent2 <List<int>, int> { }
+class Templates<int, float> : public Parent1<char>, A.B.Parent2 <List<int>, int> { }
