@@ -153,6 +153,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			{
 			htmlOutput.Append("<div class=\"CPEntry T" + Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier +" Current\">");
 
+
+			// Keyword and modifiers.  We only show the keyword if it's not "class".
+
 			TokenIterator startKeyword, endKeyword;
 			topic.ParsedClassPrototype.GetKeyword(out startKeyword, out endKeyword);
 			string keyword = startKeyword.String;
@@ -177,6 +180,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				htmlOutput.Append("</div>");
 				}
+
+
+			// Name.  We use the fully resolved name in the symbol instead of the prototype name, which may just be the last segment.
 
 			htmlOutput.Append("<div class=\"CPName\">");
 
