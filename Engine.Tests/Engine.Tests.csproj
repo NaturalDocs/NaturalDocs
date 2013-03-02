@@ -88,6 +88,8 @@
     <Compile Include="Source\Languages\C#\CommentMerging.cs" />
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
+    <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\ClassPrototypes\CSharp.cs" />
     <Compile Include="Source\Output\HTML\CodeSections.cs" />
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />

@@ -1,0 +1,17 @@
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">PlainClass</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">struct</span></div><div class="CPName">PlainStruct</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers"><span class="SHKeyword">interface</span></div><div class="CPName">PlainInterface</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPModifiers"><span class="SHKeyword">public static</span></div><div class="CPName">ClassWithModifiers</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHKeyword">public static</span> <span class="SHKeyword">struct</span></div><div class="CPName">StructWithModifiers</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers"><span class="SHKeyword">public static</span> <span class="SHKeyword">interface</span></div><div class="CPName">InterfaceWithModifiers</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">Template&#8203;<span class="TemplateSignature">&lt;T&gt;</span></div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TStruct Current"><div class="CPModifiers"><span class="SHMetadata">[Something]</span> <span class="SHKeyword">struct</span></div><div class="CPName">Metadata</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TInterface Current"><div class="CPModifiers"><span class="SHMetadata">[Something(&quot;value&quot;, 2)]</span> <span class="SHKeyword">public static</span> <span class="SHKeyword">interface</span></div><div class="CPName">Everything&#8203;<span class="TemplateSignature">&lt;X, Y&gt;</span></div></div></div>

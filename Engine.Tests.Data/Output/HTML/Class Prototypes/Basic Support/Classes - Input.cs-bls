@@ -1,0 +1,44 @@
+
+// Class: PlainClass
+class PlainClass { }
+
+// Struct: PlainStruct
+struct PlainStruct { }
+
+// Interface: PlainInterface
+interface PlainInterface { }
+
+// Class: ClassWithModifiers
+public static class ClassWithModifiers { }
+
+// Struct: StructWithModifiers
+public static struct StructWithModifiers { }
+
+// Interface: InterfaceWithModifiers
+public static interface InterfaceWithModifiers { }
+
+// Class: Template
+class Template<T> { }
+
+// Class: NestedTemplates
+class NestedTemplates<List<X,Y>, Z> { }
+
+// Struct: Metadata
+[Something]
+struct Metadata { }
+
+// Interface: Package.Package.Qualifiers
+interface Package.Package.Qualifiers { }
+
+// Interface: Package::Package::Qualifiers2
+// It's okay that the prototype uses dots because we're using the fully qualified symbol
+// instead of the prototype text, and actual languages should always use the default
+// member operator instead of allowing multiple symbols.
+interface Package::Package::Qualifiers2 { }
+
+// Class: Package::Package.Everything
+// It's okay that the prototype uses dots because we're using the fully qualified symbol
+// instead of the prototype text, and actual languages should always use the default
+// member operator instead of allowing multiple symbols.
+[Something: (value), {value}]
+public static class Package::Package.Everything<X, Y<Z>> { }

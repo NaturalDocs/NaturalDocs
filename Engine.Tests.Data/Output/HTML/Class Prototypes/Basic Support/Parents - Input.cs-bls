@@ -1,0 +1,24 @@
+
+// Class: NoParents
+class NoParents { }
+
+// Class: OneParent
+class OneParent : Parent { }
+
+// Class: TwoParents
+class TwoParents : Parent1, Parent2 { }
+
+// Class: Qualifiers
+class Qualifiers : A.B.Parent1, X.Y.Parent2 { }
+
+// Class: Properties1
+class Properties1 : public Parent { }
+
+// Class: Properties2
+class Properties2 inherit [Metadata] Parent { }
+
+// Class: Properties3
+class Properties3 : extends public Parent1, implements [Metadata] private A.B.Parent2 { }
+
+// Class: Templates
+class Templates<int, float> : public Parent1<char>, A.B.Parent2 <List<int>, int> { }
