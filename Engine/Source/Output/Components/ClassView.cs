@@ -134,38 +134,33 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			sortedTopics = null;  // for safety
 
 		
-			// Find the best topic to serve as the class topic.
+			// Find the best topic to serve as the class definition.
 
-			int bestClassIndex = 0;
-			long bestClassScore = 0;
+			Topic bestDefinition = remainingTopics[0];
+			int bestDefinitionIndex = 0;
 
-			for (int i = 0; i < remainingTopics.Count; i++)
+			for (int i = 1; i < remainingTopics.Count; i++)
 				{
 				Topic topic = remainingTopics[i];
 
-				if (Instance.TopicTypes.FromID(topic.TopicTypeID).Scope == TopicType.ScopeValue.Start)
+				if (topic.DefinesClass &&
+					 CodeDB.Manager.IsBetterClassDefinition(bestDefinition, topic))
 					{
-					long score = CodeDB.Manager.ScoreTopic(topic);
-
-					if (score > bestClassScore)
-						{
-						bestClassIndex = i;
-						bestClassScore = score;
-						}
+					bestDefinition = topic;
+					bestDefinitionIndex = i;
 					}
 				}
 
 
-			// Copy the best topic in and everything that follows it in the file.  That will serve as the base for merging.
+			// Copy the best definition in and everything that follows it in the file.  That will serve as the base for merging.
 
-			int bestClassFileID = remainingTopics[bestClassIndex].FileID;
-			int bestClassTopicCount = 1;
+			int bestDefinitionTopicCount = 1;
 
-			for (int i = bestClassIndex + 1; i < remainingTopics.Count && remainingTopics[i].FileID == bestClassFileID; i++)
-				{  bestClassTopicCount++;  }
+			for (int i = bestDefinitionIndex + 1; i < remainingTopics.Count && remainingTopics[i].FileID == bestDefinition.FileID; i++)
+				{  bestDefinitionTopicCount++;  }
 
-			topics.AddRange( remainingTopics.GetRange(bestClassIndex, bestClassTopicCount) );
-			remainingTopics.RemoveRange(bestClassIndex, bestClassTopicCount);
+			topics.AddRange( remainingTopics.GetRange(bestDefinitionIndex, bestDefinitionTopicCount) );
+			remainingTopics.RemoveRange(bestDefinitionIndex, bestDefinitionTopicCount);
 
 
 			// Make sure the first topic isn't embedded so that classes documented in lists still appear correctly.
@@ -179,13 +174,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			// Delete all the other topics that define the class.  We don't need them anymore.
 
-			int j = 0;
-			while (j < remainingTopics.Count)
+			for (int i = 0; i < remainingTopics.Count; /* don't auto increment */)
 				{
-				if (topicTypes.FromID(remainingTopics[j].TopicTypeID).Scope == TopicType.ScopeValue.Start)
-					{  remainingTopics.RemoveAt(j);  }
+				if (remainingTopics[i].DefinesClass)
+					{  remainingTopics.RemoveAt(i);  }
 				else
-					{  j++;  }
+					{  i++;  }
 				}
 
 
@@ -370,22 +364,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			// Delete any empty groups.  We do this on the main group list too for consistency.
 
-			j = 0;
-			while (j < groupedTopics.Groups.Count)
+			for (int i = 0; i < groupedTopics.Groups.Count; /* don't auto increment */)
 				{
-				if (groupedTopics.Groups[j].IsEmpty)
-					{  groupedTopics.RemoveGroupAndTopics(j);  }
+				if (groupedTopics.Groups[i].IsEmpty)
+					{  groupedTopics.RemoveGroupAndTopics(i);  }
 				else
-					{  j++;  }
+					{  i++;  }
 				}
 
-			j = 0;
-			while (j < groupedRemainingTopics.Groups.Count)
+			for (int i = 0; i < groupedRemainingTopics.Groups.Count; /* don't auto increment */)
 				{
-				if (groupedRemainingTopics.Groups[j].IsEmpty)
-					{  groupedRemainingTopics.RemoveGroupAndTopics(j);  }
+				if (groupedRemainingTopics.Groups[i].IsEmpty)
+					{  groupedRemainingTopics.RemoveGroupAndTopics(i);  }
 				else
-					{  j++;  }
+					{  i++;  }
 				}
 
 
@@ -522,17 +514,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						matchingGroupIndex = groupedTopics.Groups.Count - 1;
 						}
 
-					j = 0;
-					while (j < remainingTopics.Count)
+					for (int i = 0; i < remainingTopics.Count; /* don't auto increment */)
 						{
-						var remainingTopic = remainingTopics[j];
+						var remainingTopic = remainingTopics[i];
 						if (remainingTopic.TopicTypeID == type)
 							{
 							groupedTopics.AppendToGroup(matchingGroupIndex, remainingTopic);
-							remainingTopics.RemoveAt(j);
+							remainingTopics.RemoveAt(i);
 							}
 						else
-							{  j++;  }
+							{  i++;  }
 						}
 					}
 				}

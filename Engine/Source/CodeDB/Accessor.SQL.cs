@@ -68,6 +68,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																							  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
+			// DefinesClass is a read-only property in Topic so we don't have to retrieve it from the database.  Topic will calculate it from 
+			// TopicTypeID.  We only store it in the database so we can use it to filter queries.
+
 			if (bodyLengthOnly)
 				{  queryText.Append(", length(Body) ");  }
 			else
@@ -389,13 +392,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				GetOrCreateContextIDs(topic);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
-														"IsList, IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, Tags, FileID, " +
-														"FilePosition, CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, BodyContextID) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+														"DefinesClass, IsList, IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
+														"Tags, FileID, FilePosition, CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, " +
+														"BodyContextID) " +
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
-													topic.ClassID, (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol, topic.TopicTypeID, 
-													(int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, topic.FilePosition,
-													topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, topic.BodyContextID										 
+													topic.ClassID, (topic.DefinesClass ? 1 : 0), (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol,
+													topic.TopicTypeID, (int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, 
+													topic.FilePosition, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, 
+													topic.BodyContextID										 
 													);
 			
 				codeDB.UsedTopicIDs.Add(topic.TopicID);
@@ -1959,13 +1964,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Pare down our list of uncached class strings.
 
-			int j = 0;  // the compiler complains if we use i
-			while (j < uncachedClassStrings.Count)
+			for (int i = 0; i < uncachedClassStrings.Count; /* don't auto increment */)
 				{
-				if (classIDLookupCache.Contains(uncachedClassStrings[j]))
-					{  uncachedClassStrings.RemoveAt(j);  }
+				if (classIDLookupCache.Contains(uncachedClassStrings[i]))
+					{  uncachedClassStrings.RemoveAt(i);  }
 				else
-					{  j++;  }
+					{  i++;  }
 				}
 
 
@@ -2419,13 +2423,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Pare down our list of uncached context strings.
 
-			int j = 0;  // the compiler complains if we use i
-			while (j < uncachedContextStrings.Count)
+			for (int i = 0; i < uncachedContextStrings.Count; /* don't auto increment */)
 				{
-				if (contextIDLookupCache.Contains(uncachedContextStrings[j]))
-					{  uncachedContextStrings.RemoveAt(j);  }
+				if (contextIDLookupCache.Contains(uncachedContextStrings[i]))
+					{  uncachedContextStrings.RemoveAt(i);  }
 				else
-					{  j++;  }
+					{  i++;  }
 				}
 
 

@@ -45,6 +45,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																							"Symbol TEXT NOT NULL, " +
 																							"SymbolDefinitionNumber INTEGER NOT NULL, " +
 																							"ClassID INTEGER NOT NULL, " +
+																							"DefinesClass INTEGER NOT NULL, " +
 																							"IsList INTEGER NOT NULL, " +
 																							"IsEmbedded INTEGER NOT NULL, " +
 																							"EndingSymbol TEXT NOT NULL, " +
@@ -62,6 +63,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																	   
 			connection.Execute("CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)");
 			connection.Execute("CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)");
+			connection.Execute("CREATE INDEX TopicsByClassDefinition ON Topics (ClassID, DefinesClass)");
 			connection.Execute("CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)");
 
 

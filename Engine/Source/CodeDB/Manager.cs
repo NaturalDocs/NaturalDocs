@@ -1095,6 +1095,50 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: IsBetterClassDefinition
+		 * If two <Topics> both have the same <ClassString>, returns whether the second one serves as a better definition 
+		 * than the first.  Is safe to use with topics that don't have <Topic.DefinesClass> set.
+		 */
+		public static bool IsBetterClassDefinition (Topic currentDefinition, Topic toTest)
+			{
+			#if DEBUG
+			if (currentDefinition.ClassString != toTest.ClassString)
+				{  throw new Exception("Tried to call IsBetterClassDefinition() on two topics with different class strings.");  }
+			#endif
+
+			if (toTest.DefinesClass == false)
+				{  return false;  }
+			if (currentDefinition.DefinesClass == false)
+				{  return true;  }
+
+			long currentScore = ScoreTopic(currentDefinition);
+			long toTestScore = ScoreTopic(toTest);
+
+			if (toTestScore > currentScore)
+				{  return true;  }
+			else if (toTestScore < currentScore)
+				{  return false;  }
+
+			// If the scores are equal, compare the paths.  Having a path that sorts higher isn't indicitive of anything, it just makes
+			// sure the results of this function are consistent between runs.
+
+			Path currentPath = Engine.Instance.Files.FromID(currentDefinition.FileID).FileName;
+			Path toTestPath = Engine.Instance.Files.FromID(toTest.FileID).FileName;
+
+			int compareResult = Path.Compare(currentPath, toTestPath);
+
+			if (compareResult < 0)
+				{  return false;  }
+			else if (compareResult > 0)
+				{  return true;  }
+
+			// If they're in the same file, choose the one with the lower definition number.  We don't have to test >, <, and == 
+			// separately because if they're still equal that means they're both the same topic and either return value is fine.
+
+			return (toTest.FilePosition < currentDefinition.FilePosition);
+			}
+
+
 		/* Function: WorkOnResolvingLinks
 		 * 
 		 * Works on the task of resolving links due to topics changing or new links being added.  This is a parallelizable 

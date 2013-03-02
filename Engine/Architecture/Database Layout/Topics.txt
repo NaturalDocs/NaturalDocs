@@ -83,6 +83,15 @@ Column: ClassID
 	The ID of the class this topic creates or is a member of, or zero if it's global.
 
 
+Column: DefinesClass
+
+	(Prototype)
+		DefinesClass INTEGER NOT NULL
+	(end)
+
+	Whether this topic defines its <ClassID> as opposed to just being a member, stored as 1 or 0.
+
+
 Column: IsList
 
 	(Prototype)
@@ -244,6 +253,13 @@ Index: TopicsByClass
 
 	(Prototype)
 		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)
+	(end)
+
+
+Index: TopicsByClassDefinition
+
+	(Prototype)
+		CREATE INDEX TopicsByClassDefinition ON Topics (ClassID, DefinesClass)
 	(end)
 
 

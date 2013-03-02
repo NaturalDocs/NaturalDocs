@@ -1340,6 +1340,27 @@ namespace GregValure.NaturalDocs.Engine.Topics
 				return (topicTypeID != 0 && Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.Enum == true);
 				}
 			}
+
+
+		/* Property: DefinesClass
+		 * Whether this topic defines its <ClassString> as opposed to just being a member.
+		 */
+		public bool DefinesClass
+			{
+			get
+				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access DefinesClass when the topic type ID was ignored.");  }
+				if ((ignoredFields & IgnoreFields.IsList) != 0)
+					{  throw new InvalidOperationException("Tried to access DefinesClass when IsList was ignored.");  }
+				#endif
+
+				var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
+
+				return ((topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy) && isList == false);
+				}
+			}
 			
 			
 
