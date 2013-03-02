@@ -714,6 +714,12 @@ body.NDContentPage {
 		font: 8pt `CodeFontFamily;
 		opacity: .5;
 		}
+	.CPEntry.Parent .CPModifiers,
+	.CPEntry.Parent .CPPostModifiers,
+	.CPEntry.Child .CPPModifiers,
+	.CPEntry.Child .CPPostModifiers {
+		opacity: .75;
+		}
 	.CPEntry .CPPostModifiers {
 		margin-top: .1em;
 		}
