@@ -295,26 +295,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (oldTargetTopicID == UnresolvedTargetTopicID.NewLink)
 				{  return;  }
 
-			sourceFilesToRebuild.Add(link.FileID);
-
-			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
-			// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
-
-			// Why do we have to do this if links aren't used in tooltips?  Because how it's resolved can affect it's appearance.
-			// It will show up as "link" versus "<link>" if it's resolved or not, and "a at b" versus "a" depending on if it resolves to
-			// the topic "a at b" or the topic "b".
-
-			// Why don't we do this for type links?  Because unlike Natural Docs links, type links don't change in appearance
-			// based on whether they're resolved or not.  Therefore the logic that we don't have to worry about it because links
-			// don't appear in tooltips holds true.
-
-			if (link.Type == LinkType.NaturalDocs)
+			lock (writeLock)
 				{
-				IDObjects.SparseNumberSet fileIDs;
-				eventAccessor.GetInfoOnLinksToTopicsWithNDLinkInSummary(link, out fileIDs);
+				sourceFilesToRebuild.Add(link.FileID);
 
-				if (fileIDs != null)
-					{  sourceFilesToRebuild.Add(fileIDs);  }
+				// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
+				// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
+
+				// Why do we have to do this if links aren't used in tooltips?  Because how it's resolved can affect it's appearance.
+				// It will show up as "link" versus "<link>" if it's resolved or not, and "a at b" versus "a" depending on if it resolves to
+				// the topic "a at b" or the topic "b".
+
+				// Why don't we do this for type links?  Because unlike Natural Docs links, type links don't change in appearance
+				// based on whether they're resolved or not.  Therefore the logic that we don't have to worry about it because links
+				// don't appear in tooltips holds true.
+
+				if (link.Type == LinkType.NaturalDocs)
+					{
+					IDObjects.SparseNumberSet fileIDs;
+					eventAccessor.GetInfoOnLinksToTopicsWithNDLinkInSummary(link, out fileIDs);
+
+					if (fileIDs != null)
+						{  sourceFilesToRebuild.Add(fileIDs);  }
+					}
 				}
 			}
 		
