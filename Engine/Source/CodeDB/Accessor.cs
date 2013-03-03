@@ -29,6 +29,8 @@
 
 using System;
 using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Links;
+using GregValure.NaturalDocs.Engine.Topics;
 
 
 namespace GregValure.NaturalDocs.Engine.CodeDB
