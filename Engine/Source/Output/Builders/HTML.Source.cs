@@ -289,17 +289,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
+			// Why do we need to do this?  Can't we let the topic change handlers take care of this?  Actually no, because it is
+			// possible to add and delete links without touching the topics.  How?  Add or delete a "using" statement.  Now the
+			// link contexts have changed, causing the links with the old contexts to be deleted and new links to be created
+			// because they may resolve differently.
+
+			lock (writeLock)
+				{
+				sourceFilesToRebuild.Add(link.FileID);
+
+				if (link.ClassID != 0)
+					{  classFilesToRebuild.Add(link.ClassID);  }
+				}
 			}
 		
 		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
 			{
-			// If this is triggered by the first resolution of a new link, we don't have to do anything.  The file that contains this
-			// link must have changed to create it, so it should already be on the build list.  If it appears in the summary of any
-			// topics, that means the summary must have changed since this link didn't exist before and rebuilding any tooltips 
-			// will be handled by the topic events.
-			if (oldTargetTopicID == UnresolvedTargetTopicID.NewLink)
-				{  return;  }
-
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(link.FileID);
@@ -339,6 +344,18 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		
 		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
+			// Why do we need to do this?  Can't we let the topic change handlers take care of this?  Actually no, because it is
+			// possible to add and delete links without touching the topics.  How?  Add or delete a "using" statement.  Now the
+			// link contexts have changed, causing the links with the old contexts to be deleted and new links to be created
+			// because they may resolve differently.
+
+			lock (writeLock)
+				{
+				sourceFilesToRebuild.Add(link.FileID);
+
+				if (link.ClassID != 0)
+					{  classFilesToRebuild.Add(link.ClassID);  }
+				}
 			}
 
 		}
