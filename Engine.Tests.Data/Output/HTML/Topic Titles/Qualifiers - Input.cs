@@ -25,10 +25,14 @@
 	File: Folder/Folder/FileName.MoreFileName.js
 		The folders should be treated as qualifiers, but both dots in the file name should be ignored.
 
-	Topic: Generic/Text Topic.And::More.
+	File: Folder\Folder\FileName.MoreFileName.js
+
+	Topic: Generic/Text\Topic.And::More.
 		This isn't a code topic so no qualifiers should apply.
 
 	File: Folder/Folder/Folder///
 		Separators at the end of a title should be ignored.
+
+	File: Folder\Folder\Folder\\\
 
 */
