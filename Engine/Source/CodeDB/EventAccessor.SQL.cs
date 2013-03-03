@@ -27,15 +27,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		topicID - The topic ID to look up links for.
 		 *		fileIDs - The file IDs of all the links.  Will be null if none.
+		 *		classIDs - The class IDs of all the links.  Will be null if none.
 		 * 
 		 */
-		public void GetInfoOnLinksThatResolveToTopicID (int topicID, out IDObjects.SparseNumberSet fileIDs)
+		public void GetInfoOnLinksThatResolveToTopicID (int topicID, out IDObjects.SparseNumberSet fileIDs, 
+																										out IDObjects.SparseNumberSet classIDs)
 			{
 			accessor.RequireAtLeast(Accessor.LockType.ReadOnly);
 
 			fileIDs = null;
+			classIDs = null;
 			
-			using (SQLite.Query query = accessor.Connection.Query("SELECT FileID FROM Links WHERE TargetTopicID=?", topicID))
+			using (SQLite.Query query = accessor.Connection.Query("SELECT FileID, ClassID FROM Links WHERE TargetTopicID=?", topicID))
 				{
 				while (query.Step())
 					{
@@ -43,6 +46,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						{  fileIDs = new SparseNumberSet();  }
 
 					fileIDs.Add(query.IntColumn(0));
+
+					int classID = query.IntColumn(1);
+
+					if (classID != 0)
+						{
+						if (classIDs == null)
+							{  classIDs = new SparseNumberSet();  }
+
+						classIDs.Add(classID);
+						}
 					}
 				}
 			}
@@ -58,9 +71,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		link - The link to look up.  It must be a Natural Docs link.
 		 *		fileIDs - The file IDs of all the links that resolve to the topics that have the link in the summary.  Will be null if none.
+		 *		classIDs - The class IDs of all the links that resolve to the topics that have the link in the summary.  Will be null if none.
 		 * 
 		 */
-		public void GetInfoOnLinksToTopicsWithNDLinkInSummary (Link link, out IDObjects.SparseNumberSet fileIDs)
+		public void GetInfoOnLinksToTopicsWithNDLinkInSummary (Link link, out IDObjects.SparseNumberSet fileIDs,
+																														  out IDObjects.SparseNumberSet classIDs)
 			{
 			#if DEBUG
 				if (link.Type != LinkType.NaturalDocs)
@@ -70,6 +85,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			accessor.RequireAtLeast(Accessor.LockType.ReadOnly);
 
 			fileIDs = null;
+			classIDs = null;
 
 			IDObjects.SparseNumberSet topicIDs = null;
 			string likeText = "%<link type=\"naturaldocs\" originaltext=\"" + link.Text.EntityEncode() + "\"%";
@@ -89,7 +105,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (topicIDs == null)
 				{  return;  }
 
-			StringBuilder queryText = new StringBuilder("SELECT FileID FROM Links WHERE ");
+			StringBuilder queryText = new StringBuilder("SELECT FileID, ClassID FROM Links WHERE ");
 			List<object> queryParams = new List<object>();
 
 			bool isFirst = true;
@@ -112,6 +128,16 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 						{  fileIDs = new SparseNumberSet();  }
 
 					fileIDs.Add(query.IntColumn(0));
+
+					int classID = query.IntColumn(1);
+
+					if (classID != 0)
+						{
+						if (classIDs == null)
+							{  classIDs = new SparseNumberSet();  }
+
+						classIDs.Add(classID);
+						}
 					}
 				}
 			}
