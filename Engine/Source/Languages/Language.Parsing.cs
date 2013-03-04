@@ -252,7 +252,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Apply remaining properties
+			// Apply remaining properties. Class strings and using statements affect contexts so they must be applied
+			// first.
 
 			ApplyTags(elements);
 			ApplyClassStrings(elements);
@@ -263,8 +264,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// xxx apply prototype class parents
-				// xxx make sure topic->element conversion searches class prototypes for them
+			// Extract class parent links from class prototypes.  This can't be done earlier because they're affected by class strings,
+			// using statements, and contexts.
+
+			ExtractClassParentLinks(elements);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
 
 
 			#if DEBUG
@@ -2822,6 +2828,49 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				if (parentIndex != -1)
 					{  element.Topic.ClassString = (elements[parentIndex] as ParentElement).DefaultChildClassString;  }
+				}
+			}
+
+
+		/* Function: ExtractClassParentLinks
+		 * Fills in <Element.ClassParentLinks> for any relevant <Topics>.  It is assumed that <Topics> already have all <ClassStrings>, 
+		 * <ContextStrings>, language ID, and file ID set.
+		 */
+		protected void ExtractClassParentLinks (List<Element> elements)
+			{
+			foreach (var element in elements)
+				{
+				if (element.Topic == null)
+					{  continue;  }
+
+				var topic = element.Topic;
+				var parsedClassPrototype = topic.ParsedClassPrototype;
+
+				if (parsedClassPrototype == null)
+					{  continue;  }
+
+				int parentCount = parsedClassPrototype.NumberOfParents;
+
+				for (int i = 0; i < parentCount; i++)
+					{
+					Link link = new Link();
+					link.Type = LinkType.ClassParent;
+
+					TokenIterator start, end;
+					parsedClassPrototype.GetParentName(i, out start, out end);
+
+					link.Symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved( start.Tokenizer.TextBetween(start, end) );
+					link.Context = topic.PrototypeContext;
+					link.FileID = topic.FileID;
+					link.ClassString = topic.ClassString;
+					link.LanguageID = topic.LanguageID;
+					// Don't need to fill in EndingSymbol
+
+					if (element.ClassParentLinks == null)
+						{  element.ClassParentLinks = new List<Link>();  }
+
+					element.ClassParentLinks.Add(link);
+					}
 				}
 			}
 

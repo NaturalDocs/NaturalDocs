@@ -902,7 +902,8 @@ namespace GregValure.NaturalDocs.Engine.Files
 								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 							}
 
-						if (topic.Prototype != null)
+						if (topic.Prototype != null &&
+							Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false)
 							{
 							ExtractTypeLinks(topic, links);
 

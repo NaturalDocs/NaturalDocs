@@ -1268,7 +1268,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		ClassString - Can be null, which means not part of a class.
 		 *		ClassID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		LanguageID - Must be set.
-		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
+		 *		EndingSymbol - Ignored.  It will be generated automatically.
 		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
 		 *		TargetScore - Must be zero.
 		 */
@@ -1504,7 +1504,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		ContextID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		FileID - Must be set.
 		 *		LanguageID - Must be set.
-		 *		EndingSymbol - Ignored.  For <LinkType.Type> and <LinkType.ClassParent> it will be filled in.
+		 *		EndingSymbol - Ignored.  It will be generated automatically.
 		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
 		 *		TargetScore - Must be zero.
 		 */
