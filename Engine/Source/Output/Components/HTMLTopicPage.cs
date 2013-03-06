@@ -74,20 +74,43 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				// DEPENDENCY: HTMLTopicPages.Class assumes that this function will call a database function before using any path
 				// properties.
 
-				List<Topic> topics = GetTopics(accessor, cancelDelegate);
+				List<Topic> topics = GetTopics(accessor, cancelDelegate) ?? new List<Topic>();
 				
 				if (topics.Count == 0 || cancelDelegate())
 					{  return false;  }
 				
-					
-				// Get links and their targets
-
-				// We can't skip looking up classes and contexts here.  Later code will be trying to compare generated 
-				// links to the ones in this list and that requires them having all their properties.
-				List<Link> links = GetLinks(accessor, cancelDelegate);
+				List<Link> links = GetLinks(accessor, cancelDelegate) ?? new List<Link>();
 
 				if (cancelDelegate())
 					{  return false;  }
+
+
+				// If this is anything other than a class page, find all the classes defined in it and look up their class parent links separately by 
+				// class ID.  This is done because classes can be defined across multiple files and the class parent links may only appear in 
+				// one.  However, the class prototypes will show all parents regardless of whether the parent links appear on this page or not, 
+				// so we need to include the ones that may appear in other pages.
+
+				if ((this is HTMLTopicPages.Class) == false)
+					{
+					IDObjects.SparseNumberSet classIDsDefined = new IDObjects.SparseNumberSet();
+
+					foreach (var topic in topics)
+						{
+						if (topic.DefinesClass)
+							{  classIDsDefined.Add(topic.ClassID);  }
+						}
+
+					if (classIDsDefined.IsEmpty == false)
+						{
+						List<Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
+
+						if (classParentLinks != null && classParentLinks.Count > 0)
+							{  links.AddRange(classParentLinks);  }
+						}
+					}
+
+
+				// Get link targets
 
 				IDObjects.SparseNumberSet linkTargetIDs = new IDObjects.SparseNumberSet();
 
@@ -97,7 +120,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						{  linkTargetIDs.Add(link.TargetTopicID);  }
 					}
 
-				IList<Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate);
+				List<Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate) ?? new List<Topic>();
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -122,13 +145,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						{  inceptionFileIDs.Add(linkTarget.FileID);  }
 					}
 
-				IList<Link> inceptionLinks = null;
+				List<Link> inceptionLinks = null;
 					
 				if (!inceptionFileIDs.IsEmpty)
-					{  
-					// Can't skip looking up classes and contexts here either.
-					inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  
-					}
+					{  inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  }
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -238,7 +258,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* Function: GetTopics
 		 * 
-		 * Retrieves the <Topics> for the page's location.  If there are no topics it will return an empty list.
+		 * Retrieves the <Topics> for the page's location.
 		 * 
 		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
 		 */
@@ -247,7 +267,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* Function: GetLinks
 		 * 
-		 * Retrieves the <Links> appearing in the page's location.  If there are no links it will return an empty list.
+		 * Retrieves the <Links> appearing in the page's location.
 		 * 
 		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
 		 */

@@ -119,7 +119,7 @@ Index: LinksByFileAndType
 Index: LinksByClass
 
 	(Prototype)
-		CREATE INDEX LinksByClass ON Links (ClassID)
+		CREATE INDEX LinksByClass ON Links (ClassID, Type)
 	(end)
 
 

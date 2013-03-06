@@ -79,7 +79,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																						"TargetScore INTEGER NOT NULL )");
 																	   
 			connection.Execute("CREATE INDEX LinksByFileAndType ON Links (FileID, Type)");
-			connection.Execute("CREATE INDEX LinksByClass ON Links (ClassID)");
+			connection.Execute("CREATE INDEX LinksByClass ON Links (ClassID, Type)");
 			connection.Execute("CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)");
 			connection.Execute("CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)");
 

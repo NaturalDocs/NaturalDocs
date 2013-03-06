@@ -41,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 		/* Function: GetTopics
 		 * 
-		 * Retrieves the <Topics> in the file.  If there are no topics it will return an empty list.
+		 * Retrieves the <Topics> in the file.
 		 * 
 		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
 		 * If it already has a lock it will use it and not release it.
@@ -67,7 +67,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 		/* Function: GetLinks
 		 * 
-		 * Retrieves the <Links> appearing in the file.  If there are no links it will return an empty list.
+		 * Retrieves the <Links> appearing in the file.
 		 * 
 		 * If the <CodeDB.Accessor> doesn't have a lock this function will acquire and release a read-only lock.
 		 * If it already has a lock it will use it and not release it.

@@ -1182,6 +1182,44 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetClassParentLinksInClasses
+		 * 
+		 * Retrieves a list of all the class parent links present for the passed class IDs.  If there are none it will return an empty list.  Pass a 
+		 * <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetClassParentLinksInClasses (IDObjects.SparseNumberSet classIDs, CancelDelegate cancelled, 
+																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			StringBuilder clauseText = new StringBuilder("(");
+			object[] parameters = new object[ classIDs.Count + 1 ];
+
+			int i = 0;
+			foreach (int classID in classIDs)
+				{
+				if (i > 0)
+					{  clauseText.Append(" OR ");  }
+
+				clauseText.Append("Links.ClassID=?");
+				parameters[i] = classID;
+				i++;
+				}
+
+			clauseText.Append(") AND Links.Type=?");
+			parameters[i] = (int)LinkType.ClassParent;
+
+			return GetLinks(clauseText.ToString(), parameters, cancelled, getLinkFlags);
+			}
+
+
 		/* Function: GetLinksByEndingSymbol
 		 * 
 		 * Retrieves a list of all the <Links> present that use the passed <EndingSymbol>.  Note that this also searches 
