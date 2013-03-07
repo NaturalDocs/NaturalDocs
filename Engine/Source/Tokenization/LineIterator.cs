@@ -293,9 +293,16 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				}
 				
 			result = new TokenIterator(tokenizer, tokenStart, rawTextStart, LineNumber);
-			
-			if (resultIndex != rawTextStart)
-				{  result.NextByCharacters(resultIndex - rawTextStart);  }
+
+			// Do this instead of NextByCharacters() so we don't cause an exception if it's not on a token boundary.
+			while (result.RawTextIndex < resultIndex)
+				{  result.Next();  }
+
+			if (result.RawTextIndex != resultIndex)
+				{  
+				result = new TokenIterator();
+				return false;
+				}
 			
 			return true;
 			}
