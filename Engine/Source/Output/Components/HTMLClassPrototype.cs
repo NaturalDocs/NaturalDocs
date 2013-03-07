@@ -270,8 +270,32 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				}
 
 			TokenIterator start, end;
+			
+			string entryClass = "CPEntry Parent";
+			if (parentTopicType != null)
+				{  entryClass += " T" + parentTopicType.SimpleIdentifier;  }
 
-			htmlOutput.Append("<div class=\"CPEntry" + (parentTopicType != null ? " T" + parentTopicType.SimpleIdentifier : "") + " Parent\">");
+			if (parent.targetTopic != null)
+				{
+				Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
+				Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
+				Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
+
+				HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(parent.targetTopic);
+
+				htmlOutput.Append("<a class=\"" + entryClass + "\" " +
+												"href=\"" + pathToIndex.ToURL() + 
+													'#' + targetTopicPage.OutputFileHashPath + 
+													':' + Builders.HTML.Source_TopicHashPath(parent.targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
+												"target=\"_top\" " +
+												"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + parent.targetTopic.TopicID + ");\" " +
+												"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
+											">");
+				}
+			else
+				{
+				htmlOutput.Append("<div class=\"" + entryClass + "\">");
+				}
 
 				if (parent.prototypeIndex != -1 && 
 					topic.ParsedClassPrototype.GetParentModifiers(parent.prototypeIndex, out start, out end) == true)
@@ -307,7 +331,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				htmlOutput.Append("</div>");
 
-			htmlOutput.Append("</div>");
+			if (parent.targetTopic != null)
+				{  htmlOutput.Append("</a>");  }
+			else
+				{  htmlOutput.Append("</div>");  }
 			}
 
 

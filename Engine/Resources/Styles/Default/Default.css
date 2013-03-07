@@ -670,6 +670,20 @@ body.NDContentPage {
 		background-color: #FFFFFF;
 		overflow: auto;
 		}
+	a.CPEntry {
+		display: block;
+		}
+	a.CPEntry:link,
+	a.CPEntry:hover,
+	a.CPEntry:visited,
+	a.CPEntry:active {
+		color: #000000;
+		text-decoration: none;
+		}
+	a.CPEntry:hover .CPName,
+	a.CPEntry:active .CPName {
+		text-decoration: underline;
+		}
 
 	.NDClassPrototype .CPEntry.Parent {
 		margin-right: 3.5ex;
@@ -705,10 +719,12 @@ body.NDContentPage {
 	.CPEntry.Child .CPName {
 		font-size: 10pt;
 		}
+
 	.CPEntry.Parent,
 	.CPEntry.Child {
 		opacity: .5;
 		}
+
 	.CPEntry .CPModifiers,
 	.CPEntry .CPPostModifiers {
 		font: 8pt `CodeFontFamily;
@@ -716,7 +732,7 @@ body.NDContentPage {
 		}
 	.CPEntry.Parent .CPModifiers,
 	.CPEntry.Parent .CPPostModifiers,
-	.CPEntry.Child .CPPModifiers,
+	.CPEntry.Child .CPModifiers,
 	.CPEntry.Child .CPPostModifiers {
 		opacity: .75;
 		}
