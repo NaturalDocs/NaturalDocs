@@ -217,6 +217,67 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: FindTokenBetween
+		 * Attempts to find the passed string as a token between the two iterators, and set a <TokenIterator> at its position if successful.  
+		 * The string must match the entire token, so "some" will not match "something".
+		 */
+		public bool FindTokenBetween (string text, bool ignoreCase, TokenIterator start, TokenIterator end, out TokenIterator result)
+			{
+			TokenIterator findTokensBetweenResult;
+			
+			if (FindTokensBetween(text, ignoreCase, start, end, out findTokensBetweenResult) == false ||
+				findTokensBetweenResult.RawTextLength != text.Length)
+				{  
+				result = end;
+				return false;
+				}
+			else
+				{  
+				result = findTokensBetweenResult;
+				return true;
+				}
+			}
+			
+			
+		/* Function: FindTokensBetween
+		 * Attempts to find the passed string between the two iterators, and sets a <TokenIterator> at its position if successful.  This 
+		 * function can cross token boundaries, so you can search for "<<" even though that would normally be two tokens.  The result 
+		 * must match complete tokens though, so "<< some" will not match "<< something".
+		 */
+		public bool FindTokensBetween (string text, bool ignoreCase, TokenIterator start, TokenIterator end, out TokenIterator result)
+			{
+			if (!start.IsInBounds || start > end)
+				{  
+				result = end;
+				return false;
+				}
+				
+			int resultIndex = rawText.IndexOf( text, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex,
+																(ignoreCase ? StringComparison.CurrentCultureIgnoreCase : 
+																					 StringComparison.CurrentCulture) );
+																									   
+			if (resultIndex == -1)
+				{  
+				result = end;
+				return false;
+				}
+				
+			result = start;
+
+			// Do this instead of NextByCharacters() so we don't cause an exception if it's not on a token boundary.
+			while (result.RawTextIndex < resultIndex)
+				{  result.Next();  }
+
+			if (result.RawTextIndex != resultIndex)
+				{  
+				result = end;
+				return false;
+				}
+			
+			return true;
+			}
+
+
 
 		// Group: Type Functions
 		// __________________________________________________________________________
