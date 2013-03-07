@@ -52,6 +52,45 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Function: BuildLinkTag
+		 * Constructs an <a> tag from the current <HTMLTopicPage> to the passed <Topic>.  It will NOT include the link text or the
+		 * closing tag, only the opening <a> tag.  If output is null it will be appended to <htmlOutput>.
+		 */
+		protected void BuildLinkTag (Topic targetTopic, string cssClass = null, StringBuilder output = null)
+			{
+			#if DEBUG
+			if (output == null && htmlOutput == null)
+				{  throw new Exception("Tried to call BuildLinkTag() without setting the output parameter or the htmlOutput variable.");  }
+			#endif
+
+			if (output == null)
+				{  output = htmlOutput;  }
+
+
+			// The link can't be only the hash path because it would use the iframe's location.  We need a relative path back to index.html
+			// to append it to.
+
+			Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
+			Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
+			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
+
+			HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
+
+			output.Append("<a ");
+			
+			if (cssClass != null)
+				{  output.Append("class=\"" + cssClass + "\" ");  }
+
+			output.Append("href=\"" + pathToIndex.ToURL() + 
+											'#' + targetTopicPage.OutputFileHashPath + 
+											':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
+										"target=\"_top\" " +
+										"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
+										"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
+									">");
+			}
+
+
 		/* Function: BuildSyntaxHighlightedText
 		 * Formats the text between the two iterators with syntax highlighting.  If output is null it will be appended to
 		 * <htmlOutput>.
@@ -171,6 +210,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 																														 bool extendTypeSearch = false,
 																														 StringBuilder output = null)
 			{
+			#if DEBUG
+			if (topic == null)
+				{  throw new Exception("Tried to call BuildTypeLinkedAndSyntaxHighlightedText() without setting the topic variable.");  }
+			if (links == null)
+				{  throw new Exception("Tried to call BuildTypeLinkedAndSyntaxHighlightedText() without setting the links variable.");  }
+			if (linkTargets == null)
+				{  throw new Exception("Tried to call BuildTypeLinkedAndSyntaxHighlightedText() without setting the linkTargets variable.");  }
+			if (output == null && htmlOutput == null)
+				{  throw new Exception("Tried to call BuildTypeLinkedAndSyntaxHighlightedText() without setting the output parameter or the htmlOutput variable.");  }
+			#endif
+
 			if (output == null)
 				{  output = htmlOutput;  }
 
@@ -293,24 +343,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 								{  throw new Exception("All links targets for a topic must be in the list passed to HTMLComponent.");  }
 							#endif
 
-
-							// Now build the actual link.  It can't just be the hash path because it would use the iframe's location, so we 
-							// also need a relative path back to index.html.
-
-							Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
-							Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
-							Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
-
-							HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
-
-							output.Append("<a href=\"" + pathToIndex.ToURL() + 
-																'#' + targetTopicPage.OutputFileHashPath + 
-																':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
-															"target=\"_top\" " +
-															"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
-															"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
-														">");
-
+							BuildLinkTag(targetTopic, null, output);
 							BuildSyntaxHighlightedText(textStart, textEnd, output);
 							output.Append("</a>");
 							}

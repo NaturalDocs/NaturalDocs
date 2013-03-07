@@ -725,24 +725,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				{  throw new Exception("All links targets for a topic must be in the list passed to HTMLTopic.");  }
 			#endif
 
-
-			// Now build the actual link.  It can't just be the hash path because it would use the iframe's location, so we also
-			// need a relative path back to index.html.
-
-			Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
-			Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
-			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
-
-			HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
-
-			htmlOutput.Append("<a href=\"" + pathToIndex.ToURL() + 
-														'#' + targetTopicPage.OutputFileHashPath + 
-														':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
-											"target=\"_top\" " +
-											"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
-											"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
-										">");
-
+			BuildLinkTag(targetTopic, null, htmlOutput);
 			htmlOutput.EntityEncodeAndAppend(linkInterpretation.Text);
 			htmlOutput.Append("</a>");
 			}

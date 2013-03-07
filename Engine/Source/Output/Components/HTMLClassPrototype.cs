@@ -276,26 +276,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				{  entryClass += " T" + parentTopicType.SimpleIdentifier;  }
 
 			if (parent.targetTopic != null)
-				{
-				Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
-				Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
-				Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
-
-				HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(parent.targetTopic);
-
-				htmlOutput.Append("<a class=\"" + entryClass + "\" " +
-												"href=\"" + pathToIndex.ToURL() + 
-													'#' + targetTopicPage.OutputFileHashPath + 
-													':' + Builders.HTML.Source_TopicHashPath(parent.targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
-												"target=\"_top\" " +
-												"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + parent.targetTopic.TopicID + ");\" " +
-												"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
-											">");
-				}
+				{  BuildLinkTag(parent.targetTopic, entryClass);  }
 			else
-				{
-				htmlOutput.Append("<div class=\"" + entryClass + "\">");
-				}
+				{  htmlOutput.Append("<div class=\"" + entryClass + "\">");  }
 
 				if (parent.prototypeIndex != -1 && 
 					topic.ParsedClassPrototype.GetParentModifiers(parent.prototypeIndex, out start, out end) == true)
