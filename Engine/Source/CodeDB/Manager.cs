@@ -89,7 +89,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			usedContextIDs = new IDObjects.NumberSet();
 
 			linksToResolve = new IDObjects.NumberSet();
-			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet>();
+			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet>();
 
 			classIDReferenceChangeCache = new ReferenceChangeCache();
 			contextIDReferenceChangeCache = new ReferenceChangeCache();
@@ -1199,7 +1199,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 							enumerator.MoveNext();  // It's not positioned on the first element by default.
 
 							EndingSymbol endingSymbol = enumerator.Current.Key;
-							IDObjects.SparseNumberSet topicIDs = enumerator.Current.Value;
+							IDObjects.NumberSet topicIDs = enumerator.Current.Value;
 
 							newTopicsByEndingSymbol.Remove(endingSymbol);
 
@@ -1298,7 +1298,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		- Requires at least a read/possible write lock.  If the link changes it will be upgraded automatically.
 		 *		
 		 */
-		protected void ResolveNewTopics (IDObjects.SparseNumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
+		protected void ResolveNewTopics (IDObjects.NumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
 			{
 			// We only need the body's length, not its contents.
 			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel, 
@@ -1449,8 +1449,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		/* Property: NewTopicsByEndingSymbol
 		 * 
 		 * Keeps track of all newly created <Topics>.  The keys are the <Symbols.EndingSymbols> the topics use, and the values
-		 * are <IDObjects.SparseNumberSets> of all the topic IDs associated with that ending symbol.  This is used for resolving 
-		 * links.
+		 * are <IDObjects.NumberSets> of all the topic IDs associated with that ending symbol.  This is used for resolving links.
 		 * 
 		 * Rationale:
 		 * 
@@ -1467,7 +1466,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		into memory, reresolve them all at once, and then move on to the next ending symbol.  If we stored a single NumberSet
 		 *		of topic IDs we'd have to handle the topics one by one and query for each topic's links separately.
 		 */
-		internal SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> NewTopicsByEndingSymbol
+		internal SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> NewTopicsByEndingSymbol
 			{
 			get
 				{  return newTopicsByEndingSymbol;  }
@@ -1556,7 +1555,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 		/* var: newTopicsByEndingSymbol
 		 */
-		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.SparseNumberSet> newTopicsByEndingSymbol;
+		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> newTopicsByEndingSymbol;
 
 		/* var: classIDReferenceChangeCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Classes>.

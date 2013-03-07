@@ -259,7 +259,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
 													Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
 					{
-					IDObjects.SparseNumberSet fileIDs, classIDs;
+					IDObjects.NumberSet fileIDs, classIDs;
 					eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out fileIDs, out classIDs);
 
 					if (fileIDs != null || classIDs != null)
@@ -326,7 +326,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (link.Type == LinkType.NaturalDocs)
 				{
-				IDObjects.SparseNumberSet fileIDs, classIDs;
+				IDObjects.NumberSet fileIDs, classIDs;
 				eventAccessor.GetInfoOnLinksToTopicsWithNDLinkInSummary(link, out fileIDs, out classIDs);
 
 				if (fileIDs != null || classIDs != null)

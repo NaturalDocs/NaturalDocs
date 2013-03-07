@@ -30,8 +30,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		classIDs - The class IDs of all the links.  Will be null if none.
 		 * 
 		 */
-		public void GetInfoOnLinksThatResolveToTopicID (int topicID, out IDObjects.SparseNumberSet fileIDs, 
-																										out IDObjects.SparseNumberSet classIDs)
+		public void GetInfoOnLinksThatResolveToTopicID (int topicID, out IDObjects.NumberSet fileIDs, out IDObjects.NumberSet classIDs)
 			{
 			accessor.RequireAtLeast(Accessor.LockType.ReadOnly);
 
@@ -43,7 +42,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				while (query.Step())
 					{
 					if (fileIDs == null)
-						{  fileIDs = new SparseNumberSet();  }
+						{  fileIDs = new NumberSet();  }
 
 					fileIDs.Add(query.IntColumn(0));
 
@@ -52,7 +51,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					if (classID != 0)
 						{
 						if (classIDs == null)
-							{  classIDs = new SparseNumberSet();  }
+							{  classIDs = new NumberSet();  }
 
 						classIDs.Add(classID);
 						}
@@ -74,8 +73,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		classIDs - The class IDs of all the links that resolve to the topics that have the link in the summary.  Will be null if none.
 		 * 
 		 */
-		public void GetInfoOnLinksToTopicsWithNDLinkInSummary (Link link, out IDObjects.SparseNumberSet fileIDs,
-																														  out IDObjects.SparseNumberSet classIDs)
+		public void GetInfoOnLinksToTopicsWithNDLinkInSummary (Link link, out IDObjects.NumberSet fileIDs, out IDObjects.NumberSet classIDs)
 			{
 			#if DEBUG
 				if (link.Type != LinkType.NaturalDocs)
@@ -87,7 +85,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			fileIDs = null;
 			classIDs = null;
 
-			IDObjects.SparseNumberSet topicIDs = null;
+			IDObjects.NumberSet topicIDs = null;
 			string likeText = "%<link type=\"naturaldocs\" originaltext=\"" + link.Text.EntityEncode() + "\"%";
 			
 			using (SQLite.Query query = accessor.Connection.Query("SELECT TopicID FROM Topics WHERE FileID=? AND Summary LIKE ?", 
@@ -96,7 +94,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				while (query.Step())
 					{
 					if (topicIDs == null)
-						{  topicIDs = new SparseNumberSet();  }
+						{  topicIDs = new NumberSet();  }
 
 					topicIDs.Add(query.IntColumn(0));
 					}
@@ -108,24 +106,14 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			StringBuilder queryText = new StringBuilder("SELECT FileID, ClassID FROM Links WHERE ");
 			List<object> queryParams = new List<object>();
 
-			bool isFirst = true;
-			foreach (int topicID in topicIDs)
-				{
-				if (isFirst)
-					{  isFirst = false;  }
-				else
-					{  queryText.Append(" OR ");  }
-
-				queryText.Append("TargetTopicID=? ");
-				queryParams.Add(topicID);
-				}
+			CodeDB.Accessor.AppendWhereClause_ColumnIsInNumberSet("TargetTopicID", topicIDs, queryText, queryParams);
 
 			using (SQLite.Query query = accessor.Connection.Query(queryText.ToString(), queryParams.ToArray()))
 				{
 				while (query.Step())
 					{
 					if (fileIDs == null)
-						{  fileIDs = new SparseNumberSet();  }
+						{  fileIDs = new NumberSet();  }
 
 					fileIDs.Add(query.IntColumn(0));
 
@@ -134,7 +122,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					if (classID != 0)
 						{
 						if (classIDs == null)
-							{  classIDs = new SparseNumberSet();  }
+							{  classIDs = new NumberSet();  }
 
 						classIDs.Add(classID);
 						}

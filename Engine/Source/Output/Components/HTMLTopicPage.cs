@@ -92,7 +92,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				if ((this is HTMLTopicPages.Class) == false)
 					{
-					IDObjects.SparseNumberSet classIDsDefined = new IDObjects.SparseNumberSet();
+					IDObjects.NumberSet classIDsDefined = new IDObjects.NumberSet();
 
 					foreach (var topic in topics)
 						{
@@ -112,7 +112,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				// Get link targets
 
-				IDObjects.SparseNumberSet linkTargetIDs = new IDObjects.SparseNumberSet();
+				IDObjects.NumberSet linkTargetIDs = new IDObjects.NumberSet();
 
 				foreach (Link link in links)
 					{
@@ -137,7 +137,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				// content, depending on the project and language.  While there can also be some really long files, the
 				// chances of that are less on average so we stick with doing this by file.
 
-				IDObjects.SparseNumberSet inceptionFileIDs = new IDObjects.SparseNumberSet();
+				IDObjects.NumberSet inceptionFileIDs = new IDObjects.NumberSet();
 
 				foreach (Topic linkTarget in linkTargets)
 					{

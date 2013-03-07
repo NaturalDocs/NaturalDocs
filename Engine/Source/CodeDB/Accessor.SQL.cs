@@ -405,10 +405,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			
 				codeDB.UsedTopicIDs.Add(topic.TopicID);
 
-				IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				IDObjects.NumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
 				if (newTopicsForEndingSymbol == null)
 					{
-					newTopicsForEndingSymbol = new IDObjects.SparseNumberSet();
+					newTopicsForEndingSymbol = new IDObjects.NumberSet();
 					codeDB.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
 					}
 				newTopicsForEndingSymbol.Add(topic.TopicID);
@@ -697,7 +697,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				codeDB.UsedTopicIDs.Remove(topic.TopicID);
 
 				// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-				IDObjects.SparseNumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				IDObjects.NumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
 				if (newTopicsForEndingSymbol != null)
 					{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
@@ -1194,29 +1194,20 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetClassParentLinksInClasses (IDObjects.SparseNumberSet classIDs, CancelDelegate cancelled, 
+		public List<Link> GetClassParentLinksInClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
 																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
 			StringBuilder clauseText = new StringBuilder("(");
-			object[] parameters = new object[ classIDs.Count + 1 ];
+			List<object> clauseParams = new List<object>();
 
-			int i = 0;
-			foreach (int classID in classIDs)
-				{
-				if (i > 0)
-					{  clauseText.Append(" OR ");  }
-
-				clauseText.Append("Links.ClassID=?");
-				parameters[i] = classID;
-				i++;
-				}
+			AppendWhereClause_ColumnIsInNumberSet("Links.ClassID", classIDs, clauseText, clauseParams);
 
 			clauseText.Append(") AND Links.Type=?");
-			parameters[i] = (int)LinkType.ClassParent;
+			clauseParams.Add((int)LinkType.ClassParent);
 
-			return GetLinks(clauseText.ToString(), parameters, cancelled, getLinkFlags);
+			return GetLinks(clauseText.ToString(), clauseParams.ToArray(), cancelled, getLinkFlags);
 			}
 
 
@@ -1250,7 +1241,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 			// Find link IDs that have it as an alternate ending symbol
 
-			IDObjects.SparseNumberSet alternateLinkIDs = new IDObjects.SparseNumberSet();
+			IDObjects.NumberSet alternateLinkIDs = new IDObjects.NumberSet();
 			
 			using (SQLite.Query query = connection.Query("SELECT LinkID FROM AlternateLinkEndingSymbols " +
 																										"WHERE EndingSymbol = ?", endingSymbol.ToString()))
@@ -1267,17 +1258,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				StringBuilder whereClause = new StringBuilder();
 				List<object> whereParams = new List<object>();
 
-				bool isFirst = true;
-				foreach (int alternateLinkID in alternateLinkIDs)
-					{
-					if (!isFirst)
-						{  whereClause.Append("OR ");  }
-					else
-						{  isFirst = false;  }
-
-					whereClause.Append("LinkID=? ");
-					whereParams.Add(alternateLinkID);
-					}
+				AppendWhereClause_ColumnIsInNumberSet("LinkID", alternateLinkIDs, whereClause, whereParams);
 
 				List<Link> alternateLinks = GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled);
 				links.AddRange(alternateLinks);
@@ -2809,14 +2790,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		queryParams - The parameter list for the query being built.  The new numbers are appended to it, so it must already
 		 *									contain the parameters for any question marks appearing earlier in the query.
 		 */
-		protected void AppendWhereClause_ColumnIsInNumberSet (string columnName, IDObjects.NumberSet numberSet, 
+		static public void AppendWhereClause_ColumnIsInNumberSet (string columnName, IDObjects.NumberSet numberSet, 
 																												  StringBuilder queryText, List<object> queryParams)
 			{
-			#if DEBUG
-			if (queryText.ToString().IndexOf(" WHERE", StringComparison.CurrentCultureIgnoreCase) == -1)
-				{  throw new Exception("The query text must already have a WHERE keyword before callling AppendWhereClause_ functions.");  }
-			#endif
-
 			// Surround the entire clause with parentheses and spaces to be safe.
 			queryText.Append(" (");
 
