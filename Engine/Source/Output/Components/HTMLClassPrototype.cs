@@ -339,20 +339,71 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			if (hasModifiers || keyword != "class")
 				{
-				htmlOutput.Append("<div class=\"CPModifiers\">");
+				StringBuilder modifiersOutput = new StringBuilder();
+				TokenIterator partial;
+				
+				bool hasPartial = startModifiers.Tokenizer.FindTokenBetween("partial", !Engine.Instance.Languages.FromID(topic.LanguageID).CaseSensitive,
+																								 startModifiers, endModifiers, out partial);
 
-				if (hasModifiers)
+				if (hasPartial)
 					{
-					BuildSyntaxHighlightedText(startModifiers, endModifiers, htmlOutput);
+					TokenIterator lookahead = partial;
+					lookahead.Next();
 
-					if (keyword != "class")
-						{  htmlOutput.Append(' ');  }
+					if (lookahead < endModifiers && 
+						(lookahead.FundamentalType == FundamentalType.Text ||
+						 lookahead.Character == '_'))
+						{  hasPartial = false;  }
+
+					TokenIterator lookbehind = partial;
+					lookbehind.Previous();
+
+					if (lookbehind >= startModifiers &&
+						(lookbehind.FundamentalType == FundamentalType.Text ||
+						 lookbehind.Character == '_'))
+						{  hasPartial = false;  }
+					}
+
+				if (hasModifiers && hasPartial)
+					{
+					if (partial > startModifiers)
+						{
+						TokenIterator lookbehind = partial;
+						lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+						BuildSyntaxHighlightedText(startModifiers, lookbehind, modifiersOutput);
+						}
+
+					partial.Next();
+					partial.NextPastWhitespace();
+
+					if (partial < endModifiers)
+						{
+						if (modifiersOutput.Length > 0)
+							{  modifiersOutput.Append(' ');  }
+
+						BuildSyntaxHighlightedText(partial, endModifiers, modifiersOutput);
+						}
+					}
+				else if (hasModifiers)
+					{
+					BuildSyntaxHighlightedText(startModifiers, endModifiers, modifiersOutput);
 					}
 
 				if (keyword != "class")
-					{  BuildSyntaxHighlightedText(startKeyword, endKeyword);  }
+					{  
+					if (modifiersOutput.Length > 0)
+						{  modifiersOutput.Append(' ');  }
 
-				htmlOutput.Append("</div>");
+					BuildSyntaxHighlightedText(startKeyword, endKeyword, modifiersOutput);  
+					}
+
+				if (modifiersOutput.Length > 0)
+					{
+					htmlOutput.Append("<div class=\"CPModifiers\">");
+					htmlOutput.Append(modifiersOutput.ToString());
+					htmlOutput.Append("</div>");
+					}
 				}
 
 
