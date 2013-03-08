@@ -901,9 +901,12 @@ namespace GregValure.NaturalDocs.Engine.Files
 							if (cancelDelegate())
 								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 							}
-
+						
+						// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
+						// the HTML output falls back to regular prototypes in this situation.
 						if (topic.Prototype != null &&
-							Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false)
+							(Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false ||
+							 topic.ParsedClassPrototype == null))
 							{
 							ExtractTypeLinks(topic, links);
 
