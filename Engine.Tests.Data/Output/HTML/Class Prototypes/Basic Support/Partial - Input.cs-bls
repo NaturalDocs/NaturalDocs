@@ -1,0 +1,30 @@
+
+// Class: PartialClass
+partial class PartialClass { }
+
+// Struct: PartialStruct
+partial struct PartialStruct { }
+
+// Interface: PartialInterface
+partial interface PartialInterface { }
+
+// Class: EndOfModifiers
+public static partial class EndOfModifiers { }
+
+// Class: BeginningOfModifiers
+partial public static class BeginningOfModifiers { }
+
+// Class: MiddleOfModifiers
+public partial static class MiddleOfModifiers { }
+
+// Class: Trap1
+_partial public static class Trap1 { }
+
+// Class: Trap2
+partial_ public static class Trap2 { }
+
+// Class: Trap3
+public static _partial class Trap3 { }
+
+// Class: Trap4
+public static partial_ class Trap4 { }
