@@ -19,6 +19,27 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 	public partial class EventAccessor
 		{
 		
+		/* Function: GetFileIDsThatDefineClassID
+		 * Returns the file IDs that contain topics which define the class ID.
+		 */
+		public NumberSet GetFileIDsThatDefineClassID (int classID)
+			{
+			accessor.RequireAtLeast(Accessor.LockType.ReadOnly);
+
+			NumberSet fileIDs = new NumberSet();
+			
+			using (SQLite.Query query = accessor.Connection.Query("SELECT FileID FROM Topics WHERE ClassID=? AND DefinesClass=1", classID))
+				{
+				while (query.Step())
+					{
+					fileIDs.Add(query.IntColumn(0));
+					}
+				}
+
+			return fileIDs;
+			}
+
+
 		/* Function: GetInfoOnLinksThatResolveToTopicID
 		 * 
 		 * Returns aggregate information on all links that resolve to the passed topic ID.

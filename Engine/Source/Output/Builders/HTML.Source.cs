@@ -289,34 +289,50 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
-			// Why do we need to do this?  Can't we let the topic change handlers take care of this?  Actually no, because it is
-			// possible to add and delete links without touching the topics.  How?  Add or delete a "using" statement.  Now the
-			// link contexts have changed, causing the links with the old contexts to be deleted and new links to be created
-			// because they may resolve differently.
+			// If a class parent link was added we have to rebuild all source files that define that class as the class prototype
+			// may have changed.
+			IDObjects.NumberSet filesThatDefineClass = null;
+
+			if (link.Type == LinkType.ClassParent)
+				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
 
 			lock (writeLock)
 				{
+				// Even if it's not a class parent link we still need to rebuild the source and class files that contain it.  We can't
+				// rely on the topic events picking it up because it's possible to change links without changing topics.  How?  By
+				// changing a using statement, which causes all the links to change.
 				sourceFilesToRebuild.Add(link.FileID);
 
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
+
+				if (filesThatDefineClass != null)
+					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 			}
 		
 		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
 			{
+			IDObjects.NumberSet filesThatDefineClass = null;
+
+			if (link.Type == LinkType.ClassParent)
+				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
+
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(link.FileID);
 
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
+
+				if (filesThatDefineClass != null)
+					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 
 			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
 			// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
 
-			// Why do we have to do this if links aren't used in tooltips?  Because how it's resolved can affect it's appearance.
+			// Why do we have to do this if links aren't added to tooltips?  Because how it's resolved can affect it's appearance.
 			// It will show up as "link" versus "<link>" if it's resolved or not, and "a at b" versus "a" depending on if it resolves to
 			// the topic "a at b" or the topic "b".
 
@@ -344,10 +360,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		
 		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
-			// Why do we need to do this?  Can't we let the topic change handlers take care of this?  Actually no, because it is
-			// possible to add and delete links without touching the topics.  How?  Add or delete a "using" statement.  Now the
-			// link contexts have changed, causing the links with the old contexts to be deleted and new links to be created
-			// because they may resolve differently.
+			IDObjects.NumberSet filesThatDefineClass = null;
+
+			if (link.Type == LinkType.ClassParent)
+				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
 
 			lock (writeLock)
 				{
@@ -355,6 +371,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
+
+				if (filesThatDefineClass != null)
+					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 			}
 
