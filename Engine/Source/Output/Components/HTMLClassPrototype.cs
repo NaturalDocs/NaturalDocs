@@ -104,8 +104,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 			    {
 			    List<Parent> parents = GetParentList();
+				 List<Topic> children = GetChildList();
 
-			    htmlOutput.Append("<div class=\"NDClassPrototype" + (parents != null && parents.Count > 0 ? " HasParents" : "") + "\">");
+			    htmlOutput.Append("<div class=\"NDClassPrototype");
+
+					if (parents != null && parents.Count > 0)
+						{  htmlOutput.Append(" HasParents");  }
+					if (children != null && children.Count > 0)
+						{  htmlOutput.Append(" HasChildren");  }
+					htmlOutput.Append("\">");
 				
 					if (parents != null)
 						{
@@ -113,7 +120,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 							{  BuildParentClass(parent);  }
 						}
 
-			        BuildCurrentClass();
+		        BuildCurrentClass();
+
+					if (children != null)
+						{
+						foreach (var child in children)
+							{  BuildChildClass(child);  }
+						}
 
 			    htmlOutput.Append("</div>");
 			    }
@@ -431,6 +444,84 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				}
 
 			htmlOutput.Append("</div>");
+			}
+
+
+		/* Function: GetChildList
+		 */
+		protected List<Topic> GetChildList ()
+			{
+
+			// First find all the class parent links that resolve to this one and collect the class IDs.
+
+			IDObjects.NumberSet childClassIDs = null;
+
+			if (links != null)
+				{
+				foreach (var link in links)
+					{
+					if (link.Type == LinkType.ClassParent && link.TargetClassID == topic.ClassID)
+						{
+						if (childClassIDs == null)
+							{  childClassIDs = new IDObjects.NumberSet();  }
+
+						childClassIDs.Add(link.ClassID);
+						}
+					}
+				}
+
+			if (childClassIDs == null)
+				{  return null;  }
+
+
+			// Now find the topics that define those classes.
+
+			List<Topic> childTopics = new List<Topic>();
+
+			foreach (var linkTarget in linkTargets)
+				{
+				if (linkTarget.DefinesClass && childClassIDs.Contains(linkTarget.ClassID))
+					{  
+					childTopics.Add(linkTarget);  
+					childClassIDs.Remove(linkTarget.ClassID);
+					}
+				}
+
+			if (childTopics.Count == 0)
+				{  return null;  }
+
+
+			// Now sort the child topics by symbol.
+
+			bool caseSensitive = Engine.Instance.Languages.FromID(topic.LanguageID).CaseSensitive;
+
+			childTopics.Sort( 
+				delegate(Topic a, Topic b)
+					{
+					return a.Symbol.CompareTo(b.Symbol, !caseSensitive);
+					}
+				);
+
+			return childTopics;
+			}
+
+
+		/* Function: BuildChildClass
+		 */
+		protected void BuildChildClass (Topic childTopic)
+			{
+			TopicType childTopicType = Engine.Instance.TopicTypes.FromID(childTopic.TopicTypeID);  
+			string memberOperator = Engine.Instance.Languages.FromID(childTopic.LanguageID).MemberOperator;
+
+			BuildLinkTag(childTopic, "CPEntry Child T" + childTopicType.SimpleIdentifier);
+
+				htmlOutput.Append("<div class=\"CPName\">");
+
+					BuildWrappedTitle(childTopic.Symbol.FormatWithSeparator(memberOperator), childTopicType.ID, htmlOutput);
+
+				htmlOutput.Append("</div>");
+
+			htmlOutput.Append("</a>");
 			}
 
 

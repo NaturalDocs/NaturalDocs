@@ -85,32 +85,51 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					{  return false;  }
 
 
-				// If this is anything other than a class page, find all the classes defined in it and look up their class parent links separately by 
-				// class ID.  This is done because classes can be defined across multiple files and the class parent links may only appear in 
-				// one.  However, the class prototypes will show all parents regardless of whether the parent links appear on this page or not, 
-				// so we need to include the ones that may appear in other pages.
+				// Find all the classes that are defined in this page, since we have to do additional lookups for class prototypes.
 
-				if ((this is HTMLTopicPages.Class) == false)
+				IDObjects.NumberSet classIDsDefined = new IDObjects.NumberSet();
+
+				foreach (var topic in topics)
 					{
-					IDObjects.NumberSet classIDsDefined = new IDObjects.NumberSet();
-
-					foreach (var topic in topics)
-						{
-						if (topic.DefinesClass)
-							{  classIDsDefined.Add(topic.ClassID);  }
-						}
-
-					if (classIDsDefined.IsEmpty == false)
-						{
-						List<Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
-
-						if (classParentLinks != null && classParentLinks.Count > 0)
-							{  links.AddRange(classParentLinks);  }
-						}
+					if (topic.DefinesClass)
+						{  classIDsDefined.Add(topic.ClassID);  }
 					}
 
+				if (cancelDelegate())
+					{  return false;  }
 
-				// Get link targets
+
+				// We need the class parent links of all the classes defined on this page so the class prototypes can show the parents.
+				// If this is a class page then we can skip this step since all the links should already be included.  However, for any 
+				// other type of page this may not be the case.  A source file page would return all the links in that file, but the class 
+				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look 
+				// up the class parent links separately by class ID.
+
+				if ((this is HTMLTopicPages.Class) == false && classIDsDefined.IsEmpty == false)
+					{
+					List<Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
+
+					if (classParentLinks != null && classParentLinks.Count > 0)
+						{  links.AddRange(classParentLinks);  }
+					}
+
+				if (cancelDelegate())
+					{  return false;  }
+
+
+				// Now we need to find the children of all the classes defined on this page.  Get the class parent links that resolve to 
+				// any of the defined classes, but keep them separate for now.
+
+				List<Link> childLinks = null;
+
+				if (classIDsDefined.IsEmpty == false)
+					{  childLinks = accessor.GetClassParentLinksToClasses(classIDsDefined, cancelDelegate);  }
+
+				if (cancelDelegate())
+					{  return false;  }
+
+
+				// Get link targets for everything but the children, since they would just resolve to classes already in this file.
 
 				IDObjects.NumberSet linkTargetIDs = new IDObjects.NumberSet();
 
@@ -125,33 +144,69 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				if (cancelDelegate())
 					{  return false;  }
 
-				// We also need to get any links appearing inside the link targets.  Wut?  When you have a resolved link, 
-				// a tooltip shows up when you hover over it.  The tooltip is built from the link targets we just retrieved.  
-				// However, if the summary appearing in the tooltip contains any Natural Docs links, we need to know if
-				// they're resolved and how to know what text to show (originaltext, named links, etc.)  Links don't store
-				// which topic they appear in, but they do store the file, so gather the file IDs of the link targets that
-				// have Natural Docs links in the summaries and get all the links in those files.
+
+				// Now get targets for the children.
+
+				List<Topic> childTargets = null;
+
+				if (childLinks != null && childLinks.Count > 0)
+					{
+					IDObjects.NumberSet childClassIDs = new IDObjects.NumberSet();
+
+					foreach (var childLink in childLinks)
+						{  childClassIDs.Add(childLink.ClassID);  }
+
+					childTargets = accessor.GetBestClassDefinitionTopics(childClassIDs, cancelDelegate);
+					}
+
+				if (cancelDelegate())
+					{  return false;  }
+
+
+				// We can merge the child links and targets into the main lists now.
+
+				if (childLinks != null)
+					{  links.AddRange(childLinks);  }
+
+				if (childTargets != null)
+					{  linkTargets.AddRange(childTargets);  }
+
+				if (cancelDelegate())
+					{  return false;  }
+
+
+				// Now we need to find any Natural Docs links appearing inside the summaries of link targets.  The tooltips
+				// that will be generated for them include their summaries, and even though we don't generate HTML links 
+				// inside tooltips, how and if they're resolved affects the appearance of Natural Docs links.  We need to know 
+				// whether to include the original text with angle brackets, the text without angle brackets if it's resolved, or 
+				// only part of the text if it's a resolved named link.
+				
+				// Links don't store which topic they appear in but they do store the file, so gather the file IDs of the link 
+				// targets that have Natural Docs links in the summaries and get all the links in those files.
 
 				// Links also store which class they appear in, so why not do this by class instead of by file?  Because a 
 				// link could be to something global, and the global scope could potentially have a whole hell of a lot of 
 				// content, depending on the project and language.  While there can also be some really long files, the
-				// chances of that are less on average so we stick with doing this by file.
+				// chances of that are smaller so we stick with doing this by file.
 
-				IDObjects.NumberSet inceptionFileIDs = new IDObjects.NumberSet();
+				IDObjects.NumberSet summaryLinkFileIDs = new IDObjects.NumberSet();
 
 				foreach (Topic linkTarget in linkTargets)
 					{
 					if (linkTarget.Summary != null && linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1)
-						{  inceptionFileIDs.Add(linkTarget.FileID);  }
+						{  summaryLinkFileIDs.Add(linkTarget.FileID);  }
 					}
 
-				List<Link> inceptionLinks = null;
+				List<Link> summaryLinks = null;
 					
-				if (!inceptionFileIDs.IsEmpty)
-					{  inceptionLinks = accessor.GetNaturalDocsLinksInFiles(inceptionFileIDs, cancelDelegate);  }
+				if (!summaryLinkFileIDs.IsEmpty)
+					{  summaryLinks = accessor.GetNaturalDocsLinksInFiles(summaryLinkFileIDs, cancelDelegate);  }
 
 				if (cancelDelegate())
 					{  return false;  }
+
+
+				// Finally done with the database.
 
 				if (releaseDBLock)
 					{
@@ -165,8 +220,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				StringBuilder html = new StringBuilder("\r\n\r\n");
 				HTMLTopic topicBuilder = new HTMLTopic(this);
 
-				// We don't put embedded topics in the output, so we need to find the last non-embedded one so
-				// that the "last" CSS tag is correctly applied.
+				// We don't put embedded topics in the output, so we need to find the last non-embedded one to make
+				// sure that the "last" CSS tag is correctly applied.
 				int lastNonEmbeddedTopic = topics.Count - 1;
 				while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
 					{  lastNonEmbeddedTopic--;  }
@@ -206,7 +261,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					for (int i = 0; i < linkTargets.Count; i++)
 						{
 						Topic topic = linkTargets[i];
-						string toolTipHTML = topicBuilder.BuildToolTip(topic, inceptionLinks);
+						string toolTipHTML = topicBuilder.BuildToolTip(topic, summaryLinks);
 
 						if (toolTipHTML != null)
 							{

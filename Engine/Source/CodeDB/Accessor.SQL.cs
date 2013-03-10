@@ -305,6 +305,56 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 			
 			
+		/* Function: GetBestClassDefinitionTopics
+		 * 
+		 * Retrieves a list of all the <Topics> that serve as the best class definitions of the passed class IDs.  There will only be one 
+		 * <Topic> per class ID, even if multiple <Topics> define them.  If a class ID doesn't have any <Topics> that define it (as 
+		 * opposed to just being a member of it) it will not have an entry in the list.
+		 * 
+		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <Topic> object you can use <GetTopicFlags> to filter some out to save memory
+		 * or processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Topic> GetBestClassDefinitionTopics (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
+																		 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+
+			StringBuilder whereClause = new StringBuilder();
+			List<object> clauseParams = new List<object>();
+
+			AppendWhereClause_ColumnIsInNumberSet("Topics.ClassID", classIDs, whereClause, clauseParams);
+
+			whereClause.Append(" AND Topics.DefinesClass=1");
+
+			List<Topic> topics = GetTopics(whereClause.ToString(), "Topics.ClassID", clauseParams.ToArray(), cancelled, getTopicFlags);
+
+
+			// Make sure only the best topic is on the list for each class ID.  Since the query ordered the results by class ID, we only need
+			// to check each topic against its neighbor.
+
+			for (int i = 1; i < topics.Count; /* don't auto increment */)
+				{
+				if (topics[i].ClassID == topics[i-1].ClassID)
+					{
+					if (CodeDB.Manager.IsBetterClassDefinition(topics[i-1], topics[i]))
+						{  topics.RemoveAt(i-1);  }
+					else
+						{  topics.RemoveAt(i);  }
+					}
+				else
+					{  i++;  }
+				}
+
+			return topics;
+			}
+
+
 		/* Function: AddTopic
 		 * 
 		 * Adds a <Topic> to the database.  Assumes it doesn't exist; if it does, you need to use <UpdateTopic()> or call <DeleteTopic()> 
@@ -1183,6 +1233,36 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<object> clauseParams = new List<object>();
 
 			AppendWhereClause_ColumnIsInNumberSet("Links.ClassID", classIDs, clauseText, clauseParams);
+
+			clauseText.Append(") AND Links.Type=?");
+			clauseParams.Add((int)LinkType.ClassParent);
+
+			return GetLinks(clauseText.ToString(), clauseParams.ToArray(), cancelled, getLinkFlags);
+			}
+
+
+		/* Function: GetClassParentLinksToClasses
+		 * 
+		 * Retrieves a list of all the class parent links that resolve to the passed class IDs.  If there are none it will return 
+		 * an empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 * if not.
+		 * 
+		 * If you don't need every property in the <Link> object you can use <GetLinkFlags> to filter some out and save 
+		 * processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<Link> GetClassParentLinksToClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
+																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			StringBuilder clauseText = new StringBuilder("(");
+			List<object> clauseParams = new List<object>();
+
+			AppendWhereClause_ColumnIsInNumberSet("Links.TargetClassID", classIDs, clauseText, clauseParams);
 
 			clauseText.Append(") AND Links.Type=?");
 			clauseParams.Add((int)LinkType.ClassParent);

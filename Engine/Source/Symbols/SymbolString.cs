@@ -313,6 +313,13 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			else
 				{  return false;  }
 			}
+
+		/* Function: CompareTo
+		 */
+		public int CompareTo (SymbolString other, bool ignoreCase = false)
+			{
+			return string.Compare(symbolString, other.symbolString, ignoreCase);
+			}
 			
 		/* Function: CompareTo
 		 */
