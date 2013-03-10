@@ -207,8 +207,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				{
 				bool found = false;
 
-				// If the link is resolved...
-				if (parentLink.TargetTopicID > 0)
+				if (parentLink.IsResolved)
 					{
 					foreach (var parent in parents)
 						{
@@ -234,7 +233,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			foreach (var parent in parents)
 				{
-				if (parent.link != null && parent.link.TargetTopicID > 0)
+				if (parent.link != null && parent.link.IsResolved)
 					{
 					foreach (var linkTarget in linkTargets)
 						{

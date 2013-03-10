@@ -678,9 +678,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				if (linksAffected.IsEmpty == false)
 					{
-					StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=?, TargetScore=0 WHERE ");
+					StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE ");
 					List<object> queryParams = new List<object>();
-					queryParams.Add(UnresolvedTargetTopicID.TargetDeleted);
 
 					AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
@@ -1288,7 +1287,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		ClassID - Must be zero.  This will be automatically assigned and the <Link> updated.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  It will be generated automatically.
-		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
+		 *		TargetTopicID - Must be zero.
 		 *		TargetScore - Must be zero.
 		 */
 		public void AddLink (Link link)
@@ -1310,7 +1309,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  throw new Exception("Link.EndingSymbol didn't match Link.Symbol.EndingSymbol in AddLink");  }
 			#endif
 
-			RequireValue("AddLink", "TargetTopicID", link.TargetTopicID, UnresolvedTargetTopicID.NewLink);
+			RequireZero("AddLink", "TargetTopicID", link.TargetTopicID);
 			RequireZero("AddLink", "TargetScore", link.TargetScore);
 
 			StringSet alternateEndingSymbols = null;
@@ -1359,9 +1358,9 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetScore) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)",
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
 													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.ClassID, link.LanguageID, 
-													link.EndingSymbol.ToString(), UnresolvedTargetTopicID.NewLink
+													link.EndingSymbol.ToString()
 													);
 
 				codeDB.UsedLinkIDs.Add(link.LinkID);
@@ -1524,7 +1523,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		FileID - Must be set.
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  It will be generated automatically.
-		 *		TargetTopicID - Must be <UnresolvedTargetTopicID.NewLink>.
+		 *		TargetTopicID - Must be zero.
 		 *		TargetScore - Must be zero.
 		 */
 		public void UpdateLinksInFile (int fileID, IEnumerable<Link> newLinks, CancelDelegate cancelled)

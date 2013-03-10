@@ -82,8 +82,7 @@ Column: TargetTopicID
 		TargetTopicID INTEGER NOT NULL
 	(end)
 
-	The topic ID this link resolves to.  If it doesn't resolve, it will be zero or a negative number corresponding
-	to one of the values of <Link.UnresolvedTargetTopicID>.
+	The topic ID this link resolves to, or zero if none.
 
 
 Column: TargetScore
