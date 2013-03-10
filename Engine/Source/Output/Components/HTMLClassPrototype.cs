@@ -125,8 +125,31 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 					if (children != null)
 						{
-						foreach (var child in children)
-							{  BuildChildClass(child);  }
+						// +1 so we never have to see "and 1 other child" which would take up the same amount of space.
+						if (children.Count <= MaxExpandedChildren + 1)
+							{
+							foreach (var child in children)
+								{  BuildChildClass(child);  }
+							}
+						else
+							{
+							for (int i = 0; i < MaxExpandedChildren; i++)
+								{  BuildChildClass(children[i]);  }
+
+							htmlOutput.Append("<a href=\"javascript:NDContentPage.ShowAdditionalChildren('NDClassPrototype" + topic.TopicID + "')\" " +
+																		 "class=\"CPAdditionalChildrenNotice\">");
+
+								htmlOutput.EntityEncodeAndAppend(
+									Locale.Get("NaturalDocs.Engine", "HTML.AdditionalChildren(number)", children.Count - MaxExpandedChildren)
+									);
+
+							htmlOutput.Append("</a><div class=\"CPAdditionalChildren\">");
+
+								for (int i = MaxExpandedChildren; i < children.Count; i++)
+									{  BuildChildClass(children[i]);  }
+
+							htmlOutput.Append("</div>");
+							}
 						}
 
 			    htmlOutput.Append("</div>");
@@ -524,6 +547,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("</a>");
 			}
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* Constant: MaxExpandedChildren
+		 * The number of children to show by default.
+		 */
+		protected const int MaxExpandedChildren = 4;
 
 
 

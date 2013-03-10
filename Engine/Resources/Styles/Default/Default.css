@@ -665,12 +665,13 @@ body.NDContentPage {
 	.CPEntry {
 		border-width: 1px 2px 2px 1px; border-style: solid; border-color: #000000;
 		padding: .5ex 1ex;
-		margin-bottom: .5ex;
+		margin-bottom: 4px;  /* .5ex sometimes makes the spacing uneven */
 		border-radius: 1ex;
 		background-color: #FFFFFF;
 		overflow: auto;
 		}
-	a.CPEntry {
+	a.CPEntry,
+	a.CPAdditionalChildrenNotice {
 		display: block;
 		}
 	a.CPEntry:link,
@@ -699,10 +700,12 @@ body.NDContentPage {
 		margin-right: 3.5ex;
 		}
 
-	.NDClassPrototype .CPEntry.Child {
+	.NDClassPrototype .CPEntry.Child,
+	.NDClassPrototype .CPAdditionalChildrenNotice {
 		margin-left: 3.5ex;
 		}
-	.NDClassPrototype.HasParents .CPEntry.Child {
+	.NDClassPrototype.HasParents .CPEntry.Child,
+	.NDClassPrototype.HasParents .CPAdditionalChildrenNotice {
 		margin-left: 7ex;
 		}
 
@@ -738,6 +741,19 @@ body.NDContentPage {
 		}
 	.CPEntry .CPPostModifiers {
 		margin-top: .1em;
+		}
+
+	a.CPAdditionalChildrenNotice:link,
+	a.CPAdditionalChildrenNotice:visited,
+	a.CPAdditionalChildrenNotice:hover,
+	a.CPAdditionalChildrenNotice:active {
+		color: #949494;
+		font: italic 10pt `HeadingFontFamily;
+		padding: 0 1.5ex;
+		}
+
+	.CPAdditionalChildren {
+		display: none;
 		}
 
 

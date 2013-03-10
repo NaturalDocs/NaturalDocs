@@ -190,6 +190,21 @@ var NDContentPage = new function ()
 		};
 
 
+	/* Function: ShowAdditionalChildren
+		Displays additional children in class prototypes when the notice is clicked.
+	*/
+	this.ShowAdditionalChildren = function (prototypeID)
+		{
+		var prototype = document.getElementById(prototypeID);
+
+		var notice = NDCore.GetElementsByClassName(prototype, "CPAdditionalChildrenNotice", "a")[0];
+		var additionalChildren = NDCore.GetElementsByClassName(prototype, "CPAdditionalChildren", "div")[0];
+
+		notice.style.display = "none";
+		additionalChildren.style.display = "block";
+		};
+
+
 
 	// Group: Tool Tip Functions
 	// ________________________________________________________________________

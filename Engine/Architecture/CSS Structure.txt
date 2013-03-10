@@ -365,6 +365,14 @@ _______________________________________________________________________________
 
 		</CPEntry T[TopicType] Current/Parent/Child>
 
+		<a CPAdditionalChildrenNotice>Text</a CPAdditionalChildrenNotice>
+
+		<CPAdditionalChildren>
+
+			<CPEntry>...</CPEntry>
+
+		</CPAdditionalChildren>
+
 	</NDClassPrototype HasParents? HasChildren?>
 
 (end)
