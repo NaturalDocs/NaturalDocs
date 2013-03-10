@@ -85,6 +85,18 @@ Column: TargetTopicID
 	The topic ID this link resolves to, or zero if none.
 
 
+Column: TargetClassID
+
+	(Prototype)
+		TargetClassID INTEGER NOT NULL
+	(end)
+	
+	The class ID of <TargetTopicID>, or zero if none.
+	
+	Why is a copy stored in this table instead of doing a join?  Because we need to be able to look up class
+	parent links by target class in order to get a list of children, and this allows it to be indexed.	
+
+
 Column: TargetScore
 
 	(Prototype)
@@ -133,4 +145,11 @@ Index: LinksByTargetTopicID
 
 	(Prototype)
 		CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)
+	(end)
+
+
+Index: LinksByTargetClassID
+
+	(Prototype)
+		CREATE INDEX LinksByTargetClassID ON Links (TargetClassID, Type)
 	(end)

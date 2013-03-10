@@ -75,7 +75,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			}
 		
-		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor)
+		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
 			{
 			}
 		

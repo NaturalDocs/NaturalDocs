@@ -1257,7 +1257,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				}
 	
-			int bestMatchID = 0;
+			int bestMatchTopicID = 0;
+			int bestMatchClassID = 0;
 			long bestMatchScore = 0;
 
 			foreach (Topic topic in topics)
@@ -1266,18 +1267,24 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				if (score > bestMatchScore)
 					{
-					bestMatchID = topic.TopicID;
+					bestMatchTopicID = topic.TopicID;
+					bestMatchClassID = topic.ClassID;
 					bestMatchScore = score;
 					}
 				}
 
-			if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
+			if (bestMatchTopicID != link.TargetTopicID || 
+				bestMatchClassID != link.TargetClassID ||
+				bestMatchScore != link.TargetScore)
 				{
 				int oldTargetTopicID = link.TargetTopicID;
-				link.TargetTopicID = bestMatchID;
+				int oldTargetClassID = link.TargetClassID;
+
+				link.TargetTopicID = bestMatchTopicID;
+				link.TargetClassID = bestMatchClassID;
 				link.TargetScore = bestMatchScore;
 
-				accessor.UpdateLinkTarget(link, oldTargetTopicID);
+				accessor.UpdateLinkTarget(link, oldTargetTopicID, oldTargetClassID);
 				}
 			}
 
@@ -1326,7 +1333,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 					}
 	
-				int bestMatchID = link.TargetTopicID;
+				int bestMatchTopicID = link.TargetTopicID;
+				int bestMatchClassID = link.TargetClassID;
 				long bestMatchScore = link.TargetScore;
 
 				foreach (Topic topic in topics)
@@ -1338,19 +1346,25 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 						if (score > bestMatchScore)
 							{
-							bestMatchID = topic.TopicID;
+							bestMatchTopicID = topic.TopicID;
+							bestMatchClassID = topic.ClassID;
 							bestMatchScore = score;
 							}
 						}
 					}
 
-				if (bestMatchID != link.TargetTopicID || bestMatchScore != link.TargetScore)
+				if (bestMatchTopicID != link.TargetTopicID || 
+					bestMatchClassID != link.TargetClassID ||
+					bestMatchScore != link.TargetScore)
 					{
 					int oldTargetTopicID = link.TargetTopicID;
-					link.TargetTopicID = bestMatchID;
+					int oldTargetClassID = link.TargetClassID;
+
+					link.TargetTopicID = bestMatchTopicID;
+					link.TargetClassID = bestMatchClassID;
 					link.TargetScore = bestMatchScore;
 
-					accessor.UpdateLinkTarget(link, oldTargetTopicID);
+					accessor.UpdateLinkTarget(link, oldTargetTopicID, oldTargetClassID);
 					}
 				}
 			}

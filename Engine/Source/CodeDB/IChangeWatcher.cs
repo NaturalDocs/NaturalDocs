@@ -57,7 +57,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * are added to the database as unresolved during the parsing stage, and then changed to their targets during the
 		 * resolving stage.
 		 */
-		void OnChangeLinkTarget (Link link, int oldTargetTopicID, EventAccessor eventAccessor);
+		void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, EventAccessor eventAccessor);
 		
 		/* Function: OnDeleteLink
 		 * Called before a link is deleted from the database.

@@ -137,7 +137,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 
 		abstract public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor);
 		
-		abstract public void OnChangeLinkTarget (Link link, int oldTargetTopicID, CodeDB.EventAccessor eventAccessor);
+		abstract public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor);
 		
 		abstract public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor);
 

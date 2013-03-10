@@ -44,7 +44,8 @@ namespace GregValure.NaturalDocs.Engine.Links
 			LanguageID = 0x0100,
 			EndingSymbol = 0x0200,
 			TargetTopicID = 0x0400,
-			TargetScore = 0x0800
+			TargetClassID = 0x0800,
+			TargetScore = 0x1000
 			}
 
 
@@ -66,6 +67,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 			languageID = 0;
 			endingSymbol = new EndingSymbol();
 			targetTopicID = 0;
+			targetClassID = 0;
 			targetScore = 0;
 
 			ignoredFields = IgnoreFields.None;
@@ -161,6 +163,7 @@ namespace GregValure.NaturalDocs.Engine.Links
 			classID = other.ClassID;
 			endingSymbol = other.EndingSymbol;
 			targetTopicID = other.TargetTopicID;
+			targetClassID = other.TargetClassID;
 			targetScore = other.TargetScore;
 			}
 
@@ -555,6 +558,32 @@ namespace GregValure.NaturalDocs.Engine.Links
 			}
 
 
+		/* Property: TargetClassID
+		 * The class ID number of the <Topic> the link resolves to, or zero if none.
+		 */
+		public int TargetClassID
+			{
+			get
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetClassID when that field was ignored.");  }
+				#endif
+
+				return targetClassID;  
+				}
+			set
+				{  
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TargetClassID) != 0)
+					{  throw new InvalidOperationException("Tried to access TargetClassID when that field was ignored.");  }
+				#endif
+
+				targetClassID = value;  
+				}
+			}
+
+
 		/* Property: TargetScore
 		 * If <TargetTopicID> is set, the numeric score of the match.
 		 */
@@ -661,6 +690,11 @@ namespace GregValure.NaturalDocs.Engine.Links
 		 * The ID number of the <Topic> the link resolves to, or zero if none.
 		 */
 		protected int targetTopicID;
+
+		/* var: targetClassID
+		 * The class ID of the <Topic> the link resolves to, or zero if none.
+		 */
+		protected int targetClassID;
 
 		/* var: targetScore
 		 * If <targetTopicID> is set, the numeric score of the match.

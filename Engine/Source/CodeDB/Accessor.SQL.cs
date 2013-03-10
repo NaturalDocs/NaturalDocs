@@ -1004,7 +1004,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			bool lookupContexts = ((getLinkFlags & GetLinkFlags.DontLookupContexts) == 0);
 
 			StringBuilder queryText = new StringBuilder("SELECT LinkID, FileID, LanguageID, Type, TextOrSymbol, EndingSymbol, " +
-																								"Links.ContextID, Links.ClassID, TargetTopicID, TargetScore ");
+																		"Links.ContextID, Links.ClassID, TargetTopicID, TargetClassID, TargetScore ");
 
 			if (lookupClasses)
 				{  queryText.Append(", ifnull(Classes.ClassString, Classes.LookupKey) ");  }
@@ -1039,6 +1039,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					link.ContextID = query.NextIntColumn();
 					link.ClassID = query.NextIntColumn();
 					link.TargetTopicID = query.NextIntColumn();
+					link.TargetClassID = query.NextIntColumn();
 					link.TargetScore = query.NextLongColumn();
 
 					link.IgnoredFields = Link.IgnoreFields.None;
@@ -1288,6 +1289,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Ignored.  It will be generated automatically.
 		 *		TargetTopicID - Must be zero.
+		 *		TargetClassID - Must be zero.
 		 *		TargetScore - Must be zero.
 		 */
 		public void AddLink (Link link)
@@ -1310,6 +1312,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			#endif
 
 			RequireZero("AddLink", "TargetTopicID", link.TargetTopicID);
+			RequireZero("AddLink", "TargetClassID", link.TargetClassID);
 			RequireZero("AddLink", "TargetScore", link.TargetScore);
 
 			StringSet alternateEndingSymbols = null;
@@ -1357,8 +1360,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				GetOrCreateClassID(link);
 
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
-														"TargetTopicID, TargetScore) " +
-													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0)",
+														"TargetTopicID, TargetClassID, TargetScore) " +
+													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)",
 													link.LinkID, (int)link.Type, link.TextOrSymbol, link.ContextID, link.FileID, link.ClassID, link.LanguageID, 
 													link.EndingSymbol.ToString()
 													);
@@ -1431,6 +1434,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 *		LanguageID - Must be set.
 		 *		EndingSymbol - Must be set.
 		 *		TargetTopicID - Can be any value.
+		 *		TargetClassID - Can be any value.
 		 *		TargetScore - Can be any value.
 		 */
 		public void DeleteLink (Link link)
@@ -1448,6 +1452,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			RequireNonZero("DeleteLink", "LanguageID", link.LanguageID);
 			RequireContent("DeleteLink", "EndingSymbol", link.EndingSymbol);
 			// TargetTopicID
+			// TargetClassID
 			// TargetScore
 
 			RequireAtLeast(LockType.ReadWrite);
@@ -1646,7 +1651,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				}
 			}
 
-
+			
 		/* Function: GetAlternateLinkEndingSymbols
 		 * 
 		 * Retrieves the list of alternate <EndingSymbols> for a link ID.  It will not include the <EndingSymbol> stored in the <Link>
@@ -1688,7 +1693,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
 		 */
-		public void UpdateLinkTarget (Link link, int oldTargetTopicID)
+		public void UpdateLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID)
 			{
 			RequireAtLeast(LockType.ReadWrite);
 
@@ -1697,8 +1702,8 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			BeginTransaction();
 			try
 				{
-				connection.Execute("UPDATE Links SET TargetTopicID=?, TargetScore=? " +
-													  "WHERE LinkID = ?", link.TargetTopicID, link.TargetScore, link.LinkID);
+				connection.Execute("UPDATE Links SET TargetTopicID=?, TargetClassID=?, TargetScore=? " +
+													  "WHERE LinkID = ?", link.TargetTopicID, link.TargetClassID, link.TargetScore, link.LinkID);
 				CommitTransaction();
 				}
 			catch
@@ -1719,7 +1724,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					EventAccessor eventAccessor = new EventAccessor(this);
 
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnChangeLinkTarget(link, oldTargetTopicID, eventAccessor);  }
+						{  changeWatcher.OnChangeLinkTarget(link, oldTargetTopicID, oldTargetClassID, eventAccessor);  }
 					}
 				}
 			finally
