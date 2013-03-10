@@ -251,28 +251,18 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Topic> GetTopicsByID (IEnumerable<int> topicIDs, CancelDelegate cancelled, 
+		public List<Topic> GetTopicsByID (IDObjects.NumberSet topicIDs, CancelDelegate cancelled, 
 																	 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
+			if (topicIDs.IsEmpty)
+				{  return new List<Topic>();  }
+
 			StringBuilder whereClause = new StringBuilder();
 			List<object> clauseParameters = new List<object>();
 
-			bool isFirst = true;
-			foreach (int topicID in topicIDs)
-				{
-				if (isFirst)
-					{  isFirst = false;  }
-				else
-					{  whereClause.Append("OR ");  }
-
-				whereClause.Append("Topics.TopicID=? ");
-				clauseParameters.Add(topicID);
-				}
-
-			if (clauseParameters.Count == 0)
-				{  return new List<Topic>();  }
+			AppendWhereClause_ColumnIsInNumberSet("Topics.TopicID", topicIDs, whereClause, clauseParameters);
 
 			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, getTopicFlags);
 			}
@@ -1154,7 +1144,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<Link> GetNaturalDocsLinksInFiles (IEnumerable<int> fileIDs, CancelDelegate cancelled, 
+		public List<Link> GetNaturalDocsLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled, 
 																						GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
@@ -1164,17 +1154,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			List<object> whereParams = new List<object>();
 			whereParams.Add( (int)LinkType.NaturalDocs );
 
-			bool isFirst = true;
-			foreach (int fileID in fileIDs)
-				{
-				if (!isFirst)
-					{  whereClause.Append(" OR ");  }
-				else
-					{  isFirst = false;  }
-
-				whereClause.Append("Links.FileID=? ");
-				whereParams.Add(fileID);
-				}
+			AppendWhereClause_ColumnIsInNumberSet("Links.FileID", fileIDs, whereClause, whereParams);
 
 			whereClause.Append(')');
 
