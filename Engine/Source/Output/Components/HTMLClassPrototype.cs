@@ -97,7 +97,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			if (isToolTip)
 			    {  
-			    htmlOutput.Append("<div class=\"NDClassPrototype\">");
+			    htmlOutput.Append("<div class=\"NDClassPrototype\" id=\"NDClassPrototype" + topic.TopicID + "\">");
 			        BuildCurrentClass();
 			    htmlOutput.Append("</div>");
 			    }
@@ -112,7 +112,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						{  htmlOutput.Append(" HasParents");  }
 					if (children != null && children.Count > 0)
 						{  htmlOutput.Append(" HasChildren");  }
-					htmlOutput.Append("\">");
+
+					htmlOutput.Append("\" id=\"NDClassPrototype" + topic.TopicID + "\">");
 				
 					if (parents != null)
 						{

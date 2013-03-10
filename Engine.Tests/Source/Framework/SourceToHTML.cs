@@ -330,7 +330,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		// __________________________________________________________________________
 
 		static protected Regex TableTagsRegex = new Regex("</?(?:table|tr|td)[^>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
-		static protected Regex IDNumbersRegex = new Regex(" id=\"NDPrototype[0-9]+\"", RegexOptions.Compiled | RegexOptions.Singleline);
+		static protected Regex IDNumbersRegex = new Regex(" id=\"ND(?:Class)?Prototype[0-9]+\"", RegexOptions.Compiled | RegexOptions.Singleline);
 			
 		}
 	}
