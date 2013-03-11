@@ -40,6 +40,42 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetInfoOnClassParents
+		 * Looks up the parents of the passed class ID and returns their class IDs and all the file IDs that define them.
+		 */
+		public void GetInfoOnClassParents (int classID, out NumberSet parentClassIDs, out NumberSet parentClassFileIDs)
+			{
+			accessor.RequireAtLeast(Accessor.LockType.ReadOnly);
+
+			parentClassIDs = new NumberSet();
+			parentClassFileIDs = new NumberSet();
+
+			using (SQLite.Query query = accessor.Connection.Query("SELECT TargetClassID FROM Links " +
+																							   "WHERE ClassID=? AND Type=? AND TargetClassID != 0",
+																							   classID, (int)Links.LinkType.ClassParent))
+				{
+				while (query.Step())
+					{  parentClassIDs.Add(query.IntColumn(0));  }
+				}
+
+			if (parentClassIDs.IsEmpty)
+				{  return;  }
+
+			StringBuilder queryText = new StringBuilder("SELECT FileID FROM Topics WHERE (");
+			List<object> queryParams = new List<object>();
+
+			Accessor.AppendWhereClause_ColumnIsInNumberSet("ClassID", parentClassIDs, queryText, queryParams);
+
+			queryText.Append(") AND DefinesClass=1");
+
+			using (SQLite.Query query = accessor.Connection.Query(queryText.ToString(), queryParams.ToArray()))
+				{
+				while (query.Step())
+					{  parentClassFileIDs.Add(query.IntColumn(0));  }
+				}
+			}
+
+
 		/* Function: GetInfoOnLinksThatResolveToTopicID
 		 * 
 		 * Returns aggregate information on all links that resolve to the passed topic ID.

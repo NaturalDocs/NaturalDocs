@@ -225,52 +225,94 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		
 		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
+			// If this topic defines a class, it's possible it's now the best definition and thus we have to update the class prototypes
+			// of all its parents.  We don't have to worry about updating children because that will be taken care of by OnLinkChange
+			// since there would be a class parent link pointing to it.
+
+			IDObjects.NumberSet parentClassIDs = null;
+			IDObjects.NumberSet parentClassFileIDs = null;
+
+			if (topic.DefinesClass)
+				{
+				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
+				}
+
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
 
 				if (topic.ClassID != 0)
 					{  classFilesToRebuild.Add(topic.ClassID);  }
+
+				if (parentClassIDs != null)
+					{  classFilesToRebuild.Add(parentClassIDs);  }
+				if (parentClassFileIDs != null)
+					{  sourceFilesToRebuild.Add(parentClassFileIDs);  }
 				}
 			}
 
 		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
-																		 CodeDB.EventAccessor eventAccessor)
+															 CodeDB.EventAccessor eventAccessor)
 			{
 			// We don't care about line number changes.  They don't affect the output.  We also don't care about context
 			// changes.  They might affect links but if they do it will be handled in OnChangeLinkTarget().
 			changeFlags &= ~(Topic.ChangeFlags.CommentLineNumber | Topic.ChangeFlags.CodeLineNumber |
-											 Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext);
+									   Topic.ChangeFlags.PrototypeContext | Topic.ChangeFlags.BodyContext);
 
-			if (changeFlags != 0)
+			if (changeFlags == 0)
+				{  return;  }
+
+			lock (writeLock)
 				{
-				lock (writeLock)
-					{
-					sourceFilesToRebuild.Add(oldTopic.FileID);
+				sourceFilesToRebuild.Add(oldTopic.FileID);
 
-					if (oldTopic.ClassID != 0)
-						{  classFilesToRebuild.Add(oldTopic.ClassID);  }
-					if (newTopic.ClassID != 0)
-						{  classFilesToRebuild.Add(newTopic.ClassID);  }
-					}
+				#if DEBUG
+				if (newTopic.FileID != oldTopic.FileID)
+					{  throw new Exception("Called OnUpdateTopic() with topics that had different file IDs");  }
+				#endif
 
-				// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
-				// to this topic.
-				if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
-													Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
-					{
-					IDObjects.NumberSet fileIDs, classIDs;
-					eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out fileIDs, out classIDs);
+				if (oldTopic.ClassID != 0)
+					{  classFilesToRebuild.Add(oldTopic.ClassID);  }
+				if (newTopic.ClassID != 0)
+					{  classFilesToRebuild.Add(newTopic.ClassID);  }
+				}
 
-					if (fileIDs != null || classIDs != null)
+			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
+			// to this topic.
+			if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
+												Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
+				{
+				IDObjects.NumberSet linkFileIDs, linkClassIDs;
+				eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out linkFileIDs, out linkClassIDs);
+
+				IDObjects.NumberSet oldParentClassIDs = null;
+				IDObjects.NumberSet oldParentClassFileIDs = null;
+				IDObjects.NumberSet newParentClassIDs = null;
+				IDObjects.NumberSet newParentClassFileIDs = null;
+
+				if (oldTopic.DefinesClass)
+					{  eventAccessor.GetInfoOnClassParents(oldTopic.ClassID, out oldParentClassIDs, out oldParentClassFileIDs);  }
+				if (newTopic.DefinesClass && (newTopic.ClassID != oldTopic.ClassID || oldTopic.DefinesClass == false))
+					{  eventAccessor.GetInfoOnClassParents(newTopic.ClassID, out newParentClassIDs, out newParentClassFileIDs);  }
+
+				if (linkFileIDs != null || linkClassIDs != null || 
+					oldParentClassIDs != null || oldParentClassFileIDs != null ||
+					newParentClassIDs != null || newParentClassFileIDs != null)
+					{  
+					lock (writeLock)
 						{  
-						lock (writeLock)
-							{  
-							if (fileIDs != null)
-								{  sourceFilesToRebuild.Add(fileIDs);  }
-							if (classIDs != null)
-								{  classFilesToRebuild.Add(classIDs);  }
-							}
+						if (linkFileIDs != null)
+							{  sourceFilesToRebuild.Add(linkFileIDs);  }
+						if (linkClassIDs != null)
+							{  classFilesToRebuild.Add(linkClassIDs);  }
+						if (oldParentClassIDs !=  null)
+							{  classFilesToRebuild.Add(oldParentClassIDs);  }
+						if (oldParentClassFileIDs != null)
+							{  sourceFilesToRebuild.Add(oldParentClassFileIDs);  }
+						if (newParentClassIDs !=  null)
+							{  classFilesToRebuild.Add(newParentClassIDs);  }
+						if (newParentClassFileIDs != null)
+							{  sourceFilesToRebuild.Add(newParentClassFileIDs);  }
 						}
 					}
 				}
@@ -278,12 +320,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
+			IDObjects.NumberSet parentClassIDs = null;
+			IDObjects.NumberSet parentClassFileIDs = null;
+
+			if (topic.DefinesClass)
+				{
+				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
+				}
+
 			lock (writeLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
 
 				if (topic.ClassID != 0)
 					{  classFilesToRebuild.Add(topic.ClassID);  }
+
+				if (parentClassIDs != null)
+					{  classFilesToRebuild.Add(parentClassIDs);  }
+				if (parentClassFileIDs != null)
+					{  sourceFilesToRebuild.Add(parentClassFileIDs);  }
 				}
 			}
 
@@ -294,7 +349,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
-				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
+				{  
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+
+				// If it's resolved we have to rebuild all source files that define the target as well so its children get updated.
+				if (link.TargetClassID != 0)
+					{
+					IDObjects.NumberSet filesThatDefineTarget = eventAccessor.GetFileIDsThatDefineClassID(link.TargetClassID);
+
+					if (filesThatDefineClass == null)
+						{  filesThatDefineClass = filesThatDefineTarget;  }
+					else if (filesThatDefineTarget != null)
+						{  filesThatDefineClass.Add(filesThatDefineTarget);  }
+					}
+				}
 
 			lock (writeLock)
 				{
@@ -306,6 +374,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
 
+				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
+					{  classFilesToRebuild.Add(link.TargetClassID);  }
+
 				if (filesThatDefineClass != null)
 					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
@@ -316,7 +387,29 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
-				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
+				{
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+
+				if (link.TargetClassID != 0)
+					{
+					IDObjects.NumberSet filesThatDefineTarget = eventAccessor.GetFileIDsThatDefineClassID(link.TargetClassID);
+
+					if (filesThatDefineClass == null)
+						{  filesThatDefineClass = filesThatDefineTarget;  }
+					else if (filesThatDefineTarget != null)
+						{  filesThatDefineClass.Add(filesThatDefineTarget);  }
+					}
+
+				if (oldTargetClassID != 0)
+					{
+					IDObjects.NumberSet filesThatDefineOldTarget = eventAccessor.GetFileIDsThatDefineClassID(oldTargetClassID);
+
+					if (filesThatDefineClass == null)
+						{  filesThatDefineClass = filesThatDefineOldTarget;  }
+					else if (filesThatDefineOldTarget != null)
+						{  filesThatDefineClass.Add(filesThatDefineOldTarget);  }
+					}
+				}
 
 			lock (writeLock)
 				{
@@ -324,6 +417,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
+
+				if (link.Type == LinkType.ClassParent)
+					{
+					if (link.TargetClassID != 0)
+						{  classFilesToRebuild.Add(link.TargetClassID);  }
+					if (oldTargetClassID != 0)
+						{  classFilesToRebuild.Add(oldTargetClassID);  }
+					}
 
 				if (filesThatDefineClass != null)
 					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
@@ -363,7 +464,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			IDObjects.NumberSet filesThatDefineClass = null;
 
 			if (link.Type == LinkType.ClassParent)
-				{  filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  }
+				{
+				filesThatDefineClass = eventAccessor.GetFileIDsThatDefineClassID(link.ClassID);  
+
+				if (link.TargetClassID != 0)
+					{
+					IDObjects.NumberSet filesThatDefineTarget = eventAccessor.GetFileIDsThatDefineClassID(link.TargetClassID);
+
+					if (filesThatDefineClass == null)
+						{  filesThatDefineClass = filesThatDefineTarget;  }
+					else if (filesThatDefineTarget != null)
+						{  filesThatDefineClass.Add(filesThatDefineTarget);  }
+					}
+				}
 
 			lock (writeLock)
 				{
@@ -371,6 +484,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (link.ClassID != 0)
 					{  classFilesToRebuild.Add(link.ClassID);  }
+
+				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
+					{  classFilesToRebuild.Add(link.TargetClassID);  }
 
 				if (filesThatDefineClass != null)
 					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
