@@ -180,6 +180,7 @@ td {
 
 	/* IE 6-8 can't handle opacity so use background color instead.  Opacity is preferable for other browsers because it will */
 	/* affect the text and icon too.  We don't bother changing the text color here because then it wouldn't match the icon. */
+	/* We also don't bother with "filter: alpha(opacity=n)" because that turns off ClearType and on italic text that looks terrible. */
 	.IE6 .MTab,
 	.IE7 .MTab,
 	.IE8 .MTab {
@@ -666,7 +667,13 @@ body.NDContentPage {
 		border-width: 1px 2px 2px 1px; border-style: solid; border-color: #000000;
 		padding: .5ex 1ex;
 		margin-bottom: 4px;  /* .5ex sometimes makes the spacing uneven */
+
+		/* Firefox doesn't support plain border-radius until 4. */
+		/* Chrome supports plain border-radius since 8, and Safari since 5. */
+		/* Opera 11 supports plain border-radius. */
+		-moz-border-radius: 1ex;
 		border-radius: 1ex;
+
 		background-color: #FFFFFF;
 		overflow: auto;
 		}
@@ -832,11 +839,32 @@ body.NDContentPage {
 	background-color: #EAEAEA;
 	}
 
+	/* IE 6-8 can't handle opacity so approximate it with background colors.  The text won't fade but that's okay. */
+	/* We don't use "filter: alpha(opacity=n)" because that turns off ClearType. */
+	.IE6 .NDClassPrototype .CPEntry.Parent,
+	.IE6 .NDClassPrototype .CPEntry.Child,
+	.IE7 .NDClassPrototype .CPEntry.Parent,
+	.IE7 .NDClassPrototype .CPEntry.Child,
+	.IE8 .NDClassPrototype .CPEntry.Parent,
+	.IE8 .NDClassPrototype .CPEntry.Child {
+		border-color: #B4B4B4;
+		background-color: #F5F5F5;
+		}
+
 .NDClassPrototype .CPEntry.TInterface {
 	border-color: #6868A0;
 	background-color: #EAEAFF;
 	}
 
+	.IE6 .NDClassPrototype .CPEntry.TInterface.Parent,
+	.IE6 .NDClassPrototype .CPEntry.TInterface.Child,
+	.IE7 .NDClassPrototype .CPEntry.TInterface.Parent,
+	.IE7 .NDClassPrototype .CPEntry.TInterface.Child,
+	.IE8 .NDClassPrototype .CPEntry.TInterface.Parent,
+	.IE8 .NDClassPrototype .CPEntry.TInterface.Child {
+		border-color: #B4B4D0;
+		background-color: #F5F5FF;
+		}
 
 
 
@@ -975,9 +1003,11 @@ body.NDHomePage {
 	background-image: -o-linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor);
 
 	/* IE 6, 7, 8, 9 */
-	/* IE 10 supposedly supports -ms-linear-gradient. */
 	/* Strings don't get checked for backtick substitutions so set the colors manually. */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7070C0', endColorstr='#E0E0E0', GradientType=0 );
+
+	/* IE 10 */
+	background-image: -ms-linear-gradient(top, `HeaderBackgroundColor 0%, `MenuBackgroundColor 100%);
 
 	background-image: linear-gradient(top, `HeaderBackgroundColor, `MenuBackgroundColor);
 	background-repeat: no-repeat;
