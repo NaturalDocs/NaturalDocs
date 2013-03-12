@@ -38,9 +38,10 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 
 		
 		/* Function: Tokenizer
-		 * Creates a tokenizer from the passed string.
+		 * Creates a tokenizer from the passed string.  If the string doesn't come from the beginning of the file you can
+		 * pass the line number it appears at.
 		 */
-		public Tokenizer (string input)
+		public Tokenizer (string input, int startingLineNumber = 1)
 			{
 			if (input == null)
 				{
@@ -51,12 +52,12 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				prototypeParsingTypes = null;
 				classPrototypeParsingTypes = null;
 				lines = null;
-				startingLineNumber = 1;
+				this.startingLineNumber = startingLineNumber;
 				}
 			else
 				{  
 				// DEPENDENCY: Load() must set all internal variables.
-				Load(input, 1);  
+				Load(input, startingLineNumber);  
 				}
 			}
 			
