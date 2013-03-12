@@ -55,6 +55,7 @@
     <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
+    <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\LinkScoring.cs" />
     <Compile Include="Source\General\NumberSet.cs" />
     <Compile Include="Source\General\Symbols.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Source\Languages\C#\CommentDetection.cs" />
     <Compile Include="Source\Languages\C#\CommentMerging.cs" />
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\CSharp.cs" />
