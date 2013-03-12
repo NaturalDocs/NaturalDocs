@@ -249,7 +249,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (value != null && value.Length != 0)
 					{  
 					if (value.Length % 2 == 1)
-						{  throw new Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
 
 					blockCommentStringPairs = value;  
 					}
@@ -271,7 +271,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (value != null && value.Length != 0)
 					{  
 					if (value.Length % 2 == 1)
-						{  throw new Exceptions.ArrayDidntHaveEvenLength("JavadocLineCommentStringPairs");  }
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocLineCommentStringPairs");  }
 
 					javadocLineCommentStringPairs = value;  
 					}
@@ -292,7 +292,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (value != null && value.Length != 0)
 					{  
 					if (value.Length % 2 == 1)
-						{  throw new Exceptions.ArrayDidntHaveEvenLength("JavadocBlockCommentStringPairs");  }
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocBlockCommentStringPairs");  }
 
 					javadocBlockCommentStringPairs = value;  
 					}

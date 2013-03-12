@@ -59,6 +59,8 @@
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
     <Compile Include="Source\CodeDB\IDLookupCache.cs" />
+    <Compile Include="Source\Languages\Exceptions\BadContainerOperation.cs" />
+    <Compile Include="Source\Languages\Parsers\ShebangScript.cs" />
     <Compile Include="Source\Languages\Parsers\CSharp.cs" />
     <Compile Include="Source\Languages\Element.cs" />
     <Compile Include="Source\Languages\ParentElement.cs" />

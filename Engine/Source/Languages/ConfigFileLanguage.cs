@@ -197,7 +197,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				if (value != null && value.Length != 0)
 					{  
 					if (value.Length % 2 == 1)
-						{  throw new Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
 
 					blockCommentStringPairs = value;  
 					}
@@ -341,7 +341,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public void FixNameCapitalization (string newName)
 			{
 			if (string.Compare(name, newName, true) != 0)
-				{  throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileLanguage");  }
+				{  throw new Engine.Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileLanguage");  }
 				
 			name = newName;
 			}
@@ -360,7 +360,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				if (string.Compare(newTopicTypeNames[i], prototypeEndersList[i].TopicTypeName, true) != 0)
 					{  
-					throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEndersList[i].TopicTypeName,
+					throw new Engine.Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEndersList[i].TopicTypeName,
 																														newTopicTypeNames[i],
 																														"ConfigFileLanguage topic type");  
 					}

@@ -105,6 +105,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
 													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
+			if (Type == LanguageType.Container)
+				{  throw new Exceptions.BadContainerOperation("Parse(tokenizer)");  }
+
 			List<Element> elements = null;
 			topics = null;
 			classParentLinks = null;
@@ -222,15 +225,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				commentElements = null;
 				}
 
-
-			// xxx Containers aren't supported yet so just return it as an empty file.
-
-			else // Type == LanguageType.Container
+			#if DEBUG
+			else
 				{
-				topics = new List<Topic>();
-				classParentLinks = new LinkSet();  
-				return ParseResult.Success;  
+				// Container was already handled at the beginning of the function.
+				throw new Exception ("Unrecognized language type " + Type);
 				}
+			#endif
 
 
 			// Calculate the effective access levels.  This is done after merging code and comment topics so members are consistent.  For
@@ -320,7 +321,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
 			{
 			if (Type == LanguageType.Container)
-				{  throw new NotImplementedException();  }  //xxx
+				{  throw new Exceptions.BadContainerOperation("ParsePrototype");  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype);
 			ParsedPrototype parsedPrototype = new ParsedPrototype(tokenizedPrototype);
@@ -458,7 +459,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public virtual ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
 			{
 			if (Type == LanguageType.Container)
-				{  throw new NotImplementedException();  }  //xxx
+				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
 			if (Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
 				{  return null;  }
@@ -833,7 +834,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public virtual void SyntaxHighlight (Tokenizer source)
 			{
 			if (Type == LanguageType.Container)
-				{  return;  }  //xxx
+				{  throw new Exceptions.BadContainerOperation("SyntaxHighlight");  }
 
 			SimpleSyntaxHighlight(source);
 			}
@@ -918,9 +919,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
 
 			if (Type == LanguageType.Container)
-				{  
-				return new List<PossibleDocumentationComment>(); // xxx
-				}
+				{  throw new Exceptions.BadContainerOperation("GetPossibleDocumentationComments");  }
 
 			else if (Type == LanguageType.TextFile)
 				{

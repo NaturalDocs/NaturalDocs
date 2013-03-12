@@ -279,8 +279,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
 			predefinedLanguages[0].Predefined = true;
 			
-			predefinedLanguages[1] = new Language("Shebang Script");
-			predefinedLanguages[1].Type = Language.LanguageType.Container;
+			predefinedLanguages[1] = new Languages.Parsers.ShebangScript();
 			predefinedLanguages[1].Predefined = true;
 
 			predefinedLanguages[2] = new Languages.Parsers.CSharp();
