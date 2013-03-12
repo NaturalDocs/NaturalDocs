@@ -94,7 +94,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		 *								  list for later.
 		 *	FileDoesntExist - The file couldn't be opened because it doesn't exist.  This obviously only applies to changed files,
 		 *							as this is expected with deleted files.
-		 *	CantAccessFile - The file exists but couldn't be open, such as if the program doesn't have permission to access
+		 *	CantAccessFile - The file exists but couldn't be opened, such as if the program doesn't have permission to access
 		 *							the file.
 		 */
 		public enum ReleaseClaimedFileReason : byte
@@ -837,51 +837,30 @@ namespace GregValure.NaturalDocs.Engine.Files
 					System.Console.WriteLine("...");
 				#endif
 
+				Engine.Languages.Language language = Engine.Instance.Languages.FromFileName(file.FileName);
+				IList<Topic> topics = null;
+				LinkSet links = null;
 
-				// Try to read the file from disk
+				var parseResult = language.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
 
-				string content = null;
-				
-				try
-					{  content = System.IO.File.ReadAllText(file.FileName);  }
-
-				catch (System.IO.FileNotFoundException)
+				if (parseResult == Language.ParseResult.FileDoesntExist)
 					{  
 					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...file not found");
+					System.Console.WriteLine("...file doesn't exist");
 					#endif
 					return ReleaseClaimedFileReason.FileDoesntExist;  
 					}
-				catch (System.IO.DirectoryNotFoundException)
-					{  
-					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...folder not found");
-					#endif
-					return ReleaseClaimedFileReason.FileDoesntExist;  
-					}
-				catch
+				else if (parseResult == Language.ParseResult.CantAccessFile)
 					{  
 					#if SHOW_FILE_PARSING
 					System.Console.WriteLine("...can't access file");
 					#endif
 					return ReleaseClaimedFileReason.CantAccessFile;  
 					}
-					
-				if (cancelDelegate())
-					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
-
-
-				// Parse the file for topics and class parent links
-				
-				Engine.Languages.Language language = Engine.Instance.Languages.FromFileName(file.FileName);
-				IList<Topic> topics = null;
-				LinkSet links = null;
-
-				if (content != null)
-					{  language.Parse(content, file.ID, cancelDelegate, out topics, out links);  }
-					
-				if (cancelDelegate())
-					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+				else if (parseResult == Language.ParseResult.Cancelled)
+					{
+					return ReleaseClaimedFileReason.CancelledProcessing;
+					}
 
 
 				// Parse the topic bodies for Natural Docs links and the prototypes for type links

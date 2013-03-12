@@ -98,11 +98,9 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 							if (language == null)
 								{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }
 
-							string code = System.IO.File.ReadAllText(test.InputFile);
-
 							IList<Topic> topics;
 							LinkSet classParentLinks;
-							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+							language.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 							test.SetActualOutput( OutputOf(topics) );  
 							}

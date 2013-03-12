@@ -49,10 +49,12 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 * 
 		 * Success - The parsing completed successfully.
 		 * Cancelled - The parsing was cancelled before completion.
-		 * SyntaxErrors - The parsing has completed but there were syntax errors.
+		 * FileDoesntExist - The file couldn't be opened because it doesn't exist.
+		 * CantAccessFile - The file exists but couldn't be opened, such as if the program doesn't have permission to access
+		 *							the file.
 		 */
 		public enum ParseResult : byte
-			{  Success, Cancelled, SyntaxErrors  }
+			{  Success, Cancelled, FileDoesntExist, CantAccessFile  }
 
 
 		/* enum: ValidateElementsMode
@@ -71,24 +73,37 @@ namespace GregValure.NaturalDocs.Engine.Languages
 	
 
 		/* Function: Parse
-		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Both of these will be empty 
-		 * but not null if there weren't any.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
-		 * 
-		 * If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
+		 * Parses the passed file and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for the ability
+		 * to interrupt parsing, or use <Delegates.NeverCancel> if that's not needed.
 		 */
-		public ParseResult Parse (string source, int fileID, CancelDelegate cancelDelegate, 
-													 out IList<Topic> topics, out LinkSet classParentLinks)
+		virtual public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate, 
+													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
-			return Parse(new Tokenizer(source), fileID, cancelDelegate, out topics, out classParentLinks);
+			topics = null;
+			classParentLinks = null;
+
+			string content = null;
+				
+			try
+				{  content = System.IO.File.ReadAllText(filePath);  }
+
+			catch (System.IO.FileNotFoundException)
+				{  return ParseResult.FileDoesntExist;  }
+			catch (System.IO.DirectoryNotFoundException)
+				{  return ParseResult.FileDoesntExist;  }
+			catch
+				{  return ParseResult.CantAccessFile;  }
+
+			return Parse(new Tokenizer(content), fileID, cancelDelegate, out topics, out classParentLinks);
 			}
 			
 			
 		/* Function: Parse
-		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Both of these will be empty 
-		 * but not null if there weren't any.  Set cancelDelegate for the ability to interrupt parsing, or use <Delegates.NeverCancel>.
+		 * Parses the tokenized source code and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for 
+		 * the ability to interrupt parsing, or use <Delegates.NeverCancel>.
 		 */
 		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
-																	  out IList<Topic> topics, out LinkSet classParentLinks)
+													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
 			List<Element> elements = null;
 			topics = null;

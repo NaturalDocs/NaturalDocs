@@ -105,7 +105,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 							IList<Topic> topics;
 							LinkSet classParentLinks;
-							language.Parse(code, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+							language.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 							test.SetActualOutput( OutputOf(comments, topics) );
 							}
