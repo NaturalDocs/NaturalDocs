@@ -1265,14 +1265,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			if (lastClass != null)
 				{
-				lastClass.EndingLineNumber = possibleDocumentationComments[possibleDocumentationComments.Count - 1].End.LineNumber + 1;
-				lastClass.EndingCharNumber = 1;
+				// It's okay if this extends past the end of the file, MergeElements will take care of limiting them to their parents.
+				// We can't use one line past the last comment because if it's an enum it would start in the class/group but its own
+				// scope would extend past it.
+				lastClass.EndingLineNumber = int.MaxValue;
+				lastClass.EndingCharNumber = int.MaxValue;
 				}
 
 			if (lastGroup != null)
 				{
-				lastGroup.EndingLineNumber = possibleDocumentationComments[possibleDocumentationComments.Count - 1].End.LineNumber + 1;
-				lastGroup.EndingCharNumber = 1;
+				lastGroup.EndingLineNumber = int.MaxValue;
+				lastGroup.EndingCharNumber = int.MaxValue;
 				}
 
 			return elements;
