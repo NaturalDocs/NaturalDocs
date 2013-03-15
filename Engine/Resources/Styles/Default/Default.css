@@ -56,9 +56,13 @@
 
 */
 
-/* Needed to allow full height gradients on the home page. */
 html {
+	/* Needed to allow full height gradients on the home page. */
 	height: 100%;
+
+	/* Needed in combination with the hacks in NDMenu/NDSummary.Build() to placate IE10. */
+	/* See NDMenu.Build()'s comment for why this is necessary. */
+	font: 10pt `MenuFontFamily;
 	}
 
 body.NDFramePage {

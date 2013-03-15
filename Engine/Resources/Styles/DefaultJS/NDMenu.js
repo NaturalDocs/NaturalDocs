@@ -251,6 +251,19 @@ var NDMenu = new function ()
 
 		menuContainer.replaceChild(newMenuContent, oldMenuContent);
 
+		// Oh IE 10, why do you still have to suck?  If you don't do this AND apply a font to the html tag in CSS,
+		// the menu and summary entries will shift slightly when you hover over them.  Apparently they draw slightly 
+		// off initially and the redraw to show hovering puts them back in place.  Applying this property forces the 
+		// redraw to happen immediately.  Yes it has to be done on every menu build.  Yes it has to be done using
+		// a timeout.  No it can't be done with a property in the CSS.  IE 10 only, Windows 7 and 8.
+		if (NDCore.IsIE() && NDCore.IEVersion() >= 10)
+			{ 
+			setTimeout( function () 
+				{
+				document.getElementById("NDMenu").style.zoom="100%";  
+				}, 0 );
+			}
+
 		if (result.completed)
 			{
 			if (result.selectedFile)

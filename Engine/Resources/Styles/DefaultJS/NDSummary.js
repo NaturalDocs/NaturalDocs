@@ -245,6 +245,15 @@ var NDSummary = new function ()
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)
 			{  NDFramePage.SizeSummaryToContent();  }
+
+		// See the comment in NDMenu.Build() for why this is necessary.
+		if (NDCore.IsIE() && NDCore.IEVersion() >= 10)
+			{ 
+			setTimeout( function () 
+				{
+				document.getElementById("NDSummary").style.zoom="100%";  
+				}, 0 );
+			}
 		};
 
 	
