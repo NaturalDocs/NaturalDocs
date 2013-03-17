@@ -40,19 +40,16 @@
 
 	Z-Indexes:
 
-		NDMessages - 9999
+		`NDMessagesZIndex = 9999
 
-		NDMenuSizer/NDSummarySizer - 101
-		NDContentCover - 100
+		`NDSizerZIndex = 101
+		`NDContentCoverZIndex = 100
 
-		SToolTipHolder - 21
-		CToolTipHolder - 20
-
-		NDHeader - 5
-		NDFooter - 4
-		NDMenu - 3
-		NDSummary - 2
-		NDContent - 1
+		`NDHeaderZIndex = 5
+		`NDFooterZIndex = 4
+		`NDMenuZIndex = 3
+		`NDSummaryZIndex = 2
+		`NDContentZIndex = 1
 
 */
 
@@ -110,7 +107,7 @@ td {
 #NDHeader {
 	background-color: `HeaderBackgroundColor;
 	padding: .55em .65em;
-	z-index: 5;
+	z-index: `NDHeaderZIndex;
 	}
 
 	#HTitle {
@@ -136,7 +133,7 @@ td {
 
 #NDMenu {
 	background-color: `MenuBackgroundColor;
-	z-index: 3;
+	z-index: `NDMenuZIndex;
 	overflow: auto;
 	width: 30ex;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
@@ -310,7 +307,7 @@ td {
 	background-color: `SummaryBackgroundColor;
 	border-left: 1px solid `MenuSummaryBorderColor;
 	border-right: 1px solid `SummaryContentBorderColor;
-	z-index: 2;
+	z-index: `NDSummaryZIndex;
 	overflow: auto;
 	width: 30ex;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
@@ -407,7 +404,7 @@ td {
 #NDSummarySizer {
 	cursor: e-resize;
 	width: .8ex;
-	z-index: 101;
+	z-index: `NDSizerZIndex;
 	}
 
 #NDMenuSizer:hover,
@@ -424,7 +421,7 @@ td {
 
 #NDContentCover {
 	position: fixed;
-	z-index: 100;
+	z-index: `NDContentCoverZIndex;
 
 	/* Background image is required.  If it's set to "transparent" or isn't specified IE will send some events
 		through to what's being covered.  Even though the image is transparent and doesn't repeat the entire
@@ -440,7 +437,7 @@ td {
 */
 
 #NDContent {
-	z-index: 1;
+	z-index: `NDContentZIndex;
 	overflow: hidden;
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
@@ -954,7 +951,7 @@ body.NDContentPage {
 	font: 7pt `MenuFontFamily;
 	padding: .1em 1ex;
 	text-align: right;
-	z-index: 4;
+	z-index: `NDFooterZIndex;
 	}
 
 	#NDFooter,
@@ -1102,7 +1099,7 @@ body.NDHomePage {
 
 #NDMessages {
 	background-color: `MessageBackgroundColor;
-	z-index: 9999;
+	z-index: `NDMessagesZIndex;
 	overflow: auto;
 	max-height: 33%;
 	display: none;
