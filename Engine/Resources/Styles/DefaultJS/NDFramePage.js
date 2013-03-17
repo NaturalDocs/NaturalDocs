@@ -454,7 +454,12 @@ var NDFramePage = new function ()
 		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
 		NDCore.SetToAbsolutePosition(footer, 0, undefined, fullWidth, undefined);
 
-		var headerHeight = header.offsetHeight;
+		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the 
+		// rest of the page elements.  We do this because when browsers are set to zoom levels greater than 100%,
+		// rounding errors may make 1px gaps appear between elements.  For most elements this isn't as issue because
+		// the menu background color blends in.  The header is different because a gray bar between it and the home 
+		// page is very noticable.
+		var headerHeight = header.offsetHeight - 1;
 		var footerHeight = footer.offsetHeight;
 
 		// We needed separate calls to set the footer's Y position and width since wrapping may change its height.

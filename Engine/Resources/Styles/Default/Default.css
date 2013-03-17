@@ -45,11 +45,11 @@
 		`NDSizerZIndex = 101
 		`NDContentCoverZIndex = 100
 
-		`NDHeaderZIndex = 5
-		`NDFooterZIndex = 4
-		`NDMenuZIndex = 3
-		`NDSummaryZIndex = 2
-		`NDContentZIndex = 1
+		`NDMenuZIndex = 5
+		`NDSummaryZIndex = 4
+		`NDContentZIndex = 3
+		`NDHeaderZIndex = 2
+		`NDFooterZIndex = 1
 
 */
 
@@ -107,6 +107,10 @@ td {
 #NDHeader {
 	background-color: `HeaderBackgroundColor;
 	padding: .55em .65em;
+
+	/* For the lip.  See NDFramePage.UpdateLayout(). */
+	border-bottom: 1px solid `HeaderBackgroundColor;
+
 	z-index: `NDHeaderZIndex;
 	}
 
