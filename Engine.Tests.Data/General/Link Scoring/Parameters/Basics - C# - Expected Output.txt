@@ -10,7 +10,7 @@ C# NaturalDocs Link: MyFunc (int, float)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 // Links should also match by name
@@ -25,7 +25,7 @@ C# NaturalDocs Link: MyFunc (x, y)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 // We allow links which have fewer parameters than the prototype to go through.  We want to allow linking with
@@ -41,7 +41,7 @@ C# NaturalDocs Link: MyFunc ()
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☐☐☒☒☒☒☒☒☒☒ - Parameters
 
 C# Function Topic: MyFunc
@@ -53,7 +53,7 @@ C# NaturalDocs Link: MyFunc (int)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☐☒☒☒☒☒☒☒☒ - Parameters
 
 // We also allow links that are completely wrong, because the user or language may be specifying them in a weird
@@ -70,7 +70,7 @@ C# NaturalDocs Link: MyFunc (bool, string)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☐☐☒☒☒☒☒☒☒☒ - Parameters
 
 // We do not allow links with more parameters than the prototype though, as there's no way this was intended as 

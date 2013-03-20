@@ -12,22 +12,22 @@
   - Default Declared Child Access Level: Private
   - Child Scope: TestClass
     ---------------
-    Operator: this[]
-    TestClass.this[]
+    Operator: this []
+    TestClass.this
     int this [int x] { get }
     (line 4, char 2, child of TestClass)
     ---------------
-    Operator: this[]
-    TestClass.this[]
+    Operator: this []
+    TestClass.this
     protected int this [int x] { get; private set }
     (line 10, char 2, child of TestClass)
     ---------------
-    Operator: this[]
-    TestClass.this[]
+    Operator: this []
+    TestClass.this
     [Attribute] internal System.Text.StringBuilder this [int x, int y] { [SetAttribute] protected internal set; [GetAttribute] internal get }
     (line 18, char 2, child of TestClass)
     ---------------
-    Operator: this[]
-    TestClass.this[]
+    Operator: this []
+    TestClass.this
     abstract int this [int x] { get; set }
     (line 30, char 2, child of TestClass)

@@ -230,7 +230,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else
 								{  
 								ContextString temp = topic.PrototypeContext;
-								temp.Scope = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(valueString);
+								temp.Scope = SymbolString.FromPlainText_NoParameters(valueString);
 								topic.PrototypeContext = temp;
 								}
 							}
@@ -298,7 +298,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else
 								{
 								ContextString temp = link.Context;
-								temp.Scope = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(valueString);
+								temp.Scope = SymbolString.FromPlainText_NoParameters(valueString);
 								link.Context = temp;
 								}
 							}
@@ -323,7 +323,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 								temp.AddUsingStatement(
 									UsingString.FromParameters(
 										UsingString.UsingType.AddPrefix, 
-										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(add)
+										SymbolString.FromPlainText_NoParameters(add)
 										)
 									);
 
@@ -343,8 +343,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 								temp.AddUsingStatement(
 									UsingString.FromParameters(
 										UsingString.UsingType.ReplacePrefix, 
-										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(add),
-										SymbolString.FromPlainText_ParenthesesAlreadyRemoved(remove)
+										SymbolString.FromPlainText_NoParameters(add),
+										SymbolString.FromPlainText_NoParameters(remove)
 										)
 									);
 
@@ -381,8 +381,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 						// Calculate fields
 
-						string parentheses;
-						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parentheses);
+						string parametersString;
+						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parametersString);
 
 						var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 
@@ -398,7 +398,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 							{
 							if (linkIsPlainText)
 								{
-								SymbolString linkSymbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(link.TextOrSymbol);
+								SymbolString linkSymbol = SymbolString.FromPlainText_NoParameters(link.TextOrSymbol);
 								link.TextOrSymbol = linkSymbol.ToString();
 								link.EndingSymbol = linkSymbol.EndingSymbol;
 								linkIsPlainText = false;
@@ -511,7 +511,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 							// L - Whether the topic matches the link's language.
 							// C - Whether the topic and link's capitalization match if it matters to the language.
 							// E - Whether the text is an exact match with no plural or possessive conversions applied.
-							// T - Whether the link parentheses exactly match the topic title parentheses
+							// T - Whether the link parameters exactly match the topic title parameters.
 							// P - How well the parameters match.
 							// S - How high on the scope list the symbol match is.
 							// I - How high on the interpretation list (named/plural/possessive) the match is.
@@ -543,7 +543,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 							if (show.Contains("all") || show.Contains("parameters"))
 								{
-								output.AppendLine("   " + (TValue == 1 ? "☒" : "☐") + " - Topic title parentheses");
+								output.AppendLine("   " + (TValue == 1 ? "☒" : "☐") + " - Topic title parameters");
 
 								output.Append("   ");
 								for (int shift = 18; shift >= 0; shift -= 2)

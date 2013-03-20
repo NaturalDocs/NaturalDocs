@@ -7,7 +7,7 @@ Pascal NaturalDocs Link: MyFunc ()
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☐↓↓☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -19,7 +19,7 @@ Pascal NaturalDocs Link: MyFunc (int)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒↓↓☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -31,7 +31,7 @@ Pascal NaturalDocs Link: MyFunc (int; float)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒↓☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -43,7 +43,7 @@ Pascal NaturalDocs Link: MyFunc (int; float; bool)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc

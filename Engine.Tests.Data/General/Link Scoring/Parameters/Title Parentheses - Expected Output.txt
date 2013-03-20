@@ -6,7 +6,7 @@ C# NaturalDocs Link: Parens(int,float)
    Scope: Global
 
 Match score:
-   ☒ - Topic title parentheses
+   ☒ - Topic title parameters
    ☐☐☐☐☐☐☐☐☐☐ - Parameters
 
 // It must tolerate whitespace differences
@@ -20,7 +20,7 @@ C# NaturalDocs Link: Parens( int, float )
    Scope: Global
 
 Match score:
-   ☒ - Topic title parentheses
+   ☒ - Topic title parameters
    ☐☐☐☐☐☐☐☐☐☐ - Parameters
 
 // All matches must be exact.  It does not do fuzzy matching like it does with prototypes.
@@ -60,7 +60,7 @@ C# NaturalDocs Link: Parens()
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 C# Function Topic: Parens
@@ -100,7 +100,7 @@ Pascal NaturalDocs Link: Parens (myclass)
    Scope: Global
 
 Match score:
-   ☒ - Topic title parentheses
+   ☒ - Topic title parameters
    ☐☐☐☐☐☐☐☐☐☐ - Parameters
 
 // Title matches must override prototoype matches
@@ -116,7 +116,7 @@ Pascal NaturalDocs Link: Parens (int)
    Scope: Global
 
 Match score:
-   ☒ - Topic title parentheses
+   ☒ - Topic title parameters
    ☐☐☐☐☐☐☐☐☐☐ - Parameters
 
 Pascal Function Topic: Parens (int)
@@ -128,6 +128,6 @@ Pascal NaturalDocs Link: Parens (int)
    Scope: Global
 
 Match score:
-   ☒ - Topic title parentheses
+   ☒ - Topic title parameters
    ☐☐☐☐☐☐☐☐☐☐ - Parameters
 

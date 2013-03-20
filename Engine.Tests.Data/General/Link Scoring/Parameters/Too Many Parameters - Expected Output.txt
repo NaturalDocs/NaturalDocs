@@ -12,7 +12,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, c
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 // Missing eleventh, takes advantage of default value
@@ -27,7 +27,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒↓ - Parameters
 
 // Missing modifier on eleventh
@@ -42,7 +42,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, f
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒↑ - Parameters
 
 // Eleventh completely wrong
@@ -57,7 +57,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, s
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☐ - Parameters
 
 // Twelve parameters in link
@@ -85,7 +85,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, string
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☐ - Parameters
 
 // Tenth partial, eleventh matches
@@ -100,7 +100,7 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int, c
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒↑ - Parameters
 
 // Tenth partial, eleventh default value
@@ -115,6 +115,6 @@ C# NaturalDocs Link: MyFunc (int, int, int, int, int, int, int, int, int, int)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒↓ - Parameters
 

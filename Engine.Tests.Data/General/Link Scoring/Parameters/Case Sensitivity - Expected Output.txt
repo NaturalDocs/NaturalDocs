@@ -10,7 +10,7 @@ C# NaturalDocs Link: MyFunc (int, StringBuilder, List<ClassName>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 C# Function Topic: MyFunc
@@ -22,7 +22,7 @@ C# NaturalDocs Link: MyFunc (int, stringbuilder, list<classname>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☐☐☒☒☒☒☒☒☒ - Parameters
 
 C# Function Topic: MyFunc
@@ -34,7 +34,7 @@ C# NaturalDocs Link: MyFunc (int, StringBuilder, List<classname>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☐☒☒☒☒☒☒☒ - Parameters
 
 // Case insensitive language
@@ -49,7 +49,7 @@ Pascal NaturalDocs Link: MyFunc (int; StringBuilder; List<ClassName>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -61,7 +61,7 @@ Pascal NaturalDocs Link: MyFunc (int; stringbuilder; list<classname>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -73,6 +73,6 @@ Pascal NaturalDocs Link: MyFunc (int; StringBuilder; List<classname>)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 

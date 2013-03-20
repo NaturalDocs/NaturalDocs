@@ -10,7 +10,7 @@ Pascal NaturalDocs Link: MyFunc (unsigned int; System.Text.StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☒☒☒☒☒☒☒☒☒ - Parameters
 
 // Missing pieces
@@ -25,7 +25,7 @@ Pascal NaturalDocs Link: MyFunc (int; StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ↑↑☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -37,7 +37,7 @@ Pascal NaturalDocs Link: MyFunc (unsigned int; StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒↑☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -49,7 +49,7 @@ Pascal NaturalDocs Link: MyFunc (int; System.Text.StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ↑☒☒☒☒☒☒☒☒☒ - Parameters
 
 // Wrong pieces
@@ -64,7 +64,7 @@ Pascal NaturalDocs Link: MyFunc (const int; System.Text.StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☐☒☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -76,7 +76,7 @@ Pascal NaturalDocs Link: MyFunc (unsigned int; System.Whatever.StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☒☐☒☒☒☒☒☒☒☒ - Parameters
 
 // Extra pieces
@@ -91,7 +91,7 @@ Pascal NaturalDocs Link: MyFunc (const unsigned int; out System.Text.StringBuild
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ☐☐☒☒☒☒☒☒☒☒ - Parameters
 
 // Some pieces
@@ -106,7 +106,7 @@ Pascal NaturalDocs Link: MyFunc (unsigned int; System.Text.StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ↑↑☒☒☒☒☒☒☒☒ - Parameters
 
 Pascal Function Topic: MyFunc
@@ -118,6 +118,6 @@ Pascal NaturalDocs Link: MyFunc (out int; out StringBuilder)
    Scope: Global
 
 Match score:
-   ☐ - Topic title parentheses
+   ☐ - Topic title parameters
    ↑↑☒☒☒☒☒☒☒☒ - Parameters
 
