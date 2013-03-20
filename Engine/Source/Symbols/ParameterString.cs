@@ -3,9 +3,9 @@
  * ____________________________________________________________________________
  * 
  * A struct encapsulating parameters from a symbol, which is a normalized way of representing the parenthetical
- * section of a code element or topic, such as "(int, int)" in "PackageA.PackageB.FunctionC(int, int)".  When
- * generated from prototypes, ParameterStrings only store the types of each parameter, not the names or default 
- * values.
+ * section of a code element or topic, such as "(int, int)" in "PackageA.PackageB.FunctionC(int, int)".  It supports
+ * alternate braces as well such as "this[int]" and "Template<T>".  When generated from prototypes, ParameterStrings
+ * only store the types of each parameter, not the names or default values.
  * 
  * The encoding uses SeparatorChars.Level1.
  */
@@ -48,47 +48,58 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: GetEndingParenthesesIndex
-		 * If a plain text string ends in parentheses, returns the index of the opening parenthesis character.  Returns -1 otherwise.
+		/* Function: GetParametersIndex
+		 * If a plain text string ends in parameters, returns the index of the opening brace character.  Returns -1 otherwise.
 		 */
-		public static int GetEndingParenthesesIndex (string input)
+		public static int GetParametersIndex (string input)
 			{
 			if (input == null)
 				{  return -1;  }
 
 			input = input.TrimEnd();
+			int index = input.Length - 1;
 
-			if (input.Length >= 2 && input[input.Length - 1] == ')')
+			if (input.Length >= 2 && IsClosingBrace(input[index]))
 				{
-				// We have to count parentheses so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
-				// "(paren) text2 (paren2)".  We also want to handle nested parentheses.
+				// We have to count the braces so it correctly returns "(paren2)" from "text (paren) text2 (paren2)" and not 
+				// "(paren) text2 (paren2)".  We also want to handle nested braces.
 
-				// The start position LastIndexOfAny() takes is the character at the end of the string to be examined first.
-				// The count is the number of characters to examine, so it's one higher as index 4 goes for 5 characters: indexes 0, 1, 2,
-				// 3, and 4.  The character at the start position is examined, it's not a limit.
-				int nextParen = input.LastIndexOfAny(parenthesesChars, input.Length - 2, input.Length - 1);
-				int nesting = 1;
-				
-				while (nextParen != -1)
+				Collections.SafeStack<char> braces = new Collections.SafeStack<char>();
+				braces.Push(input[index]);
+
+				for (;;)
 					{
-					if (input[nextParen] == ')')
-						{  nesting++;  }
-					else if (input[nextParen] == '(')
+					// The start position LastIndexOfAny() takes is the character at the end of the string to be examined first.
+					// The count is the number of characters to examine, so it's one higher as index 4 goes for 5 characters: indexes 0, 1, 2,
+					// 3, and 4.  The character at the start position is examined, it's not a limit.
+					index = input.LastIndexOfAny(AllBraces, index - 1, index);
+
+					if (index == -1)
+						{  break;  }
+
+					if (IsClosingBrace(input[index]))
 						{  
-						nesting--;  
-						
-						if (nesting == 0)
+						braces.Push(input[index]);  
+						}
+					else // IsOpeningBrace(input[index])
+						{
+						if (BracesMatch(input[index], braces.Peek()))
+							{  
+							braces.Pop();
+
+							if (braces.Count == 0)
+								{  break;  }
+							}
+						else
 							{  break;  }
 						}
-
-					nextParen = input.LastIndexOfAny(parenthesesChars, nextParen - 1, nextParen);
 					}
 
-				// We want nextParen to be greater than zero so we don't include cases where the entire title is surrounded
-				// by parentheses.
-				if (nesting == 0 && nextParen > 0)
+				// We want index to be greater than zero so we don't include cases where the entire title is surrounded
+				// by braces.
+				if (braces.Count == 0 && index > 0)
 					{
-					return nextParen;
+					return index;
 					}
 				}
 
@@ -96,23 +107,23 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: SplitFromEndingParentheses
-		 * If a plain text string ends in parentheses, returns them and the rest of the text as separate strings.  If it doesn't, it will
+		/* Function: SplitFromParameters
+		 * If a plain text string ends in parameters, returns them and the rest of the text as separate strings.  If it doesn't, it will
 		 * return the original string and null.
 		 */
-		public static void SplitFromEndingParentheses (string input, out string output, out string parentheses)
+		public static void SplitFromParameters (string input, out string output, out string parameters)
 			{
-			int index = GetEndingParenthesesIndex(input);
+			int index = GetParametersIndex(input);
 
 			if (index == -1)
 				{
 				output = input;
-				parentheses = null;
+				parameters = null;
 				}
 			else
 				{
 				output = input.Substring(0, index).TrimEnd();
-				parentheses = input.Substring(index);
+				parameters = input.Substring(index);
 				}
 			}
 
@@ -154,21 +165,27 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: FromParenthesesString
-		 * Creates a ParameterString from a parentheses string, such as "(int, int)".  You can extract them from a plain text string
-		 * with <GetEndingParenthesesIndex()>.
+		/* Function: FromPlainText
+		 * Creates a ParameterString from plain text such as "(int, int)".  You can extract them from a plain text identifier with
+		 * <GetParametersIndex()>.
 		 */
-		public static ParameterString FromParenthesesString (string input)
+		public static ParameterString FromPlainText (string input)
 			{
 			if (input == null)
 				{  throw new NullReferenceException();  }
 
 			input = input.Trim();
 
-			if (input.Length < 2 || input[0] != '(' || input[input.Length - 1] != ')')
+			#if DEBUG
+			if ( (input.Length < 2 || IsOpeningBrace(input[0]) == false || IsClosingBrace(input[input.Length - 1]) == false) &&
+				 GetParametersIndex(input) != -1 )
+				{  throw new Exception("Passed a full identifier to ParameterString.FromPlainText().  Separate the parameters from the identifier first.");  }
+			#endif
+
+			if (input.Length < 2 || IsOpeningBrace(input[0]) == false || IsClosingBrace(input[input.Length - 1]) == false)
 				{  throw new FormatException();  }
 
-			input = input.Substring(1, input.Length - 2);  // Strip surrounding parentheses.
+			input = input.Substring(1, input.Length - 2);  // Strip surrounding braces.
 			input = input.Trim();
 
 			if (input == "")
@@ -176,26 +193,22 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 
 			System.Text.StringBuilder output = new System.Text.StringBuilder(input.Length);
 
-			// Ignore separators appearing within braces.  We've already filtered out the surrounding parentheses and we shouldn't
-			// have to worry about quotes because we should only have types, not default values.
+			// Ignore separators appearing within braces.  We've already filtered out the surrounding braces and we shouldn't have to
+			// worry about quotes because we should only have types, not default values.
 			Collections.SafeStack<char> braces = new Collections.SafeStack<char>();
 
 			int startParam = 0;
-			int index = input.IndexOfAny(bracesAndParamSeparators);
+			int index = input.IndexOfAny(AllBracesAndParamSeparators);
 
 			while (index != -1)
 				{
 				char character = input[index];
 
-				if (character == '(' || character == '[' || character == '{' || character == '<')
+				if (IsOpeningBrace(character))
 					{  
 					braces.Push(character);
 					}
-
-				else if ( (character == ')' && braces.Peek() == '(') ||
-							  (character == ']' && braces.Peek() == '[') ||
-							  (character == '}' && braces.Peek() == '{') ||
-							  (character == '>' && braces.Peek() == '<') )
+				else if (BracesMatch(braces.Peek(), character))
 					{
 					braces.Pop();
 					}
@@ -206,7 +219,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					startParam = index + 1;
 					}
 
-				index = input.IndexOfAny(bracesAndParamSeparators, index + 1);
+				index = input.IndexOfAny(AllBracesAndParamSeparators, index + 1);
 				}
 
 			NormalizeAndAppend(input.Substring(startParam), output);
@@ -371,7 +384,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				
 			parameter = parameter.Normalize(System.Text.NormalizationForm.FormC);  // Canonical decomposition and recombination
 
-			int nextChar = parameter.IndexOfAny(separatorCharsAndWhitespace);
+			int nextChar = parameter.IndexOfAny(SeparatorCharsAndWhitespace);
 			int index = 0;
 			
 			// Set to true if we just passed whitespace, since we only want to add it to the normalized string if it's between two 
@@ -404,7 +417,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					index = nextChar + 1;  
 					}
 
-				nextChar = parameter.IndexOfAny(separatorCharsAndWhitespace, index);
+				nextChar = parameter.IndexOfAny(SeparatorCharsAndWhitespace, index);
 				}
 			
 			if (index < parameter.Length)
@@ -418,6 +431,25 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				
 				output.Append(parameter, index, parameter.Length - index);
 				}
+			}
+
+
+		private static bool IsOpeningBrace (char character)
+			{
+			return (character == '(' || character == '[' || character == '{' || character == '<');
+			}
+
+		private static bool IsClosingBrace (char character)
+			{
+			return (character == ')' || character == ']' || character == '}' || character == '>');
+			}
+
+		private static bool BracesMatch (char openingChar, char closingChar)
+			{
+			return ( (openingChar == '(' && closingChar == ')') ||
+						(openingChar == '[' && closingChar == ']') ||
+						(openingChar == '{' && closingChar == '}') ||
+						(openingChar == '<' && closingChar == '>') );
 			}
 
 
@@ -437,22 +469,22 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		// __________________________________________________________________________
 
 
-		/* var: separatorCharAndWhitespace
+		/* var: SeparatorCharAndWhitespace
 		 * An array containing the whitespace and separator characters.
 		 */
-		static private char[] separatorCharsAndWhitespace = new char[] { ' ', '\t', 
-																																SeparatorChars.Level1, SeparatorChars.Level2,
-																																SeparatorChars.Level3, SeparatorChars.Level4 };
+		static private char[] SeparatorCharsAndWhitespace = new char[] { ' ', '\t', 
+																								  SeparatorChars.Level1, SeparatorChars.Level2,
+																								  SeparatorChars.Level3, SeparatorChars.Level4 };
 
-		/* var: bracesAndParamSeparators
+		/* var: AllBraces
+		 * An array containing all forms of braces.
+		 */
+		static private char[] AllBraces = new char[] { '(', '[', '{', '<', ')', ']', '}', '>' };
+
+		/* var: allBracesAndParamSeparators
 		 * An array containing all forms of braces, comma, and semicolon.
 		 */
-		static private char[] bracesAndParamSeparators = new char[] { '(', '[', '{', '<', ')', ']', '}', '>', ',', ';' };
-
-		/* var: parenthesesChars
-		 * An array containing the opening and closing parentheses characters.
-		 */
-		static private char[] parenthesesChars = new char[] { '(', ')' };
+		static private char[] AllBracesAndParamSeparators = new char[] { '(', '[', '{', '<', ')', ']', '}', '>', ',', ';' };
 
 		}
 	}

@@ -287,8 +287,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 						Link linkStub = new Link();
 						linkStub.Type = LinkType.Type;
-						linkStub.Symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(
-																symbolStart.Tokenizer.TextBetween(symbolStart, symbolEnd) );
+						linkStub.Symbol = SymbolString.FromPlainText_NoParameters( symbolStart.Tokenizer.TextBetween(symbolStart, symbolEnd) );
 						linkStub.Context = topic.PrototypeContext;
 						linkStub.ContextID = topic.PrototypeContextID;
 						linkStub.FileID = topic.FileID;

@@ -152,17 +152,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			// We want to work from Topic.Title instead of Topic.Symbol so that we can use the separator characters as originally
 			// written, as opposed to having them normalized and condensed in the anchor.
 
-			int titleParenthesesIndex = Symbols.ParameterString.GetEndingParenthesesIndex(topic.Title);
+			int titleParametersIndex = Symbols.ParameterString.GetParametersIndex(topic.Title);
 
 			StringBuilder hashPath;
-			if (titleParenthesesIndex == -1)
+			if (titleParametersIndex == -1)
 				{
 				hashPath = new StringBuilder(topic.Title);
 				}
 			else
 				{
-				hashPath = new StringBuilder(titleParenthesesIndex);
-				hashPath.Append(topic.Title, 0, titleParenthesesIndex);
+				hashPath = new StringBuilder(titleParametersIndex);
+				hashPath.Append(topic.Title, 0, titleParametersIndex);
 				}
 
 			hashPath.Replace('\t', ' ');

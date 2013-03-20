@@ -202,7 +202,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				Parent parent = new Parent();
 				parent.prototypeIndex = i;
-				parent.prototypeSymbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(parentName);
+				parent.prototypeSymbol = SymbolString.FromPlainText_NoParameters(parentName);
 
 				parents.Add(parent);
 				}

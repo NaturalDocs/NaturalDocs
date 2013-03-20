@@ -473,7 +473,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
 		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 */
-		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parentheses)
+		public List<LinkInterpretation> LinkInterpretations (string linkText, LinkInterpretationFlags flags, out string parameters)
 			{
 			string input = linkText.Trim();
 			
@@ -482,40 +482,40 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				input = input.Substring(1, input.Length - 2);
 
-				// Remove the flag so we can pass the rest of them to LinkInterpretations_ParenthesesAlreadyRemoved().
+				// Remove the flag so we can pass the rest of them to LinkInterpretations_NoParameters().
 				flags &= ~LinkInterpretationFlags.FromOriginalText;
 				}
 
-			int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(input);
-			bool spaceBeforeParentheses;
-			string inputWithoutParentheses;
+			int parametersIndex = ParameterString.GetParametersIndex(input);
+			bool spaceBeforeParameters;
+			string inputWithoutParameters;
 
-			if (parenthesesIndex == -1)
+			if (parametersIndex == -1)
 				{
-				inputWithoutParentheses = input;
-				parentheses = null;
-				spaceBeforeParentheses = false;
+				inputWithoutParameters = input;
+				parameters = null;
+				spaceBeforeParameters = false;
 				}
 			else
 				{
-				inputWithoutParentheses = input.Substring(0, parenthesesIndex);
-				parentheses = input.Substring(parenthesesIndex);
-				spaceBeforeParentheses = (input[parenthesesIndex - 1] == ' ');
+				inputWithoutParameters = input.Substring(0, parametersIndex);
+				parameters = input.Substring(parametersIndex);
+				spaceBeforeParameters = (input[parametersIndex - 1] == ' ');
 				}
 
-			List<LinkInterpretation> result = LinkInterpretations_DontStripParentheses(inputWithoutParentheses, flags);
+			List<LinkInterpretation> result = LinkInterpretations_NoParameters(inputWithoutParameters, flags);
 
-			// Put the parentheses back on the literal.
-			if (parentheses != null)
+			// Put the parameters back on the literal.
+			if (parameters != null)
 				{
 				foreach (LinkInterpretation interpretation in result)
 					{
 					if (interpretation.IsLiteral)
 						{
-						if (spaceBeforeParentheses)
+						if (spaceBeforeParameters)
 							{  interpretation.Text += ' ';  }
 
-						interpretation.Text += parentheses;
+						interpretation.Text += parameters;
 						}
 					}
 				}
@@ -524,7 +524,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: LinkInterpretations_DontStripParentheses
+		/* Function: LinkInterpretations_NoParameters
 		 * 
 		 * Generates a list of possible interpretations for the passed target of a Natural Docs link, or null if there are none.  If
 		 * <LinkInterpretationFlags.ExcludeLiteral> is not set it will always return a list of at least one interpretation.
@@ -533,11 +533,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * in the list.  Following entries are not guaranteed to be in any particular order but they are guaranteed to be in a
 		 * consistent order, meaning every call with the same input will generate the same list in the same order.
 		 * 
-		 * We use this awkward function name because 90% of the time you need to handle parentheses, or at least strip them
+		 * We use this awkward function name because 90% of the time you need to handle parameters, or at least strip them
 		 * off.  If we just made an overload of <LinkInterpretations()> without the out parameter people would use this one by 
-		 * accident.  By attaching _DontStripParentheses it forces you to only use this one if you know what you're doing.
+		 * accident.  By attaching _NoParameters it forces you to only use this one if you know what you're doing.
 		 */
-		public List<LinkInterpretation> LinkInterpretations_DontStripParentheses (string linkText, LinkInterpretationFlags flags)
+		public List<LinkInterpretation> LinkInterpretations_NoParameters (string linkText, LinkInterpretationFlags flags)
 			{
 			List<LinkInterpretation> interpretations = null;
 			string input = linkText.CondenseWhitespace();
@@ -2838,9 +2838,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 								else
 									{
 									// See if we can interpret the link as a named URL or e-mail address.  We can accept the first interpretation we find.
-									List<LinkInterpretation> interpretations = LinkInterpretations_DontStripParentheses(tagContent, 
-																																										LinkInterpretationFlags.AllowNamedLinks |
-																																										LinkInterpretationFlags.ExcludeLiteral);
+									List<LinkInterpretation> interpretations = LinkInterpretations_NoParameters(tagContent, 
+																																		  LinkInterpretationFlags.AllowNamedLinks |
+																																		  LinkInterpretationFlags.ExcludeLiteral);
 									bool found = false;
 									
 									if (interpretations != null)

@@ -1251,7 +1251,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access HasTitleParameters when the title was ignored.");  }
 				#endif
 
-				return (ParameterString.GetEndingParenthesesIndex(title) != -1);
+				return (ParameterString.GetParametersIndex(title) != -1);
 				}
 			}
 			
@@ -1270,12 +1270,12 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 				if ((buildFlags & BuildFlags.TitleParameters) == 0)
 					{
-					int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(title);
+					int parametersIndex = ParameterString.GetParametersIndex(title);
 
-					if (parenthesesIndex == -1)
+					if (parametersIndex == -1)
 						{  titleParameters = new ParameterString();  }
 					else
-						{  titleParameters = ParameterString.FromParenthesesString(title.Substring(parenthesesIndex));  }
+						{  titleParameters = ParameterString.FromPlainText(title.Substring(parametersIndex));  }
 
 					buildFlags |= BuildFlags.TitleParameters;
 					}

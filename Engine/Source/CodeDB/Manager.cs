@@ -310,7 +310,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			// L - Whether the topic matches the link's language.
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// E - Whether the text is an exact match with no plural or possessive conversions applied.
-			// T - Whether the link parentheses exactly match the topic title parentheses
+			// T - Whether the link parameters exactly match the topic title parameters.
 			// P - How well the parameters match.
 			// S - How high on the scope list the symbol match is.
 			// I - How high on the interpretation list (named/plural/possessive) the match is.
@@ -370,7 +370,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{
 				for (int i = 0; i < interpretations.Count; i++)
 					{
-					long interpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText_ParenthesesAlreadyRemoved(interpretations[i].Target));
+					long interpretationScore = ScoreInterpretation(topic, link, SymbolString.FromPlainText_NoParameters(interpretations[i].Target));
 
 					if (interpretationScore != 0)
 						{
@@ -419,26 +419,26 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 
 			// ====TPPP PPPPPPPP PPPPPPPP P======= ======== =------- -------- -------=
-			// T - Whether the link parentheses exactly match the topic title parentheses.
+			// T - Whether the link parameters exactly match the topic title parameters.
 			// P - How well the parameters match.
 			
-			// Both of these only apply to Natural Docs links that have parentheses.
+			// Both of these only apply to Natural Docs links that have parameters.
 			if (link.Type == LinkType.NaturalDocs)
 				{  
-				int parenthesesIndex = ParameterString.GetEndingParenthesesIndex(link.Text);
+				int parametersIndex = ParameterString.GetParametersIndex(link.Text);
 
-				if (parenthesesIndex != -1)
+				if (parametersIndex != -1)
 					{
-					string linkParentheses = link.Text.Substring(parenthesesIndex);
-					ParameterString linkParameters = ParameterString.FromParenthesesString(linkParentheses);
+					string linkParametersString = link.Text.Substring(parametersIndex);
+					ParameterString linkParameters = ParameterString.FromPlainText(linkParametersString);
 
-					// If the topic title has parentheses as well, the link parentheses must match them exactly.  We
-					// don't do fuzzy matching with topic title parentheses.
+					// If the topic title has parameters as well, the link parameters must match them exactly.  We
+					// don't do fuzzy matching with topic title parameters.
 					if (topic.HasTitleParameters && string.Compare(linkParameters, topic.TitleParameters, !language.CaseSensitive) == 0)
 						{  
 						score |= 0x0800000000000000;
 						// We can skip the prototype match since this outweighs it.  Also, we don't want two link targets
-						// where the topic title parentheses are matched to be distinguished by the prototype parameters.
+						// where the topic title parameters are matched to be distinguished by the prototype parameters.
 						// We'll let it fall through to lower properties in the score.
 						}
 					else

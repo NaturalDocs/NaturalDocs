@@ -1477,8 +1477,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-				string undecoratedTitle, parentheses;
-				Symbols.ParameterString.SplitFromEndingParentheses(topic.Title, out undecoratedTitle, out parentheses);
+				string undecoratedTitle, parameters;
+				Symbols.ParameterString.SplitFromParameters(topic.Title, out undecoratedTitle, out parameters);
 
 				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
 					{  
@@ -2876,7 +2876,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					TokenIterator start, end;
 					parsedClassPrototype.GetParentName(i, out start, out end);
 
-					link.Symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved( start.Tokenizer.TextBetween(start, end) );
+					link.Symbol = SymbolString.FromPlainText_NoParameters( start.Tokenizer.TextBetween(start, end) );
 					link.Context = topic.PrototypeContext;
 					link.FileID = topic.FileID;
 					link.ClassString = topic.ClassString;

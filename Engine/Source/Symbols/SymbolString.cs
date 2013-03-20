@@ -48,20 +48,20 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 		 * 
 		 * Creates a SymbolString from the passed string of plain text.
 		 * 
-		 * If the string ends in parentheses they will be separated off from the string and returned in the parentheses variable.  
-		 * They will not be part of the resulting SymbolString.  The string is still in its raw form so to become a <ParameterString> it
-		 * would need to be passed to <ParameterString.FromParenthesesString()>.  If there's no parentheses the variable will be null.
+		 * If the string ends in parameters they will be separated off from the string and returned in the parameters variable.  They will
+		 * not be part of the resulting SymbolString.  The string is still in its raw form so to become a <ParameterString> it would need 
+		 * to be passed to <ParameterString.FromPlainText()>.  If there's no parameters the variable will be null.
 		 * 
 		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
 		 * from another SymbolString object, use <FromExportedString()>.
 		 */
-		static public SymbolString FromPlainText (string textSymbol, out string parentheses)
+		static public SymbolString FromPlainText (string textSymbol, out string parameters)
 			{
 			if (textSymbol == null)
 				{  throw new NullReferenceException();  }
 
 			string undecoratedTextSymbol;
-			ParameterString.SplitFromEndingParentheses(textSymbol, out undecoratedTextSymbol, out parentheses);
+			ParameterString.SplitFromParameters(textSymbol, out undecoratedTextSymbol, out parameters);
 
 			SymbolString symbolString = new SymbolString(undecoratedTextSymbol);
 			symbolString.Normalize();
@@ -69,30 +69,31 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			// If a symbol string is normalized to nothing yet it had parentheses (think "::()") put them back together and redo.
 			// This should be a rare edge case but we want to handle it.  We never want a null symbol string with a valid 
 			// parentheses string.
-			if (symbolString.symbolString == null && parentheses != null)
+			if (symbolString.symbolString == null && parameters != null)
 				{
 				symbolString = new SymbolString(textSymbol);
 				symbolString.Normalize();
 
-				parentheses = null;
+				parameters = null;
 				}
 			
 			return symbolString;
 			}
 
 			
-		/* Function: FromPlainText_ParenthesesAlreadyRemoved
+		/* Function: FromPlainText_NoParameters
 		 * 
-		 * Creates a SymbolString from the passed string of plain text where the parentheses have already been removed.
+		 * Creates a SymbolString from the passed string of plain text which is guaranteed to not have parameters or has already had
+		 * them removed.
 		 * 
-		 * We use this awkward function name because 90% of the time you need to handle parentheses, or at least strip them
+		 * We use this awkward function name because much of the time you need to handle parameters, or at least strip them
 		 * off.  If we just made an overload of <FromPlainText()> without the out parameter people would use this one by accident.
-		 * By attaching _ParenthesesAlreadyRemoved it forces you to only use this one if you know what you're doing.
+		 * By attaching _NoParameters it forces you to only use this one if you know what you're doing.
 		 * 
 		 * The string will be normalized.  If you know the string is already in a normalized form because it originally came 
 		 * from another SymbolString object, use <FromExportedString()>.
 		 */
-		static public SymbolString FromPlainText_ParenthesesAlreadyRemoved (string textSymbol)
+		static public SymbolString FromPlainText_NoParameters (string textSymbol)
 			{
 			if (textSymbol == null)
 				{  throw new NullReferenceException();  }

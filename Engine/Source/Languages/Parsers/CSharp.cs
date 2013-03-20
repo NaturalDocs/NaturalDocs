@@ -412,8 +412,8 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				if (mode == ParseMode.CreateElements)
 					{
 					usingString = UsingString.FromParameters(UsingString.UsingType.ReplacePrefix,
-																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(secondIdentifier),
-																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
+																			 SymbolString.FromPlainText_NoParameters(secondIdentifier),
+																			 SymbolString.FromPlainText_NoParameters(firstIdentifier));
 					}
 				}
 			else // not on '='
@@ -421,7 +421,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				if (mode == ParseMode.CreateElements)
 					{
 					usingString = UsingString.FromParameters(UsingString.UsingType.AddPrefix,
-																			 SymbolString.FromPlainText_ParenthesesAlreadyRemoved(firstIdentifier));
+																			 SymbolString.FromPlainText_NoParameters(firstIdentifier));
 					}
 				}
 
@@ -512,7 +512,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;
@@ -703,7 +703,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
 				ClassString classString = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, true, symbol);
 
@@ -955,7 +955,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{
 					Topic functionTopic = new Topic();
 					functionTopic.Title = name;
-					functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 					functionTopic.TopicTypeID = topicTypeID;
 					functionTopic.LanguageID = this.ID;
@@ -1148,7 +1148,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{
 					Topic functionTopic = new Topic();
 					functionTopic.Title = name;
-					functionTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
 					functionTopic.TopicTypeID = topicTypeID;
 					functionTopic.LanguageID = this.ID;
@@ -1311,7 +1311,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{
 					Topic operatorTopic = new Topic();
 					operatorTopic.Title = name.ToString();
-					operatorTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(operatorTopic.Title);
+					operatorTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(operatorTopic.Title);
 					operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 					operatorTopic.TopicTypeID = topicTypeID;
 					operatorTopic.LanguageID = this.ID;
@@ -1453,7 +1453,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				{
 				Topic variableTopic = new Topic();
 				variableTopic.Title = name;
-				variableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+				variableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
 				variableTopic.TopicTypeID = topicTypeID;
 				variableTopic.LanguageID = this.ID;
@@ -1510,7 +1510,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 						{
 						Topic newVariableTopic = new Topic();
 						newVariableTopic.Title = newName;
-						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(newName);
+						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(newName);
 						newVariableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfType) + " " + newName );
 						newVariableTopic.TopicTypeID = topicTypeID;
 						newVariableTopic.LanguageID = this.ID;
@@ -1632,7 +1632,6 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 				name.EndsWith(".this"))  // It may be InterfaceName.this[]
 				{
 				keyword = "operator";
-				name += "[]";
 
 				if (lookahead.Character != '[')
 					{  
@@ -1735,7 +1734,12 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 					{
 					Topic propertyTopic = new Topic();
 					propertyTopic.Title = name;
-					propertyTopic.Symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+
+					// We don't attach it to the name variable earlier because we don't want it to be part of the symbol.
+					if (keyword == "operator")
+						{  propertyTopic.Title += " []";  }
+
+					propertyTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
 					propertyTopic.TopicTypeID = topicTypeID;
 					propertyTopic.LanguageID = this.ID;
@@ -1853,7 +1857,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				SymbolString symbol = scope + SymbolString.FromPlainText_ParenthesesAlreadyRemoved(name);
+				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;

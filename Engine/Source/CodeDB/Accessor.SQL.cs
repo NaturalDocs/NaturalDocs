@@ -1397,11 +1397,11 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 				foreach (LinkInterpretation linkInterpretation in linkInterpretations)
 					{
-					SymbolString symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(linkInterpretation.Target);
+					SymbolString symbol = SymbolString.FromPlainText_NoParameters(linkInterpretation.Target);
 					alternateEndingSymbols.Add(symbol.EndingSymbol);
 					}
 
-				link.EndingSymbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(linkInterpretations[0].Target).EndingSymbol;
+				link.EndingSymbol = SymbolString.FromPlainText_NoParameters(linkInterpretations[0].Target).EndingSymbol;
 				alternateEndingSymbols.Remove(link.EndingSymbol);
 				}
 			else

@@ -497,7 +497,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 						Topic generatedTopic = new Topic();
 						generatedTopic.TopicID = 0;
 						generatedTopic.Title = Engine.Instance.TopicTypes.FromID(type).PluralDisplayName;
-						generatedTopic.Symbol = SymbolString.FromPlainText_ParenthesesAlreadyRemoved(generatedTopic.Title);
+						generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
 						generatedTopic.ClassString = topics[0].ClassString;
 						generatedTopic.ClassID = topics[0].ClassID;
 						generatedTopic.TopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
