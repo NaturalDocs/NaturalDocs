@@ -1,0 +1,58 @@
+
+/* Topic: Brackets Following Title [with, commas]
+*/
+
+/* Topic: Braces Following Title {with, commas}
+*/
+
+/* Topic: Angle Brackets Following Title <with, commas>
+*/
+
+/* Operator: this
+	Indexer with prototype.
+*/
+int this [int x, float y] { }
+
+/* Operator: this []
+	Indexer with prototype and empty brackets.
+*/
+int this [int x, float y] { }
+
+/* Operator: this [x, y]
+	Indexer with prototype and parameterrs in brackets.
+*/
+int this [int x, float y] { }
+
+/* Operator: this
+	Indexer with elaborate prototype.
+*/
+int this [ref int x, float y = 12.4, List<string> z = null] { }
+
+/* Operator: this
+	It shouldn't interpret metadata in the prototoype as indexer parameters.
+*/
+[Metadata] int this [int x] { }
+
+/* Operator: this
+	It shouldn't interpret brackets on the return value as indexer parameters.
+*/
+int[5] this [int x] { }
+
+
+/* Class: Template
+	Template with prototype.
+	Class prototypes aren't searched for parameters.
+*/
+public class Template<T> { };
+
+/* Class: Template<>
+	Template with prototype and empty brackets.
+	Class prototypes aren't searched for parameters.
+*/
+public class Template<T> { };
+
+/* Class: Template<T>
+	Template with prototype and parameters in brackets.
+	Class prototypes aren't searched for parameters.
+*/
+public class Template<T> { };

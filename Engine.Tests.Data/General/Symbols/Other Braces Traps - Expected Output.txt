@@ -1,0 +1,39 @@
+Symbol: [Brackets Surrounding Entire Title]
+Ending Symbol: [brackets surrounding entire title]
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Braces{in middle}of title
+Ending Symbol: braces{in middle}of title
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Braces{in middle}and following title
+Ending Symbol: braces{in middle}and following title
+Title Parameters: with|commas
+Prototype Parameters: (none)
+-----
+Symbol: Nested brackets
+Ending Symbol: nested brackets
+Title Parameters: [following]
+Prototype Parameters: (none)
+-----
+Symbol: Nested braces
+Ending Symbol: nested braces
+Title Parameters: a{b}c
+Prototype Parameters: (none)
+-----
+Symbol: Nested braces and commas
+Ending Symbol: nested braces and commas
+Title Parameters: a|{b,c}|d
+Prototype Parameters: (none)
+-----
+Symbol: Mixed braces
+Ending Symbol: mixed braces
+Title Parameters: a|{b,c}|d
+Prototype Parameters: (none)
+-----
+Symbol: Mismatched braces[a,<b,c],d>
+Ending Symbol: mismatched braces[a,<b,c],d>
+Title Parameters: (none)
+Prototype Parameters: (none)

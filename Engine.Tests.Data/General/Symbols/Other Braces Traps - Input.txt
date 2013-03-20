@@ -1,0 +1,16 @@
+
+Topic: [Brackets Surrounding Entire Title]
+
+Topic: Braces {in middle} of title
+
+Topic: Braces {in middle} and following title {with, commas}
+
+Topic: Nested brackets [[following]]
+
+Topic: Nested braces {a {b} c}
+
+Topic: Nested braces and commas {a, {b, c}, d}
+
+Topic: Mixed braces [a, {b, c}, d]
+
+Topic: Mismatched braces [a, <b, c], d>

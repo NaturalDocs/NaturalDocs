@@ -1,0 +1,59 @@
+Symbol: Brackets Following Title
+Ending Symbol: brackets following title
+Title Parameters: with|commas
+Prototype Parameters: (none)
+-----
+Symbol: Braces Following Title
+Ending Symbol: braces following title
+Title Parameters: with|commas
+Prototype Parameters: (none)
+-----
+Symbol: Angle Brackets Following Title
+Ending Symbol: angle brackets following title
+Title Parameters: with|commas
+Prototype Parameters: (none)
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: (none)
+Prototype Parameters: int|float
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: (none)
+Prototype Parameters: int|float
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: x|y
+Prototype Parameters: int|float
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: (none)
+Prototype Parameters: int|float|List
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: (none)
+Prototype Parameters: int
+-----
+Symbol: this
+Ending Symbol: this
+Title Parameters: (none)
+Prototype Parameters: int
+-----
+Symbol: Template
+Ending Symbol: template
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Template
+Ending Symbol: template
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Template
+Ending Symbol: template
+Title Parameters: T
+Prototype Parameters: (none)
