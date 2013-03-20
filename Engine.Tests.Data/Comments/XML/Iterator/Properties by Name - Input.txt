@@ -1,0 +1,34 @@
+
+Property href in <a href="xxx" target="yyy">
+
+Property target in <a href="xxx" target="yyy">
+
+Property doesntexist in <a href="xxx" target="yyy">
+
+Property a in <a href="xxx" target="yyy">
+
+Property xxx in <a href="xxx" target="yyy">
+
+Property yyy in <a href="xxx" target="yyy">
+
+
+// Case Sensitivity
+// ____________________________________________________________________________
+
+Property href in <a href="xxx">
+
+Property href in <A HREF="xxx">
+
+Property HREF in <a href="xxx">
+
+Property HREF in <A HREF="xxx">
+
+
+
+// Escaped quotes
+// ____________________________________________________________________________
+
+
+Property href in <a href='xx\'xx'>
+
+Property href in <a href="xx\"xx">

@@ -1,0 +1,38 @@
+
+&lt;
+- Entity Char: <
+
+
+&gt;
+- Entity Char: >
+
+
+&quot;
+- Entity Char: "
+
+
+&amp;
+- Entity Char: &
+
+
+&unrecognized;
+- Entity Char: &unrecognized;
+
+
+
+
+// Case Sensitivity
+// ____________________________________________________________________________
+
+
+&lt;
+- Entity Char: <
+
+
+&Lt;
+- Entity Char: <
+
+
+&LT;
+- Entity Char: <
+
