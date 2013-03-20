@@ -340,6 +340,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					closingBracket = ')';
 					break;
 					}
+				else if (iterator.Character == '[')
+					{
+					// Only treat brackets as parameters if it's following "this", meaning it's an iterator.  Ignore all others so we
+					// don't get tripped up on metadata or array brackets on return values.
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+					lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+					if (lookbehind.MatchesToken("this"))
+						{
+						closingBracket = ']';
+						break;
+						}
+					else
+						{  iterator.Next();  }
+					}
 				else if (iterator.Character == '{')
 					{
 					closingBracket = '}';
