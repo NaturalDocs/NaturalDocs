@@ -57,6 +57,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				length = 0;
 				found = true;
 				}
+			else if (tokenIterator.FundamentalType == FundamentalType.LineBreak)
+				{
+				type = XMLElementType.LineBreak;
+				length = tokenIterator.RawTextLength;
+				found = true;
+				}
 			else if (tokenIterator.Character == '<')
 				{
 				int nextBracketIndex = RawText.IndexOfAny(AngleBrackets, RawTextIndex + 1);
@@ -86,7 +92,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				type = XMLElementType.Text;
 
-				int nextElementIndex = RawText.IndexOfAny(OpeningAngleBracketAndAmp, RawTextIndex + 1);
+				int nextElementIndex = RawText.IndexOfAny(StartOfElement, RawTextIndex + 1);
 
 				if (nextElementIndex == -1)
 					{  length = endingRawTextIndex - RawTextIndex;  }
@@ -347,7 +353,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		static private char[] AngleBrackets = { '<', '>' };
-		static private char[] OpeningAngleBracketAndAmp = { '<', '&' };
+
+		// DEPENDENCY: Assumes this encompasses all the line break chars recognized by Tokenizer
+		static private char[] StartOfElement = { '<', '&', '\n', '\r' };
 
 		static private Regex.NonASCIILetters NonASCIILettersRegex = new Regex.NonASCIILetters();
 

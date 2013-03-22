@@ -16,9 +16,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		* Text - The iterator is on a text segment.
 		* Tag - The iterator is on a tag.
 		* EntityChar - The iterator is on an entity char like &lt;.
+		* LineBreak - The iterator is on a single line break.
 		*/
 	public enum XMLElementType : byte
-		{  OutOfBounds, Text, Tag, EntityChar  }
+		{  OutOfBounds, Text, Tag, EntityChar, LineBreak  }
 
 	/* enum: XMLTagForm
 		* 

@@ -504,7 +504,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			// DEPENDENCY: If this implementation changes, these must change to match:
 			//		- Tokenizer.Load()
 			//		- SimpleTokenIterator.GetTokenLength()
-			//      - lineBreakChars
+			//		- lineBreakChars
+			//		- Comments.Parsers.XMLIterator for line break chars
 			
 			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
