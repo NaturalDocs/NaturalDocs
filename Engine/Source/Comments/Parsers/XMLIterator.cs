@@ -2,7 +2,7 @@
  * Struct: GregValure.NaturalDocs.Engine.Comments.Parsers.XMLIterator
  * ____________________________________________________________________________
  * 
- * A struct to handle walking through an XML-formatted string.  It moves by element, treating things like tags
+ * A struct to handle walking through XML-formatted content.  It moves by element, treating things like tags
  * and stretches of unformatted text as one step.  The iterator assumes you are going to walk through it in
  * a linear fashion rather than navigating a parsed XML tree.
  * 
@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.Comments.Parsers
@@ -29,11 +30,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		/* Constructor: XMLIterator
+		 * Creates a new XML iterator that will navigate between the two <TokenIterators>.
 		 */
-		public XMLIterator (string xml)
+		public XMLIterator (TokenIterator start, TokenIterator end)
 			{
-			content = xml;
-			index = 0;
+			tokenIterator = start;
+			endingRawTextIndex = end.RawTextIndex;
 
 			type = XMLElementType.OutOfBounds;
 			length = 0;
@@ -49,34 +51,34 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			{
 			bool found = false;
 
-			if (content == null || index < 0 || index >= content.Length)
+			if (tokenIterator == null || !IsInBounds)
 				{
 				type = XMLElementType.OutOfBounds;
 				length = 0;
 				found = true;
 				}
-			else if (content[index] == '<')
+			else if (tokenIterator.Character == '<')
 				{
-				int nextBracketIndex = content.IndexOfAny(AngleBrackets, index + 1);
+				int nextBracketIndex = RawText.IndexOfAny(AngleBrackets, RawTextIndex + 1);
 
-				if (nextBracketIndex != -1 && content[nextBracketIndex] == '>')
+				if (nextBracketIndex != -1 && nextBracketIndex < endingRawTextIndex && RawText[nextBracketIndex] == '>')
 					{
 					type = XMLElementType.Tag;
-					length = nextBracketIndex + 1 - index;
+					length = nextBracketIndex + 1 - RawTextIndex;
 
-					found = TagRegex.Match(content, index, length).Success;
+					found = TagRegex.Match(RawText, RawTextIndex, length).Success;
 					}
 				}
-			else if (content[index] == '&')
+			else if (tokenIterator.Character == '&')
 				{
-				int semicolonIndex = content.IndexOf(';', index + 1);
+				int semicolonIndex = RawText.IndexOf(';', RawTextIndex + 1);
 
-				if (semicolonIndex != -1)
+				if (semicolonIndex != -1 && semicolonIndex < endingRawTextIndex)
 					{
 					type = XMLElementType.EntityChar;
-					length = semicolonIndex + 1 - index;
+					length = semicolonIndex + 1 - RawTextIndex;
 
-					found = (NonASCIILettersRegex.Match(content, index + 1, length - 2).Success == false);
+					found = (NonASCIILettersRegex.Match(RawText, RawTextIndex + 1, length - 2).Success == false);
 					}
 				}
 
@@ -84,12 +86,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				type = XMLElementType.Text;
 
-				int nextElementIndex = content.IndexOfAny(OpeningAngleBracketAndAmp, index + 1);
+				int nextElementIndex = RawText.IndexOfAny(OpeningAngleBracketAndAmp, RawTextIndex + 1);
 
 				if (nextElementIndex == -1)
-					{  length = content.Length - index;  }
+					{  length = endingRawTextIndex - RawTextIndex;  }
 				else
-					{  length = nextElementIndex - index;  }
+					{  length = nextElementIndex - RawTextIndex;  }
 				}
 			}
 
@@ -104,7 +106,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (type == XMLElementType.OutOfBounds)
 					{  return false;  }
 
-				index += length;
+				tokenIterator.NextByCharacters(length);
 				DetermineElement();
 
 				count--;
@@ -124,12 +126,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			Dictionary<string, string> properties = new Dictionary<string,string>();
 
-			Match match = TagRegex.Match(content, index, length);
+			Match match = TagRegex.Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 				{
-				Match propertyMatch = TagPropertyRegex.Match(content, capture.Index, capture.Length);
+				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
 				properties.Add( propertyMatch.Groups[1].ToString(), 
 										DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
 				}
@@ -144,7 +146,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		private string DecodePropertyValue (int valueIndex, int valueLength)
 			{
-			string value = content.Substring(valueIndex + 1, valueLength - 2);
+			string value = RawText.Substring(valueIndex + 1, valueLength - 2);
 
 			value = value.Replace("\\\"", "\"");
 			value = value.Replace("\\'", "'");
@@ -190,7 +192,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (length == 0)
 					{  return "";  }
 				else
-					{  return content.Substring(index, length);  }
+					{  return RawText.Substring(RawTextIndex, length);  }
 				}
 			}
 
@@ -206,7 +208,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (type != XMLElementType.Tag)
 					{  throw new InvalidOperationException();  }
 
-				var match = TagRegex.Match(content, index, length);
+				var match = TagRegex.Match(RawText, RawTextIndex, length);
 
 				return match.Groups[1].ToString().ToLower();
 				}
@@ -223,9 +225,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (type != XMLElementType.Tag)
 					{  throw new InvalidOperationException();  }
 
-				if (content[index + 1] == '/')
+				if (RawText[RawTextIndex + 1] == '/')
 					{  return XMLTagForm.Closing;  }
-				else if (content[index + length - 2] == '/')
+				else if (RawText[RawTextIndex + length - 2] == '/')
 					{  return XMLTagForm.Standalone;  }
 				else
 					{  return XMLTagForm.Opening;  }
@@ -242,15 +244,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			if (type != XMLElementType.Tag)
 				{  throw new InvalidOperationException();  }
 
-			Match match = TagRegex.Match(content, index, length);
+			Match match = TagRegex.Match(RawText, RawTextIndex, length);
 			CaptureCollection captures = match.Groups[2].Captures;
 
 			foreach (Capture capture in captures)
 				{
-				Match propertyMatch = TagPropertyRegex.Match(content, capture.Index, capture.Length);
+				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
 
 				if (name.Length == propertyMatch.Groups[1].Length &&
-					string.Compare(name, 0, content, propertyMatch.Groups[1].Index, name.Length, true) == 0)
+					string.Compare(name, 0, RawText, propertyMatch.Groups[1].Index, name.Length, true) == 0)
 					{
 					return DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length);
 					}
@@ -270,18 +272,16 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (type != XMLElementType.EntityChar)
 					{  throw new InvalidOperationException();  }
 
-				string entity = content.Substring(index + 1, length - 2).ToLower();
-
-				if (entity == "amp")
+				if (tokenIterator.MatchesAcrossTokens("&amp;", true))
 					{  return "&";  }
-				else if (entity == "lt")
+				else if (tokenIterator.MatchesAcrossTokens("&lt;", true))
 					{  return "<";  }
-				else if (entity == "gt")
+				else if (tokenIterator.MatchesAcrossTokens("&gt;", true))
 					{  return ">";  }
-				else if (entity == "quot")
+				else if (tokenIterator.MatchesAcrossTokens("&quot;", true))
 					{  return "\"";  }
 				else
-					{  return content.Substring(index, length);  }
+					{  return RawText.Substring(RawTextIndex, length);  }
 				}
 			}
 
@@ -291,7 +291,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		public bool IsInBounds
 			{
 			get
-				{  return (index < content.Length);  }
+				{  return (tokenIterator.RawTextIndex < endingRawTextIndex);  }
 			}
 
 
@@ -301,7 +301,17 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		public int RawTextIndex
 			{
 			get
-				{  return index;  }
+				{  return tokenIterator.RawTextIndex;  }
+			}
+
+
+		/* Property: RawText
+		 * The raw text <tokenIterator> is walking over.
+		 */
+		private string RawText
+			{
+			get
+				{  return tokenIterator.Tokenizer.RawText;  }
 			}
 
 
@@ -310,15 +320,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		// __________________________________________________________________________
 
 
-		/* var: content
-		 * The XML string we are iterating over.
+		/* var: tokenIterator
+		 * The current position of the iterator.
 		 */
-		private string content;
+		private TokenIterator tokenIterator;
 
-		/* var: index
-		 * The current position of the iterator in <content>.
+		/* var: endingRawTextIndex
+		 * The end of the text we are iterating over.
 		 */
-		private int index;
+		private int endingRawTextIndex;
 
 		/* var: type
 		 * The <XMLElementType> of the current element.
