@@ -30,6 +30,7 @@ using NUnit.Framework;
 using GregValure.NaturalDocs.Engine;
 using GregValure.NaturalDocs.Engine.Comments.Parsers;
 using GregValure.NaturalDocs.Engine.Tests.Framework;
+using GregValure.NaturalDocs.Engine.Tokenization;
 
 
 namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
@@ -55,9 +56,9 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 					else if (findPropertyMatch.Success)
 						{
 						string propertyName = findPropertyMatch.Groups[1].ToString();
-						string xmlTag = findPropertyMatch.Groups[2].ToString();
+						Tokenizer xmlTag = new Tokenizer( findPropertyMatch.Groups[2].ToString() );
 
-						Engine.Comments.Parsers.XMLIterator iterator = new Engine.Comments.Parsers.XMLIterator(xmlTag);
+						Engine.Comments.Parsers.XMLIterator iterator = new Engine.Comments.Parsers.XMLIterator(xmlTag.FirstToken, xmlTag.LastToken);
 
 						if (iterator.Type != XMLElementType.Tag)
 							{  output.AppendLine("- Not an XML tag");  }
@@ -73,7 +74,8 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						}
 					else
 						{
-						Engine.Comments.Parsers.XMLIterator iterator = new Engine.Comments.Parsers.XMLIterator(command.Trim());
+						Tokenizer xml = new Tokenizer(command.Trim());
+						Engine.Comments.Parsers.XMLIterator iterator = new Engine.Comments.Parsers.XMLIterator(xml.FirstToken, xml.LastToken);
 
 						while (iterator.IsInBounds)
 							{

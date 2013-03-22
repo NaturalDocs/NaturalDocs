@@ -41,3 +41,13 @@ Some text and < what should have been entity chars <a href="target">shouldn't br
 - Closing Tag: a
 - Text: .
 
+
+Some text and an unclosed <tag
+- Text: Some text and an unclosed 
+- Text: <tag
+
+
+Some text and an unclosed entity &char
+- Text: Some text and an unclosed entity 
+- Text: &char
+
