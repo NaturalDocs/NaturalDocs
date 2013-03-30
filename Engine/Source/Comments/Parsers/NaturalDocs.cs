@@ -1784,7 +1784,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					else
 						{  body.Append("<de>");  }
 
-					body.EntityEncodeAndAppend(tempString);
+					ParseTextBlock(tempString, body);
 
 					if (isSymbol)
 						{  body.Append("</ds>");  }
