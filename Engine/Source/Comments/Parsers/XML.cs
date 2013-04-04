@@ -20,7 +20,7 @@
  *			permission - Added to the body under a Permissions heading.
  *			remark - Added to the beginning of the body without a header.
  *			returns - Added to the body under a Returns heading.
- *			see - When used inline, added as a link.  WHen used top-level, added to the body under a See Also heading.
+ *			see - When used inline, added as a link.  When used top-level, added to the body under a See Also heading.
  *			seealso - Added to the body under a See Also heading.
  *			summary - Added to the beginning of the body without a header.
  *			typeparam - Added to the body under a Type Parameters heading.
@@ -29,14 +29,25 @@
  * 
  *		Tags with Incomplete Support:
  *		
- *			c - Ignored.  NDMarkup does not have a similar designation yet.
  *			numbered list - NDMarkup does not have a similar designation yet, so it is converted to a bullet list.
- *			paramref formatting - Once c is implemented, format paramrefs the same.
- *			typeparamref formatting - Once c is implemented, format typeparamrefs the same.
  *			
  *		Unsupported Tags:
  *		
- *			include - Ignored.  Natural Docs is not set up to handle extracting external XML via query.
+ *			c - Ignored.  It will be formatted as regular text.
+ *			
+ *				 If you support c then the question becomes whether to automatically format things like paramrefs the same
+ *				 way.  Individual users may or may not religiously apply c tags everywhere and if the paramref formatting
+ *				 doesn't match what they do the text will appear very inconsistent.  Ignoring c guarantees the text appears
+ *				 consistently in every scenario, although at the cost of irritating those who actually use it.
+ *				 
+ *				 The other issue is if you decide to apply c formatting to things like paramrefs, then the output of XML 
+ *				 comments will always look different from the output of Natural Docs comments even for users who never 
+ *				 use c.  It's important for the documentation to be consistent as a whole regardless of the underlying format 
+ *				 of individual comments.
+ *				 
+ *			include - Ignored.  Natural Docs is not set up to handle extracting external XML via query.  This can possibly 
+ *						 be added in the future assuming .NET has native functions to handle the query, but I don't know how 
+ *						 often this is used in practice.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
