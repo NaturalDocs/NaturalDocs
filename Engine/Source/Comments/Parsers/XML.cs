@@ -13,7 +13,7 @@
  *			example - Added to the body with a heading.  Both top-level and nested are supported.
  *			exception - Added to the body under an Exceptions heading.
  *			list - Added to the body as a bullet or definition list depending on whether it includes both terms and definitions
- *				   or not.  The list type is ignored.
+ *				   or not.  The list type is ignored.  This also means numbered lists will be converted to bullets.
  *			para - Added to the body as a paragraph break.
  *			param - Added to the body under a Parameters heading.
  *			paramref - Replaced with the name property in the body.
@@ -27,10 +27,6 @@
  *			typeparamref - Replaced with the name property in the body.
  *			value - Added to the beginning of the body without a header.
  * 
- *		Tags with Incomplete Support:
- *		
- *			numbered list - NDMarkup does not have a similar designation yet, so it is converted to a bullet list.
- *			
  *		Unsupported Tags:
  *		
  *			c - Ignored.  It will be formatted as regular text.
