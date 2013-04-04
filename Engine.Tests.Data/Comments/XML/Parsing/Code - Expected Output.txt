@@ -1,0 +1,11 @@
+<p>Summary</p><pre type="code">int x = 12;</pre>
+-----
+<p>Summary</p><pre type="code">int x = 12;</pre>
+-----
+<p>Summary</p><pre type="code">int x = 12;<br>int y = 16;<br>int z = 5;</pre>
+-----
+<p>Summary</p><pre type="code">if (x == 12)<br>   {  y++;  }</pre>
+-----
+<p>Summary</p><pre type="code">int x = 5;<br><br>if (x == 12)<br>   {  y++;  }</pre>
+-----
+<p>Summary</p><pre type="code">List&lt;obj&gt; x = new List&lt;obj&gt; (&amp;ref, &quot;string&quot;);</pre>

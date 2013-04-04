@@ -1,0 +1,11 @@
+<h>Permissions</h><dl><de><link type="naturaldocs" originaltext="SinglePermission"></de><dd><p>SinglePermission description.</p></dd></dl>
+-----
+<h>Permissions</h><dl><de><link type="naturaldocs" originaltext="Permission1"></de><dd><p>Permission1 description.</p></dd><de><link type="naturaldocs" originaltext="Permission2"></de><dd><p>Permission2 description.</p></dd></dl>
+-----
+<h>Permissions</h><ul><li><p><link type="naturaldocs" originaltext="SinglePermission"></p></li></ul>
+-----
+<h>Permissions</h><ul><li><p><link type="naturaldocs" originaltext="Permission1"></p></li><li><p><link type="naturaldocs" originaltext="Permission2"></p></li></ul>
+-----
+<h>Permissions</h><dl><de><link type="naturaldocs" originaltext="Permission1"></de><dd></dd><de><link type="naturaldocs" originaltext="Permission2"></de><dd><p>Permission2 description.</p></dd></dl>
+-----
+<p>Summary</p><p>Remarks</p><h>Permissions</h><dl><de><link type="naturaldocs" originaltext="Permission1"></de><dd><p>Permission1 description.</p></dd><de><link type="naturaldocs" originaltext="Permission2"></de><dd><p>Permission2 description.</p></dd></dl>

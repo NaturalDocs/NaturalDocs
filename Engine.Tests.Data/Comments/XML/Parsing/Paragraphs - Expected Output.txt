@@ -1,0 +1,23 @@
+<p>No para</p>
+-----
+<p>Para</p>
+-----
+<p>Para 1</p><p>Para 2</p>
+-----
+<p>Before para</p><p>Para</p>
+-----
+<p>Para</p><p>After para</p>
+-----
+<p>Before para</p><p>Para 1</p><p>Between paras</p><p>Para 2</p><p>After para</p>
+-----
+<p>Para 1 on separate line</p><p>Para 2 on separate line</p>
+-----
+<p>Para on first line.  Continued on second line.</p>
+-----
+<p>Para on first line.  Continued on second line with extra indent.</p>
+-----
+<p>Para on two lines but broken mid-sentence.</p>
+-----
+<p>Para content on standalone line with extra indent.</p>
+-----
+<p>Whitespace</p><p>Whitespace everywhere</p>

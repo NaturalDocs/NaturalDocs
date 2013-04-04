@@ -1,0 +1,9 @@
+<p>An XML comment.  You can tell because *this* is not bold and _this_ is not underline.</p>
+-----
+<p>XML can use Javadoc comment styles.  Not *bold* not _underline_.</p>
+-----
+<p>XML can use Javadoc comment styles 2.  Not *bold* not _underline_.</p>
+-----
+<p>Lots of whitespace before the opening tag is tolerated.  Not *bold* not _underline_.</p>
+-----
+<p>Not starting with a tag is not permitted though.  <link type="naturaldocs" originaltext="&lt;summary&gt;This should be parsed as Natural Docs, meaning the tags show up literally.&lt;/summary&gt;"></p>

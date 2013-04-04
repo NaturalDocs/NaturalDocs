@@ -1,0 +1,11 @@
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="SingleException"></de><dd><p>SingleException description.</p></dd></dl>
+-----
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="Exception1"></de><dd><p>Exception1 description.</p></dd><de><link type="naturaldocs" originaltext="Exception2"></de><dd><p>Exception2 description.</p></dd></dl>
+-----
+<h>Exceptions</h><ul><li><p><link type="naturaldocs" originaltext="SingleException"></p></li></ul>
+-----
+<h>Exceptions</h><ul><li><p><link type="naturaldocs" originaltext="Exception1"></p></li><li><p><link type="naturaldocs" originaltext="Exception2"></p></li></ul>
+-----
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="Exception1"></de><dd></dd><de><link type="naturaldocs" originaltext="Exception2"></de><dd><p>Exception2 description.</p></dd></dl>
+-----
+<p>Summary</p><p>Remarks</p><h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="Exception1"></de><dd><p>Exception1 description.</p></dd><de><link type="naturaldocs" originaltext="Exception2"></de><dd><p>Exception2 description.</p></dd></dl>

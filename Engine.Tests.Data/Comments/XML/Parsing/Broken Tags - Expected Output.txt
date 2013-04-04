@@ -1,0 +1,13 @@
+<p>Opening paras as breaks</p><p>Opening paras as breaks</p><p>Opening paras as breaks</p>
+-----
+<p>Standalone paras as breaks</p><p>Standalone paras as breaks</p><p>Standalone paras as breaks</p>
+-----
+<p>Summary with</p><h>Example</h><p>unclosed example.</p><p>Remark with</p><h>Example</h><p>unclosed example.</p>
+-----
+<pre type="code">Code with opening &lt;tag&gt;</pre>
+-----
+<p>Unrecognized tags</p>
+-----
+<p>Unopened closing tags</p>
+-----
+<p>Summary at end of topic</p><h type="parameters">Parameters</h><dl><de>Param1</de><dd><p>Param 1</p></dd><de>Param2</de><dd><p>Out of order Param 2</p></dd></dl><h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="Exception1"></de><dd><p>Exception 1</p></dd><de><link type="naturaldocs" originaltext="Exception2"></de><dd><p>Out of order Exception 2</p></dd></dl><h>Permissions</h><dl><de><link type="naturaldocs" originaltext="Permission1"></de><dd><p>Permission 1</p></dd><de><link type="naturaldocs" originaltext="Permission2"></de><dd><p>Out of order Permission 2</p></dd></dl>

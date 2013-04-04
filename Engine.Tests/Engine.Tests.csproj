@@ -50,6 +50,7 @@
     <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
     <Compile Include="Source\Comments\XML\Iterator.cs" />
+    <Compile Include="Source\Comments\XML\Parsing.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassCombining.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentDetection.cs" />
     <Compile Include="Source\Framework\TestTypes\ClassPrototypeParsing.cs" />

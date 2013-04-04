@@ -1,0 +1,15 @@
+<p>Summary before bullets</p><ul><li><p>Description 1</p></li><li><p>Description 2</p></li></ul>
+-----
+<p>Summary before bullets</p><ul><li><p>Description 1</p></li><li><p>Description 2 para 1</p><p>Description 2 para 2</p></li></ul>
+-----
+<p>Summary before bullets</p><dl><de><b>Term Header</b></de><dd><p><b>Description Header</b></p></dd><de>Term 1</de><dd><p>Description 1</p></dd><de>Term 2</de><dd><p>Description 2</p></dd></dl>
+-----
+<p>Summary before bullets</p><dl><de><b>Term Header</b></de><dd><p><b>Description Header Para 1</b></p><p><b>Description Header Para 2</b></p></dd><de>Term 1</de><dd><p>Description 1</p></dd><de>Term 2</de><dd><p>Description 2 para 1</p><p>Description 2 para 2</p></dd></dl>
+-----
+<p>Summary before numbers</p><ul><li><p>Description 1</p></li><li><p>Description 2</p></li></ul>
+-----
+<p>Summary before numbers</p><dl><de><b>Term Header</b></de><dd><p><b>Description Header</b></p></dd><de>Term 1</de><dd><p>Description 1</p></dd><de>Term 2</de><dd><p>Description 2</p></dd></dl>
+-----
+<p>Summary before table</p><ul><li><p>Description 1</p></li><li><p>Description 2</p></li></ul>
+-----
+<p>Summary before table</p><dl><de><b>Term Header</b></de><dd><p><b>Description Header</b></p></dd><de>Term 1</de><dd><p>Description 1</p></dd><de>Term 2</de><dd><p>Description 2</p></dd></dl>

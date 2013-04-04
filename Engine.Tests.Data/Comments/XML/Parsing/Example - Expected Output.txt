@@ -1,0 +1,11 @@
+<h>Example</h><p>Top-level example</p>
+-----
+<p>Summary</p><h>Example</h><p>Top-level example</p>
+-----
+<p>Summary</p><h>Example</h><p>Top-level example</p>
+-----
+<p>Summary</p><h>Example</h><p>Nested example</p><p>Summary after example</p>
+-----
+<p>Summary para1</p><h>Example</h><p>Nested example with para</p><p>Summary para2 after example</p>
+-----
+<p>Summary</p><h>Example</h><p>Nested example</p><pre type="code">int x = 12;</pre><p>Nested example after code</p><p>Summary after example</p>

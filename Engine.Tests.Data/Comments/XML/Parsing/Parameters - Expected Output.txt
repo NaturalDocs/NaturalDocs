@@ -1,0 +1,11 @@
+<h type="parameters">Parameter</h><dl><de>SingleParam</de><dd><p>SingleParam description.</p></dd></dl>
+-----
+<h type="parameters">Parameters</h><dl><de>Param1</de><dd><p>Param1 description.</p></dd><de>Param2</de><dd><p>Param2 description.</p></dd></dl>
+-----
+<h type="parameters">Parameter</h><dl><de>SingleParam</de><dd></dd></dl>
+-----
+<h type="parameters">Parameters</h><dl><de>Param1</de><dd></dd><de>Param2</de><dd></dd></dl>
+-----
+<h type="parameters">Parameters</h><dl><de>Param1</de><dd></dd><de>Param2</de><dd><p>Param2 description.</p></dd></dl>
+-----
+<p>Summary</p><p>Remarks</p><h type="parameters">Parameters</h><dl><de>Param1</de><dd><p>Param1 description.</p></dd><de>Param2</de><dd><p>Param2 description.</p></dd></dl>
