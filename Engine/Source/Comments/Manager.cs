@@ -34,7 +34,9 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		public Manager ()
 			{
 			lineFinder = new Parsers.LineFinder();
+
 			naturalDocsParser = new Parsers.NaturalDocs();
+			xmlParser = new Parsers.XML();
 			}
 			
 			
@@ -46,10 +48,9 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		 */
 		public bool Start (Errors.ErrorList errors)
 			{
-			return (
-				lineFinder.Start(errors) &&
-				naturalDocsParser.Start(errors)
-				);
+			return (lineFinder.Start(errors) &&
+					  naturalDocsParser.Start(errors) &&
+					  xmlParser.Start(errors));
 			}
 			
 			
@@ -62,24 +63,25 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			// need to be taken out.
 			lineFinder.MarkTextBoxes(comment);
 			
-			// If the first line is a header it's Natural Docs content regardless of comment style.
+			// First try Natural Docs while requiring a header.  If the first line is a header it's treated as Natural Docs content 
+			// regardless of comment style.
 			if (naturalDocsParser.Parse(comment, topics, true) == true)
 				{  return true;  }
-					
+				
 			if (comment.Javadoc || comment.XML)
 				{
-				// XXX - If the comment is Javadoc and it contains @tags parse with Javadoc.
-				// XXX - If the comment is XML and it contains <tags> parse with XML.
-				// XXX - Note that both may be set if the comment style is ambiguous.
-				
-				// Otherwise if it's Javadoc and there's no @tags treat it as a headerless Natural Docs comment.
-				if (comment.Javadoc)
-					{  return naturalDocsParser.Parse(comment, topics, false);  }
+				// Next try XML.  XML can actually use the Javadoc comment style as well.
+				if (xmlParser.Parse(comment, topics) == true)
+					{  return true;  }
+
+				// XXX Next try Javadoc
+
+				// If neither of them were able to parse it, we assume it's a headerless Natural Docs comment.
+				return naturalDocsParser.Parse(comment, topics, false);
 				}
 				
 			return false;
 			}
-			
 			
 			
 			
@@ -107,6 +109,16 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			}
 			
 			
+		/* Property: XMLParser
+		 * A reference to <Parsers.XML>.
+		 */
+		public Parsers.XML XMLParser
+			{
+			get
+				{  return xmlParser;  }
+			}
+			
+			
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -115,6 +127,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		protected Parsers.LineFinder lineFinder;		
 		
 		protected Parsers.NaturalDocs naturalDocsParser;
+		protected Parsers.XML xmlParser;
 		
 		}
 	}

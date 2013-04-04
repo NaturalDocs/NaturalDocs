@@ -33,12 +33,19 @@ HTML.AdditionalChildren(number): and {0} other {0s?children:child}
 
 HTML.JavaScriptRequiredNotice: Please enable JavaScript to view this documentation.
 
-HTML.RootFolderName: Files xxx
 HTML.Close: Close
 
 Menu.Files: Files
 Menu.Classes: Classes
 Menu.Database: Database
+
+HTML.XMLHeading.example: Example
+HTML.XMLHeading.exception(count): Exceptions
+HTML.XMLHeading.param(count): {0s?Parameters:Parameter}
+HTML.XMLHeading.permission(count): Permissions
+HTML.XMLHeading.returns: Returns
+HTML.XMLHeading.seealso(count): See Also
+HTML.XMLHeading.typeparam(count): Type {0s?Parameters:Parameter}
 
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan
