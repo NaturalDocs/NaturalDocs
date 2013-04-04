@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Comments.Parsers.XMLIterator
+ * Struct: GregValure.NaturalDocs.Engine.Comments.Components.XMLIterator
  * ____________________________________________________________________________
  * 
  * A struct to handle walking through XML-formatted content.  It moves by element, treating things like tags
@@ -20,7 +20,7 @@ using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine.Tokenization;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Parsers
+namespace GregValure.NaturalDocs.Engine.Comments.Components
 	{
 	public struct XMLIterator
 		{
@@ -39,6 +39,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			type = XMLElementType.OutOfBounds;
 			length = 0;
+			tagType = null;
 
 			DetermineElement();
 			}
@@ -57,6 +58,31 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				length = 0;
 				found = true;
 				}
+			// If we're on a new line and either whitespace or a comment token...
+			else if ( ( RawTextIndex == 0 || 
+						  Tokenizer.FundamentalTypeOf(RawText[RawTextIndex - 1]) == FundamentalType.LineBreak )
+						&&
+						( tokenIterator.FundamentalType == FundamentalType.Whitespace || 
+						  tokenIterator.CommentParsingType == CommentParsingType.CommentSymbol ||
+						  tokenIterator.CommentParsingType == CommentParsingType.CommentDecoration ) )
+				{
+				type = XMLElementType.Indent;
+				length = 0;
+
+				TokenIterator lookahead = tokenIterator;
+
+				do
+					{  
+					length += lookahead.RawTextLength;
+					lookahead.Next();
+					}
+				while (lookahead.RawTextIndex < endingRawTextIndex &&
+						  (lookahead.FundamentalType == FundamentalType.Whitespace ||
+						   lookahead.CommentParsingType == CommentParsingType.CommentSymbol ||
+						   lookahead.CommentParsingType == CommentParsingType.CommentDecoration) );
+
+				found = true;
+				}
 			else if (tokenIterator.FundamentalType == FundamentalType.LineBreak)
 				{
 				type = XMLElementType.LineBreak;
@@ -72,7 +98,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					type = XMLElementType.Tag;
 					length = nextBracketIndex + 1 - RawTextIndex;
 
-					found = TagRegex.Match(RawText, RawTextIndex, length).Success;
+					Match tagMatch = TagRegex.Match(RawText, RawTextIndex, length);
+
+					if (tagMatch.Success)
+						{
+						found = true;
+						tagType = tagMatch.Groups[1].ToString().ToLower();
+						}
 					}
 				}
 			else if (tokenIterator.Character == '&')
@@ -156,6 +188,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			value = value.Replace("\\\"", "\"");
 			value = value.Replace("\\'", "'");
+			value = value.EntityDecode();
 
 			return value;
 			}
@@ -197,6 +230,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				if (length == 0)
 					{  return "";  }
+				else if (type == XMLElementType.Indent)
+					{  
+					// Don't want comment symbols or tabs, so convert to spaces
+					return new string(' ', Indent);  
+					}
 				else
 					{  return RawText.Substring(RawTextIndex, length);  }
 				}
@@ -214,9 +252,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (type != XMLElementType.Tag)
 					{  throw new InvalidOperationException();  }
 
-				var match = TagRegex.Match(RawText, RawTextIndex, length);
-
-				return match.Groups[1].ToString().ToLower();
+				return tagType;
 				}
 			}
 
@@ -292,6 +328,36 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
+		/* Property: Indent
+		 * If <Type> is <XMLElementType.Indent>, this is the indent length with tabs expanded.
+		 */
+		public int Indent
+			{
+			get
+				{
+				if (type != XMLElementType.Indent)
+					{  throw new InvalidOperationException();  }
+
+				int indent = 0;
+				string rawText = RawText;
+				int rawTextIndex = RawTextIndex;
+			
+				for (int i = 0; i < length; i++)
+					{
+					if (rawText[rawTextIndex + i] == '\t')
+						{
+						indent += Engine.Instance.Config.TabWidth;
+						indent -= (indent % Engine.Instance.Config.TabWidth);
+						}
+					else
+						{  indent++;  }
+					}
+				
+				return indent;
+				}
+			}
+
+
 		/* Property: IsInBounds
 		 */
 		public bool IsInBounds
@@ -340,6 +406,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * The <XMLElementType> of the current element.
 		 */
 		private XMLElementType type;
+
+		/* var: tagType
+		 * The type of the current tag if the iterator is on a tag.
+		 */
+		private string tagType;
 
 		/* var: length
 		 * The length of the current element.
