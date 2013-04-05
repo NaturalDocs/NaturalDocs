@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * Class: GregValure.NaturalDocs.Engine.CodeDB.EventAccessor
  * ____________________________________________________________________________
  * 
@@ -7,7 +7,7 @@
  * subset of functions that should be allowed then.
  */
 
-// This file is part of Natural Docs, which is Copyright � 2003-2012 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 

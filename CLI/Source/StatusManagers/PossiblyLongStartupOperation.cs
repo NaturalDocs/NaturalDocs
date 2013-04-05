@@ -6,7 +6,7 @@
  * One object can be used for multiple operations, just not at the same time obviously.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 

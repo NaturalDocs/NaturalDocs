@@ -36,7 +36,7 @@ _______________________________________________________________________________
 		there, put them in a comment under the heading "Include in output:".
 
 		> /* Include in output:
-		>  * Copyright (C) 2012 Me
+		>  * Copyright (C) 2013 Me
 		>  */
 
 		Only the text from that line to the end of the comment (or to the next substitution header) will be included, so you can

@@ -34,9 +34,9 @@
  *				d - Single digit day, where applicable.  1 is "1".
  *				dd - Always double digit day.  1 is "01".
  *				day - Day with text extension.  1 is "1st".
- *				yy - Double digit year.  2012 is "12".
- *				yyyy - Four digit year.  2012 is "2012".
- *				year - Four digit year.  2012 is "2012".
+ *				yy - Double digit year.  2013 is "13".
+ *				yyyy - Four digit year.  2013 is "2013".
+ *				year - Four digit year.  2013 is "2013".
  *			
  *			Anything else is left literal in the output.  The substitution requires a non-letter on each side, so every m will not turn into
  *			the month.
@@ -179,7 +179,7 @@
  *				- The file is introduced.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2012 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
