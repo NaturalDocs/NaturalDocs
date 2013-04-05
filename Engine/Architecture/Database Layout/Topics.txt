@@ -12,63 +12,63 @@ _______________________________________________________________________________
 
 Column: TopicID
 
-	(Prototype)
+	--- Prototype ---
 		TopicID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 	
 	The topic identifier.
 	
 	
 Column: Title
 
-	(Prototype)
+	--- Prototype ---
 		Title TEXT NOT NULL
-	(end)
+	-----------------
 	
 	The topic's title as it should appear in the output.
 	
 	
 Column: Body
 
-	(Prototype)
+	--- Prototype ---
 		Body TEXT
-	(end)
+	-----------------
 	
 	The body of the topic, if any.
 	
 	
 Column: Summary
 
-	(Prototype)
+	--- Prototype ---
 		Summary TEXT
-	(end)
+	-----------------
 	
 	The summary of the topic, if any.
 	
 	
 Column: Prototype
 
-	(Prototype)
+	--- Prototype ---
 		Prototype TEXT
-	(end)
+	-----------------
 	
 	The plain-text prototype of the topic, if any.
 	
 	
 Column: Symbol
 
-	(Prototype)
+	--- Prototype ---
 		Symbol TEXT NOT NULL
-	(end)
+	-----------------
 	
 	The fully resolved, normalized <Symbols.SymbolString> of the topic.
 	
 
 Column: SymbolDefinitionNumber
 
-	(Prototype)
+	--- Prototype ---
 		SymbolDefinitionNumber INTEGER NOT NULL
-	(end)
+	-----------------
 
 	Every unique <Symbol> defined in a file is given a number, the first one being one.  Every duplicate definition
 	of the same symbol will receive an incremented number based on the source file order.
@@ -76,27 +76,27 @@ Column: SymbolDefinitionNumber
 
 Column: ClassID
 
-	(Prototype)
+	--- Prototype ---
 		ClassID INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The ID of the class this topic creates or is a member of, or zero if it's global.
 
 
 Column: DefinesClass
 
-	(Prototype)
+	--- Prototype ---
 		DefinesClass INTEGER NOT NULL
-	(end)
+	-----------------
 
 	Whether this topic defines its <ClassID> as opposed to just being a member, stored as 1 or 0.
 
 
 Column: IsList
 
-	(Prototype)
+	--- Prototype ---
 		IsList INTEGER NOT NULL
-	(end)
+	-----------------
 
 	Whether this is a list topic, stored as 1 or 0.  This will not be set for enum topics, though it could be set for a
 	list of enums.
@@ -104,9 +104,9 @@ Column: IsList
 
 Column: IsEmbedded
 
-	(Prototype)
+	--- Prototype ---
 		IsEmbedded INTEGER NOT NULL
-	(end)
+	-----------------
 
 	Whether this topic is embedded in a prior topic, stored as 1 or 0.  This is used for members of list topics or enums.
 	Entries that appear in definition lists within these topics will get their own record to allow for linking, but they will not 
@@ -115,27 +115,27 @@ Column: IsEmbedded
 
 Column: EndingSymbol
 
-	(Prototype)
+	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
-	(end)
+	-----------------
 	
 	The <Symbols.EndingSymbol> that's derived from <Symbol>.
 	
 	
 Column: TopicTypeID
 
-	(Prototype)
+	--- Prototype ---
 		TopicTypeID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The ID of the topic's type, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
 	
 	
 Column: DeclaredAccessLevel
 
-	(Prototype)
+	--- Prototype ---
 		DeclaredAccessLevel INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The declared access level of the topic, such as public or protected.  The value is managed by 
 	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
@@ -143,9 +143,9 @@ Column: DeclaredAccessLevel
 	
 Column: EffectiveAccessLevel
 
-	(Prototype)
+	--- Prototype ---
 		EffectiveAccessLevel INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The effective access level of the topic, such as public or protected.  The value is managed by 
 	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
@@ -153,9 +153,9 @@ Column: EffectiveAccessLevel
 	
 Column: Tags
 
-	(Prototype)
+	--- Prototype ---
 		Tags TEXT
-	(end)
+	-----------------
 	
 	A number set of all the tags applied to this topic, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
 	Is a string encoding of a <GregValure.NaturalDocs.Engine.IDObjects.NumberSet>.
@@ -163,18 +163,18 @@ Column: Tags
 
 Column: FileID
 
-	(Prototype)
+	--- Prototype ---
 		FileID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The ID of the file it appears in, as managed by <GregValure.NaturalDocs.Engine.Files.Manager>.
 
 
 Column: FilePosition
 
-	(Prototype)
+	--- Prototype ---
 		FilePosition INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The relative position of the topic within the file.  The first one will be one and all following topics will have
 	higher numbers.  This is necessary to keep the order consistent because it may not be able to be determined
@@ -183,27 +183,27 @@ Column: FilePosition
 
 Column: CommentLineNumber
 
-	(Prototype)
+	--- Prototype ---
 		CommentLineNumber INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The line number the topic's comment appears on, or zero if it doesn't have one.
 	
 	
 Column: CodeLineNumber
 	
-	(Prototype)
+	--- Prototype ---
 		CodeLineNumber INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The line number the topic's code element appears on, or zero if it doesn't have one.
 	
 	
 Column: LanguageID
 
-	(Prototype)
+	--- Prototype ---
 		LanguageID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The ID of the topic's language, as managed by <GregValure.NaturalDocs.Engine.Languages.Manager>.  If the
 	file it appears in is a container file (such as .cgi or .asp) the ID will be for the embedded language, not the
@@ -212,18 +212,18 @@ Column: LanguageID
 	
 Column: PrototypeContextID
 
-	(Prototype)
+	--- Prototype ---
 		PrototypeContextID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The ID of the context any prototype links should appear in, or zero for the global context.
 	
 	
 Column: BodyContextID
 
-	(Prototype)
+	--- Prototype ---
 		BodyContextID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The ID of the context any body links should appear in, or zero for the global context.
 	
@@ -235,36 +235,36 @@ _______________________________________________________________________________
 
 Index: TopicsByID
 
-	(Prototype)
+	--- Prototype ---
 		TopicID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 
 	Automatically created by TopicID being defined as a primary key.
 
 
 Index: TopicsByFile
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)
-	(end)
+	-----------------
 
 
 Index: TopicsByClass
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)
-	(end)
+	-----------------
 
 
 Index: TopicsByClassDefinition
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX TopicsByClassDefinition ON Topics (ClassID, DefinesClass)
-	(end)
+	-----------------
 
 
 Index: TopicsByEndingSymbol
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)
-	(end)
+	-----------------

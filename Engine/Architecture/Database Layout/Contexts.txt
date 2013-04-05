@@ -17,27 +17,27 @@ _______________________________________________________________________________
 
 Column: ContextID
 
-	(Prototype)
+	--- Prototype ---
 		ContextID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 	
 	The context identifier.
 	
 	
 Column: ContextString
 
-	(Prototype)
+	--- Prototype ---
 		ContextString TEXT NOT NULL
-	(end)
+	-----------------
 	
 	The context, encoded with <Engine.Symbols.ContextString>.
 
 
 Column: ReferenceCount
 
-	(Prototype)
+	--- Prototype ---
 		ReferenceCount INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The number of times this context is used.
 
@@ -49,15 +49,15 @@ _______________________________________________________________________________
 
 Index: ContextsByID
 
-	(Prototype)
+	--- Prototype ---
 		ContextID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 
 	Automatically created by ContextID being defined as a primary key.
 
 
 Index: ContextsByContextString
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX ContextsByContextString ON Contexts (ContextString)
-	(end)
+	-----------------

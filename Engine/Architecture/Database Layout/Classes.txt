@@ -13,18 +13,18 @@ _______________________________________________________________________________
 
 Column: ClassID
 
-	(Prototype)
+	--- Prototype ---
 		ClassID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 	
 	The class identifier.
 
 
 Column: ClassString
 
-	(Prototype)
+	--- Prototype ---
 		ClassString TEXT
-	(end)
+	-----------------
 	
 	The class information encoded with <Engine.Symbols.ClassString>.  If this is the same as <LookupKey> this
 	will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or 
@@ -33,9 +33,9 @@ Column: ClassString
 
 Column: LookupKey
 
-	(Prototype)
+	--- Prototype ---
 		LookupKey TEXT NOT NULL
-	(end)
+	-----------------
 
 	This is the same as <ClassString>, except that if the language is case insensitive the symbol portion will be in 
 	lowercase.  You look up records with this key to allow for case insensitivity but you use <ClassString> so you 
@@ -44,9 +44,9 @@ Column: LookupKey
 
 Column: ReferenceCount
 
-	(Prototype)
+	--- Prototype ---
 		ReferenceCount INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The number of times this class is used.
 
@@ -58,15 +58,15 @@ _______________________________________________________________________________
 
 Index: ClassesByID
 
-	(Prototype)
+	--- Prototype ---
 		ClassID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 
 	Automatically created by ClassID being defined as a primary key.
 
 
 Index: ClassesByLookupKey
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)
-	(end)
+	-----------------

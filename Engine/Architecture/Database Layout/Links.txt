@@ -12,25 +12,25 @@ _______________________________________________________________________________
 
 Column: LinkID
 	
-	(Prototype)
+	--- Prototype ---
 		LinkID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 	
 	
 Column: Type
 
-	(Prototype)
+	--- Prototype ---
 		Type INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The type of link it is.  The value will be from <Engine.Links.LinkType>.
 
 
 Column: TextOrSymbol
 
-	(Prototype)
+	--- Prototype ---
 		TextOrSymbol TEXT NOT NULL
-	(end)
+	-----------------
 
 	If this is a Natural Docs link, this will be the plain text of the link.  If this is a type or class parent link, it 
 	will be the symbol normalized as a <Symbols.SymbolString>.
@@ -38,39 +38,39 @@ Column: TextOrSymbol
 
 Column: ContextID
 
-	(Prototype)
+	--- Prototype ---
 		ContextID INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The ID of the context the link appears in.
 
 
 Column: FileID
 
-	(Prototype)
+	--- Prototype ---
 		FileID INTEGER NOT NULL
-	(end)
+	-----------------
 
 
 Column: ClassID
 
-	(Prototype)
+	--- Prototype ---
 		ClassID INTEGER NOT NULL
-	(end)
+	-----------------
 
 
 Column: LanguageID
 
-	(Prototype)
+	--- Prototype ---
 		LanguageID INTEGER NOT NULL
-	(end)
+	-----------------
 
 
 Column: EndingSymbol
 
-	(Prototype)
+	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
-	(end)
+	-----------------
 
 	The ending segment of <TextOrSymbol>.  If this is a Natural Docs links, there may be additional ending 
 	symbols that apply to this link in <CodeDB.AlternateLinkEndingSymbols>.
@@ -78,18 +78,18 @@ Column: EndingSymbol
 
 Column: TargetTopicID
 
-	(Prototype)
+	--- Prototype ---
 		TargetTopicID INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The topic ID this link resolves to, or zero if none.
 
 
 Column: TargetClassID
 
-	(Prototype)
+	--- Prototype ---
 		TargetClassID INTEGER NOT NULL
-	(end)
+	-----------------
 	
 	The class ID of <TargetTopicID>, or zero if none.
 	
@@ -99,9 +99,9 @@ Column: TargetClassID
 
 Column: TargetScore
 
-	(Prototype)
+	--- Prototype ---
 		TargetScore INTEGER NOT NULL
-	(end)
+	-----------------
 
 	The score of the link to <TargetTopicID>, or zero if there is none.  This is a 64-bit value.
 
@@ -113,43 +113,43 @@ _______________________________________________________________________________
 
 Index: LinksByID
 
-	(Prototype)
+	--- Prototype ---
 		LinkID INTEGER PRIMARY KEY NOT NULL
-	(end)
+	-----------------
 
 	Automatically created by LinkID being defined as a primary key.
 
 
 Index: LinksByFileAndType
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX LinksByFileAndType ON Links (FileID, Type)
-	(end)
+	-----------------
 
 
 Index: LinksByClass
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX LinksByClass ON Links (ClassID, Type)
-	(end)
+	-----------------
 
 
 Index: LinksByEndingSymbols
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)
-	(end)
+	-----------------
 
 
 Index: LinksByTargetTopicID
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)
-	(end)
+	-----------------
 
 
 Index: LinksByTargetClassID
 
-	(Prototype)
+	--- Prototype ---
 		CREATE INDEX LinksByTargetClassID ON Links (TargetClassID, Type)
-	(end)
+	-----------------
