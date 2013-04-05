@@ -408,6 +408,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			// Rest of comment.
 			
 			Topic nextTopic;
+			char blockChar;
 			BlockType blockType;
 			Language language;
 			bool prevLineBlank = false;
@@ -430,16 +431,21 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					prevLineBlank = false;
 					}
 					
-				else if (IsStartBlockLine(lineIterator, out blockType, out language))
+				else if (IsStartBlockLine(lineIterator, out blockChar, out blockType, out language))
 					{
 					lineIterator.Next();
 					
 					// Skip rest of code block so nothing in its content can be interpreted as a topic line.
-					bool prevLineWasEnd = false;
-					while (lineIterator < comment.End && !prevLineWasEnd)
+					while (lineIterator < comment.End)
 						{
-						prevLineWasEnd = IsEndBlockLine(lineIterator);
-						lineIterator.Next();
+						char endBlockChar;
+						if (IsEndBlockLine(lineIterator, out endBlockChar) && endBlockChar == blockChar)
+							{
+							lineIterator.Next();
+							break;
+							}
+						else
+							{  lineIterator.Next();  }
 						}
 						
 					prevLineBlank = false;
@@ -958,6 +964,95 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 			
 			
+		/* Function: IsHorizontalLineTagLine
+		 * Returns true if the line starts with at least three dashes, underscores, or equals signs and satisfies a few other requirements 
+		 * to be suitable for a line block tag like "--- code" or "==== Perl ====".  Will return the contents of the tag with all whitespace
+		 * condensed as well as which character was used.
+		 */
+		protected bool IsHorizontalLineTagLine (LineIterator lineIterator, out string content, out char character)
+			{
+			TokenIterator firstToken, lastToken;
+			lineIterator.GetBounds(LineBoundsMode.CommentContent, out firstToken, out lastToken);
+
+			if (firstToken.Character != '-' && firstToken.Character != '=' && firstToken.Character != '_')
+				{
+				content = null;
+				character = '\0';
+				return false;
+				}
+
+			character = firstToken.Character;
+			int prefixCount = 0;
+
+			while (firstToken < lastToken && firstToken.Character == character)
+				{ 
+				firstToken.Next();
+				prefixCount++;  
+				}
+
+			if (prefixCount < 3)
+				{
+				content = null;
+				character = '\0';
+				return false;
+				}
+
+			firstToken.NextPastWhitespace(lastToken);
+
+			lastToken.Previous();  // change limit to iterator
+			
+			while (lastToken >= firstToken && lastToken.Character == character)
+				{  lastToken.Previous();  }
+
+			lastToken.Next();  // iterator back to limit
+			lastToken.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+			if (lastToken <= firstToken)
+				{
+				content = null;
+				character = '\0';
+				return false;
+				}
+								
+			content = firstToken.Tokenizer.TextBetween(firstToken, lastToken).CondenseWhitespace();																										
+			return true;
+			}
+			
+			
+		/* Function: IsHorizontalLineEnderLine
+		 * Returns true if the line only contains at least three dashes, underscores, or equals signs so that it's suitable to end a
+		 * horizontal line tag line of the same character.
+		 */
+		protected bool IsHorizontalLineEnderLine (LineIterator lineIterator, out char character)
+			{
+			TokenIterator firstToken, lastToken;
+			lineIterator.GetBounds(LineBoundsMode.CommentContent, out firstToken, out lastToken);
+
+			if (firstToken.Character != '-' && firstToken.Character != '=' && firstToken.Character != '_')
+				{
+				character = '\0';
+				return false;
+				}
+
+			character = firstToken.Character;
+			int characterCount = 0;
+
+			while (firstToken < lastToken && firstToken.Character == character)
+				{ 
+				firstToken.Next();
+				characterCount++;  
+				}
+
+			if (characterCount < 3 || firstToken != lastToken)
+				{
+				character = '\0';
+				return false;
+				}
+
+			return true;
+			}
+			
+			
 		/* Function: IsStartBlockKeyword
 		 * Returns whether the passed string is a start block keyword, which would be the first word in "(start code)".
 		 */
@@ -996,14 +1091,20 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: IsStartBlockLine
-		 * Returns whether the <LineIterator> is on a start block line like "(start code)", and if so, which <BlockType> it uses.
-		 * If it was a code block and a language was specified, also returns that <Language>.
+		 * Returns whether the <LineIterator> is on a start block line like "(start code)" or "--- code", and if so, which <BlockType> and
+		 * character it uses.  If it was a code block and a language was specified, also returns that <Language>.
 		 */
-		protected bool IsStartBlockLine (LineIterator lineIterator, out BlockType blockType, out Language language)
+		protected bool IsStartBlockLine (LineIterator lineIterator, out char character, out BlockType blockType, out Language language)
 			{
-			string betweenParens;
-			if (!IsParenTagLine(lineIterator, out betweenParens))
+			string tagString;
+
+			if (IsParenTagLine(lineIterator, out tagString))
+				{  character = '(';  }
+			else if (IsHorizontalLineTagLine(lineIterator, out tagString, out character))
+				{  }
+			else
 				{
+				character = '\0';
 				blockType = BlockType.Generic;
 				language = null;
 				return false;
@@ -1012,7 +1113,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			// (code)
 			
-			if (IsBlockType(betweenParens, out blockType))
+			if (IsBlockType(tagString, out blockType))
 				{  
 				language = null;
 				return true;  
@@ -1021,7 +1122,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			// (Perl)
 
-			language = Engine.Instance.Languages.FromName(betweenParens);
+			language = Engine.Instance.Languages.FromName(tagString);
 			if (language != null)
 				{
 				blockType = BlockType.Code;
@@ -1033,18 +1134,18 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 						
-			for (int firstSpace = betweenParens.IndexOf(' '); 
+			for (int firstSpace = tagString.IndexOf(' '); 
 				  firstSpace != -1; 
-				  firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
+				  firstSpace = tagString.IndexOf(' ', firstSpace + 1))
 				{
-				string firstPart = betweenParens.Substring(0, firstSpace);
+				string firstPart = tagString.Substring(0, firstSpace);
 				
 
 				// (start _____)
 
 				if (IsStartBlockKeyword(firstPart))
 					{
-					string secondPart = betweenParens.Substring(firstSpace + 1);
+					string secondPart = tagString.Substring(firstSpace + 1);
 				
 				
 					// (start code)
@@ -1089,12 +1190,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					language = Engine.Instance.Languages.FromName(firstPart);
 					
 					if (language != null &&
-						IsBlockType( betweenParens.Substring(firstSpace + 1), out blockType ) &&
+						IsBlockType( tagString.Substring(firstSpace + 1), out blockType ) &&
 						blockType == BlockType.Code)
 						{  return true;  }
 					}
 				}
 				
+			character = '\0';
 			blockType = BlockType.Generic;
 			language = null;
 			return false;
@@ -1102,36 +1204,46 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: IsEndBlockLine
-		 * Returns if the <LineIterator> is on an end block line like "(end code)".
+		 * Returns if the <LineIterator> is on an end block line like "(end code)", "--- end", or "---", and what character it uses.
 		 */
-		protected bool IsEndBlockLine (LineIterator lineIterator)
+		protected bool IsEndBlockLine (LineIterator lineIterator, out char character)
 			{
-			string betweenParens;
-			if (!IsParenTagLine(lineIterator, out betweenParens))
-				{  return false;  }
+			string tagString;
+
+			if (IsParenTagLine(lineIterator, out tagString))
+				{  character = '(';  }
+			else if (IsHorizontalLineEnderLine(lineIterator, out character))
+				{  return true;  }
+			else if (IsHorizontalLineTagLine(lineIterator, out tagString, out character))
+				{  }
+			else
+				{
+				character = '\0';
+				return false;
+				}
 			
 			
 			// (end)
 			
-			if (IsEndBlockKeyword(betweenParens))
+			if (IsEndBlockKeyword(tagString))
 				{  return true;  }
 			
 			
 			// Since there may be multiple spaces in the parentheses and some may belong to the keyword or language,
 			// we have to test all permutations of spaces as dividers.
 
-			for (int firstSpace = betweenParens.IndexOf(' '); 
+			for (int firstSpace = tagString.IndexOf(' '); 
 				  firstSpace != -1; 
-				  firstSpace = betweenParens.IndexOf(' ', firstSpace + 1))
+				  firstSpace = tagString.IndexOf(' ', firstSpace + 1))
 				{
-				string firstPart = betweenParens.Substring(0, firstSpace);
+				string firstPart = tagString.Substring(0, firstSpace);
 				
 
 				// (end _____)
 
 				if (IsEndBlockKeyword(firstPart))
 					{
-					string secondPart = betweenParens.Substring(firstSpace + 1);
+					string secondPart = tagString.Substring(firstSpace + 1);
 					
 
 					// (end code)
@@ -1164,6 +1276,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					}
 				}
 
+			character = '\0';
 			return false;
 			}
 			
@@ -1642,6 +1755,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			HeadingType lastHeadingType = HeadingType.Generic;
 			
 			// Temp storage for the Is functions.
+			char blockChar;
 			BlockType blockType;
 			int indent;
 			char leadingCharacter;
@@ -1655,8 +1769,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 				// Preformatted blocks
 				// (start code)
+				// --- code
 				
-				if (IsStartBlockLine(line, out blockType, out language))
+				if (IsStartBlockLine(line, out blockChar, out blockType, out language))
 					{
 					CloseAllBlocks(ref paragraph, ref definitionIndent, ref bulletIndents, body);
 					
@@ -1666,17 +1781,29 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					
 					string rawCodeLine;
 					int rawCodeLineIndent;
+					char newBlockChar;
+					BlockType newBlockType;
+					Language newLanguage;
 					
-					while (line < endOfContent && !IsEndBlockLine(line))
+					while (line < endOfContent)
 						{
-						GetPreformattedLine(line, out rawCodeLine, out rawCodeLineIndent);
-						AddRawCodeLineToList(rawCodeLine, rawCodeLineIndent, codeLines, ref sharedIndent);
-						line.Next();
+						if (IsEndBlockLine(line, out newBlockChar) && newBlockChar == blockChar)
+							{
+							line.Next();
+							break;
+							}
+						else if (IsStartBlockLine(line, out newBlockChar, out newBlockType, out newLanguage) && newBlockChar == blockChar)
+							{
+							// Stay on this line so we pick it up again on the next iteration.
+							break;
+							}
+						else
+							{
+							GetPreformattedLine(line, out rawCodeLine, out rawCodeLineIndent);
+							AddRawCodeLineToList(rawCodeLine, rawCodeLineIndent, codeLines, ref sharedIndent);
+							line.Next();
+							}
 						}
-						
-					// Move past the end block line
-					if (line < endOfContent)
-						{  line.Next();  }
 						
 					if (sharedIndent != -1)
 						{
