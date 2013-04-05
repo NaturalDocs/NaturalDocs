@@ -1,0 +1,187 @@
+
+File: Code Keywords - Lines
+_______________________________________________________________________________
+
+All the line styles that can designate code sections.  The various keyword and language permutations are handled in the
+parentheses tests instead.
+
+
+
+Topic: DashesA
+	
+	Before
+
+	--- code
+	Three dashes to start, no keyword on end
+	---
+
+	After
+
+
+Topic: DashesB
+	
+	Before
+
+	--- code
+	Three dashes to start, keyword on end
+	--- end
+
+	After
+
+
+Topic: DashesC
+	
+	Before
+
+	----- code -----
+	Five dashes before and after to start, five dashes and no keyword to end
+	-----
+
+	After
+
+
+Topic: DashesD
+	
+	Before
+
+	----- code -----
+	Five dashes before and after to start, five dashes before and after keyword to end
+	----- end -----
+
+	After
+
+
+Topic: EqualsA
+	
+	Before
+
+	=== code
+	Three equals to start, no keyword on end
+	===
+
+	After
+
+
+Topic: EqualsB
+	
+	Before
+
+	=== code
+	Three equals to start, keyword on end
+	=== end
+
+	After
+
+
+Topic: EqualsC
+	
+	Before
+
+	===== code =====
+	Five equals before and after to start, five equals and no keyword to end
+	=====
+
+	After
+
+
+Topic: EqualsD
+	
+	Before
+
+	===== code =====
+	Five equals before and after to start, five equals before and after keyword to end
+	===== end =====
+
+	After
+
+
+Topic: UnderscoresA
+	
+	Before
+
+	___ code
+	Three underscores to start, no keyword on end
+	___
+
+	After
+
+
+Topic: UnderscoresB
+	
+	Before
+
+	___ code
+	Three underscores to start, keyword on end
+	___ end
+
+	After
+
+
+Topic: UnderscoresC
+	
+	Before
+
+	_____ code _____
+	Five underscores before and after to start, five underscores and no keyword to end
+	_____
+
+	After
+
+
+Topic: UnderscoresD
+	
+	Before
+
+	_____ code _____
+	Five dashed before and after to start, five dashes before and after keyword to end
+	_____ end _____
+
+	After
+
+
+Topic: UnderscoresAllowingDashes
+
+	Before
+
+	___ code
+	--- end
+	___ end
+
+	After
+
+
+Topic: DashesAllowingUnderscores
+
+	Before
+
+	--- code
+	___
+	---
+
+	After
+
+
+Topic: DirectTransitions
+
+	Before
+
+	--- C
+	C code
+	--- Perl
+	Perl code
+	---
+
+	After
+
+
+Topic: FailedDirectTransition
+
+	Before
+
+	=== C
+	C code
+	--- Perl
+	Would be Perl code if lines matched
+	===
+
+	After

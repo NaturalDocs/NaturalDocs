@@ -1,0 +1,33 @@
+<p>All the line styles that can designate code sections.  The various keyword and language permutations are handled in the parentheses tests instead.</p>
+-----
+<p>Before</p><pre type="code">Three dashes to start, no keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Three dashes to start, keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five dashes before and after to start, five dashes and no keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five dashes before and after to start, five dashes before and after keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Three equals to start, no keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Three equals to start, keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five equals before and after to start, five equals and no keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five equals before and after to start, five equals before and after keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Three underscores to start, no keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Three underscores to start, keyword on end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five underscores before and after to start, five underscores and no keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">Five dashed before and after to start, five dashes before and after keyword to end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">--- end</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">___</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="C/C++">C code</pre><pre type="code" language="Perl">Perl code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="C/C++">C code<br>--- Perl<br>Would be Perl code if lines matched</pre><p>After</p>

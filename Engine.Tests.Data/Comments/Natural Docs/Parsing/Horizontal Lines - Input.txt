@@ -1,0 +1,63 @@
+
+File: Horizontal Lines
+_______________________________________________________________________________
+
+
+Topic: In text is ignored
+	
+	One
+	-----
+	Two
+	_____
+	Three
+	=====
+	Four
+
+
+Topic: In code is kept
+
+	(start code)
+	One
+	-----
+	Two
+	_____
+	Three
+	=====
+	Four
+	(end code)
+
+
+Topic: Only matching line breaks code
+
+	----- code
+	One
+	_____
+	Two
+	=====
+	Three
+	-----
+	Four
+
+
+Topic: Only matching line breaks code 2
+
+	_____ code
+	One
+	-----
+	Two
+	=====
+	Three
+	_____
+	Four
+
+
+Topic: Only matching line breaks code 3
+
+	===== code
+	One
+	-----
+	Two
+	_____
+	Three
+	=====
+	Four
