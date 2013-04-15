@@ -59,6 +59,7 @@
     <Compile Include="Source\CodeDB\IChangeWatcher.cs" />
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
     <Compile Include="Source\CodeDB\IDLookupCache.cs" />
+    <Compile Include="Source\Comments\Components\HTMLEntityChars.cs" />
     <Compile Include="Source\Comments\Components\XMLComment.cs" />
     <Compile Include="Source\Comments\Components\TagStack.cs" />
     <Compile Include="Source\Comments\Parsers\XML.cs" />

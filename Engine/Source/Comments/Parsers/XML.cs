@@ -301,10 +301,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 					}
 
-				else if (iterator.Type == XMLElementType.Text ||
-						  iterator.Type == XMLElementType.EntityChar)
+				else if (iterator.Type == XMLElementType.Text)
 					{
 					output.EntityEncodeAndAppend(iterator.String);
+					iterator.Next();
+					}
+
+				else if (iterator.Type == XMLElementType.EntityChar)
+					{
+					output.EntityEncodeAndAppend(iterator.EntityValue);
 					iterator.Next();
 					}
 
@@ -368,10 +373,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 					}
 
-				else if (iterator.Type == XMLElementType.Text ||
-						  iterator.Type == XMLElementType.EntityChar)
+				else if (iterator.Type == XMLElementType.Text)
 					{
 					output.EntityEncodeAndAppend(iterator.String);
+					iterator.Next();
+					}
+
+				else if (iterator.Type == XMLElementType.EntityChar)
+					{
+					output.EntityEncodeAndAppend(iterator.EntityValue);
 					iterator.Next();
 					}
 

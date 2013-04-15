@@ -111,12 +111,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 				{
 				int semicolonIndex = RawText.IndexOf(';', RawTextIndex + 1);
 
-				if (semicolonIndex != -1 && semicolonIndex < endingRawTextIndex)
+				if (semicolonIndex != -1 && semicolonIndex < endingRawTextIndex &&
+					HTMLEntityChars.IsEntityChar(RawText, RawTextIndex, semicolonIndex + 1 - RawTextIndex))
 					{
 					type = XMLElementType.EntityChar;
 					length = semicolonIndex + 1 - RawTextIndex;
-
-					found = (NonASCIILettersRegex.Match(RawText, RawTextIndex + 1, length - 2).Success == false);
+					found = true;
 					}
 				}
 
@@ -188,7 +188,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 			value = value.Replace("\\\"", "\"");
 			value = value.Replace("\\'", "'");
-			value = value.EntityDecode();
+			value = HTMLEntityChars.DecodeAll(value);
 
 			return value;
 			}
@@ -220,9 +220,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 
 		/* Property: String
-		 * Returns the element as a string.  Because this returns a copy of the element string, whenever possible you should 
-		 * avoid this property and use functions like <AppendTo()> instead.  These functions are more efficient because they
-		 * don't need to make an intermediate copy.
+		 * Returns the element as a string.
 		 */
 		public string String
 			{
@@ -307,23 +305,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 		/* Property: EntityValue
 		 * If <Type> is <XMLElementType.EntityChar>, this is the decoded character.
 		 */
-		public string EntityValue
+		public char EntityValue
 			{
 			get
 				{
 				if (type != XMLElementType.EntityChar)
 					{  throw new InvalidOperationException();  }
 
-				if (tokenIterator.MatchesAcrossTokens("&amp;", true))
-					{  return "&";  }
-				else if (tokenIterator.MatchesAcrossTokens("&lt;", true))
-					{  return "<";  }
-				else if (tokenIterator.MatchesAcrossTokens("&gt;", true))
-					{  return ">";  }
-				else if (tokenIterator.MatchesAcrossTokens("&quot;", true))
-					{  return "\"";  }
-				else
-					{  return RawText.Substring(RawTextIndex, length);  }
+				return HTMLEntityChars.DecodeSingle(RawText, RawTextIndex, length);
 				}
 			}
 
@@ -427,8 +416,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		// DEPENDENCY: Assumes this encompasses all the line break chars recognized by Tokenizer
 		static private char[] StartOfElement = { '<', '&', '\n', '\r' };
-
-		static private Regex.NonASCIILetters NonASCIILettersRegex = new Regex.NonASCIILetters();
 
 		static private Regex.Comments.XML.Tag TagRegex = new Regex.Comments.XML.Tag();
 		static private Regex.Comments.XML.TagProperty TagPropertyRegex = new Regex.Comments.XML.TagProperty();
