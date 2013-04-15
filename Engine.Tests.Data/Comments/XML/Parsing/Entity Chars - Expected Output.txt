@@ -1,0 +1,7 @@
+<p>This &amp; that.  This &amp; that.  This &amp; that.  This &amp; that.</p>
+-----
+<p>Copyright © Me.  Copyright © Me.  Copyright © Me.  Copyright © Me.</p>
+-----
+<pre type="code">&quot; &amp; &lt; &gt;</pre>
+-----
+<pre type="code">&amp;quot; &amp;#34; &amp;#x22;</pre>

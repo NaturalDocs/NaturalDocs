@@ -25,10 +25,26 @@ Property HREF in <A HREF="xxx">
 
 
 
-// Escaped quotes
+// Escaped Quotes
 // ____________________________________________________________________________
 
 
 Property href in <a href='xx\'xx'>
 
 Property href in <a href="xx\"xx">
+
+
+
+// Entity Chars
+// ____________________________________________________________________________
+
+
+Property href in <a href="&quot;quotes&quot;">
+
+Property href in <a href="&#34;quotes&#34;">
+
+Property href in <a href="&#x22;quotes&#x22;">
+
+Property href in <a href="unrecognized&unrecognized;">
+
+Property href in <a href="unterminated&unterminated">

@@ -9,11 +9,16 @@
 
 &unrecognized;
 
+&unterminated
+
+// Quote
+&#34;
+
+// Quote
+&#x22;
 
 
-// Case Sensitivity
-// ____________________________________________________________________________
-
+// Entity chars are case sensitive
 
 &lt;
 

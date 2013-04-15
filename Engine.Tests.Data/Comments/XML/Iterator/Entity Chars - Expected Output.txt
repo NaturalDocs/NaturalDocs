@@ -16,23 +16,34 @@
 
 
 &unrecognized;
-- Entity Char: &unrecognized;
+- Text: &unrecognized;
+
+
+&unterminated
+- Text: &unterminated
+
+
+// Quote
+&#34;
+- Entity Char: "
+
+
+// Quote
+&#x22;
+- Entity Char: "
 
 
 
-
-// Case Sensitivity
-// ____________________________________________________________________________
-
+// Entity chars are case sensitive
 
 &lt;
 - Entity Char: <
 
 
 &Lt;
-- Entity Char: <
+- Text: &Lt;
 
 
 &LT;
-- Entity Char: <
+- Text: &LT;
 
