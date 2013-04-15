@@ -28,6 +28,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		public Parser ()
 			{
 			}
+
 			
 		/* Function: Start
 		 */
@@ -35,6 +36,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			{
 			return true;
 			}
+
 
 		/* Function: MakeSummaryFromBody
 		 * If the <Topic> has a body, attempts to extract a summary from it and set <Topic.Summary>.
@@ -93,6 +95,55 @@ namespace GregValure.NaturalDocs.Engine.Comments
 
 			return false;
 			}
+
 			
+		/* Function: Normalize
+		 * 
+		 * Cleans up the generated NDMarkup.
+		 * 
+		 * - Replaces tab characters with spaces.
+		 * - Any '\n' characters will be replaced with spaces or double spaces deepending on whether it appears to come at the end
+		 *   of a sentence.
+		 * - Empty paragraphs and extraneous whitespace will be removed.
+		 * 
+		 * If the generated NDMarkup is normalized down to nothing it will return null instead of an empty string.
+		 */
+		protected string Normalize (string ndMarkup)
+			{
+			ndMarkup = ndMarkup.Replace('\t', ' ');
+
+			// Once to prepare for replacing line breaks
+			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");
+
+			ndMarkup = LineBreakWhichProbablyEndsSentenceRegex.Replace(ndMarkup, "  ");
+			ndMarkup = ndMarkup.Replace('\n', ' ');
+
+			ndMarkup = LeadingSpacesRegex.Replace(ndMarkup, "");
+			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");  // Again since we added spaces
+			ndMarkup = MultipleLineBreaksRegex.Replace(ndMarkup, "");
+
+			ndMarkup = EmptyParagraphsRegex.Replace(ndMarkup, "");
+
+			if (ndMarkup.Length == 0)
+				{  ndMarkup = null;  }
+
+			return ndMarkup;
+			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		protected static Regex.Comments.LeadingSpaces LeadingSpacesRegex = new Regex.Comments.LeadingSpaces();
+		protected static Regex.Comments.TrailingSpaces TrailingSpacesRegex = new Regex.Comments.TrailingSpaces();
+		protected static Regex.Comments.MultipleLineBreaks MultipleLineBreaksRegex = new Regex.Comments.MultipleLineBreaks();
+
+		protected static Regex.Comments.EmptyParagraphs EmptyParagraphsRegex = new Regex.Comments.EmptyParagraphs();
+
+		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex = 
+			new Regex.Comments.LineBreakWhichProbablyEndsSentence();
+
 		}
 	}

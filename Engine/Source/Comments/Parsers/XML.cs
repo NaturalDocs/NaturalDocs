@@ -752,40 +752,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: Normalize
-		 * 
-		 * Cleans up the generated NDMarkup.
-		 * 
-		 * - Replaces tab characters with spaces.
-		 * - Any '\n' characters will be replaced with spaces or double spaces deepending on whether it appears to come at the end
-		 *   of a sentence.
-		 * - Empty paragraphs and extraneous whitespace will be removed.
-		 * 
-		 * If the generated NDMarkup is normalized down to nothing it will return null instead of an empty string.
-		 */
-		protected string Normalize (string ndMarkup)
-			{
-			ndMarkup = ndMarkup.Replace('\t', ' ');
-
-			// Once to prepare for replacing line breaks
-			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");
-
-			ndMarkup = LineBreakWhichProbablyEndsSentenceRegex.Replace(ndMarkup, "  ");
-			ndMarkup = ndMarkup.Replace('\n', ' ');
-
-			ndMarkup = LeadingSpacesRegex.Replace(ndMarkup, "");
-			ndMarkup = TrailingSpacesRegex.Replace(ndMarkup, "");  // Again since we added spaces
-			ndMarkup = MultipleLineBreaksRegex.Replace(ndMarkup, "");
-
-			ndMarkup = EmptyParagraphsRegex.Replace(ndMarkup, "");
-
-			if (ndMarkup.Length == 0)
-				{  ndMarkup = null;  }
-
-			return ndMarkup;
-			}
-
-
 		/* Function: GenerateTopic
 		 * Creates and returns a <Topic> from the <XMLComment> and returns it.  If the comment contains no useful content
 		 * it will return null.
@@ -915,21 +881,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			return topic;
 			}
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-
-		protected static Regex.Comments.XML.LeadingSpaces LeadingSpacesRegex = new Regex.Comments.XML.LeadingSpaces();
-		protected static Regex.Comments.XML.TrailingSpaces TrailingSpacesRegex = new Regex.Comments.XML.TrailingSpaces();
-		protected static Regex.Comments.XML.MultipleLineBreaks MultipleLineBreaksRegex = new Regex.Comments.XML.MultipleLineBreaks();
-
-		protected static Regex.Comments.XML.EmptyParagraphs EmptyParagraphsRegex = new Regex.Comments.XML.EmptyParagraphs();
-
-		protected static Regex.Comments.XML.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex = 
-			new Regex.Comments.XML.LineBreakWhichProbablyEndsSentence();
 
 
 
