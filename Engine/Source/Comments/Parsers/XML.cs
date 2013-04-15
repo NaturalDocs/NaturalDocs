@@ -784,9 +784,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (block.Type == "summary" || block.Type == "remark" || block.Type == "value")
 					{  continue;  }
 
-				else if (block is XMLComment.TextBlock)
+				else if (block is BlockComment.TextBlock)
 					{
-					XMLComment.TextBlock textBlock = (XMLComment.TextBlock)block;
+					BlockComment.TextBlock textBlock = (BlockComment.TextBlock)block;
 
 					string text = textBlock.Text.ToString();
 					text = Normalize(text);
@@ -806,9 +806,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						}
 					}
 
-				else // XMLComment.ListBlock
+				else // BlockComment.ListBlock
 					{
-					XMLComment.ListBlock listBlock = (XMLComment.ListBlock)block;
+					BlockComment.ListBlock listBlock = (BlockComment.ListBlock)block;
 
 					if (listBlock.List.Count > 0)
 						{
