@@ -256,9 +256,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 
 		/* Property: TagForm
-		 * If <Type> is <XMLElementType.Tag>, this is the <XMLTagForm> it takes.
+		 * If <Type> is <XMLElementType.Tag>, this is the <TagForm> it takes.
 		 */
-		public XMLTagForm TagForm
+		public TagForm TagForm
 			{
 			get
 				{
@@ -266,11 +266,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 					{  throw new InvalidOperationException();  }
 
 				if (RawText[RawTextIndex + 1] == '/')
-					{  return XMLTagForm.Closing;  }
+					{  return TagForm.Closing;  }
 				else if (RawText[RawTextIndex + length - 2] == '/')
-					{  return XMLTagForm.Standalone;  }
+					{  return TagForm.Standalone;  }
 				else
-					{  return XMLTagForm.Opening;  }
+					{  return TagForm.Opening;  }
 				}
 			}
 

@@ -102,7 +102,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (TryToGetTopLevelTextBlock(ref iterator, xmlComment) ||
 					TryToGetTopLevelListItem(ref iterator, xmlComment))
 				    {  }
-				else if (iterator.Type == XMLElementType.Tag && iterator.TagForm == XMLTagForm.Opening)
+				else if (iterator.Type == XMLElementType.Tag && iterator.TagForm == TagForm.Opening)
 					{  SkipBlock(ref iterator);  }
 				else
 					{  iterator.Next();  }
@@ -127,7 +127,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected bool TryToGetTopLevelTextBlock (ref XMLIterator iterator, XMLComment comment)
 			{
 			if ( iterator.Type != XMLElementType.Tag || 
-				 iterator.TagForm != XMLTagForm.Opening ||
+				 iterator.TagForm != TagForm.Opening ||
 				(iterator.TagType != "summary" && iterator.TagType != "remark" && iterator.TagType != "example" && iterator.TagType != "returns" &&
 				 iterator.TagType != "value") )
 				{  return false;  }
@@ -146,7 +146,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			if (iterator.Type == XMLElementType.Tag &&
 				iterator.TagType == keyword &&
-				iterator.TagForm == XMLTagForm.Closing)
+				iterator.TagForm == TagForm.Closing)
 				{  iterator.Next();  }
 
 			return true;
@@ -159,13 +159,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected bool TryToGetTopLevelListItem (ref XMLIterator iterator, XMLComment comment)
 			{
-			if (iterator.Type != XMLElementType.Tag || iterator.TagForm == XMLTagForm.Closing)
+			if (iterator.Type != XMLElementType.Tag || iterator.TagForm == TagForm.Closing)
 				{  return false;  }
-			if (iterator.TagForm == XMLTagForm.Opening &&
+			if (iterator.TagForm == TagForm.Opening &&
 				(iterator.TagType != "param" && iterator.TagType != "exception" && iterator.TagType != "permission" &&
 				  iterator.TagType != "typeparam" && iterator.TagType != "see" && iterator.TagType != "seealso") )
 				{  return false;  }
-			if (iterator.TagForm == XMLTagForm.Standalone &&
+			if (iterator.TagForm == TagForm.Standalone &&
 				(iterator.TagType != "see" && iterator.TagType != "seealso") )
 				{  return false;  }
 
@@ -179,7 +179,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			string name = (keyword == "param" || keyword == "typeparam" ? iterator.TagProperty("name") : iterator.TagProperty("cref"));
 			string description = null;
 
-			if (iterator.TagForm == XMLTagForm.Opening)
+			if (iterator.TagForm == TagForm.Opening)
 				{
 				TagStack tagStack = new TagStack();
 				tagStack.OpenTag(keyword);
@@ -194,7 +194,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 				if (iterator.Type == XMLElementType.Tag &&
 					iterator.TagType == keyword &&
-					iterator.TagForm == XMLTagForm.Closing)
+					iterator.TagForm == TagForm.Closing)
 					{  iterator.Next();  }
 				}
 			else
@@ -235,14 +235,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						iterator.Next();
 						}
 
-					else if (iterator.TagType == "code" && iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagType == "code" && iterator.TagForm == TagForm.Opening)
 						{  
 						output.Append("</p>");
 						GetCode(ref iterator, output, tagStack);  
 						output.Append("<p>");
 						}
 
-					else if (iterator.TagType == "example" && iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagType == "example" && iterator.TagForm == TagForm.Opening)
 						{
 						// <example> can be nested in addition to a top-level tag.
 						output.Append("</p><h>");
@@ -255,7 +255,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						iterator.Next();
 						}
 
-					else if (iterator.TagType == "list" && iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagType == "list" && iterator.TagForm == TagForm.Opening)
 						{
 						output.Append("</p>");
 						GetList(ref iterator, output, tagStack);
@@ -268,7 +268,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						iterator.Next();
 						}
 
-					else if (iterator.TagType == "see" && iterator.TagForm == XMLTagForm.Standalone)
+					else if (iterator.TagType == "see" && iterator.TagForm == TagForm.Standalone)
 						{
 						output.Append("<link type=\"naturaldocs\" originaltext=\"");
 						output.EntityEncodeAndAppend(iterator.TagProperty("cref"));
@@ -279,12 +279,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 					else
 						{
-						if (iterator.TagForm == XMLTagForm.Opening)
+						if (iterator.TagForm == TagForm.Opening)
 							{  
 							tagStack.OpenTag(iterator.TagType);  
 							}
 
-						else if (iterator.TagForm == XMLTagForm.Closing)
+						else if (iterator.TagForm == TagForm.Closing)
 							{
 							int openingTagIndex = tagStack.FindTag(iterator.TagType);
 
@@ -353,12 +353,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						iterator.Next();
 						}
 
-					else if (iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagForm == TagForm.Opening)
 						{  
 						tagStack.OpenTag(iterator.TagType);  
 						}
 
-					else if (iterator.TagForm == XMLTagForm.Closing)
+					else if (iterator.TagForm == TagForm.Closing)
 						{
 						int openingTagIndex = tagStack.FindTag(iterator.TagType);
 
@@ -416,7 +416,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			#if DEBUG
 			if (iterator.Type != XMLElementType.Tag ||
 				iterator.TagType != "code" ||
-				iterator.TagForm != XMLTagForm.Opening)
+				iterator.TagForm != TagForm.Opening)
 				{  throw new Exception("GetCode() can only be called when the iterator is on an opening code tag.");  }
 			#endif
 
@@ -441,7 +441,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					break;
 					}
 				else if (iterator.Type == XMLElementType.Tag &&
-						  iterator.TagForm == XMLTagForm.Closing)
+						  iterator.TagForm == TagForm.Closing)
 					{
 					int openingTagIndex = tagStack.FindTag(iterator.TagType);
 
@@ -556,7 +556,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			#if DEBUG
 			if (iterator.Type != XMLElementType.Tag ||
 				iterator.TagType != "list" ||
-				iterator.TagForm != XMLTagForm.Opening)
+				iterator.TagForm != TagForm.Opening)
 				{  throw new Exception("GetList() can only be called when the iterator is on an opening list tag.");  }
 			#endif
 
@@ -573,7 +573,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				if (iterator.Type == XMLElementType.Tag)
 					{
-					if (iterator.TagType == "list" && iterator.TagForm == XMLTagForm.Closing)
+					if (iterator.TagType == "list" && iterator.TagForm == TagForm.Closing)
 						{  
 						iterator.Next();
 						break;  
@@ -581,13 +581,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 					else if (iterator.TagType == "item" || iterator.TagType == "listheader")
 						{
-						if (iterator.TagForm == XMLTagForm.Opening)
+						if (iterator.TagForm == TagForm.Opening)
 							{  
 							currentItem = new ListItem();  
 							currentItem.IsHeading = (iterator.TagType == "listheader");
 							}
 
-						else if (iterator.TagForm == XMLTagForm.Closing)
+						else if (iterator.TagForm == TagForm.Closing)
 							{
 							if (currentItem.Term != null)
 								{
@@ -621,7 +621,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						iterator.Next();
 						}
 
-					else if (iterator.TagType == "term" && iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagType == "term" && iterator.TagForm == TagForm.Opening)
 						{
 						tagStack.OpenTag("term");
 						iterator.Next();
@@ -630,13 +630,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						GetSimpleText(ref iterator, stringBuilder, tagStack);
 						currentItem.Term = stringBuilder.ToString();
 
-						if (iterator.TagType == "term" && iterator.TagForm == XMLTagForm.Closing)
+						if (iterator.TagType == "term" && iterator.TagForm == TagForm.Closing)
 							{  iterator.Next();  }
 
 						tagStack.CloseTag("term");
 						}
 
-					else if (iterator.TagType == "description" && iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagType == "description" && iterator.TagForm == TagForm.Opening)
 						{
 						tagStack.OpenTag("description");
 						iterator.Next();
@@ -645,13 +645,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						GetText(ref iterator, stringBuilder, tagStack);
 						currentItem.Description = stringBuilder.ToString();
 
-						if (iterator.TagType == "description" && iterator.TagForm == XMLTagForm.Closing)
+						if (iterator.TagType == "description" && iterator.TagForm == TagForm.Closing)
 							{  iterator.Next();  }
 
 						tagStack.CloseTag("description");
 						}
 
-					else if (iterator.TagForm == XMLTagForm.Opening)
+					else if (iterator.TagForm == TagForm.Opening)
 						{  SkipBlock(ref iterator);  }
 					else
 						{  iterator.Next();  }
@@ -728,7 +728,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected void SkipBlock (ref XMLIterator iterator)
 			{
 			#if DEBUG
-			if (iterator.Type != XMLElementType.Tag || iterator.TagForm != XMLTagForm.Opening)
+			if (iterator.Type != XMLElementType.Tag || iterator.TagForm != TagForm.Opening)
 				{  throw new Exception("Can only call SkipBlock() when the iterator is on an opening tag.");  }
 			#endif
 
@@ -740,9 +740,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				{
 				if (iterator.Type == XMLElementType.Tag)
 					{
-					if (iterator.TagForm == XMLTagForm.Opening)
+					if (iterator.TagForm == TagForm.Opening)
 						{  tagStack.OpenTag(iterator.TagType);  }
-					else if (iterator.TagForm == XMLTagForm.Closing)
+					else if (iterator.TagForm == TagForm.Closing)
 						{  tagStack.CloseTag(iterator.TagType);  }
 					// Ignore standalone tags
 					}

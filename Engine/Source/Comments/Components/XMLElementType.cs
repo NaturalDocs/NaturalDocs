@@ -22,13 +22,4 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 	public enum XMLElementType : byte
 		{  OutOfBounds, Text, Tag, EntityChar, LineBreak, Indent  }
 
-	/* enum: XMLTagForm
-		* 
-		* Opening - An opening tag.
-		* Closing - A closing tag.
-		* Standalone - A standalone tag.
-		*/
-	public enum XMLTagForm : byte
-		{  Opening, Closing, Standalone  }
-
 	}
