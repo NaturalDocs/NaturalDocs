@@ -60,8 +60,11 @@
     <Compile Include="Source\CodeDB\InfoTableID.cs" />
     <Compile Include="Source\CodeDB\IDLookupCache.cs" />
     <Compile Include="Source\Comments\Components\BlockComment.cs" />
+    <Compile Include="Source\Comments\Components\JavadocTagForm.cs" />
     <Compile Include="Source\Comments\Components\HTMLEntityChars.cs" />
+    <Compile Include="Source\Comments\Components\JavadocIterator.cs" />
     <Compile Include="Source\Comments\Components\TagForm.cs" />
+    <Compile Include="Source\Comments\Components\JavadocElementType.cs" />
     <Compile Include="Source\Comments\Components\XMLComment.cs" />
     <Compile Include="Source\Comments\Components\TagStack.cs" />
     <Compile Include="Source\Comments\Parsers\XML.cs" />
