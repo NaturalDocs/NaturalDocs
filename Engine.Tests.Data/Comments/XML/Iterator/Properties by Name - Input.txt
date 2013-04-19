@@ -45,6 +45,6 @@ Property href in <a href="&#34;quotes&#34;">
 
 Property href in <a href="&#x22;quotes&#x22;">
 
-Property href in <a href="unrecognized&unrecognized;">
+Property href in <a href="&unrecognized;">
 
-Property href in <a href="unterminated&unterminated">
+Property href in <a href="unterminated &amp">

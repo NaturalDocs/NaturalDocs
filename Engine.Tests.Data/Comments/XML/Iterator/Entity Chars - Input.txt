@@ -9,7 +9,7 @@
 
 &unrecognized;
 
-&unterminated
+unterminated &amp
 
 // Quote
 &#34;

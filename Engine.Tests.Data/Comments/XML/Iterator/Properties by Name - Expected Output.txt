@@ -60,8 +60,8 @@ Property href in <a href="&#34;quotes&#34;">
 Property href in <a href="&#x22;quotes&#x22;">
 - "quotes"
 
-Property href in <a href="unrecognized&unrecognized;">
-- unrecognized&unrecognized;
+Property href in <a href="&unrecognized;">
+- &unrecognized;
 
-Property href in <a href="unterminated&unterminated">
-- unterminated&unterminated
+Property href in <a href="unterminated &amp">
+- unterminated &amp

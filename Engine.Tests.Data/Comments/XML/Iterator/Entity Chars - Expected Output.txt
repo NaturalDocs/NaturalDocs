@@ -19,8 +19,9 @@
 - Text: &unrecognized;
 
 
-&unterminated
-- Text: &unterminated
+unterminated &amp
+- Text: unterminated 
+- Text: &amp
 
 
 // Quote
