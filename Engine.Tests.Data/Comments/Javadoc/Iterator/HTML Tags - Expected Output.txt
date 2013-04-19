@@ -1,0 +1,118 @@
+
+// Tag forms
+// ____________________________________________________________________________
+
+
+<a>
+- Opening HTML Tag: a
+
+
+</a>
+- Closing HTML Tag: a
+
+
+<br/>
+- Standalone HTML Tag: br
+
+
+<br />
+- Standalone HTML Tag: br
+
+
+
+
+// Properties
+// ____________________________________________________________________________
+
+
+<a href="xxx">
+- Opening HTML Tag: a
+  Property href: xxx
+
+
+<a href="xxx" target="yyy">
+- Opening HTML Tag: a
+  Property href: xxx
+  Property target: yyy
+
+
+<a href='xxx'>
+- Opening HTML Tag: a
+  Property href: xxx
+
+
+<a href='xxx' target='yyy'>
+- Opening HTML Tag: a
+  Property href: xxx
+  Property target: yyy
+
+
+<a href=xxx>
+- Opening HTML Tag: a
+  Property href: xxx
+
+
+<a href=xxx target=yyy>
+- Opening HTML Tag: a
+  Property href: xxx
+  Property target: yyy
+
+
+<a href=x_x target=yy%>
+- Opening HTML Tag: a
+  Property href: x_x
+  Property target: yy%
+
+
+
+
+// Escaped quotes
+// ____________________________________________________________________________
+
+
+<a href='xx\'xx' target='yy"yy'>
+- Opening HTML Tag: a
+  Property href: xx'xx
+  Property target: yy"yy
+
+
+<a href="xx\"xx" target="yy'yy">
+- Opening HTML Tag: a
+  Property href: xx"xx
+  Property target: yy'yy
+
+
+
+
+// Whitespace
+// ____________________________________________________________________________
+
+
+< a >
+- Opening HTML Tag: a
+
+
+< a href = 'xxx' >
+- Opening HTML Tag: a
+  Property href: xxx
+
+
+
+
+// Case Sensitivity
+// ____________________________________________________________________________
+
+
+<br />
+- Standalone HTML Tag: br
+
+
+<Br />
+- Standalone HTML Tag: br
+
+
+<BR />
+- Standalone HTML Tag: br
+
+
+

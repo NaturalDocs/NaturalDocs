@@ -1,0 +1,53 @@
+
+Some text.
+- Text: Some text.
+
+
+Some text &amp; an entity char.
+- Text: Some text 
+- Entity Char: &
+- Text:  an entity char.
+
+
+Some text <a href="target">and a link</a>.
+- Text: Some text 
+- Opening HTML Tag: a
+  Property href: target
+- Text: and a link
+- Closing HTML Tag: a
+- Text: .
+
+
+
+// Handling stray characters
+// ____________________________________________________________________________
+
+Some text & what should have been an entity char.
+- Text: Some text 
+- Text: & what should have been an entity char.
+
+
+Some text and < what should have been > entity chars.
+- Text: Some text and 
+- Text: < what should have been > entity chars.
+
+
+Some text and < what should have been entity chars <a href="target">shouldn't break a link</a>.
+- Text: Some text and 
+- Text: < what should have been entity chars 
+- Opening HTML Tag: a
+  Property href: target
+- Text: shouldn't break a link
+- Closing HTML Tag: a
+- Text: .
+
+
+Some text and an unclosed <tag
+- Text: Some text and an unclosed 
+- Text: <tag
+
+
+Some text and an unclosed entity &char
+- Text: Some text and an unclosed entity 
+- Text: &char
+

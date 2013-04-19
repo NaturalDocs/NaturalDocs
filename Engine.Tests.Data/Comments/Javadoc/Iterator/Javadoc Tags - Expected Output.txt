@@ -1,0 +1,48 @@
+
+// Tag forms
+// ____________________________________________________________________________
+
+
+@param xxx yyy
+- Block Javadoc Tag: param
+- Text:  xxx yyy
+
+
+{@code xxx}
+- Inline Javadoc Tag: code
+  Value: xxx
+
+
+
+
+// Case Sensitivity
+// ____________________________________________________________________________
+
+
+@param Javadoc tags are case sensitive
+- Block Javadoc Tag: param
+- Text:  Javadoc tags are case sensitive
+
+
+@Param Javadoc tags are case sensitive
+- Text: @Param Javadoc tags are case sensitive
+
+
+@PARAM Javadoc tags are case sensitive
+- Text: @PARAM Javadoc tags are case sensitive
+
+
+{@code Javadoc tags are case sensitive}
+- Inline Javadoc Tag: code
+  Value: Javadoc tags are case sensitive
+
+
+{@Code Javadoc tags are case sensitive}
+- Text: {
+- Text: @Code Javadoc tags are case sensitive}
+
+
+{@CODE Javadoc tags are case sensitive}
+- Text: {
+- Text: @CODE Javadoc tags are case sensitive}
+

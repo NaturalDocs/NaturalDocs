@@ -1,0 +1,50 @@
+
+&lt;
+- Entity Char: <
+
+
+&gt;
+- Entity Char: >
+
+
+&quot;
+- Entity Char: "
+
+
+&amp;
+- Entity Char: &
+
+
+&unrecognized;
+- Text: &unrecognized;
+
+
+unterminated &amp
+- Text: unterminated 
+- Text: &amp
+
+
+// Quote
+&#34;
+- Entity Char: "
+
+
+// Quote
+&#x22;
+- Entity Char: "
+
+
+
+// Entity chars are case sensitive
+
+&lt;
+- Entity Char: <
+
+
+&Lt;
+- Text: &Lt;
+
+
+&LT;
+- Text: &LT;
+

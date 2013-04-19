@@ -1,0 +1,27 @@
+
+&lt;
+
+&gt;
+
+&quot;
+
+&amp;
+
+&unrecognized;
+
+unterminated &amp
+
+// Quote
+&#34;
+
+// Quote
+&#x22;
+
+
+// Entity chars are case sensitive
+
+&lt;
+
+&Lt;
+
+&LT;

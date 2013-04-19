@@ -1,0 +1,20 @@
+
+Some text.
+
+Some text &amp; an entity char.
+
+Some text <a href="target">and a link</a>.
+
+
+// Handling stray characters
+// ____________________________________________________________________________
+
+Some text & what should have been an entity char.
+
+Some text and < what should have been > entity chars.
+
+Some text and < what should have been entity chars <a href="target">shouldn't break a link</a>.
+
+Some text and an unclosed <tag
+
+Some text and an unclosed entity &char
