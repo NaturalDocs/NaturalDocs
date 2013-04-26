@@ -45,6 +45,146 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 			}
 
 
+		/* Function: Next
+		 * Moves the iterator forward by the passed number of elements, returning whether it's still in bounds.
+		 */
+		public bool Next (int count = 1)
+			{
+			while (count > 0)
+				{
+				if (type == JavadocElementType.OutOfBounds)
+					{  return false;  }
+
+				tokenIterator.NextByCharacters(length);
+				DetermineElement();
+
+				count--;
+				}
+
+			return (type != JavadocElementType.OutOfBounds);
+			}
+
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <JavadocElementType>
+		 */
+		public bool IsOn (JavadocElementType elementType)
+			{
+			return (type == elementType);
+			}
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <JavadocElementType> and tag type.  The tag type is only relevant
+		 * for <JavadocElementType.HTMLTag> or <JavadocElementType.JavadocTag>.
+		 */
+		public bool IsOn (JavadocElementType elementType, string tagType)
+			{
+			#if DEBUG
+			if (elementType != JavadocElementType.HTMLTag && elementType != JavadocElementType.JavadocTag)
+				{  throw new Exception ("Can't call IsOn() with a tag type unless the element type is a HTML or Javadoc tag.");  }
+			#endif
+
+			return (type == elementType && this.tagType == tagType);
+			}
+
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <JavadocElementType>, tag type, and <TagForm>.  This function must be
+		 * used with <JavadocElementType.HTMLTag> since that's the only type where it's relevant.  <JavadocElementType> is
+		 * passed anyway for consistency with other IsOn() functions.
+		 */
+		public bool IsOn (JavadocElementType elementType, string tagType, TagForm tagForm)
+			{
+			#if DEBUG
+			if (elementType != JavadocElementType.HTMLTag)
+				{  throw new Exception ("Can't call IsOn() with a tag form unless the element type is a HTML tag.");  }
+			#endif
+
+			return IsOnHTMLTag(tagType, tagForm);
+			}
+
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <JavadocElementType>, tag type, and <JavadocTagForm>.  This function 
+		 * must be used with <JavadocElementType.JavadocTag> since that's the only type where it's relevant.  <JavadocElementType>
+		 * is passed anyway for consistency with other IsOn() functions.
+		 */
+		public bool IsOn (JavadocElementType elementType, string tagType, JavadocTagForm tagForm)
+			{
+			#if DEBUG
+			if (elementType != JavadocElementType.HTMLTag)
+				{  throw new Exception ("Can't call IsOn() with a tag form unless the element type is a HTML tag.");  }
+			#endif
+
+			return IsOnJavadocTag(tagType, tagForm);
+			}
+
+
+		/* Function: IsOnHTMLTag
+		 * Returns whether the iterator is on the passed HTML tag type.
+		 */
+		public bool IsOnHTMLTag (string tagType)
+			{
+			return (type == JavadocElementType.HTMLTag && this.tagType == tagType);
+			}
+
+
+		/* Function: IsOnHTMLTag
+		 * Returns whether the iterator is on the passed HTML tag type and <TagForm>.
+		 */
+		public bool IsOnHTMLTag (string tagType, TagForm tagForm)
+			{
+			return (type == JavadocElementType.HTMLTag && this.tagType == tagType && HTMLTagForm == tagForm);
+			}
+
+
+		/* Function: IsOnJavadocTag
+		 * Returns whether the iterator is on the passed Javadoc tag type.
+		 */
+		public bool IsOnJavadocTag (string tagType)
+			{
+			return (type == JavadocElementType.JavadocTag && this.tagType == tagType);
+			}
+
+
+		/* Function: IsOnJavadocTag
+		 * Returns whether the iterator is on the passed Javadoc tag type and <JavadocTagForm>.
+		 */
+		public bool IsOnJavadocTag (string tagType, JavadocTagForm tagForm)
+			{
+			return (type == JavadocElementType.JavadocTag && this.tagType == tagType && JavadocTagForm == tagForm);
+			}
+
+
+		/* Function: GetAllHTMLTagProperties
+		 * If <Type> is <JavadocElementType.HTMLTag>, this generates a dictionary of all the properties in the tag, if any.
+		 */
+		public Dictionary<string, string> GetAllHTMLTagProperties ()
+			{
+			if (type != JavadocElementType.HTMLTag)
+			    {  throw new InvalidOperationException();  }
+
+			Dictionary<string, string> properties = new Dictionary<string,string>();
+
+			Match match = HTMLTagRegex.Match(RawText, RawTextIndex, length);
+			CaptureCollection captures = match.Groups[2].Captures;
+
+			foreach (Capture capture in captures)
+			    {
+			    Match propertyMatch = HTMLTagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+			    properties.Add( propertyMatch.Groups[1].ToString(), 
+									  DecodeHTMLPropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
+			    }
+
+			return properties;
+			}
+
+
+
+		// Group: Private Functions
+		// __________________________________________________________________________
+
+
 		/* Function: DetermineElement
 		 * Determines which <JavadocElementType> the iterator is currently on, setting <type> and <length>.
 		 */
@@ -175,50 +315,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 				else
 					{  length = nextElementIndex - RawTextIndex;  }
 				}
-			}
-
-
-		/* Function: Next
-		 * Moves the iterator forward by the passed number of elements, returning whether it's still in bounds.
-		 */
-		public bool Next (int count = 1)
-			{
-			while (count > 0)
-				{
-				if (type == JavadocElementType.OutOfBounds)
-					{  return false;  }
-
-				tokenIterator.NextByCharacters(length);
-				DetermineElement();
-
-				count--;
-				}
-
-			return (type != JavadocElementType.OutOfBounds);
-			}
-
-
-		/* Function: GetAllHTMLTagProperties
-		 * If <Type> is <JavadocElementType.HTMLTag>, this generates a dictionary of all the properties in the tag, if any.
-		 */
-		public Dictionary<string, string> GetAllHTMLTagProperties ()
-			{
-			if (type != JavadocElementType.HTMLTag)
-			    {  throw new InvalidOperationException();  }
-
-			Dictionary<string, string> properties = new Dictionary<string,string>();
-
-			Match match = HTMLTagRegex.Match(RawText, RawTextIndex, length);
-			CaptureCollection captures = match.Groups[2].Captures;
-
-			foreach (Capture capture in captures)
-			    {
-			    Match propertyMatch = HTMLTagPropertyRegex.Match(RawText, capture.Index, capture.Length);
-			    properties.Add( propertyMatch.Groups[1].ToString(), 
-									  DecodeHTMLPropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
-			    }
-
-			return properties;
 			}
 
 
