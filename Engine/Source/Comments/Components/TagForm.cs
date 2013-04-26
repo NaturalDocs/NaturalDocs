@@ -11,11 +11,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 	{
 
 	/* enum: TagForm
-		* 
-		* Opening - An opening tag.
-		* Closing - A closing tag.
-		* Standalone - A standalone tag.
-		*/
+	 * 
+	 * Opening - An opening tag.
+	 * Closing - A closing tag.
+	 * Standalone - A standalone tag.
+	 */
 	public enum TagForm : byte
 		{  Opening, Closing, Standalone  }
 

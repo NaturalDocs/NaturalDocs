@@ -143,6 +143,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 				List.Add( new ListItem(name, description) );
 				}
 
+			public int Count
+				{
+				get
+					{  return List.Count;  }
+				}
+
 			public bool HasNames
 				{
 				get

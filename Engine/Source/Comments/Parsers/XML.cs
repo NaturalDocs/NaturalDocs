@@ -102,7 +102,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				if (TryToGetTopLevelTextBlock(ref iterator, xmlComment) ||
 					TryToGetTopLevelListItem(ref iterator, xmlComment))
 				    {  }
-				else if (iterator.Type == XMLElementType.Tag && iterator.TagForm == TagForm.Opening)
+				else if (iterator.IsOnTag(TagForm.Opening))
 					{  SkipBlock(ref iterator);  }
 				else
 					{  iterator.Next();  }
@@ -126,10 +126,11 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected bool TryToGetTopLevelTextBlock (ref XMLIterator iterator, XMLComment comment)
 			{
-			if ( iterator.Type != XMLElementType.Tag || 
-				 iterator.TagForm != TagForm.Opening ||
-				(iterator.TagType != "summary" && iterator.TagType != "remark" && iterator.TagType != "example" && iterator.TagType != "returns" &&
-				 iterator.TagType != "value") )
+			if (iterator.IsOnTag("summary", TagForm.Opening) == false &&
+				iterator.IsOnTag("remark", TagForm.Opening) == false &&
+				iterator.IsOnTag("example", TagForm.Opening) == false &&
+				iterator.IsOnTag("returns", TagForm.Opening) == false &&
+				iterator.IsOnTag("value", TagForm.Opening) == false)
 				{  return false;  }
 
 			string keyword = iterator.TagType;
@@ -144,9 +145,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			tagStack.CloseAllTags(block.Text);
 
-			if (iterator.Type == XMLElementType.Tag &&
-				iterator.TagType == keyword &&
-				iterator.TagForm == TagForm.Closing)
+			if (iterator.IsOnTag(keyword, TagForm.Closing))
 				{  iterator.Next();  }
 
 			return true;
@@ -159,14 +158,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected bool TryToGetTopLevelListItem (ref XMLIterator iterator, XMLComment comment)
 			{
-			if (iterator.Type != XMLElementType.Tag || iterator.TagForm == TagForm.Closing)
-				{  return false;  }
-			if (iterator.TagForm == TagForm.Opening &&
-				(iterator.TagType != "param" && iterator.TagType != "exception" && iterator.TagType != "permission" &&
-				  iterator.TagType != "typeparam" && iterator.TagType != "see" && iterator.TagType != "seealso") )
-				{  return false;  }
-			if (iterator.TagForm == TagForm.Standalone &&
-				(iterator.TagType != "see" && iterator.TagType != "seealso") )
+			if (iterator.IsOnTag("param", TagForm.Opening) == false &&
+				iterator.IsOnTag("exception", TagForm.Opening) == false &&
+				iterator.IsOnTag("permission", TagForm.Opening) == false &&
+				iterator.IsOnTag("typeparam", TagForm.Opening) == false &&
+				iterator.IsOnTag("see", TagForm.Opening) == false &&
+				iterator.IsOnTag("see", TagForm.Standalone) == false &&
+				iterator.IsOnTag("seealso", TagForm.Opening) == false &&
+				iterator.IsOnTag("seealso", TagForm.Standalone) == false)
 				{  return false;  }
 
 			string keyword = iterator.TagType;
@@ -192,9 +191,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 				description = Normalize(descriptionBuilder.ToString());
 
-				if (iterator.Type == XMLElementType.Tag &&
-					iterator.TagType == keyword &&
-					iterator.TagForm == TagForm.Closing)
+				if (iterator.IsOnTag(keyword, TagForm.Closing))
 					{  iterator.Next();  }
 				}
 			else
@@ -221,99 +218,19 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			while (iterator.IsInBounds)
 				{
 
-				if (iterator.Type == XMLElementType.Tag)
-					{
-					if (iterator.TagType == "para")
-						{
-						// Text can appear both inside and outside of <para> tags, and whitespace can appear between <para> tags that
-						// can be mistaken for content, so rather than put in a lot of logic we handle it in a very dirty but simple way.  Every 
-						// <para> tag--opening, closing, standalone (technically invalid)--causes a paragraph break.  Normalize() will clean it
-						// up for us afterwards.
-
-						tagStack.CloseTag(surroundingPTagIndex + 1, output);  // Reuse our surrounding tag
-						output.Append("</p><p>");
-						iterator.Next();
-						}
-
-					else if (iterator.TagType == "code" && iterator.TagForm == TagForm.Opening)
-						{  
-						output.Append("</p>");
-						GetCode(ref iterator, output, tagStack);  
-						output.Append("<p>");
-						}
-
-					else if (iterator.TagType == "example" && iterator.TagForm == TagForm.Opening)
-						{
-						// <example> can be nested in addition to a top-level tag.
-						output.Append("</p><h>");
-						output.EntityEncodeAndAppend(
-							Engine.Locale.Get("NaturalDocs.Engine", "HTML.XMLHeading.example")
-							);
-						output.Append("</h><p>");
-
-						tagStack.OpenTag("example", "</p><p>");
-						iterator.Next();
-						}
-
-					else if (iterator.TagType == "list" && iterator.TagForm == TagForm.Opening)
-						{
-						output.Append("</p>");
-						GetList(ref iterator, output, tagStack);
-						output.Append("<p>");
-						}
-
-					else if (iterator.TagType == "paramref" || iterator.TagType == "typeparamref")
-						{
-						output.EntityEncodeAndAppend(iterator.TagProperty("name"));
-						iterator.Next();
-						}
-
-					else if (iterator.TagType == "see" && iterator.TagForm == TagForm.Standalone)
-						{
-						output.Append("<link type=\"naturaldocs\" originaltext=\"");
-						output.EntityEncodeAndAppend(iterator.TagProperty("cref"));
-						output.Append("\">");
-
-						iterator.Next();
-						}
-
-					else
-						{
-						if (iterator.TagForm == TagForm.Opening)
-							{  
-							tagStack.OpenTag(iterator.TagType);  
-							}
-
-						else if (iterator.TagForm == TagForm.Closing)
-							{
-							int openingTagIndex = tagStack.FindTag(iterator.TagType);
-
-							if (openingTagIndex == -1)
-								{  }
-							else if (openingTagIndex < surroundingPTagIndex)
-								{  break;  }
-							else
-								{  tagStack.CloseTag(openingTagIndex, output);  }
-							}
-
-						iterator.Next();
-						}
-
-					}
-
-				else if (iterator.Type == XMLElementType.Text)
+				if (iterator.IsOn(XMLElementType.Text))
 					{
 					output.EntityEncodeAndAppend(iterator.String);
 					iterator.Next();
 					}
 
-				else if (iterator.Type == XMLElementType.EntityChar)
+				else if (iterator.IsOn(XMLElementType.EntityChar))
 					{
 					output.EntityEncodeAndAppend(iterator.EntityValue);
 					iterator.Next();
 					}
 
-				else if (iterator.Type == XMLElementType.LineBreak)
+				else if (iterator.IsOn(XMLElementType.LineBreak))
 					{
 					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide 
 					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert 
@@ -323,9 +240,85 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 					}
 
+				else if (iterator.IsOnTag("para"))
+					{
+					// Text can appear both inside and outside of <para> tags, and whitespace can appear between <para> tags that
+					// can be mistaken for content, so rather than put in a lot of logic we handle it in a very dirty but simple way.  Every 
+					// <para> tag--opening, closing, standalone (technically invalid)--causes a paragraph break.  Normalize() will clean it
+					// up for us afterwards.
+
+					tagStack.CloseTag(surroundingPTagIndex + 1, output);  // Reuse our surrounding tag
+					output.Append("</p><p>");
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag("code", TagForm.Opening))
+					{  
+					output.Append("</p>");
+					GetCode(ref iterator, output, tagStack);  
+					output.Append("<p>");
+					}
+
+				else if (iterator.IsOnTag("example", TagForm.Opening))
+					{
+					// <example> can be nested in addition to a top-level tag.
+					output.Append("</p><h>");
+					output.EntityEncodeAndAppend(
+						Engine.Locale.Get("NaturalDocs.Engine", "HTML.XMLHeading.example")
+						);
+					output.Append("</h><p>");
+
+					tagStack.OpenTag("example", "</p><p>");
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag("list", TagForm.Opening))
+					{
+					output.Append("</p>");
+					GetList(ref iterator, output, tagStack);
+					output.Append("<p>");
+					}
+
+				else if (iterator.IsOnTag("paramref") || 
+						  iterator.IsOnTag("typeparamref"))
+					{
+					output.EntityEncodeAndAppend(iterator.TagProperty("name"));
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag("see", TagForm.Standalone))
+					{
+					output.Append("<link type=\"naturaldocs\" originaltext=\"");
+					output.EntityEncodeAndAppend(iterator.TagProperty("cref"));
+					output.Append("\">");
+
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag(TagForm.Opening))
+					{  
+					tagStack.OpenTag(iterator.TagType);
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag(TagForm.Closing))
+					{
+					int openingTagIndex = tagStack.FindTag(iterator.TagType);
+
+					if (openingTagIndex == -1)
+						{  }
+					else if (openingTagIndex < surroundingPTagIndex)
+						{  break;  }
+					else
+						{  tagStack.CloseTag(openingTagIndex, output);  }
+
+					iterator.Next();
+					}
+
 				else
 					{
 					// Ignore indent.  Spaces between words will be handled by line breaks.
+					// Ignore unrecognized standalone tags.
 					iterator.Next();
 					}
 				}
@@ -345,47 +338,19 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			while (iterator.IsInBounds)
 				{
 
-				if (iterator.Type == XMLElementType.Tag)
-					{
-					if (iterator.TagType == "paramref" || iterator.TagType == "typeparamref")
-						{
-						output.Append(iterator.TagProperty("name"));
-						iterator.Next();
-						}
-
-					else if (iterator.TagForm == TagForm.Opening)
-						{  
-						tagStack.OpenTag(iterator.TagType);  
-						}
-
-					else if (iterator.TagForm == TagForm.Closing)
-						{
-						int openingTagIndex = tagStack.FindTag(iterator.TagType);
-
-						if (openingTagIndex == -1)
-							{  }
-						else if (openingTagIndex <= surroundingTagCount - 1)
-							{  break;  }
-						else
-							{  tagStack.CloseTag(openingTagIndex, output);  }
-						}
-
-					iterator.Next();
-					}
-
-				else if (iterator.Type == XMLElementType.Text)
+				if (iterator.IsOn(XMLElementType.Text))
 					{
 					output.EntityEncodeAndAppend(iterator.String);
 					iterator.Next();
 					}
 
-				else if (iterator.Type == XMLElementType.EntityChar)
+				else if (iterator.IsOn(XMLElementType.EntityChar))
 					{
 					output.EntityEncodeAndAppend(iterator.EntityValue);
 					iterator.Next();
 					}
 
-				else if (iterator.Type == XMLElementType.LineBreak)
+				else if (iterator.IsOn(XMLElementType.LineBreak))
 					{
 					// Add a literal line break.  We'll replace these with spaces or double spaces later.  Right now we can't decide 
 					// which it should be because you can't run a regex directly on a StringBuilder and it would be inefficient to convert 
@@ -395,9 +360,37 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 					}
 
+				else if (iterator.IsOnTag("paramref") || 
+						  iterator.IsOnTag("typeparamref"))
+					{
+					output.Append(iterator.TagProperty("name"));
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag(TagForm.Opening))
+					{
+					tagStack.OpenTag(iterator.TagType);  
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag(TagForm.Closing))
+					{
+					int openingTagIndex = tagStack.FindTag(iterator.TagType);
+
+					if (openingTagIndex == -1)
+						{  }
+					else if (openingTagIndex <= surroundingTagCount - 1)
+						{  break;  }
+					else
+						{  tagStack.CloseTag(openingTagIndex, output);  }
+
+					iterator.Next();
+					}
+
 				else
 					{
 					// Ignore indent.  Spaces between words will be handled by line breaks.
+					// Ignore unrecognized standalone tags.
 					iterator.Next();
 					}
 				}
@@ -414,9 +407,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected void GetCode (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
 			{
 			#if DEBUG
-			if (iterator.Type != XMLElementType.Tag ||
-				iterator.TagType != "code" ||
-				iterator.TagForm != TagForm.Opening)
+			if (iterator.IsOnTag("code", TagForm.Opening) == false)
 				{  throw new Exception("GetCode() can only be called when the iterator is on an opening code tag.");  }
 			#endif
 
@@ -435,13 +426,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			for (;;)
 				{
-				if (iterator.Type == XMLElementType.OutOfBounds)
+				if (iterator.IsInBounds == false)
 					{
 					lines.Add(currentLine);
 					break;
 					}
-				else if (iterator.Type == XMLElementType.Tag &&
-						  iterator.TagForm == TagForm.Closing)
+				else if (iterator.IsOnTag(TagForm.Closing))
 					{
 					int openingTagIndex = tagStack.FindTag(iterator.TagType);
 
@@ -454,7 +444,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					// Otherwise let it fall through to be treated as text.
 					}
 
-				if (iterator.Type == XMLElementType.LineBreak)
+				if (iterator.IsOn(XMLElementType.LineBreak))
 					{
 					lines.Add(currentLine);
 
@@ -462,7 +452,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					currentLine.Indent = 0;
 					currentLine.Text = null;
 					}
-				else if (iterator.Type == XMLElementType.Indent)
+				else if (iterator.IsOn(XMLElementType.Indent))
 					{
 					currentLine.Indent = iterator.Indent;
 					}
@@ -477,64 +467,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				iterator.Next();
 				}
 
-
-			// Trim lines and make sure all blank lines are null with an indent of -1.  We'll be finding the shared indent later and
-			// we don't want to count unindented blank lines against it.
-
-			for (int i = 0; i < lines.Count; i++)
-				{
-				if (lines[i].Text != null)
-					{  
-					// Have to do it this way because CodeLine is a struct.
-					CodeLine temp = lines[i];
-					temp.Text = temp.Text.Trim();
-					lines[i] = temp;
-					}
-
-				if (lines[i].Text == null || lines[i].Text.Length == 0)
-					{
-					CodeLine temp = new CodeLine();
-					temp.Text = null;
-					temp.Indent = -1;
-					lines[i] = temp;
-					}
-				}
-
-
-			// Remove blank lines at the end and the beginning of the block.
-
-			for (int i = lines.Count - 1; i >= 0; i--)
-				{
-				if (lines[i].Text == null)
-					{  lines.RemoveAt(i);  }
-				else
-					{  break;  }
-				}
-
-			while (lines.Count > 0 && lines[0].Text == null)
-				{  lines.RemoveAt(0);  }
-
-
-			// Find the smallest indent on lines with content.
-
-			int sharedIndent = -1;
-
-			foreach (var line in lines)
-				{
-				if (line.Indent != -1 && (sharedIndent == -1 || line.Indent < sharedIndent))
-					{  sharedIndent = line.Indent;  }
-				}
-
-			if (sharedIndent == -1)
-				{  sharedIndent = 0;  }
+			Normalize(lines);
 
 
 			// Build the output.
 
 			for (int i = 0; i < lines.Count; i++)
 				{
-				if (lines[i].Indent != -1)
-					{  output.Append(' ', lines[i].Indent - sharedIndent);  }
+				if (lines[i].Indent >= 1)
+					{  output.Append(' ', lines[i].Indent);  }
 
 				if (lines[i].Text != null)
 					{  output.EntityEncodeAndAppend(lines[i].Text);  }
@@ -554,9 +495,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected void GetList (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
 			{
 			#if DEBUG
-			if (iterator.Type != XMLElementType.Tag ||
-				iterator.TagType != "list" ||
-				iterator.TagForm != TagForm.Opening)
+			if (iterator.IsOnTag("list", TagForm.Opening) == false)
 				{  throw new Exception("GetList() can only be called when the iterator is on an opening list tag.");  }
 			#endif
 
@@ -571,93 +510,89 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			while (iterator.IsInBounds)
 				{
-				if (iterator.Type == XMLElementType.Tag)
-					{
-					if (iterator.TagType == "list" && iterator.TagForm == TagForm.Closing)
-						{  
-						iterator.Next();
-						break;  
-						}
-
-					else if (iterator.TagType == "item" || iterator.TagType == "listheader")
-						{
-						if (iterator.TagForm == TagForm.Opening)
-							{  
-							currentItem = new ListItem();  
-							currentItem.IsHeading = (iterator.TagType == "listheader");
-							}
-
-						else if (iterator.TagForm == TagForm.Closing)
-							{
-							if (currentItem.Term != null)
-								{
-								currentItem.Term = Normalize(currentItem.Term.Trim());
-
-								if (currentItem.Term == "")
-									{  currentItem.Term = null;  }
-								else if (currentItem.IsHeading)
-									{  currentItem.Term = "<b>" + currentItem.Term + "</b>";  }
-								}
-
-							if (currentItem.Description != null)
-								{
-								currentItem.Description = Normalize(currentItem.Description.Trim());
-
-								if (currentItem.Description == "")
-									{  currentItem.Description = null;  }
-								else if (currentItem.IsHeading)
-									{
-									currentItem.Description = currentItem.Description.Replace("<p>", "<p><b>");
-									currentItem.Description = currentItem.Description.Replace("</p>", "</b></p>");
-									}
-								}
-
-							if (currentItem.Term != null || currentItem.Description != null)
-								{  items.Add(currentItem);  }
-
-							currentItem = new ListItem();
-							}
-
-						iterator.Next();
-						}
-
-					else if (iterator.TagType == "term" && iterator.TagForm == TagForm.Opening)
-						{
-						tagStack.OpenTag("term");
-						iterator.Next();
-
-						stringBuilder.Remove(0, stringBuilder.Length);
-						GetSimpleText(ref iterator, stringBuilder, tagStack);
-						currentItem.Term = stringBuilder.ToString();
-
-						if (iterator.TagType == "term" && iterator.TagForm == TagForm.Closing)
-							{  iterator.Next();  }
-
-						tagStack.CloseTag("term");
-						}
-
-					else if (iterator.TagType == "description" && iterator.TagForm == TagForm.Opening)
-						{
-						tagStack.OpenTag("description");
-						iterator.Next();
-
-						stringBuilder.Remove(0, stringBuilder.Length);
-						GetText(ref iterator, stringBuilder, tagStack);
-						currentItem.Description = stringBuilder.ToString();
-
-						if (iterator.TagType == "description" && iterator.TagForm == TagForm.Closing)
-							{  iterator.Next();  }
-
-						tagStack.CloseTag("description");
-						}
-
-					else if (iterator.TagForm == TagForm.Opening)
-						{  SkipBlock(ref iterator);  }
-					else
-						{  iterator.Next();  }
+				if (iterator.IsOnTag("list", TagForm.Closing))
+					{  
+					iterator.Next();
+					break;  
 					}
 
-				else // not a tag
+				else if (iterator.IsOnTag("item") ||
+						  iterator.IsOnTag("listheader"))
+					{
+					if (iterator.TagForm == TagForm.Opening)
+						{  
+						currentItem = new ListItem();  
+						currentItem.IsHeading = (iterator.TagType == "listheader");
+						}
+
+					else if (iterator.TagForm == TagForm.Closing)
+						{
+						if (currentItem.Term != null)
+							{
+							currentItem.Term = Normalize(currentItem.Term.Trim());
+
+							if (currentItem.Term == "")
+								{  currentItem.Term = null;  }
+							else if (currentItem.IsHeading)
+								{  currentItem.Term = "<b>" + currentItem.Term + "</b>";  }
+							}
+
+						if (currentItem.Description != null)
+							{
+							currentItem.Description = Normalize(currentItem.Description.Trim());
+
+							if (currentItem.Description == "")
+								{  currentItem.Description = null;  }
+							else if (currentItem.IsHeading)
+								{
+								currentItem.Description = currentItem.Description.Replace("<p>", "<p><b>");
+								currentItem.Description = currentItem.Description.Replace("</p>", "</b></p>");
+								}
+							}
+
+						if (currentItem.Term != null || currentItem.Description != null)
+							{  items.Add(currentItem);  }
+
+						currentItem = new ListItem();
+						}
+
+					iterator.Next();
+					}
+
+				else if (iterator.IsOnTag("term", TagForm.Opening))
+					{
+					tagStack.OpenTag("term");
+					iterator.Next();
+
+					stringBuilder.Remove(0, stringBuilder.Length);
+					GetSimpleText(ref iterator, stringBuilder, tagStack);
+					currentItem.Term = stringBuilder.ToString();
+
+					if (iterator.TagType == "term" && iterator.TagForm == TagForm.Closing)
+						{  iterator.Next();  }
+
+					tagStack.CloseTag("term");
+					}
+
+				else if (iterator.IsOnTag("description", TagForm.Opening))
+					{
+					tagStack.OpenTag("description");
+					iterator.Next();
+
+					stringBuilder.Remove(0, stringBuilder.Length);
+					GetText(ref iterator, stringBuilder, tagStack);
+					currentItem.Description = stringBuilder.ToString();
+
+					if (iterator.TagType == "description" && iterator.TagForm == TagForm.Closing)
+						{  iterator.Next();  }
+
+					tagStack.CloseTag("description");
+					}
+
+				else if (iterator.IsOnTag(TagForm.Opening))
+					{  SkipBlock(ref iterator);  }
+
+				else
 					{  iterator.Next();  }
 				}
 
@@ -728,7 +663,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		protected void SkipBlock (ref XMLIterator iterator)
 			{
 			#if DEBUG
-			if (iterator.Type != XMLElementType.Tag || iterator.TagForm != TagForm.Opening)
+			if (iterator.IsOnTag(TagForm.Opening) == false)
 				{  throw new Exception("Can only call SkipBlock() when the iterator is on an opening tag.");  }
 			#endif
 
@@ -810,10 +745,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					{
 					BlockComment.ListBlock listBlock = (BlockComment.ListBlock)block;
 
-					if (listBlock.List.Count > 0)
+					if (listBlock.Count > 0)
 						{
 						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "HTML.XMLHeading." + listBlock.Type + "(count)", null, 
-																			  listBlock.List.Count);
+																			  listBlock.Count);
 
 						if (heading != null)
 							{
@@ -883,17 +818,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-
-		/* __________________________________________________________________________
-		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Parsers.XML.CodeLine
-		 * __________________________________________________________________________
-		 */
-		private struct CodeLine
-			{
-			public int Indent;
-			public string Text;
-			}
 
 		/* __________________________________________________________________________
 		 * 

@@ -11,6 +11,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine.Topics;
 
 
@@ -131,6 +132,82 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			}
 
 
+		/* Function: Normalize
+		 * 
+		 * Cleans up the list of <CodeLines>.
+		 * 
+		 * - Trims whitespace from all lines.
+		 * - Replaces empty lines with Text null, Indent -1.
+		 * - Removes empty lines from the beginning and end of the list.
+		 * - Removes shared indent.
+		 */
+		protected void Normalize (List<CodeLine> lines)
+			{
+			// Trim lines and make sure all blank lines are null with an indent of -1.  We'll be finding the shared indent later and
+			// we don't want to count unindented blank lines against it.
+
+			for (int i = 0; i < lines.Count; i++)
+				{
+				if (lines[i].Text != null)
+					{  
+					// Have to do it this way because CodeLine is a struct.
+					CodeLine temp = lines[i];
+					temp.Text = temp.Text.Trim();
+					lines[i] = temp;
+					}
+
+				if (lines[i].Text == null || lines[i].Text.Length == 0)
+					{
+					CodeLine temp = new CodeLine();
+					temp.Text = null;
+					temp.Indent = -1;
+					lines[i] = temp;
+					}
+				}
+
+
+			// Remove blank lines at the end and the beginning of the block.
+
+			for (int i = lines.Count - 1; i >= 0; i--)
+				{
+				if (lines[i].Text == null)
+					{  lines.RemoveAt(i);  }
+				else
+					{  break;  }
+				}
+
+			while (lines.Count > 0 && lines[0].Text == null)
+				{  lines.RemoveAt(0);  }
+
+
+			// Find the smallest indent on lines with content.
+
+			int sharedIndent = -1;
+
+			foreach (var line in lines)
+				{
+				if (line.Indent != -1 && (sharedIndent == -1 || line.Indent < sharedIndent))
+					{  sharedIndent = line.Indent;  }
+				}
+
+
+			// Remove shared indent from all lines
+
+			if (sharedIndent >= 1)
+				{  
+				for (int i = 0; i < lines.Count; i++)
+					{
+					if (lines[i].Indent != -1)
+						{
+						CodeLine temp = lines[i];
+						temp.Indent -= sharedIndent;
+						lines[i] = temp;
+						}
+					}
+				}
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
@@ -144,6 +221,19 @@ namespace GregValure.NaturalDocs.Engine.Comments
 
 		protected static Regex.Comments.LineBreakWhichProbablyEndsSentence LineBreakWhichProbablyEndsSentenceRegex = 
 			new Regex.Comments.LineBreakWhichProbablyEndsSentence();
+
+
+
+		/* __________________________________________________________________________
+		 * 
+		 * Struct: GregValure.NaturalDocs.Engine.Comments.Parser.CodeLine
+		 * __________________________________________________________________________
+		 */
+		protected struct CodeLine
+			{
+			public int Indent;
+			public string Text;
+			}
 
 		}
 	}
