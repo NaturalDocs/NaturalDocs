@@ -45,6 +45,122 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 			}
 
 
+		/* Function: Next
+		 * Moves the iterator forward by the passed number of elements, returning whether it's still in bounds.
+		 */
+		public bool Next (int count = 1)
+			{
+			while (count > 0)
+				{
+				if (type == XMLElementType.OutOfBounds)
+					{  return false;  }
+
+				tokenIterator.NextByCharacters(length);
+				DetermineElement();
+
+				count--;
+				}
+
+			return (type != XMLElementType.OutOfBounds);
+			}
+
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <XMLElementType>
+		 */
+		public bool IsOn (XMLElementType elementType)
+			{
+			return (type == elementType);
+			}
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <XMLElementType> and tag type.  This function must be used with
+		 * <XMLElementType.Tag> since that the only type where tag type is revelant.  <XMLElementType> is passed anyway
+		 * for consistency with other IsOn() functions.
+		 */
+		public bool IsOn (XMLElementType elementType, string tagType)
+			{
+			#if DEBUG
+			if (elementType != XMLElementType.Tag)
+				{  throw new Exception ("Can't call IsOn() with a tag type unless the element type is an XML tag.");  }
+			#endif
+
+			return IsOnTag(tagType);
+			}
+
+
+		/* Function: IsOn
+		 * Returns whether the iterator is on the passed <XMLElementType>, tag type, and <TagForm>.  This function must be
+		 * used with <XMLElementType.Tag> since that's the only type where it's relevant.  <XMLElementType> is passed anyway 
+		 * for consistency with other IsOn() functions.
+		 */
+		public bool IsOn (XMLElementType elementType, string tagType, TagForm tagForm)
+			{
+			#if DEBUG
+			if (elementType != XMLElementType.Tag)
+				{  throw new Exception ("Can't call IsOn() with a tag form unless the element type is an XML tag.");  }
+			#endif
+
+			return IsOnTag(tagType, tagForm);
+			}
+
+
+		/* Function: IsOnTag
+		 * Returns whether the iterator is on the passed XML tag type.
+		 */
+		public bool IsOnTag (string tagType)
+			{
+			return (type == XMLElementType.Tag && this.tagType == tagType);
+			}
+
+
+		/* Function: IsOnTag
+		 * Returns whether the iterator is on any XML tag of the passed <TagForm>.
+		 */
+		public bool IsOnTag (TagForm tagForm)
+			{
+			return (type == XMLElementType.Tag && this.TagForm == tagForm);
+			}
+
+
+		/* Function: IsOnTag
+		 * Returns whether the iterator is on the passed XML tag type and <TagForm>.
+		 */
+		public bool IsOnTag (string tagType, TagForm tagForm)
+			{
+			return (type == XMLElementType.Tag && this.tagType == tagType && this.TagForm == tagForm);
+			}
+
+
+		/* Function: GetAllTagProperties
+		 * If <Type> is <XMLElementType.Tag>, this generates a dictionary of all the properties in the tag, if any.
+		 */
+		public Dictionary<string, string> GetAllTagProperties ()
+			{
+			if (type != XMLElementType.Tag)
+				{  throw new InvalidOperationException();  }
+
+			Dictionary<string, string> properties = new Dictionary<string,string>();
+
+			Match match = TagRegex.Match(RawText, RawTextIndex, length);
+			CaptureCollection captures = match.Groups[2].Captures;
+
+			foreach (Capture capture in captures)
+				{
+				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
+				properties.Add( propertyMatch.Groups[1].ToString(), 
+										DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
+				}
+
+			return properties;
+			}
+
+
+
+		// Group: Private Functions
+		// __________________________________________________________________________
+
+
 		/* Function: DetermineElement
 		 * Determines which <XMLElementType> the iterator is currently on, setting <type> and <length>.
 		 */
@@ -131,50 +247,6 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 				else
 					{  length = nextElementIndex - RawTextIndex;  }
 				}
-			}
-
-
-		/* Function: Next
-		 * Moves the iterator forward by the passed number of elements, returning whether it's still in bounds.
-		 */
-		public bool Next (int count = 1)
-			{
-			while (count > 0)
-				{
-				if (type == XMLElementType.OutOfBounds)
-					{  return false;  }
-
-				tokenIterator.NextByCharacters(length);
-				DetermineElement();
-
-				count--;
-				}
-
-			return (type != XMLElementType.OutOfBounds);
-			}
-
-
-		/* Function: GetAllTagProperties
-		 * If <Type> is <XMLElementType.Tag>, this generates a dictionary of all the properties in the tag, if any.
-		 */
-		public Dictionary<string, string> GetAllTagProperties ()
-			{
-			if (type != XMLElementType.Tag)
-				{  throw new InvalidOperationException();  }
-
-			Dictionary<string, string> properties = new Dictionary<string,string>();
-
-			Match match = TagRegex.Match(RawText, RawTextIndex, length);
-			CaptureCollection captures = match.Groups[2].Captures;
-
-			foreach (Capture capture in captures)
-				{
-				Match propertyMatch = TagPropertyRegex.Match(RawText, capture.Index, capture.Length);
-				properties.Add( propertyMatch.Groups[1].ToString(), 
-										DecodePropertyValue(propertyMatch.Groups[2].Index, propertyMatch.Groups[2].Length) );
-				}
-
-			return properties;
 			}
 
 
