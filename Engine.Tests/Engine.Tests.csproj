@@ -98,6 +98,7 @@
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\CSharp.cs" />
     <Compile Include="Source\Output\HTML\CodeSections.cs" />
+    <Compile Include="Source\Output\HTML\Links.cs" />
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\CSharp.cs" />

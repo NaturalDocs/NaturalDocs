@@ -1,0 +1,15 @@
+<a name="Natural_Docs_bracketed"></a>
+-----
+<a href="http://www.website.com" target="_top">http://&#8203;www&#8203;.website&#8203;.com</a>
+-----
+<a name="Natural_Docs_bare"></a>
+-----
+<a href="http://www.website.com" target="_top">http://&#8203;www&#8203;.website&#8203;.com</a>
+-----
+<a name="Natural_Docs_named"></a>
+-----
+<a href="http://www.website.com" target="_top">web site</a>
+-----
+<a name="JavadocHTML"></a>
+-----
+<a href="http://www.website.com" target="_top">web site</a>

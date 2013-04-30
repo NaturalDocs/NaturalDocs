@@ -1,0 +1,19 @@
+<a name="Natural_Docs_bracketed"></a>
+-----
+<a href="#" onclick="javascript:location.href='ma\u0069'+'lto\u003a'+'em'+'ail'+'\u0040'+'addre'+'ss\u002ecom';return false;">em<span style="display: none">[xxx]</span>ail<span>&#64;</span>addre<span style="display: none">[xxx]</span>ss&#46;com</a>
+-----
+<a name="Natural_Docs_bare"></a>
+-----
+<a href="#" onclick="javascript:location.href='ma\u0069'+'lto\u003a'+'em'+'ail'+'\u0040'+'addre'+'ss\u002ecom';return false;">em<span style="display: none">[xxx]</span>ail<span>&#64;</span>addre<span style="display: none">[xxx]</span>ss&#46;com</a>
+-----
+<a name="Natural_Docs_named"></a>
+-----
+<a href="#" onclick="javascript:location.href='ma\u0069'+'lto\u003a'+'em'+'ail'+'\u0040'+'addre'+'ss\u002ecom';return false;">somebody</a>
+-----
+<a name="JavadocHTML"></a>
+-----
+<a href="#" onclick="javascript:location.href='ma\u0069'+'lto\u003a'+'em'+'ail'+'\u0040'+'addre'+'ss\u002ecom';return false;">somebody</a>
+-----
+<a name="JavadocHTMLWithSubject"></a>
+-----
+<a href="#" onclick="javascript:location.href='ma\u0069'+'lto\u003a'+'em'+'ail'+'\u0040'+'address\u002ecom?Su'+'bject=Something';return false;">somebody</a>
