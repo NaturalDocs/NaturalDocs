@@ -37,6 +37,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 
 			naturalDocsParser = new Parsers.NaturalDocs();
 			xmlParser = new Parsers.XML();
+			javadocParser = new Parsers.Javadoc();
 			}
 			
 			
@@ -50,7 +51,8 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			{
 			return (lineFinder.Start(errors) &&
 					  naturalDocsParser.Start(errors) &&
-					  xmlParser.Start(errors));
+					  xmlParser.Start(errors) &&
+					  javadocParser.Start(errors));
 			}
 			
 			
@@ -68,17 +70,21 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			if (naturalDocsParser.Parse(comment, topics, true) == true)
 				{  return true;  }
 				
-			if (comment.Javadoc || comment.XML)
-				{
-				// Next try XML.  XML can actually use the Javadoc comment style as well.
-				if (xmlParser.Parse(comment, topics) == true)
-					{  return true;  }
+			// Next try Javadoc.  We test this before XML so it's not mistaken for it if it starts with a HTML tag.
+			if (comment.Javadoc && 
+				javadocParser.Parse(comment, topics) == true)
+				{  return true;  }
 
-				// XXX Next try Javadoc
+			// Next try XML.  XML can actually use the Javadoc comment style as well.
+			if ((comment.XML || comment.Javadoc) &&
+				xmlParser.Parse(comment, topics) == true)
+				{  return true;  }
 
-				// If neither of them were able to parse it, we assume it's a headerless Natural Docs comment.
-				return naturalDocsParser.Parse(comment, topics, false);
-				}
+			// If neither of them were able to parse it, we can assume comments using the XML or Javadoc styles are headerless 
+			// Natural Docs comments.
+			if ((comment.Javadoc || comment.XML) &&
+				naturalDocsParser.Parse(comment, topics, false) == true)
+				{  return true;  }
 				
 			return false;
 			}
@@ -117,6 +123,16 @@ namespace GregValure.NaturalDocs.Engine.Comments
 			get
 				{  return xmlParser;  }
 			}
+
+
+		/* Property: JavadocParser
+		 * A reference to <Parsers.Javadoc>.
+		 */
+		public Parsers.Javadoc JavadocParser
+			{
+			get
+				{  return javadocParser;  }
+			}
 			
 			
 
@@ -128,6 +144,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 		
 		protected Parsers.NaturalDocs naturalDocsParser;
 		protected Parsers.XML xmlParser;
+		protected Parsers.Javadoc javadocParser;
 		
 		}
 	}

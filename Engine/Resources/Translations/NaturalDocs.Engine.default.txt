@@ -67,7 +67,7 @@ TimeStamp.ShortMonth12: Dec
 
 
 #
-# XML
+# Javadoc and XML
 #______________________________________________________________________________
 
 XML.Heading.example: Example
@@ -77,6 +77,19 @@ XML.Heading.permission(count): Permissions
 XML.Heading.returns: Returns
 XML.Heading.seealso(count): See Also
 XML.Heading.typeparam(count): Type {0s?Parameters:Parameter}
+
+Javadoc.Heading.author(count): {0s?Authors:Author}
+Javadoc.Heading.deprecated: Deprecated
+Javadoc.Heading.exception(count): Exceptions
+Javadoc.Heading.param(count): {0s?Parameters:Parameter}
+Javadoc.Heading.return: Returns
+Javadoc.Heading.see(count): See Also
+Javadoc.Heading.since(count): Since
+Javadoc.Heading.throws(count): Throws
+Javadoc.Heading.version(count): Version
+
+Javadoc.Substitution.value: the value
+Javadoc.Substitution.value(symbol): the value of {0}
 
 
 

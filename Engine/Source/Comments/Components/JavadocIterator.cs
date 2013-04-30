@@ -421,7 +421,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		/* Property: JavadocTagValue
 		 * If <Type> is <JavadocElementType.JavadocTag> and <JavadocTagForm> is <JavadocTagForm.Inline>, this 
-		 * is the content of the tag.
+		 * is the content of the tag.  If there is none it will return null.
 		 */
 		public string JavadocTagValue
 			{
@@ -442,7 +442,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 				end.Previous();  // }
 				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-				return tokenIterator.Tokenizer.TextBetween(start, end);
+				if (end > start)
+					{  return tokenIterator.Tokenizer.TextBetween(start, end);  }
+				else
+					{  return null;  }
 				}
 			}
 

@@ -1723,7 +1723,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		/* Function: IsURLProtocol
 		 * Returns whether the passed string is a valid URL protocol.  Must not include the colon.
 		 */
-		protected bool IsURLProtocol (string input)
+		public bool IsURLProtocol (string input)
 			{
 			return sets[(int)SetIndex.URLProtocols].Contains(input);
 			}

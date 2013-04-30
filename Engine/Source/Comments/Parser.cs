@@ -125,6 +125,8 @@ namespace GregValure.NaturalDocs.Engine.Comments
 
 			ndMarkup = EmptyParagraphsRegex.Replace(ndMarkup, "");
 
+			ndMarkup = ndMarkup.Trim();
+
 			if (ndMarkup.Length == 0)
 				{  ndMarkup = null;  }
 

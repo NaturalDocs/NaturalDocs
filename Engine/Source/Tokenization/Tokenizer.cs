@@ -505,7 +505,7 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			//		- Tokenizer.Load()
 			//		- SimpleTokenIterator.GetTokenLength()
 			//		- lineBreakChars
-			//		- Comments.Parsers.XMLIterator for line break chars
+			//		- Comments.Parsers.XML/Javadoc Iterator for line break chars
 			
 			char maskedCharacter = (char)(character | 0x0020);  // Converts A-Z to a-z
 				
