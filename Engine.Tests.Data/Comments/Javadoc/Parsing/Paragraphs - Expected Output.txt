@@ -1,0 +1,9 @@
+<p>Text without p tags.</p><h>Returns</h><p>x</p>
+-----
+<p>Paragraph 1</p><p>Paragraph 2</p><h>Returns</h><p>x</p>
+-----
+<p>Text before paragraph.</p><p>Paragraph.</p><p>Text after paragraph.</p><h>Returns</h><p>x</p>
+-----
+<p>Text before p tag.</p><p>Text after unclosed p tag.</p><p>Text after another unclosed p tag.</p><h>Returns</h><p>x</p>
+-----
+<p>Text before p tag.</p><p>Text after standalone p tag.</p><p>Text after another standalone p tag.</p><h>Returns</h><p>x</p>

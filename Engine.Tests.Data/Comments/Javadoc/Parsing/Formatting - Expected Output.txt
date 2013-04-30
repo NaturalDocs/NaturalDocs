@@ -1,0 +1,15 @@
+<p>Some <b>bold</b> and <b>strong</b> text.</p><h>Returns</h><p>x</p>
+-----
+<p>Some <i>italic</i> and <i>emphasized</i> text.</p><h>Returns</h><p>x</p>
+-----
+<p>Some <u>underlined</u> text.</p><h>Returns</h><p>x</p>
+-----
+<p><b><i>Bold and italic.</i></b>  <u>underline <b>and strong</b> back to just underline.</u></p><h>Returns</h><p>x</p>
+-----
+<p>Plain text <b>and unterminated bold.</b></p><h>Returns</h><p>x</p>
+-----
+<p>Plain text with <b>unterminated bold</b></p><p>and a second paragraph.</p><h>Returns</h><p>x</p>
+-----
+<p>First paragraph with <b>unterminated bold</b></p><p>Second paragraph.</p><h>Returns</h><p>x</p>
+-----
+<p>Plain <b>start bold <u>start underline</u></b> end bold end underline.</p><h>Returns</h><p>x</p>

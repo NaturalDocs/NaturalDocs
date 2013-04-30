@@ -1,0 +1,9 @@
+<ul><li><p>Unordered item 1</p></li><li><p>Unordered item 2</p></li></ul><h>Returns</h><p>x</p>
+-----
+<ul><li><p>Ordered item 1</p></li><li><p>Ordered item 2</p></li></ul><h>Returns</h><p>x</p>
+-----
+<ul><li><p>Unordered item 1</p><ul><li><p>Nested unordered item 1</p></li><li><p>Nested unordered item 2</p></li></ul></li><li><p>Unordered item 2</p><ul><li><p>Nested ordered item 1</p></li><li><p>Nested ordered item 2</p></li></ul></li></ul><h>Returns</h><p>x</p>
+-----
+<ul><li><p>Unordered item 1 with block paragraphs</p><p>Paragraph 2</p></li><li><p>Unordered item 2 with standalone paragraphs</p><p>Paragraph 2</p></li></ul><h>Returns</h><p>x</p>
+-----
+<ul><li><p>Unordered item 1 <b>with formatting</b></p></li><li><p>Unordered item 2 <i>with formatting</i></p></li></ul><h>Returns</h><p>x</p>

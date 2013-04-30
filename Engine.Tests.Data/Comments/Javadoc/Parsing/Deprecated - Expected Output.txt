@@ -1,0 +1,5 @@
+<p><i><b>Deprecated:</b> Deprecation note</i></p>
+-----
+<p><i><b>Deprecated:</b> Deprecation note with <u>formatting</u></i></p><p><i>and paragraphs.</i></p><p>Body</p>
+-----
+<p><i><b>Deprecated:</b> Deprecation note spanning multiple lines.</i></p><p>Body</p><p>with paragraphs.</p>

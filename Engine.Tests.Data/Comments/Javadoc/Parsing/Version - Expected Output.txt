@@ -1,0 +1,7 @@
+<h>Version</h><p>Description</p>
+-----
+<h>Version</h><p>Description with <i>formatting</i></p><p>and paragraphs.</p>
+-----
+<h>Version</h><p>Description spanning multiple lines.</p>
+-----
+<h>Version</h><ul><li><p>Description 1</p></li><li><p>Description 2</p></li></ul>

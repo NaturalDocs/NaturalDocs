@@ -1,0 +1,5 @@
+<h>Author</h><p>Name</p>
+-----
+<h>Authors</h><ul><li><p>Name 1</p></li><li><p>Name 2</p></li></ul>
+-----
+<h>Authors</h><ul><li><p>Name 1 with <i>formatting</i>.</p></li><li><p>Name 2 with paragraphs.</p><p>and spanning multiple lines.</p></li></ul>

@@ -1,0 +1,23 @@
+<p><link type="naturaldocs" originialtext="Class.Class.MemberWithoutDescription"></p>
+-----
+<p><link type="naturaldocs" originaltext="With Description at Class.Class.Member"></p>
+-----
+<p><link type="naturaldocs" originialtext="ClassOnly"></p>
+-----
+<p><link type="naturaldocs" originaltext="With Description at ClassOnly"></p>
+-----
+<p><link type="naturaldocs" originialtext="MemberOnly"></p>
+-----
+<p><link type="naturaldocs" originaltext="With Description at MemberOnly"></p>
+-----
+<p><link type="naturaldocs" originaltext="Spaces in parentheses shouldn't start the description at FunctionWithSpaces(x, y)"></p>
+-----
+<p><link type="naturaldocs" originialtext="FunctionWithSpacesNoDescription(x, y)"></p>
+-----
+<p><link type="naturaldocs" originaltext="Javadoc doesn't support this but we will at TemplateWithSpaces&lt;x, y&gt;"></p>
+-----
+<p><link type="naturaldocs" originialtext="TemplateWithSpacesNoDescription&lt;x, y&gt;"></p>
+-----
+<p><link type="naturaldocs" originaltext="However that means we can't get tripped up by this at operator&lt;"></p>
+-----
+<p><link type="naturaldocs" originaltext="or this at operator&lt;"></p>

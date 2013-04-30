@@ -1,0 +1,3 @@
+<p>The value of Test1 is the value.  This tag is not supported so the output isn't expected to be great.</p>
+-----
+<p>The value of Test1 is the value of <link type="naturaldocs" originialtext="Test1">.  This tag is not supported so the output isn't expected to be great.</p>

@@ -1,0 +1,7 @@
+<h type="parameters">Parameter</h><dl><de>x</de><dd><p>Description</p></dd></dl>
+-----
+<h type="parameters">Parameters</h><dl><de>x</de><dd><p>Description</p></dd><de>y</de><dd><p>Description</p></dd></dl>
+-----
+<h type="parameters">Parameters</h><dl><de>x</de><dd><p>Description with <i>formatting</i>.</p></dd><de>y</de><dd><p>Description with paragraphs.</p><p>and spanning multiple lines.</p></dd></dl>
+-----
+<h type="parameters">Parameter</h><dl><de>&lt;T&gt;</de><dd><p>Description of template parameter.</p></dd></dl>

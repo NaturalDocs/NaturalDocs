@@ -1,0 +1,5 @@
+<p>A description with some inline code.</p>
+-----
+<p>Tags and entities inside code &lt;u&gt;should&lt;/u&gt; appear &amp;amp; literally.</p>
+-----
+<h type="parameters">Parameter</h><dl><de>x</de><dd><p>Code &lt;u&gt;inside&lt;/u&gt; &amp;amp; a param description</p></dd></dl>

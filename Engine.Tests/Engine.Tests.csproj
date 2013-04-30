@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments\Javadoc\Iterator.cs" />
+    <Compile Include="Source\Comments\Javadoc\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Parsing.cs" />
     <Compile Include="Source\Comments\NaturalDocs\Summaries.cs" />
     <Compile Include="Source\Comments\XML\Iterator.cs" />

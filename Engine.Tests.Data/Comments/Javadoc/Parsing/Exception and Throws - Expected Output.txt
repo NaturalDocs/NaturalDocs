@@ -1,0 +1,13 @@
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description</p></dd></dl>
+-----
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description</p></dd><de><link type="naturaldocs" originaltext="y"></de><dd><p>Description</p></dd></dl>
+-----
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description with <i>formatting</i>.</p></dd><de><link type="naturaldocs" originaltext="y"></de><dd><p>Description with paragraphs.</p><p>and spanning multiple lines.</p></dd></dl>
+-----
+<h>Throws</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description</p></dd></dl>
+-----
+<h>Throws</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description</p></dd><de><link type="naturaldocs" originaltext="y"></de><dd><p>Description</p></dd></dl>
+-----
+<h>Throws</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Description with <i>formatting</i>.</p></dd><de><link type="naturaldocs" originaltext="y"></de><dd><p>Description with paragraphs.</p><p>and spanning multiple lines.</p></dd></dl>
+-----
+<h>Exceptions</h><dl><de><link type="naturaldocs" originaltext="x"></de><dd><p>Exception and throws are kept separate even though they're synonyms in Javadoc</p></dd></dl><h>Throws</h><dl><de><link type="naturaldocs" originaltext="y"></de><dd><p>so that the documentation heading uses the keyword the user prefers.</p></dd></dl>

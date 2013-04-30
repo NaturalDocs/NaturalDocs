@@ -1,0 +1,5 @@
+<p>A description with some inline literal text.</p>
+-----
+<p>Tags and entities inside literals &lt;u&gt;should not&lt;/u&gt; be &amp;amp; interpreted as such.</p>
+-----
+<h type="parameters">Parameter</h><dl><de>x</de><dd><p>Literal &lt;u&gt;inside&lt;/u&gt; &amp;amp; a param description</p></dd></dl>

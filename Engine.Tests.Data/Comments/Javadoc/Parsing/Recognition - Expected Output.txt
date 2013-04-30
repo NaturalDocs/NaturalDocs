@@ -1,0 +1,7 @@
+<p>This is a Natural Docs comment because it has no Javadoc tags.  You can tell because <b>bold</b> and <u>underline</u> work.</p>
+-----
+<p>This is a Javadoc comment because it has a block tag.  *Bold* and _underline_ don't work.</p><h type="parameters">Parameter</h><dl><de>x</de><dd><p>y</p></dd></dl>
+-----
+<p>This is a Javadoc comment because it has an inline tag.  *Bold* and _underline_ don't work.</p>
+-----
+<h type="parameters">Parameter</h><dl><de>x</de><dd><p>This is a Javadoc comment even though it has no summary.  *Bold* and _underline_ don't work.</p></dd></dl>

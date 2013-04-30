@@ -1,0 +1,23 @@
+<p>Link to <link type="email" target="mail@address.com" text="an e-mail address">.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="email" target="ma+il@some.address.com?subject=Test Subject" text="an e-mail address"> with extra properties in the link.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="url" target="http://www.website.com" text="an URL">.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="url" target="ftp://ftp.website.com" text="a FTP URL">.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="url" target="https://www.website.com/folder/link.cgi?a=b&amp;b=%1F#anchor" text="a complicated URL"> with extra properties.</p><h>Returns</h><p>x</p>
+-----
+<p>Defining an anchor.  Link should be ignored.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to a JavaScript function via URL.  Link should be ignored.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to a JavaScript function via onClick.  Link should be ignored.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to a relative path.  Since this is probably intended for a file in the Javadoc output structure it would be invalid.  Link should be ignored.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to a docRoot path.  Since this is probably intended for a file in the Javadoc output structure it would be invalid.  Link should be ignored.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="url" target="http://www.website.com" text="an URL with tags in the label">.</p><h>Returns</h><p>x</p>
+-----
+<p>Link to <link type="url" target="http://www.website.com" text="an URL with &amp;gt; entities &amp;amp; in the © label">.</p><h>Returns</h><p>x</p>

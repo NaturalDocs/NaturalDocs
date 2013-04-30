@@ -1,0 +1,5 @@
+<h>Returns</h><p>Description</p>
+-----
+<h>Returns</h><p>Description with <i>formatting</i></p><p>and paragraphs.</p>
+-----
+<h>Returns</h><p>Description spanning multiple lines.</p>

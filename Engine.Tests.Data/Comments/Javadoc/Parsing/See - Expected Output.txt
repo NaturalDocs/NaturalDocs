@@ -1,0 +1,29 @@
+<h>See Also</h><p>&quot;Plain Text&quot;</p>
+-----
+<h>See Also</h><p><link type="url" target="http://www.website.com" text="HTML Link"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originialtext="Class.Class.MemberWithoutDescription"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="With Description at Class.Class.Member"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originialtext="ClassOnly"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="With Description at ClassOnly"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originialtext="MemberOnly"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="With Description at MemberOnly"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="Spaces in parentheses shouldn't start the description at FunctionWithSpaces(x, y)"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originialtext="FunctionWithSpacesNoDescription(x, y)"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="Javadoc doesn't support this but we will at TemplateWithSpaces&lt;x, y&gt;"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originialtext="TemplateWithSpacesNoDescription&lt;x, y&gt;"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="However that means we can't get tripped up by this at operator&lt;"></p>
+-----
+<h>See Also</h><p><link type="naturaldocs" originaltext="or this at operator&lt;"></p>
+-----
+<h>See Also</h><ul><li><p>&quot;Plain text&quot;</p></li><li><p><link type="url" target="http://www.website.com" text="HTML link"></p></li><li><p><link type="naturaldocs" originaltext="Description at Class.Class.Member"></p></li></ul>

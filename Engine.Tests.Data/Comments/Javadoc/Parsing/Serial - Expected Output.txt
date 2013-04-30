@@ -1,0 +1,9 @@
+<p>Serial fields are ignored.  However, comments that have them should still be recognized as Javadoc, so *bold* and _underline_ should not work.  Also, blocks spanning multiple lines should not have their content included.</p>
+-----
+<h>Returns</h><p>Description after serial</p>
+-----
+<h>Returns</h><p>Description before serial</p>
+-----
+<h>Returns</h><p>Description after multiline serial</p>
+-----
+<h>Returns</h><p>Description before multiline serial</p>
