@@ -39,14 +39,6 @@ Menu.Files: Files
 Menu.Classes: Classes
 Menu.Database: Database
 
-HTML.XMLHeading.example: Example
-HTML.XMLHeading.exception(count): Exceptions
-HTML.XMLHeading.param(count): {0s?Parameters:Parameter}
-HTML.XMLHeading.permission(count): Permissions
-HTML.XMLHeading.returns: Returns
-HTML.XMLHeading.seealso(count): See Also
-HTML.XMLHeading.typeparam(count): Type {0s?Parameters:Parameter}
-
 TimeStamp.Month1: January
 TimeStamp.ShortMonth1: Jan
 TimeStamp.Month2: February
@@ -71,6 +63,20 @@ TimeStamp.Month11: November
 TimeStamp.ShortMonth11: Nov
 TimeStamp.Month12: December
 TimeStamp.ShortMonth12: Dec
+
+
+
+#
+# XML
+#______________________________________________________________________________
+
+XML.Heading.example: Example
+XML.Heading.exception(count): Exceptions
+XML.Heading.param(count): {0s?Parameters:Parameter}
+XML.Heading.permission(count): Permissions
+XML.Heading.returns: Returns
+XML.Heading.seealso(count): See Also
+XML.Heading.typeparam(count): Type {0s?Parameters:Parameter}
 
 
 

@@ -264,7 +264,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					// <example> can be nested in addition to a top-level tag.
 					output.Append("</p><h>");
 					output.EntityEncodeAndAppend(
-						Engine.Locale.Get("NaturalDocs.Engine", "HTML.XMLHeading.example")
+						Engine.Locale.Get("NaturalDocs.Engine", "XML.Heading.example")
 						);
 					output.Append("</h><p>");
 
@@ -728,7 +728,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 					if (text != null && text.Length > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "HTML.XMLHeading." + textBlock.Type, null);
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + textBlock.Type, null);
 
 						if (heading != null)
 							{
@@ -747,7 +747,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 					if (listBlock.Count > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "HTML.XMLHeading." + listBlock.Type + "(count)", null, 
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + listBlock.Type + "(count)", null, 
 																			  listBlock.Count);
 
 						if (heading != null)
