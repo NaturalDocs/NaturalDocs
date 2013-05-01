@@ -102,12 +102,15 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			TestList allTests = new TestList();
 			TestEngine.Start(testFolder, projectConfigFolder, true, outputTitle, outputSubTitle);
 
+			// Store this so we can still use it for error messages after the engine is disposed of.
+			Path inputFolder = TestEngine.InputFolder;
+
 			try
 				{
 				TestEngine.Run();
 
 				// Build a test for each input file we find
-				string[] files = System.IO.Directory.GetFiles(TestEngine.InputFolder);
+				string[] files = System.IO.Directory.GetFiles(inputFolder);
 
 				foreach (string file in files)
 					{
@@ -149,7 +152,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 
 			if (allTests.Count == 0)
-				{  Assert.Fail("There were no tests found in " + TestEngine.InputFolder);  }
+				{  Assert.Fail("There were no tests found in " + inputFolder);  }
 			else if (allTests.Passed == false)
 				{  Assert.Fail(allTests.BuildFailureMessage());  }
 			}

@@ -80,6 +80,9 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			StringSet expectedOutputFiles = new StringSet(false, false);
 			TestEngine.Start(testFolder, projectConfigFolder);
 
+			// Store this so we can still use it for error messages after the engine is disposed of.
+			Path inputFolder = TestEngine.InputFolder;
+
 			try
 				{
 				TestEngine.Run();
@@ -104,7 +107,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 								{  break;  }
 
 							string testName = classTopics[0].ClassString.Symbol.FormatWithSeparator(".");
-							Path outputFilePath = Test.ActualOutputFileOf(testName, TestEngine.InputFolder);
+							Path outputFilePath = Test.ActualOutputFileOf(testName, inputFolder);
 
 							Test test = Test.FromActualOutputFile(outputFilePath);
 							expectedOutputFiles.Add(test.ExpectedOutputFile);
@@ -129,7 +132,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 				// Now search for any expected output files that didn't have corresponding actual output files.
 
-				string[] files = System.IO.Directory.GetFiles(TestEngine.InputFolder);
+				string[] files = System.IO.Directory.GetFiles(inputFolder);
 
 				foreach (string file in files)
 					{
@@ -149,7 +152,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 
 			if (allTests.Count == 0)
-				{  Assert.Fail("There were no tests found in " + TestEngine.InputFolder);  }
+				{  Assert.Fail("There were no tests found in " + inputFolder);  }
 			else if (allTests.Passed == false)
 				{  Assert.Fail(allTests.BuildFailureMessage());  }
 			}
