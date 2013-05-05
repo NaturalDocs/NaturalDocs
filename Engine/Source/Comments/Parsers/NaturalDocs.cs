@@ -1338,30 +1338,41 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * Tests the capitalization of the text between the iterators to see whether the content should be interpreted as a
 		 * heading or left as plain text.  The iterators should not include the colon.
 		 */
-		protected bool IsHeadingContent (TokenIterator start, TokenIterator end)
+		protected bool IsHeadingContent (TokenIterator iterator, TokenIterator endOfContent)
 			{
 			bool isFirstWord = true;
+			TokenIterator wordStart = iterator;
+			TokenIterator wordEnd = iterator;
 
-			while (start < end)
+			while (iterator < endOfContent)
 				{
-				if (start.FundamentalType == FundamentalType.Text)
+				if (iterator.FundamentalType == FundamentalType.Text)
 					{
-					TokenIterator endOfWord = start;
-					endOfWord.Next();
+					wordStart = iterator;
+					wordEnd = wordStart;
+					wordEnd.Next();
 
-					while ( endOfWord < end && 
-								 (endOfWord.FundamentalType == FundamentalType.Text || endOfWord.Character == '_') )
-						{  endOfWord.Next();  }
+					while ( wordEnd < endOfContent && 
+							 (wordEnd.FundamentalType == FundamentalType.Text || wordEnd.Character == '_') )
+						{  wordEnd.Next();  }
 
-					if (IsHeadingWord(start, endOfWord, isFirstWord) == false)
+					if (IsHeadingWord(wordStart, wordEnd, isFirstWord, false) == false)
 						{  return false;  }
 
-					start = endOfWord;
+					iterator = wordEnd;
 					isFirstWord = false;
 					}
 				else
-					{  start.Next();  }
+					{  iterator.Next();  }
 				}
+
+			// If there were no words it's not a heading
+			if (isFirstWord)
+				{  return false;  }
+
+			// Retest the last word with the flag set
+			if (IsHeadingWord(wordStart, wordEnd, false, true) == false)
+				{  return false;  }
 
 			return true;
 			}
@@ -1371,15 +1382,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		 * Tests the capitalization of the single word between the iterators to see whether it should be interpreted as part of
 		 * a heading or plain text.  All words in a heading should pass this test for it to be seen as a heading.
 		 */
-		protected bool IsHeadingWord (TokenIterator start, TokenIterator end, bool isFirstWord)
+		protected bool IsHeadingWord (TokenIterator start, TokenIterator end, bool isFirstWord, bool isLastWord)
 			{
 			// If it starts with an uppercase letter, number, symbol, or underscore it's okay.  We only need to do tests if it starts
 			// with a lowercase letter.
 			if (Char.IsLower(start.Character) == false)
 				{  return true;  }
 
-			// We'll accept short words as long as it's not the first.  This lets through "A and the B", "X or Y", etc.
-			if (!isFirstWord && (end.RawTextIndex - start.RawTextIndex) <= 4)
+			// We'll accept short words as long as it's not the first or the last.  This lets through "A and the B", "X or Y", etc.
+			if (!isFirstWord && !isLastWord && (end.RawTextIndex - start.RawTextIndex) <= 4)
 				{  return true;  }
 
 			return false;
