@@ -36,6 +36,17 @@ Topic: Don't Allow Short Lowercase Words as the First Word
 		text
 
 
+Topic: Don't Allow Short Lowercase Words as the Last Word
+
+	Look at this:
+
+		text
+
+	And then:
+
+		text
+
+
 Topic: Don't Get Confused by Numbers and Symbols
 
 	1111111111 Title:
@@ -63,6 +74,14 @@ Topic: Don't Get Confused by Numbers and Symbols
 		text
 
 	(the Something):
+
+		text
+
+	(And then):
+
+		text
+
+	():
 
 		text
 
@@ -118,5 +137,9 @@ Topic: Everything Allowed with Double Colons
 		text
 
 	Parameters::
+
+		text
+
+	()::
 
 		text
