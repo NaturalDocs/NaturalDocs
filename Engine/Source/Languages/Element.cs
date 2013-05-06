@@ -67,8 +67,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			topic = null;
 			classParentLinks = null;
 
-			this.lineNumber = lineNumber;
-			this.charNumber = charNumber;
+			position = new Position(lineNumber, charNumber);
 			this.flags = flags;
 
 			#if DEBUG
@@ -113,9 +112,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public int LineNumber
 			{
 			get
-				{  return lineNumber;  }
+				{  return position.LineNumber;  }
 			set
-				{  lineNumber = value;  }
+				{  position.LineNumber = value;  }
 			}
 
 
@@ -126,22 +125,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public int CharNumber
 			{
 			get
-				{  return charNumber;  }
+				{  return position.CharNumber;  }
 			set
-				{  charNumber = value;  }
+				{  position.CharNumber = value;  }
 			}
 
 
 		/* Property: Position
-		 * An integer that combines <LineNumber> and <CharNumber> into one value so that they can be compared more
-		 * easily.
+		 * The position the element appears at.
 		 */
-		public ulong Position
+		public Position Position
 			{
 			get
-				{
-				return ((ulong)lineNumber << 32) | (uint)charNumber;
-				}
+				{  return position;  }
+			set
+				{  position = value;  }
 			}
 
 
@@ -185,16 +183,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 		
-		/* var: lineNumber
-		 * The line number the element appears at.  The first line is one, not zero.
+		/* var: position
+		 * The position the element appears at.
 		 */
-		protected int lineNumber;
-
-		/* var: charNumber
-		 * The character number the element appears at.  The first character is one, not zero, and is relative to the
-		 * line, not the file.
-		 */
-		protected int charNumber;
+		protected Position position;
 
 		/* var: flags
 		 */

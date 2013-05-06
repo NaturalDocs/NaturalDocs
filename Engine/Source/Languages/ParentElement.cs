@@ -67,8 +67,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			childContextString = new ContextString();
 			childContextStringSet = false;
 
-			endingLineNumber = -1;
-			endingCharNumber = -1;
+			endingPosition = new Position(-1, -1);
 			}
 
 
@@ -78,7 +77,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public bool Contains (Element element)
 			{
 			#if DEBUG
-			if (endingLineNumber == -1 || endingCharNumber == -1)
+			if (EndingLineNumber == -1 || EndingCharNumber == -1)
 				{  throw new Exception("Can't use ParentElement.Contains() if the ending line and char numbers weren't set.");  }
 			#endif
 
@@ -198,9 +197,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public int EndingLineNumber
 			{
 			get
-				{  return endingLineNumber;  }
+				{  return endingPosition.LineNumber;  }
 			set
-				{  endingLineNumber = value;  }
+				{  endingPosition.LineNumber = value;  }
 			}
 
 		/* Property: EndingCharNumber
@@ -210,22 +209,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		public int EndingCharNumber
 			{
 			get
-				{  return endingCharNumber;  }
+				{  return endingPosition.CharNumber;  }
 			set
-				{  endingCharNumber = value;  }
+				{  endingPosition.CharNumber = value;  }
 			}
 
 
 		/* Property: EndingPosition
-		 * An integer that combines <EndingLineNumber> and <EndingCharNumber> into one value so that they can be compared 
-		 * more easily.
+		 * The position where the parent's influence ends.
 		 */
-		public ulong EndingPosition
+		public Position EndingPosition
 			{
 			get
-				{
-				return ((ulong)endingLineNumber << 32) | (uint)endingCharNumber;
-				}
+				{  return endingPosition;  }
+			set
+				{  endingPosition = value;  }
 			}
 
 
@@ -278,16 +276,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		protected bool childContextStringSet;
 
-		/* var: endingLineNumber
-		 * The line number where the parent's influence ends, or -1 if it hasn't been set yet.
+		/* var: endingPosition
+		 * The position where the parent's influence ends.
 		 */
-		protected int endingLineNumber;
-
-		/* var: endingCharNumber
-		 * The character number where the parent's influence ends, or -1 if it hasn't been set yet.  The first character is one, not 
-		 * zero, and is relative to <endingLineNumber>, not the file.
-		 */
-		protected int endingCharNumber;
+		protected Position endingPosition;
 
 		}
 	}
