@@ -109,6 +109,10 @@
  *			
  *			The number of spaces a tab should be expanded to.
  *			
+ *			> Auto Group: [yes|no]
+ *			
+ *			Whether automatic grouping should be applied.
+ *			
  * 
  *		Revisions:
  * 
@@ -132,6 +136,7 @@
  *			The file starts with the standard binary file header as managed by <BinaryFile>.
  *			
  *			> [Int32: Tab Width]
+ *			> [Int8: Auto Group (0 or 1)]
  *
  *			Global properties.
  *			
@@ -204,9 +209,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 			configFilePath = null;
 			configFileData = null;
 
+			yesRegex = null;
+			noRegex = null;
+
 			subtitleRegex = null;
 			timestampRegex = null;
 			tabWidthRegex = null;
+			autoGroupRegex = null;
 
 			sourceFolderRegex = null;
 			imageFolderRegex = null;
@@ -241,11 +250,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 				if (openResult == false)
 					{  return false;  }
 
-				if (subtitleRegex == null)
-					{					
+				if (yesRegex == null)
+					{
+					yesRegex = new Regex.Config.Yes();
+					noRegex = new Regex.Config.No();
+							
 					subtitleRegex = new Regex.Config.Subtitle();
 					timestampRegex = new Regex.Config.Timestamp();
 					tabWidthRegex = new Regex.Config.TabWidth();
+					autoGroupRegex = new Regex.Config.AutoGroup();
 
 					sourceFolderRegex = new Regex.Config.SourceFolder();
 					imageFolderRegex = new Regex.Config.ImageFolder();
@@ -337,8 +350,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 					{
 					
 					// [Int32: Tab Width]
+					// [Int8: Auto Group (0 or 1)]
 
 					configFileData.TabWidth = binaryConfigFile.ReadInt32();
+					configFileData.AutoGroup = (binaryConfigFile.ReadInt8() == 1);
 					
 					// [String: Identifier]
 					// [[Properties]]
@@ -385,8 +400,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{
 
 				// [Int32: Tab Width]
+				// [Int8: Auto Group (0 or 1)]
 
 				binaryConfigFile.WriteInt32(content.TabWidth);
+				binaryConfigFile.WriteInt8( (sbyte)(content.AutoGroup != null && (bool)content.AutoGroup == false ? 0 : 1) );
 				
 				// [String: Identifier]
 				// [[Properties]]
@@ -484,6 +501,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 					}
 				else
 					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber") );  }
+				}
+			else if (autoGroupRegex.IsMatch(lcIdentifier))
+				{
+				if (yesRegex.IsMatch(value))
+					{  configFileData.AutoGroup = true;  }
+				else if (noRegex.IsMatch(value))
+					{  configFileData.AutoGroup = false;  }
+				else
+					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Auto Group", value) );  }
 				}
 			else
 				{
@@ -1019,6 +1045,19 @@ namespace GregValure.NaturalDocs.Engine.Config
 				hasDefinedValues = true;
 				}
 
+			if (configFileData.AutoGroup != null)
+				{
+				output.Append("Auto Group: ");
+
+				if ((bool)configFileData.AutoGroup == true)
+					{  output.AppendLine("Yes");  }
+				else
+					{  output.AppendLine("No");  }
+
+				output.AppendLine();
+				hasDefinedValues = true;
+				}
+
 			if (hasDefinedValues)
 				{  output.AppendLine();  }
 
@@ -1031,6 +1070,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{
 				output.AppendLine("#");
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TabWidthSyntax.multiline") );
+				}
+			if (configFileData.AutoGroup == null)
+				{
+				output.AppendLine("#");
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.AutoGroupSyntax.multiline") );
 				}
 
 			output.AppendLine();
@@ -1220,10 +1264,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 		 */
 		protected ConfigData configFileData;
 
+		Regex.Config.Yes yesRegex;
+		Regex.Config.No noRegex;
 
 		Regex.Config.Subtitle subtitleRegex;
 		Regex.Config.Timestamp timestampRegex;
 		Regex.Config.TabWidth tabWidthRegex;
+		Regex.Config.AutoGroup autoGroupRegex;
 
 		Regex.Config.SourceFolder sourceFolderRegex;
 		Regex.Config.ImageFolder imageFolderRegex;

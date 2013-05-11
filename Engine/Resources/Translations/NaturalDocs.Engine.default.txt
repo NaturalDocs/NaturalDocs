@@ -163,6 +163,7 @@ Project.txt.OutputFolderDoesNotExist(folder): The output folder {0} does not exi
 Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greater than zero.
 Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to source folders.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
+Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 
 Project.txt.FileHeader.multiline {{{
 # This is the file you use to provide information about your project.  It can
@@ -314,6 +315,11 @@ Project.txt.GlobalSettingsHeaderText.multiline {{{
 Project.txt.TabWidthSyntax.multiline {{{
 # Tab Width: [width]
 #    The number of spaces tabs should be expanded to.
+}}}
+
+Project.txt.AutoGroupSyntax.multiline {{{
+# Auto Group: [yes|no]
+#    Whether groups should automatically apply to you code.  Defaults to yes.
 }}}
 
 

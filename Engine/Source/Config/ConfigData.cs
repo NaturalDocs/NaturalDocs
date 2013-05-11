@@ -25,7 +25,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public ConfigData ()
 			{
 			projectInfo = new ProjectInfo();
-			tabWidth = 0;			
+			tabWidth = 0;
+			autoGroup = null;
 			entries = new List<Entry>();
 			}
 			
@@ -108,6 +109,17 @@ namespace GregValure.NaturalDocs.Engine.Config
 			set
 				{  tabWidth = value;  }
 			}
+
+		/* Property: AutoGroup
+		 * Whether automatic grouping should be applied or not, or null if it's not set.
+		 */
+		public bool? AutoGroup
+			{
+			get
+				{  return autoGroup;  }
+			set
+				{  autoGroup = value;  }
+			}
 			
 		/* Property: Entries
 		 * A list of the <Entries> appearing in the file.  They appear in the file's order.  The list will never be null; if
@@ -131,7 +143,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		protected ProjectInfo projectInfo;
-		protected int tabWidth;		
+		protected int tabWidth;
+		protected bool? autoGroup;
 		protected List<Entry> entries;
 		
 		}

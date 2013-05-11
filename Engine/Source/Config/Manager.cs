@@ -46,6 +46,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			workingDataFolder = null;
 			
 			tabWidth = DefaultTabWidth;
+			autoGroup = true;
 			commandLineConfig = new ConfigData();
 
 			reparseEverything = false;
@@ -404,6 +405,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			if (commandLineConfig.TabWidth == 0)
 				{  commandLineConfig.TabWidth = configFileData.TabWidth;  }
+			if (commandLineConfig.AutoGroup == null)
+				{  commandLineConfig.AutoGroup = configFileData.AutoGroup;  }
 
 			configFileParser.SaveFile(configFilePath, commandLineConfig, errorList);
 
@@ -416,10 +419,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 			else
 				{  tabWidth = commandLineConfig.TabWidth;  }
 
-			if (commandLineConfig.TabWidth != binaryConfigFileData.TabWidth)
+			if (commandLineConfig.AutoGroup == null)
+				{  commandLineConfig.AutoGroup = true;  }
+			else
+				{  autoGroup = (bool)commandLineConfig.AutoGroup;  }
+
+			if (commandLineConfig.TabWidth != binaryConfigFileData.TabWidth ||
+				commandLineConfig.AutoGroup != binaryConfigFileData.AutoGroup)
 				{
 				ReparseEverything = true;
-				RebuildAllOutput = true;
 				}
 
 			if (commandLineConfig.ProjectInfo.StyleName == null)
@@ -769,6 +777,16 @@ namespace GregValure.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: AutoGroup
+		 * Whether automatic grouping should be applied.
+		 */
+		public bool AutoGroup
+			{
+			get
+				{  return autoGroup;  }
+			}
+
+
 		/* Property: BackgroundThreadsPerTask
 		 * The number of threads Natural Docs should use for each parallelizable background task.
 		 */
@@ -882,6 +900,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 		 * The number of spaces tabs should be expanded to.
 		 */
 		protected int tabWidth;
+
+		/* var: autoGroup
+		 * Whether automatic grouping should be applied.
+		 */
+		protected bool autoGroup;
 
 		/* bool: reparseEverything
 		 * Whether all source files should be reparsed.
