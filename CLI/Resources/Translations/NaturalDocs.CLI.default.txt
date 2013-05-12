@@ -136,6 +136,10 @@ Parameters:
 --tab-width [width]
     Specifies how many spaces a tab should be expanded to.
 
+ -nag
+--no-auto-group
+    Turns off automatic grouping.
+
  -w [folder]
 --working-data [folder]
     Specifies a folder to store temporary data.  If not specified it will be
