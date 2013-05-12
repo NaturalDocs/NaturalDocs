@@ -399,42 +399,50 @@ namespace GregValure.NaturalDocs.Engine.Config
 				}
 
 				
-			// Merge the rest of Project.txt's settings into the command line config and save it as the new Project.txt.
-			
-			commandLineConfig.ProjectInfo.CopyUnsetPropertiesFrom(configFileData.ProjectInfo);
+			// Apply global settings.
 
-			if (commandLineConfig.TabWidth == 0)
-				{  commandLineConfig.TabWidth = configFileData.TabWidth;  }
-			if (commandLineConfig.AutoGroup == null)
-				{  commandLineConfig.AutoGroup = configFileData.AutoGroup;  }
-
-			configFileParser.SaveFile(configFilePath, commandLineConfig, errorList);
-
-
-			// Apply defaults to unset values.  We transfer them back into the command line config so the values can be saved in
-			// Project.nd.  We don't want them saved into Project.txt so the default value can change between releases.
-
-			if (commandLineConfig.TabWidth == 0)
-				{  commandLineConfig.TabWidth = DefaultTabWidth;  }
-			else
+			if (commandLineConfig.TabWidth != 0)
 				{  tabWidth = commandLineConfig.TabWidth;  }
-
-			if (commandLineConfig.AutoGroup == null)
-				{  commandLineConfig.AutoGroup = true;  }
+			else if (configFileData.TabWidth != 0)
+				{  tabWidth = configFileData.TabWidth;  }
 			else
-				{  autoGroup = (bool)commandLineConfig.AutoGroup;  }
+				{  tabWidth = DefaultTabWidth;  }
 
-			if (commandLineConfig.TabWidth != binaryConfigFileData.TabWidth ||
-				commandLineConfig.AutoGroup != binaryConfigFileData.AutoGroup)
+			if (commandLineConfig.AutoGroup != null)
+				{  autoGroup = (bool)commandLineConfig.AutoGroup;  }
+			else if (configFileData.AutoGroup != null)
+				{  autoGroup = (bool)configFileData.AutoGroup;  }
+			else
+				{  autoGroup = true;  }
+
+			if (tabWidth != binaryConfigFileData.TabWidth ||
+				autoGroup != binaryConfigFileData.AutoGroup)
 				{
 				ReparseEverything = true;
 				}
 
-			if (commandLineConfig.ProjectInfo.StyleName == null)
-				{  commandLineConfig.ProjectInfo.StyleName = "Default";  }
+
+			// Merge the rest of Project.txt's settings into the command line config and save it as the new Project.txt.
+			
+			commandLineConfig.ProjectInfo.CopyUnsetPropertiesFrom(configFileData.ProjectInfo);
+
+			// Go back to the config file's version before saving because we don't want the command line settings to get tattooed
+			// into place.  If adding --no-auto-group on the command line caused it to be added to Project.txt, removing it from the
+			// command line would have no effect because it's still in Project.txt.
+			commandLineConfig.TabWidth = configFileData.TabWidth;
+			commandLineConfig.AutoGroup = configFileData.AutoGroup;
+
+			configFileParser.SaveFile(configFilePath, commandLineConfig, errorList);
+
+			// Now apply the correct config again because we'll be saving this later as Project.nd.
+			commandLineConfig.TabWidth = tabWidth;
+			commandLineConfig.AutoGroup = autoGroup;
 
 
 			// Use the default project info to fill in anything that wasn't overridden in each output entry
+
+			if (commandLineConfig.ProjectInfo.StyleName == null)
+				{  commandLineConfig.ProjectInfo.StyleName = "Default";  }
 
 			foreach (Entry entry in commandLineConfig.Entries)
 				{
