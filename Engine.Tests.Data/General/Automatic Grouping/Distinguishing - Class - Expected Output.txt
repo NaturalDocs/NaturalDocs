@@ -1,0 +1,61 @@
+Class: HasGroups
+   Group: Manual Group
+      Function: FunctionA
+      Function: FunctionB
+      Variable: VariableA
+      Variable: VariableB
+
+Class: HasLateGroups
+   Function: FunctionA
+   Function: FunctionB
+   Group: Manual Group
+      Variable: VariableA
+      Variable: VariableB
+
+Class: DoesntHaveGroups
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+
+Class: OuterClassHasGroups
+   Group: Manual Group
+      Function: FunctionA
+      Function: FunctionB
+      Variable: VariableA
+      Variable: VariableB
+
+Class: OuterClassHasGroups.InnerClassDoesntHaveGroups
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+      Function: FunctionC
+      Function: FunctionD
+      Variable: VariableC
+      Variable: VariableD
+
+Class: OuterClassDoesntHaveGroups
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+
+Class: OuterClassDoesntHaveGroups.InnerClassHasGroups
+   Group: Manual Group
+      Function: FunctionA
+      Function: FunctionB
+      Variable: VariableA
+      Variable: VariableB
+   Group: Functions
+      Function: FunctionC
+      Function: FunctionD
+   Group: Variables
+      Variable: VariableC
+      Variable: VariableD

@@ -1,0 +1,7 @@
+Group: Functions
+   Function: FunctionA
+   Function: FunctionB
+   Section: Section Name
+Group: Functions
+   Function: FunctionC
+   Function: FunctionD

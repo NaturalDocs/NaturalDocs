@@ -1,0 +1,53 @@
+Class: CodeClass
+   Group: Types
+      Enum: EnumA
+      Enum: EnumB
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+      Function: FunctionC
+   Group: Properties
+      Property: PropertyA
+      Property: PropertyB
+   Group: Constants
+      Constant: ConstantA
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+      Variable: VariableC
+
+Class: CommentClass
+   Group: Types
+      Enum: EnumA
+      Enum: EnumB
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+      Function: FunctionC
+   Group: Properties
+      Property: PropertyA
+      Property: PropertyB
+   Group: Constants
+      Constant: ConstantA
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+      Variable: VariableC
+
+Class: DocumentedCodeClass
+   Group: Types
+      Enum: EnumA
+      Enum: EnumB
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+      Function: FunctionC
+   Group: Properties
+      Property: PropertyA
+      Property: PropertyB
+   Group: Constants
+      Constant: ConstantA
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+      Variable: VariableC

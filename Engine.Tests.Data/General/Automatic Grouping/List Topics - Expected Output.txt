@@ -1,0 +1,13 @@
+Group: Functions
+   Function: Standalone FunctionA
+   Function: Function List
+   Function: EmbeddedFunctionA
+   Function: EmbeddedFunctionB
+   Function: StandaloneFunctionB
+   Function: StandaloneFunctionC
+Group: Variables
+   Variable: Variable List
+   Variable: EmbeddedVariableA
+   Variable: EmbeddedVariableB
+Group: Functions
+   Function: StandaloneFunctionD

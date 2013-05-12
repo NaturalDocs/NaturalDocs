@@ -1,0 +1,48 @@
+Group: Types
+   Enum: CodeEnumA
+   Enum: CodeEnumB
+Group: Functions
+   Function: CodeFunctionA
+   Function: CodeFunctionB
+   Function: CodeFunctionC
+Group: Properties
+   Property: CodePropertyA
+   Property: CodePropertyB
+Group: Constants
+   Constant: CodeConstantA
+Group: Variables
+   Variable: CodeVariableA
+   Variable: CodeVariableB
+   Variable: CodeVariableC
+Group: Types
+   Enum: CommentEnumA
+   Enum: CommentEnumB
+Group: Functions
+   Function: CommentFunctionA
+   Function: CommentFunctionB
+   Function: CommentFunctionC
+Group: Properties
+   Property: CommentPropertyA
+   Property: CommentPropertyB
+Group: Constants
+   Constant: CommentConstantA
+Group: Variables
+   Variable: CommentVariableA
+   Variable: CommentVariableB
+   Variable: CommentVariableC
+Group: Types
+   Enum: DocumentedCodeEnumA
+   Enum: DocumentedCodeEnumB
+Group: Functions
+   Function: DocumentedCodeFunctionA
+   Function: DocumentedCodeFunctionB
+   Function: DocumentedCodeFunctionC
+Group: Properties
+   Property: DocumentedCodePropertyA
+   Property: DocumentedCodePropertyB
+Group: Constants
+   Constant: DocumentedCodeConstantA
+Group: Variables
+   Variable: DocumentedCodeVariableA
+   Variable: DocumentedCodeVariableB
+   Variable: DocumentedCodeVariableC

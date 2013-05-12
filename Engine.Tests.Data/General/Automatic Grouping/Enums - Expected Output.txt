@@ -1,0 +1,30 @@
+Class: EnumsOnly
+   Group: Types
+      Enum: EnumA
+      Enum: EnumB
+
+Class: TypesOnly
+   Group: Types
+      Type: TypeA
+      Type: TypeB
+
+Class: EnumsAndTypes
+   Group: Types
+      Enum: EnumA
+      Type: TypeA
+      Enum: EnumB
+      Type: TypeB
+
+Class: TypesAndEnums
+   Group: Types
+      Type: TypeA
+      Enum: EnumA
+      Type: TypeB
+      Enum: EnumB
+
+Class: EnumsWithMembers
+   Group: Types
+      Enum: EnumA
+      Constant: Value1
+      Constant: Value2
+      Type: TypeA

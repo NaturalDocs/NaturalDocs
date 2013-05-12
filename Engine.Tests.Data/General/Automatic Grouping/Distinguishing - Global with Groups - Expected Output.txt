@@ -1,0 +1,24 @@
+Group: Global Manual Group
+   Function: GlobalFunctionA
+   Function: GlobalFunctionB
+   Variable: GlobalIntA
+   Variable: GlobalIntB
+
+Class: HasGroups
+   Group: Manual Group
+      Function: FunctionA
+      Function: FunctionB
+      Variable: VariableA
+      Variable: VariableB
+
+Class: DoesntHaveGroups
+   Group: Functions
+      Function: FunctionA
+      Function: FunctionB
+   Group: Variables
+      Variable: VariableA
+      Variable: VariableB
+      Function: GlobalFunctionC
+      Function: GlobalFunctionD
+      Variable: GlobalVariableC
+      Variable: GlobalVariableD
