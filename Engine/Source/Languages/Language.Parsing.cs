@@ -234,6 +234,21 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			#endif
 
 
+			// Add automatic grouping.
+
+			if (Engine.Instance.Config.AutoGroup)
+				{
+				if (AddAutomaticGrouping(elements))
+					{  
+					// Need to add these to any newly created groups.
+					ApplyDeclaredAccessLevels(elements);  
+					}
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+				}
+
+
 			// Calculate the effective access levels.  This is done after merging code and comment topics so members are consistent.  For
 			// example, a public comment-only topic appearing in a private class needs to have an effective access level of private.
 
@@ -2095,6 +2110,22 @@ namespace GregValure.NaturalDocs.Engine.Languages
 								}
 							}
 						}
+
+					// Finally, if it's a group, make sure it doesn't encompass any other ParentElements except enums.
+
+					if (element.Topic != null && element.Topic.TopicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("group"))
+						{
+						for (int j = i + 1; j < mergedElements.Count && element.Contains(mergedElements[j]); j++)
+							{
+							if (mergedElements[j] is ParentElement &&
+								(mergedElements[j].Topic == null || mergedElements[j].Topic.IsEnum == false))
+								{
+								element.EndingLineNumber = mergedElements[j].LineNumber;
+								element.EndingCharNumber = mergedElements[j].CharNumber;
+								break;
+								}
+							}
+						}
 					}
 				}
 
@@ -2258,6 +2289,328 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else
 					{  i++;  }
 				}
+			}
+
+
+		/* Function: AddAutomaticGrouping
+		 * Adds automatic grouping to the <Elements>.  Returns whether anything was changed.
+		 */
+		protected bool AddAutomaticGrouping (List<Element> elements)
+			{
+			// For the first pass determine if we already have groups and recurse into sub groups.
+
+			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
+
+			bool hasGroups = false;
+			int groupsAdded = 0;
+
+			int i = 0;
+			while (i < elements.Count)
+				{
+				if (elements[i] is ParentElement)
+					{  
+					ParentElement subParent = (ParentElement)elements[i];
+
+					if (subParent.Topic != null && subParent.Topic.TopicTypeID == groupTopicTypeID)
+						{  hasGroups = true;  }
+
+					if (subParent.Topic == null || (subParent.Topic.IsEnum == false && subParent.Topic.IsList == false))
+						{
+						// We do this even if the element is a group because it may hold an embedded class that needs to be grouped.
+						groupsAdded += AddAutomaticGroupingToParent(elements, i);
+						}
+
+					do
+						{  i++;  }
+					while (i < elements.Count && subParent.Contains(elements[i]));
+					}
+				else
+					{  i++;  }
+				}
+
+
+			// For the second pass add groups to each stretch of non-parent topics in this scope.
+
+			if (hasGroups == false)
+				{
+				i = 0;
+				while (i < elements.Count)
+					{
+					if ( (elements[i] is ParentElement) == false ||
+						 (elements[i].Topic != null && (elements[i].Topic.IsEnum || elements[i].Topic.IsList)) )
+						{
+						int startIndex = i;
+
+						do
+							{
+							if (elements[i] is ParentElement)
+								{
+								ParentElement subParent = (ParentElement)elements[i];
+
+								if (subParent.Topic != null && (subParent.Topic.IsEnum || subParent.Topic.IsList))
+									{
+									do
+										{  i++;  }
+									while (i < elements.Count && subParent.Contains(elements[i]));
+									}
+								else
+									{  break;  }
+								}
+							else // not a ParentElement
+								{  i++;  }
+							}
+						while (i < elements.Count);
+
+						int newGroups = AddAutomaticGroupingToRange(elements, startIndex, i);
+
+						groupsAdded += newGroups;
+						i += newGroups;
+						}
+
+					else // element is a non-enum ParentElement
+						{
+						ParentElement subParent = (ParentElement)elements[i];
+
+						do
+							{  i++;  }
+						while (i < elements.Count && subParent.Contains(elements[i]));
+						}
+					}
+				}
+
+			return (groupsAdded > 0);
+			}
+
+
+		/* Function: AddAutomaticGroupingToParent
+		 * Adds automatic grouping to the <Elements> that belong to the passed parent.  It will return the number of elements
+		 * added to the list, or zero if none.
+		 */
+		protected int AddAutomaticGroupingToParent (List<Element> elements, int parentIndex)
+			{
+			#if DEBUG
+			if ((elements[parentIndex] is ParentElement) == false)
+				{  throw new Exception ("Called AddAutomaticGroupingToParent() with an element that wasn't a ParentElement.");  }
+			#endif
+
+
+			// For the first pass determine if we already have groups and recurse into sub groups.  We also have to deal with the
+			// possibility that the parent is itself a group.
+
+			ParentElement parent = (ParentElement)elements[parentIndex];
+			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
+
+			bool hasGroups = (parent.Topic != null && parent.Topic.TopicTypeID == groupTopicTypeID);
+			int groupsAdded = 0;
+
+			int i = parentIndex + 1;
+			while (i < elements.Count && parent.Contains(elements[i]))
+				{
+				if (elements[i] is ParentElement)
+					{  
+					ParentElement subParent = (ParentElement)elements[i];
+
+					if (subParent.Topic != null && subParent.Topic.TopicTypeID == groupTopicTypeID)
+						{  hasGroups = true;  }
+
+					if (subParent.Topic == null || (subParent.Topic.IsEnum == false && subParent.Topic.IsList == false))
+						{
+						// We do this even if the element is a group because it may hold an embedded class that needs to be grouped.
+						groupsAdded += AddAutomaticGroupingToParent(elements, i);
+						}
+
+					do
+						{  i++;  }
+					while (i < elements.Count && subParent.Contains(elements[i]));
+					}
+				else
+					{  i++;  }
+				}
+
+
+			// For the second pass add groups to each stretch of non-parent topics in this scope.
+
+			if (hasGroups == false)
+				{
+				i = parentIndex + 1;
+				while (i < elements.Count && parent.Contains(elements[i]))
+					{
+					if ( (elements[i] is ParentElement) == false ||
+						 (elements[i].Topic != null && (elements[i].Topic.IsEnum || elements[i].Topic.IsList)) )
+						{
+						int startIndex = i;
+
+						do
+							{
+							if (elements[i] is ParentElement)
+								{
+								ParentElement subParent = (ParentElement)elements[i];
+
+								if (subParent.Topic != null && (subParent.Topic.IsEnum || subParent.Topic.IsList))
+									{
+									do
+										{  i++;  }
+									while (i < elements.Count && subParent.Contains(elements[i]));
+									}
+								else
+									{  break;  }
+								}
+							else // not a ParentElement
+								{  i++;  }
+							}
+						while (i < elements.Count && parent.Contains(elements[i]));
+
+						int newGroups = AddAutomaticGroupingToRange(elements, startIndex, i);
+						
+						groupsAdded += newGroups;
+						i += newGroups;
+						}
+
+					else // element is a non-enum ParentElement
+						{
+						ParentElement subParent = (ParentElement)elements[i];
+
+						do
+							{  i++;  }
+						while (i < elements.Count && subParent.Contains(elements[i]));
+						}
+					}
+				}
+
+			return groupsAdded;
+			}
+
+
+		/* Function: AddAutomaticGroupingToRange
+		 * Adds automatic grouping to the <Elements> between the indexes.  It assumes they are all in the same scope and there are 
+		 * no <ParentElements> in this range.  It will return the number of elements added to the list, or zero if none.
+		 */
+		protected int AddAutomaticGroupingToRange (List<Element> elements, int startIndex, int endIndex)
+			{
+			if (endIndex <= startIndex)
+				{  return 0;  }
+
+			#if DEBUG
+			ParentElement firstParent = null;
+			int firstParentIndex = FindElementParent(elements, startIndex);
+
+			if (firstParentIndex != -1)
+				{  firstParent = (ParentElement)elements[firstParentIndex];  }
+
+			for (int j = startIndex; j < endIndex; j++)
+				{
+				if (elements[j] is ParentElement && (elements[j].Topic == null || (elements[j].Topic.IsEnum == false && elements[j].Topic.IsList == false)))
+					{  throw new Exception("Cannot use AddAutomaticGroupingToRange() with ranges that contain ParentElements other than enums and list topics.");  }
+				if (firstParent != null && firstParent.Contains(elements[j]) == false)
+					{  throw new Exception("All elements passed to AddAutomaticGroupingToRange() must be part of the same scope.");  }
+				}
+			#endif
+
+			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
+			int typeTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("type");
+
+			if (groupTopicTypeID == 0)
+				{  return 0;  }
+
+			TopicType lastTopicType = null;
+			int groupsAdded = 0;
+			ParentElement lastGroupAdded = null;
+			int lastGroupAddedIndex = -1;
+
+			int i = startIndex;
+			while (i < endIndex)
+				{
+				if (elements[i].Topic == null)
+					{  
+					i++;
+					continue;  
+					}
+
+				int effectiveTopicTypeID = elements[i].Topic.TopicTypeID;
+
+				if (elements[i].Topic.IsEnum && typeTopicTypeID != 0)
+					{  effectiveTopicTypeID = typeTopicTypeID;  }
+
+				if (lastTopicType == null || lastTopicType.ID != effectiveTopicTypeID)
+					{
+					if (lastGroupAdded != null)
+						{
+						lastGroupAdded.EndingLineNumber = elements[i].LineNumber;
+						lastGroupAdded.EndingCharNumber = elements[i].CharNumber;
+						}
+
+					lastTopicType = Engine.Instance.TopicTypes.FromID(effectiveTopicTypeID);
+					bool addGroup = true;
+
+					// Don't group on files if they're the first topic in the file.
+					if (lastTopicType.Flags.File)
+						{
+						addGroup = false;
+
+						for (int j = 0; j < i; j++)
+							{
+							if (elements[j].Topic != null)
+								{  
+								addGroup = true;
+								break;
+								}
+							}
+						}
+
+					if (addGroup)
+						{
+						Topic newGroupTopic = new Topic();
+						newGroupTopic.TopicTypeID = groupTopicTypeID;
+						newGroupTopic.Title = lastTopicType.PluralDisplayName;
+
+						ParentElement newGroupElement = new ParentElement(elements[i].LineNumber, elements[i].CharNumber, 0);
+						newGroupElement.Topic = newGroupTopic;
+					
+						elements.Insert(i, newGroupElement);
+						lastGroupAdded = newGroupElement;
+						lastGroupAddedIndex = i;
+
+						groupsAdded++;
+						i++;
+						endIndex++;
+						}
+					}
+
+				if (elements[i] is ParentElement)
+					{
+					ParentElement subParent = (ParentElement)elements[i];
+
+					do
+						{  i++;  }
+					while (i < elements.Count && subParent.Contains(elements[i]));
+					}
+				else
+					{  i++;  }
+				}
+
+			if (lastGroupAdded != null)
+				{
+				if (endIndex < elements.Count)
+					{
+					lastGroupAdded.EndingLineNumber = elements[endIndex].LineNumber;
+					lastGroupAdded.EndingCharNumber = elements[endIndex].CharNumber;
+					}
+				else
+					{
+					lastGroupAdded.EndingLineNumber = int.MaxValue;
+					lastGroupAdded.EndingCharNumber = int.MaxValue;
+					}
+
+				int parentIndex = FindElementParent(elements, lastGroupAddedIndex);
+
+				if (parentIndex != -1 && (elements[parentIndex] as ParentElement).EndingPosition < lastGroupAdded.EndingPosition)
+					{
+					lastGroupAdded.EndingLineNumber = (elements[parentIndex] as ParentElement).EndingLineNumber;
+					lastGroupAdded.EndingCharNumber = (elements[parentIndex] as ParentElement).EndingCharNumber;
+					}
+				}
+
+			return groupsAdded;
 			}
 
 
@@ -2675,8 +3028,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{
 				if (element.Topic != null)
 					{
-					if (element.Topic.Symbol == null && (element.InCode == true || element.InComments == false))
-						{  throw new Exception("Only comment topics may have undefined symbols in GenerateRemainingSymbols().");  }
+					if (element.Topic.Symbol == null && element.InCode == true)
+						{  throw new Exception("Code topics may not have undefined symbols before calling GenerateRemainingSymbols().");  }
 					if (element.Topic.Title == null)
 						{  throw new Exception("Headerless topics must be removed before calling GenerateRemainingSymbols().");  }
 					if (element.Topic.LanguageID == 0)
@@ -4158,6 +4511,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				if (element.Topic != null && element.Topic.Title != null)
 					{  elementName = element.Topic.Title + " " + elementName;  }
+
+
+				// Make sure they have either InCode or InComments set.  We don't do this form ValidateElementsMode.Final because 
+				// automatic grouping will be applied which doesn't appear in either.  However, prior to that point every Element needs
+				// one or the other set.
+
+				if (mode != ValidateElementsMode.Final)
+					{
+					if (element.InCode == false && element.InComments == false)
+						{  throw new Exception("Element " + elementName + " doesn't have the InComments or InCode flag set.");  }
+					}
 
 
 				// Make sure they're in order

@@ -69,11 +69,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			position = new Position(lineNumber, charNumber);
 			this.flags = flags;
-
-			#if DEBUG
-				if (InCode == false && InComments == false)
-					{  throw new Exception("Elements must be created with Flags.InComments or Flags.InCode set.");  }
-			#endif
 			}
 
 
