@@ -295,6 +295,8 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			
 			singularKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);
 			pluralKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);
+
+			groupTopicTypeID = 0;
 			}
 			
 			
@@ -670,7 +672,6 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				{  success = false;  };
 			
 			
-			
 			// Compare the structures with the binary ones to see if anything changed.
 
 			if (changed == false)
@@ -761,9 +762,10 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			SaveBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/Topics.nd", 
 								   topicTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
-			
 			if (success == true && changed == true)
 				{  Engine.Instance.Config.ReparseEverything = true;  }
+
+			groupTopicTypeID = IDFromKeyword("group");
 				
 			return success;
 			}
@@ -2224,6 +2226,21 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				file.Close();
 				}
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: GroupTopicTypeID
+		 * The ID of the "group" keyword, or zero if it isn't defined.
+		 */
+		public int GroupTopicTypeID
+			{
+			get
+				{  return groupTopicTypeID;  }
+			}
 			
 
 		
@@ -2264,5 +2281,12 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		 * A <StringTable> mapping the plural keywords to the <TopicType>s they represent.
 		 */
 		protected StringTable<TopicType> pluralKeywords;
+
+		
+		/* var: groupTopicTypeID
+		 * The ID of the "group" keyword, or zero if it's not defined.
+		 */
+		protected int groupTopicTypeID;
+
 		}
 	}

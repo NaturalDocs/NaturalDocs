@@ -42,7 +42,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			this.startingIndex = startingIndex;
 			this.count = count;
 
-			if (topics[startingIndex].TopicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("group"))
+			if (topics[startingIndex].IsGroup)
 				{  this.header = topics[startingIndex];  }
 
 			this.recalculateProperties = true;
@@ -88,14 +88,13 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			if (count == 0)
 				{  return;  }
 		
-			var groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
 			var classString = topics[startingIndex].ClassString;
 
 			for (int i = startingIndex; i < startingIndex + count; i++)
 				{
 				if (topics[i].ClassString != classString)
 					{  throw new Exception("All topics in a TopicGroup must be part of the same class.");  }
-				if (topics[i].TopicTypeID == groupTopicTypeID && i != startingIndex)
+				if (topics[i].IsGroup && i != startingIndex)
 					{  throw new Exception("Only the first topic in a TopicGroup may be a group topic.");  }
 				if (Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID).Scope == TopicType.ScopeValue.Start)
 					{  throw new Exception("TopicGroups cannot contain topics that start a scope.");  }

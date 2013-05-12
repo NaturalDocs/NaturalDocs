@@ -1342,6 +1342,23 @@ namespace GregValure.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Property: IsGroup
+		 * Whether this topic is a group topic.  If <TopicTypeID> isn't set this will be false.
+		 */
+		public bool IsGroup
+			{
+			get
+				{
+				#if DEBUG
+				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access IsGroup when the topic type ID was ignored.");  }
+				#endif
+
+				return (topicTypeID != 0 && Engine.Instance.TopicTypes.GroupTopicTypeID == topicTypeID);
+				}
+			}
+
+
 		/* Property: DefinesClass
 		 * Whether this topic defines its <ClassString> as opposed to just being a member.
 		 */

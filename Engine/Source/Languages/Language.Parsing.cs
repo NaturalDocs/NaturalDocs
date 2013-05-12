@@ -1183,8 +1183,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			ParentElement lastClass = null;
 			ParentElement lastGroup = null;
 
-			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
-
 			int i = 0;
 			while (i < topics.Count)
 				{
@@ -1209,7 +1207,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					if (topicType.Scope == TopicType.ScopeValue.Start ||
 						 topicType.Scope == TopicType.ScopeValue.End ||
-						 topicType.ID == groupTopicTypeID)
+						 topic.IsGroup)
 						{
 						if (lastGroup != null)
 							{
@@ -1256,13 +1254,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				else if (topicType != null && topic.IsList == false &&
 						  (topicType.Scope == TopicType.ScopeValue.Start || 
 						   topicType.Scope == TopicType.ScopeValue.End || 
-						   topicType.ID == groupTopicTypeID))
+						   topic.IsGroup))
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
 					parentElement.Topic = topic;
 					parentElement.DefaultChildLanguageID = topic.LanguageID;
 
-					if (topicType.ID == groupTopicTypeID)
+					if (topic.IsGroup)
 						{  
 						// Groups don't enfoce a maximum access level, they just set the default declared level.
 						parentElement.DefaultDeclaredChildAccessLevel = topic.DeclaredAccessLevel;
@@ -1276,7 +1274,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					elements.Add(parentElement);
 					i++;
 
-					if (topicType.ID == groupTopicTypeID)
+					if (topic.IsGroup)
 						{  lastGroup = parentElement;  }
 					else
 						{  lastClass = parentElement;  }
@@ -2113,7 +2111,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 					// Finally, if it's a group, make sure it doesn't encompass any other ParentElements except enums.
 
-					if (element.Topic != null && element.Topic.TopicTypeID == Engine.Instance.TopicTypes.IDFromKeyword("group"))
+					if (element.Topic != null && element.Topic.IsGroup)
 						{
 						for (int j = i + 1; j < mergedElements.Count && element.Contains(mergedElements[j]); j++)
 							{
@@ -2299,8 +2297,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			{
 			// For the first pass determine if we already have groups and recurse into sub groups.
 
-			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
-
 			bool hasGroups = false;
 			int groupsAdded = 0;
 
@@ -2311,7 +2307,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  
 					ParentElement subParent = (ParentElement)elements[i];
 
-					if (subParent.Topic != null && subParent.Topic.TopicTypeID == groupTopicTypeID)
+					if (subParent.Topic != null && subParent.Topic.IsGroup)
 						{  hasGroups = true;  }
 
 					if (subParent.Topic == null || (subParent.Topic.IsEnum == false && subParent.Topic.IsList == false))
@@ -2398,9 +2394,8 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// possibility that the parent is itself a group.
 
 			ParentElement parent = (ParentElement)elements[parentIndex];
-			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
 
-			bool hasGroups = (parent.Topic != null && parent.Topic.TopicTypeID == groupTopicTypeID);
+			bool hasGroups = (parent.Topic != null && parent.Topic.IsGroup);
 			int groupsAdded = 0;
 
 			int i = parentIndex + 1;
@@ -2410,7 +2405,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					{  
 					ParentElement subParent = (ParentElement)elements[i];
 
-					if (subParent.Topic != null && subParent.Topic.TopicTypeID == groupTopicTypeID)
+					if (subParent.Topic != null && subParent.Topic.IsGroup)
 						{  hasGroups = true;  }
 
 					if (subParent.Topic == null || (subParent.Topic.IsEnum == false && subParent.Topic.IsList == false))
@@ -2506,10 +2501,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 			#endif
 
-			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
-			int typeTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("type");
-
-			if (groupTopicTypeID == 0)
+			if (Engine.Instance.TopicTypes.GroupTopicTypeID == 0)
 				{  return 0;  }
 
 			TopicType lastTopicType = null;
@@ -2528,8 +2520,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 				int effectiveTopicTypeID = elements[i].Topic.TopicTypeID;
 
-				if (elements[i].Topic.IsEnum && typeTopicTypeID != 0)
-					{  effectiveTopicTypeID = typeTopicTypeID;  }
+				if (elements[i].Topic.IsEnum)
+					{  
+					int typeTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("type");
+
+					if (typeTopicTypeID != 0)
+						{  effectiveTopicTypeID = typeTopicTypeID;  }
+					}
 
 				if (lastTopicType == null || lastTopicType.ID != effectiveTopicTypeID)
 					{
@@ -2560,7 +2557,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					if (addGroup)
 						{
 						Topic newGroupTopic = new Topic();
-						newGroupTopic.TopicTypeID = groupTopicTypeID;
+						newGroupTopic.TopicTypeID = Engine.Instance.TopicTypes.GroupTopicTypeID;
 						newGroupTopic.Title = lastTopicType.PluralDisplayName;
 
 						ParentElement newGroupElement = new ParentElement(elements[i].LineNumber, elements[i].CharNumber, 0);

@@ -87,7 +87,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			var files = Engine.Instance.Files;
 			var topicTypes = Engine.Instance.TopicTypes;
-			var groupTopicTypeID = topicTypes.IDFromKeyword("group");
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -194,7 +193,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				var topic = topics[topicIndex];
 
 				// Ignore group topics
-				if (topic.TopicTypeID == groupTopicTypeID)
+				if (topic.IsGroup)
 					{  
 					topicIndex++;  
 					continue;
@@ -263,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				var remainingTopic = remainingTopics[remainingTopicIndex];
 
 				// Ignore group topics
-				if (remainingTopic.TopicTypeID == groupTopicTypeID)
+				if (remainingTopic.IsGroup)
 					{  
 					remainingTopicIndex++;  
 					continue;
@@ -574,8 +573,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			{
 			GroupedTopics groupedTopics = new GroupedTopics(topics);
 
-			int groupTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
-
 			int i = startingIndex;
 			while (i < topics.Count)
 				{
@@ -587,7 +584,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				while (i < topics.Count && 
 							(topics[i].FileID == fileID || !groupByFileID) && 
-							topics[i].TopicTypeID != groupTopicTypeID)
+							topics[i].IsGroup == false)
 					{
 					groupCount++;
 					i++;
