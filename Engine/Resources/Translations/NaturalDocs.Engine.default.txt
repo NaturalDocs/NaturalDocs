@@ -651,9 +651,7 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    always treated this way.
 #
 #    The language Text File is also special.  It's treated as one big comment
-#    so you can put Natural Docs content in them without special symbols.  Also,
-#    if you don't specify a member operator or enum value behavior, it will
-#    copy those settings from the language that is used most in the source tree.
+#    so you can put Natural Docs content in them without special symbols.
 #
 # Extensions: [extension] [extension] ...
 #    Defines the file extensions of the language's source files.
