@@ -158,7 +158,6 @@ Topic Type: Function
    Plural Display Name from Locale: Topics.txt.Function.PluralDisplayName
 
    Flags: Code
-   Break Lists: Yes
 
    Keywords:
       function, functions
@@ -181,7 +180,6 @@ Topic Type: Operator
 
    Index: with Function
    Flags: Code
-   Break Lists: Yes
 
    Keywords:
       operator, operators

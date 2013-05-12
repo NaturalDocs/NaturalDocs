@@ -566,10 +566,6 @@ Topics.txt.ProjectTopicTypesReference.multiline {{{
 #    Enum
 #        Whether it describes an enum.
 #
-# Break Lists: [yes|no]
-#    Whether list topics should be broken into individual topics in the
-#    output.  Defaults to no.
-#
 # Keywords:
 #    [keyword]
 #    [keyword], [plural keyword]
