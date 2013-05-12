@@ -1015,8 +1015,6 @@ namespace GregValure.NaturalDocs.Engine.Config
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.OutputHeaderText.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HTMLOutputFoldersSyntax.multiline") );
-			output.AppendLine("#");
-			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.XMLOutputFoldersSyntax.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 			}

@@ -295,13 +295,6 @@ Project.txt.HTMLOutputFoldersSyntax.multiline {{{
 #    Generates HTML documentation in the specified folder.
 }}}
 
-Project.txt.XMLOutputFoldersSyntax.multiline {{{
-# XML Output Folder: [path]
-#    [Project Information]
-#
-#    Generates XML documentation in the specified folder.
-}}}
-
 Project.txt.GlobalSettingsHeader.multiline {{{
 # Global Settings
 # ------------------------------------------------------------------------
