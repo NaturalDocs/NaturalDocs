@@ -136,7 +136,7 @@
  *			The file starts with the standard binary file header as managed by <BinaryFile>.
  *			
  *			> [Int32: Tab Width]
- *			> [Int8: Auto Group (0 or 1)]
+ *			> [Byte: Auto Group (0 or 1)]
  *
  *			Global properties.
  *			
@@ -350,10 +350,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 					{
 					
 					// [Int32: Tab Width]
-					// [Int8: Auto Group (0 or 1)]
+					// [Byte: Auto Group (0 or 1)]
 
 					configFileData.TabWidth = binaryConfigFile.ReadInt32();
-					configFileData.AutoGroup = (binaryConfigFile.ReadInt8() == 1);
+					configFileData.AutoGroup = (binaryConfigFile.ReadByte() == 1);
 					
 					// [String: Identifier]
 					// [[Properties]]
@@ -400,10 +400,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{
 
 				// [Int32: Tab Width]
-				// [Int8: Auto Group (0 or 1)]
+				// [Byte: Auto Group (0 or 1)]
 
 				binaryConfigFile.WriteInt32(content.TabWidth);
-				binaryConfigFile.WriteInt8( (sbyte)(content.AutoGroup != null && (bool)content.AutoGroup == false ? 0 : 1) );
+				binaryConfigFile.WriteByte( (byte)(content.AutoGroup != null && (bool)content.AutoGroup == false ? 0 : 1) );
 				
 				// [String: Identifier]
 				// [[Properties]]
