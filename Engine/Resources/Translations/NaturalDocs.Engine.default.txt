@@ -691,7 +691,7 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    normally a line break would end it.
 #
 # Enum Values: [global|under type|under parent]
-#    Defines how enum values are referenced.  The default is global.
+#    Defines how enum values are referenced.  The default is under type.
 #    global       - Values are always global, referenced as 'value'.
 #    under type   - Values are under the enum type, referenced as
 #                   'class.enum.value'.

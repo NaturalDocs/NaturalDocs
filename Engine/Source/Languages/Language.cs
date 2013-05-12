@@ -92,7 +92,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			memberOperator = ".";
 			topicTypesToPrototypeEnders = null;
 			lineExtender = null;
-			enumValue = EnumValues.Global;
+			enumValue = EnumValues.UnderType;
 			caseSensitive = true;
 			flags = 0;
 			}
