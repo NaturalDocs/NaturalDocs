@@ -26,6 +26,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			projectInfo = new ProjectInfo();
 			tabWidth = 0;
+			documentedOnly = null;
 			autoGroup = null;
 			entries = new List<Entry>();
 			}
@@ -110,6 +111,17 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  tabWidth = value;  }
 			}
 
+		/* Property: DocumentedOnly
+		 * Whether only documented code elements should appear in the output.
+		 */
+		public bool? DocumentedOnly
+			{
+			get
+				{  return documentedOnly;  }
+			set
+				{  documentedOnly = value;  }
+			}
+			
 		/* Property: AutoGroup
 		 * Whether automatic grouping should be applied or not, or null if it's not set.
 		 */
@@ -144,6 +156,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 		
 		protected ProjectInfo projectInfo;
 		protected int tabWidth;
+		protected bool? documentedOnly;
 		protected bool? autoGroup;
 		protected List<Entry> entries;
 		

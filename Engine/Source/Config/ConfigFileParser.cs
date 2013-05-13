@@ -109,6 +109,10 @@
  *			
  *			The number of spaces a tab should be expanded to.
  *			
+ *			> Documented Only: [yes|no]
+ *			
+ *			Whether only documented code elements should appear in the output.
+ *			
  *			> Auto Group: [yes|no]
  *			
  *			Whether automatic grouping should be applied.
@@ -136,6 +140,7 @@
  *			The file starts with the standard binary file header as managed by <BinaryFile>.
  *			
  *			> [Int32: Tab Width]
+ *			> [Byte: Documented Only (0 or 1)]
  *			> [Byte: Auto Group (0 or 1)]
  *
  *			Global properties.
@@ -215,6 +220,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			subtitleRegex = null;
 			timestampRegex = null;
 			tabWidthRegex = null;
+			documentedOnlyRegex = null;
 			autoGroupRegex = null;
 
 			sourceFolderRegex = null;
@@ -258,6 +264,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 					subtitleRegex = new Regex.Config.Subtitle();
 					timestampRegex = new Regex.Config.Timestamp();
 					tabWidthRegex = new Regex.Config.TabWidth();
+					documentedOnlyRegex = new Regex.Config.DocumentedOnly();
 					autoGroupRegex = new Regex.Config.AutoGroup();
 
 					sourceFolderRegex = new Regex.Config.SourceFolder();
@@ -350,9 +357,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 					{
 					
 					// [Int32: Tab Width]
+					// [Byte: Documented Only (0 or 1)]
 					// [Byte: Auto Group (0 or 1)]
 
 					configFileData.TabWidth = binaryConfigFile.ReadInt32();
+					configFileData.DocumentedOnly = (binaryConfigFile.ReadByte() == 1);
 					configFileData.AutoGroup = (binaryConfigFile.ReadByte() == 1);
 					
 					// [String: Identifier]
@@ -400,9 +409,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{
 
 				// [Int32: Tab Width]
+				// [Byte: Documented Only (0 or 1)]
 				// [Byte: Auto Group (0 or 1)]
 
 				binaryConfigFile.WriteInt32(content.TabWidth);
+				binaryConfigFile.WriteByte( (byte)(content.DocumentedOnly != null && (bool)content.DocumentedOnly == false ? 0 : 1) );
 				binaryConfigFile.WriteByte( (byte)(content.AutoGroup != null && (bool)content.AutoGroup == false ? 0 : 1) );
 				
 				// [String: Identifier]
@@ -501,6 +512,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 					}
 				else
 					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber") );  }
+				}
+			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
+				{
+				if (yesRegex.IsMatch(value))
+					{  configFileData.DocumentedOnly = true;  }
+				else if (noRegex.IsMatch(value))
+					{  configFileData.DocumentedOnly = false;  }
+				else
+					{  configFile.AddError( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Documented Only", value) );  }
 				}
 			else if (autoGroupRegex.IsMatch(lcIdentifier))
 				{
@@ -1043,6 +1063,19 @@ namespace GregValure.NaturalDocs.Engine.Config
 				hasDefinedValues = true;
 				}
 
+			if (configFileData.DocumentedOnly != null)
+				{
+				output.Append("Documented Only: ");
+
+				if ((bool)configFileData.DocumentedOnly == true)
+					{  output.AppendLine("Yes");  }
+				else
+					{  output.AppendLine("No");  }
+
+				output.AppendLine();
+				hasDefinedValues = true;
+				}
+
 			if (configFileData.AutoGroup != null)
 				{
 				output.Append("Auto Group: ");
@@ -1068,6 +1101,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{
 				output.AppendLine("#");
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TabWidthSyntax.multiline") );
+				}
+			if (configFileData.DocumentedOnly == null)
+				{
+				output.AppendLine("#");
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.DocumentedOnlySyntax.multiline") );
 				}
 			if (configFileData.AutoGroup == null)
 				{
@@ -1268,6 +1306,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 		Regex.Config.Subtitle subtitleRegex;
 		Regex.Config.Timestamp timestampRegex;
 		Regex.Config.TabWidth tabWidthRegex;
+		Regex.Config.DocumentedOnly documentedOnlyRegex;
 		Regex.Config.AutoGroup autoGroupRegex;
 
 		Regex.Config.SourceFolder sourceFolderRegex;

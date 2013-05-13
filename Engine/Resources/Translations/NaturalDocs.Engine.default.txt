@@ -310,6 +310,12 @@ Project.txt.TabWidthSyntax.multiline {{{
 #    The number of spaces tabs should be expanded to.
 }}}
 
+Project.txt.DocumentedOnlySyntax.multiline {{{
+# Documented Only: [yes|no]
+#    Whether only documented code elements should appear in the output.
+#    Defaults to no.
+}}}
+
 Project.txt.AutoGroupSyntax.multiline {{{
 # Auto Group: [yes|no]
 #    Whether groups should automatically apply to you code.  Defaults to yes.

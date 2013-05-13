@@ -46,6 +46,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			workingDataFolder = null;
 			
 			tabWidth = DefaultTabWidth;
+			documentedOnly = false;
 			autoGroup = true;
 			commandLineConfig = new ConfigData();
 
@@ -408,6 +409,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 			else
 				{  tabWidth = DefaultTabWidth;  }
 
+			if (commandLineConfig.DocumentedOnly != null)
+				{  documentedOnly = (bool)commandLineConfig.DocumentedOnly;  }
+			else if (configFileData.DocumentedOnly != null)
+				{  documentedOnly = (bool)configFileData.DocumentedOnly;  }
+			else
+				{  documentedOnly = false;  }
+
 			if (commandLineConfig.AutoGroup != null)
 				{  autoGroup = (bool)commandLineConfig.AutoGroup;  }
 			else if (configFileData.AutoGroup != null)
@@ -416,6 +424,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  autoGroup = true;  }
 
 			if (tabWidth != binaryConfigFileData.TabWidth ||
+				documentedOnly != binaryConfigFileData.DocumentedOnly ||
 				autoGroup != binaryConfigFileData.AutoGroup)
 				{
 				ReparseEverything = true;
@@ -430,12 +439,14 @@ namespace GregValure.NaturalDocs.Engine.Config
 			// into place.  If adding --no-auto-group on the command line caused it to be added to Project.txt, removing it from the
 			// command line would have no effect because it's still in Project.txt.
 			commandLineConfig.TabWidth = configFileData.TabWidth;
+			commandLineConfig.DocumentedOnly = configFileData.DocumentedOnly;
 			commandLineConfig.AutoGroup = configFileData.AutoGroup;
 
 			configFileParser.SaveFile(configFilePath, commandLineConfig, errorList);
 
 			// Now apply the correct config again because we'll be saving this later as Project.nd.
 			commandLineConfig.TabWidth = tabWidth;
+			commandLineConfig.DocumentedOnly = documentedOnly;
 			commandLineConfig.AutoGroup = autoGroup;
 
 
@@ -785,6 +796,16 @@ namespace GregValure.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: DocumentedOnly
+		 * Whether only documented code elements should appear in the output.
+		 */
+		public bool DocumentedOnly
+			{
+			get
+				{  return documentedOnly;  }
+			}
+
+
 		/* Property: AutoGroup
 		 * Whether automatic grouping should be applied.
 		 */
@@ -908,6 +929,11 @@ namespace GregValure.NaturalDocs.Engine.Config
 		 * The number of spaces tabs should be expanded to.
 		 */
 		protected int tabWidth;
+
+		/* var: documentedOnly
+		 * Whether only documented code elements should appear in the output.
+		 */
+		protected bool documentedOnly;
 
 		/* var: autoGroup
 		 * Whether automatic grouping should be applied.
