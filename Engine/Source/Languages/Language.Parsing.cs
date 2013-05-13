@@ -234,6 +234,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			#endif
 
 
+			// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the 
+			// code's effects still apply with full language support.
+
+			if (Engine.Instance.Config.DocumentedOnly)
+				{
+				foreach (var element in elements)
+					{
+					if (element.Topic != null && element.InComments == false)
+						{  element.Topic = null;  }
+					}
+				}
+
+
 			// Add automatic grouping.
 
 			if (Engine.Instance.Config.AutoGroup)
