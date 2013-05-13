@@ -31,7 +31,6 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 			StringBuilder output = new StringBuilder();
 			bool inClass = false;
 			bool inGroup = false;
-			int groupID = Engine.Instance.TopicTypes.IDFromKeyword("group");
 
 			for (int i = 0; i < topics.Count; i++)
 				{
@@ -43,7 +42,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 					if (i != 0)
 						{  output.AppendLine();  }
 					}
-				else if (topics[i].TopicTypeID == groupID)
+				else if (topics[i].IsGroup)
 					{
 					inGroup = false;
 					}
@@ -65,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 					inClass = true;
 					inGroup = false;
 					}
-				else if (topics[i].TopicTypeID == groupID)
+				else if (topics[i].IsGroup)
 					{
 					inGroup = true;
 					}
