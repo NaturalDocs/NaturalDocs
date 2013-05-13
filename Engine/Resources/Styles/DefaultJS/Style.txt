@@ -1,4 +1,27 @@
-﻿Format: 1.4
+﻿Format: 2.0 (Development Release 11-04-2012)
+
+# This is a configuration file for a Natural Docs HTML output style.
+
+
+# Inheritance
+# ------------------------------------------------------------------------
+
+# You can inherit the settings of another style like this:
+#
+# Inherit: [style]
+#
+# All of its settings will be applied before yours.  You can inherit more than
+# one style.
+#
+# If you're building your own style from scratch, do not inherit anything.  If
+# you just want to make some changes to the default style, inherit Default.
+# If you're building your own page design from scratch but want to keep the
+# default JavaScript functions, inherit DefaultJS.  This will include the code
+# but not the CSS or images.
+
+
+# Linked Files
+# ------------------------------------------------------------------------
 
 Link: NDCore.js
 Frame Link: NDFramePage.js
@@ -6,6 +29,41 @@ Frame Link: NDMenu.js
 Frame Link: NDSummary.js
 Content Link: NDContentPage.js
 
+
+# You can link .css, .js, and .json files to the output like this:
+#
+# Link: [file]
+# Frame Link: [file]
+# Content Link: [file]
+#
+# These files will be included the generated output via link or script tags.
+# If you do not specify a page type, it will be included in every page.
+#
+# While all files will be copied to the output folder automatically, they are
+# not linked automatically.  Since JavaScript files can be loaded dynamically
+# and CSS files can be imported from other ones, you must explicitly link the
+# ones you want here.
+
+
+# OnLoad
+# ------------------------------------------------------------------------
+
 OnLoad: NDCore.AddIEClassesToBody();
+
 Frame OnLoad: NDFramePage.Start();
+
 Content OnLoad: NDContentPage.Start();
+
+
+# You can add code to the page's OnLoad handler like this:
+#
+# OnLoad: [statement]
+# Frame OnLoad: [statement]
+# Content OnLoad: [statement]
+#
+# If you do not specify a page type, it will be called for every page.
+#
+# The OnLoad statement is confined to a single line.  It's recommended that
+# you make your OnLoad code a function in a separate .js file, link that file
+# from here, and then call it from this statement rather than trying to cram
+# it on this line.

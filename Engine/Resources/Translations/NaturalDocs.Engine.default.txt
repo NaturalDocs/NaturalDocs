@@ -832,15 +832,15 @@ HTML.Style.txt.LinkedFilesReference.multiline {{{
 # You can link .css, .js, and .json files to the output like this:
 #
 # Link: [file]
+# Frame Link: [file]
 # Content Link: [file]
-# Index Link: [file]
 #
 # These files will be included the generated output via link or script tags.
 # If you do not specify a page type, it will be included in every page.
 #
 # While all files will be copied to the output folder automatically, they are
-# not linked automatically.  JavaScript files can be loaded dynamically and
-# CSS files can be imported from other ones, so you must explicitly link the
+# not linked automatically.  Since JavaScript files can be loaded dynamically
+# and CSS files can be imported from other ones, you must explicitly link the
 # ones you want here.
 }}}
 
@@ -853,8 +853,8 @@ HTML.Style.txt.OnLoadReference.multiline {{{
 # You can add code to the page's OnLoad handler like this:
 #
 # OnLoad: [statement]
+# Frame OnLoad: [statement]
 # Content OnLoad: [statement]
-# Index OnLoad: [statement]
 #
 # If you do not specify a page type, it will be called for every page.
 #
