@@ -136,6 +136,10 @@ Parameters:
 --tab-width [width]
     Specifies how many spaces a tab should be expanded to.
 
+ -do
+--documented-only
+    Only include documented code elements in the output.
+
  -nag
 --no-auto-group
     Turns off automatic grouping.

@@ -346,6 +346,7 @@ namespace GregValure.NaturalDocs.CLI
 		 *		- -xip, --exclude-input-pattern, --exclude-source-pattern
 		 *		- -img, --images
 		 *		- -t, --tab, --tabwidth, --tablength
+		 *		- -do, --documentedonly
 		 *		- -nag, --noautogroup
 		 *		- -s, --style, --defaultstyle
 		 *		- -r, --rebuild
@@ -356,7 +357,6 @@ namespace GregValure.NaturalDocs.CLI
 		 *		
 		 * Unsupported so far:
 		 * 
-		 *		- -do, --documentedonly
 		 *		- -cs, --charset, --characterset
 		 *		- -q, --quiet
 		 *		
@@ -381,6 +381,7 @@ namespace GregValure.NaturalDocs.CLI
 				"data", "-w", "workingdata", "-w",
 				"images", "-img", "image", "-img",
 				"tab", "-t", "tabwidth", "-t", "tablength", "-t",
+				"documentedonly", "-do",
 				"noautogroup", "-nag",
 				"style", "-s", "defaultstyle", "-s",
 				"help", "-h",
@@ -606,6 +607,15 @@ namespace GregValure.NaturalDocs.CLI
 					
 					
 					
+				// Documented Only
+					
+				else if (command == "-do")
+					{
+					Engine.Instance.Config.CommandLineConfig.DocumentedOnly = true;
+					}
+					
+					
+
 				// No Auto-Group
 					
 				else if (command == "-nag")
