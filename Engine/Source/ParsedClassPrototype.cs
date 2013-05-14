@@ -98,6 +98,57 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: GetAccessLevel
+		 * Returns the <Languages.AccessLevel> if it can be determined by the prototype.  This should only be used with basic language
+		 * support as it will not be as reliable as the dedicated language parser.
+		 */
+		public Languages.AccessLevel GetAccessLevel ()
+			{
+			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
+
+			TokenIterator iterator, end;
+			if (GetModifiers(out iterator, out end) == false)
+				{  return accessLevel;  }
+
+			bool previousWasUnderscore = false;
+
+			while (iterator < end)
+				{
+				if (iterator.FundamentalType == FundamentalType.Text &&
+					 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.Modifier &&
+					 previousWasUnderscore == false)
+					{
+					if (iterator.MatchesToken("public"))
+						{  accessLevel = Languages.AccessLevel.Public;  }
+					else if (iterator.MatchesToken("private"))
+						{  accessLevel = Languages.AccessLevel.Private;  }
+					else if (iterator.MatchesToken("protected"))
+						{
+						if (accessLevel == Languages.AccessLevel.Internal)
+							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
+						else
+							{  accessLevel = Languages.AccessLevel.Protected;  }
+						}
+					else if (iterator.MatchesToken("internal"))
+						{
+						if (accessLevel == Languages.AccessLevel.Protected)
+							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
+						else
+							{  accessLevel = Languages.AccessLevel.Internal;  }
+						}
+					}
+				else
+					{
+					previousWasUnderscore = (iterator.Character == '_');
+					}
+
+				iterator.Next();
+				}
+
+			return accessLevel;
+			}
+
+
 		/* Function: GetTemplateSuffix
 		 * Gets the bounds of the template suffix attached to the class name, such as "<T>" in "List<T>", or returns false if there isn't one.
 		 */

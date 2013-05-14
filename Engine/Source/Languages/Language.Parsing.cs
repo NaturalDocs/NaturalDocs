@@ -133,11 +133,17 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Fill in the declared access levels.  We do this before merging with the code elements so the defaults that come from the 
-			// comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will have the comment
-			// settings overwritten by the code settings.
+			// Apply file and language IDs since we're going to need the language ID to deal with prototypes.
 
-			ApplyDeclaredAccessLevels(commentElements);
+			ApplyFileAndLanguageIDs(commentElements, fileID, this.ID);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
+			// Apply comment prototypes.
+
+			ApplyCommentPrototypes(commentElements);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
@@ -147,6 +153,28 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			if (Type == LanguageType.FullSupport)
 				{
+
+				// Fill in any access levels we can find in comment prototypes.  Since this requires prototype parsing, we have to make sure
+				// the language IDs are set beforehand.
+
+				ApplyPrototypeAccessLevels(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Fill in the declared access levels for comment elements.  We do this before merging with the code elements so the defaults 
+				// that come from the  comment settings only apply to topics that don't also appear in the code.  Anything that gets merged will 
+				// have the comment settings overwritten by the code settings.
+
+				ApplyDeclaredAccessLevels(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Now retrieve the code elements.
+
 				List<Element> codeElements = GetCodeElements(source);
 
 				#if DEBUG
@@ -186,6 +214,19 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				#if DEBUG
 					ValidateElements(elements, ValidateElementsMode.MergedElements);
 				#endif
+
+
+				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the 
+				// code's effects still apply.
+
+				if (Engine.Instance.Config.DocumentedOnly)
+					{
+					foreach (var element in elements)
+						{
+						if (element.Topic != null && element.InComments == false)
+							{  element.Topic = null;  }
+						}
+					}
 				}
 
 
@@ -194,9 +235,25 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			else if (Type == LanguageType.BasicSupport)
 				{
 				
-				// Fill in additional prototypes via our language-neutral algorithm.
+				// Fill in additional prototypes via our language-neutral algorithm.  These will not overwrite the comment prototypes.
 	
 				AddBasicPrototypes(source, commentElements, possibleDocumentationComments);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Fill in any access levels we can find in the prototypes.
+
+				ApplyPrototypeAccessLevels(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Fill in the declared access levels.
+
+				ApplyDeclaredAccessLevels(commentElements);
 
 				if (cancelDelegate())
 					{  return ParseResult.Cancelled;  }
@@ -219,6 +276,23 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 			else if (Type == LanguageType.TextFile)
 				{
+
+				// Fill in any access levels we can find in the prototypes.  Prototypes may have been defined in the comments.
+
+				ApplyPrototypeAccessLevels(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
+				// Fill in the declared access levels.
+
+				ApplyDeclaredAccessLevels(commentElements);
+
+				if (cancelDelegate())
+					{  return ParseResult.Cancelled;  }
+
+
 				// We don't have to remove headerless topics because there's no way to specify them in text files.
 
 				elements = commentElements;
@@ -232,19 +306,6 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				throw new Exception ("Unrecognized language type " + Type);
 				}
 			#endif
-
-
-			// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the 
-			// code's effects still apply with full language support.
-
-			if (Engine.Instance.Config.DocumentedOnly)
-				{
-				foreach (var element in elements)
-					{
-					if (element.Topic != null && element.InComments == false)
-						{  element.Topic = null;  }
-					}
-				}
 
 
 			// Add automatic grouping.
@@ -262,6 +323,14 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				}
 
 
+			// Reapply file and language IDs so that they also apply to code elements and auto-groups.
+
+			ApplyFileAndLanguageIDs(elements, fileID, this.ID);
+
+			if (cancelDelegate())
+				{  return ParseResult.Cancelled;  }
+
+
 			// Calculate the effective access levels.  This is done after merging code and comment topics so members are consistent.  For
 			// example, a public comment-only topic appearing in a private class needs to have an effective access level of private.
 
@@ -271,26 +340,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return ParseResult.Cancelled;  }
 
 
-			// Apply file and language IDs.  This must be done before generating the remaining symbols because it needs to know the
-			// language to be able to look up the enum settings.
-
-			ApplyFileAndLanguageIDs(elements, fileID, this.ID);
-
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
-
-
 			// Generate remaining symbols.
 
 			GenerateRemainingSymbols(elements);
-
-			if (cancelDelegate())
-				{  return ParseResult.Cancelled;  }
-
-
-			// Apply comment prototypes, which will overwrite any code prototypes that exist.
-
-			ApplyCommentPrototypes(elements);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
@@ -1849,6 +1901,27 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: ApplyPrototypeAccessLevels
+		 * Goes through the <Topics> and applies any <AccessLevels> it finds in the prototypes.  This will not override any existing
+		 * <AccessLevels>.
+		 */
+		protected void ApplyPrototypeAccessLevels (List<Element> elements)
+			{
+			foreach (var element in elements)
+				{
+				if (element.Topic != null &&
+					 element.Topic.Prototype != null &&
+					 element.Topic.DeclaredAccessLevel == AccessLevel.Unknown)
+					{
+					element.Topic.DeclaredAccessLevel = element.Topic.ParsedPrototype.GetAccessLevel();
+
+					if (element is ParentElement)
+						{  (element as ParentElement).MaximumEffectiveChildAccessLevel = element.Topic.DeclaredAccessLevel;  }
+					}
+				}
+			}
+
+
 		/* Function: MergeElements
 		 * Combines code and comment <Elements> into one list.  The original <Elements> and/or <Topics> may be reused so don't use them 
 		 * after calling this function.
@@ -2214,8 +2287,11 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			// Summary - Use the comment.
 			mergedTopic.Summary = commentTopic.Summary;
 
-			// Prototype - Use the code.  If there's one manually specified in the comment, ApplyCommentPrototypes() will overwrite it later.
-			mergedTopic.Prototype = codeTopic.Prototype;
+			// Prototype - If one was specified in the comment it overrides the code.
+			if (commentTopic.Prototype != null)
+				{  mergedTopic.Prototype = commentTopic.Prototype;  }
+			else
+				{  mergedTopic.Prototype = codeTopic.Prototype;  }
 
 			// Symbol - Use the code, even if we replaced the title.
 			mergedTopic.Symbol = codeTopic.Symbol;

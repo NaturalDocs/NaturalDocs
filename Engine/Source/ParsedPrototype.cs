@@ -114,6 +114,57 @@ namespace GregValure.NaturalDocs.Engine
 				}
 			}
 
+
+		/* Function: GetAccessLevel
+		 * Returns the <Languages.AccessLevel> if it can be determined by the prototype.  This should only be used with basic
+		 * language support as it's not as reliable as the results from the dedicated language parsers.
+		 */
+		public Languages.AccessLevel GetAccessLevel ()
+			{
+			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
+
+			TokenIterator iterator, end;
+			if (GetSectionBounds(SectionType.BeforeParameters, 0, out iterator, out end) == false)
+				{  return accessLevel;  }
+
+			bool previousWasUnderscore = false;
+
+			while (iterator < end)
+				{
+				if (iterator.FundamentalType == FundamentalType.Text &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
+					 previousWasUnderscore == false)
+					{
+					if (iterator.MatchesToken("public"))
+						{  accessLevel = Languages.AccessLevel.Public;  }
+					else if (iterator.MatchesToken("private"))
+						{  accessLevel = Languages.AccessLevel.Private;  }
+					else if (iterator.MatchesToken("protected"))
+						{
+						if (accessLevel == Languages.AccessLevel.Internal)
+							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
+						else
+							{  accessLevel = Languages.AccessLevel.Protected;  }
+						}
+					else if (iterator.MatchesToken("internal"))
+						{
+						if (accessLevel == Languages.AccessLevel.Protected)
+							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
+						else
+							{  accessLevel = Languages.AccessLevel.Internal;  }
+						}
+					}
+				else
+					{
+					previousWasUnderscore = (iterator.Character == '_');
+					}
+
+				iterator.Next();
+				}
+
+			return accessLevel;
+			}
+
 			
 		/* Function: GetBeforeParameters
 		 * Returns the bounds of the section of the prototype prior to the parameters.  If it has parameters, it will include the 
