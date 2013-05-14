@@ -1,0 +1,38 @@
+
+// Protected Function: ProtectedInHeader_NoCode
+
+// Protected Function: ProtectedInHeader_UnspecifiedInCode
+void ProtectedInHeader_UnspecifiedInCode () { }
+
+// Protected Function: ProtectedInHeader_PublicInCode
+public void ProtectedInHeader_PublicInCode () { }
+
+// Function: UnspecifiedInHeader_PublicInCode
+public void UnspecifiedInHeader_PublicInCode () { }
+
+// Protected Function: ProtectedInHeader_UnspecifiedInComment
+// --- Prototype
+// void ProtectedInHeader_UnspecifiedInComment ()
+// --- end
+
+// Protected Function: ProtectedInHeader_PublicInComment
+// --- Prototype
+// public void ProtectedInHeader_PublicInComment ()
+// --- end
+
+// Function: UnspecifiedInHeader_PublicInComment
+// --- Prototype
+// public void UnspecifiedInHeader_PublicInComment ()
+// --- end
+
+// Protected Function: ProtectedInHeader_PublicInComment_InternalInCode
+// --- Prototype
+// public void ProtectedInHeader_PublicInComment_InternalInCode ()
+// --- end
+internal void ProtectedInHeader_PublicInComment_InternalInCode () { }
+
+// Function: UnspecifiedInHeader_PublicInComment_InternalInCode
+// --- Prototype
+// public void UnspecifiedInHeader_PublicInComment_InternalInCode ()
+// --- end
+internal void UnspecifiedInHeader_PublicInComment_InternalInCode () { }

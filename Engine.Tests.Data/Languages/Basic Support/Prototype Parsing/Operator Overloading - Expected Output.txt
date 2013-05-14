@@ -1,4 +1,5 @@
 - Before Parameters: int operator< (
+  - Access Level: Unknown
   - Link Candidates: int
 
   - Parameter 1: LineIterator a,
@@ -19,6 +20,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: LineIterator operator<< (
+  - Access Level: Unknown
   - Link Candidates: LineIterator
 
   - Parameter 1: LineIterator input
@@ -32,6 +34,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: ObjectC operator+ (
+  - Access Level: Unknown
   - Link Candidates: ObjectC
 
   - Parameter 1: ObjectC other

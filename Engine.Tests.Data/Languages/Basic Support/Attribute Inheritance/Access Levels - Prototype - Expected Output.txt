@@ -1,0 +1,74 @@
+UnspecifiedClass
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PublicClass
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+UnspecifiedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+PublicFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+PrivateFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+PrivateClass
+- Language: C# (Basic Language Support)
+- Declared Access Level: Private
+- Effective Access Level: Private
+-----
+UnspecifiedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+PublicFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Private
+-----
+ProtectedFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Private
+-----
+PrivateFunction
+- Language: C# (Basic Language Support)
+- Declared Access Level: Private
+- Effective Access Level: Private

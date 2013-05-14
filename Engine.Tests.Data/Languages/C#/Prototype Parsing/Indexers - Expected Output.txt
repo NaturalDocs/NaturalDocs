@@ -1,4 +1,5 @@
 - Before Parameters: int this [
+  - Access Level: Unknown
   - Link Candidates: int
 
   - Parameter 1: int x
@@ -12,6 +13,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: protected int this [
+  - Access Level: Protected
   - Link Candidates: int
 
   - Parameter 1: int x
@@ -25,6 +27,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: internal System.Text.StringBuilder this [
+  - Access Level: Internal
   - Link Candidates: System.Text.StringBuilder
   - Pre-Prototype Line: [Attribute]
 
@@ -46,6 +49,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: abstract int this [
+  - Access Level: Unknown
   - Link Candidates: int
 
   - Parameter 1: int x

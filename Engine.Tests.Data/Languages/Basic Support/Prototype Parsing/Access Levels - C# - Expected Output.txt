@@ -1,0 +1,31 @@
+- No Parameters: public int FunctionA ()
+  - Access Level: Public
+  - Link Candidates: int
+-----
+- No Parameters: private int FunctionB ()
+  - Access Level: Private
+  - Link Candidates: int
+-----
+- No Parameters: protected int FunctionC ()
+  - Access Level: Protected
+  - Link Candidates: int
+-----
+- No Parameters: internal int FunctionD ()
+  - Access Level: Internal
+  - Link Candidates: int
+-----
+- No Parameters: protected internal int FunctionE ()
+  - Access Level: ProtectedInternal
+  - Link Candidates: int
+-----
+- No Parameters: internal protected int FunctionF ()
+  - Access Level: ProtectedInternal
+  - Link Candidates: int
+-----
+- No Parameters: virtual public static int FunctionG ()
+  - Access Level: Public
+  - Link Candidates: int
+-----
+- No Parameters: not_public int FunctionH ()
+  - Access Level: Unknown
+  - Link Candidates: int

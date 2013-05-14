@@ -1,4 +1,5 @@
 - Before Parameters: public delegate void DelegateA (
+  - Access Level: Public
   - Link Candidates: void
 
   - Parameter 1: int a
@@ -12,6 +13,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: protected internal delegate IList<T> DelegateB<in T> (
+  - Access Level: ProtectedInternal
   - Link Candidates: IList, T
   - Pre-Prototype Line: [Attribute]
 

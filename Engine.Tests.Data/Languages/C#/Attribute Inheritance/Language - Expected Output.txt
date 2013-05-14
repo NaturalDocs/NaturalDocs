@@ -9,7 +9,7 @@ Function_NoTagCSharpCode
 - Effective Access Level: Private
 -----
 Function_NoTagNoCode
-- Language: C#
+- Language: Visual Basic
 - Declared Access Level: Public
 - Effective Access Level: Public
 -----

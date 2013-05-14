@@ -2,6 +2,7 @@ class Qualifiers : A.B.Parent1, X.Y.Parent2
 
   - Name: Qualifiers
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: A.B.Parent1
     - Name: A.B.Parent1
@@ -15,6 +16,7 @@ class Properties1 : public Parent
 
   - Name: Properties1
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: public Parent
     - Name: Parent
@@ -26,6 +28,7 @@ class Properties2 inherit [Metadata] Parent
 
   - Name: Properties2
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: [Metadata] Parent
     - Name: Parent
@@ -37,6 +40,7 @@ class Properties3 : extends public Parent1, implements [Metadata] private A.B.Pa
 
   - Name: Properties3
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: public Parent1
     - Name: Parent1
@@ -53,6 +57,7 @@ class Templates<int, float> : public Parent1<char>, A.B.Parent2 <List<int>, int>
   - Name: Templates
   - Template Suffix: <int, float>
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: public Parent1<char>
     - Name: Parent1

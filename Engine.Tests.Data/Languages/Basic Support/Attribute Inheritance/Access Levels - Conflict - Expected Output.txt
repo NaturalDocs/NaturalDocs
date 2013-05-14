@@ -1,0 +1,44 @@
+ProtectedInHeader_NoCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+ProtectedInHeader_UnspecifiedInCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+ProtectedInHeader_PublicInCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedInHeader_PublicInCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedInHeader_UnspecifiedInComment
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+ProtectedInHeader_PublicInComment
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedInHeader_PublicInComment
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public
+-----
+ProtectedInHeader_PublicInComment_InternalInCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Protected
+- Effective Access Level: Protected
+-----
+UnspecifiedInHeader_PublicInComment_InternalInCode
+- Language: C# (Basic Language Support)
+- Declared Access Level: Public
+- Effective Access Level: Public

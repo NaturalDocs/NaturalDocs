@@ -1,13 +1,17 @@
 - No Parameters: sub FunctionA ()
+  - Access Level: Unknown
   - Link Candidates: sub
 -----
 - No Parameters: sub FunctionB ( )
+  - Access Level: Unknown
   - Link Candidates: sub
 -----
 - No Parameters: sub FunctionC()
+  - Access Level: Unknown
   - Link Candidates: sub
 -----
 - Before Parameters: sub FunctionD (
+  - Access Level: Unknown
   - Link Candidates: sub
 
   - Parameter 1: $x,
@@ -35,6 +39,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: sub FunctionE(
+  - Access Level: Unknown
   - Link Candidates: sub
 
   - Parameter 1: $x,

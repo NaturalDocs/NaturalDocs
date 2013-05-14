@@ -1,30 +1,38 @@
 - No Parameters: int varA
+  - Access Level: Unknown
   - Link Candidates: int
 -----
 - No Parameters: public int varB
+  - Access Level: Public
   - Link Candidates: int
 -----
 - No Parameters: private static List<int> varC
+  - Access Level: Private
   - Link Candidates: List, int
 -----
 - No Parameters: volatile string[] varD
+  - Access Level: Unknown
   - Link Candidates: string
 -----
 - No Parameters: int* varE
+  - Access Level: Unknown
   - Link Candidates: int
   - Pre-Prototype Line: [Attribute: Something("value")]
 -----
 - No Parameters: protected internal System.Text.StringBuilder varF
+  - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
   - Pre-Prototype Line: [AttributeA]
   - Pre-Prototype Line: [AttributeB(12)]
 -----
 - No Parameters: protected internal System.Text.StringBuilder varG
+  - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
   - Pre-Prototype Line: [AttributeA]
   - Pre-Prototype Line: [AttributeB(12)]
 -----
 - No Parameters: protected internal System.Text.StringBuilder varH
+  - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
   - Pre-Prototype Line: [AttributeA]
   - Pre-Prototype Line: [AttributeB(12)]

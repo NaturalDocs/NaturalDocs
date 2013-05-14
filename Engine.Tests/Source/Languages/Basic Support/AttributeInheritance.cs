@@ -17,7 +17,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Languages.BasicSupport
 		[Test]
 		public void All ()
 			{
-			TestFolder("Languages/Basic Support/Attribute Inheritance", "Shared ND Config/Tags");
+			TestFolder("Languages/Basic Support/Attribute Inheritance", "Shared ND Config/Basic Language Support");
 			}
 
 		}

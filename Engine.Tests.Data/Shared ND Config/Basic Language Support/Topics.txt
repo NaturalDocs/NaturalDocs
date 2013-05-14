@@ -21,14 +21,8 @@
 # Tags
 # ------------------------------------------------------------------------
 
-# Tags allow you to create documentation that only includes topics marked
-# with that tag.  If you'd like to define your own tags, you can do it like
-# this:
-#
-# Tags:
-#    [tag]
-#    [tag]
-#    ...
+Tags:
+   Test Tag
 
 
 # Topic Types

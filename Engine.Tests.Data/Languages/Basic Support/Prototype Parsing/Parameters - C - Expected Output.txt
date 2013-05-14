@@ -1,13 +1,17 @@
 - No Parameters: int FunctionName ()
+  - Access Level: Unknown
   - Link Candidates: int
 -----
 - No Parameters: int FunctionName2 ( )
+  - Access Level: Unknown
   - Link Candidates: int
 -----
 - No Parameters: int FunctionName3()
+  - Access Level: Unknown
   - Link Candidates: int
 -----
 - Before Parameters: void FunctionName4 (
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: int x,
@@ -28,6 +32,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: void FunctionName5(
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: int x,
@@ -48,6 +53,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: void FunctionName6 (
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: int x_1,
@@ -68,6 +74,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: virtual void FunctionName7 (
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: int* x,

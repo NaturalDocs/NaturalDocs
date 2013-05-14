@@ -1,0 +1,40 @@
+
+// Function: FunctionA
+public int FunctionA ()
+	{
+	}
+
+// Function: FunctionB
+private int FunctionB ()
+	{
+	}
+
+// Function: FunctionC
+protected int FunctionC ()
+	{
+	}
+
+// Function: FunctionD
+internal int FunctionD ()
+	{
+	}
+
+// Function: FunctionE
+protected internal int FunctionE ()
+	{
+	}
+
+// Function: FunctionF
+internal protected int FunctionF ()
+	{
+	}
+
+// Function: FunctionG
+virtual public static int FunctionG ()
+	{
+	}
+
+// Function: FunctionH
+not_public int FunctionH ()
+	{
+	}

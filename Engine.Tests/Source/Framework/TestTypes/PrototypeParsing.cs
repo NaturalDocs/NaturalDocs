@@ -51,6 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						parsedPrototype.GetCompletePrototype(out start, out end);
 						output.AppendLine("- No Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);
 						output.AppendLine();
@@ -60,6 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						parsedPrototype.GetBeforeParameters(out start, out end);
 						output.AppendLine("- Before Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);
 						output.AppendLine();

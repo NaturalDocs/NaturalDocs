@@ -1,4 +1,5 @@
 - Before Parameters: [Test] static virtual int FunctionName (
+  - Access Level: Unknown
   - Link Candidates: int
 
   - Parameter 1: ref PkgA.PkgB.Class x,

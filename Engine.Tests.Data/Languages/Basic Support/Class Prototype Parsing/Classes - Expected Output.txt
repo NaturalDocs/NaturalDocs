@@ -2,6 +2,7 @@ class PlainClass
 
   - Name: PlainClass
   - Keyword: class
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -10,6 +11,7 @@ struct PlainStruct
 
   - Name: PlainStruct
   - Keyword: struct
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -18,6 +20,7 @@ interface PlainInterface
 
   - Name: PlainInterface
   - Keyword: interface
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -27,6 +30,7 @@ public static class ClassWithModifiers
   - Name: ClassWithModifiers
   - Keyword: class
   - Modifiers: public static
+  - Access Level: Public
   - No parents
 
 -----
@@ -36,6 +40,7 @@ public static struct StructWithModifiers
   - Name: StructWithModifiers
   - Keyword: struct
   - Modifiers: public static
+  - Access Level: Public
   - No parents
 
 -----
@@ -45,6 +50,7 @@ public static interface InterfaceWithModifiers
   - Name: InterfaceWithModifiers
   - Keyword: interface
   - Modifiers: public static
+  - Access Level: Public
   - No parents
 
 -----
@@ -54,6 +60,7 @@ class Template<T>
   - Name: Template
   - Template Suffix: <T>
   - Keyword: class
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -63,6 +70,7 @@ class NestedTemplates<List<X,Y>, Z>
   - Name: NestedTemplates
   - Template Suffix: <List<X,Y>, Z>
   - Keyword: class
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -72,6 +80,7 @@ class NestedTemplates<List<X,Y>, Z>
   - Name: Metadata
   - Keyword: struct
   - Modifiers: [Something]
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -80,6 +89,7 @@ interface Package.Package.Qualifiers
 
   - Name: Package.Package.Qualifiers
   - Keyword: interface
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -88,6 +98,7 @@ interface Package::Package::Qualifiers2
 
   - Name: Package::Package::Qualifiers2
   - Keyword: interface
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -98,4 +109,5 @@ interface Package::Package::Qualifiers2
   - Template Suffix: <X, Y<Z>>
   - Keyword: class
   - Modifiers: [Something: (value), {value}] public static
+  - Access Level: Public
   - No parents

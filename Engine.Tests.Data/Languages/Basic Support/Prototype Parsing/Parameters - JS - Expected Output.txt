@@ -1,13 +1,17 @@
 - No Parameters: function FunctionA ()
+  - Access Level: Unknown
   - Link Candidates: function
 -----
 - No Parameters: function FunctionB ( )
+  - Access Level: Unknown
   - Link Candidates: function
 -----
 - No Parameters: function FunctionC()
+  - Access Level: Unknown
   - Link Candidates: function
 -----
 - Before Parameters: function FunctionD (
+  - Access Level: Unknown
   - Link Candidates: function
 
   - Parameter 1: x,
@@ -28,6 +32,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: function FunctionE(
+  - Access Level: Unknown
   - Link Candidates: function
 
   - Parameter 1: x,
@@ -48,6 +53,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: function FunctionF (
+  - Access Level: Unknown
   - Link Candidates: function
 
   - Parameter 1: x_1,

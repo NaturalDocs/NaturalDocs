@@ -1,7 +1,9 @@
 - No Parameters: public TestClass ()
+  - Access Level: Public
   - Link Candidates: (none)
 -----
 - Before Parameters: private TestClass (
+  - Access Level: Private
   - Link Candidates: (none)
 
   - Parameter 1: int x
@@ -15,6 +17,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: private TestClass (
+  - Access Level: Private
   - Link Candidates: (none)
 
   - Parameter 1: int x,
@@ -35,9 +38,11 @@
   - Link Candidates: (none)
 -----
 - No Parameters: ~TestClass ()
+  - Access Level: Unknown
   - Link Candidates: (none)
 -----
 - Before Parameters: extern static TestClass (
+  - Access Level: Unknown
   - Link Candidates: (none)
 
   - Parameter 1: float x
@@ -51,4 +56,5 @@
   - Link Candidates: (none)
 -----
 - No Parameters: extern ~TestClass ()
+  - Access Level: Unknown
   - Link Candidates: (none)

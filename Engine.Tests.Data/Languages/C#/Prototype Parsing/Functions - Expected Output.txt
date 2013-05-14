@@ -1,7 +1,9 @@
 - No Parameters: void Parameterless ()
+  - Access Level: Unknown
   - Link Candidates: void
 -----
 - Before Parameters: void Basic (
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: int x,
@@ -22,6 +24,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: public static string Modifiers (
+  - Access Level: Public
   - Link Candidates: string
 
   - Parameter 1: int? x,
@@ -42,6 +45,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: extern static private bool Attributes_NoBraces (
+  - Access Level: Private
   - Link Candidates: bool
   - Pre-Prototype Line: [Attribute]
   - Pre-Prototype Line: [DllImport ("NaturalDocs.Engine.SQLite.dll")]
@@ -71,6 +75,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: void DefaultValues (
+  - Access Level: Unknown
   - Link Candidates: void
 
   - Parameter 1: string x = "),;[<{ \" ),;[<{",
@@ -98,6 +103,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: public List<int> Templates (
+  - Access Level: Public
   - Link Candidates: List, int
 
   - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x = null,
@@ -118,6 +124,7 @@
   - Link Candidates: (none)
 -----
 - Before Parameters: public List<T1> WhereClause<T1,T2> (
+  - Access Level: Public
   - Link Candidates: List, T1
 
   - Parameter 1: List<T2> x

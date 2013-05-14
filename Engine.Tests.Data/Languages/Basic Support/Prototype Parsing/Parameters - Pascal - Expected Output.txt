@@ -1,7 +1,9 @@
 - No Parameters: Procedure FunctionA
+  - Access Level: Unknown
   - Link Candidates: Procedure
 -----
 - Before Parameters: Function FunctionB (
+  - Access Level: Unknown
   - Link Candidates: (none)
 
   - Parameter 1: x: integer,
@@ -22,6 +24,7 @@
   - Link Candidates: integer
 -----
 - Before Parameters: Function FunctionC(
+  - Access Level: Unknown
   - Link Candidates: (none)
 
   - Parameter 1: x: integer,
@@ -42,6 +45,7 @@
   - Link Candidates: integer
 -----
 - Before Parameters: Function FunctionD (
+  - Access Level: Unknown
   - Link Candidates: (none)
 
   - Parameter 1: x_2,

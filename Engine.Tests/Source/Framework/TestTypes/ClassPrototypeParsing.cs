@@ -63,6 +63,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{  output.AppendLine("  - Keyword: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 					if (parsedPrototype.GetModifiers(out start, out end))
 						{  output.AppendLine("  - Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+					output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 					if (parsedPrototype.GetPostModifiers(out start, out end))
 						{  output.AppendLine("  - Post Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 

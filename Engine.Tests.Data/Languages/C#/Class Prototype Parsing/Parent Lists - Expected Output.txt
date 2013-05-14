@@ -2,6 +2,7 @@ class OneParent : Parent
 
   - Name: OneParent
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: Parent
     - Name: Parent
@@ -12,6 +13,7 @@ class ThreeParents : Parent1, Parent2, Parent3
 
   - Name: ThreeParents
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: Parent1
     - Name: Parent1
@@ -28,6 +30,7 @@ class ParentsWithQualifiers : X.Y.Parent1, A.B.Parent2
 
   - Name: ParentsWithQualifiers
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: X.Y.Parent1
     - Name: X.Y.Parent1
@@ -41,6 +44,7 @@ class ParentTemplate : List<int>
 
   - Name: ParentTemplate
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: List<int>
     - Name: List
@@ -53,6 +57,7 @@ class TemplateWithQualifiedParentTemplates<X,Y> : System.Collections.Generic.IEn
   - Name: TemplateWithQualifiedParentTemplates
   - Template Suffix: <X,Y>
   - Keyword: class
+  - Access Level: Unknown
 
   - Parent 1: System.Collections.Generic.IEnumerable<X>
     - Name: System.Collections.Generic.IEnumerable

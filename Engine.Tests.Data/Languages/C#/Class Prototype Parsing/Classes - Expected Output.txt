@@ -2,6 +2,7 @@ class Plain
 
   - Name: Plain
   - Keyword: class
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -11,6 +12,7 @@ public static interface WithModifiers
   - Name: WithModifiers
   - Keyword: interface
   - Modifiers: public static
+  - Access Level: Public
   - No parents
 
 -----
@@ -20,6 +22,7 @@ class Template<T>
   - Name: Template
   - Template Suffix: <T>
   - Keyword: class
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -29,6 +32,7 @@ class Template<T>
   - Name: Metadata
   - Keyword: struct
   - Modifiers: [Something]
+  - Access Level: Unknown
   - No parents
 
 -----
@@ -39,4 +43,5 @@ class Template<T>
   - Template Suffix: <X, Y>
   - Keyword: interface
   - Modifiers: [Something("value", 2)] public static
+  - Access Level: Public
   - No parents

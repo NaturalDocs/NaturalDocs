@@ -1,0 +1,53 @@
+
+// Class: UnspecifiedClass
+// An unspecified class with basic language support should be public.
+class UnspecifiedClass
+	{
+	// Function: UnspecifiedFunction
+	void UnspecifiedFunction () { }
+
+	// Function: PublicFunction
+	public void PublicFunction () { }
+
+	// Function: ProtectedFunction
+	protected void ProtectedFunction () { }
+
+	// Function: PrivateFunction
+	private void PrivateFunction () { }
+	}
+
+
+// Class: PublicClass
+public class PublicClass
+	{
+	// Function: UnspecifiedFunction
+	void UnspecifiedFunction () { }
+
+	// Function: PublicFunction
+	public void PublicFunction () { }
+
+	// Function: ProtectedFunction
+	protected void ProtectedFunction () { }
+
+	// Function: PrivateFunction
+	private void PrivateFunction () { }
+	}
+
+
+// Class: PrivateClass
+// Because it is a private class, the effective access level of each member should be private, even
+// if the declared access level is less restrictive.
+private class PrivateClass
+	{
+	// Function: UnspecifiedFunction
+	void UnspecifiedFunction () { }
+
+	// Function: PublicFunction
+	public void PublicFunction () { }
+
+	// Function: ProtectedFunction
+	protected void ProtectedFunction () { }
+
+	// Function: PrivateFunction
+	private void PrivateFunction () { }
+	}

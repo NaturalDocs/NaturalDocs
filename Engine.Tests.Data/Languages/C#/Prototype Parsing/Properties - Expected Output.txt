@@ -1,12 +1,16 @@
 - No Parameters: int PropertyA { get }
+  - Access Level: Unknown
   - Link Candidates: int
 -----
 - No Parameters: protected int PropertyB { get; private set }
+  - Access Level: Protected
   - Link Candidates: int
 -----
 - No Parameters: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  - Access Level: Internal
   - Link Candidates: System.Text.StringBuilder
   - Pre-Prototype Line: [Attribute]
 -----
 - No Parameters: abstract int PropertyD { get; set }
+  - Access Level: Unknown
   - Link Candidates: int
