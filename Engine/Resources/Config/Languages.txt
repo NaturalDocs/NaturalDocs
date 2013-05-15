@@ -25,7 +25,7 @@ Language: Shebang Script
 
 Language: C/C++
 
-   Extensions: c cpp cxx h hpp hxx
+   Extensions: c cc cpp cxx c++ h hh hpp hxx h++
 
    Simple Identifier: C
    Aliases: C C++
