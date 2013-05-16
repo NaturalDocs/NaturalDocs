@@ -171,10 +171,15 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				else if (testedForVerticalLines == false)
 					{
 					// We permit the very first line to be different to allow for this:
-					// /** text
-					//  * text
-					//  */
-					if (line != comment.Start)
+					//    /** text
+					//     * text
+					//     */
+					//
+					// However, don't skip the first line if it's a one line comment or we wouldn't be able to handle this:
+					//    ### text
+					//
+					if (line != comment.Start || 
+						(comment.End.LineNumber - comment.Start.LineNumber) == 1)
 						{
 						if (CountEdgeSymbols(line, out leftSymbol, out rightSymbol, out leftSymbolCount, out rightSymbolCount, 
 													  out symbolIsAloneOnLine) == false)
