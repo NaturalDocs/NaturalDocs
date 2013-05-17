@@ -23,15 +23,15 @@ Body
 // Topic: Plain comment 7/7
 // Body
 
-/** Topic: Javadoc comment 1/3
+/** Topic: Javadoc or XML comment 1/3
 Body
 */
 
-/** Topic: Javadoc comment 2/3
+/** Topic: Javadoc or XML comment 2/3
  * Body
  */
 
-/** Topic: Javadoc comment 3/3 */
+/** Topic: Javadoc or XML comment 3/3 */
 
 /// Topic: XML comment 1/1
 /// Body

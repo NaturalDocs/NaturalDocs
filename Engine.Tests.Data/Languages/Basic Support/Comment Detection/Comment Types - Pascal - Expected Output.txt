@@ -43,33 +43,33 @@
   - Topic "Plain comment 9/9", line 30:
     - (No body detected)
 
-- Javadoc comment, lines 32-34:
+- Javadoc+XML comment, lines 32-34:
 
-  - Topic "Javadoc comment 1/4", line 32:
+  - Topic "Javadoc or XML comment 1/5", line 32:
     - <p>Body</p>
 
-- Javadoc comment, lines 36-38:
+- Javadoc+XML comment, lines 36-38:
 
-  - Topic "Javadoc comment 2/4", line 36:
+  - Topic "Javadoc or XML comment 2/5", line 36:
     - <p>Body</p>
 
-- Javadoc comment, line 40:
+- Javadoc+XML comment, line 40:
 
-  - Topic "Javadoc comment 3/4", line 40:
+  - Topic "Javadoc or XML comment 3/5", line 40:
     - (No body detected)
 
-- Javadoc comment, lines 42-43:
+- Javadoc+XML comment, lines 42-43:
 
-  - Topic "Javadoc comment 4/4", line 42:
+  - Topic "Javadoc or XML comment 4/5", line 42:
     - <p>Body</p>
 
-- XML comment, lines 45-46:
+- Javadoc+XML comment, line 45:
 
-  - Topic "XML comment 1/1", line 45:
-    - <p>Body</p>
-
-- Javadoc+XML comment, line 48:
-
-  - Topic "Ambiguous comment 1/1", line 48:
+  - Topic "Javadoc or XML comment 5/5", line 45:
     - (No body detected)
+
+- XML comment, lines 47-48:
+
+  - Topic "XML comment 1/1", line 47:
+    - <p>Body</p>
 

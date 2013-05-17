@@ -14,10 +14,10 @@ Body
 -- Topic: Plain comment 5/5
 -- Body
 
---- Topic: Javadoc comment 1/1
+--- Topic: Javadoc or XML comment 1/2
 -- Body
+
+--- Topic: Javadoc or XML comment 2/2
 
 --- Topic: XML comment 1/1
 --- Body
-
---- Topic: Ambiguous comment 1/1

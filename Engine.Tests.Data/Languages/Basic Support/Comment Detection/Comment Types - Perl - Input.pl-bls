@@ -8,12 +8,10 @@
 # Topic: Plain comment 3/3
 # Body
 
-## Topic: Javadoc comment 1/2
+## Topic: Javadoc or XML comment 1/2
 # Body
 
-## Topic: Javadoc comment 2/2
+## Topic: Javadoc or XML comment 2/2
 
-### Topic: XML comment 1/2
+### Topic: XML comment 1/1
 ### Body
-
-### Topic: XML comment 2/2

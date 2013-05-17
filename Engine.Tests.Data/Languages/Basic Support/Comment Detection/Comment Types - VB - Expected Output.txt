@@ -13,14 +13,14 @@
   - Topic "Plain comment 3/3", line 8:
     - <p>Body</p>
 
-- Javadoc comment, lines 11-12:
+- Javadoc+XML comment, lines 11-12:
 
-  - Topic "Javadoc comment 1/2", line 11:
+  - Topic "Javadoc or XML comment 1/2", line 11:
     - <p>Body</p>
 
-- Javadoc comment, line 14:
+- Javadoc+XML comment, line 14:
 
-  - Topic "Javadoc comment 2/2", line 14:
+  - Topic "Javadoc or XML comment 2/2", line 14:
     - (No body detected)
 
 - XML comment, lines 16-17:

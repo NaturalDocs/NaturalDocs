@@ -29,20 +29,20 @@ Body
 
 { Topic: Plain comment 9/9 }
 
-(** Topic: Javadoc comment 1/4
+(** Topic: Javadoc or XML comment 1/5
 Body
 *)
 
-(** Topic: Javadoc comment 2/4
+(** Topic: Javadoc or XML comment 2/5
  * Body
  *)
 
-(** Topic: Javadoc comment 3/4 *)
+(** Topic: Javadoc or XML comment 3/5 *)
 
-/// Topic: Javadoc comment 4/4
+/// Topic: Javadoc or XML comment 4/5
 // Body
+
+/// Topic: Javadoc or XML comment 5/5
 
 /// Topic: XML comment 1/1
 /// Body
-
-/// Topic: Ambiguous comment 1/1

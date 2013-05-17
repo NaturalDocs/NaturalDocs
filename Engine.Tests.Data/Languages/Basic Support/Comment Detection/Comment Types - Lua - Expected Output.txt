@@ -23,18 +23,18 @@
   - Topic "Plain comment 5/5", line 14:
     - <p>Body</p>
 
-- Javadoc comment, lines 17-18:
+- Javadoc+XML comment, lines 17-18:
 
-  - Topic "Javadoc comment 1/1", line 17:
+  - Topic "Javadoc or XML comment 1/2", line 17:
     - <p>Body</p>
 
-- XML comment, lines 20-21:
+- Javadoc+XML comment, line 20:
 
-  - Topic "XML comment 1/1", line 20:
-    - <p>Body</p>
-
-- Javadoc+XML comment, line 23:
-
-  - Topic "Ambiguous comment 1/1", line 23:
+  - Topic "Javadoc or XML comment 2/2", line 20:
     - (No body detected)
+
+- XML comment, lines 22-23:
+
+  - Topic "XML comment 1/1", line 22:
+    - <p>Body</p>
 
