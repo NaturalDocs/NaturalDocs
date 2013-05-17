@@ -1152,6 +1152,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 						{  lineIterator.Next();  }
 					else
 						{
+						// XML can actually use the Javadoc comment format in addition to its own.
+						if (comment.Javadoc)
+							{  comment.XML = true;  }
+
 						possibleDocumentationComments.Add(comment);
 						lineIterator = comment.End;
 						}
