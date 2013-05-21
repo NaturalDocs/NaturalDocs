@@ -72,6 +72,7 @@
     <Compile Include="Source\Comments\Parsers\XML.cs" />
     <Compile Include="Source\Comments\Components\XMLElementType.cs" />
     <Compile Include="Source\Comments\Components\XMLIterator.cs" />
+    <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Position.cs" />
     <Compile Include="Source\Languages\Exceptions\BadContainerOperation.cs" />
     <Compile Include="Source\Languages\Parsers\ShebangScript.cs" />
@@ -246,6 +247,7 @@
     <Content Include="Resources\Config\Topics.txt" />
     <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
+    <Content Include="Source\Languages\Parsers\Perl Notes.txt" />
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
   <ItemGroup>
