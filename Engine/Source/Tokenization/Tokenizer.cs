@@ -322,6 +322,37 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			commentParsingTypes[tokenIndex] = type;
 			}
 			
+		/* Function: SetCommentParsingTypeBetween
+		 * Changes the <CommentParsingType> of all the tokens between the two passed indexes.  The
+		 * token at the ending index will not be changed.
+		 */
+		public void SetCommentParsingTypeBetween (int startingIndex, int endingIndex, CommentParsingType type)
+			{
+			if (commentParsingTypes == null)
+				{  commentParsingTypes = new CommentParsingType[tokenLengths.Count];  }
+
+			if (startingIndex < 0 || endingIndex > commentParsingTypes.Length)
+				{  throw new ArgumentOutOfRangeException();  }
+			if (startingIndex > endingIndex)
+				{  throw new InvalidOperationException();  }
+
+			for (int i = startingIndex; i < endingIndex; i++)
+				{  commentParsingTypes[i] = type;  }
+			}			
+			
+		/* Function: SetCommentParsingTypeBetween
+		 * Changes the <CommentParsingType> of all the tokens between the two passed iterators.  The
+		 * token at the ending iterator will not be changed.
+		 */
+		public void SetCommentParsingTypeBetween (TokenIterator startingIterator, TokenIterator endingIterator, 
+																							 CommentParsingType type)
+			{
+			if (startingIterator.Tokenizer != this || endingIterator.Tokenizer != this)
+				{  throw new InvalidOperationException();  }
+
+			SetCommentParsingTypeBetween(startingIterator.TokenIndex, endingIterator.TokenIndex, type);
+			}
+			
 		/* Function: SyntaxHighlightingTypeAt
 		 * Returns the <SyntaxHighlightingType> at the passed token index.
 		 */
