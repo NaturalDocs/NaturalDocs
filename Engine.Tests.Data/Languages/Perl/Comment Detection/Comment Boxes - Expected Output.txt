@@ -1,0 +1,25 @@
+- XML comment, lines 2-3:
+
+  - Topic "Wide vertical line", line 2:
+    - <p>Body</p>
+
+- Plain comment, lines 6-12:
+
+  - Topic "Horizontal lines", line 6:
+    - <p>Body 1</p><p>Body 2</p><p>Body 3</p>
+
+- Plain comment, lines 15-19:
+
+  - Topic "Horizontal lines with enders", line 15:
+    - <p>Body</p>
+
+- Plain comment, lines 22-25:
+
+  - Topic "Full box", line 23:
+    - <p>Body</p>
+
+- Plain comment, lines 28-35:
+
+  - Topic "Partial Box", line 30:
+    - <p>Body</p>
+
