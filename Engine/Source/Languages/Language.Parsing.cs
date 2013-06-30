@@ -3143,6 +3143,13 @@ namespace GregValure.NaturalDocs.Engine.Languages
 					string ignore;
 					SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out ignore);
 
+					// This could happen with something like "Topic: ."
+					if (topicSymbol == null)
+						{
+						element.Topic = null;
+						continue;
+						}
+
 					int parentIndex = FindElementParent(elements, i);
 					while (parentIndex != -1 && (elements[parentIndex] as ParentElement).ChildContextStringSet == false)
 						{  parentIndex = FindElementParent(elements, parentIndex);  }
