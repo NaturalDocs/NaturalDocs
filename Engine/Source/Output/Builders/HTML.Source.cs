@@ -51,7 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (hasTopics)
 				{
-				lock (writeLock)
+				lock (accessLock)
 					{
 					if (sourceFilesWithContent.Add(fileID) == true)
 						{  buildFlags |= BuildFlags.BuildMenu;  }
@@ -64,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				DeleteOutputFileIfExists(page.SummaryFile);
 				DeleteOutputFileIfExists(page.SummaryToolTipsFile);
 
-				lock (writeLock)
+				lock (accessLock)
 					{
 					if (sourceFilesWithContent.Remove(fileID) == true)
 						{  buildFlags |= BuildFlags.BuildMenu;  }
@@ -83,7 +83,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  
 				System.IO.File.Delete(outputFile);
 
-				lock (writeLock)
+				lock (accessLock)
 					{
 					foldersToCheckForDeletion.Add(outputFile.ParentFolder);
 					buildFlags |= BuildFlags.CheckFoldersForDeletion;
@@ -237,7 +237,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
 				}
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
 
@@ -262,7 +262,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (changeFlags == 0)
 				{  return;  }
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				sourceFilesToRebuild.Add(oldTopic.FileID);
 
@@ -299,7 +299,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					oldParentClassIDs != null || oldParentClassFileIDs != null ||
 					newParentClassIDs != null || newParentClassFileIDs != null)
 					{  
-					lock (writeLock)
+					lock (accessLock)
 						{  
 						if (linkFileIDs != null)
 							{  sourceFilesToRebuild.Add(linkFileIDs);  }
@@ -328,7 +328,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
 				}
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				sourceFilesToRebuild.Add(topic.FileID);
 
@@ -364,7 +364,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				// Even if it's not a class parent link we still need to rebuild the source and class files that contain it.  We can't
 				// rely on the topic events picking it up because it's possible to change links without changing topics.  How?  By
@@ -411,7 +411,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				sourceFilesToRebuild.Add(link.FileID);
 
@@ -448,7 +448,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				if (fileIDs != null || classIDs != null)
 					{
-					lock (writeLock)
+					lock (accessLock)
 						{
 						if (fileIDs != null)
 							{  sourceFilesToRebuild.Add(fileIDs);  }
@@ -478,7 +478,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				sourceFilesToRebuild.Add(link.FileID);
 

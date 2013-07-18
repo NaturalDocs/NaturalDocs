@@ -23,14 +23,13 @@
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		> Accessor's database Lock -> writeLock
+ *		> Accessor's database Lock -> accessLock
  * 
- *		Externally, this class is thread safe as functions use <writeLock> to control access to internal variables.
+ *		Externally, this class is thread safe as functions use <accessLock> to control access to internal variables.
  *		
- *		Interally, if code needs both a database lock and <writeLock> it must acquire the database lock first.  It also 
- *		must not upgrade the database lock from read/possible write to read/write while holding <writeLock>, as there
- *		may be a thread with a read-only accessor waiting for <writeLock>.  Acquiring and releasing <writeLock> while 
- *		holding a database lock is fine as long as no changes will be made to it.
+ *		Interally, if code needs both a database lock and <accessLock> it must acquire the database lock first.  It also 
+ *		must not upgrade the database lock from read/possible write to read/write while holding <accessLock>, as there
+ *		may be a thread with a read-only accessor waiting for <accessLock>.
  *		
  * 
  * File: Config.nd
@@ -166,7 +165,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		
 		public HTML (Config.Entries.HTMLOutputFolder configEntry) : base ()
 			{
-			writeLock = new object();
+			accessLock = new object();
 
 			sourceFilesToRebuild = null;
 			classFilesToRebuild = null;
@@ -613,7 +612,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				for (;;)
 					{
 					// Remember that you can't acquire or change the database lock while holding this.
-					Monitor.Enter(writeLock);
+					Monitor.Enter(accessLock);
 					haveLock = true;
 					
 					if (cancelDelegate())
@@ -627,17 +626,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						buildFlags &= ~BuildFlags.BuildFramePage;
 						unitsOfWorkInProgress += UnitsOfWork_FramePage;
 
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 
 						BuildFramePage(cancelDelegate);
 
-						lock (writeLock)
+						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_FramePage;  }
 
 						if (cancelDelegate())
 							{
-							lock (writeLock)
+							lock (accessLock)
 								{  buildFlags |= BuildFlags.BuildFramePage;  }
 							}
 						}
@@ -650,17 +649,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						buildFlags &= ~BuildFlags.BuildMainStyleFiles;
 						unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;
 
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 
 						BuildMainStyleFiles(cancelDelegate);
 
-						lock (writeLock)
+						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_MainStyleFiles;  }
 
 						if (cancelDelegate())
 							{
-							lock (writeLock)
+							lock (accessLock)
 								{  buildFlags |= BuildFlags.BuildMainStyleFiles;  }
 							}
 						}
@@ -674,7 +673,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						sourceFilesToRebuild.Remove(sourceFileToRebuild);
 						unitsOfWorkInProgress += UnitsOfWork_SourceFile;
 						
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 						
 						if (accessor == null)
@@ -682,12 +681,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							
 						BuildSourceFile(sourceFileToRebuild, accessor, cancelDelegate);
 						
-						lock (writeLock)
+						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_SourceFile;  }
 
 						if (cancelDelegate())
 							{
-							lock (writeLock)
+							lock (accessLock)
 								{  sourceFilesToRebuild.Add(sourceFileToRebuild);  }
 							}						
 						}
@@ -701,7 +700,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						classFilesToRebuild.Remove(classFileToRebuild);
 						unitsOfWorkInProgress += UnitsOfWork_ClassFile;
 						
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 						
 						if (accessor == null)
@@ -709,12 +708,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							
 						BuildClassFile(classFileToRebuild, accessor, cancelDelegate);
 						
-						lock (writeLock)
+						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_ClassFile;  }
 
 						if (cancelDelegate())
 							{
-							lock (writeLock)
+							lock (accessLock)
 								{  classFilesToRebuild.Add(classFileToRebuild);  }
 							}						
 						}
@@ -729,7 +728,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			finally
 				{
 				if (haveLock)
-					{  Monitor.Exit(writeLock);  }
+					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
 				}
@@ -746,7 +745,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				for (;;)
 					{
 					// Remember that you can't acquire or change the database lock while holding this.
-					Monitor.Enter(writeLock);
+					Monitor.Enter(accessLock);
 					haveLock = true;
 					
 					if (cancelDelegate())
@@ -769,12 +768,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							Path folder = foldersToCheckForDeletion.RemoveOne();
 							unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion;
 
-							Monitor.Exit(writeLock);
+							Monitor.Exit(accessLock);
 							haveLock = false;
 
 							DeleteEmptyFolders(folder);
 
-							Monitor.Enter(writeLock);
+							Monitor.Enter(accessLock);
 							haveLock = true;
 
 							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
@@ -784,7 +783,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (foldersToCheckForDeletion.IsEmpty == false)
 							{  buildFlags |= BuildFlags.CheckFoldersForDeletion;  }
 
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 						}
 
@@ -796,7 +795,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						buildFlags &= ~BuildFlags.BuildMenu;
 						unitsOfWorkInProgress += UnitsOfWork_Menu;
 
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 
 						if (accessor == null)
@@ -804,7 +803,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 						BuildMenu(accessor, cancelDelegate);
 
-						Monitor.Enter(writeLock);
+						Monitor.Enter(accessLock);
 						haveLock = true;
 
 						unitsOfWorkInProgress -= UnitsOfWork_Menu;
@@ -812,7 +811,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{  buildFlags |= BuildFlags.BuildMenu;  }
 
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 						}
 
@@ -827,7 +826,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			finally
 				{
 				if (haveLock)
-					{  Monitor.Exit(writeLock);  }
+					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
 				}
@@ -838,7 +837,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			long value = 0;
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				value += sourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
 				value += classFilesToRebuild.Count * UnitsOfWork_ClassFile;
@@ -1544,10 +1543,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		/* var: writeLock
+		/* var: accessLock
 		 * A monitor used for accessing any of the variables in this class.
 		 */
-		protected object writeLock;
+		protected object accessLock;
 		
 		/* var: sourceFilesToRebuild
 		 * A set of the source file IDs that need to be rebuilt.

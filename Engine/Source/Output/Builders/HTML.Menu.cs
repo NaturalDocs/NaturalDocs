@@ -34,7 +34,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Build file menu
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				foreach (int fileID in sourceFilesWithContent)
 					{
@@ -85,7 +85,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Clear out any old menu files that are no longer in use.
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				foreach (var usedMenuDataFileInfo in usedMenuDataFiles)
 					{

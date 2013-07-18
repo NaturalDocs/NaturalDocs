@@ -51,7 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			if (hasTopics)
 				{
-				lock (writeLock)
+				lock (accessLock)
 					{
 					if (classFilesWithContent.Add(classID) == true)
 						{  buildFlags |= BuildFlags.BuildMenu;  }
@@ -64,7 +64,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				DeleteOutputFileIfExists(page.SummaryFile);
 				DeleteOutputFileIfExists(page.SummaryToolTipsFile);
 
-				lock (writeLock)
+				lock (accessLock)
 				   {
 				   if (classFilesWithContent.Remove(classID) == true)
 				      {  buildFlags |= BuildFlags.BuildMenu;  }
