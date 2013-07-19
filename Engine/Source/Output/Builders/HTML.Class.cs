@@ -53,8 +53,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				lock (accessLock)
 					{
-					if (classFilesWithContent.Add(classID) == true)
-						{  buildFlags |= BuildFlags.BuildMenu;  }
+					if (buildState.ClassFilesWithContent.Add(classID) == true)
+						{  buildState.NeedToBuildMenu = true;  }
 					}
 				}
 			else
@@ -66,8 +66,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				lock (accessLock)
 				   {
-				   if (classFilesWithContent.Remove(classID) == true)
-				      {  buildFlags |= BuildFlags.BuildMenu;  }
+				   if (buildState.ClassFilesWithContent.Remove(classID) == true)
+				      {  buildState.NeedToBuildMenu = true;  }
 				   }
 				}
 			}

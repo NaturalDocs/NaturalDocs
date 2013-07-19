@@ -53,8 +53,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				lock (accessLock)
 					{
-					if (sourceFilesWithContent.Add(fileID) == true)
-						{  buildFlags |= BuildFlags.BuildMenu;  }
+					if (buildState.SourceFilesWithContent.Add(fileID) == true)
+						{  buildState.NeedToBuildMenu = true;;  }
 					}
 				}
 			else
@@ -66,8 +66,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 				lock (accessLock)
 					{
-					if (sourceFilesWithContent.Remove(fileID) == true)
-						{  buildFlags |= BuildFlags.BuildMenu;  }
+					if (buildState.SourceFilesWithContent.Remove(fileID) == true)
+						{  buildState.NeedToBuildMenu = true;  }
 					}
 				}
 			}
@@ -84,10 +84,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				System.IO.File.Delete(outputFile);
 
 				lock (accessLock)
-					{
-					foldersToCheckForDeletion.Add(outputFile.ParentFolder);
-					buildFlags |= BuildFlags.CheckFoldersForDeletion;
-					}
+					{  buildState.FoldersToCheckForDeletion.Add(outputFile.ParentFolder);  }
 				}
 			}
 
@@ -239,15 +236,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				sourceFilesToRebuild.Add(topic.FileID);
+				buildState.SourceFilesToRebuild.Add(topic.FileID);
 
 				if (topic.ClassID != 0)
-					{  classFilesToRebuild.Add(topic.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(topic.ClassID);  }
 
 				if (parentClassIDs != null)
-					{  classFilesToRebuild.Add(parentClassIDs);  }
+					{  buildState.ClassFilesToRebuild.Add(parentClassIDs);  }
 				if (parentClassFileIDs != null)
-					{  sourceFilesToRebuild.Add(parentClassFileIDs);  }
+					{  buildState.SourceFilesToRebuild.Add(parentClassFileIDs);  }
 				}
 			}
 
@@ -264,7 +261,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				sourceFilesToRebuild.Add(oldTopic.FileID);
+				buildState.SourceFilesToRebuild.Add(oldTopic.FileID);
 
 				#if DEBUG
 				if (newTopic.FileID != oldTopic.FileID)
@@ -272,9 +269,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				#endif
 
 				if (oldTopic.ClassID != 0)
-					{  classFilesToRebuild.Add(oldTopic.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(oldTopic.ClassID);  }
 				if (newTopic.ClassID != 0)
-					{  classFilesToRebuild.Add(newTopic.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(newTopic.ClassID);  }
 				}
 
 			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
@@ -302,17 +299,17 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (accessLock)
 						{  
 						if (linkFileIDs != null)
-							{  sourceFilesToRebuild.Add(linkFileIDs);  }
+							{  buildState.SourceFilesToRebuild.Add(linkFileIDs);  }
 						if (linkClassIDs != null)
-							{  classFilesToRebuild.Add(linkClassIDs);  }
+							{  buildState.ClassFilesToRebuild.Add(linkClassIDs);  }
 						if (oldParentClassIDs !=  null)
-							{  classFilesToRebuild.Add(oldParentClassIDs);  }
+							{  buildState.ClassFilesToRebuild.Add(oldParentClassIDs);  }
 						if (oldParentClassFileIDs != null)
-							{  sourceFilesToRebuild.Add(oldParentClassFileIDs);  }
+							{  buildState.SourceFilesToRebuild.Add(oldParentClassFileIDs);  }
 						if (newParentClassIDs !=  null)
-							{  classFilesToRebuild.Add(newParentClassIDs);  }
+							{  buildState.ClassFilesToRebuild.Add(newParentClassIDs);  }
 						if (newParentClassFileIDs != null)
-							{  sourceFilesToRebuild.Add(newParentClassFileIDs);  }
+							{  buildState.SourceFilesToRebuild.Add(newParentClassFileIDs);  }
 						}
 					}
 				}
@@ -330,15 +327,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				sourceFilesToRebuild.Add(topic.FileID);
+				buildState.SourceFilesToRebuild.Add(topic.FileID);
 
 				if (topic.ClassID != 0)
-					{  classFilesToRebuild.Add(topic.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(topic.ClassID);  }
 
 				if (parentClassIDs != null)
-					{  classFilesToRebuild.Add(parentClassIDs);  }
+					{  buildState.ClassFilesToRebuild.Add(parentClassIDs);  }
 				if (parentClassFileIDs != null)
-					{  sourceFilesToRebuild.Add(parentClassFileIDs);  }
+					{  buildState.SourceFilesToRebuild.Add(parentClassFileIDs);  }
 				}
 			}
 
@@ -369,16 +366,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// Even if it's not a class parent link we still need to rebuild the source and class files that contain it.  We can't
 				// rely on the topic events picking it up because it's possible to change links without changing topics.  How?  By
 				// changing a using statement, which causes all the links to change.
-				sourceFilesToRebuild.Add(link.FileID);
+				buildState.SourceFilesToRebuild.Add(link.FileID);
 
 				if (link.ClassID != 0)
-					{  classFilesToRebuild.Add(link.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
-					{  classFilesToRebuild.Add(link.TargetClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
 
 				if (filesThatDefineClass != null)
-					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 			}
 		
@@ -413,21 +410,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				sourceFilesToRebuild.Add(link.FileID);
+				buildState.SourceFilesToRebuild.Add(link.FileID);
 
 				if (link.ClassID != 0)
-					{  classFilesToRebuild.Add(link.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent)
 					{
 					if (link.TargetClassID != 0)
-						{  classFilesToRebuild.Add(link.TargetClassID);  }
+						{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
 					if (oldTargetClassID != 0)
-						{  classFilesToRebuild.Add(oldTargetClassID);  }
+						{  buildState.ClassFilesToRebuild.Add(oldTargetClassID);  }
 					}
 
 				if (filesThatDefineClass != null)
-					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 
 			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
@@ -451,9 +448,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					lock (accessLock)
 						{
 						if (fileIDs != null)
-							{  sourceFilesToRebuild.Add(fileIDs);  }
+							{  buildState.SourceFilesToRebuild.Add(fileIDs);  }
 						if (classIDs != null)
-							{  classFilesToRebuild.Add(classIDs);  }
+							{  buildState.ClassFilesToRebuild.Add(classIDs);  }
 						}
 					}
 				}
@@ -480,16 +477,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				sourceFilesToRebuild.Add(link.FileID);
+				buildState.SourceFilesToRebuild.Add(link.FileID);
 
 				if (link.ClassID != 0)
-					{  classFilesToRebuild.Add(link.ClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
-					{  classFilesToRebuild.Add(link.TargetClassID);  }
+					{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
 
 				if (filesThatDefineClass != null)
-					{  sourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
 				}
 			}
 

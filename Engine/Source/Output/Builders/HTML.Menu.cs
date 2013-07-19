@@ -36,7 +36,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				foreach (int fileID in sourceFilesWithContent)
+				foreach (int fileID in buildState.SourceFilesWithContent)
 					{
 					if (cancelDelegate())
 						{  return;  }
@@ -52,7 +52,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			accessor.GetReadOnlyLock();
 			try
-				{  classes = accessor.GetClassesByID(classFilesWithContent, cancelDelegate);  }
+				{  classes = accessor.GetClassesByID(buildState.ClassFilesWithContent, cancelDelegate);  }
 			finally
 				{  accessor.ReleaseLock();  }
 
@@ -87,7 +87,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				foreach (var usedMenuDataFileInfo in usedMenuDataFiles)
+				foreach (var usedMenuDataFileInfo in buildState.UsedMenuDataFiles)
 					{
 					string type = usedMenuDataFileInfo.Key;
 					IDObjects.NumberSet oldNumbers = usedMenuDataFileInfo.Value;
@@ -111,7 +111,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					}
 
-				usedMenuDataFiles = newMenuDataFiles;
+				buildState.UsedMenuDataFiles = newMenuDataFiles;
 				}
 			}
 

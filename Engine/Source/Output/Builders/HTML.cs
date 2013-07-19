@@ -59,38 +59,6 @@
  *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
  *		one is deleted or changes.
  *		
- * 
- * File: BuildState.nd
- * 
- *		A file used to store the build state of this output target the last time it was built.
- *		
- *		> [NumberSet: Source File IDs to Rebuild]
- *		> [NumberSet: Class IDs to Rebuild]
- *		
- *		The source and class files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
- *		be empty sets, though if the build was interrupted this will have the ones left to do.
- *		
- *		> [NumberSet: Source File IDs with Content]
- *		> [NumberSet: Class IDs with Content]
- *		
- *		A set of all the source and class files known to have content after all filters were applied.
- *		
- *		> [StringSet: Folders to Check for Deletion]
- *		
- *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
- *		to completion this should be an empty set.
- * 
- *		> [String: Data File Type] [NumberSet: Data File Numbers]
- *		> [String: Data File Type] [NumberSet: Data File Numbers]
- *		> ...
- *		> [String: null]
- *		
- *		A list of the data files that were created to build the menu, stored as string-NumberSet pairs that repeats until there
- *		is a null string.  This allows us to clean up old data files if we're using fewer than before.
- *		
- *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
- *		stored as "files" and {1-3}.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
@@ -118,29 +86,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 	public partial class HTML : Builder, Files.IStyleChangeWatcher, IDisposable
 		{
 
-		/* enum: BuildFlags
-		 * 
-		 * Flags that specify what parts of the HTML output structure still need to be built.
-		 * 
-		 * BuildFramePage - index.html
-		 * BuildMainStyleFiles - main.css and main.js
-		 * 
-		 * BuildMenu - The data files for the menu.
-		 * 
-		 * CheckFoldersForDeletion - Processing <foldersToCheckForDeletion>.  You can't simply check if the variable is
-		 *														 empty because the task isn't parallelizable.  It may have contents but another thread
-		 *														 is already working on it, in which case this flag will be reset.
-		 */
-		[Flags]
-		protected enum BuildFlags : byte {
-			BuildFramePage = 0x01,
-			BuildMainStyleFiles = 0x02,
-			BuildMenu = 0x04,
-
-			CheckFoldersForDeletion = 0x08
-			}
-
-
 		/* enum: PageType
 		 * Used for specifying the type of page something applies to.
 		 * 
@@ -167,17 +112,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			accessLock = new object();
 
-			sourceFilesToRebuild = null;
-			classFilesToRebuild = null;
-			sourceFilesWithContent = null;
-			classFilesWithContent = null;
-			foldersToCheckForDeletion = null;
-			buildFlags = 0;
+			buildState = null;
 			unitsOfWorkInProgress = 0;
 
 			config = configEntry;
 			styles = null;
-			usedMenuDataFiles = null;
 			}
 
 
@@ -214,14 +153,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  return false;  }
 
 
-			// Set the default build flags
-
-			buildFlags = BuildFlags.BuildFramePage | BuildFlags.BuildMainStyleFiles;
-			// The menu only gets rebuilt if changes are detected in source/classFilesWithContent.
-			// If you ever make this differential, remember that FramePage depends on the project name and other
-			// information.
-
-
 			// Load Config.nd
 
 			List<HTMLStyle> previousStyles;
@@ -245,21 +176,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			bool hasBinaryBuildStateFile = false;
 			
 			if (!Engine.Instance.Config.ReparseEverything)
-				{
-				hasBinaryBuildStateFile = LoadBinaryBuildStateFile(config.OutputWorkingDataFolder + "/BuildState.nd", 
-																										 out sourceFilesToRebuild, out classFilesToRebuild,
-																										 out sourceFilesWithContent, out classFilesWithContent,
-																										 out foldersToCheckForDeletion, out usedMenuDataFiles);
-				}
+				{  hasBinaryBuildStateFile = HTMLBuildState.LoadBinaryFile(config.OutputWorkingDataFolder + "/BuildState.nd", out buildState);  }
 			else
-				{
-				sourceFilesToRebuild = new IDObjects.NumberSet();
-				classFilesToRebuild = new IDObjects.NumberSet();
-				sourceFilesWithContent = new IDObjects.NumberSet();
-				classFilesWithContent = new IDObjects.NumberSet();
-				foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
-				usedMenuDataFiles = new StringTable<IDObjects.NumberSet>(false, false);
-				}
+				{  buildState = new HTMLBuildState();  }
 
 			if (!hasBinaryBuildStateFile)
 				{
@@ -270,14 +189,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				Engine.Instance.Config.RebuildAllOutput = true;
 				}
 
+
+			// Always rebuild the scaffolding since they're quick.  If you ever make this differential, remember that FramePage depends
+			// on the project name and other information.
+
+			buildState.NeedToBuildFramePage = true;
+			buildState.NeedToBuildMainStyleFiles = true;
+
 			if (Engine.Instance.Config.RebuildAllOutput)
-				{  
-				buildFlags |= BuildFlags.BuildMenu;
-				}
-			if (foldersToCheckForDeletion.IsEmpty == false)
-				{
-				buildFlags |= BuildFlags.CheckFoldersForDeletion;
-				}
+				{  buildState.NeedToBuildMenu = true;  }
 
 
 			// Compare to the previous list of styles.
@@ -450,7 +370,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 				Start_PurgeFolder(Menu_DataFolder, ref saidPurgingOutputFiles);
-				buildFlags |= BuildFlags.BuildMenu;
+				buildState.NeedToBuildMenu = true;
 				}
 
 
@@ -594,8 +514,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			{
 			try
 				{
-				SaveBinaryBuildStateFile( config.OutputWorkingDataFolder + "/BuildState.nd", sourceFilesToRebuild, classFilesToRebuild,
-																  sourceFilesWithContent, classFilesWithContent, foldersToCheckForDeletion, usedMenuDataFiles );
+				if (buildState != null)
+					{  HTMLBuildState.SaveBinaryFile(config.OutputWorkingDataFolder + "/BuildState.nd", buildState);  }
 				}
 			catch 
 				{  }
@@ -605,7 +525,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
 			CodeDB.Accessor accessor = null;
-			bool haveLock = false;
+			bool haveAccessLock = false;
 			
 			try
 				{
@@ -613,7 +533,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(accessLock);
-					haveLock = true;
+					haveAccessLock = true;
 					
 					if (cancelDelegate())
 						{  return;  }
@@ -621,13 +541,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build frame page
 
-					if ((buildFlags & BuildFlags.BuildFramePage) != 0)
+					if (buildState.NeedToBuildFramePage)
 						{
-						buildFlags &= ~BuildFlags.BuildFramePage;
+						buildState.NeedToBuildFramePage = false;
 						unitsOfWorkInProgress += UnitsOfWork_FramePage;
 
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 
 						BuildFramePage(cancelDelegate);
 
@@ -637,20 +557,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildFlags |= BuildFlags.BuildFramePage;  }
+								{  buildState.NeedToBuildFramePage = true;  }
 							}
 						}
 
 
 					// Build main style files
 						
-					else if ((buildFlags & BuildFlags.BuildMainStyleFiles) != 0)
+					else if (buildState.NeedToBuildMainStyleFiles)
 						{
-						buildFlags &= ~BuildFlags.BuildMainStyleFiles;
+						buildState.NeedToBuildMainStyleFiles = false;
 						unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;
 
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 
 						BuildMainStyleFiles(cancelDelegate);
 
@@ -660,21 +580,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildFlags |= BuildFlags.BuildMainStyleFiles;  }
+								{  buildState.NeedToBuildMainStyleFiles = true;  }
 							}
 						}
 
 
 					// Build source files
 						
-					else if (sourceFilesToRebuild.IsEmpty == false)
+					else if (buildState.SourceFilesToRebuild.IsEmpty == false)
 						{
-						int sourceFileToRebuild = sourceFilesToRebuild.Highest;
-						sourceFilesToRebuild.Remove(sourceFileToRebuild);
+						int sourceFileToRebuild = buildState.SourceFilesToRebuild.Highest;
+						buildState.SourceFilesToRebuild.Remove(sourceFileToRebuild);
 						unitsOfWorkInProgress += UnitsOfWork_SourceFile;
 						
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 						
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
@@ -687,21 +607,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  sourceFilesToRebuild.Add(sourceFileToRebuild);  }
+								{  buildState.SourceFilesToRebuild.Add(sourceFileToRebuild);  }
 							}						
 						}
 						
 
 					// Build class files
 						
-					else if (classFilesToRebuild.IsEmpty == false)
+					else if (buildState.ClassFilesToRebuild.IsEmpty == false)
 						{
-						int classFileToRebuild = classFilesToRebuild.Highest;
-						classFilesToRebuild.Remove(classFileToRebuild);
+						int classFileToRebuild = buildState.ClassFilesToRebuild.Highest;
+						buildState.ClassFilesToRebuild.Remove(classFileToRebuild);
 						unitsOfWorkInProgress += UnitsOfWork_ClassFile;
 						
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 						
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
@@ -714,7 +634,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  classFilesToRebuild.Add(classFileToRebuild);  }
+								{  buildState.ClassFilesToRebuild.Add(classFileToRebuild);  }
 							}						
 						}
 						
@@ -727,7 +647,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			finally
 				{
-				if (haveLock)
+				if (haveAccessLock)
 					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
@@ -738,7 +658,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		public override void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
 			{
 			CodeDB.Accessor accessor = null;
-			bool haveLock = false;
+			bool haveAccessLock = false;
 			
 			try
 				{
@@ -746,7 +666,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{
 					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(accessLock);
-					haveLock = true;
+					haveAccessLock = true;
 					
 					if (cancelDelegate())
 						{  return;  }
@@ -754,49 +674,61 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Delete empty folders
 
-					// This task is not parallelizable so it gets claimed by one thread and looped to completion.  Theoretically it should
-					// be, but in practice when two or more threads try to delete the same folder at the same time they both fail.  This
-					// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
-					// while the other thread gets it by walking up the child's tree.
-
-					if ((buildFlags & BuildFlags.CheckFoldersForDeletion) != 0)
+					if (buildState.FoldersToCheckForDeletion.IsEmpty == false)
 						{
-						buildFlags &= ~BuildFlags.CheckFoldersForDeletion;
+						// This task is not parallelizable so it gets claimed by one thread and looped to completion.  Theoretically it should
+						// be, but in practice when two or more threads try to delete the same folder at the same time they both fail.  This
+						// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
+						// while the other thread gets it by walking up the child's tree.
 
-						while (!cancelDelegate() && foldersToCheckForDeletion.IsEmpty == false)
+						string[] foldersToCheckForDeletion = new string[ buildState.FoldersToCheckForDeletion.Count ];
+						buildState.FoldersToCheckForDeletion.CopyTo(foldersToCheckForDeletion);
+						buildState.FoldersToCheckForDeletion.Clear();
+
+						unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion * foldersToCheckForDeletion.Length;
+						int folderIndex = 0;
+
+						while (folderIndex < foldersToCheckForDeletion.Length)
 							{
-							Path folder = foldersToCheckForDeletion.RemoveOne();
-							unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion;
-
 							Monitor.Exit(accessLock);
-							haveLock = false;
+							haveAccessLock = false;
 
-							DeleteEmptyFolders(folder);
+							if (cancelDelegate())
+								{  break;  }
+
+							DeleteEmptyFolders(foldersToCheckForDeletion[folderIndex]);
+							folderIndex++;
 
 							Monitor.Enter(accessLock);
-							haveLock = true;
+							haveAccessLock = true;
 
 							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
 							}
 
-						// Reset the flag if it was cancelled with entries still left to do.
-						if (foldersToCheckForDeletion.IsEmpty == false)
-							{  buildFlags |= BuildFlags.CheckFoldersForDeletion;  }
+						// If folderIndex isn't at the end that means the cancel delegate was triggered and we have to add the remaining
+						// folders back to the build state.
+						while (folderIndex < foldersToCheckForDeletion.Length)
+							{
+							buildState.FoldersToCheckForDeletion.Add(foldersToCheckForDeletion[folderIndex]);
+							folderIndex++;
+
+							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
+							}
 
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 						}
 
 
 					// Build the menu
 
-					else if ((buildFlags & BuildFlags.BuildMenu) != 0)
+					else if (buildState.NeedToBuildMenu)
 						{
-						buildFlags &= ~BuildFlags.BuildMenu;
+						buildState.NeedToBuildMenu = false;
 						unitsOfWorkInProgress += UnitsOfWork_Menu;
 
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
@@ -804,15 +736,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						BuildMenu(accessor, cancelDelegate);
 
 						Monitor.Enter(accessLock);
-						haveLock = true;
+						haveAccessLock = true;
 
 						unitsOfWorkInProgress -= UnitsOfWork_Menu;
 
 						if (cancelDelegate())
-							{  buildFlags |= BuildFlags.BuildMenu;  }
+							{  buildState.NeedToBuildMenu = true;  }
 
 						Monitor.Exit(accessLock);
-						haveLock = false;
+						haveAccessLock = false;
 						}
 
 
@@ -825,7 +757,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			finally
 				{
-				if (haveLock)
+				if (haveAccessLock)
 					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
@@ -839,15 +771,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			lock (accessLock)
 				{
-				value += sourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
-				value += classFilesToRebuild.Count * UnitsOfWork_ClassFile;
-				value += foldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
+				value += buildState.SourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
+				value += buildState.ClassFilesToRebuild.Count * UnitsOfWork_ClassFile;
+				value += buildState.FoldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
 
-				if ((buildFlags & BuildFlags.BuildFramePage) != 0)
+				if (buildState.NeedToBuildFramePage)
 					{  value += UnitsOfWork_FramePage;  }
-				if ((buildFlags & BuildFlags.BuildMainStyleFiles) != 0)
+				if (buildState.NeedToBuildMainStyleFiles)
 					{  value += UnitsOfWork_MainStyleFiles;  }
-				if ((buildFlags & BuildFlags.BuildMenu) != 0)
+				if (buildState.NeedToBuildMenu)
 					{  value += UnitsOfWork_Menu;  }
 
 				value += unitsOfWorkInProgress;
@@ -1301,143 +1233,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			}
 
 
-		/* Function: LoadBinaryBuildStateFile
-		 * Loads the information in <BuildState.nd> and returns whether it was successful.  If not all the out parameters will still 
-		 * return objects, they will just be empty.  
-		 */
-		public static bool LoadBinaryBuildStateFile (Path filename, 
-																							out IDObjects.NumberSet fileIDsToBuild, out IDObjects.NumberSet classIDsToBuild,
-																							out IDObjects.NumberSet fileIDsWithContent, out IDObjects.NumberSet classIDsWithContent,
-																							out StringSet foldersToCheckForDeletion,
-																							out StringTable<IDObjects.NumberSet> usedDataFiles)
-			{
-			fileIDsToBuild = null;
-			classIDsToBuild = null;
-			fileIDsWithContent = null;
-			classIDsWithContent = null;
-			foldersToCheckForDeletion = null;
-			usedDataFiles = null;
-
-			BinaryFile binaryFile = new BinaryFile();
-			bool result = true;
-
-			try
-				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
-					{  result = false;  }
-				else
-					{
-					// [NumberSet: Source File IDs to Rebuild]
-					// [NumberSet: Class IDs to Rebuild]
-					// [NumberSet: Source File IDs with Content]
-					// [NumberSet: Class IDs with Content]
-					// [StringSet: Folders to Check for Deletion]
-
-					fileIDsToBuild = binaryFile.ReadNumberSet();
-					classIDsToBuild = binaryFile.ReadNumberSet();
-					fileIDsWithContent = binaryFile.ReadNumberSet();
-					classIDsWithContent = binaryFile.ReadNumberSet();
-					foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.IgnoreCaseInPaths, false);
-
-					// [String: Data File Type] [NumberSet: Data File Numbers]
-					// [String: Data File Type] [NumberSet: Data File Numbers]
-					// ...
-					// [String: null]
-
-					usedDataFiles = new StringTable<IDObjects.NumberSet>(false, false);
-					string dataFileType = binaryFile.ReadString();
-
-					while (dataFileType != null)
-						{
-						IDObjects.NumberSet dataFileNumbers = binaryFile.ReadNumberSet();
-						usedDataFiles.Add(dataFileType, dataFileNumbers);
-
-						dataFileType = binaryFile.ReadString();
-						}
-					}
-				}
-			catch
-				{  result = false;  }
-			finally
-				{  binaryFile.Dispose();  }
-
-			if (result == false)
-				{
-				if (fileIDsToBuild == null)
-					{  fileIDsToBuild = new IDObjects.NumberSet();  }
-				else
-					{  fileIDsToBuild.Clear();  }
-
-				if (classIDsToBuild == null)
-					{  classIDsToBuild = new IDObjects.NumberSet();  }
-				else
-					{  classIDsToBuild.Clear();  }
-
-				if (fileIDsWithContent == null)
-					{  fileIDsWithContent = new IDObjects.NumberSet();  }
-				else
-					{  fileIDsWithContent.Clear();  }
-
-				if (classIDsWithContent == null)
-					{  classIDsWithContent = new IDObjects.NumberSet();  }
-				else
-					{  classIDsWithContent.Clear();  }
-
-				if (foldersToCheckForDeletion == null)
-					{  foldersToCheckForDeletion = new StringSet( Config.Manager.IgnoreCaseInPaths, false);  }
-				else
-					{  foldersToCheckForDeletion.Clear();  }
-
-				if (usedDataFiles == null)
-					{  usedDataFiles = new StringTable<IDObjects.NumberSet>(false, false);  }
-				else
-					{  usedDataFiles.Clear();  }
-				}
-
-			return result;
-			}
-
-
-		/* Function: SaveBinaryBuildStateFile
-		 * Saves the passed information in <BuildState.nd>.
-		 */
-		public static void SaveBinaryBuildStateFile (Path filename, 
-																							IDObjects.NumberSet fileIDsToBuild, IDObjects.NumberSet classIDsToBuild,
-																							IDObjects.NumberSet fileIDsWithContent, IDObjects.NumberSet classIDsWithContent,
-																							StringSet foldersToCheckForDeletion, StringTable<IDObjects.NumberSet> usedDataFiles)
-			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
-				binaryFile.OpenForWriting(filename);
-
-				// [NumberSet: Source File IDs to Rebuild]
-				// [NumberSet: Class IDs to Rebuild]
-				// [NumberSet: Source File IDs with Content]
-				// [NumberSet: Class IDs with Content]
-				// [StringSet: Folders to Check for Deletion]
-
-				binaryFile.WriteNumberSet(fileIDsToBuild);
-				binaryFile.WriteNumberSet(classIDsToBuild);
-				binaryFile.WriteNumberSet(fileIDsWithContent);
-				binaryFile.WriteNumberSet(classIDsWithContent);
-				binaryFile.WriteStringSet(foldersToCheckForDeletion);
-
-				// [String: Data File Type] [NumberSet: Data File Numbers]
-				// [String: Data File Type] [NumberSet: Data File Numbers]
-				// ...
-				// [String: null]
-
-				foreach (var dataFilePair in usedDataFiles)
-					{
-					binaryFile.WriteString(dataFilePair.Key);
-					binaryFile.WriteNumberSet(dataFilePair.Value);
-					}
-
-				binaryFile.WriteString(null);
-				}
-			}
-
-
 
 		// Group: Path Functions
 		// __________________________________________________________________________
@@ -1548,39 +1343,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected object accessLock;
 		
-		/* var: sourceFilesToRebuild
-		 * A set of the source file IDs that need to be rebuilt.
+		/* var: buildState
+		 * The current build state for the HTML target.
 		 */
-		protected IDObjects.NumberSet sourceFilesToRebuild;
-
-		/* var: classFilesToRebuild
-		 * A set of the class IDs that need their output rebuilt.
-		 */
-		protected IDObjects.NumberSet classFilesToRebuild;
-
-		/* var: sourceFilesWithContent
-		 * A set of the source file IDs that contain content this output target can use.  This is different from all the files with
-		 * content in <CodeDB.Manager> because it is after all filters have been applied.
-		 */
-		protected IDObjects.NumberSet sourceFilesWithContent;
-
-		/* var: classFilesWithContent
-		 * A set of the class IDs that contain content this output target can use.  This is different from all the classes with 
-		 * content in <CodeDB.Manager> because it is after all filters have been applied.
-		 */
-		protected IDObjects.NumberSet classFilesWithContent;
-		
-		/* var: foldersToCheckForDeletion
-		 * A set of folders that have had files removed, and thus should be deleted if empty.  Note that threads should check
-		 * <buildFlags> to see if this task is needed rather than checking if this set is empty.  It may not be empty but have
-		 * another thread working on it, and the task is not parallelizable.
-		 */
-		protected StringSet foldersToCheckForDeletion;
-
-		/* var: buildFlags
-		 * Flags for everything that needs to be built not encompassed by other variables like <sourceFilesToRebuild>.
-		 */
-		protected BuildFlags buildFlags;
+		protected HTMLBuildState buildState;
 
 		/* var: unitsOfWorkInProgress
 		 * 
@@ -1602,12 +1368,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * A list of <Styles.HTMLStyles> that apply to this builder in the order in which they should be loaded.
 		 */
 		protected List<Styles.HTMLStyle> styles;
-
-		/* var: usedMenuDataFiles
-		 * The data files created the last time the menu was built.  It maps strings like "files" and "classes" to NumberSets,
-		 * so files.js, files2.js, and files3.js would map to "files" and {1-3}.
-		 */
-		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
 
 
 
