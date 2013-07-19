@@ -83,7 +83,7 @@ using GregValure.NaturalDocs.Engine.Output.Styles;
 
 namespace GregValure.NaturalDocs.Engine.Output.Builders
 	{
-	public partial class HTML : Builder, Files.IStyleChangeWatcher, IDisposable
+	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IStyleChangeWatcher, IDisposable
 		{
 
 		/* enum: PageType
@@ -410,6 +410,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			SaveBinaryConfigFile(config.OutputWorkingDataFolder + "/Config.nd", styles, fileSourceInfoList);
+
+
+			// Watch other modules
+
+			Engine.Instance.CodeDB.AddChangeWatcher(this);
+			Engine.Instance.Files.AddStyleChangeWatcher(this);
 
 
 			return (errors == errorList.Count);

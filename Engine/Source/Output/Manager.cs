@@ -76,11 +76,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 				
 			foreach (Builder builder in builders)
 				{
-				Engine.Instance.CodeDB.AddChangeWatcher(builder);
-
-				if (builder is Files.IStyleChangeWatcher)
-					{  Engine.Instance.Files.AddStyleChangeWatcher((Files.IStyleChangeWatcher)builder);  }
-
 				if (builder.Styles != null)
 					{
 					foreach (Style style in builder.Styles)

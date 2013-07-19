@@ -20,7 +20,7 @@ using GregValure.NaturalDocs.Engine.Topics;
 
 namespace GregValure.NaturalDocs.Engine.Output
 	{
-	abstract public class Builder : CodeDB.IChangeWatcher
+	abstract public class Builder
 		{
 		
 		// Group: Functions
@@ -121,25 +121,6 @@ namespace GregValure.NaturalDocs.Engine.Output
 				
 			return streamWriter;
 			}
-
-
-
-		// Group: CodeDB.IChangeWatcher Functions
-		// __________________________________________________________________________
-		
-		
-		abstract public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
-
-		abstract public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
-																		 CodeDB.EventAccessor eventAccessor);
-
-		abstract public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor);
-
-		abstract public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor);
-		
-		abstract public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor);
-		
-		abstract public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor);
 
 
 

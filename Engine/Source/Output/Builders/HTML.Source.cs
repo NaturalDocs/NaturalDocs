@@ -220,7 +220,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			// If this topic defines a class, it's possible it's now the best definition and thus we have to update the class prototypes
 			// of all its parents.  We don't have to worry about updating children because that will be taken care of by OnLinkChange
@@ -248,8 +248,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
-															 CodeDB.EventAccessor eventAccessor)
+		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, CodeDB.EventAccessor eventAccessor)
 			{
 			// We don't care about line number changes.  They don't affect the output.  We also don't care about context
 			// changes.  They might affect links but if they do it will be handled in OnChangeLinkTarget().
@@ -315,7 +314,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			IDObjects.NumberSet parentClassIDs = null;
 			IDObjects.NumberSet parentClassFileIDs = null;
@@ -339,7 +338,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
+		public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
 			// If a class parent link was added we have to rebuild all source files that define that class as the class prototype
 			// may have changed.
@@ -379,7 +378,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 		
-		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
+		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
 			{
 			IDObjects.NumberSet filesThatDefineClass = null;
 
@@ -456,7 +455,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 			}
 		
-		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
+		public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
 			{
 			IDObjects.NumberSet filesThatDefineClass = null;
 

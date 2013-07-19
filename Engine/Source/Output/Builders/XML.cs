@@ -54,37 +54,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			
 			
 		
-		// Group: CodeDB.IChangeWatcher Functions
-		// __________________________________________________________________________
-		
-		
-		override public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
-			{
-			}
-
-		override public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, 
-																		 CodeDB.EventAccessor eventAccessor)
-			{
-			}
-
-		override public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
-			{
-			}
-
-		override public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
-			{
-			}
-		
-		override public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
-			{
-			}
-		
-		override public void OnDeleteLink (Link link, CodeDB.EventAccessor eventAccessor)
-			{
-			}
-
-
-
 		// Group: Variables
 		// __________________________________________________________________________
 
