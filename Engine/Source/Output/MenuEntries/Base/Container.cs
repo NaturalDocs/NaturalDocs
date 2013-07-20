@@ -49,15 +49,53 @@ namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
 		 */
 		static protected int CompareMembers (Base.Entry a, Base.Entry b)
 			{
-			int result = String.Compare(a.Title, b.Title, true);
+			string aTitle = a.Title;
+			string bTitle = b.Title;
+
+
+			// If we're comparing two files we want to ignore the extension so A.cpp appears before A.B.cpp.
+
+			bool comparingFiles = (a is MenuEntries.Files.File && b is MenuEntries.Files.File);
+
+			if (comparingFiles)
+				{
+				aTitle = new Path(aTitle).NameWithoutPathOrExtension;
+				bTitle = new Path(bTitle).NameWithoutPathOrExtension;
+				}
+
+
+			// Compare in a case-insensitive way first, but fall back to a case-sensitive compare if they're equal.  This means
+			// both a.cpp and A.cpp will appear before B.cpp, but they will appear consistently relative to each other.
+
+			int result = String.Compare(aTitle, bTitle, true);
 
 			if (result != 0)
 				{  return result;  }
 
-			result = String.Compare(a.Title, b.Title, false);
+			result = String.Compare(aTitle, bTitle, false);
 
 			if (result != 0)
 				{  return result;  }
+
+
+			// If we're comparing two files, try again with extensions so a.cpp and a.h appear consistently.
+
+			if (comparingFiles)
+				{
+				result = String.Compare(a.Title, b.Title, true);
+
+				if (result != 0)
+					{  return result;  }
+
+				result = String.Compare(a.Title, b.Title, false);
+
+				if (result != 0)
+					{  return result;  }
+				}
+
+
+			// At this point the titles are exactly equal.  Make sure non-containers come first so the class A will
+			// appear before the container A which leads to A.B.
 
 			if (a is Base.Container)
 				{  return (b is Base.Container ? 0 : 1);  }
