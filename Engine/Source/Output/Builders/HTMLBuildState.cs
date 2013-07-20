@@ -59,29 +59,6 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 	public partial class HTMLBuildState
 		{
 
-		/* enum: BuildFlags
-		 * 
-		 * Flags that specify what parts of the HTML output structure still need to be built.
-		 * 
-		 * BuildFramePage - index.html
-		 * BuildMainStyleFiles - main.css and main.js
-		 * BuildMenu - The data files for the menu.
-		 * 
-		 * CheckFoldersForDeletion - Processing <foldersToCheckForDeletion>.  You can't simply check if the variable is
-		 *										empty because the task isn't parallelizable.  It may have contents but another thread
-		 *										is already working on it, in which case this flag will be reset.
-		 */
-		[Flags]
-		protected enum BuildFlags : byte {
-			BuildFramePage = 0x01,
-			BuildMainStyleFiles = 0x02,
-			BuildMenu = 0x04,
-
-			CheckFoldersForDeletion = 0x08
-			}
-
-		
-
 		// Group: Functions
 		// __________________________________________________________________________
 		
