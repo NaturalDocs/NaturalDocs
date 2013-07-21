@@ -530,6 +530,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
+			if (cancelDelegate())
+				{  return;  }
+
 			CodeDB.Accessor accessor = null;
 			bool haveAccessLock = false;
 			
@@ -537,13 +540,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				for (;;)
 					{
-					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(accessLock);
 					haveAccessLock = true;
-					
-					if (cancelDelegate())
-						{  return;  }
 
+					// Remember the following in the below code:
+					// - Every clause of the if-else statement starts off holding the lock.
+					// - You can't acquire or change the database lock while holding it.
+					// - You can't call cancelDelegate while holding it.
+					// - Every clause of the if-else statement must end with the lock released.
+					
 
 					// Build frame page
 
@@ -663,6 +668,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 		public override void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
 			{
+			if (cancelDelegate())
+				{  return;  }
+
 			CodeDB.Accessor accessor = null;
 			bool haveAccessLock = false;
 			
@@ -670,12 +678,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				for (;;)
 					{
-					// Remember that you can't acquire or change the database lock while holding this.
 					Monitor.Enter(accessLock);
 					haveAccessLock = true;
 					
-					if (cancelDelegate())
-						{  return;  }
+					// Remember the following in the below code:
+					// - Every clause of the if-else statement starts off holding the lock.
+					// - You can't acquire or change the database lock while holding it.
+					// - You can't call cancelDelegate while holding it.
+					// - Every clause of the if-else statement must end with the lock released.
 
 
 					// Delete empty folders
@@ -741,16 +751,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 						BuildMenu(accessor, cancelDelegate);
 
-						Monitor.Enter(accessLock);
-						haveAccessLock = true;
-
-						unitsOfWorkInProgress -= UnitsOfWork_Menu;
+						lock (accessLock)
+							{  unitsOfWorkInProgress -= UnitsOfWork_Menu;  }
 
 						if (cancelDelegate())
-							{  buildState.NeedToBuildMenu = true;  }
-
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+							{
+							lock (accessLock)
+								{  buildState.NeedToBuildMenu = true;  }
+							}
 						}
 
 
