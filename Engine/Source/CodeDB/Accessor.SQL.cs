@@ -62,11 +62,13 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			bool bodyLengthOnly = ((getTopicFlags & GetTopicFlags.BodyLengthOnly) != 0);
 			bool lookupClasses = ((getTopicFlags & GetTopicFlags.DontLookupClasses) == 0);
 			bool lookupContexts = ((getTopicFlags & GetTopicFlags.DontLookupContexts) == 0);
+			bool includeSummary = ((getTopicFlags & GetTopicFlags.DontIncludeSummary) == 0);
+			bool includePrototype = ((getTopicFlags & GetTopicFlags.DontIncludePrototype) == 0);
 						
-			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Summary, Prototype, Symbol, SymbolDefinitionNumber, " +
-																							  "Topics.ClassID, IsList, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
-																							  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
-																							  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
+			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Symbol, SymbolDefinitionNumber, " +
+																				  "Topics.ClassID, IsList, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
+																				  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
+																				  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
 			// DefinesClass is a read-only property in Topic so we don't have to retrieve it from the database.  Topic will calculate it from 
 			// TopicTypeID.  We only store it in the database so we can use it to filter queries.
@@ -75,6 +77,12 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 				{  queryText.Append(", length(Body) ");  }
 			else
 				{  queryText.Append(", Body ");  }
+
+			if (includeSummary)
+				{  queryText.Append(", Summary ");  }
+
+			if (includePrototype)
+				{  queryText.Append(", Prototype ");  }
 
 			if (lookupClasses)
 				{  queryText.Append(", ifnull(Classes.ClassString, Classes.LookupKey) ");  }
@@ -90,7 +98,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 			if (lookupContexts)
 				{  
 				queryText.Append("LEFT OUTER JOIN Contexts AS PContexts ON PContexts.ContextID = PrototypeContextID " +
-													"LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");  
+										 "LEFT OUTER JOIN Contexts AS BContexts ON BContexts.ContextID = BodyContextID ");  
 				}
 				
 			queryText.Append("WHERE ");
@@ -113,8 +121,6 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					
 					topic.TopicID = query.NextIntColumn();
 					topic.Title = query.NextStringColumn();
-					topic.Summary = query.NextStringColumn();
-					topic.Prototype = query.NextStringColumn();
 					topic.Symbol = SymbolString.FromExportedString( query.NextStringColumn() );
 					topic.SymbolDefinitionNumber = query.NextIntColumn();
 					topic.ClassID = query.NextIntColumn();
@@ -145,6 +151,15 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					else
 						{  topic.Body = query.NextStringColumn();  }
 
+					if (includeSummary)
+						{  topic.Summary = query.NextStringColumn();  }
+					else
+						{  topic.IgnoredFields |= Topic.IgnoreFields.Summary;  }
+
+					if (includePrototype)
+						{  topic.Prototype = query.NextStringColumn();  }
+					else
+						{  topic.IgnoredFields |= Topic.IgnoreFields.Prototype;  }
 
 					if (lookupClasses)
 						{  topic.ClassString = ClassString.FromExportedString( query.NextStringColumn() );  }
