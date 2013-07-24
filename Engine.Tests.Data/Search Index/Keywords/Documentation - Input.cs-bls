@@ -1,0 +1,42 @@
+
+/* Topic: Title
+ */
+
+/* Topic: Title.A.B
+ */
+
+/* Topic: .Title.
+ */
+
+/* Topic: Title A... B
+ */
+
+/* Topic: Title::A::B
+ */
+
+/* Topic: ::Title
+ */
+
+/* Topic: Title A/B
+ */
+
+/* Topic: Title A\B
+ */
+
+/* Topic: Title (param)
+ */
+
+/* Class: ParentClass
+ */
+
+	/* Topic: Title
+	 */
+
+	/* Topic: Title.A.B
+	 */
+
+	/* Topic: Title::A::B
+	 */
+
+	/* Topic: Title A/B
+	 */

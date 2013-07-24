@@ -1,0 +1,24 @@
+Topic: ClassA
+- Display Name: ClassA
+- Normalized Name: classa
+- Keywords: ClassA
+
+Topic: MemberFunctionA
+- Display Name: ClassA::MemberFunctionA
+- Normalized Name: classa.memberfunctiona
+- Keywords: MemberFunctionA
+
+Topic: MemberFunctionB (int)
+- Display Name: ClassA::MemberFunctionB
+- Normalized Name: classa.memberfunctionb
+- Keywords: MemberFunctionB
+
+Topic: Namespace::ClassB
+- Display Name: Namespace::ClassB
+- Normalized Name: namespace.classb
+- Keywords: ClassB
+
+Topic: Namespace->ClassC
+- Display Name: Namespace->ClassC
+- Normalized Name: namespace.classc
+- Keywords: ClassC

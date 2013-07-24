@@ -59,6 +59,7 @@
     <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
+    <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
     <Compile Include="Source\Framework\TestTypes\JavadocIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\XMLIterator.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />
     <Compile Include="Source\Output\HTML\TopicTitles.cs" />
+    <Compile Include="Source\SearchIndex\Keywords.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">

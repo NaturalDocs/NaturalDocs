@@ -1,0 +1,59 @@
+Topic: operator.
+- Display Name: operator.
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: operator .
+- Display Name: operator .
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: operator..
+- Display Name: operator..
+- Normalized Name: operator..
+- Keywords: operator
+
+Topic: operator . .
+- Display Name: operator . .
+- Normalized Name: operator..
+- Keywords: operator
+
+Topic: operator::
+- Display Name: operator::
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: operator ::
+- Display Name: operator ::
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: operator->
+- Display Name: operator->
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: operator ->
+- Display Name: operator ->
+- Normalized Name: operator.
+- Keywords: operator
+
+Topic: .Global
+- Display Name: .Global
+- Normalized Name: global
+- Keywords: Global
+
+Topic: . Global
+- Display Name: . Global
+- Normalized Name: global
+- Keywords: Global
+
+Topic: ::Global
+- Display Name: ::Global
+- Normalized Name: global
+- Keywords: Global
+
+Topic: :: Global
+- Display Name: :: Global
+- Normalized Name: global
+- Keywords: Global

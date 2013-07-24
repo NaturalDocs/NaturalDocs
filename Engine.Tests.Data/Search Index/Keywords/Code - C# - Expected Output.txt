@@ -1,0 +1,19 @@
+Topic: ClassA
+- Display Name: ClassA
+- Normalized Name: classa
+- Keywords: ClassA
+
+Topic: MemberFunctionA
+- Display Name: ClassA.MemberFunctionA
+- Normalized Name: classa.memberfunctiona
+- Keywords: MemberFunctionA
+
+Topic: MemberFunctionB (int)
+- Display Name: ClassA.MemberFunctionB
+- Normalized Name: classa.memberfunctionb
+- Keywords: MemberFunctionB
+
+Topic: Package.Package.ClassB
+- Display Name: Package.Package.ClassB
+- Normalized Name: package.package.classb
+- Keywords: ClassB

@@ -1,0 +1,10 @@
+
+// Class: ClassA
+
+	// Function: MemberFunctionA
+
+	// Function: MemberFunctionB (int)
+
+// Class: Namespace::ClassB
+
+// Class: Namespace->ClassC

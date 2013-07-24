@@ -1,0 +1,42 @@
+
+/* File: File.txt
+ */
+
+/* File: Folder/Folder/File.txt
+ */
+
+/* File: Folder\Folder\File.with.dots.txt
+ */
+
+/* File: Folder A\Folder B\File with spaces.txt
+ */
+
+/* File: /FolderA/FolderB/File.txt
+ */
+
+/* File: .trap.txt
+ */
+
+/* File: Trap.txt/
+ */
+
+/* File: Trap.txt /
+ */
+
+/* File: Trap.txt//
+ */
+
+/* File: Trap.txt / /
+ */
+
+/* File: File.txt (param)
+ */
+
+/* Class: ParentClass
+ */
+
+	/* File: File.txt
+	 */
+
+	/* File: Folder A\Folder B\File.with.dots.txt
+	 */
