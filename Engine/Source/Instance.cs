@@ -34,8 +34,10 @@
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <TopicTypes.Manager>.
  *		
- *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> watchers.  It can
- *		   also set the rebuild/reparse flags that CodeDB needs to interpret.
+ *		- <SearchIndex.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
+ *		
+ *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> and <SearchIndex.Manager>
+ *		   watchers.  It can also set the rebuild/reparse flags that CodeDB needs to interpret.
  *		
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
@@ -80,7 +82,7 @@ namespace GregValure.NaturalDocs.Engine
 		static public void Create (Config.Manager configManager = null, TopicTypes.Manager topicTypesManager = null, 
 														 Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 														 CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
-														 Files.Manager filesManager = null)
+														 SearchIndex.Manager searchIndexManager = null, Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
@@ -90,6 +92,7 @@ namespace GregValure.NaturalDocs.Engine
 			comments = commentsManager ?? new Comments.Manager();
 			codeDB = codeDBManager ?? new CodeDB.Manager();
 			output = outputManager ?? new Output.Manager();
+			searchIndex = searchIndexManager ?? new SearchIndex.Manager();
 			files = filesManager ?? new Files.Manager();
 			}
 			
@@ -125,7 +128,13 @@ namespace GregValure.NaturalDocs.Engine
 				files.Dispose();  
 				files = null;
 				}
-								
+			
+			if (searchIndex != null)
+				{
+				searchIndex.Dispose();					
+				searchIndex = null;
+				}
+
 			comments = null;
 			languages = null;
 			topicTypes = null;
@@ -163,6 +172,7 @@ namespace GregValure.NaturalDocs.Engine
 				topicTypes.Start(errors) &&
 				languages.Start(errors) &&
 				comments.Start(errors) &&
+				searchIndex.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
 				files.Start(errors)
@@ -392,6 +402,15 @@ namespace GregValure.NaturalDocs.Engine
 				{  return codeDB;  }
 			}
 			
+		/* Property: SearchIndex
+		 * Returns the <SearchIndex.Manager> associated with this instance.
+		 */
+		static public SearchIndex.Manager SearchIndex
+			{
+			get
+				{  return searchIndex;  }
+			}
+
 		/* Property: Output
 		 * Returns the <Output.Manager> associated with this instance.
 		 */
@@ -432,6 +451,8 @@ namespace GregValure.NaturalDocs.Engine
 		
 		static private CodeDB.Manager codeDB;
 		
+		static private SearchIndex.Manager searchIndex;
+
 		static private Output.Manager output;
 			
 		static private Files.Manager files;

@@ -1,0 +1,69 @@
+﻿
+Title: JavaScript Search Data
+_______________________________________________________________________________
+
+	Because Natural Docs' output needs to be able to function as just static HTML files on a local hard drive, it can't rely on a 
+	database to generate search results live.  Instead it pregenerates results and saves them as JavaScript files located in the 
+	search subfolder of the output folder.  These files are not linked to the HTML by default so any Javascript that needs them 
+	is responsible for loading them.  If you include the DefaultJS style this will be handled by <NDSearch>.
+
+
+	Topic: Keyword Segmenting
+
+		Results are grouped by keyword, and then grouped into data files by the keywords' first three lowercase characters.  The 
+		file names use UTF-16 characters encoded in lowercase hex:
+		
+		> [Output Folder]\search\keywords\[hex char 1][hex char 2][hex char 3].js
+		
+		So the output file for "and" would be:
+
+		> [Output Folder]\search\keywords\0061006e0064.js
+		
+		However, keywords that are only one or two characters long have their own file.  So the file for "app" will store both Apple 
+		and Application, but the file for "a" will only store keywords that are exactly "a" and not include keywords that start with A.
+
+
+	Topic: Keyword Segment File
+
+		The keyword segment file calls <NDSearch.OnKeywordSegmentLoaded()> with its data, which conceptually looks like this:
+
+		> NDSearch.OnKeywordSegmentLoaded(keywordSegmentID, keywordSegmentType, keywords[]);
+		>
+		> keywordSegmentType: prefix = 1, short = 2
+		>
+		> keyword: [ keywordString, members[] ]
+		>
+		> member: [ displayName, fileURLPath, classURLPath (optional) ]
+
+		which when applied, looks like this:
+
+		> NDSearch.OnKeywordSegmentLoaded(
+		>    "acc", 1, [
+		>
+		>       [ "Access", [
+		>             [ "Access", "File:Folder/DocumentationA.txt#Access" ]
+		>       ]],
+		>
+		>       [ "access", [
+		>          [ "access", "File:Folder/DocumentationB.txt#access" ]
+		>       ]],
+		>
+		>       [ "Accessor", [
+		>          [ "ClassA.Accessor", "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB::Accessor", "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>       ]]
+		>
+		>    ]);
+
+		Both the list of keywords and each keyword's list of results are already sorted into the order in which they should appear.
+
+
+	Topic: Main Index File
+
+		Information about which character combinations actually have results are stored in [Output Folder]\search\index.js.  The
+		file contains a call to <NDSearch.OnIndexLoaded()> that looks like this:
+
+		> NDSearch.OnIndexLoaded([ "a", "acc", "add", "ade", ... ]);
+
+		The only parameter is an array of all the letter combinations that have files defined.  They are sorted so you can use a
+		binary search to walk through them.
