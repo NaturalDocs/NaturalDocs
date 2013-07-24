@@ -12,6 +12,7 @@
  *		> [Byte: Need to Build Frame Page (0 or 1)]
  *		> [Byte: Need to Build Main Style Files (0 or 1)]
  *		> [Byte: Need to Build Menu (0 or 1)]
+ *		> [Byte: Need to Build Main Search Index (0 or 1)]
  *		
  *		Flags for some of the structural items that need to be built.
  * 
@@ -26,6 +27,10 @@
  *		
  *		A set of all the source and class files known to have content after all filters were applied.
  *		
+ *		> [StringSet: Search Index Keyword Segment IDs to Rebuild]
+ *		
+ *		A set of all the search index keyword segment IDs which were changed or deleted and thus need to be rebuilt.
+ * 
  *		> [StringSet: Folders to Check for Deletion]
  *		
  *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
@@ -79,6 +84,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				classFilesToRebuild = new IDObjects.NumberSet();
 				classFilesWithContent = new IDObjects.NumberSet();
+				searchIndexKeywordSegmentsToRebuild = new StringSet(false, false);
 				foldersToCheckForDeletion = new StringSet(Config.Manager.IgnoreCaseInPaths, false);
 				usedMenuDataFiles = new StringTable<NumberSet>(false, false);
 				}
@@ -88,6 +94,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = null;
 				classFilesToRebuild = null;
 				classFilesWithContent = null;
+				searchIndexKeywordSegmentsToRebuild = null;
 				foldersToCheckForDeletion = null;
 				usedMenuDataFiles = null;
 				}
@@ -95,6 +102,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			needToBuildFramePage = false;
 			needToBuildMainStyleFiles = false;
 			needToBuildMenu = false;
+			needToBuildMainSearchIndex = false;
 			}
 
 
@@ -123,21 +131,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					// [Byte: Need to Build Frame Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
 					// [Byte: Need to Build Menu (0 or 1)]
+					// [Byte: Need to Build Main Search Index (0 or 1)]
 
 					buildState.needToBuildFramePage = (binaryFile.ReadByte() == 1);
 					buildState.needToBuildMainStyleFiles = (binaryFile.ReadByte() == 1);
 					buildState.needToBuildMenu = (binaryFile.ReadByte() == 1);
+					buildState.needToBuildMainSearchIndex = (binaryFile.ReadByte() == 1);
 
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
+					// [StringSet: Search Index Keyword Segment IDs to Rebuild]
 					// [StringSet: Folders to Check for Deletion]
 
 					buildState.sourceFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.classFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.sourceFilesWithContent = binaryFile.ReadNumberSet();
 					buildState.classFilesWithContent = binaryFile.ReadNumberSet();
+					buildState.searchIndexKeywordSegmentsToRebuild = binaryFile.ReadStringSet(false, false);
 					buildState.foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.IgnoreCaseInPaths, false);
 
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
@@ -181,21 +193,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				// [Byte: Need to Build Frame Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
 				// [Byte: Need to Build Menu (0 or 1)]
+				// [Byte: Need to Build Main Search Index (0 or 1)]
 
 				binaryFile.WriteByte( (byte)(buildState.needToBuildFramePage ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(buildState.needToBuildMainStyleFiles ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(buildState.needToBuildMenu ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(buildState.needToBuildMainSearchIndex ? 1 : 0) );
 
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
+				// [StringSet: Search Index Keyword Segment IDs to Rebuild]
 				// [StringSet: Folders to Check for Deletion]
 
 				binaryFile.WriteNumberSet(buildState.sourceFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.classFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classFilesWithContent);
+				binaryFile.WriteStringSet(buildState.searchIndexKeywordSegmentsToRebuild);
 				binaryFile.WriteStringSet(buildState.foldersToCheckForDeletion);
 
 				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
@@ -256,7 +272,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			get
 				{  return classFilesWithContent;  }
 			}
-		
+
 		/* Property: NeedToBuildFramePage
 		 * Whether the frame page, index.html, needs to be rebuilt.
 		 */
@@ -302,6 +318,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{  usedMenuDataFiles = value;  }
 			}
 
+		/* Property: NeedToBuildMainSearchIndex
+		 * Whether the main search index file needs to be rebuilt.
+		 */
+		public bool NeedToBuildMainSearchIndex
+			{
+			get
+				{  return needToBuildMainSearchIndex;  }
+			set
+				{  needToBuildMainSearchIndex = value;  }
+			}
+
+		/* Property: SearchIndexKeywordSegmentsToRebuild
+		 * A set of all the search index keyword segment IDs which need to be rebuilt.  This set combines changed and deleted IDs, 
+		 * so when using <SearchIndex.Manager.TopicIDsInKeywordSegment()> make sure to test each result for null.
+		 */
+		public StringSet SearchIndexKeywordSegmentsToRebuild
+			{
+			get
+				{  return searchIndexKeywordSegmentsToRebuild;  }
+			}
+		
 		/* Property: FoldersToCheckForDeletion
 		 * A set of folders that have had files removed, and thus should be deleted if empty.
 		 */
@@ -321,12 +358,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected IDObjects.NumberSet classFilesToRebuild;
 		protected IDObjects.NumberSet classFilesWithContent;
 
+		protected StringSet searchIndexKeywordSegmentsToRebuild;
 		protected StringSet foldersToCheckForDeletion;
 		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
 
 		protected bool needToBuildFramePage;
 		protected bool needToBuildMainStyleFiles;
 		protected bool needToBuildMenu;
+		protected bool needToBuildMainSearchIndex;
 
 		}
 	}
