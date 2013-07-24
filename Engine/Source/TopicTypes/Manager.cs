@@ -261,21 +261,9 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 		
 		
-		/* Constants: Tolerance Constants
-		 * 
-		 * KeywordsIgnoreCase - Whether keywords ignore case.
-		 * KeywordsAreNormalized - Whether Unicode normalization is applied to keywords.
-		 * TopicTypeNamesIgnoreCase - Whether topic type names ignore case.
-		 * TopicTypeNamesAreNormalized - Whether Unicode normalization is applied to topic type names.
-		 * TagsIgnoreCase - Whether tags ignore case.
-		 * TagsAreNormalized - Whether Unicode normalization is applied to tags.
-		 */
-		public const bool KeywordsIgnoreCase = true;
-		public const bool KeywordsAreNormalized = true;
-		public const bool TopicTypeNamesIgnoreCase = true;
-		public const bool TopicTypeNamesAreNormalized = true;
-		public const bool TagsIgnoreCase = true;
-		public const bool TagsAreNormalized = true;
+		public const KeySettings KeySettingsForKeywords = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
+		public const KeySettings KeySettingsForTopicTypes = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
+		public const KeySettings KeySettingsForTags = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		
 		
 		
@@ -290,11 +278,11 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			{
 			// Topic type names aren't normalized because they're only referenced in other config files.  Tags and keywords are
 			// referenced in source files so they should be more tolerant.
-			topicTypes = new IDObjects.Manager<TopicType>(TopicTypeNamesIgnoreCase, TopicTypeNamesAreNormalized, false);
-			tags = new IDObjects.Manager<Tag>(TagsIgnoreCase, TagsAreNormalized, false);
+			topicTypes = new IDObjects.Manager<TopicType>(KeySettingsForTopicTypes, false);
+			tags = new IDObjects.Manager<Tag>(KeySettingsForTags, false);
 			
-			singularKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);
-			pluralKeywords = new StringTable<TopicType>(KeywordsIgnoreCase, KeywordsAreNormalized);
+			singularKeywords = new StringTable<TopicType>(KeySettingsForKeywords);
+			pluralKeywords = new StringTable<TopicType>(KeySettingsForKeywords);
 
 			groupTopicTypeID = 0;
 			}
@@ -429,7 +417,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 				
 			// Combine the ignored keywords.
 			
-			StringSet ignoredKeywords = new StringSet(KeywordsIgnoreCase, KeywordsAreNormalized);
+			StringSet ignoredKeywords = new StringSet(KeySettingsForKeywords);
 			
 			foreach (string keyword in ignoredSystemKeywords)
 				{
@@ -1047,7 +1035,7 @@ namespace GregValure.NaturalDocs.Engine.TopicTypes
 			{
 			fileTopicTypes = new List<ConfigFileTopicType>();
 			StringTable<ConfigFileTopicType> fileTopicTypeNames = 
-				new StringTable<ConfigFileTopicType>(TopicTypeNamesIgnoreCase, TopicTypeNamesAreNormalized);
+				new StringTable<ConfigFileTopicType>(KeySettingsForTopicTypes);
 			fileIgnoredKeywords = new List<string>();
 			fileTags = new List<string>();
 			int previousErrorCount = errorList.Count;

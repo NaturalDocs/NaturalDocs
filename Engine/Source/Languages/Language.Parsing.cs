@@ -4790,7 +4790,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		/* var: defaultKeywords
 		 * A set of the default keywords for basic language support across all languages.
 		 */
-		static protected StringSet defaultKeywords = new StringSet(false, false, new string[] {
+		static protected StringSet defaultKeywords = new StringSet (KeySettings.Literal, new string[] {
 
 			// This isn't comprehensive but should cover most languages.
 

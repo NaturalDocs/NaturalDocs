@@ -5,7 +5,7 @@
  * A generic sorted lookup table for mapping strings to other objects.  This is preferable to a 
  * SortedDictionary<string, object> class because
  * 
- * - It has case sensitivity and Unicode normalization flags.
+ * - It can apply the normalizations in <KeySettings>.
  * - Reading non-existent keys returns null instead of throwing an exception.
  * - Using <Add()> on a preexisting key overwrites the value instead of throwing an exception.
  * 
@@ -28,20 +28,18 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: SortedStringTable
 		 * Creates an empty table using the default string comparer.
 		 */
-		public SortedStringTable (bool ignoreCase, bool normalizeUnicode) : base()
+		public SortedStringTable (KeySettings keySettings = KeySettings.Literal) : base()
 			{
-			this.ignoreCase = ignoreCase;
-			this.normalizeUnicode = normalizeUnicode;
+			this.keySettings = keySettings;
 			}
 			
 			
 		/* Function: SortedStringTable
 		 * Creates an empty table with a custom string comparer.
 		 */
-		public SortedStringTable (bool ignoreCase, bool normalizeUnicode, IComparer<string> comparer) : base(comparer)
+		public SortedStringTable (IComparer<string> comparer, KeySettings keySettings = KeySettings.Literal) : base(comparer)
 			{
-			this.ignoreCase = ignoreCase;
-			this.normalizeUnicode = normalizeUnicode;
+			this.keySettings = keySettings;
 			}
 			
 			
@@ -51,7 +49,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		new public void Add (string key, ObjectType value)
 			{
 			// We do this so it doesn't throw an exception if the value already exists.  The overloaded operator will handle
-			// the flags.
+			// keySettings.
 			this[key] = value;
 			}
 			
@@ -62,7 +60,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 */
 		new public bool Remove (string key)
 			{
-			return base.Remove( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			return base.Remove( key.NormalizeKey(keySettings) );
 			}
 			
 			
@@ -74,7 +72,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			if (key == null)
 				{  return false;  }
 			
-			return base.ContainsKey( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			return base.ContainsKey( key.NormalizeKey(keySettings) );
 			}
 			
 			
@@ -91,7 +89,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 					
 				// We do this to make it so it doesn't throw an exception if the key doesn't exist.
 				ObjectType value;
-				bool success = TryGetValue( key.NormalizeKey(ignoreCase, normalizeUnicode), out value);
+				bool success = TryGetValue( key.NormalizeKey(keySettings), out value);
 				
 				if (success)
 					{  return value;  }
@@ -100,7 +98,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 				}
 			set
 				{  
-				base[ key.NormalizeKey(ignoreCase, normalizeUnicode) ] = value;  
+				base[ key.NormalizeKey(keySettings) ] = value;  
 				}
 			}
 						
@@ -110,15 +108,10 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		// __________________________________________________________________________
 		
 			
-		/* var: ignoreCase
-		 * Whether the table has case sensitive keys.
+		/* var: keySettings
+		 * Which normalizations to apply to the keys.
 		 */
-		protected bool ignoreCase;
-		
-		/* var: normalizeUnicode
-		 * Whether the table uses Unicode normalization for its keys.
-		 */
-		protected bool normalizeUnicode;
+		protected KeySettings keySettings;
 		
 		}
 	}

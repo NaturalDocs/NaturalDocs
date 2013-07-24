@@ -101,7 +101,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				}
 			else
 				{
-				keywordSegments = new StringTable<NumberSet>(false, false);
+				keywordSegments = new StringTable<NumberSet>(KeySettingsForKeywordSegmentIDs);
 				hasBinaryFile = false;
 				}
 
@@ -209,7 +209,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			// Convert the topics into entries and sort them by keyword
 
-			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>(false, false);
+			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>();
 
 			foreach (var topic in topics)
 				{
@@ -321,7 +321,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		 */
 		public static bool LoadBinaryFile (Path filename, out StringTable<IDObjects.NumberSet> keywordSegments)
 			{
-			keywordSegments = new StringTable<IDObjects.NumberSet>(false, false);
+			keywordSegments = new StringTable<IDObjects.NumberSet>(KeySettingsForKeywordSegmentIDs);
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -603,6 +603,13 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			{
 			// We don't care about links.
 			}
+
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+		protected const KeySettings KeySettingsForKeywordSegmentIDs = KeySettings.Literal;
 
 
 

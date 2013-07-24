@@ -72,7 +72,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			// Build menu files
 
-			StringTable<IDObjects.NumberSet> outputFiles = new StringTable<IDObjects.NumberSet>(false, false);
+			StringTable<IDObjects.NumberSet> outputFiles = new StringTable<IDObjects.NumberSet>();
 
 			if (RootFileMenu != null)
 				{  

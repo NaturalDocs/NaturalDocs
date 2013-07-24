@@ -241,21 +241,9 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 		
-		/* Constants: Tolerance Constants
-		 * 
-		 * LanguageNamesIgnoreCase - Whether language names ignore case.
-		 * LanguageNamesAreNormalized - Whether Unicode normalization is applied to language names.
-		 * ExtensionsIgnoreCase - Whether file extensions ignore case.
-		 * ExtensionsAreNormalized - Whether Unicode normalization is applied to file extensions.
-		 * ShebangStringsIgnoreCase - Whether shebang strings ignore case.
-		 * ShebangStringsAreNormalized - Whether Unicode normalization is applied to shebang strings.
-		 */
-		public const bool LanguageNamesIgnoreCase = true;
-		public const bool LanguageNamesAreNormalized = true;
-		public const bool ExtensionsIgnoreCase = true;
-		public const bool ExtensionsAreNormalized = false;
-		public const bool ShebangStringsIgnoreCase = true;
-		public const bool ShebangStringsAreNormalized = false;		 
+		public const KeySettings KeySettingsForLanguageName = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
+		public const KeySettings KeySettingsForExtensions = KeySettings.IgnoreCase;
+		public const KeySettings KeySettingsForShebangStrings = KeySettings.IgnoreCase;
 		 
 		 
 		
@@ -267,11 +255,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 		 */
 		public Manager ()
 			{
-			languages = new IDObjects.Manager<Language>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized, false);
-			aliases = new StringTable<Language>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized);
-			extensions = new StringTable<Language>(ExtensionsIgnoreCase, ExtensionsAreNormalized);
-			shebangStrings = new SortedStringTable<Language>(ShebangStringsIgnoreCase, ShebangStringsAreNormalized,
-																					new ShebangStringComparer());
+			languages = new IDObjects.Manager<Language>(KeySettingsForLanguageName, false);
+			aliases = new StringTable<Language>(KeySettingsForLanguageName);
+			extensions = new StringTable<Language>(KeySettingsForExtensions);
+			shebangStrings = new SortedStringTable<Language>(new ShebangStringComparer(), KeySettingsForShebangStrings);
 			
 			predefinedLanguages = new Language[4];
 			
@@ -429,7 +416,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				
 			// Combine the ignored extensions.
 			
-			StringSet ignoredExtensions = new StringSet(ExtensionsIgnoreCase, ExtensionsAreNormalized);
+			StringSet ignoredExtensions = new StringSet(KeySettingsForExtensions);
 			
 			foreach (string extension in ignoredSystemExtensions)
 				{  ignoredExtensions.Add(extension);  }
@@ -1001,7 +988,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			fileLanguages = new List<ConfigFileLanguage>();
 			fileIgnoredExtensions = new List<string>();
 			StringTable<ConfigFileLanguage> fileLanguageNames = 
-				new StringTable<ConfigFileLanguage>(LanguageNamesIgnoreCase, LanguageNamesAreNormalized);
+				new StringTable<ConfigFileLanguage>(KeySettingsForLanguageName);
 			int previousErrorCount = errorList.Count;
 
 			using (ConfigFile file = new ConfigFile())

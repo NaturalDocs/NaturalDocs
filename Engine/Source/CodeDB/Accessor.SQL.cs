@@ -1408,7 +1408,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
 																												out parentheses);
 
-				alternateEndingSymbols = new StringSet(false, false);
+				alternateEndingSymbols = new StringSet();
 
 				foreach (LinkInterpretation linkInterpretation in linkInterpretations)
 					{

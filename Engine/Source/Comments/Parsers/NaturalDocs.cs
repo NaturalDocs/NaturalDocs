@@ -3174,7 +3174,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					if (identifier == "set")
 						{
 						string nsValue = value.RemoveWhitespace();
-						StringSet set = new StringSet(true, true);
+						StringSet set = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
 						bool urlProtocol = false;
 						
 						try
@@ -3218,7 +3218,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 					
 					else if (identifier == "table")
 						{
-						StringTable<byte> table = new StringTable<byte>(true, true);
+						StringTable<byte> table = new StringTable<byte>(KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
 						System.Type type = null;
 
 						// We take the spaces out anyway because if one's not defined, the error message will use the
@@ -3438,7 +3438,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						
 					for (byte i = 0; i < numberOfSets; i++)
 						{
-						StringSet set = new StringSet(true, true);
+						StringSet set = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
 						LoadBinaryFile_GetSet(file, set);
 						binarySets[i] = set;
 						}
@@ -3452,7 +3452,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				
 					for (byte i = 0; i < numberOfTables; i++)
 						{
-						StringTable<byte> table = new StringTable<byte>(true, true);
+						StringTable<byte> table = new StringTable<byte>(KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);
 						LoadBinaryFile_GetTable(file, table);
 						binaryTables[i] = table;
 						}
@@ -3484,10 +3484,10 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				binaryConversionLists = new List<string>[ (int)ConversionListIndex.MaxValue + 1 ];
 				
 				for (byte i = 0; i <= (byte)SetIndex.MaxValue; i++)
-					{  binarySets[i] = new StringSet(true, true);  }
+					{  binarySets[i] = new StringSet (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);  }
 					
 				for (byte i = 0; i <= (byte)TableIndex.MaxValue; i++)
-					{  binaryTables[i] = new StringTable<byte>(true, true);  }
+					{  binaryTables[i] = new StringTable<byte> (KeySettings.IgnoreCase | KeySettings.NormalizeUnicode);  }
 					
 				for (byte i = 0; i <= (byte)ConversionListIndex.MaxValue; i++)
 					{  binaryConversionLists[i] = new List<string>();  }

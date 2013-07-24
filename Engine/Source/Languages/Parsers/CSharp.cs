@@ -2969,7 +2969,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* var: Keywords
 		 */
-		static protected StringSet Keywords = new StringSet(false, false, new string[] {
+		static protected StringSet Keywords = new StringSet (KeySettings.Literal, new string[] {
 
 			// Listed in the C# reference's keywords section
 
@@ -3011,7 +3011,7 @@ namespace GregValure.NaturalDocs.Engine.Languages.Parsers
 
 		/* var: BuiltInTypes
 		 */
-		static protected StringSet BuiltInTypes = new StringSet(false, false, new string[] {
+		static protected StringSet BuiltInTypes = new StringSet (KeySettings.Literal, new string[] {
 
 			"byte", "sbyte", "int", "uint", "short", "ushort", "long", "ulong", "float", "double", "decimal",
 			"char", "string", "bool", "void", "object", "dynamic"

@@ -51,7 +51,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 			{
 			source = new Tokenizer(javascript);
 			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(false, false);
+			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
 
 
 			// Search comments for sections to include in the output and substitution definitions.
@@ -136,7 +136,7 @@ namespace GregValure.NaturalDocs.Engine.Output
 			{
 			source = new Tokenizer(css);
 			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(false, false);
+			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
 
 
 			// Search comments for sections to include in the output and substitution definitions.
@@ -508,6 +508,12 @@ namespace GregValure.NaturalDocs.Engine.Output
 				return false;
 				}
 			}
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+		protected const Collections.KeySettings KeySettingsForSubstitutions = KeySettings.Literal;
 
 
 		// Group: Variables

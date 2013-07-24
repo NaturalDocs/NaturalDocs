@@ -147,7 +147,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 			styles = new List<HTMLStyle>();
-			StringSet definedStyles = new StringSet( Config.Manager.IgnoreCaseInPaths, false );
+			StringSet definedStyles = new StringSet(Config.Manager.KeySettingsForPaths);
 
 			if (!Start_LoadStyles(styleName, stylePath, styles, definedStyles, errorList))
 				{  return false;  }

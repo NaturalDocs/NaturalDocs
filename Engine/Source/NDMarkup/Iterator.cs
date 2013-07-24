@@ -63,7 +63,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 		 */
 		static Iterator ()
 			{
-			TagNameToElementType = new Collections.StringTable<ElementType>(false, false);
+			TagNameToElementType = new Collections.StringTable<ElementType>();
 
 			TagNameToElementType.Add("p", ElementType.ParagraphTag);
 			TagNameToElementType.Add("h", ElementType.HeadingTag);
@@ -81,7 +81,7 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 			TagNameToElementType.Add("u", ElementType.UnderlineTag);
 			TagNameToElementType.Add("link", ElementType.LinkTag);
 
-			EntityCharToElementType = new Collections.StringTable<ElementType>(false, false);
+			EntityCharToElementType = new Collections.StringTable<ElementType>();
 
 			EntityCharToElementType.Add("lt", ElementType.LTEntityChar);
 			EntityCharToElementType.Add("gt", ElementType.GTEntityChar);

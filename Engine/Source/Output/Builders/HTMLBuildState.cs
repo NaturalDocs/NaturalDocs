@@ -84,9 +84,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				classFilesToRebuild = new IDObjects.NumberSet();
 				classFilesWithContent = new IDObjects.NumberSet();
-				searchIndexKeywordSegmentsToRebuild = new StringSet(false, false);
-				foldersToCheckForDeletion = new StringSet(Config.Manager.IgnoreCaseInPaths, false);
-				usedMenuDataFiles = new StringTable<NumberSet>(false, false);
+				searchIndexKeywordSegmentsToRebuild = new StringSet();
+				foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
+				usedMenuDataFiles = new StringTable<NumberSet>();
 				}
 			else
 				{
@@ -149,15 +149,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					buildState.classFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.sourceFilesWithContent = binaryFile.ReadNumberSet();
 					buildState.classFilesWithContent = binaryFile.ReadNumberSet();
-					buildState.searchIndexKeywordSegmentsToRebuild = binaryFile.ReadStringSet(false, false);
-					buildState.foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.IgnoreCaseInPaths, false);
+					buildState.searchIndexKeywordSegmentsToRebuild = binaryFile.ReadStringSet();
+					buildState.foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.KeySettingsForPaths);
 
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 					// ...
 					// [String: null]
 
-					buildState.usedMenuDataFiles = new StringTable<IDObjects.NumberSet>(false, false);
+					buildState.usedMenuDataFiles = new StringTable<IDObjects.NumberSet>();
 					string menuDataFileType = binaryFile.ReadString();
 
 					while (menuDataFileType != null)

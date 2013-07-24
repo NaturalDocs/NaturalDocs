@@ -285,7 +285,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 		 * A <StringSet> of the supported extensions for files associated with styles.  This does not include image extensions; get
 		 * those from <Files.Manager.ImageExtensions> instead.
 		 */
-		static public StringSet StyleExtensions = new StringSet (true, false, new string[] { "css", "js", "json" });
+		static public StringSet StyleExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json" });
 
 		}
 

@@ -904,6 +904,21 @@ namespace GregValure.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: KeySettingsForPaths
+		 * The <Collections.KeySettings> that should be used when using paths as a key.  It will apply <IgnoreCaseInPaths>.
+		 */
+		static public Collections.KeySettings KeySettingsForPaths
+			{
+			get
+				{
+				if (IgnoreCaseInPaths)
+					{  return Collections.KeySettings.IgnoreCase;  }
+				else
+					{  return Collections.KeySettings.Literal;  }
+				}
+			}
+
+
 			
 		// Group: Variables
 		// __________________________________________________________________________

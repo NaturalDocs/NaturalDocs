@@ -124,7 +124,7 @@ namespace GregValure.NaturalDocs.Engine
 			translationsFolder = System.IO.Path.GetDirectoryName(Path.GetExecutingAssembly()) +
 													System.IO.Path.DirectorySeparatorChar + "Translations";
 											  
-			translations = new StringTable<StringToStringTable>(false, false);
+			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
 			translationsLock = new System.Threading.ReaderWriterLock();
 			
 			pluralFormatterRegex = new Engine.Regex.Locale.PluralFormatter();
@@ -346,7 +346,7 @@ namespace GregValure.NaturalDocs.Engine
 						}
 					else
 						{
-						translations[moduleLocaleString] = new Collections.StringToStringTable(false, false);
+						translations[moduleLocaleString] = new Collections.StringToStringTable(KeySettingsForIdentifiers);
 						}			
 					}
 				
@@ -356,7 +356,7 @@ namespace GregValure.NaturalDocs.Engine
 				else using (System.IO.StreamReader translationFileReader = 
 								new System.IO.StreamReader(translationFileName, System.Text.Encoding.UTF8, true))
 					{
-					StringToStringTable translation = new StringToStringTable(false, false);
+					StringToStringTable translation = new StringToStringTable(KeySettingsForIdentifiers);
 					
 					string line, originalLine;
 					string identifier = "";  // Not necessary to initialize, just need to shut the compiler up.
@@ -442,6 +442,14 @@ namespace GregValure.NaturalDocs.Engine
 				translationsLock.DowngradeFromWriterLock(ref lockCookie);
 				}
 			}
+
+
+
+		// Group: Constants
+		// __________________________________________________________________________
+
+		private const Collections.KeySettings KeySettingsForIdentifiers = KeySettings.Literal;
+		private const Collections.KeySettings KeySettingsForLocaleNames = KeySettings.Literal;
 
 
 

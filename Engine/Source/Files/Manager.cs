@@ -115,9 +115,9 @@ namespace GregValure.NaturalDocs.Engine.Files
 			{
 			fileSources = new List<FileSource>();
 			filters = new List<Filter>();
-			claimedFolderPrefixes = new StringSet(true, false);			
+			claimedFolderPrefixes = new StringSet (KeySettings.IgnoreCase);			
 
-			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false, false );
+			files = new IDObjects.Manager<File>(Config.Manager.KeySettingsForPaths, false);
 			unprocessedChangedFileIDs = new IDObjects.NumberSet();
 			unprocessedDeletedFileIDs = new IDObjects.NumberSet();
 			claimedFileIDs = new IDObjects.NumberSet();
@@ -1422,7 +1422,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		 */
 		public static bool LoadBinaryFile (Path filename, out IDObjects.Manager<File> files)
 			{
-			files = new IDObjects.Manager<File>( Config.Manager.IgnoreCaseInPaths, false, false );
+			files = new IDObjects.Manager<File>(Config.Manager.KeySettingsForPaths, false );
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -1704,7 +1704,7 @@ namespace GregValure.NaturalDocs.Engine.Files
 		/* var: ImageExtensions
 		 * A <StringSet> of the supported image extensions.
 		 */
-		static public StringSet ImageExtensions = new StringSet (true, false, new string[] { "gif", "jpg", "jpeg", "png", "bmp" });
+		static public StringSet ImageExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "gif", "jpg", "jpeg", "png", "bmp" });
 
 		}
 	}

@@ -26,7 +26,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: StringToStringTable
 		 * Creates an empty table.
 		 */
-		public StringToStringTable (bool ignoreCase, bool normalizeUnicode) : base(ignoreCase, normalizeUnicode)
+		public StringToStringTable (KeySettings keySettings = KeySettings.Literal) : base(keySettings)
 			{
 			}
 			
@@ -34,7 +34,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: StringToStringTable (strings)
 		 * Creates a table initialized with the key value pairs in the passed array.
 		 */
-		public StringToStringTable (bool ignoreCase, bool normalizeUnicode, params string[] keyvalues) : base(ignoreCase, normalizeUnicode)
+		public StringToStringTable (KeySettings keySettings, params string[] keyvalues) : base(keySettings)
 			{
 			if (keyvalues.Length % 2 != 0)
 				{  throw new Exceptions.ArrayDidntHaveEvenLength("keyvalues");  }

@@ -5,7 +5,7 @@
  * A general lookup table for tracking the existence of strings in a set.  This is preferable to a HashSet class 
  * because
  * 
- * - It supports case sensitivity and Unicode normalization flags.
+ * - It can apply the normalizations in <KeySettings>.
  * - It has a constructor that allows you to initialize it with an array of strings.
  * 
  */
@@ -31,20 +31,18 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: StringSet
 		 * Creates an empty set.
 		 */
-		public StringSet (bool ignoreCase, bool normalizeUnicode) : base()
+		public StringSet (KeySettings keySettings = KeySettings.Literal) : base()
 			{
-			this.ignoreCase = ignoreCase;
-			this.normalizeUnicode = normalizeUnicode;
+			this.keySettings = keySettings;
 			}
 			
 		
 		/* Function: StringSet
 		 * Creates a set with the passed strings as members.
 		 */
-		public StringSet (bool ignoreCase, bool normalizeUnicode, params string[] members)
+		public StringSet (KeySettings keySettings, params string[] members)
 			{
-			this.ignoreCase = ignoreCase;
-			this.normalizeUnicode = normalizeUnicode;
+			this.keySettings = keySettings;
 			
 			foreach (string member in members)
 				{  Add(member);  }
@@ -56,7 +54,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 */
 		new public void Add (string key)
 			{
-			base.Add( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			base.Add( key.NormalizeKey(keySettings) );
 			}
 			
 			
@@ -65,7 +63,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 */
 		new public bool Remove (string key)
 			{
-			return base.Remove( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			return base.Remove( key.NormalizeKey(keySettings) );
 			}
 		
 			
@@ -77,7 +75,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 			if (key == null)
 				{  return false;  }
 				
-			return base.Contains( key.NormalizeKey(ignoreCase, normalizeUnicode) );
+			return base.Contains( key.NormalizeKey(keySettings) );
 			}
 
 
@@ -159,9 +157,9 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		/* Function: FromBinaryFile
 		 * Reads the contents of the string set from the passed binary file.
 		 */
-		static public StringSet FromBinaryFile (BinaryFile binaryFile, bool ignoreCase, bool normalizeUnicode)
+		static public StringSet FromBinaryFile (BinaryFile binaryFile, KeySettings keySettings = KeySettings.Literal)
 			{
-			StringSet stringSet = new StringSet(ignoreCase, normalizeUnicode);
+			StringSet stringSet = new StringSet(keySettings);
 
 			// [String: member]
 			// [String: member]
@@ -195,15 +193,10 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		// __________________________________________________________________________
 
 			
-		/* var: ignoreCase
-		 * Whether the set is case sensitive.
+		/* var: keySettings
+		 * Which normalizations to apply to the keys.
 		 */
-		protected bool ignoreCase;
-		
-		/* var: normalizeUnicode
-		 * Whether the set uses Unicode normalization.
-		 */
-		protected bool normalizeUnicode;
+		protected KeySettings keySettings;
 
 		}
 			
@@ -223,9 +216,9 @@ namespace GregValure.NaturalDocs.Engine.Collections
 		 * An extension method to <BinaryFile> which reads a string set from it.  Call with 
 		 * "stringSet = binaryFile.ReadStringSet(ignoreCase, normalizeUnicode);"
 		 */
-		static public StringSet ReadStringSet (this BinaryFile binaryFile, bool ignoreCase, bool normalizeUnicode)
+		static public StringSet ReadStringSet (this BinaryFile binaryFile, KeySettings keySettings = KeySettings.Literal)
 			{
-			return StringSet.FromBinaryFile(binaryFile, ignoreCase, normalizeUnicode);
+			return StringSet.FromBinaryFile(binaryFile, keySettings);
 			}
 
 		/* Function: WriteStringSet

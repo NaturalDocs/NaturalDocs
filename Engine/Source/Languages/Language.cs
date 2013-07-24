@@ -563,7 +563,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return false;  }
 			else
 				{
-				Collections.StringSet array1set = new Collections.StringSet(false, false);
+				Collections.StringSet array1set = new Collections.StringSet();
 				
 				foreach (string array1item in array1)
 					{  array1set.Add(array1item);  }
@@ -592,7 +592,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 				{  return false;  }
 			else
 				{
-				Collections.StringSet array1set = new Collections.StringSet(false, false);
+				Collections.StringSet array1set = new Collections.StringSet();
 				
 				for (int i = 0; i < array1.Length; i += 2)
 					{  array1set.Add( array1[i] + array1[i+1] );  }

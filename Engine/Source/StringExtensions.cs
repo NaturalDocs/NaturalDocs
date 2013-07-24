@@ -67,15 +67,13 @@ namespace GregValure.NaturalDocs.Engine
 			}
 		
 		/* Function: NormalizeKey
-		 * Converts the string to a version suitable for use as the key in a table according to the passed parameters.  If 
-		 * ignoreCase is set it will be converted to lowercase.  If normalizeUnicode is set Unicode compatibility normalization 
-		 * will be applied (FormKC).
+		 * Normalizes a string key by applying <Collections.KeySettings>.
 		 */
-		public static string NormalizeKey (this string key, bool ignoreCase, bool normalizeUnicode)
+		public static string NormalizeKey (this string key, Collections.KeySettings keySettings)
 			{
-			if (ignoreCase)
+			if ((keySettings & Collections.KeySettings.IgnoreCase) != 0)
 				{  key = key.ToLower();  }
-			if (normalizeUnicode)
+			if ((keySettings & Collections.KeySettings.NormalizeUnicode) != 0)
 				{  key = key.Normalize(System.Text.NormalizationForm.FormKC);  }
 				
 			return key;

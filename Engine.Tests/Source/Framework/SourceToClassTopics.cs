@@ -77,7 +77,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		public void TestFolder (Path testFolder, Path projectConfigFolder = default(Path))
 			{
 			TestList allTests = new TestList();
-			StringSet expectedOutputFiles = new StringSet(false, false);
+			StringSet expectedOutputFiles = new StringSet();
 			TestEngine.Start(testFolder, projectConfigFolder);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.

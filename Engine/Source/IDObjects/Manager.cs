@@ -38,23 +38,21 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 		 * 
 		 * Parameters:
 		 * 
-		 *		ignoreCase - If set, object names will be compared in a case-insensitive manner.
-		 *		
-		 *		normalize - If set, object names will be compared with Unicode compatibility normalization applied (FormKC).
+		 *		keySettings - The <KeySettings> that should apply when referencing objects by name.
 		 *		
 		 *		sparse - If false, it assumes the manager will be handling objects with low and mostly consecutive ID numbers.
-		 *						This allows it to store them in an array where the index maps directly to the ID number, which is very
-		 *						fast.  However, if there are going to be large gaps in the IDs stored this will waste a lot of memory.
+		 *					This allows it to store them in an array where the index maps directly to the ID number, which is very
+		 *					fast.  However, if there are going to be large gaps in the IDs stored this will waste a lot of memory.
 		 *						
-		 *						If true, it assumes the manager will be handling objects with high and/or non-consecutive ID numbers
-		 *						with large gaps between the values.  This means it will store them in a sorted array and use a binary
-		 *						search for lookups and insertions.  This is slower but more memory efficient.
+		 *					If true, it assumes the manager will be handling objects with high and/or non-consecutive ID numbers
+		 *					with large gaps between the values.  This means it will store them in a sorted array and use a binary
+		 *					search for lookups and insertions.  This is slower but more memory efficient.
 		 */
-		public Manager (bool ignoreCase, bool normalize, bool sparse)
+		public Manager (KeySettings keySettings, bool sparse)
 			{
 			usedIDs = new IDObjects.NumberSet();
 			objectsByID = new List<IDObjectType>();
-			objectsByName = new StringTable<IDObjectType>(ignoreCase, normalize);
+			objectsByName = new StringTable<IDObjectType>(keySettings);
 			this.sparse = sparse;
 			}
 		

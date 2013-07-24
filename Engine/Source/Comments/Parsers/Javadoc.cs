@@ -1182,14 +1182,14 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 		// __________________________________________________________________________
 
 
-		public static StringSet BlockTags = new StringSet(false, false, 
+		public static StringSet BlockTags = new StringSet (KeySettings.Literal, 
 			"author", "deprecated", "exception", "param", "return", "see", "serial", "serialData", "serialField",
 			"since", "throws", "version");
 
-		public static StringSet InlineTags = new StringSet(false, false,
+		public static StringSet InlineTags = new StringSet (KeySettings.Literal,
 			"code", "docRoot", "inheritDoc", "link", "linkPlain", "literal", "value");
 
-		public static StringToStringTable EntityChars = new StringToStringTable(true, false,
+		public static StringToStringTable EntityChars = new StringToStringTable (KeySettings.Literal,
 			"&lt;", "<", "&gt;", ">", "&amp;", "&", "&quot;", "\"");
 
 		}

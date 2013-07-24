@@ -372,7 +372,7 @@ namespace GregValure.NaturalDocs.CLI
 			int originalErrorCount = errorList.Count;
 			
 			Engine.Collections.StringToStringTable synonyms = new Engine.Collections.StringToStringTable( 
-				false, false, // Case-insensitivity is handled elsewhere and we don't need normalization
+				Engine.Collections.KeySettings.Literal,  // Case-insensitivity is handled elsewhere and we don't need normalization
 				"input", "-i", "source", "-i", 
 				"output", "-o",
 				"excludeinput", "-xi", "excludesource", "-xi",
