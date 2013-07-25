@@ -161,14 +161,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				tabInformation.Append(',');
 
-				if (extraData.HashPath == null)
-					{  tabInformation.Append("undefined");  }
-				else
+				if (extraData.HashPath != null)
 					{
 					tabInformation.Append('"');
 					tabInformation.StringEscapeAndAppend(extraData.HashPath);
 					tabInformation.Append('"');
 					}
+				// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
 
 				tabInformation.Append(",\"");
 				tabInformation.StringEscapeAndAppend(extraData.DataFileName);
@@ -608,14 +607,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				if (menuEntry.CondensedTitles == null)
 					{
-					if (menuEntry.Title == null)
-						{  output.Append("undefined");  }
-					else
+					if (menuEntry.Title != null)
 						{
 						output.Append('"');
 						output.StringEscapeAndAppend(menuEntry.Title.ToHTML());
 						output.Append('"');
 						}
+					// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
 					}
 				else
 					{
@@ -716,14 +714,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					{  throw new Exception ("Don't know how to generate JSON for container \"" + menuEntry.Title + "\".");  }
 				#endif
 
-				if (hashPath == null)
-					{  output.Append("undefined");  }
-				else
+				if (hashPath != null)
 					{  
 					output.Append('"');
 					output.StringEscapeAndAppend(hashPath);
 					output.Append('"');
 					}
+				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
 
 				output.Append(',');
 

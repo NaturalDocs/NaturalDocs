@@ -14,7 +14,7 @@ _______________________________________________________________________________
 
 		> NDMenu.OnTabsLoaded([
 		>    [ "File", "Files", "File:Folder/", "files.js" ],
-		>    [ "Class", "Classes", undefined, "classes.js" ]
+		>    [ "Class", "Classes", , "classes.js" ]
 		>    ]);
 
 		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:

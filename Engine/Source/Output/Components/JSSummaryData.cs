@@ -325,8 +325,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					output.StringEscapeAndAppend( HTMLComponent.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
 					output.Append('"');
 					}
-				else
-					{  output.Append("undefined");  }
+				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
 
 				output.Append(",\"");
 				output.StringEscapeAndAppend( Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths) );
