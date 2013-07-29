@@ -95,6 +95,19 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 						}
 					}
 
+				// We don't want to count the angle brackets in "operator<string>" as parameters since this is the distinguishing part of
+				// the name.
+				if (index >= 0 && input[index] == '<')
+					{
+					int lookbehind = index - 1;
+
+					while (lookbehind > 0 && input[lookbehind] == ' ')
+						{  lookbehind--;  }
+
+					if (lookbehind >= 7 && string.Compare(input, lookbehind - 7, "operator", 0, 8, true) == 0)
+						{  return -1;  }
+					}
+
 				// We want index to be greater than zero so we don't include cases where the entire title is surrounded
 				// by braces.
 				if (braces.Count == 0 && index > 0)
