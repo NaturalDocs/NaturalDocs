@@ -20,31 +20,32 @@ using GregValure.NaturalDocs.Engine.Topics;
 
 namespace GregValure.NaturalDocs.Engine.SearchIndex
 	{
-	public class TopicEntry
+	public class TopicEntry : Entry
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		public TopicEntry (Topic topic)
+		public TopicEntry (Topic topic) : base ()
 			{
 			this.topic = topic;
 			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
 			var language = Engine.Instance.Languages.FromID(topic.LanguageID);
 
 
-			// We don't want to include the parameters in the index.  Multiple functions that differ only by parameter
-			// will be treated as one entry.
+			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that 
+			// differ only by parameter will be treated as one entry.
 
 			string title, ignore;
 			ParameterString.SplitFromParameters(topic.Title, out title, out ignore);
 			title = title.TrimEnd();
 
 
-			// Figure out any extra scope text that should appear by comparing the fully resolved symbol to one generated
-			// from the title.  We want to use the title as written for indexing rather than having the extra normalization that
-			// occurs in SymbolStrings applied.
+			// Figure out the extra scope text that should be added to the title to make it a fully resolved symbol.  We do this by
+			// comparing the symbol from the topic to one generated from the title.  We don't just use the symbol to begin with 
+			// because we want to show the title as written; there's some normalization that occurs when generating symbols
+			// that we want to bypass.
 
 			string extraScope = null;
 
@@ -55,179 +56,122 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			if (symbolString.Length > titleSymbolString.Length)
 				{
+				// We have to go by IndexOf rather than EndsWith because operator<string> will have <string> cut off as a parameter. xxx
+				int titleIndex = symbolString.IndexOf(titleSymbolString);
+
 				#if DEBUG
-				if (symbolString.IndexOf(titleSymbolString) == -1)
+				if (titleIndex == -1)
 					{  
 					throw new Exception("Title symbol string \"" + titleSymbolString + "\" isn't part of symbol string \"" + symbolString + "\" which " +
 													"was assumed when creating a search index entry.");  
 					}
 				#endif
 
-				extraScope = symbolString.Substring(0, symbolString.Length - titleSymbolString.Length);
+				extraScope = symbolString.Substring(0, titleIndex);
 				}
 
 
 			displayName = extraScope + title;
-			normalizedName = NormalizeName(displayName);
+			endOfDisplayNameQualifiers = EndOfQualifiers(displayName, topicType);
+
+			searchText = Normalize(displayName);
+			endOfSearchTextQualifiers = EndOfQualifiers(searchText, topicType);
+
 			keywords = new List<string>();
 
-			if (topicType.Flags.Code)
-				{  AddKeywordsFromLastSegment( NormalizeSeparators(extraScope + title), '.');  }
-			else if (topicType.Flags.File)
-				{  AddKeywordsFromLastSegment( NormalizeSeparators(title), '/');  }
-			else // documentation
-				{  AddKeywordsFromSegment( NormalizeSeparators(title) );  }
+			if (endOfDisplayNameQualifiers == 0)
+				{  AddKeywords(displayName);  }
+			else
+				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers));  }
 			}
 
 
-
-		// Group: Static Functions
-		// __________________________________________________________________________
-
-
-		/* Function: NormalizeSeparators
-		 * 
-		 * Converts all separators to a standardized form that's easier to search.
-		 * 
-		 * - :: and -> are converted to . regardless of what the language's member operator is.  It also doesn't matter if
-		 *   they appear in non-code topics or not.
-		 * - \ is converted to / regardless of what the platform's path separator is.  It also doesn't matter if they appear in
-		 *   non-file topics or not.
+		/* Function: EndOfQualifiers
 		 */
-		static public string NormalizeSeparators (string text)
+		protected int EndOfQualifiers (string title, TopicTypes.TopicType topicType)
 			{
-			text = text.Replace("::", ".");
-			text = text.Replace("->", ".");
-			text = text.Replace('\\', '/');
+			MatchCollection splitSymbols = null;
 
-			return text;
-			}
+			if (topicType.Flags.File == true)
+				{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
+			else if (topicType.Flags.Code == true)
+				{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
+			// Leave it as null for documentation comments
 
-
-		/* Function: NormalizeName
-		 * 
-		 * Converts a display name to a standardized form that's easier to search.
-		 * 
-		 * - Text is converted to lowercase.
-		 * - Whitespace is condensed.
-		 * - Spaces that don't separate alphanumeric and underscore characters are removed.
-		 * - Separators are normalized with <NormalizeSeparators()>.
-		 * - Leading separators are removed.
-		 */
-		static public string NormalizeName (string text)
-			{
-			text = text.ToLower();
-			text = text.CondenseWhitespace().Trim();
+			if (splitSymbols == null || splitSymbols.Count == 0)
+				{  return 0;  }
 
 
-			// Remove spaces unless between two alphanumeric/underscore characters
+			// Don't count separators on the end of the string.
 
-			int spaceIndex = text.IndexOf(' ');
+			int splitCount = splitSymbols.Count;
+			int endOfString = title.Length;
 
-			while (spaceIndex != -1)
+			for (int i = splitCount - 1; i >= 0; i--)
 				{
-				char charBefore = text[spaceIndex - 1];
-				char charAfter = text[spaceIndex + 1];
+				int afterSplitSymbolIndex = splitSymbols[i].Index + splitSymbols[i].Length;
 
-				bool alphanumBefore = ( (charBefore >= 'a' && charBefore <= 'z') ||
-												 (charBefore >= 'A' && charBefore <= 'Z') ||
-												 (charBefore >= '0' && charBefore <= '9') ||
-												 charBefore == '_' );
-				bool alphanumAfter = ( (charAfter >= 'a' && charAfter <= 'z') ||
-												 (charAfter >= 'A' && charAfter <= 'Z') ||
-												 (charAfter >= '0' && charAfter <= '9') ||
-												 charAfter == '_' );
-
-				if (alphanumBefore && alphanumAfter)
-					{  spaceIndex = text.IndexOf(' ', spaceIndex + 1);  }
-				else
+				if (afterSplitSymbolIndex == endOfString)
 					{
-					text = text.Substring(0, spaceIndex) + text.Substring(spaceIndex + 1);
-					spaceIndex = text.IndexOf(' ', spaceIndex);
-					}
-				}
-
-
-			text = NormalizeSeparators(text);
-
-
-			// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
-
-			int i = 0;
-			while (i < text.Length && (text[i] == '.' || text[i] == '/'))
-				{  i++;  }
-
-			if (i > 0)
-				{  text = text.Substring(i);  }
-
-			return text;
-			}
-
-
-		/* Function: AddKeywordsFromLastSegment
-		 * Adds keywords to the list from the last segment of text as determined by the passed separator.  Returns
-		 * how many were added.  The text must already have normalized separators.
-		 */
-		protected int AddKeywordsFromLastSegment (string normalizedSeparatorText, char normalizedSeparator)
-			{
-			#if DEBUG
-			if (normalizedSeparatorText != NormalizeSeparators(normalizedSeparatorText))
-				{  throw new Exception("The text passed to AddKeywordsFromLastSegment() must have its separators already normalized.");  }
-			#endif
-
-			int lastSeparator = normalizedSeparatorText.LastIndexOf(normalizedSeparator, normalizedSeparatorText.Length - 1);
-
-			for (;;)
-				{
-				if (lastSeparator == -1)
-					{  
-					return AddKeywordsFromSegment(normalizedSeparatorText, 0);
+					splitCount--;
+					endOfString = splitSymbols[i].Index;
 					}
 				else
 					{  
-					int count = AddKeywordsFromSegment(normalizedSeparatorText, lastSeparator + 1);
+					var nonWhitespaceCharsMatch = NonWhitespaceCharsRegex.Match(title, afterSplitSymbolIndex, endOfString - afterSplitSymbolIndex);
 
-					if (count > 0 || lastSeparator == 0)
-						{  return count;  }
+					if (nonWhitespaceCharsMatch.Success)
+						{  break;  }
 					else
-						{  lastSeparator = normalizedSeparatorText.LastIndexOf(normalizedSeparator, lastSeparator - 1);  }
+						{
+						splitCount--;
+						endOfString = splitSymbols[i].Index;
+						}
 					}
 				}
+
+
+			// Now the result is after the last separator that we didn't ignore.
+
+			if (splitCount == 0)
+				{  return 0;  }
+			else
+				{  return splitSymbols[ splitSymbols.Count - 1 ].Index + splitSymbols[ splitSymbols.Count - 1 ].Length;  }
 			}
 
 
-		/* Function: AddKeywordsFromSegment
-		 * Adds keywords to the list from the passed segment of text.  Returns how many were added.  The text must already have
-		 * normalized separators.
+		/* Function: AddKeywords
+		 * Adds keywords to the list from the passed segment of text.  Returns how many were added
 		 */
-		protected int AddKeywordsFromSegment (string normalizedSeparatorText, int startingIndex = 0)
+		protected int AddKeywords (string text)
 			{
-			#if DEBUG
-			if (normalizedSeparatorText != NormalizeSeparators(normalizedSeparatorText))
-				{  throw new Exception("The text passed to AddKeywordsFromSegment() must have its separators already normalized.");  }
-			#endif
+			text = NormalizeSeparatorsOnly(text);
+
+			// Remove the space in "operator <" so they don't appear as two keywords.
+			text = SpaceAfterOperatorKeywordRegex.Replace(text, "");
 
 			int count = 0;
+			int startingIndex = 0;
 
 			for (;;)
 				{
-				int nextIndex = normalizedSeparatorText.IndexOfAny(NormalizedKeywordSeparators, startingIndex);
+				int nextIndex = text.IndexOfAny(NormalizedKeywordSeparators, startingIndex);
 
 				if (nextIndex == -1)
 					{  break;  }
 
 				if (nextIndex > startingIndex)
 					{
-					keywords.Add(normalizedSeparatorText.Substring(startingIndex, nextIndex - startingIndex));
+					keywords.Add(text.Substring(startingIndex, nextIndex - startingIndex));
 					count++;
 					}
 
 				startingIndex = nextIndex + 1;
 				}
 
-			if (startingIndex < normalizedSeparatorText.Length)
+			if (startingIndex < text.Length)
 				{
-				keywords.Add(normalizedSeparatorText.Substring(startingIndex));
+				keywords.Add(text.Substring(startingIndex));
 				count++;
 				}
 
@@ -259,9 +203,19 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{  return displayName;  }
 			}
 
-		/* Propety: NormalizedName
+		/* Property: EndOfDisplayNameQualifiers
+		 * The index into <DisplayName> where the qualifiers end and the main symbol begins.  In "Package::Package::Name"
+		 * the value will be 18, the index of "N".  If the name doesn't have qualifiers this will be zero.
+		 */
+		public int EndOfDisplayNameQualifiers
+			{
+			get
+				{  return endOfDisplayNameQualifiers;  }
+			}
+
+		/* Propety: SearchText
 		 * 
-		 * The full name of the entry normalized for matching, such as "package.package.name".
+		 * The full name of the entry normalized for search, such as "package.package.name".
 		 * 
 		 * Normalization:
 		 * - All characters are converted to lowercase, regardless of whether the language is case sensitive or not.
@@ -269,15 +223,26 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		 * - \ is converted to / regardless of what the platform's path separator is.
 		 * - ::, ->, and \ are converted everywhere, not just in code and file topics respectively.
 		 */
-		public string NormalizedName
+		public string SearchText
 			{
 			get
-				{  return normalizedName;  }
+				{  return searchText;  }
+			}
+
+		/* Property: EndOfSearchTextQualifiers
+		 * The index into <SearchText> where the qualifiers end and the main symbol begins.  In "package.package.name"
+		 * the value will be 16, the index of "n".  If the search text doesn't have qualifiers this will be zero.
+		 */
+		public int EndOfSearchTextQualifiers
+			{
+			get
+				{  return endOfSearchTextQualifiers;  }
 			}
 
 		/* Property: Keywords
 		 * A list of the keywords this entry should appear under.  They are case sensitive regardless of whether the language
-		 * is or not.
+		 * is or not.  Note that keywords are not generated for qualifiers, only the main part of the symbol.  For
+		 * "Package.Package.Name" the only keyword will be "Name".
 		 */
 		public List<string> Keywords
 			{
@@ -292,7 +257,9 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 		protected Topic topic;
 		protected string displayName;
-		protected string normalizedName;
+		protected int endOfDisplayNameQualifiers;
+		protected string searchText;
+		protected int endOfSearchTextQualifiers;
 		protected List<string> keywords;
 
 
@@ -301,5 +268,11 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		// __________________________________________________________________________
 		
 		private static char[] NormalizedKeywordSeparators = { ' ', '.', '/' };
+
+		static protected Regex.FileSplitSymbols FileSplitSymbolsRegex = new Regex.FileSplitSymbols();
+		static protected Regex.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.CodeSplitSymbols();
+		static protected Regex.NonWhitespaceChars NonWhitespaceCharsRegex =  new Regex.NonWhitespaceChars();
+		static protected Regex.SpaceAfterOperatorKeyword SpaceAfterOperatorKeywordRegex = new Regex.SpaceAfterOperatorKeyword();
+
 		}
 	}

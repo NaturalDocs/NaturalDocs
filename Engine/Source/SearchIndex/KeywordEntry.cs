@@ -17,14 +17,14 @@ using System.Collections.Generic;
 
 namespace GregValure.NaturalDocs.Engine.SearchIndex
 	{
-	public class KeywordEntry
+	public class KeywordEntry : Entry
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		public KeywordEntry (string keyword)
+		public KeywordEntry (string keyword) : base ()
 			{
 			this.keyword = keyword;
 			this.topicEntries = new List<TopicEntry>();
@@ -43,6 +43,15 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			{
 			get
 				{  return keyword;  }
+			}
+
+		/* Property: SearchText
+		 * The search text associated with this entry, which is <Keyword> normalized for search.
+		 */
+		public string SearchText
+			{
+			get
+				{  return Normalize(keyword);  }
 			}
 
 		/* Property: TopicEntries
