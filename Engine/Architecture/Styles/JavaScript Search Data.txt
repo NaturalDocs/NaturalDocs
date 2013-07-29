@@ -32,33 +32,41 @@ _______________________________________________________________________________
 		> keywordSegmentType: prefix = 1, short = 2
 		>
 		> keyword: [ htmlName, searchText (optional), members[] ]
+		>  - searchText is undefined if it's the same as htmlName in lowercase
 		>
-		> member: [ htmlName, searchText (optional), fileURLPath, classURLPath (optional) ]
+		> member: [ htmlQualifier (optional), htmlName (optional), searchText (optional), fileURLPath, classURLPath (optional) ]
+		>  - htmlQualifier is undefined if there isn't one
+		>  - htmlName is undefined if it's the same as the keyword's htmlName
+		>  - searchText is undefined if it's the same as htmlName in lowercase
+		>  - classURLPath is undefined if there isn't one
 
-		which when applied, looks like this:
+		Applied without removing optional parameters it would look like this:
 
 		> NDSearch.OnKeywordSegmentLoaded(
 		>    "acc", 1, [
-		>
-		>       [ "Access", , [
-		>             [ "Access", , "File:Folder/DocumentationA.txt#Access" ]
-		>       ]],
-		>
-		>       [ "access", , [
-		>          [ "access", , "File:Folder/DocumentationB.txt#access" ]
-		>       ]],
-		>
 		>       [ "Accessor", "accessor", [
-		>          [ "ClassA.Accessor", , "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB::Accessor", "classb.accessor", "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>          [ undefined, "Accessor", "accessor", "File:Folder/Documentation.txt:Accessor", undefined ]
+		>          [ "ClassA.", "Accessor", "accessor", "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB::", "Accessor", "accessor", "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
-		>
 		>    ]);
 
-		Both the list of keywords and each keyword's list of results are already sorted into the order in which they should appear.
+		With optional parameters applied it looks like this:
 
-		searchText will only appear if it is something different than htmlName in lowercase.  Otherwise it will be undefined to keep 
-		data file sizes down.
+		> NDSearch.OnKeywordSegmentLoaded(
+		>    "acc", 1, [
+		>       [ "Accessor", , [
+		>          [ , , , "File:Folder/Documentation.txt#Accessor" ]
+		>          [ "ClassA.", , , "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB::", , , "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>       ]]
+		>    ]);
+
+		The use of optional parameters greatly cuts down on redundant data to limit file sizes.  They only appear when necessary.
+		For example, the keyword "operator<" would need htmlName "operator&lt;" and searchText "operator<", but that's not
+		necessary for "Accessor" in our example above.
+
+		Both the list of keywords and each keyword's list of members are already sorted into the order in which they should appear.
 
 
 	Topic: Main Index File

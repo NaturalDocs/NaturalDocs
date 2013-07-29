@@ -154,12 +154,40 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					output.Append("\n      ");
 					#endif
 
-					string topicHTMLName = topicEntry.DisplayName.ToHTML();
-					string topicSearchText = topicEntry.SearchText;
+					string topicHTMLPrefix, topicHTMLName, topicSearchText;
 
-					output.Append("[\"");
-					output.StringEscapeAndAppend(topicHTMLName);
-					output.Append("\",");
+					if (topicEntry.EndOfDisplayNameQualifiers == 0)
+						{
+						topicHTMLPrefix = null;
+						topicHTMLName = topicEntry.DisplayName.ToHTML();
+						topicSearchText = topicEntry.SearchText;
+						}
+					else
+						{
+						topicHTMLPrefix = topicEntry.DisplayName.Substring(0, topicEntry.EndOfDisplayNameQualifiers).ToHTML();
+						topicHTMLName = topicEntry.DisplayName.Substring(topicEntry.EndOfDisplayNameQualifiers).ToHTML();
+						topicSearchText = topicEntry.SearchText.Substring(topicEntry.EndOfSearchTextQualifiers);
+						}
+
+					output.Append('[');
+
+					if (topicHTMLPrefix != null)
+						{
+						output.Append('"');
+						output.StringEscapeAndAppend(topicHTMLPrefix);
+						output.Append('"');
+						}
+
+					output.Append(',');
+
+					if (topicHTMLName != keywordHTMLName)
+						{
+						output.Append('"');
+						output.StringEscapeAndAppend(topicHTMLName);
+						output.Append('"');
+						}
+
+					output.Append(',');
 
 					if (topicSearchText != topicHTMLName.ToLower())
 						{
@@ -167,13 +195,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						output.StringEscapeAndAppend(topicSearchText);
 						output.Append('"');
 						}
-					// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
 
 					output.Append(",\"");
-
 					Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(this, topicEntry.Topic.FileID);
 					output.StringEscapeAndAppend(filePage.OutputFileHashPath);
-
+					output.Append(':');
+					output.StringEscapeAndAppend(Source_TopicHashPath(topicEntry.Topic, true));
 					output.Append('"');
 
 					if (topicEntry.Topic.ClassID != 0)
@@ -183,7 +210,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						Components.HTMLTopicPages.Class classPage = 
 							new Components.HTMLTopicPages.Class(this, topicEntry.Topic.ClassID, topicEntry.Topic.ClassString);
 						output.StringEscapeAndAppend(classPage.OutputFileHashPath);
-
+						output.Append(':');
+						output.StringEscapeAndAppend(Source_TopicHashPath(topicEntry.Topic, false));
+	
 						output.Append('"');
 						}
 
