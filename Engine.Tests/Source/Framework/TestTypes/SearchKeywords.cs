@@ -42,8 +42,34 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				Engine.SearchIndex.TopicEntry searchEntry = new Engine.SearchIndex.TopicEntry(topics[i]);
 
-				output.AppendLine("- Display Name: " + searchEntry.DisplayName);
-				output.AppendLine("- Normalized Name: " + searchEntry.NormalizedName);
+				output.Append("- Display Name: ");
+
+				if (searchEntry.EndOfDisplayNameQualifiers > 0)
+					{
+					output.Append('(');
+					output.Append(searchEntry.DisplayName, 0, searchEntry.EndOfDisplayNameQualifiers);
+					output.Append(')');
+					output.Append(searchEntry.DisplayName, searchEntry.EndOfDisplayNameQualifiers, 
+										 searchEntry.DisplayName.Length - searchEntry.EndOfDisplayNameQualifiers);
+					output.AppendLine();
+					}
+				else
+					{  output.AppendLine(searchEntry.DisplayName);  }
+
+				output.Append("- Search Text: ");
+
+				if (searchEntry.EndOfSearchTextQualifiers > 0)
+					{
+					output.Append('(');
+					output.Append(searchEntry.SearchText, 0, searchEntry.EndOfSearchTextQualifiers);
+					output.Append(')');
+					output.Append(searchEntry.SearchText, searchEntry.EndOfSearchTextQualifiers, 
+										 searchEntry.SearchText.Length - searchEntry.EndOfSearchTextQualifiers);
+					output.AppendLine();
+					}
+				else
+					{  output.AppendLine(searchEntry.SearchText);  }
+
 				output.Append("- Keywords: ");
 
 				if (searchEntry.Keywords == null || searchEntry.Keywords.Count == 0)

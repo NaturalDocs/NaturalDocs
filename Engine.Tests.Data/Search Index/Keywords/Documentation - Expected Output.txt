@@ -1,69 +1,69 @@
 Topic: Title
 - Display Name: Title
-- Normalized Name: title
+- Search Text: title
 - Keywords: Title
 
 Topic: Title.A.B
 - Display Name: Title.A.B
-- Normalized Name: title.a.b
+- Search Text: title.a.b
 - Keywords: Title, A, B
 
 Topic: .Title.
 - Display Name: .Title.
-- Normalized Name: title.
+- Search Text: title.
 - Keywords: Title
 
 Topic: Title A... B
 - Display Name: Title A... B
-- Normalized Name: title a...b
+- Search Text: title a...b
 - Keywords: Title, A, B
 
 Topic: Title::A::B
 - Display Name: Title::A::B
-- Normalized Name: title.a.b
+- Search Text: title.a.b
 - Keywords: Title, A, B
 
 Topic: ::Title
 - Display Name: ::Title
-- Normalized Name: title
+- Search Text: title
 - Keywords: Title
 
 Topic: Title A/B
 - Display Name: Title A/B
-- Normalized Name: title a/b
+- Search Text: title a/b
 - Keywords: Title, A, B
 
 Topic: Title A\B
 - Display Name: Title A\B
-- Normalized Name: title a/b
+- Search Text: title a/b
 - Keywords: Title, A, B
 
 Topic: Title (param)
 - Display Name: Title
-- Normalized Name: title
+- Search Text: title
 - Keywords: Title
 
 Topic: ParentClass
 - Display Name: ParentClass
-- Normalized Name: parentclass
+- Search Text: parentclass
 - Keywords: ParentClass
 
 Topic: Title
 - Display Name: ParentClass.Title
-- Normalized Name: parentclass.title
-- Keywords: Title
+- Search Text: parentclass.title
+- Keywords: ParentClass, Title
 
 Topic: Title.A.B
 - Display Name: ParentClass.Title.A.B
-- Normalized Name: parentclass.title.a.b
-- Keywords: Title, A, B
+- Search Text: parentclass.title.a.b
+- Keywords: ParentClass, Title, A, B
 
 Topic: Title::A::B
 - Display Name: ParentClass.Title::A::B
-- Normalized Name: parentclass.title.a.b
-- Keywords: Title, A, B
+- Search Text: parentclass.title.a.b
+- Keywords: ParentClass, Title, A, B
 
 Topic: Title A/B
 - Display Name: ParentClass.Title A/B
-- Normalized Name: parentclass.title a/b
-- Keywords: Title, A, B
+- Search Text: parentclass.title a/b
+- Keywords: ParentClass, Title, A, B

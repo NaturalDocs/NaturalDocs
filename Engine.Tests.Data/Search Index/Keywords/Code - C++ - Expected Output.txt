@@ -1,24 +1,24 @@
 Topic: ClassA
 - Display Name: ClassA
-- Normalized Name: classa
+- Search Text: classa
 - Keywords: ClassA
 
 Topic: MemberFunctionA
-- Display Name: ClassA::MemberFunctionA
-- Normalized Name: classa.memberfunctiona
+- Display Name: (ClassA::)MemberFunctionA
+- Search Text: (classa.)memberfunctiona
 - Keywords: MemberFunctionA
 
 Topic: MemberFunctionB (int)
-- Display Name: ClassA::MemberFunctionB
-- Normalized Name: classa.memberfunctionb
+- Display Name: (ClassA::)MemberFunctionB
+- Search Text: (classa.)memberfunctionb
 - Keywords: MemberFunctionB
 
 Topic: Namespace::ClassB
-- Display Name: Namespace::ClassB
-- Normalized Name: namespace.classb
+- Display Name: (Namespace::)ClassB
+- Search Text: (namespace.)classb
 - Keywords: ClassB
 
 Topic: Namespace->ClassC
-- Display Name: Namespace->ClassC
-- Normalized Name: namespace.classc
+- Display Name: (Namespace->)ClassC
+- Search Text: (namespace.)classc
 - Keywords: ClassC

@@ -1,69 +1,69 @@
 Topic: File.txt
 - Display Name: File.txt
-- Normalized Name: file.txt
+- Search Text: file.txt
 - Keywords: File, txt
 
 Topic: Folder/Folder/File.txt
-- Display Name: Folder/Folder/File.txt
-- Normalized Name: folder/folder/file.txt
+- Display Name: (Folder/Folder/)File.txt
+- Search Text: (folder/folder/)file.txt
 - Keywords: File, txt
 
 Topic: Folder\Folder\File.with.dots.txt
-- Display Name: Folder\Folder\File.with.dots.txt
-- Normalized Name: folder/folder/file.with.dots.txt
+- Display Name: (Folder\Folder\)File.with.dots.txt
+- Search Text: (folder/folder/)file.with.dots.txt
 - Keywords: File, with, dots, txt
 
 Topic: Folder A\Folder B\File with spaces.txt
-- Display Name: Folder A\Folder B\File with spaces.txt
-- Normalized Name: folder a/folder b/file with spaces.txt
+- Display Name: (Folder A\Folder B\)File with spaces.txt
+- Search Text: (folder a/folder b/)file with spaces.txt
 - Keywords: File, with, spaces, txt
 
 Topic: /FolderA/FolderB/File.txt
-- Display Name: /FolderA/FolderB/File.txt
-- Normalized Name: foldera/folderb/file.txt
+- Display Name: (/FolderA/FolderB/)File.txt
+- Search Text: (foldera/folderb/)file.txt
 - Keywords: File, txt
 
 Topic: .trap.txt
 - Display Name: .trap.txt
-- Normalized Name: trap.txt
+- Search Text: trap.txt
 - Keywords: trap, txt
 
 Topic: Trap.txt/
 - Display Name: Trap.txt/
-- Normalized Name: trap.txt/
+- Search Text: trap.txt/
 - Keywords: Trap, txt
 
 Topic: Trap.txt /
 - Display Name: Trap.txt /
-- Normalized Name: trap.txt/
+- Search Text: trap.txt/
 - Keywords: Trap, txt
 
 Topic: Trap.txt//
 - Display Name: Trap.txt//
-- Normalized Name: trap.txt//
+- Search Text: trap.txt//
 - Keywords: Trap, txt
 
 Topic: Trap.txt / /
 - Display Name: Trap.txt / /
-- Normalized Name: trap.txt//
+- Search Text: trap.txt//
 - Keywords: Trap, txt
 
 Topic: File.txt (param)
 - Display Name: File.txt
-- Normalized Name: file.txt
+- Search Text: file.txt
 - Keywords: File, txt
 
 Topic: ParentClass
 - Display Name: ParentClass
-- Normalized Name: parentclass
+- Search Text: parentclass
 - Keywords: ParentClass
 
 Topic: File.txt
 - Display Name: File.txt
-- Normalized Name: file.txt
+- Search Text: file.txt
 - Keywords: File, txt
 
 Topic: Folder A\Folder B\File.with.dots.txt
-- Display Name: Folder A\Folder B\File.with.dots.txt
-- Normalized Name: folder a/folder b/file.with.dots.txt
+- Display Name: (Folder A\Folder B\)File.with.dots.txt
+- Search Text: (folder a/folder b/)file.with.dots.txt
 - Keywords: File, with, dots, txt

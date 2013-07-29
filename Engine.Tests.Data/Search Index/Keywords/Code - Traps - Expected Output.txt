@@ -1,59 +1,59 @@
 Topic: operator.
 - Display Name: operator.
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: operator .
 - Display Name: operator .
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: operator..
 - Display Name: operator..
-- Normalized Name: operator..
+- Search Text: operator..
 - Keywords: operator
 
 Topic: operator . .
 - Display Name: operator . .
-- Normalized Name: operator..
+- Search Text: operator..
 - Keywords: operator
 
 Topic: operator::
 - Display Name: operator::
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: operator ::
 - Display Name: operator ::
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: operator->
 - Display Name: operator->
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: operator ->
 - Display Name: operator ->
-- Normalized Name: operator.
+- Search Text: operator.
 - Keywords: operator
 
 Topic: .Global
-- Display Name: .Global
-- Normalized Name: global
+- Display Name: (.)Global
+- Search Text: global
 - Keywords: Global
 
 Topic: . Global
-- Display Name: . Global
-- Normalized Name: global
+- Display Name: (.) Global
+- Search Text: global
 - Keywords: Global
 
 Topic: ::Global
-- Display Name: ::Global
-- Normalized Name: global
+- Display Name: (::)Global
+- Search Text: global
 - Keywords: Global
 
 Topic: :: Global
-- Display Name: :: Global
-- Normalized Name: global
+- Display Name: (::) Global
+- Search Text: global
 - Keywords: Global
