@@ -71,11 +71,34 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				}
 
 
-			displayName = extraScope + title;
-			endOfDisplayNameQualifiers = EndOfQualifiers(displayName, topicType);
-
+			displayName = (extraScope == null ? title : extraScope + title);
 			searchText = Normalize(displayName);
-			endOfSearchTextQualifiers = EndOfQualifiers(searchText, topicType);
+
+			if (topicType.Flags.File)
+				{
+				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
+				endOfSearchTextQualifiers = EndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
+				}
+			else if (topicType.Flags.Code)
+				{
+				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
+				endOfSearchTextQualifiers = EndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
+				}
+			else // documentation topic
+				{
+				if (extraScope == null)
+					{
+					endOfDisplayNameQualifiers = 0;
+					endOfSearchTextQualifiers = 0;
+					}
+				else
+					{
+					endOfDisplayNameQualifiers = extraScope.Length;
+
+					// Don't need +1 because only leading separators are removed.  The trailing separator will still be there.
+					endOfSearchTextQualifiers = Normalize(extraScope).Length;
+					}
+				}
 
 			keywords = new List<string>();
 
@@ -88,16 +111,8 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 		/* Function: EndOfQualifiers
 		 */
-		protected int EndOfQualifiers (string title, TopicTypes.TopicType topicType)
+		protected int EndOfQualifiers (string title, MatchCollection splitSymbols)
 			{
-			MatchCollection splitSymbols = null;
-
-			if (topicType.Flags.File == true)
-				{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
-			else if (topicType.Flags.Code == true)
-				{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
-			// Leave it as null for documentation comments
-
 			if (splitSymbols == null || splitSymbols.Count == 0)
 				{  return 0;  }
 
