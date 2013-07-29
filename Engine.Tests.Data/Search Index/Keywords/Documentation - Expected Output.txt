@@ -49,21 +49,21 @@ Topic: ParentClass
 - Keywords: ParentClass
 
 Topic: Title
-- Display Name: ParentClass.Title
-- Search Text: parentclass.title
-- Keywords: ParentClass, Title
+- Display Name: (ParentClass.)Title
+- Search Text: (parentclass.)title
+- Keywords: Title
 
 Topic: Title.A.B
-- Display Name: ParentClass.Title.A.B
-- Search Text: parentclass.title.a.b
-- Keywords: ParentClass, Title, A, B
+- Display Name: (ParentClass.)Title.A.B
+- Search Text: (parentclass.)title.a.b
+- Keywords: Title, A, B
 
 Topic: Title::A::B
-- Display Name: ParentClass.Title::A::B
-- Search Text: parentclass.title.a.b
-- Keywords: ParentClass, Title, A, B
+- Display Name: (ParentClass.)Title::A::B
+- Search Text: (parentclass.)title.a.b
+- Keywords: Title, A, B
 
 Topic: Title A/B
-- Display Name: ParentClass.Title A/B
-- Search Text: parentclass.title a/b
-- Keywords: ParentClass, Title, A, B
+- Display Name: (ParentClass.)Title A/B
+- Search Text: (parentclass.)title a/b
+- Keywords: Title, A, B
