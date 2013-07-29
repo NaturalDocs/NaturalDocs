@@ -124,9 +124,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				output.Append("\n\n   ");
 				#endif
 
+				string keywordHTMLName = keywordEntry.Keyword.ToHTML();
+				string keywordSearchText = keywordEntry.SearchText;
+
 				output.Append("[\"");
-				output.StringEscapeAndAppend(keywordEntry.Keyword);
-				output.Append("\",[");
+				output.StringEscapeAndAppend(keywordHTMLName);
+				output.Append("\",");
+
+				if (keywordSearchText != keywordHTMLName.ToLower())
+					{
+					output.Append('"');
+					output.StringEscapeAndAppend(keywordSearchText);
+					output.Append('"');
+					}
+				// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
+
+				output.Append(",[");
 
 				bool isFirstTopicEntry = true;
 
@@ -141,9 +154,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					output.Append("\n      ");
 					#endif
 
+					string topicHTMLName = topicEntry.DisplayName.ToHTML();
+					string topicSearchText = topicEntry.SearchText;
+
 					output.Append("[\"");
-					output.StringEscapeAndAppend(topicEntry.DisplayName);
-					output.Append("\",\"");
+					output.StringEscapeAndAppend(topicHTMLName);
+					output.Append("\",");
+
+					if (topicSearchText != topicHTMLName.ToLower())
+						{
+						output.Append('"');
+						output.StringEscapeAndAppend(topicSearchText);
+						output.Append('"');
+						}
+					// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
+
+					output.Append(",\"");
 
 					Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(this, topicEntry.Topic.FileID);
 					output.StringEscapeAndAppend(filePage.OutputFileHashPath);

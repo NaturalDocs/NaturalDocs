@@ -31,31 +31,34 @@ _______________________________________________________________________________
 		>
 		> keywordSegmentType: prefix = 1, short = 2
 		>
-		> keyword: [ keywordString, members[] ]
+		> keyword: [ htmlName, searchText (optional), members[] ]
 		>
-		> member: [ displayName, fileURLPath, classURLPath (optional) ]
+		> member: [ htmlName, searchText (optional), fileURLPath, classURLPath (optional) ]
 
 		which when applied, looks like this:
 
 		> NDSearch.OnKeywordSegmentLoaded(
 		>    "acc", 1, [
 		>
-		>       [ "Access", [
-		>             [ "Access", "File:Folder/DocumentationA.txt#Access" ]
+		>       [ "Access", , [
+		>             [ "Access", , "File:Folder/DocumentationA.txt#Access" ]
 		>       ]],
 		>
-		>       [ "access", [
-		>          [ "access", "File:Folder/DocumentationB.txt#access" ]
+		>       [ "access", , [
+		>          [ "access", , "File:Folder/DocumentationB.txt#access" ]
 		>       ]],
 		>
-		>       [ "Accessor", [
-		>          [ "ClassA.Accessor", "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB::Accessor", "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>       [ "Accessor", "accessor", [
+		>          [ "ClassA.Accessor", , "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB::Accessor", "classb.accessor", "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
 		>
 		>    ]);
 
 		Both the list of keywords and each keyword's list of results are already sorted into the order in which they should appear.
+
+		searchText will only appear if it is something different than htmlName in lowercase.  Otherwise it will be undefined to keep 
+		data file sizes down.
 
 
 	Topic: Main Index File
