@@ -1072,28 +1072,23 @@ body.NDHomePage {
 		padding: 1.5em 2em;
 		overflow: hidden;
 		background-color: #FFFFFF;
-
-		/* Firefox doesn't support plain border-radius until 4. */
-		/* Chrome supports plain border-radius since 8, and Safari since 5. */
-		/* Opera 11 supports plain border-radius. */
-		-moz-border-radius: 15ex;
-		border-radius: 15ex;
+		border-width: .5ex;
+		border-style: solid;
+		border-color: #E0E0E0 #A0A0A0 #202020 #C0C0C0;
 
 		/* Firefox doesn't support plain box-shadow until 4. */
 		/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
 		/* Opera 11 supports plain box-shadow. */
-		-moz-box-shadow: 0 .75ex 1.5ex #383838;
-		-webkit-box-shadow: 0 .75ex 1.5ex #383838;
-		box-shadow: 0 .75ex 1.5ex #383838;
+		-moz-box-shadow: 0 .25ex .75ex #383838;
+		-webkit-box-shadow: 0 .25ex .75ex #383838;
+		box-shadow: 0 .25ex .75ex #383838;
 		}
 
-		/* IE doesn't support any kind of border radius or box shadow until 9. */
+		/* IE doesn't support any kind of box shadow until 9. */
 		.IE8 .HHeader,
 		.IE7 .HHeader,
 		.IE6 .HHeader {
-			border-style: solid;
-			border-width: 1px 3px 3px 1px;
-			border-color: #808080 #505050 #505050 #808080;
+			border-color: #C0C0C0 #404040 #202020 #787878;
 			}
 
 		.HTitle {
