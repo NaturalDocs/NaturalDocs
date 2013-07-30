@@ -1066,7 +1066,7 @@ body.NDHomePage {
 		padding: 4em 5em .5em 5em;
 		}
 
-	.HHeader {
+	.HContent {
 		max-width: 25em;
 		margin: 0 auto 3em auto;
 		padding: 1.5em 2em;
@@ -1106,18 +1106,20 @@ body.NDHomePage {
 
 	.HFooter {
 		margin: 0 auto;
-		margin-top: 3.5em;
+		margin-top: 2em;
+		border-top: 1px solid #A0A0A0;
+		padding-top: 2em;
 		font: 8pt `ParagraphFontFamily;
 		}
 		.HFooter div {
-			margin-bottom: .8em;
-			color: #505050;
+			margin-bottom: .5em;
+			color: #A0A0A0;
 			}
 		.HFooter a:link,
 		.HFooter a:visited,
 		.HFooter a:hover,
 		.HFooter a:active {
-			color: #505050;
+			color: #A0A0A0;
 			}
 
 
