@@ -1067,7 +1067,7 @@ body.NDHomePage {
 		}
 
 	.HContent {
-		max-width: 25em;
+		max-width: 28em;
 		margin: 0 auto 3em auto;
 		padding: 1.5em 2em;
 		overflow: hidden;
@@ -1079,30 +1079,20 @@ body.NDHomePage {
 		/* Firefox doesn't support plain box-shadow until 4. */
 		/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
 		/* Opera 11 supports plain box-shadow. */
+		/* IE 9 supports plain box shadow, IE 6-8 don't support any form at all. */
 		-moz-box-shadow: 0 .25ex .75ex #383838;
 		-webkit-box-shadow: 0 .25ex .75ex #383838;
 		box-shadow: 0 .25ex .75ex #383838;
 		}
 
-		/* IE doesn't support any kind of box shadow until 9. */
-		.IE8 .HHeader,
-		.IE7 .HHeader,
-		.IE6 .HHeader {
-			border-color: #C0C0C0 #404040 #202020 #787878;
-			}
-
 		.HTitle {
-			font: small-caps 24pt `ProjectTitleFontFamily;
+			font: 34pt `ProjectTitleFontFamily;
 			line-height: 95%;
 			}
 		.HSubTitle {
-			font: 13pt `ProjectSubTitleFontFamily;
-			padding-top: .15em;
+			font: 16pt `ProjectSubTitleFontFamily;
+			padding-top: .075em;
 			}
-
-	.NDHomePage p {
-		font: 10pt `ParagraphFontFamily;
-		}
 
 	.HFooter {
 		margin: 0 auto;
