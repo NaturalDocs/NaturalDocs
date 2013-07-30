@@ -27,6 +27,7 @@ Link: NDCore.js
 Frame Link: NDFramePage.js
 Frame Link: NDMenu.js
 Frame Link: NDSummary.js
+Frame Link: NDSearch.js
 Content Link: NDContentPage.js
 
 

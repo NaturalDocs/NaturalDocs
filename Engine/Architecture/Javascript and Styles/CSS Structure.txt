@@ -25,7 +25,8 @@ _______________________________________________________________________________
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
 			<#HSubTitle>...</#HSubTitle>
-			<input #NDSearch DefaultText? />
+			<input #NDSearchField />
+			<#NDSearchResults>...</#NDSearchResults>
 		</#NDHeader>
 
 		<#NDLoadingNotice>
@@ -396,6 +397,20 @@ _______________________________________________________________________________
 ----------
 
 The summary paragraph will not have separate <p> tags.
+
+
+
+Topic: Search
+_______________________________________________________________________________
+
+--- text ---
+
+	<input #NDSearchField DefaultText? />
+
+	<#NDSearchResults>
+	</#NDSearchResults>
+
+----------
 
 
 

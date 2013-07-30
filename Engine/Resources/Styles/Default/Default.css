@@ -46,7 +46,10 @@
 		`NDSizerZIndex = 101
 		`NDContentCoverZIndex = 100
 
-		`NDSearchZIndex = 6
+		`NDSearchResultsZIndex = 22
+		`NDToolTipZIndex = 21
+
+		`NDSearchFieldZIndex = 6
 		`NDMenuZIndex = 5
 		`NDSummaryZIndex = 4
 		`NDContentZIndex = 3
@@ -136,9 +139,10 @@ td {
 	___________________________________________________________________________
 */
 
-#NDSearch {
-	z-index: `NDSearchZIndex;
+#NDSearchField {
+	z-index: `NDSearchFieldZIndex;
 	width: 25ex;
+	color: #000000;
 	font: 10pt `SearchFontFamily;
 	background: #FFFFFF URL("images/search.png") no-repeat left center;
 	padding: .5ex 1.5ex .5ex 3.5ex;
@@ -151,15 +155,34 @@ td {
 	border-radius: 5ex;
 	}
 
-	#NDSearch.DefaultText {
+	#NDSearchField.DefaultText {
 		color: #808080;
 		font-style: italic;
 		}
 
-	#NDSearch:focus {
+	#NDSearchField:focus {
 		outline: none;  /* Get rid of Chrome's orange highlight */
 		}
 
+#NDSearchResults {
+	z-index: `NDSearchZIndex;
+	background-color: #FFFFFF;
+
+	border-style: solid;
+	border-width: 1px;
+	border-color: #BCBCBC #747474 #747474 #BCBCBC;
+
+	/* Firefox doesn't support plain box-shadow until 4. */
+	/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
+	/* Opera 11 supports plain box-shadow. */
+	-moz-box-shadow: .15ex .25ex .4ex #606060;
+	-webkit-box-shadow: .15ex .25ex .4ex #606060;
+	box-shadow: .15ex .25ex .4ex #606060;
+
+	padding: .75ex 1ex;
+
+	min-width: 50ex;
+	}
 
 
 

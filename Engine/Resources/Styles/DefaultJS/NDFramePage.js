@@ -65,7 +65,7 @@ var NDFramePage = new function ()
 		// True or false determines whether it will be made visible later.
 		var pageElements = {
 			NDHeader: true,
-			NDSearch: true,
+			NDSearchField: true,
 			NDFooter: true,
 			NDMenu: true, 
 			NDSummary: false, // UpdateLayout() will enable this if necessary
@@ -124,6 +124,7 @@ var NDFramePage = new function ()
 
 		NDMenu.Start();
 		NDSummary.Start();
+		NDSearch.Start();
 
 
 		// Load the hash location, if any.
@@ -444,7 +445,7 @@ var NDFramePage = new function ()
 		var fullHeight = NDCore.WindowClientHeight();
 
 		var header = document.getElementById("NDHeader");
-		var search = document.getElementById("NDSearch");
+		var searchField = document.getElementById("NDSearchField");
 		var footer = document.getElementById("NDFooter");
 		var menu = document.getElementById("NDMenu");
 		var menuSizer = document.getElementById("NDMenuSizer");
@@ -467,8 +468,8 @@ var NDFramePage = new function ()
 		// We needed separate calls to set the footer's Y position and width since wrapping may change its height.
 		NDCore.SetToAbsolutePosition(footer, undefined, fullHeight - footerHeight, undefined, undefined);
 
-		var searchMargin = (headerHeight - search.offsetHeight) / 2;
-		NDCore.SetToAbsolutePosition(search, fullWidth - search.offsetWidth - searchMargin, searchMargin, undefined, undefined);
+		var searchMargin = (headerHeight - searchField.offsetHeight) / 2;
+		NDCore.SetToAbsolutePosition(searchField, fullWidth - searchField.offsetWidth - searchMargin, searchMargin, undefined, undefined);
 
 		var remainingHeight = fullHeight - headerHeight - footerHeight;
 		var remainingWidth = fullWidth;
