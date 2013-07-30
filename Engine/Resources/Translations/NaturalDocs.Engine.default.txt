@@ -29,6 +29,8 @@ HTML.DefaultHeaderTitle: Source Documentation
 HTML.DefaultHomeTitle: Source Documentation
 HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
 
+HTML.DefaultSearchText: Search
+
 HTML.AdditionalChildren(number): and {0} other {0s?children:child}
 
 HTML.JavaScriptRequiredNotice: Please enable JavaScript to view this documentation.

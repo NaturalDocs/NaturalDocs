@@ -25,6 +25,7 @@ _______________________________________________________________________________
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
 			<#HSubTitle>...</#HSubTitle>
+			<input #NDSearch DefaultText? />
 		</#NDHeader>
 
 		<#NDLoadingNotice>

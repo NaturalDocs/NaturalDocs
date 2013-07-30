@@ -991,6 +991,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 
 				content.Append(
+				"<input id=\"NDSearch\" class=\"DefaultText\" type=\"text\" value=\"" +
+					Locale.Get("NaturalDocs.Engine", "HTML.DefaultSearchText").ToHTML().StringEscape() +
+					"\" />"+
+
 				"</div>" +
 
 				"<script type=\"text/javascript\">" +

@@ -34,6 +34,7 @@
 		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
 		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`CodeFontFamily = Consolas, "Courier New", monospace
+		`SearchFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 
 		`TextLinkColor = #880000
 		`TextLinkActiveColor = #F04040
@@ -45,6 +46,7 @@
 		`NDSizerZIndex = 101
 		`NDContentCoverZIndex = 100
 
+		`NDSearchZIndex = 6
 		`NDMenuZIndex = 5
 		`NDSummaryZIndex = 4
 		`NDContentZIndex = 3
@@ -127,6 +129,36 @@ td {
 		text-shadow: 0 .1ex .3ex #202020;
 		}
 
+
+
+
+/* Group: Search
+	___________________________________________________________________________
+*/
+
+#NDSearch {
+	z-index: `NDSearchZIndex;
+	width: 25ex;
+	font: 10pt `SearchFontFamily;
+	background: #FFFFFF URL("images/search.png") no-repeat left center;
+	padding: .5ex 1.5ex .5ex 3.5ex;
+	border: 0 none;
+
+	/* Firefox doesn't support plain border-radius until 4. */
+	/* Chrome supports plain border-radius since 8, and Safari since 5. */
+	/* Opera 11 supports plain border-radius. */
+	-moz-border-radius: 5ex;
+	border-radius: 5ex;
+	}
+
+	#NDSearch.DefaultText {
+		color: #808080;
+		font-style: italic;
+		}
+
+	#NDSearch:focus {
+		outline: none;  /* Get rid of Chrome's orange highlight */
+		}
 
 
 
