@@ -166,6 +166,7 @@ td {
 
 #NDSearchResults {
 	z-index: `NDSearchZIndex;
+	overflow: auto;
 	background-color: #FFFFFF;
 
 	border-style: solid;
@@ -181,7 +182,7 @@ td {
 
 	padding: .75ex 1ex;
 
-	min-width: 50ex;
+	min-width: 28ex;
 	}
 
 

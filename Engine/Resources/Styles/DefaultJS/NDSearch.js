@@ -95,12 +95,60 @@ var NDSearch = new function ()
 	*/
 	this.PositionResults = function ()
 		{
-		NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, undefined, 200);
+		this.searchResults.style.visibility = "hidden";
 
-		NDCore.SetToAbsolutePosition(this.searchResults, 
-													 this.searchField.offsetLeft + this.searchField.offsetWidth - this.searchResults.offsetWidth,
-													 this.searchField.offsetTop + this.searchField.offsetHeight + 5,
-													 undefined, undefined);
+
+		// First set the position to 0,0 and the width and height back to auto so it will be sized naturally to its content
+
+		NDCore.SetToAbsolutePosition(this.searchResults, 0, 0, undefined, undefined);
+		this.searchResults.style.width = "";
+		this.searchResults.style.height = "";
+
+		
+		// Figure out our desired upper right coordinates
+
+		var urX = this.searchField.offsetLeft + this.searchField.offsetWidth;
+		var urY = this.searchField.offsetTop + this.searchField.offsetHeight + 5;
+
+
+		// Figure out our maximum width/height so we don't go off the screen.  We include the footer height not because
+		// we care about covering the footer, but because it serves as a good estimate for the URL popup you get in
+		// Firefox and Chrome.
+
+		var footer = document.getElementById("NDFooter");
+
+		var maxWidth = urX;
+		var maxHeight = NDCore.WindowClientHeight() - urY - footer.offsetHeight - 2;
+
+
+		// Resize
+
+		if (this.searchResults.offsetHeight > maxHeight)
+			{  NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, undefined, maxHeight);  }
+		if (this.searchResults.offsetWidth > maxWidth)
+			{  NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, maxWidth, undefined);  }
+		else
+			{
+			// Firefox and Chrome will sometimes not set the automatic width correctly, leaving a horizontal scroll bar where 
+			// one isn't necessary.  Weird.  Fix it up for them.  This also fixes the positioning for IE 6 and 7.
+			if (this.searchResults.scrollWidth > this.searchResults.clientWidth)
+				{
+				var newWidth = this.searchResults.offsetWidth + (this.searchResults.scrollWidth - this.searchResults.clientWidth) + 5;
+
+				if (newWidth > maxWidth)
+					{  newWidth = maxWidth;  }
+
+				NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, newWidth, undefined);
+				}
+			}
+
+
+		// Reposition
+
+		NDCore.SetToAbsolutePosition(this.searchResults, urX - this.searchResults.offsetWidth, urY, undefined, undefined);
+
+
+		this.searchResults.style.visibility = "visible";
 		};
 
 
@@ -194,11 +242,27 @@ var NDSearch = new function ()
 				{  output += "<br>[" + this.altSearchText + "]";  }
 			}
 
-		this.searchResults.innerHTML = "<pre>" + output + "</pre>";
+		output = "<pre>" + output + "</pre>";
+		
+		for (var i = 0; i < this.searchText.length * 10; i++)
+			{  
+			output += "<br>";
+			for (var j = 0; j < this.searchText.length; j++)
+				{  output += "xxxxxxxxxxxxxxx";  }
+			}
 
+		this.searchResults.innerHTML = output;
 		this.ShowResults();
 		}
 
+
+	/* Function: OnUpdateLayout
+	*/
+	this.OnUpdateLayout = function ()
+		{
+		if (this.searchResults != undefined)
+			{  this.PositionResults();  }
+		};
 
 
 

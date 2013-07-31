@@ -530,6 +530,7 @@ var NDFramePage = new function ()
 
 		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
 		NDCore.SetToAbsolutePosition(messages, currentX, 0, remainingWidth, undefined);
+		NDSearch.OnUpdateLayout();
 		};
 
 
