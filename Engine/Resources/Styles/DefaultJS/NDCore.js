@@ -168,7 +168,9 @@ var NDCore = new function ()
 		var script = document.createElement("script");
 		script.src = path;
 		script.type = "text/javascript";
-		script.id = id;
+
+		if (id != undefined)
+			{  script.id = id;  }
 
 		document.getElementsByTagName("head")[0].appendChild(script);
 
