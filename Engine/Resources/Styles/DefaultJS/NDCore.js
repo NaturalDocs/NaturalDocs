@@ -344,8 +344,7 @@ var NDCore = new function ()
 		if (hashString == undefined)
 			{  return "";  }
 
-		// IE 6 and 7 don't support hashString[0], so use substr(0,1).
-		if (hashString.substr(0,1) == "#")
+		if (hashString.charAt(0) == "#")
 			{  hashString = hashString.substr(1);  }
 
 		hashString = decodeURI(hashString);

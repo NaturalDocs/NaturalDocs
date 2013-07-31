@@ -137,8 +137,7 @@ var NDSearch = new function ()
 		// If the search text ends with : or - it's possible that it's the first character of :: or ->.  Provide an alternate
 		// search string so relevant results don't disappear until the second character is added.
 
-		// IE 6 and 7 don't support input[n], so we have to use substr().
-		var lastChar = input.substr(input.length - 1, 1);
+		var lastChar = input.charAt(input.length - 1);
 
 		if (lastChar == ":" || lastChar == "-")
 			{  this.altSearchText = input.substr(0, input.length - 1) + ".";  }
