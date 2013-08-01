@@ -169,7 +169,10 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 					if (testIndex == firstIndex)
 						{  return ~testIndex;  }
 					else
-						{  lastIndex = testIndex - 1;  }
+						{  
+						// Not testIndex - 1 because even though ID is lower, this may be the position we would insert it at.
+						lastIndex = testIndex;
+						}
 					}
 					
 				else // (objectID > this[testIndex].ID)

@@ -275,7 +275,10 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 					if (testIndex == firstIndex)
 						{  return ~testIndex;  }
 					else
-						{  lastIndex = testIndex - 1;  }
+						{  
+						// Not testIndex - 1 because even though ID is lower, this may be the position we would insert it at.
+						lastIndex = testIndex;  
+						}
 					}
 					
 				else // (id > objectsByID[testIndex].ID)
