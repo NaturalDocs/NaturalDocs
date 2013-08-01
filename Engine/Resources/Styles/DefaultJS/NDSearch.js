@@ -30,6 +30,10 @@ var NDSearch = new function ()
 	*/
 	this.Start = function ()
 		{
+		// We delay loading search/index.js until the search field is actually used
+		this.mainIndexStatus = `NotLoaded;
+
+
 		this.searchField = document.getElementById("NDSearchField");
 
 		this.searchField.onfocus = function () {  NDSearch.OnFocus(true);  };
@@ -57,6 +61,14 @@ var NDSearch = new function ()
 		{
 		this.searchField.value = "";
 		NDCore.RemoveClass(this.searchField, "DefaultText");
+
+		// Start loading the main index as soon as the search field is first activated.  We don't want to wait
+		// until they start typing.
+		if (this.mainIndexStatus == `NotLoaded)
+			{
+			this.mainIndexStatus = `Loading;
+			NDCore.LoadJavaScript("search/index.js");
+			}
 		};
 
 	
@@ -153,14 +165,14 @@ var NDSearch = new function ()
 
 
 	/* Function: MakeSearchText
-		Converts the raw text as entered into a normalized form compatible with the search text Natural Docs 
+		Converts the raw text entered in <searchField> to a normalized form compatible with the search text Natural Docs 
 		generates.  It will fill in <searchText> and <altSearchText>.
 	*/
-	this.MakeSearchText = function (input)
+	this.MakeSearchText = function ()
 		{
 		// DEPENDENCY: This must match what is done in Engine.SearchIndex.Entry.Normalize().
 
-		input = input.toLowerCase();
+		var input = this.searchField.value.toLowerCase();
 
 		// Trim and condense whitespace
 		input = input.replace(/\s+/g, " ");
@@ -191,6 +203,206 @@ var NDSearch = new function ()
 			{  this.altSearchText = input.substr(0, input.length - 1) + ".";  }
 		else
 			{  this.altSearchText = undefined;  }
+		};
+
+
+	/* Function: DataFileOf
+	*/
+	this.DataFileOf = function (prefix)
+		{
+		var dataFile = "";
+
+		for (var i = 0; i < prefix.length; i++)
+			{
+			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
+			dataFile += charValue.substr(charValue.length - 4, 4);
+			}
+
+		if (dataFile.length > 0)
+			{  return "search/keywords/" + dataFile + ".js";  }
+		else
+			{  return undefined;  }
+		};
+
+
+
+	// Group: Prefix Functions
+	// ________________________________________________________________________
+
+
+	/* Function: PrefixOf
+		Returns the prefix of an individual normalized search string.
+	*/
+	this.PrefixOf = function (searchText)
+		{
+		var prefix = "";
+
+		for (var i = 0; i < 3; i++)
+			{
+			if (i >= searchText.length)
+				{  break;  }
+
+			var char = searchText.charAt(i);
+
+			if (char == " " || char == "." || char == "/")
+				{  break;  }
+
+			prefix += char;
+			}
+
+		if (prefix.length > 0)
+			{  return prefix;  }
+		else
+			{  return undefined;  }
+		};
+
+
+	/* Function: PrefixIndex
+		Returns the index at which the passed prefix appears or should appear in <mainIndex>.  If it's not found 
+		it will return the index it would be inserted at if it were to be added.
+	*/
+	this.PrefixIndex = function (prefix)
+		{
+		if (this.mainIndexStatus != `Ready)
+			{  return undefined;  }
+		if (this.mainIndex.length == 0)
+			{  return 0;  }
+
+		var firstIndex = 0;
+		var lastIndex = this.mainIndex.length - 1;  // lastIndex is inclusive
+
+		for (;;)
+			{
+			var testIndex = (firstIndex + lastIndex) >> 1;
+
+			if (prefix == this.mainIndex[testIndex])
+				{  return testIndex;  }
+
+			else if (prefix < this.mainIndex[testIndex])
+				{  
+				if (testIndex == firstIndex)
+					{  return testIndex;  }
+				else
+					{  
+					// Not testIndex - 1 because even though prefix is lower, that may be the position it would be 
+					// inserted at.
+					lastIndex = testIndex;
+					}
+				}
+
+			else // prefix > this.mainIndex[testIndex]
+				{
+				if (testIndex == lastIndex)
+					{  return lastIndex + 1;  }
+				else
+					{  firstIndex = testIndex + 1;  }
+				}
+			}
+		};
+
+
+	/* Function: GetPrefixesInSearchText
+		Returns an array of prefixes that match <searchText> and/or <altSearchText>.  If there are none it will
+		return an empty array.
+	*/
+	this.GetPrefixesInSearchText = function ()
+		{
+		if (this.mainIndexStatus != `Ready)
+			{  return [ ];  }
+
+
+		// Find the stretch that matches searchText
+
+		var searchPrefix = undefined;
+		var searchPrefixIndex = 0;
+		var searchPrefixCount = 0;
+
+		if (this.searchText != undefined && this.searchText != "")
+			{  searchPrefix = this.PrefixOf(this.searchText);  }
+
+		if (searchPrefix != undefined && searchPrefix != "")
+			{
+			searchPrefixIndex = this.PrefixIndex(searchPrefix);
+
+			for (var i = searchPrefixIndex; i < this.mainIndex.length; i++)
+				{
+				if (this.mainIndex[i].length >= searchPrefix.length &&
+					this.mainIndex[i].substr(0, searchPrefix.length) == searchPrefix)
+					{  searchPrefixCount++;  }
+				else
+					{  break;  }
+				}
+			}
+
+
+		// Find the stretch that matches altSearchText
+
+		var altSearchPrefix = undefined;
+		var altSearchPrefixIndex = 0;
+		var altSearchPrefixCount = 0;
+
+		if (this.altSearchText != undefined && this.altSearchText != "")
+			{  altSearchPrefix = this.PrefixOf(this.altSearchText);  }
+
+		if (altSearchPrefix != undefined && altSearchPrefix != "" && altSearchPrefix != searchPrefix)
+			{
+			altSearchPrefixIndex = this.PrefixIndex(altSearchPrefix);
+
+			for (var i = altSearchPrefixIndex; i < this.mainIndex.length; i++)
+				{
+				if (this.mainIndex[i].length >= altSearchPrefix.length &&
+					this.mainIndex[i].substr(0, altSearchPrefix.length) == altSearchPrefix)
+					{  altSearchPrefixCount++;  }
+				else
+					{  break;  }
+				}
+			}
+
+
+		// At this point we don't care about which stretch came from searchText and which came from altSearchText
+		// anymore.  Normalize them so that if there is only one defined it's in the first one, and if they're both defined
+		// the lower is first.
+
+		if (searchPrefixCount == 0 && altSearchPrefixCount != 0)
+			{
+			searchPrefixIndex = altSearchPrefixIndex;
+			searchPrefixCount = altSearchPrefixCount;
+			altSearchPrefixCount = 0;
+			}
+		else if (searchPrefixCount != 0 && altSearchPrefixCount != 0 && altSearchIndex < searchIndex)
+			{
+			var tempSearchPrefixIndex = searchPrefixIndex;
+			var tempSearchPrefixCount = searchPrefixCount;
+			searchPrefixIndex = altSearchPrefixIndex;
+			searchPrefixCount = altSearchPrefixCount;
+			altSearchPrefixIndex = tempSearchPrefixIndex;
+			altSearchPrefixCount = tempSearchPrefixCount;
+			}
+
+
+		// Return a combined array of results.  We don't want any duplicates.
+
+		if (searchPrefixCount == 0)
+			{  return [ ];  }
+		else if (altSearchPrefixCount == 0 || 
+					(altSearchPrefixIndex == searchPrefixIndex && altSearchPrefixCount <= searchPrefixCount) )
+			{  return this.mainIndex.slice(searchPrefixIndex, searchPrefixIndex + searchPrefixCount);  }
+		else
+			{
+			var result;
+			var searchPrefixEnd = searchPrefixIndex + searchPrefixCount;
+			var altSearchPrefixEnd = altSearchPrefixIndex + altSearchPrefixCount;
+
+			if (searchPrefixEnd <= altSearchPrefixIndex)
+				{  result = this.mainIndex.slice(searchPrefixIndex, searchPrefixEnd);  }
+			else
+				{  result = this.mainIndex.slice(searchPrefixIndex, altSearchPrefixIndex);  }
+
+			result = result.concat(this.mainIndex.slice(altSearchPrefixIndex, altSearchPrefixEnd));
+
+			return result;
+			}
+
 		};
 
 
@@ -228,38 +440,59 @@ var NDSearch = new function ()
 	*/
 	this.OnChange = function ()
 		{
-		this.MakeSearchText(this.searchField.value);
-
-		var output;
+		this.MakeSearchText();
 
 		if (this.searchText == undefined || this.searchText == "")
-			{  output = "(none)";  }
-		else
 			{
-			output = "[" + this.searchText + "]";
-
-			if (this.altSearchText != undefined && this.altSearchText != "")
-				{  output += "<br>[" + this.altSearchText + "]";  }
+			this.HideResults();
+			return;
 			}
+
+
+		// Show normalized search text
+
+		var output = "[" + this.searchText + "]";
+
+		if (this.altSearchText != undefined && this.altSearchText != "")
+			{  output += "<br>[" + this.altSearchText + "]";  }
 
 		output = "<pre>" + output + "</pre>";
 		
-		for (var i = 0; i < this.searchText.length * 10; i++)
-			{  
-			output += "<br>";
-			for (var j = 0; j < this.searchText.length; j++)
-				{  output += "xxxxxxxxxxxxxxx";  }
+
+		// Show prefix matches
+
+		var prefixes = this.GetPrefixesInSearchText();
+		
+		if (prefixes == undefined || prefixes.length == 0)
+			{  output += "No matches";  }
+		else
+			{
+			for (var i = 0; i < prefixes.length; i++)
+				{
+				output += "<br>" + prefixes[i] + " - " + this.DataFileOf(prefixes[i]);
+				}
 			}
+
 
 		this.searchResults.innerHTML = output;
 		this.ShowResults();
 		}
 
 
+	/* Function: OnIndexLoaded
+	*/
+	this.OnIndexLoaded = function (content)
+		{
+		this.mainIndex = content;
+		this.mainIndexStatus = `Ready;
+		};
+
+
 	/* Function: OnUpdateLayout
 	*/
 	this.OnUpdateLayout = function ()
 		{
+		// This may be called before Start().
 		if (this.searchResults != undefined)
 			{  this.PositionResults();  }
 		};
@@ -285,5 +518,23 @@ var NDSearch = new function ()
 		An alternate version of the current search text, normalized, if any.  This is for if there can
 		be two interpretations of the search text as written.
 	*/
+
+	/* var: mainIndex
+		A sorted array of the search text prefixes that have data files associated with them.  This is
+		what was stored in search/index.js.  This variable is only available if <mainIndexStatus> is set
+		to `Ready.
+	*/
+
+	/* var: mainIndexStatus
+		The state of <mainIndex>, which may be:
+		`NotLoaded - search/index.js has not been loaded yet, or even had it's script element added.
+		`Loading - search/index.js has had a script element added but the data hasn't returned yet.
+		`Ready - search/index.js has been loaded and <mainIndex> is ready to use.
+	*/
+		/* Substitutions:
+			`NotLoaded = 1
+			`Loading = 2
+			`Ready = 3
+		*/
 
 	};

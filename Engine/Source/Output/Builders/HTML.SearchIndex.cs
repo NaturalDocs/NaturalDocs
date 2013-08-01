@@ -32,7 +32,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 			StringBuilder output = new StringBuilder("NDSearch.OnIndexLoaded([");
 
 			List<string> keywordSegmentIDs = Engine.Instance.SearchIndex.KeywordSegmentIDs();
-			keywordSegmentIDs.Sort();
+
+			keywordSegmentIDs.Sort(
+				delegate (string a, string b)
+					{
+					return string.CompareOrdinal(a, b);
+					}
+				);
 
 			#if DONT_SHRINK_FILES
 			char lastStartingLetter = '\0';
