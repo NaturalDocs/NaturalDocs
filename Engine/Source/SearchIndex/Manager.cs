@@ -19,7 +19,6 @@
  *		
  *		The file stores each keyword segment as a string ID followed by a NumberSet of its associated topic IDs.  The
  *		String-NumberSet pairs continue in no particular order until it reaches a null ID.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
@@ -209,7 +208,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			// Convert the topics into entries and sort them by keyword
 
-			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>();
+			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>(KeySettings.IgnoreCase);
 
 			foreach (var topic in topics)
 				{
@@ -225,6 +224,39 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 							{
 							keywordEntry = new KeywordEntry(keyword);
 							keywordEntryTable[keyword] = keywordEntry;
+							}
+						else if (keywordEntry.Keyword != keyword)
+							{
+							// If they differ in case we still want to combine them, but we have to choose which case will be in the
+							// results.  Prioritize in this order: mixed case ('m'), all lowercase ('l'), all uppercase ('u').
+
+							char keywordCase, keywordEntryCase;
+
+							if (keyword == keyword.ToLower())
+								{  keywordCase = 'l';  }
+							else if (keyword == keyword.ToUpper())
+								{  keywordCase = 'u';  }
+							else
+								{  keywordCase = 'm';  }
+
+							if (keywordEntry.Keyword == keywordEntry.Keyword.ToLower())
+								{  keywordEntryCase = 'l';  }
+							else if (keywordEntry.Keyword == keywordEntry.Keyword.ToUpper())
+								{  keywordEntryCase = 'u';  }
+							else
+								{  keywordEntryCase = 'm';  }
+
+							if ( (keywordCase == 'm' && keywordEntryCase != 'm') ||
+								 (keywordCase == 'l' && keywordEntryCase == 'u') )
+								{  
+								keywordEntry.Keyword = keyword;  
+								}
+							else if (keywordCase == 'm' && keywordEntryCase == 'm')
+								{
+								// If they're both mixed, use the sort order.  This lets SomeValue be used instead of someValue.
+								if (string.Compare(keyword, keywordEntry.Keyword) > 0)
+									{  keywordEntry.Keyword = keyword;  }
+								}
 							}
 
 						keywordEntry.TopicEntries.Add(topicEntry);

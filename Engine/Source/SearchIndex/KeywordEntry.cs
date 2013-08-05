@@ -37,12 +37,22 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 
 		/* Property: Keyword
-		 * The keyword associated with this entry.
+		 * The keyword associated with this entry.  After the object is created it can only be changed to the same keyword with
+		 * different capitalization.
 		 */
 		public string Keyword
 			{
 			get
 				{  return keyword;  }
+			set
+				{
+				#if DEBUG
+				if (string.Compare(value, keyword, true) != 0)
+					{  throw new Exception("Can only change the keyword in a KeywordEntry to the same string with different capitalization.");  }
+				#endif
+
+				keyword = value;
+				}
 			}
 
 		/* Property: SearchText
