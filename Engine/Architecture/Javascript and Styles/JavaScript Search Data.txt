@@ -27,9 +27,7 @@ _______________________________________________________________________________
 
 		The keyword segment file calls <NDSearch.OnKeywordSegmentLoaded()> with its data, which conceptually looks like this:
 
-		> NDSearch.OnKeywordSegmentLoaded(keywordSegmentID, keywordSegmentType, keywords[]);
-		>
-		> keywordSegmentType: prefix = 1, short = 2
+		> NDSearch.OnKeywordSegmentLoaded(keywordSegmentID, keywords[]);
 		>
 		> keyword: [ htmlName, searchText (optional), members[] ]
 		>  - searchText is undefined if it's the same as htmlName in lowercase
@@ -43,7 +41,7 @@ _______________________________________________________________________________
 		Applied without removing optional parameters it would look like this:
 
 		> NDSearch.OnKeywordSegmentLoaded(
-		>    "acc", 1, [
+		>    "acc", [
 		>       [ "Accessor", "accessor", [
 		>          [ undefined, "Accessor", "accessor", "File:Folder/Documentation.txt:Accessor", undefined ]
 		>          [ "ClassA.", "Accessor", "accessor", "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
@@ -54,7 +52,7 @@ _______________________________________________________________________________
 		With optional parameters applied it looks like this:
 
 		> NDSearch.OnKeywordSegmentLoaded(
-		>    "acc", 1, [
+		>    "acc", [
 		>       [ "Accessor", , [
 		>          [ , , , "File:Folder/Documentation.txt#Accessor" ]
 		>          [ "ClassA.", , , "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],

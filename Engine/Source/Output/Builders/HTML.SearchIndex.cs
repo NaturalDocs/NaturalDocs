@@ -113,9 +113,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			StringBuilder output = new StringBuilder("OnKeywordSegmentLoaded(\"");
 			output.StringEscapeAndAppend(keywordSegmentID);
-			output.Append("\",");
-			output.Append( (int)Engine.Instance.SearchIndex.KeywordSegmentType(keywordSegmentID) );
-			output.Append(",[");
+			output.Append("\",[");
 
 			bool isFirstKeywordEntry = true;
 

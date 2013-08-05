@@ -42,22 +42,6 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 	public class Manager : IDisposable, CodeDB.IChangeWatcher
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-		/* Enum: KeywordSegmentTypes
-		 * 
-		 * Prefix - The segment is for all keywords that start with the keyword segment ID.  For example, prefix segment "app"
-		 *			   be the segment for "app" and "application".
-		 * Short - The segment is for short keywords that exactly match the keyword segment ID.  For example, prefix segment
-		 *			  "a" would be the segment for "a" only and not include "application".
-		 */
-		public enum KeywordSegmentTypes
-			{  Prefix = 1, Short = 2  }
-			/* DEPENDENCY: If these values change, the JavaScript styles must be changed to match. */
-
-
-		
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -150,18 +134,6 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{  accessLock.ExitReadLock();  }
 
 			return keywordSegmentIDs;
-			}
-
-
-		/* Function: KeywordSegmentType
-		 * Returns which of the <KeywordSegmentTypes> is associated with the passed keyword segment ID.
-		 */
-		public KeywordSegmentTypes KeywordSegmentType (string keywordSegmentID)
-			{
-			if (keywordSegmentID.Length < 3)
-				{  return KeywordSegmentTypes.Short;  }
-			else
-				{  return KeywordSegmentTypes.Prefix;  }
 			}
 
 
