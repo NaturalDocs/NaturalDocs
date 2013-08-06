@@ -118,6 +118,14 @@ var NDSearch = new function ()
 		};
 
 
+	/* Function: IsActive
+	*/
+	this.IsActive = function ()
+		{
+		return (NDCore.HasClass(this.domSearchField, "DefaultText") == false);
+		};
+
+
 	/* Function: ShowResults
 	*/
 	this.ShowResults = function ()
@@ -307,6 +315,10 @@ var NDSearch = new function ()
 	*/
 	this.Update = function ()
 		{
+		// This may be called by segment data loaders after the field was deactivated so we have to check.
+		if (!this.IsActive())
+			{  return;  }
+
 		var status = this.UpdateAndBuildResults();
 
 		if (status.newContent == undefined)
@@ -699,6 +711,17 @@ var NDSearch = new function ()
 	// ________________________________________________________________________
 
 	
+	/* Function: OnIndexLoaded
+	*/
+	this.OnIndexLoaded = function (content)
+		{
+		this.mainIndex = content;
+		this.mainIndexStatus = `Ready;
+
+		this.Update();
+		};
+
+	
 	/* Function: LoadKeywordSegment
 		Starts loading the keyword segment with the passed prefix if it isn't already loaded or in the process of loading.
 	*/
@@ -803,11 +826,11 @@ var NDSearch = new function ()
 
 	/* Function: OnFieldFocus
 	*/
-	this.OnFieldFocus = function (isActive)
+	this.OnFieldFocus = function (hasFocus)
 		{
-		if (isActive)
+		if (hasFocus)
 			{
-			if (NDCore.HasClass(this.domSearchField, "DefaultText"))
+			if (!this.IsActive())
 				{  this.Activate();  }
 			// Otherwise it might be receiving focus back from the search results
 			}
@@ -836,9 +859,9 @@ var NDSearch = new function ()
 
 	/* Function: OnResultsFocus
 	*/
-	this.OnResultsFocus = function (isActive)
+	this.OnResultsFocus = function (hasFocus)
 		{
-		if (isActive == false)
+		if (hasFocus == false)
 			{  
 			if (document.activeElement == undefined || document.activeElement.id != "NDSearchField")
 				{  this.Deactivate();  }
@@ -856,17 +879,6 @@ var NDSearch = new function ()
 		if (event.keyCode == 27)  // ESC
 			{  this.Deactivate();  }
 		}
-
-
-	/* Function: OnIndexLoaded
-	*/
-	this.OnIndexLoaded = function (content)
-		{
-		this.mainIndex = content;
-		this.mainIndexStatus = `Ready;
-
-		this.Update();
-		};
 
 
 	/* Function: OnUpdateLayout
