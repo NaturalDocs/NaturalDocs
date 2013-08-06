@@ -23,6 +23,8 @@
 		`Member_FileHashPath = 3
 		`Member_ClassHashPath = 4
 
+		`UpdateSearchDelay = 350
+
 */
 
 "use strict";
@@ -853,7 +855,21 @@ var NDSearch = new function ()
 		if (event.keyCode == 27)  // ESC
 			{  this.Deactivate();  }
 		else
-			{  this.Update();  }
+			{
+			// Reset the countdown on every keystroke
+			if (this.updateSearchTimeout != undefined)
+				{  clearTimeout(this.updateSearchTimeout);  }
+
+			this.updateSearchTimeout = setTimeout(
+				function ()
+					{
+					clearTimeout(NDSearch.updateSearchTimeout);
+					NDSearch.updateSearchTimeout = undefined;
+
+					NDSearch.Update();
+					},
+				`UpdateSearchDelay);
+			}
 		}
 
 
@@ -915,6 +931,11 @@ var NDSearch = new function ()
 	/* var: prefixesInSearchText
 		An array of prefixes that match <searchText> and/or <altSearchText>.  If there are none it will
 		be undefined.
+	*/
+
+	/* var: updateSearchTimeout
+		A timeout to manage the delay between when the user stops typing and when the search results
+		update.
 	*/
 
 	/* var: mainIndex
