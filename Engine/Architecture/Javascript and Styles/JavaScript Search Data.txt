@@ -32,11 +32,11 @@ _______________________________________________________________________________
 		> keyword: [ htmlName, searchText (optional), members[] ]
 		>  - searchText is undefined if it's the same as htmlName in lowercase
 		>
-		> member: [ htmlQualifier (optional), htmlName (optional), searchText (optional), fileURLPath, classURLPath (optional) ]
+		> member: [ htmlQualifier (optional), htmlName (optional), searchText (optional), fileHashPath, classHashPath (optional) ]
 		>  - htmlQualifier is undefined if there isn't one
 		>  - htmlName is undefined if it's the same as the keyword's htmlName
 		>  - searchText is undefined if it's the same as htmlName in lowercase
-		>  - classURLPath is undefined if there isn't one
+		>  - classHashPath is undefined if there isn't one
 
 		Applied without removing optional parameters it would look like this:
 

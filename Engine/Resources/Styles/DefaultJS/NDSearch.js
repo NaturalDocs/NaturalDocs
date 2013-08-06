@@ -10,6 +10,19 @@
 	Such documentation is not covered by Natural Docs' copyright and licensing,
 	and may have its own copyright and distribution terms as decided by its author.
 
+
+	Substitutions:
+
+		`Keyword_HTMLName = 0
+		`Keyword_SearchText = 1
+		`Keyword_Members = 2
+
+		`Member_HTMLQualifier = 0
+		`Member_HTMLName = 1
+		`Member_SearchText = 2
+		`Member_FileHashPath = 3
+		`Member_ClassHashPath = 4
+
 */
 
 "use strict";
@@ -32,35 +45,48 @@ var NDSearch = new function ()
 		{
 		// We delay loading search/index.js until the search field is actually used
 		this.mainIndexStatus = `NotLoaded;
+		this.keywordSegments = { };
 
 
-		this.searchField = document.getElementById("NDSearchField");
+		this.domSearchField = document.getElementById("NDSearchField");
 
-		this.searchField.onfocus = function () {  NDSearch.OnFocus(true);  };
-		this.searchField.onblur = function () {  NDSearch.OnFocus(false);  };
-		this.searchField.onkeyup = function (event) {  NDSearch.OnKeyUp(event);  };
+		this.domSearchField.onfocus = function () {  NDSearch.OnFieldFocus(true);  };
+		this.domSearchField.onblur = function () {  NDSearch.OnFieldFocus(false);  };
+		this.domSearchField.onkeyup = function (event) {  NDSearch.OnFieldKeyUp(event);  };
 
-		this.searchResults = document.createElement("div");
-		this.searchResults.id = "NDSearchResults";
-		this.searchResults.style.display = "none";
-		this.searchResults.style.position = "fixed";
+		this.domSearchResults = document.createElement("div");
+		this.domSearchResults.id = "NDSearchResults";
+		this.domSearchResults.style.display = "none";
+		this.domSearchResults.style.position = "fixed";
 
 		if (NDCore.IEVersion() == 6)
-			{  this.searchResults.style.position = "absolute";  }
+			{  this.domSearchResults.style.position = "absolute";  }
 
-		this.searchResults.style.zIndex = 22;  // documented in default.css
-		document.body.appendChild(this.searchResults);
+		this.domSearchResults.onfocus = function () {  NDSearch.OnResultsFocus(true);  };
+		this.domSearchResults.onblur = function () {  NDSearch.OnResultsFocus(false);  };
+		this.domSearchResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
+
+		var domSearchResultsContent = document.createElement("div");
+		domSearchResultsContent.id = "ShContent";
+
+		this.domSearchResults.appendChild(domSearchResultsContent);
+		document.body.appendChild(this.domSearchResults);
 
 		this.Deactivate();
 		};
 
 
+
+	// Group: UI Functions
+	// ________________________________________________________________________
+
+	
 	/* Function: Activate
 	*/
 	this.Activate = function ()
 		{
-		this.searchField.value = "";
-		NDCore.RemoveClass(this.searchField, "DefaultText");
+		this.domSearchField.value = "";
+		NDCore.RemoveClass(this.domSearchField, "DefaultText");
 
 		// Start loading the main index as soon as the search field is first activated.  We don't want to wait
 		// until they start typing.
@@ -78,8 +104,13 @@ var NDSearch = new function ()
 		{
 		this.HideResults();
 
-		NDCore.AddClass(this.searchField, "DefaultText");
-		this.searchField.value = `Locale{HTML.DefaultSearchText};
+		NDCore.AddClass(this.domSearchField, "DefaultText");
+		this.domSearchField.value = `Locale{HTML.DefaultSearchText};
+
+		this.searchText = undefined;
+		this.altSearchText = undefined;
+		this.prefixesInSearchText = undefined;
+		// xxx purge unused result data
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		document.getElementById("CFrame").contentWindow.focus();
@@ -90,7 +121,7 @@ var NDSearch = new function ()
 	*/
 	this.ShowResults = function ()
 		{
-		this.searchResults.style.display = "block";
+		this.domSearchResults.style.display = "block";
 		this.PositionResults();
 		};
 
@@ -99,7 +130,7 @@ var NDSearch = new function ()
 	*/
 	this.HideResults = function ()
 		{
-		this.searchResults.style.display = "none";
+		this.domSearchResults.style.display = "none";
 		};
 	
 
@@ -107,20 +138,20 @@ var NDSearch = new function ()
 	*/
 	this.PositionResults = function ()
 		{
-		this.searchResults.style.visibility = "hidden";
+		this.domSearchResults.style.visibility = "hidden";
 
 
 		// First set the position to 0,0 and the width and height back to auto so it will be sized naturally to its content
 
-		NDCore.SetToAbsolutePosition(this.searchResults, 0, 0, undefined, undefined);
-		this.searchResults.style.width = "";
-		this.searchResults.style.height = "";
+		NDCore.SetToAbsolutePosition(this.domSearchResults, 0, 0, undefined, undefined);
+		this.domSearchResults.style.width = "";
+		this.domSearchResults.style.height = "";
 
 		
 		// Figure out our desired upper right coordinates
 
-		var urX = this.searchField.offsetLeft + this.searchField.offsetWidth;
-		var urY = this.searchField.offsetTop + this.searchField.offsetHeight + 5;
+		var urX = this.domSearchField.offsetLeft + this.domSearchField.offsetWidth;
+		var urY = this.domSearchField.offsetTop + this.domSearchField.offsetHeight + 5;
 
 
 		// Figure out our maximum width/height so we don't go off the screen.  We include the footer height not because
@@ -135,93 +166,34 @@ var NDSearch = new function ()
 
 		// Resize
 
-		if (this.searchResults.offsetHeight > maxHeight)
-			{  NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, undefined, maxHeight);  }
-		if (this.searchResults.offsetWidth > maxWidth)
-			{  NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, maxWidth, undefined);  }
+		if (this.domSearchResults.offsetHeight > maxHeight)
+			{  NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, undefined, maxHeight);  }
+		if (this.domSearchResults.offsetWidth > maxWidth)
+			{  NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, maxWidth, undefined);  }
 		else
 			{
 			// Firefox and Chrome will sometimes not set the automatic width correctly, leaving a horizontal scroll bar where 
 			// one isn't necessary.  Weird.  Fix it up for them.  This also fixes the positioning for IE 6 and 7.
-			if (this.searchResults.scrollWidth > this.searchResults.clientWidth)
+			if (this.domSearchResults.scrollWidth > this.domSearchResults.clientWidth)
 				{
-				var newWidth = this.searchResults.offsetWidth + (this.searchResults.scrollWidth - this.searchResults.clientWidth) + 5;
+				var newWidth = this.domSearchResults.offsetWidth + 
+									 (this.domSearchResults.scrollWidth - this.domSearchResults.clientWidth) + 5;
 
 				if (newWidth > maxWidth)
 					{  newWidth = maxWidth;  }
 
-				NDCore.SetToAbsolutePosition(this.searchResults, undefined, undefined, newWidth, undefined);
+				NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, newWidth, undefined);
 				}
 			}
 
 
 		// Reposition
 
-		NDCore.SetToAbsolutePosition(this.searchResults, urX - this.searchResults.offsetWidth, urY, undefined, undefined);
+		NDCore.SetToAbsolutePosition(this.domSearchResults, urX - this.domSearchResults.offsetWidth, urY, 
+												 undefined, undefined);
 
 
-		this.searchResults.style.visibility = "visible";
-		};
-
-
-	/* Function: MakeSearchText
-		Converts the raw text entered in <searchField> to a normalized form compatible with the search text Natural Docs 
-		generates.  It will fill in <searchText> and <altSearchText>.
-	*/
-	this.MakeSearchText = function ()
-		{
-		// DEPENDENCY: This must match what is done in Engine.SearchIndex.Entry.Normalize().
-
-		var input = this.searchField.value.toLowerCase();
-
-		// Trim and condense whitespace
-		input = input.replace(/\s+/g, " ");
-		input = input.replace(/^ /, "");
-		input = input.replace(/ $/, "");
-
-		// Remove spaces unless between two alphanumeric/underscore characters
-		input = input.replace(/([^a-z0-9_]) /g, "$1");  // Substitution because JavaScript has no (?<=) for lookbehinds
-		input = input.replace(/ (?=[^a-z0-9_])/g, "");
-
-		// Normalize separators
-		input = input.replace(/::|->/g, ".");
-		input = input.replace(/\\/g, "/");
-
-		// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
-		input = input.replace(/^[./]+/, "");
-
-
-		this.searchText = input;
-
-
-		// If the search text ends with : or - it's possible that it's the first character of :: or ->.  Provide an alternate
-		// search string so relevant results don't disappear until the second character is added.
-
-		var lastChar = input.charAt(input.length - 1);
-
-		if (lastChar == ":" || lastChar == "-")
-			{  this.altSearchText = input.substr(0, input.length - 1) + ".";  }
-		else
-			{  this.altSearchText = undefined;  }
-		};
-
-
-	/* Function: DataFileOf
-	*/
-	this.DataFileOf = function (prefix)
-		{
-		var dataFile = "";
-
-		for (var i = 0; i < prefix.length; i++)
-			{
-			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
-			dataFile += charValue.substr(charValue.length - 4, 4);
-			}
-
-		if (dataFile.length > 0)
-			{  return "search/keywords/" + dataFile + ".js";  }
-		else
-			{  return undefined;  }
+		this.domSearchResults.style.visibility = "visible";
 		};
 
 
@@ -301,14 +273,204 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: GetPrefixesInSearchText
-		Returns an array of prefixes that match <searchText> and/or <altSearchText>.  If there are none it will
-		return an empty array.
+	/* Function: PrefixToHex
 	*/
-	this.GetPrefixesInSearchText = function ()
+	this.PrefixToHex = function (prefix)
+		{
+		var hex = "";
+
+		for (var i = 0; i < prefix.length; i++)
+			{
+			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
+			hex += charValue.substr(charValue.length - 4, 4);
+			}
+
+		return hex;
+		};
+
+
+	/* Function: PrefixToDataFile
+	*/
+	this.PrefixToDataFile = function (prefix)
+		{
+		return "search/keywords/" + this.PrefixToHex(prefix) + ".js";
+		};
+
+
+
+	// Group: Search Functions
+	// ________________________________________________________________________
+
+
+	/* Function: Update
+	*/
+	this.Update = function ()
+		{
+		var status = this.UpdateAndBuildResults();
+
+		if (status.newContent == undefined)
+			{  this.HideResults();  }
+		else
+			{
+			var oldContent = document.getElementById("ShContent");
+			this.domSearchResults.replaceChild(status.newContent, oldContent);
+
+			this.ShowResults();
+			}
+
+		if (status.keywordSegmentToLoad != undefined)
+			{  this.LoadKeywordSegment(status.keywordSegmentToLoad);  }
+		};
+
+	
+	/* Function: UpdateAndBuildResults
+
+		Updates the internal search variables and builds and returns a new ShContent DOM element for the current 
+		search state.  If the results pane should not be shown it will return undefined.
+
+		This is the complete process from reading <domSearchField>, to setting state variables like <searchText>
+		and <prefixesInSearchText>, to queueing more prefix elements for loading, to building the final ShContent 
+		element.  This is only separated from <Update()> to make returning early while building ShContent easier.
+
+		Returns:
+
+			> { newContent, keywordSegmentToLoad }
+	*/
+	this.UpdateAndBuildResults = function ()
+		{
+		var status = {
+			newContent: undefined,
+			keywordSegmentToLoad: undefined
+			};
+
+		this.UpdateSearchText();
+
+		if (this.searchText == undefined || this.searchText == "")
+			{
+			this.prefixesInSearchText = undefined;
+			// xxx purge prefixes in search text
+			return status;
+			}
+
+		status.newContent = document.createElement("div");
+		status.newContent.id = "ShContent";
+
+		if (this.mainIndexStatus != `Ready)
+			{
+			this.AddSearchingStatus(status.newContent);
+			return status;
+			}
+
+		this.UpdatePrefixesInSearchText();
+
+		// xxx purge prefixes no longer used
+
+		if (this.prefixesInSearchText == undefined)
+			{
+			this.AddNoMatchesStatus(status.newContent);
+			return status;
+			}
+
+		var htmlResults = "";
+
+		for (var p = 0; p < this.prefixesInSearchText.length; p++)
+			{
+			var prefix = this.prefixesInSearchText[p];
+
+			if (this.keywordSegments[prefix] == undefined)
+				{
+				status.newContent.innerHTML = htmlResults;
+				status.keywordSegmentToLoad = prefix;
+				this.AddSearchingStatus(status.newContent);
+				return status;
+				}
+			else if (this.keywordSegments[prefix].ready == false)
+				{
+				status.newContent.innerHTML = htmlResults;
+				this.AddSearchingStatus(status.newContent);
+				return status;
+				}
+
+			var keywords = this.keywordSegments[prefix].content;
+
+			for (var i = 0; i < keywords.length; i++)
+				{  htmlResults += this.BuildKeyword(keywords[i]);  }
+			}
+		
+		if (htmlResults == "")
+			{  this.AddNoMatchesStatus(status.newContent);  }
+		else
+			{  status.newContent.innerHTML = htmlResults;  }
+
+		return status;
+		};
+
+	
+	/* Function: UpdateSearchText
+		Converts the raw text entered in <domSearchField> to a normalized form compatible with the search text Natural Docs 
+		generates.  It will fill in <searchText> and <altSearchText>.  Returns whether they changed.
+	*/
+	this.UpdateSearchText = function ()
+		{
+		// DEPENDENCY: This must match what is done in Engine.SearchIndex.Entry.Normalize().
+
+		var changed = false;
+		var newSearchText = this.domSearchField.value.toLowerCase();
+
+		// Trim and condense whitespace
+		newSearchText = newSearchText.replace(/\s+/g, " ");
+		newSearchText = newSearchText.replace(/^ /, "");
+		newSearchText = newSearchText.replace(/ $/, "");
+
+		// Remove spaces unless between two alphanumeric/underscore characters
+		newSearchText = newSearchText.replace(/([^a-z0-9_]) /g, "$1");  // Substitution because JavaScript has no (?<=) for lookbehinds
+		newSearchText = newSearchText.replace(/ (?=[^a-z0-9_])/g, "");
+
+		// Normalize separators
+		newSearchText = newSearchText.replace(/::|->/g, ".");
+		newSearchText = newSearchText.replace(/\\/g, "/");
+
+		// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
+		newSearchText = newSearchText.replace(/^[./]+/, "");
+
+		if (newSearchText != this.searchText)
+			{
+			this.searchText = newSearchText;
+			changed = true;
+			}
+
+
+		// If the search text ends with : or - it's possible that it's the first character of :: or ->.  Provide an alternate
+		// search string so relevant results don't disappear until the second character is added.
+
+		var lastChar = newSearchText.charAt(newSearchText.length - 1);
+		var newAltSearchText;
+
+		if (lastChar == ":" || lastChar == "-")
+			{  newAltSearchText = newSearchText.substr(0, newSearchText.length - 1) + ".";  }
+		else
+			{  newAltSearchText = undefined;  }
+
+		if (newAltSearchText != this.altSearchText)
+			{
+			this.altSearchText = newAltSearchText;
+			changed = true;
+			}
+
+		return changed;
+		};
+
+	
+	/* Function: UpdatePrefixesInSearchText
+		Creates <prefixesInSearchText> from <searchText> and <altSearchText>.  Returns whether it changed.
+	*/
+	this.UpdatePrefixesInSearchText = function ()
 		{
 		if (this.mainIndexStatus != `Ready)
-			{  return [ ];  }
+			{  
+			this.prefixesInSearchText = undefined;
+			return false;
+			}
 
 
 		// Find the stretch that matches searchText
@@ -380,51 +542,254 @@ var NDSearch = new function ()
 			}
 
 
-		// Return a combined array of results.  We don't want any duplicates.
+		// Create a combined array of results.  We don't want any duplicates.
+
+		var newPrefixesInSearchText;
 
 		if (searchPrefixCount == 0)
-			{  return [ ];  }
+			{  
+			newPrefixesInSearchText = undefined;  
+			}
 		else if (altSearchPrefixCount == 0 || 
 					(altSearchPrefixIndex == searchPrefixIndex && altSearchPrefixCount <= searchPrefixCount) )
-			{  return this.mainIndex.slice(searchPrefixIndex, searchPrefixIndex + searchPrefixCount);  }
+			{  
+			newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, searchPrefixIndex + searchPrefixCount);  
+			}
 		else
 			{
-			var result;
 			var searchPrefixEnd = searchPrefixIndex + searchPrefixCount;
 			var altSearchPrefixEnd = altSearchPrefixIndex + altSearchPrefixCount;
 
 			if (searchPrefixEnd <= altSearchPrefixIndex)
-				{  result = this.mainIndex.slice(searchPrefixIndex, searchPrefixEnd);  }
+				{  newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, searchPrefixEnd);  }
 			else
-				{  result = this.mainIndex.slice(searchPrefixIndex, altSearchPrefixIndex);  }
+				{  newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, altSearchPrefixIndex);  }
 
-			result = result.concat(this.mainIndex.slice(altSearchPrefixIndex, altSearchPrefixEnd));
-
-			return result;
+			newPrefixesInSearchText = newPrefixesInSearchText.concat(
+													this.mainIndex.slice(altSearchPrefixIndex, altSearchPrefixEnd) );
 			}
 
+
+		// Compare
+
+		var result;
+
+		if (this.prefixesInSearchText == undefined && newPrefixesInSearchText == undefined)
+			{  result = false;  }
+		else if (this.prefixesInSearchText == undefined || newPrefixesInSearchText == undefined)
+			{  result = true;  }
+		else if (this.prefixesInSearchText.length != newPrefixesInSearchText.length)
+			{  result = true;  }
+		else
+			{
+			result = true;
+
+			for (var i = 0; i < newPrefixesInSearchText; i++)
+				{
+				if (this.prefixesInSearchText[i] != newPrefixesInSearchText[i])
+					{
+					result = false;
+					break;
+					}
+				}
+			}
+
+		this.prefixesInSearchText = newPrefixesInSearchText;
+		return result;
+		};
+
+
+	/* Function: BuildKeyword
+	*/
+	this.BuildKeyword = function (keyword)
+		{
+		// Searching for "acc" in keyword "Access"...
+		if (this.searchText.length <= keyword[`Keyword_SearchText].length)
+			{
+			if (keyword[`Keyword_SearchText].indexOf(this.searchText) == -1 &&
+				(this.altSearchText == undefined || keyword[`Keyword_SearchText].indexOf(this.altSearchText) == -1))
+				{  return "";  }
+			}
+		// Reverse it to search for "access levels" under keyword "Access"...
+		else
+			{
+			if (this.searchText.indexOf(keyword[`Keyword_SearchText]) == -1 &&
+				(this.altSearchText == undefined || this.altSearchText(keyword[`Keyword_SearchText]) == -1))
+				{  return "";  }
+			}
+
+		var membersResults = this.BuildKeywordMembers(keyword[`Keyword_Members]);
+
+		if (membersResults.numberOfMatches == 0)
+			{  return "";  }
+		else if (membersResults.numberOfMatches == 1)
+			{  return membersResults.html;  }
+		else
+			{
+			return "<div class=\"ShResult ShKeyword\">" + 
+						"<a href=\"#\">" + keyword[`Keyword_HTMLName] + "</a>" +
+						"<div class=\"ShIndent\">" +
+							membersResults.html +
+						"</div>" +
+					"</div>";
+			}
+		};
+
+	
+	/* Function: BuildKeywordMembers
+		
+		Returns:
+
+			{ numberOfMatches, html }
+	*/
+	this.BuildKeywordMembers = function (members)
+		{
+		var result = {
+			numberOfMatches: 0,
+			html: ""
+			};
+
+		for (var i = 0; i < members.length; i++)
+			{
+			var member = members[i];
+
+			if (member[`Member_SearchText].indexOf(this.searchText) != -1 ||
+				(this.altSearchText != undefined && member[`Member_SearchText].indexOf(this.altSearchText) != -1))
+				{
+				result.html += "<div class=\"ShResult ShTarget\"><a href=\"#\">";
+
+				if (member[`Member_HTMLQualifier] != undefined)
+					{  result.html += "<span class=\"ShQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
+				
+				result.html += member[`Member_HTMLName] + "</a></div>";
+				result.numberOfMatches++;
+				}
+			}
+
+		return result;
+		};
+
+	
+	/* Function: AddSearchingStatus
+	*/
+	this.AddSearchingStatus = function (domElement)
+		{
+		var status = document.createElement("div");
+		status.className = "ShStatus Searching";
+		status.innerHTML = `Locale{HTML.SearchingStatus};
+
+		domElement.appendChild(status);
+		};
+
+
+	/* Function: AddNoMatchesStatus
+	*/
+	this.AddNoMatchesStatus = function (domElement)
+		{
+		var status = document.createElement("div");
+		status.className = "ShStatus NoResults";
+		status.innerHTML = `Locale{HTML.NoMatchesStatus};
+
+		domElement.appendChild(status);
 		};
 
 
 
+	// Group: Segment Functions
+	// ________________________________________________________________________
+
+	
+	/* Function: LoadKeywordSegment
+		Starts loading the keyword segment with the passed prefix if it isn't already loaded or in the process of loading.
+	*/
+	this.LoadKeywordSegment = function (prefix)
+		{
+		if (this.keywordSegments[prefix] == undefined)
+			{
+			var segment = {
+				prefix: prefix,
+				content: undefined,
+				ready: false,
+				domLoaderID: "NDKeywordLoader_" + this.PrefixToHex(prefix)
+				};
+
+			this.keywordSegments[prefix] = segment;
+
+			NDCore.LoadJavaScript(this.PrefixToDataFile(prefix), segment.domLoaderID);
+			}
+		};
+
+
+	/* Function: OnKeywordSegmentLoaded
+		Called by the keyword segment data file when it has finished loading.
+	*/
+	this.OnKeywordSegmentLoaded = function (prefix, content)
+		{
+		var entry = this.keywordSegments[prefix];
+
+		// The data file might have been requested but then purged as no longer needed before it came in.  If that's the
+		// case then we can just discard the data.
+		if (entry == undefined)
+			{  return;  }
+
+		// Undo the data deduplication that was applied to the content.
+		for (var k = 0; k < content.length; k++)
+			{
+			var keyword = content[k];
+
+			if (keyword[`Keyword_SearchText] == undefined)
+				{  keyword[`Keyword_SearchText] = keyword[`Keyword_HTMLName].toLowerCase();  }
+
+			for (var m = 0; m < keyword[`Keyword_Members].length; m++)
+				{
+				var member = keyword[`Keyword_Members][m];
+
+				if (member[`Member_HTMLName] == undefined)
+					{  member[`Member_HTMLName] = keyword[`Keyword_HTMLName];  }
+				if (member[`Member_SearchText] == undefined)
+					{  member[`Member_SearchText] = member[`Member_HTMLName].toLowerCase();  }
+				}
+			}
+
+		entry.content = content;
+		entry.ready = true;
+
+		// We don't need the loader anymore.
+		NDCore.RemoveScriptElement(entry.domLoaderID);
+
+		//	Replace with this line to simulate latency:
+		// setTimeout("NDSearch.Update()", 1500);
+		this.Update();
+		};
+
+
+	
 	// Group: Event Handlers
 	// ________________________________________________________________________
 
 
-	/* Function: OnFocus
+	/* Function: OnFieldFocus
 	*/
-	this.OnFocus = function (isActive)
+	this.OnFieldFocus = function (isActive)
 		{
 		if (isActive)
-			{  this.Activate();  }
+			{
+			if (NDCore.HasClass(this.domSearchField, "DefaultText"))
+				{  this.Activate();  }
+			// Otherwise it might be receiving focus back from the search results
+			}
 		else
-			{  this.Deactivate();  }
+			{  
+			// IE switches focus to the results if you click on a scroll bar
+			if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
+				{  this.Deactivate();  }
+			}
 		};
 
 
-	/* Function: OnKeyUp
+	/* Function: OnFieldKeyUp
 	*/
-	this.OnKeyUp = function (event)
+	this.OnFieldKeyUp = function (event)
 		{
 		if (event === undefined)
 			{  event = window.event;  }
@@ -432,50 +797,31 @@ var NDSearch = new function ()
 		if (event.keyCode == 27)  // ESC
 			{  this.Deactivate();  }
 		else
-			{  this.OnChange();  }
+			{  this.Update();  }
 		}
 
 
-	/* Function: OnChange
+	/* Function: OnResultsFocus
 	*/
-	this.OnChange = function ()
+	this.OnResultsFocus = function (isActive)
 		{
-		this.MakeSearchText();
-
-		if (this.searchText == undefined || this.searchText == "")
-			{
-			this.HideResults();
-			return;
+		if (isActive == false)
+			{  
+			if (document.activeElement == undefined || document.activeElement.id != "NDSearchField")
+				{  this.Deactivate();  }
 			}
+		};
 
 
-		// Show normalized search text
+	/* Function: OnResultsKeyUp
+	*/
+	this.OnResultsKeyUp = function (event)
+		{
+		if (event === undefined)
+			{  event = window.event;  }
 
-		var output = "[" + this.searchText + "]";
-
-		if (this.altSearchText != undefined && this.altSearchText != "")
-			{  output += "<br>[" + this.altSearchText + "]";  }
-
-		output = "<pre>" + output + "</pre>";
-		
-
-		// Show prefix matches
-
-		var prefixes = this.GetPrefixesInSearchText();
-		
-		if (prefixes == undefined || prefixes.length == 0)
-			{  output += "No matches";  }
-		else
-			{
-			for (var i = 0; i < prefixes.length; i++)
-				{
-				output += "<br>" + prefixes[i] + " - " + this.DataFileOf(prefixes[i]);
-				}
-			}
-
-
-		this.searchResults.innerHTML = output;
-		this.ShowResults();
+		if (event.keyCode == 27)  // ESC
+			{  this.Deactivate();  }
 		}
 
 
@@ -485,6 +831,8 @@ var NDSearch = new function ()
 		{
 		this.mainIndex = content;
 		this.mainIndexStatus = `Ready;
+
+		this.Update();
 		};
 
 
@@ -493,7 +841,7 @@ var NDSearch = new function ()
 	this.OnUpdateLayout = function ()
 		{
 		// This may be called before Start().
-		if (this.searchResults != undefined)
+		if (this.domSearchResults != undefined)
 			{  this.PositionResults();  }
 		};
 
@@ -502,11 +850,11 @@ var NDSearch = new function ()
 	// Group: Variables
 	// ________________________________________________________________________
 
-	/* var: searchField
+	/* var: domSearchField
 		The search field DOM element.
 	*/
 
-	/* var: searchResults
+	/* var: domSearchResults
 		The search results DOM element.
 	*/
 
@@ -517,6 +865,11 @@ var NDSearch = new function ()
 	/* var: altSearchText
 		An alternate version of the current search text, normalized, if any.  This is for if there can
 		be two interpretations of the search text as written.
+	*/
+
+	/* var: prefixesInSearchText
+		An array of prefixes that match <searchText> and/or <altSearchText>.  If there are none it will
+		be undefined.
 	*/
 
 	/* var: mainIndex
@@ -537,4 +890,31 @@ var NDSearch = new function ()
 			`Ready = 3
 		*/
 
+	/* var: keywordSegments
+		A hash mapping segment IDs to <NDKeywordSegments>.
+	*/
+
 	};
+
+
+
+
+/* Class: NDKeywordSegment
+	___________________________________________________________________________
+
+	An object representing a keyword segment of search index data.
+
+		var: id
+		The segment ID string, such as "acc".
+
+		var: ready
+		True if the data has been loaded and is ready to use.  False if the data has been requested but is not ready 
+		yet.  If the data has not been requested there simply would not be a NDKeywordSegment object for it.
+
+		var: content
+		The content of the segment as an array of keywords.
+
+		var: domLoaderID
+		The ID of the DOM script object that's loading this file.
+
+*/

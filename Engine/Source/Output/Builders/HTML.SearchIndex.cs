@@ -111,7 +111,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Generate the output file contents
 
-			StringBuilder output = new StringBuilder("OnKeywordSegmentLoaded(\"");
+			StringBuilder output = new StringBuilder("NDSearch.OnKeywordSegmentLoaded(\"");
 			output.StringEscapeAndAppend(keywordSegmentID);
 			output.Append("\",[");
 

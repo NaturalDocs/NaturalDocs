@@ -408,6 +408,23 @@ _______________________________________________________________________________
 	<input #NDSearchField DefaultText? />
 
 	<#NDSearchResults>
+		<#ShContent>
+
+			<ShResult ShTarget>
+				<a>...</a>
+			</ShResult ShTarget>
+
+			<ShResult ShKeyword>
+				<a>...</a>
+				<ShIndent>
+					<ShResult>...</ShResult>
+					...
+				</ShIndent>
+			</ShResult ShKeyword>
+
+			<ShStatus Searching? NoResults?>...</ShStatus>
+
+		</#ShContent>
 	</#NDSearchResults>
 
 ----------

@@ -43,13 +43,14 @@
 
 		`NDMessagesZIndex = 9999
 
+		`NDSearchFieldZIndex = 201
+		`NDSearchResultsZIndex = 200
+
 		`NDSizerZIndex = 101
 		`NDContentCoverZIndex = 100
 
-		`NDSearchResultsZIndex = 22
 		`NDToolTipZIndex = 21
 
-		`NDSearchFieldZIndex = 6
 		`NDMenuZIndex = 5
 		`NDSummaryZIndex = 4
 		`NDContentZIndex = 3
@@ -165,8 +166,9 @@ td {
 		}
 
 #NDSearchResults {
-	z-index: `NDSearchZIndex;
+	z-index: `NDSearchResultsZIndex;
 	overflow: auto;
+	font: 10pt `SearchFontFamily;
 	background-color: #FFFFFF;
 
 	border-style: solid;
@@ -184,6 +186,49 @@ td {
 
 	min-width: 28ex;
 	}
+
+	.ShResult {
+		padding: .15em 0;
+		font-weight: bold;
+		color: #000000;
+		}
+	.ShResult a:link,
+	.ShResult a:hover,
+	.ShResult a:active,
+	.ShResult a:visited {
+		color: #000000;
+		}
+
+	.ShQualifier {
+		font-weight: normal;
+		color: #404040;
+		}
+	.ShKeyword {
+		font-style: italic;
+		}
+	.ShResult + .ShKeyword,
+	.ShKeyword + .ShResult {
+		margin-top: .75em;
+		}
+	.ShIndent {
+		margin-left: 3ex;
+		font-style: normal;
+		}
+
+
+	.ShStatus {
+		color: #A0A0A0;
+		text-align: center;
+		}
+	.ShStatus.Searching {
+		font-style: italic;
+		}
+	.ShResult + .ShStatus {
+		margin-top: .75ex;
+		border-top: 1px solid #C0C0C0;
+		padding-top: .75ex;
+		}
+
 
 
 

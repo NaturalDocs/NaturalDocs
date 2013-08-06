@@ -30,6 +30,8 @@ HTML.DefaultHomeTitle: Source Documentation
 HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
 
 HTML.DefaultSearchText: Search
+HTML.SearchingStatus: Searching...
+HTML.NoMatchesStatus: No Matches
 
 HTML.AdditionalChildren(number): and {0} other {0s?children:child}
 
