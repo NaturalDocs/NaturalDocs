@@ -110,7 +110,8 @@ var NDSearch = new function ()
 		this.searchText = undefined;
 		this.altSearchText = undefined;
 		this.prefixesInSearchText = undefined;
-		// xxx purge unused result data
+
+		this.PurgeUnusedSegments();
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		document.getElementById("CFrame").contentWindow.focus();
@@ -348,7 +349,7 @@ var NDSearch = new function ()
 		if (this.searchText == undefined || this.searchText == "")
 			{
 			this.prefixesInSearchText = undefined;
-			// xxx purge prefixes in search text
+			this.PurgeUnusedSegments();
 			return status;
 			}
 
@@ -362,8 +363,7 @@ var NDSearch = new function ()
 			}
 
 		this.UpdatePrefixesInSearchText();
-
-		// xxx purge prefixes no longer used
+		this.PurgeUnusedSegments();
 
 		if (this.prefixesInSearchText == undefined)
 			{
@@ -760,6 +760,39 @@ var NDSearch = new function ()
 		//	Replace with this line to simulate latency:
 		// setTimeout("NDSearch.Update()", 1500);
 		this.Update();
+		};
+
+
+	/* Function: PurgeUnusedSegments
+		Removes all segments from <keywordSegments> that are not represented in <prefixesInSearchText>.
+	*/
+	this.PurgeUnusedSegments = function ()
+		{
+		if (this.prefixesInSearchText == undefined || this.prefixesInSearchText.length == 0)
+			{  
+			this.keywordSegments = { };
+			return;
+			}
+
+		for (var prefix in this.keywordSegments)
+			{
+			var isUsed = false;
+
+			for (var i = 0; i < this.prefixesInSearchText.length; i++)
+				{
+				if (this.prefixesInSearchText[i] == prefix)
+					{
+					isUsed = true;
+					break;
+					}
+				}
+
+			if (!isUsed)
+				{
+				// Set it to undefined instead of using delete so we don't potentially screw up the for..in iteration.
+				this.keywordSegments[prefix] = undefined;
+				}
+			}
 		};
 
 
