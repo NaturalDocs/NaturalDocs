@@ -716,7 +716,7 @@ var NDSearch = new function ()
 				if (member[`Member_HTMLQualifier] != undefined)
 					{  result.html += "<span class=\"ShQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
 				
-				result.html += member[`Member_HTMLName] + "</a></div>";
+				result.html += member[`Member_HTMLName] + "</a>";
 				result.numberOfMatches++;
 				}
 			}
