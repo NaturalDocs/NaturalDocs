@@ -168,6 +168,7 @@ td {
 #NDSearchResults {
 	z-index: `NDSearchResultsZIndex;
 	overflow: auto;
+
 	font: 10pt `SearchFontFamily;
 	background-color: #FFFFFF;
 
@@ -182,21 +183,32 @@ td {
 	-webkit-box-shadow: .15ex .25ex .4ex #606060;
 	box-shadow: .15ex .25ex .4ex #606060;
 
-	padding: .75ex 1ex;
-
 	min-width: 28ex;
 	}
 
-	.ShResult {
-		padding: .15em 0;
+	.ShEntry {
+		padding: .25ex 1.25ex;
 		font-weight: bold;
 		color: #000000;
 		}
-	.ShResult a:link,
-	.ShResult a:hover,
-	.ShResult a:active,
-	.ShResult a:visited {
+	.ShEntry.first {
+		margin-top: .75ex;
+		}
+	.ShEntry.last {
+		margin-bottom: .75ex;
+		}
+	.ShEntry:hover {
+		background-color: #E4E4E4;
+		}
+	a.ShEntry {
+		display: block;
+		}
+	a.ShEntry:link,
+	a.ShEntry:hover,
+	a.ShEntry:active,
+	a.ShEntry:visited {
 		color: #000000;
+		text-decoration: none;
 		}
 
 	.ShQualifier {
@@ -206,27 +218,26 @@ td {
 	.ShKeyword {
 		font-style: italic;
 		}
-	.ShResult + .ShKeyword,
-	.ShKeyword + .ShResult {
-		margin-top: .75em;
-		}
-	.ShIndent {
-		margin-left: 3ex;
-		font-style: normal;
-		}
 
+	.ShChildren {
+		margin-bottom: .5em;
+		}
+	.ShChildren .ShEntry {
+		padding-left: 4ex;
+		}
 
 	.ShStatus {
+		margin: .75ex 1.25ex;
 		color: #A0A0A0;
 		text-align: center;
 		}
+	.ShEntry + .ShStatus,
+	.ShChildren + .ShStatus{
+		padding-top: .75ex;
+		border-top: 1px solid #C0C0C0;
+		}
 	.ShStatus.Searching {
 		font-style: italic;
-		}
-	.ShResult + .ShStatus {
-		margin-top: .75ex;
-		border-top: 1px solid #C0C0C0;
-		padding-top: .75ex;
 		}
 
 

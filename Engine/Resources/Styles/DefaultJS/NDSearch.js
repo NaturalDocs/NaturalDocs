@@ -385,7 +385,10 @@ var NDSearch = new function ()
 			return status;
 			}
 
+		var location = new NDLocation(window.location.hash);
+		var favorClasses = (location.type == "Class" || location.type == "Database");
 		var htmlResults = "";
+		var addSearchingStatus = false;
 
 		for (var p = 0; p < this.prefixesInSearchText.length; p++)
 			{
@@ -393,28 +396,53 @@ var NDSearch = new function ()
 
 			if (this.keywordSegments[prefix] == undefined)
 				{
-				status.newContent.innerHTML = htmlResults;
 				status.keywordSegmentToLoad = prefix;
-				this.AddSearchingStatus(status.newContent);
-				return status;
+				addSearchingStatus = true;
+				break;
 				}
 			else if (this.keywordSegments[prefix].ready == false)
 				{
-				status.newContent.innerHTML = htmlResults;
-				this.AddSearchingStatus(status.newContent);
-				return status;
+				addSearchingStatus = true;
+				break;
 				}
 
 			var keywords = this.keywordSegments[prefix].content;
 
 			for (var i = 0; i < keywords.length; i++)
-				{  htmlResults += this.BuildKeyword(keywords[i]);  }
+				{  htmlResults += this.BuildKeyword(keywords[i], favorClasses);  }
 			}
 		
-		if (htmlResults == "")
+		if (htmlResults == "" && !addSearchingStatus)
 			{  this.AddNoMatchesStatus(status.newContent);  }
 		else
-			{  status.newContent.innerHTML = htmlResults;  }
+			{  
+			status.newContent.innerHTML = htmlResults;
+
+			var results = status.newContent.childNodes;
+
+			for (var i = 0; i < results.length; i++)
+				{
+				if (NDCore.HasClass(results[i], "ShEntry"))
+					{
+					NDCore.AddClass(results[i], "first");
+					break;
+					}
+				}
+
+			for (var i = results.length - 1; i >= 0; i--)
+				{
+				if (NDCore.HasClass(results[i], "ShEntry"))
+					{
+					NDCore.AddClass(results[i], "last");
+					break;
+					}
+				else if (NDCore.HasClass(results[i], "ShChildren"))
+					{  break;  }
+				}
+
+			if (addSearchingStatus)
+				{  this.AddSearchingStatus(status.newContent);  }
+			}
 
 		return status;
 		};
@@ -615,7 +643,7 @@ var NDSearch = new function ()
 
 	/* Function: BuildKeyword
 	*/
-	this.BuildKeyword = function (keyword)
+	this.BuildKeyword = function (keyword, favorClasses)
 		{
 		// Searching for "acc" in keyword "Access"...
 		if (this.searchText.length <= keyword[`Keyword_SearchText].length)
@@ -632,7 +660,7 @@ var NDSearch = new function ()
 				{  return "";  }
 			}
 
-		var membersResults = this.BuildKeywordMembers(keyword[`Keyword_Members]);
+		var membersResults = this.BuildKeywordMembers(keyword[`Keyword_Members], favorClasses);
 
 		if (membersResults.numberOfMatches == 0)
 			{  return "";  }
@@ -640,11 +668,11 @@ var NDSearch = new function ()
 			{  return membersResults.html;  }
 		else
 			{
-			return "<div class=\"ShResult ShKeyword\">" + 
-						"<a href=\"#\">" + keyword[`Keyword_HTMLName] + "</a>" +
-						"<div class=\"ShIndent\">" +
-							membersResults.html +
-						"</div>" +
+			return "<a class=\"ShEntry ShKeyword\" href=\"#\">" + 
+						keyword[`Keyword_HTMLName] +
+					"</a>" +
+					"<div class=\"ShChildren\">" +
+						membersResults.html +
 					"</div>";
 			}
 		};
@@ -656,7 +684,7 @@ var NDSearch = new function ()
 
 			{ numberOfMatches, html }
 	*/
-	this.BuildKeywordMembers = function (members)
+	this.BuildKeywordMembers = function (members, favorClasses)
 		{
 		var result = {
 			numberOfMatches: 0,
@@ -670,7 +698,14 @@ var NDSearch = new function ()
 			if (member[`Member_SearchText].indexOf(this.searchText) != -1 ||
 				(this.altSearchText != undefined && member[`Member_SearchText].indexOf(this.altSearchText) != -1))
 				{
-				result.html += "<div class=\"ShResult ShTarget\"><a href=\"#\">";
+				var target;
+
+				if (favorClasses && member[`Member_ClassHashPath] != undefined)
+					{  target = member[`Member_ClassHashPath];  }
+				else
+					{  target = member[`Member_FileHashPath];  }
+
+				result.html += "<a class=\"ShEntry\" href=\"#" + target + "\">";
 
 				if (member[`Member_HTMLQualifier] != undefined)
 					{  result.html += "<span class=\"ShQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
@@ -839,8 +874,8 @@ var NDSearch = new function ()
 		else
 			{  
 			// IE switches focus to the results if you click on a scroll bar
-			if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
-				{  this.Deactivate();  }
+//			if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
+//				{  this.Deactivate();  }
 			}
 		};
 

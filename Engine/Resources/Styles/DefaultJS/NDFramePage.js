@@ -179,6 +179,11 @@ var NDFramePage = new function ()
 		if (this.hashChangePoller != undefined)
 			{  this.hashChangePoller.lastHash = location.hash;  }
 
+		
+		// Clear any search results since that may be the way we got here.
+
+		NDSearch.Deactivate();
+
 
 		// We need to update the layout if the location changes the visibility of the summary panel.
 

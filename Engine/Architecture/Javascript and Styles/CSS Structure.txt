@@ -410,17 +410,17 @@ _______________________________________________________________________________
 	<#NDSearchResults>
 		<#ShContent>
 
-			<ShResult ShTarget>
-				<a>...</a>
-			</ShResult ShTarget>
+			<ShEntry first/last?>
+				<ShQualifier>Package.Package.</ShQualifier>Name
+			</ShEntry>
 
-			<ShResult ShKeyword>
-				<a>...</a>
-				<ShIndent>
-					<ShResult>...</ShResult>
-					...
-				</ShIndent>
-			</ShResult ShKeyword>
+			<ShEntry ShKeyword>
+				...
+			</ShEntry ShKeyword>
+			<ShChildren>
+				<ShEntry>...</ShEntry>
+				...
+			</ShChildren>
 
 			<ShStatus Searching? NoResults?>...</ShStatus>
 
@@ -428,6 +428,9 @@ _______________________________________________________________________________
 	</#NDSearchResults>
 
 ----------
+
+The "last" class will only be applied if the last element is a ShEntry.  It will not be applied to ShChildren or entries
+that appear in ShChildren.
 
 
 
