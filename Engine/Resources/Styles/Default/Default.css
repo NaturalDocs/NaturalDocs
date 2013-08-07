@@ -182,8 +182,6 @@ td {
 	-moz-box-shadow: .15ex .25ex .4ex #606060;
 	-webkit-box-shadow: .15ex .25ex .4ex #606060;
 	box-shadow: .15ex .25ex .4ex #606060;
-
-	min-width: 28ex;
 	}
 
 	.ShEntry {

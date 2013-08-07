@@ -195,6 +195,12 @@ var NDSearch = new function ()
 
 				NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, newWidth, undefined);
 				}
+
+			// Also make sure the results are at least as wide as the search box.
+			if (this.domSearchResults.offsetWidth < this.domSearchField.offsetWidth)
+				{
+				NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, this.domSearchField.offsetWidth, undefined);
+				}
 			}
 
 
