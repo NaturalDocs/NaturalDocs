@@ -217,8 +217,20 @@ td {
 		font-style: italic;
 		}
 
-	.ShChildren {
+	.ShChildCount {
+		font-weight: normal;
+		margin-left: 0ex;
+		color: #808080;
+		}
+	.ShKeyword.open .ShChildCount {
+		display: none;
+		}
+
+	.ShChildren.open {
 		margin-bottom: .5em;
+		}
+	.ShChildren.closed {
+		display: none;
 		}
 	.ShChildren .ShEntry {
 		padding-left: 4ex;

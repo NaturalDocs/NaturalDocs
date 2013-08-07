@@ -16,6 +16,7 @@
 		`Keyword_HTMLName = 0
 		`Keyword_SearchText = 1
 		`Keyword_Members = 2
+		`Keyword_ParentID = 3
 
 		`Member_HTMLQualifier = 0
 		`Member_HTMLName = 1
@@ -48,6 +49,8 @@ var NDSearch = new function ()
 		// We delay loading search/index.js until the search field is actually used
 		this.mainIndexStatus = `NotLoaded;
 		this.keywordSegments = { };
+		this.highestAssignedParentID = 0;
+		this.openParentIDs = [ ];
 
 
 		this.domSearchField = document.getElementById("NDSearchField");
@@ -113,7 +116,9 @@ var NDSearch = new function ()
 		this.altSearchText = undefined;
 		this.prefixesInSearchText = undefined;
 
-		this.PurgeUnusedSegments();
+		this.keywordSegments = { };
+		this.highestAssignedParentID = 0;
+		this.openParentIDs = [ ];
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		document.getElementById("CFrame").contentWindow.focus();
@@ -211,6 +216,35 @@ var NDSearch = new function ()
 
 
 		this.domSearchResults.style.visibility = "visible";
+		};
+
+
+	/* Function: ToggleParent
+	*/
+	this.ToggleParent = function (id)
+		{
+		var domParent = document.getElementById("ShParent" + id);
+		var domChildren = document.getElementById("ShChildren" + id);
+
+		if (domParent == undefined || domChildren == undefined)
+			{  return;  }
+
+		if (NDCore.HasClass(domParent, "open"))
+			{
+			NDCore.RemoveClass(domParent, "open");
+			NDCore.RemoveClass(domChildren, "open");
+			NDCore.AddClass(domParent, "closed");
+			NDCore.AddClass(domChildren, "closed");
+			}
+		else
+			{
+			NDCore.RemoveClass(domParent, "closed");
+			NDCore.RemoveClass(domChildren, "closed");
+			NDCore.AddClass(domParent, "open");
+			NDCore.AddClass(domChildren, "open");
+			}
+
+		this.PositionResults();
 		};
 
 
@@ -674,10 +708,24 @@ var NDSearch = new function ()
 			{  return membersResults.html;  }
 		else
 			{
-			return "<a class=\"ShEntry ShKeyword\" href=\"#\">" + 
-						keyword[`Keyword_HTMLName] +
+			var parentID;
+			
+			if (keyword[`Keyword_ParentID] == undefined)
+				{
+				parentID = this.highestAssignedParentID + 1;
+				this.highestAssignedParentID++;
+
+				keyword[`Keyword_ParentID] = parentID;
+				}
+			else
+				{  parentID = keyword[`Keyword_ParentID];  }
+
+			return "<a class=\"ShEntry ShKeyword ShParent closed\" id=\"ShParent" + parentID + "\" " +
+						"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
+						keyword[`Keyword_HTMLName] + 
+						" <span class=\"ShChildCount\">(" + membersResults.numberOfMatches + ")</span>" +
 					"</a>" +
-					"<div class=\"ShChildren\">" +
+					"<div class=\"ShChildren closed\" id=\"ShChildren" + parentID + "\">" +
 						membersResults.html +
 					"</div>";
 			}
@@ -999,6 +1047,14 @@ var NDSearch = new function ()
 
 	/* var: keywordSegments
 		A hash mapping segment IDs to <NDKeywordSegments>.
+	*/
+
+	/* var: highestAssignedParentID
+		The highest ID number used in building ShParent/ShChildren pairs.
+	*/
+
+	/* var: openParentIDs
+		An array of ShParent IDs that are open.
 	*/
 
 	};

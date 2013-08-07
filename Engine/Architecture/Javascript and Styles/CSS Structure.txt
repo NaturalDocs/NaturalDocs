@@ -414,13 +414,13 @@ _______________________________________________________________________________
 				<ShQualifier>Package.Package.</ShQualifier>Name
 			</ShEntry>
 
-			<ShEntry ShKeyword>
-				...
-			</ShEntry ShKeyword>
-			<ShChildren>
+			<ShEntry ShKeyword ShParent #ShParent[number] open/closed>
+				... <ShChildCount># children</ShChildCount>
+			</ShEntry ShKeyword ShParent #ShParent[number] open/closed>
+			<ShChildren #ShChildren[number] open/closed>
 				<ShEntry>...</ShEntry>
 				...
-			</ShChildren>
+			</ShChildren #ShChildren[number] open/closed>
 
 			<ShStatus Searching? NoResults?>...</ShStatus>
 
@@ -431,6 +431,8 @@ _______________________________________________________________________________
 
 The "last" class will only be applied if the last element is a ShEntry.  It will not be applied to ShChildren or entries
 that appear in ShChildren.
+
+The ShParent and ShChildren pairs will have the same number.
 
 
 
