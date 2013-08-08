@@ -424,9 +424,9 @@ var NDSummary = new function ()
 		// setting the width may have changed the height due to wrapping.  We include the footer height not
 		// because we care about covering the footer, but because that serves as a good estimate for the
 		// URL popup you get in Firefox and Chrome.
-		if (y + this.toolTipHolder.offsetHeight + footer.offsetHeight + 2 > NDCore.WindowClientHeight())
+		if (y + this.toolTipHolder.offsetHeight + (footer.offsetHeight * 2) > NDCore.WindowClientHeight())
 			{
-			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight - footer.offsetHeight - 2;
+			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight - (footer.offsetHeight * 2);
 
 			if (newY < 0)
 				{  newY = 0;  }

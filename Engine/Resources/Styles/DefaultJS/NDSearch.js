@@ -177,7 +177,7 @@ var NDSearch = new function ()
 		var footer = document.getElementById("NDFooter");
 
 		var maxWidth = urX;
-		var maxHeight = NDCore.WindowClientHeight() - urY - footer.offsetHeight - 2;
+		var maxHeight = NDCore.WindowClientHeight() - urY - (footer.offsetHeight * 2);
 
 
 		// Resize
