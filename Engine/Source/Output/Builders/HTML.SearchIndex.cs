@@ -130,7 +130,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			foreach (var keywordEntry in keywordEntries)
 				{
-				keywordEntry.TopicEntries.Sort(
+				var topicEntries = keywordEntry.TopicEntries;
+
+				topicEntries.Sort(
 					delegate (SearchIndex.TopicEntry a, SearchIndex.TopicEntry b)
 						{
 						int aNonQualifierLength = a.DisplayName.Length - a.EndOfDisplayNameQualifiers;
@@ -169,6 +171,63 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						return result;
 						}
 					);
+
+
+				// Oh we're not done yet.  Now reorder the sorted list so that topics that begin with the keyword appear before those that
+				// don't, even if they're otherwise ahead of it in the sort order.  Right now we have this:
+				//
+				// Thread
+				// - Not Thread Safe
+				// - thread
+				// - Thread
+				// - Thread Safe
+				// - Thread Safety Notes
+				// - Window Threads
+				//
+				// but most of the time someone typing in "thread" will want the Thread class, so convert it into this:
+				//
+				// Thread
+				// - thread
+				// - Thread
+				// - Thread Safe
+				// - Thread Safety Notes
+				// - Not Thread Safe
+				// - Window Threads
+
+				int firstKeywordStart = -1;
+
+				for (int i = 0; i < topicEntries.Count; i++)
+					{
+					int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, topicEntries[i].EndOfSearchTextQualifiers);
+
+					if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
+						{
+						firstKeywordStart = i;
+						break;
+						}
+					}
+
+				// If the first one already starts with the keyword, or none of them do, there's nothing we need to do.
+				if (firstKeywordStart > 0)
+					{
+					int endOfKeywordStart = topicEntries.Count;
+
+					for (int i = topicEntries.Count - 1; i >= 0; i--)
+						{
+						int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, topicEntries[i].EndOfSearchTextQualifiers);
+
+						if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
+							{  break;  }
+						else
+							{  endOfKeywordStart = i;  }
+						}
+
+					var tempList = topicEntries.GetRange(0, firstKeywordStart);
+					topicEntries.RemoveRange(0, firstKeywordStart);
+
+					// end - first because it shifted down after we removed the range
+					topicEntries.InsertRange(endOfKeywordStart - firstKeywordStart, tempList);
+					}
 				}
 
 
