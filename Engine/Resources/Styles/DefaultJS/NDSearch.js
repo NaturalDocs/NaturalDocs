@@ -991,19 +991,18 @@ var NDSearch = new function ()
 			{  this.Deactivate();  }
 		else
 			{
-			// Reset the countdown on every keystroke
-			if (this.updateSearchTimeout != undefined)
-				{  clearTimeout(this.updateSearchTimeout);  }
+			if (this.updateSearchTimeout == undefined)
+				{
+				this.updateSearchTimeout = setTimeout(
+					function ()
+						{
+						clearTimeout(NDSearch.updateSearchTimeout);
+						NDSearch.updateSearchTimeout = undefined;
 
-			this.updateSearchTimeout = setTimeout(
-				function ()
-					{
-					clearTimeout(NDSearch.updateSearchTimeout);
-					NDSearch.updateSearchTimeout = undefined;
-
-					NDSearch.Update();
-					},
-				`UpdateSearchDelay);
+						NDSearch.Update();
+						},
+					`UpdateSearchDelay);
+				}
 			}
 		}
 
