@@ -109,6 +109,69 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				}
 
 
+			// Sort the keywords.  Compare case-insensitively at first, then use case sensitivity to break ties.
+
+			keywordEntries.Sort( 
+				delegate (SearchIndex.KeywordEntry a, SearchIndex.KeywordEntry b)
+					{
+					int result = string.Compare(a.Keyword, b.Keyword, true);
+
+					if (result != 0)
+						{  return result;  }
+
+					return string.Compare(a.Keyword, b.Keyword, false);
+					}
+				);
+
+
+			// Also sort the topic entries in each keyword entry.  We sort by the non-qualifier part first, then by qualifiers since they'll be
+			// displayed in "Name, Class" format.  The below code is just an elaborate way of doing that without allocating intermediate
+			// strings for each comparison.  This is also case-insensitive at first and then sensitive to break ties.
+
+			foreach (var keywordEntry in keywordEntries)
+				{
+				keywordEntry.TopicEntries.Sort(
+					delegate (SearchIndex.TopicEntry a, SearchIndex.TopicEntry b)
+						{
+						int aNonQualifierLength = a.DisplayName.Length - a.EndOfDisplayNameQualifiers;
+						int bNonQualifierLength = b.DisplayName.Length - b.EndOfDisplayNameQualifiers;
+						int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? aNonQualifierLength : bNonQualifierLength);
+
+						int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
+
+						if (result != 0)
+							{  return result;  }
+
+						result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
+
+						if (result != 0)
+							{  return result;  }
+
+						result = (aNonQualifierLength - bNonQualifierLength);
+
+						if (result != 0)
+							{  return result;  }
+
+						int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
+
+						result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, true);
+
+						if (result != 0)
+							{  return result;  }
+
+						result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, false);
+
+						if (result != 0)
+							{  return result;  }
+
+						result = (a.EndOfDisplayNameQualifiers - b.EndOfDisplayNameQualifiers);
+
+						return result;
+						}
+					);
+				}
+
+
 			// Generate the output file contents
 
 			StringBuilder output = new StringBuilder("NDSearch.OnKeywordSegmentLoaded(\"");
@@ -168,7 +231,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						}
 					else
 						{
-						topicHTMLPrefix = topicEntry.DisplayName.Substring(0, topicEntry.EndOfDisplayNameQualifiers).ToHTML();
+						topicHTMLPrefix = topicEntry.DisplayName.Substring(0, topicEntry.EndOfDisplayNameQualifiers);
+
+						if (topicHTMLPrefix[ topicHTMLPrefix.Length - 1 ] == '.')
+							{  topicHTMLPrefix = topicHTMLPrefix.Substring(0, topicHTMLPrefix.Length - 1);  }
+						else if (topicHTMLPrefix.EndsWith("::") || topicHTMLPrefix.EndsWith("->"))
+							{  topicHTMLPrefix = topicHTMLPrefix.Substring(0, topicHTMLPrefix.Length - 2);  }
+						
+						topicHTMLPrefix = topicHTMLPrefix.ToHTML();
 						topicHTMLName = topicEntry.DisplayName.Substring(topicEntry.EndOfDisplayNameQualifiers).ToHTML();
 						topicSearchText = topicEntry.SearchText.Substring(topicEntry.EndOfSearchTextQualifiers);
 						}

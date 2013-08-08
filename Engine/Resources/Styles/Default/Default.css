@@ -172,6 +172,8 @@ td {
 	font: 10pt `SearchFontFamily;
 	background-color: #FFFFFF;
 
+	padding: .5ex 0;
+
 	border-style: solid;
 	border-width: 1px;
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
@@ -188,12 +190,6 @@ td {
 		padding: .25ex 1.25ex;
 		font-weight: bold;
 		color: #000000;
-		}
-	.ShEntry.first {
-		margin-top: .75ex;
-		}
-	.ShEntry.last {
-		margin-bottom: .75ex;
 		}
 	.ShEntry:hover {
 		background-color: #E4E4E4;
@@ -213,22 +209,16 @@ td {
 		font-weight: normal;
 		color: #404040;
 		}
-	.ShKeyword {
-		font-style: italic;
-		}
-
 	.ShChildCount {
 		font-weight: normal;
-		margin-left: 0ex;
+		font-style: italic;
 		color: #808080;
 		}
-	.ShKeyword.open .ShChildCount {
+
+	.ShParent.open .ShChildCount {
 		display: none;
 		}
 
-	.ShChildren.open {
-		margin-bottom: .5em;
-		}
 	.ShChildren.closed {
 		display: none;
 		}
@@ -237,12 +227,13 @@ td {
 		}
 
 	.ShStatus {
-		margin: .75ex 1.25ex;
+		margin: .25ex 1.25ex;
 		color: #A0A0A0;
 		text-align: center;
 		}
 	.ShEntry + .ShStatus,
 	.ShChildren + .ShStatus{
+		margin-top: .75ex;
 		padding-top: .75ex;
 		border-top: 1px solid #C0C0C0;
 		}

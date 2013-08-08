@@ -139,7 +139,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 		/* Function: BuildKeywordSegment
 		 * Returns a list of all the <KeywordEntries> in a segment ID, complete with all their <TopicEntries>.  If there are none it will return
-		 * null.
+		 * null.  The returned list will not be in any particular order, it is up to the calling code to sort them as desired.
 		 */
 		public List<KeywordEntry> BuildKeywordSegment (string keywordSegmentID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
@@ -178,7 +178,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{  return null;  }
 
 
-			// Convert the topics into entries and sort them by keyword
+			// Convert the topics into entries
 
 			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>(KeySettings.IgnoreCase);
 
@@ -240,36 +240,6 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			foreach (var keywordEntryTablePair in keywordEntryTable)
 				{  keywordEntries.Add(keywordEntryTablePair.Value);  }
-
-			keywordEntries.Sort( 
-				delegate (KeywordEntry a, KeywordEntry b)
-					{
-					int result = string.Compare(a.Keyword, b.Keyword, true);
-
-					if (result != 0)
-						{  return result;  }
-
-					return string.Compare(a.Keyword, b.Keyword, false);
-					}
-				);
-
-
-			// Also sort the topic entries in each keyword entry
-
-			foreach (var keywordEntry in keywordEntries)
-				{
-				keywordEntry.TopicEntries.Sort(
-					delegate (TopicEntry a, TopicEntry b)
-						{
-						int result = string.Compare(a.DisplayName, b.DisplayName, true);
-
-						if (result != 0)
-							{  return result;  }
-
-						return string.Compare(a.DisplayName, b.DisplayName, false);
-						}
-					);
-				}
 
 
 			return keywordEntries;

@@ -458,28 +458,6 @@ var NDSearch = new function ()
 			{  
 			status.newContent.innerHTML = htmlResults;
 
-			var results = status.newContent.childNodes;
-
-			for (var i = 0; i < results.length; i++)
-				{
-				if (NDCore.HasClass(results[i], "ShEntry"))
-					{
-					NDCore.AddClass(results[i], "first");
-					break;
-					}
-				}
-
-			for (var i = results.length - 1; i >= 0; i--)
-				{
-				if (NDCore.HasClass(results[i], "ShEntry"))
-					{
-					NDCore.AddClass(results[i], "last");
-					break;
-					}
-				else if (NDCore.HasClass(results[i], "ShChildren"))
-					{  break;  }
-				}
-
 			if (addSearchingStatus)
 				{  this.AddSearchingStatus(status.newContent);  }
 			}
@@ -681,32 +659,77 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: BuildKeyword
+	/* Function: KeywordMatchesSearchText
 	*/
-	this.BuildKeyword = function (keyword, favorClasses)
+	this.KeywordMatchesSearchText = function (keyword)
 		{
 		// Searching for "acc" in keyword "Access"...
 		if (this.searchText.length <= keyword[`Keyword_SearchText].length)
 			{
-			if (keyword[`Keyword_SearchText].indexOf(this.searchText) == -1 &&
-				(this.altSearchText == undefined || keyword[`Keyword_SearchText].indexOf(this.altSearchText) == -1))
-				{  return "";  }
+			return ( keyword[`Keyword_SearchText].indexOf(this.searchText) != -1 ||
+					   (this.altSearchText != undefined && keyword[`Keyword_SearchText].indexOf(this.altSearchText) != -1) );
 			}
 		// Reverse it to search for "access levels" under keyword "Access"...
 		else
 			{
-			if (this.searchText.indexOf(keyword[`Keyword_SearchText]) == -1 &&
-				(this.altSearchText == undefined || this.altSearchText(keyword[`Keyword_SearchText]) == -1))
-				{  return "";  }
+			return ( this.searchText.indexOf(keyword[`Keyword_SearchText]) != -1 ||
+					   (this.altSearchText != undefined && this.altSearchText(keyword[`Keyword_SearchText]) != -1) );
+			}
+		};
+
+
+	/* Function: KeywordMemberMatchesSearchText
+	*/
+	this.KeywordMemberMatchesSearchText = function (member)
+		{
+		return ( member[`Member_SearchText].indexOf(this.searchText) != -1 ||
+				   (this.altSearchText != undefined && member[`Member_SearchText].indexOf(this.altSearchText) != -1) );
+		};
+
+
+	/* Function: BuildKeyword
+	*/
+	this.BuildKeyword = function (keyword, favorClasses)
+		{
+		if (this.KeywordMatchesSearchText(keyword) == false)
+			{  return "";  }
+
+		var memberMatches = 0;
+		var lastMatch;
+
+		for (var i = 0; i < keyword[`Keyword_Members].length; i++)
+			{
+			var member = keyword[`Keyword_Members][i];
+
+			if (this.KeywordMemberMatchesSearchText(member))
+				{
+				lastMatch = member;
+				memberMatches++;  
+				}
 			}
 
-		var membersResults = this.BuildKeywordMembers(keyword[`Keyword_Members], favorClasses);
-
-		if (membersResults.numberOfMatches == 0)
+		if (memberMatches == 0)
 			{  return "";  }
-		else if (membersResults.numberOfMatches == 1)
-			{  return membersResults.html;  }
-		else
+
+		else if (memberMatches == 1 && lastMatch[`Member_SearchText] == keyword[`Keyword_SearchText])
+			{
+			var target;
+
+			if (favorClasses && lastMatch[`Member_ClassHashPath] != undefined)
+				{  target = lastMatch[`Member_ClassHashPath];  }
+			else
+				{  target = lastMatch[`Member_FileHashPath];  }
+
+			var html = "<a class=\"ShEntry\" href=\"#" + target + "\">" + lastMatch[`Member_HTMLName];
+
+			if (lastMatch[`Member_HTMLQualifier] != undefined)
+				{  html += "<span class=\"ShQualifier\">, " + lastMatch[`Member_HTMLQualifier] + "</span>";  }
+			
+			html += "</a>";
+			return html;
+			}
+
+		else // memberMatches >= 2
 			{
 			var parentID;
 			
@@ -720,14 +743,37 @@ var NDSearch = new function ()
 			else
 				{  parentID = keyword[`Keyword_ParentID];  }
 
-			return "<a class=\"ShEntry ShKeyword ShParent closed\" id=\"ShParent" + parentID + "\" " +
-						"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
-						keyword[`Keyword_HTMLName] + 
-						" <span class=\"ShChildCount\">(" + membersResults.numberOfMatches + ")</span>" +
-					"</a>" +
-					"<div class=\"ShChildren closed\" id=\"ShChildren" + parentID + "\">" +
-						membersResults.html +
-					"</div>";
+			var html = "<a class=\"ShEntry ShParent closed\" id=\"ShParent" + parentID + "\" " +
+								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
+								keyword[`Keyword_HTMLName] + 
+								" <span class=\"ShChildCount\">(" + memberMatches + ")</span>" +
+							"</a>" +
+							"<div class=\"ShChildren closed\" id=\"ShChildren" + parentID + "\">";
+
+			for (var i = 0; i < keyword[`Keyword_Members].length; i++)
+				{
+				var member = keyword[`Keyword_Members][i];
+
+				if (this.KeywordMemberMatchesSearchText(member))
+					{
+					var target;
+
+					if (favorClasses && member[`Member_ClassHashPath] != undefined)
+						{  target = member[`Member_ClassHashPath];  }
+					else
+						{  target = member[`Member_FileHashPath];  }
+
+					html += "<a class=\"ShEntry\" href=\"#" + target + "\">" + member[`Member_HTMLName];
+
+					if (member[`Member_HTMLQualifier] != undefined)
+						{  html += "<span class=\"ShQualifier\">, " + member[`Member_HTMLQualifier] + "</span>";  }
+
+					html += "</a>";
+					}
+				}
+
+			html += "</div>";
+			return html;
 			}
 		};
 
