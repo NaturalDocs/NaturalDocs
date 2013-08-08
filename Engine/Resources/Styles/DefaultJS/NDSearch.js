@@ -778,47 +778,6 @@ var NDSearch = new function ()
 		};
 
 	
-	/* Function: BuildKeywordMembers
-		
-		Returns:
-
-			{ numberOfMatches, html }
-	*/
-	this.BuildKeywordMembers = function (members, favorClasses)
-		{
-		var result = {
-			numberOfMatches: 0,
-			html: ""
-			};
-
-		for (var i = 0; i < members.length; i++)
-			{
-			var member = members[i];
-
-			if (member[`Member_SearchText].indexOf(this.searchText) != -1 ||
-				(this.altSearchText != undefined && member[`Member_SearchText].indexOf(this.altSearchText) != -1))
-				{
-				var target;
-
-				if (favorClasses && member[`Member_ClassHashPath] != undefined)
-					{  target = member[`Member_ClassHashPath];  }
-				else
-					{  target = member[`Member_FileHashPath];  }
-
-				result.html += "<a class=\"SeEntry\" href=\"#" + target + "\">";
-
-				if (member[`Member_HTMLQualifier] != undefined)
-					{  result.html += "<span class=\"SeQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
-				
-				result.html += member[`Member_HTMLName] + "</a>";
-				result.numberOfMatches++;
-				}
-			}
-
-		return result;
-		};
-
-	
 	/* Function: AddSearchingStatus
 	*/
 	this.AddSearchingStatus = function (domElement)
