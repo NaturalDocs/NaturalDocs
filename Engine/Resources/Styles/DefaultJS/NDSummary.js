@@ -183,12 +183,12 @@ var NDSummary = new function ()
 	this.Build = function ()
 		{
 		var newContent = document.createElement("div");
-		newContent.id = "SContent";
+		newContent.id = "SuContent";
 
 		if (this.summaryEntries == undefined)
 			{
 			var loadingNotice = document.createElement("div");
-			loadingNotice.className = "SLoadingNotice";
+			loadingNotice.className = "SuLoadingNotice";
 			newContent.appendChild(loadingNotice);
 			}
 		else
@@ -204,16 +204,16 @@ var NDSummary = new function ()
 					{
 					var entryHTML = document.createElement("a");
 
-					var classString = "SEntry" +
+					var classString = "SuEntry" +
 						" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
 						" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
 						(i == 0 ? " first" : "") +
 						(i == this.summaryEntries.length - 1 ? " last" : "");
 
-					entryHTML.id = "SEntry" + entry[`Entry_TopicID];
+					entryHTML.id = "SuEntry" + entry[`Entry_TopicID];
 					entryHTML.className = classString;
 					entryHTML.setAttribute("href", "#" + NDFramePage.currentLocation.path + ":" + entry[`Entry_Symbol]);
-					entryHTML.innerHTML = "<div class=\"SEntryIcon\"></div>" + entry[`Entry_NameHTML];
+					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[`Entry_NameHTML];
 					entryHTML.onmouseover = mouseOverHandler;
 					entryHTML.onmouseout = mouseOutHandler;
 
@@ -233,7 +233,7 @@ var NDSummary = new function ()
 			}
 
 		var summaryContainer = document.getElementById("NDSummary");
-		var oldContent = document.getElementById("SContent");
+		var oldContent = document.getElementById("SuContent");
 
 		if (oldContent != undefined)
 			{  summaryContainer.replaceChild(newContent, oldContent);  }
@@ -369,13 +369,13 @@ var NDSummary = new function ()
 
 
 	/* Function: GetTopicIDFromDOMID
-		Extracts the topic ID from the DOM ID, such as SEntry123, and returns it as a number.  Returns -1 if it
+		Extracts the topic ID from the DOM ID, such as SuEntry123, and returns it as a number.  Returns -1 if it
 		couldn't find it.
 	*/
 	this.GetTopicIDFromDOMID = function (domID)
 		{
-		// Extract from "SEntry123".
-		var id = parseInt(domID.substr(6), 10);
+		// Extract from "SuEntry123".
+		var id = parseInt(domID.substr(7), 10);
 
 		if (id != NaN && id > 0)
 			{  return id;  }
@@ -390,7 +390,7 @@ var NDSummary = new function ()
 	*/
 	this.ShowToolTip = function ()
 		{
-		var entry = document.getElementById("SEntry" + this.showingToolTip);
+		var entry = document.getElementById("SuEntry" + this.showingToolTip);
 
 		this.toolTipHolder.innerHTML = this.summaryToolTips[this.showingToolTip];
 		this.toolTipHolder.style.visibility = "hidden";

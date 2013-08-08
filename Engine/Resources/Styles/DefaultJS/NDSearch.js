@@ -72,7 +72,7 @@ var NDSearch = new function ()
 		this.domSearchResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
 
 		var domSearchResultsContent = document.createElement("div");
-		domSearchResultsContent.id = "ShContent";
+		domSearchResultsContent.id = "SeContent";
 
 		this.domSearchResults.appendChild(domSearchResultsContent);
 		document.body.appendChild(this.domSearchResults);
@@ -223,8 +223,8 @@ var NDSearch = new function ()
 	*/
 	this.ToggleParent = function (id)
 		{
-		var domParent = document.getElementById("ShParent" + id);
-		var domChildren = document.getElementById("ShChildren" + id);
+		var domParent = document.getElementById("SeParent" + id);
+		var domChildren = document.getElementById("SeChildren" + id);
 
 		if (domParent == undefined || domChildren == undefined)
 			{  return;  }
@@ -367,7 +367,7 @@ var NDSearch = new function ()
 			{  this.HideResults();  }
 		else
 			{
-			var oldContent = document.getElementById("ShContent");
+			var oldContent = document.getElementById("SeContent");
 			this.domSearchResults.replaceChild(status.newContent, oldContent);
 
 			this.ShowResults();
@@ -380,12 +380,12 @@ var NDSearch = new function ()
 	
 	/* Function: UpdateAndBuildResults
 
-		Updates the internal search variables and builds and returns a new ShContent DOM element for the current 
+		Updates the internal search variables and builds and returns a new SeContent DOM element for the current 
 		search state.  If the results pane should not be shown it will return undefined.
 
 		This is the complete process from reading <domSearchField>, to setting state variables like <searchText>
-		and <prefixesInSearchText>, to queueing more prefix elements for loading, to building the final ShContent 
-		element.  This is only separated from <Update()> to make returning early while building ShContent easier.
+		and <prefixesInSearchText>, to queueing more prefix elements for loading, to building the final SeContent 
+		element.  This is only separated from <Update()> to make returning early while building SeContent easier.
 
 		Returns:
 
@@ -408,7 +408,7 @@ var NDSearch = new function ()
 			}
 
 		status.newContent = document.createElement("div");
-		status.newContent.id = "ShContent";
+		status.newContent.id = "SeContent";
 
 		if (this.mainIndexStatus != `Ready)
 			{
@@ -720,10 +720,10 @@ var NDSearch = new function ()
 			else
 				{  target = lastMatch[`Member_FileHashPath];  }
 
-			var html = "<a class=\"ShEntry\" href=\"#" + target + "\">" + lastMatch[`Member_HTMLName];
+			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatch[`Member_HTMLName];
 
 			if (lastMatch[`Member_HTMLQualifier] != undefined)
-				{  html += "<span class=\"ShQualifier\">, " + lastMatch[`Member_HTMLQualifier] + "</span>";  }
+				{  html += "<span class=\"SeQualifier\">, " + lastMatch[`Member_HTMLQualifier] + "</span>";  }
 			
 			html += "</a>";
 			return html;
@@ -743,12 +743,12 @@ var NDSearch = new function ()
 			else
 				{  parentID = keyword[`Keyword_ParentID];  }
 
-			var html = "<a class=\"ShEntry ShParent closed\" id=\"ShParent" + parentID + "\" " +
+			var html = "<a class=\"SeEntry SeParent closed\" id=\"SeParent" + parentID + "\" " +
 								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
 								keyword[`Keyword_HTMLName] + 
-								" <span class=\"ShChildCount\">(" + memberMatches + ")</span>" +
+								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
 							"</a>" +
-							"<div class=\"ShChildren closed\" id=\"ShChildren" + parentID + "\">";
+							"<div class=\"SeChildren closed\" id=\"SeChildren" + parentID + "\">";
 
 			for (var i = 0; i < keyword[`Keyword_Members].length; i++)
 				{
@@ -763,10 +763,10 @@ var NDSearch = new function ()
 					else
 						{  target = member[`Member_FileHashPath];  }
 
-					html += "<a class=\"ShEntry\" href=\"#" + target + "\">" + member[`Member_HTMLName];
+					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + member[`Member_HTMLName];
 
 					if (member[`Member_HTMLQualifier] != undefined)
-						{  html += "<span class=\"ShQualifier\">, " + member[`Member_HTMLQualifier] + "</span>";  }
+						{  html += "<span class=\"SeQualifier\">, " + member[`Member_HTMLQualifier] + "</span>";  }
 
 					html += "</a>";
 					}
@@ -805,10 +805,10 @@ var NDSearch = new function ()
 				else
 					{  target = member[`Member_FileHashPath];  }
 
-				result.html += "<a class=\"ShEntry\" href=\"#" + target + "\">";
+				result.html += "<a class=\"SeEntry\" href=\"#" + target + "\">";
 
 				if (member[`Member_HTMLQualifier] != undefined)
-					{  result.html += "<span class=\"ShQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
+					{  result.html += "<span class=\"SeQualifier\">" + member[`Member_HTMLQualifier] + "</span>";  }
 				
 				result.html += member[`Member_HTMLName] + "</a>";
 				result.numberOfMatches++;
@@ -824,7 +824,7 @@ var NDSearch = new function ()
 	this.AddSearchingStatus = function (domElement)
 		{
 		var status = document.createElement("div");
-		status.className = "ShStatus Searching";
+		status.className = "SeStatus Searching";
 		status.innerHTML = `Locale{HTML.SearchingStatus};
 
 		domElement.appendChild(status);
@@ -836,7 +836,7 @@ var NDSearch = new function ()
 	this.AddNoMatchesStatus = function (domElement)
 		{
 		var status = document.createElement("div");
-		status.className = "ShStatus NoResults";
+		status.className = "SeStatus NoResults";
 		status.innerHTML = `Locale{HTML.NoMatchesStatus};
 
 		domElement.appendChild(status);
@@ -1095,11 +1095,11 @@ var NDSearch = new function ()
 	*/
 
 	/* var: highestAssignedParentID
-		The highest ID number used in building ShParent/ShChildren pairs.
+		The highest ID number used in building SeParent/SeChildren pairs.
 	*/
 
 	/* var: openParentIDs
-		An array of ShParent IDs that are open.
+		An array of SeParent IDs that are open.
 	*/
 
 	};
