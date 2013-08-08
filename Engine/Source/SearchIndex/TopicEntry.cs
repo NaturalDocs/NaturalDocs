@@ -71,6 +71,12 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				}
 
 
+			// Remove the space in "operator <".  This prevents them from appearing as two keywords, and also makes sure "operator <" and
+			// "operator<" are always displayed consistently, which will be important for sorting.
+
+			title = SpaceAfterOperatorKeywordRegex.Replace(title, "");
+
+
 			displayName = (extraScope == null ? title : extraScope + title);
 			searchText = Normalize(displayName);
 
@@ -161,9 +167,6 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		protected int AddKeywords (string text, bool isDocumentation)
 			{
 			text = NormalizeSeparatorsOnly(text);
-
-			// Remove the space in "operator <" so they don't appear as two keywords.
-			text = SpaceAfterOperatorKeywordRegex.Replace(text, "");
 
 			int count = 0;
 			int startingIndex = 0;
