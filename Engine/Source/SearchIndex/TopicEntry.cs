@@ -103,9 +103,9 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			keywords = new List<string>();
 
 			if (endOfDisplayNameQualifiers == 0)
-				{  AddKeywords(displayName);  }
+				{  AddKeywords(displayName, topicType.Flags.Documentation);  }
 			else
-				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers));  }
+				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), topicType.Flags.Documentation);  }
 			}
 
 
@@ -158,7 +158,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		/* Function: AddKeywords
 		 * Adds keywords to the list from the passed segment of text.  Returns how many were added
 		 */
-		protected int AddKeywords (string text)
+		protected int AddKeywords (string text, bool isDocumentation)
 			{
 			text = NormalizeSeparatorsOnly(text);
 
@@ -177,8 +177,19 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 				if (nextIndex > startingIndex)
 					{
-					keywords.Add(text.Substring(startingIndex, nextIndex - startingIndex));
-					count++;
+					string keyword = text.Substring(startingIndex, nextIndex - startingIndex);
+
+					if (isDocumentation)
+						{
+						keyword = LeadingPunctuationRegex.Replace(keyword, "");
+						keyword = TrailingPunctuationRegex.Replace(keyword, "");
+						}
+
+					if (keyword.Length > 0)
+						{
+						keywords.Add(keyword);
+						count++;
+						}
 					}
 
 				startingIndex = nextIndex + 1;
@@ -288,6 +299,8 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		static protected Regex.CodeSplitSymbols CodeSplitSymbolsRegex = new Regex.CodeSplitSymbols();
 		static protected Regex.NonWhitespaceChars NonWhitespaceCharsRegex =  new Regex.NonWhitespaceChars();
 		static protected Regex.SpaceAfterOperatorKeyword SpaceAfterOperatorKeywordRegex = new Regex.SpaceAfterOperatorKeyword();
+		static protected Regex.LeadingPunctuation LeadingPunctuationRegex = new Regex.LeadingPunctuation();
+		static protected Regex.TrailingPunctuation TrailingPunctuationRegex = new Regex.TrailingPunctuation();
 
 		}
 	}
