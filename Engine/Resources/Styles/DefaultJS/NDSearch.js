@@ -13,16 +13,16 @@
 
 	Substitutions:
 
-		`Keyword_HTMLName = 0
-		`Keyword_SearchText = 1
-		`Keyword_Members = 2
-		`Keyword_ParentID = 3
+		`KeywordData_HTMLName = 0
+		`KeywordData_SearchText = 1
+		`KeywordData_Members = 2
+		`KeywordData_ParentID = 3
 
-		`Member_HTMLQualifier = 0
-		`Member_HTMLName = 1
-		`Member_SearchText = 2
-		`Member_FileHashPath = 3
-		`Member_ClassHashPath = 4
+		`MemberData_HTMLQualifier = 0
+		`MemberData_HTMLName = 1
+		`MemberData_SearchText = 2
+		`MemberData_FileHashPath = 3
+		`MemberData_ClassHashPath = 4
 
 		`UpdateSearchDelay = 350
 
@@ -46,18 +46,10 @@ var NDSearch = new function ()
 	*/
 	this.Start = function ()
 		{
-		// We delay loading search/index.js until the search field is actually used
-		this.mainIndexStatus = `NotLoaded;
-		this.keywordSegments = { };
-		this.highestAssignedParentID = 0;
-		this.openParentIDs = [ ];
 
+		// UI variables
 
 		this.domSearchField = document.getElementById("NDSearchField");
-
-		this.domSearchField.onfocus = function () {  NDSearch.OnFieldFocus(true);  };
-		this.domSearchField.onblur = function () {  NDSearch.OnFieldFocus(false);  };
-		this.domSearchField.onkeyup = function (event) {  NDSearch.OnFieldKeyUp(event);  };
 
 		this.domSearchResults = document.createElement("div");
 		this.domSearchResults.id = "NDSearchResults";
@@ -67,21 +59,605 @@ var NDSearch = new function ()
 		if (NDCore.IEVersion() == 6)
 			{  this.domSearchResults.style.position = "absolute";  }
 
-		this.domSearchResults.onfocus = function () {  NDSearch.OnResultsFocus(true);  };
-		this.domSearchResults.onblur = function () {  NDSearch.OnResultsFocus(false);  };
+		this.domSearchResultsContent = document.createElement("div");
+		this.domSearchResultsContent.id = "SeContent";
+
+		this.domSearchResults.appendChild(this.domSearchResultsContent);
+		document.body.appendChild(this.domSearchResults);
+
+		// this.updateTimeout = undefined;
+		this.openParentIDs = [ ];
+		this.highestAssignedParentID = 0;
+
+
+		// Search data variables
+
+		// We delay loading search/index.js until the search field is activated
+
+		// this.prefixesWithData = undefined;
+		this.prefixesWithDataStatus = `NotLoaded;
+		this.keywordSegments = { };
+
+
+		// Event handlers
+
+		this.domSearchField.onfocus = function () {  NDSearch.OnFieldFocus();  };
+		this.domSearchField.onblur = function () {  NDSearch.OnFieldBlur();  };
+		this.domSearchField.onkeyup = function (event) {  NDSearch.OnFieldKeyUp(event);  };
+
+		this.domSearchResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
+		this.domSearchResults.onblur = function () {  NDSearch.OnResultsBlur();  };
 		this.domSearchResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
 
-		var domSearchResultsContent = document.createElement("div");
-		domSearchResultsContent.id = "SeContent";
 
-		this.domSearchResults.appendChild(domSearchResultsContent);
-		document.body.appendChild(this.domSearchResults);
+		// Initialization
 
 		this.Deactivate();
 		};
 
 
+	/* Function: Update
+	*/
+	this.Update = function ()
+		{
+		// This may be called by segment data loaders after the field was deactivated so we have to check.
+		if (!this.IsActive())
+			{  return;  }
 
+		var searchInterpretations = this.GetSearchInterpretations();
+
+		if (searchInterpretations.length == 0)
+			{
+			this.HideResults();
+			return;
+			}
+
+		if (this.prefixesWithDataStatus != `Ready)
+			{
+			this.domSearchResultsContent.innerHTML = this.BuildSearchingStatus();
+			this.ShowResults();
+			return;
+			}
+
+		var searchInterpretationPrefixes = this.GetPrefixesWithData(searchInterpretations);
+
+		this.PurgeUnusedSegments(searchInterpretationPrefixes);
+
+		if (searchInterpretationPrefixes.length == 0)
+			{
+			this.domSearchResultsContent.innerHTML = this.BuildNoMatchesStatus();
+			this.ShowResults();
+			return;
+			}
+
+		var location = new NDLocation(window.location.hash);
+		var favorClasses = (location.type == "Class" || location.type == "Database");
+
+		var buildResults = this.BuildResults(searchInterpretations, searchInterpretationPrefixes, favorClasses);
+		
+		this.domSearchResultsContent.innerHTML = buildResults.html;
+		this.ShowResults();
+
+		if (buildResults.keywordSegmentToLoad != undefined)
+			{  this.LoadKeywordSegment(buildResults.keywordSegmentToLoad);  }
+		};
+
+
+
+	// Group: Event Handlers
+	// ________________________________________________________________________
+
+
+	/* Function: OnFieldFocus
+	*/
+	this.OnFieldFocus = function ()
+		{
+		if (!this.IsActive())
+			{  this.Activate();  }
+		// Otherwise it might be receiving focus back from the search results
+		};
+
+
+	/* Function: OnFieldBlur
+	*/
+	this.OnFieldBlur = function ()
+		{
+		// IE switches focus to the results if you click on a scroll bar
+//		if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
+//			{  this.Deactivate();  }
+		};
+
+
+	/* Function: OnFieldKeyUp
+	*/
+	this.OnFieldKeyUp = function (event)
+		{
+		if (event === undefined)
+			{  event = window.event;  }
+
+		if (event.keyCode == 27)  // ESC
+			{  this.Deactivate();  }
+		else
+			{
+			if (this.updateTimeout == undefined)
+				{
+				this.updateTimeout = setTimeout(
+					function ()
+						{
+						clearTimeout(NDSearch.updateTimeout);
+						NDSearch.updateTimeout = undefined;
+
+						NDSearch.Update();
+						},
+					`UpdateSearchDelay);
+				}
+			}
+		}
+
+
+	/* Function: OnResultsFocus
+	*/
+	this.OnResultsFocus = function ()
+		{
+		};
+
+
+	/* Function: OnResultsBlur
+	*/
+	this.OnResultsBlur = function ()
+		{
+		if (document.activeElement == undefined || document.activeElement.id != "NDSearchField")
+			{  this.Deactivate();  }
+		};
+
+
+	/* Function: OnResultsKeyUp
+	*/
+	this.OnResultsKeyUp = function (event)
+		{
+		if (event === undefined)
+			{  event = window.event;  }
+
+		if (event.keyCode == 27)  // ESC
+			{  this.Deactivate();  }
+		}
+
+
+	/* Function: OnUpdateLayout
+	*/
+	this.OnUpdateLayout = function ()
+		{
+		// Check for undefined because this may be called before Start().
+		if (this.domSearchResults != undefined)
+			{  this.PositionResults();  }
+		};
+
+	
+	
+	// Group: Search Functions
+	// ________________________________________________________________________
+
+
+	/* Function: GetSearchInterpretations
+		Reads the contents of <domSearchField> and returns it as an array of normalized interpretations compatible with
+		the search text Natural Docs generates for the data files .  Usually there will only be one, but there may be more 
+		if the search text is ambiguous.  There may also be none, in which case it will return an empty array.
+	*/
+	this.GetSearchInterpretations = function ()
+		{
+		// DEPENDENCY: This must match what is done in Engine.SearchIndex.Entry.Normalize().
+
+		var interpretations = [ ];
+		var normalizedSearchText = this.domSearchField.value.toLowerCase();
+
+		// Trim and condense whitespace
+		normalizedSearchText = normalizedSearchText.replace(/\s+/g, " ");
+		normalizedSearchText = normalizedSearchText.replace(/^ /, "");
+		normalizedSearchText = normalizedSearchText.replace(/ $/, "");
+
+		// Remove spaces unless between two alphanumeric/underscore characters
+		normalizedSearchText = normalizedSearchText.replace(/([^a-z0-9_]) /g, "$1");  // Substitution because JavaScript has no (?<=) for lookbehinds
+		normalizedSearchText = normalizedSearchText.replace(/ (?=[^a-z0-9_])/g, "");
+
+		// Normalize separators
+		normalizedSearchText = normalizedSearchText.replace(/::|->/g, ".");
+		normalizedSearchText = normalizedSearchText.replace(/\\/g, "/");
+
+		// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
+		normalizedSearchText = normalizedSearchText.replace(/^[./]+/, "");
+
+		if (normalizedSearchText == "")
+			{  return interpretations;  }
+
+		interpretations.push(normalizedSearchText);
+
+
+		// If the search text ends with : or - it's possible that it's the first character of :: or ->.  Provide an alternate
+		// search string so relevant results don't disappear until the second character is added.
+
+		var lastChar = normalizedSearchText.charAt(normalizedSearchText.length - 1);
+
+		if (lastChar == ":" || lastChar == "-")
+			{  interpretations.push(normalizedSearchText.substr(0, normalizedSearchText.length - 1) + ".");  }
+
+
+		return interpretations;
+		};
+
+
+	/* Function: GetPrefixesWithData
+		Returns an array of prefixes in <prefixesWithData> that apply to the passed search text array.
+	*/
+	this.GetPrefixesWithData = function (searchTextArray)
+		{
+		var matchingPrefixes = [ ];
+
+		if (this.prefixesWithDataStatus != `Ready)
+			{  return matchingPrefixes;  }
+
+
+		// Add each prefix to the array
+
+		for (var i = 0; i < searchTextArray.length; i++)
+			{
+			var searchText = searchTextArray[i];
+			var searchPrefix = this.MakePrefix(searchText);
+
+			if (searchPrefix != undefined && searchPrefix != "")
+				{
+				var prefixIndex = this.GetPrefixesWithDataIndex(searchPrefix);
+
+				while (prefixIndex < this.prefixesWithData.length)
+					{
+					if (this.prefixesWithData[prefixIndex].length >= searchPrefix.length &&
+						this.prefixesWithData[prefixIndex].substr(0, searchPrefix.length) == searchPrefix)
+						{  
+						matchingPrefixes.push(this.prefixesWithData[prefixIndex]);  
+						prefixIndex++;
+						}
+					else
+						{  break;  }
+					}
+				}
+			}
+
+
+		if (searchTextArray.length <= 1)
+			{  return matchingPrefixes;  }
+
+
+		// If there was more than one, sort the combined array and remove duplicates.
+
+		matchingPrefixes.sort();
+
+		for (var i = 1; i < matchingPrefixes.length; /* no auto-increment */)
+			{
+			if (matchingPrefixes[i] == matchingPrefixes[i - 1])
+				{  matchingPrefixes.splice(i, 1);  }
+			else
+				{  i++;  }
+			}
+
+		return matchingPrefixes;
+		};
+
+	
+	/* Function: GetPrefixesWithDataIndex
+		Returns the index at which the passed prefix appears or should appear in <prefixesWithData>.  If it's not found 
+		it will return the index it would be inserted at if it were to be added.
+	*/
+	this.GetPrefixesWithDataIndex = function (prefix)
+		{
+		if (this.prefixesWithDataStatus != `Ready)
+			{  return undefined;  }
+		if (this.prefixesWithData.length == 0)
+			{  return 0;  }
+
+		var firstIndex = 0;
+		var lastIndex = this.prefixesWithData.length - 1;  // lastIndex is inclusive
+
+		for (;;)
+			{
+			var testIndex = (firstIndex + lastIndex) >> 1;
+
+			if (prefix == this.prefixesWithData[testIndex])
+				{  return testIndex;  }
+
+			else if (prefix < this.prefixesWithData[testIndex])
+				{  
+				if (testIndex == firstIndex)
+					{  return testIndex;  }
+				else
+					{  
+					// Not testIndex - 1 because even though prefix is lower, that may be the position it would be 
+					// inserted at.
+					lastIndex = testIndex;
+					}
+				}
+
+			else // prefix > this.prefixesWithData[testIndex]
+				{
+				if (testIndex == lastIndex)
+					{  return lastIndex + 1;  }
+				else
+					{  firstIndex = testIndex + 1;  }
+				}
+			}
+		};
+
+
+	/* Function: KeywordMatchesInterpretations
+		Returns whether the keyword matches any of the passed interpretations.
+	*/
+	this.KeywordMatchesInterpretations = function (keywordData, interpretations)
+		{
+		for (var i = 0; i < interpretations.length; i++)
+			{
+			var interpretation = interpretations[i];
+
+			// Searching for "acc" in keyword "Access"...
+			if (interpretation.length <= keywordData[`KeywordData_SearchText].length)
+				{
+				if (keywordData[`KeywordData_SearchText].indexOf(interpretation) != -1)
+					{  return true;  }
+				}
+
+			// Reverse it to search for "access levels" under keyword "Access"...
+			else
+				{
+				if (interpretation.indexOf(keywordData[`KeywordData_SearchText]) != -1)
+					{  return true;  }
+				}
+			}
+
+		return false;
+		};
+
+
+	/* Function: MemberMatchesInterpretations
+		Returns whether the keyword member matches any of the passed interpretations.
+	*/
+	this.MemberMatchesInterpretations = function (memberData, interpretations)
+		{
+		for (var i = 0; i < interpretations.length; i++)
+			{
+			var interpretation = interpretations[i];
+
+			if (memberData[`MemberData_SearchText].indexOf(interpretation) != -1)
+				{  return true;  }
+			}
+
+		return false;
+		};
+
+	
+
+	// Group: Build Functions
+	// ________________________________________________________________________
+
+
+	/* Function: BuildResults
+
+		Builds the search results in HTML.  If a keyword segment it needs is not loaded yet it will build what it can and return 
+		the next one that needs in the results.  If favorClasses is set, links will use the class/database view whenever possible.
+
+		Returns:
+
+			{ html, keywordSegmentToLoad }
+	*/
+	this.BuildResults = function (searchInterpretations, searchInterpretationPrefixes, favorClasses)
+		{
+		var results = {
+			// keywordSegmentToLoad: undefined,
+			html: ""
+			};
+
+		if (this.prefixesWithDataStatus != `Ready)
+			{
+			results.html += this.BuildSearchingStatus();
+			return results;
+			}
+
+		var addSearchingStatus = false;
+
+		for (var p = 0; p < searchInterpretationPrefixes.length; p++)
+			{
+			var prefix = searchInterpretationPrefixes[p];
+
+			if (this.keywordSegments[prefix] == undefined)
+				{
+				results.keywordSegmentToLoad = prefix;
+				addSearchingStatus = true;
+				break;
+				}
+			else if (this.keywordSegments[prefix].ready == false)
+				{
+				addSearchingStatus = true;
+				break;
+				}
+
+			var keywordData = this.keywordSegments[prefix].content;
+
+			for (var k = 0; k < keywordData.length; k++)
+				{  results.html += this.BuildKeyword(keywordData[k], searchInterpretations, favorClasses);  }
+			}
+		
+		if (addSearchingStatus)
+			{  results.html += this.BuildSearchingStatus();  }
+		else if (results.html == "")
+			{  results.html += this.BuildNoMatchesStatus();  }
+
+		return results;
+		};
+
+
+	/* Function: BuildKeyword
+		Builds the results for a keyword and returns the HTML.  The results will be filtered based on <searchText>.  If
+		favorClasses is set, links will use the class/database view whenever possible.
+	*/
+	this.BuildKeyword = function (keywordData, searchInterpretations, favorClasses)
+		{
+		if (this.KeywordMatchesInterpretations(keywordData, searchInterpretations) == false)
+			{  return "";  }
+
+		var memberMatches = 0;
+		var lastMatchingMemberData;
+
+		for (var i = 0; i < keywordData[`KeywordData_Members].length; i++)
+			{
+			var memberData = keywordData[`KeywordData_Members][i];
+
+			if (this.MemberMatchesInterpretations(memberData, searchInterpretations))
+				{
+				lastMatchingMemberData = memberData;
+				memberMatches++;  
+				}
+			}
+
+		if (memberMatches == 0)
+			{  return "";  }
+
+		else if (memberMatches == 1 &&
+				   lastMatchingMemberData[`MemberData_SearchText] == keywordData[`KeywordData_SearchText])
+			{
+			var target;
+
+			if (favorClasses && lastMatchingMemberData[`MemberData_ClassHashPath] != undefined)
+				{  target = lastMatchingMemberData[`MemberData_ClassHashPath];  }
+			else
+				{  target = lastMatchingMemberData[`MemberData_FileHashPath];  }
+
+			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatchingMemberData[`MemberData_HTMLName];
+
+			if (lastMatchingMemberData[`MemberData_HTMLQualifier] != undefined)
+				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberData[`MemberData_HTMLQualifier] + "</span>";  }
+			
+			html += "</a>";
+			return html;
+			}
+
+		else
+			{
+			var parentID;
+			
+			if (keywordData[`KeywordData_ParentID] == undefined)
+				{
+				parentID = this.highestAssignedParentID + 1;
+				this.highestAssignedParentID++;
+
+				keywordData[`KeywordData_ParentID] = parentID;
+				}
+			else
+				{  parentID = keywordData[`KeywordData_ParentID];  }
+
+			var html = "<a class=\"SeEntry SeParent closed\" id=\"SeParent" + parentID + "\" " +
+								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
+								keywordData[`KeywordData_HTMLName] + 
+								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
+							"</a>" +
+							"<div class=\"SeChildren closed\" id=\"SeChildren" + parentID + "\">";
+
+			for (var i = 0; i < keywordData[`KeywordData_Members].length; i++)
+				{
+				var memberData = keywordData[`KeywordData_Members][i];
+
+				if (this.MemberMatchesInterpretations(memberData, searchInterpretations))
+					{
+					var target;
+
+					if (favorClasses && memberData[`MemberData_ClassHashPath] != undefined)
+						{  target = memberData[`MemberData_ClassHashPath];  }
+					else
+						{  target = memberData[`MemberData_FileHashPath];  }
+
+					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + memberData[`MemberData_HTMLName];
+
+					if (memberData[`MemberData_HTMLQualifier] != undefined)
+						{  html += "<span class=\"SeQualifier\">, " + memberData[`MemberData_HTMLQualifier] + "</span>";  }
+
+					html += "</a>";
+					}
+				}
+
+			html += "</div>";
+			return html;
+			}
+		};
+
+	
+	/* Function: BuildSearchingStatus
+	*/
+	this.BuildSearchingStatus = function ()
+		{
+		return "<div class=\"SeStatus Searching\">" + `Locale{HTML.SearchingStatus} + "</div>";
+		};
+
+
+	/* Function: BuildNoMatchesStatus
+	*/
+	this.BuildNoMatchesStatus = function ()
+		{
+		return "<div class=\"SeStatus NoResults\">" + `Locale{HTML.NoMatchesStatus} + "</div>";
+		};
+
+
+
+	// Group: Prefix Functions
+	// ________________________________________________________________________
+
+
+	/* Function: MakePrefix
+		Returns the prefix of an individual normalized search string.
+	*/
+	this.MakePrefix = function (searchText)
+		{
+		var prefix = "";
+
+		for (var i = 0; i < 3; i++)
+			{
+			if (i >= searchText.length)
+				{  break;  }
+
+			var char = searchText.charAt(i);
+
+			if (char == " " || char == "." || char == "/")
+				{  break;  }
+
+			prefix += char;
+			}
+
+		if (prefix.length > 0)
+			{  return prefix;  }
+		else
+			{  return undefined;  }
+		};
+
+
+	/* Function: PrefixToHex
+	*/
+	this.PrefixToHex = function (prefix)
+		{
+		var hex = "";
+
+		for (var i = 0; i < prefix.length; i++)
+			{
+			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
+			hex += charValue.substr(charValue.length - 4, 4);
+			}
+
+		return hex;
+		};
+
+
+	/* Function: PrefixToDataFile
+	*/
+	this.PrefixToDataFile = function (prefix)
+		{
+		return "search/keywords/" + this.PrefixToHex(prefix) + ".js";
+		};
+
+	
+	
 	// Group: UI Functions
 	// ________________________________________________________________________
 
@@ -95,9 +671,9 @@ var NDSearch = new function ()
 
 		// Start loading the main index as soon as the search field is first activated.  We don't want to wait
 		// until they start typing.
-		if (this.mainIndexStatus == `NotLoaded)
+		if (this.prefixesWithDataStatus == `NotLoaded)
 			{
-			this.mainIndexStatus = `Loading;
+			this.prefixesWithDataStatus = `Loading;
 			NDCore.LoadJavaScript("search/index.js");
 			}
 		};
@@ -112,13 +688,8 @@ var NDSearch = new function ()
 		NDCore.AddClass(this.domSearchField, "DefaultText");
 		this.domSearchField.value = `Locale{HTML.DefaultSearchText};
 
-		this.searchText = undefined;
-		this.altSearchText = undefined;
-		this.prefixesInSearchText = undefined;
-
-		this.keywordSegments = { };
-		this.highestAssignedParentID = 0;
 		this.openParentIDs = [ ];
+		this.highestAssignedParentID = 0;
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		document.getElementById("CFrame").contentWindow.focus();
@@ -249,561 +820,7 @@ var NDSearch = new function ()
 
 
 
-	// Group: Prefix Functions
-	// ________________________________________________________________________
-
-
-	/* Function: PrefixOf
-		Returns the prefix of an individual normalized search string.
-	*/
-	this.PrefixOf = function (searchText)
-		{
-		var prefix = "";
-
-		for (var i = 0; i < 3; i++)
-			{
-			if (i >= searchText.length)
-				{  break;  }
-
-			var char = searchText.charAt(i);
-
-			if (char == " " || char == "." || char == "/")
-				{  break;  }
-
-			prefix += char;
-			}
-
-		if (prefix.length > 0)
-			{  return prefix;  }
-		else
-			{  return undefined;  }
-		};
-
-
-	/* Function: PrefixIndex
-		Returns the index at which the passed prefix appears or should appear in <mainIndex>.  If it's not found 
-		it will return the index it would be inserted at if it were to be added.
-	*/
-	this.PrefixIndex = function (prefix)
-		{
-		if (this.mainIndexStatus != `Ready)
-			{  return undefined;  }
-		if (this.mainIndex.length == 0)
-			{  return 0;  }
-
-		var firstIndex = 0;
-		var lastIndex = this.mainIndex.length - 1;  // lastIndex is inclusive
-
-		for (;;)
-			{
-			var testIndex = (firstIndex + lastIndex) >> 1;
-
-			if (prefix == this.mainIndex[testIndex])
-				{  return testIndex;  }
-
-			else if (prefix < this.mainIndex[testIndex])
-				{  
-				if (testIndex == firstIndex)
-					{  return testIndex;  }
-				else
-					{  
-					// Not testIndex - 1 because even though prefix is lower, that may be the position it would be 
-					// inserted at.
-					lastIndex = testIndex;
-					}
-				}
-
-			else // prefix > this.mainIndex[testIndex]
-				{
-				if (testIndex == lastIndex)
-					{  return lastIndex + 1;  }
-				else
-					{  firstIndex = testIndex + 1;  }
-				}
-			}
-		};
-
-
-	/* Function: PrefixToHex
-	*/
-	this.PrefixToHex = function (prefix)
-		{
-		var hex = "";
-
-		for (var i = 0; i < prefix.length; i++)
-			{
-			var charValue = "0000" + prefix.charCodeAt(i).toString(16);
-			hex += charValue.substr(charValue.length - 4, 4);
-			}
-
-		return hex;
-		};
-
-
-	/* Function: PrefixToDataFile
-	*/
-	this.PrefixToDataFile = function (prefix)
-		{
-		return "search/keywords/" + this.PrefixToHex(prefix) + ".js";
-		};
-
-
-
-	// Group: Search Functions
-	// ________________________________________________________________________
-
-
-	/* Function: Update
-	*/
-	this.Update = function ()
-		{
-		// This may be called by segment data loaders after the field was deactivated so we have to check.
-		if (!this.IsActive())
-			{  return;  }
-
-		var status = this.UpdateAndBuildResults();
-
-		if (status.newContent == undefined)
-			{  this.HideResults();  }
-		else
-			{
-			var oldContent = document.getElementById("SeContent");
-			this.domSearchResults.replaceChild(status.newContent, oldContent);
-
-			this.ShowResults();
-			}
-
-		if (status.keywordSegmentToLoad != undefined)
-			{  this.LoadKeywordSegment(status.keywordSegmentToLoad);  }
-		};
-
-	
-	/* Function: UpdateAndBuildResults
-
-		Updates the internal search variables and builds and returns a new SeContent DOM element for the current 
-		search state.  If the results pane should not be shown it will return undefined.
-
-		This is the complete process from reading <domSearchField>, to setting state variables like <searchText>
-		and <prefixesInSearchText>, to queueing more prefix elements for loading, to building the final SeContent 
-		element.  This is only separated from <Update()> to make returning early while building SeContent easier.
-
-		Returns:
-
-			> { newContent, keywordSegmentToLoad }
-	*/
-	this.UpdateAndBuildResults = function ()
-		{
-		var status = {
-			newContent: undefined,
-			keywordSegmentToLoad: undefined
-			};
-
-		this.UpdateSearchText();
-
-		if (this.searchText == undefined || this.searchText == "")
-			{
-			this.prefixesInSearchText = undefined;
-			this.PurgeUnusedSegments();
-			return status;
-			}
-
-		status.newContent = document.createElement("div");
-		status.newContent.id = "SeContent";
-
-		if (this.mainIndexStatus != `Ready)
-			{
-			this.AddSearchingStatus(status.newContent);
-			return status;
-			}
-
-		this.UpdatePrefixesInSearchText();
-		this.PurgeUnusedSegments();
-
-		if (this.prefixesInSearchText == undefined)
-			{
-			this.AddNoMatchesStatus(status.newContent);
-			return status;
-			}
-
-		var location = new NDLocation(window.location.hash);
-		var favorClasses = (location.type == "Class" || location.type == "Database");
-		var htmlResults = "";
-		var addSearchingStatus = false;
-
-		for (var p = 0; p < this.prefixesInSearchText.length; p++)
-			{
-			var prefix = this.prefixesInSearchText[p];
-
-			if (this.keywordSegments[prefix] == undefined)
-				{
-				status.keywordSegmentToLoad = prefix;
-				addSearchingStatus = true;
-				break;
-				}
-			else if (this.keywordSegments[prefix].ready == false)
-				{
-				addSearchingStatus = true;
-				break;
-				}
-
-			var keywords = this.keywordSegments[prefix].content;
-
-			for (var i = 0; i < keywords.length; i++)
-				{  htmlResults += this.BuildKeyword(keywords[i], favorClasses);  }
-			}
-		
-		if (htmlResults == "" && !addSearchingStatus)
-			{  this.AddNoMatchesStatus(status.newContent);  }
-		else
-			{  
-			status.newContent.innerHTML = htmlResults;
-
-			if (addSearchingStatus)
-				{  this.AddSearchingStatus(status.newContent);  }
-			}
-
-		return status;
-		};
-
-	
-	/* Function: UpdateSearchText
-		Converts the raw text entered in <domSearchField> to a normalized form compatible with the search text Natural Docs 
-		generates.  It will fill in <searchText> and <altSearchText>.  Returns whether they changed.
-	*/
-	this.UpdateSearchText = function ()
-		{
-		// DEPENDENCY: This must match what is done in Engine.SearchIndex.Entry.Normalize().
-
-		var changed = false;
-		var newSearchText = this.domSearchField.value.toLowerCase();
-
-		// Trim and condense whitespace
-		newSearchText = newSearchText.replace(/\s+/g, " ");
-		newSearchText = newSearchText.replace(/^ /, "");
-		newSearchText = newSearchText.replace(/ $/, "");
-
-		// Remove spaces unless between two alphanumeric/underscore characters
-		newSearchText = newSearchText.replace(/([^a-z0-9_]) /g, "$1");  // Substitution because JavaScript has no (?<=) for lookbehinds
-		newSearchText = newSearchText.replace(/ (?=[^a-z0-9_])/g, "");
-
-		// Normalize separators
-		newSearchText = newSearchText.replace(/::|->/g, ".");
-		newSearchText = newSearchText.replace(/\\/g, "/");
-
-		// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
-		newSearchText = newSearchText.replace(/^[./]+/, "");
-
-		if (newSearchText != this.searchText)
-			{
-			this.searchText = newSearchText;
-			changed = true;
-			}
-
-
-		// If the search text ends with : or - it's possible that it's the first character of :: or ->.  Provide an alternate
-		// search string so relevant results don't disappear until the second character is added.
-
-		var lastChar = newSearchText.charAt(newSearchText.length - 1);
-		var newAltSearchText;
-
-		if (lastChar == ":" || lastChar == "-")
-			{  newAltSearchText = newSearchText.substr(0, newSearchText.length - 1) + ".";  }
-		else
-			{  newAltSearchText = undefined;  }
-
-		if (newAltSearchText != this.altSearchText)
-			{
-			this.altSearchText = newAltSearchText;
-			changed = true;
-			}
-
-		return changed;
-		};
-
-	
-	/* Function: UpdatePrefixesInSearchText
-		Creates <prefixesInSearchText> from <searchText> and <altSearchText>.  Returns whether it changed.
-	*/
-	this.UpdatePrefixesInSearchText = function ()
-		{
-		if (this.mainIndexStatus != `Ready)
-			{  
-			this.prefixesInSearchText = undefined;
-			return false;
-			}
-
-
-		// Find the stretch that matches searchText
-
-		var searchPrefix = undefined;
-		var searchPrefixIndex = 0;
-		var searchPrefixCount = 0;
-
-		if (this.searchText != undefined && this.searchText != "")
-			{  searchPrefix = this.PrefixOf(this.searchText);  }
-
-		if (searchPrefix != undefined && searchPrefix != "")
-			{
-			searchPrefixIndex = this.PrefixIndex(searchPrefix);
-
-			for (var i = searchPrefixIndex; i < this.mainIndex.length; i++)
-				{
-				if (this.mainIndex[i].length >= searchPrefix.length &&
-					this.mainIndex[i].substr(0, searchPrefix.length) == searchPrefix)
-					{  searchPrefixCount++;  }
-				else
-					{  break;  }
-				}
-			}
-
-
-		// Find the stretch that matches altSearchText
-
-		var altSearchPrefix = undefined;
-		var altSearchPrefixIndex = 0;
-		var altSearchPrefixCount = 0;
-
-		if (this.altSearchText != undefined && this.altSearchText != "")
-			{  altSearchPrefix = this.PrefixOf(this.altSearchText);  }
-
-		if (altSearchPrefix != undefined && altSearchPrefix != "" && altSearchPrefix != searchPrefix)
-			{
-			altSearchPrefixIndex = this.PrefixIndex(altSearchPrefix);
-
-			for (var i = altSearchPrefixIndex; i < this.mainIndex.length; i++)
-				{
-				if (this.mainIndex[i].length >= altSearchPrefix.length &&
-					this.mainIndex[i].substr(0, altSearchPrefix.length) == altSearchPrefix)
-					{  altSearchPrefixCount++;  }
-				else
-					{  break;  }
-				}
-			}
-
-
-		// At this point we don't care about which stretch came from searchText and which came from altSearchText
-		// anymore.  Normalize them so that if there is only one defined it's in the first one, and if they're both defined
-		// the lower is first.
-
-		if (searchPrefixCount == 0 && altSearchPrefixCount != 0)
-			{
-			searchPrefixIndex = altSearchPrefixIndex;
-			searchPrefixCount = altSearchPrefixCount;
-			altSearchPrefixCount = 0;
-			}
-		else if (searchPrefixCount != 0 && altSearchPrefixCount != 0 && altSearchIndex < searchIndex)
-			{
-			var tempSearchPrefixIndex = searchPrefixIndex;
-			var tempSearchPrefixCount = searchPrefixCount;
-			searchPrefixIndex = altSearchPrefixIndex;
-			searchPrefixCount = altSearchPrefixCount;
-			altSearchPrefixIndex = tempSearchPrefixIndex;
-			altSearchPrefixCount = tempSearchPrefixCount;
-			}
-
-
-		// Create a combined array of results.  We don't want any duplicates.
-
-		var newPrefixesInSearchText;
-
-		if (searchPrefixCount == 0)
-			{  
-			newPrefixesInSearchText = undefined;  
-			}
-		else if (altSearchPrefixCount == 0 || 
-					(altSearchPrefixIndex == searchPrefixIndex && altSearchPrefixCount <= searchPrefixCount) )
-			{  
-			newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, searchPrefixIndex + searchPrefixCount);  
-			}
-		else
-			{
-			var searchPrefixEnd = searchPrefixIndex + searchPrefixCount;
-			var altSearchPrefixEnd = altSearchPrefixIndex + altSearchPrefixCount;
-
-			if (searchPrefixEnd <= altSearchPrefixIndex)
-				{  newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, searchPrefixEnd);  }
-			else
-				{  newPrefixesInSearchText = this.mainIndex.slice(searchPrefixIndex, altSearchPrefixIndex);  }
-
-			newPrefixesInSearchText = newPrefixesInSearchText.concat(
-													this.mainIndex.slice(altSearchPrefixIndex, altSearchPrefixEnd) );
-			}
-
-
-		// Compare
-
-		var result;
-
-		if (this.prefixesInSearchText == undefined && newPrefixesInSearchText == undefined)
-			{  result = false;  }
-		else if (this.prefixesInSearchText == undefined || newPrefixesInSearchText == undefined)
-			{  result = true;  }
-		else if (this.prefixesInSearchText.length != newPrefixesInSearchText.length)
-			{  result = true;  }
-		else
-			{
-			result = true;
-
-			for (var i = 0; i < newPrefixesInSearchText; i++)
-				{
-				if (this.prefixesInSearchText[i] != newPrefixesInSearchText[i])
-					{
-					result = false;
-					break;
-					}
-				}
-			}
-
-		this.prefixesInSearchText = newPrefixesInSearchText;
-		return result;
-		};
-
-
-	/* Function: KeywordMatchesSearchText
-	*/
-	this.KeywordMatchesSearchText = function (keyword)
-		{
-		// Searching for "acc" in keyword "Access"...
-		if (this.searchText.length <= keyword[`Keyword_SearchText].length)
-			{
-			return ( keyword[`Keyword_SearchText].indexOf(this.searchText) != -1 ||
-					   (this.altSearchText != undefined && keyword[`Keyword_SearchText].indexOf(this.altSearchText) != -1) );
-			}
-		// Reverse it to search for "access levels" under keyword "Access"...
-		else
-			{
-			return ( this.searchText.indexOf(keyword[`Keyword_SearchText]) != -1 ||
-					   (this.altSearchText != undefined && this.altSearchText(keyword[`Keyword_SearchText]) != -1) );
-			}
-		};
-
-
-	/* Function: KeywordMemberMatchesSearchText
-	*/
-	this.KeywordMemberMatchesSearchText = function (member)
-		{
-		return ( member[`Member_SearchText].indexOf(this.searchText) != -1 ||
-				   (this.altSearchText != undefined && member[`Member_SearchText].indexOf(this.altSearchText) != -1) );
-		};
-
-
-	/* Function: BuildKeyword
-	*/
-	this.BuildKeyword = function (keyword, favorClasses)
-		{
-		if (this.KeywordMatchesSearchText(keyword) == false)
-			{  return "";  }
-
-		var memberMatches = 0;
-		var lastMatch;
-
-		for (var i = 0; i < keyword[`Keyword_Members].length; i++)
-			{
-			var member = keyword[`Keyword_Members][i];
-
-			if (this.KeywordMemberMatchesSearchText(member))
-				{
-				lastMatch = member;
-				memberMatches++;  
-				}
-			}
-
-		if (memberMatches == 0)
-			{  return "";  }
-
-		else if (memberMatches == 1 && lastMatch[`Member_SearchText] == keyword[`Keyword_SearchText])
-			{
-			var target;
-
-			if (favorClasses && lastMatch[`Member_ClassHashPath] != undefined)
-				{  target = lastMatch[`Member_ClassHashPath];  }
-			else
-				{  target = lastMatch[`Member_FileHashPath];  }
-
-			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatch[`Member_HTMLName];
-
-			if (lastMatch[`Member_HTMLQualifier] != undefined)
-				{  html += "<span class=\"SeQualifier\">, " + lastMatch[`Member_HTMLQualifier] + "</span>";  }
-			
-			html += "</a>";
-			return html;
-			}
-
-		else // memberMatches >= 2
-			{
-			var parentID;
-			
-			if (keyword[`Keyword_ParentID] == undefined)
-				{
-				parentID = this.highestAssignedParentID + 1;
-				this.highestAssignedParentID++;
-
-				keyword[`Keyword_ParentID] = parentID;
-				}
-			else
-				{  parentID = keyword[`Keyword_ParentID];  }
-
-			var html = "<a class=\"SeEntry SeParent closed\" id=\"SeParent" + parentID + "\" " +
-								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
-								keyword[`Keyword_HTMLName] + 
-								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
-							"</a>" +
-							"<div class=\"SeChildren closed\" id=\"SeChildren" + parentID + "\">";
-
-			for (var i = 0; i < keyword[`Keyword_Members].length; i++)
-				{
-				var member = keyword[`Keyword_Members][i];
-
-				if (this.KeywordMemberMatchesSearchText(member))
-					{
-					var target;
-
-					if (favorClasses && member[`Member_ClassHashPath] != undefined)
-						{  target = member[`Member_ClassHashPath];  }
-					else
-						{  target = member[`Member_FileHashPath];  }
-
-					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + member[`Member_HTMLName];
-
-					if (member[`Member_HTMLQualifier] != undefined)
-						{  html += "<span class=\"SeQualifier\">, " + member[`Member_HTMLQualifier] + "</span>";  }
-
-					html += "</a>";
-					}
-				}
-
-			html += "</div>";
-			return html;
-			}
-		};
-
-	
-	/* Function: AddSearchingStatus
-	*/
-	this.AddSearchingStatus = function (domElement)
-		{
-		var status = document.createElement("div");
-		status.className = "SeStatus Searching";
-		status.innerHTML = `Locale{HTML.SearchingStatus};
-
-		domElement.appendChild(status);
-		};
-
-
-	/* Function: AddNoMatchesStatus
-	*/
-	this.AddNoMatchesStatus = function (domElement)
-		{
-		var status = document.createElement("div");
-		status.className = "SeStatus NoResults";
-		status.innerHTML = `Locale{HTML.NoMatchesStatus};
-
-		domElement.appendChild(status);
-		};
-
-
-
-	// Group: Segment Functions
+	// Group: Search Data Functions
 	// ________________________________________________________________________
 
 	
@@ -811,8 +828,8 @@ var NDSearch = new function ()
 	*/
 	this.OnIndexLoaded = function (content)
 		{
-		this.mainIndex = content;
-		this.mainIndexStatus = `Ready;
+		this.prefixesWithData = content;
+		this.prefixesWithDataStatus = `Ready;
 
 		this.Update();
 		};
@@ -854,19 +871,19 @@ var NDSearch = new function ()
 		// Undo the data deduplication that was applied to the content.
 		for (var k = 0; k < content.length; k++)
 			{
-			var keyword = content[k];
+			var keywordData = content[k];
 
-			if (keyword[`Keyword_SearchText] == undefined)
-				{  keyword[`Keyword_SearchText] = keyword[`Keyword_HTMLName].toLowerCase();  }
+			if (keywordData[`KeywordData_SearchText] == undefined)
+				{  keywordData[`KeywordData_SearchText] = keywordData[`KeywordData_HTMLName].toLowerCase();  }
 
-			for (var m = 0; m < keyword[`Keyword_Members].length; m++)
+			for (var m = 0; m < keywordData[`KeywordData_Members].length; m++)
 				{
-				var member = keyword[`Keyword_Members][m];
+				var memberData = keywordData[`KeywordData_Members][m];
 
-				if (member[`Member_HTMLName] == undefined)
-					{  member[`Member_HTMLName] = keyword[`Keyword_HTMLName];  }
-				if (member[`Member_SearchText] == undefined)
-					{  member[`Member_SearchText] = member[`Member_HTMLName].toLowerCase();  }
+				if (memberData[`MemberData_HTMLName] == undefined)
+					{  memberData[`MemberData_HTMLName] = keywordData[`KeywordData_HTMLName];  }
+				if (memberData[`MemberData_SearchText] == undefined)
+					{  memberData[`MemberData_SearchText] = memberData[`MemberData_HTMLName].toLowerCase();  }
 				}
 			}
 
@@ -877,17 +894,17 @@ var NDSearch = new function ()
 		NDCore.RemoveScriptElement(entry.domLoaderID);
 
 		//	Replace with this line to simulate latency:
-		// setTimeout("NDSearch.Update()", 1500);
+		// setTimeout("NDSearch.Update()", 3000);
 		this.Update();
 		};
 
 
 	/* Function: PurgeUnusedSegments
-		Removes all segments from <keywordSegments> that are not represented in <prefixesInSearchText>.
+		Removes all segments from <keywordSegments> that are not in the passed prefixes.
 	*/
-	this.PurgeUnusedSegments = function ()
+	this.PurgeUnusedSegments = function (usedPrefixes)
 		{
-		if (this.prefixesInSearchText == undefined || this.prefixesInSearchText.length == 0)
+		if (usedPrefixes.length == 0)
 			{  
 			this.keywordSegments = { };
 			return;
@@ -895,18 +912,7 @@ var NDSearch = new function ()
 
 		for (var prefix in this.keywordSegments)
 			{
-			var isUsed = false;
-
-			for (var i = 0; i < this.prefixesInSearchText.length; i++)
-				{
-				if (this.prefixesInSearchText[i] == prefix)
-					{
-					isUsed = true;
-					break;
-					}
-				}
-
-			if (!isUsed)
+			if (usedPrefixes.indexOf(prefix) == -1)
 				{
 				// Set it to undefined instead of using delete so we don't potentially screw up the for..in iteration.
 				this.keywordSegments[prefix] = undefined;
@@ -916,93 +922,9 @@ var NDSearch = new function ()
 
 
 	
-	// Group: Event Handlers
+	// Group: UI Variables
 	// ________________________________________________________________________
 
-
-	/* Function: OnFieldFocus
-	*/
-	this.OnFieldFocus = function (hasFocus)
-		{
-		if (hasFocus)
-			{
-			if (!this.IsActive())
-				{  this.Activate();  }
-			// Otherwise it might be receiving focus back from the search results
-			}
-		else
-			{  
-			// IE switches focus to the results if you click on a scroll bar
-//			if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
-//				{  this.Deactivate();  }
-			}
-		};
-
-
-	/* Function: OnFieldKeyUp
-	*/
-	this.OnFieldKeyUp = function (event)
-		{
-		if (event === undefined)
-			{  event = window.event;  }
-
-		if (event.keyCode == 27)  // ESC
-			{  this.Deactivate();  }
-		else
-			{
-			if (this.updateSearchTimeout == undefined)
-				{
-				this.updateSearchTimeout = setTimeout(
-					function ()
-						{
-						clearTimeout(NDSearch.updateSearchTimeout);
-						NDSearch.updateSearchTimeout = undefined;
-
-						NDSearch.Update();
-						},
-					`UpdateSearchDelay);
-				}
-			}
-		}
-
-
-	/* Function: OnResultsFocus
-	*/
-	this.OnResultsFocus = function (hasFocus)
-		{
-		if (hasFocus == false)
-			{  
-			if (document.activeElement == undefined || document.activeElement.id != "NDSearchField")
-				{  this.Deactivate();  }
-			}
-		};
-
-
-	/* Function: OnResultsKeyUp
-	*/
-	this.OnResultsKeyUp = function (event)
-		{
-		if (event === undefined)
-			{  event = window.event;  }
-
-		if (event.keyCode == 27)  // ESC
-			{  this.Deactivate();  }
-		}
-
-
-	/* Function: OnUpdateLayout
-	*/
-	this.OnUpdateLayout = function ()
-		{
-		// This may be called before Start().
-		if (this.domSearchResults != undefined)
-			{  this.PositionResults();  }
-		};
-
-
-
-	// Group: Variables
-	// ________________________________________________________________________
 
 	/* var: domSearchField
 		The search field DOM element.
@@ -1012,36 +934,39 @@ var NDSearch = new function ()
 		The search results DOM element.
 	*/
 
-	/* var: searchText
-		The current search text, normalized.
+	/* var: domSearchResultsContent
+		The SeContent section of <domSearchResults>.
 	*/
 
-	/* var: altSearchText
-		An alternate version of the current search text, normalized, if any.  This is for if there can
-		be two interpretations of the search text as written.
-	*/
-
-	/* var: prefixesInSearchText
-		An array of prefixes that match <searchText> and/or <altSearchText>.  If there are none it will
-		be undefined.
-	*/
-
-	/* var: updateSearchTimeout
+	/* var: updateTimeout
 		A timeout to manage the delay between when the user stops typing and when the search results
 		update.
 	*/
 
-	/* var: mainIndex
+	/* var: openParentIDs
+		An array of SeParent IDs that are open.
+	*/
+
+	/* var: highestAssignedParentID
+		The highest ID number used in building SeParent/SeChildren pairs.
+	*/
+
+
+	// Group: Search Data Variables
+	// ________________________________________________________________________
+
+
+	/* var: prefixesWithData
 		A sorted array of the search text prefixes that have data files associated with them.  This is
-		what was stored in search/index.js.  This variable is only available if <mainIndexStatus> is set
+		what was stored in search/index.js.  This variable is only available if <prefixesWithDataStatus> is set
 		to `Ready.
 	*/
 
-	/* var: mainIndexStatus
-		The state of <mainIndex>, which may be:
+	/* var: prefixesWithDataStatus
+		The state of <prefixesWithData>, which may be:
 		`NotLoaded - search/index.js has not been loaded yet, or even had it's script element added.
 		`Loading - search/index.js has had a script element added but the data hasn't returned yet.
-		`Ready - search/index.js has been loaded and <mainIndex> is ready to use.
+		`Ready - search/index.js has been loaded and <prefixesWithData> is ready to use.
 	*/
 		/* Substitutions:
 			`NotLoaded = 1
@@ -1051,14 +976,6 @@ var NDSearch = new function ()
 
 	/* var: keywordSegments
 		A hash mapping segment IDs to <NDKeywordSegments>.
-	*/
-
-	/* var: highestAssignedParentID
-		The highest ID number used in building SeParent/SeChildren pairs.
-	*/
-
-	/* var: openParentIDs
-		An array of SeParent IDs that are open.
 	*/
 
 	};

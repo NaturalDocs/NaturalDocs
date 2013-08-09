@@ -40,7 +40,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		 */
 		static public string Normalize (string text)
 			{
-			// DEPENDENCY: If this changes NDSearch.MakeSearchText() must be updated to match.
+			// DEPENDENCY: If this changes NDSearch.GetSearchText() must be updated to match.
 
 			text = text.ToLower();
 			text = text.CondenseWhitespace().Trim();
