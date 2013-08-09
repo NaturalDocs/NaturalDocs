@@ -13,16 +13,21 @@
 
 	Substitutions:
 
-		`KeywordData_HTMLName = 0
-		`KeywordData_SearchText = 1
-		`KeywordData_Members = 2
-		`KeywordData_ParentID = 3
+		`PrefixObject_Prefix = 0
+		`PrefixObject_KeywordObjects = 1
+		`PrefixObject_Ready = 2
+		`PrefixObject_DOMLoaderID = 3
 
-		`MemberData_HTMLQualifier = 0
-		`MemberData_HTMLName = 1
-		`MemberData_SearchText = 2
-		`MemberData_FileHashPath = 3
-		`MemberData_ClassHashPath = 4
+		`KeywordObject_HTMLName = 0
+		`KeywordObject_SearchText = 1
+		`KeywordObject_MemberObjects = 2
+		`KeywordObject_ParentID = 3
+
+		`MemberObject_HTMLQualifier = 0
+		`MemberObject_HTMLName = 1
+		`MemberObject_SearchText = 2
+		`MemberObject_FileHashPath = 3
+		`MemberObject_ClassHashPath = 4
 
 		`UpdateSearchDelay = 350
 
@@ -74,9 +79,9 @@ var NDSearch = new function ()
 
 		// We delay loading search/index.js until the search field is activated
 
-		// this.prefixesWithData = undefined;
-		this.prefixesWithDataStatus = `NotLoaded;
-		this.keywordSegments = { };
+		// this.allPrefixes = undefined;
+		this.allPrefixesStatus = `NotLoaded;
+		this.prefixObjects = { };
 
 
 		// Event handlers
@@ -100,7 +105,7 @@ var NDSearch = new function ()
 	*/
 	this.Update = function ()
 		{
-		// This may be called by segment data loaders after the field was deactivated so we have to check.
+		// This may be called by prefix data loaders after the field was deactivated so we have to check.
 		if (!this.IsActive())
 			{  return;  }
 
@@ -112,16 +117,16 @@ var NDSearch = new function ()
 			return;
 			}
 
-		if (this.prefixesWithDataStatus != `Ready)
+		if (this.allPrefixesStatus != `Ready)
 			{
 			this.domSearchResultsContent.innerHTML = this.BuildSearchingStatus();
 			this.ShowResults();
 			return;
 			}
 
-		var searchInterpretationPrefixes = this.GetPrefixesWithData(searchInterpretations);
+		var searchInterpretationPrefixes = this.GetMatchingPrefixes(searchInterpretations);
 
-		this.PurgeUnusedSegments(searchInterpretationPrefixes);
+		this.RemoveUnusedPrefixObjects(searchInterpretationPrefixes);
 
 		if (searchInterpretationPrefixes.length == 0)
 			{
@@ -138,8 +143,8 @@ var NDSearch = new function ()
 		this.domSearchResultsContent.innerHTML = buildResults.html;
 		this.ShowResults();
 
-		if (buildResults.keywordSegmentToLoad != undefined)
-			{  this.LoadKeywordSegment(buildResults.keywordSegmentToLoad);  }
+		if (buildResults.prefixDataToLoad != undefined)
+			{  this.LoadPrefixData(buildResults.prefixDataToLoad);  }
 		};
 
 
@@ -285,14 +290,14 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: GetPrefixesWithData
-		Returns an array of prefixes in <prefixesWithData> that apply to the passed search text array.
+	/* Function: GetMatchingPrefixes
+		Returns an array of prefixes from <allPrefixes> that apply to the passed search text array.
 	*/
-	this.GetPrefixesWithData = function (searchTextArray)
+	this.GetMatchingPrefixes = function (searchTextArray)
 		{
 		var matchingPrefixes = [ ];
 
-		if (this.prefixesWithDataStatus != `Ready)
+		if (this.allPrefixesStatus != `Ready)
 			{  return matchingPrefixes;  }
 
 
@@ -305,14 +310,14 @@ var NDSearch = new function ()
 
 			if (searchPrefix != undefined && searchPrefix != "")
 				{
-				var prefixIndex = this.GetPrefixesWithDataIndex(searchPrefix);
+				var prefixIndex = this.GetAllPrefixesIndex(searchPrefix);
 
-				while (prefixIndex < this.prefixesWithData.length)
+				while (prefixIndex < this.allPrefixes.length)
 					{
-					if (this.prefixesWithData[prefixIndex].length >= searchPrefix.length &&
-						this.prefixesWithData[prefixIndex].substr(0, searchPrefix.length) == searchPrefix)
+					if (this.allPrefixes[prefixIndex].length >= searchPrefix.length &&
+						this.allPrefixes[prefixIndex].substr(0, searchPrefix.length) == searchPrefix)
 						{  
-						matchingPrefixes.push(this.prefixesWithData[prefixIndex]);  
+						matchingPrefixes.push(this.allPrefixes[prefixIndex]);  
 						prefixIndex++;
 						}
 					else
@@ -342,28 +347,28 @@ var NDSearch = new function ()
 		};
 
 	
-	/* Function: GetPrefixesWithDataIndex
-		Returns the index at which the passed prefix appears or should appear in <prefixesWithData>.  If it's not found 
+	/* Function: GetAllPrefixesIndex
+		Returns the index at which the passed prefix appears or should appear in <allPrefixes>.  If it's not found 
 		it will return the index it would be inserted at if it were to be added.
 	*/
-	this.GetPrefixesWithDataIndex = function (prefix)
+	this.GetAllPrefixesIndex = function (prefix)
 		{
-		if (this.prefixesWithDataStatus != `Ready)
+		if (this.allPrefixesStatus != `Ready)
 			{  return undefined;  }
-		if (this.prefixesWithData.length == 0)
+		if (this.allPrefixes.length == 0)
 			{  return 0;  }
 
 		var firstIndex = 0;
-		var lastIndex = this.prefixesWithData.length - 1;  // lastIndex is inclusive
+		var lastIndex = this.allPrefixes.length - 1;  // lastIndex is inclusive
 
 		for (;;)
 			{
 			var testIndex = (firstIndex + lastIndex) >> 1;
 
-			if (prefix == this.prefixesWithData[testIndex])
+			if (prefix == this.allPrefixes[testIndex])
 				{  return testIndex;  }
 
-			else if (prefix < this.prefixesWithData[testIndex])
+			else if (prefix < this.allPrefixes[testIndex])
 				{  
 				if (testIndex == firstIndex)
 					{  return testIndex;  }
@@ -375,7 +380,7 @@ var NDSearch = new function ()
 					}
 				}
 
-			else // prefix > this.prefixesWithData[testIndex]
+			else // prefix > this.allPrefixes[testIndex]
 				{
 				if (testIndex == lastIndex)
 					{  return lastIndex + 1;  }
@@ -389,23 +394,23 @@ var NDSearch = new function ()
 	/* Function: KeywordMatchesInterpretations
 		Returns whether the keyword matches any of the passed interpretations.
 	*/
-	this.KeywordMatchesInterpretations = function (keywordData, interpretations)
+	this.KeywordMatchesInterpretations = function (keywordObject, interpretations)
 		{
 		for (var i = 0; i < interpretations.length; i++)
 			{
 			var interpretation = interpretations[i];
 
 			// Searching for "acc" in keyword "Access"...
-			if (interpretation.length <= keywordData[`KeywordData_SearchText].length)
+			if (interpretation.length <= keywordObject[`KeywordObject_SearchText].length)
 				{
-				if (keywordData[`KeywordData_SearchText].indexOf(interpretation) != -1)
+				if (keywordObject[`KeywordObject_SearchText].indexOf(interpretation) != -1)
 					{  return true;  }
 				}
 
 			// Reverse it to search for "access levels" under keyword "Access"...
 			else
 				{
-				if (interpretation.indexOf(keywordData[`KeywordData_SearchText]) != -1)
+				if (interpretation.indexOf(keywordObject[`KeywordObject_SearchText]) != -1)
 					{  return true;  }
 				}
 			}
@@ -417,13 +422,13 @@ var NDSearch = new function ()
 	/* Function: MemberMatchesInterpretations
 		Returns whether the keyword member matches any of the passed interpretations.
 	*/
-	this.MemberMatchesInterpretations = function (memberData, interpretations)
+	this.MemberMatchesInterpretations = function (memberObject, interpretations)
 		{
 		for (var i = 0; i < interpretations.length; i++)
 			{
 			var interpretation = interpretations[i];
 
-			if (memberData[`MemberData_SearchText].indexOf(interpretation) != -1)
+			if (memberObject[`MemberObject_SearchText].indexOf(interpretation) != -1)
 				{  return true;  }
 			}
 
@@ -438,21 +443,22 @@ var NDSearch = new function ()
 
 	/* Function: BuildResults
 
-		Builds the search results in HTML.  If a keyword segment it needs is not loaded yet it will build what it can and return 
-		the next one that needs in the results.  If favorClasses is set, links will use the class/database view whenever possible.
+		Builds the search results in HTML.  If a prefix data it needs is not loaded yet it will build what it can and return 
+		the next one that needs in the results.  If favorClasses is set, links will use the class/database view whenever 
+		possible.
 
 		Returns:
 
-			{ html, keywordSegmentToLoad }
+			{ html, prefixDataToLoad }
 	*/
 	this.BuildResults = function (searchInterpretations, searchInterpretationPrefixes, favorClasses)
 		{
 		var results = {
-			// keywordSegmentToLoad: undefined,
+			// prefixDataToLoad: undefined,
 			html: ""
 			};
 
-		if (this.prefixesWithDataStatus != `Ready)
+		if (this.allPrefixesStatus != `Ready)
 			{
 			results.html += this.BuildSearchingStatus();
 			return results;
@@ -464,22 +470,22 @@ var NDSearch = new function ()
 			{
 			var prefix = searchInterpretationPrefixes[p];
 
-			if (this.keywordSegments[prefix] == undefined)
+			if (this.prefixObjects[prefix] == undefined)
 				{
-				results.keywordSegmentToLoad = prefix;
+				results.prefixDataToLoad = prefix;
 				addSearchingStatus = true;
 				break;
 				}
-			else if (this.keywordSegments[prefix].ready == false)
+			else if (this.prefixObjects[prefix][`PrefixObject_Ready] == false)
 				{
 				addSearchingStatus = true;
 				break;
 				}
 
-			var keywordData = this.keywordSegments[prefix].content;
+			var keywordObjects = this.prefixObjects[prefix][`PrefixObject_KeywordObjects];
 
-			for (var k = 0; k < keywordData.length; k++)
-				{  results.html += this.BuildKeyword(keywordData[k], searchInterpretations, favorClasses);  }
+			for (var k = 0; k < keywordObjects.length; k++)
+				{  results.html += this.BuildKeyword(keywordObjects[k], searchInterpretations, favorClasses);  }
 			}
 		
 		if (addSearchingStatus)
@@ -495,21 +501,21 @@ var NDSearch = new function ()
 		Builds the results for a keyword and returns the HTML.  The results will be filtered based on <searchText>.  If
 		favorClasses is set, links will use the class/database view whenever possible.
 	*/
-	this.BuildKeyword = function (keywordData, searchInterpretations, favorClasses)
+	this.BuildKeyword = function (keywordObject, searchInterpretations, favorClasses)
 		{
-		if (this.KeywordMatchesInterpretations(keywordData, searchInterpretations) == false)
+		if (this.KeywordMatchesInterpretations(keywordObject, searchInterpretations) == false)
 			{  return "";  }
 
 		var memberMatches = 0;
-		var lastMatchingMemberData;
+		var lastMatchingMemberObject;
 
-		for (var i = 0; i < keywordData[`KeywordData_Members].length; i++)
+		for (var i = 0; i < keywordObject[`KeywordObject_MemberObjects].length; i++)
 			{
-			var memberData = keywordData[`KeywordData_Members][i];
+			var memberObject = keywordObject[`KeywordObject_MemberObjects][i];
 
-			if (this.MemberMatchesInterpretations(memberData, searchInterpretations))
+			if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 				{
-				lastMatchingMemberData = memberData;
+				lastMatchingMemberObject = memberObject;
 				memberMatches++;  
 				}
 			}
@@ -518,19 +524,19 @@ var NDSearch = new function ()
 			{  return "";  }
 
 		else if (memberMatches == 1 &&
-				   lastMatchingMemberData[`MemberData_SearchText] == keywordData[`KeywordData_SearchText])
+				   lastMatchingMemberObject[`MemberObject_SearchText] == keywordObject[`KeywordObject_SearchText])
 			{
 			var target;
 
-			if (favorClasses && lastMatchingMemberData[`MemberData_ClassHashPath] != undefined)
-				{  target = lastMatchingMemberData[`MemberData_ClassHashPath];  }
+			if (favorClasses && lastMatchingMemberObject[`MemberObject_ClassHashPath] != undefined)
+				{  target = lastMatchingMemberObject[`MemberObject_ClassHashPath];  }
 			else
-				{  target = lastMatchingMemberData[`MemberData_FileHashPath];  }
+				{  target = lastMatchingMemberObject[`MemberObject_FileHashPath];  }
 
-			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatchingMemberData[`MemberData_HTMLName];
+			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatchingMemberObject[`MemberObject_HTMLName];
 
-			if (lastMatchingMemberData[`MemberData_HTMLQualifier] != undefined)
-				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberData[`MemberData_HTMLQualifier] + "</span>";  }
+			if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined)
+				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberObject[`MemberObject_HTMLQualifier] + "</span>";  }
 			
 			html += "</a>";
 			return html;
@@ -540,40 +546,47 @@ var NDSearch = new function ()
 			{
 			var parentID;
 			
-			if (keywordData[`KeywordData_ParentID] == undefined)
+			if (keywordObject[`KeywordObject_ParentID] == undefined)
 				{
 				parentID = this.highestAssignedParentID + 1;
 				this.highestAssignedParentID++;
 
-				keywordData[`KeywordData_ParentID] = parentID;
+				keywordObject[`KeywordObject_ParentID] = parentID;
 				}
 			else
-				{  parentID = keywordData[`KeywordData_ParentID];  }
+				{  parentID = keywordObject[`KeywordObject_ParentID];  }
 
-			var html = "<a class=\"SeEntry SeParent closed\" id=\"SeParent" + parentID + "\" " +
+			var openClosed;
+
+			if (this.openParentIDs.indexOf(parentID) != -1)
+				{  openClosed = "open";  }
+			else
+				{  openClosed = "closed";  }
+
+			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" id=\"SeParent" + parentID + "\" " +
 								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
-								keywordData[`KeywordData_HTMLName] + 
+								keywordObject[`KeywordObject_HTMLName] + 
 								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
 							"</a>" +
-							"<div class=\"SeChildren closed\" id=\"SeChildren" + parentID + "\">";
+							"<div class=\"SeChildren " + openClosed + "\" id=\"SeChildren" + parentID + "\">";
 
-			for (var i = 0; i < keywordData[`KeywordData_Members].length; i++)
+			for (var i = 0; i < keywordObject[`KeywordObject_MemberObjects].length; i++)
 				{
-				var memberData = keywordData[`KeywordData_Members][i];
+				var memberObject = keywordObject[`KeywordObject_MemberObjects][i];
 
-				if (this.MemberMatchesInterpretations(memberData, searchInterpretations))
+				if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 					{
 					var target;
 
-					if (favorClasses && memberData[`MemberData_ClassHashPath] != undefined)
-						{  target = memberData[`MemberData_ClassHashPath];  }
+					if (favorClasses && memberObject[`MemberObject_ClassHashPath] != undefined)
+						{  target = memberObject[`MemberObject_ClassHashPath];  }
 					else
-						{  target = memberData[`MemberData_FileHashPath];  }
+						{  target = memberObject[`MemberObject_FileHashPath];  }
 
-					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + memberData[`MemberData_HTMLName];
+					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + memberObject[`MemberObject_HTMLName];
 
-					if (memberData[`MemberData_HTMLQualifier] != undefined)
-						{  html += "<span class=\"SeQualifier\">, " + memberData[`MemberData_HTMLQualifier] + "</span>";  }
+					if (memberObject[`MemberObject_HTMLQualifier] != undefined)
+						{  html += "<span class=\"SeQualifier\">, " + memberObject[`MemberObject_HTMLQualifier] + "</span>";  }
 
 					html += "</a>";
 					}
@@ -669,11 +682,11 @@ var NDSearch = new function ()
 		this.domSearchField.value = "";
 		NDCore.RemoveClass(this.domSearchField, "DefaultText");
 
-		// Start loading the main index as soon as the search field is first activated.  We don't want to wait
+		// Start loading the prefixes index as soon as the search field is first activated.  We don't want to wait
 		// until they start typing.
-		if (this.prefixesWithDataStatus == `NotLoaded)
+		if (this.allPrefixesStatus == `NotLoaded)
 			{
-			this.prefixesWithDataStatus = `Loading;
+			this.allPrefixesStatus = `Loading;
 			NDCore.LoadJavaScript("search/index.js");
 			}
 		};
@@ -690,6 +703,7 @@ var NDSearch = new function ()
 
 		this.openParentIDs = [ ];
 		this.highestAssignedParentID = 0;
+		this.prefixObjects = { };
 
 		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
 		document.getElementById("CFrame").contentWindow.focus();
@@ -806,6 +820,11 @@ var NDSearch = new function ()
 			NDCore.RemoveClass(domChildren, "open");
 			NDCore.AddClass(domParent, "closed");
 			NDCore.AddClass(domChildren, "closed");
+
+			var parentIndex = this.openParentIDs.indexOf(id);
+
+			if (parentIndex != -1)
+				{  this.openParentIDs.splice(parentIndex, 1);  }
 			}
 		else
 			{
@@ -813,6 +832,8 @@ var NDSearch = new function ()
 			NDCore.RemoveClass(domChildren, "closed");
 			NDCore.AddClass(domParent, "open");
 			NDCore.AddClass(domChildren, "open");
+
+			this.openParentIDs.push(id);
 			}
 
 		this.PositionResults();
@@ -824,74 +845,74 @@ var NDSearch = new function ()
 	// ________________________________________________________________________
 
 	
-	/* Function: OnIndexLoaded
+	/* Function: OnPrefixIndexLoaded
 	*/
-	this.OnIndexLoaded = function (content)
+	this.OnPrefixIndexLoaded = function (prefixes)
 		{
-		this.prefixesWithData = content;
-		this.prefixesWithDataStatus = `Ready;
+		this.allPrefixes = prefixes;
+		this.allPrefixesStatus = `Ready;
 
 		this.Update();
 		};
 
 	
-	/* Function: LoadKeywordSegment
-		Starts loading the keyword segment with the passed prefix if it isn't already loaded or in the process of loading.
+	/* Function: LoadPrefixData
+		Starts loading the prefix data file associated with the passed prefix if it isn't already loaded or in the process of loading.
 	*/
-	this.LoadKeywordSegment = function (prefix)
+	this.LoadPrefixData = function (prefix)
 		{
-		if (this.keywordSegments[prefix] == undefined)
+		if (this.prefixObjects[prefix] == undefined)
 			{
-			var segment = {
-				prefix: prefix,
-				content: undefined,
-				ready: false,
-				domLoaderID: "NDKeywordLoader_" + this.PrefixToHex(prefix)
-				};
+			var prefixObject = [ ];
 
-			this.keywordSegments[prefix] = segment;
+			prefixObject[`PrefixObject_Prefix] = prefix;
+			// prefixObject[`PrefixObject_KeywordObjects] = undefined;
+			prefixObject[`PrefixObject_Ready] = false;
+			prefixObject[`PrefixObject_DOMLoaderID] = "NDPrefixLoader_" + this.PrefixToHex(prefix);
 
-			NDCore.LoadJavaScript(this.PrefixToDataFile(prefix), segment.domLoaderID);
+			this.prefixObjects[prefix] = prefixObject;
+
+			NDCore.LoadJavaScript(this.PrefixToDataFile(prefix), prefixObject[`PrefixObject_DOMLoaderID]);
 			}
 		};
 
 
-	/* Function: OnKeywordSegmentLoaded
-		Called by the keyword segment data file when it has finished loading.
+	/* Function: OnPrefixDataLoaded
+		Called by the prefix data file when it has finished loading.
 	*/
-	this.OnKeywordSegmentLoaded = function (prefix, content)
+	this.OnPrefixDataLoaded = function (prefix, topicTypeSimpleIDs, keywordObjects)
 		{
-		var entry = this.keywordSegments[prefix];
+		var prefixObject = this.prefixObjects[prefix];
 
 		// The data file might have been requested but then purged as no longer needed before it came in.  If that's the
 		// case then we can just discard the data.
-		if (entry == undefined)
+		if (prefixObject == undefined)
 			{  return;  }
 
 		// Undo the data deduplication that was applied to the content.
-		for (var k = 0; k < content.length; k++)
+		for (var k = 0; k < keywordObjects.length; k++)
 			{
-			var keywordData = content[k];
+			var keywordObject = keywordObjects[k];
 
-			if (keywordData[`KeywordData_SearchText] == undefined)
-				{  keywordData[`KeywordData_SearchText] = keywordData[`KeywordData_HTMLName].toLowerCase();  }
+			if (keywordObject[`KeywordObject_SearchText] == undefined)
+				{  keywordObject[`KeywordObject_SearchText] = keywordObject[`KeywordObject_HTMLName].toLowerCase();  }
 
-			for (var m = 0; m < keywordData[`KeywordData_Members].length; m++)
+			for (var m = 0; m < keywordObject[`KeywordObject_MemberObjects].length; m++)
 				{
-				var memberData = keywordData[`KeywordData_Members][m];
+				var memberObject = keywordObject[`KeywordObject_MemberObjects][m];
 
-				if (memberData[`MemberData_HTMLName] == undefined)
-					{  memberData[`MemberData_HTMLName] = keywordData[`KeywordData_HTMLName];  }
-				if (memberData[`MemberData_SearchText] == undefined)
-					{  memberData[`MemberData_SearchText] = memberData[`MemberData_HTMLName].toLowerCase();  }
+				if (memberObject[`MemberObject_HTMLName] == undefined)
+					{  memberObject[`MemberObject_HTMLName] = keywordObject[`KeywordObject_HTMLName];  }
+				if (memberObject[`MemberObject_SearchText] == undefined)
+					{  memberObject[`MemberObject_SearchText] = memberObject[`MemberObject_HTMLName].toLowerCase();  }
 				}
 			}
 
-		entry.content = content;
-		entry.ready = true;
+		prefixObject[`PrefixObject_KeywordObjects] = keywordObjects;
+		prefixObject[`PrefixObject_Ready] = true;
 
 		// We don't need the loader anymore.
-		NDCore.RemoveScriptElement(entry.domLoaderID);
+		NDCore.RemoveScriptElement(prefixObject[`PrefixObject_DOMLoaderID]);
 
 		//	Replace with this line to simulate latency:
 		// setTimeout("NDSearch.Update()", 3000);
@@ -899,23 +920,23 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: PurgeUnusedSegments
-		Removes all segments from <keywordSegments> that are not in the passed prefixes.
+	/* Function: RemoveUnusedPrefixObjects
+		Removes all entries from <prefixObjects> that are not in the passed prefix list.
 	*/
-	this.PurgeUnusedSegments = function (usedPrefixes)
+	this.RemoveUnusedPrefixObjects = function (usedPrefixes)
 		{
 		if (usedPrefixes.length == 0)
 			{  
-			this.keywordSegments = { };
+			this.prefixObjects = { };
 			return;
 			}
 
-		for (var prefix in this.keywordSegments)
+		for (var prefix in this.prefixObjects)
 			{
 			if (usedPrefixes.indexOf(prefix) == -1)
 				{
 				// Set it to undefined instead of using delete so we don't potentially screw up the for..in iteration.
-				this.keywordSegments[prefix] = undefined;
+				this.prefixObjects[prefix] = undefined;
 				}
 			}
 		};
@@ -956,17 +977,19 @@ var NDSearch = new function ()
 	// ________________________________________________________________________
 
 
-	/* var: prefixesWithData
-		A sorted array of the search text prefixes that have data files associated with them.  This is
-		what was stored in search/index.js.  This variable is only available if <prefixesWithDataStatus> is set
+	/* var: allPrefixes
+		A sorted array of all the search text prefixes that have data files associated with them.  This is
+		what was stored in search/index.js.  This variable is only available if <allPrefixesStatus> is set
 		to `Ready.
 	*/
 
-	/* var: prefixesWithDataStatus
-		The state of <prefixesWithData>, which may be:
+	/* var: allPrefixesStatus
+
+		The state of <allPrefixes>, which may be:
+
 		`NotLoaded - search/index.js has not been loaded yet, or even had it's script element added.
 		`Loading - search/index.js has had a script element added but the data hasn't returned yet.
-		`Ready - search/index.js has been loaded and <prefixesWithData> is ready to use.
+		`Ready - search/index.js has been loaded and <allPrefixes> is ready to use.
 	*/
 		/* Substitutions:
 			`NotLoaded = 1
@@ -974,31 +997,8 @@ var NDSearch = new function ()
 			`Ready = 3
 		*/
 
-	/* var: keywordSegments
-		A hash mapping segment IDs to <NDKeywordSegments>.
+	/* var: prefixObjects
+		A hash mapping prefixes to prefix data objects.
 	*/
 
 	};
-
-
-
-
-/* Class: NDKeywordSegment
-	___________________________________________________________________________
-
-	An object representing a keyword segment of search index data.
-
-		var: id
-		The segment ID string, such as "acc".
-
-		var: ready
-		True if the data has been loaded and is ready to use.  False if the data has been requested but is not ready 
-		yet.  If the data has not been requested there simply would not be a NDKeywordSegment object for it.
-
-		var: content
-		The content of the segment as an array of keywords.
-
-		var: domLoaderID
-		The ID of the DOM script object that's loading this file.
-
-*/

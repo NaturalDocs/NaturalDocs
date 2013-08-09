@@ -77,7 +77,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 * If the passed file exists, deletes it and adds its parent folder to <foldersToCheckForDeletion>.  It's okay for the
 		 * output path to be null.
 		 */
-		protected void DeleteOutputFileIfExists (Path outputFile)
+		public void DeleteOutputFileIfExists (Path outputFile)
 			{
 			if (outputFile != null && System.IO.File.Exists(outputFile))
 				{  

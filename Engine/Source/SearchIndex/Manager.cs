@@ -12,13 +12,13 @@
  * 
  *		A file used to store the state of the search index.
  *		
- *		> [String: Keyword Segment ID]
- *		> [NumberSet: Topic IDs in Keyword Segment]
+ *		> [String: Prefix]
+ *		> [NumberSet: Prefix Topic IDs]
  *		> ...
  *		> [String: null]
  *		
- *		The file stores each keyword segment as a string ID followed by a NumberSet of its associated topic IDs.  The
- *		String-NumberSet pairs continue in no particular order until it reaches a null ID.
+ *		The file stores each prefix as a string followed by a NumberSet of its associated topic IDs.  The String-NumberSet pairs 
+ *		continue in no particular order until it reaches a null ID.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
@@ -52,7 +52,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			{
 			accessLock = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
 			changeWatchers = new List<IChangeWatcher>();
-			keywordSegments = null;
+			prefixTopicIDs = null;
 			}
 			
 			
@@ -62,7 +62,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			{
 			try
 				{
-				SaveBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", keywordSegments);
+				SaveBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
 				}
 			catch 
 				{  }
@@ -80,11 +80,11 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			if (!Engine.Instance.Config.ReparseEverything)
 				{
-				hasBinaryFile = LoadBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", out keywordSegments);
+				hasBinaryFile = LoadBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
 				{
-				keywordSegments = new StringTable<NumberSet>(KeySettingsForKeywordSegmentIDs);
+				prefixTopicIDs = new StringTable<NumberSet>(KeySettingsForPrefixes);
 				hasBinaryFile = false;
 				}
 
@@ -101,52 +101,52 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			}
 
 
-		/* Function: TopicIDsInKeywordSegment
-		 * Returns a <IDObjects.NumberSet> of all the topic IDs that are associated with the passed segment ID.  If there are none,
-		 * it will return null.  Do not change the NumberSet.
+		/* Function: PrefixTopicIDs
+		 * Returns a <IDObjects.NumberSet> of all the topic IDs that are associated with the passed prefix.  If there are none, it will
+		 * return null.  Do not change the NumberSet.
 		 */
-		public IDObjects.NumberSet TopicIDsInKeywordSegment (string keywordSegmentID)
+		public IDObjects.NumberSet PrefixTopicIDs (string prefix)
 			{
 			accessLock.EnterReadLock();
 
 			try
-				{  return keywordSegments[keywordSegmentID];  }
+				{  return prefixTopicIDs[prefix];  }
 			finally
 				{  accessLock.ExitReadLock();  }
 			}
 
 
-		/* Function: KeywordSegmentIDs
-		 * Returns a list of all keyword segment IDs in the index.
+		/* Function: UsedPrefixes
+		 * Returns a list of all prefixes used in the index.
 		 */
-		public List<string> KeywordSegmentIDs ()
+		public List<string> UsedPrefixes ()
 			{
-			List<string> keywordSegmentIDs = new List<string>(keywordSegments.Keys.Count);
+			List<string> usedPrefixes = new List<string>(prefixTopicIDs.Keys.Count);
 
 			accessLock.EnterReadLock();
 			
 			try
 				{
-				foreach (var keywordSegment in keywordSegments)
-					{  keywordSegmentIDs.Add(keywordSegment.Key);  }
+				foreach (var prefixPair in prefixTopicIDs)
+					{  usedPrefixes.Add(prefixPair.Key);  }
 				}
 			finally
 				{  accessLock.ExitReadLock();  }
 
-			return keywordSegmentIDs;
+			return usedPrefixes;
 			}
 
 
-		/* Function: BuildKeywordSegment
-		 * Returns a list of all the <KeywordEntries> in a segment ID, complete with all their <TopicEntries>.  If there are none it will return
+		/* Function: GetKeywordEntries
+		 * Returns a list of all the <KeywordEntries> for a prefix, complete with all their <TopicEntries>.  If there are none it will return
 		 * null.  The returned list will not be in any particular order, it is up to the calling code to sort them as desired.
 		 */
-		public List<KeywordEntry> BuildKeywordSegment (string keywordSegmentID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		public List<KeywordEntry> GetKeywordEntries (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 
 			// Retrieve the topics from the database
 
-			IDObjects.NumberSet topicIDs = TopicIDsInKeywordSegment(keywordSegmentID);
+			IDObjects.NumberSet topicIDs = PrefixTopicIDs(prefix);
 
 			if (topicIDs == null || topicIDs.IsEmpty)
 				{  return null;  }
@@ -188,7 +188,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 				foreach (var keyword in topicEntry.Keywords)
 					{
-					if (KeywordIsInSegmentID(keyword, keywordSegmentID))
+					if (KeywordMatchesPrefix(keyword, prefix))
 						{
 						var keywordEntry = keywordEntryTable[keyword];
 
@@ -261,13 +261,13 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 
 
-		// Group: Segment ID Functions
+		// Group: Prefix Functions
 		// __________________________________________________________________________
 
 
-		/* Function: KeywordSegmentID
+		/* Function: KeywordPrefix
 		 */
-		public string KeywordSegmentID (string keyword)
+		public string KeywordPrefix (string keyword)
 			{
 			if (keyword.Length > 3)
 				{  keyword = keyword.Substring(0, 3);  }
@@ -275,12 +275,11 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 			return keyword.ToLower();
 			}
 
-		/* Function: KeywordIsInSegmentID
+		/* Function: KeywordMatchesPrefix
 		 */
-		public bool KeywordIsInSegmentID (string keyword, string keywordSegmentID)
+		public bool KeywordMatchesPrefix (string keyword, string prefix)
 			{
-			return (keyword.Length >= keywordSegmentID.Length &&
-						  string.Compare(keyword, 0, keywordSegmentID, 0, keywordSegmentID.Length, true) == 0);
+			return (keyword.Length >= prefix.Length && string.Compare(keyword, 0, prefix, 0, prefix.Length, true) == 0);
 			}
 
 
@@ -293,9 +292,9 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		 * Loads the information in <SearchIndex.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public static bool LoadBinaryFile (Path filename, out StringTable<IDObjects.NumberSet> keywordSegments)
+		public static bool LoadBinaryFile (Path filename, out StringTable<IDObjects.NumberSet> prefixTopicIDs)
 			{
-			keywordSegments = new StringTable<IDObjects.NumberSet>(KeySettingsForKeywordSegmentIDs);
+			prefixTopicIDs = new StringTable<IDObjects.NumberSet>(KeySettingsForPrefixes);
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -306,20 +305,20 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 					{  result = false;  }
 				else
 					{
-					// [String: Keyword Segment ID]
-					// [NumberSet: Topic IDs in Keyword Segment]
+					// [String: Prefix]
+					// [NumberSet: Prefix Topic IDs]
 					// ...
 					// [String: null]
 
 					for (;;)
 						{
-						string keywordSegmentID = binaryFile.ReadString();
+						string prefix = binaryFile.ReadString();
 
-						if (keywordSegmentID == null)
+						if (prefix == null)
 							{  break;  }
 
 						IDObjects.NumberSet topicIDs = binaryFile.ReadNumberSet();
-						keywordSegments.Add(keywordSegmentID, topicIDs);
+						prefixTopicIDs.Add(prefix, topicIDs);
 						}
 					}
 				}
@@ -329,7 +328,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{  binaryFile.Dispose();  }
 
 			if (result == false)
-				{  keywordSegments.Clear();  }
+				{  prefixTopicIDs.Clear();  }
 
 			return result;
 			}
@@ -338,21 +337,21 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		/* Function: SaveBinaryFile
 		 * Saves the passed information in <SearchIndex.nd>.
 		 */
-		public static void SaveBinaryFile (Path filename, StringTable<IDObjects.NumberSet> keywordSegments)
+		public static void SaveBinaryFile (Path filename, StringTable<IDObjects.NumberSet> prefixTopicIDs)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
 				binaryFile.OpenForWriting(filename);
 
-				// [String: Keyword Segment ID]
-				// [NumberSet: Topic IDs in Keyword Segment]
+				// [String: Prefix]
+				// [NumberSet: Prefix Topic IDs]
 				// ...
 				// [String: null]
 
-				foreach (var keywordSegment in keywordSegments)
+				foreach (var prefixPair in prefixTopicIDs)
 					{
-					binaryFile.WriteString(keywordSegment.Key);
-					binaryFile.WriteNumberSet(keywordSegment.Value);
+					binaryFile.WriteString(prefixPair.Key);
+					binaryFile.WriteNumberSet(prefixPair.Value);
 					}
 
 				binaryFile.WriteString(null);
@@ -436,24 +435,24 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{
 				foreach (string keyword in entry.Keywords)
 					{
-					string keywordSegmentID = KeywordSegmentID(keyword);
-					var keywordSegment = keywordSegments[keywordSegmentID];
+					string prefix = KeywordPrefix(keyword);
+					var topicIDs = prefixTopicIDs[prefix];
 
-					if (keywordSegment == null)
+					if (topicIDs == null)
 						{
-						keywordSegment = new IDObjects.NumberSet();
-						keywordSegment.Add(topic.TopicID);
-						keywordSegments[keywordSegmentID] = keywordSegment;
+						topicIDs = new IDObjects.NumberSet();
+						topicIDs.Add(topic.TopicID);
+						prefixTopicIDs[prefix] = topicIDs;
 
 						foreach (var changeWatcher in changeWatchers)
-							{  changeWatcher.OnAddSegment(keywordSegmentID, eventAccessor);  }
+							{  changeWatcher.OnAddPrefix(prefix, eventAccessor);  }
 						}
 					else
 						{
-						keywordSegment.Add(topic.TopicID);
+						topicIDs.Add(topic.TopicID);
 
 						foreach (var changeWatcher in changeWatchers)
-							{  changeWatcher.OnUpdateSegment(keywordSegmentID, eventAccessor);  }
+							{  changeWatcher.OnUpdatePrefix(prefix, eventAccessor);  }
 						}
 					}
 				}
@@ -508,10 +507,10 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{
 				foreach (var keyword in newEntry.Keywords)
 					{
-					string keywordSegmentID = KeywordSegmentID(keyword);
+					string prefix = KeywordPrefix(keyword);
 
 					foreach (var changeWatcher in changeWatchers)
-						{  changeWatcher.OnUpdateSegment(keywordSegmentID, eventAccessor);  }
+						{  changeWatcher.OnUpdatePrefix(prefix, eventAccessor);  }
 					}
 				}
 			finally
@@ -536,24 +535,24 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 				{
 				foreach (string keyword in entry.Keywords)
 					{
-					string keywordSegmentID = KeywordSegmentID(keyword);
-					var keywordSegment = keywordSegments[keywordSegmentID];
+					string prefix = KeywordPrefix(keyword);
+					var numberSet = prefixTopicIDs[prefix];
 
-					if (keywordSegment != null)
+					if (numberSet != null)
 						{
-						keywordSegment.Remove(topic.TopicID);
+						numberSet.Remove(topic.TopicID);
 
-						if (keywordSegment.IsEmpty)
+						if (numberSet.IsEmpty)
 							{
-							keywordSegments.Remove(keywordSegmentID);
+							prefixTopicIDs.Remove(prefix);
 
 							foreach (var changeWatcher in changeWatchers)
-								{  changeWatcher.OnDeleteSegment(keywordSegmentID, eventAccessor);  }
+								{  changeWatcher.OnDeletePrefix(prefix, eventAccessor);  }
 							}
 						else
 							{
 							foreach (var changeWatcher in changeWatchers)
-								{  changeWatcher.OnUpdateSegment(keywordSegmentID, eventAccessor);  }
+								{  changeWatcher.OnUpdatePrefix(prefix, eventAccessor);  }
 							}
 						}
 					}
@@ -583,7 +582,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 		// Group: Constants
 		// __________________________________________________________________________
 
-		protected const KeySettings KeySettingsForKeywordSegmentIDs = KeySettings.Literal;
+		protected const KeySettings KeySettingsForPrefixes = KeySettings.Literal;
 
 
 
@@ -594,7 +593,7 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 		protected List<IChangeWatcher> changeWatchers;
 
-		protected StringTable<IDObjects.NumberSet> keywordSegments;
+		protected StringTable<IDObjects.NumberSet> prefixTopicIDs;
 
 		}
 	}

@@ -31,23 +31,23 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 	public interface IChangeWatcher
 		{
 		
-		/* Function: OnAddSegment
-		 * Called after a new segment is added to the index.  Note that you will hold a lock on both <CodeDB.Manager> and
-		 * <SearchIndex.Manager> when this is called.
+		/* Function: OnAddPrefix
+		 * Called after a prefix is used in the index for the first time.  Note that you will hold a lock on both <CodeDB.Manager>
+		 * and <SearchIndex.Manager> when this is called.
 		 */
-		void OnAddSegment (string segmentID, CodeDB.EventAccessor eventAccessor);
+		void OnAddPrefix (string prefix, CodeDB.EventAccessor eventAccessor);
 		
-		/* Function: OnUpdateSegment
-		 * Called after an existing segment has been changed.  Note that you will hold a lock on both <CodeDB.Manager> and
-		 * <SearchIndex.Manager> when this is called.
+		/* Function: OnUpdatePrefix
+		 * Called after a change was made that affected an existing prefix.  Note that you will hold a lock on both <CodeDB.Manager>
+		 * and <SearchIndex.Manager> when this is called.
 		 */
-		void OnUpdateSegment (string segmentID, CodeDB.EventAccessor eventAccessor);
+		void OnUpdatePrefix (string prefix, CodeDB.EventAccessor eventAccessor);
 		
-		/* Function: OnDeleteSegment
-		 * Called before a segment is deleted from the index.  Note that you will hold a lock on both <CodeDB.Manager> and
-		 * <SearchIndex.Manager> when this is called.
+		/* Function: OnDeletePrefix
+		 * Called before the last reference to a prefix was removed from the index.  Note that you will hold a lock on both 
+		 * <CodeDB.Manager> and <SearchIndex.Manager> when this is called.
 		 */
-		void OnDeleteSegment (string segmentID, CodeDB.EventAccessor eventAccessor);
+		void OnDeletePrefix (string prefix, CodeDB.EventAccessor eventAccessor);
 				
 		}
 	}

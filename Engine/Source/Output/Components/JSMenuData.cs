@@ -473,7 +473,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.JSMenuData.TargetExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Components.JSMenuData.TargetExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 
@@ -571,7 +571,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Builders.Components.JSMenuData.ContainerExtraData
+		 * Class: GregValure.NaturalDocs.Engine.Output.Components.JSMenuData.ContainerExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 

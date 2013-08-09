@@ -200,7 +200,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				{
 				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
 				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildMainSearchIndex = true;
+				buildState.NeedToBuildPrefixIndex = true;
 				}
 
 
@@ -370,7 +370,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				Start_PurgeFolder(SearchIndex_DataFolder, ref saidPurgingOutputFiles);
 
 				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildMainSearchIndex = true;
+				buildState.NeedToBuildPrefixIndex = true;
 				}
 
 
@@ -765,10 +765,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 					// Build the search index
 
-					else if (buildState.NeedToBuildMainSearchIndex)
+					else if (buildState.NeedToBuildPrefixIndex)
 						{
-						buildState.NeedToBuildMainSearchIndex = false;
-						unitsOfWorkInProgress += UnitsOfWork_MainSearchIndex;
+						buildState.NeedToBuildPrefixIndex = false;
+						unitsOfWorkInProgress += UnitsOfWork_PrefixIndex;
 
 						Monitor.Exit(accessLock);
 						haveAccessLock = false;
@@ -776,22 +776,22 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
 
-						BuildMainSearchIndexDataFile(accessor, cancelDelegate);
+						BuildPrefixIndex(accessor, cancelDelegate);
 
 						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_MainSearchIndex;  }
+							{  unitsOfWorkInProgress -= UnitsOfWork_PrefixIndex;  }
 
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildState.NeedToBuildMainSearchIndex = true;  }
+								{  buildState.NeedToBuildPrefixIndex = true;  }
 							}
 						}
 
-					else if (buildState.SearchIndexKeywordSegmentsToRebuild.IsEmpty == false)
+					else if (buildState.PrefixesToRebuild.IsEmpty == false)
 						{
-						string segmentID = buildState.SearchIndexKeywordSegmentsToRebuild.RemoveOne();
-						unitsOfWorkInProgress += UnitsOfWork_SearchIndexSegment;
+						string prefix = buildState.PrefixesToRebuild.RemoveOne();
+						unitsOfWorkInProgress += UnitsOfWork_KeywordDataFile;
 
 						Monitor.Exit(accessLock);
 						haveAccessLock = false;
@@ -799,15 +799,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 						if (accessor == null)
 							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
 
-						BuildKeywordSegmentDataFile(segmentID, accessor, cancelDelegate);
+						BuildPrefixDataFile(prefix, accessor, cancelDelegate);
 
 						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_SearchIndexSegment;  }
+							{  unitsOfWorkInProgress -= UnitsOfWork_KeywordDataFile;  }
 
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildState.SearchIndexKeywordSegmentsToRebuild.Add(segmentID);  }
+								{  buildState.PrefixesToRebuild.Add(prefix);  }
 							}
 						}
 
@@ -838,7 +838,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 				value += buildState.SourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
 				value += buildState.ClassFilesToRebuild.Count * UnitsOfWork_ClassFile;
 				value += buildState.FoldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
-				value += buildState.SearchIndexKeywordSegmentsToRebuild.Count * UnitsOfWork_SearchIndexSegment;
+				value += buildState.PrefixesToRebuild.Count * UnitsOfWork_KeywordDataFile;
 
 				if (buildState.NeedToBuildFramePage)
 					{  value += UnitsOfWork_FramePage;  }
@@ -846,8 +846,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					{  value += UnitsOfWork_MainStyleFiles;  }
 				if (buildState.NeedToBuildMenu)
 					{  value += UnitsOfWork_Menu;  }
-				if (buildState.NeedToBuildMainSearchIndex)
-					{  value += UnitsOfWork_MainSearchIndex;  }
+				if (buildState.NeedToBuildPrefixIndex)
+					{  value += UnitsOfWork_PrefixIndex;  }
 
 				value += unitsOfWorkInProgress;
 				}
@@ -1392,8 +1392,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 *		UnitsOfWork_FramePage - How much building index.html costs.
 		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
 		 *		UnitsOfWork_Menu - How much building the menu costs.
-		 *		UnitsOfWork_MainSearchIndex - How much building the main search index data file costs.
-		 *		UnitsOfWork_SearchIndexSegment - How much building a single search index segment data file costs.
+		 *		UnitsOfWork_PrefixIndex - How much building the prefix index file costs.
+		 *		UnitsOfWork_KeywordDataFile - How much building a single keyword data file costs.
 		 *		UnitsOfWork_FolderToCheckForDeletion - How much checking a single folder for deletion costs.
 		 */
 		protected const long UnitsOfWork_SourceFile = 10;
@@ -1401,8 +1401,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		protected const long UnitsOfWork_FramePage = 1;
 		protected const long UnitsOfWork_MainStyleFiles = 1;
 		protected const long UnitsOfWork_Menu = 15;
-		protected const long UnitsOfWork_MainSearchIndex = 1;
-		protected const long UnitsOfWork_SearchIndexSegment = 2;
+		protected const long UnitsOfWork_PrefixIndex = 1;
+		protected const long UnitsOfWork_KeywordDataFile = 2;
 		protected const long UnitsOfWork_FolderToCheckForDeletion = 1;
 
 
