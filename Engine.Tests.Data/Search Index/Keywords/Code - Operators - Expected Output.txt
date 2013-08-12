@@ -4,7 +4,7 @@ Topic: operator<
 - Keywords: operator<
 
 Topic: operator <
-- Display Name: operator <
+- Display Name: operator<
 - Search Text: operator<
 - Keywords: operator<
 
@@ -14,6 +14,6 @@ Topic: operator<string>
 - Keywords: operator<string>
 
 Topic: operator <string>
-- Display Name: operator <string>
+- Display Name: operator<string>
 - Search Text: operator<string>
 - Keywords: operator<string>
