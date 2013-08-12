@@ -26,8 +26,9 @@
 		`MemberObject_HTMLQualifier = 0
 		`MemberObject_HTMLName = 1
 		`MemberObject_SearchText = 2
-		`MemberObject_FileHashPath = 3
-		`MemberObject_ClassHashPath = 4
+		`MemberObject_TopicType = 3
+		`MemberObject_FileHashPath = 4
+		`MemberObject_ClassHashPath = 5
 
 		`UpdateSearchDelay = 350
 
@@ -526,6 +527,7 @@ var NDSearch = new function ()
 		else if (memberMatches == 1 &&
 				   lastMatchingMemberObject[`MemberObject_SearchText] == keywordObject[`KeywordObject_SearchText])
 			{
+			var topicType = lastMatchingMemberObject[`MemberObject_TopicType];
 			var target;
 
 			if (favorClasses && lastMatchingMemberObject[`MemberObject_ClassHashPath] != undefined)
@@ -533,7 +535,9 @@ var NDSearch = new function ()
 			else
 				{  target = lastMatchingMemberObject[`MemberObject_FileHashPath];  }
 
-			var html = "<a class=\"SeEntry\" href=\"#" + target + "\">" + lastMatchingMemberObject[`MemberObject_HTMLName];
+			var html = "<a class=\"SeEntry T" + topicType + "\" href=\"#" + target + "\">" + 
+							   "<div class=\"SeEntryIcon\"></div>" +
+							   lastMatchingMemberObject[`MemberObject_HTMLName];
 
 			if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined)
 				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberObject[`MemberObject_HTMLQualifier] + "</span>";  }
@@ -565,6 +569,7 @@ var NDSearch = new function ()
 
 			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" id=\"SeParent" + parentID + "\" " +
 								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
+								"<div class=\"SeEntryIcon\"></div>" +
 								keywordObject[`KeywordObject_HTMLName] + 
 								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
 							"</a>" +
@@ -576,6 +581,7 @@ var NDSearch = new function ()
 
 				if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 					{
+					var topicType = memberObject[`MemberObject_TopicType];
 					var target;
 
 					if (favorClasses && memberObject[`MemberObject_ClassHashPath] != undefined)
@@ -583,7 +589,9 @@ var NDSearch = new function ()
 					else
 						{  target = memberObject[`MemberObject_FileHashPath];  }
 
-					html += "<a class=\"SeEntry\" href=\"#" + target + "\">" + memberObject[`MemberObject_HTMLName];
+					html += "<a class=\"SeEntry T" + topicType + "\" href=\"#" + target + "\">" + 
+									"<div class=\"SeEntryIcon\"></div>" +
+									memberObject[`MemberObject_HTMLName];
 
 					if (memberObject[`MemberObject_HTMLQualifier] != undefined)
 						{  html += "<span class=\"SeQualifier\">, " + memberObject[`MemberObject_HTMLQualifier] + "</span>";  }
@@ -880,7 +888,7 @@ var NDSearch = new function ()
 	/* Function: OnPrefixDataLoaded
 		Called by the prefix data file when it has finished loading.
 	*/
-	this.OnPrefixDataLoaded = function (prefix, topicTypeSimpleIDs, keywordObjects)
+	this.OnPrefixDataLoaded = function (prefix, topicTypes, keywordObjects)
 		{
 		var prefixObject = this.prefixObjects[prefix];
 
@@ -900,6 +908,9 @@ var NDSearch = new function ()
 			for (var m = 0; m < keywordObject[`KeywordObject_MemberObjects].length; m++)
 				{
 				var memberObject = keywordObject[`KeywordObject_MemberObjects][m];
+
+				var topicTypeIndex = memberObject[`MemberObject_TopicType];
+				memberObject[`MemberObject_TopicType] = topicTypes[topicTypeIndex];
 
 				if (memberObject[`MemberObject_HTMLName] == undefined)
 					{  memberObject[`MemberObject_HTMLName] = keywordObject[`KeywordObject_HTMLName];  }

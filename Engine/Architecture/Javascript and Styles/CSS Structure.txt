@@ -411,6 +411,7 @@ _______________________________________________________________________________
 		<#SeContent>
 
 			<SeEntry>
+				<SeEntryIcon></SeEntryIcon>
 				<SeQualifier>Package.Package.</SeQualifier>Name
 			</SeEntry>
 

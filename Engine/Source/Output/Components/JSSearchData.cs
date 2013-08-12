@@ -45,6 +45,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			this.htmlBuilder = htmlBuilder;
 
 			output = null;
+			usedTopicTypes = null;
 			}
 
 
@@ -341,6 +342,28 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildPrefixDataFileJS (string prefix, List<SearchIndex.KeywordEntry> keywordEntries)
 			{
+			// Build the list of all used topic types
+
+			if (usedTopicTypes == null)
+				{  usedTopicTypes = new List<TopicType>();  }
+			else
+				{  usedTopicTypes.Clear();  }
+
+			foreach (var keywordEntry in keywordEntries)
+				{
+				foreach (var topicEntry in keywordEntry.TopicEntries)
+					{
+					int topicTypeID = topicEntry.Topic.TopicTypeID;
+					int topicTypeIndex = UsedTopicTypesIndex(topicTypeID);
+
+					if (topicTypeIndex == -1)
+						{  usedTopicTypes.Add( Engine.Instance.TopicTypes.FromID(topicTypeID) );  }
+					}
+				}
+
+
+			// Build the output
+
 			if (output == null)	
 				{  output = new StringBuilder();  }
 			else
@@ -350,6 +373,13 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			output.Append("NDSearch.OnPrefixDataLoaded(\"");
 			output.StringEscapeAndAppend(prefix);
 			output.Append("\",");
+
+			#if DONT_SHRINK_FILES
+			output.Append("\n   ");
+			#endif
+
+			BuildTopicTypeList(keywordEntries);
+			output.Append(',');
 
 			#if DONT_SHRINK_FILES
 			output.Append("\n   ");
@@ -479,6 +509,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				output.Append('"');
 				}
 
+			output.Append(',');
+
+			output.Append(UsedTopicTypesIndex(topicEntry.Topic.TopicTypeID));
+
 			output.Append(",\"");
 			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(htmlBuilder, topicEntry.Topic.FileID);
 			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
@@ -503,6 +537,41 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Function: BuildTopicTypeList
+		 */
+		protected void BuildTopicTypeList (IList<SearchIndex.KeywordEntry> keywordEntries)
+			{
+			output.Append('[');
+
+			for (int i = 0; i < usedTopicTypes.Count; i++)
+				{
+				if (i != 0)
+					{  output.Append(',');  }
+
+				output.Append('"');
+				output.StringEscapeAndAppend(usedTopicTypes[i].SimpleIdentifier);
+				output.Append('"');
+				}
+
+			output.Append(']');
+			}
+
+
+		/* Function: UsedTopicTypesIndex
+		 * Returns the index into <usedTopicTypes> of the passed topic type ID, or -1 if it isn't in the list.
+		 */
+		protected int UsedTopicTypesIndex (int topicTypeID)
+			{
+			for (int i = 0; i < usedTopicTypes.Count; i++)
+				{
+				if (usedTopicTypes[i].ID == topicTypeID)
+					{  return i;  }
+				}
+
+			return -1;
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -516,6 +585,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		 * The JavaScript being generated.
 		 */
 		protected StringBuilder output;
+
+		/* var: usedTopicTypes
+		 * A list of the topic types used in the search data.  The order in which they appear here will be the order in which they
+		 * appear in the JavaScript array.
+		 */
+		protected List<TopicType> usedTopicTypes;
 
 		}
 	}

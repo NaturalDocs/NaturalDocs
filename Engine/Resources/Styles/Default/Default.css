@@ -34,7 +34,8 @@
 		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
 		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`CodeFontFamily = Consolas, "Courier New", monospace
-		`SearchFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
+		`SummaryFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
+		`SearchFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
 
 		`TextLinkColor = #880000
 		`TextLinkActiveColor = #F04040
@@ -187,8 +188,7 @@ td {
 	}
 
 	.SeEntry {
-		padding: .25ex 1.25ex;
-		font-weight: bold;
+		padding: .25ex 1.25ex .25ex 3.25ex;
 		color: #000000;
 		}
 	.SeEntry:hover {
@@ -205,16 +205,11 @@ td {
 		text-decoration: none;
 		}
 
-	.SeQualifier {
-		font-weight: normal;
-		color: #404040;
-		}
+	.SeQualifier,
 	.SeChildCount {
 		font-weight: normal;
-		font-style: italic;
-		color: #808080;
+		color: #7C7C7C;
 		}
-
 	.SeParent.open .SeChildCount {
 		display: none;
 		}
@@ -223,7 +218,41 @@ td {
 		display: none;
 		}
 	.SeChildren .SeEntry {
-		padding-left: 4ex;
+		padding-left: 5.5ex;
+		}
+
+	.SeEntryIcon {
+		position: absolute;
+		left: 1.4ex;
+		width: 1ex;
+		height: .8em;
+		margin-top: 2px;
+		}
+		.SeChildren .SeEntryIcon {
+			left: 3.65ex;
+			}
+	.SeParent .SeEntryIcon {
+		margin-top: 4px;
+		margin-left: 1px;
+		background: url("images/search-parent.png") center center no-repeat;
+		}
+	.TClass .SeEntryIcon,
+	.TInterface .SeEntryIcon,
+	.TStruct .SeEntryIcon {
+		width: 2ex;
+		height: 1em;
+		left: .9ex;
+		background: url("images/search-class.png") center center no-repeat;
+		}
+		.SeChildren .TClass .SeEntryIcon,
+		.SeChildren .TInterface .SeEntryIcon,
+		.SeChildren .TStruct .SeEntryIcon {
+			left: 3.15ex;
+			}
+	.SeEntry.TClass,
+	.SeEntry.TInterface,
+	.SeEntry.TStruct {
+		font-weight: bold;
 		}
 
 	.SeStatus {
@@ -442,7 +471,7 @@ td {
 
 	.SuEntry {
 		display: block;
-		font: 10pt `ParagraphFontFamily;
+		font: 10pt `SummaryFontFamily;
 		padding: 0 1.5ex 0 3.5ex;
 		}
 	.SuEntry.first { margin-top: 1ex; }
@@ -884,7 +913,7 @@ body.NDContentPage {
 
 
 
-/* Group: Prototype and Summary Colors
+/* Group: Prototype Colors
 	___________________________________________________________________________
 */
 
@@ -894,7 +923,9 @@ body.NDContentPage {
 	border-color: #D8D8D8;
 	}
 	.TFunction .SuEntryIcon,
-	.TOperator .SuEntryIcon {
+	.TFunction .SeEntryIcon,
+	.TOperator .SuEntryIcon, 
+	.TOperator .SeEntryIcon {
 		border: 1px solid #C0C0C0;
 		background-color: #E4E4E4;
 		}
@@ -903,7 +934,8 @@ body.NDContentPage {
 	background-color: #F0F0FE;
 	border-color: #CBCBD8 ;
 	}
-	.TProperty .SuEntryIcon {
+	.TProperty .SuEntryIcon,
+	.TProperty .SeEntryIcon {
 		border: 1px solid #B8B8E0;
 		background-color: #D6D6FF;
 		}
@@ -914,7 +946,9 @@ body.NDContentPage {
 	border-color: #DFDFB8;
 	}
 	.TVariable .SuEntryIcon,
-	.TDatabaseField .SuEntryIcon {
+	.TVariable .SeEntryIcon,
+	.TDatabaseField .SuEntryIcon,
+	.TDatabaseField .SeEntryIcon {
 		border: 1px solid #C8C8A0;
 		background-color: #E8E8B8;
 		}
@@ -923,7 +957,8 @@ body.NDContentPage {
 	background-color: #D8D8D8;
 	border-color: #B0B0B0;
 	}
-	.TConstant .SuEntryIcon {
+	.TConstant .SuEntryIcon,
+	.TConstant .SeEntryIcon {
 		border: 1px solid #A8A8A8;
 		background-color: #CCCCCC;
 		}
@@ -935,8 +970,11 @@ body.NDContentPage {
 	border-color: #E0CCA4;
 	}
 	.TType .SuEntryIcon,
+	.TType .SeEntryIcon,
 	.TEnumeration .SuEntryIcon,
-	.TDelegate .SuEntryIcon {
+	.TEnumeration .SeEntryIcon,
+	.TDelegate .SuEntryIcon,
+	.TDelegate .SeEntryIcon {
 		border: 1px solid #D0C0A0;
 		background-color: #F0E0C0;
 		}
@@ -945,7 +983,8 @@ body.NDContentPage {
 	background-color: #E8F8E8;
 	border-color: #C0DCC0;
 	}
-	.TEvent .SuEntryIcon {
+	.TEvent .SuEntryIcon,
+	.TEvent .SeEntryIcon {
 		border: 1px solid #A8C4A8;
 		background-color: #D0E8D0;
 		}
