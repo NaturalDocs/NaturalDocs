@@ -255,6 +255,12 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			if (topicType.ID == Engine.Instance.TopicTypes.IDFromKeyword("group"))
 				{  return false;  }
+
+			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost
+			// certainly want the class and this just pollutes the results by forcing them under a keyword heading.
+			else if (topicType.Flags.Code && topicType.Flags.ClassHierarchy == false && topic.Symbol.EndsWithDuplicate())
+			    {  return false;  }
+
 			else
 				{  return true;  }
 			}

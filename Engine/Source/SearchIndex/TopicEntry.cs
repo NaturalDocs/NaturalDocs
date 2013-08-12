@@ -56,8 +56,9 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			if (symbolString.Length > titleSymbolString.Length)
 				{
-				// We have to go by IndexOf rather than EndsWith because operator<string> will have <string> cut off as a parameter. xxx
-				int titleIndex = symbolString.IndexOf(titleSymbolString);
+				// We have to go by LastIndexOf rather than EndsWith because operator<string> will have <string> cut off as a parameter.
+				// We have to go by LastIndexOf instead of IndexOf so constructors don't get cut off (Package.Class.Class).
+				int titleIndex = symbolString.LastIndexOf(titleSymbolString);
 
 				#if DEBUG
 				if (titleIndex == -1)

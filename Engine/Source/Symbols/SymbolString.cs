@@ -177,6 +177,31 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 					  symbolString[symbolString.Length - other.symbolString.Length - 1] == SeparatorChar &&
 					  symbolString.EndsWith(other.symbolString, ignoreCase, System.Globalization.CultureInfo.CurrentCulture));
 			}
+
+
+		/* Function: EndsWithDuplicate
+		 * Returns whether the last two segments of the symbol match, such as "PackageA.ClassA.ClassA".  This is useful for detecting C-style
+		 * constructors.
+		 */
+		public bool EndsWithDuplicate ()
+			{
+			int lastSeparator = symbolString.LastIndexOf(SeparatorChar);
+
+			if (lastSeparator <= 0)
+				{  return false;  }
+
+			int secondToLastSeparator = symbolString.LastIndexOf(SeparatorChar, lastSeparator - 1);
+
+			if (secondToLastSeparator == -1)
+				{  return false;  }
+
+			int length = symbolString.Length - (lastSeparator + 1);
+
+			if ((lastSeparator - secondToLastSeparator) - 1 != length)
+				{  return false;  }
+
+			return (string.Compare(symbolString, secondToLastSeparator + 1, symbolString, lastSeparator + 1, length) == 0);
+			}
 			
 		
 		
