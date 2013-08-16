@@ -298,7 +298,7 @@ var NDSearch = new function ()
 			else
 				{  this.selectionIndex--;  }
 
-			this.Update();
+			this.UpdateSelection();
 			}
 
 		else if (event.keyCode == 40)  // Down
@@ -313,7 +313,7 @@ var NDSearch = new function ()
 				this.selectionIndex++;
 				}
 
-			this.Update();
+			this.UpdateSelection();
 			}
 
 		else if (event.keyCode == 13)  // Enter
@@ -969,6 +969,28 @@ var NDSearch = new function ()
 
 		this.domResults.scrollTop = oldScrollTop;
 		this.domResults.style.visibility = "visible";
+		};
+
+
+	/* Function: UpdateSelection
+		Updates the SeSelectedEntry element in the results to match <selectionIndex> without regenerating the HTML.
+	*/
+	this.UpdateSelection = function ()
+		{
+		var domCurrentSelection = document.getElementById("SeSelectedEntry");
+		var domNewSelection = undefined;
+
+		if (this.selectionIndex != -1)
+			{  domNewSelection = NDCore.GetElementsByClassName(this.domResultsContent, "SeEntry", "a")[this.selectionIndex];  }
+
+		if (domCurrentSelection != undefined)
+			{  domCurrentSelection.id = undefined;  }
+
+		if (domNewSelection != undefined)
+			{
+			domNewSelection.id = "SeSelectedEntry";
+			this.ScrollEntryIntoView(domNewSelection, false);
+			}
 		};
 
 
