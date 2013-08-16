@@ -21,7 +21,6 @@
 		`KeywordObject_HTMLName = 0
 		`KeywordObject_SearchText = 1
 		`KeywordObject_MemberObjects = 2
-		`KeywordObject_ParentID = 3
 
 		`MemberObject_HTMLQualifier = 0
 		`MemberObject_HTMLName = 1
@@ -57,23 +56,25 @@ var NDSearch = new function ()
 
 		this.domSearchField = document.getElementById("NDSearchField");
 
-		this.domSearchResults = document.createElement("div");
-		this.domSearchResults.id = "NDSearchResults";
-		this.domSearchResults.style.display = "none";
-		this.domSearchResults.style.position = "fixed";
+		this.domResults = document.createElement("div");
+		this.domResults.id = "NDSearchResults";
+		this.domResults.style.display = "none";
+		this.domResults.style.position = "fixed";
 
 		if (NDCore.IEVersion() == 6)
-			{  this.domSearchResults.style.position = "absolute";  }
+			{  this.domResults.style.position = "absolute";  }
 
-		this.domSearchResultsContent = document.createElement("div");
-		this.domSearchResultsContent.id = "SeContent";
+		this.domResultsContent = document.createElement("div");
+		this.domResultsContent.id = "SeContent";
 
-		this.domSearchResults.appendChild(this.domSearchResultsContent);
-		document.body.appendChild(this.domSearchResults);
+		this.domResults.appendChild(this.domResultsContent);
+		document.body.appendChild(this.domResults);
 
 		// this.updateTimeout = undefined;
-		this.openParentIDs = [ ];
-		this.highestAssignedParentID = 0;
+		this.topLevelEntryCount = 0;
+		this.totalEntryCount = 0;
+		this.topLevelOpenParents = [ ];
+		this.selectionIndex = -1;
 
 
 		// Search data variables
@@ -87,18 +88,18 @@ var NDSearch = new function ()
 
 		// Event handlers
 
-		this.domSearchField.onfocus = function () {  NDSearch.OnFieldFocus();  };
-		this.domSearchField.onblur = function () {  NDSearch.OnFieldBlur();  };
-		this.domSearchField.onkeyup = function (event) {  NDSearch.OnFieldKeyUp(event);  };
+		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
+		this.domSearchField.onblur = function () {  NDSearch.OnSearchFieldBlur();  };
+		this.domSearchField.onkeyup = function (event) {  NDSearch.OnSearchFieldKeyUp(event);  };
 
-		this.domSearchResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
-		this.domSearchResults.onblur = function () {  NDSearch.OnResultsBlur();  };
-		this.domSearchResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
+		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
+		this.domResults.onblur = function () {  NDSearch.OnResultsBlur();  };
+		this.domResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
 
 
 		// Initialization
 
-		this.Deactivate();
+		this.DeactivateSearchField();
 		};
 
 
@@ -107,20 +108,21 @@ var NDSearch = new function ()
 	this.Update = function ()
 		{
 		// This may be called by prefix data loaders after the field was deactivated so we have to check.
-		if (!this.IsActive())
+		if (!this.SearchFieldIsActive())
 			{  return;  }
 
 		var searchInterpretations = this.GetSearchInterpretations();
 
 		if (searchInterpretations.length == 0)
 			{
-			this.HideResults();
+			this.ClearResults();
 			return;
 			}
 
 		if (this.allPrefixesStatus != `Ready)
 			{
-			this.domSearchResultsContent.innerHTML = this.BuildSearchingStatus();
+			this.ClearResults(true);
+			this.domResultsContent.innerHTML = this.BuildSearchingStatus();
 			this.ShowResults();
 			return;
 			}
@@ -131,7 +133,8 @@ var NDSearch = new function ()
 
 		if (searchInterpretationPrefixes.length == 0)
 			{
-			this.domSearchResultsContent.innerHTML = this.BuildNoMatchesStatus();
+			this.ClearResults(true);
+			this.domResultsContent.innerHTML = this.BuildNoMatchesStatus();
 			this.ShowResults();
 			return;
 			}
@@ -141,11 +144,95 @@ var NDSearch = new function ()
 
 		var buildResults = this.BuildResults(searchInterpretations, searchInterpretationPrefixes, favorClasses);
 		
-		this.domSearchResultsContent.innerHTML = buildResults.html;
+		var oldScrollTop = this.domResults.scrollTop;
+
+		this.domResultsContent.innerHTML = buildResults.html;
 		this.ShowResults();
+
+		this.domResults.scrollTop = oldScrollTop;
+
+		if (this.selectionIndex != -1)
+			{
+			var domSelectedEntry = document.getElementById("SeSelectedEntry");
+			this.ScrollEntryIntoView(domSelectedEntry, false);
+			}
 
 		if (buildResults.prefixDataToLoad != undefined)
 			{  this.LoadPrefixData(buildResults.prefixDataToLoad);  }
+		};
+
+
+	/* Function: ClearResults
+		Clears the search results and all internal data related to it.  If internalOnly is set, it will not hide the results in the 
+		DOM.
+	*/
+	this.ClearResults = function (internalOnly)
+		{
+		if (this.updateTimeout != undefined)
+			{
+			clearTimeout(this.updateTimeout);
+			this.updateTimeout = undefined;
+			}
+
+		if (!internalOnly)
+			{  this.HideResults();  }
+
+		this.topLevelEntryCount = 0;
+		this.totalEntryCount = 0;
+		this.topLevelOpenParents = [ ];
+		this.selectionIndex = -1;
+
+		this.prefixObjects = { };
+		};
+
+
+	/* Function: ToggleParent
+	*/
+	this.ToggleParent = function (topLevelIndex, fromKeyboard)
+		{
+		var openParentsIndex = this.topLevelOpenParents.indexOf(topLevelIndex);
+
+		if (openParentsIndex == -1)
+			{  this.topLevelOpenParents.push(topLevelIndex);  }
+		else
+			{  this.topLevelOpenParents.splice(openParentsIndex, 1);  }
+
+		if (!fromKeyboard)
+			{  
+			this.selectionIndex = -1;
+			this.domSearchField.focus();
+			}
+
+		this.Update();
+
+		// Update() will scroll the selected entry into view, but if the parent was opened we want to make sure all the children are 
+		// in view as well.
+		if (openParentsIndex == -1)
+			{
+			// Find the DOM element by the top level index.  We can't just use it as an index into ResultsContent.children
+			// because SeEntryChildren count towards that but not topLevelIndex.
+
+			var children = this.domResultsContent.children;
+			var topLevelCount = 0;
+			var domToggledElement = undefined;
+			
+			for (var i = 0; i < children.length; i++)
+				{
+				if (NDCore.HasClass(children[i], "SeEntry"))
+					{
+					if (topLevelCount == topLevelIndex)
+						{  
+						domToggledElement = children[i];
+						break;
+						}
+					else
+						{  topLevelCount++;  }
+					}
+				}
+
+			if (domToggledElement != undefined)
+				{  this.ScrollEntryIntoView(domToggledElement, true);  }
+			}
 		};
 
 
@@ -154,19 +241,29 @@ var NDSearch = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: OnFieldFocus
+	/* Function: OnSearchFieldFocus
 	*/
-	this.OnFieldFocus = function ()
+	this.OnSearchFieldFocus = function ()
 		{
-		if (!this.IsActive())
-			{  this.Activate();  }
+		if (!this.SearchFieldIsActive())
+			{  
+			this.ActivateSearchField();  
+
+			// Start loading the prefix index as soon as the search field is first activated.  We don't want to wait
+			// until they start typing.
+			if (this.allPrefixesStatus == `NotLoaded)
+				{
+				this.allPrefixesStatus = `Loading;
+				NDCore.LoadJavaScript("search/index.js");
+				}
+			}
 		// Otherwise it might be receiving focus back from the search results
 		};
 
 
-	/* Function: OnFieldBlur
+	/* Function: OnSearchFieldBlur
 	*/
-	this.OnFieldBlur = function ()
+	this.OnSearchFieldBlur = function ()
 		{
 		// IE switches focus to the results if you click on a scroll bar
 //		if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
@@ -174,17 +271,83 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: OnFieldKeyUp
+	/* Function: OnSearchFieldKeyUp
 	*/
-	this.OnFieldKeyUp = function (event)
+	this.OnSearchFieldKeyUp = function (event)
 		{
 		if (event === undefined)
 			{  event = window.event;  }
 
 		if (event.keyCode == 27)  // ESC
-			{  this.Deactivate();  }
-		else
+			{  
+			this.ClearResults();
+			this.DeactivateSearchField();
+
+			// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+			document.getElementById("CFrame").contentWindow.focus();
+			}
+
+		else if (event.keyCode == 38)  // Up
 			{
+			// If it's -1 (no selection) or 0 (first entry) wrap to the last item
+			if (this.selectionIndex <= 0)
+				{
+				// Will result in -1 if count is 0, which is exactly what we want.
+				this.selectionIndex = this.totalEntryCount - 1;
+				}
+			else
+				{  this.selectionIndex--;  }
+
+			this.Update();
+			}
+
+		else if (event.keyCode == 40)  // Down
+			{
+			if (this.totalEntryCount == 0)
+				{  this.selectionIndex = -1;  }
+			else if (this.selectionIndex >= this.totalEntryCount - 1)
+				{  this.selectionIndex = 0;  }
+			else
+				{
+				// Will result in 0 if it was previously -1, which is exactly what we want.
+				this.selectionIndex++;
+				}
+
+			this.Update();
+			}
+
+		else if (event.keyCode == 13)  // Enter
+			{
+			var domSelectedEntry = undefined;
+
+			if (this.selectionIndex != -1)
+				{  domSelectedEntry = document.getElementById("SeSelectedEntry");  }
+			else if (this.totalEntryCount == 1)
+				{  domSelectedEntry = this.domResultsContent.firstChild;  }
+
+			if (domSelectedEntry != undefined)
+				{
+				var address = domSelectedEntry.getAttribute("href");
+
+				if (address.substr(0, 11) == "javascript:")
+					{  
+					address = address.substr(11);
+
+					// Change false to true to let ToggleParent() know we're doing it from the keyboard.
+					// DEPENDENCY: This depends on the exact JavaScript BuildKeyword() generates for parents.
+					address = address.replace(/^(NDSearch.ToggleParent\([0-9]+,)false(.*)$/, "$1true$2");
+
+					eval(address);
+					}
+				else
+					{  location.href = address;  }
+				}
+			}
+
+		else  // Everything else
+			{
+			this.selectionIndex = -1;
+
 			if (this.updateTimeout == undefined)
 				{
 				this.updateTimeout = setTimeout(
@@ -212,8 +375,6 @@ var NDSearch = new function ()
 	*/
 	this.OnResultsBlur = function ()
 		{
-		if (document.activeElement == undefined || document.activeElement.id != "NDSearchField")
-			{  this.Deactivate();  }
 		};
 
 
@@ -221,11 +382,7 @@ var NDSearch = new function ()
 	*/
 	this.OnResultsKeyUp = function (event)
 		{
-		if (event === undefined)
-			{  event = window.event;  }
-
-		if (event.keyCode == 27)  // ESC
-			{  this.Deactivate();  }
+		this.OnSearchFieldKeyUp(event);
 		}
 
 
@@ -234,8 +391,13 @@ var NDSearch = new function ()
 	this.OnUpdateLayout = function ()
 		{
 		// Check for undefined because this may be called before Start().
-		if (this.domSearchResults != undefined)
-			{  this.PositionResults();  }
+		if (this.domResults != undefined)
+			{  
+			this.PositionResults();
+
+			if (this.selectionIndex != -1)
+				{  this.ScrollEntryIntoView( document.getElementById("SeSelectedEntry"), false );  }
+			}
 		};
 
 	
@@ -448,6 +610,8 @@ var NDSearch = new function ()
 		the next one that needs in the results.  If favorClasses is set, links will use the class/database view whenever 
 		possible.
 
+		This will also set <topLevelEntryCount> and <totalEntryCount>.
+
 		Returns:
 
 			{ html, prefixDataToLoad }
@@ -458,6 +622,9 @@ var NDSearch = new function ()
 			// prefixDataToLoad: undefined,
 			html: ""
 			};
+		
+		this.topLevelEntryCount = 0;
+		this.totalEntryCount = 0;
 
 		if (this.allPrefixesStatus != `Ready)
 			{
@@ -527,6 +694,7 @@ var NDSearch = new function ()
 		else if (memberMatches == 1 &&
 				   lastMatchingMemberObject[`MemberObject_SearchText] == keywordObject[`KeywordObject_SearchText])
 			{
+			var selected = (this.selectionIndex == this.totalEntryCount);
 			var topicType = lastMatchingMemberObject[`MemberObject_TopicType];
 			var target;
 
@@ -535,72 +703,79 @@ var NDSearch = new function ()
 			else
 				{  target = lastMatchingMemberObject[`MemberObject_FileHashPath];  }
 
-			var html = "<a class=\"SeEntry T" + topicType + "\" href=\"#" + target + "\">" + 
-							   "<div class=\"SeEntryIcon\"></div>" +
-							   lastMatchingMemberObject[`MemberObject_HTMLName];
+			var html = "<a class=\"SeEntry T" + topicType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+								"href=\"#" + target + "\">" +
+								"<div class=\"SeEntryIcon\"></div>" +
+								lastMatchingMemberObject[`MemberObject_HTMLName];
 
 			if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined)
 				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberObject[`MemberObject_HTMLQualifier] + "</span>";  }
 			
 			html += "</a>";
+
+			this.topLevelEntryCount++;
+			this.totalEntryCount++;
+
 			return html;
 			}
 
 		else
 			{
-			var parentID;
-			
-			if (keywordObject[`KeywordObject_ParentID] == undefined)
-				{
-				parentID = this.highestAssignedParentID + 1;
-				this.highestAssignedParentID++;
-
-				keywordObject[`KeywordObject_ParentID] = parentID;
-				}
-			else
-				{  parentID = keywordObject[`KeywordObject_ParentID];  }
-
+			var selected = (this.selectionIndex == this.totalEntryCount);
 			var openClosed;
 
-			if (this.openParentIDs.indexOf(parentID) != -1)
+			if (this.topLevelOpenParents.indexOf(this.topLevelEntryCount) != -1)
 				{  openClosed = "open";  }
 			else
 				{  openClosed = "closed";  }
-
-			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" id=\"SeParent" + parentID + "\" " +
-								"href=\"javascript:NDSearch.ToggleParent(" + parentID + ")\">" + 
+			
+			// DEPENDENCY: OnSearchFieldKeyUp depends on the ToggleParent JavaScript to process the Enter key.
+			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+								"href=\"javascript:NDSearch.ToggleParent(" + this.topLevelEntryCount + ",false)\">" + 
 								"<div class=\"SeEntryIcon\"></div>" +
 								keywordObject[`KeywordObject_HTMLName] + 
 								" <span class=\"SeChildCount\">(" + memberMatches + ")</span>" +
-							"</a>" +
-							"<div class=\"SeChildren " + openClosed + "\" id=\"SeChildren" + parentID + "\">";
+							"</a>";
 
-			for (var i = 0; i < keywordObject[`KeywordObject_MemberObjects].length; i++)
+			this.topLevelEntryCount++;
+			this.totalEntryCount++;
+
+			if (openClosed == "open")
 				{
-				var memberObject = keywordObject[`KeywordObject_MemberObjects][i];
+				html += "<div class=\"SeChildren\">";
 
-				if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
+				for (var i = 0; i < keywordObject[`KeywordObject_MemberObjects].length; i++)
 					{
-					var topicType = memberObject[`MemberObject_TopicType];
-					var target;
+					var memberObject = keywordObject[`KeywordObject_MemberObjects][i];
 
-					if (favorClasses && memberObject[`MemberObject_ClassHashPath] != undefined)
-						{  target = memberObject[`MemberObject_ClassHashPath];  }
-					else
-						{  target = memberObject[`MemberObject_FileHashPath];  }
+					if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
+						{
+						var selected = (this.selectionIndex == this.totalEntryCount);
+						var topicType = memberObject[`MemberObject_TopicType];
+						var target;
 
-					html += "<a class=\"SeEntry T" + topicType + "\" href=\"#" + target + "\">" + 
-									"<div class=\"SeEntryIcon\"></div>" +
-									memberObject[`MemberObject_HTMLName];
+						if (favorClasses && memberObject[`MemberObject_ClassHashPath] != undefined)
+							{  target = memberObject[`MemberObject_ClassHashPath];  }
+						else
+							{  target = memberObject[`MemberObject_FileHashPath];  }
 
-					if (memberObject[`MemberObject_HTMLQualifier] != undefined)
-						{  html += "<span class=\"SeQualifier\">, " + memberObject[`MemberObject_HTMLQualifier] + "</span>";  }
+						html += "<a class=\"SeEntry T" + topicType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+										"href=\"#" + target + "\">" + 
+										"<div class=\"SeEntryIcon\"></div>" +
+										memberObject[`MemberObject_HTMLName];
 
-					html += "</a>";
+						if (memberObject[`MemberObject_HTMLQualifier] != undefined)
+							{  html += "<span class=\"SeQualifier\">, " + memberObject[`MemberObject_HTMLQualifier] + "</span>";  }
+
+						html += "</a>";
+
+						this.totalEntryCount++;
+						}
 					}
+
+				html += "</div>";
 				}
 
-			html += "</div>";
 			return html;
 			}
 		};
@@ -683,44 +858,27 @@ var NDSearch = new function ()
 	// ________________________________________________________________________
 
 	
-	/* Function: Activate
+	/* Function: ActivateSearchField
 	*/
-	this.Activate = function ()
+	this.ActivateSearchField = function ()
 		{
 		this.domSearchField.value = "";
 		NDCore.RemoveClass(this.domSearchField, "DefaultText");
-
-		// Start loading the prefixes index as soon as the search field is first activated.  We don't want to wait
-		// until they start typing.
-		if (this.allPrefixesStatus == `NotLoaded)
-			{
-			this.allPrefixesStatus = `Loading;
-			NDCore.LoadJavaScript("search/index.js");
-			}
 		};
 
 	
-	/* Function: Deactivate
+	/* Function: DeactivateSearchField
 	*/
-	this.Deactivate = function ()
+	this.DeactivateSearchField = function ()
 		{
-		this.HideResults();
-
 		NDCore.AddClass(this.domSearchField, "DefaultText");
 		this.domSearchField.value = `Locale{HTML.DefaultSearchText};
-
-		this.openParentIDs = [ ];
-		this.highestAssignedParentID = 0;
-		this.prefixObjects = { };
-
-		// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
-		document.getElementById("CFrame").contentWindow.focus();
 		};
 
 
-	/* Function: IsActive
+	/* Function: SearchFieldIsActive
 	*/
-	this.IsActive = function ()
+	this.SearchFieldIsActive = function ()
 		{
 		return (NDCore.HasClass(this.domSearchField, "DefaultText") == false);
 		};
@@ -730,7 +888,7 @@ var NDSearch = new function ()
 	*/
 	this.ShowResults = function ()
 		{
-		this.domSearchResults.style.display = "block";
+		this.domResults.style.display = "block";
 		this.PositionResults();
 		};
 
@@ -739,7 +897,7 @@ var NDSearch = new function ()
 	*/
 	this.HideResults = function ()
 		{
-		this.domSearchResults.style.display = "none";
+		this.domResults.style.display = "none";
 		};
 	
 
@@ -747,14 +905,15 @@ var NDSearch = new function ()
 	*/
 	this.PositionResults = function ()
 		{
-		this.domSearchResults.style.visibility = "hidden";
+		this.domResults.style.visibility = "hidden";
+		var oldScrollTop = this.domResults.scrollTop;
 
 
 		// First set the position to 0,0 and the width and height back to auto so it will be sized naturally to its content
 
-		NDCore.SetToAbsolutePosition(this.domSearchResults, 0, 0, undefined, undefined);
-		this.domSearchResults.style.width = "";
-		this.domSearchResults.style.height = "";
+		NDCore.SetToAbsolutePosition(this.domResults, 0, 0, undefined, undefined);
+		this.domResults.style.width = "";
+		this.domResults.style.height = "";
 
 		
 		// Figure out our desired upper right coordinates
@@ -775,76 +934,75 @@ var NDSearch = new function ()
 
 		// Resize
 
-		if (this.domSearchResults.offsetHeight > maxHeight)
-			{  NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, undefined, maxHeight);  }
-		if (this.domSearchResults.offsetWidth > maxWidth)
-			{  NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, maxWidth, undefined);  }
+		if (this.domResults.offsetHeight > maxHeight)
+			{  NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, undefined, maxHeight);  }
+		if (this.domResults.offsetWidth > maxWidth)
+			{  NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, maxWidth, undefined);  }
 		else
 			{
 			// Firefox and Chrome will sometimes not set the automatic width correctly, leaving a horizontal scroll bar where 
 			// one isn't necessary.  Weird.  Fix it up for them.  This also fixes the positioning for IE 6 and 7.
-			if (this.domSearchResults.scrollWidth > this.domSearchResults.clientWidth)
+			if (this.domResults.scrollWidth > this.domResults.clientWidth)
 				{
-				var newWidth = this.domSearchResults.offsetWidth + 
-									 (this.domSearchResults.scrollWidth - this.domSearchResults.clientWidth) + 5;
+				var newWidth = this.domResults.offsetWidth + 
+									 (this.domResults.scrollWidth - this.domResults.clientWidth) + 5;
 
 				if (newWidth > maxWidth)
 					{  newWidth = maxWidth;  }
 
-				NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, newWidth, undefined);
+				NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, newWidth, undefined);
 				}
 
 			// Also make sure the results are at least as wide as the search box.
-			if (this.domSearchResults.offsetWidth < this.domSearchField.offsetWidth)
+			if (this.domResults.offsetWidth < this.domSearchField.offsetWidth)
 				{
-				NDCore.SetToAbsolutePosition(this.domSearchResults, undefined, undefined, this.domSearchField.offsetWidth, undefined);
+				NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, this.domSearchField.offsetWidth, undefined);
 				}
 			}
 
 
 		// Reposition
 
-		NDCore.SetToAbsolutePosition(this.domSearchResults, urX - this.domSearchResults.offsetWidth, urY, 
+		NDCore.SetToAbsolutePosition(this.domResults, urX - this.domResults.offsetWidth, urY, 
 												 undefined, undefined);
 
 
-		this.domSearchResults.style.visibility = "visible";
+		this.domResults.scrollTop = oldScrollTop;
+		this.domResults.style.visibility = "visible";
 		};
 
 
-	/* Function: ToggleParent
+	/* Function: ScrollEntryIntoView
 	*/
-	this.ToggleParent = function (id)
+	this.ScrollEntryIntoView = function (domEntry, includeChildren)
 		{
-		var domParent = document.getElementById("SeParent" + id);
-		var domChildren = document.getElementById("SeChildren" + id);
+		var itemTop = domEntry.offsetTop;
+		var itemBottom;
 
-		if (domParent == undefined || domChildren == undefined)
-			{  return;  }
-
-		if (NDCore.HasClass(domParent, "open"))
+		if (includeChildren && NDCore.HasClass(domEntry, "open"))
 			{
-			NDCore.RemoveClass(domParent, "open");
-			NDCore.RemoveClass(domChildren, "open");
-			NDCore.AddClass(domParent, "closed");
-			NDCore.AddClass(domChildren, "closed");
-
-			var parentIndex = this.openParentIDs.indexOf(id);
-
-			if (parentIndex != -1)
-				{  this.openParentIDs.splice(parentIndex, 1);  }
+			var domSelectedChildren = domEntry.nextSibling;
+			itemBottom = domSelectedChildren.offsetTop + domSelectedChildren.offsetHeight;
 			}
 		else
-			{
-			NDCore.RemoveClass(domParent, "closed");
-			NDCore.RemoveClass(domChildren, "closed");
-			NDCore.AddClass(domParent, "open");
-			NDCore.AddClass(domChildren, "open");
+			{  itemBottom = itemTop + domEntry.offsetHeight;  }
 
-			this.openParentIDs.push(id);
-			}
+		var windowTop = this.domResults.scrollTop;
+		var windowBottom = windowTop + this.domResults.clientHeight;
 
-		this.PositionResults();
+		var offset = 0;
+
+		if (windowBottom < itemBottom)
+			{  offset = itemBottom - windowBottom;  }
+
+		// Separate "if" statement instead of an "else" so we can handle when scrolling the bottom of the child list into
+		// view would scroll the top of the list out of view.  In this case we want the top to stay in view.
+
+		if (windowTop + offset > itemTop)
+			{  offset = itemTop - windowTop;  }
+
+		if (offset != 0)
+			{  this.domResults.scrollTop += offset;  }
 		};
 
 
@@ -962,12 +1120,12 @@ var NDSearch = new function ()
 		The search field DOM element.
 	*/
 
-	/* var: domSearchResults
+	/* var: domResults
 		The search results DOM element.
 	*/
 
-	/* var: domSearchResultsContent
-		The SeContent section of <domSearchResults>.
+	/* var: domResultsContent
+		The SeContent section of <domResults>.
 	*/
 
 	/* var: updateTimeout
@@ -975,12 +1133,24 @@ var NDSearch = new function ()
 		update.
 	*/
 
-	/* var: openParentIDs
-		An array of SeParent IDs that are open.
+	/* var: topLevelEntryCount
+		The total number of top-level entries in the search results.  This is only SeEntry items, it excludes
+		SeChildren items and everything within them.
 	*/
 
-	/* var: highestAssignedParentID
-		The highest ID number used in building SeParent/SeChildren pairs.
+	/* var: totalEntryCount
+		The total number of entries in the search results, including those in expanded children.  It excludes
+		children from parents that aren't expanded.
+	*/
+
+	/* var: topLevelOpenParents
+		An array of indexes for all the SeParents which are open, in no particular order.  These indexes are based
+		on <topLevelEntryCount>, not <totalEntryCount>.
+	*/
+
+	/* var: selectionIndex
+		The index into the entries of the keyboard selection, or -1 if there isn't one.  This is based on <totalEntryCount>,
+		not <topLevelEntryCount>.
 	*/
 
 

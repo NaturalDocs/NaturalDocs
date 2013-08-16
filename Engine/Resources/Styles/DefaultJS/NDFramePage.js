@@ -182,7 +182,8 @@ var NDFramePage = new function ()
 		
 		// Clear any search results since that may be the way we got here.
 
-		NDSearch.Deactivate();
+		NDSearch.ClearResults();
+		NDSearch.DeactivateSearchField();
 
 
 		// We need to update the layout if the location changes the visibility of the summary panel.

@@ -188,11 +188,18 @@ td {
 	}
 
 	.SeEntry {
-		padding: .25ex 1.25ex .25ex 3.25ex;
+		padding: .2ex 1.25ex .2ex 3.25ex;
 		color: #000000;
+		border-width: 1px 0;
+		border-style: solid;
+		border-color: #FFFFFF;
 		}
 	.SeEntry:hover {
-		background-color: #E4E4E4;
+		background-color: #F0F0F0;
+		}
+	#SeSelectedEntry {
+		background-color: #F4F4E0;
+		border-color: #D0D0C0;
 		}
 	a.SeEntry {
 		display: block;

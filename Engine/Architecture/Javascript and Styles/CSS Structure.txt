@@ -410,18 +410,18 @@ _______________________________________________________________________________
 	<#NDSearchResults>
 		<#SeContent>
 
-			<SeEntry>
+			<SeEntry #SeSelectedEntry?>
 				<SeEntryIcon></SeEntryIcon>
 				<SeQualifier>Package.Package.</SeQualifier>Name
 			</SeEntry>
 
-			<SeEntry SeParent #SeParent[number] open/closed>
+			<SeEntry SeParent open/closed #SeSelectedEntry?>
 				... <SeChildCount># children</SeChildCount>
-			</SeEntry SeParent #SeParent[number] open/closed>
-			<SeChildren #SeChildren[number] open/closed>
+			</SeEntry>
+			<SeChildren>
 				<SeEntry>...</SeEntry>
 				...
-			</SeChildren #SeChildren[number] open/closed>
+			</SeChildren>
 
 			<SeStatus Searching? NoResults?>...</SeStatus>
 
@@ -430,7 +430,7 @@ _______________________________________________________________________________
 
 ----------
 
-The SeParent and SeChildren pairs will have the same number.
+SeChildren and its members will only appear if the SeParent is open.
 
 
 
