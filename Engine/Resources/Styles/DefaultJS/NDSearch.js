@@ -90,11 +90,11 @@ var NDSearch = new function ()
 
 		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
 		this.domSearchField.onblur = function () {  NDSearch.OnSearchFieldBlur();  };
-		this.domSearchField.onkeyup = function (event) {  NDSearch.OnSearchFieldKeyUp(event);  };
+		this.domSearchField.onkeydown = function (event) {  NDSearch.OnSearchFieldKey(event);  };
 
 		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
 		this.domResults.onblur = function () {  NDSearch.OnResultsBlur();  };
-		this.domResults.onkeyup = function (event) {  NDSearch.OnResultsKeyUp(event);  };
+		this.domResults.onkeydown = function (event) {  NDSearch.OnResultsKey(event);  };
 
 
 		// Initialization
@@ -271,9 +271,9 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: OnSearchFieldKeyUp
+	/* Function: OnSearchFieldKey
 	*/
-	this.OnSearchFieldKeyUp = function (event)
+	this.OnSearchFieldKey = function (event)
 		{
 		if (event === undefined)
 			{  event = window.event;  }
@@ -378,11 +378,11 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: OnResultsKeyUp
+	/* Function: OnResultsKey
 	*/
-	this.OnResultsKeyUp = function (event)
+	this.OnResultsKey = function (event)
 		{
-		this.OnSearchFieldKeyUp(event);
+		this.OnSearchFieldKey(event);
 		}
 
 
@@ -729,7 +729,7 @@ var NDSearch = new function ()
 			else
 				{  openClosed = "closed";  }
 			
-			// DEPENDENCY: OnSearchFieldKeyUp depends on the ToggleParent JavaScript to process the Enter key.
+			// DEPENDENCY: OnSearchFieldKey depends on the ToggleParent JavaScript to process the Enter key.
 			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
 								"href=\"javascript:NDSearch.ToggleParent(" + this.topLevelEntryCount + ",false)\">" + 
 								"<div class=\"SeEntryIcon\"></div>" +
