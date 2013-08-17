@@ -191,10 +191,11 @@ var NDSearch = new function ()
 	this.ToggleParent = function (topLevelIndex, fromKeyboard)
 		{
 		var openParentsIndex = this.topLevelOpenParents.indexOf(topLevelIndex);
+		var opening = (openParentsIndex == -1);
 
-		if (openParentsIndex == -1)
+		if (opening)
 			{  this.topLevelOpenParents.push(topLevelIndex);  }
-		else
+		else // closing
 			{  this.topLevelOpenParents.splice(openParentsIndex, 1);  }
 
 		if (!fromKeyboard)
@@ -207,7 +208,7 @@ var NDSearch = new function ()
 
 		// Update() will scroll the selected entry into view, but if the parent was opened we want to make sure all the children are 
 		// in view as well.
-		if (openParentsIndex == -1)
+		if (opening)
 			{
 			// Find the DOM element by the top level index.  We can't just use it as an index into ResultsContent.children
 			// because SeEntryChildren count towards that but not topLevelIndex.
@@ -232,6 +233,14 @@ var NDSearch = new function ()
 
 			if (domToggledElement != undefined)
 				{  this.ScrollEntryIntoView(domToggledElement, true);  }
+			}
+
+		// Chrome 28 has a weird bug where if you open or close a parent and the scroll level wasn't at the top, all the swatches
+		// and icons will be wrong.  They jump back into place as soon as you scroll some more, so do that automatically.
+		if (navigator.userAgent.indexOf("KHTML") != -1 && this.domResults.scrollTop > 0)
+			{
+			// Have to scroll up instead of down or it won't work reliably when scrolled all the way to the bottom.
+			this.domResults.scrollTop--;
 			}
 		};
 
