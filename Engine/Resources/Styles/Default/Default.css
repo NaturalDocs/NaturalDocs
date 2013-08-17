@@ -156,6 +156,10 @@ td {
 	-moz-border-radius: 5ex;
 	border-radius: 5ex;
 	}
+	.IE #NDSearchField {
+		/* IE 10 doesn't like custom fonts on the search field.  It will make the size jump around on focus and hover. */
+		font: inherit;
+		}
 
 	#NDSearchField.DefaultText {
 		color: #808080;
