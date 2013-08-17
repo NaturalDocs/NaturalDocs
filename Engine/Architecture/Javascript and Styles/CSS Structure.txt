@@ -7,7 +7,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDFramePage IE6/7/8?>
+	<body NDPage NDFramePage [browser styles]>
 
 		<#NDMessages>
 
@@ -58,8 +58,6 @@ _______________________________________________________________________________
 	</body NDPage NDFramePage>
 
 ----------
-
-If the browser is Internet Explorer 6 through 8, the default style's JavaScript will add an IE6, IE7, or IE8 class to the body.
 
 
 
@@ -156,7 +154,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDContentPage IE6/7/8?>
+	<body NDPage NDContentPage [browser styles]>
 
 		<CTopic T[Type] L[Language] first/last?>
 
@@ -210,8 +208,6 @@ _______________________________________________________________________________
 	</body NDPage NDContentPage>
 
 ----------
-
-If the browser is Internet Explorer 6 through 8, the default style's JavaScript will add an IE6, IE7, or IE8 class to the body.
 
 
 
@@ -439,7 +435,7 @@ _______________________________________________________________________________
 
 --- text ---
 
-	<body NDPage NDHomePage IE6/7/8?>
+	<body NDPage NDHomePage [browser styles]>
 
 		<HFrame>
 
@@ -466,4 +462,10 @@ _______________________________________________________________________________
 
 ----------
 
-If the browser is Internet Explorer 6 through 8, the default style's JavaScript will add an IE6, IE7, or IE8 class to the body.
+
+
+Topic: Browser Styles
+_______________________________________________________________________________
+
+The default JavaScript will add the class IE to the body if it detects Internet Explorer.  It will also add classes
+IE6, IE7, and IE8 for those particular versions.

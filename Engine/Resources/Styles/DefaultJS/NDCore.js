@@ -394,8 +394,13 @@ var NDCore = new function ()
 		{
 		var ieVersion = this.IEVersion();
 
-		if (ieVersion >= 6 && ieVersion <= 8)  // 7 covers IE8 in IE7 compatibility mode
-			{  this.AddClass(document.body, "IE" + ieVersion);  }
+		if (ieVersion != undefined)
+			{
+			this.AddClass(document.body, "IE");
+
+			if (ieVersion >= 6 && ieVersion <= 8)  // 7 covers IE8 in IE7 compatibility mode
+				{  this.AddClass(document.body, "IE" + ieVersion);  }
+			}
 		};
 
 
