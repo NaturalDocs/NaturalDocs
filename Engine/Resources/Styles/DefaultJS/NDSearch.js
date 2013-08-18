@@ -30,6 +30,7 @@
 		`MemberObject_ClassHashPath = 5
 
 		`UpdateSearchDelay = 350
+		`MaxAutoExpand = 10
 
 */
 
@@ -142,7 +143,10 @@ var NDSearch = new function ()
 		var location = new NDLocation(window.location.hash);
 		var favorClasses = (location.type == "Class" || location.type == "Database");
 
-		var buildResults = this.BuildResults(searchInterpretations, searchInterpretationPrefixes, favorClasses);
+		// Don't fonce expansion if it returns undefined because more needs to be loaded.
+		var forceExpansion = (this.TotalMatchesGreaterThan(searchInterpretations, searchInterpretationPrefixes, `MaxAutoExpand) === false);
+
+		var buildResults = this.BuildResults(searchInterpretations, searchInterpretationPrefixes, favorClasses, forceExpansion);
 		
 		var oldScrollTop = this.domResults.scrollTop;
 
@@ -608,6 +612,57 @@ var NDSearch = new function ()
 		};
 
 	
+	/* Function: TotalMatchesGreaterThan
+
+		Returns whether the total number of entries that match the search interpretations is greater than the
+		passed maximum.  It will return true or false, or undefined if more data needs to be loaded in order
+		to find out.
+	*/
+	this.TotalMatchesGreaterThan = function (searchInterpretations, searchInterpretationPrefixes, maximum)
+		{
+		var totalMatches = 0;
+
+		for (var p = 0; p < searchInterpretationPrefixes.length; p++)
+			{
+			var prefix = searchInterpretationPrefixes[p];
+
+			if (this.prefixObjects[prefix] == undefined ||
+				this.prefixObjects[prefix][`PrefixObject_Ready] == false)
+				{
+				return undefined;
+				}
+
+			var keywordObjects = this.prefixObjects[prefix][`PrefixObject_KeywordObjects];
+
+			for (var k = 0; k < keywordObjects.length; k++)
+				{
+				var keywordObject = keywordObjects[k];
+
+				if (this.KeywordMatchesInterpretations(keywordObject, searchInterpretations))
+					{
+					var memberObjects = keywordObject[`KeywordObject_MemberObjects];
+
+					for (var m = 0; m < memberObjects.length; m++)
+						{
+						var memberObject = memberObjects[m];
+
+						if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
+							{  
+							totalMatches++;
+
+							if (totalMatches > maximum)
+								{  return true;  }
+							}
+						}
+					}
+
+				}  // keywordObjects
+			}  // searchInterpretationPrefixes
+		
+		return false;
+		};
+
+
 
 	// Group: Build Functions
 	// ________________________________________________________________________
@@ -616,16 +671,18 @@ var NDSearch = new function ()
 	/* Function: BuildResults
 
 		Builds the search results in HTML.  If a prefix data it needs is not loaded yet it will build what it can and return 
-		the next one that needs in the results.  If favorClasses is set, links will use the class/database view whenever 
-		possible.
+		the next one that needs in the results.  This will also set <topLevelEntryCount> and <totalEntryCount>.
 
-		This will also set <topLevelEntryCount> and <totalEntryCount>.
+		Flags:
+
+			favorClasses - If set, links will use the class/database view whenever possible.
+			forceExpansion - If set, all parent entries will be expanded regardless of <topLevelOpenParents>.
 
 		Returns:
 
 			{ html, prefixDataToLoad }
 	*/
-	this.BuildResults = function (searchInterpretations, searchInterpretationPrefixes, favorClasses)
+	this.BuildResults = function (searchInterpretations, searchInterpretationPrefixes, favorClasses, forceExpansion)
 		{
 		var results = {
 			// prefixDataToLoad: undefined,
@@ -662,7 +719,7 @@ var NDSearch = new function ()
 			var keywordObjects = this.prefixObjects[prefix][`PrefixObject_KeywordObjects];
 
 			for (var k = 0; k < keywordObjects.length; k++)
-				{  results.html += this.BuildKeyword(keywordObjects[k], searchInterpretations, favorClasses);  }
+				{  results.html += this.BuildKeyword(keywordObjects[k], searchInterpretations, favorClasses, forceExpansion);  }
 			}
 		
 		if (addSearchingStatus)
@@ -675,10 +732,15 @@ var NDSearch = new function ()
 
 
 	/* Function: BuildKeyword
-		Builds the results for a keyword and returns the HTML.  The results will be filtered based on <searchText>.  If
-		favorClasses is set, links will use the class/database view whenever possible.
+
+		Builds the results for a keyword and returns the HTML.  The results will be filtered based on <searchText>.
+		
+		Flags:
+
+			favorClasses - If set, links will use the class/database view whenever possible.
+			forceExpansion - If set, all parent entries will be expanded regardless of <topLevelOpenParents>.
 	*/
-	this.BuildKeyword = function (keywordObject, searchInterpretations, favorClasses)
+	this.BuildKeyword = function (keywordObject, searchInterpretations, favorClasses, forceExpansion)
 		{
 		if (this.KeywordMatchesInterpretations(keywordObject, searchInterpretations) == false)
 			{  return "";  }
@@ -733,7 +795,7 @@ var NDSearch = new function ()
 			var selected = (this.selectionIndex == this.totalEntryCount);
 			var openClosed;
 
-			if (this.topLevelOpenParents.indexOf(this.topLevelEntryCount) != -1)
+			if (forceExpansion || this.topLevelOpenParents.indexOf(this.topLevelEntryCount) != -1)
 				{  openClosed = "open";  }
 			else
 				{  openClosed = "closed";  }
