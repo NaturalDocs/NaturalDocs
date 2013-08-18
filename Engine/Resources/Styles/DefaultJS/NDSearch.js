@@ -331,13 +331,28 @@ var NDSearch = new function ()
 
 		else if (event.keyCode == 13)  // Enter
 			{
+			// Figure out which element to activate, if any.
 			var domSelectedEntry = undefined;
 
+			// Was there a keyboard selection?
 			if (this.keyboardSelectionIndex != -1)
 				{  domSelectedEntry = document.getElementById("SeSelectedEntry");  }
+
+			// If not, was there only one entry left in the results?
 			else if (this.visibleEntryCount == 1)
 				{  domSelectedEntry = this.domResultsContent.firstChild;  }
 
+			// If not, wer there only two entries left in the results and the first was a group?  This will happen in
+			// this scenario:
+			//
+			// Search: [CSS]
+			// > CSS
+			//     [] CSS Structure
+			else if (this.visibleEntryCount == 2 && NDCore.HasClass(this.domResultsContent.firstChild, "SeParent"))
+				{  domSelectedEntry = this.domResultsContent.childNodes[1].firstChild;  }
+
+			// If we found something we can activate it.  If we didn't because there's a lot of results visible and no
+			// keyboard selection, just ignore the enter press.
 			if (domSelectedEntry != undefined)
 				{
 				var address = domSelectedEntry.getAttribute("href");
