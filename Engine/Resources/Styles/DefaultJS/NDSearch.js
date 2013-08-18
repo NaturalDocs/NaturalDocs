@@ -73,9 +73,9 @@ var NDSearch = new function ()
 
 		// this.updateTimeout = undefined;
 		this.topLevelEntryCount = 0;
-		this.totalEntryCount = 0;
-		this.topLevelOpenParents = [ ];
-		this.selectionIndex = -1;
+		this.visibleEntryCount = 0;
+		this.openParents = [ ];
+		this.keyboardSelectionIndex = -1;
 
 
 		// Search data variables
@@ -155,7 +155,7 @@ var NDSearch = new function ()
 
 		this.domResults.scrollTop = oldScrollTop;
 
-		if (this.selectionIndex != -1)
+		if (this.keyboardSelectionIndex != -1)
 			{
 			var domSelectedEntry = document.getElementById("SeSelectedEntry");
 			this.ScrollEntryIntoView(domSelectedEntry, false);
@@ -182,9 +182,9 @@ var NDSearch = new function ()
 			{  this.HideResults();  }
 
 		this.topLevelEntryCount = 0;
-		this.totalEntryCount = 0;
-		this.topLevelOpenParents = [ ];
-		this.selectionIndex = -1;
+		this.visibleEntryCount = 0;
+		this.openParents = [ ];
+		this.keyboardSelectionIndex = -1;
 
 		this.prefixObjects = { };
 		};
@@ -194,17 +194,17 @@ var NDSearch = new function ()
 	*/
 	this.ToggleParent = function (topLevelIndex, fromKeyboard)
 		{
-		var openParentsIndex = this.topLevelOpenParents.indexOf(topLevelIndex);
+		var openParentsIndex = this.openParents.indexOf(topLevelIndex);
 		var opening = (openParentsIndex == -1);
 
 		if (opening)
-			{  this.topLevelOpenParents.push(topLevelIndex);  }
+			{  this.openParents.push(topLevelIndex);  }
 		else // closing
-			{  this.topLevelOpenParents.splice(openParentsIndex, 1);  }
+			{  this.openParents.splice(openParentsIndex, 1);  }
 
 		if (!fromKeyboard)
 			{  
-			this.selectionIndex = -1;
+			this.keyboardSelectionIndex = -1;
 			this.domSearchField.focus();
 			}
 
@@ -303,27 +303,27 @@ var NDSearch = new function ()
 		else if (event.keyCode == 38)  // Up
 			{
 			// If it's -1 (no selection) or 0 (first entry) wrap to the last item
-			if (this.selectionIndex <= 0)
+			if (this.keyboardSelectionIndex <= 0)
 				{
 				// Will result in -1 if count is 0, which is exactly what we want.
-				this.selectionIndex = this.totalEntryCount - 1;
+				this.keyboardSelectionIndex = this.visibleEntryCount - 1;
 				}
 			else
-				{  this.selectionIndex--;  }
+				{  this.keyboardSelectionIndex--;  }
 
 			this.UpdateSelection();
 			}
 
 		else if (event.keyCode == 40)  // Down
 			{
-			if (this.totalEntryCount == 0)
-				{  this.selectionIndex = -1;  }
-			else if (this.selectionIndex >= this.totalEntryCount - 1)
-				{  this.selectionIndex = 0;  }
+			if (this.visibleEntryCount == 0)
+				{  this.keyboardSelectionIndex = -1;  }
+			else if (this.keyboardSelectionIndex >= this.visibleEntryCount - 1)
+				{  this.keyboardSelectionIndex = 0;  }
 			else
 				{
 				// Will result in 0 if it was previously -1, which is exactly what we want.
-				this.selectionIndex++;
+				this.keyboardSelectionIndex++;
 				}
 
 			this.UpdateSelection();
@@ -333,9 +333,9 @@ var NDSearch = new function ()
 			{
 			var domSelectedEntry = undefined;
 
-			if (this.selectionIndex != -1)
+			if (this.keyboardSelectionIndex != -1)
 				{  domSelectedEntry = document.getElementById("SeSelectedEntry");  }
-			else if (this.totalEntryCount == 1)
+			else if (this.visibleEntryCount == 1)
 				{  domSelectedEntry = this.domResultsContent.firstChild;  }
 
 			if (domSelectedEntry != undefined)
@@ -359,7 +359,7 @@ var NDSearch = new function ()
 
 		else  // Everything else
 			{
-			this.selectionIndex = -1;
+			this.keyboardSelectionIndex = -1;
 
 			if (this.updateTimeout == undefined)
 				{
@@ -408,7 +408,7 @@ var NDSearch = new function ()
 			{  
 			this.PositionResults();
 
-			if (this.selectionIndex != -1)
+			if (this.keyboardSelectionIndex != -1)
 				{  this.ScrollEntryIntoView( document.getElementById("SeSelectedEntry"), false );  }
 			}
 		};
@@ -671,12 +671,12 @@ var NDSearch = new function ()
 	/* Function: BuildResults
 
 		Builds the search results in HTML.  If a prefix data it needs is not loaded yet it will build what it can and return 
-		the next one that needs in the results.  This will also set <topLevelEntryCount> and <totalEntryCount>.
+		the next one that needs in the results.  This will also set <topLevelEntryCount> and <visibleEntryCount>.
 
 		Flags:
 
 			favorClasses - If set, links will use the class/database view whenever possible.
-			forceExpansion - If set, all parent entries will be expanded regardless of <topLevelOpenParents>.
+			forceExpansion - If set, all parent entries will be expanded regardless of <openParents>.
 
 		Returns:
 
@@ -690,13 +690,7 @@ var NDSearch = new function ()
 			};
 		
 		this.topLevelEntryCount = 0;
-		this.totalEntryCount = 0;
-
-		if (this.allPrefixesStatus != `Ready)
-			{
-			results.html += this.BuildSearchingStatus();
-			return results;
-			}
+		this.visibleEntryCount = 0;
 
 		var addSearchingStatus = false;
 
@@ -738,7 +732,7 @@ var NDSearch = new function ()
 		Flags:
 
 			favorClasses - If set, links will use the class/database view whenever possible.
-			forceExpansion - If set, all parent entries will be expanded regardless of <topLevelOpenParents>.
+			forceExpansion - If set, all parent entries will be expanded regardless of <openParents>.
 	*/
 	this.BuildKeyword = function (keywordObject, searchInterpretations, favorClasses, forceExpansion)
 		{
@@ -765,7 +759,7 @@ var NDSearch = new function ()
 		else if (memberMatches == 1 &&
 				   lastMatchingMemberObject[`MemberObject_SearchText] == keywordObject[`KeywordObject_SearchText])
 			{
-			var selected = (this.selectionIndex == this.totalEntryCount);
+			var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
 			var topicType = lastMatchingMemberObject[`MemberObject_TopicType];
 			var target;
 
@@ -785,17 +779,17 @@ var NDSearch = new function ()
 			html += "</a>";
 
 			this.topLevelEntryCount++;
-			this.totalEntryCount++;
+			this.visibleEntryCount++;
 
 			return html;
 			}
 
 		else
 			{
-			var selected = (this.selectionIndex == this.totalEntryCount);
+			var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
 			var openClosed;
 
-			if (forceExpansion || this.topLevelOpenParents.indexOf(this.topLevelEntryCount) != -1)
+			if (forceExpansion || this.openParents.indexOf(this.topLevelEntryCount) != -1)
 				{  openClosed = "open";  }
 			else
 				{  openClosed = "closed";  }
@@ -809,7 +803,7 @@ var NDSearch = new function ()
 							"</a>";
 
 			this.topLevelEntryCount++;
-			this.totalEntryCount++;
+			this.visibleEntryCount++;
 
 			if (openClosed == "open")
 				{
@@ -821,7 +815,7 @@ var NDSearch = new function ()
 
 					if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 						{
-						var selected = (this.selectionIndex == this.totalEntryCount);
+						var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
 						var topicType = memberObject[`MemberObject_TopicType];
 						var target;
 
@@ -840,7 +834,7 @@ var NDSearch = new function ()
 
 						html += "</a>";
 
-						this.totalEntryCount++;
+						this.visibleEntryCount++;
 						}
 					}
 
@@ -1044,15 +1038,15 @@ var NDSearch = new function ()
 
 
 	/* Function: UpdateSelection
-		Updates the SeSelectedEntry element in the results to match <selectionIndex> without regenerating the HTML.
+		Updates the SeSelectedEntry element in the results to match <keyboardSelectionIndex> without regenerating the HTML.
 	*/
 	this.UpdateSelection = function ()
 		{
 		var domCurrentSelection = document.getElementById("SeSelectedEntry");
 		var domNewSelection = undefined;
 
-		if (this.selectionIndex != -1)
-			{  domNewSelection = NDCore.GetElementsByClassName(this.domResultsContent, "SeEntry", "a")[this.selectionIndex];  }
+		if (this.keyboardSelectionIndex != -1)
+			{  domNewSelection = NDCore.GetElementsByClassName(this.domResultsContent, "SeEntry", "a")[this.keyboardSelectionIndex];  }
 
 		if (domCurrentSelection != undefined)
 			{  domCurrentSelection.id = undefined;  }
@@ -1205,7 +1199,7 @@ var NDSearch = new function ()
 
 
 	
-	// Group: UI Variables
+	// Group: DOM Elements
 	// ________________________________________________________________________
 
 
@@ -1221,30 +1215,43 @@ var NDSearch = new function ()
 		The SeContent section of <domResults>.
 	*/
 
+
+
+	// Group: Timers
+	// ________________________________________________________________________
+
+
 	/* var: updateTimeout
 		A timeout to manage the delay between when the user stops typing and when the search results
 		update.
 	*/
 
+
+
+	// Group: UI Variables
+	// ________________________________________________________________________
+
+
+	/* var: visibleEntryCount
+		The total number of visible entries in the search results.  This includes <topLevelEntryCount> plus any expanded 
+		children.  It does not include children from parents that aren't expanded.
+	*/
+
 	/* var: topLevelEntryCount
-		The total number of top-level entries in the search results.  This is only SeEntry items, it excludes
-		SeChildren items and everything within them.
+		The total number of top-level entries in the search results.  This is only SeEntry items, so it excludes SeChildren
+		and everything within them.
 	*/
 
-	/* var: totalEntryCount
-		The total number of entries in the search results, including those in expanded children.  It excludes
-		children from parents that aren't expanded.
+	/* var: openParents
+		An array of indexes for all the SeParents which are open, in no particular order.  These indexes are based on
+		<topLevelEntryCount>, not <visibleEntryCount>.
 	*/
 
-	/* var: topLevelOpenParents
-		An array of indexes for all the SeParents which are open, in no particular order.  These indexes are based
-		on <topLevelEntryCount>, not <totalEntryCount>.
-	*/
-
-	/* var: selectionIndex
-		The index into the entries of the keyboard selection, or -1 if there isn't one.  This is based on <totalEntryCount>,
+	/* var: keyboardSelectionIndex
+		The index into the entries of the keyboard selection, or -1 if there isn't one.  This is based on <visibleEntryCount>,
 		not <topLevelEntryCount>.
 	*/
+
 
 
 	// Group: Search Data Variables
