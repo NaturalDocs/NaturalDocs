@@ -265,6 +265,10 @@ td {
 	.SeEntry.TStruct {
 		font-weight: bold;
 		}
+	.SeEntry.MoreResults {
+		font-weight: bold;
+		margin-top: .75em;
+		}
 
 	.SeStatus {
 		margin: .25ex 1.25ex;

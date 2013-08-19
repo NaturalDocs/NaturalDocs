@@ -31,6 +31,7 @@
 
 		`UpdateSearchDelay = 350
 		`MaxAutoExpand = 10
+		`MoreResultsThreshold = 25
 
 */
 
@@ -76,6 +77,7 @@ var NDSearch = new function ()
 		this.visibleEntryCount = 0;
 		this.openParents = [ ];
 		this.keyboardSelectionIndex = -1;
+		this.moreResultsThreshold = `MoreResultsThreshold;
 
 
 		// Search data variables
@@ -158,7 +160,9 @@ var NDSearch = new function ()
 		if (this.keyboardSelectionIndex != -1)
 			{
 			var domSelectedEntry = document.getElementById("SeSelectedEntry");
-			this.ScrollEntryIntoView(domSelectedEntry, false);
+
+			if (domSelectedEntry != undefined)
+				{  this.ScrollEntryIntoView(domSelectedEntry, false);  }
 			}
 
 		if (buildResults.prefixDataToLoad != undefined)
@@ -185,6 +189,7 @@ var NDSearch = new function ()
 		this.visibleEntryCount = 0;
 		this.openParents = [ ];
 		this.keyboardSelectionIndex = -1;
+		this.moreResultsThreshold = `MoreResultsThreshold;
 
 		this.prefixObjects = { };
 		};
@@ -246,6 +251,15 @@ var NDSearch = new function ()
 			// Have to scroll up instead of down or it won't work reliably when scrolled all the way to the bottom.
 			this.domResults.scrollTop--;
 			}
+		};
+
+
+	/* Function: LoadMoreResults
+	*/
+	this.LoadMoreResults = function ()
+		{
+		this.moreResultsThreshold = this.visibleEntryCount + `MoreResultsThreshold;
+		this.Update();
 		};
 
 
@@ -424,7 +438,12 @@ var NDSearch = new function ()
 			this.PositionResults();
 
 			if (this.keyboardSelectionIndex != -1)
-				{  this.ScrollEntryIntoView( document.getElementById("SeSelectedEntry"), false );  }
+				{  
+				var domSelectedEntry = document.getElementById("SeSelectedEntry");
+
+				if (domSelectedEntry != undefined)
+					{  this.ScrollEntryIntoView(domSelectedEntry, false);  }
+				}
 			}
 		};
 
@@ -715,8 +734,16 @@ var NDSearch = new function ()
 
 			if (this.prefixObjects[prefix] == undefined)
 				{
-				results.prefixDataToLoad = prefix;
-				addSearchingStatus = true;
+				if (this.visibleEntryCount < this.moreResultsThreshold)
+					{
+					results.prefixDataToLoad = prefix;
+					addSearchingStatus = true;
+					}
+				else
+					{
+					results.html += this.BuildMoreResultsEntry();
+					}
+
 				break;
 				}
 			else if (this.prefixObjects[prefix][`PrefixObject_Ready] == false)
@@ -875,6 +902,25 @@ var NDSearch = new function ()
 		{
 		return "<div class=\"SeStatus NoResults\">" + `Locale{HTML.NoMatchesStatus} + "</div>";
 		};
+
+	
+	/* Function: BuildMoreResultsEntry
+	*/
+	this.BuildMoreResultsEntry = function ()
+		{
+		var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
+
+		var html = "<a class=\"SeEntry MoreResults\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+							"href=\"javascript:NDSearch.LoadMoreResults();\">" + 
+							"<div class=\"SeEntryIcon\"></div>" +
+							`Locale{HTML.MoreResults} + 
+						 "</a>";
+
+		this.visibleEntryCount++;
+		this.topLevelEntryCount++;
+
+		return html;
+		}
 
 
 
@@ -1265,6 +1311,11 @@ var NDSearch = new function ()
 	/* var: keyboardSelectionIndex
 		The index into the entries of the keyboard selection, or -1 if there isn't one.  This is based on <visibleEntryCount>,
 		not <topLevelEntryCount>.
+	*/
+
+	/* var: moreResultsThreshold
+		The number of results that must be loaded before the "Load More" message appears.  This will be adjusted
+		upwards every time Load More is clicked.
 	*/
 
 

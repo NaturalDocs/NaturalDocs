@@ -32,6 +32,7 @@ HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
 HTML.DefaultSearchText: Search
 HTML.SearchingStatus: Searching...
 HTML.NoMatchesStatus: No Matches
+HTML.MoreResults: More Results...
 
 HTML.AdditionalChildren(number): and {0} other {0s?children:child}
 
