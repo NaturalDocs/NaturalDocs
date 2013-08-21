@@ -404,6 +404,23 @@ var NDCore = new function ()
 		};
 
 
+	/* Function: SupportsOnInput
+		Whether the browser supports the oninput event.
+	*/
+	this.SupportsOnInput = function ()
+		{
+		// IE 9 has a buggy implementation that detects new characters but not deleted ones, so make it a special case.
+		if (this.IEVersion() == 9)
+			{  return false;  }
+		// All other browsers will have it as undefined if it's unsupported.  If it's supported but not set it will be null.
+		else
+			{  return (window.oninput !== undefined);  }
+
+		// IE 8 and earlier don't support it, IE 9 is buggy, and IE 10 and later support it.
+		// Firefox 3.6 doesn't support it, but 9 and later do.  Don't know which intermediate version introduced it.
+		};
+
+
 
 	// Group: Prototype Functions
 	// ________________________________________________________________________

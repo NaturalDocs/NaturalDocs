@@ -95,6 +95,17 @@ var NDSearch = new function ()
 		this.domSearchField.onblur = function () {  NDSearch.OnSearchFieldBlur();  };
 		this.domSearchField.onkeydown = function (event) {  NDSearch.OnSearchFieldKey(event);  };
 
+		if (NDCore.SupportsOnInput())
+			{
+			this.domSearchField.oninput = function (event) {  NDSearch.OnSearchFieldChange(event);  };
+			}
+		else
+			{
+			// It will be emulated with this and additional logic inside of OnSearchFieldKey()
+			this.domSearchField.oncut = function (event) {  NDSearch.OnSearchFieldChange(event);  };
+			this.domSearchField.onpaste = function (event) {  NDSearch.OnSearchFieldChange(event);  };
+			}
+
 		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
 		this.domResults.onblur = function () {  NDSearch.OnResultsBlur();  };
 		this.domResults.onkeydown = function (event) {  NDSearch.OnResultsKey(event);  };
@@ -386,24 +397,37 @@ var NDSearch = new function ()
 				}
 			}
 
-		else  // Everything else
+		// Pick up the slack for browsers missing oninput support.
+		else if (NDCore.SupportsOnInput() == false)
 			{
-			this.keyboardSelectionIndex = -1;
-
-			if (this.updateTimeout == undefined)
-				{
-				this.updateTimeout = setTimeout(
-					function ()
-						{
-						clearTimeout(NDSearch.updateTimeout);
-						NDSearch.updateTimeout = undefined;
-
-						NDSearch.Update();
-						},
-					`UpdateSearchDelay);
-				}
+			this.OnSearchFieldChange(event);
 			}
-		}
+
+		};
+
+
+	/* Function: OnSearchFieldChange
+	*/
+	this.OnSearchFieldChange = function (event)
+		{
+		if (event === undefined)
+			{  event = window.event;  }
+
+		this.keyboardSelectionIndex = -1;
+
+		if (this.updateTimeout == undefined)
+			{
+			this.updateTimeout = setTimeout(
+				function ()
+					{
+					clearTimeout(NDSearch.updateTimeout);
+					NDSearch.updateTimeout = undefined;
+
+					NDSearch.Update();
+					},
+				`UpdateSearchDelay);
+			}
+		};
 
 
 	/* Function: OnResultsFocus
