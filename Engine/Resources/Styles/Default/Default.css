@@ -1289,3 +1289,41 @@ body.NDHomePage {
 		border-top: 1px dashed #D0D0C8;
 		margin-top: 1.2ex;
 		}
+
+
+
+/* Group: IE 6 Touch Ups
+	___________________________________________________________________________
+
+	IE 6 doesn't understand .A.B selectors, so these are a few things to make it less horrible.  I'm not going to move
+	mountains to support IE 6, but since it's mostly functional anyway I can put in this little bit of effort at least.
+
+	IE 6's interpretation depends on the order of otherwise unrelated rules above, which means these have to be at
+	the bottom of the file.  This also makes it fairly unpredictable so it's better to cordon off the insanity here rather 
+	than try to beat the rest of the file into something it likes.  However, this also means this is an ugly hack because
+	it's separate from where the relevant rules are defined and it's only used to beat glaring problems into line as they
+	come up rather than being a coherent design.  But... so what?  IE 6 is on its way out, so an ugly "good enough" 
+	solution is fine.  It's not worth the effort to do something more and it's definitely not worth polluting the rest of the 
+	file to make it work better.
+*/
+
+.IE6 .MTab {
+	border-bottom: 0px none;
+	}
+.IE6 #MContent .Selected {
+	background-color: #FFFFFF;
+	}
+.IE6 .NDPrototype .PModifierQualifier,
+.IE6 .NDPrototype .PType {
+	font: 10pt `CodeFontFamily;
+	padding: 0;
+	border-bottom: 0px none;
+	}
+.IE6 .CTopic p,
+.IE6 .CTopic .CTitle,
+.IE6 .NDClassPrototype .CPName {
+	color: #000000;
+	}
+.IE6 .NDClassPrototype .CPEntry {
+	margin-top: 0;
+	}
