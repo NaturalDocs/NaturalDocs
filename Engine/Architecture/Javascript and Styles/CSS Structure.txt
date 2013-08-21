@@ -342,6 +342,7 @@ P[ColumnType]:
 	PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 	PDefaultValue - The default value.
 
+----------
 	
 
 Topic: Class Prototype
