@@ -155,6 +155,9 @@ td {
 	/* Opera 11 supports plain border-radius. */
 	-moz-border-radius: 5ex;
 	border-radius: 5ex;
+
+	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
+	display: none;
 	}
 	.IE #NDSearchField {
 		/* IE 10 doesn't like custom fonts on the search field.  It will make the size jump around on focus and hover. */
