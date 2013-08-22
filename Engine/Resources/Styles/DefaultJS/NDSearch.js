@@ -95,7 +95,7 @@ var NDSearch = new function ()
 
 		// We delay loading search/index.js until the search field is activated
 		// this.allPrefixes = undefined;
-		this.allPrefixesStatus = `NotLoaded;
+		this.allPrefixesStatus = `AllPrefixesStatus_NotLoaded;
 		this.prefixObjects = { };
 
 
@@ -143,7 +143,7 @@ var NDSearch = new function ()
 			return;
 			}
 
-		if (this.allPrefixesStatus != `Ready)
+		if (this.allPrefixesStatus != `AllPrefixesStatus_Ready)
 			{
 			this.ClearResults(true);
 			this.domResultsContent.innerHTML = this.BuildSearchingStatus();
@@ -320,9 +320,9 @@ var NDSearch = new function ()
 
 			// Start loading the prefix index as soon as the search field is first activated.  We don't want to wait
 			// until they start typing.
-			if (this.allPrefixesStatus == `NotLoaded)
+			if (this.allPrefixesStatus == `AllPrefixesStatus_NotLoaded)
 				{
-				this.allPrefixesStatus = `Loading;
+				this.allPrefixesStatus = `AllPrefixesStatus_Loading;
 				NDCore.LoadJavaScript("search/index.js");
 				}
 			}
@@ -474,7 +474,7 @@ var NDSearch = new function ()
 			var searchInterpretations = this.GetSearchInterpretations();
 
 			if (searchInterpretations.length != 0 &&
-				this.allPrefixesStatus == `Ready && 
+				this.allPrefixesStatus == `AllPrefixesStatus_Ready && 
 				this.GetMatchingPrefixes(searchInterpretations).length <= 1)
 				{
 				if (this.initialTimeoutStatus == `InitialTimeoutStatus_Waiting)
@@ -614,7 +614,7 @@ var NDSearch = new function ()
 		{
 		var matchingPrefixes = [ ];
 
-		if (this.allPrefixesStatus != `Ready)
+		if (this.allPrefixesStatus != `AllPrefixesStatus_Ready)
 			{  return matchingPrefixes;  }
 
 
@@ -670,7 +670,7 @@ var NDSearch = new function ()
 	*/
 	this.GetAllPrefixesIndex = function (prefix)
 		{
-		if (this.allPrefixesStatus != `Ready)
+		if (this.allPrefixesStatus != `AllPrefixesStatus_Ready)
 			{  return undefined;  }
 		if (this.allPrefixes.length == 0)
 			{  return 0;  }
@@ -1271,7 +1271,7 @@ var NDSearch = new function ()
 	this.OnPrefixIndexLoaded = function (prefixes)
 		{
 		this.allPrefixes = prefixes;
-		this.allPrefixesStatus = `Ready;
+		this.allPrefixesStatus = `AllPrefixesStatus_Ready;
 
 		if (this.initialTimeoutStatus == `InitialTimeoutStatus_Finished)
 			{  this.Update();  }
@@ -1457,21 +1457,21 @@ var NDSearch = new function ()
 	/* var: allPrefixes
 		A sorted array of all the search text prefixes that have data files associated with them.  This is
 		what was stored in search/index.js.  This variable is only available if <allPrefixesStatus> is set
-		to `Ready.
+		to `AllPrefixesStatus_Ready.
 	*/
 
 	/* var: allPrefixesStatus
 
 		The state of <allPrefixes>, which may be:
 
-		`NotLoaded - search/index.js has not been loaded yet, or even had it's script element added.
-		`Loading - search/index.js has had a script element added but the data hasn't returned yet.
-		`Ready - search/index.js has been loaded and <allPrefixes> is ready to use.
+		`AllPrefixesStatus_NotLoaded - search/index.js has not been loaded yet, or even had it's script element added.
+		`AllPrefixesStatus_Loading - search/index.js has had a script element added but the data hasn't returned yet.
+		`AllPrefixesStatus_Ready - search/index.js has been loaded and <allPrefixes> is ready to use.
 	*/
 		/* Substitutions:
-			`NotLoaded = 1
-			`Loading = 2
-			`Ready = 3
+			`AllPrefixesStatus_NotLoaded = 1
+			`AllPrefixesStatus_Loading = 2
+			`AllPrefixesStatus_Ready = 3
 		*/
 
 	/* var: prefixObjects
