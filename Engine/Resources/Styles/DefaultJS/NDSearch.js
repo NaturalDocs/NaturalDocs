@@ -29,7 +29,9 @@
 		`MemberObject_FileHashPath = 4
 		`MemberObject_ClassHashPath = 5
 
-		`UpdateSearchDelay = 350
+		`UpdateTimeout_Delay = 350
+		`InitialTimeout_Delay = 1250
+
 		`MaxAutoExpand = 10
 		`MoreResultsThreshold = 25
 
@@ -54,7 +56,7 @@ var NDSearch = new function ()
 	this.Start = function ()
 		{
 
-		// UI variables
+		// DOM elements
 
 		this.domSearchField = document.getElementById("NDSearchField");
 
@@ -72,7 +74,16 @@ var NDSearch = new function ()
 		this.domResults.appendChild(this.domResultsContent);
 		document.body.appendChild(this.domResults);
 
+
+		// Timers
+
 		// this.updateTimeout = undefined;
+		// this.initialTimeout = undefined;
+		this.initialTimeoutStatus = `InitialTimeoutStatus_NotStarted;
+
+
+		// UI variables
+
 		this.topLevelEntryCount = 0;
 		this.visibleEntryCount = 0;
 		this.openParents = [ ];
@@ -83,13 +94,12 @@ var NDSearch = new function ()
 		// Search data variables
 
 		// We delay loading search/index.js until the search field is activated
-
 		// this.allPrefixes = undefined;
 		this.allPrefixesStatus = `NotLoaded;
 		this.prefixObjects = { };
 
 
-		// Event handlers
+		// Attach event handlers
 
 		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
 		this.domSearchField.onblur = function () {  NDSearch.OnSearchFieldBlur();  };
@@ -187,20 +197,40 @@ var NDSearch = new function ()
 	*/
 	this.ClearResults = function (internalOnly)
 		{
+
+		// Timers
+
 		if (this.updateTimeout != undefined)
 			{
 			clearTimeout(this.updateTimeout);
 			this.updateTimeout = undefined;
 			}
 
+		if (this.initialTimeout != undefined)
+			{
+			clearTimeout(this.initialTimeout);
+			this.initialTimeout = undefined;
+			}
+
+		this.initialTimeoutStatus = `InitialTimeoutStatus_NotStarted;
+
+
+		// DOM elements
+
 		if (!internalOnly)
 			{  this.HideResults();  }
 
-		this.topLevelEntryCount = 0;
+
+		// UI variables
+
 		this.visibleEntryCount = 0;
+		this.topLevelEntryCount = 0;
 		this.openParents = [ ];
 		this.keyboardSelectionIndex = -1;
 		this.moreResultsThreshold = `MoreResultsThreshold;
+
+
+		// Search data variables
 
 		this.prefixObjects = { };
 		};
@@ -283,6 +313,7 @@ var NDSearch = new function ()
 	*/
 	this.OnSearchFieldFocus = function ()
 		{
+		// Check if it's already active because it might be receiving focus back from the search results
 		if (!this.SearchFieldIsActive())
 			{  
 			this.ActivateSearchField();  
@@ -295,7 +326,6 @@ var NDSearch = new function ()
 				NDCore.LoadJavaScript("search/index.js");
 				}
 			}
-		// Otherwise it might be receiving focus back from the search results
 		};
 
 
@@ -415,17 +445,70 @@ var NDSearch = new function ()
 
 		this.keyboardSelectionIndex = -1;
 
-		if (this.updateTimeout == undefined)
+		// If we've already done the initial timeout, we can use the faster update timeout.
+		if (this.initialTimeoutStatus == `InitialTimeoutStatus_Finished)
 			{
-			this.updateTimeout = setTimeout(
-				function ()
-					{
-					clearTimeout(NDSearch.updateTimeout);
-					NDSearch.updateTimeout = undefined;
+			// We don't have to worry about not started versus finished, so we can check it for undefined to determine
+			// if we're already waiting for an existing timeout.
+			if (this.updateTimeout == undefined)
+				{
+				this.updateTimeout = setTimeout(
+					function ()
+						{
+						clearTimeout(NDSearch.updateTimeout);
+						NDSearch.updateTimeout = undefined;
 
-					NDSearch.Update();
-					},
-				`UpdateSearchDelay);
+						NDSearch.Update();
+						},
+					`UpdateTimeout_Delay);
+				}
+			}
+
+		else // initialTimeoutStatus == NotStarted or Waiting
+			{
+			// If the search results in only one prefix, skip the initial timeout and update immediately.  The point of having
+			// the longer initial timeout is so we don't end up loading a ton of prefix files to service a one or two letter search
+			// while they're in the middle of typing out a longer one.  Once they hit that third letter we can ignore the rest of 
+			// the delay.
+
+			var searchInterpretations = this.GetSearchInterpretations();
+
+			if (searchInterpretations.length != 0 &&
+				this.allPrefixesStatus == `Ready && 
+				this.GetMatchingPrefixes(searchInterpretations).length <= 1)
+				{
+				if (this.initialTimeoutStatus == `InitialTimeoutStatus_Waiting)
+					{
+					clearTimeout(this.initialTimeout);
+					this.initialTimeout = undefined;
+					}
+
+				this.initialTimeoutStatus = `InitialTimeoutStatus_Finished;
+				this.Update();
+				}
+
+			else if (this.initialTimeoutStatus == `InitialTimeoutStatus_NotStarted)
+				{
+				this.initialTimeoutStatus = `InitialTimeoutStatus_Waiting;
+
+				this.initialTimeout = setTimeout(
+					function ()
+						{
+						// Check the state since it may have changed before this triggered.
+						if (NDSearch.initialTimeoutStatus == `InitialTimeoutStatus_Waiting)
+							{
+							clearTimeout(NDSearch.initialTimeout);
+							NDSearch.initialTimeout = undefined;
+							NDSearch.initialTimeoutStatus = `InitialTimeoutStatus_Finished;
+
+							NDSearch.Update();
+							}
+						},
+					`InitialTimeout_Delay);
+				}
+
+			// else (this.initialTimeoutStatus == `InitialTimeoutStatus_Waiting)
+				// Do nothing.
 			}
 		};
 
@@ -1190,7 +1273,8 @@ var NDSearch = new function ()
 		this.allPrefixes = prefixes;
 		this.allPrefixesStatus = `Ready;
 
-		this.Update();
+		if (this.initialTimeoutStatus == `InitialTimeoutStatus_Finished)
+			{  this.Update();  }
 		};
 
 	
@@ -1307,9 +1391,31 @@ var NDSearch = new function ()
 
 
 	/* var: updateTimeout
-		A timeout to manage the delay between when the user stops typing and when the search results
-		update.
+		A timeout to manage the delay between when the user types and when the search results update.
 	*/
+
+	/* var: initialTimeout
+		A timeout to manage the delay between when the user types for the first time and when the search results
+		update.  This is done because a search one or two characters long would require multiple data files to be
+		loaded so we wait a little longer to try to avoid this.
+	*/
+
+	/* var: initialTimeoutStatus
+
+		The state of <initialTimeout>.
+
+		Values:
+
+			`InitialTimeoutStatus_NotStarted - <initialTimeout> has never been used since the search field was last 
+														   cleared.
+			`InitialTimeoutStatus_Waiting - <initialTimeout> has started and we're waiting for it to complete.
+			`InitialTimeoutStatus_Finished - <initialTimeout> has finished and you can used <updateTimeout> going
+														forward.
+	*/
+		// Substitutions:
+		// `InitialTimeoutStatus_NotStarted = 1
+		// `InitialTimeoutStatus_Waiting = 2
+		// `InitialTimeoutStatus_Finished = 3
 
 
 
