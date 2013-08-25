@@ -35,6 +35,13 @@
 		`MaxAutoExpand = 10
 		`MoreResultsThreshold = 25
 
+		`KeyCode_Enter = 13
+		`KeyCode_Escape = 27
+		`KeyCode_LeftArrow = 37
+		`KeyCode_UpArrow = 38
+		`KeyCode_RightArrow = 39
+		`KeyCode_DownArrow = 40
+
 */
 
 "use strict";
@@ -102,7 +109,6 @@ var NDSearch = new function ()
 		// Attach event handlers
 
 		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
-		this.domSearchField.onblur = function () {  NDSearch.OnSearchFieldBlur();  };
 		this.domSearchField.onkeydown = function (event) {  NDSearch.OnSearchFieldKey(event);  };
 
 		if (NDCore.SupportsOnInput())
@@ -117,8 +123,6 @@ var NDSearch = new function ()
 			}
 
 		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
-		this.domResults.onblur = function () {  NDSearch.OnResultsBlur();  };
-		this.domResults.onkeydown = function (event) {  NDSearch.OnResultsKey(event);  };
 
 
 		// Initialization
@@ -300,6 +304,8 @@ var NDSearch = new function ()
 	this.LoadMoreResults = function ()
 		{
 		this.moreResultsThreshold = this.visibleEntryCount + `MoreResultsThreshold;
+
+		this.domSearchField.focus()
 		this.Update();
 		};
 
@@ -329,16 +335,6 @@ var NDSearch = new function ()
 		};
 
 
-	/* Function: OnSearchFieldBlur
-	*/
-	this.OnSearchFieldBlur = function ()
-		{
-		// IE switches focus to the results if you click on a scroll bar
-//		if (document.activeElement == undefined || document.activeElement.id != "NDSearchResults")
-//			{  this.Deactivate();  }
-		};
-
-
 	/* Function: OnSearchFieldKey
 	*/
 	this.OnSearchFieldKey = function (event)
@@ -346,7 +342,7 @@ var NDSearch = new function ()
 		if (event === undefined)
 			{  event = window.event;  }
 
-		if (event.keyCode == 27)  // ESC
+		if (event.keyCode == `KeyCode_Escape)
 			{  
 			this.ClearResults();
 			this.DeactivateSearchField();
@@ -355,7 +351,7 @@ var NDSearch = new function ()
 			document.getElementById("CFrame").contentWindow.focus();
 			}
 
-		else if (event.keyCode == 38)  // Up
+		else if (event.keyCode == `KeyCode_UpArrow)
 			{
 			// If it's -1 (no selection) or 0 (first entry) wrap to the last item
 			if (this.keyboardSelectionIndex <= 0)
@@ -369,7 +365,7 @@ var NDSearch = new function ()
 			this.UpdateSelection();
 			}
 
-		else if (event.keyCode == 40)  // Down
+		else if (event.keyCode == `KeyCode_DownArrow)
 			{
 			if (this.visibleEntryCount == 0)
 				{  this.keyboardSelectionIndex = -1;  }
@@ -384,7 +380,7 @@ var NDSearch = new function ()
 			this.UpdateSelection();
 			}
 
-		else if (event.keyCode == 13)  // Enter
+		else if (event.keyCode == `KeyCode_Enter)
 			{
 			// Figure out which element to activate, if any.
 			var domSelectedEntry = undefined;
@@ -430,7 +426,11 @@ var NDSearch = new function ()
 		// Pick up the slack for browsers missing oninput support.
 		else if (NDCore.SupportsOnInput() == false)
 			{
-			this.OnSearchFieldChange(event);
+			if (event.keyCode != `KeyCode_LeftArrow &&
+				event.keyCode != `KeyCode_RightArrow)
+				{
+				this.OnSearchFieldChange(event);
+				}
 			}
 
 		};
@@ -517,22 +517,9 @@ var NDSearch = new function ()
 	*/
 	this.OnResultsFocus = function ()
 		{
+		// Internet Explorer will transfer focus to the results window if you click on the scroll bar.
+		this.domSearchField.focus();
 		};
-
-
-	/* Function: OnResultsBlur
-	*/
-	this.OnResultsBlur = function ()
-		{
-		};
-
-
-	/* Function: OnResultsKey
-	*/
-	this.OnResultsKey = function (event)
-		{
-		this.OnSearchFieldKey(event);
-		}
 
 
 	/* Function: OnUpdateLayout

@@ -119,6 +119,11 @@ var NDFramePage = new function ()
 		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
 		this.AddHashChangeHandler();
 
+		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
+		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur 
+		// will only fire for Firefox.  IE 8 and earlier won't fire either, oh well.
+		window.onblur = function () {  NDFramePage.OnBlur();  };
+
 
 		// Start panels
 
@@ -156,6 +161,18 @@ var NDFramePage = new function ()
 		{
 		document.getElementById("NDMessages").style.display = "none";
 		document.getElementById("MsgContent").innerHTML = "";
+		};
+
+
+	/* Function: OnBlur
+	*/
+	this.OnBlur = function ()
+		{
+		if (NDSearch.SearchFieldIsActive())
+			{
+			NDSearch.ClearResults();
+			NDSearch.DeactivateSearchField();
+			}
 		};
 
 
@@ -564,6 +581,26 @@ var NDFramePage = new function ()
 			{  event = window.event;  }
 
 		var target = event.target || event.srcElement;
+
+		if (NDSearch.SearchFieldIsActive())
+			{
+			var targetIsInResults = false;
+
+			for (var element = target; element != undefined; element = element.parentNode)
+				{
+				if (element.id == "NDSearchResults")
+					{  
+					targetIsInResults = true;
+					break;
+					}
+				}
+
+			if (!targetIsInResults)
+				{
+				NDSearch.ClearResults();
+				NDSearch.DeactivateSearchField();
+				}
+			}
 
 		if (target.id == "NDMenuSizer" || target.id == "NDSummarySizer")
 			{
