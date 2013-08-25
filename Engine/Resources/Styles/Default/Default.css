@@ -1327,3 +1327,16 @@ body.NDHomePage {
 .IE6 .NDClassPrototype .CPEntry {
 	margin-top: 0;
 	}
+.IE6 .SeEntry {
+	border-bottom: 0px none;
+	padding: .2ex 1.25ex .2ex 3.25ex;
+	margin: 0;
+	font: 10pt `SearchFontFamily;
+	}
+.IE6 .SeChildren .SeEntry {
+	padding-left: 5.5ex;
+	}
+.IE6 #SeSelectedEntry {
+	border-style: solid;
+	border-width: 1px;
+	}
