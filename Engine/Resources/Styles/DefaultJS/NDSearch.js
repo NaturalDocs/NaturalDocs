@@ -310,6 +310,28 @@ var NDSearch = new function ()
 		};
 
 
+	/* Function: ActivateLinkFromKeyboard
+		Performs the action of the DOM href element from the keyboard.
+	*/
+	this.ActivateLinkFromKeyboard = function (domLink)
+		{
+		var address = domLink.getAttribute("href");
+
+		if (address.substr(0, 11) == "javascript:")
+			{  
+			address = address.substr(11);
+
+			// Change false to true to let ToggleParent() know we're doing it from the keyboard.
+			// DEPENDENCY: This depends on the exact JavaScript BuildKeyword() generates for parents.
+			address = address.replace(/^(NDSearch.ToggleParent\([0-9]+,)false(.*)$/, "$1true$2");
+
+			eval(address);
+			}
+		else
+			{  location.href = address;  }
+		}
+
+
 
 	// Group: Event Handlers
 	// ________________________________________________________________________
@@ -380,6 +402,30 @@ var NDSearch = new function ()
 			this.UpdateSelection();
 			}
 
+		else if (event.keyCode == `KeyCode_LeftArrow)
+			{
+			// Close parents if there's a keyboard selection
+			if (this.keyboardSelectionIndex != -1)
+				{  
+				var domSelectedEntry = document.getElementById("SeSelectedEntry");
+
+				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "open"))
+					{  this.ActivateLinkFromKeyboard(domSelectedEntry);  }
+				}
+			}
+
+		else if (event.keyCode == `KeyCode_RightArrow)
+			{
+			// Open parents if there's a keyboard selection
+			if (this.keyboardSelectionIndex != -1)
+				{  
+				var domSelectedEntry = document.getElementById("SeSelectedEntry");
+
+				if (NDCore.HasClass(domSelectedEntry, "SeParent") && NDCore.HasClass(domSelectedEntry, "closed"))
+					{  this.ActivateLinkFromKeyboard(domSelectedEntry);  }
+				}
+			}
+
 		else if (event.keyCode == `KeyCode_Enter)
 			{
 			// Figure out which element to activate, if any.
@@ -404,23 +450,9 @@ var NDSearch = new function ()
 
 			// If we found something we can activate it.
 			if (domSelectedEntry != undefined)
-				{
-				var address = domSelectedEntry.getAttribute("href");
-
-				if (address.substr(0, 11) == "javascript:")
-					{  
-					address = address.substr(11);
-
-					// Change false to true to let ToggleParent() know we're doing it from the keyboard.
-					// DEPENDENCY: This depends on the exact JavaScript BuildKeyword() generates for parents.
-					address = address.replace(/^(NDSearch.ToggleParent\([0-9]+,)false(.*)$/, "$1true$2");
-
-					eval(address);
-					}
-				else
-					{  location.href = address;  }
+				{  
+				this.ActivateLinkFromKeyboard(domSelectedEntry);  
 				}
-
 			// If there was nothing to activate, create a keyboard selection
 			else if (this.keyboardSelectionIndex == -1 && this.visibleEntryCount > 0)
 				{
@@ -936,7 +968,7 @@ var NDSearch = new function ()
 			else
 				{  openClosed = "closed";  }
 			
-			// DEPENDENCY: OnSearchFieldKey depends on the ToggleParent JavaScript to process the Enter key.
+			// DEPENDENCY: ActivateLinkFromKeyboard depends on the exact ToggleParent JavaScript generated.
 			var html = "<a class=\"SeEntry SeParent " + openClosed + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
 								"href=\"javascript:NDSearch.ToggleParent(" + this.topLevelEntryCount + ",false)\">" + 
 								"<div class=\"SeEntryIcon\"></div>" +
