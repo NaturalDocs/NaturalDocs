@@ -237,7 +237,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			// Sort by the non-qualifier part first, then by qualifiers since they'll be displayed in "Name, Class" format.  The below code is just 
 			// an elaborate way of doing that without allocating intermediate strings for each comparison.  It's also case-insensitive at first 
-			// and then case-sensitive to break ties.
+			// and then case-sensitive to break ties, but hierarchy topics always come before non-hierarchy topics regardless of capitalization.
 
 			topicEntries.Sort(
 				delegate (SearchIndex.TopicEntry a, SearchIndex.TopicEntry b)
@@ -256,6 +256,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 					if (result != 0)
 						{  return result;  }
+
+					// Hierarchy membership
+					var aTopicType = Engine.Instance.TopicTypes.FromID(a.Topic.TopicTypeID);
+					var bTopicType = Engine.Instance.TopicTypes.FromID(b.Topic.TopicTypeID);
+
+					if (aTopicType.Flags.ClassHierarchy != bTopicType.Flags.ClassHierarchy)
+						{  return (aTopicType.Flags.ClassHierarchy ? -1 : 1);  }
+
+					if (aTopicType.Flags.DatabaseHierarchy != bTopicType.Flags.DatabaseHierarchy)
+						{  return (aTopicType.Flags.DatabaseHierarchy ? -1 : 1);  }
 
 					// Case-sensitive compare, non-qualifiers
 					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
