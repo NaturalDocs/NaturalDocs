@@ -246,12 +246,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					int bNonQualifierLength = b.DisplayName.Length - b.EndOfDisplayNameQualifiers;
 					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? aNonQualifierLength : bNonQualifierLength);
 
+					// Case-insensitive compare, non-qualifiers
 					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
-
-					if (result != 0)
-						{  return result;  }
-
-					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
 
 					if (result != 0)
 						{  return result;  }
@@ -261,19 +257,27 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					if (result != 0)
 						{  return result;  }
 
+					// Case-sensitive compare, non-qualifiers
+					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
+
+					if (result != 0)
+						{  return result;  }
+
 					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
 
+					// Case-insensitive compare, qualifiers
 					result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, true);
 
 					if (result != 0)
 						{  return result;  }
 
-					result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, false);
+					result = (a.EndOfDisplayNameQualifiers - b.EndOfDisplayNameQualifiers);
 
 					if (result != 0)
 						{  return result;  }
 
-					result = (a.EndOfDisplayNameQualifiers - b.EndOfDisplayNameQualifiers);
+					// Case-sensitive compare, qualifiers
+					result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, false);
 
 					return result;
 					}
