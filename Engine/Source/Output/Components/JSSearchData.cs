@@ -177,7 +177,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			SortKeywordEntries(keywordEntries);
 
 			foreach (var keywordEntry in keywordEntries)
-				{  SortTopicEntries(keywordEntry);  }
+				{  
+				SortTopicEntries(keywordEntry);
+				RemoveDuplicateTopics(keywordEntry);
+				}
 
 			BuildPrefixDataFileJS(prefix, keywordEntries);
 
@@ -234,19 +237,19 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			{
 			List<SearchIndex.TopicEntry> topicEntries = keywordEntry.TopicEntries;
 
-
-			// Sort by the non-qualifier part first, then by qualifiers since they'll be displayed in "Name, Class" format.  The below code is just 
-			// an elaborate way of doing that without allocating intermediate strings for each comparison.  It's also case-insensitive at first 
-			// and then case-sensitive to break ties, but hierarchy topics always come before non-hierarchy topics regardless of capitalization.
-
 			topicEntries.Sort(
 				delegate (SearchIndex.TopicEntry a, SearchIndex.TopicEntry b)
 					{
+					// Sort by the non-qualifier part first since they'll be displayed in "Name, Class" format.  The below code is just an elaborate 
+					// way of doing that without allocating intermediate strings for each comparison.
+
 					int aNonQualifierLength = a.DisplayName.Length - a.EndOfDisplayNameQualifiers;
 					int bNonQualifierLength = b.DisplayName.Length - b.EndOfDisplayNameQualifiers;
 					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? aNonQualifierLength : bNonQualifierLength);
 
-					// Case-insensitive compare, non-qualifiers
+
+					// Compare non-qualifiers in a case-insensitive way first.
+
 					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
 
 					if (result != 0)
@@ -257,7 +260,10 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					if (result != 0)
 						{  return result;  }
 
-					// Hierarchy membership
+
+					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token" to appear before
+					// variable "token" even though normally we want lowercase to go first.
+
 					var aTopicType = Engine.Instance.TopicTypes.FromID(a.Topic.TopicTypeID);
 					var bTopicType = Engine.Instance.TopicTypes.FromID(b.Topic.TopicTypeID);
 
@@ -267,7 +273,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					if (aTopicType.Flags.DatabaseHierarchy != bTopicType.Flags.DatabaseHierarchy)
 						{  return (aTopicType.Flags.DatabaseHierarchy ? -1 : 1);  }
 
-					// Case-sensitive compare, non-qualifiers
+
+					// Still equal, now compare the qualifiers in a case-sensitive way to break ties.
+
 					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
 
 					if (result != 0)
@@ -275,7 +283,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
 
-					// Case-insensitive compare, qualifiers
+
+					// Still equal so do a case-insensitive comparison of qualifiers, so "Name, ClassA" comes before "Name, ClassB".
+
 					result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, true);
 
 					if (result != 0)
@@ -286,10 +296,36 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					if (result != 0)
 						{  return result;  }
 
-					// Case-sensitive compare, qualifiers
+
+					// Case-sensitive comparison of qualifiers to break ties.
+
 					result = string.Compare(a.DisplayName, 0, b.DisplayName, 0, shorterQualifierLength, false);
 
-					return result;
+					if (result != 0)
+						{  return result;  }
+
+
+					// So now we have two symbols that are equal letter for letter.  Sort by language name first.
+
+					if (a.Topic.LanguageID != b.Topic.LanguageID)
+						{
+						return string.Compare(Engine.Instance.Languages.FromID(a.Topic.LanguageID).Name, 
+													  Engine.Instance.Languages.FromID(b.Topic.LanguageID).Name, true);
+						}
+
+
+					// and by file name next.
+
+					if (a.Topic.FileID != b.Topic.FileID)
+						{
+						return string.Compare(Engine.Instance.Files.FromID(a.Topic.FileID).FileName, 
+													  Engine.Instance.Files.FromID(b.Topic.FileID).FileName, true);
+						}
+
+
+					// If we're here then they're two overloaded functions in the same source file.  Go by symbol definition number.
+
+					return (a.Topic.SymbolDefinitionNumber - b.Topic.SymbolDefinitionNumber);
 					}
 				);
 
@@ -348,6 +384,26 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				// end - first because it shifted down after we removed the range
 				topicEntries.InsertRange(endOfKeywordStart - firstKeywordStart, tempList);
+				}
+			}
+
+
+		/* Function: RemoveDuplicateTopics
+		 * Removes topics from the results which have the same letter for letter display names.
+		 */
+		protected void RemoveDuplicateTopics (SearchIndex.KeywordEntry keywordEntry)
+			{
+			List<SearchIndex.TopicEntry> topicEntries = keywordEntry.TopicEntries;
+
+			for (int i = 1; i < topicEntries.Count; /* no auto-increment */)
+				{
+				var current = topicEntries[i];
+				var previous = topicEntries[i -1];
+
+				if (current.DisplayName == previous.DisplayName)
+					{  topicEntries.RemoveAt(i);  }
+				else
+					{  i++;  }
 				}
 			}
 
