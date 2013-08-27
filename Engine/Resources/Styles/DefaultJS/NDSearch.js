@@ -402,8 +402,7 @@ var NDSearch = new function ()
 			else if (this.visibleEntryCount == 2 && NDCore.HasClass(this.domResultsContent.firstChild, "SeParent"))
 				{  domSelectedEntry = this.domResultsContent.childNodes[1].firstChild;  }
 
-			// If we found something we can activate it.  If we didn't because there's a lot of results visible and no
-			// keyboard selection, just ignore the enter press.
+			// If we found something we can activate it.
 			if (domSelectedEntry != undefined)
 				{
 				var address = domSelectedEntry.getAttribute("href");
@@ -420,6 +419,13 @@ var NDSearch = new function ()
 					}
 				else
 					{  location.href = address;  }
+				}
+
+			// If there was nothing to activate, create a keyboard selection
+			else if (this.keyboardSelectionIndex == -1 && this.visibleEntryCount > 0)
+				{
+				this.keyboardSelectionIndex = 0;
+				this.UpdateSelection();
 				}
 			}
 
