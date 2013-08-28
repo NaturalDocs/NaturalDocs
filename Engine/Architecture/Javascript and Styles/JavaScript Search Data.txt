@@ -46,8 +46,8 @@ _______________________________________________________________________________
 		>    [
 		>       [ "Accessor", "accessor", [
 		>          [ undefined, "Accessor", "accessor", 0, "File:Folder/Documentation.txt:Accessor", undefined ]
-		>          [ "ClassA.", "Accessor", "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB::", "Accessor", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>          [ "ClassA", "Accessor", "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB", "Accessor", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
 		>    ]);
 
@@ -59,8 +59,8 @@ _______________________________________________________________________________
 		>    [
 		>       [ "Accessor", , [
 		>          [ , , , 0, "File:Folder/Documentation.txt#Accessor" ]
-		>          [ "ClassA.", , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB::", , , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>          [ "ClassA", , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB", , , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
 		>    ]);
 
