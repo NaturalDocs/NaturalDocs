@@ -30,13 +30,23 @@ _______________________________________________________________________________
 		> NDSearch.OnPrefixDataLoaded(prefix, topicTypeSimpleIDs[], keywords[]);
 		>
 		> keyword: [ htmlName, searchText (optional), members[] ]
-		>  - searchText is undefined if it's the same as htmlName in lowercase
-		>
-		> member: [ htmlQualifier (optional), htmlName (optional), searchText (optional), topicTypeIndex, fileHashPath, classHashPath (optional) ]
-		>  - htmlQualifier is undefined if there isn't one
-		>  - htmlName is undefined if it's the same as the keyword's htmlName
-		>  - searchText is undefined if it's the same as htmlName in lowercase
-		>  - classHashPath is undefined if there isn't one
+		
+		searchText is undefined if it's the same as htmlName in lowercase
+
+		> member: [ 
+		>    htmlQualifier (optional),
+		>    htmlName (optional),
+		>    htmlLanguageName (optional), 
+		>    searchText (optional), 
+		>    topicTypeIndex, 
+		>    fileHashPath, 
+		>    classHashPath (optional) ]
+
+		- htmlQualifier is undefined if there isn't one
+		- htmlName is undefined if it's the same as the keyword's htmlName
+		- htmlLanguageName is undefined unless there's another member that has the same name and qualifier but is in a different language.
+		- searchText is undefined if it's the same as htmlName in lowercase
+		- classHashPath is undefined if there isn't one
 
 		Applied without removing optional parameters it would look like this:
 
@@ -45,9 +55,10 @@ _______________________________________________________________________________
 		>    [ "Function", "Property" ],
 		>    [
 		>       [ "Accessor", "accessor", [
-		>          [ undefined, "Accessor", "accessor", 0, "File:Folder/Documentation.txt:Accessor", undefined ]
-		>          [ "ClassA", "Accessor", "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB", "Accessor", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>          [ undefined, "Accessor", undefined, "accessor", 0, "File:Folder/Documentation.txt:Accessor", undefined ]
+		>          [ "ClassA", "Accessor", undefined, "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB", "Accessor", "C#", "accessor", 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
+		>          [ "ClassB", "Accessor", "C/C++", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
 		>    ]);
 
@@ -58,9 +69,10 @@ _______________________________________________________________________________
 		>    [ "Function", "Property" ],
 		>    [
 		>       [ "Accessor", , [
-		>          [ , , , 0, "File:Folder/Documentation.txt#Accessor" ]
-		>          [ "ClassA", , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB", , , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+		>          [ , , , , 0, "File:Folder/Documentation.txt#Accessor" ]
+		>          [ "ClassA", , , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+		>          [ "ClassB", , "C#", , 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
+		>          [ "ClassB", , "C/C++", , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
 		>       ]]
 		>    ]);
 

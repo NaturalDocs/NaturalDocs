@@ -24,10 +24,11 @@
 
 		`MemberObject_HTMLQualifier = 0
 		`MemberObject_HTMLName = 1
-		`MemberObject_SearchText = 2
-		`MemberObject_TopicType = 3
-		`MemberObject_FileHashPath = 4
-		`MemberObject_ClassHashPath = 5
+		`MemberObject_HTMLLanguageName = 2
+		`MemberObject_SearchText = 3
+		`MemberObject_TopicType = 4
+		`MemberObject_FileHashPath = 5
+		`MemberObject_ClassHashPath = 6
 
 		`UpdateTimeout_Delay = 350
 		`InitialTimeout_Delay = 1250
@@ -947,8 +948,18 @@ var NDSearch = new function ()
 								"<div class=\"SeEntryIcon\"></div>" +
 								lastMatchingMemberObject[`MemberObject_HTMLName];
 
-			if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined)
-				{  html += "<span class=\"SeQualifier\">, " + lastMatchingMemberObject[`MemberObject_HTMLQualifier] + "</span>";  }
+			if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined ||
+				lastMatchingMemberObject[`MemberObject_HTMLLanguageName] != undefined)
+				{  
+				html += "<span class=\"SeQualifier\">";
+
+				if (lastMatchingMemberObject[`MemberObject_HTMLQualifier] != undefined)
+					{  html += ", " + lastMatchingMemberObject[`MemberObject_HTMLQualifier];  }
+				if (lastMatchingMemberObject[`MemberObject_HTMLLanguageName] != undefined)
+					{  html += ", " + lastMatchingMemberObject[`MemberObject_HTMLLanguageName];  }
+				
+				html += "</span>";  
+				}
 			
 			html += "</a>";
 
@@ -1003,8 +1014,18 @@ var NDSearch = new function ()
 										"<div class=\"SeEntryIcon\"></div>" +
 										memberObject[`MemberObject_HTMLName];
 
-						if (memberObject[`MemberObject_HTMLQualifier] != undefined)
-							{  html += "<span class=\"SeQualifier\">, " + memberObject[`MemberObject_HTMLQualifier] + "</span>";  }
+						if (memberObject[`MemberObject_HTMLQualifier] != undefined ||
+							memberObject[`MemberObject_HTMLLanguageName] != undefined)
+							{  
+							html += "<span class=\"SeQualifier\">";
+
+							if (memberObject[`MemberObject_HTMLQualifier] != undefined)
+								{  html += ", " + memberObject[`MemberObject_HTMLQualifier];  }
+							if (memberObject[`MemberObject_HTMLLanguageName] != undefined)
+								{  html += ", " + memberObject[`MemberObject_HTMLLanguageName];  }
+
+							html += "</span>";  
+							}
 
 						html += "</a>";
 

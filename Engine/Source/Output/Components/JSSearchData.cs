@@ -389,7 +389,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 
 		/* Function: RemoveDuplicateTopics
-		 * Removes topics from the results which have the same letter for letter display names.
+		 * Removes topics from the results which have the same letter for letter display names.  An exception is made if they
+		 * have different languages.
 		 */
 		protected void RemoveDuplicateTopics (SearchIndex.KeywordEntry keywordEntry)
 			{
@@ -400,7 +401,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				var current = topicEntries[i];
 				var previous = topicEntries[i -1];
 
-				if (current.DisplayName == previous.DisplayName)
+				if (current.DisplayName == previous.DisplayName &&
+					current.Topic.LanguageID == previous.Topic.LanguageID)
 					{  topicEntries.RemoveAt(i);  }
 				else
 					{  i++;  }
@@ -502,20 +504,35 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			output.Append(",[");
 
-			bool isFirstTopicEntry = true;
-
-			foreach (var topicEntry in keywordEntry.TopicEntries)
+			for (int i = 0; i < keywordEntry.TopicEntries.Count; i++)
 				{
-				if (isFirstTopicEntry)
-					{  isFirstTopicEntry = false;  }
-				else
+				if (i > 0)
 					{  output.Append(',');  }
 
 				#if DONT_SHRINK_FILES
 				output.Append("\n      ");
 				#endif
 
-				BuildTopicEntry(topicEntry, keywordHTMLName);
+				var topicEntry = keywordEntry.TopicEntries[i];
+				bool includeLanguage = false;
+
+				if (i < keywordEntry.TopicEntries.Count - 1)
+					{
+					var other = keywordEntry.TopicEntries[i + 1];
+
+					if (topicEntry.DisplayName == other.DisplayName && topicEntry.Topic.LanguageID != other.Topic.LanguageID)
+						{  includeLanguage = true;  }
+					}
+
+				if (i > 0 && !includeLanguage)
+					{
+					var other = keywordEntry.TopicEntries[i - 1];
+
+					if (topicEntry.DisplayName == other.DisplayName && topicEntry.Topic.LanguageID != other.Topic.LanguageID)
+						{  includeLanguage = true;  }
+					}
+
+				BuildTopicEntry(topicEntry, keywordHTMLName, includeLanguage);
 				}
 
 			#if DONT_SHRINK_FILES
@@ -528,7 +545,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* Function: BuildTopicEntry
 		 */
-		protected void BuildTopicEntry (SearchIndex.TopicEntry topicEntry, string keywordHTMLName)
+		protected void BuildTopicEntry (SearchIndex.TopicEntry topicEntry, string keywordHTMLName, bool includeLanguage)
 			{
 			string topicHTMLPrefix, topicHTMLName, topicSearchText;
 
@@ -567,6 +584,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				{
 				output.Append('"');
 				output.StringEscapeAndAppend(topicHTMLName);
+				output.Append('"');
+				}
+
+			output.Append(',');
+
+			if (includeLanguage)
+				{
+				output.Append('"');
+				output.StringEscapeAndAppend( Engine.Instance.Languages.FromID(topicEntry.Topic.LanguageID).Name );
 				output.Append('"');
 				}
 
