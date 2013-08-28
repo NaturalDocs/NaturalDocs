@@ -190,10 +190,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 			if (lastSeparator <= 0)
 				{  return false;  }
 
-			int secondToLastSeparator = symbolString.LastIndexOf(SeparatorChar, lastSeparator - 1);
-
-			if (secondToLastSeparator == -1)
-				{  return false;  }
+			int secondToLastSeparator = symbolString.LastIndexOf(SeparatorChar, lastSeparator - 1);  // May be -1
 
 			int length = symbolString.Length - (lastSeparator + 1);
 
