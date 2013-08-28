@@ -210,9 +210,12 @@ var NDSummary = new function ()
 						(i == 0 ? " first" : "") +
 						(i == this.summaryEntries.length - 1 ? " last" : "");
 
+					var href = "#" + NDFramePage.currentLocation.path + 
+									(entry[`Entry_Symbol] != undefined ? ":" + entry[`Entry_Symbol] : "");
+
 					entryHTML.id = "SuEntry" + entry[`Entry_TopicID];
 					entryHTML.className = classString;
-					entryHTML.setAttribute("href", "#" + NDFramePage.currentLocation.path + ":" + entry[`Entry_Symbol]);
+					entryHTML.setAttribute("href", href);
 					entryHTML.innerHTML = "<div class=\"SuEntryIcon\"></div>" + entry[`Entry_NameHTML];
 					entryHTML.onmouseover = mouseOverHandler;
 					entryHTML.onmouseout = mouseOutHandler;

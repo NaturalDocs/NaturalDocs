@@ -48,7 +48,7 @@ _______________________________________________________________________________
 			languageIndex - The topic's language as an index into the languages array.
 			topicTypeIndex - The topic type as an index into the topic types array.
 			nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
-			symbol - The topic's symbol in the hash path.
+			symbol - The topic's symbol in the hash path.  May be undefined if you should use the file's hash path alone.
 
 		What is an embedded topic?  One that appears within another topic, such as a list topic or an enumeration's members.
 		The names are undefined so they should not be displayed in the summary's generated HTML.  However, they are included

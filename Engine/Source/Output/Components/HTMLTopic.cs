@@ -97,9 +97,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
 			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+			string topicHashPath = Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
+
+			if (topicHashPath != null)
+				{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
 
 			htmlOutput.Append(
-				"<a name=\"" + Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths).EntityEncode() + "\"></a>" +
 				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
 				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
@@ -343,9 +346,12 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 										{  throw new Exception ("There are not enough embedded topics to build the definition list.");  }
 								#endif
 
-								htmlOutput.Append(
-									"<a name=\"" + Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], topicPage.IncludeClassInTopicHashPaths).EntityEncode() + "\"></a>" +
-									"<a name=\"Topic" + embeddedTopics[embeddedTopicIndex].TopicID + "\"></a>");
+								string topicHashPath = Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], topicPage.IncludeClassInTopicHashPaths);
+
+								if (topicHashPath != null)
+									{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
+
+								htmlOutput.Append("<a name=\"Topic" + embeddedTopics[embeddedTopicIndex].TopicID + "\"></a>");
 
 								embeddedTopicIndex++;
 								}

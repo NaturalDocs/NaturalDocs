@@ -327,9 +327,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					}
 				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
 
-				output.Append(",\"");
-				output.StringEscapeAndAppend( Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths) );
-				output.Append("\"]");
+				string topicHashPath = Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
+
+				if (topicHashPath != null)
+					{
+					output.Append(",\"");
+					output.StringEscapeAndAppend(topicHashPath);
+					output.Append('"');
+					}
+					
+				output.Append(']');
 
 				if (topicIndex < topics.Count - 1)
 					{  

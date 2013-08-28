@@ -142,10 +142,20 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: Source_TopicHashPath
-		 * Returns a hash path representing a specific <Topic> within an output file.
+		 * Returns a hash path representing a specific <Topic> within an output file.  If it returns null, you should use the hash path for
+		 * the class or file without a topic anchor.
 		 */
 		public static string Source_TopicHashPath (Topic topic, bool includeClass = true)
 			{
+			// If we're not including the class and the topic is itself a class, return null.
+			if (!includeClass)
+				{
+				var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+
+				if (topicType.Flags.ClassHierarchy)
+					{  return null;  }
+				}
+
 			// We want to work from Topic.Title instead of Topic.Symbol so that we can use the separator characters as originally
 			// written, as opposed to having them normalized and condensed in the anchor.
 

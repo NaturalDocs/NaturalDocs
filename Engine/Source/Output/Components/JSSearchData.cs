@@ -612,8 +612,15 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			output.Append(",\"");
 			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(htmlBuilder, topicEntry.Topic.FileID);
 			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
-			output.Append(':');
-			output.StringEscapeAndAppend(Builders.HTML.Source_TopicHashPath(topicEntry.Topic, true));
+
+			string topicHashPath = Builders.HTML.Source_TopicHashPath(topicEntry.Topic, true);
+
+			if (topicHashPath != null)
+				{
+				output.Append(':');
+				output.StringEscapeAndAppend(topicHashPath);
+				}
+
 			output.Append('"');
 
 			if (topicEntry.Topic.ClassID != 0)
@@ -623,8 +630,14 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 				Components.HTMLTopicPages.Class classPage = 
 					new Components.HTMLTopicPages.Class(htmlBuilder, topicEntry.Topic.ClassID, topicEntry.Topic.ClassString);
 				output.StringEscapeAndAppend(classPage.OutputFileHashPath);
-				output.Append(':');
-				output.StringEscapeAndAppend(Builders.HTML.Source_TopicHashPath(topicEntry.Topic, false));
+
+				string classTopicHashPath = Builders.HTML.Source_TopicHashPath(topicEntry.Topic, false);
+
+				if (classTopicHashPath != null)
+					{
+					output.Append(':');
+					output.StringEscapeAndAppend(classTopicHashPath);
+					}
 	
 				output.Append('"');
 				}

@@ -81,9 +81,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			if (cssClass != null)
 				{  output.Append("class=\"" + cssClass + "\" ");  }
 
+			string topicHashPath = Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
+
 			output.Append("href=\"" + pathToIndex.ToURL() + 
-											'#' + targetTopicPage.OutputFileHashPath + 
-											':' + Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths) + "\" " +
+											'#' + targetTopicPage.OutputFileHashPath.EntityEncode() + 
+											(topicHashPath != null ? ':' + topicHashPath.EntityEncode() : "") + "\" " +
 										"target=\"_top\" " +
 										"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
 										"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
