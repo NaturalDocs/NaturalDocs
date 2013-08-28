@@ -506,12 +506,14 @@ namespace GregValure.NaturalDocs.Engine.SearchIndex
 
 			#endif
 
+			TopicEntry entry = new TopicEntry(newTopic);
+
 			// We use upgradeable in case one of the change handlers needs to do something that requires a write lock.
 			accessLock.EnterUpgradeableReadLock();
 
 			try
 				{
-				foreach (var keyword in newEntry.Keywords)
+				foreach (var keyword in entry.Keywords)
 					{
 					string prefix = KeywordPrefix(keyword);
 

@@ -306,7 +306,7 @@ var NDSearch = new function ()
 		{
 		this.moreResultsThreshold = this.visibleEntryCount + `MoreResultsThreshold;
 
-		this.domSearchField.focus()
+		this.domSearchField.focus();
 		this.Update();
 		};
 
@@ -330,7 +330,7 @@ var NDSearch = new function ()
 			}
 		else
 			{  location.href = address;  }
-		}
+		};
 
 
 
@@ -1073,7 +1073,7 @@ var NDSearch = new function ()
 		this.topLevelEntryCount++;
 
 		return html;
-		}
+		};
 
 
 

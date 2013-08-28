@@ -326,7 +326,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 				htmlOutput.Append("<div class=\"CPName\">");
 
-					string name;
+					string name = null;
 
 					if (parent.targetTopic != null)
 					    {  name = parent.targetTopic.Symbol.FormatWithSeparator(memberOperator);  }
