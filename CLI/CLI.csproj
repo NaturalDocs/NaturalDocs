@@ -73,7 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Architecture\Compilation Symbols.txt" />
-    <Content Include="Build Scripts\PostBuild.js" />
     <Content Include="Resources\Icons\Application.ico" />
     <Content Include="Resources\Translations\NaturalDocs.CLI.default.txt" />
   </ItemGroup>
@@ -99,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="CLI.build" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\Engine.csproj">
@@ -112,8 +112,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)..\Engine\Build Scripts\PostBuild.js" "$(SolutionDir)Source\" "$(TargetDir)"
-"$(ProjectDir)Build Scripts\PostBuild.js" "$(SolutionDir)Source\" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)Tools\NAnt\bin\NAnt.exe" -buildfile:"$(ProjectDir)CLI.build" -D:OutputFolder="$(TargetDir)\" -D:Platform=Windows CopyAllResources</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
