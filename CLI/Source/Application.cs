@@ -340,329 +340,486 @@ namespace GregValure.NaturalDocs.CLI
 		 * 
 		 *		- -i, --input, --source
 		 *		- -o, --output
-		 *		- -p, --project, --projectconfig --projectconfiguration
-		 *		- -w, --data, --workingdata
+		 *		- -p, --project, --project-config --project-configuration
+		 *		- -w, --data, --working-data
 		 *		- -xi, --exclude-input, --exclude-source
 		 *		- -xip, --exclude-input-pattern, --exclude-source-pattern
 		 *		- -img, --images
-		 *		- -t, --tab, --tabwidth, --tablength
-		 *		- -do, --documentedonly
-		 *		- -nag, --noautogroup
-		 *		- -s, --style, --defaultstyle
+		 *		- -t, --tab, --tab-width, --tab-length
+		 *		- -do, --documented-only
+		 *		- -nag, --no-auto-group
+		 *		- -s, --style, --default-style
 		 *		- -r, --rebuild
-		 *		- -ro, --rebuildoutput
+		 *		- -ro, --rebuild-output
 		 *		- -h, --help
 		 *		- -?
 		 *		- -v, --version
 		 *		
 		 * Unsupported so far:
 		 * 
-		 *		- -cs, --charset, --characterset
 		 *		- -q, --quiet
 		 *		
 		 * No longer supported:
 		 * 
+		 *		- -cs, --charset, --characterset
 		 *		- -ho, --headersonly
 		 *		- -s Custom, --style Custom
 		 *		- -ag, --autogroup
 		 */
-		public static ParseCommandLineResult ParseCommandLine (string[] commandLine, ErrorList errorList)
+		public static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, ErrorList errorList)
 			{
-			int index = 0;
 			int originalErrorCount = errorList.Count;
+
+			Engine.CommandLine commandLine = new CommandLine(commandLineSegments);
+
+			commandLine.AddAliases("--input", "-i", "--source");
+			commandLine.AddAliases("--output", "-o");
+			commandLine.AddAliases("--project", "-p", "--project-config", "--projectconfig", "--project-configuration", "--projectconfiguration");
+			commandLine.AddAliases("--working-data", "-w", "--data", "--workingdata");
+			commandLine.AddAliases("--exclude-input", "-xi", "--excludeinput", "--exclude-source", "--excludesource");
+			commandLine.AddAliases("--exclude-input-pattern", "-xip", "--excludeinputpattern", "--exclude-source-pattern", "--excludesourcepattern");
+			commandLine.AddAliases("--images", "-img");
+			commandLine.AddAliases("--tab-width", "-t", "--tab", "--tabwidth", "--tab-length", "--tablength");
+			commandLine.AddAliases("--documented-only", "-do", "--documentedonly");
+			commandLine.AddAliases("--no-auto-group", "-nag", "--noautogroup");
+			commandLine.AddAliases("--style", "-s", "--default-style", "--defaultstyle");
+			commandLine.AddAliases("--rebuild", "-r");
+			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
+			commandLine.AddAliases("--help", "-h", "-?");
+			commandLine.AddAliases("--version", "-v");
+
+			// No longer supported or not supported yet
+			commandLine.AddAliases("--charset", "-cs", "--char-set", "--characterset", "--character-set");
+			commandLine.AddAliases("--quiet", "-q");
+			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
+			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
 			
-			Engine.Collections.StringToStringTable synonyms = new Engine.Collections.StringToStringTable( 
-				Engine.Collections.KeySettings.Literal,  // Case-insensitivity is handled elsewhere and we don't need normalization
-				"input", "-i", "source", "-i", 
-				"output", "-o",
-				"excludeinput", "-xi", "excludesource", "-xi",
-				"excludeinputpattern", "-xip", "excludesourcepattern", "-xip",
-				"project", "-p", "projectconfig", "-p", "projectconfiguration", "-p",
-				"data", "-w", "workingdata", "-w",
-				"images", "-img", "image", "-img",
-				"tab", "-t", "tabwidth", "-t", "tablength", "-t",
-				"documentedonly", "-do",
-				"noautogroup", "-nag",
-				"style", "-s", "defaultstyle", "-s",
-				"help", "-h",
-				"version", "-v",
-				"rebuild", "-r",
-				"rebuildoutput", "-ro"
-				);
-				
-			while (index < commandLine.Length)
+			string parameter, parameterAsEntered;
+			bool isFirst = true;
+							
+			while (commandLine.IsInBounds)
 				{
-				string command;
-				
-				// If the first parameter doesn't start with -, assume it's the project folder or file specified without -p.
-				if (index == 0 && commandLine[0][0] != '-')
-					{
-					command = "-p";
+				// If the first segment isn't a parameter, assume it's the project folder specified without -p.
+				if (isFirst && !commandLine.IsOnParameter)
+					{  
+					parameter = "--project";
+					parameterAsEntered = parameter;
 					}
 				else
-					{
-					command = commandLine[index].ToLower();
-					index++;
-					
-					// Convert the --something form to the short form.
-					if (command.Length > 2 && command[1] == '-')
+					{  
+					if (!commandLine.GetParameter(out parameter, out parameterAsEntered))
 						{
-						// This allows things like --project-config to work just as well as --projectconfig.
-						command = command.Replace("-", "");
-						
-						if (synonyms.ContainsKey(command))
-							{  command = synonyms[command];  }
-						// Otherwise let it go through.  The error handling for the short form with take care of it.
+						string bareWord;
+						commandLine.GetBareWord(out bareWord);
+
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedParameter(param)", bareWord)
+							);
+
+						commandLine.SkipToNextParameter();
 						}
-					}					
-					
+					}
+
+				isFirst = false;
+
 					
 				// Input folders
 					
-				if (command == "-i")
+				if (parameter == "--input")
 					{
-					Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-
-					if (folder.IsRelative)
-						{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+					Path folder;
 					
-					Engine.Config.Entries.InputFolder entry = 
-						new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Source);
-
-					Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
-					}
-					
-
-					
-				// Ignored input folders
-					
-				else if (command == "-xi")
-					{
-					Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-					
-					if (folder.IsRelative)
-						{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
-					Engine.Config.Entries.IgnoredSourceFolder entry = new Engine.Config.Entries.IgnoredSourceFolder(folder);
-
-					Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
-					}
-					
-					
-					
-				// Ignored input folder patterns
-					
-				else if (command == "-xip")
-					{
-					System.Text.StringBuilder pattern = new System.Text.StringBuilder();
-					
-					while (index < commandLine.Length && commandLine[index][0] != '-')
+					if (!commandLine.GetPathValue(out folder))
 						{
-						if (pattern.Length != 0)
-							{  pattern.Append(' ');  }
-							
-						pattern.Append(commandLine[index]);
-						index++;
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFolder(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
 						}
-
-					Engine.Config.Entries.IgnoredSourceFolderPattern entry = 
-						new Engine.Config.Entries.IgnoredSourceFolderPattern(pattern.ToString());
-
-					Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
-					}
-					
-					
-					
-				// Image folders
-					
-				else if (command == "-img")
-					{
-					Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-					
-					if (folder.IsRelative)
-						{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
-					Engine.Config.Entries.InputFolder entry = 
-						new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Image);
-					}
-					
-					
-					
-				// Output folders
-				
-				else if (command == "-o")
-					{
-					string format = commandLine[index].ToLower();
-					index++;
-					
-					if (index < commandLine.Length && commandLine[index][0] != '-')
+					else
 						{
-						Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-						
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						Engine.Config.OutputEntry entry = null;
+						Engine.Config.Entries.InputFolder entry = 
+							new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Source);
+
+						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+						}
+					}
+					
+
+					
+				// Output folders
+				
+				else if (parameter == "--output")
+					{
+					string format;
+					Path folder;
+					
+					if (!commandLine.GetBareWordAndPathValue(out format, out folder))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFormatAndFolder(param)", parameter)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+					
+						format = format.ToLower();
 
 						if (format == "html" || format == "framedhtml")
-							{  entry = new Engine.Config.Entries.HTMLOutputFolder(folder);  }
+							{  
+							var entry = new Engine.Config.Entries.HTMLOutputFolder(folder);  
+							Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+							}
 						else if (format == "xml")
-							{  entry = new Engine.Config.Entries.XMLOutputFolder(folder);  }
+							{  
+							var entry = new Engine.Config.Entries.XMLOutputFolder(folder);
+							Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+							}
 						else
 							{
 							errorList.Add( 
 								Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedOutputFormat(format)", format)
 								);
-							}
 
-						if (entry != null)
-							{  Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);  }
-						}
-						
-					else
-						{
-						errorList.Add(
-							Locale.Get("NaturalDocs.CLI", "CommandLine.OutputMustIncludeFormat")
-							);
+							commandLine.SkipToNextParameter();
+							}
 						}
 					}
-					
-					
-					
+
+
+
 				// Project configuration folder
 					
-				else if (command == "-p")
+				else if (parameter == "--project")
 					{
-					Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-						
-					if (folder.IsRelative)
-						{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-
-					// Accept the parameter being to Project.txt instead of the folder.
-					if (folder.NameWithoutPath.ToLower() == "project.txt")
-						{  folder = folder.ParentFolder;  }
-						
-					if ( !String.IsNullOrEmpty(Engine.Instance.Config.ProjectConfigFolder) )
+					Path folder;
+					
+					if (!commandLine.GetPathValue(out folder))
 						{
-						errorList.Add( 
-							Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneProjectConfigFolder")
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFolder(param)", parameterAsEntered)
 							);
+
+						commandLine.SkipToNextParameter();
 						}
 					else
-						{  Engine.Instance.Config.ProjectConfigFolder = folder;  }
+						{
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+
+						// Accept the parameter being set to Project.txt instead of the folder.
+						if (folder.NameWithoutPath.ToLower() == "project.txt")
+							{  folder = folder.ParentFolder;  }
+						
+						if ( !String.IsNullOrEmpty(Engine.Instance.Config.ProjectConfigFolder) )
+							{
+							errorList.Add( 
+								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneProjectConfigFolder")
+								);
+							}
+						else
+							{  Engine.Instance.Config.ProjectConfigFolder = folder;  }
+						}
 					}
 					
 					
 
 				// Working data folder
 					
-				else if (command == "-w")
+				else if (parameter == "--working-data")
 					{
-					Path folder = Engine.Path.FromCommandLine(commandLine, ref index);
-						
-					if (folder.IsRelative)
-						{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-
-					if ( !String.IsNullOrEmpty(Engine.Instance.Config.WorkingDataFolder) )
+					Path folder;
+					
+					if (!commandLine.GetPathValue(out folder))
 						{
-						errorList.Add( 
-							Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneWorkingDataFolder")
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFolder(param)", parameterAsEntered)
 							);
+
+						commandLine.SkipToNextParameter();
 						}
 					else
-						{  Engine.Instance.Config.WorkingDataFolder = folder;  }
+						{
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+
+						if ( !String.IsNullOrEmpty(Engine.Instance.Config.WorkingDataFolder) )
+							{
+							errorList.Add( 
+								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneWorkingDataFolder")
+								);
+							}
+						else
+							{  Engine.Instance.Config.WorkingDataFolder = folder;  }
+						}
 					}
 					
 					
 				
-				// Tab Width
-				// Supports -t 4 and -t4.  Doesn't support --tablength4.
-				
-				else if (command.StartsWith("-t"))
+				// Ignored input folders
+					
+				else if (parameter == "--exclude-input")
 					{
-					string tabWidthString = null;
+					Path folder;
 					
-					if (command == "-t")
+					if (!commandLine.GetPathValue(out folder))
 						{
-						if (index < commandLine.Length && commandLine[index][0] != '-')
-							{  
-							tabWidthString = commandLine[index];
-							index++;
-							}
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFolder(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
 						}
-					else if (command.Length > 2)
-						{  tabWidthString = command.Substring(2);  }
-						
-					int tabWidth;
-					
-					if (tabWidthString != null && Int32.TryParse(tabWidthString, out tabWidth) && tabWidth > 0)
-						{  Engine.Instance.Config.CommandLineConfig.TabWidth = tabWidth;  }						
 					else
 						{
-						errorList.Add( 
-							Locale.Get("NaturalDocs.CLI", "CommandLine.TabLengthMustBeGreaterThanZero")
-							);
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+					
+						Engine.Config.Entries.IgnoredSourceFolder entry = new Engine.Config.Entries.IgnoredSourceFolder(folder);
+
+						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
 						}
+					}
+					
+					
+					
+				// Ignored input folder patterns
+					
+				else if (parameter == "--exclude-input-pattern")
+					{
+					string pattern;
+
+					if (!commandLine.GetBareOrQuotedWordsValue(out pattern))
+						{
+						errorList.Add(
+							Engine.Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedPattern(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Config.Entries.IgnoredSourceFolderPattern entry = 
+							new Engine.Config.Entries.IgnoredSourceFolderPattern(pattern);
+
+						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+						}
+					}
+					
+					
+					
+				// Image folders
+					
+				else if (parameter == "--images")
+					{
+					Path folder;
+					
+					if (!commandLine.GetPathValue(out folder))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedFolder(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+					
+						Engine.Config.Entries.InputFolder entry = 
+							new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Image);
+						}
+					}
+					
+					
+					
+				// Tab Width
+				
+				else if (parameter == "--tab-width")
+					{
+					int tabWidth;
+					
+					if (!commandLine.GetIntegerValue(out tabWidth))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNumber(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else if (tabWidth < 1)
+						{
+						errorList.Add( 
+							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidTabWidth")
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{  Engine.Instance.Config.CommandLineConfig.TabWidth = tabWidth;  }						
+					}
+					
+				// Support the -t4 form ini addition to -t 4.  Doesn't support --tablength4.
+				else if (parameter.StartsWith("-t") && parameter.Length > 2 && parameter[2] >= '0' && parameter[2] <= '9')
+					{
+					string tabWidthString = parameter.Substring(2);
+						
+					int tabWidth;
+
+					if (!Int32.TryParse(tabWidthString, out tabWidth))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNumber(param)", "-t")
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else if (tabWidth < 1)
+						{
+						errorList.Add( 
+							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidTabWidth")
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{  Engine.Instance.Config.CommandLineConfig.TabWidth = tabWidth;  }						
 					}
 					
 					
 					
 				// Documented Only
 					
-				else if (command == "-do")
+				else if (parameter == "--documented-only")
 					{
-					Engine.Instance.Config.CommandLineConfig.DocumentedOnly = true;
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Instance.Config.CommandLineConfig.DocumentedOnly = true;
+						}
 					}
 					
 					
 
 				// No Auto-Group
 					
-				else if (command == "-nag")
+				else if (parameter == "--no-auto-group")
 					{
-					Engine.Instance.Config.CommandLineConfig.AutoGroup = false;
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Instance.Config.CommandLineConfig.AutoGroup = false;
+						}
 					}
 					
 					
 
 				// Style
 					
-				else if (command == "-s")
+				else if (parameter == "--style")
 					{
-					System.Text.StringBuilder style = new System.Text.StringBuilder();
+					string styleName;
 					
-					while (index < commandLine.Length && commandLine[index][0] != '-')
+					if (!commandLine.GetBareOrQuotedWordsValue(out styleName))
 						{
-						if (style.Length != 0)
-							{  style.Append(' ');  }
-							
-						style.Append(commandLine[index]);
-						index++;
-						}
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedStyleName(param)", parameterAsEntered)
+							);
 
-					Engine.Instance.Config.CommandLineConfig.StyleName = style.ToString();
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Instance.Config.CommandLineConfig.StyleName = styleName;
+						}
 					}
 					
 					
 
 				// Rebuild
 				
-				else if (command == "-r")
+				else if (parameter == "--rebuild")
 					{
-					Engine.Instance.Config.ReparseEverything = true;
-					Engine.Instance.Config.RebuildAllOutput = true;
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Instance.Config.ReparseEverything = true;
+						Engine.Instance.Config.RebuildAllOutput = true;
+						}
 					}
 					
-				else if (command == "-ro")
+				else if (parameter == "--rebuild-output")
 					{
-					Engine.Instance.Config.RebuildAllOutput = true;
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						Engine.Instance.Config.RebuildAllOutput = true;
+						}
 					}
 					
 					
 					
+				// Help
+				
+				else if (parameter == "--help")
+					{
+					Console.WriteLine( 
+						Locale.Get("NaturalDocs.CLI", "CommandLine.SyntaxReference(version).multiline", NaturalDocs.Engine.Instance.VersionString) 
+						);
+
+					return ParseCommandLineResult.InformationalExit;
+					}
+
+
+
 				// Version
 				
-				else if (command == "-v")
+				else if (parameter == "--version")
 					{
 					Console.WriteLine( Engine.Instance.VersionString );
 					return ParseCommandLineResult.InformationalExit;
@@ -670,29 +827,15 @@ namespace GregValure.NaturalDocs.CLI
 					
 					
 					
-				// Help
-				
-				else if (command == "-h" || command == "-?")
-					{
-					Console.WriteLine( 
-						Locale.Get("NaturalDocs.CLI", "CommandLine.SyntaxReference(version).multiline", NaturalDocs.Engine.Instance.VersionString) 
-						);
-					return ParseCommandLineResult.InformationalExit;
-					}
-
-
-
 				// Everything else
 
 				else
 					{
 					errorList.Add( 
-						Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidParameter(param)", commandLine[index - 1])
+						Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedParameter(param)", parameterAsEntered)
 						);
-					
-					// Skip to next parameter.  We don't need to error on every value following it.
-					while (index < commandLine.Length && commandLine[index][0] != '-')
-						{  index++;  }
+
+					commandLine.SkipToNextParameter();
 					}
 				}
 				

@@ -65,14 +65,20 @@ Status.LongStartupOperation.StartPurgingOutputFiles: Deleting old documentation.
 CommandLine.ErrorsInFile(file): There are errors in {0}:
 CommandLine.Line: Line
 
-CommandLine.InvalidParameter(param): {0} is not a valid parameter.
-CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
+CommandLine.ExpectedNoValue(param): {0} cannot be followed by a value.
+CommandLine.ExpectedNumber(param): {0} must be in the form "{0} [number]".
+CommandLine.ExpectedFolder(param): {0} must be in the form "{0} [folder]".
+CommandLine.ExpectedFormatAndFolder(param): {0} must be in the form "{0} [format] [folder]".
+CommandLine.ExpectedPattern(param): {0} must be in the form "{0} [pattern]".
+CommandLine.ExpectedStyleName(param): {0} must be in the form "{0} [style name]".
+CommandLine.UnrecognizedParameter(param): {0} is not a valid parameter.
+CommandLine.UnrecognizedOutputFormat(format): {0} is not a valid output format.
 CommandLine.OnlyOneProjectConfigFolder: You may only specify one project configuration folder.
 CommandLine.OnlyOneWorkingDataFolder: You man only specify one working data folder.
-CommandLine.UnrecognizedOutputFormat(format): {0} is not a valid output format.
-CommandLine.OutputMustIncludeFormat: You must include an output format with -o.  Use "-o [format] [folder]".
-CommandLine.NoProjectConfigFolder: You need to define a project configuration folder with -p.
-CommandLine.TabLengthMustBeGreaterThanZero: The tab length must be a number greater than zero.
+CommandLine.NoProjectConfigFolder: You must define a project configuration folder.
+CommandLine.InvalidTabWidth: The tab width must be a number greater than zero.
+CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
+
 
 CommandLine.SyntaxReference(version).multiline {{{
 Natural Docs, version {0}

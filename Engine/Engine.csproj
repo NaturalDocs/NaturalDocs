@@ -73,6 +73,7 @@
     <Compile Include="Source\Comments\Parsers\XML.cs" />
     <Compile Include="Source\Comments\Components\XMLElementType.cs" />
     <Compile Include="Source\Comments\Components\XMLIterator.cs" />
+    <Compile Include="Source\CommandLine.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
     <Compile Include="Source\Output\Builders\HTMLBuildState.cs" />
