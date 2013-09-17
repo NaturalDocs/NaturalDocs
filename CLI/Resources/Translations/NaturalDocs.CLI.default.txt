@@ -78,6 +78,9 @@ CommandLine.OnlyOneWorkingDataFolder: You man only specify one working data fold
 CommandLine.NoProjectConfigFolder: You must define a project configuration folder.
 CommandLine.InvalidTabWidth: The tab width must be a number greater than zero.
 CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
+CommandLine.NoLongerSupported(param): {0} is no longer supported.
+CommandLine.NoLongerSupported.HeadersOnly(param): {0} is no longer supported.  Use Languages.txt to exclude the source file extensions instead.
+CommandLine.NoLongerSupported.AutoGroup(param): {0} is no longer supported.  Use --no-auto-group if you want to turn off automatic grouping.
 
 
 CommandLine.SyntaxReference(version).multiline {{{

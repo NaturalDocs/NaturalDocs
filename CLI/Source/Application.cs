@@ -361,10 +361,9 @@ namespace GregValure.NaturalDocs.CLI
 		 *		
 		 * No longer supported:
 		 * 
-		 *		- -cs, --charset, --characterset
-		 *		- -ho, --headersonly
-		 *		- -s Custom, --style Custom
-		 *		- -ag, --autogroup
+		 *		- -cs, --char-set, --charset, --character-set, --characterset
+		 *		- -ho, --headers-only, --headersonly
+		 *		- -ag, --auto-group, --autogroup
 		 */
 		public static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, ErrorList errorList)
 			{
@@ -388,9 +387,11 @@ namespace GregValure.NaturalDocs.CLI
 			commandLine.AddAliases("--help", "-h", "-?");
 			commandLine.AddAliases("--version", "-v");
 
-			// No longer supported or not supported yet
-			commandLine.AddAliases("--charset", "-cs", "--char-set", "--characterset", "--character-set");
+			// Not supported yet
 			commandLine.AddAliases("--quiet", "-q");
+
+			// No longer supported
+			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
 			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
 			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
 			
@@ -823,6 +824,65 @@ namespace GregValure.NaturalDocs.CLI
 					{
 					Console.WriteLine( Engine.Instance.VersionString );
 					return ParseCommandLineResult.InformationalExit;
+					}
+
+
+
+				// Quiet
+
+				else if (parameter == "--quiet")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						// xxx not supported yet.  Do nothing.
+						}
+					}
+
+
+
+				// Charset
+
+				else if (parameter == "--charset")
+					{
+					errorList.Add(
+						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported(param)", parameterAsEntered)
+						);
+
+					commandLine.SkipToNextParameter();
+					}
+					
+					
+					
+				// Headers only
+
+				else if (parameter == "--headers-only")
+					{
+					errorList.Add(
+						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported.HeadersOnly(param)", parameterAsEntered)
+						);
+
+					commandLine.SkipToNextParameter();
+					}
+					
+					
+					
+				// Auto-group
+
+				else if (parameter == "--auto-group")
+					{
+					errorList.Add(
+						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported.AutoGroup(param)", parameterAsEntered)
+						);
+
+					commandLine.SkipToNextParameter();
 					}
 					
 					
