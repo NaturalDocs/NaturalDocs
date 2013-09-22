@@ -99,10 +99,10 @@ namespace GregValure.NaturalDocs.CLI
 
 					// Heading
 
-					string version = Engine.Instance.VersionString;
-					int parenthesisIndex = version.IndexOf('(');
+					string version = Engine.Instance.Version.PrimaryVersionString;
+					string subversion = Engine.Instance.Version.SecondaryVersionString;
 
-					if (parenthesisIndex == -1)
+					if (subversion == null)
 						{
 						System.Console.WriteLine();
 						System.Console.Write(
@@ -111,9 +111,6 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						string subversion = version.Substring(parenthesisIndex);
-						version = version.Substring(0, parenthesisIndex).TrimEnd();
-
 						System.Console.WriteLine();
 						System.Console.Write(
 							Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version,subversion).multiline", version, subversion)

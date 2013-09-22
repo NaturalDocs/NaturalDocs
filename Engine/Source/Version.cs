@@ -99,6 +99,7 @@
 // Refer to License.txt for the complete details
 
 using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using GregValure.NaturalDocs.Engine;
 
@@ -168,7 +169,7 @@ namespace GregValure.NaturalDocs.Engine
 				}
 				
 				
-			// Release format x.y.z.  This will also catch the pre-2.0 release strings.
+			// Release format "x.y.z".  This will also catch the pre-2.0 release strings.
 
 			Regex.Version.ReleaseVersionString releaseRegex = new Regex.Version.ReleaseVersionString();
 			Match match = releaseRegex.Match(versionString);
@@ -222,7 +223,7 @@ namespace GregValure.NaturalDocs.Engine
 				}
 				
 				
-			// Development release format x.y type mm-dd-yyyy.
+			// Development release format "x.y (type mm-dd-yyyy)"
 			
 			Regex.Version.DevelopmentVersionString developmentRegex = new Regex.Version.DevelopmentVersionString();
 			match = developmentRegex.Match(versionString);
@@ -296,12 +297,27 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Function: ToString
+		 * Returns the version as a string.
+		 */
+		public override string ToString ()
+			{
+			string primary = PrimaryVersionString;
+			string secondary = SecondaryVersionString;
+
+			if (secondary == null)
+				{  return primary;  }
+			else
+				{  return primary + ' ' + secondary;  }
+			}
+
+
 		/* Function: ToVersionInt
 		 * Takes a version's component parts and returns them encoded in the <Integer Format>.  Also sanity-checks 
 		 * the values so impossible combinations will result in zero.
 		 */
 		static private ulong ToVersionInt (byte majorVersion, byte minorVersion, byte bugfixVersion,
-											 							 ReleaseType type, byte month, byte day, ushort year)
+													 ReleaseType type, byte month, byte day, ushort year)
 			{
 			ulong result = 0;
 			
@@ -365,18 +381,6 @@ namespace GregValure.NaturalDocs.Engine
 			}
 						
 			
-		/* Property: Type
-		 * The <ReleaseType> of the version structure.
-		 */
-		public ReleaseType Type
-			{
-			get
-				{
-				return (ReleaseType)((versionInt & 0x000000FF00000000) >> 32);
-				}
-			}
-			
-			
 		/* Function: BinaryDataCompatibility
 		 * 
 		 * Determines if the version number on a binary data file is compatible with the engine version and optionally a set 
@@ -407,6 +411,170 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: MajorVersion
+		 * The major version number, such as 2 in 2.0.1.
+		 */
+		public int MajorVersion
+			{
+			get
+				{
+				return (int)((versionInt & 0xFF00000000000000) >> 56);
+				}
+			}
+
+
+		/* Property: MinorVersion
+		 * The minor version number, such as 0 in 2.0.1.
+		 */
+		public int MinorVersion
+			{
+			get
+				{
+				return (int)((versionInt & 0x00FF000000000000) >> 48);
+				}
+			}
+
+
+		/* Property: BugFixVersion
+		 * The bugfix version number, such as 1 in 2.0.1.
+		 */
+		public int BugFixVersion
+			{
+			get
+				{
+				return (int)((versionInt & 0x0000FF0000000000) >> 40);
+				}
+			}
+
+
+		/* Property: Type
+		 * The <ReleaseType> of the version structure.
+		 */
+		public ReleaseType Type
+			{
+			get
+				{
+				return (ReleaseType)((versionInt & 0x000000FF00000000) >> 32);
+				}
+			}
+
+
+		/* Property: Year
+		 * The year of non full-releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		 */
+		public int Year
+			{
+			get
+				{
+				return (int)((versionInt & 0x00000000FFFF0000) >> 16);
+				}
+			}
+
+
+		/* Property: Month
+		 * The numeric month of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		 */
+		public int Month
+			{
+			get
+				{
+				return (int)((versionInt & 0x000000000000FF00) >> 8);
+				}
+			}
+
+
+		/* Property: Day
+		 * The numeric day of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		 */
+		public int Day
+			{
+			get
+				{
+				return (int)(versionInt & 0x00000000000000FF);
+				}
+			}
+
+
+		/* Property: PrimaryVersionString
+		 * The primary part of the version string.  For full releases this will be the same as the full string.  For other releases it
+		 * will exclude the parenthetical, so for "2.0 (Development Release 01-01-2013)" it will return only "2.0".
+		 */
+		public string PrimaryVersionString
+			{
+			get
+				{
+				if (versionInt == 0)
+					{  throw new InvalidOperationException("Tried to convert a null version to a string.");  }
+
+				StringBuilder stringBuilder = new StringBuilder();
+
+				if (MajorVersion < 2 && Type == ReleaseType.Development)
+					{
+					// The old "Development Release 01-01-2007 (1.35 base)" format
+					return string.Format("Development Release {0:00}-{1:00}-{2:0000}", this.Month, this.Day, this.Year);
+					}
+				else
+					{  
+					stringBuilder.Append(MajorVersion);
+					stringBuilder.Append('.');
+					stringBuilder.Append(MinorVersion);
+
+					if (BugFixVersion > 0)
+						{  
+						stringBuilder.Append('.');
+						stringBuilder.Append(BugFixVersion);
+						}
+					
+					return stringBuilder.ToString();
+					}			
+				}
+			}
+
+
+		/* Property: SecondaryVersionString
+		 * The secondary part of the version string, or null if there is none.  For full releases this will always be null.  For other
+		 * releases it will be the part in parentheses, so for "2.0 (Development Release 01-01-2013)" it will be
+		 * "(Development Release 01-01-2013)", parentheses included.
+		 */
+		public string SecondaryVersionString
+			{
+			get
+				{
+				if (versionInt == 0)
+					{  throw new InvalidOperationException("Tried to convert a null version to a string.");  }
+
+				if (Type == ReleaseType.Full)
+					{  return null;  }
+
+				if (MajorVersion >= 2)
+					{  
+					string typeName;
+					
+					if (Type == ReleaseType.ReleaseCanditate)
+						{  typeName = "Release Candidate";  }
+					else if (Type == ReleaseType.Beta)
+						{  typeName = "Beta";  }
+					else if (Type == ReleaseType.Customized)
+						{  typeName = "Customized";  }
+					else
+						{  typeName = "Development Release";  }
+						
+					return String.Format("({0} {1:00}-{2:00}-{3:0000})", typeName, this.Month, this.Day, this.Year);
+					}
+				else
+					{
+					// The only time non-full version numbers were used prior to 2.0 was in the format "Development Release 01-01-2007 (1.35 base)".
+					return "(1.35 base)";
+					}
+				}
+			}
+
+
 		 
 		// Group: Operators
 		// __________________________________________________________________________
@@ -475,59 +643,7 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		public static explicit operator string (Version version)
 			{
-			if (version.versionInt == 0)
-				{  throw new InvalidOperationException("Tried to convert a null version to a string.");  }
-
-			byte majorVersion = (byte)((version.versionInt & 0xFF00000000000000) >> 56);
-			byte minorVersion = (byte)((version.versionInt & 0x00FF000000000000) >> 48);
-			byte bugfixVersion = (byte)((version.versionInt & 0x0000FF0000000000) >> 40);
-			
-			ReleaseType type = (ReleaseType)((version.versionInt & 0x000000FF00000000) >> 32);
-			
-			ushort year = (ushort)((version.versionInt & 0x00000000FFFF0000) >> 16);
-			byte month = (byte)((version.versionInt & 0x000000000000FF00) >> 8);
-			byte day = (byte)(version.versionInt & 0x00000000000000FF);
-
-			if (majorVersion >= 2)
-				{  
-				string result = majorVersion.ToString() + "." + minorVersion;
-				if (bugfixVersion > 0)
-					{  result += "." + bugfixVersion;  }
-					
-				if (type != ReleaseType.Full)
-					{
-					string typeName;
-					
-					if (type == ReleaseType.ReleaseCanditate)
-						{  typeName = "Release Candidate";  }
-					else if (type == ReleaseType.Beta)
-						{  typeName = "Beta";  }
-					else if (type == ReleaseType.Customized)
-						{  typeName = "Customized";  }
-					else
-						{  typeName = "Development Release";  }
-						
-					result += String.Format(" ({0} {1:00}-{2:00}-{3:0000})", typeName, month, day, year);
-					}
-					
-				return result;
-				}
-			
-			else // majorVersion < 2
-				{
-				if (type == ReleaseType.Development)
-					{
-					return string.Format("Development Release {0:00}-{1:00}-{2:0000} (1.35 base)", month, day, year);
-					}
-				else
-					{
-					string result = majorVersion.ToString() + "." + minorVersion;
-					if (bugfixVersion != 0)
-						{  result += bugfixVersion;  }
-						
-					return result;
-					}
-				}
+			return version.ToString();
 			}
 			
 			
@@ -554,14 +670,6 @@ namespace GregValure.NaturalDocs.Engine
 		public override int GetHashCode ()
 			{
 			return versionInt.GetHashCode();
-			}
-			
-		/* Function: ToString
-		 * Returns the version as a string.
-		 */
-		public override string ToString ()
-			{
-			return (string)this;
 			}
 			
 			
