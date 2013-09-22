@@ -69,16 +69,12 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: TestFolder
-		 * 
-		 * Tests all the input files contained in this folder.
-		 * 
-		 * If the test data folder is relative it will take the executing assembly path, skip up until it finds "Source", move into
-		 * the "Engine.Tests.Data" subfolder, and then make the path relative to that.
+		 * Tests all the input files contained in this folder.  See <TestEngine.Start()> for how relative paths are handled.
 		 */
-		public void TestFolder (Path testFolder, Path projectConfigFolder = default(Path), bool autoGroup = false)
+		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path), bool autoGroup = false)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testFolder, projectConfigFolder, autoGroup: autoGroup);
+			TestEngine.Start(testDataFolder, projectConfigFolder, autoGroup: autoGroup);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
 			Path inputFolder = TestEngine.InputFolder;

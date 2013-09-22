@@ -52,41 +52,46 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * 
 		 * Starts <Engine.Instance> using the passed folder of test data.
 		 * 
-		 * If the test data folder is relative it will take the executing assembly path, skip up until it finds "Source", move into
-		 * the "Engine.Tests.Data" subfolder, and then make the path relative to that.
+		 * If the test data folder is relative it will look for a "Engine.Tests.Data" subfolder where the executing assembly is.  If
+		 * one doesn't exist, it will check each parent folder for it.  Once found it will make the test data folder relative to that.
 		 * 
 		 * If projectConfigFolder is relative it follows the same rules as the test data folder.  If it's not specified all defaults will
 		 * be used as if the project didn't have any configuration files defined.
 		 * 
-		 * If preserveInputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
+		 * If keepOutputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public static void Start (Path pInputFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false, 
+		public static void Start (Path pTestDataFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false, 
 										 string outputTitle = null, string outputSubTitle = null, bool autoGroup = false)
 			{
 			// Stupid, but we can't use "this" in static classes.
-			inputFolder = pInputFolder;
+			inputFolder = pTestDataFolder;
 			projectConfigFolder = pProjectConfigFolder;
 			keepOutputFolder = pKeepOutputFolder;
 
 
-			Path baseFolder;
+			Path testDataFolder;
 
 			if (inputFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
 				{
-				string assemblyPath = Path.GetExecutingAssembly();
-				int binIndex = assemblyPath.IndexOf("Source");
+				Path assemblyFolder = Path.GetExecutingAssembly().ParentFolder;
+				Path folder = assemblyFolder;
 
-				if (binIndex == -1)
-					{  throw new Exception("Couldn't find Source folder in " + assemblyPath);  }
+				while (System.IO.Directory.Exists(folder + "/Engine.Tests.Data") == false)
+					{
+					if (folder.ParentFolder == folder)
+						{  throw new Exception("Couldn't find Engine.Tests.Data folder in " + assemblyFolder + " or any of its parents.");  }
 
-				baseFolder = assemblyPath.Substring(0, binIndex) + "Source/Engine.Tests.Data";
+					folder = folder.ParentFolder;
+					}
+
+				testDataFolder = folder + "/Engine.Tests.Data";
 				}
 
 
 			// inputFolder
 
 			if (inputFolder.IsRelative)
-				{  inputFolder = baseFolder + '/' + inputFolder;  }
+				{  inputFolder = testDataFolder + '/' + inputFolder;  }
 
 			if (System.IO.Directory.Exists(inputFolder) == false)
 				{  throw new Exception("Cannot locate input folder " + inputFolder);  }
@@ -104,7 +109,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 			else
 				{
 				if (projectConfigFolder.IsRelative)
-					{  projectConfigFolder = baseFolder + '/' + projectConfigFolder;  }
+					{  projectConfigFolder = testDataFolder + '/' + projectConfigFolder;  }
 
 				if (System.IO.Directory.Exists(projectConfigFolder) == false)
 					{  throw new Exception("Cannot locate config folder " + projectConfigFolder);  }
