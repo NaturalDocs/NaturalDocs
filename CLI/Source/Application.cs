@@ -82,6 +82,8 @@ namespace GregValure.NaturalDocs.CLI
 			#endif
 			
 			bool gracefulExit = false;
+			quiet = false;
+			var standardOutput = System.Console.Out;
 
 			try
 				{
@@ -95,6 +97,13 @@ namespace GregValure.NaturalDocs.CLI
 					{
 					bool rebuildAllOutputFromCommandLine = Engine.Instance.Config.RebuildAllOutput;
 					bool reparseEverythingFromCommandLine = Engine.Instance.Config.ReparseEverything;
+
+					if (quiet)
+						{  
+						// This is easier and less error prone than putting conditional statements around all the non-error console
+						// output, even if it's less efficient.
+						System.Console.SetOut(System.IO.TextWriter.Null);
+						}
 
 
 					// Heading
@@ -279,6 +288,10 @@ namespace GregValure.NaturalDocs.CLI
 			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
 				if (pauseBeforeExit)
 					{
+					// Restore the standard output because we don't want an invisible keyboard prompt.
+					if (quiet)
+						{  System.Console.SetOut(standardOutput);  }
+
 					System.Console.WriteLine();
 					System.Console.WriteLine("Press any key to continue...");
 					System.Console.ReadKey(true);
@@ -381,11 +394,9 @@ namespace GregValure.NaturalDocs.CLI
 			commandLine.AddAliases("--style", "-s", "--default-style", "--defaultstyle");
 			commandLine.AddAliases("--rebuild", "-r");
 			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
+			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--help", "-h", "-?");
 			commandLine.AddAliases("--version", "-v");
-
-			// Not supported yet
-			commandLine.AddAliases("--quiet", "-q");
 
 			// No longer supported
 			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
@@ -802,6 +813,25 @@ namespace GregValure.NaturalDocs.CLI
 					
 					
 					
+				// Quiet
+
+				else if (parameter == "--quiet")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						quiet = true;
+						}
+					}
+
+
 				// Help
 				
 				else if (parameter == "--help")
@@ -821,26 +851,6 @@ namespace GregValure.NaturalDocs.CLI
 					{
 					Console.WriteLine( Engine.Instance.VersionString );
 					return ParseCommandLineResult.InformationalExit;
-					}
-
-
-
-				// Quiet
-
-				else if (parameter == "--quiet")
-					{
-					if (!commandLine.NoValue())
-						{
-						errorList.Add(
-							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
-							);
-
-						commandLine.SkipToNextParameter();
-						}
-					else
-						{
-						// xxx not supported yet.  Do nothing.
-						}
 					}
 
 
@@ -921,11 +931,13 @@ namespace GregValure.NaturalDocs.CLI
 		 */
 		static public void HandleException (Exception e)
 			{
-			Console.Write ("\n\n------------------------------------------------------------\n");
-			Console.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.Exception",
-										"Natural Docs has closed because of the following error:"));
-			Console.WriteLine();
-			Console.WriteLine(e.Message);
+			var errorOutput = Console.Error;
+
+			errorOutput.Write ("\n\n------------------------------------------------------------\n");
+			errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.Exception",
+														"Natural Docs has closed because of the following error:"));
+			errorOutput.WriteLine();
+			errorOutput.WriteLine(e.Message);
 				
 			
 			// If it's not a user friendly exception or a thread exception wrapping a user friendly exception...
@@ -937,16 +949,16 @@ namespace GregValure.NaturalDocs.CLI
 
 				if (crashFile != null)
 					{
-					Console.WriteLine();
-					Console.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline", 
-										  "A crash report has been generated at {0}.\n"
-										  + "Please include this file when asking for help at naturaldocs.org.\n", crashFile));
+					errorOutput.WriteLine();
+					errorOutput.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline", 
+														"A crash report has been generated at {0}.\n" +
+														"Please include this file when asking for help at naturaldocs.org.\n", crashFile));
 					}
 					
 				else
 					{
-					Console.WriteLine ();
-					Console.WriteLine (e.StackTrace);  
+					errorOutput.WriteLine ();
+					errorOutput.WriteLine (e.StackTrace);  
 					
 					// If it's a thread exception, skip the first inner one because that's the wrapped one, which we already got the
 					// message for.
@@ -957,38 +969,38 @@ namespace GregValure.NaturalDocs.CLI
 						{
 						e = e.InnerException;
 
-						Console.WriteLine ();
-						Console.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.NestedException",
-													   "This error was caused by the following error:") + "\n");
+						errorOutput.WriteLine ();
+						errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.NestedException",
+																   "This error was caused by the following error:") + "\n");
 
-						Console.WriteLine (e.Message);
+						errorOutput.WriteLine (e.Message);
 						}
 						
 					try
 						{
-						Console.WriteLine ();
-						Console.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Version", "Version") +
-														": " + Engine.Instance.VersionString );
-						Console.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Platform", "Platform") +
-														": " + Environment.OSVersion.VersionString +
-														" (" + Environment.OSVersion.Platform + ")" );
-						Console.WriteLine ( "SQLite: " + Engine.SQLite.API.LibVersion() );
-						Console.WriteLine ();
-						Console.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.CommandLine", "Command Line") + ":" );
-						Console.WriteLine ();
-						Console.WriteLine ("   " + Environment.CommandLine );
+						errorOutput.WriteLine ();
+						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Version", "Version") +
+																	": " + Engine.Instance.VersionString );
+						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Platform", "Platform") +
+																	": " + Environment.OSVersion.VersionString +
+																	" (" + Environment.OSVersion.Platform + ")" );
+						errorOutput.WriteLine ( "SQLite: " + Engine.SQLite.API.LibVersion() );
+						errorOutput.WriteLine ();
+						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.CommandLine", "Command Line") + ":" );
+						errorOutput.WriteLine ();
+						errorOutput.WriteLine ("   " + Environment.CommandLine );
 						}
 					catch
 						{
 						}
 						
-					Console.WriteLine ();
-					Console.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.IncludeInfoAndGetHelp",
-												   "Please include this information when asking for help at naturaldocs.org."));
+					errorOutput.WriteLine ();
+					errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.IncludeInfoAndGetHelp",
+															   "Please include this information when asking for help at naturaldocs.org."));
 					}
 				}
 
-			Console.Write ("\n------------------------------------------------------------\n\n");
+			errorOutput.Write ("\n------------------------------------------------------------\n\n");
 			}
 			
 			
@@ -1003,7 +1015,8 @@ namespace GregValure.NaturalDocs.CLI
 			
 			// Write them to the console.
 			
-			Console.WriteLine();
+			var errorOutput = Console.Error;
+			errorOutput.WriteLine();
 			
 			Path lastErrorFile = null;
 			bool hasNonFileErrors = false;
@@ -1013,29 +1026,55 @@ namespace GregValure.NaturalDocs.CLI
 				if (error.File != lastErrorFile)
 					{
 					if (error.File != null)
-						{  Console.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.ErrorsInFile(file)", error.File) );  }
+						{  errorOutput.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.ErrorsInFile(file)", error.File) );  }
 
 					lastErrorFile = error.File;
 					}
 					
 				if (error.File != null)
 					{
-					Console.Write("   - ");
+					errorOutput.Write("   - ");
 					
 					if (error.LineNumber > 0)
-						{  Console.Write( Locale.Get("NaturalDocs.CLI", "CommandLine.Line") + " " + error.LineNumber + ": " );  }
+						{  errorOutput.Write( Locale.Get("NaturalDocs.CLI", "CommandLine.Line") + " " + error.LineNumber + ": " );  }
 					}
 				else
 					{  hasNonFileErrors = true;  }
 					
-				System.Console.WriteLine(error.Message);  
+				errorOutput.WriteLine(error.Message);  
 				}
 				
 			if (hasNonFileErrors == true)
-				{  System.Console.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.HowToGetCommandLineRef") );  }
+				{  errorOutput.WriteLine( Locale.Get("NaturalDocs.CLI", "CommandLine.HowToGetCommandLineRef") );  }
 				
-			System.Console.WriteLine();
+			errorOutput.WriteLine();
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: Quiet
+		 * Whether the application should suppress all non-error output.
+		 */
+		static public bool Quiet
+			{
+			get
+				{  return quiet;  }
+			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+
+		/* var: quiet
+		 * Whether the application should suppress all non-error output.
+		 */
+		static private bool quiet;
 		
 		}
 	}

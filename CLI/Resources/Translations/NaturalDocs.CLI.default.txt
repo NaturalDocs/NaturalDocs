@@ -162,6 +162,10 @@ Parameters:
 --rebuild
     Rescans every source file and rebuilds all the output.
 
+ -q
+--quiet
+    Suppresses all non-error output.
+
  -v
 --version
     Displays the current version of Natural Docs.
