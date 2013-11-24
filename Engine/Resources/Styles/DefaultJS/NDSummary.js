@@ -250,7 +250,7 @@ var NDSummary = new function ()
 			{  NDFramePage.SizeSummaryToContent();  }
 
 		// See the comment in NDMenu.Build() for why this is necessary.
-		if (NDCore.IsIE() && NDCore.IEVersion() >= 10)
+		if (NDCore.IsIE() && NDCore.IEVersion() == 10)
 			{ 
 			setTimeout( function () 
 				{

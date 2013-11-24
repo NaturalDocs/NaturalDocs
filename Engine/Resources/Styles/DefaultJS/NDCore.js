@@ -365,7 +365,8 @@ var NDCore = new function ()
 	*/
 	this.IsIE = function ()
 		{
-		return (navigator.userAgent.indexOf("MSIE") != -1);
+		return (navigator.userAgent.indexOf("MSIE") != -1 ||
+				   navigator.userAgent.indexOf("Trident") != -1);
 		};
 
 	/* Function: IEVersion
@@ -373,16 +374,35 @@ var NDCore = new function ()
 	*/
 	this.IEVersion = function ()
 		{
+		// IE 10 and earlier: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)
+
 		var ieIndex = navigator.userAgent.indexOf("MSIE");
 
-		if (ieIndex == -1)
-			{  return undefined;  }
+		if (ieIndex != -1)
+			{  ieIndex += 5;  }
 		else
+			{
+			// IE 11 and later: Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko
+
+			ieIndex = navigator.userAgent.indexOf("Trident");
+
+			if (ieIndex != -1)
+				{
+				ieIndex = navigator.userAgent.indexOf("rv:");
+
+				if (ieIndex != -1)
+					{  ieIndex += 3;  }
+				}
+			}
+
+		if (ieIndex != -1)
 			{
 			// parseInt() allows random crap to appear after the numbers.  It will still interpret only the leading digit
 			// characters at that location and return successfully.
-			return parseInt(navigator.userAgent.substr(ieIndex + 5));
+			return parseInt(navigator.userAgent.substr(ieIndex));
 			}
+		else
+			{  return undefined;  }
 		};
 
 	/* Function: AddIEClassesToBody
