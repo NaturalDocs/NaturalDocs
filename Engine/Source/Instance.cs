@@ -9,7 +9,8 @@
  * 
  *		- Call <Create()>.
  *		
- *		- Set any properties you need prior to start, such as <Config.Manager.ProjectConfigFolder>.
+ *		- Create a <Config.ProjectConfig> object for the command line parameters.  At minimum you must set the project
+ *		  config folder.
  *		
  *		- Call <Start()>.  If it succeeds you can use the engine instance.  If it fails and you want to try again instead of
  *		  exiting the program, you must call <Dispose()> and <Create()> first.
@@ -146,9 +147,9 @@ namespace GregValure.NaturalDocs.Engine
 		 * Attempts to start the engine instance.  Returns whether it was successful, and if it wasn't, puts any errors that 
 		 * prevented it on the list.  If you wish to try to start it again, call <Dispose()> and <Create()> first.
 		 */
-		static public bool Start (Errors.ErrorList errors)
+		static public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
 			{
-			if (config.Start(errors) == false)
+			if (config.Start(errors, commandLineConfig) == false)
 				{  return false;  }
 				
 				

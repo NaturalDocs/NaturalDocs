@@ -13,6 +13,7 @@
 using System;
 using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine;
+using GregValure.NaturalDocs.Engine.Config;
 using GregValure.NaturalDocs.Engine.Errors;
 
 
@@ -91,7 +92,8 @@ namespace GregValure.NaturalDocs.CLI
 
 				NaturalDocs.Engine.Instance.Create();
 				
-				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, startupErrors);
+				ProjectConfig commandLineConfig;
+				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, out commandLineConfig, startupErrors);
 
 				if (parseCommandLineResult == ParseCommandLineResult.OK)
 					{
@@ -128,7 +130,7 @@ namespace GregValure.NaturalDocs.CLI
 
 					NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
 
-					if (NaturalDocs.Engine.Instance.Start(startupErrors) == true)
+					if (NaturalDocs.Engine.Instance.Start(startupErrors, commandLineConfig) == true)
 						{
 
 
@@ -375,7 +377,7 @@ namespace GregValure.NaturalDocs.CLI
 		 *		- -ho, --headers-only, --headersonly
 		 *		- -ag, --auto-group, --autogroup
 		 */
-		public static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, ErrorList errorList)
+		public static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, out ProjectConfig commandLineConfig, ErrorList errorList)
 			{
 			int originalErrorCount = errorList.Count;
 
@@ -403,9 +405,11 @@ namespace GregValure.NaturalDocs.CLI
 			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
 			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
 			
+			commandLineConfig = new ProjectConfig(Source.CommandLine);
+			
 			string parameter, parameterAsEntered;
 			bool isFirst = true;
-							
+				
 			while (commandLine.IsInBounds)
 				{
 				// If the first segment isn't a parameter, assume it's the project folder specified without -p.
@@ -451,10 +455,12 @@ namespace GregValure.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						Engine.Config.Entries.InputFolder entry = 
-							new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Source);
+						var target = new Engine.Config.Targets.SourceFolder(Source.CommandLine, Engine.Files.InputType.Source);
 
-						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+						target.Folder = folder;
+						target.FolderPropertyLocation = Source.CommandLine;
+
+						commandLineConfig.InputTargets.Add(target);
 						}
 					}
 					
@@ -484,13 +490,12 @@ namespace GregValure.NaturalDocs.CLI
 
 						if (format == "html" || format == "framedhtml")
 							{  
-							var entry = new Engine.Config.Entries.HTMLOutputFolder(folder);  
-							Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
-							}
-						else if (format == "xml")
-							{  
-							var entry = new Engine.Config.Entries.XMLOutputFolder(folder);
-							Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+							var target = new Engine.Config.Targets.HTMLOutputFolder(Source.CommandLine);
+
+							target.Folder = folder;
+							target.FolderPropertyLocation = Source.CommandLine;
+
+							commandLineConfig.OutputTargets.Add(target);
 							}
 						else
 							{
@@ -528,14 +533,17 @@ namespace GregValure.NaturalDocs.CLI
 						if (folder.NameWithoutPath.ToLower() == "project.txt")
 							{  folder = folder.ParentFolder;  }
 						
-						if ( !String.IsNullOrEmpty(Engine.Instance.Config.ProjectConfigFolder) )
+						if (commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
 							{
 							errorList.Add( 
 								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneProjectConfigFolder")
 								);
 							}
 						else
-							{  Engine.Instance.Config.ProjectConfigFolder = folder;  }
+							{  
+							commandLineConfig.ProjectConfigFolder = folder;
+							commandLineConfig.ProjectConfigFolderPropertyLocation = Source.CommandLine;
+							}
 						}
 					}
 					
@@ -560,14 +568,17 @@ namespace GregValure.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 
-						if ( !String.IsNullOrEmpty(Engine.Instance.Config.WorkingDataFolder) )
+						if (commandLineConfig.WorkingDataFolderPropertyLocation.IsDefined)
 							{
 							errorList.Add( 
 								Locale.Get("NaturalDocs.CLI", "CommandLine.OnlyOneWorkingDataFolder")
 								);
 							}
 						else
-							{  Engine.Instance.Config.WorkingDataFolder = folder;  }
+							{
+							commandLineConfig.WorkingDataFolder = folder;
+							commandLineConfig.WorkingDataFolderPropertyLocation = Source.CommandLine;
+							}
 						}
 					}
 					
@@ -592,9 +603,12 @@ namespace GregValure.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						Engine.Config.Entries.IgnoredSourceFolder entry = new Engine.Config.Entries.IgnoredSourceFolder(folder);
+						var target = new Engine.Config.Targets.IgnoredSourceFolder(Source.CommandLine);
 
-						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+						target.Folder = folder;
+						target.FolderPropertyLocation = Source.CommandLine;
+
+						commandLineConfig.FilterTargets.Add(target);
 						}
 					}
 					
@@ -616,10 +630,12 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						Engine.Config.Entries.IgnoredSourceFolderPattern entry = 
-							new Engine.Config.Entries.IgnoredSourceFolderPattern(pattern);
+						var target =  new Engine.Config.Targets.IgnoredSourceFolderPattern(Source.CommandLine);
 
-						Engine.Instance.Config.CommandLineConfig.Entries.Add(entry);
+						target.Pattern = pattern;
+						target.PatternPropertyLocation = Source.CommandLine;
+
+						commandLineConfig.FilterTargets.Add(target);
 						}
 					}
 					
@@ -644,8 +660,12 @@ namespace GregValure.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						Engine.Config.Entries.InputFolder entry = 
-							new Engine.Config.Entries.InputFolder(folder, Engine.Files.InputType.Image);
+						var target = new Engine.Config.Targets.SourceFolder(Source.CommandLine, Engine.Files.InputType.Image);
+
+						target.Folder = folder;
+						target.FolderPropertyLocation = Source.CommandLine;
+
+						commandLineConfig.InputTargets.Add(target);
 						}
 					}
 					
@@ -674,7 +694,10 @@ namespace GregValure.NaturalDocs.CLI
 						commandLine.SkipToNextParameter();
 						}
 					else
-						{  Engine.Instance.Config.CommandLineConfig.TabWidth = tabWidth;  }						
+						{  
+						commandLineConfig.TabWidth = tabWidth;
+						commandLineConfig.TabWidthPropertyLocation = Source.CommandLine;
+						}	
 					}
 					
 				// Support the -t4 form ini addition to -t 4.  Doesn't support --tablength4.
@@ -709,7 +732,10 @@ namespace GregValure.NaturalDocs.CLI
 						commandLine.SkipToNextParameter();
 						}
 					else
-						{  Engine.Instance.Config.CommandLineConfig.TabWidth = tabWidth;  }						
+						{  
+						commandLineConfig.TabWidth = tabWidth;
+						commandLineConfig.TabWidthPropertyLocation = Source.CommandLine;
+						}
 					}
 					
 					
@@ -728,7 +754,8 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						Engine.Instance.Config.CommandLineConfig.DocumentedOnly = true;
+						commandLineConfig.DocumentedOnly = true;
+						commandLineConfig.DocumentedOnlyPropertyLocation = Source.CommandLine;
 						}
 					}
 					
@@ -748,7 +775,8 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						Engine.Instance.Config.CommandLineConfig.AutoGroup = false;
+						commandLineConfig.AutoGroup = false;
+						commandLineConfig.AutoGroupPropertyLocation = Source.CommandLine;
 						}
 					}
 					
@@ -770,7 +798,8 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						Engine.Instance.Config.CommandLineConfig.StyleName = styleName;
+						commandLineConfig.GlobalProjectInfo.StyleName = styleName;
+						commandLineConfig.GlobalProjectInfo.StyleNamePropertyLocation = Source.CommandLine;
 						}
 					}
 					
@@ -909,7 +938,7 @@ namespace GregValure.NaturalDocs.CLI
 				
 			// Validation
 			
-			if (String.IsNullOrEmpty( Engine.Instance.Config.ProjectConfigFolder ))
+			if (!commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
 				{
 				errorList.Add( 
 					Locale.Get("NaturalDocs.CLI", "CommandLine.NoProjectConfigFolder")

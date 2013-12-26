@@ -104,7 +104,7 @@ Javadoc.Substitution.value(symbol): the value of {0}
 
 Error.NoFileSourcesDefined: You did not define any file sources.
 Error.FolderDoesntExist(type, name): The {0} folder {1} doesn't exist.
-Error.SourceFolderIsIgnored(sourceFolder): The source folder {0} matches a filter, output folder, or configuration folder.
+Error.SourceFolderIsIgnored(sourceFolder): The source folder {0} wouldn't be used because it matches a filter, output folder, or configuration folder.
 
 Error.NoProjectConfigFolder: You did not define a project configuration folder.
 Error.ProjectConfigFolderDoesntExist(name): The project configuration folder {0} doesn't exist.
@@ -114,8 +114,8 @@ Error.TabWidthMustBeANumber: The tab width must be a number.
 Error.TabWidthMustBeGreaterThanZero: The tab width must be greater than zero.
 
 Error.CouldNotWriteToDataFile(name): Could not write to data file {0}.
-Error.NoInputEntries: There were no input entries in Project.txt or the command line.
-Error.NoOutputEntries: There were no output entries in Project.txt or the command line.
+Error.NoInputTargets: There were no input targets in Project.txt or the command line.
+Error.NoOutputTargets: There were no output targets in Project.txt or the command line.
 
 Error.CouldNotCreateOutputFolder(name): Could not create output folder {0}.
 Error.CouldNotCreateOutputFile(name): Could not create output file {0}.

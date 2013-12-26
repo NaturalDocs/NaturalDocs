@@ -11,7 +11,7 @@
 
 
 using System;
-using System.Collections.Generic;
+using GregValure.NaturalDocs.Engine.Config;
 
 
 namespace GregValure.NaturalDocs.Engine.Config
@@ -25,28 +25,31 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public ProjectInfo ()
 			{
 			title = null;
-			subtitle = null;
+			subTitle = null;
 			copyright = null;
 			timeStampCode = null;
 			styleName = null;
+
+			titlePropertyLocation = Source.NotDefined;
+			subTitlePropertyLocation = Source.NotDefined;
+			copyrightPropertyLocation = Source.NotDefined;
+			timeStampCodePropertyLocation = Source.NotDefined;
+			styleNamePropertyLocation = Source.NotDefined;
 			}
 
-
-		/* Function: CopyUnsetPropertiesFrom
-		 * Anything that is undefined will be copied from the passed object.
-		 */
-		public void CopyUnsetPropertiesFrom (ProjectInfo other)
+		public ProjectInfo (ProjectInfo toCopy)
 			{
-			if (title == null)
-				{  title = other.title;  }
-			if (subtitle == null)
-				{  subtitle = other.subtitle;  }
-			if (copyright == null)
-				{  copyright = other.copyright;  }
-			if (timeStampCode == null)
-				{  timeStampCode = other.timeStampCode;  }
-			if (styleName == null)
-				{  styleName = other.styleName;  }
+			title = toCopy.title;
+			subTitle = toCopy.subTitle;
+			copyright = toCopy.copyright;
+			timeStampCode = toCopy.timeStampCode;
+			styleName = toCopy.styleName;
+
+			titlePropertyLocation = toCopy.titlePropertyLocation;
+			subTitlePropertyLocation = toCopy.subTitlePropertyLocation;
+			copyrightPropertyLocation = toCopy.copyrightPropertyLocation;
+			timeStampCodePropertyLocation = toCopy.timeStampCodePropertyLocation;
+			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
 			}
 			
 
@@ -136,16 +139,16 @@ namespace GregValure.NaturalDocs.Engine.Config
 			set
 				{  title = value;  }
 			}
-			
-		/* Property: Subtitle
-		 * The project subtitle, or null if it's not set.
+
+		/* Property: SubTitle
+		 * The project sub-title, or null if it's not set.
 		 */
-		public string Subtitle
+		public string SubTitle
 			{
 			get
-				{  return subtitle;  }
+				{  return subTitle;  }
 			set
-				{  subtitle = value;  }
+				{  subTitle = value;  }
 			}
 			
 		/* Property: Copyright
@@ -169,9 +172,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 			set
 				{  timeStampCode = value;  }
 			}
-			
+
 		/* Property: StyleName
-		 * The style identifier, or null if it's not set.
+		 * The name of the style to be applied, or null if it's not set.
 		 */
 		public string StyleName
 			{
@@ -183,14 +186,81 @@ namespace GregValure.NaturalDocs.Engine.Config
 			
 	
 		
+		// Group: Property Locations
+		// __________________________________________________________________________
+		
+		
+		/* Property: TitlePropertyLocation
+		 * Where the <Title> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation TitlePropertyLocation
+			{
+			get
+				{  return titlePropertyLocation;  }
+			set
+				{  titlePropertyLocation = value;  }
+			}
+			
+		/* Property: SubTitlePropertyLocation
+		 * Where the <SubTitle> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation SubTitlePropertyLocation
+			{
+			get
+				{  return subTitlePropertyLocation;  }
+			set
+				{  subTitlePropertyLocation = value;  }
+			}
+			
+		/* Property: CopyrightPropertyLocation
+		 * Where the <Copyright> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation CopyrightPropertyLocation
+			{
+			get
+				{  return copyrightPropertyLocation;  }
+			set
+				{  copyrightPropertyLocation = value;  }
+			}
+			
+		/* Property: TimeStampCodePropertyLocation
+		 * Where the <TimeStampCode> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation TimeStampCodePropertyLocation
+			{
+			get
+				{  return timeStampCodePropertyLocation;  }
+			set
+				{  timeStampCodePropertyLocation = value;  }
+			}
+
+		/* Property: StyleNamePropertyLocation
+		 * Where the <StyleName> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation StyleNamePropertyLocation
+			{
+			get
+				{  return styleNamePropertyLocation;  }
+			set
+				{  styleNamePropertyLocation = value;  }
+			}
+			
+	
+		
 		// Group: Variables
 		// __________________________________________________________________________
 		
 		protected string title;
-		protected string subtitle;
+		protected string subTitle;
 		protected string copyright;
 		protected string timeStampCode;
 		protected string styleName;
+
+		protected PropertyLocation titlePropertyLocation;
+		protected PropertyLocation subTitlePropertyLocation;
+		protected PropertyLocation copyrightPropertyLocation;
+		protected PropertyLocation timeStampCodePropertyLocation;
+		protected PropertyLocation styleNamePropertyLocation;
 		
 		}
 	}

@@ -27,7 +27,7 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 		/* Function: Folder
 		 * Instance constructor.  If the path is relative it will be made absolute using the current working folder.
 		 */
-		public Folder (Config.Entries.InputFolder config) : base ()
+		public Folder (Config.Targets.SourceFolder config) : base ()
 			{
 			this.config = config;
 			}
@@ -178,7 +178,7 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 		override public InputType Type
 			{
 			get 
-				{  return config.InputType;  }
+				{  return config.Type;  }
 			}
 			
 		/* Property: Number
@@ -205,7 +205,7 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 		// __________________________________________________________________________
 			
 
-		protected Config.Entries.InputFolder config;
+		protected Config.Targets.SourceFolder config;
 
 		}
 	}
