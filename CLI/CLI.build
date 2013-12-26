@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-	File: CLI.build
+	File: Open.CLI.build
 	___________________________________________________________________________
 
 	This is the NAnt build file for the Natural Docs CLI.

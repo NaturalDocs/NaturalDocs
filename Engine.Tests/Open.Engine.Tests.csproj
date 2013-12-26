@@ -38,7 +38,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\Engine.csproj">
+    <ProjectReference Include="..\Engine\Open.Engine.csproj">
       <Project>{F7569B05-FFFD-4084-8F33-760F3E1916CD}</Project>
       <Name>Engine</Name>
     </ProjectReference>
