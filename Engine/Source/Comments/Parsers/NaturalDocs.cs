@@ -571,7 +571,9 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 				while (colon != -1)
 					{
-					if (colon != 0 && colon != input.Length - 1)
+					// Don't interpret it as a named link if the character before or after it is also a colon, so <Package::Name> works.
+					if (colon != 0 && colon != input.Length - 1 && input[colon + 1] != ':' &&
+						(colon > 0 && input[colon - 1] == ':') == false)
 						{
 						// Need to check for URL protocols so the colon in <http://www.naturaldocs.org> doesn't make it get interpreted 
 						// as a named link.  Same with the colon in <web site at http://www.naturaldocs.org>.
