@@ -67,7 +67,7 @@ namespace GregValure.NaturalDocs.Engine.Symbols
 				Collections.SafeStack<char> braces = new Collections.SafeStack<char>();
 				braces.Push(input[index]);
 
-				for (;;)
+				while (index > 0)
 					{
 					// The start position LastIndexOfAny() takes is the character at the end of the string to be examined first.
 					// The count is the number of characters to examine, so it's one higher as index 4 goes for 5 characters: indexes 0, 1, 2,
