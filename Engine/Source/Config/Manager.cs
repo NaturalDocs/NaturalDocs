@@ -565,6 +565,21 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public static void MergeConfig (ProjectConfig primaryConfig, ProjectConfig secondaryConfig)
 			{
 
+			// Project folders
+
+			if (!primaryConfig.ProjectConfigFolderPropertyLocation.IsDefined)
+				{
+				primaryConfig.ProjectConfigFolder = secondaryConfig.ProjectConfigFolder;
+				primaryConfig.ProjectConfigFolderPropertyLocation = secondaryConfig.ProjectConfigFolderPropertyLocation;
+				}
+
+			if (!primaryConfig.WorkingDataFolderPropertyLocation.IsDefined)
+				{
+				primaryConfig.WorkingDataFolder = secondaryConfig.WorkingDataFolder;
+				primaryConfig.WorkingDataFolderPropertyLocation = secondaryConfig.WorkingDataFolderPropertyLocation;
+				}
+
+
 			// Global project info
 
 			MergeProjectInfo(primaryConfig.GlobalProjectInfo, secondaryConfig.GlobalProjectInfo);
