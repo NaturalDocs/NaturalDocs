@@ -157,24 +157,46 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 			Engine.Instance.Create();
 
-			Engine.Instance.Config.ProjectConfigFolder = projectConfigFolder;
-			Engine.Instance.Config.WorkingDataFolder = workingDataFolder;
+			var config = new Engine.Config.ProjectConfig(Config.Source.CommandLine);
 
-			Engine.Instance.Config.CommandLineConfig.Entries.Add(
-				new Engine.Config.Entries.InputFolder(inputFolder, Engine.Files.InputType.Source)
-				);
+			config.ProjectConfigFolder = projectConfigFolder;
+			config.ProjectConfigFolderPropertyLocation = Config.Source.CommandLine;
 
-			Engine.Instance.Config.CommandLineConfig.AutoGroup = autoGroup;
+			config.WorkingDataFolder = workingDataFolder;
+			config.WorkingDataFolderPropertyLocation = Config.Source.CommandLine;
 
-			var outputEntry = new Engine.Config.Entries.HTMLOutputFolder(outputFolder);
-			outputEntry.ProjectInfo.Title = outputTitle;
-			outputEntry.ProjectInfo.Subtitle = outputSubTitle;
+			config.AutoGroup = autoGroup;
+			config.AutoGroupPropertyLocation = Config.Source.CommandLine;
 
-			Engine.Instance.Config.CommandLineConfig.Entries.Add(outputEntry);
+			var inputTarget = new Config.Targets.SourceFolder(Config.Source.CommandLine, Files.InputType.Source);
+
+			inputTarget.Folder = inputFolder;
+			inputTarget.FolderPropertyLocation = Config.Source.CommandLine;
+
+			config.InputTargets.Add(inputTarget);
+
+			var outputTarget = new Config.Targets.HTMLOutputFolder(Config.Source.CommandLine);
+			
+			outputTarget.Folder = outputFolder;
+			outputTarget.FolderPropertyLocation = Config.Source.CommandLine;
+			
+			if (outputTitle != null)
+				{
+				outputTarget.ProjectInfo.Title = outputTitle;
+				outputTarget.ProjectInfo.TitlePropertyLocation = Config.Source.CommandLine;
+				}
+
+			if (outputSubTitle != null)
+				{
+				outputTarget.ProjectInfo.SubTitle = outputSubTitle;
+				outputTarget.ProjectInfo.SubTitlePropertyLocation = Config.Source.CommandLine;
+				}
+
+			config.OutputTargets.Add(outputTarget);
 
 			Engine.Errors.ErrorList startupErrors = new Engine.Errors.ErrorList();
 
-			if (!Engine.Instance.Start(startupErrors))
+			if (!Engine.Instance.Start(startupErrors, config))
 				{
 				StringBuilder message = new StringBuilder();
 				message.Append("Could not start the Natural Docs engine for testing:");
