@@ -1,0 +1,90 @@
+
+// It's okay for incorrect interpretations to appear because the parser has no way of knowing whether 
+// Knives should be plural for Knive, Kniv, or Knife without a full dictionary.  It's only important that the
+// correct one appear in the possibilities since the others will not exist as link targets.
+
+
+// Basic English Plurals
+// ____________________________________________________________________________
+
+<Boys>
+
+<Foxes>
+
+
+// Unusual English Plurals
+// ____________________________________________________________________________
+
+<Alumni>
+
+<Errata>
+
+<Phenomena>
+
+<Amoebae>
+
+<Pennies>
+
+<Calves>
+
+<Knives>
+
+<Parentheses>
+
+<Women>
+
+<Mice>
+
+<Vetoes>
+
+<Matrices>
+
+<Oxen>
+
+<Indices>
+
+<Feet>
+
+<Geese>
+
+<Teeth>
+
+<Children>
+
+
+// Plurals on complex links
+// ____________________________________________________________________________
+
+<Package.Package.WindowChildren>
+
+<Package::Package->Indices>
+
+// Should not interpret Packages as plural
+<Packages->Window>
+
+// Should not interpret Packages as plural
+<Packages->Windows>
+
+
+// Possessives
+// ____________________________________________________________________________
+
+<Object's>
+
+<Object’s>
+
+<Objects'>
+
+<Objects’>
+
+<Objects's>
+
+<Objects’s>
+
+
+// Plurals and possessives combined
+// ____________________________________________________________________________
+
+<Children's>
+
+<Foxes’>

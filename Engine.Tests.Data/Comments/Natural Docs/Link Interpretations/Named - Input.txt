@@ -1,0 +1,35 @@
+
+// Basic
+// ____________________________________________________________________________
+
+<Some text at Object>
+
+<Some text: Object>
+
+
+// Multiple Interpretations
+// ____________________________________________________________________________
+//
+// It should show all possible combinations
+//
+
+<Some text at Object1 at Object2>
+
+<Some text: Object1: Object2>
+
+<Some text at Object1: Object2>
+
+<Some text: Object1 at Object2>
+
+
+// Colon Traps
+// ____________________________________________________________________________
+//
+// Double colons should not be interpreted as named links.
+//
+
+<Object::Name>
+
+<Some text: Object::Name>
+
+<Some::text: Object::Name>

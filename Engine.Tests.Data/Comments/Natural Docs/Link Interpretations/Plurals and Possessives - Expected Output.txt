@@ -1,0 +1,188 @@
+
+// It's okay for incorrect interpretations to appear because the parser has no way of knowing whether 
+// Knives should be plural for Knive, Kniv, or Knife without a full dictionary.  It's only important that the
+// correct one appear in the possibilities since the others will not exist as link targets.
+
+
+// Basic English Plurals
+// ____________________________________________________________________________
+
+<Boys>
+- "Boys" -> Boys
+- "Boys" -> Boy
+
+<Foxes>
+- "Foxes" -> Foxes
+- "Foxes" -> Foxe
+- "Foxes" -> Fox
+
+
+// Unusual English Plurals
+// ____________________________________________________________________________
+
+<Alumni>
+- "Alumni" -> Alumni
+- "Alumni" -> Alumnus
+
+<Errata>
+- "Errata" -> Errata
+- "Errata" -> Erratum
+- "Errata" -> Erraton
+
+<Phenomena>
+- "Phenomena" -> Phenomena
+- "Phenomena" -> Phenomenum
+- "Phenomena" -> Phenomenon
+
+<Amoebae>
+- "Amoebae" -> Amoebae
+- "Amoebae" -> Amoeba
+
+<Pennies>
+- "Pennies" -> Pennies
+- "Pennies" -> Pennie
+- "Pennies" -> Penni
+- "Pennies" -> Penny
+
+<Calves>
+- "Calves" -> Calves
+- "Calves" -> Calve
+- "Calves" -> Calv
+- "Calves" -> Calf
+- "Calves" -> Calfe
+
+<Knives>
+- "Knives" -> Knives
+- "Knives" -> Knive
+- "Knives" -> Kniv
+- "Knives" -> Knif
+- "Knives" -> Knife
+
+<Parentheses>
+- "Parentheses" -> Parentheses
+- "Parentheses" -> Parenthese
+- "Parentheses" -> Parenthes
+- "Parentheses" -> Parenthesis
+
+<Women>
+- "Women" -> Women
+- "Women" -> Woman
+
+<Mice>
+- "Mice" -> Mice
+- "Mice" -> Mouse
+
+<Vetoes>
+- "Vetoes" -> Vetoes
+- "Vetoes" -> Vetoe
+- "Vetoes" -> Veto
+
+<Matrices>
+- "Matrices" -> Matrices
+- "Matrices" -> Matrice
+- "Matrices" -> Matric
+- "Matrices" -> Matrix
+- "Matrices" -> Matrex
+
+<Oxen>
+- "Oxen" -> Oxen
+- "Oxen" -> Ox
+
+<Indices>
+- "Indices" -> Indices
+- "Indices" -> Indice
+- "Indices" -> Indic
+- "Indices" -> Indix
+- "Indices" -> Index
+
+<Feet>
+- "Feet" -> Feet
+- "Feet" -> foot
+
+<Geese>
+- "Geese" -> Geese
+- "Geese" -> Goose
+
+<Teeth>
+- "Teeth" -> Teeth
+- "Teeth" -> Tooth
+
+<Children>
+- "Children" -> Children
+- "Children" -> Child
+
+
+// Plurals on complex links
+// ____________________________________________________________________________
+
+<Package.Package.WindowChildren>
+- "Package.Package.WindowChildren" -> Package.Package.WindowChildren
+- "Package.Package.WindowChildren" -> Package.Package.WindowChild
+
+<Package::Package->Indices>
+- "Package::Package->Indices" -> Package::Package->Indices
+- "Package::Package->Indices" -> Package::Package->Indice
+- "Package::Package->Indices" -> Package::Package->Indic
+- "Package::Package->Indices" -> Package::Package->Indix
+- "Package::Package->Indices" -> Package::Package->Index
+
+// Should not interpret Packages as plural
+<Packages->Window>
+- "Packages->Window" -> Packages->Window
+
+// Should not interpret Packages as plural
+<Packages->Windows>
+- "Packages->Windows" -> Packages->Windows
+- "Packages->Windows" -> Packages->Window
+
+
+// Possessives
+// ____________________________________________________________________________
+
+<Object's>
+- "Object's" -> Object's
+- "Object's" -> Object'
+- "Object's" -> Object
+
+<Object’s>
+- "Object’s" -> Object’s
+- "Object’s" -> Object’
+- "Object’s" -> Object
+
+<Objects'>
+- "Objects'" -> Objects'
+- "Objects'" -> Objects
+- "Objects'" -> Object
+
+<Objects’>
+- "Objects’" -> Objects’
+- "Objects’" -> Objects
+- "Objects’" -> Object
+
+<Objects's>
+- "Objects's" -> Objects's
+- "Objects's" -> Objects'
+- "Objects's" -> Objects
+- "Objects's" -> Object
+
+<Objects’s>
+- "Objects’s" -> Objects’s
+- "Objects’s" -> Objects’
+- "Objects’s" -> Objects
+- "Objects’s" -> Object
+
+
+// Plurals and possessives combined
+// ____________________________________________________________________________
+
+<Children's>
+- "Children's" -> Children's
+- "Children's" -> Children'
+- "Children's" -> Children
+- "Children's" -> Child
+
+<Foxes’>
+- "Foxes’" -> Foxes’
+- "Foxes’" -> Foxes
+- "Foxes’" -> Foxe
+- "Foxes’" -> Fox
