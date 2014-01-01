@@ -197,7 +197,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				string lcIdentifier, value;
 				
 				Targets.Base currentTarget =  null;
-				ProjectInfo currentProjectInfo = projectConfig.GlobalProjectInfo;
+				ProjectInfo currentProjectInfo = projectConfig.ProjectInfo;
 
 				while (configFile.Get(out lcIdentifier, out value))
 					{
@@ -207,7 +207,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 					if (GetGlobalProperty(lcIdentifier, value, propertyLocation))
 						{
 						currentTarget = null;
-						currentProjectInfo = projectConfig.GlobalProjectInfo;
+						currentProjectInfo = projectConfig.ProjectInfo;
 						}
 					else if (GetTargetHeader(lcIdentifier, value, propertyLocation, out target))
 						{
@@ -216,7 +216,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 						if (target is Targets.OutputBase)
 							{  currentProjectInfo = (target as Targets.OutputBase).ProjectInfo;  }
 						else
-							{  currentProjectInfo = projectConfig.GlobalProjectInfo;  }
+							{  currentProjectInfo = projectConfig.ProjectInfo;  }
 						}
 					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation, currentProjectInfo))
 						{  }
@@ -583,25 +583,25 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			// Defined values
 
-			bool hasTitle = (projectConfig.GlobalProjectInfo.TitlePropertyLocation.IsDefined &&
-								  projectConfig.GlobalProjectInfo.TitlePropertyLocation.Source != Source.SystemDefault &&
-								  projectConfig.GlobalProjectInfo.TitlePropertyLocation.Source != Source.CommandLine);
-			bool hasSubTitle = (projectConfig.GlobalProjectInfo.SubTitlePropertyLocation.IsDefined &&
-									  projectConfig.GlobalProjectInfo.SubTitlePropertyLocation.Source != Source.SystemDefault &&
-									  projectConfig.GlobalProjectInfo.SubTitlePropertyLocation.Source != Source.CommandLine);
-			bool hasCopyright = (projectConfig.GlobalProjectInfo.CopyrightPropertyLocation.IsDefined &&
-										projectConfig.GlobalProjectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault &&
-										projectConfig.GlobalProjectInfo.CopyrightPropertyLocation.Source != Source.CommandLine);
-			bool hasTimeStampCode = (projectConfig.GlobalProjectInfo.TimeStampCodePropertyLocation.IsDefined &&
-												 projectConfig.GlobalProjectInfo.TimeStampCodePropertyLocation.Source != Source.SystemDefault &&
-												 projectConfig.GlobalProjectInfo.TimeStampCodePropertyLocation.Source != Source.CommandLine);
-			bool hasStyleName = (projectConfig.GlobalProjectInfo.StyleNamePropertyLocation.IsDefined &&
-										  projectConfig.GlobalProjectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault &&
-										  projectConfig.GlobalProjectInfo.StyleNamePropertyLocation.Source != Source.CommandLine);
+			bool hasTitle = (projectConfig.ProjectInfo.TitlePropertyLocation.IsDefined &&
+								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.SystemDefault &&
+								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.CommandLine);
+			bool hasSubTitle = (projectConfig.ProjectInfo.SubTitlePropertyLocation.IsDefined &&
+									  projectConfig.ProjectInfo.SubTitlePropertyLocation.Source != Source.SystemDefault &&
+									  projectConfig.ProjectInfo.SubTitlePropertyLocation.Source != Source.CommandLine);
+			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
+										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault &&
+										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.CommandLine);
+			bool hasTimeStampCode = (projectConfig.ProjectInfo.TimeStampCodePropertyLocation.IsDefined &&
+												 projectConfig.ProjectInfo.TimeStampCodePropertyLocation.Source != Source.SystemDefault &&
+												 projectConfig.ProjectInfo.TimeStampCodePropertyLocation.Source != Source.CommandLine);
+			bool hasStyleName = (projectConfig.ProjectInfo.StyleNamePropertyLocation.IsDefined &&
+										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault &&
+										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.CommandLine);
 
 			if (hasTitle)
 				{  
-				output.AppendLine("Title: " + projectConfig.GlobalProjectInfo.Title);
+				output.AppendLine("Title: " + projectConfig.ProjectInfo.Title);
 
 				if (!hasSubTitle)
 					{  output.AppendLine();  }
@@ -609,19 +609,19 @@ namespace GregValure.NaturalDocs.Engine.Config
 					
 			if (hasSubTitle)
 				{
-				output.AppendLine("Subtitle: " + projectConfig.GlobalProjectInfo.SubTitle);
+				output.AppendLine("Subtitle: " + projectConfig.ProjectInfo.SubTitle);
 				output.AppendLine();
 				}
 					
 			if (hasCopyright)
 				{
-				output.AppendLine("Copyright: " + projectConfig.GlobalProjectInfo.Copyright);
+				output.AppendLine("Copyright: " + projectConfig.ProjectInfo.Copyright);
 				output.AppendLine();
 				}
 			
 			if (hasTimeStampCode)
 				{  
-				output.AppendLine("Timestamp: " + projectConfig.GlobalProjectInfo.TimeStampCode);
+				output.AppendLine("Timestamp: " + projectConfig.ProjectInfo.TimeStampCode);
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions(shortYear, longYear).multiline",
 													 shortYear, longYear) );
 				output.AppendLine();
@@ -629,7 +629,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			if (hasStyleName)
 				{
-				output.AppendLine("Style: " + projectConfig.GlobalProjectInfo.StyleName);
+				output.AppendLine("Style: " + projectConfig.ProjectInfo.StyleName);
 				output.AppendLine();
 				}
 

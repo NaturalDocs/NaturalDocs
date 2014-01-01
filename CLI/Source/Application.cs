@@ -798,8 +798,8 @@ namespace GregValure.NaturalDocs.CLI
 						}
 					else
 						{
-						commandLineConfig.GlobalProjectInfo.StyleName = styleName;
-						commandLineConfig.GlobalProjectInfo.StyleNamePropertyLocation = Source.CommandLine;
+						commandLineConfig.ProjectInfo.StyleName = styleName;
+						commandLineConfig.ProjectInfo.StyleNamePropertyLocation = Source.CommandLine;
 						}
 					}
 					

@@ -123,23 +123,23 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 					if (lcIdentifier == "title")
 						{  
-						projectConfig.GlobalProjectInfo.Title = value.ConvertCopyrightAndTrademark();
-						projectConfig.GlobalProjectInfo.TitlePropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.Title = value.ConvertCopyrightAndTrademark();
+						projectConfig.ProjectInfo.TitlePropertyLocation = propertyLocation;
 						}
 					else if (subtitleRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.GlobalProjectInfo.SubTitle = value.ConvertCopyrightAndTrademark();  
-						projectConfig.GlobalProjectInfo.SubTitlePropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.SubTitle = value.ConvertCopyrightAndTrademark();  
+						projectConfig.ProjectInfo.SubTitlePropertyLocation = propertyLocation;
 						}
 					else if (lcIdentifier == "footer" || lcIdentifier == "copyright")
 						{  
-						projectConfig.GlobalProjectInfo.Copyright = value.ConvertCopyrightAndTrademark();
-						projectConfig.GlobalProjectInfo.CopyrightPropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.Copyright = value.ConvertCopyrightAndTrademark();
+						projectConfig.ProjectInfo.CopyrightPropertyLocation = propertyLocation;
 						}
 					else if (timestampRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.GlobalProjectInfo.TimeStampCode = value;
-						projectConfig.GlobalProjectInfo.TimeStampCodePropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.TimeStampCode = value;
+						projectConfig.ProjectInfo.TimeStampCodePropertyLocation = propertyLocation;
 						}
 					// Otherwise just ignore the entry.
 					}

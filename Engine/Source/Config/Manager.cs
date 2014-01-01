@@ -54,8 +54,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 			systemDefaultConfig.AutoGroup = true;
 			systemDefaultConfig.AutoGroupPropertyLocation = Source.SystemDefault;
 
-			systemDefaultConfig.GlobalProjectInfo.StyleName = "Default";
-			systemDefaultConfig.GlobalProjectInfo.StyleNamePropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.ProjectInfo.StyleName = "Default";
+			systemDefaultConfig.ProjectInfo.StyleNamePropertyLocation = Source.SystemDefault;
 			}
 
 
@@ -471,7 +471,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			foreach (var target in combinedConfig.OutputTargets)
 				{
 				// Merge the global project info so it has a complete configuration.  The configuration files have already been saved without it.
-				MergeProjectInfo(target.ProjectInfo, combinedConfig.GlobalProjectInfo);
+				MergeProjectInfo(target.ProjectInfo, combinedConfig.ProjectInfo);
 
 				Engine.Instance.Output.AddBuilder(CreateBuilder(target));  
 				}
@@ -582,7 +582,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			// Global project info
 
-			MergeProjectInfo(primaryConfig.GlobalProjectInfo, secondaryConfig.GlobalProjectInfo);
+			MergeProjectInfo(primaryConfig.ProjectInfo, secondaryConfig.ProjectInfo);
 
 
 			// Input targets

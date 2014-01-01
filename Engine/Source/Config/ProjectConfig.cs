@@ -31,7 +31,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			projectConfigFolder = new Path();
 			workingDataFolder = new Path();
 
-			globalProjectInfo = new ProjectInfo();
+			projectInfo = new ProjectInfo();
 
 			tabWidth = 0;
 			documentedOnly = false;
@@ -86,14 +86,14 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  workingDataFolder = value;  }
 			}
 
-		/* Property: GlobalProjectInfo
+		/* Property: ProjectInfo
 		 * The <ProjectInfo> that applies to the entire project.  The object will always be defined, though the properties inside it may
 		 * not be.
 		 */
-		public ProjectInfo GlobalProjectInfo
+		public ProjectInfo ProjectInfo
 			{
 			get
-				{  return globalProjectInfo;  }
+				{  return projectInfo;  }
 			}
 
 		/* Property: InputTargets
@@ -230,7 +230,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 		protected Path projectConfigFolder;
 		protected Path workingDataFolder;
 
-		protected ProjectInfo globalProjectInfo;
+		protected ProjectInfo projectInfo;
 
 		protected int tabWidth;
 		protected bool documentedOnly;
