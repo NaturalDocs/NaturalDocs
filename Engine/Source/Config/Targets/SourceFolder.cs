@@ -50,16 +50,18 @@ namespace GregValure.NaturalDocs.Engine.Config.Targets
 			return (folder == (other as SourceFolder).folder);
 			}
 			
-		public override bool Validate (ErrorList errorList)
+		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
 			if (System.IO.Directory.Exists(folder) == false)
 				{
-				string key = "Project.txt.SourceFolderDoesNotExist(folder)";
+				string localeKey = "Project.txt.SourceFolderDoesNotExist(folder)";
 
 				if (type == Files.InputType.Image)
-					{  key = "Project.txt.ImageFolderDoesNotExist(folder)";  }
+					{  localeKey = "Project.txt.ImageFolderDoesNotExist(folder)";  }
 
-				errorList.Add( Locale.Get("NaturalDocs.Engine", key, folder) );
+				errorList.Add( Locale.Get("NaturalDocs.Engine", localeKey, folder),
+								   folderPropertyLocation,
+								   "InputTargets[" + targetIndex + "].Folder" );
 				return false;
 				}
 

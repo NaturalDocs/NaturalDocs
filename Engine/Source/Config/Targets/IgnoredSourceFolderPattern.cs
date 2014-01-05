@@ -41,7 +41,7 @@ namespace GregValure.NaturalDocs.Engine.Config.Targets
 			return new IgnoredSourceFolderPattern(this);
 			}
 
-		public override bool Validate (ErrorList errorList)
+		public override bool Validate (ErrorList errorList, int targetIndex)
 			{
 			return true;
 			}

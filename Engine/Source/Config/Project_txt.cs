@@ -224,7 +224,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 						{  }
 					else
 						{
-						configFile.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );
+						errorList.Add (
+							message: Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier),
+							propertyLocation: propertyLocation
+							);
 						}
 					}
 				

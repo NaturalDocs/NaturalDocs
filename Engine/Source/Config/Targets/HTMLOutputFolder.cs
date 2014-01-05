@@ -49,11 +49,15 @@ namespace GregValure.NaturalDocs.Engine.Config.Targets
 			return (folder == (other as HTMLOutputFolder).folder);
 			}
 
-		override public bool Validate (ErrorList errorList)
+		override public bool Validate (ErrorList errorList, int targetIndex)
 			{
 			if (System.IO.Directory.Exists(folder) == false)
 				{  
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folder) );  
+				errorList.Add(
+					Locale.Get("NaturalDocs.Engine", "Project.txt.OutputFolderDoesNotExist(folder)", folder),
+					folderPropertyLocation,
+					"OutputTargets[" + targetIndex + "].Folder" );
+
 				return false;
 				}
 

@@ -110,7 +110,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 				String.IsNullOrEmpty(projectConfigFolder))
 				{
 				errorList.Add( 
-					Locale.Get("NaturalDocs.Engine", "Error.NoProjectConfigFolder")
+					message: Locale.Get("NaturalDocs.Engine", "Error.NoProjectConfigFolder"),
+					configSource: Source.CommandLine,
+					property: "ProjectConfigFolder"
 					);
 					
 				success = false;
@@ -119,7 +121,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 			else if (!System.IO.Directory.Exists(projectConfigFolder))
 				{
 				errorList.Add(
-					Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderDoesntExist(name)", projectConfigFolder)
+					message: Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderDoesntExist(name)", projectConfigFolder),
+					propertyLocation: commandLineConfig.ProjectConfigFolderPropertyLocation,
+					property: "ProjectConfigFolder"
 					);
 					
 				success = false;
@@ -128,7 +132,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 			else if (projectConfigFolder == SystemConfigFolder)
 				{
 				errorList.Add( 
-					Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderCannotEqualSystemConfigFolder")
+					message: Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderCannotEqualSystemConfigFolder"),
+					propertyLocation: commandLineConfig.ProjectConfigFolderPropertyLocation,
+					property: "ProjectConfigFolder"
 					);
 					
 				success = false;
@@ -188,7 +194,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 				catch
 					{
 					errorList.Add(
-						Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name)", workingDataFolder)
+						message: Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name)", workingDataFolder),
+						property: "WorkingDataFolder"
 						);
 					
 					success = false;
@@ -234,28 +241,34 @@ namespace GregValure.NaturalDocs.Engine.Config
 						
 			if (combinedConfig.InputTargets.Count < 1)
 				{
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.NoInputTargets") );
+				errorList.Add(
+					message: Locale.Get("NaturalDocs.Engine", "Error.NoInputTargets"),
+					property: "InputTargets"
+					);
 				success = false;
 				}
 			if (combinedConfig.OutputTargets.Count < 1)
 				{
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.NoOutputTargets") );
+				errorList.Add( 
+					message: Locale.Get("NaturalDocs.Engine", "Error.NoOutputTargets"),
+					property: "OutputTargets"
+					);
 				success = false;
 				}
 
-			foreach (var target in combinedConfig.InputTargets)
+			for (int i = 0; i < combinedConfig.InputTargets.Count; i++)
 				{
-				if (target.Validate(errorList) == false)
+				if (combinedConfig.InputTargets[i].Validate(errorList, i) == false)
 					{  success = false;  }
 				}
-			foreach (var target in combinedConfig.FilterTargets)
+			for (int i = 0; i < combinedConfig.FilterTargets.Count; i++)
 				{
-				if (target.Validate(errorList) == false)
+				if (combinedConfig.FilterTargets[i].Validate(errorList, i) == false)
 					{  success = false;  }
 				}
-			foreach (var target in combinedConfig.OutputTargets)
+			for (int i = 0; i < combinedConfig.OutputTargets.Count; i++)
 				{
-				if (target.Validate(errorList) == false)
+				if (combinedConfig.OutputTargets[i].Validate(errorList, i) == false)
 					{  success = false;  }
 				}
 
@@ -445,17 +458,19 @@ namespace GregValure.NaturalDocs.Engine.Config
 			
 			// Check all input folder entries against the filters.
 			
-			foreach (var target in combinedConfig.InputTargets)
+			for (int i = 0; i < combinedConfig.InputTargets.Count; i++)
 				{
-				if (target is Targets.SourceFolder)
+				if (combinedConfig.InputTargets[i] is Targets.SourceFolder)
 					{
-					var sourceFolderTarget = (Targets.SourceFolder)target;
+					var sourceFolderTarget = (Targets.SourceFolder)combinedConfig.InputTargets[i];
 					
 					if (sourceFolderTarget.Type == Files.InputType.Source &&
 						Engine.Instance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
 						{
 						errorList.Add(
-							Locale.Get("NaturalDocs.Engine", "Error.SourceFolderIsIgnored(sourceFolder)", sourceFolderTarget.Folder)
+							message: Locale.Get("NaturalDocs.Engine", "Error.SourceFolderIsIgnored(sourceFolder)", sourceFolderTarget.Folder),
+							propertyLocation: sourceFolderTarget.FolderPropertyLocation,
+							property: "InputTargets[" + i + "].Folder"
 							);
 							
 						success = false;

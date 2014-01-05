@@ -75,7 +75,6 @@
 using System;
 using System.Text;
 using GregValure.NaturalDocs.Engine.Config;
-using GregValure.NaturalDocs.Engine.Errors;
 
 
 namespace GregValure.NaturalDocs.Engine.Config

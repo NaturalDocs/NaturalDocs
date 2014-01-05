@@ -41,11 +41,15 @@ namespace GregValure.NaturalDocs.Engine.Config.Targets
 			return new IgnoredSourceFolder(this);
 			}
 
-		public override bool Validate (Errors.ErrorList errorList)
+		public override bool Validate (Errors.ErrorList errorList, int targetIndex)
 			{
 			if (System.IO.Directory.Exists(folder) == false)
 				{  
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredSourceFolderDoesNotExist(folder)", folder) );  
+				errorList.Add( 
+					Locale.Get("NaturalDocs.Engine", "Project.txt.IgnoredSourceFolderDoesNotExist(folder)", folder),
+					folderPropertyLocation,
+					"FilterTargets[" + targetIndex + "].Folder" );
+
 				return false;
 				}
 

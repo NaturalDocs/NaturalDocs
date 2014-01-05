@@ -33,9 +33,12 @@ namespace GregValure.NaturalDocs.Engine.Config.Targets
 			this.propertyLocation = toCopy.propertyLocation;
 			}
 
-		public abstract bool Validate (Errors.ErrorList errorList);
-
-		
+		/* Function: Validate
+		 * Override to add errors if there are any problems with the target's properties, such as a folder not existing.
+		 * TargetIndex is passed so that you may include it in the error's Property field, such as
+		 * "InputTargets[0].Folder".
+		 */
+		public abstract bool Validate (Errors.ErrorList errorList, int targetIndex);
 			
 	
 		
