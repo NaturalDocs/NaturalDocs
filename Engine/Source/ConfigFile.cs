@@ -313,13 +313,12 @@ namespace GregValure.NaturalDocs.Engine
 			
 			
 		/* Function: AddError
-		 * Adds an error to the file based on the results of the last call to <Get()>.
+		 * Adds an error to the list, automatically filling in the file and line number properties based on the last call to <Get()>.
 		 */
-		public void AddError (string errorMessage)
+		public void AddError (string errorMessage, Config.Source configSource = Config.Source.NotDefined, string property = null)
 			{
-			errorList.Add(errorMessage, fileName, lineNumber);
+			errorList.Add(errorMessage, fileName, lineNumber, configSource, property);
 			}
-			
 			
 			
 			

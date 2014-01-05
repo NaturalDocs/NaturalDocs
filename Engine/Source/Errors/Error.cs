@@ -26,16 +26,49 @@ namespace GregValure.NaturalDocs.Engine.Errors
 		/* Constructor: Error
 		 * A constructor for an error that occurs in a specific file.
 		 */
-		public Error (string newMessage, Path newFile = default(Path), int newLineNumber = 0)
+		public Error (string message, Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined, 
+						 string property = null)
 			{
-			message = newMessage;
-			file = newFile;
-			lineNumber = newLineNumber;
+			this.message = message;
+
+			this.file = file;
+			this.lineNumber = lineNumber;
+			this.configSource = configSource;
+			this.property = property;
 			}
 			
 			
+		/* Constructor: Error
+		 * A constructor for an error that occurs in a specific file.
+		 */
+		public Error (string message, Config.PropertyLocation propertyLocation, string property = null) 
+			: this (message, propertyLocation.FileName, propertyLocation.LineNumber, propertyLocation.Source, property)
+			{
+			}
+
+
+		/* Function: Matches
+		 * Whether the error occurs in the passed location.
+		 */
+		public bool Matches (Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined, 
+									string property = null)
+			{
+			return (this.file == file && this.lineNumber == lineNumber && this.configSource == configSource && this.property == property);
+			}
+			
+			
+		/* Function: Matches
+		 * Whether the error occurs in the passed location.
+		 */
+		public bool Matches (Config.PropertyLocation propertyLocation, string property = null)
+			{
+			return Matches(propertyLocation.FileName, propertyLocation.LineNumber, propertyLocation.Source, property);
+			}
+
+
 		/* Function: CompareTo
-		 * Implements IComparable.CompareTo() so that errors can be sorted.  They are sorted by <File>, then <LineNumber>.
+		 * Implements IComparable.CompareTo() so that errors can be sorted.  They are sorted by <File>, then <LineNumber>, then 
+		 * <ConfigSource>, then <Property>.
 		 */
 		public int CompareTo (object otherObject)
 			{
@@ -51,7 +84,25 @@ namespace GregValure.NaturalDocs.Engine.Errors
 						{  return file.CompareTo(other.file);  }
 					}
 					
-				return lineNumber - other.lineNumber;
+				if (lineNumber != other.lineNumber)
+					{
+					return lineNumber - other.lineNumber;
+					}
+
+				if (configSource != other.configSource)
+					{
+					return (int)configSource - (int)other.configSource;
+					}
+
+				if (property != other.property)
+					{
+					if (property == null)
+						{  return -1;  }
+					else
+						{  return property.CompareTo(other.property);  }
+					}
+
+				return 0;
 				}
 			else
 				{  throw new InvalidOperationException();  }
@@ -91,6 +142,33 @@ namespace GregValure.NaturalDocs.Engine.Errors
 			set
 				{  lineNumber = value;  }
 			}
+
+		/* Property: ConfigSource
+		 * The config source the error occurs in, if appropriate.  Will be <Config.Source.NotDefined> otherwise.
+		 */
+		public Config.Source ConfigSource
+			{
+			get
+				{  return configSource;  }
+			set
+				{  configSource = value;  }
+			}
+
+		/* Property: Property
+		 * 
+		 * The propery that the error occurs in, if appropriate.  Will be null otherwise.
+		 * 
+		 * The string will match the class property name.  For example, an error in <ProjectConfig.TabWidth> will have "TabWidth".  An error in the 
+		 * global title will be "ProjectInfo.Title".  If it occurs in one of the targets, it will be something like "InputTargets[0].Folder" or 
+		 * "OutputTargets[1].ProjectInfo.Title".
+		 */
+		public string Property
+			{
+			get
+				{  return property;  }
+			set
+				{  property = value;  }
+			}
 		
 		
 		
@@ -98,20 +176,12 @@ namespace GregValure.NaturalDocs.Engine.Errors
 		// __________________________________________________________________________
 		
 		
-		/* string: message
-		 * The error message itself.
-		 */
 		protected string message;
-		
-		/* var: file
-		 * The file the error appears in, if appropriate.  Will be null otherwise.
-		 */
+
 		protected Path file;
-		
-		/* var: lineNumber
-		 * The line number of the <file> the error appears in, if appropriate.  Will be zero otherwise.
-		 */
 		protected int lineNumber;
+		protected Config.Source configSource;
+		protected string property;
 
 		}
 	}

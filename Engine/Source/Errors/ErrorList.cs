@@ -57,10 +57,20 @@ namespace GregValure.NaturalDocs.Engine.Errors
 		/* Function: Add
 		 * Adds an error occurring in a particular file to the list.
 		 */
-		public void Add (string message, Path file = default(Path), int lineNumber = 0)
+		public void Add (string message, Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined,
+							  string property = null)
 			{
-			list.Add ( new Error(message, file, lineNumber) );
+			list.Add ( new Error(message, file, lineNumber, configSource, property) );
 			sorted = false;
+			}
+			
+			
+		/* Function: Add
+		 * Adds an error occurring in a particular file to the list.
+		 */
+		public void Add (string message, Config.PropertyLocation propertyLocation, string property = null)
+			{
+			Add(message, propertyLocation.FileName, propertyLocation.LineNumber, propertyLocation.Source, property);
 			}
 			
 			
