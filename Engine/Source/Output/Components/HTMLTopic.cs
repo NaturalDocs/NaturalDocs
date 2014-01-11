@@ -393,7 +393,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 									{  parameterListSymbol = symbol.ToString();  }
 								}
 							}
-						else
+						else // closing tag
 							{  
 							// See if parameterListSymbol matches any of the prototype parameter names
 							if (parameterListSymbol != null && topic.Prototype != null)
@@ -415,9 +415,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 								// If so, include the type under the entry in the HTML
 								if (matchedParameter != -1)
 									{
-									TokenIterator extensionStart, extensionEnd;
+									TokenIterator prefixStart, prefixEnd, suffixStart, suffixEnd;
 									topic.ParsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
-																													out extensionStart, out extensionEnd);
+																								out prefixStart, out prefixEnd, out suffixStart, out suffixEnd);
 
 									if (start < end && 
 										// Don't include single symbol types
@@ -427,7 +427,8 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 										htmlOutput.Append("<div class=\"CDLParameterType\">");
 									
 										BuildTypeLinkedAndSyntaxHighlightedText(start, end);
-										BuildTypeLinkedAndSyntaxHighlightedText(extensionStart, extensionEnd);
+										BuildTypeLinkedAndSyntaxHighlightedText(prefixStart, prefixEnd);
+										BuildTypeLinkedAndSyntaxHighlightedText(suffixStart, suffixEnd);
 
 										htmlOutput.Append("</div>");
 										}

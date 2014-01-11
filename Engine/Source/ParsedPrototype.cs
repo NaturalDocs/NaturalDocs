@@ -226,12 +226,17 @@ namespace GregValure.NaturalDocs.Engine
 
 
 		/* Function: GetFullParameterType
+		 * 
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This includes modifiers and type
-		 * suffixes.  If there's any additional type information that appears after the name (int x[12]) that will be returned in the
-		 * extension.
+		 * suffixes.  Since the type token may not be continuous, it returns separate start and end iterators for type prefixes
+		 * (* in "int *x") and suffixes ("[12]" in "int x[12]").
+		 * 
+		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
 		public bool GetFullParameterType (int index, out TokenIterator start, out TokenIterator end, 
-																			out TokenIterator extensionStart, out TokenIterator extensionEnd)
+													  out TokenIterator prefixStart, out TokenIterator prefixEnd,
+													  out TokenIterator suffixStart, out TokenIterator suffixEnd,
+													  bool impliedTypes = true)
 			{
 			TokenIterator paramStart, paramEnd;
 
@@ -239,10 +244,15 @@ namespace GregValure.NaturalDocs.Engine
 				{  
 				start = paramEnd;
 				end = paramEnd;
-				extensionStart = paramEnd;
-				extensionEnd = paramEnd;
+				prefixStart = paramEnd;
+				prefixEnd = paramEnd;
+				suffixStart = paramEnd;
+				suffixEnd = paramEnd;
 				return false;  
 				}
+
+
+			// Find the beginning of the type by finding the first type token
 
 			start = paramStart;
 			PrototypeParsingType type = start.PrototypeParsingType;
@@ -250,16 +260,20 @@ namespace GregValure.NaturalDocs.Engine
 			while (start < paramEnd && 
 						type != PrototypeParsingType.Type &&
 						type != PrototypeParsingType.TypeModifier &&
-						type != PrototypeParsingType.TypeQualifier &&
-						type != PrototypeParsingType.NamePrefix_PartOfType)
+						type != PrototypeParsingType.TypeQualifier)
 				{  
 				start.Next();  
 				type = start.PrototypeParsingType;
 				}
 
-			if (start < paramEnd)
+
+			// If we found one, find the end of the type
+
+			bool foundType = (start < paramEnd);
+			end = start;
+
+			if (foundType)
 				{
-				end = start;
 				int nestLevel = 0;
 
 				do
@@ -279,44 +293,97 @@ namespace GregValure.NaturalDocs.Engine
 							  type == PrototypeParsingType.OpeningTypeSuffix ||
 							  type == PrototypeParsingType.ClosingTypeSuffix ||
 							  type == PrototypeParsingType.TypeSuffix ||
-							  type == PrototypeParsingType.NamePrefix_PartOfType ||
 							  end.FundamentalType == FundamentalType.Whitespace) &&
 							end < paramEnd);
 
-				// Find an extension if there is one.
-				extensionStart = end;
-
-				while (extensionStart < paramEnd &&
-							 extensionStart.PrototypeParsingType != PrototypeParsingType.NameSuffix_PartOfType)
-					{  extensionStart.Next();  }
-
-				extensionEnd = extensionStart;
-
-				while (extensionEnd < paramEnd &&
-							 extensionEnd.PrototypeParsingType == PrototypeParsingType.NameSuffix_PartOfType)
-					{  extensionEnd.Next();  }
-
-				// Trim trailing whitespace from the regular type
 				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+				}
+
+
+			// If we didn't find a type, see if it's implied
+
+			else if (impliedTypes)
+				{
+				if (Style == ParameterStyle.C)
+					{
+					// Move backwards for "int x, y"
+					for (int i = index - 1; i >= 0; i--)
+						{
+						if (GetFullParameterType(i, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
+							{  
+							foundType = true;
+							break;
+							}
+						}
+					}
+				else // Style == ParameterStyle.Pascal
+					{
+					// Move forwards for "x, y: integer"
+					for (int i = index + 1; i <= NumberOfParameters; i++)
+						{
+						if (GetFullParameterType(i, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
+							{
+							foundType = true;
+							break;
+							}
+						}
+					}
+				}
+			
+
+			// If we found a type, explicit or implied, find the prefix and suffix.  We do this after checking for implied types because we 
+			// want "int a[12], b" to work.  b should be int, not int[12].  In "int *x, y", y should be int, not int*.
+
+			if (foundType)
+				{
+				prefixStart = paramStart;
+
+				while (prefixStart < paramEnd &&
+							 prefixStart.PrototypeParsingType != PrototypeParsingType.NamePrefix_PartOfType)
+					{  prefixStart.Next();  }
+
+				prefixEnd = prefixStart;
+
+				while (prefixEnd < paramEnd &&
+							 prefixEnd.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType)
+					{  prefixEnd.Next();  }
+
+				suffixStart = paramStart;
+
+				while (suffixStart < paramEnd &&
+							 suffixStart.PrototypeParsingType != PrototypeParsingType.NameSuffix_PartOfType)
+					{  suffixStart.Next();  }
+
+				suffixEnd = suffixStart;
+
+				while (suffixEnd < paramEnd &&
+							 suffixEnd.PrototypeParsingType == PrototypeParsingType.NameSuffix_PartOfType)
+					{  suffixEnd.Next();  }
 
 				return true;
 				}
-			else
-				{  
+
+			else // didn't find a type
+				{
 				start = paramEnd;
 				end = paramEnd;
-				extensionStart = paramEnd;
-				extensionEnd = paramEnd;
+				prefixStart = paramEnd;
+				prefixEnd = paramEnd;
+				suffixStart = paramEnd;
+				suffixEnd = paramEnd;
 				return false;  
 				}
 			}
 
 
 		/* Function: GetBaseParameterType
+		 * 
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
 		 * suffixes.
+		 * 
+		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
-		public bool GetBaseParameterType (int index, out TokenIterator start, out TokenIterator end)
+		public bool GetBaseParameterType (int index, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
 			{
 			TokenIterator paramStart, paramEnd;
 
@@ -348,31 +415,32 @@ namespace GregValure.NaturalDocs.Engine
 				return true;
 				}
 			else
-				{
-				// If there's no explicit type, seach for a name prefix like "$", "@", or "%".
-				start = paramStart;
-
-				while (start < paramEnd && 
-							start.PrototypeParsingType != PrototypeParsingType.NamePrefix_PartOfType)
-					{  start.Next();  }
-
-				if (start < paramEnd)
+				{  
+				if (impliedTypes)
 					{
-					end = start;
-
-					do
-						{  end.Next();  }
-					while (end.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType &&
-								end < paramEnd);
-
-					return true;
+					if (Style == ParameterStyle.C)
+						{
+						// Move backwards for "int x, y"
+						for (int i = index - 1; i >= 0; i--)
+							{
+							if (GetBaseParameterType(i, out start, out end, false))
+								{  return true;  }
+							}
+						}
+					else // Style == ParameterStyle.Pascal
+						{
+						// Move forwards for "x, y: integer"
+						for (int i = index + 1; i <= NumberOfParameters; i++)
+							{
+							if (GetBaseParameterType(i, out start, out end, false))
+								{  return true;  }
+							}
+						}
 					}
-				else
-					{  
-					start = paramEnd;
-					end = paramEnd;
-					return false;  
-					}
+
+				start = paramEnd;
+				end = paramEnd;
+				return false;  
 				}
 			}
 

@@ -1299,7 +1299,7 @@ namespace GregValure.NaturalDocs.Engine.Topics
 
 				if ((buildFlags & BuildFlags.PrototypeParameters) == 0)
 					{
-					ParsedPrototype parsedPrototype = ParsedPrototype;
+					ParsedPrototype parsedPrototype = this.ParsedPrototype;
 
 					if (parsedPrototype == null || parsedPrototype.NumberOfParameters == 0)
 						{  prototypeParameters = new ParameterString();  }
