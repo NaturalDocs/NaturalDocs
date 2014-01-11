@@ -50,8 +50,8 @@
 
   - Parameter 1: x_2,
     - Name: x_2
-    - Full Type: (not detected)
-    - Base Type: (not detected)
+    - Full Type (implied): integer
+    - Base Type (implied): integer
     - Link Candidates: (none)
     - Default Value: (not detected)
 

@@ -4,7 +4,7 @@
 
   - Parameter 1: int * a,
     - Name: a
-    - Full Type: int *
+    - Full Type: int*
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
@@ -18,14 +18,14 @@
 
   - Parameter 3: int *c,
     - Name: c
-    - Full Type: int *
+    - Full Type: int*
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 4: int ** d,
     - Name: d
-    - Full Type: int **
+    - Full Type: int**
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
@@ -39,14 +39,14 @@
 
   - Parameter 6: int **f,
     - Name: f
-    - Full Type: int **
+    - Full Type: int**
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 7: int * * g,
     - Name: g
-    - Full Type: int * *
+    - Full Type: int* *
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
@@ -60,7 +60,7 @@
 
   - Parameter 9: int * *i
     - Name: i
-    - Full Type: int * *
+    - Full Type: int* *
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
@@ -74,7 +74,7 @@
 
   - Parameter 1: const int * a,
     - Name: a
-    - Full Type: const int *
+    - Full Type: const int*
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
@@ -144,7 +144,7 @@
 
   - Parameter 1: const int *a,
     - Name: a
-    - Full Type: const int *
+    - Full Type: const int*
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)

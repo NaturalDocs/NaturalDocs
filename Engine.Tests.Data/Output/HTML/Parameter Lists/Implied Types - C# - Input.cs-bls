@@ -1,0 +1,62 @@
+
+/* Function: FunctionA
+
+	Parameters:
+		x - description
+		y - description
+*/
+void FunctionA (int x, y)
+	{
+	}
+
+/* Function: FunctionB
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+*/
+void FunctionB (int a, b, float c, d)
+	{
+	}
+
+/* Function: FunctionC
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+		e - description
+		f - description
+*/
+void FunctionC (int a[5], b, float c, d[10], string[] e, f[12])
+	{
+	}
+
+/* Function: FunctionD
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+		e - description
+		f - description
+*/
+void FunctionD (int* a, b, float *c, d, string e, *f)
+	{
+	}
+
+/* Function: FunctionE
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+*/
+void FunctionE (int** a, b,*c, float& d)
+	{
+	}

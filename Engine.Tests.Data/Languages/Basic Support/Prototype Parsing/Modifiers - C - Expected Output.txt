@@ -11,7 +11,7 @@
 
   - Parameter 2: unsigned int &y
     - Name: y
-    - Full Type: unsigned int &
+    - Full Type: unsigned int&
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)

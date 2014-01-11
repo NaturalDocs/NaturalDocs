@@ -1,0 +1,55 @@
+- Before Parameters: Function FunctionA (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: x,
+    - Name: x
+    - Full Type (implied): integer
+    - Base Type (implied): integer
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: y: integer
+    - Name: y
+    - Full Type: integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer
+-----
+- Before Parameters: Function FunctionB (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type (implied): Package.Class
+    - Base Type (implied): Package.Class
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Package.Class,
+    - Name: b
+    - Full Type: Package.Class
+    - Base Type: Package.Class
+    - Link Candidates: Package.Class
+    - Default Value: (not detected)
+
+  - Parameter 3: c,
+    - Name: c
+    - Full Type (implied): string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: d: string
+    - Name: d
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer

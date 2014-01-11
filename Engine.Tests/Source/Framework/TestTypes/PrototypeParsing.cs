@@ -44,7 +44,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 					{  
 					var parsedPrototype = topics[topicIndex].ParsedPrototype;
 					
-					TokenIterator start, end, extensionStart, extensionEnd;
+					TokenIterator start, end, prefixStart, prefixEnd, suffixStart, suffixEnd;
 					int numberOfParameters = parsedPrototype.NumberOfParameters;
 
 					if (numberOfParameters == 0)
@@ -78,20 +78,35 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
-							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, out extensionStart, out extensionEnd))
+							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
 								{  
 								output.Append("    - Full Type: " + parsedPrototype.Tokenizer.TextBetween(start, end));
 
-								if (extensionEnd > extensionStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(extensionStart, extensionEnd));  }
+								if (prefixEnd > prefixStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
+								if (suffixEnd > suffixStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
+
+								output.AppendLine();
+								}
+							else if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, true))
+								{  
+								output.Append("    - Full Type (implied): " + parsedPrototype.Tokenizer.TextBetween(start, end));
+
+								if (prefixEnd > prefixStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
+								if (suffixEnd > suffixStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
 
 								output.AppendLine();
 								}
 							else
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
-							if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end))
+							if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end, false))
 								{  output.AppendLine("    - Base Type: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+							else if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end, true))
+								{  output.AppendLine("    - Base Type (implied): " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 							else
 								{  output.AppendLine("    - Base Type: (not detected)");  }
 

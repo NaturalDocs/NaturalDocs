@@ -1,0 +1,22 @@
+
+{ Function: FunctionA
+
+	Parameters:
+		x - description
+		y - description
+}
+Function FunctionA (x, y: integer): integer;
+	Begin
+	End;
+ 
+{ Function: FunctionB
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+}
+Function FunctionB (a, b: Package.Class, c, d: string): integer;
+	Begin
+	End;

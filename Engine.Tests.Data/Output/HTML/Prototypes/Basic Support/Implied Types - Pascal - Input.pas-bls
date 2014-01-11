@@ -1,0 +1,10 @@
+
+// Function: FunctionA
+Function FunctionA (x, y: integer): integer;
+	Begin
+	End;
+ 
+// Function: FunctionB
+Function FunctionB (a, b: Package.Class, c, d: string): integer;
+	Begin
+	End;

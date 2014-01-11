@@ -1,0 +1,188 @@
+- Before Parameters: void FunctionA (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: y
+    - Name: y
+    - Full Type (implied): int
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionB (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int a,
+    - Name: a
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): int
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: float c,
+    - Name: c
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - Parameter 4: d
+    - Name: d
+    - Full Type (implied): float
+    - Base Type (implied): float
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionC (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int a[5],
+    - Name: a
+    - Full Type: int[5]
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): int
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: float c,
+    - Name: c
+    - Full Type: float
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - Parameter 4: d[10],
+    - Name: d
+    - Full Type (implied): float[10]
+    - Base Type (implied): float
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: string[] e,
+    - Name: e
+    - Full Type: string[]
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 6: f[12]
+    - Name: f
+    - Full Type (implied): string[][12]
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionD (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int* a,
+    - Name: a
+    - Full Type: int*
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): int
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: float *c,
+    - Name: c
+    - Full Type: float*
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+  - Parameter 4: d,
+    - Name: d
+    - Full Type (implied): float
+    - Base Type (implied): float
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: string e,
+    - Name: e
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 6: *f
+    - Name: f
+    - Full Type (implied): string*
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionE (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int** a,
+    - Name: a
+    - Full Type: int**
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): int
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: *c,
+    - Name: c
+    - Full Type (implied): int*
+    - Base Type (implied): int
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: float& d
+    - Name: d
+    - Full Type: float&
+    - Base Type: float
+    - Link Candidates: float
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)

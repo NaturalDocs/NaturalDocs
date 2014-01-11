@@ -1,0 +1,25 @@
+
+// Function: FunctionA
+void FunctionA (int x, y)
+	{
+	}
+
+// Function: FunctionB
+void FunctionB (int a, b, float c, d)
+	{
+	}
+
+// Function: FunctionC
+void FunctionC (int a[5], b, float c, d[10], string[] e, f[12])
+	{
+	}
+
+// Function: FunctionD
+void FunctionD (int* a, b, float *c, d, string e, *f)
+	{
+	}
+
+// Function: FunctionE
+void FunctionE (int** a, b,*c, float& d)
+	{
+	}
