@@ -22,12 +22,12 @@
 
 HTML.PageTitle(projectTitle): {0} Documentation
 HTML.HeaderTitle(projectTitle): {0}
-HTML.HeaderSubTitle(projectSubTitle): {0}
+HTML.HeaderSubtitle(projectSubtitle): {0}
 
 HTML.DefaultPageTitle: Source Documentation
 HTML.DefaultHeaderTitle: Source Documentation
 HTML.DefaultHomeTitle: Source Documentation
-HTML.DefaultHomeSubTitleIfTitleExists: Source Documentation
+HTML.DefaultHomeSubtitleIfTitleExists: Source Documentation
 
 HTML.DefaultSearchText: Search
 HTML.SearchingStatus: Searching...

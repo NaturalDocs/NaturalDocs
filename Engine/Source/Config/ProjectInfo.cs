@@ -25,13 +25,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public ProjectInfo ()
 			{
 			title = null;
-			subTitle = null;
+			subtitle = null;
 			copyright = null;
 			timeStampCode = null;
 			styleName = null;
 
 			titlePropertyLocation = Source.NotDefined;
-			subTitlePropertyLocation = Source.NotDefined;
+			subtitlePropertyLocation = Source.NotDefined;
 			copyrightPropertyLocation = Source.NotDefined;
 			timeStampCodePropertyLocation = Source.NotDefined;
 			styleNamePropertyLocation = Source.NotDefined;
@@ -40,13 +40,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 		public ProjectInfo (ProjectInfo toCopy)
 			{
 			title = toCopy.title;
-			subTitle = toCopy.subTitle;
+			subtitle = toCopy.subtitle;
 			copyright = toCopy.copyright;
 			timeStampCode = toCopy.timeStampCode;
 			styleName = toCopy.styleName;
 
 			titlePropertyLocation = toCopy.titlePropertyLocation;
-			subTitlePropertyLocation = toCopy.subTitlePropertyLocation;
+			subtitlePropertyLocation = toCopy.subtitlePropertyLocation;
 			copyrightPropertyLocation = toCopy.copyrightPropertyLocation;
 			timeStampCodePropertyLocation = toCopy.timeStampCodePropertyLocation;
 			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
@@ -140,15 +140,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  title = value;  }
 			}
 
-		/* Property: SubTitle
-		 * The project sub-title, or null if it's not set.
+		/* Property: Subtitle
+		 * The project subtitle, or null if it's not set.
 		 */
-		public string SubTitle
+		public string Subtitle
 			{
 			get
-				{  return subTitle;  }
+				{  return subtitle;  }
 			set
-				{  subTitle = value;  }
+				{  subtitle = value;  }
 			}
 			
 		/* Property: Copyright
@@ -201,15 +201,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  titlePropertyLocation = value;  }
 			}
 			
-		/* Property: SubTitlePropertyLocation
-		 * Where the <SubTitle> property is defined, or <Source.NotDefined> if it isn't.
+		/* Property: SubtitlePropertyLocation
+		 * Where the <Subtitle> property is defined, or <Source.NotDefined> if it isn't.
 		 */
-		public PropertyLocation SubTitlePropertyLocation
+		public PropertyLocation SubtitlePropertyLocation
 			{
 			get
-				{  return subTitlePropertyLocation;  }
+				{  return subtitlePropertyLocation;  }
 			set
-				{  subTitlePropertyLocation = value;  }
+				{  subtitlePropertyLocation = value;  }
 			}
 			
 		/* Property: CopyrightPropertyLocation
@@ -251,13 +251,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		protected string title;
-		protected string subTitle;
+		protected string subtitle;
 		protected string copyright;
 		protected string timeStampCode;
 		protected string styleName;
 
 		protected PropertyLocation titlePropertyLocation;
-		protected PropertyLocation subTitlePropertyLocation;
+		protected PropertyLocation subtitlePropertyLocation;
 		protected PropertyLocation copyrightPropertyLocation;
 		protected PropertyLocation timeStampCodePropertyLocation;
 		protected PropertyLocation styleNamePropertyLocation;

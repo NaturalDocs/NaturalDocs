@@ -104,7 +104,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 			else
 			    {
 			    List<Parent> parents = GetParentList();
-				 List<Topic> children = GetChildList();
+				List<Topic> children = GetChildList();
 
 			    htmlOutput.Append("<div class=\"NDClassPrototype");
 

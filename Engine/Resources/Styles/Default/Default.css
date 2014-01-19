@@ -29,7 +29,7 @@
 		`MessageTextColor = #787800
 
 		`ProjectTitleFontFamily = "Palatino Linotype", Palatino, Georgia, serif
-		`ProjectSubTitleFontFamily = Georgia, serif
+		`ProjectSubtitleFontFamily = Georgia, serif
 		`MenuFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
 		`ParagraphFontFamily = Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif
 		`HeadingFontFamily = "Trebuchet MS", Tahoma, Geneva, sans-serif
@@ -127,8 +127,8 @@ td {
 		line-height: 90%;
 		color: #FFFFFF;
 		}
-	#HSubTitle {
-		font: 10pt `ProjectSubTitleFontFamily;
+	#HSubtitle {
+		font: 10pt `ProjectSubtitleFontFamily;
 		color: #C8C8C8;
 		margin-left: .65em;
 		text-shadow: 0 .1ex .3ex #202020;
@@ -1209,7 +1209,7 @@ body.NDHomePage {
 	}
 
 	.HTitle,
-	.HSubTitle,
+	.HSubtitle,
 	.HCopyright,
 	.HTimeStamp,
 	.HGeneratedBy,
@@ -1245,8 +1245,8 @@ body.NDHomePage {
 			font: 34pt `ProjectTitleFontFamily;
 			line-height: 95%;
 			}
-		.HSubTitle {
-			font: 16pt `ProjectSubTitleFontFamily;
+		.HSubtitle {
+			font: 16pt `ProjectSubtitleFontFamily;
 			padding-top: .075em;
 			}
 

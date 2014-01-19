@@ -22,7 +22,7 @@
  *			> Subtitle: [subtitle]
  *			> Copyright: [copyright]
  *
- *			The title, sub-title, and copyright notice for the project.  (C), (R), and (TM) will be converted into their respective symbols.
+ *			The title, subtitle, and copyright notice for the project.  (C), (R), and (TM) will be converted into their respective symbols.
  *			
  *			> Timestamp: [timestamp code]
  *			
@@ -327,8 +327,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 				}
 			else if (subtitleRegex.IsMatch(lcIdentifier))
 				{
-				projectInfo.SubTitle = value.ConvertCopyrightAndTrademark();
-				projectInfo.SubTitlePropertyLocation = propertyLocation;
+				projectInfo.Subtitle = value.ConvertCopyrightAndTrademark();
+				projectInfo.SubtitlePropertyLocation = propertyLocation;
 				return true;
 				}
 			else if (lcIdentifier == "copyright")
@@ -589,9 +589,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 			bool hasTitle = (projectConfig.ProjectInfo.TitlePropertyLocation.IsDefined &&
 								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.SystemDefault &&
 								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.CommandLine);
-			bool hasSubTitle = (projectConfig.ProjectInfo.SubTitlePropertyLocation.IsDefined &&
-									  projectConfig.ProjectInfo.SubTitlePropertyLocation.Source != Source.SystemDefault &&
-									  projectConfig.ProjectInfo.SubTitlePropertyLocation.Source != Source.CommandLine);
+			bool hasSubtitle = (projectConfig.ProjectInfo.SubtitlePropertyLocation.IsDefined &&
+									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != Source.SystemDefault &&
+									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != Source.CommandLine);
 			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
 										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault &&
 										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.CommandLine);
@@ -606,13 +606,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  
 				output.AppendLine("Title: " + projectConfig.ProjectInfo.Title);
 
-				if (!hasSubTitle)
+				if (!hasSubtitle)
 					{  output.AppendLine();  }
 				}
 					
-			if (hasSubTitle)
+			if (hasSubtitle)
 				{
-				output.AppendLine("Subtitle: " + projectConfig.ProjectInfo.SubTitle);
+				output.AppendLine("Subtitle: " + projectConfig.ProjectInfo.Subtitle);
 				output.AppendLine();
 				}
 					
@@ -636,7 +636,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				output.AppendLine();
 				}
 
-			if (hasTitle || hasSubTitle || hasCopyright || hasTimeStampCode || hasStyleName)
+			if (hasTitle || hasSubtitle || hasCopyright || hasTimeStampCode || hasStyleName)
 				{  output.AppendLine();  }
 
 
@@ -650,7 +650,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TitleSyntax.multiline") );
 				}
 					
-			if (!hasSubTitle)
+			if (!hasSubtitle)
 				{  
 				output.AppendLine("#");
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SubtitleSyntax.multiline") );
@@ -690,9 +690,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 				projectInfo.TitlePropertyLocation.Source != Source.SystemDefault)
 				{  output.AppendLine("   Title: " + projectInfo.Title);  }
 					
-			if (projectInfo.SubTitlePropertyLocation.IsDefined &&
-				projectInfo.SubTitlePropertyLocation.Source != Source.SystemDefault)
-				{  output.AppendLine("   Subtitle: " + projectInfo.SubTitle);  }
+			if (projectInfo.SubtitlePropertyLocation.IsDefined &&
+				projectInfo.SubtitlePropertyLocation.Source != Source.SystemDefault)
+				{  output.AppendLine("   Subtitle: " + projectInfo.Subtitle);  }
 					
 			if (projectInfo.CopyrightPropertyLocation.IsDefined &&
 				projectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault)

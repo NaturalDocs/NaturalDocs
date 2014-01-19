@@ -24,7 +24,7 @@ _______________________________________________________________________________
 
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
-			<#HSubTitle>...</#HSubTitle>
+			<#HSubtitle>...</#HSubtitle>
 			<input #NDSearchField />
 			<#NDSearchResults>...</#NDSearchResults>
 		</#NDHeader>
@@ -446,9 +446,9 @@ _______________________________________________________________________________
 					Title
 				</HTitle>
 
-				<HSubTitle>?
-					Sub-title
-				</HSubTitle>
+				<HSubtitle>?
+					Subtitle
+				</HSubtitle>
 
 				<HFooter>
 					<HCopyright>Copyright text</HCopyright>

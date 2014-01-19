@@ -714,10 +714,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 				// If we're using the secondary project info's title, we want to use its subtitle as well, even if it's undefined.  Setting only the
 				// title should reset the subtitle.
-				if (!primaryProjectInfo.SubTitlePropertyLocation.IsDefined)
+				if (!primaryProjectInfo.SubtitlePropertyLocation.IsDefined)
 					{
-					primaryProjectInfo.SubTitle = secondaryProjectInfo.SubTitle;
-					primaryProjectInfo.SubTitlePropertyLocation = secondaryProjectInfo.SubTitlePropertyLocation;
+					primaryProjectInfo.Subtitle = secondaryProjectInfo.Subtitle;
+					primaryProjectInfo.SubtitlePropertyLocation = secondaryProjectInfo.SubtitlePropertyLocation;
 					}
 				}
 

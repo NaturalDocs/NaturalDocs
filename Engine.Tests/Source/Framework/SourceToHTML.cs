@@ -94,10 +94,10 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * passed class name.
 		 */
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder, string tagName, string className = null, 
-									   bool reformatHTML = false, string outputTitle = null, string outputSubTitle = null)
+									   bool reformatHTML = false, string outputTitle = null, string outputSubtitle = null)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubTitle);
+			TestEngine.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubtitle);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
 			Path inputFolder = TestEngine.InputFolder;

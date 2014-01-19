@@ -61,7 +61,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 		 * If keepOutputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
 		public static void Start (Path pTestDataFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false, 
-										 string outputTitle = null, string outputSubTitle = null, bool autoGroup = false)
+										 string outputTitle = null, string outputSubtitle = null, bool autoGroup = false)
 			{
 			// Stupid, but we can't use "this" in static classes.
 			inputFolder = pTestDataFolder;
@@ -186,10 +186,10 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 				outputTarget.ProjectInfo.TitlePropertyLocation = Config.Source.CommandLine;
 				}
 
-			if (outputSubTitle != null)
+			if (outputSubtitle != null)
 				{
-				outputTarget.ProjectInfo.SubTitle = outputSubTitle;
-				outputTarget.ProjectInfo.SubTitlePropertyLocation = Config.Source.CommandLine;
+				outputTarget.ProjectInfo.Subtitle = outputSubtitle;
+				outputTarget.ProjectInfo.SubtitlePropertyLocation = Config.Source.CommandLine;
 				}
 
 			config.OutputTargets.Add(outputTarget);

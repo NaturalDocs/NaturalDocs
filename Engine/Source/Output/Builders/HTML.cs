@@ -926,25 +926,25 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			string rawPageTitle;
 			string headerTitleHTML;
-			string headerSubTitleHTML;
+			string headerSubtitleHTML;
 
 			if (config.ProjectInfo.Title == null)
 				{
 				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
-				headerSubTitleHTML = null;
+				headerSubtitleHTML = null;
 				}
 			else
 				{
 				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", config.ProjectInfo.Title);
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", config.ProjectInfo.Title).ToHTML();
 
-				if (config.ProjectInfo.SubTitle == null)
-					{  headerSubTitleHTML = null;  }
+				if (config.ProjectInfo.Subtitle == null)
+					{  headerSubtitleHTML = null;  }
 				else
 					{
-					headerSubTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubTitle(projectSubTitle)",
-																				 config.ProjectInfo.SubTitle).ToHTML();
+					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)",
+																				 config.ProjectInfo.Subtitle).ToHTML();
 					}
 				}
 
@@ -980,11 +980,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					
 					"</div>");
 
-					if (headerSubTitleHTML != null)
+					if (headerSubtitleHTML != null)
 						{  
 						content.Append(
-							"<div id=\"HSubTitle\">" +
-								headerSubTitleHTML +
+							"<div id=\"HSubtitle\">" +
+								headerSubtitleHTML +
 							"</div>");  
 						}
 
@@ -1057,21 +1057,21 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			content.Remove(0, content.Length);
 
-			string titleHTML, subTitleHTML;
+			string titleHTML, subtitleHTML;
 
 			if (config.ProjectInfo.Title != null)
 				{
 				titleHTML = headerTitleHTML;
 
-				if (config.ProjectInfo.SubTitle != null)
-					{  subTitleHTML = headerSubTitleHTML;  }
+				if (config.ProjectInfo.Subtitle != null)
+					{  subtitleHTML = headerSubtitleHTML;  }
 				else
-					{  subTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeSubTitleIfTitleExists").ToHTML();  }
+					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeSubtitleIfTitleExists").ToHTML();  }
 				}
 			else
 				{
 				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeTitle").ToHTML();
-				subTitleHTML = null;
+				subtitleHTML = null;
 				}
 
 			content.Append(
@@ -1082,11 +1082,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							titleHTML + 
 						"</div>");
 
-						if (subTitleHTML != null)
+						if (subtitleHTML != null)
 							{
 							content.Append(
-								"<div class=\"HSubTitle\">" +
-									subTitleHTML + 
+								"<div class=\"HSubtitle\">" +
+									subtitleHTML + 
 								"</div>");
 							}
 

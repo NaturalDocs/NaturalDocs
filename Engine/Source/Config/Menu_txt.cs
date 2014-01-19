@@ -18,7 +18,7 @@
  *		Project Information:
  * 
  *			> Title: [title]
- *			> SubTitle: [subtitle]
+ *			> Subtitle: [subtitle]
  *			> Footer: [footer]
  *			> Timestamp: [timestamp code]
  *
@@ -128,8 +128,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 						}
 					else if (subtitleRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.ProjectInfo.SubTitle = value.ConvertCopyrightAndTrademark();  
-						projectConfig.ProjectInfo.SubTitlePropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.Subtitle = value.ConvertCopyrightAndTrademark();  
+						projectConfig.ProjectInfo.SubtitlePropertyLocation = propertyLocation;
 						}
 					else if (lcIdentifier == "footer" || lcIdentifier == "copyright")
 						{  

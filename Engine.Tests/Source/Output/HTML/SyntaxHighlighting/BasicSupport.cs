@@ -19,7 +19,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Output.HTML.SyntaxHighlighting
 		public void All ()
 			{
 			TestFolder("Output/HTML/Syntax Highlighting/Basic Support", "Shared ND Config/Basic Language Support", 
-						   "pre", outputTitle: "Syntax Highlighting Tests", outputSubTitle: "Basic Language Support");
+						   "pre", outputTitle: "Syntax Highlighting Tests", outputSubtitle: "Basic Language Support");
 			}
 
 		}
