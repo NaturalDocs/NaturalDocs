@@ -282,15 +282,26 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				else if (iterator.IsOnTag("paramref") || 
 						  iterator.IsOnTag("typeparamref"))
 					{
-					output.EntityEncodeAndAppend(iterator.TagProperty("name"));
+					// Can't assume all the properties are set
+					string name = iterator.TagProperty("name");
+
+					if (name != null)
+						{  output.EntityEncodeAndAppend(name);  }
+
 					iterator.Next();
 					}
 
 				else if (iterator.IsOnTag("see", TagForm.Standalone))
 					{
-					output.Append("<link type=\"naturaldocs\" originaltext=\"");
-					output.EntityEncodeAndAppend(iterator.TagProperty("cref"));
-					output.Append("\">");
+					// Can't assume all the properties are set
+					string cref = iterator.TagProperty("cref");
+
+					if (cref != null)
+						{
+						output.Append("<link type=\"naturaldocs\" originaltext=\"");
+						output.EntityEncodeAndAppend(cref);
+						output.Append("\">");
+						}
 
 					iterator.Next();
 					}
@@ -328,7 +339,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 
 		/* Function: GetSimpleText
-		 * Converts a block of plain unformatted text to NDMarkup and adds it to the output.  Unlike <GetText()> this will not surrount the 
+		 * Converts a block of plain unformatted text to NDMarkup and adds it to the output.  Unlike <GetText()> this will not surround the 
 		 * output in paragraph tags.  It ends when it reaches the closing tag for anything already on the tag stack.
 		 */
 		protected void GetSimpleText (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
@@ -363,7 +374,12 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 				else if (iterator.IsOnTag("paramref") || 
 						  iterator.IsOnTag("typeparamref"))
 					{
-					output.Append(iterator.TagProperty("name"));
+					// Can't assume all the properties are set
+					string name = iterator.TagProperty("name");
+
+					if (name != null)
+						{  output.Append(name);  }
+
 					iterator.Next();
 					}
 
