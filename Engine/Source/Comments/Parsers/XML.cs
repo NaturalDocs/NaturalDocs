@@ -26,6 +26,12 @@
  *			typeparam - Added to the body under a Type Parameters heading.
  *			typeparamref - Replaced with the name property in the body.
  *			value - Added to the beginning of the body without a header.
+ *			
+ *		Supported Non-Standard Tags:
+ *		
+ *			remarks - Treated as remark.  Found in Ookii.Dialogs documentation.
+ *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Fonud in 
+ *								 Ookii.Dialogs documentation.
  * 
  *		Unsupported Tags:
  *		
@@ -128,13 +134,19 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 			{
 			if (iterator.IsOnTag("summary", TagForm.Opening) == false &&
 				iterator.IsOnTag("remark", TagForm.Opening) == false &&
+				iterator.IsOnTag("remarks", TagForm.Opening) == false &&
 				iterator.IsOnTag("example", TagForm.Opening) == false &&
 				iterator.IsOnTag("returns", TagForm.Opening) == false &&
 				iterator.IsOnTag("value", TagForm.Opening) == false)
 				{  return false;  }
 
 			string keyword = iterator.TagType;
-			XMLComment.TextBlock block = comment.GetTextBlock(keyword);
+			string blockType = keyword;
+
+			if (keyword == "remarks")
+				{  blockType = "remark";  }
+
+			XMLComment.TextBlock block = comment.GetTextBlock(blockType);
 
 			TagStack tagStack = new TagStack();
 			tagStack.OpenTag(keyword);
@@ -175,8 +187,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 			XMLComment.ListBlock block = comment.GetListBlock(keyword);
 
-			string name = (keyword == "param" || keyword == "typeparam" ? iterator.TagProperty("name") : iterator.TagProperty("cref"));
+			string name = null;
 			string description = null;
+
+			if (keyword == "param" || keyword == "typeparam")
+				{  name = iterator.TagProperty("name");  }
+			else
+				{  name = iterator.TagProperty("cref") ?? iterator.TagProperty("langword");  }
 
 			if (iterator.TagForm == TagForm.Opening)
 				{
@@ -301,6 +318,13 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 						output.Append("<link type=\"naturaldocs\" originaltext=\"");
 						output.EntityEncodeAndAppend(cref);
 						output.Append("\">");
+						}
+					else
+						{
+						string langword = iterator.TagProperty("langword");
+
+						if (langword != null)
+							{  output.EntityEncodeAndAppend(langword);  }
 						}
 
 					iterator.Next();
