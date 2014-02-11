@@ -3,22 +3,35 @@ Title: License
 _______________________________________________________________________________
 
 Natural Docs is Copyright © 2003-2013 Greg Valure.  Natural Docs is licensed under version 3 of the GNU
-Affero General Public License (AGPL).
+Affero General Public License (AGPLv3).  Please see <Incorporated Code> for additional copyrights and license
+terms.
 
 Portions of Natural Docs are automatically included with generated documentation in order to help it function,
 such as JavaScript, CSS, and image files.  These included files retain the copyright and licensing terms of 
 Natural Docs, but those terms do not apply to the remainder of the generated documentation.  All other
 generated documentation files remain under the copyright and distribution terms decided by its author.
 
-Incorporated Code:
 
-Natural Docs includes code derived from jQuery HashChange Event, which is Copyright © 2010 "Cowboy" Ben
-Alman.  jQuery HashChange Event may be obtained separately under the MIT license or the GNU General Public
-License (GPL).  However, this combined product is still licensed under the terms of the AGPLv3.
 
-	- <Project Page: http://benalman.com/projects/jquery-hashchange-plugin/>
-	- <Documentation: http://benalman.com/code/projects/jquery-hashchange/docs/>
-	- <License: http://benalman.com/about/license/>
+Topic: Incorporated Code
+_______________________________________________________________________________
+
+SQLite::
+
+	Natural Docs includes code from SQLite, which is in the public domain.  SQLite may be obtained separately to
+	be used without restriction.  However, this combined product is still licensed under the terms of the AGPLv3.
+
+		- <Web Site: http://www.sqlite.org/>
+		- See <Public Domain Statement for SQLite>
+
+jQuery HashChange Event::
+
+	Natural Docs includes code derived from jQuery HashChange Event, which is Copyright © 2010 "Cowboy"
+	Ben Alman.  jQuery HashChange Event may be obtained separately to be used under the MIT license or the 
+	GNU General Public License (GPL).  However, this combined product is still licensed under the terms of the AGPLv3.
+
+		- <Web Site: http://benalman.com/projects/jquery-hashchange-plugin/>
+		- See <License for jQuery HashChange Event>
 
 
 
@@ -424,13 +437,19 @@ _______________________________________________________________________________
 
 	14. Revised Versions of this License:
 
-	The Free Software Foundation may publish revised and/or new versions of the GNU Affero General Public License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
+	The Free Software Foundation may publish revised and/or new versions of the GNU Affero General Public License from time to time.
+	Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
 
-	Each version is given a distinguishing version number. If the Program specifies that a certain numbered version of the GNU Affero General Public License "or any later version" applies to it, you have the option of following the terms and conditions either of that numbered version or of any later version published by the Free Software Foundation. If the Program does not specify a version number of the GNU Affero General Public License, you may choose any version ever published by the Free Software Foundation.
+	Each version is given a distinguishing version number. If the Program specifies that a certain numbered version of the GNU Affero 
+	General Public License "or any later version" applies to it, you have the option of following the terms and conditions either of that 
+	numbered version or of any later version published by the Free Software Foundation. If the Program does not specify a version 
+	number of the GNU Affero General Public License, you may choose any version ever published by the Free Software Foundation.
 
-	If the Program specifies that a proxy can decide which future versions of the GNU Affero General Public License can be used, that proxy's public statement of acceptance of a version permanently authorizes you to choose that version for the Program.
+	If the Program specifies that a proxy can decide which future versions of the GNU Affero General Public License can be used, that
+	proxy's public statement of acceptance of a version permanently authorizes you to choose that version for the Program.
 
-	Later license versions may give you additional or different permissions. However, no additional obligations are imposed on any author or copyright holder as a result of your choosing to follow a later version.
+	Later license versions may give you additional or different permissions. However, no additional obligations are imposed on any author
+	or copyright holder as a result of your choosing to follow a later version.
 
 
 	15. Disclaimer of Warranty:
@@ -499,7 +518,38 @@ program, if necessary. For more information on this, and how to apply and follow
 
 
 
-Topic: MIT License for JQuery HashChange Event
+===============================================================================
+Group: Licenses for Incorporated Code
+===============================================================================
+The licenses below only apply to their respective areas of code.  All original code in Natural Docs, as well as the combined product
+which incorporates this other code, is licensed under the terms of the AGPLv3.
+
+
+
+Topic: Public Domain Statement for SQLite
+_______________________________________________________________________________
+
+All of the code and documentation in SQLite has been dedicated to the public domain by the authors. All code authors, and 
+representatives of the companies they work for, have signed affidavits dedicating their contributions to the public domain and 
+originals of those signed affidavits are stored in a firesafe at the main offices of Hwaci. Anyone is free to copy, modify, publish,
+use, compile, sell, or distribute the original SQLite code, either in source code form or as a compiled binary, for any purpose, 
+commercial or non-commercial, and by any means.
+
+The previous paragraph applies to the deliverable code and documentation in SQLite -- those parts of the SQLite library that you 
+actually bundle and ship with a larger application. Some scripts used as part of the build process (for example the "configure" 
+scripts generated by autoconf) might fall under other open-source licenses. Nothing from these build scripts ever reaches the final 
+deliverable SQLite library, however, and so the licenses associated with those scripts should not be a factor in assessing your rights 
+to copy and use the SQLite library.
+
+All of the deliverable code in SQLite has been written from scratch. No code has been taken from other projects or from the open
+internet. Every line of code can be traced back to its original author, and all of those authors have public domain dedications on file.
+So the SQLite code base is clean and is uncontaminated with licensed code from other projects.
+
+(Public domain statement retrieved from http://www.sqlite.org/copyright.html)
+
+
+
+Topic: License for JQuery HashChange Event
 _______________________________________________________________________________
 
 Copyright © 2010 "Cowboy" Ben Alman
@@ -524,3 +574,5 @@ HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
+
+(License retrieved from http://benalman.com/about/license/)
