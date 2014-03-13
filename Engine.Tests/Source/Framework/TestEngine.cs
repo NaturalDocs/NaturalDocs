@@ -73,7 +73,7 @@ namespace GregValure.NaturalDocs.Engine.Tests.Framework
 
 			if (inputFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
 				{
-				Path assemblyFolder = Path.GetExecutingAssembly().ParentFolder;
+				Path assemblyFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder;
 				Path folder = assemblyFolder;
 
 				while (System.IO.Directory.Exists(folder + "/Engine.Tests.Data") == false)

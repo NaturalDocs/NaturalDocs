@@ -905,8 +905,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			get
 				{  
-				// Including /../ because it returns the file name as well.  The Path class will simplify it out.
-				return Path.GetExecutingAssembly() + "/../Config";  
+				return Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Config";  
 				}
 			}
 			
@@ -918,8 +917,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 			{
 			get
 				{  
-				// Including /../ because it returns the file name as well.  The Path class will simplify it out.
-				return Path.GetExecutingAssembly() + "/../Styles";  
+				return Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Styles";  
 				}
 			}
 			

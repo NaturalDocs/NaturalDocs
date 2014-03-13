@@ -37,8 +37,9 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				System.Console.WriteLine("Version " + Engine.Instance.VersionString);
 				System.Console.WriteLine("-------------------------");
 
-				Path assemblyPath = Path.GetExecutingAssembly();
-				Path dllPath = assemblyPath.ParentFolder + "/NaturalDocs.Engine.Tests.dll";
+				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+				Path assemblyFolder = Path.FromAssembly(assembly).ParentFolder;
+				Path dllPath = assemblyFolder + "/NaturalDocs.Engine.Tests.dll";
 
 				string[] runnerParams;
 				string testParam;
@@ -78,7 +79,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 
 				// Attempt to extract the failure count and notices from the generated XML file.
 
-				Path xmlPath = assemblyPath.ParentFolder + "/TestResult.xml";
+				Path xmlPath = assemblyFolder + "/TestResult.xml";
 				string xmlContent = System.IO.File.ReadAllText(xmlPath);
 
 				// <failure>

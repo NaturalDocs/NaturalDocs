@@ -11,8 +11,7 @@
  * Topic: Requirements
  * 
  *		- Because it's so fundamental to the functionality of the rest of the program, this class is mostly 
- *		  self-contained.  The only other things it relies on are <Engine.Collections.StringToStringTable> and
- *		  <Path.GetExecutingAssembly()>.
+ *		  self-contained.  The only other things it relies on are <Engine.Collections.StringToStringTable> and <Path>.
  *		  
  *		- <Translation Files> defined for the default locale for each module.
  *		  
@@ -120,9 +119,7 @@ namespace GregValure.NaturalDocs.Engine
 			else 
 				{  localeCode = localeCode.ToLower();  }
 			
-			// We're using System.IO functions to limit our dependence on Path to just this one function.
-			translationsFolder = System.IO.Path.GetDirectoryName(Path.GetExecutingAssembly()) +
-													System.IO.Path.DirectorySeparatorChar + "Translations";
+			translationsFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Translations";
 											  
 			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
 			translationsLock = new System.Threading.ReaderWriterLock();

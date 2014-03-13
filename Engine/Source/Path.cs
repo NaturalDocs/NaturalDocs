@@ -400,30 +400,18 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Function: ToURL
-		 * Converts the path to an URL string, meaning it will always use slashes as separators, even on Windows.
-		 */
-		public string ToURL ()
-			{
-			if (Engine.Config.Manager.PathSeparatorCharacter == '/')
-				{  return pathString;  }
-			else
-				{  return pathString.Replace(Engine.Config.Manager.PathSeparatorCharacter, '/');  }
-			}
-
-
-		/* Function: GetExecutingAssembly
+		/* Function: FromAssembly
 		 * 
-		 * Returns a path to the executing assembly.
+		 * Returns a path to the passed .NET assembly.
 		 * 
 		 * This is preferable to using .NET's version because when executing under NUnit, GetExecutingAssembly().Location 
 		 * will return a path to the shadow copy.  This isn't useful because this path is used to get things like the Config folder 
 		 * which will only be available relative to the original file.  .NET's GetExecutingAssembly().CodeBase returns the
 		 * correct path but in a weird format, so this function abstracts away the conversion from that to a normal Path.
 		 */
-		static public Path GetExecutingAssembly ()
+		static public Path FromAssembly (System.Reflection.Assembly assembly)
 			{
-			string codeBase = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+			string codeBase = assembly.CodeBase;
 			UriBuilder uri = new UriBuilder(codeBase);
 			string assemblyPath = Uri.UnescapeDataString(uri.Path);
 
@@ -436,10 +424,29 @@ namespace GregValure.NaturalDocs.Engine
 			else
 				{  result.pathString = assemblyPath.Replace('/', Engine.Config.Manager.PathSeparatorCharacter);  }
 
+			// Actually, let's check that assumption in debug builds.
+			#if DEBUG
+			Path test = new Path(assemblyPath);
+			if (test != result)
+				{  throw new Exception("Path wasn't properly normalized in Path.FromAssembly.");  }
+			#endif
+
 			return result;
 			}
-			
-			
+
+
+		/* Function: ToURL
+		 * Converts the path to an URL string, meaning it will always use slashes as separators, even on Windows.
+		 */
+		public string ToURL ()
+			{
+			if (Engine.Config.Manager.PathSeparatorCharacter == '/')
+				{  return pathString;  }
+			else
+				{  return pathString.Replace(Engine.Config.Manager.PathSeparatorCharacter, '/');  }
+			}
+
+
 			
 		// Group: Operators
 		// __________________________________________________________________________
