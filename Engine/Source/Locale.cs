@@ -5,41 +5,36 @@
  * The localization engine for all of Natural Docs.
  * 
  * Unlike most other major engine components, this one is completely independent of <Engine.Instance>.  This allows it to 
- * be used with the external code both before and after <Engine.Instance> is available and in error conditions.
+ * be used with external code both before and after <Engine.Instance> is available and in error conditions.
  * 
  * 
  * Topic: Requirements
  * 
- *		- Because it's so fundamental to the functionality of the rest of the program, this class is mostly 
- *		  self-contained.  The only other things it relies on are <Engine.Collections.StringToStringTable> and <Path>.
+ *		- Because it's so fundamental to the functionality of the rest of the program, this class is mostly self-contained.  The
+ *		  only other things it relies on are <Engine.Collections.StringToStringTable> and <Path>.
  *		  
- *		- <Translation Files> defined for the default locale for each module.
+ *		- <Translation Files> must be defined for the default locale for each module.
  *		  
  * 
  * Topic: Usage
  * 
  *		- Add strings to the <Translation Files> and reference them with <Get()>.
  *		
- *		- Any primitives or code that could conceivably be used in error situations should use <SafeGet()>.  This
- *		  class can reach error states and/or throw its own exceptions, so any fundamental classes that could be
- *		  used in error handling should only use <SafeGet()> to prevent additional exceptions from being thrown 
- *		  and to be guaranteed a string.
+ *		- Any code that could conceivably be used in error situations should use <SafeGet()>.  This class can reach error states 
+ *		  and/or throw its own exceptions, so any classes that could be used in error handling should only use <SafeGet()> to 
+ *		  prevent additional exceptions from being thrown and to be guaranteed a string.
  *		  
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		With the exception of setting <Locale>, this class is inherently thread safe.  All locks are managed internally, all are
- *		released before function calls return, and they do not depend on locks in other modules.  There is no risk of deadlock.
- *		
- *		The only exception is setting <Locale>, which is not intended to be changed beyond the program's initialization.  It 
- *		should be treated as read-only by the time multithreading scenarios begin.
+ *		This class is inherently thread safe.  All locks are managed internally, all are released before function calls return, and they 
+ *		do not depend on locks in other modules.  There is no risk of deadlock.
  *
  * 
  * Architecture: Translation Files
  * 
- *		This class depends on translation files.  These are UTF-8 text files stored in a Translations subfolder in 
- *		the same location as the executing assembly.  They may be in any line break format and may appear with
- *		or without the Unicode BOM.
+ *		This class depends on translation files.  These are UTF-8 text files stored in a Translations subfolder in the same location as 
+ *		the executing assembly.  They may be in any line break format and may appear with or without the Unicode BOM.
  * 
  *		Each language file is named [module].[locale].txt with the locale in all lowercase, such as 
  *		"NaturalDocs.Engine.en-us.txt".  If a language file doesn't exist for the requested locale, it first tries stripping the part 
@@ -122,27 +117,38 @@ namespace GregValure.NaturalDocs.Engine
 			translationsFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Translations";
 											  
 			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
-			translationsLock = new System.Threading.ReaderWriterLock();
+			accessLock = new System.Threading.ReaderWriterLock();
 			
 			pluralFormatterRegex = new Engine.Regex.Locale.PluralFormatter();
 			}
 			
 			
 		/* Property: LocaleCode
-		 * 
 		 * Gets or sets the locale code, which is an all lowercase string in the form of "en-us".  By default it is set
 		 * to the system locale but it can be overridden by setting this property.
-		 * 
-		 * *Setting the locale code is NOT thread safe.*  It's really meant to be set by the application's initializing
-		 * thread and then treated as read-only for the rest of the program's execution.  Also note that because the
-		 * Locale class is static, this will apply to _all_ <Engine.Instances> and _all_ threads.
 		 */
 		public static string LocaleCode
 			{
 			get
-				{  return localeCode;  }
+				{  
+				accessLock.AcquireReaderLock(-1);
+				string result = localeCode;
+				accessLock.ReleaseReaderLock();
+
+				return result;
+				}
 			set
-				{  localeCode = value.ToLower();  }
+				{
+				accessLock.AcquireWriterLock(-1);
+
+				try
+					{
+					localeCode = value.ToLower();
+					ClearTranslations();
+					}
+				finally
+					{  accessLock.ReleaseWriterLock();  }
+				}
 			}
 			
 			
@@ -224,13 +230,14 @@ namespace GregValure.NaturalDocs.Engine
 			{
 			string moduleLocaleString = module + '.' + localeCode;
 			
-			translationsLock.AcquireReaderLock(-1);  
+			accessLock.AcquireReaderLock(-1);  
 			try 
 				{
-
-				// Load will automatically upgrade it to a writer lock.
 				if (!translations.ContainsKey(moduleLocaleString))
-					{  Load(module, localeCode);  }
+					{  
+					// Load will automatically upgrade it to a writer lock.
+					Load(module, localeCode);
+					}
 
 				StringToStringTable translation = translations[moduleLocaleString];
 				
@@ -284,7 +291,7 @@ namespace GregValure.NaturalDocs.Engine
 				} 
 
 			finally 
-				{  translationsLock.ReleaseReaderLock();  }
+				{  accessLock.ReleaseReaderLock();  }
 			}
 
 
@@ -313,8 +320,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * doesn't exist it will create an entry anyway with an empty table, except for the default locale in which case
 		 * it will throw an exception.
 		 * 
-		 * *Assumes the class already has a reader lock on <translationsLock>.*
-		 * 
 		 * Parameters:
 		 * 
 		 *		module - The module string to load.
@@ -322,18 +327,29 @@ namespace GregValure.NaturalDocs.Engine
 		 */
 		private static void Load (string module, string localeCode)
 			{
-			string moduleLocaleString = module + '.' + localeCode;
-			
-			System.Threading.LockCookie lockCookie = translationsLock.UpgradeToWriterLock(-1);
+			bool hadWriterLock = accessLock.IsWriterLockHeld;
+			bool hadReaderLock = accessLock.IsReaderLockHeld;
+
+			System.Threading.LockCookie lockCookie = default(System.Threading.LockCookie);
+
+			if (!hadWriterLock)
+				{
+				if (hadReaderLock)
+					{  lockCookie = accessLock.UpgradeToWriterLock(-1);  }
+				else
+					{  accessLock.AcquireWriterLock(-1);  }
+				}
+
 			try
 				{  
+				string moduleLocaleString = module + '.' + localeCode;
+
 				// Check to see if it's already loaded when we get the writer lock.  It's possible another thread got it
 				// first and already loaded this file.				
 				if (translations.ContainsKey(moduleLocaleString))
 					{  return;  }
 
-				string translationFileName = translationsFolder + System.IO.Path.DirectorySeparatorChar + 
-														 moduleLocaleString + ".txt";
+				Path translationFileName = translationsFolder + '/' + moduleLocaleString + ".txt";
 										
 				if (System.IO.File.Exists(translationFileName) == false)
 					{
@@ -436,7 +452,48 @@ namespace GregValure.NaturalDocs.Engine
 			
 			finally
 				{
-				translationsLock.DowngradeFromWriterLock(ref lockCookie);
+				if (!hadWriterLock)
+					{
+					if (hadReaderLock)
+						{  accessLock.DowngradeFromWriterLock(ref lockCookie);  }
+					else
+						{  accessLock.ReleaseWriterLock();  }
+					}
+				}
+			}
+
+
+		/* Function: ClearTranslations
+		 * Clears the loaded translations.  New ones will be loaded the next time they are accessed.
+		 */
+		private static void ClearTranslations ()
+			{
+			bool hadWriterLock = accessLock.IsWriterLockHeld;
+			bool hadReaderLock = accessLock.IsReaderLockHeld;
+
+			System.Threading.LockCookie lockCookie = default(System.Threading.LockCookie);
+
+			if (!hadWriterLock)
+				{
+				if (hadReaderLock)
+					{  lockCookie = accessLock.UpgradeToWriterLock(-1);  }
+				else
+					{  accessLock.AcquireWriterLock(-1);  }
+				}
+
+			try
+				{
+				translations.Clear();
+				}
+			finally
+				{
+				if (!hadWriterLock)
+					{
+					if (hadReaderLock)
+						{  accessLock.DowngradeFromWriterLock(ref lockCookie);  }
+					else
+						{  accessLock.ReleaseWriterLock();  }
+					}
 				}
 			}
 
@@ -481,10 +538,10 @@ namespace GregValure.NaturalDocs.Engine
 		private static StringTable<StringToStringTable> translations;
 		
 		
-		/* object: translationsLock
-		 * A reader/writer lock to control access to <translations>.
+		/* object: accessLock
+		 * A reader/writer lock to control access to the class's variables.
 		 */
-		private static System.Threading.ReaderWriterLock translationsLock;
+		private static System.Threading.ReaderWriterLock accessLock;
 		
 		/* object: pluralFormatterRegex
 		 */
