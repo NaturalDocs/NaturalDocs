@@ -1152,11 +1152,11 @@ body.NDContentPage {
 		}
 
 	#FCopyright,
-	#FTimeStamp{
+	#FTimestamp{
 		display: inline;
 		}
 	#FCopyright:after,
-	#FTimeStamp:after {
+	#FTimestamp:after {
 		white-space: pre;
 		content: "  ·  ";
 		}
@@ -1164,8 +1164,8 @@ body.NDContentPage {
 		/* IE can't do :after elements prior to 8 */
 		.IE6 #FCopyright,
 		.IE7 #FCopyright,
-		.IE6 #FTimeStamp,
-		.IE7 #FTimeStamp {
+		.IE6 #FTimestamp,
+		.IE7 #FTimestamp {
 			margin-right: 3ex;
 			}
 
@@ -1211,7 +1211,7 @@ body.NDHomePage {
 	.HTitle,
 	.HSubtitle,
 	.HCopyright,
-	.HTimeStamp,
+	.HTimestamp,
 	.HGeneratedBy,
 	.NDHomePage p {
 		text-align: center;

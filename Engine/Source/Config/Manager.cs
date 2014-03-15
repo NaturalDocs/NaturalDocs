@@ -727,10 +727,10 @@ namespace GregValure.NaturalDocs.Engine.Config
 				primaryProjectInfo.CopyrightPropertyLocation = secondaryProjectInfo.CopyrightPropertyLocation;
 				}
 
-			if (!primaryProjectInfo.TimeStampCodePropertyLocation.IsDefined)
+			if (!primaryProjectInfo.TimestampCodePropertyLocation.IsDefined)
 				{
-				primaryProjectInfo.TimeStampCode = secondaryProjectInfo.TimeStampCode;
-				primaryProjectInfo.TimeStampCodePropertyLocation = secondaryProjectInfo.TimeStampCodePropertyLocation;
+				primaryProjectInfo.TimestampCode = secondaryProjectInfo.TimestampCode;
+				primaryProjectInfo.TimestampCodePropertyLocation = secondaryProjectInfo.TimestampCodePropertyLocation;
 				}
 
 			if (!primaryProjectInfo.StyleNamePropertyLocation.IsDefined)

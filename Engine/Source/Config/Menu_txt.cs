@@ -138,8 +138,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 						}
 					else if (timestampRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.ProjectInfo.TimeStampCode = value;
-						projectConfig.ProjectInfo.TimeStampCodePropertyLocation = propertyLocation;
+						projectConfig.ProjectInfo.TimestampCode = value;
+						projectConfig.ProjectInfo.TimestampCodePropertyLocation = propertyLocation;
 						}
 					// Otherwise just ignore the entry.
 					}

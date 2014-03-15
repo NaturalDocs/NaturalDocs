@@ -951,11 +951,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 
 			// Footer
 
-			string timeStampHTML = config.ProjectInfo.MakeTimeStamp();
+			string timestampHTML = config.ProjectInfo.MakeTimestamp();
 			string copyrightHTML = config.ProjectInfo.Copyright;
 
-			if (timeStampHTML != null)
-				{  timeStampHTML = timeStampHTML.ToHTML();  }
+			if (timestampHTML != null)
+				{  timestampHTML = timestampHTML.ToHTML();  }
 			if (copyrightHTML != null)
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
@@ -1029,11 +1029,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							"</div>");
 						}
 
-					if (timeStampHTML != null)
+					if (timestampHTML != null)
 						{
 						content.Append(
-							"<div id=\"FTimeStamp\">" +
-								timeStampHTML +
+							"<div id=\"FTimestamp\">" +
+								timestampHTML +
 							"</div>");
 						}
 
@@ -1103,11 +1103,11 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								"</div>");
 							}
 
-						if (timeStampHTML != null)
+						if (timestampHTML != null)
 							{
 							content.Append(
-								"<div class=\"HTimeStamp\">" +
-									timeStampHTML +
+								"<div class=\"HTimestamp\">" +
+									timestampHTML +
 								"</div>");
 							}
 

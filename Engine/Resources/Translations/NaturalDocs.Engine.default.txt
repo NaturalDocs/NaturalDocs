@@ -44,30 +44,30 @@ Menu.Files: Files
 Menu.Classes: Classes
 Menu.Database: Database
 
-TimeStamp.Month1: January
-TimeStamp.ShortMonth1: Jan
-TimeStamp.Month2: February
-TimeStamp.ShortMonth2: Feb
-TimeStamp.Month3: March
-TimeStamp.ShortMonth3: Mar
-TimeStamp.Month4: April
-TimeStamp.ShortMonth4: Apr
-TimeStamp.Month5: May
-TimeStamp.ShortMonth5: May
-TimeStamp.Month6: June
-TimeStamp.ShortMonth6: Jun
-TimeStamp.Month7: July
-TimeStamp.ShortMonth7: Jul
-TimeStamp.Month8: August
-TimeStamp.ShortMonth8: Aug
-TimeStamp.Month9: September
-TimeStamp.ShortMonth9: Sep
-TimeStamp.Month10: October
-TimeStamp.ShortMonth10: Oct
-TimeStamp.Month11: November
-TimeStamp.ShortMonth11: Nov
-TimeStamp.Month12: December
-TimeStamp.ShortMonth12: Dec
+Timestamp.Month1: January
+Timestamp.ShortMonth1: Jan
+Timestamp.Month2: February
+Timestamp.ShortMonth2: Feb
+Timestamp.Month3: March
+Timestamp.ShortMonth3: Mar
+Timestamp.Month4: April
+Timestamp.ShortMonth4: Apr
+Timestamp.Month5: May
+Timestamp.ShortMonth5: May
+Timestamp.Month6: June
+Timestamp.ShortMonth6: Jun
+Timestamp.Month7: July
+Timestamp.ShortMonth7: Jul
+Timestamp.Month8: August
+Timestamp.ShortMonth8: Aug
+Timestamp.Month9: September
+Timestamp.ShortMonth9: Sep
+Timestamp.Month10: October
+Timestamp.ShortMonth10: Oct
+Timestamp.Month11: November
+Timestamp.ShortMonth11: Nov
+Timestamp.Month12: December
+Timestamp.ShortMonth12: Dec
 
 
 

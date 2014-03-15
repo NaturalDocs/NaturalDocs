@@ -339,8 +339,8 @@ namespace GregValure.NaturalDocs.Engine.Config
 				}
 			else if (timestampRegex.IsMatch(lcIdentifier))
 				{
-				projectInfo.TimeStampCode = value;
-				projectInfo.TimeStampCodePropertyLocation = propertyLocation;
+				projectInfo.TimestampCode = value;
+				projectInfo.TimestampCodePropertyLocation = propertyLocation;
 				return true;
 				}
 			else if (lcIdentifier == "style")
@@ -595,9 +595,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
 										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault &&
 										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.CommandLine);
-			bool hasTimeStampCode = (projectConfig.ProjectInfo.TimeStampCodePropertyLocation.IsDefined &&
-												 projectConfig.ProjectInfo.TimeStampCodePropertyLocation.Source != Source.SystemDefault &&
-												 projectConfig.ProjectInfo.TimeStampCodePropertyLocation.Source != Source.CommandLine);
+			bool hasTimestampCode = (projectConfig.ProjectInfo.TimestampCodePropertyLocation.IsDefined &&
+												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != Source.SystemDefault &&
+												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != Source.CommandLine);
 			bool hasStyleName = (projectConfig.ProjectInfo.StyleNamePropertyLocation.IsDefined &&
 										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault &&
 										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.CommandLine);
@@ -622,9 +622,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 				output.AppendLine();
 				}
 			
-			if (hasTimeStampCode)
+			if (hasTimestampCode)
 				{  
-				output.AppendLine("Timestamp: " + projectConfig.ProjectInfo.TimeStampCode);
+				output.AppendLine("Timestamp: " + projectConfig.ProjectInfo.TimestampCode);
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions(shortYear, longYear).multiline",
 													 shortYear, longYear) );
 				output.AppendLine();
@@ -636,7 +636,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				output.AppendLine();
 				}
 
-			if (hasTitle || hasSubtitle || hasCopyright || hasTimeStampCode || hasStyleName)
+			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName)
 				{  output.AppendLine();  }
 
 
@@ -662,7 +662,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.CopyrightSyntax.multiline") );
 				}
 			
-			if (!hasTimeStampCode)
+			if (!hasTimestampCode)
 				{  
 				output.AppendLine("#");
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSyntax.multiline") );
@@ -698,9 +698,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 				projectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault)
 				{  output.AppendLine("   Copyright: " + projectInfo.Copyright);  }
 			
-			if (projectInfo.TimeStampCodePropertyLocation.IsDefined &&
-				projectInfo.TimeStampCodePropertyLocation.Source != Source.SystemDefault)
-				{  output.AppendLine("   Timestamp: " + projectInfo.TimeStampCode);  }
+			if (projectInfo.TimestampCodePropertyLocation.IsDefined &&
+				projectInfo.TimestampCodePropertyLocation.Source != Source.SystemDefault)
+				{  output.AppendLine("   Timestamp: " + projectInfo.TimestampCode);  }
 
 			if (projectInfo.StyleNamePropertyLocation.IsDefined &&
 				projectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault)

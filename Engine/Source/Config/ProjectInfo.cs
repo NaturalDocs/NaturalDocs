@@ -27,13 +27,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 			title = null;
 			subtitle = null;
 			copyright = null;
-			timeStampCode = null;
+			timestampCode = null;
 			styleName = null;
 
 			titlePropertyLocation = Source.NotDefined;
 			subtitlePropertyLocation = Source.NotDefined;
 			copyrightPropertyLocation = Source.NotDefined;
-			timeStampCodePropertyLocation = Source.NotDefined;
+			timestampCodePropertyLocation = Source.NotDefined;
 			styleNamePropertyLocation = Source.NotDefined;
 			}
 
@@ -42,24 +42,24 @@ namespace GregValure.NaturalDocs.Engine.Config
 			title = toCopy.title;
 			subtitle = toCopy.subtitle;
 			copyright = toCopy.copyright;
-			timeStampCode = toCopy.timeStampCode;
+			timestampCode = toCopy.timestampCode;
 			styleName = toCopy.styleName;
 
 			titlePropertyLocation = toCopy.titlePropertyLocation;
 			subtitlePropertyLocation = toCopy.subtitlePropertyLocation;
 			copyrightPropertyLocation = toCopy.copyrightPropertyLocation;
-			timeStampCodePropertyLocation = toCopy.timeStampCodePropertyLocation;
+			timestampCodePropertyLocation = toCopy.timestampCodePropertyLocation;
 			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
 			}
 			
 
-		/* Functoin: MakeTimeStamp
-		 * Generates a time stamp from <TimeStampCode> and the current date.  If <TimeStampCode> is null this will also
+		/* Functoin: MakeTimestamp
+		 * Generates a time stamp from <TimestampCode> and the current date.  If <TimestampCode> is null this will also
 		 * return null.
 		 */
-		public string MakeTimeStamp ()
+		public string MakeTimestamp ()
 			{
-			return MakeTimeStamp(timeStampCode);
+			return MakeTimestamp(timestampCode);
 			}
 
 
@@ -68,25 +68,25 @@ namespace GregValure.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 
 
-		/* Function: MakeTimeStamp
+		/* Function: MakeTimestamp
 		 */
-		public static string MakeTimeStamp (string timeStampCode)
+		public static string MakeTimestamp (string timestampCode)
 			{
-			return MakeTimeStamp (timeStampCode, DateTime.Now.ToLocalTime());
+			return MakeTimestamp (timestampCode, DateTime.Now.ToLocalTime());
 			}
 
 
-		/* Function: MakeTimeStamp
+		/* Function: MakeTimestamp
 		 */
-		public static string MakeTimeStamp (string timeStampCode, DateTime date)
+		public static string MakeTimestamp (string timestampCode, DateTime date)
 			{
-			if (timeStampCode == null)
+			if (timestampCode == null)
 				{  return null;  }
 
 			if (date == null)
 				{  date = DateTime.Now.ToLocalTime();  }
 
-			Tokenization.Tokenizer tokenizer = new Tokenization.Tokenizer(timeStampCode);
+			Tokenization.Tokenizer tokenizer = new Tokenization.Tokenizer(timestampCode);
 			Tokenization.TokenIterator tokenIterator = tokenizer.FirstToken;
 			System.Text.StringBuilder output = new System.Text.StringBuilder();
 
@@ -101,9 +101,9 @@ namespace GregValure.NaturalDocs.Engine.Config
 					output.Append(date.Month);
 					}
 				else if (tokenIterator.MatchesToken("mon", true))
-					{  output.Append( Locale.Get("NaturalDocs.Engine", "TimeStamp.ShortMonth" + date.Month) );  }
+					{  output.Append( Locale.Get("NaturalDocs.Engine", "Timestamp.ShortMonth" + date.Month) );  }
 				else if (tokenIterator.MatchesToken("month", true))
-					{  output.Append( Locale.Get("NaturalDocs.Engine", "TimeStamp.Month" + date.Month) );  }
+					{  output.Append( Locale.Get("NaturalDocs.Engine", "Timestamp.Month" + date.Month) );  }
 				else if (tokenIterator.MatchesToken("d", true))
 					{  output.Append(date.Day);  }
 				else if (tokenIterator.MatchesToken("dd", true))
@@ -185,15 +185,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  copyright = value;  }
 			}
 			
-		/* Property: TimeStampCode
+		/* Property: TimestampCode
 		 * The time stamp code, or null if it's not set.
 		 */
-		public string TimeStampCode
+		public string TimestampCode
 			{
 			get
-				{  return timeStampCode;  }
+				{  return timestampCode;  }
 			set
-				{  timeStampCode = value;  }
+				{  timestampCode = value;  }
 			}
 
 		/* Property: StyleName
@@ -246,15 +246,15 @@ namespace GregValure.NaturalDocs.Engine.Config
 				{  copyrightPropertyLocation = value;  }
 			}
 			
-		/* Property: TimeStampCodePropertyLocation
-		 * Where the <TimeStampCode> property is defined, or <Source.NotDefined> if it isn't.
+		/* Property: TimestampCodePropertyLocation
+		 * Where the <TimestampCode> property is defined, or <Source.NotDefined> if it isn't.
 		 */
-		public PropertyLocation TimeStampCodePropertyLocation
+		public PropertyLocation TimestampCodePropertyLocation
 			{
 			get
-				{  return timeStampCodePropertyLocation;  }
+				{  return timestampCodePropertyLocation;  }
 			set
-				{  timeStampCodePropertyLocation = value;  }
+				{  timestampCodePropertyLocation = value;  }
 			}
 
 		/* Property: StyleNamePropertyLocation
@@ -276,13 +276,13 @@ namespace GregValure.NaturalDocs.Engine.Config
 		protected string title;
 		protected string subtitle;
 		protected string copyright;
-		protected string timeStampCode;
+		protected string timestampCode;
 		protected string styleName;
 
 		protected PropertyLocation titlePropertyLocation;
 		protected PropertyLocation subtitlePropertyLocation;
 		protected PropertyLocation copyrightPropertyLocation;
-		protected PropertyLocation timeStampCodePropertyLocation;
+		protected PropertyLocation timestampCodePropertyLocation;
 		protected PropertyLocation styleNamePropertyLocation;
 		
 		}
