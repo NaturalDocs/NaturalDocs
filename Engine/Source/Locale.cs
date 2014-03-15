@@ -92,6 +92,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using GregValure.NaturalDocs.Engine.Collections;
 
 
@@ -114,41 +115,46 @@ namespace GregValure.NaturalDocs.Engine
 			else 
 				{  localeCode = localeCode.ToLower();  }
 			
-			translationsFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Translations";
+			translationFolders = new List<Path>(1);
+			translationFolders.Add(
+				Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder + "/Translations"
+				);
 											  
 			translations = new StringTable<StringToStringTable>(KeySettingsForLocaleNames);
 			accessLock = new System.Threading.ReaderWriterLock();
 			
 			pluralFormatterRegex = new Engine.Regex.Locale.PluralFormatter();
 			}
-			
-			
-		/* Property: LocaleCode
-		 * Gets or sets the locale code, which is an all lowercase string in the form of "en-us".  By default it is set
-		 * to the system locale but it can be overridden by setting this property.
+
+
+		/* Function: AddLocation
+		 * Adds a location where translation files may be found.  It will be searched along with the system folder.
 		 */
-		public static string LocaleCode
+		static public void AddLocation (Path folder)
 			{
-			get
-				{  
-				accessLock.AcquireReaderLock(-1);
-				string result = localeCode;
-				accessLock.ReleaseReaderLock();
+			accessLock.AcquireWriterLock(-1);
 
-				return result;
-				}
-			set
+			try
 				{
-				accessLock.AcquireWriterLock(-1);
+				bool foundMatch = false;
 
-				try
+				foreach (var translationFolder in translationFolders)
 					{
-					localeCode = value.ToLower();
+					if (translationFolder == folder)
+						{
+						foundMatch = true;
+						break;
+						}
+					}
+
+				if (!foundMatch)
+					{
+					translationFolders.Add(folder);
 					ClearTranslations();
 					}
-				finally
-					{  accessLock.ReleaseWriterLock();  }
 				}
+			finally
+				{  accessLock.ReleaseWriterLock();  }
 			}
 			
 			
@@ -211,6 +217,39 @@ namespace GregValure.NaturalDocs.Engine
 		
 		
 		
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: LocaleCode
+		 * Gets or sets the locale code, which is an all lowercase string in the form of "en-us".  By default it is set
+		 * to the system locale but it can be overridden by setting this property.
+		 */
+		public static string LocaleCode
+			{
+			get
+				{  
+				accessLock.AcquireReaderLock(-1);
+				string result = localeCode;
+				accessLock.ReleaseReaderLock();
+
+				return result;
+				}
+			set
+				{
+				accessLock.AcquireWriterLock(-1);
+
+				try
+					{
+					localeCode = value.ToLower();
+					ClearTranslations();
+					}
+				finally
+					{  accessLock.ReleaseWriterLock();  }
+				}
+			}
+			
+			
 		
 		// Group: Private Functions
 		// __________________________________________________________________________
@@ -349,105 +388,35 @@ namespace GregValure.NaturalDocs.Engine
 				if (translations.ContainsKey(moduleLocaleString))
 					{  return;  }
 
-				Path translationFileName = translationsFolder + '/' + moduleLocaleString + ".txt";
+				bool foundTranslationFile = false;
+				Path translationFileName = null;
+				
+				foreach (Path translationFolder in translationFolders)
+					{
+					translationFileName = translationFolder + '/' + moduleLocaleString + ".txt";
 										
-				if (System.IO.File.Exists(translationFileName) == false)
+					if (System.IO.File.Exists(translationFileName))
+						{
+						foundTranslationFile = true;
+						break;
+						}
+					}
+
+				if (foundTranslationFile)
+					{
+					translations[moduleLocaleString] = Load(translationFileName);
+					}
+				else
 					{
 					if (localeCode == "default")
 						{  
-						throw new Exceptions.UserFriendly("Could not find translation file " + translationFileName + ".");  
+						throw new Exceptions.UserFriendly("Could not find translation file " + moduleLocaleString + ".txt.");  
 						}
 					else
 						{
 						translations[moduleLocaleString] = new Collections.StringToStringTable(KeySettingsForIdentifiers);
 						}			
 					}
-				
-				
-				// If the file does exist...
-					
-				else using (System.IO.StreamReader translationFileReader = 
-								new System.IO.StreamReader(translationFileName, System.Text.Encoding.UTF8, true))
-					{
-					StringToStringTable translation = new StringToStringTable(KeySettingsForIdentifiers);
-					
-					string line, originalLine;
-					string identifier = "";  // Not necessary to initialize, just need to shut the compiler up.
-					string value = "";
-					bool inMultiline = false;
-					int lineNumber = 0;
-					int index = -1;
-					
-					while ( (originalLine = translationFileReader.ReadLine()) != null )
-						{
-						line = originalLine.Trim();
-						lineNumber++;
-						
-						if (inMultiline == true)
-							{
-							if (line == "}}}")
-								{
-								inMultiline = false;
-								translation.Add(identifier, value);
-								}
-							else if (line.IndexOf("}}}") != -1)
-								{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": Nothing can be on the same line as }}}.");  }
-							else
-								{
-								// We want to preserve any leading whitespace.
-								value += originalLine.TrimEnd() + System.Environment.NewLine;
-								}
-							}
-							
-						else // not in multiline
-							{
-							if (line == "" || line[0] == '#')
-								{  /* skip */  }
-								
-							else if ( (index = line.IndexOf("{{{")) != -1)
-								{
-								identifier = line.Substring(0, index).TrimEnd();
-								
-								if (String.IsNullOrEmpty(identifier))
-									{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": No identifier before {{{.");  }
-								if (identifier.IndexOf(':') != -1)
-									{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": Line cannot have a colon and {{{.");  }
-								if (line.EndsWith("{{{") == false)
-									{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": There cannot be content on the same line as {{{.");  }
-									
-								value = "";
-								inMultiline = true;
-								}
-								
-							else if ( (index = line.IndexOf(':')) != -1)
-								{
-								identifier = line.Substring(0, index).TrimEnd();
-								
-								if (index + 1 < line.Length)
-									{  value = line.Substring(index + 1).TrimStart();  }
-								else
-									{  value = null;  }
-									
-								if (String.IsNullOrEmpty(identifier))
-									{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": No identifier before colon.");  }
-								if (String.IsNullOrEmpty(value))
-									{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": No value after colon.");  }
-									
-								translation.Add(identifier, value);
-								}
-								
-							else
-								{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + " line " + lineNumber + ": Unrecognized line format.");  }								
-							
-							}
-						}  // while ReadLine					
-						
-					if (inMultiline == true)
-						{  throw new Exceptions.UserFriendly("Error in translation file " + translationFileName + ": Unclosed multiline block.");  }
-						
-					translations[moduleLocaleString] = translation;
-
-					}  // else using FileReader
 				}
 			
 			finally
@@ -459,6 +428,94 @@ namespace GregValure.NaturalDocs.Engine
 					else
 						{  accessLock.ReleaseWriterLock();  }
 					}
+				}
+			}
+
+
+		/* Function: Load
+		 * Loads the translation file at the specified path and returns its data.
+		 */
+		private static StringToStringTable Load (Path fileName)
+			{
+			using (var fileReader = new System.IO.StreamReader(fileName, System.Text.Encoding.UTF8, true))
+				{
+				StringToStringTable fileContent = new StringToStringTable(KeySettingsForIdentifiers);
+					
+				string line, originalLine;
+				string identifier = "";  // Not necessary to initialize, just need to shut the compiler up.
+				string value = "";
+				bool inMultiline = false;
+				int lineNumber = 0;
+				int index = -1;
+					
+				while ( (originalLine = fileReader.ReadLine()) != null )
+					{
+					line = originalLine.Trim();
+					lineNumber++;
+						
+					if (inMultiline == true)
+						{
+						if (line == "}}}")
+							{
+							inMultiline = false;
+							fileContent.Add(identifier, value);
+							}
+						else if (line.IndexOf("}}}") != -1)
+							{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": Nothing can be on the same line as }}}.");  }
+						else
+							{
+							// We want to preserve any leading whitespace.
+							value += originalLine.TrimEnd() + System.Environment.NewLine;
+							}
+						}
+							
+					else // not in multiline
+						{
+						if (line == "" || line[0] == '#')
+							{  /* skip */  }
+								
+						else if ( (index = line.IndexOf("{{{")) != -1)
+							{
+							identifier = line.Substring(0, index).TrimEnd();
+								
+							if (String.IsNullOrEmpty(identifier))
+								{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": No identifier before {{{.");  }
+							if (identifier.IndexOf(':') != -1)
+								{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": Line cannot have a colon and {{{.");  }
+							if (line.EndsWith("{{{") == false)
+								{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": There cannot be content on the same line as {{{.");  }
+									
+							value = "";
+							inMultiline = true;
+							}
+								
+						else if ( (index = line.IndexOf(':')) != -1)
+							{
+							identifier = line.Substring(0, index).TrimEnd();
+								
+							if (index + 1 < line.Length)
+								{  value = line.Substring(index + 1).TrimStart();  }
+							else
+								{  value = null;  }
+									
+							if (String.IsNullOrEmpty(identifier))
+								{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": No identifier before colon.");  }
+							if (String.IsNullOrEmpty(value))
+								{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": No value after colon.");  }
+									
+							fileContent.Add(identifier, value);
+							}
+								
+						else
+							{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + " line " + lineNumber + ": Unrecognized line format.");  }								
+							
+						}
+					}  // while ReadLine					
+						
+				if (inMultiline == true)
+					{  throw new Exceptions.UserFriendly("Error in translation file " + fileName + ": Unclosed multiline block.");  }
+						
+				return fileContent;
 				}
 			}
 
@@ -518,11 +575,10 @@ namespace GregValure.NaturalDocs.Engine
 		private static string localeCode;
 		
 		
-		/* string: translationsFolder
-		 * The folder where the translation files are stored.  Does not have a trailing separator character.  Is 
-		 * deliberately not a <Path> struct in order to help maintain this class's independence.
+		/* string: translationFolders
+		 * A list of locations where translation files are stored.
 		 */
-		private static string translationsFolder;
+		private static List<Path> translationFolders;
 		
 		
 		/* object: translations
