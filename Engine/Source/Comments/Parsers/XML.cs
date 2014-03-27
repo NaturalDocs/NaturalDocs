@@ -60,6 +60,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GregValure.NaturalDocs.Engine.Collections;
 using GregValure.NaturalDocs.Engine.Comments.Components;
 using GregValure.NaturalDocs.Engine.Topics;
 

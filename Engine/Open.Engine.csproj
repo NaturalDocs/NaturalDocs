@@ -68,7 +68,7 @@
     <Compile Include="Source\Comments\Components\JavadocElementType.cs" />
     <Compile Include="Source\Comments\Components\JavadocComment.cs" />
     <Compile Include="Source\Comments\Components\XMLComment.cs" />
-    <Compile Include="Source\Comments\Components\TagStack.cs" />
+    <Compile Include="Source\Collections\TagStack.cs" />
     <Compile Include="Source\Comments\Parsers\Javadoc.cs" />
     <Compile Include="Source\Comments\Parsers\XML.cs" />
     <Compile Include="Source\Comments\Components\XMLElementType.cs" />
