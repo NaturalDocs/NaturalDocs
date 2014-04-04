@@ -395,6 +395,15 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 				}
 			}
 
+		/* Property: IsTag
+		 * Whether <Type> is any form of tag.
+		 */
+		public bool IsTag
+			{
+			get
+				{  return (type >= ElementType.LowestTagValue && type <= ElementType.HighestTagValue);  }
+			}
+
 		/* Property: IsOpeningTag
 		 * If <Element> is on a tag, whether it is an opening or a closing tag.  This value is undefined if the iterator is
 		 * on a non-tag or standalone tag element.
@@ -413,6 +422,15 @@ namespace GregValure.NaturalDocs.Engine.NDMarkup
 			{
 			get
 				{  return !isOpeningTag;  }
+			}
+
+		/* Property: IsEntityChar
+		 * Whether <Type> is any form of entity character.
+		 */
+		public bool IsEntityChar
+			{
+			get
+				{  return (type >= ElementType.LowestEntityValue && type <= ElementType.HighestEntityValue);  }
 			}
 
 		/* Property: IsInBounds
