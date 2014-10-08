@@ -90,6 +90,7 @@
     <Compile Include="Source\Config\Source.cs" />
     <Compile Include="Source\Config\PropertyLocation.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
+    <Compile Include="Source\Languages\Languages_txt.cs" />
     <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
     <Compile Include="Source\Output\Builders\HTMLBuildState.cs" />
     <Compile Include="Source\Output\Components\JSSearchData.cs" />
