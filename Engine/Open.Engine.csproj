@@ -89,6 +89,7 @@
     <Compile Include="Source\Config\ProjectInfo.cs" />
     <Compile Include="Source\Config\Source.cs" />
     <Compile Include="Source\Config\PropertyLocation.cs" />
+    <Compile Include="Source\Languages\Languages_nd.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Languages\Languages_txt.cs" />
     <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
