@@ -95,11 +95,23 @@ namespace GregValure.NaturalDocs.CLI
 				ProjectConfig commandLineConfig;
 				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, out commandLineConfig, startupErrors);
 
-				if (parseCommandLineResult == ParseCommandLineResult.OK)
+				
+				if (parseCommandLineResult == ParseCommandLineResult.Error)
 					{
-					bool rebuildAllOutputFromCommandLine = Engine.Instance.Config.RebuildAllOutput;
-					bool reparseEverythingFromCommandLine = Engine.Instance.Config.ReparseEverything;
+					HandleErrorList(startupErrors);
+					
+					#if PAUSE_ON_ERROR
+						pauseBeforeExit = true;
+					#endif
+					}
 
+				else if (parseCommandLineResult == ParseCommandLineResult.InformationalExit)
+					{
+					gracefulExit = true;
+					}
+
+				else // (parseCommandLineResult == ParseCommandLineResult.OK)
+					{
 					if (quiet)
 						{  
 						// This is easier and less error prone than putting conditional statements around all the non-error console
@@ -128,131 +140,176 @@ namespace GregValure.NaturalDocs.CLI
 							);
 						}
 
-					NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
 
-					if (NaturalDocs.Engine.Instance.Start(startupErrors, commandLineConfig) == true)
+					// Create project configuration files only
+
+					if (commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined &&
+						commandLineConfig.InputTargets.Count == 0 &&
+						commandLineConfig.OutputTargets.Count == 0 &&
+						System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Project.txt") == false)
 						{
-
-
-						// File Search
-						
-						using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch() )
-							{
-							statusManager.Start();
-							
-							Multithread("File Adder", Engine.Instance.Files.WorkOnAddingAllFiles);
-							
-							statusManager.End();
-							}
-							
-						Engine.Instance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
-							
-						
-						// Rebuild notice
-
-						string alternateStartMessage = null;
-						
-						if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
-							{  alternateStartMessage = "Status.RebuildEverythingByRequest";  }
-						else if (Engine.Instance.Config.ReparseEverything && Engine.Instance.Config.RebuildAllOutput)
-							{  alternateStartMessage = "Status.RebuildEverythingAutomatically";  }
-							
-							
-						// Parsing
-						
-						#if SHOW_EXECUTION_TIME
-							startParsing = System.DateTime.Now.Ticks;
-						#endif
-
-						using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
-							{
-							statusManager.Start();
-
-							Multithread("Parser", Engine.Instance.Files.WorkOnProcessingChanges);							
-							
-							statusManager.End();
-							}
-							
-						#if SHOW_EXECUTION_TIME
-							endParsing = System.DateTime.Now.Ticks;
-						#endif
-
-							
-						// Resolving
-						
-						#if SHOW_EXECUTION_TIME
-							startResolving = System.DateTime.Now.Ticks;
-						#endif
-
-						using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
-							{
-							statusManager.Start();
-
-							Multithread("Resolver", Engine.Instance.CodeDB.WorkOnResolvingLinks);
-							
-							statusManager.End();
-							}
-							
-						#if SHOW_EXECUTION_TIME
-							endResolving = System.DateTime.Now.Ticks;
-						#endif
-
-							
-						// Building
-						
-						#if SHOW_EXECUTION_TIME
-							startBuilding = System.DateTime.Now.Ticks;
-						#endif
-
-						using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
-							{
-							statusManager.Start();
-
-							Multithread("Builder", Engine.Instance.Output.WorkOnUpdatingOutput);
-							Multithread("Finalizer", Engine.Instance.Output.WorkOnFinalizingOutput);							
-							
-							statusManager.End();
-							}
-							
-						#if SHOW_EXECUTION_TIME
-							endBuilding = System.DateTime.Now.Ticks;
-						#endif
-
-							
-						// End
-						
-						Engine.Instance.Cleanup(Delegates.NeverCancel);
-						
-						System.Console.Write(
-							Engine.Locale.Get("NaturalDocs.CLI", "Status.End.multiline")
+						System.Console.WriteLine(
+							Engine.Locale.Get("NaturalDocs.CLI", "Status.CreatingProjectConfigFiles")
 							);
-						System.Console.WriteLine();
-						
-						gracefulExit = true;
 
-						}
-					else
-						{  
-						HandleErrorList(startupErrors); 
-						
-						#if PAUSE_ON_ERROR
-							pauseBeforeExit = true;
-						#endif
-						}
-					}
-				
-				else if (parseCommandLineResult == ParseCommandLineResult.InformationalExit)
-					{
-					gracefulExit = true;
-					}
+						Engine.Config.Project_txt projectTxtParser = new Engine.Config.Project_txt();
+						projectTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Project.txt", commandLineConfig, startupErrors);
 
-				else
-					{
-					HandleErrorList(startupErrors);
+						if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Languages.txt") == false)
+							{
+							Engine.Languages.Languages_txt languagesTxtParser = new Engine.Languages.Languages_txt();
+							languagesTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Languages.txt",
+																new List<Engine.Languages.ConfigFileLanguage>(), new List<string>(),
+																startupErrors, true, false);
+							}
+
+						if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Topics.txt") == false)
+							{
+							Engine.TopicTypes.Topics_txt topicsTxtParser = new Engine.TopicTypes.Topics_txt();
+							topicsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Topics.txt",
+														   new List<Engine.TopicTypes.ConfigFileTopicType>(), new List<string>(), new List<string>(),
+														   startupErrors, true, false);
+							}
+
+						if (startupErrors.Count > 0)
+							{
+							HandleErrorList(startupErrors);
 					
-					#if PAUSE_ON_ERROR
-						pauseBeforeExit = true;
-					#endif
+							#if PAUSE_ON_ERROR
+								pauseBeforeExit = true;
+							#endif
+							}
+						else
+							{
+							System.Console.Write(
+								Engine.Locale.Get("NaturalDocs.CLI", "Status.End.multiline")
+								);
+							System.Console.WriteLine();
+						
+							gracefulExit = true;
+							}
+						}
+
+
+					// Normal execution
+
+					else
+						{
+						bool rebuildAllOutputFromCommandLine = Engine.Instance.Config.RebuildAllOutput;
+						bool reparseEverythingFromCommandLine = Engine.Instance.Config.ReparseEverything;
+
+						NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
+
+						if (NaturalDocs.Engine.Instance.Start(startupErrors, commandLineConfig) == true)
+							{
+
+
+							// File Search
+						
+							using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch() )
+								{
+								statusManager.Start();
+							
+								Multithread("File Adder", Engine.Instance.Files.WorkOnAddingAllFiles);
+							
+								statusManager.End();
+								}
+							
+							Engine.Instance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
+							
+						
+							// Rebuild notice
+
+							string alternateStartMessage = null;
+						
+							if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
+								{  alternateStartMessage = "Status.RebuildEverythingByRequest";  }
+							else if (Engine.Instance.Config.ReparseEverything && Engine.Instance.Config.RebuildAllOutput)
+								{  alternateStartMessage = "Status.RebuildEverythingAutomatically";  }
+							
+							
+							// Parsing
+						
+							#if SHOW_EXECUTION_TIME
+								startParsing = System.DateTime.Now.Ticks;
+							#endif
+
+							using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
+								{
+								statusManager.Start();
+
+								Multithread("Parser", Engine.Instance.Files.WorkOnProcessingChanges);							
+							
+								statusManager.End();
+								}
+							
+							#if SHOW_EXECUTION_TIME
+								endParsing = System.DateTime.Now.Ticks;
+							#endif
+
+							
+							// Resolving
+						
+							#if SHOW_EXECUTION_TIME
+								startResolving = System.DateTime.Now.Ticks;
+							#endif
+
+							using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
+								{
+								statusManager.Start();
+
+								Multithread("Resolver", Engine.Instance.CodeDB.WorkOnResolvingLinks);
+							
+								statusManager.End();
+								}
+							
+							#if SHOW_EXECUTION_TIME
+								endResolving = System.DateTime.Now.Ticks;
+							#endif
+
+							
+							// Building
+						
+							#if SHOW_EXECUTION_TIME
+								startBuilding = System.DateTime.Now.Ticks;
+							#endif
+
+							using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
+								{
+								statusManager.Start();
+
+								Multithread("Builder", Engine.Instance.Output.WorkOnUpdatingOutput);
+								Multithread("Finalizer", Engine.Instance.Output.WorkOnFinalizingOutput);							
+							
+								statusManager.End();
+								}
+							
+							#if SHOW_EXECUTION_TIME
+								endBuilding = System.DateTime.Now.Ticks;
+							#endif
+
+							
+							// End
+						
+							Engine.Instance.Cleanup(Delegates.NeverCancel);
+						
+							System.Console.Write(
+								Engine.Locale.Get("NaturalDocs.CLI", "Status.End.multiline")
+								);
+							System.Console.WriteLine();
+						
+							gracefulExit = true;
+							}
+
+						else // engine did not start correctly
+							{  
+							HandleErrorList(startupErrors); 
+						
+							#if PAUSE_ON_ERROR
+								pauseBeforeExit = true;
+							#endif
+							}
+						}
 					}
 				}
 

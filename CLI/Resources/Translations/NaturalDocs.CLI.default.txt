@@ -55,6 +55,7 @@ Status.OutputBuildingUpdate(percent): ...{0}% complete
 
 Status.LongStartupOperation.StartPurgingOutputWorkingData: Deleting old working data...
 Status.LongStartupOperation.StartPurgingOutputFiles: Deleting old documentation...
+Status.CreatingProjectConfigFiles: Creating project configuration files...
 
 
 #
@@ -113,6 +114,9 @@ Parameters:
  -p [folder]
 --project-config [folder]
     Specifies a folder to store project configuration files.  Required.
+    If you run Natural Docs and only specify an empty project configuration
+    folder on the command line, it will create default configuration files for
+    you.
 
  -i [folder]
 --input [folder]
