@@ -325,6 +325,10 @@ namespace GregValure.NaturalDocs.CLI
 			finally
 				{
 				Engine.Instance.Dispose(gracefulExit);
+
+				// Restore the standard output
+				if (quiet)
+					{  System.Console.SetOut(standardOutput);  }
 				}
 				
 			#if SHOW_EXECUTION_TIME
@@ -347,10 +351,6 @@ namespace GregValure.NaturalDocs.CLI
 			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
 				if (pauseBeforeExit)
 					{
-					// Restore the standard output because we don't want an invisible keyboard prompt.
-					if (quiet)
-						{  System.Console.SetOut(standardOutput);  }
-
 					System.Console.WriteLine();
 					System.Console.WriteLine("Press any key to continue...");
 					System.Console.ReadKey(true);
