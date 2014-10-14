@@ -66,14 +66,8 @@ namespace GregValure.NaturalDocs.CLI
 		public static void Main (string[] commandLine)
 			{
 			#if SHOW_EXECUTION_TIME
-				long startProgram = System.DateTime.Now.Ticks;
-				long endProgram = -1;
-				long startParsing = -1;
-				long endParsing = -1;
-				long startResolving = -1;
-				long endResolving = -1;
-				long startBuilding = -1;
-				long endBuilding = -1;
+				var executionTimer = new ExecutionTimer();
+				executionTimer.Start("Total Execution");
 			#endif
 
 			#if PAUSE_BEFORE_EXIT
@@ -231,7 +225,7 @@ namespace GregValure.NaturalDocs.CLI
 							// Parsing
 						
 							#if SHOW_EXECUTION_TIME
-								startParsing = System.DateTime.Now.Ticks;
+								executionTimer.Start("Parsing Source Files");
 							#endif
 
 							using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
@@ -244,14 +238,14 @@ namespace GregValure.NaturalDocs.CLI
 								}
 							
 							#if SHOW_EXECUTION_TIME
-								endParsing = System.DateTime.Now.Ticks;
+								executionTimer.End("Parsing Source Files");
 							#endif
 
 							
 							// Resolving
 						
 							#if SHOW_EXECUTION_TIME
-								startResolving = System.DateTime.Now.Ticks;
+								executionTimer.Start("Resolving Links");
 							#endif
 
 							using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
@@ -264,14 +258,14 @@ namespace GregValure.NaturalDocs.CLI
 								}
 							
 							#if SHOW_EXECUTION_TIME
-								endResolving = System.DateTime.Now.Ticks;
+								executionTimer.End("Resolving Links");
 							#endif
 
 							
 							// Building
 						
 							#if SHOW_EXECUTION_TIME
-								startBuilding = System.DateTime.Now.Ticks;
+								executionTimer.Start("Building Output");
 							#endif
 
 							using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
@@ -285,7 +279,7 @@ namespace GregValure.NaturalDocs.CLI
 								}
 							
 							#if SHOW_EXECUTION_TIME
-								endBuilding = System.DateTime.Now.Ticks;
+								executionTimer.End("Building Output");
 							#endif
 
 							
@@ -332,20 +326,8 @@ namespace GregValure.NaturalDocs.CLI
 				}
 				
 			#if SHOW_EXECUTION_TIME
-
-				endProgram = DateTime.Now.Ticks;
-
-				System.Console.WriteLine();
-
-				if (startParsing != -1 && endParsing != -1)
-					{  System.Console.WriteLine("Parsing time: {0:#,0}k ticks", (endParsing - startParsing) / 1000);  }
-				if (startResolving != -1 && endResolving != -1)
-					{  System.Console.WriteLine("Resolving time: {0:#,0}k ticks", (endResolving - startResolving) / 1000);  }
-				if (startBuilding != -1 && endBuilding != -1)
-					{  System.Console.WriteLine("Building time: {0:#,0}k ticks", (endBuilding - startBuilding) / 1000);  }
-				if (startProgram != -1 && endProgram != -1)
-					{  System.Console.WriteLine("Total time: {0:#,0}k ticks", (endProgram - startProgram) / 1000);  }
-
+				executionTimer.End("Total Execution");
+				System.Console.Write(executionTimer.StatisticsToString());
 			#endif
 
 			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
