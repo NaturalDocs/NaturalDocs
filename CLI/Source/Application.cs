@@ -1117,21 +1117,6 @@ namespace GregValure.NaturalDocs.CLI
 
 
 
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: Quiet
-		 * Whether the application should suppress all non-error output.
-		 */
-		static public bool Quiet
-			{
-			get
-				{  return quiet;  }
-			}
-
-
-
 		// Group: Variables
 		// __________________________________________________________________________
 
