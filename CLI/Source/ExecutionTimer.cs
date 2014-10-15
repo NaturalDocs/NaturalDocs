@@ -1,6 +1,4 @@
-﻿#if SHOW_EXECUTION_TIME
-
-/* 
+﻿/* 
  * Class: GregValure.NaturalDocs.CLI.ExecutionTimer
  * ____________________________________________________________________________
  * 
@@ -222,5 +220,3 @@ namespace GregValure.NaturalDocs.CLI
 		
 		}
 	}
-
-#endif

@@ -65,10 +65,8 @@ namespace GregValure.NaturalDocs.CLI
 		 */
 		public static void Main (string[] commandLine)
 			{
-			#if SHOW_EXECUTION_TIME
-				var executionTimer = new ExecutionTimer();
-				executionTimer.Start("Total Execution");
-			#endif
+			executionTimer = new ExecutionTimer();
+			executionTimer.Start("Total Execution");
 
 			#if PAUSE_BEFORE_EXIT
 				bool pauseBeforeExit = true;
@@ -78,6 +76,8 @@ namespace GregValure.NaturalDocs.CLI
 			
 			bool gracefulExit = false;
 			quiet = false;
+			showExecutionTime = false;
+
 			var standardOutput = System.Console.Out;
 
 			try
@@ -224,9 +224,7 @@ namespace GregValure.NaturalDocs.CLI
 							
 							// Parsing
 						
-							#if SHOW_EXECUTION_TIME
-								executionTimer.Start("Parsing Source Files");
-							#endif
+							executionTimer.Start("Parsing Source Files");
 
 							using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
 								{
@@ -237,16 +235,12 @@ namespace GregValure.NaturalDocs.CLI
 								statusManager.End();
 								}
 							
-							#if SHOW_EXECUTION_TIME
-								executionTimer.End("Parsing Source Files");
-							#endif
+							executionTimer.End("Parsing Source Files");
 
 							
 							// Resolving
 						
-							#if SHOW_EXECUTION_TIME
-								executionTimer.Start("Resolving Links");
-							#endif
+							executionTimer.Start("Resolving Links");
 
 							using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
 								{
@@ -257,16 +251,12 @@ namespace GregValure.NaturalDocs.CLI
 								statusManager.End();
 								}
 							
-							#if SHOW_EXECUTION_TIME
-								executionTimer.End("Resolving Links");
-							#endif
+							executionTimer.End("Resolving Links");
 
 							
 							// Building
 						
-							#if SHOW_EXECUTION_TIME
-								executionTimer.Start("Building Output");
-							#endif
+							executionTimer.Start("Building Output");
 
 							using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
 								{
@@ -278,9 +268,7 @@ namespace GregValure.NaturalDocs.CLI
 								statusManager.End();
 								}
 							
-							#if SHOW_EXECUTION_TIME
-								executionTimer.End("Building Output");
-							#endif
+							executionTimer.End("Building Output");
 
 							
 							// End
@@ -325,10 +313,10 @@ namespace GregValure.NaturalDocs.CLI
 					{  System.Console.SetOut(standardOutput);  }
 				}
 				
-			#if SHOW_EXECUTION_TIME
-				executionTimer.End("Total Execution");
-				System.Console.Write(executionTimer.StatisticsToString());
-			#endif
+			executionTimer.End("Total Execution");
+
+			if (showExecutionTime)
+				{  System.Console.Write(executionTimer.StatisticsToString());  }
 
 			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
 				if (pauseBeforeExit)
@@ -407,7 +395,11 @@ namespace GregValure.NaturalDocs.CLI
 		 *		- -?
 		 *		- -v, --version
 		 *		
-		 * No longer supported:
+		 * Supported But Undocumented:
+		 * 
+		 *		- --show-execution-time
+		 *		
+		 * No Longer Supported:
 		 * 
 		 *		- -cs, --char-set, --charset, --character-set, --characterset
 		 *		- -ho, --headers-only, --headersonly
@@ -435,6 +427,10 @@ namespace GregValure.NaturalDocs.CLI
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--help", "-h", "-?");
 			commandLine.AddAliases("--version", "-v");
+
+			// Undocumented
+			commandLine.AddAliases("--show-execution-time", "--showexecutiontime", "--show-execution-timer", "--showexecutiontimer",
+													"--execution-time", "--executiontime");
 
 			// No longer supported
 			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
@@ -897,6 +893,25 @@ namespace GregValure.NaturalDocs.CLI
 					}
 
 
+				// Show Execution Time
+
+				else if (parameter == "--show-execution-time")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						showExecutionTime = true;
+						}
+					}
+
+
 				// Help
 				
 				else if (parameter == "--help")
@@ -1125,6 +1140,13 @@ namespace GregValure.NaturalDocs.CLI
 		 * Whether the application should suppress all non-error output.
 		 */
 		static private bool quiet;
+
+		/* var: showExecutionTime
+		 * Whether the application should show how long it takes to execute various sections of code.
+		 */
+		static private bool showExecutionTime;
+
+		static private ExecutionTimer executionTimer;
 		
 		}
 	}
