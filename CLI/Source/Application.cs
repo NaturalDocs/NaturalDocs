@@ -402,13 +402,10 @@ namespace GregValure.NaturalDocs.CLI
 		 *		- -s, --style, --default-style
 		 *		- -r, --rebuild
 		 *		- -ro, --rebuild-output
+		 *		- -q, --quiet
 		 *		- -h, --help
 		 *		- -?
 		 *		- -v, --version
-		 *		
-		 * Unsupported so far:
-		 * 
-		 *		- -q, --quiet
 		 *		
 		 * No longer supported:
 		 * 
