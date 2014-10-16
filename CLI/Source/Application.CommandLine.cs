@@ -23,21 +23,19 @@ namespace GregValure.NaturalDocs.CLI
 		 * 
 		 * The result returned from <ParseCommandLine()>.
 		 * 
-		 * OK - The command line was OK and execution should continue.
+		 * Run - The command line was OK and Natural Docs should run normally.
 		 * Error - There was an error on the command line.
-		 * InformationalExit - The program was asked for information, such as the version number, that 
-		 *								<ParseCommandLine()> provided and now execution should cease.
+		 * ShowCommandLineReference - The user asked for the command line reference to be displayed.
+		 * ShowVersion - The user asked for the version number to be displayed.
 		 */
 		public enum ParseCommandLineResult : byte
-			{  OK, Error, InformationalExit  };
+			{  Run, Error, ShowCommandLineReference, ShowVersion  };
 			
 
 		/* Function: ParseCommandLine
 		 * 
 		 * Parses the command line and applies the relevant settings in in <NaturalDocs.Engine's> modules.  If there were 
-		 * errors they will be placed on errorList and it will return <ParseCommandLineResult.Error>.  If the command line 
-		 * was used to ask for information such as the program version, it will write it to the console and return
-		 * <ParseCommandLineResult.InformationalExit>.
+		 * errors they will be placed on errorList and it will return <ParseCommandLineResult.Error>.
 		 * 
 		 * Supported:
 		 * 
@@ -69,7 +67,7 @@ namespace GregValure.NaturalDocs.CLI
 		 *		- -ho, --headers-only, --headersonly
 		 *		- -ag, --auto-group, --autogroup
 		 */
-		public static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, out ProjectConfig commandLineConfig, ErrorList errorList)
+		private static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, out ProjectConfig commandLineConfig, ErrorList errorList)
 			{
 			int originalErrorCount = errorList.Count;
 
@@ -580,11 +578,7 @@ namespace GregValure.NaturalDocs.CLI
 				
 				else if (parameter == "--help")
 					{
-					Console.WriteLine( 
-						Locale.Get("NaturalDocs.CLI", "CommandLine.SyntaxReference(version).multiline", NaturalDocs.Engine.Instance.VersionString) 
-						);
-
-					return ParseCommandLineResult.InformationalExit;
+					return ParseCommandLineResult.ShowCommandLineReference;
 					}
 
 
@@ -593,8 +587,7 @@ namespace GregValure.NaturalDocs.CLI
 				
 				else if (parameter == "--version")
 					{
-					Console.WriteLine( Engine.Instance.VersionString );
-					return ParseCommandLineResult.InformationalExit;
+					return ParseCommandLineResult.ShowVersion;
 					}
 
 
@@ -664,7 +657,7 @@ namespace GregValure.NaturalDocs.CLI
 			// Done.
 				
 			if (errorList.Count == originalErrorCount)
-				{  return ParseCommandLineResult.OK;  }
+				{  return ParseCommandLineResult.Run;  }
 			else
 				{  return ParseCommandLineResult.Error;  }
 			}
