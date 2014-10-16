@@ -50,15 +50,12 @@ namespace GregValure.NaturalDocs.CLI
 			executionTimer = new ExecutionTimer();
 			executionTimer.Start("Total Execution");
 
-			#if PAUSE_BEFORE_EXIT
-				bool pauseBeforeExit = true;
-			#elif PAUSE_ON_ERROR
-				bool pauseBeforeExit = false;
-			#endif
-			
-			bool gracefulExit = false;
 			quiet = false;
 			showExecutionTime = false;
+			pauseOnError = false;
+			pauseBeforeExit = false;
+			
+			bool gracefulExit = false;
 
 			var standardOutput = System.Console.Out;
 
@@ -73,10 +70,6 @@ namespace GregValure.NaturalDocs.CLI
 				if (parseCommandLineResult == ParseCommandLineResult.Error)
 					{
 					HandleErrorList(startupErrors);
-					
-					#if PAUSE_ON_ERROR
-						pauseBeforeExit = true;
-					#endif
 					}
 
 				else if (parseCommandLineResult == ParseCommandLineResult.ShowCommandLineReference)
@@ -111,13 +104,7 @@ namespace GregValure.NaturalDocs.CLI
 						if (CreateProjectConfiguration(startupErrors))
 							{  gracefulExit = true;  }
 						else
-							{
-							HandleErrorList(startupErrors);
-					
-							#if PAUSE_ON_ERROR
-								pauseBeforeExit = true;
-							#endif
-							}
+							{  HandleErrorList(startupErrors);  }
 						}
 
 
@@ -128,13 +115,7 @@ namespace GregValure.NaturalDocs.CLI
 						if (BuildDocumentation(startupErrors))
 							{  gracefulExit = true;  }
 						else
-							{
-							HandleErrorList(startupErrors);
-					
-							#if PAUSE_ON_ERROR
-								pauseBeforeExit = true;
-							#endif
-							}
+							{  HandleErrorList(startupErrors);  }
 						}
 					}
 				}
@@ -142,34 +123,29 @@ namespace GregValure.NaturalDocs.CLI
 			catch (Exception e)
 				{  
 				HandleException(e);  
-				
-				#if PAUSE_ON_ERROR
-					pauseBeforeExit = true;
-				#endif
 				}
 				
 			finally
 				{
 				Engine.Instance.Dispose(gracefulExit);
 
-				// Restore the standard output
+				executionTimer.End("Total Execution");
+
+				if (showExecutionTime)
+					{  System.Console.Write(executionTimer.StatisticsToString());  }
+
+				// Restore the standard output.  We do this before "Press any key to continue" because we never want that to
+				// be hidden.
 				if (quiet)
 					{  System.Console.SetOut(standardOutput);  }
 				}
 				
-			executionTimer.End("Total Execution");
-
-			if (showExecutionTime)
-				{  System.Console.Write(executionTimer.StatisticsToString());  }
-
-			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
-				if (pauseBeforeExit)
-					{
-					System.Console.WriteLine();
-					System.Console.WriteLine("Press any key to continue...");
-					System.Console.ReadKey(true);
-					}
-			#endif
+			if (pauseBeforeExit || (pauseOnError && !gracefulExit))
+				{
+				System.Console.WriteLine();
+				System.Console.WriteLine("Press any key to continue...");
+				System.Console.ReadKey(true);
+				}
 			}
 
 
@@ -546,6 +522,9 @@ namespace GregValure.NaturalDocs.CLI
 		 * Whether the application should show how long it takes to execute various sections of code.
 		 */
 		static private bool showExecutionTime;
+
+		static private bool pauseOnError;
+		static private bool pauseBeforeExit;
 
 		static private ExecutionTimer executionTimer;
 		

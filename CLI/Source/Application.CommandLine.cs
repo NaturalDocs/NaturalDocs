@@ -60,6 +60,8 @@ namespace GregValure.NaturalDocs.CLI
 		 * Supported But Undocumented:
 		 * 
 		 *		- --show-execution-time
+		 *		- --pause-before-exit, --pause
+		 *		- --pause-on-error
 		 *		
 		 * No Longer Supported:
 		 * 
@@ -93,6 +95,8 @@ namespace GregValure.NaturalDocs.CLI
 			// Undocumented
 			commandLine.AddAliases("--show-execution-time", "--showexecutiontime", "--show-execution-timer", "--showexecutiontimer",
 													"--execution-time", "--executiontime");
+			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
+			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 
 			// No longer supported
 			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
@@ -570,6 +574,44 @@ namespace GregValure.NaturalDocs.CLI
 					else
 						{
 						showExecutionTime = true;
+						}
+					}
+
+
+				// Pause Before Exit
+
+				else if (parameter == "--pause-before-exit")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						pauseBeforeExit = true;
+						}
+					}
+
+
+				// Show Execution Time
+
+				else if (parameter == "--pause-on-error")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						pauseOnError = true;
 						}
 					}
 
