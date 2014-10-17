@@ -24,11 +24,9 @@ namespace GregValure.NaturalDocs.Engine.Tests
 		{
 		static void Main (string[] commandLineOptions)
 			{
-			#if PAUSE_BEFORE_EXIT
-				bool pauseBeforeExit = true;
-			#elif PAUSE_ON_ERROR
-				bool pauseBeforeExit = false;
-			#endif
+			testGroup = null;
+			pauseOnError = false;
+			pauseBeforeExit = false;
 
 			try
 				{
@@ -41,24 +39,21 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				Path assemblyFolder = Path.FromAssembly(assembly).ParentFolder;
 				Path dllPath = assemblyFolder + "/NaturalDocs.Engine.Tests.dll";
 
-				string[] runnerParams;
-				string testParam;
+				if (!ParseCommandLine(commandLineOptions))
+					{  return;  }
 
-				if (commandLineOptions.Length == 0)
+				string[] runnerParams;
+
+				if (testGroup == null)
 					{  
-					testParam = null;
+					System.Console.WriteLine("Running all tests...");
 					runnerParams = new string[1] { dllPath };
 					}
 				else
 					{
-					testParam = commandLineOptions[0];
-					runnerParams = new string[2] { "/fixture:GregValure.NaturalDocs.Engine.Tests." + testParam, dllPath };
+					System.Console.WriteLine("Running " + testGroup + " tests...");
+					runnerParams = new string[2] { "/fixture:GregValure.NaturalDocs.Engine.Tests." + testGroup, dllPath };
 					}
-
-				if (testParam == null)
-					{  System.Console.WriteLine("Running all tests...");  }
-				else
-					{  System.Console.WriteLine("Running " + testParam + " tests...");  }
 
 
 				// Use the NUnit console runner to execute the tests and capture the output.
@@ -124,9 +119,8 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						System.Console.Write(capturedConsoleOut.ToString());
 					#endif
 
-					#if PAUSE_ON_ERROR
-						pauseBeforeExit = true;
-					#endif
+					if (pauseOnError)
+						{  pauseBeforeExit = true;  }
 					}
 				else if (failureCount != 0)
 					{
@@ -135,9 +129,8 @@ namespace GregValure.NaturalDocs.Engine.Tests
 						System.Console.Write(failures.ToString());
 					#endif
 
-					#if PAUSE_ON_ERROR
-						pauseBeforeExit = true;
-					#endif
+					if (pauseOnError)
+						{  pauseBeforeExit = true;  }
 					}
 				else
 					{
@@ -150,23 +143,132 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				}
 			catch (Exception e)
 				{
-				#if PAUSE_ON_ERROR
-					pauseBeforeExit = true;
-				#endif
+				if (pauseOnError)
+					{  pauseBeforeExit = true;  }
 
 				System.Console.WriteLine("-------------------------");
 				System.Console.WriteLine();
 				System.Console.WriteLine("Exception: " + e.Message);
 				}
 
-			#if PAUSE_BEFORE_EXIT || PAUSE_ON_ERROR
-				if (pauseBeforeExit)
-					{
-					System.Console.WriteLine();
-					System.Console.WriteLine("Press any key to continue...");
-					System.Console.ReadKey(false);
-					}
-			#endif
+			if (pauseBeforeExit)
+				{
+				System.Console.WriteLine();
+				System.Console.WriteLine("Press any key to continue...");
+				System.Console.ReadKey(false);
+				}
 			}
+
+
+		private static bool ParseCommandLine (string[] commandLineSegments)
+			{
+			Engine.CommandLine commandLine = new CommandLine(commandLineSegments);
+
+			commandLine.AddAliases("--test-group", "--testgroup", "--test", "--tests");
+			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
+			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
+			commandLine.AddAliases("--help", "-h", "-?");
+			
+			string parameter, parameterAsEntered;
+			bool isFirst = true;
+				
+			while (commandLine.IsInBounds)
+				{
+				// If the first segment isn't a parameter, it's the test group
+				if (isFirst && !commandLine.IsOnParameter)
+					{
+					parameter = "--test-group";
+					parameterAsEntered = parameter;
+					}
+				else
+					{  
+					if (!commandLine.GetParameter(out parameter, out parameterAsEntered))
+						{
+						System.Console.Error.WriteLine("Unrecognized parameter \"" + parameterAsEntered + "\"");
+						return false;
+						}
+					}
+
+				isFirst = false;
+
+					
+				// Test Group
+
+				if (parameter == "--test-group")
+					{
+					if (!commandLine.GetBareWord(out testGroup))
+						{
+						System.Console.Error.WriteLine("\"" + parameterAsEntered + "\" must be followed by a test group name");
+						return false;
+						}
+					}
+
+
+				// Pause Before Exit
+
+				else if (parameter == "--pause-before-exit")
+					{
+					if (!commandLine.NoValue())
+						{
+						System.Console.Error.WriteLine("\"" + parameterAsEntered + "\" can't be followed by a value");
+						return false;
+						}
+					else
+						{
+						pauseBeforeExit = true;
+						}
+					}
+
+
+				// Pause On Error
+
+				else if (parameter == "--pause-on-error")
+					{
+					if (!commandLine.NoValue())
+						{
+						System.Console.Error.WriteLine("\"" + parameterAsEntered + "\" can't be followed by a value");
+						return false;
+						}
+					else
+						{
+						pauseOnError = true;
+						}
+					}
+
+
+				// Help
+				
+				else if (parameter == "--help")
+					{
+					System.Console.WriteLine("TestRunner [group].  If no group is specified all tests will be run.");
+					return false;
+					}
+
+
+				// Everything else
+
+				else
+					{
+					System.Console.Error.WriteLine("Unrecognized parameter \"" + parameterAsEntered + "\"");
+					return false;
+					}
+				}
+				
+				
+			// Done.
+
+			return true;				
+			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		private static string testGroup;
+
+		private static bool pauseBeforeExit;
+		private static bool pauseOnError;
+
 		}
 	}
