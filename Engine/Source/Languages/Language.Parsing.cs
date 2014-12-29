@@ -1484,6 +1484,10 @@ namespace GregValure.NaturalDocs.Engine.Languages
 			if (prototypeEnders == null)
 				{  return;  }
 
+			// Skip leading blank lines even in languages where line breaks matter.
+			while (startCode < endCode && startCode.IsEmpty(LineBoundsMode.ExcludeWhitespace))
+				{  startCode.Next();  }
+
 			TokenIterator start = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 			TokenIterator iterator = start;
 			TokenIterator limit = endCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
