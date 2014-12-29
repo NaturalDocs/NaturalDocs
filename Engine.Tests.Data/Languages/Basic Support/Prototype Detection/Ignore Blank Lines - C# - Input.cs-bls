@@ -1,0 +1,48 @@
+
+/* Ignore Blank Lines
+	___________________________________________________________________________
+
+	Blank lines between the comment and the prototype should be tolerated.
+
+*/
+
+
+/* Function: SomeFunctionNameA
+*/
+public void SomeFunctionNameA (int x)
+	{
+	}
+
+/* Function: SomeFunctionNameB
+*/
+
+public void SomeFunctionNameB (int x)
+	{
+	}
+
+/* Function: SomeFunctionNameC
+*/
+
+
+public void SomeFunctionNameC (int x)
+	{
+	}
+
+// Function: SomeFunctionNameD
+public void SomeFunctionNameD (int x)
+	{
+	}
+
+// Function: SomeFunctionNameE
+
+public void SomeFunctionNameE (int x)
+	{
+	}
+
+// Function: SomeFunctionNameF
+
+
+public void SomeFunctionNameF (int x)
+	{
+	}
+

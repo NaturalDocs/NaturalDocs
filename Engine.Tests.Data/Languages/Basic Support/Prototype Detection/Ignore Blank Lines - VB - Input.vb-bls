@@ -1,0 +1,23 @@
+
+' Ignore Blank Lines
+' ___________________________________________________________________________
+'
+' Blank lines between the comment and the prototype should be tolerated, even in languages where
+' line breaks matter.
+
+
+' Function: SomeFunctionNameA
+Function  SomeFunctionNameA (x)
+End Function
+
+' Function: SomeFunctionNameB
+
+Function  SomeFunctionNameB (x)
+End Function
+
+' Function: SomeFunctionNameC
+
+
+Function  SomeFunctionNameC (x)
+End Function
+
