@@ -122,7 +122,7 @@ td {
 	}
 
 	#HTitle {
-		font: bold small-caps 20pt `ProjectTitleFontFamily;
+		font: 22pt `ProjectTitleFontFamily;
 		text-shadow: 0 .1ex .3ex #202020;
 		line-height: 90%;
 		color: #FFFFFF;
