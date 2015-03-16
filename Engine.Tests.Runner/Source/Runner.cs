@@ -47,12 +47,12 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				if (testGroup == null)
 					{  
 					System.Console.WriteLine("Running all tests...");
-					runnerParams = new string[1] { dllPath };
+					runnerParams = new string[2] { "/work:" + assemblyFolder, dllPath };
 					}
 				else
 					{
 					System.Console.WriteLine("Running " + testGroup + " tests...");
-					runnerParams = new string[2] { "/fixture:GregValure.NaturalDocs.Engine.Tests." + testGroup, dllPath };
+					runnerParams = new string[3] { "/work:" + assemblyFolder, "/fixture:GregValure.NaturalDocs.Engine.Tests." + testGroup, dllPath };
 					}
 
 
