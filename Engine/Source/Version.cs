@@ -27,8 +27,6 @@
  *			> 2.0 (Development Release 01-01-2007)
  *			> 2.0.1 (Release Candidate 02-02-2007)
  *			> 2.1 (Beta 03-03-2007)
- *			>
- *			> 2.1.1 (Customized 04-04-2007)
  *			
  *			Interim releases are the version number followed by the status and date in parentheses.  The date
  *			always has leading zeroes.  The status description can only be A-Z and spaces, no unicode or other stuff.
@@ -36,9 +34,7 @@
  *			
  *			In the case of pre-releases (development, beta, release candidate) the version number is what the release
  *			*aspires to be*, and the full release is always greater than it in comparisons.  "2.0" is greater than
- *			"2.0 (Release Candidate 02-02-2007)".  However, in the case of customized releases, the version number
- *			is what the release *is based upon*, and thus is greater than its full release.  "2.0 (Customized 04-04-2007)"
- *			is greater than "2.0".
+ *			"2.0 (Release Candidate 02-02-2007)".
  *			
  *		Full Releases Prior to 2.0:
  *		
@@ -116,22 +112,22 @@ namespace GregValure.NaturalDocs.Engine
 
 		/* Enum: ReleaseType
 		 * 
-		 * The type of release.  They are listed below in descending order, so a customized release will compare as higher
-		 * than a full release, which will be higher than a release candidate, etc.
+		 * The type of release.  They are listed below in descending order, so a full release will compare as higher
+		 * than a release candidate, which will be higher than a beta, etc.
 		 * 
-		 * Customized - A custom release someone derived from a full one.
 		 * Full - A standard release.
 		 * ReleaseCandidate - A release candidate.
 		 * Beta - A beta pre-release.
 		 * Development - A development pre-release.
+		 * Null - A null version string.
 		 */
 		public enum ReleaseType : byte
 			{
-			Development = 0x0D,
-			Beta = 0xBE,
-			ReleaseCanditate = 0xCA,
 			Full = 0xF0,
-			Customized = 0xFC
+			ReleaseCanditate = 0xCA,
+			Beta = 0xBE,
+			Development = 0x0D,
+			Null = 0x00
 			}
 
 
@@ -247,8 +243,6 @@ namespace GregValure.NaturalDocs.Engine
 					{  type = ReleaseType.ReleaseCanditate;  }
 				else if (typeString == "beta")
 					{  type = ReleaseType.Beta;  }
-				else if (typeString == "customized" || typeString == "custom")
-					{  type = ReleaseType.Customized;  }
 				
 				byte month = byte.Parse( match.Groups[5].ToString() );
 				byte day = byte.Parse( match.Groups[6].ToString() );
@@ -396,9 +390,6 @@ namespace GregValure.NaturalDocs.Engine
 		 * to try to interpret the file format of a future release.
 		 * 
 		 * If minimumVersion isn't null, the data version must also be greater than or equal to it.
-		 * 
-		 * Customized releases are considered later than full releases.  However, they still aren't full releases so they
-		 * behave the same as development releases in that they are only compatible with the exact same release.
 		 */
 		static public bool BinaryDataCompatibility (Version dataVersion, Version engineVersion, Version minimumVersion)
 			{
@@ -559,8 +550,6 @@ namespace GregValure.NaturalDocs.Engine
 						{  typeName = "Release Candidate";  }
 					else if (Type == ReleaseType.Beta)
 						{  typeName = "Beta";  }
-					else if (Type == ReleaseType.Customized)
-						{  typeName = "Customized";  }
 					else
 						{  typeName = "Development Release";  }
 						
