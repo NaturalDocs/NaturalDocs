@@ -504,12 +504,7 @@ namespace GregValure.NaturalDocs.Engine
 
 				StringBuilder stringBuilder = new StringBuilder();
 
-				if (MajorVersion < 2 && Type == ReleaseType.Development)
-					{
-					// The old "Development Release 01-01-2007 (1.35 base)" format
-					return string.Format("Development Release {0:00}-{1:00}-{2:0000}", this.Month, this.Day, this.Year);
-					}
-				else
+				if (MajorVersion >= 2)
 					{  
 					stringBuilder.Append(MajorVersion);
 					stringBuilder.Append('.');
@@ -522,7 +517,26 @@ namespace GregValure.NaturalDocs.Engine
 						}
 					
 					return stringBuilder.ToString();
-					}			
+					}
+				else // MajorVersion < 2
+					{
+					if (Type == ReleaseType.Development)
+						{
+						// The old "Development Release 01-01-2007 (1.35 base)" format
+						return string.Format("Development Release {0:00}-{1:00}-{2:0000}", this.Month, this.Day, this.Year);
+						}
+					else
+						{
+						stringBuilder.Append(MajorVersion);
+						stringBuilder.Append('.');
+						stringBuilder.Append(MinorVersion);
+
+						if (BugFixVersion > 0)
+							{  stringBuilder.Append(BugFixVersion);  }
+					
+						return stringBuilder.ToString();
+						}
+					}
 				}
 			}
 
