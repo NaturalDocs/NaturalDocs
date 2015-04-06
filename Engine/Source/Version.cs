@@ -23,18 +23,20 @@
  *		Interim Releases:
  *		
  *			> [version] ([status] [mm]-[dd]-[yyyy])
+ *			> [version] ([status] [count])
  *			>
  *			> 2.0 (Development Release 01-01-2007)
+ *			> 2.0.1 (Release Candidate 1)
  *			> 2.0.1 (Release Candidate 02-02-2007)
+ *			> 2.1 (Beta 3)
  *			> 2.1 (Beta 03-03-2007)
  *			
- *			Interim releases are the version number followed by the status and date in parentheses.  The date
- *			always has leading zeroes.  The status description can only be A-Z and spaces, no unicode or other stuff.
- *			If it's unrecognized it's treated the same as a development release.
+ *			Interim releases are the version number followed by the status and either a date in parentheses or a number.
+ *			The date always has leading zeroes.  The status description can only be A-Z and spaces, no unicode or other
+ *			stuff.  If it's unrecognized it's treated the same as a development release.
  *			
- *			In the case of pre-releases (development, beta, release candidate) the version number is what the release
- *			*aspires to be*, and the full release is always greater than it in comparisons.  "2.0" is greater than
- *			"2.0 (Release Candidate 02-02-2007)".
+ *			For pre-releases (development, beta, release candidate) the version number is what the release *aspires to be*,
+ *			and the full release is always greater than it in comparisons.  "2.0" is greater than "2.0 (Release Candidate 2)".
  *			
  *		Full Releases Prior to 2.0:
  *		
@@ -81,7 +83,7 @@
  *			
  *			t - The type of release.
  *			
- *			y - The year, or zero for full releases.
+ *			y - The year if greater than 1000, or the count if less than 1000, or zero for full releases.
  *			m - The month, or zero for full releases.
  *			d - The day, or zero for full releases.
  *			
@@ -212,7 +214,7 @@ namespace GregValure.NaturalDocs.Engine
 						{  bugfixVersion = 0;  }
 					}
 					
-				var versionInt = ToVersionInt (majorVersion, minorVersion, bugfixVersion, ReleaseType.Full, 0, 0, 0);
+				var versionInt = ToVersionInt (majorVersion, minorVersion, bugfixVersion, ReleaseType.Full, 0, 0, 0, 0);
 
 				version = new Version(versionInt);
 				return (versionInt != 0);
@@ -221,8 +223,8 @@ namespace GregValure.NaturalDocs.Engine
 				
 			// Development release format "x.y (type mm-dd-yyyy)"
 			
-			Regex.Version.DevelopmentVersionString developmentRegex = new Regex.Version.DevelopmentVersionString();
-			match = developmentRegex.Match(versionString);
+			Regex.Version.DevelopmentDateVersionString developmentDateRegex = new Regex.Version.DevelopmentDateVersionString();
+			match = developmentDateRegex.Match(versionString);
 			
 			if (match.Success)
 				{
@@ -248,7 +250,41 @@ namespace GregValure.NaturalDocs.Engine
 				byte day = byte.Parse( match.Groups[6].ToString() );
 				ushort year = ushort.Parse( match.Groups[7].ToString() );
 				
-				var versionInt = ToVersionInt (majorVersion, minorVersion, bugfixVersion, type, month, day, year);
+				var versionInt = ToVersionInt (majorVersion, minorVersion, bugfixVersion, type, 0, month, day, year);
+				
+				version = new Version(versionInt);
+				return (versionInt != 0);
+				}
+				
+
+			// Development release format "x.y (type count)"
+			
+			Regex.Version.DevelopmentCountVersionString developmentCountRegex = new Regex.Version.DevelopmentCountVersionString();
+			match = developmentCountRegex.Match(versionString);
+			
+			if (match.Success)
+				{
+				byte majorVersion = byte.Parse( match.Groups[1].ToString() );
+				byte minorVersion = byte.Parse( match.Groups[2].ToString() );
+				byte bugfixVersion;
+				
+				string bugfixVersionString = match.Groups[3].ToString();
+				if (string.IsNullOrEmpty(bugfixVersionString))
+					{  bugfixVersion = 0;  }
+				else
+					{  bugfixVersion = byte.Parse( bugfixVersionString );  }
+					
+				ReleaseType type = ReleaseType.Development;
+				string typeString = match.Groups[4].ToString().ToLower();
+				
+				if (typeString == "release candidate" || typeString == "rc")
+					{  type = ReleaseType.ReleaseCanditate;  }
+				else if (typeString == "beta")
+					{  type = ReleaseType.Beta;  }
+				
+				ushort count = ushort.Parse( match.Groups[5].ToString() );
+				
+				var versionInt = ToVersionInt (majorVersion, minorVersion, bugfixVersion, type, count, 0, 0, 0);
 				
 				version = new Version(versionInt);
 				return (versionInt != 0);
@@ -257,7 +293,7 @@ namespace GregValure.NaturalDocs.Engine
 
 			// 1.35 development release format "Development Release mm-dd-yyyy (1.35 base)"
 			
-			Regex.Version.OldDevelopmentVersionString oldDevelopmentRegex = new Regex.Version.OldDevelopmentVersionString();
+			Regex.Version.OldDevelopmentDateVersionString oldDevelopmentRegex = new Regex.Version.OldDevelopmentDateVersionString();
 			match = oldDevelopmentRegex.Match(versionString);
 			
 			if (match.Success)
@@ -266,7 +302,7 @@ namespace GregValure.NaturalDocs.Engine
 				byte day = byte.Parse( match.Groups[2].ToString() );
 				ushort year = ushort.Parse( match.Groups[3].ToString() );
 				
-				var versionInt = ToVersionInt (1, 4, 0, ReleaseType.Development, month, day, year);
+				var versionInt = ToVersionInt (1, 4, 0, ReleaseType.Development, 0, month, day, year);
 				
 				version = new Version(versionInt);
 				return (versionInt != 0);
@@ -277,7 +313,7 @@ namespace GregValure.NaturalDocs.Engine
 
 			if (versionString == "1")
 				{
-				var versionInt = ToVersionInt (0, 9, 1, ReleaseType.Full, 0, 0, 0);
+				var versionInt = ToVersionInt (0, 9, 1, ReleaseType.Full, 0, 0, 0, 0);
 				
 				version = new Version(versionInt);
 				return true;
@@ -311,7 +347,7 @@ namespace GregValure.NaturalDocs.Engine
 		 * the values so impossible combinations will result in zero.
 		 */
 		static private ulong ToVersionInt (byte majorVersion, byte minorVersion, byte bugfixVersion,
-													 ReleaseType type, byte month, byte day, ushort year)
+													 ReleaseType type, ushort count, byte month, byte day, ushort year)
 			{
 			ulong result = 0;
 			
@@ -327,22 +363,32 @@ namespace GregValure.NaturalDocs.Engine
 			
 			result |= (ulong)type << 32;
 				
-			// Full releases cannot have date fields.
+			// Full releases cannot have date or count fields.
 			if (type == ReleaseType.Full)
 				{  
-				if (month != 0 || day != 0 || year != 0)
+				if (count != 0 || month != 0 || day != 0 || year != 0)
 					{  return 0;  }
 				}
 				
-			// All other release types must have date fields.
+			// All other release types must have count or date fields.
 			else
 				{
-				if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1990 || year > 2100)
-					{  return 0;  }
+				if (count != 0)
+					{
+					if (count >= 1000 || month != 0 || day != 0 || year != 0)
+						{  return 0;  }
+
+					result |= (ulong)count << 16;
+					}
+				else
+					{
+					if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1990 || year > 2100)
+						{  return 0;  }
 					
-				result |= (ulong)year << 16;
-				result |= (ulong)month << 8;
-				result |= day;
+					result |= (ulong)year << 16;
+					result |= (ulong)month << 8;
+					result |= day;
+					}
 				}
 				
 			return result;
@@ -455,10 +501,10 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
-		/* Property: Year
-		 * The year of non full-releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		/* Property: CountOrYear
+		 * The count or year variable.  Must be interpreted.
 		 */
-		public int Year
+		private int CountOrYear
 			{
 			get
 				{
@@ -467,8 +513,44 @@ namespace GregValure.NaturalDocs.Engine
 			}
 
 
+		/* Property: Count
+		 * The prerelease count, such as 2 in "2.0 (Beta 2)".  Will be zero for full releases or releases with a date.
+		 */
+		public int Count
+			{
+			get
+				{
+				var countOrYear = this.CountOrYear;
+
+				if (countOrYear < 1000)
+					{  return countOrYear;  }
+				else
+					{  return 0;  }
+				}
+			}
+
+
+		/* Property: Year
+		 * The year of non full-releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases or
+		 * releases with a count.
+		 */
+		public int Year
+			{
+			get
+				{
+				var countOrYear = this.CountOrYear;
+
+				if (countOrYear >= 1000)
+					{  return countOrYear;  }
+				else
+					{  return 0;  }
+				}
+			}
+
+
 		/* Property: Month
-		 * The numeric month of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		 * The numeric month of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases
+		 * or releases with a count.
 		 */
 		public int Month
 			{
@@ -480,7 +562,8 @@ namespace GregValure.NaturalDocs.Engine
 
 
 		/* Property: Day
-		 * The numeric day of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases.
+		 * The numeric day of non-full releases, such as "2.0 (Development Release 01-01-2013".  Will be zero for full releases or
+		 * releases with a count.
 		 */
 		public int Day
 			{
@@ -567,7 +650,10 @@ namespace GregValure.NaturalDocs.Engine
 					else
 						{  typeName = "Development Release";  }
 						
-					return String.Format("({0} {1:00}-{2:00}-{3:0000})", typeName, this.Month, this.Day, this.Year);
+					if (this.Year != 0)
+						{  return String.Format("({0} {1:00}-{2:00}-{3:0000})", typeName, this.Month, this.Day, this.Year);  }
+					else
+						{  return String.Format("({0} {1})", typeName, this.Count);  }
 					}
 				else
 					{
