@@ -1,0 +1,6 @@
+
+// The development releases between 1.35 and 1.4 were the only ones to use this string format, so we
+// treat "Development Release 07-09-2006 (1.35 base)" as "1.4 (Development Release 07-09-2006)".
+// ____________________________________________________________________________
+
+Development Release 07-09-2006 (1.35 base)

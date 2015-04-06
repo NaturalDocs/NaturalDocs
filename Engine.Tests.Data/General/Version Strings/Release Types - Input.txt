@@ -1,0 +1,31 @@
+
+2.0 (Development Release 01-02-2003)
+
+2.0 (Beta 1)
+
+2.0 (Beta 01-02-2003)
+
+2.0 (Release Candidate 3)
+
+2.0 (Release Candidate 01-02-2003)
+
+
+// Non-Round Trip
+
+2.0 (Beta 01)
+
+2.0 (Beta 1-2-2003)
+
+2.0 (Unrecognized String 01-02-2003)
+
+
+// Invalid
+
+2.0 (Beta 0)
+
+
+// Three digit maximum
+
+2.0 (Beta 999)
+
+2.0 (Beta 1000)

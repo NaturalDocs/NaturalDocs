@@ -1,0 +1,76 @@
+
+// 1.x version strings are interpreted as Major.MinorBugfix, where 1.21 is the equivalent of 1.2.1 and
+// not 1.21.0.
+// ____________________________________________________________________________
+
+1.0
+- Major: 1, Minor: 0, Bugfix: 0
+- Release Type: Full
+- Primary: 1.0, no secondary
+- Round trip successful
+
+1.2
+- Major: 1, Minor: 2, Bugfix: 0
+- Release Type: Full
+- Primary: 1.2, no secondary
+- Round trip successful
+
+1.23
+- Major: 1, Minor: 2, Bugfix: 3
+- Release Type: Full
+- Primary: 1.23, no secondary
+- Round trip successful
+
+1.03
+- Major: 1, Minor: 0, Bugfix: 3
+- Release Type: Full
+- Primary: 1.03, no secondary
+- Round trip successful
+
+0.9
+- Major: 0, Minor: 9, Bugfix: 0
+- Release Type: Full
+- Primary: 0.9, no secondary
+- Round trip successful
+
+0.91
+- Major: 0, Minor: 9, Bugfix: 1
+- Release Type: Full
+- Primary: 0.91, no secondary
+- Round trip successful
+
+
+// Non-round trip
+// ____________________________________________________________________________
+
+1.00
+- Major: 1, Minor: 0, Bugfix: 0
+- Release Type: Full
+- Primary: 1.0, no secondary
+- Round trip failed: "1.00" != "1.0"
+
+1.20
+- Major: 1, Minor: 2, Bugfix: 0
+- Release Type: Full
+- Primary: 1.2, no secondary
+- Round trip failed: "1.20" != "1.2"
+
+// "1" without ".0" is intentionally interpreted as 0.91
+1
+- Major: 0, Minor: 9, Bugfix: 1
+- Release Type: Full
+- Primary: 0.91, no secondary
+- Round trip failed: "1" != "0.91"
+
+
+// Two digit maximum
+// ____________________________________________________________________________
+
+1.99
+- Major: 1, Minor: 9, Bugfix: 9
+- Release Type: Full
+- Primary: 1.99, no secondary
+- Round trip successful
+
+1.100
+- Exception: The string "1.100" is not in a valid format for Version.

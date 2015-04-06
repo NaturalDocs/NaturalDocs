@@ -61,6 +61,7 @@
     <Compile Include="Source\Framework\TestTypes\AttributeInheritance.cs" />
     <Compile Include="Source\Framework\TestTypes\CommentMerging.cs" />
     <Compile Include="Source\Framework\SourceToElements.cs" />
+    <Compile Include="Source\Framework\TestTypes\VersionStrings.cs" />
     <Compile Include="Source\Framework\TestTypes\LinkInterpretations.cs" />
     <Compile Include="Source\Framework\TestTypes\SearchKeywords.cs" />
     <Compile Include="Source\Framework\TestTypes\Grouping.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Source\Framework\TestTypes\XMLIterator.cs" />
     <Compile Include="Source\Framework\TestTypes\LanguageDetection.cs" />
     <Compile Include="Source\General\LinkScoring.cs" />
+    <Compile Include="Source\General\VersionStrings.cs" />
     <Compile Include="Source\General\NumberSet.cs" />
     <Compile Include="Source\General\AutomaticGrouping.cs" />
     <Compile Include="Source\General\Symbols.cs" />

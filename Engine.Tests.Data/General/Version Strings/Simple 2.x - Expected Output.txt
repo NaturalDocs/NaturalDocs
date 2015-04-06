@@ -1,0 +1,91 @@
+
+// 2.x version strings are interpreted as Major.Minor.Bugfix, where 1.21 is the equivalent of 1.21.0 and
+// not 1.2.1.
+// ____________________________________________________________________________
+
+2.0
+- Major: 2, Minor: 0, Bugfix: 0
+- Release Type: Full
+- Primary: 2.0, no secondary
+- Round trip successful
+
+2.1
+- Major: 2, Minor: 1, Bugfix: 0
+- Release Type: Full
+- Primary: 2.1, no secondary
+- Round trip successful
+
+2.0.3
+- Major: 2, Minor: 0, Bugfix: 3
+- Release Type: Full
+- Primary: 2.0.3, no secondary
+- Round trip successful
+
+2.1.3
+- Major: 2, Minor: 1, Bugfix: 3
+- Release Type: Full
+- Primary: 2.1.3, no secondary
+- Round trip successful
+
+2.11
+- Major: 2, Minor: 11, Bugfix: 0
+- Release Type: Full
+- Primary: 2.11, no secondary
+- Round trip successful
+
+2.11.3
+- Major: 2, Minor: 11, Bugfix: 3
+- Release Type: Full
+- Primary: 2.11.3, no secondary
+- Round trip successful
+
+
+
+// Non-round trip
+// ____________________________________________________________________________
+
+2.01
+- Major: 2, Minor: 1, Bugfix: 0
+- Release Type: Full
+- Primary: 2.1, no secondary
+- Round trip failed: "2.01" != "2.1"
+
+2.1.0
+- Major: 2, Minor: 1, Bugfix: 0
+- Release Type: Full
+- Primary: 2.1, no secondary
+- Round trip failed: "2.1.0" != "2.1"
+
+2.0.03
+- Major: 2, Minor: 0, Bugfix: 3
+- Release Type: Full
+- Primary: 2.0.3, no secondary
+- Round trip failed: "2.0.03" != "2.0.3"
+
+2.00.03
+- Major: 2, Minor: 0, Bugfix: 3
+- Release Type: Full
+- Primary: 2.0.3, no secondary
+- Round trip failed: "2.00.03" != "2.0.3"
+
+
+// Two digit maximum
+// ____________________________________________________________________________
+
+2.99.99
+- Major: 2, Minor: 99, Bugfix: 99
+- Release Type: Full
+- Primary: 2.99.99, no secondary
+- Round trip successful
+
+2.100.100
+- Exception: The string "2.100.100" is not in a valid format for Version.
+
+99.99.99
+- Major: 99, Minor: 99, Bugfix: 99
+- Release Type: Full
+- Primary: 99.99.99, no secondary
+- Round trip successful
+
+100.100.100
+- Exception: The string "100.100.100" is not in a valid format for Version.

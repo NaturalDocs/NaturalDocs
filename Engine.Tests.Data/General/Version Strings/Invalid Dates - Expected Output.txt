@@ -1,0 +1,32 @@
+
+// Digits too high.  We're not going to worry about things like "February 31".
+
+2.0 (Development Release 13-02-2003)
+- Exception: The string "2.0 (Development Release 13-02-2003)" is not in a valid format for Version.
+
+2.0 (Beta 01-33-2003)
+- Exception: The string "2.0 (Beta 01-33-2003)" is not in a valid format for Version.
+
+
+// Digits too low.
+
+2.0 (Development Release 00-02-2003)
+- Exception: The string "2.0 (Development Release 00-02-2003)" is not in a valid format for Version.
+
+2.0 (Beta 01-00-2003)
+- Exception: The string "2.0 (Beta 01-00-2003)" is not in a valid format for Version.
+
+2.0 (Release Candidate 01-02-0000)
+- Exception: The string "2.0 (Release Candidate 01-02-0000)" is not in a valid format for Version.
+
+2.0 (Release Candidate 01-02-0203)
+- Exception: The string "2.0 (Release Candidate 01-02-0203)" is not in a valid format for Version.
+
+
+// All or mostly zeroes.  Make sure these aren't interpreted as other release types.
+
+2.0 (Development Release 00-00-0000)
+- Exception: The string "2.0 (Development Release 00-00-0000)" is not in a valid format for Version.
+
+2.0 (Beta 00-00-0001)
+- Exception: The string "2.0 (Beta 00-00-0001)" is not in a valid format for Version.
