@@ -1362,7 +1362,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 		 */
 		protected string MakeRelativeURL (Path fromFile, Path toFile)
 			{
-			return fromFile.ParentFolder.MakeRelative(toFile).ToURL();
+			return toFile.MakeRelativeTo(fromFile.ParentFolder).ToURL();
 			}
 
 

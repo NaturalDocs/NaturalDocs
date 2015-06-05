@@ -231,47 +231,47 @@ namespace GregValure.NaturalDocs.Engine
 			}
 			
 			
-		/* Function: MakeRelative
-		 * Returns the passed path as one relative to the current one, if possible.  If it's not possible (for example, if they're on
+		/* Function: MakeRelativeTo
+		 * Returns the path as one relative to the passed folder, if possible.  If it's not possible (for example, if they're on
 		 * different drive letters) it returns null.
 		 */
-		public Path MakeRelative (Path other)
+		public Path MakeRelativeTo (Path folder)
 			{
-			if (Contains(other))
+			if (folder.Contains(this))
 				{
 				// +1 to get rid of the separator character.  Contains() performed all the necessary checks, so we can just
 				// do something really simple here.  This should not require the result to be normalized again.
 				Path result;
-				result.pathString = other.pathString.Substring( pathString.Length + 1);
+				result.pathString = pathString.Substring( folder.pathString.Length + 1 );
 				return result;
 				}
 			else
 				{
-				string thisPrefix, otherPrefix;
-				List<string> thisSections, otherSections;
+				string thisPrefix, folderPrefix;
+				List<string> thisSections, folderSections;
 				
 				Split(out thisPrefix, out thisSections);
-				other.Split(out otherPrefix, out otherSections);
+				folder.Split(out folderPrefix, out folderSections);
 				
-				if (String.Compare(thisPrefix, otherPrefix, Engine.Config.Manager.IgnoreCaseInPaths) != 0)
+				if (String.Compare(thisPrefix, folderPrefix, Engine.Config.Manager.IgnoreCaseInPaths) != 0)
 					{  return null;  }
 					
-				while (thisSections.Count > 0 && otherSections.Count > 0 &&
-						 String.Compare(thisSections[0], otherSections[0], Engine.Config.Manager.IgnoreCaseInPaths) == 0)
+				while (thisSections.Count > 0 && folderSections.Count > 0 &&
+						 String.Compare(thisSections[0], folderSections[0], Engine.Config.Manager.IgnoreCaseInPaths) == 0)
 					{
 					thisSections.RemoveAt(0);
-					otherSections.RemoveAt(0);
+					folderSections.RemoveAt(0);
 					}
 					
 				StringBuilder resultString = new StringBuilder(".");  // In case they're exactly equal.  If not, normalization will remove it.
 				
-				for (int i = 0; i < thisSections.Count; i++)
+				for (int i = 0; i < folderSections.Count; i++)
 					{  resultString.Append("/..");  }
 					
-				for (int i = 0; i < otherSections.Count; i++)
-					{
-					resultString.Append('/');
-					resultString.Append(otherSections[i]);
+				for (int i = 0; i < thisSections.Count; i++)
+					{  
+					resultString.Append('/');  
+					resultString.Append(thisSections[i]);
 					}
 					
 				return new Path( resultString.ToString() );

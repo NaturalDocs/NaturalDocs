@@ -72,7 +72,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 			Path currentOutputFolder = topicPage.OutputFile.ParentFolder;
 			Path indexFile = HTMLBuilder.OutputFolder + "/index.html";
-			Path pathToIndex = currentOutputFolder.MakeRelative(indexFile);
+			Path pathToIndex = indexFile.MakeRelativeTo(currentOutputFolder);
 
 			HTMLTopicPage targetTopicPage = topicPage.GetLinkTarget(targetTopic);
 

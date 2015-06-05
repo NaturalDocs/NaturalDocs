@@ -794,7 +794,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			output.Append(": ");
 
-			Path relativePath = projectFolder.MakeRelative(target.Folder);
+			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
 			if (target.NamePropertyLocation.IsDefined &&
@@ -854,7 +854,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			output.Append("Ignore Source Folder: ");
 
-			Path relativePath = projectFolder.MakeRelative(target.Folder);
+			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 			}
 
@@ -915,7 +915,7 @@ namespace GregValure.NaturalDocs.Engine.Config
 
 			output.Append("HTML Output Folder: ");
 
-			Path relativePath = projectFolder.MakeRelative(target.Folder);
+			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
 			AppendOverriddenProjectInfo(target.ProjectInfo, output);

@@ -66,7 +66,7 @@ namespace GregValure.NaturalDocs.Engine.Files.FileSources
 		override public Path MakeRelative (Path file)
 			{
 			if (Path.Contains(file))
-				{  return Path.MakeRelative(file);  }
+				{  return file.MakeRelativeTo(Path);  }
 			else
 				{  return null;  }
 			}

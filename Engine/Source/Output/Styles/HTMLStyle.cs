@@ -104,7 +104,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 			else
 				{
 				if (Folder.Contains(file))
-					{  return Folder.MakeRelative(file);  }
+					{  return file.MakeRelativeTo(Folder);  }
 				else
 					{  return null;  }
 				}

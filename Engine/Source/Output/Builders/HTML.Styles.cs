@@ -299,7 +299,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 					if (style.IsCSSOnly)
 						{
 						Path outputPath = Styles_OutputFile(style.CSSFile);
-						Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
+						Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
 						mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 						}
 					else if (style.Links != null)
@@ -310,7 +310,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 							if (link.File.Extension.ToLower() == "css")
 								{
 								Path outputPath = Styles_OutputFile(style.Folder + '/' + link.File);
-								Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
+								Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
 								mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 								}
 							}
@@ -340,7 +340,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Builders
 								{  jsLinks[(int)link.Type].Append(", ");  }
 
 							Path outputPath = Styles_OutputFile(style.Folder + "/" + link.File);
-							Path relativeOutputPath = Styles_OutputFolder().MakeRelative(outputPath);
+							Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
 							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
 						}
