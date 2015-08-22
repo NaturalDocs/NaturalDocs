@@ -382,12 +382,16 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 		static public void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
 			{
 			MatchCollection splitSymbols = null;
-			var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
 
-			if (topicType.Flags.File == true)
-				{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
-			else if (topicType.Flags.Code == true)
-				{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
+			if (topicTypeID != 0)
+				{
+				var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
+
+				if (topicType.Flags.File == true)
+					{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
+				else if (topicType.Flags.Code == true)
+					{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
+				}
 
 			int splitCount = (splitSymbols == null ? 0 : splitSymbols.Count);
 
