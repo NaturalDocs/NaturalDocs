@@ -516,7 +516,9 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 					for (int i = 0; i < remainingTopics.Count; /* don't auto increment */)
 						{
 						var remainingTopic = remainingTopics[i];
-						if (remainingTopic.TopicTypeID == type)
+
+						// Need to check IsEmbedded because enums values will not have the same type as their parent.
+						if (remainingTopic.TopicTypeID == type || remainingTopic.IsEmbedded)
 							{
 							groupedTopics.AppendToGroup(matchingGroupIndex, remainingTopic);
 							remainingTopics.RemoveAt(i);
