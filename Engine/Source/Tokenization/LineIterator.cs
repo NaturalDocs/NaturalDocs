@@ -217,8 +217,8 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{
 				if (rawText[i] == '\t')
 					{
-					indent += Engine.Instance.Config.TabWidth;
-					indent -= (indent % Engine.Instance.Config.TabWidth);
+					indent += this.TabWidth;
+					indent -= (indent % this.TabWidth);
 					}
 				else
 					{  indent++;  }
@@ -425,10 +425,9 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 				{  return tokenizer;  }
 			}
 			
+
 			
-		
-		
-		// Group: Internal Properties
+		// Group: Internal and Private Properties
 		// __________________________________________________________________________
 		
 		
@@ -462,6 +461,21 @@ namespace GregValure.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Property: TabWidth
+		 * The number of spaces to expand tabs.  If an <Engine.Instance> is started, it will use <Config.Manager.TabWidth>.
+		 */
+		private int TabWidth
+			{
+			get
+				{
+				if (Engine.Instance.Config != null)
+					{  return Engine.Instance.Config.TabWidth;  }
+				else
+					{  return 4;  }
+				}
+			}
+		
+		
 
 		// Group: Operators
 		// __________________________________________________________________________
