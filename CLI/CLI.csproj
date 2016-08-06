@@ -105,9 +105,9 @@
     <None Include="CLI.build" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Engine\Open.Engine.csproj">
+    <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{F7569B05-FFFD-4084-8F33-760F3E1916CD}</Project>
-      <Name>Open.Engine</Name>
+      <Name>Engine</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
