@@ -128,7 +128,7 @@ Column: TopicTypeID
 		TopicTypeID INTEGER NOT NULL
 	-----------------
 	
-	The ID of the topic's type, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
+	The ID of the topic's type, as managed by <CodeClear.NaturalDocs.Engine.TopicTypes.Manager>.
 	
 	
 Column: DeclaredAccessLevel
@@ -138,7 +138,7 @@ Column: DeclaredAccessLevel
 	-----------------
 	
 	The declared access level of the topic, such as public or protected.  The value is managed by 
-	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
+	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	
 Column: EffectiveAccessLevel
@@ -148,7 +148,7 @@ Column: EffectiveAccessLevel
 	-----------------
 	
 	The effective access level of the topic, such as public or protected.  The value is managed by 
-	<GregValure.NaturalDocs.Engine.Languages.AccessLevel>.
+	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	
 Column: Tags
@@ -157,8 +157,8 @@ Column: Tags
 		Tags TEXT
 	-----------------
 	
-	A number set of all the tags applied to this topic, as managed by <GregValure.NaturalDocs.Engine.TopicTypes.Manager>.
-	Is a string encoding of a <GregValure.NaturalDocs.Engine.IDObjects.NumberSet>.
+	A number set of all the tags applied to this topic, as managed by <CodeClear.NaturalDocs.Engine.TopicTypes.Manager>.
+	Is a string encoding of a <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet>.
 
 
 Column: FileID
@@ -167,7 +167,7 @@ Column: FileID
 		FileID INTEGER NOT NULL
 	-----------------
 	
-	The ID of the file it appears in, as managed by <GregValure.NaturalDocs.Engine.Files.Manager>.
+	The ID of the file it appears in, as managed by <CodeClear.NaturalDocs.Engine.Files.Manager>.
 
 
 Column: FilePosition
@@ -205,7 +205,7 @@ Column: LanguageID
 		LanguageID INTEGER NOT NULL
 	-----------------
 	
-	The ID of the topic's language, as managed by <GregValure.NaturalDocs.Engine.Languages.Manager>.  If the
+	The ID of the topic's language, as managed by <CodeClear.NaturalDocs.Engine.Languages.Manager>.  If the
 	file it appears in is a container file (such as .cgi or .asp) the ID will be for the embedded language, not the
 	container.
 	

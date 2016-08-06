@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.TopicTypes.Topics_txt
+ * Class: CodeClear.NaturalDocs.Engine.TopicTypes.Topics_txt
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Topics.txt>.
@@ -163,17 +163,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.TopicTypes
 	{
 	public class Topics_txt
 		{

@@ -1,21 +1,21 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Links.LinkSet
+ * Class: CodeClear.NaturalDocs.Engine.Links.LinkSet
  * ____________________________________________________________________________
  * 
  * A sorted list of <Links> that prevents duplicates from being added as determined by <Link.CompareIDPropertiesTo()>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Links;
 
 
-namespace GregValure.NaturalDocs.Engine.Links
+namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class LinkSet : List<Link>
 		{

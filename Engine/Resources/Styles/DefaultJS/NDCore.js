@@ -1,7 +1,7 @@
 ﻿/*
 	Include in output:
 
-	This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+	This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 	Natural Docs is licensed under version 3 of the GNU Affero General Public
 	License (AGPL).  Refer to License.txt or www.naturaldocs.org for the
 	complete details.
@@ -602,7 +602,7 @@ String.prototype.StartsWith = function (other)
 
 /* Function: String.EntityDecode
 	Returns the string with entity chars like &amp; replaced with their original characters.  Only substitutes characters
-	found in <GregValure.NaturalDocs.Engine.StringExtensions.EntityEncode()>.
+	found in <CodeClear.NaturalDocs.Engine.StringExtensions.EntityEncode()>.
 */
 String.prototype.EntityDecode = function ()
 	{

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.ShebangStringComparer
+ * Class: CodeClear.NaturalDocs.Engine.Languages.ShebangStringComparer
  * ____________________________________________________________________________
  * 
  * An implementation of IComparer that incorporates string length.  Longer strings are less than shorter strings, and if 
@@ -9,7 +9,7 @@
  * one to be tested against first.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,7 +17,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class ShebangStringComparer : System.Collections.Generic.IComparer<string>
 		{

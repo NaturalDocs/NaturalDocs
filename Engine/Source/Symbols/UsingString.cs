@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Symbols.UsingString
+ * Struct: CodeClear.NaturalDocs.Engine.Symbols.UsingString
  * ____________________________________________________________________________
  * 
  * A struct encapsulating a using string, which is a normalized way of representing a single "using" statement.
@@ -8,7 +8,7 @@
  * <SeparatorChars.Level1>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,7 +17,7 @@ using System;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Symbols
+namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public struct UsingString
 		{

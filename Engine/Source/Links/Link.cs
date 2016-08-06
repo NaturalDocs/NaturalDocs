@@ -1,20 +1,20 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Links.Link
+ * Class: CodeClear.NaturalDocs.Engine.Links.Link
  * ____________________________________________________________________________
  * 
  * A class encapsulating all the information available about a link.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Symbols;
 
 
-namespace GregValure.NaturalDocs.Engine.Links
+namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class Link
 		{

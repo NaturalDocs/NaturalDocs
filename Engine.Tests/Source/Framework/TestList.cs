@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestList
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestList
  * ____________________________________________________________________________
  * 
  * A class storing information about a list of file-based tests.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,10 +14,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GregValure.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
 	public class TestList : List<Test>
 		{

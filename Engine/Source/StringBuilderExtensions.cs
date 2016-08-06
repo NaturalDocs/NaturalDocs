@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.StringBuilderExtensions
+ * Class: CodeClear.NaturalDocs.Engine.StringBuilderExtensions
  * ____________________________________________________________________________
  * 
  * A static class for all the functions added to the StringBuilder type.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -15,7 +15,7 @@ using System;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine
 	{
 	static public class StringBuilderExtensions
 		{

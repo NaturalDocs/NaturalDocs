@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Manager
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.Manager
  * ____________________________________________________________________________
  * 
  * A class to manage information about various aspects of the code and its documentation.
@@ -51,23 +51,23 @@
  *		need to worry about it.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Languages;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Topics;
-using GregValure.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Languages;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.TopicTypes;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Manager : IDisposable
 		{

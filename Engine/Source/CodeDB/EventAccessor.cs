@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.EventAccessor
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.EventAccessor
  * ____________________________________________________________________________
  * 
  * A variation of <Accessor> that is passed along with change events.  This is necessary because the code
@@ -7,7 +7,7 @@
  * subset of functions that should be allowed then.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -15,7 +15,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class EventAccessor
 		{

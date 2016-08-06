@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.SourceToClassTopics
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToClassTopics
  * ____________________________________________________________________________
  * 
  * A base class for automated tests where sample source files are run through Natural Docs normally and then the 
@@ -22,7 +22,7 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -31,12 +31,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
 	public abstract class SourceToClassTopics
 		{

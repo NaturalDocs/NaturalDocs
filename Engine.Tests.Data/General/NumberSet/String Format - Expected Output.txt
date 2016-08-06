@@ -49,83 +49,83 @@
 // Can't have zero
 {0-4,6}
 Exception: The string "{0-4,6}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {0,9-21}
 Exception: The string "{0,9-21}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have negative numbers
 {-5}
 Exception: The string "{-5}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {-1-3}
 Exception: The string "{-1-3}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {-5--1}
 Exception: The string "{-5--1}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have spaces or invalid characters
 {5, 7}
 Exception: The string "{5, 7}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {q}
 Exception: The string "{q}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {9f}
 Exception: The string "{9f}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have symbols in wrong context
 {,12}
 Exception: The string "{,12}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {5,9,}
 Exception: The string "{5,9,}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {5,9-}
 Exception: The string "{5,9-}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {1,,5}
 Exception: The string "{1,,5}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {1--5}
 Exception: The string "{1--5}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {,}
 Exception: The string "{,}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {-}
 Exception: The string "{-}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
@@ -141,42 +141,42 @@ Exception: The string "{-}" is not in a valid format for NumberSet.
 // Can't have uncombined series
 {1,2}
 Exception: The string "{1,2}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {4-9,10-12}
 Exception: The string "{4-9,10-12}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {4-9,10}
 Exception: The string "{4-9,10}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have overlapping series
 {1-5,4-16}
 Exception: The string "{1-5,4-16}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have unordered numbers
 {6,3}
 Exception: The string "{6,3}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 {12-14,6-9}
 Exception: The string "{12-14,6-9}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 
 
 // Can't have unordered pairs
 {16-13}
 Exception: The string "{16-13}" is not in a valid format for NumberSet.
-(GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
+(CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat)
 = {} Lowest Available: 1, Highest Used: 0, Count: 0
 

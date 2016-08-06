@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.NDMarkup.Iterator
+ * Class: CodeClear.NaturalDocs.Engine.NDMarkup.Iterator
  * ____________________________________________________________________________
  * 
  * A class to handle walking through a <NDMarkup>-formatted string.  It moves by element, treating things like tags
@@ -7,7 +7,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,7 +16,7 @@ using System;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.NDMarkup
+namespace CodeClear.NaturalDocs.Engine.NDMarkup
 	{
 	public struct Iterator
 		{

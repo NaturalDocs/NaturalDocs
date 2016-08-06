@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Collections.SafeStack
+ * Class: CodeClear.NaturalDocs.Engine.Collections.SafeStack
  * ____________________________________________________________________________
  * 
  * A variation of .NET's Stack class that uses null returns instead of exceptions.
@@ -8,7 +8,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,7 +16,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Collections
+namespace CodeClear.NaturalDocs.Engine.Collections
 	{
 	public class SafeStack<ObjectType> : System.Collections.Generic.Stack<ObjectType>
 		{

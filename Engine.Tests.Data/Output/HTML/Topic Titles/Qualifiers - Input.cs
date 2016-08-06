@@ -6,7 +6,7 @@
 	Qualifiers are things like namespace levels and path folders that should be made a little less 
 	prominent in titles in order to emphasize the ending class, function, or file name.  This is 
 	especially important in languages like Java and C# where fully qualified names can be very 
-	long (i.e. GregValure.NaturalDocs.Engine.Output.Builders.HTML.)
+	long (i.e. CodeClear.NaturalDocs.Engine.Output.Builders.HTML.)
 	
 	Zero width spaces (&#8203;) should also be inserted so long titles are allowed to wrap and 
 	don't hurt the layout.  When separating the qualifiers from the ending symbol via a span tag,

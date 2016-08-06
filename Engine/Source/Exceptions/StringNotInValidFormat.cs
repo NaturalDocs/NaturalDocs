@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Exceptions.StringNotInValidFormat
+ * Class: CodeClear.NaturalDocs.Engine.Exceptions.StringNotInValidFormat
  * ____________________________________________________________________________
  * 
  * An exception thrown when an input string needs to be in a particular format but is not.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Exceptions
+namespace CodeClear.NaturalDocs.Engine.Exceptions
 	{
 	public class StringNotInValidFormat : Exception
 		{

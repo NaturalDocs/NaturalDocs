@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.SQLite.Query
+ * Class: CodeClear.NaturalDocs.Engine.SQLite.Query
  * ____________________________________________________________________________
  * 
  * An object representing a SQLite query.
@@ -26,14 +26,14 @@
  *		its own <Connection> object and use only Queries created by that object.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.SQLite
+namespace CodeClear.NaturalDocs.Engine.SQLite
 	{
 	public class Query : IDisposable
 		{

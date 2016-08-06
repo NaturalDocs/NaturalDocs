@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Collections.StringSet
+ * Class: CodeClear.NaturalDocs.Engine.Collections.StringSet
  * ____________________________________________________________________________
  * 
  * A general lookup table for tracking the existence of strings in a set.  This is preferable to a HashSet class 
@@ -10,7 +10,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Collections
+namespace CodeClear.NaturalDocs.Engine.Collections
 	{
 	public class StringSet : System.Collections.Generic.HashSet<string>
 		{
@@ -206,7 +206,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 
 	/* ___________________________________________________________________________
 	 * 
-	 * Class: GregValure.NaturalDocs.Engine.Collections.StringSet_BinaryFileExtensions
+	 * Class: CodeClear.NaturalDocs.Engine.Collections.StringSet_BinaryFileExtensions
 	 * ___________________________________________________________________________
 	 * 
 	 */

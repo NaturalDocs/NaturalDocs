@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.ConfigFileLanguage
+ * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFileLanguage
  * ____________________________________________________________________________
  * 
  * A class encapsulating information about a language as it appears in <Languages.txt>.  This differs from <Language> in 
@@ -7,7 +7,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class ConfigFileLanguage
 		{
@@ -463,7 +463,7 @@ namespace GregValure.NaturalDocs.Engine.Languages
 
 
 
-		/* Class: GregValure.NaturalDocs.Engine.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
+		/* Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
 		* __________________________________________________________________________
 		*/
 		protected class ConfigFilePrototypeEnders

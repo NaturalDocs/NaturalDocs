@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Errors.Error
+ * Class: CodeClear.NaturalDocs.Engine.Errors.Error
  * ____________________________________________________________________________
  * 
  * A class containing information about an error that occurred in the engine.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Errors
+namespace CodeClear.NaturalDocs.Engine.Errors
 	{
 	public class Error : IComparable
 		{

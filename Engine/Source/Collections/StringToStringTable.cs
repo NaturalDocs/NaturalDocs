@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Collections.StringToStringTable
+ * Class: CodeClear.NaturalDocs.Engine.Collections.StringToStringTable
  * ____________________________________________________________________________
  * 
  * A general lookup table for mapping one string to another.  This is preferable to a Dictionary<string, string> class
@@ -10,7 +10,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,7 +18,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Collections
+namespace CodeClear.NaturalDocs.Engine.Collections
 	{
 	public class StringToStringTable : StringTable<string>
 		{

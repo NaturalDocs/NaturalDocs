@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Links.LinkInterpretation
+ * Class: CodeClear.NaturalDocs.Engine.Links.LinkInterpretation
  * ____________________________________________________________________________
  * 
  * A class representing a possible interpretation of a Natural Docs link in <NDMarkup>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Links
+namespace CodeClear.NaturalDocs.Engine.Links
 	{
 	public class LinkInterpretation
 		{

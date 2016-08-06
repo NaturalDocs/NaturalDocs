@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.PrototypeEnders
+ * Class: CodeClear.NaturalDocs.Engine.Languages.PrototypeEnders
  * ____________________________________________________________________________
  * 
  * A simple class to hold information about what can end a prototype.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 
 	public class PrototypeEnders

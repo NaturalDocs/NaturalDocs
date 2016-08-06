@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.Languages_nd
+ * Class: CodeClear.NaturalDocs.Engine.Languages.Languages_nd
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Languages.nd>.
@@ -72,17 +72,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public class Languages_nd
 		{

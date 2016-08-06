@@ -1,5 +1,5 @@
 ﻿/* 
- * Enum: GregValure.NaturalDocs.Engine.Tokenization.LineBoundsMode
+ * Enum: CodeClear.NaturalDocs.Engine.Tokenization.LineBoundsMode
  * ____________________________________________________________________________
  * 
  * An option that determines what should be considered the beginning and end of a line.
@@ -12,7 +12,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -20,7 +20,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Tokenization
+namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
 	public enum LineBoundsMode
 		{  Everything, ExcludeWhitespace, CommentContent  };

@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.NDMarkup.Exceptions.InvalidMarkup
+ * Class: CodeClear.NaturalDocs.Engine.NDMarkup.Exceptions.InvalidMarkup
  * ____________________________________________________________________________
  * 
  * Thrown when something is wrong with a string's <NDMarkup> formatting.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@ using System;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.NDMarkup.Exceptions
+namespace CodeClear.NaturalDocs.Engine.NDMarkup.Exceptions
 	{
 	public class InvalidMarkup : Exception
 		{

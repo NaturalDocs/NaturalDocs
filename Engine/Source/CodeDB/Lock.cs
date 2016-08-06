@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Lock
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.Lock
  * ____________________________________________________________________________
  * 
  * A struct to encapsulate the CodeDB database lock.
@@ -19,7 +19,7 @@
  * logic is meant to be encapsulated in another class, so this one omits it for efficiency.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -28,7 +28,7 @@ using System;
 using System.Threading;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public class Lock
 		{

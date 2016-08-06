@@ -1,21 +1,21 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.Parsers.LineFinder
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.LineFinder
  * ____________________________________________________________________________
  * 
  * A general parser which finds vertical and horizontal lines in comments and marks them with
  * <Tokenization.CommentParsingType.CommentDecoration> so that they can be ignored in later stages of parsing.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 	{
 	public class LineFinder : Parser
 		{

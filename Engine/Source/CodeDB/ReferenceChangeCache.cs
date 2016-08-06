@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.ReferenceChangeCache
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.ReferenceChangeCache
  * ____________________________________________________________________________
  * 
  * A class that stores changes to reference counts in memory so they don't have to hit the database on 
@@ -29,7 +29,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -38,7 +38,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public class ReferenceChangeCache : List<ReferenceChangeEntry>
 		{
@@ -191,7 +191,7 @@ namespace GregValure.NaturalDocs.Engine.CodeDB
 
 	/* ___________________________________________________________________________
 	 * 
-	 *	 Class: GregValure.NaturalDocs.Engine.CodeDB.ReferenceChangeEntry
+	 *	 Class: CodeClear.NaturalDocs.Engine.CodeDB.ReferenceChangeEntry
 	 *	 __________________________________________________________________________
 	 */
 

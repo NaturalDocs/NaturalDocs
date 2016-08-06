@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes.Class
+ * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes.Class
  * ____________________________________________________________________________
  * 
  * Represents a class in <Menu>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Classes
+namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes
 	{
 	public class Class : Base.Target
 		{

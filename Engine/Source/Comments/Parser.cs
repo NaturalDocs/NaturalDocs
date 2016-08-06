@@ -1,21 +1,21 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.Parser
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Parser
  * ____________________________________________________________________________
  * 
  * A base class for Natural Docs comment parsers.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments
+namespace CodeClear.NaturalDocs.Engine.Comments
 	{
 	public class Parser
 		{
@@ -228,7 +228,7 @@ namespace GregValure.NaturalDocs.Engine.Comments
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Parser.CodeLine
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Parser.CodeLine
 		 * __________________________________________________________________________
 		 */
 		protected struct CodeLine

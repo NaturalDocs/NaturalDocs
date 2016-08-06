@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Components.JSSearchData
+ * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSSearchData
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build JavaScript search data for <Output.Builders.HTML>.  See <JavaScript Search Data>
@@ -18,7 +18,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -26,10 +26,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GregValure.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.TopicTypes;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.Components
 	{
 	public class JSSearchData
 		{

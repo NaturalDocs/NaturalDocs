@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.SourceToElements
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToElements
  * ____________________________________________________________________________
  * 
  * A base class for automated tests where sample source files are loaded from a folder, converted to <Elements>, 
@@ -20,7 +20,7 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,15 +29,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.Engine.Languages;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Languages;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
 	public class SourceToElements
 		{

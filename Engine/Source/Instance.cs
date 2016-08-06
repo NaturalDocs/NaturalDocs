@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Instance
+ * Class: CodeClear.NaturalDocs.Engine.Instance
  * ____________________________________________________________________________
  * 
  * A class for managing the overall Natural Docs engine.
@@ -54,7 +54,7 @@
  *		crash or exception.  This automatically causes <Config.Manager.RebuildEverything> to be set the next time it starts.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -63,7 +63,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine
 	{
 	static public class Instance
 		{

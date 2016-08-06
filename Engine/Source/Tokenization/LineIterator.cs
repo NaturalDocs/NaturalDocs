@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Tokenization.LineIterator
+ * Struct: CodeClear.NaturalDocs.Engine.Tokenization.LineIterator
  * ____________________________________________________________________________
  * 
  * An iterator to go through a <Tokenizer> line by line instead of token by token.
@@ -12,7 +12,7 @@
  * them behave as a value type is more intuitive.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -20,7 +20,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Tokenization
+namespace CodeClear.NaturalDocs.Engine.Tokenization
 	{
 	public struct LineIterator
 		{

@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.CLI.ExecutionTimer
+ * Class: CodeClear.NaturalDocs.CLI.ExecutionTimer
  * ____________________________________________________________________________
  * 
  * A class to time certain operations in the engine.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.CLI
+namespace CodeClear.NaturalDocs.CLI
 	{
 	public class ExecutionTimer
 		{

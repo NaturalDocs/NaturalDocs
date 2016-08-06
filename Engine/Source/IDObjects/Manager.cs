@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.IDObjects.Manager
+ * Class: CodeClear.NaturalDocs.Engine.IDObjects.Manager
  * ____________________________________________________________________________
  * 
  * A class for managing objects that have to be referenced either by a string ID or a unique numeric ID.  This is a generic
@@ -13,17 +13,17 @@
  *		  
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.IDObjects
+namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
 	public class Manager<IDObjectType> : IEnumerable<IDObjectType> where IDObjectType: IDObjects.Base 
 		{

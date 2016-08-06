@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.TopicTypes.ConfigFileTopicType
+ * Class: CodeClear.NaturalDocs.Engine.TopicTypes.ConfigFileTopicType
  * ____________________________________________________________________________
  * 
  * A class encapsulating information about a file as parsed from a <ConfigFile>.  This differs from <TopicType> in that its
@@ -7,7 +7,7 @@
  * can be null if it's not defined.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.TopicTypes
 	{
 	public class ConfigFileTopicType
 		{

@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle ("Natural Docs Engine")]
 [assembly: AssemblyDescription ("")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("Greg Valure")]
+[assembly: AssemblyCompany ("Code Clear LLC")]
 [assembly: AssemblyProduct ("Natural Docs")]
-[assembly: AssemblyCopyright ("Copyright © 2003-2013 Greg Valure")]
+[assembly: AssemblyCopyright ("Copyright © 2003-2016 Code Clear LLC")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 

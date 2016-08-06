@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.IDLookupCache
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.IDLookupCache
  * ____________________________________________________________________________
  * 
  * A class that provides a local cache of string to ID mappings.  The string class must implement
@@ -11,7 +11,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -19,7 +19,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public class IDLookupCache<LookupType> : System.Collections.Generic.Dictionary<string, int> where LookupType: Collections.ILookupKey
 		{

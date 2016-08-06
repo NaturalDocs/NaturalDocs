@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Components.JSMenuData
+ * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSMenuData
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
@@ -21,7 +21,7 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,11 +29,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Output.MenuEntries;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Output.MenuEntries;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.Components
 	{
 	public class JSMenuData : Menu
 		{
@@ -473,7 +473,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Components.JSMenuData.TargetExtraData
+		 * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSMenuData.TargetExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 
@@ -571,7 +571,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Components
 
 		/* ____________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Output.Components.JSMenuData.ContainerExtraData
+		 * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSMenuData.ContainerExtraData
 		 * ____________________________________________________________________________
 		 * 
 		 * A class used to store extra information needed by <JSMenuData> in each menu entry via the 

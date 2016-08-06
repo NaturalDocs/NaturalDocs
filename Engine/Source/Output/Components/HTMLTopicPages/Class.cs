@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages.Class
+ * Class: CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages.Class
  * ____________________________________________________________________________
  * 
  * Creates a <HTMLTopicPage> for a class.
@@ -11,21 +11,21 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Languages;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Topics;
-using GregValure.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.Languages;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.TopicTypes;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Components.HTMLTopicPages
+namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 	{
 	public class Class : HTMLTopicPage
 		{

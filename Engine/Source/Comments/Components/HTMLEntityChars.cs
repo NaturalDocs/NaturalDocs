@@ -1,22 +1,22 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.Components.HTMLEntityChars
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Components.HTMLEntityChars
  * ____________________________________________________________________________
  * 
  * A static class to handle entity chars that may appear in HTML or XML.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Text;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Components
+namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
 	public static class HTMLEntityChars
 		{

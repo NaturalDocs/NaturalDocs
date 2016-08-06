@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.CLI.StatusManager
+ * Class: CodeClear.NaturalDocs.CLI.StatusManager
  * ____________________________________________________________________________
  * 
  * A base class for all status managers, which handle posting status messages for long tasks.  They can post
@@ -35,7 +35,7 @@
  *		- When the task finishes call <End()>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -43,7 +43,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.CLI
+namespace CodeClear.NaturalDocs.CLI
 	{
 	public class StatusManager : IDisposable
 		{

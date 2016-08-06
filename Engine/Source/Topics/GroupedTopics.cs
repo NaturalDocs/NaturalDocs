@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Topics.GroupedTopics
+ * Class: CodeClear.NaturalDocs.Engine.Topics.GroupedTopics
  * ____________________________________________________________________________
  * 
  * A list of <Topics> divided into <TopicGroups>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Topics
+namespace CodeClear.NaturalDocs.Engine.Topics
 	{
 	public class GroupedTopics
 		{

@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.Components.BlockComment
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Components.BlockComment
  * ____________________________________________________________________________
  * 
  * A class to handle the generated output of a native comment which can be represented in text and list blocks.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Components
+namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
 	public class BlockComment
 		{
@@ -96,7 +96,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		/* __________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.Comments.Components.BlockComment.Block
+		 * Class: CodeClear.NaturalDocs.Engine.Comments.Components.BlockComment.Block
 		 * __________________________________________________________________________
 		 */
 		public class Block
@@ -112,7 +112,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Components.BlockComment.TextBlock
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.BlockComment.TextBlock
 		 * __________________________________________________________________________
 		 */
 		public class TextBlock : Block
@@ -128,7 +128,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Components.BlockComment.ListBlock
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.BlockComment.ListBlock
 		 * __________________________________________________________________________
 		 */
 		public class ListBlock : Block
@@ -183,7 +183,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Components
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Components.BlockComment.ListItem
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.BlockComment.ListItem
 		 * __________________________________________________________________________
 		 */
 		public struct ListItem

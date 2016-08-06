@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>GregValure.NaturalDocs.Engine.Tests.Runner</StartupObject>
+    <StartupObject>CodeClear.NaturalDocs.Engine.Tests.Runner</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit-console-runner">

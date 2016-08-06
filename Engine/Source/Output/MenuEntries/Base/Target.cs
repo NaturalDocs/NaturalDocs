@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.MenuEntries.Base.Target
+ * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base.Target
  * ____________________________________________________________________________
  * 
  * A base class for <Entries> that cause navigation, such as a file or a class, as opposed to a <Container>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.MenuEntries.Base
+namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 	{
 	public class Target : Base.Entry
 		{

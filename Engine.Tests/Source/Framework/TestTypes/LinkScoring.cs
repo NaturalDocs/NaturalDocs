@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkScoring
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkScoring
  * ____________________________________________________________________________
  * 
  * A class to test <Engine.CodeDB.Manager.ScoreLink>.
@@ -56,7 +56,7 @@
  *		actual code they're handled just in case.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -66,14 +66,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using GregValure.NaturalDocs.Engine;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Tests.Framework;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Tests.Framework;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework.TestTypes
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 	{
 	public class LinkScoring : Framework.TextCommands
 		{

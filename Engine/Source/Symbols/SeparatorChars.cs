@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Symbols.SeparatorChars
+ * Class: CodeClear.NaturalDocs.Engine.Symbols.SeparatorChars
  * ____________________________________________________________________________
  * 
  * The reserved characters that can be used as separators by the symbol encodings.  They use consecutive values 
  * so they can be checked for by looking between <LowestValue> and <HighestValue> in addition to individually by name.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Symbols
+namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public static class SeparatorChars
 		{

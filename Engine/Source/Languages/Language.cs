@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.Language
+ * Class: CodeClear.NaturalDocs.Engine.Languages.Language
  * ____________________________________________________________________________
  * 
  * A class encapsulating information about a language.  This differs from <ConfigFileLanguage> in that its meant to 
@@ -8,18 +8,18 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Comments;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Comments;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public partial class Language : IDObjects.Base
 		{

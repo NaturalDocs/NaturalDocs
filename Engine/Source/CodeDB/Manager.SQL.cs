@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Manager
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.Manager
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB
+namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public partial class Manager
 		{		

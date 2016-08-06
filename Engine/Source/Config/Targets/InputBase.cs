@@ -1,20 +1,20 @@
 /* 
- * Class: GregValure.NaturalDocs.Engine.Config.Targets.InputBase
+ * Class: CodeClear.NaturalDocs.Engine.Config.Targets.InputBase
  * ____________________________________________________________________________
  * 
  * A base class for the configuration of all input targets.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Config;
+using CodeClear.NaturalDocs.Engine.Config;
 
 
-namespace GregValure.NaturalDocs.Engine.Config.Targets
+namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
 	abstract public class InputBase : Base
 		{

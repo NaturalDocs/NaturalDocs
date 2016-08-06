@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Comments.Parsers.XML
+ * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.XML
  * ____________________________________________________________________________
  * 
  * A parser to handle Microsoft's XML comment format.
@@ -52,7 +52,7 @@
  *						 often this is used in practice.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -60,12 +60,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Comments.Components;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Comments.Components;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 	{
 	public class XML : Parser
 		{
@@ -862,7 +862,7 @@ namespace GregValure.NaturalDocs.Engine.Comments.Parsers
 
 		/* __________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Parsers.XML.ListItem
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Parsers.XML.ListItem
 		 * __________________________________________________________________________
 		 */
 		private struct ListItem

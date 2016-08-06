@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Components.HTMLTopic
+ * Class: CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopic
  * ____________________________________________________________________________
  * 
  * A reusable helper class to build <Topics> and tooltips for <Output.Builders.HTML>.
@@ -30,7 +30,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -39,13 +39,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.Components
 	{
 	public class HTMLTopic : HTMLComponent
 		{

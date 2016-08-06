@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Symbols.SymbolString
+ * Struct: CodeClear.NaturalDocs.Engine.Symbols.SymbolString
  * ____________________________________________________________________________
  * 
  * A struct encapsulating a symbol string, which is a normalized way of representing a hierarchal code element 
@@ -8,16 +8,16 @@
  * The encoding uses <SeparatorChars.Level1>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace GregValure.NaturalDocs.Engine.Symbols
+namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public struct SymbolString : IComparable
 		{

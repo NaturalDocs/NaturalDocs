@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Runner
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Runner
  * ____________________________________________________________________________
  * 
  * A simple class to run NUnit tests from a Visual Studio console project which allows you to set breakpoints
@@ -8,7 +8,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -16,9 +16,9 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using GregValure.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine;
 
-namespace GregValure.NaturalDocs.Engine.Tests
+namespace CodeClear.NaturalDocs.Engine.Tests
 	{
 	class Runner
 		{
@@ -52,7 +52,7 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				else
 					{
 					System.Console.WriteLine("Running " + testGroup + " tests...");
-					runnerParams = new string[3] { "/work:" + assemblyFolder, "/fixture:GregValure.NaturalDocs.Engine.Tests." + testGroup, dllPath };
+					runnerParams = new string[3] { "/work:" + assemblyFolder, "/fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup, dllPath };
 					}
 
 
@@ -81,8 +81,8 @@ namespace GregValure.NaturalDocs.Engine.Tests
 				// <message><![CDATA[1 out of 1 test failed for F:\Projects\Natural Docs 2\Source\Engine.Tests.Data\Comments\XML\Parsing:
 				// - Test: Expected output file missing
 				// ]]></message>
-				// <stack-trace><![CDATA[at GregValure.NaturalDocs.Engine.Tests.Framework.SourceToTopics.TestFolder(Path testFolder, Path projectConfigFolder) in F:\Projects\Natural Docs 2\Source\Engine.Tests\Source\Framework\SourceToTopics.cs:line 123
-				// at GregValure.NaturalDocs.Engine.Tests.Comments.XML.Parsing.All() in F:\Projects\Natural Docs 2\Source\Engine.Tests\Source\Comments\XML\Parsing.cs:line 20
+				// <stack-trace><![CDATA[at CodeClear.NaturalDocs.Engine.Tests.Framework.SourceToTopics.TestFolder(Path testFolder, Path projectConfigFolder) in F:\Projects\Natural Docs 2\Source\Engine.Tests\Source\Framework\SourceToTopics.cs:line 123
+				// at CodeClear.NaturalDocs.Engine.Tests.Comments.XML.Parsing.All() in F:\Projects\Natural Docs 2\Source\Engine.Tests\Source\Comments\XML\Parsing.cs:line 20
 				// ]]></stack-trace>
 				// </failure>
 

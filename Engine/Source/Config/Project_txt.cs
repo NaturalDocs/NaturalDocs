@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Config.Project_txt
+ * Class: CodeClear.NaturalDocs.Engine.Config.Project_txt
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Project.txt>.
@@ -121,18 +121,18 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Text;
-using GregValure.NaturalDocs.Engine.Config;
-using GregValure.NaturalDocs.Engine.Errors;
+using CodeClear.NaturalDocs.Engine.Config;
+using CodeClear.NaturalDocs.Engine.Errors;
 
 
-namespace GregValure.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public class Project_txt
 		{

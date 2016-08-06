@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.CLI.StatusManagers.Parsing
+ * Class: CodeClear.NaturalDocs.CLI.StatusManagers.Parsing
  * ____________________________________________________________________________
  * 
  * A class to monitor the file parsing stage.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.CLI.StatusManagers
+namespace CodeClear.NaturalDocs.CLI.StatusManagers
 	{
 	public class Parsing : StatusManager
 		{

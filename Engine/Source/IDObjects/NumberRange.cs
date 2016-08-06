@@ -1,12 +1,12 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.IDObjects.NumberRange
+ * Struct: CodeClear.NaturalDocs.Engine.IDObjects.NumberRange
  * ____________________________________________________________________________
  * 
  * A simple struct representing a range of numbers for use with <NumberSet>.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.IDObjects
+namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
 	public struct NumberRange
 		{

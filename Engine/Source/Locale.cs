@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Locale
+ * Class: CodeClear.NaturalDocs.Engine.Locale
  * ____________________________________________________________________________
  * 
  * The localization engine for all of Natural Docs.
@@ -86,17 +86,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine
 	{
 	static public class Locale
 		{
@@ -607,7 +607,7 @@ namespace GregValure.NaturalDocs.Engine
 	
 	
 	/* 
-	 * Class: GregValure.NaturalDocs.Engine.LocalePluralFormatReplacer
+	 * Class: CodeClear.NaturalDocs.Engine.LocalePluralFormatReplacer
 	 * ___________________________________________________________________________
 	 * 
 	 * An internal class to deal with replacing Natural Docs' plural formatting syntax with regular expressions.

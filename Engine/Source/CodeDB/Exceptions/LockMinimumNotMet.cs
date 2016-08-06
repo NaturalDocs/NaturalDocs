@@ -1,11 +1,11 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.CodeDB.Exceptions.LockMinimumNotMet
+ * Class: CodeClear.NaturalDocs.Engine.CodeDB.Exceptions.LockMinimumNotMet
  * ____________________________________________________________________________
  * 
  * Thrown when an <Accessor> was attempting to perform an operation that required a stronger lock than was held.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.CodeDB.Exceptions
+namespace CodeClear.NaturalDocs.Engine.CodeDB.Exceptions
 	{
 	public class LockMinimumNotMet : Exception
 		{

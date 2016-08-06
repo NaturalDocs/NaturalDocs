@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTMLBuildState
+ * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTMLBuildState
  * ____________________________________________________________________________
  * 
  * A class encompassing all the build state information for a HTML output target.
@@ -49,17 +49,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.IDObjects;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	{
 	public partial class HTMLBuildState
 		{

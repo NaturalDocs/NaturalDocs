@@ -1,12 +1,12 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Files.ProcessChangesStatus
+ * Class: CodeClear.NaturalDocs.Engine.Files.ProcessChangesStatus
  * ____________________________________________________________________________
  * 
  * Statistics on the progress of <Files.Manager.WorkOnProcessingChanges()>.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Files
+namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	public class ProcessChangesStatus
 		{

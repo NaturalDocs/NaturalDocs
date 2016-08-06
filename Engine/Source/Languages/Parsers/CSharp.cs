@@ -1,25 +1,25 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Languages.Parsers.CSharp
+ * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.CSharp
  * ____________________________________________________________________________
  * 
  * Full language support parser for C#.
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Tokenization;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages.Parsers
+namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
 	public class CSharp : Language
 		{

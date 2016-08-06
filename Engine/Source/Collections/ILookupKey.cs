@@ -1,5 +1,5 @@
 ﻿/* 
- * Interface: GregValure.NaturalDocs.Engine.Collections.ILookupKey
+ * Interface: CodeClear.NaturalDocs.Engine.Collections.ILookupKey
  * ____________________________________________________________________________
  * 
  * An interface for any class that needs to be indexed with a specific key that differs from what's returned by ToString().
@@ -10,7 +10,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,7 +18,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Collections
+namespace CodeClear.NaturalDocs.Engine.Collections
 	{
 	public interface ILookupKey
 		{

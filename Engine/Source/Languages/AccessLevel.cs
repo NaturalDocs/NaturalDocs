@@ -1,5 +1,5 @@
 ﻿/* 
- * Enum: GregValure.NaturalDocs.Engine.Languages.AccessLevel
+ * Enum: CodeClear.NaturalDocs.Engine.Languages.AccessLevel
  * ____________________________________________________________________________
  * 
  * An enum representing a member access level.
@@ -16,7 +16,7 @@
  *							   protected or internal can access it.  It doesn't have to be both.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -24,7 +24,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages
 	{
 	public enum AccessLevel : byte
 		{

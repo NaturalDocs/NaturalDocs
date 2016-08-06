@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Exceptions.Thread
+ * Class: CodeClear.NaturalDocs.Engine.Exceptions.Thread
  * ____________________________________________________________________________
  * 
  * An exception thrown when one of the program's worker threads has stopped because of an exception.
@@ -18,12 +18,12 @@
  *		  to check it for null.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
-namespace GregValure.NaturalDocs.Engine.Exceptions
+namespace CodeClear.NaturalDocs.Engine.Exceptions
 	{
 	public class Thread : System.Exception
 		{

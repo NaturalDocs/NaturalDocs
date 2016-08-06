@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Collections.TagStack
+ * Class: CodeClear.NaturalDocs.Engine.Collections.TagStack
  * ____________________________________________________________________________
  * 
  * A class to handle tag systems like HTML and XML that might not be valid.  This stack tracks tags that are opened and 
@@ -10,7 +10,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace GregValure.NaturalDocs.Engine.Collections
+namespace CodeClear.NaturalDocs.Engine.Collections
 	{
 	public class TagStack
 		{
@@ -174,7 +174,7 @@ namespace GregValure.NaturalDocs.Engine.Collections
 
 		/* ___________________________________________________________________________
 		 * 
-		 * Struct: GregValure.NaturalDocs.Engine.Comments.Components.TagStack.Entry
+		 * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.TagStack.Entry
 		 * ___________________________________________________________________________
 		 */
 		private struct Entry

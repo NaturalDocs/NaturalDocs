@@ -1,20 +1,20 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Topics.Topic
+ * Class: CodeClear.NaturalDocs.Engine.Topics.Topic
  * ____________________________________________________________________________
  * 
  * A class encapsulating all the information available about a topic.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Symbols;
 
 
-namespace GregValure.NaturalDocs.Engine.Topics
+namespace CodeClear.NaturalDocs.Engine.Topics
 	{
 	public class Topic
 		{

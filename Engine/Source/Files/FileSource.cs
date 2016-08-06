@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Files.FileSource
+ * Class: CodeClear.NaturalDocs.Engine.Files.FileSource
  * ____________________________________________________________________________
  * 
  * The base class for a file source.
@@ -13,16 +13,16 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.Files
+namespace CodeClear.NaturalDocs.Engine.Files
 	{
 	abstract public class FileSource
 		{

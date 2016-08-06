@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.ParsedClassPrototype
+ * Class: CodeClear.NaturalDocs.Engine.ParsedClassPrototype
  * ____________________________________________________________________________
  * 
  * A class that wraps a <Tokenizer> for a prototype that's been marked with <ClassPrototypeParsingTypes>, providing easier 
@@ -24,17 +24,17 @@
  *		not change going forward.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace GregValure.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine
 	{
 	public class ParsedClassPrototype
 		{
@@ -442,7 +442,7 @@ namespace GregValure.NaturalDocs.Engine
 
 		/* ___________________________________________________________________________
 		 * 
-		 * Class: GregValure.NaturalDocs.Engine.ParsedClassPrototype.Section
+		 * Class: CodeClear.NaturalDocs.Engine.ParsedClassPrototype.Section
 		 * ___________________________________________________________________________
 		 */
 		protected class Section

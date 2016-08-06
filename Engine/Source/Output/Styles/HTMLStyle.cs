@@ -1,22 +1,22 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Styles.HTMLStyle
+ * Class: CodeClear.NaturalDocs.Engine.Output.Styles.HTMLStyle
  * ____________________________________________________________________________
  * 
  * A style reference used by <Builders.HTML>.
  *			
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Styles
+namespace CodeClear.NaturalDocs.Engine.Output.Styles
 	{
 	public class HTMLStyle : Style
 		{
@@ -290,7 +290,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 		}
 
 
-	/* Struct: GregValure.NaturalDocs.Engine.Output.Styles.HTMLStyleFileLink
+	/* Struct: CodeClear.NaturalDocs.Engine.Output.Styles.HTMLStyleFileLink
 	 * ___________________________________________________________________________
 	 */
 	public struct HTMLStyleFileLink
@@ -300,7 +300,7 @@ namespace GregValure.NaturalDocs.Engine.Output.Styles
 		}
 
 
-	/* Struct: GregValure.NaturalDocs.Engine.Output.Styles.HTMLStyleOnLoadStatement
+	/* Struct: CodeClear.NaturalDocs.Engine.Output.Styles.HTMLStyleOnLoadStatement
 	 * ___________________________________________________________________________
 	 */
 	public struct HTMLStyleOnLoadStatement

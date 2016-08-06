@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.TestEngine
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestEngine
  * ____________________________________________________________________________
  * 
  * A class that simplifies configuring and running <Engine.Instance> for tests.
@@ -15,17 +15,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Text;
-using GregValure.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
 	public static class TestEngine
 		{

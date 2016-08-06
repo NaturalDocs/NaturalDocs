@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Symbols.ContextString
+ * Struct: CodeClear.NaturalDocs.Engine.Symbols.ContextString
  * ____________________________________________________________________________
  * 
  * A struct encapsulating a context string, which is a normalized way of representing what scope and "using"
@@ -9,7 +9,7 @@
  * <SeparatorChars.Level2>.
  */
  
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.Symbols
+namespace CodeClear.NaturalDocs.Engine.Symbols
 	{
 	public struct ContextString : IComparable, Collections.ILookupKey
 		{

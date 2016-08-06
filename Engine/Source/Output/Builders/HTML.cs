@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
  * 
  * An output builder for HTML.
@@ -61,7 +61,7 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -74,14 +74,14 @@ using System.Threading;
 // We must include this so that "FileSource" doesn't get accidentally interpreted as Output.Styles.FileSource
 // instead of Files.FileSource.  Including them both makes "FileSource" ambiguous and the compiler forces you
 // to specify.
-using GregValure.NaturalDocs.Engine.Files;
+using CodeClear.NaturalDocs.Engine.Files;
 
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.IDObjects;
-using GregValure.NaturalDocs.Engine.Output.Styles;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.IDObjects;
+using CodeClear.NaturalDocs.Engine.Output.Styles;
 
 
-namespace GregValure.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	{
 	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IStyleChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
 		{

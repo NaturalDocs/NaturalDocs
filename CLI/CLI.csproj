@@ -8,7 +8,7 @@
     <ProjectGuid>{2190235A-96D0-4369-B6E6-4C123B76DA04}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GregValure.NaturalDocs.CLI</RootNamespace>
+    <RootNamespace>CodeClear.NaturalDocs.CLI</RootNamespace>
     <AssemblyName>NaturalDocs</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -52,7 +52,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>GregValure.NaturalDocs.CLI.Application</StartupObject>
+    <StartupObject>CodeClear.NaturalDocs.CLI.Application</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>

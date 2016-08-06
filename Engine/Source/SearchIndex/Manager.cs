@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.SearchIndex.Manager
+ * Class: CodeClear.NaturalDocs.Engine.SearchIndex.Manager
  * ____________________________________________________________________________
  * 
  * Multithreading: Thread Safety Notes
@@ -21,7 +21,7 @@
  *		continue in no particular order until it reaches a null ID.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -29,15 +29,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using GregValure.NaturalDocs.Engine.Collections;
-using GregValure.NaturalDocs.Engine.Errors;
-using GregValure.NaturalDocs.Engine.Links;
-using GregValure.NaturalDocs.Engine.IDObjects;
-using GregValure.NaturalDocs.Engine.Symbols;
-using GregValure.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Errors;
+using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.IDObjects;
+using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace GregValure.NaturalDocs.Engine.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.SearchIndex
 	{
 	public class Manager : IDisposable, CodeDB.IChangeWatcher
 		{

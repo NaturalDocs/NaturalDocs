@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Tests.Framework.Test
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.Test
  * ____________________________________________________________________________
  * 
  * A class storing information about a single file-based test.
@@ -26,16 +26,16 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
-using GregValure.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine;
 
 
-namespace GregValure.NaturalDocs.Engine.Tests.Framework
+namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
 	public class Test
 		{

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.Config.Manager
+ * Class: CodeClear.NaturalDocs.Engine.Config.Manager
  * ____________________________________________________________________________
  * 
  * A class to manage the engine's configuration.
@@ -18,17 +18,17 @@
  *		
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
 
 using System;
 using System.Collections.Generic;
-using GregValure.NaturalDocs.Engine.Errors;
+using CodeClear.NaturalDocs.Engine.Errors;
 
 
-namespace GregValure.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Config
 	{
 	public class Manager
 		{

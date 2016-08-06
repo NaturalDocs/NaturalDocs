@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: GregValure.NaturalDocs.Engine.IDObjects.NumberSet
+ * Class: CodeClear.NaturalDocs.Engine.IDObjects.NumberSet
  * ____________________________________________________________________________
  * 
  * A class for efficiently storing a large list of ID numbers and determining which ones are still available.  Also focuses 
@@ -9,7 +9,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace GregValure.NaturalDocs.Engine.IDObjects
+namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
 	public class NumberSet : IEnumerable<int>
 		{
@@ -952,7 +952,7 @@ namespace GregValure.NaturalDocs.Engine.IDObjects
 
 	/* ___________________________________________________________________________
 	 * 
-	 * Class: GregValure.NaturalDocs.Engine.IDObjects.NumberSet_BinaryFileExtensions
+	 * Class: CodeClear.NaturalDocs.Engine.IDObjects.NumberSet_BinaryFileExtensions
 	 * ___________________________________________________________________________
 	 * 
 	 */

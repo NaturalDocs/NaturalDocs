@@ -1,5 +1,5 @@
 /* 
- * Class: GregValure.NaturalDocs.Engine.Files.Filters.IgnoredSourceFolderPattern
+ * Class: CodeClear.NaturalDocs.Engine.Files.Filters.IgnoredSourceFolderPattern
  * ____________________________________________________________________________
  * 
  * An ignored source folder pattern.  If the pattern matches any folder name in the path, it will be ignored.
@@ -7,7 +7,7 @@
  * pattern must match the full folder name, so "cli" will not match "client" although "cli*" will.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -15,7 +15,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Files.Filters
+namespace CodeClear.NaturalDocs.Engine.Files.Filters
 	{
 	public class IgnoredSourceFolderPattern : IgnoredSourceFolderRegex
 		{

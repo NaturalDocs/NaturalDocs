@@ -1,12 +1,12 @@
 /* 
- * Class: GregValure.NaturalDocs.Engine.Files.Filters.IgnoredSourceFolderRegex
+ * Class: CodeClear.NaturalDocs.Engine.Files.Filters.IgnoredSourceFolderRegex
  * ____________________________________________________________________________
  * 
  * A filter that uses a regular expression to determine which source folders to ignore.  If the regex matches any part
  * of the path, the folder will be ignored.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace GregValure.NaturalDocs.Engine.Files.Filters
+namespace CodeClear.NaturalDocs.Engine.Files.Filters
 	{
 	public class IgnoredSourceFolderRegex : Filter
 		{

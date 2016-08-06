@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: GregValure.NaturalDocs.Engine.Comments.Components.XMLIterator
+ * Struct: CodeClear.NaturalDocs.Engine.Comments.Components.XMLIterator
  * ____________________________________________________________________________
  * 
  * A struct to handle walking through XML-formatted content.  It moves by element, treating things like tags
@@ -8,7 +8,7 @@
  * 
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2013 Greg Valure.
+// This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using GregValure.NaturalDocs.Engine.Tokenization;
+using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace GregValure.NaturalDocs.Engine.Comments.Components
+namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
 	public struct XMLIterator
 		{
