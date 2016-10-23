@@ -496,7 +496,7 @@ td {
 	.SuEntry.last { margin-bottom: 2ex; }
 
 	.SuEntry {
-		color: #808080;
+		color: #707070;
 		}
 
 	.SuEntryIcon {
@@ -515,7 +515,7 @@ td {
 	.SuEntry.TDatabaseTable,
 	.SuEntry.TFile.first {
 		font: bold 11pt `HeadingFontFamily;
-		color: #727272;
+		color: #6B6B6B;
 		padding-left: 1.25ex;
 		padding-top: .75ex;
 		padding-bottom: .75ex;
@@ -539,7 +539,7 @@ td {
 
 	.SuEntry.TGroup {
 		font: bold 10pt `HeadingFontFamily;
-		color: #727272;
+		color: #6B6B6B;
 		padding-left: 1.5ex;
 		padding-top: .25ex;
 		padding-bottom: .25ex;
