@@ -42,8 +42,15 @@ _______________________________________________________________________________
 
 		> int* x, y;
 
-		In C++ that would mean int *x, int y as the asterisk is associated with the name.  In C# it means int* x, int* y as the asterisk
-		is associated with the type.
+		In C++ that would mean
+		
+		> int *x, int y
+		
+		as the asterisk is associated with the name.  In C# it means
+		
+		> int* x, int* y 
+		
+		as the asterisk is associated with the type.
 
 
 
