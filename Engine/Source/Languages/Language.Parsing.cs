@@ -963,7 +963,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
 		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
-		// filter out text boxes and lines, use <Comments.Parsers.LineFinder>.
+		// filter out text boxes and lines, use <Comments.LineFinder>.
 		//
 		// If you already have the source code in tokenized form it would be more efficient to pass it as a <Tokenizer>.
 		//
@@ -981,7 +981,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
 		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
-		// filter out text boxes and lines, use <Comments.Parsers.LineFinder>.
+		// filter out text boxes and lines, use <Comments.LineFinder>.
 		//
 		// Default Implementation:
 		//

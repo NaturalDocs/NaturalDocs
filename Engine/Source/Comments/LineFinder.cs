@@ -1,9 +1,16 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Comments.Parsers.LineFinder
+ * Class: CodeClear.NaturalDocs.Engine.Comments.LineFinder
  * ____________________________________________________________________________
  * 
- * A general parser which finds vertical and horizontal lines in comments and marks them with
+ * A static class which finds vertical and horizontal lines in comments and marks them with
  * <Tokenization.CommentParsingType.CommentDecoration> so that they can be ignored in later stages of parsing.
+ * 
+ * 
+ * Multithreading: Thread Safety Notes
+ * 
+ *		This class can be used by multiple threads to parse multiple files simultaneously.  The parsing functions store
+ *		no state information inside the class.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
@@ -15,11 +22,11 @@ using System;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
+namespace CodeClear.NaturalDocs.Engine.Comments
 	{
-	public class LineFinder : Parser
+	public static class LineFinder
 		{
-		
+
 		/* Function: MarkTextBoxes
 		 * 
 		 * Finds all text boxes in a comment and marks their tokens as <Tokenization.CommentParsingType.CommentDecoration>.
@@ -61,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * > // +-----+
 		 * > // (end code)
 		 */
-		public void MarkTextBoxes (PossibleDocumentationComment comment)
+		public static void MarkTextBoxes (PossibleDocumentationComment comment)
 			{
 			char symbolA, symbolB, symbolC;
 			int symbolACount, symbolBCount, symbolCCount;
@@ -306,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		/* Function: IsHorizontalLine
 		 * Returns whether the passed <LineIterator> is at a horizontal line, not including any comment symbols or decoration.
 		 */
-		public bool IsHorizontalLine (LineIterator line)
+		public static bool IsHorizontalLine (LineIterator line)
 			{
 			TokenIterator start, end;
 			line.GetBounds(LineBoundsMode.CommentContent, out start, out end);
@@ -333,7 +340,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 			
 			
-		// Group: Protected Functions
+		// Group: Private Functions
 		// __________________________________________________________________________
 			
 			
@@ -347,9 +354,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * If it wasn't on a symbol to begin with it will return false, A, B, and C will all be set to null and zero, and the
 		 * start iterator will not be moved.
 		 */
-		protected bool CountSymbolLine (ref TokenIterator start, TokenIterator end,
-														 out char symbolA, out char symbolB, out char symbolC,
-														 out int symbolACount, out int symbolBCount, out int symbolCCount)
+		private static bool CountSymbolLine (ref TokenIterator start, TokenIterator end,
+															 out char symbolA, out char symbolB, out char symbolC,
+															 out int symbolACount, out int symbolBCount, out int symbolCCount)
 			{
 			symbolA = '\0';
 			symbolB = '\0';
@@ -399,8 +406,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * The slashes on the middle line will be returned as the left symbol but is meant to be the right.  Make sure you
 		 * handle this situation correctly.
 		 */
-		protected bool CountEdgeSymbols (LineIterator line, out char leftSymbol, out char rightSymbol,
-															out int leftSymbolCount, out int rightSymbolCount, out bool symbolIsAloneOnLine)
+		private static bool CountEdgeSymbols (LineIterator line, out char leftSymbol, out char rightSymbol,
+																out int leftSymbolCount, out int rightSymbolCount, out bool symbolIsAloneOnLine)
 			{
 			symbolIsAloneOnLine = false;
 			
@@ -446,7 +453,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * If the start iterator wasn't on a symbol it returns false, sets the symbol to null, the count to zero, and does
 		 * not move the start iterator.
 		 */
-		protected bool CountSymbols (ref TokenIterator start, TokenIterator end, out char symbol, out int count)
+		private static bool CountSymbols (ref TokenIterator start, TokenIterator end, out char symbol, out int count)
 			{
 			if (start >= end || start.FundamentalType != FundamentalType.Symbol)
 				{  
@@ -478,7 +485,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * If the end iterator wasn't on a symbol it returns false, sets the symbol to null, the count to zero, and does
 		 * not move the end iterator.
 		 */
-		protected bool ReverseCountSymbols (TokenIterator start, ref TokenIterator end, out char symbol, out int count)
+		private static bool ReverseCountSymbols (TokenIterator start, ref TokenIterator end, out char symbol, out int count)
 			{
 			end.Previous();
 			

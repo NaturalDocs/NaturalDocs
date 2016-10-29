@@ -33,8 +33,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 */
 		public Manager ()
 			{
-			lineFinder = new Parsers.LineFinder();
-
 			naturalDocsParser = new Parsers.NaturalDocs();
 			xmlParser = new Parsers.XML();
 			javadocParser = new Parsers.Javadoc();
@@ -49,8 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 */
 		public bool Start (Errors.ErrorList errors)
 			{
-			return (lineFinder.Start(errors) &&
-					  naturalDocsParser.Start(errors) &&
+			return (naturalDocsParser.Start(errors) &&
 					  xmlParser.Start(errors) &&
 					  javadocParser.Start(errors));
 			}
@@ -63,7 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			{
 			// Apply to all comments, not just Natural Docs'.  Javadoc comments may use a left line of stars which would
 			// need to be taken out.
-			lineFinder.MarkTextBoxes(comment);
+			LineFinder.MarkTextBoxes(comment);
 			
 			// First try Natural Docs while requiring a header.  If the first line is a header it's treated as Natural Docs content 
 			// regardless of comment style.
@@ -95,16 +92,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 		
 		
-		/* Property: LineFinder
-		 * A reference to <Parsers.LineFinder> so that other parsers may use it to detect horizontal lines.
-		 */
-		public Parsers.LineFinder LineFinder
-			{
-			get
-				{  return lineFinder;  }
-			}
-			
-			
 		/* Property: NaturalDocsParser
 		 * A reference to <Parsers.NaturalDocs> so that other code can call <Parsers.NaturalDocs.LinkInterpretations()>.
 		 */
@@ -140,8 +127,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		// __________________________________________________________________________
 
 
-		protected Parsers.LineFinder lineFinder;		
-		
 		protected Parsers.NaturalDocs naturalDocsParser;
 		protected Parsers.XML xmlParser;
 		protected Parsers.Javadoc javadocParser;

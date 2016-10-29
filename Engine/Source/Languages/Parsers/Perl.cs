@@ -70,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		//
 		// All the comments in the returned list will have their comment symbols marked as <CommentParsingType.CommentSymbol>
 		// in the tokenizer.  This allows further operations to be done on them in a language independent manner.  If you want to also
-		// filter out text boxes and lines, use <Comments.Parsers.LineFinder>.
+		// filter out text boxes and lines, use <Comments.LineFinder>.
 		//
 		override public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{

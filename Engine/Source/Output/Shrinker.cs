@@ -35,8 +35,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			cssLanguage = new Languages.Language("CSS");
 			cssLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
 
-			lineFinder = new Comments.Parsers.LineFinder();
-
 			keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
 			substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
 			substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
@@ -227,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected void ProcessComment (PossibleDocumentationComment comment)
 			{
-			lineFinder.MarkTextBoxes(comment);
+			Comments.LineFinder.MarkTextBoxes(comment);
 
 			LineIterator iterator = comment.Start;
 
@@ -532,13 +530,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		protected static Languages.Language jsLanguage;
 		protected static Languages.Language cssLanguage;
 		
-		/* var: lineFinder
-		 * A private copy of <Comments.Parsers.LineFinder> so that this class can be used independently of a started <Engine.Instance>.
-		 * The version in <Comments.Manager> will only exist when the engine is started and other projects such as the website generator
-		 * may want to use it.
-		 */
-		protected static Comments.Parsers.LineFinder lineFinder;
-
 		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex;
 		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex;
 		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex;

@@ -119,7 +119,7 @@
     <Compile Include="Source\Links\LinkInterpretation.cs" />
     <Compile Include="Source\Comments\Manager.cs" />
     <Compile Include="Source\Comments\Parser.cs" />
-    <Compile Include="Source\Comments\Parsers\LineFinder.cs" />
+    <Compile Include="Source\Comments\LineFinder.cs" />
     <Compile Include="Source\Comments\Parsers\NaturalDocs.cs" />
     <Compile Include="Source\Comments\PossibleDocumentationComment.cs" />
     <Compile Include="Source\Comments\Type.cs" />

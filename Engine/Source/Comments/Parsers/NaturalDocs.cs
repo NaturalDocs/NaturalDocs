@@ -372,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 			while (lineIterator < comment.End &&
 					  ( lineIterator.IsEmpty(LineBoundsMode.CommentContent) ||
-						Engine.Instance.Comments.LineFinder.IsHorizontalLine(lineIterator) ))
+						LineFinder.IsHorizontalLine(lineIterator) ))
 				{  
 				lineIterator.Next();
 				}
@@ -454,7 +454,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				else
 					{
 					prevLineBlank = ( lineIterator.IsEmpty(LineBoundsMode.CommentContent) ||
-											   Engine.Instance.Comments.LineFinder.IsHorizontalLine(lineIterator) );
+											   LineFinder.IsHorizontalLine(lineIterator) );
 					
 					lineIterator.Next();
 					}
@@ -2036,7 +2036,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					
 				// Blank or horizontal lines
 				
-				else if (line.IsEmpty(LineBoundsMode.CommentContent) || Engine.Instance.Comments.LineFinder.IsHorizontalLine(line))
+				else if (line.IsEmpty(LineBoundsMode.CommentContent) || LineFinder.IsHorizontalLine(line))
 					{
 					CloseParagraph(ref paragraph, body);
 					prevLineBlank = true;
