@@ -145,7 +145,7 @@ Conversion List: Plural Conversions
 	ses -> sis
 
 	# women -> woman
-	men -> man
+	en -> an
     
 	# mice -> mouse
 	ice -> ouse
@@ -163,7 +163,7 @@ Conversion List: Plural Conversions
 	ices -> ex
 	
 	# feet -> foot
-	feet -> foot
+	eet -> oot
     
 	# geese -> goose
 	eese -> oose
