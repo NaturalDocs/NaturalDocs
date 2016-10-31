@@ -357,28 +357,36 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		static private void Multithread (string threadName, CancellableTask task)
 			{
-			Engine.Thread[] threads = new Engine.Thread[ Engine.Instance.Config.BackgroundThreadsPerTask ];
+			#if WORK_ON_MAIN_THREAD
 
-			for (int i = 0; i < threads.Length; i++)
-				{  
-				Engine.Thread thread = new Engine.Thread();
+				task(Engine.Delegates.NeverCancel);
 
-				thread.Name = threadName + " Thread " + (i + 1);
-				thread.Task = task;
-				thread.CancelDelegate = Engine.Delegates.NeverCancel;
-				thread.Priority = System.Threading.ThreadPriority.BelowNormal;
+			#else
 
-				threads[i] = thread;
-				}
+				Engine.Thread[] threads = new Engine.Thread[ Engine.Instance.Config.BackgroundThreadsPerTask ];
 
-			foreach (var thread in threads)
-				{  thread.Start();  }
+				for (int i = 0; i < threads.Length; i++)
+					{  
+					Engine.Thread thread = new Engine.Thread();
 
-			foreach (var thread in threads)
-				{  thread.Join();  }
+					thread.Name = threadName + " Thread " + (i + 1);
+					thread.Task = task;
+					thread.CancelDelegate = Engine.Delegates.NeverCancel;
+					thread.Priority = System.Threading.ThreadPriority.BelowNormal;
 
-			foreach (var thread in threads)
-				{  thread.ThrowExceptions();  }
+					threads[i] = thread;
+					}
+
+				foreach (var thread in threads)
+					{  thread.Start();  }
+
+				foreach (var thread in threads)
+					{  thread.Join();  }
+
+				foreach (var thread in threads)
+					{  thread.ThrowExceptions();  }
+
+			#endif
 			}
 
 
