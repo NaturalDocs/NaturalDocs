@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSSearchData
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build JavaScript search data for <Output.Builders.HTML>.  See <JavaScript Search Data>
+ * A helper class to build JavaScript search data for <Output.Builders.HTML>.  See <JavaScript Search Data>
  * for the output format.
  * 
  * Topic: Usage
@@ -10,7 +10,6 @@
  *		- Create a JSSearchData object.
  *		- Call <BuildPrefixIndex()>.
  *		- Call <BuildPrefixDataFile()>.
- *		- The object can be reused with different files by calling <BuildPrefixDataFile()> again.
  * 
  * Threading: Not Thread Safe
  * 

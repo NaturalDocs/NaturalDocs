@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSMenuData
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
+ * A helper class to build the JavaScript menu data for <Output.Builders.HTML>.  See <JavaScript Menu Data> 
  * for the output format.
  * 
  * 

@@ -2,14 +2,13 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSSummaryData
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript Summary Data>
+ * A helper class to build JavaScript summary data for <Output.Builders.HTML>.  See <JavaScript Summary Data>
  * and <JavaScript ToolTip Data> for the output formats.
  * 
  * Topic: Usage
  *		
  *		- Create a JSSummaryData object.
  *		- Call <Build()>.
- *		- The object can be reused on different <Topics> by calling <Build()> again.
  * 
  * Threading: Not Thread Safe
  * 
