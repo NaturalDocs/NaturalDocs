@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.LinkInterpretations
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes.VersionStrings
  * ____________________________________________________________________________
  * 
  * A class to test Natural Docs' link interpreting.
