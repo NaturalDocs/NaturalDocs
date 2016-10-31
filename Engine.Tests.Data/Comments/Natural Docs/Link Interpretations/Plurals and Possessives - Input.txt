@@ -88,3 +88,23 @@
 <Children's>
 
 <Foxes’>
+
+
+// Capitalization preservation
+// ____________________________________________________________________________
+
+<men>
+
+<Men>
+
+<feet>
+
+<Feet>
+
+<geese>
+
+<Geese>
+
+<children>
+
+<Children>

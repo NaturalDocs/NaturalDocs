@@ -86,6 +86,7 @@
 
 <Oxen>
 - "Oxen" -> Oxen
+- "Oxen" -> Oxan
 - "Oxen" -> Ox
 
 <Indices>
@@ -97,7 +98,7 @@
 
 <Feet>
 - "Feet" -> Feet
-- "Feet" -> foot
+- "Feet" -> Foot
 
 <Geese>
 - "Geese" -> Geese
@@ -109,6 +110,7 @@
 
 <Children>
 - "Children" -> Children
+- "Children" -> Childran
 - "Children" -> Child
 
 
@@ -117,6 +119,7 @@
 
 <Package.Package.WindowChildren>
 - "Package.Package.WindowChildren" -> Package.Package.WindowChildren
+- "Package.Package.WindowChildren" -> Package.Package.WindowChildran
 - "Package.Package.WindowChildren" -> Package.Package.WindowChild
 
 <Package::Package->Indices>
@@ -179,6 +182,7 @@
 - "Children's" -> Children's
 - "Children's" -> Children'
 - "Children's" -> Children
+- "Children's" -> Childran
 - "Children's" -> Child
 
 <Foxes’>
@@ -186,3 +190,41 @@
 - "Foxes’" -> Foxes
 - "Foxes’" -> Foxe
 - "Foxes’" -> Fox
+
+
+// Capitalization preservation
+// ____________________________________________________________________________
+
+<men>
+- "men" -> men
+- "men" -> man
+
+<Men>
+- "Men" -> Men
+- "Men" -> Man
+
+<feet>
+- "feet" -> feet
+- "feet" -> foot
+
+<Feet>
+- "Feet" -> Feet
+- "Feet" -> Foot
+
+<geese>
+- "geese" -> geese
+- "geese" -> goose
+
+<Geese>
+- "Geese" -> Geese
+- "Geese" -> Goose
+
+<children>
+- "children" -> children
+- "children" -> childran
+- "children" -> child
+
+<Children>
+- "Children" -> Children
+- "Children" -> Childran
+- "Children" -> Child

@@ -43,8 +43,8 @@ C# NaturalDocs Link: Children
 
 Match score:
    ☐ - Exact text
-   1 - Interpretation index
-      (62 score)
+   2 - Interpretation index
+      (61 score)
 
 C# Function Topic: Alumnus
    Symbol: Alumnus
