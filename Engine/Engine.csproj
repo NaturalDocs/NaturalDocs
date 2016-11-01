@@ -44,6 +44,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Languages\CommentFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\BinaryFile.cs" />
     <Compile Include="Source\CodeDB\Accessor.cs" />

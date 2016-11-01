@@ -6,6 +6,13 @@
  * represent the final combined settings of a language rather than its entry in a config file.  For example, this class
  * doesn't store the language's extensions or shebang strings.
  * 
+ * 
+ * Multithreading: Thread Safety Notes
+ * 
+ *		Once the object is set up, meaning there will be no further changes to properties like <LineCommentStrings>,
+ *		the object can be used by multiple threads to parse multiple files simultaneously.  The parsing functions store
+ *		no state information inside the object.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
@@ -21,7 +28,7 @@ using CodeClear.NaturalDocs.Engine.Comments;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public partial class Language : IDObjects.Base
+	public partial class Language : CommentFinder
 		{
 		
 		// Group: Types
@@ -58,6 +65,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * InBinaryFile - Set if the language was present in <Languages.nd>
 		 * Predefined - Set if the language is predefined by Natural Docs.
 		 */
+		[Flags]
 		protected enum LanguageFlags : byte
 			{
 			InSystemFile = 0x01,
@@ -78,17 +86,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: Language
 		 * Creates a new language object.
 		 */
-		public Language (string newName) : base()
+		public Language (string name) : base (name)
 			{
-			name = newName;
-			
 			simpleIdentifier = null;			
 			type = LanguageType.BasicSupport;
-			lineCommentStrings = null;
-			blockCommentStringPairs = null;
-			javadocLineCommentStringPairs = null;
-			javadocBlockCommentStringPairs = null;
-			xmlLineCommentStrings = null;
 			memberOperator = ".";
 			topicTypesToPrototypeEnders = null;
 			lineExtender = null;
@@ -177,17 +178,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			
 		// Group: Language Properties
 		// __________________________________________________________________________
-			
-			
-		/* Property: Name
-		 * The name of the language.
-		 */
-		override public string Name
-			{
-			get
-				{  return name;  }
-			}
-			
+		
+		
 		/* Property: SimpleIdentifier
 		 * The name of the language using only the letters A to Z.
 		 */
@@ -219,102 +211,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return type;  }
 			set
 				{  type = value;  }
-			}
-			
-		/* Property: LineCommentStrings
-		 * An array of strings representing line comment symbols.  Will be null if none are defined.
-		 */
-		public string[] LineCommentStrings
-			{
-			get
-				{  return lineCommentStrings;  }
-			set
-				{
-				if (value != null && value.Length != 0)
-					{  lineCommentStrings = value;  }
-				else
-					{  lineCommentStrings = null;  }
-				}
-			}
-			
-		/* Property: BlockCommentStringPairs
-		 * An array of string pairs representing start and stop block comment symbols.  Will be null if none are defined.
-		 */
-		public string[] BlockCommentStringPairs
-			{
-			get
-				{  return blockCommentStringPairs;  }
-			set
-				{
-				if (value != null && value.Length != 0)
-					{  
-					if (value.Length % 2 == 1)
-						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
-
-					blockCommentStringPairs = value;  
-					}
-				else
-					{  blockCommentStringPairs = null;  }
-				}
-			}
-			
-		/* Property: JavadocLineCommentStringPairs
-		 * An array of string pairs representing Javadoc line comment symbols.  The first are are the symbols that must start the
-		 * comment, and the second are the symbols that must be used on every following line.  Will be null if none are defined.
-		 */
-		public string[] JavadocLineCommentStringPairs
-			{
-			get
-				{  return javadocLineCommentStringPairs;  }
-			set
-				{
-				if (value != null && value.Length != 0)
-					{  
-					if (value.Length % 2 == 1)
-						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocLineCommentStringPairs");  }
-
-					javadocLineCommentStringPairs = value;  
-					}
-				else
-					{  javadocLineCommentStringPairs = null;  }
-				}
-			}
-			
-		/* Property: JavadocBlockCommentStringPairs
-		 * An array of string pairs representing start and stop Javadoc block comment symbols.  Will be null if none are defined.
-		 */
-		public string[] JavadocBlockCommentStringPairs
-			{
-			get
-				{  return javadocBlockCommentStringPairs;  }
-			set
-				{
-				if (value != null && value.Length != 0)
-					{  
-					if (value.Length % 2 == 1)
-						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocBlockCommentStringPairs");  }
-
-					javadocBlockCommentStringPairs = value;  
-					}
-				else
-					{  javadocBlockCommentStringPairs = null;  }
-				}
-			}
-			
-		/* Property: XMLLineCommentStrings
-		 * An array of strings representing XML line comment symbols.  Will be null if none are defined.
-		 */
-		public string[] XMLLineCommentStrings
-			{
-			get
-				{  return xmlLineCommentStrings;  }
-			set
-				{
-				if (value != null && value.Length != 0)
-					{  xmlLineCommentStrings = value;  }
-				else
-					{  xmlLineCommentStrings = null;  }
-				}
 			}
 			
 		/* Property: MemberOperator
@@ -663,11 +559,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		/* var: name
-		 * The language name.
-		 */
-		protected string name;
-		
 		/* var: simpleIdentifier
 		 * The language's name using only the letters A to Z, or null if it's not defined.
 		 */
@@ -678,32 +569,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected LanguageType type;
 
-		/* array: lineCommentStrings
-		 * An array of strings that start line comments.
-		 */
-		protected string[] lineCommentStrings;
-		
-		/* array: blockCommentStringPairs
-		 * An array of string pairs that start and end block comments.
-		 */
-		protected string[] blockCommentStringPairs;
-		
-		/* array: javadocLineCommentStringPairs
-		 * An array of string pairs that start Javadoc line comments.  The first will be the symbol that must start it, and
-		 * the second will be the symbol that must be used on every following line.
-		 */
-		protected string[] javadocLineCommentStringPairs;
-		
-		/* array: javadocBlockCommentStringPairs
-		 * An array of string pairs that start and end Javadoc black comments.
-		 */
-		protected string[] javadocBlockCommentStringPairs;
-		
-		/* array: xmlLineCommentStrings
-		 * An array of strings that start XML line comments.
-		 */
-		protected string[] xmlLineCommentStrings;
-		
 		/* string: memberOperator
 		 * A string representing the default member operator symbol.
 		 */
