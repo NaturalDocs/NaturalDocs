@@ -28,12 +28,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		static Shrinker ()
 			{
-			jsLanguage = new Languages.Language("JavaScript");
-			jsLanguage.LineCommentStrings = new string[] { "//" };
-			jsLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			jsCommentFinder = new Languages.CommentFinder("JavaScript");
+			jsCommentFinder.LineCommentStrings = new string[] { "//" };
+			jsCommentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
 
-			cssLanguage = new Languages.Language("CSS");
-			cssLanguage.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			cssCommentFinder = new Languages.CommentFinder("CSS");
+			cssCommentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
 
 			keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
 			substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = jsLanguage.GetPossibleDocumentationComments(source);
+			IList<PossibleDocumentationComment> comments = jsCommentFinder.GetPossibleDocumentationComments(source);
 
 			foreach (var comment in comments)
 				{  ProcessComment(comment);  }
@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			// Search comments for sections to include in the output and substitution definitions.
 
-			IList<PossibleDocumentationComment> comments = cssLanguage.GetPossibleDocumentationComments(source);
+			IList<PossibleDocumentationComment> comments = cssCommentFinder.GetPossibleDocumentationComments(source);
 
 			foreach (var comment in comments)
 				{  ProcessComment(comment);  }
@@ -527,8 +527,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static Languages.Language jsLanguage;
-		protected static Languages.Language cssLanguage;
+		protected static Languages.CommentFinder jsCommentFinder;
+		protected static Languages.CommentFinder cssCommentFinder;
 		
 		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex;
 		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex;
