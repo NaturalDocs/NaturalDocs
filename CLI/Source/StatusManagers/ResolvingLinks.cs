@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		public override void Start ()
 			{
-			totalUnitsOfWork = Engine.Instance.CodeDB.ResolvingUnitsOfWorkRemaining();
+			totalUnitsOfWork = Application.EngineInstance.CodeDB.ResolvingUnitsOfWorkRemaining();
 
 			base.Start();
 			}
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			long unitsOfWorkRemaining = Engine.Instance.CodeDB.ResolvingUnitsOfWorkRemaining();
+			long unitsOfWorkRemaining = Application.EngineInstance.CodeDB.ResolvingUnitsOfWorkRemaining();
 
 			// Sanity check in case it increases while running.
 			if (unitsOfWorkRemaining > totalUnitsOfWork)

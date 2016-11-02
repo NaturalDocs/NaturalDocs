@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowStartMessage ()
 			{
-			totalUnitsOfWork = Engine.Instance.Output.UnitsOfWorkRemaining();
+			totalUnitsOfWork = Application.EngineInstance.Output.UnitsOfWorkRemaining();
 
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartOutputBuilding")
@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			long unitsOfWorkRemaining = Engine.Instance.Output.UnitsOfWorkRemaining();
+			long unitsOfWorkRemaining = Application.EngineInstance.Output.UnitsOfWorkRemaining();
 
 			// Sanity check since as it runs a builder can add tasks to the list of things it needs to do.
 			if (unitsOfWorkRemaining > totalUnitsOfWork)

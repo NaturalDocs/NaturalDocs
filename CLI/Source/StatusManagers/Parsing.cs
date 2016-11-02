@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowStartMessage ()
 			{
-			NaturalDocs.Engine.Instance.Files.GetProcessChangesStatus(ref status);
+			Application.EngineInstance.Files.GetProcessChangesStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
 			
 			if (alternateStartMessage != null)
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			if (totalFilesToProcess == 0)
 				{  return;  }
 				
-			Engine.Instance.Files.GetProcessChangesStatus(ref status);
+			Application.EngineInstance.Files.GetProcessChangesStatus(ref status);
 			
 			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;

@@ -50,6 +50,8 @@ namespace CodeClear.NaturalDocs.CLI
 			executionTimer = new ExecutionTimer();
 			executionTimer.Start("Total Execution");
 
+			engineInstance = null;
+
 			quiet = false;
 			showExecutionTime = false;
 			pauseOnError = false;
@@ -61,7 +63,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			try
 				{
-				NaturalDocs.Engine.Instance.Create();
+				engineInstance = new NaturalDocs.Engine.Instance();
 				
 				ErrorList startupErrors = new ErrorList();
 				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, out commandLineConfig, startupErrors);
@@ -127,7 +129,8 @@ namespace CodeClear.NaturalDocs.CLI
 				
 			finally
 				{
-				Engine.Instance.Dispose(gracefulExit);
+				engineInstance.Dispose(gracefulExit);
+				engineInstance = null;
 
 				executionTimer.End("Total Execution");
 
@@ -153,12 +156,12 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			ShowConsoleHeader();
 
-			bool rebuildAllOutputFromCommandLine = Engine.Instance.Config.RebuildAllOutput;
-			bool reparseEverythingFromCommandLine = Engine.Instance.Config.ReparseEverything;
+			bool rebuildAllOutputFromCommandLine = EngineInstance.Config.RebuildAllOutput;
+			bool reparseEverythingFromCommandLine = EngineInstance.Config.ReparseEverything;
 
-			NaturalDocs.Engine.Instance.AddStartupWatcher(new EngineStartupWatcher());
+			EngineInstance.AddStartupWatcher(new EngineStartupWatcher());
 
-			if (NaturalDocs.Engine.Instance.Start(errorList, commandLineConfig) == true)
+			if (EngineInstance.Start(errorList, commandLineConfig) == true)
 				{
 
 				// File Search
@@ -167,12 +170,12 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 							
-					Multithread("File Adder", Engine.Instance.Files.WorkOnAddingAllFiles);
+					Multithread("File Adder", EngineInstance.Files.WorkOnAddingAllFiles);
 							
 					statusManager.End();
 					}
 							
-				Engine.Instance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
+				EngineInstance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
 							
 						
 				// Rebuild notice
@@ -181,7 +184,7 @@ namespace CodeClear.NaturalDocs.CLI
 						
 				if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
 					{  alternateStartMessage = "Status.RebuildEverythingByRequest";  }
-				else if (Engine.Instance.Config.ReparseEverything && Engine.Instance.Config.RebuildAllOutput)
+				else if (EngineInstance.Config.ReparseEverything && EngineInstance.Config.RebuildAllOutput)
 					{  alternateStartMessage = "Status.RebuildEverythingAutomatically";  }
 							
 							
@@ -193,7 +196,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 
-					Multithread("Parser", Engine.Instance.Files.WorkOnProcessingChanges);							
+					Multithread("Parser", EngineInstance.Files.WorkOnProcessingChanges);							
 							
 					statusManager.End();
 					}
@@ -209,7 +212,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 
-					Multithread("Resolver", Engine.Instance.CodeDB.WorkOnResolvingLinks);
+					Multithread("Resolver", EngineInstance.CodeDB.WorkOnResolvingLinks);
 							
 					statusManager.End();
 					}
@@ -225,8 +228,8 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 
-					Multithread("Builder", Engine.Instance.Output.WorkOnUpdatingOutput);
-					Multithread("Finalizer", Engine.Instance.Output.WorkOnFinalizingOutput);							
+					Multithread("Builder", EngineInstance.Output.WorkOnUpdatingOutput);
+					Multithread("Finalizer", EngineInstance.Output.WorkOnFinalizingOutput);							
 							
 					statusManager.End();
 					}
@@ -236,7 +239,7 @@ namespace CodeClear.NaturalDocs.CLI
 							
 				// End
 						
-				Engine.Instance.Cleanup(Delegates.NeverCancel);
+				EngineInstance.Cleanup(Delegates.NeverCancel);
 						
 				ShowConsoleFooter(true);
 				return true;
@@ -363,7 +366,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			#else
 
-				Engine.Thread[] threads = new Engine.Thread[ Engine.Instance.Config.BackgroundThreadsPerTask ];
+				Engine.Thread[] threads = new Engine.Thread[ EngineInstance.Config.BackgroundThreadsPerTask ];
 
 				for (int i = 0; i < threads.Length; i++)
 					{  
@@ -408,7 +411,7 @@ namespace CodeClear.NaturalDocs.CLI
 				 ( e.GetType() == typeof(Engine.Exceptions.Thread) &&
 				   e.InnerException.GetType() == typeof(Engine.Exceptions.UserFriendly) ) == false )
 				{
-				Engine.Path crashFile = Engine.Instance.BuildCrashReport(e);
+				Engine.Path crashFile = EngineInstance.BuildCrashReport(e);
 
 				if (crashFile != null)
 					{
@@ -515,9 +518,25 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with the application.
+		 */
+		public static Engine.Instance EngineInstance
+			{
+			get
+				{  return engineInstance;  }
+			}
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 
+		static private Engine.Instance engineInstance;
 
 		static private ProjectConfig commandLineConfig;
 
