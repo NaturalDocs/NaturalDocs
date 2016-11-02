@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			catch
 				{  return ParseResult.CantAccessFile;  }
 
-			return Parse(new Tokenizer(content, tabWidth: Manager.EngineInstance.Config.TabWidth),
+			return Parse(new Tokenizer(content, tabWidth: EngineInstance.Config.TabWidth),
 							   fileID, cancelDelegate, out topics, out classParentLinks);
 			}
 			
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Remove code topics if --documented-only is on.  We do this after merging and keep all the original elements so that the 
 				// code's effects still apply.
 
-				if (Manager.EngineInstance.Config.DocumentedOnly)
+				if (EngineInstance.Config.DocumentedOnly)
 					{
 					foreach (var element in elements)
 						{
@@ -311,7 +311,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Add automatic grouping.
 
-			if (Manager.EngineInstance.Config.AutoGroup)
+			if (EngineInstance.Config.AutoGroup)
 				{
 				if (AddAutomaticGrouping(elements))
 					{  
@@ -404,7 +404,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (Type == LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParsePrototype");  }
 
-			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: Manager.EngineInstance.Config.TabWidth);
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			ParsedPrototype parsedPrototype = new ParsedPrototype(tokenizedPrototype);
 
 
@@ -559,10 +559,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (Type == LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
-			if (Manager.EngineInstance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+			if (EngineInstance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
 				{  return null;  }
 
-			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: Manager.EngineInstance.Config.TabWidth);
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
 
 
@@ -1059,7 +1059,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			List<Topic> topics = new List<Topic>();
 				
 			foreach (var comment in possibleDocumentationComments)
-				{  Manager.EngineInstance.Comments.Parse(comment, topics);  }
+				{  EngineInstance.Comments.Parse(comment, topics);  }
 
 
 			// Convert the topics to elements.  Generate ranges for scoped topics and groups.
@@ -1087,7 +1087,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Look up the topic type and end the previous class or group if necessary.
 				if (topic.TopicTypeID != 0)
 					{
-					topicType = Manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+					topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 					if (topicType.Scope == TopicType.ScopeValue.Start ||
 						 topicType.Scope == TopicType.ScopeValue.End)
@@ -1461,7 +1461,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected virtual string NormalizePrototype (string input)
 			{
-			return NormalizePrototype(new Tokenizer(input, tabWidth: Manager.EngineInstance.Config.TabWidth));
+			return NormalizePrototype(new Tokenizer(input, tabWidth: EngineInstance.Config.TabWidth));
 			}
 
 
@@ -2006,7 +2006,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (element.Topic != null && element.Topic.TopicTypeID != 0)
 						{
-						var topicType = Manager.EngineInstance.TopicTypes.FromID(element.Topic.TopicTypeID);
+						var topicType = EngineInstance.TopicTypes.FromID(element.Topic.TopicTypeID);
 
 						if (topicType.Scope == TopicType.ScopeValue.Start ||
 							topicType.Scope == TopicType.ScopeValue.End)
@@ -2078,7 +2078,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				#endif
 
 				// Documentation and file topics should not be merged with code.  Headerless topics are assumed to be code.
-				if (Manager.EngineInstance.TopicTypes.FromID(commentTopic.TopicTypeID).Flags.Code == false)
+				if (EngineInstance.TopicTypes.FromID(commentTopic.TopicTypeID).Flags.Code == false)
 					{  return false;  }
 
 				#if DEBUG
@@ -2105,7 +2105,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  throw new Exception ("Tried to merge topics that did not pass CanMergeTopics().");  }
 			#endif
 
-			Topic mergedTopic = new Topic(Manager.EngineInstance.TopicTypes);
+			Topic mergedTopic = new Topic(EngineInstance.TopicTypes);
 
 			// TopicID - Shouldn't be set on either.
 			
@@ -2424,7 +2424,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 			#endif
 
-			if (Manager.EngineInstance.TopicTypes.GroupTopicTypeID == 0)
+			if (EngineInstance.TopicTypes.GroupTopicTypeID == 0)
 				{  return 0;  }
 
 			TopicType lastTopicType = null;
@@ -2445,7 +2445,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (elements[i].Topic.IsEnum)
 					{  
-					int typeTopicTypeID = Manager.EngineInstance.TopicTypes.IDFromKeyword("type");
+					int typeTopicTypeID = EngineInstance.TopicTypes.IDFromKeyword("type");
 
 					if (typeTopicTypeID != 0)
 						{  effectiveTopicTypeID = typeTopicTypeID;  }
@@ -2459,7 +2459,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						lastGroupAdded.EndingCharNumber = elements[i].CharNumber;
 						}
 
-					lastTopicType = Manager.EngineInstance.TopicTypes.FromID(effectiveTopicTypeID);
+					lastTopicType = EngineInstance.TopicTypes.FromID(effectiveTopicTypeID);
 					bool addGroup = true;
 
 					// Don't group on files if they're the first topic in the file.
@@ -2479,8 +2479,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (addGroup)
 						{
-						Topic newGroupTopic = new Topic(Manager.EngineInstance.TopicTypes);
-						newGroupTopic.TopicTypeID = Manager.EngineInstance.TopicTypes.GroupTopicTypeID;
+						Topic newGroupTopic = new Topic(EngineInstance.TopicTypes);
+						newGroupTopic.TopicTypeID = EngineInstance.TopicTypes.GroupTopicTypeID;
 						newGroupTopic.Title = lastTopicType.PluralDisplayName;
 
 						ParentElement newGroupElement = new ParentElement(elements[i].LineNumber, elements[i].CharNumber, 0);
@@ -2968,7 +2968,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Gather information
 
-					TopicType topicType = Manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+					TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 					string ignore;
 					SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out ignore);
@@ -3007,7 +3007,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						ClassString.HierarchyType hierarchyType = (topicType.Flags.ClassHierarchy ? 
 																												ClassString.HierarchyType.Class :
 																												ClassString.HierarchyType.Database);
-						Language language = Manager.EngineInstance.Languages.FromID(topic.LanguageID);
+						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 						ClassString classString = ClassString.FromParameters(hierarchyType, language.ID, language.CaseSensitive, topicSymbol);
 

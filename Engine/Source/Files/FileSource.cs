@@ -103,6 +103,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				{  return manager;  }
 			}
 
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this object.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
 		/* Property: UniqueIDString
 		 * A string that uniquely identifies this FileSource among all others of its <Type>, including ones based on different
 		 * classes.  For example, "Folder:[path]" or "VSProject:[file]".

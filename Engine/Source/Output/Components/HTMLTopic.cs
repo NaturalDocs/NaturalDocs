@@ -95,8 +95,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+			string simpleTopicTypeName = EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
 
 			if (topicHashPath != null)
@@ -166,8 +166,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+			string simpleTopicTypeName = EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
 			htmlOutput.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			bool builtPrototype = false;
 
-			if (HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
+			if (EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = topic.ParsedClassPrototype;
 
@@ -302,13 +302,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							if (preLanguageName != null)
 								{  
 								// This can return null if the language name is unrecognized.
-								preLanguage = HTMLBuilder.EngineInstance.Languages.FromName(preLanguageName);  
+								preLanguage = EngineInstance.Languages.FromName(preLanguageName);  
 								}
 
 							if (preLanguage == null)
-								{  preLanguage = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);  }
+								{  preLanguage = EngineInstance.Languages.FromID(topic.LanguageID);  }
 
-							Tokenizer code = new Tokenizer(textCode, tabWidth: HTMLBuilder.EngineInstance.Config.TabWidth);
+							Tokenizer code = new Tokenizer(textCode, tabWidth: EngineInstance.Config.TabWidth);
 							preLanguage.SyntaxHighlight(code);
 							BuildSyntaxHighlightedText(code.FirstToken, code.LastToken);
 							}
@@ -695,7 +695,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			LinkInterpretation linkInterpretation = null;
 
 			string ignore;
-			List<LinkInterpretation> linkInterpretations = HTMLBuilder.EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
+			List<LinkInterpretation> linkInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,

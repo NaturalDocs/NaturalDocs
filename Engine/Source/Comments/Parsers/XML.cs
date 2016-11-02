@@ -849,7 +849,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			if (body.Length > 0)
 				{
-				topic = new Topic(Manager.EngineInstance.TopicTypes);
+				topic = new Topic(EngineInstance.TopicTypes);
 				topic.Body = body.ToString();
 
 				MakeSummaryFromBody(topic);

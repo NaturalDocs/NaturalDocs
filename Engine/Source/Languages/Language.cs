@@ -190,6 +190,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			get
 				{  return manager;  }
 			}
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this language.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
 			
 		/* Property: SimpleIdentifier
 		 * The name of the language using only the letters A to Z.

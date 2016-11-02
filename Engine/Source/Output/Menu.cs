@@ -292,7 +292,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected MenuEntries.Files.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
 			{
-			var fileSource = Builder.EngineInstance.Files.FileSourceOf(file);
+			var fileSource = EngineInstance.Files.FileSourceOf(file);
 			var fileSourceEntry = FindFileSourceEntry(fileSource);
 
 			if (fileSourceEntry == null)
@@ -372,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected MenuEntries.Classes.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
 			{
-			var language = Builder.EngineInstance.Languages.FromID(classString.LanguageID);
+			var language = EngineInstance.Languages.FromID(classString.LanguageID);
 			var languageEntry = FindLanguageEntry(language);
 
 			if (languageEntry == null)
@@ -458,6 +458,15 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			get
 				{  return builder;  }
+			}
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this menu.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Builder.EngineInstance;  }
 			}
 
 		/* Property: RootFileMenu

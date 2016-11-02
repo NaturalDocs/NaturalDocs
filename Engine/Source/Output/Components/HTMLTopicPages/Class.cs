@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (topics[i].IsList)
 					{
-					TopicType topicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(topics[i].TopicTypeID);
+					TopicType topicType = EngineInstance.TopicTypes.FromID(topics[i].TopicTypeID);
 
 					if (topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy)
 						{  remove = true;  }
@@ -232,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
-					var language = HTMLBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
 					}
 				else // Database
@@ -256,7 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
-					var language = HTMLBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 
 					// OutputFolderHashPath already includes the trailing separator so we can just concatenate them.
 					return htmlBuilder.Class_OutputFolderHashPath(language, classString.Symbol.WithoutLastSegment) + 
@@ -319,7 +319,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
-					var language = HTMLBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
 					}
 				else // Database
@@ -360,7 +360,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
-					var language = HTMLBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
 					}
 				else
@@ -401,7 +401,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
-					var language = HTMLBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return htmlBuilder.Class_OutputFolder(language, classString.Symbol.WithoutLastSegment) + '/' + 
 								 SummaryToolTipsFileNameOnly;
 					}

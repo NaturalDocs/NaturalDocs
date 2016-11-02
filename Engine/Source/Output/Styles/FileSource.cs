@@ -92,8 +92,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
 			// them all or otherwise use Path functions on them.
 			Stack<string> foldersToSearch = new Stack<string>();
-			foldersToSearch.Push(Manager.EngineInstance.Config.SystemStyleFolder);
-			foldersToSearch.Push(Manager.EngineInstance.Config.ProjectConfigFolder);
+			foldersToSearch.Push(EngineInstance.Config.SystemStyleFolder);
+			foldersToSearch.Push(EngineInstance.Config.ProjectConfigFolder);
 			
 			while (foldersToSearch.Count > 0)
 			   {

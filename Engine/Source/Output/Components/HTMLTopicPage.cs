@@ -350,6 +350,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this topic page.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return HTMLBuilder.EngineInstance;  }
+			}
+
+
 
 		// Group: Abstract Properties
 		// __________________________________________________________________________

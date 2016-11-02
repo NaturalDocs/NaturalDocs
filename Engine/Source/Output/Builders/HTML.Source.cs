@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// If we're not including the class and the topic is itself a class, return null.
 			if (!includeClass)
 				{
-				var topicType = Manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+				var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 				if (topicType.Flags.ClassHierarchy)
 					{  return null;  }

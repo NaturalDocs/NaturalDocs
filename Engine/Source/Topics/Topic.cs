@@ -1176,6 +1176,16 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this topic.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
+
 		/* Property: IgnoredFields
 		 * 
 		 * When querying topics from the database, not all fields may be needed in all situations.  The database
@@ -1212,7 +1222,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedPrototype = null;  }
 					else
-						{  parsedPrototype = Manager.EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
+						{  parsedPrototype = EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedPrototype;
 					}
@@ -1240,7 +1250,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedClassPrototype = null;  }
 					else
-						{  parsedClassPrototype = Manager.EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
+						{  parsedClassPrototype = EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedClassPrototype;
 					}

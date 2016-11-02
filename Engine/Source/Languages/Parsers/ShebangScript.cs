@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return ParseResult.Success;  }
 
 			// Since we ate the first line, start the tokenizer at line 2.
-			Tokenizer tokenizedContent = new Tokenizer(content, startingLineNumber: 2, tabWidth: Manager.EngineInstance.Config.TabWidth);
+			Tokenizer tokenizedContent = new Tokenizer(content, startingLineNumber: 2, tabWidth: EngineInstance.Config.TabWidth);
 
 			return language.Parse(tokenizedContent, fileID, cancelDelegate, out topics, out classParentLinks);
 			}

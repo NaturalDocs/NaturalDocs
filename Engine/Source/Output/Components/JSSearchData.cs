@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<string> GetAllPrefixes ()
 			{
-			return HTMLBuilder.EngineInstance.SearchIndex.UsedPrefixes();
+			return EngineInstance.SearchIndex.UsedPrefixes();
 			}
 
 
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<SearchIndex.KeywordEntry> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			return HTMLBuilder.EngineInstance.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
+			return EngineInstance.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
 			}
 
 
@@ -263,8 +263,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token" to appear before
 					// variable "token" even though normally we want lowercase to go first.
 
-					var aTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(a.Topic.TopicTypeID);
-					var bTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(b.Topic.TopicTypeID);
+					var aTopicType = EngineInstance.TopicTypes.FromID(a.Topic.TopicTypeID);
+					var bTopicType = EngineInstance.TopicTypes.FromID(b.Topic.TopicTypeID);
 
 					if (aTopicType.Flags.ClassHierarchy != bTopicType.Flags.ClassHierarchy)
 						{  return (aTopicType.Flags.ClassHierarchy ? -1 : 1);  }
@@ -308,8 +308,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (a.Topic.LanguageID != b.Topic.LanguageID)
 						{
-						return string.Compare(HTMLBuilder.EngineInstance.Languages.FromID(a.Topic.LanguageID).Name, 
-														 HTMLBuilder.EngineInstance.Languages.FromID(b.Topic.LanguageID).Name, true);
+						return string.Compare(EngineInstance.Languages.FromID(a.Topic.LanguageID).Name, 
+														 EngineInstance.Languages.FromID(b.Topic.LanguageID).Name, true);
 						}
 
 
@@ -317,8 +317,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (a.Topic.FileID != b.Topic.FileID)
 						{
-						return string.Compare(HTMLBuilder.EngineInstance.Files.FromID(a.Topic.FileID).FileName, 
-														 HTMLBuilder.EngineInstance.Files.FromID(b.Topic.FileID).FileName, true);
+						return string.Compare(EngineInstance.Files.FromID(a.Topic.FileID).FileName, 
+														 EngineInstance.Files.FromID(b.Topic.FileID).FileName, true);
 						}
 
 
@@ -428,7 +428,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					int topicTypeIndex = UsedTopicTypesIndex(topicTypeID);
 
 					if (topicTypeIndex == -1)
-						{  usedTopicTypes.Add( HTMLBuilder.EngineInstance.TopicTypes.FromID(topicTypeID) );  }
+						{  usedTopicTypes.Add( EngineInstance.TopicTypes.FromID(topicTypeID) );  }
 					}
 				}
 
@@ -591,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (includeLanguage)
 				{
 				output.Append('"');
-				output.StringEscapeAndAppend( HTMLBuilder.EngineInstance.Languages.FromID(topicEntry.Topic.LanguageID).Name );
+				output.StringEscapeAndAppend( EngineInstance.Languages.FromID(topicEntry.Topic.LanguageID).Name );
 				output.Append('"');
 				}
 
@@ -685,12 +685,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 
-		/* var: HTMLBuilder
-		 */
 		public Builders.HTML HTMLBuilder
 			{
 			get
 				{  return htmlBuilder;  }
+			}
+
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return HTMLBuilder.EngineInstance;  }
 			}
 
 

@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (output == null)
 				{  output = htmlOutput;  }
 
-			Language language = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);
+			Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 
 			// Find each Type/TypeQualifier stretch in the text
@@ -380,7 +380,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (topicTypeID != 0)
 				{
-				var topicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(topicTypeID);
+				var topicType = EngineInstance.TopicTypes.FromID(topicTypeID);
 
 				if (topicType.Flags.File == true)
 					{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
@@ -479,6 +479,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			get
 				{  return topicPage.HTMLBuilder;  }
+			}
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this component.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return HTMLBuilder.EngineInstance;  }
 			}
 
 

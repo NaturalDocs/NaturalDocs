@@ -222,6 +222,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				{  return manager;  }
 			}
 
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
 
 		
 		// Group: Variables

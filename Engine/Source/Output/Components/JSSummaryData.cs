@@ -174,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 
 				if (!found)
-					{  usedLanguages.Add( HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID) );  }
+					{  usedLanguages.Add( EngineInstance.Languages.FromID(topic.LanguageID) );  }
 				}
 
 
@@ -235,7 +235,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 
 				if (!found)
-					{  usedTopicTypes.Add( HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID) );  }
+					{  usedTopicTypes.Add( EngineInstance.TopicTypes.FromID(topic.TopicTypeID) );  }
 				}
 
 
@@ -409,6 +409,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			get
 				{  return topicPage.HTMLBuilder;  }
+			}
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this object.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return HTMLBuilder.EngineInstance;  }
 			}
 
 

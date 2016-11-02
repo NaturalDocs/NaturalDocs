@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				while (query.Step() && !cancelled())
 					{
-					Topic topic = new Topic(Manager.EngineInstance.TopicTypes);
+					Topic topic = new Topic(EngineInstance.TopicTypes);
 					
 					topic.TopicID = query.NextIntColumn();
 					topic.Title = query.NextStringColumn();
@@ -1398,7 +1398,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// For example, <x at y> and <x: y> will still always end up with y as the ending symbol regardless of whether you search for
 				// named links or not, so we can avoid the extra processing.
 				List<LinkInterpretation> linkInterpretations = 
-					Manager.EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+					EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,

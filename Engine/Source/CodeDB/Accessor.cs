@@ -360,6 +360,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return manager;  }
 			}
 
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this accessor.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
 		/* Property: Connection
 		 * This accessor's connection to the database.  Only to be used by <EventAccessor>.
 		 */

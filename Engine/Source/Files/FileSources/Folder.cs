@@ -122,7 +122,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 						
 					if (Type == InputType.Source)
 						{
-						if ( Manager.EngineInstance.Languages.FromExtension(extension) != null)
+						if ( EngineInstance.Languages.FromExtension(extension) != null)
 							{  type = FileType.Source;  }
 						// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
 						// file instead of an image folder.
