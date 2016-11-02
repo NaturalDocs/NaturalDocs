@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Comments
 	{
-	public class Manager
+	public class Manager : Module
 		{
 		
 		// Group: Functions
@@ -31,14 +31,19 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		
 		/* Function: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			naturalDocsParser = new Parsers.NaturalDocs();
-			xmlParser = new Parsers.XML();
-			javadocParser = new Parsers.Javadoc();
+			naturalDocsParser = new Parsers.NaturalDocs(this);
+			xmlParser = new Parsers.XML(this);
+			javadocParser = new Parsers.Javadoc(this);
 			}
-			
-			
+
+
+		protected override void Dispose (bool strictRulesApply)
+			{
+			}
+
+
 		/* Function: Start
 		 * 
 		 * Dependencies:

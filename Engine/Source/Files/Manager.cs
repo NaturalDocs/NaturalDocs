@@ -78,7 +78,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class Manager : IDisposable
+	public class Manager : Module
 		{
 		
 		// Group: Types
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		/* Function: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			fileSources = new List<FileSource>();
 			filters = new List<Filter>();
@@ -130,7 +130,40 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			WhenThereAreFileChanges = new System.Threading.ManualResetEvent(false);
 			}
 			
-			
+						
+		/* Function: Dispose
+		 */
+		override protected void Dispose (bool strictRulesApply)
+			{
+			if (!strictRulesApply)
+				{
+				foreach (FileSource fileSource in fileSources)
+					{
+					if (fileSource is IDisposable)
+						{  ((IDisposable)fileSource).Dispose();  }
+					}
+					
+				// Set the last modification time to zero for anything still being worked on
+				
+				DateTime zero = new DateTime(0);
+
+				foreach (int id in unprocessedChangedFileIDs)
+					{  files[id].LastModified = zero;  }
+				foreach (int id in unprocessedDeletedFileIDs)
+					{  files[id].LastModified = zero;  }
+				foreach (int id in claimedFileIDs)
+					{  files[id].LastModified = zero;  }
+					
+				try
+					{
+					SaveBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Files.nd", files );
+					}
+				catch
+					{  }
+				}
+			}
+
+
 		/* Function: AddFileSource
 		 * Adds a file source to the list.
 		 */
@@ -198,10 +231,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 				}
 				
-			if (Engine.Instance.Config.ReparseEverything == false)
+			if (EngineInstance.Config.ReparseEverything == false)
 				{
-				if (LoadBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Files.nd", out files) == false)
-					{  Engine.Instance.Config.ReparseEverything = true;  }
+				if (LoadBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files) == false)
+					{  EngineInstance.Config.ReparseEverything = true;  }
 				}
 		        			
 			return (errors.Count == startingErrorCount);
@@ -689,7 +722,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void WorkOnProcessingChanges (CancelDelegate cancelDelegate)
 			{
-			using (Engine.CodeDB.Accessor codeDBAccessor = Engine.Instance.CodeDB.GetAccessor())
+			using (Engine.CodeDB.Accessor codeDBAccessor = EngineInstance.CodeDB.GetAccessor())
 				{
 				bool deletedFiles, changedFiles;
 
@@ -837,7 +870,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					System.Console.WriteLine("...");
 				#endif
 
-				Engine.Languages.Language language = Engine.Instance.Languages.FromFileName(file.FileName);
+				Engine.Languages.Language language = EngineInstance.Languages.FromFileName(file.FileName);
 				IList<Topic> topics = null;
 				LinkSet links = null;
 
@@ -884,7 +917,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
 						// the HTML output falls back to regular prototypes in this situation.
 						if (topic.Prototype != null &&
-							(Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false ||
+							(EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false ||
 							 topic.ParsedClassPrototype == null))
 							{
 							ExtractTypeLinks(topic, links);
@@ -1333,7 +1366,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (topic.Prototype == null)
 				{  return;  }
 
-			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 			TokenIterator symbolStart = topic.ParsedPrototype.Tokenizer.FirstToken;
 			TokenIterator symbolEnd;
@@ -1576,42 +1609,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * You should only use this object for sleeping.  The set and reset functions will be managed by this class.
 		 */
 		public System.Threading.ManualResetEvent WhenThereAreFileChanges;
-		
-		
-		
-		
-		// Group: IDisposable Functions
-		// __________________________________________________________________________
-		
-		
-		/* Function: Dispose
-		 */
-		public void Dispose ()
-			{
-			foreach (FileSource fileSource in fileSources)
-				{
-				if (fileSource is IDisposable)
-					{  ((IDisposable)fileSource).Dispose();  }
-				}
-					
-			// Set the last modification time to zero for anything still being worked on
-				
-			DateTime zero = new DateTime(0);
-
-			foreach (int id in unprocessedChangedFileIDs)
-				{  files[id].LastModified = zero;  }
-			foreach (int id in unprocessedDeletedFileIDs)
-				{  files[id].LastModified = zero;  }
-			foreach (int id in claimedFileIDs)
-				{  files[id].LastModified = zero;  }
-					
-			try
-				{
-				SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Files.nd", files );
-				}
-			catch
-				{  }
-			}
 			
 			
 

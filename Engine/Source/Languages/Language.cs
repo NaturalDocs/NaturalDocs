@@ -86,8 +86,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: Language
 		 * Creates a new language object.
 		 */
-		public Language (string name) : base (name)
+		public Language (Languages.Manager manager, string name) : base (name)
 			{
+			this.manager = manager;
+			
 			simpleIdentifier = null;			
 			type = LanguageType.BasicSupport;
 			memberOperator = ".";
@@ -180,6 +182,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 		
+		/* Property: Manager
+		 * The <Languages.Manager> associated with this language.
+		 */
+		public Languages.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
+			
 		/* Property: SimpleIdentifier
 		 * The name of the language using only the letters A to Z.
 		 */
@@ -559,6 +570,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 		
+		/* var: languageManager
+		 * The <Languages.Manager> this language is associated with.
+		 */
+		protected Languages.Manager manager;
+
 		/* var: simpleIdentifier
 		 * The language's name using only the letters A to Z, or null if it's not defined.
 		 */

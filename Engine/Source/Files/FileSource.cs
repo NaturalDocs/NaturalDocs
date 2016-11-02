@@ -33,8 +33,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		/* Function: FileSource
 		 */
-		public FileSource ()
+		public FileSource (Files.Manager manager)
 			{
+			this.manager = manager;
+
 			addAllFilesStatus = new AddAllFilesStatus();
 			claimed = false;
 			}
@@ -91,6 +93,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// Group: Properties
 		// __________________________________________________________________________
 		
+
+		/* Property: Manager
+		 * The <Files.Manager> associated with this object.
+		 */
+		public Files.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
 
 		/* Property: UniqueIDString
 		 * A string that uniquely identifies this FileSource among all others of its <Type>, including ones based on different
@@ -155,7 +166,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		// Group: Variables
 		// __________________________________________________________________________
-		
+
+		protected Files.Manager manager;		
 		
 		protected AddAllFilesStatus addAllFilesStatus;
 		

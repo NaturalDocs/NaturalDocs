@@ -30,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Errors;
 
 namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	public class Manager
+	public class Manager : Module
 		{
 		
 		// Group: Functions
@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		/* Constructor: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{  
 			projectConfigFolder = null;
 			workingDataFolder = null;
@@ -86,8 +86,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					{  backgroundThreadsPerTask--;  }
 			#endif
 			}
-			
-						
+
+
+		protected override void Dispose (bool strictRulesApply)
+			{
+			}
+
+
 		/* Function: Start
 		 * 
 		 * Initializes the configuration and returns whether all the settings are correct and that execution is ready to begin.  
@@ -431,10 +436,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Create file sources and filters for Files.Manager
 	
 			foreach (var target in combinedConfig.InputTargets)
-				{  Engine.Instance.Files.AddFileSource(CreateFileSource(target));  }
+				{  EngineInstance.Files.AddFileSource(CreateFileSource(target));  }
 
 			foreach (var target in combinedConfig.FilterTargets)
-				{  Engine.Instance.Files.AddFilter(CreateFilter(target));  }
+				{  EngineInstance.Files.AddFilter(CreateFilter(target));  }
 
 			// Some people may put the output folder in their source folder.  Exclude it automatically.
 			foreach (var target in combinedConfig.OutputTargets)
@@ -442,18 +447,18 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				var filter = CreateOutputFilter(target);
 
 				if (filter != null)
-					{  Engine.Instance.Files.AddFilter(filter);  }
+					{  EngineInstance.Files.AddFilter(filter);  }
 				}
 				
 				
 			// Create more default filters
 
-			Engine.Instance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(ProjectConfigFolder) );
-			Engine.Instance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(WorkingDataFolder) );
-			Engine.Instance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemConfigFolder) );
-			Engine.Instance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemStyleFolder) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(ProjectConfigFolder) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(WorkingDataFolder) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemConfigFolder) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemStyleFolder) );
 			
-			Engine.Instance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
+			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
 			
 			
 			// Check all input folder entries against the filters.
@@ -465,7 +470,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					var sourceFolderTarget = (Targets.SourceFolder)combinedConfig.InputTargets[i];
 					
 					if (sourceFolderTarget.Type == Files.InputType.Source &&
-						Engine.Instance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
+						EngineInstance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
 						{
 						errorList.Add(
 							message: Locale.Get("NaturalDocs.Engine", "Error.SourceFolderIsIgnored(sourceFolder)", sourceFolderTarget.Folder),
@@ -488,7 +493,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				// Merge the global project info so it has a complete configuration.  The configuration files have already been saved without it.
 				MergeProjectInfo(target.ProjectInfo, combinedConfig.ProjectInfo);
 
-				Engine.Instance.Output.AddBuilder(CreateBuilder(target));  
+				EngineInstance.Output.AddBuilder(CreateBuilder(target));  
 				}
 
 
@@ -517,7 +522,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						// files in there which could take a while to clear out.
 						if (!raisedPossiblyLongOperationEvent)
 							{
-							Engine.Instance.StartPossiblyLongOperation("PurgingOutputWorkingData");
+							EngineInstance.StartPossiblyLongOperation("PurgingOutputWorkingData");
 							raisedPossiblyLongOperationEvent = true;
 							}
 
@@ -557,7 +562,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 			if (raisedPossiblyLongOperationEvent)
-				{  Engine.Instance.EndPossiblyLongOperation();  }
+				{  EngineInstance.EndPossiblyLongOperation();  }
 				
 
 			return success;
@@ -838,7 +843,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected virtual Files.FileSource CreateFileSource (Targets.InputBase target)
 			{
 			if (target is Targets.SourceFolder)
-				{  return new Files.FileSources.Folder((Targets.SourceFolder)target);  }
+				{  return new Files.FileSources.Folder(EngineInstance.Files, (Targets.SourceFolder)target);  }
 			else
 				{  throw new NotImplementedException();  }
 			}
@@ -874,7 +879,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected virtual Output.Builder CreateBuilder (Targets.OutputBase target)
 			{
 			if (target is Targets.HTMLOutputFolder)
-				{  return new Output.Builders.HTML((Targets.HTMLOutputFolder)target);  }
+				{  return new Output.Builders.HTML(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }
 			else
 				{  throw new NotImplementedException();  }
 			}

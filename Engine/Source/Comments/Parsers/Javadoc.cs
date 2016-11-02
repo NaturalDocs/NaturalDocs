@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		
 		/* Function: Javadoc
 		 */
-		public Javadoc () : base ()
+		public Javadoc (Comments.Manager manager) : base (manager)
 			{
 			}
 			
@@ -939,7 +939,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			if (colonIndex != -1)
 				{
 				string possibleProtocol = href.Substring(0, colonIndex);
-				isExternalURL = Engine.Instance.Comments.NaturalDocsParser.IsURLProtocol(possibleProtocol);
+				isExternalURL = Manager.NaturalDocsParser.IsURLProtocol(possibleProtocol);
 				}
 
 			if (isExternalURL)
@@ -1167,7 +1167,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			if (body.Length > 0)
 				{
-				topic = new Topic();
+				topic = new Topic(Manager.EngineInstance.TopicTypes);
 				topic.Body = body.ToString();
 
 				MakeSummaryFromBody(topic);

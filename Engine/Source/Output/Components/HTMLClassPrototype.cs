@@ -89,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			this.linkTargets = linkTargets;
 			htmlOutput = output;
 
-			language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			language = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);
 			parsedPrototype = topic.ParsedClassPrototype;
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
@@ -296,12 +296,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (parent.targetTopic != null)
 				{  
-				parentTopicType = Engine.Instance.TopicTypes.FromID(parent.targetTopic.TopicTypeID);  
-				memberOperator = Engine.Instance.Languages.FromID(parent.targetTopic.LanguageID).MemberOperator;
+				parentTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(parent.targetTopic.TopicTypeID);  
+				memberOperator = HTMLBuilder.EngineInstance.Languages.FromID(parent.targetTopic.LanguageID).MemberOperator;
 				}
 			else
 				{  
-				parentTopicType = Engine.Instance.TopicTypes.FromKeyword("class");
+				parentTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromKeyword("class");
 				memberOperator = ".";
 				}
 
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildCurrentClass ()
 			{
-			htmlOutput.Append("<div class=\"CPEntry T" + Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier +" Current\">");
+			htmlOutput.Append("<div class=\"CPEntry T" + HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier +" Current\">");
 
 
 			// Keyword and modifiers.  We only show the keyword if it's not "class".
@@ -378,8 +378,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				StringBuilder modifiersOutput = new StringBuilder();
 				TokenIterator partial;
 				
-				bool hasPartial = startModifiers.Tokenizer.FindTokenBetween("partial", !Engine.Instance.Languages.FromID(topic.LanguageID).CaseSensitive,
-																								 startModifiers, endModifiers, out partial);
+				bool hasPartial = startModifiers.Tokenizer.FindTokenBetween("partial", HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).CaseSensitive,
+																									  startModifiers, endModifiers, out partial);
 
 				if (hasPartial)
 					{
@@ -517,7 +517,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Now sort the child topics by symbol.
 
-			bool caseSensitive = Engine.Instance.Languages.FromID(topic.LanguageID).CaseSensitive;
+			bool caseSensitive = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).CaseSensitive;
 
 			childTopics.Sort( 
 				delegate(Topic a, Topic b)
@@ -534,8 +534,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildChildClass (Topic childTopic)
 			{
-			TopicType childTopicType = Engine.Instance.TopicTypes.FromID(childTopic.TopicTypeID);  
-			string memberOperator = Engine.Instance.Languages.FromID(childTopic.LanguageID).MemberOperator;
+			TopicType childTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(childTopic.TopicTypeID);  
+			string memberOperator = HTMLBuilder.EngineInstance.Languages.FromID(childTopic.LanguageID).MemberOperator;
 
 			BuildLinkTag(childTopic, "CPEntry Child T" + childTopicType.SimpleIdentifier);
 

@@ -27,11 +27,11 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		// __________________________________________________________________________
 
 
-		public TopicEntry (Topic topic) : base ()
+		public TopicEntry (Topic topic, SearchIndex.Manager manager) : base ()
 			{
 			this.topic = topic;
-			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
-			var language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			var topicType = manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			var language = manager.EngineInstance.Languages.FromID(topic.LanguageID);
 
 
 			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that 

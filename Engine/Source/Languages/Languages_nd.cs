@@ -93,8 +93,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		
 		/* Constructor: Languages_nd
 		 */
-		public Languages_nd ()
+		public Languages_nd (Languages.Manager manager)
 			{
+			languageManager = manager;
 			}
 
 
@@ -162,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						  languageName != null;
 						  languageName = file.ReadString())
 						{
-						Language language = new Language(languageName);
+						Language language = new Language(languageManager, languageName);
 						
 						language.ID = file.ReadInt32();
 						
@@ -460,5 +461,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			file.WriteString(null);
 			}
 
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected Languages.Manager languageManager;
 		}
 	}

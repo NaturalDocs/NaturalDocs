@@ -31,14 +31,16 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public Menu ()
-		   {
+		public Menu (Builder builder)
+			{
+			this.builder = builder;
+
 			rootFileMenu = null;
 			rootClassMenu = null;
 			rootDatabaseMenu = null;
 
 			isCondensed = false;
-		   }
+			}
 
 
 		/* Function: AddFile
@@ -290,7 +292,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected MenuEntries.Files.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
 			{
-			var fileSource = Engine.Instance.Files.FileSourceOf(file);
+			var fileSource = Builder.EngineInstance.Files.FileSourceOf(file);
 			var fileSourceEntry = FindFileSourceEntry(fileSource);
 
 			if (fileSourceEntry == null)
@@ -370,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected MenuEntries.Classes.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
 			{
-			var language = Engine.Instance.Languages.FromID(classString.LanguageID);
+			var language = Builder.EngineInstance.Languages.FromID(classString.LanguageID);
 			var languageEntry = FindLanguageEntry(language);
 
 			if (languageEntry == null)
@@ -449,6 +451,15 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// __________________________________________________________________________
 
 
+		/* Property: Builder
+		 * The <Builder> associated with this menu.
+		 */
+		public Builder Builder
+			{
+			get
+				{  return builder;  }
+			}
+
 		/* Property: RootFileMenu
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
@@ -492,6 +503,11 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Variables
 		// __________________________________________________________________________
 
+
+		/* var: builder
+		 * The <Builder> associated with this menu.
+		 */
+		protected Builder builder;
 
 		/* var: rootFileMenu
 		 * 

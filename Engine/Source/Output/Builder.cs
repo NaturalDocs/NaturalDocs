@@ -29,8 +29,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		
 		/* Function: Builder
 		 */
-		public Builder ()
+		public Builder (Output.Manager manager)
 			{
+			this.manager = manager;
 			}
 			
 		
@@ -128,6 +129,26 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// __________________________________________________________________________
 
 
+		/* Property: Manager
+		 * The <Output.Manager> associated with this builder.
+		 */
+		public Output.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this builder.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
+
 		/* Property: Styles
 		 * A list of <Styles> that apply to this builder, or null if none.
 		 */
@@ -136,6 +157,13 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			get
 				{  return null;  }
 			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected Output.Manager manager;
 
 		}
 	}

@@ -531,8 +531,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 					{
 					if (rawText[rawTextIndex + i] == '\t')
 						{
-						indent += Engine.Instance.Config.TabWidth;
-						indent -= (indent % Engine.Instance.Config.TabWidth);
+						indent += tokenIterator.Tokenizer.TabWidth;
+						indent -= (indent % tokenIterator.Tokenizer.TabWidth);
 						}
 					else
 						{  indent++;  }

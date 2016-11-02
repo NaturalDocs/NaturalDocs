@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (cssClass != null)
 				{  output.Append("class=\"" + cssClass + "\" ");  }
 
-			string topicHashPath = Builders.HTML.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
+			string topicHashPath = HTMLBuilder.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
 
 			output.Append("href=\"" + pathToIndex.ToURL() + 
 											'#' + targetTopicPage.OutputFileHashPath.EntityEncode() + 
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (output == null)
 				{  output = htmlOutput;  }
 
-			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			Language language = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);
 
 
 			// Find each Type/TypeQualifier stretch in the text
@@ -369,23 +369,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-
-		// Group: Static Functions
-		// __________________________________________________________________________
-
-
 		/* Function: BuildWrappedTitle
 		 * Builds a title with zero-width spaces added so that long identifiers wrap.  Will also add a span surrounding the qualifiers
 		 * with a "Qualifier" CSS class.  The HTML will be appended to the StringBuilder, but you must provide your own surrounding
 		 * div if required.
 		 */
-		static public void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
+		public void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
 			{
 			MatchCollection splitSymbols = null;
 
 			if (topicTypeID != 0)
 				{
-				var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
+				var topicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(topicTypeID);
 
 				if (topicType.Flags.File == true)
 					{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
@@ -454,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * with a "Qualifier" CSS class.  The HTML will be returned as a string, but you must provide your own surrounding div if
 		 * required.  If the string will be directly appended to a StringBuilder, it is more efficient to use the other form.
 		 */
-		static public string BuildWrappedTitle (string title, int topicTypeID)
+		public string BuildWrappedTitle (string title, int topicTypeID)
 			{
 			StringBuilder temp = new StringBuilder();
 			BuildWrappedTitle(title, topicTypeID, temp);

@@ -125,8 +125,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		
 		/* Function: Accessor
 		 */
-		internal Accessor (SQLite.Connection connection, bool priority)
+		internal Accessor (CodeDB.Manager manager, SQLite.Connection connection, bool priority)
 			{
+			this.manager = manager;
 			this.connection = connection;
 			lockHeld = LockType.None;
 			this.priority = priority;
@@ -168,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (lockHeld != LockType.None)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadOnly, LockType.None);  }
 				
-			Engine.Instance.CodeDB.DatabaseLock.GetReadOnlyLock(priority);
+			Manager.DatabaseLock.GetReadOnlyLock(priority);
 			lockHeld = LockType.ReadOnly;
 			}
 			
@@ -182,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (lockHeld != LockType.None)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadPossibleWrite, LockType.None);  }
 				
-			Engine.Instance.CodeDB.DatabaseLock.GetReadPossibleWriteLock(priority);
+			Manager.DatabaseLock.GetReadPossibleWriteLock(priority);
 			lockHeld = LockType.ReadPossibleWrite;
 			}
 			
@@ -198,7 +199,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (lockHeld != LockType.ReadPossibleWrite)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadWrite, LockType.ReadPossibleWrite);  }
 				
-			Engine.Instance.CodeDB.DatabaseLock.UpgradeToReadWriteLock(priority);
+			Manager.DatabaseLock.UpgradeToReadWriteLock(priority);
 			lockHeld = LockType.ReadWrite;
 			}
 			
@@ -214,7 +215,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (lockHeld != LockType.ReadWrite)
 				{  throw new Exceptions.BadLockChange(lockHeld, LockType.ReadPossibleWrite, LockType.ReadWrite);  }
 				
-			Engine.Instance.CodeDB.DatabaseLock.DowngradeToReadPossibleWriteLock(priority);
+			Manager.DatabaseLock.DowngradeToReadPossibleWriteLock(priority);
 			lockHeld = LockType.ReadPossibleWrite;
 			}
 			
@@ -227,13 +228,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			switch (lockHeld)
 				{
 				case LockType.ReadOnly:
-					Engine.Instance.CodeDB.DatabaseLock.ReleaseReadOnlyLock(priority);
+					Manager.DatabaseLock.ReleaseReadOnlyLock(priority);
 					break;
 				case LockType.ReadPossibleWrite:
-					Engine.Instance.CodeDB.DatabaseLock.ReleaseReadPossibleWriteLock(priority);
+					Manager.DatabaseLock.ReleaseReadPossibleWriteLock(priority);
 					break;
 				case LockType.ReadWrite:
-					Engine.Instance.CodeDB.DatabaseLock.ReleaseReadWriteLock(priority);
+					Manager.DatabaseLock.ReleaseReadWriteLock(priority);
 					break;
 				}
 				
@@ -350,6 +351,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 		
 
+		/* Property: Manager
+		 * The <CodeDB.Manager> associated with this accessor.
+		 */
+		public CodeDB.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
+
 		/* Property: Connection
 		 * This accessor's connection to the database.  Only to be used by <EventAccessor>.
 		 */
@@ -374,6 +384,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 		
 		
+		/* var: manager
+		 * The <CodeDB.Manager> associated with this accessor.
+		 */
+		protected CodeDB.Manager manager;
+
 		/* var: connection
 		 * This accessor's connection to the database.
 		 */

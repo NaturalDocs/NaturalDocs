@@ -134,8 +134,9 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 		
 		
-		public Topic ()
+		public Topic (TopicTypes.Manager manager)
 			{
+			this.manager = manager;
 			topicID = 0;
 
 			title = null;
@@ -180,8 +181,9 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 */
 		public Topic Duplicate ()
 			{
-			Topic duplicate = new Topic();
+			Topic duplicate = new Topic(manager);
 
+			//duplicate.manager = manager;
 			duplicate.topicID = topicID;
 
 			duplicate.title = title;
@@ -1164,6 +1166,16 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 		
 
+		/* Property: Manager
+		 * The <TopicTypes.Manager> associated with this topic.
+		 */
+		public TopicTypes.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
+
+
 		/* Property: IgnoredFields
 		 * 
 		 * When querying topics from the database, not all fields may be needed in all situations.  The database
@@ -1200,7 +1212,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedPrototype = null;  }
 					else
-						{  parsedPrototype = Engine.Instance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
+						{  parsedPrototype = Manager.EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedPrototype;
 					}
@@ -1228,7 +1240,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedClassPrototype = null;  }
 					else
-						{  parsedClassPrototype = Engine.Instance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
+						{  parsedClassPrototype = Manager.EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedClassPrototype;
 					}
@@ -1337,7 +1349,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access IsEnum when the topic type ID was ignored.");  }
 				#endif
 
-				return (topicTypeID != 0 && Engine.Instance.TopicTypes.FromID(topicTypeID).Flags.Enum == true);
+				return (topicTypeID != 0 && Manager.FromID(topicTypeID).Flags.Enum == true);
 				}
 			}
 
@@ -1354,7 +1366,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access IsGroup when the topic type ID was ignored.");  }
 				#endif
 
-				return (topicTypeID != 0 && Engine.Instance.TopicTypes.GroupTopicTypeID == topicTypeID);
+				return (topicTypeID != 0 && Manager.GroupTopicTypeID == topicTypeID);
 				}
 			}
 
@@ -1373,7 +1385,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access DefinesClass when IsList was ignored.");  }
 				#endif
 
-				var topicType = Engine.Instance.TopicTypes.FromID(topicTypeID);
+				var topicType = Manager.FromID(topicTypeID);
 
 				return ((topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy) && isList == false);
 				}
@@ -1385,6 +1397,11 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 		
 		
+		/* var: manager
+		 * The <TopicTypes.Manager> associated with this topic.
+		 */
+		protected TopicTypes.Manager manager;
+
 		/* var: topicID
 		 * The topic's ID number, or zero if not specified.
 		 */

@@ -23,7 +23,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.TopicTypes
 	{
-	public class Manager
+	public class Manager : Module
 		{
 		
 		// Group: Constants
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		
 		/* Constructor: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			// Topic type names aren't normalized because they're only referenced in other config files.  Tags and keywords are
 			// referenced in source files so they should be more tolerant.
@@ -55,8 +55,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 			groupTopicTypeID = 0;
 			}
-			
-			
+
+
+		protected override void Dispose (bool strictRulesApply)
+			{
+			}
+
+
 		/* Function: Start
 		 * 
 		 * Loads and combines the two versions of <Topics.txt>, returning whether it was successful.  If there were any errors
@@ -95,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			// We need the ID numbers to stay consistent between runs, so we need to create all the topic types and tags from the
 			// binary file first.  We'll worry about comparing their attributes and seeing if any were added or deleted later.
 
-			if (Engine.Instance.Config.ReparseEverything == true)
+			if (EngineInstance.Config.ReparseEverything == true)
 				{
 				binaryTopicTypes = new List<TopicType>();
 				binaryTags = new List<Tag>();
@@ -106,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				changed = true;
 				}
 				
-			else if (topicsNDParser.Load(Engine.Instance.Config.WorkingDataFolder + "/Topics.nd", out binaryTopicTypes, out binaryTags, 
+			else if (topicsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", out binaryTopicTypes, out binaryTags, 
 													out binarySingularKeywords, out binaryPluralKeywords, out binaryIgnoredKeywords) == false)
 				{
 				changed = true;
@@ -157,8 +162,8 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				}
 
 			
-			Path systemFile = Engine.Instance.Config.SystemConfigFolder + "/Topics.txt";
-			Path projectFile = Engine.Instance.Config.ProjectConfigFolder + "/Topics.txt";
+			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Topics.txt";
+			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Topics.txt";
 
 			Topics_txt topicsTxtParser = new Topics_txt();
 
@@ -520,11 +525,11 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				}
 
 				
-			topicsNDParser.Save(Engine.Instance.Config.WorkingDataFolder + "/Topics.nd", 
+			topicsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", 
 										  topicTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
 			if (success == true && changed == true)
-				{  Engine.Instance.Config.ReparseEverything = true;  }
+				{  EngineInstance.Config.ReparseEverything = true;  }
 
 			groupTopicTypeID = IDFromKeyword("group");
 				

@@ -26,8 +26,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		
 		/* Function: Parser
 		 */
-		public Parser ()
+		public Parser (Comments.Manager manager)
 			{
+			this.manager = manager;
 			}
 
 			
@@ -208,6 +209,26 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 					}
 				}
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		public Comments.Manager Manager
+			{
+			get
+				{  return manager;  }
+			}
+
+
+		
+		// Group: Variables
+		// __________________________________________________________________________
+
+
+		protected Comments.Manager manager;
 
 
 

@@ -17,7 +17,7 @@ using CodeClear.NaturalDocs.Engine.Errors;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	public class Manager : IDisposable
+	public class Manager : Module
 		{
 		
 		// Group: Functions
@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		
 		/* Constructor: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			builders = new List<Builder>();
 			reparseStyleFiles = false;
@@ -35,12 +35,15 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			
 		/* Function: Dispose
 		 */
-		public void Dispose ()
+		override protected void Dispose (bool strictRulesApply)
 			{
-			foreach (Builder builder in builders)
+			if (!strictRulesApply)
 				{
-				if (builder is IDisposable)
-					{  ((IDisposable)builder).Dispose();  }
+				foreach (Builder builder in builders)
+					{
+					if (builder is IDisposable)
+						{  ((IDisposable)builder).Dispose();  }
+					}
 				}
 			}
 
@@ -72,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			if (success == false)
 				{  return false;  }
 
-			Styles.FileSource styleFileSource = new Styles.FileSource();
+			Styles.FileSource styleFileSource = new Styles.FileSource(this);
 				
 			foreach (Builder builder in builders)
 				{
@@ -86,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			if (reparseStyleFiles)
 				{  styleFileSource.ForceReparse = true;  }
 
-			Engine.Instance.Files.AddFileSource(styleFileSource);
+			EngineInstance.Files.AddFileSource(styleFileSource);
 				
 			return success;
 			}

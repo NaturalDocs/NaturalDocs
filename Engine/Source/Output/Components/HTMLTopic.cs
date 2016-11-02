@@ -95,9 +95,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
-			string topicHashPath = Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
+			string simpleTopicTypeName = HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleLanguageName = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
 
 			if (topicHashPath != null)
 				{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
@@ -166,8 +166,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = Instance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
-			string simpleLanguageName = Instance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+			string simpleTopicTypeName = HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleLanguageName = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
 			htmlOutput.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			bool builtPrototype = false;
 
-			if (Engine.Instance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
+			if (HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = topic.ParsedClassPrototype;
 
@@ -302,13 +302,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							if (preLanguageName != null)
 								{  
 								// This can return null if the language name is unrecognized.
-								preLanguage = Engine.Instance.Languages.FromName(preLanguageName);  
+								preLanguage = HTMLBuilder.EngineInstance.Languages.FromName(preLanguageName);  
 								}
 
 							if (preLanguage == null)
-								{  preLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);  }
+								{  preLanguage = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);  }
 
-							Tokenizer code = new Tokenizer(textCode);
+							Tokenizer code = new Tokenizer(textCode, tabWidth: HTMLBuilder.EngineInstance.Config.TabWidth);
 							preLanguage.SyntaxHighlight(code);
 							BuildSyntaxHighlightedText(code.FirstToken, code.LastToken);
 							}
@@ -346,7 +346,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 										{  throw new Exception ("There are not enough embedded topics to build the definition list.");  }
 								#endif
 
-								string topicHashPath = Builders.HTML.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], topicPage.IncludeClassInTopicHashPaths);
+								string topicHashPath = HTMLBuilder.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], topicPage.IncludeClassInTopicHashPaths);
 
 								if (topicHashPath != null)
 									{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
@@ -695,7 +695,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			LinkInterpretation linkInterpretation = null;
 
 			string ignore;
-			List<LinkInterpretation> linkInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
+			List<LinkInterpretation> linkInterpretations = HTMLBuilder.EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(fullLink.Text,
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,

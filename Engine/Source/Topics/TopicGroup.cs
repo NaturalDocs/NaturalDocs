@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new Exception("All topics in a TopicGroup must be part of the same class.");  }
 				if (topics[i].IsGroup && i != startingIndex)
 					{  throw new Exception("Only the first topic in a TopicGroup may be a group topic.");  }
-				if (Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID).Scope == TopicType.ScopeValue.Start)
+				if (topics[i].Manager.FromID(topics[i].TopicTypeID).Scope == TopicType.ScopeValue.Start)
 					{  throw new Exception("TopicGroups cannot contain topics that start a scope.");  }
 				}
 
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{  titleMatchesType = false;  }
 			else
 				{
-				var type = Engine.Instance.TopicTypes.FromID(dominantTypeID);
+				var type = topics[0].Manager.FromID(dominantTypeID);
 
 				titleMatchesType = (header.Title == type.Name ||
 													 header.Title == type.DisplayName ||

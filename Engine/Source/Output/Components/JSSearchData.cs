@@ -66,16 +66,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(htmlBuilder.SearchIndex_DataFolder);  
+				System.IO.Directory.CreateDirectory(HTMLBuilder.SearchIndex_DataFolder);  
 				}
 			catch
 				{
 				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", htmlBuilder.SearchIndex_DataFolder) 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", HTMLBuilder.SearchIndex_DataFolder) 
 					);
 				}
 
-			System.IO.File.WriteAllText(htmlBuilder.SearchIndex_PrefixIndexFile, output.ToString());
+			System.IO.File.WriteAllText(HTMLBuilder.SearchIndex_PrefixIndexFile, output.ToString());
 			}
 
 
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<string> GetAllPrefixes ()
 			{
-			return Engine.Instance.SearchIndex.UsedPrefixes();
+			return HTMLBuilder.EngineInstance.SearchIndex.UsedPrefixes();
 			}
 
 
@@ -169,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (keywordEntries == null || keywordEntries.Count == 0)
 				{
-				htmlBuilder.DeleteOutputFileIfExists(htmlBuilder.SearchIndex_PrefixDataFile(prefix));
+				HTMLBuilder.DeleteOutputFileIfExists(HTMLBuilder.SearchIndex_PrefixDataFile(prefix));
 				return;
 				}
 
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			BuildPrefixDataFileJS(prefix, keywordEntries);
 
-			Path path = htmlBuilder.SearchIndex_PrefixDataFile(prefix);
+			Path path = HTMLBuilder.SearchIndex_PrefixDataFile(prefix);
 
 			try
 				{  
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<SearchIndex.KeywordEntry> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			return Engine.Instance.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
+			return HTMLBuilder.EngineInstance.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
 			}
 
 
@@ -263,8 +263,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token" to appear before
 					// variable "token" even though normally we want lowercase to go first.
 
-					var aTopicType = Engine.Instance.TopicTypes.FromID(a.Topic.TopicTypeID);
-					var bTopicType = Engine.Instance.TopicTypes.FromID(b.Topic.TopicTypeID);
+					var aTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(a.Topic.TopicTypeID);
+					var bTopicType = HTMLBuilder.EngineInstance.TopicTypes.FromID(b.Topic.TopicTypeID);
 
 					if (aTopicType.Flags.ClassHierarchy != bTopicType.Flags.ClassHierarchy)
 						{  return (aTopicType.Flags.ClassHierarchy ? -1 : 1);  }
@@ -308,8 +308,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (a.Topic.LanguageID != b.Topic.LanguageID)
 						{
-						return string.Compare(Engine.Instance.Languages.FromID(a.Topic.LanguageID).Name, 
-													  Engine.Instance.Languages.FromID(b.Topic.LanguageID).Name, true);
+						return string.Compare(HTMLBuilder.EngineInstance.Languages.FromID(a.Topic.LanguageID).Name, 
+														 HTMLBuilder.EngineInstance.Languages.FromID(b.Topic.LanguageID).Name, true);
 						}
 
 
@@ -317,8 +317,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (a.Topic.FileID != b.Topic.FileID)
 						{
-						return string.Compare(Engine.Instance.Files.FromID(a.Topic.FileID).FileName, 
-													  Engine.Instance.Files.FromID(b.Topic.FileID).FileName, true);
+						return string.Compare(HTMLBuilder.EngineInstance.Files.FromID(a.Topic.FileID).FileName, 
+														 HTMLBuilder.EngineInstance.Files.FromID(b.Topic.FileID).FileName, true);
 						}
 
 
@@ -428,7 +428,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					int topicTypeIndex = UsedTopicTypesIndex(topicTypeID);
 
 					if (topicTypeIndex == -1)
-						{  usedTopicTypes.Add( Engine.Instance.TopicTypes.FromID(topicTypeID) );  }
+						{  usedTopicTypes.Add( HTMLBuilder.EngineInstance.TopicTypes.FromID(topicTypeID) );  }
 					}
 				}
 
@@ -591,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (includeLanguage)
 				{
 				output.Append('"');
-				output.StringEscapeAndAppend( Engine.Instance.Languages.FromID(topicEntry.Topic.LanguageID).Name );
+				output.StringEscapeAndAppend( HTMLBuilder.EngineInstance.Languages.FromID(topicEntry.Topic.LanguageID).Name );
 				output.Append('"');
 				}
 
@@ -609,10 +609,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			output.Append(UsedTopicTypesIndex(topicEntry.Topic.TopicTypeID));
 
 			output.Append(",\"");
-			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(htmlBuilder, topicEntry.Topic.FileID);
+			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(HTMLBuilder, topicEntry.Topic.FileID);
 			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
 
-			string topicHashPath = Builders.HTML.Source_TopicHashPath(topicEntry.Topic, true);
+			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topicEntry.Topic, true);
 
 			if (topicHashPath != null)
 				{
@@ -627,10 +627,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				output.Append(",\"");
 
 				Components.HTMLTopicPages.Class classPage = 
-					new Components.HTMLTopicPages.Class(htmlBuilder, topicEntry.Topic.ClassID, topicEntry.Topic.ClassString);
+					new Components.HTMLTopicPages.Class(HTMLBuilder, topicEntry.Topic.ClassID, topicEntry.Topic.ClassString);
 				output.StringEscapeAndAppend(classPage.OutputFileHashPath);
 
-				string classTopicHashPath = Builders.HTML.Source_TopicHashPath(topicEntry.Topic, false);
+				string classTopicHashPath = HTMLBuilder.Source_TopicHashPath(topicEntry.Topic, false);
 
 				if (classTopicHashPath != null)
 					{
@@ -677,6 +677,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 			return -1;
+			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* var: HTMLBuilder
+		 */
+		public Builders.HTML HTMLBuilder
+			{
+			get
+				{  return htmlBuilder;  }
 			}
 
 

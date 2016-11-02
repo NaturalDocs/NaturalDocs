@@ -145,12 +145,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Returns a hash path representing a specific <Topic> within an output file.  If it returns null, you should use the hash path for
 		 * the class or file without a topic anchor.
 		 */
-		public static string Source_TopicHashPath (Topic topic, bool includeClass = true)
+		public string Source_TopicHashPath (Topic topic, bool includeClass = true)
 			{
 			// If we're not including the class and the topic is itself a class, return null.
 			if (!includeClass)
 				{
-				var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+				var topicType = Manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 				if (topicType.Flags.ClassHierarchy)
 					{  return null;  }

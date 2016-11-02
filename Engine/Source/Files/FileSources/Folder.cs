@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		/* Function: Folder
 		 * Instance constructor.  If the path is relative it will be made absolute using the current working folder.
 		 */
-		public Folder (Config.Targets.SourceFolder config) : base ()
+		public Folder (Files.Manager manager, Config.Targets.SourceFolder config) : base (manager)
 			{
 			this.config = config;
 			}
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 				if (Type == InputType.Source)
 					{
-					if (Engine.Instance.Files.SourceFolderIsIgnored(folder))
+					if (Manager.SourceFolderIsIgnored(folder))
  						{  continue;  }	
 					else
 						{  addAllFilesStatus.SourceFoldersFound++;  }
@@ -122,7 +122,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 						
 					if (Type == InputType.Source)
 						{
-						if ( Engine.Instance.Languages.FromExtension(extension) != null)
+						if ( Manager.EngineInstance.Languages.FromExtension(extension) != null)
 							{  type = FileType.Source;  }
 						// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
 						// file instead of an image folder.
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 					if (type != null)
 						{  
-						Engine.Instance.Files.AddOrUpdateFile(filePath, (FileType)type, System.IO.File.GetLastWriteTimeUtc(file));
+						Manager.AddOrUpdateFile(filePath, (FileType)type, System.IO.File.GetLastWriteTimeUtc(file));
 
 						if (type == FileType.Source)
 							{  addAllFilesStatus.SourceFilesFound++;  }

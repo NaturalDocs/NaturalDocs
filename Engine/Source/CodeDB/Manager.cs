@@ -69,7 +69,7 @@ using CodeClear.NaturalDocs.Engine.TopicTypes;
 
 namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
-	public partial class Manager : IDisposable
+	public partial class Manager : Module
 		{
 		
 		// Group: Functions
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		
 		/* Function: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			connection = null;
 			databaseLock = new Lock();
@@ -158,11 +158,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (sqliteResult != SQLite.API.Result.OK)
 			    {  throw new SQLite.Exceptions.UnexpectedResult("Could not initialize SQLite.", sqliteResult);  }
 
-			Path databaseFile = Engine.Instance.Config.WorkingDataFolder + "/CodeDB.nd";
+			Path databaseFile = EngineInstance.Config.WorkingDataFolder + "/CodeDB.nd";
 			connection = new SQLite.Connection();
 			bool success = false;
 			
-			if (Engine.Instance.Config.ReparseEverything == false)
+			if (EngineInstance.Config.ReparseEverything == false)
 				{
 				try
 					{
@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (System.IO.File.Exists(databaseFile))
 					{  System.IO.File.Delete(databaseFile);  }
 					
-				Engine.Instance.Config.ReparseEverything = true;
+				EngineInstance.Config.ReparseEverything = true;
 				reparsingEverything = true;
 					
 				connection.Open(databaseFile, true);
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		public Accessor GetAccessor ()
 			{
-			return new Accessor(connection.CreateAnotherConnection(), false);
+			return new Accessor(this, connection.CreateAnotherConnection(), false);
 			}
 			
 			
@@ -212,15 +212,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		public Accessor GetPriorityAccessor ()
 			{
-			return new Accessor(connection.CreateAnotherConnection(), true);
+			return new Accessor(this, connection.CreateAnotherConnection(), true);
 			}
 
 
 		/* Function: Dispose
 		 */
-		public void Dispose ()
+		protected override void Dispose (bool strictRulesApply)
 			{
-			if (connection != null && connection.IsOpen)
+			// If strict rules apply then the connection object will have to dispose of itself.  We can't do it here.
+			if (!strictRulesApply && connection != null && connection.IsOpen)
 				{
 				if (databaseLock.IsLocked)
 					{  throw new Exception("Attempted to dispose of database when there were still locks held.");  }
@@ -325,8 +326,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// For type and class parent links, the topic type MUST have the relevant attribute set to be possible.
 
-			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
-			var language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			var language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 			if ( (link.Type == LinkType.ClassParent && topicType.Flags.ClassHierarchy == false) ||
 				  (link.Type == LinkType.Type && topicType.Flags.VariableType == false) )
@@ -535,8 +536,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// C - Whether the topic and link's capitalization match if it matters to the language.
 			// S - How high on the scope list the symbol match is.
 
-			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
-			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+			Language topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
+			TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 
 			// Values of C:
@@ -705,8 +706,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (usingStrings == null || usingStrings.Count == 0)
 				{  return 0;  }
 
-			Language topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
-			TopicType topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+			Language topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
+			TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 
 			// Values of C:
@@ -1099,7 +1100,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * If two <Topics> both have the same <ClassString>, returns whether the second one serves as a better definition 
 		 * than the first.  Is safe to use with topics that don't have <Topic.DefinesClass> set.
 		 */
-		public static bool IsBetterClassDefinition (Topic currentDefinition, Topic toTest)
+		public bool IsBetterClassDefinition (Topic currentDefinition, Topic toTest)
 			{
 			#if DEBUG
 			if (currentDefinition.ClassString != toTest.ClassString)
@@ -1122,8 +1123,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// If the scores are equal, compare the paths.  Having a path that sorts higher isn't indicitive of anything, it just makes
 			// sure the results of this function are consistent between runs.
 
-			Path currentPath = Engine.Instance.Files.FromID(currentDefinition.FileID).FileName;
-			Path toTestPath = Engine.Instance.Files.FromID(toTest.FileID).FileName;
+			Path currentPath = EngineInstance.Files.FromID(currentDefinition.FileID).FileName;
+			Path toTestPath = EngineInstance.Files.FromID(toTest.FileID).FileName;
 
 			int compareResult = Path.Compare(currentPath, toTestPath);
 
@@ -1249,7 +1250,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (link.Type == LinkType.NaturalDocs)
 				{
 				string ignore;
-				alternateInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+				alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
@@ -1325,7 +1326,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (link.Type == LinkType.NaturalDocs)
 					{
 					string ignore;
-					alternateInterpretations = Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+					alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
 																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
@@ -1401,7 +1402,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// Group: Accessor Properties
 		// These properties are internal and are only meant for use by <Accessor>.
 		// __________________________________________________________________________
-		
+	
 		
 		/* Property: DatabaseLock
 		 * The <CodeDB.Lock> used to manage access to this database.  It covers properties like <UsedTopicIDs> in addition

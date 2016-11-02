@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		override public string PageTitle
 			{
 			get
-				{  return Instance.Files.FromID(fileID).FileName.NameWithoutPath;  }
+				{  return HTMLBuilder.EngineInstance.Files.FromID(fileID).FileName.NameWithoutPath;  }
 			}
 
 		/* Property: IncludeClassInTopicHashPaths
@@ -134,8 +134,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = Engine.Instance.Files.FromID(fileID);
-				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
+				Files.FileSource fileSource = HTMLBuilder.EngineInstance.Files.FileSourceOf(file);
 
 				if (fileSource == null)
 					{  return null;  }
@@ -153,8 +153,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{  
-				Files.File file = Engine.Instance.Files.FromID(fileID);
-				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
+				Files.FileSource fileSource = HTMLBuilder.EngineInstance.Files.FileSourceOf(file);
 
 				if (fileSource == null)
 					{  return null;  }
@@ -173,7 +173,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{
-				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
 				return Builders.HTML.SanitizePath(nameString, true) + ".html";
 				}
@@ -187,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{
-				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
 				return Builders.HTML.SanitizePath(nameString);
 				}
@@ -200,8 +200,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = Engine.Instance.Files.FromID(fileID);
-				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
+				Files.FileSource fileSource = HTMLBuilder.EngineInstance.Files.FileSourceOf(file);
 
 				if (fileSource == null)
 					{  return null;  }
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{
-				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
 				return Builders.HTML.SanitizePath(nameString, true) + "-ToolTips.js";
 				}
@@ -233,8 +233,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = Engine.Instance.Files.FromID(fileID);
-				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
+				Files.FileSource fileSource = HTMLBuilder.EngineInstance.Files.FileSourceOf(file);
 
 				if (fileSource == null)
 					{  return null;  }
@@ -252,7 +252,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{
-				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
 				return Builders.HTML.SanitizePath(nameString, true) + "-Summary.js";
 				}
@@ -266,8 +266,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = Engine.Instance.Files.FromID(fileID);
-				Files.FileSource fileSource = Engine.Instance.Files.FileSourceOf(file);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
+				Files.FileSource fileSource = HTMLBuilder.EngineInstance.Files.FileSourceOf(file);
 
 				if (fileSource == null)
 					{  return null;  }
@@ -285,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			{
 			get
 				{
-				Files.File file = Engine.Instance.Files.FromID(fileID);
+				Files.File file = HTMLBuilder.EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
 				return Builders.HTML.SanitizePath(nameString, true) + "-SummaryToolTips.js";
 				}

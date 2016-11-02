@@ -41,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					if (cancelDelegate())
 						{  return;  }
 
-					jsMenuData.AddFile(Instance.Files.FromID(fileID));
+					jsMenuData.AddFile(Manager.EngineInstance.Files.FromID(fileID));
 					}
 				}
 

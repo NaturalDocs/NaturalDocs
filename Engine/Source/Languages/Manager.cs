@@ -23,7 +23,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public class Manager
+	public class Manager : Module
 		{
 		
 		// Group: Constants
@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		
 		/* Constructor: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			languages = new IDObjects.Manager<Language>(KeySettingsForLanguageName, false);
 			aliases = new StringTable<Language>(KeySettingsForLanguageName);
@@ -51,21 +51,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			
 			predefinedLanguages = new Language[4];
 			
-			predefinedLanguages[0] = new Language("Text File");
+			predefinedLanguages[0] = new Language(this, "Text File");
 			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
 			predefinedLanguages[0].Predefined = true;
 			
-			predefinedLanguages[1] = new Languages.Parsers.ShebangScript();
+			predefinedLanguages[1] = new Languages.Parsers.ShebangScript(this);
 			predefinedLanguages[1].Predefined = true;
 
-			predefinedLanguages[2] = new Languages.Parsers.CSharp();
+			predefinedLanguages[2] = new Languages.Parsers.CSharp(this);
 			predefinedLanguages[2].Predefined = true;
 
-			predefinedLanguages[3] = new Languages.Parsers.Perl();
+			predefinedLanguages[3] = new Languages.Parsers.Perl(this);
 			predefinedLanguages[3].Predefined = true;
 			}
-			
-			
+
+
+		protected override void Dispose (bool strictRulesApply)
+			{
+			}
+
+
 		/* Function: Start
 		 * 
 		 * Loads and combines the two versions of <Languages.txt>, returning whether it was successful.  If there were any errors
@@ -106,10 +111,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// We need the ID numbers to stay consistent between runs, so we create all the languages from the binary file
 			// next.  We'll worry about comparing their attributes with the text files and seeing if any were added or deleted later.
 
-			Languages_nd languagesNDParser = new Languages_nd();
+			Languages_nd languagesNDParser = new Languages_nd(this);
 
 			// Don't bother going through the effort if we're rebuilding everything anyway.
-			if (Engine.Instance.Config.ReparseEverything == true)
+			if (EngineInstance.Config.ReparseEverything == true)
 				{
 				binaryLanguages = new List<Language>();
 				binaryAliases = new List<KeyValuePair<string,int>>();
@@ -120,7 +125,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				changed = true;
 				}
 				
-			else if (languagesNDParser.Load(Engine.Instance.Config.WorkingDataFolder + "/Languages.nd", out binaryLanguages,
+			else if (languagesNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Languages.nd", out binaryLanguages,
 														  out binaryAliases, out binaryExtensions, out binaryShebangStrings, out binaryIgnoredExtensions) == false)
 				{
 				changed = true;
@@ -145,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			            
 						if (existingLanguage == null)
 							{
-							Language newLanguage = new Language(binaryLanguage.Name);
+							Language newLanguage = new Language(this, binaryLanguage.Name);
 							newLanguage.ID = binaryLanguage.ID;
 							newLanguage.InBinaryFile = true;
 							
@@ -177,8 +182,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 			
 			
-			Path systemFile = Engine.Instance.Config.SystemConfigFolder + "/Languages.txt";
-			Path projectFile = Engine.Instance.Config.ProjectConfigFolder + "/Languages.txt";
+			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Languages.txt";
+			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Languages.txt";
 
 			Languages_txt languagesTxtParser = new Languages_txt();
 
@@ -367,12 +372,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			    }
 
 			
-			languagesNDParser.Save(Engine.Instance.Config.WorkingDataFolder + "/Languages.nd",
+			languagesNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Languages.nd",
 												languages, aliases, extensions, shebangStrings, ignoredExtensions);
 								   
 			
 			if (success == true && changed == true)
-			    {  Engine.Instance.Config.ReparseEverything = true;  }
+			    {  EngineInstance.Config.ReparseEverything = true;  }
 
 			return success;
 			}
@@ -422,7 +427,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				else
 					{					
-					Language newLanguage = new Language(configFileLanguage.Name);
+					Language newLanguage = new Language(this, configFileLanguage.Name);
 					languages.Add(newLanguage);
 					}
 					
@@ -522,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					foreach (string topicTypeName in topicTypeNamesWithPrototypeEnders)
 						{
-						TopicTypes.TopicType topicType = Engine.Instance.TopicTypes.FromName(topicTypeName);
+						TopicTypes.TopicType topicType = EngineInstance.TopicTypes.FromName(topicTypeName);
 						
 						if (topicType == null)
 							{
@@ -675,7 +680,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					for (int i = 0; i < prototypeEnderTopicTypeNames.Length; i++)
 						{
-						prototypeEnderTopicTypeNames[i] = Engine.Instance.TopicTypes.FromName( prototypeEnderTopicTypeNames[i] ).Name;
+						prototypeEnderTopicTypeNames[i] = EngineInstance.TopicTypes.FromName( prototypeEnderTopicTypeNames[i] ).Name;
 						}
 						
 					configFileLanguage.FixPrototypeEnderTopicTypeCapitalization( prototypeEnderTopicTypeNames );

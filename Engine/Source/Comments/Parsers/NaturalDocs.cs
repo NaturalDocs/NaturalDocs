@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		
 		/* Function: NaturalDocs
 		 */
-		public NaturalDocs () : base ()
+		public NaturalDocs (Comments.Manager manager) : base (manager)
 			{
 			sets = null;
 			tables = null;
@@ -256,29 +256,29 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			 // Load configuration files
 
-			bool loadFileResult = LoadFile( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt", errors,
+			bool loadFileResult = LoadFile( Manager.EngineInstance.Config.SystemConfigFolder + "/Parser.txt", errors,
 																	out sets, out tables, out conversionLists);
 													 
 			if (loadFileResult == false )
 				{  return false;  }
 								
-			if (Engine.Instance.Config.ReparseEverything == false)
+			if (Manager.EngineInstance.Config.ReparseEverything == false)
 				{
 				StringSet[] binarySets;
 				StringTable<byte>[] binaryTables;
 				List<string>[] binaryConversionLists;
 
-				bool loadBinaryFileResult = LoadBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
+				bool loadBinaryFileResult = LoadBinaryFile( Manager.EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
 																							out binarySets, out binaryTables, out binaryConversionLists );
 																		 
 				if (loadBinaryFileResult == false)
-					{  Engine.Instance.Config.ReparseEverything = true;  }
+					{  Manager.EngineInstance.Config.ReparseEverything = true;  }
 					
 				// Try quick compares before full ones
 				else if (sets.Length != binarySets.Length ||
 							 tables.Length != binaryTables.Length ||
 							 conversionLists.Length != binaryConversionLists.Length)
-					{  Engine.Instance.Config.ReparseEverything = true;  }
+					{  Manager.EngineInstance.Config.ReparseEverything = true;  }
 
 				else
 					{
@@ -336,13 +336,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						}
 						
 					if (equal == false)
-						{  Engine.Instance.Config.ReparseEverything = true;  }
+						{  Manager.EngineInstance.Config.ReparseEverything = true;  }
 					}
 				}
 		        
-			ConfigFile.TryToRemoveErrorAnnotations( Engine.Instance.Config.SystemConfigFolder + "/Parser.txt" );
+			ConfigFile.TryToRemoveErrorAnnotations( Manager.EngineInstance.Config.SystemConfigFolder + "/Parser.txt" );
 				
-			SaveBinaryFile( Engine.Instance.Config.WorkingDataFolder + "/Parser.nd",
+			SaveBinaryFile( Manager.EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
 										sets, tables, conversionLists );
 
 			return true;
@@ -397,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					{  return false;  }
 				else
 					{  
-					currentTopic = new Topic();
+					currentTopic = new Topic(Manager.EngineInstance.TopicTypes);
 					currentTopic.CommentLineNumber = lineIterator.LineNumber;
 					
 					firstContentLine = lineIterator;
@@ -813,7 +813,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			int keywordEndingIndex = keywordsAndTags.Length;
 			
 			bool pluralKeyword;
-			TopicTypes.TopicType topicType = Engine.Instance.TopicTypes.FromKeyword(keywordsAndTags, out pluralKeyword);
+			TopicTypes.TopicType topicType = Manager.EngineInstance.TopicTypes.FromKeyword(keywordsAndTags, out pluralKeyword);
 			
 			while (topicType == null)
 				{
@@ -824,7 +824,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					
 				keywordStartingIndex++;
 				
-				topicType = Engine.Instance.TopicTypes.FromKeyword( 
+				topicType = Manager.EngineInstance.TopicTypes.FromKeyword( 
 											keywordsAndTags.Substring (keywordStartingIndex, keywordEndingIndex - keywordStartingIndex),
 											out pluralKeyword);
 				}
@@ -851,7 +851,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					bool success = false;
 					string substring = keywordsAndTags.Substring(tagStartingIndex, tagEndingIndex - tagStartingIndex);
 					
-					TopicTypes.Tag tag = Engine.Instance.TopicTypes.TagFromName(substring);
+					TopicTypes.Tag tag = Manager.EngineInstance.TopicTypes.TagFromName(substring);
 														
 					if (tag != null)
 						{
@@ -870,7 +870,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						success = true;
 						}
 
-					Language language = Engine.Instance.Languages.FromName(substring);
+					Language language = Manager.EngineInstance.Languages.FromName(substring);
 
 					if (language != null)
 						{
@@ -902,7 +902,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				
 			// If we made it this far, we're okay.  Set any topic properties.
 			
-			topic = new Topic();
+			topic = new Topic(Manager.EngineInstance.TopicTypes);
 			topic.CommentLineNumber = lineIterator.LineNumber;
 			topic.Title = tokenizer.RawText.Substring( afterColon.RawTextIndex, lineEndingIndex - afterColon.RawTextIndex );
 			topic.TopicTypeID = topicType.ID;
@@ -1124,7 +1124,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			// (Perl)
 
-			language = Engine.Instance.Languages.FromName(tagString);
+			language = Manager.EngineInstance.Languages.FromName(tagString);
 			if (language != null)
 				{
 				blockType = BlockType.Code;
@@ -1161,7 +1161,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					
 					// (start Perl)
 						
-					language = Engine.Instance.Languages.FromName(secondPart);
+					language = Manager.EngineInstance.Languages.FromName(secondPart);
 					if (language != null)
 						{
 						blockType = BlockType.Code;
@@ -1175,7 +1175,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						  secondSpace != -1; 
 						  secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
 						{
-						language = Engine.Instance.Languages.FromName( secondPart.Substring(0, secondSpace) );
+						language = Manager.EngineInstance.Languages.FromName( secondPart.Substring(0, secondSpace) );
 						
 						if (language != null && 
 							IsBlockType( secondPart.Substring(secondSpace+1), out blockType) &&
@@ -1189,7 +1189,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 					// (Perl code)
 
-					language = Engine.Instance.Languages.FromName(firstPart);
+					language = Manager.EngineInstance.Languages.FromName(firstPart);
 					
 					if (language != null &&
 						IsBlockType( tagString.Substring(firstSpace + 1), out blockType ) &&
@@ -1257,7 +1257,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 					// (end Perl)
 
-					Language language = Engine.Instance.Languages.FromName(secondPart);
+					Language language = Manager.EngineInstance.Languages.FromName(secondPart);
 					if (language != null)
 						{  return true;  }
 						
@@ -1268,7 +1268,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						  secondSpace != -1; 
 						  secondSpace = secondPart.IndexOf(' ', secondSpace + 1))
 						{
-						language = Engine.Instance.Languages.FromName( secondPart.Substring(0, secondSpace) );
+						language = Manager.EngineInstance.Languages.FromName( secondPart.Substring(0, secondSpace) );
 						
 						if (language != null && 
 							IsBlockType(secondPart.Substring(secondSpace+1), out blockType) &&
@@ -1416,7 +1416,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			int lineLength = 0;
 			string rawText = lineIterator.Tokenizer.RawText;
-			int tabLength = Engine.Instance.Config.TabWidth;
+			int tabWidth = Manager.EngineInstance.Config.TabWidth;
 			
 			
 			// Calculate indent first.
@@ -1431,8 +1431,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						{
 						if (rawText[i] == '\t')
 							{
-							lineLength += tabLength;
-							lineLength -= (lineLength % tabLength);
+							lineLength += tabWidth;
+							lineLength -= (lineLength % tabWidth);
 							}
 						else
 							{  lineLength++;  }
@@ -1474,8 +1474,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						{
 						if (rawText[i] == '\t')
 							{
-							lineLength += tabLength;
-							lineLength -= (lineLength % tabLength);
+							lineLength += tabWidth;
+							lineLength -= (lineLength % tabWidth);
 							}
 						else
 							{  lineLength++;  }
@@ -2204,7 +2204,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 */
 		protected void ParseTextBlock (string input, StringBuilder output)
 			{
-			Tokenizer tokenizer = new Tokenizer(input);
+			Tokenizer tokenizer = new Tokenizer(input, tabWidth: Manager.EngineInstance.Config.TabWidth);
 			
 			// The order of these function calls is important.  Read each of their descriptions.
 			MarkPossibleFormattingTags(tokenizer);
@@ -3076,7 +3076,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			int embeddedTopicTypeID = 0;
 
 			if (topic.IsEnum)
-				{  embeddedTopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("constant");  }
+				{  embeddedTopicTypeID = Manager.EngineInstance.TopicTypes.IDFromKeyword("constant");  }
 
 			// We do it this way in case there is no type that uses the "constant" keyword.
 			if (embeddedTopicTypeID == 0)
@@ -3094,7 +3094,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 				int endDefinitionIndex = topic.Body.IndexOf("</dd>", definitionIndex + 4);
 
-				Topic embeddedTopic = new Topic();
+				Topic embeddedTopic = new Topic(Manager.EngineInstance.TopicTypes);
 				embeddedTopic.Title = topic.Body.Substring(symbolIndex + 4, endSymbolIndex - (symbolIndex + 4)).EntityDecode();
 				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
 				embeddedTopic.IsEmbedded = true;

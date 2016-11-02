@@ -217,8 +217,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{
 				if (rawText[i] == '\t')
 					{
-					indent += this.TabWidth;
-					indent -= (indent % this.TabWidth);
+					indent += tokenizer.TabWidth;
+					indent -= (indent % tokenizer.TabWidth);
 					}
 				else
 					{  indent++;  }
@@ -458,21 +458,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			{
 			get
 				{  return lineIndex;  }
-			}
-
-
-		/* Property: TabWidth
-		 * The number of spaces to expand tabs.  If an <Engine.Instance> is started, it will use <Config.Manager.TabWidth>.
-		 */
-		private int TabWidth
-			{
-			get
-				{
-				if (Engine.Instance.Config != null)
-					{  return Engine.Instance.Config.TabWidth;  }
-				else
-					{  return 4;  }
-				}
 			}
 		
 		

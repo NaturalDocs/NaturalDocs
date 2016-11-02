@@ -61,20 +61,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			if (!systemFolderOnly)
 				{
-				if (System.IO.File.Exists( Instance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt" ))
-					{  return Instance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt";  }
-				else if (System.IO.File.Exists( Instance.Config.ProjectConfigFolder + "/" + name + "/Style.txt" ))
-					{  return Instance.Config.ProjectConfigFolder + "/" + name + "/Style.txt";  }
-				else if (System.IO.File.Exists( Instance.Config.ProjectConfigFolder + "/" + name + ".css" ))
-					{  return Instance.Config.ProjectConfigFolder + "/" + name + ".css";  }
+				if (System.IO.File.Exists( Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt" ))
+					{  return Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt";  }
+				else if (System.IO.File.Exists( Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt" ))
+					{  return Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt";  }
+				else if (System.IO.File.Exists( Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + ".css" ))
+					{  return Manager.EngineInstance.Config.ProjectConfigFolder + "/" + name + ".css";  }
 				}
 
-			if (System.IO.File.Exists( Instance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt" ))
-				{  return Instance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt";  }
-			else if (System.IO.File.Exists( Instance.Config.SystemStyleFolder + "/" + name + "/Style.txt" ))
-				{  return Instance.Config.SystemStyleFolder + "/" + name + "/Style.txt";  }
-			else if (System.IO.File.Exists( Instance.Config.SystemStyleFolder + "/" + name + ".css" ))
-				{  return Instance.Config.SystemStyleFolder + "/" + name + ".css";  }
+			if (System.IO.File.Exists( Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt" ))
+				{  return Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt";  }
+			else if (System.IO.File.Exists( Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + "/Style.txt" ))
+				{  return Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + "/Style.txt";  }
+			else if (System.IO.File.Exists( Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + ".css" ))
+				{  return Manager.EngineInstance.Config.SystemStyleFolder + "/" + name + ".css";  }
 
 			return null;
 			}

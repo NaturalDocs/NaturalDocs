@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			this.linkTargets = linkTargets;
 			htmlOutput = output;
 
-			language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			language = HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID);
 			parsedPrototype = topic.ParsedPrototype;
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)

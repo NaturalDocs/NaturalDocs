@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	public class ShebangScript : Language
 		{
 	
-		public ShebangScript () : base ("Shebang Script")
+		public ShebangScript (Languages.Manager manager) : base (manager, "Shebang Script")
 			{
 			Type = LanguageType.Container;
 			}
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// we don't want to use ReadLine() right away in case it returns the entire file and the file is huge.
 				string shebangLine = file.ReadLine();
 
-				language = Engine.Instance.Languages.FromShebangLine(shebangLine);
+				language = Manager.FromShebangLine(shebangLine);
 
 				if (language != null)
 					{  content = file.ReadToEnd() ?? "";  }
@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  return ParseResult.Success;  }
 
 			// Since we ate the first line, start the tokenizer at line 2.
-			Tokenizer tokenizedContent = new Tokenizer(content, 2);
+			Tokenizer tokenizedContent = new Tokenizer(content, startingLineNumber: 2, tabWidth: Manager.EngineInstance.Config.TabWidth);
 
 			return language.Parse(tokenizedContent, fileID, cancelDelegate, out topics, out classParentLinks);
 			}

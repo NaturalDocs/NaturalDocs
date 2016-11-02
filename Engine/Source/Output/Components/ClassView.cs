@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * single coherent list.  It assumes all topics from a single file will be consecutive, but otherwise the groups of
 		 * topics can be in any order.
 		 */
-		public static void MergeTopics (List<Topic> topics)
+		public static void MergeTopics (List<Topic> topics, Builder builder)
 			{
 			if (topics.Count == 0)
 				{  return;  }
@@ -85,8 +85,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				return;  
 				}
 
-			var files = Engine.Instance.Files;
-			var topicTypes = Engine.Instance.TopicTypes;
+			var files = builder.EngineInstance.Files;
+			var topicTypes = builder.EngineInstance.TopicTypes;
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				Topic topic = remainingTopics[i];
 
 				if (topic.DefinesClass &&
-					 CodeDB.Manager.IsBetterClassDefinition(bestDefinition, topic))
+					builder.EngineInstance.CodeDB.IsBetterClassDefinition(bestDefinition, topic))
 					{
 					bestDefinition = topic;
 					bestDefinitionIndex = i;
@@ -213,7 +213,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				else if (embeddedTopicCount == 0)
 					{
-					int duplicateIndex = FindDuplicateTopic(topic, remainingTopics);
+					int duplicateIndex = FindDuplicateTopic(topic, remainingTopics, builder);
 
 					if (duplicateIndex == -1)
 						{  topicIndex++;  }
@@ -236,7 +236,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					for (int i = 0; i < embeddedTopicCount; i++)
 						{
 						Topic embeddedTopic = topics[topicIndex + 1 + i];
-						int duplicateIndex = FindDuplicateTopic(embeddedTopic, remainingTopics);
+						int duplicateIndex = FindDuplicateTopic(embeddedTopic, remainingTopics, builder);
 
 						if (duplicateIndex == -1 ||
 							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(remainingTopics[duplicateIndex]))
@@ -276,7 +276,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				if (remainingTopic.IsEnum)
 					{
-					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics);
+					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
 
 					if (duplicateIndex == -1)
 						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
@@ -301,7 +301,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				else if (embeddedTopicCount == 0)
 					{
-					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics);
+					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
 
 					if (duplicateIndex == -1)
 						{  remainingTopicIndex++;  }
@@ -334,7 +334,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					for (int i = 0; i < embeddedTopicCount; i++)
 						{
 						Topic embeddedTopic = remainingTopics[remainingTopicIndex + 1 + i];
-						int duplicateIndex = FindDuplicateTopic(embeddedTopic, topics);
+						int duplicateIndex = FindDuplicateTopic(embeddedTopic, topics, builder);
 
 						if (duplicateIndex == -1 ||
 							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]))
@@ -493,13 +493,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					// Create a new group if there's no existing one we can use.
 					if (matchingGroupIndex == -1)
 						{
-						Topic generatedTopic = new Topic();
+						Topic generatedTopic = new Topic(builder.EngineInstance.TopicTypes);
 						generatedTopic.TopicID = 0;
-						generatedTopic.Title = Engine.Instance.TopicTypes.FromID(type).PluralDisplayName;
+						generatedTopic.Title = builder.EngineInstance.TopicTypes.FromID(type).PluralDisplayName;
 						generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
 						generatedTopic.ClassString = topics[0].ClassString;
 						generatedTopic.ClassID = topics[0].ClassID;
-						generatedTopic.TopicTypeID = Engine.Instance.TopicTypes.IDFromKeyword("group");
+						generatedTopic.TopicTypeID = builder.EngineInstance.TopicTypes.IDFromKeyword("group");
 						generatedTopic.FileID = topics[0].FileID;
 						generatedTopic.LanguageID = topics[0].LanguageID;
 
@@ -535,9 +535,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Returns the index of a topic that defines the same code element as the passed one, or -1 if there isn't
 		 * any.  Topics are considered duplicates if <Language.IsSameCodeElement> returns true.
 		 */
-		private static int FindDuplicateTopic (Topic topic, List<Topic> listToSearch)
+		private static int FindDuplicateTopic (Topic topic, List<Topic> listToSearch, Builder builder)
 			{
-			Language language = Engine.Instance.Languages.FromID(topic.LanguageID);
+			Language language = builder.EngineInstance.Languages.FromID(topic.LanguageID);
 
 			for (int i = 0; i < listToSearch.Count; i++)
 				{

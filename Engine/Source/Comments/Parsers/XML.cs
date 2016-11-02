@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		
 		/* Function: XML
 		 */
-		public XML () : base ()
+		public XML (Comments.Manager manager) : base (manager)
 			{
 			}
 			
@@ -849,7 +849,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			if (body.Length > 0)
 				{
-				topic = new Topic();
+				topic = new Topic(Manager.EngineInstance.TopicTypes);
 				topic.Body = body.ToString();
 
 				MakeSummaryFromBody(topic);

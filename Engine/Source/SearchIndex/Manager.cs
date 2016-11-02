@@ -39,7 +39,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.SearchIndex
 	{
-	public class Manager : IDisposable, CodeDB.IChangeWatcher
+	public class Manager : Module, CodeDB.IChangeWatcher
 		{
 
 		// Group: Functions
@@ -48,24 +48,27 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		
 		/* Constructor: Manager
 		 */
-		public Manager ()
+		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			accessLock = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
 			changeWatchers = new List<IChangeWatcher>();
 			prefixTopicIDs = null;
 			}
-			
-			
+
+
 		/* Function: Dispose
 		 */
-		public void Dispose ()
+		protected override void Dispose(bool strictRulesApply)
 			{
-			try
+			if (!strictRulesApply)
 				{
-				SaveBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+				try
+					{
+					SaveBinaryFile(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+					}
+				catch 
+					{  }
 				}
-			catch 
-				{  }
 			}
 
 
@@ -78,9 +81,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			bool hasBinaryFile;
 
-			if (!Engine.Instance.Config.ReparseEverything)
+			if (!EngineInstance.Config.ReparseEverything)
 				{
-				hasBinaryFile = LoadBinaryFile(Engine.Instance.Config.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
+				hasBinaryFile = LoadBinaryFile(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
 				{
@@ -89,12 +92,12 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				}
 
 			if (!hasBinaryFile)
-				{  Engine.Instance.Config.ReparseEverything = true;  }
+				{  EngineInstance.Config.ReparseEverything = true;  }
 
 
 			// Watch CodeDB for topic changes
 
-			Engine.Instance.CodeDB.AddChangeWatcher(this);
+			EngineInstance.CodeDB.AddChangeWatcher(this);
 
 
 			return true;
@@ -184,7 +187,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			foreach (var topic in topics)
 				{
-				TopicEntry topicEntry = new TopicEntry(topic);
+				TopicEntry topicEntry = new TopicEntry(topic, this);
 
 				foreach (var keyword in topicEntry.Keywords)
 					{
@@ -251,9 +254,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 */
 		protected bool IncludeInIndex (Topic topic)
 			{
-			var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+			var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
-			if (topicType.ID == Engine.Instance.TopicTypes.IDFromKeyword("group"))
+			if (topicType.ID == EngineInstance.TopicTypes.IDFromKeyword("group"))
 				{  return false;  }
 
 			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost
@@ -433,7 +436,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			if (!IncludeInIndex(topic))
 				{  return;  }
 
-			TopicEntry entry =  new TopicEntry(topic);
+			TopicEntry entry =  new TopicEntry(topic, this);
 
 			accessLock.EnterWriteLock();
 
@@ -492,8 +495,8 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				if (newTopic.TopicID != oldTopic.TopicID)
 					{  throw new Exception ("SearchIndex incorrectly assumes both the old and new topics in OnUpdateTopic() have the same topic IDs.");  }
 
-				TopicEntry newEntry = new TopicEntry(newTopic);
-				TopicEntry oldEntry = new TopicEntry(oldTopic);
+				TopicEntry newEntry = new TopicEntry(newTopic, this);
+				TopicEntry oldEntry = new TopicEntry(oldTopic, this);
 
 				if (newEntry.Keywords.Count != oldEntry.Keywords.Count)
 					{  throw new Exception ("SearchIndex incorrectly assumes both the old and new topics in OnUpdateTopic() have the same keywords.");  }
@@ -506,7 +509,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			#endif
 
-			TopicEntry entry = new TopicEntry(newTopic);
+			TopicEntry entry = new TopicEntry(newTopic, this);
 
 			// We use upgradeable in case one of the change handlers needs to do something that requires a write lock.
 			accessLock.EnterUpgradeableReadLock();
@@ -535,7 +538,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			if (!IncludeInIndex(topic))
 				{  return;  }
 
-			TopicEntry entry =  new TopicEntry(topic);
+			TopicEntry entry =  new TopicEntry(topic, this);
 
 			accessLock.EnterWriteLock();
 

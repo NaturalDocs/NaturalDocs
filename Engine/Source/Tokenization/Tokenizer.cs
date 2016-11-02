@@ -6,11 +6,6 @@
  * how they are divided up by default.
  * 
  * 
- * Usage:
- * 
- *		- <Config.Manager> must be started before use because it depends on it for tab expansion.
- *		
- * 
  * Multithreading: Not Thread Safe, Doesn't Support Reader/Writer
  * 
  *		This class is NOT thread safe, not even with an external reader/writer lock because line information
@@ -41,24 +36,21 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 * Creates a tokenizer from the passed string.  If the string doesn't come from the beginning of the file you can
 		 * pass the line number it appears at.
 		 */
-		public Tokenizer (string input, int startingLineNumber = 1)
+		public Tokenizer (string input = null, int startingLineNumber = 1, int tabWidth = 4)
 			{
-			if (input == null)
-				{
-				rawText = null;
-				tokenLengths = null;
-				commentParsingTypes = null;
-				syntaxHighlightingTypes = null;
-				prototypeParsingTypes = null;
-				classPrototypeParsingTypes = null;
-				lines = null;
-				this.startingLineNumber = startingLineNumber;
-				}
-			else
-				{  
-				// DEPENDENCY: Load() must set all internal variables.
-				Load(input, startingLineNumber);  
-				}
+			rawText = null;
+			tokenLengths = null;
+			commentParsingTypes = null;
+			syntaxHighlightingTypes = null;
+			prototypeParsingTypes = null;
+			classPrototypeParsingTypes = null;
+			lines = null;
+
+			this.startingLineNumber = startingLineNumber;
+			this.tabWidth = tabWidth;
+
+			if (input != null)
+				{  Load(input);  }
 			}
 			
 			
@@ -77,13 +69,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 					{  throw new ArgumentOutOfRangeException();  }
 			#endif
 
-			Tokenizer result = new Tokenizer(null);
+			Tokenizer result = new Tokenizer();
 			
 			// If end is out of bounds it's return values will be one past the end of the data.	
 			result.rawText = rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			
 			result.tokenLengths = tokenLengths.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
 			result.startingLineNumber = start.LineNumber;
+			result.tabWidth = start.Tokenizer.TabWidth;
 			
 			// Leave lines null.  Even if they exist the iterators may not be cleanly on the beginning and end.  Let them be
 			// recalculated.
@@ -572,17 +565,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		/* Function: Load
 		 * Loads and tokenizes the passed string.
 		 */
-		protected void Load (string input, int newStartingLineNumber)
+		protected void Load (string input)
 			{
-			// DEPENDENCY: The constructor assumes all internal variables will be set.
-
 			rawText = input;
 			// Random guess, almost definitely too low, but that's better than being too high.  Will still be closer than the default.
 			tokenLengths = new List<byte>(8 + (input.Length / 20));
 			commentParsingTypes = null;
 			syntaxHighlightingTypes = null;
 			lines = null;
-			startingLineNumber = newStartingLineNumber;
 			
 			byte tokenLength;
 			
@@ -791,6 +781,15 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  return (syntaxHighlightingTypes != null);  }
 			}
 
+		/* Property: TabWidth
+		 * The number of spaces in a tab.
+		 */
+		public int TabWidth
+			{
+			get
+				{  return tabWidth; }
+			}
+
 
 			
 		// Group: Protected/Internal Properties
@@ -869,6 +868,10 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		/* var: startingLineNumber
 		 */
 		protected int startingLineNumber;
+
+		/* var: tabWidth
+		 */
+		protected int tabWidth;
 
 
 

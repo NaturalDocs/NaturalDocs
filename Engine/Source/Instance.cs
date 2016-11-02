@@ -7,13 +7,13 @@
  * 
  * Usage:
  * 
- *		- Call <Create()>.
+ *		- Create an instance object.
  *		
  *		- Create a <Config.ProjectConfig> object for the command line parameters.  At minimum you must set the project
  *		  config folder.
  *		
  *		- Call <Start()>.  If it succeeds you can use the engine instance.  If it fails and you want to try again instead of
- *		  exiting the program, you must call <Dispose()> and <Create()> first.
+ *		  exiting the program, you must call <Dispose()> and create a new object.  You cannot reuse it.
  *		  
  *		- Use the engine.
  *		
@@ -65,14 +65,14 @@ using System.Collections.Generic;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	static public class Instance
+	public class Instance : IDisposable
 		{
 		
 		// Group: Functions
 		// ________________________________________________________________________
 		
 		
-		/* Function: Create
+		/* Constructor: Instance
 		 * 
 		 * Creates the instance so you can access modules like <Config>.  The modules will not be started by this
 		 * function.
@@ -80,31 +80,53 @@ namespace CodeClear.NaturalDocs.Engine
 		 * You can optionally pass your own module objects in which allows you to populate the engine with derived classes.
 		 * Any left as null will have the default classes created instead.
 		 */
-		static public void Create (Config.Manager configManager = null, TopicTypes.Manager topicTypesManager = null, 
-														 Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
-														 CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
-														 SearchIndex.Manager searchIndexManager = null, Files.Manager filesManager = null)
+		public Instance (Config.Manager configManager = null, TopicTypes.Manager topicTypesManager = null, 
+								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
+								CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
+								SearchIndex.Manager searchIndexManager = null, Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
-			config = configManager ?? new Config.Manager();
-			topicTypes = topicTypesManager ?? new TopicTypes.Manager();
-			languages = languagesManager ?? new Languages.Manager();
-			comments = commentsManager ?? new Comments.Manager();
-			codeDB = codeDBManager ?? new CodeDB.Manager();
-			output = outputManager ?? new Output.Manager();
-			searchIndex = searchIndexManager ?? new SearchIndex.Manager();
-			files = filesManager ?? new Files.Manager();
+			config = configManager ?? new Config.Manager(this);
+			topicTypes = topicTypesManager ?? new TopicTypes.Manager(this);
+			languages = languagesManager ?? new Languages.Manager(this);
+			comments = commentsManager ?? new Comments.Manager(this);
+			codeDB = codeDBManager ?? new CodeDB.Manager(this);
+			output = outputManager ?? new Output.Manager(this);
+			searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
+			files = filesManager ?? new Files.Manager(this);
 			}
 			
+
+		~Instance ()
+			{
+			Dispose(false, true);
+			}
+
+
+		/* Function: Dispose
+		 * Shuts down the engine instance.  Pass to it whether it was a graceful shutdown, as opposed to closing because
+		 * of an error or exception.
+		 */
+		public void Dispose (bool graceful)
+			{
+			Dispose(graceful, false);
+			}
+
+
+		void IDisposable.Dispose ()
+			{
+			Dispose(false, false);
+			}
+
 			
 		/* Function: Dispose
 		 * Shuts down the engine instance.  Pass to it whether it was a graceful shutdown, as opposed to closing because
 		 * of an error or exception.
 		 */
-		static public void Dispose (bool graceful)
+		protected void Dispose (bool graceful, bool strictRulesApply)
 			{
-			if (graceful)
+			if (graceful && !strictRulesApply)
 				{
 				Path gracefulExitFilePath = config.WorkingDataFolder + "/GracefulExit.nd";
 				
@@ -112,34 +134,53 @@ namespace CodeClear.NaturalDocs.Engine
 					{  System.IO.File.Delete(gracefulExitFilePath);  }
 				}
 
-			if (output != null)
+			if (output != null && !strictRulesApply)
 				{
 				output.Dispose();
 				output = null;
 				}
 				
-			if (codeDB != null)
+			if (codeDB != null && !strictRulesApply)
 				{
 				codeDB.Dispose();
 				codeDB = null;
 				}
 
-			if (files != null)
+			if (files != null && !strictRulesApply)
 				{  
 				files.Dispose();  
 				files = null;
 				}
 			
-			if (searchIndex != null)
+			if (searchIndex != null && !strictRulesApply)
 				{
 				searchIndex.Dispose();					
 				searchIndex = null;
 				}
 
-			comments = null;
-			languages = null;
-			topicTypes = null;
-			config = null;
+			if (comments != null && !strictRulesApply)
+				{
+				comments.Dispose();					
+				comments = null;
+				}
+
+			if (languages != null && !strictRulesApply)
+				{
+				languages.Dispose();					
+				languages = null;
+				}
+
+			if (topicTypes != null && !strictRulesApply)
+				{
+				topicTypes.Dispose();					
+				topicTypes = null;
+				}
+
+			if (config != null && !strictRulesApply)
+				{
+				config.Dispose();					
+				config = null;
+				}
 			}
 			
 
@@ -147,7 +188,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Attempts to start the engine instance.  Returns whether it was successful, and if it wasn't, puts any errors that 
 		 * prevented it on the list.  If you wish to try to start it again, call <Dispose()> and <Create()> first.
 		 */
-		static public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
+		public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
 			{
 			if (config.Start(errors, commandLineConfig) == false)
 				{  return false;  }
@@ -191,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * because builders may not have handled the deletions yet and rely on that entry.  Once everything is up to date 
 		 * however you can assume nothing else needs them.
 		 */
-		static public void Cleanup (CancelDelegate cancelDelegate)
+		public void Cleanup (CancelDelegate cancelDelegate)
 			{
 			if (cancelDelegate())
 				{  return;  }
@@ -217,7 +258,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * simply eat any exceptions it generates trying to create the report and return null instead.  Since it may not
 		 * be able to generate the report, you should have a backup method of displaying the information.
 		 */
-		static public Path BuildCrashReport (Exception e)
+		public Path BuildCrashReport (Exception e)
 			{
 			System.IO.StreamWriter crashReport = null;
 			Path filePath = null;
@@ -306,7 +347,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Function: AddStartupWatcher
 		 * Adds an object that wants to be aware of events that occur during initialization.  Call after <Create()> but before <Start()>.
 		 */
-		static public void AddStartupWatcher (IStartupWatcher watcher)
+		public void AddStartupWatcher (IStartupWatcher watcher)
 			{
 			startupWatchers.Add(watcher);
 			}
@@ -317,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * <EndPossiblyLongOperation()> call, and it is up to the module code to make sure the calls are properly paired and 
 		 * non-overlapping.
 		 */
-		static public void StartPossiblyLongOperation (string operationName)
+		public void StartPossiblyLongOperation (string operationName)
 			{
 			foreach (IStartupWatcher watcher in startupWatchers)
 				{  watcher.OnStartPossiblyLongOperation(operationName);  }
@@ -327,7 +368,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Called *by module code only* to signify that the possibly long operation previously recorded with <StartPossiblyLongOperation()>
 		 * has concluded.
 		 */
-		static public void EndPossiblyLongOperation ()
+		public void EndPossiblyLongOperation ()
 			{
 			foreach (IStartupWatcher watcher in startupWatchers)
 				{  watcher.OnEndPossiblyLongOperation();  }
@@ -357,11 +398,11 @@ namespace CodeClear.NaturalDocs.Engine
 				}
 			}
 			
-			
+	
 		/* Property: Config
 		 * Returns the <Config.Manager> associated with this instance.
 		 */
-		static public Config.Manager Config
+		public Config.Manager Config
 			{
 			get
 				{  return config;  }
@@ -370,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: TopicTypes
 		 * Returns the <TopicTypes.Manager> associated with this instance.
 		 */
-		static public TopicTypes.Manager TopicTypes
+		public TopicTypes.Manager TopicTypes
 			{
 			get
 				{  return topicTypes;  }
@@ -379,7 +420,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: Languages
 		 * Returns the <Languages.Manager> associated with this instance.
 		 */
-		static public Languages.Manager Languages
+		public Languages.Manager Languages
 			{
 			get
 				{  return languages;  }
@@ -388,7 +429,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: Comments
 		 * Returns the <Comments.Manager> associated with this instance.
 		 */
-		static public Comments.Manager Comments
+		public Comments.Manager Comments
 			{
 			get
 				{  return comments;  }
@@ -397,7 +438,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: CodeDB
 		 * Returns the <CodeDB.Manager> associated with this instance.
 		 */
-		static public CodeDB.Manager CodeDB
+		public CodeDB.Manager CodeDB
 			{
 			get
 				{  return codeDB;  }
@@ -406,7 +447,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: SearchIndex
 		 * Returns the <SearchIndex.Manager> associated with this instance.
 		 */
-		static public SearchIndex.Manager SearchIndex
+		public SearchIndex.Manager SearchIndex
 			{
 			get
 				{  return searchIndex;  }
@@ -415,7 +456,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: Output
 		 * Returns the <Output.Manager> associated with this instance.
 		 */
-		static public Output.Manager Output
+		public Output.Manager Output
 			{
 			get
 				{  return output;  }
@@ -424,7 +465,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: Files
 		 * Returns the <Files.Manager> associated with this instance.
 		 */
-		static public Files.Manager Files
+		public Files.Manager Files
 			{
 			get
 				{  return files;  }
@@ -435,28 +476,27 @@ namespace CodeClear.NaturalDocs.Engine
 			
 		// Group: Variables
 		// __________________________________________________________________________
-		
-		
+	
 		/* var: startupWatchers
 		 * A list of all the objects that want to observe the engine's initialization.
 		 */
-		static private List<IStartupWatcher> startupWatchers;
+		protected List<IStartupWatcher> startupWatchers;
 
-		static private Config.Manager config;
+		protected Config.Manager config;
 		
-		static private TopicTypes.Manager topicTypes;
+		protected TopicTypes.Manager topicTypes;
 		
-		static private Languages.Manager languages;
+		protected Languages.Manager languages;
 		
-		static private Comments.Manager comments;
+		protected Comments.Manager comments;
 		
-		static private CodeDB.Manager codeDB;
+		protected CodeDB.Manager codeDB;
 		
-		static private SearchIndex.Manager searchIndex;
+		protected SearchIndex.Manager searchIndex;
 
-		static private Output.Manager output;
+		protected Output.Manager output;
 			
-		static private Files.Manager files;
+		protected Files.Manager files;
 
 		}
 	}

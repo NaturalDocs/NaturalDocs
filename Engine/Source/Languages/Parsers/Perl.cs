@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: Perl
 		 */
-		public Perl () : base ("Perl")
+		public Perl (Languages.Manager manager) : base (manager, "Perl")
 			{
 			Type = LanguageType.BasicSupport;
 

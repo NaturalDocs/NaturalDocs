@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				while (query.Step() && !cancelled())
 					{
-					Topic topic = new Topic();
+					Topic topic = new Topic(Manager.EngineInstance.TopicTypes);
 					
 					topic.TopicID = query.NextIntColumn();
 					topic.Title = query.NextStringColumn();
@@ -357,7 +357,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (topics[i].ClassID == topics[i-1].ClassID)
 					{
-					if (CodeDB.Manager.IsBetterClassDefinition(topics[i-1], topics[i]))
+					if (Manager.IsBetterClassDefinition(topics[i-1], topics[i]))
 						{  topics.RemoveAt(i-1);  }
 					else
 						{  topics.RemoveAt(i);  }
@@ -435,14 +435,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// BodyContext
 			RequireZero("AddTopic", "BodyContextID", topic.BodyContextID);
 			
-			var codeDB = Engine.Instance.CodeDB;
-
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
 			try
 				{
-				topic.TopicID = codeDB.UsedTopicIDs.LowestAvailable;
+				topic.TopicID = Manager.UsedTopicIDs.LowestAvailable;
 				GetOrCreateClassID(topic);
 				GetOrCreateContextIDs(topic);
 			
@@ -458,19 +456,19 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													topic.BodyContextID										 
 													);
 			
-				codeDB.UsedTopicIDs.Add(topic.TopicID);
+				Manager.UsedTopicIDs.Add(topic.TopicID);
 
-				IDObjects.NumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
 				if (newTopicsForEndingSymbol == null)
 					{
 					newTopicsForEndingSymbol = new IDObjects.NumberSet();
-					codeDB.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
+					Manager.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
 					}
 				newTopicsForEndingSymbol.Add(topic.TopicID);
 
-				codeDB.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
-				codeDB.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
-				codeDB.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
+				Manager.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
+				Manager.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
+				Manager.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
 
 				CommitTransaction();
 				}
@@ -483,7 +481,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// Notify change watchers
 			
-			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -497,7 +495,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				codeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 			}
 
@@ -574,7 +572,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				if (classChanged)
 					{
-					var referenceCache = Engine.Instance.CodeDB.ClassIDReferenceChangeCache;
+					var referenceCache = Manager.ClassIDReferenceChangeCache;
 
 					referenceCache.RemoveReference(oldTopic.ClassID);
 					referenceCache.AddReference(newTopic.ClassID);
@@ -582,7 +580,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				if (contextsChanged)
 					{
-					var referenceCache = Engine.Instance.CodeDB.ContextIDReferenceChangeCache;
+					var referenceCache = Manager.ContextIDReferenceChangeCache;
 
 					referenceCache.RemoveReference(oldTopic.PrototypeContextID);
 					referenceCache.RemoveReference(oldTopic.BodyContextID);
@@ -600,7 +598,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// Notify change watchers
 
-			IList<IChangeWatcher> changeWatchers = Engine.Instance.CodeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -614,7 +612,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				Engine.Instance.CodeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 			}
 			
@@ -691,12 +689,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			RequireAtLeast(LockType.ReadWrite);
 
-			var codeDB = Engine.Instance.CodeDB;
-
 
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
-			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -710,7 +706,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				codeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 
 
@@ -740,7 +736,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 					connection.Execute(queryText.ToString(), queryParams.ToArray());
 
-					codeDB.LinksToResolve.Add(linksAffected);
+					Manager.LinksToResolve.Add(linksAffected);
 					}
 
 
@@ -748,16 +744,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
-				codeDB.UsedTopicIDs.Remove(topic.TopicID);
+				Manager.UsedTopicIDs.Remove(topic.TopicID);
 
 				// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-				IDObjects.NumberSet newTopicsForEndingSymbol = codeDB.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
+				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
 				if (newTopicsForEndingSymbol != null)
 					{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
 
-				codeDB.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
-				codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
-				codeDB.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
+				Manager.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
+				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
+				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
 
 				CommitTransaction();
 				}
@@ -1402,7 +1398,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				// For example, <x at y> and <x: y> will still always end up with y as the ending symbol regardless of whether you search for
 				// named links or not, so we can avoid the extra processing.
 				List<LinkInterpretation> linkInterpretations = 
-					Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
+					Manager.EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
 																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
@@ -1423,14 +1419,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  link.EndingSymbol = link.Symbol.EndingSymbol;  }
 			
 
-			var codeDB = Engine.Instance.CodeDB;
-
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
 			try
 				{
-				link.LinkID = codeDB.UsedLinkIDs.LowestAvailable;
+				link.LinkID = Manager.UsedLinkIDs.LowestAvailable;
 				GetOrCreateContextIDs(link);
 				GetOrCreateClassID(link);
 
@@ -1441,10 +1435,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													link.EndingSymbol.ToString()
 													);
 
-				codeDB.UsedLinkIDs.Add(link.LinkID);
-				codeDB.LinksToResolve.Add(link.LinkID);
-				codeDB.ContextIDReferenceChangeCache.AddReference(link.ContextID);
-				codeDB.ClassIDReferenceChangeCache.AddReference(link.ClassID);
+				Manager.UsedLinkIDs.Add(link.LinkID);
+				Manager.LinksToResolve.Add(link.LinkID);
+				Manager.ContextIDReferenceChangeCache.AddReference(link.ContextID);
+				Manager.ClassIDReferenceChangeCache.AddReference(link.ClassID);
 
 				if (alternateEndingSymbols != null && alternateEndingSymbols.Count > 0)
 					{
@@ -1467,7 +1461,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// Notify change watchers
 			
-			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -1481,7 +1475,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				codeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 			}
 			
@@ -1532,12 +1526,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			RequireAtLeast(LockType.ReadWrite);
 
-			var codeDB = Engine.Instance.CodeDB;
-
 
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
-			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -1551,7 +1543,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				codeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 
 
@@ -1563,10 +1555,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
 			
-				codeDB.UsedLinkIDs.Remove(link.LinkID);
-				codeDB.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
-				codeDB.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
-				codeDB.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
+				Manager.UsedLinkIDs.Remove(link.LinkID);
+				Manager.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
+				Manager.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
+				Manager.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
 
 				if (link.Type == LinkType.NaturalDocs)
 					{
@@ -1772,8 +1764,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadWrite);
 
-			var codeDB = Engine.Instance.CodeDB;
-
 			BeginTransaction();
 			try
 				{
@@ -1790,7 +1780,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// Notify change watchers
 			
-			IList<IChangeWatcher> changeWatchers = codeDB.LockChangeWatchers();
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
 			
 			try
 				{
@@ -1804,7 +1794,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 			finally
 				{
-				codeDB.ReleaseChangeWatchers();
+				Manager.ReleaseChangeWatchers();
 				}
 			}
 
@@ -2093,21 +2083,19 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) " +
 																									"VALUES (?, ?, ?, 0)") )
 					{
-					var codeDB = Engine.Instance.CodeDB;
-
 					foreach (var classString in uncachedClassStrings)
 						{
-						int id = codeDB.UsedClassIDs.LowestAvailable;
+						int id = Manager.UsedClassIDs.LowestAvailable;
 
 						query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
 														  classString.LookupKey);
 						query.Step();
 						query.Reset(true);
 
-						codeDB.UsedClassIDs.Add(id);
+						Manager.UsedClassIDs.Add(id);
 						classIDLookupCache.Add(classString, id);
 
-						codeDB.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						Manager.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 						}
 					}
 
@@ -2148,7 +2136,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			ReferenceChangeCache cache = Instance.CodeDB.ClassIDReferenceChangeCache;
+			ReferenceChangeCache cache = Manager.ClassIDReferenceChangeCache;
 
 			if (cache.Count == 0)
 				{  return;  }
@@ -2293,7 +2281,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToDelete, queryText, queryParams);
 
 					connection.Execute(queryText.ToString(), queryParams.ToArray());
-					Engine.Instance.CodeDB.UsedClassIDs.Remove(idsToDelete);
+					Manager.UsedClassIDs.Remove(idsToDelete);
 					}
 
 
@@ -2549,20 +2537,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
 																									 "VALUES (?, ?, 0)") )
 					{
-					var codeDB = Engine.Instance.CodeDB;
-
 					foreach (var contextString in uncachedContextStrings)
 						{
-						int id = codeDB.UsedContextIDs.LowestAvailable;
+						int id = Manager.UsedContextIDs.LowestAvailable;
 
 						query.BindValues(id, contextString);
 						query.Step();
 						query.Reset(true);
 
-						codeDB.UsedContextIDs.Add(id);
+						Manager.UsedContextIDs.Add(id);
 						contextIDLookupCache.Add(contextString, id);
 
-						codeDB.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
+						Manager.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
 						}
 					}
 
@@ -2603,7 +2589,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			ReferenceChangeCache cache = Instance.CodeDB.ContextIDReferenceChangeCache;
+			ReferenceChangeCache cache = Manager.ContextIDReferenceChangeCache;
 
 			if (cache.Count == 0)
 				{  return;  }
@@ -2748,7 +2734,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToDelete, queryText, queryParams);
 
 					connection.Execute(queryText.ToString(), queryParams.ToArray());
-					Engine.Instance.CodeDB.UsedContextIDs.Remove(idsToDelete);
+					Manager.UsedContextIDs.Remove(idsToDelete);
 					}
 
 

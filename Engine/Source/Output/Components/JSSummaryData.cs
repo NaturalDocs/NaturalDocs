@@ -56,6 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			htmlTopic = new HTMLTopic(topicPage);
 			usedLanguages = new List<Language>();
 			usedTopicTypes = new List<TopicType>();
+
+			htmlComponent = new HTMLComponent(topicPage);
 			}
 
 
@@ -172,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 
 				if (!found)
-					{  usedLanguages.Add( Engine.Instance.Languages.FromID(topic.LanguageID) );  }
+					{  usedLanguages.Add( HTMLBuilder.EngineInstance.Languages.FromID(topic.LanguageID) );  }
 				}
 
 
@@ -233,7 +235,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 
 				if (!found)
-					{  usedTopicTypes.Add( Engine.Instance.TopicTypes.FromID(topic.TopicTypeID) );  }
+					{  usedTopicTypes.Add( HTMLBuilder.EngineInstance.TopicTypes.FromID(topic.TopicTypeID) );  }
 				}
 
 
@@ -321,12 +323,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (topic.IsEmbedded == false)
 					{  
 					output.Append('"');
-					output.StringEscapeAndAppend( HTMLComponent.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
+					output.StringEscapeAndAppend( htmlComponent.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
 					output.Append('"');
 					}
 				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
 
-				string topicHashPath = Builders.HTML.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
+				string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
 
 				if (topicHashPath != null)
 					{
@@ -459,6 +461,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * appear in the JavaScript array.
 		 */
 		protected List<TopicType> usedTopicTypes;
+
+		/* var: htmlComponent
+		 * A private <HTMLComponent> object used for building wrapped titles.
+		 */
+		protected HTMLComponent htmlComponent;
 
 		}
 	}

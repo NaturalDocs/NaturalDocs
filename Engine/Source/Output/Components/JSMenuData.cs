@@ -44,9 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 		/* Constructor: JSMenuData
 		 */
-		public JSMenuData (Builders.HTML htmlBuilder) : base ()
+		public JSMenuData (Builders.HTML htmlBuilder) : base (htmlBuilder)
 			{
-			this.htmlBuilder = htmlBuilder;
 			}
 
 
@@ -60,12 +59,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(htmlBuilder.Menu_DataFolder);  
+				System.IO.Directory.CreateDirectory(HTMLBuilder.Menu_DataFolder);  
 				}
 			catch
 				{
 				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", htmlBuilder.Menu_DataFolder) 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", HTMLBuilder.Menu_DataFolder) 
 					);
 				}
 
@@ -186,7 +185,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			#endif
 			tabInformation.Append("]);");
 
-			System.IO.File.WriteAllText( htmlBuilder.Menu_DataFile("tabs", 1), tabInformation.ToString() );
+			System.IO.File.WriteAllText( HTMLBuilder.Menu_DataFile("tabs", 1), tabInformation.ToString() );
 
 
 			return outputFiles;
@@ -201,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			ContainerExtraData containerExtraData = new ContainerExtraData(container);
 			container.ExtraData = containerExtraData;
 
-			containerExtraData.GenerateJSON(htmlBuilder, this);
+			containerExtraData.GenerateJSON(HTMLBuilder, this);
 
 			foreach (var member in container.Members)
 				{
@@ -210,7 +209,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					TargetExtraData targetExtraData = new TargetExtraData((MenuEntries.Base.Target)member);
 					member.ExtraData = targetExtraData;
 
-					targetExtraData.GenerateJSON(htmlBuilder, this);
+					targetExtraData.GenerateJSON(HTMLBuilder, this);
 					}
 				else if (member is MenuEntries.Base.Container)
 					{
@@ -240,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			usedDataFileNumbers.Add(dataFileNumber);
 
 			ContainerExtraData extraData = (ContainerExtraData)container.ExtraData;
-			extraData.DataFileName = htmlBuilder.Menu_DataFileNameOnly(dataFileType, dataFileNumber);
+			extraData.DataFileName = HTMLBuilder.Menu_DataFileNameOnly(dataFileType, dataFileNumber);
 
 
 			// The data file has to include all the members in this container no matter what.
@@ -368,7 +367,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				output.Append("]);");
 
-				System.IO.File.WriteAllText(htmlBuilder.Menu_DataFolder + "/" + fileName, output.ToString());
+				System.IO.File.WriteAllText(HTMLBuilder.Menu_DataFolder + "/" + fileName, output.ToString());
 				}
 			}
 
@@ -442,13 +441,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 
 
-		// Group: Variables
+		// Group: Properties
 		// __________________________________________________________________________
 			
-		/* var: htmlBuilder
-			* The <Builders.HTML> object associated with this menu.
-			*/
-		protected Builders.HTML htmlBuilder;
+
+		/* var: HTMLBuilder
+		 * The <Builders.HTML> object associated with this menu.
+		 */
+		public Builders.HTML HTMLBuilder
+			{
+			get
+				{  return (Builders.HTML)builder;  }
+			}
+
 
 
 		// Group: Constants

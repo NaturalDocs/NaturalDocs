@@ -142,22 +142,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 				}
 			}
 
-		/* Property: IsSystemStyle
-		 * Whether the style is in Natural Docs' system folder.
+		/* Property: Location
+		 * The path to the style.  If <IsCSSOnly> is set, this is the full <Path> to the CSS file.  If not, this is
+		 * the full <Path> to the style's <Style.txt>.
 		 */
-		public bool IsSystemStyle
+		public Path Location
 			{
 			get
-				{  return Instance.Config.SystemStyleFolder.Contains(location);  }
-			}
-
-		/* Property: IsProjectStyle
-		 * Whether the style is in the project's folder.
-		 */
-		public bool IsProjectStyle
-			{
-			get
-				{  return Instance.Config.ProjectConfigFolder.Contains(location);  }
+				{  return location;  }
 			}
 
 		/* Property: IsCSSOnly

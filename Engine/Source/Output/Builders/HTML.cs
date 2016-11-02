@@ -108,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		public HTML (Config.Targets.HTMLOutputFolder config) : base ()
+		public HTML (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
 			{
 			accessLock = new object();
 
@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
-			if (!Engine.Instance.Config.ReparseEverything)
+			if (!Manager.EngineInstance.Config.ReparseEverything)
 				{
 				hasBinaryConfigFile = LoadBinaryConfigFile(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
 				}
@@ -173,7 +173,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			bool hasBinaryBuildStateFile = false;
 			
-			if (!Engine.Instance.Config.ReparseEverything)
+			if (!Manager.EngineInstance.Config.ReparseEverything)
 				{  hasBinaryBuildStateFile = HTMLBuildState.LoadBinaryFile(WorkingDataFolder + "/BuildState.nd", out buildState);  }
 			else
 				{  buildState = new HTMLBuildState();  }
@@ -181,10 +181,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 				// Because we need source/classFilesWithContent
-				Engine.Instance.Config.ReparseEverything = true;
+				Manager.EngineInstance.Config.ReparseEverything = true;
 
 				// Because we don't know if there was anything left in sourceFilesToRebuild
-				Engine.Instance.Config.RebuildAllOutput = true;
+				Manager.EngineInstance.Config.RebuildAllOutput = true;
 				}
 
 
@@ -194,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			buildState.NeedToBuildFramePage = true;
 			buildState.NeedToBuildMainStyleFiles = true;
 
-			if (Engine.Instance.Config.RebuildAllOutput)
+			if (Manager.EngineInstance.Config.RebuildAllOutput)
 				{
 				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
 				buildState.NeedToBuildMenu = true;
@@ -211,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
 				Start_PurgeFolder(Styles_OutputFolder(), ref saidPurgingOutputFiles);
-				Engine.Instance.Output.ReparseStyleFiles = true;
+				Manager.EngineInstance.Output.ReparseStyleFiles = true;
 				}
 
 			else // (hasBinaryFile)
@@ -256,7 +256,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					if (foundMatch == false)
 						{  
-						Engine.Instance.Output.ReparseStyleFiles = true;
+						Manager.EngineInstance.Output.ReparseStyleFiles = true;
 						break;
 						}
 					}
@@ -296,7 +296,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					{
 					bool stillExists = false;
 
-					foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+					foreach (Files.FileSource fileSource in Manager.EngineInstance.Files.FileSources)
 						{
 						if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
 							{
@@ -324,7 +324,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				// Check if anything was added or changed.
 
-				foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+				foreach (Files.FileSource fileSource in Manager.EngineInstance.Files.FileSources)
 					{
 					if (fileSource.Type == InputType.Source || fileSource.Type == InputType.Image)
 						{
@@ -354,7 +354,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				// files in the child folder.
 
 				if (hasAdditions && hasDeletions)
-					{  Engine.Instance.Config.RebuildAllOutput = true;  }
+					{  Manager.EngineInstance.Config.RebuildAllOutput = true;  }
 				}
 
 
@@ -375,7 +375,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// We're done with anything that could purge.
 
 			if (saidPurgingOutputFiles)
-				{  Instance.EndPossiblyLongOperation();  }
+				{  Manager.EngineInstance.EndPossiblyLongOperation();  }
 
 
 			// Resave the Style.txt-based styles.
@@ -385,7 +385,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				if (style.IsCSSOnly == false)
 					{  
 					// No error on save for system styles.
-					SaveStyle(style, errorList, style.IsSystemStyle);  
+					bool isSystemStyle = EngineInstance.Config.SystemStyleFolder.Contains(style.Location);
+					SaveStyle(style, errorList, isSystemStyle);  
 					}
 				}
 
@@ -397,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			List<FileSourceInfo> fileSourceInfoList = new List<FileSourceInfo>();
 
-			foreach (Files.FileSource fileSource in Engine.Instance.Files.FileSources)
+			foreach (Files.FileSource fileSource in Manager.EngineInstance.Files.FileSources)
 				{
 				if (fileSource.Type == Files.InputType.Source || fileSource.Type == Files.InputType.Image)
 					{
@@ -412,9 +413,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Watch other modules
 
-			Engine.Instance.CodeDB.AddChangeWatcher(this);
-			Engine.Instance.Files.AddStyleChangeWatcher(this);
-			Engine.Instance.SearchIndex.AddChangeWatcher(this);
+			Manager.EngineInstance.CodeDB.AddChangeWatcher(this);
+			Manager.EngineInstance.Files.AddStyleChangeWatcher(this);
+			Manager.EngineInstance.SearchIndex.AddChangeWatcher(this);
 
 
 			return (errors == errorList.Count);
@@ -498,7 +499,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  
 				if (!saidPurgingOutputFiles)
 					{
-					Instance.StartPossiblyLongOperation("PurgingOutputFiles");
+					Manager.EngineInstance.StartPossiblyLongOperation("PurgingOutputFiles");
 					saidPurgingOutputFiles = true;
 					}
 
@@ -607,7 +608,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						haveAccessLock = false;
 						
 						if (accessor == null)
-							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+							{  accessor = Manager.EngineInstance.CodeDB.GetAccessor();  }
 							
 						BuildSourceFile(sourceFileToRebuild, accessor, cancelDelegate);
 						
@@ -634,7 +635,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						haveAccessLock = false;
 						
 						if (accessor == null)
-							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+							{  accessor = Manager.EngineInstance.CodeDB.GetAccessor();  }
 							
 						BuildClassFile(classFileToRebuild, accessor, cancelDelegate);
 						
@@ -746,7 +747,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						haveAccessLock = false;
 
 						if (accessor == null)
-							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+							{  accessor = Manager.EngineInstance.CodeDB.GetAccessor();  }
 
 						BuildMenu(accessor, cancelDelegate);
 
@@ -772,7 +773,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						haveAccessLock = false;
 
 						if (accessor == null)
-							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+							{  accessor = Manager.EngineInstance.CodeDB.GetAccessor();  }
 
 						BuildPrefixIndex(accessor, cancelDelegate);
 
@@ -795,7 +796,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						haveAccessLock = false;
 
 						if (accessor == null)
-							{  accessor = Engine.Instance.CodeDB.GetAccessor();  }
+							{  accessor = Manager.EngineInstance.CodeDB.GetAccessor();  }
 
 						BuildPrefixDataFile(prefix, accessor, cancelDelegate);
 
@@ -1320,7 +1321,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		public Path WorkingDataFolder
 			{
 			get
-				{  return Engine.Instance.Config.OutputWorkingDataFolderOf(config.Number);  }
+				{  return Manager.EngineInstance.Config.OutputWorkingDataFolderOf(config.Number);  }
 			}
 
 		/* Function: SanitizePath
