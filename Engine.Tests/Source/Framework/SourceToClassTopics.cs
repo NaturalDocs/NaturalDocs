@@ -48,6 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 */
 		public SourceToClassTopics ()
 			{
+			engineInstanceManager = null;
 			}
 
 
@@ -68,25 +69,27 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: TestFolder
-		 * Tests all the input files contained in this folder.  See <TestEngine.Start()> for how relative paths are handled.
+		 * Tests all the input files contained in this folder.  See <EngineInstanceManager.Start()> for how relative paths are handled.
 		 */
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path))
 			{
 			TestList allTests = new TestList();
 			StringSet expectedOutputFiles = new StringSet();
-			TestEngine.Start(testDataFolder, projectConfigFolder);
+			
+			engineInstanceManager = new EngineInstanceManager();
+			engineInstanceManager.Start(testDataFolder, projectConfigFolder);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
-			Path inputFolder = TestEngine.InputFolder;
+			Path inputFolder = engineInstanceManager.InputFolder;
 
 			try
 				{
-				TestEngine.Run();
+				engineInstanceManager.Run();
 
 
 				// Iterate through classes to build output files.
 
-				using (Engine.CodeDB.Accessor accessor = Engine.Instance.CodeDB.GetAccessor())
+				using (Engine.CodeDB.Accessor accessor = EngineInstance.CodeDB.GetAccessor())
 					{
 					// Class IDs should be assigned sequentially.  It's not an ideal way to do this though.
 					int classID = 1;
@@ -97,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 						for (;;)
 							{
 							List<Topic> classTopics =  accessor.GetTopicsInClass(classID, Delegates.NeverCancel);
-							Engine.Output.Components.ClassView.MergeTopics(classTopics);
+							Engine.Output.Components.ClassView.MergeTopics(classTopics, engineInstanceManager.HTMLBuilder);
 
 							if (classTopics == null || classTopics.Count == 0)
 								{  break;  }
@@ -144,7 +147,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  TestEngine.Dispose();  }
+				{  
+				engineInstanceManager.Dispose();  
+				engineInstanceManager = null;
+				}
 
 
 			if (allTests.Count == 0)
@@ -152,6 +158,27 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			else if (allTests.Passed == false)
 				{  Assert.Fail(allTests.BuildFailureMessage());  }
 			}
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+		public NaturalDocs.Engine.Instance EngineInstance
+			{
+			get
+				{
+				if (engineInstanceManager != null)
+					{  return engineInstanceManager.EngineInstance;  }
+				else
+					{  return null;  }
+				}
+			}
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected EngineInstanceManager engineInstanceManager;
 
 		}
 	}

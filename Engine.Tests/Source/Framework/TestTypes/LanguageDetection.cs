@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					else
 						{  output.AppendLine("-----");  }
 
-					output.AppendLine( "Language: " + Engine.Instance.Languages.FromID(topics[i].LanguageID).Name );
+					output.AppendLine( "Language: " + EngineInstance.Languages.FromID(topics[i].LanguageID).Name );
 					output.AppendLine( "Line " + topics[i].CommentLineNumber );
 					}
 				}

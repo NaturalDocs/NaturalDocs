@@ -40,7 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				output.AppendLine(topics[i].Title);
 
-				output.AppendLine("- Language: " + Engine.Instance.Languages.FromID(topics[i].LanguageID).Name);
+				output.AppendLine("- Language: " + EngineInstance.Languages.FromID(topics[i].LanguageID).Name);
 				output.AppendLine("- Declared Access Level: " + topics[i].DeclaredAccessLevel);
 				output.AppendLine("- Effective Access Level: " + topics[i].EffectiveAccessLevel);
 
@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						else
 							{  output.Append(", ");  }
 
-						output.Append(Engine.Instance.TopicTypes.TagFromID(tagID).Name);
+						output.Append(EngineInstance.TopicTypes.TagFromID(tagID).Name);
 						}
 
 					output.AppendLine();

@@ -83,12 +83,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			StringBuilder output = new StringBuilder();
 			bool lastWasLineBreak = true;
 
-			Topic topic = new Topic();
-			topic.LanguageID = Engine.Instance.Languages.FromName("C#").ID;
-			topic.TopicTypeID = Engine.Instance.TopicTypes.FromKeyword("Function").ID;
+			Topic topic = new Topic(EngineInstance.TopicTypes);
+			topic.LanguageID = EngineInstance.Languages.FromName("C#").ID;
+			topic.TopicTypeID = EngineInstance.TopicTypes.FromKeyword("Function").ID;
 
 			Link link = new Engine.Links.Link();
-			link.LanguageID = Engine.Instance.Languages.FromName("C#").ID;
+			link.LanguageID = EngineInstance.Languages.FromName("C#").ID;
 			link.Type = Engine.Links.LinkType.NaturalDocs;
 			bool linkIsPlainText = true;
 
@@ -171,7 +171,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Topic.LanguageName must be set to a string value.");  }
 
-							var language = Engine.Instance.Languages.FromName(valueString);
+							var language = EngineInstance.Languages.FromName(valueString);
 
 							if (language == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a language.");  }
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Topic.Keyword must be set to a string value.");  }
 
-							var topicType = Engine.Instance.TopicTypes.FromKeyword(valueString);
+							var topicType = EngineInstance.TopicTypes.FromKeyword(valueString);
 
 							if (topicType == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a keyword.");  }
@@ -250,7 +250,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Link.LanguageName must be set to a string value.");  }
 
-							var language = Engine.Instance.Languages.FromName(valueString);
+							var language = EngineInstance.Languages.FromName(valueString);
 
 							if (language == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a language.");  }
@@ -384,7 +384,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string parametersString;
 						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parametersString);
 
-						var topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+						var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 						if (topicType.Scope == Engine.TopicTypes.TopicType.ScopeValue.Normal &&
 							 topic.PrototypeContext.ScopeIsGlobal == false)
@@ -417,8 +417,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (!lastWasLineBreak)
 							{  output.AppendLine();  }
 
-						var topicLanguage = Engine.Instance.Languages.FromID(topic.LanguageID);
-						topicType = Engine.Instance.TopicTypes.FromID(topic.TopicTypeID);
+						var topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
+						topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
 
 						output.AppendLine(topicLanguage.Name + " " + topicType.Name + " Topic: " + topic.Title);
 						output.AppendLine("   Symbol: " + topic.Symbol.FormatWithSeparator('.'));
@@ -441,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 						// Show link
 
-						var linkLanguage = Engine.Instance.Languages.FromID(link.LanguageID);
+						var linkLanguage = EngineInstance.Languages.FromID(link.LanguageID);
 
 						output.AppendLine(linkLanguage.Name + " " + link.Type + " Link: " + link.TextOrSymbol.Replace(Engine.Symbols.SymbolString.SeparatorChar, '*'));
 
@@ -480,13 +480,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (link.Type == LinkType.NaturalDocs)
 							{
 							string ignore;
-							interpretations = Engine.Instance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol, 
+							interpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.TextOrSymbol, 
 																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks | 
 																								Engine.Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
 																								out ignore);
 							}
 
-						long score = Engine.Instance.CodeDB.ScoreLink(link, topic, 0, interpretations);
+						long score = EngineInstance.CodeDB.ScoreLink(link, topic, 0, interpretations);
 
 						if (score <= 0)
 							{  output.AppendLine("☓☓☓ No Match ☓☓☓");  }

@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.TestEngine
+ * Class: CodeClear.NaturalDocs.Engine.Tests.Framework.EngineInstanceManager
  * ____________________________________________________________________________
  * 
- * A class that simplifies configuring and running <Engine.Instance> for tests.
+ * A class that simplifies configuring and running <NaturalDocs.Engine.Instance> for tests.
  * 
  * Usage:
  * 
@@ -27,16 +27,18 @@ using CodeClear.NaturalDocs.Engine;
 
 namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 	{
-	public static class TestEngine
+	public class EngineInstanceManager
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		/* Constructor: TestEngine
+		/* Constructor: EngineInstanceManager
 		 */
-		static TestEngine ()
+		public EngineInstanceManager ()
 			{
+			engineInstance = null;
+
 			inputFolder = null;
 			projectConfigFolder = null;
 			workingDataFolder = null;
@@ -60,38 +62,34 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 * 
 		 * If keepOutputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
-		public static void Start (Path pTestDataFolder, Path pProjectConfigFolder = default(Path), bool pKeepOutputFolder = false, 
-										 string outputTitle = null, string outputSubtitle = null, bool autoGroup = false)
+		public void Start (Path testDataFolder, Path projectConfigFolder = default(Path), bool keepOutputFolder = false, 
+								 string outputTitle = null, string outputSubtitle = null, bool autoGroup = false)
 			{
-			// Stupid, but we can't use "this" in static classes.
-			inputFolder = pTestDataFolder;
-			projectConfigFolder = pProjectConfigFolder;
-			keepOutputFolder = pKeepOutputFolder;
+			this.inputFolder = testDataFolder;
+			this.projectConfigFolder = projectConfigFolder;
+			this.keepOutputFolder = keepOutputFolder;
 
 
-			Path testDataFolder;
+			// testDataRoot
 
-			if (inputFolder.IsRelative || (projectConfigFolder != null && projectConfigFolder.IsRelative))
+			Path assemblyFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder;
+			Path testDataRoot = assemblyFolder;
+
+			while (System.IO.Directory.Exists(testDataRoot + "/Engine.Tests.Data") == false)
 				{
-				Path assemblyFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder;
-				Path folder = assemblyFolder;
+				if (testDataRoot.ParentFolder == testDataRoot)
+					{  throw new Exception("Couldn't find Engine.Tests.Data folder in " + assemblyFolder + " or any of its parents.");  }
 
-				while (System.IO.Directory.Exists(folder + "/Engine.Tests.Data") == false)
-					{
-					if (folder.ParentFolder == folder)
-						{  throw new Exception("Couldn't find Engine.Tests.Data folder in " + assemblyFolder + " or any of its parents.");  }
-
-					folder = folder.ParentFolder;
-					}
-
-				testDataFolder = folder + "/Engine.Tests.Data";
+				testDataRoot = testDataRoot.ParentFolder;
 				}
+
+			testDataRoot = testDataRoot + "/Engine.Tests.Data";
 
 
 			// inputFolder
 
 			if (inputFolder.IsRelative)
-				{  inputFolder = testDataFolder + '/' + inputFolder;  }
+				{  inputFolder = testDataRoot + '/' + inputFolder;  }
 
 			if (System.IO.Directory.Exists(inputFolder) == false)
 				{  throw new Exception("Cannot locate input folder " + inputFolder);  }
@@ -109,7 +107,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			else
 				{
 				if (projectConfigFolder.IsRelative)
-					{  projectConfigFolder = testDataFolder + '/' + projectConfigFolder;  }
+					{  projectConfigFolder = testDataRoot + '/' + projectConfigFolder;  }
 
 				if (System.IO.Directory.Exists(projectConfigFolder) == false)
 					{  throw new Exception("Cannot locate config folder " + projectConfigFolder);  }
@@ -155,9 +153,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			// INITIALIZE ZE ENGINE!
 
-			Engine.Instance.Create();
+			engineInstance = new NaturalDocs.Engine.Instance();
 
-			var config = new Engine.Config.ProjectConfig(Config.Source.CommandLine);
+			var config = new Config.ProjectConfig(Config.Source.CommandLine);
 
 			config.ProjectConfigFolder = projectConfigFolder;
 			config.ProjectConfigFolderPropertyLocation = Config.Source.CommandLine;
@@ -196,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			Engine.Errors.ErrorList startupErrors = new Engine.Errors.ErrorList();
 
-			if (!Engine.Instance.Start(startupErrors, config))
+			if (!engineInstance.Start(startupErrors, config))
 				{
 				StringBuilder message = new StringBuilder();
 				message.Append("Could not start the Natural Docs engine for testing:");
@@ -218,28 +216,29 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: Run
 		 */
-		public static void Run ()
+		public void Run ()
 			{
-			Engine.Instance.Files.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
-			Engine.Instance.Files.DeleteFilesNotInFileSources(Engine.Delegates.NeverCancel);
+			EngineInstance.Files.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
+			EngineInstance.Files.DeleteFilesNotInFileSources(Engine.Delegates.NeverCancel);
 							
-			Engine.Instance.Files.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
+			EngineInstance.Files.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
 
-			Engine.Instance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
-			Engine.Instance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
+			EngineInstance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
+			EngineInstance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
 						
-			Engine.Instance.Cleanup(Delegates.NeverCancel);
+			EngineInstance.Cleanup(Delegates.NeverCancel);
 			}
 
 
 		/* Function: Dispose
 		 * Disposes of the <Engine.Instance> so you can create another one or end execution.
 		 */
-		public static void Dispose ()
+		public void Dispose ()
 			{
-			if (inputFolder != null)
+			if (engineInstance != null)
 				{
-				Engine.Instance.Dispose(true);
+				engineInstance.Dispose(true);
+				engineInstance = null;
 
 				try
 					{  System.IO.Directory.Delete(temporaryFolderRoot, true);  }
@@ -248,28 +247,33 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 				// We don't have to worry about the output folder.  It would be part of the temporary folder if we weren't
 				// keeping it and separate if we were.
-
-				inputFolder = null;
 				}
 			}
+
 
 
 		// Group: Properties
 		// __________________________________________________________________________
 
 
-		public static Path InputFolder
+		public NaturalDocs.Engine.Instance EngineInstance
+			{
+			get
+				{  return engineInstance;  }
+			}
+
+		public Path InputFolder
 			{
 			get
 				{  return inputFolder;  }
 			}
 
 
-		public static Engine.Output.Builders.HTML HTMLBuilder
+		public Engine.Output.Builders.HTML HTMLBuilder
 			{
 			get
 				{
-				foreach (var builder in Engine.Instance.Output.Builders)
+				foreach (var builder in EngineInstance.Output.Builders)
 					{
 					if (builder is Engine.Output.Builders.HTML)
 						{  return (Engine.Output.Builders.HTML)builder;  }
@@ -284,14 +288,16 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		// Group: Variables
 		// __________________________________________________________________________
 
-		private static Path inputFolder;
-		private static Path projectConfigFolder;
-		private static Path workingDataFolder;
-		private static Path outputFolder;
+		protected NaturalDocs.Engine.Instance engineInstance;
 
-		private static Path temporaryFolderRoot;
+		protected Path inputFolder;
+		protected Path projectConfigFolder;
+		protected Path workingDataFolder;
+		protected Path outputFolder;
 
-		private static bool keepOutputFolder;
+		protected Path temporaryFolderRoot;
+
+		protected bool keepOutputFolder;
 
 		}
 	}

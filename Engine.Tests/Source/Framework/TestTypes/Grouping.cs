@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				if (inGroup)
 					{  output.Append(' ', 3);  }
 
-				output.Append(Engine.Instance.TopicTypes.FromID(topics[i].TopicTypeID).DisplayName + ": ");
+				output.Append(EngineInstance.TopicTypes.FromID(topics[i].TopicTypeID).DisplayName + ": ");
 
 				if (topics[i].Title == null)
 					{  output.AppendLine("(No title detected)");  }

@@ -49,6 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 */
 		public SourceToTopics ()
 			{
+			engineInstanceManager = null;
 			}
 
 
@@ -69,15 +70,17 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 
 		/* Function: TestFolder
-		 * Tests all the input files contained in this folder.  See <TestEngine.Start()> for how relative paths are handled.
+		 * Tests all the input files contained in this folder.  See <EngineInstanceManager.Start()> for how relative paths are handled.
 		 */
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder = default(Path), bool autoGroup = false)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testDataFolder, projectConfigFolder, autoGroup: autoGroup);
+			
+			engineInstanceManager = new EngineInstanceManager();
+			engineInstanceManager.Start(testDataFolder, projectConfigFolder, autoGroup: autoGroup);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
-			Path inputFolder = TestEngine.InputFolder;
+			Path inputFolder = engineInstanceManager.InputFolder;
 
 			try
 				{
@@ -92,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 						try
 							{
-							Language language = Engine.Instance.Languages.FromExtension(test.InputFile.Extension);
+							Language language = EngineInstance.Languages.FromExtension(test.InputFile.Extension);
 
 							if (language == null)
 								{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }
@@ -113,7 +116,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  TestEngine.Dispose();  }
+				{  
+				engineInstanceManager.Dispose();
+				engineInstanceManager = null;
+				}
 
 
 			if (allTests.Count == 0)
@@ -122,6 +128,27 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				{  Assert.Fail(allTests.BuildFailureMessage());  }
 			}
 
-		}
 
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+		public NaturalDocs.Engine.Instance EngineInstance
+			{
+			get
+				{
+				if (engineInstanceManager != null)
+					{  return engineInstanceManager.EngineInstance;  }
+				else
+					{  return null;  }
+				}
+			}
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected EngineInstanceManager engineInstanceManager;
+
+		}
 	}

@@ -92,7 +92,7 @@
     <Compile Include="Source\Framework\SourceToCommentsAndTopics.cs" />
     <Compile Include="Source\Framework\SourceToHTML.cs" />
     <Compile Include="Source\Framework\Test.cs" />
-    <Compile Include="Source\Framework\TestEngine.cs" />
+    <Compile Include="Source\Framework\EngineInstanceWrapper.cs" />
     <Compile Include="Source\Framework\SourceToTopics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Framework\TestTypes\PrototypeDetection.cs" />

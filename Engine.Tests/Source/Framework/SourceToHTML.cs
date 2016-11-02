@@ -49,6 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 */
 		public SourceToHTML ()
 			{
+			engineInstanceManager = null;
 			}
 
 
@@ -88,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		/* Function: TestFolder
 		 * 
-		 * Tests all the input files contained in this folder.  See <TestEngine.Start()> for how relative paths are handled.
+		 * Tests all the input files contained in this folder.  See <EngineInstanceManager.Start()> for how relative paths are handled.
 		 * 
 		 * Unless you override <ExtractHTML()>, the output will be all the tags that match the passed tag name and, if specified, the
 		 * passed class name.
@@ -97,14 +98,16 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 									   bool reformatHTML = false, string outputTitle = null, string outputSubtitle = null)
 			{
 			TestList allTests = new TestList();
-			TestEngine.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubtitle);
+
+			engineInstanceManager = new EngineInstanceManager();
+			engineInstanceManager.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubtitle);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
-			Path inputFolder = TestEngine.InputFolder;
+			Path inputFolder = engineInstanceManager.InputFolder;
 
 			try
 				{
-				TestEngine.Run();
+				engineInstanceManager.Run();
 
 				// Build a test for each input file we find
 				string[] files = System.IO.Directory.GetFiles(inputFolder);
@@ -117,13 +120,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 						try
 							{
-							var fileInfo = Engine.Instance.Files.FromPath(file);
+							var fileInfo = EngineInstance.Files.FromPath(file);
 
 							if (fileInfo == null)
 								{  throw new Exception("Could not get file info of " + file);  }
 
 							Engine.Output.Components.HTMLTopicPages.File fileTopicPage = 
-								new Engine.Output.Components.HTMLTopicPages.File(TestEngine.HTMLBuilder, fileInfo.ID);
+								new Engine.Output.Components.HTMLTopicPages.File(engineInstanceManager.HTMLBuilder, fileInfo.ID);
 
 							Path htmlFile = fileTopicPage.OutputFile;
 
@@ -145,7 +148,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				}
 
 			finally
-				{  TestEngine.Dispose();  }
+				{  
+				engineInstanceManager.Dispose();  
+				engineInstanceManager = null;
+				}
 
 
 			if (allTests.Count == 0)
@@ -324,6 +330,27 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			return outputString;
 			}
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+		public NaturalDocs.Engine.Instance EngineInstance
+			{
+			get
+				{
+				if (engineInstanceManager != null)
+					{  return engineInstanceManager.EngineInstance;  }
+				else
+					{  return null;  }
+				}
+			}
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected EngineInstanceManager engineInstanceManager;
 
 
 		// Group: Static Variables

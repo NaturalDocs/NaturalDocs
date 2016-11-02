@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 		public override string OutputOf (IList<string> commands)
 			{
 			StringBuilder output = new StringBuilder();
-			var parser = Engine.Instance.Comments.NaturalDocsParser;
+			var parser = EngineInstance.Comments.NaturalDocsParser;
 
 			foreach (var command in commands)
 				{
