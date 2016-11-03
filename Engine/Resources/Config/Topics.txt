@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 08-22-2015)
+﻿Format: 2.0 (Development Release 11-03-2016)
 
 # This is the main Natural Docs topics file.  If you change anything here, it
 # will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
