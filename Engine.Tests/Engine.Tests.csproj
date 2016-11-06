@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Engine.Tests.build" />
+    <None Include="Engine.Tests.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Source\Comments\Javadoc\Iterator.cs" />
@@ -130,7 +132,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)Tools\NAnt\bin\NAnt.exe" -buildfile:"$(ProjectDir)Engine.Tests.build" -D:OutputFolder="$(TargetDir)\" -D:Platform=Windows CopyAllResources</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
@@ -143,4 +146,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Import Project="Engine.Tests.targets" />
 </Project>

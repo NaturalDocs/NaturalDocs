@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	File: Engine.targets
+	___________________________________________________________________________
+
+	This is the supplemental MSBuild file for the Natural Docs engine.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	
+	
+	<!--
+		Group: Properties
+		_____________________________________________________________________________
+	-->
+	<PropertyGroup>
+		
+		<!-- 
+			Build Property: OperatingSystemTarget
+
+			The operating system that you are building for, which must be one of the following values:
+
+			Windows - Build for Windows only.
+			Unix - Build for Unix, Linux, and Mac OS X.
+			Universal - Include files for both Windows and Unix.
+
+			If this property is not defined it defaults to Universal.
+		-->
+		<OperatingSystemTarget Condition="'$(OperatingSystemTarget)'==''">Universal</OperatingSystemTarget>
+
+	</PropertyGroup>
+	
+	
+	
+	<!--
+		Group: General Targets
+		_____________________________________________________________________________
+		
+		These targets are used when building this project.  They just forward to the <Engine General Targets> which can be called
+		when building any project.
+		
+	-->
+
+		<!-- Build Target: BeforeClean -->
+		<Target Name="BeforeClean">
+			<CallTarget Targets="Engine_BeforeClean" />
+		</Target>
+
+		<!-- Build Target: AfterClean -->
+		<Target Name="AfterClean">
+			<CallTarget Targets="Engine_AfterClean" />
+		</Target>
+
+		<!-- Build Target: BeforeBuild -->
+		<Target Name="BeforeBuild">
+			<CallTarget Targets="Engine_BeforeBuild" />
+		</Target>
+
+		<!-- Build Target: AfterBuild -->
+		<Target Name="AfterBuild">
+			<CallTarget Targets="Engine_AfterBuild" />
+		</Target>
+
+
+	
+	<!--
+		Group: Engine General Targets
+		_____________________________________________________________________________
+		
+		These targets are used when building this project.  All projects that depend on this one should also call these functions from their own
+		<General Targets> so that resources are properly copied over.
+	-->
+
+		<!-- Build Target: Engine_BeforeClean -->
+		<Target Name="Engine_BeforeClean">
+			<CallTarget Targets="Engine_ValidateProperties" />
+		</Target>
+
+		<!-- Build Target: Engine_AfterClean -->
+		<Target Name="Engine_AfterClean">
+			<CallTarget Targets="Engine_CleanSQLiteResources" />
+			<CallTarget Targets="Engine_CleanRegexResources" />
+			<CallTarget Targets="Engine_CleanConfigResources" />
+			<CallTarget Targets="Engine_CleanStyleResources" />
+			<CallTarget Targets="Engine_CleanTranslationResources" />
+			<CallTarget Targets="Engine_CleanLicenseResources" />
+		</Target>
+
+		<!-- Build Target: Engine_BeforeBuild -->
+		<Target Name="Engine_BeforeBuild">
+			<CallTarget Targets="Engine_ValidateProperties" />
+		</Target>
+
+		<!-- Build Target: Engine_AfterBuild -->
+		<Target Name="Engine_AfterBuild">
+			<CallTarget Targets="Engine_CopySQLiteResources" />
+			<CallTarget Targets="Engine_CopyRegexResources" />
+			<CallTarget Targets="Engine_CopyConfigResources" />
+			<CallTarget Targets="Engine_CopyStyleResources" />
+			<CallTarget Targets="Engine_CopyTranslationResources" />
+			<CallTarget Targets="Engine_CopyLicenseResources" />
+		</Target>
+
+
+
+		<!--
+			Group: Engine Action Targets
+			_____________________________________________________________________________
+		
+			These targets are used by the <Engine General Targets>.  You shouldn't need to call these individually, just call the <Engine General Targets> and
+			they will be called automatically.
+		-->
+
+	
+		<!--
+			Build Target: Engine_ValidateProperties
+			Makes sure all the <Properties> are set to valid values.	
+		-->
+		<Target Name="Engine_ValidateProperties">
+			<Error
+				Condition="'$(OperatingSystemTarget)' != 'Windows' and '$(OperatingSystemTarget)' != 'Unix' and '$(OperatingSystemTarget)' != 'Universal'"
+				Text="OperatingSystemTarget property must be set to Windows, Unix, or Universal" />
+		</Target>
+
+	
+		<!--
+			Build Target: Engine_CopySQLiteResources
+		-->
+		<Target Name="Engine_CopySQLiteResources">
+
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				SourceFiles="$(SolutionDir)Source\Engine\Resources\SQLite\NaturalDocs.Engine.SQLite.dll"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				SourceFiles="$(SolutionDir)Source\Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite32.so"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				SourceFiles="$(SolutionDir)Source\Engine\Resources\SQLite\NaturalDocs.Engine.dll.config"
+				DestinationFolder="$(TargetDir)"
+				/>
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanSQLiteResources
+		-->
+		<Target Name="Engine_CleanSQLiteResources">
+
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Windows'"
+				Files="$(TargetDir)NaturalDocs.Engine.SQLite.dll"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Files="$(TargetDir)libNaturalDocs.Engine.SQLite32.so"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Files="$(TargetDir)NaturalDocs.Engine.dll.config"
+				/>
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CopyRegexResources
+		-->
+		<Target Name="Engine_CopyRegexResources">
+
+			<Copy
+				SourceFiles="$(SolutionDir)Source\Engine\Resources\Regex\Release\NaturalDocs.Engine.Regex.dll"
+				DestinationFolder="$(TargetDir)"
+				/>
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanRegexResources
+		-->
+		<Target Name="Engine_CleanRegexResources">
+
+			<Delete
+				Files="$(TargetDir)NaturalDocs.Engine.Regex.dll"
+				/>
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CopyConfigResources
+		-->
+		<Target Name="Engine_CopyConfigResources">
+
+			<MakeDir Directories="$(TargetDir)Config" />
+			<Exec Command='xcopy "$(SolutionDir)Source\Engine\Resources\Config" "$(TargetDir)Config" /Y' />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanConfigResources
+		-->
+		<Target Name="Engine_CleanConfigResources">
+
+			<RemoveDir Directories="$(TargetDir)Config" />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CopyStyleResources
+		-->
+		<Target Name="Engine_CopyStyleResources">
+
+			<MakeDir Directories="$(TargetDir)Styles" />
+			<Exec Command='xcopy "$(SolutionDir)Source\Engine\Resources\Styles" "$(TargetDir)Styles" /S /Y' />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanStyleResources
+		-->
+		<Target Name="Engine_CleanStyleResources">
+
+			<RemoveDir Directories="$(TargetDir)Styles" />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CopyTranslationResources
+		-->
+		<Target Name="Engine_CopyTranslationResources">
+
+			<MakeDir Directories="$(TargetDir)Translations" />
+			<Exec Command='xcopy "$(SolutionDir)Source\Engine\Resources\Translations" "$(TargetDir)Translations" /Y' />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanTranslationResources
+		-->
+		<Target Name="Engine_CleanTranslationResources">
+
+			<RemoveDir Directories="$(TargetDir)Translations" />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CopyLicenseResources
+		-->
+		<Target Name="Engine_CopyLicenseResources">
+
+			<Copy
+				SourceFiles="$(SolutionDir)Source\Engine\Resources\License\License.txt"
+				DestinationFolder="$(TargetDir)"
+				/>
+
+		</Target>
+	
+	
+		<!--
+			Build Target: Engine_CleanLicenseResources
+		-->
+		<Target Name="Engine_CleanLicenseResources">
+
+			<Delete
+				Files="$(TargetDir)License.txt"
+				/>
+
+		</Target>
+	
+	
+</Project>

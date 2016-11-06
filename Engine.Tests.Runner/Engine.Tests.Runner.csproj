@@ -51,7 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Engine.Tests.Runner.build" />
+    <None Include="Engine.Tests.Runner.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine.Tests\Engine.Tests.csproj">
@@ -68,7 +70,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)Tools\NAnt\bin\NAnt.exe" -buildfile:"$(ProjectDir)Engine.Tests.Runner.build" -D:OutputFolder="$(TargetDir)\" -D:Platform=Windows CopyAllResources</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -77,4 +80,5 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Import Project="Engine.Tests.Runner.targets" />
 </Project>

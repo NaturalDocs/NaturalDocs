@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	File: CLI.targets
+	___________________________________________________________________________
+
+	This is the supplemental MSBuild file for the Natural Docs CLI.
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<Import Project="..\Engine\Engine.targets" />
+
+
+	<!--
+		Group: General Targets
+		_____________________________________________________________________________
+		
+		These targets are used when building this project.  They just forward to the <CLI General Targets> which can be called
+		when building any project.
+		
+	-->
+
+		<!-- Build Target: BeforeClean -->
+		<Target Name="BeforeClean">
+			<CallTarget Targets="CLI_BeforeClean" />
+		</Target>
+
+		<!-- Build Target: AfterClean -->
+		<Target Name="AfterClean">
+			<CallTarget Targets="CLI_AfterClean" />
+		</Target>
+
+		<!-- Build Target: BeforeBuild -->
+		<Target Name="BeforeBuild">
+			<CallTarget Targets="CLI_BeforeBuild" />
+		</Target>
+
+		<!-- Build Target: AfterBuild -->
+		<Target Name="AfterBuild">
+			<CallTarget Targets="CLI_AfterBuild" />
+		</Target>
+
+
+
+	<!--
+		Group: CLI General Targets
+		_____________________________________________________________________________
+		
+		These targets are used when building this project.  All projects that depend on this one should also call these functions from their own
+		<General Targets> so that resources are properly copied over.
+	-->
+
+		<!-- Build Target: CLI_BeforeClean -->
+		<Target Name="CLI_BeforeClean">
+			<CallTarget Targets="Engine_BeforeClean" />
+		</Target>
+
+		<!-- Build Target: CLI_AfterClean -->
+		<Target Name="CLI_AfterClean">
+			<CallTarget Targets="CLI_CleanTranslationResources" />
+			<CallTarget Targets="Engine_AfterClean" />
+		</Target>
+
+		<!-- Build Target: CLI_BeforeBuild -->
+		<Target Name="CLI_BeforeBuild">
+			<CallTarget Targets="Engine_BeforeBuild" />
+		</Target>
+
+		<!-- Build Target: CLI_AfterBuild -->
+		<Target Name="CLI_AfterBuild">
+			<CallTarget Targets="Engine_AfterBuild" />
+			<CallTarget Targets="CLI_CopyTranslationResources" />
+		</Target>
+
+	
+
+	<!--
+		Group: CLI Action Targets
+		_____________________________________________________________________________
+		
+		These targets are used by the <CLI General Targets>.  You shouldn't need to call these individually, just call the <CLI General Targets> and
+		they will be called automatically.
+	-->
+
+	
+		<!--
+			Build Target: CLI_CopyTranslationResources
+		-->
+		<Target Name="CLI_CopyTranslationResources">
+
+			<MakeDir Directories="$(TargetDir)Translations" />
+			<Exec Command='xcopy "$(SolutionDir)Source\CLI\Resources\Translations" "$(TargetDir)Translations" /Y' />
+
+		</Target>
+	
+	
+		<!--
+			Build Target: CLI_CleanTranslationResources
+		-->
+		<Target Name="CLI_CleanTranslationResources">
+
+			<RemoveDir Directories="$(TargetDir)Translations" />
+
+		</Target>
+	
+	
+</Project>
