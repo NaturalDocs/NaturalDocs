@@ -217,6 +217,13 @@ Language: Makefile
    Line Comment: #
 
 
+Language: MSBuild
+
+   Extensions: csproj targets
+
+   Block Comment: <!-- -->
+
+
 Language: ActionScript
 
    Extensions: as mxml
