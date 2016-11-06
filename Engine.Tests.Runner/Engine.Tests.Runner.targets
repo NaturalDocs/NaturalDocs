@@ -93,22 +93,22 @@
 			<!-- Engine.Tests will handle nunit.framework.dll -->
 			
 			<Copy
-				SourceFiles="$(SolutionDir)Source\Engine.Tests.Runner\Resources\NUnit\nunit-console-runner.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-runner.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			
 			<!-- These files are needed by nunit-console-runner.dll -->
 			
 			<Copy
-				SourceFiles="$(SolutionDir)Source\Engine.Tests.Runner\Resources\NUnit\nunit.core.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.core.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				SourceFiles="$(SolutionDir)Source\Engine.Tests.Runner\Resources\NUnit\nunit.core.interfaces.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.core.interfaces.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				SourceFiles="$(SolutionDir)Source\Engine.Tests.Runner\Resources\NUnit\nunit.util.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.util.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 

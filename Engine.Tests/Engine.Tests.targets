@@ -90,7 +90,7 @@
 		<Target Name="EngineTests_CopyNUnitResources">
 
 			<Copy
-				SourceFiles="$(SolutionDir)Source\Engine.Tests\Resources\NUnit\nunit.framework.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests\Resources\NUnit\nunit.framework.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 
