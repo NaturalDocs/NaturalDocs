@@ -270,7 +270,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		
 
 		/* Property: AllConfigurationProperties
-		 * All of the combined <FlagValues> except for the <location properties>.  Setting this will not affect those properties.
+		 * All of the properties below combined into one <FlagValues> except for the <location properties>.  This allows
+		 * them all to be compared at once, or see if any are set by comparing against zero, or read or write them to disk
+		 * as one value.  Setting this will not affect the <location properties>.
 		 */
 		public FlagValues AllConfigurationProperties
 			{
