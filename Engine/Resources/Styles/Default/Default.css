@@ -938,91 +938,91 @@ body.NDContentPage {
 .TFunction .NDPrototype,
 .TOperator .NDPrototype {
 	background-color: #F0F0F0;
-	border-color: #D1D1D1;
+	border-color: #C8C8C8;
 	}
 	.TFunction .SuEntryIcon,
 	.TOperator .SuEntryIcon {
-		background-color: #E8E8E8;
-		border: 1px solid #CACACA;
+		background-color: #EAEAEA;
+		border: 1px solid #C7C7C7;
 		}
 	.TFunction .SeEntryIcon,
 	.TOperator .SeEntryIcon {
-		background-color: #E8E8E8;
-		border: 1px solid #BABABA;
+		background-color: #ECECEC;
+		border: 1px solid #C2C2C2;
 		}
 
 .TProperty .NDPrototype {
-	background-color: #EEEEFF;
-	border-color: #CCCCE1;
+	background-color: #ECECFF;
+	border-color: #C0C0D6;
 	}
 	.TProperty .SuEntryIcon {
-		background-color: #E6E6FF;
-		border: 1px solid #C3C3E2;
+		background-color: #DCDCFF;
+		border: 1px solid #BEBED4;
 		}
 	.TProperty .SeEntryIcon {
-		background-color: #E6E6FF;
-		border: 1px solid #B4B4D0;
+		background-color: #D8DAFF;
+		border: 1px solid #BABAD0;
 		}
 
 .TVariable .NDPrototype,
 .TDatabaseField .NDPrototype {
-	background-color: #FAFAE0;
-	border-color: #DFDFBE;
+	background-color: #FCFCE6;
+	border-color: #D2D2B8;
 	}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
-		background-color: #EEEEC6;
-		border: 1px solid #D0D0A0;
+		background-color: #F9F9C5;
+		border: 1px solid #D0D09A;
 		}
 	.TVariable .SeEntryIcon,
 	.TDatabaseField .SeEntryIcon {
-		background-color: #F4F4C9;
-		border: 1px solid #CACA9A;
+		background-color: #F9F9C4;
+		border: 1px solid #CFCEB4;
 		}
 
 .TConstant .NDPrototype {
-	background-color: #D8D8D8;
-	border-color: #A9A9A9;
+	background-color: #CACACA;
+	border-color: #979797;
 	}
 	.TConstant .SuEntryIcon {
-		background-color: #CCCCCC;
-		border: 1px solid #A3A3A3;
+		background-color: #C6C6C6;
+		border: 1px solid #A6A6A6;
 		}
 	.TConstant .SeEntryIcon {
-		background-color: #C8C8C8;
-		border: 1px solid #949494;
+		background-color: #C6C6C6;
+		border: 1px solid #969696;
 		}
 
 .TType .NDPrototype,
 .TEnumeration .NDPrototype,
 .TDelegate .NDPrototype {
-	background-color: #FAEED8;
-	border-color: #E0D0B5;
+	background-color: #FCEFDE;
+	border-color: #D8CBBA;
 	}
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
 	.TDelegate .SuEntryIcon {
-		background-color: #F7E6CC;
-		border: 1px solid #DFC9AA;
+		background-color: #F7E6D3;
+		border: 1px solid #D8C7B3;
 		}
 	.TType .SeEntryIcon,
 	.TEnumeration .SeEntryIcon,
 	.TDelegate .SeEntryIcon {
-		background-color: #F7E6CC;
-		border: 1px solid #CDB99B;
+		background-color: #F5E3D1;
+		border: 1px solid #D4C3B2;
 		}
 
 .TEvent .NDPrototype {
-	background-color: #F5FFFF;
-	border-color: #D3E0E0;
+	background-color: #E6F9E6;
+	border-color: #BCCFBC;
 	}
 	.TEvent .SuEntryIcon {
-		background-color: #DFEEEE;
-		border: 1px solid #B9CBCB;
+		background-color: #D3F3D3;
+		border: 1px solid #B2D1B1;
 		}
 	.TEvent .SeEntryIcon {
-		background-color: #E3F3F3;
-		border: 1px solid #B3C4C4;
+		background-color: #D3F3D3;
+		border: 1px solid #B2D1B1;
 		}
 
 
@@ -1045,7 +1045,7 @@ body.NDContentPage {
 		}
 
 .NDClassPrototype .CPEntry.TInterface {
-	border-color: #6868A0;
+	border-color: #686879;
 	background-color: #EAEAFF;
 	}
 
@@ -1055,7 +1055,7 @@ body.NDContentPage {
 	.IE7 .NDClassPrototype .CPEntry.TInterface.Child,
 	.IE8 .NDClassPrototype .CPEntry.TInterface.Parent,
 	.IE8 .NDClassPrototype .CPEntry.TInterface.Child {
-		border-color: #B4B4D0;
+		border-color: #B3B3BB;
 		background-color: #F5F5FF;
 		}
 
