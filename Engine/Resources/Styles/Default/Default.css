@@ -19,7 +19,7 @@
 		`ContentBackgroundColor = #FFFFFF
 
 		`MenuLineColor = #C0C0C0
-		`MenuHoverColor = #ECECEC
+		`MenuHoverColor = #EEEEEE
 
 		`MenuSummaryBorderColor = #D8D8D8
 		`SummaryContentBorderColor = #E8E8E8
@@ -202,7 +202,7 @@ td {
 		border-color: #FFFFFF;
 		}
 	.SeEntry:hover {
-		background-color: #F0F0F0;
+		background-color: #E8E8E8;
 		}
 	#SeSelectedEntry {
 		background-color: #F4F4E0;
@@ -237,13 +237,13 @@ td {
 
 	.SeEntryIcon {
 		position: absolute;
-		left: 1.4ex;
-		width: 1ex;
-		height: .8em;
+		left: 1.7ex;
+		width: .8ex;
+		height: .9em;
 		margin-top: 2px;
 		}
 		.SeChildren .SeEntryIcon {
-			left: 3.65ex;
+			left: 3.9ex;
 			}
 	.SeParent .SeEntryIcon {
 		margin-top: 4px;
@@ -490,7 +490,7 @@ td {
 	.SuEntry {
 		display: block;
 		font: 10pt `SummaryFontFamily;
-		padding: 0 1.5ex 0 3.5ex;
+		padding: 1px 1.5ex 1px 3.5ex;
 		}
 	.SuEntry.first { margin-top: 1ex; }
 	.SuEntry.last { margin-bottom: 2ex; }
@@ -501,9 +501,9 @@ td {
 
 	.SuEntryIcon {
 		position: absolute;
-		left: 1.9ex;
+		left: 1.8ex;
 		width: .8ex;
-		height: .8em;
+		height: .9em;
 		margin-top: 2px;
 		}
 
@@ -553,7 +553,7 @@ td {
 
 	a.SuEntry:hover,
 	a.SuEntry:active {
-		background-color: #ECECEC;
+		background-color: #E6E6E6;
 		}
 
 
