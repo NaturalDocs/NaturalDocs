@@ -95,8 +95,8 @@ Syntax:
     NaturalDocs [project config folder]
 
     NaturalDocs -i [input (source) folder]
-                -p [project config folder]
-                -o [output format] [output folder]
+                -p [project configuration folder]
+                -o [output format] [output (documentation) folder]
                 [additional options]
 
 Examples:
@@ -105,45 +105,57 @@ Examples:
     
     NaturalDocs -i /project/src
                 -o html /project/doc
-                -p /project/ndconf
+                -p /project/ndconfig
 
 
-Parameters:
---------------------
+Folder Parameters:
+-------------------
 
  -p [folder]
 --project-config [folder]
-    Specifies a folder to store project configuration files.  Required.
-    If you run Natural Docs and only specify an empty project configuration
-    folder on the command line, it will create default configuration files for
-    you.
+    Specifies the folder to store project configuration files.  Required.  If
+    you specify an empty folder Natural Docs will generate configuration files
+    for you.
 
  -i [folder]
 --input [folder]
 --source [folder]
-    Specifies an input (source) folder.  Required either on the command line
-    or in Project.txt.  Can be specified multiple times.
+    Specifies an input folder, which is where your source code is.  Required
+    either on the command line or in Project.txt.  Can be specified multiple
+    times.
 
  -o [format] [folder]
 --output [format] [folder]
-    Specifies an output format and folder.  Required either on the command
-    line or in Project.txt.  Can be specified multiple times.
+    Specifies an output format and folder, which is where your generated
+    documentation will go.  Currently the only supported format is HTML.
+    Required either on the command line or in Project.txt.  Can be specified
+    multiple times.
 
  -xi [folder]
 --exclude-input [folder]
 --exclude-source [folder]
-    Excludes an input (source) folder.
+    Excludes an input folder.  Natural Docs will not search it or its
+    subfolders for code.  Can be specified multiple times.
 
  -xip [pattern]
 --exclude-input-pattern [pattern]
 --exclude-source-pattern [pattern]
-    Excludes input (source) folders by a pattern, which can include * and ?
-    wildcards.  The pattern must match an entire folder name, so "cli" will
-    not match "client", but "cli*" would.
+    Excludes input folders by a pattern, which can include * and ? wildcards.
+    Can be specified multiple times.  The pattern must match an entire folder
+    name, so "cli" will not match "client", but "cli*" would.
 
  -img [folder]
 --images [folder]
-    Specifies an image folder.
+    Specifies a folder to search for images.  Can be specified multiple times.
+
+ -w [folder]
+--working-data [folder]
+    Specifies a folder to store temporary data.  If not specified it will be a
+    subfolder of the project configuration folder.
+
+
+Other Parameters:
+-----------------
 
  -t [width]
 --tab-width [width]
@@ -155,16 +167,16 @@ Parameters:
 
  -nag
 --no-auto-group
-    Turns off automatic grouping.
-
- -w [folder]
---working-data [folder]
-    Specifies a folder to store temporary data.  If not specified it will be
-    a subfolder of the project configuration folder.
+    Turns off automatic grouping.  Topics will only be grouped in the output
+    when you manually add Group topics.
 
  -r
 --rebuild
     Rescans every source file and rebuilds all the output.
+
+ -ro
+--rebuild-output
+    Rebuilds all the output without rescanning the source.
 
  -q
 --quiet
