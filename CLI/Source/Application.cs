@@ -161,11 +161,18 @@ namespace CodeClear.NaturalDocs.CLI
 
 			EngineInstance.AddStartupWatcher(new EngineStartupWatcher());
 
+
+			executionTimer.Start("Engine Startup");
+			
 			if (EngineInstance.Start(errorList, commandLineConfig) == true)
 				{
+				executionTimer.End("Engine Startup");
+
 
 				// File Search
 						
+				executionTimer.Start("Finding Source Files");
+
 				using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch() )
 					{
 					statusManager.Start();
@@ -177,6 +184,8 @@ namespace CodeClear.NaturalDocs.CLI
 							
 				EngineInstance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
 							
+				executionTimer.End("Finding Source Files");
+
 						
 				// Rebuild notice
 
@@ -247,6 +256,8 @@ namespace CodeClear.NaturalDocs.CLI
 
 			else // engine did not start correctly
 				{  
+				executionTimer.End("Engine Startup");
+
 				ShowConsoleFooter(false);
 				return false;
 				}
