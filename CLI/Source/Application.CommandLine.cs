@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--tab-width", "-t", "--tab", "--tabwidth", "--tab-length", "--tablength");
 			commandLine.AddAliases("--documented-only", "-do", "--documentedonly");
 			commandLine.AddAliases("--no-auto-group", "-nag", "--noautogroup");
-			commandLine.AddAliases("--style", "-s", "--default-style", "--defaultstyle");
+			commandLine.AddAliases("--style", "-s");
 			commandLine.AddAliases("--rebuild", "-r");
 			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
 			commandLine.AddAliases("--quiet", "-q");
@@ -559,6 +559,7 @@ namespace CodeClear.NaturalDocs.CLI
 					}
 
 
+
 				// Show Execution Time
 
 				else if (parameter == "--show-execution-time")
@@ -576,6 +577,7 @@ namespace CodeClear.NaturalDocs.CLI
 						showExecutionTime = true;
 						}
 					}
+
 
 
 				// Pause Before Exit
@@ -597,7 +599,8 @@ namespace CodeClear.NaturalDocs.CLI
 					}
 
 
-				// Show Execution Time
+
+				// Pause on Error
 
 				else if (parameter == "--pause-on-error")
 					{
@@ -614,6 +617,7 @@ namespace CodeClear.NaturalDocs.CLI
 						pauseOnError = true;
 						}
 					}
+
 
 
 				// Help
@@ -634,38 +638,14 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 
-				// Charset
+				// No longer supported parameters
 
-				else if (parameter == "--charset")
+				else if (parameter == "--charset" ||
+						  parameter == "--headers-only" ||
+						  parameter == "--auto-group")
 					{
 					errorList.Add(
 						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported(param)", parameterAsEntered)
-						);
-
-					commandLine.SkipToNextParameter();
-					}
-					
-					
-					
-				// Headers only
-
-				else if (parameter == "--headers-only")
-					{
-					errorList.Add(
-						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported.HeadersOnly(param)", parameterAsEntered)
-						);
-
-					commandLine.SkipToNextParameter();
-					}
-					
-					
-					
-				// Auto-group
-
-				else if (parameter == "--auto-group")
-					{
-					errorList.Add(
-						Locale.Get("NaturalDocs.CLI", "CommandLine.NoLongerSupported.AutoGroup(param)", parameterAsEntered)
 						);
 
 					commandLine.SkipToNextParameter();
