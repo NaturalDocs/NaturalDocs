@@ -618,12 +618,12 @@ namespace CodeClear.NaturalDocs.CLI
 			
 				if (processorCount < 1)  // Sanity check
 					{  return 1;  }
-				else if (processorCount > 8)  // Never use more than 8
-					{  return 8;  }
-				else if (processorCount > 4)  // Leave two free with 5-8 cores
-					{  return (processorCount - 2);  }
-				else  // Use them all with 1-4
+				else if (processorCount <= 4)  // Use everything on dual and quad core processors
 					{  return processorCount;  }
+				else if (processorCount <= 7)  // Don't take the whole processor above 4 cores
+					{  return 4;  }
+				else  // Max out at 6 if we have 8 cores or more
+					{  return 6;  }
 				}
 			}
 
