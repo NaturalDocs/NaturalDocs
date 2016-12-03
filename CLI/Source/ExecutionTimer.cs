@@ -28,7 +28,35 @@ namespace CodeClear.NaturalDocs.CLI
 			timingRecords = new List<TimingRecord>();
 			}
 
-		public string StatisticsToString ()
+		public void Start (string timerName, string parentName = "Total Execution")
+			{
+			foreach (var timingRecord in timingRecords)
+				{
+				if (timingRecord.Name == timerName)
+					{  return;  }
+				}
+
+			if (timerName == "Total Execution")
+				{  parentName = null;  }
+
+			var newTimingRecord = new TimingRecord(timerName, parentName);
+			newTimingRecord.OnStart();
+			timingRecords.Add(newTimingRecord);
+			}
+
+		public void End (string timerName)
+			{
+			foreach (var timingRecord in timingRecords)
+				{
+				if (timingRecord.Name == timerName)
+					{
+					timingRecord.OnEnd();
+					break;
+					}
+				}
+			}
+
+		public string GetStatistics ()
 			{
 			// First just calculate the column widths so we can format them nicely.  We'll save the formatted tick counts
 			// so we don't have to regenerate them later.
@@ -98,6 +126,11 @@ namespace CodeClear.NaturalDocs.CLI
 			return output.ToString();
 			}
 
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+				
 		protected TimingRecord Get (string name)
 			{
 			foreach (var timingRecord in timingRecords)
@@ -117,35 +150,7 @@ namespace CodeClear.NaturalDocs.CLI
 				{  return Get(timingRecord.ParentName);  }
 			}
 
-		public void Start (string timerName, string parentName = "Total Execution")
-			{
-			foreach (var timingRecord in timingRecords)
-				{
-				if (timingRecord.Name == timerName)
-					{  return;  }
-				}
-
-			if (timerName == "Total Execution")
-				{  parentName = null;  }
-
-			var newTimingRecord = new TimingRecord(timerName, parentName);
-			newTimingRecord.OnStart();
-			timingRecords.Add(newTimingRecord);
-			}
-
-		public void End (string timerName)
-			{
-			foreach (var timingRecord in timingRecords)
-				{
-				if (timingRecord.Name == timerName)
-					{
-					timingRecord.OnEnd();
-					break;
-					}
-				}
-			}
-
-		
+				
 		
 		// Group: Variables
 		// __________________________________________________________________________

@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.CLI
 			engineInstance = null;
 
 			quiet = false;
-			showExecutionTime = false;
+			benchmark = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
 			
@@ -134,8 +134,8 @@ namespace CodeClear.NaturalDocs.CLI
 
 				executionTimer.End("Total Execution");
 
-				if (showExecutionTime)
-					{  System.Console.Write(executionTimer.StatisticsToString());  }
+				if (benchmark)
+					{  System.Console.Write(executionTimer.GetStatistics());  }
 
 				// Restore the standard output.  We do this before "Press any key to continue" because we never want that to
 				// be hidden.
@@ -556,10 +556,10 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		static private bool quiet;
 
-		/* var: showExecutionTime
+		/* var: benchmark
 		 * Whether the application should show how long it takes to execute various sections of code.
 		 */
-		static private bool showExecutionTime;
+		static private bool benchmark;
 
 		static private bool pauseOnError;
 		static private bool pauseBeforeExit;
