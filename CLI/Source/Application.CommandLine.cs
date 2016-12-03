@@ -53,13 +53,13 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -r, --rebuild
 		 *		- -ro, --rebuild-output
 		 *		- -q, --quiet
+		 *		- -v, --version
+		 *		- --benchmark
 		 *		- -h, --help
 		 *		- -?
-		 *		- -v, --version
 		 *		
 		 * Supported But Undocumented:
 		 * 
-		 *		- --show-execution-time
 		 *		- --pause-before-exit, --pause
 		 *		- --pause-on-error
 		 *		
@@ -91,10 +91,9 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--help", "-h", "-?");
 			commandLine.AddAliases("--version", "-v");
+			// no aliases for --benchmark
 
 			// Undocumented
-			commandLine.AddAliases("--show-execution-time", "--showexecutiontime", "--show-execution-timer", "--showexecutiontimer",
-													"--execution-time", "--executiontime");
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 
@@ -560,9 +559,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 
-				// Show Execution Time
+				// Benchmark
 
-				else if (parameter == "--show-execution-time")
+				else if (parameter == "--benchmark")
 					{
 					if (!commandLine.NoValue())
 						{
@@ -574,7 +573,7 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						showExecutionTime = true;
+						benchmark = true;
 						}
 					}
 

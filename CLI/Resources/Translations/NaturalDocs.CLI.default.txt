@@ -192,6 +192,10 @@ Other Parameters:
 --version
     Displays the current version of Natural Docs.
 
+--benchmark
+    Collects and displays statistics on how long it takes Natural Docs to
+    execute.
+
  -?
  -h
 --help
