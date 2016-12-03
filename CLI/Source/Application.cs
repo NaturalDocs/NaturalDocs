@@ -53,6 +53,7 @@ namespace CodeClear.NaturalDocs.CLI
 			engineInstance = null;
 
 			quiet = false;
+			workerThreadCount = DefaultWorkerThreadCount;
 			benchmark = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
@@ -371,13 +372,15 @@ namespace CodeClear.NaturalDocs.CLI
 		 */
 		static private void Multithread (string threadName, CancellableTask task)
 			{
-			#if WORK_ON_MAIN_THREAD
-
+			if (workerThreadCount == 1)
+				{
+				// If there's only one thread, execute it on the main thread instead of spawning a new one.
+				// Uses fewer resources and makes debugging easier.
 				task(Engine.Delegates.NeverCancel);
-
-			#else
-
-				Engine.Thread[] threads = new Engine.Thread[ EngineInstance.Config.BackgroundThreadsPerTask ];
+				}
+			else
+				{
+				Engine.Thread[] threads = new Engine.Thread[workerThreadCount];
 
 				for (int i = 0; i < threads.Length; i++)
 					{  
@@ -399,8 +402,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 				foreach (var thread in threads)
 					{  thread.ThrowExceptions();  }
-
-			#endif
+				}
 			}
 
 
@@ -542,6 +544,29 @@ namespace CodeClear.NaturalDocs.CLI
 				{  return engineInstance;  }
 			}
 
+		public static int WorkerThreadCount
+			{
+			get
+				{  return workerThreadCount;  }
+			}
+
+		public static int DefaultWorkerThreadCount
+			{
+			get
+				{
+				int processorCount = System.Environment.ProcessorCount;
+			
+				if (processorCount < 1)  // Sanity check
+					{  return 1;  }
+				else if (processorCount > 8)  // Never use more than 8
+					{  return 8;  }
+				else if (processorCount > 4)  // Leave two free with 5-8 cores
+					{  return (processorCount - 2);  }
+				else  // Use them all with 1-4
+					{  return processorCount;  }
+				}
+			}
+
 
 
 		// Group: Variables
@@ -555,6 +580,8 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Whether the application should suppress all non-error output.
 		 */
 		static private bool quiet;
+
+		static private int workerThreadCount;
 
 		/* var: benchmark
 		 * Whether the application should show how long it takes to execute various sections of code.

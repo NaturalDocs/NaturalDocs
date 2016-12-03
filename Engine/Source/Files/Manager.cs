@@ -862,10 +862,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				#if SHOW_FILE_PARSING
 					System.Console.Write("Parsing " + file.FileName);
 
-					#if !SINGLE_CORE
-						if (System.Threading.Thread.CurrentThread.Name != null)
-							{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
-					#endif
+					if (!string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.Name))
+						{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
 
 					System.Console.WriteLine("...");
 				#endif

@@ -77,7 +77,6 @@
     <Compile Include="Source\StatusManagers\ResolvingLinks.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Compilation Symbols.txt" />
     <Content Include="Resources\Icons\Application.ico" />
     <Content Include="Resources\Translations\NaturalDocs.CLI.default.txt" />
   </ItemGroup>

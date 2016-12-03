@@ -78,6 +78,7 @@ CommandLine.OnlyOneProjectConfigFolder: You may only specify one project configu
 CommandLine.OnlyOneWorkingDataFolder: You man only specify one working data folder.
 CommandLine.NoProjectConfigFolder: You must define a project configuration folder.
 CommandLine.InvalidTabWidth: The tab width must be a number greater than zero.
+CommandLine.InvalidWorkerThreadCount: The worker thread count must be a number greater than zero.
 CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
 CommandLine.NoLongerSupported(param): {0} is no longer supported.
 CommandLine.NoLongerSupported.HeadersOnly(param): {0} is no longer supported.  Use Languages.txt to exclude the source file extensions instead.
@@ -109,7 +110,7 @@ Examples:
 
 
 Folder Parameters:
--------------------
+------------------
 
  -p [folder]
 --project-config [folder]
@@ -154,14 +155,14 @@ Folder Parameters:
     subfolder of the project configuration folder.
 
 
-Other Parameters:
------------------
+Common Parameters:
+------------------
 
  -s [style]
 --style [style]
     Specifies the output style to use.  Can be the name of a CSS file in the
-    project folder or a subfolder of the project folder that contains Style.txt.
-    Do not include ".css" if using a CSS file.
+    project folder or a subfolder of the project folder that contains
+    Style.txt.  Do not include ".css" if using a CSS file.
 
  -t [width]
 --tab-width [width]
@@ -192,14 +193,22 @@ Other Parameters:
 --version
     Displays the current version of Natural Docs.
 
---benchmark
-    Collects and displays statistics on how long it takes Natural Docs to
-    execute.
-
  -?
  -h
 --help
     Displays this command line reference.
+
+
+Technical Parameters:
+---------------------
+
+--worker-threads
+    Sets the number of worker threads Natural Docs should use for processing.
+    By default it is calculated based on the number of cores present.
+
+--benchmark
+    Collects and displays statistics on how long it takes Natural Docs to
+    execute.
 }}}
 
 

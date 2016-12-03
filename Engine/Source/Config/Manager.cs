@@ -72,19 +72,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			reparseEverything = false;
 			rebuildAllOutput = false;
-
-			#if SINGLE_CORE
-				backgroundThreadsPerTask = 1;
-			#else
-				backgroundThreadsPerTask = System.Environment.ProcessorCount;
-			
-				if (backgroundThreadsPerTask < 1)  // In case it's not detected correctly
-					{  backgroundThreadsPerTask = 1;  }
-				else if (backgroundThreadsPerTask > 8)  // Hard upper limit
-					{  backgroundThreadsPerTask = 8;  }
-				else if (backgroundThreadsPerTask > 4)  // Leave one free with 5-8 cores
-					{  backgroundThreadsPerTask--;  }
-			#endif
 			}
 
 
@@ -1013,23 +1000,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		/* Property: BackgroundThreadsPerTask
-		 * The number of threads Natural Docs should use for each parallelizable background task.
-		 */
-		public int BackgroundThreadsPerTask
-			{
-			get
-				{  return backgroundThreadsPerTask;  }
-			set
-				{
-				if (value < 1)
-					{  throw new InvalidOperationException();  }
-					
-				backgroundThreadsPerTask = value;
-				}
-			}
-
-
 		/* Function: OutputWorkingDataFileOf
 		 * Returns the working data file path for the passed output entry number.  It's up to the output entry whether
 		 * it wants to actually create and use a file at this path, this just makes sure it has its own unique path.
@@ -1167,10 +1137,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected bool rebuildAllOutput;
 		
-		/* int: backgroundThreadsPerTask
-		 */
-		protected int backgroundThreadsPerTask;
-
 
 
 		// Group: Static Variables

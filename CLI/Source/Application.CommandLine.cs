@@ -49,12 +49,13 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -t, --tab, --tab-width, --tab-length
 		 *		- -do, --documented-only
 		 *		- -nag, --no-auto-group
-		 *		- -s, --style, --default-style
+		 *		- -s, --style
 		 *		- -r, --rebuild
 		 *		- -ro, --rebuild-output
 		 *		- -q, --quiet
 		 *		- -v, --version
 		 *		- --benchmark
+		 *		- --worker-threads, --threads
 		 *		- -h, --help
 		 *		- -?
 		 *		
@@ -89,9 +90,10 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--rebuild", "-r");
 			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
 			commandLine.AddAliases("--quiet", "-q");
-			commandLine.AddAliases("--help", "-h", "-?");
 			commandLine.AddAliases("--version", "-v");
+			commandLine.AddAliases("--worker-threads", "--threads");
 			// no aliases for --benchmark
+			commandLine.AddAliases("--help", "-h", "-?");
 
 			// Undocumented
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
@@ -559,6 +561,36 @@ namespace CodeClear.NaturalDocs.CLI
 
 
 
+				// Worker Threads
+				
+				else if (parameter == "--worker-threads")
+					{
+					int value;
+					
+					if (!commandLine.GetIntegerValue(out value))
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNumber(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else if (value < 1)
+						{
+						errorList.Add( 
+							Locale.Get("NaturalDocs.CLI", "CommandLine.InvalidWorkerThreadCount")
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						workerThreadCount = value;
+						}	
+					}
+					
+					
+					
 				// Benchmark
 
 				else if (parameter == "--benchmark")

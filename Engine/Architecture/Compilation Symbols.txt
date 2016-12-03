@@ -21,14 +21,10 @@ Macros: SQLite Character Mode
 	
 Macros: Other Symbols
 
-	SINGLE_CORE - If defined, Natural Docs will run as if there is only one core detected on the computer.  This means most
-							tasks will only have a single thread working on them, although there will still be multiple threads used
-							throughout the program in general.
-							
 	DONT_SHRINK_FILES - If defined, extra whitespace and comments will not be removed from JS, JSON, and CSS files.
 
 	SHOW_NDMARKUP - If defined, Natural Docs will put a copy of the <NDMarkup> in the output.
 
 	SHOW_FILE_PARSING - If defined, Natural Docs will include a console message for every file parsed.  Useful for figuring
-									out which file is causing a crash.  You should define <SINGLE_CORE> as well or else the status
+									out which file is causing a crash.  You should use --worker-threads 1 as well or else the status
 									messages from different threads will get mixed together.
