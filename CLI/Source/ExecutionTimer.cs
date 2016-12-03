@@ -33,33 +33,30 @@ namespace CodeClear.NaturalDocs.CLI
 			// First just calculate the column widths so we can format them nicely.  We'll save the formatted tick counts
 			// so we don't have to regenerate them later.
 
-			string[] formattedTicks = new string[timingRecords.Count];
+			string[] formattedTime = new string[timingRecords.Count];
 			int nameColumnWidth = 0;
-			int ticksColumnWidth = 0;
+			int timeColumnWidth = 0;
 
 			for (int i = 0; i < timingRecords.Count; i++)
 				{
 				var timingRecord = timingRecords[i];
 
-				if (timingRecord.Ticks != -1)
+				formattedTime[i] = string.Format("{0:#,0}ms", timingRecord.Milliseconds);
+
+				if (formattedTime[i].Length > timeColumnWidth)
+					{  timeColumnWidth = formattedTime[i].Length;  }
+
+				int nameWidth = timingRecord.Name.Length;
+				TimingRecord parent = GetParent(timingRecord);
+
+				while (parent != null)
 					{
-					formattedTicks[i] = string.Format("{0:#,0}k", (timingRecord.Ticks / 1000));
-
-					if (formattedTicks[i].Length > ticksColumnWidth)
-						{  ticksColumnWidth = formattedTicks[i].Length;  }
-
-					int nameWidth = timingRecord.Name.Length;
-					int parentIndex = GetParent(i);
-
-					while (parentIndex != -1)
-						{
-						nameWidth += 2;
-						parentIndex = GetParent(parentIndex);
-						}
-
-					if (nameWidth > nameColumnWidth)
-						{  nameColumnWidth = nameWidth;  }
+					nameWidth += 2;
+					parent = GetParent(parent);
 					}
+
+				if (nameWidth > nameColumnWidth)
+					{  nameColumnWidth = nameWidth;  }
 				}
 
 
@@ -71,61 +68,67 @@ namespace CodeClear.NaturalDocs.CLI
 				{
 				var timingRecord = timingRecords[i];
 
-				if (timingRecord.Ticks != -1)
+				int nameWidth = 0;
+				TimingRecord parent = GetParent(timingRecord);
+
+				while (parent != null)
 					{
-					int nameWidth = 0;
-					int parentIndex = GetParent(i);
-
-					while (parentIndex != -1)
-						{
-						output.Append("- ");
-						nameWidth += 2;
-						parentIndex = GetParent(parentIndex);
-						}
-
-					output.Append(timingRecord.Name);
-					nameWidth += timingRecord.Name.Length;
-
-					output.Append(' ', nameColumnWidth + 1 - nameWidth);
-					output.Append(' ', ticksColumnWidth - formattedTicks[i].Length);
-
-					output.Append(formattedTicks[i] + " ticks");
-					output.AppendLine();
+					output.Append("- ");
+					nameWidth += 2;
+					parent = GetParent(parent);
 					}
+
+				output.Append(timingRecord.Name);
+				nameWidth += timingRecord.Name.Length;
+
+				output.Append(' ', nameColumnWidth + 2 - nameWidth);
+				output.Append(' ', timeColumnWidth - formattedTime[i].Length);
+
+				output.Append(formattedTime[i]);
+
+				parent = GetParent(timingRecord);
+				if (parent != null)
+					{
+					output.Append(string.Format(" {0,3}%", ((timingRecord.Milliseconds * 100) / parent.Milliseconds) ));
+					}
+
+				output.AppendLine();
 				}
 
 			return output.ToString();
 			}
 
-		/* Function: GetParent
-		 * If the <TimingRecord> at index i is fully contained in another timing record, returns the index of that record.
-		 * If not, returns -1.
-		 */
-		protected int GetParent (int i)
+		protected TimingRecord Get (string name)
 			{
-			var childRecord = timingRecords[i];
-
-			for (;;)
+			foreach (var timingRecord in timingRecords)
 				{
-				i--;
-
-				if (i < 0)
-					{  return -1;  }
-
-				if (timingRecords[i].Contains(childRecord))
-					{  return i;  }
+				if (timingRecord.Name == name)
+					{  return timingRecord;  }
 				}
+
+			return null;
 			}
 
-		public void Start (string timerName)
-			{  
+		protected TimingRecord GetParent (TimingRecord timingRecord)
+			{
+			if (timingRecord.ParentName == null)
+				{  return null;  }
+			else
+				{  return Get(timingRecord.ParentName);  }
+			}
+
+		public void Start (string timerName, string parentName = "Total Execution")
+			{
 			foreach (var timingRecord in timingRecords)
 				{
 				if (timingRecord.Name == timerName)
 					{  return;  }
 				}
 
-			var newTimingRecord = new TimingRecord(timerName);
+			if (timerName == "Total Execution")
+				{  parentName = null;  }
+
+			var newTimingRecord = new TimingRecord(timerName, parentName);
 			newTimingRecord.OnStart();
 			timingRecords.Add(newTimingRecord);
 			}
@@ -161,27 +164,19 @@ namespace CodeClear.NaturalDocs.CLI
 
 			// Group: Functions
 
-			public TimingRecord (string name)
+			public TimingRecord (string name, string parentName = null)
 				{
 				this.name = name;
+				this.parentName = parentName;
 
-				startTicks = -1;
-				endTicks = -1;
+				stopWatch = new System.Diagnostics.Stopwatch();
 				}
 
 			public void OnStart ()
-				{  startTicks = System.DateTime.Now.Ticks;  }
+				{  stopWatch.Start();  }
 
 			public void OnEnd ()
-				{  endTicks = System.DateTime.Now.Ticks;  }
-
-			public bool Contains (TimingRecord other)
-				{
-				if (!IsComplete || !other.IsComplete)
-					{  return false;  }
-
-				return (startTicks <= other.startTicks && endTicks >= other.endTicks);
-				}
+				{  stopWatch.Stop();  }
 
 
 			// Group: Properties
@@ -192,30 +187,31 @@ namespace CodeClear.NaturalDocs.CLI
 					{  return name;  }
 				}
 
-			public long Ticks
+			public string ParentName
 				{
 				get
-					{
-					if (startTicks != -1 && endTicks != -1 && endTicks >= startTicks)
-						{  return endTicks - startTicks;  }
-					else
-						{  return -1;  }
-					}
+					{  return parentName;  }
+				}
+
+			public long Milliseconds
+				{
+				get
+					{  return stopWatch.ElapsedMilliseconds;  }
 				}
 
 			public bool IsComplete
 				{
 				get
-					{  return (startTicks != -1 && endTicks != -1);  }
+					{  return !stopWatch.IsRunning;  }
 				}
 
 
 			// Group: Variables
 
 			protected string name;
+			protected string parentName;
 
-			protected long startTicks;
-			protected long endTicks;
+			protected System.Diagnostics.Stopwatch stopWatch;
 			}
 		
 		}
