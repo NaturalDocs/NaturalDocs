@@ -90,6 +90,16 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 				lastPercentage = newPercentage;
 				}
 			}
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+		public int TotalFilesToProcess
+			{
+			get
+				{  return totalFilesToProcess;  }
+			}
 			
 			
 		// Group: Variables

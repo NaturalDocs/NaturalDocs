@@ -57,6 +57,9 @@ Status.LongStartupOperation.StartPurgingOutputWorkingData: Deleting old working 
 Status.LongStartupOperation.StartPurgingOutputFiles: Deleting old documentation...
 Status.CreatingProjectConfigFiles: Creating project configuration files...
 
+Status.BenchmarksSavedIn(file): Benchmarks saved in {0}.
+Status.CouldNotSaveBenchmarksIn(file): Could not save benchmarks in {0}.
+
 
 #
 # Command Line

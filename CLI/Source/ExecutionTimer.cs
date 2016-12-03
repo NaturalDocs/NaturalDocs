@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.CLI
 				}
 			}
 
-		public string GetStatistics ()
+		public string BuildStatistics ()
 			{
 			// First just calculate the column widths so we can format them nicely.  We'll save the formatted tick counts
 			// so we don't have to regenerate them later.
@@ -121,6 +121,48 @@ namespace CodeClear.NaturalDocs.CLI
 					}
 
 				output.AppendLine();
+				}
+
+			return output.ToString();
+			}
+
+
+		/* Function: BuildCSVHeadings
+		 * Returns a list of timer names suitable for serving as headings in a CSV file.
+		 */
+		public string BuildCSVHeadings ()
+			{
+			System.Text.StringBuilder output = new System.Text.StringBuilder();
+
+			for (int i = 0; i < timingRecords.Count; i++)
+				{
+				var timingRecord = timingRecords[i];
+
+				if (i > 0)
+					{  output.Append(',');  }
+
+				output.Append('"' + timingRecord.Name + " (ms)\"");
+				}
+
+			return output.ToString();
+			}
+
+
+		/* Function: BuildCSVValues
+		 * Returns a list of timer values suitable for serving as a row in a CSV file.
+		 */
+		public string BuildCSVValues ()
+			{
+			System.Text.StringBuilder output = new System.Text.StringBuilder();
+
+			for (int i = 0; i < timingRecords.Count; i++)
+				{
+				var timingRecord = timingRecords[i];
+
+				if (i > 0)
+					{  output.Append(',');  }
+
+				output.Append(timingRecord.Milliseconds);
 				}
 
 			return output.ToString();

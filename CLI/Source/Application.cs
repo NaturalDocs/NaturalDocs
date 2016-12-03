@@ -54,6 +54,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			quiet = false;
 			workerThreadCount = DefaultWorkerThreadCount;
+			totalFileChanges = 0;
 			benchmark = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
@@ -130,13 +131,15 @@ namespace CodeClear.NaturalDocs.CLI
 				
 			finally
 				{
+				Engine.Path projectFolder = engineInstance.Config.ProjectConfigFolder;
+
 				engineInstance.Dispose(gracefulExit);
 				engineInstance = null;
 
 				executionTimer.End("Total Execution");
 
 				if (benchmark)
-					{  System.Console.Write(executionTimer.GetStatistics());  }
+					{  ShowBenchmarksAndBuildCSV(projectFolder + "/Benchmarks.csv");  } 
 
 				// Restore the standard output.  We do this before "Press any key to continue" because we never want that to
 				// be hidden.
@@ -205,6 +208,7 @@ namespace CodeClear.NaturalDocs.CLI
 				using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
 					{
 					statusManager.Start();
+					totalFileChanges = statusManager.TotalFilesToProcess;
 
 					Multithread("Parser", EngineInstance.Files.WorkOnProcessingChanges);							
 							
@@ -354,6 +358,62 @@ namespace CodeClear.NaturalDocs.CLI
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.End.multiline")
 					);
 				System.Console.WriteLine();
+				}
+			}
+
+
+		static private void ShowBenchmarksAndBuildCSV (Engine.Path csvPath)
+			{
+			System.Console.Write(executionTimer.BuildStatistics());
+
+			bool csvFileExisted = System.IO.File.Exists(csvPath);
+			System.IO.StreamWriter csvFile = null;
+			
+			try
+				{
+				csvFile = new System.IO.StreamWriter(csvPath, true, System.Text.Encoding.UTF8);
+
+				if (!csvFileExisted)
+					{
+					csvFile.Write("\"Date\",\"Threads Used\",\"Cores Available\",\"File Changes\",");
+					csvFile.Write(executionTimer.BuildCSVHeadings());
+					csvFile.WriteLine();
+					}
+
+				csvFile.Write(
+					string.Format("\"{0:yyyy-MM-dd HH:mm:ss}\"", DateTime.Now)
+					);
+
+				csvFile.Write(',');
+				csvFile.Write(workerThreadCount);
+				csvFile.Write(',');
+				csvFile.Write(System.Environment.ProcessorCount);
+				csvFile.Write(',');
+				csvFile.Write(totalFileChanges);
+				csvFile.Write(',');
+				csvFile.Write(executionTimer.BuildCSVValues());
+				csvFile.WriteLine();
+
+				Console.WriteLine();
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.BenchmarksSavedIn(file)", csvPath)
+					);
+				}
+			catch (Exception e)
+				{
+				Console.WriteLine();
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.CouldNotSaveBenchmarksIn(file)", csvPath)
+					);
+				Console.WriteLine(e.Message);
+				}
+			finally
+				{
+				if (csvFile != null)
+					{
+					csvFile.Dispose();
+					csvFile = null;
+					}
 				}
 			}
 
@@ -582,6 +642,7 @@ namespace CodeClear.NaturalDocs.CLI
 		static private bool quiet;
 
 		static private int workerThreadCount;
+		static private int totalFileChanges;
 
 		/* var: benchmark
 		 * Whether the application should show how long it takes to execute various sections of code.
