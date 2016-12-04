@@ -23,7 +23,7 @@ Column: Type
 		Type INTEGER NOT NULL
 	-----------------
 
-	The type of link it is.  The value will be from <Engine.Links.LinkType>.
+	The type of link it is.  The value will be from <CodeClear.NaturalDocs.Engine.Links.LinkType>.
 
 
 Column: TextOrSymbol
@@ -33,7 +33,7 @@ Column: TextOrSymbol
 	-----------------
 
 	If this is a Natural Docs link, this will be the plain text of the link.  If this is a type or class parent link, it 
-	will be the symbol normalized as a <Symbols.SymbolString>.
+	will be the symbol normalized as a <CodeClear.NaturalDocs.Engine.Symbols.SymbolString>.
 
 
 Column: ContextID

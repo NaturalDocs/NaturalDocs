@@ -21,8 +21,8 @@ Column: UsedTopicIDs
 		UsedTopicIDs TEXT NOT NULL
 	-----------------
 
-	A string containing the <Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.  This is only used 
-	for storage between Natural Docs executions.  It is not continually updated during execution.
+	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used topic IDs in <CodeDB.Topics>.
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
 Column: UsedLinkIDs
@@ -31,8 +31,8 @@ Column: UsedLinkIDs
 		UsedLinkIDs TEXT NOT NULL
 	-----------------
 
-	A string containing the <Engine.IDObjects.NumberSet> for all the used link IDs in <CodeDB.Topics>.  This is only used 
-	for storage between Natural Docs executions.  It is not continually updated during execution.
+	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used link IDs in <CodeDB.Topics>.
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
 Column: UsedClassIDs
@@ -41,8 +41,8 @@ Column: UsedClassIDs
 		UsedClassIDs TEXT NOT NULL
 	-----------------
 
-	A string containing the <Engine.IDObjects.NumberSet> for all the used class IDs in <CodeDB.Classes>.  This is only
-	used for storage between Natural Docs executions.  It is not continually updated during execution.
+	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used class IDs in <CodeDB.Classes>.
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
 Column: UsedContextIDs
@@ -51,5 +51,5 @@ Column: UsedContextIDs
 		UsedContextIDs TEXT NOT NULL
 	-----------------
 
-	A string containing the <Engine.IDObjects.NumberSet> for all the used context IDs in <CodeDB.Contexts>.  This is only
-	used for storage between Natural Docs executions.  It is not continually updated during execution.
+	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used context IDs in <CodeDB.Contexts>.
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.

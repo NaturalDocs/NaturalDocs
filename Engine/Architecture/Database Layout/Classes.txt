@@ -26,8 +26,8 @@ Column: ClassString
 		ClassString TEXT
 	-----------------
 	
-	The class information encoded with <Engine.Symbols.ClassString>.  If this is the same as <LookupKey> this
-	will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or 
+	The class information encoded with <CodeClear.NaturalDocs.Engine.Symbols.ClassString>.  If this is the same 
+	as <LookupKey> this will be null to reduce memory use.  Retrieve it using "ifnull(ClassString, LookupKey)" or 
 	"coalesce(ClassString, LookupKey)" in the select statement.
 
 
