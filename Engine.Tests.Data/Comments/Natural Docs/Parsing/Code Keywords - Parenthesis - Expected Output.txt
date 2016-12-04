@@ -4,6 +4,8 @@
 -----
 <p>Before</p><pre type="code" language="Perl">Perl</pre><p>After</p>
 -----
+<p>Before</p><pre type="code" language="Perl">Perl</pre><p>After</p>
+-----
 <p>Before</p><pre type="code">Start Code</pre><p>After</p>
 -----
 <p>Before</p><pre type="code" language="C#">Start C#</pre><p>After</p>
@@ -11,3 +13,5 @@
 <p>Before</p><pre type="code" language="JavaScript">Start JavaScript Code</pre><p>After</p>
 -----
 <p>Before</p><pre type="code" language="Python">Python code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Perl">Perl code</pre><pre type="code" language="C#">C# code</pre><p>After</p>

@@ -2,8 +2,20 @@
 -----
 <p>Before</p><pre type="code" language="JavaScript">JS</pre><p>After</p>
 -----
+<p>Before</p><pre type="code" language="JavaScript">js</pre><p>After</p>
+-----
 <p>Before</p><pre type="code" language="Visual Basic">Start VB</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="Visual Basic">Start vb</pre><p>After</p>
 -----
 <p>Before</p><pre type="code" language="SQL">Start PL/SQL Code</pre><p>After</p>
 -----
+<p>Before</p><pre type="code" language="SQL">Start pl/sql Code</pre><p>After</p>
+-----
 <p>Before</p><pre type="code" language="ActionScript">AS code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="ActionScript">as code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="JavaScript">JS</pre><pre type="code" language="Visual Basic">Start VB</pre><pre type="code" language="SQL">Start PL/SQL Code</pre><pre type="code" language="ActionScript">AS code</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="JavaScript">js</pre><pre type="code" language="Visual Basic">Start vb</pre><pre type="code" language="SQL">Start pl/sql Code</pre><pre type="code" language="ActionScript">as code</pre><p>After</p>

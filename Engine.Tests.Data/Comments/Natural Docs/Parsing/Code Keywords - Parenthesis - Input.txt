@@ -32,6 +32,17 @@ Topic: C
 
 	Before
 
+	(Perl)
+	Perl
+	(end)
+
+	After
+
+
+Topic: D
+
+	Before
+
 	(start code)
 	Start Code
 	(end code)
@@ -39,7 +50,7 @@ Topic: C
 	After
 
 
-Topic: D
+Topic: E
 
 	Before
 
@@ -50,7 +61,7 @@ Topic: D
 	After
 
 
-Topic: E
+Topic: F
 
 	Before
 
@@ -71,3 +82,15 @@ Topic: G
 
 	After
 
+
+Topic: Direct Transitions
+
+	Before
+
+	(Perl)
+	Perl code
+	(C#)
+	C# code
+	(end)
+
+	After
