@@ -1,0 +1,87 @@
+
+File: Code Keywords - Lines Without Spaces
+_______________________________________________________________________________
+
+Natural Docs should still recognize code lines even if they forget the spaces.
+
+
+
+Topic: DashesA
+	
+	Before
+
+	---code
+	No space before keyword
+	---
+
+	After
+
+
+Topic: DashesB
+	
+	Before
+
+	--- code---
+	No space after keyword
+	---
+
+	After
+
+
+Topic: DashesC
+	
+	Before
+
+	---code---
+	No spaces around keyword
+	---
+
+	After
+
+
+Topic: EqualsA
+	
+	Before
+
+	===code
+	No space before keyword
+	===end
+
+	After
+
+
+Topic: EqualsB
+	
+	Before
+
+	=== code===
+	No space after keyword
+	=== end===
+
+	After
+
+
+Topic: EqualsC
+	
+	Before
+
+	===code===
+	No spaces around keyword
+	===end===
+
+	After
+
+
+Topic: Languages and Direct Transitions
+	
+	Before
+
+	---C# ---
+	No space before keyword
+	--- Perl---
+	No space after keyword
+	---VB---
+	No spaces around keyword
+	---
+
+	After

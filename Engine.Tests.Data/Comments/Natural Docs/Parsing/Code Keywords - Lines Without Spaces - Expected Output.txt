@@ -1,0 +1,15 @@
+<p>Natural Docs should still recognize code lines even if they forget the spaces.</p>
+-----
+<p>Before</p><pre type="code">No space before keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">No space after keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">No spaces around keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">No space before keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">No space after keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code">No spaces around keyword</pre><p>After</p>
+-----
+<p>Before</p><pre type="code" language="C#">No space before keyword</pre><pre type="code" language="Perl">No space after keyword</pre><pre type="code" language="Visual Basic">No spaces around keyword</pre><p>After</p>
