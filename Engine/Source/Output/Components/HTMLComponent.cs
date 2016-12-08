@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Formats the text between the two iterators with syntax highlighting.  If output is null it will be appended to
 		 * <htmlOutput>.
 		 */
-		protected void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder output = null)
+		public void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder output = null)
 			{
 			if (output == null)
 				{  output = htmlOutput;  }
