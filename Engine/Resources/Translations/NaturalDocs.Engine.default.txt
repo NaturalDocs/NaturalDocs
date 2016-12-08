@@ -218,13 +218,13 @@ Project.txt.TimestampSubstitutions(shortYear, longYear).multiline {{{
 }}}
 Project.txt.StyleSyntax.multiline {{{
 # Style: [style]
-#    The style to apply to the generated output.  It can be the name of a CSS
-#    file in the project folder or a subfolder of the project folder that
-#    contains Style.txt.  Do not include ".css" if using a CSS file.
+#    The style to apply to the generated documentation.  It can be the name of
+#    a CSS file in the project folder or a subfolder of the project folder
+#    that contains Style.txt.  Do not include ".css" if using a CSS file.
 }}}
 
 Project.txt.InputHeader.multiline {{{
-# Input
+# Source Code
 # ------------------------------------------------------------------------
 }}}
 
@@ -253,12 +253,12 @@ Project.txt.ImageFolderSyntax.multiline {{{
 }}}
 
 Project.txt.FilterHeader.multiline {{{
-# Filtering
+# Source Filtering
 # ------------------------------------------------------------------------
 }}}
 
 Project.txt.FilterHeaderText.multiline {{{
-# If there are any subfolders of the input folders that you would like Natural
+# If there are any subfolders in the source code that you would like Natural
 # Docs to ignore, they can be specified here.  If you use any of these options
 # on the command line, this entire section is ignored.
 }}}
@@ -270,14 +270,14 @@ Project.txt.IgnoreSourceFolderSyntax.multiline {{{
 
 Project.txt.IgnoreSourceFolderPatternSyntax.multiline {{{
 # Ignore Source Folder Pattern: [pattern]
-#    Tells Natural Docs to skip all folders which match this pattern when
+#    Tells Natural Docs to skip all folder names which match this pattern when
 #    scanning files.  ? matches a single character, * matches zero or more
-#    characters.  It applies to the entire folder name, so "cli" will not 
+#    characters.  It applies to the entire folder name, so "cli" will not
 #    match "client", although "cli*" will.
 }}}
 
 Project.txt.OutputHeader.multiline {{{
-# Output
+# Generated Documentation
 # ------------------------------------------------------------------------
 }}}
 
