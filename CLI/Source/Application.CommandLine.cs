@@ -56,13 +56,10 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -v, --version
 		 *		- --benchmark
 		 *		- --worker-threads, --threads
-		 *		- -h, --help
-		 *		- -?
-		 *		
-		 * Supported But Undocumented:
-		 * 
 		 *		- --pause-before-exit, --pause
 		 *		- --pause-on-error
+		 *		- -h, --help
+		 *		- -?
 		 *		
 		 * No Longer Supported:
 		 * 

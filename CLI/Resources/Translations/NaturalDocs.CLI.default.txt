@@ -192,6 +192,18 @@ Common Parameters:
 --quiet
     Suppresses all non-error output.
 
+--pause
+--pause-before-exit
+    Require keyboard input before exiting the program.  Only use this if you
+    are running Natural Docs in a pop-up console window that closes
+    automatically and you would like to see the output before that happens.
+
+--pause-on-error
+    Require keyboard input before exiting the program if there is an error.
+    Only use this if you are running Natural Docs in a pop-up console window
+    that closes automatically and you would like it to stay open if there are
+    error messages.
+
  -v
 --version
     Displays the current version of Natural Docs.
