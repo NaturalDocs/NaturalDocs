@@ -1,0 +1,7 @@
+(No body detected)
+-----
+<p>Before</p><pre>Angle bracket</pre><p>After</p>
+-----
+<p>Before</p><pre>Colon</pre><p>After</p>
+-----
+<p>Before</p><pre>Pipe</pre><p>After</p>

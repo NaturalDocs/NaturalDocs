@@ -21,4 +21,20 @@ Topic: B
 					Third line more indented.
 		Fourth line that's less indented than the rest.
 	(end)
+
+
+Topic: C
+	
+	|		Shared indentation should be removed.
+	|		Shared indentation should be removed.
+	|			Relative indentation should be preserved.
+	|				Relative indentation should be preserved.
+
+
+Topic: D
+	
+	>			First line indented.
+	>			Second line indented.
+	>				Third line more indented.
+	>	Fourth line that's less indented than the rest.
  
