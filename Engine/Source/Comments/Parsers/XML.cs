@@ -30,7 +30,7 @@
  *		Supported Non-Standard Tags:
  *		
  *			remarks - Treated as remark.  Found in Ookii.Dialogs documentation.
- *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Fonud in 
+ *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Found in 
  *								 Ookii.Dialogs documentation.
  * 
  *		Unsupported Tags:
