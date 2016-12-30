@@ -331,7 +331,6 @@ Topic Type: Database Field
       databasecolumn, databasecolumns
       db column, db columns
       dbcolumn, dbcolumns
-      column, columns
 
 
 Topic Type: Database View
@@ -365,13 +364,10 @@ Topic Type: Database Index
       db index, db indices
       dbindex, dbindexes
       dbindex, dbindices
-      key, keys
       database key, database keys
       databasekey, databasekeys
       db key, db keys
       dbkey, dbkeys
-      primary key, primary keys
-      primarykey, primarykeys
       database primary key, database primary keys
       databaseprimarykey, databaseprimarykeys
       db primary key, db primary keys
