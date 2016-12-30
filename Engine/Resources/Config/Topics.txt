@@ -263,6 +263,7 @@ Topic Type: Variable
       arrayref, arrayrefs
       hash, hashes
       hashref, hashrefs
+	  table, tables
       bool, bools
       boolean, booleans
       flag, flags
@@ -308,7 +309,6 @@ Topic Type: Database Table
    Flags: Code, Database Hierarchy
 
    Keywords:
-      table, tables
       database table, database tables
       databasetable, databasetables
       db table, db tables
@@ -343,7 +343,6 @@ Topic Type: Database View
    Flags: Code, Database Hierarchy
 
    Keywords:
-      view, views
       database view, database views
       databaseview, databaseviews
       db view, db views
@@ -358,8 +357,6 @@ Topic Type: Database Index
    Flags: Code
 
    Keywords:
-      index, indexes
-      index, indices
       database index, database indexes
       database index, database indices
       databaseindex, databaseindexes
@@ -389,7 +386,6 @@ Topic Type: Database Cursor
    Flags: Code
 
    Keywords:
-      cursor, cursors
       database cursor, database cursors
       databasecursor, databasecursors
       db cursor, db cursors
@@ -404,7 +400,6 @@ Topic Type: Database Trigger
    Flags: Code
 
    Keywords:
-      trigger, triggers
       database trigger, database triggers
       databasetrigger, databasetriggers
       db trigger, db triggers
