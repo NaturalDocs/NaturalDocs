@@ -10,14 +10,14 @@ Group: Columns
 _______________________________________________________________________________
 
 
-Column: LinkID
+Database Column: LinkID
 	
 	--- Prototype ---
 		LinkID INTEGER PRIMARY KEY NOT NULL
 	-----------------
 	
 	
-Column: Type
+Database Column: Type
 
 	--- Prototype ---
 		Type INTEGER NOT NULL
@@ -26,7 +26,7 @@ Column: Type
 	The type of link it is.  The value will be from <CodeClear.NaturalDocs.Engine.Links.LinkType>.
 
 
-Column: TextOrSymbol
+Database Column: TextOrSymbol
 
 	--- Prototype ---
 		TextOrSymbol TEXT NOT NULL
@@ -36,7 +36,7 @@ Column: TextOrSymbol
 	will be the symbol normalized as a <CodeClear.NaturalDocs.Engine.Symbols.SymbolString>.
 
 
-Column: ContextID
+Database Column: ContextID
 
 	--- Prototype ---
 		ContextID INTEGER NOT NULL
@@ -45,28 +45,28 @@ Column: ContextID
 	The ID of the context the link appears in.
 
 
-Column: FileID
+Database Column: FileID
 
 	--- Prototype ---
 		FileID INTEGER NOT NULL
 	-----------------
 
 
-Column: ClassID
+Database Column: ClassID
 
 	--- Prototype ---
 		ClassID INTEGER NOT NULL
 	-----------------
 
 
-Column: LanguageID
+Database Column: LanguageID
 
 	--- Prototype ---
 		LanguageID INTEGER NOT NULL
 	-----------------
 
 
-Column: EndingSymbol
+Database Column: EndingSymbol
 
 	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
@@ -76,7 +76,7 @@ Column: EndingSymbol
 	symbols that apply to this link in <CodeDB.AlternateLinkEndingSymbols>.
 
 
-Column: TargetTopicID
+Database Column: TargetTopicID
 
 	--- Prototype ---
 		TargetTopicID INTEGER NOT NULL
@@ -85,7 +85,7 @@ Column: TargetTopicID
 	The topic ID this link resolves to, or zero if none.
 
 
-Column: TargetClassID
+Database Column: TargetClassID
 
 	--- Prototype ---
 		TargetClassID INTEGER NOT NULL
@@ -97,7 +97,7 @@ Column: TargetClassID
 	parent links by target class in order to get a list of children, and this allows it to be indexed.	
 
 
-Column: TargetScore
+Database Column: TargetScore
 
 	--- Prototype ---
 		TargetScore INTEGER NOT NULL
@@ -111,7 +111,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Index: LinksByID
+Database Index: LinksByID
 
 	--- Prototype ---
 		LinkID INTEGER PRIMARY KEY NOT NULL
@@ -120,35 +120,35 @@ Index: LinksByID
 	Automatically created by LinkID being defined as a primary key.
 
 
-Index: LinksByFileAndType
+Database Index: LinksByFileAndType
 
 	--- Prototype ---
 		CREATE INDEX LinksByFileAndType ON Links (FileID, Type)
 	-----------------
 
 
-Index: LinksByClass
+Database Index: LinksByClass
 
 	--- Prototype ---
 		CREATE INDEX LinksByClass ON Links (ClassID, Type)
 	-----------------
 
 
-Index: LinksByEndingSymbols
+Database Index: LinksByEndingSymbols
 
 	--- Prototype ---
 		CREATE INDEX LinksByEndingSymbols ON Links (EndingSymbol)
 	-----------------
 
 
-Index: LinksByTargetTopicID
+Database Index: LinksByTargetTopicID
 
 	--- Prototype ---
 		CREATE INDEX LinksByTargetTopicID ON Links (TargetTopicID)
 	-----------------
 
 
-Index: LinksByTargetClassID
+Database Index: LinksByTargetClassID
 
 	--- Prototype ---
 		CREATE INDEX LinksByTargetClassID ON Links (TargetClassID, Type)

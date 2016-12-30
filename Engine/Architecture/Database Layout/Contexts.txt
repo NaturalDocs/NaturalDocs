@@ -15,7 +15,7 @@ Group: Columns
 _______________________________________________________________________________
 
 
-Column: ContextID
+Database Column: ContextID
 
 	--- Prototype ---
 		ContextID INTEGER PRIMARY KEY NOT NULL
@@ -24,7 +24,7 @@ Column: ContextID
 	The context identifier.
 	
 	
-Column: ContextString
+Database Column: ContextString
 
 	--- Prototype ---
 		ContextString TEXT NOT NULL
@@ -33,7 +33,7 @@ Column: ContextString
 	The context, encoded with <Engine.Symbols.ContextString>.
 
 
-Column: ReferenceCount
+Database Column: ReferenceCount
 
 	--- Prototype ---
 		ReferenceCount INTEGER NOT NULL
@@ -47,7 +47,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Index: ContextsByID
+Database Index: ContextsByID
 
 	--- Prototype ---
 		ContextID INTEGER PRIMARY KEY NOT NULL
@@ -56,7 +56,7 @@ Index: ContextsByID
 	Automatically created by ContextID being defined as a primary key.
 
 
-Index: ContextsByContextString
+Database Index: ContextsByContextString
 
 	--- Prototype ---
 		CREATE INDEX ContextsByContextString ON Contexts (ContextString)

@@ -11,7 +11,7 @@ Group: Columns
 _______________________________________________________________________________
 
 
-Column: ClassID
+Database Column: ClassID
 
 	--- Prototype ---
 		ClassID INTEGER PRIMARY KEY NOT NULL
@@ -20,7 +20,7 @@ Column: ClassID
 	The class identifier.
 
 
-Column: ClassString
+Database Column: ClassString
 
 	--- Prototype ---
 		ClassString TEXT
@@ -31,7 +31,7 @@ Column: ClassString
 	"coalesce(ClassString, LookupKey)" in the select statement.
 
 
-Column: LookupKey
+Database Column: LookupKey
 
 	--- Prototype ---
 		LookupKey TEXT NOT NULL
@@ -42,7 +42,7 @@ Column: LookupKey
 	can preserve the case as it was entered.
 
 
-Column: ReferenceCount
+Database Column: ReferenceCount
 
 	--- Prototype ---
 		ReferenceCount INTEGER NOT NULL
@@ -56,7 +56,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Index: ClassesByID
+Database Index: ClassesByID
 
 	--- Prototype ---
 		ClassID INTEGER PRIMARY KEY NOT NULL
@@ -65,7 +65,7 @@ Index: ClassesByID
 	Automatically created by ClassID being defined as a primary key.
 
 
-Index: ClassesByLookupKey
+Database Index: ClassesByLookupKey
 
 	--- Prototype ---
 		CREATE INDEX ClassesByLookupKey ON Classes (LookupKey)

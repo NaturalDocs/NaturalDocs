@@ -10,7 +10,7 @@ Group: Columns
 _______________________________________________________________________________
 
 
-Column: TopicID
+Database Column: TopicID
 
 	--- Prototype ---
 		TopicID INTEGER PRIMARY KEY NOT NULL
@@ -19,7 +19,7 @@ Column: TopicID
 	The topic identifier.
 	
 	
-Column: Title
+Database Column: Title
 
 	--- Prototype ---
 		Title TEXT NOT NULL
@@ -28,7 +28,7 @@ Column: Title
 	The topic's title as it should appear in the output.
 	
 	
-Column: Body
+Database Column: Body
 
 	--- Prototype ---
 		Body TEXT
@@ -37,7 +37,7 @@ Column: Body
 	The body of the topic, if any.
 	
 	
-Column: Summary
+Database Column: Summary
 
 	--- Prototype ---
 		Summary TEXT
@@ -46,7 +46,7 @@ Column: Summary
 	The summary of the topic, if any.
 	
 	
-Column: Prototype
+Database Column: Prototype
 
 	--- Prototype ---
 		Prototype TEXT
@@ -55,7 +55,7 @@ Column: Prototype
 	The plain-text prototype of the topic, if any.
 	
 	
-Column: Symbol
+Database Column: Symbol
 
 	--- Prototype ---
 		Symbol TEXT NOT NULL
@@ -64,7 +64,7 @@ Column: Symbol
 	The fully resolved, normalized <Symbols.SymbolString> of the topic.
 	
 
-Column: SymbolDefinitionNumber
+Database Column: SymbolDefinitionNumber
 
 	--- Prototype ---
 		SymbolDefinitionNumber INTEGER NOT NULL
@@ -74,7 +74,7 @@ Column: SymbolDefinitionNumber
 	of the same symbol will receive an incremented number based on the source file order.
 
 
-Column: ClassID
+Database Column: ClassID
 
 	--- Prototype ---
 		ClassID INTEGER NOT NULL
@@ -83,7 +83,7 @@ Column: ClassID
 	The ID of the class this topic creates or is a member of, or zero if it's global.
 
 
-Column: DefinesClass
+Database Column: DefinesClass
 
 	--- Prototype ---
 		DefinesClass INTEGER NOT NULL
@@ -92,7 +92,7 @@ Column: DefinesClass
 	Whether this topic defines its <ClassID> as opposed to just being a member, stored as 1 or 0.
 
 
-Column: IsList
+Database Column: IsList
 
 	--- Prototype ---
 		IsList INTEGER NOT NULL
@@ -102,7 +102,7 @@ Column: IsList
 	list of enums.
 
 
-Column: IsEmbedded
+Database Column: IsEmbedded
 
 	--- Prototype ---
 		IsEmbedded INTEGER NOT NULL
@@ -113,7 +113,7 @@ Column: IsEmbedded
 	appear in the output because they are already covered by the parent.
 
 
-Column: EndingSymbol
+Database Column: EndingSymbol
 
 	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
@@ -122,7 +122,7 @@ Column: EndingSymbol
 	The <Symbols.EndingSymbol> that's derived from <Symbol>.
 	
 	
-Column: TopicTypeID
+Database Column: TopicTypeID
 
 	--- Prototype ---
 		TopicTypeID INTEGER NOT NULL
@@ -131,7 +131,7 @@ Column: TopicTypeID
 	The ID of the topic's type, as managed by <CodeClear.NaturalDocs.Engine.TopicTypes.Manager>.
 	
 	
-Column: DeclaredAccessLevel
+Database Column: DeclaredAccessLevel
 
 	--- Prototype ---
 		DeclaredAccessLevel INTEGER NOT NULL
@@ -141,7 +141,7 @@ Column: DeclaredAccessLevel
 	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	
-Column: EffectiveAccessLevel
+Database Column: EffectiveAccessLevel
 
 	--- Prototype ---
 		EffectiveAccessLevel INTEGER NOT NULL
@@ -151,7 +151,7 @@ Column: EffectiveAccessLevel
 	<CodeClear.NaturalDocs.Engine.Languages.AccessLevel>.
 	
 	
-Column: Tags
+Database Column: Tags
 
 	--- Prototype ---
 		Tags TEXT
@@ -161,7 +161,7 @@ Column: Tags
 	Is a string encoding of a <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet>.
 
 
-Column: FileID
+Database Column: FileID
 
 	--- Prototype ---
 		FileID INTEGER NOT NULL
@@ -170,7 +170,7 @@ Column: FileID
 	The ID of the file it appears in, as managed by <CodeClear.NaturalDocs.Engine.Files.Manager>.
 
 
-Column: FilePosition
+Database Column: FilePosition
 
 	--- Prototype ---
 		FilePosition INTEGER NOT NULL
@@ -181,7 +181,7 @@ Column: FilePosition
 	from <CommentLineNumber> and <CodeLineNumber>.
 	
 
-Column: CommentLineNumber
+Database Column: CommentLineNumber
 
 	--- Prototype ---
 		CommentLineNumber INTEGER NOT NULL
@@ -190,7 +190,7 @@ Column: CommentLineNumber
 	The line number the topic's comment appears on, or zero if it doesn't have one.
 	
 	
-Column: CodeLineNumber
+Database Column: CodeLineNumber
 	
 	--- Prototype ---
 		CodeLineNumber INTEGER NOT NULL
@@ -199,7 +199,7 @@ Column: CodeLineNumber
 	The line number the topic's code element appears on, or zero if it doesn't have one.
 	
 	
-Column: LanguageID
+Database Column: LanguageID
 
 	--- Prototype ---
 		LanguageID INTEGER NOT NULL
@@ -210,7 +210,7 @@ Column: LanguageID
 	container.
 	
 	
-Column: PrototypeContextID
+Database Column: PrototypeContextID
 
 	--- Prototype ---
 		PrototypeContextID INTEGER NOT NULL
@@ -219,7 +219,7 @@ Column: PrototypeContextID
 	The ID of the context any prototype links should appear in, or zero for the global context.
 	
 	
-Column: BodyContextID
+Database Column: BodyContextID
 
 	--- Prototype ---
 		BodyContextID INTEGER NOT NULL
@@ -233,7 +233,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Index: TopicsByID
+Database Index: TopicsByID
 
 	--- Prototype ---
 		TopicID INTEGER PRIMARY KEY NOT NULL
@@ -242,28 +242,28 @@ Index: TopicsByID
 	Automatically created by TopicID being defined as a primary key.
 
 
-Index: TopicsByFile
+Database Index: TopicsByFile
 
 	--- Prototype ---
 		CREATE INDEX TopicsByFile ON Topics (FileID, FilePosition)
 	-----------------
 
 
-Index: TopicsByClass
+Database Index: TopicsByClass
 
 	--- Prototype ---
 		CREATE INDEX TopicsByClass ON Topics (ClassID, FileID, FilePosition)
 	-----------------
 
 
-Index: TopicsByClassDefinition
+Database Index: TopicsByClassDefinition
 
 	--- Prototype ---
 		CREATE INDEX TopicsByClassDefinition ON Topics (ClassID, DefinesClass)
 	-----------------
 
 
-Index: TopicsByEndingSymbol
+Database Index: TopicsByEndingSymbol
 
 	--- Prototype ---
 		CREATE INDEX TopicsByEndingSymbol ON Topics (EndingSymbol)

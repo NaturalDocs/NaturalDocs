@@ -5,7 +5,7 @@ _______________________________________________________________________________
 A simple, one-row table that stores various information about the database.
 
 
-Column: Version
+Database Column: Version
 	
 	--- Prototype ---
 		Version TEXT NOT NULL
@@ -15,7 +15,7 @@ Column: Version
 	so you can safely do "SELECT Version from System" on any past or future version of Natural Docs based on SQLite.
 	
 	
-Column: UsedTopicIDs
+Database Column: UsedTopicIDs
 
 	--- Prototype ---
 		UsedTopicIDs TEXT NOT NULL
@@ -25,7 +25,7 @@ Column: UsedTopicIDs
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
-Column: UsedLinkIDs
+Database Column: UsedLinkIDs
 
 	--- Prototype ---
 		UsedLinkIDs TEXT NOT NULL
@@ -35,7 +35,7 @@ Column: UsedLinkIDs
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
-Column: UsedClassIDs
+Database Column: UsedClassIDs
 
 	--- Prototype ---
 		UsedClassIDs TEXT NOT NULL
@@ -45,7 +45,7 @@ Column: UsedClassIDs
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
-Column: UsedContextIDs
+Database Column: UsedContextIDs
 
 	--- Prototype ---
 		UsedContextIDs TEXT NOT NULL

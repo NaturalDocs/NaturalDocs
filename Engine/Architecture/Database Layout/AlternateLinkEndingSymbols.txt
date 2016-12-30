@@ -11,14 +11,14 @@ Group: Columns
 _______________________________________________________________________________
 
 
-Column: LinkID
+Database Column: LinkID
 	
 	--- Prototype ---
 		LinkID INTEGER NOT NULL
 	-----------------
 	
 	
-Column: EndingSymbol
+Database Column: EndingSymbol
 
 	--- Prototype ---
 		EndingSymbol TEXT NOT NULL
@@ -30,7 +30,7 @@ Group: Indexes
 _______________________________________________________________________________
 
 
-Index: AlternateLinkEndingSymbolsByIDAndSymbol
+Database Index: AlternateLinkEndingSymbolsByIDAndSymbol
 
 	--- Prototype ---
 		PRIMARY KEY (LinkID, EndingSymbol)
@@ -40,7 +40,7 @@ Index: AlternateLinkEndingSymbolsByIDAndSymbol
 	multiple entries for each link ID.
 
 
-Index: AlternateLinkEndingSymbolsBySymbol
+Database Index: AlternateLinkEndingSymbolsBySymbol
 
 	--- Prototype ---
 		CREATE INDEX AlternateLinkEndingSymbolsBySymbol ON AlternateLinkEndingSymbols (EndingSymbol)
