@@ -37,7 +37,6 @@ Table: Block Types
 	diagram -> generic
 	table -> generic
 	code -> code
-	example -> code
 	prototype -> prototype
 	
 	
