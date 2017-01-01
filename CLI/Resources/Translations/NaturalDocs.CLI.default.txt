@@ -60,6 +60,8 @@ Status.CreatingProjectConfigFiles: Creating project configuration files...
 Status.BenchmarksSavedIn(file): Benchmarks saved in {0}.
 Status.CouldNotSaveBenchmarksIn(file): Could not save benchmarks in {0}.
 
+Status.PressAnyKeyToContinue: Press any key to continue...
+
 
 #
 # Command Line

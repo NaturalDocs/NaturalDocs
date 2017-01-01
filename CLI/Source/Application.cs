@@ -150,7 +150,9 @@ namespace CodeClear.NaturalDocs.CLI
 			if (pauseBeforeExit || (pauseOnError && !gracefulExit))
 				{
 				System.Console.WriteLine();
-				System.Console.WriteLine("Press any key to continue...");
+				System.Console.WriteLine(
+					Engine.Locale.SafeGet("NaturalDocs.CLI", "Status.PressAnyKeyToContinue", "Press any key to continue...")
+					);
 				System.Console.ReadKey(true);
 				}
 			}
