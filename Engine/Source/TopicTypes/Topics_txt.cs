@@ -933,8 +933,8 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			// Tags
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsHeader.multiline") );
-			output.AppendLine();
+			//output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsHeader.multiline") );
+			//output.AppendLine();
 
 			if (tags.Count > 0)
 				{
@@ -942,13 +942,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				foreach (string tag in tags)
 					{  output.AppendLine("   " + tag);  }
 				}
-			else
-				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsReference.multiline") );
-				}
+			//else
+				//{
+				//output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsReference.multiline") );
+				//}
 
-			output.AppendLine();
-			output.AppendLine();
+			//output.AppendLine();
+			//output.AppendLine();
 				
 				
 			// Topic Types
