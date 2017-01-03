@@ -7,13 +7,6 @@
 # you upgrade Natural Docs.
 
 
-# Tags
-# ------------------------------------------------------------------------
-
-Tags:
-   API
-
-
 # Topic Types
 # ------------------------------------------------------------------------
 # The syntax reference is after the definitions.
@@ -37,7 +30,6 @@ Topic Type: Interface
    Display Name from Locale: Topics.txt.Interface.DisplayName
    Plural Display Name from Locale: Topics.txt.Interface.PluralDisplayName
 
-   Index: with Class
    Scope: Start
    Flags: Code, Variable Type, Class Hierarchy
 
@@ -50,7 +42,6 @@ Topic Type: Struct
    Display Name from Locale: Topics.txt.Struct.DisplayName
    Plural Display Name from Locale: Topics.txt.Struct.PluralDisplayName
 
-   Index: with Class
    Scope: Start
    Flags: Code, Variable Type, Class Hierarchy
 
@@ -64,7 +55,6 @@ Topic Type: Section
    Display Name from Locale: Topics.txt.Section.DisplayName
    Plural Display Name from Locale: Topics.txt.Section.PluralDisplayName
 
-   Index: No
    Scope: End
    Flags: Documentation
 
@@ -78,7 +68,6 @@ Topic Type: Group
    Display Name from Locale: Topics.txt.Group.DisplayName
    Plural Display Name from Locale: Topics.txt.Group.PluralDisplayName
 
-   Index: No
    Flags: Documentation
 
    Keywords:
@@ -90,7 +79,6 @@ Topic Type: Information
    Display Name from Locale: Topics.txt.Information.DisplayName
    Plural Display Name from Locale: Topics.txt.Information.PluralDisplayName
 
-   Index: No
    Flags: Documentation
 
    Keywords:
@@ -132,7 +120,6 @@ Topic Type: Enumeration
    Display Name from Locale: Topics.txt.Enumeration.DisplayName
    Plural Display Name from Locale: Topics.txt.Enumeration.PluralDisplayName
 
-   Index: with Type
    Flags: Code, Variable Type, Enum
 
    Keywords:
@@ -145,7 +132,6 @@ Topic Type: Delegate
    Display Name from Locale: Topics.txt.Delegate.DisplayName
    Plural Display Name from Locale: Topics.txt.Delegate.PluralDisplayName
 
-   Index: with Type
    Flags: Code, Variable Type
 
    Keywords:
@@ -178,7 +164,6 @@ Topic Type: Operator
    Display Name from Locale: Topics.txt.Operator.DisplayName
    Plural Display Name from Locale: Topics.txt.Operator.PluralDisplayName
 
-   Index: with Function
    Flags: Code
 
    Keywords:
@@ -203,7 +188,6 @@ Topic Type: Property
    Display Name from Locale: Topics.txt.Property.DisplayName
    Plural Display Name from Locale: Topics.txt.Property.PluralDisplayName
 
-   Index: with Function
    Flags: Code
 
    Keywords:
@@ -427,11 +411,6 @@ Topic Type: Database Trigger
 #    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
 #    minus any unacceptable characters.  This is used to generate things like
 #    CSS class names.
-#
-# Index: [yes|no|with [topic type]]
-#    Whether an index should be generated for the topic type.  Defaults to
-#    yes.  If "with [topic type]" is specified, the type is indexed but only
-#    as part of the other topic type's index.
 #
 # Scope: [normal|start|end|always global]
 #    How the topic affects scope.  Defaults to normal.
