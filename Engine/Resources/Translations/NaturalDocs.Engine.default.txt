@@ -453,8 +453,7 @@ Topics.txt.SystemTopicTypesReference.multiline {{{
 # Display Name: [name]
 # Plural Display Name: [name]
 #    The singular and plural name of the topic type as it should appear in the
-#    output.  Change these instead of the topic type name because most of the
-#    default types are required to be defined with their current names.
+#    output.  Defaults to the topic type name.
 #
 # Display Name from Locale: [identifier]
 # Plural Display Name from Locale: [identifier]
