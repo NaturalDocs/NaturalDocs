@@ -1,6 +1,34 @@
 ﻿
 Title: CSS Structure
 
+	Notation:
+
+	This page uses a very simplified notation so you can quickly scan through the CSS classes.
+
+	- Uppercase tags represent CSS classes, so <CBody> is a HTML element with CBody applied.
+	  Style with ".CBody".
+
+	- Lowercase tags represent HTML elements, so <body NDPage> is the body element with NDPage 
+	  applied.  Style with "body.NDPage" or just ".NDPage".
+
+		- Most tags will not specify a element type so you should not rely on them being a particular
+		  type.
+
+	- Multiple tags are multiple CSS classes applied to the same element, so <body NDPage NDContentPage>
+	  is a body element with both NDPage and NDContentPage applied.  Style with "body.NDPage.NDContentPage",
+	  ".NDPage.NDContentPage", or just ".NDContentPage".
+
+	- Hash symbols on tags represent HTML IDs, so <#NDHeader> is a HTML element with NDHeader as
+	  the ID.  Style with "#NDHeader".
+
+	- Question marks after tags means it may or may not appear, so <#NDMenuSizer Dragging?> means
+	  the element may or may not have the CSS class Dragging applied, in this case because it only appears
+	  while it's actively being dragged.
+
+	Hopefully everything else should be self-explanitory.
+
+
+
 
 Topic: Frame Page
 _______________________________________________________________________________
