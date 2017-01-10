@@ -141,6 +141,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (stylePath == null)
 				{
+				if (styleName != "Default" &&
+					System.IO.Directory.Exists( EngineInstance.Config.ProjectConfigFolder + '/' + styleName ) &&
+					System.IO.File.Exists( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" ) == false)
+					{
+					// Generate a default Style.txt for the folder
+
+					HTMLStyle style = new HTMLStyle( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
+
+					// Inherit Default so everything still works before it's filled out.
+					style.AddInheritedStyle("Default");
+
+					if (SaveStyle(style, errorList, false))
+						{  stylePath = style.Location;  }
+					}
+				}
+
+			if (stylePath == null)
+				{
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindStyle(name)", styleName) );
 				return false;
 				}
