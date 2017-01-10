@@ -158,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine
 			
 			string identifier, valueString;
 			
-			if (!Get(out identifier, out valueString) && identifier.ToLower() == "format")
+			if (!Get(out identifier, out valueString) || identifier.ToLower() != "format")
 				{
 				AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.DidntStartWithFormat(name)", fileName) );
 				}
