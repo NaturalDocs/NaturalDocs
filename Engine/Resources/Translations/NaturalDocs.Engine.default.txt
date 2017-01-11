@@ -793,11 +793,10 @@ HTML.Style.txt.InheritanceReference.multiline {{{
 #
 # Inherit: [style]
 #
-# All of its settings will be applied before yours.  You can inherit more than
-# one style.
+# All of its settings will be applied before yours.  You can add this line
+# multiple times to inherit more than one style.
 #
-# If you're building your own style from scratch, do not inherit anything.  If
-# you just want to make some changes to the default style, inherit Default.
+# If you just want to make some changes to the default style, inherit Default.
 # If you're building your own page design from scratch but want to keep the
 # default JavaScript functions, inherit DefaultJS.  This will include the code
 # but not the CSS or images.
@@ -815,13 +814,15 @@ HTML.Style.txt.LinkedFilesReference.multiline {{{
 # Frame Link: [file]
 # Content Link: [file]
 #
-# These files will be included the generated output via link or script tags.
-# If you do not specify a page type, it will be included in every page.
+# These files will be added to the generated output via link or script tags.
 #
-# While all files will be copied to the output folder automatically, they are
-# not linked automatically.  Since JavaScript files can be loaded dynamically
-# and CSS files can be imported from other ones, you must explicitly link the
-# ones you want here.
+# You can limit them to just to the frame page, which handles the header,
+# footer, menu, and summary, or to content pages, which is the documentation
+# in the rightmost panel.  If you do not specify a page type, they will be
+# linked to every page.
+#
+# All files will be copied to the output folder even if you don't link them,
+# but they will not be added to the pages automatically.
 }}}
 
 HTML.Style.txt.OnLoadHeader.multiline {{{
@@ -836,10 +837,13 @@ HTML.Style.txt.OnLoadReference.multiline {{{
 # Frame OnLoad: [statement]
 # Content OnLoad: [statement]
 #
-# If you do not specify a page type, it will be called for every page.
+# You can limit it to just to the frame page, which handles the header,
+# footer, menu, and summary, or to content pages, which is the documentation
+# in the rightmost panel.  If you do not specify a page type, it will be added
+# to every page.
 #
-# The OnLoad statement is confined to a single line.  It's recommended that
-# you make your OnLoad code a function in a separate .js file, link that file
-# from here, and then call it from this statement rather than trying to cram
-# it on this line.
+# The OnLoad statement is limited to a single line.  If you have a lot of code
+# it's recommended that you make it a function in a separate .js file, link
+# that file, and then call the function from this statement rather than trying
+# to cram it all on this line.
 }}}
