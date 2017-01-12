@@ -274,6 +274,9 @@ Project.txt.IgnoreSourceFolderPatternSyntax.multiline {{{
 #    scanning files.  ? matches a single character, * matches zero or more
 #    characters.  It applies to the entire folder name, so "cli" will not
 #    match "client", although "cli*" will.
+#
+#    The data folders of common version control systems (.git, .svn, .cvs, .hg)
+#    are ignored automatically.  You do not have to specify them here.
 }}}
 
 Project.txt.OutputHeader.multiline {{{
