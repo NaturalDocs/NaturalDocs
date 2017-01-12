@@ -763,8 +763,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.InputHeaderText.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderSyntax.multiline") );
-			output.AppendLine("#");
-			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline") );
+			//output.AppendLine("#");
+			//output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 			}
