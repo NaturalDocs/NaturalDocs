@@ -574,9 +574,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected void AppendGlobalProjectInfo (StringBuilder output)
 			{
-			string longYear = DateTime.Now.Year.ToString();
-			string shortYear = longYear.Substring(2, 2);
-
 
 			// Header
 
@@ -625,8 +622,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (hasTimestampCode)
 				{  
 				output.AppendLine("Timestamp: " + projectConfig.ProjectInfo.TimestampCode);
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions(shortYear, longYear).multiline",
-													 shortYear, longYear) );
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
 				output.AppendLine();
 				}
 
@@ -666,8 +662,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  
 				output.AppendLine("#");
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSyntax.multiline") );
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions(shortYear, longYear).multiline",
-													 shortYear, longYear) );
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
 				}
 
 			if (!hasStyleName)

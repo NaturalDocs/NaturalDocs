@@ -204,7 +204,7 @@ Project.txt.TimestampSyntax.multiline {{{
 #    Text explaining when the documentation was generated.  The following
 #    substitutions are performed:
 }}}
-Project.txt.TimestampSubstitutions(shortYear, longYear).multiline {{{
+Project.txt.TimestampSubstitutions.multiline {{{
 #    m     - Single digit month, when possible.  January is "1".
 #    mm    - Always double digit month.  January is "01".
 #    mon   - Short month word.  January is "Jan".
@@ -212,9 +212,9 @@ Project.txt.TimestampSubstitutions(shortYear, longYear).multiline {{{
 #    d     - Single digit day, when possible.  1 is "1".
 #    dd    - Always double digit day.  1 is "01".
 #    day   - Day with text extension.  1 is "1st".
-#    yy    - Double digit year.  {1} is "{0}".
-#    yyyy  - Four digit year.  {1} is "{1}".
-#    year  - Four digit year.  {1} is "{1}".
+#    yy    - Double digit year.  2017 is "17".
+#    yyyy  - Four digit year.  2017 is "2017".
+#    year  - Four digit year.  2017 is "2017".
 }}}
 Project.txt.StyleSyntax.multiline {{{
 # Style: [style]
