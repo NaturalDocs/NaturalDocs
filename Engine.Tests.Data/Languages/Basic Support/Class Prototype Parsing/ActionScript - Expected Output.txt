@@ -1,0 +1,77 @@
+public class AS_Plain
+
+  - Name: AS_Plain
+  - Keyword: class
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+public final class Package.Package.Name
+
+  - Name: Package.Package.Name
+  - Keyword: class
+  - Modifiers: public final
+  - Access Level: Public
+  - No parents
+
+-----
+
+public class AS_Inheritance extends AS_Base
+
+  - Name: AS_Inheritance
+  - Keyword: class
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: AS_Base
+    - Name: AS_Base
+
+-----
+
+public interface AS_Interface
+
+  - Name: AS_Interface
+  - Keyword: interface
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+public class AS_Implements implements AS_Interface
+
+  - Name: AS_Implements
+  - Keyword: class
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: AS_Interface
+    - Name: AS_Interface
+
+-----
+
+public interface AS_ExtendsInterface extends AS_Interface
+
+  - Name: AS_ExtendsInterface
+  - Keyword: interface
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: AS_Interface
+    - Name: AS_Interface
+
+-----
+
+class AS_MultipleImplements implements AS_InterfaceA, AS_InterfaceB
+
+  - Name: AS_MultipleImplements
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: AS_InterfaceA
+    - Name: AS_InterfaceA
+
+  - Parent 2: AS_InterfaceB
+    - Name: AS_InterfaceB

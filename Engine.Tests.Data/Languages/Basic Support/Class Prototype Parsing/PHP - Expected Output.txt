@@ -1,0 +1,81 @@
+class PHP_Plain
+
+  - Name: PHP_Plain
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+abstract class PHP_Modifiers
+
+  - Name: PHP_Modifiers
+  - Keyword: class
+  - Modifiers: abstract
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PHP_Inheritance extends PHP_Base
+
+  - Name: PHP_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: PHP_Base
+    - Name: PHP_Base
+
+-----
+
+interface PHP_Interface
+
+  - Name: PHP_Interface
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class PHP_Implements implements PHP_InterfaceA, PHP_InterfaceB
+
+  - Name: PHP_Implements
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: PHP_InterfaceA
+    - Name: PHP_InterfaceA
+
+  - Parent 2: PHP_InterfaceB
+    - Name: PHP_InterfaceB
+
+-----
+
+interface PHP_InterfaceInheritance extends PHP_InterfaceA, PHP_InterfaceB
+
+  - Name: PHP_InterfaceInheritance
+  - Keyword: interface
+  - Access Level: Unknown
+
+  - Parent 1: PHP_InterfaceA
+    - Name: PHP_InterfaceA
+
+  - Parent 2: PHP_InterfaceB
+    - Name: PHP_InterfaceB
+
+-----
+
+class PHP_ExtendsAndImplements extends PHP_Base implements PHP_InterfaceA, PHP_InterfaceB
+
+  - Name: PHP_ExtendsAndImplements
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: PHP_Base
+    - Name: PHP_Base
+
+  - Parent 2: PHP_InterfaceA
+    - Name: PHP_InterfaceA
+
+  - Parent 3: PHP_InterfaceB
+    - Name: PHP_InterfaceB

@@ -1,0 +1,91 @@
+class Java_Plain
+
+  - Name: Java_Plain
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+protected abstract class Java_Modifiers
+
+  - Name: Java_Modifiers
+  - Keyword: class
+  - Modifiers: protected abstract
+  - Access Level: Protected
+  - No parents
+
+-----
+
+private final class Java_Modifiers
+
+  - Name: Java_Modifiers
+  - Keyword: class
+  - Modifiers: private final
+  - Access Level: Private
+  - No parents
+
+-----
+
+class Java_Inheritance extends Java_Base
+
+  - Name: Java_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Java_Base
+    - Name: Java_Base
+
+-----
+
+interface Java_Interface
+
+  - Name: Java_Interface
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Java_Implements implements Java_InterfaceA, Java_InterfaceB
+
+  - Name: Java_Implements
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Java_InterfaceA
+    - Name: Java_InterfaceA
+
+  - Parent 2: Java_InterfaceB
+    - Name: Java_InterfaceB
+
+-----
+
+interface Java_InterfaceInheritance extends Java_InterfaceA, Java_InterfaceB
+
+  - Name: Java_InterfaceInheritance
+  - Keyword: interface
+  - Access Level: Unknown
+
+  - Parent 1: Java_InterfaceA
+    - Name: Java_InterfaceA
+
+  - Parent 2: Java_InterfaceB
+    - Name: Java_InterfaceB
+
+-----
+
+class Java_ExtendsAndImplements extends Java_Base implements Java_InterfaceA, Java_InterfaceB
+
+  - Name: Java_ExtendsAndImplements
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Java_Base
+    - Name: Java_Base
+
+  - Parent 2: Java_InterfaceA
+    - Name: Java_InterfaceA
+
+  - Parent 3: Java_InterfaceB
+    - Name: Java_InterfaceB

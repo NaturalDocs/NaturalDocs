@@ -1,0 +1,78 @@
+class CPP_Plain
+
+  - Name: CPP_Plain
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class CPP_Public_Inheritance : public CPP_Base
+
+  - Name: CPP_Public_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: public CPP_Base
+    - Name: CPP_Base
+    - Modifiers: public
+
+-----
+
+class CPP_Protected_Inheritance : protected CPP_Base
+
+  - Name: CPP_Protected_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: protected CPP_Base
+    - Name: CPP_Base
+    - Modifiers: protected
+
+-----
+
+class CPP_Private_Inheritance : private CPP_Base
+
+  - Name: CPP_Private_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: private CPP_Base
+    - Name: CPP_Base
+    - Modifiers: private
+
+-----
+
+class CPP_Multiple_Inheritance : public CPP_BaseA, public CPP_BaseB
+
+  - Name: CPP_Multiple_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: public CPP_BaseA
+    - Name: CPP_BaseA
+    - Modifiers: public
+
+  - Parent 2: public CPP_BaseB
+    - Name: CPP_BaseB
+    - Modifiers: public
+
+-----
+
+class CPP_Mixed_Multiple_Inheritance : private CPP_BaseA, public CPP_BaseB, protected CPP_BaseC
+
+  - Name: CPP_Mixed_Multiple_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: private CPP_BaseA
+    - Name: CPP_BaseA
+    - Modifiers: private
+
+  - Parent 2: public CPP_BaseB
+    - Name: CPP_BaseB
+    - Modifiers: public
+
+  - Parent 3: protected CPP_BaseC
+    - Name: CPP_BaseC
+    - Modifiers: protected
