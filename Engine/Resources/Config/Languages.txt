@@ -57,6 +57,8 @@ Language: Java
    Enum Values: Under Type
    Case Sensitive: Yes
 
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
 
@@ -97,6 +99,7 @@ Language: Python
    Line Extender: \
    Case Sensitive: Yes
 
+   Class Prototype Ender: :
    Function Prototype Ender: :
    Variable Prototype Ender: =
 
@@ -110,6 +113,8 @@ Language: PHP
    Block Comment: /* */
    Case Sensitive: Yes
 
+   Class Prototype Enders: {
+   Interface Prototype Enders: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
@@ -142,6 +147,8 @@ Language: Visual Basic
    Enum Values: Under Type
    Case Sensitive: No
 
+   Class Prototype Ender: \n
+   Interface Prototype Ender: \n
    Function Prototype Ender: \n
    Variable Prototype Enders: \n =
 
@@ -206,6 +213,7 @@ Language: Ruby
    Enum Values: Under Parent
    Case Sensitive: Yes
 
+   Class Prototype Enders: \n
    Function Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
@@ -234,6 +242,8 @@ Language: ActionScript
    Block Comment: /* */
    Case Sensitive: Yes
 
+   Class Prototype Enders: {
+   Interface Prototype Enders: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
