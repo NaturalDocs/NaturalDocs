@@ -50,15 +50,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public Perl (Languages.Manager manager) : base (manager, "Perl")
 			{
-			Type = LanguageType.BasicSupport;
-
-			LineCommentStrings = new string[] { "#" };
-			JavadocLineCommentStringPairs = new string[] { "##", "#" };
-			XMLLineCommentStrings = new string[] { "###" };
-
-			MemberOperator = "::";
-			EnumValue = EnumValues.Global;
-			CaseSensitive = true;
 			}
 
 
