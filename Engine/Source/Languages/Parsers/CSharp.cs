@@ -672,19 +672,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Constraint clauses
 
-			TokenIterator startOfConstraints = lookahead;
-			TokenIterator endOfConstraints = lookahead;
-
 			while (TryToSkipWhereClause(ref lookahead, mode))
-				{  
-				endOfConstraints = lookahead;
-				TryToSkipWhitespace(ref lookahead);  
-				}
-
-			if (endOfConstraints > startOfConstraints)
-				{
-				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfConstraints, endOfConstraints, ClassPrototypeParsingType.PostParentModifier);
-				}
+				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Start of body
@@ -2379,7 +2368,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *			- It will be marked with <PrototypeParsingType.StartOfPostPrototypeLine> and <PrototypeParsingType.PostPrototypeLine>.
 		 *		- <ParseMode.ParseClassPrototype>
-		 *			- It will be marked with <ClassPrototypeParsingType.PostParentModifier>.
+		 *			- It will be marked with <ClassPrototypeParsing.StartOfPostPrototypeLine> and <ClassPrototypeParsingType.PostPrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipWhereClause (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
@@ -2459,7 +2448,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (mode == ParseMode.ParseClassPrototype)
 				{
-				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, endOfClause, ClassPrototypeParsingType.PostParentModifier);
+				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, endOfClause, ClassPrototypeParsingType.PostPrototypeLine);
+				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPostPrototypeLine;
 				}
 
 			iterator = endOfClause;
