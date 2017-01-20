@@ -4,7 +4,7 @@ class WhereClause<X> where X : struct
   - Template Suffix: <X>
   - Keyword: class
   - Access Level: Unknown
-  - Post Modifiers: where X : struct
+  - Post-Prototype Line: where X : struct
   - No parents
 
 -----
@@ -15,7 +15,8 @@ class MultipleWhereClauses<X,Y> where X : BaseClass where Y : new(), class
   - Template Suffix: <X,Y>
   - Keyword: class
   - Access Level: Unknown
-  - Post Modifiers: where X : BaseClass where Y : new(), class
+  - Post-Prototype Line: where X : BaseClass
+  - Post-Prototype Line: where Y : new(), class
   - No parents
 
 -----
@@ -26,7 +27,8 @@ class WhereClausesWithInheritance<X,Y> : Parent1<X>, Parent2<Y> where X : A.B.Ba
   - Template Suffix: <X,Y>
   - Keyword: class
   - Access Level: Unknown
-  - Post Modifiers: where X : A.B.BaseClass, X.Y.Interface where Y : new(), class
+  - Post-Prototype Line: where X : A.B.BaseClass, X.Y.Interface
+  - Post-Prototype Line: where Y : new(), class
 
   - Parent 1: Parent1<X>
     - Name: Parent1

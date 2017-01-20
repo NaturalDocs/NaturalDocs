@@ -74,8 +74,16 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					if (parsedPrototype.GetModifiers(out start, out end))
 						{  output.AppendLine("  - Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 					output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
-					if (parsedPrototype.GetPostModifiers(out start, out end))
-						{  output.AppendLine("  - Post Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+
+					numberOfLines = parsedPrototype.NumberOfPostPrototypeLines;
+
+					for (int i = 0; i < numberOfLines; i++)
+						{
+						parsedPrototype.GetPostPrototypeLine(i, out start, out end);
+						output.Append("  - Post-Prototype Line: ");
+						parsedPrototype.Tokenizer.AppendTextBetweenTo(start, end, output);
+						output.AppendLine();
+						}
 
 					int numberOfParents = parsedPrototype.NumberOfParents;
 
