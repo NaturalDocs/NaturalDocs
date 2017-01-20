@@ -47,9 +47,7 @@
  *				 use c.  It's important for the documentation to be consistent as a whole regardless of the underlying format 
  *				 of individual comments.
  *				 
- *			include - Ignored.  Natural Docs is not set up to handle extracting external XML via query.  This can possibly 
- *						 be added in the future assuming .NET has native functions to handle the query, but I don't know how 
- *						 often this is used in practice.
+ *			include - Ignored.  Natural Docs is not set up to handle extracting external XML via query.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
