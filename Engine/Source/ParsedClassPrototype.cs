@@ -47,11 +47,12 @@ namespace CodeClear.NaturalDocs.Engine
 		 * 
 		 * PrePrototypeLine - A line that should appear separately before the prototype.
 		 * BeforeParents - The prototype prior to the parents.  If there are no parents, this will be the entire prototype.
-		 *	Parent - An individual parent.  This will not include separators.
-		 *	AfterParents - The prototype after the parents.
+		 * Parent - An individual parent.  This will not include separators.
+		 * AfterParents - The prototype after the parents.
+		 * PostPrototypeLine - A line that should appear separately after the prototype.
 		 */
 		public enum SectionType : byte
-			{  PrePrototypeLine, BeforeParents, Parent, AfterParents  }
+			{  PrePrototypeLine, BeforeParents, Parent, AfterParents, PostPrototypeLine  }
 
 
 
@@ -170,16 +171,6 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
-		/* Function: GetPostModifiers
-		 * Gets the bounds of any modifiers that appear after the class name and parents, or returns false if there aren't any.
-		 */
-		public bool GetPostModifiers (out TokenIterator start, out TokenIterator end)
-			{
-			return GetTokensInSection(SectionType.AfterParents, 0, ClassPrototypeParsingType.PostParentModifier,
-												 out start, out end);
-			}
-
-
 		/* Function: GetParent
 		 * Gets the bounds of the numbered parent, or returns false if it doesn't exist.  Numbers start at zero.
 		 */
@@ -216,6 +207,16 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			return GetTokensInSection(SectionType.Parent, index, ClassPrototypeParsingType.TemplateSuffix,
 												 out start, out end);
+			}
+
+
+		/* Function: GetPostPrototypeLine
+		 * Returns the bounds of a numbered post-prototype line.  Numbers start at zero.  It will return false if one does not
+		 * exist at that number.
+		 */
+		public bool GetPostPrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
+			{
+			return GetSectionBounds(SectionType.PostPrototypeLine, lineNumber, out start, out end);
 			}
 
 
@@ -261,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			while (iterator.IsInBounds && 
 					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfParents &&
-					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 					iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 				{  iterator.Next();  }
 
@@ -283,7 +284,7 @@ namespace CodeClear.NaturalDocs.Engine
 				iterator.NextPastWhitespace();
 
 				while (iterator.IsInBounds &&
-						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 					{
 					startOfSection = iterator;
@@ -294,7 +295,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 					while (iterator.IsInBounds &&
 							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.ParentSeparator &&
-							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.PostParentModifier &&
+							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 						{  iterator.Next();  }
 
@@ -318,18 +319,48 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// After Parents
 
-			if (iterator.IsInBounds)
+			if (iterator.IsInBounds &&
+				iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
+				iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 				{
+				startOfSection = iterator;
+
 				section = new Section();
 				section.Type = SectionType.AfterParents;
 				section.StartIndex = iterator.TokenIndex;
 
-				startOfSection = iterator;
-				iterator = tokenizer.LastToken;
-				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+				do 
+					{  iterator.Next();  }
+				while (iterator.IsInBounds &&
+						  iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
+						  iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody);
+
+				lookbehind = iterator;
+				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+				section.EndIndex = lookbehind.TokenIndex;
+				sections.Add(section);
+				}
+
+
+			// Post-Prototype Lines
+
+			while (iterator.IsInBounds && 
+					 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfPostPrototypeLine)
+				{
+				section = new Section();
+				section.Type = SectionType.PostPrototypeLine;
+				section.StartIndex = iterator.TokenIndex;
+
+				do
+					{  iterator.Next();  }
+				while (iterator.IsInBounds && 
+						 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.PostPrototypeLine);
 
 				section.EndIndex = iterator.TokenIndex;
 				sections.Add(section);
+
+				iterator.NextPastWhitespace();
 				}
 			}
 
@@ -453,6 +484,17 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  
 				return CountSections(SectionType.PrePrototypeLine);
+				}
+			}
+
+
+		/* Property: NumberOfPostPrototypeLines
+		 */
+		public int NumberOfPostPrototypeLines
+			{
+			get
+				{  
+				return CountSections(SectionType.PostPrototypeLine);
 				}
 			}
 

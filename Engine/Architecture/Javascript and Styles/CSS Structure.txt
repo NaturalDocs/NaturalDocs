@@ -392,7 +392,9 @@ _______________________________________________________________________________
 				<Qualifier>Package.Package.</Qualifier>Title<TemplateSignature>signature</TemplateSignature>
 			</CPName>
 
-			<CPPostModifiers>text</CPPostModifiers>?
+			<CPPostPrototypeLine>
+				...
+			</CPPostPrototypeLine>
 
 		</CPEntry T[TopicType] Current/Parent/Child>
 

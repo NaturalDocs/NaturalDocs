@@ -475,10 +475,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("</div>");
 
-			if (topic.ParsedClassPrototype.GetPostModifiers(out startModifiers, out endModifiers))
+
+			// Post-prototype lines
+
+			lineCount = parsedPrototype.NumberOfPostPrototypeLines;
+
+			for (int i = 0; i < lineCount; i++)
 				{
-				htmlOutput.Append("<div class=\"CPPostModifiers\">");
-				BuildSyntaxHighlightedText(startModifiers, endModifiers, htmlOutput);
+				parsedPrototype.GetPostPrototypeLine(i, out start, out end);
+
+				htmlOutput.Append("<div class=\"CPPostPrototypeLine\">");
+				BuildSyntaxHighlightedText(start, end);
 				htmlOutput.Append("</div>");
 				}
 

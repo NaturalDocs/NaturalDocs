@@ -902,18 +902,16 @@ body.NDContentPage {
 
 	.CPEntry .CPPrePrototypeLine,
 	.CPEntry .CPModifiers,
-	.CPEntry .CPPostModifiers {
+	.CPEntry .CPPostPrototypeLine {
 		font: 8pt `CodeFontFamily;
 		opacity: .5;
 		}
 	.CPEntry.Parent .CPModifiers,
-	.CPEntry.Parent .CPPostModifiers,
-	.CPEntry.Child .CPModifiers,
-	.CPEntry.Child .CPPostModifiers {
+	.CPEntry.Child .CPModifiers {
 		opacity: .75;
 		}
-	.CPEntry .CPPostModifiers {
-		margin-top: .1em;
+	.CPEntry .CPPostPrototypeLine {
+		margin-left: 5ex;
 		}
 
 	a.CPAdditionalChildrenNotice:link,

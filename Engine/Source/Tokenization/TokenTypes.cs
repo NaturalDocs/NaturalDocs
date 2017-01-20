@@ -146,7 +146,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * 
 	 * TemplateSuffix - Extra template information after a class or parent, such as "<T>" in "List<T>".
 	 * 
-	 * PostParentModifier - Class modifiers appearing after the parent list, such as "where T: class".
+	 * StartOfPostPrototypeLine - The first token of a new post-prototype line.  Each token marked with this starts a new line.
+	 * PostPrototypeLine - Part of a line that should be shown after the prototype.
 	 * 
 	 * StartOfBody - The start of the class's body if it is present in the prototype.  Nothing beyond that is demarcated, including the end
 	 *								of the body.  This token is just present to indicate that the prototype does contain a body.
@@ -163,7 +164,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		TemplateSuffix,
 
-		PostParentModifier,
+		StartOfPostPrototypeLine, PostPrototypeLine,
 
 		StartOfBody
 		}
