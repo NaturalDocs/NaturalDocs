@@ -45,12 +45,13 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Enum: SectionType
 		 * 
+		 * PrePrototypeLine - A line that should appear separately before the prototype.
 		 * BeforeParents - The prototype prior to the parents.  If there are no parents, this will be the entire prototype.
 		 *	Parent - An individual parent.  This will not include separators.
 		 *	AfterParents - The prototype after the parents.
 		 */
 		public enum SectionType : byte
-			{  BeforeParents, Parent, AfterParents  }
+			{  PrePrototypeLine, BeforeParents, Parent, AfterParents  }
 
 
 
@@ -65,6 +66,16 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			tokenizer = prototype;
 			sections = null;
+			}
+
+
+		/* Function: GetPrePrototypeLine
+		 * Returns the bounds of a numbered pre-prototype line.  Numbers start at zero.  It will return false if one does not
+		 * exist at that number.
+		 */
+		public bool GetPrePrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
+			{
+			return GetSectionBounds(SectionType.PrePrototypeLine, lineNumber, out start, out end);
 			}
 
 
@@ -213,16 +224,38 @@ namespace CodeClear.NaturalDocs.Engine
 		protected void CalculateSections ()
 			{
 			sections = new List<Section>();
-
-
-			// Before Parents
+			Section section = null;
 
 			TokenIterator iterator = tokenizer.FirstToken;
 			iterator.NextPastWhitespace();
 
+
+			// Pre-Prototype Lines
+
+			while (iterator.IsInBounds && 
+					 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.StartOfPrePrototypeLine)
+				{
+				section = new Section();
+				section.Type = SectionType.PrePrototypeLine;
+				section.StartIndex = iterator.TokenIndex;
+
+				do
+					{  iterator.Next();  }
+				while (iterator.IsInBounds && 
+						 iterator.ClassPrototypeParsingType == ClassPrototypeParsingType.PrePrototypeLine);
+
+				section.EndIndex = iterator.TokenIndex;
+				sections.Add(section);
+
+				iterator.NextPastWhitespace();
+				}
+
+
+			// Before Parents
+
 			TokenIterator startOfSection = iterator;
 
-			Section section = new Section();
+			section = new Section();
 			section.Type = SectionType.BeforeParents;
 			section.StartIndex = startOfSection.TokenIndex;
 
@@ -410,6 +443,17 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			get
 				{  return tokenizer;  }
+			}
+
+
+		/* Property: NumberOfPrePrototypeLines
+		 */
+		public int NumberOfPrePrototypeLines
+			{
+			get
+				{  
+				return CountSections(SectionType.PrePrototypeLine);
+				}
 			}
 
 

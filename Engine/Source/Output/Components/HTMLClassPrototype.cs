@@ -364,6 +364,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			htmlOutput.Append("<div class=\"CPEntry T" + EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier +" Current\">");
 
 
+			// Pre-prototype lines
+
+			int lineCount = parsedPrototype.NumberOfPrePrototypeLines;
+			TokenIterator start, end;
+
+			for (int i = 0; i < lineCount; i++)
+				{
+				parsedPrototype.GetPrePrototypeLine(i, out start, out end);
+
+				htmlOutput.Append("<div class=\"CPPrePrototypeLine\">");
+				BuildSyntaxHighlightedText(start, end);
+				htmlOutput.Append("</div>");
+				}
+
+
 			// Keyword and modifiers.  We only show the keyword if it's not "class".
 
 			TokenIterator startKeyword, endKeyword;

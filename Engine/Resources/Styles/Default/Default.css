@@ -900,6 +900,7 @@ body.NDContentPage {
 		opacity: .5;
 		}
 
+	.CPEntry .CPPrePrototypeLine,
 	.CPEntry .CPModifiers,
 	.CPEntry .CPPostModifiers {
 		font: 8pt `CodeFontFamily;
@@ -1082,6 +1083,10 @@ body.NDContentPage {
 .SHMetadata {
 	color: #808000;
 	}
+	.CPPrePrototypeLine .SHMetadata {
+		/*  Normal color is too light to easily read at .5 opacity  */
+		color: #484800;
+		}
 
 
 

@@ -134,6 +134,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * 
 	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 * 
+	 * StartOfPrePrototypeLine - The first token of a new pre-prototype line.  Each token marked with this starts a new line.
+	 * PrePrototypeLine - Part of a line that should be shown before the prototype.
+	 * 
 	 * StartOfParents - The start of a parent list.
 	 * ParentSeparator - A separator between parents, such as a comma.
 	 * 
@@ -151,6 +154,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	public enum ClassPrototypeParsingType :  byte
 		{
 		Null = 0,
+
+		StartOfPrePrototypeLine, PrePrototypeLine,
 
 		StartOfParents, ParentSeparator,
 

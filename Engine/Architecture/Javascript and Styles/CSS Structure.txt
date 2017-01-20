@@ -382,6 +382,10 @@ _______________________________________________________________________________
 
 		<CPEntry T[TopicType] Current/Parent/Child>
 
+			<CPPrePrototypeLine>
+				...
+			</CPPrePrototypeLine>
+
 			<CPModifiers>text</CPModifiers>?
 
 			<CPName>
