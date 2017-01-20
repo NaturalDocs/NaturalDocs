@@ -767,36 +767,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  
 					getParents = false;
 					}
-				else if (iterator.MatchesToken("where"))
-					{
-					TokenIterator lookahead = iterator;
-					lookahead.Next();
-
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous();
-
-					if (lookahead.Character != '_' && lookbehind.Character != '_')
-						{
-						while (lookahead.IsInBounds && lookahead.Character != '{')
-							{
-							if (TryToSkipComment(ref lookahead) ||
-								 TryToSkipString(ref lookahead) ||
-								 TryToSkipBlock(ref lookahead, true))
-								{  }
-							else
-								{  lookahead.Next();  }
-							}
-
-						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.PostParentModifier);
-
-						if (lookahead.Character == '{')
-							{  lookahead.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfBody;  }
-
-						getParents = false;
-						}
-					else
-						{  iterator.Next();  }
-					}
 				else if (TryToSkipComment(ref iterator) ||
 						  TryToSkipString(ref iterator) ||
 						  TryToSkipBlock(ref iterator, true))
@@ -825,22 +795,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				while (iterator < endOfParent)
 					{
-					if (iterator.MatchesToken("where"))
-						{
-						TokenIterator lookahead = iterator;
-						lookahead.Next();
-
-						TokenIterator lookbehind = iterator;
-						lookbehind.Previous();
-						
-						if ( (lookahead >= endOfParent || lookahead.Character != '_') && 
-							 (lookbehind < startOfParent || lookbehind.Character != '_') )
-							{
-							// We've reached a "where" clause so we can stop looking for a name.
-							break;
-							}
-						}
-
 					if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
 						{
 						startOfName = iterator;
