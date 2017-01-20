@@ -29,19 +29,21 @@ class Template<T>
 
 [Something] struct Metadata
 
+  - Pre-Prototype Line: [Something]
   - Name: Metadata
   - Keyword: struct
-  - Modifiers: [Something]
   - Access Level: Unknown
   - No parents
 
 -----
 
-[Something("value", 2)] public static interface Everything<X, Y>
+[Something("value", 2)] [SomethingElse] public static interface Everything<X, Y>
 
+  - Pre-Prototype Line: [Something("value", 2)]
+  - Pre-Prototype Line: [SomethingElse]
   - Name: Everything
   - Template Suffix: <X, Y>
   - Keyword: interface
-  - Modifiers: [Something("value", 2)] public static
+  - Modifiers: public static
   - Access Level: Public
   - No parents

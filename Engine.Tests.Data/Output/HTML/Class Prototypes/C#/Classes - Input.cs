@@ -17,4 +17,5 @@ class Template<T> { }
 struct Metadata { }
 
 [Something("value", 2)]
+[SomethingElse]
 public static interface Everything<X, Y> { }

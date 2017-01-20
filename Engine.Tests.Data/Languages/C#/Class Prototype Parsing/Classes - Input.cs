@@ -14,4 +14,5 @@ struct Metadata { }
 
 // Interface: Everything
 [Something("value", 2)]
+[SomethingElse]
 public static interface Everything<X, Y> { }

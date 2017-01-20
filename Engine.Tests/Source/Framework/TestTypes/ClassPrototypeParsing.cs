@@ -52,6 +52,16 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					output.AppendLine(topics[topicIndex].Prototype);
 					output.AppendLine();
 
+					int numberOfLines = parsedPrototype.NumberOfPrePrototypeLines;
+
+					for (int i = 0; i < numberOfLines; i++)
+						{
+						parsedPrototype.GetPrePrototypeLine(i, out start, out end);
+						output.Append("  - Pre-Prototype Line: ");
+						parsedPrototype.Tokenizer.AppendTextBetweenTo(start, end, output);
+						output.AppendLine();
+						}
+
 					if (parsedPrototype.GetName(out start, out end))
 						{  output.AppendLine("  - Name: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 					else
