@@ -21,6 +21,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
+//	[test][your-mom]
 	public class CSharp : Language
 		{
 
@@ -579,18 +580,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Attributes
 
-			TokenIterator startOfModifiers = lookahead;
-			TokenIterator endOfModifiers = lookahead;
-			
-			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode, PrototypeParsingType.PrePrototypeLine))
-				{  
-				endOfModifiers = lookahead;
-				TryToSkipWhitespace(ref lookahead);  
-				}
+			if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly, mode))
+				{  TryToSkipWhitespace(ref lookahead);  }
 
 
 			// Modifiers
 
+			TokenIterator startOfModifiers = lookahead;
+			TokenIterator endOfModifiers = lookahead;
+			
 			AccessLevel accessLevel;
 
 			// This covers "partial" as well, even though that's listed separately in the documentaton.
@@ -2478,9 +2476,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.IterateOnly>
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- <ParseMode.ParsePrototype>
-		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.Name> or
-		 *			  <PrototypeParsingType.Type>.  If set to Type, it will use both <PrototypeParsingType.Type> and 
-		 *			  <PrototypeParsingType.TypeQualifier>.
+		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>.
+		 *			  If set to <PrototypeParsingType.PrePrototypeLine>, it will also mark the first one with <PrototypeParsingType.StartOfPrePrototypeLine>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttributes (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
@@ -2517,6 +2516,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *			- Set prototypeParsingType to the type you would like them to be marked as, such as <PrototypeParsingType.TypeModifier>.
 		 *			  If set to <PrototypeParsingType.PrePrototypeLine>, it will also mark the first one with <PrototypeParsingType.StartOfPrePrototypeLine>.
+		 *		- <ParseMode.ParseClassPrototype>
+		 *			- Will mark the first one with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipAttribute (ref TokenIterator iterator, AttributeTarget type = AttributeTarget.Any, 
@@ -2557,6 +2558,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (prototypeParsingType == PrototypeParsingType.PrePrototypeLine)
 					{  startOfAttribute.PrototypeParsingType = PrototypeParsingType.StartOfPrePrototypeLine;  }
+				}
+			else if (mode == ParseMode.ParseClassPrototype)
+				{  
+				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfAttribute, iterator, ClassPrototypeParsingType.PrePrototypeLine);  
+				startOfAttribute.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				}
 
 			return true;
