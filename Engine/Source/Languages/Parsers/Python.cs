@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Languages.Parsers.Python
  * ____________________________________________________________________________
  * 
- * Additional language support for Perl.
+ * Additional language support for Python.
  * 
  */
 
