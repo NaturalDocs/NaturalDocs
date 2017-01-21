@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			extensions = new StringTable<Language>(KeySettingsForExtensions);
 			shebangStrings = new SortedStringTable<Language>(new ShebangStringComparer(), KeySettingsForShebangStrings);
 			
-			predefinedLanguages = new Language[4];
+			predefinedLanguages = new Language[5];
 			
 			predefinedLanguages[0] = new Language(this, "Text File");
 			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
@@ -63,6 +63,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			predefinedLanguages[3] = new Languages.Parsers.Perl(this);
 			predefinedLanguages[3].Predefined = true;
+
+			predefinedLanguages[4] = new Languages.Parsers.Python(this);
+			predefinedLanguages[4].Predefined = true;
 			}
 
 
