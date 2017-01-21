@@ -2943,21 +2943,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
-		/* Function: ResetTokensBetween
-		 * If the mode is <ParseMode.SyntaxHighlight>, <ParseMode.ParsePrototype>, or <ParseMode.ParseClassPrototype>, this will
-		 * reset the relevant tokens between the iterators back to null.  For other modes it has no effect.
-		 */
-		protected void ResetTokensBetween (TokenIterator start, TokenIterator end, ParseMode mode)
-			{
-			if (mode == ParseMode.SyntaxHighlight)
-				{  start.Tokenizer.SetSyntaxHighlightingTypeBetween(start, end, SyntaxHighlightingType.Null);  }
-			else if (mode == ParseMode.ParsePrototype)
-				{  start.Tokenizer.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.Null);  }
-			else if (mode == ParseMode.ParseClassPrototype)
-				{  start.Tokenizer.SetClassPrototypeParsingTypeBetween(start, end, ClassPrototypeParsingType.Null);  }
-			}
-
-
 
 		// Group: Static Variables
 		// __________________________________________________________________________
