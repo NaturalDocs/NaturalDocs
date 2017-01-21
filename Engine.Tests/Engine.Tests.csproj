@@ -109,6 +109,7 @@
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\Perl\CommentDetection.cs" />
     <Compile Include="Source\Languages\Python\ClassPrototypeParsing.cs" />
+    <Compile Include="Source\Languages\Ruby\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />

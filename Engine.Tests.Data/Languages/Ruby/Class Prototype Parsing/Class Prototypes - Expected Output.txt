@@ -1,0 +1,17 @@
+class Ruby_Plain
+
+  - Name: Ruby_Plain
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Ruby_Inheritance < Ruby_Base
+
+  - Name: Ruby_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Ruby_Base
+    - Name: Ruby_Base
