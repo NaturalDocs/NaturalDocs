@@ -284,6 +284,7 @@ namespace CodeClear.NaturalDocs.Engine
 				iterator.NextPastWhitespace();
 
 				while (iterator.IsInBounds &&
+						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.EndOfParents &&
 						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 						 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 					{
@@ -295,6 +296,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 					while (iterator.IsInBounds &&
 							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.ParentSeparator &&
+							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.EndOfParents &&
 							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfPostPrototypeLine &&
 							 iterator.ClassPrototypeParsingType != ClassPrototypeParsingType.StartOfBody)
 						{  iterator.Next();  }

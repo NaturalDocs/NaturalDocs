@@ -139,6 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * 
 	 * StartOfParents - The start of a parent list.
 	 * ParentSeparator - A separator between parents, such as a comma.
+	 * EndOfParents - The end of a parent list for languages like Python that use parenthesis.
 	 * 
 	 * Modifier - A separate word modifying the class or parent, such as "public" or "static".
 	 * Keyword - The keyword used to declare the class, such as "class", "struct", or "interface".
@@ -158,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		StartOfPrePrototypeLine, PrePrototypeLine,
 
-		StartOfParents, ParentSeparator,
+		StartOfParents, ParentSeparator, EndOfParents,
 
 		Modifier, Keyword, Name,
 
