@@ -1,0 +1,17 @@
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">Python_Plain</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPName">Python_Empty_Parens</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Python_Base</div></div><div class="CPEntry TClass Current"><div class="CPName">Python_Inheritance</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_Base</div></div><div class="CPEntry TClass Current"><div class="CPName">Python_Module_Inheritance</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Python_BaseA</div></div><div class="CPEntry Parent TClass"><div class="CPName">Python_BaseB</div></div><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_BaseC</div></div><div class="CPEntry TClass Current"><div class="CPName">Python_Multiple_Inheritance</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Unicode_Python_Base</div></div><div class="CPEntry TClass Current"><div class="CPName">Unicode_Python</div></div></div>
+-----
+<div class="NDClassPrototype"><div class="CPEntry TClass Current"><div class="CPPrePrototypeLine">@f1(arg)</div><div class="CPPrePrototypeLine">@f2 </div><div class="CPName">Python_Decorators</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPModifiers">metaclass</div><div class="CPName">Python_Metaclass</div></div><div class="CPEntry TClass Current"><div class="CPName">Python_Metaclass</div></div></div>
+-----
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPModifiers">metaclass</div><div class="CPName">Python_Metaclass</div></div><div class="CPEntry Parent TClass"><div class="CPName">Unicode_Python_Base</div></div><div class="CPEntry Parent TClass"><div class="CPName"><span class="Qualifier">module.</span>&#8203;Python_Module_Base</div></div><div class="CPEntry TClass Current"><div class="CPPrePrototypeLine">@f1(arg)</div><div class="CPPrePrototypeLine">@f2 </div><div class="CPName">Everything</div></div></div>

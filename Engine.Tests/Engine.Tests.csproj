@@ -108,9 +108,11 @@
     <Compile Include="Source\Languages\C#\CommentMerging.cs" />
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\Perl\CommentDetection.cs" />
+    <Compile Include="Source\Languages\Python\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\ClassPrototypes\Python.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\CSharp.cs" />
     <Compile Include="Source\Output\HTML\CodeSections.cs" />
     <Compile Include="Source\Output\HTML\Links.cs" />

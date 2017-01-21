@@ -1,0 +1,108 @@
+class Python_Plain
+
+  - Name: Python_Plain
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Python_Empty_Parens ()
+
+  - Name: Python_Empty_Parens
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Python_Inheritance (Python_Base)
+
+  - Name: Python_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Python_Base
+    - Name: Python_Base
+
+-----
+
+class Python_Module_Inheritance (module.Python_Base)
+
+  - Name: Python_Module_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: module.Python_Base
+    - Name: module.Python_Base
+
+-----
+
+class Python_Multiple_Inheritance (Python_BaseA, Python_BaseB, module.Python_BaseC)
+
+  - Name: Python_Multiple_Inheritance
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Python_BaseA
+    - Name: Python_BaseA
+
+  - Parent 2: Python_BaseB
+    - Name: Python_BaseB
+
+  - Parent 3: module.Python_BaseC
+    - Name: module.Python_BaseC
+
+-----
+
+class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base)
+
+  - Name: Ŭnicode_Pŷthon
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Ŭnicode_Pŷthon_Base
+    - Name: Ŭnicode_Pŷthon_Base
+
+-----
+
+@f1(arg) @f2 class Python_Decorators
+
+  - Pre-Prototype Line: @f1(arg)
+  - Pre-Prototype Line: @f2 
+  - Name: Python_Decorators
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+class Python_Metaclass (metaclass=Python_Metaclass)
+
+  - Name: Python_Metaclass
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: metaclass=Python_Metaclass
+    - Name: Python_Metaclass
+    - Modifiers: metaclass
+
+-----
+
+@f1(arg) @f2 class Everything (metaclass=Python_Metaclass, Ŭnicode_Pŷthon_Base, module.Python_Module_Base)
+
+  - Pre-Prototype Line: @f1(arg)
+  - Pre-Prototype Line: @f2 
+  - Name: Everything
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: metaclass=Python_Metaclass
+    - Name: Python_Metaclass
+    - Modifiers: metaclass
+
+  - Parent 2: Ŭnicode_Pŷthon_Base
+    - Name: Ŭnicode_Pŷthon_Base
+
+  - Parent 3: module.Python_Module_Base
+    - Name: module.Python_Module_Base
