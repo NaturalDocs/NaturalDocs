@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Source\Languages\CommentFinder.cs" />
+    <Compile Include="Source\Languages\Parsers\Ruby.cs" />
     <Compile Include="Source\Languages\Parsers\Python.cs" />
     <Compile Include="Source\Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
