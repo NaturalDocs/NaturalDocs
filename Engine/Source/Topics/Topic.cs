@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			IsList = 0x00000080,
 			IsEmbedded = 0x00000100,
 
-			TopicTypeID = 0x00000200,
+			CommentTypeID = 0x00000200,
 			DeclaredAccessLevel = 0x00000400,
 			EffectiveAccessLevel = 0x00000800,
 			Tags = 0x00001000,
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			BodyContext = 0x00080000,
 
 			All = Title | Body | Summary | Prototype | Symbol | SymbolDefinitonNumber | Class |
-					 IsList | IsEmbedded | TopicTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
+					 IsList | IsEmbedded | CommentTypeID | DeclaredAccessLevel | EffectiveAccessLevel |
 					 Tags | LanguageID | CommentLineNumber | CodeLineNumber |
 					 FileID | FilePosition | PrototypeContext | BodyContext
 			}
@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			ClassID = 0x00000200,
 			IsList = 0x00000400,
 			IsEmbedded = 0x00000800,
-			TopicTypeID = 0x00001000,
+			CommentTypeID = 0x00001000,
 			DeclaredAccessLevel = 0x00002000,
 			EffectiveAccessLevel = 0x00004000,
 			Tags = 0x00008000,
@@ -134,9 +134,9 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 		
 		
-		public Topic (TopicTypes.Manager manager)
+		public Topic (CommentTypes.Manager manager)
 			{
-			this.manager = manager;
+			this.commentTypes = manager;
 			topicID = 0;
 
 			title = null;
@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			titleParameters = new ParameterString();
 			prototypeParameters = new ParameterString();
 
-			topicTypeID = 0;
+			commentTypeID = 0;
 			isList = false;
 			declaredAccessLevel = Languages.AccessLevel.Unknown;
 			effectiveAccessLevel = Languages.AccessLevel.Unknown;
@@ -181,7 +181,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 */
 		public Topic Duplicate ()
 			{
-			Topic duplicate = new Topic(manager);
+			Topic duplicate = new Topic(commentTypes);
 
 			//duplicate.manager = manager;
 			duplicate.topicID = topicID;
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			duplicate.titleParameters = titleParameters;
 			duplicate.prototypeParameters = prototypeParameters;
 
-			duplicate.topicTypeID = topicTypeID;
+			duplicate.commentTypeID = commentTypeID;
 			duplicate.isList = isList;
 			duplicate.declaredAccessLevel = declaredAccessLevel;
 			duplicate.effectiveAccessLevel = effectiveAccessLevel;
@@ -268,7 +268,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			// titleParameters - Not a database field.
 			// prototypeParameters - Not a database field.
 
-			// topicTypeID - Important in linking.
+			// commentTypeID - Important in linking.
 			// usesPluralKeyword - Not a database field.
 			// declaredAccessLevel - Not important in linking.
 			// effectiveAccessLevel - Not important in linking, but return Different anyway because it could affect visibility
@@ -295,7 +295,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 			if (	
 				// Quick integer comparisons, only somewhat likely to be different but faster than a string comparison
-				topicTypeID != other.topicTypeID ||
+				commentTypeID != other.commentTypeID ||
 				effectiveAccessLevel != other.effectiveAccessLevel ||
 
 				// String comparisons, most likely to be different			
@@ -774,28 +774,28 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 
-		/* Property: TopicTypeID
-		 * The ID of the topic's type, or zero if it hasn't been set.
+		/* Property: commentTypeID
+		 * The ID of the topic's comment type, or zero if it hasn't been set.
 		 */
-		public int TopicTypeID
+		public int CommentTypeID
 			{
 			get
 				{  
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
-					{  throw new InvalidOperationException("Tried to access TopicTypeID when that field was ignored.");  }
+				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access CommentTypeID when that field was ignored.");  }
 				#endif
 
-				return topicTypeID;  
+				return commentTypeID;  
 				}
 			set
 				{  
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
-					{  throw new InvalidOperationException("Tried to access TopicTypeID when that field was ignored.");  }
+				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access CommentTypeID when that field was ignored.");  }
 				#endif
 
-				topicTypeID = value;  
+				commentTypeID = value;  
 				}
 			}
 			
@@ -1166,13 +1166,13 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		// __________________________________________________________________________
 		
 
-		/* Property: Manager
-		 * The <TopicTypes.Manager> associated with this topic.
+		/* Property: CommentTypes
+		 * The <CommentTypes.Manager> associated with this topic.
 		 */
-		public TopicTypes.Manager Manager
+		public CommentTypes.Manager CommentTypes
 			{
 			get
-				{  return manager;  }
+				{  return commentTypes;  }
 			}
 
 
@@ -1182,7 +1182,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		public Engine.Instance EngineInstance
 			{
 			get
-				{  return Manager.EngineInstance;  }
+				{  return CommentTypes.EngineInstance;  }
 			}
 
 
@@ -1222,7 +1222,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedPrototype = null;  }
 					else
-						{  parsedPrototype = EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, topicTypeID);  }
+						{  parsedPrototype = EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, commentTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedPrototype;
 					}
@@ -1233,7 +1233,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: ParsedClassPrototype
-		 * If <Prototype> is not null and the topic type is part of the class hierarchy, this will be the prototype in <ParsedClassPrototype> 
+		 * If <Prototype> is not null and the comment type is part of the class hierarchy, this will be the prototype in <ParsedClassPrototype> 
 		 * form.
 		 */
 		public ParsedClassPrototype ParsedClassPrototype
@@ -1250,7 +1250,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedClassPrototype = null;  }
 					else
-						{  parsedClassPrototype = EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, topicTypeID);  }
+						{  parsedClassPrototype = EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, commentTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedClassPrototype;
 					}
@@ -1348,35 +1348,35 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 
 		/* Property: IsEnum
-		 * Whether this topic uses a topic type that has the Enum flag set.  If <TopicTypeID> isn't set this will be false.
+		 * Whether this topic uses a comment type that has the Enum flag set.  If <CommentTypeID> isn't set this will be false.
 		 */
 		public bool IsEnum
 			{
 			get
 				{
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
-					{  throw new InvalidOperationException("Tried to access IsEnum when the topic type ID was ignored.");  }
+				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access IsEnum when the comment type ID was ignored.");  }
 				#endif
 
-				return (topicTypeID != 0 && Manager.FromID(topicTypeID).Flags.Enum == true);
+				return (commentTypeID != 0 && CommentTypes.FromID(commentTypeID).Flags.Enum == true);
 				}
 			}
 
 
 		/* Property: IsGroup
-		 * Whether this topic is a group topic.  If <TopicTypeID> isn't set this will be false.
+		 * Whether this topic is a group topic.  If <CommentTypeID> isn't set this will be false.
 		 */
 		public bool IsGroup
 			{
 			get
 				{
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
-					{  throw new InvalidOperationException("Tried to access IsGroup when the topic type ID was ignored.");  }
+				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access IsGroup when the comment type ID was ignored.");  }
 				#endif
 
-				return (topicTypeID != 0 && Manager.GroupTopicTypeID == topicTypeID);
+				return (commentTypeID != 0 && CommentTypes.GroupCommentTypeID == commentTypeID);
 				}
 			}
 
@@ -1389,15 +1389,15 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			get
 				{
 				#if DEBUG
-				if ((ignoredFields & IgnoreFields.TopicTypeID) != 0)
-					{  throw new InvalidOperationException("Tried to access DefinesClass when the topic type ID was ignored.");  }
+				if ((ignoredFields & IgnoreFields.CommentTypeID) != 0)
+					{  throw new InvalidOperationException("Tried to access DefinesClass when the comment type ID was ignored.");  }
 				if ((ignoredFields & IgnoreFields.IsList) != 0)
 					{  throw new InvalidOperationException("Tried to access DefinesClass when IsList was ignored.");  }
 				#endif
 
-				var topicType = Manager.FromID(topicTypeID);
+				var commentType = CommentTypes.FromID(commentTypeID);
 
-				return ((topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy) && isList == false);
+				return ((commentType.Flags.ClassHierarchy || commentType.Flags.DatabaseHierarchy) && isList == false);
 				}
 			}
 			
@@ -1408,9 +1408,9 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		
 		
 		/* var: manager
-		 * The <TopicTypes.Manager> associated with this topic.
+		 * The <CommentTypes.Manager> associated with this topic.
 		 */
-		protected TopicTypes.Manager manager;
+		protected CommentTypes.Manager commentTypes;
 
 		/* var: topicID
 		 * The topic's ID number, or zero if not specified.
@@ -1450,7 +1450,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 		/* var: parsedClassPrototype
 		 * The <prototype> in <ParsedClassPrototype> form, or null if <prototype> is null, it hasn't been generated yet,
-		 * or this isn't appropriate for the topic type.
+		 * or this isn't appropriate for the comment type.
 		 */
 		protected ParsedClassPrototype parsedClassPrototype;
 		
@@ -1500,10 +1500,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		 */
 		protected ParameterString prototypeParameters;
 
-		/* var: topicTypeID
-		 * The ID number of the topic's type, or zero if not specified.
+		/* var: commentTypeID
+		 * The ID number of the comment's type, or zero if not specified.
 		 */
-		protected int topicTypeID;
+		protected int commentTypeID;
 		
 		/* var: declaredAccessLevel
 		 * The declared access level of the topic.  For a public member of an internal class, this would be public.

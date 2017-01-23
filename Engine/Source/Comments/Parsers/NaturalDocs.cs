@@ -249,7 +249,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- <Config.Manager> and <TopicTypes.Manager> must be started before using this class.
+		 *		- <Config.Manager> and <CommentTypes.Manager> must be started before using this class.
 		 */
 		public override bool Start (Errors.ErrorList errors)
 		    {
@@ -358,7 +358,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 *		- Title, unless doesn't require header
 		 *		- Body, if present
 		 *		- Summary, if available
-		 *		- TopicTypeID, unless doesn't require header
+		 *		- CommentTypeID, unless doesn't require header
 		 *		- AccessLevel, if specified
 		 *		- Tags, if specified
 		 *		- UsesPluralKeyword, unless doesn't require header
@@ -397,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					{  return false;  }
 				else
 					{  
-					currentTopic = new Topic(EngineInstance.TopicTypes);
+					currentTopic = new Topic(EngineInstance.CommentTypes);
 					currentTopic.CommentLineNumber = lineIterator.LineNumber;
 					
 					firstContentLine = lineIterator;
@@ -749,7 +749,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 * 
 		 *		- CommentLineNumber
 		 *		- Title
-		 *		- TopicTypeID
+		 *		- CommentTypeID
 		 *		- IsList
 		 *		- LanguageID, if specified
 		 *		- AccessLevel, if specified
@@ -813,9 +813,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			int keywordEndingIndex = keywordsAndTags.Length;
 			
 			bool pluralKeyword;
-			TopicTypes.TopicType topicType = EngineInstance.TopicTypes.FromKeyword(keywordsAndTags, out pluralKeyword);
+			CommentTypes.CommentType commentType = EngineInstance.CommentTypes.FromKeyword(keywordsAndTags, out pluralKeyword);
 			
-			while (topicType == null)
+			while (commentType == null)
 				{
 				keywordStartingIndex = keywordsAndTags.IndexOf(' ', keywordStartingIndex);
 				
@@ -824,12 +824,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					
 				keywordStartingIndex++;
 				
-				topicType = EngineInstance.TopicTypes.FromKeyword( 
+				commentType = EngineInstance.CommentTypes.FromKeyword( 
 											keywordsAndTags.Substring (keywordStartingIndex, keywordEndingIndex - keywordStartingIndex),
 											out pluralKeyword);
 				}
 				
-			if (topicType == null)
+			if (commentType == null)
 				{  return false;  }
 				
 
@@ -851,7 +851,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					bool success = false;
 					string substring = keywordsAndTags.Substring(tagStartingIndex, tagEndingIndex - tagStartingIndex);
 					
-					TopicTypes.Tag tag = EngineInstance.TopicTypes.TagFromName(substring);
+					CommentTypes.Tag tag = EngineInstance.CommentTypes.TagFromName(substring);
 														
 					if (tag != null)
 						{
@@ -902,10 +902,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				
 			// If we made it this far, we're okay.  Set any topic properties.
 			
-			topic = new Topic(EngineInstance.TopicTypes);
+			topic = new Topic(EngineInstance.CommentTypes);
 			topic.CommentLineNumber = lineIterator.LineNumber;
 			topic.Title = tokenizer.RawText.Substring( afterColon.RawTextIndex, lineEndingIndex - afterColon.RawTextIndex );
-			topic.TopicTypeID = topicType.ID;
+			topic.CommentTypeID = commentType.ID;
 			topic.IsList = pluralKeyword;
 			
 			topic.DeclaredAccessLevel = accessLevel;
@@ -3073,14 +3073,14 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			int symbolIndex = topic.Body.IndexOf("<ds>");
 			int lineNumberOffset = 1;
 
-			int embeddedTopicTypeID = 0;
+			int embeddedCommentTypeID = 0;
 
 			if (topic.IsEnum)
-				{  embeddedTopicTypeID = EngineInstance.TopicTypes.IDFromKeyword("constant");  }
+				{  embeddedCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant");  }
 
 			// We do it this way in case there is no type that uses the "constant" keyword.
-			if (embeddedTopicTypeID == 0)
-				{  embeddedTopicTypeID = topic.TopicTypeID;  }
+			if (embeddedCommentTypeID == 0)
+				{  embeddedCommentTypeID = topic.CommentTypeID;  }
 
 			while (symbolIndex != -1)
 				{
@@ -3094,11 +3094,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 				int endDefinitionIndex = topic.Body.IndexOf("</dd>", definitionIndex + 4);
 
-				Topic embeddedTopic = new Topic(EngineInstance.TopicTypes);
+				Topic embeddedTopic = new Topic(EngineInstance.CommentTypes);
 				embeddedTopic.Title = topic.Body.Substring(symbolIndex + 4, endSymbolIndex - (symbolIndex + 4)).EntityDecode();
 				embeddedTopic.Body = topic.Body.Substring(definitionIndex + 4, endDefinitionIndex - (definitionIndex + 4));
 				embeddedTopic.IsEmbedded = true;
-				embeddedTopic.TopicTypeID = embeddedTopicTypeID;
+				embeddedTopic.CommentTypeID = embeddedCommentTypeID;
 				embeddedTopic.DeclaredAccessLevel = topic.DeclaredAccessLevel;
 				embeddedTopic.TagString = topic.TagString;
 				embeddedTopic.CommentLineNumber = topic.CommentLineNumber + lineNumberOffset;

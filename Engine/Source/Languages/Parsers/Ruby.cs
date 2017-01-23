@@ -39,9 +39,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		/* Function: ParseClassPrototype
 		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
 		 */
-		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
+		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
 			{
-			if (EngineInstance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+			if (EngineInstance.CommentTypes.FromID(commentTypeID).Flags.ClassHierarchy == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (success)
 				{  return parsedPrototype;  }
 			else
-			    {  return base.ParseClassPrototype(stringPrototype, topicTypeID);  }
+			    {  return base.ParseClassPrototype(stringPrototype, commentTypeID);  }
 			}
 
 

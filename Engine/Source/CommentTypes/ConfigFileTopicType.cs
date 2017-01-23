@@ -1,10 +1,10 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.ConfigFileTopicType
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFileCommentType
  * ____________________________________________________________________________
  * 
- * A class encapsulating information about a file as parsed from a <ConfigFile>.  This differs from <TopicType> in that its
- * meant to represent how its entry appears in the config file rather than the final combined settings.  For example, any field
- * can be null if it's not defined.
+ * A class encapsulating information about a comment type as parsed from a <ConfigFile>.  This differs from <CommentType>
+ * in that its meant to represent how its entry appears in the config file rather than the final combined settings.  For example,
+ * any field can be null if it's not defined.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
@@ -16,18 +16,18 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class ConfigFileTopicType
+	public class ConfigFileCommentType
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: ConfigFileTopicType
+		/* Constructor: ConfigFileCommentType
 		 */
-		public ConfigFileTopicType (string newName, bool newAlterType, int newLineNumber)
+		public ConfigFileCommentType (string newName, bool newAlterType, int newLineNumber)
 			{
 			name = newName;
 			alterType = newAlterType;
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		public void FixNameCapitalization (string newName)
 			{
 			if (string.Compare(name, newName, true) != 0)
-				{  throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileTopicType");  }
+				{  throw new Exceptions.NameChangeDifferedInMoreThanCapitalization(name, newName, "ConfigFileCommentType");  }
 				
 			name = newName;
 			}
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Property: Name
-		 * The name of the topic type, not to be confused with <DisplayName>.
+		 * The name of the comment type, not to be confused with <DisplayName>.
 		 */
 		public string Name
 			{
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: AlterType
-		 * Whether this topic is altering an existing one or not.
+		 * Whether this comment is altering an existing one or not.
 		 */
 		public bool AlterType
 			{
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: LineNumber
-		 * The line number where this topic type appears in the file.
+		 * The line number where this comment type appears in the file.
 		 */
 		public int LineNumber
 			{
@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: DisplayName
-		 * The topic type's display name, or null if it's not defined.  If this is set to something other than null, 
+		 * The comment type's display name, or null if it's not defined.  If this is set to something other than null, 
 		 * <DisplayNameFromLocale> becomes null.
 		 */
 		public string DisplayName
@@ -110,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: DisplayNameFromLocale
-		 * The topic type's display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.  If this is set
+		 * The comment type's display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.  If this is set
 		 * to something other than null, <DisplayName> becomes null.
 		 */
 		public string DisplayNameFromLocale
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: PluralDisplayName
-		 * The topic type's plural display name, or null if it's not defined.  If this is set to something other than null, 
+		 * The comment type's plural display name, or null if it's not defined.  If this is set to something other than null, 
 		 * <PluralDisplayNameFromLocale> becomes null.
 		 */
 		public string PluralDisplayName
@@ -144,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: PluralDisplayNameFromLocale
-		 * The topic type's plural display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.  If this 
+		 * The comment type's plural display name identifier to be retrieved from <Engine.Locale>, or null if it's not defined.  If this 
 		 * is set to something other than null, <PluralDisplayName> becomes null.
 		 */
 		public string PluralDisplayNameFromLocale
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Property: SimpleIdentifier
-		 * The topic type's name using only the letters A to Z, or null if it's not defined.
+		 * The comment type's name using only the letters A to Z, or null if it's not defined.
 		 */
 		public string SimpleIdentifier
 			{
@@ -174,10 +174,10 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Property: Index
-		 * Whether the topic type is indexed, or null if it is not defined.  If set to IndexWith, you must also set the <IndexWith>
+		 * Whether the comment type is indexed, or null if it is not defined.  If set to IndexWith, you must also set the <IndexWith>
 		 * property.
 		 */
-		public TopicType.IndexValue? Index
+		public CommentType.IndexValue? Index
 			{
 			get
 				{  return index;  }
@@ -185,20 +185,20 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				{  
 				index = value;  
 				
-				if (index != TopicType.IndexValue.IndexWith)
+				if (index != CommentType.IndexValue.IndexWith)
 					{  indexWith = null;  }
 				}
 			}
 			
 		/* Property: IndexWith
-		 * A string representing the name of the topic type this one is indexed with, provided <Index> is set to IndexWith.  Will
+		 * A string representing the name of the comment type this one is indexed with, provided <Index> is set to IndexWith.  Will
 		 * be null otherwise.
 		 */
 		public string IndexWith
 			{
 			get
 				{
-				if (index == TopicType.IndexValue.IndexWith)
+				if (index == CommentType.IndexValue.IndexWith)
 					{  return indexWith;  }
 				else
 					{  return null;  }
@@ -208,9 +208,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: Scope
-		 * The scope of the topic type, or null if it is not defined.
+		 * The scope of the comment type, or null if it is not defined.
 		 */
-		public TopicType.ScopeValue? Scope
+		public CommentType.ScopeValue? Scope
 			{
 			get
 				{  return scope;  }
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: BreakLists
-		 * Whether list topics should be broken into individual topics in the output, or null if it is not defined.
+		 * Whether list comments should be broken into individual topics in the output, or null if it is not defined.
 		 */
 		public bool? BreakLists
 			{
@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: Keywords
-		 * An array of keywords this topic type defines.  It will never be null.  The array's values are arranged in pairs, with
+		 * An array of keywords this comment type defines.  It will never be null.  The array's values are arranged in pairs, with
 		 * odd ones being the singular form and even ones being the plural.  If there is no plural form for a keyword, it's even
 		 * entry will be null.
 		 */
@@ -244,9 +244,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Variable: Flags
-		 * <TopicTypeFlags> as a public variable, so you can use it like a property.
+		 * <CommentTypeFlags> as a public variable, so you can use it like a property.
 		 */
-		public TopicTypeFlags Flags;
+		public CommentTypeFlags Flags;
 			
 			
 		
@@ -254,72 +254,72 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 		
 		/* var: name
-		 * The topic type name.
+		 * The comment type name.
 		 */
 		protected string name;
 		
 		/* var: alterType
-		 * Whether this entry is for altering a topic type instead of defining a new one.
+		 * Whether this entry is for altering a comment type instead of defining a new one.
 		 */
 		protected bool alterType;
 		
 		/* var: lineNumber
-		 * The line number where this topic type appears in the file.
+		 * The line number where this comment type appears in the file.
 		 */
 		protected int lineNumber;
 		
 		/* var: displayName
-		 * The topic type's display name, or null if it's not defined.
+		 * The comment type's display name, or null if it's not defined.
 		 */
 		protected string displayName;
 		
 		/* var: displayNameFromLocale
-		 * The locale identifier of the topic type's display name, or null if it's not defined.
+		 * The locale identifier of the comment type's display name, or null if it's not defined.
 		 */
 		protected string displayNameFromLocale;
 		
 		/* var: pluralDisplayName
-		 * The topic type's plural display name, or null if it's not defined.
+		 * The comment type's plural display name, or null if it's not defined.
 		 */
 		protected string pluralDisplayName;
 		
 		/* var: pluralDisplayNameFromLocale
-		 * The locale identifier of the topic type's plural display name, or null if it's not defined.
+		 * The locale identifier of the comment type's plural display name, or null if it's not defined.
 		 */
 		protected string pluralDisplayNameFromLocale;
 		
 		/* var: simpleIdentifier
-		 * The topic type's name using only the letters A to Z, or null if it's not defined.
+		 * The comment type's name using only the letters A to Z, or null if it's not defined.
 		 */
 		protected string simpleIdentifier;
 		
 		/* var: index
-		 * Whether the topic type is indexed, or null if it is not defined.
+		 * Whether the comment type is indexed, or null if it is not defined.
 		 */
-		protected TopicType.IndexValue? index;
+		protected CommentType.IndexValue? index;
 		
 		/* var: indexWith
-		 * The name of the topic type to index this one with, or null if none.
+		 * The name of the comment type to index this one with, or null if none.
 		 */
 		protected string indexWith;
 		
 		/* var: scope
-		 * The scope of the topic type, or null if it is not defined.
+		 * The scope of the comment type, or null if it is not defined.
 		 */
-		protected TopicType.ScopeValue? scope;
+		protected CommentType.ScopeValue? scope;
 		
 		/* var: classHierarchy
-		 * Whether the topic type can be included in the class hierarchy, or null if it is not defined.
+		 * Whether the comment type can be included in the class hierarchy, or null if it is not defined.
 		 */
 		protected bool? classHierarchy;
 		
 		/* var: variableType
-		 * Whether the topic type can be used as a variable type, or null if it is not defined.
+		 * Whether the comment type can be used as a variable type, or null if it is not defined.
 		 */
 		protected bool? variableType;
 		
 		/* var: breakLists
-		 * Whether lists topics should be broken into individual ones, or null if it is not defined.
+		 * Whether lists comments should be broken into individual topics, or null if it is not defined.
 		 */
 		protected bool? breakLists;
 		

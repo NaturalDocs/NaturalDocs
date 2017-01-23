@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		public TopicEntry (Topic topic, SearchIndex.Manager manager) : base ()
 			{
 			this.topic = topic;
-			var topicType = manager.EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			var commentType = manager.EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 			var language = manager.EngineInstance.Languages.FromID(topic.LanguageID);
 
 
@@ -81,12 +81,12 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			displayName = (extraScope == null ? title : extraScope + title);
 			searchText = Normalize(displayName);
 
-			if (topicType.Flags.File)
+			if (commentType.Flags.File)
 				{
 				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
 				endOfSearchTextQualifiers = EndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
 				}
-			else if (topicType.Flags.Code)
+			else if (commentType.Flags.Code)
 				{
 				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
 				endOfSearchTextQualifiers = EndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
@@ -110,9 +110,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			keywords = new List<string>();
 
 			if (endOfDisplayNameQualifiers == 0)
-				{  AddKeywords(displayName, topicType.Flags.Documentation);  }
+				{  AddKeywords(displayName, commentType.Flags.Documentation);  }
 			else
-				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), topicType.Flags.Documentation);  }
+				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), commentType.Flags.Documentation);  }
 			}
 
 

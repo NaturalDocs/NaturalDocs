@@ -1,9 +1,9 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.TopicType
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.CommentType
  * ____________________________________________________________________________
  * 
- * A class encapsulating information about a topic type.  This differs from <ConfigFileTopicType> in that its meant to 
- * represent the final combined settings of a topic type rather than its entry in a config file.  For example, all fields are 
+ * A class encapsulating information about a comment type.  This differs from <ConfigFileCommentType> in that its meant to 
+ * represent the final combined settings of a comment type rather than its entry in a config file.  For example, all fields are 
  * initialized to default values rather than null or Default, and it doesn't store the type's keywords.
  * 
  */
@@ -17,9 +17,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class TopicType : IDObjects.Base
+	public class CommentType : IDObjects.Base
 		{
 		
 		// Group: Types
@@ -43,9 +43,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: TopicType
+		/* Constructor: CommentType
 		 */
-		public TopicType (string newName) : base()
+		public CommentType (string newName) : base()
 			{
 			name = newName;
 			
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			indexWith = 0;
 			scope = ScopeValue.Normal;
 			breakLists = false;
-			Flags = new TopicTypeFlags();
+			Flags = new CommentTypeFlags();
 			}
 			
 
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 			
 		/* Property: Name
-		 * The name of the topic type, not to be confused with <DisplayName>.
+		 * The name of the comment type, not to be confused with <DisplayName>.
 		 */
 		override public string Name
 			{
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: DisplayName
-		 * The topic type's display name.
+		 * The comment type's display name.
 		 */
 		public string DisplayName
 			{
@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: PluralDisplayName
-		 * The topic type's plural display name.
+		 * The comment type's plural display name.
 		 */
 		public string PluralDisplayName
 			{
@@ -114,7 +114,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: SimpleIdentifier
-		 * The topic type's name using only the letters A to Z.
+		 * The comment type's name using only the letters A to Z.
 		 */
 		public string SimpleIdentifier
 			{
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 				// A fallback if that didn't work.
 				if (simpleIdentifier == null)
-					{  simpleIdentifier = "TopicTypeID" + ID;  }
+					{  simpleIdentifier = "CommentTypeID" + ID;  }
 					
 				return simpleIdentifier;
 				}
@@ -136,7 +136,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: Index
-		 * Whether the topic type is indexed.  If set to IndexWith, you must also set the <IndexWith> property.
+		 * Whether the comment type is indexed.  If set to IndexWith, you must also set the <IndexWith> property.
 		 */
 		public IndexValue Index
 			{
@@ -152,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: IndexWith
-		 * The ID of the topic type this one is indexed with, provided <Index> is set to IndexWith.  Will be zero otherwise.
+		 * The ID of the comment type this one is indexed with, provided <Index> is set to IndexWith.  Will be zero otherwise.
 		 */
 		public int IndexWith
 			{
@@ -168,7 +168,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: Scope
-		 * The scope of the topic type.
+		 * The scope of the comment type.
 		 */
 		public ScopeValue Scope
 			{
@@ -179,7 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: BreakLists
-		 * Whether list topics should be broken into individual topics in the output.
+		 * Whether list comments should be broken into individual topics in the output.
 		 */
 		public bool BreakLists
 			{
@@ -190,9 +190,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Variable: Flags
-		 * <TopicTypeFlags> as a public variable, so you can use it like a property.
+		 * <CommentTypeFlags> as a public variable, so you can use it like a property.
 		 */
-		public TopicTypeFlags Flags;
+		public CommentTypeFlags Flags;
 
 			
 						
@@ -201,10 +201,10 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		
 		
 		/* Function: operator ==
-		 * Returns whether all the properties of the two topic types are equal, including Name and ID, but excluding 
-		 * <TopicTypeFlags.Location Properties>.
+		 * Returns whether all the properties of the two comment types are equal, including Name and ID, but excluding 
+		 * <CommentTypeFlags.Location Properties>.
 		 */
-		public static bool operator == (TopicType type1, TopicType type2)
+		public static bool operator == (CommentType type1, CommentType type2)
 			{
 			if ((object)type1 == null && (object)type2 == null)
 				{  return true;  }
@@ -228,10 +228,10 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 		
 		/* Function: operator !=
-		 * Returns if any of the properties of the two topic types are inequal, including Name and ID, but excluding
-		 * <TopicTypeFlags.Location Properties>.
+		 * Returns if any of the properties of the two comment types are inequal, including Name and ID, but excluding
+		 * <CommentTypeFlags.Location Properties>.
 		 */
-		public static bool operator != (TopicType type1, TopicType type2)
+		public static bool operator != (CommentType type1, CommentType type2)
 			{
 			return !(type1 == type2);
 			}
@@ -244,8 +244,8 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		
 		public override bool Equals (object o)
 			{
-			if (o is TopicType)
-				{  return (this == (TopicType)o);  }
+			if (o is CommentType)
+				{  return (this == (CommentType)o);  }
 			else
 				{  return false;  }
 			}
@@ -262,45 +262,45 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 		
 		/* var: name
-		 * The topic type name.
+		 * The comment type name.
 		 */
 		protected string name;
 		
 		/* var: displayName
-		 * The topic type's display name.  May be null to indicate that it was not set.  <DisplayName> will always return a value
+		 * The comment type's display name.  May be null to indicate that it was not set.  <DisplayName> will always return a value
 		 * though.
 		 */
 		protected string displayName;
 		
 		/* var: pluralDisplayName
-		 * The topic type's plural display name.  May be null to indicate that it was not set.  <PluralDisplayName> will always
+		 * The comment type's plural display name.  May be null to indicate that it was not set.  <PluralDisplayName> will always
 		 * return a value though.
 		 */
 		protected string pluralDisplayName;
 		
 		/* var: simpleIdentifier
-		 * The topic type's name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode.
+		 * The comment type's name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode.
 		 * May be null to indicate that it was not set.  <SimpleIdentifier> will always return a value though.
 		 */
 		protected string simpleIdentifier;
 		
 		/* var: index
-		 * Whether the topic type is indexed.
+		 * Whether the comment type is indexed.
 		 */
 		protected IndexValue index;
 		
 		/* var: indexWith
-		 * The ID of the topic type to index this one with, or zero if none.
+		 * The ID of the comment type to index this one with, or zero if none.
 		 */
 		protected int indexWith;
 		
 		/* var: scope
-		 * The scope of the topic type.
+		 * The scope of the comment type.
 		 */
 		protected ScopeValue scope;
 		
 		/* var: breakLists
-		 * Whether lists topics should be broken into individual ones.
+		 * Whether lists comments should be broken into individual topics.
 		 */
 		protected bool breakLists;
 		

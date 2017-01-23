@@ -9,7 +9,7 @@ when they are deleted so that you know there are no references left behind when 
 meaning may change out from under code unexpectedly.
 
 
-Topic: Topic Type, Language, and Tag IDs
+Topic: Comment Type, Language, and Tag IDs
 
 	These are easy.  These IDs can only be changed by changing <Topics.txt> or <Languages.txt> between runs.  
 	Changing those files in a substantial way automatically triggers a complete rebuild, so any references to them in 

@@ -22,8 +22,8 @@ _______________________________________________________________________________
 		> NDSummary.OnSummaryLoaded("File:Folder/Folder/SourceFile.cs",
 		>    [["Language HTML Name","LanguageSimpleID"]],
 		>
-		>    [["Topic Type HTML Name","TopicTypeSimpleID"],
-		>     ["Topic Type 2 HTML Name","TopicType2SimpleID"]],
+		>    [["Comment Type HTML Name","CommentTypeSimpleID"],
+		>     ["Comment Type 2 HTML Name","CommentType2SimpleID"]],
 		>
 		>    [[1234,0,0,"Topic HTML Name","TopicHashSymbol"],
 		>     [1235,0,1,"Topic 2 HTML Name","Topic2HashSymbol"],
@@ -36,8 +36,8 @@ _______________________________________________________________________________
 			nameHTML - The name of the language in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
 				
-		The second parameter is an array of the topic types used in the summary.  They appear in the order in which they should
-		appear in the output.  Each topic type is an array with these members:
+		The second parameter is an array of the comment types used in the summary.  They appear in the order in which they should
+		appear in the output.  Each comment type is an array with these members:
 			
 			pluralNameHTML - The plural name of the language in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
@@ -46,7 +46,7 @@ _______________________________________________________________________________
 			
 			topicID - A numeric ID for the topic, unique across the whole project.
 			languageIndex - The topic's language as an index into the languages array.
-			topicTypeIndex - The topic type as an index into the topic types array.
+			commentTypeIndex - The comment type as an index into the comment types array.
 			nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
 			symbol - The topic's symbol in the hash path.  May be undefined if you should use the file's hash path alone.
 

@@ -39,10 +39,10 @@
  *			> Link: [title] ([URL])
  *			>
  *			> Index: [name]
- *			> [topic type name] Index: [name]
+ *			> [comment type name] Index: [name]
  *			>
- *			> Don't Index: [topic type name]
- *			> Don't Index: [topic type name], [topic type name], ...
+ *			> Don't Index: [comment type name]
+ *			> Don't Index: [comment type name], [topic type name], ...
  *			>
  *			> Data: [number]([obscured data])
  *			> Data: 1([obscured: [directory name]///[input directory]])

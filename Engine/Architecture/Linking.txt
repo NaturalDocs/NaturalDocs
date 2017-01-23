@@ -66,7 +66,7 @@ Topic: Scoring Links
 		  "using" statements.  This is also used to weed out impossible matches.
 		- Whether the case matches, depending on the language's case sensitivity setting.  Some languages are case sensitive,
 		  some are not, and if it's not known then it will favor case sensitive matches but accept both.
-		- Whether the topic type is appropriate for the link.  Type links need to go to type topics, and class parent links need to
+		- Whether the comment type is appropriate for the link.  Type links need to go to type topics, and class parent links need to
 		  go to classes.
 		- Whether the topic has a prototype or body and how long.  This is used to distinguish between multiple definitions of
 		  the same symbol, such as partial classes in C#.  Hopefully only one will be documented and that's the one we want to

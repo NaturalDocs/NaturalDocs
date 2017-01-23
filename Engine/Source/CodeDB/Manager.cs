@@ -64,7 +64,7 @@ using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.CodeDB
@@ -324,13 +324,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// 1 - The final bit is one to make sure a match will never be zero.
 
 
-			// For type and class parent links, the topic type MUST have the relevant attribute set to be possible.
+			// For type and class parent links, the comment type MUST have the relevant attribute set to be possible.
 
-			var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 			var language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-			if ( (link.Type == LinkType.ClassParent && topicType.Flags.ClassHierarchy == false) ||
-				  (link.Type == LinkType.Type && topicType.Flags.VariableType == false) )
+			if ( (link.Type == LinkType.ClassParent && commentType.Flags.ClassHierarchy == false) ||
+				  (link.Type == LinkType.Type && commentType.Flags.VariableType == false) )
 				{  return 0;  }
 
 
@@ -537,7 +537,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// S - How high on the scope list the symbol match is.
 
 			Language topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
-			TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			CommentType commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
 
 			// Values of C:
@@ -567,11 +567,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (link.Type == LinkType.NaturalDocs)
 				{  
 				caseRequired = false;
-				caseFlagged = (topicType.Flags.Code && topicLanguage.CaseSensitive);
+				caseFlagged = (commentType.Flags.Code && topicLanguage.CaseSensitive);
 				}
 			else
 				{
-				if (topicType.Flags.Code == false)
+				if (commentType.Flags.Code == false)
 					{  return 0;  }
 
 				caseRequired = topicLanguage.CaseSensitive;  
@@ -707,7 +707,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return 0;  }
 
 			Language topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
-			TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			CommentType commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
 
 			// Values of C:
@@ -737,11 +737,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (link.Type == LinkType.NaturalDocs)
 				{  
 				caseRequired = false;
-				caseFlagged = (topicType.Flags.Code && topicLanguage.CaseSensitive);
+				caseFlagged = (commentType.Flags.Code && topicLanguage.CaseSensitive);
 				}
 			else
 				{
-				if (topicType.Flags.Code == false)
+				if (commentType.Flags.Code == false)
 					{  return 0;  }
 
 				caseRequired = topicLanguage.CaseSensitive;  

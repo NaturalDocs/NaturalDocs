@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Topics
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new Exception("All topics in a TopicGroup must be part of the same class.");  }
 				if (topics[i].IsGroup && i != startingIndex)
 					{  throw new Exception("Only the first topic in a TopicGroup may be a group topic.");  }
-				if (topics[i].Manager.FromID(topics[i].TopicTypeID).Scope == TopicType.ScopeValue.Start)
+				if (topics[i].CommentTypes.FromID(topics[i].CommentTypeID).Scope == CommentType.ScopeValue.Start)
 					{  throw new Exception("TopicGroups cannot contain topics that start a scope.");  }
 				}
 
@@ -123,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				}
 			else
 				{
-				// See if we can work our way through the group with only one topic type.
+				// See if we can work our way through the group with only one comment type.
 
 				Topic firstTopic = topics[i];
 				int typeCount = 1;
@@ -131,7 +131,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 				while (i < startingIndex + count)
 					{
-					if (topics[i].TopicTypeID == firstTopic.TopicTypeID)
+					if (topics[i].CommentTypeID == firstTopic.CommentTypeID)
 						{
 						i++;
 						typeCount++;
@@ -147,7 +147,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 				if (i >= startingIndex + count)
 					{
-					dominantTypeID = firstTopic.TopicTypeID;
+					dominantTypeID = firstTopic.CommentTypeID;
 					mixedTypes = false;
 					}
 				else
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					// the groups that don't need it.
 
 					SafeDictionary<int, int> typeCounts = new SafeDictionary<int,int>();
-					typeCounts[firstTopic.TopicTypeID] = typeCount;
+					typeCounts[firstTopic.CommentTypeID] = typeCount;
 
 					bool lastNonEmbeddedWasEnum = firstTopic.IsEnum;
 
@@ -170,10 +170,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 						// Only count embedded topics towards the dominant one if they're not enum constants.
 						if (topic.IsEmbedded == false || lastNonEmbeddedWasEnum == false)
 							{
-							if (typeCounts.ContainsKey(topic.TopicTypeID))
-								{  typeCounts[topic.TopicTypeID]++;  }
+							if (typeCounts.ContainsKey(topic.CommentTypeID))
+								{  typeCounts[topic.CommentTypeID]++;  }
 							else
-								{  typeCounts[topic.TopicTypeID] = 1;  }
+								{  typeCounts[topic.CommentTypeID] = 1;  }
 							}
 
 						i++;
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 				{  titleMatchesType = false;  }
 			else
 				{
-				var type = topics[0].Manager.FromID(dominantTypeID);
+				var type = topics[0].CommentTypes.FromID(dominantTypeID);
 
 				titleMatchesType = (header.Title == type.Name ||
 													 header.Title == type.DisplayName ||
@@ -279,7 +279,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 		/* Property: MixedTypes
-		 * Whether this group has more than one topic type ID.
+		 * Whether this group has more than one comment type ID.
 		 */
 		public bool MixedTypes
 			{
@@ -293,8 +293,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			}
 
 		/* Property: DominantTypeID
-		 * If <MixedTypes> is true, this is the topic type ID that appears the most.  If it's false, this
-		 * is the topic type ID of all the members.
+		 * If <MixedTypes> is true, this is the comment type ID that appears the most.  If it's false, this
+		 * is the comment type ID of all the members.
 		 */
 		public int DominantTypeID
 			{
@@ -359,18 +359,18 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 		protected int count;
 
 		/* var: mixedTypes
-		 * Whether the group has more than one topic type in it.
+		 * Whether the group has more than one comment type in it.
 		 */
 		protected bool mixedTypes;
 
 		/* var: dominantTypeID
-		 * The topic type ID of the dominant type in the group.  If <mixedTypes> is false, all of the topics
+		 * The comment type ID of the dominant type in the group.  If <mixedTypes> is false, all of the topics
 		 * will be of this type.
 		 */
 		protected int dominantTypeID;
 
 		/* var: titleMatchesType
-		 * Whether the group title matches the name of the dominant topic type ID.
+		 * Whether the group title matches the name of the dominant comment type ID.
 		 */
 		protected bool titleMatchesType;
 

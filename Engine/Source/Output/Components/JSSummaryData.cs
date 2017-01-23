@@ -30,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
@@ -55,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlTopic = new HTMLTopic(topicPage);
 			usedLanguages = new List<Language>();
-			usedTopicTypes = new List<TopicType>();
+			usedCommentTypes = new List<CommentType>();
 
 			htmlComponent = new HTMLComponent(topicPage);
 			}
@@ -83,7 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			this.links = links;
 			
 			usedLanguages.Clear();
-			usedTopicTypes.Clear();
+			usedCommentTypes.Clear();
 
 
 			// Summary.js
@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				output.AppendLine();
 			#endif
 
-			BuildTopicTypeList();
+			BuildCommentTypeList();
 			output.Append(',');
 
 			#if DONT_SHRINK_FILES
@@ -218,31 +218,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildTopicTypeList
+		/* Function: BuildCommentTypeList
 		 */
-		protected void BuildTopicTypeList ()
+		protected void BuildCommentTypeList ()
 			{
-			// Build used topic type list
+			// Build used comment type list
 
 			foreach (Topic topic in topics)
 				{
 				bool found = false;
 
-				for (int i = 0; found == false && i < usedTopicTypes.Count; i++)
+				for (int i = 0; found == false && i < usedCommentTypes.Count; i++)
 					{
-					if (usedTopicTypes[i].ID == topic.TopicTypeID)
+					if (usedCommentTypes[i].ID == topic.CommentTypeID)
 						{  found = true;  }
 					}
 
 				if (!found)
-					{  usedTopicTypes.Add( EngineInstance.TopicTypes.FromID(topic.TopicTypeID) );  }
+					{  usedCommentTypes.Add( EngineInstance.CommentTypes.FromID(topic.CommentTypeID) );  }
 				}
 
 
-			// Sort used topic type list
+			// Sort used comment type list
 
-			usedTopicTypes.Sort(
-				delegate (TopicType a, TopicType b)
+			usedCommentTypes.Sort(
+				delegate (CommentType a, CommentType b)
 					{  return string.Compare(a.Name, b.Name);  } // xxx should be by topics.txt order
 				);
 
@@ -256,15 +256,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			output.Append('[');
 
-			for (int i = 0; i < usedTopicTypes.Count; i++)
+			for (int i = 0; i < usedCommentTypes.Count; i++)
 				{
 				output.Append("[\"");
-				output.StringEscapeAndAppend(usedTopicTypes[i].PluralDisplayName.ToHTML());
+				output.StringEscapeAndAppend(usedCommentTypes[i].PluralDisplayName.ToHTML());
 				output.Append("\",\"");
-				output.StringEscapeAndAppend(usedTopicTypes[i].SimpleIdentifier);
+				output.StringEscapeAndAppend(usedCommentTypes[i].SimpleIdentifier);
 				output.Append("\"]");
 
-				if (i != usedTopicTypes.Count - 1)
+				if (i != usedCommentTypes.Count - 1)
 					{  
 					output.Append(',');  
 					
@@ -309,11 +309,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				output.Append(',');
 
-				for (int usedTopicTypeIndex = 0; usedTopicTypeIndex < usedTopicTypes.Count; usedTopicTypeIndex++)
+				for (int usedCommentTypeIndex = 0; usedCommentTypeIndex < usedCommentTypes.Count; usedCommentTypeIndex++)
 					{
-					if (usedTopicTypes[usedTopicTypeIndex].ID == topic.TopicTypeID)
+					if (usedCommentTypes[usedCommentTypeIndex].ID == topic.CommentTypeID)
 						{  
-						output.Append(usedTopicTypeIndex);
+						output.Append(usedCommentTypeIndex);
 						break;
 						}
 					}
@@ -323,7 +323,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (topic.IsEmbedded == false)
 					{  
 					output.Append('"');
-					output.StringEscapeAndAppend( htmlComponent.BuildWrappedTitle(topic.Title, topic.TopicTypeID) );  
+					output.StringEscapeAndAppend( htmlComponent.BuildWrappedTitle(topic.Title, topic.CommentTypeID) );  
 					output.Append('"');
 					}
 				// Otherwise leave an empty space before the comma.  We don't have to write out "undefined".
@@ -465,11 +465,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<Language> usedLanguages;
 
-		/* var: usedTopicTypes
-		 * A list of the topic types used in <topics>.  The order in which they appear here will be the order in which they
+		/* var: usedCommentTypes
+		 * A list of the comment types used in <topics>.  The order in which they appear here will be the order in which they
 		 * appear in the JavaScript array.
 		 */
-		protected List<TopicType> usedTopicTypes;
+		protected List<CommentType> usedCommentTypes;
 
 		/* var: htmlComponent
 		 * A private <HTMLComponent> object used for building wrapped titles.

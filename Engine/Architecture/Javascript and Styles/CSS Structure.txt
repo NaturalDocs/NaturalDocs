@@ -160,7 +160,7 @@ JavaScript class included in the DefaultJS style.  Other styles may or may not u
 	<#NDSummary>
 		<#SuContent>
 
-			<SuEntry T[TopicType] L[Language]>
+			<SuEntry T[CommentType] L[Language]>
 				<SuEntryIcon></SuEntryIcon>
 				Name
 			</SuEntry>
@@ -380,7 +380,7 @@ _______________________________________________________________________________
 
 	<NDClassPrototype HasParents? HasChildren?>
 
-		<CPEntry T[TopicType] Current/Parent/Child>
+		<CPEntry T[CommentType] Current/Parent/Child>
 
 			<CPPrePrototypeLine>
 				...
@@ -396,7 +396,7 @@ _______________________________________________________________________________
 				...
 			</CPPostPrototypeLine>
 
-		</CPEntry T[TopicType] Current/Parent/Child>
+		</CPEntry T[CommentType] Current/Parent/Child>
 
 		<a CPAdditionalChildrenNotice>Text</a CPAdditionalChildrenNotice>
 

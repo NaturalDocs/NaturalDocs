@@ -27,7 +27,7 @@ _______________________________________________________________________________
 
 		The prefix data file calls <NDSearch.OnPrefixDataLoaded()> with its data, which conceptually looks like this:
 
-		> NDSearch.OnPrefixDataLoaded(prefix, topicTypeSimpleIDs[], keywords[]);
+		> NDSearch.OnPrefixDataLoaded(prefix, commentTypeSimpleIDs[], keywords[]);
 		>
 		> keyword: [ htmlName, searchText (optional), members[] ]
 		
@@ -38,7 +38,7 @@ _______________________________________________________________________________
 		>    htmlName (optional),
 		>    htmlLanguageName (optional), 
 		>    searchText (optional), 
-		>    topicTypeIndex, 
+		>    commentTypeIndex, 
 		>    fileHashPath, 
 		>    classHashPath (optional) ]
 

@@ -63,55 +63,55 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		/* Function: ParsePrototype
 		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
-		public override ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
+		public override ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
 			{
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
 			ParsedPrototype parsedPrototype = new ParsedPrototype(tokenizedPrototype);
 			bool parsed = false;
 
-			if (topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("function") ||
-				topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("delegate") ||
-				topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("operator"))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("delegate") ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator"))
 			    {
 				parsed = TryToSkipFunction(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 			
 			if (!parsed &&
-				(topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("variable") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("constant") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("event")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constant") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event")) )
 			    {
 				parsed = TryToSkipVariable(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("property") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("operator") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("function") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("event")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("property") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event")) )
 			    {
 				parsed = TryToSkipProperty(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("function") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("constructor") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("destructor")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constructor") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("destructor")) )
 			    {
 				parsed = TryToSkipConstructor(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("enum") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("type")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("enum") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("type")) )
 			    {
 				parsed = TryToSkipEnum(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("operator") ||
-				 topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("function")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator") ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function")) )
 			    {
 				parsed = TryToSkipConversionOperator(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
@@ -119,16 +119,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (parsed)
 				{  return parsedPrototype;  }
 			else
-			    {  return base.ParsePrototype(stringPrototype, topicTypeID);  }
+			    {  return base.ParsePrototype(stringPrototype, commentTypeID);  }
 			}
 
 
 		/* Function: ParseClassPrototype
 		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
 		 */
-		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
+		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
 			{
-			if (EngineInstance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+			if (EngineInstance.CommentTypes.FromID(commentTypeID).Flags.ClassHierarchy == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -136,9 +136,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
 			bool parsed = false;
 
-			if (topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("class") ||
-				topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("struct") ||
-				topicTypeID == EngineInstance.TopicTypes.IDFromKeyword("interface"))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("class") ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("struct") ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("interface"))
 			    {
 				parsed = TryToSkipClass(ref startOfPrototype, ParseMode.ParseClassPrototype);
 			    }
@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (parsed)
 				{  return parsedPrototype;  }
 			else
-			    {  return base.ParseClassPrototype(stringPrototype, topicTypeID);  }
+			    {  return base.ParseClassPrototype(stringPrototype, commentTypeID);  }
 			}
 
 
@@ -164,7 +164,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		ClassString - Not set.
 		 *		ClassID - Not set.
 		 *		IsEmbedded - Not applicable.
-		 *		TopicTypeID - Set.
+		 *		CommentTypeID - Set.
 		 *		AccessLevel - Set if directly defined on the element.  Not set to defaults or adjusted for inheritance.
 		 *		Tags - Not applicable.
 		 *		FileID - Not set.
@@ -708,16 +708,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else // "class" or "struct"
 					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
 
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic classTopic = new Topic(EngineInstance.TopicTypes);
+					Topic classTopic = new Topic(EngineInstance.CommentTypes);
 					classTopic.Title = symbol.FormatWithSeparator('.');  // so the title is fully resolved
 					classTopic.Symbol = symbol;
 					classTopic.ClassString = classString;
 					classTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-					classTopic.TopicTypeID = topicTypeID;
+					classTopic.CommentTypeID = commentTypeID;
 					classTopic.LanguageID = this.ID;
 					classTopic.DeclaredAccessLevel = accessLevel;
 					classTopic.CodeLineNumber = iterator.LineNumber;
@@ -936,15 +936,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic functionTopic = new Topic(EngineInstance.TopicTypes);
+					Topic functionTopic = new Topic(EngineInstance.CommentTypes);
 					functionTopic.Title = name;
 					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-					functionTopic.TopicTypeID = topicTypeID;
+					functionTopic.CommentTypeID = commentTypeID;
 					functionTopic.LanguageID = this.ID;
 					functionTopic.DeclaredAccessLevel = accessLevel;
 					functionTopic.CodeLineNumber = iterator.LineNumber;
@@ -1129,15 +1129,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic functionTopic = new Topic(EngineInstance.TopicTypes);
+					Topic functionTopic = new Topic(EngineInstance.CommentTypes);
 					functionTopic.Title = name;
 					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfPrototype) );
-					functionTopic.TopicTypeID = topicTypeID;
+					functionTopic.CommentTypeID = commentTypeID;
 					functionTopic.LanguageID = this.ID;
 					functionTopic.DeclaredAccessLevel = accessLevel;
 					functionTopic.CodeLineNumber = iterator.LineNumber;
@@ -1292,15 +1292,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword("operator");
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("operator");
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic operatorTopic = new Topic(EngineInstance.TopicTypes);
+					Topic operatorTopic = new Topic(EngineInstance.CommentTypes);
 					operatorTopic.Title = name.ToString();
 					operatorTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(operatorTopic.Title);
 					operatorTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-					operatorTopic.TopicTypeID = topicTypeID;
+					operatorTopic.CommentTypeID = commentTypeID;
 					operatorTopic.LanguageID = this.ID;
 					operatorTopic.DeclaredAccessLevel = accessLevel;
 					operatorTopic.CodeLineNumber = iterator.LineNumber;
@@ -1434,15 +1434,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Create element
 
-			int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword(keyword);
+			int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
 
-			if (mode == ParseMode.CreateElements && topicTypeID != 0)
+			if (mode == ParseMode.CreateElements && commentTypeID != 0)
 				{
-				Topic variableTopic = new Topic(EngineInstance.TopicTypes);
+				Topic variableTopic = new Topic(EngineInstance.CommentTypes);
 				variableTopic.Title = name;
 				variableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-				variableTopic.TopicTypeID = topicTypeID;
+				variableTopic.CommentTypeID = commentTypeID;
 				variableTopic.LanguageID = this.ID;
 				variableTopic.DeclaredAccessLevel = accessLevel;
 				variableTopic.CodeLineNumber = iterator.LineNumber;
@@ -1493,13 +1493,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						lookahead.Character != '=')
 						{  break;  }
 
-					if (mode == ParseMode.CreateElements && topicTypeID != 0)
+					if (mode == ParseMode.CreateElements && commentTypeID != 0)
 						{
-						Topic newVariableTopic = new Topic(EngineInstance.TopicTypes);
+						Topic newVariableTopic = new Topic(EngineInstance.CommentTypes);
 						newVariableTopic.Title = newName;
 						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(newName);
 						newVariableTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, endOfType) + " " + newName );
-						newVariableTopic.TopicTypeID = topicTypeID;
+						newVariableTopic.CommentTypeID = commentTypeID;
 						newVariableTopic.LanguageID = this.ID;
 						newVariableTopic.DeclaredAccessLevel = accessLevel;
 						newVariableTopic.CodeLineNumber = startOfNewName.LineNumber;
@@ -1715,11 +1715,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Create element
 
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic propertyTopic = new Topic(EngineInstance.TopicTypes);
+					Topic propertyTopic = new Topic(EngineInstance.CommentTypes);
 					propertyTopic.Title = name;
 
 					// We don't attach it to the name variable earlier because we don't want it to be part of the symbol.
@@ -1728,7 +1728,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 					propertyTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
-					propertyTopic.TopicTypeID = topicTypeID;
+					propertyTopic.CommentTypeID = commentTypeID;
 					propertyTopic.LanguageID = this.ID;
 					propertyTopic.DeclaredAccessLevel = accessLevel;
 					propertyTopic.CodeLineNumber = iterator.LineNumber;
@@ -1853,15 +1853,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				enumElement.ChildContextString = childContext;
 				enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
-				int topicTypeID = EngineInstance.TopicTypes.IDFromKeyword("enum");
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("enum");
 
-				if (topicTypeID != 0)
+				if (commentTypeID != 0)
 					{
-					Topic enumTopic = new Topic(EngineInstance.TopicTypes);
+					Topic enumTopic = new Topic(EngineInstance.CommentTypes);
 					enumTopic.Title = name;
 					enumTopic.Symbol = symbol;
 					enumTopic.Prototype = NormalizePrototype( iterator.Tokenizer.TextBetween(iterator, lookahead) );
-					enumTopic.TopicTypeID = topicTypeID;
+					enumTopic.CommentTypeID = commentTypeID;
 					enumTopic.LanguageID = this.ID;
 					enumTopic.DeclaredAccessLevel = accessLevel;
 					enumTopic.CodeLineNumber = iterator.LineNumber;

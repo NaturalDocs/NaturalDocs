@@ -32,7 +32,7 @@ using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
@@ -291,25 +291,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildParentClass (Parent parent)
 			{
-			TopicType parentTopicType;
+			CommentType parentCommentType;
 			string memberOperator;
 
 			if (parent.targetTopic != null)
 				{  
-				parentTopicType = EngineInstance.TopicTypes.FromID(parent.targetTopic.TopicTypeID);  
+				parentCommentType = EngineInstance.CommentTypes.FromID(parent.targetTopic.CommentTypeID);  
 				memberOperator = EngineInstance.Languages.FromID(parent.targetTopic.LanguageID).MemberOperator;
 				}
 			else
 				{  
-				parentTopicType = EngineInstance.TopicTypes.FromKeyword("class");
+				parentCommentType = EngineInstance.CommentTypes.FromKeyword("class");
 				memberOperator = ".";
 				}
 
 			TokenIterator start, end;
 			
 			string entryClass = "CPEntry Parent";
-			if (parentTopicType != null)
-				{  entryClass += " T" + parentTopicType.SimpleIdentifier;  }
+			if (parentCommentType != null)
+				{  entryClass += " T" + parentCommentType.SimpleIdentifier;  }
 
 			if (parent.targetTopic != null)
 				{  BuildLinkTag(parent.targetTopic, entryClass);  }
@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						{  throw new Exception("There was a parent without a target topic or a link associated with it.");  }
 					#endif
 
-					BuildWrappedTitle(name, (parentTopicType != null ? parentTopicType.ID : 0), htmlOutput);
+					BuildWrappedTitle(name, (parentCommentType != null ? parentCommentType.ID : 0), htmlOutput);
 
 					if (parent.prototypeIndex != -1 &&
 						topic.ParsedClassPrototype.GetParentTemplateSuffix(parent.prototypeIndex, out start, out end) == true)
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildCurrentClass ()
 			{
-			htmlOutput.Append("<div class=\"CPEntry T" + EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier +" Current\">");
+			htmlOutput.Append("<div class=\"CPEntry T" + EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier +" Current\">");
 
 
 			// Pre-prototype lines
@@ -462,7 +462,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("<div class=\"CPName\">");
 
-			BuildWrappedTitle(topic.Symbol.FormatWithSeparator(this.language.MemberOperator), topic.TopicTypeID, htmlOutput);
+			BuildWrappedTitle(topic.Symbol.FormatWithSeparator(this.language.MemberOperator), topic.CommentTypeID, htmlOutput);
 
 			TokenIterator startTemplate, endTemplate;
 			if (topic.ParsedClassPrototype.GetTemplateSuffix(out startTemplate, out endTemplate))
@@ -556,14 +556,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildChildClass (Topic childTopic)
 			{
-			TopicType childTopicType = EngineInstance.TopicTypes.FromID(childTopic.TopicTypeID);  
+			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);  
 			string memberOperator = EngineInstance.Languages.FromID(childTopic.LanguageID).MemberOperator;
 
-			BuildLinkTag(childTopic, "CPEntry Child T" + childTopicType.SimpleIdentifier);
+			BuildLinkTag(childTopic, "CPEntry Child T" + childCommentType.SimpleIdentifier);
 
 				htmlOutput.Append("<div class=\"CPName\">");
 
-					BuildWrappedTitle(childTopic.Symbol.FormatWithSeparator(memberOperator), childTopicType.ID, htmlOutput);
+					BuildWrappedTitle(childTopic.Symbol.FormatWithSeparator(memberOperator), childCommentType.ID, htmlOutput);
 
 				htmlOutput.Append("</div>");
 

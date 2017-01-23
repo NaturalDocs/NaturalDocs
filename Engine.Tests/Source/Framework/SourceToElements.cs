@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 					{  output.AppendLine("(no topic)");  }
 				else 
 					{
-					output.Append( EngineInstance.TopicTypes.FromID(element.Topic.TopicTypeID).Name + ": " );
+					output.Append( EngineInstance.CommentTypes.FromID(element.Topic.CommentTypeID).Name + ": " );
 
 					if (element.Topic.Title == null)
 						{  output.AppendLine("(untitled)");  }

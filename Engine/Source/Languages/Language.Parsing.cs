@@ -16,7 +16,7 @@ using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages
@@ -399,7 +399,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: ParsePrototype
 		 * Converts a raw text prototype into a <ParsedPrototype>.
 		 */
-		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int topicTypeID)
+		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
 			{
 			if (Type == LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParsePrototype");  }
@@ -498,7 +498,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
-						ParsePrototypeParameter(start, end, topicTypeID);
+						ParsePrototypeParameter(start, end, commentTypeID);
 						}
 					}
 
@@ -519,7 +519,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					start.NextPastWhitespace();
 
 					if (start < end)
-						{  MarkPascalParameterAfterColon(start, end, topicTypeID);  }
+						{  MarkPascalParameterAfterColon(start, end, commentTypeID);  }
 					}
 
 				// Otherwise it's a C-style function.  Mark the part before the parameters as if it was a parameter to get the return
@@ -533,7 +533,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 					if (start < end)
-						{  MarkCParameter(start, end, topicTypeID);  }
+						{  MarkCParameter(start, end, commentTypeID);  }
 					}
 				}
 
@@ -544,7 +544,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				TokenIterator start, end;
 				parsedPrototype.GetCompletePrototype(out start, out end);
-				ParsePrototypeParameter(start, end, topicTypeID);
+				ParsePrototypeParameter(start, end, commentTypeID);
 				}
 
 			return parsedPrototype;
@@ -554,12 +554,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: ParseClassPrototype
 		 * Converts a raw text prototype into a <ParsedClassPrototype>.  Will return null if it is not an appropriate prototype.
 		 */
-		public virtual ParsedClassPrototype ParseClassPrototype (string stringPrototype, int topicTypeID)
+		public virtual ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
 			{
 			if (Type == LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
-			if (EngineInstance.TopicTypes.FromID(topicTypeID).Flags.ClassHierarchy == false)
+			if (EngineInstance.CommentTypes.FromID(commentTypeID).Flags.ClassHierarchy == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -980,8 +980,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
 			#endif
 
-			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same topic type.
-			if (topicA.TopicTypeID != topicB.TopicTypeID)
+			// This is a problem if one uses "constructor" and one uses "function" and they don't map to the same comment type.
+			if (topicA.CommentTypeID != topicB.CommentTypeID)
 				{  return false;  }
 
 			bool ignoreCase = (Manager.FromID(topicA.LanguageID).CaseSensitive == false);
@@ -1036,15 +1036,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			while (i < topics.Count)
 				{
 				Topic topic = topics[i];
-				TopicType topicType = null;
+				CommentType commentType = null;
 
-				// Look up the topic type and end the previous class or group if necessary.
-				if (topic.TopicTypeID != 0)
+				// Look up the comment type and end the previous class or group if necessary.
+				if (topic.CommentTypeID != 0)
 					{
-					topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+					commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-					if (topicType.Scope == TopicType.ScopeValue.Start ||
-						 topicType.Scope == TopicType.ScopeValue.End)
+					if (commentType.Scope == CommentType.ScopeValue.Start ||
+						 commentType.Scope == CommentType.ScopeValue.End)
 						{
 						if (lastClass != null)
 							{
@@ -1054,8 +1054,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						}
 
-					if (topicType.Scope == TopicType.ScopeValue.Start ||
-						 topicType.Scope == TopicType.ScopeValue.End ||
+					if (commentType.Scope == CommentType.ScopeValue.Start ||
+						 commentType.Scope == CommentType.ScopeValue.End ||
 						 topic.IsGroup)
 						{
 						if (lastGroup != null)
@@ -1100,9 +1100,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Scoped and group topics get a ParentElement.  Sections get treated like classes because we want any modifiers they 
 				// have to be inherited by the topics that follow.
-				else if (topicType != null && topic.IsList == false &&
-						  (topicType.Scope == TopicType.ScopeValue.Start || 
-						   topicType.Scope == TopicType.ScopeValue.End || 
+				else if (commentType != null && topic.IsList == false &&
+						  (commentType.Scope == CommentType.ScopeValue.Start || 
+						   commentType.Scope == CommentType.ScopeValue.End || 
 						   topic.IsGroup))
 					{
 					ParentElement parentElement = new ParentElement(topic.CommentLineNumber, 1, Element.Flags.InComments);
@@ -1172,7 +1172,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		must meet these requirements:
 		 *		
 		 *		- Every <Topic> must have a title set.
-		 *		- Every <Topic> must have a topic type ID set.
+		 *		- Every <Topic> must have a comment type ID set.
 		 *		- Every <Topic> must have a symbol set.
 		 *		- Each symbol must be fully resolved.  For example, a function appearing in a class must have the symbol "Class.Function".
 		 *		  Other code will not apply parent symbols to children.
@@ -1259,7 +1259,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected virtual void AddBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
 			{
-			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.TopicTypeID);
+			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
 				{  return;  }
@@ -1958,12 +1958,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// reached the scope reverts back to the code.  This behavior doesn't apply to groups since we want to be able to use
 					// them with code elements.
 
-					if (element.Topic != null && element.Topic.TopicTypeID != 0)
+					if (element.Topic != null && element.Topic.CommentTypeID != 0)
 						{
-						var topicType = EngineInstance.TopicTypes.FromID(element.Topic.TopicTypeID);
+						var commentType = EngineInstance.CommentTypes.FromID(element.Topic.CommentTypeID);
 
-						if (topicType.Scope == TopicType.ScopeValue.Start ||
-							topicType.Scope == TopicType.ScopeValue.End)
+						if (commentType.Scope == CommentType.ScopeValue.Start ||
+							commentType.Scope == CommentType.ScopeValue.End)
 							{
 							int nextCodeIndex = i + 1;
 
@@ -2027,12 +2027,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 				{
 				#if DEBUG
-				if (commentTopic.TopicTypeID == 0)
-					{  throw new Exception ("All comment topics with titles must have topic type IDs before calling CanMergeTopics().");  }
+				if (commentTopic.CommentTypeID == 0)
+					{  throw new Exception ("All comment topics with titles must have comment type IDs before calling CanMergeTopics().");  }
 				#endif
 
 				// Documentation and file topics should not be merged with code.  Headerless topics are assumed to be code.
-				if (EngineInstance.TopicTypes.FromID(commentTopic.TopicTypeID).Flags.Code == false)
+				if (EngineInstance.CommentTypes.FromID(commentTopic.CommentTypeID).Flags.Code == false)
 					{  return false;  }
 
 				#if DEBUG
@@ -2059,7 +2059,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  throw new Exception ("Tried to merge topics that did not pass CanMergeTopics().");  }
 			#endif
 
-			Topic mergedTopic = new Topic(EngineInstance.TopicTypes);
+			Topic mergedTopic = new Topic(EngineInstance.CommentTypes);
 
 			// TopicID - Shouldn't be set on either.
 			
@@ -2100,13 +2100,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// IsEmbedded - Use the comment.  We want to be able to merge code topics into embedded comment topics.
 			mergedTopic.IsEmbedded = commentTopic.IsEmbedded;
 
-			// TopicTypeID - If the user specified one, we always want to use that.  We don't care if the topic type would normally switch the
+			// CommentTypeID - If the user specified one, we always want to use that.  We don't care if the comment type would normally switch the
 			//					   containing element between an Element and a ParentElement, or if the new type has a different scope setting.  We'll
-			//					   switch to the comment topic type but retain the code settings for those.
-			if (commentTopic.TopicTypeID != 0)
-				{  mergedTopic.TopicTypeID = commentTopic.TopicTypeID;  }
+			//					   switch to the comment's comment type but retain the code settings for those.
+			if (commentTopic.CommentTypeID != 0)
+				{  mergedTopic.CommentTypeID = commentTopic.CommentTypeID;  }
 			else
-				{  mergedTopic.TopicTypeID = codeTopic.TopicTypeID;  }
+				{  mergedTopic.CommentTypeID = codeTopic.CommentTypeID;  }
 
 			// DeclaredAccessLevel - Use the code.  The topic settings only apply when the topic only appears in the comments.
 			// xxx Copy when the language doesn't have native support for access levels, like JavaScript.
@@ -2378,10 +2378,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 			#endif
 
-			if (EngineInstance.TopicTypes.GroupTopicTypeID == 0)
+			if (EngineInstance.CommentTypes.GroupCommentTypeID == 0)
 				{  return 0;  }
 
-			TopicType lastTopicType = null;
+			CommentType lastCommentType = null;
 			int groupsAdded = 0;
 			ParentElement lastGroupAdded = null;
 			int lastGroupAddedIndex = -1;
@@ -2395,17 +2395,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					continue;  
 					}
 
-				int effectiveTopicTypeID = elements[i].Topic.TopicTypeID;
+				int effectiveCommentTypeID = elements[i].Topic.CommentTypeID;
 
 				if (elements[i].Topic.IsEnum)
 					{  
-					int typeTopicTypeID = EngineInstance.TopicTypes.IDFromKeyword("type");
+					int typeCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("type");
 
-					if (typeTopicTypeID != 0)
-						{  effectiveTopicTypeID = typeTopicTypeID;  }
+					if (typeCommentTypeID != 0)
+						{  effectiveCommentTypeID = typeCommentTypeID;  }
 					}
 
-				if (lastTopicType == null || lastTopicType.ID != effectiveTopicTypeID)
+				if (lastCommentType == null || lastCommentType.ID != effectiveCommentTypeID)
 					{
 					if (lastGroupAdded != null)
 						{
@@ -2413,11 +2413,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						lastGroupAdded.EndingCharNumber = elements[i].CharNumber;
 						}
 
-					lastTopicType = EngineInstance.TopicTypes.FromID(effectiveTopicTypeID);
+					lastCommentType = EngineInstance.CommentTypes.FromID(effectiveCommentTypeID);
 					bool addGroup = true;
 
 					// Don't group on files if they're the first topic in the file.
-					if (lastTopicType.Flags.File)
+					if (lastCommentType.Flags.File)
 						{
 						addGroup = false;
 
@@ -2433,9 +2433,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (addGroup)
 						{
-						Topic newGroupTopic = new Topic(EngineInstance.TopicTypes);
-						newGroupTopic.TopicTypeID = EngineInstance.TopicTypes.GroupTopicTypeID;
-						newGroupTopic.Title = lastTopicType.PluralDisplayName;
+						Topic newGroupTopic = new Topic(EngineInstance.CommentTypes);
+						newGroupTopic.CommentTypeID = EngineInstance.CommentTypes.GroupCommentTypeID;
+						newGroupTopic.Title = lastCommentType.PluralDisplayName;
 
 						ParentElement newGroupElement = new ParentElement(elements[i].LineNumber, elements[i].CharNumber, 0);
 						newGroupElement.Topic = newGroupTopic;
@@ -2922,7 +2922,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Gather information
 
-					TopicType topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+					CommentType commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
 					string ignore;
 					SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out ignore);
@@ -2947,7 +2947,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Set Topic.Symbol
 
-					if (topicType.Scope == TopicType.ScopeValue.Normal)
+					if (commentType.Scope == CommentType.ScopeValue.Normal)
 						{  topic.Symbol = parentContext.Scope + topicSymbol;  }
 					else // Scope is Start, End, or AlwaysGlobal
 						{  topic.Symbol = topicSymbol;  }
@@ -2955,10 +2955,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Set Topic.ClassString and ParentElement.DefaultChildClassString if appropriate
 
-					if (topicType.Scope == TopicType.ScopeValue.Start && 
-						  (topicType.Flags.ClassHierarchy == true || topicType.Flags.DatabaseHierarchy == true) )
+					if (commentType.Scope == CommentType.ScopeValue.Start && 
+						  (commentType.Flags.ClassHierarchy == true || commentType.Flags.DatabaseHierarchy == true) )
 						{
-						ClassString.HierarchyType hierarchyType = (topicType.Flags.ClassHierarchy ? 
+						ClassString.HierarchyType hierarchyType = (commentType.Flags.ClassHierarchy ? 
 																												ClassString.HierarchyType.Class :
 																												ClassString.HierarchyType.Database);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
@@ -2980,22 +2980,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (element is ParentElement && topic.IsList == false)
 						{
 						EnumValues enumValue = 0;
-						if (topicType.Flags.Enum == true)
+						if (commentType.Flags.Enum == true)
 							{  enumValue = Manager.FromID(topic.LanguageID).EnumValue;  }
 							
-						if (topicType.Scope == TopicType.ScopeValue.Start ||
-						    (topicType.Flags.Enum == true && enumValue == EnumValues.UnderType))
+						if (commentType.Scope == CommentType.ScopeValue.Start ||
+						    (commentType.Flags.Enum == true && enumValue == EnumValues.UnderType))
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = topic.Symbol;
 							(element as ParentElement).ChildContextString = newContext;
 							}
-						else if (topicType.Scope == TopicType.ScopeValue.End ||
-								  (topicType.Flags.Enum == true && enumValue == EnumValues.Global))
+						else if (commentType.Scope == CommentType.ScopeValue.End ||
+								  (commentType.Flags.Enum == true && enumValue == EnumValues.Global))
 							{
 							(element as ParentElement).ChildContextString = new ContextString();
 							}
-						else if (topicType.Flags.Enum == true && enumValue == EnumValues.UnderParent)
+						else if (commentType.Flags.Enum == true && enumValue == EnumValues.UnderParent)
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = parentContext.Scope;
@@ -3168,7 +3168,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: ParsePrototypeParameter
 		 * Marks the tokens in the parameter specified by the bounds with <CommentParsingTypes>.
 		 */
-		protected void ParsePrototypeParameter (TokenIterator start, TokenIterator end, int topicTypeID)
+		protected void ParsePrototypeParameter (TokenIterator start, TokenIterator end, int commentTypeID)
 			{
 			// Pass 1: Count the number of "words" in the parameter and determine whether it has a colon, and is thus a Pascal-style 
 			// parameter.  We'll figure out how to interpret the words in the second pass.  Pascal can define more than one parameter 
@@ -3261,7 +3261,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (hasColon == false)
 				{
-				MarkCParameter(start, end, topicTypeID, words);
+				MarkCParameter(start, end, commentTypeID, words);
 				}
 
 			// If we do have a colon, the order of words goes [name]: [modifier] [modifier] [type], the type portion starting
@@ -3273,12 +3273,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				while (iterator < end && iterator.PrototypeParsingType != PrototypeParsingType.NameTypeSeparator)
 					{  iterator.Next();  }
 
-				MarkPascalParameterBeforeColon(start, iterator, topicTypeID, wordsBeforeColon);
+				MarkPascalParameterBeforeColon(start, iterator, commentTypeID, wordsBeforeColon);
 
 				while (iterator < end && iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
 					{  iterator.Next();  }
 
-				MarkPascalParameterAfterColon(iterator, end, topicTypeID, words - wordsBeforeColon);
+				MarkPascalParameterAfterColon(iterator, end, commentTypeID, words - wordsBeforeColon);
 				}
 			}
 
@@ -3286,7 +3286,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: CountParameterWords
 		 * Returns the number of "words" between the bounds.
 		 */
-		protected int CountParameterWords (TokenIterator start, TokenIterator end, int topicTypeID)
+		protected int CountParameterWords (TokenIterator start, TokenIterator end, int commentTypeID)
 			{
 			TokenIterator iterator = start;
 			int words = 0;
@@ -3317,10 +3317,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * work correctly for typeless parameters and Pascal-style parameters that don't have a type.  If you leave the word count
 		 * -1 it will use <CountParameterWords()> to determine it itself.
 		 */
-		protected void MarkCParameter (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+		protected void MarkCParameter (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
 			{
 			if (words == -1)
-				{  words = CountParameterWords(start, end, topicTypeID);  }
+				{  words = CountParameterWords(start, end, commentTypeID);  }
 
 			// The order of words goes [modifier] [modifier] [type] [name], starting from the right.  Typeless languages that only have
 			// one word will have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
@@ -3400,10 +3400,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * contain the part of the prototype prior to the colon.  If the word count is -1 it will determine it itself with 
 		 * <CountParameterWords()>.
 		 */
-		protected void MarkPascalParameterBeforeColon (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+		protected void MarkPascalParameterBeforeColon (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
 			{
 			if (words == -1)
-				{  words = CountParameterWords(start, end, topicTypeID);  }
+				{  words = CountParameterWords(start, end, commentTypeID);  }
 
 			TokenIterator iterator = start;
 			TokenIterator startWord = iterator;
@@ -3430,10 +3430,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * contain the part of the prototype after the colon.  If the word count is -1 it will determine it itself with
 		 * <CountParameterWords()>.
 		 */
-		protected void MarkPascalParameterAfterColon (TokenIterator start, TokenIterator end, int topicTypeID, int words = -1)
+		protected void MarkPascalParameterAfterColon (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
 			{
 			if (words == -1)
-				{  words = CountParameterWords(start, end, topicTypeID);  }
+				{  words = CountParameterWords(start, end, commentTypeID);  }
 
 			TokenIterator iterator = start;
 			TokenIterator startWord = iterator;
@@ -4375,8 +4375,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  throw new Exception("All topics returned by GetCodeElements() must have titles.");  }
 					if (element.Topic.Symbol == null)
 						{  throw new Exception("All topics returned by GetCodeElements() must have symbols.");  }
-					if (element.Topic.TopicTypeID == 0)
-						{  throw new Exception("All topics returned by GetCodeElements() must have topic type IDs.");  }
+					if (element.Topic.CommentTypeID == 0)
+						{  throw new Exception("All topics returned by GetCodeElements() must have comment type IDs.");  }
 					if (element.Topic.IsList)
 						{  throw new Exception("GetCodeElements() cannot return list topics.");  }
 					if (element.Topic.IsEmbedded)
@@ -4450,8 +4450,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{  missingProperties += " Symbol";  }
 					if (topic.Title == null)
 						{  missingProperties += " Title";  }
-					if (topic.TopicTypeID == 0)
-						{  missingProperties += " TopicTypeID";  }
+					if (topic.CommentTypeID == 0)
+						{  missingProperties += " CommentTypeID";  }
 
 					if (missingProperties != "")
 						{  throw new Exception("Generated Topic is missing properties:" + missingProperties);  }

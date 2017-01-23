@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- <Config.Manager> and <TopicTypes.Manager> must be started before using the rest of the class.
+		 *		- <Config.Manager> and <CommentTypes.Manager> must be started before using the rest of the class.
 		 */
 		public bool Start (Errors.ErrorList errors)
 			{

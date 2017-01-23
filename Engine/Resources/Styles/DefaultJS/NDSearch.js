@@ -26,7 +26,7 @@
 		`MemberObject_HTMLName = 1
 		`MemberObject_HTMLLanguageName = 2
 		`MemberObject_SearchText = 3
-		`MemberObject_TopicType = 4
+		`MemberObject_CommentType = 4
 		`MemberObject_FileHashPath = 5
 		`MemberObject_ClassHashPath = 6
 
@@ -935,7 +935,7 @@ var NDSearch = new function ()
 				   lastMatchingMemberObject[`MemberObject_SearchText] == keywordObject[`KeywordObject_SearchText])
 			{
 			var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
-			var topicType = lastMatchingMemberObject[`MemberObject_TopicType];
+			var commentType = lastMatchingMemberObject[`MemberObject_CommentType];
 			var target;
 
 			if (favorClasses && lastMatchingMemberObject[`MemberObject_ClassHashPath] != undefined)
@@ -943,7 +943,7 @@ var NDSearch = new function ()
 			else
 				{  target = lastMatchingMemberObject[`MemberObject_FileHashPath];  }
 
-			var html = "<a class=\"SeEntry T" + topicType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+			var html = "<a class=\"SeEntry T" + commentType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
 								"href=\"#" + target + "\">" +
 								"<div class=\"SeEntryIcon\"></div>" +
 								lastMatchingMemberObject[`MemberObject_HTMLName];
@@ -1001,7 +1001,7 @@ var NDSearch = new function ()
 					if (this.MemberMatchesInterpretations(memberObject, searchInterpretations))
 						{
 						var selected = (this.keyboardSelectionIndex == this.visibleEntryCount);
-						var topicType = memberObject[`MemberObject_TopicType];
+						var commentType = memberObject[`MemberObject_CommentType];
 						var target;
 
 						if (favorClasses && memberObject[`MemberObject_ClassHashPath] != undefined)
@@ -1009,7 +1009,7 @@ var NDSearch = new function ()
 						else
 							{  target = memberObject[`MemberObject_FileHashPath];  }
 
-						html += "<a class=\"SeEntry T" + topicType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
+						html += "<a class=\"SeEntry T" + commentType + "\" " + (selected ? "id=\"SeSelectedEntry\" " : "") +
 										"href=\"#" + target + "\">" + 
 										"<div class=\"SeEntryIcon\"></div>" +
 										memberObject[`MemberObject_HTMLName];
@@ -1348,7 +1348,7 @@ var NDSearch = new function ()
 	/* Function: OnPrefixDataLoaded
 		Called by the prefix data file when it has finished loading.
 	*/
-	this.OnPrefixDataLoaded = function (prefix, topicTypes, keywordObjects)
+	this.OnPrefixDataLoaded = function (prefix, commentTypes, keywordObjects)
 		{
 		var prefixObject = this.prefixObjects[prefix];
 
@@ -1369,8 +1369,8 @@ var NDSearch = new function ()
 				{
 				var memberObject = keywordObject[`KeywordObject_MemberObjects][m];
 
-				var topicTypeIndex = memberObject[`MemberObject_TopicType];
-				memberObject[`MemberObject_TopicType] = topicTypes[topicTypeIndex];
+				var commentTypeIndex = memberObject[`MemberObject_CommentType];
+				memberObject[`MemberObject_CommentType] = commentTypes[commentTypeIndex];
 
 				if (memberObject[`MemberObject_HTMLName] == undefined)
 					{  memberObject[`MemberObject_HTMLName] = keywordObject[`KeywordObject_HTMLName];  }

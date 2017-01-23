@@ -28,12 +28,12 @@
  *		- <Config.Manager> is first because almost everything depends on it, such as for its config and working data folder
  *		  properties or for its flag to rebuild everything.
  *		  
- *		- <TopicTypes.Manager> is next.
+ *		- <CommentTypes.Manager> is next.
  *		
- *		- <Languages.Manager> is next because it depends on <TopicTypes.Manager> for the "[Topic Type] Prototype Enders"
+ *		- <Languages.Manager> is next because it depends on <CommentTypes.Manager> for the "[Comment Type] Prototype Enders"
  *		  property.
  *		  
- *		- <Comments.Manager> is next though it only needs <Config.Manager> and <TopicTypes.Manager>.
+ *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
  *		- <SearchIndex.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
  *		
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * You can optionally pass your own module objects in which allows you to populate the engine with derived classes.
 		 * Any left as null will have the default classes created instead.
 		 */
-		public Instance (Config.Manager configManager = null, TopicTypes.Manager topicTypesManager = null, 
+		public Instance (Config.Manager configManager = null, CommentTypes.Manager commentTypesManager = null, 
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 								CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
 								SearchIndex.Manager searchIndexManager = null, Files.Manager filesManager = null)
@@ -88,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine
 			startupWatchers = new List<IStartupWatcher>();
 
 			config = configManager ?? new Config.Manager(this);
-			topicTypes = topicTypesManager ?? new TopicTypes.Manager(this);
+			commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
 			languages = languagesManager ?? new Languages.Manager(this);
 			comments = commentsManager ?? new Comments.Manager(this);
 			codeDB = codeDBManager ?? new CodeDB.Manager(this);
@@ -170,10 +170,10 @@ namespace CodeClear.NaturalDocs.Engine
 				languages = null;
 				}
 
-			if (topicTypes != null && !strictRulesApply)
+			if (commentTypes != null && !strictRulesApply)
 				{
-				topicTypes.Dispose();					
-				topicTypes = null;
+				commentTypes.Dispose();					
+				commentTypes = null;
 				}
 
 			if (config != null && !strictRulesApply)
@@ -211,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine
 				
 				
 			return (
-				topicTypes.Start(errors) &&
+				commentTypes.Start(errors) &&
 				languages.Start(errors) &&
 				comments.Start(errors) &&
 				searchIndex.Start(errors) &&
@@ -408,13 +408,13 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return config;  }
 			}
 			
-		/* Property: TopicTypes
-		 * Returns the <TopicTypes.Manager> associated with this instance.
+		/* Property: CommentTypes
+		 * Returns the <CommentTypes.Manager> associated with this instance.
 		 */
-		public TopicTypes.Manager TopicTypes
+		public CommentTypes.Manager CommentTypes
 			{
 			get
-				{  return topicTypes;  }
+				{  return commentTypes;  }
 			}
 			
 		/* Property: Languages
@@ -484,7 +484,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		protected Config.Manager config;
 		
-		protected TopicTypes.Manager topicTypes;
+		protected CommentTypes.Manager commentTypes;
 		
 		protected Languages.Manager languages;
 		

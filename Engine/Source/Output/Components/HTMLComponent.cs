@@ -374,17 +374,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * with a "Qualifier" CSS class.  The HTML will be appended to the StringBuilder, but you must provide your own surrounding
 		 * div if required.
 		 */
-		public void BuildWrappedTitle (string title, int topicTypeID, StringBuilder output)
+		public void BuildWrappedTitle (string title, int commentTypeID, StringBuilder output)
 			{
 			MatchCollection splitSymbols = null;
 
-			if (topicTypeID != 0)
+			if (commentTypeID != 0)
 				{
-				var topicType = EngineInstance.TopicTypes.FromID(topicTypeID);
+				var commentType = EngineInstance.CommentTypes.FromID(commentTypeID);
 
-				if (topicType.Flags.File == true)
+				if (commentType.Flags.File == true)
 					{  splitSymbols = FileSplitSymbolsRegex.Matches(title);  }
-				else if (topicType.Flags.Code == true)
+				else if (commentType.Flags.Code == true)
 					{  splitSymbols = CodeSplitSymbolsRegex.Matches(title);  }
 				}
 
@@ -449,10 +449,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * with a "Qualifier" CSS class.  The HTML will be returned as a string, but you must provide your own surrounding div if
 		 * required.  If the string will be directly appended to a StringBuilder, it is more efficient to use the other form.
 		 */
-		public string BuildWrappedTitle (string title, int topicTypeID)
+		public string BuildWrappedTitle (string title, int commentTypeID)
 			{
 			StringBuilder temp = new StringBuilder();
-			BuildWrappedTitle(title, topicTypeID, temp);
+			BuildWrappedTitle(title, commentTypeID, temp);
 			return temp.ToString();
 			}
 

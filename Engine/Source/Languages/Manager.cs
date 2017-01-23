@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- <Config.Manager> and <TopicTypes.Manager> must be started before using the rest of the class.
+		 *		- <Config.Manager> and <CommentTypes.Manager> must be started before using the rest of the class.
  		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
@@ -520,9 +520,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  language.CaseSensitive = (bool)configFileLanguage.CaseSensitive;  }
 				}
 				
-			string[] topicTypeNamesWithPrototypeEnders = configFileLanguage.GetTopicTypeNamesWithPrototypeEnders();
+			string[] commentTypeNamesWithPrototypeEnders = configFileLanguage.GetCommentTypeNamesWithPrototypeEnders();
 			
-			if (topicTypeNamesWithPrototypeEnders != null)
+			if (commentTypeNamesWithPrototypeEnders != null)
 				{
 				if (language.Type != Language.LanguageType.BasicSupport)
 					{	
@@ -531,14 +531,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				else
 					{
-					foreach (string topicTypeName in topicTypeNamesWithPrototypeEnders)
+					foreach (string commentTypeName in commentTypeNamesWithPrototypeEnders)
 						{
-						TopicTypes.TopicType topicType = EngineInstance.TopicTypes.FromName(topicTypeName);
+						CommentTypes.CommentType commentType = EngineInstance.CommentTypes.FromName(commentTypeName);
 						
-						if (topicType == null)
+						if (commentType == null)
 							{
 							errorList.Add( 
-								Locale.Get("NaturalDocs.Engine", "Languages.txt.PrototypeEnderTopicTypeDoesntExist(name)", topicTypeName),
+								Locale.Get("NaturalDocs.Engine", "Languages.txt.PrototypeEnderTopicTypeDoesntExist(name)", commentTypeName),
 								sourceFile, configFileLanguage.LineNumber 
 								);
 							
@@ -546,9 +546,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							string[] prototypeEnderStrings = configFileLanguage.GetPrototypeEnderStrings(topicTypeName);
+							string[] prototypeEnderStrings = configFileLanguage.GetPrototypeEnderStrings(commentTypeName);
 							PrototypeEnders prototypeEnders = new PrototypeEnders(prototypeEnderStrings);
-							language.SetPrototypeEnders(topicType.ID, prototypeEnders);
+							language.SetPrototypeEnders(commentType.ID, prototypeEnders);
 							}
 						}
 					}
@@ -667,9 +667,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * 
 		 * A helper function used only by <Start()> which cleans up the capitalization of <ConfigFileLanguages> such as by 
 		 * making Alter Language entries match the original language and making Topic Type Prototype Enders match the
-		 * original topic type.
+		 * original comment type.
 		 * 
-		 * Assumes <languages> and <TopicTypes.Manager> are already filled in and valid.
+		 * Assumes <languages> and <CommentTypes.Manager> are already filled in and valid.
 		 */
 		public void Start_FixCapitalization (List<ConfigFileLanguage> languageList)
 			{
@@ -680,16 +680,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					configFileLanguage.FixNameCapitalization( languages[configFileLanguage.Name].Name );
 					}
 				
-				string[] prototypeEnderTopicTypeNames = configFileLanguage.GetTopicTypeNamesWithPrototypeEnders();
+				string[] prototypeEnderCommentTypeNames = configFileLanguage.GetCommentTypeNamesWithPrototypeEnders();
 				
-				if (prototypeEnderTopicTypeNames != null)
+				if (prototypeEnderCommentTypeNames != null)
 					{
-					for (int i = 0; i < prototypeEnderTopicTypeNames.Length; i++)
+					for (int i = 0; i < prototypeEnderCommentTypeNames.Length; i++)
 						{
-						prototypeEnderTopicTypeNames[i] = EngineInstance.TopicTypes.FromName( prototypeEnderTopicTypeNames[i] ).Name;
+						prototypeEnderCommentTypeNames[i] = EngineInstance.CommentTypes.FromName( prototypeEnderCommentTypeNames[i] ).Name;
 						}
 						
-					configFileLanguage.FixPrototypeEnderTopicTypeCapitalization( prototypeEnderTopicTypeNames );
+					configFileLanguage.FixPrototypeEnderCommentTypeCapitalization( prototypeEnderCommentTypeNames );
 					}
 				}
 			}

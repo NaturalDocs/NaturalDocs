@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
@@ -108,9 +108,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				if (topics[i].IsList)
 					{
-					TopicType topicType = EngineInstance.TopicTypes.FromID(topics[i].TopicTypeID);
+					CommentType commentType = EngineInstance.CommentTypes.FromID(topics[i].CommentTypeID);
 
-					if (topicType.Flags.ClassHierarchy || topicType.Flags.DatabaseHierarchy)
+					if (commentType.Flags.ClassHierarchy || commentType.Flags.DatabaseHierarchy)
 						{  remove = true;  }
 					}
 

@@ -46,7 +46,7 @@
  *			
  *			The attributes are self-explanitory.  The comment symbols repeat until a null string is reached.
  *			
- *			> [Int32: Topic Type ID]
+ *			> [Int32: Comment Type ID]
  *			> [Byte: Include Line Breaks (1 or 0)]
  *			> [String: Prototype Ender Symbol] [] ... [String: null]
  *			> ...
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
 					// [String: XML Line Comment Symbol] [] ... [String: null]
 					
-					// [Int32: Topic Type ID]
+					// [Int32: Comment Type ID]
 					// [Byte: Include Line Breaks (1 or 0)]
 					// [String: Prototype Ender Symbol] [] ... [String: null]
 					// ...
@@ -192,14 +192,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						language.JavadocBlockCommentStringPairs = ReadStringArray(file);
 						language.XMLLineCommentStrings = ReadStringArray(file);
 							
-						for (int topicTypeID = file.ReadInt32();
-							  topicTypeID != 0;
-							  topicTypeID = file.ReadInt32())
+						for (int commentTypeID = file.ReadInt32();
+							  commentTypeID != 0;
+							  commentTypeID = file.ReadInt32())
 							{
 							bool includeLineBreaks = (file.ReadByte() == 1);
 							string[] enderSymbols = ReadStringArray(file);
 
-							language.SetPrototypeEnders(topicTypeID, new PrototypeEnders(enderSymbols, includeLineBreaks));
+							language.SetPrototypeEnders(commentTypeID, new PrototypeEnders(enderSymbols, includeLineBreaks));
 							}
 						
 						languages.Add(language);
@@ -351,7 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
 				// [String: XML Line Comment Symbol] [] ... [String: null]
 				
-				// [Int32: Topic Type ID]
+				// [Int32: Comment Type ID]
 				// [Byte: Include Line Breaks (0 or 1)]
 				// [String: Prototype Ender Symbol] [] ... [String: null]
 				// ...
@@ -377,14 +377,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					WriteStringArray(file, language.JavadocBlockCommentStringPairs);
 					WriteStringArray(file, language.XMLLineCommentStrings);
 
-					int[] topicTypes = language.GetTopicTypesWithPrototypeEnders();
-					if (topicTypes != null)
+					int[] commentTypes = language.GetCommentTypesWithPrototypeEnders();
+					if (commentTypes != null)
 						{
-						foreach (int topicType in topicTypes)
+						foreach (int commentType in commentTypes)
 							{
-							PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topicType);
+							PrototypeEnders prototypeEnders = language.GetPrototypeEnders(commentType);
 
-							file.WriteInt32(topicType);
+							file.WriteInt32(commentType);
 							file.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
 							WriteStringArray(file, prototypeEnders.Symbols);
 							}

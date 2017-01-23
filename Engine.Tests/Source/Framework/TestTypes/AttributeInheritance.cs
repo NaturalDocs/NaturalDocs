@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						else
 							{  output.Append(", ");  }
 
-						output.Append(EngineInstance.TopicTypes.TagFromID(tagID).Name);
+						output.Append(EngineInstance.CommentTypes.TagFromID(tagID).Name);
 						}
 
 					output.AppendLine();

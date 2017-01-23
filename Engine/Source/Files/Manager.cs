@@ -915,7 +915,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
 						// the HTML output falls back to regular prototypes in this situation.
 						if (topic.Prototype != null &&
-							(EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy == false ||
+							(EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy == false ||
 							 topic.ParsedClassPrototype == null))
 							{
 							ExtractTypeLinks(topic, links);

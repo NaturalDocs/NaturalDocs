@@ -90,9 +90,9 @@
  *			Defines the default member operator, such as . or ::.  This is for presentation only and will not affect how 
  *			Natural Docs links are parsed.  The default is a dot.
  *			
- *			> [Topic Type] Prototype Ender[s]: [symbol] [symbol] ...
+ *			> [Comment Type] Prototype Ender[s]: [symbol] [symbol] ...
  *			
- *			When defined, Natural Docs will attempt to collect prototypes from the code following the specified topic type.  It 
+ *			When defined, Natural Docs will attempt to collect prototypes from the code following the specified comment type.  It 
  *			grabs code until the first ender symbol or the next Natural Docs comment, and if it contains the topic name, it serves 
  *			as its prototype.  Use \n to specify a line break.  Example: "Function Prototype Enders: { ;", 
  *			"Variable Prototype Enders: = ;".
@@ -124,7 +124,7 @@
  *			> [Add/Replace] Ignore[d] [Topic Type] Prefix[es] in Index: ...
  *			
  *			Specifies prefixes that should be ignored when sorting symbols for an index.  Can be specified in general or for a 
- *			specific TopicType.  The prefixes will still appear, the symbols will just be sorted as if they're not there.  For example,
+ *			specific comment type.  The prefixes will still appear, the symbols will just be sorted as if they're not there.  For example,
  *			specifying "ADO_" for functions will mean that "ADO_DoSomething" will appear under D instead of A.
  *
  *			> Perl Package: [perl package]
@@ -234,7 +234,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			using (ConfigFile file = new ConfigFile())
 				{
-				// Can't make identifiers lowercase here or we'd lose the case of the topic type in prototype ender lines.
+				// Can't make identifiers lowercase here or we'd lose the case of the comment type in prototype ender lines.
 				bool openResult = file.Open(filename, 
 														 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
 														 ConfigFile.FileFormatFlags.CondenseValueWhitespace,
@@ -641,17 +641,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Prototype Enders
 					//
 					
-					// Use identifier and not lcIdentifier to keep the case of the topic type.  The regex will compensate.
+					// Use identifier and not lcIdentifier to keep the case of the comment type.  The regex will compensate.
 					else if ( (match = prototypeEndersRegex.Match(identifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
 							{  NeedsLanguageError(file, identifier);  }
 						else
 							{
-							string topicType = match.Groups[1].Value;
+							string commentType = match.Groups[1].Value;
 							string[] enderStrings = value.Split(space);
 
-							currentLanguage.SetPrototypeEnderStrings(topicType, enderStrings);
+							currentLanguage.SetPrototypeEnderStrings(commentType, enderStrings);
 							}
 						}
 						
@@ -927,23 +927,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					output.AppendLine("   Case Sensitive: " + ((language.CaseSensitive != null && (bool)language.CaseSensitive == true) ? "Yes" : "No"));  
 					}
 				
-				string[] topicTypeNamesWithPrototypeEnders = language.GetTopicTypeNamesWithPrototypeEnders();
+				string[] commentTypeNamesWithPrototypeEnders = language.GetCommentTypeNamesWithPrototypeEnders();
 				
-				if (topicTypeNamesWithPrototypeEnders != null)
+				if (commentTypeNamesWithPrototypeEnders != null)
 					{
 					LineBreakOnGroupChange(4, ref oldGroupNumber, output);
 
-					foreach (string topicTypeName in topicTypeNamesWithPrototypeEnders)
+					foreach (string commentTypeName in commentTypeNamesWithPrototypeEnders)
 						{
-						string[] prototypeEnderStrings = language.GetPrototypeEnderStrings(topicTypeName);
+						string[] prototypeEnderStrings = language.GetPrototypeEnderStrings(commentTypeName);
 						
 						if (prototypeEnderStrings.Length == 1)
 							{  
-							output.AppendLine( "   " + topicTypeName + " Prototype Ender: " + prototypeEnderStrings[0] );  
+							output.AppendLine( "   " + commentTypeName + " Prototype Ender: " + prototypeEnderStrings[0] );  
 							}
 						else
 							{  
-							output.AppendLine( "   " + topicTypeName + " Prototype Enders: " + string.Join(" ", prototypeEnderStrings) );  
+							output.AppendLine( "   " + commentTypeName + " Prototype Enders: " + string.Join(" ", prototypeEnderStrings) );  
 							}
 						}
 					}

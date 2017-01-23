@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Output.Components;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders
@@ -150,9 +150,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// If we're not including the class and the topic is itself a class, return null.
 			if (!includeClass)
 				{
-				var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+				var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-				if (topicType.Flags.ClassHierarchy)
+				if (commentType.Flags.ClassHierarchy)
 					{  return null;  }
 				}
 
@@ -286,7 +286,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
 			// to this topic.
 			if ((changeFlags & (Topic.ChangeFlags.Prototype | Topic.ChangeFlags.Summary | 
-												Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.TopicTypeID)) != 0)
+												Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.CommentTypeID)) != 0)
 				{
 				IDObjects.NumberSet linkFileIDs, linkClassIDs;
 				eventAccessor.GetInfoOnLinksThatResolveToTopicID(oldTopic.TopicID, out linkFileIDs, out linkClassIDs);

@@ -83,9 +83,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			StringBuilder output = new StringBuilder();
 			bool lastWasLineBreak = true;
 
-			Topic topic = new Topic(EngineInstance.TopicTypes);
+			Topic topic = new Topic(EngineInstance.CommentTypes);
 			topic.LanguageID = EngineInstance.Languages.FromName("C#").ID;
-			topic.TopicTypeID = EngineInstance.TopicTypes.FromKeyword("Function").ID;
+			topic.CommentTypeID = EngineInstance.CommentTypes.FromKeyword("Function").ID;
 
 			Link link = new Engine.Links.Link();
 			link.LanguageID = EngineInstance.Languages.FromName("C#").ID;
@@ -183,12 +183,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Topic.Keyword must be set to a string value.");  }
 
-							var topicType = EngineInstance.TopicTypes.FromKeyword(valueString);
+							var topicType = EngineInstance.CommentTypes.FromKeyword(valueString);
 
 							if (topicType == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a keyword.");  }
 
-							topic.TopicTypeID = topicType.ID;
+							topic.CommentTypeID = topicType.ID;
 							}
 						else if (property == "title")
 							{
@@ -384,9 +384,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string parametersString;
 						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parametersString);
 
-						var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+						var topicType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-						if (topicType.Scope == Engine.TopicTypes.TopicType.ScopeValue.Normal &&
+						if (topicType.Scope == Engine.CommentTypes.CommentType.ScopeValue.Normal &&
 							 topic.PrototypeContext.ScopeIsGlobal == false)
 							{
 							topicSymbol = topic.PrototypeContext.Scope + topicSymbol;  
@@ -418,7 +418,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							{  output.AppendLine();  }
 
 						var topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
-						topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+						topicType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
 						output.AppendLine(topicLanguage.Name + " " + topicType.Name + " Topic: " + topic.Title);
 						output.AppendLine("   Symbol: " + topic.Symbol.FormatWithSeparator('.'));

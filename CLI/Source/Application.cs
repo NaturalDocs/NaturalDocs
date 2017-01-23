@@ -293,9 +293,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Topics.txt") == false)
 				{
-				Engine.TopicTypes.Topics_txt topicsTxtParser = new Engine.TopicTypes.Topics_txt();
+				Engine.CommentTypes.Topics_txt topicsTxtParser = new Engine.CommentTypes.Topics_txt();
 				topicsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Topics.txt",
-												new List<Engine.TopicTypes.ConfigFileTopicType>(), new List<string>(), new List<string>(),
+												new List<Engine.CommentTypes.ConfigFileCommentType>(), new List<string>(), new List<string>(),
 												errorList, true, false);
 				}
 

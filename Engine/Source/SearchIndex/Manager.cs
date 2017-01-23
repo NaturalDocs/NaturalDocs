@@ -254,14 +254,14 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 */
 		protected bool IncludeInIndex (Topic topic)
 			{
-			var topicType = EngineInstance.TopicTypes.FromID(topic.TopicTypeID);
+			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-			if (topicType.ID == EngineInstance.TopicTypes.IDFromKeyword("group"))
+			if (commentType.ID == EngineInstance.CommentTypes.IDFromKeyword("group"))
 				{  return false;  }
 
 			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost
 			// certainly want the class and this just pollutes the results by forcing them under a keyword heading.
-			else if (topicType.Flags.Code && topicType.Flags.ClassHierarchy == false && topic.Symbol.EndsWithDuplicate())
+			else if (commentType.Flags.Code && commentType.Flags.ClassHierarchy == false && topic.Symbol.EndsWithDuplicate())
 			    {  return false;  }
 
 			else
@@ -480,7 +480,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			if (!IncludeInIndex(newTopic))
 				{  return;  }
 
-			if ((changeFlags & (Topic.ChangeFlags.Title | Topic.ChangeFlags.TopicTypeID | Topic.ChangeFlags.SymbolDefinitonNumber |
+			if ((changeFlags & (Topic.ChangeFlags.Title | Topic.ChangeFlags.CommentTypeID | Topic.ChangeFlags.SymbolDefinitonNumber |
 									  Topic.ChangeFlags.Symbol | Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.FileID | 
 									  Topic.ChangeFlags.EffectiveAccessLevel | Topic.ChangeFlags.Class)) == 0)
 				{  return;  }

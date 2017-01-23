@@ -41,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				if (topic.IsEmbedded)
 					{  output.Append("Embedded ");  }
-				output.Append(EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Name);
+				output.Append(EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Name);
 				if (topic.IsList)
 					{  output.Append(" List");  }
 				output.Append(": ");

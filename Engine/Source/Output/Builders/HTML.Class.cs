@@ -18,7 +18,7 @@ using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Output.Components;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders

@@ -25,7 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			this.htmlBuilder = htmlBuilder;
 
 			output = null;
-			usedTopicTypes = null;
+			usedCommentTypes = null;
 			}
 
 
@@ -263,14 +263,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token" to appear before
 					// variable "token" even though normally we want lowercase to go first.
 
-					var aTopicType = EngineInstance.TopicTypes.FromID(a.Topic.TopicTypeID);
-					var bTopicType = EngineInstance.TopicTypes.FromID(b.Topic.TopicTypeID);
+					var aCommentType = EngineInstance.CommentTypes.FromID(a.Topic.CommentTypeID);
+					var bCommentType = EngineInstance.CommentTypes.FromID(b.Topic.CommentTypeID);
 
-					if (aTopicType.Flags.ClassHierarchy != bTopicType.Flags.ClassHierarchy)
-						{  return (aTopicType.Flags.ClassHierarchy ? -1 : 1);  }
+					if (aCommentType.Flags.ClassHierarchy != bCommentType.Flags.ClassHierarchy)
+						{  return (aCommentType.Flags.ClassHierarchy ? -1 : 1);  }
 
-					if (aTopicType.Flags.DatabaseHierarchy != bTopicType.Flags.DatabaseHierarchy)
-						{  return (aTopicType.Flags.DatabaseHierarchy ? -1 : 1);  }
+					if (aCommentType.Flags.DatabaseHierarchy != bCommentType.Flags.DatabaseHierarchy)
+						{  return (aCommentType.Flags.DatabaseHierarchy ? -1 : 1);  }
 
 
 					// Still equal, now compare the qualifiers in a case-sensitive way to break ties.
@@ -413,22 +413,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildPrefixDataFileJS (string prefix, List<SearchIndex.KeywordEntry> keywordEntries)
 			{
-			// Build the list of all used topic types
+			// Build the list of all used comment types
 
-			if (usedTopicTypes == null)
-				{  usedTopicTypes = new List<TopicType>();  }
+			if (usedCommentTypes == null)
+				{  usedCommentTypes = new List<CommentType>();  }
 			else
-				{  usedTopicTypes.Clear();  }
+				{  usedCommentTypes.Clear();  }
 
 			foreach (var keywordEntry in keywordEntries)
 				{
 				foreach (var topicEntry in keywordEntry.TopicEntries)
 					{
-					int topicTypeID = topicEntry.Topic.TopicTypeID;
-					int topicTypeIndex = UsedTopicTypesIndex(topicTypeID);
+					int commentTypeID = topicEntry.Topic.CommentTypeID;
+					int commentTypeIndex = UsedCommentTypesIndex(commentTypeID);
 
-					if (topicTypeIndex == -1)
-						{  usedTopicTypes.Add( EngineInstance.TopicTypes.FromID(topicTypeID) );  }
+					if (commentTypeIndex == -1)
+						{  usedCommentTypes.Add( EngineInstance.CommentTypes.FromID(commentTypeID) );  }
 					}
 				}
 
@@ -449,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			output.Append("\n   ");
 			#endif
 
-			BuildTopicTypeList(keywordEntries);
+			BuildCommentTypeList(keywordEntries);
 			output.Append(',');
 
 			#if DONT_SHRINK_FILES
@@ -606,7 +606,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			output.Append(',');
 
-			output.Append(UsedTopicTypesIndex(topicEntry.Topic.TopicTypeID));
+			output.Append(UsedCommentTypesIndex(topicEntry.Topic.CommentTypeID));
 
 			output.Append(",\"");
 			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(HTMLBuilder, topicEntry.Topic.FileID);
@@ -645,19 +645,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildTopicTypeList
+		/* Function: BuildCommentTypeList
 		 */
-		protected void BuildTopicTypeList (IList<SearchIndex.KeywordEntry> keywordEntries)
+		protected void BuildCommentTypeList (IList<SearchIndex.KeywordEntry> keywordEntries)
 			{
 			output.Append('[');
 
-			for (int i = 0; i < usedTopicTypes.Count; i++)
+			for (int i = 0; i < usedCommentTypes.Count; i++)
 				{
 				if (i != 0)
 					{  output.Append(',');  }
 
 				output.Append('"');
-				output.StringEscapeAndAppend(usedTopicTypes[i].SimpleIdentifier);
+				output.StringEscapeAndAppend(usedCommentTypes[i].SimpleIdentifier);
 				output.Append('"');
 				}
 
@@ -665,14 +665,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: UsedTopicTypesIndex
-		 * Returns the index into <usedTopicTypes> of the passed topic type ID, or -1 if it isn't in the list.
+		/* Function: UsedCommentTypesIndex
+		 * Returns the index into <usedCommentTypes> of the passed comment type ID, or -1 if it isn't in the list.
 		 */
-		protected int UsedTopicTypesIndex (int topicTypeID)
+		protected int UsedCommentTypesIndex (int commentTypeID)
 			{
-			for (int i = 0; i < usedTopicTypes.Count; i++)
+			for (int i = 0; i < usedCommentTypes.Count; i++)
 				{
-				if (usedTopicTypes[i].ID == topicTypeID)
+				if (usedCommentTypes[i].ID == commentTypeID)
 					{  return i;  }
 				}
 
@@ -712,11 +712,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected StringBuilder output;
 
-		/* var: usedTopicTypes
-		 * A list of the topic types used in the search data.  The order in which they appear here will be the order in which they
+		/* var: usedCommentTypes
+		 * A list of the comment types used in the search data.  The order in which they appear here will be the order in which they
 		 * appear in the JavaScript array.
 		 */
-		protected List<TopicType> usedTopicTypes;
+		protected List<CommentType> usedCommentTypes;
 
 		}
 	}

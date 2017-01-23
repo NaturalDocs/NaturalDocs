@@ -18,16 +18,16 @@
 			`Language_NameHTML = 0
 			`Language_SimpleIdentifier = 1
 
-		Summary Topic Types Members:
+		Summary Comment Types Members:
 
-			`TopicType_PluralNameHTML = 0
-			`TopicType_SimpleIdentifier = 1
+			`CommentType_PluralNameHTML = 0
+			`CommentType_SimpleIdentifier = 1
 
 		Summary Entry Members:
 
 			`Entry_TopicID = 0
 			`Entry_LanguageIndex = 1
-			`Entry_TopicTypeIndex = 2
+			`Entry_CommentTypeIndex = 2
 			`Entry_NameHTML = 3
 			`Entry_Symbol = 4
 
@@ -92,7 +92,7 @@ var NDSummary = new function ()
 			// Reset the state
 
 			this.summaryLanguages = undefined;
-			this.summaryTopicTypes = undefined;
+			this.summaryCommentTypes = undefined;
 			this.summaryEntries = undefined;
 			this.summaryToolTips = undefined;
 
@@ -144,12 +144,12 @@ var NDSummary = new function ()
 
 	/* Function: OnSummaryLoaded
 	*/
-	this.OnSummaryLoaded = function (hashPath, summaryLanguages, summaryTopicTypes, summaryEntries)
+	this.OnSummaryLoaded = function (hashPath, summaryLanguages, summaryCommentTypes, summaryEntries)
 		{
 		if (hashPath == NDFramePage.currentLocation.path)
 			{
 			this.summaryLanguages = summaryLanguages;
-			this.summaryTopicTypes = summaryTopicTypes;
+			this.summaryCommentTypes = summaryCommentTypes;
 			this.summaryEntries = summaryEntries;
 
 			this.Build();
@@ -206,7 +206,7 @@ var NDSummary = new function ()
 
 					var classString = "SuEntry" +
 						" L" + this.summaryLanguages[ entry[`Entry_LanguageIndex] ][`Language_SimpleIdentifier] +
-						" T" + this.summaryTopicTypes[ entry[`Entry_TopicTypeIndex] ][`TopicType_SimpleIdentifier] +
+						" T" + this.summaryCommentTypes[ entry[`Entry_CommentTypeIndex] ][`CommentType_SimpleIdentifier] +
 						(i == 0 ? " first" : "") +
 						(i == this.summaryEntries.length - 1 ? " last" : "");
 
@@ -473,7 +473,7 @@ var NDSummary = new function ()
 	/* var: summaryLanguages
 	*/
 
-	/* var: summaryTopicTypes
+	/* var: summaryCommentTypes
 	*/
 
 	/* var: summaryEntries

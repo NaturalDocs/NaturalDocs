@@ -232,16 +232,16 @@
     <Compile Include="Source\Tokenization\TokenIterator.cs" />
     <Compile Include="Source\Tokenization\Tokenizer.cs" />
     <Compile Include="Source\Tokenization\TokenTypes.cs" />
-    <Compile Include="Source\TopicTypes\Topics_nd.cs" />
-    <Compile Include="Source\TopicTypes\Topics_txt.cs" />
+    <Compile Include="Source\CommentTypes\Topics_nd.cs" />
+    <Compile Include="Source\CommentTypes\Topics_txt.cs" />
     <Compile Include="Source\Topics\Topic.cs" />
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
-    <Compile Include="Source\TopicTypes\ConfigFileTopicType.cs" />
-    <Compile Include="Source\TopicTypes\TopicTypeFlags.cs" />
-    <Compile Include="Source\TopicTypes\Manager.cs" />
-    <Compile Include="Source\TopicTypes\Tag.cs" />
-    <Compile Include="Source\TopicTypes\TopicType.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFileTopicType.cs" />
+    <Compile Include="Source\CommentTypes\CommentTypeFlags.cs" />
+    <Compile Include="Source\CommentTypes\Manager.cs" />
+    <Compile Include="Source\CommentTypes\Tag.cs" />
+    <Compile Include="Source\CommentTypes\CommentType.cs" />
     <Compile Include="Source\Version.cs" />
   </ItemGroup>
   <ItemGroup>

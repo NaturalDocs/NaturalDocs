@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.TopicTypes;
+using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 			var files = builder.EngineInstance.Files;
-			var topicTypes = builder.EngineInstance.TopicTypes;
+			var commentTypes = builder.EngineInstance.CommentTypes;
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -477,7 +477,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				while (remainingTopics.Count > 0)
 					{
-					int type = remainingTopics[0].TopicTypeID;
+					int type = remainingTopics[0].CommentTypeID;
 					int matchingGroupIndex = -1;
 
 					for (int i = groupedTopics.Groups.Count - 1; i >= 0; i--)
@@ -493,18 +493,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					// Create a new group if there's no existing one we can use.
 					if (matchingGroupIndex == -1)
 						{
-						Topic generatedTopic = new Topic(builder.EngineInstance.TopicTypes);
+						Topic generatedTopic = new Topic(builder.EngineInstance.CommentTypes);
 						generatedTopic.TopicID = 0;
-						generatedTopic.Title = builder.EngineInstance.TopicTypes.FromID(type).PluralDisplayName;
+						generatedTopic.Title = builder.EngineInstance.CommentTypes.FromID(type).PluralDisplayName;
 						generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
 						generatedTopic.ClassString = topics[0].ClassString;
 						generatedTopic.ClassID = topics[0].ClassID;
-						generatedTopic.TopicTypeID = builder.EngineInstance.TopicTypes.IDFromKeyword("group");
+						generatedTopic.CommentTypeID = builder.EngineInstance.CommentTypes.IDFromKeyword("group");
 						generatedTopic.FileID = topics[0].FileID;
 						generatedTopic.LanguageID = topics[0].LanguageID;
 
 						// In case there's nothing that defines the "group" keyword.
-						if (generatedTopic.TopicTypeID != 0)
+						if (generatedTopic.CommentTypeID != 0)
 							{
 							groupedTopics.Topics.Add(generatedTopic);
 							groupedTopics.CreateGroup(groupedTopics.Topics.Count - 1, 1);
@@ -518,7 +518,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						var remainingTopic = remainingTopics[i];
 
 						// Need to check IsEmbedded because enums values will not have the same type as their parent.
-						if (remainingTopic.TopicTypeID == type || remainingTopic.IsEmbedded)
+						if (remainingTopic.CommentTypeID == type || remainingTopic.IsEmbedded)
 							{
 							groupedTopics.AppendToGroup(matchingGroupIndex, remainingTopic);
 							remainingTopics.RemoveAt(i);

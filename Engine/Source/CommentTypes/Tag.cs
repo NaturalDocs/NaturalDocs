@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.Tag
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Tag
  * ____________________________________________________________________________
  * 
- * A class encompassing a topic type tag.
+ * A class encompassing a comment type tag.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
@@ -13,7 +13,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class Tag : IDObjects.Base
 		{
@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * 
 		 * InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
 		 * 
-		 * InBinaryFile - Set if the topic type appears in <Topics.nd>.
+		 * InBinaryFile - Set if the comment type appears in <Topics.nd>.
 		 */
 		protected enum TagFlags : byte
 			{
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 		/* Function: FixNameCapitalization
 		 * Replaces <Name> with a version with alternate capitalization but is otherwise equal.  This expects the tag
-		 * to be retrievable by <TopicTypes.Manager.TagFromName()> so it can verify that the new name won't cause
+		 * to be retrievable by <CommentTypes.Manager.TagFromName()> so it can verify that the new name won't cause
 		 * any problems.
 		 */
 		public void FixNameCapitalization (string newName)

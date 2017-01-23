@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			simpleIdentifier = null;			
 			type = LanguageType.BasicSupport;
 			memberOperator = ".";
-			topicTypesToPrototypeEnders = null;
+			commentTypesToPrototypeEnders = null;
 			lineExtender = null;
 			enumValue = EnumValues.UnderType;
 			caseSensitive = true;
@@ -256,20 +256,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 			
 		/* Function: GetPrototypeEnders
-		 * Returns the <PrototypeEnders> for the passed topic type, or null if there are none.
+		 * Returns the <PrototypeEnders> for the passed comment type, or null if there are none.
 		 */
-		public PrototypeEnders GetPrototypeEnders (int topicTypeID)
+		public PrototypeEnders GetPrototypeEnders (int commentTypeID)
 			{
-			if (topicTypesToPrototypeEnders == null)
+			if (commentTypesToPrototypeEnders == null)
 				{  return null;  }
 			else
-				{  return topicTypesToPrototypeEnders[topicTypeID];  }
+				{  return commentTypesToPrototypeEnders[commentTypeID];  }
 			}
 			
 		/* Function: SetPrototypeEnders
-		 * Sets the <PrototypeEnders> for the passed topic type.
+		 * Sets the <PrototypeEnders> for the passed comment type.
 		 */
-		public void SetPrototypeEnders (int topicTypeID, PrototypeEnders prototypeEnders)
+		public void SetPrototypeEnders (int commentTypeID, PrototypeEnders prototypeEnders)
 			{
 			// Simplify prototypeEnders
 			if (prototypeEnders != null)
@@ -283,33 +283,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			if (prototypeEnders == null)
 				{
-				if (topicTypesToPrototypeEnders != null)
+				if (commentTypesToPrototypeEnders != null)
 					{
-					topicTypesToPrototypeEnders.Remove(topicTypeID);
-					if (topicTypesToPrototypeEnders.Count == 0)
-						{  topicTypesToPrototypeEnders = null;  }
+					commentTypesToPrototypeEnders.Remove(commentTypeID);
+					if (commentTypesToPrototypeEnders.Count == 0)
+						{  commentTypesToPrototypeEnders = null;  }
 					}
 				}
 			else
 				{
-				if (topicTypesToPrototypeEnders == null)
-					{  topicTypesToPrototypeEnders = new SafeDictionary<int, PrototypeEnders>();  }
+				if (commentTypesToPrototypeEnders == null)
+					{  commentTypesToPrototypeEnders = new SafeDictionary<int, PrototypeEnders>();  }
 					
-				topicTypesToPrototypeEnders[topicTypeID] = prototypeEnders;
+				commentTypesToPrototypeEnders[commentTypeID] = prototypeEnders;
 				}
 			}
 			
-		/* Function: GetTopicTypesWithPrototypeEnders
-		 * Returns an array of all the topic types that have prototype enders defined, or null if none.
+		/* Function: GetCommentTypesWithPrototypeEnders
+		 * Returns an array of all the comment types that have prototype enders defined, or null if none.
 		 */
-		public int[] GetTopicTypesWithPrototypeEnders()
+		public int[] GetCommentTypesWithPrototypeEnders()
 			{
-			if (topicTypesToPrototypeEnders == null)
+			if (commentTypesToPrototypeEnders == null)
 				{  return null;  }
 			else
 				{
-				int[] result = new int[ topicTypesToPrototypeEnders.Keys.Count ];
-				topicTypesToPrototypeEnders.Keys.CopyTo(result, 0);
+				int[] result = new int[ commentTypesToPrototypeEnders.Keys.Count ];
+				commentTypesToPrototypeEnders.Keys.CopyTo(result, 0);
 				return result;  
 				}
 			}
@@ -426,7 +426,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		
 		
 		/* Function: operator ==
-		 * Returns whether all the properties of the two topic types are equal, including Name and ID, but excluding flags.
+		 * Returns whether all the properties of the two languages are equal, including Name and ID, but excluding flags.
 		 */
 		public static bool operator == (Language language1, Language language2)
 			{
@@ -449,7 +449,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 							StringArraysAreEqual (language1.lineCommentStrings, language2.lineCommentStrings) &&
 							StringPairArraysAreEqual (language1.blockCommentStringPairs, language2.blockCommentStringPairs) &&
-							PrototypeEndersAreEqual (language1.topicTypesToPrototypeEnders, language2.topicTypesToPrototypeEnders) &&
+							PrototypeEndersAreEqual (language1.commentTypesToPrototypeEnders, language2.commentTypesToPrototypeEnders) &&
 							StringPairArraysAreEqual (language1.javadocLineCommentStringPairs, language2.javadocLineCommentStringPairs) &&
 							StringPairArraysAreEqual (language1.javadocBlockCommentStringPairs, language2.javadocBlockCommentStringPairs) &&
 							StringArraysAreEqual (language1.xmlLineCommentStrings, language2.xmlLineCommentStrings) );
@@ -527,20 +527,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: PrototypeEndersAreEqual
 		 * Compares two prototype ender dictionaries.  Is case sensitive and safe to use with nulls.
 		 */
-		protected static bool PrototypeEndersAreEqual (SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders1, 
-																								  SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders2)
+		protected static bool PrototypeEndersAreEqual (SafeDictionary<int, PrototypeEnders> commentTypesToPrototypeEnders1, 
+																								  SafeDictionary<int, PrototypeEnders> commentTypesToPrototypeEnders2)
 			{
-			if (topicTypesToPrototypeEnders1 == null && topicTypesToPrototypeEnders2 == null)
+			if (commentTypesToPrototypeEnders1 == null && commentTypesToPrototypeEnders2 == null)
 				{  return true;  }
-			else if (topicTypesToPrototypeEnders1 == null || topicTypesToPrototypeEnders2 == null)
+			else if (commentTypesToPrototypeEnders1 == null || commentTypesToPrototypeEnders2 == null)
 				{  return false;  }
-			else if (topicTypesToPrototypeEnders1.Count != topicTypesToPrototypeEnders2.Count)
+			else if (commentTypesToPrototypeEnders1.Count != commentTypesToPrototypeEnders2.Count)
 				{  return false;  }
 			else
 				{
-				foreach (System.Collections.Generic.KeyValuePair<int, PrototypeEnders> prototypeEnders1Pair in topicTypesToPrototypeEnders1)
+				foreach (System.Collections.Generic.KeyValuePair<int, PrototypeEnders> prototypeEnders1Pair in commentTypesToPrototypeEnders1)
 					{
-					PrototypeEnders prototypeEnders2Value = topicTypesToPrototypeEnders2[ prototypeEnders1Pair.Key ];
+					PrototypeEnders prototypeEnders2Value = commentTypesToPrototypeEnders2[ prototypeEnders1Pair.Key ];
 
 					if (prototypeEnders2Value == null)
 						{  return false;  }
@@ -599,10 +599,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected string memberOperator;
 		
-		/* object: topicTypesToPrototypeEnders
-		 * A dictionary mapping topic type IDs to <PrototypeEnders>.
+		/* object: commentTypesToPrototypeEnders
+		 * A dictionary mapping comment type IDs to <PrototypeEnders>.
 		 */
-		protected SafeDictionary<int, PrototypeEnders> topicTypesToPrototypeEnders;
+		protected SafeDictionary<int, PrototypeEnders> commentTypesToPrototypeEnders;
 		
 		/* string: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.

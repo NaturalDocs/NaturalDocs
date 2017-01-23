@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.Topics_txt
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Topics_txt
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Topics.txt>.
@@ -12,8 +12,8 @@
  * 
  * File: Topics.txt
  * 
- *		The configuration file that defines or overrides the topic definitions for Natural Docs.  One version sits in Natural Docs'
- *		configuration folder, and another in the project configuration folder to add topics or override their behavior.
+ *		The configuration file that defines or overrides the comment type definitions for Natural Docs.  One version sits in Natural Docs'
+ *		configuration folder, and another in the project configuration folder to add comment types or override their behavior.
  *		
  *		These files follows the standard conventions in <ConfigFile>.  Identifier and value whitespace is condensed.  Y, N, True, 
  *		and False can be substituted for Yes and No.
@@ -25,7 +25,7 @@
  *			>    [keyword], [keyword]
  *			>    ...
  *		
- *			Ignores the keywords so that they're not recognized as Natural Docs topics anymore.  Can be specified as a list on 
+ *			Ignores the keywords so that they're not recognized as Natural Docs comments anymore.  Can be specified as a list on 
  *			the same line and/or following like a normal Keywords section.
  *			
  *			> Tag[s]: [tag], [tag] ...
@@ -33,7 +33,7 @@
  *			>    [tag]
  *			>    ...
  *			
- *			Defines tags that can be applied to topic types.
+ *			Defines tags that can be applied to comment types.
  *			
  *			> Topic Type: [name]
  *			> Alter Topic Type: [name]
@@ -42,7 +42,7 @@
  *			> Edit Topic Type: [name]
  *			> Change Topic Type: [name]
  *			
- *			Creates a new topic type or alters an existing one.  The name isn't case sensitive.
+ *			Creates a new comment type or alters an existing one.  The name isn't case sensitive.
  *			
  *			The name Information is reserved.  There are a number of default types that must be defined in the system config file 
  *			but those may be different for each individual release and aren't listed here.  The default types can have their 
@@ -53,7 +53,7 @@
  *			according to the rules in <Languages.txt>.
  *			
  * 
- *		Topic Type Sections:
+ *		Comment Type Sections:
  *		
  *			> Display Name: [name]
  *			> Plural Display Name: [name]
@@ -62,9 +62,9 @@
  *			> Name: [name]
  *			> Plural: [name]
  *			
- *			Specifies the singular and plural display names of the topic type.  If Display Name isn't defined, it defaults to the 
- *			topic type name.  If Plural Display Name isn't defined, it defaults to the Display Name.  These are available so 
- *			someone can rename one of the required types in the output since they can't change the topic type name.
+ *			Specifies the singular and plural display names of the comment type.  If Display Name isn't defined, it defaults to the 
+ *			comment type name.  If Plural Display Name isn't defined, it defaults to the Display Name.  These are available so 
+ *			someone can rename one of the required types in the output since they can't change the comment type name.
  *			
  *			> Display Name from Locale: [identifier]
  *			> Plural Display Name from Locale: [identifier]
@@ -73,34 +73,34 @@
  *			> Name from Locale: [identifier]
  *			> Plural from Locale: [identifier]
  *			
- *			Specifies the singular and plural display names of the topic type using an identifier from a translation file in the 
- *			Engine module.  A topic type does not store both a normal and a "from locale" version, one overwrites the other.  
+ *			Specifies the singular and plural display names of the comment type using an identifier from a translation file in the 
+ *			Engine module.  A comment type does not store both a normal and a "from locale" version, one overwrites the other.  
  *			This means that a project's configuration file can override the system's "from locale" version with a regular version.
  *			
  *			> Simple Identifier: [name]
  *			
- *			Specifies the topic type name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode
+ *			Specifies the comment type name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode
  *			allowed.  This is for use in situations when such things may not be allowed, such as when generating CSS class names.
- *			If it's not specified, it defaults to the topic type name stripped of all unacceptable characters.
+ *			If it's not specified, it defaults to the comment type name stripped of all unacceptable characters.
  *			
- *			> Index: [yes|no|with [topic type]]
- *			> Index With: [topic type]
+ *			> Index: [yes|no|with [comment type]]
+ *			> Index With: [comment type]
  *			
- *			Whether the topic type is indexed.  Defaults to yes.  If "with [topic type]" is specified, the type is indexed but only
- *			as part of the other topic type's index.
+ *			Whether the comment type is indexed.  Defaults to yes.  If "with [comment type]" is specified, the type is indexed but only
+ *			as part of the other comment type's index.
  *			
  *			> Scope: [normal|start|end|always global]
  *			
- *			How the topic affects scope.  Defaults to normal.
+ *			How the comment affects scope.  Defaults to normal.
  *			
- *			normal - The topic stays within the current scope.
- *			start - The topic starts a new scope for all the topics beneath it, like class topics.
- *			end - The topic resets the scope back to global for all the topics beneath it, like section topics.
- *			always global - The topic is defined as a global symbol, but does not change the scope for any other topics.
+ *			normal - The comment stays within the current scope.
+ *			start - The comment starts a new scope for all the comments beneath it, like class comments.
+ *			end - The comment resets the scope back to global for all the comments beneath it, like section comments.
+ *			always global - The comment is defined as a global symbol, but does not change the scope for any other comments.
  *			
  *			> Flags: [flag], [flag], ...
  *			
- *			Various flags that can be applied to the topic type.
+ *			Various flags that can be applied to the comment type.
  *			
  *			Code, File, Documentation - Whether it's used to describe a code element, a file, or is a standalone documentation 
  *																  comment.  Defaults to Code.
@@ -111,14 +111,14 @@
  *			
  *			> Break List[s]: [yes|no]
  *			
- *			Whether list topics should be broken into individual topics in the output.  Defaults to no.
+ *			Whether list comments should be broken into individual topics in the output.  Defaults to no.
  *			
  *			> [Add] Keyword[s]:
  *			>    [keyword]
  *			>    [keyword], [plural keyword]
  *			>    ...
  *			
- *			A list of the topic type's keywords.  Each line after the heading is the keyword and optionally its plural form.  This 
+ *			A list of the comment type's keywords.  Each line after the heading is the keyword and optionally its plural form.  This 
  *			continues until the next line in "keyword: value" format.  "Add" isn't required.
  *			
  *			- Keywords cannot contain colons, commas, braces, or #.
@@ -131,13 +131,13 @@
  *		
  *			These are no longer supported but are listed here as a reference for parsing earlier verisons of the file.
  *			
- *			> Can Group With: [topic type], [topic type], ...
+ *			> Can Group With: [comment type], [comment type], ...
  *			
- *			The list of topic types the topic can possibly be grouped with.
+ *			The list of comment types the comment can possibly be grouped with.
  *			
  *			> Page Title if First: [yes|no]
  *			
- *			Whether the title of this topic becomes the page title if it is the first topic in a file.  Defaults to no.
+ *			Whether the title of this comment becomes the page title if it is the first comment in a file.  Defaults to no.
  *			
  *			> Class Hierarchy: [yes|no]
  *			
@@ -153,8 +153,8 @@
  *			- All values now support Unicode characters, except for Simple Identifier.
  *			- Can Group With and Page Title if First are deprecated.
  *			- Class Hierarchy is deprecated but will be converted into Flags.
- *			- Added "with [topic type]" value to Index property.
- *			- Replaced "Generic" as the default topic type with "Information".
+ *			- Added "with [comment type]" value to Index property.
+ *			- Replaced "Generic" as the default comment type with "Information".
  *			- Added Tags.
  *			
  *		1.3:
@@ -173,7 +173,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class Topics_txt
 		{
@@ -194,7 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			nonASCIILettersRegex = new Regex.NonASCIILetters();
 
 			ignoreKeywordsRegex = new Regex.TopicTypes.IgnoreKeywords();
-			alterTopicTypeRegex = new Regex.TopicTypes.AlterTopicType();
+			alterCommentTypeRegex = new Regex.TopicTypes.AlterTopicType();
 			displayNameRegex = new Regex.TopicTypes.DisplayName();
 			pluralDisplayNameRegex = new Regex.TopicTypes.PluralDisplayName();
 			displayNameFromLocaleRegex = new Regex.TopicTypes.DisplayNameFromLocale();
@@ -220,15 +220,15 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 		/* Function: Load
 		 * 
-		 * Loads the passed configuration file and parses it.  Redundant information will be simplified out, such as an Alter Topic 
-		 * Type section that applies to a Topic Type defined in the same file.
+		 * Loads the passed configuration file and parses it.  Redundant information will be simplified out, such as an Alter Comment 
+		 * Type section that applies to a comment type defined in the same file.
 		 * 
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
-		 *		fileTopicTypes - Returns a list of <ConfigFileTopicTypes> in no particular order.
+		 *		fileCommentTypes - Returns a list of <ConfigFileCommentTypes> in no particular order.
 		 *		fileIgnoredKeywords - Returns any ignored keywords as a string array in the format of 
-		 *										<ConfigFileTopicType.Keywords>.
+		 *										<ConfigFileCommentType.Keywords>.
 		 *		fileTags - Returns any defined tags as a string array.
 		 *		errorList - If it couldn't successfully parse the file it will add error messages to this list.
 		 *		
@@ -236,13 +236,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * 
 		 *		Whether it was able to successfully load and parse the file without any errors.
 		 */
-		public bool Load (Path filename, out List<ConfigFileTopicType> fileTopicTypes, 
+		public bool Load (Path filename, out List<ConfigFileCommentType> fileCommentTypes, 
 								 out List<string> fileIgnoredKeywords, out List<string> fileTags,
 								 Errors.ErrorList errorList)
 			{
-			fileTopicTypes = new List<ConfigFileTopicType>();
-			StringTable<ConfigFileTopicType> fileTopicTypeNames = 
-				new StringTable<ConfigFileTopicType>(Engine.TopicTypes.Manager.KeySettingsForTopicTypes);
+			fileCommentTypes = new List<ConfigFileCommentType>();
+			StringTable<ConfigFileCommentType> fileCommentTypeNames = 
+				new StringTable<ConfigFileCommentType>(Engine.CommentTypes.Manager.KeySettingsForCommentTypes);
 			fileIgnoredKeywords = new List<string>();
 			fileTags = new List<string>();
 			int previousErrorCount = errorList.Count;
@@ -261,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					{  return false;  }
 					
 				string identifier, value;
-				ConfigFileTopicType currentTopicType = null;
+				ConfigFileCommentType currentCommentType = null;
 				List<string> currentKeywordList = null;
 				bool inTags = false;
 				
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					if (ignoreKeywordsRegex.IsMatch(identifier))
 						{
-						currentTopicType = null;
+						currentCommentType = null;
 						currentKeywordList = fileIgnoredKeywords;
 						
 						if (!string.IsNullOrEmpty(value))
@@ -396,7 +396,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					else if (tagsRegex.IsMatch(identifier))
 						{
-						currentTopicType = null;
+						currentCommentType = null;
 						inTags = true;
 						
 						if (!string.IsNullOrEmpty(value))
@@ -421,12 +421,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					
 					//
-					// Topic Type
+					// Comment Type
 					//
 						
 					else if (identifier == "topic type")
 						{
-						if (fileTopicTypeNames.ContainsKey(value))
+						if (fileCommentTypeNames.ContainsKey(value))
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", value)
@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							
 							// Continue parsing.  We'll throw this into the existing type even though it shouldn't be overwriting
 							// its values because we want to find any other errors there are in the file.
-							currentTopicType = fileTopicTypeNames[value];
+							currentCommentType = fileCommentTypeNames[value];
 							}
 							
 						else
@@ -443,32 +443,32 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							if (file.Version < "1.5" && String.Compare(value, "generic", true) == 0)
 								{  value = "Information";  }
 								
-							currentTopicType = new ConfigFileTopicType(value, false, file.LineNumber);
-							fileTopicTypes.Add(currentTopicType);
-							fileTopicTypeNames.Add(value, currentTopicType);
+							currentCommentType = new ConfigFileCommentType(value, false, file.LineNumber);
+							fileCommentTypes.Add(currentCommentType);
+							fileCommentTypeNames.Add(value, currentCommentType);
 							}								
 						}
 						
 						
 					//
-					// Alter Topic Type
+					// Alter Comment Type
 					//
 					
-					else if (alterTopicTypeRegex.IsMatch(identifier))
+					else if (alterCommentTypeRegex.IsMatch(identifier))
 						{
 						// If this type already exists, collapse it into the current definition.
-						if (fileTopicTypeNames.ContainsKey(value))
+						if (fileCommentTypeNames.ContainsKey(value))
 							{
-							currentTopicType = fileTopicTypeNames[value];
+							currentCommentType = fileCommentTypeNames[value];
 							}
 							
 						// If it doesn't exist, create the new type anyway with the alter flag set because it may exist in another
 						// file.
 						else
 							{
-							currentTopicType = new ConfigFileTopicType(value, true, file.LineNumber);
-							fileTopicTypes.Add(currentTopicType);
-							fileTopicTypeNames.Add(value, currentTopicType);
+							currentCommentType = new ConfigFileCommentType(value, true, file.LineNumber);
+							fileCommentTypes.Add(currentCommentType);
+							fileCommentTypeNames.Add(value, currentCommentType);
 							}								
 						}
 
@@ -479,9 +479,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						
 					else if (displayNameRegex.IsMatch(identifier))
 						{
-						if (currentTopicType == null)
-							{  NeedsTopicTypeError(file, identifier);  }
-						else if (currentTopicType.DisplayNameFromLocale != null)
+						if (currentCommentType == null)
+							{  NeedsCommentTypeError(file, identifier);  }
+						else if (currentCommentType.DisplayNameFromLocale != null)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name", "Display Name from Locale")
@@ -489,14 +489,14 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							}
 						else
 							{						
-							currentTopicType.DisplayName = value;
+							currentCommentType.DisplayName = value;
 							}
 						}
 					else if (pluralDisplayNameRegex.IsMatch(identifier))
 						{
-						if (currentTopicType == null)
-							{  NeedsTopicTypeError(file, identifier);  }
-						else if (currentTopicType.PluralDisplayNameFromLocale != null)
+						if (currentCommentType == null)
+							{  NeedsCommentTypeError(file, identifier);  }
+						else if (currentCommentType.PluralDisplayNameFromLocale != null)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name", "Plural Display Name from Locale")
@@ -504,14 +504,14 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							}
 						else
 							{						
-							currentTopicType.PluralDisplayName = value;
+							currentCommentType.PluralDisplayName = value;
 							}
 						}
 					else if (displayNameFromLocaleRegex.IsMatch(identifier))
 						{
-						if (currentTopicType == null)
-							{  NeedsTopicTypeError(file, identifier);  }
-						else if (currentTopicType.DisplayName != null)
+						if (currentCommentType == null)
+							{  NeedsCommentTypeError(file, identifier);  }
+						else if (currentCommentType.DisplayName != null)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name from Locale", "Display Name")
@@ -519,14 +519,14 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							}
 						else
 							{						
-							currentTopicType.DisplayNameFromLocale = value;
+							currentCommentType.DisplayNameFromLocale = value;
 							}
 						}
 					else if (pluralDisplayNameFromLocaleRegex.IsMatch(identifier))
 						{
-						if (currentTopicType == null)
-							{  NeedsTopicTypeError(file, identifier);  }
-						else if (currentTopicType.PluralDisplayName != null)
+						if (currentCommentType == null)
+							{  NeedsCommentTypeError(file, identifier);  }
+						else if (currentCommentType.PluralDisplayName != null)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name from Locale", "Plural Display Name")
@@ -534,7 +534,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							}
 						else
 							{						
-							currentTopicType.PluralDisplayNameFromLocale = value;
+							currentCommentType.PluralDisplayNameFromLocale = value;
 							}
 						}
 						
@@ -545,8 +545,8 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						
 					else if (identifier == "simple identifier")
 						{
-						if (currentTopicType == null)
-							{  NeedsTopicTypeError(file, identifier);  }
+						if (currentCommentType == null)
+							{  NeedsCommentTypeError(file, identifier);  }
 						else if (nonASCIILettersRegex.IsMatch(value))
 							{
 							file.AddError(
@@ -555,7 +555,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							}
 						else
 							{						
-							currentTopicType.SimpleIdentifier = value;
+							currentCommentType.SimpleIdentifier = value;
 							}
 						}
 						
@@ -566,24 +566,24 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						
 					else if (identifier == "index")
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
 							value = value.ToLower();
 							
 							if (yesRegex.IsMatch(value))
 								{
-								currentTopicType.Index = TopicType.IndexValue.Yes;
+								currentCommentType.Index = CommentType.IndexValue.Yes;
 								}
 							else if (noRegex.IsMatch(value))
 								{
-								currentTopicType.Index = TopicType.IndexValue.No;
+								currentCommentType.Index = CommentType.IndexValue.No;
 								}
 							else if (value.StartsWith("with "))
 								{
-								currentTopicType.Index = TopicType.IndexValue.IndexWith;
+								currentCommentType.Index = CommentType.IndexValue.IndexWith;
 								
 								// We hold off on validating this because it may be defined later in the file or in another file.
-								currentTopicType.IndexWith = value.Substring(5);
+								currentCommentType.IndexWith = value.Substring(5);
 								}
 							else
 								{
@@ -593,20 +593,20 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 					else if (identifier == "index with")
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
-							currentTopicType.Index = TopicType.IndexValue.IndexWith;
+							currentCommentType.Index = CommentType.IndexValue.IndexWith;
 							
 							// We hold off on validating this because it may be defined later in the file or in another file.
-							currentTopicType.IndexWith = value;
+							currentCommentType.IndexWith = value;
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 						
@@ -616,25 +616,25 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					else if (identifier == "scope")
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
 							value = value.ToLower();
 							
 							if (value == "normal")
 								{
-								currentTopicType.Scope = TopicType.ScopeValue.Normal;
+								currentCommentType.Scope = CommentType.ScopeValue.Normal;
 								}
 							else if (startRegex.IsMatch(value))
 								{
-								currentTopicType.Scope = TopicType.ScopeValue.Start;
+								currentCommentType.Scope = CommentType.ScopeValue.Start;
 								}
 							else if (endRegex.IsMatch(value))
 								{
-								currentTopicType.Scope = TopicType.ScopeValue.End;
+								currentCommentType.Scope = CommentType.ScopeValue.End;
 								}
 							else if (alwaysGlobalRegex.IsMatch(value))
 								{
-								currentTopicType.Scope = TopicType.ScopeValue.AlwaysGlobal;
+								currentCommentType.Scope = CommentType.ScopeValue.AlwaysGlobal;
 								}
 							else
 								{
@@ -644,7 +644,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 						
@@ -654,7 +654,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					else if (flagsRegex.IsMatch(identifier))
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
 							value = value.ToLower();
 							
@@ -665,19 +665,19 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								foreach (string flag in flagsArray)
 									{
 									if (flag == "code")
-										{  currentTopicType.Flags.Code = true;  }
+										{  currentCommentType.Flags.Code = true;  }
 									else if (flag == "file")
-										{  currentTopicType.Flags.File = true;  }
+										{  currentCommentType.Flags.File = true;  }
 									else if (documentationRegex.IsMatch(flag))
-										{  currentTopicType.Flags.Documentation = true;  }
+										{  currentCommentType.Flags.Documentation = true;  }
 									else if (variableTypeRegex.IsMatch(flag))
-										{  currentTopicType.Flags.VariableType = true;  }
+										{  currentCommentType.Flags.VariableType = true;  }
 									else if (classHierarchyRegex.IsMatch(flag))
-										{  currentTopicType.Flags.ClassHierarchy = true;  }
+										{  currentCommentType.Flags.ClassHierarchy = true;  }
 									else if (databaseHierarchyRegex.IsMatch(flag))
-										{  currentTopicType.Flags.DatabaseHierarchy = true;  }
+										{  currentCommentType.Flags.DatabaseHierarchy = true;  }
 									else if (enumRegex.IsMatch(flag))
-										{  currentTopicType.Flags.Enum = true;  }
+										{  currentCommentType.Flags.Enum = true;  }
 									else if (string.IsNullOrEmpty(flag) == false)
 										{  
 										file.AddError(
@@ -686,7 +686,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 										}
 									}
 
-								List<string> flagErrors = currentTopicType.Flags.Validate(false, currentTopicType.Scope, "NaturalDocs.Engine");
+								List<string> flagErrors = currentCommentType.Flags.Validate(false, currentCommentType.Scope, "NaturalDocs.Engine");
 
 								if (flagErrors != null)
 									{
@@ -696,7 +696,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 					
 					
@@ -706,17 +706,17 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					else if (classHierarchyRegex.IsMatch(identifier))
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
 							value = value.ToLower();
 							
 							if (yesRegex.IsMatch(value))
 								{
-								currentTopicType.Flags.ClassHierarchy = true;
+								currentCommentType.Flags.ClassHierarchy = true;
 								}
 							else if (noRegex.IsMatch(value))
 								{
-								currentTopicType.Flags.ClassHierarchy = false;
+								currentCommentType.Flags.ClassHierarchy = false;
 								}
 							else
 								{
@@ -726,7 +726,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 						
@@ -736,17 +736,17 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					
 					else if (breakListsRegex.IsMatch(identifier))
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
 							value = value.ToLower();
 							
 							if (yesRegex.IsMatch(value))
 								{
-								currentTopicType.BreakLists = true;
+								currentCommentType.BreakLists = true;
 								}
 							else if (noRegex.IsMatch(value))
 								{
-								currentTopicType.BreakLists = false;
+								currentCommentType.BreakLists = false;
 								}
 							else
 								{
@@ -756,7 +756,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 						
@@ -766,9 +766,9 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 					else if (keywordsRegex.IsMatch(identifier))
 						{
-						if (currentTopicType != null)
+						if (currentCommentType != null)
 							{
-							currentKeywordList = currentTopicType.Keywords;
+							currentKeywordList = currentCommentType.Keywords;
 							
 							if (!string.IsNullOrEmpty(value))
 								{
@@ -793,7 +793,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 							}
 						else
-							{  NeedsTopicTypeError(file, identifier);  }
+							{  NeedsCommentTypeError(file, identifier);  }
 						}
 						
 						
@@ -824,24 +824,24 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				}
 
 
-			// Do a strict validation on all topic types that defined flags.
+			// Do a strict validation on all comment types that defined flags.
 
-			foreach (var topicType in fileTopicTypes)
+			foreach (var commentType in fileCommentTypes)
 				{
-				if (topicType.Flags.AllConfigurationProperties != 0)
+				if (commentType.Flags.AllConfigurationProperties != 0)
 					{
 					// We don't want to duplicate errors we already found, so only do this if it passes the non-strict test.
-					List<string> flagErrors = topicType.Flags.Validate(false, topicType.Scope, "NaturalDocs.Engine");
+					List<string> flagErrors = commentType.Flags.Validate(false, commentType.Scope, "NaturalDocs.Engine");
 
 					if (flagErrors == null)
 						{
-						topicType.Flags.AddImpliedFlags();
-						flagErrors = topicType.Flags.Validate(true, topicType.Scope, "NaturalDocs.Engine");
+						commentType.Flags.AddImpliedFlags();
+						flagErrors = commentType.Flags.Validate(true, commentType.Scope, "NaturalDocs.Engine");
 
 						if (flagErrors != null)
 							{
 							foreach (string flagError in flagErrors)
-								{  errorList.Add(flagError, filename, topicType.LineNumber);  }
+								{  errorList.Add(flagError, filename, commentType.LineNumber);  }
 							}
 						}
 					}
@@ -855,11 +855,11 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 
-		/* Function: NeedsTopicTypeError
+		/* Function: NeedsCommentTypeError
 		 * A shortcut function only used by <Load()> which adds an error stating that the passed keyword needs to appear
-		 * in a topic type section.
+		 * in a comment type section.
 		 */
-		private void NeedsTopicTypeError (ConfigFile file, string identifier)
+		private void NeedsCommentTypeError (ConfigFile file, string identifier)
 			{
 			file.AddError(
 				Locale.Get("NaturalDocs.Engine", "Topics.txt.KeywordMustBeInTopicType(keyword)", identifier)
@@ -879,8 +879,8 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
-		 *		topicTypes - A list of <ConfigFileTopicTypes>.  
-		 *		ignoredKeywords - A string array of ignored keywords in the format of <ConfigFileTopicType.Keywords>.
+		 *		commentTypes - A list of <ConfigFileCommentTypes>.  
+		 *		ignoredKeywords - A string array of ignored keywords in the format of <ConfigFileCommentType.Keywords>.
 		 *		tags - A list of defined tags.
 		 *		errorList - If it couldn't successfully save the file it will add error messages to this list.
 		 *		isProjectFile - Whether the file is for a project configuration folder as opposed to the system folder.
@@ -892,7 +892,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 *		Whether it was able to successfully save the file without any errors.  If the file didn't need saving because
 		 *		the generated file was the same as the one on disk, this will still return true.
 		 */
-		public bool Save (Path filename, List<ConfigFileTopicType> topicTypes, 
+		public bool Save (Path filename, List<ConfigFileCommentType> commentTypes, 
 								 List<string> ignoredKeywords, List<string> tags,
 								 Errors.ErrorList errorList, bool isProjectFile, bool noErrorOnFail)
 			{
@@ -951,11 +951,11 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			//output.AppendLine();
 				
 				
-			// Topic Types
+			// Comment Types
 			
 			output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypesHeader.multiline") );
 
-			if (topicTypes.Count > 1)
+			if (commentTypes.Count > 1)
 				{  output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.DeferredTopicTypesReference.multiline") );  }
 				
 			output.AppendLine();
@@ -965,120 +965,120 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			// Create content
 			//
 			
-			topicTypes.Sort( 
-				delegate (ConfigFileTopicType a, ConfigFileTopicType b)
+			commentTypes.Sort( 
+				delegate (ConfigFileCommentType a, ConfigFileCommentType b)
 					{  return a.LineNumber - b.LineNumber;  } 
 				);
 				
-			foreach (ConfigFileTopicType topicType in topicTypes)
+			foreach (ConfigFileCommentType commentType in commentTypes)
 				{
-				if (isProjectFile && topicType.AlterType == true)
+				if (isProjectFile && commentType.AlterType == true)
 					{  output.Append("Alter ");  }
 					
-				output.AppendLine("Topic Type: " + topicType.Name);
+				output.AppendLine("Topic Type: " + commentType.Name);
 				int oldGroupNumber = 0;
 				
-				if (topicType.DisplayName != null)
+				if (commentType.DisplayName != null)
 					{  
 					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-					output.AppendLine("   Display Name: " + topicType.DisplayName);
+					output.AppendLine("   Display Name: " + commentType.DisplayName);
 					}
-				if (topicType.PluralDisplayName != null)
+				if (commentType.PluralDisplayName != null)
 					{
 					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-					output.AppendLine("   Plural Display Name: " + topicType.PluralDisplayName);
+					output.AppendLine("   Plural Display Name: " + commentType.PluralDisplayName);
 					}
-				if (topicType.DisplayNameFromLocale != null)
+				if (commentType.DisplayNameFromLocale != null)
 					{
 					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-					output.AppendLine("   Display Name from Locale: " + topicType.DisplayNameFromLocale);
+					output.AppendLine("   Display Name from Locale: " + commentType.DisplayNameFromLocale);
 					}
-				if (topicType.PluralDisplayNameFromLocale != null)
+				if (commentType.PluralDisplayNameFromLocale != null)
 					{
 					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-					output.AppendLine("   Plural Display Name from Locale: " + topicType.PluralDisplayNameFromLocale);
+					output.AppendLine("   Plural Display Name from Locale: " + commentType.PluralDisplayNameFromLocale);
 					}
-				if (topicType.SimpleIdentifier != null)
+				if (commentType.SimpleIdentifier != null)
 					{
 					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-					output.AppendLine("   Simple Identifier: " + topicType.SimpleIdentifier);
+					output.AppendLine("   Simple Identifier: " + commentType.SimpleIdentifier);
 					}
 					
-				if (topicType.Index != null)
+				if (commentType.Index != null)
 					{
 					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 					output.Append("   Index: ");
 					
-					if (topicType.Index == TopicType.IndexValue.Yes)
+					if (commentType.Index == CommentType.IndexValue.Yes)
 						{  output.AppendLine("Yes");  }
-					else if (topicType.Index == TopicType.IndexValue.No)
+					else if (commentType.Index == CommentType.IndexValue.No)
 						{  output.AppendLine("No");  }
 					else  // IndexWith
-						{  output.AppendLine("with " + topicType.IndexWith);  }
+						{  output.AppendLine("with " + commentType.IndexWith);  }
 					}
 					
-				if (topicType.Scope != null)
+				if (commentType.Scope != null)
 					{
 					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 					output.Append("   Scope: ");
 					
-					if (topicType.Scope == TopicType.ScopeValue.Normal)
+					if (commentType.Scope == CommentType.ScopeValue.Normal)
 						{  output.AppendLine("Normal");  }
-					else if (topicType.Scope == TopicType.ScopeValue.Start)
+					else if (commentType.Scope == CommentType.ScopeValue.Start)
 						{  output.AppendLine("Start");  }
-					else if (topicType.Scope == TopicType.ScopeValue.End)
+					else if (commentType.Scope == CommentType.ScopeValue.End)
 						{  output.AppendLine("End");  }
 					else  // AlwaysGlobal
 						{  output.AppendLine("Always Global");  }
 					}
 					
-				if (topicType.Flags.AllConfigurationProperties != 0)
+				if (commentType.Flags.AllConfigurationProperties != 0)
 					{
 					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 					output.Append("   Flags: ");
 					
-					if (topicType.Flags.Code)
+					if (commentType.Flags.Code)
 						{  output.Append("Code");  }
-					else if (topicType.Flags.File)
+					else if (commentType.Flags.File)
 						{  output.Append("File");  }
-					else if (topicType.Flags.Documentation)
+					else if (commentType.Flags.Documentation)
 						{  output.Append("Documentation");  }
 
-					if (topicType.Flags.VariableType)
+					if (commentType.Flags.VariableType)
 						{  output.Append(", Variable Type");  }
 
-					if (topicType.Flags.ClassHierarchy)
+					if (commentType.Flags.ClassHierarchy)
 						{  output.Append(", Class Hierarchy");  }
-					else if (topicType.Flags.DatabaseHierarchy)
+					else if (commentType.Flags.DatabaseHierarchy)
 						{  output.Append(", Database Hierarchy");  }
 
-					if (topicType.Flags.Enum)
+					if (commentType.Flags.Enum)
 						{  output.Append(", Enum");  }
 
 					output.AppendLine();
 					}
 					
-				if (topicType.BreakLists != null)
+				if (commentType.BreakLists != null)
 					{
 					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 					output.Append("   Break Lists: ");
 					
-					if (topicType.BreakLists == true)
+					if (commentType.BreakLists == true)
 						{  output.AppendLine("Yes");  }
 					else
 						{  output.AppendLine("No");  }
 					}
 					
-				if (topicType.Keywords.Count != 0)
+				if (commentType.Keywords.Count != 0)
 					{
 					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
 					
 					output.AppendLine("   Keywords:");
-					AppendKeywordList(output, topicType.Keywords, "      ");
+					AppendKeywordList(output, commentType.Keywords, "      ");
 					}
 
 				output.AppendLine();
@@ -1136,7 +1136,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		protected Regex.NonASCIILetters nonASCIILettersRegex;
 
 		protected Regex.TopicTypes.IgnoreKeywords ignoreKeywordsRegex;
-		protected Regex.TopicTypes.AlterTopicType alterTopicTypeRegex;
+		protected Regex.TopicTypes.AlterTopicType alterCommentTypeRegex;
 		protected Regex.TopicTypes.DisplayName displayNameRegex;
 		protected Regex.TopicTypes.PluralDisplayName pluralDisplayNameRegex;
 		protected Regex.TopicTypes.DisplayNameFromLocale displayNameFromLocaleRegex;

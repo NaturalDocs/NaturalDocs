@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
 			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
 
@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append(
 				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
-				"<div class=\"CTopic T" + simpleTopicTypeName + " L" + simpleLanguageName + 
+				"<div class=\"CTopic T" + simpleCommentTypeName + " L" + simpleLanguageName + 
 											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
 
 					"\r\n ");
@@ -166,11 +166,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Core
 
-			string simpleTopicTypeName = EngineInstance.TopicTypes.FromID(topic.TopicTypeID).SimpleIdentifier;
+			string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
 			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
 
 			// No line breaks and indentation because this will be embedded in JavaScript strings.
-			htmlOutput.Append("<div class=\"NDToolTip T" + simpleTopicTypeName + " L" + simpleLanguageName + "\">");
+			htmlOutput.Append("<div class=\"NDToolTip T" + simpleCommentTypeName + " L" + simpleLanguageName + "\">");
 
 				if (topic.Prototype != null)
 					{  BuildPrototype();  }
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		protected void BuildTitle ()
 			{
 			htmlOutput.Append("<div class=\"CTitle\">");
-			BuildWrappedTitle(topic.Title, topic.TopicTypeID, htmlOutput);
+			BuildWrappedTitle(topic.Title, topic.CommentTypeID, htmlOutput);
 			htmlOutput.Append("</div>");
 			}
 
@@ -200,7 +200,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			bool builtPrototype = false;
 
-			if (EngineInstance.TopicTypes.FromID(topic.TopicTypeID).Flags.ClassHierarchy)
+			if (EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = topic.ParsedClassPrototype;
 

@@ -71,7 +71,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																				  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
 			// DefinesClass is a read-only property in Topic so we don't have to retrieve it from the database.  Topic will calculate it from 
-			// TopicTypeID.  We only store it in the database so we can use it to filter queries.
+			// CommentTypeID.  We only store it in the database so we can use it to filter queries.
 
 			if (bodyLengthOnly)
 				{  queryText.Append(", length(Body) ");  }
@@ -117,7 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				while (query.Step() && !cancelled())
 					{
-					Topic topic = new Topic(EngineInstance.TopicTypes);
+					Topic topic = new Topic(EngineInstance.CommentTypes);
 					
 					topic.TopicID = query.NextIntColumn();
 					topic.Title = query.NextStringColumn();
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					topic.IsList = (query.NextIntColumn() == 1);
 					topic.IsEmbedded = (query.NextIntColumn() == 1);
 
-					topic.TopicTypeID = query.NextIntColumn();
+					topic.CommentTypeID = query.NextIntColumn();
 					topic.DeclaredAccessLevel = (Languages.AccessLevel)query.NextIntColumn();
 					topic.EffectiveAccessLevel = (Languages.AccessLevel)query.NextIntColumn();
 					topic.TagString = query.NextStringColumn();
@@ -392,7 +392,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		ClassID - Must be zero.  This will be automatically assigned and the <Topic> updated.
 		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
-		 *		TopicTypeID - Must be set.
+		 *		CommentTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.
@@ -421,7 +421,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (topic.IsList && topic.IsEmbedded)
 				{  throw new Exception("IsList and IsEmbedded cannot both be set on a topic.");  }
 
-			RequireNonZero("AddTopic", "TopicTypeID", topic.TopicTypeID);
+			RequireNonZero("AddTopic", "CommentTypeID", topic.CommentTypeID);
 			// DeclaredAccessLevel
 			RequireNotValue("AddTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
 			// TagString
@@ -451,7 +451,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 													topic.TopicID, topic.Title, topic.Body, topic.Summary, topic.Prototype, topic.Symbol, topic.SymbolDefinitionNumber,
 													topic.ClassID, (topic.DefinesClass ? 1 : 0), (topic.IsList ? 1 : 0), (topic.IsEmbedded ? 1 : 0), topic.Symbol.EndingSymbol,
-													topic.TopicTypeID, (int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, 
+													topic.CommentTypeID, (int)topic.DeclaredAccessLevel, (int)topic.EffectiveAccessLevel, topic.TagString, topic.FileID, 
 													topic.FilePosition, topic.CommentLineNumber, topic.CodeLineNumber, topic.LanguageID, topic.PrototypeContextID, 
 													topic.BodyContextID										 
 													);
@@ -641,7 +641,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		ClassID - Must be set.
 		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
-		 *		TopicTypeID - Must be set.
+		 *		CommentTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.
@@ -671,7 +671,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (topic.IsList && topic.IsEmbedded)
 				{  throw new Exception("IsList and IsEmbedded cannot both be set on a topic.");  }
 
-			RequireNonZero("DeleteTopic", "TopicTypeID", topic.TopicTypeID);
+			RequireNonZero("DeleteTopic", "CommentTypeID", topic.CommentTypeID);
 			// DeclaredAccessLevel
 			RequireNotValue("DeleteTopic", "EffectiveAccessLevel", (int)topic.EffectiveAccessLevel, (int)Languages.AccessLevel.Unknown);
 			// TagString
@@ -789,7 +789,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		ClassID - Must be zero.  These will be automatically assigned and the <Topics> updated.
 		 *		IsList - Must be set.
 		 *		IsEmbedded - Must be set.
-		 *		TopicTypeID - Must be set.
+		 *		CommentTypeID - Must be set.
 		 *		DeclaredAccessLevel - Optional.
 		 *		EffectiveAccessLevel - Must be set to something other than Unknown.
 		 *		TagString - Can be null.

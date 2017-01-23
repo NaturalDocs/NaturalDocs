@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.Topics_nd
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Topics_nd
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Topics.nd>.
@@ -28,15 +28,15 @@
  *			
  *			The file then has pairs of tag names and IDs until it reaches a null string.
  *			
- *			> [String: Topic Type Name]
- *			> [[Topic Type Attributes]]
+ *			> [String: Comment Type Name]
+ *			> [[Comment Type Attributes]]
  *			> ...
  *			> [String: null]
  *			
- *			The file then encodes each topic type by its name string, followed by its attributes, and repeats until it reaches a null
+ *			The file then encodes each comment type by its name string, followed by its attributes, and repeats until it reaches a null
  *			string instead of a new name string.
  *			
- *			> Topic Type Attributes:
+ *			> Comment Type Attributes:
  *			> [Int32: ID]
  *			> [String: Display Name]
  *			> [String: Plural Display Name]
@@ -51,11 +51,11 @@
  *			weren't defined they'll still be here via whatever inheritance rules are in play.  If it's defined by the locale, it's the 
  *			resulting string that was retrieved from it.
  *			
- *			IndexWithID is the identifier of the topic type to index with and is only present if Index is set to 
- *			<TopicTypes.IndexValue.IndexWith>.
+ *			IndexWithID is the identifier of the comment type to index with and is only present if Index is set to 
+ *			<CommentTypes.IndexValue.IndexWith>.
  *			
  *			> [String: Singular Keyword]
- *			> [Int32: Topic Type ID]
+ *			> [Int32: Comment Type ID]
  *			> ...
  *			> [String: null]
  *			
@@ -63,7 +63,7 @@
  *			until a null string appears in place of the keyword.
  *			
  *			> [String: Plural Keyword]
- *			> [Int32: Topic Type ID]
+ *			> [Int32: Comment Type ID]
  *			> ...
  *			> [String: null]
  *			
@@ -73,7 +73,7 @@
  *			> ...
  *			> [String: null]
  *			
- *			Next is a similar list of ignored keywords, only the topic type ID is omitted.
+ *			Next is a similar list of ignored keywords, only the comment type ID is omitted.
  *			
  *		Revisions:
  *		
@@ -93,7 +93,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class Topics_nd
 		{
@@ -110,17 +110,17 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 
 		/* Function: Load
-		 * Loads the information in <Topics.nd>, which is the computed topic settings from the last time Natural Docs was run.
+		 * Loads the information in <Topics.nd>, which is the computed comment settings from the last time Natural Docs was run.
 		 * Returns whether it was successful.  If not all the out parameters will still return objects, they will just be empty.  
 		 */
 		public bool Load (Path filename,
-								 out List<TopicType> binaryTopicTypes, 
+								 out List<CommentType> binaryCommentTypes, 
 								 out List<Tag> binaryTags,
 								 out List<KeyValuePair<string, int>> binarySingularKeywords,
 								 out List<KeyValuePair<string, int>> binaryPluralKeywords, 
 								 out List<string> binaryIgnoredKeywords)
 			{
-			binaryTopicTypes = new List<TopicType>();
+			binaryCommentTypes = new List<CommentType>();
 			binaryTags = new List<Tag>();
 			
 			binarySingularKeywords = new List<KeyValuePair<string,int>>();
@@ -156,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						}
 						
 
-					// [String: Topic Type Name]
+					// [String: Comment Type Name]
 					// [Int32: ID]
 					// [String: Display Name]
 					// [String: Plural Display Name]
@@ -169,46 +169,46 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					// ...
 					// [String: null]
 						
-					string topicTypeName = file.ReadString();
-					IDObjects.NumberSet topicTypeIDs = new IDObjects.NumberSet();
+					string commentTypeName = file.ReadString();
+					IDObjects.NumberSet commentTypeIDs = new IDObjects.NumberSet();
 					
-					while (topicTypeName != null)
+					while (commentTypeName != null)
 						{
-						TopicType topicType = new TopicType(topicTypeName);
+						CommentType commentType = new CommentType(commentTypeName);
 						
-						topicType.ID = file.ReadInt32();
-						topicType.DisplayName = file.ReadString();
-						topicType.PluralDisplayName = file.ReadString();
-						topicType.SimpleIdentifier = file.ReadString();
+						commentType.ID = file.ReadInt32();
+						commentType.DisplayName = file.ReadString();
+						commentType.PluralDisplayName = file.ReadString();
+						commentType.SimpleIdentifier = file.ReadString();
 
 						// We don't have to validate the enum and flag values because they're only used to compare to the config file 
 						// versions, which are validated.  If these are invalid they'll just show up as changed.
 
-						topicType.Index = (TopicType.IndexValue)file.ReadByte();
+						commentType.Index = (CommentType.IndexValue)file.ReadByte();
 
-						if (topicType.Index == TopicType.IndexValue.IndexWith)
-							{  topicType.IndexWith = file.ReadInt32();  }
+						if (commentType.Index == CommentType.IndexValue.IndexWith)
+							{  commentType.IndexWith = file.ReadInt32();  }
 
-						topicType.Scope = (TopicType.ScopeValue)file.ReadByte();
-						topicType.BreakLists = (file.ReadByte() != 0);
-						topicType.Flags.AllConfigurationProperties = (TopicTypeFlags.FlagValues)file.ReadUInt16();
+						commentType.Scope = (CommentType.ScopeValue)file.ReadByte();
+						commentType.BreakLists = (file.ReadByte() != 0);
+						commentType.Flags.AllConfigurationProperties = (CommentTypeFlags.FlagValues)file.ReadUInt16();
 
-						binaryTopicTypes.Add(topicType);
-						topicTypeIDs.Add(topicType.ID);
+						binaryCommentTypes.Add(commentType);
+						commentTypeIDs.Add(commentType.ID);
 						
-						topicTypeName = file.ReadString();
+						commentTypeName = file.ReadString();
 						}
 						
 					// Check the Index With values after they're all entered in.
-					foreach (TopicType topicType in binaryTopicTypes)
+					foreach (CommentType commentType in binaryCommentTypes)
 						{
-						if (topicType.Index == TopicType.IndexValue.IndexWith && !topicTypeIDs.Contains(topicType.IndexWith))
+						if (commentType.Index == CommentType.IndexValue.IndexWith && !commentTypeIDs.Contains(commentType.IndexWith))
 							{  result = false;  }
 						}
 
 				
 					// [String: Singular Keyword]
-					// [Int32: Topic Type ID]
+					// [Int32: Comment Type ID]
 					// ...
 					// [String: null]
 
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						int id = file.ReadInt32();
 						
 						binarySingularKeywords.Add( new KeyValuePair<string,int>(keyword, id) );
-						if (!topicTypeIDs.Contains(id))
+						if (!commentTypeIDs.Contains(id))
 							{  result = false;  }
 						
 						keyword = file.ReadString();
@@ -227,7 +227,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 				
 					// [String: Plural Keyword]
-					// [Int32: Topic Type ID]
+					// [Int32: Comment Type ID]
 					// ...
 					// [String: null]
 
@@ -238,7 +238,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						int id = file.ReadInt32();
 						
 						binaryPluralKeywords.Add( new KeyValuePair<string, int>(keyword, id) );
-						if (!topicTypeIDs.Contains(id))
+						if (!commentTypeIDs.Contains(id))
 							{  result = false;  }
 						
 						keyword = file.ReadString();
@@ -271,7 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			if (result == false)
 				{
 				// Reset all the objects to empty versions.
-				binaryTopicTypes.Clear();
+				binaryCommentTypes.Clear();
 				
 				binarySingularKeywords.Clear();
 				binaryPluralKeywords.Clear();
@@ -283,10 +283,10 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 
 		/* Function: Save
-		 * Saves the current computed topic types into <Topics.nd>.  Throws an exception if unsuccessful.
+		 * Saves the current computed comment types into <Topics.nd>.  Throws an exception if unsuccessful.
 		 */
-		public void Save (Path filename, IDObjects.Manager<TopicType> topicTypes, IDObjects.Manager<Tag> tags,
-								StringTable<TopicType> singularKeywords, StringTable<TopicType> pluralKeywords,
+		public void Save (Path filename, IDObjects.Manager<CommentType> commentTypes, IDObjects.Manager<Tag> tags,
+								StringTable<CommentType> singularKeywords, StringTable<CommentType> pluralKeywords,
 								StringSet ignoredKeywords)
 			{
 			BinaryFile file = new BinaryFile();
@@ -309,7 +309,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				file.WriteString(null);
 				
 
-				// [String: Topic Type Name]
+				// [String: Comment Type Name]
 				// [Int32: ID]
 				// [String: Display Name]
 				// [String: Plural Display Name]
@@ -322,32 +322,32 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				// ...
 				// [String: null]
 
-				foreach (TopicType topicType in topicTypes)
+				foreach (CommentType commentType in commentTypes)
 					{
-					file.WriteString( topicType.Name );
-					file.WriteInt32( topicType.ID );
-					file.WriteString( topicType.DisplayName );
-					file.WriteString( topicType.PluralDisplayName );
-					file.WriteString( topicType.SimpleIdentifier );
-					file.WriteByte( (byte)topicType.Index );
+					file.WriteString( commentType.Name );
+					file.WriteInt32( commentType.ID );
+					file.WriteString( commentType.DisplayName );
+					file.WriteString( commentType.PluralDisplayName );
+					file.WriteString( commentType.SimpleIdentifier );
+					file.WriteByte( (byte)commentType.Index );
 					
-					if (topicType.Index == TopicType.IndexValue.IndexWith)
-						{  file.WriteInt32( topicType.IndexWith );  }
+					if (commentType.Index == CommentType.IndexValue.IndexWith)
+						{  file.WriteInt32( commentType.IndexWith );  }
 
-					file.WriteByte( (byte)topicType.Scope );
-					file.WriteByte( (byte)(topicType.BreakLists ? 1 : 0) );
-					file.WriteUInt16( (ushort)topicType.Flags.AllConfigurationProperties );
+					file.WriteByte( (byte)commentType.Scope );
+					file.WriteByte( (byte)(commentType.BreakLists ? 1 : 0) );
+					file.WriteUInt16( (ushort)commentType.Flags.AllConfigurationProperties );
 					}
 					
 				file.WriteString(null);
 				
 				
 				// [String: Singular Keyword]
-				// [Int32: Topic Type ID]
+				// [Int32: Comment Type ID]
 				// ...
 				// [String: null]
 
-				foreach (KeyValuePair<string, TopicType> pair in singularKeywords)
+				foreach (KeyValuePair<string, CommentType> pair in singularKeywords)
 					{
 					file.WriteString( pair.Key );
 					file.WriteInt32( pair.Value.ID );
@@ -357,11 +357,11 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				
 				
 				// [String: Plural Keyword]
-				// [Int32: Topic Type ID]
+				// [Int32: Comment Type ID]
 				// ...
 				// [String: null]
 
-				foreach (KeyValuePair<string, TopicType> pair in pluralKeywords)
+				foreach (KeyValuePair<string, CommentType> pair in pluralKeywords)
 					{
 					file.WriteString( pair.Key );
 					file.WriteInt32( pair.Value.ID );

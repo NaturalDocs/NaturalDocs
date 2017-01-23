@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.TopicTypes.Manager
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Manager
  * ____________________________________________________________________________
  * 
- * A module to handle <Topics.txt> and all the topic settings within Natural Docs.
+ * A module to handle <Topics.txt> and all the comment type settings within Natural Docs.
  * 
  * 
  * Topic: Usage
@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
 	public class Manager : Module
 		{
@@ -31,7 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		
 		
 		public const KeySettings KeySettingsForKeywords = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
-		public const KeySettings KeySettingsForTopicTypes = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
+		public const KeySettings KeySettingsForCommentTypes = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		public const KeySettings KeySettingsForTags = KeySettings.IgnoreCase | KeySettings.NormalizeUnicode;
 		
 		
@@ -45,15 +45,15 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			// Topic type names aren't normalized because they're only referenced in other config files.  Tags and keywords are
+			// Comment type names aren't normalized because they're only referenced in other config files.  Tags and keywords are
 			// referenced in source files so they should be more tolerant.
-			topicTypes = new IDObjects.Manager<TopicType>(KeySettingsForTopicTypes, false);
+			commentTypes = new IDObjects.Manager<CommentType>(KeySettingsForCommentTypes, false);
 			tags = new IDObjects.Manager<Tag>(KeySettingsForTags, false);
 			
-			singularKeywords = new StringTable<TopicType>(KeySettingsForKeywords);
-			pluralKeywords = new StringTable<TopicType>(KeySettingsForKeywords);
+			singularKeywords = new StringTable<CommentType>(KeySettingsForKeywords);
+			pluralKeywords = new StringTable<CommentType>(KeySettingsForKeywords);
 
-			groupTopicTypeID = 0;
+			groupCommentTypeID = 0;
 			}
 
 
@@ -73,14 +73,14 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
-			List<ConfigFileTopicType> systemTopicTypeList;
-			List<ConfigFileTopicType> projectTopicTypeList;
+			List<ConfigFileCommentType> systemCommentTypeList;
+			List<ConfigFileCommentType> projectCommentTypeList;
 			List<string> ignoredSystemKeywords;
 			List<string> ignoredProjectKeywords;
 			List<string> systemTags;
 			List<string> projectTags;
 			
-			List<TopicType> binaryTopicTypes;
+			List<CommentType> binaryCommentTypes;
 			List<Tag> binaryTags;
 			List<KeyValuePair<string, int>> binarySingularKeywords;
 			List<KeyValuePair<string, int>> binaryPluralKeywords;
@@ -94,15 +94,15 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			// we have to assume something changed.
 			bool changed = false;
 
-			Topics_nd topicsNDParser = new Topics_nd();
+			Topics_nd commentsNDParser = new Topics_nd();
 
 
-			// We need the ID numbers to stay consistent between runs, so we need to create all the topic types and tags from the
+			// We need the ID numbers to stay consistent between runs, so we need to create all the comment types and tags from the
 			// binary file first.  We'll worry about comparing their attributes and seeing if any were added or deleted later.
 
 			if (EngineInstance.Config.ReparseEverything == true)
 				{
-				binaryTopicTypes = new List<TopicType>();
+				binaryCommentTypes = new List<CommentType>();
 				binaryTags = new List<Tag>();
 				binarySingularKeywords = new List<KeyValuePair<string,int>>();
 				binaryPluralKeywords = new List<KeyValuePair<string,int>>();
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				changed = true;
 				}
 				
-			else if (topicsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", out binaryTopicTypes, out binaryTags, 
+			else if (commentsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", out binaryCommentTypes, out binaryTags, 
 													out binarySingularKeywords, out binaryPluralKeywords, out binaryIgnoredKeywords) == false)
 				{
 				changed = true;
@@ -124,16 +124,16 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				// an exception when added, we can continue as if the binary file didn't parse at all.
 				try
 					{
-					foreach (TopicType binaryTopicType in binaryTopicTypes)
+					foreach (CommentType binaryCommentType in binaryCommentTypes)
 						{
-						// We don't add the binary topic type itself because we only want those for comparison purposes.  We want 
-						// the types in topicTypes to be at their default values because the Topics.txt versions will only set some attributes, 
+						// We don't add the binary comment type itself because we only want those for comparison purposes.  We want 
+						// the types in commentTypes to be at their default values because the Topics.txt versions will only set some attributes, 
 						// not all, and we don't want the unset attributes influenced by the binary versions.
-						TopicType newTopicType = new TopicType(binaryTopicType.Name);
-						newTopicType.ID = binaryTopicType.ID;
-						newTopicType.Flags.InBinaryFile = true;
+						CommentType newCommentType = new CommentType(binaryCommentType.Name);
+						newCommentType.ID = binaryCommentType.ID;
+						newCommentType.Flags.InBinaryFile = true;
 						
-						topicTypes.Add(newTopicType);
+						commentTypes.Add(newCommentType);
 						}
 					
 					foreach (Tag binaryTag in binaryTags)
@@ -147,12 +147,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					}
 				catch
 					{
-					topicTypes.Clear();
+					commentTypes.Clear();
 					tags.Clear();
 					changed = true;
 					
 					// Clear them since they may be used later in this function.
-					binaryTopicTypes.Clear();
+					binaryCommentTypes.Clear();
 					binarySingularKeywords.Clear();
 					binaryPluralKeywords.Clear();
 					binaryIgnoredKeywords.Clear();
@@ -165,12 +165,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Topics.txt";
 			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Topics.txt";
 
-			Topics_txt topicsTxtParser = new Topics_txt();
+			Topics_txt commentsTxtParser = new Topics_txt();
 
 			
 			// Load the files.
 			
-			if (!topicsTxtParser.Load( systemFile, out systemTopicTypeList, out ignoredSystemKeywords, out systemTags, errorList ))
+			if (!commentsTxtParser.Load( systemFile, out systemCommentTypeList, out ignoredSystemKeywords, out systemTags, errorList ))
 				{  
 				success = false;  
 				// Continue anyway because we want to show errors from both files.
@@ -178,13 +178,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			if (System.IO.File.Exists(projectFile))
 				{
-				if (!topicsTxtParser.Load( projectFile, out projectTopicTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
+				if (!commentsTxtParser.Load( projectFile, out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
 					{  success = false;  }
 				}
 			else
 				{
 				// The project file not existing is not an error condition.  Fill in the variables with empty structures.
-				projectTopicTypeList = new List<ConfigFileTopicType>();
+				projectCommentTypeList = new List<ConfigFileCommentType>();
 				ignoredProjectKeywords = new List<string>();
 				projectTags = new List<string>();
 				}
@@ -249,7 +249,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				}
 				
 				
-			// All the topic types have to exist in IDObjects.Manager before the properties are set because Index With will need their 
+			// All the comment types have to exist in IDObjects.Manager before the properties are set because Index With will need their 
 			// IDs.  This pass only creates the types that were not already created by the binary file.
 			
 			// We don't need to do separate passes for standard entries and alter entries because alter entries should only appear 
@@ -257,15 +257,15 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			// project entry) or would have been simplified out by LoadFile (a file with an alter entry applying to a type in the same 
 			// file.)
 
-			foreach (ConfigFileTopicType topicType in systemTopicTypeList)
+			foreach (ConfigFileCommentType commentType in systemCommentTypeList)
 				{  
-				if (!Start_CreateType(topicType, systemFile, true, errorList))
+				if (!Start_CreateType(commentType, systemFile, true, errorList))
 					{  success = false;  }
 				}
 
-			foreach (ConfigFileTopicType topicType in projectTopicTypeList)
+			foreach (ConfigFileCommentType commentType in projectCommentTypeList)
 				{  
-				if (!Start_CreateType(topicType, projectFile, false, errorList))
+				if (!Start_CreateType(commentType, projectFile, false, errorList))
 					{  success = false;  }
 				}
 				
@@ -274,23 +274,23 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				{  return false;  }
 
 
-			// Now that everything's in topicTypes we can delete the ones that aren't in the text files, meaning they were in 
+			// Now that everything's in commentTypes we can delete the ones that aren't in the text files, meaning they were in 
 			// the binary file from the last run but were deleted since then.  We have to put them on a list and delete them in a 
 			// second pass because deleting them while iterating through would screw up the iterator.
 			
 			List<int> deletedIDs = new List<int>();
 			
-			foreach (TopicType topicType in topicTypes)
+			foreach (CommentType commentType in commentTypes)
 				{
-				if (topicType.Flags.InConfigFiles == false)
+				if (commentType.Flags.InConfigFiles == false)
 					{
-					deletedIDs.Add(topicType.ID);
+					deletedIDs.Add(commentType.ID);
 					changed = true;
 					}
 				}
 				
 			foreach (int deletedID in deletedIDs)
-				{  topicTypes.Remove(deletedID);  }
+				{  commentTypes.Remove(deletedID);  }
 				
 				
 			// Delete the tags that weren't in the text files as well.
@@ -312,15 +312,15 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				
 			// Fill in the properties
 			
-			foreach (ConfigFileTopicType topicType in systemTopicTypeList)
+			foreach (ConfigFileCommentType commentType in systemCommentTypeList)
 				{  
-				if (!Start_ApplyProperties(topicType, systemFile, ignoredKeywords, errorList))
+				if (!Start_ApplyProperties(commentType, systemFile, ignoredKeywords, errorList))
 					{  success = false;  }
 				}
 
-			foreach (ConfigFileTopicType topicType in projectTopicTypeList)
+			foreach (ConfigFileCommentType commentType in projectCommentTypeList)
 				{  
-				if (!Start_ApplyProperties(topicType, projectFile, ignoredKeywords, errorList))
+				if (!Start_ApplyProperties(commentType, projectFile, ignoredKeywords, errorList))
 					{  success = false;  }
 				}
 				
@@ -330,12 +330,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				
 			// Make sure there are no circular dependencies in Index With.
 			
-			foreach (TopicType topicType in topicTypes)
+			foreach (CommentType commentType in commentTypes)
 				{
-				if (topicType.Index == TopicType.IndexValue.IndexWith)
+				if (commentType.Index == CommentType.IndexValue.IndexWith)
 					{
 					IDObjects.NumberSet ids = new IDObjects.NumberSet();
-					TopicType currentType = topicType;
+					CommentType currentType = commentType;
 					
 					do
 						{
@@ -343,20 +343,20 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						
 						if (ids.Contains(currentType.IndexWith))
 							{
-							// Start the dependency message on the repeated topic type, not on the one the loop started with because
+							// Start the dependency message on the repeated comment type, not on the one the loop started with because
 							// it could go A > B > C > B, in which case reporting A is irrelevant.
 							
 							int repeatedID = currentType.IndexWith;
-							TopicType iterator = topicTypes[repeatedID];
+							CommentType iterator = commentTypes[repeatedID];
 							string repeatMessage = iterator.Name;
 
 							// We want the error message to be on the repeated type only if that's the only one: A > A.  Otherwise we
 							// want it to be the second to last one: C in A > B > C > B.
-							TopicType errorMessageTarget = currentType;
+							CommentType errorMessageTarget = currentType;
 
 							for (;;)
 								{
-								iterator = topicTypes[iterator.IndexWith];
+								iterator = commentTypes[iterator.IndexWith];
 								repeatMessage += " > " + iterator.Name;
 								
 								if (iterator.ID == repeatedID)
@@ -366,23 +366,23 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 								}
 								
 							Path errorMessageFile;
-							List <ConfigFileTopicType> searchList;
+							List <ConfigFileCommentType> searchList;
 							
 							if (errorMessageTarget.Flags.InProjectFile)
 								{
 								errorMessageFile = projectFile;
-								searchList = projectTopicTypeList;
+								searchList = projectCommentTypeList;
 								}
 							else
 								{
 								errorMessageFile = systemFile;
-								searchList = systemTopicTypeList;
+								searchList = systemCommentTypeList;
 								}
 								
 							int errorMessageLineNumber = 0;
 							string lcErrorMessageTargetName = errorMessageTarget.Name.ToLower();
 							
-							foreach (ConfigFileTopicType searchListType in searchList)
+							foreach (ConfigFileCommentType searchListType in searchList)
 								{  
 								if (searchListType.Name.ToLower() == lcErrorMessageTargetName)
 									{
@@ -399,28 +399,28 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 							return false;
 							}
 						
-						currentType = topicTypes[currentType.IndexWith];
+						currentType = commentTypes[currentType.IndexWith];
 						}
-					while (currentType.Index == TopicType.IndexValue.IndexWith);
+					while (currentType.Index == CommentType.IndexValue.IndexWith);
 					}
 				}
 				
 				
 			// Simplify Index With.  So A > B > C becomes A > C.  Also A > B = no indexing becomes A = no indexing.
 			
-			foreach (TopicType topicType in topicTypes)
+			foreach (CommentType commentType in commentTypes)
 				{
-				if (topicType.Index == TopicType.IndexValue.IndexWith)
+				if (commentType.Index == CommentType.IndexValue.IndexWith)
 					{
-					TopicType targetTopicType = topicTypes[topicType.IndexWith];
+					CommentType targetCommentType = commentTypes[commentType.IndexWith];
 					
-					while (targetTopicType.Index == TopicType.IndexValue.IndexWith)
-						{  targetTopicType = topicTypes[targetTopicType.IndexWith];  }
+					while (targetCommentType.Index == CommentType.IndexValue.IndexWith)
+						{  targetCommentType = commentTypes[targetCommentType.IndexWith];  }
 						
-					if (targetTopicType.Index == TopicType.IndexValue.No)
-						{  topicType.Index = TopicType.IndexValue.No;  }
+					if (targetCommentType.Index == CommentType.IndexValue.No)
+						{  commentType.Index = CommentType.IndexValue.No;  }
 					else
-						{  topicType.IndexWith = targetTopicType.ID;  }
+						{  commentType.IndexWith = targetCommentType.ID;  }
 					}
 				}
 				
@@ -428,13 +428,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			// Everything is okay at this point.  Save the files again to reformat them.  If the project file didn't exist, saving it 
 			// with the empty structures we created will create it.
 			
-			Start_FixCapitalization(systemTopicTypeList);
-			Start_FixCapitalization(projectTopicTypeList);
+			Start_FixCapitalization(systemCommentTypeList);
+			Start_FixCapitalization(projectCommentTypeList);
 			
-			if (!topicsTxtParser.Save(projectFile, projectTopicTypeList, ignoredProjectKeywords, projectTags, errorList, true, false))
+			if (!commentsTxtParser.Save(projectFile, projectCommentTypeList, ignoredProjectKeywords, projectTags, errorList, true, false))
 				{  success = false;  };
 				
-			if (!topicsTxtParser.Save(systemFile, systemTopicTypeList, ignoredSystemKeywords, systemTags, errorList, false, true))
+			if (!commentsTxtParser.Save(systemFile, systemCommentTypeList, ignoredSystemKeywords, systemTags, errorList, false, true))
 				{  success = false;  };
 			
 			
@@ -444,7 +444,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				{
 				// First an easy comparison.
 				
-				if (binaryTopicTypes.Count != topicTypes.Count || 
+				if (binaryCommentTypes.Count != commentTypes.Count || 
 					binaryTags.Count != tags.Count ||
 					binaryIgnoredKeywords.Count != ignoredKeywords.Count ||
 					singularKeywords.Count != binarySingularKeywords.Count || 
@@ -458,11 +458,11 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				{
 				// Next a detailed comparison if necessary.
 				
-				foreach (TopicType binaryTopicType in binaryTopicTypes)
+				foreach (CommentType binaryCommentType in binaryCommentTypes)
 					{
-					TopicType topicType = topicTypes[binaryTopicType.ID];
+					CommentType commentType = commentTypes[binaryCommentType.ID];
 					
-					if (topicType == null || binaryTopicType != topicType)
+					if (commentType == null || binaryCommentType != commentType)
 						{  
 						changed = true;
 						break;
@@ -525,34 +525,34 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				}
 
 				
-			topicsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", 
-										  topicTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
+			commentsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", 
+										  commentTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
 			if (success == true && changed == true)
 				{  EngineInstance.Config.ReparseEverything = true;  }
 
-			groupTopicTypeID = IDFromKeyword("group");
+			groupCommentTypeID = IDFromKeyword("group");
 				
 			return success;
 			}
 			
 			
 		/* Function: Start_CreateType
-		 * A helper function that is used only by <Start()> to create an entry in <topicTypes> for a <ConfigFileTopicType>.
+		 * A helper function that is used only by <Start()> to create an entry in <commentTypes> for a <ConfigFileCommentType>.
 		 * Does not set any properties.  Returns whether it was able to do so without any errors.
 		 */
-		private bool Start_CreateType (ConfigFileTopicType configFileTopicType, Path sourceFile, bool isSystemFile,
+		private bool Start_CreateType (ConfigFileCommentType configFileCommentType, Path sourceFile, bool isSystemFile,
 													  Errors.ErrorList errorList)
 			{
-			if (configFileTopicType.AlterType == true)
+			if (configFileCommentType.AlterType == true)
 				{
 				// If altering a type that doesn't exist at all, or only exists in the binary files...
-				if ( topicTypes.Contains(configFileTopicType.Name) == false ||
-				     topicTypes[configFileTopicType.Name].Flags.InConfigFiles == false )
+				if ( commentTypes.Contains(configFileCommentType.Name) == false ||
+				     commentTypes[configFileCommentType.Name].Flags.InConfigFiles == false )
 					{
 					errorList.Add( 
-						Locale.Get("NaturalDocs.Engine", "Topics.txt.AlteredTopicTypeDoesntExist(name)", configFileTopicType.Name),
-						sourceFile, configFileTopicType.LineNumber 
+						Locale.Get("NaturalDocs.Engine", "Topics.txt.AlteredTopicTypeDoesntExist(name)", configFileCommentType.Name),
+						sourceFile, configFileCommentType.LineNumber 
 						);
 						
 					return false;
@@ -562,13 +562,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			else // define type, not alter
 				{
 				// Error if defining a type that already exists in the config files.  Having it exist from the binary file is fine.
-				if (topicTypes.Contains(configFileTopicType.Name))
+				if (commentTypes.Contains(configFileCommentType.Name))
 					{
-				    if (topicTypes[configFileTopicType.Name].Flags.InConfigFiles == true)
+				    if (commentTypes[configFileCommentType.Name].Flags.InConfigFiles == true)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", configFileTopicType.Name),
-							sourceFile, configFileTopicType.LineNumber 
+							Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", configFileCommentType.Name),
+							sourceFile, configFileCommentType.LineNumber 
 							);
 							
 						return false;
@@ -576,14 +576,14 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 					}
 				else
 					{					
-					TopicType topicType = new TopicType(configFileTopicType.Name);
-					topicTypes.Add(topicType);
+					CommentType commentType = new CommentType(configFileCommentType.Name);
+					commentTypes.Add(commentType);
 					}
 					
 				if (isSystemFile)
-					{  topicTypes[configFileTopicType.Name].Flags.InSystemFile = true;  }
+					{  commentTypes[configFileCommentType.Name].Flags.InSystemFile = true;  }
 				else
-					{  topicTypes[configFileTopicType.Name].Flags.InProjectFile = true;  }
+					{  commentTypes[configFileCommentType.Name].Flags.InProjectFile = true;  }
 				}
 				
 			return true;
@@ -592,48 +592,48 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			
 			
 		/* Function: Start_ApplyProperties
-		 * A helper function that is used only by <Start()> to combine a <ConfigFileTopicType's> properties into <topicTypes> and
+		 * A helper function that is used only by <Start()> to combine a <ConfigFileCommentType's> properties into <commentTypes> and
 		 * its keywords into <singularKeywords> and <pluralKeywords>.  Assumes entries were already created for all of them by 
 		 * <Start_CreateType()>.  Returns whether it was able to do so without causing an error.
 		 */
-		private bool Start_ApplyProperties (ConfigFileTopicType configFileTopicType, Path sourceFile, 
+		private bool Start_ApplyProperties (ConfigFileCommentType configFileCommentType, Path sourceFile, 
 														    StringSet ignoredKeywords, Errors.ErrorList errorList)
 			{
-			TopicType topicType = topicTypes[configFileTopicType.Name];
+			CommentType commentType = commentTypes[configFileCommentType.Name];
 			bool success = true;
 
 
 			// Display names
 			
-			if (configFileTopicType.DisplayNameFromLocale != null)
-				{  topicType.DisplayName = Locale.Get("NaturalDocs.Engine", configFileTopicType.DisplayNameFromLocale);  }
-			else if (configFileTopicType.DisplayName != null)
-				{  topicType.DisplayName = configFileTopicType.DisplayName;  }
+			if (configFileCommentType.DisplayNameFromLocale != null)
+				{  commentType.DisplayName = Locale.Get("NaturalDocs.Engine", configFileCommentType.DisplayNameFromLocale);  }
+			else if (configFileCommentType.DisplayName != null)
+				{  commentType.DisplayName = configFileCommentType.DisplayName;  }
 				
-			if (configFileTopicType.PluralDisplayNameFromLocale != null)
-				{  topicType.PluralDisplayName = Locale.Get("NaturalDocs.Engine", configFileTopicType.PluralDisplayNameFromLocale);  }
-			else if (configFileTopicType.PluralDisplayName != null)
-				{  topicType.PluralDisplayName = configFileTopicType.PluralDisplayName;  }
+			if (configFileCommentType.PluralDisplayNameFromLocale != null)
+				{  commentType.PluralDisplayName = Locale.Get("NaturalDocs.Engine", configFileCommentType.PluralDisplayNameFromLocale);  }
+			else if (configFileCommentType.PluralDisplayName != null)
+				{  commentType.PluralDisplayName = configFileCommentType.PluralDisplayName;  }
 				
 				
 			// Other properties
 			
-			if (configFileTopicType.SimpleIdentifier != null)
-				{  topicType.SimpleIdentifier = configFileTopicType.SimpleIdentifier;  }
+			if (configFileCommentType.SimpleIdentifier != null)
+				{  commentType.SimpleIdentifier = configFileCommentType.SimpleIdentifier;  }
 			
-			if (configFileTopicType.Index != null)
+			if (configFileCommentType.Index != null)
 				{
-				topicType.Index = (TopicType.IndexValue)configFileTopicType.Index;
+				commentType.Index = (CommentType.IndexValue)configFileCommentType.Index;
 				
-				if (topicType.Index == TopicType.IndexValue.IndexWith)
+				if (commentType.Index == CommentType.IndexValue.IndexWith)
 					{
-					TopicType indexWithTopicType = topicTypes[ configFileTopicType.IndexWith ];
+					CommentType indexWithCommentType = commentTypes[ configFileCommentType.IndexWith ];
 					
-					if (indexWithTopicType == null)
+					if (indexWithCommentType == null)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.IndexWithTopicTypeDoesntExist(name)", configFileTopicType.IndexWith),
-							sourceFile, configFileTopicType.LineNumber 
+							Locale.Get("NaturalDocs.Engine", "Topics.txt.IndexWithTopicTypeDoesntExist(name)", configFileCommentType.IndexWith),
+							sourceFile, configFileCommentType.LineNumber 
 							);
 							
 						success = false;
@@ -641,34 +641,34 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 						
 					else
 						{
-						topicType.IndexWith = indexWithTopicType.ID;
+						commentType.IndexWith = indexWithCommentType.ID;
 						}
 					}
 				}
 				
-			if (configFileTopicType.Scope != null)
-				{  topicType.Scope = (TopicType.ScopeValue)configFileTopicType.Scope;  }
-			if (configFileTopicType.Flags.AllConfigurationProperties != 0)
-				{  topicType.Flags.AllConfigurationProperties = configFileTopicType.Flags.AllConfigurationProperties;  }
-			if (configFileTopicType.BreakLists != null)
-				{  topicType.BreakLists = (bool)configFileTopicType.BreakLists;  }
+			if (configFileCommentType.Scope != null)
+				{  commentType.Scope = (CommentType.ScopeValue)configFileCommentType.Scope;  }
+			if (configFileCommentType.Flags.AllConfigurationProperties != 0)
+				{  commentType.Flags.AllConfigurationProperties = configFileCommentType.Flags.AllConfigurationProperties;  }
+			if (configFileCommentType.BreakLists != null)
+				{  commentType.BreakLists = (bool)configFileCommentType.BreakLists;  }
 				
 				
 			// Keywords
 			
-			List<string> keywords = configFileTopicType.Keywords;
+			List<string> keywords = configFileCommentType.Keywords;
 			
 			for (int i = 0; i < keywords.Count; i += 2)
 				{
 				if (keywords[i] != null && !ignoredKeywords.Contains(keywords[i]))
 					{
-					singularKeywords.Add(keywords[i], topicType);
+					singularKeywords.Add(keywords[i], commentType);
 					pluralKeywords.Remove(keywords[i]);
 					}
 				if (keywords[i+1] != null && !ignoredKeywords.Contains(keywords[i+1]))
 					{
 					singularKeywords.Remove(keywords[i+1]);
-					pluralKeywords.Add(keywords[i+1], topicType);
+					pluralKeywords.Add(keywords[i+1], commentType);
 					}
 				}
 				
@@ -679,32 +679,32 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 		/* Function: Start_FixCapitalization
 		 * 
-		 * A helper function used only by <Start()> which cleans up the capitalization of <ConfigFileTopicTypes> such as by 
-		 * making Alter Topic Type and Index With entries match the original type.
+		 * A helper function used only by <Start()> which cleans up the capitalization of <ConfigFileCommentTypes> such as by 
+		 * making Alter Comment Type and Index With entries match the original type.
 		 * 
-		 * Assumes <topicTypse> is already filled in and valid.
+		 * Assumes <commentTypes> is already filled in and valid.
 		 */
-		public void Start_FixCapitalization (List<ConfigFileTopicType> configFileTopicTypes)
+		public void Start_FixCapitalization (List<ConfigFileCommentType> configFileCommentTypes)
 			{
-			for (int i = 0; i < configFileTopicTypes.Count; i++)
+			for (int i = 0; i < configFileCommentTypes.Count; i++)
 				{
-				if (configFileTopicTypes[i].AlterType == true)
+				if (configFileCommentTypes[i].AlterType == true)
 					{
-					configFileTopicTypes[i].FixNameCapitalization( topicTypes[ configFileTopicTypes[i].Name ].Name );
+					configFileCommentTypes[i].FixNameCapitalization( commentTypes[ configFileCommentTypes[i].Name ].Name );
 					}
 					
-				if (configFileTopicTypes[i].Index == TopicType.IndexValue.IndexWith)
+				if (configFileCommentTypes[i].Index == CommentType.IndexValue.IndexWith)
 					{
-					configFileTopicTypes[i].IndexWith = topicTypes[ configFileTopicTypes[i].IndexWith ].Name;
+					configFileCommentTypes[i].IndexWith = commentTypes[ configFileCommentTypes[i].IndexWith ].Name;
 					}
 				}
 			}
 
 
 		/* Function: FromKeyword
-		 * Returns the <TopicType> associated with the passed keyword, or null if none.
+		 * Returns the <CommentType> associated with the passed keyword, or null if none.
 		 */
-		public TopicType FromKeyword (string keyword)
+		public CommentType FromKeyword (string keyword)
 			{
 			bool ignore;
 			return FromKeyword(keyword, out ignore);
@@ -712,12 +712,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 
 		/* Function: FromKeyword
-		 * Returns the <TopicType> associated with the passed keyword, or null if none.  Also returns whether it was singular
+		 * Returns the <CommentType> associated with the passed keyword, or null if none.  Also returns whether it was singular
 		 * or plural.
 		 */
-		public TopicType FromKeyword (string keyword, out bool plural)
+		public CommentType FromKeyword (string keyword, out bool plural)
 			{
-			TopicType result = singularKeywords[keyword];
+			CommentType result = singularKeywords[keyword];
 			
 			if (result != null)
 				{
@@ -738,30 +738,30 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Function: FromName
-		 * Returns the <TopicType> associated with the passed name, or null if none.
+		 * Returns the <CommentType> associated with the passed name, or null if none.
 		 */
-		public TopicType FromName (string name)
+		public CommentType FromName (string name)
 			{
-			return topicTypes[name];
+			return commentTypes[name];
 			}
 			
 		/* Function: FromID
-		 * Returns the <TopicType> associated with the passed ID, or null if none.
+		 * Returns the <CommentType> associated with the passed ID, or null if none.
 		 */
-		public TopicType FromID (int id)
+		public CommentType FromID (int id)
 			{
-			return topicTypes[id];
+			return commentTypes[id];
 			}
 			
 		/* Function: IDFromKeyword
-		 * Returns the topic type ID associated with the passed keyword, or zero if none.
+		 * Returns the comment type ID associated with the passed keyword, or zero if none.
 		 */
 		public int IDFromKeyword (string keyword)
 			{
-			TopicType topicType = FromKeyword(keyword);
+			CommentType commentType = FromKeyword(keyword);
 
-			if (topicType != null)
-				{  return topicType.ID;  }
+			if (commentType != null)
+				{  return commentType.ID;  }
 			else
 				{  return 0;  }
 			}
@@ -788,13 +788,13 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 
 
-		/* Property: GroupTopicTypeID
+		/* Property: GroupCommentTypeID
 		 * The ID of the "group" keyword, or zero if it isn't defined.
 		 */
-		public int GroupTopicTypeID
+		public int GroupCommentTypeID
 			{
 			get
-				{  return groupTopicTypeID;  }
+				{  return groupCommentTypeID;  }
 			}
 			
 
@@ -803,10 +803,10 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		// __________________________________________________________________________
 
 
-		/* var: topicTypes
-		 * Manages all the <TopicType>s by their case-insensitive name or ID number.
+		/* var: commentTypes
+		 * Manages all the <CommentTypes> by their case-insensitive name or ID number.
 		 */
-		protected IDObjects.Manager<TopicType> topicTypes;
+		protected IDObjects.Manager<CommentType> commentTypes;
 		
 		
 		/* var: tags
@@ -816,21 +816,21 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 		
 		/* var: singularKeywords
-		 * A <StringTable> mapping the singular keywords to the <TopicType>s they represent.
+		 * A <StringTable> mapping the singular keywords to the <CommentTypes> they represent.
 		 */
-		protected StringTable<TopicType> singularKeywords;
+		protected StringTable<CommentType> singularKeywords;
 		
 		
 		/* var: pluralKeywords
-		 * A <StringTable> mapping the plural keywords to the <TopicType>s they represent.
+		 * A <StringTable> mapping the plural keywords to the <CommentTypes>s they represent.
 		 */
-		protected StringTable<TopicType> pluralKeywords;
+		protected StringTable<CommentType> pluralKeywords;
 
 		
-		/* var: groupTopicTypeID
+		/* var: groupCommentTypeID
 		 * The ID of the "group" keyword, or zero if it's not defined.
 		 */
-		protected int groupTopicTypeID;
+		protected int groupCommentTypeID;
 
 		}
 	}

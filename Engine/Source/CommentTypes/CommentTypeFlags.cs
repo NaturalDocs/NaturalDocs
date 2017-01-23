@@ -1,12 +1,12 @@
 ﻿/* 
- * Struct: CodeClear.NaturalDocs.Engine.TopicTypes.TopicTypeFlags
+ * Struct: CodeClear.NaturalDocs.Engine.CommentTypes.CommentTypeFlags
  * ____________________________________________________________________________
  * 
- * A class encapsulating the properties and validation logic behind topic type flags, since it must be shared between
- * <TopicType> and <ConfigFileTopicType>.
+ * A class encapsulating the properties and validation logic behind comment type flags, since it must be shared between
+ * <CommentType> and <ConfigFileCommentType>.
  * 
  * When adding this to another class you should make it a public variable instead of a property.  Properties and structs do 
- * not behave predictably when used together.  If you were to use a property and write "topicType.Flags.Code = true", the
+ * not behave predictably when used together.  If you were to use a property and write "commentType.Flags.Code = true", the
  * property will return a copy, you'd set Code to true on the copy, and then it would never be written back to the original
  * location.  To make it work you'd have to make a copy, edit it in a temporary variable, and then overwrite the original in 
  * a separate step.  Using a public variable instead lets it behave more predictably.
@@ -16,7 +16,7 @@
  * 
  *		- Set individual flags and/or use <AllConfigurationProperties> to load and save a binary representation.
  *		- After reading a "Flags:" line from a user editable config file, call <Validate()> with strict mode off.
- *		- After reading a full "Topic Type:" section from a user editable config file, call <AddImpliedFlags()> and then
+ *		- After reading a full "Comment Type:" section from a user editable config file, call <AddImpliedFlags()> and then
  *		  <Validate()> again with strict mode on.
  *		- You MUST call <Validate()> with strict mode on at least once before starting the engine.
  *		
@@ -30,7 +30,7 @@
  * Variable Type:
  * 
  *		- Implies Code.
- *		- Used to determine which topics can be used for links in prototypes.
+ *		- Used to determine which comments can be used for links in prototypes.
  *		
  * Class Hierarchy and Database Hierarchy:
  * 
@@ -39,7 +39,7 @@
  *		- Implies Code.
  *		- Class Hierarchy implies Variable Type.
  *		- Used to determine which classes appear in the respective menus.
- *		- Used to determine which topics can be targets of and have their prototypes seached for class parent links.
+ *		- Used to determine which comments can be targets of and have their prototypes seached for class parent links.
  *		
  * Enum:
  * 
@@ -56,9 +56,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.TopicTypes
+namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public struct TopicTypeFlags
+	public struct CommentTypeFlags
 		{
 		
 		// Group: Types
@@ -69,24 +69,24 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * 
 		 * Configuration Properties:
 		 * 
-		 *		Code - Set if the topic type describes a code element.
-		 *		File - Set if the topic type describes a file.
-		 *		Documentation - Set if the topic type is for standalone documentation.
+		 *		Code - Set if the comment type describes a code element.
+		 *		File - Set if the comment type describes a file.
+		 *		Documentation - Set if the comment type is for standalone documentation.
 		 * 
-		 *		VariableType - Set if the topic type can be used as a type for a variable.
+		 *		VariableType - Set if the comment type can be used as a type for a variable.
 		 * 
-		 *		ClassHierarchy - Set if the topic type should appear in the class hierarchy.
-		 *		DatabaseHierarchy - Set if the topic type should appear in the database hierarchy.
+		 *		ClassHierarchy - Set if the comment type should appear in the class hierarchy.
+		 *		DatabaseHierarchy - Set if the comment type should appear in the database hierarchy.
 		 * 
-		 *		Enum - Set if the topic type describes an enum.
+		 *		Enum - Set if the comment type describes an enum.
 		 *		
 		 *		ConfigurationPropertiesMask - A combination of all the configuration properties so they can be filtered en masse.
 		 *		
 		 * Location Properties:
 		 * 
-		 *		InSystemFile - Set if the topic type was defined in the system config file <Topics.txt>.
-		 *		InProjectFile - Set if the topic type was defined in the project config file <Topics.txt>.  Not set for Alter TopicType.
-		 *		InBinaryFile - Set if the topic type appears in <Topics.nd>.
+		 *		InSystemFile - Set if the comment type was defined in the system config file <Topics.txt>.
+		 *		InProjectFile - Set if the comment type was defined in the project config file <Topics.txt>.  Not set for Alter Comment Type.
+		 *		InBinaryFile - Set if the comment type appears in <Topics.nd>.
 		 * 
 		 *		InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
 		 *		
@@ -131,12 +131,12 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * The error messages are retrieved from <Locale> using the module passed to the function and these identifiers.  You
 		 * must implement them all in the translation file.
 		 * 
-		 * - TopicTypeFlags.CantCombine(a,b)
-		 * - TopicTypeFlags.CantCombine(a,b,c)
-		 * - TopicTypeFlags.MustDefineOneOf(a,b)
-		 * - TopicTypeFlags.MustDefineOneOf(a,b,c)
-		 * - TopicTypeFlags.MustDefineAWithB(a,b)
-		 * - TopicTypeFlags.FlagRequiresScope(flag,scope)
+		 * - CommentTypeFlags.CantCombine(a,b)
+		 * - CommentTypeFlags.CantCombine(a,b,c)
+		 * - CommentTypeFlags.MustDefineOneOf(a,b)
+		 * - CommentTypeFlags.MustDefineOneOf(a,b,c)
+		 * - CommentTypeFlags.MustDefineAWithB(a,b)
+		 * - CommentTypeFlags.FlagRequiresScope(flag,scope)
 		 * 
 		 * If strict is false it only tests for contradictions, such as defining both <Code> and <File>.  You can use this for testing
 		 * validity before the scope is set.  You should also use this to test validity on what the user entered before calling 
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 		 * <AddImpliedFlags()> should be called beforehand.
 		 * 
 		 */
-		public List<string> Validate (bool strict, TopicType.ScopeValue? scope, string localeModule)
+		public List<string> Validate (bool strict, CommentType.ScopeValue? scope, string localeModule)
 			{
 			List<string> errors = new List<string>();
 
@@ -207,7 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				if (Documentation)
 					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"));  }
 				if ( (scope == null && strict) || 
-					  (scope != null && (TopicType.ScopeValue)scope != TopicType.ScopeValue.Start) )
+					  (scope != null && (CommentType.ScopeValue)scope != CommentType.ScopeValue.Start) )
 					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.FlagRequiresScope(flag,scope)", "Class Hierarchy", "Start"));  }
 				}
 			else if (DatabaseHierarchy)
@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 				if (Documentation)
 					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Database Hierarchy"));  }
 				if ( (scope == null && strict) || 
-					  (scope != null && (TopicType.ScopeValue)scope != TopicType.ScopeValue.Start) )
+					  (scope != null && (CommentType.ScopeValue)scope != CommentType.ScopeValue.Start) )
 					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.FlagRequiresScope(flag,scope)", "Database Hierarchy", "Start"));  }
 				}
 
@@ -286,7 +286,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: Code
-		 * Whether the topic type describes a code element.
+		 * Whether the comment type describes a code element.
 		 */
 		public bool Code
 			{
@@ -302,7 +302,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: File
-		 * Whether the topic type describes a file.
+		 * Whether the comment type describes a file.
 		 */
 		public bool File
 			{
@@ -318,7 +318,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: Documentation
-		 * Whether the topic type is used for standalone documentation.
+		 * Whether the comment type is used for standalone documentation.
 		 */
 		public bool Documentation
 			{
@@ -334,7 +334,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: VariableType
-		 * Whether the topic type describes a code element that can be used as the type of a variable.
+		 * Whether the comment type describes a code element that can be used as the type of a variable.
 		 */
 		public bool VariableType
 			{
@@ -350,7 +350,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: ClassHierarchy
-		 * Whether the topic type is part of the class hierarchy.
+		 * Whether the comment type is part of the class hierarchy.
 		 */
 		public bool ClassHierarchy
 			{
@@ -366,7 +366,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: DatabaseHierarchy
-		 * Whether the topic type is part of the database hierarchy.
+		 * Whether the comment type is part of the database hierarchy.
 		 */
 		public bool DatabaseHierarchy
 			{
@@ -382,7 +382,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 
 		/* Property: Enum
-		 * Whether the topic type describes an enum.
+		 * Whether the comment type describes an enum.
 		 */
 		public bool Enum
 			{
@@ -404,7 +404,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 
 
 		/* Property: InSystemFile
-		 * Whether this topic type was defined in the system <Topics.txt> file.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in the system <Topics.txt> file.  Does not affect equality comparisons.
 		 */
 		public bool InSystemFile
 			{
@@ -420,7 +420,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: InProjectFile
-		 * Whether this topic type was defined in the project <Topics.txt> file.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in the project <Topics.txt> file.  Does not affect equality comparisons.
 		 */
 		public bool InProjectFile
 			{
@@ -436,7 +436,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: InConfigFiles
-		 * Whether this topic type was defined in either of the <Topics.txt> files.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in either of the <Topics.txt> files.  Does not affect equality comparisons.
 		 */
 		public bool InConfigFiles
 			{
@@ -445,7 +445,7 @@ namespace CodeClear.NaturalDocs.Engine.TopicTypes
 			}
 			
 		/* Property: InBinaryFile
-		 * Whether this topic type appears in <Topics.nd>.  Does not affect equality comparisons.
+		 * Whether this comment type appears in <Topics.nd>.  Does not affect equality comparisons.
 		 */
 		public bool InBinaryFile
 			{

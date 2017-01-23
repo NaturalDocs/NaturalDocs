@@ -229,20 +229,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 			
 		/* Function: GetPrototypeEnderStrings
-		 * Returns the prototype ender strings for the passed topic type, or null if there are none.  If line breaks are supported they
+		 * Returns the prototype ender strings for the passed comment type, or null if there are none.  If line breaks are supported they
 		 * will appear in this list as "\n".
 		 */
-		public string[] GetPrototypeEnderStrings (string topicTypeName)
+		public string[] GetPrototypeEnderStrings (string commentTypeName)
 			{
 			if (prototypeEndersList == null)
 				{  return null;  }
 			else
 				{  
-				string lcTopicTypeName = topicTypeName.ToLower();
+				string lcCommentTypeName = commentTypeName.ToLower();
 				
 				for (int i = 0; i < prototypeEndersList.Count; i++)
 					{
-					if (lcTopicTypeName == prototypeEndersList[i].TopicTypeName.ToLower())
+					if (lcCommentTypeName == prototypeEndersList[i].CommentTypeName.ToLower())
 						{  return prototypeEndersList[i].EnderStrings;  }
 					}
 					
@@ -251,10 +251,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 			
 		/* Function: SetPrototypeEnders
-		 * Sets the prototype ender strings for the passed topic type.  If line breaks are supported they should be included in the
+		 * Sets the prototype ender strings for the passed comment type.  If line breaks are supported they should be included in the
 		 * array as "\n".
 		 */
-		public void SetPrototypeEnderStrings (string topicTypeName, string[] prototypeEnderStrings)
+		public void SetPrototypeEnderStrings (string commentTypeName, string[] prototypeEnderStrings)
 			{
 			if (prototypeEnderStrings != null && prototypeEnderStrings.Length == 0)
 				{  prototypeEnderStrings = null;  }
@@ -264,12 +264,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (prototypeEndersList == null)
 				{  prototypeEndersList = new List<ConfigFilePrototypeEnders>();  }
 					
-			string lcTopicTypeName = topicTypeName.ToLower();
+			string lcCommentTypeName = commentTypeName.ToLower();
 			bool found = false;
 				
 			for (int i = 0; i < prototypeEndersList.Count; i++)
 				{
-				if (lcTopicTypeName == prototypeEndersList[i].TopicTypeName.ToLower())
+				if (lcCommentTypeName == prototypeEndersList[i].CommentTypeName.ToLower())
 					{
 					if (prototypeEnderStrings == null)
 						{  prototypeEndersList.RemoveAt(i);  }
@@ -284,7 +284,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (found == false && prototypeEnderStrings != null)
 				{  
 				ConfigFilePrototypeEnders prototypeEnders = new ConfigFilePrototypeEnders();
-				prototypeEnders.TopicTypeName = topicTypeName;
+				prototypeEnders.CommentTypeName = commentTypeName;
 				prototypeEnders.EnderStrings = prototypeEnderStrings;
 				prototypeEndersList.Add(prototypeEnders);  
 				}
@@ -292,10 +292,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  prototypeEndersList = null;  }
 			}
 			
-		/* Function: GetTopicTypeNamesWithPrototypeEnders
-		 * Returns an array of all the topic types that have prototype enders defined, or null if none.
+		/* Function: GetCommentTypeNamesWithPrototypeEnders
+		 * Returns an array of all the comment types that have prototype enders defined, or null if none.
 		 */
-		public string[] GetTopicTypeNamesWithPrototypeEnders()
+		public string[] GetCommentTypeNamesWithPrototypeEnders()
 			{
 			if (prototypeEndersList == null)
 				{  return null;  }
@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				string[] result = new string[ prototypeEndersList.Count ];
 				
 				for (int i = 0; i < prototypeEndersList.Count; i++)
-					{  result[i] = prototypeEndersList[i].TopicTypeName;  }
+					{  result[i] = prototypeEndersList[i].CommentTypeName;  }
 				
 				return result;  
 				}
@@ -347,25 +347,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 			
 		
-		/* Function: FixPrototypeEnderTopicTypeCapitalization
-		 * Replaces the list of topic types with prototype enders with versions that have alternate capitalization but are otherwise
-		 * equal.  You pass to it an array of names in the same order as returned by <GetTopicTypeNamesWithPrototypeEnders()>.
+		/* Function: FixPrototypeEnderCommentTypeCapitalization
+		 * Replaces the list of comment types with prototype enders with versions that have alternate capitalization but are otherwise
+		 * equal.  You pass to it an array of names in the same order as returned by <GetCommentTypeNamesWithPrototypeEnders()>.
 		 */
-		public void FixPrototypeEnderTopicTypeCapitalization (string[] newTopicTypeNames)
+		public void FixPrototypeEnderCommentTypeCapitalization (string[] newCommentTypeNames)
 			{
-			if (newTopicTypeNames.Length != prototypeEndersList.Count)
+			if (newCommentTypeNames.Length != prototypeEndersList.Count)
 				{  throw new InvalidOperationException();  }
 				
 			for (int i = 0; i < prototypeEndersList.Count; i++)
 				{
-				if (string.Compare(newTopicTypeNames[i], prototypeEndersList[i].TopicTypeName, true) != 0)
+				if (string.Compare(newCommentTypeNames[i], prototypeEndersList[i].CommentTypeName, true) != 0)
 					{  
-					throw new Engine.Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEndersList[i].TopicTypeName,
-																														newTopicTypeNames[i],
-																														"ConfigFileLanguage topic type");  
+					throw new Engine.Exceptions.NameChangeDifferedInMoreThanCapitalization(prototypeEndersList[i].CommentTypeName,
+																														newCommentTypeNames[i],
+																														"ConfigFileLanguage comment type");  
 					}
 					
-				prototypeEndersList[i].TopicTypeName = newTopicTypeNames[i];
+				prototypeEndersList[i].CommentTypeName = newCommentTypeNames[i];
 				}
 			}
 			
@@ -440,7 +440,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected string memberOperator;
 		
 		/* object: prototypeEndersList
-		 * A list of <ConfigFilePrototypeEnders> mapping topic type strings to arrays of ender strings.  Line breaks are 
+		 * A list of <ConfigFilePrototypeEnders> mapping comment type strings to arrays of ender strings.  Line breaks are 
 		 * represented with "\n".  Will be null if not set.
 		 */
 		protected List<ConfigFilePrototypeEnders> prototypeEndersList;
@@ -470,11 +470,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			public ConfigFilePrototypeEnders()
 				{
-				TopicTypeName = null;
+				CommentTypeName = null;
 				EnderStrings = null;
 				}
 			
-			public string TopicTypeName;
+			public string CommentTypeName;
 
 			/* var: EnderStrings
 			 * An array of ender strings which may be symbols and/or "\n".
