@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Topics_txt
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Comments_txt
  * ____________________________________________________________________________
  * 
- * A class to handle loading and saving <Topics.txt>.
+ * A class to handle loading and saving <Comments.txt> and Topics.txt.
  * 
  * 
  * Threading: Not Thread Safe
@@ -10,7 +10,7 @@
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  *		
  * 
- * File: Topics.txt
+ * File: Comments.txt
  * 
  *		The configuration file that defines or overrides the comment type definitions for Natural Docs.  One version sits in Natural Docs'
  *		configuration folder, and another in the project configuration folder to add comment types or override their behavior.
@@ -148,6 +148,7 @@
  * 
  *		2.0:
  *		
+ *			- Name changed from Topics.txt to Comments.txt.
  *			- Added Display Name, Plural Display Name, synonyms, and their "from Locale" variants.
  *			- Added Simple Identifier and Flags.
  *			- All values now support Unicode characters, except for Simple Identifier.
@@ -175,16 +176,16 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class Topics_txt
+	public class Comments_txt
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Topics_txt
+		/* Constructor: Comments_txt
 		 */
-		public Topics_txt ()
+		public Comments_txt ()
 			{
 			yesRegex = new Regex.Config.Yes();
 			noRegex = new Regex.Config.No();
@@ -284,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							if (keywordsArray.Length > 2)
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.NoMoreThanTwoKeywordsOnALine")
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.NoMoreThanTwoKeywordsOnALine")
 									);
 								}
 								
@@ -294,7 +295,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 								if (bannedChar != -1)
 									{
 									file.AddError( 
-										Locale.Get("NaturalDocs.Engine", "Topics.txt.KeywordsCannotContain(char)", keywordsArray[i][bannedChar]) 
+										Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keywordsArray[i][bannedChar]) 
 										);
 									// Continue parsing
 									}
@@ -321,7 +322,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							if (value.IndexOf(',') != -1)
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.NoMoreThanOneTagOnALine")
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.NoMoreThanOneTagOnALine")
 									);
 								}
 								
@@ -329,7 +330,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							if (bannedChar != -1)
 								{
 								file.AddError( 
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsCannotContain(char)", value[bannedChar]) 
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.TagsCannotContain(char)", value[bannedChar]) 
 									);
 								// Continue parsing
 								}
@@ -376,7 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 								if (bannedChar != -1)
 									{
 									file.AddError( 
-										Locale.Get("NaturalDocs.Engine", "Topics.txt.KeywordsCannotContain(char)", ignoredKeyword[bannedChar]) 
+										Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", ignoredKeyword[bannedChar]) 
 										);
 									// Continue parsing
 									}
@@ -409,7 +410,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 								if (bannedChar != -1)
 									{
 									file.AddError( 
-										Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsCannotContain(char)", tag[bannedChar]) 
+										Locale.Get("NaturalDocs.Engine", "Comments.txt.TagsCannotContain(char)", tag[bannedChar]) 
 										);
 									// Continue parsing
 									}
@@ -429,7 +430,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						if (fileCommentTypeNames.ContainsKey(value))
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", value)
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypeAlreadyExists(name)", value)
 								);
 							
 							// Continue parsing.  We'll throw this into the existing type even though it shouldn't be overwriting
@@ -484,7 +485,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						else if (currentCommentType.DisplayNameFromLocale != null)
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name", "Display Name from Locale")
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name", "Display Name from Locale")
 								);
 							}
 						else
@@ -499,7 +500,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						else if (currentCommentType.PluralDisplayNameFromLocale != null)
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name", "Plural Display Name from Locale")
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name", "Plural Display Name from Locale")
 								);
 							}
 						else
@@ -514,7 +515,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						else if (currentCommentType.DisplayName != null)
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name from Locale", "Display Name")
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CannotDefineXWhenYIsDefined(x,y)", "Display Name from Locale", "Display Name")
 								);
 							}
 						else
@@ -529,7 +530,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						else if (currentCommentType.PluralDisplayName != null)
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name from Locale", "Plural Display Name")
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CannotDefineXWhenYIsDefined(x,y)", "Plural Display Name from Locale", "Plural Display Name")
 								);
 							}
 						else
@@ -550,7 +551,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						else if (nonASCIILettersRegex.IsMatch(value))
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name)", value)
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name)", value)
 								);
 							}
 						else
@@ -588,7 +589,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							else
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Index", value)
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Index", value)
 									);
 								}
 							}
@@ -639,7 +640,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							else
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Scope", value)
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Scope", value)
 									);
 								}
 							}
@@ -681,7 +682,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 									else if (string.IsNullOrEmpty(flag) == false)
 										{  
 										file.AddError(
-											Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Flags", flag)
+											Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", flag)
 											);
 										}
 									}
@@ -721,7 +722,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							else
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Class Hierarchy", value)
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Class Hierarchy", value)
 									);
 								}
 							}
@@ -751,7 +752,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							else
 								{
 								file.AddError(
-									Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedValue(keyword, value)", "Break Lists", value)
+									Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Break Lists", value)
 									);
 								}
 							}
@@ -780,7 +781,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 									if (bannedChar != -1)
 										{
 										file.AddError( 
-											Locale.Get("NaturalDocs.Engine", "Topics.txt.KeywordsCannotContain(char)", keyword[bannedChar]) 
+											Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordsCannotContain(char)", keyword[bannedChar]) 
 											);
 										// Continue parsing
 										}
@@ -814,7 +815,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					else
 						{
 						file.AddError(
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.UnrecognizedKeyword(keyword)", identifier)
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedKeyword(keyword)", identifier)
 							);
 						}
 										
@@ -862,7 +863,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		private void NeedsCommentTypeError (ConfigFile file, string identifier)
 			{
 			file.AddError(
-				Locale.Get("NaturalDocs.Engine", "Topics.txt.KeywordMustBeInTopicType(keyword)", identifier)
+				Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordMustBeInTopicType(keyword)", identifier)
 				);
 			}
 
@@ -904,7 +905,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			
 			output.AppendLine("Format: " + Engine.Instance.VersionString);
 			output.AppendLine();
-			output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt." + projectSystem + "Header.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectSystem + "Header.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 			
@@ -913,7 +914,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			
 			if (ignoredKeywords.Count > 0)
 				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.IgnoredKeywordsHeader.multiline") );
+				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsHeader.multiline") );
 				output.AppendLine();
 				output.AppendLine("Ignore Keywords:");
 				AppendKeywordList(output, ignoredKeywords, "   ");
@@ -922,9 +923,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 			else if (isProjectFile)
 				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.IgnoredKeywordsHeader.multiline") );
+				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsHeader.multiline") );
 				output.AppendLine();
-				output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.IgnoredKeywordsReference.multiline") );
+				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsReference.multiline") );
 				output.AppendLine();
 				output.AppendLine();
 				}
@@ -933,7 +934,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			
 			// Tags
 			
-			//output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsHeader.multiline") );
+			//output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.TagsHeader.multiline") );
 			//output.AppendLine();
 
 			if (tags.Count > 0)
@@ -944,7 +945,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 			//else
 				//{
-				//output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TagsReference.multiline") );
+				//output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.TagsReference.multiline") );
 				//}
 
 			//output.AppendLine();
@@ -953,10 +954,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				
 			// Comment Types
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypesHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypesHeader.multiline") );
 
 			if (commentTypes.Count > 1)
-				{  output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt.DeferredTopicTypesReference.multiline") );  }
+				{  output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredTopicTypesReference.multiline") );  }
 				
 			output.AppendLine();
 
@@ -1085,7 +1086,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				output.AppendLine();
 				}
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "Topics.txt." + projectSystem + "TopicTypesReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectSystem + "TopicTypesReference.multiline") );
 				
 				
 			//

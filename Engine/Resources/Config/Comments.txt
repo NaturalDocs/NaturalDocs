@@ -13,8 +13,8 @@
 
 Topic Type: Class
 
-   Display Name from Locale: Topics.txt.Class.DisplayName
-   Plural Display Name from Locale: Topics.txt.Class.PluralDisplayName
+   Display Name from Locale: Comments.txt.Class.DisplayName
+   Plural Display Name from Locale: Comments.txt.Class.PluralDisplayName
 
    Scope: Start
    Flags: Code, Variable Type, Class Hierarchy
@@ -27,8 +27,8 @@ Topic Type: Class
 
 Topic Type: Interface
 
-   Display Name from Locale: Topics.txt.Interface.DisplayName
-   Plural Display Name from Locale: Topics.txt.Interface.PluralDisplayName
+   Display Name from Locale: Comments.txt.Interface.DisplayName
+   Plural Display Name from Locale: Comments.txt.Interface.PluralDisplayName
 
    Scope: Start
    Flags: Code, Variable Type, Class Hierarchy
@@ -39,8 +39,8 @@ Topic Type: Interface
 
 Topic Type: Struct
 
-   Display Name from Locale: Topics.txt.Struct.DisplayName
-   Plural Display Name from Locale: Topics.txt.Struct.PluralDisplayName
+   Display Name from Locale: Comments.txt.Struct.DisplayName
+   Plural Display Name from Locale: Comments.txt.Struct.PluralDisplayName
 
    Scope: Start
    Flags: Code, Variable Type, Class Hierarchy
@@ -52,8 +52,8 @@ Topic Type: Struct
 
 Topic Type: Section
 
-   Display Name from Locale: Topics.txt.Section.DisplayName
-   Plural Display Name from Locale: Topics.txt.Section.PluralDisplayName
+   Display Name from Locale: Comments.txt.Section.DisplayName
+   Plural Display Name from Locale: Comments.txt.Section.PluralDisplayName
 
    Scope: End
    Flags: Documentation
@@ -65,8 +65,8 @@ Topic Type: Section
 
 Topic Type: Group
 
-   Display Name from Locale: Topics.txt.Group.DisplayName
-   Plural Display Name from Locale: Topics.txt.Group.PluralDisplayName
+   Display Name from Locale: Comments.txt.Group.DisplayName
+   Plural Display Name from Locale: Comments.txt.Group.PluralDisplayName
 
    Flags: Documentation
 
@@ -76,8 +76,8 @@ Topic Type: Group
 
 Topic Type: Information
 
-   Display Name from Locale: Topics.txt.Information.DisplayName
-   Plural Display Name from Locale: Topics.txt.Information.PluralDisplayName
+   Display Name from Locale: Comments.txt.Information.DisplayName
+   Plural Display Name from Locale: Comments.txt.Information.PluralDisplayName
 
    Flags: Documentation
 
@@ -88,8 +88,8 @@ Topic Type: Information
 
 Topic Type: File
 
-   Display Name from Locale: Topics.txt.File.DisplayName
-   Plural Display Name from Locale: Topics.txt.File.PluralDisplayName
+   Display Name from Locale: Comments.txt.File.DisplayName
+   Plural Display Name from Locale: Comments.txt.File.PluralDisplayName
 
    Scope: Always Global
    Flags: File
@@ -105,8 +105,8 @@ Topic Type: File
 
 Topic Type: Type
 
-   Display Name from Locale: Topics.txt.Type.DisplayName
-   Plural Display Name from Locale: Topics.txt.Type.PluralDisplayName
+   Display Name from Locale: Comments.txt.Type.DisplayName
+   Plural Display Name from Locale: Comments.txt.Type.PluralDisplayName
 
    Flags: Code, Variable Type
 
@@ -117,8 +117,8 @@ Topic Type: Type
 
 Topic Type: Enumeration
 
-   Display Name from Locale: Topics.txt.Enumeration.DisplayName
-   Plural Display Name from Locale: Topics.txt.Enumeration.PluralDisplayName
+   Display Name from Locale: Comments.txt.Enumeration.DisplayName
+   Plural Display Name from Locale: Comments.txt.Enumeration.PluralDisplayName
 
    Flags: Code, Variable Type, Enum
 
@@ -129,8 +129,8 @@ Topic Type: Enumeration
 
 Topic Type: Delegate
 
-   Display Name from Locale: Topics.txt.Delegate.DisplayName
-   Plural Display Name from Locale: Topics.txt.Delegate.PluralDisplayName
+   Display Name from Locale: Comments.txt.Delegate.DisplayName
+   Plural Display Name from Locale: Comments.txt.Delegate.PluralDisplayName
 
    Flags: Code, Variable Type
 
@@ -140,8 +140,8 @@ Topic Type: Delegate
 
 Topic Type: Function
 
-   Display Name from Locale: Topics.txt.Function.DisplayName
-   Plural Display Name from Locale: Topics.txt.Function.PluralDisplayName
+   Display Name from Locale: Comments.txt.Function.DisplayName
+   Plural Display Name from Locale: Comments.txt.Function.PluralDisplayName
 
    Flags: Code
 
@@ -161,8 +161,8 @@ Topic Type: Function
 
 Topic Type: Operator
 
-   Display Name from Locale: Topics.txt.Operator.DisplayName
-   Plural Display Name from Locale: Topics.txt.Operator.PluralDisplayName
+   Display Name from Locale: Comments.txt.Operator.DisplayName
+   Plural Display Name from Locale: Comments.txt.Operator.PluralDisplayName
 
    Flags: Code
 
@@ -172,8 +172,8 @@ Topic Type: Operator
 
 Topic Type: Macro
 
-   Display Name from Locale: Topics.txt.Macro.DisplayName
-   Plural Display Name from Locale: Topics.txt.Macro.PluralDisplayName
+   Display Name from Locale: Comments.txt.Macro.DisplayName
+   Plural Display Name from Locale: Comments.txt.Macro.PluralDisplayName
 
    Flags: Code
 
@@ -185,8 +185,8 @@ Topic Type: Macro
 
 Topic Type: Property
 
-   Display Name from Locale: Topics.txt.Property.DisplayName
-   Plural Display Name from Locale: Topics.txt.Property.PluralDisplayName
+   Display Name from Locale: Comments.txt.Property.DisplayName
+   Plural Display Name from Locale: Comments.txt.Property.PluralDisplayName
 
    Flags: Code
 
@@ -197,8 +197,8 @@ Topic Type: Property
 
 Topic Type: Event
 
-   Display Name from Locale: Topics.txt.Event.DisplayName
-   Plural Display Name from Locale: Topics.txt.Event.PluralDisplayName
+   Display Name from Locale: Comments.txt.Event.DisplayName
+   Plural Display Name from Locale: Comments.txt.Event.PluralDisplayName
 
    Flags: Code
 
@@ -208,8 +208,8 @@ Topic Type: Event
 
 Topic Type: Constant
 
-   Display Name from Locale: Topics.txt.Constant.DisplayName
-   Plural Display Name from Locale: Topics.txt.Constant.PluralDisplayName
+   Display Name from Locale: Comments.txt.Constant.DisplayName
+   Plural Display Name from Locale: Comments.txt.Constant.PluralDisplayName
 
    Flags: Code
 
@@ -220,8 +220,8 @@ Topic Type: Constant
 
 Topic Type: Variable
 
-   Display Name from Locale: Topics.txt.Variable.DisplayName
-   Plural Display Name from Locale: Topics.txt.Variable.PluralDisplayName
+   Display Name from Locale: Comments.txt.Variable.DisplayName
+   Plural Display Name from Locale: Comments.txt.Variable.PluralDisplayName
 
    Flags: Code
 
@@ -273,8 +273,8 @@ Topic Type: Variable
 
 Topic Type: Database
 
-   Display Name from Locale: Topics.txt.Database.DisplayName
-   Plural Display Name from Locale: Topics.txt.Database.PluralDisplayName
+   Display Name from Locale: Comments.txt.Database.DisplayName
+   Plural Display Name from Locale: Comments.txt.Database.PluralDisplayName
 
    Scope: Start
    Flags: Code, Database Hierarchy
@@ -286,8 +286,8 @@ Topic Type: Database
 
 Topic Type: Database Table
 
-   Display Name from Locale: Topics.txt.DatabaseTable.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseTable.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseTable.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseTable.PluralDisplayName
 
    Scope: Start
    Flags: Code, Database Hierarchy
@@ -301,8 +301,8 @@ Topic Type: Database Table
 
 Topic Type: Database Field
 
-   Display Name from Locale: Topics.txt.DatabaseField.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseField.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseField.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseField.PluralDisplayName
 
    Flags: Code
 
@@ -319,8 +319,8 @@ Topic Type: Database Field
 
 Topic Type: Database View
 
-   Display Name from Locale: Topics.txt.DatabaseView.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseView.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseView.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseView.PluralDisplayName
 
    Scope: Start
    Flags: Code, Database Hierarchy
@@ -334,8 +334,8 @@ Topic Type: Database View
 
 Topic Type: Database Index
 
-   Display Name from Locale: Topics.txt.DatabaseIndex.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseIndex.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseIndex.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseIndex.PluralDisplayName
 
    Flags: Code
 
@@ -360,8 +360,8 @@ Topic Type: Database Index
 
 Topic Type: Database Cursor
 
-   Display Name from Locale: Topics.txt.DatabaseCursor.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseCursor.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseCursor.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseCursor.PluralDisplayName
 
    Flags: Code
 
@@ -374,8 +374,8 @@ Topic Type: Database Cursor
 
 Topic Type: Database Trigger
 
-   Display Name from Locale: Topics.txt.DatabaseTrigger.DisplayName
-   Plural Display Name from Locale: Topics.txt.DatabaseTrigger.PluralDisplayName
+   Display Name from Locale: Comments.txt.DatabaseTrigger.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseTrigger.PluralDisplayName
 
    Flags: Code
 

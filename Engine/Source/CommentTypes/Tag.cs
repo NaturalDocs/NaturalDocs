@@ -23,8 +23,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		
 		/* Enum: TagFlags
 		 * 
-		 * InSystemFile - Set if the tag was defined in the system config file <Topics.txt>.
-		 * InProjectFile - Set if the tag was defined in the project config file <Topics.txt>.
+		 * InSystemFile - Set if the tag was defined in the system config file <Comments.txt>.
+		 * InProjectFile - Set if the tag was defined in the project config file <Comments.txt>.
 		 * 
 		 * InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
 		 * 
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		// __________________________________________________________________________
 			
 		/* Property: InSystemFile
-		 * Whether this tag was defined in the system <Topics.txt> file.
+		 * Whether this tag was defined in the system <Comments.txt> file.
 		 */
 		public bool InSystemFile
 			{
@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 			
 		/* Property: InProjectFile
-		 * Whether this tag was defined in the project <Topics.txt> file.
+		 * Whether this tag was defined in the project <Comments.txt> file.
 		 */
 		public bool InProjectFile
 			{
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 			
 		/* Property: InConfigFiles
-		 * Whether this tag was defined in either of the <Topics.txt> files.
+		 * Whether this tag was defined in either of the <Comments.txt> files.
 		 */
 		public bool InConfigFiles
 			{

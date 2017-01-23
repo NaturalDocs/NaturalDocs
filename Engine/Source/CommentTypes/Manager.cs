@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Manager
  * ____________________________________________________________________________
  * 
- * A module to handle <Topics.txt> and all the comment type settings within Natural Docs.
+ * A module to handle <Comments.txt> and all the comment type settings within Natural Docs.
  * 
  * 
  * Topic: Usage
@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		/* Function: Start
 		 * 
-		 * Loads and combines the two versions of <Topics.txt>, returning whether it was successful.  If there were any errors
+		 * Loads and combines the two versions of <Comments.txt>, returning whether it was successful.  If there were any errors
 		 * they will be added to errorList.
 		 * 
 		 * Dependencies:
@@ -86,8 +86,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			List<KeyValuePair<string, int>> binaryPluralKeywords;
 			List<string> binaryIgnoredKeywords;
 			
-			// The return value, which is whether we were able to successfully load and parse the system Topics.txt, and if it exists,
-			// the project Topics.txt.  The project Topics.txt not existing is not a failure.
+			// The return value, which is whether we were able to successfully load and parse the system Comments.txt, and if it exists,
+			// the project Comments.txt.  The project Comments.txt not existing is not a failure.
 			bool success = true;
 			
 			// Whether anything has changed since the last run, as determined by Comments.nd.  If Topics.nd doesn't exist or is corrupt,
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					foreach (CommentType binaryCommentType in binaryCommentTypes)
 						{
 						// We don't add the binary comment type itself because we only want those for comparison purposes.  We want 
-						// the types in commentTypes to be at their default values because the Topics.txt versions will only set some attributes, 
+						// the types in commentTypes to be at their default values because the Comments.txt versions will only set some attributes, 
 						// not all, and we don't want the unset attributes influenced by the binary versions.
 						CommentType newCommentType = new CommentType(binaryCommentType.Name);
 						newCommentType.ID = binaryCommentType.ID;
@@ -162,10 +162,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 
 			
-			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Topics.txt";
-			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Topics.txt";
+			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Comments.txt";
+			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Comments.txt";
+			Path oldProjectFile = EngineInstance.Config.ProjectConfigFolder + "/Topics.txt";
 
-			Topics_txt commentsTxtParser = new Topics_txt();
+			Comments_txt commentsTxtParser = new Comments_txt();
 
 			
 			// Load the files.
@@ -179,6 +180,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (System.IO.File.Exists(projectFile))
 				{
 				if (!commentsTxtParser.Load( projectFile, out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
+					{  success = false;  }
+				}
+			else if (System.IO.File.Exists(oldProjectFile))
+				{
+				if (!commentsTxtParser.Load( oldProjectFile, out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
 					{  success = false;  }
 				}
 			else
@@ -392,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 								}
 
 							errorList.Add( 
-								Locale.Get("NaturalDocs.Engine", "Topics.txt.CircularDependencyInIndexWith(list)", repeatMessage),
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CircularDependencyInIndexWith(list)", repeatMessage),
 								errorMessageFile, errorMessageLineNumber 
 								);
 															
@@ -551,7 +557,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				     commentTypes[configFileCommentType.Name].Flags.InConfigFiles == false )
 					{
 					errorList.Add( 
-						Locale.Get("NaturalDocs.Engine", "Topics.txt.AlteredTopicTypeDoesntExist(name)", configFileCommentType.Name),
+						Locale.Get("NaturalDocs.Engine", "Comments.txt.AlteredTopicTypeDoesntExist(name)", configFileCommentType.Name),
 						sourceFile, configFileCommentType.LineNumber 
 						);
 						
@@ -567,7 +573,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				    if (commentTypes[configFileCommentType.Name].Flags.InConfigFiles == true)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.TopicTypeAlreadyExists(name)", configFileCommentType.Name),
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypeAlreadyExists(name)", configFileCommentType.Name),
 							sourceFile, configFileCommentType.LineNumber 
 							);
 							
@@ -632,7 +638,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					if (indexWithCommentType == null)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Topics.txt.IndexWithTopicTypeDoesntExist(name)", configFileCommentType.IndexWith),
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.IndexWithTopicTypeDoesntExist(name)", configFileCommentType.IndexWith),
 							sourceFile, configFileCommentType.LineNumber 
 							);
 							

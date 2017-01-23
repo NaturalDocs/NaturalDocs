@@ -233,7 +233,7 @@
     <Compile Include="Source\Tokenization\Tokenizer.cs" />
     <Compile Include="Source\Tokenization\TokenTypes.cs" />
     <Compile Include="Source\CommentTypes\Comments_nd.cs" />
-    <Compile Include="Source\CommentTypes\Topics_txt.cs" />
+    <Compile Include="Source\CommentTypes\Comments_txt.cs" />
     <Compile Include="Source\Topics\Topic.cs" />
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
@@ -266,7 +266,7 @@
     <Content Include="Architecture\JavaScript and Styles\Substitutions.txt" />
     <Content Include="Resources\Config\Languages.txt" />
     <Content Include="Resources\Config\Parser.txt" />
-    <Content Include="Resources\Config\Topics.txt" />
+    <Content Include="Resources\Config\Comments.txt" />
     <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
     <Content Include="Source\Languages\Parsers\Perl Notes.txt" />

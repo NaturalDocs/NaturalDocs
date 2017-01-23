@@ -291,10 +291,10 @@ namespace CodeClear.NaturalDocs.CLI
 													errorList, true, false);
 				}
 
-			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Topics.txt") == false)
+			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Comments.txt") == false)
 				{
-				Engine.CommentTypes.Topics_txt topicsTxtParser = new Engine.CommentTypes.Topics_txt();
-				topicsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Topics.txt",
+				Engine.CommentTypes.Comments_txt commentsTxtParser = new Engine.CommentTypes.Comments_txt();
+				commentsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Comments.txt",
 												new List<Engine.CommentTypes.ConfigFileCommentType>(), new List<string>(), new List<string>(),
 												errorList, true, false);
 				}

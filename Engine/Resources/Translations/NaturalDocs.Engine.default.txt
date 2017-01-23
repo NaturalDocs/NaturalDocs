@@ -334,72 +334,72 @@ Project.txt.AutoGroupSyntax.multiline {{{
 
 
 #
-# Topics.txt
+# Comments.txt
 # _____________________________________________________________________________
 
 
-Topics.txt.Information.DisplayName: Information
-Topics.txt.Information.PluralDisplayName: Information
-Topics.txt.Class.DisplayName: Class
-Topics.txt.Class.PluralDisplayName: Classes
-Topics.txt.Interface.DisplayName: Interface
-Topics.txt.Interface.PluralDisplayName: Interfaces
-Topics.txt.Struct.DisplayName: Struct
-Topics.txt.Struct.PluralDisplayName: Structs
-Topics.txt.Section.DisplayName: Section
-Topics.txt.Section.PluralDisplayName: Sections
-Topics.txt.File.DisplayName: File
-Topics.txt.File.PluralDisplayName: Files
-Topics.txt.Group.DisplayName: Group
-Topics.txt.Group.PluralDisplayName: Groups
-Topics.txt.Function.DisplayName: Function
-Topics.txt.Function.PluralDisplayName: Functions
-Topics.txt.Operator.DisplayName: Operator
-Topics.txt.Operator.PluralDisplayName: Operators
-Topics.txt.Variable.DisplayName: Variable
-Topics.txt.Variable.PluralDisplayName: Variables
-Topics.txt.Property.DisplayName: Property
-Topics.txt.Property.PluralDisplayName: Properties
-Topics.txt.Type.DisplayName: Type
-Topics.txt.Type.PluralDisplayName: Types
-Topics.txt.Constant.DisplayName: Constant
-Topics.txt.Constant.PluralDisplayName: Constants
-Topics.txt.Enumeration.DisplayName: Enum
-Topics.txt.Enumeration.PluralDisplayName: Enums
-Topics.txt.Event.DisplayName: Event
-Topics.txt.Event.PluralDisplayName: Events
-Topics.txt.Delegate.DisplayName: Delegate
-Topics.txt.Delegate.PluralDisplayName: Delegates
-Topics.txt.Macro.DisplayName: Macro
-Topics.txt.Macro.PluralDisplayName: Macros
-Topics.txt.Database.DisplayName: Database
-Topics.txt.Database.PluralDisplayName: Databases
-Topics.txt.DatabaseTable.DisplayName: Table
-Topics.txt.DatabaseTable.PluralDisplayName: Tables
-Topics.txt.DatabaseField.DisplayName: Field
-Topics.txt.DatabaseField.PluralDisplayName: Fields
-Topics.txt.DatabaseView.DisplayName: View
-Topics.txt.DatabaseView.PluralDisplayName: Views
-Topics.txt.DatabaseIndex.DisplayName: Index
-Topics.txt.DatabaseIndex.PluralDisplayName: Indexes
-Topics.txt.DatabaseCursor.DisplayName: Cursor
-Topics.txt.DatabaseCursor.PluralDisplayName: Cursors
-Topics.txt.DatabaseTrigger.DisplayName: Trigger
-Topics.txt.DatabaseTrigger.PluralDisplayName: Triggers
+Comments.txt.Information.DisplayName: Information
+Comments.txt.Information.PluralDisplayName: Information
+Comments.txt.Class.DisplayName: Class
+Comments.txt.Class.PluralDisplayName: Classes
+Comments.txt.Interface.DisplayName: Interface
+Comments.txt.Interface.PluralDisplayName: Interfaces
+Comments.txt.Struct.DisplayName: Struct
+Comments.txt.Struct.PluralDisplayName: Structs
+Comments.txt.Section.DisplayName: Section
+Comments.txt.Section.PluralDisplayName: Sections
+Comments.txt.File.DisplayName: File
+Comments.txt.File.PluralDisplayName: Files
+Comments.txt.Group.DisplayName: Group
+Comments.txt.Group.PluralDisplayName: Groups
+Comments.txt.Function.DisplayName: Function
+Comments.txt.Function.PluralDisplayName: Functions
+Comments.txt.Operator.DisplayName: Operator
+Comments.txt.Operator.PluralDisplayName: Operators
+Comments.txt.Variable.DisplayName: Variable
+Comments.txt.Variable.PluralDisplayName: Variables
+Comments.txt.Property.DisplayName: Property
+Comments.txt.Property.PluralDisplayName: Properties
+Comments.txt.Type.DisplayName: Type
+Comments.txt.Type.PluralDisplayName: Types
+Comments.txt.Constant.DisplayName: Constant
+Comments.txt.Constant.PluralDisplayName: Constants
+Comments.txt.Enumeration.DisplayName: Enum
+Comments.txt.Enumeration.PluralDisplayName: Enums
+Comments.txt.Event.DisplayName: Event
+Comments.txt.Event.PluralDisplayName: Events
+Comments.txt.Delegate.DisplayName: Delegate
+Comments.txt.Delegate.PluralDisplayName: Delegates
+Comments.txt.Macro.DisplayName: Macro
+Comments.txt.Macro.PluralDisplayName: Macros
+Comments.txt.Database.DisplayName: Database
+Comments.txt.Database.PluralDisplayName: Databases
+Comments.txt.DatabaseTable.DisplayName: Table
+Comments.txt.DatabaseTable.PluralDisplayName: Tables
+Comments.txt.DatabaseField.DisplayName: Field
+Comments.txt.DatabaseField.PluralDisplayName: Fields
+Comments.txt.DatabaseView.DisplayName: View
+Comments.txt.DatabaseView.PluralDisplayName: Views
+Comments.txt.DatabaseIndex.DisplayName: Index
+Comments.txt.DatabaseIndex.PluralDisplayName: Indexes
+Comments.txt.DatabaseCursor.DisplayName: Cursor
+Comments.txt.DatabaseCursor.PluralDisplayName: Cursors
+Comments.txt.DatabaseTrigger.DisplayName: Trigger
+Comments.txt.DatabaseTrigger.PluralDisplayName: Triggers
 
-Topics.txt.KeywordsCannotContain(char): Keywords cannot contain the {0} character.
-Topics.txt.TagsCannotContain(char): Tags cannot contain the {0} character.
-Topics.txt.TopicTypeAlreadyExists(name): The topic type "{0}" already exists.  Use Alter Topic Type or choose a different name.
-Topics.txt.AlteredTopicTypeDoesntExist(name): The topic type you are trying to alter, "{0}", doesn't exist.
-Topics.txt.IndexWithTopicTypeDoesntExist(name): The topic type you are trying to index with, "{0}", doesn't exist.
-Topics.txt.NoMoreThanTwoKeywordsOnALine: There cannot be more than two keywords on a line.  The first is singular, the second is plural.
-Topics.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a line.
-Topics.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used after a Topic Type or Alter Topic Type keyword.
-Topics.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
-Topics.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
-Topics.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
-Topics.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
-Topics.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
+Comments.txt.KeywordsCannotContain(char): Keywords cannot contain the {0} character.
+Comments.txt.TagsCannotContain(char): Tags cannot contain the {0} character.
+Comments.txt.TopicTypeAlreadyExists(name): The topic type "{0}" already exists.  Use Alter Topic Type or choose a different name.
+Comments.txt.AlteredTopicTypeDoesntExist(name): The topic type you are trying to alter, "{0}", doesn't exist.
+Comments.txt.IndexWithTopicTypeDoesntExist(name): The topic type you are trying to index with, "{0}", doesn't exist.
+Comments.txt.NoMoreThanTwoKeywordsOnALine: There cannot be more than two keywords on a line.  The first is singular, the second is plural.
+Comments.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a line.
+Comments.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used after a Topic Type or Alter Topic Type keyword.
+Comments.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
+Comments.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
+Comments.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
+Comments.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
+Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
 
 TopicTypeFlags.CantCombine(a,b): You cannot set both {0} and {1}.
 TopicTypeFlags.CantCombine(a,b,c): You cannot set {0}, {1}, and {2}.
@@ -408,7 +408,7 @@ TopicTypeFlags.MustDefineOneOf(a,b,c): You must set either {0}, {1}, or {2}.
 TopicTypeFlags.MustDefineAWithB(a,b): You must set {0} with {1}.
 TopicTypeFlags.FlagRequiresScope(flag,scope): {0} requires Scope: {1}.
 
-Topics.txt.SystemHeader.multiline {{{
+Comments.txt.SystemHeader.multiline {{{
 # This is the main Natural Docs topics file.  If you change anything here, it
 # will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
 # you edit the version in your project configuration folder instead.  This 
@@ -416,19 +416,19 @@ Topics.txt.SystemHeader.multiline {{{
 # you upgrade Natural Docs.
 }}}
 
-Topics.txt.ProjectHeader.multiline {{{
+Comments.txt.ProjectHeader.multiline {{{
 # This is the Natural Docs topics file for this project.  If you change anything
 # here, it will apply to THIS PROJECT ONLY.  You can edit the version in
 # Natural Docs' Config folder to make the changes apply to all projects, but
 # it's recommended that you edit this version instead.
 }}}
 
-Topics.txt.IgnoredKeywordsHeader.multiline {{{
+Comments.txt.IgnoredKeywordsHeader.multiline {{{
 # Ignored Keywords
 # ------------------------------------------------------------------------
 }}}
 
-Topics.txt.IgnoredKeywordsReference.multiline {{{
+Comments.txt.IgnoredKeywordsReference.multiline {{{
 # If you'd like to prevent keywords from being recognized by Natural Docs, 
 # you can do it like this:
 #
@@ -438,15 +438,15 @@ Topics.txt.IgnoredKeywordsReference.multiline {{{
 #    ...
 }}}
 
-Topics.txt.TopicTypesHeader.multiline {{{
+Comments.txt.TopicTypesHeader.multiline {{{
 # Topic Types
 # ------------------------------------------------------------------------
 }}}
-Topics.txt.DeferredTopicTypesReference.multiline {{{
+Comments.txt.DeferredTopicTypesReference.multiline {{{
 # The syntax reference is after the definitions.
 }}}
 
-Topics.txt.SystemTopicTypesReference.multiline {{{
+Comments.txt.SystemTopicTypesReference.multiline {{{
 # Each Natural Docs topic has a corresponding type which determine things
 # like how they are indexed.  This is how you define them.
 #
@@ -504,7 +504,7 @@ Topics.txt.SystemTopicTypesReference.multiline {{{
 #    keyword and optionally its plural form for list topics.
 }}}
 
-Topics.txt.ProjectTopicTypesReference.multiline {{{
+Comments.txt.ProjectTopicTypesReference.multiline {{{
 # Each Natural Docs topic has a corresponding type which determine things
 # like how they are indexed.  You can define your own here or override the 
 # settings of the existing ones.

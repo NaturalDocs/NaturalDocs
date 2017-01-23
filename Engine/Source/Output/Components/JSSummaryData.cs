@@ -243,7 +243,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			usedCommentTypes.Sort(
 				delegate (CommentType a, CommentType b)
-					{  return string.Compare(a.Name, b.Name);  } // xxx should be by topics.txt order
+					{  return string.Compare(a.Name, b.Name);  } // xxx should be by comments.txt order
 				);
 
 

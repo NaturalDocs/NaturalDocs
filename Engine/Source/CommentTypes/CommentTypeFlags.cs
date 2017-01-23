@@ -84,8 +84,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 *		
 		 * Location Properties:
 		 * 
-		 *		InSystemFile - Set if the comment type was defined in the system config file <Topics.txt>.
-		 *		InProjectFile - Set if the comment type was defined in the project config file <Topics.txt>.  Not set for Alter Comment Type.
+		 *		InSystemFile - Set if the comment type was defined in the system config file <Comments.txt>.
+		 *		InProjectFile - Set if the comment type was defined in the project config file <Comments.txt>.  Not set for Alter Comment Type.
 		 *		InBinaryFile - Set if the comment type appears in <Comments.nd>.
 		 * 
 		 *		InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
@@ -404,7 +404,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Property: InSystemFile
-		 * Whether this comment type was defined in the system <Topics.txt> file.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in the system <Comments.txt> file.  Does not affect equality comparisons.
 		 */
 		public bool InSystemFile
 			{
@@ -420,7 +420,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 			
 		/* Property: InProjectFile
-		 * Whether this comment type was defined in the project <Topics.txt> file.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in the project <Comments.txt> file.  Does not affect equality comparisons.
 		 */
 		public bool InProjectFile
 			{
@@ -436,7 +436,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 			
 		/* Property: InConfigFiles
-		 * Whether this comment type was defined in either of the <Topics.txt> files.  Does not affect equality comparisons.
+		 * Whether this comment type was defined in either of the <Comments.txt> files.  Does not affect equality comparisons.
 		 */
 		public bool InConfigFiles
 			{

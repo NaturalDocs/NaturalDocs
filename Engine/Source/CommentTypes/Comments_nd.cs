@@ -12,7 +12,7 @@
  * 
  * File: Comments.nd
  * 
- *		A binary file which stores the combined results of the two versions of <Topics.txt> as of the last run, as well as storing
+ *		A binary file which stores the combined results of the two versions of <Comments.txt> as of the last run, as well as storing
  *		the IDs of each type so they maintain their consistency between runs.
  *		
  *		Format:

@@ -18,8 +18,8 @@
  *		OldMenuFile - The property is defined in <Menu.txt>.
  *		ProjectLanguageFile - The property is defined in the project's <Languages.txt> file.
  *		SystemLanguageFile - The property is defined in the system's <Languages.txt> file.
- *		ProjectTopicsFile - The property is defined in the project's <Topics.txt> file.
- *		SystemTopicsFile - The property is defined in the system's <Topics.txt> file.
+ *		ProjectTopicsFile - The property is defined in the project's <Comments.txt> file.
+ *		SystemTopicsFile - The property is defined in the system's <Comments.txt> file.
  *		
  * Meta-Values:
  * 

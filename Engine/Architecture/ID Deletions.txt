@@ -11,7 +11,7 @@ meaning may change out from under code unexpectedly.
 
 Topic: Comment Type, Language, and Tag IDs
 
-	These are easy.  These IDs can only be changed by changing <Topics.txt> or <Languages.txt> between runs.  
+	These are easy.  These IDs can only be changed by changing <Comments.txt> or <Languages.txt> between runs.  
 	Changing those files in a substantial way automatically triggers a complete rebuild, so any references to them in 
 	CodeDB or other areas are thrown out and the data regenerated.  As such you don't have to worry about deletions
 	for these types of IDs.
