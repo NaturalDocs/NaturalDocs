@@ -183,12 +183,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Topic.Keyword must be set to a string value.");  }
 
-							var topicType = EngineInstance.CommentTypes.FromKeyword(valueString);
+							var commentType = EngineInstance.CommentTypes.FromKeyword(valueString);
 
-							if (topicType == null)
+							if (commentType == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a keyword.");  }
 
-							topic.CommentTypeID = topicType.ID;
+							topic.CommentTypeID = commentType.ID;
 							}
 						else if (property == "title")
 							{
@@ -384,9 +384,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						string parametersString;
 						SymbolString topicSymbol = SymbolString.FromPlainText(topic.Title, out parametersString);
 
-						var topicType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
+						var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-						if (topicType.Scope == Engine.CommentTypes.CommentType.ScopeValue.Normal &&
+						if (commentType.Scope == Engine.CommentTypes.CommentType.ScopeValue.Normal &&
 							 topic.PrototypeContext.ScopeIsGlobal == false)
 							{
 							topicSymbol = topic.PrototypeContext.Scope + topicSymbol;  
@@ -418,9 +418,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							{  output.AppendLine();  }
 
 						var topicLanguage = EngineInstance.Languages.FromID(topic.LanguageID);
-						topicType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
+						commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-						output.AppendLine(topicLanguage.Name + " " + topicType.Name + " Topic: " + topic.Title);
+						output.AppendLine(topicLanguage.Name + " " + commentType.Name + " Topic: " + topic.Title);
 						output.AppendLine("   Symbol: " + topic.Symbol.FormatWithSeparator('.'));
 
 						if (topic.TitleParameters != null)
