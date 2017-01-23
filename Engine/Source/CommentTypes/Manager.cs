@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// the project Comments.txt.  The project Comments.txt not existing is not a failure.
 			bool success = true;
 			
-			// Whether anything has changed since the last run, as determined by Comments.nd.  If Topics.nd doesn't exist or is corrupt,
+			// Whether anything has changed since the last run, as determined by Comments.nd.  If Comments.nd doesn't exist or is corrupt,
 			// we have to assume something changed.
 			bool changed = false;
 

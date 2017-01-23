@@ -1,10 +1,10 @@
 ﻿Format: 2.0 (Development Release 11-03-2016)
 
-# This is the main Natural Docs topics file.  If you change anything here, it
-# will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
-# you edit the version in your project configuration folder instead.  This
-# will keep your changes separate so you won't have to reapply them whenever
-# you upgrade Natural Docs.
+# This is the main Natural Docs comments file.  If you change anything here,
+# it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
+# that you edit the version in your project configuration folder instead.
+# This will keep your changes separate so you won't have to reapply them
+# whenever you upgrade Natural Docs.
 
 
 # Comment Types
@@ -247,7 +247,7 @@ Comment Type: Variable
       arrayref, arrayrefs
       hash, hashes
       hashref, hashrefs
-	  table, tables
+      table, tables
       bool, bools
       boolean, booleans
       flag, flags
@@ -386,24 +386,23 @@ Comment Type: Database Trigger
       dbtrigger, dbtriggers
 
 
-# Each Natural Docs topic has a corresponding type which determine things
-# like how they are indexed.  This is how you define them.
+# Each Natural Docs comment has a corresponding type which determine its
+# behavior.  This is how you define them.
 #
 # Comment Type: [name]
 #    Creates a new comment type.
 #
 # Display Name: [name]
 # Plural Display Name: [name]
-#    The singular and plural name of the comment type as it should appear in the
-#    output.  Change these instead of the comment type name because most of the
-#    default types are required to be defined with their current names.
+#    The singular and plural name of the comment type as it should appear in
+#    the output.  Defaults to the comment type name.
 #
 # Display Name from Locale: [identifier]
 # Plural Display Name from Locale: [identifier]
 #    The identifiers in the current translation file that define the singular
-#    and plural names of the comment type as it should appear in the output.  If
-#    you want to change the name of a comment type in the output, you should
-#    remove these properties and use the versions without "from Locale"
+#    and plural names of the comment type as it should appear in the output.
+#    If you want to change the name of a comment type in the output, you
+#    should remove these properties and use the versions without "from Locale"
 #    instead.
 #
 # Simple Identifier: [name]
@@ -413,14 +412,14 @@ Comment Type: Database Trigger
 #    CSS class names.
 #
 # Scope: [normal|start|end|always global]
-#    How the topic affects scope.  Defaults to normal.
-#    normal        - The topic stays within the current scope.
-#    start         - The topic starts a new scope for all the topics beneath
-#                    it, like class topics.
-#    end           - The topic resets the scope back to global for all the
-#                    topics beneath it, like section topics.
-#    always global - The topic is defined as a global symbol, but does not
-#                    change the scope for any other topics.
+#    How the comment affects scope.  Defaults to normal.
+#    normal        - The comment stays within the current scope.
+#    start         - The comment starts a new scope for all the comments
+#                    beneath it, like class comments.
+#    end           - The comment resets the scope back to global for all the
+#                    comments beneath it, like section comments.
+#    always global - The comment is defined as a global symbol, but does not
+#                    change the scope for any other comments.
 #
 # Flags: [flag], [flag], ...
 #    A combination of settings that apply to the comment type.
@@ -440,5 +439,5 @@ Comment Type: Database Trigger
 #    [keyword]
 #    [keyword], [plural keyword]
 #    ...
-#    A list of the comment type's keywords.  Each line after the heading is the
-#    keyword and optionally its plural form for list topics.
+#    A list of the comment type's keywords.  Each line after the heading is
+#    the keyword and optionally its plural form for list comments.

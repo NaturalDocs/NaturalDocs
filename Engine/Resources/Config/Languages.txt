@@ -113,8 +113,8 @@ Language: PHP
    Block Comment: /* */
    Case Sensitive: Yes
 
-   Class Prototype Enders: {
-   Interface Prototype Enders: {
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
@@ -173,7 +173,7 @@ Language: Assembly
 
    Line Comment: ;
    Line Extender: \
-	Case Sensitive: No
+   Case Sensitive: No
 
    Variable Prototype Ender: \n
 
@@ -213,7 +213,7 @@ Language: Ruby
    Enum Values: Under Parent
    Case Sensitive: Yes
 
-   Class Prototype Enders: \n
+   Class Prototype Ender: \n
    Function Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
@@ -242,8 +242,8 @@ Language: ActionScript
    Block Comment: /* */
    Case Sensitive: Yes
 
-   Class Prototype Enders: {
-   Interface Prototype Enders: {
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
@@ -309,8 +309,8 @@ Language: Fortran
 #    CSS class names.
 #
 # Aliases: [alias] [alias] ...
-#    Defines alternate names for the language that can be used in code block
-#    tags like (start c++ code).
+#    Defines alternate names for the language that can be used to start a code
+#    block.
 #
 #
 # Properties for Basic Language Support Only
@@ -336,9 +336,9 @@ Language: Fortran
 #    Defines how enum values are referenced.  The default is under type.
 #    global       - Values are always global, referenced as 'value'.
 #    under type   - Values are under the enum type, referenced as
-#                 'class.enum.value'.
+#                   'class.enum.value'.
 #    under parent - Values are under the enum's parent, referenced as
-#                 'class.value'.
+#                   'class.value'.
 #
 # Case Sensitive: [yes|no]
 #    Defines whether the language's identifiers are case sensitive.  The
