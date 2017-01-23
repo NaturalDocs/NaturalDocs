@@ -557,7 +557,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				     commentTypes[configFileCommentType.Name].Flags.InConfigFiles == false )
 					{
 					errorList.Add( 
-						Locale.Get("NaturalDocs.Engine", "Comments.txt.AlteredTopicTypeDoesntExist(name)", configFileCommentType.Name),
+						Locale.Get("NaturalDocs.Engine", "Comments.txt.AlteredCommentTypeDoesntExist(name)", configFileCommentType.Name),
 						sourceFile, configFileCommentType.LineNumber 
 						);
 						
@@ -573,7 +573,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				    if (commentTypes[configFileCommentType.Name].Flags.InConfigFiles == true)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypeAlreadyExists(name)", configFileCommentType.Name),
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypeAlreadyExists(name)", configFileCommentType.Name),
 							sourceFile, configFileCommentType.LineNumber 
 							);
 							
@@ -638,7 +638,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					if (indexWithCommentType == null)
 						{
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "Comments.txt.IndexWithTopicTypeDoesntExist(name)", configFileCommentType.IndexWith),
+							Locale.Get("NaturalDocs.Engine", "Comments.txt.IndexWithCommentTypeDoesntExist(name)", configFileCommentType.IndexWith),
 							sourceFile, configFileCommentType.LineNumber 
 							);
 							

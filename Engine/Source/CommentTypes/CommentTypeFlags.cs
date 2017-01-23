@@ -158,16 +158,16 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (Code)
 				{
 				if (File && Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b,c)", "Code", "File", "Documentation"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b,c)", "Code", "File", "Documentation"));  }
 				else if (File)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Code", "File"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Code", "File"));  }
 				else if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Code", "Documentation"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Code", "Documentation"));  }
 				}
 			else if (File)
 				{
 				if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "File", "Documentation"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "File", "Documentation"));  }
 				}
 			else if (Documentation)
 				{
@@ -175,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			else
 				{
 				if (strict)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineOneOf(a,b,c)", "Code", "File", "Documentation"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineOneOf(a,b,c)", "Code", "File", "Documentation"));  }
 				}
 
 
@@ -184,11 +184,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (VariableType)
 				{
 				if (strict && !Code)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Code", "Variable Type"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Code", "Variable Type"));  }
 				if (File)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "File", "Variable Type"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "File", "Variable Type"));  }
 				if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Variable Type"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Variable Type"));  }
 				}
 
 
@@ -197,30 +197,30 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (ClassHierarchy)
 				{
 				if (DatabaseHierarchy)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Class Hierarchy", "Database Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Class Hierarchy", "Database Hierarchy"));  }
 				if (strict && !Code)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Code", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Code", "Class Hierarchy"));  }
 				if (strict && !VariableType)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Variable Type", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Variable Type", "Class Hierarchy"));  }
 				if (File)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "File", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "File", "Class Hierarchy"));  }
 				if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"));  }
 				if ( (scope == null && strict) || 
 					  (scope != null && (CommentType.ScopeValue)scope != CommentType.ScopeValue.Start) )
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.FlagRequiresScope(flag,scope)", "Class Hierarchy", "Start"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.FlagRequiresScope(flag,scope)", "Class Hierarchy", "Start"));  }
 				}
 			else if (DatabaseHierarchy)
 				{
 				if (strict && !Code)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Code", "Database Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Code", "Database Hierarchy"));  }
 				if (File)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "File", "Database Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "File", "Database Hierarchy"));  }
 				if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Database Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Database Hierarchy"));  }
 				if ( (scope == null && strict) || 
 					  (scope != null && (CommentType.ScopeValue)scope != CommentType.ScopeValue.Start) )
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.FlagRequiresScope(flag,scope)", "Database Hierarchy", "Start"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.FlagRequiresScope(flag,scope)", "Database Hierarchy", "Start"));  }
 				}
 
 
@@ -229,13 +229,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			if (Enum)
 				{
 				if (strict && !Code)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Code", "Enum"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Code", "Enum"));  }
 				if (strict && !VariableType)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.MustDefineAWithB(a,b)", "Variable Type", "Enum"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.MustDefineAWithB(a,b)", "Variable Type", "Enum"));  }
 				if (File)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "File", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "File", "Class Hierarchy"));  }
 				if (Documentation)
-					{  errors.Add(Locale.Get(localeModule, "TopicTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"));  }
+					{  errors.Add(Locale.Get(localeModule, "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"));  }
 				}
 
 

@@ -7,11 +7,11 @@
 # you upgrade Natural Docs.
 
 
-# Topic Types
+# Comment Types
 # ------------------------------------------------------------------------
 # The syntax reference is after the definitions.
 
-Topic Type: Class
+Comment Type: Class
 
    Display Name from Locale: Comments.txt.Class.DisplayName
    Plural Display Name from Locale: Comments.txt.Class.PluralDisplayName
@@ -25,7 +25,7 @@ Topic Type: Class
       namespace, namespaces
 
 
-Topic Type: Interface
+Comment Type: Interface
 
    Display Name from Locale: Comments.txt.Interface.DisplayName
    Plural Display Name from Locale: Comments.txt.Interface.PluralDisplayName
@@ -37,7 +37,7 @@ Topic Type: Interface
       interface, interfaces
 
 
-Topic Type: Struct
+Comment Type: Struct
 
    Display Name from Locale: Comments.txt.Struct.DisplayName
    Plural Display Name from Locale: Comments.txt.Struct.PluralDisplayName
@@ -50,7 +50,7 @@ Topic Type: Struct
       structure, structures
 
 
-Topic Type: Section
+Comment Type: Section
 
    Display Name from Locale: Comments.txt.Section.DisplayName
    Plural Display Name from Locale: Comments.txt.Section.PluralDisplayName
@@ -63,7 +63,7 @@ Topic Type: Section
       title
 
 
-Topic Type: Group
+Comment Type: Group
 
    Display Name from Locale: Comments.txt.Group.DisplayName
    Plural Display Name from Locale: Comments.txt.Group.PluralDisplayName
@@ -74,7 +74,7 @@ Topic Type: Group
       group
 
 
-Topic Type: Information
+Comment Type: Information
 
    Display Name from Locale: Comments.txt.Information.DisplayName
    Plural Display Name from Locale: Comments.txt.Information.PluralDisplayName
@@ -86,7 +86,7 @@ Topic Type: Information
       about, list
 
 
-Topic Type: File
+Comment Type: File
 
    Display Name from Locale: Comments.txt.File.DisplayName
    Plural Display Name from Locale: Comments.txt.File.PluralDisplayName
@@ -103,7 +103,7 @@ Topic Type: File
       header, headers
 
 
-Topic Type: Type
+Comment Type: Type
 
    Display Name from Locale: Comments.txt.Type.DisplayName
    Plural Display Name from Locale: Comments.txt.Type.PluralDisplayName
@@ -115,7 +115,7 @@ Topic Type: Type
       typedef, typedefs
 
 
-Topic Type: Enumeration
+Comment Type: Enumeration
 
    Display Name from Locale: Comments.txt.Enumeration.DisplayName
    Plural Display Name from Locale: Comments.txt.Enumeration.PluralDisplayName
@@ -127,7 +127,7 @@ Topic Type: Enumeration
       enumeration, enumerations
 
 
-Topic Type: Delegate
+Comment Type: Delegate
 
    Display Name from Locale: Comments.txt.Delegate.DisplayName
    Plural Display Name from Locale: Comments.txt.Delegate.PluralDisplayName
@@ -138,7 +138,7 @@ Topic Type: Delegate
       delegate, delegates
 
 
-Topic Type: Function
+Comment Type: Function
 
    Display Name from Locale: Comments.txt.Function.DisplayName
    Plural Display Name from Locale: Comments.txt.Function.PluralDisplayName
@@ -159,7 +159,7 @@ Topic Type: Function
       destructor, destructors
 
 
-Topic Type: Operator
+Comment Type: Operator
 
    Display Name from Locale: Comments.txt.Operator.DisplayName
    Plural Display Name from Locale: Comments.txt.Operator.PluralDisplayName
@@ -170,7 +170,7 @@ Topic Type: Operator
       operator, operators
 
 
-Topic Type: Macro
+Comment Type: Macro
 
    Display Name from Locale: Comments.txt.Macro.DisplayName
    Plural Display Name from Locale: Comments.txt.Macro.PluralDisplayName
@@ -183,7 +183,7 @@ Topic Type: Macro
       macro, macros
 
 
-Topic Type: Property
+Comment Type: Property
 
    Display Name from Locale: Comments.txt.Property.DisplayName
    Plural Display Name from Locale: Comments.txt.Property.PluralDisplayName
@@ -195,7 +195,7 @@ Topic Type: Property
       prop, props
 
 
-Topic Type: Event
+Comment Type: Event
 
    Display Name from Locale: Comments.txt.Event.DisplayName
    Plural Display Name from Locale: Comments.txt.Event.PluralDisplayName
@@ -206,7 +206,7 @@ Topic Type: Event
       event, events
 
 
-Topic Type: Constant
+Comment Type: Constant
 
    Display Name from Locale: Comments.txt.Constant.DisplayName
    Plural Display Name from Locale: Comments.txt.Constant.PluralDisplayName
@@ -218,7 +218,7 @@ Topic Type: Constant
       const, consts
 
 
-Topic Type: Variable
+Comment Type: Variable
 
    Display Name from Locale: Comments.txt.Variable.DisplayName
    Plural Display Name from Locale: Comments.txt.Variable.PluralDisplayName
@@ -271,7 +271,7 @@ Topic Type: Variable
       handle, handles
 
 
-Topic Type: Database
+Comment Type: Database
 
    Display Name from Locale: Comments.txt.Database.DisplayName
    Plural Display Name from Locale: Comments.txt.Database.PluralDisplayName
@@ -284,7 +284,7 @@ Topic Type: Database
       db, dbs
 
 
-Topic Type: Database Table
+Comment Type: Database Table
 
    Display Name from Locale: Comments.txt.DatabaseTable.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseTable.PluralDisplayName
@@ -299,7 +299,7 @@ Topic Type: Database Table
       dbtable, dbtables
 
 
-Topic Type: Database Field
+Comment Type: Database Field
 
    Display Name from Locale: Comments.txt.DatabaseField.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseField.PluralDisplayName
@@ -317,7 +317,7 @@ Topic Type: Database Field
       dbcolumn, dbcolumns
 
 
-Topic Type: Database View
+Comment Type: Database View
 
    Display Name from Locale: Comments.txt.DatabaseView.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseView.PluralDisplayName
@@ -332,7 +332,7 @@ Topic Type: Database View
       dbview, dbviews
 
 
-Topic Type: Database Index
+Comment Type: Database Index
 
    Display Name from Locale: Comments.txt.DatabaseIndex.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseIndex.PluralDisplayName
@@ -358,7 +358,7 @@ Topic Type: Database Index
       dbprimarykey, dbprimarykeys
 
 
-Topic Type: Database Cursor
+Comment Type: Database Cursor
 
    Display Name from Locale: Comments.txt.DatabaseCursor.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseCursor.PluralDisplayName
@@ -372,7 +372,7 @@ Topic Type: Database Cursor
       dbcursor, dbcursors
 
 
-Topic Type: Database Trigger
+Comment Type: Database Trigger
 
    Display Name from Locale: Comments.txt.DatabaseTrigger.DisplayName
    Plural Display Name from Locale: Comments.txt.DatabaseTrigger.PluralDisplayName
@@ -389,26 +389,26 @@ Topic Type: Database Trigger
 # Each Natural Docs topic has a corresponding type which determine things
 # like how they are indexed.  This is how you define them.
 #
-# Topic Type: [name]
-#    Creates a new topic type.
+# Comment Type: [name]
+#    Creates a new comment type.
 #
 # Display Name: [name]
 # Plural Display Name: [name]
-#    The singular and plural name of the topic type as it should appear in the
-#    output.  Change these instead of the topic type name because most of the
+#    The singular and plural name of the comment type as it should appear in the
+#    output.  Change these instead of the comment type name because most of the
 #    default types are required to be defined with their current names.
 #
 # Display Name from Locale: [identifier]
 # Plural Display Name from Locale: [identifier]
 #    The identifiers in the current translation file that define the singular
-#    and plural names of the topic type as it should appear in the output.  If
-#    you want to change the name of a topic type in the output, you should
+#    and plural names of the comment type as it should appear in the output.  If
+#    you want to change the name of a comment type in the output, you should
 #    remove these properties and use the versions without "from Locale"
 #    instead.
 #
 # Simple Identifier: [name]
-#    The name of the topic type using only the letters A to Z.  No spaces,
-#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    The name of the comment type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the comment type name
 #    minus any unacceptable characters.  This is used to generate things like
 #    CSS class names.
 #
@@ -423,7 +423,7 @@ Topic Type: Database Trigger
 #                    change the scope for any other topics.
 #
 # Flags: [flag], [flag], ...
-#    A combination of settings that apply to the topic type.
+#    A combination of settings that apply to the comment type.
 #    Code, File, or Documentation
 #        Whether it's used to describe a code element, a file, or is a
 #        standalone documentation comment.  Defaults to Code.
@@ -440,5 +440,5 @@ Topic Type: Database Trigger
 #    [keyword]
 #    [keyword], [plural keyword]
 #    ...
-#    A list of the topic type's keywords.  Each line after the heading is the
+#    A list of the comment type's keywords.  Each line after the heading is the
 #    keyword and optionally its plural form for list topics.

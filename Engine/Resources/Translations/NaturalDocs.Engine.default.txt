@@ -389,38 +389,38 @@ Comments.txt.DatabaseTrigger.PluralDisplayName: Triggers
 
 Comments.txt.KeywordsCannotContain(char): Keywords cannot contain the {0} character.
 Comments.txt.TagsCannotContain(char): Tags cannot contain the {0} character.
-Comments.txt.TopicTypeAlreadyExists(name): The topic type "{0}" already exists.  Use Alter Topic Type or choose a different name.
-Comments.txt.AlteredTopicTypeDoesntExist(name): The topic type you are trying to alter, "{0}", doesn't exist.
-Comments.txt.IndexWithTopicTypeDoesntExist(name): The topic type you are trying to index with, "{0}", doesn't exist.
+Comments.txt.CommentTypeAlreadyExists(name): The comment type "{0}" already exists.  Use Alter Comment Type or choose a different name.
+Comments.txt.AlteredCommentTypeDoesntExist(name): The comment type you are trying to alter, "{0}", doesn't exist.
+Comments.txt.IndexWithCommentTypeDoesntExist(name): The comment type you are trying to index with, "{0}", doesn't exist.
 Comments.txt.NoMoreThanTwoKeywordsOnALine: There cannot be more than two keywords on a line.  The first is singular, the second is plural.
 Comments.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a line.
-Comments.txt.KeywordMustBeInTopicType(keyword): The keyword "{0}" can only be used after a Topic Type or Alter Topic Type keyword.
+Comments.txt.KeywordMustBeInCommentType(keyword): The keyword "{0}" can only be used after a Comment Type or Alter Comment Type keyword.
 Comments.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
 Comments.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Comments.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
 Comments.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
 
-TopicTypeFlags.CantCombine(a,b): You cannot set both {0} and {1}.
-TopicTypeFlags.CantCombine(a,b,c): You cannot set {0}, {1}, and {2}.
-TopicTypeFlags.MustDefineOneOf(a,b): You must set either {0} or {1}.
-TopicTypeFlags.MustDefineOneOf(a,b,c): You must set either {0}, {1}, or {2}.
-TopicTypeFlags.MustDefineAWithB(a,b): You must set {0} with {1}.
-TopicTypeFlags.FlagRequiresScope(flag,scope): {0} requires Scope: {1}.
+CommentTypeFlags.CantCombine(a,b): You cannot set both {0} and {1}.
+CommentTypeFlags.CantCombine(a,b,c): You cannot set {0}, {1}, and {2}.
+CommentTypeFlags.MustDefineOneOf(a,b): You must set either {0} or {1}.
+CommentTypeFlags.MustDefineOneOf(a,b,c): You must set either {0}, {1}, or {2}.
+CommentTypeFlags.MustDefineAWithB(a,b): You must set {0} with {1}.
+CommentTypeFlags.FlagRequiresScope(flag,scope): {0} requires Scope: {1}.
 
 Comments.txt.SystemHeader.multiline {{{
-# This is the main Natural Docs topics file.  If you change anything here, it
-# will apply to EVERY PROJECT you use Natural Docs on.  It's recommended that
-# you edit the version in your project configuration folder instead.  This 
-# will keep your changes separate so you won't have to reapply them whenever
-# you upgrade Natural Docs.
+# This is the main Natural Docs comments file.  If you change anything here,
+# it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
+# that you edit the version in your project configuration folder instead.
+# This will keep your changes separate so you won't have to reapply them
+# whenever you upgrade Natural Docs.
 }}}
 
 Comments.txt.ProjectHeader.multiline {{{
-# This is the Natural Docs topics file for this project.  If you change anything
-# here, it will apply to THIS PROJECT ONLY.  You can edit the version in
-# Natural Docs' Config folder to make the changes apply to all projects, but
-# it's recommended that you edit this version instead.
+# This is the Natural Docs comments file for this project.  If you change
+# anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
+# in Natural Docs' Config folder to make the changes apply to all projects,
+# but it's recommended that you edit this version instead.
 }}}
 
 Comments.txt.IgnoredKeywordsHeader.multiline {{{
@@ -438,52 +438,52 @@ Comments.txt.IgnoredKeywordsReference.multiline {{{
 #    ...
 }}}
 
-Comments.txt.TopicTypesHeader.multiline {{{
-# Topic Types
+Comments.txt.CommentTypesHeader.multiline {{{
+# Comment Types
 # ------------------------------------------------------------------------
 }}}
-Comments.txt.DeferredTopicTypesReference.multiline {{{
+Comments.txt.DeferredCommentTypesReference.multiline {{{
 # The syntax reference is after the definitions.
 }}}
 
-Comments.txt.SystemTopicTypesReference.multiline {{{
-# Each Natural Docs topic has a corresponding type which determine things
-# like how they are indexed.  This is how you define them.
+Comments.txt.SystemCommentTypesReference.multiline {{{
+# Each Natural Docs comment has a corresponding type which determine its
+# behavior.  This is how you define them.
 #
-# Topic Type: [name]
-#    Creates a new topic type.
+# Comment Type: [name]
+#    Creates a new comment type.
 #
 # Display Name: [name]
 # Plural Display Name: [name]
-#    The singular and plural name of the topic type as it should appear in the
-#    output.  Defaults to the topic type name.
+#    The singular and plural name of the comment type as it should appear in
+#    the output.  Defaults to the comment type name.
 #
 # Display Name from Locale: [identifier]
 # Plural Display Name from Locale: [identifier]
 #    The identifiers in the current translation file that define the singular
-#    and plural names of the topic type as it should appear in the output.  If
-#    you want to change the name of a topic type in the output, you should 
-#    remove these properties and use the versions without "from Locale" 
+#    and plural names of the comment type as it should appear in the output.
+#    If you want to change the name of a comment type in the output, you
+#    should remove these properties and use the versions without "from Locale"
 #    instead.
 #
 # Simple Identifier: [name]
-#    The name of the topic type using only the letters A to Z.  No spaces,
-#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    The name of the comment type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the comment type name
 #    minus any unacceptable characters.  This is used to generate things like
 #    CSS class names.
 #
 # Scope: [normal|start|end|always global]
-#    How the topic affects scope.  Defaults to normal.
-#    normal        - The topic stays within the current scope.
-#    start         - The topic starts a new scope for all the topics beneath
-#                    it, like class topics.
-#    end           - The topic resets the scope back to global for all the
-#                    topics beneath it, like section topics.
-#    always global - The topic is defined as a global symbol, but does not 
-#                    change the scope for any other topics.
+#    How the comment affects scope.  Defaults to normal.
+#    normal        - The comment stays within the current scope.
+#    start         - The comment starts a new scope for all the comments
+#                    beneath it, like class comments.
+#    end           - The comment resets the scope back to global for all the
+#                    comments beneath it, like section comments.
+#    always global - The comment is defined as a global symbol, but does not
+#                    change the scope for any other comments.
 #
 # Flags: [flag], [flag], ...
-#    A combination of settings that apply to the topic type.
+#    A combination of settings that apply to the comment type.
 #    Code, File, or Documentation
 #        Whether it's used to describe a code element, a file, or is a
 #        standalone documentation comment.  Defaults to Code.
@@ -500,42 +500,42 @@ Comments.txt.SystemTopicTypesReference.multiline {{{
 #    [keyword]
 #    [keyword], [plural keyword]
 #    ...
-#    A list of the topic type's keywords.  Each line after the heading is the
-#    keyword and optionally its plural form for list topics.
+#    A list of the comment type's keywords.  Each line after the heading is
+#    the keyword and optionally its plural form for list comments.
 }}}
 
-Comments.txt.ProjectTopicTypesReference.multiline {{{
-# Each Natural Docs topic has a corresponding type which determine things
-# like how they are indexed.  You can define your own here or override the 
-# settings of the existing ones.
+Comments.txt.ProjectCommentTypesReference.multiline {{{
+# Each Natural Docs comment has a corresponding type which determine its
+# behavior.  You can define your own here or override the settings of the
+# existing ones.
 #
-# Topic Type: [name]
-# Alter Topic Type: [name]
-#    Creates a new topic type or changes an existing one.
+# Comment Type: [name]
+# Alter Comment Type: [name]
+#    Creates a new comment type or changes an existing one.
 #
 # Display Name: [name]
 # Plural Display Name: [name]
-#    The singular and plural name of the topic type as it should appear in the
-#    output.
+#    The singular and plural name of the comment type as it should appear in
+#    the output.
 #
 # Simple Identifier: [name]
-#    The name of the topic type using only the letters A to Z.  No spaces,
-#    numbers, symbols, or Unicode allowed.  Defaults to the topic type name
+#    The name of the comment type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the comment type name
 #    minus any unacceptable characters.  This is used to generate things like
 #    CSS class names.
 #
 # Scope: [normal|start|end|always global]
-#    How the topic affects scope.  Defaults to normal.
-#    normal        - The topic stays within the current scope.
-#    start         - The topic starts a new scope for all the topics beneath
-#                    it, like class topics.
-#    end           - The topic resets the scope back to global for all the
-#                    topics beneath it, like section topics.
-#    always global - The topic is defined as a global symbol, but does not 
-#                    change the scope for any other topics.
+#    How the comment affects scope.  Defaults to normal.
+#    normal        - The comment stays within the current scope.
+#    start         - The comment starts a new scope for all the comments
+#                    beneath it, like class comments.
+#    end           - The comment resets the scope back to global for all the
+#                    comments beneath it, like section comments.
+#    always global - The comment is defined as a global symbol, but does not
+#                    change the scope for any other comments.
 #
 # Flags: [flag], [flag], ...
-#    A combination of settings that apply to the topic type.
+#    A combination of settings that apply to the comment type.
 #    Code, File, or Documentation
 #        Whether it's used to describe a code element, a file, or is a
 #        standalone documentation comment.  Defaults to Code.
@@ -552,11 +552,11 @@ Comments.txt.ProjectTopicTypesReference.multiline {{{
 #    [keyword]
 #    [keyword], [plural keyword]
 #    ...
-#    A list of the topic type's keywords.  Each line after the heading is the
-#    keyword and optionally its plural form for list topics.  You can reuse
-#    existing keywords to change their definition.  When using 
-#    "Alter Topic Type", these keywords are added to the existing ones rather
-#    than replacing them.
+#    A list of the comment type's keywords.  Each line after the heading is
+#    the keyword and optionally its plural form for list comments.  You can
+#    reuse existing keywords to change their definition.  When using
+#    "Alter Comment Type", these keywords are added to the existing ones
+#    rather than replacing them.
 }}}
 
 
@@ -576,7 +576,7 @@ Languages.txt.InvalidEnumValue(value): "{0}" is not a valid Enum Value.
 Languages.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Languages.txt.AlteredLanguageDoesntExist(name): The language you are trying to alter, "{0}", doesn't exist.
 Languages.txt.LanguageAlreadyExists(name): The language "{0}" already exists.  Use Alter Language or choose a different name.
-Languages.txt.PrototypeEnderTopicTypeDoesntExist(name): The topic type "{0}" doesn't exist.
+Languages.txt.PrototypeEnderCommentTypeDoesntExist(name): The comment type "{0}" doesn't exist.
 Languages.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
 
 Languages.txt.CantDefinePropertyForTextFiles(property, language): You cannot define {0} for {1}.
@@ -684,9 +684,9 @@ Languages.txt.SystemLanguagesReference.multiline {{{
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
 #
-# [Topic Type] Prototype Enders: [symbol] [symbol] ...
+# [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
-#    immediately following the topic type.  It stops when it reaches one of
+#    immediately following the comment type.  It stops when it reaches one of
 #    these symbols.  Use \n for line breaks.
 }}}
 
@@ -762,9 +762,9 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 #    Defines whether the language's identifiers are case sensitive.  The
 #    default is yes.
 #
-# [Topic Type] Prototype Enders: [symbol] [symbol] ...
+# [Comment Type] Prototype Enders: [symbol] [symbol] ...
 #    When defined, Natural Docs will attempt to get a prototype from the code
-#    immediately following the topic type.  It stops when it reaches one of
+#    immediately following the comment type.  It stops when it reaches one of
 #    these symbols.  Use \n for line breaks.
 }}}
 

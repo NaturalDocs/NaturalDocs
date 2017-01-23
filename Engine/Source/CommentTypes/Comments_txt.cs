@@ -35,12 +35,12 @@
  *			
  *			Defines tags that can be applied to comment types.
  *			
- *			> Topic Type: [name]
- *			> Alter Topic Type: [name]
+ *			> Comment Type: [name]
+ *			> Alter Comment Type: [name]
  *			>
  *			> (synonyms)
- *			> Edit Topic Type: [name]
- *			> Change Topic Type: [name]
+ *			> Topic Type: [name]
+ *			> [Edit/Change] [Comment/Topic] Type: [name]
  *			
  *			Creates a new comment type or alters an existing one.  The name isn't case sensitive.
  *			
@@ -189,28 +189,29 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			{
 			yesRegex = new Regex.Config.Yes();
 			noRegex = new Regex.Config.No();
-			startRegex = new Regex.TopicTypes.ScopeStart();
-			endRegex = new Regex.TopicTypes.ScopeEnd();
+			startRegex = new Regex.CommentTypes.ScopeStart();
+			endRegex = new Regex.CommentTypes.ScopeEnd();
 
 			nonASCIILettersRegex = new Regex.NonASCIILetters();
 
-			ignoreKeywordsRegex = new Regex.TopicTypes.IgnoreKeywords();
-			alterCommentTypeRegex = new Regex.TopicTypes.AlterTopicType();
-			displayNameRegex = new Regex.TopicTypes.DisplayName();
-			pluralDisplayNameRegex = new Regex.TopicTypes.PluralDisplayName();
-			displayNameFromLocaleRegex = new Regex.TopicTypes.DisplayNameFromLocale();
-			pluralDisplayNameFromLocaleRegex = new Regex.TopicTypes.PluralDisplayNameFromLocale();
-			flagsRegex = new Regex.TopicTypes.Flags();
-			documentationRegex = new Regex.TopicTypes.Documentation();
-			variableTypeRegex = new Regex.TopicTypes.VariableType();
-			classHierarchyRegex = new Regex.TopicTypes.ClassHierarchy();
-			databaseHierarchyRegex = new Regex.TopicTypes.DatabaseHierarchy();
-			enumRegex = new Regex.TopicTypes.Enum();
-			breakListsRegex = new Regex.TopicTypes.BreakLists();
-			keywordsRegex = new Regex.TopicTypes.Keywords();
+			ignoreKeywordsRegex = new Regex.CommentTypes.IgnoreKeywords();
+			commentTypeRegex = new Regex.CommentTypes.CommentType();
+			alterCommentTypeRegex = new Regex.CommentTypes.AlterCommentType();
+			displayNameRegex = new Regex.CommentTypes.DisplayName();
+			pluralDisplayNameRegex = new Regex.CommentTypes.PluralDisplayName();
+			displayNameFromLocaleRegex = new Regex.CommentTypes.DisplayNameFromLocale();
+			pluralDisplayNameFromLocaleRegex = new Regex.CommentTypes.PluralDisplayNameFromLocale();
+			flagsRegex = new Regex.CommentTypes.Flags();
+			documentationRegex = new Regex.CommentTypes.Documentation();
+			variableTypeRegex = new Regex.CommentTypes.VariableType();
+			classHierarchyRegex = new Regex.CommentTypes.ClassHierarchy();
+			databaseHierarchyRegex = new Regex.CommentTypes.DatabaseHierarchy();
+			enumRegex = new Regex.CommentTypes.Enum();
+			breakListsRegex = new Regex.CommentTypes.BreakLists();
+			keywordsRegex = new Regex.CommentTypes.Keywords();
 			commaSeparatorRegex = new Regex.CondensedWhitespaceCommaSeparator();
-			alwaysGlobalRegex = new Regex.TopicTypes.ScopeAlwaysGlobal();
-			tagsRegex = new Regex.TopicTypes.Tags();
+			alwaysGlobalRegex = new Regex.CommentTypes.ScopeAlwaysGlobal();
+			tagsRegex = new Regex.CommentTypes.Tags();
 			}
 
 
@@ -425,12 +426,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					// Comment Type
 					//
 						
-					else if (identifier == "topic type")
+					else if (commentTypeRegex.IsMatch(identifier))
 						{
 						if (fileCommentTypeNames.ContainsKey(value))
 							{
 							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypeAlreadyExists(name)", value)
+								Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypeAlreadyExists(name)", value)
 								);
 							
 							// Continue parsing.  We'll throw this into the existing type even though it shouldn't be overwriting
@@ -863,7 +864,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		private void NeedsCommentTypeError (ConfigFile file, string identifier)
 			{
 			file.AddError(
-				Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordMustBeInTopicType(keyword)", identifier)
+				Locale.Get("NaturalDocs.Engine", "Comments.txt.KeywordMustBeInCommentType(keyword)", identifier)
 				);
 			}
 
@@ -954,10 +955,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				
 			// Comment Types
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.TopicTypesHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypesHeader.multiline") );
 
 			if (commentTypes.Count > 1)
-				{  output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredTopicTypesReference.multiline") );  }
+				{  output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredCommentTypesReference.multiline") );  }
 				
 			output.AppendLine();
 
@@ -976,7 +977,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (isProjectFile && commentType.AlterType == true)
 					{  output.Append("Alter ");  }
 					
-				output.AppendLine("Topic Type: " + commentType.Name);
+				output.AppendLine("Comment Type: " + commentType.Name);
 				int oldGroupNumber = 0;
 				
 				if (commentType.DisplayName != null)
@@ -1086,7 +1087,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				output.AppendLine();
 				}
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectSystem + "TopicTypesReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectSystem + "CommentTypesReference.multiline") );
 				
 				
 			//
@@ -1131,28 +1132,29 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		protected Regex.Config.Yes yesRegex;
 		protected Regex.Config.No noRegex;
-		protected Regex.TopicTypes.ScopeStart startRegex;
-		protected Regex.TopicTypes.ScopeEnd endRegex;
+		protected Regex.CommentTypes.ScopeStart startRegex;
+		protected Regex.CommentTypes.ScopeEnd endRegex;
 
 		protected Regex.NonASCIILetters nonASCIILettersRegex;
 
-		protected Regex.TopicTypes.IgnoreKeywords ignoreKeywordsRegex;
-		protected Regex.TopicTypes.AlterTopicType alterCommentTypeRegex;
-		protected Regex.TopicTypes.DisplayName displayNameRegex;
-		protected Regex.TopicTypes.PluralDisplayName pluralDisplayNameRegex;
-		protected Regex.TopicTypes.DisplayNameFromLocale displayNameFromLocaleRegex;
-		protected Regex.TopicTypes.PluralDisplayNameFromLocale pluralDisplayNameFromLocaleRegex;
-		protected Regex.TopicTypes.Flags flagsRegex;
-		protected Regex.TopicTypes.Documentation documentationRegex;
-		protected Regex.TopicTypes.VariableType variableTypeRegex;
-		protected Regex.TopicTypes.ClassHierarchy classHierarchyRegex;
-		protected Regex.TopicTypes.DatabaseHierarchy databaseHierarchyRegex;
-		protected Regex.TopicTypes.Enum enumRegex;
-		protected Regex.TopicTypes.BreakLists breakListsRegex;
-		protected Regex.TopicTypes.Keywords keywordsRegex;
+		protected Regex.CommentTypes.IgnoreKeywords ignoreKeywordsRegex;
+		protected Regex.CommentTypes.CommentType commentTypeRegex;
+		protected Regex.CommentTypes.AlterCommentType alterCommentTypeRegex;
+		protected Regex.CommentTypes.DisplayName displayNameRegex;
+		protected Regex.CommentTypes.PluralDisplayName pluralDisplayNameRegex;
+		protected Regex.CommentTypes.DisplayNameFromLocale displayNameFromLocaleRegex;
+		protected Regex.CommentTypes.PluralDisplayNameFromLocale pluralDisplayNameFromLocaleRegex;
+		protected Regex.CommentTypes.Flags flagsRegex;
+		protected Regex.CommentTypes.Documentation documentationRegex;
+		protected Regex.CommentTypes.VariableType variableTypeRegex;
+		protected Regex.CommentTypes.ClassHierarchy classHierarchyRegex;
+		protected Regex.CommentTypes.DatabaseHierarchy databaseHierarchyRegex;
+		protected Regex.CommentTypes.Enum enumRegex;
+		protected Regex.CommentTypes.BreakLists breakListsRegex;
+		protected Regex.CommentTypes.Keywords keywordsRegex;
 		protected Regex.CondensedWhitespaceCommaSeparator commaSeparatorRegex;
-		protected Regex.TopicTypes.ScopeAlwaysGlobal alwaysGlobalRegex;
-		protected Regex.TopicTypes.Tags tagsRegex;
+		protected Regex.CommentTypes.ScopeAlwaysGlobal alwaysGlobalRegex;
+		protected Regex.CommentTypes.Tags tagsRegex;
 
 
 		// Group: Static Variables

@@ -538,7 +538,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						if (commentType == null)
 							{
 							errorList.Add( 
-								Locale.Get("NaturalDocs.Engine", "Languages.txt.PrototypeEnderTopicTypeDoesntExist(name)", commentTypeName),
+								Locale.Get("NaturalDocs.Engine", "Languages.txt.PrototypeEnderCommentTypeDoesntExist(name)", commentTypeName),
 								sourceFile, configFileLanguage.LineNumber 
 								);
 							
@@ -666,7 +666,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Function: Start_FixCapitalization
 		 * 
 		 * A helper function used only by <Start()> which cleans up the capitalization of <ConfigFileLanguages> such as by 
-		 * making Alter Language entries match the original language and making Topic Type Prototype Enders match the
+		 * making Alter Language entries match the original language and making Comment Type Prototype Enders match the
 		 * original comment type.
 		 * 
 		 * Assumes <languages> and <CommentTypes.Manager> are already filled in and valid.
