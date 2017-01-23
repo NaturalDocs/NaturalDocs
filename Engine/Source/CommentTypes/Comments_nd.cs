@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Topics_nd
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Comments_nd
  * ____________________________________________________________________________
  * 
- * A class to handle loading and saving <Topics.nd>.
+ * A class to handle loading and saving <Comments.nd>.
  * 
  * 
  * Threading: Not Thread Safe
@@ -10,7 +10,7 @@
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  *		
  * 
- * File: Topics.nd
+ * File: Comments.nd
  * 
  *		A binary file which stores the combined results of the two versions of <Topics.txt> as of the last run, as well as storing
  *		the IDs of each type so they maintain their consistency between runs.
@@ -95,22 +95,22 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class Topics_nd
+	public class Comments_nd
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Topics_nd
+		/* Constructor: Comments_nd
 		 */
-		public Topics_nd ()
+		public Comments_nd ()
 			{
 			}
 
 
 		/* Function: Load
-		 * Loads the information in <Topics.nd>, which is the computed comment settings from the last time Natural Docs was run.
+		 * Loads the information in <Comments.nd>, which is the computed comment settings from the last time Natural Docs was run.
 		 * Returns whether it was successful.  If not all the out parameters will still return objects, they will just be empty.  
 		 */
 		public bool Load (Path filename,
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: Save
-		 * Saves the current computed comment types into <Topics.nd>.  Throws an exception if unsuccessful.
+		 * Saves the current computed comment types into <Comments.nd>.  Throws an exception if unsuccessful.
 		 */
 		public void Save (Path filename, IDObjects.Manager<CommentType> commentTypes, IDObjects.Manager<Tag> tags,
 								StringTable<CommentType> singularKeywords, StringTable<CommentType> pluralKeywords,

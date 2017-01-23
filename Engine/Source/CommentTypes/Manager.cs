@@ -90,11 +90,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// the project Topics.txt.  The project Topics.txt not existing is not a failure.
 			bool success = true;
 			
-			// Whether anything has changed since the last run, as determined by Topics.nd.  If Topics.nd doesn't exist or is corrupt,
+			// Whether anything has changed since the last run, as determined by Comments.nd.  If Topics.nd doesn't exist or is corrupt,
 			// we have to assume something changed.
 			bool changed = false;
 
-			Topics_nd commentsNDParser = new Topics_nd();
+			Comments_nd commentsNDParser = new Comments_nd();
 
 
 			// We need the ID numbers to stay consistent between runs, so we need to create all the comment types and tags from the
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				changed = true;
 				}
 				
-			else if (commentsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", out binaryCommentTypes, out binaryTags, 
+			else if (commentsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Comments.nd", out binaryCommentTypes, out binaryTags, 
 													out binarySingularKeywords, out binaryPluralKeywords, out binaryIgnoredKeywords) == false)
 				{
 				changed = true;
@@ -525,7 +525,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 
 				
-			commentsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Topics.nd", 
+			commentsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Comments.nd", 
 										  commentTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
 			if (success == true && changed == true)

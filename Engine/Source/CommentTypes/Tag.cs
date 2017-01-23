@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * 
 		 * InConfigFiles - A combination of <InSystemFile> and <InProjectFile> used for testing if either are set.
 		 * 
-		 * InBinaryFile - Set if the comment type appears in <Topics.nd>.
+		 * InBinaryFile - Set if the comment type appears in <Comments.nd>.
 		 */
 		protected enum TagFlags : byte
 			{
@@ -122,7 +122,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 			
 		/* Property: InBinaryFile
-		 * Whether this tag appears in <Topics.nd>.
+		 * Whether this tag appears in <Comments.nd>.
 		 */
 		public bool InBinaryFile
 			{
