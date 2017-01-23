@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																							"IsList INTEGER NOT NULL, " +
 																							"IsEmbedded INTEGER NOT NULL, " +
 																							"EndingSymbol TEXT NOT NULL, " +
-																							"TopicTypeID INTEGER NOT NULL, " +
+																							"CommentTypeID INTEGER NOT NULL, " +
 																							"DeclaredAccessLevel INTEGER NOT NULL, " +
 																							"EffectiveAccessLevel INTEGER NOT NULL, " +
 																							"Tags TEXT, " +

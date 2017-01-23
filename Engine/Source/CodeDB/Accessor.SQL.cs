@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			bool includePrototype = ((getTopicFlags & GetTopicFlags.DontIncludePrototype) == 0);
 						
 			StringBuilder queryText = new StringBuilder("SELECT TopicID, Title, Symbol, SymbolDefinitionNumber, " +
-																				  "Topics.ClassID, IsList, IsEmbedded, TopicTypeID, DeclaredAccessLevel, " +
+																				  "Topics.ClassID, IsList, IsEmbedded, CommentTypeID, DeclaredAccessLevel, " +
 																				  "EffectiveAccessLevel, Tags, CommentLineNumber, CodeLineNumber, " +
 																				  "LanguageID, PrototypeContextID, BodyContextID, FileID, FilePosition ");
 
@@ -445,7 +445,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				GetOrCreateContextIDs(topic);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
-														"DefinesClass, IsList, IsEmbedded, EndingSymbol, TopicTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
+														"DefinesClass, IsList, IsEmbedded, EndingSymbol, CommentTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
 														"Tags, FileID, FilePosition, CommentLineNumber, CodeLineNumber, LanguageID, PrototypeContextID, " +
 														"BodyContextID) " +
 													"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",

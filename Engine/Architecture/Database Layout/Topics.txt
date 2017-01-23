@@ -122,13 +122,13 @@ Database Column: EndingSymbol
 	The <Symbols.EndingSymbol> that's derived from <Symbol>.
 	
 	
-Database Column: TopicTypeID
+Database Column: CommentTypeID
 
 	--- Prototype ---
-		TopicTypeID INTEGER NOT NULL
+		CommentTypeID INTEGER NOT NULL
 	-----------------
 	
-	The ID of the topic's type, as managed by <CodeClear.NaturalDocs.Engine.TopicTypes.Manager>.
+	The ID of the topic's type, as managed by <CodeClear.NaturalDocs.Engine.CommentTypes.Manager>.
 	
 	
 Database Column: DeclaredAccessLevel
@@ -157,7 +157,7 @@ Database Column: Tags
 		Tags TEXT
 	-----------------
 	
-	A number set of all the tags applied to this topic, as managed by <CodeClear.NaturalDocs.Engine.TopicTypes.Manager>.
+	A number set of all the tags applied to this topic, as managed by <CodeClear.NaturalDocs.Engine.CommentTypes.Manager>.
 	Is a string encoding of a <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet>.
 
 
