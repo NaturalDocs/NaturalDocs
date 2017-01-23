@@ -126,7 +126,6 @@
     <Compile Include="Source\Comments\LineFinder.cs" />
     <Compile Include="Source\Comments\Parsers\NaturalDocs.cs" />
     <Compile Include="Source\Comments\PossibleDocumentationComment.cs" />
-    <Compile Include="Source\Comments\Type.cs" />
     <Compile Include="Source\ConfigFile.cs" />
     <Compile Include="Source\Config\Manager.cs" />
     <Compile Include="Source\IDObjects\NumberRange.cs" />
