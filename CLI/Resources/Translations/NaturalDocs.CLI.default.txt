@@ -150,10 +150,6 @@ Folder Parameters:
     Can be specified multiple times.  The pattern must match an entire folder
     name, so "cli" will not match "client", but "cli*" would.
 
- -img [folder]
---images [folder]
-    Specifies a folder to search for images.  Can be specified multiple times.
-
  -w [folder]
 --working-data [folder]
     Specifies a folder to store temporary data.  If not specified it will be a
