@@ -98,7 +98,7 @@ This program is licensed under the AGPL
 
 Syntax:
 
-    NaturalDocs [project config folder]
+    NaturalDocs [project configuration folder] [additional options]
 
     NaturalDocs -i [input (source) folder]
                 -p [project configuration folder]
@@ -110,8 +110,8 @@ Examples:
     NaturalDocs C:\My Project\Natural Docs Config
     
     NaturalDocs -i /project/src
-                -o html /project/doc
                 -p /project/ndconfig
+                -o html /project/doc
 
 
 Folder Parameters:
@@ -119,9 +119,9 @@ Folder Parameters:
 
  -p [folder]
 --project-config [folder]
-    Specifies the folder to store project configuration files.  Required.  If
-    you specify an empty folder Natural Docs will generate configuration files
-    for you.
+    Specifies the folder that stores the configuration files Natural Docs will
+    use for this project.  Required.  If the folder is empty Natural Docs will
+    generate the configuration files for you.
 
  -i [folder]
 --input [folder]
@@ -166,8 +166,8 @@ Common Parameters:
  -s [style]
 --style [style]
     Specifies the output style to use.  Can be the name of a CSS file in the
-    project folder or a subfolder of the project folder that contains
-    Style.txt.  Do not include ".css" if using a CSS file.
+    project folder or a subfolder of the project configuration folder that
+    contains Style.txt.  Do not include ".css" if using a CSS file.
 
  -t [width]
 --tab-width [width]
@@ -180,7 +180,7 @@ Common Parameters:
  -nag
 --no-auto-group
     Turns off automatic grouping.  Topics will only be grouped in the output
-    when you manually add Group topics.
+    when you manually add Group comments.
 
  -r
 --rebuild
