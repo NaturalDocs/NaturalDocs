@@ -162,8 +162,8 @@ Common Parameters:
  -s [style]
 --style [style]
     Specifies the output style to use.  Can be the name of a CSS file in the
-    project folder or a subfolder of the project configuration folder that
-    contains Style.txt.  Do not include ".css" if using a CSS file.
+    project configuration folder or a subfolder that contains Style.txt.  Do
+    not include ".css" if using a CSS file.
 
  -t [width]
 --tab-width [width]

@@ -219,8 +219,8 @@ Project.txt.TimestampSubstitutions.multiline {{{
 Project.txt.StyleSyntax.multiline {{{
 # Style: [style]
 #    The style to apply to the generated documentation.  It can be the name of
-#    a CSS file in the project folder or a subfolder of the project folder
-#    that contains Style.txt.  Do not include ".css" if using a CSS file.
+#    a CSS file in the project configuration folder or a subfolder that
+#    contains Style.txt.  Do not include ".css" if using a CSS file.
 }}}
 
 Project.txt.InputHeader.multiline {{{
@@ -233,9 +233,10 @@ Project.txt.InputHeaderText.multiline {{{
 # scanning.  If you use any of these options on the command line, this entire
 # section is ignored except for names and numbers.
 #
-# All paths are relative to the project folder, which lets this file remain
-# portable across computers and not cause problems in version control systems.
-# You can enter absolute paths and they will be converted automatically.
+# All paths are relative to the project configuration folder, which lets this
+# file remain portable across computers and not cause problems in version
+# control systems.  You can enter absolute paths and they will be converted
+# automatically.
 }}}
 
 Project.txt.SourceFolderSyntax.multiline {{{
@@ -289,9 +290,10 @@ Project.txt.OutputHeaderText.multiline {{{
 # to build and where it should be put.  If you use any of these options on the
 # command line, this entire section is ignored except for secondary settings.
 #
-# All paths are relative to the project folder, which lets this file remain
-# portable across computers and not cause problems in version control systems.
-# You can enter absolute paths and they will be converted automatically.
+# All paths are relative to the project configuration folder, which lets this
+# file remain portable across computers and not cause problems in version
+# control systems.  You can enter absolute paths and they will be converted
+# automatically.
 #
 # You can override any of the project information settings under each entry,
 # so if you have multiple output folders you can give them each different
