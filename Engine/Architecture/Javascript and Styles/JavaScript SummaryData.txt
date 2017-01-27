@@ -39,7 +39,7 @@ _______________________________________________________________________________
 		The second parameter is an array of the comment types used in the summary.  They appear in the order in which they should
 		appear in the output.  Each comment type is an array with these members:
 			
-			pluralNameHTML - The plural name of the language in HTML.
+			pluralNameHTML - The plural name of the comment type in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
 			
 		The third parameter is an array of summary entries, each of which is an array with these members:
