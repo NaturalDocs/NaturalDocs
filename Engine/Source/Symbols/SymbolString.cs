@@ -374,13 +374,16 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			if (symbolString == null)
 				{  return;  }
 
+			string fallbackSymbolString = symbolString;
 			symbolString = symbolString.Trim();
 
 			if (symbolString == "")
 				{
-				symbolString = null;
+				symbolString = fallbackSymbolString;
 				return;
 				}
+
+			fallbackSymbolString = symbolString;
 				
 			symbolString = symbolString.Normalize(System.Text.NormalizationForm.FormC);  // Canonical decomposition and recombination
 
@@ -482,7 +485,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				}
 				
 			if (normalizedString.Length == 0)
-				{  symbolString = null;  }
+				{  symbolString = fallbackSymbolString;  }
 			else
 				{  symbolString = normalizedString.ToString();  }
 			}
