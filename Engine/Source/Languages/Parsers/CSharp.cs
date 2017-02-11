@@ -2899,15 +2899,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TokenIterator startOfString = iterator;
 				iterator.Next();
 
-				while (iterator.IsInBounds && iterator.Character != closingChar)
+				while (iterator.IsInBounds)
 					{
+					if (iterator.Character == closingChar)
+						{  
+						iterator.Next();
+						break;
+						}
 					if (iterator.Character == '\\')
-						{  iterator.Next(2);  }
+						{  
+						iterator.Next();
+
+						if (iterator.IsInBounds)
+							{  iterator.Next();  }
+						}
 					else
 						{  iterator.Next();  }
 					}
-
-				iterator.Next();
 
 				if (mode == ParseMode.SyntaxHighlight)
 					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
@@ -2925,12 +2933,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					if (iterator.MatchesAcrossTokens("\"\""))
 						{  iterator.NextByCharacters(2);  }
 					else if (iterator.Character == '\"')
-						{  break;  }
+						{
+						iterator.Next();
+						break;  
+						}
 					else
 						{  iterator.Next();  }
 					}
-
-				iterator.Next();
 
 				if (mode == ParseMode.SyntaxHighlight)
 					{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
