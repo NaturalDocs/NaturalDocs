@@ -142,8 +142,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 			int topicCount = group.Count;
 
 			int targetTopicIndex;
-			if (targetGroupIndex >= target.groups.Count)
-				{  
+			if (target.groups.Count == 0)
+				{  targetTopicIndex = target.topics.Count;  }
+			else if (targetGroupIndex >= target.groups.Count)
+				{
 				var lastGroup = target.groups[ target.groups.Count - 1 ];
 				targetTopicIndex = lastGroup.StartingIndex + lastGroup.Count;
 				}
