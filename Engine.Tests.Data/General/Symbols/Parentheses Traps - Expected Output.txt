@@ -68,8 +68,8 @@ Ending Symbol: ()
 Title Parameters: (none)
 Prototype Parameters: (none)
 -----
-Symbol: ()
-Ending Symbol: ()
+Symbol: ::
+Ending Symbol: ::
 Title Parameters: (none)
 Prototype Parameters: (none)
 -----

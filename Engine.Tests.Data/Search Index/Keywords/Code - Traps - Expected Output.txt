@@ -38,6 +38,21 @@ Topic: operator ->
 - Search Text: operator.
 - Keywords: operator
 
+Topic: .
+- Display Name: .
+- Search Text: 
+- Keywords: (none)
+
+Topic: ::
+- Display Name: ::
+- Search Text: 
+- Keywords: (none)
+
+Topic: ->
+- Display Name: ->
+- Search Text: 
+- Keywords: (none)
+
 Topic: .Global
 - Display Name: (.)Global
 - Search Text: global

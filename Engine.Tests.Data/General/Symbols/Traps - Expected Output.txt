@@ -3,6 +3,21 @@ Ending Symbol: before bad topics
 Title Parameters: (none)
 Prototype Parameters: (none)
 -----
+Symbol: .
+Ending Symbol: .
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: ::
+Ending Symbol: ::
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: ->
+Ending Symbol: ->
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
 Symbol: After bad topics
 Ending Symbol: after bad topics
 Title Parameters: (none)
