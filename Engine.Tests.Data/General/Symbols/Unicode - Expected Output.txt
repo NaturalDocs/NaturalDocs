@@ -1,0 +1,14 @@
+Symbol: Unicode
+Ending Symbol: unicode
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Ŭnicode
+Ending Symbol: ŭnicode
+Title Parameters: (none)
+Prototype Parameters: (none)
+-----
+Symbol: Unicóde
+Ending Symbol: unicóde
+Title Parameters: (none)
+Prototype Parameters: (none)
