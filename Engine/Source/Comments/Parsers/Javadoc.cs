@@ -332,7 +332,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					description = Normalize(description);
 
 					if (description == null || description == "")
-						{  description = "<p><link type=\"naturaldocs\" originialtext=\"" + symbol.EntityEncode() + "\"></p>";  }
+						{  description = "<p><link type=\"naturaldocs\" originaltext=\"" + symbol.EntityEncode() + "\"></p>";  }
 					else
 						{  description = "<p><link type=\"naturaldocs\" originaltext=\"" + description.EntityEncode() + " at " + symbol.EntityEncode() + "\"></p>";  }
 					}
@@ -601,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 					if (description == null || description == "")
 						{  
-						output.Append("<link type=\"naturaldocs\" originialtext=\"");
+						output.Append("<link type=\"naturaldocs\" originaltext=\"");
 						output.EntityEncodeAndAppend(symbol);
 						output.Append("\">");
 						}
@@ -639,7 +639,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							if (substitutionIndex > 0)
 								{  output.EntityEncodeAndAppend(substitution, 0, substitutionIndex);  }
 
-							output.Append("<link type=\"naturaldocs\" originialtext=\"");
+							output.Append("<link type=\"naturaldocs\" originaltext=\"");
 							output.EntityEncodeAndAppend(symbol);
 							output.Append("\">");
 
