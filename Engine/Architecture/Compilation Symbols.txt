@@ -5,14 +5,14 @@ _______________________________________________________________________________
 
 Macros: SQLite Character Mode
 
-	Determines which mode SQLite will be run in.  One of these must be defined.
+	Determines which mode SQLite will be run in.  If neither of them are defined it will use UTF-8.
 
-	SQLITE_UTF16 - Use SQLite in UTF-16 mode.
 	SQLITE_UTF8 - Use SQLite in UTF-8 mode.
-
+	SQLITE_UTF16 - Use SQLite in UTF-16 mode.
+	
 	Running in UTF-8 mode means a smaller database file, which means less disk access and less memory use.  It also 
 	means more of the database can stay in the memory it does use.  However, it also means strings have to be constantly 
-	converted between C#'s native UTF-16 strings and SQLite's UTF-8 ones.  Having these symbols available lets you
+	converted between SQLite's UTF-8 strings and C#'s native UTF-16 ones.  Having these symbols available lets you
 	easily test the performance tradeoff.
 	
 	Note, however, that this only applies to new databases.  When testing, you must delete CodeDB.nd for it to really take

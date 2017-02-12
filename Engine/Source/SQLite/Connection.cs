@@ -25,6 +25,10 @@
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
+#if !SQLITE_UTF8 && !SQLITE_UTF16
+	#define SQLITE_UTF8
+#endif
+
 using System;
 
 
