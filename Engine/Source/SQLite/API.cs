@@ -12,6 +12,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 
 #if !SQLITE_UTF8 && !SQLITE_UTF16
@@ -89,8 +90,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		extern static private Result sqlite3_shutdown ();
 		
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.LPStr)] string filename, out IntPtr connectionHandle, 
-																	 OpenOption options, IntPtr vfs);
+		extern static private Result sqlite3_open_v2 ([MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string filename, 
+																		 out IntPtr connectionHandle, OpenOption options, IntPtr vfs);
 
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_close_v2 (IntPtr connectionHandle);
@@ -104,15 +105,15 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		#if SQLITE_UTF16
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_prepare16_v2 (IntPtr connectionHandle, 
-																			[MarshalAs(UnmanagedType.LPWStr)] string statementText, int statementTextByteLength,
-																			out IntPtr statementHandle, out IntPtr unusedStatementText);
+																				 [MarshalAs(UnmanagedType.LPWStr)] string statementText,
+																				 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#elif SQLITE_UTF8
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_prepare_v2 (IntPtr connectionHandle, 
-																		[MarshalAs(UnmanagedType.LPStr)] string statementText, int statementTextByteLength,
-																		out IntPtr statementHandle, out IntPtr unusedStatementText);
+																			 [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string statementText,
+																			 int statementTextByteLength, out IntPtr statementHandle, out IntPtr unusedStatementText);
 		#endif
-																					
+
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_int (IntPtr statementHandle, int index, int value);
 		
@@ -121,20 +122,22 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		
 		#if SQLITE_UTF16
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_text16 (IntPtr statementHandle, int index, [MarshalAs(UnmanagedType.LPWStr)] string value, 
-																		 int valueByteLength, DestructorOption destructor);
+		extern static private Result sqlite3_bind_text16 (IntPtr statementHandle, int index,
+																			  [MarshalAs(UnmanagedType.LPWStr)] string value, 
+																			  int valueByteLength, DestructorOption destructor);
 		#elif SQLITE_UTF8
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
-		extern static private Result sqlite3_bind_text (IntPtr statementHandle, int index, [MarshalAs(UnmanagedType.LPStr)] string value, 
-																 	  int valueByteLength, DestructorOption destructor);
+		extern static private Result sqlite3_bind_text (IntPtr statementHandle, int index, 
+																		  [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef=typeof(UTF8Marshaller))] string value, 
+																		  int valueByteLength, DestructorOption destructor);
 		#endif
-																		  
+
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_double (IntPtr statementHandle, int index, double value);
 		
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_bind_null (IntPtr  statementHandle, int index);
-																					
+
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_step (IntPtr statementHandle);
 		
@@ -160,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_clear_bindings (IntPtr statementHandle);
-																					  
+
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_finalize (IntPtr statementHandle);
 		
@@ -196,15 +199,15 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			IntPtr ignore;
 
 			#if SQLITE_UTF16
-				// * 2 because it wants the length in bytes, not in characters, and we're passing it as UTF-16.
-				return sqlite3_prepare16_v2(connectionHandle, statementText, statementText.Length * 2, out statementHandle, out ignore);
+				// It wants the length in bytes, not in characters
+				return sqlite3_prepare16_v2(connectionHandle, statementText, Encoding.Unicode.GetByteCount(statementText), out statementHandle, out ignore);
 			#elif SQLITE_UTF8
-				return sqlite3_prepare_v2(connectionHandle, statementText, statementText.Length, out statementHandle, out ignore);
+				return sqlite3_prepare_v2(connectionHandle, statementText, Encoding.UTF8.GetByteCount(statementText), out statementHandle, out ignore);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
 			}
-														   
+
 		static public Result BindInt (IntPtr statementHandle, int index, int value)
 			{  return sqlite3_bind_int(statementHandle, index, value);  }
 		
@@ -214,10 +217,10 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		static public Result BindText (IntPtr statementHandle, int index, string value)
 			{  
 			#if SQLITE_UTF16
-				// * 2 because it wants the length in bytes, not in characters, and we're passing it as UTF-16.
-				return sqlite3_bind_text16(statementHandle, index, value, value.Length * 2, DestructorOption.Transient);  
+				// It wants the length in bytes, not in characters
+				return sqlite3_bind_text16(statementHandle, index, value, Encoding.Unicode.GetByteCount(value), DestructorOption.Transient);  
 			#elif SQLITE_UTF8
-				return sqlite3_bind_text(statementHandle, index, value, value.Length, DestructorOption.Transient);  
+				return sqlite3_bind_text(statementHandle, index, value, Encoding.UTF8.GetByteCount(value), DestructorOption.Transient);  
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -248,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				return Marshal.PtrToStringUni(nativeResult);
 			#elif SQLITE_UTF8
 				IntPtr nativeResult = sqlite3_column_text (statementHandle, column);
-				return Marshal.PtrToStringAnsi(nativeResult);
+				return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
 			#else
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 			#endif
@@ -269,7 +272,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		static public string LibVersion ()
 			{
 			IntPtr nativeResult = sqlite3_libversion();
-			return Marshal.PtrToStringAnsi(nativeResult);
+			return (string)UTF8Marshaller.GetInstance().MarshalNativeToManaged(nativeResult);
 			}
 
 		}

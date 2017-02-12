@@ -26,6 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>default</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -241,6 +242,7 @@
     <Compile Include="Source\CommentTypes\Manager.cs" />
     <Compile Include="Source\CommentTypes\Tag.cs" />
     <Compile Include="Source\CommentTypes\CommentType.cs" />
+    <Compile Include="Source\UTF8Marshaller.cs" />
     <Compile Include="Source\Version.cs" />
   </ItemGroup>
   <ItemGroup>
