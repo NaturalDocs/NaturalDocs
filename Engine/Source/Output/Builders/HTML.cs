@@ -896,13 +896,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					"<html>" +
 						"<head>" +
 
-							"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">" +
+							"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" +
 
 							"<title>" + pageTitle.ToHTML() + "</title>" +
 
 							"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
 								MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main.css") +
-								"\">");
+								"\" />");
 
 							string pageTypeName = PageTypeNameOf(pageType);
 							string jsRelativePrefix = MakeRelativeURL(outputPath, Styles_OutputFolder()) + '/';
