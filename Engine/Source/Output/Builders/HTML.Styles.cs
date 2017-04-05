@@ -452,8 +452,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			string jsOutputString = jsOutput.ToString();
 
 			#if !DONT_SHRINK_FILES
-				Shrinker shrinker = new Shrinker();
-				jsOutputString = shrinker.ShrinkJS(jsOutputString);
+				ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
+				jsOutputString = jsProcessor.Process(jsOutputString);
 			#endif
 
 			System.IO.File.WriteAllText(Styles_OutputFolder() + "/main.js", jsOutputString);
@@ -522,14 +522,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					if (extension == "js" || extension == "json")
 						{
-						Shrinker shrinker = new Shrinker();
-						string output = shrinker.ShrinkJS(System.IO.File.ReadAllText(originalStyleFile));
+						ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
+						string output = jsProcessor.Process(System.IO.File.ReadAllText(originalStyleFile));
 						System.IO.File.WriteAllText(outputStyleFile, output);
 						}
 					else if (extension == "css")
 						{
-						Shrinker shrinker = new Shrinker();
-						string output = shrinker.ShrinkCSS(System.IO.File.ReadAllText(originalStyleFile));
+						ResourceProcessors.CSS cssProcessor = new ResourceProcessors.CSS();
+						string output = cssProcessor.Process(System.IO.File.ReadAllText(originalStyleFile));
 						System.IO.File.WriteAllText(outputStyleFile, output);
 						}
 					else

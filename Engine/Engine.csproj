@@ -103,6 +103,9 @@
     <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
     <Compile Include="Source\Output\Builders\HTMLBuildState.cs" />
     <Compile Include="Source\Output\Components\JSSearchData.cs" />
+    <Compile Include="Source\Output\ResourceProcessor.cs" />
+    <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
+    <Compile Include="Source\Output\ResourceProcessors\CSS.cs" />
     <Compile Include="Source\Position.cs" />
     <Compile Include="Source\Languages\Exceptions\BadContainerOperation.cs" />
     <Compile Include="Source\Languages\Parsers\ShebangScript.cs" />
@@ -172,7 +175,6 @@
     <Compile Include="Source\Output\MenuEntries\Files\File.cs" />
     <Compile Include="Source\Output\MenuEntries\Files\FileSource.cs" />
     <Compile Include="Source\Output\MenuEntries\Files\Folder.cs" />
-    <Compile Include="Source\Output\Shrinker.cs" />
     <Compile Include="Source\Output\Style.cs" />
     <Compile Include="Source\Output\Styles\FileSource.cs" />
     <Compile Include="Source\Output\Styles\HTMLStyle.cs" />

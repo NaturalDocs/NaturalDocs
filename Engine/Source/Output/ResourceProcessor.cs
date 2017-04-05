@@ -1,8 +1,8 @@
-﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Shrinker
+﻿/*
+ * Class: CodeClear.NaturalDocs.Engine.Output.ResourceProcessor
  * ____________________________________________________________________________
- * 
- * A class used to condense JavaScript and CSS so that it doesn't contain any unnecessary comments or whitespace.
+ *
+ * A base class used for shared functionality when processing JS and CSS files.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2016 Code Clear LLC.
@@ -11,7 +11,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
@@ -20,203 +19,30 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	public class Shrinker
+	public abstract class ResourceProcessor
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		static Shrinker ()
+		static ResourceProcessor ()
 			{
-			jsCommentFinder = new Languages.CommentFinder("JavaScript");
-			jsCommentFinder.LineCommentStrings = new string[] { "//" };
-			jsCommentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
-
-			cssCommentFinder = new Languages.CommentFinder("CSS");
-			cssCommentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
-
 			keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
 			substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
 			substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
 			}
 
-		public Shrinker ()
+		public ResourceProcessor ()
 			{
 			source = null;
 			output = null;
 			substitutions = null;
 			}
 
-		public string ShrinkJS (string javascript)
-			{
-			source = new Tokenizer(javascript);
-			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
 
-
-			// Search comments for sections to include in the output and substitution definitions.
-
-			IList<PossibleDocumentationComment> comments = jsCommentFinder.GetPossibleDocumentationComments(source);
-
-			foreach (var comment in comments)
-				{  ProcessComment(comment);  }
-
-			if (output.Length > 0)
-				{  
-				output.AppendLine(" */");
-				output.AppendLine();  
-				}
-
-
-			// Build the condensed output.
-
-			TokenIterator iterator = source.FirstToken;
-
-			#if !DONT_SHRINK_FILES
-				string spaceSeparatedSymbols = "+-";
-			#endif
-
-			string regexPrefixCharacters = "({[,;:=&|!?\0";
-			char lastNonWSChar = '\0';
-
-			while (iterator.IsInBounds)
-				{
-				TokenIterator prevIterator = iterator;
-				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
-
-				if (lastChar != ' ' && lastChar != '\t')
-					{  lastNonWSChar = lastChar;  }
-
-				if (TryToSkipWhitespace(ref iterator, false) == true)
-					{
-					#if DONT_SHRINK_FILES
-						source.AppendTextBetweenTo(prevIterator, iterator, output);
-					#else
-					char nextChar = iterator.Character; 
-
-					if ( nextChar == '`' ||
-						  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
-						   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
-						  (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
-						   Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
-						{  output.Append(' ');  }
-					#endif
-					}
-				else if (iterator.Character == '`')
-					{
-					string substitution = null;
-
-					if (TryToGetSubstitution(ref iterator, out substitution))
-						{  
-						output.Append(substitution);  
-						}
-					else
-						{
-						output.Append('`');
-						iterator.Next();
-						}
-					}
-				else
-					{
-					if (TryToSkipString(ref iterator) == true ||
-							(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
-						{  }
-					else
-						{  iterator.Next();  }
-
-					source.AppendTextBetweenTo(prevIterator, iterator, output);
-					}
-				}
-
-			return output.ToString();
-			}
-
-
-		public string ShrinkCSS (string css)
-			{
-			source = new Tokenizer(css);
-			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
-
-
-			// Search comments for sections to include in the output and substitution definitions.
-
-			IList<PossibleDocumentationComment> comments = cssCommentFinder.GetPossibleDocumentationComments(source);
-
-			foreach (var comment in comments)
-				{  ProcessComment(comment);  }
-
-			if (output.Length > 0)
-				{  
-				output.AppendLine(" */");
-				output.AppendLine();  
-				}
-
-
-			// Build the condensed output.
-
-			TokenIterator iterator = source.FirstToken;
-
-			// We have to be more cautious than the JS shrinker.  You don't want something like "head .class" to become
-			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
-			// and not before ("body :link").
-			#if !DONT_SHRINK_FILES
-				string safeToCondenseAround = "{},;:+>[]=\0";
-			#endif
-
-			while (iterator.IsInBounds)
-				{
-				TokenIterator prevIterator = iterator;
-				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
-
-				if (TryToSkipWhitespace(ref iterator, true) == true)
-					{
-					#if DONT_SHRINK_FILES
-						source.AppendTextBetweenTo(prevIterator, iterator, output);
-					#else
-						char nextChar = iterator.Character; 
-
-						if (nextChar == ':' ||
-							  (safeToCondenseAround.IndexOf(lastChar) == -1 &&
-								safeToCondenseAround.IndexOf(nextChar) == -1) )
-							{  output.Append(' ');  }
-					#endif
-					}
-				else if (TryToSkipString(ref iterator) == true)
-					{
-					source.AppendTextBetweenTo(prevIterator, iterator, output);
-					}
-				else if (iterator.Character == '`')
-					{
-					string substitution = null;
-
-					if (TryToGetSubstitution(ref iterator, out substitution))
-						{  
-						output.Append(substitution);  
-						}
-					else
-						{
-						output.Append('`');
-						iterator.Next();
-						}
-					}
-				else
-					{
-					if (iterator.Character == '}' && lastChar == ';')
-						{
-						// Semicolons are unnecessary at the end of blocks.  However, we have to do this here instead of in a 
-						// global search and replace for ";}" because we don't want to alter that sequence if it appears in a string.
-						output[output.Length - 1] = '}';
-						}
-					else
-						{  iterator.AppendTokenTo(output);  }
-
-					iterator.Next();
-					}
-				}
-
-			return output.ToString();
-			}
+		/* Function: Process
+		 */
+		abstract public string Process (string input);
 
 
 		/* Function: ProcessComment
@@ -235,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					{
 					iterator.Next();
 
-					while (iterator < comment.End && 
+					while (iterator < comment.End &&
 								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false)
 						{
 						Match match = iterator.Match(substitutionDefinitionRegex, LineBoundsMode.CommentContent);
@@ -263,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					LineIterator end = iterator;
 					int commonIndent = 9999;
 
-					while (iterator < comment.End && 
+					while (iterator < comment.End &&
 								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false &&
 								iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success == false)
 						{
@@ -332,15 +158,15 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			for (;;)
 				{
-				if (iterator.FundamentalType == FundamentalType.Whitespace || 
+				if (iterator.FundamentalType == FundamentalType.Whitespace ||
 					 iterator.FundamentalType == FundamentalType.LineBreak)
 					{
 					iterator.Next();
 					result = true;
 					}
 				else if (TryToSkipBlockComment(ref iterator) || (!blockCommentsOnly && TryToSkipLineComment(ref iterator)) )
-					{  
-					result = true;  
+					{
+					result = true;
 					}
 				else
 					{  return result;  }
@@ -407,9 +233,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 		/* Function: TryToSkipQuotedText
-		 * If the iterator is on the opening symbol of a section of quated text as specified by the passed character, skips over it and 
-		 * returns true.  Otherwise leaves the iterator alone and returns false.  
-		 * 
+		 * If the iterator is on the opening symbol of a section of quated text as specified by the passed character, skips over it and
+		 * returns true.  Otherwise leaves the iterator alone and returns false.
+		 *
 		 * Quoted text is a segment that starts and ends with the passed character.  Everything in between is part of the quoted section
 		 * until it reaches the character again, excluding when that character is preceded by a backslash.
 		 */
@@ -465,9 +291,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				tokenIterator.NextByCharacters(7);
 
 				while (tokenIterator.IsInBounds && tokenIterator.Character != '}')
-					{  
+					{
 					tokenIterator.AppendTokenTo(token);
-					tokenIterator.Next();  
+					tokenIterator.Next();
 					}
 
 				if (tokenIterator.Character != '}')
@@ -486,7 +312,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			// Standard comment substitutions
 			else
 				{
-				while (tokenIterator.IsInBounds && (tokenIterator.FundamentalType == FundamentalType.Text || 
+				while (tokenIterator.IsInBounds && (tokenIterator.FundamentalType == FundamentalType.Text ||
 							 tokenIterator.Character == '.' || tokenIterator.Character == '_'))
 					{
 					tokenIterator.AppendTokenTo(token);
@@ -523,13 +349,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		protected StringBuilder output;
 		protected StringToStringTable substitutions;
 
-		
+
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static Languages.CommentFinder jsCommentFinder;
-		protected static Languages.CommentFinder cssCommentFinder;
-		
 		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex;
 		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex;
 		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex;
