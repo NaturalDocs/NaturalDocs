@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 11-03-2016)
+﻿Format: 2.0 (Development Release 04-06-2017)
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
