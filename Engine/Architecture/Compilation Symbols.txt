@@ -21,8 +21,6 @@ Macros: SQLite Character Mode
 	
 Macros: Other Symbols
 
-	DONT_SHRINK_FILES - If defined, extra whitespace and comments will not be removed from JS, JSON, and CSS files.
-
 	SHOW_NDMARKUP - If defined, Natural Docs will put a copy of the <NDMarkup> in the output.
 
 	SHOW_FILE_PARSING - If defined, Natural Docs will include a console message for every file parsed.  Useful for figuring

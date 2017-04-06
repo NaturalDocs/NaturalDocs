@@ -92,33 +92,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				"NDFramePage.OnPageTitleLoaded(\"" + fileHashPath.StringEscape() + "\",\"" + fileTitle.StringEscape() + "\");"
 				);
 
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.AppendLine();
-			#endif
+				}
 
 			output.Append("NDSummary.OnSummaryLoaded(\"" + fileHashPath.StringEscape() + "\",");
 
 			BuildLanguageList();
 			output.Append(',');
 
-			#if DONT_SHRINK_FILES
-				output.AppendLine();
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.AppendLine();  }
 
 			BuildCommentTypeList();
 			output.Append(',');
 
-			#if DONT_SHRINK_FILES
-				output.AppendLine();
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.AppendLine();  }
 
 			BuildSummaryEntries();
 
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			output.Append(");");
 
@@ -141,10 +141,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			BuildSummaryToolTips();
 
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			output.Append("});");
 
@@ -188,10 +189,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			
 			// Build JavaScript
 
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			output.Append('[');
 
@@ -207,10 +209,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{  
 					output.Append(',');  
 
-					#if DONT_SHRINK_FILES
+					if (!EngineInstance.Config.ShrinkFiles)
+						{
 						output.AppendLine();
 						output.Append("   ");
-					#endif
+						}
 					}
 				}
 
@@ -249,10 +252,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// Build JavaScript output
 
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			output.Append('[');
 
@@ -268,10 +272,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{  
 					output.Append(',');  
 					
-					#if DONT_SHRINK_FILES
+					if (!EngineInstance.Config.ShrinkFiles)
+						{
 						output.AppendLine();
 						output.Append("   ");
-					#endif
+						}
 					}
 				}
 
@@ -283,10 +288,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildSummaryEntries ()
 			{
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			output.Append('[');
 
@@ -343,10 +349,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{  
 					output.Append(',');  
 
-					#if DONT_SHRINK_FILES
+					if (!EngineInstance.Config.ShrinkFiles)
+						{
 						output.AppendLine();
 						output.Append("   ");
-					#endif
+						}
 					}
 				}
 
@@ -358,10 +365,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildSummaryToolTips ()
 			{
-			#if DONT_SHRINK_FILES
+			if (!EngineInstance.Config.ShrinkFiles)
+				{
 				output.AppendLine();
 				output.Append("   ");
-			#endif
+				}
 
 			bool first = true;
 
@@ -379,10 +387,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							{
 							output.Append(',');
 
-							#if DONT_SHRINK_FILES
+							if (!EngineInstance.Config.ShrinkFiles)
+								{
 								output.AppendLine();
 								output.Append("   ");
-							#endif
+								}
 							}
 
 						output.Append(topic.TopicID);

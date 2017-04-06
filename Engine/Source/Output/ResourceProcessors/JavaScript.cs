@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			commentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
 			}
 
-		override public string Process (string javascript)
+		override public string Process (string javascript, bool shrink = true)
 			{
 			source = new Tokenizer(javascript);
 			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			IList<PossibleDocumentationComment> comments = commentFinder.GetPossibleDocumentationComments(source);
 
 			foreach (var comment in comments)
-				{  ProcessComment(comment);  }
+				{  ProcessComment(comment, shrink);  }
 
 			if (output.Length > 0)
 				{
@@ -57,10 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 
 			TokenIterator iterator = source.FirstToken;
 
-			#if !DONT_SHRINK_FILES
-				string spaceSeparatedSymbols = "+-";
-			#endif
-
+			string spaceSeparatedSymbols = "+-";
 			string regexPrefixCharacters = "({[,;:=&|!?\0";
 			char lastNonWSChar = '\0';
 
@@ -74,18 +71,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 
 				if (TryToSkipWhitespace(ref iterator, false) == true)
 					{
-					#if DONT_SHRINK_FILES
-						source.AppendTextBetweenTo(prevIterator, iterator, output);
-					#else
-					char nextChar = iterator.Character;
+					if (!shrink)
+						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
+					else
+						{
+						char nextChar = iterator.Character;
 
-					if ( nextChar == '`' ||
-						  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
-						   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
-						  (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
-						   Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
-						{  output.Append(' ');  }
-					#endif
+						if ( nextChar == '`' ||
+							  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
+							   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
+							  (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
+							   Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
+							{  output.Append(' ');  }
+						}
 					}
 				else if (iterator.Character == '`')
 					{

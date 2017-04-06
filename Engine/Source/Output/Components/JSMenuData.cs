@@ -98,9 +98,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			// Build tab information file
 
 			StringBuilder tabInformation = new StringBuilder("NDMenu.OnTabsLoaded([");
-			#if DONT_SHRINK_FILES
-				tabInformation.Append('\n');
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  tabInformation.Append('\n');  }
 
 			List<MenuEntries.Base.Container> tabContainers = new List<MenuEntries.Base.Container>();
 			List<string> tabTypes = new List<string>();
@@ -128,9 +127,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{
 				ContainerExtraData extraData = (ContainerExtraData)tabContainers[i].ExtraData;
 
-				#if DONT_SHRINK_FILES
-					tabInformation.Append(' ', IndentSpaces);
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  tabInformation.Append(' ', IndentSpaces);  }
 
 				tabInformation.Append("[\"");
 				tabInformation.Append(tabTypes[i]);
@@ -175,14 +173,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (i < tabContainers.Count - 1)
 					{  tabInformation.Append(',');  }
 
-				#if DONT_SHRINK_FILES
-					tabInformation.Append('\n');
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  tabInformation.Append('\n');  }
 				}
 
-			#if DONT_SHRINK_FILES
-				tabInformation.Append(' ', IndentSpaces);
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  tabInformation.Append(' ', IndentSpaces);  }
+
 			tabInformation.Append("]);");
 
 			System.IO.File.WriteAllText( HTMLBuilder.Menu_DataFile("tabs", 1), tabInformation.ToString() );
@@ -355,15 +352,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				output.StringEscapeAndAppend(fileName);
 				output.Append("\",[");
 
-				#if DONT_SHRINK_FILES
-				output.AppendLine();
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  output.AppendLine();  }
 				
 				AppendMembers(containerToBuild, output, 1, containersToBuild);
 
-				#if DONT_SHRINK_FILES
-				output.Append(' ', IndentSpaces);
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  output.Append(' ', IndentSpaces);  }
 
 				output.Append("]);");
 
@@ -384,9 +379,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{
 				var member = container.Members[i];
 
-				#if DONT_SHRINK_FILES
-				output.Append(' ', indent * IndentSpaces);
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  output.Append(' ', indent * IndentSpaces);  }
 
 				if (member is MenuEntries.Base.Target)
 					{
@@ -410,15 +404,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						{
 						output.Append('[');
 
-						#if DONT_SHRINK_FILES
-						output.AppendLine();
-						#endif
+						if (!EngineInstance.Config.ShrinkFiles)
+							{  output.AppendLine();  }
 
 						AppendMembers((MenuEntries.Base.Container)member, output, indent + 1, containersToBuild);
 
-						#if DONT_SHRINK_FILES
-						output.Append(' ', (indent + 1) * IndentSpaces);
-						#endif
+						if (!EngineInstance.Config.ShrinkFiles)
+							{  output.Append(' ', (indent + 1) * IndentSpaces);  }
 
 						output.Append(']');
 						}
@@ -433,9 +425,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (i < container.Members.Count - 1)
 					{  output.Append(',');  }
 
-				#if DONT_SHRINK_FILES
-				output.AppendLine();
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  output.AppendLine();  }
 				}
 			}
 
@@ -460,9 +451,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 		/* Constant: IndentSpaces
-		 * The number of spaces to indent each level by when building the output with <DONT_SHRINK_FILES>.
+		 * The number of spaces to indent each level by when building the output without file shrinking.
 		 */
-		protected int IndentSpaces = 3;
+		protected const int IndentSpaces = 3;
 
 		/* const: SegmentLength
 		 * The amount of data to try to fit in each JSON file before splitting it off into another one.  This will be

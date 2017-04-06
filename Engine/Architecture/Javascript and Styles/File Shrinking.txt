@@ -20,14 +20,10 @@ _______________________________________________________________________________
 
 	Topic: Turning Off Shrinking and Debugging
 
-		You can turn off file shrinking by defining the compilation symbol <DONT_SHRINK_FILES>.  This will allow you to step 
-		through the code in the output with things like Firebug.  However, file shrinking is on by default so if other people are 
-		going to be using your files you need to make sure they work shrunk too.  Also, the default Natural Docs JavaScript is 
-		heavily documented so you'll be increasing their output file sizes considerably by turning it off.
-
-		If you have an error that only appears when shrinking is on, use Opera's error console to see the exact character it occurs
-		at.  As of this writing both Firefox and Chrome will only give you the line number in their error consoles, which isn't helpful
-		when line breaks are removed.
+		You can turn off file shrinking with the --dont-shrink-files command line option.  This will allow you to step through the
+		code in the output with browser's developer tools.  However, file shrinking is on by default so if other people are going
+		to be using your files you need to make sure they work shrunk too.  Also, the default Natural Docs JavaScript is heavily
+		commented so you'll be increasing their output file sizes considerably by turning it off.
 
 
 	Topic: Including Comments in Shrunken Files

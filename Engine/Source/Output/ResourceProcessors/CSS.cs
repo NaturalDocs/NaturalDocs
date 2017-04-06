@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			}
 
 
-		override public string Process (string css)
+		override public string Process (string css, bool shrink = true)
 			{
 			source = new Tokenizer(css);
 			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			IList<PossibleDocumentationComment> comments = commentFinder.GetPossibleDocumentationComments(source);
 
 			foreach (var comment in comments)
-				{  ProcessComment(comment);  }
+				{  ProcessComment(comment, shrink);  }
 
 			if (output.Length > 0)
 				{
@@ -60,9 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			// We have to be more cautious than the JS shrinker.  You don't want something like "head .class" to become
 			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
 			// and not before ("body :link").
-			#if !DONT_SHRINK_FILES
-				string safeToCondenseAround = "{},;:+>[]=\0";
-			#endif
+			string safeToCondenseAround = "{},;:+>[]=\0";
 
 			while (iterator.IsInBounds)
 				{
@@ -71,16 +69,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 
 				if (TryToSkipWhitespace(ref iterator, true) == true)
 					{
-					#if DONT_SHRINK_FILES
-						source.AppendTextBetweenTo(prevIterator, iterator, output);
-					#else
+					if (!shrink)
+						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
+					else
+						{
 						char nextChar = iterator.Character;
 
 						if (nextChar == ':' ||
 							  (safeToCondenseAround.IndexOf(lastChar) == -1 &&
 								safeToCondenseAround.IndexOf(nextChar) == -1) )
 							{  output.Append(' ');  }
-					#endif
+						}
 					}
 				else if (TryToSkipString(ref iterator) == true)
 					{

@@ -26,6 +26,7 @@
  *			> [Int32: Tab Width]
  *			> [Byte: Documented Only (0 or 1)]
  *			> [Byte: Auto Group (0 or 1)]
+ *			> [Byte: Shrink Files (0 or 1)]
  *
  *			Global properties.
  *			
@@ -123,6 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					// [Int32: Tab Width]
 					// [Byte: Documented Only (0 or 1)]
 					// [Byte: Auto Group (0 or 1)]
+					// [Byte: Shrink Files (0 or 1)]
 
 					projectConfig.TabWidth = binaryFile.ReadInt32();
 					projectConfig.TabWidthPropertyLocation = Source.PreviousRun;
@@ -132,6 +134,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 					projectConfig.AutoGroup = (binaryFile.ReadByte() == 1);
 					projectConfig.AutoGroupPropertyLocation = Source.PreviousRun;
+
+					projectConfig.ShrinkFiles = (binaryFile.ReadByte() == 1);
+					projectConfig.ShrinkFilesPropertyLocation = Source.PreviousRun;
 					
 					// [String: Identifier]
 					// [[Properties]]
@@ -250,10 +255,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		        // [Int32: Tab Width]
 		        // [Byte: Documented Only (0 or 1)]
 		        // [Byte: Auto Group (0 or 1)]
+		        // [Byte: Shrink Files (0 or 1)]
 
 		        output.WriteInt32(projectConfig.TabWidth);
 		        output.WriteByte( (byte)((bool)projectConfig.DocumentedOnly == false ? 0 : 1) );
 		        output.WriteByte( (byte)((bool)projectConfig.AutoGroup == false ? 0 : 1) );
+		        output.WriteByte( (byte)((bool)projectConfig.ShrinkFiles == false ? 0 : 1) );
 				
 		        // [String: Identifier]
 		        // [[Properties]]

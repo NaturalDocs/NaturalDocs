@@ -222,6 +222,10 @@ Technical Parameters:
 --benchmark
     Collects and displays statistics on how long it takes Natural Docs to
     execute.
+
+--dont-shrink-files
+    Leave whitespace and comments in CSS and JavaScript output files.  Makes
+    it easier to debug JavaScript in the browser.
 }}}
 
 

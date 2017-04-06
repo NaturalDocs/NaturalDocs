@@ -58,6 +58,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- --worker-threads, --threads
 		 *		- --pause-before-exit, --pause
 		 *		- --pause-on-error
+		 *		- --dont-shrink-files
 		 *		- -h, --help
 		 *		- -?
 		 *		
@@ -88,13 +89,12 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--version", "-v");
+			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
+			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
+			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink", "--dontshrink");
 			commandLine.AddAliases("--worker-threads", "--threads");
 			// no aliases for --benchmark
 			commandLine.AddAliases("--help", "-h", "-?");
-
-			// Undocumented
-			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
-			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 
 			// No longer supported
 			commandLine.AddAliases("--charset", "-cs", "--char-set", "--character-set", "--characterset");
@@ -473,6 +473,27 @@ namespace CodeClear.NaturalDocs.CLI
 						{
 						commandLineConfig.AutoGroup = false;
 						commandLineConfig.AutoGroupPropertyLocation = Source.CommandLine;
+						}
+					}
+					
+					
+
+				// Don't Shrink Files
+					
+				else if (parameter == "--dont-shrink-files")
+					{
+					if (!commandLine.NoValue())
+						{
+						errorList.Add(
+							Locale.Get("NaturalDocs.CLI", "CommandLine.ExpectedNoValue(param)", parameterAsEntered)
+							);
+
+						commandLine.SkipToNextParameter();
+						}
+					else
+						{
+						commandLineConfig.ShrinkFiles = false;
+						commandLineConfig.ShrinkFilesPropertyLocation = Source.CommandLine;
 						}
 					}
 					

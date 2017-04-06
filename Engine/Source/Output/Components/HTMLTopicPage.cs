@@ -254,9 +254,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{
 					file.Write("NDContentPage.OnToolTipsLoaded({");
 
-					#if DONT_SHRINK_FILES
-						file.WriteLine();
-					#endif
+					if (!EngineInstance.Config.ShrinkFiles)
+						{  file.WriteLine();  }
 
 					for (int i = 0; i < linkTargets.Count; i++)
 						{
@@ -265,9 +264,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 						if (toolTipHTML != null)
 							{
-							#if DONT_SHRINK_FILES
-								file.Write("   ");
-							#endif
+							if (!EngineInstance.Config.ShrinkFiles)
+								{  file.Write("   ");  }
 
 							file.Write(topic.TopicID);
 							file.Write(":\"");
@@ -277,15 +275,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							if (i != linkTargets.Count - 1)
 								{  file.Write(',');  }
 
-							#if DONT_SHRINK_FILES
-								file.WriteLine();
-							#endif
+							if (!EngineInstance.Config.ShrinkFiles)
+								{  file.WriteLine();  }
 							}
 						}
 
-					#if DONT_SHRINK_FILES
-						file.Write("   ");
-					#endif
+					if (!EngineInstance.Config.ShrinkFiles)
+						{  file.Write("   ");  }
+
 					file.Write("});");
 					}
 

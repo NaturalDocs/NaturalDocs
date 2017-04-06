@@ -115,11 +115,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			output.Append("NDSearch.OnPrefixIndexLoaded([");
 
-			#if DONT_SHRINK_FILES
 			char lastStartingLetter = '\0';
 			int lineCount = 0;
-			#endif
-
 			bool isFirst = true;
 
 			foreach (string prefix in prefixes)
@@ -129,7 +126,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				else
 					{  output.Append(',');  }
 
-				#if DONT_SHRINK_FILES
+				if (!EngineInstance.Config.ShrinkFiles)
+					{
 					if (prefix[0] != lastStartingLetter)
 						{
 						output.Append("\n\n   ");
@@ -142,16 +140,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						}
 
 					lineCount++;
-				#endif
+					}
 
 				output.Append('"');
 				output.StringEscapeAndAppend(prefix);
 				output.Append('"');
 				}
 
-			#if DONT_SHRINK_FILES
-				output.Append("\n\n   ");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n\n   ");  }
+
 			output.Append("]);");
 			}
 
@@ -445,16 +443,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			output.StringEscapeAndAppend(prefix);
 			output.Append("\",");
 
-			#if DONT_SHRINK_FILES
-			output.Append("\n   ");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n   ");  }
 
 			BuildCommentTypeList(keywordEntries);
 			output.Append(',');
 
-			#if DONT_SHRINK_FILES
-			output.Append("\n   ");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n   ");  }
 
 			output.Append('[');
 
@@ -470,9 +466,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				BuildKeywordEntry(keywordEntry);
 				}
 
-			#if DONT_SHRINK_FILES
-			output.Append("\n\n");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n\n");  }
 
 			output.Append("]);");
 			}
@@ -482,9 +477,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void BuildKeywordEntry (SearchIndex.KeywordEntry keywordEntry)
 			{
-			#if DONT_SHRINK_FILES
-			output.Append("\n\n   ");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n\n   ");  }
 
 			string keywordHTMLName = keywordEntry.Keyword.ToHTML();
 			string keywordSearchText = keywordEntry.SearchText;
@@ -508,9 +502,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (i > 0)
 					{  output.Append(',');  }
 
-				#if DONT_SHRINK_FILES
-				output.Append("\n      ");
-				#endif
+				if (!EngineInstance.Config.ShrinkFiles)
+					{  output.Append("\n      ");  }
 
 				var topicEntry = keywordEntry.TopicEntries[i];
 				bool includeLanguage = false;
@@ -534,9 +527,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				BuildTopicEntry(topicEntry, keywordHTMLName, includeLanguage);
 				}
 
-			#if DONT_SHRINK_FILES
-			output.Append("\n   ");
-			#endif
+			if (!EngineInstance.Config.ShrinkFiles)
+				{  output.Append("\n   ");  }
 
 			output.Append("]]");
 			}

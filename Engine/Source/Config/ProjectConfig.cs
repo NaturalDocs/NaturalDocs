@@ -36,12 +36,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			tabWidth = 0;
 			documentedOnly = false;
 			autoGroup = true;
+			shrinkFiles = true;
 
 			projectConfigFolderPropertyLocation = Source.NotDefined;
 			workingDataFolderPropertyLocation = Source.NotDefined;
 			tabWidthPropertyLocation = Source.NotDefined;
 			documentedOnlyPropertyLocation = Source.NotDefined;
 			autoGroupPropertyLocation = Source.NotDefined;
+			shrinkFilesPropertyLocation = Source.NotDefined;
 
 			inputTargets = new List<Targets.InputBase>();
 			filterTargets = new List<Targets.FilterBase>();
@@ -157,6 +159,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  autoGroup = value;  }
 			}
 			
+		/* Property: ShrinkFiles
+		 * Whether to remove whitespace and comments from resource files like CSS and JavaScript in the output.
+		 */
+		public bool ShrinkFiles
+			{
+			get
+				{  return shrinkFiles;  }
+			set
+				{  shrinkFiles = value;  }
+			}
+			
 	
 		
 		// Group: Property Locations
@@ -221,6 +234,18 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 	
+		/* Property: ShrinkFilesPropertyLocation
+		 * Where the <ShrinkFiles> property is defined, or <Source.NotDefined> if it isn't.
+		 */
+		public PropertyLocation ShrinkFilesPropertyLocation
+			{
+			get
+				{  return shrinkFilesPropertyLocation;  }
+			set
+				{  shrinkFilesPropertyLocation = value;  }
+			}
+			
+	
 		
 		// Group: Variables
 		// __________________________________________________________________________
@@ -235,6 +260,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected int tabWidth;
 		protected bool documentedOnly;
 		protected bool autoGroup;
+		protected bool shrinkFiles;
 
 		protected PropertyLocation projectConfigFolderPropertyLocation;
 		protected PropertyLocation workingDataFolderPropertyLocation;
@@ -242,6 +268,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected PropertyLocation tabWidthPropertyLocation;
 		protected PropertyLocation documentedOnlyPropertyLocation;
 		protected PropertyLocation autoGroupPropertyLocation;
+		protected PropertyLocation shrinkFilesPropertyLocation;
 
 		protected List<Targets.InputBase> inputTargets;
 		protected List<Targets.FilterBase> filterTargets;

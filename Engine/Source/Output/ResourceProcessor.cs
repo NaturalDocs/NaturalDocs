@@ -42,14 +42,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		/* Function: Process
 		 */
-		abstract public string Process (string input);
+		abstract public string Process (string input, bool shrink = true);
 
 
 		/* Function: ProcessComment
 		 * Searches the passed comment for sections that should be included in the output or for substitution definitions.
 		 * Comments that should be included in the output will be added to <output>.
 		 */
-		protected void ProcessComment (PossibleDocumentationComment comment)
+		protected void ProcessComment (PossibleDocumentationComment comment, bool shrink = true)
 			{
 			Comments.LineFinder.MarkTextBoxes(comment);
 
@@ -75,10 +75,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 						}
 					}
 
-				#if !DONT_SHRINK_FILES
 				// We only need to worry about Keep in Output if we're shrinking files.  Unshrunk files will have the comments
 				// anyway, and adding them again would throw off the line numbers compared to the original.
-				else if (iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
+				else if (shrink && iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
 					{
 					iterator.Next();
 
@@ -135,7 +134,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 						while (start < end);
 						}
 					}
-				#endif
 
 				else
 					{  iterator.Next();  }

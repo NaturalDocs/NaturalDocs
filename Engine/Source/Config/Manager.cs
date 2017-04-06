@@ -54,6 +54,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			systemDefaultConfig.AutoGroup = true;
 			systemDefaultConfig.AutoGroupPropertyLocation = Source.SystemDefault;
 
+			systemDefaultConfig.ShrinkFiles = true;
+			systemDefaultConfig.ShrinkFilesPropertyLocation = Source.SystemDefault;
+
 			systemDefaultConfig.ProjectInfo.StyleName = "Default";
 			systemDefaultConfig.ProjectInfo.StyleNamePropertyLocation = Source.SystemDefault;
 			}
@@ -69,6 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			tabWidth = DefaultTabWidth;
 			documentedOnly = false;
 			autoGroup = true;
+			shrinkFiles = true;
 
 			reparseEverything = false;
 			rebuildAllOutput = false;
@@ -404,6 +408,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			tabWidth = combinedConfig.TabWidth;
 			documentedOnly = combinedConfig.DocumentedOnly;
 			autoGroup = combinedConfig.AutoGroup;
+			shrinkFiles = combinedConfig.ShrinkFiles;
 
 			if (previousConfig == null ||
 				tabWidth != previousConfig.TabWidth ||
@@ -411,6 +416,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				autoGroup != previousConfig.AutoGroup)
 				{
 				ReparseEverything = true;
+				}
+			else if (previousConfig != null &&
+					  shrinkFiles != previousConfig.ShrinkFiles)
+				{
+				RebuildAllOutput = true;
 				}
 
 
@@ -686,6 +696,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				primaryConfig.AutoGroup = secondaryConfig.AutoGroup;
 				primaryConfig.AutoGroupPropertyLocation = secondaryConfig.AutoGroupPropertyLocation;
+				}
+
+			if (!primaryConfig.ShrinkFilesPropertyLocation.IsDefined)
+				{
+				primaryConfig.ShrinkFiles = secondaryConfig.ShrinkFiles;
+				primaryConfig.ShrinkFilesPropertyLocation = secondaryConfig.ShrinkFilesPropertyLocation;
 				}
 
 			}
@@ -1000,6 +1016,16 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
+		/* Property: ShrinkFiles
+		 * Whether whitespace and comments should be removed from CSS and JavaScript files in the output.
+		 */
+		public bool ShrinkFiles
+			{
+			get
+				{  return shrinkFiles;  }
+			}
+
+
 		/* Function: OutputWorkingDataFileOf
 		 * Returns the working data file path for the passed output entry number.  It's up to the output entry whether
 		 * it wants to actually create and use a file at this path, this just makes sure it has its own unique path.
@@ -1126,6 +1152,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Whether automatic grouping should be applied.
 		 */
 		protected bool autoGroup;
+
+		/* var: shrinkFiles
+		 * Whether whitespace and comments should be removed from JavaScript and CSS files in the output.
+		 */
+		protected bool shrinkFiles;
 
 		/* bool: reparseEverything
 		 * Whether all source files should be reparsed.
