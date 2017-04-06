@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Code Clear LLC")]
 [assembly: AssemblyProduct("Natural Docs")]
-[assembly: AssemblyCopyright("Copyright © 2003-2016 Code Clear LLC")]
+[assembly: AssemblyCopyright("Copyright © 2003-2017 Code Clear LLC")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
