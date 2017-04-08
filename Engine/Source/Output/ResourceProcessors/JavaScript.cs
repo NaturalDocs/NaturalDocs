@@ -123,10 +123,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			while (iterator.IsInBounds)
 				{
 				TokenIterator prevIterator = iterator;
-				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
-
-				if (lastChar != ' ' && lastChar != '\t')
-					{  lastNonWSChar = lastChar;  }
+				
+				if (iterator.FundamentalType != FundamentalType.Whitespace &&
+					iterator.FundamentalType != FundamentalType.LineBreak)
+					{  lastNonWSChar = javascript.RawText[iterator.RawTextIndex + iterator.RawTextLength - 1];  }
 
 				if (TryToSkipWhitespace(ref iterator, false) || // includes comments
 					TryToSkipString(ref iterator) ||
