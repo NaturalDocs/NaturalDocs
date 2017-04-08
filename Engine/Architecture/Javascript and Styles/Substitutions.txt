@@ -4,27 +4,32 @@ _______________________________________________________________________________
 
 	Natural Docs includes a simple substitution engine for JavaScript and CSS files.
 
+
 	Topic: Direct Substitutions
 
-		If you include a comment with the heading "Substitutions:" in it, anything under that heading will be scanned for substitution 
-		definitions, which take this form:
+		You can perform simple substitutions in both types of files by using a syntax similar to SCSS and Less.  Declare a variable 
+		starting with $ or @ and set it's value with = or :.  Both assignment types work in both types of files.
 
-		> /* Substitutions:
-		>  * `Name1 = value1
-		>  * `Name2 = value2
-		>  */
+		> $Name1 = value1;
+		> @Name2 = value2;
+		> 
+		> $Name3: value3;
+		> @Name4: value4;
 
-		Now anywhere you put "`Name1" in the code it will be replaced by "value1".  This is a literal substitution so the value can
-		be anything: a string, an integer, a snippet of code.  The name must be preceded by a backtick and can only contain ASCII
-		letters, numbers, underscores, and dots.  All substitutions are per file, so substitutions defined in one file will not apply to 
-		others.  Any backtick entries that aren't recognized will be left as is in the output.
+		Now anywhere you put "$Name1" in the code it will be replaced by "value1".  This is a literal substitution so the value can
+		be anything: a string, an integer, a snippet of code, etc.  The name must be preceded by $ or @ and can only contain ASCII
+		letters, numbers, and underscores.  All substitutions are per file, so substitutions defined in one file will not apply to others.
+		However, the substitutions can be declared anywhere in the file; they don't have to be above it's first use.
+
+		Nested substitutions ("@Name2 = @Name1;") are not supported, nor are Sass and Less's other, more advanced features.
+
 
 	Topic: Locale Substitutions
 
 		You can also embed strings from the Engine.NaturalDocs locale file ([ND Dir]/Translations/NaturalDocs.Engine.[locale].txt)
-		by following the backtick with "Locale" and putting the identifier in braces:
+		by following the substitution symbol with "Locale" and putting the identifier in braces:
 
-		> var title = `Locale{Identifier}
+		> var title = $Locale{Identifier}
 
 		This lets you include text that will be in the native language of each Natural Docs user.  The substitution will be a JavaScript
 		string that includes the quotes and any escaping necessary.  If it isn't found in the translation file, it will be replaced with a 

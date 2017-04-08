@@ -41,16 +41,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			GetSubstitutions(source);
 
 
-			// Search comments for sections to include in the output and substitution definitions.
+			// Search comments for sections to include in the output
 
 			IList<PossibleDocumentationComment> comments = commentFinder.GetPossibleDocumentationComments(source);
 
 			foreach (var comment in comments)
-				{  ProcessComment(comment, shrink);  }
+				{
+				string includeInOutput = IncludeInOutput(comment);
+
+				if (includeInOutput != null)
+					{
+					if (output.Length == 0)
+						{  output.AppendLine("/*");  }
+					else
+						{  output.AppendLine();  }
+
+					output.Append(includeInOutput);
+					}
+				}
 
 			if (output.Length > 0)
 				{
-				output.AppendLine(" */");
+				output.AppendLine("*/");
 				output.AppendLine();
 				}
 

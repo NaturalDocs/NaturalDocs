@@ -18,6 +18,7 @@ _______________________________________________________________________________
 	an error in JavaScript that isn't shrunk because the semicolon would be implied by the line break, but the shrunk JavaScript
 	won't have line breaks.
 
+
 	Topic: Turning Off Shrinking and Debugging
 
 		You can turn off file shrinking with the --dont-shrink-files command line option.  This will allow you to step through the
@@ -35,7 +36,6 @@ _______________________________________________________________________________
 		>  * Copyright (C) 2013 Me
 		>  */
 
-		Only the text from that line to the end of the comment (or to the next substitution header) will be included, so you can
-		have other information above it.  If you include Natural Docs comments in your file and don't want this included in that
-		documentation, put it in a separate comment.
+		Only the text from the following line to the end of the comment will be included so you can have other information above it.  If
+		you include Natural Docs comments in your file and don't want this included in that documentation, put it in a separate comment.
 	

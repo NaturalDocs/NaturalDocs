@@ -27,9 +27,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		static ResourceProcessor ()
 			{
-			keepInOutputRegex = new Regex.Comments.Shrinker.KeepInOutput();
-			substitutionDefinitionRegex = new Regex.Comments.Shrinker.SubstitutionDefinition();
-			substitutionHeaderRegex = new Regex.Comments.Shrinker.SubstitutionHeader();
+			IncludeInOutputRegex = new Regex.Comments.IncludeInOutput();
 			}
 
 		public ResourceProcessor ()
@@ -45,99 +43,75 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		abstract public string Process (string input, bool shrink = true);
 
 
-		/* Function: ProcessComment
-		 * Searches the passed comment for sections that should be included in the output or for substitution definitions.
-		 * Comments that should be included in the output will be added to <output>.
+		/* Function: IncludeInOutput
+		 * Extracts and returns any comment content marked "include in output".  All comment symbols and extra indents
+		 * will be removed.  Returns null if the comment doesn't have any.
 		 */
-		protected void ProcessComment (PossibleDocumentationComment comment, bool shrink = true)
+		protected string IncludeInOutput (PossibleDocumentationComment comment)
 			{
 			Comments.LineFinder.MarkTextBoxes(comment);
 
 			LineIterator iterator = comment.Start;
 
+
+			// Find the "include in output" header if it exists
+
+			while (iterator < comment.End &&
+					 iterator.Match(IncludeInOutputRegex, LineBoundsMode.CommentContent).Success == false)
+				{  iterator.Next();  }
+
+			if (iterator >= comment.End)
+				{  return null;  }
+
+
+			// Find the bounds of the content excluding whitespace and the shared indent level
+
+			iterator.Next();
+
+			while (iterator < comment.End && iterator.IsEmpty(LineBoundsMode.CommentContent))
+				{  iterator.Next();  }
+
+			LineIterator start = iterator;
+			LineIterator end = iterator;
+			int commonIndent = 9999;
+
 			while (iterator < comment.End)
 				{
-				if (iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success)
-					{
-					iterator.Next();
-
-					while (iterator < comment.End &&
-								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false)
-						{
-						Match match = iterator.Match(substitutionDefinitionRegex, LineBoundsMode.CommentContent);
-
-						if (match.Success)
-							{
-							substitutions[ match.Groups[1].ToString() ] = match.Groups[2].ToString();
-							}
-
-						iterator.Next();
-						}
-					}
-
-				// We only need to worry about Keep in Output if we're shrinking files.  Unshrunk files will have the comments
-				// anyway, and adding them again would throw off the line numbers compared to the original.
-				else if (shrink && iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == true)
-					{
-					iterator.Next();
-
-					while (iterator < comment.End && iterator.IsEmpty(LineBoundsMode.CommentContent))
-						{  iterator.Next();  }
-
-					LineIterator start = iterator;
-					LineIterator end = iterator;
-					int commonIndent = 9999;
-
-					while (iterator < comment.End &&
-								iterator.Match(keepInOutputRegex, LineBoundsMode.CommentContent).Success == false &&
-								iterator.Match(substitutionHeaderRegex, LineBoundsMode.CommentContent).Success == false)
-						{
-						if (iterator.IsEmpty(LineBoundsMode.CommentContent))
-							{  iterator.Next();  }
-						else
-							{
-							if (iterator.Indent(LineBoundsMode.CommentContent) < commonIndent)
-								{  commonIndent = iterator.Indent(LineBoundsMode.CommentContent);  }
-
-							iterator.Next();
-							end = iterator;
-							}
-						}
-
-					if (start < end)
-						{
-						if (output.Length > 0)
-							{  output.AppendLine(" *");  }
-
-						do
-							{
-							if (start.IsEmpty(LineBoundsMode.CommentContent))
-								{  output.AppendLine(" *");  }
-							else
-								{
-								if (output.Length == 0)
-									{  output.Append("/* ");  }
-								else
-									{  output.Append(" * ");  }
-
-								int indentDifference = start.Indent(LineBoundsMode.CommentContent) - commonIndent;
-
-								if (indentDifference > 0)
-									{  output.Append(' ', indentDifference);  }
-
-								start.AppendTo(output, LineBoundsMode.CommentContent);
-								output.AppendLine();
-								}
-
-							start.Next();
-							}
-						while (start < end);
-						}
-					}
-
-				else
+				if (iterator.IsEmpty(LineBoundsMode.CommentContent))
 					{  iterator.Next();  }
+				else
+					{
+					if (iterator.Indent(LineBoundsMode.CommentContent) < commonIndent)
+						{  commonIndent = iterator.Indent(LineBoundsMode.CommentContent);  }
+
+					iterator.Next();
+					end = iterator;
+					}
 				}
+
+
+			// Build and return the comment content
+
+			if (start >= end)
+				{  return null;  }
+
+			StringBuilder output = new StringBuilder();
+
+			do
+				{
+				int indentDifference = start.Indent(LineBoundsMode.CommentContent) - commonIndent;
+
+				if (indentDifference > 0)
+					{  output.Append(' ', indentDifference);  }
+
+				start.AppendTo(output, LineBoundsMode.CommentContent);
+				output.AppendLine();
+
+				start.Next();
+				}
+			while (start < end);
+
+			return output.ToString();
 			}
 
 
@@ -341,7 +315,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		protected bool TryToSkipSubstitution (ref TokenIterator iterator, out string substitution)
 			{
-			if (iterator.Character != '`' && iterator.Character != '$' && iterator.Character != '@')
+			if (iterator.Character != '$' && iterator.Character != '@')
 				{
 				substitution = null;
 				return false;
@@ -428,9 +402,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static Regex.Comments.Shrinker.KeepInOutput keepInOutputRegex;
-		protected static Regex.Comments.Shrinker.SubstitutionDefinition substitutionDefinitionRegex;
-		protected static Regex.Comments.Shrinker.SubstitutionHeader substitutionHeaderRegex;
+		protected static Regex.Comments.IncludeInOutput IncludeInOutputRegex;
 
 		}
 	}
