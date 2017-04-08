@@ -267,25 +267,22 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		/* Function: TryToSkipSubstitutionDefinition
 		 * 
-		 * If the iterator is on a valid substitution definition, advances it past it, adds the identifier and value to <substitutions>,
-		 * and returns true.  Otherwise the iterator will be left alone and it will return false.
+		 * If the iterator is on a valid substitution definition, advances it past it, determines its properties, and returns true.  Otherwise the 
+		 * iterator will be left alone and it will return false.
+		 * 
+		 * identifier - "$identifier" in "$identifier = value;"
+		 * value - "value" in "$identifier = value;"
+		 * declaration - "$identifier = value;" in "$identifier = value;"
 		 */
-		protected bool TryToSkipSubstitutionDefinition (ref TokenIterator iterator)
+		protected bool TryToSkipSubstitutionDefinition (ref TokenIterator iterator, out string identifier, out string value, out string declaration)
 			{
+			identifier = null;
+			value = null;
+			declaration = null;
+
 			if (iterator.Character != '$' && iterator.Character != '@')
 				{  return false;  }
-
-			TokenIterator lookBehind = iterator;
-			lookBehind.Previous();
-
-			if (lookBehind.IsInBounds &&
-				lookBehind.FundamentalType != FundamentalType.Whitespace &&
-				lookBehind.FundamentalType != FundamentalType.LineBreak &&
-				lookBehind.Character != ';')
-				{  return false;  }				 
 			
-			TokenIterator startOfIdentifier = iterator;
-
 			TokenIterator lookahead = iterator;
 			lookahead.Next();
 
@@ -300,7 +297,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					 (lookahead.FundamentalType == FundamentalType.Text ||
 					  lookahead.Character == '_'));
 
-			string identifier = iterator.Tokenizer.TextBetween(startOfIdentifier, lookahead);
+			TokenIterator endOfIdentifier = lookahead;
 			lookahead.NextPastWhitespace();
 
 			if (lookahead.Character != ':' && lookahead.Character != '=')
@@ -326,10 +323,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			if (lookahead.Character != ';')
 				{  return false;  }
 
-			string value = iterator.Tokenizer.TextBetween(startOfValue, lookahead).TrimEnd();
+			identifier = iterator.Tokenizer.TextBetween(iterator, endOfIdentifier);
+			value = iterator.Tokenizer.TextBetween(startOfValue, lookahead);
+
 			lookahead.Next();
 
-			substitutions.Add(identifier, value);
+			declaration = iterator.Tokenizer.TextBetween(iterator, lookahead);
 
 			iterator = lookahead;
 			return true;

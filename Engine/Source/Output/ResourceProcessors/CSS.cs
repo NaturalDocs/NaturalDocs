@@ -38,6 +38,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
 			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
 
+			GetSubstitutions(source);
+
 
 			// Search comments for sections to include in the output and substitution definitions.
 
@@ -61,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
 			// and not before ("body :link").
 			string safeToCondenseAround = "{},;:+>[]= \0\n\r";
-			string substitution;
+			string substitution, identifier, value, declaration;
 
 			while (iterator.IsInBounds)
 				{
@@ -86,9 +88,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 					{
 					source.AppendTextBetweenTo(prevIterator, iterator, output);
 					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator))
+				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
 					{
-					// Don't include in the output regardless of shrink
+					if (!shrink)
+						{  output.Append("/* " + declaration + " */");  }
 					}
 				else if (TryToSkipSubstitution(ref iterator, out substitution))
 					{
@@ -110,6 +113,30 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 				}
 
 			return output.ToString();
+			}
+
+
+		protected void GetSubstitutions (Tokenizer css)
+			{
+			TokenIterator iterator = source.FirstToken;
+			string identifier, value, declaration;
+
+			while (iterator.IsInBounds)
+				{
+				TokenIterator prevIterator = iterator;
+
+				if (TryToSkipWhitespace(ref iterator, true) ||
+					TryToSkipString(ref iterator))
+					{
+					// Do nothing
+					}
+				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
+					{
+					substitutions.Add(identifier, value);
+					}
+				else
+					{  iterator.Next();  }
+				}
 			}
 
 

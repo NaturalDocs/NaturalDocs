@@ -38,6 +38,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
 			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
 
+			GetSubstitutions(source);
+
 
 			// Search comments for sections to include in the output and substitution definitions.
 
@@ -60,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			string spaceSeparatedSymbols = "+-";
 			string regexPrefixCharacters = "({[,;:=&|!?\0";
 			char lastNonWSChar = '\0';
-			string substitution = null;
+			string substitution, identifier, value, declaration;
 
 			while (iterator.IsInBounds)
 				{
@@ -85,9 +87,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 							{  output.Append(' ');  }
 						}
 					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator))
+				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
 					{
-					// Don't include in the output regardless of shrink
+					if (!shrink)
+						{  output.Append("/* " + declaration + " */");  }
 					}
 				else if (TryToSkipSubstitution(ref iterator, out substitution))
 					{
@@ -95,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 					}
 				else
 					{
-					if (TryToSkipString(ref iterator) == true ||
+					if (TryToSkipString(ref iterator) ||
 						(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
 						{  }
 					else
@@ -106,6 +109,38 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 				}
 
 			return output.ToString();
+			}
+
+
+		protected void GetSubstitutions (Tokenizer javascript)
+			{
+			TokenIterator iterator = source.FirstToken;
+
+			string regexPrefixCharacters = "({[,;:=&|!?\0";
+			char lastNonWSChar = '\0';
+			string identifier, value, declaration;
+
+			while (iterator.IsInBounds)
+				{
+				TokenIterator prevIterator = iterator;
+				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
+
+				if (lastChar != ' ' && lastChar != '\t')
+					{  lastNonWSChar = lastChar;  }
+
+				if (TryToSkipWhitespace(ref iterator, false) || // includes comments
+					TryToSkipString(ref iterator) ||
+					(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
+					{
+					// Do nothing
+					}
+				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
+					{
+					substitutions.Add(identifier, value);
+					}
+				else
+					{  iterator.Next();  }
+				}
 			}
 
 
