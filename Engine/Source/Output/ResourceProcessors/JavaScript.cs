@@ -53,13 +53,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 				}
 
 
-			// Build the condensed output.
+			// Build the output.
 
 			TokenIterator iterator = source.FirstToken;
 
 			string spaceSeparatedSymbols = "+-";
 			string regexPrefixCharacters = "({[,;:=&|!?\0";
 			char lastNonWSChar = '\0';
+			string substitution = null;
 
 			while (iterator.IsInBounds)
 				{
@@ -69,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 				if (lastChar != ' ' && lastChar != '\t')
 					{  lastNonWSChar = lastChar;  }
 
-				if (TryToSkipWhitespace(ref iterator, false) == true)
+				if (TryToSkipWhitespace(ref iterator, false) == true) // includes comments
 					{
 					if (!shrink)
 						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
@@ -77,32 +78,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 						{
 						char nextChar = iterator.Character;
 
-						if ( nextChar == '`' ||
-							  (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
-							   spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
-							  (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
-							   Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
+						if ( (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
+							  spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
+							 (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
+							  Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
 							{  output.Append(' ');  }
 						}
 					}
-				else if (iterator.Character == '`')
+				else if (TryToSkipSubstitutionDefinition(ref iterator, '='))
 					{
-					string substitution = null;
-
-					if (TryToGetSubstitution(ref iterator, out substitution))
-						{
-						output.Append(substitution);
-						}
-					else
-						{
-						output.Append('`');
-						iterator.Next();
-						}
+					// Don't include in the output regardless of shrink
+					}
+				else if (TryToSkipSubstitution(ref iterator, out substitution))
+					{
+					output.Append(substitution);
 					}
 				else
 					{
 					if (TryToSkipString(ref iterator) == true ||
-							(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
+						(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
 						{  }
 					else
 						{  iterator.Next();  }

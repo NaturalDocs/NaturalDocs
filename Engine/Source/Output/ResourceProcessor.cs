@@ -265,71 +265,151 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 
-		/* Function: TryToGetSubstitution
-		 * If the iterator is on a valid substitution token, advances it past it, returns the replacement text, and returns true.
+		/* Function: TryToSkipSubstitutionDefinition
+		 * 
+		 * If the iterator is on a valid substitution definition, advances it past it, adds the identifier and value to <substitutions>,
+		 * and returns true.  Otherwise the iterator will be left alone and it will return false.
+		 * 
+		 * Set assignmentChar to ':' or '=' depending on which style you want.
+		 */
+		protected bool TryToSkipSubstitutionDefinition (ref TokenIterator iterator, char assignmentChar)
+			{
+			if (iterator.Character != '$' && iterator.Character != '@')
+				{  return false;  }
+
+			TokenIterator lookBehind = iterator;
+			lookBehind.Previous();
+
+			if (lookBehind.IsInBounds &&
+				lookBehind.FundamentalType != FundamentalType.Whitespace &&
+				lookBehind.FundamentalType != FundamentalType.LineBreak &&
+				lookBehind.Character != ';')
+				{  return false;  }				 
+			
+			TokenIterator startOfIdentifier = iterator;
+
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
+
+			if (!lookahead.IsInBounds ||
+				 (lookahead.FundamentalType != FundamentalType.Text &&
+				  lookahead.Character != '_'))
+				{  return false;  }
+
+			do
+				{  lookahead.Next();  }
+			while (lookahead.IsInBounds &&
+					 (lookahead.FundamentalType == FundamentalType.Text ||
+					  lookahead.Character == '_'));
+
+			string identifier = iterator.Tokenizer.TextBetween(startOfIdentifier, lookahead);
+			lookahead.NextPastWhitespace();
+
+			if (lookahead.Character != assignmentChar)
+				{  return false;  }
+
+			lookahead.Next();
+			lookahead.NextPastWhitespace();
+			
+			TokenIterator startOfValue = lookahead;
+
+			while (lookahead.IsInBounds && lookahead.Character != ';')
+				{
+				if (TryToSkipLineComment(ref lookahead) ||
+					TryToSkipBlockComment(ref lookahead) ||
+					lookahead.FundamentalType == FundamentalType.LineBreak ||
+					lookahead.Character == '{')
+					{  return false;  }
+
+				if (!TryToSkipString(ref lookahead))
+					{  lookahead.Next();  }
+				}
+
+			if (lookahead.Character != ';')
+				{  return false;  }
+
+			string value = iterator.Tokenizer.TextBetween(startOfValue, lookahead).TrimEnd();
+			lookahead.Next();
+
+			substitutions.Add(identifier, value);
+
+			iterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToSkipSubstitution
+		 * If the iterator is on a valid substitution identifier, advances it past it, returns the replacement text, and returns true.
 		 * Otherwise the iterator will be left alone and it will return false.
 		 */
-		protected bool TryToGetSubstitution (ref TokenIterator iterator, out string substitution)
+		protected bool TryToSkipSubstitution (ref TokenIterator iterator, out string substitution)
 			{
-			if (iterator.Character != '`')
+			if (iterator.Character != '`' && iterator.Character != '$' && iterator.Character != '@')
 				{
 				substitution = null;
 				return false;
 				}
 
-			TokenIterator tokenIterator = iterator;
-			tokenIterator.Next();
-
-			StringBuilder token = new StringBuilder();
-			string tokenSubstitution = null;
+			TokenIterator startOfIdentifier = iterator;
+			TokenIterator lookahead = iterator;
+			lookahead.Next();
 
 			// Locale substitutions
-			if (tokenIterator.MatchesAcrossTokens("Locale{"))
+			if (lookahead.MatchesAcrossTokens("Locale{"))
 				{
-				tokenIterator.NextByCharacters(7);
+				lookahead.NextByCharacters(7);
+				TokenIterator startOfLocaleIdentifier = lookahead;
 
-				while (tokenIterator.IsInBounds && tokenIterator.Character != '}')
-					{
-					tokenIterator.AppendTokenTo(token);
-					tokenIterator.Next();
-					}
+				while (lookahead.IsInBounds && lookahead.Character != '}')
+					{  lookahead.Next();  }
 
-				if (tokenIterator.Character != '}')
+				if (lookahead.Character != '}')
 					{
 					substitution = null;
 					return false;
 					}
 
-				tokenIterator.Next();
+				string localeIdentifier = iterator.Tokenizer.TextBetween(startOfLocaleIdentifier, lookahead);
+				lookahead.Next();
 
-				string tokenString = token.ToString();
-				tokenSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", tokenString, tokenString);
-				tokenSubstitution = '"' + tokenSubstitution.StringEscape() + '"';
-				}
+				string possibleSubstitution = Engine.Locale.SafeGet("NaturalDocs.Engine", localeIdentifier, null);
 
-			// Standard comment substitutions
-			else
-				{
-				while (tokenIterator.IsInBounds && (tokenIterator.FundamentalType == FundamentalType.Text ||
-							 tokenIterator.Character == '.' || tokenIterator.Character == '_'))
+				if (possibleSubstitution == null)
 					{
-					tokenIterator.AppendTokenTo(token);
-					tokenIterator.Next();
+					substitution = null;
+					return false;
 					}
-
-				tokenSubstitution = substitutions[token.ToString()];
+				else
+					{
+					substitution = '"' + possibleSubstitution.StringEscape() + '"';
+					iterator = lookahead;
+					return true;
+					}
 				}
 
-			if (tokenSubstitution != null)
-				{
-				substitution = tokenSubstitution;
-				iterator = tokenIterator;
-				return true;
-				}
+			// Standard substitutions
 			else
 				{
-				substitution = null;
-				return false;
+				while (lookahead.IsInBounds &&
+						 (lookahead.FundamentalType == FundamentalType.Text ||
+						  lookahead.Character == '.' || 
+						  lookahead.Character == '_'))
+					{  lookahead.Next();  }
+
+				string identifier = iterator.Tokenizer.TextBetween(startOfIdentifier, lookahead);
+				string possibleSubstitution = substitutions[identifier.ToString()];
+
+				if (possibleSubstitution == null)
+					{
+					substitution = null;
+					return false;
+					}
+				else
+					{
+					substitution = possibleSubstitution;
+					iterator = lookahead;
+					return true;
+					}
 				}
 			}
 

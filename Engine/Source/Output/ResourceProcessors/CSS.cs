@@ -53,21 +53,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 				}
 
 
-			// Build the condensed output.
+			// Build the output.
 
 			TokenIterator iterator = source.FirstToken;
 
 			// We have to be more cautious than the JS shrinker.  You don't want something like "head .class" to become
 			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
 			// and not before ("body :link").
-			string safeToCondenseAround = "{},;:+>[]=\0";
+			string safeToCondenseAround = "{},;:+>[]= \0\n\r";
+			string substitution;
 
 			while (iterator.IsInBounds)
 				{
 				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
 
-				if (TryToSkipWhitespace(ref iterator, true) == true)
+				if (TryToSkipWhitespace(ref iterator, true)) // includes comments
 					{
 					if (!shrink)
 						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
@@ -81,23 +82,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 							{  output.Append(' ');  }
 						}
 					}
-				else if (TryToSkipString(ref iterator) == true)
+				else if (TryToSkipString(ref iterator))
 					{
 					source.AppendTextBetweenTo(prevIterator, iterator, output);
 					}
-				else if (iterator.Character == '`')
+				else if (TryToSkipSubstitutionDefinition(ref iterator, ':'))
 					{
-					string substitution = null;
-
-					if (TryToGetSubstitution(ref iterator, out substitution))
-						{
-						output.Append(substitution);
-						}
-					else
-						{
-						output.Append('`');
-						iterator.Next();
-						}
+					// Don't include in the output regardless of shrink
+					}
+				else if (TryToSkipSubstitution(ref iterator, out substitution))
+					{
+					output.Append(substitution);
 					}
 				else
 					{
