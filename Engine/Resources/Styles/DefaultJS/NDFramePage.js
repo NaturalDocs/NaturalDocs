@@ -702,7 +702,7 @@ var NDFramePage = new function ()
 
 	/* Function: SizeSummaryToContent
 		Resizes the summary panel to try to show its content without a horizontal scrollbar.  The new width will have a 
-		minimum of <desiredSummaryWidth> and a maximum of <desiredSummaryWidth> times <`ExpansionFactor>.  This 
+		minimum of <desiredSummaryWidth> and a maximum of <desiredSummaryWidth> times <$ExpansionFactor>.  This 
 		is to be called by <NDSummary> whenever it's content changes.
 	*/
 	this.SizeSummaryToContent = function ()
@@ -717,7 +717,7 @@ var NDFramePage = new function ()
 
 	/* Function: SizePanelToContent
 		Resizes the passed panel to try to show its content without a horizontal scrollbar.  The new width will have a
-		minimum of desiredOffsetWidth and a maximum of desiredOffsetWidth times <`ExpansionFactor>.
+		minimum of desiredOffsetWidth and a maximum of desiredOffsetWidth times <$ExpansionFactor>.
 	*/
 	this.SizePanelToContent = function (panel, desiredOffsetWidth)
 		{
@@ -777,9 +777,9 @@ var NDFramePage = new function ()
 			newOffsetWidth += 3;
 
 			// See if automatically expanding to this size would exceed the maximum.
-			if (newOffsetWidth / desiredOffsetWidth > `ExpansionFactor)
+			if (newOffsetWidth / desiredOffsetWidth > $ExpansionFactor)
 				{
-				newOffsetWidth = Math.floor(desiredOffsetWidth * `ExpansionFactor);
+				newOffsetWidth = Math.floor(desiredOffsetWidth * $ExpansionFactor);
 				}
 			
 			if (panel.offsetWidth != newOffsetWidth)
@@ -837,11 +837,10 @@ var NDFramePage = new function ()
 		can be slightly larger if needed to show the content without a horizontal scrollbar.
 	*/
 
-	/* Constant: `ExpansionFactor
+	/* Constant: $ExpansionFactor
 		This substitution is the maximum amount the menu or summary panel may be automatically expanded by.
 		To allow a 15% expansion, set the value to 1.15.
 	*/
-		// Substitutions:
-		// `ExpansionFactor = 1.333
+	$ExpansionFactor = 1.333;
 
 	};
