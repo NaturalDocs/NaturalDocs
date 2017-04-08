@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 							{  output.Append(' ');  }
 						}
 					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, '='))
+				else if (TryToSkipSubstitutionDefinition(ref iterator))
 					{
 					// Don't include in the output regardless of shrink
 					}

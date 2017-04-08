@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 					{
 					source.AppendTextBetweenTo(prevIterator, iterator, output);
 					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, ':'))
+				else if (TryToSkipSubstitutionDefinition(ref iterator))
 					{
 					// Don't include in the output regardless of shrink
 					}

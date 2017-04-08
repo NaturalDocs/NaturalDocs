@@ -269,10 +269,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * 
 		 * If the iterator is on a valid substitution definition, advances it past it, adds the identifier and value to <substitutions>,
 		 * and returns true.  Otherwise the iterator will be left alone and it will return false.
-		 * 
-		 * Set assignmentChar to ':' or '=' depending on which style you want.
 		 */
-		protected bool TryToSkipSubstitutionDefinition (ref TokenIterator iterator, char assignmentChar)
+		protected bool TryToSkipSubstitutionDefinition (ref TokenIterator iterator)
 			{
 			if (iterator.Character != '$' && iterator.Character != '@')
 				{  return false;  }
@@ -305,7 +303,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			string identifier = iterator.Tokenizer.TextBetween(startOfIdentifier, lookahead);
 			lookahead.NextPastWhitespace();
 
-			if (lookahead.Character != assignmentChar)
+			if (lookahead.Character != ':' && lookahead.Character != '=')
 				{  return false;  }
 
 			lookahead.Next();
