@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				try
 					{
-					if (arguments.Length == 0)
+					if (arguments.Length == 0 || substitution == null)
 						{  return substitution;  }
 					else
 						{  return Format(substitution, arguments);  }
