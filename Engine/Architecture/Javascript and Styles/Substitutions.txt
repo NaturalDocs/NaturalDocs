@@ -21,7 +21,13 @@ _______________________________________________________________________________
 		letters, numbers, and underscores.  All substitutions are per file, so substitutions defined in one file will not apply to others.
 		However, the substitutions can be declared anywhere in the file; they don't have to be above it's first use.
 
-		Nested substitutions ("@Name2 = @Name1;") are not supported, nor are Sass and Less's other, more advanced features.
+		Substitutions can be nested:
+
+		> $Name1 = value1;
+		> $Name2 = $Name1;
+		> $Name3 = $Name1 + $Name2;
+
+		However, Sass's and Less's more advanced features are not supported.  Only direct and nested substitutions.
 
 
 	Topic: Locale Substitutions

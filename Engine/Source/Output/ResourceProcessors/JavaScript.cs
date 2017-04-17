@@ -11,10 +11,8 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
@@ -25,98 +23,70 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 		// Group: Functions
 		// __________________________________________________________________________
 
-		static JavaScript ()
+		public JavaScript()  : base ("JavaScript")
 			{
-			commentFinder = new Languages.CommentFinder("JavaScript");
-			commentFinder.LineCommentStrings = new string[] { "//" };
-			commentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			this.LineCommentStrings = new string[] { "//" };
+			this.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			this.QuoteCharacters = new char[] { '"', '\'' };
 			}
 
 		override public string Process (string javascript, bool shrink = true)
 			{
-			source = new Tokenizer(javascript);
-			output = new StringBuilder(javascript.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
+			Tokenizer source = new Tokenizer(javascript);
+			StringToStringTable substitutions = FindSubstitutions(source);
 
-			GetSubstitutions(source);
+			source = ApplySubstitutions(source, substitutions);
 
+			if (!shrink)
+				{  return source.RawText;  }
 
+			
 			// Search comments for sections to include in the output
 
-			IList<PossibleDocumentationComment> comments = commentFinder.GetPossibleDocumentationComments(source);
+			StringBuilder output = new StringBuilder(javascript.Length);
 
-			foreach (var comment in comments)
+			string includeInOutput = FindIncludeInOutput( GetPossibleDocumentationComments(source) );
+
+			if (includeInOutput != null)
 				{
-				string includeInOutput = IncludeInOutput(comment);
-
-				if (includeInOutput != null)
-					{
-					if (output.Length == 0)
-						{  output.AppendLine("/*");  }
-					else
-						{  output.AppendLine();  }
-
-					output.Append(includeInOutput);
-					}
-				}
-
-			if (output.Length > 0)
-				{
+				output.AppendLine("/*");
+				output.Append(includeInOutput);
 				output.AppendLine("*/");
 				output.AppendLine();
 				}
 
 
-			// Build the output.
+			// Shrink the source
 
 			TokenIterator iterator = source.FirstToken;
-
 			string spaceSeparatedSymbols = "+-";
-			string regexPrefixCharacters = "({[,;:=&|!?\0";
-			char lastNonWSChar = '\0';
-			string substitution, identifier, value, declaration;
 
 			while (iterator.IsInBounds)
 				{
-				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
 
-				if (lastChar != ' ' && lastChar != '\t')
-					{  lastNonWSChar = lastChar;  }
+				if (TryToSkipWhitespace(ref iterator) == true) // includes comments
+					{
+					char nextChar = iterator.Character;
 
-				if (TryToSkipWhitespace(ref iterator, false) == true) // includes comments
-					{
-					if (!shrink)
-						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
-					else
-						{
-						char nextChar = iterator.Character;
-
-						if ( (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
-							  spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
-							 (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
-							  Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
-							{  output.Append(' ');  }
-						}
-					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
-					{
-					if (!shrink)
-						{  output.Append("/* " + declaration + " */");  }
-					}
-				else if (TryToSkipSubstitution(ref iterator, out substitution))
-					{
-					output.Append(substitution);
+					if ( (spaceSeparatedSymbols.IndexOf(lastChar) != -1 &&
+						  spaceSeparatedSymbols.IndexOf(nextChar) != -1) ||
+						 (Tokenizer.FundamentalTypeOf(lastChar) == FundamentalType.Text &&
+						  Tokenizer.FundamentalTypeOf(nextChar) == FundamentalType.Text) )
+						{  output.Append(' ');  }
 					}
 				else
 					{
-					if (TryToSkipString(ref iterator) ||
-						(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
-						{  }
-					else
-						{  iterator.Next();  }
+					TokenIterator prevIterator = iterator;
 
-					source.AppendTextBetweenTo(prevIterator, iterator, output);
+					if (TryToSkipString(ref iterator) ||
+						TryToSkipRegex(ref iterator) )
+						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
+					else
+						{
+						iterator.AppendTokenTo(output);
+						iterator.Next();  
+						}
 					}
 				}
 
@@ -124,43 +94,48 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 			}
 
 
-		protected void GetSubstitutions (Tokenizer javascript)
+		/* Function: GenericSkip
+		 * Extends <ResourceProcessor.GenericSkip()> to handle regular expressions.
+		 */
+		override protected void GenericSkip (ref TokenIterator iterator)
 			{
-			TokenIterator iterator = source.FirstToken;
-
-			string regexPrefixCharacters = "({[,;:=&|!?\0";
-			char lastNonWSChar = '\0';
-			string identifier, value, declaration;
-
-			while (iterator.IsInBounds)
-				{
-				TokenIterator prevIterator = iterator;
-				
-				if (iterator.FundamentalType != FundamentalType.Whitespace &&
-					iterator.FundamentalType != FundamentalType.LineBreak)
-					{  lastNonWSChar = javascript.RawText[iterator.RawTextIndex + iterator.RawTextLength - 1];  }
-
-				if (TryToSkipWhitespace(ref iterator, false) || // includes comments
-					TryToSkipString(ref iterator) ||
-					(regexPrefixCharacters.IndexOf(lastNonWSChar) != -1 && TryToSkipRegex(ref iterator) == true) )
-					{
-					// Do nothing
-					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
-					{
-					substitutions.Add(identifier, value);
-					}
-				else
-					{  iterator.Next();  }
-				}
+			if (!TryToSkipRegex(ref iterator))
+				{  base.GenericSkip(ref iterator);  }
 			}
 
+
+		/* Function: TryToSkipRegex
+		 * If the iterator is on the opening symbol of a regular expression, skips over it and returns true.  Otherwise leaves the iterator
+		 * alone and returns false.
+		 */
+		protected bool TryToSkipRegex (ref TokenIterator iterator)
+			{
+			if (iterator.Character != '/')
+				{  return false;  }
+
+			// A plain / can be the start of a regex or a division symbol.  See if the previous non-whitespace character is acceptable before
+			// treating it as a regex.
+
+			string rawText = iterator.Tokenizer.RawText;
+			int rawTextIndex = iterator.RawTextIndex - 1;
+
+			while (rawTextIndex >= 0 && (rawText[rawTextIndex] == ' ' || rawText[rawTextIndex] == '\t'))
+				{  rawTextIndex--;  }
+
+			if (rawTextIndex < 0 || RegexPrefixCharacters.IndexOf(rawText[rawTextIndex]) != -1)
+				{
+				// Starts and ends with a slash except when escaped.  Just like a string right?
+				return TryToSkipString(ref iterator, '/');
+				}
+			else
+				{  return false;  }
+			}
 
 
 		// Group: Static Variables
 		// __________________________________________________________________________
 
-		protected static Languages.CommentFinder commentFinder;
+		protected static string RegexPrefixCharacters = "({[,;:=&|!?\0";
 
 		}
 	}

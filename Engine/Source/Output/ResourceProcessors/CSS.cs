@@ -25,138 +25,87 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 		// Group: Functions
 		// __________________________________________________________________________
 
-		static CSS ()
+		public CSS () : base ("CSS")
 			{
-			commentFinder = new Languages.CommentFinder("CSS");
-			commentFinder.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			this.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			this.QuoteCharacters = new char[] { '"', '\'' };
 			}
 
 
 		override public string Process (string css, bool shrink = true)
 			{
-			source = new Tokenizer(css);
-			output = new StringBuilder(css.Length / 2);  // Guess, but better than nothing.
-			substitutions = new StringToStringTable(KeySettingsForSubstitutions);
+			Tokenizer source = new Tokenizer(css);
+			StringToStringTable substitutions = FindSubstitutions(source);
 
-			GetSubstitutions(source);
+			source = ApplySubstitutions(source, substitutions);
 
+			if (!shrink)
+				{  return source.RawText;  }
 
+			
 			// Search comments for sections to include in the output
 
-			IList<PossibleDocumentationComment> comments = commentFinder.GetPossibleDocumentationComments(source);
+			StringBuilder output = new StringBuilder(css.Length);
 
-			foreach (var comment in comments)
+			string includeInOutput = FindIncludeInOutput( GetPossibleDocumentationComments(source) );
+
+			if (includeInOutput != null)
 				{
-				string includeInOutput = IncludeInOutput(comment);
-
-				if (includeInOutput != null)
-					{
-					if (output.Length == 0)
-						{  output.AppendLine("/*");  }
-					else
-						{  output.AppendLine();  }
-
-					output.Append(includeInOutput);
-					}
-				}
-
-			if (output.Length > 0)
-				{
+				output.AppendLine("/*");
+				output.Append(includeInOutput);
 				output.AppendLine("*/");
 				output.AppendLine();
 				}
 
 
-			// Build the output.
+			// Shrink the source
 
 			TokenIterator iterator = source.FirstToken;
 
-			// We have to be more cautious than the JS shrinker.  You don't want something like "head .class" to become
-			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt")
-			// and not before ("body :link").
+			// We have to be more cautious than the JavaScript shrinker.  You don't want something like "head .class" to become
+			// "head.class".  Colon is a special case because we only want to remove spaces after it ("font-size: 12pt") and not
+			// before ("body :link").
 			string safeToCondenseAround = "{},;:+>[]= \0\n\r";
-			string substitution, identifier, value, declaration;
 
 			while (iterator.IsInBounds)
 				{
-				TokenIterator prevIterator = iterator;
 				char lastChar = (output.Length > 0 ? output[output.Length - 1] : '\0');
 
-				if (TryToSkipWhitespace(ref iterator, true)) // includes comments
+				if (TryToSkipWhitespace(ref iterator)) // includes comments
 					{
-					if (!shrink)
-						{  source.AppendTextBetweenTo(prevIterator, iterator, output);  }
-					else
-						{
-						char nextChar = iterator.Character;
+					char nextChar = iterator.Character;
 
-						if (nextChar == ':' ||
-							  (safeToCondenseAround.IndexOf(lastChar) == -1 &&
-								safeToCondenseAround.IndexOf(nextChar) == -1) )
-							{  output.Append(' ');  }
-						}
+					if (nextChar == ':' ||
+						(safeToCondenseAround.IndexOf(lastChar) == -1 &&
+						safeToCondenseAround.IndexOf(nextChar) == -1) )
+						{  output.Append(' ');  }
 					}
-				else if (TryToSkipString(ref iterator))
+				else 
 					{
-					source.AppendTextBetweenTo(prevIterator, iterator, output);
-					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
-					{
-					if (!shrink)
-						{  output.Append("/* " + declaration + " */");  }
-					}
-				else if (TryToSkipSubstitution(ref iterator, out substitution))
-					{
-					output.Append(substitution);
-					}
-				else
-					{
-					if (iterator.Character == '}' && lastChar == ';')
+					TokenIterator prevIterator = iterator;
+
+					if (TryToSkipString(ref iterator))
 						{
-						// Semicolons are unnecessary at the end of blocks.  However, we have to do this here instead of in a
-						// global search and replace for ";}" because we don't want to alter that sequence if it appears in a string.
-						output[output.Length - 1] = '}';
+						source.AppendTextBetweenTo(prevIterator, iterator, output);
 						}
 					else
-						{  iterator.AppendTokenTo(output);  }
+						{
+						if (iterator.Character == '}' && lastChar == ';')
+							{
+							// Semicolons are unnecessary at the end of blocks.  However, we have to do this here instead of in a
+							// global search and replace for ";}" because we don't want to alter that sequence if it appears in a string.
+							output[output.Length - 1] = '}';
+							}
+						else
+							{  iterator.AppendTokenTo(output);  }
 
-					iterator.Next();
+						iterator.Next();
+						}
 					}
 				}
 
 			return output.ToString();
 			}
-
-
-		protected void GetSubstitutions (Tokenizer css)
-			{
-			TokenIterator iterator = source.FirstToken;
-			string identifier, value, declaration;
-
-			while (iterator.IsInBounds)
-				{
-				TokenIterator prevIterator = iterator;
-
-				if (TryToSkipWhitespace(ref iterator, true) ||
-					TryToSkipString(ref iterator))
-					{
-					// Do nothing
-					}
-				else if (TryToSkipSubstitutionDefinition(ref iterator, out identifier, out value, out declaration))
-					{
-					substitutions.Add(identifier, value);
-					}
-				else
-					{  iterator.Next();  }
-				}
-			}
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-		protected static Languages.CommentFinder commentFinder;
 
 		}
 	}
