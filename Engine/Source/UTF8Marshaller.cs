@@ -16,72 +16,75 @@ using System.Runtime.InteropServices;
 using System.Text;
 
 
-public class UTF8Marshaller : ICustomMarshaler
+namespace CodeClear.NaturalDocs.Engine
 	{
-	public IntPtr MarshalManagedToNative (object managedObject)
+	public class UTF8Marshaller : ICustomMarshaler
 		{
-		if (managedObject == null || (managedObject is string) == false)
-			{  return IntPtr.Zero;  }
-
-		// Convert string to UTF-8 bytes.  The result is not null terminated.
-		byte[] utf8Bytes = Encoding.UTF8.GetBytes((string)managedObject);
-		
-		// Create a native buffer.  +1 to the length for the null terminator.
-		IntPtr nativeBuffer = Marshal.AllocHGlobal(utf8Bytes.Length + 1);
-
-		Marshal.Copy(utf8Bytes, 0, nativeBuffer, utf8Bytes.Length);
-
-		// Add the null terminator
-		Marshal.WriteByte(nativeBuffer, utf8Bytes.Length, 0);
-
-		return nativeBuffer;
-		}
-
-	public object MarshalNativeToManaged (IntPtr nativeBuffer)
-		{
-		if (nativeBuffer == IntPtr.Zero)
-			{  return null;  }
-
-		unsafe 
+		public IntPtr MarshalManagedToNative (object managedObject)
 			{
-			sbyte* start = (sbyte*)nativeBuffer;
-			sbyte* end = start;
+			if (managedObject == null || (managedObject is string) == false)
+				{  return IntPtr.Zero;  }
 
-			// Find the null
-			while (*end != 0)
-				{  end++;  }
+			// Convert string to UTF-8 bytes.  The result is not null terminated.
+			byte[] utf8Bytes = Encoding.UTF8.GetBytes((string)managedObject);
+		
+			// Create a native buffer.  +1 to the length for the null terminator.
+			IntPtr nativeBuffer = Marshal.AllocHGlobal(utf8Bytes.Length + 1);
 
-			if (start == end)
-				{  return string.Empty;  }
-			else
+			Marshal.Copy(utf8Bytes, 0, nativeBuffer, utf8Bytes.Length);
+
+			// Add the null terminator
+			Marshal.WriteByte(nativeBuffer, utf8Bytes.Length, 0);
+
+			return nativeBuffer;
+			}
+
+		public object MarshalNativeToManaged (IntPtr nativeBuffer)
+			{
+			if (nativeBuffer == IntPtr.Zero)
+				{  return null;  }
+
+			unsafe 
 				{
-				// End is on the null, but that's okay because we don't want to include it in the string constructor.
-				int length = (int)(end - start);
-				return new string(start, 0, length, Encoding.UTF8);
+				sbyte* start = (sbyte*)nativeBuffer;
+				sbyte* end = start;
+
+				// Find the null
+				while (*end != 0)
+					{  end++;  }
+
+				if (start == end)
+					{  return string.Empty;  }
+				else
+					{
+					// End is on the null, but that's okay because we don't want to include it in the string constructor.
+					int length = (int)(end - start);
+					return new string(start, 0, length, Encoding.UTF8);
+					}
 				}
 			}
+
+		public void CleanUpNativeData (IntPtr nativeBuffer)
+			{
+			if (nativeBuffer != IntPtr.Zero)
+				{  Marshal.FreeHGlobal(nativeBuffer);  }
+			}
+
+		public void CleanUpManagedData (object managedObject)
+			{
+			}
+
+		public int GetNativeDataSize()
+			{
+			return 0;
+			}
+
+		static public ICustomMarshaler GetInstance (string cookie = null)
+			{
+			return staticInstance;
+			}
+
+		private static UTF8Marshaller staticInstance = new UTF8Marshaller();
+
 		}
-
-	public void CleanUpNativeData (IntPtr nativeBuffer)
-		{
-		if (nativeBuffer != IntPtr.Zero)
-			{  Marshal.FreeHGlobal(nativeBuffer);  }
-	    }
-
-	public void CleanUpManagedData (object managedObject)
-		{
-		}
-
-	public int GetNativeDataSize()
-		{
-		return 0;
-		}
-
-	static public ICustomMarshaler GetInstance (string cookie = null)
-		{
-		return staticInstance;
-		}
-
-	private static UTF8Marshaller staticInstance = new UTF8Marshaller();
-
 	}
