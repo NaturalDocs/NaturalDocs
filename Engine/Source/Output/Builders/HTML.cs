@@ -741,16 +741,29 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 						// If folderIndex isn't at the end that means the cancel delegate was triggered and we have to add the remaining
 						// folders back to the build state.
-						while (folderIndex < foldersToCheckForDeletion.Length)
+						if (folderIndex < foldersToCheckForDeletion.Length)
 							{
-							buildState.FoldersToCheckForDeletion.Add(foldersToCheckForDeletion[folderIndex]);
-							folderIndex++;
+							if (haveAccessLock == false)
+								{
+								Monitor.Enter(accessLock);
+								haveAccessLock = true;
+								}
 
-							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
+							do
+								{
+								buildState.FoldersToCheckForDeletion.Add(foldersToCheckForDeletion[folderIndex]);
+								folderIndex++;
+
+								unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
+								}
+							while (folderIndex < foldersToCheckForDeletion.Length);
 							}
 
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						if (haveAccessLock)
+							{
+							Monitor.Exit(accessLock);
+							haveAccessLock = false;
+							}
 						}
 
 
