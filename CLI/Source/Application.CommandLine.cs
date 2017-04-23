@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--version", "-v");
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
-			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink", "--dontshrink");
+			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink-output", "--dontshrinkoutput", "--dont-shrink", "--dontshrink");
 			commandLine.AddAliases("--worker-threads", "--threads");
 			// no aliases for --benchmark
 			commandLine.AddAliases("--help", "-h", "-?");
