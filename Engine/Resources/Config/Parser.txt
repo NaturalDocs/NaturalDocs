@@ -1,4 +1,4 @@
-Format: 2.0 (Development Release 04-06-2017)
+Format: 2.0
 
 # Natural Docs Parser Configuration File
 
