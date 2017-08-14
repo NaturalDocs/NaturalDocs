@@ -40,9 +40,6 @@
     <StartupObject>CodeClear.NaturalDocs.Engine.Tests.Runner</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit-console-runner">
-      <HintPath>..\Engine.Tests\Resources\NUnit\nunit-console-runner.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>

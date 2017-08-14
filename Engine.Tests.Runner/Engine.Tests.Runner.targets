@@ -91,7 +91,18 @@
 		<Target Name="EngineTestRunner_CopyNUnitResources">
 
 			<!-- Engine.Tests will handle nunit.framework.dll -->
-			
+
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-x86.exe"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-x86.exe.config"
+				DestinationFolder="$(TargetDir)"
+				/>
+
+			<!-- This file is needed by nunit-console-x86.exe -->
+
 			<Copy
 				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-runner.dll"
 				DestinationFolder="$(TargetDir)"

@@ -42,34 +42,56 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 				if (!ParseCommandLine(commandLineOptions))
 					{  return;  }
 
-				string[] runnerParams;
 
-				if (testGroup == null)
-					{  
-					System.Console.WriteLine("Running all tests...");
-					runnerParams = new string[2] { "/work:" + assemblyFolder, dllPath };
-					}
-				else
+				// Build the parameter string
+
+				string runnerParams = "/work:\"" + assemblyFolder + "\"";
+
+				if (testGroup != null)
+					{  runnerParams += " /fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup;  }
+
+				runnerParams += " \"" + dllPath + "\"";
+
+
+				// Use nunit-console-x86.exe to run the tests.  Capture its output if desired.
+
+				string runnerOutput;
+
+				using (System.Diagnostics.Process runnerProcess = new System.Diagnostics.Process())
 					{
-					System.Console.WriteLine("Running " + testGroup + " tests...");
-					runnerParams = new string[3] { "/work:" + assemblyFolder, "/fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup, dllPath };
+					runnerProcess.StartInfo.FileName = assemblyFolder + "/nunit-console-x86.exe";
+					runnerProcess.StartInfo.Arguments = runnerParams;
+					runnerProcess.StartInfo.UseShellExecute = false;
+
+					#if USE_NUNIT_OUTPUT
+						runnerProcess.StartInfo.RedirectStandardOutput = false;
+					#else
+						runnerProcess.StartInfo.RedirectStandardOutput = true;
+					#endif
+
+					if (testGroup == null)
+						{  System.Console.WriteLine("Running all tests...");  }
+					else
+						{  System.Console.WriteLine("Running " + testGroup + " tests...");  }
+
+					#if USE_NUNIT_OUTPUT
+						System.Console.WriteLine();
+					#endif
+
+					runnerProcess.Start();
+
+					#if !USE_NUNIT_OUTPUT
+						// This MUST be done before WaitForExit(), counterintuitive as that may be.
+						// See https://msdn.microsoft.com/en-us/library/system.diagnostics.process.standardoutput(v=vs.110).aspx
+						runnerOutput = runnerProcess.StandardOutput.ReadToEnd();
+					#endif
+
+					runnerProcess.WaitForExit();
+
+					#if USE_NUNIT_OUTPUT
+						System.Console.WriteLine();
+					#endif
 					}
-
-
-				// Use the NUnit console runner to execute the tests and capture the output.
-
-				#if !USE_NUNIT_OUTPUT
-					var oldConsoleOut = System.Console.Out;
-					var capturedConsoleOut = new System.IO.StringWriter();
-	
-					System.Console.SetOut(capturedConsoleOut);
-				#endif
-
-				NUnit.ConsoleRunner.Runner.Main(runnerParams);
-
-				#if !USE_NUNIT_OUTPUT
-					System.Console.SetOut(oldConsoleOut);
-				#endif
 
 
 				// Attempt to extract the failure count and notices from the generated XML file.
@@ -116,7 +138,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 					{  
 					#if !USE_NUNIT_OUTPUT
 						System.Console.WriteLine();
-						System.Console.Write(capturedConsoleOut.ToString());
+						System.Console.Write(runnerOutput);
 					#endif
 
 					if (pauseOnError)
