@@ -25,6 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 		static void Main (string[] commandLineOptions)
 			{
 			testGroup = null;
+			showNUnitOutput = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
 
@@ -45,52 +46,46 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 				// Build the parameter string
 
-				string runnerParams = "/work:\"" + assemblyFolder + "\"";
+				string nunitParams = "/work:\"" + assemblyFolder + "\"";
 
 				if (testGroup != null)
-					{  runnerParams += " /fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup;  }
+					{  nunitParams += " /fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup;  }
 
-				runnerParams += " \"" + dllPath + "\"";
+				nunitParams += " \"" + dllPath + "\"";
 
 
 				// Use nunit-console-x86.exe to run the tests.  Capture its output if desired.
 
-				string runnerOutput;
+				string nunitOutput = null;
 
-				using (System.Diagnostics.Process runnerProcess = new System.Diagnostics.Process())
+				using (System.Diagnostics.Process nunitProcess = new System.Diagnostics.Process())
 					{
-					runnerProcess.StartInfo.FileName = assemblyFolder + "/nunit-console-x86.exe";
-					runnerProcess.StartInfo.Arguments = runnerParams;
-					runnerProcess.StartInfo.UseShellExecute = false;
-
-					#if USE_NUNIT_OUTPUT
-						runnerProcess.StartInfo.RedirectStandardOutput = false;
-					#else
-						runnerProcess.StartInfo.RedirectStandardOutput = true;
-					#endif
+					nunitProcess.StartInfo.FileName = assemblyFolder + "/nunit-console-x86.exe";
+					nunitProcess.StartInfo.Arguments = nunitParams;
+					nunitProcess.StartInfo.UseShellExecute = false;
+					nunitProcess.StartInfo.RedirectStandardOutput = !showNUnitOutput;
 
 					if (testGroup == null)
 						{  System.Console.WriteLine("Running all tests...");  }
 					else
 						{  System.Console.WriteLine("Running " + testGroup + " tests...");  }
 
-					#if USE_NUNIT_OUTPUT
-						System.Console.WriteLine();
-					#endif
+					if (showNUnitOutput)
+						{  System.Console.WriteLine();  }
 
-					runnerProcess.Start();
+					nunitProcess.Start();
 
-					#if !USE_NUNIT_OUTPUT
+					if (!showNUnitOutput)
+						{
 						// This MUST be done before WaitForExit(), counterintuitive as that may be.
 						// See https://msdn.microsoft.com/en-us/library/system.diagnostics.process.standardoutput(v=vs.110).aspx
-						runnerOutput = runnerProcess.StandardOutput.ReadToEnd();
-					#endif
+						nunitOutput = nunitProcess.StandardOutput.ReadToEnd();
+						}
 
-					runnerProcess.WaitForExit();
+					nunitProcess.WaitForExit();
 
-					#if USE_NUNIT_OUTPUT
-						System.Console.WriteLine();
-					#endif
+					if (showNUnitOutput)
+						{  System.Console.WriteLine();  }
 					}
 
 
@@ -136,29 +131,30 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 				if (failureCount == -1 || failureCount != foundFailures)
 					{  
-					#if !USE_NUNIT_OUTPUT
+					if (!showNUnitOutput)
+						{
 						System.Console.WriteLine();
-						System.Console.Write(runnerOutput);
-					#endif
+						System.Console.Write(nunitOutput);
+						}
 
 					if (pauseOnError)
 						{  pauseBeforeExit = true;  }
 					}
 				else if (failureCount != 0)
 					{
-					#if !USE_NUNIT_OUTPUT
+					if (!showNUnitOutput)
+						{
 						System.Console.WriteLine();
 						System.Console.Write(failures.ToString());
-					#endif
+						}
 
 					if (pauseOnError)
 						{  pauseBeforeExit = true;  }
 					}
 				else
 					{
-					#if !USE_NUNIT_OUTPUT
-						System.Console.WriteLine("All tests successful.");
-					#endif
+					if (!showNUnitOutput)
+						{  System.Console.WriteLine("All tests successful.");  }
 					}
 
 				System.Console.WriteLine("-------------------------");
@@ -187,6 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 			Engine.CommandLine commandLine = new CommandLine(commandLineSegments);
 
 			commandLine.AddAliases("--test-group", "--testgroup", "--test", "--tests");
+			commandLine.AddAliases("--show-nunit-output", "--shownunitoutput", "--show-nunit", "--shownunit");
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 			commandLine.AddAliases("--help", "-h", "-?");
@@ -222,6 +219,22 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 						{
 						System.Console.Error.WriteLine("\"" + parameterAsEntered + "\" must be followed by a test group name");
 						return false;
+						}
+					}
+
+
+				// Show NUnit Output
+
+				else if (parameter == "--show-nunit-output")
+					{
+					if (!commandLine.NoValue())
+						{
+						System.Console.Error.WriteLine("\"" + parameterAsEntered + "\" can't be followed by a value");
+						return false;
+						}
+					else
+						{
+						showNUnitOutput = true;
 						}
 					}
 
@@ -289,6 +302,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 		private static string testGroup;
 
+		private static bool showNUnitOutput;
 		private static bool pauseBeforeExit;
 		private static bool pauseOnError;
 

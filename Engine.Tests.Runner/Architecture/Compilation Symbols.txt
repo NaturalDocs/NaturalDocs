@@ -1,6 +1,0 @@
-﻿
-Macros: Compilation Symbols
-_______________________________________________________________________________
-
-
-	USE_NUNIT_OUTPUT - Display NUnit's console output instead of our own.
