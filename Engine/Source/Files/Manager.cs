@@ -1699,7 +1699,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* var: ImageExtensions
 		 * A <StringSet> of the supported image extensions.
 		 */
-		static public StringSet ImageExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "gif", "jpg", "jpeg", "png", "bmp" });
+		static public StringSet ImageExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "gif", "jpg", "jpeg", "png", "bmp", "svg" });
 
 		}
 	}
