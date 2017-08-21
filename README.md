@@ -1,4 +1,4 @@
-# NaturalDocs
+# Natural Docs
 
 Natural Docs is an open source documentation generator for 
 [multiple programming languages](http://www.naturaldocs.org/languages).  You document your code in a 
