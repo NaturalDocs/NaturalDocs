@@ -2,7 +2,7 @@
 # License
 
 Natural Docs is Copyright © 2003-2017 Code Clear LLC.  Natural Docs is licensed under version 3 of the GNU
-Affero General Public License (AGPLv3).  Please see <Incorporated Code> for additional copyrights and license
+Affero General Public License (AGPLv3).  Please see Incorporated Code for additional copyrights and license
 terms.
 
 Portions of Natural Docs are automatically included with generated documentation in order to help it function,
@@ -37,7 +37,7 @@ GNU General Public License (GPL).  However, this combined product is still licen
 
 Version 3, 19 November 2007
 
-Copyright © 2007 Free Software Foundation, Inc.  [http://fsf.org/]
+Copyright © 2007 Free Software Foundation, Inc.  http://fsf.org/
 
 Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not
 allowed.
@@ -501,7 +501,7 @@ found.
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see http://www.gnu.org/licenses/.
 
 Also add information on how to contact you by electronic and paper mail.
 
@@ -511,7 +511,7 @@ users to an archive of the code. There are many ways you could offer source, and
 programs; see section 13 for the specific requirements.
 
 You should also get your employer (if you work as a programmer) or school, if any, to sign a "copyright disclaimer" for the
-program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see <http://www.gnu.org/licenses/>.
+program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see http://www.gnu.org/licenses/.
 
 
 
@@ -540,7 +540,7 @@ All of the deliverable code in SQLite has been written from scratch. No code has
 internet. Every line of code can be traced back to its original author, and all of those authors have public domain dedications on file.
 So the SQLite code base is clean and is uncontaminated with licensed code from other projects.
 
-(Public domain statement retrieved from [http://www.sqlite.org/copyright.html])
+(Public domain statement retrieved from http://www.sqlite.org/copyright.html)
 
 
 
@@ -569,4 +569,4 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
-(License retrieved from [http://benalman.com/about/license/])
+(License retrieved from http://benalman.com/about/license/)
