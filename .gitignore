@@ -5,3 +5,5 @@ Thumbs.db
 *.csproj.user
 bin/
 obj/
+CLI.Package.MSI/
+CLI.Package.ZIP/
