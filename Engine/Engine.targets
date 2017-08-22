@@ -159,7 +159,22 @@
 				/>
 			<Copy
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite32.so"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite.Linux32.so"
+			DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite.Linux64.so"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite.Mac32.so"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\SQLite\libNaturalDocs.Engine.SQLite.Mac64.so"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
@@ -182,7 +197,19 @@
 				/>
 			<Delete
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
-				Files="$(TargetDir)libNaturalDocs.Engine.SQLite32.so"
+			Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux32.so"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Linux64.so"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Mac32.so"
+				/>
+			<Delete
+				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
+				Files="$(TargetDir)libNaturalDocs.Engine.SQLite.Mac64.so"
 				/>
 			<Delete
 				Condition="'$(OperatingSystemTarget)'=='Universal' or '$(OperatingSystemTarget)'=='Unix'"
