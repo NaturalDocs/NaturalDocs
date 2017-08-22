@@ -17,4 +17,6 @@ You can also join the community:
 - [Support](http://www.naturaldocs.org/support)
 - [Discussion](http://www.reddit.com/r/NaturalDocs)
 
-Natural Docs is licensed under the GNU Affero General Public License, version 3.
+Natural Docs is licensed under the GNU Affero General Public License, version 3.  See 
+[Engine\Resources\License\License.txt](https://github.com/NaturalDocs/NaturalDocs/blob/master/Engine/Resources/License/License.txt)
+for full details and incorporated code.
