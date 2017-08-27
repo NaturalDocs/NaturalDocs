@@ -279,6 +279,7 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Engine.targets" />
+    <None Include="Resources\License\License.rtf" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
