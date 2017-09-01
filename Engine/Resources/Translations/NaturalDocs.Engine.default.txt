@@ -125,9 +125,8 @@ CrashReport.CausedBy: Caused By:
 CrashReport.StackTrace: Stack Trace:
 CrashReport.Task: Task:
 CrashReport.GeneratedOn(date): Generated on {0}
-CrashReport.Platform: Platform
-CrashReport.Version: Version
-CrashReport.CommandLine: Command Line
+CrashReport.Versions: Versions:
+CrashReport.CommandLine: Command Line:
 
 Thread.ParentThread: Parent Thread
 Thread.ThreadPoolThread: Thread Pool Member

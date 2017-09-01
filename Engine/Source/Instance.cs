@@ -336,7 +336,7 @@ namespace CodeClear.NaturalDocs.Engine
 				// Command Line
 
 				output.AppendLine ();
-				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line") + ":" );
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line:") );
 				output.AppendLine ();
 				output.AppendLine ("   " + Environment.CommandLine );
 
@@ -344,14 +344,39 @@ namespace CodeClear.NaturalDocs.Engine
 				// Versions
 
 				output.AppendLine ();
-				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Version", "Version") +
-														": " + Instance.VersionString );
-				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Platform", "Platform") +
-														": " + Environment.OSVersion.VersionString +
-														" (" + Environment.OSVersion.Platform + ")" );
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Versions", "Versions:") );
+				output.AppendLine ();
+				output.AppendLine ( "   Natural Docs " + Instance.VersionString );
+				output.AppendLine ();
 
-				// This should definitely be last in case there's a problem accessing the library
-				output.AppendLine ( "SQLite: " + SQLite.API.LibVersion() );
+				// .NET/Mono version.  Extra try block in case it crashes out.
+				try 
+					{  
+					Type type = Type.GetType("Mono.Runtime");
+
+					if (type != null)
+						{
+						var getDisplayNameMethod = type.GetMethod("GetDisplayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+						if (getDisplayNameMethod != null)
+							{  output.AppendLine( "   Mono " + getDisplayNameMethod.Invoke(null, null));  }
+						else
+							{  output.AppendLine( "   Couldn't get Mono version");  }
+						}
+					else
+						{  output.AppendLine( "   .NET " + System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion);  }
+					}
+				catch
+					{  output.AppendLine ( "   Couldn't get .NET/Mono version" );  }
+
+				output.AppendLine ( "   " + Environment.OSVersion.VersionString + " (" + Environment.OSVersion.Platform + ")" );
+				output.AppendLine ();
+
+				// SQLite version.  Extra try block in case it crashes out.
+				try 
+					{  output.AppendLine ( "   SQLite " + SQLite.API.LibVersion() );  }
+				catch
+					{  output.AppendLine ( "   Couldn't get SQLite version" );  }
 				}
 				
 			// If the information building crashes out at any time, that's fine.  We'll just return what we managed to build before that happened.
