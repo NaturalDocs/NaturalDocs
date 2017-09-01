@@ -459,7 +459,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						break;
 
 					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
-						htmlOutput.Append( "<i>" + iterator.String.ToHTML() + "</i>" );
+						if (iterator.Property("type") == "standalone")
+							{  htmlOutput.Append("<p>");  }
+
+						htmlOutput.Append(iterator.Property("originaltext").ToHTML());
+
+						if (iterator.Property("type") == "standalone")
+							{  htmlOutput.Append("</p>");  }
 						break;
 					}
 
