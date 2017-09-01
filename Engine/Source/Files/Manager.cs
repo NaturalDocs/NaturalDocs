@@ -859,104 +859,118 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			if (file.Type == FileType.Source)
 				{
-				#if SHOW_FILE_PARSING
-					System.Console.Write("Parsing " + file.FileName);
-
-					if (!string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.Name))
-						{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
-
-					System.Console.WriteLine("...");
-				#endif
-
-				Engine.Languages.Language language = EngineInstance.Languages.FromFileName(file.FileName);
-				IList<Topic> topics = null;
-				LinkSet links = null;
-
-				var parseResult = language.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
-
-				if (parseResult == Language.ParseResult.FileDoesntExist)
-					{  
-					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...file doesn't exist");
-					#endif
-					return ReleaseClaimedFileReason.FileDoesntExist;  
-					}
-				else if (parseResult == Language.ParseResult.CantAccessFile)
-					{  
-					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...can't access file");
-					#endif
-					return ReleaseClaimedFileReason.CantAccessFile;  
-					}
-				else if (parseResult == Language.ParseResult.Cancelled)
-					{
-					return ReleaseClaimedFileReason.CancelledProcessing;
-					}
-
-
-				// Parse the topic bodies for Natural Docs links and the prototypes for type links
-
-				if (topics != null && topics.Count > 0)
-					{
-					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...found " + topics.Count + " topic" + (topics.Count == 1 ? "" : "s"));
-					#endif
-
-					foreach (Topic topic in topics)
-						{
-						if (topic.Body != null)
-							{
-							ExtractBodyLinks(topic, links);
-
-							if (cancelDelegate())
-								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
-							}
-						
-						// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
-						// the HTML output falls back to regular prototypes in this situation.
-						if (topic.Prototype != null &&
-							(EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy == false ||
-							 topic.ParsedClassPrototype == null))
-							{
-							ExtractTypeLinks(topic, links);
-
-							if (cancelDelegate())
-								{  return ReleaseClaimedFileReason.CancelledProcessing;  }
-							}
-						}
-					}
-				else
-					{
-					#if SHOW_FILE_PARSING
-					System.Console.WriteLine("...found no topics");
-					#endif
-					}
-					
-
-				// Update the database
-
-				codeDBAccessor.GetReadPossibleWriteLock();
-					
 				try
 					{
-					if (topics != null && topics.Count > 0)  
-						{  codeDBAccessor.UpdateTopicsInFile(file.ID, topics, cancelDelegate);  }
-					else
-						{  codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  }
 
-					if (links != null && links.Count > 0)  
-						{  codeDBAccessor.UpdateLinksInFile(file.ID, links, cancelDelegate);  }
+					#if SHOW_FILE_PARSING
+						System.Console.Write("Parsing " + file.FileName);
+
+						if (!string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.Name))
+							{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
+
+						System.Console.WriteLine("...");
+					#endif
+
+					Engine.Languages.Language language = EngineInstance.Languages.FromFileName(file.FileName);
+					IList<Topic> topics = null;
+					LinkSet links = null;
+
+					var parseResult = language.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
+
+					if (parseResult == Language.ParseResult.FileDoesntExist)
+						{  
+						#if SHOW_FILE_PARSING
+						System.Console.WriteLine("...file doesn't exist");
+						#endif
+						return ReleaseClaimedFileReason.FileDoesntExist;  
+						}
+					else if (parseResult == Language.ParseResult.CantAccessFile)
+						{  
+						#if SHOW_FILE_PARSING
+						System.Console.WriteLine("...can't access file");
+						#endif
+						return ReleaseClaimedFileReason.CantAccessFile;  
+						}
+					else if (parseResult == Language.ParseResult.Cancelled)
+						{
+						return ReleaseClaimedFileReason.CancelledProcessing;
+						}
+
+
+					// Parse the topic bodies for Natural Docs links and the prototypes for type links
+
+					if (topics != null && topics.Count > 0)
+						{
+						#if SHOW_FILE_PARSING
+						System.Console.WriteLine("...found " + topics.Count + " topic" + (topics.Count == 1 ? "" : "s"));
+						#endif
+
+						foreach (Topic topic in topics)
+							{
+							if (topic.Body != null)
+								{
+								ExtractBodyLinks(topic, links);
+
+								if (cancelDelegate())
+									{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+								}
+						
+							// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
+							// the HTML output falls back to regular prototypes in this situation.
+							if (topic.Prototype != null &&
+								(EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy == false ||
+								 topic.ParsedClassPrototype == null))
+								{
+								ExtractTypeLinks(topic, links);
+
+								if (cancelDelegate())
+									{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+								}
+							}
+						}
 					else
-						{  codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);  }
+						{
+						#if SHOW_FILE_PARSING
+						System.Console.WriteLine("...found no topics");
+						#endif
+						}
+					
+
+					// Update the database
+
+					codeDBAccessor.GetReadPossibleWriteLock();
+					
+					try
+						{
+						if (topics != null && topics.Count > 0)  
+							{  codeDBAccessor.UpdateTopicsInFile(file.ID, topics, cancelDelegate);  }
+						else
+							{  codeDBAccessor.DeleteTopicsInFile(file.ID, cancelDelegate);  }
+
+						if (links != null && links.Count > 0)  
+							{  codeDBAccessor.UpdateLinksInFile(file.ID, links, cancelDelegate);  }
+						else
+							{  codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);  }
+						}
+					finally
+						{  codeDBAccessor.ReleaseLock();  }
+					
+					// Need this final check in case CodeDB quit with a cancellation.
+					if (cancelDelegate())
+						{  return ReleaseClaimedFileReason.CancelledProcessing;  }
+					
+					return ReleaseClaimedFileReason.SuccessfullyProcessed;
+
 					}
-				finally
-					{  codeDBAccessor.ReleaseLock();  }
-					
-				// Need this final check in case CodeDB quit with a cancellation.
-				if (cancelDelegate())
-					{  return ReleaseClaimedFileReason.CancelledProcessing;  }
-					
-				return ReleaseClaimedFileReason.SuccessfullyProcessed;
+				catch (Exception e)
+					{
+					try
+						{  e.AddNaturalDocsTask("Parsing File: " + file.FileName);  }
+					catch
+						{  }
+
+					throw;
+					}
 				}
 
 
