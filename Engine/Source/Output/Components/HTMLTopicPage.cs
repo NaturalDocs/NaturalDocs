@@ -215,84 +215,97 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 
 
-				// Build the HTML for the list of topics
-
-				StringBuilder html = new StringBuilder("\r\n\r\n");
-				HTMLTopic topicBuilder = new HTMLTopic(this);
-
-				// We don't put embedded topics in the output, so we need to find the last non-embedded one to make
-				// sure that the "last" CSS tag is correctly applied.
-				int lastNonEmbeddedTopic = topics.Count - 1;
-				while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
-					{  lastNonEmbeddedTopic--;  }
-
-				for (int i = 0; i <= lastNonEmbeddedTopic; i++)
-					{  
-					string extraClass = null;
-
-					if (i == 0)
-						{  extraClass = "first";  }
-					else if (i == lastNonEmbeddedTopic)
-						{  extraClass = "last";  }
-
-					if (topics[i].IsEmbedded == false)
-						{
-						topicBuilder.Build(topics[i], links, linkTargets, html, topics, i + 1, extraClass);  
-						html.Append("\r\n\r\n");
-						}
-					}
-							
-
-				// Build the full HTML file
-
-				htmlBuilder.BuildFile(OutputFile, PageTitle, html.ToString(), Builders.HTML.PageType.Content);
-
-
-				// Build the tooltips file
-
-				using (System.IO.StreamWriter file = htmlBuilder.CreateTextFileAndPath(ToolTipsFile))
+				try
 					{
-					file.Write("NDContentPage.OnToolTipsLoaded({");
 
-					if (!EngineInstance.Config.ShrinkFiles)
-						{  file.WriteLine();  }
+					// Build the HTML for the list of topics
 
-					for (int i = 0; i < linkTargets.Count; i++)
-						{
-						Topic topic = linkTargets[i];
-						string toolTipHTML = topicBuilder.BuildToolTip(topic, summaryLinks);
+					StringBuilder html = new StringBuilder("\r\n\r\n");
+					HTMLTopic topicBuilder = new HTMLTopic(this);
 
-						if (toolTipHTML != null)
+					// We don't put embedded topics in the output, so we need to find the last non-embedded one to make
+					// sure that the "last" CSS tag is correctly applied.
+					int lastNonEmbeddedTopic = topics.Count - 1;
+					while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
+						{  lastNonEmbeddedTopic--;  }
+
+					for (int i = 0; i <= lastNonEmbeddedTopic; i++)
+						{  
+						string extraClass = null;
+
+						if (i == 0)
+							{  extraClass = "first";  }
+						else if (i == lastNonEmbeddedTopic)
+							{  extraClass = "last";  }
+
+						if (topics[i].IsEmbedded == false)
 							{
-							if (!EngineInstance.Config.ShrinkFiles)
-								{  file.Write("   ");  }
-
-							file.Write(topic.TopicID);
-							file.Write(":\"");
-							file.Write(toolTipHTML.StringEscape());
-							file.Write('"');
-
-							if (i != linkTargets.Count - 1)
-								{  file.Write(',');  }
-
-							if (!EngineInstance.Config.ShrinkFiles)
-								{  file.WriteLine();  }
+							topicBuilder.Build(topics[i], links, linkTargets, html, topics, i + 1, extraClass);  
+							html.Append("\r\n\r\n");
 							}
 						}
+							
 
-					if (!EngineInstance.Config.ShrinkFiles)
-						{  file.Write("   ");  }
+					// Build the full HTML file
 
-					file.Write("});");
+					htmlBuilder.BuildFile(OutputFile, PageTitle, html.ToString(), Builders.HTML.PageType.Content);
+
+
+					// Build the tooltips file
+
+					using (System.IO.StreamWriter file = htmlBuilder.CreateTextFileAndPath(ToolTipsFile))
+						{
+						file.Write("NDContentPage.OnToolTipsLoaded({");
+
+						if (!EngineInstance.Config.ShrinkFiles)
+							{  file.WriteLine();  }
+
+						for (int i = 0; i < linkTargets.Count; i++)
+							{
+							Topic topic = linkTargets[i];
+							string toolTipHTML = topicBuilder.BuildToolTip(topic, summaryLinks);
+
+							if (toolTipHTML != null)
+								{
+								if (!EngineInstance.Config.ShrinkFiles)
+									{  file.Write("   ");  }
+
+								file.Write(topic.TopicID);
+								file.Write(":\"");
+								file.Write(toolTipHTML.StringEscape());
+								file.Write('"');
+
+								if (i != linkTargets.Count - 1)
+									{  file.Write(',');  }
+
+								if (!EngineInstance.Config.ShrinkFiles)
+									{  file.WriteLine();  }
+								}
+							}
+
+						if (!EngineInstance.Config.ShrinkFiles)
+							{  file.Write("   ");  }
+
+						file.Write("});");
+						}
+
+
+					// Build summary and summary tooltips files
+
+					JSSummaryData summaryBuilder = new JSSummaryData(this);
+					summaryBuilder.Build(topics, links, PageTitle, OutputFileHashPath, SummaryFile, SummaryToolTipsFile);
+
+					return true;
 					}
+				catch (Exception e)
+					{
+					try
+						{  e.AddNaturalDocsTask("Building File: " + OutputFile);  }
+					catch
+						{  }
 
-
-				// Build summary and summary tooltips files
-
-				JSSummaryData summaryBuilder = new JSSummaryData(this);
-				summaryBuilder.Build(topics, links, PageTitle, OutputFileHashPath, SummaryFile, SummaryToolTipsFile);
-
-				return true;
+					throw;
+					}
 				}
 				
 			finally
