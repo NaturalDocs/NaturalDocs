@@ -123,6 +123,7 @@ Error.CouldNotCreateOutputFile(name): Could not create output file {0}.
 CrashReport.Message: Crash Message:
 CrashReport.CausedBy: Caused By:
 CrashReport.StackTrace: Stack Trace:
+CrashReport.Task: Task:
 CrashReport.GeneratedOn(date): Generated on {0}
 CrashReport.Platform: Platform
 CrashReport.Version: Version

@@ -217,6 +217,7 @@
     <Compile Include="Source\SQLite\Connection.cs" />
     <Compile Include="Source\SQLite\Exceptions\UnexpectedResult.cs" />
     <Compile Include="Source\SQLite\Query.cs" />
+    <Compile Include="Source\ExceptionExtensions.cs" />
     <Compile Include="Source\StringExtensions.cs" />
     <Compile Include="Source\Symbols\ContextString.cs" />
     <Compile Include="Source\Symbols\ClassString.cs" />

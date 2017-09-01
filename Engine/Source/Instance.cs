@@ -284,6 +284,21 @@ namespace CodeClear.NaturalDocs.Engine
 					}
 
 
+				// Natural Docs task
+
+				if (exception.HasNaturalDocsTask())
+					{
+					output.AppendLine();
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task:") );
+					output.AppendLine();
+
+					var tasks = exception.GetNaturalDocsTasks();
+
+					foreach (var task in tasks)
+						{  output.AppendLine( "   " + task );  }
+					}
+				
+
 				// Nested exceptions
 
 				while (inner != null)
@@ -294,6 +309,18 @@ namespace CodeClear.NaturalDocs.Engine
 					output.AppendLine( "   " + inner.Message );
 					output.AppendLine( "   (" + inner.GetType() + ")" );
 					
+					if (inner.HasNaturalDocsTask())
+						{
+						output.AppendLine();
+						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task:") );
+						output.AppendLine();
+
+						var tasks = inner.GetNaturalDocsTasks();
+
+						foreach (var task in tasks)
+							{  output.AppendLine( "   " + task );  }
+						}
+
 					inner = inner.InnerException;
 					}
 
