@@ -236,7 +236,6 @@ Technical Parameters:
 
 
 Crash.Exception: Natural Docs has stopped because of the following error:
-Crash.NestedException: This error was caused by the following error:
 Crash.IncludeInfoAndGetHelp: Please include this information when asking for help at naturaldocs.org.
 
 Crash.ReportAt(file).multiline {{{
@@ -244,6 +243,3 @@ A crash report has been generated at {0}.
 Please include this file when asking for help at naturaldocs.org.
 }}}
 
-Crash.Version: Version
-Crash.Platform: Platform
-Crash.CommandLine: Command Line

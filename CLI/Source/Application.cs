@@ -476,72 +476,48 @@ namespace CodeClear.NaturalDocs.CLI
 
 			errorOutput.Write ("\n\n------------------------------------------------------------\n");
 			errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.Exception",
-														"Natural Docs has closed because of the following error:"));
+																	"Natural Docs has closed because of the following error:"));
 			errorOutput.WriteLine();
-			errorOutput.WriteLine(e.Message);
-				
-			
-			// If it's not a user friendly exception or a thread exception wrapping a user friendly exception...
-			if ( e.GetType() != typeof(Engine.Exceptions.UserFriendly) &&
+
+
+			// If it's a user friendly exception, just display it
+
+			if ( e.GetType() == typeof(Engine.Exceptions.UserFriendly) ||
 				 ( e.GetType() == typeof(Engine.Exceptions.Thread) &&
-				   e.InnerException.GetType() == typeof(Engine.Exceptions.UserFriendly) ) == false )
+				   e.InnerException.GetType() == typeof(Engine.Exceptions.UserFriendly) ))
 				{
-				Engine.Path crashFile = EngineInstance.BuildCrashReport(e);
+				errorOutput.WriteLine(e.Message);
+				}
+
+			else
+				{
+				Path crashFile = EngineInstance.BuildCrashReport(e);
+
+
+				// If we were able to build a crash report, display the exception and the report's location
 
 				if (crashFile != null)
 					{
+					errorOutput.WriteLine(e.Message);
 					errorOutput.WriteLine();
 					errorOutput.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline", 
-														"A crash report has been generated at {0}.\n" +
-														"Please include this file when asking for help at naturaldocs.org.\n", crashFile));
+																	  "A crash report has been generated at {0}.\n" +
+																	  "Please include this file when asking for help at naturaldocs.org.\n", crashFile));
 					}
+
+
+				// If we couldn't build the crash report, display the information on the screen.
 					
 				else
 					{
-					errorOutput.WriteLine ();
-					errorOutput.WriteLine (e.StackTrace);  
-					
-					// If it's a thread exception, skip the first inner one because that's the wrapped one, which we already got the
-					// message for.
-					if (e is Engine.Exceptions.Thread)
-						{  e = e.InnerException;  }
-						
-					while (e.InnerException != null)
-						{
-						e = e.InnerException;
-
-						errorOutput.WriteLine ();
-						errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.NestedException",
-																   "This error was caused by the following error:") + "\n");
-
-						errorOutput.WriteLine (e.Message);
-						}
-						
-					try
-						{
-						errorOutput.WriteLine ();
-						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Version", "Version") +
-																	": " + Engine.Instance.VersionString );
-						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.Platform", "Platform") +
-																	": " + Environment.OSVersion.VersionString +
-																	" (" + Environment.OSVersion.Platform + ")" );
-						errorOutput.WriteLine ( "SQLite: " + Engine.SQLite.API.LibVersion() );
-						errorOutput.WriteLine ();
-						errorOutput.WriteLine ( Locale.SafeGet("NaturalDocs.CLI", "Crash.CommandLine", "Command Line") + ":" );
-						errorOutput.WriteLine ();
-						errorOutput.WriteLine ("   " + Environment.CommandLine );
-						}
-					catch
-						{
-						}
-						
+					errorOutput.Write( EngineInstance.GetCrashInformation(e) );
 					errorOutput.WriteLine ();
 					errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.IncludeInfoAndGetHelp",
-															   "Please include this information when asking for help at naturaldocs.org."));
+																			"Please include this information when asking for help at naturaldocs.org."));
 					}
 				}
 
-			errorOutput.Write ("\n------------------------------------------------------------\n\n");
+			errorOutput.Write ("------------------------------------------------------------\n\n");
 			}
 			
 			

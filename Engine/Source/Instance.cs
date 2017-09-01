@@ -61,6 +61,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 
 namespace CodeClear.NaturalDocs.Engine
@@ -251,12 +252,95 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 			
 			
+		/* Function: GetCrashInformation
+		 * Builds crash information for the passed exception.  It is safe to use even though the program is in an unstable state.
+		 */
+		public string GetCrashInformation (Exception exception)
+			{
+			StringBuilder output = new StringBuilder();
+			
+			try
+				{
+
+				// Crash message
+
+				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Message", "Crash Message:") );
+				output.AppendLine();
+				output.AppendLine( "   " + exception.Message );
+
+
+				// Exception type
+
+				Exception inner = exception.InnerException;
+
+				if (exception is Engine.Exceptions.Thread)
+					{
+					output.AppendLine( "   (" + inner.GetType() + ")" );
+					inner = inner.InnerException;
+					}
+				else
+					{
+					output.AppendLine( "   (" + exception.GetType() + ")" );
+					}
+
+
+				// Nested exceptions
+
+				while (inner != null)
+					{
+					output.AppendLine();
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CausedBy", "Caused By:") );
+					output.AppendLine();
+					output.AppendLine( "   " + inner.Message );
+					output.AppendLine( "   (" + inner.GetType() + ")" );
+					
+					inner = inner.InnerException;
+					}
+
+
+				// Stack trace
+					
+				output.AppendLine();
+				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.StackTrace", "Stack Trace:") );
+				output.AppendLine();
+				output.AppendLine( exception.StackTrace );
+
+
+				// Command Line
+
+				output.AppendLine ();
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line") + ":" );
+				output.AppendLine ();
+				output.AppendLine ("   " + Environment.CommandLine );
+
+
+				// Versions
+
+				output.AppendLine ();
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Version", "Version") +
+														": " + Instance.VersionString );
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Platform", "Platform") +
+														": " + Environment.OSVersion.VersionString +
+														" (" + Environment.OSVersion.Platform + ")" );
+
+				// This should definitely be last in case there's a problem accessing the library
+				output.AppendLine ( "SQLite: " + SQLite.API.LibVersion() );
+				}
+				
+			// If the information building crashes out at any time, that's fine.  We'll just return what we managed to build before that happened.
+			catch
+				{  }
+				
+			return output.ToString();
+			}
+			
+
 		/* Function: BuildCrashReport
 		 * 
 		 * Attempts to build a crash report for the passed exception.  If it succeeds it will return the path to the file,
 		 * otherwise it will return null.  It is safe to use even though the program is in an unstable state.  It will 
-		 * simply eat any exceptions it generates trying to create the report and return null instead.  Since it may not
-		 * be able to generate the report, you should have a backup method of displaying the information.
+		 * simply eat any exceptions it generates trying to create the report and return null instead.  If it's not able
+		 * to generate the report you should display <GetCrashInformation()> instead.
 		 */
 		public Path BuildCrashReport (Exception e)
 			{
@@ -274,56 +358,7 @@ namespace CodeClear.NaturalDocs.Engine
 				crashReport.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.GeneratedOn(date)", "Generated on {0}",
 																		 DateTime.Now ) );
 				crashReport.WriteLine();				
-				crashReport.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Message", "Crash Message:") );
-				crashReport.WriteLine();
-				crashReport.WriteLine( "   " + e.Message );
-
-				Exception inner = e.InnerException;
-
-				if (e is Engine.Exceptions.Thread)
-					{
-					crashReport.WriteLine( "   (" + inner.GetType() + ")" );
-					inner = inner.InnerException;
-					}
-				else
-					{
-					crashReport.WriteLine( "   (" + e.GetType() + ")" );
-					}
-				
-				while (inner != null)
-					{
-					crashReport.WriteLine();
-					crashReport.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CausedBy", "Caused By:") );
-					crashReport.WriteLine();
-					crashReport.WriteLine( "   " + inner.Message );
-					crashReport.WriteLine( "   (" + inner.GetType() + ")" );
-					
-					inner = inner.InnerException;
-					}
-					
-				crashReport.WriteLine();
-				crashReport.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.StackTrace", "Stack Trace:") );
-				crashReport.WriteLine();
-				crashReport.WriteLine( e.StackTrace );
-
-				// This part has a separate try block because it's okay if any of this information doesn't make it into the
-				// crash report.  We'd like to have it, but it's still better to have the rest of it if we can't.
-				try
-					{				
-					crashReport.WriteLine ();
-					crashReport.WriteLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line") + ":" );
-					crashReport.WriteLine ();
-					crashReport.WriteLine ("   " + Environment.CommandLine );
-					crashReport.WriteLine ();
-					crashReport.WriteLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Version", "Version") +
-														  ": " + Instance.VersionString );
-					crashReport.WriteLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Platform", "Platform") +
-														  ": " + Environment.OSVersion.VersionString +
-														  " (" + Environment.OSVersion.Platform + ")" );
-					crashReport.WriteLine ( "SQLite: " + SQLite.API.LibVersion() );
-					}
-				catch
-					{  }
+				crashReport.Write( GetCrashInformation(e) );
 				}
 				
 			catch
