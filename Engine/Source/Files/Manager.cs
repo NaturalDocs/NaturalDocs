@@ -43,6 +43,9 @@
  *		> [String: Path]
  *		> [Byte: Type]
  *		> [Int64: Last Modification in Ticks or 0]
+ *		> (if image)
+ *		>    [UInt32: Width in Pixels or 0 if unknown]
+ *		>    [UInt32: Height in Pixels or 0 if unknown]
  *		> ...
  *		> [Int32: 0]
  *		
@@ -53,6 +56,10 @@
  *		This continues until there is an ID number of zero.
  *			
  *		Revisions:
+ *		
+ *			2.1:
+ *			
+ *				- Added dimensions for image files.
  *		
  *			2.0:
  *				
@@ -533,7 +540,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				
 				if (file == null)
 					{
-					file = new File(name, type, lastModified);
+					if (type == FileType.Image)
+						{  file = new ImageFile(name, lastModified);  }
+					else
+						{  file = new File(name, type, lastModified);  }
+
 					file.Status = FileFlags.NewOrChanged;
 					files.Add(file);
 					
@@ -1474,6 +1485,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			try
 				{
+				// We'll continue to handle 2.0 files in 2.1 since it's easy enough
 				if (binaryFile.OpenForReading(filename, "2.0") == false)
 					{
 					result = false;
@@ -1484,7 +1496,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					// [String: Path]
 					// [Byte: Type]
 					// [Int64: Last Modification in Ticks or 0]
-					// ...
+					// (if image)
+					//    [UInt32: Width in Pixels or 0 if unknown]
+					//    [UInt32: Height in Pixels or 0 if unknown]
+ 					// ...
 					// [Int32: 0]
 					
 					int id;
@@ -1492,6 +1507,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					FileType type;
 					DateTime lastModification;
 					File file;
+					uint width, height;
 					
 					for (;;)
 						{
@@ -1504,7 +1520,32 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						type = (FileType)binaryFile.ReadByte();
 						lastModification = new DateTime(binaryFile.ReadInt64());
 						
-						file = new File(path, type, lastModification);
+						if (type == FileType.Image)
+							{
+							if (binaryFile.Version < "2.1")
+								{
+								width = 0;
+								height = 0;
+
+								// Reset last modification time so they'll be reparsed
+								lastModification = new DateTime(0);
+								}
+							else
+								{
+								width = binaryFile.ReadUInt32();
+								height = binaryFile.ReadUInt32();
+								}
+
+							if (width == 0 || height == 0)
+								{  file = new ImageFile(path, lastModification);  }
+							else
+								{  file = new ImageFile(path, lastModification, width, height);  }
+							}
+						else
+							{
+							file = new File(path, type, lastModification);
+							}
+
 						file.ID = id;
 						file.InBinaryFile = true;
 						
@@ -1545,11 +1586,30 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					// [String: Path]
 					// [Byte: Type]
 					// [Int64: Last Modification in Ticks or 0]
+					// (if image)
+					//    [UInt32: Width in Pixels or 0 if unknown]
+					//    [UInt32: Height in Pixels or 0 if unknown]
 					
 					binaryFile.WriteInt32(file.ID);
 					binaryFile.WriteString(file.FileName);
 					binaryFile.WriteByte((byte)file.Type);
 					binaryFile.WriteInt64(file.LastModified.Ticks);
+
+					if (file.Type == FileType.Image)
+						{
+						ImageFile imageFile = (ImageFile)file;
+
+						if (imageFile.DimensionsKnown)
+							{
+							binaryFile.WriteUInt32(imageFile.Width);
+							binaryFile.WriteUInt32(imageFile.Height);
+							}
+						else
+							{
+							binaryFile.WriteUInt32(0);
+							binaryFile.WriteUInt32(0);
+							}
+						}
 					}
 
 				// [Int32: 0]
