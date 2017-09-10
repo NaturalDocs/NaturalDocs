@@ -357,7 +357,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (topics[i].ClassID == topics[i-1].ClassID)
 					{
-					if (Manager.IsBetterClassDefinition(topics[i-1], topics[i]))
+					if (EngineInstance.Links.IsBetterClassDefinition(topics[i-1], topics[i]))
 						{  topics.RemoveAt(i-1);  }
 					else
 						{  topics.RemoveAt(i);  }
