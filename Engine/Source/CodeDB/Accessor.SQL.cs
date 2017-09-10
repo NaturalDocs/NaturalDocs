@@ -441,7 +441,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				topic.TopicID = Manager.UsedTopicIDs.LowestAvailable;
-				GetOrCreateClassID(topic);
+				topic.ClassID = GetOrCreateClassID(topic.ClassString);
 				GetOrCreateContextIDs(topic);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
@@ -542,7 +542,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				newTopic.TopicID = oldTopic.TopicID;
 			
 				if (classChanged)
-					{  GetOrCreateClassID(newTopic);  }
+					{  newTopic.ClassID = GetOrCreateClassID(newTopic.ClassString);  }
 				else
 					{  newTopic.ClassID = oldTopic.ClassID;  }
 
@@ -1426,7 +1426,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				link.LinkID = Manager.UsedLinkIDs.LowestAvailable;
 				GetOrCreateContextIDs(link);
-				GetOrCreateClassID(link);
+				link.ClassID = GetOrCreateClassID(link.ClassString);
 
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetClassID, TargetScore) " +
@@ -1882,192 +1882,47 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		/* Function: GetOrCreateClassID
 		 * 
-		 * Retrieves the ID for <Topic.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
+		 * Retrieves the ID for the <ClassString>.  If an existing ID cannot be found, one will be created.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
 		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
 		 */
-		public void GetOrCreateClassID (Topic topic)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (topic.ClassIDKnown == false)
-				{  
-				CacheOrCreateClassIDs(topic.ClassString);
-				topic.ClassID = classIDLookupCache[topic.ClassString];
-				}
-			}
-
-
-		/* Function: GetOrCreateClassIDs
-		 * 
-		 * Retrieves the class IDs for each <Topic's> ClassString if they are not already set.  If existing IDs cannot be found, 
-		 * they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new class IDs are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
-		 */
-		public void GetOrCreateClassIDs (IEnumerable<Topic> topics)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing class IDs.  There may be none so create the HashSet on demand.
-
-			HashSet<ClassString> classes = null;
-
-			foreach (var topic in topics)
-				{
-				if (topic.ClassIDKnown == false)
-					{  
-					if (classes == null)
-						{  classes = new HashSet<ClassString>();  }
-
-					classes.Add(topic.ClassString);  
-					}
-				}
-
-			if (classes != null)
-				{  CacheOrCreateClassIDs(classes);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topics.
-
-			foreach (var topic in topics)
-				{
-				if (topic.ClassIDKnown == false)
-					{  topic.ClassID = classIDLookupCache[topic.ClassString];  }
-				}
-			}
-
-
-		/* Function: GetOrCreateClassID
-		 * 
-		 * Retrieves the ID for <Link.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the link is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
-		 */
-		public void GetOrCreateClassID (Link link)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (link.ClassIDKnown == false)
-				{  
-				CacheOrCreateClassIDs(link.ClassString);
-				link.ClassID = classIDLookupCache[link.ClassString];
-				}
-			}
-
-
-		/* Function: CacheOrCreateClassIDs
-		 * 
-		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateClassIDs (IEnumerable<ClassString> classStrings)
+		public int GetOrCreateClassID (ClassString classString)
 			{
 			// Remember that classIDLookupCache is local to the accessor and doesn't need any locking.
 			// ClassIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
 
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			
-			// Create a list of all classStrings not already in the cache.  Since it's possible that they'll all be in the cache we
-			// create the list object on demand.
 
-			List<ClassString> uncachedClassStrings = null;
+			// First check for null and cached values
 
-			foreach (var classString in classStrings)
+			if (classString == null)
+				{  return 0;  }
+				
+			if (classIDLookupCache.Contains(classString))
+				{  return classIDLookupCache[classString];  }
+
+
+			// If it's not cached, check the database
+
+			int classID;
+
+			using (SQLite.Query query = connection.Query("SELECT ClassID FROM Classes WHERE LookupKey=?", classString.LookupKey))
 				{
-				if (classString != null && classIDLookupCache.Contains(classString) == false)
-					{
-					if (uncachedClassStrings == null)
-						{  uncachedClassStrings = new List<ClassString>();  }
+				if (query.Step())
+					{  
+					classID = query.IntColumn(0);
 
-					uncachedClassStrings.Add(classString);  
+					classIDLookupCache.Add(classString, classID);
+					return classID;
 					}
 				}
 
 
-			// Can we quit early?
-
-			if (uncachedClassStrings == null)
-				{  return;  }
-
-
-			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
-
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, ifnull(ClassString, LookupKey) " + 
-																																					 "FROM Classes WHERE");
-			object[] queryParams = new object[uncachedClassStrings.Count];
-
-			for (int i = 0; i < uncachedClassStrings.Count; i++)
-				{
-				if (i != 0)
-					{  queryText.Append(" OR");  }
-
-				queryText.Append(" LookupKey=?");
-				queryParams[i] = uncachedClassStrings[i].LookupKey;
-				}
-
-
-			// Run the query to fill in the cache with whatever already exists in the database.
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
-				{
-			   while (query.Step())
-			      {  
-					classIDLookupCache.Add( ClassString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );
-					}
-			   }
-
-
-			// Pare down our list of uncached class strings.
-
-			for (int i = 0; i < uncachedClassStrings.Count; /* don't auto increment */)
-				{
-				if (classIDLookupCache.Contains(uncachedClassStrings[i]))
-					{  uncachedClassStrings.RemoveAt(i);  }
-				else
-					{  i++;  }
-				}
-
-
-			// Can we quit now?
-
-			if (uncachedClassStrings.Count == 0)
-				{  return;  }
-
-
-			// Create anything we still need.
+			// If it's not in the database, create it
 
 			// DEPENDENCY: GetClassByID() and GetClassesByID() assume *every* newly created class ID will have a record
 			// in the database, even if the change cache hasn't been flushed yet.
@@ -2078,26 +1933,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
+			classID = Manager.UsedClassIDs.LowestAvailable;
+
 			try
 				{
-				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) " +
-																									"VALUES (?, ?, ?, 0)") )
-					{
-					foreach (var classString in uncachedClassStrings)
-						{
-						int id = Manager.UsedClassIDs.LowestAvailable;
+				connection.Execute("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) VALUES (?, ?, ?, 0)",
+											 classID, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), classString.LookupKey);
 
-						query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
-														  classString.LookupKey);
-						query.Step();
-						query.Reset(true);
+				Manager.UsedClassIDs.Add(classID);
+				classIDLookupCache.Add(classString, classID);
 
-						Manager.UsedClassIDs.Add(id);
-						classIDLookupCache.Add(classString, id);
-
-						Manager.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-						}
-					}
+				Manager.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(classID, 0);
 
 				CommitTransaction();
 				}
@@ -2106,21 +1952,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				RollbackTransactionForException();
 				throw;
 				}
-			}
 
-
-		/* Function: CacheOrCreateClassIDs
-		 * 
-		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateClassIDs (params ClassString[] classStrings)
-			{
-			CacheOrCreateClassIDs((IEnumerable<ClassString>)classStrings);
+			return classID;
 			}
 
 
@@ -2146,7 +1979,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// DEPENDENCY:
 			//
-			// - This assumes CacheOrCreateClassIDs() will create an entry in CodeDB.ClassIDReferenceChangeCache for *every*
+			// - This assumes GetOrCreateClassID() will create an entry in CodeDB.ClassIDReferenceChangeCache for *every*
 			//    newly created class ID with the database reference count set to zero.
 			//
 			// - This also assumes that this function deletes every class ID record with zero references from the database, and
