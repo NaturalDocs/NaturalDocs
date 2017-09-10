@@ -442,7 +442,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				topic.TopicID = Manager.UsedTopicIDs.LowestAvailable;
 				topic.ClassID = GetOrCreateClassID(topic.ClassString);
-				GetOrCreateContextIDs(topic);
+				topic.BodyContextID = GetOrCreateContextID(topic.BodyContext);
+				topic.PrototypeContextID = GetOrCreateContextID(topic.PrototypeContext);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
 														"DefinesClass, IsList, IsEmbedded, EndingSymbol, CommentTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
@@ -547,7 +548,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{  newTopic.ClassID = oldTopic.ClassID;  }
 
 				if (contextsChanged)
-					{  GetOrCreateContextIDs(newTopic);  }
+					{  
+					newTopic.BodyContextID = GetOrCreateContextID(newTopic.BodyContext);
+					newTopic.PrototypeContextID = GetOrCreateContextID(newTopic.PrototypeContext);
+					}
 				else
 					{
 					newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
@@ -1425,8 +1429,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				link.LinkID = Manager.UsedLinkIDs.LowestAvailable;
-				GetOrCreateContextIDs(link);
 				link.ClassID = GetOrCreateClassID(link.ClassString);
+				link.ContextID = GetOrCreateContextID(link.Context);
 
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetClassID, TargetScore) " +
@@ -2135,157 +2139,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
-		/* Function: GetOrCreateContextIDs
+		/* Function: GetOrCreateContextID
 		 * 
-		 * Retrieves the context IDs for <Topic.PrototypeContext> and <Topic.BodyContext> if they are not already set.
-		 * If existing IDs cannot be found, they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
-		 *												  If it's already non-zero this is a no-op.
-		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
-		 *										 non-zero this is a no-op.
-		 */
-		public void GetOrCreateContextIDs (Topic topic)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing context IDs.  Since there's only two fields to check we'll handle this by hand to minimize 
-			// memory instead of creating a HashSet or List.
-
-			if (topic.PrototypeContextIDKnown == false)
-				{
-				if (topic.BodyContextIDKnown == false && topic.BodyContext != topic.PrototypeContext)
-					{  CacheOrCreateContextIDs(topic.PrototypeContext, topic.BodyContext);  }
-				else
-					{  CacheOrCreateContextIDs(topic.PrototypeContext);  }
-				}
-			else if (topic.BodyContextIDKnown == false)
-				{  CacheOrCreateContextIDs(topic.BodyContext);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topic.
-
-			if (topic.PrototypeContextIDKnown == false)
-				{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
-
-			if (topic.BodyContextIDKnown == false)
-				{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
-			}
-
-
-		/* Function: GetOrCreateContextIDs
-		 * 
-		 * Retrieves the context IDs for each <Topic's> PrototypeContext and BodyContext if they are not already set.  If existing
-		 * IDs cannot be found, they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
-		 *												  If it's already non-zero this is a no-op.
-		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
-		 *										 non-zero this is a no-op.
-		 */
-		public void GetOrCreateContextIDs (IEnumerable<Topic> topics)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing context IDs.  There may be none so create the HashSet on demand.
-
-			HashSet<ContextString> contexts = null;
-
-			foreach (var topic in topics)
-				{
-				if (topic.PrototypeContextIDKnown == false)
-					{  
-					if (contexts == null)
-						{  contexts = new HashSet<ContextString>();  }
-
-					contexts.Add(topic.PrototypeContext);  
-					}
-
-				if (topic.BodyContextIDKnown == false)
-					{  
-					if (contexts == null)
-						{  contexts = new HashSet<ContextString>();  }
-
-					contexts.Add(topic.BodyContext);  
-					}
-				}
-
-			if (contexts != null)
-				{  CacheOrCreateContextIDs(contexts);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topics.
-
-			foreach (var topic in topics)
-				{
-				if (topic.PrototypeContextIDKnown == false)
-					{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
-
-				if (topic.BodyContextIDKnown == false)
-					{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
-				}
-			}
-
-
-		/* Function: GetOrCreateContextIDs
-		 * 
-		 * Retrieves the context ID for <Link.Context> if it's not already set.  If an existing ID cannot be found, it will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If a new context is created, it will be upgraded automatically.
-		 *		
-		 * Link Requirements:
-		 * 
-		 *		Context - Can be null, which means global with no "using" statements.
-		 *		ContextID - If this is zero and Context is not null, ContextID will be looked up or created.  If it's already non-zero this
-		 *								is a no-op.
-		 */
-		public void GetOrCreateContextIDs (Link link)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (link.ContextIDKnown)
-				{  return;  }
-
-			CacheOrCreateContextIDs(link.Context);
-
-			link.ContextID = contextIDLookupCache[link.Context];
-			}
-
-
-		/* Function: CacheOrCreateContextIDs
-		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
+		 * Retrieves the ID for the <ContextString>.  If an existing ID cannot be found, one will be created.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
 		 */
-		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings)
+		public int GetOrCreateContextID (ContextString contextString)
 			{
 			// Remember that contextIDLookupCache is local to the accessor and doesn't need any locking.
 			// ContextIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
@@ -2293,71 +2155,32 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			
-			// Create a list of all contextStrings not already in the cache.  Since it's possible that they'll all be in the cache we
-			// create the list object on demand.
+			// First check for null and cached values
 
-			List<ContextString> uncachedContextStrings = null;
+			if (contextString == null)
+				{  return 0;  }
+				
+			if (contextIDLookupCache.Contains(contextString))
+				{  return contextIDLookupCache[contextString];  }
 
-			foreach (var contextString in contextStrings)
+
+			// If it's not cached, check the database
+
+			int contextID;
+
+			using (SQLite.Query query = connection.Query("SELECT ContextID FROM Contexts WHERE ContextString=?", contextString.ToString()))
 				{
-				if (contextString != null && contextIDLookupCache.Contains(contextString) == false)
-					{
-					if (uncachedContextStrings == null)
-						{  uncachedContextStrings = new List<ContextString>();  }
+				if (query.Step())
+					{  
+					contextID = query.IntColumn(0);
 
-					uncachedContextStrings.Add(contextString);  
+					contextIDLookupCache.Add(contextString, contextID);
+					return contextID;
 					}
 				}
 
 
-			// Can we quit early?
-
-			if (uncachedContextStrings == null)
-				{  return;  }
-
-
-			// Create a query to lookup the uncached contexts in the database.  The IDs may already be assigned.
-
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ContextID, ContextString FROM Contexts WHERE");
-			string[] queryParams = new string[uncachedContextStrings.Count];
-
-			for (int i = 0; i < uncachedContextStrings.Count; i++)
-				{
-				if (i != 0)
-					{  queryText.Append(" OR");  }
-
-				queryText.Append(" ContextString=?");
-				queryParams[i] = uncachedContextStrings[i].ToString();
-				}
-
-
-			// Run the query to fill in the cache with whatever already exists in the database.
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
-				{
-			   while (query.Step())
-			      {  contextIDLookupCache.Add( ContextString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );  }
-			   }
-
-
-			// Pare down our list of uncached context strings.
-
-			for (int i = 0; i < uncachedContextStrings.Count; /* don't auto increment */)
-				{
-				if (contextIDLookupCache.Contains(uncachedContextStrings[i]))
-					{  uncachedContextStrings.RemoveAt(i);  }
-				else
-					{  i++;  }
-				}
-
-
-			// Can we quit now?
-
-			if (uncachedContextStrings.Count == 0)
-				{  return;  }
-
-
-			// Create anything we still need.
+			// If it's not in the database, create it
 
 			// DEPENDENCY: FlushContextIDReferenceChangeCache() assumes *every* newly created context ID will have an 
 			// entry in CodeDB.ContextIDReferenceChangeCache with database references set to zero.
@@ -2365,25 +2188,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
+			contextID = Manager.UsedContextIDs.LowestAvailable;
+
 			try
 				{
-				using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
-																									 "VALUES (?, ?, 0)") )
-					{
-					foreach (var contextString in uncachedContextStrings)
-						{
-						int id = Manager.UsedContextIDs.LowestAvailable;
+				connection.Execute("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) VALUES (?, ?, 0)",
+											 contextID, contextString.ToString());
 
-						query.BindValues(id, contextString);
-						query.Step();
-						query.Reset(true);
+				Manager.UsedContextIDs.Add(contextID);
+				contextIDLookupCache.Add(contextString, contextID);
 
-						Manager.UsedContextIDs.Add(id);
-						contextIDLookupCache.Add(contextString, id);
-
-						Manager.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-						}
-					}
+				Manager.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(contextID, 0);
 
 				CommitTransaction();
 				}
@@ -2392,21 +2207,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				RollbackTransactionForException();
 				throw;
 				}
-			}
 
-
-		/* Function: CacheOrCreateContextIDs
-		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in
-		 * the database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateContextIDs (params ContextString[] contextStrings)
-			{
-			CacheOrCreateContextIDs((IEnumerable<ContextString>)contextStrings);
+			return contextID;
 			}
 
 
