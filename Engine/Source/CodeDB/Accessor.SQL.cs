@@ -694,6 +694,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 
 
+			// Find any links that resolve to this topic.
+
+			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
+
+			using (SQLite.Query query = connection.Query("SELECT LinkID FROM Links WHERE TargetTopicID=?", topic.TopicID))
+				{
+				while (query.Step())
+					{  linksAffected.Add( query.IntColumn(0) );  }
+				}
+
+
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
@@ -705,23 +716,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					EventAccessor eventAccessor = new EventAccessor(this);
 
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnDeleteTopic(topic, eventAccessor);  }
+						{  changeWatcher.OnDeleteTopic(topic, linksAffected, eventAccessor);  }
 					}
 				}
 			finally
 				{
 				Manager.ReleaseChangeWatchers();
-				}
-
-
-			// Find any links that resolve to this topic.
-
-			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
-
-			using (SQLite.Query query = connection.Query("SELECT LinkID FROM Links WHERE TargetTopicID=?", topic.TopicID))
-				{
-				while (query.Step())
-					{  linksAffected.Add( query.IntColumn(0) );  }
 				}
 
 

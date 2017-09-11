@@ -533,7 +533,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			}
 
 
-		public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, CodeDB.EventAccessor eventAccessor)
 			{
 			if (!IncludeInIndex(topic))
 				{  return;  }

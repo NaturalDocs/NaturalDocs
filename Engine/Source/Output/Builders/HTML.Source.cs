@@ -324,8 +324,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
-		public void OnDeleteTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, CodeDB.EventAccessor eventAccessor)
 			{
+			// We'll wait for OnChangeLinkTarget to handle linksAffected
+
 			IDObjects.NumberSet parentClassIDs = null;
 			IDObjects.NumberSet parentClassFileIDs = null;
 
