@@ -35,10 +35,9 @@
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
- *		- <Links.Manager> is next though it doesn't need anything just to start.  It will need <Languages.Manager> and
- *		  <CommentTypes.Manager> to score links though.
+ *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
  *		
- *		- <SearchIndex.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
+ *		- <SearchIndex.Manager> is next because it also needs to be added as a <CodeDB.Manager> watcher.
  *		
  *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> and <SearchIndex.Manager>
  *		   watchers.  It can also set the rebuild/reparse flags that CodeDB needs to interpret.

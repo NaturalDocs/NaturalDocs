@@ -459,14 +459,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			
 				Manager.UsedTopicIDs.Add(topic.TopicID);
 
-				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-				if (newTopicsForEndingSymbol == null)
-					{
-					newTopicsForEndingSymbol = new IDObjects.NumberSet();
-					Manager.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
-					}
-				newTopicsForEndingSymbol.Add(topic.TopicID);
-
 				Manager.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
 				Manager.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
 				Manager.ContextIDReferenceChangeCache.AddReference(topic.BodyContextID);
@@ -739,8 +731,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
 					connection.Execute(queryText.ToString(), queryParams.ToArray());
-
-					Manager.LinksToResolve.Add(linksAffected);
 					}
 
 
@@ -749,12 +739,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
 				Manager.UsedTopicIDs.Remove(topic.TopicID);
-
-				// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-				if (newTopicsForEndingSymbol != null)
-					{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
-
 				Manager.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
@@ -1440,7 +1424,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													);
 
 				Manager.UsedLinkIDs.Add(link.LinkID);
-				Manager.LinksToResolve.Add(link.LinkID);
 				Manager.ContextIDReferenceChangeCache.AddReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.AddReference(link.ClassID);
 
@@ -1560,7 +1543,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
 			
 				Manager.UsedLinkIDs.Remove(link.LinkID);
-				Manager.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
 				Manager.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
 

@@ -228,7 +228,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 
-					Multithread("Resolver", EngineInstance.CodeDB.WorkOnResolvingLinks);
+					Multithread("Resolver", EngineInstance.Links.WorkOnResolvingLinks);
 							
 					statusManager.End();
 					}

@@ -88,9 +88,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			usedClassIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
 
-			linksToResolve = new IDObjects.NumberSet();
-			newTopicsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet>();
-
 			classIDReferenceChangeCache = new ReferenceChangeCache();
 			contextIDReferenceChangeCache = new ReferenceChangeCache();
 			
@@ -237,9 +234,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				usedClassIDs.Clear();
 				usedContextIDs.Clear();
 
-				linksToResolve.Clear();
-				newTopicsByEndingSymbol.Clear();
-
 				classIDReferenceChangeCache.Clear();
 				contextIDReferenceChangeCache.Clear();
 				
@@ -269,269 +263,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				accessor.FlushContextIDReferenceChangeCache(cancelDelegate);
 				accessor.ReleaseLock();
 				}
-			}
-
-
-
-		// Group: Link Functions
-		// __________________________________________________________________________
-
-
-		/* Function: WorkOnResolvingLinks
-		 * 
-		 * Works on the task of resolving links due to topics changing or new links being added.  This is a parallelizable 
-		 * task so multiple threads can call this function and the work will be divided up between them.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working 
-		 * on this then the task is complete, but if there are multiple threads the task isn't complete until they all have 
-		 * returned.  This one may have returned because there was no more work for this thread to do, but other threads 
-		 * are still working.
-		 */
-		public void WorkOnResolvingLinks (CancelDelegate cancelled)
-			{
-			using (Accessor accessor = GetAccessor())
-				{
-				while (!cancelled())
-					{
-					// We'll piggyback on the accessor's database lock to access the state variables.
-					accessor.GetReadPossibleWriteLock();
-
-					try
-						{
-						if (reparsingEverything)
-							{
-							accessor.UpgradeToReadWriteLock();
-
-							// If we're reparsing everything, that means all links will be readded to the database as new and all of them
-							// will be handled by linksToResolve.  We don't have to worry about new topics changing the definition of 
-							// unchanged links so we can clear this out to lessen the workload.
-							newTopicsByEndingSymbol.Clear();
-
-							// We change this back to false afterwards so that any changes that occur after we started resolving will be 
-							// treated differentially.  Once something is taken off linksToResolve we can no longer guarantee that new
-							// topics won't affect anything.
-							reparsingEverything = false;
-
-							// DEPENDENCY: ResolvingUnitsOfWorkRemaining() depends on this behavior.
-
-							// Leave the lock as read/write.
-							}
-
-						if (!linksToResolve.IsEmpty)
-							{
-							accessor.UpgradeToReadWriteLock();
-
-							int linkID = linksToResolve.Highest;
-							linksToResolve.Remove(linkID);
-
-							accessor.DowngradeToReadPossibleWriteLock();
-
-							ResolveLink(linkID, accessor);
-							}
-
-						else if (newTopicsByEndingSymbol.Count > 0)
-							{
-							accessor.UpgradeToReadWriteLock();
-
-							var enumerator = newTopicsByEndingSymbol.GetEnumerator();
-							enumerator.MoveNext();  // It's not positioned on the first element by default.
-
-							EndingSymbol endingSymbol = enumerator.Current.Key;
-							IDObjects.NumberSet topicIDs = enumerator.Current.Value;
-
-							newTopicsByEndingSymbol.Remove(endingSymbol);
-
-							accessor.DowngradeToReadPossibleWriteLock();
-
-							ResolveNewTopics(topicIDs, endingSymbol, accessor);
-							}
-
-						else
-							{  break;  }
-						}
-
-					finally
-						{  accessor.ReleaseLock();  }
-					}
-				}
-			}
-
-
-		/* Function: ResolveLink
-		 * 
-		 * Calculates a new target for the passed link ID.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If the link target changes it will be upgraded automatically.
-		 *		
-		 */
-		protected void ResolveLink (int linkID, Accessor accessor)
-			{
-			Link link = accessor.GetLinkByID(linkID, Accessor.GetLinkFlags.DontLookupClasses);
-			List<EndingSymbol> endingSymbols = accessor.GetAlternateLinkEndingSymbols(linkID);
-
-			if (endingSymbols == null)
-				{  endingSymbols = new List<EndingSymbol>();  }
-
-			endingSymbols.Add(link.EndingSymbol);
-
-			// We only need the body's length, not its contents.
-			List<Topic> topics = accessor.GetTopicsByEndingSymbol(endingSymbols, Delegates.NeverCancel, 
-																												 Accessor.GetTopicFlags.BodyLengthOnly |
-																												 Accessor.GetTopicFlags.DontLookupClasses |
-																												 Accessor.GetTopicFlags.DontLookupContexts);
-
-			List<LinkInterpretation> alternateInterpretations = null;
-
-			if (link.Type == LinkType.NaturalDocs)
-				{
-				string ignore;
-				alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																												Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
-																												out ignore);
-
-				}
-	
-			int bestMatchTopicID = 0;
-			int bestMatchClassID = 0;
-			long bestMatchScore = 0;
-
-			foreach (Topic topic in topics)
-				{
-				long score = EngineInstance.Links.Score(link, topic, bestMatchScore, alternateInterpretations);
-
-				if (score > bestMatchScore)
-					{
-					bestMatchTopicID = topic.TopicID;
-					bestMatchClassID = topic.ClassID;
-					bestMatchScore = score;
-					}
-				}
-
-			if (bestMatchTopicID != link.TargetTopicID || 
-				bestMatchClassID != link.TargetClassID ||
-				bestMatchScore != link.TargetScore)
-				{
-				int oldTargetTopicID = link.TargetTopicID;
-				int oldTargetClassID = link.TargetClassID;
-
-				link.TargetTopicID = bestMatchTopicID;
-				link.TargetClassID = bestMatchClassID;
-				link.TargetScore = bestMatchScore;
-
-				accessor.UpdateLinkTarget(link, oldTargetTopicID, oldTargetClassID);
-				}
-			}
-
-
-		/* Function: ResolveNewTopics
-		 * 
-		 * Goes through the IDs of newly created <Topics> and sees if they serve as better targets for any existing
-		 * links.
-		 * 
-		 * Parameters:
-		 * 
-		 *		topicIDs - The set of IDs to check.  Every <Topic> represented here must have the same <EndingSymbol>.
-		 *		endingSymbol - The <EndingSymbol> shared by all of the topic IDs.
-		 *		accessor - The <Accessor> used for the database.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If the link changes it will be upgraded automatically.
-		 *		
-		 */
-		protected void ResolveNewTopics (IDObjects.NumberSet topicIDs, EndingSymbol endingSymbol, Accessor accessor)
-			{
-			// We only need the body's length, not its contents.
-			List<Topic> topics = accessor.GetTopicsByID(topicIDs, Delegates.NeverCancel, 
-																							  Accessor.GetTopicFlags.BodyLengthOnly |
-																							  Accessor.GetTopicFlags.DontLookupClasses |
-																							  Accessor.GetTopicFlags.DontLookupContexts);
-			List<Link> links = accessor.GetLinksByEndingSymbol(endingSymbol, Delegates.NeverCancel,
-																										 Accessor.GetLinkFlags.DontLookupClasses);
-
-			// Go through each link and see if any of the topics serve as a better target.  It's better for the links to be the outer loop 
-			// because we can generate alternate interpretations only once per link.
-
-			foreach (Link link in links)
-				{
-				List<LinkInterpretation> alternateInterpretations = null;
-
-				if (link.Type == LinkType.NaturalDocs)
-					{
-					string ignore;
-					alternateInterpretations = EngineInstance.Comments.NaturalDocsParser.LinkInterpretations(link.Text, 
-																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText |
-																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowNamedLinks |
-																													Comments.Parsers.NaturalDocs.LinkInterpretationFlags.AllowPluralsAndPossessives,
-																													out ignore);
-
-					}
-	
-				int bestMatchTopicID = link.TargetTopicID;
-				int bestMatchClassID = link.TargetClassID;
-				long bestMatchScore = link.TargetScore;
-
-				foreach (Topic topic in topics)
-					{
-					// No use rescoring the existing target.
-					if (topic.TopicID != link.TargetTopicID)
-						{
-						long score = EngineInstance.Links.Score(link, topic, bestMatchScore, alternateInterpretations);
-
-						if (score > bestMatchScore)
-							{
-							bestMatchTopicID = topic.TopicID;
-							bestMatchClassID = topic.ClassID;
-							bestMatchScore = score;
-							}
-						}
-					}
-
-				if (bestMatchTopicID != link.TargetTopicID || 
-					bestMatchClassID != link.TargetClassID ||
-					bestMatchScore != link.TargetScore)
-					{
-					int oldTargetTopicID = link.TargetTopicID;
-					int oldTargetClassID = link.TargetClassID;
-
-					link.TargetTopicID = bestMatchTopicID;
-					link.TargetClassID = bestMatchClassID;
-					link.TargetScore = bestMatchScore;
-
-					accessor.UpdateLinkTarget(link, oldTargetTopicID, oldTargetClassID);
-					}
-				}
-			}
-
-
-		/* Function: ResolvingUnitsOfWorkRemaining
-		 * Returns a number representing how much work is left to be done by <WorkOnResolvingLinks()>.  What tasks the 
-		 * units represent can vary, so this is intended simply to allow a percentage to be calculated.
-		 */
-		public long ResolvingUnitsOfWorkRemaining ()
-			{
-			long units = 0;
-			databaseLock.GetReadOnlyLock(false);
-
-			try
-				{
-				units += linksToResolve.Count;
-
-				// Only add newTopicsByEndingSymbol if we're building differentially.  This will be cleared by WorkOnResolvingLinks()
-				// if not.  We don't clear it here to avoid needing anything more than a read only lock.
-				if (!reparsingEverything)
-					{  units += newTopicsByEndingSymbol.Count;  }
-
-				// DEPENDENCY: This depends on WorkOnResolvingLinks() clearing the variable when reparsingEverything is set.
-				}
-			finally
-				{  databaseLock.ReleaseReadOnlyLock(false);  }
-
-			return units;
 			}
 
 
@@ -585,43 +316,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{  return usedContextIDs;  }
-			}
-
-		/* Property: LinksToResolve
-		 * An <IDObjects.NumberSet> of all the link IDs in <CodeDB.Links> that have changed and need to be resolved again.
-		 * Note that this is not the complete set of all unresolved links; some links may have previously resolved to nothing and
-		 * there may have been no changes made that could affect them.
-		 */
-		internal IDObjects.NumberSet LinksToResolve
-			{
-			get
-				{  return linksToResolve;  }
-			}
-
-		/* Property: NewTopicsByEndingSymbol
-		 * 
-		 * Keeps track of all newly created <Topics>.  The keys are the <Symbols.EndingSymbols> the topics use, and the values
-		 * are <IDObjects.NumberSets> of all the topic IDs associated with that ending symbol.  This is used for resolving links.
-		 * 
-		 * Rationale:
-		 * 
-		 *		When a new <Topic> is created, it might serve as a better definition for existing links.  We don't want to reresolve
-		 *		the links as soon as the topic is created because there may be multiple topics that affect the same links and we'd 
-		 *		be wasting effort.  Instead we store which topics are new and do this after parsing is complete.
-		 *		
-		 *		We can't store the <Topic> objects themselves because when doing a non-differential run every topic will be new and 
-		 *		we'd end up storing the entire documentation structure in memory.  Instead we store the topic IDs and look up the 
-		 *		<Topics> again when it's time to resolve links.
-		 *		
-		 *		We store them by ending symbol instead of in one NumberSet so that we can reresolve links in batches.  Topics that 
-		 *		have the same ending symbol will be candidates for the same group of links, so we can query those topics and links
-		 *		into memory, reresolve them all at once, and then move on to the next ending symbol.  If we stored a single NumberSet
-		 *		of topic IDs we'd have to handle the topics one by one and query for each topic's links separately.
-		 */
-		internal SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> NewTopicsByEndingSymbol
-			{
-			get
-				{  return newTopicsByEndingSymbol;  }
 			}
 
 		/* Property: ClassIDReferenceChangeCache
@@ -700,14 +394,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		/* var: usedContextIDs
 		 */
 		protected IDObjects.NumberSet usedContextIDs;
-
-		/* var: linksToResolve
-		 */
-		protected IDObjects.NumberSet linksToResolve;
-
-		/* var: newTopicsByEndingSymbol
-		 */
-		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> newTopicsByEndingSymbol;
 
 		/* var: classIDReferenceChangeCache
 		 * A cache of all the reference count changes to be applied to <CodeDB.Classes>.
