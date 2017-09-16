@@ -124,8 +124,16 @@ td {
 		font: 22pt $ProjectTitleFontFamily;
 		text-shadow: 0 .1ex .3ex #202020;
 		line-height: 90%;
-		color: #FFFFFF;
 		}
+		#HTitle,
+		#HTitle a:link,
+		#HTitle a:hover,
+		#HTitle a:active,
+		#HTitle a:visited {
+			color: #FFFFFF;
+			text-decoration: none;
+			}
+
 	#HSubtitle {
 		font: 10pt $ProjectSubtitleFontFamily;
 		color: #C8C8C8;

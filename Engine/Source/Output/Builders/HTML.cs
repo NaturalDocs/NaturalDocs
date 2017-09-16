@@ -1010,7 +1010,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"<div id=\"NDHeader\">" +
 					"<div id=\"HTitle\">" +
 					
-						headerTitleHTML +
+						"<a href=\"#\">" +
+							headerTitleHTML +
+						"</a>" +
 					
 					"</div>");
 
