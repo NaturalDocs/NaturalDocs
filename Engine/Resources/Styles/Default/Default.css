@@ -27,8 +27,8 @@
 	$MessageBorderColor: #A0A000;
 	$MessageTextColor: #787800;
 
-	$ProjectTitleFontFamily: "Palatino Linotype", Palatino, Georgia, serif;
-	$ProjectSubtitleFontFamily: "Palatino Linotype", Palatino, Georgia, serif;
+	$ProjectTitleFontFamily: Georgia, serif;
+	$ProjectSubtitleFontFamily: Georgia, serif;
 	$MenuFontFamily: "Trebuchet MS", Tahoma, Geneva, sans-serif;
 	$ParagraphFontFamily: Tahoma, Geneva, "Trebuchet MS", Verdana, sans-serif;
 	$HeadingFontFamily: "Trebuchet MS", Tahoma, Geneva, sans-serif;
@@ -112,7 +112,7 @@ td {
 
 #NDHeader {
 	background-color: $HeaderBackgroundColor;
-	padding: .55em .65em;
+	padding: .65em .65em .55em .65em;
 
 	/* For the lip.  See NDFramePage.UpdateLayout(). */
 	border-bottom: 1px solid $HeaderBackgroundColor;
