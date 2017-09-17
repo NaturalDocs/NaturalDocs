@@ -65,5 +65,22 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		void OnDeleteLink (Link link, EventAccessor eventAccessor);
 		
+		/* Function: OnAddImageLink
+		 * Called after an image link is added to the database.
+		 */
+		void OnAddImageLink (ImageLink imageLink, EventAccessor eventAccessor);
+		
+		/* Function: OnChangeImageLinkTarget
+		 * Called after an image link's target has been changed in the database.  Note that this will also be called for new image
+		 * links, as they are added to the database as unresolved during the parsing stage, and then changed to their targets 
+		 * during the resolving stage.
+		 */
+		void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, EventAccessor eventAccessor);
+		
+		/* Function: OnDeleteImageLink
+		 * Called before an image link is deleted from the database.
+		 */
+		void OnDeleteImageLink (ImageLink imageLink, EventAccessor eventAccessor);
+		
 		}
 	}

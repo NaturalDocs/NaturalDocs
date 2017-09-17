@@ -588,6 +588,21 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			// We don't care about links.
 			}
 
+		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// We don't care about image links.
+			}
+
+		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
+			{
+			// We don't care about image links.
+			}
+
+		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// We don't care about image links.
+			}
+
 
 
 		// Group: Constants

@@ -427,5 +427,20 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{  Monitor.Exit(linksToResolve);  }
 			}
 
+		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
+		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
+		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
 		}
 	}

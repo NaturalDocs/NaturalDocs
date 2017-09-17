@@ -501,6 +501,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				}
 			}
 
+		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
+		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
+		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
+			{
+			// xxx placeholder
+			}
+
 		}
 	}
 
