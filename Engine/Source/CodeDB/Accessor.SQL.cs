@@ -1786,6 +1786,393 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 
 
+		// Group: Image Link Functions
+		// __________________________________________________________________________
+
+
+		/* Function: GetImageLinks
+		 * 
+		 * A generic function for retrieving all the <ImageLinks> that satisfy the passed WHERE clause.  If there are none it will
+		 * return an empty list.
+		 * 
+		 * Parameters:
+		 * 
+		 *		whereClause - The SQL WHERE clause to apply to the query, such as "ImageLinks.FileID=?".  It's recommended that
+		 *							  you add the table name to fully qualify columns.
+		 *		clauseParameters - Any parameters needed for question marks in the WHERE clause, or null if none.
+		 *		cancelled - A <CancelDelegate> you can use to interrupt this process.  Pass <Delegates.NeverCancel> if you won't
+		 *						need to.
+		 *		getImageLinkFlags - If you don't need every property in the <ImageLink> object you can use this to filter some out
+		 *									 to save processing time.  In debug builds <ImageLink> will enforce these settings to prevent 
+		 *									 programming errors.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		protected List<ImageLink> GetImageLinks (string whereClause, object[] clauseParameters, CancelDelegate cancelled,
+																	  GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			#if DEBUG
+			if (whereClause == null)
+				{  throw new Exception ("You must define a WHERE clause when calling GetImageLinks().");  }
+			#endif 
+
+			RequireAtLeast(LockType.ReadOnly);
+
+			List<ImageLink> imageLinks = new List<ImageLink>();
+
+			bool lookupClasses = ((getImageLinkFlags & GetImageLinkFlags.DontLookupClasses) == 0);
+
+			StringBuilder queryText = new StringBuilder("SELECT ImageLinkID, OriginalText, Path, FileID, ImageLinks.ClassID, TargetFileID, TargetScore ");
+
+			if (lookupClasses)
+				{  queryText.Append(", ifnull(Classes.ClassString, Classes.LookupKey) ");  }
+
+			queryText.Append("FROM ImageLinks ");
+
+			if (lookupClasses)
+				{  queryText.Append("LEFT OUTER JOIN Classes ON Classes.ClassID = ImageLinks.ClassID ");  }
+
+			queryText.Append("WHERE ");
+			
+			queryText.Append('(');
+			queryText.Append(whereClause);
+			queryText.Append(')');
+
+			using (SQLite.Query query = connection.Query(queryText.ToString(), clauseParameters))
+				{
+				while (query.Step() && !cancelled())
+					{
+					ImageLink imageLink = new ImageLink();
+
+					imageLink.ImageLinkID = query.NextIntColumn();
+					imageLink.OriginalText = query.NextStringColumn();
+					imageLink.Path = query.NextStringColumn();
+					imageLink.FileID = query.NextIntColumn();
+					imageLink.ClassID = query.NextIntColumn();
+					imageLink.TargetFileID = query.NextIntColumn();
+					imageLink.TargetScore = query.NextIntColumn();
+
+					imageLink.IgnoredFields = ImageLink.IgnoreFields.None;
+
+					if (lookupClasses)
+						{  imageLink.ClassString = ClassString.FromExportedString( query.NextStringColumn() );  }
+					else
+						{  imageLink.IgnoredFields |= ImageLink.IgnoreFields.ClassString;  }
+
+					imageLinks.Add(imageLink);
+
+					if (lookupClasses)
+						{  classIDLookupCache.Add(imageLink.ClassString, imageLink.ClassID);  }
+					}
+				}
+			
+			return imageLinks;
+			}
+
+
+		/* Function: GetImageLinksInFile
+		 * 
+		 * Retrieves a list of all the image links present in the passed file ID.  If there are none it will return an empty list.
+		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 * out and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ImageLink> GetImageLinksInFile (int fileID, CancelDelegate cancelled, 
+																		GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = fileID;
+
+			return GetImageLinks("ImageLinks.FileID=?", parameters, cancelled, getImageLinkFlags);
+			}
+
+
+		/* Function: AddImageLink
+		 * 
+		 * Adds an <ImageLink> to the database.  Assumes it doesn't already exist.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 * 
+		 * Link Requirements:
+		 * 
+		 *		ImageLinkID - Must be zero.  This will be automatically assigned and the <ImageLink> updated.
+		 *		OriginalText - Must be set.
+		 *		Path - Must be set.
+		 *		FileID - Must be set.
+		 *		ClassString - Can be null, which means not part of a class.
+		 *		ClassID - Must be zero.  This will be automatically assigned and the <ImageLink> updated.
+		 *		TargetFileID - Must be zero.
+		 *		TargetScore - Must be zero.
+		 */
+		public void AddImageLink (ImageLink imageLink)
+			{
+			RequireZero("AddImageLink", "ImageLinkID", imageLink.ImageLinkID);
+			RequireContent("AddImageLink", "OriginalText", imageLink.OriginalText);
+			RequireContent("AddImageLink", "Path", imageLink.Path);
+			// FileName
+			RequireNonZero("AddImageLink", "FileID", imageLink.FileID);
+			// ClassString
+			RequireZero("AddImageLink", "ClassID", imageLink.ClassID);
+			RequireZero("AddImageLink", "TargetFileID", imageLink.TargetFileID);
+			RequireZero("AddImageLink", "TargetScore", imageLink.TargetScore);
+
+			RequireAtLeast(LockType.ReadWrite);
+			BeginTransaction();
+
+			try
+				{
+				imageLink.ImageLinkID = Manager.UsedImageLinkIDs.LowestAvailable;
+				imageLink.ClassID = GetOrCreateClassID(imageLink.ClassString);
+
+				connection.Execute("INSERT INTO ImageLinks (ImageLinkID, OriginalText, Path, FileName, FileID, ClassID, TargetFileID, TargetScore) " +
+												"VALUES (?, ?, ?, ?, ?, ?, 0, 0)",
+												imageLink.ImageLinkID, imageLink.OriginalText, imageLink.Path, imageLink.FileName.ToString().ToLower(),
+												imageLink.FileID, imageLink.ClassID
+												);
+
+				Manager.UsedImageLinkIDs.Add(imageLink.ImageLinkID);
+				Manager.ClassIDReferenceChangeCache.AddReference(imageLink.ClassID);
+
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
+
+
+			// Notify change watchers
+			
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnAddImageLink(imageLink, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				Manager.ReleaseChangeWatchers();
+				}
+			}
+			
+			
+		/* Function: DeleteImageLink
+		 * 
+		 * Removes an <ImageLink> from the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 * 
+		 * Link Requirements:
+		 * 
+		 *		The image link must have been retrieved from the database, and thus have all its fields set.
+		 * 
+		 *		ImageLinkID - Must be set.
+		 *		OriginalText - Must be set.
+		 *		Path - Must be set.
+		 *		FileID - Must be set.
+		 *		ClassString - Can be null, which means not part of a class.
+		 *		ClassID - Must be set.
+		 *		TargetFileID - Can be any value.
+		 *		TargetScore - Can be any value.
+		 */
+		public void DeleteImageLink (ImageLink imageLink)
+			{
+			RequireNonZero("DeleteImageLink", "ImageLinkID", imageLink.ImageLinkID);
+			RequireContent("DeleteImageLink", "OriginalText", imageLink.OriginalText);
+			RequireContent("DeleteImageLink", "Path", imageLink.Path);
+			RequireNonZero("DeleteImageLink", "FileID", imageLink.FileID);
+			// ClassString
+			if (imageLink.ClassString != null)
+				{  RequireNonZero("DeleteImageLink", "ClassID", imageLink.ClassID);  }
+			// TargetFileID
+			// TargetScore
+
+			RequireAtLeast(LockType.ReadWrite);
+
+
+			// Notify the change watchers BEFORE we actually perform the deletion.
+
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnDeleteImageLink(imageLink, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				Manager.ReleaseChangeWatchers();
+				}
+
+
+			// Perform the deletion.
+
+			BeginTransaction();
+
+			try
+				{
+				connection.Execute("DELETE FROM ImageLinks WHERE ImageLinkID=?", imageLink.ImageLinkID);
+			
+				Manager.UsedImageLinkIDs.Remove(imageLink.ImageLinkID);
+				Manager.ClassIDReferenceChangeCache.RemoveReference(imageLink.ClassID);
+
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
+			}
+
+
+		public void UpdateImageLinksInFile (int fileID, IEnumerable<ImageLink> newLinks, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+
+			foreach (ImageLink newLink in newLinks)
+				{
+				if (newLink.FileID != fileID)
+					{  throw new Exception ("Can't update links in file if the file IDs don't match.");  }
+				// We'll leave the rest of the topic field validation to AddLink() and DeleteLink().
+				}
+			
+			List<ImageLink> oldLinks = GetImageLinksInFile(fileID, cancelled);
+			bool madeChanges = false;
+			
+			try
+				{
+				
+				foreach (ImageLink newLink in newLinks)
+					{
+					if (cancelled())
+						{  break;  }
+						
+					bool foundMatch = false;
+					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
+						{
+						if (newLink.SameIDPropertiesAs(oldLinks[i]))
+							{
+							foundMatch = true;
+							newLink.CopyNonIDPropertiesFrom(oldLinks[i]);
+							oldLinks.RemoveAt(i);
+							}
+						}
+						
+					if (foundMatch == false)
+						{
+						if (madeChanges == false)
+							{
+							RequireAtLeast(LockType.ReadWrite);
+							BeginTransaction();
+							madeChanges = true;
+							}
+							
+						AddImageLink(newLink);
+						}
+					}
+					
+				// All matches would have been removed, so anything left in oldLinks was deleted.
+				if (oldLinks.Count > 0 && !cancelled())
+					{
+					if (madeChanges == false)
+						{
+						RequireAtLeast(LockType.ReadWrite);
+						BeginTransaction();
+						madeChanges = true;
+						}
+						
+					foreach (ImageLink oldLink in oldLinks)
+						{  
+						if (cancelled())
+							{  break;  }
+
+						DeleteImageLink(oldLink);  
+						}
+					}
+					
+				if (madeChanges == true)
+					{
+					CommitTransaction();
+					}
+				}
+			catch
+				{
+				if (madeChanges == true)
+					{  RollbackTransactionForException();  }
+					
+				throw;
+				}
+			}
+
+
+		/* Function: DeleteImageLinksInFile
+		 * 
+		 * Deletes all the image links in the database under the passed file ID.  Pass a <CancelDelegate> if you'd like to be able to
+		 * interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires at least a read/possible write lock.  If any deletions occur, it will be upgraded automatically.
+		 */
+		public void DeleteImageLinksInFile (int fileID, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadPossibleWrite);
+			
+			List<ImageLink> links = GetImageLinksInFile(fileID, cancelled);
+			
+			if (links.Count > 0 && !cancelled())
+				{
+				RequireAtLeast(LockType.ReadWrite);
+				BeginTransaction();
+				
+				try
+					{	
+					foreach (ImageLink link in links)
+						{  
+						DeleteImageLink(link);
+					
+						if (cancelled())
+							{  break;  }
+						}
+
+					CommitTransaction();
+					}
+				catch
+					{
+					RollbackTransactionForException();
+					throw;
+					}
+				}
+			}
+
+			
+
 		// Group: Class Functions
 		// __________________________________________________________________________
 
