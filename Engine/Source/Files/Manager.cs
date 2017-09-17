@@ -885,6 +885,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					Engine.Languages.Language language = EngineInstance.Languages.FromFileName(file.FileName);
 					IList<Topic> topics = null;
 					LinkSet links = null;
+					ImageLinkSet imageLinks = null;
 
 					var parseResult = language.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
 
@@ -916,11 +917,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						System.Console.WriteLine("...found " + topics.Count + " topic" + (topics.Count == 1 ? "" : "s"));
 						#endif
 
+						imageLinks = new ImageLinkSet();
+
 						foreach (Topic topic in topics)
 							{
 							if (topic.Body != null)
 								{
-								ExtractBodyLinks(topic, links);
+								ExtractBodyLinks(topic, links, imageLinks);
 
 								if (cancelDelegate())
 									{  return ReleaseClaimedFileReason.CancelledProcessing;  }
@@ -962,6 +965,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 							{  codeDBAccessor.UpdateLinksInFile(file.ID, links, cancelDelegate);  }
 						else
 							{  codeDBAccessor.DeleteLinksInFile(file.ID, cancelDelegate);  }
+
+						if (imageLinks != null && imageLinks.Count > 0)  
+							{  codeDBAccessor.UpdateImageLinksInFile(file.ID, imageLinks, cancelDelegate);  }
+						else
+							{  codeDBAccessor.DeleteImageLinksInFile(file.ID, cancelDelegate);  }
 						}
 					finally
 						{  codeDBAccessor.ReleaseLock();  }
@@ -1346,14 +1354,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: ExtractBodyLinks
-		 * Goes through the body of the passed <Topic> and adds any Natural Docs links it finds in the <NDMarkup> to <LinkSet>.
+		 * Goes through the body of the passed <Topic> and adds any Natural Docs and image links it finds in the <NDMarkup>
+		 * to <LinkSet> and <ImageLinkSet>.
 		 */
-		protected void ExtractBodyLinks (Topic topic, LinkSet linkSet)
+		protected void ExtractBodyLinks (Topic topic, LinkSet linkSet, ImageLinkSet imageLinkSet)
 			{
 			if (topic.Body == null)
 				{  return;  }
 
 			NDMarkup.Iterator iterator = new NDMarkup.Iterator(topic.Body);
+
+			// Doing two passes of GoToFirstTag is probably faster than iterating through each element
 
 			if (iterator.GoToFirstTag("<link type=\"naturaldocs\""))
 				{
@@ -1377,6 +1388,29 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					linkSet.Add(link);
 					}
 				while (iterator.GoToNextTag("<link type=\"naturaldocs\""));
+				}
+
+			iterator = new NDMarkup.Iterator(topic.Body);
+
+			if (iterator.GoToFirstTag("<image"))
+				{
+				do
+					{
+					ImageLink imageLink = new ImageLink();
+
+					// ignore ImageLinkID
+					imageLink.OriginalText = iterator.Property("originaltext");
+					imageLink.Path = new Path( iterator.Property("target") );
+					// ignore FileName, generated from Path
+					imageLink.FileID = topic.FileID;
+					imageLink.ClassString = topic.ClassString;
+					// ignore classID
+					// ignore TargetFileID
+					// ignore TargetScore
+
+					imageLinkSet.Add(imageLink);
+					}
+				while (iterator.GoToNextTag("<image"));
 				}
 			}
 
