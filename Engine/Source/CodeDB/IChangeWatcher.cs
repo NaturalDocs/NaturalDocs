@@ -43,9 +43,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor);
 		
 		/* Function: OnDeleteTopic
-		 * Called before a topic is deleted from the database.
+		 * Called before a topic is deleted from the database.  It will include the IDs of the links that previously resolved to this
+		 * topic, but you can wait for <OnChangeLinkTarget()> to handle that.
 		 */
-		void OnDeleteTopic (Topic topic, EventAccessor eventAccessor);
+		void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, EventAccessor eventAccessor);
 		
 		/* Function: OnAddLink
 		 * Called after a link is added to the database.

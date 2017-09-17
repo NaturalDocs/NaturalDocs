@@ -85,8 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				return;  
 				}
 
-			var files = builder.EngineInstance.Files;
-			var commentTypes = builder.EngineInstance.CommentTypes;
+			var engineInstance = builder.EngineInstance;
+			var files = engineInstance.Files;
+			var commentTypes = engineInstance.CommentTypes;
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -143,7 +144,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				Topic topic = remainingTopics[i];
 
 				if (topic.DefinesClass &&
-					builder.EngineInstance.CodeDB.IsBetterClassDefinition(bestDefinition, topic))
+					builder.EngineInstance.Links.IsBetterClassDefinition(bestDefinition, topic))
 					{
 					bestDefinition = topic;
 					bestDefinitionIndex = i;
@@ -218,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					if (duplicateIndex == -1)
 						{  topicIndex++;  }
 					else if (remainingTopics[duplicateIndex].IsEmbedded &&
-								  CodeDB.Manager.ScoreTopic(topic) < CodeDB.Manager.ScoreTopic(remainingTopics[duplicateIndex]))
+							  engineInstance.Links.IsBetterTopicDefinition(topic, remainingTopics[duplicateIndex]))
 						{  topics.RemoveAt(topicIndex);  }
 					else
 						{  topicIndex++;  }
@@ -239,7 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						int duplicateIndex = FindDuplicateTopic(embeddedTopic, remainingTopics, builder);
 
 						if (duplicateIndex == -1 ||
-							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(remainingTopics[duplicateIndex]))
+							engineInstance.Links.IsBetterTopicDefinition(embeddedTopic, remainingTopics[duplicateIndex]) == false)
 							{
 							allHaveBetterMatches = false;
 							break;
@@ -286,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 						if (embeddedTopicCount > duplicateEmbeddedTopicCount ||
 							 ( embeddedTopicCount == duplicateEmbeddedTopicCount &&
-								CodeDB.Manager.ScoreTopic(remainingTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]) ) )
+								engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false ) )
 							{
 							topics.RemoveRange(duplicateIndex, 1 + duplicateEmbeddedTopicCount);
 							topics.InsertRange(duplicateIndex, remainingTopics.GetRange(remainingTopicIndex, 1 + embeddedTopicCount));
@@ -305,7 +306,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (duplicateIndex == -1)
 						{  remainingTopicIndex++;  }
-					else if (CodeDB.Manager.ScoreTopic(remainingTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]))
+					else if (engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false)
 						{  
 						if (topics[duplicateIndex].IsEmbedded)
 							{  
@@ -337,7 +338,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						int duplicateIndex = FindDuplicateTopic(embeddedTopic, topics, builder);
 
 						if (duplicateIndex == -1 ||
-							 CodeDB.Manager.ScoreTopic(embeddedTopic) > CodeDB.Manager.ScoreTopic(topics[duplicateIndex]))
+							engineInstance.Links.IsBetterTopicDefinition(embeddedTopic, topics[duplicateIndex]) == false)
 							{
 							allHaveBetterMatches = false;
 							break;

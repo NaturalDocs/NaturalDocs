@@ -52,6 +52,9 @@
     <Compile Include="Source\Languages\Parsers\Python.cs" />
     <Compile Include="Source\Links\ImageLink.cs" />
     <Compile Include="Source\Links\ImageLinkSet.cs" />
+    <Compile Include="Source\Links\Manager.Resolving.cs" />
+    <Compile Include="Source\Links\Manager.Scoring.cs" />
+    <Compile Include="Source\Links\Manager.cs" />
     <Compile Include="Source\Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\BinaryFile.cs" />

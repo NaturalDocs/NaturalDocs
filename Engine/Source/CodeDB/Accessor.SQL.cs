@@ -357,7 +357,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (topics[i].ClassID == topics[i-1].ClassID)
 					{
-					if (Manager.IsBetterClassDefinition(topics[i-1], topics[i]))
+					if (EngineInstance.Links.IsBetterClassDefinition(topics[i-1], topics[i]))
 						{  topics.RemoveAt(i-1);  }
 					else
 						{  topics.RemoveAt(i);  }
@@ -441,8 +441,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				topic.TopicID = Manager.UsedTopicIDs.LowestAvailable;
-				GetOrCreateClassID(topic);
-				GetOrCreateContextIDs(topic);
+				topic.ClassID = GetOrCreateClassID(topic.ClassString);
+				topic.BodyContextID = GetOrCreateContextID(topic.BodyContext);
+				topic.PrototypeContextID = GetOrCreateContextID(topic.PrototypeContext);
 			
 				connection.Execute("INSERT INTO Topics (TopicID, Title, Body, Summary, Prototype, Symbol, SymbolDefinitionNumber, ClassID, " +
 														"DefinesClass, IsList, IsEmbedded, EndingSymbol, CommentTypeID, DeclaredAccessLevel, EffectiveAccessLevel, " +
@@ -457,14 +458,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													);
 			
 				Manager.UsedTopicIDs.Add(topic.TopicID);
-
-				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-				if (newTopicsForEndingSymbol == null)
-					{
-					newTopicsForEndingSymbol = new IDObjects.NumberSet();
-					Manager.NewTopicsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicsForEndingSymbol);
-					}
-				newTopicsForEndingSymbol.Add(topic.TopicID);
 
 				Manager.ClassIDReferenceChangeCache.AddReference(topic.ClassID);
 				Manager.ContextIDReferenceChangeCache.AddReference(topic.PrototypeContextID);
@@ -542,12 +535,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				newTopic.TopicID = oldTopic.TopicID;
 			
 				if (classChanged)
-					{  GetOrCreateClassID(newTopic);  }
+					{  newTopic.ClassID = GetOrCreateClassID(newTopic.ClassString);  }
 				else
 					{  newTopic.ClassID = oldTopic.ClassID;  }
 
 				if (contextsChanged)
-					{  GetOrCreateContextIDs(newTopic);  }
+					{  
+					newTopic.BodyContextID = GetOrCreateContextID(newTopic.BodyContext);
+					newTopic.PrototypeContextID = GetOrCreateContextID(newTopic.PrototypeContext);
+					}
 				else
 					{
 					newTopic.PrototypeContextID = oldTopic.PrototypeContextID;
@@ -690,6 +686,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 
 
+			// Find any links that resolve to this topic.
+
+			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
+
+			using (SQLite.Query query = connection.Query("SELECT LinkID FROM Links WHERE TargetTopicID=?", topic.TopicID))
+				{
+				while (query.Step())
+					{  linksAffected.Add( query.IntColumn(0) );  }
+				}
+
+
 			// Notify the change watchers BEFORE we actually perform the deletion.
 
 			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
@@ -701,23 +708,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					EventAccessor eventAccessor = new EventAccessor(this);
 
 					foreach (IChangeWatcher changeWatcher in changeWatchers)
-						{  changeWatcher.OnDeleteTopic(topic, eventAccessor);  }
+						{  changeWatcher.OnDeleteTopic(topic, linksAffected, eventAccessor);  }
 					}
 				}
 			finally
 				{
 				Manager.ReleaseChangeWatchers();
-				}
-
-
-			// Find any links that resolve to this topic.
-
-			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
-
-			using (SQLite.Query query = connection.Query("SELECT LinkID FROM Links WHERE TargetTopicID=?", topic.TopicID))
-				{
-				while (query.Step())
-					{  linksAffected.Add( query.IntColumn(0) );  }
 				}
 
 
@@ -735,8 +731,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
 
 					connection.Execute(queryText.ToString(), queryParams.ToArray());
-
-					Manager.LinksToResolve.Add(linksAffected);
 					}
 
 
@@ -745,12 +739,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				connection.Execute("DELETE FROM Topics WHERE TopicID = ?", topic.TopicID);
 			
 				Manager.UsedTopicIDs.Remove(topic.TopicID);
-
-				// Check CodeDB.NewTopicsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-				IDObjects.NumberSet newTopicsForEndingSymbol = Manager.NewTopicsByEndingSymbol[topic.Symbol.EndingSymbol];
-				if (newTopicsForEndingSymbol != null)
-					{  newTopicsForEndingSymbol.Remove(topic.TopicID);  }
-
 				Manager.ClassIDReferenceChangeCache.RemoveReference(topic.ClassID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.PrototypeContextID);
 				Manager.ContextIDReferenceChangeCache.RemoveReference(topic.BodyContextID);
@@ -1425,8 +1413,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			try
 				{
 				link.LinkID = Manager.UsedLinkIDs.LowestAvailable;
-				GetOrCreateContextIDs(link);
-				GetOrCreateClassID(link);
+				link.ClassID = GetOrCreateClassID(link.ClassString);
+				link.ContextID = GetOrCreateContextID(link.Context);
 
 				connection.Execute("INSERT INTO Links (LinkID, Type, TextOrSymbol, ContextID, FileID, ClassID, LanguageID, EndingSymbol, " +
 														"TargetTopicID, TargetClassID, TargetScore) " +
@@ -1436,7 +1424,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 													);
 
 				Manager.UsedLinkIDs.Add(link.LinkID);
-				Manager.LinksToResolve.Add(link.LinkID);
 				Manager.ContextIDReferenceChangeCache.AddReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.AddReference(link.ClassID);
 
@@ -1556,7 +1543,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				connection.Execute("DELETE FROM Links WHERE LinkID=?", link.LinkID);
 			
 				Manager.UsedLinkIDs.Remove(link.LinkID);
-				Manager.LinksToResolve.Remove(link.LinkID);  // Just in case, so there's no hanging references
 				Manager.ContextIDReferenceChangeCache.RemoveReference(link.ContextID);
 				Manager.ClassIDReferenceChangeCache.RemoveReference(link.ClassID);
 
@@ -1882,192 +1868,47 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 		/* Function: GetOrCreateClassID
 		 * 
-		 * Retrieves the ID for <Topic.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
+		 * Retrieves the ID for the <ClassString>.  If an existing ID cannot be found, one will be created.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
 		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
 		 */
-		public void GetOrCreateClassID (Topic topic)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (topic.ClassIDKnown == false)
-				{  
-				CacheOrCreateClassIDs(topic.ClassString);
-				topic.ClassID = classIDLookupCache[topic.ClassString];
-				}
-			}
-
-
-		/* Function: GetOrCreateClassIDs
-		 * 
-		 * Retrieves the class IDs for each <Topic's> ClassString if they are not already set.  If existing IDs cannot be found, 
-		 * they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new class IDs are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the topic is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
-		 */
-		public void GetOrCreateClassIDs (IEnumerable<Topic> topics)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing class IDs.  There may be none so create the HashSet on demand.
-
-			HashSet<ClassString> classes = null;
-
-			foreach (var topic in topics)
-				{
-				if (topic.ClassIDKnown == false)
-					{  
-					if (classes == null)
-						{  classes = new HashSet<ClassString>();  }
-
-					classes.Add(topic.ClassString);  
-					}
-				}
-
-			if (classes != null)
-				{  CacheOrCreateClassIDs(classes);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topics.
-
-			foreach (var topic in topics)
-				{
-				if (topic.ClassIDKnown == false)
-					{  topic.ClassID = classIDLookupCache[topic.ClassString];  }
-				}
-			}
-
-
-		/* Function: GetOrCreateClassID
-		 * 
-		 * Retrieves the ID for <Link.ClassString> if it's not already set.  If an existing ID cannot be found, it will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If a new class ID is created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		ClassString - Can be null, which means the link is global and doesn't create a class.
-		 *		ClassID - If this is zero and ClassString is not null, ClassID will be looked up or created.  If it's already non-zero this 
-		 *						 is a no-op.
-		 */
-		public void GetOrCreateClassID (Link link)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (link.ClassIDKnown == false)
-				{  
-				CacheOrCreateClassIDs(link.ClassString);
-				link.ClassID = classIDLookupCache[link.ClassString];
-				}
-			}
-
-
-		/* Function: CacheOrCreateClassIDs
-		 * 
-		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateClassIDs (IEnumerable<ClassString> classStrings)
+		public int GetOrCreateClassID (ClassString classString)
 			{
 			// Remember that classIDLookupCache is local to the accessor and doesn't need any locking.
 			// ClassIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
 
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
-			
-			// Create a list of all classStrings not already in the cache.  Since it's possible that they'll all be in the cache we
-			// create the list object on demand.
 
-			List<ClassString> uncachedClassStrings = null;
+			// First check for null and cached values
 
-			foreach (var classString in classStrings)
+			if (classString == null)
+				{  return 0;  }
+				
+			if (classIDLookupCache.Contains(classString))
+				{  return classIDLookupCache[classString];  }
+
+
+			// If it's not cached, check the database
+
+			int classID;
+
+			using (SQLite.Query query = connection.Query("SELECT ClassID FROM Classes WHERE LookupKey=?", classString.LookupKey))
 				{
-				if (classString != null && classIDLookupCache.Contains(classString) == false)
-					{
-					if (uncachedClassStrings == null)
-						{  uncachedClassStrings = new List<ClassString>();  }
+				if (query.Step())
+					{  
+					classID = query.IntColumn(0);
 
-					uncachedClassStrings.Add(classString);  
+					classIDLookupCache.Add(classString, classID);
+					return classID;
 					}
 				}
 
 
-			// Can we quit early?
-
-			if (uncachedClassStrings == null)
-				{  return;  }
-
-
-			// Create a query to lookup the uncached classes in the database.  The IDs may already be assigned.
-
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ClassID, ifnull(ClassString, LookupKey) " + 
-																																					 "FROM Classes WHERE");
-			object[] queryParams = new object[uncachedClassStrings.Count];
-
-			for (int i = 0; i < uncachedClassStrings.Count; i++)
-				{
-				if (i != 0)
-					{  queryText.Append(" OR");  }
-
-				queryText.Append(" LookupKey=?");
-				queryParams[i] = uncachedClassStrings[i].LookupKey;
-				}
-
-
-			// Run the query to fill in the cache with whatever already exists in the database.
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
-				{
-			   while (query.Step())
-			      {  
-					classIDLookupCache.Add( ClassString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );
-					}
-			   }
-
-
-			// Pare down our list of uncached class strings.
-
-			for (int i = 0; i < uncachedClassStrings.Count; /* don't auto increment */)
-				{
-				if (classIDLookupCache.Contains(uncachedClassStrings[i]))
-					{  uncachedClassStrings.RemoveAt(i);  }
-				else
-					{  i++;  }
-				}
-
-
-			// Can we quit now?
-
-			if (uncachedClassStrings.Count == 0)
-				{  return;  }
-
-
-			// Create anything we still need.
+			// If it's not in the database, create it
 
 			// DEPENDENCY: GetClassByID() and GetClassesByID() assume *every* newly created class ID will have a record
 			// in the database, even if the change cache hasn't been flushed yet.
@@ -2078,26 +1919,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
+			classID = Manager.UsedClassIDs.LowestAvailable;
+
 			try
 				{
-				using (SQLite.Query query = connection.Query("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) " +
-																									"VALUES (?, ?, ?, 0)") )
-					{
-					foreach (var classString in uncachedClassStrings)
-						{
-						int id = Manager.UsedClassIDs.LowestAvailable;
+				connection.Execute("INSERT INTO Classes (ClassID, ClassString, LookupKey, ReferenceCount) VALUES (?, ?, ?, 0)",
+											 classID, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), classString.LookupKey);
 
-						query.BindValues(id, (classString.ToString() == classString.LookupKey ? null : classString.ToString()), 
-														  classString.LookupKey);
-						query.Step();
-						query.Reset(true);
+				Manager.UsedClassIDs.Add(classID);
+				classIDLookupCache.Add(classString, classID);
 
-						Manager.UsedClassIDs.Add(id);
-						classIDLookupCache.Add(classString, id);
-
-						Manager.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-						}
-					}
+				Manager.ClassIDReferenceChangeCache.SetDatabaseReferenceCount(classID, 0);
 
 				CommitTransaction();
 				}
@@ -2106,21 +1938,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				RollbackTransactionForException();
 				throw;
 				}
-			}
 
-
-		/* Function: CacheOrCreateClassIDs
-		 * 
-		 * Retrieves the IDs for each <ClassString> and stores them in <classIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new classes are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateClassIDs (params ClassString[] classStrings)
-			{
-			CacheOrCreateClassIDs((IEnumerable<ClassString>)classStrings);
+			return classID;
 			}
 
 
@@ -2146,7 +1965,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			// DEPENDENCY:
 			//
-			// - This assumes CacheOrCreateClassIDs() will create an entry in CodeDB.ClassIDReferenceChangeCache for *every*
+			// - This assumes GetOrCreateClassID() will create an entry in CodeDB.ClassIDReferenceChangeCache for *every*
 			//    newly created class ID with the database reference count set to zero.
 			//
 			// - This also assumes that this function deletes every class ID record with zero references from the database, and
@@ -2302,157 +2121,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
-		/* Function: GetOrCreateContextIDs
+		/* Function: GetOrCreateContextID
 		 * 
-		 * Retrieves the context IDs for <Topic.PrototypeContext> and <Topic.BodyContext> if they are not already set.
-		 * If existing IDs cannot be found, they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
-		 *												  If it's already non-zero this is a no-op.
-		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
-		 *										 non-zero this is a no-op.
-		 */
-		public void GetOrCreateContextIDs (Topic topic)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing context IDs.  Since there's only two fields to check we'll handle this by hand to minimize 
-			// memory instead of creating a HashSet or List.
-
-			if (topic.PrototypeContextIDKnown == false)
-				{
-				if (topic.BodyContextIDKnown == false && topic.BodyContext != topic.PrototypeContext)
-					{  CacheOrCreateContextIDs(topic.PrototypeContext, topic.BodyContext);  }
-				else
-					{  CacheOrCreateContextIDs(topic.PrototypeContext);  }
-				}
-			else if (topic.BodyContextIDKnown == false)
-				{  CacheOrCreateContextIDs(topic.BodyContext);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topic.
-
-			if (topic.PrototypeContextIDKnown == false)
-				{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
-
-			if (topic.BodyContextIDKnown == false)
-				{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
-			}
-
-
-		/* Function: GetOrCreateContextIDs
-		 * 
-		 * Retrieves the context IDs for each <Topic's> PrototypeContext and BodyContext if they are not already set.  If existing
-		 * IDs cannot be found, they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 *		
-		 * Topic Requirements:
-		 * 
-		 *		PrototypeContext - Can be null, which means global with no "using" statements.
-		 *		PrototypeContextID - If this is zero and PrototypeContext is not null, PrototypeContextID will be looked up or created.  
-		 *												  If it's already non-zero this is a no-op.
-		 *		BodyContext - Can be null, which means global with no "using" statements.
-		 *		BodyContextID - If this is zero and BodyContext is not null, BodyContextID will be looked up or created.  If it's already 
-		 *										 non-zero this is a no-op.
-		 */
-		public void GetOrCreateContextIDs (IEnumerable<Topic> topics)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-
-			// Cache or create any missing context IDs.  There may be none so create the HashSet on demand.
-
-			HashSet<ContextString> contexts = null;
-
-			foreach (var topic in topics)
-				{
-				if (topic.PrototypeContextIDKnown == false)
-					{  
-					if (contexts == null)
-						{  contexts = new HashSet<ContextString>();  }
-
-					contexts.Add(topic.PrototypeContext);  
-					}
-
-				if (topic.BodyContextIDKnown == false)
-					{  
-					if (contexts == null)
-						{  contexts = new HashSet<ContextString>();  }
-
-					contexts.Add(topic.BodyContext);  
-					}
-				}
-
-			if (contexts != null)
-				{  CacheOrCreateContextIDs(contexts);  }
-			else
-				{  return;  }
-
-
-			// Fill in the Topics.
-
-			foreach (var topic in topics)
-				{
-				if (topic.PrototypeContextIDKnown == false)
-					{  topic.PrototypeContextID = contextIDLookupCache[topic.PrototypeContext];  }
-
-				if (topic.BodyContextIDKnown == false)
-					{  topic.BodyContextID = contextIDLookupCache[topic.BodyContext];  }
-				}
-			}
-
-
-		/* Function: GetOrCreateContextIDs
-		 * 
-		 * Retrieves the context ID for <Link.Context> if it's not already set.  If an existing ID cannot be found, it will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If a new context is created, it will be upgraded automatically.
-		 *		
-		 * Link Requirements:
-		 * 
-		 *		Context - Can be null, which means global with no "using" statements.
-		 *		ContextID - If this is zero and Context is not null, ContextID will be looked up or created.  If it's already non-zero this
-		 *								is a no-op.
-		 */
-		public void GetOrCreateContextIDs (Link link)
-			{
-			RequireAtLeast(LockType.ReadPossibleWrite);
-
-			if (link.ContextIDKnown)
-				{  return;  }
-
-			CacheOrCreateContextIDs(link.Context);
-
-			link.ContextID = contextIDLookupCache[link.Context];
-			}
-
-
-		/* Function: CacheOrCreateContextIDs
-		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in the 
-		 * database they will be created.
+		 * Retrieves the ID for the <ContextString>.  If an existing ID cannot be found, one will be created.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
 		 */
-		protected void CacheOrCreateContextIDs (IEnumerable<ContextString> contextStrings)
+		public int GetOrCreateContextID (ContextString contextString)
 			{
 			// Remember that contextIDLookupCache is local to the accessor and doesn't need any locking.
 			// ContextIDReferenceChangeCache is part of CodeDB.Manager and requires a database lock.
@@ -2460,71 +2137,32 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadPossibleWrite);
 
 			
-			// Create a list of all contextStrings not already in the cache.  Since it's possible that they'll all be in the cache we
-			// create the list object on demand.
+			// First check for null and cached values
 
-			List<ContextString> uncachedContextStrings = null;
+			if (contextString == null)
+				{  return 0;  }
+				
+			if (contextIDLookupCache.Contains(contextString))
+				{  return contextIDLookupCache[contextString];  }
 
-			foreach (var contextString in contextStrings)
+
+			// If it's not cached, check the database
+
+			int contextID;
+
+			using (SQLite.Query query = connection.Query("SELECT ContextID FROM Contexts WHERE ContextString=?", contextString.ToString()))
 				{
-				if (contextString != null && contextIDLookupCache.Contains(contextString) == false)
-					{
-					if (uncachedContextStrings == null)
-						{  uncachedContextStrings = new List<ContextString>();  }
+				if (query.Step())
+					{  
+					contextID = query.IntColumn(0);
 
-					uncachedContextStrings.Add(contextString);  
+					contextIDLookupCache.Add(contextString, contextID);
+					return contextID;
 					}
 				}
 
 
-			// Can we quit early?
-
-			if (uncachedContextStrings == null)
-				{  return;  }
-
-
-			// Create a query to lookup the uncached contexts in the database.  The IDs may already be assigned.
-
-			System.Text.StringBuilder queryText = new System.Text.StringBuilder("SELECT ContextID, ContextString FROM Contexts WHERE");
-			string[] queryParams = new string[uncachedContextStrings.Count];
-
-			for (int i = 0; i < uncachedContextStrings.Count; i++)
-				{
-				if (i != 0)
-					{  queryText.Append(" OR");  }
-
-				queryText.Append(" ContextString=?");
-				queryParams[i] = uncachedContextStrings[i].ToString();
-				}
-
-
-			// Run the query to fill in the cache with whatever already exists in the database.
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams))
-				{
-			   while (query.Step())
-			      {  contextIDLookupCache.Add( ContextString.FromExportedString(query.StringColumn(1)), query.IntColumn(0) );  }
-			   }
-
-
-			// Pare down our list of uncached context strings.
-
-			for (int i = 0; i < uncachedContextStrings.Count; /* don't auto increment */)
-				{
-				if (contextIDLookupCache.Contains(uncachedContextStrings[i]))
-					{  uncachedContextStrings.RemoveAt(i);  }
-				else
-					{  i++;  }
-				}
-
-
-			// Can we quit now?
-
-			if (uncachedContextStrings.Count == 0)
-				{  return;  }
-
-
-			// Create anything we still need.
+			// If it's not in the database, create it
 
 			// DEPENDENCY: FlushContextIDReferenceChangeCache() assumes *every* newly created context ID will have an 
 			// entry in CodeDB.ContextIDReferenceChangeCache with database references set to zero.
@@ -2532,25 +2170,17 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			RequireAtLeast(LockType.ReadWrite);
 			BeginTransaction();
 
+			contextID = Manager.UsedContextIDs.LowestAvailable;
+
 			try
 				{
-				using (SQLite.Query query = connection.Query("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) " +
-																									 "VALUES (?, ?, 0)") )
-					{
-					foreach (var contextString in uncachedContextStrings)
-						{
-						int id = Manager.UsedContextIDs.LowestAvailable;
+				connection.Execute("INSERT INTO Contexts (ContextID, ContextString, ReferenceCount) VALUES (?, ?, 0)",
+											 contextID, contextString.ToString());
 
-						query.BindValues(id, contextString);
-						query.Step();
-						query.Reset(true);
+				Manager.UsedContextIDs.Add(contextID);
+				contextIDLookupCache.Add(contextString, contextID);
 
-						Manager.UsedContextIDs.Add(id);
-						contextIDLookupCache.Add(contextString, id);
-
-						Manager.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(id, 0);
-						}
-					}
+				Manager.ContextIDReferenceChangeCache.SetDatabaseReferenceCount(contextID, 0);
 
 				CommitTransaction();
 				}
@@ -2559,21 +2189,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				RollbackTransactionForException();
 				throw;
 				}
-			}
 
-
-		/* Function: CacheOrCreateContextIDs
-		 * 
-		 * Retrieves the IDs for each <ContextString> and stores them in <contextIDLookupCache>.  If they don't exist in
-		 * the database they will be created.
-		 * 
-		 * Requirements:
-		 * 
-		 *		- Requires at least a read/possible write lock.  If new contexts are created, it will be upgraded automatically.
-		 */
-		protected void CacheOrCreateContextIDs (params ContextString[] contextStrings)
-			{
-			CacheOrCreateContextIDs((IEnumerable<ContextString>)contextStrings);
+			return contextID;
 			}
 
 

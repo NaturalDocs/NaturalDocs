@@ -707,7 +707,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 																					  Comments.Parsers.NaturalDocs.LinkInterpretationFlags.FromOriginalText,
 																					  out ignore);
 
-			linkInterpretation = linkInterpretations[ CodeDB.Manager.GetInterpretationIndex(fullLink.TargetScore) ];
+			linkInterpretation = linkInterpretations[ fullLink.TargetInterpretationIndex ];
 
 
 			// If it's a tooltip, that's all we need.  We don't need to find the Topic because we're not creating an actual link;

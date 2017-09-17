@@ -35,11 +35,13 @@
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
- *		- <SearchIndex.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
+ *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
+ *		
+ *		- <SearchIndex.Manager> is next because it also needs to be added as a <CodeDB.Manager> watcher.
  *		
  *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> and <SearchIndex.Manager>
  *		   watchers.  It can also set the rebuild/reparse flags that CodeDB needs to interpret.
- *		
+ *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
  *		
@@ -83,8 +85,9 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public Instance (Config.Manager configManager = null, CommentTypes.Manager commentTypesManager = null, 
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
-								CodeDB.Manager codeDBManager = null, Output.Manager outputManager = null,
-								SearchIndex.Manager searchIndexManager = null, Files.Manager filesManager = null)
+								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
+								Output.Manager outputManager = null, SearchIndex.Manager searchIndexManager = null, 
+								Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
@@ -92,6 +95,7 @@ namespace CodeClear.NaturalDocs.Engine
 			commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
 			languages = languagesManager ?? new Languages.Manager(this);
 			comments = commentsManager ?? new Comments.Manager(this);
+			links = linksManager ?? new Links.Manager(this);
 			codeDB = codeDBManager ?? new CodeDB.Manager(this);
 			output = outputManager ?? new Output.Manager(this);
 			searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
@@ -159,6 +163,12 @@ namespace CodeClear.NaturalDocs.Engine
 				searchIndex = null;
 				}
 
+			if (links != null && !strictRulesApply)
+				{
+				links.Dispose();					
+				links = null;
+				}
+
 			if (comments != null && !strictRulesApply)
 				{
 				comments.Dispose();					
@@ -215,6 +225,7 @@ namespace CodeClear.NaturalDocs.Engine
 				commentTypes.Start(errors) &&
 				languages.Start(errors) &&
 				comments.Start(errors) &&
+				links.Start(errors) &&
 				searchIndex.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
@@ -522,6 +533,15 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return comments;  }
 			}
 			
+		/* Property: Links
+		 * Returns the <Links.Manager> associated with this instance.
+		 */
+		public Links.Manager Links
+			{
+			get
+				{  return links;  }
+			}
+			
 		/* Property: CodeDB
 		 * Returns the <CodeDB.Manager> associated with this instance.
 		 */
@@ -576,6 +596,8 @@ namespace CodeClear.NaturalDocs.Engine
 		protected Languages.Manager languages;
 		
 		protected Comments.Manager comments;
+
+		protected Links.Manager links;
 		
 		protected CodeDB.Manager codeDB;
 		
