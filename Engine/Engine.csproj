@@ -260,6 +260,7 @@
     <Content Include="Architecture\Compilation Symbols.txt" />
     <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Database Layout\Classes.txt" />
+    <Content Include="Architecture\Database Layout\ImageLinks.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript Search Data.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript SummaryData.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript ToolTip Data.txt" />

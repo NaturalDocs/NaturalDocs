@@ -35,6 +35,16 @@ Database Column: UsedLinkIDs
 	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
 	
 	
+Database Column: UsedImageLinkIDs
+
+	--- Prototype ---
+		UsedImageLinkIDs TEXT NOT NULL
+	-----------------
+
+	A string containing the <CodeClear.NaturalDocs.Engine.IDObjects.NumberSet> for all the used link IDs in <CodeDB.ImageLinks>.
+	This is only used for storage between Natural Docs executions.  It is not continually updated during execution.
+	
+	
 Database Column: UsedClassIDs
 
 	--- Prototype ---

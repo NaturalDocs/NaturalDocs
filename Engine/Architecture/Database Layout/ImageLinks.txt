@@ -1,0 +1,122 @@
+﻿
+Database Table: CodeDB.ImageLinks
+_______________________________________________________________________________
+
+The table that stores all the image links found by Natural Docs, such as "(see image.jpg)".
+
+
+
+Group: Columns
+_______________________________________________________________________________
+
+
+Database Column: ImageLinkID
+	
+	--- Prototype ---
+		ImageLinkID INTEGER PRIMARY KEY NOT NULL
+	-----------------
+	
+	
+Database Column: OriginalText
+
+	--- Prototype ---
+		OriginalText TEXT NOT NULL
+	-----------------
+
+	The plain text of the link, such as "(see Folder/File.jpg)".
+
+
+Database Column: Path
+
+	--- Prototype ---
+		Path TEXT NOT NULL
+	-----------------
+
+	The path of the link.  For "(see Folder/File.jpg)" it will be "Folder/File.jpg".
+
+
+Database Column: FileName
+
+	--- Prototype ---
+		FileName TEXT NOT NULL
+	-----------------
+
+	The all-lowercase file name of the link.  For "(see Folder/File.jpg)" it will be "file.jpg".
+
+
+Database Column: FileID
+
+	--- Prototype ---
+		FileID INTEGER NOT NULL
+	-----------------
+
+	The ID of the file the link appears in.
+
+
+Database Column: ClassID
+
+	--- Prototype ---
+		ClassID INTEGER NOT NULL
+	-----------------
+
+	The ID of the class the link appears in.
+
+
+Database Column: TargetFileID
+
+	--- Prototype ---
+		TargetFileID INTEGER NOT NULL
+	-----------------
+
+	The file ID the link resolves to, or zero if none.
+
+
+Database Column: TargetScore
+
+	--- Prototype ---
+		TargetScore INTEGER NOT NULL
+	-----------------
+
+	The score of the link to <TargetFileID>, or zero if there is none.
+
+
+
+Group: Indexes
+_______________________________________________________________________________
+
+
+Database Index: ImageLinksByID
+
+	--- Prototype ---
+		ImageLinkID INTEGER PRIMARY KEY NOT NULL
+	-----------------
+
+	Automatically created by <ImageLinkID> being defined as a primary key.
+
+
+Database Index: ImageLinksByFileID
+
+	--- Prototype ---
+		CREATE INDEX ImageLinksByFileID ON ImageLinks (FileID)
+	-----------------
+
+
+Database Index: ImageLinksByClassID
+
+	--- Prototype ---
+		CREATE INDEX ImageLinksByClassID ON ImageLinks (ClassID)
+	-----------------
+
+
+Database Index: ImageLinksByFileName
+
+	--- Prototype ---
+		CREATE INDEX ImageLinksByFileName ON ImageLinks (FileName)
+	-----------------
+
+
+Database Index: ImageLinksByTargetFileID
+
+	--- Prototype ---
+		CREATE INDEX ImageLinksByTargetFileID ON ImageLinks (TargetFileID)
+	-----------------

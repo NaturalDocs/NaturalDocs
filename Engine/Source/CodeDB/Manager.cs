@@ -85,6 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			usedTopicIDs = new IDObjects.NumberSet();
 			usedLinkIDs = new IDObjects.NumberSet();
+			usedImageLinkIDs = new IDObjects.NumberSet();
 			usedClassIDs = new IDObjects.NumberSet();
 			usedContextIDs = new IDObjects.NumberSet();
 
@@ -167,7 +168,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					
 					Version version = GetVersion();
 					
-					if (Version.BinaryDataCompatibility(version, Engine.Instance.Version, "2.0") == true)
+					if (Version.BinaryDataCompatibility(version, Engine.Instance.Version, "2.1") == true)
 						{  
 						LoadSystemVariables();
 						success = true;
@@ -231,6 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				usedTopicIDs.Clear();
 				usedLinkIDs.Clear();
+				usedImageLinkIDs.Clear();
 				usedClassIDs.Clear();
 				usedContextIDs.Clear();
 
@@ -298,6 +300,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			get
 				{  return usedLinkIDs;  }
+			}
+			
+		/* Property: UsedImageLinkIDs
+		 * An <IDObjects.NumberSet> of all the used image link IDs in <CodeDB.ImageLinks>.  Its use is governed by <DatabaseLock>.
+		 */
+		internal IDObjects.NumberSet UsedImageLinkIDs
+			{
+			get
+				{  return usedImageLinkIDs;  }
 			}
 			
 		/* Property: UsedClassIDs
@@ -386,6 +397,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		/* var: usedLinkIDs
 		 */
 		protected IDObjects.NumberSet usedLinkIDs;
+
+		/* var: usedImageLinkIDs
+		 */
+		protected IDObjects.NumberSet usedImageLinkIDs;
 
 		/* var: usedClassIDs
 		 */
