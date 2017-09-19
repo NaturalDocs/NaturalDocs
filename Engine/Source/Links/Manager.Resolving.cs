@@ -38,14 +38,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public void WorkOnResolvingLinks (CancelDelegate cancelled)
 			{
 
-			// Reset beforeFirstResolve
-
-			Monitor.Enter(newTopicIDsByEndingSymbol);
-
-			try
-				{  beforeFirstResolve = false;  }
-			finally
-				{  Monitor.Exit(newTopicIDsByEndingSymbol);  }
+			// Reset immediately before doing any work
+			beforeFirstResolve = false;
 
 
 			Accessor accessor = EngineInstance.CodeDB.GetAccessor();
@@ -337,17 +331,15 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		public void OnAddTopic (Topic topic, EventAccessor eventAccessor)
 			{
-			Monitor.Enter(newTopicIDsByEndingSymbol);
+			// We don't need to track newTopicIDsByEndingSymbol when we're reparsing everything and nothing has been resolved
+			// yet because the entire codebase will be reparsed and therefore every link will be re-added.  Every link will thus be on
+			// linksToResolve and we don't need to worry about new topics causing existing links to need to be reresolved.
 
-			try
+			if ( (beforeFirstResolve && EngineInstance.Config.ReparseEverything) == false)
 				{
-				if (beforeFirstResolve && EngineInstance.Config.ReparseEverything)
-					{
-					// We don't need to track newTopicIDsByEndingSymbol in this case because the entire output will
-					// be reparsed and every link will be re-added.  Thus every link will be on linksToResolve and we don't
-					// need to worry about new topics causing existing links to need to be reresolved.
-					}
-				else
+				Monitor.Enter(newTopicIDsByEndingSymbol);
+
+				try
 					{
 					IDObjects.NumberSet newTopicIDs = newTopicIDsByEndingSymbol[topic.Symbol.EndingSymbol];
 
@@ -359,10 +351,10 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 					newTopicIDs.Add(topic.TopicID);
 					}
-				}
-			finally
-				{
-				Monitor.Exit(newTopicIDsByEndingSymbol);
+				finally
+					{
+					Monitor.Exit(newTopicIDsByEndingSymbol);
+					}
 				}
 			}
 		

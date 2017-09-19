@@ -8,17 +8,24 @@
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		> newTopicIDsByEndingSymbol -> linksToResolve
+ *		> linksToResolve
+ *		> newTopicIDsByEndingSymbol
  * 
  *		Externally, this class is thread safe.
  *		
- *		Internally, both <newTopicIDsByEndingSymbol> and <linksToResolve> are locked independently.  You may attempt to
- *		acquire the lock for <linksToResolve> while holding <newTopicIDsByEndingSymbol> but not vice versa.
+ *		Internally, both <linksToResolve> and <newTopicIDsByEndingSymbol> are locked independently with monitors.
+ *		Currently the locks do not need to be held simultaneously for any reason so there is no locking order.  That means
+ *		do not attempt to lock one while holding the other, period.
  *		
- *		> newTopicIDsByEndingSymbol = beforeFirstResolve
+ *		> beforeFirstResolve
  *		
- *		<beforeFirstResolve> uses <newTopicIDsByEndingSymbol>'s lock, so locking it locks both.  Kind of ugly, but the
- *		current implementation doesn't warrant requiring a separate lock.
+ *		<beforeFirstResolve> is currently only used for optimization in the parsing stage to limit the amount of work to be done
+ *		in the resolving stage on a full reparse.  <WorkOnResolvingLinks()> immediately sets it to false before doing any work
+ *		and no code in that or later stages references it.  As such it is not governed by a lock since the only race condition it
+ *		could introduce would be if a full reparse and link resolving were occuring simultaneously, which they won't.
+ *		
+ *		If this variable is used in any other way or this assumption is no longer correct, the locking mechanism for this variable
+ *		will have to be revisited.
  * 
  */
 
@@ -42,6 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			linksToResolve = new IDObjects.NumberSet();
 			newTopicIDsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet>();
+
 			beforeFirstResolve = true;
 			}
 
@@ -74,8 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * 
 		 * Thread Safety:
 		 * 
-		 *		This variable should always be locked with a monitor before using.  If you need to lock <newTopicIDsByEndingSymbol>
-		 *		at the same time you must lock that one *before* this one.
+		 *		This variable should always be locked with a monitor before using.
 		 */
 		protected IDObjects.NumberSet linksToResolve;
 
@@ -86,8 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * 
 		 * Thread Safety:
 		 * 
-		 *		This variable should always be locked with a monitor before using.  You may attempt to lock <newTopicIDsByEndingSymbol>
-		 *		while holding this lock.
+		 *		This variable should always be locked with a monitor before using.
 		 * 
 		 * Rationale:
 		 * 
@@ -112,10 +118,15 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * 
 		 * Thread Safety:
 		 * 
-		 *		This variable shares a monitor with <newTopicIDsByEndingSymbol> since that's the only variable that's affected.
-		 *		Ideally it should have its own monitor but it's not necessary with the current implementation.
+		 *		This variable is currently only used for optimization in the parsing stage to limit the amount of work to be done in the
+		 *		resolving stage on a full reparse.  <WorkOnResolvingLinks()> immediately sets it to false before doing any work and
+		 *		no code in that or later stages references it.  As such it is not governed by a lock since the only race condition it could
+		 *		introduce would be if a full reparse and link resolving were occuring simultaneously, which they won't.
+		 *		
+		 *		If this variable is used in any other way or this assumption is no longer correct, the locking mechanism for this variable
+		 *		will have to be revisited.
 		 */
-		protected bool beforeFirstResolve;
+		private bool beforeFirstResolve;
 
 		}
 	}
