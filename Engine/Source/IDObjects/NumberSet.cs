@@ -487,6 +487,21 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 					
 				}
 			}
+
+
+		/* Function: Pop
+		 * Removes the highest value from the set and returns it.  Will return zero if the set is empty.
+		 */
+		public int Pop ()
+			{
+			if (IsEmpty)
+				{  return 0;  }
+
+			int id = Highest;
+			Remove(id);
+
+			return id;
+			}
 			
 			
 		/* Function: Contains
