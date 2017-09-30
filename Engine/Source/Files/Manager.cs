@@ -27,7 +27,7 @@
  * 
  *		Externally, this class is thread safe.
  *		
- *		Internally, all variable accesses must use a monitor on <writeLock>.
+ *		Internally, all variable accesses must use a monitor on <accessLock>.
  *		
  * 
  * File: Files.nd
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			unprocessedDeletedFileIDs = new IDObjects.NumberSet();
 			claimedFileIDs = new IDObjects.NumberSet();
 			
-			writeLock = new object();
+			accessLock = new object();
 			styleChangeWatchers = new List<IStyleChangeWatcher>();
 			}
 			
@@ -248,7 +248,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public File FromID (int fileID)
 			{
-			lock (writeLock)
+			lock (accessLock)
 				{
 				return files[fileID];
 				}
@@ -263,7 +263,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (filePath.IsRelative)
 				{  throw new InvalidOperationException();  }
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				return files[filePath];
 				}
@@ -321,7 +321,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			string claimedFolderPrefix = null;
 			
-			Monitor.Enter(writeLock);
+			Monitor.Enter(accessLock);
 			bool locked = true;
 			
 			try
@@ -402,13 +402,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						
 					// Now release the lock while we work on it.
 					
-					Monitor.Exit(writeLock);
+					Monitor.Exit(accessLock);
 					locked = false;
 
 					claimedFileSource.AddAllFiles(cancelDelegate);
 					// If it failed because of the cancelDelegate AllFilesAdded will be false.
 					
-					Monitor.Enter(writeLock);
+					Monitor.Enter(accessLock);
 					locked = true;
 					
 					claimedFileSource.Claimed = false;
@@ -419,7 +419,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			finally
 				{
 				if (locked)
-					{  Monitor.Exit(writeLock);  }
+					{  Monitor.Exit(accessLock);  }
 				}
 			}
 			
@@ -450,7 +450,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void DeleteFilesNotInFileSources (CancelDelegate cancelDelegate)
 			{
-			Monitor.Enter(writeLock);
+			Monitor.Enter(accessLock);
 			bool haveLock = true;
 			
 			try
@@ -468,12 +468,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 					if (file != null && file.InFileSource == false)
 						{  
-						Monitor.Exit(writeLock);
+						Monitor.Exit(accessLock);
 						haveLock = false;
 
 						DeleteFile(file.FileName);
 
-						Monitor.Enter(writeLock);
+						Monitor.Enter(accessLock);
 						haveLock = true;
 						}
 						
@@ -484,7 +484,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			finally
 				{  
 				if (haveLock)
-					{  Monitor.Exit(writeLock);  }
+					{  Monitor.Exit(accessLock);  }
 				}
 			}
 			
@@ -510,7 +510,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			bool changed = false;
 			
-			Monitor.Enter(writeLock);
+			Monitor.Enter(accessLock);
 			
 			try
 				{
@@ -552,7 +552,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				file.InFileSource = true;
 				}
 			finally
-				{  Monitor.Exit(writeLock);  }
+				{  Monitor.Exit(accessLock);  }
 				
 			return changed;
 			}
@@ -567,7 +567,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			bool changed = false;
 			
-			Monitor.Enter(writeLock);
+			Monitor.Enter(accessLock);
 			
 			try
 				{
@@ -595,7 +595,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 				}
 			finally
-				{  Monitor.Exit(writeLock);  }
+				{  Monitor.Exit(accessLock);  }
 				
 			return changed;
 			}
@@ -671,7 +671,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			statusTarget.Reset();
 			
-			lock (writeLock)
+			lock (accessLock)
 				{
 				statusTarget.TotalFiles = files.Count;
 				statusTarget.FilesBeingProcessed = claimedFileIDs.Count;
@@ -695,7 +695,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public File ClaimChangedFile ()
 			{
-			lock (writeLock)
+			lock (accessLock)
 				{
 				if (unprocessedChangedFileIDs.IsEmpty)
 					{  return null;  }
@@ -720,7 +720,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public File ClaimDeletedFile ()
 			{
-			lock (writeLock)
+			lock (accessLock)
 				{
 				if (unprocessedDeletedFileIDs.IsEmpty)
 					{  return null;  }
@@ -978,7 +978,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			bool triggerFileChanges = false;
 
-			lock (writeLock)
+			lock (accessLock)
 				{
 				file.Claimed = false;
 				claimedFileIDs.Remove(file.ID);
@@ -1314,7 +1314,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
-			lock (writeLock)
+			lock (accessLock)
 				{
 				IDObjects.NumberSet toDelete = new IDObjects.NumberSet();
 				
@@ -1488,25 +1488,25 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 
 		/* var: files
-		 * All the files that are managed by this object.  You must have <writeLock> to use this variable.
+		 * All the files that are managed by this object.  You must have <accessLock> to use this variable.
 		 */
 		protected IDObjects.Manager<File> files;
 		
 		/* var: unprocessedChangedFileIDs
 		 * A <IDObjects.NumberSet> of the file IDs which have changed since the last run.  Will not include IDs that are in
-		 * <claimedFileIDs>.  You must have <writeLock> to use this variable.
+		 * <claimedFileIDs>.  You must have <accessLock> to use this variable.
 		 */
 		protected IDObjects.NumberSet unprocessedChangedFileIDs;
 		
 		/* var: unprocessedDeletedFileIDs
 		 * A <IDObjects.NumberSet> of the file IDs which have been deleted since the last run.  Will not include IDs that are
-		 * in <claimedFileIDs>.  You must have <writeLock> to use this variable.
+		 * in <claimedFileIDs>.  You must have <accessLock> to use this variable.
 		 */
 		protected IDObjects.NumberSet unprocessedDeletedFileIDs;
 		
 		/* var: claimedFileIDs
 		 * A <IDObjects.NumberSet> of the file IDs which are currently claimed.  Any ID in here will not be in
-		 * <unprocessedChangedFileIDs> or <unprocessedDeletedFileIDs>.
+		 * <unprocessedChangedFileIDs> or <unprocessedDeletedFileIDs>.  You must have <accessLock> to use this variable.
 		 */
 		protected IDObjects.NumberSet claimedFileIDs;
 				
@@ -1516,15 +1516,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 		
 		
-		/* var: writeLock
-		 * 
-		 * An object used for a monitor lock that prevents more than one thread from changing any of the files 
-		 * structures at a time.
+		/* var: accessLock
+		 * An object used for a monitor that prevents more than one thread from accessing any of the variables
+		 * at a time.
 		 */
-		protected object writeLock;
+		protected object accessLock;
 		
 		/* var: styleChangeWatchers
-		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.
+		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.  You must
+		 * have <accessLock> to use this variable.
 		 */
 		protected List<IStyleChangeWatcher> styleChangeWatchers;
 
