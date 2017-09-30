@@ -27,8 +27,9 @@
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		This class is thread safe.  All locking is handled internally unless you call functions like <LockForBatchFileUpdates()> 
- *		and <LockForFileEnumeration()> to explicitly leave the class in a locked state between function calls.
+ *		Externally, this class is thread safe.
+ *		
+ *		Internally, all variable accesses must use a monitor on <writeLock>.
  *		
  * 
  * File: Files.nd
@@ -123,8 +124,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			claimedFileIDs = new IDObjects.NumberSet();
 			
 			writeLock = new object();
-			batchingFileUpdates = 0;
-			batchHasChanges = false;
 			styleChangeWatchers = new List<IStyleChangeWatcher>();
 			
 			WhenThereAreFileChanges = new System.Threading.ManualResetEvent(false);
@@ -509,9 +508,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * new, whereas if it was known but has a different modification time it will be treated as changed.  Returns whether this
 		 * call changed anything.  It is okay to call this multiple times on the same file.
 		 * 
-		 * If you did not call <LockForBatchFileUpdates()> beforehand this function will automatically get and release a lock and
-		 * trigger <FileChangesEvent> and <WhenThereAreFileChanges>.  If <LockForBatchFileUpdates()> was called then they
-		 * won't be triggered until <EndBatchFileUpdates()>.
+		 * This function will automatically get and release a lock and trigger <FileChangesEvent> and <WhenThereAreFileChanges>.
 		 * 
 		 * This is assumed to be called for files that are in a file source so it automatically sets <File.InFileSource>.
 		 */
@@ -564,12 +561,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 				file.InFileSource = true;
 				
-				if (batchingFileUpdates > 0 && changed && !suppressEvent)
-					{  
-					suppressEvent = true;  
-					batchHasChanges = true;
-					}
-					
 				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
 				// just wait until it's released.
 				if (changed && !suppressEvent)
@@ -592,9 +583,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * Notifies the class that the file has been deleted.  Returns whether this call changed anything.  It is okay to call this
 		 * multiple times on the same file.
 		 * 
-		 * If you did not call <LockForBatchFileUpdates()> beforehand this function will automatically get and release a lock and
-		 * trigger <FileChangesEvent> and <WhenThereAreFileChanges>.  If <LockForBatchFileUpdates()> was called then they 
-		 * won't be triggered until <EndBatchFileUpdates()>.
+		 * This function will automatically get and release a lock and trigger <FileChangesEvent> and <WhenThereAreFileChanges>.
 		 */
 		public bool DeleteFile (Path name)
 			{
@@ -628,12 +617,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					changed = true;
 					}
 						
-				if (batchingFileUpdates > 0 && changed)
-					{
-					suppressEvent = true;
-					batchHasChanges = true;
-					}
-					
 				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
 				// just wait until it's released.
 				if (changed && !suppressEvent)
@@ -650,52 +633,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			return changed;
 			}
 			
-			
-		/* Function: LockForBatchFileUpdates
-		 * Notifies the class that you're going to send multiple file update calls as a batch.  This prevents the class from 
-		 * relinquishing the lock between calls and supresses <FileChangesEvent> and <WhenThereAreFileChanges> until the 
-		 * batch ends.  Batches nest so this can be called multiple times and the changes will only apply when they are all released.
-		 */
-		public void LockForBatchFileUpdates ()
-			{
-			Monitor.Enter(writeLock);
-
-			if (batchingFileUpdates == 0)
-				{  batchHasChanges = false;  }
-
-			batchingFileUpdates++;
-			}
-
-
-		/* Function: EndBatchFileUpdates
-		 * Notifies the class that you're done with your batch of file updates.  Relinquishes the overall lock and triggers
-		 * <FileChangesEvent> and <WhenThereAreFileChanges> if there were any changes since the batch started and this isn't
-		 * a nested batch. 
-		 */
-		 public void EndBatchFileUpdates()
-			{
-			batchingFileUpdates--;
-			
-			// Need this as a separate variable because we want to trigger the event after releasing the lock, but we can't
-			// test these variables then.
-			bool triggerEvent = (batchingFileUpdates == 0 && batchHasChanges == true);
-			
-			if (triggerEvent)
-				{
-				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
-				// just wait until it's released.
-				WhenThereAreFileChanges.Set();
-				
-				batchHasChanges = false;
-				}
-			
-			Monitor.Exit(writeLock);
-			
-			// This is NOT okay to call while holding the lock because any event handlers will be called on this thread instead of
-			// their own, and thus would be unwittingly holding the lock as well.
-			if (triggerEvent)
-				{  TriggerFileChangesEvent();  }
-			}
 			
 		#endregion			
 			
@@ -1580,8 +1517,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		
 		/* Event: FileChangesEvent
-		 * Triggered when a file has been added, changed, or deleted.  Multiple changes may be batched together into a single
-		 * event.
+		 * Triggered when a file has been added, changed, or deleted.
 		 */
 		public event SimpleDelegate FileChangesEvent;
 				
@@ -1682,18 +1618,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		protected object writeLock;
 		
-		/* var: batchingFileUpdates
-		 * Whether file updates are currently being batched, and at what nesting level if so.  If the value is zero, it is not being 
-		 * batched.  If it is one or greater, that's how many nested batches there are.  You must have <writeLock> to use this 
-		 * variable, even to read it lest you create a race condition.
-		 */
-		protected int batchingFileUpdates;
-		
-		/* var: batchHasChanges
-		 * If <batchingFileUpdates> is true, this is set to whether any changes have occurred since the batch was started.
-		 */
-		protected bool batchHasChanges;
-
 		/* var: styleChangeWatchers
 		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.
 		 */
