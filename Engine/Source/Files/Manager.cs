@@ -13,8 +13,6 @@
  *		  
  *		- If desired, add filters with <AddFilter()>.
  * 
- *		- If desired, add event handlers to <FileChangesEvent> or sleep on <WhenThereAreFileChanges>.
- *		  
  *		- Call <Engine.Instance.Start()> which will start this module.
  *		
  *		- At this point the class is usable, but the file information is as of the last run.
@@ -125,8 +123,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			writeLock = new object();
 			styleChangeWatchers = new List<IStyleChangeWatcher>();
-			
-			WhenThereAreFileChanges = new System.Threading.ManualResetEvent(false);
 			}
 			
 						
@@ -508,14 +504,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * new, whereas if it was known but has a different modification time it will be treated as changed.  Returns whether this
 		 * call changed anything.  It is okay to call this multiple times on the same file.
 		 * 
-		 * This function will automatically get and release a lock and trigger <FileChangesEvent> and <WhenThereAreFileChanges>.
-		 * 
 		 * This is assumed to be called for files that are in a file source so it automatically sets <File.InFileSource>.
 		 */
 		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false)
 			{
 			bool changed = false;
-			bool suppressEvent = false;
 			
 			Monitor.Enter(writeLock);
 			
@@ -544,9 +537,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						file.StatusSinceClaimed = FileFlags.NewOrChangedSinceClaimed;
 		
 						changed = true;
-
-						// There's no point in firing an event here since it's claimed.  It will fire when the file is released.
-						suppressEvent = true;
 						}
 					}
 				else if (file.LastModified != lastModified || file.Status == FileFlags.Deleted || forceReparse)
@@ -560,19 +550,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 
 				file.InFileSource = true;
-				
-				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
-				// just wait until it's released.
-				if (changed && !suppressEvent)
-					{  WhenThereAreFileChanges.Set();  }
 				}
 			finally
 				{  Monitor.Exit(writeLock);  }
-				
-			// This is NOT okay to call while holding the lock because any event handlers will be called on this thread instead of
-			// their own, and thus would be unwittingly holding the lock as well.
-			if (changed && !suppressEvent)
-				{  TriggerFileChangesEvent();  }
 				
 			return changed;
 			}
@@ -582,13 +562,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * 
 		 * Notifies the class that the file has been deleted.  Returns whether this call changed anything.  It is okay to call this
 		 * multiple times on the same file.
-		 * 
-		 * This function will automatically get and release a lock and trigger <FileChangesEvent> and <WhenThereAreFileChanges>.
 		 */
 		public bool DeleteFile (Path name)
 			{
 			bool changed = false;
-			bool suppressEvent = false;
 			
 			Monitor.Enter(writeLock);
 			
@@ -616,19 +593,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					unprocessedDeletedFileIDs.Add(file.ID);
 					changed = true;
 					}
-						
-				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
-				// just wait until it's released.
-				if (changed && !suppressEvent)
-					{  WhenThereAreFileChanges.Set();  }
 				}
 			finally
 				{  Monitor.Exit(writeLock);  }
-				
-			// This is NOT okay to call while holding the lock because any event handlers will be called on this thread instead of
-			// their own, and thus would be unwittingly holding the lock as well.
-			if (changed && !suppressEvent)
-				{  TriggerFileChangesEvent();  }
 				
 			return changed;
 			}
@@ -742,9 +709,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				unprocessedChangedFileIDs.Remove(fileID);
 				claimedFileIDs.Add(fileID);
 				
-				if (unprocessedChangedFileIDs.IsEmpty && unprocessedDeletedFileIDs.IsEmpty)
-					{  WhenThereAreFileChanges.Reset();  }
-				
 				return file;
 				}
 			}
@@ -769,9 +733,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				
 				unprocessedDeletedFileIDs.Remove(fileID);
 				claimedFileIDs.Add(fileID);
-				
-				if (unprocessedDeletedFileIDs.IsEmpty && unprocessedChangedFileIDs.IsEmpty)
-					{  WhenThereAreFileChanges.Reset();  }
 				
 				return file;
 				}
@@ -1173,7 +1134,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					}
 
 
-				// If a change was cancelled, we put it back on the list and fire an event so it gets handled again.
+				// If a change was cancelled, we put it back on the list so it gets handled again.
 
 				// ☒ File changed - Successfully processed - Unchanged since claim
 				// ☒ File changed - Successfully processed - Changed since claim
@@ -1245,17 +1206,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					unprocessedDeletedFileIDs.Add(file.ID);
 					triggerFileChanges = true;
 					}
-					
-				// This is okay to call while holding the lock because we need it to keep the state consistent and other threads can
-				// just wait until it's released.
-				if (triggerFileChanges)
-					{  WhenThereAreFileChanges.Set();  }
 				}
-				
-			// This is NOT okay to call while holding the lock because any event handlers will be called on this thread instead of
-			// their own, and thus would be unwittingly holding the lock as well.
-			if (triggerFileChanges)
-				{  TriggerFileChangesEvent();  }
 			}
 			
 		#endregion
@@ -1509,52 +1460,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			
 			
-		// Group: Events
-		// __________________________________________________________________________
-		// 
-		// Note that these events may be thrown by worker threads.  It is recommended that the event handlers hand them
-		// off to the main thread and return quickly rather than handling them themselves.
-		
-		
-		/* Event: FileChangesEvent
-		 * Triggered when a file has been added, changed, or deleted.
-		 */
-		public event SimpleDelegate FileChangesEvent;
-				
-		
-		
-		
-		// Group: Protected Functions
-		// __________________________________________________________________________
-		
-		
-		/* Function: TriggerFileChangesEvent
-		 * Triggers the <FileChangesEvent> event.
-		 */
-		protected void TriggerFileChangesEvent ()
-			{
-			SimpleDelegate temp = FileChangesEvent;
-			
-			if (temp != null)
-				{  temp();  }
-			}
-			
-					
-			
-			
-		// Group: Thread Synchronization Objects
-		// __________________________________________________________________________
-		
-		
-		/* var: WhenThereAreFileChanges
-		 * A thread synchronization object that remains signaled when there are changes that can be claimed with
-		 * <ClaimChangedFile()> or <ClaimDeletedFile()>.  This allows threads to sleep until they become available.  
-		 * You should only use this object for sleeping.  The set and reset functions will be managed by this class.
-		 */
-		public System.Threading.ManualResetEvent WhenThereAreFileChanges;
-			
-			
-
 		// Group: File Source Variables
 		// __________________________________________________________________________
 		
