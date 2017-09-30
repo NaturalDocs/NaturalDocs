@@ -306,32 +306,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 
-		/* Function: LockForFileEnumeration
-		 * 
-		 * Locks the class so your can retrieve the file manager for enumeration.  You must call <EndFileEnumeration()> afterwards.  
-		 * 
-		 * This function automatically calls <LockForBatchFileUpdates()> so that <FileChangesEvent> and <WhenThereAreFileChanges> 
-		 * don't trigger while you have the lock.  Since they nest, it's okay if you were already batching files.
-		 */
-		public IDObjects.Manager<File> LockForFileEnumeration ()
-			{
-			Monitor.Enter(writeLock);
-			LockForBatchFileUpdates();
-			return files;
-			}
-			
-			
-		/* Function: EndFileEnumeration
-		 * Releases the lock acquired by <LockForFileEnumeration()>.  The object it had returned can no longer be accessed 
-		 * in a thread safe manner.  It also calls <EndBatchFileUpdates()> to trigger any events that happened while you held
-		 * this lock, provided you weren't already batching them yourself.
-		 */
-		public void EndFileEnumeration ()
-			{
-			EndBatchFileUpdates();
-			Monitor.Exit(writeLock);
-			}
-
 		#endregion
 
 
