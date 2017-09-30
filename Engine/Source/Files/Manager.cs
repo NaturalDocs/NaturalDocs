@@ -455,21 +455,42 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void DeleteFilesNotInFileSources (CancelDelegate cancelDelegate)
 			{
-			LockForBatchFileUpdates();
+			Monitor.Enter(writeLock);
+			bool haveLock = true;
 			
 			try
 				{
-				foreach (File file in files)
+				// We want to release the lock before calling DeleteFile so it won't be held when it notifies change watchers.
+				// Since that can potentially allow the list of files to change we take a private copy of the used IDs and work 
+				// from that instead of iterating through the files object.
+
+				IDObjects.NumberSet fileIDs = files.GetUsedIDs();
+
+				while (!fileIDs.IsEmpty)
 					{
-					if (file.InFileSource == false)
-						{  DeleteFile(file.FileName);  }
+					int fileID = fileIDs.Pop();
+					File file = files[fileID];
+
+					if (file != null && file.InFileSource == false)
+						{  
+						Monitor.Exit(writeLock);
+						haveLock = false;
+
+						DeleteFile(file.FileName);
+
+						Monitor.Enter(writeLock);
+						haveLock = true;
+						}
 						
 					if (cancelDelegate())
 						{  return;  }
 					}
 				}
 			finally
-				{  EndBatchFileUpdates();  }
+				{  
+				if (haveLock)
+					{  Monitor.Exit(writeLock);  }
+				}
 			}
 			
 			
