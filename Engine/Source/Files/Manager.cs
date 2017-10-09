@@ -86,6 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		
 		/* enum: ReleaseClaimedFileReason
+		 * 
 		 * The reason for calling <ReleaseClaimedFile()>.
 		 * 
 		 * SuccessfullyProcessed - The file was successfully processed.  Take it off the changed/deleted list.
@@ -103,11 +104,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		#endregion 
 			
+
 		
 		// Group: Initialization and Configuration Functions
 		// __________________________________________________________________________
 		#region Initialization and Configuration Functions
 		
+
 		/* Function: Manager
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -164,7 +167,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void AddFileSource (FileSource source)
 			{
-			fileSources.Add(source);
+			lock (accessLock)
+				{  fileSources.Add(source);  }
 			}
 			
 		/* Function: AddFilter
@@ -172,7 +176,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void AddFilter (Filter filter)
 			{
-			filters.Add(filter);
+			lock (accessLock)
+				{  filters.Add(filter);  }
 			}
 
 		/* Function: AddStyleChangeWatcher
@@ -180,7 +185,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void AddStyleChangeWatcher (IStyleChangeWatcher watcher)
 			{
-			styleChangeWatchers.Add(watcher);
+			lock (accessLock)
+				{  styleChangeWatchers.Add(watcher);  }
 			}
 					
 			
@@ -238,6 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		#endregion
 			
 			
+
 		// Group: Information Functions
 		// __________________________________________________________________________
 		#region Information Functions
@@ -275,13 +282,16 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public FileSource FileSourceOf (File file)
 			{
-			foreach (FileSource fileSource in fileSources)
+			lock (accessLock)
 				{
-				if (fileSource.Contains(file.FileName))
-					{  return fileSource;  }
-				}
+				foreach (FileSource fileSource in fileSources)
+					{
+					if (fileSource.Contains(file.FileName))
+						{  return fileSource;  }
+					}
 				
-			return null;
+				return null;
+				}
 			}
 
 
@@ -291,23 +301,27 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public bool SourceFolderIsIgnored (Path path)
 			{
-			foreach (Filter filter in filters)
+			lock (accessLock)
 				{
-				if (filter.IgnoreSourceFolder(path))
-					{  return true;  }
-				}
+				foreach (Filter filter in filters)
+					{
+					if (filter.IgnoreSourceFolder(path))
+						{  return true;  }
+					}
 				
-			return false;
+				return false;
+				}
 			}
 
-
 		#endregion
+
 
 
 		// Group: Group File Management Functions
 		// __________________________________________________________________________
 		#region Group File Management Functions
-		
+
+
 		/* Function: WorkOnAddingAllFiles
 		 * 
 		 * Works on the task of going through all the files in all the <FileSources> and calling <AddOrUpdateFile()> on each one.
@@ -432,9 +446,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			statusTarget.Reset();
 			
-			for (int i = 0; i < fileSources.Count; i++)
+			lock (accessLock)
 				{
-				fileSources[i].CombineAddAllFilesStatus(ref statusTarget);
+				for (int i = 0; i < fileSources.Count; i++)
+					{
+					fileSources[i].CombineAddAllFilesStatus(ref statusTarget);
+					}
 				}
 			}
 			
@@ -486,8 +503,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (haveLock)
 					{  Monitor.Exit(accessLock);  }
 				}
-			}
-			
+			}			
 			
 		#endregion
 		
@@ -600,9 +616,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			return changed;
 			}
 			
-			
 		#endregion			
 			
+
 			
 		// Group: Group File Processing Functions
 		// __________________________________________________________________________
@@ -976,8 +992,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void ReleaseClaimedFile (File file, ReleaseClaimedFileReason releaseReason)
 			{
-			bool triggerFileChanges = false;
-
 			lock (accessLock)
 				{
 				file.Claimed = false;
@@ -1130,7 +1144,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					file.Status = FileFlags.NewOrChanged;
 					unprocessedChangedFileIDs.Add(file.ID);
-					triggerFileChanges = true;
 					}
 
 
@@ -1166,7 +1179,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						  file.StatusSinceClaimed == FileFlags.UnchangedSinceClaimed)
 					{
 					unprocessedChangedFileIDs.Add(file.ID);
-					triggerFileChanges = true;
 					}
 					
 					
@@ -1204,7 +1216,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					file.Status = FileFlags.Deleted;
 					unprocessedDeletedFileIDs.Add(file.ID);
-					triggerFileChanges = true;
 					}
 				}
 			}
@@ -1445,12 +1456,18 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		#endregion
 			
 			
+
 		// Group: Properties
 		// __________________________________________________________________________
 		
 		
 		/* Property: FileSources
+		 * 
 		 * Retrieves a read-only list of the file sources this instance has.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		This function is NOT thread-safe.  It should only be called during engine initialization.
 		 */
 		public IList<FileSource> FileSources
 			{
@@ -1465,19 +1482,36 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		
 		/* var: fileSources
+		 * 
 		 * A list of all the file sources.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected List<FileSource> fileSources;
 		
+
 		/* var: filters
+		 * 
 		 * A list of all the filters.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected List<Filter> filters;
 		
+
 		/* var: claimedFolderPrefixes
+		 * 
 		 * A set of all the <Path.Prefixes> that are currently being searched by threads.  This is used to prevent multiple 
 		 * threads from searching <Folder>-based <FileSources> with the same prefix at the same time, since they are most 
 		 * likely on the same physical disk and would not benefit from the parallelism.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected StringSet claimedFolderPrefixes;
 		
@@ -1488,25 +1522,48 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 
 		/* var: files
-		 * All the files that are managed by this object.  You must have <accessLock> to use this variable.
+		 * 
+		 * All the files that are managed by this object.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.Manager<File> files;
 		
+
 		/* var: unprocessedChangedFileIDs
+		 * 
 		 * A <IDObjects.NumberSet> of the file IDs which have changed since the last run.  Will not include IDs that are in
-		 * <claimedFileIDs>.  You must have <accessLock> to use this variable.
+		 * <claimedFileIDs>.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet unprocessedChangedFileIDs;
 		
+
 		/* var: unprocessedDeletedFileIDs
+		 * 
 		 * A <IDObjects.NumberSet> of the file IDs which have been deleted since the last run.  Will not include IDs that are
-		 * in <claimedFileIDs>.  You must have <accessLock> to use this variable.
+		 * in <claimedFileIDs>.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet unprocessedDeletedFileIDs;
 		
+
 		/* var: claimedFileIDs
+		 * 
 		 * A <IDObjects.NumberSet> of the file IDs which are currently claimed.  Any ID in here will not be in
-		 * <unprocessedChangedFileIDs> or <unprocessedDeletedFileIDs>.  You must have <accessLock> to use this variable.
+		 * <unprocessedChangedFileIDs> or <unprocessedDeletedFileIDs>.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.NumberSet claimedFileIDs;
 				
@@ -1517,14 +1574,20 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		
 		/* var: accessLock
+		 * 
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables
 		 * at a time.
 		 */
 		protected object accessLock;
+
 		
 		/* var: styleChangeWatchers
-		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.  You must
-		 * have <accessLock> to use this variable.
+		 * 
+		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected List<IStyleChangeWatcher> styleChangeWatchers;
 
