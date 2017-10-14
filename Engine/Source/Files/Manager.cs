@@ -12,6 +12,8 @@
  *		  <FileSource.Number> can be set or left at the default which will cause it to autogenerate.
  *		  
  *		- If desired, add filters with <AddFilter()>.
+ *		
+ *		- Add any change watchers with <AddChangeWatcher()>.  This can be done before the module is started.
  * 
  *		- Call <Engine.Instance.Start()> which will start this module.
  *		
@@ -125,6 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			claimedFileIDs = new IDObjects.NumberSet();
 			
 			accessLock = new object();
+			changeWatchers = new List<IChangeWatcher>();
 			styleChangeWatchers = new List<IStyleChangeWatcher>();
 			}
 			
@@ -180,6 +183,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				{  filters.Add(filter);  }
 			}
 
+		/* Function: AddChangeWatcher
+		 * Adds an object that wants to be notified whenever files change.
+		 */
+		public void AddChangeWatcher (IChangeWatcher watcher)
+			{
+			lock (accessLock)
+				{  changeWatchers.Add(watcher);  }
+			}
+					
 		/* Function: AddStyleChangeWatcher
 		 * Adds an object that wants to be notified whenever a style file changes.
 		 */
@@ -525,13 +537,14 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false)
 			{
 			bool changed = false;
-			
+
 			Monitor.Enter(accessLock);
 			
 			try
 				{
 				File file = files[name];
 				
+				// The file didn't exist in our records so it's new
 				if (file == null)
 					{
 					file = new File(name, type, lastModified);
@@ -539,29 +552,57 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					files.Add(file);
 					
 					unprocessedChangedFileIDs.Add(file.ID);
+
+					foreach (var changeWatcher in changeWatchers)
+						{  changeWatcher.OnAddFile(file);  }
+
 					changed = true;
 					}
+
 				else if (file.Type != type)
 					{
 					throw new Exception("Added an existing file but the types didn't match.");
 					}
+
 				else if (file.Claimed == true)
 					{
 					if (file.LastModified != lastModified || file.StatusSinceClaimed == FileFlags.DeletedSinceClaimed || forceReparse)
 						{
+						bool wasDeletedSinceClaimed = (file.StatusSinceClaimed == FileFlags.DeletedSinceClaimed);
+
 						file.LastModified = lastModified;
 						file.StatusSinceClaimed = FileFlags.NewOrChangedSinceClaimed;
+
+						foreach (var changeWatcher in changeWatchers)
+							{  
+							if (wasDeletedSinceClaimed)
+								{  changeWatcher.OnAddFile(file);  }
+							else
+								{  changeWatcher.OnFileChanged(file);  }
+							}
 		
 						changed = true;
 						}
 					}
+
 				else if (file.LastModified != lastModified || file.Status == FileFlags.Deleted || forceReparse)
 					{
+					bool wasDeleted = (file.Status == FileFlags.Deleted);
+
 					file.LastModified = lastModified;
 					file.Status = FileFlags.NewOrChanged;
 					
 					unprocessedDeletedFileIDs.Remove(file.ID);
 					unprocessedChangedFileIDs.Add(file.ID);
+
+					foreach (var changeWatcher in changeWatchers)
+						{  
+						if (wasDeleted)
+							{  changeWatcher.OnAddFile(file);  }
+						else
+							{  changeWatcher.OnFileChanged(file);  }
+						}
+
 					changed = true;
 					}
 
@@ -569,7 +610,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				}
 			finally
 				{  Monitor.Exit(accessLock);  }
-				
+
 			return changed;
 			}
 			
@@ -593,20 +634,30 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					// Nada
 					}
+
 				else if (file.Claimed == true)
 					{
 					if (file.StatusSinceClaimed != FileFlags.DeletedSinceClaimed)
 						{
 						file.StatusSinceClaimed = FileFlags.DeletedSinceClaimed;
+
+						foreach (var changeWatcher in changeWatchers)
+							{  changeWatcher.OnDeleteFile(file);  }
+
 						changed = true;
 						}
 					}
+
 				else if (file.Status != FileFlags.Deleted)
 					{
 					file.Status = FileFlags.Deleted;
 					
 					unprocessedChangedFileIDs.Remove(file.ID);
 					unprocessedDeletedFileIDs.Add(file.ID);
+
+					foreach (var changeWatcher in changeWatchers)
+						{  changeWatcher.OnDeleteFile(file);  }
+
 					changed = true;
 					}
 				}
@@ -1000,6 +1051,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				// This logic is a little tricky, so we'll chart out all the possibilities for the two claim reasons (changed/deleted)
 				// the four release reasons (success/cancel/can't access/doesn't exist) and the three statuses since the claim
 				// (unchanged/changed/deleted) to see that this covers all the bases correctly.
+
+				// We don't have to worry about notifying change watchers here.  They were notified at the time of the event
+				// while the file was claimed.  We're not delaying those notifications until the file is released.
 				
 
 				// First throw an exception when Doesn't Exist and Can't Access are used when processing a deleted file.  They don't
@@ -1581,6 +1635,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		protected object accessLock;
 
 		
+		/* var: changeWatchers
+		 * 
+		 * A list of <IChangeWatchers> that want to be notified whenever files change.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected List<IChangeWatcher> changeWatchers;
+
+
 		/* var: styleChangeWatchers
 		 * 
 		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.
