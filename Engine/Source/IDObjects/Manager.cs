@@ -231,6 +231,16 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			return usedIDs.Contains(id);
 			}
 			
+
+		/* Function: GetUsedIDs
+		 * Returns a <NumberSet> of all the used IDs.  The returned set is an independent copy, which means you can 
+		 * change it without affecting this object, and it's a snapshot that will not reflect future changes to this object.
+		 */
+		public NumberSet GetUsedIDs ()
+			{
+			return new NumberSet(usedIDs);
+			}
+
 			
 		/* Function: Clear
 		 * Removes all objects, making the manager empty.

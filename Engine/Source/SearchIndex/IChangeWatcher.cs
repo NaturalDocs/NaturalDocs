@@ -4,18 +4,16 @@
  * 
  * An interface for any class that wants to watch for changes in the search index.
  * 
- * 
- * Rationale:
- * 
- *		Why use lists of IChangeWatchers instead of events?  Mainly because it allows <SearchIndex.Manager> to control
- *		the calling order so you can have priority watchers that get called before normal ones.
- *		
- * 
  * Multithreading: Thread Safety Notes
  * 
  *		This interface is used for receiving notifications when the search index has changed.  As such, these functions can
  *		be called from any possible thread.  Make sure any structures you interact with are thread safe.
  *		
+ *		Because event handlers will be called while holding locks, you should keep interaction with other modules to a 
+ *		minimum to prevent deadlocks.  You don't want to access another thread-safe module causing your thread to wait
+ *		for it to lock while another thread is holding that lock and waiting for one held here.  The event handler should
+ *		ideally just collect the prefixes for work that needs to be done and return, letting other code do the actual work
+ *		later.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2017 Code Clear LLC.
@@ -30,6 +28,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 	{
 	public interface IChangeWatcher
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
 		
 		/* Function: OnAddPrefix
 		 * Called after a prefix is used in the index for the first time.  Note that you will hold a lock on both <CodeDB.Manager>

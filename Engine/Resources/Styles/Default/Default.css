@@ -136,10 +136,17 @@ td {
 
 	#HSubtitle {
 		font: 10pt $ProjectSubtitleFontFamily;
-		color: #C8C8C8;
 		margin-left: .65em;
 		text-shadow: 0 .1ex .3ex #202020;
 		}
+		#HSubtitle,
+		#HSubtitle a:link,
+		#HSubtitle a:hover,
+		#HSubtitle a:active,
+		#HSubtitle a:visited {
+			color: #C8C8C8;
+			text-decoration: none;
+			}
 
 
 

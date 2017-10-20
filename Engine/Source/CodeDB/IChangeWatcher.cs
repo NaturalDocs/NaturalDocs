@@ -4,16 +4,16 @@
  * 
  * An interface for any class that wants to watch for changes in the code database.
  * 
- * Rationale:
- * 
- *		Why use lists of IChangeWatchers instead of events?  Mainly because it allows <CodeDB.Manager> to control
- *		the calling order so you can have priority watchers that get called before normal ones.
- * 
- * 
  * Multithreading: Thread Safety Notes
  * 
  *		This interface is used for receiving notifications when the database has changed.  As such, these functions can
  *		be called from any possible thread.  Make sure any structures you interact with are thread safe.
+ *		
+ *		Because event handlers will be called while holding a database lock, you should keep interaction with other modules
+ *		to a minimum to prevent deadlocks.  You don't want to access another thread-safe module causing your thread to 
+ *		wait for it to lock while another thread is holding that lock and waiting to access the database.  The event handler
+ *		should ideally just collect the topic and class IDs for work that needs to be done and return, letting other code do
+ *		the actual work later.
  *		
  */
 
@@ -31,6 +31,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
 	public interface IChangeWatcher
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
 		
 		/* Function: OnAddTopic
 		 * Called after a topic is added to the database.

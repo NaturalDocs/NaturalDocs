@@ -1020,7 +1020,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						{  
 						content.Append(
 							"<div id=\"HSubtitle\">" +
-								headerSubtitleHTML +
+								"<a href=\"#\">" +
+									headerSubtitleHTML +
+								"</a>" +
 							"</div>");  
 						}
 

@@ -93,7 +93,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			contextIDReferenceChangeCache = new ReferenceChangeCache();
 			
 			changeWatchers = new List<IChangeWatcher>();
-			reparsingEverything = false;
 			}
 			
 			
@@ -185,7 +184,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{  System.IO.File.Delete(databaseFile);  }
 					
 				EngineInstance.Config.ReparseEverything = true;
-				reparsingEverything = true;
 					
 				connection.Open(databaseFile, true);
 				CreateDatabase();
@@ -425,13 +423,6 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * rather than null.
 		 */
 		protected List<IChangeWatcher> changeWatchers;
-
-		/* var: reparsingEverything
-		 * If this flag is set we are reparsing the entire codebase.  Knowing this makes resolving easier.  However, we use this
-		 * flag instead of checking <Config.Manager.ReparseEverything> because that is only valid on startup.  Once we start
-		 * resolving this flag gets set back to false so that future changes are recorded differentially.
-		 */
-		protected bool reparsingEverything;
 		
 		}
 	}
