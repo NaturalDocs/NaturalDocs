@@ -832,16 +832,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				{
 				try
 					{
-
-					#if SHOW_FILE_PARSING
-						System.Console.Write("Parsing " + file.FileName);
-
-						if (!string.IsNullOrEmpty(System.Threading.Thread.CurrentThread.Name))
-							{  System.Console.Write(" on " + System.Threading.Thread.CurrentThread.Name);  }
-
-						System.Console.WriteLine("...");
-					#endif
-
 					Engine.Languages.Language language = EngineInstance.Languages.FromFileName(file.FileName);
 					IList<Topic> topics = null;
 					LinkSet links = null;
@@ -851,16 +841,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 					if (parseResult == Language.ParseResult.FileDoesntExist)
 						{  
-						#if SHOW_FILE_PARSING
-						System.Console.WriteLine("...file doesn't exist");
-						#endif
 						return ReleaseClaimedFileReason.FileDoesntExist;  
 						}
 					else if (parseResult == Language.ParseResult.CantAccessFile)
 						{  
-						#if SHOW_FILE_PARSING
-						System.Console.WriteLine("...can't access file");
-						#endif
 						return ReleaseClaimedFileReason.CantAccessFile;  
 						}
 					else if (parseResult == Language.ParseResult.Cancelled)
@@ -873,12 +857,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 					if (topics != null && topics.Count > 0)
 						{
-						#if SHOW_FILE_PARSING
-						System.Console.WriteLine("...found " + topics.Count + " topic" + (topics.Count == 1 ? "" : "s"));
-						#endif
-
 						imageLinks = new ImageLinkSet();
-
+						
 						foreach (Topic topic in topics)
 							{
 							if (topic.Body != null)
@@ -901,12 +881,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 									{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 								}
 							}
-						}
-					else
-						{
-						#if SHOW_FILE_PARSING
-						System.Console.WriteLine("...found no topics");
-						#endif
 						}
 					
 
