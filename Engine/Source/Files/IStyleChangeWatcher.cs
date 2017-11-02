@@ -22,12 +22,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: OnAddOrChangeFile
 		 * Called to handle a file that was added or changed.
 		 */
-		Manager.ReleaseClaimedFileReason OnAddOrChangeFile (Path file);
+		Processor.ReleaseClaimedFileReason OnAddOrChangeFile (Path file);
 		
 		/* Function: OnDeleteFile
 		 * Called to handle a file that was deleted since the last run.
 		 */
-		Manager.ReleaseClaimedFileReason OnDeleteFile (Path file);
+		Processor.ReleaseClaimedFileReason OnDeleteFile (Path file);
 		
 		}
 	}

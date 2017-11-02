@@ -221,7 +221,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			EngineInstance.Files.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
 			EngineInstance.Files.DeleteFilesNotInFileSources(Engine.Delegates.NeverCancel);
 							
-			EngineInstance.Files.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
+			EngineInstance.FileProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
 
 			EngineInstance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
 			EngineInstance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);

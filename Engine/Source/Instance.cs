@@ -44,6 +44,8 @@
  *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
+ *		   
+ *		- <Files.Processor> in next because it needs to be added as a <Files.Manager> watcher.
  *		
  *		- <Files.Manager> is last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
@@ -87,19 +89,20 @@ namespace CodeClear.NaturalDocs.Engine
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
 								Output.Manager outputManager = null, SearchIndex.Manager searchIndexManager = null, 
-								Files.Manager filesManager = null)
+								Files.Manager filesManager = null, Files.Processor fileProcessor = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
-			config = configManager ?? new Config.Manager(this);
-			commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
-			languages = languagesManager ?? new Languages.Manager(this);
-			comments = commentsManager ?? new Comments.Manager(this);
-			links = linksManager ?? new Links.Manager(this);
-			codeDB = codeDBManager ?? new CodeDB.Manager(this);
-			output = outputManager ?? new Output.Manager(this);
-			searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
-			files = filesManager ?? new Files.Manager(this);
+			this.config = configManager ?? new Config.Manager(this);
+			this.commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
+			this.languages = languagesManager ?? new Languages.Manager(this);
+			this.comments = commentsManager ?? new Comments.Manager(this);
+			this.links = linksManager ?? new Links.Manager(this);
+			this.codeDB = codeDBManager ?? new CodeDB.Manager(this);
+			this.output = outputManager ?? new Output.Manager(this);
+			this.searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
+			this.files = filesManager ?? new Files.Manager(this);
+			this.fileProcessor = fileProcessor ?? new Files.Processor(this);
 			}
 			
 
@@ -143,6 +146,12 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				output.Dispose();
 				output = null;
+				}
+
+			if (fileProcessor != null && !strictRulesApply)
+				{
+				fileProcessor.Dispose();
+				fileProcessor = null;
 				}
 				
 			if (codeDB != null && !strictRulesApply)
@@ -229,6 +238,7 @@ namespace CodeClear.NaturalDocs.Engine
 				searchIndex.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
+				fileProcessor.Start(errors) &&
 				files.Start(errors)
 				);
 			}
@@ -569,6 +579,15 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return output;  }
 			}
 
+		/* Property: FileProcessor
+		 * Returns the <Files.Processor> associated with this instance.
+		 */
+		public Files.Processor FileProcessor
+			{
+			get
+				{  return fileProcessor;  }
+			}
+			
 		/* Property: Files
 		 * Returns the <Files.Manager> associated with this instance.
 		 */
@@ -606,6 +625,8 @@ namespace CodeClear.NaturalDocs.Engine
 		protected Output.Manager output;
 			
 		protected Files.Manager files;
+
+		protected Files.Processor fileProcessor;
 
 		}
 	}

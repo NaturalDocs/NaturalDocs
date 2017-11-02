@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Source\Files\IChangeWatcher.cs" />
     <Compile Include="Source\Files\ImageFile.cs" />
+    <Compile Include="Source\Files\Processor.cs" />
     <Compile Include="Source\Languages\CommentFinder.cs" />
     <Compile Include="Source\Languages\Parsers\Ruby.cs" />
     <Compile Include="Source\Languages\Parsers\Python.cs" />

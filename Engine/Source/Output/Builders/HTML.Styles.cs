@@ -503,12 +503,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		public Files.Manager.ReleaseClaimedFileReason OnAddOrChangeFile (Path originalStyleFile)
+		public Files.Processor.ReleaseClaimedFileReason OnAddOrChangeFile (Path originalStyleFile)
 			{
 			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
 
 			if (outputStyleFile == null)
-				{  return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
+				{  return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
 			else
 				{
 				// Creates all subdirectories needed.  Does nothing if it already exists.
@@ -536,25 +536,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						}
 					}
 				catch (System.IO.FileNotFoundException)
-					{  return Files.Manager.ReleaseClaimedFileReason.FileDoesntExist;  }
+					{  return Files.Processor.ReleaseClaimedFileReason.FileDoesntExist;  }
 				catch (System.IO.DirectoryNotFoundException)
-					{  return Files.Manager.ReleaseClaimedFileReason.FileDoesntExist;  }
+					{  return Files.Processor.ReleaseClaimedFileReason.FileDoesntExist;  }
 				catch (System.UnauthorizedAccessException)
-					{  return Files.Manager.ReleaseClaimedFileReason.CantAccessFile;  }
+					{  return Files.Processor.ReleaseClaimedFileReason.CantAccessFile;  }
 				catch (System.IO.IOException)
-					{  return Files.Manager.ReleaseClaimedFileReason.CantAccessFile;  }
+					{  return Files.Processor.ReleaseClaimedFileReason.CantAccessFile;  }
 
-				return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;
+				return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;
 				}
 			}
 
 
-		public Files.Manager.ReleaseClaimedFileReason OnDeleteFile (Path originalStyleFile)
+		public Files.Processor.ReleaseClaimedFileReason OnDeleteFile (Path originalStyleFile)
 			{
 			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
 
 			if (outputStyleFile == null || !System.IO.File.Exists(outputStyleFile))
-				{  return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
+				{  return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
 
 			else
 				{
@@ -563,7 +563,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				lock (accessLock)
 					{  buildState.FoldersToCheckForDeletion.Add(outputStyleFile.ParentFolder);  }
 
-				return Files.Manager.ReleaseClaimedFileReason.SuccessfullyProcessed;
+				return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;
 				}
 			}
 

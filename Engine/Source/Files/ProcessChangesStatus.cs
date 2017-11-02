@@ -35,7 +35,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void Reset ()
 			{
-			TotalFiles = 0;
 			FilesBeingProcessed = 0;
 			ChangedFilesRemaining = 0;
 			DeletedFilesRemaining = 0;
@@ -64,11 +63,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// Group: Public Variables
 		// __________________________________________________________________________
 		
-		
-		/* Variable: TotalFiles
-		 * The total number of known files, including deleted ones.
-		 */
-		public int TotalFiles;
 		
 		/* Variable: FilesBeingProcessed
 		 * The number of files currently being processed.  This does not distinguish between those that were
