@@ -419,33 +419,6 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			this.versionInt = newVersionInt;
 			}
-						
-			
-		/* Function: BinaryDataCompatibility
-		 * 
-		 * Determines if the version number on a binary data file is compatible with the engine version and optionally a set 
-		 * minimum.
-		 * 
-		 * Binary data from anything other than a full release is only considered compatible with that specific release, so if
-		 * dataVersion is from a beta, release candidate, or development release, engineVersion must be an exact match
-		 * for this function to return true.  This is so the calling code only has to worry about the differences between the
-		 * file formats of full releases and doesn't have to track when in the development process each particular change
-		 * was introduced.
-		 * 
-		 * If the data is from a full release, it must be less than or equal to the engine version.  It would obviously be bad
-		 * to try to interpret the file format of a future release.
-		 * 
-		 * If minimumVersion isn't null, the data version must also be greater than or equal to it.
-		 */
-		static public bool BinaryDataCompatibility (Version dataVersion, Version engineVersion, Version minimumVersion)
-			{
-			if (dataVersion.Type != ReleaseType.Full)
-				{  return (dataVersion == engineVersion);  }
-			else if (minimumVersion != null && dataVersion < minimumVersion)
-				{  return false;  }
-			else
-				{  return (dataVersion <= engineVersion);  }
-			}
 			
 			
 

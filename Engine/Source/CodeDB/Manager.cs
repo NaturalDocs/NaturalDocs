@@ -167,7 +167,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					
 					Version version = GetVersion();
 					
-					if (Version.BinaryDataCompatibility(version, Engine.Instance.Version, "2.1") == true)
+					if (BinaryFile.IsCompatible(version, Engine.Instance.Version, "2.1") == true)
 						{  
 						LoadSystemVariables();
 						success = true;
