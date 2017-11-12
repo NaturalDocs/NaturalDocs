@@ -216,7 +216,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
 				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildPrefixIndex = true;
+				buildState.NeedToBuildSearchPrefixIndex = true;
 				}
 
 
@@ -386,7 +386,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				Start_PurgeFolder(SearchIndex_DataFolder, ref saidPurgingOutputFiles);
 
 				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildPrefixIndex = true;
+				buildState.NeedToBuildSearchPrefixIndex = true;
 				}
 
 
@@ -795,10 +795,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					// Build the search index
 
-					else if (buildState.NeedToBuildPrefixIndex)
+					else if (buildState.NeedToBuildSearchPrefixIndex)
 						{
-						buildState.NeedToBuildPrefixIndex = false;
-						unitsOfWorkInProgress += UnitsOfWork_PrefixIndex;
+						buildState.NeedToBuildSearchPrefixIndex = false;
+						unitsOfWorkInProgress += UnitsOfWork_SearchPrefixIndex;
 
 						Monitor.Exit(accessLock);
 						haveAccessLock = false;
@@ -806,21 +806,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
 
-						BuildPrefixIndex(accessor, cancelDelegate);
+						BuildSearchPrefixIndex(accessor, cancelDelegate);
 
 						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_PrefixIndex;  }
+							{  unitsOfWorkInProgress -= UnitsOfWork_SearchPrefixIndex;  }
 
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildState.NeedToBuildPrefixIndex = true;  }
+								{  buildState.NeedToBuildSearchPrefixIndex = true;  }
 							}
 						}
 
-					else if (buildState.PrefixesToRebuild.IsEmpty == false)
+					else if (buildState.SearchPrefixesToRebuild.IsEmpty == false)
 						{
-						string prefix = buildState.PrefixesToRebuild.RemoveOne();
+						string prefix = buildState.SearchPrefixesToRebuild.RemoveOne();
 						unitsOfWorkInProgress += UnitsOfWork_KeywordDataFile;
 
 						Monitor.Exit(accessLock);
@@ -829,7 +829,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
 
-						BuildPrefixDataFile(prefix, accessor, cancelDelegate);
+						BuildSearchPrefixDataFile(prefix, accessor, cancelDelegate);
 
 						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_KeywordDataFile;  }
@@ -837,7 +837,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						if (cancelDelegate())
 							{
 							lock (accessLock)
-								{  buildState.PrefixesToRebuild.Add(prefix);  }
+								{  buildState.SearchPrefixesToRebuild.Add(prefix);  }
 							}
 						}
 
@@ -868,7 +868,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				value += buildState.SourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
 				value += buildState.ClassFilesToRebuild.Count * UnitsOfWork_ClassFile;
 				value += buildState.FoldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
-				value += buildState.PrefixesToRebuild.Count * UnitsOfWork_KeywordDataFile;
+				value += buildState.SearchPrefixesToRebuild.Count * UnitsOfWork_KeywordDataFile;
 
 				if (buildState.NeedToBuildFramePage)
 					{  value += UnitsOfWork_FramePage;  }
@@ -876,8 +876,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					{  value += UnitsOfWork_MainStyleFiles;  }
 				if (buildState.NeedToBuildMenu)
 					{  value += UnitsOfWork_Menu;  }
-				if (buildState.NeedToBuildPrefixIndex)
-					{  value += UnitsOfWork_PrefixIndex;  }
+				if (buildState.NeedToBuildSearchPrefixIndex)
+					{  value += UnitsOfWork_SearchPrefixIndex;  }
 
 				value += unitsOfWorkInProgress;
 				}
@@ -1437,7 +1437,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 *		UnitsOfWork_FramePage - How much building index.html costs.
 		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
 		 *		UnitsOfWork_Menu - How much building the menu costs.
-		 *		UnitsOfWork_PrefixIndex - How much building the prefix index file costs.
+		 *		UnitsOfWork_SearchPrefixIndex - How much building the prefix index file costs.
 		 *		UnitsOfWork_KeywordDataFile - How much building a single keyword data file costs.
 		 *		UnitsOfWork_FolderToCheckForDeletion - How much checking a single folder for deletion costs.
 		 */
@@ -1446,7 +1446,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected const long UnitsOfWork_FramePage = 1;
 		protected const long UnitsOfWork_MainStyleFiles = 1;
 		protected const long UnitsOfWork_Menu = 15;
-		protected const long UnitsOfWork_PrefixIndex = 1;
+		protected const long UnitsOfWork_SearchPrefixIndex = 1;
 		protected const long UnitsOfWork_KeywordDataFile = 2;
 		protected const long UnitsOfWork_FolderToCheckForDeletion = 1;
 

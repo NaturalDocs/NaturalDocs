@@ -25,18 +25,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: BuildPrefixIndex
+		/* Function: BuildSearchPrefixIndex
 		 */
-		protected void BuildPrefixIndex (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		protected void BuildSearchPrefixIndex (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			Components.JSSearchData searchData = new Components.JSSearchData(this);
 			searchData.BuildPrefixIndex();
 			}
 
 
-		/* Function: BuildPrefixDataFile
+		/* Function: BuildSearchPrefixDataFile
 		 */
-		protected void BuildPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		protected void BuildSearchPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			Components.JSSearchData searchData = new Components.JSSearchData(this);
 			searchData.BuildPrefixDataFile(prefix, accessor, cancelDelegate);
@@ -52,8 +52,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			lock (accessLock)
 				{
-				buildState.NeedToBuildPrefixIndex = true;
-				buildState.PrefixesToRebuild.Add(prefix);  
+				buildState.NeedToBuildSearchPrefixIndex = true;
+				buildState.SearchPrefixesToRebuild.Add(prefix);  
 				}
 			}
 
@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			lock (accessLock)
 				{
-				buildState.PrefixesToRebuild.Add(prefix);
+				buildState.SearchPrefixesToRebuild.Add(prefix);
 				}
 			}
 
@@ -69,8 +69,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			lock (accessLock)
 				{
-				buildState.NeedToBuildPrefixIndex = true;
-				buildState.PrefixesToRebuild.Add(prefix);  
+				buildState.NeedToBuildSearchPrefixIndex = true;
+				buildState.SearchPrefixesToRebuild.Add(prefix);  
 				}
 			}
 

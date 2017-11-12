@@ -12,7 +12,7 @@
  *		> [Byte: Need to Build Frame Page (0 or 1)]
  *		> [Byte: Need to Build Main Style Files (0 or 1)]
  *		> [Byte: Need to Build Menu (0 or 1)]
- *		> [Byte: Need to Build Prefix Index (0 or 1)]
+ *		> [Byte: Need to Build Search Prefix Index (0 or 1)]
  *		
  *		Flags for some of the structural items that need to be built.
  * 
@@ -27,7 +27,7 @@
  *		
  *		A set of all the source and class files known to have content after all filters were applied.
  *		
- *		> [StringSet: Prefixes to Rebuild]
+ *		> [StringSet: Search Prefixes to Rebuild]
  *		
  *		A set of all the search index prefixes which were changed or deleted and thus need to be rebuilt.
  * 
@@ -84,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				classFilesToRebuild = new IDObjects.NumberSet();
 				classFilesWithContent = new IDObjects.NumberSet();
-				prefixesToRebuild = new StringSet();
+				searchPrefixesToRebuild = new StringSet();
 				foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
 				usedMenuDataFiles = new StringTable<NumberSet>();
 				}
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = null;
 				classFilesToRebuild = null;
 				classFilesWithContent = null;
-				prefixesToRebuild = null;
+				searchPrefixesToRebuild = null;
 				foldersToCheckForDeletion = null;
 				usedMenuDataFiles = null;
 				}
@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			needToBuildFramePage = false;
 			needToBuildMainStyleFiles = false;
 			needToBuildMenu = false;
-			needToBuildPrefixIndex = false;
+			needToBuildSearchPrefixIndex = false;
 			}
 
 
@@ -131,25 +131,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					// [Byte: Need to Build Frame Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
 					// [Byte: Need to Build Menu (0 or 1)]
-					// [Byte: Need to Build Prefix Index (0 or 1)]
+					// [Byte: Need to Build Search Prefix Index (0 or 1)]
 
 					buildState.needToBuildFramePage = (binaryFile.ReadByte() == 1);
 					buildState.needToBuildMainStyleFiles = (binaryFile.ReadByte() == 1);
 					buildState.needToBuildMenu = (binaryFile.ReadByte() == 1);
-					buildState.needToBuildPrefixIndex = (binaryFile.ReadByte() == 1);
+					buildState.needToBuildSearchPrefixIndex = (binaryFile.ReadByte() == 1);
 
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
-					// [StringSet: Prefixes to Rebuild]
+					// [StringSet: Search Prefixes to Rebuild]
 					// [StringSet: Folders to Check for Deletion]
 
 					buildState.sourceFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.classFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.sourceFilesWithContent = binaryFile.ReadNumberSet();
 					buildState.classFilesWithContent = binaryFile.ReadNumberSet();
-					buildState.prefixesToRebuild = binaryFile.ReadStringSet();
+					buildState.searchPrefixesToRebuild = binaryFile.ReadStringSet();
 					buildState.foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.KeySettingsForPaths);
 
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
@@ -193,25 +193,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				// [Byte: Need to Build Frame Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
 				// [Byte: Need to Build Menu (0 or 1)]
-				// [Byte: Need to Build Prefix Index (0 or 1)]
+				// [Byte: Need to Build Search Prefix Index (0 or 1)]
 
 				binaryFile.WriteByte( (byte)(buildState.needToBuildFramePage ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(buildState.needToBuildMainStyleFiles ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(buildState.needToBuildMenu ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.needToBuildPrefixIndex ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(buildState.needToBuildSearchPrefixIndex ? 1 : 0) );
 
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
-				// [StringSet: Prefixes to Rebuild]
+				// [StringSet: Search Prefixes to Rebuild]
 				// [StringSet: Folders to Check for Deletion]
 
 				binaryFile.WriteNumberSet(buildState.sourceFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.classFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classFilesWithContent);
-				binaryFile.WriteStringSet(buildState.prefixesToRebuild);
+				binaryFile.WriteStringSet(buildState.searchPrefixesToRebuild);
 				binaryFile.WriteStringSet(buildState.foldersToCheckForDeletion);
 
 				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
@@ -318,25 +318,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  usedMenuDataFiles = value;  }
 			}
 
-		/* Property: NeedToBuildPrefixIndex
+		/* Property: NeedToBuildSearchPrefixIndex
 		 * Whether the search prefix index needs to be rebuilt.
 		 */
-		public bool NeedToBuildPrefixIndex
+		public bool NeedToBuildSearchPrefixIndex
 			{
 			get
-				{  return needToBuildPrefixIndex;  }
+				{  return needToBuildSearchPrefixIndex;  }
 			set
-				{  needToBuildPrefixIndex = value;  }
+				{  needToBuildSearchPrefixIndex = value;  }
 			}
 
-		/* Property: PrefixesToRebuild
+		/* Property: SearchPrefixesToRebuild
 		 * A set of all the search index prefixes which need to be rebuilt.  This set combines changed and deleted IDs, so when 
 		 * using <SearchIndex.Manager.GetKeywordEntries()> make sure to test each result for null.
 		 */
-		public StringSet PrefixesToRebuild
+		public StringSet SearchPrefixesToRebuild
 			{
 			get
-				{  return prefixesToRebuild;  }
+				{  return searchPrefixesToRebuild;  }
 			}
 		
 		/* Property: FoldersToCheckForDeletion
@@ -358,14 +358,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected IDObjects.NumberSet classFilesToRebuild;
 		protected IDObjects.NumberSet classFilesWithContent;
 
-		protected StringSet prefixesToRebuild;
+		protected StringSet searchPrefixesToRebuild;
 		protected StringSet foldersToCheckForDeletion;
 		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
 
 		protected bool needToBuildFramePage;
 		protected bool needToBuildMainStyleFiles;
 		protected bool needToBuildMenu;
-		protected bool needToBuildPrefixIndex;
+		protected bool needToBuildSearchPrefixIndex;
 
 		}
 	}
