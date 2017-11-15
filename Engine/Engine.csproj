@@ -160,7 +160,6 @@
     <Compile Include="Source\Exceptions\StringNotInValidFormat.cs" />
     <Compile Include="Source\Exceptions\Thread.cs" />
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
-    <Compile Include="Source\Files\IStyleChangeWatcher.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
     <Compile Include="Source\Output\Components\HTMLTopicPage.cs" />
     <Compile Include="Source\Output\Components\HTMLTopicPages\Class.cs" />

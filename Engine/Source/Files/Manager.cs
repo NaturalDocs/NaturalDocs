@@ -100,7 +100,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			accessLock = new object();
 			changeWatchers = new List<IChangeWatcher>();
-			styleChangeWatchers = new List<IStyleChangeWatcher>();
 			}
 			
 						
@@ -151,15 +150,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			lock (accessLock)
 				{  changeWatchers.Add(watcher);  }
-			}
-					
-		/* Function: AddStyleChangeWatcher
-		 * Adds an object that wants to be notified whenever a style file changes.
-		 */
-		public void AddStyleChangeWatcher (IStyleChangeWatcher watcher)
-			{
-			lock (accessLock)
-				{  styleChangeWatchers.Add(watcher);  }
 			}
 					
 			
@@ -902,17 +892,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected List<IChangeWatcher> changeWatchers;
-
-
-		/* var: styleChangeWatchers
-		 * 
-		 * A list of <IStyleChangeWatcher> objects that want to be notified whenever style files change.
-		 * 
-		 * Thread Safety:
-		 * 
-		 *		You must hold <accessLock> in order to use this variable.
-		 */
-		protected List<IStyleChangeWatcher> styleChangeWatchers;
 
 
 
