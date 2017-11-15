@@ -40,6 +40,7 @@
 
 using System;
 using System.Text;
+using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Output.Styles;
 
 
@@ -289,6 +290,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildMainStyleFiles (CancelDelegate cancelDelegate)
 			{
+			// Creates all subdirectories needed.  Does nothing if it already exists.
+			System.IO.Directory.CreateDirectory(Styles_OutputFolder());
+
+
 			// main.css
 
 			// There's nothing to condense so just write it directly to a file.
@@ -458,6 +463,54 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		protected void BuildStyleFile (int fileID, CancelDelegate cancelled)
+			{
+			File file = EngineInstance.Files.FromID(fileID);
+
+			// Will return null if the file isn't used by this builder
+			Path outputFile = Styles_OutputFile(file.FileName);
+
+			if (outputFile == null)
+				{  return;  }
+
+			if (file.Status == FileFlags.Deleted)
+				{
+				if (System.IO.File.Exists(outputFile))
+					{  
+					System.IO.File.Delete(outputFile);
+
+					lock (accessLock)
+						{  buildState.FoldersToCheckForDeletion.Add(outputFile.ParentFolder);  }
+					}
+				}
+
+			else // file new or changed
+				{
+				// Creates all subdirectories needed.  Does nothing if it already exists.
+				System.IO.Directory.CreateDirectory(outputFile.ParentFolder);
+
+				string extension = outputFile.Extension.ToLower();
+
+				if (extension == "js" || extension == "json")
+					{
+					ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
+					string output = jsProcessor.Process(System.IO.File.ReadAllText(file.FileName), EngineInstance.Config.ShrinkFiles);
+					System.IO.File.WriteAllText(outputFile, output);
+					}
+				else if (extension == "css")
+					{
+					ResourceProcessors.CSS cssProcessor = new ResourceProcessors.CSS();
+					string output = cssProcessor.Process(System.IO.File.ReadAllText(file.FileName), EngineInstance.Config.ShrinkFiles);
+					System.IO.File.WriteAllText(outputFile, output);
+					}
+				else
+					{
+					System.IO.File.Copy(file.FileName, outputFile, true);  
+					}
+				}
+			}
+
+
 
 		// Group: Path Functions
 		// __________________________________________________________________________
@@ -499,72 +552,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 
 
-		// Group: Files.IStyleChangeWatcher Functions
+		// Group: Files.IChangeWatcher Functions
 		// __________________________________________________________________________
 
 
-		public Files.Processor.ReleaseClaimedFileReason OnAddOrChangeFile (Path originalStyleFile)
+		public void OnAddFile (File file)
 			{
-			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
-
-			if (outputStyleFile == null)
-				{  return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
-			else
-				{
-				// Creates all subdirectories needed.  Does nothing if it already exists.
-				System.IO.Directory.CreateDirectory(outputStyleFile.ParentFolder);
-
-				try
-					{
-					string extension = outputStyleFile.Extension.ToLower();
-
-					if (extension == "js" || extension == "json")
-						{
-						ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
-						string output = jsProcessor.Process(System.IO.File.ReadAllText(originalStyleFile), EngineInstance.Config.ShrinkFiles);
-						System.IO.File.WriteAllText(outputStyleFile, output);
-						}
-					else if (extension == "css")
-						{
-						ResourceProcessors.CSS cssProcessor = new ResourceProcessors.CSS();
-						string output = cssProcessor.Process(System.IO.File.ReadAllText(originalStyleFile), EngineInstance.Config.ShrinkFiles);
-						System.IO.File.WriteAllText(outputStyleFile, output);
-						}
-					else
-						{
-						System.IO.File.Copy(originalStyleFile, outputStyleFile, true);  
-						}
-					}
-				catch (System.IO.FileNotFoundException)
-					{  return Files.Processor.ReleaseClaimedFileReason.FileDoesntExist;  }
-				catch (System.IO.DirectoryNotFoundException)
-					{  return Files.Processor.ReleaseClaimedFileReason.FileDoesntExist;  }
-				catch (System.UnauthorizedAccessException)
-					{  return Files.Processor.ReleaseClaimedFileReason.CantAccessFile;  }
-				catch (System.IO.IOException)
-					{  return Files.Processor.ReleaseClaimedFileReason.CantAccessFile;  }
-
-				return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;
-				}
+			lock (accessLock)
+				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
 			}
 
-
-		public Files.Processor.ReleaseClaimedFileReason OnDeleteFile (Path originalStyleFile)
+		public void OnFileChanged (File file)
 			{
-			Path outputStyleFile = Styles_OutputFile(originalStyleFile);
+			lock (accessLock)
+				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
+			}
 
-			if (outputStyleFile == null || !System.IO.File.Exists(outputStyleFile))
-				{  return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;  }
-
-			else
-				{
-				System.IO.File.Delete(outputStyleFile);  
-
-				lock (accessLock)
-					{  buildState.FoldersToCheckForDeletion.Add(outputStyleFile.ParentFolder);  }
-
-				return Files.Processor.ReleaseClaimedFileReason.SuccessfullyProcessed;
-				}
+		public void OnDeleteFile (File file)
+			{
+			lock (accessLock)
+				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
 			}
 
 		}

@@ -77,13 +77,12 @@ using System.Threading;
 using CodeClear.NaturalDocs.Engine.Files;
 
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.IDObjects;
 using CodeClear.NaturalDocs.Engine.Output.Styles;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	{
-	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IStyleChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
+	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
 		{
 
 		/* enum: PageType
@@ -432,7 +431,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// Watch other modules
 
 			EngineInstance.CodeDB.AddChangeWatcher(this);
-			EngineInstance.Files.AddStyleChangeWatcher(this);
+			EngineInstance.Files.AddChangeWatcher(this);
 			EngineInstance.SearchIndex.AddChangeWatcher(this);
 
 
@@ -614,12 +613,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						}
 
 
+					// Build style files
+						
+					else if (buildState.StyleFilesToRebuild.IsEmpty == false)
+						{
+						int styleFileToRebuild = buildState.StyleFilesToRebuild.Pop();
+						unitsOfWorkInProgress += UnitsOfWork_StyleFile;
+						
+						Monitor.Exit(accessLock);
+						haveAccessLock = false;
+						
+						BuildStyleFile(styleFileToRebuild, cancelDelegate);
+						
+						lock (accessLock)
+							{  unitsOfWorkInProgress -= UnitsOfWork_StyleFile;  }
+
+						if (cancelDelegate())
+							{
+							lock (accessLock)
+								{  buildState.StyleFilesToRebuild.Add(styleFileToRebuild);  }
+							}						
+						}
+						
+
 					// Build source files
 						
 					else if (buildState.SourceFilesToRebuild.IsEmpty == false)
 						{
-						int sourceFileToRebuild = buildState.SourceFilesToRebuild.Highest;
-						buildState.SourceFilesToRebuild.Remove(sourceFileToRebuild);
+						int sourceFileToRebuild = buildState.SourceFilesToRebuild.Pop();
 						unitsOfWorkInProgress += UnitsOfWork_SourceFile;
 						
 						Monitor.Exit(accessLock);
@@ -645,8 +666,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						
 					else if (buildState.ClassFilesToRebuild.IsEmpty == false)
 						{
-						int classFileToRebuild = buildState.ClassFilesToRebuild.Highest;
-						buildState.ClassFilesToRebuild.Remove(classFileToRebuild);
+						int classFileToRebuild = buildState.ClassFilesToRebuild.Pop();
 						unitsOfWorkInProgress += UnitsOfWork_ClassFile;
 						
 						Monitor.Exit(accessLock);
@@ -867,6 +887,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				value += buildState.SourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
 				value += buildState.ClassFilesToRebuild.Count * UnitsOfWork_ClassFile;
+				value += buildState.StyleFilesToRebuild.Count * UnitsOfWork_StyleFile;
 				value += buildState.FoldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
 				value += buildState.SearchPrefixesToRebuild.Count * UnitsOfWork_KeywordDataFile;
 
@@ -1434,6 +1455,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * 
 		 *		UnitsOfWork_SourceFile - How much building a single source file costs.
 		 *		UnitsOfWork_ClassFile - How much building a single class file costs.
+		 *		UnitsOfWork_StyleFile - How much building a single style file costs.
 		 *		UnitsOfWork_FramePage - How much building index.html costs.
 		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
 		 *		UnitsOfWork_Menu - How much building the menu costs.
@@ -1443,6 +1465,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected const long UnitsOfWork_SourceFile = 10;
 		protected const long UnitsOfWork_ClassFile = 10;
+		protected const long UnitsOfWork_StyleFile = 4;
 		protected const long UnitsOfWork_FramePage = 1;
 		protected const long UnitsOfWork_MainStyleFiles = 1;
 		protected const long UnitsOfWork_Menu = 15;

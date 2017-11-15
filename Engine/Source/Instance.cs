@@ -39,8 +39,8 @@
  *		
  *		- <SearchIndex.Manager> is next because it also needs to be added as a <CodeDB.Manager> watcher.
  *		
- *		- <Output.Manager> is next because all <Output.Builders> need to be added as <CodeDB.Manager> and <SearchIndex.Manager>
- *		   watchers.  It can also set the rebuild/reparse flags that CodeDB needs to interpret.
+ *		- <Output.Manager> is next because <Output.Builders> may need to be added as <Files.Manager>, <CodeDB.Manager>, and 
+ *		  <SearchIndex.Manager> watchers.  They can also set the rebuild/reparse flags that CodeDB needs to interpret.
  *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.

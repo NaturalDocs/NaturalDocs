@@ -18,6 +18,7 @@
  * 
  *		> [NumberSet: Source File IDs to Rebuild]
  *		> [NumberSet: Class IDs to Rebuild]
+ *		> [NumberSet: Style File IDs to Rebuild]
  *		
  *		The source and class files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
  *		be empty sets, though if the build was interrupted this will have the ones left to do.
@@ -47,6 +48,11 @@
  *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
  *		stored as "files" and {1-3}.
  *		
+ *		Version History:
+ *		
+ *			- 2.1
+ *				- Added Style File IDs to Rebuild.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2017 Code Clear LLC.
@@ -68,15 +74,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
+		public HTMLBuildState () : this (createEmptyObjects: true)
+			{
+			}
+
+
 		/* Function: HTMLBuildState
 		 * 
-		 * Constructor.
-		 * 
-		 * If createEmptyObjects is set things like <sourceFilesToRebuild> will have objects associated with them.  If it's falso,
-		 * they will be set to null.  Only set it to false if you're going to be creating the objects yourself since they shouldn't be
-		 * set to null.
+		 * In this version of the constructor you can set createEmptyObjects to false to have variables like <sourceFilesToRebuild>
+		 * set to null instead of empty objects.  Only do this if you're going to be creating the objects yourself since they shouldn't
+		 * normally be set to null.
 		 */
-		public HTMLBuildState (bool createEmptyObjects = true)
+		private HTMLBuildState (bool createEmptyObjects)
 			{
 			if (createEmptyObjects)
 				{
@@ -84,6 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = new IDObjects.NumberSet();
 				classFilesToRebuild = new IDObjects.NumberSet();
 				classFilesWithContent = new IDObjects.NumberSet();
+				styleFilesToRebuild = new IDObjects.NumberSet();
 				searchPrefixesToRebuild = new StringSet();
 				foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
 				usedMenuDataFiles = new StringTable<NumberSet>();
@@ -94,6 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				sourceFilesWithContent = null;
 				classFilesToRebuild = null;
 				classFilesWithContent = null;
+				styleFilesToRebuild = null;
 				searchPrefixesToRebuild = null;
 				foldersToCheckForDeletion = null;
 				usedMenuDataFiles = null;
@@ -124,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
+				if (binaryFile.OpenForReading(filename, "2.1") == false)
 					{  result = false;  }
 				else
 					{
@@ -140,6 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
+					// [NumberSet: Style File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
 					// [StringSet: Search Prefixes to Rebuild]
@@ -147,6 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					buildState.sourceFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.classFilesToRebuild = binaryFile.ReadNumberSet();
+					buildState.styleFilesToRebuild = binaryFile.ReadNumberSet();
 					buildState.sourceFilesWithContent = binaryFile.ReadNumberSet();
 					buildState.classFilesWithContent = binaryFile.ReadNumberSet();
 					buildState.searchPrefixesToRebuild = binaryFile.ReadStringSet();
@@ -202,6 +215,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
+				// [NumberSet: Style File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
 				// [StringSet: Search Prefixes to Rebuild]
@@ -209,6 +223,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				binaryFile.WriteNumberSet(buildState.sourceFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.classFilesToRebuild);
+				binaryFile.WriteNumberSet(buildState.styleFilesToRebuild);
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classFilesWithContent);
 				binaryFile.WriteStringSet(buildState.searchPrefixesToRebuild);
@@ -271,6 +286,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return classFilesWithContent;  }
+			}
+
+		/* Property: StyleFilesToRebuild
+		 * A set of IDs for the style files that need their output updated.  This includes new, changed, and deleted files so
+		 * you should check the file's status to see if it's deleted before processing it.
+		 */
+		public IDObjects.NumberSet StyleFilesToRebuild
+			{
+			get
+				{  return styleFilesToRebuild;  }
 			}
 
 		/* Property: NeedToBuildFramePage
@@ -357,6 +382,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected IDObjects.NumberSet sourceFilesWithContent;
 		protected IDObjects.NumberSet classFilesToRebuild;
 		protected IDObjects.NumberSet classFilesWithContent;
+		protected IDObjects.NumberSet styleFilesToRebuild;
 
 		protected StringSet searchPrefixesToRebuild;
 		protected StringSet foldersToCheckForDeletion;
