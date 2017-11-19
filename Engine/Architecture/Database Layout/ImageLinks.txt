@@ -77,7 +77,7 @@ Database Column: TargetScore
 		TargetScore INTEGER NOT NULL
 	-----------------
 
-	The score of the link to <TargetFileID>, or zero if there is none.
+	The score of the link to <TargetFileID>, or zero if there is none.  This is a 32-bit value.
 
 
 
