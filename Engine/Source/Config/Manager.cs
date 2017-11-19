@@ -1108,16 +1108,19 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Property: KeySettingsForPaths
-		 * The <Collections.KeySettings> that should be used when using paths as a key.  It will apply <IgnoreCaseInPaths>.
+		 * The <Collections.KeySettings> that should be used when using paths as a key.
 		 */
 		static public Collections.KeySettings KeySettingsForPaths
 			{
 			get
 				{
-				if (IgnoreCaseInPaths)
-					{  return Collections.KeySettings.IgnoreCase;  }
-				else
-					{  return Collections.KeySettings.Literal;  }
+				// Natural Docs should treat paths as case-insensitive regardless of platform, as that makes its
+				// behavior more consistent.  Otherwise you could have things like image links that work on one 
+				// platform but not another.  However, code should always try to accommodate case-sensitive file
+				// systems whenever possible.  If someone writes "(see symboltable.jpg)" it should still resolve to 
+				// SymbolTable.jpg and the HTML output should  put SymbolTable.jpg in the image src attribute 
+				// instead of symboltable.jpg.
+				return Collections.KeySettings.IgnoreCase;
 				}
 			}
 
