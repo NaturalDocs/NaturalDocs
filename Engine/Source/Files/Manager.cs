@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: AddFileSource
-		 * Adds a file source to the list.
+		 * Adds a file source to the list.  This can only be called before the <Engine.Instance> is started, not while it is running.
 		 */
 		public void AddFileSource (FileSource source)
 			{
@@ -806,7 +806,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * 
 		 * Thread Safety:
 		 * 
-		 *		This function is NOT thread-safe.  It should only be called during engine initialization.
+		 *		During engine initialization this function is not thread safe, but engine initialization should be a single-threaded operation
+		 *		anyway.
+		 *		
+		 *		Once the engine is started this is treated as a read-only variable, which would make it inherently thread safe.
 		 */
 		public IList<FileSource> FileSources
 			{
