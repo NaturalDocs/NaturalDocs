@@ -61,14 +61,25 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			
 			
 		/* Function: MakeRelative
-		 * If the passed absolute <Path> is contained by this folder, returns a relative path to it.  Otherwise returns null.
+		 * Converts the passed absolute path to one relative to this source.  If this source doesn't contain the path, it will
+		 * return null.
 		 */
-		override public Path MakeRelative (Path file)
+		override public Path MakeRelative (Path path)
 			{
-			if (Path.Contains(file))
-				{  return file.MakeRelativeTo(Path);  }
+			if (this.Path.Contains(path))
+				{  return path.MakeRelativeTo(this.Path);  }
 			else
 				{  return null;  }
+			}
+
+
+		/* Function: MakeAbsolute
+		 * Converts the passed relative path to an absolute one based on this source.  This may or may not result in a path
+		 * that actually maps to an existing file.
+		 */
+		override public Path MakeAbsolute (Path path)
+			{
+			return (this.Path + "/" + path);
 			}
 
 

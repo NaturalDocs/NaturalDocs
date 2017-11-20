@@ -59,9 +59,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		
 		/* Function: MakeRelative
-		 * Converts the passed filename to one relative to this source.  If this source doesn't contain the file, it will return null.
+		 * Converts the passed absolute path to one relative to this source.  If this source doesn't contain the path, it will
+		 * return null.
 		 */
-		abstract public Path MakeRelative (Path file);
+		abstract public Path MakeRelative (Path path);
+		
+		
+		/* Function: MakeAbsolute
+		 * Converts the passed relative path to an absolute one based on this source.  This may or may not result in a path
+		 * that actually maps to an existing file.
+		 */
+		abstract public Path MakeAbsolute (Path path);
 		
 		
 		/* Function: AddAllFiles
