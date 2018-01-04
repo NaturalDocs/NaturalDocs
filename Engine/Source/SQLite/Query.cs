@@ -77,7 +77,10 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				statementHandle = IntPtr.Zero;
 				connectionHandle = IntPtr.Zero;
 				
-				throw new Exceptions.UnexpectedResult("Could not prepare query.", result);
+				var exception = new Exceptions.UnexpectedResult("Could not prepare query.", result);
+				exception.AddNaturalDocsQuery(statement, values);
+
+				throw exception;
 				}
 				
 			if (values.Length != 0)

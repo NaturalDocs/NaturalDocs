@@ -71,5 +71,102 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return null;  }
 			}
 		
+		/* Function: HasNaturalDocsQuery
+		 * Whether this exception has query information attached to it by Natural Docs.
+		 */
+		static public bool HasNaturalDocsQuery (this Exception exception)
+			{
+			if (exception is Exceptions.Thread)
+				{  exception = exception.InnerException;  }
+
+			var exceptionData = exception.Data;
+
+			return exceptionData.Contains("NDQuery");
+			}
+		
+		/* Function: SetNaturalDocsQuery
+		 * Adds the Natural Docs query information to the exception.  Only the first query added will be stored.  Subsequent ones 
+		 * will be ignored.
+		 */
+		static public void AddNaturalDocsQuery (this Exception exception, string statement, params Object[] values)
+			{
+			if (exception is Exceptions.Thread)
+				{  exception = exception.InnerException;  }
+
+			var exceptionData = exception.Data;
+
+			if (exceptionData.Contains("NDQuery") == false)
+				{  
+				exceptionData.Add("NDQuery", statement);  
+				
+				if (values.Length > 0)
+					{
+					List<string> valueStrings = new List<string>(values.Length);
+
+					foreach (var value in values)
+						{
+						if (value == null)
+							{  valueStrings.Add("null");  }
+						else if (value is string)
+							{  valueStrings.Add('"' + (string)value + '"');  }
+						else if (value is byte ||
+								  value is sbyte ||
+								  value is short ||
+								  value is ushort ||
+								  value is int ||
+								  value is uint ||
+								  value is long ||
+								  value is ulong ||
+								  value is float ||
+								  value is double ||
+								  value is decimal)
+							{  valueStrings.Add(value.ToString());  }
+						else
+							{
+							string valueString = '(' + value.GetType().Name + ')';
+
+							try
+								{  valueString += value.ToString();  }
+							catch
+								{  }
+
+							valueStrings.Add(valueString);
+							}
+						}
+
+					exceptionData.Add("NDQueryValues", valueStrings);
+					}
+				}
+			}
+		
+		/* Function: GetNaturalDocsQuery
+		 * Returns the query Natural Docs was working on when the exception was thrown, or returns false if none.
+		 */
+		static public bool GetNaturalDocsQuery (this Exception exception, out string query, out List<string> values)
+			{
+			if (exception is Exceptions.Thread)
+				{  exception = exception.InnerException;  }
+
+			var exceptionData = exception.Data;
+
+			if (exceptionData.Contains("NDQuery"))
+				{  
+				query = exceptionData["NDQuery"].ToString();
+
+				if (exceptionData.Contains("NDQueryValues"))
+					{  values = (List<string>)exceptionData["NDQueryValues"];  }
+				else
+					{  values = null;  }
+
+				return true;
+				}
+			else
+				{  
+				query = null;
+				values = null;
+				return false;
+				}
+			}
+		
 		}
 	}

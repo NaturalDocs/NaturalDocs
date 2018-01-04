@@ -285,7 +285,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 				// Crash message
 
-				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Message", "Crash Message:") );
+				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Message", "Crash Message") + ':' );
 				output.AppendLine();
 				output.AppendLine( "   " + exception.Message );
 
@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.Engine
 				if (exception.HasNaturalDocsTask())
 					{
 					output.AppendLine();
-					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task:") );
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task") + ':' );
 					output.AppendLine();
 
 					var tasks = exception.GetNaturalDocsTasks();
@@ -320,12 +320,36 @@ namespace CodeClear.NaturalDocs.Engine
 					}
 				
 
+				// Natural Docs query
+
+				if (exception.HasNaturalDocsQuery())
+					{
+					output.AppendLine();
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Query", "Query") + ':' );
+					output.AppendLine();
+
+					string query;
+					List<string> queryValues;
+
+					exception.GetNaturalDocsQuery(out query, out queryValues);
+
+					output.AppendLine( "   " + query );
+
+					if (queryValues != null && queryValues.Count > 0)
+						{
+						output.AppendLine();
+						output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' + 
+													 string.Join(", ", queryValues.ToArray()) );
+						}
+					}
+
+
 				// Nested exceptions
 
 				while (inner != null)
 					{
 					output.AppendLine();
-					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CausedBy", "Caused By:") );
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CausedBy", "Caused By") + ':' );
 					output.AppendLine();
 					output.AppendLine( "   " + inner.Message );
 					output.AppendLine( "   (" + inner.GetType() + ")" );
@@ -333,13 +357,34 @@ namespace CodeClear.NaturalDocs.Engine
 					if (inner.HasNaturalDocsTask())
 						{
 						output.AppendLine();
-						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task:") );
+						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Task", "Task") + ':' );
 						output.AppendLine();
 
 						var tasks = inner.GetNaturalDocsTasks();
 
 						foreach (var task in tasks)
 							{  output.AppendLine( "   " + task );  }
+						}
+
+					if (exception.HasNaturalDocsQuery())
+						{
+						output.AppendLine();
+						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Query", "Query") + ':' );
+						output.AppendLine();
+
+						string query;
+						List<string> queryValues;
+
+						exception.GetNaturalDocsQuery(out query, out queryValues);
+
+						output.AppendLine( "   " + query );
+
+						if (queryValues != null && queryValues.Count > 0)
+							{
+							output.AppendLine();
+							output.AppendLine( "   " + Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Values", "Values") + ' ' + 
+														 string.Join(", ", queryValues.ToArray()) );
+							}
 						}
 
 					inner = inner.InnerException;
@@ -349,7 +394,7 @@ namespace CodeClear.NaturalDocs.Engine
 				// Stack trace
 					
 				output.AppendLine();
-				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.StackTrace", "Stack Trace:") );
+				output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.StackTrace", "Stack Trace") + ':' );
 				output.AppendLine();
 				output.AppendLine( exception.StackTrace );
 
@@ -357,7 +402,7 @@ namespace CodeClear.NaturalDocs.Engine
 				// Command Line
 
 				output.AppendLine ();
-				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line:") );
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.CommandLine", "Command Line") + ':' );
 				output.AppendLine ();
 				output.AppendLine ("   " + Environment.CommandLine );
 
@@ -365,7 +410,7 @@ namespace CodeClear.NaturalDocs.Engine
 				// Versions
 
 				output.AppendLine ();
-				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Versions", "Versions:") );
+				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Versions", "Versions") + ':' );
 				output.AppendLine ();
 				output.AppendLine ( "   Natural Docs " + Instance.VersionString );
 				output.AppendLine ();

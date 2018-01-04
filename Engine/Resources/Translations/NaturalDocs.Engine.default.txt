@@ -120,13 +120,15 @@ Error.NoOutputTargets: There were no output targets in Project.txt or the comman
 Error.CouldNotCreateOutputFolder(name): Could not create output folder {0}.
 Error.CouldNotCreateOutputFile(name): Could not create output file {0}.
 
-CrashReport.Message: Crash Message:
-CrashReport.CausedBy: Caused By:
-CrashReport.StackTrace: Stack Trace:
-CrashReport.Task: Task:
+CrashReport.Message: Crash Message
+CrashReport.CausedBy: Caused By
+CrashReport.StackTrace: Stack Trace
+CrashReport.Task: Task
+CrashReport.Query: Query
+CrashReport.Values: Values
 CrashReport.GeneratedOn(date): Generated on {0}
-CrashReport.Versions: Versions:
-CrashReport.CommandLine: Command Line:
+CrashReport.Versions: Versions
+CrashReport.CommandLine: Command Line
 
 Thread.ParentThread: Parent Thread
 Thread.ThreadPoolThread: Thread Pool Member
