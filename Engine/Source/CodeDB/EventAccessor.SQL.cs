@@ -61,14 +61,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (parentClassIDs.IsEmpty)
 				{  return;  }
 
-			StringBuilder queryText = new StringBuilder("SELECT FileID FROM Topics WHERE (");
-			List<object> queryParams = new List<object>();
+			string queryText = "SELECT FileID FROM Topics WHERE " + Accessor.ColumnIsInNumberSetExpression("ClassID", parentClassIDs) + " AND DefinesClass=1";
 
-			Accessor.AppendWhereClause_ColumnIsInNumberSet("ClassID", parentClassIDs, queryText, queryParams);
-
-			queryText.Append(") AND DefinesClass=1");
-
-			using (SQLite.Query query = accessor.Connection.Query(queryText.ToString(), queryParams.ToArray()))
+			using (SQLite.Query query = accessor.Connection.Query(queryText))
 				{
 				while (query.Step())
 					{  parentClassFileIDs.Add(query.IntColumn(0));  }
@@ -160,12 +155,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (topicIDs == null)
 				{  return;  }
 
-			StringBuilder queryText = new StringBuilder("SELECT FileID, ClassID FROM Links WHERE ");
-			List<object> queryParams = new List<object>();
+			string queryText = "SELECT FileID, ClassID FROM Links WHERE " + Accessor.ColumnIsInNumberSetExpression("TargetTopicID", topicIDs);
 
-			CodeDB.Accessor.AppendWhereClause_ColumnIsInNumberSet("TargetTopicID", topicIDs, queryText, queryParams);
-
-			using (SQLite.Query query = accessor.Connection.Query(queryText.ToString(), queryParams.ToArray()))
+			using (SQLite.Query query = accessor.Connection.Query(queryText))
 				{
 				while (query.Step())
 					{

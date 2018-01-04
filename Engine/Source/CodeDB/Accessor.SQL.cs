@@ -274,12 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (topicIDs.IsEmpty)
 				{  return new List<Topic>();  }
 
-			StringBuilder whereClause = new StringBuilder();
-			List<object> clauseParameters = new List<object>();
-
-			AppendWhereClause_ColumnIsInNumberSet("Topics.TopicID", topicIDs, whereClause, clauseParameters);
-
-			return GetTopics(whereClause.ToString(), null, clauseParameters.ToArray(), cancelled, getTopicFlags);
+			return GetTopics(ColumnIsInNumberSetExpression("Topics.TopicID", topicIDs), null, null, cancelled, getTopicFlags);
 			}
 			
 			
@@ -340,14 +335,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
-			StringBuilder whereClause = new StringBuilder();
-			List<object> clauseParams = new List<object>();
-
-			AppendWhereClause_ColumnIsInNumberSet("Topics.ClassID", classIDs, whereClause, clauseParams);
-
-			whereClause.Append(" AND Topics.DefinesClass=1");
-
-			List<Topic> topics = GetTopics(whereClause.ToString(), "Topics.ClassID", clauseParams.ToArray(), cancelled, getTopicFlags);
+			List<Topic> topics = GetTopics(ColumnIsInNumberSetExpression("Topics.ClassID", classIDs) + " AND Topics.DefinesClass=1",
+														 "Topics.ClassID", null, cancelled, getTopicFlags);
 
 
 			// Make sure only the best topic is on the list for each class ID.  Since the query ordered the results by class ID, we only need
@@ -725,12 +714,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				if (linksAffected.IsEmpty == false)
 					{
-					StringBuilder queryText = new StringBuilder("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE ");
-					List<object> queryParams = new List<object>();
-
-					AppendWhereClause_ColumnIsInNumberSet("LinkID", linksAffected, queryText, queryParams);
-
-					connection.Execute(queryText.ToString(), queryParams.ToArray());
+					connection.Execute("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE " + ColumnIsInNumberSetExpression("LinkID", linksAffected));
 					}
 
 
@@ -1198,16 +1182,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			StringBuilder whereClause = new StringBuilder("Links.Type=? AND (");
-
-			List<object> whereParams = new List<object>();
-			whereParams.Add( (int)LinkType.NaturalDocs );
-
-			AppendWhereClause_ColumnIsInNumberSet("Links.FileID", fileIDs, whereClause, whereParams);
-
-			whereClause.Append(')');
-
-			return GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled, getLinkFlags);
+			return GetLinks("Links.Type=? AND " + ColumnIsInNumberSetExpression("Links.FileID", fileIDs), 
+									new object[] { (int)LinkType.NaturalDocs }, cancelled, getLinkFlags);
 			}
 
 
@@ -1228,15 +1204,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			StringBuilder clauseText = new StringBuilder("(");
-			List<object> clauseParams = new List<object>();
-
-			AppendWhereClause_ColumnIsInNumberSet("Links.ClassID", classIDs, clauseText, clauseParams);
-
-			clauseText.Append(") AND Links.Type=?");
-			clauseParams.Add((int)LinkType.ClassParent);
-
-			return GetLinks(clauseText.ToString(), clauseParams.ToArray(), cancelled, getLinkFlags);
+			return GetLinks(ColumnIsInNumberSetExpression("Links.ClassID", classIDs) + " AND Links.Type=?",
+									new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
 			}
 
 
@@ -1258,15 +1227,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			StringBuilder clauseText = new StringBuilder("(");
-			List<object> clauseParams = new List<object>();
-
-			AppendWhereClause_ColumnIsInNumberSet("Links.TargetClassID", classIDs, clauseText, clauseParams);
-
-			clauseText.Append(") AND Links.Type=?");
-			clauseParams.Add((int)LinkType.ClassParent);
-
-			return GetLinks(clauseText.ToString(), clauseParams.ToArray(), cancelled, getLinkFlags);
+			return GetLinks(ColumnIsInNumberSetExpression("Links.TargetClassID", classIDs) + " AND Links.Type=?",
+									new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
 			}
 
 
@@ -1314,12 +1276,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (!alternateLinkIDs.IsEmpty)
 				{
-				StringBuilder whereClause = new StringBuilder();
-				List<object> whereParams = new List<object>();
-
-				AppendWhereClause_ColumnIsInNumberSet("LinkID", alternateLinkIDs, whereClause, whereParams);
-
-				List<Link> alternateLinks = GetLinks(whereClause.ToString(), whereParams.ToArray(), cancelled);
+				List<Link> alternateLinks = GetLinks(ColumnIsInNumberSetExpression("LinkID", alternateLinkIDs), null, cancelled);
 				links.AddRange(alternateLinks);
 				}
 
@@ -2229,13 +2186,9 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed 
 			// yet.
 
-			StringBuilder queryText = new StringBuilder("SELECT ClassID, ifnull(ClassString,LookupKey) " +
-																								  "FROM Classes WHERE ");
-			List<object> queryParams = new List<object>();
+			string queryText = "SELECT ClassID, ifnull(ClassString,LookupKey) FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", ids);
 
-			AppendWhereClause_ColumnIsInNumberSet("ClassID", ids, queryText, queryParams);
-
-			using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+			using (SQLite.Query query = connection.Query(queryText))
 				{
 				while (query.Step())
 					{
@@ -2397,15 +2350,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (idsToLookup.IsEmpty == false)
 				{
-				StringBuilder queryText = new StringBuilder("SELECT ClassID, ReferenceCount FROM Classes WHERE ");
-				List<object> queryParams = new List<object>();
-
-				AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToLookup, queryText, queryParams);
+				string queryText = "SELECT ClassID, ReferenceCount FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", idsToLookup);
 
 				if (cancelled())
 					{  return;  }
 
-				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+				using (SQLite.Query query = connection.Query(queryText))
 					{
 					while (query.Step())
 						{
@@ -2481,12 +2431,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			
 				if (idsToDelete.IsEmpty == false)
 					{
-					StringBuilder queryText = new StringBuilder("DELETE FROM Classes WHERE ");
-					List<object> queryParams = new List<object>();
-
-					AppendWhereClause_ColumnIsInNumberSet("ClassID", idsToDelete, queryText, queryParams);
-
-					connection.Execute(queryText.ToString(), queryParams.ToArray());
+					string queryText = "DELETE FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", idsToDelete);
+					connection.Execute(queryText);
 					Manager.UsedClassIDs.Remove(idsToDelete);
 					}
 
@@ -2648,15 +2594,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (idsToLookup.IsEmpty == false)
 				{
-				StringBuilder queryText = new StringBuilder("SELECT ContextID, ReferenceCount FROM Contexts WHERE ");
-				List<object> queryParams = new List<object>();
-
-				AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToLookup, queryText, queryParams);
+				string queryText = "SELECT ContextID, ReferenceCount FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", idsToLookup);
 
 				if (cancelled())
 					{  return;  }
 			
-				using (SQLite.Query query = connection.Query(queryText.ToString(), queryParams.ToArray()))
+				using (SQLite.Query query = connection.Query(queryText))
 					{
 					while (query.Step())
 						{
@@ -2732,12 +2675,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			
 				if (idsToDelete.IsEmpty == false)
 					{
-					StringBuilder queryText = new StringBuilder("DELETE FROM Contexts WHERE ");
-					List<object> queryParams = new List<object>();
-
-					AppendWhereClause_ColumnIsInNumberSet("ContextID", idsToDelete, queryText, queryParams);
-
-					connection.Execute(queryText.ToString(), queryParams.ToArray());
+					string queryText = "DELETE FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", idsToDelete);
+					connection.Execute(queryText);
 					Manager.UsedContextIDs.Remove(idsToDelete);
 					}
 
@@ -2838,32 +2777,25 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		// __________________________________________________________________________
 
 
-		/* Function: AppendWhereClause_ColumnIsInNumberSet
+		/* Function: ColumnIsInNumberSetExpression
 		 * 
-		 * Generates a SQL WHERE clause for testing that a column's value is contained in a number set.  It will be appended to 
-		 * the passed StringBuilder and list of parameters.
+		 * Generates a SQL expression for testing that a column's value is contained in a number set which can be used in WHERE
+		 * clauses.
 		 * 
-		 * For example, calling this with the NumberSet {2,5-8} would add 
+		 * For example, calling this with "Column" and the NumberSet {2,5-8} would create:
 		 * 
-		 *		> (Column=? OR (Column >= ? AND Column <= ?))
-		 * 
-		 * to the end of the query and 2, 5, and 8 to the list of parameters.
-		 * 
-		 * 
-		 * Parameters:
-		 * 
-		 *		columnName - The name of the column to test against the NumberSet.
-		 *		numberSet - The <IDObjects.NumberSet> to use in the query.
-		 *		queryText - The query being built.  The new text is appended to it, so it must already contain a query up to the
-		 *							  WHERE clause, including already having the WHERE keyword.
-		 *		queryParams - The parameter list for the query being built.  The new numbers are appended to it, so it must already
-		 *									contain the parameters for any question marks appearing earlier in the query.
+		 *		> (Column=2 OR (Column >= 5 AND Column <= 8))
+		 *		
+		 *	Inline constants are used because SQLite has a low limit for the number of query parameters you can pass (usually 100 
+		 *	or 127) and a large non-contiguous NumberSet can overwhelm that.  Meanwhile it has a high statement length limit
+		 *	(usually 1,000,000) which is unlikely to get hit.  Since all values must be numbers there is no risk of SQL injection or
+		 *	escaping problems.
+		 *	
 		 */
-		static public void AppendWhereClause_ColumnIsInNumberSet (string columnName, IDObjects.NumberSet numberSet, 
-																												  StringBuilder queryText, List<object> queryParams)
+		static public string ColumnIsInNumberSetExpression (string columnName, IDObjects.NumberSet numberSet)
 			{
-			// Surround the entire clause with parentheses and spaces to be safe.
-			queryText.Append(" (");
+			// Surround the entire clause with parentheses to be safe.
+			StringBuilder queryText = new StringBuilder("(");
 
 			bool firstParam = true;
 
@@ -2875,19 +2807,14 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					{  queryText.Append(" OR ");  }
 
 				if (range.Low == range.High)
-					{
-					queryText.Append(columnName + "=?");
-					queryParams.Add(range.Low);
-					}
+					{  queryText.Append(columnName + '=' + range.Low);  }
 				else
-					{
-					queryText.Append("(" + columnName + ">=? AND " + columnName + "<=?)");
-					queryParams.Add(range.Low);
-					queryParams.Add(range.High);
-					}
+					{  queryText.Append('(' + columnName + ">=" + range.Low + " AND " + columnName + "<=" + range.High + ')');  }
 				}
 
-			queryText.Append(") ");
+			queryText.Append(')');
+
+			return queryText.ToString();
 			}
 
 		}
