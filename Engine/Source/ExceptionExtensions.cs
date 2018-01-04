@@ -99,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{  
 				exceptionData.Add("NDQuery", statement);  
 				
-				if (values.Length > 0)
+				if (values != null && values.Length > 0)
 					{
 					List<string> valueStrings = new List<string>(values.Length);
 

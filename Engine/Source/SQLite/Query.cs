@@ -30,6 +30,10 @@
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
+#if !SQLITE_UTF8 && !SQLITE_UTF16
+	#define SQLITE_UTF8
+#endif
+
 using System;
 
 
@@ -93,18 +97,20 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
 				#endif
 
-				if (sqlByteLength > connection.StatementByteLengthLimit && values.Length > connection.ArgumentLimit)
+				int valueCount = (values == null ? 0 : values.Length);
+
+				if (sqlByteLength > connection.StatementByteLengthLimit && valueCount > connection.ArgumentLimit)
 					{
 					errorMessage += "  Statement is too long (byte count: " + sqlByteLength + ", limit: " + connection.StatementByteLengthLimit + ") and " +
-											  "has too many arguments (count: " + values.Length + ", limit: " + connection.ArgumentLimit + ").";
+											  "has too many arguments (count: " + valueCount + ", limit: " + connection.ArgumentLimit + ").";
 					}
 				else if (sqlByteLength > connection.StatementByteLengthLimit)
 					{
 					errorMessage += "  Statement is too long (byte count: " + sqlByteLength + ", limit: " + connection.StatementByteLengthLimit + ").";
 					}
-				else if (values.Length > connection.ArgumentLimit)
+				else if (valueCount > connection.ArgumentLimit)
 					{
-					errorMessage += "  Query has too many arguments (count: " + values.Length + ", limit: " + connection.ArgumentLimit + ").";
+					errorMessage += "  Query has too many arguments (count: " + valueCount + ", limit: " + connection.ArgumentLimit + ").";
 					}
 
 				var exception = new Exceptions.UnexpectedResult(errorMessage, result);
@@ -115,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				throw exception;
 				}
 				
-			if (values.Length != 0)
+			if (values != null && values.Length != 0)
 				{  BindValues(values);  }
 			}
 			
