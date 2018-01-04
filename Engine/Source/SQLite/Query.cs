@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		public Query ()
 			{
 			statementHandle = IntPtr.Zero;
-			connectionHandle = IntPtr.Zero;
+			connection = null;
 			columnIndex = 0;
 			} 
 			
@@ -63,22 +63,54 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		 * Prepares a SQL statement for execution.  If values are specified, <BindValues()> is called on them.  This
 		 * function should only be called by <SQLite.Connection>.
 		 */
-		public void Prepare (IntPtr newConnectionHandle, string statement, params Object[] values)
+		public void Prepare (Connection connection, string statement, params Object[] values)
 			{
 			if (statementHandle != IntPtr.Zero)
 				{  throw new Exception("Tried to prepare a query when one already existed.");  }
 
-			connectionHandle = newConnectionHandle;
+			this.connection = connection;
 
-			API.Result result = API.PrepareV2 (connectionHandle, statement, out statementHandle);
+			API.Result result = API.PrepareV2 (connection.Handle, statement, out statementHandle);
 			
 			if (result != API.Result.OK)
 				{
 				statementHandle = IntPtr.Zero;
-				connectionHandle = IntPtr.Zero;
 				
-				var exception = new Exceptions.UnexpectedResult("Could not prepare query.", result);
+				string errorMessage = "Could not prepare query.";
+
+
+				// See if we ran afoul of any limits to make the error message more meaningful
+				// Using SQLite.API.Limit() here causes memory protection errors, which is why we need to get it in the
+				// Connection object and reference that here instead.
+
+				int sqlByteLength;
+
+				#if SQLITE_UTF16
+				sqlByteLength = System.Text.Encoding.UTF16.GetByteCount(statement);
+				#elif SQLITE_UTF8
+				sqlByteLength = System.Text.Encoding.UTF8.GetByteCount(statement);
+				#else
+				throw new Exception("Did not define SQLITE_UTF8 or SQLITE_UTF16");
+				#endif
+
+				if (sqlByteLength > connection.StatementByteLengthLimit && values.Length > connection.ArgumentLimit)
+					{
+					errorMessage += "  Statement is too long (byte count: " + sqlByteLength + ", limit: " + connection.StatementByteLengthLimit + ") and " +
+											  "has too many arguments (count: " + values.Length + ", limit: " + connection.ArgumentLimit + ").";
+					}
+				else if (sqlByteLength > connection.StatementByteLengthLimit)
+					{
+					errorMessage += "  Statement is too long (byte count: " + sqlByteLength + ", limit: " + connection.StatementByteLengthLimit + ").";
+					}
+				else if (values.Length > connection.ArgumentLimit)
+					{
+					errorMessage += "  Query has too many arguments (count: " + values.Length + ", limit: " + connection.ArgumentLimit + ").";
+					}
+
+				var exception = new Exceptions.UnexpectedResult(errorMessage, result);
 				exception.AddNaturalDocsQuery(statement, values);
+
+				connection = null;
 
 				throw exception;
 				}
@@ -260,7 +292,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				API.Finalize (statementHandle);
 
 				statementHandle = IntPtr.Zero;
-				connectionHandle = IntPtr.Zero;
+				connection = null;
 				}	
 			}
 		
@@ -277,10 +309,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		protected IntPtr statementHandle; 
 		
 		/* Handle: connectionHandle
-		 * A handle to the SQLite database connection.  This is just a reference, the <SQLite.Connection> object is
-		 * responsible for disposing of it.
+		 * The <Connection> that created this query.
 		 */
-		protected IntPtr connectionHandle;
+		protected Connection connection;
 
 		/* var: columnIndex
 		 * The current column index when using functions like <NextIntColumn()>.

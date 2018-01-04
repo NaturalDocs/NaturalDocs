@@ -47,6 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			{
 			handle = IntPtr.Zero;
 			databaseFile = null;
+			statementByteLengthLimit = -1;
+			argumentLimit = -1;
 			}
 			
 		/* Destructor: ~Connection
@@ -94,6 +96,13 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 				// Even with proper locking it's possible for queries to return Busy, even when all the threads are only reading.  Alas.
 				API.BusyTimeout(handle, BusyTimeoutInMS);
+
+				// Query the limits
+				// "Hey," you might be thinking, "why don't we just get these when we need them in the Query class?  Then we don't have to 
+				// store them here and pass a reference to the Connection object."  Well, you get a memory protection error when you try to
+				// do this while building an exception in Query.  It works fine here though.
+				statementByteLengthLimit = API.Limit(handle, API.LimitID.SQLLength, -1);
+				argumentLimit = API.Limit(handle, API.LimitID.FunctionArguments, -1);
 				
 				// No point in using SQLite's case-insensitivity since it only applies to ASCII characters.
 				Execute("PRAGMA case_sensitive_like = 1");
@@ -127,6 +136,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				API.CloseV2(handle);
 				handle = IntPtr.Zero;
 				databaseFile = null;
+				statementByteLengthLimit = -1;
+				argumentLimit = -1;
 				
 				throw;
 				}
@@ -168,7 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		public SQLite.Query Query (string statement, params Object[] values)
 			{
 			SQLite.Query query = new SQLite.Query();
-			query.Prepare(handle, statement, values);
+			query.Prepare(this, statement, values);
 			
 			return query;
 			}
@@ -181,7 +192,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			{
 			using (SQLite.Query query = new SQLite.Query())
 				{
-				query.Prepare(handle, statement, values);
+				query.Prepare(this, statement, values);
 				while (query.Step() == true)
 					{  }
 				}
@@ -211,9 +222,38 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			get
 				{  return databaseFile;  }
 			}
+
+
+		/* Property: Handle
+		 * The SQLite database connection handle.
+		 */
+		internal IntPtr Handle
+			{
+			get
+				{  return handle;  }
+			}
 			
 			
+		/* Property: StatementByteLengthLimit
+		 * The maximum number of bytes in a SQL statement.
+		 */
+		public int StatementByteLengthLimit
+			{
+			get
+				{  return statementByteLengthLimit;  }
+			}
+
+
+		/* Property: ArgumentLimit
+		 * The maximum number of arguments that can be passed to a SQL statement.
+		 */
+		public int ArgumentLimit
+			{
+			get
+				{  return argumentLimit;  }
+			}
 		
+
 		
 		// Group: IDisposable Functions
 		// __________________________________________________________________________
@@ -236,6 +276,8 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				API.Result closeResult = API.CloseV2(handle);
 				handle = IntPtr.Zero;
 				databaseFile = null;
+				statementByteLengthLimit = -1;
+				argumentLimit = -1;
 				
 				if (strictRulesApply == false && closeResult != API.Result.OK)
 					{  throw new Exceptions.UnexpectedResult("Could not close database.", closeResult);  }
@@ -258,6 +300,16 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 		 * The database file path.
 		 */
 		protected Path databaseFile;
+
+		/* var: statementByteLengthLimit
+		 * The maximum number of bytes in a SQL statement.
+		 */
+		protected int statementByteLengthLimit;
+
+		/* var: argumentLimit
+		 * The maximum number of arguments that can be passed to a SQL statement.
+		 */
+		protected int argumentLimit;
 
 
 

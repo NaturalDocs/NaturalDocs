@@ -76,6 +76,22 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 			Transient = -1
 			}
 			
+		public enum LimitID : int
+			{
+			Length = 0,
+			SQLLength = 1,
+			Column = 2,
+			ExpressionDepth = 3,
+			CompoundSelect = 4,
+			VDBEOps = 5,
+			FunctionArguments = 6,
+			Attached = 7,
+			LikePatternLength = 8,
+			VariableNumber = 9,
+			TriggerDepth = 10,
+			WorkerThreads = 11
+			}
+
 
 
 		// Group: Native Functions
@@ -94,6 +110,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_close_v2 (IntPtr connectionHandle);
+
+		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
+		extern static private int sqlite3_limit(IntPtr connectionHandle, LimitID id, int newValue);
 
 		[DllImport ("NaturalDocs.Engine.SQLite.dll", CallingConvention = CallingConvention.Cdecl)]
 		extern static private Result sqlite3_extended_result_codes(IntPtr connectionHandle, int onoff);
@@ -186,6 +205,9 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 
 		static public Result CloseV2 (IntPtr connectionHandle)
 			{  return sqlite3_close_v2(connectionHandle);  }
+
+		static public int Limit (IntPtr connectionHandle, LimitID id, int newLimit)
+			{  return sqlite3_limit(connectionHandle, id, newLimit);  }
 
 		static public Result ExtendedResultCodes (IntPtr connectionHandle, bool onoff)
 			{  return sqlite3_extended_result_codes (connectionHandle, (onoff ? 1 : 0));  }
