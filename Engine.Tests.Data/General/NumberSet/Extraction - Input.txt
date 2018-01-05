@@ -1,0 +1,33 @@
+
+{5,10-20,25,27,29,40-50,55}
+
+
+Extract 0,1
+
+Extract 1,1
+
+Extract 2,1
+
+Extract 6,1
+
+Extract 7,1
+
+
+{5,10-20,25,27,29,40-50,55}
+
+
+Extract 0,3
+
+Extract 1,3
+
+Extract 4,3
+
+Extract 5,3
+
+
+{5,10-20,25,27,29,40-50,55}
+
+
+Extract 0,7
+
+Extract 0,0

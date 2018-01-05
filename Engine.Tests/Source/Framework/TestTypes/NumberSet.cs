@@ -26,6 +26,9 @@
  *		
  *		> -{8-9}
  *		Subtracts a set.
+ *		
+ *		> Extract 1, 4
+ *		Extracts the *ranges* at the index and count.
  * 
  */
 
@@ -59,6 +62,19 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				string braces = (match.Success ? match.Value : null);
 				match = GetNumberRegex.Match(command);
 				int number = (match.Success ? int.Parse(match.Value) : -1);
+				match = ExtractRangeRegex.Match(command);
+				int extractIndex, extractCount;
+
+				if (match.Success)
+					{
+					extractIndex = int.Parse(match.Groups[1].ToString());
+					extractCount = int.Parse(match.Groups[2].ToString());
+					}
+				else
+					{
+					extractIndex = -1;
+					extractCount = -1;
+					}
 
 				bool showSet = false;
 				output.AppendLine(command);
@@ -100,6 +116,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						output.AppendLine( (set.Contains(number) ? "true" : "false") );	
 						}
+					else if (extractIndex != -1 && extractCount != -1)
+						{
+						Engine.IDObjects.NumberSet extracted = set.ExtractRanges(extractIndex, extractCount);
+						output.AppendLine(extracted.ToString());
+						}
 					else
 						{  throw new Exception("Unknown command " + command);  }
 					}
@@ -124,6 +145,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 		protected static Regex GetBracesRegex = new Regex(@"{.*?}", RegexOptions.Compiled | RegexOptions.Singleline);
 		protected static Regex GetNumberRegex = new Regex("[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
+		protected static Regex ExtractRangeRegex = new Regex("Extract ([0-9]+), ?([0-9]+)", RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
 		}
 	}

@@ -1,0 +1,56 @@
+
+{5,10-20,25,27,29,40-50,55}
+= {5,10-20,25,27,29,40-50,55} Lowest Available: 1, Highest Used: 55, Count: 27
+
+
+
+Extract 0,1
+{5}
+
+Extract 1,1
+{10-20}
+
+Extract 2,1
+{25}
+
+Extract 6,1
+{55}
+
+Extract 7,1
+Exception: Operation is not valid due to the current state of the object.
+(System.InvalidOperationException)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+
+{5,10-20,25,27,29,40-50,55}
+= {5,10-20,25,27,29,40-50,55} Lowest Available: 1, Highest Used: 55, Count: 27
+
+
+
+Extract 0,3
+{5,10-20,25}
+
+Extract 1,3
+{10-20,25,27}
+
+Extract 4,3
+{29,40-50,55}
+
+Extract 5,3
+Exception: Operation is not valid due to the current state of the object.
+(System.InvalidOperationException)
+= {} Lowest Available: 1, Highest Used: 0, Count: 0
+
+
+
+{5,10-20,25,27,29,40-50,55}
+= {5,10-20,25,27,29,40-50,55} Lowest Available: 1, Highest Used: 55, Count: 27
+
+
+
+Extract 0,7
+{5,10-20,25,27,29,40-50,55}
+
+Extract 0,0
+{}
