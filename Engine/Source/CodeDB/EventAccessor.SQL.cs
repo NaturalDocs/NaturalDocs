@@ -61,13 +61,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (parentClassIDs.IsEmpty)
 				{  return;  }
 
-			string queryText = "SELECT FileID FROM Topics WHERE " + Accessor.ColumnIsInNumberSetExpression("ClassID", parentClassIDs) + " AND DefinesClass=1";
+			IDObjects.NumberSet remainingParentClassIDs = parentClassIDs;
 
-			using (SQLite.Query query = accessor.Connection.Query(queryText))
+			do
 				{
-				while (query.Step())
-					{  parentClassFileIDs.Add(query.IntColumn(0));  }
+				IDObjects.NumberSet temp;
+				string queryText = "SELECT FileID FROM Topics WHERE " + Accessor.ColumnIsInNumberSetExpression("ClassID", remainingParentClassIDs, out temp) + " AND DefinesClass=1";
+				remainingParentClassIDs = temp;
+
+				using (SQLite.Query query = accessor.Connection.Query(queryText))
+					{
+					while (query.Step())
+						{  parentClassFileIDs.Add(query.IntColumn(0));  }
+					}
 				}
+			while (remainingParentClassIDs != null);
 			}
 
 
@@ -155,28 +163,36 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			if (topicIDs == null)
 				{  return;  }
 
-			string queryText = "SELECT FileID, ClassID FROM Links WHERE " + Accessor.ColumnIsInNumberSetExpression("TargetTopicID", topicIDs);
+			IDObjects.NumberSet remainingTopicIDs = topicIDs;
 
-			using (SQLite.Query query = accessor.Connection.Query(queryText))
+			do
 				{
-				while (query.Step())
+				IDObjects.NumberSet temp;
+				string queryText = "SELECT FileID, ClassID FROM Links WHERE " + Accessor.ColumnIsInNumberSetExpression("TargetTopicID", remainingTopicIDs, out temp);
+				remainingTopicIDs = temp;
+
+				using (SQLite.Query query = accessor.Connection.Query(queryText))
 					{
-					if (fileIDs == null)
-						{  fileIDs = new NumberSet();  }
-
-					fileIDs.Add(query.IntColumn(0));
-
-					int classID = query.IntColumn(1);
-
-					if (classID != 0)
+					while (query.Step())
 						{
-						if (classIDs == null)
-							{  classIDs = new NumberSet();  }
+						if (fileIDs == null)
+							{  fileIDs = new NumberSet();  }
 
-						classIDs.Add(classID);
+						fileIDs.Add(query.IntColumn(0));
+
+						int classID = query.IntColumn(1);
+
+						if (classID != 0)
+							{
+							if (classIDs == null)
+								{  classIDs = new NumberSet();  }
+
+							classIDs.Add(classID);
+							}
 						}
 					}
 				}
+			while (remainingTopicIDs != null);
 			}
 
 		}

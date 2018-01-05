@@ -452,5 +452,30 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		protected IDLookupCache<Symbols.ContextString> contextIDLookupCache;
 
+
+		
+		// Group: Constants
+		// __________________________________________________________________________
+
+
+		/* Const: NumberSetExpressionExpansionLimit
+		 * 
+		 * The number of ranges <ColumnIsInNumberSetExpression> will limit itself to before it makes you use multiple queries.
+		 * 
+		 * As of January 2018 SQLite has a limit of about 127 "?" parameters in queries.  Switching NumberSet expansions to use 
+		 * inline values instead of "?" parameters helped, but SQLite still fails at about 4500 inline parameters.  This constant is set
+		 * much lower since we can't rely on 4500 reliably remaining usable indefinitely.
+		 * 
+		 * Quick benchmarks didn't show a significant difference in execution time between 4, 100, and 1000.  I find it a little hard 
+		 * to believe, but it means we don't have to obsess over finding the ideal value.  The limit is set reasonably high in release 
+		 * builds because I'm still convinced there's some efficiency there, but not so high as to potentially overtax SQLite now or 
+		 * in the future.  In debug builds the limit is very low to test that everything works with multiple queries.
+		 */
+		#if DEBUG
+			protected const int NumberSetExpressionExpansionLimit = 4;
+		#else
+			protected const int NumberSetExpressionExpansionLimit = 100;
+		#endif
+
 		}
 	}

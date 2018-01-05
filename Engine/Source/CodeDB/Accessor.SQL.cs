@@ -267,14 +267,33 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Topic> GetTopicsByID (IDObjects.NumberSet topicIDs, CancelDelegate cancelled, 
-																	 GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
+														  GetTopicFlags getTopicFlags = GetTopicFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
 			if (topicIDs.IsEmpty)
 				{  return new List<Topic>();  }
 
-			return GetTopics(ColumnIsInNumberSetExpression("Topics.TopicID", topicIDs), null, null, cancelled, getTopicFlags);
+			List<Topic> topics = null;
+			IDObjects.NumberSet remainingTopicIDs = topicIDs;
+			
+			do
+				{
+				IDObjects.NumberSet temp;
+
+				List<Topic> topicBatch = GetTopics(ColumnIsInNumberSetExpression("Topics.TopicID", remainingTopicIDs, out temp),
+																	null, null, cancelled, getTopicFlags);
+
+				remainingTopicIDs = temp;
+
+				if (topics == null)
+					{  topics = topicBatch;  }
+				else
+					{  topics.AddRange(topicBatch);  }
+				}
+			while (remainingTopicIDs != null && !cancelled());
+
+			return topics;
 			}
 			
 			
@@ -335,8 +354,24 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
-			List<Topic> topics = GetTopics(ColumnIsInNumberSetExpression("Topics.ClassID", classIDs) + " AND Topics.DefinesClass=1",
-														 "Topics.ClassID", null, cancelled, getTopicFlags);
+			List<Topic> topics = null;
+			IDObjects.NumberSet remainingClassIDs = classIDs;
+			
+			do
+				{
+				IDObjects.NumberSet temp;
+
+				List<Topic> topicBatch = GetTopics(ColumnIsInNumberSetExpression("Topics.ClassID", remainingClassIDs, out temp) + " AND Topics.DefinesClass=1",
+																	"Topics.ClassID", null, cancelled, getTopicFlags);
+
+				remainingClassIDs = temp;
+
+				if (topics == null)
+					{  topics = topicBatch;  }
+				else
+					{  topics.AddRange(topicBatch);  }
+				}
+			while (remainingClassIDs != null);
 
 
 			// Make sure only the best topic is on the list for each class ID.  Since the query ordered the results by class ID, we only need
@@ -714,7 +749,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 				if (linksAffected.IsEmpty == false)
 					{
-					connection.Execute("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE " + ColumnIsInNumberSetExpression("LinkID", linksAffected));
+					IDObjects.NumberSet remainingLinksAffected = linksAffected;
+
+					do
+						{
+						IDObjects.NumberSet temp;
+						connection.Execute("UPDATE Links SET TargetTopicID=0, TargetScore=0 WHERE " + ColumnIsInNumberSetExpression("LinkID", remainingLinksAffected, out temp));
+						remainingLinksAffected = temp;
+						}
+					while (remainingLinksAffected != null);
 					}
 
 
@@ -1178,12 +1221,30 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetNaturalDocsLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled, 
-																						GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+																		  GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			return GetLinks("Links.Type=? AND " + ColumnIsInNumberSetExpression("Links.FileID", fileIDs), 
-									new object[] { (int)LinkType.NaturalDocs }, cancelled, getLinkFlags);
+			List<Link> links = null;
+			IDObjects.NumberSet fileIDsRemaining = fileIDs;
+
+			do
+				{
+				IDObjects.NumberSet temp;
+
+				List<Link> linkBatch = GetLinks("Links.Type=? AND " + ColumnIsInNumberSetExpression("Links.FileID", fileIDsRemaining, out temp), 
+																new object[] { (int)LinkType.NaturalDocs }, cancelled, getLinkFlags);
+
+				fileIDsRemaining = temp;
+
+				if (links == null)
+					{  links = linkBatch;  }
+				else
+					{  links.AddRange(linkBatch);  }
+				}
+			while (fileIDsRemaining != null && !cancelled());
+
+			return links;
 			}
 
 
@@ -1200,12 +1261,30 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetClassParentLinksInClasses (IDObjects.NumberSet classIDs, CancelDelegate cancelled, 
-																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+																			   GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
+
+			List<Link> links = null;
+			IDObjects.NumberSet remainingClassIDs = classIDs;
+
+			do
+				{
+				IDObjects.NumberSet temp;
 			
-			return GetLinks(ColumnIsInNumberSetExpression("Links.ClassID", classIDs) + " AND Links.Type=?",
-									new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
+				List<Link> linkBatch = GetLinks(ColumnIsInNumberSetExpression("Links.ClassID", remainingClassIDs, out temp) + " AND Links.Type=?",
+															   new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
+
+				remainingClassIDs = temp;
+
+				if (links == null)
+					{  links = linkBatch;  }
+				else
+					{  links.AddRange(linkBatch);  }
+				}
+			while (remainingClassIDs != null && !cancelled());
+
+			return links;
 			}
 
 
@@ -1227,8 +1306,26 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
-			return GetLinks(ColumnIsInNumberSetExpression("Links.TargetClassID", classIDs) + " AND Links.Type=?",
-									new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
+			List<Link> links = null;
+			IDObjects.NumberSet remainingClassIDs = classIDs;
+
+			do
+				{
+				IDObjects.NumberSet temp;
+
+				List<Link> linkBatch = GetLinks(ColumnIsInNumberSetExpression("Links.TargetClassID", remainingClassIDs, out temp) + " AND Links.Type=?",
+															   new object[] { (int)LinkType.ClassParent }, cancelled, getLinkFlags);
+
+				remainingClassIDs = temp;
+
+				if (links == null)
+					{  links = linkBatch;  }
+				else
+					{  links.AddRange(linkBatch);  }
+				}
+			while (remainingClassIDs != null && !cancelled());
+
+			return links;
 			}
 
 
@@ -1247,7 +1344,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<Link> GetLinksByEndingSymbol (EndingSymbol endingSymbol, CancelDelegate cancelled,
-																					GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
+																		GetLinkFlags getLinkFlags = GetLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -1272,12 +1369,21 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				}
 
 
-			// Get the links that have it as an alternate ending symbol
+			// Add the links that have it as an alternate ending symbol
 
 			if (!alternateLinkIDs.IsEmpty)
 				{
-				List<Link> alternateLinks = GetLinks(ColumnIsInNumberSetExpression("LinkID", alternateLinkIDs), null, cancelled);
-				links.AddRange(alternateLinks);
+				IDObjects.NumberSet remainingAlternateLinkIDs = alternateLinkIDs;
+				
+				do
+					{
+					IDObjects.NumberSet temp;
+					List<Link> alternateLinksBatch = GetLinks(ColumnIsInNumberSetExpression("LinkID", remainingAlternateLinkIDs, out temp), null, cancelled);
+					remainingAlternateLinkIDs = temp;
+
+					links.AddRange(alternateLinksBatch);
+					}
+				while (remainingAlternateLinkIDs != null && !cancelled());
 				}
 
 			return links;
@@ -2186,21 +2292,29 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			// new class IDs, and thus we'll be able to get everything from the database even if the change cache hasn't been flushed 
 			// yet.
 
-			string queryText = "SELECT ClassID, ifnull(ClassString,LookupKey) FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", ids);
+			IDObjects.NumberSet remainingIDs = ids;
 
-			using (SQLite.Query query = connection.Query(queryText))
+			do
 				{
-				while (query.Step())
-					{
-					int classID = query.IntColumn(0);
-					ClassString classString = ClassString.FromExportedString(query.StringColumn(1));
+				IDObjects.NumberSet temp;
+				string queryText = "SELECT ClassID, ifnull(ClassString,LookupKey) FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", remainingIDs, out temp);
+				remainingIDs = temp;
 
-					classes.Add( new KeyValuePair<int, ClassString>(classID, classString));
+				using (SQLite.Query query = connection.Query(queryText))
+					{
+					while (query.Step())
+						{
+						int classID = query.IntColumn(0);
+						ClassString classString = ClassString.FromExportedString(query.StringColumn(1));
+
+						classes.Add( new KeyValuePair<int, ClassString>(classID, classString));
 					
-					if (cancelled())
-						{  break;  }
+						if (cancelled())
+							{  break;  }
+						}
 					}
 				}
+			while (remainingIDs != null && !cancelled());
 
 			return classes;
 			}
@@ -2350,21 +2464,29 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (idsToLookup.IsEmpty == false)
 				{
-				string queryText = "SELECT ClassID, ReferenceCount FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", idsToLookup);
+				IDObjects.NumberSet remainingIDsToLookup = idsToLookup;
 
-				if (cancelled())
-					{  return;  }
-
-				using (SQLite.Query query = connection.Query(queryText))
+				do
 					{
-					while (query.Step())
-						{
-						cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
+					IDObjects.NumberSet temp;
+					string queryText = "SELECT ClassID, ReferenceCount FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", remainingIDsToLookup, out temp);
+					remainingIDsToLookup = temp;
 
-						if (cancelled())
-							{  return;  }
+					if (cancelled())
+						{  return;  }
+
+					using (SQLite.Query query = connection.Query(queryText))
+						{
+						while (query.Step())
+							{
+							cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
+
+							if (cancelled())
+								{  return;  }
+							}
 						}
 					}
+				while (remainingIDsToLookup != null && !cancelled());
 				}
 
 
@@ -2431,9 +2553,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			
 				if (idsToDelete.IsEmpty == false)
 					{
-					string queryText = "DELETE FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", idsToDelete);
-					connection.Execute(queryText);
-					Manager.UsedClassIDs.Remove(idsToDelete);
+					IDObjects.NumberSet remainingIDsToDelete = idsToDelete;
+
+					do
+						{
+						IDObjects.NumberSet temp;
+						string queryText = "DELETE FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", remainingIDsToDelete, out temp);
+						remainingIDsToDelete = temp;
+
+						connection.Execute(queryText);
+						Manager.UsedClassIDs.Remove(idsToDelete);
+						}
+					while (remainingIDsToDelete != null && !cancelled());
 					}
 
 
@@ -2594,21 +2725,29 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 
 			if (idsToLookup.IsEmpty == false)
 				{
-				string queryText = "SELECT ContextID, ReferenceCount FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", idsToLookup);
+				IDObjects.NumberSet remainingIDsToLookup = idsToLookup;
 
-				if (cancelled())
-					{  return;  }
-			
-				using (SQLite.Query query = connection.Query(queryText))
+				do
 					{
-					while (query.Step())
-						{
-						cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
+					IDObjects.NumberSet temp;
+					string queryText = "SELECT ContextID, ReferenceCount FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", remainingIDsToLookup, out temp);
+					remainingIDsToLookup = temp;
 
-						if (cancelled())
-							{  return;  }
+					if (cancelled())
+						{  return;  }
+			
+					using (SQLite.Query query = connection.Query(queryText))
+						{
+						while (query.Step())
+							{
+							cache.SetDatabaseReferenceCount(query.IntColumn(0), query.IntColumn(1));
+
+							if (cancelled())
+								{  return;  }
+							}
 						}
 					}
+				while (remainingIDsToLookup != null && !cancelled());
 				}
 
 
@@ -2675,9 +2814,18 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			
 				if (idsToDelete.IsEmpty == false)
 					{
-					string queryText = "DELETE FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", idsToDelete);
-					connection.Execute(queryText);
-					Manager.UsedContextIDs.Remove(idsToDelete);
+					IDObjects.NumberSet remainingIDsToDelete = idsToDelete;
+
+					do
+						{
+						IDObjects.NumberSet temp;
+						string queryText = "DELETE FROM Contexts WHERE " + ColumnIsInNumberSetExpression("ContextID", remainingIDsToDelete, out temp);
+						remainingIDsToDelete = temp;
+
+						connection.Execute(queryText);
+						Manager.UsedContextIDs.Remove(idsToDelete);
+						}
+					while (remainingIDsToDelete != null && !cancelled());
 					}
 
 
@@ -2786,35 +2934,51 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		> (Column=2 OR (Column >= 5 AND Column <= 8))
 		 *		
-		 *	Inline constants are used because SQLite has a low limit for the number of query parameters you can pass (usually 100 
-		 *	or 127) and a large non-contiguous NumberSet can overwhelm that.  Meanwhile it has a high statement length limit
-		 *	(usually 1,000,000) which is unlikely to get hit.  Since all values must be numbers there is no risk of SQL injection or
-		 *	escaping problems.
+		 *	Large non-contiguous number sets may need to be broken into multiple queries though.  If that's the case it will return
+		 * the values unaccounted for by the expression in the "remaining" parameter.  Otherwise "remaining" will be null.  See
+		 * <NumberSetExpressionExpansionLimit> for more information on SQLite's limits.
 		 *	
 		 */
-		static public string ColumnIsInNumberSetExpression (string columnName, IDObjects.NumberSet numberSet)
+		static public string ColumnIsInNumberSetExpression (string columnName, IDObjects.NumberSet numberSet, out IDObjects.NumberSet remaining)
 			{
 			// Surround the entire clause with parentheses to be safe.
-			StringBuilder queryText = new StringBuilder("(");
+			StringBuilder expression = new StringBuilder("(");
 
-			bool firstParam = true;
+			int i = 0;
+			int lowest = -1;
+			int highest = -1;
 
 			foreach (IDObjects.NumberRange range in numberSet.Ranges)
 				{
-				if (firstParam)
-					{  firstParam = false;  }
+				if (i == 0)
+					{  lowest = range.Low;  }
+				else if (i == NumberSetExpressionExpansionLimit)
+					{  break;  }
 				else
-					{  queryText.Append(" OR ");  }
+					{  expression.Append(" OR ");  }
 
 				if (range.Low == range.High)
-					{  queryText.Append(columnName + '=' + range.Low);  }
+					{  expression.Append(columnName + '=' + range.Low);  }
 				else
-					{  queryText.Append('(' + columnName + ">=" + range.Low + " AND " + columnName + "<=" + range.High + ')');  }
+					{  expression.Append('(' + columnName + ">=" + range.Low + " AND " + columnName + "<=" + range.High + ')');  }
+
+				highest = range.High;
+				i++;
 				}
 
-			queryText.Append(')');
+			expression.Append(')');
 
-			return queryText.ToString();
+			if (i < numberSet.RangeCount)
+				{  remaining = numberSet.ExtractRanges(i, numberSet.RangeCount - i);  }
+			else
+				{  remaining = null;  }
+
+			if (i == 0)
+				{  return "(1=0)";  }
+			else if (i > 8)
+				{  return "(" + columnName + ">=" + lowest + " AND " + columnName + "<=" + highest + " AND " + expression.ToString() + ")";  }
+			else
+				{  return expression.ToString();  }
 			}
 
 		}
