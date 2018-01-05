@@ -534,6 +534,23 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 
 
+		/* Function: ExtractRanges
+		 * Creates a new set from the specified ranges.  Note that the index and length refer to <Ranges>, not to values.
+		 */
+		public NumberSet ExtractRanges (int index, int count)
+			{
+			if (index < 0 || index + count > usedRanges)
+				{  throw new InvalidOperationException();  }
+
+			NumberSet result = new NumberSet(count);
+
+			Array.Copy(ranges, index, result.ranges, 0, count);
+			result.usedRanges = count;
+
+			return result;
+			}
+
+
 		/* Operator: operator==
 		 */
 		static public bool operator== (NumberSet setA, NumberSet setB)
@@ -689,7 +706,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 
 			return true;
 			}
-			
+
 
 		/* Function: GetEnumerator
 		 * Returns an enumerator that returns each value.  This allows the number set to be used with foreach.
@@ -797,6 +814,16 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 			
 		
+		/* Property: RangeCount
+		 * How many ranges are in the set.
+		 */
+		public int RangeCount
+			{
+			get
+				{  return usedRanges;  }
+			}
+
+
 			
 			
 		// Group: Protected Functions
