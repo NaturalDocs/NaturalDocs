@@ -4,7 +4,7 @@
 
 		(code)
 
-		bool Function (string x)
+		async bool Function (string x)
 			{
 			if (x == null)
 				{  return true;  }

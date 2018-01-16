@@ -44,6 +44,10 @@
 - After Parameters: )
   - Link Candidates: (none)
 -----
+- No Parameters: public async int NewModifiers ()
+  - Access Level: Public
+  - Link Candidates: int
+-----
 - Before Parameters: extern static private bool Attributes_NoBraces (
   - Access Level: Private
   - Link Candidates: bool
@@ -138,3 +142,31 @@
   - Link Candidates: (none)
   - Post-Prototype Line: where T1: class, Interface, new ()
   - Post-Prototype Line: where T2: System.Collections.IEnumerable<T2>
+-----
+- Before Parameters: public int ExpressionBodyA (
+  - Access Level: Public
+  - Link Candidates: int
+
+  - Parameter 1: bool x
+    - Name: x
+    - Full Type: bool
+    - Base Type: bool
+    - Link Candidates: bool
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: public static RgbColor ExpressionBodyB (
+  - Access Level: Public
+  - Link Candidates: RgbColor
+
+  - Parameter 1: RgbColor color
+    - Name: color
+    - Full Type: RgbColor
+    - Base Type: RgbColor
+    - Link Candidates: RgbColor
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)

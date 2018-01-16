@@ -21,7 +21,7 @@ class TestClass
 		[SetAttribute]
 		protected internal set
 			{  }
-		
+
 		[GetAttribute]
 		internal get
 			{  }
@@ -29,4 +29,12 @@ class TestClass
 
 	abstract int this [int x]
 		{  get;  set;  }
+
+	public int this [int x] => x ? 1 : 0;
+
+	public int this [int x]
+		{
+		get => array[x];
+		set => array[x] = value;
+		}
 	}

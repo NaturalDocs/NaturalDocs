@@ -110,3 +110,17 @@
 
 - After Parameters: )
   - Link Candidates: (none)
+-----
+- Before Parameters: public static bool operator true (
+  - Access Level: Public
+  - Link Candidates: bool
+
+  - Parameter 1: TestClass input
+    - Name: input
+    - Full Type: TestClass
+    - Base Type: TestClass
+    - Link Candidates: TestClass
+    - Default Value: (not detected)
+
+- After Parameters: )
+  - Link Candidates: (none)

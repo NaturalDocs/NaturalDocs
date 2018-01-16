@@ -18,3 +18,5 @@ public static extern implicit operator string (TestClass input);
 
 public static explicit operator List<string> (TestClass input)
 	{ }
+
+public static bool operator true (TestClass input) => input.success ? 1 : 0;

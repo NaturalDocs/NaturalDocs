@@ -17,4 +17,16 @@ class TestClass
 
 	unsafe void* FunctionF (int* x)
 		{  }
+
+	public async int FunctionG ()
+		{  }
+
+	public int FunctionH (bool x) => x ? 1 : 0;
+
+	public static RgbColor FunctionI (RgbColor color) =>
+		new RgbColor(
+			color.Red ^ 0xFF,
+			color.Green ^ 0xFF,
+			color.Blue ^ 0xFF
+			);
 	}

@@ -71,3 +71,13 @@
     TestClass.varL
     void* varL
     (line 20, char 14, child of TestClass)
+    ---------------
+    Property: PropertyNotVariableA
+    TestClass.PropertyNotVariableA
+    public int PropertyNotVariableA { get }
+    (line 22, char 2, child of TestClass)
+    ---------------
+    Property: PropertyNotVariableB
+    TestClass.PropertyNotVariableB
+    public int PropertyNotVariableB { get }
+    (line 24, char 2, child of TestClass)

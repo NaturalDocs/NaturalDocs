@@ -14,3 +14,15 @@
 - No Parameters: abstract int PropertyD { get; set }
   - Access Level: Unknown
   - Link Candidates: int
+-----
+- No Parameters: public int PropertyE { get }
+  - Access Level: Public
+  - Link Candidates: int
+-----
+- No Parameters: public string PropertyF { get }
+  - Access Level: Public
+  - Link Candidates: string
+-----
+- No Parameters: public int PropertyG { get; set }
+  - Access Level: Public
+  - Link Candidates: int

@@ -61,3 +61,31 @@
 
 - After Parameters: ] { get; set }
   - Link Candidates: (none)
+-----
+- Before Parameters: public int this [
+  - Access Level: Public
+  - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { get }
+  - Link Candidates: (none)
+-----
+- Before Parameters: public int this [
+  - Access Level: Public
+  - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+- After Parameters: ] { get; set }
+  - Link Candidates: (none)

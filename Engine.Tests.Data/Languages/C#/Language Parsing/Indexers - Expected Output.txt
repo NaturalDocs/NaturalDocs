@@ -31,3 +31,13 @@
     TestClass.this
     abstract int this [int x] { get; set }
     (line 30, char 2, child of TestClass)
+    ---------------
+    Operator: this []
+    TestClass.this
+    public int this [int x] { get }
+    (line 33, char 2, child of TestClass)
+    ---------------
+    Operator: this []
+    TestClass.this
+    public int this [int x] { get; set }
+    (line 35, char 2, child of TestClass)

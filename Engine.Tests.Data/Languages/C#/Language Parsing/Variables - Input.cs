@@ -18,4 +18,8 @@ class TestClass
 	int* varI, varJ;
 
 	void* varK, varL;
+
+	public int PropertyNotVariableA => 12;
+
+	public int PropertyNotVariableB => x ? 0 : 12;
 	}

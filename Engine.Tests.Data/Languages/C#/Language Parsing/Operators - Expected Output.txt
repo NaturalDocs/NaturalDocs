@@ -46,3 +46,8 @@
     TestClass.operator List<string>
     public static explicit operator List<string> (TestClass input)
     (line 21, char 2, child of TestClass)
+    ---------------
+    Operator: operator true
+    TestClass.operator true
+    public static bool operator true (TestClass input)
+    (line 24, char 2, child of TestClass)

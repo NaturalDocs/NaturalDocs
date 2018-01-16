@@ -36,3 +36,18 @@
     TestClass.PropertyE
     unsafe abstract void* PropertyE { get; set }
     (line 33, char 2, child of TestClass)
+    ---------------
+    Property: PropertyF
+    TestClass.PropertyF
+    public int PropertyF { get }
+    (line 36, char 2, child of TestClass)
+    ---------------
+    Property: PropertyG
+    TestClass.PropertyG
+    public string PropertyG { get }
+    (line 38, char 2, child of TestClass)
+    ---------------
+    Property: PropertyH
+    TestClass.PropertyH
+    public int PropertyH { get; set }
+    (line 40, char 2, child of TestClass)

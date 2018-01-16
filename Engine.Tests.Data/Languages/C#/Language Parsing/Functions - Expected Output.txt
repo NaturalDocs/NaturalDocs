@@ -41,3 +41,18 @@
     TestClass.FunctionF
     unsafe void* FunctionF (int* x)
     (line 18, char 2, child of TestClass)
+    ---------------
+    Function: FunctionG
+    TestClass.FunctionG
+    public async int FunctionG ()
+    (line 21, char 2, child of TestClass)
+    ---------------
+    Function: FunctionH
+    TestClass.FunctionH
+    public int FunctionH (bool x)
+    (line 24, char 2, child of TestClass)
+    ---------------
+    Function: FunctionI
+    TestClass.FunctionI
+    public static RgbColor FunctionI (RgbColor color)
+    (line 26, char 2, child of TestClass)
