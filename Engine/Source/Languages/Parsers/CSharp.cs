@@ -925,7 +925,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.IsInBounds &&
 				lookahead.Character != '{' &&
-				lookahead.Character != ';')
+				lookahead.Character != ';' &&
+				lookahead.MatchesAcrossTokens("=>") == false)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -966,6 +967,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
+			else if (lookahead.MatchesAcrossTokens("=>"))
+				{
+				lookahead.Next(2);
+				GenericSkipUntilAfter(ref lookahead, ';');
+				}
 			// Don't fail if it doesn't exist since we may be parsing a prototype.
 
 
@@ -1425,7 +1431,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (lookahead.IsInBounds &&
 				lookahead.Character != ';' &&
 				lookahead.Character != ',' &&
-				lookahead.Character != '=')
+				( lookahead.Character != '=') ||
+				  lookahead.MatchesAcrossTokens("=>") )
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -1646,7 +1653,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			if (lookahead.Character != '{')
+			if (lookahead.Character != '{' &&
+				lookahead.MatchesAcrossTokens("=>") == false)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -1662,54 +1670,72 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator.Tokenizer.AppendTextBetweenTo(iterator, lookahead, prototype);
 				prototype.Append(" { ");
 
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-
-				bool firstAccessor = true;
-
-				while (lookahead.IsInBounds && lookahead.Character != '}')
+				if (lookahead.Character == '{')
 					{
-					TokenIterator startOfAccessor = lookahead;
-				
-					if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
-						{  TryToSkipWhitespace(ref lookahead);  }
-
-					// Accessors may have their own access levels in properties (but not in events) but for the documentation we're always
-					// going to use the overall property's access level.
-					if (TryToSkipModifiers(ref lookahead))
-						{  TryToSkipWhitespace(ref lookahead);  }
-
-					if ( (keyword == "property" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-						 (keyword == "operator" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-						 (keyword == "event" && lookahead.MatchesToken("add") == false && lookahead.MatchesToken("remove") == false) )
-						{  
-						ResetTokensBetween(iterator, lookahead, mode);
-						return false;  
-						}
-
 					lookahead.Next();
-
-					if (!firstAccessor)
-						{  prototype.Append("; ");  }
-					else
-						{  firstAccessor = false;  }
-
-					iterator.Tokenizer.AppendTextBetweenTo(startOfAccessor, lookahead, prototype);
-
 					TryToSkipWhitespace(ref lookahead);
 
-					if (lookahead.Character == ';')
-						{  lookahead.Next();  }
-					else if (lookahead.Character == '{')
+					bool firstAccessor = true;
+
+					while (lookahead.IsInBounds && lookahead.Character != '}')
 						{
+						TokenIterator startOfAccessor = lookahead;
+				
+						if (TryToSkipAttributes(ref lookahead, AttributeTarget.LocalOnly))
+							{  TryToSkipWhitespace(ref lookahead);  }
+
+						// Accessors may have their own access levels in properties (but not in events) but for the documentation we're always
+						// going to use the overall property's access level.
+						if (TryToSkipModifiers(ref lookahead))
+							{  TryToSkipWhitespace(ref lookahead);  }
+
+						if ( (keyword == "property" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
+							 (keyword == "operator" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
+							 (keyword == "event" && lookahead.MatchesToken("add") == false && lookahead.MatchesToken("remove") == false) )
+							{  
+							ResetTokensBetween(iterator, lookahead, mode);
+							return false;  
+							}
+
 						lookahead.Next();
-						GenericSkipUntilAfter(ref lookahead, '}');
+
+						if (!firstAccessor)
+							{  prototype.Append("; ");  }
+						else
+							{  firstAccessor = false;  }
+
+						iterator.Tokenizer.AppendTextBetweenTo(startOfAccessor, lookahead, prototype);
+
+						TryToSkipWhitespace(ref lookahead);
+
+						if (lookahead.Character == ';')
+							{  lookahead.Next();  }
+						else if (lookahead.Character == '{')
+							{
+							lookahead.Next();
+							GenericSkipUntilAfter(ref lookahead, '}');
+							}
+						else if (lookahead.MatchesAcrossTokens("=>"))
+							{
+							lookahead.Next(2);
+							GenericSkipUntilAfter(ref lookahead, ';');
+							}
+
+						TryToSkipWhitespace(ref lookahead);
 						}
 
-					TryToSkipWhitespace(ref lookahead);
+					// Closing brace
+					lookahead.Next();
 					}
 
-				lookahead.Next();
+				else // lookahead is at "=>"
+					{
+					prototype.Append("get");
+
+					lookahead.Next(2);
+					GenericSkipUntilAfter(ref lookahead, ';');
+					}
+
 				prototype.Append(" }");
 
 
@@ -1743,8 +1769,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			else // mode isn't CreateElements
 				{
 				// If mode is ParsePrototypes, we're not marking the accessors as if they were parameters.  Just skip everything.
-				lookahead.Next();
-				GenericSkipUntilAfter(ref lookahead, '}');
+
+				if (lookahead.Character == '{')
+					{
+					lookahead.Next();
+					GenericSkipUntilAfter(ref lookahead, '}');
+					}
+				else // =>
+					{
+					lookahead.Next(2);
+					GenericSkipUntilAfter(ref lookahead, ';');
+					}
 				}
 
 			iterator = lookahead;
@@ -2982,7 +3017,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Additional keywords found in the syntax reference
 
-			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value",
+			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await",
 
 			// Additional keywords for LINQ
 
@@ -2996,7 +3031,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * to every code element (such as "sealed" not being revelant for constants) but it is okay for the parser to be over tolerant.
 		 */
 		static protected string[] NonAccessModifiers = new string[] {
-			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe"
+			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe", "async"
 			};
 
 		/* var: BuiltInTypes
