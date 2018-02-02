@@ -81,62 +81,115 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output, 
 										IList<Topic> embeddedTopics, int embeddedTopicIndex = 0, string extraClass = null)
 			{
+			try
+				{
 
-			// Setup
+				// Setup
 
-			this.topic = topic;
-			this.links = links;
-			this.linkTargets = linkTargets;
-			this.htmlOutput = output;
-			this.embeddedTopics = embeddedTopics;
-			this.embeddedTopicIndex = embeddedTopicIndex;
-			this.isToolTip = false;
+				this.topic = topic;
+				this.links = links;
+				this.linkTargets = linkTargets;
+				this.htmlOutput = output;
+				this.embeddedTopics = embeddedTopics;
+				this.embeddedTopicIndex = embeddedTopicIndex;
+				this.isToolTip = false;
 
 
-			// Core
+				// Core
 
-			string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
-			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
-			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
+				string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
+				string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
+				string topicHashPath = HTMLBuilder.Source_TopicHashPath(topic, topicPage.IncludeClassInTopicHashPaths);
 
-			if (topicHashPath != null)
-				{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
-
-			htmlOutput.Append(
-				"<a name=\"Topic" + topic.TopicID + "\"></a>" +
-				"<div class=\"CTopic T" + simpleCommentTypeName + " L" + simpleLanguageName + 
-											(extraClass == null ? "" : ' ' + extraClass) + "\">" +
-
-					"\r\n ");
-					BuildTitle();
-
-					#if SHOW_NDMARKUP
-						if (topic.Body != null)
-							{
-							htmlOutput.Append(
-							"\r\n " +
-							"<div class=\"CBodyNDMarkup\">" +
-								topic.Body.ToHTML() +
-							"</div>");
-							}
-					#endif
-
-					if (topic.Prototype != null)
-						{
-						htmlOutput.Append("\r\n ");
-						BuildPrototype();
-						}
-
-					if (topic.Body != null)
-						{
-						htmlOutput.Append("\r\n ");
-						BuildBody();
-						}
+				if (topicHashPath != null)
+					{  htmlOutput.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
 
 				htmlOutput.Append(
-				"\r\n" +
-				"</div>"
-				);
+					"<a name=\"Topic" + topic.TopicID + "\"></a>" +
+					"<div class=\"CTopic T" + simpleCommentTypeName + " L" + simpleLanguageName + 
+												(extraClass == null ? "" : ' ' + extraClass) + "\">" +
+
+						"\r\n ");
+						BuildTitle();
+
+						#if SHOW_NDMARKUP
+							if (topic.Body != null)
+								{
+								htmlOutput.Append(
+								"\r\n " +
+								"<div class=\"CBodyNDMarkup\">" +
+									topic.Body.ToHTML() +
+								"</div>");
+								}
+						#endif
+
+						if (topic.Prototype != null)
+							{
+							htmlOutput.Append("\r\n ");
+							BuildPrototype();
+							}
+
+						if (topic.Body != null)
+							{
+							htmlOutput.Append("\r\n ");
+							BuildBody();
+							}
+
+					htmlOutput.Append(
+					"\r\n" +
+					"</div>"
+					);
+				}
+
+			catch (Exception e)
+				{
+				if (topic != null)
+					{
+					StringBuilder task = new StringBuilder();
+
+					if (string.IsNullOrEmpty(topic.Title) == false)
+						{  task.Append("Building Topic: \"" + topic.Title + "\"");  }
+					else
+						{
+						task.Append("Building Topic ID: " + topic.TopicID + ", Title: ");
+
+						if (topic.Title == null)
+							{  task.Append("(null)");  }
+						else // empty
+							{  task.Append("\"\"");  }
+						}
+
+					if (topic.FileID > 0)
+						{
+						var file = EngineInstance.Files.FromID(topic.FileID);
+
+						if (file == null)
+							{  task.Append(" from file ID " + topic.FileID);  }
+						else
+							{  task.Append(" from file \"" + file.FileName + "\"");  }
+
+						if (topic.CommentLineNumber == topic.CodeLineNumber)
+							{  
+							if (topic.CommentLineNumber > 0)
+								{  task.Append(" line " + topic.CommentLineNumber);  }
+							}
+						else if (topic.CommentLineNumber > 0)
+							{
+							if (topic.CodeLineNumber > 0)
+								{  task.Append(" lines " + topic.CommentLineNumber + " and " + topic.CodeLineNumber);  }
+							else
+								{  task.Append(" line " + topic.CommentLineNumber);  }
+							}
+						else if (topic.CodeLineNumber > 0)
+							{  task.Append(" line " + topic.CodeLineNumber);  }
+						}
+
+					e.AddNaturalDocsTask(task.ToString());
+					}
+
+				throw;
+				}
+
 			}
 
 
