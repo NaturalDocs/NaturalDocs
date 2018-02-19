@@ -701,9 +701,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
 						}
 					}
-				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu || menuEntry == menu.RootDatabaseMenu)
+				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu)
 					{
+					// If we're at the root file or class menu and the entry is not also a language or file source, it means there are multiple languages and/or
+					// file sources beneath it and thus there is no shared hash path.  "CSharpClass:" and "PerlClass:", "Files:" and "Files2:", etc.
 					hashPath = null;
+					}
+				else if (menuEntry == menu.RootDatabaseMenu)
+					{
+					// If we're at the root database menu and the entry is not also a scope, it means there are multiple scopes beneath it.  However, unlike
+					// files and classes, there is still the shared "Database:" hash path.
+					hashPath = htmlBuilder.Database_OutputFolderHashPath();
 					}
 				#if DEBUG
 				else
