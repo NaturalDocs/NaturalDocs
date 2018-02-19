@@ -82,6 +82,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			return null;
 		   }
 
+		override public Path MakeAbsolute (Path path)
+			{
+			throw new InvalidOperationException();
+			}
+
 		/* Function: AddAllFiles
 		 * Calls <Files.Manager.AddOrUpdateFile()> for every file in the folder and its subfolders.
 		 */
