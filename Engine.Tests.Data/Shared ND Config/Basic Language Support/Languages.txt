@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 04-06-2017)
+﻿Format: 2.1 (Development Release 01-04-2018)
 
 # This is the Natural Docs languages file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -107,6 +107,21 @@ Language: Java (Basic Language Support)
    Function Prototype Ender: {
    Variable Prototype Enders: ; =
    Class Prototype Enders: { ;
+
+
+Language: Python (Basic Language Support)
+
+   Extension: py-bls
+   Shebang String: pythonBLS
+
+   Line Comment: #
+   Block Comment: ''' ''' """ """
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Class Prototype Ender: :
+   Function Prototype Ender: :
+   Variable Prototype Ender: =
 
 
 Language: Pascal (Basic Language Support)
