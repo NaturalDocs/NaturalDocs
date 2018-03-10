@@ -264,33 +264,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 																											  string openingSymbol, string closingSymbol,
 																											  bool openingMustBeAlone)
 			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+			TokenIterator firstToken, endOfLine;
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 
 			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
 				{  return null;  }
 
-			if (openingMustBeAlone)
-				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(openingSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
-				}
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with 
+			// Python's ''' and """ strings.
+			firstToken.NextByCharacters(openingSymbol.Length);
+
+			if (openingMustBeAlone && firstToken.FundamentalType == FundamentalType.Symbol)
+				{  return null;  }
 
 			PossibleDocumentationComment comment = new PossibleDocumentationComment();
 			comment.Start = lineIterator;
 
+			var tokenizer = lineIterator.Tokenizer;
+
 			for (;;)
 				{
-				if (!lineIterator.IsInBounds)
-					{  return null;  }
-					
 				TokenIterator closingSymbolIterator;
 				
-				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
+				if (tokenizer.FindTokensBetween(closingSymbol, false, firstToken, endOfLine, out closingSymbolIterator) == true)
 					{
-					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
+					// Make sure nothing appears after the closing symbol on the line
 
+					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
 					closingSymbolIterator.NextPastWhitespace();
 
 					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
@@ -303,16 +303,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 
 				lineIterator.Next();
+
+				if (!lineIterator.IsInBounds)
+					{  return null;  }
+
+				lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 				}
-			
+
+
 			// Success.  Mark the symbols before returning.
+			firstToken = comment.Start.FirstToken(LineBoundsMode.ExcludeWhitespace);
 			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
 
-			TokenIterator lastToken;
 			lineIterator.Previous();
-			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
-			lastToken.PreviousByCharacters(closingSymbol.Length);
-			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
+			endOfLine.PreviousByCharacters(closingSymbol.Length);
+			endOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
 
 			return comment;
 			}
