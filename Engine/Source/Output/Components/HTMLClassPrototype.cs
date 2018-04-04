@@ -224,7 +224,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							{  parent.link = parentLinks[i];  }
 
 						foundMatch = true;
-						break;
+
+						// Keep going, don't break on the first match.  It's possible for multiple prototype parents to share 
+						// the same link, such as IList and IList<T>.
 						}
 					}
 
