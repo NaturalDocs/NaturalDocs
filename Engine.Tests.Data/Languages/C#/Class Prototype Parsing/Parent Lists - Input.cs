@@ -13,3 +13,6 @@ class ParentTemplate : List<int> { }
 
 // Class: TemplateWithQualifiedParentTemplates
 class TemplateWithQualifiedParentTemplates<X,Y> : System.Collections.Generic.IEnumerable<X>, Parent2<X,Y> { }
+
+// Class: SimilarParentNames
+class SimilarParentNames : IList, IList<T> { }

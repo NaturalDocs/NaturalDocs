@@ -66,3 +66,18 @@ class TemplateWithQualifiedParentTemplates<X,Y> : System.Collections.Generic.IEn
   - Parent 2: Parent2<X,Y>
     - Name: Parent2
     - Template Suffix: <X,Y>
+
+-----
+
+class SimilarParentNames : IList, IList<T>
+
+  - Name: SimilarParentNames
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: IList
+    - Name: IList
+
+  - Parent 2: IList<T>
+    - Name: IList
+    - Template Suffix: <T>
