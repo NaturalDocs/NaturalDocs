@@ -45,3 +45,28 @@ Topic: Block Comment 6/8
 """
 
 """ Topic: Block Comment 8/8 """
+
+
+''' Topic: Unacceptable comment 1/8 ''' text after closing
+
+''' Topic: Unacceptable comment 2/8
+   Body
+''' text after closing
+
+text before opening ''' Topic: Unacceptable comment 3/8 '''
+ 
+text before opening ''' Topic: Unacceptable comment 4/8
+Body
+'''
+
+""" Topic: Unacceptable comment 5/8 """ text after closing
+
+""" Topic: Unacceptable comment 6/8
+   Body
+""" text after closing
+
+text before opening """ Topic: Unacceptable comment 7/8 """
+ 
+text before opening """ Topic: Unacceptable comment 8/8
+Body
+"""
