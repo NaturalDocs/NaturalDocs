@@ -321,11 +321,22 @@ namespace CodeClear.NaturalDocs.Engine.Files
 									{  return ReleaseClaimedFileReason.CancelledProcessing;  }
 								}
 						
-							// We want to extract type links for members of the class hierarchy that don't have parsed prototypes because
-							// the HTML output falls back to regular prototypes in this situation.
-							if (topic.Prototype != null &&
-								(EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy == false ||
-								 topic.ParsedClassPrototype == null))
+							// We want to extract type links even for prototypes in the class hierarchy because the HTML output falls back to
+							// regular prototypes if there's no class prototype.  Also, if there's parameter lists in the description the HTML
+							// generator will require type links to exist regardless of what type of prototype it creates.  For example, this 
+							// SystemVerilog interface:
+							//
+							//    // Interface: myInterface
+							//    //
+							//    // Parameters:
+							//    //    PARAMNAME - description
+							//
+							//    interface myInterface #(parameter PARAMNAME = 8) (input reset, clk);
+							//
+							// The HTML generation for the Parameters section will expect a type link to exist for PARAMNAME.
+							//
+							if (topic.Prototype != null
+							)
 								{
 								ExtractTypeLinks(topic, links);
 
