@@ -1,0 +1,11 @@
+
+/* Interface: InterfaceName
+
+	This is a SystemVerilog example.  The fact that it has a class prototype shouldn't mean it can't find the
+	parameter type.
+
+	Parameters:
+		PARAMNAME - Something
+*/
+interface InterfaceName #(parameter PARAMNAME = 8) (input reset, clk);
+	{  /* braces added to satisfy cs-bls prototype enders */  }
