@@ -109,18 +109,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			
 		/* Function: FirstToken
 		 * Returns a <TokenIterator> at the beginning of the current line.  If the iterator is out of bounds it will be 
-		 * set to the first line or one past the last token, depending on which edge it has gone off.
+		 * set to one past the last token, regardless of which edge it has gone off.
 		 */
 		public TokenIterator FirstToken (LineBoundsMode boundsMode)
 			{
-			if (lineIndex >= tokenizer.Lines.Count)
+			if (!IsInBounds)
 				{  
 				return new TokenIterator(tokenizer, tokenizer.TokenCount, tokenizer.RawText.Length, 
-																 tokenizer.StartingLineNumber + tokenizer.Lines.Count - 1);
-				}
-			else if (lineIndex <= 0)
-				{  
-				return new TokenIterator(tokenizer, tokenIndex, rawTextIndex, tokenizer.StartingLineNumber);
+													tokenizer.StartingLineNumber + tokenizer.Lines.Count - 1);
 				}
 			else
 				{
