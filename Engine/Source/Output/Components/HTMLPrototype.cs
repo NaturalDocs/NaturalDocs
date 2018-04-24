@@ -139,6 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 			columnWidths = new int[NumberOfColumns];
+            columnIndexes = new int[NumberOfColumns];
 			htmlCells = new string[parsedPrototype.NumberOfParameters, NumberOfColumns];
 
 			for (int p = 0; p < parsedPrototype.NumberOfParameters; p++)
@@ -520,10 +521,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		protected void BuildParameterTable ()
 			{
 			int firstUsedCell = 0;
-			while (firstUsedCell < columnWidths.Length && columnWidths[firstUsedCell] == 0)
+			while (firstUsedCell < NumberOfColumns && columnWidths[firstUsedCell] == 0)
 				{  firstUsedCell++;  }
 
-			int lastUsedCell = columnWidths.Length - 1;
+			int lastUsedCell = NumberOfColumns - 1;
 			while (lastUsedCell > 0 && columnWidths[lastUsedCell] == 0)
 				{  lastUsedCell--;  }
 
