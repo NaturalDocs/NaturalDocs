@@ -1,0 +1,55 @@
+- Before Parameters: Function FunctionA (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: const x: integer,
+    - Name: x
+    - Full Type: const integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: var y: array of integer
+    - Name: y
+    - Full Type: var array of integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer
+-----
+- Before Parameters: Function FunctionB (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: const a,
+    - Name: a
+    - Full Type (implied): const Package.Class
+    - Base Type (implied): Package.Class
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Package.Class,
+    - Name: b
+    - Full Type: Package.Class
+    - Base Type: Package.Class
+    - Link Candidates: Package.Class
+    - Default Value: (not detected)
+
+  - Parameter 3: var c,
+    - Name: c
+    - Full Type (implied): var array of string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: out d: array of string
+    - Name: d
+    - Full Type: out array of string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer

@@ -1,0 +1,23 @@
+
+{ Function: FunctionA
+
+	Parameters:
+		x - description
+		y - description
+}
+Function FunctionA (const x: integer, var y: array of integer): integer;
+	Begin
+	End;
+ 
+{ Function: FunctionB
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+}
+Function FunctionB (const a, b: Package.Class, var c, out d: array of string): integer;
+	Begin
+	End;
+
