@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					{  
 					var parsedPrototype = topics[topicIndex].ParsedPrototype;
 					
-					TokenIterator start, end, prefixStart, prefixEnd, suffixStart, suffixEnd;
+					TokenIterator start, end, extraModifierStart, extraModifierEnd, prefixStart, prefixEnd, suffixStart, suffixEnd;
 					int numberOfParameters = parsedPrototype.NumberOfParameters;
 
 					if (numberOfParameters == 0)
@@ -78,9 +78,17 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
-							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
+							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
+																						out extraModifierStart, out extraModifierEnd, 
+																						out prefixStart, out prefixEnd, 
+																						out suffixStart, out suffixEnd, false))
 								{  
-								output.Append("    - Full Type: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+								output.Append("    - Full Type: ");
+								
+								if (extraModifierEnd > extraModifierStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
+								
+								output.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
 
 								if (prefixEnd > prefixStart)
 									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
@@ -89,9 +97,17 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 								output.AppendLine();
 								}
-							else if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, true))
+							else if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
+																							  out extraModifierStart, out extraModifierEnd, 
+																							  out prefixStart, out prefixEnd, 
+																							  out suffixStart, out suffixEnd, true))
 								{  
-								output.Append("    - Full Type (implied): " + parsedPrototype.Tokenizer.TextBetween(start, end));
+								output.Append("    - Full Type (implied): ");
+
+								if (extraModifierEnd > extraModifierStart)
+									{  output.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
+								
+								output.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
 
 								if (prefixEnd > prefixStart)
 									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }

@@ -228,12 +228,14 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Function: GetFullParameterType
 		 * 
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This includes modifiers and type
-		 * suffixes.  Since the type token may not be continuous, it returns separate start and end iterators for type prefixes
-		 * (* in "int *x") and suffixes ("[12]" in "int x[12]").
+		 * suffixes.  Since the type token may not be continuous, it returns separate start and end iterators for extra type modifiers
+		 * ("const" in "const x: integer") prefixes ("*" in "int *x") and suffixes ("[12]" in "int x[12]").  Regular modifiers attached to
+		 * the type ("unsigned" in "unsigned int x") will be accounted for by the main iterators.
 		 * 
 		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
-		public bool GetFullParameterType (int index, out TokenIterator start, out TokenIterator end, 
+		public bool GetFullParameterType (int index, out TokenIterator start, out TokenIterator end,
+													  out TokenIterator extraModifierStart, out TokenIterator extraModifierEnd,
 													  out TokenIterator prefixStart, out TokenIterator prefixEnd,
 													  out TokenIterator suffixStart, out TokenIterator suffixEnd,
 													  bool impliedTypes = true)
@@ -244,6 +246,8 @@ namespace CodeClear.NaturalDocs.Engine
 				{  
 				start = paramEnd;
 				end = paramEnd;
+				extraModifierStart = paramEnd;
+				extraModifierEnd = paramEnd;
 				prefixStart = paramEnd;
 				prefixEnd = paramEnd;
 				suffixStart = paramEnd;
@@ -258,12 +262,46 @@ namespace CodeClear.NaturalDocs.Engine
 			PrototypeParsingType type = start.PrototypeParsingType;
 
 			while (start < paramEnd && 
-						type != PrototypeParsingType.Type &&
-						type != PrototypeParsingType.TypeModifier &&
-						type != PrototypeParsingType.TypeQualifier)
+					  type != PrototypeParsingType.Type &&
+					  type != PrototypeParsingType.TypeModifier &&
+					  type != PrototypeParsingType.TypeQualifier &&
+					  type != PrototypeParsingType.NameModifier_PartOfType)
 				{  
 				start.Next();  
 				type = start.PrototypeParsingType;
+				}
+
+
+			// If we're on a name modifier, get it and keep looking for the type
+
+			if (type == PrototypeParsingType.NameModifier_PartOfType)
+				{
+				extraModifierStart = start;
+
+				while (start < paramEnd && 
+						 type != PrototypeParsingType.NameModifier_PartOfType);
+					{  
+					start.Next();  
+					type = start.PrototypeParsingType;
+					}
+
+				extraModifierEnd = start;
+
+				// Search for the start again after the extra modifier
+
+				while (start < paramEnd && 
+						  type != PrototypeParsingType.Type &&
+						  type != PrototypeParsingType.TypeModifier &&
+						  type != PrototypeParsingType.TypeQualifier)
+					{  
+					start.Next();  
+					type = start.PrototypeParsingType;
+					}
+				}
+			else
+				{
+				extraModifierStart = paramEnd;
+				extraModifierEnd = paramEnd;
 				}
 
 
@@ -304,12 +342,15 @@ namespace CodeClear.NaturalDocs.Engine
 
 			else if (impliedTypes)
 				{
+				TokenIterator ignoredA, ignoredB;
+
 				if (Style == ParameterStyle.C)
 					{
 					// Move backwards for "int x, y"
 					for (int i = index - 1; i >= 0; i--)
 						{
-						if (GetFullParameterType(i, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
+						if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
+															out suffixStart, out suffixEnd, false))
 							{  
 							foundType = true;
 							break;
@@ -321,7 +362,9 @@ namespace CodeClear.NaturalDocs.Engine
 					// Move forwards for "x, y: integer"
 					for (int i = index + 1; i <= NumberOfParameters; i++)
 						{
-						if (GetFullParameterType(i, out start, out end, out prefixStart, out prefixEnd, out suffixStart, out suffixEnd, false))
+						// We ignore the extra modifiers so "const x, y: integer" will work
+						if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
+															out suffixStart, out suffixEnd, false))
 							{
 							foundType = true;
 							break;
@@ -367,6 +410,8 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				start = paramEnd;
 				end = paramEnd;
+				extraModifierStart = paramEnd;
+				extraModifierEnd = paramEnd;
 				prefixStart = paramEnd;
 				prefixEnd = paramEnd;
 				suffixStart = paramEnd;

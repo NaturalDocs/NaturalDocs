@@ -444,7 +444,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					break;
 					}
 				else if (TryToSkipComment(ref iterator) ||
-							  TryToSkipString(ref iterator))
+						   TryToSkipString(ref iterator))
 					{  }
 				else
 					{  iterator.Next();  }
@@ -477,8 +477,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
 					// as a parameter divider.
 					else if (TryToSkipComment(ref iterator) || 
-								 TryToSkipString(ref iterator) ||
-								 TryToSkipBlock(ref iterator, true))
+							   TryToSkipString(ref iterator) ||
+							   TryToSkipBlock(ref iterator, true))
 						{  }
 
 					else
@@ -495,10 +495,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (parsedPrototype.NumberOfParameters > 0)
 					{
+					var parameterStyle = DetectParameterStyle(parsedPrototype);
+
 					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 						{
 						parsedPrototype.GetParameter(i, out start, out end);
-						ParsePrototypeParameter(start, end, commentTypeID);
+
+						if (parameterStyle == ParsedPrototype.ParameterStyle.C)
+							{  MarkCParameter(start, end);  }
+						else if (parameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+							{  MarkPascalParameter(start, end);  }
+						else
+							{  throw new NotImplementedException();  }
 						}
 					}
 
@@ -511,19 +519,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				start.Next();
 				start.NextPastWhitespace(end);
 
-				// If there's a colon immediately after the parameters, it's a Pascal-style function.  Mark the return value after it 
-				// the same as the part of a parameter after the colon.
+				// If there's a colon immediately after the parameters, it's a Pascal-style function.  Mark the return value after it.
+				// We can't rely on parameterStyle since the prototype may not have parameters.
 				if (start < end && start.Character == ':')
 					{  
 					start.Next();
 					start.NextPastWhitespace();
 
 					if (start < end)
-						{  MarkPascalParameterAfterColon(start, end, commentTypeID);  }
+						{  MarkTypeAndModifiers(start, end);  }
 					}
 
-				// Otherwise it's a C-style function.  Mark the part before the parameters as if it was a parameter to get the return
-				// value.
+				// Otherwise it's a C-style function.  Mark the part before the parameters, which includes the name.
 				else
 					{  
 					parsedPrototype.GetBeforeParameters(out start, out end);
@@ -533,18 +540,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 					if (start < end)
-						{  MarkCParameter(start, end, commentTypeID);  }
+						{  MarkCParameter(start, end);  }
 					}
 				}
 
 			
-			// If there's no brackets, it's a variable or property.  Mark it like a parameter.
+			// If there's no brackets, it's a variable, property, or class.
 
 			else
 				{
 				TokenIterator start, end;
 				parsedPrototype.GetCompletePrototype(out start, out end);
-				ParsePrototypeParameter(start, end, commentTypeID);
+
+				var parameterStyle = DetectParameterStyle(start, end);
+
+				if (parameterStyle == ParsedPrototype.ParameterStyle.C)
+					{  MarkCParameter(start, end);  }
+				else if (parameterStyle == ParsedPrototype.ParameterStyle.Pascal)
+					{  MarkPascalParameter(start, end);  }
+				else
+					{  throw new NotImplementedException();  }
 				}
 
 			return parsedPrototype;
@@ -3165,25 +3180,92 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 
-		/* Function: ParsePrototypeParameter
-		 * Marks the tokens in the parameter specified by the bounds with <CommentParsingTypes>.
+		/* Function: DetectParameterStyle
+		 * Determines whether the *single* parameter between the iterators uses the C or Pascal style.  Note that a Pascal prototype 
+		 * may contain individual parameters that look like C style parameters, but it should always have at least one that looks like
+		 * a Pascal style parameter.
 		 */
-		protected void ParsePrototypeParameter (TokenIterator start, TokenIterator end, int commentTypeID)
+		protected ParsedPrototype.ParameterStyle DetectParameterStyle (TokenIterator start, TokenIterator end)
 			{
-			// Pass 1: Count the number of "words" in the parameter and determine whether it has a colon, and is thus a Pascal-style 
-			// parameter.  We'll figure out how to interpret the words in the second pass.  Pascal can define more than one parameter 
-			// per type ("x, y: int") but as long as there's only one word in the first one it will still be interpreted as we want it.
-			//
-			// If they exist, also mark the colon as a name/type separator and mark the default value.
-
-			int words = 0;
-			int wordsBeforeColon = 0;
-			bool hasColon = false;
-
 			TokenIterator iterator = start;
 
 			while (iterator < end)
 				{
+				// Quit early if we found a default value expression
+				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":="))
+					{  break;  }
+
+				// Can only check for a colon after checking for :=
+				else if (iterator.Character == ':')
+					{  return ParsedPrototype.ParameterStyle.Pascal;  }
+
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
+					{
+					// There may be comments in the prototype if it's something we allowed there like a Splint comment or /*out*/.
+
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it 
+					// anyway just so it doesn't lose its mind if one occurs.
+
+					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property.
+					}
+
+				// Skip over whitespace plus any unexpected random symbols that appear.
+				else
+					{  iterator.Next();  }
+				}
+
+			// If we didn't find anything Pascal, then we're C.
+			return ParsedPrototype.ParameterStyle.C;
+			}
+
+
+		/* Function: DetectParameterStyle
+		 * Determines whether the parameters in this prototype use the C or Pascal style.
+		 */
+		protected ParsedPrototype.ParameterStyle DetectParameterStyle (ParsedPrototype prototype)
+			{
+			// We have to go through all the parameters to see if any are Pascal-style since some may appear as C-style.  For 
+			// example:
+			//
+			// Function FunctionName (const a, b: string): integer;
+			//
+			// "const a" could be seen as a C-style parameter with type "const" and name "a".  It's only when we get to the second
+			// parameter that we see it's Pascal.
+
+			TokenIterator start, end;
+
+			for (int i = 0; i < prototype.NumberOfParameters; i++)
+				{
+				prototype.GetParameter(i, out start, out end);
+
+				if (DetectParameterStyle(start, end) == ParsedPrototype.ParameterStyle.Pascal)
+					{  return ParsedPrototype.ParameterStyle.Pascal;  }
+				}
+
+			// If we didn't find anything Pascal, then we're C.  If there's no parameters then it doesn't matter which we return.
+			return ParsedPrototype.ParameterStyle.C;
+			}
+
+
+		/* Function: MarkCParameter
+		 * Marks the tokens in the C-style parameter specified by the bounds with <CommentParsingTypes>.
+		 */
+		protected void MarkCParameter (TokenIterator start, TokenIterator end)
+			{
+			// Pass 1: Count the number of "words" in the parameter prior to the default value and mark the default value.
+			// We'll figure out how to interpret the words in the second pass.
+
+			int words = 0;
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+
+				// Default values
+
 				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":="))
 					{
 					if (iterator.Character == '=')
@@ -3217,22 +3299,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					break;
 					}
 
-				// Can only check for this after checking for :=
-				else if (iterator.Character == ':')
-					{
-					hasColon = true;
-					wordsBeforeColon = words;
-					iterator.PrototypeParsingType = PrototypeParsingType.NameTypeSeparator;
-					iterator.Next();
-					}
+
+				// Param separator
+
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-					{
-					break;
-					}
+					{  break;  }
+
+
+				// "Words" we're interested in
+
 				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
-							 TryToSkipComment(ref iterator) ||
-							 TryToSkipString(ref iterator) ||
-							 TryToSkipBlock(ref iterator, true))
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
 					{
 					// If there was a comment in the prototype, that means it specifically wasn't filtered out because it was something
 					// significant like a Splint comment or /*out*/.  Treat it like a modifier.
@@ -3246,235 +3325,331 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					words++;
 					}
 
-				// Skip over whitespace plus any unexpected random symbols that appear.
+
+				// Whitespace and any unexpected random symbols
+
 				else
-					{
-					iterator.Next();
-					}
-				}
-
-
-			// Pass 2: Mark the "words" we counted from the first pass.  If we don't have a colon and thus have C-style parameters, 
-			// the order of words goes [modifier] [modifier] [type] [name], starting from the right.  Typeless languages that only have
-			// one word will have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
-			// they're sharing a type declaration will also have it correctly interpreted as the name.
-
-			if (hasColon == false)
-				{
-				MarkCParameter(start, end, commentTypeID, words);
-				}
-
-			// If we do have a colon, the order of words goes [name]: [modifier] [modifier] [type], the type portion starting
-			// from the right.
-			else
-				{
-				iterator = start;
-
-				while (iterator < end && iterator.PrototypeParsingType != PrototypeParsingType.NameTypeSeparator)
 					{  iterator.Next();  }
-
-				MarkPascalParameterBeforeColon(start, iterator, commentTypeID, wordsBeforeColon);
-
-				while (iterator < end && iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
-					{  iterator.Next();  }
-
-				MarkPascalParameterAfterColon(iterator, end, commentTypeID, words - wordsBeforeColon);
 				}
-			}
 
 
-		/* Function: CountParameterWords
-		 * Returns the number of "words" between the bounds.
-		 */
-		protected int CountParameterWords (TokenIterator start, TokenIterator end, int commentTypeID)
-			{
-			TokenIterator iterator = start;
-			int words = 0;
+			// Pass 2: Mark the "words" we counted from the first pass.  The order of words goes [modifier] [modifier] [type] [name],
+			// starting from the right.  Typeless languages that only have one word will have it correctly interpreted as the name.
+
+			iterator = start;
+			TokenIterator wordStart, wordEnd;
 
 			while (iterator < end)
 				{
-				if (TryToSkipTypeOrVarName(ref iterator, end) ||
-					 TryToSkipComment(ref iterator) ||
-					 TryToSkipString(ref iterator) ||
-					 TryToSkipBlock(ref iterator, true))
-					{
-					words++;
-					}
-
-				// Skip over whitespace plus any unexpected random symbols that appear.
-				else
-					{
-					iterator.Next();
-					}
-				}
-
-			return words;
-			}
-
-
-		/* Function: MarkCParameter
-		 * Marks the tokens in the C-style parameter specified by the bounds with <CommentParsingTypes>.  This function will also
-		 * work correctly for typeless parameters and Pascal-style parameters that don't have a type.  If you leave the word count
-		 * -1 it will use <CountParameterWords()> to determine it itself.
-		 */
-		protected void MarkCParameter (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
-			{
-			if (words == -1)
-				{  words = CountParameterWords(start, end, commentTypeID);  }
-
-			// The order of words goes [modifier] [modifier] [type] [name], starting from the right.  Typeless languages that only have
-			// one word will have it correctly interpreted as the name.  Pascal-style languages that don't have a colon on this line because
-			// they're sharing a type declaration will also have it correctly interpreted as the name.
-
-			TokenIterator iterator = start;
-
-			TokenIterator startWord = iterator;
-			TokenIterator endWord = iterator;
-			bool markWord = false;
-
-			while (iterator < end)
-				{
-				startWord = iterator;
-				markWord = false;
+				wordStart = iterator;
 
 				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
-						iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
 					{
 					break;
 					}
 				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
-							 TryToSkipComment(ref iterator) ||
-							 TryToSkipString(ref iterator) ||
-							 TryToSkipBlock(ref iterator, true))
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
 					{
-					markWord = true;
-					endWord = iterator;
-					}
-				else
-					{
-					iterator.Next();
-					}
+					wordEnd = iterator;
 
-				if (markWord)
-					{
 					if (words >= 3)
-						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);  }
 					else if (words == 2)
 						{  
-						MarkType(startWord, endWord);  
+						MarkType(wordStart, wordEnd);  
 
 						// Go back and change any trailing * or & to name prefixes because even if they're textually attached to the type
 						// (int* x) they're actually part of the name in C++ (int *x).
 
-						TokenIterator namePrefix = endWord;
+						TokenIterator namePrefix = wordEnd;
 						namePrefix.Previous();
 
-						if (namePrefix >= startWord && (namePrefix.Character == '*' || namePrefix.Character == '&' || namePrefix.Character == '^'))
+						if (namePrefix >= wordStart && 
+							(namePrefix.Character == '*' || namePrefix.Character == '&' || namePrefix.Character == '^') )
 							{
 							for (;;)
 								{
 								TokenIterator temp = namePrefix;
 								temp.Previous();
-								temp.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, startWord);
+								temp.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, wordStart);
 
-								if (temp >= startWord && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
+								if (temp >= wordStart && (temp.Character == '*' || temp.Character == '&' || temp.Character == '^'))
 									{  namePrefix = temp;  }
 								else
 									{  break;  }
 								}
 
-							namePrefix.Tokenizer.SetPrototypeParsingTypeBetween(namePrefix, endWord, PrototypeParsingType.NamePrefix_PartOfType);
+							namePrefix.Tokenizer.SetPrototypeParsingTypeBetween(namePrefix, wordEnd, 
+																										  PrototypeParsingType.NamePrefix_PartOfType);
 							}
 						}
 					else if (words == 1)
-						{  MarkName(startWord, endWord);  }
+						{  MarkName(wordStart, wordEnd);  }
 
 					words--;
-					}
-				}
-			}
-
-
-		/* Function: MarkPascalParameterBeforeColon
-		 * Marks the tokens in the Pascal-style parameter specified by the bounds with <CommentParsingTypes>.  The bounds
-		 * contain the part of the prototype prior to the colon.  If the word count is -1 it will determine it itself with 
-		 * <CountParameterWords()>.
-		 */
-		protected void MarkPascalParameterBeforeColon (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
-			{
-			if (words == -1)
-				{  words = CountParameterWords(start, end, commentTypeID);  }
-
-			TokenIterator iterator = start;
-			TokenIterator startWord = iterator;
-
-			// First word is the name no matter what.
-
-			if (TryToSkipTypeOrVarName(ref iterator, end) ||
-					TryToSkipComment(ref iterator) ||
-					TryToSkipString(ref iterator) ||
-					TryToSkipBlock(ref iterator, true))
-				{  }
-			else
-				{  iterator.Next();  }
-
-			TokenIterator endWord = iterator;
-			MarkName(startWord, endWord);
-
-			// Ignore everything else before the colon.
-			}
-
-
-		/* Function: MarkPascalParameterAfterColon
-		 * Marks the tokens in the Pascal-style parameter specified by the bounds with <CommentParsingTypes>.  The bounds
-		 * contain the part of the prototype after the colon.  If the word count is -1 it will determine it itself with
-		 * <CountParameterWords()>.
-		 */
-		protected void MarkPascalParameterAfterColon (TokenIterator start, TokenIterator end, int commentTypeID, int words = -1)
-			{
-			if (words == -1)
-				{  words = CountParameterWords(start, end, commentTypeID);  }
-
-			TokenIterator iterator = start;
-			TokenIterator startWord = iterator;
-			TokenIterator endWord = iterator;
-
-			// Mark words in the type section as [modifier] [modifier] [type].
-
-			bool markWord = false;
-
-			while (iterator < end)
-				{
-				startWord = iterator;
-				markWord = false;
-
-				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
-					 iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-					{
-					break;
-					}
-				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
-							 TryToSkipComment(ref iterator) ||
-							 TryToSkipString(ref iterator) ||
-							 TryToSkipBlock(ref iterator, true))
-					{
-					markWord = true;
-					endWord = iterator;
 					}
 				else
 					{
 					iterator.Next();
 					}
+				}
+			}
 
-				if (markWord)
+
+		/* Function: MarkPascalParameter
+		 * Marks the tokens in the Pascal-style parameter specified by the bounds with <CommentParsingTypes>.
+		 */
+		protected void MarkPascalParameter (TokenIterator start, TokenIterator end)
+			{
+			// Pass 1: Count the number of "words" in the parameter prior to the default value and mark the default value.
+			// We'll figure out how to interpret the words in the second pass.  Also mark the colon as the name/type separator 
+			// if it exists.
+
+			int words = 0;
+			int wordsBeforeColon = 0;
+
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+
+				// Default values
+
+				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":="))
 					{
+					if (iterator.Character == '=')
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.DefaultValueSeparator;
+						iterator.Next();
+						}
+					else
+						{
+						iterator.SetPrototypeParsingTypeByCharacters(PrototypeParsingType.DefaultValueSeparator, 2);
+						iterator.Next(2);
+						}
+
+					iterator.NextPastWhitespace(end);
+
+					TokenIterator endOfDefaultValue = end;
+					TokenIterator temp = end;
+					temp.Previous();
+
+					while (temp >= iterator && temp.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{
+						endOfDefaultValue = temp;
+						temp.Previous();
+						}
+
+					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, iterator);
+
+					if (iterator < endOfDefaultValue)
+						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
+
+					break;
+					}
+
+
+				// Colon.  Can only check for this after checking for :=
+
+				else if (iterator.Character == ':')
+					{
+					wordsBeforeColon = words;
+					iterator.PrototypeParsingType = PrototypeParsingType.NameTypeSeparator;
+					iterator.Next();
+					}
+
+
+				// Param separator
+
+				else if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+					{  break;  }
+
+				
+				// "Words" we're interested in
+
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
+					{
+					// If there was a comment in the prototype, that means it specifically wasn't filtered out because it was something
+					// significant like a Splint comment or /*out*/.  Treat it like a modifier.
+
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it anyway
+					// just so it doesn't lose its mind if one occurs.
+
+					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
+					// treat it as a modifier.  
+
+					words++;
+					}
+
+
+				// Whitespace and any unexpected random symbols
+
+				else
+					{  iterator.Next();  }
+				}
+
+
+			// Pass 2: Mark the "words" we counted from the first pass.  Before the colon the order of the words goes
+			// [modifier] [modifier] [name].  After the colon it goes [modifier] [modifier] [type].  Not every parameter line will have 
+			// a colon as they could be sharing a type declaration.  An example of modifiers on each side is"const a: array of string".
+
+
+			// Fix up the word counts.  wordsBeforeColon will be zero if we never found a colon.
+
+			int wordsAfterColon;
+
+			if (wordsBeforeColon == 0)
+				{  
+				wordsBeforeColon = words;  
+				wordsAfterColon = 0;
+				}
+			else
+				{  wordsAfterColon = words - wordsBeforeColon;  }
+
+
+			// Before the colon: [modifier] [modifier] [name]
+
+			iterator = start;
+			TokenIterator wordStart, wordEnd;
+
+			while (iterator < end)
+				{
+				wordStart = iterator;
+
+				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator ||
+					iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+					{
+					break;
+					}
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
+					{
+					wordEnd = iterator;
+
+					if (wordsBeforeColon >= 2)
+						{  wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.NameModifier_PartOfType);  }
+					else if (wordsBeforeColon == 1)
+						{  MarkName(wordStart, wordEnd);  }
+
+					wordsBeforeColon--;
+					}
+				else
+					{  iterator.Next();  }
+				}
+
+
+			// After the colon: [modifier] [modifier] [type]
+
+			if (wordsAfterColon > 0)
+				{
+				while (iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+					{  iterator.Next();  }
+
+				while (iterator < end)
+					{
+					wordStart = iterator;
+
+					if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+						iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
+						{
+						break;
+						}
+					else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+							   TryToSkipComment(ref iterator) ||
+							   TryToSkipString(ref iterator) ||
+							   TryToSkipBlock(ref iterator, true))
+						{
+						wordEnd = iterator;
+
+						if (wordsAfterColon >= 2)
+							{  wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);  }
+						else if (wordsAfterColon == 1)
+							{  MarkType(wordStart, wordEnd);  }
+
+						wordsAfterColon--;
+						}
+					else
+						{
+						iterator.Next();
+						}
+					}
+				}
+			}
+
+
+		/* Function: MarkTypeAndModifiers
+		 * Marks the passed stretch of tokens with <PrototypeParsingTypes> for variable types and preceding modifiers.
+		 */
+		protected void MarkTypeAndModifiers (TokenIterator start, TokenIterator end)
+			{
+			// Pass 1: Count the number of "words" in the segment.
+
+			int words = 0;
+			TokenIterator iterator = start;
+
+			while (iterator < end)
+				{
+				if (TryToSkipTypeOrVarName(ref iterator, end) ||
+					TryToSkipComment(ref iterator) ||
+					TryToSkipString(ref iterator) ||
+					TryToSkipBlock(ref iterator, true))
+					{
+					// If there was a comment in the prototype, that means it specifically wasn't filtered out because it was something
+					// significant like a Splint comment or /*out*/.  Treat it like a modifier.
+
+					// Strings don't really make sense in the prototype until the default value, but we need the parser to handle it anyway
+					// just so it doesn't lose its mind if one occurs.
+
+					// If we come across a block that doesn't immediately follow an identifier, it may be something like a C# property so
+					// treat it as a modifier.  
+
+					words++;
+					}
+				else
+					{  iterator.Next();  }
+				}
+
+
+			// Pass 2: Mark the "words" we counted from the first pass in the order of [modifier] [modifier] [type].
+
+			iterator = start;
+			TokenIterator wordStart, wordEnd;
+
+			while (iterator < end)
+				{
+				wordStart = iterator;
+
+				if (iterator.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator ||
+					iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+					{
+					break;
+					}
+				else if (TryToSkipTypeOrVarName(ref iterator, end) ||
+						   TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, true))
+					{
+					wordEnd = iterator;
+
 					if (words >= 2)
-						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);  }
 					else if (words == 1)
-						{  MarkType(startWord, endWord);  }
+						{  MarkType(wordStart, wordEnd);  }
 
 					words--;
 					}
+				else
+					{  iterator.Next();  }
 				}
 			}
 
