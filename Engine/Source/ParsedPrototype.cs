@@ -338,38 +338,104 @@ namespace CodeClear.NaturalDocs.Engine
 				}
 
 
-			// If we didn't find a type, see if it's implied
+			// See if we can fill it out with implied types
 
-			else if (impliedTypes)
+			if (impliedTypes)
 				{
-				TokenIterator ignoredA, ignoredB;
-
 				if (Style == ParameterStyle.C)
 					{
-					// Move backwards for "int x, y"
-					for (int i = index - 1; i >= 0; i--)
+
+					// If there's no type for a C parameter, move backwards for "int x, y"
+
+					if (!foundType)
 						{
-						if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
-															out suffixStart, out suffixEnd, false))
-							{  
-							foundType = true;
-							break;
+						TokenIterator ignoredA, ignoredB;
+
+						for (int i = index - 1; i >= 0; i--)
+							{
+							if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
+																out suffixStart, out suffixEnd, false))
+								{  
+								foundType = true;
+								break;
+								}
 							}
 						}
+
 					}
+
 				else // Style == ParameterStyle.Pascal
 					{
-					// Move forwards for "x, y: integer"
-					for (int i = index + 1; i <= NumberOfParameters; i++)
+
+					// If there's no type for a Pascal parameter, move forwards for "x, y: integer"
+
+					if (!foundType)
 						{
-						// We ignore the extra modifiers so "const x, y: integer" will work
-						if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
-															out suffixStart, out suffixEnd, false))
+						TokenIterator ignoredA, ignoredB;
+
+						for (int i = index + 1; i <= NumberOfParameters; i++)
 							{
-							foundType = true;
-							break;
+							if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
+																  out suffixStart, out suffixEnd, false))
+								{
+								foundType = true;
+								break;
+								}
 							}
 						}
+
+
+					// If there's no extra modifiers for a Pascal parameter, move backwards for "const x, y: integer"
+
+					if (extraModifierEnd <= extraModifierStart)
+						{
+						TokenIterator prevParamIterator, prevParamEnd, prevExtraModifierStart, prevExtraModifierEnd;
+
+						for (int i = index - 1; i >= 0; i--)
+							{
+							// We can't use GetFullParameterType() here because it won't return anything if it doesn't find a type with
+							// implied types off, and turning implied types on means we can't detect when another type occurs which
+							// would mean we wouldn't want to inherit its modifiers ("const x: integer; y: integer").  So we do it manually
+							// with GetParameter().
+							GetParameter(i, out prevParamIterator, out prevParamEnd);
+							prevExtraModifierStart = prevParamEnd;
+							prevExtraModifierEnd = prevParamEnd;
+							bool foundPrevExtraModifier = false;
+							bool foundPrevType = false;
+							
+							while (prevParamIterator < prevParamEnd)
+								{
+								if (prevParamIterator.PrototypeParsingType == PrototypeParsingType.NameModifier_PartOfType)
+									{
+									if (!foundPrevExtraModifier)
+										{
+										prevExtraModifierStart = prevParamIterator;
+										foundPrevExtraModifier = true;
+										}
+
+									prevParamIterator.Next();
+									prevExtraModifierEnd = prevParamIterator;
+									}
+								else if (prevParamIterator.PrototypeParsingType == PrototypeParsingType.Type)
+									{
+									foundPrevType = true;
+									break;
+									}
+								else
+									{  prevParamIterator.Next();  }
+								}
+
+							if (foundPrevType)
+								{  break;  }
+							else if (foundPrevExtraModifier)
+								{
+								extraModifierStart = prevExtraModifierStart;
+								extraModifierEnd = prevExtraModifierEnd;
+								break;
+								}
+							}
+						}
+
 					}
 				}
 			
