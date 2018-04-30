@@ -78,45 +78,58 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
+							string fullType = null;
 							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
 																						out extraModifierStart, out extraModifierEnd, 
 																						out prefixStart, out prefixEnd, 
 																						out suffixStart, out suffixEnd, false))
 								{  
-								output.Append("    - Full Type: ");
+								StringBuilder fullTypeBuilder = new StringBuilder();
 								
 								if (extraModifierEnd > extraModifierStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
+									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
 								
-								output.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
+								fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
 
 								if (prefixEnd > prefixStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
+									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
 								if (suffixEnd > suffixStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
+									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
 
-								output.AppendLine();
+								fullType = fullTypeBuilder.ToString();
 								}
-							else if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
-																							  out extraModifierStart, out extraModifierEnd, 
-																							  out prefixStart, out prefixEnd, 
-																							  out suffixStart, out suffixEnd, true))
+
+							string impliedType = null;
+							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
+																					   out extraModifierStart, out extraModifierEnd, 
+																					   out prefixStart, out prefixEnd, 
+																					   out suffixStart, out suffixEnd, true))
 								{  
-								output.Append("    - Full Type (implied): ");
+								StringBuilder impliedTypeBuilder = new StringBuilder();
 
 								if (extraModifierEnd > extraModifierStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
+									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
 								
-								output.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
+								impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
 
 								if (prefixEnd > prefixStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
+									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
 								if (suffixEnd > suffixStart)
-									{  output.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
+									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
 
-								output.AppendLine();
+								impliedType = impliedTypeBuilder.ToString();
 								}
-							else
+
+							if (fullType != null)
+								{  output.AppendLine("    - Full Type: " + fullType);  }
+							if (impliedType != null)
+								{
+								if (fullType == null)
+									{  output.AppendLine("    - Full Type (implied): " + impliedType);  }
+								else if (impliedType != fullType)
+									{  output.AppendLine("    - Full Type (plus implied): " + impliedType);  }
+								}
+							if (fullType == null && impliedType == null)
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
 							if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end, false))

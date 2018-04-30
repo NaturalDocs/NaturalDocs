@@ -17,7 +17,21 @@ Function FunctionA (const x: integer, var y: array of integer): integer;
 		c - description
 		d - description
 }
-Function FunctionB (const a, b: Package.Class, var c, out d: array of string): integer;
+Function FunctionB (a, b: Package.Class, out c, d: array of string): integer;
 	Begin
 	End;
 
+{ Function: FunctionC
+
+	Parameters:
+		a - description
+		b - description
+		c - description
+		d - description
+		e - description
+		f - description
+		g - description
+}
+Function FunctionC (const a: integer; b, c, d: string; var e, f, g: real): integer;
+	Begin
+	End;
