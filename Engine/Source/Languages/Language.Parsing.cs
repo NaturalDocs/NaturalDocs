@@ -3195,7 +3195,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (iterator.Character == '=' || iterator.MatchesAcrossTokens(":="))
 					{  break;  }
 
-				// Can only check for a colon after checking for :=
+				// Skip double colons so we're not confused by C++ ::Globals
+				else if (iterator.MatchesAcrossTokens("::"))
+					{  iterator.Next(2);  }
+
+				// Can only check for a colon after checking for := and ::
 				else if (iterator.Character == ':')
 					{  return ParsedPrototype.ParameterStyle.Pascal;  }
 
