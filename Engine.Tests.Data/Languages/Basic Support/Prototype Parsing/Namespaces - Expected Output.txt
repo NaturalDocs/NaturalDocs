@@ -1,0 +1,153 @@
+- Before Parameters: void FunctionName1 (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: ::GlobalType y,
+    - Name: y
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: (not detected)
+
+  - Parameter 2: ::GlobalType z = null
+    - Name: z
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionName2 (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: ::GlobalType y,
+    - Name: y
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: (not detected)
+
+  - Parameter 3: ::GlobalType z = null
+    - Name: z
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: ::GlobalType FunctionName3 (
+  - Access Level: Unknown
+  - Link Candidates: GlobalType
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: ::GlobalType y,
+    - Name: y
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: (not detected)
+
+  - Parameter 3: ::GlobalType z = null
+    - Name: z
+    - Full Type: GlobalType
+    - Base Type: GlobalType
+    - Link Candidates: GlobalType
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionName4 (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: Namespace::Type y,
+    - Name: y
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: (not detected)
+
+  - Parameter 2: Namespace::Type z = null
+    - Name: z
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: void FunctionName5 (
+  - Access Level: Unknown
+  - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: Namespace::Type y,
+    - Name: y
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: (not detected)
+
+  - Parameter 3: Namespace::Type z = null
+    - Name: z
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)
+-----
+- Before Parameters: Namespace::Type FunctionName6 (
+  - Access Level: Unknown
+  - Link Candidates: Namespace::Type
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: Namespace::Type y,
+    - Name: y
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: (not detected)
+
+  - Parameter 3: Namespace::Type z = null
+    - Name: z
+    - Full Type: Namespace::Type
+    - Base Type: Namespace::Type
+    - Link Candidates: Namespace::Type
+    - Default Value: null
+
+- After Parameters: )
+  - Link Candidates: (none)

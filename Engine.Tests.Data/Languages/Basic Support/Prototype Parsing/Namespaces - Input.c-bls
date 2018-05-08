@@ -1,0 +1,30 @@
+
+// Function: FunctionName1
+void FunctionName1 (::GlobalType y, ::GlobalType z = null)
+	{
+	}
+	
+// Function: FunctionName2
+void FunctionName2 (int x, ::GlobalType y, ::GlobalType z = null)
+	{
+	}
+	
+// Function: FunctionName3
+::GlobalType FunctionName3 (int x, ::GlobalType y, ::GlobalType z = null)
+	{
+	}
+
+// Function: FunctionName4
+void FunctionName4 (Namespace::Type y, Namespace::Type z = null)
+	{
+	}
+	
+// Function: FunctionName5
+void FunctionName5 (int x, Namespace::Type y, Namespace::Type z = null)
+	{
+	}
+	
+// Function: FunctionName6
+Namespace::Type FunctionName6 (int x, Namespace::Type y, Namespace::Type z = null)
+	{
+	}

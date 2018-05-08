@@ -1,0 +1,64 @@
+
+/* Function: FunctionName1
+
+	Parameters:
+		y - Something
+		z - Something
+*/
+void FunctionName1 (::GlobalType y, ::GlobalType z = null)
+	{
+	}
+
+/* Function: FunctionName2
+
+	Parameters:
+		x - Something
+		y - Something
+		z - Something
+*/
+void FunctionName2 (int x, ::GlobalType y, ::GlobalType z = null)
+	{
+	}
+
+/* Function: FunctionName3
+
+	Parameters:
+		x - Something
+		y - Something
+		z - Something
+*/
+::GlobalType FunctionName3 (int x, ::GlobalType y, ::GlobalType z = null)
+	{
+	}
+
+/* Function: FunctionName4
+
+	Parameters:
+		y - Something
+		z - Something
+*/
+void FunctionName4 (Namespace::Type y, Namespace::Type z = null)
+	{
+	}
+
+/* Function: FunctionName5
+
+	Parameters:
+		x - Something
+		y - Something
+		z - Something
+*/
+void FunctionName5 (int x, Namespace::Type y, Namespace::Type z = null)
+	{
+	}
+
+/* Function: FunctionName6
+
+	Parameters:
+		x - Something
+		y - Something
+		z - Something
+*/
+Namespace::Type FunctionName6 (int x, Namespace::Type y, Namespace::Type z = null)
+	{
+	}
