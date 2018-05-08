@@ -50,7 +50,7 @@
  *		
  *		Version History:
  *		
- *			- 2.1
+ *			- 2.0.2
  *				- Added Style File IDs to Rebuild.
  *		
  */
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.1") == false)
+				if (binaryFile.OpenForReading(filename, "2.0.2") == false)
 					{  result = false;  }
 				else
 					{

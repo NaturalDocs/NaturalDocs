@@ -58,9 +58,10 @@
  *			
  *		Revisions:
  *		
- *			2.1:
+ *			2.0.2:
  *			
- *				- Added dimensions for image files.
+ *				- Added dimensions for image files.  They will always be zero because image file support was only partially
+ *				  implemented and it would have been too much effort to back it out for 2.0.2.
  *		
  *			2.0:
  *				
@@ -660,7 +661,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			try
 				{
-				// We'll continue to handle 2.0 files in 2.1 since it's easy enough
+				// We'll continue to handle 2.0 files in 2.0.2 since it's easy enough
 				if (binaryFile.OpenForReading(filename, "2.0") == false)
 					{
 					result = false;
@@ -697,7 +698,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						
 						if (type == FileType.Image)
 							{
-							if (binaryFile.Version < "2.1")
+							if (binaryFile.Version < "2.0.2")
 								{
 								width = 0;
 								height = 0;
