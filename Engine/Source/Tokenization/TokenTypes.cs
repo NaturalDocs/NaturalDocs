@@ -95,14 +95,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * 
 	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such
 	 *												 as ":" in "x: int".  In languages that simply use a space this type won't appear.
-	 *											 
+	 *							
+	 * NameModifier_PartOfType - Any modifiers appearing before a name, such as "const" in "const x: integer", that are actually
+	 *										   part of its type.
 	 * NamePrefix_PartOfType - Any symbols appearing before a name, such as "*" in "int *x" or "$" in "$x", that are actually
-	 *													  part of its type.  It doesn't matter if it's textually attached to the type ("int* x") because that
-	 *													  still means the same thing ("int *x") in C++.
+	 *										part of its type.  It doesn't matter if it's textually attached to the type ("int* x") because that
+	 *										still means the same thing ("int *x") in C++.
 	 * Name - The name of the parameter or the code element being defined by the prototype.
 	 * NameSuffix_PartOfType - Any symbols appearing after a name, such as "[]" in "int x[]", that are actually part of its type.  
-	 *														Unlike with types, we don't have to distinguish between opening and closing symbols to search
-	 *														for nested types.
+	 *										Unlike with types, we don't have to distinguish between opening and closing symbols to search
+	 *										for nested types.
 	 *														
 	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
 	 * DefaultValue - The default value of the parameter.
@@ -122,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 		NameTypeSeparator, 
 		
-		NamePrefix_PartOfType, Name, NameSuffix_PartOfType,
+		NameModifier_PartOfType, NamePrefix_PartOfType, Name, NameSuffix_PartOfType,
 
 		DefaultValueSeparator, DefaultValue,
 

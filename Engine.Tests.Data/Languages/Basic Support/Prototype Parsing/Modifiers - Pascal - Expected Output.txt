@@ -1,0 +1,113 @@
+- Before Parameters: Function FunctionA (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: const x: integer,
+    - Name: x
+    - Full Type: const integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: var y: array of integer
+    - Name: y
+    - Full Type: var array of integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer
+-----
+- Before Parameters: Function FunctionB (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: a,
+    - Name: a
+    - Full Type (implied): Package.Class
+    - Base Type (implied): Package.Class
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: b: Package.Class,
+    - Name: b
+    - Full Type: Package.Class
+    - Base Type: Package.Class
+    - Link Candidates: Package.Class
+    - Default Value: (not detected)
+
+  - Parameter 3: out c,
+    - Name: c
+    - Full Type (implied): out array of string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: d: array of string
+    - Name: d
+    - Full Type: array of string
+    - Full Type (plus implied): out array of string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer
+-----
+- Before Parameters: Function FunctionC (
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+  - Parameter 1: const a: integer;
+    - Name: a
+    - Full Type: const integer
+    - Base Type: integer
+    - Link Candidates: integer
+    - Default Value: (not detected)
+
+  - Parameter 2: b,
+    - Name: b
+    - Full Type (implied): string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: c,
+    - Name: c
+    - Full Type (implied): string
+    - Base Type (implied): string
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: d: string;
+    - Name: d
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 5: var e,
+    - Name: e
+    - Full Type (implied): var real
+    - Base Type (implied): real
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 6: f,
+    - Name: f
+    - Full Type (implied): var real
+    - Base Type (implied): real
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 7: g: real
+    - Name: g
+    - Full Type: real
+    - Full Type (plus implied): var real
+    - Base Type: real
+    - Link Candidates: real
+    - Default Value: (not detected)
+
+- After Parameters: ): integer
+  - Link Candidates: integer

@@ -468,9 +468,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 								// If so, include the type under the entry in the HTML
 								if (matchedParameter != -1)
 									{
-									TokenIterator prefixStart, prefixEnd, suffixStart, suffixEnd;
+									TokenIterator extraModifierStart, extraModifierEnd, prefixStart, prefixEnd, suffixStart, suffixEnd;
 									topic.ParsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
-																								out prefixStart, out prefixEnd, out suffixStart, out suffixEnd);
+																								   out extraModifierStart, out extraModifierEnd, 
+																								   out prefixStart, out prefixEnd, 
+																								   out suffixStart, out suffixEnd);
 
 									if (start < end && 
 										// Don't include single symbol types
@@ -479,6 +481,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 										{
 										htmlOutput.Append("<div class=\"CDLParameterType\">");
 									
+										if (extraModifierStart < extraModifierEnd)
+											{  
+											BuildTypeLinkedAndSyntaxHighlightedText(extraModifierStart, extraModifierEnd);
+											htmlOutput.Append(' ');
+											}
+
 										BuildTypeLinkedAndSyntaxHighlightedText(start, end);
 										BuildTypeLinkedAndSyntaxHighlightedText(prefixStart, prefixEnd);
 										BuildTypeLinkedAndSyntaxHighlightedText(suffixStart, suffixEnd);

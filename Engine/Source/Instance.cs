@@ -35,7 +35,7 @@
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
- *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> watcher.
+ *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> and <Files.Manager> watcher.
  *		
  *		- <SearchIndex.Manager> is next because it also needs to be added as a <CodeDB.Manager> watcher.
  *		
@@ -536,7 +536,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
-		public const string VersionString = "2.1";
+		public const string VersionString = "2.0.2";
 		
 		
 		/* Property: Version

@@ -46,3 +46,16 @@ Body
 
 /// Topic: XML comment 1/1
 /// Body
+
+
+(* Topic: Unacceptable comment 1/4 *) text after closing
+
+(* Topic: Unacceptable comment 2/4
+ * Body
+ *) text after closing
+
+text before opening (* Topic: Unacceptable comment 3/4 *)
+ 
+text before opening (* Topic: Unacceptable comment 4/4
+Body
+*)

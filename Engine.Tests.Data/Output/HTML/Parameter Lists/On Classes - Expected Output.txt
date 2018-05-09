@@ -1,0 +1,1 @@
+<div class="CBody"><p>This is a SystemVerilog example.&nbsp; The fact that it has a class prototype shouldn't mean it can't find the parameter type.</p><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">PARAMNAME<div class="CDLParameterType">parameter</div></td><td class="CDLDefinition"><p>Something</p></td></tr></table></div>

@@ -111,7 +111,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			while (lineIterator.IsInBounds)
 				{
-				PossibleDocumentationComment comment = null;
+				bool foundComment = false;
+				PossibleDocumentationComment possibleDocumentationComment = null;
 				
 				
 				// Javadoc block comments
@@ -119,36 +120,39 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// We test for these before regular block comments because they are usually extended versions of them, such
 				// as /** and /*.
 
-				// We also test block comments in general ahead of line comments because in Lua the line comments are a
-				// substring of them: -- versus --[[ and ]]--.
-				
 				if (javadocBlockCommentStringPairs != null)
 					{
-					for (int i = 0; comment == null && i < javadocBlockCommentStringPairs.Length; i += 2)
+					for (int i = 0; foundComment == false && i < javadocBlockCommentStringPairs.Length; i += 2)
 						{
-						comment = TryToGetPDBlockComment(lineIterator, javadocBlockCommentStringPairs[i], 
-																								 javadocBlockCommentStringPairs[i+1], true);
+						foundComment = TryToGetBlockComment(ref lineIterator, 
+																					 javadocBlockCommentStringPairs[i], javadocBlockCommentStringPairs[i+1], true,
+																					 out possibleDocumentationComment);
 						}
 
-					if (comment != null)
-						{  comment.Javadoc = true;  }
+					if (possibleDocumentationComment != null)
+						{  possibleDocumentationComment.Javadoc = true;  }
 					}
 					
 					
 				// Plain block comments
 					
-				if (comment == null && blockCommentStringPairs != null)
+				// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
+				// versus --[[ and ]]--.
+
+				if (foundComment == false && blockCommentStringPairs != null)
 					{
-					for (int i = 0; comment == null && i < blockCommentStringPairs.Length; i += 2)
+					for (int i = 0; foundComment == false && i < blockCommentStringPairs.Length; i += 2)
 						{
-						comment = TryToGetPDBlockComment(lineIterator, blockCommentStringPairs[i], 
-																								 blockCommentStringPairs[i+1], false);
+						foundComment = TryToGetBlockComment(ref lineIterator, 
+																					 blockCommentStringPairs[i], blockCommentStringPairs[i+1], false,
+																					 out possibleDocumentationComment);
 						}
 
 					// Skip Splint comments so that they can appear in prototypes.
-					if (comment != null && comment.Start.FirstToken(LineBoundsMode.CommentContent).Character == '@')
+					if (possibleDocumentationComment != null && 
+						possibleDocumentationComment.Start.FirstToken(LineBoundsMode.CommentContent).Character == '@')
 						{
-						LineIterator lastLine = comment.End;
+						LineIterator lastLine = possibleDocumentationComment.End;
 						lastLine.Previous();
 
 						TokenIterator lastToken, ignore;
@@ -156,87 +160,148 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						lastToken.Previous();
 
 						if (lastToken.Character == '@')
-							{  comment = null;  }
+							{  possibleDocumentationComment = null;  }
 						}
 					}
 					
 					
 				// XML line comments
 
-				if (comment == null && xmlLineCommentStrings != null)
+				if (foundComment == false && xmlLineCommentStrings != null)
 					{
-					for (int i = 0; comment == null && i < xmlLineCommentStrings.Length; i++)
+					for (int i = 0; foundComment == false && i < xmlLineCommentStrings.Length; i++)
 						{
-						comment = TryToGetPDLineComment(lineIterator, xmlLineCommentStrings[i],
-																							   xmlLineCommentStrings[i], true);
+						foundComment = TryToGetLineComment(ref lineIterator, 
+																				   xmlLineCommentStrings[i], xmlLineCommentStrings[i], true,
+																				   out possibleDocumentationComment);
 						}
 
-					if (comment != null)
-						{  comment.XML = true;  }
+					if (possibleDocumentationComment != null)
+						{  possibleDocumentationComment.XML = true;  }
 					}
 						
 						
+				// Ambiguous XML/Javadoc line comments
+
+				// If an XML comment is found we check the same position for Javadoc because they may share an opening 
+				// symbol, such as ///.
+
+				if (possibleDocumentationComment != null && possibleDocumentationComment.XML == true &&
+					javadocLineCommentStringPairs != null)
+					{
+					LineIterator javadocLineIterator = possibleDocumentationComment.Start;
+					PossibleDocumentationComment possibleJavadocDocumentationComment = null;
+					bool foundJavadocComment = false;
+
+					for (int i = 0; foundJavadocComment == false && i < javadocLineCommentStringPairs.Length; i += 2)
+						{
+						foundJavadocComment = TryToGetLineComment(ref javadocLineIterator, 
+																							  javadocLineCommentStringPairs[i], javadocLineCommentStringPairs[i+1], true,
+																							  out possibleJavadocDocumentationComment);
+						}
+
+					if (possibleJavadocDocumentationComment != null)
+						{
+						// If the Javadoc comment is longer we use that instead of the XML since it may have detected the first 
+						// line as XML and ignored the rest for not having the same symbol.  For example:
+						//
+						// ## Comment
+						// #
+						// #
+						//
+						// This will be detected as a one line XML comment and a three line Javadoc comment.
+
+						if (possibleJavadocDocumentationComment.End.LineNumber >
+							possibleDocumentationComment.End.LineNumber)
+							{
+							possibleDocumentationComment = possibleJavadocDocumentationComment;
+							possibleDocumentationComment.Javadoc = true;
+							lineIterator = javadocLineIterator;
+							}
+
+
+						// If they're the same length...
+
+						else if (possibleJavadocDocumentationComment.End.LineNumber ==
+								  possibleDocumentationComment.End.LineNumber)
+							{
+
+							// If the comments are both one line long then it's genuinely ambiguous.  For example:
+							//
+							// ## Comment
+							//
+							// Is that a one line XML comment or a one line Javadoc comment?  We can't tell, so mark it as 
+							// potentially either.
+
+							if (possibleDocumentationComment.Start.LineNumber ==
+								possibleDocumentationComment.End.LineNumber - 1)
+								{
+								possibleDocumentationComment.Javadoc = true;
+								// XML should already be set to true
+								}
+							
+							// If the comments are equal length but more than one line then it's just interpreting the XML as 
+							// a Javadoc start with a vertical line for the remainder, so leave it as XML.  For example:
+							//
+							// ## Comment
+							// ##
+							// ##
+							//
+							// That's clearly a three line XML comment and not a Javadoc comment with a vertical line.
+
+							}
+
+						// If the XML comment is longer just leave it and ignore the Javadoc one.
+					
+						}
+					}
+						
+
 				// Javadoc line comments
 
-				// We check for these even if a XML comment is found because they may share an opening symbol, such as ///.
-				// We change it to Javadoc if it's longer.  If it's equal it's just interpreting the XML as a Javadoc start with a
-				// vertical line for the remainder, so leave it as XML.  Unless the comment is only one line long, in which case it's
-				// genuinely ambiguous.
-				
-				if ( (comment == null || comment.XML == true) && javadocLineCommentStringPairs != null)
+				if (foundComment == false && javadocLineCommentStringPairs != null)
 					{
-					PossibleDocumentationComment javadocComment = null;
-
-					for (int i = 0; javadocComment == null && i < javadocLineCommentStringPairs.Length; i += 2)
+					for (int i = 0; foundComment == false && i < javadocLineCommentStringPairs.Length; i += 2)
 						{
-						javadocComment = TryToGetPDLineComment(lineIterator, javadocLineCommentStringPairs[i],
-																										  javadocLineCommentStringPairs[i+1], true);
+						foundComment = TryToGetLineComment(ref lineIterator, 
+																				   javadocLineCommentStringPairs[i], javadocLineCommentStringPairs[i+1], true,
+																				   out possibleDocumentationComment);
 						}
 
-					if (javadocComment != null)
-						{
-						javadocComment.Javadoc = true;
-
-						if (comment == null)
-							{  comment = javadocComment;  }
-						else
-							{
-							int javadocLength = javadocComment.End.LineNumber - javadocComment.Start.LineNumber;
-							int xmlLength = comment.End.LineNumber - comment.Start.LineNumber;
-
-							if (javadocLength > xmlLength)
-								{  comment = javadocComment;  }
-							else if (javadocLength == 1 && xmlLength == 1)
-								{  comment.Javadoc = true;  }
-							// else stay with the XML comment
-							}
-						}
+					if (possibleDocumentationComment != null)
+						{  possibleDocumentationComment.Javadoc = true;  }
 					}
-						
+
 
 				// Plain line comments
 				
-				if (comment == null && lineCommentStrings != null)
+				if (foundComment == false && lineCommentStrings != null)
 					{
-					for (int i = 0; comment == null && i < lineCommentStrings.Length; i++)
+					for (int i = 0; foundComment == false && i < lineCommentStrings.Length; i++)
 						{
-						comment = TryToGetPDLineComment(lineIterator, lineCommentStrings[i], lineCommentStrings[i], false);
+						foundComment = TryToGetLineComment(ref lineIterator, 
+																				   lineCommentStrings[i], lineCommentStrings[i], false,
+																				   out possibleDocumentationComment);
 						}
 					}
 					
 				
 				// Nada.
 				
-				if (comment == null)
+				if (foundComment == false)
 					{  lineIterator.Next();  }
 				else
 					{
-					// XML can actually use the Javadoc comment format in addition to its own.
-					if (comment.Javadoc)
-						{  comment.XML = true;  }
+					if (possibleDocumentationComment != null)
+						{
+						// XML can actually use the Javadoc comment format in addition to its own.
+						if (possibleDocumentationComment.Javadoc == true)
+							{  possibleDocumentationComment.XML = true;  }
 
-					possibleDocumentationComments.Add(comment);
-					lineIterator = comment.End;
+						possibleDocumentationComments.Add(possibleDocumentationComment);
+						}
+
+					// lineIterator would have been moved already if foundComment is true
 					}
 					
 				}
@@ -250,108 +315,154 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 
-		/* Function: TryToGetPDBlockComment
+		/* Function: TryToGetBlockComment
 		 * 
-		 * If the line iterator is on the starting symbol of a block comment, return it as a <PossibleDocumentationComment>
-		 * and mark the symbols as <CommentParsingType.CommentSymbol>.  If the iterator is not on the opening comment
-		 * symbol or there is content after the closing comment symbol making it unsuitable as a documentation comment,
-		 * returns null.
+		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
+		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
+		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
+		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
 		 * 
-		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol for this
-		 * function to succeed.  This allows you to specifically detect something like /** without also matching /******.
+		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
+		 * symbol, so it's possible for this function to return true and have comment be null.  This is important because in Lua
+		 * the block comment symbol is --[[ and the line comment symbol is --, so if we didn't move past the block comment 
+		 * it could be interpreted as a line comment as well.
+		 * 
+		 * If openingMustBeAlone is set, that means no symbol can appear immediately after the opening symbol.  If it does
+		 * the function will return false and not move past the comment.  This allows you to specifically detect something like 
+		 * /** without also matching /******.
 		 */
-		protected PossibleDocumentationComment TryToGetPDBlockComment (LineIterator lineIterator, 
-																											  string openingSymbol, string closingSymbol,
-																											  bool openingMustBeAlone)
+		protected bool TryToGetBlockComment (ref LineIterator lineIterator, 
+																 string openingSymbol, string closingSymbol, bool openingMustBeAlone,
+																 out PossibleDocumentationComment comment)
 			{
-			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+			TokenIterator firstToken, endOfLine;
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 
 			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
-				{  return null;  }
-
-			if (openingMustBeAlone)
-				{
-				TokenIterator nextToken = firstToken;
-				nextToken.NextByCharacters(openingSymbol.Length);
-				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
+				{  
+				comment = null;
+				return false;
 				}
 
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with 
+			// Python's ''' and """ strings.
+			firstToken.NextByCharacters(openingSymbol.Length);
+
+			if (openingMustBeAlone && firstToken.FundamentalType == FundamentalType.Symbol)
+				{  
+				comment = null;  
+				return false;
+				}
+
+			comment = new PossibleDocumentationComment();
 			comment.Start = lineIterator;
+
+			var tokenizer = lineIterator.Tokenizer;
+			var lookahead = lineIterator;
 
 			for (;;)
 				{
-				if (!lineIterator.IsInBounds)
-					{  return null;  }
-					
 				TokenIterator closingSymbolIterator;
 				
-				if (lineIterator.FindAcrossTokens(closingSymbol, false, LineBoundsMode.Everything, out closingSymbolIterator) == true)
+				if (tokenizer.FindTokensBetween(closingSymbol, false, firstToken, endOfLine, out closingSymbolIterator) == true)
 					{
-					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
+					// Move past the end of the comment regardless of whether it's acceptable for documentation or not
+					lookahead.Next();
 
+					// Make sure nothing appears after the closing symbol on the line
+					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
 					closingSymbolIterator.NextPastWhitespace();
 
 					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
-						 closingSymbolIterator.FundamentalType != FundamentalType.Null)
-						{  return null;  }
+						closingSymbolIterator.FundamentalType != FundamentalType.Null)
+						{  comment = null;  }
+					else
+						{  comment.End = lookahead;  }
 
-					lineIterator.Next();
-					comment.End = lineIterator;
 					break;
 					}
 
-				lineIterator.Next();
+				lookahead.Next();
+
+				// If we're not in bounds that means there was an unclosed comment at the end of the file.  Skip it but don't treat
+				// it as a documentation candidate.
+				if (!lookahead.IsInBounds)
+					{  
+					comment = null;
+					break;  
+					}
+
+				lookahead.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
 				}
-			
-			// Success.  Mark the symbols before returning.
-			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
 
-			TokenIterator lastToken;
-			lineIterator.Previous();
-			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out lastToken);
-			lastToken.PreviousByCharacters(closingSymbol.Length);
-			lastToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
 
-			return comment;
+			if (comment != null)
+				{
+				// Mark the symbols before returning
+
+				firstToken = comment.Start.FirstToken(LineBoundsMode.ExcludeWhitespace);
+				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+
+				LineIterator lastLine = lookahead;
+				lastLine.Previous();
+				lastLine.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
+				endOfLine.PreviousByCharacters(closingSymbol.Length);
+				endOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+				}
+
+			// If we made it this far that means we found a comment and can move the line iterator and return true.  Whether
+			// that comment was suitable for documentation will be determined by the comment variable, but we are moving the
+			// iterator and returning true either way.
+			lineIterator = lookahead;
+			return true;
 			}
 
 
-		/* Function: TryToGetPDLineComment
+		/* Function: TryToGetLineComment
 		 * 
-		 * If the line iterator is on a line comment, return it and all connected line comments as a 
-		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  Returns 
-		 * null otherwise.
+		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
+		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
+		 * <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
+		 * line does not start with a line comment symbol it will return false and leave the iterator where it is.
 		 * 
 		 * This function takes a separate comment symbol for the first line and all remaining lines, allowing you to detect
 		 * Javadoc line comments that start with ## and the remaining lines use #.  Both symbols can be the same if this isn't
-		 * required.  If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol for this
-		 * function to succeed.  This allows you to specifically detect something like ## without also matching #######.
+		 * required.
+		 * 
+		 * If openingMustBeAlone is set, no symbol can appear immediately after the first line symbol.  If it does the function
+		 * will return false and not move past the comment.  This allows you to specifically detect something like ## without 
+		 * also matching #######.
 		 */
-		protected PossibleDocumentationComment TryToGetPDLineComment (LineIterator lineIterator, 
-																											string firstSymbol, string remainderSymbol,
-																											bool openingMustBeAlone)
+		protected bool TryToGetLineComment (ref LineIterator lineIterator, 
+																string firstSymbol, string remainderSymbol, bool openingMustBeAlone,
+																out PossibleDocumentationComment comment)
 			{
 			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
 
 			if (firstToken.MatchesAcrossTokens(firstSymbol) == false)
-				{  return null;  }
+				{  
+				comment = null;
+				return false;
+				}
 
 			if (openingMustBeAlone)
 				{
 				TokenIterator nextToken = firstToken;
 				nextToken.NextByCharacters(firstSymbol.Length);
+
 				if (nextToken.FundamentalType == FundamentalType.Symbol)
-					{  return null;  }
+					{  
+					comment = null;
+					return false;
+					}
 				}
 
-			PossibleDocumentationComment comment = new PossibleDocumentationComment();
+			comment = new PossibleDocumentationComment();
 			comment.Start = lineIterator;
 			lineIterator.Next();
 
-			// Since we're definitely returning a comment (barring the operation being cancelled) we can mark the comment
-			// symbols as we go rather than waiting until the end.
+			// Since we're definitely returning a comment we can mark the comment symbols as we go rather than waiting until
+			// the end.
 			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, firstSymbol.Length);
 
 			while (lineIterator.IsInBounds)
@@ -366,7 +477,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 			
 			comment.End = lineIterator;
-			return comment;
+			return true;
 			}
 
 

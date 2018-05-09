@@ -61,6 +61,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
 		 *				  prototypes this will be the entire symbol.
 		 * TypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
+		 * NameModifier - For Pascal-style prototypes, any modifiers that appear before the name.
 		 * NamePrefix - A prefix for a parameter name that should be formatted with the name, such as * and &.
 		 * Name - The parameter name.
 		 * DefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
@@ -69,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		public enum ColumnType : byte
 			{  
 			ModifierQualifier, Type, TypeNameSeparator, 
-			NamePrefix, Name, 
+			NameModifier, NamePrefix, Name, 
 			DefaultValueSeparator, DefaultValue
 			}
 
@@ -139,6 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 			columnWidths = new int[NumberOfColumns];
+            columnIndexes = new int[NumberOfColumns];
 			htmlCells = new string[parsedPrototype.NumberOfParameters, NumberOfColumns];
 
 			for (int p = 0; p < parsedPrototype.NumberOfParameters; p++)
@@ -318,10 +320,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			else if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.Pascal)
 				{
 
+				// NameModifier
+				
+				int currentColumn = 0;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
+
+				// Null covers whitespace and any random symbols we encountered that went unmarked.
+				while (iterator < endParam && 
+							(type == PrototypeParsingType.NameModifier_PartOfType ||
+							 type == PrototypeParsingType.Null))
+					{  
+					iterator.Next();  
+					type = iterator.PrototypeParsingType;
+					}
+
+
 				// Name
 
-				int columnSymbolIndex = 0;
-				columnIndexes[columnSymbolIndex] = iterator.TokenIndex;
+				currentColumn++;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
 
 				// Null covers whitespace and any random symbols we encountered that went unmarked.
 				// Include the parameter separator because there may not be a type
@@ -339,8 +356,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// TypeNameSeparator
 
-				columnSymbolIndex++;
-				columnIndexes[columnSymbolIndex] = iterator.TokenIndex;
+				currentColumn++;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
 
 				while (iterator < endParam && 
 							type == PrototypeParsingType.NameTypeSeparator)
@@ -352,8 +369,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// Type
 
-				columnSymbolIndex++;
-				columnIndexes[columnSymbolIndex] = iterator.TokenIndex;
+				currentColumn++;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
 
 				int typeNesting = 0;
 
@@ -381,8 +398,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// DefaultValueSeparator
 
-				columnSymbolIndex++;
-				columnIndexes[columnSymbolIndex] = iterator.TokenIndex;
+				currentColumn++;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
 
 				while (iterator < endParam && 
 							type == PrototypeParsingType.DefaultValueSeparator)
@@ -394,8 +411,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// DefaultValue
 
-				columnSymbolIndex++;
-				columnIndexes[columnSymbolIndex] = iterator.TokenIndex;
+				currentColumn++;
+				columnIndexes[currentColumn] = iterator.TokenIndex;
 				}
 
 
@@ -461,7 +478,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{  BuildSyntaxHighlightedText(start, end, html);  }
 
 			if (type == ColumnType.TypeNameSeparator ||
-				 type == ColumnType.DefaultValueSeparator)
+				 type == ColumnType.DefaultValueSeparator ||
+				 type == ColumnType.NameModifier)
 				{  html.Append("&nbsp;");  }
 
 			else if (end.FundamentalType == FundamentalType.Whitespace &&
@@ -520,10 +538,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		protected void BuildParameterTable ()
 			{
 			int firstUsedCell = 0;
-			while (firstUsedCell < columnWidths.Length && columnWidths[firstUsedCell] == 0)
+			while (firstUsedCell < NumberOfColumns && columnWidths[firstUsedCell] == 0)
 				{  firstUsedCell++;  }
 
-			int lastUsedCell = columnWidths.Length - 1;
+			int lastUsedCell = NumberOfColumns - 1;
 			while (lastUsedCell > 0 && columnWidths[lastUsedCell] == 0)
 				{  lastUsedCell--;  }
 
@@ -753,20 +771,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * An array of <ColumnTypes> representing the order in which columns should appear for C-style prototypes.
 		 */
 		static public ColumnType[] CColumnOrder = { ColumnType.ModifierQualifier,
-																						  ColumnType.Type,
-																						  ColumnType.NamePrefix,
-																						  ColumnType.Name,
-																						  ColumnType.DefaultValueSeparator,
-																						  ColumnType.DefaultValue };
+																		  ColumnType.Type,
+																		  ColumnType.NamePrefix,
+																		  ColumnType.Name,
+																		  ColumnType.DefaultValueSeparator,
+																		  ColumnType.DefaultValue };
 
 		/* var: PascalColumnOrder
 		 * An array of <ColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
 		 */
-		static public ColumnType[] PascalColumnOrder = { ColumnType.Name,
-																								  ColumnType.TypeNameSeparator,
-																								  ColumnType.Type,
-																								  ColumnType.DefaultValueSeparator,
-																								  ColumnType.DefaultValue };
+		static public ColumnType[] PascalColumnOrder = { ColumnType.NameModifier,
+																				ColumnType.Name,
+																				ColumnType.TypeNameSeparator,
+																				ColumnType.Type,
+																				ColumnType.DefaultValueSeparator,
+																				ColumnType.DefaultValue };
 
 		}
 	}

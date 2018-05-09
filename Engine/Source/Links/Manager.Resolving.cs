@@ -90,24 +90,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 */
 		protected bool PickLinkIDToResolve (out int linkID)
 			{
-			Monitor.Enter(linksToResolve);
-
-			try
-				{
-				if (linksToResolve.IsEmpty)
-					{
-					linkID = 0;
-					return false;
-					}
-				else
-					{
-					linkID = linksToResolve.Highest;
-					linksToResolve.Remove(linkID);
-					return true;
-					}
+			lock (linksToResolve)
+				{  
+				linkID = linksToResolve.Pop();
+				return (linkID != 0);
 				}
-			finally
-				{  Monitor.Exit(linksToResolve);  }
 			}
 
 
@@ -117,9 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 */
 		protected bool PickEndingSymbolToResolve (out EndingSymbol endingSymbol, out NumberSet topicIDs)
 			{
-			Monitor.Enter(newTopicIDsByEndingSymbol);
-
-			try
+			lock (newTopicIDsByEndingSymbol)
 				{
 				if (newTopicIDsByEndingSymbol.Count == 0)
 					{
@@ -140,8 +125,6 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					return true;
 					}
 				}
-			finally
-				{  Monitor.Exit(newTopicIDsByEndingSymbol);  }
 			}
 
 
@@ -306,19 +289,14 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			long units = 0;
 			
-			Monitor.Enter(linksToResolve);
-
-			try
+			lock (linksToResolve)
 				{  units += linksToResolve.Count;  }
-			finally
-				{  Monitor.Exit(linksToResolve);  }
 
-			Monitor.Enter(newTopicIDsByEndingSymbol);
-
-			try
-				{  units += newTopicIDsByEndingSymbol.Count;  }
-			finally
-				{  Monitor.Exit(newTopicIDsByEndingSymbol);  }			
+			lock (newTopicIDsByEndingSymbol)
+				{
+				foreach (var kvPair in newTopicIDsByEndingSymbol)
+					{  units += kvPair.Value.Count;  }
+				}
 
 			return units;
 			}
@@ -337,9 +315,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			if ( (beforeFirstResolve && EngineInstance.Config.ReparseEverything) == false)
 				{
-				Monitor.Enter(newTopicIDsByEndingSymbol);
-
-				try
+				lock (newTopicIDsByEndingSymbol)
 					{
 					IDObjects.NumberSet newTopicIDs = newTopicIDsByEndingSymbol[topic.Symbol.EndingSymbol];
 
@@ -350,10 +326,6 @@ namespace CodeClear.NaturalDocs.Engine.Links
 						}
 
 					newTopicIDs.Add(topic.TopicID);
-					}
-				finally
-					{
-					Monitor.Exit(newTopicIDsByEndingSymbol);
 					}
 				}
 			}
@@ -366,38 +338,26 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, EventAccessor eventAccessor)
 			{
-			Monitor.Enter(linksToResolve);
-
-			try
+			lock (linksToResolve)
 				{  linksToResolve.Add(linksAffected);  }
-			finally
-				{  Monitor.Exit(linksToResolve);  }
 
 
 			// Check newTopicIDsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
 
-			Monitor.Enter(newTopicIDsByEndingSymbol);
-
-			try
+			lock (newTopicIDsByEndingSymbol)
 				{
 				IDObjects.NumberSet newTopicIDs = newTopicIDsByEndingSymbol[topic.Symbol.EndingSymbol];
 
 				if (newTopicIDs != null)
 					{  newTopicIDs.Remove(topic.TopicID);  }
 				}
-			finally
-				{  Monitor.Exit(newTopicIDsByEndingSymbol);  }
 			}
 
 		
 		public void OnAddLink (Link link, EventAccessor eventAccessor)
 			{
-			Monitor.Enter(linksToResolve);
-
-			try
+			lock (linksToResolve)
 				{  linksToResolve.Add(link.LinkID);  }
-			finally
-				{  Monitor.Exit(linksToResolve);  }
 			}
 
 		
@@ -411,12 +371,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			// Just in case, so there's no hanging references
 			
-			Monitor.Enter(linksToResolve);
-
-			try
+			lock (linksToResolve)
 				{  linksToResolve.Remove(link.LinkID);  }
-			finally
-				{  Monitor.Exit(linksToResolve);  }
 			}
 
 		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)

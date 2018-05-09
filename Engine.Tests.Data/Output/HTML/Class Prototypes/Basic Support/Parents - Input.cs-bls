@@ -22,3 +22,6 @@ class Properties3 : extends public Parent1, implements [Metadata] private A.B.Pa
 
 // Class: Templates
 class Templates<int, float> : public Parent1<char>, A.B.Parent2 <List<int>, int> { }
+
+// Class: SimilarParentNames
+class SimilarParentNames : IList, IList<T> { }

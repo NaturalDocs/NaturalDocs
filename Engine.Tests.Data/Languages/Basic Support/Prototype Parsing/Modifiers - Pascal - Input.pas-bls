@@ -1,0 +1,15 @@
+
+// Function: FunctionA
+Function FunctionA (const x: integer, var y: array of integer): integer;
+	Begin
+	End;
+ 
+// Function: FunctionB
+Function FunctionB (a, b: Package.Class, out c, d: array of string): integer;
+	Begin
+	End;
+
+// Function: FunctionC
+Function FunctionC (const a: integer; b, c, d: string; var e, f, g: real): integer;
+	Begin
+	End;

@@ -8,3 +8,5 @@ class ParentsWithQualifiers : X.Y.Parent1, A.B.Parent2 { }
 class ParentTemplate : List<int> { }
 
 class TemplateWithQualifiedParentTemplates<X,Y> : System.Collections.Generic.IEnumerable<X>, Parent2<X,Y> { }
+
+class SimilarParentNames : IList, IList<T> { }
