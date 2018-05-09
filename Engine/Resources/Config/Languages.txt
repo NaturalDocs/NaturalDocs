@@ -164,6 +164,9 @@ Language: Pascal
 
    Function Prototype Ender: ;
    Variable Prototype Enders: ; =
+   Type Prototype Ender: ;
+   Event Prototype Enders: ; read write
+   Property Prototype Enders: ; read write
 
 
 Language: Assembly
