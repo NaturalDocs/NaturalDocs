@@ -319,7 +319,7 @@ td {
 
 	/* The tab bar causes a horizontal scroll bar on IE7 for some inexplicable reason. */
 	.IE7 #NDMenu {
-		overflow: hidden;
+		overflow-x: hidden;
 		}
 
 	#NDMenu a:hover,
