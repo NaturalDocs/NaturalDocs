@@ -1,0 +1,86 @@
+NoKeyword
+
+  - Name: NoKeyword
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+unknownkeyword UnknownKeyword
+
+  - Name: UnknownKeyword
+  - Modifiers: unknownkeyword
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+unknown_keyword _Unknown_Keyword_2
+
+  - Name: _Unknown_Keyword_2
+  - Modifiers: unknown_keyword
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+public static NoKeywordWithModifiers
+
+  - Name: NoKeywordWithModifiers
+  - Modifiers: public static
+  - Access Level: Public
+  - No parents
+
+-----
+
+public static unknownkeyword UnknownKeywordWithModifiers
+
+  - Name: UnknownKeywordWithModifiers
+  - Modifiers: public static unknownkeyword
+  - Access Level: Public
+  - No parents
+
+-----
+
+public static unknown_keyword _Unknown_Keyword_With_Modifiers_2
+
+  - Name: _Unknown_Keyword_With_Modifiers_2
+  - Modifiers: public static unknown_keyword
+  - Access Level: Public
+  - No parents
+
+-----
+
+NoKeywordTemplate<T>
+
+  - Name: NoKeywordTemplate
+  - Template Suffix: <T>
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+unknownkeyword UnknownKeywordNestedTemplates<List<X,Y>, Z>
+
+  - Name: UnknownKeywordNestedTemplates
+  - Template Suffix: <List<X,Y>, Z>
+  - Modifiers: unknownkeyword
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+No.Keyword.With.Qualifiers
+
+  - Name: No.Keyword.With.Qualifiers
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+unknownkeyword Unknown::Keyword::With::Qualifiers
+
+  - Name: Unknown::Keyword::With::Qualifiers
+  - Modifiers: unknownkeyword
+  - Access Level: Unknown
+  - No parents

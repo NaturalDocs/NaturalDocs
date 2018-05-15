@@ -1,0 +1,30 @@
+
+// Class: NoKeyword
+NoKeyword { }
+
+// Struct: UnknownKeyword
+unknownkeyword UnknownKeyword { }
+
+// Interface: _Unknown_Keyword_2
+unknown_keyword _Unknown_Keyword_2 { }
+
+// Class: NoKeywordWithModifiers
+public static NoKeywordWithModifiers { }
+
+// Struct: UnknownKeywordWithModifiers
+public static unknownkeyword UnknownKeywordWithModifiers { }
+
+// Interface: _Unknown_Keyword_With_Modifiers_2
+public static unknown_keyword _Unknown_Keyword_With_Modifiers_2 { }
+
+// Class: NoKeywordTemplate
+NoKeywordTemplate<T> { }
+
+// Class: UnknownKeywordNestedTemplates
+unknownkeyword UnknownKeywordNestedTemplates<List<X,Y>, Z> { }
+
+// Interface: No.Keyword.With.Qualifiers
+No.Keyword.With.Qualifiers { }
+
+// Interface: Unknown::Keyword::With::Qualifiers
+unknownkeyword Unknown::Keyword::With::Qualifiers { }
