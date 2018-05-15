@@ -278,12 +278,13 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				extraModifierStart = start;
 
-				while (start < paramEnd && 
-						 type != PrototypeParsingType.NameModifier_PartOfType);
+				do
 					{  
 					start.Next();  
 					type = start.PrototypeParsingType;
 					}
+				while (start < paramEnd && 
+						 type == PrototypeParsingType.NameModifier_PartOfType);
 
 				extraModifierEnd = start;
 
