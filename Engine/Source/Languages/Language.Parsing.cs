@@ -585,11 +585,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// like splint comments and bracketed C# metadata.
 
 			TokenIterator iterator = tokenizedPrototype.FirstToken;
+			bool foundKeyword = false;
 
 			for (;;)
 				{
 				if (iterator.IsInBounds == false)
-					{  return null;  }
+					{  break;  }
 				else if (iterator.MatchesToken("class") || 
 						  iterator.MatchesToken("struct") || 
 						  iterator.MatchesToken("interface"))
@@ -607,6 +608,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						 (lookbehind.IsInBounds == false || lookbehind.FundamentalType == FundamentalType.Whitespace) )
 						{  
 						iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;
+						foundKeyword = true;
 						break;  
 						}
 					else
@@ -620,20 +622,81 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  iterator.Next();  }
 				}
 
-			TokenIterator startOfModifiers = tokenizedPrototype.FirstToken;
-			TokenIterator endOfModifiers = iterator;
 
-			endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
-			startOfModifiers.NextPastWhitespace(endOfModifiers);
+			// If we found a recognized keyword like class or struct, we can assume everything before it is a modifier and what's immediately after
+			// it is the name.
 
-			if (endOfModifiers > startOfModifiers)
-				{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+			if (foundKeyword)
+				{
+				TokenIterator startOfModifiers = tokenizedPrototype.FirstToken;
+				TokenIterator endOfModifiers = iterator;
 
+				endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
+				startOfModifiers.NextPastWhitespace(endOfModifiers);
 
-			// The iterator is on the keyword.  Get the name.
+				if (endOfModifiers > startOfModifiers)
+					{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 
-			iterator.Next();
-			iterator.NextPastWhitespace();
+				// The iterator is on the keyword.  Move past it to the name.
+				iterator.Next();
+				iterator.NextPastWhitespace();
+				}
+
+			
+			// If we didn't find a recognized keyword, treat it as a space separated list of words, the last one being the name and the rest being modifiers.
+
+			else
+				{
+				iterator = tokenizedPrototype.FirstToken;
+				iterator.NextPastWhitespace();
+
+				if (iterator.FundamentalType != FundamentalType.Text &&
+					iterator.Character != '_')
+					{  return null;  }
+
+				TokenIterator startOfModifiers = iterator;
+				TokenIterator endOfModifiers = iterator;
+
+				for (;;)
+					{
+					TokenIterator startOfLastWord = iterator;
+
+					while (iterator.IsInBounds)
+						{
+						if (iterator.FundamentalType == FundamentalType.Text ||
+							iterator.Character == '.' || 
+							iterator.Character == '_')
+							{  iterator.Next();  }
+						else if (iterator.MatchesAcrossTokens("::"))
+							{  iterator.Next(2);  }
+						else
+							{  break;  }
+						}
+
+					if (iterator.FundamentalType != FundamentalType.Whitespace)
+						{  
+						iterator = startOfLastWord;
+						break;  
+						}
+
+					TokenIterator lookahead = iterator;
+					lookahead.NextPastWhitespace();
+
+					if (lookahead.FundamentalType != FundamentalType.Text &&
+						lookahead.Character != '_')
+						{
+						iterator = startOfLastWord;
+						break;
+						}
+
+					endOfModifiers = iterator;
+					iterator = lookahead;
+					}
+
+				if (endOfModifiers > startOfModifiers)
+					{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+				}
+
 
 			TokenIterator startOfName = iterator;
 
@@ -855,8 +918,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{
 					tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfName, endOfName, ClassPrototypeParsingType.Name);
 
-					startOfModifiers = startOfParent;
-					endOfModifiers = startOfName;
+					TokenIterator startOfModifiers = startOfParent;
+					TokenIterator endOfModifiers = startOfName;
 
 					endOfModifiers.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfModifiers);
 					startOfModifiers.NextPastWhitespace(endOfModifiers);
