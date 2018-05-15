@@ -5,7 +5,7 @@
  * A base class for <Entries> that cause navigation, such as a file or a class, as opposed to a <Container>.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2017 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2018 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
