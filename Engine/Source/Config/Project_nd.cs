@@ -114,7 +114,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
+				// There were no file format changes between 2.0 and 2.0.2 but there were parsing changes and
+				// bug fixes that require a full rebuild.
+				if (binaryFile.OpenForReading(filename, "2.0.2") == false)
 					{
 					result = false;
 					}
