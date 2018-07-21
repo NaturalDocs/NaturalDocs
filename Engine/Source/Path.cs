@@ -526,7 +526,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public int CompareTo (object other)
 			{
-			return pathString.CompareTo(other);
+			return pathString.CompareTo(other.ToString());
 			}
 		
 			
