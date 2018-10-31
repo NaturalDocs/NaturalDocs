@@ -54,9 +54,7 @@
   <PropertyGroup>
     <StartupObject>CodeClear.NaturalDocs.CLI.Application</StartupObject>
   </PropertyGroup>
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
