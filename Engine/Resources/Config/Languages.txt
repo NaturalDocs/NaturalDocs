@@ -124,16 +124,16 @@ Language: SQL
 
    Extension: sql
 
-   Alias: PL/SQL
+   Alias: PL/SQL PLSQL T-SQL TSQL Transact-SQL TransactSQL
 
    Line Comment: --
    Block Comment: /* */
    Enum Values: Global
    Case Sensitive: No
 
-   Function Prototype Enders: , ; ) as As AS is Is IS
-   Variable Prototype Enders: , ; ) := default Default DEFAULT
-   Database Index Prototype Enders: , ; )
+   Function Prototype Enders: ; ) as As AS is Is IS
+   Variable Prototype Enders: ; ) = := default Default DEFAULT
+   Database Index Prototype Enders: ; )
    Database Trigger Prototype Enders: begin Begin BEGIN as As AS
 
 
