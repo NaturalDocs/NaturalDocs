@@ -153,8 +153,8 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							output.AppendLine();
 							}
 
-						parsedPrototype.GetAfterParameters(out start, out end);
-						output.AppendLine("- After Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
+						if (parsedPrototype.GetAfterParameters(out start, out end))
+							{  output.AppendLine("- After Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);
 						output.AppendLine();
