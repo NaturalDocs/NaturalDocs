@@ -611,53 +611,72 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			sections = new List<Section>();
 			Section section = null;
-
+			
+			TokenIterator startOfSection, endOfSection;
 			TokenIterator iterator = tokenizer.FirstToken;
-			iterator.NextPastWhitespace();
+
+			// Only skip whitespace if it's insignificant to the prototype parsing
+			while (iterator.FundamentalType == FundamentalType.Whitespace &&
+					 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+				{  iterator.Next();  }
 
 
 			// Pre-Prototype Lines
 
-			while (iterator.IsInBounds && 
-					 iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
+			while (iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
 				{
-				section = new Section();
-				section.Type = SectionType.PrePrototypeLine;
-				section.StartIndex = iterator.TokenIndex;
+				startOfSection = iterator;
 
 				do
 					{  iterator.Next();  }
-				while (iterator.IsInBounds && 
-						 iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine);
+				while (iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine);
 
-				section.EndIndex = iterator.TokenIndex;
-				sections.Add(section);
+				endOfSection = iterator;
 
-				iterator.NextPastWhitespace();
+				startOfSection.NextPastWhitespace(endOfSection);
+				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+				if (endOfSection > startOfSection)
+					{
+					section = new Section();
+					section.Type = SectionType.PrePrototypeLine;
+					section.StartIndex = startOfSection.TokenIndex;
+					section.EndIndex = endOfSection.TokenIndex;
+					sections.Add(section);
+					}
+
+				while (iterator.FundamentalType == FundamentalType.Whitespace &&
+						 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+					{  iterator.Next();  }
 				}
 
 
 			// Before Parameters
 
-			section = new Section();
-			section.Type = SectionType.BeforeParameters;
-			section.StartIndex = iterator.TokenIndex;
+			startOfSection = iterator;
 
 			while (iterator.IsInBounds && 
 					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
 				{  iterator.Next();  }
 
-
 			if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
 				{
-				// Include the StartOfParams symbol in the section
+				// Include the StartOfParams symbol in the section.  Note that it's possible for StartOfParams to be whitespace, 
+				// as it is in Microsoft Transact-SQL, so we don't trim the end.
 				iterator.Next();
 
-				section.EndIndex = iterator.TokenIndex;
-				sections.Add(section);
+				endOfSection = iterator;
+				startOfSection.NextPastWhitespace(endOfSection);
 
-				iterator.NextPastWhitespace();
+				if (endOfSection > startOfSection)
+					{
+					section = new Section();
+					section.Type = SectionType.BeforeParameters;
+					section.StartIndex = startOfSection.TokenIndex;
+					section.EndIndex = endOfSection.TokenIndex;
+					sections.Add(section);
+					}
 
 
 				// Parameters
@@ -666,9 +685,7 @@ namespace CodeClear.NaturalDocs.Engine
 						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
 						 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
 					{
-					section = new Section();
-					section.Type = SectionType.Parameter;
-					section.StartIndex = iterator.TokenIndex;
+					startOfSection = iterator;
 
 					while (iterator.IsInBounds &&
 							 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
@@ -676,55 +693,70 @@ namespace CodeClear.NaturalDocs.Engine
 							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
 						{  iterator.Next();  }
 
-					// Include the separator in the parameter block
+					// Include the separator in the parameter section
 					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{  
-						iterator.Next();  
-						section.EndIndex = iterator.TokenIndex;
-						}
-					else
+						{  iterator.Next();  }
+
+					endOfSection = iterator;
+
+					startOfSection.NextPastWhitespace(endOfSection);
+					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+					if (endOfSection > startOfSection)
 						{
-						TokenIterator lookbehind = iterator;
-						lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
-						section.EndIndex = lookbehind.TokenIndex;
+						section = new Section();
+						section.Type = SectionType.Parameter;
+						section.StartIndex = startOfSection.TokenIndex;
+						section.EndIndex = endOfSection.TokenIndex;
+						sections.Add(section);
 						}
-
-					sections.Add(section);
-
-					iterator.NextPastWhitespace();
 					}
 
 
 				// After Parameters
 
-				if (iterator.IsInBounds &&
-					iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
+				if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfParams)
 					{
-					section = new Section();
-					section.Type = SectionType.AfterParameters;
-					section.StartIndex = iterator.TokenIndex;
+					startOfSection = iterator;
 
 					do
 						{  iterator.Next();  }
 					while (iterator.IsInBounds &&
 							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine);
 
-					TokenIterator lookbehind = iterator;
-					lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
-					section.EndIndex = lookbehind.TokenIndex;
+					endOfSection = iterator;
 
-					sections.Add(section);
+					// It's possible for EndOfParams to be whitespace, as it is in Microsoft Transact-SQL, so we don't trim the 
+					// beginning.
+					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+					if (endOfSection > startOfSection)
+						{
+						section = new Section();
+						section.Type = SectionType.AfterParameters;
+						section.StartIndex = startOfSection.TokenIndex;
+						section.EndIndex = endOfSection.TokenIndex;
+						sections.Add(section);
+						}					
 					}
 				}
 
 			else // there was no StartOfParams
 				{
 				// We still have to finish the BeforeParameters section.
-				TokenIterator lookbehind = iterator;
-				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator, iterator);
-				section.EndIndex = lookbehind.TokenIndex;
+				endOfSection = iterator;
 
-				sections.Add(section);
+				startOfSection.NextPastWhitespace(endOfSection);
+				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+				if (endOfSection > startOfSection)
+					{
+					section = new Section();
+					section.Type = SectionType.BeforeParameters;
+					section.StartIndex = startOfSection.TokenIndex;
+					section.EndIndex = endOfSection.TokenIndex;
+					sections.Add(section);
+					}
 				}
 
 
@@ -733,19 +765,29 @@ namespace CodeClear.NaturalDocs.Engine
 			while (iterator.IsInBounds && 
 					 iterator.PrototypeParsingType == PrototypeParsingType.StartOfPostPrototypeLine)
 				{
-				section = new Section();
-				section.Type = SectionType.PostPrototypeLine;
-				section.StartIndex = iterator.TokenIndex;
+				startOfSection = iterator;
 
 				do
 					{  iterator.Next();  }
-				while (iterator.IsInBounds && 
-						 iterator.PrototypeParsingType == PrototypeParsingType.PostPrototypeLine);
+				while (iterator.PrototypeParsingType == PrototypeParsingType.PostPrototypeLine);
 
-				section.EndIndex = iterator.TokenIndex;
-				sections.Add(section);
+				endOfSection = iterator;
 
-				iterator.NextPastWhitespace();
+				startOfSection.NextPastWhitespace(endOfSection);
+				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+
+				if (endOfSection > startOfSection)
+					{
+					section = new Section();
+					section.Type = SectionType.PostPrototypeLine;
+					section.StartIndex = startOfSection.TokenIndex;
+					section.EndIndex = endOfSection.TokenIndex;
+					sections.Add(section);
+					}
+
+				while (iterator.FundamentalType == FundamentalType.Whitespace &&
+						 iterator.PrototypeParsingType == PrototypeParsingType.Null)
+					{  iterator.Next();  }
 				}
 			}
 
