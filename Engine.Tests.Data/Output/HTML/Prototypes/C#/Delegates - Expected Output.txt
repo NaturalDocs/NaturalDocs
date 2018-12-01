@@ -21,6 +21,6 @@
             <td class="PName last">x</td>
          </tr>
       </table></td>
-      <td class="PAfterParameters">) </td>
+      <td class="PAfterParameters">)</td>
    </tr>
 </table><div class="PPostPrototypeLine"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>

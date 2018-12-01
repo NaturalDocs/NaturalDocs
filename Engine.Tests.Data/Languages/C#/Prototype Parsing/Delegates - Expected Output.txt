@@ -24,6 +24,6 @@
     - Link Candidates: object
     - Default Value: (not detected)
 
-- After Parameters: ) 
+- After Parameters: )
   - Link Candidates: (none)
   - Post-Prototype Line: where T: System.Collections.IEnumerable, new()

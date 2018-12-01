@@ -115,6 +115,6 @@
             <td class="PName last">y</td>
          </tr>
       </table></td>
-      <td class="PAfterParameters">) </td>
+      <td class="PAfterParameters">)</td>
    </tr>
 </table><div class="PPostPrototypeLine"><span class="SHKeyword">where</span> T1: <span class="SHKeyword">class</span>, Interface, <span class="SHKeyword">new</span> ()</div><div class="PPostPrototypeLine"><span class="SHKeyword">where</span> T2: System.Collections.IEnumerable&lt;T2&gt;</div></div>
