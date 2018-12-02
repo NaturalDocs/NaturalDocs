@@ -1405,7 +1405,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Ender Symbol, not in a bracket
 
 				// We test this before looking for opening brackets so the opening symbols can be used as enders.
-				else if (prototypeEnders.Symbols != null && iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols) != -1)
+				else if (prototypeEnders.Symbols != null && iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols, !CaseSensitive) != -1)
 					{
 					goodPrototype = true;
 					break;

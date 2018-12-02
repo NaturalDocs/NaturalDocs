@@ -131,10 +131,10 @@ Language: SQL
    Enum Values: Global
    Case Sensitive: No
 
-   Function Prototype Enders: ; ) as As AS is Is IS
-   Variable Prototype Enders: ; ) = := default Default DEFAULT
+   Function Prototype Enders: ; ) AS IS
+   Variable Prototype Enders: ; ) = := DEFAULT
    Database Index Prototype Enders: ; )
-   Database Trigger Prototype Enders: begin Begin BEGIN as As AS
+   Database Trigger Prototype Enders: BEGIN AS
 
 
 Language: Visual Basic
@@ -189,7 +189,7 @@ Language: Ada
    Line Comment: --
    Case Sensitive: No
 
-   Function Prototype Enders: ; is Is IS
+   Function Prototype Enders: ; IS
    Variable Prototype Enders: ; :=
 
 
