@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.ParsedClassPrototype
+ * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedClassPrototype
  * ____________________________________________________________________________
  * 
  * A class that wraps a <Tokenizer> for a prototype that's been marked with <ClassPrototypeParsingTypes>, providing easier 
@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
 
-namespace CodeClear.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine.Prototypes
 	{
 	public class ParsedClassPrototype
 		{
@@ -530,7 +530,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* ___________________________________________________________________________
 		 * 
-		 * Class: CodeClear.NaturalDocs.Engine.ParsedClassPrototype.Section
+		 * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedClassPrototype.Section
 		 * ___________________________________________________________________________
 		 */
 		protected class Section

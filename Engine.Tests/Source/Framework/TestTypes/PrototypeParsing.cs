@@ -11,13 +11,10 @@
 // Refer to License.txt for the complete details
 
 
-using System;
 using System.Collections.Generic;
 using System.Text;
-using NUnit.Framework;
-using CodeClear.NaturalDocs.Engine;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Tests.Framework;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 

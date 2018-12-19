@@ -14,6 +14,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -21,7 +22,6 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-//	[test][your-mom]
 	public class CSharp : Language
 		{
 

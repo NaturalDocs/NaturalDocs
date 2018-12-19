@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
 using CodeClear.NaturalDocs.Engine.Errors;
 using CodeClear.NaturalDocs.Engine.Languages;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;

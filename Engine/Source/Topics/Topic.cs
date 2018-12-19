@@ -11,6 +11,7 @@
 
 
 using System;
+using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
 
 
