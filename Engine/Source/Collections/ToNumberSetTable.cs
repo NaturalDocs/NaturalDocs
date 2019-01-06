@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 		/*	Property: Count
 		 *	Returns the total number of values across all keys.
 		 */
-		public int Count
+		new public int Count
 			{
 			get
 				{
