@@ -112,12 +112,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			
 			
 		/* Function: NextPastWhitespace
-		 * Moves forward until past all whitespace tokens or the limit is reached.
+		 * Moves forward until past all whitespace tokens or the limit is reached.  Returns whether it moved.
 		 */
-		public void NextPastWhitespace (TokenIterator limit)
+		public bool NextPastWhitespace (TokenIterator limit)
 			{
-			while (FundamentalType == FundamentalType.Whitespace && this < limit)
+			if (FundamentalType != FundamentalType.Whitespace || this >= limit)
+				{  return false;  }
+
+			do
 				{  Next();  }
+			while (FundamentalType == FundamentalType.Whitespace && this < limit);
+
+			return true;
 			}
 			
 			
@@ -191,7 +197,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			
 		/* Function: PreviousPastWhitespace
 		 * 
-		 * Moves backwards until past all whitespace tokens.
+		 * Moves backwards until past all whitespace tokens.  Returs whether it moved.
 		 * 
 		 * Parameters:
 		 * 
@@ -203,12 +209,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 *					 whitespace.  This is useful if you're using it as an independent iterator and want it to be on a non-whitespace
 		 *					 token.
 		 */
-		public void PreviousPastWhitespace (PreviousPastWhitespaceMode mode)
+		public bool PreviousPastWhitespace (PreviousPastWhitespaceMode mode)
 			{
 			if (mode == PreviousPastWhitespaceMode.Iterator)
 				{
-				while (FundamentalType == Tokenization.FundamentalType.Whitespace)
+				if (FundamentalType != Tokenization.FundamentalType.Whitespace)
+					{  return false;  }
+
+				do
 					{  Previous();  }
+				while (FundamentalType == Tokenization.FundamentalType.Whitespace);
+
+				return true;
 				}
 
 			else if (mode == PreviousPastWhitespaceMode.EndingBounds)
@@ -216,18 +228,27 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				TokenIterator temp = this;
 				temp.Previous();
 
-				while (temp.FundamentalType == FundamentalType.Whitespace)
+				if (temp.FundamentalType != FundamentalType.Whitespace)
+					{  return false;  }
+
+				do
 					{  
 					this = temp;
 					temp.Previous();
 					}
+				while (temp.FundamentalType == FundamentalType.Whitespace);
+
+				return true;
 				}
+
+			else
+				{  throw new NotImplementedException();  }
 			}
 
 
 		/* Function: PreviousPastWhitespace
 		 * 
-		 * Moves backwards until past all whitespace tokens or it reaches the limit.
+		 * Moves backwards until past all whitespace tokens or it reaches the limit.  Returns whether it moved.
 		 * 
 		 * Parameters:
 		 * 
@@ -239,12 +260,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 *					 whitespace.  This is useful if you're using it as an independent iterator and want it to be on a non-whitespace
 		 *					 token.
 		 */
-		public void PreviousPastWhitespace (PreviousPastWhitespaceMode mode, TokenIterator limit)
+		public bool PreviousPastWhitespace (PreviousPastWhitespaceMode mode, TokenIterator limit)
 			{
 			if (mode == PreviousPastWhitespaceMode.Iterator)
 				{
-				while (FundamentalType == Tokenization.FundamentalType.Whitespace && this > limit)
+				if (FundamentalType != Tokenization.FundamentalType.Whitespace || this <= limit)
+					{  return false;  }
+
+				do
 					{  Previous();  }
+				while (FundamentalType == Tokenization.FundamentalType.Whitespace && this > limit);
+
+				return true;
 				}
 
 			else if (mode == PreviousPastWhitespaceMode.EndingBounds)
@@ -252,12 +279,21 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				TokenIterator temp = this;
 				temp.Previous();
 
-				while (temp.FundamentalType == FundamentalType.Whitespace && temp >= limit)
+				if (temp.FundamentalType != FundamentalType.Whitespace || temp < limit)
+					{  return false;  }
+
+				do
 					{  
 					this = temp;
 					temp.Previous();
 					}
+				while (temp.FundamentalType == FundamentalType.Whitespace && temp >= limit);
+
+				return true;
 				}
+
+			else
+				{  throw new NotImplementedException();  }
 			}
 
 
