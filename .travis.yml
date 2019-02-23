@@ -10,4 +10,4 @@ script:
   - sudo mv ./xcopy /bin
   - msbuild /p:Configuration=Release CLI/CLI.csproj
   - msbuild /p:Configuration=Release Engine.Tests.Runner/Engine.Tests.Runner.csproj
-  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests.Runner/bin/Release/nunit.framework.dll
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests.Runner/Resources/NUnit/nunit-console-runner.dll
