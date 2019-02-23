@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Beakerboy/NaturalDocs.svg?branch=master)](https://travis-ci.org/Beakerboy/NaturalDocs)
+[![Build Status](https://travis-ci.org/NaturalDocs/NaturalDocs.svg?branch=master)](https://travis-ci.org/NaturalDocs/NaturalDocs)
 
 # Natural Docs
 
