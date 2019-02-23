@@ -1,11 +1,11 @@
 language: csharp
 mono:
-  - latest
+  - 3.12.0
 dotnet: 2.1.4
 install:
   - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
-  - msbuild /p:Configuration=Release Engine/Engine.csproj
+  - msbuild /p:Configuration=Release
   - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests/bin/Release/Engine.Tests.dll
   - dotnet restore
   - dotnet build
