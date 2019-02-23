@@ -1,7 +1,12 @@
 language: csharp
-mono: none
-dotnet: 2.1.4
+mono:
+  - latest
+install:
+  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
-  - cd CLI
-  - dotnet restore
-  - dotnet build CLI.csproj
+  - echo '#!/bin/bash' > ./xcopy
+  - echo 'cp -r $1 $2' >> ./xcopy
+  - sudo chmod 777 ./xcopy
+  - sudo mv ./xcopy /bin
+  - sudo chmod 777 /bin/xcopy
+  - msbuild /p:Configuration=Release CLI/CLI.csproj
