@@ -4,4 +4,5 @@ mono:
 install:
   - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
-  - msbuild /p:Configuration=Release CLI/CLI.csproj
+  - cd CLI
+  - msbuild /p:Configuration=Release CLI.csproj
