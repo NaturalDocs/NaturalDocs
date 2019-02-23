@@ -3,4 +3,4 @@ mono: none
 dotnet: 2.1.4
 script:
  - dotnet restore
- - dotnet build
+ - dotnet build CLI/CLI.csproj
