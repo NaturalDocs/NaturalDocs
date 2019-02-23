@@ -8,5 +8,4 @@ script:
   - echo 'cp -r $1 $2' >> ./xcopy
   - sudo chmod 777 ./xcopy
   - sudo mv ./xcopy /bin
-  - sudo chmod 777 /bin/xcopy
   - msbuild /p:Configuration=Release CLI/CLI.csproj
