@@ -1,8 +1,6 @@
 language: csharp
-mono:
-  - latest
-install:
-  - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+mono: none
+dotnet: 2.1.4
 script:
-  - cd CLI
-  - msbuild /p:Configuration=Release CLI.csproj
+ - dotnet restore
+ - dotnet build
