@@ -6,3 +6,6 @@ environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 build:
   project: CLI/CLI.csproj
+test:
+  assemblies:
+    - ./Engine.Tests/bin/Release/NaturalDocs.Engine.Tests.dll
