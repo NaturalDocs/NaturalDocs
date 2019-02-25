@@ -9,19 +9,13 @@ before_script:
   - cp .nd_project.txt $TRAVIS_BUILD_DIR/.ND_Config/Project.txt
 script:
   - echo '#!/bin/bash' > ./xcopy
-  - echo 'cp -r $1 $2' >> ./xcopy
-  - sudo chmod 777 ./xcopy
+  - echo "string2='/*'" >> ./xcopy
+  - echo 'cp -r $1$string2 $2' >> ./xcopy
+  - sudo chmod '+x' ./xcopy
   - sudo mv ./xcopy /bin
   - msbuild /p:Configuration=Release CLI/CLI.csproj
   - msbuild /p:Configuration=Release Engine.Tests/Engine.Tests.csproj
-  - cp -r Engine/Resources/Translations Engine.Tests/bin/Release/
-  - cp -r Engine/Resources/Config Engine.Tests/bin/Release/
-  - cp -r Engine/Resources/Styles Engine.Tests/bin/Release/
   - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests/bin/Release/NaturalDocs.Engine.Tests.dll
-  - cp -r CLI/Resources/Translations CLI/bin/Release/
-  - cp Engine/Resources/Translations/* CLI/bin/Release/Translations/
-  - cp -r Engine/Resources/Config CLI/bin/Release/
-  - cp -r Engine/Resources/Styles CLI/bin/Release/
   - mono CLI/bin/Release/NaturalDocs.exe $TRAVIS_BUILD_DIR/.ND_Config
 deploy:
   provider: pages
