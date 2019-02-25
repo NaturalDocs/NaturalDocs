@@ -3,9 +3,9 @@ image:
   - Visual Studio 2017
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
- matrix: 
-      - NaturalDocs: CLI/CLI.csproj 
-      - NaturalDocs: Engine.Tests/Engine.Tests.csproj
+matrix:
+  - NaturalDocs: CLI/CLI.csproj
+  - NaturalDocs: Engine.Tests/Engine.Tests.csproj
 build:
   project: $(NaturalDocs)
 test:
