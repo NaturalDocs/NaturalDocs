@@ -9,4 +9,4 @@ build:
   project: $(NaturalDocsProj)
 test:
   assemblies:
-- ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
+    - ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
