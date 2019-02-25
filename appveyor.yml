@@ -2,9 +2,11 @@ version: 0.0.{build}
 image: 
   - Visual Studio 2017
 environment:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  matrix:
+    - NaturalDocsProj: Engine.Tests/Engine.Tests.csproj
+    - NaturalDocsProj: CLI/CLI.csproj
 build:
-  project: Engine.Tests/Engine.Tests.csproj
+  project: $(NaturalDocsProj)
 test:
   assemblies:
     - ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
