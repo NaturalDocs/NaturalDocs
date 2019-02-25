@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/NaturalDocs/NaturalDocs.svg?branch=master)](https://travis-ci.org/NaturalDocs/NaturalDocs)
-
+[![Build status](https://ci.appveyor.com/api/projects/status/pm53j27386wap25d/branch/master?svg=true)](https://ci.appveyor.com/project/NaturalDocs/naturaldocs/branch/master)
 # Natural Docs
 
 Natural Docs is an open source documentation generator for 
