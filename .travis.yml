@@ -29,4 +29,4 @@ deploy:
   local_dir: $TRAVIS_BUILD_DIR/docs
   github_token: $GH_REPO_TOKEN
   on:
-    branch: Docs
+    branch: master
