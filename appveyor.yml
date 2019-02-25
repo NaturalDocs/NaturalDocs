@@ -7,4 +7,4 @@ build:
   project: Engine.Tests/Engine.Tests.csproj
 test:
   assemblies:
-    - ./Engine.Tests/bin/Release/NaturalDocs.Engine.Tests.dll
+    - ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
