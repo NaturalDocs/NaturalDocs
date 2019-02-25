@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/NaturalDocs/NaturalDocs.svg?branch=master)](https://travis-ci.org/NaturalDocs/NaturalDocs)
+
 # Natural Docs
 
 Natural Docs is an open source documentation generator for 
