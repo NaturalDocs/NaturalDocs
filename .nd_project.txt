@@ -1,0 +1,10 @@
+Format: 2.0.2
+Source Folder: ../CLI/Source
+   Name: Command Line Interface
+
+Source Folder: ../Engine/Source
+   Name: Engine
+   
+HTML Output Folder: ../docs
+
+Title: NaturalDocs
