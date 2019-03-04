@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public delegate</span> <span class="SHKeyword">void</span> DelegateA (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -9,9 +9,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">protected internal delegate</span> IList&lt;T&gt; DelegateB&lt;<span class="SHKeyword">in</span> T&gt; (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -23,4 +23,4 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table><div class="PPostPrototypeLine"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>
+</table></div><div class="PSection PPlainSection"><span class="SHKeyword">where</span> T: System.Collections.IEnumerable, <span class="SHKeyword">new</span>()</div></div>

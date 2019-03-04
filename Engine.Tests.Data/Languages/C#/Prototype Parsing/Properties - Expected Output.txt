@@ -1,28 +1,31 @@
-- No Parameters: int PropertyA { get }
+- Plain Section: int PropertyA { get }
   - Access Level: Unknown
   - Link Candidates: int
 -----
-- No Parameters: protected int PropertyB { get; private set }
+- Plain Section: protected int PropertyB { get; private set }
   - Access Level: Protected
   - Link Candidates: int
 -----
-- No Parameters: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
   - Access Level: Internal
   - Link Candidates: System.Text.StringBuilder
-  - Pre-Prototype Line: [Attribute]
 -----
-- No Parameters: abstract int PropertyD { get; set }
+- Plain Section: abstract int PropertyD { get; set }
   - Access Level: Unknown
   - Link Candidates: int
 -----
-- No Parameters: public int PropertyE { get }
+- Plain Section: public int PropertyE { get }
   - Access Level: Public
   - Link Candidates: int
 -----
-- No Parameters: public string PropertyF { get }
+- Plain Section: public string PropertyF { get }
   - Access Level: Public
   - Link Candidates: string
 -----
-- No Parameters: public int PropertyG { get; set }
+- Plain Section: public int PropertyG { get; set }
   - Access Level: Public
   - Link Candidates: int

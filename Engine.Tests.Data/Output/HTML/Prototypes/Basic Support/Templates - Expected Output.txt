@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">int</span> FunctionName (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -12,26 +12,26 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PModifierQualifier first">System.Collections.Generic.</td>
             <td class="PType">Dictionary&lt;Nullable&lt;<span class="SHKeyword">int</span>&gt;, Map&lt;<span class="SHKeyword">string</span>, Object[]&gt;&gt;&nbsp;</td>
-            <td class="PName">x&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">x</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span>,</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PType"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName">y&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">y</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHNumber">12</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>

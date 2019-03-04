@@ -1,18 +1,31 @@
-- No Parameters: sub FunctionA ()
-  - Access Level: Unknown
-  - Link Candidates: sub
+- Parameter Section:
+  - Before Parameters: sub FunctionA (
+    - Access Level: Unknown
+    - Link Candidates: sub
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: sub FunctionB ( )
-  - Access Level: Unknown
-  - Link Candidates: sub
+- Parameter Section:
+  - Before Parameters: sub FunctionB (
+    - Access Level: Unknown
+    - Link Candidates: sub
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: sub FunctionC()
-  - Access Level: Unknown
-  - Link Candidates: sub
+- Parameter Section:
+  - Before Parameters: sub FunctionC(
+    - Access Level: Unknown
+    - Link Candidates: sub
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: sub FunctionD (
-  - Access Level: Unknown
-  - Link Candidates: sub
+- Parameter Section:
+  - Before Parameters: sub FunctionD (
+    - Access Level: Unknown
+    - Link Candidates: sub
 
   - Parameter 1: $x,
     - Name: x
@@ -35,12 +48,13 @@
     - Link Candidates: (none)
     - Default Value: [ ]
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: sub FunctionE(
-  - Access Level: Unknown
-  - Link Candidates: sub
+- Parameter Section:
+  - Before Parameters: sub FunctionE(
+    - Access Level: Unknown
+    - Link Candidates: sub
 
   - Parameter 1: $x,
     - Name: x
@@ -63,5 +77,5 @@
     - Link Candidates: (none)
     - Default Value: [ ]
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

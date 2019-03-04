@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionA (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -12,9 +12,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionB (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -34,9 +34,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionC (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -62,15 +62,15 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionD (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PNamePrefix">*</td>
+            <td class="PType first"><span class="SHKeyword">int</span>*&nbsp;</td>
+            <td></td>
             <td class="PName last">a,</td>
          </tr><tr>
             <td class="first"></td>
@@ -78,7 +78,7 @@
             <td class="PName last">b,</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PNamePrefix">*</td>
+            <td class="PSymbols">*</td>
             <td class="PName last">c,</td>
          </tr><tr>
             <td class="first"></td>
@@ -90,21 +90,21 @@
             <td class="PName last">e,</td>
          </tr><tr>
             <td class="first"></td>
-            <td class="PNamePrefix">*</td>
+            <td class="PSymbols">*</td>
             <td class="PName last">f</td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionE (</td>
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
-            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PNamePrefix">**</td>
+            <td class="PType first"><span class="SHKeyword">int</span>**&nbsp;</td>
+            <td></td>
             <td class="PName last">a,</td>
          </tr><tr>
             <td class="first"></td>
@@ -112,14 +112,14 @@
             <td class="PName last">b,</td>
          </tr><tr>
             <td class="first"></td>
-            <td class="PNamePrefix">*</td>
+            <td class="PSymbols">*</td>
             <td class="PName last">c,</td>
          </tr><tr>
-            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
-            <td class="PNamePrefix">&amp;</td>
+            <td class="PType first"><span class="SHKeyword">float</span>&amp;&nbsp;</td>
+            <td></td>
             <td class="PName last">d</td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>

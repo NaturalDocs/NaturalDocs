@@ -1,6 +1,6 @@
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> TestClass ()</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> TestClass ()</div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -11,9 +11,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">private</span> TestClass (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -27,11 +27,11 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype NoParameterForm">~TestClass ()</div>
+<div class="NDPrototype"><div class="PSection PPlainSection">~TestClass ()</div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">extern static</span> TestClass (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -42,6 +42,6 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">extern</span> ~TestClass ()</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">extern</span> ~TestClass ()</div></div>

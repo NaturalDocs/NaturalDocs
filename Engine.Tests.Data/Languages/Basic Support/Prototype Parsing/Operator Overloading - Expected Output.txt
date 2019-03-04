@@ -1,6 +1,7 @@
-- Before Parameters: int operator< (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int operator< (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: LineIterator a,
     - Name: a
@@ -16,12 +17,13 @@
     - Link Candidates: LineIterator
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: LineIterator operator<< (
-  - Access Level: Unknown
-  - Link Candidates: LineIterator
+- Parameter Section:
+  - Before Parameters: LineIterator operator<< (
+    - Access Level: Unknown
+    - Link Candidates: LineIterator
 
   - Parameter 1: LineIterator input
     - Name: input
@@ -30,12 +32,13 @@
     - Link Candidates: LineIterator
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: ObjectC operator+ (
-  - Access Level: Unknown
-  - Link Candidates: ObjectC
+- Parameter Section:
+  - Before Parameters: ObjectC operator+ (
+    - Access Level: Unknown
+    - Link Candidates: ObjectC
 
   - Parameter 1: ObjectC other
     - Name: other
@@ -44,5 +47,5 @@
     - Link Candidates: ObjectC
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

@@ -1,0 +1,51 @@
+
+// Function: FunctionName
+void FunctionName (int* a, int *b, int * c, int** d, int **e, int ** f, int* * g, int * *h, int * * i)
+	{
+	}
+
+// Function: FunctionName2
+void FunctionName2 (int* a)
+	{
+	}
+
+// Function: FunctionName3
+void FunctionName3 (int *b)
+	{
+	}
+
+// Function: FunctionName4
+void FunctionName4 (int * c)
+	{
+	}
+
+// Function: FunctionName5
+void FunctionName5 (int** d)
+	{
+	}
+
+// Function: FunctionName6
+void FunctionName6 (int **e)
+	{
+	}
+
+// Function: FunctionName7
+void FunctionName7 (int ** f)
+	{
+	}
+
+// Function: FunctionName8
+void FunctionName8 (int* * g)
+	{
+	}
+
+// Function: FunctionName9
+void FunctionName9 (int * *h)
+	{
+	}
+
+// Function: FunctionName10
+void FunctionName10 (int * * i)
+	{
+	}
+

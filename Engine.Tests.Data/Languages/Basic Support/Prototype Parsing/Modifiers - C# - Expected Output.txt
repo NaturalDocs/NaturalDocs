@@ -1,6 +1,7 @@
-- Before Parameters: [Test] static virtual int FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: [Test] static virtual int FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: ref PkgA.PkgB.Class x,
     - Name: x
@@ -16,5 +17,5 @@
     - Link Candidates: List, int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

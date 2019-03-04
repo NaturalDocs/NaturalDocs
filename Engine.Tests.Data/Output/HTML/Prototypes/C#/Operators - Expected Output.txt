@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span> ! (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -9,9 +9,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>++ (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -22,9 +22,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static extern</span> <span class="SHKeyword">bool</span> <span class="SHKeyword">operator true</span> (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -35,9 +35,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass <span class="SHKeyword">operator</span>+ (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -51,9 +51,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static</span> TestClass&lt;T&gt; <span class="SHKeyword">operator</span>&lt;&lt; (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -67,9 +67,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static extern implicit operator string</span> (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -80,9 +80,9 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">public static explicit operator</span> List&lt;<span class="SHKeyword">string</span>&gt; (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -93,4 +93,4 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>

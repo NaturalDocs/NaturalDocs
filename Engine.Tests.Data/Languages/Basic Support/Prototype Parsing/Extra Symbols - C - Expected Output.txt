@@ -1,6 +1,7 @@
-- Before Parameters: void** FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void** FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int * a,
     - Name: a
@@ -46,31 +47,32 @@
 
   - Parameter 7: int * * g,
     - Name: g
-    - Full Type: int* *
+    - Full Type: int**
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 8: int* * h,
     - Name: h
-    - Full Type: int* *
+    - Full Type: int**
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 9: int * *i
     - Name: i
-    - Full Type: int* *
+    - Full Type: int**
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: const int* FunctionName2 (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: const int* FunctionName2 (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: const int * a,
     - Name: a
@@ -81,31 +83,32 @@
 
   - Parameter 2: int * const b,
     - Name: b
-    - Full Type: int * const
+    - Full Type: int* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 3: const int * const c,
     - Name: c
-    - Full Type: const int * const
+    - Full Type: const int* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 4: int const * const d
     - Name: d
-    - Full Type: int const * const
+    - Full Type: int const* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: int* const FunctionName3 (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int* const FunctionName3 (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: const int* a,
     - Name: a
@@ -135,12 +138,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: int const * const FunctionName4 (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int const * const FunctionName4 (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: const int *a,
     - Name: a
@@ -151,32 +155,40 @@
 
   - Parameter 2: int *const b,
     - Name: b
-    - Full Type: int *const
+    - Full Type: int* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 3: const int *const c,
     - Name: c
-    - Full Type: const int *const
+    - Full Type: const int* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
   - Parameter 4: int const *const d
     - Name: d
-    - Full Type: int const *const
+    - Full Type: int const* const
     - Base Type: int
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: ~FunctionName5 ()
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: ~FunctionName5 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: virtual ~FunctionName6 () = 0
-  - Access Level: Unknown
-  - Link Candidates: virtual
+- Parameter Section:
+  - Before Parameters: virtual ~FunctionName6 (
+    - Access Level: Unknown
+    - Link Candidates: virtual
+
+  - After Parameters: ) = 0
+    - Link Candidates: (none)

@@ -1,10 +1,15 @@
-- No Parameters: void Parameterless ()
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void Parameterless (
+    - Access Level: Unknown
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void Basic (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void Basic (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -20,12 +25,13 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static string Modifiers (
-  - Access Level: Public
-  - Link Candidates: string
+- Parameter Section:
+  - Before Parameters: public static string Modifiers (
+    - Access Level: Public
+    - Link Candidates: string
 
   - Parameter 1: int? x,
     - Name: x
@@ -41,18 +47,29 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-- After Parameters: )
+  - After Parameters: )
+    - Link Candidates: (none)
+-----
+- Parameter Section:
+  - Before Parameters: public async int NewModifiers (
+    - Access Level: Public
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+-----
+- Plain Section: [Attribute]
+  - Access Level: Unknown
   - Link Candidates: (none)
------
-- No Parameters: public async int NewModifiers ()
-  - Access Level: Public
-  - Link Candidates: int
------
-- Before Parameters: extern static private bool Attributes_NoBraces (
-  - Access Level: Private
-  - Link Candidates: bool
-  - Pre-Prototype Line: [Attribute]
-  - Pre-Prototype Line: [DllImport ("NaturalDocs.Engine.SQLite.dll")]
+
+- Plain Section: [DllImport ("NaturalDocs.Engine.SQLite.dll")]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: extern static private bool Attributes_NoBraces (
+    - Access Level: Private
+    - Link Candidates: bool
 
   - Parameter 1: [MarshalAs(UnmanagedType.LPStr)] string x,
     - Name: x
@@ -75,12 +92,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void DefaultValues (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void DefaultValues (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: string x = "),;[<{ \" ),;[<{",
     - Name: x
@@ -103,12 +121,13 @@
     - Link Candidates: int
     - Default Value:  6
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public List<int> Templates (
-  - Access Level: Public
-  - Link Candidates: List, int
+- Parameter Section:
+  - Before Parameters: public List<int> Templates (
+    - Access Level: Public
+    - Link Candidates: List, int
 
   - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x = null,
     - Name: x
@@ -124,12 +143,13 @@
     - Link Candidates: int
     - Default Value:  12
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public List<T1> WhereClause<T1,T2> (
-  - Access Level: Public
-  - Link Candidates: List, T1
+- Parameter Section:
+  - Before Parameters: public List<T1> WhereClause<T1,T2> (
+    - Access Level: Public
+    - Link Candidates: List, T1
 
   - Parameter 1: List<T2> x
     - Name: x
@@ -138,14 +158,21 @@
     - Link Candidates: List, T2
     - Default Value: (not detected)
 
-- After Parameters: )
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: where T1: class, Interface, new ()
+  - Access Level: Unknown
   - Link Candidates: (none)
-  - Post-Prototype Line: where T1: class, Interface, new ()
-  - Post-Prototype Line: where T2: System.Collections.IEnumerable<T2>
+
+- Plain Section: where T2: System.Collections.IEnumerable<T2>
+  - Access Level: Unknown
+  - Link Candidates: (none)
 -----
-- Before Parameters: public int ExpressionBodyA (
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int ExpressionBodyA (
+    - Access Level: Public
+    - Link Candidates: int
 
   - Parameter 1: bool x
     - Name: x
@@ -154,12 +181,13 @@
     - Link Candidates: bool
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static RgbColor ExpressionBodyB (
-  - Access Level: Public
-  - Link Candidates: RgbColor
+- Parameter Section:
+  - Before Parameters: public static RgbColor ExpressionBodyB (
+    - Access Level: Public
+    - Link Candidates: RgbColor
 
   - Parameter 1: RgbColor color
     - Name: color
@@ -168,5 +196,5 @@
     - Link Candidates: RgbColor
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

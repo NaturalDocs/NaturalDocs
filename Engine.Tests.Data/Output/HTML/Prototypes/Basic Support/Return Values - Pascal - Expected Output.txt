@@ -1,6 +1,6 @@
-<div class="NDPrototype NoParameterForm">Function FuncA (): MyClass</div>
+<div class="NDPrototype"><div class="PSection PPlainSection">Function FuncA (): MyClass</div></div>
 -----
-<div class="NDPrototype WideForm PascalStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
    <tr>
       <td class="PBeforeParameters">Function FuncB (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -16,4 +16,4 @@
       </table></td>
       <td class="PAfterParameters">): Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt;</td>
    </tr>
-</table></div>
+</table></div></div>

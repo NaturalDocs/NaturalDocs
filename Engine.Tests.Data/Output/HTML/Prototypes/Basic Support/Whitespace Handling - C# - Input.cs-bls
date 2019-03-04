@@ -1,0 +1,114 @@
+
+// Function: DefaultValuesAll
+void DefaultValuesAll (int a=1, int b= 2, int c =3, int d = 4, int e   =   5)
+	{
+	}
+
+// Function: DefaultValues1
+void DefaultValues1 (int a=1)
+	{
+	}
+
+// Function: DefaultValues2
+void DefaultValues2 (int b= 2)
+	{
+	}
+
+// Function: DefaultValues3
+void DefaultValues3 (int c =3)
+	{
+	}
+
+// Function: DefaultValues4
+void DefaultValues4 (int d = 4)
+	{
+	}
+
+// Function: DefaultValues5
+void DefaultValues5 (int e   =   5)
+	{
+	}
+
+
+
+// Function: PointersAll
+void PointersAll (int* a, int *b, int * c, int   *   d)
+	{
+	}
+
+// Function: Pointers1
+void Pointers1 (int* a)
+	{
+	}
+
+// Function: Pointers2
+void Pointers2 (int *b)
+	{
+	}
+
+// Function: Pointers3
+void Pointers3 (int * c)
+	{
+	}
+
+// Function: Pointers4
+void Pointers4 (int   *   d)
+	{
+	}
+
+
+
+// Function: Parens1
+void Parens1 (int x)
+	{
+	}
+
+// Function: Parens2
+void Parens2 ( int x)
+	{
+	}
+
+// Function: Parens3
+void Parens3 (int x )
+	{
+	}
+
+// Function: Parens4
+void Parens4 ( int x )
+	{
+	}
+
+// Function: Parens5
+void Parens5 (   int x   )
+	{
+	}
+
+// Function: Parens6
+void Parens6 ()
+	{
+	}
+
+// Function: Parens7
+void Parens7 ( )
+	{
+	}
+
+// Function: Parens8
+void Parens8 (   )
+	{
+	}
+
+// Function: Parens9
+void Parens9()
+	{
+	}
+
+// Function: Parens10
+void Parens10( )
+	{
+	}
+
+// Function: Parens11
+void Parens11(   )
+	{
+	}

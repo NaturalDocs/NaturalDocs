@@ -1,9 +1,9 @@
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public event</span> Delegate EventA</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public event</span> Delegate EventA</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><span class="SHKeyword">private event</span> Delegate EventB</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">private event</span> Delegate EventB</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><span class="SHKeyword">private event</span> Delegate EventC</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">private event</span> Delegate EventC</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">internal event</span> Delegate EventD { <span class="SHKeyword">add</span>; <span class="SHKeyword">remove</span> }</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">internal event</span> Delegate EventD { <span class="SHKeyword">add</span>; <span class="SHKeyword">remove</span> }</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><span class="SHKeyword">internal event</span> Delegate EventE { <span class="SHMetadata">[AddAttribute]</span> <span class="SHKeyword">add</span>; <span class="SHMetadata">[RemoveAttribute]</span> <span class="SHKeyword">remove</span> }</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">internal event</span> Delegate EventE { <span class="SHMetadata">[AddAttribute]</span> <span class="SHKeyword">add</span>; <span class="SHMetadata">[RemoveAttribute]</span> <span class="SHKeyword">remove</span> }</div></div>

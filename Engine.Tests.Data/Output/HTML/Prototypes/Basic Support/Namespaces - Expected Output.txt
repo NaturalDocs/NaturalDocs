@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName1 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -11,16 +11,16 @@
          </tr><tr>
             <td class="PModifierQualifier first">::</td>
             <td class="PType">GlobalType&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName2 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -39,16 +39,16 @@
          </tr><tr>
             <td class="PModifierQualifier first">::</td>
             <td class="PType">GlobalType&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters">::GlobalType FunctionName3 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -67,16 +67,16 @@
          </tr><tr>
             <td class="PModifierQualifier first">::</td>
             <td class="PType">GlobalType&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName4 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -89,16 +89,16 @@
          </tr><tr>
             <td class="PModifierQualifier first">Namespace::</td>
             <td class="PType">Type&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">void</span> FunctionName5 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -117,16 +117,16 @@
          </tr><tr>
             <td class="PModifierQualifier first">Namespace::</td>
             <td class="PType">Type&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters">Namespace::Type FunctionName6 (</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -145,11 +145,11 @@
          </tr><tr>
             <td class="PModifierQualifier first">Namespace::</td>
             <td class="PType">Type&nbsp;</td>
-            <td class="PName">z&nbsp;</td>
-            <td class="PDefaultValueSeparator">=&nbsp;</td>
+            <td class="PName">z</td>
+            <td class="PDefaultValueSeparator">&nbsp;=&nbsp;</td>
             <td class="PDefaultValue last"><span class="SHKeyword">null</span></td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div>
+</table></div></div>

@@ -1,6 +1,7 @@
-- Before Parameters: public static TestClass operator ! (
-  - Access Level: Public
-  - Link Candidates: TestClass
+- Parameter Section:
+  - Before Parameters: public static TestClass operator ! (
+    - Access Level: Public
+    - Link Candidates: TestClass
 
   - Parameter 1: TestClass input
     - Name: input
@@ -9,12 +10,13 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static TestClass operator++ (
-  - Access Level: Public
-  - Link Candidates: TestClass
+- Parameter Section:
+  - Before Parameters: public static TestClass operator++ (
+    - Access Level: Public
+    - Link Candidates: TestClass
 
   - Parameter 1: TestClass input
     - Name: input
@@ -23,12 +25,13 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static extern bool operator true (
-  - Access Level: Public
-  - Link Candidates: bool
+- Parameter Section:
+  - Before Parameters: public static extern bool operator true (
+    - Access Level: Public
+    - Link Candidates: bool
 
   - Parameter 1: TestClass input
     - Name: input
@@ -37,12 +40,13 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static TestClass operator+ (
-  - Access Level: Public
-  - Link Candidates: TestClass
+- Parameter Section:
+  - Before Parameters: public static TestClass operator+ (
+    - Access Level: Public
+    - Link Candidates: TestClass
 
   - Parameter 1: TestClass a,
     - Name: a
@@ -58,13 +62,17 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static TestClass<T> operator<< (
-  - Access Level: Public
-  - Link Candidates: TestClass, T
-  - Pre-Prototype Line: [Attribute]
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public static TestClass<T> operator<< (
+    - Access Level: Public
+    - Link Candidates: TestClass, T
 
   - Parameter 1: TestClass<T> a,
     - Name: a
@@ -80,12 +88,13 @@
     - Link Candidates: TestClass, T
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static extern implicit operator string (
-  - Access Level: Public
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: public static extern implicit operator string (
+    - Access Level: Public
+    - Link Candidates: (none)
 
   - Parameter 1: TestClass input
     - Name: input
@@ -94,12 +103,13 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static explicit operator List<string> (
-  - Access Level: Public
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: public static explicit operator List<string> (
+    - Access Level: Public
+    - Link Candidates: (none)
 
   - Parameter 1: TestClass input
     - Name: input
@@ -108,12 +118,13 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: public static bool operator true (
-  - Access Level: Public
-  - Link Candidates: bool
+- Parameter Section:
+  - Before Parameters: public static bool operator true (
+    - Access Level: Public
+    - Link Candidates: bool
 
   - Parameter 1: TestClass input
     - Name: input
@@ -122,5 +133,5 @@
     - Link Candidates: TestClass
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

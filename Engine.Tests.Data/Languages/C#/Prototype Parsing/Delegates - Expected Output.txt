@@ -1,6 +1,7 @@
-- Before Parameters: public delegate void DelegateA (
-  - Access Level: Public
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: public delegate void DelegateA (
+    - Access Level: Public
+    - Link Candidates: void
 
   - Parameter 1: int a
     - Name: a
@@ -9,13 +10,17 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: protected internal delegate IList<T> DelegateB<in T> (
-  - Access Level: ProtectedInternal
-  - Link Candidates: IList, T
-  - Pre-Prototype Line: [Attribute]
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: protected internal delegate IList<T> DelegateB<in T> (
+    - Access Level: ProtectedInternal
+    - Link Candidates: IList, T
 
   - Parameter 1: params object[] x
     - Name: x
@@ -24,6 +29,9 @@
     - Link Candidates: object
     - Default Value: (not detected)
 
-- After Parameters: )
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: where T: System.Collections.IEnumerable, new()
+  - Access Level: Unknown
   - Link Candidates: (none)
-  - Post-Prototype Line: where T: System.Collections.IEnumerable, new()

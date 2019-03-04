@@ -1,18 +1,31 @@
-- No Parameters: int FunctionName ()
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: int FunctionName2 ( )
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int FunctionName2 (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: int FunctionName3()
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int FunctionName3(
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName4 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName4 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -28,12 +41,13 @@
     - Link Candidates: float
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName5(
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName5(
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -49,12 +63,13 @@
     - Link Candidates: float
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName6 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName6 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x_1,
     - Name: x_1
@@ -70,12 +85,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: virtual void FunctionName7 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: virtual void FunctionName7 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int* x,
     - Name: x
@@ -98,5 +114,5 @@
     - Link Candidates: char
     - Default Value: ""
 
-- After Parameters: ) = 0
-  - Link Candidates: (none)
+  - After Parameters: ) = 0
+    - Link Candidates: (none)

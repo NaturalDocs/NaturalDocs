@@ -1,5 +1,5 @@
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> MyClass VarA</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> MyClass VarA</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public static</span> Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt; VarB</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public static</span> Pkg.MyClass&lt;<span class="SHKeyword">int</span>, Class2&gt; VarB</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> Pkg.MyClass[] PropA</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> Pkg.MyClass[] PropA</div></div>

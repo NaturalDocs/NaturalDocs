@@ -1,0 +1,36 @@
+
+
+// Function: FunctionAll
+Function FunctionAll (a: integer, b: ^integer, c: ^ integer, d: ^&integer, e: ^& integer, f: ^ &integer, g: ^ & integer);
+	Begin
+	End;
+ 
+// Function: FunctionB
+Function FunctionB (b: ^integer);
+	Begin
+	End;
+ 
+// Function: FunctionC
+Function FunctionC (c: ^ integer);
+	Begin
+	End;
+ 
+// Function: FunctionD
+Function FunctionD (d: ^&integer);
+	Begin
+	End;
+ 
+// Function: FunctionE
+Function FunctionE (e: ^& integer);
+	Begin
+	End;
+ 
+// Function: FunctionF
+Function FunctionF (f: ^ &integer);
+	Begin
+	End;
+ 
+// Function: FunctionG
+Function FunctionG (g: ^ & integer);
+	Begin
+	End;

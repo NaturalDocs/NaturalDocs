@@ -1,10 +1,15 @@
-- No Parameters: public TestClass ()
-  - Access Level: Public
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: public TestClass (
+    - Access Level: Public
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: private TestClass (
-  - Access Level: Private
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: private TestClass (
+    - Access Level: Private
+    - Link Candidates: (none)
 
   - Parameter 1: int x
     - Name: x
@@ -13,12 +18,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: private TestClass (
-  - Access Level: Private
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: private TestClass (
+    - Access Level: Private
+    - Link Candidates: (none)
 
   - Parameter 1: int x,
     - Name: x
@@ -34,16 +40,21 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: ~TestClass ()
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: ~TestClass (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: extern static TestClass (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: extern static TestClass (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: float x
     - Name: x
@@ -52,9 +63,13 @@
     - Link Candidates: float
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: extern ~TestClass ()
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: extern ~TestClass (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)

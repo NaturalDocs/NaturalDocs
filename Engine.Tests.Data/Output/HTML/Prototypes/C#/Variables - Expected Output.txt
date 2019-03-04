@@ -1,15 +1,15 @@
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">int</span> varA</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">int</span> varA</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> varB</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> varB</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">private static</span> List&lt;<span class="SHKeyword">int</span>&gt; varC</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">private static</span> List&lt;<span class="SHKeyword">int</span>&gt; varC</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><span class="SHKeyword">volatile</span> <span class="SHKeyword">string</span>[] varD</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">volatile</span> <span class="SHKeyword">string</span>[] varD</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute: Something(&quot;value&quot;)]</span></div><span class="SHKeyword">int</span>* varE</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute: Something(&quot;value&quot;)]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">int</span>* varE</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varF</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12)]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varF</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varG</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12)]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varG</div></div>
 -----
-<div class="NDPrototype NoParameterForm"><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeA]</span></div><div class="PPrePrototypeLine"><span class="SHMetadata">[AttributeB(12)]</span></div><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varH</div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12)]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varH</div></div>

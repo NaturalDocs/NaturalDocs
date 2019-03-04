@@ -1,6 +1,7 @@
-- Before Parameters: virtual int FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: virtual int FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: /*@out@*/ const Namespace::Class** x,
     - Name: x
@@ -16,5 +17,5 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: ) /*@globals undef globnum, undef globname @*/
-  - Link Candidates: (none)
+  - After Parameters: ) /*@globals undef globnum, undef globname @*/
+    - Link Candidates: (none)

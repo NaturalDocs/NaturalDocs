@@ -1,31 +1,63 @@
-- No Parameters: public int FunctionA ()
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int FunctionA (
+    - Access Level: Public
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: private int FunctionB ()
-  - Access Level: Private
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: private int FunctionB (
+    - Access Level: Private
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: protected int FunctionC ()
-  - Access Level: Protected
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: protected int FunctionC (
+    - Access Level: Protected
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: internal int FunctionD ()
-  - Access Level: Internal
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: internal int FunctionD (
+    - Access Level: Internal
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: protected internal int FunctionE ()
-  - Access Level: ProtectedInternal
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: protected internal int FunctionE (
+    - Access Level: ProtectedInternal
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: internal protected int FunctionF ()
-  - Access Level: ProtectedInternal
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: internal protected int FunctionF (
+    - Access Level: ProtectedInternal
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: virtual public static int FunctionG ()
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: virtual public static int FunctionG (
+    - Access Level: Public
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- No Parameters: not_public int FunctionH ()
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: not_public int FunctionH (
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)

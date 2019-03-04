@@ -1,6 +1,7 @@
-- Before Parameters: void FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: string x = "),;[<{ \" ),;[<{",
     - Name: x
@@ -23,5 +24,5 @@
     - Link Candidates: int
     - Default Value: 6
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

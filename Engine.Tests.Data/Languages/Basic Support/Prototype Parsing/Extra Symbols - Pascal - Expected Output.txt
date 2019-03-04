@@ -1,6 +1,7 @@
-- Before Parameters: Function FunctionA (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: x: integer,
     - Name: x
@@ -23,5 +24,5 @@
     - Link Candidates: string
     - Default Value: 0
 
-- After Parameters: ): integer^
-  - Link Candidates: integer
+  - After Parameters: ): integer^
+    - Link Candidates: integer

@@ -1,6 +1,7 @@
-- Before Parameters: Function FunctionA (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionA (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: x,
     - Name: x
@@ -16,12 +17,13 @@
     - Link Candidates: integer
     - Default Value: (not detected)
 
-- After Parameters: ): integer
-  - Link Candidates: integer
+  - After Parameters: ): integer
+    - Link Candidates: integer
 -----
-- Before Parameters: Function FunctionB (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: a,
     - Name: a
@@ -51,5 +53,5 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-- After Parameters: ): integer
-  - Link Candidates: integer
+  - After Parameters: ): integer
+    - Link Candidates: integer

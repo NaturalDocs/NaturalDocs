@@ -1,13 +1,19 @@
-- No Parameters: public const int ConstA
+- Plain Section: public const int ConstA
   - Access Level: Public
   - Link Candidates: int
 -----
-- No Parameters: private const string ConstB
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: private const string ConstB
   - Access Level: Private
   - Link Candidates: string
-  - Pre-Prototype Line: [Attribute]
 -----
-- No Parameters: private const string ConstC
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: private const string ConstC
   - Access Level: Private
   - Link Candidates: string
-  - Pre-Prototype Line: [Attribute]

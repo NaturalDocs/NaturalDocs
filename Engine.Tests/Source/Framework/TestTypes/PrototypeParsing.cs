@@ -36,86 +36,50 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 					{  output.AppendLine("-----");  }
 
 				if (topics[topicIndex].Prototype == null)
-					{  output.AppendLine("(No prototype detected)");  }
-				else
 					{  
-					var parsedPrototype = topics[topicIndex].ParsedPrototype;
+					output.AppendLine("(No prototype detected)");  
+					continue;
+					}
+
+				var parsedPrototype = topics[topicIndex].ParsedPrototype;
 					
-					TokenIterator start, end, extraModifierStart, extraModifierEnd, prefixStart, prefixEnd, suffixStart, suffixEnd;
-					int numberOfParameters = parsedPrototype.NumberOfParameters;
+				for (int sectionIndex = 0; sectionIndex < parsedPrototype.Sections.Count; sectionIndex++)
+					{
+					if (sectionIndex != 0)
+						{  output.AppendLine();  }
 
-					if (numberOfParameters == 0)
+					if (parsedPrototype.Sections[sectionIndex] is Prototypes.ParameterSection)
 						{
-						parsedPrototype.GetCompletePrototype(out start, out end);
-						output.AppendLine("- No Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
-						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
-						output.Append("  - Link Candidates: ");
-						AppendLinkCandidates(start, end, output);
-						output.AppendLine();
-						AppendPrePrototypeLines(parsedPrototype, output);
-						}
-					else
-						{
-						parsedPrototype.GetBeforeParameters(out start, out end);
-						output.AppendLine("- Before Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));
-						output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
-						output.Append("  - Link Candidates: ");
-						AppendLinkCandidates(start, end, output);
-						output.AppendLine();
-						AppendPrePrototypeLines(parsedPrototype, output);
-						output.AppendLine();
+						Prototypes.ParameterSection section = (parsedPrototype.Sections[sectionIndex] as Prototypes.ParameterSection);
+						output.AppendLine("- Parameter Section:");
 
-						for (int paramIndex = 0; paramIndex < numberOfParameters; paramIndex++)
+						TokenIterator start, end;
+						section.GetBeforeParameters(out start, out end);
+						output.AppendLine("  - Before Parameters: " + start.Tokenizer.TextBetween(start, end));
+						output.AppendLine("    - Access Level: " + section.GetAccessLevel());
+						output.Append("    - Link Candidates: ");
+						AppendLinkCandidates(start, end, output);  output.AppendLine();
+
+						for (int paramIndex = 0; paramIndex < section.NumberOfParameters; paramIndex++)
 							{
-							parsedPrototype.GetParameter(paramIndex, out start, out end);
-							output.AppendLine("  - Parameter " + (paramIndex + 1) + ": " + parsedPrototype.Tokenizer.TextBetween(start, end));
+							output.AppendLine();
 
-							if (parsedPrototype.GetParameterName(paramIndex, out start, out end))
-								{  output.AppendLine("    - Name: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+							section.GetParameterBounds(paramIndex, out start, out end);
+							output.AppendLine("  - Parameter " + (paramIndex + 1) + ": " + start.Tokenizer.TextBetween(start, end));
+
+							if (section.GetParameterName(paramIndex, out start, out end))
+								{  output.AppendLine("    - Name: " + start.Tokenizer.TextBetween(start, end));  }
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
 							string fullType = null;
-							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
-																						out extraModifierStart, out extraModifierEnd, 
-																						out prefixStart, out prefixEnd, 
-																						out suffixStart, out suffixEnd, false))
-								{  
-								StringBuilder fullTypeBuilder = new StringBuilder();
-								
-								if (extraModifierEnd > extraModifierStart)
-									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
-								
-								fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
-
-								if (prefixEnd > prefixStart)
-									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
-								if (suffixEnd > suffixStart)
-									{  fullTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
-
-								fullType = fullTypeBuilder.ToString();
-								}
+							Tokenizer tokenizer;
+							if (section.BuildFullParameterType(paramIndex, out start, out end, out tokenizer, false))
+								{  fullType = tokenizer.TextBetween(start, end);  }
 
 							string impliedType = null;
-							if (parsedPrototype.GetFullParameterType(paramIndex, out start, out end, 
-																					   out extraModifierStart, out extraModifierEnd, 
-																					   out prefixStart, out prefixEnd, 
-																					   out suffixStart, out suffixEnd, true))
-								{  
-								StringBuilder impliedTypeBuilder = new StringBuilder();
-
-								if (extraModifierEnd > extraModifierStart)
-									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(extraModifierStart, extraModifierEnd) + " ");  }
-								
-								impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(start, end));
-
-								if (prefixEnd > prefixStart)
-									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(prefixStart, prefixEnd));  }
-								if (suffixEnd > suffixStart)
-									{  impliedTypeBuilder.Append(parsedPrototype.Tokenizer.TextBetween(suffixStart, suffixEnd));  }
-
-								impliedType = impliedTypeBuilder.ToString();
-								}
+							if (section.BuildFullParameterType(paramIndex, out start, out end, out tokenizer, true))
+								{  impliedType = tokenizer.TextBetween(start, end);  }
 
 							if (fullType != null)
 								{  output.AppendLine("    - Full Type: " + fullType);  }
@@ -129,33 +93,40 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (fullType == null && impliedType == null)
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
-							if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end, false))
-								{  output.AppendLine("    - Base Type: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
-							else if (parsedPrototype.GetBaseParameterType(paramIndex, out start, out end, true))
-								{  output.AppendLine("    - Base Type (implied): " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+							if (section.GetBaseParameterType(paramIndex, out start, out end, false))
+								{  output.AppendLine("    - Base Type: " + start.Tokenizer.TextBetween(start, end));  }
+							else if (section.GetBaseParameterType(paramIndex, out start, out end, true))
+								{  output.AppendLine("    - Base Type (implied): " + section.Tokenizer.TextBetween(start, end));  }
 							else
 								{  output.AppendLine("    - Base Type: (not detected)");  }
 
-							parsedPrototype.GetParameter(paramIndex, out start, out end);
-
+							section.GetParameterBounds(paramIndex, out start, out end);
 							output.Append("    - Link Candidates: ");
-							AppendLinkCandidates(start, end, output);
-							output.AppendLine();
+							AppendLinkCandidates(start, end, output);  output.AppendLine();
 
-							if (parsedPrototype.GetDefaultValue(paramIndex, out start, out end))
-								{  output.AppendLine("    - Default Value: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+							if (section.GetParameterDefaultValue(paramIndex, out start, out end))
+								{  output.AppendLine("    - Default Value: " + start.Tokenizer.TextBetween(start, end));  }
 							else
 								{  output.AppendLine("    - Default Value: (not detected)");  }
-
-							output.AppendLine();
 							}
 
-						if (parsedPrototype.GetAfterParameters(out start, out end))
-							{  output.AppendLine("- After Parameters: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+						if (section.GetAfterParameters(out start, out end))
+							{
+							output.AppendLine();
+							output.AppendLine("  - After Parameters: " + start.Tokenizer.TextBetween(start, end));
+							output.Append("    - Link Candidates: ");
+							AppendLinkCandidates(start, end, output);  output.AppendLine();
+							}
+						}
+
+					else // Plain section
+						{
+						Prototypes.Section section = parsedPrototype.Sections[sectionIndex];
+
+						output.AppendLine("- Plain Section: " + section.Tokenizer.TextBetween(section.Start, section.End));
+						output.AppendLine("  - Access Level: " + section.GetAccessLevel());
 						output.Append("  - Link Candidates: ");
-						AppendLinkCandidates(start, end, output);
-						output.AppendLine();
-						AppendPostPrototypeLines(parsedPrototype, output);
+						AppendLinkCandidates(section.Start, section.End, output);  output.AppendLine();
 						}
 					}
 				}
@@ -197,32 +168,5 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				{  output.Append("(none)");  }
 			}
 
-		void AppendPrePrototypeLines (ParsedPrototype prototype, StringBuilder output)
-			{
-			int numberOfLines = prototype.NumberOfPrePrototypeLines;
-			TokenIterator start, end;
-
-			for (int i = 0; i < numberOfLines; i++)
-				{
-				prototype.GetPrePrototypeLine(i, out start, out end);
-				output.Append("  - Pre-Prototype Line: ");
-				prototype.Tokenizer.AppendTextBetweenTo(start, end, output);
-				output.AppendLine();
-				}
-			}
-
-		void AppendPostPrototypeLines (ParsedPrototype prototype, StringBuilder output)
-			{
-			int numberOfLines = prototype.NumberOfPostPrototypeLines;
-			TokenIterator start, end;
-
-			for (int i = 0; i < numberOfLines; i++)
-				{
-				prototype.GetPostPrototypeLine(i, out start, out end);
-				output.Append("  - Post-Prototype Line: ");
-				prototype.Tokenizer.AppendTextBetweenTo(start, end, output);
-				output.AppendLine();
-				}
-			}
 		}
 	}

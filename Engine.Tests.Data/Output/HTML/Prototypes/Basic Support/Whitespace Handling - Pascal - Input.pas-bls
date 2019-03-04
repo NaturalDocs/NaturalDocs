@@ -1,0 +1,119 @@
+
+// Function: TypeNameSeparatorsAll
+Function TypeNameSeparatorsAll (a:int, b: int, c :int, d : int, e   :   int);
+	Begin;
+	End;
+
+// Function: TypeNameSeparators1
+Function TypeNameSeparators1 (a:int);
+	Begin;
+	End;
+
+// Function: TypeNameSeparators2
+Function TypeNameSeparators2 (b: int);
+	Begin;
+	End;
+
+// Function: TypeNameSeparators3
+Function TypeNameSeparators3 (c :int);
+	Begin;
+	End;
+
+// Function: TypeNameSeparators4
+Function TypeNameSeparators4 (d : int);
+	Begin;
+	End;
+
+// Function: TypeNameSeparators5
+Function TypeNameSeparators5 (e   :   int);
+	Begin;
+	End;
+
+
+
+// Function: DefaultValuesAll
+Function DefaultValuesAll (a: int:=1, b: int:= 2, c: int :=3, d: int := 4, e: int   :=   5);
+	Begin;
+	End;
+
+// Function: DefaultValues1
+Function DefaultValues1 (a: int:=1);
+	Begin;
+	End;
+
+// Function: DefaultValues2
+Function DefaultValues2 (b: int:= 2);
+	Begin;
+	End;
+
+// Function: DefaultValues3
+Function DefaultValues3 (c: int :=3);
+	Begin;
+	End;
+
+// Function: DefaultValues4
+Function DefaultValues4 (d: int := 4);
+	Begin;
+	End;
+
+// Function: DefaultValues5
+Function DefaultValues5 (e: int   :=   5);
+	Begin;
+	End;
+
+
+
+// Function: Parens1
+Function Parens1 (a: int);
+	Begin;
+	End;
+
+// Function: Parens2
+Function Parens2 ( a: int);
+	Begin;
+	End;
+
+// Function: Parens3
+Function Parens3 (a: int );
+	Begin;
+	End;
+
+// Function: Parens4
+Function Parens4 ( a: int );
+	Begin;
+	End;
+
+// Function: Parens5
+Function Parens5 (   a: int   );
+	Begin;
+	End;
+
+// Function: Parens6
+Function Parens6 ();
+	Begin;
+	End;
+
+// Function: Parens7
+Function Parens7 ( );
+	Begin;
+	End;
+
+// Function: Parens8
+Function Parens8 (   );
+	Begin;
+	End;
+
+// Function: Parens9
+Function Parens9();
+	Begin;
+	End;
+
+// Function: Parens10
+Function Parens10( );
+	Begin;
+	End;
+
+// Function: Parens11
+Function Parens11(   );
+	Begin;
+	End;

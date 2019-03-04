@@ -1,4 +1,4 @@
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">int</span> <span class="SHKeyword">this</span> [</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -9,9 +9,9 @@
       </table></td>
       <td class="PAfterParameters">] { <span class="SHKeyword">get</span> }</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">protected</span> <span class="SHKeyword">int</span> <span class="SHKeyword">this</span> [</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -22,9 +22,9 @@
       </table></td>
       <td class="PAfterParameters">] { <span class="SHKeyword">get</span>; <span class="SHKeyword">private set</span> }</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><div class="PPrePrototypeLine"><span class="SHMetadata">[Attribute]</span></div><table>
+<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">internal</span> System.Text.StringBuilder <span class="SHKeyword">this</span> [</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -38,9 +38,9 @@
       </table></td>
       <td class="PAfterParameters">] { <span class="SHMetadata">[SetAttribute]</span> <span class="SHKeyword">protected internal set</span>; <span class="SHMetadata">[GetAttribute]</span> <span class="SHKeyword">internal get</span> }</td>
    </tr>
-</table></div>
+</table></div></div>
 -----
-<div class="NDPrototype WideForm CStyle"><table>
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
    <tr>
       <td class="PBeforeParameters"><span class="SHKeyword">abstract</span> <span class="SHKeyword">int</span> <span class="SHKeyword">this</span> [</td>
       <td class="PParametersParentCell"><table class="PParameters">
@@ -51,4 +51,4 @@
       </table></td>
       <td class="PAfterParameters">] { <span class="SHKeyword">get</span>; <span class="SHKeyword">set</span> }</td>
    </tr>
-</table></div>
+</table></div></div>

@@ -1,6 +1,7 @@
-- Before Parameters: void FunctionName1 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName1 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: ::GlobalType y,
     - Name: y
@@ -16,12 +17,13 @@
     - Link Candidates: GlobalType
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName2 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName2 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -44,12 +46,13 @@
     - Link Candidates: GlobalType
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: ::GlobalType FunctionName3 (
-  - Access Level: Unknown
-  - Link Candidates: GlobalType
+- Parameter Section:
+  - Before Parameters: ::GlobalType FunctionName3 (
+    - Access Level: Unknown
+    - Link Candidates: GlobalType
 
   - Parameter 1: int x,
     - Name: x
@@ -72,12 +75,13 @@
     - Link Candidates: GlobalType
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName4 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName4 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: Namespace::Type y,
     - Name: y
@@ -93,12 +97,13 @@
     - Link Candidates: Namespace::Type
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName5 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName5 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: int x,
     - Name: x
@@ -121,12 +126,13 @@
     - Link Candidates: Namespace::Type
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: Namespace::Type FunctionName6 (
-  - Access Level: Unknown
-  - Link Candidates: Namespace::Type
+- Parameter Section:
+  - Before Parameters: Namespace::Type FunctionName6 (
+    - Access Level: Unknown
+    - Link Candidates: Namespace::Type
 
   - Parameter 1: int x,
     - Name: x
@@ -149,5 +155,5 @@
     - Link Candidates: Namespace::Type
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

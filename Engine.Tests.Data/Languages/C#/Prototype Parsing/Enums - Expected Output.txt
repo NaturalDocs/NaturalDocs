@@ -1,8 +1,11 @@
-- No Parameters: public enum EnumA
+- Plain Section: public enum EnumA
   - Access Level: Public
   - Link Candidates: (none)
 -----
-- No Parameters: public enum EnumB : byte
+- Plain Section: [Attribute]
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: public enum EnumB : byte
   - Access Level: Public
   - Link Candidates: byte
-  - Pre-Prototype Line: [Attribute]

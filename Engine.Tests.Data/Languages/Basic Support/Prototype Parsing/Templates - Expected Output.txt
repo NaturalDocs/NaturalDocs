@@ -1,6 +1,7 @@
-- Before Parameters: int FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: List<int> x
     - Name: x
@@ -9,12 +10,13 @@
     - Link Candidates: List, int
     - Default Value: (not detected)
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
 -----
-- Before Parameters: void FunctionName2 (
-  - Access Level: Unknown
-  - Link Candidates: void
+- Parameter Section:
+  - Before Parameters: void FunctionName2 (
+    - Access Level: Unknown
+    - Link Candidates: void
 
   - Parameter 1: System.Collections.Generic.Dictionary<Nullable<int>, Map<string, Object[]>> x = null,
     - Name: x
@@ -30,5 +32,5 @@
     - Link Candidates: int
     - Default Value: 12
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)

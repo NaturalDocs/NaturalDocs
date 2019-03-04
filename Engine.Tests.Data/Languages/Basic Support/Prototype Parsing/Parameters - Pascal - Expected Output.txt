@@ -1,10 +1,11 @@
-- No Parameters: Procedure FunctionA
+- Plain Section: Procedure FunctionA
   - Access Level: Unknown
   - Link Candidates: Procedure
 -----
-- Before Parameters: Function FunctionB (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionB (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: x: integer,
     - Name: x
@@ -20,12 +21,13 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-- After Parameters: ): integer
-  - Link Candidates: integer
+  - After Parameters: ): integer
+    - Link Candidates: integer
 -----
-- Before Parameters: Function FunctionC(
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionC(
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: x: integer,
     - Name: x
@@ -41,12 +43,13 @@
     - Link Candidates: string
     - Default Value: (not detected)
 
-- After Parameters: ): integer
-  - Link Candidates: integer
+  - After Parameters: ): integer
+    - Link Candidates: integer
 -----
-- Before Parameters: Function FunctionD (
-  - Access Level: Unknown
-  - Link Candidates: (none)
+- Parameter Section:
+  - Before Parameters: Function FunctionD (
+    - Access Level: Unknown
+    - Link Candidates: (none)
 
   - Parameter 1: x_2,
     - Name: x_2
@@ -69,5 +72,5 @@
     - Link Candidates: string
     - Default Value: ""
 
-- After Parameters: ): integer
-  - Link Candidates: integer
+  - After Parameters: ): integer
+    - Link Candidates: integer

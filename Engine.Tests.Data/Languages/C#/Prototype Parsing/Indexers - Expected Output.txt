@@ -1,35 +1,41 @@
-- Before Parameters: int this [
+- Parameter Section:
+  - Before Parameters: int this [
+    - Access Level: Unknown
+    - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ] { get }
+    - Link Candidates: (none)
+-----
+- Parameter Section:
+  - Before Parameters: protected int this [
+    - Access Level: Protected
+    - Link Candidates: int
+
+  - Parameter 1: int x
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: ] { get; private set }
+    - Link Candidates: (none)
+-----
+- Plain Section: [Attribute]
   - Access Level: Unknown
-  - Link Candidates: int
-
-  - Parameter 1: int x
-    - Name: x
-    - Full Type: int
-    - Base Type: int
-    - Link Candidates: int
-    - Default Value: (not detected)
-
-- After Parameters: ] { get }
   - Link Candidates: (none)
------
-- Before Parameters: protected int this [
-  - Access Level: Protected
-  - Link Candidates: int
 
-  - Parameter 1: int x
-    - Name: x
-    - Full Type: int
-    - Base Type: int
-    - Link Candidates: int
-    - Default Value: (not detected)
-
-- After Parameters: ] { get; private set }
-  - Link Candidates: (none)
------
-- Before Parameters: internal System.Text.StringBuilder this [
-  - Access Level: Internal
-  - Link Candidates: System.Text.StringBuilder
-  - Pre-Prototype Line: [Attribute]
+- Parameter Section:
+  - Before Parameters: internal System.Text.StringBuilder this [
+    - Access Level: Internal
+    - Link Candidates: System.Text.StringBuilder
 
   - Parameter 1: int x,
     - Name: x
@@ -45,12 +51,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: ] { [SetAttribute] protected internal set; [GetAttribute] internal get }
-  - Link Candidates: (none)
+  - After Parameters: ] { [SetAttribute] protected internal set; [GetAttribute] internal get }
+    - Link Candidates: (none)
 -----
-- Before Parameters: abstract int this [
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: abstract int this [
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: int x
     - Name: x
@@ -59,12 +66,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: ] { get; set }
-  - Link Candidates: (none)
+  - After Parameters: ] { get; set }
+    - Link Candidates: (none)
 -----
-- Before Parameters: public int this [
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int this [
+    - Access Level: Public
+    - Link Candidates: int
 
   - Parameter 1: int x
     - Name: x
@@ -73,12 +81,13 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: ] { get }
-  - Link Candidates: (none)
+  - After Parameters: ] { get }
+    - Link Candidates: (none)
 -----
-- Before Parameters: public int this [
-  - Access Level: Public
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: public int this [
+    - Access Level: Public
+    - Link Candidates: int
 
   - Parameter 1: int x
     - Name: x
@@ -87,5 +96,5 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-- After Parameters: ] { get; set }
-  - Link Candidates: (none)
+  - After Parameters: ] { get; set }
+    - Link Candidates: (none)

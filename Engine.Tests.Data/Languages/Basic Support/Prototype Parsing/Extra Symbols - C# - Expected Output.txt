@@ -1,6 +1,7 @@
-- Before Parameters: int? FunctionName (
-  - Access Level: Unknown
-  - Link Candidates: int
+- Parameter Section:
+  - Before Parameters: int? FunctionName (
+    - Access Level: Unknown
+    - Link Candidates: int
 
   - Parameter 1: int x,
     - Name: x
@@ -23,5 +24,5 @@
     - Link Candidates: int
     - Default Value: null
 
-- After Parameters: )
-  - Link Candidates: (none)
+  - After Parameters: )
+    - Link Candidates: (none)
