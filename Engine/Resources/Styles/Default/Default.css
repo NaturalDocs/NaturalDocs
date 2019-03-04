@@ -763,7 +763,7 @@ body.NDContentPage {
 		overflow: auto;
 		}
 
-	.NDPrototype td {
+	.PParameterSection td {
 		white-space: nowrap;
 		}
 
@@ -775,20 +775,17 @@ body.NDContentPage {
 		white-space: normal;
 		}
 
-	.NarrowForm table.PParameters td.last {
+	.PParameters td.last {
 		width: 100%;
 		}
-	.NarrowForm table.PParameters td.first,
-	.NarrowForm.CStyle td.PAfterParameters {
+	.NDPrototype.NarrowForm td.PParametersParentCell,
+	.NDPrototype.NarrowForm td.PAfterParameters {
 		padding-left: 3.5ex;
 		}
-	.WideForm td.PAfterParameters {
+	.NDPrototype.WideForm td.PAfterParameters {
 		vertical-align: bottom;
 		}
 
-	.CStyle .PPostPrototypeLine {
-		padding-left: 3.5ex;
-		}
 
 	.CDLParameterType {
 		font: 8pt $CodeFontFamily;
@@ -821,14 +818,13 @@ body.NDContentPage {
 		}
 
 	.PNameModifier,
-	.CStyle .PModifierQualifier,
+	.PModifierQualifier,
 	.PDefaultValue,
 	.PDefaultValueSeparator {
 		opacity: 0.45;
 		}
-	.PNameModifier,
-	.CStyle .PModifierQualifier,
-	.CStyle .PNamePrefix {
+	.PSymbols,
+	.PModifierQualifier {
 		text-align: right;
 		}
 

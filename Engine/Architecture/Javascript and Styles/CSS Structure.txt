@@ -242,37 +242,42 @@ _______________________________________________________________________________
 Topic: Prototype
 _______________________________________________________________________________
 
-No Parameter Form:
+
+Frame:
 
 --- text ---
 
-	<NDPrototype NoParameterForm #NDPrototype[ID]>
+	<NDPrototype #NDPrototype[ID] WideForm/Narrowform>
 
-		<PPrePrototypeLine>
-			...
-		</PPrePrototypeLine>
+		section
+		section
+		...
+
+	</NDPrototype #NDPrototype[ID] WideForm/NarrowForm>
+
+----------
+
+The prototype will only have a WideForm or NarrowForm attribute if it contains a parameter section.
+
+
+Plain Section:
+
+--- text ---
+
+	<PSection PPlainSection>
 
 		content
 
-		<PPostPrototypeLine>
-			...
-		</PPostPrototypeLine>
-
-	</NDPrototype NoParameterForm #NDPrototype[ID]>
+	</PSection PPlainSection>
 
 ----------
 
 
-Wide Form:
+Parameter Section, Wide Form:
 
 --- text ---
 
-	<NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
-
-		<PPrePrototypeLine>
-			...
-		</PPrePrototypeLine>
-
+	<PSection PParameterSection CStyle/PascalStyle>
 		<table>
 			<tr>
 
@@ -290,26 +295,16 @@ Wide Form:
 
 			</tr>
 		</table>
-
-		<PPostPrototypeLine>
-			...
-		</PPostPrototypeLine>
-
-	</NDPrototype WideForm CStyle/PascalStyle #NDPrototype[ID]>
+	</PSection PParameterSection WideForm CStyle/PascalStyle>
 
 ----------
 
 
-Narrow Form:
+Parameter Section, Narrow Form:
 
 --- text ---
 
-	<NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
-
-		<PPrePrototypeLine>
-			...
-		</PPrePrototypeLine>
-
+	<PSection PParameterSection CStyle/PascalStyle>
 		<table>
 			<tr>
 
@@ -331,12 +326,7 @@ Narrow Form:
 
 			</tr>
 		</table>
-
-		<PPostPrototypeLine>
-			...
-		</PPostPrototypeLine>
-
-	</NDPrototype NarrowForm CStyle/PascalStyle #NDPrototype[ID]>
+	</PSection PParameterSection NarrowForm CStyle/PascalStyle>
 
 ----------
 
@@ -347,11 +337,11 @@ Parameter Table:
 
 		<table PParameters>
 			<tr>
-				<td PType>type<PTypeSuffix>suffix</PTypeSuffix></td PType>
 
 				<td P[ColumnType]>column</td P[ColumnType]>
 				<td P[ColumnType]>column</td P[ColumnType]>
 				...
+
 			</tr><tr>
 				...
 			</tr>
@@ -365,7 +355,7 @@ P[ColumnType]:
 	PType - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
 					prototypes this will be the entire symbol.
 	PTypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
-	PNamePrefix - A prefix for a parameter name that should be formatted with the name, such as * and &.
+	PSymbols - Symbols before a parameter name that should be formatted with the name, such as * and &.
 	PName - The parameter name.
 	PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 	PDefaultValue - The default value.

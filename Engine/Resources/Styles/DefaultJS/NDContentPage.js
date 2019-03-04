@@ -139,7 +139,18 @@ var NDContentPage = new function ()
 
 				if (id != -1)
 					{  
-					this.wideFormPrototypeWidths[id] = prototypes[i].getElementsByTagName("table")[0].offsetWidth;  
+					var tables = prototypes[i].getElementsByTagName("table");
+					var maxWidth = 0;
+
+					for (var t = 0; t < tables.length; t++)
+						{
+						var tableWidth = tables[t].offsetWidth;  
+
+						if (tableWidth > maxWidth)
+							{  maxWidth = tableWidth;  }
+						}
+
+					this.wideFormPrototypeWidths[id] = maxWidth;
 					}
 				}
 			}

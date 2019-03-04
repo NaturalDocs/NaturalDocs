@@ -10,7 +10,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
-using CodeClear.NaturalDocs.Engine.Errors;
+using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			//   - Link.TargetInterepretationIndex
 
 			// Other than that the score's format should be treated as opaque.  Nothing beyond this class should try to 
-			// interpret the value other than to know that higher is better, zero is impossible, and -1 means we quit early.
+			// interpret the value other than to know that higher is better, zero is not a match, and -1 means we quit early.
 
 			// It's a 64-bit value so we'll assign bits to the different characteristics.  Higher order bits obviously result in higher 
 			// numeric values so the characteristics are ordered by priority.
@@ -665,29 +665,31 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				bool nameMatch = false;
 				bool nameMismatch = false;
 
-				int suffixLevel = 0;
+				int modifierBlockLevel = 0;
 
 				while (prototypeParamStart < prototypeParamEnd)
 					{
 					var type = prototypeParamStart.PrototypeParsingType;
 
-					// We want any mismatches that occur nested in type suffixes to be scored as a modifier mismatch.
-					if (type == PrototypeParsingType.OpeningTypeSuffix)
-						{  suffixLevel++;  }
-					else if (type == PrototypeParsingType.ClosingTypeSuffix)
-						{  suffixLevel--;  }
-					else if (suffixLevel > 0)
-						{  type = PrototypeParsingType.TypeSuffix;  }
+					// We want any mismatches that occur nested in type modifier blocks to be scored as a modifier mismatch.
+					if (type == PrototypeParsingType.OpeningTypeModifier ||
+						type == PrototypeParsingType.OpeningParamModifier)
+						{  modifierBlockLevel++;  }
+					else if (type == PrototypeParsingType.ClosingTypeModifier ||
+							   type == PrototypeParsingType.ClosingParamModifier)
+						{  modifierBlockLevel--;  }
+					else if (modifierBlockLevel > 0)
+						{  type = PrototypeParsingType.TypeModifier;  }
 
 					switch (type)
 						{
 						case PrototypeParsingType.TypeModifier:
 						case PrototypeParsingType.TypeQualifier:
-						case PrototypeParsingType.OpeningTypeSuffix:
-						case PrototypeParsingType.ClosingTypeSuffix:
-						case PrototypeParsingType.TypeSuffix:
-						case PrototypeParsingType.NamePrefix_PartOfType:
-						case PrototypeParsingType.NameSuffix_PartOfType: 
+						case PrototypeParsingType.OpeningTypeModifier:
+						case PrototypeParsingType.ClosingTypeModifier:
+						case PrototypeParsingType.ParamModifier:
+						case PrototypeParsingType.OpeningParamModifier:
+						case PrototypeParsingType.ClosingParamModifier: 
 
 							if (linkParamStart < linkParamEnd && linkParamStart.MatchesToken(prototypeParamStart, ignoreCase))
 								{  

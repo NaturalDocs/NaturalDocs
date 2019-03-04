@@ -124,6 +124,9 @@
     <Compile Include="Source\Languages\ParentElement.cs" />
     <Compile Include="Source\Output\Components\ClassView.cs" />
     <Compile Include="Source\Output\Components\HTMLClassPrototype.cs" />
+    <Compile Include="Source\Prototypes\ParameterSection.cs" />
+    <Compile Include="Source\Prototypes\TypeBuilder.cs" />
+    <Compile Include="Source\Prototypes\Section.cs" />
     <Compile Include="Source\Prototypes\ParsedClassPrototype.cs" />
     <Compile Include="Source\CodeDB\Lock.cs" />
     <Compile Include="Source\CodeDB\Manager.cs" />

@@ -458,26 +458,33 @@ var NDCore = new function ()
 		this.RemoveClass(newPrototype, "WideForm");
 		this.AddClass(newPrototype, "NarrowForm");
 
-		var prePrototypeLines = NDCore.GetElementsByClassName(prototype, "PPrePrototypeLine", "div");
-		for (var i = 0; i < prePrototypeLines.length; i++)
-			{  newPrototype.appendChild(prePrototypeLines[i].cloneNode(true));  }
+		var sections = prototype.children;
 
-		var table = prototype.getElementsByTagName("table")[0];
-		var newTable = document.createElement("table");
-		newPrototype.appendChild(newTable);
+		for (var i = 0; i < sections.length; i++)
+			{
+			if (this.HasClass(sections[i], "PParameterSection") == false)
+				{  newPrototype.appendChild(sections[i].cloneNode(true));  }
+			else
+				{
+				var newSection = document.createElement("div");
+				newSection.className = sections[i].className;
 
-		var newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
+				var table = sections[i].firstChild;
+				var newTable = document.createElement("table");
 
-		newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[1].cloneNode(true));
+				var newRow = newTable.insertRow(-1);
+				newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
 
-		newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
+				newRow = newTable.insertRow(-1);
+				newRow.appendChild(table.rows[0].cells[1].cloneNode(true));
 
-		var postPrototypeLines = NDCore.GetElementsByClassName(prototype, "PPostPrototypeLine", "div");
-		for (var i = 0; i < postPrototypeLines.length; i++)
-			{  newPrototype.appendChild(postPrototypeLines[i].cloneNode(true));  }
+				newRow = newTable.insertRow(-1);
+				newRow.appendChild(table.rows[0].cells[2].cloneNode(true));
+
+				newSection.appendChild(newTable);
+				newPrototype.appendChild(newSection);
+				}
+			}
 
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};
@@ -495,22 +502,29 @@ var NDCore = new function ()
 		this.RemoveClass(newPrototype, "NarrowForm");
 		this.AddClass(newPrototype, "WideForm");
 
-		var prePrototypeLines = NDCore.GetElementsByClassName(prototype, "PPrePrototypeLine", "div");
-		for (var i = 0; i < prePrototypeLines.length; i++)
-			{  newPrototype.appendChild(prePrototypeLines[i].cloneNode(true));  }
+		var sections = prototype.children;
 
-		var table = prototype.getElementsByTagName("table")[0];
-		var newTable = document.createElement("table");
-		newPrototype.appendChild(newTable);
+		for (var i = 0; i < sections.length; i++)
+			{
+			if (this.HasClass(sections[i], "PParameterSection") == false)
+				{  newPrototype.appendChild(sections[i].cloneNode(true));  }
+			else
+				{
+				var newSection = document.createElement("div");
+				newSection.className = sections[i].className;
 
-		var newRow = newTable.insertRow(-1);
-		newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
-		newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
-		newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
+				var table = sections[i].firstChild;
+				var newTable = document.createElement("table");
 
-		var postPrototypeLines = NDCore.GetElementsByClassName(prototype, "PPostPrototypeLine", "div");
-		for (var i = 0; i < postPrototypeLines.length; i++)
-			{  newPrototype.appendChild(postPrototypeLines[i].cloneNode(true));  }
+				var newRow = newTable.insertRow(-1);
+				newRow.appendChild(table.rows[0].cells[0].cloneNode(true));
+				newRow.appendChild(table.rows[1].cells[0].cloneNode(true));
+				newRow.appendChild(table.rows[2].cells[0].cloneNode(true));
+
+				newSection.appendChild(newTable);
+				newPrototype.appendChild(newSection);
+				}
+			}
 
 		prototype.parentNode.replaceChild(newPrototype, prototype);
 		};

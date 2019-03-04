@@ -451,6 +451,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							if (parameterListSymbol != null && topic.Prototype != null)
 								{
 								TokenIterator start, end;
+								Tokenizer tokenizer;
 								int matchedParameter = -1;
 
 								for (int i = 0; i < topic.ParsedPrototype.NumberOfParameters; i++)	
@@ -467,29 +468,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 								// If so, include the type under the entry in the HTML
 								if (matchedParameter != -1)
 									{
-									TokenIterator extraModifierStart, extraModifierEnd, prefixStart, prefixEnd, suffixStart, suffixEnd;
-									topic.ParsedPrototype.GetFullParameterType(matchedParameter, out start, out end, 
-																								   out extraModifierStart, out extraModifierEnd, 
-																								   out prefixStart, out prefixEnd, 
-																								   out suffixStart, out suffixEnd);
+									topic.ParsedPrototype.BuildFullParameterType(matchedParameter, out start, out end, out tokenizer);
 
 									if (start < end && 
 										// Don't include single symbol types
-										 (end.RawTextIndex - start.RawTextIndex > 1 ||
-										   (start.Character != '$' && start.Character != '@' && start.Character != '%')) )
+										 !(end.RawTextIndex - start.RawTextIndex == 1 &&
+										   (start.Character == '$' || start.Character == '@' || start.Character == '%')) )
 										{
 										htmlOutput.Append("<div class=\"CDLParameterType\">");
-									
-										if (extraModifierStart < extraModifierEnd)
-											{  
-											BuildTypeLinkedAndSyntaxHighlightedText(extraModifierStart, extraModifierEnd);
-											htmlOutput.Append(' ');
-											}
-
 										BuildTypeLinkedAndSyntaxHighlightedText(start, end);
-										BuildTypeLinkedAndSyntaxHighlightedText(prefixStart, prefixEnd);
-										BuildTypeLinkedAndSyntaxHighlightedText(suffixStart, suffixEnd);
-
 										htmlOutput.Append("</div>");
 										}
 									}

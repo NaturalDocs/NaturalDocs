@@ -58,12 +58,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * A prototype's parameter column type.  Note that the prototype CSS classes are directly mapped to these 
 		 * names.
 		 * 
-		 * ModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.
+		 * ModifierQualifier - For C-style prototypes, a separate column for modifiers and qualifiers.  For Pascal-style
+		 *							  prototypes, any modifiers that appear before the name.
 		 * Type - The parameter type.  For C-style prototypes this will only be the last word.  For Pascal-style
-		 *				  prototypes this will be the entire symbol.
+		 *			  prototypes this will be the entire symbol.
 		 * TypeNameSeparator - For Pascal-style prototypes, the symbol separating the name from the type.
-		 * NameModifier - For Pascal-style prototypes, any modifiers that appear before the name.
-		 * NamePrefix - A prefix for a parameter name that should be formatted with the name, such as * and &.
+		 * Symbols - Symbols between names and types that should be formatted in a separate column, such as * 
+		 *				   and &.
 		 * Name - The parameter name.
 		 * DefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 		 * DefaultValue - The default value.
@@ -71,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		public enum ColumnType : byte
 			{  
 			ModifierQualifier, Type, TypeNameSeparator, 
-			NameModifier, NamePrefix, Name, 
+			Symbols, Name, 
 			DefaultValueSeparator, DefaultValue
 			}
 
@@ -87,10 +88,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			parsedPrototype = null;
 			language = null;
-			columnIndexes = null;
-			endOfColumnsIndex = -1;
-			columnWidths = null;
-			htmlCells = null;
+			parameterTableTokenIndexes = null;
+			parameterTableColumnsUsed = null;
+			symbolColumnWidth = 0;
 			addLinks = false;
 			}
 
@@ -134,438 +134,564 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
 				{  language.SyntaxHighlight(parsedPrototype);  }
 
-			if (parsedPrototype.NumberOfParameters == 0)
+			// We always build the wide form by default, but only include the attribute if there's parameters
+			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype" +
+										(parsedPrototype.NumberOfParameters > 0 ? " WideForm" : "") + "\">");
+
+			foreach (var section in parsedPrototype.Sections)
 				{
-				BuildNoParameterForm();
-				return;
+				if (section is Prototypes.ParameterSection && (section as Prototypes.ParameterSection).NumberOfParameters > 0)
+					{  BuildParameterSection((Prototypes.ParameterSection)section);  }
+				else
+					{  BuildPlainSection(section);  }
 				}
 
-			columnWidths = new int[NumberOfColumns];
-            columnIndexes = new int[NumberOfColumns];
-			htmlCells = new string[parsedPrototype.NumberOfParameters, NumberOfColumns];
+			htmlOutput.Append("</div>");
+			}
 
-			for (int p = 0; p < parsedPrototype.NumberOfParameters; p++)
+
+		/* Function: CalculateParameterTable
+		 * Fills in <parameterTableTokenIndexes>, <parameterTableColumnUsed>, and <symbolColumnWidth> for the
+		 * passed section.
+		 */
+		protected void CalculateParameterTable (Prototypes.ParameterSection section)
+			{
+
+			//
+			// First fill in parameterTableTokenIndexes
+			//
+
+			parameterTableTokenIndexes = new int[section.NumberOfParameters, NumberOfColumns + 1];
+
+			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
 				{
-				CalculateColumns(p);
+				TokenIterator startOfParam, endOfParam;
+				parsedPrototype.GetParameter(parameterIndex, out startOfParam, out endOfParam);
 
-				for (int c = 0; c < NumberOfColumns; c++)
+				TokenIterator iterator = startOfParam;
+				iterator.NextPastWhitespace(endOfParam);
+
+
+				// C-Style Parameters
+
+				if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.C)
 					{
-					TokenIterator start, end;
-					ColumnType type;
+					while (iterator < endOfParam && 
+							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+							  iterator.FundamentalType == FundamentalType.Whitespace)
+						{  iterator.Next();  }
 
-					if (GetColumn(c, out start, out end, out type))
+
+					// ModifierQualifier
+				
+					int currentColumn = 0;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					TokenIterator startOfType = iterator;
+
+					while (iterator < endOfParam)
 						{
-						int length = end.RawTextIndex - start.RawTextIndex;
+						PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						if (length > columnWidths[c])
-							{  columnWidths[c] = length;  }
+						// Null covers whitespace and any random symbols we encountered that went unmarked.
+						if (type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.TypeQualifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
 
-						htmlCells[p,c] = BuildCellContents(start, end, type);
+
+					// Type
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						// The previous loop already got any modifiers before the type, so this will only cover the type
+						// plus any modifiers following it.
+						if (type == PrototypeParsingType.Type ||
+							type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
+
+
+					// Symbols
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					// All symbols are part of the type column right now because they're marked as type or param 
+					// modifiers.  Walk backwards to claim the symbols from the type column.
+
+					if (iterator > startOfType)
+						{
+						TokenIterator lookbehind = iterator;
+						lookbehind.Previous();
+
+						if (lookbehind.FundamentalType == FundamentalType.Symbol && 
+							lookbehind.Character != '_' &&
+							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
+							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+							{
+							parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
+							lookbehind.Previous();
+
+							while (lookbehind >= startOfType)
+								{
+								if (lookbehind.FundamentalType == FundamentalType.Symbol &&
+									lookbehind.Character != '_' &&
+									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
+									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+									{
+									parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
+									lookbehind.Previous();
+									}
+								else
+									{  break;  }
+								}
+
+							// Fix up any columns we stole from
+							for (int i = 0; i < currentColumn; i++)
+								{
+								if (parameterTableTokenIndexes[parameterIndex, i] > parameterTableTokenIndexes[parameterIndex, currentColumn])
+									{  parameterTableTokenIndexes[parameterIndex, i] = parameterTableTokenIndexes[parameterIndex, currentColumn];  }
+								}
+							}
+						}
+
+
+					// Name
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						// Include the parameter separator because there may not be a default value.
+						// Include modifiers because there still may be some after the name.
+						if (type == PrototypeParsingType.Name ||
+							type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
+
+
+					// DefaultValueSeparator
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.DefaultValueSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else
+							{  break;  }						
+						}
+
+
+					// DefaultValue
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+
+					// End of param
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = endOfParam.TokenIndex;
+					}
+
+
+				// Pascal-Style Parameters
+
+				else if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.Pascal)
+					{
+					while (iterator < endOfParam && 
+							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
+							  iterator.FundamentalType == FundamentalType.Whitespace)
+						{  iterator.Next();  }
+
+
+					// ModifierQualifier
+				
+					int currentColumn = 0;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
+
+
+					// Name
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						// Include the parameter separator because there may not be a type.
+						// Include modifiers because there still may be some after the name.
+						if (type == PrototypeParsingType.Name ||
+							type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
+
+
+					// TypeNameSeparator
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.NameTypeSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else
+							{  break;  }						
+						}
+
+
+					// Symbols
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					if (iterator < endOfParam &&
+						iterator.FundamentalType == FundamentalType.Symbol &&
+						iterator.Character != '_')
+						{
+						while (iterator < endOfParam)
+							{
+							PrototypeParsingType type = iterator.PrototypeParsingType;
+
+							if ( (
+									( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' ) ||
+									( iterator.FundamentalType == FundamentalType.Whitespace )
+								 ) &&
+								( type == PrototypeParsingType.TypeModifier ||
+								  type == PrototypeParsingType.ParamModifier ||
+								  type == PrototypeParsingType.Null) )
+								{  iterator.Next();   }
+							else
+								{  break;  }
+							}
+						}
+
+
+					// Type
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						// Include the parameter separator because there may not be a default value.
+						if (type == PrototypeParsingType.Type ||
+							type == PrototypeParsingType.TypeModifier ||
+							type == PrototypeParsingType.TypeQualifier ||
+							type == PrototypeParsingType.ParamModifier ||
+							type == PrototypeParsingType.ParamSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else if (type == PrototypeParsingType.OpeningTypeModifier ||
+								   type == PrototypeParsingType.OpeningParamModifier)
+							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else
+							{  break;  }						
+						}
+
+
+					// DefaultValueSeparator
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					while (iterator < endOfParam)
+						{  
+						PrototypeParsingType type = iterator.PrototypeParsingType;
+
+						if (type == PrototypeParsingType.DefaultValueSeparator ||
+							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						else
+							{  break;  }						
+						}
+
+
+					// DefaultValue
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+
+					// End of param
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = endOfParam.TokenIndex;
+					}
+				}
+
+
+
+			//
+			// Next fill in parameterTableColumnsUsed
+			//
+
+			// There's a very high likelihood of this array always being the same length so it's worth it to try to reuse the
+			// memory and avoid a reallocation.
+			if (parameterTableColumnsUsed != null &&
+				parameterTableColumnsUsed.Length == NumberOfColumns)
+				{  Array.Clear(parameterTableColumnsUsed, 0, NumberOfColumns);  }
+			else
+				{  parameterTableColumnsUsed = new bool[NumberOfColumns];  }
+
+			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+				{
+				for (int columnIndex = 0; columnIndex < NumberOfColumns; columnIndex++)
+					{
+					if (parameterTableTokenIndexes[parameterIndex, columnIndex] !=
+						parameterTableTokenIndexes[parameterIndex, columnIndex + 1])
+						{
+						parameterTableColumnsUsed[columnIndex] = true;
 						}
 					}
 				}
 
-			// Default to wide form so the length can be measured by the JavaScript.  The JS will convert them to narrow form
-			// if necessary.
-			BuildWideForm();
-			}
 
 
-		/* Function: BuildPrePrototypeLines
-		 */
-		protected void BuildPrePrototypeLines ()
-			{
-			int lineCount = parsedPrototype.NumberOfPrePrototypeLines;
-			TokenIterator start, end;
+			//
+			// Next determine the symbol column's width
+			//
 
-			for (int i = 0; i < lineCount; i++)
+			symbolColumnWidth = 0;
+
+			if (parameterTableColumnsUsed[SymbolsColumnIndex])
 				{
-				parsedPrototype.GetPrePrototypeLine(i, out start, out end);
+				for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+					{
+					int startTokenIndex = parameterTableTokenIndexes[parameterIndex, SymbolsColumnIndex];
+					int endTokenIndex = parameterTableTokenIndexes[parameterIndex, SymbolsColumnIndex + 1];
 
-				htmlOutput.Append("<div class=\"PPrePrototypeLine\">");
-				BuildSyntaxHighlightedText(start, end);
-				htmlOutput.Append("</div>");
-				}
-			}
+					if (endTokenIndex > startTokenIndex)
+						{
+						TokenIterator start, end;
+						parsedPrototype.GetParameter(parameterIndex, out start, out end);
 
+						start.Next(startTokenIndex - start.TokenIndex);
+						end.Previous(end.TokenIndex - endTokenIndex);
 
-		/* Function: BuildPostPrototypeLines
-		 */
-		protected void BuildPostPrototypeLines ()
-			{
-			int lineCount = parsedPrototype.NumberOfPostPrototypeLines;
-			TokenIterator start, end;
+						int paramColumnWidth = end.RawTextIndex - start.RawTextIndex;
 
-			for (int i = 0; i < lineCount; i++)
-				{
-				parsedPrototype.GetPostPrototypeLine(i, out start, out end);
-
-				htmlOutput.Append("<div class=\"PPostPrototypeLine\">");
-				BuildSyntaxHighlightedText(start, end);
-				htmlOutput.Append("</div>");
-				}
-			}
-
-
-		/* Function: CalculateColumns
-		 * Fills in <columnIndexes> for the passed parameter.  If the parameter doesn't exist it will return false.
-		 */
-		protected bool CalculateColumns (int parameterIndex)
-			{
-			TokenIterator startParam, endParam;
-
-			if (parsedPrototype.GetParameter(parameterIndex, out startParam, out endParam) == false)
-				{  return false;  }
-
-			if (columnIndexes == null)
-				{  columnIndexes = new int[NumberOfColumns];  }
-
-			TokenIterator iterator = startParam;
-			iterator.NextPastWhitespace(endParam);
-			PrototypeParsingType type = iterator.PrototypeParsingType;
-
-			if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.C)
-				{
-
-				// ModifierQualifier
-				
-				int currentColumn = 0;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				// Null covers whitespace and any random symbols we encountered that went unmarked.
-				while (iterator < endParam && 
-							(type == PrototypeParsingType.TypeModifier ||
-							 type == PrototypeParsingType.TypeQualifier ||
-							 type == PrototypeParsingType.Null))
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
+						if (paramColumnWidth > symbolColumnWidth)
+							{  symbolColumnWidth = paramColumnWidth;  }
+						}
 					}
+				}
+			}
 
 
-				// Type
+		/* Function: SkipModifierBlock
+		 * If the iterator is on a <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
+		 * token, moves the token iterator past the entire block, including any nested blocks.
+		 */
+		protected void SkipModifierBlock (ref TokenIterator iterator, TokenIterator limit)
+			{
+			if (iterator < limit &&
+				(iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
+				 iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier))
+				{
+				int level = 1;
+				iterator.Next();
 
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				int typeNesting = 0;
-
-				while (iterator < endParam && 
-							(type == PrototypeParsingType.Type ||
-							 type == PrototypeParsingType.TypeSuffix ||
-							 type == PrototypeParsingType.OpeningTypeSuffix ||
-							 type == PrototypeParsingType.ClosingTypeSuffix ||
-							 type == PrototypeParsingType.Null ||
-							 typeNesting > 0))
-					{  
-					if (type == PrototypeParsingType.OpeningTypeSuffix)
-						{  typeNesting++;  }
-					else if (type == PrototypeParsingType.ClosingTypeSuffix)
-						{  typeNesting--;  }
+				while (iterator < limit && level > 0)
+					{
+					if (iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
+						iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+						{  level++;  }
+					else if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
+							   iterator.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
+						{  level--;  }
 
 					iterator.Next();
-					type = iterator.PrototypeParsingType;
 					}
-
-
-				// NamePrefix
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				while (iterator < endParam && 
-							type == PrototypeParsingType.NamePrefix_PartOfType)
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// Name
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				// Include the parameter separator because there may not be a default value
-				while (iterator < endParam &&
-							(type == PrototypeParsingType.Name||
-							 type == PrototypeParsingType.NameSuffix_PartOfType||
-							 type == PrototypeParsingType.ParamSeparator ||
-							 type == PrototypeParsingType.Null))
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// DefaultValueSeparator
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				while (iterator < endParam && 
-							type == PrototypeParsingType.DefaultValueSeparator)
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// DefaultValue
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
 				}
-
-
-			else if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.Pascal)
-				{
-
-				// NameModifier
-				
-				int currentColumn = 0;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				// Null covers whitespace and any random symbols we encountered that went unmarked.
-				while (iterator < endParam && 
-							(type == PrototypeParsingType.NameModifier_PartOfType ||
-							 type == PrototypeParsingType.Null))
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// Name
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				// Null covers whitespace and any random symbols we encountered that went unmarked.
-				// Include the parameter separator because there may not be a type
-				while (iterator < endParam && 
-							(type == PrototypeParsingType.Name ||
-							 type == PrototypeParsingType.NamePrefix_PartOfType||
-							 type == PrototypeParsingType.NameSuffix_PartOfType ||
-							 type == PrototypeParsingType.ParamSeparator ||
-							 type == PrototypeParsingType.Null))
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// TypeNameSeparator
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				while (iterator < endParam && 
-							type == PrototypeParsingType.NameTypeSeparator)
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// Type
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				int typeNesting = 0;
-
-				// Include the parameter separator because there may not be a default value
-				while (iterator < endParam && 
-							(type == PrototypeParsingType.TypeModifier ||
-							 type == PrototypeParsingType.TypeQualifier ||
-							 type == PrototypeParsingType.Type ||
-							 type == PrototypeParsingType.TypeSuffix ||
-							 type == PrototypeParsingType.OpeningTypeSuffix ||
-							 type == PrototypeParsingType.ClosingTypeSuffix ||
-							 type == PrototypeParsingType.ParamSeparator ||
-							 type == PrototypeParsingType.Null ||
-							 typeNesting > 0))
-					{  
-					if (type == PrototypeParsingType.OpeningTypeSuffix)
-						{  typeNesting++;  }
-					else if (type == PrototypeParsingType.ClosingTypeSuffix)
-						{  typeNesting--;  }
-
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// DefaultValueSeparator
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-
-				while (iterator < endParam && 
-							type == PrototypeParsingType.DefaultValueSeparator)
-					{  
-					iterator.Next();  
-					type = iterator.PrototypeParsingType;
-					}
-
-
-				// DefaultValue
-
-				currentColumn++;
-				columnIndexes[currentColumn] = iterator.TokenIndex;
-				}
-
-
-			// End of parameter
-
-			endOfColumnsIndex = endParam.TokenIndex;
-
-			return true;
 			}
 
 
-		/* Function: GetColumn
-		 * Returns the bounds of a parameter's column and what type it is, which depends on <ColumnOrder>.  You *must* call
-		 * <CalculateColumns()> beforehand.  Returns false if the column index is out of bounds or the contents are empty for
-		 * that particular slot.
+		/* Function: BuildPlainSection
 		 */
-		public bool GetColumn (int columnIndex, out TokenIterator start, out TokenIterator end, out ColumnType type)
+		protected void BuildPlainSection (Prototypes.Section section)
 			{
-			if (columnIndex >= columnIndexes.Length)
-				{ 
-				start = parsedPrototype.Tokenizer.LastToken;
-				end = parsedPrototype.Tokenizer.LastToken;
-				type = ColumnType.Name;
-				return false;
-				}
+			htmlOutput.Append("<div class=\"PSection PPlainSection\">");
 
-			int startIndex = columnIndexes[columnIndex];
-			int endIndex = (columnIndex + 1 >= columnIndexes.Length ? endOfColumnsIndex : columnIndexes[columnIndex + 1]);
-
-			start = parsedPrototype.Tokenizer.FirstToken;
-
-			if (startIndex > 0)
-				{  start.Next(startIndex);  }
-
-			end = start;
-
-			if (endIndex > startIndex)
-				{  end.Next(endIndex - startIndex);  }
-
-			type = ColumnOrder[columnIndex];
-
-			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-			start.NextPastWhitespace(end);
-
-			return (end > start);
-			}
-
-
-		/* Function: BuildCellContents
-		 * Unlike other functions, this returns the contents as a string rather than appending it to <htmlOutput>.
-		 */
-		protected string BuildCellContents (TokenIterator start, TokenIterator end, ColumnType type)
-			{
-			StringBuilder html = new StringBuilder();
-
-			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
-			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
-			if (type == ColumnType.Name)
-				{  html.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
-			else if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, html);  }
+			if (addLinks)
+				{  BuildTypeLinkedAndSyntaxHighlightedText(section.Start, section.End);  }
 			else
-				{  BuildSyntaxHighlightedText(start, end, html);  }
+				{  BuildSyntaxHighlightedText(section.Start, section.End);  }
 
-			if (type == ColumnType.TypeNameSeparator ||
-				 type == ColumnType.DefaultValueSeparator ||
-				 type == ColumnType.NameModifier)
-				{  html.Append("&nbsp;");  }
-
-			else if (end.FundamentalType == FundamentalType.Whitespace &&
-						  (type == ColumnType.Name ||
-						   type == ColumnType.ModifierQualifier ||
-							type == ColumnType.Type) )
-				{  
-				TokenIterator lookbehind = end;
-				lookbehind.Previous();
-
-				if (lookbehind.PrototypeParsingType != PrototypeParsingType.ParamSeparator)
-					{  html.Append("&nbsp;");  }
-				}
-
-			// Insert a space after the type in cases of "int* x" because the star won't get a trailing space.
-			else if (type == ColumnType.Type && end.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType)
-				{  html.Append("&nbsp;");  }
-
-			return html.ToString();
+			htmlOutput.Append("</div>");
 			}
 
 
-		/* Function: BuildCell
+		/* Function: BuildParameterSection
+		 * Builds the HTML for a <Prototypes.ParameterSection>.  It will always be in wide form.
 		 */
-		protected void BuildCell (string contents, ColumnType type, string extraClass = null)
+		protected void BuildParameterSection (Prototypes.ParameterSection section)
 			{
-			if (contents == null)
+			var parameterStyle = section.ParameterStyle;
+			string parameterClass;
+
+			switch (parameterStyle)
 				{
-				if (extraClass == null)
-					{  htmlOutput.Append("<td></td>");  }
-				else
-					{  htmlOutput.Append("<td class=\"" + extraClass + "\"></td>");  }
+				case ParsedPrototype.ParameterStyle.C:
+					parameterClass = "CStyle";
+					break;
+				case ParsedPrototype.ParameterStyle.Pascal:
+					parameterClass = "PascalStyle";
+					break;
+				default:
+					throw new NotImplementedException();
 				}
+
+			htmlOutput.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
+
+			htmlOutput.Append("<table><tr>");
+
+			TokenIterator start, end;
+			section.GetBeforeParameters(out start, out end);
+
+			htmlOutput.Append("<td class=\"PBeforeParameters\">");
+
+			if (addLinks)
+				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
 			else
-				{
-				htmlOutput.Append("<td class=\"P");
-				htmlOutput.Append(type.ToString());
+				{ BuildSyntaxHighlightedText(start, end); }
 
-				if (extraClass != null)
-					{
-					htmlOutput.Append(' ');
-					htmlOutput.Append(extraClass);
-					}
+			htmlOutput.Append("</td>");
 
-				htmlOutput.Append("\">");
+			htmlOutput.Append("<td class=\"PParametersParentCell\">");
+			BuildParameterTable(section);
+			htmlOutput.Append("</td>");
 
-				htmlOutput.Append(contents);
+			section.GetAfterParameters(out start, out end);
 
-				htmlOutput.Append("</td>");
-				}
+			htmlOutput.Append("<td class=\"PAfterParameters\">");
+
+			if (addLinks)
+				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
+			else
+				{ BuildSyntaxHighlightedText(start, end); }
+
+			htmlOutput.Append("</td></tr></table>");
+
+			htmlOutput.Append("</div>");
 			}
 
-	
+
 		/* Function: BuildParameterTable
 		 */
-		protected void BuildParameterTable ()
+		protected void BuildParameterTable (Prototypes.ParameterSection section)
 			{
+			CalculateParameterTable(section);
+
 			int firstUsedCell = 0;
-			while (firstUsedCell < NumberOfColumns && columnWidths[firstUsedCell] == 0)
+			while (firstUsedCell < NumberOfColumns && parameterTableColumnsUsed[firstUsedCell] == false)
 				{  firstUsedCell++;  }
 
 			int lastUsedCell = NumberOfColumns - 1;
-			while (lastUsedCell > 0 && columnWidths[lastUsedCell] == 0)
+			while (lastUsedCell > 0 && parameterTableColumnsUsed[lastUsedCell] == false)
 				{  lastUsedCell--;  }
 
 			htmlOutput.Append("<table class=\"PParameters\">");
 
-			for (int p = 0; p < parsedPrototype.NumberOfParameters; p++)
+			for (int parameterIndex = 0; parameterIndex < parsedPrototype.NumberOfParameters; parameterIndex++)
 				{
 				htmlOutput.Append("<tr>");
 
-				for (int c = firstUsedCell; c <= lastUsedCell; c++)
+				for (int cellIndex = firstUsedCell; cellIndex <= lastUsedCell; cellIndex++)
 					{
-					if (columnWidths[c] != 0)
-						{  
+					if (parameterTableColumnsUsed[cellIndex])
+						{
 						string extraClass = null;
 
-						if (c == firstUsedCell && c == lastUsedCell)
+						if (cellIndex == firstUsedCell && cellIndex == lastUsedCell)
 							{  extraClass = "first last";  }
-						else if (c == firstUsedCell)
+						else if (cellIndex == firstUsedCell)
 							{  extraClass = "first";  }
-						else if (c == lastUsedCell)
+						else if (cellIndex == lastUsedCell)
 							{  extraClass = "last";  }
 
-						BuildCell(htmlCells[p,c], ColumnOrder[c], extraClass);
+						if (parameterTableTokenIndexes[parameterIndex, cellIndex] == parameterTableTokenIndexes[parameterIndex, cellIndex + 1])
+							{  
+							if (extraClass == null)
+								{  htmlOutput.Append("<td></td>");  }
+							else
+								{  htmlOutput.Append("<td class=\"" + extraClass + "\"></td>");  }
+							}
+						else
+							{
+							htmlOutput.Append("<td class=\"P" + ColumnOrder[cellIndex].ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
+
+							BuildCellContents(section, parameterIndex, cellIndex);
+
+							htmlOutput.Append("</td>");
+							}
 						}
 					}
 
@@ -576,113 +702,53 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildNoParameterForm
+		/* Function: BuildCellContents
 		 */
-		protected void BuildNoParameterForm ()
+		protected void BuildCellContents (Prototypes.ParameterSection section, int parameterIndex, int cellIndex)
 			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NoParameterForm\">");
+			TokenIterator start = section.Start;
+			start.Next(parameterTableTokenIndexes[parameterIndex, cellIndex] - start.TokenIndex);
 
-			BuildPrePrototypeLines();
+			TokenIterator end = start;
+			end.Next(parameterTableTokenIndexes[parameterIndex, cellIndex + 1] - end.TokenIndex);
 
-			TokenIterator start, end;
-			parsedPrototype.GetCompletePrototype(out start, out end);
+			bool hadTrailingWhitespace = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
-			else
-				{  BuildSyntaxHighlightedText(start, end);  }
+			ColumnType type = ColumnOrder[cellIndex];
 
-			BuildPostPrototypeLines();
-
-			htmlOutput.Append("</div>");
-			}
-
-
-		/* Function: BuildWideForm
-		 */
-		protected void BuildWideForm ()
-			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype WideForm " +
-				parsedPrototype.Style.ToString() + "Style\">");
-				
-			BuildPrePrototypeLines();
+			// Find the type of the next used cell
+			ColumnType? nextType = null;
+			for (int nextCellIndex = cellIndex + 1; nextCellIndex < NumberOfColumns; nextCellIndex++)
+				{
+				if (parameterTableColumnsUsed[nextCellIndex])
+					{
+					nextType = ColumnOrder[nextCellIndex];
+					break;
+					}
+				}
 			
-			htmlOutput.Append("<table><tr>");
+			// Default value separators always get spaces before and after
+			if (type == ColumnType.DefaultValueSeparator)
+				{ htmlOutput.Append("&nbsp;"); }
 
-			TokenIterator start, end;
-			parsedPrototype.GetBeforeParameters(out start, out end);
-
-			htmlOutput.Append("<td class=\"PBeforeParameters\">");
-
-			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
+			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
+			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
+			if (type == ColumnType.Name)
+				{  htmlOutput.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
+			else if (addLinks)
+				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, htmlOutput);  }
 			else
-				{  BuildSyntaxHighlightedText(start, end);  }
+				{  BuildSyntaxHighlightedText(start, end, htmlOutput);  }
 
-			htmlOutput.Append("</td>");
-
-			htmlOutput.Append("<td class=\"PParametersParentCell\">");
-				BuildParameterTable();
-			htmlOutput.Append("</td>");
-
-			parsedPrototype.GetAfterParameters(out start, out end);
-
-			htmlOutput.Append("<td class=\"PAfterParameters\">");
-
-			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
-			else
-				{  BuildSyntaxHighlightedText(start, end);  }
-
-			htmlOutput.Append("</td></tr></table>");
-			
-			BuildPostPrototypeLines();
-
-			htmlOutput.Append("</div>");
-			}
-
-
-		/* Function: BuildNarrowForm
-		 */
-		protected void BuildNarrowForm ()
-			{
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype NarrowForm " +
-				parsedPrototype.Style.ToString() + "Style\">");
-				
-			BuildPrePrototypeLines();
-
-			htmlOutput.Append("<table>");
-
-			TokenIterator start, end;
-			parsedPrototype.GetBeforeParameters(out start, out end);
-
-			htmlOutput.Append("<tr><td class=\"PBeforeParameters\">");
-
-			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
-			else
-				{  BuildSyntaxHighlightedText(start, end);  }
-
-			htmlOutput.Append("</td></tr>");
-
-			htmlOutput.Append("<tr><td class=\"PParametersParentCell\">");
-				BuildParameterTable();
-			htmlOutput.Append("</td></tr>");
-
-			parsedPrototype.GetAfterParameters(out start, out end);
-
-			htmlOutput.Append("<tr><td class=\"PAfterParameters\">");
-
-			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end);  }
-			else
-				{  BuildSyntaxHighlightedText(start, end);  }
-
-			htmlOutput.Append("</td></tr></table>");
-
-			BuildPostPrototypeLines();
-
-			htmlOutput.Append("</div>");
+			// Default value separators and type/name separators always get spaces after.  Make sure the spaces aren't duplicated
+			// by the preceding cells.
+			if (type == ColumnType.DefaultValueSeparator ||
+				type == ColumnType.TypeNameSeparator ||
+				(hadTrailingWhitespace && 
+					type != ColumnType.DefaultValue &&
+					nextType != ColumnType.DefaultValueSeparator && 
+					nextType != ColumnType.TypeNameSeparator) )
+				{  htmlOutput.Append("&nbsp;");  }
 			}
 
 
@@ -721,6 +787,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
+		/* Property: SymbolsColumnIndex
+		 * The index into <ColumnOrder> where <ColumnType.Symbols> appears.
+		 */
+		protected int SymbolsColumnIndex
+			{
+			get
+				{
+				switch (parsedPrototype.Style)
+					{
+					case ParsedPrototype.ParameterStyle.C:
+						return CSymbolsColumnIndex;
+					case ParsedPrototype.ParameterStyle.Pascal:
+						return PascalSymbolsColumnIndex;
+					default:
+						throw new NotSupportedException();
+					}
+				}
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -736,27 +822,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected Languages.Language language;
 
-		/* var: columnIndexes
-		 * An array of symbol indexes representing the starting position of each column.  The indexes are taken from 
-		 * <TokenIterator.TokenIndex> and so are relative to the start of <parsedPrototype> rather than the parameter.
+		/* var: parameterTableTokenIndexes
+		 * A table representing the parameters as rows and the columns determined by <ColumnOrder>.  Each value
+		 * represents the starting token index of that cell.  Each row will also contain one extra value representing the
+		 * token index of the end of the final cell.
 		 */
-		protected int[] columnIndexes;
+		protected int[,] parameterTableTokenIndexes;
 
-		/* var: endOfColumnsIndex
-		 * The symbol index of the end of the last column in <columnIndexes>.
+		/* var: parameterTableColumnsUsed
+		 * An array representing whether each column in <parameterTableTokenIndexes> is used at all.
 		 */
-		protected int endOfColumnsIndex;
+		protected bool[] parameterTableColumnsUsed;
 
-		/* var: columnWidths
-		 * The width in characters of each column.
+		/* var: symbolColumnWidth
+		 * The width in characters of the longest entry in the symbol column, if any.  Will be zero if it's not used.
 		 */
-		protected int[] columnWidths;
-
-		/* var: htmlCells
-		 * The HTML contents of each parameter cell, not including the td tags.  The first index is the parameter, the
-		 * second is the column.
-		 */
-		protected string[,] htmlCells;
+		protected int symbolColumnWidth;
 
 		/* var: addLinks
 		 * Whether to add type links to the prototype.
@@ -772,21 +853,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * An array of <ColumnTypes> representing the order in which columns should appear for C-style prototypes.
 		 */
 		static public ColumnType[] CColumnOrder = { ColumnType.ModifierQualifier,
-																		  ColumnType.Type,
-																		  ColumnType.NamePrefix,
-																		  ColumnType.Name,
-																		  ColumnType.DefaultValueSeparator,
-																		  ColumnType.DefaultValue };
+																		   ColumnType.Type,
+																		   ColumnType.Symbols,
+																		   ColumnType.Name,
+																		   ColumnType.DefaultValueSeparator,
+																		   ColumnType.DefaultValue };
+
+		/* var: CSymbolsColumnIndex
+		 * The index into <CColumnOrder> where <ColumnType.Symbols> appears.
+		 */
+		static public int CSymbolsColumnIndex = 2;
 
 		/* var: PascalColumnOrder
 		 * An array of <ColumnTypes> representing the order in which columns should appear for Pascal-style prototypes.
 		 */
-		static public ColumnType[] PascalColumnOrder = { ColumnType.NameModifier,
-																				ColumnType.Name,
-																				ColumnType.TypeNameSeparator,
-																				ColumnType.Type,
-																				ColumnType.DefaultValueSeparator,
-																				ColumnType.DefaultValue };
+		static public ColumnType[] PascalColumnOrder = { ColumnType.ModifierQualifier,
+																				  ColumnType.Name,
+																				  ColumnType.TypeNameSeparator,
+																				  ColumnType.Symbols,
+																				  ColumnType.Type,
+																				  ColumnType.DefaultValueSeparator,
+																				  ColumnType.DefaultValue };
+
+		/* var: PascalSymbolsColumnIndex
+		 * The index into <PascalColumnOrder> where <ColumnType.Symbols> appears.
+		 */
+		static public int PascalSymbolsColumnIndex = 3;
 
 		}
 	}

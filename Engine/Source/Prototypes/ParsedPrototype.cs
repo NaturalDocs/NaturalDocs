@@ -14,10 +14,9 @@
  *		call <GetParameter()>, and then use those bounds to further parse the parameter and set tokens like
  *		<PrototypeParsingType.Name>.
  * 
- *		An important thing to remember though is that the parameter divisions are calculated once and saved.  Only call
- *		functions like <GetParameter()> after *ALL* the separator tokens (<PrototypeParsingType.StartOfParams>,
- *		<PrototypeParsingType.ParamSeparator>, and <PrototypeParsingType.EndOfParams>) are set and will not change
- *		going forward.
+ *		Section and parameter divisions are not calculated on the fly.  They are calculated once at object creation and then saved.
+ *		If you make changes to section or parameter delimiting tokens call <RecalculateSections()> to make sure the changes are
+ *		reflected in the other functions.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2018 Code Clear LLC.
@@ -50,20 +49,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{  C, Pascal  }
 
 
-		/* Enum: SectionType
-		 * 
-		 * PrePrototypeLine - A line that should appear separately before the prototype.
-		 * BeforeParameters - The prototype prior to the parameters.  This will include the start of parameters symbol, such as
-		 *							   an opening parenthesis in C#.  If there are no parameters, this will be the entire prototype.
-		 *	Parameter - An individual parameter.  It may include the parameter separator symbol, such as a comma in C#.
-		 *	AfterParameters - The prototype after the parameters.  This will include the end of parameters symbol, such as a
-		 *							 closing parenthesis in C#.
-		 *	PostPrototypeLine - A line that should appear separately after the prototype.
-		 */
-		public enum SectionType : byte
-			{  PrePrototypeLine, BeforeParameters, Parameter, AfterParameters, PostPrototypeLine  }
-
-
 
 		// Group: Functions
 		// __________________________________________________________________________
@@ -76,42 +61,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			tokenizer = prototype;
 			sections = null;
-			style = null;
-			}
+			mainSectionIndex = 0;
 
-
-		/* Function: GetPrePrototypeLine
-		 * Returns the bounds of a numbered pre-prototype line.  Numbers start at zero.  It will return false if one does not
-		 * exist at that number.
-		 */
-		public bool GetPrePrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
-			{
-			return GetSectionBounds(SectionType.PrePrototypeLine, lineNumber, out start, out end);
-			}
-
-
-		/* Function: GetCompletePrototype
-		 * Returns the bounds of the complete prototype, minus whitespace.  This does NOT include pre-prototype lines.
-		 */
-		public void GetCompletePrototype (out TokenIterator start, out TokenIterator end)
-			{
-			Section beforeParameters = FindSection(SectionType.BeforeParameters);
-
-			start = tokenizer.FirstToken;
-			start.Next(beforeParameters.StartIndex);
-
-			Section afterParameters = FindSection(SectionType.AfterParameters);
-
-			end = start;
-
-			if (afterParameters == null)
-				{
-				end.Next(beforeParameters.EndIndex - beforeParameters.StartIndex);
-				}
-			else
-				{
-				end.Next(afterParameters.EndIndex - beforeParameters.StartIndex);
-				}
+			RecalculateSections();
 			}
 
 
@@ -121,59 +73,27 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		public Languages.AccessLevel GetAccessLevel ()
 			{
-			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
-
-			TokenIterator iterator, end;
-			if (GetSectionBounds(SectionType.BeforeParameters, 0, out iterator, out end) == false)
-				{  return accessLevel;  }
-
-			bool previousWasUnderscore = false;
-
-			while (iterator < end)
-				{
-				if (iterator.FundamentalType == FundamentalType.Text &&
-					 iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier &&
-					 previousWasUnderscore == false)
-					{
-					if (iterator.MatchesToken("public"))
-						{  accessLevel = Languages.AccessLevel.Public;  }
-					else if (iterator.MatchesToken("private"))
-						{  accessLevel = Languages.AccessLevel.Private;  }
-					else if (iterator.MatchesToken("protected"))
-						{
-						if (accessLevel == Languages.AccessLevel.Internal)
-							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
-						else
-							{  accessLevel = Languages.AccessLevel.Protected;  }
-						}
-					else if (iterator.MatchesToken("internal"))
-						{
-						if (accessLevel == Languages.AccessLevel.Protected)
-							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
-						else
-							{  accessLevel = Languages.AccessLevel.Internal;  }
-						}
-					}
-				else
-					{
-					previousWasUnderscore = (iterator.Character == '_');
-					}
-
-				iterator.Next();
-				}
-
-			return accessLevel;
+			return sections[mainSectionIndex].GetAccessLevel();
 			}
 
 			
 		/* Function: GetBeforeParameters
-		 * Returns the bounds of the section of the prototype prior to the parameters.  If it has parameters, it will include the 
-		 * starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this will return the 
-		 * bounds of the entire prototype.
+		 * Returns the bounds of the section of the prototype prior to the parameters and whether it exists.  If it has parameters,
+		 * it will include the starting symbol of the parameter list such as the opening parenthesis.  If there are no parameters, this
+		 * will return the bounds of the entire prototype.
 		 */
-		public void GetBeforeParameters (out TokenIterator start, out TokenIterator end)
+		public bool GetBeforeParameters (out TokenIterator beforeParametersStart, out TokenIterator beforeParametersEnd)
 			{
-			GetSectionBounds(SectionType.BeforeParameters, 0, out start, out end);
+			if (sections[mainSectionIndex] is ParameterSection)
+				{  
+				return (sections[mainSectionIndex] as ParameterSection).GetBeforeParameters(out beforeParametersStart, out beforeParametersEnd);  
+				}
+			else
+				{
+				beforeParametersStart = tokenizer.FirstToken;
+				beforeParametersEnd = tokenizer.LastToken;
+				return true;
+				}
 			}
 
 
@@ -181,309 +101,68 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the bounds of a numbered parameter.  Numbers start at zero.  It will return false if one does not exist at that
 		 * number.
 		 */
-		public bool GetParameter (int parameterNumber, out TokenIterator start, out TokenIterator end)
+		public bool GetParameter (int parameterIndex, out TokenIterator parameterStart, out TokenIterator parameterEnd)
 			{
-			return GetSectionBounds(SectionType.Parameter, parameterNumber, out start, out end);
+			if (sections[mainSectionIndex] is ParameterSection)
+				{  
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterBounds(parameterIndex, out parameterStart, out parameterEnd);  
+				}
+			else
+				{
+				parameterStart = tokenizer.LastToken;
+				parameterEnd = tokenizer.LastToken;
+				return false;
+				}
 			}
 
 
 		/* Function: GetParameterName
 		 * Returns the bounds of the name of the passed parameter, or false if it couldn't find it.
 		 */
-		public bool GetParameterName (int index, out TokenIterator start, out TokenIterator end)
+		public bool GetParameterName (int parameterIndex, out TokenIterator parameterNameStart, out TokenIterator parameterNameEnd)
 			{
-			TokenIterator paramStart, paramEnd;
-
-			if (!GetParameter(index, out paramStart, out paramEnd))
+			if (sections[mainSectionIndex] is ParameterSection)
 				{  
-				start = paramEnd;
-				end = paramEnd;
-				return false;  
-				}
-
-			start = paramStart;
-
-			while (start < paramEnd && start.PrototypeParsingType != PrototypeParsingType.Name)
-				{  start.Next();  }
-
-			if (start < paramEnd)
-				{
-				end = start;
-
-				do
-					{  end.Next();  }
-				while (end.PrototypeParsingType == PrototypeParsingType.Name && end < paramEnd);
-
-				return true;
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterName(parameterIndex, out parameterNameStart, out parameterNameEnd);  
 				}
 			else
-				{  
-				start = paramEnd;
-				end = paramEnd;
-				return false;  
+				{
+				parameterNameStart = tokenizer.LastToken;
+				parameterNameEnd = tokenizer.LastToken;
+				return false;
 				}
 			}
 
 
-		/* Function: GetFullParameterType
+		/* Function: BuildFullParameterType
 		 * 
-		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This includes modifiers and type
-		 * suffixes.  Since the type token may not be continuous, it returns separate start and end iterators for extra type modifiers
-		 * ("const" in "const x: integer") prefixes ("*" in "int *x") and suffixes ("[12]" in "int x[12]").  Regular modifiers attached to
-		 * the type ("unsigned" in "unsigned int x") will be accounted for by the main iterators.
+		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
+		 * one continuous string.
 		 * 
-		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
+		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return that <Tokenizer> and
+		 * <TokenIterators> based on it.
+		 * 
+		 * If the type and all its modifiers and qualifiers are not continuous it will create a separate <Tokenizer> to hold a continuous
+		 * version of it.  It will return that <Tokenizer> and the bounds will be <TokenIterators> based on it rather than on the original 
+		 * <Tokenizer>.  The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of 
+		 * the original.
+		 * 
+		 * If implied types is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
-		public bool GetFullParameterType (int index, out TokenIterator start, out TokenIterator end,
-													  out TokenIterator extraModifierStart, out TokenIterator extraModifierEnd,
-													  out TokenIterator prefixStart, out TokenIterator prefixEnd,
-													  out TokenIterator suffixStart, out TokenIterator suffixEnd,
-													  bool impliedTypes = true)
+		public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
+														  out Tokenizer fullTypeTokenizer, bool impliedTypes = true)
 			{
-			TokenIterator paramStart, paramEnd;
-
-			if (!GetParameter(index, out paramStart, out paramEnd))
+			if (sections[mainSectionIndex] is ParameterSection)
 				{  
-				start = paramEnd;
-				end = paramEnd;
-				extraModifierStart = paramEnd;
-				extraModifierEnd = paramEnd;
-				prefixStart = paramEnd;
-				prefixEnd = paramEnd;
-				suffixStart = paramEnd;
-				suffixEnd = paramEnd;
-				return false;  
-				}
-
-
-			// Find the beginning of the type by finding the first type token
-
-			start = paramStart;
-			PrototypeParsingType type = start.PrototypeParsingType;
-
-			while (start < paramEnd && 
-					  type != PrototypeParsingType.Type &&
-					  type != PrototypeParsingType.TypeModifier &&
-					  type != PrototypeParsingType.TypeQualifier &&
-					  type != PrototypeParsingType.NameModifier_PartOfType)
-				{  
-				start.Next();  
-				type = start.PrototypeParsingType;
-				}
-
-
-			// If we're on a name modifier, get it and keep looking for the type
-
-			if (type == PrototypeParsingType.NameModifier_PartOfType)
-				{
-				extraModifierStart = start;
-
-				do
-					{  
-					start.Next();  
-					type = start.PrototypeParsingType;
-					}
-				while (start < paramEnd && 
-						 type == PrototypeParsingType.NameModifier_PartOfType);
-
-				extraModifierEnd = start;
-
-				// Search for the start again after the extra modifier
-
-				while (start < paramEnd && 
-						  type != PrototypeParsingType.Type &&
-						  type != PrototypeParsingType.TypeModifier &&
-						  type != PrototypeParsingType.TypeQualifier)
-					{  
-					start.Next();  
-					type = start.PrototypeParsingType;
-					}
+				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, 
+																																	out fullTypeTokenizer, impliedTypes);
 				}
 			else
 				{
-				extraModifierStart = paramEnd;
-				extraModifierEnd = paramEnd;
-				}
-
-
-			// If we found one, find the end of the type
-
-			bool foundType = (start < paramEnd);
-			end = start;
-
-			if (foundType)
-				{
-				int nestLevel = 0;
-
-				do
-					{  
-					if (end.PrototypeParsingType == PrototypeParsingType.OpeningTypeSuffix)
-						{  nestLevel++;  }
-					else if (end.PrototypeParsingType == PrototypeParsingType.ClosingTypeSuffix)
-						{  nestLevel--;  }
-
-					end.Next();
-					type = end.PrototypeParsingType;
-					}
-				while ( (nestLevel > 0 ||
-							  type == PrototypeParsingType.Type ||
-							  type == PrototypeParsingType.TypeModifier ||
-							  type == PrototypeParsingType.TypeQualifier ||
-							  type == PrototypeParsingType.OpeningTypeSuffix ||
-							  type == PrototypeParsingType.ClosingTypeSuffix ||
-							  type == PrototypeParsingType.TypeSuffix ||
-							  end.FundamentalType == FundamentalType.Whitespace) &&
-							end < paramEnd);
-
-				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-				}
-
-
-			// See if we can fill it out with implied types
-
-			if (impliedTypes)
-				{
-				if (Style == ParameterStyle.C)
-					{
-
-					// If there's no type for a C parameter, move backwards for "int x, y"
-
-					if (!foundType)
-						{
-						TokenIterator ignoredA, ignoredB;
-
-						for (int i = index - 1; i >= 0; i--)
-							{
-							if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
-																out suffixStart, out suffixEnd, false))
-								{  
-								foundType = true;
-								break;
-								}
-							}
-						}
-
-					}
-
-				else // Style == ParameterStyle.Pascal
-					{
-
-					// If there's no type for a Pascal parameter, move forwards for "x, y: integer"
-
-					if (!foundType)
-						{
-						TokenIterator ignoredA, ignoredB;
-
-						for (int i = index + 1; i <= NumberOfParameters; i++)
-							{
-							if (GetFullParameterType(i, out start, out end, out ignoredA, out ignoredB, out prefixStart, out prefixEnd,
-																  out suffixStart, out suffixEnd, false))
-								{
-								foundType = true;
-								break;
-								}
-							}
-						}
-
-
-					// If there's no extra modifiers for a Pascal parameter, move backwards for "const x, y: integer"
-
-					if (extraModifierEnd <= extraModifierStart)
-						{
-						TokenIterator prevParamIterator, prevParamEnd, prevExtraModifierStart, prevExtraModifierEnd;
-
-						for (int i = index - 1; i >= 0; i--)
-							{
-							// We can't use GetFullParameterType() here because it won't return anything if it doesn't find a type with
-							// implied types off, and turning implied types on means we can't detect when another type occurs which
-							// would mean we wouldn't want to inherit its modifiers ("const x: integer; y: integer").  So we do it manually
-							// with GetParameter().
-							GetParameter(i, out prevParamIterator, out prevParamEnd);
-							prevExtraModifierStart = prevParamEnd;
-							prevExtraModifierEnd = prevParamEnd;
-							bool foundPrevExtraModifier = false;
-							bool foundPrevType = false;
-							
-							while (prevParamIterator < prevParamEnd)
-								{
-								if (prevParamIterator.PrototypeParsingType == PrototypeParsingType.NameModifier_PartOfType)
-									{
-									if (!foundPrevExtraModifier)
-										{
-										prevExtraModifierStart = prevParamIterator;
-										foundPrevExtraModifier = true;
-										}
-
-									prevParamIterator.Next();
-									prevExtraModifierEnd = prevParamIterator;
-									}
-								else if (prevParamIterator.PrototypeParsingType == PrototypeParsingType.Type)
-									{
-									foundPrevType = true;
-									break;
-									}
-								else
-									{  prevParamIterator.Next();  }
-								}
-
-							if (foundPrevType)
-								{  break;  }
-							else if (foundPrevExtraModifier)
-								{
-								extraModifierStart = prevExtraModifierStart;
-								extraModifierEnd = prevExtraModifierEnd;
-								break;
-								}
-							}
-						}
-
-					}
-				}
-			
-
-			// If we found a type, explicit or implied, find the prefix and suffix.  We do this after checking for implied types because we 
-			// want "int a[12], b" to work.  b should be int, not int[12].  In "int *x, y", y should be int, not int*.
-
-			if (foundType)
-				{
-				prefixStart = paramStart;
-
-				while (prefixStart < paramEnd &&
-							 prefixStart.PrototypeParsingType != PrototypeParsingType.NamePrefix_PartOfType)
-					{  prefixStart.Next();  }
-
-				prefixEnd = prefixStart;
-
-				while (prefixEnd < paramEnd &&
-							 prefixEnd.PrototypeParsingType == PrototypeParsingType.NamePrefix_PartOfType)
-					{  prefixEnd.Next();  }
-
-				suffixStart = paramStart;
-
-				while (suffixStart < paramEnd &&
-							 suffixStart.PrototypeParsingType != PrototypeParsingType.NameSuffix_PartOfType)
-					{  suffixStart.Next();  }
-
-				suffixEnd = suffixStart;
-
-				while (suffixEnd < paramEnd &&
-							 suffixEnd.PrototypeParsingType == PrototypeParsingType.NameSuffix_PartOfType)
-					{  suffixEnd.Next();  }
-
-				return true;
-				}
-
-			else // didn't find a type
-				{
-				start = paramEnd;
-				end = paramEnd;
-				extraModifierStart = paramEnd;
-				extraModifierEnd = paramEnd;
-				prefixStart = paramEnd;
-				prefixEnd = paramEnd;
-				suffixStart = paramEnd;
-				suffixEnd = paramEnd;
-				return false;  
+				fullTypeTokenizer = tokenizer;
+				fullTypeStart = tokenizer.LastToken;
+				fullTypeEnd = tokenizer.LastToken;
+				return false;
 				}
 			}
 
@@ -495,93 +174,36 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * 
 		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
-		public bool GetBaseParameterType (int index, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
+		public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
 			{
-			TokenIterator paramStart, paramEnd;
-
-			if (!GetParameter(index, out paramStart, out paramEnd))
+			if (sections[mainSectionIndex] is ParameterSection)
 				{  
-				start = paramEnd;
-				end = paramEnd;
-				return false;  
-				}
-
-			// First search for an explicit type, like "int".
-			start = paramStart;
-
-			while (start < paramEnd && 
-						start.PrototypeParsingType != PrototypeParsingType.Type &&
-						start.PrototypeParsingType != PrototypeParsingType.TypeQualifier)
-				{  start.Next();  }
-
-			if (start < paramEnd)
-				{
-				end = start;
-
-				do
-					{  end.Next();  }
-				while ((end.PrototypeParsingType == PrototypeParsingType.Type ||
-							 end.PrototypeParsingType == PrototypeParsingType.TypeQualifier) &&
-							end < paramEnd);
-
-				return true;
+				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end, impliedTypes);
 				}
 			else
-				{  
-				if (impliedTypes)
-					{
-					if (Style == ParameterStyle.C)
-						{
-						// Move backwards for "int x, y"
-						for (int i = index - 1; i >= 0; i--)
-							{
-							if (GetBaseParameterType(i, out start, out end, false))
-								{  return true;  }
-							}
-						}
-					else // Style == ParameterStyle.Pascal
-						{
-						// Move forwards for "x, y: integer"
-						for (int i = index + 1; i <= NumberOfParameters; i++)
-							{
-							if (GetBaseParameterType(i, out start, out end, false))
-								{  return true;  }
-							}
-						}
-					}
-
-				start = paramEnd;
-				end = paramEnd;
-				return false;  
+				{
+				start = tokenizer.LastToken;
+				end = tokenizer.LastToken;
+				return false;
 				}
 			}
 
 
-		/* Function: GetDefaultValue
+		/* Function: GetParameterDefaultValue
 		 * Returns the bounds of the default value of the passed parameter, or false if it doesn't exist.
 		 */
-		public bool GetDefaultValue (int index, out TokenIterator start, out TokenIterator end)
+		public bool GetParameterDefaultValue (int parameterIndex, out TokenIterator defaultValueStart, out TokenIterator defaultValueEnd)
 			{
-			TokenIterator paramStart, paramEnd;
-
-			if (!GetParameter(index, out paramStart, out paramEnd))
+			if (sections[mainSectionIndex] is ParameterSection)
 				{  
-				start = paramEnd;
-				end = paramEnd;
-				return false;  
+				return (sections[mainSectionIndex] as ParameterSection).GetParameterDefaultValue(parameterIndex, out defaultValueStart, out defaultValueEnd);  
 				}
-
-			start = paramStart;
-
-			while (start < paramEnd && start.PrototypeParsingType != PrototypeParsingType.DefaultValue)
-				{  start.Next();  }
-
-			end = start;
-
-			while (end < paramEnd && end.PrototypeParsingType == PrototypeParsingType.DefaultValue)
-				{  end.Next();  }
-
-			return (start != end);
+			else
+				{
+				defaultValueStart = tokenizer.LastToken;
+				defaultValueEnd = tokenizer.LastToken;
+				return false;
+				}
 			}
 
 
@@ -589,277 +211,124 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the bounds of the section of the prototype after the parameters and whether it exists.  If it does
 		 * exist, the bounds will include the closing symbol of the parameter list such as the closing parenthesis.
 		 */
-		public bool GetAfterParameters (out TokenIterator start, out TokenIterator end)
+		public bool GetAfterParameters (out TokenIterator afterParametersStart, out TokenIterator afterParametersEnd)
 			{
-			return GetSectionBounds(SectionType.AfterParameters, 0, out start, out end);
-			}
-			
-
-		/* Function: GetPostPrototypeLine
-		 * Returns the bounds of a numbered post-prototype line.  Numbers start at zero.  It will return false if one does not
-		 * exist at that number.
-		 */
-		public bool GetPostPrototypeLine (int lineNumber, out TokenIterator start, out TokenIterator end)
-			{
-			return GetSectionBounds(SectionType.PostPrototypeLine, lineNumber, out start, out end);
-			}
-
-
-		/* Function: CalculateSections
-		 */
-		protected void CalculateSections ()
-			{
-			sections = new List<Section>();
-			Section section = null;
-			
-			TokenIterator startOfSection, endOfSection;
-			TokenIterator iterator = tokenizer.FirstToken;
-
-			// Only skip whitespace if it's insignificant to the prototype parsing
-			while (iterator.FundamentalType == FundamentalType.Whitespace &&
-					 iterator.PrototypeParsingType == PrototypeParsingType.Null)
-				{  iterator.Next();  }
-
-
-			// Pre-Prototype Lines
-
-			while (iterator.PrototypeParsingType == PrototypeParsingType.StartOfPrePrototypeLine)
+			if (sections[mainSectionIndex] is ParameterSection)
 				{
-				startOfSection = iterator;
-
-				do
-					{  iterator.Next();  }
-				while (iterator.PrototypeParsingType == PrototypeParsingType.PrePrototypeLine);
-
-				endOfSection = iterator;
-
-				startOfSection.NextPastWhitespace(endOfSection);
-				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
-
-				if (endOfSection > startOfSection)
-					{
-					section = new Section();
-					section.Type = SectionType.PrePrototypeLine;
-					section.StartIndex = startOfSection.TokenIndex;
-					section.EndIndex = endOfSection.TokenIndex;
-					sections.Add(section);
-					}
-
-				while (iterator.FundamentalType == FundamentalType.Whitespace &&
-						 iterator.PrototypeParsingType == PrototypeParsingType.Null)
-					{  iterator.Next();  }
-				}
-
-
-			// Before Parameters
-
-			startOfSection = iterator;
-
-			while (iterator.IsInBounds && 
-					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfParams &&
-					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
-				{  iterator.Next();  }
-
-			if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfParams)
-				{
-				// Include the StartOfParams symbol in the section.  Note that it's possible for StartOfParams to be whitespace, 
-				// as it is in Microsoft Transact-SQL, so we don't trim the end.
-				iterator.Next();
-
-				endOfSection = iterator;
-				startOfSection.NextPastWhitespace(endOfSection);
-
-				if (endOfSection > startOfSection)
-					{
-					section = new Section();
-					section.Type = SectionType.BeforeParameters;
-					section.StartIndex = startOfSection.TokenIndex;
-					section.EndIndex = endOfSection.TokenIndex;
-					sections.Add(section);
-					}
-
-
-				// Parameters
-
-				while (iterator.IsInBounds && 
-						 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
-						 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
-					{
-					startOfSection = iterator;
-
-					while (iterator.IsInBounds &&
-							 iterator.PrototypeParsingType != PrototypeParsingType.EndOfParams &&
-							 iterator.PrototypeParsingType != PrototypeParsingType.ParamSeparator &&
-							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine)
-						{  iterator.Next();  }
-
-					// Include the separator in the parameter section
-					if (iterator.PrototypeParsingType == PrototypeParsingType.ParamSeparator)
-						{  iterator.Next();  }
-
-					endOfSection = iterator;
-
-					startOfSection.NextPastWhitespace(endOfSection);
-					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
-
-					if (endOfSection > startOfSection)
-						{
-						section = new Section();
-						section.Type = SectionType.Parameter;
-						section.StartIndex = startOfSection.TokenIndex;
-						section.EndIndex = endOfSection.TokenIndex;
-						sections.Add(section);
-						}
-					}
-
-
-				// After Parameters
-
-				if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfParams)
-					{
-					startOfSection = iterator;
-
-					do
-						{  iterator.Next();  }
-					while (iterator.IsInBounds &&
-							 iterator.PrototypeParsingType != PrototypeParsingType.StartOfPostPrototypeLine);
-
-					endOfSection = iterator;
-
-					// It's possible for EndOfParams to be whitespace, as it is in Microsoft Transact-SQL, so we don't trim the 
-					// beginning.
-					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
-
-					if (endOfSection > startOfSection)
-						{
-						section = new Section();
-						section.Type = SectionType.AfterParameters;
-						section.StartIndex = startOfSection.TokenIndex;
-						section.EndIndex = endOfSection.TokenIndex;
-						sections.Add(section);
-						}					
-					}
-				}
-
-			else // there was no StartOfParams
-				{
-				// We still have to finish the BeforeParameters section.
-				endOfSection = iterator;
-
-				startOfSection.NextPastWhitespace(endOfSection);
-				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
-
-				if (endOfSection > startOfSection)
-					{
-					section = new Section();
-					section.Type = SectionType.BeforeParameters;
-					section.StartIndex = startOfSection.TokenIndex;
-					section.EndIndex = endOfSection.TokenIndex;
-					sections.Add(section);
-					}
-				}
-
-
-			// Post-Prototype Lines
-
-			while (iterator.IsInBounds && 
-					 iterator.PrototypeParsingType == PrototypeParsingType.StartOfPostPrototypeLine)
-				{
-				startOfSection = iterator;
-
-				do
-					{  iterator.Next();  }
-				while (iterator.PrototypeParsingType == PrototypeParsingType.PostPrototypeLine);
-
-				endOfSection = iterator;
-
-				startOfSection.NextPastWhitespace(endOfSection);
-				endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
-
-				if (endOfSection > startOfSection)
-					{
-					section = new Section();
-					section.Type = SectionType.PostPrototypeLine;
-					section.StartIndex = startOfSection.TokenIndex;
-					section.EndIndex = endOfSection.TokenIndex;
-					sections.Add(section);
-					}
-
-				while (iterator.FundamentalType == FundamentalType.Whitespace &&
-						 iterator.PrototypeParsingType == PrototypeParsingType.Null)
-					{  iterator.Next();  }
-				}
-			}
-
-
-		/* Function: GetSectionBounds
-		 * Returns the bounds of the passed section and whether it exists.  An index of zero represents the first section of that
-		 * type, 1 represents the second, etc.
-		 */
-		protected bool GetSectionBounds (SectionType type, int index, out TokenIterator start, out TokenIterator end)
-			{
-			Section section = FindSection(type, index);
-
-			if (section == null)
-				{
-				start = tokenizer.LastToken;
-				end = start;
-				return false;
+				return (sections[mainSectionIndex] as ParameterSection).GetAfterParameters(out afterParametersStart, out afterParametersEnd);
 				}
 			else
 				{
-				start = tokenizer.FirstToken;
-				start.Next(section.StartIndex);
-
-				end = start;
-				end.Next(section.EndIndex - section.StartIndex);
-
-				return true;
+				afterParametersStart = tokenizer.LastToken;
+				afterParametersEnd = tokenizer.LastToken;
+				return false;
 				}
-			}
-
-
-		/* Function: FindSection
-		 * Returns the first section with the passed type, or if you passed an index, the nth section with that type.  If there are
-		 * none it will return null.
-		 */
-		protected Section FindSection (SectionType type, int index = 0)
-			{
-			if (sections == null)
-				{  CalculateSections();  }
-
-			foreach (Section section in sections)
-				{
-				if (section.Type == type)
-					{
-					if (index == 0)
-						{  return section;  }
-					else
-						{  index--;  }
-					}
-				}
-
-			return null;
 			}
 			
 
-		/* Function: CountSections
-		 * Returns the number of sections with the passed type.
+		/* Function: RecalculateSections
+		 * 
+		 * Recalculates the <Sections> list.
+		 * 
+		 * Sections are delimited with <PrototypeParsingType.StartOfPrototypeSection> and <PrototypeParsingType.EndOfPrototypeSection>.
+		 * Neither of these token types are required to appear, and if they do not the entire prototype will be in one section.  Also, they are 
+		 * not required to appear together.  Sections can be delimited by only start tokens or only end tokens, whichever is most convenient 
+		 * to the language parser and won't interfere with marking other types.
+		 * 
+		 * Each section containing <PrototypeParsingType.StartOfParams> will generate a <ParameterSection>.  All others will generate a
+		 * regular <Section>.
 		 */
-		protected int CountSections (SectionType type)
+		public void RecalculateSections ()
 			{
 			if (sections == null)
-				{  CalculateSections();  }
+				{  sections = new List<Section>(1);  }
+			else
+				{  sections.Clear();  }
 
-			int count = 0;
+			TokenIterator startOfSection = tokenizer.FirstToken;
+			TokenIterator endOfSection = startOfSection;
 
-			foreach (Section section in sections)
+			int firstSectionWithName = -1;
+			int firstSectionWithParams = -1;
+
+			for (;;)
 				{
-				if (section.Type == type)
-					{  count++;  }
+
+				// Find the section bounds
+
+				bool sectionIsEmpty = true;
+				bool sectionHasName = false;
+				bool sectionHasParams = false;
+
+				while (endOfSection.IsInBounds)
+					{
+					// Break if we hit the beginning of the next section, but not if it's the start of the current section
+					if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfPrototypeSection &&
+						endOfSection > startOfSection)
+						{  break;  }
+
+					if (endOfSection.FundamentalType != FundamentalType.Whitespace)
+						{  sectionIsEmpty = false; }
+
+					if (endOfSection.PrototypeParsingType == PrototypeParsingType.Name)
+						{  sectionHasName = true;  }
+					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.StartOfParams)
+						{  sectionHasParams = true;  }
+					else if (endOfSection.PrototypeParsingType == PrototypeParsingType.EndOfPrototypeSection)
+						{
+						endOfSection.Next();
+						break;
+						}
+
+					endOfSection.Next();
+					}
+
+
+				// Process the section
+
+				if (!sectionIsEmpty)
+					{
+					endOfSection.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, startOfSection);
+					startOfSection.NextPastWhitespace(endOfSection);
+
+					if (sectionHasParams)
+						{  sections.Add( new ParameterSection(startOfSection, endOfSection) );  }
+					else
+						{  sections.Add( new Section(startOfSection, endOfSection) );  }
+
+					if (sectionHasName && firstSectionWithName == -1)
+						{  firstSectionWithName = sections.Count - 1;  }
+					if (sectionHasParams && firstSectionWithParams == -1)
+						{  firstSectionWithParams = sections.Count - 1;  }
+					}
+
+
+				// Continue?
+
+				if (endOfSection.IsInBounds)
+					{  startOfSection = endOfSection;  }
+				else
+					{  break;  }
 				}
 
-			return count;
+
+			// Sanity check.  This should only happen if all the sections were whitespace, which shouldn't normally happen but I
+			// suppose could with a manual prototype.
+
+			if (sections.Count < 1)
+				{  sections.Add( new Section(tokenizer.FirstToken, tokenizer.LastToken) );  }
+
+
+			// Determine main section
+
+			if (sections.Count == 1)
+				{  mainSectionIndex = 0;  }
+			else if (firstSectionWithName != -1)
+				{  mainSectionIndex = firstSectionWithName;  }
+			else if (firstSectionWithParams != -1)
+				{  mainSectionIndex = firstSectionWithParams;  }
+			else
+				{  mainSectionIndex = 0;  }
 			}
 
 
@@ -878,14 +347,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
-		/* Property: NumberOfPrePrototypeLines
+		/* Property: Sections
+		 * The list of <Sections> making up the prototype.
 		 */
-		public int NumberOfPrePrototypeLines
+		public List<Section> Sections
 			{
 			get
-				{  
-				return CountSections(SectionType.PrePrototypeLine);
-				}
+				{  return sections;  }
 			}
 
 
@@ -895,18 +363,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			get
 				{  
-				return CountSections(SectionType.Parameter);
-				}
-			}
-
-
-		/* Property: NumberOfPostPrototypeLines
-		 */
-		public int NumberOfPostPrototypeLines
-			{
-			get
-				{  
-				return CountSections(SectionType.PostPrototypeLine);
+				if (sections[mainSectionIndex] is ParameterSection)
+					{  return (sections[mainSectionIndex] as ParameterSection).NumberOfParameters;  }
+				else
+					{  return 0;  }
 				}
 			}
 
@@ -920,55 +380,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			get
 				{
-				if (style != null)
-					{  return (ParameterStyle)style;  }
-
-				int numberOfParameters = NumberOfParameters;
-
-				for (int i = 0; i < numberOfParameters; i++)
-					{
-					bool foundName = false;
-					bool foundType = false;
-					bool foundSeparator = false;
-
-					TokenIterator start, end;
-					GetParameter(i, out start, out end);
-
-					while (start < end)
-						{
-						PrototypeParsingType type = start.PrototypeParsingType;
-
-						if (type == PrototypeParsingType.Name)
-							{
-							if (foundType)
-								{  
-								style = ParameterStyle.C;
-								return ParameterStyle.C;
-								}
-							else
-								{  foundName = true;  }
-							}
-						else if (type == PrototypeParsingType.Type)
-							{
-							if (foundName && foundSeparator)
-								{  
-								style = ParameterStyle.Pascal;
-								return ParameterStyle.Pascal;
-								}
-							else
-								{  foundType = true;  }
-							}
-						else if (type == PrototypeParsingType.NameTypeSeparator)
-							{
-							foundSeparator = true;
-							}
-
-						start.Next();
-						}
-					}
-					
-				style = ParameterStyle.C;
-				return ParameterStyle.C;
+				if (sections[mainSectionIndex] is ParameterSection)
+					{  return (sections[mainSectionIndex] as ParameterSection).ParameterStyle;  }
+				else
+					{  return ParameterStyle.C;  }
 				}
 			}
 
@@ -987,30 +402,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected List<Section> sections;
 
-		/* var: style
-		 * The prototype format, or null if it hasn't been determined yet.
+		/* var: mainSectionIndex
+		 * An index into <sections> representing the main one used for retrieving properties like name, access level,
+		 * and parameters.
 		 */
-		protected ParameterStyle? style;
+		protected int mainSectionIndex;
 
-
-
-		/* ___________________________________________________________________________
-		 * 
-		 * Class: CodeClear.NaturalDocs.Engine.Prototypes.ParsedPrototype.Section
-		 * ___________________________________________________________________________
-		 */
-		protected class Section
-			{
-			public Section ()
-				{
-				StartIndex = 0;
-				EndIndex = 0;
-				Type = SectionType.BeforeParameters;
-				}
-			
-			public int StartIndex;
-			public int EndIndex;
-			public SectionType Type;
-			}
 		}
 	}

@@ -79,56 +79,51 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * 
 	 * Null - Returned when the token is out of bounds or one of these values hasn't been assigned to it yet.
 	 * 
-	 * StartOfPrePrototypeLine - The first token of a new pre-prototype line.  Each token marked with this starts a new line.
-	 * PrePrototypeLine - Part of a line that should be shown before the prototype.
+	 * StartOfPrototypeSection - The first token of a new prototype section.  It is possible for these to appear without
+	 *										 corresponding <EndOfPrototypeSections>.
+	 * EndOfPrototypeSection - The last token of a prototype section, causing the next token to start a new one.  It is possible
+	 *										for these to appear without corresponding <StartOfPrototypeSections>.
 	 * 
 	 * StartOfParams - The start of a parameter list, such as an opening parenthesis.
 	 * EndOfParams - The end of a parameter list, such as a closing parenthesis.
 	 * ParamSeparator - A separator between parameters, such as a comma.
 	 * 
+	 * Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
 	 * TypeModifier - A separate word modifying a type, such as "const" in "const int".
 	 * TypeQualifier - Everything prior to the ending word in a qualified type, such as "PkgA.PkgB." in "PkgA.PkgB.Class".
-	 * Type - The type excluding all modifiers and qualifiers, such as "int" in "unsigned int" or "Class" in "PkgA.PkgB.Class".
-	 * OpeningTypeSuffix - An opening symbol after a type, such as "[" in "int[]" or "<" in "List<int>".
-	 * ClosingTypeSuffix - A closing symbol after a type, such as "]" in "int[]" or ">" in "List<int>".
-	 * TypeSuffix - A neutral symbol after a type, such as "^" in "integer^".
+	 * OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".
+	 * ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".
 	 * 
-	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such
-	 *												 as ":" in "x: int".  In languages that simply use a space this type won't appear.
-	 *							
-	 * NameModifier_PartOfType - Any modifiers appearing before a name, such as "const" in "const x: integer", that are actually
-	 *										   part of its type.
-	 * NamePrefix_PartOfType - Any symbols appearing before a name, such as "*" in "int *x" or "$" in "$x", that are actually
-	 *										part of its type.  It doesn't matter if it's textually attached to the type ("int* x") because that
-	 *										still means the same thing ("int *x") in C++.
+	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such as ":" in
+	 *									"x: int".  In languages that simply use a space this type won't appear.
+	 *
 	 * Name - The name of the parameter or the code element being defined by the prototype.
-	 * NameSuffix_PartOfType - Any symbols appearing after a name, such as "[]" in "int x[]", that are actually part of its type.  
-	 *										Unlike with types, we don't have to distinguish between opening and closing symbols to search
-	 *										for nested types.
+	 * 
+	 * ParamModifier - Any parameter modifiers.  These usually appear with the name but are part of the type, and aren't
+	 *						   shared with other parameters inheriting the type, such as "*" in "int *x" in C++.
+	 * OpeningParamModifier - An opening symbol modifying a parameter.  These usually appear with the name but are part
+	 *									  of the type, such as "[" in "int x[5]".
+	 * ClosingParamModifier - A closing symbol modifying a parameter.  These usually appear with the name but are part of
+	 *									 the type, such as "]" in "int x[5]".
 	 *														
 	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
 	 * DefaultValue - The default value of the parameter.
-	 * 
-	 * StartOfPostPrototypeLine - The first token of a new post-prototype line.  Each token marked with this starts a new line.
-	 * PostPrototypeLine - Part of a line that should be shown after the prototype.
 	 */
 	public enum PrototypeParsingType :  byte
 		{
 		Null = 0,
 
-		StartOfPrePrototypeLine, PrePrototypeLine,
+		StartOfPrototypeSection, EndOfPrototypeSection,
 
 		StartOfParams, EndOfParams, ParamSeparator,
 
-		TypeModifier, TypeQualifier, Type, OpeningTypeSuffix, ClosingTypeSuffix, TypeSuffix,
+		Type, TypeModifier, TypeQualifier, OpeningTypeModifier, ClosingTypeModifier,
 
 		NameTypeSeparator, 
 		
-		NameModifier_PartOfType, NamePrefix_PartOfType, Name, NameSuffix_PartOfType,
+		Name, ParamModifier, OpeningParamModifier, ClosingParamModifier,
 
-		DefaultValueSeparator, DefaultValue,
-
-		StartOfPostPrototypeLine, PostPrototypeLine
+		DefaultValueSeparator, DefaultValue
 		}
 
 
