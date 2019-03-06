@@ -734,7 +734,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
 			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
-				{  htmlOutput.EntityEncodeAndAppend(parsedPrototype.Tokenizer.TextBetween(start, end));  }
+				{  htmlOutput.EntityEncodeAndAppend(start.TextBetween(end));  }
 			else if (addLinks)
 				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, htmlOutput);  }
 			else

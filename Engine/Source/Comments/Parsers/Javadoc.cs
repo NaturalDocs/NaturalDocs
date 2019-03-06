@@ -415,7 +415,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				return false;
 				}
 
-			entryText = iterator.Tokenizer.TextBetween(iterator, lookahead);
+			entryText = iterator.TextBetween(lookahead);
 			iterator = lookahead;
 			return true;
 			}

@@ -1049,7 +1049,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public bool IsBuiltInType (TokenIterator start, TokenIterator end)
 			{
-			return IsBuiltInType( start.Tokenizer.TextBetween(start, end) );
+			return IsBuiltInType( start.TextBetween(end) );
 			}
 
 
@@ -1459,7 +1459,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
 					{
 					string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
-					string prototypeString = start.Tokenizer.TextBetween(start, iterator);
+					string prototypeString = start.TextBetween(iterator);
 					string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
 
 					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) == -1)
@@ -1469,7 +1469,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// If ".prototype." is in the string, make another attempt to see if we can match with it removed.
 				else if (start.Tokenizer.ContainsTextBetween(".prototype.", true, start, iterator))
 					{
-					string prototypeString = start.Tokenizer.TextBetween(start, iterator);
+					string prototypeString = start.TextBetween(iterator);
 					int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
 
 					// We want to keep the trailing period so String.prototype.Function becomes String.Function.
@@ -3214,7 +3214,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					TokenIterator start, end;
 					parsedClassPrototype.GetParentName(i, out start, out end);
 
-					link.Symbol = SymbolString.FromPlainText_NoParameters( start.Tokenizer.TextBetween(start, end) );
+					link.Symbol = SymbolString.FromPlainText_NoParameters( start.TextBetween(end) );
 					link.Context = topic.PrototypeContext;
 					link.FileID = topic.FileID;
 					link.ClassString = topic.ClassString;

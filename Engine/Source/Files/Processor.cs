@@ -781,7 +781,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 						// ignore LinkID
 						link.Type = LinkType.Type;
-						link.Symbol = SymbolString.FromPlainText_NoParameters( symbolStart.Tokenizer.TextBetween(symbolStart, symbolEnd) );
+						link.Symbol = SymbolString.FromPlainText_NoParameters( symbolStart.TextBetween(symbolEnd) );
 						link.Context = topic.PrototypeContext;
 						// ignore contextID
 						link.FileID = topic.FileID;

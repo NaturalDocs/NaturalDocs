@@ -443,7 +443,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 				if (end > start)
-					{  return tokenIterator.Tokenizer.TextBetween(start, end);  }
+					{  return start.TextBetween(end);  }
 				else
 					{  return null;  }
 				}

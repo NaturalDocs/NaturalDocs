@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							break;
 						}
 
-					output.EntityEncodeAndAppend(iterator.Tokenizer.TextBetween(startStretch, endStretch));
+					output.EntityEncodeAndAppend(startStretch.TextBetween(endStretch));
 
 					if (stretchType != SyntaxHighlightingType.Null)
 						{  output.Append("</span>");  }
@@ -289,7 +289,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 						Link linkStub = new Link();
 						linkStub.Type = LinkType.Type;
-						linkStub.Symbol = SymbolString.FromPlainText_NoParameters( symbolStart.Tokenizer.TextBetween(symbolStart, symbolEnd) );
+						linkStub.Symbol = SymbolString.FromPlainText_NoParameters( symbolStart.TextBetween(symbolEnd) );
 						linkStub.Context = topic.PrototypeContext;
 						linkStub.ContextID = topic.PrototypeContextID;
 						linkStub.FileID = topic.FileID;

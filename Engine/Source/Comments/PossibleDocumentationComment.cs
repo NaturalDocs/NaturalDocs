@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 				Tokenization.TokenIterator firstToken = start.FirstToken(Tokenization.LineBoundsMode.Everything);
 				Tokenization.TokenIterator endToken = end.FirstToken(Tokenization.LineBoundsMode.Everything);
 
-				return firstToken.Tokenizer.TextBetween(firstToken, endToken);
+				return firstToken.TextBetween(endToken);
 				}
 			}
 			

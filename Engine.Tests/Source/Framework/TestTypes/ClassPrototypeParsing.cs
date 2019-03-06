@@ -58,21 +58,21 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						parsedPrototype.GetPrePrototypeLine(i, out start, out end);
 						output.Append("  - Pre-Prototype Line: ");
-						parsedPrototype.Tokenizer.AppendTextBetweenTo(start, end, output);
+						start.AppendTextBetweenTo(end, output);
 						output.AppendLine();
 						}
 
 					if (parsedPrototype.GetName(out start, out end))
-						{  output.AppendLine("  - Name: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+						{  output.AppendLine("  - Name: " + start.TextBetween(end));  }
 					else
 						{  output.AppendLine("  - Name: (none)");  }
 
 					if (parsedPrototype.GetTemplateSuffix(out start, out end))
-						{  output.AppendLine("  - Template Suffix: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+						{  output.AppendLine("  - Template Suffix: " + start.TextBetween(end));  }
 					if (parsedPrototype.GetKeyword(out start, out end))
-						{  output.AppendLine("  - Keyword: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+						{  output.AppendLine("  - Keyword: " + start.TextBetween(end));  }
 					if (parsedPrototype.GetModifiers(out start, out end))
-						{  output.AppendLine("  - Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+						{  output.AppendLine("  - Modifiers: " + start.TextBetween(end));  }
 					output.AppendLine("  - Access Level: " + parsedPrototype.GetAccessLevel());
 
 					numberOfLines = parsedPrototype.NumberOfPostPrototypeLines;
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						parsedPrototype.GetPostPrototypeLine(i, out start, out end);
 						output.Append("  - Post-Prototype Line: ");
-						parsedPrototype.Tokenizer.AppendTextBetweenTo(start, end, output);
+						start.AppendTextBetweenTo(end, output);
 						output.AppendLine();
 						}
 
@@ -98,17 +98,17 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							output.AppendLine();
 
 							parsedPrototype.GetParent(i, out start, out end);
-							output.AppendLine("  - Parent " + (i + 1) + ": " + parsedPrototype.Tokenizer.TextBetween(start, end));
+							output.AppendLine("  - Parent " + (i + 1) + ": " + start.TextBetween(end));
 
 							if (parsedPrototype.GetParentName(i, out start, out end))
-								{  output.AppendLine("    - Name: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Name: " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Name: (none)");  }
 
 							if (parsedPrototype.GetParentTemplateSuffix(i, out start, out end))
-								{  output.AppendLine("    - Template Suffix: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Template Suffix: " + start.TextBetween(end));  }
 							if (parsedPrototype.GetParentModifiers(i, out start, out end))
-								{  output.AppendLine("    - Modifiers: " + parsedPrototype.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Modifiers: " + start.TextBetween(end));  }
 							}
 						}
 					}

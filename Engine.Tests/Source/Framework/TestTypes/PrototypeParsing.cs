@@ -55,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 						TokenIterator start, end;
 						section.GetBeforeParameters(out start, out end);
-						output.AppendLine("  - Before Parameters: " + start.Tokenizer.TextBetween(start, end));
+						output.AppendLine("  - Before Parameters: " + start.TextBetween(end));
 						output.AppendLine("    - Access Level: " + section.GetAccessLevel());
 						output.Append("    - Link Candidates: ");
 						AppendLinkCandidates(start, end, output);  output.AppendLine();
@@ -65,10 +65,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							output.AppendLine();
 
 							section.GetParameterBounds(paramIndex, out start, out end);
-							output.AppendLine("  - Parameter " + (paramIndex + 1) + ": " + start.Tokenizer.TextBetween(start, end));
+							output.AppendLine("  - Parameter " + (paramIndex + 1) + ": " + start.TextBetween(end));
 
 							if (section.GetParameterName(paramIndex, out start, out end))
-								{  output.AppendLine("    - Name: " + start.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Name: " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Name: (not detected)");  }
 
@@ -94,9 +94,9 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{  output.AppendLine("    - Full Type: (not detected)");  }
 
 							if (section.GetBaseParameterType(paramIndex, out start, out end, false))
-								{  output.AppendLine("    - Base Type: " + start.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Base Type: " + start.TextBetween(end));  }
 							else if (section.GetBaseParameterType(paramIndex, out start, out end, true))
-								{  output.AppendLine("    - Base Type (implied): " + section.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Base Type (implied): " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Base Type: (not detected)");  }
 
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							AppendLinkCandidates(start, end, output);  output.AppendLine();
 
 							if (section.GetParameterDefaultValue(paramIndex, out start, out end))
-								{  output.AppendLine("    - Default Value: " + start.Tokenizer.TextBetween(start, end));  }
+								{  output.AppendLine("    - Default Value: " + start.TextBetween(end));  }
 							else
 								{  output.AppendLine("    - Default Value: (not detected)");  }
 							}
@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						if (section.GetAfterParameters(out start, out end))
 							{
 							output.AppendLine();
-							output.AppendLine("  - After Parameters: " + start.Tokenizer.TextBetween(start, end));
+							output.AppendLine("  - After Parameters: " + start.TextBetween(end));
 							output.Append("    - Link Candidates: ");
 							AppendLinkCandidates(start, end, output);  output.AppendLine();
 							}
@@ -123,7 +123,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						{
 						Prototypes.Section section = parsedPrototype.Sections[sectionIndex];
 
-						output.AppendLine("- Plain Section: " + section.Tokenizer.TextBetween(section.Start, section.End));
+						output.AppendLine("- Plain Section: " + section.Start.TextBetween(section.End));
 						output.AppendLine("  - Access Level: " + section.GetAccessLevel());
 						output.Append("  - Link Candidates: ");
 						AppendLinkCandidates(section.Start, section.End, output);  output.AppendLine();
@@ -160,7 +160,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				if (linkableTypes > 0)
 					{  output.Append(", ");  }
 
-				start.Tokenizer.AppendTextBetweenTo(linkableTypeStart, iterator, output);
+				linkableTypeStart.AppendTextBetweenTo(iterator, output);
 				linkableTypes++;
 				}
 

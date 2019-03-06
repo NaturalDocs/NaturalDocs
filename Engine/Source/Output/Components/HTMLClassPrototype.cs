@@ -199,7 +199,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			for (int i = 0; i < prototypeParentCount; i++)
 				{
 				topic.ParsedClassPrototype.GetParentName(i, out start, out end);
-				string parentName = start.Tokenizer.TextBetween(start, end);
+				string parentName = start.TextBetween(end);
 
 				Parent parent = new Parent();
 				parent.prototypeIndex = i;
@@ -347,7 +347,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						{
 						// Include a zero-width space for wrapping
 						htmlOutput.Append("&#8203;<span class=\"TemplateSignature\">");
-						htmlOutput.EntityEncodeAndAppend( start.Tokenizer.TextBetween(start, end) );
+						htmlOutput.EntityEncodeAndAppend( start.TextBetween(end) );
 						htmlOutput.Append("</span>");
 						}
 
@@ -472,7 +472,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{
 				// Include a zero-width space for wrapping
 				htmlOutput.Append("&#8203;<span class=\"TemplateSignature\">");
-				htmlOutput.EntityEncodeAndAppend( startTemplate.Tokenizer.TextBetween(startTemplate, endTemplate) );
+				htmlOutput.EntityEncodeAndAppend( startTemplate.TextBetween(endTemplate) );
 				htmlOutput.Append("</span>");
 				}
 

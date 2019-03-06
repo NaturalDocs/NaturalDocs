@@ -951,7 +951,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				
 			lastToken.Next();
 				
-			string betweenParens = lineIterator.Tokenizer.TextBetween(firstToken, lastToken);
+			string betweenParens = firstToken.TextBetween(lastToken);
 																											
 			if (betweenParens.IndexOfAny(ParenthesesChars) != -1)
 				{
@@ -1016,7 +1016,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				return false;
 				}
 								
-			content = firstToken.Tokenizer.TextBetween(firstToken, lastToken).CondenseWhitespace();																										
+			content = firstToken.TextBetween(lastToken).CondenseWhitespace();																										
 			return true;
 			}
 			
@@ -1325,7 +1325,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{  return false;  }
 
 
-			heading = lineIterator.Tokenizer.TextBetween(start, end);
+			heading = start.TextBetween(end);
 
 			if (tables[(int)TableIndex.SpecialHeadings].ContainsKey(heading))
 				{  headingType = (HeadingType)tables[(int)TableIndex.SpecialHeadings][heading];  }
@@ -1664,7 +1664,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				return false;
 				}
 				
-			content = lineIterator.Tokenizer.TextBetween(start, end);
+			content = start.TextBetween(end);
 			indent = lineIterator.Indent(LineBoundsMode.CommentContent);
 			return true;
 			}
@@ -1726,8 +1726,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				return false;
 				}
 				
-			leftSide = lineIterator.Tokenizer.TextBetween(start, endOfLeftSide);
-			rightSide = lineIterator.Tokenizer.TextBetween(startOfRightSide, end);
+			leftSide = start.TextBetween(endOfLeftSide);
+			rightSide = startOfRightSide.TextBetween(end);
 			indent = lineIterator.Indent(LineBoundsMode.CommentContent);
 			return true;
 			}
