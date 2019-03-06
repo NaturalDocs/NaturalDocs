@@ -139,27 +139,23 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
 		 * one continuous string.
 		 * 
-		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return that <Tokenizer> and
-		 * <TokenIterators> based on it.
-		 * 
-		 * If the type and all its modifiers and qualifiers are not continuous it will create a separate <Tokenizer> to hold a continuous
-		 * version of it.  It will return that <Tokenizer> and the bounds will be <TokenIterators> based on it rather than on the original 
-		 * <Tokenizer>.  The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of 
-		 * the original.
+		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
+		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold 
+		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
+		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 * 
 		 * If implied types is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
 		public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
-														  out Tokenizer fullTypeTokenizer, bool impliedTypes = true)
+															bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{  
 				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, 
-																																	out fullTypeTokenizer, impliedTypes);
+																																	   impliedTypes);
 				}
 			else
 				{
-				fullTypeTokenizer = tokenizer;
 				fullTypeStart = tokenizer.LastToken;
 				fullTypeEnd = tokenizer.LastToken;
 				return false;

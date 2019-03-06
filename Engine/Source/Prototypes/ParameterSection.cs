@@ -296,25 +296,21 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
 		 * one continuous string.
 		 * 
-		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return that <Tokenizer> and
-		 * <TokenIterators> based on it.
-		 * 
-		 * If the type and all its modifiers and qualifiers are not continuous it will create a separate <Tokenizer> to hold a continuous
-		 * version of it.  It will return that <Tokenizer> and the bounds will be <TokenIterators> based on it rather than on the original 
-		 * <Tokenizer>.  The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of 
-		 * the original.
+		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
+		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold 
+		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
+		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 * 
 		 * If implied types is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
 		 */
-		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, out Tokenizer fullTypeTokenizer,
-														  bool impliedTypes = true)
+		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool impliedTypes = true)
 			{
 			if (parameters != null && index >= 0 && index < parameters.Count)
 				{
 				// If the parameter has its own type, we can use the existing Build function.
 
 				if (parameters[index].HasType)
-					{  return parameters[index].BuildFullType(out fullTypeStart, out fullTypeEnd, out fullTypeTokenizer);  }
+					{  return parameters[index].BuildFullType(out fullTypeStart, out fullTypeEnd);  }
 
 
 				// If not, build one from the closest parameter that defines one.
@@ -442,7 +438,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							}
 						}
 
-					fullTypeTokenizer = typeBuilder.ToTokenizer();
+					Tokenizer fullTypeTokenizer = typeBuilder.ToTokenizer();
 					fullTypeStart = fullTypeTokenizer.FirstToken;
 					fullTypeEnd = fullTypeTokenizer.LastToken;
 					return true;
@@ -450,7 +446,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 
 			// Couldn't find one or parameters were invalid
-			fullTypeTokenizer = end.Tokenizer;
 			fullTypeStart = end;
 			fullTypeEnd = end;
 			return false;
@@ -592,9 +587,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Function: BuildFullType
 		 * This function isn't relevant to this section and will always return false.  Call on one of the individual parameters instead.
 		 */
-		override public bool BuildFullType (out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, out Tokenizer fullTypeTokenizer)
+		override public bool BuildFullType (out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
 			{
-			fullTypeTokenizer = end.Tokenizer;
 			fullTypeStart = end;
 			fullTypeEnd = end;
 			return false;

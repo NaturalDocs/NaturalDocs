@@ -150,15 +150,12 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the full type if one is marked by <PrototypeParsingType.Type> tokens, combining all its modifiers and qualifiers into
 		 * one continuous string.
 		 * 
-		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return that <Tokenizer> and
-		 * <TokenIterators> based on it.
-		 * 
-		 * If the type and all its modifiers and qualifiers are not continuous it will create a separate <Tokenizer> to hold a continuous
-		 * version of it.  It will return that <Tokenizer> and the bounds will be <TokenIterators> based on it rather than on the original 
-		 * <Tokenizer>.  The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of 
-		 * the original.
+		 * If the type and all its modifiers and qualifiers are continuous in the original <Tokenizer> it will return <TokenIterators> based
+		 * on it.  However, if the type and all its modifiers and qualifiers are NOT continuous it will create a separate <Tokenizer> to hold 
+		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
+		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 */
-		virtual public bool BuildFullType (out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, out Tokenizer fullTypeTokenizer)
+		virtual public bool BuildFullType (out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd)
 			{
 
 			// Find the first type token
@@ -253,7 +250,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (!foundType)
 				{
-				fullTypeTokenizer = start.Tokenizer;
 				fullTypeStart = end;
 				fullTypeEnd = end;
 				return false;
@@ -273,7 +269,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			if (continuous && acceptableSpacing)
 				{  
-				fullTypeTokenizer = start.Tokenizer;
 				// fullTypeStart is already set
 				// fullTypeEnd is already set
 
@@ -281,11 +276,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// Test that this returns the same thing BuildFullType() would have.
 				Tokenizer tempTokenizer = BuildFullType();
 
-				if (fullTypeEnd.RawTextIndex - fullTypeStart.RawTextIndex != tempTokenizer.RawText.Length ||
-					!fullTypeStart.MatchesAcrossTokens(tempTokenizer.RawText))
+				if (fullTypeStart.TextBetween(fullTypeEnd) != tempTokenizer.RawText)
 					{
-					throw new Exception("Continuous and built types don't match: \"" + 
-													fullTypeTokenizer.RawText.Substring(fullTypeStart.RawTextIndex, fullTypeEnd.RawTextIndex - fullTypeStart.RawTextIndex) +
+					throw new Exception("Continuous and built types don't match: \"" + fullTypeStart.TextBetween(fullTypeEnd) +
 													"\", \"" + tempTokenizer.RawText + "\"");
 					}
 				#endif
@@ -294,15 +287,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				}
 			else
 				{
-				fullTypeTokenizer = BuildFullType();
+				Tokenizer fullTypeTokenizer = BuildFullType();
 
 				#if DEBUG
 				// Test that the call to BuildFullType() was necessary and not a quirk in our spacing detection logic.
 				// fullTypeStart and fullTypeEnd are still set to the original tokenizer.
 
 				if (continuous && !acceptableSpacing &&
-					fullTypeEnd.RawTextIndex - fullTypeStart.RawTextIndex == fullTypeTokenizer.RawText.Length &&
-					fullTypeStart.MatchesAcrossTokens(fullTypeTokenizer.RawText))
+					fullTypeStart.TextBetween(fullTypeEnd) == fullTypeTokenizer.RawText)
 					{
 					throw new Exception("Built type matches continuous, building was unnecessary: \"" + fullTypeTokenizer.RawText + "\"");
 					}

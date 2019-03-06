@@ -451,7 +451,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							if (parameterListSymbol != null && topic.Prototype != null)
 								{
 								TokenIterator start, end;
-								Tokenizer tokenizer;
 								int matchedParameter = -1;
 
 								for (int i = 0; i < topic.ParsedPrototype.NumberOfParameters; i++)	
@@ -468,7 +467,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 								// If so, include the type under the entry in the HTML
 								if (matchedParameter != -1)
 									{
-									topic.ParsedPrototype.BuildFullParameterType(matchedParameter, out start, out end, out tokenizer);
+									topic.ParsedPrototype.BuildFullParameterType(matchedParameter, out start, out end);
 
 									if (start < end && 
 										// Don't include single symbol types

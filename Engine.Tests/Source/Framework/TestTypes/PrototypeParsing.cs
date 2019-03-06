@@ -73,13 +73,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 								{  output.AppendLine("    - Name: (not detected)");  }
 
 							string fullType = null;
-							Tokenizer tokenizer;
-							if (section.BuildFullParameterType(paramIndex, out start, out end, out tokenizer, false))
-								{  fullType = tokenizer.TextBetween(start, end);  }
+							if (section.BuildFullParameterType(paramIndex, out start, out end, false))
+								{  fullType = start.TextBetween(end);  }
 
 							string impliedType = null;
-							if (section.BuildFullParameterType(paramIndex, out start, out end, out tokenizer, true))
-								{  impliedType = tokenizer.TextBetween(start, end);  }
+							if (section.BuildFullParameterType(paramIndex, out start, out end, true))
+								{  impliedType = start.TextBetween(end);  }
 
 							if (fullType != null)
 								{  output.AppendLine("    - Full Type: " + fullType);  }
