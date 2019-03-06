@@ -495,6 +495,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: TextBetween
+		 * Returns the text between the two passed iterators.  If you plan to add it to a StringBuilder, it is more efficient to call
+		 * <AppendTextBetweenTo()> instead because that won't require the creation of an intermediate string.
+		 */
+		public string TextBetween (TokenIterator end)
+			{
+			return Tokenizer.TextBetween(this, end);
+			}
+
+
 		/* Function: AppendTokenTo
 		 * Appends the token to the passed StringBuilder.  This is more efficient than appending the result of <String>
 		 * because it copies directly from the source without creating an intermediate string.
@@ -507,6 +517,17 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  output.Append(tokenizer.RawText[rawTextIndex]);  }
 			else if (length > 1)
 				{  output.Append(tokenizer.RawText, rawTextIndex, length);  }
+			}
+			
+			
+		/* Function: AppendTextBetweenTo
+		 * Appends the text between the two passed iterators to the passed StringBuilder.  This is more effecient than appending
+		 * the result from <TextBetween()> because it transfers directly from the raw text to the StringBuilder without creating 
+		 * an intermediate string.
+		 */
+		public void AppendTextBetweenTo (TokenIterator end, System.Text.StringBuilder output)
+			{
+			Tokenizer.AppendTextBetweenTo(this, end, output);
 			}
 			
 			
