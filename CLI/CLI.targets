@@ -91,10 +91,10 @@
 
 			<MakeDir Directories="$(TargetDir)Translations" />
 			<ItemGroup>
-                            <NDEngineResTrn Include="$(NaturalDocsSourceDir)Engine\Resources\Translations\**\*.*" />
+                            <NDCLIResTrn Include="$(NaturalDocsSourceDir)CLI\Resources\Translations\**\*.*" />
                         </ItemGroup>
 			<Copy
-                                SourceFiles="@(NDEngineResTrn)"
+                                SourceFiles="@(NDCLIResTrn)"
                                 DestinationFolder="$(TargetDir)Translations"
                                 />
 		</Target>
