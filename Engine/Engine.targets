@@ -250,8 +250,10 @@
 		<Target Name="Engine_CopyConfigResources">
 
 			<MakeDir Directories="$(TargetDir)Config" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Config" "$(TargetDir)Config" /Y' />
-
+			<Copy
+                                SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Config"
+                                DestinationFolder="$(TargetDir)Config"
+                                />
 		</Target>
 	
 	
@@ -271,7 +273,10 @@
 		<Target Name="Engine_CopyStyleResources">
 
 			<MakeDir Directories="$(TargetDir)Styles" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Styles" "$(TargetDir)Styles" /S /Y' />
+			<Copy
+                                SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Styles"
+                                DestinationFolder="$(TargetDir)Styles"
+                                />
 
 		</Target>
 	
@@ -292,8 +297,10 @@
 		<Target Name="Engine_CopyTranslationResources">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Translations" "$(TargetDir)Translations" /Y' />
-
+			<Copy
+                                SourceFiles="$(NaturalDocsSourceDir)Engine\Resources\Translations"
+                                DestinationFolder="$(TargetDir)Translations"
+                                />
 		</Target>
 	
 	
