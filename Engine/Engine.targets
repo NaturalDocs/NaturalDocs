@@ -250,8 +250,13 @@
 		<Target Name="Engine_CopyConfigResources">
 
 			<MakeDir Directories="$(TargetDir)Config" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Config" "$(TargetDir)Config" /Y' />
-
+			<ItemGroup>
+                            <NDEngineResCfg Include="$(NaturalDocsSourceDir)Engine\Resources\Config\**\*.*" />
+                        </ItemGroup>
+			<Copy
+                                SourceFiles="@(NDEngineResCfg)"
+                                DestinationFolder="$(TargetDir)Config"
+                                />
 		</Target>
 	
 	
@@ -271,7 +276,13 @@
 		<Target Name="Engine_CopyStyleResources">
 
 			<MakeDir Directories="$(TargetDir)Styles" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Styles" "$(TargetDir)Styles" /S /Y' />
+			<ItemGroup>
+                            <NDEngineResSty Include="$(NaturalDocsSourceDir)Engine\Resources\Styles\**\*.*" />
+                        </ItemGroup>
+			<Copy
+                                SourceFiles="@(NDEngineResSty)"
+                                DestinationFolder="$(TargetDir)Styles"
+                                />
 
 		</Target>
 	
@@ -292,8 +303,13 @@
 		<Target Name="Engine_CopyTranslationResources">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)Engine\Resources\Translations" "$(TargetDir)Translations" /Y' />
-
+			<ItemGroup>
+                            <NDEngineResTrn Include="$(NaturalDocsSourceDir)Engine\Resources\Translations\**\*.*" />
+                        </ItemGroup>
+			<Copy
+                                SourceFiles="@(NDEngineResTrn)"
+                                DestinationFolder="$(TargetDir)Translations"
+                                />
 		</Target>
 	
 	

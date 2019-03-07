@@ -3,11 +3,19 @@ mono:
   - latest
 install:
   - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
+before_script:
+  - mkdir $TRAVIS_BUILD_DIR/docs
+  - mkdir $TRAVIS_BUILD_DIR/.ND_Config
+  - cp .nd_project.txt $TRAVIS_BUILD_DIR/.ND_Config/Project.txt
 script:
-  - echo '#!/bin/bash' > ./xcopy
-  - echo 'cp -r $1 $2' >> ./xcopy
-  - sudo chmod 777 ./xcopy
-  - sudo mv ./xcopy /bin
   - msbuild /p:Configuration=Release CLI/CLI.csproj
-  - msbuild /p:Configuration=Release Engine.Tests.Runner/Engine.Tests.Runner.csproj
-  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests.Runner/Resources/NUnit/nunit-console-runner.dll
+  - msbuild /p:Configuration=Release Engine.Tests/Engine.Tests.csproj
+  - mono ./testrunner/NUnit.ConsoleRunner.3.9.0/tools/nunit3-console.exe ./Engine.Tests/bin/Release/NaturalDocs.Engine.Tests.dll
+  - mono CLI/bin/Release/NaturalDocs.exe $TRAVIS_BUILD_DIR/.ND_Config
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: $TRAVIS_BUILD_DIR/docs
+  github_token: $GH_REPO_TOKEN
+    on:
+      branch: master

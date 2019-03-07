@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/Beakerboy/NaturalDocs.svg?branch=master)](https://travis-ci.org/Beakerboy/NaturalDocs)
+[![Build status](https://ci.appveyor.com/api/projects/status/pm53j27386wap25d/branch/master?svg=true)](https://ci.appveyor.com/project/Beakerboy/naturaldocs/branch/master)
+[![codecov](https://codecov.io/gh/Beakerboy/NaturalDocs/branch/master/graph/badge.svg)](https://codecov.io/gh/Beakerboy/NaturalDocs)
 
 # Natural Docs
 

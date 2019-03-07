@@ -1,0 +1,17 @@
+version: 0.0.{build}
+image: 
+  - Visual Studio 2017
+environment:
+  matrix:
+    - NaturalDocsProj: Engine.Tests/Engine.Tests.csproj
+    - NaturalDocsProj: CLI/CLI.csproj
+before_build:
+  - nuget restore Engine.Tests/Engine.Tests.csproj
+  - choco install opencover.portable
+  - choco install codecov
+build:
+  project: $(NaturalDocsProj)
+  verbosity: minimal
+test_script:
+  - OpenCover.Console.exe -register:user -target:"nunit-console-x86.exe" -targetargs:".\Engine.Tests\bin\Debug\NaturalDocs.Engine.Tests.dll" -output:".\MyProject_coverage.xml"
+  - codecov -f "MyProject_coverage.xml
