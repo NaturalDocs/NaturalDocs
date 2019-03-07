@@ -1,12 +1,12 @@
 version: 0.0.{build}
-	image: 
-	  - Visual Studio 2017
-	environment:
-	  matrix:
-	    - NaturalDocsProj: Engine.Tests/Engine.Tests.csproj
-	    - NaturalDocsProj: CLI/CLI.csproj
-	build:
-	  project: $(NaturalDocsProj)
-	test:
-	  assemblies:
-	    - ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
+image: 
+  - Visual Studio 2017
+environment:
+  matrix:
+    - NaturalDocsProj: Engine.Tests/Engine.Tests.csproj
+    - NaturalDocsProj: CLI/CLI.csproj
+build:
+  project: $(NaturalDocsProj)
+test:
+  assemblies:
+    - ./Engine.Tests/bin/Debug/NaturalDocs.Engine.Tests.dll
