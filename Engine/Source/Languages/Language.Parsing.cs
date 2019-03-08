@@ -4261,7 +4261,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		virtual protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if (iterator.Character != '"' && iterator.Character != '\'')
 				{  return false;  }
