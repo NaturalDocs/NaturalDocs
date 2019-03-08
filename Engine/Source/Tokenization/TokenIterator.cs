@@ -561,6 +561,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 			
+		/* Function: SetCommentParsingTypeBetween
+		 * Changes the <CommentParsingType> of all the tokens between the current position and the passed iterator.
+		 * The token the ending iterator is on will not be changed.
+		 */
+		public void SetCommentParsingTypeBetween (TokenIterator end, CommentParsingType type)
+			{
+			Tokenizer.SetCommentParsingTypeBetween(this, end, type);
+			}
+
+
 		/* Function: SetSyntaxHighlightingTypeByCharacters
 		 * 
 		 * Changes the <SyntaxHighlightingType> of the tokens encompassed by the passed number of characters.
@@ -591,6 +601,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 			
+		/* Function: SetSyntaxHighlightingTypeBetween
+		 * Changes the <SyntaxHighlightingType> of all the tokens between the current position and the passed iterator.
+		 * The token the ending iterator is on will not be changed.
+		 */
+		public void SetSyntaxHighlightingTypeBetween (TokenIterator end, SyntaxHighlightingType type)
+			{
+			Tokenizer.SetSyntaxHighlightingTypeBetween(this, end, type);
+			}
+
+
 		/* Function: SetPrototypeParsingTypeByCharacters
 		 * 
 		 * Changes the <PrototypeParsingType> of the tokens encompassed by the passed number of characters.
@@ -621,6 +641,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 			
+		/* Function: SetPrototypeParsingTypeBetween
+		 * Changes the <PrototypeParsingType> of all the tokens between the current position and the passed iterator.
+		 * The token the ending iterator is on will not be changed.
+		 */
+		public void SetPrototypeParsingTypeBetween (TokenIterator end, PrototypeParsingType type)
+			{
+			Tokenizer.SetPrototypeParsingTypeBetween(this, end, type);
+			}
+
+
 		/* Function: SetClassPrototypeParsingTypeByCharacters
 		 * 
 		 * Changes the <ClassPrototypeParsingType> of the tokens encompassed by the passed number of characters.
@@ -648,6 +678,16 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 					tokenCount--;
 					}
 				}
+			}
+
+
+		/* Function: SetClassPrototypeParsingTypeBetween
+		 * Changes the <ClassPrototypeParsingType> of all the tokens between the current position and the passed iterator.
+		 * The token the ending iterator is on will not be changed.
+		 */
+		public void SetClassPrototypeParsingTypeBetween (TokenIterator end, ClassPrototypeParsingType type)
+			{
+			Tokenizer.SetClassPrototypeParsingTypeBetween(this, end, type);
 			}
 
 			
