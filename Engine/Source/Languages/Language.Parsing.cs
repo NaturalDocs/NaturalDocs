@@ -644,7 +644,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				startOfModifiers.NextPastWhitespace(endOfModifiers);
 
 				if (endOfModifiers > startOfModifiers)
-					{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+					{  startOfModifiers.SetClassPrototypeParsingTypeBetween(endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 
 				// The iterator is on the keyword.  Move past it to the name.
 				iterator.Next();
@@ -703,7 +703,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 
 				if (endOfModifiers > startOfModifiers)
-					{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+					{  startOfModifiers.SetClassPrototypeParsingTypeBetween(endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 				}
 
 
@@ -728,7 +728,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (endOfName == startOfName)
 				{  return null;  }
 
-			tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfName, endOfName, ClassPrototypeParsingType.Name);
+			startOfName.SetClassPrototypeParsingTypeBetween(endOfName, ClassPrototypeParsingType.Name);
 
 
 			// Iterator is past the name.  Get the template information if there is any.
@@ -742,7 +742,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (TryToSkipBlock(ref iterator, true) == false)
 					{  return null;  }
 
-				tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfTemplate, iterator, ClassPrototypeParsingType.TemplateSuffix);
+				startOfTemplate.SetClassPrototypeParsingTypeBetween(iterator, ClassPrototypeParsingType.TemplateSuffix);
 
 				iterator.NextPastWhitespace();
 				}
@@ -777,7 +777,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (doubleToken)
 					{
-					tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.StartOfParents);
+					iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.StartOfParents);
 					iterator = lookahead;
 					}
 				else
@@ -825,7 +825,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (doubleToken)
 						{
-						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.ParentSeparator);
+						iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.ParentSeparator);
 						iterator = lookahead;
 						iterator.NextPastWhitespace();
 						}
@@ -925,7 +925,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (endOfName > startOfName)
 					{
-					tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfName, endOfName, ClassPrototypeParsingType.Name);
+					startOfName.SetClassPrototypeParsingTypeBetween(endOfName, ClassPrototypeParsingType.Name);
 
 					TokenIterator startOfModifiers = startOfParent;
 					TokenIterator endOfModifiers = startOfName;
@@ -934,7 +934,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					startOfModifiers.NextPastWhitespace(endOfModifiers);
 
 					if (endOfModifiers > startOfModifiers)
-						{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+						{  startOfModifiers.SetClassPrototypeParsingTypeBetween(endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 
 					TokenIterator startOfTemplate = endOfName;
 					startOfTemplate.NextPastWhitespace(endOfParent);
@@ -943,7 +943,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (startOfTemplate < endOfParent && startOfTemplate.Character == '<' && 
 						TryToSkipBlock(ref endOfTemplate, true) == true && endOfTemplate <= endOfParent)
 						{
-						tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfTemplate, endOfTemplate, ClassPrototypeParsingType.TemplateSuffix);
+						startOfTemplate.SetClassPrototypeParsingTypeBetween(endOfTemplate, ClassPrototypeParsingType.TemplateSuffix);
 						}
 					else
 						{
@@ -959,7 +959,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					startOfModifiers.NextPastWhitespace(endOfModifiers);
 
 					if (endOfModifiers > startOfModifiers)
-						{  tokenizedPrototype.SetClassPrototypeParsingTypeBetween(startOfModifiers, endOfModifiers, ClassPrototypeParsingType.Modifier);  }
+						{  startOfModifiers.SetClassPrototypeParsingTypeBetween(endOfModifiers, ClassPrototypeParsingType.Modifier);  }
 					}
 				}
 
@@ -3370,7 +3370,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, iterator);
 
 					if (iterator < endOfDefaultValue)
-						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
+						{  iterator.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
 
 					break;
 					}
@@ -3459,7 +3459,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);
+							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);
 							}
 						}
 					else if (words == 2)
@@ -3536,7 +3536,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					endOfDefaultValue.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, iterator);
 
 					if (iterator < endOfDefaultValue)
-						{  iterator.Tokenizer.SetPrototypeParsingTypeBetween(iterator, endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
+						{  iterator.SetPrototypeParsingTypeBetween(endOfDefaultValue, PrototypeParsingType.DefaultValue);  }
 
 					break;
 					}
@@ -3651,7 +3651,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							}
 						else
 							{
-							wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.ParamModifier);  
+							wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.ParamModifier);  
 							}
 						}
 					else if (wordsBeforeColon == 1)
@@ -3713,7 +3713,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								}
 							else
 								{
-								wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);  
+								wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);  
 								}
 							}
 						else if (wordsAfterColon == 1)
@@ -3782,7 +3782,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					wordEnd = iterator;
 
 					if (words >= 2)
-						{  wordStart.Tokenizer.SetPrototypeParsingTypeBetween(wordStart, wordEnd, PrototypeParsingType.TypeModifier);  }
+						{  wordStart.SetPrototypeParsingTypeBetween(wordEnd, PrototypeParsingType.TypeModifier);  }
 					else if (words == 1)
 						{  MarkType(wordStart, wordEnd);  }
 
@@ -3832,9 +3832,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			if (qualifierEnd > start)
-				{  start.Tokenizer.SetPrototypeParsingTypeBetween(start, qualifierEnd, PrototypeParsingType.TypeQualifier);  }
+				{  start.SetPrototypeParsingTypeBetween(qualifierEnd, PrototypeParsingType.TypeQualifier);  }
 			if (iterator > qualifierEnd)
-				{  qualifierEnd.Tokenizer.SetPrototypeParsingTypeBetween(qualifierEnd, iterator, PrototypeParsingType.Type);  }
+				{  qualifierEnd.SetPrototypeParsingTypeBetween(iterator, PrototypeParsingType.Type);  }
 			if (iterator < end)
 				{  MarkTypeSuffix(iterator, end);  }
 			}
@@ -3976,7 +3976,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				if (markWord)
 					{
 					if (words >= 2)
-						{  startWord.Tokenizer.SetPrototypeParsingTypeBetween(startWord, endWord, PrototypeParsingType.TypeModifier);  }
+						{  startWord.SetPrototypeParsingTypeBetween(endWord, PrototypeParsingType.TypeModifier);  }
 					else if (words == 1)
 						{  MarkType(startWord, endWord);  }
 
@@ -4146,7 +4146,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  iterator.Next();  }
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
+				{  startOfComment.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Comment);  }
 
 			return true;
 			}
@@ -4213,7 +4213,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  iterator.NextByCharacters(closingSymbol.Length);  }
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfComment, iterator, SyntaxHighlightingType.Comment);  }
+				{  startOfComment.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Comment);  }
 
 			// Return true even if the iterator reached the end of the content before finding a closing symbol.
 			return true;
@@ -4285,7 +4285,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfString, iterator, SyntaxHighlightingType.String);  }
+				{  startOfString.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.String);  }
 
 			// Return true even if the iterator reached the end of the content before finding a closing quote.
 			return true;
@@ -4383,7 +4383,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			if (mode == ParseMode.SyntaxHighlight)
-				{  iterator.Tokenizer.SetSyntaxHighlightingTypeBetween(startOfNumber, iterator, SyntaxHighlightingType.Number);  }
+				{  startOfNumber.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Number);  }
 
 			return true;
 			}
@@ -4553,11 +4553,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected void ResetTokensBetween (TokenIterator start, TokenIterator end, ParseMode mode)
 			{
 			if (mode == ParseMode.SyntaxHighlight)
-				{  start.Tokenizer.SetSyntaxHighlightingTypeBetween(start, end, SyntaxHighlightingType.Null);  }
+				{  start.SetSyntaxHighlightingTypeBetween(end, SyntaxHighlightingType.Null);  }
 			else if (mode == ParseMode.ParsePrototype)
-				{  start.Tokenizer.SetPrototypeParsingTypeBetween(start, end, PrototypeParsingType.Null);  }
+				{  start.SetPrototypeParsingTypeBetween(end, PrototypeParsingType.Null);  }
 			else if (mode == ParseMode.ParseClassPrototype)
-				{  start.Tokenizer.SetClassPrototypeParsingTypeBetween(start, end, ClassPrototypeParsingType.Null);  }
+				{  start.SetClassPrototypeParsingTypeBetween(end, ClassPrototypeParsingType.Null);  }
 			}
 
 

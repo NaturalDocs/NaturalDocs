@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)
-				{  iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfIdentifier, lookahead, ClassPrototypeParsingType.Name);  }
+				{  startOfIdentifier.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -120,7 +120,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				if (mode == ParseMode.ParseClassPrototype)
-					{  lookahead.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfParent, lookahead, ClassPrototypeParsingType.Name);  }
+					{  startOfParent.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
 				}
 
 

@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)
-				{  iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfIdentifier, lookahead, ClassPrototypeParsingType.Name);  }
+				{  startOfIdentifier.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
 
 			TryToSkipWhitespace(ref lookahead);
 
@@ -221,7 +221,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.ParseClassPrototype)
 				{
-				iterator.Tokenizer.SetClassPrototypeParsingTypeBetween(iterator, lookahead, ClassPrototypeParsingType.PrePrototypeLine);
+				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
 				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				}
 
@@ -274,7 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 			if (mode == ParseMode.ParseClassPrototype)
-				{  lookahead.Tokenizer.SetClassPrototypeParsingTypeBetween(startOfIdentifier, lookahead, ClassPrototypeParsingType.Name);  }
+				{  startOfIdentifier.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.Name);  }
 
 			iterator = lookahead;
 			return true;
