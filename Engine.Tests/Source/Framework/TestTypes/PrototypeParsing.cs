@@ -33,7 +33,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				if (topicIndex != 0)
-					{  output.AppendLine("-----");  }
+					{  
+					output.AppendLine();  
+					output.AppendLine("------------------------------");
+					output.AppendLine();  
+					}
 
 				if (topics[topicIndex].Prototype == null)
 					{  
