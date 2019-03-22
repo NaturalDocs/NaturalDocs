@@ -12,7 +12,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName2 (
     - Access Level: Unknown

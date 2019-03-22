@@ -1,7 +1,9 @@
 - Plain Section: public event Delegate EventA
   - Access Level: Public
   - Link Candidates: Delegate
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -9,7 +11,9 @@
 - Plain Section: private event Delegate EventB
   - Access Level: Private
   - Link Candidates: Delegate
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -17,11 +21,15 @@
 - Plain Section: private event Delegate EventC
   - Access Level: Private
   - Link Candidates: Delegate
------
+
+------------------------------
+
 - Plain Section: internal event Delegate EventD { add; remove }
   - Access Level: Internal
   - Link Candidates: Delegate
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)

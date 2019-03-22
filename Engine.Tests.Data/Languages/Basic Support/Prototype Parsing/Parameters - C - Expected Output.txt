@@ -5,7 +5,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: int FunctionName2 (
     - Access Level: Unknown
@@ -13,7 +15,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: int FunctionName3(
     - Access Level: Unknown
@@ -21,7 +25,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName4 (
     - Access Level: Unknown
@@ -43,7 +49,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName5(
     - Access Level: Unknown
@@ -65,7 +73,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName6 (
     - Access Level: Unknown
@@ -87,7 +97,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: virtual void FunctionName7 (
     - Access Level: Unknown

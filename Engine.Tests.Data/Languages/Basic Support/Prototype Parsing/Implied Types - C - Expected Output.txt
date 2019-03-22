@@ -19,7 +19,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionB (
     - Access Level: Unknown
@@ -55,7 +57,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionC (
     - Access Level: Unknown
@@ -105,7 +109,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionD (
     - Access Level: Unknown
@@ -155,7 +161,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionE (
     - Access Level: Unknown

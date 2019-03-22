@@ -19,7 +19,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName2 (
     - Access Level: Unknown
@@ -48,7 +50,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: ::GlobalType FunctionName3 (
     - Access Level: Unknown
@@ -77,7 +81,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName4 (
     - Access Level: Unknown
@@ -99,7 +105,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void FunctionName5 (
     - Access Level: Unknown
@@ -128,7 +136,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: Namespace::Type FunctionName6 (
     - Access Level: Unknown

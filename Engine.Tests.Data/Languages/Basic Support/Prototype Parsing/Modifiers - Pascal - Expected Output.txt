@@ -19,7 +19,9 @@
 
   - After Parameters: ): integer
     - Link Candidates: integer
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: Function FunctionB (
     - Access Level: Unknown
@@ -55,7 +57,9 @@
 
   - After Parameters: ): integer
     - Link Candidates: integer
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: Function FunctionC (
     - Access Level: Unknown

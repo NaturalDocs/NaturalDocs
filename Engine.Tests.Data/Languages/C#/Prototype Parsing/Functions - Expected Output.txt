@@ -5,7 +5,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void Basic (
     - Access Level: Unknown
@@ -27,7 +29,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public static string Modifiers (
     - Access Level: Public
@@ -49,7 +53,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public async int NewModifiers (
     - Access Level: Public
@@ -57,7 +63,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -94,7 +102,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: void DefaultValues (
     - Access Level: Unknown
@@ -123,7 +133,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public List<int> Templates (
     - Access Level: Public
@@ -145,7 +157,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public List<T1> WhereClause<T1,T2> (
     - Access Level: Public
@@ -168,7 +182,9 @@
 - Plain Section: where T2: System.Collections.IEnumerable<T2>
   - Access Level: Unknown
   - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public int ExpressionBodyA (
     - Access Level: Public
@@ -183,7 +199,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public static RgbColor ExpressionBodyB (
     - Access Level: Public

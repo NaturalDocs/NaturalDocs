@@ -19,7 +19,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: LineIterator operator<< (
     - Access Level: Unknown
@@ -34,7 +36,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: ObjectC operator+ (
     - Access Level: Unknown

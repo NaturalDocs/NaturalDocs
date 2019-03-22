@@ -1,11 +1,15 @@
 - Plain Section: int PropertyA { get }
   - Access Level: Unknown
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: protected int PropertyB { get; private set }
   - Access Level: Protected
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -13,19 +17,27 @@
 - Plain Section: internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
   - Access Level: Internal
   - Link Candidates: System.Text.StringBuilder
------
+
+------------------------------
+
 - Plain Section: abstract int PropertyD { get; set }
   - Access Level: Unknown
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: public int PropertyE { get }
   - Access Level: Public
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: public string PropertyF { get }
   - Access Level: Public
   - Link Candidates: string
------
+
+------------------------------
+
 - Plain Section: public int PropertyG { get; set }
   - Access Level: Public
   - Link Candidates: int

@@ -1,7 +1,9 @@
 - Plain Section: public const int ConstA
   - Access Level: Public
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -9,7 +11,9 @@
 - Plain Section: private const string ConstB
   - Access Level: Private
   - Link Candidates: string
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)

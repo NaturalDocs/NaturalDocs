@@ -5,7 +5,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: private TestClass (
     - Access Level: Private
@@ -20,7 +22,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: private TestClass (
     - Access Level: Private
@@ -42,7 +46,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: ~TestClass (
     - Access Level: Unknown
@@ -50,7 +56,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: extern static TestClass (
     - Access Level: Unknown
@@ -65,7 +73,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: extern ~TestClass (
     - Access Level: Unknown

@@ -5,7 +5,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: function FunctionB (
     - Access Level: Unknown
@@ -13,7 +15,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: function FunctionC(
     - Access Level: Unknown
@@ -21,7 +25,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: function FunctionD (
     - Access Level: Unknown
@@ -43,7 +49,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: function FunctionE(
     - Access Level: Unknown
@@ -65,7 +73,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: function FunctionF (
     - Access Level: Unknown

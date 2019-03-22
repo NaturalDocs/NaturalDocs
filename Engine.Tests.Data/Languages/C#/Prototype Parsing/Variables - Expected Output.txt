@@ -1,19 +1,27 @@
 - Plain Section: int varA
   - Access Level: Unknown
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: public int varB
   - Access Level: Public
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: private static List<int> varC
   - Access Level: Private
   - Link Candidates: List, int
------
+
+------------------------------
+
 - Plain Section: volatile string[] varD
   - Access Level: Unknown
   - Link Candidates: string
------
+
+------------------------------
+
 - Plain Section: [Attribute: Something("value")]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -21,7 +29,9 @@
 - Plain Section: int* varE
   - Access Level: Unknown
   - Link Candidates: int
------
+
+------------------------------
+
 - Plain Section: [AttributeA]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -33,7 +43,9 @@
 - Plain Section: protected internal System.Text.StringBuilder varF
   - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
------
+
+------------------------------
+
 - Plain Section: [AttributeA]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -45,7 +57,9 @@
 - Plain Section: protected internal System.Text.StringBuilder varG
   - Access Level: ProtectedInternal
   - Link Candidates: System.Text.StringBuilder
------
+
+------------------------------
+
 - Plain Section: [AttributeA]
   - Access Level: Unknown
   - Link Candidates: (none)

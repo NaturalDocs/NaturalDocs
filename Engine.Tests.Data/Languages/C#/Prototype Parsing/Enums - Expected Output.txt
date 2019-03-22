@@ -1,7 +1,9 @@
 - Plain Section: public enum EnumA
   - Access Level: Public
   - Link Candidates: (none)
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)

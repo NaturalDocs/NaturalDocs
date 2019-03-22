@@ -68,7 +68,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: const int* FunctionName2 (
     - Access Level: Unknown
@@ -104,7 +106,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: int* const FunctionName3 (
     - Access Level: Unknown
@@ -140,7 +144,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: int const * const FunctionName4 (
     - Access Level: Unknown
@@ -176,7 +182,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: ~FunctionName5 (
     - Access Level: Unknown
@@ -184,7 +192,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: virtual ~FunctionName6 (
     - Access Level: Unknown

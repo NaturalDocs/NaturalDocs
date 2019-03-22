@@ -12,7 +12,9 @@
 
   - After Parameters: ] { get }
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: protected int this [
     - Access Level: Protected
@@ -27,7 +29,9 @@
 
   - After Parameters: ] { get; private set }
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Plain Section: [Attribute]
   - Access Level: Unknown
   - Link Candidates: (none)
@@ -53,7 +57,9 @@
 
   - After Parameters: ] { [SetAttribute] protected internal set; [GetAttribute] internal get }
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: abstract int this [
     - Access Level: Unknown
@@ -68,7 +74,9 @@
 
   - After Parameters: ] { get; set }
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public int this [
     - Access Level: Public
@@ -83,7 +91,9 @@
 
   - After Parameters: ] { get }
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: public int this [
     - Access Level: Public

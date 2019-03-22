@@ -5,7 +5,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: private int FunctionB (
     - Access Level: Private
@@ -13,7 +15,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: protected int FunctionC (
     - Access Level: Protected
@@ -21,7 +25,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: internal int FunctionD (
     - Access Level: Internal
@@ -29,7 +35,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: protected internal int FunctionE (
     - Access Level: ProtectedInternal
@@ -37,7 +45,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: internal protected int FunctionF (
     - Access Level: ProtectedInternal
@@ -45,7 +55,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: virtual public static int FunctionG (
     - Access Level: Public
@@ -53,7 +65,9 @@
 
   - After Parameters: )
     - Link Candidates: (none)
------
+
+------------------------------
+
 - Parameter Section:
   - Before Parameters: not_public int FunctionH (
     - Access Level: Unknown
