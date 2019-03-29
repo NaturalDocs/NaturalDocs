@@ -754,9 +754,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 				}
 			
-			// Default value separators always get spaces before and after
-			if (type == ColumnType.DefaultValueSeparator)
-				{ htmlOutput.Append("&nbsp;"); }
+			// Default value separators always get spaces before.  Type-name separators get them if they're text (SQL's "AS") instead
+			// of symbols (Pascal's ":").
+			if (type == ColumnType.DefaultValueSeparator ||
+				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
+				{  htmlOutput.Append("&nbsp;");  }
 
 			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
 			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
