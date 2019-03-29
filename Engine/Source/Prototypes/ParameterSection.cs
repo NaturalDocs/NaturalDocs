@@ -486,7 +486,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				{
 				bool foundName = false;
 				bool foundType = false;
-				bool foundSeparator = false;
 
 				TokenIterator iterator = parameter.Start;
 
@@ -504,17 +503,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						}
 					else if (iterator.PrototypeParsingType == PrototypeParsingType.Type)
 						{
-						if (foundName && foundSeparator)
+						if (foundName)
 							{  
 							parameterStyle = ParsedPrototype.ParameterStyle.Pascal;
 							return;
 							}
 						else
 							{  foundType = true;  }
-						}
-					else if (iterator.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
-						{
-						foundSeparator = true;
 						}
 
 					iterator.Next();
