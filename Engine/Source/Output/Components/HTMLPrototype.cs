@@ -166,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
 				{
 				TokenIterator startOfParam, endOfParam;
-				parsedPrototype.GetParameter(parameterIndex, out startOfParam, out endOfParam);
+				section.GetParameterBounds(parameterIndex, out startOfParam, out endOfParam);
 
 				TokenIterator iterator = startOfParam;
 				iterator.NextPastWhitespace(endOfParam);
@@ -174,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// C-Style Parameters
 
-				if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.C)
+				if (section.ParameterStyle == ParsedPrototype.ParameterStyle.C)
 					{
 					while (iterator < endOfParam && 
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// Pascal-Style Parameters
 
-				else if (parsedPrototype.Style == ParsedPrototype.ParameterStyle.Pascal)
+				else if (section.ParameterStyle == ParsedPrototype.ParameterStyle.Pascal)
 					{
 					while (iterator < endOfParam && 
 							  iterator.PrototypeParsingType == PrototypeParsingType.Null &&
@@ -550,7 +550,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					if (endTokenIndex > startTokenIndex)
 						{
 						TokenIterator start, end;
-						parsedPrototype.GetParameter(parameterIndex, out start, out end);
+						section.GetParameterBounds(parameterIndex, out start, out end);
 
 						start.Next(startTokenIndex - start.TokenIndex);
 						end.Previous(end.TokenIndex - endTokenIndex);
@@ -687,7 +687,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("<table class=\"PParameters\">");
 
-			for (int parameterIndex = 0; parameterIndex < parsedPrototype.NumberOfParameters; parameterIndex++)
+			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
 				{
 				htmlOutput.Append("<tr>");
 
