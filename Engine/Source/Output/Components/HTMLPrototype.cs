@@ -618,10 +618,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("<td class=\"PBeforeParameters\">");
 
+			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
 			if (addLinks)
 				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
 			else
 				{ BuildSyntaxHighlightedText(start, end); }
+
+			if (addNBSP)
+				{  htmlOutput.Append("&nbsp;");  }
 
 			htmlOutput.Append("</td>");
 
@@ -632,6 +637,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			section.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PAfterParameters\">");
+
+			if (start.NextPastWhitespace(end))
+				{  htmlOutput.Append("&nbsp;");  };
 
 			if (addLinks)
 				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
