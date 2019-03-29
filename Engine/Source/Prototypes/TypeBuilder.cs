@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			lastTokenIterator = default(TokenIterator);
 			lastTokenType = FundamentalType.Null;
 			pastFirstText = false;
-			lastSymbolWasPackageSeparator = false;
+			dontAddSpaceAfterSymbol = false;
 			lastSymbolWasBlock = false;
 			}
 
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1)) 
 						 ||
 						 (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol && 
-						  !lastSymbolWasPackageSeparator && (pastFirstText || lastSymbolWasBlock)) )
+						  !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) )
 						{
 						rawText.Append(' ');
 						prototypeParsingTypes.Add(PrototypeParsingType.Null);
@@ -92,10 +92,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (iterator.FundamentalType == FundamentalType.Symbol)
 						{
 						if (iterator.Character == '.'  || iterator.MatchesAcrossTokens("::") || 
-							(iterator.Character == ':' && lastSymbolWasPackageSeparator) ) // second colon of ::
-							{  lastSymbolWasPackageSeparator = true;  }
+							(iterator.Character == ':' && dontAddSpaceAfterSymbol) ||  // second colon of ::
+							iterator.Character == '%' )  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
+							{  dontAddSpaceAfterSymbol = true;  }
 						else
-							{  lastSymbolWasPackageSeparator = false;  }
+							{  dontAddSpaceAfterSymbol = false;  }
 						}
 
 					iterator.AppendTokenTo(rawText);
@@ -138,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1)) 
 					||
 					(thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol && 
-					 !lastSymbolWasPackageSeparator && (pastFirstText || lastSymbolWasBlock)) )
+					 !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) )
 					{
 					rawText.Append(' ');
 					prototypeParsingTypes.Add(PrototypeParsingType.Null);
@@ -157,7 +158,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				lastTokenIterator = closingToken;
 				lastTokenType = thisTokenType;
 				lastSymbolWasBlock = true;
-				lastSymbolWasPackageSeparator = false;
+				dontAddSpaceAfterSymbol = false;
 
 				if (thisTokenType == FundamentalType.Text)
 					{  pastFirstText = true;  }
@@ -197,7 +198,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			bool pastFirstText = false;
 			FundamentalType lastTokenType = FundamentalType.Null;
-			bool lastSymbolWasPackageSeparator = false;
+			bool dontAddSpaceAfterSymbol = false;
 			bool lastSymbolWasBlock = false;
 
 			while (iterator < end)
@@ -207,7 +208,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					{
 					if (lastTokenType == FundamentalType.Null ||
 						lastTokenType == FundamentalType.Text ||
-						(lastTokenType == FundamentalType.Symbol && (lastSymbolWasPackageSeparator || (!pastFirstText && !lastSymbolWasBlock))) ||
+						(lastTokenType == FundamentalType.Symbol && (dontAddSpaceAfterSymbol || (!pastFirstText && !lastSymbolWasBlock))) ||
 						lastTokenType == FundamentalType.Whitespace)
 						{
 						pastFirstText = true;
@@ -230,25 +231,25 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						if (iterator.MatchesAcrossTokens("::"))
 							{
 							lastSymbolWasBlock = false;
-							lastSymbolWasPackageSeparator = true;
+							dontAddSpaceAfterSymbol = true;
 							iterator.NextByCharacters(2);
 							}
-						else if (iterator.Character == '.')
+						else if (iterator.Character == '.' || iterator.Character == '%')
 							{
 							lastSymbolWasBlock = false;
-							lastSymbolWasPackageSeparator = true;
+							dontAddSpaceAfterSymbol = true;
 							iterator.Next();
 							}
 						else if (TryToSkipModifierBlock(ref iterator))
 							{
 							lastSymbolWasBlock = true;
-							lastSymbolWasPackageSeparator = false;
+							dontAddSpaceAfterSymbol = false;
 							// already moved iterator
 							}
 						else
 							{
 							lastSymbolWasBlock = false;
-							lastSymbolWasPackageSeparator = false;
+							dontAddSpaceAfterSymbol = false;
 							iterator.Next();  
 							}
 						}
@@ -258,7 +259,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				else if (iterator.FundamentalType == FundamentalType.Whitespace &&
 						  iterator.Character == ' ' && iterator.RawTextLength == 1)
 					{
-					if ((lastTokenType == FundamentalType.Symbol && !lastSymbolWasPackageSeparator && (pastFirstText || lastSymbolWasBlock)) ||
+					if ((lastTokenType == FundamentalType.Symbol && !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) ||
 						lastTokenType == FundamentalType.Text)
 						{
 						lastTokenType = FundamentalType.Whitespace;
@@ -364,10 +365,10 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 */
 		protected bool pastFirstText;
 
-		/* var: lastSymbolWasPackageSeparator
-		 * Whether the last symbol added was a package separator.
+		/* var: dontAddSpaceAfterSymbol
+		 * Whether to skip adding a space after the last symbol, such as if it was a package separator.
 		 */
-		protected bool lastSymbolWasPackageSeparator;
+		protected bool dontAddSpaceAfterSymbol;
 
 		/* var: lastSymbolWasBlock
 		 * Whether the last symbol added was a block.
