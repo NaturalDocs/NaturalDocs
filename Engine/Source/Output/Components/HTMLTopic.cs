@@ -293,6 +293,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			bool underParameterHeading = false;
 			string parameterListSymbol = null;
+			string altParameterListSymbol = null;
 
 			while (iterator.IsInBounds)
 				{
@@ -438,17 +439,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 									firstNonSymbolIndex++;
 									}
 
-								if (firstNonSymbolIndex > 0)
-									{  symbol.Remove(0, firstNonSymbolIndex);  }
-
 								if (symbol.Length > 0)
 									{  parameterListSymbol = symbol.ToString();  }
+								else
+									{  parameterListSymbol = null;  }
+
+								if (firstNonSymbolIndex > 0)
+									{  
+									symbol.Remove(0, firstNonSymbolIndex);
+									altParameterListSymbol = symbol.ToString();
+									}
+								else
+									{  altParameterListSymbol = null;  }
+
 								}
 							}
 						else // closing tag
 							{  
 							// See if parameterListSymbol matches any of the prototype parameter names
-							if (parameterListSymbol != null && topic.Prototype != null)
+							if ( (parameterListSymbol != null || altParameterListSymbol != null) && topic.Prototype != null)
 								{
 								TokenIterator start, end;
 								int matchedParameter = -1;
@@ -457,7 +466,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 									{
 									topic.ParsedPrototype.GetParameterName(i, out start, out end);
 
-									if (topic.ParsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end))
+									if ( (parameterListSymbol != null && topic.ParsedPrototype.Tokenizer.EqualsTextBetween(parameterListSymbol, true, start, end)) ||
+										 (altParameterListSymbol != null && topic.ParsedPrototype.Tokenizer.EqualsTextBetween(altParameterListSymbol, true, start, end)) )
 										{
 										matchedParameter = i;
 										break;
