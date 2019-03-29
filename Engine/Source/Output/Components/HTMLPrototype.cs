@@ -363,6 +363,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						}
 
 
+					// Do we have a name-type separator?  We may not, such as for SQL.
+
+					bool hasNameTypeSeparator = false;
+					TokenIterator lookahead = iterator;
+
+					while (lookahead < endOfParam)
+						{
+						if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+							{
+							hasNameTypeSeparator = true;
+							break;
+							}
+
+						lookahead.Next();
+						}
+
+
 					// Name
 
 					currentColumn++;
@@ -373,12 +390,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						PrototypeParsingType type = iterator.PrototypeParsingType;
 
 						// Include the parameter separator because there may not be a type.
-						// Include modifiers because there still may be some after the name.
 						if (type == PrototypeParsingType.Name ||
-							type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
 							type == PrototypeParsingType.ParamSeparator ||
 							type == PrototypeParsingType.Null)
+							{  iterator.Next();   }
+						// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
+						else if (hasNameTypeSeparator && 
+								   (type == PrototypeParsingType.TypeModifier ||
+									type == PrototypeParsingType.ParamModifier))
 							{  iterator.Next();   }
 						else if (type == PrototypeParsingType.OpeningTypeModifier ||
 								   type == PrototypeParsingType.OpeningParamModifier)
