@@ -4304,7 +4304,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || iterator.Character == '-' || iterator.Character == '.') == false)
+			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || 
+				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
 				{  return false;  }
 
 			TokenIterator lookahead = iterator;
@@ -4312,7 +4313,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			bool lastCharWasE = false;
 			bool isHex = false;
 
-			if (lookahead.Character == '-')
+			if (lookahead.Character == '-' || lookahead.Character == '+')
 				{  
 				// Distinguish between -1 and x-1
 
