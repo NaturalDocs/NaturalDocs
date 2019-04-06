@@ -88,6 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			parsedPrototype = null;
 			language = null;
+			parameterTableSection = null;
 			parameterTableTokenIndexes = null;
 			parameterTableColumnsUsed = null;
 			symbolColumnWidth = 0;
@@ -611,12 +612,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		/* Function: BuildParameterSection
 		 * Builds the HTML for a <Prototypes.ParameterSection>.  It will always be in wide form.
 		 */
-		protected void BuildParameterSection (Prototypes.ParameterSection section)
+		protected void BuildParameterSection (Prototypes.ParameterSection parameterTableSection)
 			{
-			var parameterStyle = section.ParameterStyle;
+			this.parameterTableSection = parameterTableSection;
+
 			string parameterClass;
 
-			switch (parameterStyle)
+			switch (parameterTableSection.ParameterStyle)
 				{
 				case ParsedPrototype.ParameterStyle.C:
 					parameterClass = "CStyle";
@@ -633,7 +635,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			htmlOutput.Append("<table><tr>");
 
 			TokenIterator start, end;
-			section.GetBeforeParameters(out start, out end);
+			parameterTableSection.GetBeforeParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PBeforeParameters\">");
 
@@ -650,10 +652,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			htmlOutput.Append("</td>");
 
 			htmlOutput.Append("<td class=\"PParametersParentCell\">");
-			BuildParameterTable(section);
+			BuildParameterTable();
 			htmlOutput.Append("</td>");
 
-			section.GetAfterParameters(out start, out end);
+			parameterTableSection.GetAfterParameters(out start, out end);
 
 			htmlOutput.Append("<td class=\"PAfterParameters\">");
 
@@ -673,9 +675,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 		/* Function: BuildParameterTable
 		 */
-		protected void BuildParameterTable (Prototypes.ParameterSection section)
+		protected void BuildParameterTable ()
 			{
-			CalculateParameterTable(section);
+			CalculateParameterTable(parameterTableSection);
 
 			int firstUsedCell = 0;
 			while (firstUsedCell < NumberOfColumns && parameterTableColumnsUsed[firstUsedCell] == false)
@@ -687,7 +689,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			htmlOutput.Append("<table class=\"PParameters\">");
 
-			for (int parameterIndex = 0; parameterIndex < section.NumberOfParameters; parameterIndex++)
+			for (int parameterIndex = 0; parameterIndex < parameterTableSection.NumberOfParameters; parameterIndex++)
 				{
 				htmlOutput.Append("<tr>");
 
@@ -715,7 +717,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							{
 							htmlOutput.Append("<td class=\"P" + ColumnOrder[cellIndex].ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
 
-							BuildCellContents(section, parameterIndex, cellIndex);
+							BuildCellContents(parameterIndex, cellIndex);
 
 							htmlOutput.Append("</td>");
 							}
@@ -731,9 +733,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 		/* Function: BuildCellContents
 		 */
-		protected void BuildCellContents (Prototypes.ParameterSection section, int parameterIndex, int cellIndex)
+		protected void BuildCellContents (int parameterIndex, int cellIndex)
 			{
-			TokenIterator start = section.Start;
+			TokenIterator start = parameterTableSection.Start;
 			start.Next(parameterTableTokenIndexes[parameterIndex, cellIndex] - start.TokenIndex);
 
 			TokenIterator end = start;
@@ -803,7 +805,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			get
 				{
-				switch (parsedPrototype.Style)
+				switch (parameterTableSection.ParameterStyle)
 					{
 					case ParsedPrototype.ParameterStyle.C:
 						return CColumnOrder;
@@ -823,7 +825,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			get
 				{
-				switch (parsedPrototype.Style)
+				switch (parameterTableSection.ParameterStyle)
 					{
 					case ParsedPrototype.ParameterStyle.C:
 						return CSymbolsColumnIndex;
@@ -851,10 +853,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected Languages.Language language;
 
+		/* var: parameterTableSection
+		 * The <Prototypes.ParameterSection> currently being processed.
+		 */
+		protected Prototypes.ParameterSection parameterTableSection;
+
 		/* var: parameterTableTokenIndexes
-		 * A table representing the parameters as rows and the columns determined by <ColumnOrder>.  Each value
-		 * represents the starting token index of that cell.  Each row will also contain one extra value representing the
-		 * token index of the end of the final cell.
+		 * A table representing the <parameterTableSection> as rows and the columns determined by <ColumnOrder>.
+		 * Each value represents the starting token index of that cell.  Each row will also contain one extra value 
+		 * representing the token index of the end of the final cell.
 		 */
 		protected int[,] parameterTableTokenIndexes;
 
