@@ -171,9 +171,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected void CalculateParameterTable (Prototypes.ParameterSection section)
 			{
+			
+			//
+			// Check if this is a raw section with nothing other than parameter separators, meaning no name, type, etc. tokens
+			//
+
+			TokenIterator iterator = section.Start;
+			TokenIterator endOfSection = section.End;
+			bool isRaw= true;
+
+			while (iterator < endOfSection)
+				{
+				var type = iterator.PrototypeParsingType;
+
+				if (type != PrototypeParsingType.Null &&
+					type != PrototypeParsingType.StartOfPrototypeSection &&
+					type != PrototypeParsingType.StartOfParams &&
+					type != PrototypeParsingType.ParamSeparator &&
+					type != PrototypeParsingType.EndOfParams &&
+					type != PrototypeParsingType.EndOfPrototypeSection)
+					{
+					isRaw = false;
+					break;
+					}
+
+				iterator.Next();
+				}
+
 
 			//
-			// First fill in parameterTableTokenIndexes
+			// Now fill in parameterTableTokenIndexes
 			//
 
 			parameterTableTokenIndexes = new int[section.NumberOfParameters, NumberOfColumns + 1];
@@ -183,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				TokenIterator startOfParam, endOfParam;
 				section.GetParameterBounds(parameterIndex, out startOfParam, out endOfParam);
 
-				TokenIterator iterator = startOfParam;
+				iterator = startOfParam;
 				iterator.NextPastWhitespace(endOfParam);
 
 
@@ -204,21 +231,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					TokenIterator startOfType = iterator;
 
-					while (iterator < endOfParam)
+					if (!isRaw)
 						{
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+						while (iterator < endOfParam)
+							{
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						// Null covers whitespace and any random symbols we encountered that went unmarked.
-						if (type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.TypeQualifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }						
+							// Null covers whitespace and any random symbols we encountered that went unmarked.
+							if (type == PrototypeParsingType.TypeModifier ||
+								type == PrototypeParsingType.TypeQualifier ||
+								type == PrototypeParsingType.ParamModifier ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else if (type == PrototypeParsingType.OpeningTypeModifier ||
+									   type == PrototypeParsingType.OpeningParamModifier)
+								{  SkipModifierBlock(ref iterator, endOfParam);  }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -227,6 +257,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
+					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
+					// We use the type column instead of the name column because the name column isn't syntax highlighted.
 					while (iterator < endOfParam)
 						{  
 						PrototypeParsingType type = iterator.PrototypeParsingType;
@@ -236,10 +268,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						if (type == PrototypeParsingType.Type ||
 							type == PrototypeParsingType.TypeModifier ||
 							type == PrototypeParsingType.ParamModifier ||
+							(isRaw && type == PrototypeParsingType.ParamSeparator) ||
 							type == PrototypeParsingType.Null)
 							{  iterator.Next();   }
 						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
+									type == PrototypeParsingType.OpeningParamModifier)
 							{  SkipModifierBlock(ref iterator, endOfParam);  }
 						else
 							{  break;  }						
@@ -251,41 +284,44 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					// All symbols are part of the type column right now because they're marked as type or param 
-					// modifiers.  Walk backwards to claim the symbols from the type column.
-
-					if (iterator > startOfType)
+					if (!isRaw)
 						{
-						TokenIterator lookbehind = iterator;
-						lookbehind.Previous();
+						// All symbols are part of the type column right now because they're marked as type or param 
+						// modifiers.  Walk backwards to claim the symbols from the type column.
 
-						if (lookbehind.FundamentalType == FundamentalType.Symbol && 
-							lookbehind.Character != '_' &&
-							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-							lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+						if (iterator > startOfType)
 							{
-							parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
+							TokenIterator lookbehind = iterator;
 							lookbehind.Previous();
 
-							while (lookbehind >= startOfType)
+							if (lookbehind.FundamentalType == FundamentalType.Symbol && 
+								lookbehind.Character != '_' &&
+								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
+								lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
 								{
-								if (lookbehind.FundamentalType == FundamentalType.Symbol &&
-									lookbehind.Character != '_' &&
-									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
-									lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
-									{
-									parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
-									lookbehind.Previous();
-									}
-								else
-									{  break;  }
-								}
+								parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
+								lookbehind.Previous();
 
-							// Fix up any columns we stole from
-							for (int i = 0; i < currentColumn; i++)
-								{
-								if (parameterTableTokenIndexes[parameterIndex, i] > parameterTableTokenIndexes[parameterIndex, currentColumn])
-									{  parameterTableTokenIndexes[parameterIndex, i] = parameterTableTokenIndexes[parameterIndex, currentColumn];  }
+								while (lookbehind >= startOfType)
+									{
+									if (lookbehind.FundamentalType == FundamentalType.Symbol &&
+										lookbehind.Character != '_' &&
+										lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingTypeModifier &&
+										lookbehind.PrototypeParsingType != PrototypeParsingType.ClosingParamModifier)
+										{
+										parameterTableTokenIndexes[parameterIndex, currentColumn] = lookbehind.TokenIndex;
+										lookbehind.Previous();
+										}
+									else
+										{  break;  }
+									}
+
+								// Fix up any columns we stole from
+								for (int i = 0; i < currentColumn; i++)
+									{
+									if (parameterTableTokenIndexes[parameterIndex, i] > parameterTableTokenIndexes[parameterIndex, currentColumn])
+										{  parameterTableTokenIndexes[parameterIndex, i] = parameterTableTokenIndexes[parameterIndex, currentColumn];  }
+									}
 								}
 							}
 						}
@@ -296,23 +332,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						// Include the parameter separator because there may not be a default value.
-						// Include modifiers because there still may be some after the name.
-						if (type == PrototypeParsingType.Name ||
-							type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }						
+							// Include the parameter separator because there may not be a default value.
+							// Include modifiers because there still may be some after the name.
+							if (type == PrototypeParsingType.Name ||
+								type == PrototypeParsingType.TypeModifier ||
+								type == PrototypeParsingType.ParamModifier ||
+								type == PrototypeParsingType.ParamSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else if (type == PrototypeParsingType.OpeningTypeModifier ||
+										type == PrototypeParsingType.OpeningParamModifier)
+								{  SkipModifierBlock(ref iterator, endOfParam);  }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -321,15 +360,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						if (type == PrototypeParsingType.DefaultValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }						
+							if (type == PrototypeParsingType.DefaultValueSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -361,20 +403,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					int currentColumn = 0;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						if (type == PrototypeParsingType.TypeModifier ||
-							type == PrototypeParsingType.ParamModifier ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }						
+							if (type == PrototypeParsingType.TypeModifier ||
+								type == PrototypeParsingType.ParamModifier ||
+								type == PrototypeParsingType.ParamSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else if (type == PrototypeParsingType.OpeningTypeModifier ||
+									   type == PrototypeParsingType.OpeningParamModifier)
+								{  SkipModifierBlock(ref iterator, endOfParam);  }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -383,15 +428,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					bool hasNameTypeSeparator = false;
 					TokenIterator lookahead = iterator;
 
-					while (lookahead < endOfParam)
+					if (!isRaw)
 						{
-						if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+						while (lookahead < endOfParam)
 							{
-							hasNameTypeSeparator = true;
-							break;
-							}
+							if (lookahead.PrototypeParsingType == PrototypeParsingType.NameTypeSeparator)
+								{
+								hasNameTypeSeparator = true;
+								break;
+								}
 
-						lookahead.Next();
+							lookahead.Next();
+							}
 						}
 
 
@@ -400,25 +448,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						// Include the parameter separator because there may not be a type.
-						if (type == PrototypeParsingType.Name ||
-							type == PrototypeParsingType.ParamSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
-						else if (hasNameTypeSeparator && 
-								   (type == PrototypeParsingType.TypeModifier ||
-									type == PrototypeParsingType.ParamModifier))
-							{  iterator.Next();   }
-						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
-							{  SkipModifierBlock(ref iterator, endOfParam);  }
-						else
-							{  break;  }						
+							// Include the parameter separator because there may not be a type.
+							if (type == PrototypeParsingType.Name ||
+								type == PrototypeParsingType.ParamSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							// Include modifiers because there still may be some after the name, but only if there's a name-type separator.
+							else if (hasNameTypeSeparator && 
+									   (type == PrototypeParsingType.TypeModifier ||
+										type == PrototypeParsingType.ParamModifier))
+								{  iterator.Next();   }
+							else if (type == PrototypeParsingType.OpeningTypeModifier ||
+									   type == PrototypeParsingType.OpeningParamModifier)
+								{  SkipModifierBlock(ref iterator, endOfParam);  }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -427,15 +478,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						if (type == PrototypeParsingType.NameTypeSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }						
+							if (type == PrototypeParsingType.NameTypeSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -444,24 +498,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					if (iterator < endOfParam &&
-						iterator.FundamentalType == FundamentalType.Symbol &&
-						iterator.Character != '_')
+					if (!isRaw)
 						{
-						while (iterator < endOfParam)
+						if (iterator < endOfParam &&
+							iterator.FundamentalType == FundamentalType.Symbol &&
+							iterator.Character != '_')
 							{
-							PrototypeParsingType type = iterator.PrototypeParsingType;
+							while (iterator < endOfParam)
+								{
+								PrototypeParsingType type = iterator.PrototypeParsingType;
 
-							if ( (
-									( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' ) ||
-									( iterator.FundamentalType == FundamentalType.Whitespace )
-								 ) &&
-								( type == PrototypeParsingType.TypeModifier ||
-								  type == PrototypeParsingType.ParamModifier ||
-								  type == PrototypeParsingType.Null) )
-								{  iterator.Next();   }
-							else
-								{  break;  }
+								if ( (
+										( iterator.FundamentalType == FundamentalType.Symbol && iterator.Character != '_' ) ||
+										( iterator.FundamentalType == FundamentalType.Whitespace )
+									 ) &&
+									( type == PrototypeParsingType.TypeModifier ||
+									  type == PrototypeParsingType.ParamModifier ||
+									  type == PrototypeParsingType.Null) )
+									{  iterator.Next();   }
+								else
+									{  break;  }
+								}
 							}
 						}
 
@@ -471,6 +528,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
+					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
+					// We use the type column instead of the name column because the name column isn't syntax highlighted.
 					while (iterator < endOfParam)
 						{  
 						PrototypeParsingType type = iterator.PrototypeParsingType;
@@ -484,7 +543,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							type == PrototypeParsingType.Null)
 							{  iterator.Next();   }
 						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-								   type == PrototypeParsingType.OpeningParamModifier)
+									type == PrototypeParsingType.OpeningParamModifier)
 							{  SkipModifierBlock(ref iterator, endOfParam);  }
 						else
 							{  break;  }						
@@ -496,15 +555,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					currentColumn++;
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
-					while (iterator < endOfParam)
-						{  
-						PrototypeParsingType type = iterator.PrototypeParsingType;
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
 
-						if (type == PrototypeParsingType.DefaultValueSeparator ||
-							type == PrototypeParsingType.Null)
-							{  iterator.Next();   }
-						else
-							{  break;  }						
+							if (type == PrototypeParsingType.DefaultValueSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
 						}
 
 
