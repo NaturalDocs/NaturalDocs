@@ -1,0 +1,25 @@
+﻿
+Title: SQL Parser Notes
+_______________________________________________________________________________
+
+There are two variations of PL/SQL that have to be covered by the same parser: Oracle's PL/SQL and Microsoft's
+Transact-SQL.
+
+
+Topic: Oracle PL/SQL
+
+	- <Language Reference: https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/index.html>
+		- <Function Syntax: https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/CREATE-FUNCTION-statement.html>
+		- <SQL Data Types: https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Data-Types.html> and 
+		  <PL/SQL Data Types: https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/plsql-data-types.html>
+		- <Keywords: https://docs.oracle.com/en/database/oracle/oracle-database/19/lnpls/plsql-reserved-words-keywords.html>
+		  (doesn't include types)
+
+
+Topic: Microsoft Transact-SQL
+
+	- <Language Reference: https://docs.microsoft.com/en-us/sql/t-sql/language-reference>
+		- <Function Syntax: https://docs.microsoft.com/en-us/sql/t-sql/statements/create-function-transact-sql>
+		- <Data Types: https://docs.microsoft.com/en-us/sql/t-sql/data-types/data-types-transact-sql>
+		- <Keywords: https://docs.microsoft.com/en-us/sql/t-sql/language-elements/reserved-keywords-transact-sql>
+		  (doesn't include types)

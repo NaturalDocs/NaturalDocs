@@ -51,6 +51,7 @@
     <Compile Include="Source\Files\ImageFile.cs" />
     <Compile Include="Source\Files\Processor.cs" />
     <Compile Include="Source\Languages\CommentFinder.cs" />
+    <Compile Include="Source\Languages\Parsers\SQL.cs" />
     <Compile Include="Source\Languages\Parsers\Ruby.cs" />
     <Compile Include="Source\Languages\Parsers\Python.cs" />
     <Compile Include="Source\Links\ImageLink.cs" />
@@ -286,6 +287,7 @@
     <Content Include="Resources\Config\Comments.txt" />
     <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
+    <Content Include="Source\Languages\Parsers\SQL Notes.txt" />
     <Content Include="Source\Languages\Parsers\Perl Notes.txt" />
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
   </ItemGroup>
