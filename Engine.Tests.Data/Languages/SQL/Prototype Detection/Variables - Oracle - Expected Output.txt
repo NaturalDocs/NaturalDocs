@@ -1,0 +1,31 @@
+Simple INTEGER
+-----
+$Identifier_Symbols# INTEGER
+-----
+Attributes CONSTANT INTEGER NOT NULL
+-----
+DefaultValue1 INTEGER
+-----
+DefaultValue2 VARCHAR
+-----
+DefaultValue3 INTEGER
+-----
+DefaultValue4 Real
+-----
+DefaultValue5 real
+-----
+DefaultValue6 VarChar(12)
+-----
+TypeParens1 INTEGER(6)
+-----
+TypeParens2 INTEGER(6, 8)
+-----
+IndirectType1 SomethingElse%TYPE
+-----
+IndirectType2 Table.Column%TYPE
+-----
+IndirectType3 Table%ROWTYPE
+-----
+AllCombined1 CONSTANT INTEGER(1,2) NOT NULL
+-----
+AllCombined2 CONSTANT Package.SomethingElse%TYPE NOT NULL

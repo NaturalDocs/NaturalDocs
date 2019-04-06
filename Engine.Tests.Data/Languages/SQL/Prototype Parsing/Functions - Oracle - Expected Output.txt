@@ -1,0 +1,328 @@
+- Plain Section: FUNCTION NoParams1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURN NUMBER IS 
+    - Access Level: Unknown
+    - Link Candidates: NUMBER
+
+  - Parameter 1: x NUMBER
+    - Name: x
+    - Full Type: NUMBER
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION NoParams2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURN NUMBER AS 
+    - Access Level: Unknown
+    - Link Candidates: NUMBER
+
+  - Parameter 1: x NUMBER(2,3)
+    - Name: x
+    - Full Type: NUMBER(2,3)
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: CREATE OR REPLACE FUNCTION NoParams3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: FUNCTION Params1 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 INTEGER,
+    - Name: Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2 VARCHAR2(100),
+    - Name: Param2
+    - Full Type: VARCHAR2(100)
+    - Base Type: VARCHAR2
+    - Link Candidates: VARCHAR2
+    - Default Value: (not detected)
+
+  - Parameter 3: Param3 NUMBER(4) DEFAULT 5,
+    - Name: Param3
+    - Full Type: NUMBER(4)
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: 5
+
+  - Parameter 4: Param4 NUMBER(5,6) := 2e-1 
+    - Name: Param4
+    - Full Type: NUMBER(5,6)
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: 2e-1 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURN NUMBER AS 
+    - Access Level: Unknown
+    - Link Candidates: NUMBER
+
+  - Parameter 1: x NUMBER
+    - Name: x
+    - Full Type: NUMBER
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE FUNCTION Params2 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 IN INTEGER,
+    - Name: Param1
+    - Full Type: IN INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2 OUT INTEGER NOT NULL,
+    - Name: Param2
+    - Full Type: OUT INTEGER NOT NULL
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: Param3 IN OUT INTEGER,
+    - Name: Param3
+    - Full Type: IN OUT INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 4: Param4 IN OUT NOCOPY NUMBER NOT NULL
+    - Name: Param4
+    - Full Type: IN OUT NOCOPY NUMBER NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURN NUMBER IS 
+    - Access Level: Unknown
+    - Link Candidates: NUMBER
+
+  - Parameter 1: x NUMBER(2,3) NOT NULL
+    - Name: x
+    - Full Type: NUMBER(2,3) NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE OR REPLACE FUNCTION Params3 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 CLASS.VARIABLE%TYPE,
+    - Name: Param1
+    - Full Type: CLASS.VARIABLE%TYPE
+    - Base Type: CLASS.VARIABLE
+    - Link Candidates: CLASS.VARIABLE
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2 IN OUT NOCOPY NUMBER(5, 6) NOT NULL := +6E2 
+    - Name: Param2
+    - Full Type: IN OUT NOCOPY NUMBER(5, 6) NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: +6E2 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE OR ALTER EDITIONABLE RANDOM_WORD FUNCTION ExtraKeywords (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 INTEGER
+    - Name: Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURN NUMBER IS 
+    - Access Level: Unknown
+    - Link Candidates: NUMBER
+
+  - Parameter 1: x NUMBER NOT NULL
+    - Name: x
+    - Full Type: NUMBER NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION Modifiers1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+- Plain Section: SHARING = NONE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AUTHID DEFINER
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: DEFAULT COLLATION USING_NLS_COMP
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION Modifiers2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+- Plain Section: SHARING = METADATA
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AUTHID CURRENT_USER
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: DETERMINISTIC
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: PARALLEL_ENABLE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RESULT_CACHE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AGGREGATE USING Schema.$IS
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: IS 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x NUMBER NOT NULL
+    - Name: x
+    - Full Type: NUMBER NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION Modifiers3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+- Plain Section: DETERMINISTIC
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: PARALLEL_ENABLE (PARTITION x BY VALUE (col))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RESULT_CACHE RELIES ON (x, y)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: PIPELINED USING Schema.AS#
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION Modifiers4
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+- Plain Section: PARALLEL_ENABLE (PARTITION x BY HASH (col) ORDER x BY (y, z))
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: PIPELINED TABLE POLYMORPHIC USING Schema.#BEGIN
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: IS 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x NUMBER NOT NULL
+    - Name: x
+    - Full Type: NUMBER NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)

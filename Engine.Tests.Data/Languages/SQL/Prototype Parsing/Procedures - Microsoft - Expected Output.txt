@@ -1,0 +1,211 @@
+- Plain Section: PROCEDURE #Identifier1@
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE ##Identifier2$
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE @$schema#.@Id_ent$ifi#er3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE DeclarationSyntax1_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROC DeclarationSyntax2_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE PROCEDURE DeclarationSyntax3_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE OR ALTER PROC DeclarationSyntax4_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: ALTER PROC DeclarationSyntax5_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: PROCEDURE Params1 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 INTEGER,
+    - Name: @Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @Param2 VARCHAR(100),
+    - Name: @Param2
+    - Full Type: VARCHAR(100)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: (not detected)
+
+  - Parameter 3: @Param3 VARCHAR(40) = 'string',
+    - Name: @Param3
+    - Full Type: VARCHAR(40)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: 'string'
+
+  - Parameter 4: @Param4 SCHEMA.NUMBER(5,6) = +.2e-1,
+    - Name: @Param4
+    - Full Type: SCHEMA.NUMBER(5,6)
+    - Base Type: SCHEMA.NUMBER
+    - Link Candidates: SCHEMA.NUMBER
+    - Default Value: +.2e-1
+
+  - Parameter 5: @Param5 VARCHAR(max) = 'escaped''apostrophe',
+    - Name: @Param5
+    - Full Type: VARCHAR(max)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: 'escaped''apostrophe'
+
+  - Parameter 6: @Param6 INTEGER = 0xdeadbeef
+    - Name: @Param6
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: 0xdeadbeef
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE PROC Params2 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 VARYING INTEGER NULL,
+    - Name: @Param1
+    - Full Type: VARYING INTEGER NULL
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @Param2 INTEGER OUT,
+    - Name: @Param2
+    - Full Type: INTEGER OUT
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: @Param3 INTEGER NOT NULL READONLY,
+    - Name: @Param3
+    - Full Type: INTEGER NOT NULL READONLY
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 4: @Param4 VARYING SCHEMA.NUMBER NOT NULL = 12 OUTPUT READONLY
+    - Name: @Param4
+    - Full Type: VARYING SCHEMA.NUMBER NOT NULL OUTPUT READONLY
+    - Base Type: SCHEMA.NUMBER
+    - Link Candidates: SCHEMA.NUMBER
+    - Default Value: 12 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: ALTER PROC Something.Complex 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 INTEGER
+    - Name: @Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: WITH 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: NATIVE_COMPILATION,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: SCHEMABINDING,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: INLINE = OFF,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: EXECUTE AS 'AS'
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+- Plain Section: FOR REPLICATION
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE PROCEDURE Fakeout 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @AS INTEGER,
+    - Name: @AS
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @WITH INTEGER,
+    - Name: @WITH
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: @RETURNS INTEGER
+    - Name: @RETURNS
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)

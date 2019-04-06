@@ -1,0 +1,63 @@
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple1 <span class="SHKeyword">INTEGER</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Simple2 <span class="SHKeyword">AS</span> <span class="SHKeyword">INTEGER</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue1 <span class="SHKeyword">INTEGER</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue2 <span class="SHKeyword">AS</span> <span class="SHKeyword">VARCHAR</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue3 <span class="SHKeyword">INTEGER</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue4 <span class="SHKeyword">AS</span> <span class="SHKeyword">Real</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue5 <span class="SHKeyword">real</span></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @DefaultValue6 <span class="SHKeyword">AS</span> <span class="SHKeyword">VarChar</span>(<span class="SHNumber">12</span>)</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens1 <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>)</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @TypeParens2 <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">6</span>, <span class="SHNumber">8</span>)</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @AllCombined <span class="SHKeyword">AS</span> <span class="SHKeyword">NUMERIC</span>(<span class="SHNumber">3</span>,<span class="SHNumber">4</span>)</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">DECLARE</span> @Cursor <span class="SHKeyword">CURSOR</span></div></div>
+-----
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table1 <span class="SHKeyword">TABLE</span> (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PName first">Column1&nbsp;</td>
+            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+            <td></td>
+            <td class="last"></td>
+         </tr><tr>
+            <td class="PName first">Column2&nbsp;</td>
+            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div></div>
+-----
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">DECLARE</span> @Table2 <span class="SHKeyword">AS</span> <span class="SHKeyword">TABLE</span>(</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PName first">Column1&nbsp;</td>
+            <td class="PType"><span class="SHKeyword">INT</span> <span class="SHKeyword">PRIMARY KEY NOT NULL</span>,</td>
+            <td></td>
+            <td class="last"></td>
+         </tr><tr>
+            <td class="PName first">Column2&nbsp;</td>
+            <td class="PType"><span class="SHKeyword">NVARCHAR</span>(<span class="SHNumber">255</span>)</td>
+            <td class="PDefaultValueSeparator">&nbsp;<span class="SHKeyword">DEFAULT</span>&nbsp;</td>
+            <td class="PDefaultValue last"><span class="SHString">'string'</span></td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div></div>

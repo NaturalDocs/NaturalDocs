@@ -1,0 +1,29 @@
+DECLARE @Simple1 INTEGER
+-----
+DECLARE @Simple2 AS INTEGER
+-----
+DECLARE @Ident#fier_$ymb@ls INTEGER
+-----
+DECLARE @DefaultValue1 INTEGER
+-----
+DECLARE @DefaultValue2 AS VARCHAR
+-----
+DECLARE @DefaultValue3 INTEGER
+-----
+DECLARE @DefaultValue4 AS Real
+-----
+DECLARE @DefaultValue5 real
+-----
+DECLARE @DefaultValue6 AS VarChar(12)
+-----
+DECLARE @TypeParens1 NUMERIC(6)
+-----
+DECLARE @TypeParens2 AS NUMERIC(6, 8)
+-----
+DECLARE @AllCombined AS NUMERIC(3,4)
+-----
+DECLARE @Cursor CURSOR
+-----
+DECLARE @Table1 TABLE ( Column1 INT PRIMARY KEY NOT NULL, Column2 NVARCHAR(255) DEFAULT 'string' )
+-----
+DECLARE @Table2 AS TABLE(Column1 INT PRIMARY KEY NOT NULL,Column2 NVARCHAR(255) DEFAULT 'string')

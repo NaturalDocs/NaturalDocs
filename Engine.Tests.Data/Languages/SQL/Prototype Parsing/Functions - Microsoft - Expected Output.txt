@@ -1,0 +1,431 @@
+- Plain Section: FUNCTION #Identifier1@
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: FUNCTION ##Identifier2$
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: FUNCTION @$schema#.@Id_ent$if#er3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: FUNCTION A.[B C].Identifier4
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: FUNCTION A.[B.C].Identifier5
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: FUNCTION DeclarationSyntax1_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: CREATE FUNCTION DeclarationSyntax2_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS SCHEMA.INTEGER(2,3)
+  - Access Level: Unknown
+  - Link Candidates: SCHEMA.INTEGER
+
+------------------------------
+
+- Plain Section: CREATE OR ALTER FUNCTION DeclarationSyntax3_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS TABLE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: ALTER FUNCTION DeclarationSyntax4_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURNS TABLE (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Column1 INT PRIMARY KEY NOT NULL,
+    - Name: Column1
+    - Full Type: INT PRIMARY KEY NOT NULL
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - Parameter 2: Column2 NVARCHAR(255) DEFAULT 'string' 
+    - Name: Column2
+    - Full Type: NVARCHAR(255)
+    - Base Type: NVARCHAR
+    - Link Candidates: NVARCHAR
+    - Default Value: 'string' 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE OR ALTER FUNCTION DeclarationSyntax5_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS TABLE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE OR ALTER FUNCTION DeclarationSyntax6_NoParams
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: RETURNS @VariableName TABLE (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Column1 INT PRIMARY KEY NOT NULL,
+    - Name: Column1
+    - Full Type: INT PRIMARY KEY NOT NULL
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - Parameter 2: Column2 NVARCHAR(255) DEFAULT 'string' 
+    - Name: Column2
+    - Full Type: NVARCHAR(255)
+    - Base Type: NVARCHAR
+    - Link Candidates: NVARCHAR
+    - Default Value: 'string' 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: FUNCTION Params1 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 INTEGER,
+    - Name: @Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @Param2 VARCHAR(100),
+    - Name: @Param2
+    - Full Type: VARCHAR(100)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: (not detected)
+
+  - Parameter 3: @Param3 VARCHAR(40) = 'string',
+    - Name: @Param3
+    - Full Type: VARCHAR(40)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: 'string'
+
+  - Parameter 4: @Param4 AS SCHEMA.NUMBER(5,6) = +.2e-1,
+    - Name: @Param4
+    - Full Type: SCHEMA.NUMBER(5,6)
+    - Base Type: SCHEMA.NUMBER
+    - Link Candidates: SCHEMA.NUMBER
+    - Default Value: +.2e-1
+
+  - Parameter 5: @Param5 AS VARCHAR(max) = 'escaped''apostrophe',
+    - Name: @Param5
+    - Full Type: VARCHAR(max)
+    - Base Type: VARCHAR
+    - Link Candidates: VARCHAR
+    - Default Value: 'escaped''apostrophe'
+
+  - Parameter 6: @Param6 AS INTEGER = 0xdeadbeef
+    - Name: @Param6
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: 0xdeadbeef
+
+- Plain Section: RETURNS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE FUNCTION @Params2 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 VARYING INTEGER NULL,
+    - Name: @Param1
+    - Full Type: VARYING INTEGER NULL
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @Param2 INTEGER OUT,
+    - Name: @Param2
+    - Full Type: INTEGER OUT
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: @Param3 AS INTEGER NOT NULL READONLY,
+    - Name: @Param3
+    - Full Type: INTEGER NOT NULL READONLY
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 4: @Param4 AS VARYING SCHEMA.NUMBER NOT NULL = 12 READONLY
+    - Name: @Param4
+    - Full Type: VARYING SCHEMA.NUMBER NOT NULL READONLY
+    - Base Type: SCHEMA.NUMBER
+    - Link Candidates: SCHEMA.NUMBER
+    - Default Value: 12 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: RETURNS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: FUNCTION With1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+- Parameter Section:
+  - Before Parameters: WITH 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: NATIVE_COMPILATION,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: SCHEMABINDING,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: EXECUTE AS 'Name'
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: FUNCTION With2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+- Parameter Section:
+  - Before Parameters: WITH 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: EXEC AS 'RETURNS',
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: INLINE = OFF,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: RETURNS NULL ON NULL INPUT
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Plain Section: CREATE OR ALTER FUNCTION With3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURNS TABLE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: WITH 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: EXECUTE AS 'BEGIN'
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: ALTER FUNCTION @Something.@Complex 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @Param1 INTEGER
+    - Name: @Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: RETURNS TABLE (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Column1 INT PRIMARY KEY NOT NULL,
+    - Name: Column1
+    - Full Type: INT PRIMARY KEY NOT NULL
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - Parameter 2: Column2 NVARCHAR(255) DEFAULT 'string' 
+    - Name: Column2
+    - Full Type: NVARCHAR(255)
+    - Base Type: NVARCHAR
+    - Link Candidates: NVARCHAR
+    - Default Value: 'string' 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: WITH 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: NATIVE_COMPILATION,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: SCHEMABINDING,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: EXECUTE AS 'AS',
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: INLINE = OFF,
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 5: RETURNS NULL ON NULL INPUT
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE FUNCTION Fakeout 
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: @AS INTEGER,
+    - Name: @AS
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: @WITH INTEGER,
+    - Name: @WITH
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: @RETURNS INTEGER
+    - Name: @RETURNS
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+- Parameter Section:
+  - Before Parameters: RETURNS @WITH TABLE (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Column1 INT
+    - Name: Column1
+    - Full Type: INT
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)

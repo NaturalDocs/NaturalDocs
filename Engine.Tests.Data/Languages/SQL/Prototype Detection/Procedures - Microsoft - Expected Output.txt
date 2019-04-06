@@ -1,0 +1,31 @@
+PROCEDURE #Identifier1@
+-----
+PROCEDURE ##Identifier2$
+-----
+PROCEDURE @$schema#.@Id_ent$ifi#er3
+-----
+PROCEDURE Keyword_AS_Fakeout
+-----
+PROCEDURE Keyword#AS@Fakeout
+-----
+PROCEDURE Keyword_IS_Fakeout
+-----
+PROCEDURE Keyword$IS#Fakeout
+-----
+PROCEDURE DeclarationSyntax1_NoParams
+-----
+PROC DeclarationSyntax2_NoParams
+-----
+CREATE PROCEDURE DeclarationSyntax3_NoParams
+-----
+CREATE OR ALTER PROC DeclarationSyntax4_NoParams
+-----
+ALTER PROC DeclarationSyntax5_NoParams
+-----
+PROCEDURE Params1 @Param1 INTEGER, @Param2 VARCHAR(100), @Param3 VARCHAR(40) = 'string', @Param4 AS SCHEMA.NUMBER(5,6) = +.2e-1, @Param5 AS VARCHAR(max) = 'escaped''apostrophe', @Param6 AS INTEGER = 0xdeadbeef
+-----
+CREATE PROC Params2 ( @Param1 VARYING INTEGER NULL, @Param2 INTEGER OUT, @Param3 AS INTEGER NOT NULL READONLY, @Param4 AS VARYING SCHEMA.NUMBER NOT NULL = 12 OUTPUT READONLY)
+-----
+ALTER PROC WithStatement @Param1 INTEGER WITH NATIVE_COMPILATION, SCHEMABINDING, INLINE = OFF, EXECUTE AS 'AS' FOR REPLICATION
+-----
+CREATE PROC Fakeout @AS INTEGER, @WITH INTEGER, @RETURNS INTEGER

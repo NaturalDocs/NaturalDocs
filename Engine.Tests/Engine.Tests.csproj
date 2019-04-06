@@ -111,6 +111,8 @@
     <Compile Include="Source\Languages\Python\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Ruby\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
+    <Compile Include="Source\Languages\SQL\PrototypeDetection.cs" />
+    <Compile Include="Source\Languages\SQL\PrototypeParsing.cs" />
     <Compile Include="Source\Output\HTML\Anchors.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\ClassPrototypes\Python.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Source\Output\HTML\Links.cs" />
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\Prototypes\SQL.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\CSharp.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\BasicSupport.cs" />
     <Compile Include="Source\Output\HTML\SyntaxHighlighting\CSharp.cs" />

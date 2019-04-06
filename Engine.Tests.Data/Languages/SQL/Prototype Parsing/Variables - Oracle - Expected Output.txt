@@ -1,0 +1,93 @@
+- Plain Section: Simple INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: $Identifier_Symbols# INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: Attributes CONSTANT INTEGER NOT NULL
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DefaultValue1 INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DefaultValue2 VARCHAR
+  - Access Level: Unknown
+  - Link Candidates: VARCHAR
+
+------------------------------
+
+- Plain Section: DefaultValue3 INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DefaultValue4 Real
+  - Access Level: Unknown
+  - Link Candidates: Real
+
+------------------------------
+
+- Plain Section: DefaultValue5 real
+  - Access Level: Unknown
+  - Link Candidates: real
+
+------------------------------
+
+- Plain Section: DefaultValue6 VarChar(12)
+  - Access Level: Unknown
+  - Link Candidates: VarChar
+
+------------------------------
+
+- Plain Section: TypeParens1 INTEGER(6)
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: TypeParens2 INTEGER(6, 8)
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: IndirectType1 SomethingElse%TYPE
+  - Access Level: Unknown
+  - Link Candidates: SomethingElse
+
+------------------------------
+
+- Plain Section: IndirectType2 MyTable.Column%TYPE
+  - Access Level: Unknown
+  - Link Candidates: MyTable.Column
+
+------------------------------
+
+- Plain Section: IndirectType3 MyTable%ROWTYPE
+  - Access Level: Unknown
+  - Link Candidates: MyTable
+
+------------------------------
+
+- Plain Section: AllCombined1 CONSTANT INTEGER(1,2) NOT NULL
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: AllCombined2 CONSTANT Package.SomethingElse%TYPE NOT NULL
+  - Access Level: Unknown
+  - Link Candidates: Package.SomethingElse

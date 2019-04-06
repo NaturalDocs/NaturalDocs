@@ -4,7 +4,7 @@
 -----
 <pre><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Perl&quot;</span>;<br />// C comment<br /><span class="SHComment"># Perl comment</span><br />-- SQL comment</pre>
 -----
-<pre><span class="SHKeyword">string</span> language = <span class="SHString">&quot;SQL&quot;</span>;<br />// C comment<br /># Perl comment<br /><span class="SHComment">-- SQL comment</span></pre>
+<pre><span class="SHKeyword">string language</span> = <span class="SHString">&quot;SQL&quot;</span>;<br />// C <span class="SHKeyword">comment</span><br /># Perl <span class="SHKeyword">comment</span><br /><span class="SHComment">-- SQL comment</span></pre>
 -----
 <pre><span class="SHKeyword">string</span> language = <span class="SHString">&quot;Pascal&quot;</span>;<br /># Perl comment<br /><span class="SHComment">// Pascal comment 1</span><br /><span class="SHComment">(* Pascal comment 2 *)</span><br /><span class="SHComment">{ Pascal comment 3 }</span><br />-- SQL comment</pre>
 -----

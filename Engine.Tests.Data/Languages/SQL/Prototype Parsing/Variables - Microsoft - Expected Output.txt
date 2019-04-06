@@ -1,0 +1,123 @@
+- Plain Section: DECLARE @Simple1 INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DECLARE @Simple2 AS INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DECLARE @Ident#fier_$ymb@ls INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue1 INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue2 AS VARCHAR
+  - Access Level: Unknown
+  - Link Candidates: VARCHAR
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue3 INTEGER
+  - Access Level: Unknown
+  - Link Candidates: INTEGER
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue4 AS Real
+  - Access Level: Unknown
+  - Link Candidates: Real
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue5 real
+  - Access Level: Unknown
+  - Link Candidates: real
+
+------------------------------
+
+- Plain Section: DECLARE @DefaultValue6 AS VarChar(12)
+  - Access Level: Unknown
+  - Link Candidates: VarChar
+
+------------------------------
+
+- Plain Section: DECLARE @TypeParens1 NUMERIC(6)
+  - Access Level: Unknown
+  - Link Candidates: NUMERIC
+
+------------------------------
+
+- Plain Section: DECLARE @TypeParens2 AS NUMERIC(6, 8)
+  - Access Level: Unknown
+  - Link Candidates: NUMERIC
+
+------------------------------
+
+- Plain Section: DECLARE @AllCombined AS NUMERIC(3,4)
+  - Access Level: Unknown
+  - Link Candidates: NUMERIC
+
+------------------------------
+
+- Plain Section: DECLARE @Cursor CURSOR
+  - Access Level: Unknown
+  - Link Candidates: CURSOR
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: DECLARE @Table1 TABLE (
+    - Access Level: Unknown
+    - Link Candidates: TABLE
+
+  - Parameter 1: Column1 INT PRIMARY KEY NOT NULL,
+    - Name: Column1
+    - Full Type: INT PRIMARY KEY NOT NULL
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - Parameter 2: Column2 NVARCHAR(255) DEFAULT 'string' 
+    - Name: Column2
+    - Full Type: NVARCHAR(255)
+    - Base Type: NVARCHAR
+    - Link Candidates: NVARCHAR
+    - Default Value: 'string' 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: DECLARE @Table2 AS TABLE(
+    - Access Level: Unknown
+    - Link Candidates: TABLE
+
+  - Parameter 1: Column1 INT PRIMARY KEY NOT NULL,
+    - Name: Column1
+    - Full Type: INT PRIMARY KEY NOT NULL
+    - Base Type: INT
+    - Link Candidates: INT
+    - Default Value: (not detected)
+
+  - Parameter 2: Column2 NVARCHAR(255) DEFAULT 'string'
+    - Name: Column2
+    - Full Type: NVARCHAR(255)
+    - Base Type: NVARCHAR
+    - Link Candidates: NVARCHAR
+    - Default Value: 'string'
+
+  - After Parameters: )
+    - Link Candidates: (none)

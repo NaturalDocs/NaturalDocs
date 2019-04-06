@@ -1,0 +1,180 @@
+- Plain Section: PROCEDURE #Identifier1$
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE #$package.$Id_ent#ifi$er2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE NoParams1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE NoParams2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: PROCEDURE NoParams3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: PROCEDURE Params1 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 INTEGER,
+    - Name: Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2 VARCHAR2(100),
+    - Name: Param2
+    - Full Type: VARCHAR2(100)
+    - Base Type: VARCHAR2
+    - Link Candidates: VARCHAR2
+    - Default Value: (not detected)
+
+  - Parameter 3: Param3 NUMBER(4) DEFAULT 5,
+    - Name: Param3
+    - Full Type: NUMBER(4)
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: 5
+
+  - Parameter 4: Param4 NUMBER(5,6) := 2e-1 
+    - Name: Param4
+    - Full Type: NUMBER(5,6)
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: 2e-1 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE PROCEDURE Params2 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 IN INTEGER,
+    - Name: Param1
+    - Full Type: IN INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2 OUT INTEGER NOT NULL,
+    - Name: Param2
+    - Full Type: OUT INTEGER NOT NULL
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 3: Param3 IN OUT INTEGER,
+    - Name: Param3
+    - Full Type: IN OUT INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 4: Param4 IN OUT NOCOPY NUMBER NOT NULL
+    - Name: Param4
+    - Full Type: IN OUT NOCOPY NUMBER NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE OR REPLACE PROCEDURE Params3 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 CLASS.VARIABLE%TYPE,
+    - Name: Param1
+    - Full Type: CLASS.VARIABLE%TYPE
+    - Base Type: CLASS.VARIABLE
+    - Link Candidates: CLASS.VARIABLE
+    - Default Value: (not detected)
+
+  - Parameter 2: Param2$ IN OUT NOCOPY NUMBER(5, 6) NOT NULL := +6E2 
+    - Name: Param2$
+    - Full Type: IN OUT NOCOPY NUMBER(5, 6) NOT NULL
+    - Base Type: NUMBER
+    - Link Candidates: NUMBER
+    - Default Value: +6E2 
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CREATE OR REPLACE EDITIONABLE RANDOM_WORD PROCEDURE ExtraKeywords (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: Param1 INTEGER
+    - Name: Param1
+    - Full Type: INTEGER
+    - Base Type: INTEGER
+    - Link Candidates: INTEGER
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE PROCEDURE Modifiers1
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: SHARING = NONE
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AUTHID DEFINER
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: CREATE PROCEDURE Modifiers2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: SHARING = METADATA
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: AUTHID CURRENT_USER
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: DEFAULT COLLATION USING_NLS_COMP
+  - Access Level: Unknown
+  - Link Candidates: (none)
