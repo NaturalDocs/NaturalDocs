@@ -135,9 +135,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
 				{  language.SyntaxHighlight(parsedPrototype);  }
 
-			// We always build the wide form by default, but only include the attribute if there's parameters
+			// Determine if there's parameters anywhere.  It's possible for parsedPrototype.NumberOfParameters to be zero and 
+			// there still be a parameters section present somewhere such as for SQL's return table definitions.
+			bool hasParameters = false;
+
+			foreach (var section in parsedPrototype.Sections)
+				{
+				if (section is Prototypes.ParameterSection && (section as Prototypes.ParameterSection).NumberOfParameters > 0)
+					{  
+					hasParameters = true;
+					break;
+					}
+				}
+
+			// We always build the wide form by default, but only include the attribute if there's parameters.  The JavaScript assumes
+			// there will be a parameters section in any prototype that has it.
 			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype" +
-										(parsedPrototype.NumberOfParameters > 0 ? " WideForm" : "") + "\">");
+										(hasParameters ? " WideForm" : "") + "\">");
 
 			foreach (var section in parsedPrototype.Sections)
 				{
