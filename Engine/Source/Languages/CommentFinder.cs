@@ -47,6 +47,82 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			}
 
 
+		/* Function: GenerateJavadocCommentStrings
+		 * If they're not already defined, generate <JavadocLineCommentStringPairs> and <JavadocBlockCommentStringPairs>
+		 * from <LineCommentStrings> and <BlockCommentStringPairs>.
+		 */
+		public void GenerateJavadocCommentStrings ()
+			{
+			if (javadocBlockCommentStringPairs == null && blockCommentStringPairs != null)
+				{
+				int count = 0;
+
+				for (int i = 0; i < blockCommentStringPairs.Length; i += 2)
+					{
+					// We only accept strings like /* */ and (* *).  Anything else doesn't get it.
+					if (blockCommentStringPairs[i].Length == 2 && 
+						 blockCommentStringPairs[i+1].Length == 2 &&
+						 blockCommentStringPairs[i][1] == '*' &&
+						 blockCommentStringPairs[i+1][0] == '*')
+						{  count++;  }
+					}
+
+				if (count > 0)
+					{
+					javadocBlockCommentStringPairs = new string[count * 2];
+					int javadocIndex = 0;
+
+					for (int i = 0; i < blockCommentStringPairs.Length; i += 2)
+						{
+						if (blockCommentStringPairs[i].Length == 2 && 
+							 blockCommentStringPairs[i+1].Length == 2 &&
+							 blockCommentStringPairs[i][1] == '*' &&
+							 blockCommentStringPairs[i+1][0] == '*')
+							{  
+							javadocBlockCommentStringPairs[javadocIndex] = blockCommentStringPairs[i] + '*';
+							javadocBlockCommentStringPairs[javadocIndex+1] = blockCommentStringPairs[i+1];
+							javadocIndex += 2;
+							}
+						}
+					}
+				}
+
+			if (javadocLineCommentStringPairs == null && lineCommentStrings != null)
+				{
+				javadocLineCommentStringPairs = new string[lineCommentStrings.Length * 2];
+
+				for (int i = 0; i < lineCommentStrings.Length; i++)
+					{
+					javadocLineCommentStringPairs[i*2] = lineCommentStrings[i] + lineCommentStrings[i][ lineCommentStrings[i].Length - 1 ];
+					javadocLineCommentStringPairs[(i*2)+1] = lineCommentStrings[i];
+					}
+				}
+			}
+
+
+		/* Function: GenerateXMLCommentStrings
+		 * If they're not already defined, generate <XMLLineCommentStrings> from <LineCommentStrings>.
+		 */
+		public void GenerateXMLCommentStrings ()
+			{
+			if (xmlLineCommentStrings == null && lineCommentStrings != null)
+				{
+				xmlLineCommentStrings = new string[lineCommentStrings.Length];
+
+				for (int i = 0; i < lineCommentStrings.Length; i++)
+					{
+					// If it's only one character, turn it to three like ''' in Visual Basic.
+					if (lineCommentStrings[i].Length == 1)
+						{  xmlLineCommentStrings[i] = lineCommentStrings[i] + lineCommentStrings[i][0] + lineCommentStrings[i];  }
+
+					// Otherwise just duplicate the last charater like /// in C#.
+					else
+						{  xmlLineCommentStrings[i] = lineCommentStrings[i] + lineCommentStrings[i][ lineCommentStrings[i].Length - 1 ];  }
+					}
+				}
+			}
+
+
 		/* Function: GetPossibleDocumentationComments
 		 * 
 		 * 	Goes through the source looking for comments that could possibly contain documentation and returns them as a list.  These

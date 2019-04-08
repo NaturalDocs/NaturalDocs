@@ -297,7 +297,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// binary files in case the generation method changes in a future version.
 
 			foreach (Language language in languages)
-				{  language.GenerateAlternateCommentStyles();  }
+				{
+				if (language.Type == Language.LanguageType.BasicSupport)
+					{  
+					language.GenerateJavadocCommentStrings();
+					language.GenerateXMLCommentStrings();
+					}
+				}
 
 			
 			// Compare the structures with the binary ones to see if anything changed.
