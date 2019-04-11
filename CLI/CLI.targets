@@ -90,8 +90,13 @@
 		<Target Name="CLI_CopyTranslationResources">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)CLI\Resources\Translations" "$(TargetDir)Translations" /Y' />
-
+			<ItemGroup>
+                            <NDCLIResTrn Include="$(NaturalDocsSourceDir)CLI\Resources\Translations\**\*.*" />
+                        </ItemGroup>
+			<Copy
+                                SourceFiles="@(NDCLIResTrn)"
+                                DestinationFolder="$(TargetDir)Translations"
+                                />
 		</Target>
 	
 	
