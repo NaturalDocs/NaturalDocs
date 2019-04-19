@@ -90,7 +90,14 @@
 		<Target Name="CLI_CopyTranslationResources">
 
 			<MakeDir Directories="$(TargetDir)Translations" />
-			<Exec Command='xcopy "$(NaturalDocsSourceDir)CLI\Resources\Translations" "$(TargetDir)Translations" /Y' />
+			<Exec
+				Condition="'$(OS)'=='Windows_NT'"
+				Command='xcopy "$(NaturalDocsSourceDir)CLI\Resources\Translations" "$(TargetDir)Translations" /Y'
+				/>
+			<Exec
+				Condition="'$(OS)'!='Windows_NT'"
+				Command='cp -f -r "$(NaturalDocsSourceDir)CLI/Resources/Translations" "$(TargetDir)"'
+				/>
 
 		</Target>
 	
