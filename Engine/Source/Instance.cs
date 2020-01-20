@@ -45,11 +45,11 @@
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
  *		   
- *		- <Files.Processor> in next because it needs to be added as a <Files.Manager> watcher.
- *		
- *		- <Files.Manager> is last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
+ *		- <Files.Manager> is almost last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
  *		  
+ *		- <Files.Processor> is last because it depends on <Files.Manager>.
+ *		
  * 
  * File: GracefulExit.nd
  * 
@@ -238,8 +238,8 @@ namespace CodeClear.NaturalDocs.Engine
 				searchIndex.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
-				fileProcessor.Start(errors) &&
-				files.Start(errors)
+				files.Start(errors) &&
+				fileProcessor.Start(errors)
 				);
 			}
 			
@@ -624,15 +624,6 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return output;  }
 			}
 
-		/* Property: FileProcessor
-		 * Returns the <Files.Processor> associated with this instance.
-		 */
-		public Files.Processor FileProcessor
-			{
-			get
-				{  return fileProcessor;  }
-			}
-			
 		/* Property: Files
 		 * Returns the <Files.Manager> associated with this instance.
 		 */
@@ -640,6 +631,15 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			get
 				{  return files;  }
+			}
+			
+		/* Property: FileProcessor
+		 * Returns the <Files.Processor> associated with this instance.
+		 */
+		public Files.Processor FileProcessor
+			{
+			get
+				{  return fileProcessor;  }
 			}
 			
 			
