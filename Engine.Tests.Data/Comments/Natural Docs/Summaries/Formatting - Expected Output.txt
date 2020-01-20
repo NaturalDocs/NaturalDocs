@@ -1,1 +1,1 @@
-Formatting such as <b>bold</b> and <u>underline</u> and <link type="naturaldocs" originaltext="&lt;links&gt;"> should not affect the summary.  Here's a <b>second</b> <u>sentence</u> with <link type="naturaldocs" originaltext="&lt;them&gt;"> too.
+Formatting such as <b>bold</b>, <u>underline</u>, <i>italics</i>, <code>code</code>, and <link type="naturaldocs" originaltext="&lt;links&gt;"> should not affect the summary.  Here's a <b>second</b> <u>sentence</u> <code>with<code> <link type="naturaldocs" originaltext="&lt;them&gt;"> <i>too</i>.

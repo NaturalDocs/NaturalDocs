@@ -1,9 +1,26 @@
+# Build Results
+.vs/
+x64/
+x686/
+[Bb]in/
+[Dd]ebug/
+[Ll]og
+[Oo]bj/
+[Rr]elease/
 
-#ignore thumbnails created by windows
-Thumbs.db
-#Ignore files build by Visual Studio
-*.csproj.user
-bin/
-obj/
-CLI.Package.MSI/
-CLI.Package.ZIP/
+
+# MSTest Test Results
+[Tt]est[Rr]esults*/
+[Bb]uild[Ll]og.*/
+
+
+# Various File Suffixes
+*.exe
+*.meta
+*.obj
+*.pdb
+*.pgc
+*.pgd
+*.svclog
+*.temp*
+*.tmp*

@@ -2223,8 +2223,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 			
 		/* Function: MarkPossibleFormattingTags
-		 * Goes through the passed <Tokenizer> and marks asterisks and underscores with <CommentParsingType.PossibleOpeningTag> and 
-		 * <CommentParsingType.PossibleClosingTag> if they can possibly be interpreted as bold and underline formatting.
+		 * Goes through the passed <Tokenizer> and marks asterisks, underscores, slashes, and backticks with
+		 * <CommentParsingType.PossibleOpeningTag> and  <CommentParsingType.PossibleClosingTag> if they can possibly be interpreted as
+		 * bold, underline, italic, or in-line code formatting (respectively).
 		 */
 		protected void MarkPossibleFormattingTags (Tokenizer tokenizer)
 			{
@@ -2232,7 +2233,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{
 				char character = token.Character;
 				
-				if (character == '_' || character == '*')
+				if (character == '_' || character == '*' || character == '/' || character == '`')
 					{					
 					// Possible opening symbols
 
@@ -2242,9 +2243,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					TokenIterator prev = token;
 					prev.Previous();
 
-					// Prevent *=, __, ** from counting.					
+					// Prevent *=, __, **, /= from counting.					
 					if ( (character == '*' && (next.Character == '=' || next.Character == '*' || prev.Character == '*')) ||
-						  character == '_' && (next.Character == '_' || prev.Character == '_') )
+						 (character == '_' && (next.Character == '_' || prev.Character == '_')) ||
+						 (character == '/' && next.Character == '=') )
 						{  goto ClosingSymbols;  }
 							
 					// The next token must also be non-whitespace.
@@ -2278,9 +2280,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					prev = token;
 					prev.Previous();
 					
-					// Prevent *=, **, __ from counting.						
+					// Prevent *=, **, __, /= from counting.						
 					if ( (character == '*' && (next.Character == '=' || next.Character == '*' || prev.Character == '*')) ||
-						  character == '_' && (next.Character == '_' || prev.Character == '_') )
+						 (character == '_' && (next.Character == '_' || prev.Character == '_')) ||
+						 (character == '/' && next.Character == '=') )
 						{  continue;  }
 							
 					// The previous token must also be non-whitespace.
@@ -2347,10 +2350,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						}
 							
 					// An opening link tag can only be preceded by another opening tag without intervening whitespace if
-					// it's a bold or underline tag.
+					// it's a bold, underline, or italic tag; code tags cannot be further formatted.
 					if (prev.CommentParsingType == CommentParsingType.PossibleOpeningTag)
 						{
-						if (prev.Character != '*' && prev.Character != '_')
+						if (prev.Character != '*' && prev.Character != '_' && prev.Character != '/')
 							{  continue;  }
 						}
 
@@ -2404,12 +2407,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 								end.FundamentalType != FundamentalType.Null &&
 								end.CommentParsingType != CommentParsingType.PossibleClosingTag)
 						{  end.Next();  }
-							
+
 					// A closing link tag can only be followed by another closing tag without intervening whitespace if
-					// it's a bold or underline tag.
+					// it's a bold, underline, or italic tag; code tags cannot be further formatted.
 					if (end.CommentParsingType == CommentParsingType.PossibleClosingTag)
 						{
-						if (end.Character != '*' && end.Character != '_')
+						if (end.Character != '*' && end.Character != '_' && end.Character != '/')
 							{  continue;  }
 						}
 
@@ -2859,7 +2862,10 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							lookahead.Next();
 							}
 						}
-						
+					else if (tokenIterator.Character == '/')
+						{ output.Append("<i>"); }
+					else if (tokenIterator.Character == '`')
+						{ output.Append("<code>"); }
 					else if (tokenIterator.Character == '(' || tokenIterator.Character == '<')
 						{
 						TokenIterator startOfContent = tokenIterator;
@@ -2984,7 +2990,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						output.Append("</u>");  
 						eatUnderscores = false;
 						}
-						
+					else if (tokenIterator.Character == '/')
+						{
+						output.Append("</i>");
+						}
+					else if (tokenIterator.Character == '`')
+						{
+						output.Append("</code>");
+						}
+
 					tokenIterator.Next();
 					}
 					

@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 				BulletListTag, BulletListItemTag,
 				DefinitionListTag, DefinitionListEntryTag, DefinitionListSymbolTag, DefinitionListDefinitionTag,
 
-				BoldTag, ItalicsTag, UnderlineTag,
+				BoldTag, ItalicsTag, UnderlineTag, CodeTag,
 				LinkTag,
 
 			HighestTagValue
@@ -79,6 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.NDMarkup
 			TagNameToElementType.Add("b", ElementType.BoldTag);
 			TagNameToElementType.Add("i", ElementType.ItalicsTag);
 			TagNameToElementType.Add("u", ElementType.UnderlineTag);
+			TagNameToElementType.Add("code", ElementType.CodeTag);
 			TagNameToElementType.Add("link", ElementType.LinkTag);
 
 			EntityCharToElementType = new Collections.StringTable<ElementType>();
