@@ -98,6 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			claimedFolderPrefixes = new StringSet (KeySettings.IgnoreCase);			
 
 			files = new IDObjects.Manager<File>(Config.Manager.KeySettingsForPaths, false);
+			unprocessedChanges = new UnprocessedChanges();
 			
 			accessLock = new object();
 			changeWatchers = new List<IChangeWatcher>();
@@ -110,6 +111,14 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			if (!strictRulesApply)
 				{
+				// Set the last modification time to zero for anything still being worked on
+				DateTime zero = new DateTime(0);
+				
+				foreach (int id in unprocessedChanges.AllNewOrChangedFileIDs)
+					{  files[id].LastModified = zero;  }
+				foreach (int id in unprocessedChanges.AllDeletedFileIDs)
+					{  files[id].LastModified = zero;  }
+
 				foreach (FileSource fileSource in fileSources)
 					{
 					if (fileSource is IDisposable)
@@ -167,6 +176,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public bool Start (Errors.ErrorList errors)
 			{
 			int startingErrorCount = errors.Count;
+
+
+			// Validate FileSources
 			
 			if (fileSources.Count == 0)
 				{
@@ -179,6 +191,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				foreach (FileSource fileSource in fileSources)
 					{  fileSource.Validate(errors);  }
 				}
+
+
+			// Make sure no source folders are completely ignored because of filters
 				
 			foreach (FileSource fileSource in fileSources)
 				{
@@ -195,13 +210,16 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						}
 					}
 				}
-				
+
+
+			// Load Files.nd
+
 			if (EngineInstance.Config.ReparseEverything == false)
 				{
 				if (LoadBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files) == false)
 					{  EngineInstance.Config.ReparseEverything = true;  }
 				}
-		        			
+
 			return (errors.Count == startingErrorCount);
 			}
 			
@@ -495,8 +513,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					else
 						{  file = new File(name, type, lastModified);  }
 
-					file.Status = FileFlags.NewOrChanged;
 					files.Add(file);
+
+					unprocessedChanges.AddNewFile(file);
 					
 					foreach (var changeWatcher in changeWatchers)
 						{  changeWatcher.OnAddFile(file);  }
@@ -509,42 +528,28 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					throw new Exception("Added an existing file but the types didn't match.");
 					}
 
-				else if (file.Claimed == true)
+				else if (file.LastModified != lastModified || file.Deleted || forceReparse)
 					{
-					if (file.LastModified != lastModified || file.StatusSinceClaimed == FileFlags.DeletedSinceClaimed || forceReparse)
-						{
-						bool wasDeletedSinceClaimed = (file.StatusSinceClaimed == FileFlags.DeletedSinceClaimed);
+					bool wasDeleted = file.Deleted;
 
-						file.LastModified = lastModified;
-						file.StatusSinceClaimed = FileFlags.NewOrChangedSinceClaimed;
+					file.Deleted = false;
+					file.LastModified = lastModified;
+
+					if (wasDeleted)
+						{
+						unprocessedChanges.AddNewFile(file);
 
 						foreach (var changeWatcher in changeWatchers)
-							{  
-							if (wasDeletedSinceClaimed)
-								{  changeWatcher.OnAddFile(file);  }
-							else
-								{  changeWatcher.OnFileChanged(file);  }
-							}
-		
-						changed = true;
-						}
-					}
-
-				else if (file.LastModified != lastModified || file.Status == FileFlags.Deleted || forceReparse)
-					{
-					bool wasDeleted = (file.Status == FileFlags.Deleted);
-
-					file.LastModified = lastModified;
-					file.Status = FileFlags.NewOrChanged;
-					
-					foreach (var changeWatcher in changeWatchers)
-						{  
-						if (wasDeleted)
 							{  changeWatcher.OnAddFile(file);  }
-						else
+						}
+					else
+						{
+						unprocessedChanges.AddChangedFile(file);
+
+						foreach (var changeWatcher in changeWatchers)
 							{  changeWatcher.OnFileChanged(file);  }
 						}
-
+					
 					changed = true;
 					}
 
@@ -577,22 +582,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					// Nada
 					}
 
-				else if (file.Claimed == true)
+				else if (!file.Deleted)
 					{
-					if (file.StatusSinceClaimed != FileFlags.DeletedSinceClaimed)
-						{
-						file.StatusSinceClaimed = FileFlags.DeletedSinceClaimed;
+					file.Deleted = true;
 
-						foreach (var changeWatcher in changeWatchers)
-							{  changeWatcher.OnDeleteFile(file);  }
-
-						changed = true;
-						}
-					}
-
-				else if (file.Status != FileFlags.Deleted)
-					{
-					file.Status = FileFlags.Deleted;
+					unprocessedChanges.AddDeletedFile(file);
 					
 					foreach (var changeWatcher in changeWatchers)
 						{  changeWatcher.OnDeleteFile(file);  }
@@ -628,7 +622,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					if (cancelDelegate())
 						{  return;  }
 						
-					if (file.Status == FileFlags.Deleted)
+					if (file.Deleted)
 						{  toDelete.Add(file.ID);  }
 					}
 					
@@ -817,6 +811,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			get
 				{  return fileSources.AsReadOnly();  }
 			}
+
+
+		/* Property: UnprocessedChanges
+		 * 
+		 * Returns a <Files.Changes> object which stores all of the unprocessed file changes that have been detected.
+		 */
+		public Files.UnprocessedChanges UnprocessedChanges
+			{
+			get
+				{  return unprocessedChanges;  }
+			}
 			
 			
 			
@@ -873,6 +878,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.Manager<File> files;
+
+
+		/* var: unprocessedChanges
+		 * 
+		 * All the unprocessed file changes that have been detected.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected UnprocessedChanges unprocessedChanges;
 		
 				
 				

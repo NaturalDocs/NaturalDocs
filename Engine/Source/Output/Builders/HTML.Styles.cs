@@ -473,7 +473,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (outputFile == null)
 				{  return;  }
 
-			if (file.Status == FileFlags.Deleted)
+			if (file.Deleted)
 				{
 				if (System.IO.File.Exists(outputFile))
 					{  

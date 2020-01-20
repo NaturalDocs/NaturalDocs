@@ -31,6 +31,21 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			lastModified = newLastModified;
 			flags = 0;
 			}
+
+
+		/* Function: CreateSnapshotOfProperties
+		 * Creates a duplicate File object that contains all the file's properties at the time this function was called.
+		 * The duplicate will not change so it can be used to compare to the original File object later to see if any 
+		 * of the properties have changed.
+		 */
+		public File CreateSnapshotOfProperties ()
+			{
+			File duplicate = new File (fileName, type, lastModified);
+			duplicate.ID = ID;
+			duplicate.flags = flags;
+
+			return duplicate;
+			}
 			
 			
 			
@@ -99,48 +114,19 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				}
 			}
 			
-		/* Property: Status
-		 * The file's status.  Will be <FileFlags.Unchanged>, <FileFlags.NewOrChanged>, or <FileFlags.Deleted>.
+		/* Property: Deleted
+		 * Whether this file is deleted.  The File object will continue to exist until the deletion is processed.
 		 */
-		public FileFlags Status
+		public bool Deleted
 			{
 			get
-				{  return (flags & FileFlags.StatusMask);  }
-			set
-				{
-				flags &= ~FileFlags.StatusMask;
-				flags |= value;
-				}
-			}
-			
-		/* Property: Claimed
-		 * Whether the file is currently claimed.
-		 */
-		public bool Claimed
-			{
-			get
-				{  return ( (flags & FileFlags.Claimed) != 0 );  }
+				{  return ( (flags & FileFlags.Deleted) != 0 );  }
 			set
 				{
 				if (value == true)
-					{  flags |= FileFlags.Claimed;  }
+					{  flags |= FileFlags.Deleted;  }
 				else
-					{  flags &= ~FileFlags.Claimed;  }
-				}
-			}
-			
-		/* Property: StatusSinceClaimed
-		 * The file's status since it was claimed.  Will be <FileFlags.UnchangedSinceClaimed>, <FileFlags.NewOrChangedSinceClaimed>, or
-		 * <FileFlags.DeletedSinceClaimed>.  This value is undefined when <Claimed> is false.
-		 */
-		public FileFlags StatusSinceClaimed
-			{
-			get
-				{  return (flags & FileFlags.StatusSinceClaimedMask);  }
-			set
-				{
-				flags &= ~FileFlags.StatusSinceClaimedMask;
-				flags |= value;
+					{  flags &= ~FileFlags.Deleted;  }
 				}
 			}
 			
@@ -177,5 +163,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * Informational flags about the file.
 		 */
 		protected FileFlags flags;
+
 		}
 	}
