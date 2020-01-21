@@ -900,6 +900,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				// also helps visual separation.
 				do
 					{
+					string matchingPhrase;
+
 					if (OnAnyKeyword(lookahead, "SHARING", "AUTHID", "ACCESSIBLE", "DETERMINISTIC", "AGGREGATE", "PIPELINED"))
 						{
 						if (mode == ParseMode.ParsePrototype)
@@ -908,7 +910,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 						lookahead.Next();
 						}
-					else if (OnAnyKeyphrase(lookahead, out string matchingPhrase, "DEFAULT COLLATION", "PARALLEL_ENABLE", "RESULT_CACHE"))
+					else if (OnAnyKeyphrase(lookahead, out matchingPhrase, "DEFAULT COLLATION", "PARALLEL_ENABLE", "RESULT_CACHE"))
 						{
 						if (mode == ParseMode.ParsePrototype)
 							{ lookahead.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection; }
