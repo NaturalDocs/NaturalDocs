@@ -63,9 +63,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			}
 
-		/* Function: AddBasicPrototype
+		/* Function: TryToFindBasicPrototype
 		 */
-		override protected void AddBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
+		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
+																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
 			if (topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
 				topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure") ||
@@ -81,8 +82,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					iterator <= endToken &&
 					iterator.Tokenizer.ContainsTextBetween(topic.Title, true, startToken, iterator))
 					{  
-					Tokenizer prototype = startToken.Tokenizer.CreateFromIterators(startToken, iterator);
-					topic.Prototype = NormalizePrototype(prototype);
+					prototypeStart = startToken;
+					prototypeEnd = iterator;
+					return true;
+					}
+				else
+					{
+					prototypeStart = iterator;
+					prototypeEnd = iterator;
+					return false;  
 					}
 				}
 
@@ -91,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// If they didn't work, fall back to the default implementation
 			else
 				{
-				base.AddBasicPrototype(topic, startCode, endCode);
+				return base.TryToFindBasicPrototype(topic, startCode, endCode, out prototypeStart, out prototypeEnd);
 				}
 			}
 

@@ -1335,29 +1335,60 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else
 					{  endCode = source.LastLine;  }
 
-				AddBasicPrototype(elements[elementIndex].Topic, startCode, endCode);
+				TokenIterator prototypeStart, prototypeEnd;
+				if (TryToFindBasicPrototype(elements[elementIndex].Topic, startCode, endCode, out prototypeStart, out prototypeEnd))
+					{
+					Tokenizer prototype = prototypeStart.Tokenizer.CreateFromIterators(prototypeStart, prototypeEnd);
+					elements[elementIndex].Topic.Prototype = NormalizePrototype(prototype);
+					}
 				}
 			}
 
 
-		/* Function: AddBasicPrototype
+		/* Function: TryToFindBasicPrototype
 		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
 		 * <Topic.Prototoype>.
 		 */
-		protected virtual void AddBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode)
+		protected virtual bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
+																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
 			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
-				{  return;  }
+				{  
+				prototypeStart = startCode.FirstToken(LineBoundsMode.Everything);
+				prototypeEnd = prototypeStart;
+				return false;  
+				}
 
 			// Skip leading blank lines even in languages where line breaks matter.
 			while (startCode < endCode && startCode.IsEmpty(LineBoundsMode.ExcludeWhitespace))
 				{  startCode.Next();  }
 
 			TokenIterator start = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
-			TokenIterator iterator = start;
 			TokenIterator limit = endCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			return TryToFindBasicPrototype(topic, start, limit, out prototypeStart, out prototypeEnd);
+			}
+			
+		
+		/* Function: TryToFindBasicPrototype
+		 * Attempts to find a prototype for the passed <Topic> between the iterators.  If one is found, it will be normalized and put in
+		 * <Topic.Prototoype>.
+		 */
+		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit, 
+																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
+			{
+			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.CommentTypeID);
+
+			if (prototypeEnders == null)
+				{  
+				prototypeStart = limit;
+				prototypeEnd = limit;
+				return false;  
+				}
+
+			TokenIterator iterator = start;
 
 			bool lineHasExtender = false;
 			bool goodPrototype = false;
@@ -1426,11 +1457,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// We test comments before brackets in case the opening symbols are used for comments.
 				// We don't include < when skipping brackets because there might be an unbalanced pair as part of an operator overload.
 				else if (TryToSkipComment(ref iterator) ||
-							 TryToSkipString(ref iterator) ||
-							 TryToSkipBlock(ref iterator, false))
+						   TryToSkipString(ref iterator) ||
+						   TryToSkipBlock(ref iterator, false))
 					{
 					}
-
+					
 
 				// Everything Else
 
@@ -1446,48 +1477,64 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (goodPrototype)
 				{
 				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
-
-				string undecoratedTitle, parameters;
-				Symbols.ParameterString.SplitFromParameters(topic.Title, out undecoratedTitle, out parameters);
-
-				if (start.Tokenizer.ContainsTextBetween(undecoratedTitle, true, start, iterator))
-					{  
-					// goodPrototype remains true.
-					}
-
-				// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
-				else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
-					{
-					string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
-					string prototypeString = start.TextBetween(iterator);
-					string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
-
-					if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) == -1)
-						{  goodPrototype = false;  }
-					}
-
-				// If ".prototype." is in the string, make another attempt to see if we can match with it removed.
-				else if (start.Tokenizer.ContainsTextBetween(".prototype.", true, start, iterator))
-					{
-					string prototypeString = start.TextBetween(iterator);
-					int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
-
-					// We want to keep the trailing period so String.prototype.Function becomes String.Function.
-					prototypeString = prototypeString.Substring(0, prototypeIndex) + prototypeString.Substring(prototypeIndex + 10);
-
-					if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) == -1)
-						{  goodPrototype = false;  }
-					}
-
-				else
-					{  goodPrototype = false;  }
+				goodPrototype = BasicPrototypeMatchesTitle(topic, start, iterator);
 				}
 
 			if (goodPrototype)
 				{
-				Tokenizer prototype = start.Tokenizer.CreateFromIterators(start, iterator);
-				topic.Prototype = NormalizePrototype(prototype);
+				prototypeStart = start;
+				prototypeEnd = iterator;
+				return true;
 				}
+			else
+				{
+				prototypeStart = limit;
+				prototypeEnd = limit;
+				return false;
+				}
+			}
+			
+		
+		/* Function: BasicPrototypeMatchesTitle
+		 * Returns whether the prototype between the iterators matches the title in the passed <Topic>.
+		 */
+		protected virtual bool BasicPrototypeMatchesTitle (Topic topic, TokenIterator prototypeStart, TokenIterator prototypeEnd)
+			{
+			string undecoratedTitle, parameters;
+			Symbols.ParameterString.SplitFromParameters(topic.Title, out undecoratedTitle, out parameters);
+
+			Tokenizer tokenizer = prototypeStart.Tokenizer;
+
+			if (tokenizer.ContainsTextBetween(undecoratedTitle, true, prototypeStart, prototypeEnd))
+				{  
+				return true;
+				}
+
+			// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
+			else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
+				{
+				string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
+				string prototypeString = prototypeStart.TextBetween(prototypeEnd);
+				string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
+
+				if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) != -1)
+					{  return true;  }
+				}
+
+			// If ".prototype." is in the string, make another attempt to see if we can match with it removed.
+			else if (tokenizer.ContainsTextBetween(".prototype.", true, prototypeStart, prototypeEnd))
+				{
+				string prototypeString = prototypeStart.TextBetween(prototypeEnd);
+				int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
+
+				// We want to keep the trailing period so String.prototype.Function becomes String.Function.
+				prototypeString = prototypeString.Substring(0, prototypeIndex) + prototypeString.Substring(prototypeIndex + 10);
+
+				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
+					{  return true;  }
+				}
+
+			return false;
 			}
 			
 		
