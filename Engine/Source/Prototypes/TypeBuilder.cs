@@ -88,12 +88,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						syntaxHighlightingTypes.Add(SyntaxHighlightingType.Null);
 						}
 
-					// Special handling for package separators
+					// Special handling for package separators and a few other things
 					if (iterator.FundamentalType == FundamentalType.Symbol)
 						{
 						if (iterator.Character == '.'  || iterator.MatchesAcrossTokens("::") || 
 							(iterator.Character == ':' && dontAddSpaceAfterSymbol) ||  // second colon of ::
-							iterator.Character == '%' )  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
+							iterator.Character == '%' ||  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
+							iterator.Character == '"' || iterator.Character == '\'' ||  // strings in Java annotations like @copyright("me")
+							iterator.Character == '@')  // tags in Java annotations like @copyright
 							{  dontAddSpaceAfterSymbol = true;  }
 						else
 							{  dontAddSpaceAfterSymbol = false;  }
@@ -234,7 +236,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							dontAddSpaceAfterSymbol = true;
 							iterator.NextByCharacters(2);
 							}
-						else if (iterator.Character == '.' || iterator.Character == '%')
+						else if (iterator.Character == '.' || iterator.Character == '%' || 
+								   iterator.Character == '"' || iterator.Character == '\'' || iterator.Character == '@')
 							{
 							lastSymbolWasBlock = false;
 							dontAddSpaceAfterSymbol = true;
