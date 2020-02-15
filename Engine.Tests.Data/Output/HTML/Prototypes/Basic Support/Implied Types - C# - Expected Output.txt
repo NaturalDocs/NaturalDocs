@@ -42,7 +42,7 @@
       <td class="PParametersParentCell"><table class="PParameters">
          <tr>
             <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
-            <td class="PName last">a[5],</td>
+            <td class="PName last">a[<span class="SHNumber">5</span>],</td>
          </tr><tr>
             <td class="first"></td>
             <td class="PName last">b,</td>
@@ -51,13 +51,13 @@
             <td class="PName last">c,</td>
          </tr><tr>
             <td class="first"></td>
-            <td class="PName last">d[10],</td>
+            <td class="PName last">d[<span class="SHNumber">10</span>],</td>
          </tr><tr>
             <td class="PType first"><span class="SHKeyword">string</span>[]&nbsp;</td>
             <td class="PName last">e,</td>
          </tr><tr>
             <td class="first"></td>
-            <td class="PName last">f[12]</td>
+            <td class="PName last">f[<span class="SHNumber">12</span>]</td>
          </tr>
       </table></td>
       <td class="PAfterParameters">)</td>
