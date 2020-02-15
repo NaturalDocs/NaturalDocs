@@ -53,6 +53,7 @@
     <Compile Include="Source\Files\UnprocessedChanges.cs" />
     <Compile Include="Source\Files\Processor.cs" />
     <Compile Include="Source\Languages\CommentFinder.cs" />
+    <Compile Include="Source\Languages\Parsers\Java.cs" />
     <Compile Include="Source\Languages\Parsers\SQL.cs" />
     <Compile Include="Source\Languages\Parsers\Ruby.cs" />
     <Compile Include="Source\Languages\Parsers\Python.cs" />
