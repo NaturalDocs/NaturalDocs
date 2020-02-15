@@ -108,6 +108,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 *														
 	 * DefaultValueSeparator - The symbol separating the name and type from its default value, such as "=" or ":=".
 	 * DefaultValue - The default value of the parameter.
+	 * 
+	 * PropertyValueSeparator - The symbol separating a property name from its value, such as "=" or ":".
+	 * PropertyValue - The value of a property, such as "12" in "@RequestForEnhancement(id = 12)" in Java annotations.
 	 */
 	public enum PrototypeParsingType :  byte
 		{
@@ -123,7 +126,9 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		
 		Name, ParamModifier, OpeningParamModifier, ClosingParamModifier,
 
-		DefaultValueSeparator, DefaultValue
+		DefaultValueSeparator, DefaultValue,
+
+		PropertyValueSeparator, PropertyValue
 		}
 
 

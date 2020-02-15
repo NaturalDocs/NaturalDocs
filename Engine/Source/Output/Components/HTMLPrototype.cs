@@ -68,12 +68,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Name - The parameter name.
 		 * DefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 		 * DefaultValue - The default value.
+		 * PropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
+		 * PropertyValue - The property value, such as could appear in Java annotations.
 		 */
 		public enum ColumnType : byte
 			{  
 			ModifierQualifier, Type, TypeNameSeparator, 
 			Symbols, Name, 
-			DefaultValueSeparator, DefaultValue
+			DefaultValueSeparator, DefaultValue,
+			PropertyValueSeparator, PropertyValue
 			}
 
 
@@ -355,6 +358,47 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						}
 
 
+					// PropertyValueSeparator
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
+
+							if (type == PrototypeParsingType.PropertyValueSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
+						}
+
+
+					// PropertyValue
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
+
+							if (type == PrototypeParsingType.PropertyValue ||
+								type == PrototypeParsingType.ParamSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
+						}
+
+
 					// DefaultValueSeparator
 
 					currentColumn++;
@@ -547,6 +591,47 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							{  SkipModifierBlock(ref iterator, endOfParam);  }
 						else
 							{  break;  }						
+						}
+
+
+					// PropertyValueSeparator
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
+
+							if (type == PrototypeParsingType.PropertyValueSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
+						}
+
+
+					// PropertyValue
+
+					currentColumn++;
+					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
+
+					if (!isRaw)
+						{
+						while (iterator < endOfParam)
+							{  
+							PrototypeParsingType type = iterator.PrototypeParsingType;
+
+							if (type == PrototypeParsingType.PropertyValue ||
+								type == PrototypeParsingType.ParamSeparator ||
+								type == PrototypeParsingType.Null)
+								{  iterator.Next();   }
+							else
+								{  break;  }						
+							}
 						}
 
 
@@ -832,13 +917,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					}
 				}
 			
-			// Default value separators always get spaces before.  Type-name separators get them if they're text (SQL's "AS") instead
-			// of symbols (Pascal's ":").
+			// Default value separators always get spaces before.
+			// Property value separators get them unless they're ":", but watch out for ":=".
+			// Type-name separators get them if they're text (SQL's "AS") instead of symbols (Pascal's ":").
 			if (type == ColumnType.DefaultValueSeparator ||
+				(type == ColumnType.PropertyValueSeparator && (start.Character != ':' || start.MatchesAcrossTokens(":="))) ||
 				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
 				{  htmlOutput.Append("&nbsp;");  }
 
-			// We don't want to syntax highlight keywords on the Name cell because identifiers can accidentally be marked as them with
+			// We don't want to highlight keywords on the Name cell because identifiers can accidentally be marked as them with
 			// basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
 				{  BuildSyntaxHighlightedText(start, end, htmlOutput, excludeKeywords: true);  }
@@ -847,9 +934,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			else
 				{  BuildSyntaxHighlightedText(start, end, htmlOutput);  }
 
-			// Default value separators and type/name separators always get spaces after.  Make sure the spaces aren't duplicated
-			// by the preceding cells.
+			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure 
+			// the spaces aren't duplicated by the preceding cells.
 			if (type == ColumnType.DefaultValueSeparator ||
+				type == ColumnType.PropertyValueSeparator ||
 				type == ColumnType.TypeNameSeparator ||
 				(hadTrailingWhitespace && 
 					type != ColumnType.DefaultValue &&
@@ -968,6 +1056,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 																		   ColumnType.Type,
 																		   ColumnType.Symbols,
 																		   ColumnType.Name,
+																		   ColumnType.PropertyValueSeparator,
+																		   ColumnType.PropertyValue,
 																		   ColumnType.DefaultValueSeparator,
 																		   ColumnType.DefaultValue };
 
@@ -984,6 +1074,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 																				  ColumnType.TypeNameSeparator,
 																				  ColumnType.Symbols,
 																				  ColumnType.Type,
+																				  ColumnType.PropertyValueSeparator,
+																				  ColumnType.PropertyValue,
 																				  ColumnType.DefaultValueSeparator,
 																				  ColumnType.DefaultValue };
 

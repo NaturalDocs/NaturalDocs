@@ -359,6 +359,8 @@ P[ColumnType]:
 	PName - The parameter name.
 	PDefaultValueSeparator - If present, the symbol for assigning a default value like = or :=.
 	PDefaultValue - The default value.
+	PPropertyValueSeparator - If present, the symbol for assigning a value to a property like = or :.
+	PPropertyValue - The property value, such as could appear in Java annotations.
 
 	
 

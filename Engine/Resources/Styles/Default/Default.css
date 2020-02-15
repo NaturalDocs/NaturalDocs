@@ -771,7 +771,8 @@ body.NDContentPage {
 		won't be able to measure the wide form correctly. */
 	.NDPrototype.NarrowForm td.PBeforeParameters,
 	.NDPrototype.NarrowForm td.PAfterParameters,
-	.NDPrototype.NarrowForm td.PDefaultValue {
+	.NDPrototype.NarrowForm td.PDefaultValue,
+	.NDPrototype.NarrowForm td.PPropertyValue {
 		white-space: normal;
 		}
 
