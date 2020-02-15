@@ -1,0 +1,402 @@
+- Plain Section: @Preliminary
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Marker_Annotation1 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: @ Preliminary
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Marker_Annotation2 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @Preliminary(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Marker_Annotation3 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @ Preliminary (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Marker_Annotation4 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @Copyright(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: "Text String"
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Single_Element_Annotation1 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @Endorsers(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {"String 1", "String 2"}
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void Single_Element_Annotation2 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @RequestForEnhancement(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: id = 2868724,
+    - Name: id
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: engineer = "String",
+    - Name: engineer
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: date = "4/1/2004"
+    - Name: date
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public static void Key_Value_Annotation1 (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: @Preliminary
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @Copyright(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: "Text String"
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @RequestForEnhancement(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: id = 2868724,
+    - Name: id
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: engineer = "String",
+    - Name: engineer
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: array = {"string 1", "string 2"}
+    - Name: array
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @Endorsers(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {"String 1", "String 2"}
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public static void Multiple_Annotations (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: @Copyright(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: "Text String"
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: @Preliminary
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @RequestForEnhancement(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: id = 2868724,
+    - Name: id
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: engineer = "String",
+    - Name: engineer
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 3: array = {"string 1", "string 2"}
+    - Name: array
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @Endorsers(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: {"String 1", "String 2"}
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public static void Multiple_Annotations_and_Parameters (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - Parameter 1: int x,
+    - Name: x
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 2: string y = "value"
+    - Name: y
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: "value"
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: @GET
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: @Produces(
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: MediaType.APPLICATION_JSON
+    - Name: (not detected)
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Parameter Section:
+  - Before Parameters: public void JAXRS_Annotations (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - Parameter 1: @Context HttpServletRequest req,
+    - Name: req
+    - Full Type: @Context HttpServletRequest
+    - Base Type: HttpServletRequest
+    - Link Candidates: HttpServletRequest
+    - Default Value: (not detected)
+
+  - Parameter 2: @QueryParam("token") String token,
+    - Name: token
+    - Full Type: @QueryParam("token") String
+    - Base Type: String
+    - Link Candidates: String
+    - Default Value: (not detected)
+
+  - Parameter 3: @QueryParam("start") int start,
+    - Name: start
+    - Full Type: @QueryParam("start") int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 4: @QueryParam("length") Integer length,
+    - Name: length
+    - Full Type: @QueryParam("length") Integer
+    - Base Type: Integer
+    - Link Candidates: Integer
+    - Default Value: (not detected)
+
+  - Parameter 5: @QueryParam("valid_from") String validFrom,
+    - Name: validFrom
+    - Full Type: @QueryParam("valid_from") String
+    - Base Type: String
+    - Link Candidates: String
+    - Default Value: (not detected)
+
+  - Parameter 6: @QueryParam("valid_to") String validTo,
+    - Name: validTo
+    - Full Type: @QueryParam("valid_to") String
+    - Base Type: String
+    - Link Candidates: String
+    - Default Value: (not detected)
+
+  - Parameter 7: @DefaultValue("id") @QueryParam("order_by") String orderBy,
+    - Name: orderBy
+    - Full Type: @DefaultValue("id")@QueryParam("order_by") String
+    - Base Type: String
+    - Link Candidates: String
+    - Default Value: (not detected)
+
+  - Parameter 8: @DefaultValue("false") @QueryParam("order_direction") boolean orderDirection,
+    - Name: orderDirection
+    - Full Type: @DefaultValue("false")@QueryParam("order_direction") boolean
+    - Base Type: boolean
+    - Link Candidates: boolean
+    - Default Value: (not detected)
+
+  - Parameter 9: @DefaultValue("true") @QueryParam("only_enabled") boolean onlyEnabled
+    - Name: onlyEnabled
+    - Full Type: @DefaultValue("true")@QueryParam("only_enabled") boolean
+    - Base Type: boolean
+    - Link Candidates: boolean
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
