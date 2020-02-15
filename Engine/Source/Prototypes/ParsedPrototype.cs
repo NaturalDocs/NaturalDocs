@@ -224,7 +224,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 		/* Function: RecalculateSections
 		 * 
-		 * Recalculates the <Sections> list.
+		 * Recalculates the <Sections> list.  If you've set <MainSectionIndex> manually, it will have to be set again after calling this 
+		 * function.
 		 * 
 		 * Sections are delimited with <PrototypeParsingType.StartOfPrototypeSection> and <PrototypeParsingType.EndOfPrototypeSection>.
 		 * Neither of these token types are required to appear, and if they do not the entire prototype will be in one section.  Also, they are 
@@ -350,6 +351,19 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			{
 			get
 				{  return sections;  }
+			}
+
+
+		/* Property: MainSectionIndex
+		 * The index into <Sections> for the one which contains the most significant content, namely the prototype's
+		 * access level and function parameters.  If it's not set manually it will be a guess.
+		 */
+		public int MainSectionIndex
+			{
+			get
+				{  return mainSectionIndex;  }
+			set
+				{  mainSectionIndex = value;  }
 			}
 
 
