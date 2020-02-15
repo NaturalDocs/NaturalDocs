@@ -258,7 +258,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					parameterTableTokenIndexes[parameterIndex, currentColumn] = iterator.TokenIndex;
 
 					// Allow this column to claim the contents of a raw prototype.  They should all be null tokens.
-					// We use the type column instead of the name column because the name column isn't syntax highlighted.
+					// We use the type column instead of the name column because the name column isn't fully syntax highlighted.
 					while (iterator < endOfParam)
 						{  
 						PrototypeParsingType type = iterator.PrototypeParsingType;
@@ -838,10 +838,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
 				{  htmlOutput.Append("&nbsp;");  }
 
-			// We don't want syntax highlighting on the Name cell because identifiers can accidentally be marked as keywords with
-			// simple highlighting and basic language support, such as "event" in "wxPaintEvent &event".
+			// We don't want to syntax highlight keywords on the Name cell because identifiers can accidentally be marked as them with
+			// basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
-				{  htmlOutput.EntityEncodeAndAppend(start.TextBetween(end));  }
+				{  BuildSyntaxHighlightedText(start, end, htmlOutput, excludeKeywords: true);  }
 			else if (addLinks)
 				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, htmlOutput);  }
 			else

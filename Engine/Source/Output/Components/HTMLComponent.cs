@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Formats the text between the two iterators with syntax highlighting.  If output is null it will be appended to
 		 * <htmlOutput>.
 		 */
-		public void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder output = null)
+		public void BuildSyntaxHighlightedText (TokenIterator iterator, TokenIterator end, StringBuilder output = null, bool excludeKeywords = false)
 			{
 			if (output == null)
 				{  output = htmlOutput;  }
@@ -157,7 +157,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							output.Append("<span class=\"SHComment\">");
 							break;
 						case SyntaxHighlightingType.Keyword:
-							output.Append("<span class=\"SHKeyword\">");
+							if (!excludeKeywords)
+								{  output.Append("<span class=\"SHKeyword\">");  }
 							break;
 						case SyntaxHighlightingType.Number:
 							output.Append("<span class=\"SHNumber\">");
@@ -182,7 +183,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					output.EntityEncodeAndAppend(startStretch.TextBetween(endStretch));
 
-					if (stretchType != SyntaxHighlightingType.Null)
+					if (stretchType != SyntaxHighlightingType.Null &&
+						!(stretchType == SyntaxHighlightingType.Keyword && excludeKeywords) )
 						{  output.Append("</span>");  }
 
 					iterator = endStretch;
