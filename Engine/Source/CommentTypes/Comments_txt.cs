@@ -943,6 +943,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				output.AppendLine("Tags:");
 				foreach (string tag in tags)
 					{  output.AppendLine("   " + tag);  }
+				output.AppendLine();
+				output.AppendLine();
 				}
 			//else
 				//{
