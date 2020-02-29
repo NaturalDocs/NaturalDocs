@@ -345,8 +345,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					if (parent.prototypeIndex != -1 &&
 						topic.ParsedClassPrototype.GetParentTemplateSuffix(parent.prototypeIndex, out start, out end) == true)
 						{
-						// Include a zero-width space for wrapping
-						htmlOutput.Append("&#8203;<span class=\"TemplateSignature\">");
+						// Include preceding whitespace if present, or a zero-width space for wrapping if not
+						if (!start.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds))
+							{  htmlOutput.Append("&#8203;");  }
+
+						htmlOutput.Append("<span class=\"TemplateSignature\">");
 						htmlOutput.EntityEncodeAndAppend( start.TextBetween(end) );
 						htmlOutput.Append("</span>");
 						}
@@ -470,8 +473,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			TokenIterator startTemplate, endTemplate;
 			if (topic.ParsedClassPrototype.GetTemplateSuffix(out startTemplate, out endTemplate))
 				{
-				// Include a zero-width space for wrapping
-				htmlOutput.Append("&#8203;<span class=\"TemplateSignature\">");
+				// Include preceding whitespace if present, or a zero-width space for wrapping if not
+				if (!startTemplate.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds))
+					{  htmlOutput.Append("&#8203;");  }
+
+				htmlOutput.Append("<span class=\"TemplateSignature\">");
 				htmlOutput.EntityEncodeAndAppend( startTemplate.TextBetween(endTemplate) );
 				htmlOutput.Append("</span>");
 				}
