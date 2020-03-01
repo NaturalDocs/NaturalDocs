@@ -163,6 +163,18 @@ Language: Lua (Basic Language Support)
    Block Comment: --[[ ]]--
 
 
+Language: SystemVerilog (Basic Language Support)
+
+   Extension: sv-bls
+
+   Simple Identifier: SVBLS
+
+   Line Comment: //
+
+   Module Prototype Ender: ;
+   Class Prototype Ender: ;
+
+
 # These settings define the languages Natural Docs knows how to parse.  You
 # can define your own here or override the settings of the existing ones.
 # Note that all lists are space separated so that commas can be used as

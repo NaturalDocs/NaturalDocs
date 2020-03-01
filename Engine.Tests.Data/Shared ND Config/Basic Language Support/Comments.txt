@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 04-06-2017)
+﻿Format: 2.0.2
 
 # This is the Natural Docs comments file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -25,6 +25,15 @@ Tags:
 
 # Comment Types
 # ------------------------------------------------------------------------
+
+Comment Type: Module
+
+   Scope: Start
+   Flags: Code
+
+   Keywords:
+      module, modules
+
 
 # Each Natural Docs comment has a corresponding type which determine its
 # behavior.  You can define your own here or override the settings of the
