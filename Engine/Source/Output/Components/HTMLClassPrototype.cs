@@ -350,7 +350,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							{  htmlOutput.Append("&#8203;");  }
 
 						htmlOutput.Append("<span class=\"TemplateSignature\">");
-						htmlOutput.EntityEncodeAndAppend( start.TextBetween(end) );
+						BuildSyntaxHighlightedText(start, end, htmlOutput);
 						htmlOutput.Append("</span>");
 						}
 
@@ -478,7 +478,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{  htmlOutput.Append("&#8203;");  }
 
 				htmlOutput.Append("<span class=\"TemplateSignature\">");
-				htmlOutput.EntityEncodeAndAppend( startTemplate.TextBetween(endTemplate) );
+				BuildSyntaxHighlightedText(startTemplate, endTemplate, htmlOutput);
 				htmlOutput.Append("</span>");
 				}
 
