@@ -1,3 +1,3 @@
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">X</div></div><div class="CPEntry TClass Current"><div class="CPName">A<span class="TemplateSignature"> #(type T = int)</span></div></div></div>
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">X</div></div><div class="CPEntry TClass Current"><div class="CPName">A<span class="TemplateSignature"> #(type T = <span class="SHKeyword">int</span>)</span></div></div></div>
 -----
-<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Y<span class="TemplateSignature"> #(.T(T))</span></div></div><div class="CPEntry TClass Current"><div class="CPName">B<span class="TemplateSignature"> #(type T = int)</span></div></div></div>
+<div class="NDClassPrototype HasParents"><div class="CPEntry Parent TClass"><div class="CPName">Y<span class="TemplateSignature"> #(.T(T))</span></div></div><div class="CPEntry TClass Current"><div class="CPName">B<span class="TemplateSignature"> #(type T = <span class="SHKeyword">int</span>)</span></div></div></div>
