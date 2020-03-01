@@ -735,9 +735,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			iterator.NextPastWhitespace();
 
-			if (iterator.Character == '<')
+			if (iterator.Character == '<' || iterator.Character == '[' || iterator.Character == '(' ||
+				iterator.MatchesAcrossTokens("#("))  // SystemVerilog
 				{
 				TokenIterator startOfTemplate = iterator;
+
+				if (iterator.Character == '#')
+					{  iterator.Next();  }
 
 				if (TryToSkipBlock(ref iterator, true) == false)
 					{  return null;  }
@@ -902,13 +906,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						iterator = endOfName;
 						iterator.NextPastWhitespace(endOfParent);
 
-						if (iterator.Character == '<' && iterator < endOfParent)
+						if (iterator < endOfParent)
 							{
-							TokenIterator lookahead = iterator;
-							if (TryToSkipBlock(ref lookahead, true) == true && lookahead <= endOfParent)
+							if (iterator.Character == '<' || iterator.Character == '[' || iterator.Character == '(' ||
+								iterator.MatchesAcrossTokens("#("))  // SystemVerilog
 								{
-								// We've reached template information so we can stop looking for the name.
-								break;
+								TokenIterator lookahead = iterator;
+
+								if (lookahead.Character == '#')
+									{  lookahead.Next();  }
+
+								if (TryToSkipBlock(ref lookahead, true) == true && lookahead <= endOfParent)
+									{
+									// We've reached template information so we can stop looking for the name.
+									break;
+									}
 								}
 							}
 						}
@@ -940,15 +952,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					startOfTemplate.NextPastWhitespace(endOfParent);
 
 					TokenIterator endOfTemplate = startOfTemplate;
-					if (startOfTemplate < endOfParent && startOfTemplate.Character == '<' && 
-						TryToSkipBlock(ref endOfTemplate, true) == true && endOfTemplate <= endOfParent)
+					if (endOfTemplate < endOfParent &&
+						(endOfTemplate.Character == '<' || endOfTemplate.Character == '[' || endOfTemplate.Character == '(' ||
+						 endOfTemplate.MatchesAcrossTokens("#(")) )  // SystemVerilog
 						{
-						startOfTemplate.SetClassPrototypeParsingTypeBetween(endOfTemplate, ClassPrototypeParsingType.TemplateSuffix);
-						}
-					else
-						{
-						// Reset in case TryToSkipBlock() worked but it went past the parent.  
-						endOfTemplate = startOfTemplate;  
+						if (endOfTemplate.Character == '#')
+							{  endOfTemplate.Next();  }
+
+						if (TryToSkipBlock(ref endOfTemplate, true) == true && endOfTemplate <= endOfParent)
+							{
+							startOfTemplate.SetClassPrototypeParsingTypeBetween(endOfTemplate, ClassPrototypeParsingType.TemplateSuffix);
+							}
+						else
+							{
+							// Reset in case TryToSkipBlock() worked but it went past the parent.  
+							endOfTemplate = startOfTemplate;  
+							}
 						}
 
 					// There may also be modifiers after the name.
