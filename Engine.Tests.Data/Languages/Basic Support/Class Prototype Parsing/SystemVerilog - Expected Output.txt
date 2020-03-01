@@ -1,0 +1,22 @@
+class A #(type T = int) extends X
+
+  - Name: A
+  - Template Suffix: #(type T = int)
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: X
+    - Name: X
+
+-----
+
+class B #(type T = int) extends Y #(.T(T))
+
+  - Name: B
+  - Template Suffix: #(type T = int)
+  - Keyword: class
+  - Access Level: Unknown
+
+  - Parent 1: Y #(.T(T))
+    - Name: Y
+    - Template Suffix: #(.T(T))

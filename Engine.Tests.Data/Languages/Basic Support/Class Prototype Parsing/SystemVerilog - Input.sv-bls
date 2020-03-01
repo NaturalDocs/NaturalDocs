@@ -1,0 +1,6 @@
+
+// Class: A
+class A #(type T = int) extends X;
+
+// Class: B
+class B #(type T = int) extends Y #(.T(T));
