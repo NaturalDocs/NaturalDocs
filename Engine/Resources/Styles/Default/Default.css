@@ -773,6 +773,16 @@ body.NDContentPage {
 		scrollbar-width: thin;
 		scrollbar-color: #C8C8C8 #FFFFFF;
 		}
+		.NDPrototype::-webkit-scrollbar {
+			height: 7px;
+			}
+		.NDPrototype::-webkit-scrollbar-track {
+			background-color: #FFFFFF;
+			}
+		.NDPrototype::-webkit-scrollbar-thumb {
+			background-color: #C8C8C8;
+			border-bottom: 1px solid #FFFFFF;
+			}
 
 	.PParameterSection td {
 		white-space: nowrap;
@@ -867,6 +877,9 @@ body.NDContentPage {
 		overflow: auto;
 		scrollbar-width: thin;
 		}
+		.CPEntry::-webkit-scrollbar {
+			height: 7px;
+			}
 	a.CPEntry,
 	a.CPAdditionalChildrenNotice {
 		display: block;
@@ -965,6 +978,15 @@ body.NDContentPage {
 	border-color: #C8C8C8;
 	scrollbar-color: #C8C8C8 #F0F0F0;
 	}
+	.TFunction .NDPrototype::-webkit-scrollbar-thumb,
+	.TOperator .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #C8C8C8;
+		border-bottom: 1px solid #F0F0F0;
+		}
+	.TFunction .NDPrototype::-webkit-scrollbar-track,
+	.TOperator .NDPrototype::-webkit-scrollbar-track {
+		background-color: #F0F0F0;
+		}
 	.TFunction .SuEntryIcon,
 	.TOperator .SuEntryIcon {
 		background-color: #EAEAEA;
@@ -981,6 +1003,13 @@ body.NDContentPage {
 	border-color: #C0C0D6;
 	scrollbar-color: #C0C0D6 #ECECFF;
 	}
+	.TProperty .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #COCOD6;
+		border-bottom: 1px solid #ECECFF;
+		}
+	.TProperty .NDPrototype::-webkit-scrollbar-track {
+		background-color: #ECECFF;
+		}
 	.TProperty .SuEntryIcon {
 		background-color: #DCDCFF;
 		border: 1px solid #BEBED4;
@@ -996,6 +1025,15 @@ body.NDContentPage {
 	border-color: #D2D2B8;
 	scrollbar-color: #D2D2B8 #FCFCE6;
 	}
+	.TVariable .NDPrototype::-webkit-scrollbar-thumb,
+	.TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #D2D2B8;
+		border-bottom: 1px solid #FCFCE6;
+		}
+	.TVariable .NDPrototype::-webkit-scrollbar-track,
+	.TDatabaseField .NDPrototype::-webkit-scrollbar-track {
+		background-color: #FCFCE6;
+		}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
 		background-color: #F9F9C5;
@@ -1012,6 +1050,13 @@ body.NDContentPage {
 	border-color: #979797;
 	scrollbar-color: #979797 #CACACA;
 	}
+	.TConstant .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #979797;
+		border-bottom: 1px solid #CACACA;
+		}
+	.TConstant .NDPrototype::-webkit-scrollbar-track {
+		background-color: #CACACA;
+		}
 	.TConstant .SuEntryIcon {
 		background-color: #C6C6C6;
 		border: 1px solid #A6A6A6;
@@ -1028,6 +1073,17 @@ body.NDContentPage {
 	border-color: #D8CBBA;
 	scrollbar-color: #D8CBBA #FCEFDE;
 	}
+	.TType .NDPrototype::-webkit-scrollbar-thumb,
+	.TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
+	.TDelegate .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #D8CBBA;
+		border-bottom: 1px solid #FCEFDE;
+		}
+	.TType .NDPrototype::-webkit-scrollbar-track,
+	.TEnumeration .NDPrototype::-webkit-scrollbar-track,
+	.TDelegate .NDPrototype::-webkit-scrollbar-track {
+		background-color: #FCEFDE;
+		}
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
 	.TDelegate .SuEntryIcon {
@@ -1046,6 +1102,13 @@ body.NDContentPage {
 	border-color: #BCCFBC;
 	scrollbar-color: #BCCFBC #E6F9E6;
 	}
+	.TEvent .NDPrototype::-webkit-scrollbar-thumb {
+		background-color: #BCCFBC;
+		border-bottom: 1px solid #E6F9E6;
+		}
+	.TEvent .NDPrototype::-webkit-scrollbar-track {
+		background-color: #E6F9E6;
+		}
 	.TEvent .SuEntryIcon {
 		background-color: #D3F3D3;
 		border: 1px solid #B2D1B1;
@@ -1062,10 +1125,21 @@ body.NDContentPage {
 	border-color: #686868;
 	scrollbar-color: #C0C0C0 #EAEAEA;
 	}
+	.NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
+		background-color: #C0C0C0;
+		border-bottom: 1px solid #EAEAEA;
+		}
+	.NDClassPrototype .CPEntry::-webkit-scrollbar-track {
+		background-color: #EAEAEA;
+		}
 	.NDClassPrototype .CPEntry.Parent,
 	.NDClassPrototype .CPEntry.Child {
 		scrollbar-color: #A8A8A8 #EAEAEA;
 		}
+		.NDClassPrototype .CPEntry.Parent::-webkit-scrollbar-thumb,
+		.NDClassPrototype .CPEntry.Child::-webkit-scrollbar-thumb {
+			background-color: #A8A8A8;
+			}
 
 	/* IE 6-8 can't handle opacity so approximate it with background colors.  The text won't fade but that's okay. */
 	/* We don't use "filter: alpha(opacity=n)" because that turns off ClearType. */
@@ -1084,6 +1158,13 @@ body.NDContentPage {
 	border-color: #686879;
 	scrollbar-color: #BCBCE0 #EAEAFF;
 	}
+	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
+		background-color: #BCBCE0;
+		border-bottom: 1px solid #EAEAFF;
+		}
+	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
+		background-color: #EAEAFF;
+		}
 
 	.IE6 .NDClassPrototype .CPEntry.TInterface.Parent,
 	.IE6 .NDClassPrototype .CPEntry.TInterface.Child,
