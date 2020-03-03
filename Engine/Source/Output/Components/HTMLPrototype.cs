@@ -942,6 +942,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				(hadTrailingWhitespace && 
 					type != ColumnType.DefaultValue &&
 					nextType != ColumnType.DefaultValueSeparator && 
+					nextType != ColumnType.PropertyValueSeparator && 
 					nextType != ColumnType.TypeNameSeparator) )
 				{  htmlOutput.Append("&nbsp;");  }
 			}
