@@ -770,6 +770,8 @@ body.NDContentPage {
 		margin: 0 5ex 1em 5ex;
 		padding: .75ex 1.25ex 1.25ex 1.25ex;
 		overflow: auto;
+		scrollbar-width: thin;
+		scrollbar-color: #C8C8C8 #FFFFFF;
 		}
 
 	.PParameterSection td {
@@ -863,6 +865,7 @@ body.NDContentPage {
 
 		background-color: #FFFFFF;
 		overflow: auto;
+		scrollbar-width: thin;
 		}
 	a.CPEntry,
 	a.CPAdditionalChildrenNotice {
@@ -960,6 +963,7 @@ body.NDContentPage {
 .TOperator .NDPrototype {
 	background-color: #F0F0F0;
 	border-color: #C8C8C8;
+	scrollbar-color: #C8C8C8 #F0F0F0;
 	}
 	.TFunction .SuEntryIcon,
 	.TOperator .SuEntryIcon {
@@ -975,6 +979,7 @@ body.NDContentPage {
 .TProperty .NDPrototype {
 	background-color: #ECECFF;
 	border-color: #C0C0D6;
+	scrollbar-color: #C0C0D6 #ECECFF;
 	}
 	.TProperty .SuEntryIcon {
 		background-color: #DCDCFF;
@@ -989,6 +994,7 @@ body.NDContentPage {
 .TDatabaseField .NDPrototype {
 	background-color: #FCFCE6;
 	border-color: #D2D2B8;
+	scrollbar-color: #D2D2B8 #FCFCE6;
 	}
 	.TVariable .SuEntryIcon,
 	.TDatabaseField .SuEntryIcon {
@@ -1004,6 +1010,7 @@ body.NDContentPage {
 .TConstant .NDPrototype {
 	background-color: #CACACA;
 	border-color: #979797;
+	scrollbar-color: #979797 #CACACA;
 	}
 	.TConstant .SuEntryIcon {
 		background-color: #C6C6C6;
@@ -1019,6 +1026,7 @@ body.NDContentPage {
 .TDelegate .NDPrototype {
 	background-color: #FCEFDE;
 	border-color: #D8CBBA;
+	scrollbar-color: #D8CBBA #FCEFDE;
 	}
 	.TType .SuEntryIcon,
 	.TEnumeration .SuEntryIcon,
@@ -1036,6 +1044,7 @@ body.NDContentPage {
 .TEvent .NDPrototype {
 	background-color: #E6F9E6;
 	border-color: #BCCFBC;
+	scrollbar-color: #BCCFBC #E6F9E6;
 	}
 	.TEvent .SuEntryIcon {
 		background-color: #D3F3D3;
@@ -1049,9 +1058,14 @@ body.NDContentPage {
 
 
 .NDClassPrototype .CPEntry {
-	border-color: #686868;
 	background-color: #EAEAEA;
+	border-color: #686868;
+	scrollbar-color: #C0C0C0 #EAEAEA;
 	}
+	.NDClassPrototype .CPEntry.Parent,
+	.NDClassPrototype .CPEntry.Child {
+		scrollbar-color: #A8A8A8 #EAEAEA;
+		}
 
 	/* IE 6-8 can't handle opacity so approximate it with background colors.  The text won't fade but that's okay. */
 	/* We don't use "filter: alpha(opacity=n)" because that turns off ClearType. */
@@ -1066,8 +1080,9 @@ body.NDContentPage {
 		}
 
 .NDClassPrototype .CPEntry.TInterface {
-	border-color: #686879;
 	background-color: #EAEAFF;
+	border-color: #686879;
+	scrollbar-color: #BCBCE0 #EAEAFF;
 	}
 
 	.IE6 .NDClassPrototype .CPEntry.TInterface.Parent,
