@@ -536,7 +536,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Constant: VersionString
 		 * The current version of the Natural Docs engine as a string.
 		 */
-		public const string VersionString = "2.0.2";
+		public const string VersionString = "2.1 (Development Release 1)";
 		
 		
 		/* Property: Version
