@@ -23,6 +23,10 @@
 	$MenuSummaryBorderColor: #D8D8D8;
 	$SummaryContentBorderColor: #E8E8E8;
 
+	$MenuScrollbarColors: #C8C8C8 #E8E8E8;
+	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
+	$ContentScrollbarColors: #CCCCCC #F0F0F0;
+
 	$MessageBackgroundColor: #FFFFF0;
 	$MessageBorderColor: #A0A000;
 	$MessageTextColor: #787800;
@@ -66,6 +70,9 @@ html {
 	/* Needed in combination with the hacks in NDMenu/NDSummary.Build() to placate IE10. */
 	/* See NDMenu.Build()'s comment for why this is necessary. */
 	font: 10pt $MenuFontFamily;
+
+	/* Can't apply to iframe or body.NDContentPage, needs to be on HTML in Firefox.*/
+	scrollbar-color: $ContentScrollbarColors;
 	}
 
 body.NDFramePage {
@@ -311,6 +318,7 @@ td {
 
 #NDMenu {
 	background-color: $MenuBackgroundColor;
+	scrollbar-color: $MenuScrollbarColors;
 	z-index: $NDMenuZIndex;
 	overflow: auto;
 	width: 30ex;
@@ -483,6 +491,7 @@ td {
 
 #NDSummary {
 	background-color: $SummaryBackgroundColor;
+	scrollbar-color: $SummaryScrollbarColors;
 	border-left: 1px solid $MenuSummaryBorderColor;
 	border-right: 1px solid $SummaryContentBorderColor;
 	z-index: $NDSummaryZIndex;
