@@ -274,6 +274,14 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			ShowConsoleHeader();
 
+			if (System.IO.Directory.Exists(commandLineConfig.ProjectConfigFolder) == false)
+				{
+				errorList.Add(
+					Engine.Locale.Get("NaturalDocs.Engine", "Error.ProjectConfigFolderDoesntExist(name)", commandLineConfig.ProjectConfigFolder)
+					);
+				return false;
+				}
+
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.CreatingProjectConfigFiles")
 				);
