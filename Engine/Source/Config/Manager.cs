@@ -187,10 +187,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				try
 					{  System.IO.Directory.CreateDirectory(workingDataFolder);  }
-				catch
+				catch (Exception e)
 					{
 					errorList.Add(
-						message: Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name)", workingDataFolder),
+						message: Locale.Get("NaturalDocs.Engine", "Error.CantCreateWorkingDataFolder(name, exception)", 
+														workingDataFolder, e.Message),
 						property: "WorkingDataFolder"
 						);
 					

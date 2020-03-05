@@ -108,17 +108,17 @@ Error.SourceFolderIsIgnored(sourceFolder): The source folder {0} wouldn't be use
 
 Error.NoProjectConfigFolder: You did not define a project configuration folder.
 Error.ProjectConfigFolderDoesntExist(name): The project configuration folder {0} doesn't exist.
-Error.CantCreateWorkingDataFolder(name): Could not create working data folder {0}.
+Error.CantCreateWorkingDataFolder(name, exception): Could not create working data folder {0}.  {1}
 Error.ProjectConfigFolderCannotEqualSystemConfigFolder: The project configuration folder cannot be the same as Natural Docs' configuration folder.
 Error.TabWidthMustBeANumber: The tab width must be a number.
 Error.TabWidthMustBeGreaterThanZero: The tab width must be greater than zero.
 
-Error.CouldNotWriteToDataFile(name): Could not write to data file {0}.
+Error.CouldNotWriteToDataFile(name, exception): Could not write to data file {0}.  {1}
 Error.NoInputTargets: There were no input targets in Project.txt or the command line.
 Error.NoOutputTargets: There were no output targets in Project.txt or the command line.
 
-Error.CouldNotCreateOutputFolder(name): Could not create output folder {0}.
-Error.CouldNotCreateOutputFile(name): Could not create output file {0}.
+Error.CouldNotCreateOutputFolder(name, exception): Could not create output folder {0}.  {1}
+Error.CouldNotCreateOutputFile(name, exception): Could not create output file {0}.  {1}
 
 CrashReport.Message: Crash Message
 CrashReport.CausedBy: Caused By
@@ -141,8 +141,8 @@ Thread.UnnamedThread: Unnamed Thread
 # _____________________________________________________________________________
 
 ConfigFile.DoesNotExist(name): The configuration file {0} does not exist.
-ConfigFile.CouldNotOpen(name): Could not open configuration file {0}.
-ConfigFile.CouldNotWriteTo(name): Could not write to configuration file {0}.
+ConfigFile.CouldNotOpen(name, exception): Could not open configuration file {0}.  {1}
+ConfigFile.CouldNotWriteTo(name, exception): Could not write to configuration file {0}.  {1}
 ConfigFile.LineNotInIdentifierValueFormat: Lines must be in [name]: [value] format.
 ConfigFile.NotAValidIdentifier(identifier): {0} is not a valid identifier.
 ConfigFile.NotAValidValue(value): {0} is not a valid value.

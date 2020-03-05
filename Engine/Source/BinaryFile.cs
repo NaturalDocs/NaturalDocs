@@ -139,10 +139,10 @@ namespace CodeClear.NaturalDocs.Engine
 				{  
 				fileStream = new FileStream(newFileName, FileMode.Create);
 				}
-			catch
+			catch (Exception e)
 				{
 				throw new Engine.Exceptions.UserFriendly ( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotWriteToDataFile(name)", newFileName)
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotWriteToDataFile(name, exception)", newFileName, e.Message)
 					);
 				}
 				

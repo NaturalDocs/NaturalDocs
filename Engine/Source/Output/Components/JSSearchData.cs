@@ -68,10 +68,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
 				System.IO.Directory.CreateDirectory(HTMLBuilder.SearchIndex_DataFolder);  
 				}
-			catch
+			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", HTMLBuilder.SearchIndex_DataFolder) 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
+									HTMLBuilder.SearchIndex_DataFolder, e.Message) 
 					);
 				}
 
@@ -189,10 +190,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				// We can't use SearchIndex_DataFolder because we may need a subfolder of it.
 				System.IO.Directory.CreateDirectory(path.ParentFolder);
 				}
-			catch
+			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", path.ParentFolder) 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
+									path.ParentFolder, e.Message) 
 					);
 				}
 

@@ -61,10 +61,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
 				System.IO.Directory.CreateDirectory(HTMLBuilder.Menu_DataFolder);  
 				}
-			catch
+			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", HTMLBuilder.Menu_DataFolder) 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
+									HTMLBuilder.Menu_DataFolder, e.Message) 
 					);
 				}
 

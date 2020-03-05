@@ -142,10 +142,10 @@ namespace CodeClear.NaturalDocs.Engine
 				
 			try
 				{  file = new StreamReader(newFileName, System.Text.Encoding.UTF8, true);  }
-			catch
+			catch (Exception e)
 				{
 				newErrorList.Add( 
-					Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotOpen(name)", newFileName)
+					Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotOpen(name, exception)", newFileName, e.Message)
 					);
 					
 				return false;
@@ -698,12 +698,12 @@ namespace CodeClear.NaturalDocs.Engine
 					// Write out the regular content, NOT the normalized content.
 					System.IO.File.WriteAllText(filename, newContent, System.Text.Encoding.UTF8);  
 					}
-				catch
+				catch (Exception e)
 					{
 					if (!noErrorOnFail)
 						{  
 						errorList.Add( 
-							Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotWriteTo(name)", filename)
+							Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotWriteTo(name, exception)", filename, e.Message)
 							);
 						}
 

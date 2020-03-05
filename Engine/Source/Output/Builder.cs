@@ -106,18 +106,20 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
 				Directory.CreateDirectory(path.ParentFolder);  
 				}
-			catch
+			catch (Exception e)
 				{
-				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name)", path.ParentFolder) );
+				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
+																					 path.ParentFolder, e.Message) );
 				}
 				
 			StreamWriter streamWriter = null;
 			
 			try
 				{  streamWriter = File.CreateText(path);  }
-			catch
+			catch (Exception e)
 				{
-				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name)", path) );
+				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name, exception)", 
+																					 path, e.Message) );
 				}
 				
 			return streamWriter;
