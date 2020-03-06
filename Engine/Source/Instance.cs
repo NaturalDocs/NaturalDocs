@@ -279,7 +279,41 @@ namespace CodeClear.NaturalDocs.Engine
 		public string GetCrashInformation (Exception exception)
 			{
 			StringBuilder output = new StringBuilder();
+
+
+			// Gather platform information
+
+			string dotNETVersion = null;
+			string monoVersion = null;
+			string osNameAndVersion = null;
+			string sqliteVersion = null;
+
+			if (Engine.SystemInfo.OnWindows)
+				{
+				try
+					{  dotNETVersion = Engine.SystemInfo.dotNETVersion;  }
+				catch
+					{  }
+				}
+			else if (Engine.SystemInfo.OnUnix)
+				{
+				try
+					{  monoVersion = Engine.SystemInfo.MonoVersion;  }
+				catch
+					{  }
+				}
 			
+			try
+				{  osNameAndVersion = Engine.SystemInfo.OSNameAndVersion;  }
+			catch
+				{  }
+
+			try
+				{  sqliteVersion = SQLite.API.LibVersion();  }
+			catch
+				{  }
+
+
 			try
 				{
 
@@ -302,6 +336,23 @@ namespace CodeClear.NaturalDocs.Engine
 				else
 					{
 					output.AppendLine( "   (" + exception.GetType() + ")" );
+					}
+
+
+				// Outdated Mono version
+
+				if (monoVersion != null)
+					{
+					if (monoVersion.StartsWith("0.") || 
+						monoVersion.StartsWith("1.") ||
+						monoVersion.StartsWith("2.") )
+						{
+						output.AppendLine();
+						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
+													 "You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
+						output.AppendLine();
+						output.AppendLine("   Mono " + monoVersion);
+						}
 					}
 
 
@@ -415,33 +466,29 @@ namespace CodeClear.NaturalDocs.Engine
 				output.AppendLine ( "   Natural Docs " + Instance.VersionString );
 				output.AppendLine ();
 
-				// .NET/Mono version.  Extra try block in case it crashes out.
-				try 
+				if (osNameAndVersion != null)
+					{  output.AppendLine( "   " + osNameAndVersion);  }
+				else
+					{  output.AppendLine( "   Couldn't get OS name and version");  }
+
+				if (Engine.SystemInfo.OnWindows) 
 					{  
-					Type type = Type.GetType("Mono.Runtime");
-
-					if (type != null)
-						{
-						var getDisplayNameMethod = type.GetMethod("GetDisplayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-						if (getDisplayNameMethod != null)
-							{  output.AppendLine( "   Mono " + getDisplayNameMethod.Invoke(null, null));  }
-						else
-							{  output.AppendLine( "   Couldn't get Mono version");  }
-						}
+					if (dotNETVersion != null)
+						{  output.AppendLine("   .NET " + dotNETVersion);  }
 					else
-						{  output.AppendLine( "   .NET " + System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion);  }
+						{  output.AppendLine("   Couldn't get .NET version");  }
 					}
-				catch
-					{  output.AppendLine ( "   Couldn't get .NET/Mono version" );  }
+				else if (Engine.SystemInfo.OnUnix)
+					{
+					if (monoVersion != null)
+						{  output.AppendLine( "   Mono " + monoVersion);  }
+					else
+						{  output.AppendLine( "   Couldn't get Mono version");  }
+					}
 
-				output.AppendLine ( "   " + Environment.OSVersion.VersionString + " (" + Environment.OSVersion.Platform + ")" );
-				output.AppendLine ();
-
-				// SQLite version.  Extra try block in case it crashes out.
-				try 
-					{  output.AppendLine ( "   SQLite " + SQLite.API.LibVersion() );  }
-				catch
+				if (sqliteVersion != null)
+					{  output.AppendLine( "   SQLite " + sqliteVersion);  }
+				else
 					{  output.AppendLine ( "   Couldn't get SQLite version" );  }
 				}
 				
