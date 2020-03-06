@@ -87,6 +87,131 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
+		/* Property: MonoVersion
+		 * The version of Mono we're running on, or null if we're not or it can't be determined.
+		 */
+		static public string MonoVersion
+			{
+			get
+				{
+				try
+					{
+					return Type.GetType("Mono.Runtime")?
+								.GetMethod("GetDisplayName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?
+								.Invoke(null, null)?.ToString();
+					}
+				catch
+					{  }
+
+				return null;
+				}
+			}
+
+
+		/* Property: dotNETVersion
+		 * The version of .NET we're running on, or null if it can't be determined.  This will probably return a value for Mono so check
+		 * <OnWindows> if you only want it for actual .NET.
+		 */
+		static public string dotNETVersion
+			{
+			get
+				{
+				try
+					{
+					return System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(int).Assembly.Location).ProductVersion;
+					}
+				catch
+					{  }
+
+				return null;
+				}
+			}
+
+
+		/* Property: OSNameAndVersion
+		 * Returns the full OS name and version, such as "Windows 10 Home version 1909".  Works for both Windows and Unix.
+		 */
+		static public string OSNameAndVersion
+			{
+			get
+				{
+				if (OnWindows)
+					{  return WindowsNameAndVersion;  }
+				else if (OnUnix)
+					{  return UnixNameAndVersion;  }
+				else
+					{  return null;  }
+				}
+			}
+
+
+		/* Property: WindowsNameAndVersion
+		 * Returns the full Windows name and version, such as "Windows 10 Home version 1909" or "Windows 7 Professional with Service Pack 1".
+		 */
+		static public string WindowsNameAndVersion
+			{
+			get
+				{
+				if (!OnWindows)
+					{  return null;  }
+
+				string result = null;
+
+				// First try getting the information from the registry, since that's a lot nicer.  We can build a string like "Windows 10 Home version 1909"
+				// from it.
+				try
+					{
+					var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion");
+
+					if (key != null)
+						{
+						string productName = key.GetValue("ProductName")?.ToString();
+						if (productName != null)
+							{
+							result = productName;
+
+							string win10version = key.GetValue("ReleaseId")?.ToString();
+							if (win10version != null)
+								{  result += " version " + win10version;  }
+
+							string servicePack = key.GetValue("CSDVersion")?.ToString();
+							if (servicePack != null)
+								{  result += " with " + servicePack;  }
+							}
+						}
+					}
+				catch
+					{  }
+
+				// If that doesn't work fall back to this version, which isn't as nice because it tends to be like "Microsoft Windows NT 6.2.9200.0"
+				// which isn't clear.
+				if (result == null)
+					{  result = Environment.OSVersion.VersionString;  }
+
+				// Some things return "Microsoft Windows", some things just "Windows", so let's be consistent
+				if (result.StartsWith("Microsoft "))
+					{  result = result.Substring(10);  }
+
+				return result;
+				}
+			}
+
+
+		/* Property: UnixNameAndVersion
+		 * Returns the Unix name and version to the degree that it can be determined.
+		 */
+		static public string UnixNameAndVersion
+			{
+			get
+				{
+				if (!OnUnix)
+					{  return null;  }
+
+				return Environment.OSVersion.VersionString;
+				}
+			}
+
+
 			
 		// Group: Static Variables
 		// __________________________________________________________________________
