@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.Filters
 			
 			pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"^\*?[/\\]", "");
 			pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"[/\\]\*?$", "");
-			pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"[/\\]", Config.Manager.PathSeparatorCharacter.ToString());
+			pattern = System.Text.RegularExpressions.Regex.Replace(pattern, @"[/\\]", Engine.SystemInfo.PathSeparatorCharacter.ToString());
 				
 			pattern = System.Text.RegularExpressions.Regex.Escape(pattern);
 			
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.Filters
 			
 			System.Text.RegularExpressions.RegexOptions options = System.Text.RegularExpressions.RegexOptions.Compiled;
 			
-			if (Engine.Config.Manager.IgnoreCaseInPaths)
+			if (Engine.SystemInfo.IgnoreCaseInPaths)
 				{  options |= System.Text.RegularExpressions.RegexOptions.IgnoreCase;  }
 				
 			regex = new System.Text.RegularExpressions.Regex(pattern, options);

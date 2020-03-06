@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine
 			bool hasCR = (input.IndexOf('\r') != -1);
 			bool hasLF = (input.IndexOf('\n') != -1);
 
-			if (Config.Manager.UsingUnix)
+			if (Engine.SystemInfo.OnUnix)
 				{
 				if (hasCR)
 					{  return input.Replace("\r", "");  }

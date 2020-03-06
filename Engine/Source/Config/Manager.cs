@@ -1062,52 +1062,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		/* Property: UsingUnix
-		 * True if the program is running in Unix.
-		 */
-		static public bool UsingUnix
-			{
-			get
-				{
-				// Early versions of Mono returned 128 as the value, whereas PlatformID.Unix is 4.
-				// There's also now OS X which is 6.
-				return ( System.Environment.OSVersion.Platform == PlatformID.Unix ||
-							  System.Environment.OSVersion.Platform == PlatformID.MacOSX ||
-							  (int)System.Environment.OSVersion.Platform == 128);
-				}
-			}
-			
-			
-		/* Property: PathSeparatorCharacter
-		 * The path separator character for the current platform, such as slash or backslash.
-		 */
-		static public char PathSeparatorCharacter
-			{
-			get
-				{ 
-				if (UsingUnix == true)
-					{  return '/';  }
-				else  // all others are variants of Windows
-					{  return '\\';  }
-				}
-			}
-			
-			
-		/* Property: IgnoreCaseInPaths
-		 * Whether paths are case sensitive on the current platform.
-		 */
-		static public bool IgnoreCaseInPaths
-			{
-			get
-				{
-				if (UsingUnix == true)
-					{  return false;  }
-				else  // all others are variants of Windows
-					{  return true;  }
-				}
-			}
-
-
 		/* Property: KeySettingsForPaths
 		 * The <Collections.KeySettings> that should be used when using paths as a key.
 		 */

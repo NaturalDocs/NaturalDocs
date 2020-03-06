@@ -224,7 +224,7 @@ namespace CodeClear.NaturalDocs.Engine
 					{  return false;  }
 					
 				// Since they're both normalized, we can just do a simple compare now.
-				return other.pathString.StartsWith(pathString, Engine.Config.Manager.IgnoreCaseInPaths, null);
+				return other.pathString.StartsWith(pathString, Engine.SystemInfo.IgnoreCaseInPaths, null);
 				}
 			else
 				{  return false;  }
@@ -253,11 +253,11 @@ namespace CodeClear.NaturalDocs.Engine
 				Split(out thisPrefix, out thisSections);
 				folder.Split(out folderPrefix, out folderSections);
 				
-				if (String.Compare(thisPrefix, folderPrefix, Engine.Config.Manager.IgnoreCaseInPaths) != 0)
+				if (String.Compare(thisPrefix, folderPrefix, Engine.SystemInfo.IgnoreCaseInPaths) != 0)
 					{  return null;  }
 					
 				while (thisSections.Count > 0 && folderSections.Count > 0 &&
-						 String.Compare(thisSections[0], folderSections[0], Engine.Config.Manager.IgnoreCaseInPaths) == 0)
+						 String.Compare(thisSections[0], folderSections[0], Engine.SystemInfo.IgnoreCaseInPaths) == 0)
 					{
 					thisSections.RemoveAt(0);
 					folderSections.RemoveAt(0);
@@ -419,10 +419,10 @@ namespace CodeClear.NaturalDocs.Engine
 
 			// The above code always returns a path with slashes, even on Windows.  However, we can assume it's otherwise
 			// properly normalized so just do a quick search and replace if it's needed.
-			if (Engine.Config.Manager.PathSeparatorCharacter == '/')
+			if (Engine.SystemInfo.PathSeparatorCharacter == '/')
 				{  result.pathString = assemblyPath;  }
 			else
-				{  result.pathString = assemblyPath.Replace('/', Engine.Config.Manager.PathSeparatorCharacter);  }
+				{  result.pathString = assemblyPath.Replace('/', Engine.SystemInfo.PathSeparatorCharacter);  }
 
 			// Actually, let's check that assumption in debug builds.
 			#if DEBUG
@@ -440,10 +440,10 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public string ToURL ()
 			{
-			if (Engine.Config.Manager.PathSeparatorCharacter == '/')
+			if (Engine.SystemInfo.PathSeparatorCharacter == '/')
 				{  return pathString;  }
 			else
-				{  return pathString.Replace(Engine.Config.Manager.PathSeparatorCharacter, '/');  }
+				{  return pathString.Replace(Engine.SystemInfo.PathSeparatorCharacter, '/');  }
 			}
 
 
@@ -492,7 +492,7 @@ namespace CodeClear.NaturalDocs.Engine
 		public static int Compare (Path a, Path b)
 			{
 			// Since these are structs we don't have to worry about null objects.
-			return String.Compare(a.pathString, b.pathString, Engine.Config.Manager.IgnoreCaseInPaths);
+			return String.Compare(a.pathString, b.pathString, Engine.SystemInfo.IgnoreCaseInPaths);
 			}
 
 		/* Function: ToString
@@ -625,7 +625,7 @@ namespace CodeClear.NaturalDocs.Engine
 				
 			// Build our final string.
 			
-			char separator = Engine.Config.Manager.PathSeparatorCharacter;
+			char separator = Engine.SystemInfo.PathSeparatorCharacter;
 			StringBuilder newPathString = new StringBuilder(pathString.Length);
 			
 			if (prefix == null)
