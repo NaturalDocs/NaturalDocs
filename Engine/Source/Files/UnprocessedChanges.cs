@@ -94,7 +94,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 		/* Function: PickNewOrChangedFileID
-		 * Picks an added or changed file ID to work on, if there are any.  If not it will return zero.
+		 * Picks an added or changed file ID to work on, if there are any.  It will be removed from the list of unprocessed 
+		 * changes.  If there aren't any it will return zero.
 		 */
 		public int PickNewOrChangedFileID ()
 			{
@@ -106,7 +107,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			
 		/* Function: PickDeletedFileID
-		 * Picks a deleted file to work on, if there are any.  If not it will return zero.
+		 * Picks a deleted file to work on, if there are any.  It will be removed from the list of unprocessed changes.  If there
+		 * aren't any it will return zero.
 		 */
 		public int PickDeletedFileID ()
 			{
