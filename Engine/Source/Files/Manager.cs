@@ -815,7 +815,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		/* Property: UnprocessedChanges
 		 * 
-		 * Returns a <Files.Changes> object which stores all of the unprocessed file changes that have been detected.
+		 * Returns a <Files.UnprocessedChanges> object which stores all of the unprocessed file changes that have been detected.
 		 */
 		public Files.UnprocessedChanges UnprocessedChanges
 			{
