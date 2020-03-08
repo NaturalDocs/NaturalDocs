@@ -22,23 +22,23 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public Parsing (string alternateStartMessage) : base (Application.StatusInterval)
+		public Parsing (string alternativeStartMessage) : base (Application.StatusInterval)
 			{
-			status = new Engine.Files.ProcessChangesStatus();
+			status = new Engine.Files.ProcessorStatus();
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
-			this.alternateStartMessage = alternateStartMessage;
+			this.alternativeStartMessage = alternativeStartMessage;
 			}
 
 		protected override void ShowStartMessage ()
 			{
-			Application.EngineInstance.FileProcessor.GetProcessChangesStatus(ref status);
+			Application.EngineInstance.FileProcessor.GetStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
 			
-			if (alternateStartMessage != null)
+			if (alternativeStartMessage != null)
 				{
 				System.Console.WriteLine(
-					Engine.Locale.Get("NaturalDocs.CLI", alternateStartMessage)
+					Engine.Locale.Get("NaturalDocs.CLI", alternativeStartMessage)
 					);
 				}
 			else if (status.ChangedFilesRemaining == 0)
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			if (totalFilesToProcess == 0)
 				{  return;  }
 				
-			Application.EngineInstance.FileProcessor.GetProcessChangesStatus(ref status);
+			Application.EngineInstance.FileProcessor.GetStatus(ref status);
 			
 			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
@@ -105,10 +105,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected Engine.Files.ProcessChangesStatus status;
+		protected Engine.Files.ProcessorStatus status;
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
-		protected string alternateStartMessage;
+		protected string alternativeStartMessage;
 		
 		}
 	}

@@ -138,11 +138,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 		 
 		
-		/* Function: GetProcessChangesStatus
+		/* Function: GetStatus
 		 * Fills the passed object with the status of <WorkOnProcessingChanges()>.  This will be a snapshot of its
 		 * progress rather than a live object, so the values won't change out from under you.
 		 */
-		public void GetProcessChangesStatus (ref ProcessChangesStatus statusTarget)
+		public void GetStatus (ref ProcessorStatus statusTarget)
 			{
 			lock (accessLock)
 				{
@@ -455,6 +455,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			else
 				{  throw new ArgumentException();  }
 			}
+
+
+		
+		// Group: Topic Functions
+		// __________________________________________________________________________
 
 
 		/* Function: GetLinks

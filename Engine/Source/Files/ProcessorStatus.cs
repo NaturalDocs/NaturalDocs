@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.ProcessChangesStatus
+ * Class: CodeClear.NaturalDocs.Engine.Files.ProcessorStatus
  * ____________________________________________________________________________
  * 
- * Statistics on the progress of <Files.Manager.WorkOnProcessingChanges()>.
+ * Statistics on the progress of <Files.Processor.WorkOnProcessingChanges()>.
  * 
  */
 
@@ -16,16 +16,16 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class ProcessChangesStatus
+	public class ProcessorStatus
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Function: ProcessChangesStatus
+		/* Function: ProcessorStatus
 		 */
-		public ProcessChangesStatus ()
+		public ProcessorStatus ()
 			{
 			Reset();
 			}

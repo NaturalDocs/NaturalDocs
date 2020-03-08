@@ -209,7 +209,7 @@
     <Compile Include="Source\Files\InputType.cs" />
     <Compile Include="Source\Files\Manager.cs" />
     <Compile Include="Source\Files\AddAllFilesStatus.cs" />
-    <Compile Include="Source\Files\ProcessChangesStatus.cs" />
+    <Compile Include="Source\Files\ProcessorStatus.cs" />
     <Compile Include="Source\IDObjects\Base.cs" />
     <Compile Include="Source\IDObjects\Manager.cs" />
     <Compile Include="Source\IDObjects\NumberSet.cs" />
