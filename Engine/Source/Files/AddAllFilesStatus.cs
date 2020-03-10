@@ -3,6 +3,14 @@
  * ____________________________________________________________________________
  * 
  * Statistics on the progress of <FileSource.AddAllFiles()>.
+ * 
+ * 
+ * Multithreading: Thread Safety Notes
+ * 
+ *		Externally, this class is thread safe.
+ *		
+ *		Internally, all variable accesses must use a monitor on <accessLock>.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -26,6 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public AddAllFilesStatus ()
 			{
+			accessLock = new object();
 			Reset();
 			}
 			
@@ -34,55 +43,216 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void Reset ()
 			{
-			Completed = false;
+			lock (accessLock)
+				{
+				sourceFilesFound = 0;
+				sourceFoldersFound = 0;
 
-			SourceFilesFound = 0;
-			SourceFoldersFound = 0;
-			}
-		
-		/* Function: CopyFrom
-		 * Copies all the variables from the passed one.
-		 */
-		public void CopyFrom (AddAllFilesStatus other)
-			{
-			Completed = other.Completed;
+				imageFilesFound = 0;
+				imageFoldersFound = 0;
 
-			SourceFilesFound = other.SourceFilesFound;
-			SourceFoldersFound = other.SourceFoldersFound;
+				styleFilesFound = 0;
+				styleFoldersFound = 0;
+				}
 			}
-			
+
 		/* Function: Add
-		 * Adds the statistics of the passed status to this one.
+		 * Adds the passed status to this one.
 		 */
 		public void Add (AddAllFilesStatus other)
 			{
-			if (other.Completed == false)
-				{  Completed = false;  }
-				
-			SourceFilesFound += other.SourceFilesFound;
-			SourceFoldersFound += other.SourceFoldersFound;
+			// We'll take a temporary copy of the other status so we never hold two locks at the same time.
+
+			int otherSourceFilesFound, otherSourceFoldersFound;
+			int otherImageFilesFound, otherImageFoldersFound;
+			int otherStyleFilesFound, otherStyleFoldersFound;
+
+			lock (other.accessLock)
+				{
+				otherSourceFilesFound = other.sourceFilesFound;
+				otherSourceFoldersFound = other.sourceFoldersFound;
+
+				otherImageFilesFound = other.imageFilesFound;
+				otherImageFoldersFound = other.imageFoldersFound;
+
+				otherStyleFilesFound = other.styleFilesFound;
+				otherStyleFoldersFound = other.styleFoldersFound;
+				}
+
+			lock (accessLock)
+				{
+				sourceFilesFound += otherSourceFilesFound;
+				sourceFoldersFound += otherSourceFoldersFound;
+
+				imageFilesFound += otherImageFilesFound;
+				imageFoldersFound += otherImageFoldersFound;
+
+				styleFilesFound += otherStyleFilesFound;
+				styleFoldersFound += otherStyleFoldersFound;
+				}
 			}
 			
 			
+		/* Function: Copy
+		 * Copies the passed status to this one.
+		 */
+		public void Copy (AddAllFilesStatus other)
+			{
+			// We'll take a temporary copy of the other status so we never hold two locks at the same time.
+
+			int otherSourceFilesFound, otherSourceFoldersFound;
+			int otherImageFilesFound, otherImageFoldersFound;
+			int otherStyleFilesFound, otherStyleFoldersFound;
+
+			lock (other.accessLock)
+				{
+				otherSourceFilesFound = other.sourceFilesFound;
+				otherSourceFoldersFound = other.sourceFoldersFound;
+
+				otherImageFilesFound = other.imageFilesFound;
+				otherImageFoldersFound = other.imageFoldersFound;
+
+				otherStyleFilesFound = other.styleFilesFound;
+				otherStyleFoldersFound = other.styleFoldersFound;
+				}
+
+			lock (accessLock)
+				{
+				sourceFilesFound = otherSourceFilesFound;
+				sourceFoldersFound = otherSourceFoldersFound;
+
+				imageFilesFound = otherImageFilesFound;
+				imageFoldersFound = otherImageFoldersFound;
+
+				styleFilesFound = otherStyleFilesFound;
+				styleFoldersFound = otherStyleFoldersFound;
+				}
+			}
+
+		/* Function: AddFiles
+		 * Adds files to the count.
+		 */
+		public void AddFiles (FileType type, int count = 1)
+			{
+			lock (accessLock)
+				{
+				switch (type)
+					{
+					case FileType.Source:
+						sourceFilesFound += count;
+						break;
+					case FileType.Image:
+						imageFilesFound += count;
+						break;
+					case FileType.Style:
+						styleFilesFound += count;
+						break;
+					default:
+						throw new NotImplementedException();
+					}
+				}
+			}
+
+		/* Function: AddFolders
+		 * Adds folders to the count.
+		 */
+		public void AddFolders (InputType type, int count = 1)
+			{
+			lock (accessLock)
+				{
+				switch (type)
+					{
+					case InputType.Source:
+						sourceFoldersFound += count;
+						break;
+					case InputType.Image:
+						imageFoldersFound += count;
+						break;
+					case InputType.Style:
+						styleFoldersFound += count;
+						break;
+					default:
+						throw new NotImplementedException();
+					}
+				}
+			}
+
 			
-		// Group: Public Variables
+			
+		// Group: Properties
 		// __________________________________________________________________________
+
+
+		public int SourceFilesFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return sourceFilesFound;  }
+				}
+			}
+
+		public int SourceFoldersFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return sourceFoldersFound;  }
+				}
+			}
+
+		public int ImageFilesFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return imageFilesFound;  }
+				}
+			}
+
+		public int ImageFoldersFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return imageFoldersFound;  }
+				}
+			}
+
+		public int StyleFilesFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return styleFilesFound;  }
+				}
+			}
+
+		public int StyleFoldersFound
+			{
+			get
+				{
+				lock (accessLock)
+					{  return styleFoldersFound;  }
+				}
+			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+
+		protected object accessLock;		
 		
-		
-		/* Variable: SourceFilesFound
-		 * The number of source files found by the function.  This does not include image or style files.
-		 */
-		public int SourceFilesFound;
-		
-		/* Variable: SourceFoldersFound
-		 * The number of source folders found by the function, if appropriate.  This does not include image or style folders.
-		 */
-		public int SourceFoldersFound;
-		
-		/* Variable: Completed
-		 * Whether the function was successfully completed on this file source.
-		 */
-		public bool Completed;
-		
+		protected int sourceFilesFound;
+		protected int sourceFoldersFound;
+
+		protected int imageFilesFound;
+		protected int imageFoldersFound;
+
+		protected int styleFilesFound;
+		protected int styleFoldersFound;
+
 		}
 	}

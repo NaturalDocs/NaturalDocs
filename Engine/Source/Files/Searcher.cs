@@ -103,20 +103,14 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			
 		/* Function: GetStatus
-		 * Fills the passed object with the status of <WorkOnAddingAllFiles()>.  The object will be a snapshot of the values, not
-		 * a live monitor, so the values will not change out from under you.
+		 * Fills the passed object with the status of <WorkOnAddingAllFiles()>.
 		 */
 		public void GetStatus (ref AddAllFilesStatus statusTarget)
 			{
 			statusTarget.Reset();
 			
-			lock (accessLock)
-				{
-				for (int i = 0; i < fileSources.Count; i++)
-					{
-					fileSources[i].CombineAddAllFilesStatus(ref statusTarget);
-					}
-				}
+			foreach (var fileSource in fileSources)
+				{  fileSource.AddStatusTo(ref statusTarget);  }
 			}
 			
 			

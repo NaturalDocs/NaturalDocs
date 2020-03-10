@@ -99,11 +99,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			Stack<string> foldersToSearch = new Stack<string>();
 			foldersToSearch.Push(EngineInstance.Config.SystemStyleFolder);
 			foldersToSearch.Push(EngineInstance.Config.ProjectConfigFolder);
+			addAllFilesStatus.AddFolders(Files.InputType.Style, 2);
 			
 			while (foldersToSearch.Count > 0)
 			   {
 			   string folder = foldersToSearch.Pop();
 			   string[] subfolders = System.IO.Directory.GetDirectories(folder);
+			   addAllFilesStatus.AddFolders(Files.InputType.Style, subfolders.Length);
 				
 			   if (cancelDelegate())
 			      {  return;  }
@@ -116,11 +118,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			   if (cancelDelegate())
 			      {  return;  }
 
-			   // This is deliberately not batched to increase parallelism.  Reading all the file modification times could potentially be
-			   // a long, IO intensive operation if there are a lot of files in a folder.  It would be more efficient in a single threaded
-			   // application to put off triggering the change notifications for each one, but in a multithreaded application it's 
-			   // preventing other file sources from searching and/or parsers from working on the files already found.
-			
 			   foreach (string file in files)
 			      {
 			      if (cancelDelegate())
@@ -132,14 +129,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 						{
 						if (style.Contains(filePath))
 							{  
+							addAllFilesStatus.AddFiles(Files.FileType.Style, 1);
 							Manager.AddOrUpdateFile(filePath, Files.FileType.Style, System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
 							break;
 							}
 						}
-			      }
-			   }
-
-			addAllFilesStatus.Completed = true;
+					}
+				}
 			}
 
 

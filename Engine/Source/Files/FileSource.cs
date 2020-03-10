@@ -78,20 +78,19 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		abstract public void AddAllFiles (CancelDelegate cancelDelegate);
 		
 		
-		/* Function: GetAddAllFilesStatus
-		 * Fills the passed object with the current status of <AddAllFiles()>.  The passed object will contain a snapshot of the status,
-		 * not a continuously updating object, so the values won't change out from under you.
+		/* Function: GetStatus
+		 * Fills the passed object with the current state of <AddAllFiles()>.
 		 */
-		public void GetAddAllFilesStatus (ref AddAllFilesStatus statusTarget)
+		public void GetStatus (ref AddAllFilesStatus statusTarget)
 			{
-			statusTarget.CopyFrom(addAllFilesStatus);
+			statusTarget.Copy(addAllFilesStatus);
 			}
 			
 			
-		/* Function: CombineAddAllFilesStatus
-		 * Adds the current status numbers to the passed object.
+		/* Function: AddStatusTo
+		 * Adds the current status of <AddAllFiles()> to the passed one.
 		 */
-		public void CombineAddAllFilesStatus (ref AddAllFilesStatus statusTarget)
+		public void AddStatusTo (ref AddAllFilesStatus statusTarget)
 			{
 			statusTarget.Add(addAllFilesStatus);
 			}
@@ -155,16 +154,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			get
 				{  return null;  }
-			}
-			
-			
-		/* Property: AllFilesAdded
-		 * Whether all files have been added via <AddAllFiles()>.
-		 */
-		public bool AllFilesAdded
-			{
-			get
-				{  return addAllFilesStatus.Completed;  }
 			}
 			
 			

@@ -103,10 +103,10 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					{
 					if (Manager.SourceFolderIsIgnored(folder))
  						{  continue;  }	
-					else
-						{  addAllFilesStatus.SourceFoldersFound++;  }
 					}
 				
+				addAllFilesStatus.AddFolders(Type, 1);
+
 				string[] subfolders = System.IO.Directory.GetDirectories(folder);
 				
 				if (cancelDelegate())
@@ -120,43 +120,34 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				if (cancelDelegate())
 					{  return;  }
 					
-				// This is deliberately not batched to increase parallelism.  Reading all the file modification times could potentially be
-				// a long, IO intensive operation if there are a lot of files in a folder.  It would be more efficient in a single threaded
-				// application to put off triggering the change notifications for each one, but in a multithreaded application it's 
-				// preventing other file sources from searching and/or parsers from working on the files already found.
-			
 				foreach (string file in files)
 					{
 					Path filePath = file;
 					string extension = filePath.Extension;
-					FileType? type = null;
+					FileType? fileType = null;
 						
 					if (Type == InputType.Source)
 						{
 						if ( EngineInstance.Languages.FromExtension(extension) != null)
-							{  type = FileType.Source;  }
+							{  fileType = FileType.Source;  }
 						// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
 						// file instead of an image folder.
 						else if (Files.Manager.ImageExtensions.Contains(extension) )
-							{  type = FileType.Image;  }
+							{  fileType = FileType.Image;  }
 						}
 					else if (Type == InputType.Image && Files.Manager.ImageExtensions.Contains(extension))
-						{  type = FileType.Image;  }
+						{  fileType = FileType.Image;  }
 
-					if (type != null)
+					if (fileType != null)
 						{  
-						Manager.AddOrUpdateFile(filePath, (FileType)type, System.IO.File.GetLastWriteTimeUtc(file));
-
-						if (type == FileType.Source)
-							{  addAllFilesStatus.SourceFilesFound++;  }
+						addAllFilesStatus.AddFiles((FileType)fileType, 1);
+						Manager.AddOrUpdateFile(filePath, (FileType)fileType, System.IO.File.GetLastWriteTimeUtc(file));
 						}
 
 					if (cancelDelegate())
 						{  return;  }
 					}
 				}
-
-			addAllFilesStatus.Completed = true;
 			}
 
 		
@@ -215,7 +206,6 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		// Group: Variables
 		// __________________________________________________________________________
 			
-
 		protected Config.Targets.SourceFolder config;
 
 		}
