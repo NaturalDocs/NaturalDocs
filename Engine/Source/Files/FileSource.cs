@@ -38,7 +38,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			this.manager = manager;
 
 			addAllFilesStatus = new AddAllFilesStatus();
-			claimed = false;
 			}
 			
 		
@@ -155,18 +154,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			get
 				{  return null;  }
 			}
-			
-			
-		/* Property: Claimed
-		 * Whether the file source is claimed by a thread for processing with <AddAllFiles()>.
-		 */
-		public bool Claimed
-			{
-			get
-				{  return claimed;  }
-			set
-				{  claimed = value;  }
-			}
 
 
 
@@ -176,8 +163,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		protected Files.Manager manager;		
 		
 		protected AddAllFilesStatus addAllFilesStatus;
-		
-		protected bool claimed;
 
 		}
 	}
