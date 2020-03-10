@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{
 					statusManager.Start();
 							
-					Multithread("File Adder", EngineInstance.Files.WorkOnAddingAllFiles);
+					Multithread("File Searcher", EngineInstance.FileSearcher.WorkOnAddingAllFiles);
 							
 					statusManager.End();
 					}

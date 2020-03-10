@@ -95,7 +95,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			fileSources = new List<FileSource>();
 			filters = new List<Filter>();
-			claimedFolderPrefixes = new StringSet (KeySettings.IgnoreCase);			
 
 			files = new IDObjects.Manager<File>(Config.Manager.KeySettingsForPaths, false);
 			unprocessedChanges = new UnprocessedChanges();
@@ -298,140 +297,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 
 
-		/* Function: WorkOnAddingAllFiles
-		 * 
-		 * Works on the task of going through all the files in all the <FileSources> and calling <AddOrUpdateFile()> on each one.
-		 * This is a parallelizable task, so multiple threads can call this function and they will divide up the work until it's done.
-		 * 
-		 * The function returns when there is no more work for this thread to do.  If this is the only thread working on it then the
-		 * task is complete, but if there are multiple threads, the task is only complete after they all return.  An individual thread
-		 * may return prior to that point.
-		 */
-		public void WorkOnAddingAllFiles (CancelDelegate cancelDelegate)
-			{
-			string claimedFolderPrefix = null;
-			
-			Monitor.Enter(accessLock);
-			bool locked = true;
-			
-			try
-				{
-				for (;;)
-					{
-					FileSource claimedFileSource = null;
-					
-					if (cancelDelegate())
-						{  return;  }
-						
-						
-					// If we have a claimed folder prefix, try to find another file source with the same one.
-					
-					if (claimedFolderPrefix != null)
-						{
-						foreach (FileSource fileSource in fileSources)
-							{
-							if (fileSource is FileSources.Folder && 
-								fileSource.Claimed == false &&
-								fileSource.AllFilesAdded == false && 
-								String.Compare(claimedFolderPrefix, (fileSource as FileSources.Folder).Path.Prefix, true) == 0)
-								{
-								claimedFileSource = fileSource;
-								fileSource.Claimed = true;
-								break;
-								}
-							}
-							
-						if (claimedFileSource == null)
-							{
-							claimedFolderPrefixes.Remove(claimedFolderPrefix);
-							claimedFolderPrefix = null;
-							}
-						}
-							
-						
-					// If that didn't work, either because we didn't have a claimed folder prefix or there were no more available,
-					// claim the first untaken file source there is.  If it's a folder file source, claim its prefix as well, but ignore it if the
-					// prefix was already claimed because it wouldn't benefit from parallelization.
-					
-					if (claimedFileSource == null)
-						{
-						foreach (FileSource fileSource in fileSources)
-							{
-							if (fileSource is FileSources.Folder)
-								{
-								if (fileSource.AllFilesAdded == false && 
-									fileSource.Claimed == false &&
-									claimedFolderPrefixes.Contains( (fileSource as FileSources.Folder).Path.Prefix ) == false)
-									{
-									claimedFileSource = fileSource;
-									fileSource.Claimed = true;
-									
-									claimedFolderPrefix = (fileSource as FileSources.Folder).Path.Prefix;
-									claimedFolderPrefixes.Add(claimedFolderPrefix);
-									
-									break;
-									}
-								}
-								
-							else if (fileSource.AllFilesAdded == false && fileSource.Claimed == false)
-								{
-								claimedFileSource = fileSource;
-								fileSource.Claimed = true;
-								
-								break;
-								}
-							}
-						}
-						
-						
-					// If that didn't work either it means there are no available file sources left so we can quit.
-					
-					if (claimedFileSource == null)
-						{  return;  }
-						
-						
-					// Now release the lock while we work on it.
-					
-					Monitor.Exit(accessLock);
-					locked = false;
-
-					claimedFileSource.AddAllFiles(cancelDelegate);
-					// If it failed because of the cancelDelegate AllFilesAdded will be false.
-					
-					Monitor.Enter(accessLock);
-					locked = true;
-					
-					claimedFileSource.Claimed = false;
-						
-					}  // for
-				} // try
-				
-			finally
-				{
-				if (locked)
-					{  Monitor.Exit(accessLock);  }
-				}
-			}
-			
-			
-		/* Function: GetAddAllFilesStatus
-		 * Fills the passed object with the status of <WorkOnAddingAllFiles()>.  The object will be a snapshot of the values, not
-		 * a live monitor, so the values will not change out from under you.
-		 */
-		public void GetAddAllFilesStatus (ref AddAllFilesStatus statusTarget)
-			{
-			statusTarget.Reset();
-			
-			lock (accessLock)
-				{
-				for (int i = 0; i < fileSources.Count; i++)
-					{
-					fileSources[i].CombineAddAllFilesStatus(ref statusTarget);
-					}
-				}
-			}
-			
-			
 		/* Function: DeleteFilesNotInFileSources
 		 * 
 		 * Calls <DeleteFile()> on any file that doesn't have <File.InFileSource> set.  <AddOrUpdateFile()> automatically sets this
@@ -851,19 +716,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		protected List<Filter> filters;
 		
 
-		/* var: claimedFolderPrefixes
-		 * 
-		 * A set of all the <Path.Prefixes> that are currently being searched by threads.  This is used to prevent multiple 
-		 * threads from searching <Folder>-based <FileSources> with the same prefix at the same time, since they are most 
-		 * likely on the same physical disk and would not benefit from the parallelism.
-		 * 
-		 * Thread Safety:
-		 * 
-		 *		You must hold <accessLock> in order to use this variable.
-		 */
-		protected StringSet claimedFolderPrefixes;
-		
-		
 		
 		// Group: File Variables
 		// __________________________________________________________________________
