@@ -124,6 +124,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 
 
+		public bool IsEmpty
+			{
+			get
+				{
+				lock (accessLock)
+					{
+					return (newOrChangedFileIDs.IsEmpty && deletedFileIDs.IsEmpty);
+					}
+				}
+			}
+
 		public IEnumerable<int> AllNewOrChangedFileIDs
 			{
 			get

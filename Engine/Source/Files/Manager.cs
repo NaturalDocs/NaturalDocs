@@ -15,14 +15,14 @@
  *		
  *		- Add any change watchers with <AddChangeWatcher()>.  This can be done before the module is started.
  * 
- *		- Call <Engine.Instance.Start()> which will start this module.
- *		
- *		- At this point the class is usable, but the file information is as of the last run.
- *		
- *		- Use update functions like <WorkOnAddingAllFiles()> to make changes.  After that completes, detect deleted files by 
- *		  calling <DeleteFilesNotInFileSources()>.
+ *		- Call <Engine.Instance.Start()> which will start this module. At this point the class is usable, but the file information
+ *		  is as of the last run.
  *		  
- *		- Use processing functions like <WorkOnProcessingChanges()> to process the changes.
+ *		- Use <Files.Searcher> to scan for added and changed files and to register them with the class.
+ *		
+ *		- Call <DeleteFilesNotReAdded()> to mark everything not found by the <Searcher> as deleted.
+ *		  
+ *		- Use <Files.Processor> to process the changes.
  *		  
  * 
  * Multithreading: Thread Safety Notes
@@ -97,6 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			filters = new List<Filter>();
 
 			files = new IDObjects.Manager<File>(Config.Manager.KeySettingsForPaths, false);
+			filesAddedSinceStart = new IDObjects.NumberSet();
 			unprocessedChanges = new UnprocessedChanges();
 			
 			accessLock = new object();
@@ -238,6 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				return files[fileID];
 				}
 			}
+
 			
 		/* Function: FromPath
 		 * Returns the <File> associated with the passed file <Path>, or null if there isn't one.  The <Path> must be
@@ -293,61 +295,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 
-		// Group: Group File Management Functions
-		// __________________________________________________________________________
-
-
-		/* Function: DeleteFilesNotInFileSources
-		 * 
-		 * Calls <DeleteFile()> on any file that doesn't have <File.InFileSource> set.  <AddOrUpdateFile()> automatically sets this
-		 * flag, so after <WorkOnAddingAllFiles()> successfully completes this will delete any files that existed on the last run but
-		 * no longer exist.
-		 * 
-		 * While this function takes a <CancelDelegate>, it is not a WorkOn function because more than one thread cannot work
-		 * on this task simultaneously.
-		 */
-		public void DeleteFilesNotInFileSources (CancelDelegate cancelDelegate)
-			{
-			Monitor.Enter(accessLock);
-			bool haveLock = true;
-			
-			try
-				{
-				// We want to release the lock before calling DeleteFile so it won't be held when it notifies change watchers.
-				// Since that can potentially allow the list of files to change we take a private copy of the used IDs and work 
-				// from that instead of iterating through the files object.
-
-				IDObjects.NumberSet fileIDs = files.GetUsedIDs();
-
-				while (!fileIDs.IsEmpty)
-					{
-					int fileID = fileIDs.Pop();
-					File file = files[fileID];
-
-					if (file != null && file.InFileSource == false)
-						{  
-						Monitor.Exit(accessLock);
-						haveLock = false;
-
-						DeleteFile(file.FileName);
-
-						Monitor.Enter(accessLock);
-						haveLock = true;
-						}
-						
-					if (cancelDelegate())
-						{  return;  }
-					}
-				}
-			finally
-				{  
-				if (haveLock)
-					{  Monitor.Exit(accessLock);  }
-				}
-			}			
-		
-		
-			
 		// Group: Individual File Management Functions
 		// __________________________________________________________________________
 		
@@ -362,15 +309,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public bool AddOrUpdateFile (Path name, FileType type, DateTime lastModified, bool forceReparse = false)
 			{
-			bool changed = false;
-
-			Monitor.Enter(accessLock);
-			
-			try
+			lock (accessLock)
 				{
 				File file = files[name];
 				
-				// The file didn't exist in our records so it's new
+				// If the file didn't exist in our records it's new
 				if (file == null)
 					{
 					if (type == FileType.Image)
@@ -379,51 +322,60 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						{  file = new File(name, type, lastModified);  }
 
 					files.Add(file);
-
+					filesAddedSinceStart.Add(file.ID);
 					unprocessedChanges.AddNewFile(file);
 					
 					foreach (var changeWatcher in changeWatchers)
 						{  changeWatcher.OnAddFile(file);  }
 
-					changed = true;
+					return true;
 					}
 
+				// Make sure the file isn't being re-added as a different type
 				else if (file.Type != type)
 					{
 					throw new Exception("Added an existing file but the types didn't match.");
 					}
 
-				else if (file.LastModified != lastModified || file.Deleted || forceReparse)
+				// If the file was previously marked as deleted it was recreated
+				else if (file.Deleted)
 					{
-					bool wasDeleted = file.Deleted;
-
 					file.Deleted = false;
 					file.LastModified = lastModified;
 
-					if (wasDeleted)
-						{
-						unprocessedChanges.AddNewFile(file);
+					filesAddedSinceStart.Add(file.ID);
+					unprocessedChanges.AddNewFile(file);
 
-						foreach (var changeWatcher in changeWatchers)
-							{  changeWatcher.OnAddFile(file);  }
-						}
-					else
-						{
-						unprocessedChanges.AddChangedFile(file);
+					foreach (var changeWatcher in changeWatchers)
+						{  changeWatcher.OnAddFile(file);  }
 
-						foreach (var changeWatcher in changeWatchers)
-							{  changeWatcher.OnFileChanged(file);  }
-						}
+					return true;
+					}
 					
-					changed = true;
+				// If the file changed or we're forcing everything to be reparsed anyway
+				else if (file.LastModified != lastModified || forceReparse)
+					{
+					file.LastModified = lastModified;
+
+					filesAddedSinceStart.Add(file.ID);
+					unprocessedChanges.AddChangedFile(file);
+
+					foreach (var changeWatcher in changeWatchers)
+						{  changeWatcher.OnFileChanged(file);  }
+					
+					return true;
 					}
 
-				file.InFileSource = true;
-				}
-			finally
-				{  Monitor.Exit(accessLock);  }
+				// Otherwise the file is the same as the last time we saw it.
+				else
+					{
+					// This is still important because it's needed to know which files do and don't exist since the last time
+					// Natural Docs was run
+					filesAddedSinceStart.Add(file.ID);
 
-			return changed;
+					return false;
+					}
+				}
 			}
 			
 			
@@ -434,41 +386,66 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public bool DeleteFile (Path name)
 			{
-			bool changed = false;
-			
-			Monitor.Enter(accessLock);
-			
-			try
+			lock (accessLock)
 				{
 				File file = files[name];
 				
-				if (file == null)
+				// If the file didn't exist in our records or was already marked as deleted
+				if (file == null || file.Deleted)
 					{
-					// Nada
+					return false;
 					}
 
-				else if (!file.Deleted)
+				// The file does exist
+				else
 					{
 					file.Deleted = true;
+
+					// Probably not needed but let's be thorough
+					filesAddedSinceStart.Remove(file.ID);
 
 					unprocessedChanges.AddDeletedFile(file);
 					
 					foreach (var changeWatcher in changeWatchers)
 						{  changeWatcher.OnDeleteFile(file);  }
 
-					changed = true;
+					return true;
 					}
 				}
-			finally
-				{  Monitor.Exit(accessLock);  }
-				
-			return changed;
 			}
 			
 
 			
 		// Group: Misc Functions
 		// __________________________________________________________________________
+
+
+		/* Function: DeleteFilesNotReAdded
+		 * 
+		 * Calls <DeleteFile()> on any file that hasn't been passed to <AddOrUpdateFile()> since <Start()> was called.  <Start()>
+		 * loads the file information as of Natural Docs' last run, and <Files.Searcher> adds everything it finds, so when all the 
+		 * <Searcher> threads have completed then this represents files that no longer exist and should be treated as deleted.
+		 * 
+		 * While this function takes a <CancelDelegate>, it is not a WorkOn function because more than one thread cannot work
+		 * on this task simultaneously.
+		 */
+		public void DeleteFilesNotReAdded (CancelDelegate cancelDelegate)
+			{
+			lock (accessLock)
+				{
+				IDObjects.NumberSet fileIDsToDelete = files.GetUsedIDs();
+				fileIDsToDelete.Remove(filesAddedSinceStart);
+
+				foreach (int fileIDToDelete in fileIDsToDelete)
+					{
+					File file = files[fileIDToDelete];
+					DeleteFile(file.FileName);
+						
+					if (cancelDelegate())
+						{  return;  }
+					}
+				}
+			}			
 
 
 		/* Function: Cleanup
@@ -480,6 +457,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			lock (accessLock)
 				{
+				#if DEBUG
+				if (!unprocessedChanges.IsEmpty)
+					{  throw new Exception("Called Cleanup() when there were still unprocessed changes.");  }
+				#endif
+
 				IDObjects.NumberSet toDelete = new IDObjects.NumberSet();
 				
 				foreach (File file in files)
@@ -496,6 +478,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					if (cancelDelegate())
 						{  return;  }
 						
+					filesAddedSinceStart.Remove(id);
 					files.Remove(id);
 					}
 				}
@@ -730,6 +713,19 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected IDObjects.Manager<File> files;
+
+
+		/* var: filesAddedSinceStart
+		 * 
+		 * The IDs of all the files that have been passed to <AddOrUpdateFile()> since <Start()> was called.  This means these
+		 * are all the files found in the filesystem by <Searcher>, whereas <files> will also include files that existed on the last
+		 * run.  Anything in <files> that isn't in here has thus been deleted since the last run.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected IDObjects.NumberSet filesAddedSinceStart;
 
 
 		/* var: unprocessedChanges

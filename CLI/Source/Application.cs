@@ -188,7 +188,7 @@ namespace CodeClear.NaturalDocs.CLI
 					statusManager.End();
 					}
 							
-				EngineInstance.Files.DeleteFilesNotInFileSources( Engine.Delegates.NeverCancel );
+				EngineInstance.Files.DeleteFilesNotReAdded( Engine.Delegates.NeverCancel );
 							
 				executionTimer.End("Finding Source Files");
 

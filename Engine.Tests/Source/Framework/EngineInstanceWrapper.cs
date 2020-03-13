@@ -219,7 +219,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		public void Run ()
 			{
 			EngineInstance.FileSearcher.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
-			EngineInstance.Files.DeleteFilesNotInFileSources(Engine.Delegates.NeverCancel);
+			EngineInstance.Files.DeleteFilesNotReAdded(Engine.Delegates.NeverCancel);
 							
 			EngineInstance.FileProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
 
