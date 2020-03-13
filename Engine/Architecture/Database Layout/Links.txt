@@ -72,7 +72,7 @@ Database Column: EndingSymbol
 		EndingSymbol TEXT NOT NULL
 	-----------------
 
-	The ending segment of <TextOrSymbol>.  If this is a Natural Docs links, there may be additional ending 
+	The ending segment of <TextOrSymbol>.  If this is a Natural Docs link, there may be additional ending 
 	symbols that apply to this link in <CodeDB.AlternateLinkEndingSymbols>.
 
 

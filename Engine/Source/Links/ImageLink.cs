@@ -63,23 +63,25 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 			
 			
-		/* Function: SameIDPropertiesAs
-		 * Returns whether the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) are the same as the passed one.
+		/* Function: SameIdentifyingPropertiesAs
+		 * Returns whether the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) are the same as
+		 * the passed one.
 		 */
-		public bool SameIDPropertiesAs (ImageLink other)
+		public bool SameIdentifyingPropertiesAs (ImageLink other)
 			{
-			return (CompareIDPropertiesTo(other) == 0);
+			return (CompareIdentifyingPropertiesTo(other) == 0);
 			}
 
 
-		/* Function: CompareIDPropertiesTo
+		/* Function: CompareIdentifyingPropertiesTo
 		 * 
-		 * Compares the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) and returns a value similar to a string 
-		 * comparison result which is suitable for sorting a list of ImageLinks.  It will return zero if all the properties are equal.
+		 * Compares the identifying properties of the link (<OriginalText>, <FileID>, <ClassString>) and returns a value similar
+		 * to a string  comparison result which is suitable for sorting a list of ImageLinks.  It will return zero if all the properties 
+		 * are equal.
 		 */
-		public int CompareIDPropertiesTo (ImageLink other)
+		public int CompareIdentifyingPropertiesTo (ImageLink other)
 			{
-			// DEPENDENCY: What CopyNonIDPropertiesFrom() does depends on what this compares.
+			// DEPENDENCY: What CopyNonIdentifyingPropertiesFrom() does depends on what this compares.
 
 			int result = originalText.CompareTo(other.originalText);
 
@@ -106,13 +108,13 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 
-		/* Function: CopyNonIDPropertiesFrom
-		 * Makes this link copy all the properties not tested by <CompareIDPropertiesTo()> and <SameIDPropertiesAs()> from 
-		 * the passed link.
+		/* Function: CopyNonIdentifyingPropertiesFrom
+		 * Makes this link copy all the properties not tested by <CompareIdentifyingPropertiesTo()> and 
+		 * <SameIdentifyingPropertiesAs()> from the passed link.
 		 */
-		public void CopyNonIDPropertiesFrom (ImageLink other)
+		public void CopyNonIdentifyingPropertiesFrom (ImageLink other)
 			{
-			// DEPENDENCY: What this copies depends on what CompareIDPropertiesTo() does not.
+			// DEPENDENCY: What this copies depends on what CompareIdentifyingPropertiesTo() does not.
 
 			imageLinkID = other.imageLinkID;
 			path = other.path;

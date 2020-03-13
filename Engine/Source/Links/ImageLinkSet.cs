@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A sorted list of <ImageLinks> that prevents duplicates from being added as determined by 
- * <ImageLink.CompareIDPropertiesTo()>.
+ * <ImageLink.CompareIdentifyingPropertiesTo()>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			else if (b == null)
 				{  return 1;  }
 			else
-				{  return a.CompareIDPropertiesTo(b);  }
+				{  return a.CompareIdentifyingPropertiesTo(b);  }
 			}
 		}
 	}

@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Links.LinkSet
  * ____________________________________________________________________________
  * 
- * A sorted list of <Links> that prevents duplicates from being added as determined by <Link.CompareIDPropertiesTo()>.
+ * A sorted list of <Links> that prevents duplicates from being added as determined by <Link.CompareIdentifyingPropertiesTo()>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -45,7 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			else if (b == null)
 				{  return 1;  }
 			else
-				{  return a.CompareIDPropertiesTo(b);  }
+				{  return a.CompareIdentifyingPropertiesTo(b);  }
 			}
 		}
 	}

@@ -1672,10 +1672,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
 						{
-						if (newLink.SameIDPropertiesAs(oldLinks[i]))
+						if (newLink.SameIdentifyingPropertiesAs(oldLinks[i]))
 							{
 							foundMatch = true;
-							newLink.CopyNonIDPropertiesFrom(oldLinks[i]);
+							newLink.CopyNonIdentifyingPropertiesFrom(oldLinks[i]);
 							oldLinks.RemoveAt(i);
 							}
 						}
@@ -2139,10 +2139,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					bool foundMatch = false;
 					for (int i = 0; foundMatch == false && i < oldLinks.Count; i++)
 						{
-						if (newLink.SameIDPropertiesAs(oldLinks[i]))
+						if (newLink.SameIdentifyingPropertiesAs(oldLinks[i]))
 							{
 							foundMatch = true;
-							newLink.CopyNonIDPropertiesFrom(oldLinks[i]);
+							newLink.CopyNonIdentifyingPropertiesFrom(oldLinks[i]);
 							oldLinks.RemoveAt(i);
 							}
 						}

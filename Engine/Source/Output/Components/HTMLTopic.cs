@@ -730,7 +730,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			foreach (Link link in links)
 				{
-				if (link.SameIDPropertiesAs(linkStub))
+				if (link.SameIdentifyingPropertiesAs(linkStub))
 					{
 					fullLink = link;
 					break;
