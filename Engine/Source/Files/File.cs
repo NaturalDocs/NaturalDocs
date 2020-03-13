@@ -24,12 +24,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		/* Function: File
 		 */
-		public File (Path newFileName, FileType newType, DateTime newLastModified) : base()
+		public File (Path fileName, FileType type, DateTime lastModified) : base()
 			{
-			fileName = newFileName;
-			type = newType;
-			lastModified = newLastModified;
-			flags = 0;
+			this.fileName = fileName;
+			this.type = type;
+			this.lastModified = lastModified;
+			this.deleted = false;
 			}
 
 
@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			File duplicate = new File (fileName, type, lastModified);
 			duplicate.ID = ID;
-			duplicate.flags = flags;
+			duplicate.deleted = deleted;
 
 			return duplicate;
 			}
@@ -82,52 +82,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				{  lastModified = value;  }
 			}
 			
-		/* Property: InBinaryFile
-		 * Whether this file is defined in <Files.nd>.
-		 */
-		public bool InBinaryFile
-			{
-			get
-				{  return ( (flags & FileFlags.InBinaryFile) != 0 );  }
-			set
-				{
-				if (value == true)
-					{  flags |= FileFlags.InBinaryFile;  }
-				else
-					{  flags &= ~FileFlags.InBinaryFile;  }
-				}
-			}
-			
-		/* Property: InFileSource
-		 * Whether this file was found in one of <Engine.Files.Manager's> file sources.
-		 */
-		public bool InFileSource
-			{
-			get
-				{  return ( (flags & FileFlags.InFileSource) != 0 );  }
-			set
-				{
-				if (value == true)
-					{  flags |= FileFlags.InFileSource;  }
-				else
-					{  flags &= ~FileFlags.InFileSource;  }
-				}
-			}
-			
 		/* Property: Deleted
-		 * Whether this file is deleted.  The File object will continue to exist until the deletion is processed.
+		 * Whether this file is deleted.  The File object will continue to exist until the deletion is fully processed.
 		 */
 		public bool Deleted
 			{
 			get
-				{  return ( (flags & FileFlags.Deleted) != 0 );  }
+				{  return deleted;  }
 			set
-				{
-				if (value == true)
-					{  flags |= FileFlags.Deleted;  }
-				else
-					{  flags &= ~FileFlags.Deleted;  }
-				}
+				{  deleted = value;  }
 			}
 			
 		/* Property: Name
@@ -140,6 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 			
 			
+
 		// Group: Variables
 		// __________________________________________________________________________
 		
@@ -159,10 +123,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		protected DateTime lastModified;
 		
-		/* var: flags
-		 * Informational flags about the file.
+		/* var: deleted
+		 * Whether this file was deleted, since the File object will persist until it's fully processed.
 		 */
-		protected FileFlags flags;
+		protected bool deleted;
 
 		}
 	}

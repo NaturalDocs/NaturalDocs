@@ -199,7 +199,6 @@
     <Compile Include="Source\Prototypes\ParsedPrototype.cs" />
     <Compile Include="Source\Path.cs" />
     <Compile Include="Source\Files\File.cs" />
-    <Compile Include="Source\Files\FileFlags.cs" />
     <Compile Include="Source\Files\FileSource.cs" />
     <Compile Include="Source\Files\FileSources\Folder.cs" />
     <Compile Include="Source\Files\FileType.cs" />

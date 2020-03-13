@@ -565,8 +565,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 							}
 
 						file.ID = id;
-						file.InBinaryFile = true;
-						
 						files.Add(file);
 						}
 					}
