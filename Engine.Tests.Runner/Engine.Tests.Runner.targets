@@ -93,33 +93,35 @@
 			<!-- Engine.Tests will handle nunit.framework.dll -->
 
 			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-x86.exe"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\Mono.Cecil.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-x86.exe.config"
-				DestinationFolder="$(TargetDir)"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.engine.api.dll"
+			DestinationFolder="$(TargetDir)"
 				/>
-
-			<!-- This file is needed by nunit-console-x86.exe -->
-
 			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-console-runner.dll"
-				DestinationFolder="$(TargetDir)"
-				/>
-			
-			<!-- These files are needed by nunit-console-runner.dll -->
-			
-			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.core.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.engine.core.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.core.interfaces.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.engine.dll"
 				DestinationFolder="$(TargetDir)"
 				/>
 			<Copy
-				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit.util.dll"
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit3-console.exe"
+			DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit3-console.exe.config"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-agent-x86.exe"
+				DestinationFolder="$(TargetDir)"
+				/>
+			<Copy
+				SourceFiles="$(NaturalDocsSourceDir)Engine.Tests.Runner\Resources\NUnit\nunit-agent-x86.exe.config"
 				DestinationFolder="$(TargetDir)"
 				/>
 

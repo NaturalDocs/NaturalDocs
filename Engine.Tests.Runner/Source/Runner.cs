@@ -46,21 +46,21 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 
 				// Build the parameter string
 
-				string nunitParams = "/work:\"" + assemblyFolder + "\"";
+				string nunitParams = "\"" + dllPath + "\"";
 
 				if (testGroup != null)
-					{  nunitParams += " /fixture:CodeClear.NaturalDocs.Engine.Tests." + testGroup;  }
+					{  nunitParams += " --test=CodeClear.NaturalDocs.Engine.Tests." + testGroup;  }
 
-				nunitParams += " \"" + dllPath + "\"";
+				nunitParams += " --work=\"" + assemblyFolder + "\"";
 
 
-				// Use nunit-console-x86.exe to run the tests.  Capture its output if desired.
+				// Use nunit3-console.exe to run the tests.  Capture its output if desired.
 
 				string nunitOutput = null;
 
 				using (System.Diagnostics.Process nunitProcess = new System.Diagnostics.Process())
 					{
-					nunitProcess.StartInfo.FileName = assemblyFolder + "/nunit-console-x86.exe";
+					nunitProcess.StartInfo.FileName = assemblyFolder + "/nunit3-console.exe";
 					nunitProcess.StartInfo.Arguments = nunitParams;
 					nunitProcess.StartInfo.UseShellExecute = false;
 					nunitProcess.StartInfo.RedirectStandardOutput = !showNUnitOutput;
@@ -108,22 +108,27 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 				MatchCollection failureMatches = Regex.Matches(xmlContent, @"<failure>.*?<message><!\[CDATA\[(.*?)\]\]>.*?</message>.*?</failure>", RegexOptions.Singleline);
 
 				foreach (Match failureMatch in failureMatches)
-					{  
-					failures.AppendLine(failureMatch.Groups[1].ToString());
-					foundFailures++;
+					{
+					string failureMessage = failureMatch.Groups[1].ToString();
+
+					if (failureMessage != "One or more child tests had errors")
+						{
+						failures.AppendLine(failureMessage);
+						foundFailures++;
+						}
 					}
 
-				//<test-results 
-				//		name="F:\Projects\Natural Docs 2\Source\Engine.Tests.Runner\bin\Debug\NaturalDocs.Engine.Tests.dll"
-				//		total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0"
-				//		date="2012-03-06" time="11:02:19"
-				//>
-				Match failureCountMatch = System.Text.RegularExpressions.Regex.Match(xmlContent, @"<test-results.+errors=\""([0-9]+)\"".+failures=\""([0-9]+)\"".*>");
+				//<test-run 
+				//		id="0" runstate="Runnable" testcasecount="48" 
+				//		result="Failed" total="14" passed="13" failed="1" inconclusive="0" skipped="0" asserts="0" 
+				//		engine-version="3.11.1.0" clr-version="4.0.30319.42000" 
+				//		start-time="2020-03-15 18:24:36Z" end-time="2020-03-15 18:24:44Z" duration="8.456703">
+				Match failureCountMatch = System.Text.RegularExpressions.Regex.Match(xmlContent, @"<test-run.+failed=\""([0-9]+)\"".*>");
 				int failureCount = -1;
 
 				if (failureCountMatch.Success)
 					{
-					failureCount = int.Parse(failureCountMatch.Groups[1].Value) + int.Parse(failureCountMatch.Groups[2].Value);
+					failureCount = int.Parse(failureCountMatch.Groups[1].Value);
 					}
 
 
