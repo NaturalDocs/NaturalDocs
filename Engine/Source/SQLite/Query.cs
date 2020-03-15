@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.SQLite
 				int sqlByteLength;
 
 				#if SQLITE_UTF16
-				sqlByteLength = System.Text.Encoding.UTF16.GetByteCount(statement);
+				sqlByteLength = System.Text.Encoding.Unicode.GetByteCount(statement);
 				#elif SQLITE_UTF8
 				sqlByteLength = System.Text.Encoding.UTF8.GetByteCount(statement);
 				#else
