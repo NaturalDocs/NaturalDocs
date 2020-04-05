@@ -107,6 +107,7 @@
     <Compile Include="Source\Languages\C#\CommentDetection.cs" />
     <Compile Include="Source\Languages\C#\CommentMerging.cs" />
     <Compile Include="Source\Languages\C#\PrototypeParsing.cs" />
+    <Compile Include="Source\Languages\Lua\CommentDetection.cs" />
     <Compile Include="Source\Languages\Perl\CommentDetection.cs" />
     <Compile Include="Source\Languages\Python\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Ruby\ClassPrototypeParsing.cs" />

@@ -1,0 +1,55 @@
+- Plain comment, lines 2-4:
+
+  - Topic "Block comment", line 2:
+    - <p>Body</p>
+
+- Plain comment, line 6:
+
+  - Topic "Single line block comment", line 6:
+    - (No body detected)
+
+- Plain comment, lines 8-10:
+
+  - Topic "Block comment with extra dashes", line 8:
+    - <p>Body</p>
+
+- Plain comment, line 12:
+
+  - Topic "Single line block comment with extra dashes", line 12:
+    - (No body detected)
+
+- Plain comment, lines 15-17:
+
+  - Topic "Equals 1", line 15:
+    - <p>Body</p>
+
+- Plain comment, line 19:
+
+  - Topic "Single line equals 1", line 19:
+    - (No body detected)
+
+- Plain comment, lines 21-23:
+
+  - Topic "Equals 1 with extra dashes", line 21:
+    - <p>Body</p>
+
+- Plain comment, line 25:
+
+  - Topic "Single line equals 1 with extra dashes", line 25:
+    - (No body detected)
+
+- Plain comment, lines 28-32:
+
+  - Topic "Equals 2", line 28:
+    - <p>Body ]] Body ]=] Body ]===]</p>
+
+- Plain comment, lines 34-38:
+
+  - Topic "Equals 3", line 34:
+    - <p>Body ]] Body ]=] Body ]==]</p>
+
+- Plain comment, line 40:
+
+  - Topic "Single line ]] equals 3", line 40:
+    - (No body detected)
+
