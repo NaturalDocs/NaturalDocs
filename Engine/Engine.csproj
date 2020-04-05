@@ -47,6 +47,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Source\Collections\ToNumberSetTable.cs" />
+    <Compile Include="Source\Languages\Parsers\Lua.cs" />
     <Compile Include="Source\SystemInfo.cs" />
     <Compile Include="Source\Files\FilesBeingProcessed.cs" />
     <Compile Include="Source\Files\IChangeWatcher.cs" />
