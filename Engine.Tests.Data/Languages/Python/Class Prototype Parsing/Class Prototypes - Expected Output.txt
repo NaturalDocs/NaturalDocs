@@ -77,6 +77,17 @@ class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base)
 
 -----
 
+@f1(arg1 = 12, arg2 = "string") @f2 class Python_Decorator_Params
+
+  - Pre-Prototype Line: @f1(arg1 = 12, arg2 = "string")
+  - Pre-Prototype Line: @f2 
+  - Name: Python_Decorator_Params
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
 class Python_Metaclass (metaclass=Python_Metaclass)
 
   - Name: Python_Metaclass

@@ -22,6 +22,11 @@ class Ŭnicode_Pŷthon (Ŭnicode_Pŷthon_Base):
 @f2
 class Python_Decorators:
 
+# Class: Python_Decorator_Params
+@f1(arg1 = 12, arg2 = "string")
+@f2
+class Python_Decorator_Params:
+
 # Class: Python_Metaclass
 class Python_Metaclass (metaclass=Python_Metaclass):
 

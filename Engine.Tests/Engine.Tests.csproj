@@ -110,6 +110,7 @@
     <Compile Include="Source\Languages\Lua\CommentDetection.cs" />
     <Compile Include="Source\Languages\Perl\CommentDetection.cs" />
     <Compile Include="Source\Languages\Python\ClassPrototypeParsing.cs" />
+    <Compile Include="Source\Languages\Python\PrototypeParsing.cs" />
     <Compile Include="Source\Languages\Ruby\ClassPrototypeParsing.cs" />
     <Compile Include="Source\Languages\Shebang Script\LanguageDetection.cs" />
     <Compile Include="Source\Languages\Java\PrototypeDetection.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Source\Output\HTML\Links.cs" />
     <Compile Include="Source\Output\HTML\ParameterLists.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\BasicSupport.cs" />
+    <Compile Include="Source\Output\HTML\Prototypes\Python.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\Java.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\SQL.cs" />
     <Compile Include="Source\Output\HTML\Prototypes\CSharp.cs" />

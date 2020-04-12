@@ -1,0 +1,5 @@
+<div class="CBody"><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">param1<div class="CDLParameterType"><span class="SHKeyword">int</span></div></td><td class="CDLDefinition"><p>description</p></td></tr><tr><td class="CDLEntry">param2<div class="CDLParameterType"><span class="SHKeyword">str</span></div></td><td class="CDLDefinition"><p>description</p></td></tr></table></div>
+-----
+<div class="CBody"><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">param1<div class="CDLParameterType"><span class="SHKeyword">int</span></div></td><td class="CDLDefinition"><p>description</p></td></tr><tr><td class="CDLEntry">param2<div class="CDLParameterType"><span class="SHKeyword">str</span></div></td><td class="CDLDefinition"><p>description</p></td></tr></table></div>
+-----
+<div class="CBody"><div class="CHeading">Parameters</div><table class="CDefinitionList"><tr><td class="CDLEntry">param1</td><td class="CDLDefinition"><p>description</p></td></tr><tr><td class="CDLEntry">param2</td><td class="CDLDefinition"><p>description</p></td></tr></table></div>
