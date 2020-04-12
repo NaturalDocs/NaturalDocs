@@ -11,6 +11,8 @@
 // Refer to License.txt for the complete details
 
 
+using System;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 
@@ -28,6 +30,186 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		public Python (Languages.Manager manager) : base (manager, "Python")
 			{
+			}
+
+
+		/* Function: SyntaxHighlight
+		 */
+		override public void SyntaxHighlight (Tokenizer source)
+			{
+			TokenIterator iterator = source.FirstToken;
+			
+			while (iterator.IsInBounds)
+				{
+				if (TryToSkipComment(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipString(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipNumber(ref iterator, ParseMode.SyntaxHighlight) ||
+					TryToSkipDecorator(ref iterator, ParseMode.SyntaxHighlight))
+					{
+					}
+				else if (iterator.FundamentalType == FundamentalType.Text || iterator.Character == '_')
+					{
+					TokenIterator endOfIdentifier = iterator;
+
+					TryToSkipUnqualifiedIdentifier(ref endOfIdentifier);
+					string identifier = source.TextBetween(iterator, endOfIdentifier);
+
+					if (pythonKeywords.Contains(identifier))
+						{  iterator.SetSyntaxHighlightingTypeByCharacters(SyntaxHighlightingType.Keyword, identifier.Length);  }
+
+					iterator = endOfIdentifier;
+					}
+				else
+					{  iterator.Next();  }
+				}
+			}
+
+
+		/* Function: ParsePrototype
+		 * Converts a raw text prototype into a <ParsedPrototype>.
+		 */
+		override public ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
+			{
+			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
+			ParsedPrototype parsedPrototype;
+
+
+			// Mark any leading decorators.
+
+			TokenIterator iterator = tokenizedPrototype.FirstToken;
+
+			TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);
+
+			if (TryToSkipDecorators(ref iterator, ParseMode.ParsePrototype))
+				{  TryToSkipWhitespace(ref iterator, true, ParseMode.ParsePrototype);  }
+
+
+			// Search for the first opening bracket or brace.
+
+			char closingBracket = '\0';
+
+			while (iterator.IsInBounds)
+				{
+				if (iterator.Character == '(')
+					{
+					closingBracket = ')';
+					break;
+					}
+				else if (iterator.Character == '[')
+					{
+					// Only treat brackets as parameters if it's following "this", meaning it's an iterator.  Ignore all others so we
+					// don't get tripped up on metadata or array brackets on return values.
+
+					TokenIterator lookbehind = iterator;
+					lookbehind.Previous();
+					lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+					if (lookbehind.MatchesToken("this"))
+						{
+						closingBracket = ']';
+						break;
+						}
+					else
+						{  iterator.Next();  }
+					}
+				else if (iterator.Character == '{')
+					{
+					closingBracket = '}';
+					break;
+					}
+				else if (TryToSkipComment(ref iterator) ||
+						   TryToSkipString(ref iterator))
+					{  }
+				else
+					{  iterator.Next();  }
+				}
+
+
+			// If we found brackets, it's either a function prototype or a class prototype that includes members.  
+			// Mark the delimiters.
+
+			if (closingBracket != '\0')
+				{
+				iterator.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				iterator.Next();
+
+				while (iterator.IsInBounds)
+					{
+					if (iterator.Character == ',')
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+						iterator.Next();
+						}
+
+					else if (iterator.Character == closingBracket)
+						{
+						iterator.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+						break;
+						}
+
+					// Unlike prototype detection, here we treat < as an opening bracket.  Since we're already in the parameter list
+					// we shouldn't run into it as part of an operator overload, and we need it to not treat the comma in "template<a,b>"
+					// as a parameter divider.
+					else if (TryToSkipComment(ref iterator) || 
+							   TryToSkipString(ref iterator) ||
+							   TryToSkipBlock(ref iterator, true))
+						{  }
+
+					else
+						{  iterator.Next();  }
+					}
+
+
+				// We have enough tokens marked to create the parsed prototype.  This will also let us iterate through the parameters
+				// easily.
+
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype, supportsImpliedTypes: false);
+
+
+				// Set the main section to the last one, since any decorators present will each be in their own section.  Some can have
+				// parameter lists and we don't want those confused for the actual parameter list.
+
+				parsedPrototype.MainSectionIndex = parsedPrototype.Sections.Count - 1;
+
+
+				// Mark the part before the parameters, which includes the name and return value.
+
+				TokenIterator start, end;
+				parsedPrototype.GetBeforeParameters(out start, out end);
+
+				// Exclude the opening bracket
+				end.Previous();
+				end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+				if (start < end)
+					{  MarkPascalParameter(start, end);  }
+
+
+				// If there are any parameters, mark the tokens in them.
+
+				if (parsedPrototype.NumberOfParameters > 0)
+					{
+					for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
+						{
+						parsedPrototype.GetParameter(i, out start, out end);
+						MarkPascalParameter(start, end);
+						}
+					}
+				}
+
+			
+			// If there's no brackets, it's a variable, property, or class.
+
+			else
+				{
+				parsedPrototype = new ParsedPrototype(tokenizedPrototype);
+				TokenIterator start = tokenizedPrototype.FirstToken;
+				TokenIterator end = tokenizedPrototype.LastToken;
+
+				MarkPascalParameter(start, end);
+				}
+
+			return parsedPrototype;
 			}
 
 
@@ -194,6 +376,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * Supported Modes:
 		 * 
 		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- Each decorator will create a new prototype section.
 		 *		- <ParseMode.ParseClassPrototype>
 		 *			- Will mark the first token with <ClassPrototypeParsingType.StartOfPrePrototypeLine> and the rest with <ClassPrototypeParsingType.PrePrototypeLine>.
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
@@ -209,24 +393,170 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			if (TryToSkipIdentifier(ref lookahead) == false)
 				{  return false;  }
 
-			TokenIterator endOfIdentifier = lookahead;
+			TokenIterator decoratorStart = iterator;
+			TokenIterator decoratorEnd = lookahead;
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  decoratorStart.SetSyntaxHighlightingTypeBetween(decoratorEnd, SyntaxHighlightingType.Metadata);  }
 
 			TryToSkipWhitespace(ref lookahead);
 
-			if (lookahead.Character == '(')
-				{  
-				if (TryToSkipBlock(ref lookahead, false) == false)
-					{  return false;  }  
-				}
+			if (TryToSkipDecoratorParameters(ref lookahead, mode))
+				{  decoratorEnd = lookahead;  }
 
-			if (mode == ParseMode.ParseClassPrototype)
+			if (mode == ParseMode.ParsePrototype)
+				{
+				decoratorStart.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;
+				decoratorEnd.PrototypeParsingType = PrototypeParsingType.EndOfPrototypeSection;
+				}
+			else if (mode == ParseMode.ParseClassPrototype)
 				{
 				iterator.SetClassPrototypeParsingTypeBetween(lookahead, ClassPrototypeParsingType.PrePrototypeLine);
 				iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.StartOfPrePrototypeLine;
 				}
 
-			iterator = lookahead;
+			iterator = decoratorEnd;
 			return true;
+			}
+
+
+		/* Function: TryToSkipDecoratorParameters
+		 * 
+		 * Tries to move the iterator past a decorator parameter section, such as "("String")" in "@Copynight("String")".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- <ParseMode.ParsePrototype>
+		 *			- The contents will be marked with parameter tokens.
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipDecoratorParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '(')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (!TryToSkipBlock(ref lookahead, false))
+				{  return false;  }
+
+			TokenIterator end = lookahead;
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{
+				iterator.SetSyntaxHighlightingTypeBetween(end, SyntaxHighlightingType.Metadata);
+				}
+
+			else if (mode == ParseMode.ParsePrototype)
+				{
+				TokenIterator openingParen = iterator;
+
+				TokenIterator closingParen = lookahead;
+				closingParen.Previous();
+
+				openingParen.PrototypeParsingType = PrototypeParsingType.StartOfParams;
+				closingParen.PrototypeParsingType = PrototypeParsingType.EndOfParams;
+
+				lookahead = openingParen;
+				lookahead.Next();
+
+				TokenIterator startOfParam = lookahead;
+
+				while (lookahead < closingParen)
+					{
+					if (lookahead.Character == ',')
+						{
+						MarkDecoratorParameter(startOfParam, lookahead, mode);
+
+						lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;
+						lookahead.Next();
+
+						startOfParam = lookahead;
+						}
+
+					else if (TryToSkipComment(ref lookahead) || 
+							   TryToSkipString(ref lookahead) ||
+							   TryToSkipBlock(ref lookahead, true))
+						{  }
+
+					else
+						{  lookahead.Next();  }
+					}
+
+				MarkDecoratorParameter(startOfParam, lookahead, mode);
+				}
+
+			iterator = end;
+			return true;
+			}
+
+
+		/* Function: MarkDecoratorParameter
+		 * 
+		 * Applies types to an decorator parameter, such as ""String"" in "@Copynight("String")" or "id = 12" in 
+		 * "@RequestForEnhancement(id = 12, engineer = "String")".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.ParsePrototype>
+		 *			- The contents will be marked with parameter tokens.
+		 *		- Everything else has no effect.
+		 */
+		protected void MarkDecoratorParameter (TokenIterator start, TokenIterator end, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (mode != ParseMode.ParsePrototype)
+				{  return;  }
+
+			start.NextPastWhitespace(end);
+			end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+			if (start >= end)
+				{  return;  }
+
+
+			// Find and mark the equals sign, if there is one
+
+			TokenIterator equals = start;
+
+			while (equals < end)
+				{
+				if (equals.Character == '=')
+					{
+					equals.PrototypeParsingType = PrototypeParsingType.PropertyValueSeparator;
+					break;
+					}
+				else if (TryToSkipComment(ref equals) || 
+							TryToSkipString(ref equals) ||
+							TryToSkipBlock(ref equals, true))
+					{  }
+				else
+					{  equals.Next();  }
+				}
+
+
+			// The equals sign will be at or past the end if it doesn't exist.
+
+			if (equals >= end)
+				{
+				start.SetPrototypeParsingTypeBetween(end, PrototypeParsingType.PropertyValue);
+				}
+			else
+				{
+				TokenIterator iterator = equals;
+				iterator.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
+
+				if (start < iterator)
+					{  start.SetPrototypeParsingTypeBetween(iterator, PrototypeParsingType.Name);  }
+
+				iterator = equals;
+				iterator.Next();
+				iterator.NextPastWhitespace(end);
+
+				if (iterator < end)
+					{  iterator.SetPrototypeParsingTypeBetween(end, PrototypeParsingType.PropertyValue);  }
+				}
 			}
 
 
@@ -329,6 +659,34 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			return true;
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+		/* var: pythonKeywords
+		 */
+		static protected StringSet pythonKeywords = new StringSet (KeySettings.Literal, new string[] {
+
+			"False", "await", "else", "import", "pass",
+			"None", "break", "except", "in", "raise",
+			"True", "class", "finally", "is", "return",
+			"and", "continue", "for", "lambda", "try",
+			"as", "def", "from", "nonlocal", "while",
+			"assert", "del", "global", "not" ,"with",
+			"async", "elif", "if", "or", "yield",
+
+			"metaclass",
+
+			"int", "float", "complex",
+			"list", "tuple", "range",
+			"str",
+			"bytes", "bytearray", "memoryview",
+			"set", "frozenset", "dict",
+			"bool"
+
+			});
 
 		}
 	}
