@@ -30,12 +30,14 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Pass the start and end of the entire section to be covered, including the before and after parameters part.  This function will
 		 * automatically call <RecalculateParameters()> so you don't have to.
 		 */
-		public ParameterSection (TokenIterator start, TokenIterator end) : base (start, end)
+		public ParameterSection (TokenIterator start, TokenIterator end, bool supportsImpliedTypes = true) : base (start, end)
 			{
 			beforeParameters = null;
 			afterParameters = null;
 			parameters = null;
 			parameterStyle = null;
+
+			this.supportsImpliedTypes = supportsImpliedTypes;
 
 			RecalculateParameters();
 			}
@@ -268,7 +270,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * couldn't find it.  It will also include type qualifiers ("Package.Class") but exclude modifiers (so "unsigned int*[]" would just 
 		 * be "int".)
 		 * 
-		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool GetBaseParameterType (int index, out TokenIterator baseTypeStart, out TokenIterator baseTypeEnd, bool impliedTypes = true)
 			{
@@ -280,11 +283,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 				// If not, find the closest parameter that defines one.
 				int impliedTypeIndex;
-				if (impliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (impliedTypes && supportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{  return parameters[impliedTypeIndex].GetBaseType(out baseTypeStart, out baseTypeEnd);  }
 				}
 
-			// Couldnt' find the type or invalid parameters.
+			// Couldn't find the type or invalid parameters.
 			baseTypeStart = end;
 			baseTypeEnd = end;
 			return false;
@@ -301,7 +304,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 * 
-		 * If implied types is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool BuildFullParameterType (int index, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd, bool impliedTypes = true)
 			{
@@ -316,7 +320,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				// If not, build one from the closest parameter that defines one.
 
 				int impliedTypeIndex;
-				if (impliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
+				if (impliedTypes && supportsImpliedTypes && GetImpliedTypeIndex(index, out impliedTypeIndex))
 					{
 					TypeBuilder typeBuilder = new TypeBuilder();
 				
@@ -634,6 +638,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: SupportsImpliedTypes
+		 * Whether the prototype's language supports implied types.
+		 */
+		public bool SupportsImpliedTypes
+			{
+			get
+				{  return supportsImpliedTypes;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -658,5 +672,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * The parameter format, or null if it hasn't been determined yet.
 		 */
 		protected ParsedPrototype.ParameterStyle? parameterStyle;
+
+		/* var: supportsImpliedTypes
+		 * Whether the prototype's language supports implied types.
+		 */
+		protected bool supportsImpliedTypes;
+
 		}
 	}

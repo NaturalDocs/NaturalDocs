@@ -57,11 +57,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		/* Constructor: ParsedPrototype
 		 * Creates a new parsed prototype.
 		 */
-		public ParsedPrototype (Tokenizer prototype)
+		public ParsedPrototype (Tokenizer prototype, bool supportsImpliedTypes = true)
 			{
 			tokenizer = prototype;
 			sections = null;
 			mainSectionIndex = 0;
+
+			this.supportsImpliedTypes = supportsImpliedTypes;
 
 			RecalculateSections();
 			}
@@ -144,7 +146,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * a continuous version of it.  The returned bounds will be <TokenIterators> based on that rather than on the original <Tokenizer>.
 		 * The new <Tokenizer> will still contain the same <PrototypeParsingTypes> and <SyntaxHighlightingTypes> of the original.
 		 * 
-		 * If implied types is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool BuildFullParameterType (int parameterIndex, out TokenIterator fullTypeStart, out TokenIterator fullTypeEnd,
 															bool impliedTypes = true)
@@ -152,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			if (sections[mainSectionIndex] is ParameterSection)
 				{  
 				return (sections[mainSectionIndex] as ParameterSection).BuildFullParameterType(parameterIndex, out fullTypeStart, out fullTypeEnd, 
-																																	   impliedTypes);
+																																	   (impliedTypes && supportsImpliedTypes));
 				}
 			else
 				{
@@ -168,13 +171,15 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * Returns the bounds of the type of the passed parameter, or false if it couldn't find it.  This excludes modifiers and type
 		 * suffixes.
 		 * 
-		 * If the implied types flag is set this will return "int" for y in "int x, y".  If it is not then it will return false for y.
+		 * If implied types is set and <SupportsImpliedTypes> is true this will return "int" for y in "int x, y".  If it is not set or 
+		 * <SupportsImpliedTypes> is false then it will return false for y.
 		 */
 		public bool GetBaseParameterType (int parameterIndex, out TokenIterator start, out TokenIterator end, bool impliedTypes = true)
 			{
 			if (sections[mainSectionIndex] is ParameterSection)
 				{  
-				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end, impliedTypes);
+				return (sections[mainSectionIndex] as ParameterSection).GetBaseParameterType(parameterIndex, out start, out end, 
+																																	  (impliedTypes && supportsImpliedTypes));
 				}
 			else
 				{
@@ -289,7 +294,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					startOfSection.NextPastWhitespace(endOfSection);
 
 					if (sectionHasParams)
-						{  sections.Add( new ParameterSection(startOfSection, endOfSection) );  }
+						{  sections.Add( new ParameterSection(startOfSection, endOfSection, supportsImpliedTypes) );  }
 					else
 						{  sections.Add( new Section(startOfSection, endOfSection) );  }
 
@@ -398,6 +403,16 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			}
 
 
+		/* Property: SupportsImpliedTypes
+		 * Whether the prototype's language supports implied types.
+		 */
+		public bool SupportsImpliedTypes
+			{
+			get
+				{  return supportsImpliedTypes;  }
+			}
+
+
 		
 		// Group: Variables
 		// __________________________________________________________________________
@@ -417,6 +432,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 		 * and parameters.
 		 */
 		protected int mainSectionIndex;
+
+		/* var: supportsImpliedTypes
+		 * Whether the prototype's language supports implied types.
+		 */
+		protected bool supportsImpliedTypes;
 
 		}
 	}
