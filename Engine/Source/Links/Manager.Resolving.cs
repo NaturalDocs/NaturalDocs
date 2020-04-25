@@ -37,11 +37,6 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 */
 		public void WorkOnResolvingLinks (CancelDelegate cancelled)
 			{
-
-			// Reset immediately before doing any work
-			beforeFirstResolve = false;
-
-
 			Accessor accessor = EngineInstance.CodeDB.GetAccessor();
 
 			try
@@ -54,7 +49,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 				while (!cancelled())
 					{
-					if (PickLinkIDToResolve(out linkID))
+					linkID = unprocessedChanges.PickLinkID();
+
+					if (linkID != 0)
 						{
 						ResolveLink(linkID, accessor);
 
@@ -62,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 							{  accessor.DowngradeToReadPossibleWriteLock();  }
 						}
 
-					else if (PickEndingSymbolToResolve(out endingSymbol, out topicIDs))
+					else if (unprocessedChanges.PickNewTopics(out topicIDs, out endingSymbol))
 						{
 						ResolveNewTopics(topicIDs, endingSymbol, accessor);
 
@@ -80,50 +77,6 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					{  accessor.ReleaseLock();  }
 
 				accessor.Dispose();
-				}
-			}
-
-
-		/* Function: PickLinkIDToResolve
-		 * If <linksToResolve> isn't empty it will remove one from the list and return true.  Otherwise returns false.
-		 * Handles locking automatically.
-		 */
-		protected bool PickLinkIDToResolve (out int linkID)
-			{
-			lock (linksToResolve)
-				{  
-				linkID = linksToResolve.Pop();
-				return (linkID != 0);
-				}
-			}
-
-
-		/* Function: PickEndingSymbolToResolve
-		 * If <newTopicIDsByEndingSymbol> isn't empty it will remove one from the list and return true.  Otherwise 
-		 * returns false.  Handles locking automatically.
-		 */
-		protected bool PickEndingSymbolToResolve (out EndingSymbol endingSymbol, out NumberSet topicIDs)
-			{
-			lock (newTopicIDsByEndingSymbol)
-				{
-				if (newTopicIDsByEndingSymbol.Count == 0)
-					{
-					endingSymbol = default(EndingSymbol);
-					topicIDs = null;
-					return false;
-					}
-				else
-					{
-					var enumerator = newTopicIDsByEndingSymbol.GetEnumerator();
-					enumerator.MoveNext();  // It's not positioned on the first element by default.
-
-					endingSymbol = enumerator.Current.Key;
-					topicIDs = enumerator.Current.Value;
-
-					newTopicIDsByEndingSymbol.Remove(endingSymbol);
-
-					return true;
-					}
 				}
 			}
 
@@ -287,107 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 */
 		public long UnitsOfWorkRemaining ()
 			{
-			long units = 0;
-			
-			lock (linksToResolve)
-				{  units += linksToResolve.Count;  }
-
-			lock (newTopicIDsByEndingSymbol)
-				{
-				foreach (var kvPair in newTopicIDsByEndingSymbol)
-					{  units += kvPair.Value.Count;  }
-				}
-
-			return units;
-			}
-
-
-
-		// Group: CodeDB.IChangeWatcher Functions
-		// __________________________________________________________________________
-
-
-		public void OnAddTopic (Topic topic, EventAccessor eventAccessor)
-			{
-			// We don't need to track newTopicIDsByEndingSymbol when we're reparsing everything and nothing has been resolved
-			// yet because the entire codebase will be reparsed and therefore every link will be re-added.  Every link will thus be on
-			// linksToResolve and we don't need to worry about new topics causing existing links to need to be reresolved.
-
-			if ( (beforeFirstResolve && EngineInstance.Config.ReparseEverything) == false)
-				{
-				lock (newTopicIDsByEndingSymbol)
-					{
-					IDObjects.NumberSet newTopicIDs = newTopicIDsByEndingSymbol[topic.Symbol.EndingSymbol];
-
-					if (newTopicIDs == null)
-						{
-						newTopicIDs = new IDObjects.NumberSet();
-						newTopicIDsByEndingSymbol.Add(topic.Symbol.EndingSymbol, newTopicIDs);
-						}
-
-					newTopicIDs.Add(topic.TopicID);
-					}
-				}
-			}
-		
-
-		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor)
-			{
-			}
-		
-
-		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, EventAccessor eventAccessor)
-			{
-			lock (linksToResolve)
-				{  linksToResolve.Add(linksAffected);  }
-
-
-			// Check newTopicIDsByEndingSymbol just in case.  We don't want to leave any references to a deleted topic.
-
-			lock (newTopicIDsByEndingSymbol)
-				{
-				IDObjects.NumberSet newTopicIDs = newTopicIDsByEndingSymbol[topic.Symbol.EndingSymbol];
-
-				if (newTopicIDs != null)
-					{  newTopicIDs.Remove(topic.TopicID);  }
-				}
-			}
-
-		
-		public void OnAddLink (Link link, EventAccessor eventAccessor)
-			{
-			lock (linksToResolve)
-				{  linksToResolve.Add(link.LinkID);  }
-			}
-
-		
-		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, EventAccessor eventAccessor)
-			{
-			// We're going to be the one causing this event, not responding to it.  No other code should be changing link definitions.
-			}
-
-		
-		public void OnDeleteLink (Link link, EventAccessor eventAccessor)
-			{
-			// Just in case, so there's no hanging references
-			
-			lock (linksToResolve)
-				{  linksToResolve.Remove(link.LinkID);  }
-			}
-
-		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
-			}
-
-		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
-			}
-
-		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
+			return unprocessedChanges.Count;
 			}
 
 		}
