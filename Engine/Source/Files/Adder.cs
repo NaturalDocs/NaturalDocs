@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: GetStatus
 		 * Fills the passed object with the status of <WorkOnAddingAllFiles()>.
 		 */
-		public void GetStatus (ref AddAllFilesStatus statusTarget)
+		public void GetStatus (ref AdderStatus statusTarget)
 			{
 			statusTarget.Reset();
 			

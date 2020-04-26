@@ -88,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		 */
 		override public void AddAllFiles (CancelDelegate cancelDelegate)
 			{
-			addAllFilesStatus.Reset();
+			adderStatus.Reset();
 			
 			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
 			// them all or otherwise use Path functions on them.
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
  						{  continue;  }	
 					}
 				
-				addAllFilesStatus.AddFolders(Type, 1);
+				adderStatus.AddFolders(Type, 1);
 
 				string[] subfolders = System.IO.Directory.GetDirectories(folder);
 				
@@ -140,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 					if (fileType != null)
 						{  
-						addAllFilesStatus.AddFiles((FileType)fileType, 1);
+						adderStatus.AddFiles((FileType)fileType, 1);
 						Manager.AddOrUpdateFile(filePath, (FileType)fileType, System.IO.File.GetLastWriteTimeUtc(file));
 						}
 

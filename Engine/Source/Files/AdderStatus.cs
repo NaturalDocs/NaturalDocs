@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.AddAllFilesStatus
+ * Class: CodeClear.NaturalDocs.Engine.Files.AdderStatus
  * ____________________________________________________________________________
  * 
- * Statistics on the progress of <FileSource.AddAllFiles()>.
+ * Statistics on the progress of <Adder.WorkOnAddingAllFiles()>.
  * 
  * 
  * Multithreading: Thread Safety Notes
@@ -23,16 +23,16 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class AddAllFilesStatus
+	public class AdderStatus
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Function: AddAllFilesStatus
+		/* Function: AdderStatus
 		 */
-		public AddAllFilesStatus ()
+		public AdderStatus ()
 			{
 			accessLock = new object();
 			Reset();
@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: Add
 		 * Adds the passed status to this one.
 		 */
-		public void Add (AddAllFilesStatus other)
+		public void Add (AdderStatus other)
 			{
 			// We'll take a temporary copy of the other status so we never hold two locks at the same time.
 
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: Copy
 		 * Copies the passed status to this one.
 		 */
-		public void Copy (AddAllFilesStatus other)
+		public void Copy (AdderStatus other)
 			{
 			// We'll take a temporary copy of the other status so we never hold two locks at the same time.
 

@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		
 		public FileSearch () : base (Application.StatusInterval)
 			{
-			status = new Engine.Files.AddAllFilesStatus();
+			status = new Engine.Files.AdderStatus();
 			
 			lastSourceFilesFound = 0;
 			lastSourceFoldersFound = 0;
@@ -65,7 +65,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		Engine.Files.AddAllFilesStatus status;
+		Engine.Files.AdderStatus status;
 		
 		int lastSourceFoldersFound;
 		int lastSourceFilesFound;

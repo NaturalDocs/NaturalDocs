@@ -7,7 +7,7 @@
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		<AddAllFiles()> is the only function that is allowed to alter <addAllFilesStatus>.  However, other threads may read its 
+ *		<AddAllFiles()> is the only function that is allowed to alter <adderStatus>.  However, other threads may read its 
  *		values at any time.  Since they are all integer counters and are only used for informational purposes, no thread 
  *		synchronization is necessary.
  * 
@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			this.manager = manager;
 
-			addAllFilesStatus = new AddAllFilesStatus();
+			adderStatus = new AdderStatus();
 			}
 			
 		
@@ -80,18 +80,18 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: GetStatus
 		 * Fills the passed object with the current state of <AddAllFiles()>.
 		 */
-		public void GetStatus (ref AddAllFilesStatus statusTarget)
+		public void GetStatus (ref AdderStatus statusTarget)
 			{
-			statusTarget.Copy(addAllFilesStatus);
+			statusTarget.Copy(adderStatus);
 			}
 			
 			
 		/* Function: AddStatusTo
 		 * Adds the current status of <AddAllFiles()> to the passed one.
 		 */
-		public void AddStatusTo (ref AddAllFilesStatus statusTarget)
+		public void AddStatusTo (ref AdderStatus statusTarget)
 			{
-			statusTarget.Add(addAllFilesStatus);
+			statusTarget.Add(adderStatus);
 			}
 			
 		
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		protected Files.Manager manager;		
 		
-		protected AddAllFilesStatus addAllFilesStatus;
+		protected AdderStatus adderStatus;
 
 		}
 	}

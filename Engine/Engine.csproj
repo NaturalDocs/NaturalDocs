@@ -210,7 +210,7 @@
     <Compile Include="Source\Files\Filters\IgnoredSourceFolderRegex.cs" />
     <Compile Include="Source\Files\InputType.cs" />
     <Compile Include="Source\Files\Manager.cs" />
-    <Compile Include="Source\Files\AddAllFilesStatus.cs" />
+    <Compile Include="Source\Files\AdderStatus.cs" />
     <Compile Include="Source\Files\ChangeProcessorStatus.cs" />
     <Compile Include="Source\IDObjects\Base.cs" />
     <Compile Include="Source\IDObjects\Manager.cs" />
