@@ -212,7 +212,7 @@ namespace CodeClear.NaturalDocs.CLI
 					statusManager.Start();
 					totalFileChanges = statusManager.TotalFilesToProcess;
 
-					Multithread("Parser", EngineInstance.FileProcessor.WorkOnProcessingChanges);							
+					Multithread("Parser", EngineInstance.FileChangeProcessor.WorkOnProcessingChanges);							
 							
 					statusManager.End();
 					}

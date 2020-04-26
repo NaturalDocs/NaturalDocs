@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		
 		public Parsing (string alternativeStartMessage) : base (Application.StatusInterval)
 			{
-			status = new Engine.Files.ProcessorStatus();
+			status = new Engine.Files.ChangeProcessorStatus();
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
 			this.alternativeStartMessage = alternativeStartMessage;
@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowStartMessage ()
 			{
-			Application.EngineInstance.FileProcessor.GetStatus(ref status);
+			Application.EngineInstance.FileChangeProcessor.GetStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
 			
 			if (alternativeStartMessage != null)
@@ -76,7 +76,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			if (totalFilesToProcess == 0)
 				{  return;  }
 				
-			Application.EngineInstance.FileProcessor.GetStatus(ref status);
+			Application.EngineInstance.FileChangeProcessor.GetStatus(ref status);
 			
 			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected Engine.Files.ProcessorStatus status;
+		protected Engine.Files.ChangeProcessorStatus status;
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
 		protected string alternativeStartMessage;

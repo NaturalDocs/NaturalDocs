@@ -2,12 +2,12 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.FilesBeingProcessed
  * ____________________________________________________________________________
  * 
- * A class that handles the list of files being processed by <Files.Processor>.
+ * A class that handles the list of files being processed by <Files.ChangeProcessor>.
  * 
  * 
  * Multithreading: Thread Safety Notes
  * 
- *		This class is not thread safe.  It is assumed that <Files.Processor> will manage thread safety itself.
+ *		This class is not thread safe.  It is assumed that <Files.ChangeProcessor> will manage thread safety itself.
  *		
  */
 

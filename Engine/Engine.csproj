@@ -55,7 +55,7 @@
     <Compile Include="Source\Files\ImageFile.cs" />
     <Compile Include="Source\Files\Adder.cs" />
     <Compile Include="Source\Files\UnprocessedChanges.cs" />
-    <Compile Include="Source\Files\Processor.cs" />
+    <Compile Include="Source\Files\ChangeProcessor.cs" />
     <Compile Include="Source\Languages\CommentFinder.cs" />
     <Compile Include="Source\Languages\Parsers\Java.cs" />
     <Compile Include="Source\Languages\Parsers\SQL.cs" />
@@ -211,7 +211,7 @@
     <Compile Include="Source\Files\InputType.cs" />
     <Compile Include="Source\Files\Manager.cs" />
     <Compile Include="Source\Files\AddAllFilesStatus.cs" />
-    <Compile Include="Source\Files\ProcessorStatus.cs" />
+    <Compile Include="Source\Files\ChangeProcessorStatus.cs" />
     <Compile Include="Source\IDObjects\Base.cs" />
     <Compile Include="Source\IDObjects\Manager.cs" />
     <Compile Include="Source\IDObjects\NumberSet.cs" />

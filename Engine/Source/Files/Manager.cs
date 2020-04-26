@@ -22,7 +22,7 @@
  *		
  *		- Call <DeleteFilesNotReAdded()> to mark everything not found by <Files.Adder> as deleted.
  *		  
- *		- Use <Files.Processor> to process the changes.
+ *		- Use <Files.ChangeProcessor> to process the changes.
  *		  
  * 
  * Multithreading: Thread Safety Notes

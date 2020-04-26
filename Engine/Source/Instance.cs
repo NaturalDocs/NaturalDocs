@@ -48,7 +48,7 @@
  *		- <Files.Manager> is almost last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
  *		  
- *		- <Files.Processor> and <Files.Adder> are last because they depends on <Files.Manager>.
+ *		- <Files.ChangeProcessor> and <Files.Adder> are last because they depends on <Files.Manager>.
  *		
  * 
  * File: GracefulExit.nd
@@ -89,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
 								Output.Manager outputManager = null, SearchIndex.Manager searchIndexManager = null, 
-								Files.Manager filesManager = null, Files.Processor fileProcessor = null,
+								Files.Manager filesManager = null, Files.ChangeProcessor fileChangeProcessor = null,
 								Files.Adder fileAdder = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine
 			this.output = outputManager ?? new Output.Manager(this);
 			this.searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
-			this.fileProcessor = fileProcessor ?? new Files.Processor(this);
+			this.fileChangeProcessor = fileChangeProcessor ?? new Files.ChangeProcessor(this);
 			this.fileAdder = fileAdder ?? new Files.Adder(this);
 			}
 			
@@ -150,10 +150,10 @@ namespace CodeClear.NaturalDocs.Engine
 				output = null;
 				}
 
-			if (fileProcessor != null && !strictRulesApply)
+			if (fileChangeProcessor != null && !strictRulesApply)
 				{
-				fileProcessor.Dispose();
-				fileProcessor = null;
+				fileChangeProcessor.Dispose();
+				fileChangeProcessor = null;
 				}
 				
 			if (fileAdder != null && !strictRulesApply)
@@ -248,7 +248,7 @@ namespace CodeClear.NaturalDocs.Engine
 				codeDB.Start(errors) &&
 				files.Start(errors) &&
 				fileAdder.Start(errors) &&
-				fileProcessor.Start(errors)
+				fileChangeProcessor.Start(errors)
 				);
 			}
 			
@@ -689,13 +689,13 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return files;  }
 			}
 			
-		/* Property: FileProcessor
-		 * Returns the <Files.Processor> associated with this instance.
+		/* Property: FileChangeProcessor
+		 * Returns the <Files.ChangeProcessor> associated with this instance.
 		 */
-		public Files.Processor FileProcessor
+		public Files.ChangeProcessor FileChangeProcessor
 			{
 			get
-				{  return fileProcessor;  }
+				{  return fileChangeProcessor;  }
 			}
 			
 		/* Property: FileAdder
@@ -735,7 +735,7 @@ namespace CodeClear.NaturalDocs.Engine
 			
 		protected Files.Manager files;
 
-		protected Files.Processor fileProcessor;
+		protected Files.ChangeProcessor fileChangeProcessor;
 
 		protected Files.Adder fileAdder;
 

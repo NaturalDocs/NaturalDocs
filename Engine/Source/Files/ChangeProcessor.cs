@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.Processor
+ * Class: CodeClear.NaturalDocs.Engine.Files.ChangeProcessor
  * ____________________________________________________________________________
  * 
  * A module which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
@@ -30,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class Processor : Module
+	public class ChangeProcessor : Module
 		{
 		
 		// Group: Types
@@ -57,9 +57,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// __________________________________________________________________________
 		
 
-		/* Function: Processor
+		/* Function: ChangeProcessor
 		 */
-		public Processor (Engine.Instance engineInstance) : base (engineInstance)
+		public ChangeProcessor (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			filesBeingProcessed = new FilesBeingProcessed();
 			accessLock = new object();
@@ -70,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (!strictRulesApply)
 				{
 				if (!filesBeingProcessed.IsEmpty)
-					{  throw new Exception("Files.Processor shut down while files were still being processed.");  }
+					{  throw new Exception("Files.ChangeProcessor shut down while files were still being processed.");  }
 				}
 			}
 
@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * Fills the passed object with the status of <WorkOnProcessingChanges()>.  This will be a snapshot of its
 		 * progress rather than a live object, so the values won't change out from under you.
 		 */
-		public void GetStatus (ref ProcessorStatus statusTarget)
+		public void GetStatus (ref ChangeProcessorStatus statusTarget)
 			{
 			lock (accessLock)
 				{
