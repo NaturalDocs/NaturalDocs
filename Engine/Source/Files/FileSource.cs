@@ -36,8 +36,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public FileSource (Files.Manager manager)
 			{
 			this.manager = manager;
-
-			adderStatus = new AdderStatus();
 			}
 			
 		
@@ -70,29 +68,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		abstract public Path MakeAbsolute (Path path);
 		
-		
-		/* Function: AddAllFiles
-		 * Iterates through every file in the source and calls <Files.Manager.AddOrUpdateFile()> for each one.
+
+		/* Function: CreateAdder
+		 * Creates a new <FileSourceAdder> that can be used with this FileSource.
 		 */
-		abstract public void AddAllFiles (CancelDelegate cancelDelegate);
-		
-		
-		/* Function: GetStatus
-		 * Fills the passed object with the current state of <AddAllFiles()>.
-		 */
-		public void GetStatus (ref AdderStatus statusTarget)
-			{
-			statusTarget.Copy(adderStatus);
-			}
-			
-			
-		/* Function: AddStatusTo
-		 * Adds the current status of <AddAllFiles()> to the passed one.
-		 */
-		public void AddStatusTo (ref AdderStatus statusTarget)
-			{
-			statusTarget.Add(adderStatus);
-			}
+		abstract public FileSourceAdder CreateAdder ();
 			
 		
 		
@@ -162,7 +142,5 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		protected Files.Manager manager;		
 		
-		protected AdderStatus adderStatus;
-
 		}
 	}

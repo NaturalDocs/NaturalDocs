@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.Adder
  * ____________________________________________________________________________
  * 
- * A module which handles adding all files in <FileSources> to <Files.Manager>.
+ * A module which handles adding all files in all the <FileSources> to <Files.Manager>.
  * 
  * 
  * Topic: Usage
@@ -45,7 +45,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			fileSources = null;
 			fileSourcesClaimed = null;
+			fileSourceAdders = null;
 			folderPrefixesClaimed = null;
+
 			accessLock = new object();
 			}
 			
@@ -63,6 +65,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			fileSources = Manager.FileSources;
 			fileSourcesClaimed = new bool[fileSources.Count];
+			fileSourceAdders = new FileSourceAdder[fileSources.Count];
 			folderPrefixesClaimed = new StringSet (KeySettings.IgnoreCase);
 
 			return true;
@@ -76,8 +79,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		/* Function: WorkOnAddingAllFiles
 		 * 
-		 * Works on the task of going through all the files in all the <FileSources> and calling <AddOrUpdateFile()> on each one.
-		 * This is a parallelizable task, so multiple threads can call this function and they will divide up the work until it's done.
+		 * Works on the task of going through all the files in all the <FileSources> and calling <Files.Manager.AddOrUpdateFile()>
+		 * on each one.  This is a parallelizable task, so multiple threads can call this function and they will divide up the work until
+		 * it's done.
 		 * 
 		 * The function returns when there is no more work for this thread to do.  If this is the only thread working on it then the
 		 * task is complete, but if there are multiple threads, the task is only complete after they all return.  An individual thread
@@ -85,19 +89,20 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public void WorkOnAddingAllFiles (CancelDelegate cancelDelegate)
 			{
+			FileSource fileSource;
+			FileSourceAdder fileSourceAdder;
+
 			for (;;)
 				{
 				if (cancelDelegate())
 					{  return;  }
 
-				var fileSource = PickFileSource();
-
-				if (fileSource == null)
+				if (!PickFileSource(out fileSource, out fileSourceAdder))
 					{  return;  }
 
-				fileSource.AddAllFiles(cancelDelegate);
+				fileSourceAdder.AddAllFiles(cancelDelegate);
 
-				ReleaseFileSource(fileSource, !cancelDelegate());
+				ReleaseFileSource(fileSource, fileSourceAdder, scanningCompleted: !cancelDelegate());
 				}
 			}
 			
@@ -105,12 +110,17 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: GetStatus
 		 * Fills the passed object with the status of <WorkOnAddingAllFiles()>.
 		 */
-		public void GetStatus (ref AdderStatus statusTarget)
+		public void GetStatus (ref AdderStatus status)
 			{
-			statusTarget.Reset();
-			
-			foreach (var fileSource in fileSources)
-				{  fileSource.AddStatusTo(ref statusTarget);  }
+			status.Reset();
+
+			for (int i = 0; i < fileSourceAdders.Length; i++)
+				{
+				if (fileSourceAdders[i] != null)
+					{
+					fileSourceAdders[i].AddStatusTo(ref status);
+					}
+				}
 			}
 			
 			
@@ -121,15 +131,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 		/* Function: PickFileSource
 		 * 
-		 * Returns a <FileSource> that is available to be scanned for files, or null if there aren't any.  You must pass it to
-		 * <ReleaseFileSource()> when done.
+		 * Returns a <FileSource> that is available to be scanned for files and its corresponding <FileSourceAdder>, or false if there
+		 * aren't any.  You must pass them to <ReleaseFileSource()> when done.
 		 * 
-		 * If this function returns null it doesn't mean that there are no unscanned <FileSources> remaining, as it may be requiring 
-		 * some to be scanned sequentially to prevent multiple sources from the same disk from being scanned at the same time.
-		 * So while this function may return null while a particular <FileSource> is being scanned, it may return another one after
-		 * it's released.
+		 * If this function returns false it doesn't mean that there are no unscanned <FileSources> remaining, as it may be requiring 
+		 * some to be scanned sequentially to prevent multiple sources on the same disk from being scanned at the same time.  So
+		 * while this function may return null while a particular <FileSource> is being scanned, it may return another one after it's
+		 * released.
 		 */
-		protected FileSource PickFileSource ()
+		protected bool PickFileSource (out FileSource fileSource, out FileSourceAdder fileSourceAdder)
 			{
 			lock (accessLock)
 				{
@@ -137,47 +147,55 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{
 					if (fileSourcesClaimed[i] == false)
 						{
-						var fileSource = fileSources[i];
+						fileSource = fileSources[i];
 
 						if (fileSource is FileSources.Folder)
 							{
-							FileSources.Folder folderFileSource = (FileSources.Folder)fileSource;
-							string folderPrefix = folderFileSource.Path.Prefix;
+							string folderPrefix = (fileSource as FileSources.Folder).Path.Prefix;
 
 							if (folderPrefixesClaimed.Contains(folderPrefix) == false)
 								{
 								fileSourcesClaimed[i] = true;
 								folderPrefixesClaimed.Add(folderPrefix);
-								return fileSource;
+								fileSourceAdder = fileSource.CreateAdder();
+								fileSourceAdders[i] = fileSourceAdder;
+								return true;
 								}
 							}
 						else // not a folder
 							{
 							fileSourcesClaimed[i] = true;
-							return fileSource;
+							fileSourceAdder = fileSource.CreateAdder();
+							fileSourceAdders[i] = fileSourceAdder;
+							return true;
 							}
 						}
 					}
 				}
 
-			return null;
+			fileSource = null;
+			fileSourceAdder = null;
+			return false;
 			}
 
 
 		/* Function: ReleaseFileSource
 		 * Releases a <FileSource> claimed via <PickFileSource()> after all processing is complete on it.
 		 */
-		protected void ReleaseFileSource (FileSource fileSource, bool scanningCompleted)
+		protected void ReleaseFileSource (FileSource fileSource, FileSourceAdder fileSourceAdder, bool scanningCompleted)
 			{
 			lock (accessLock)
 				{
+				// If scanning wasn't completed allow it to be chosen again
 				if (!scanningCompleted)
 					{
+					// Need to find which index it was at
 					for (int i = 0; i < fileSources.Count; i++)
 						{
 						if ((object)fileSources[i] == (object)fileSource)
 							{
 							fileSourcesClaimed[i] = false;
+							fileSourceAdders[i] = null;
 							break;
 							}
 						}
@@ -209,6 +227,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		// Group: Variables
 		// __________________________________________________________________________
 		
+
 		/* var: fileSources
 		 * 
 		 * The list of <FileSources> being scanned.
@@ -219,10 +238,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		protected IList<FileSource> fileSources;
 
+
 		/* var: fileSourcesClaimed
 		 * 
-		 * An array of bools corresponding to the entries in <fileSources>, with each one representng whether the corresponding 
-		 * index into <fileSources> has been scanned already, or the scan is in process.
+		 * An array of bools corresponding to the entries in <fileSources>, with each one representing whether that <FileSource>
+		 * has been scanned or is in the process of being scanned.
 		 * 
 		 * Thread Safety:
 		 * 
@@ -230,6 +250,19 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		protected bool[] fileSourcesClaimed;
 
+
+		/* var: fileSourceAdders
+		 * 
+		 * An array of <FileSourceAdders> corresponding to the entries in <fileSources>, or null if that <FileSource> hasn't been 
+		 * started yet.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected FileSourceAdder[] fileSourceAdders;
+
+		
 		/* var: folderPrefixesClaimed
 		 * 
 		 * A set of all the <Path.Prefixes> that are currently being searched by threads.  This is used to prevent multiple 
@@ -241,6 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected StringSet folderPrefixesClaimed;
+		
 		
 		/* var: accessLock
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables

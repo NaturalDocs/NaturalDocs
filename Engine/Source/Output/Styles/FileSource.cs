@@ -87,55 +87,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			throw new InvalidOperationException();
 			}
 
-		/* Function: AddAllFiles
-		 * Calls <Files.Manager.AddOrUpdateFile()> for every file in the folder and its subfolders.
+		/* Function: CreateAdder
+		 * Creates a <Files.FileSourceAdder> that can be used with this FileSource.
 		 */
-		override public void AddAllFiles (CancelDelegate cancelDelegate)
-			{ 
-			adderStatus.Reset();
-
-			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
-			// them all or otherwise use Path functions on them.
-			Stack<string> foldersToSearch = new Stack<string>();
-			foldersToSearch.Push(EngineInstance.Config.SystemStyleFolder);
-			foldersToSearch.Push(EngineInstance.Config.ProjectConfigFolder);
-			adderStatus.AddFolders(Files.InputType.Style, 2);
-			
-			while (foldersToSearch.Count > 0)
-			   {
-			   string folder = foldersToSearch.Pop();
-			   string[] subfolders = System.IO.Directory.GetDirectories(folder);
-			   adderStatus.AddFolders(Files.InputType.Style, subfolders.Length);
-				
-			   if (cancelDelegate())
-			      {  return;  }
-			
-			   foreach (string subfolder in subfolders)
-			      {  foldersToSearch.Push(subfolder);  }
-
-			   string[] files = System.IO.Directory.GetFiles(folder);
-				
-			   if (cancelDelegate())
-			      {  return;  }
-
-			   foreach (string file in files)
-			      {
-			      if (cancelDelegate())
-			         {  return;  }
-
-					Path filePath = file;
-
-					foreach (Style style in styles)
-						{
-						if (style.Contains(filePath))
-							{  
-							adderStatus.AddFiles(Files.FileType.Style, 1);
-							Manager.AddOrUpdateFile(filePath, Files.FileType.Style, System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
-							break;
-							}
-						}
-					}
-				}
+		override public Files.FileSourceAdder CreateAdder ()
+			{
+			return new Styles.FileSourceAdder(this, EngineInstance);
 			}
 
 
@@ -164,6 +121,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			{
 			get 
 				{  return Files.InputType.Style;  }
+			}
+
+
+		/* Property: Styles
+		 * All the <Styles> referenced by the builders.
+		 */
+		public IList<Style> Styles
+			{
+			get
+				{  return styles;  }
 			}
 
 

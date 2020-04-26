@@ -83,74 +83,15 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
-		/* Function: AddAllFiles
-		 * Calls <Files.Manager.AddOrUpdateFile()> for every file in the folder and its subfolders.
+		/* Function: CreateAdder
+		 * Returns a <FileSourceAdder> that can be used with this FileSource.
 		 */
-		override public void AddAllFiles (CancelDelegate cancelDelegate)
+		override public FileSourceAdder CreateAdder()
 			{
-			adderStatus.Reset();
-			
-			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
-			// them all or otherwise use Path functions on them.
-			Stack<string> foldersToSearch = new Stack<string>();
-			foldersToSearch.Push(Path);				
-			
-			while (foldersToSearch.Count > 0)
-				{
-				string folder = foldersToSearch.Pop();
-
-				if (Type == InputType.Source)
-					{
-					if (Manager.SourceFolderIsIgnored(folder))
- 						{  continue;  }	
-					}
-				
-				adderStatus.AddFolders(Type, 1);
-
-				string[] subfolders = System.IO.Directory.GetDirectories(folder);
-				
-				if (cancelDelegate())
-					{  return;  }
-			
-				foreach (string subfolder in subfolders)
-					{  foldersToSearch.Push(subfolder);  }
-
-				string[] files = System.IO.Directory.GetFiles(folder);
-				
-				if (cancelDelegate())
-					{  return;  }
-					
-				foreach (string file in files)
-					{
-					Path filePath = file;
-					string extension = filePath.Extension;
-					FileType? fileType = null;
-						
-					if (Type == InputType.Source)
-						{
-						if ( EngineInstance.Languages.FromExtension(extension) != null)
-							{  fileType = FileType.Source;  }
-						// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
-						// file instead of an image folder.
-						else if (Files.Manager.ImageExtensions.Contains(extension) )
-							{  fileType = FileType.Image;  }
-						}
-					else if (Type == InputType.Image && Files.Manager.ImageExtensions.Contains(extension))
-						{  fileType = FileType.Image;  }
-
-					if (fileType != null)
-						{  
-						adderStatus.AddFiles((FileType)fileType, 1);
-						Manager.AddOrUpdateFile(filePath, (FileType)fileType, System.IO.File.GetLastWriteTimeUtc(file));
-						}
-
-					if (cancelDelegate())
-						{  return;  }
-					}
-				}
+			return new FolderAdder(this, EngineInstance);
 			}
 
-		
+
 		
 		// Group: Properties
 		// __________________________________________________________________________
