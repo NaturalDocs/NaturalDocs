@@ -53,7 +53,7 @@
     <Compile Include="Source\Files\FilesBeingProcessed.cs" />
     <Compile Include="Source\Files\IChangeWatcher.cs" />
     <Compile Include="Source\Files\ImageFile.cs" />
-    <Compile Include="Source\Files\Searcher.cs" />
+    <Compile Include="Source\Files\Adder.cs" />
     <Compile Include="Source\Files\UnprocessedChanges.cs" />
     <Compile Include="Source\Files\Processor.cs" />
     <Compile Include="Source\Languages\CommentFinder.cs" />

@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			Application.EngineInstance.FileSearcher.GetStatus(ref status);
+			Application.EngineInstance.FileAdder.GetStatus(ref status);
 			
 			if (lastSourceFilesFound != status.SourceFilesFound || lastSourceFoldersFound != status.SourceFoldersFound)
 				{
@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowEndMessage ()
 			{
-			Application.EngineInstance.FileSearcher.GetStatus(ref status);
+			Application.EngineInstance.FileAdder.GetStatus(ref status);
 
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.EndFileSearch(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)

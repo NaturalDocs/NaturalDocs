@@ -48,7 +48,7 @@
  *		- <Files.Manager> is almost last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
  *		  
- *		- <Files.Processor> and <Files.Searcher> are last because they depends on <Files.Manager>.
+ *		- <Files.Processor> and <Files.Adder> are last because they depends on <Files.Manager>.
  *		
  * 
  * File: GracefulExit.nd
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine
 								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
 								Output.Manager outputManager = null, SearchIndex.Manager searchIndexManager = null, 
 								Files.Manager filesManager = null, Files.Processor fileProcessor = null,
-								Files.Searcher fileSearcher = null)
+								Files.Adder fileAdder = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine
 			this.searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
 			this.fileProcessor = fileProcessor ?? new Files.Processor(this);
-			this.fileSearcher = fileSearcher ?? new Files.Searcher(this);
+			this.fileAdder = fileAdder ?? new Files.Adder(this);
 			}
 			
 
@@ -156,10 +156,10 @@ namespace CodeClear.NaturalDocs.Engine
 				fileProcessor = null;
 				}
 				
-			if (fileSearcher != null && !strictRulesApply)
+			if (fileAdder != null && !strictRulesApply)
 				{
-				fileSearcher.Dispose();
-				fileSearcher = null;
+				fileAdder.Dispose();
+				fileAdder = null;
 				}
 				
 			if (codeDB != null && !strictRulesApply)
@@ -247,7 +247,7 @@ namespace CodeClear.NaturalDocs.Engine
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
 				files.Start(errors) &&
-				fileSearcher.Start(errors) &&
+				fileAdder.Start(errors) &&
 				fileProcessor.Start(errors)
 				);
 			}
@@ -698,13 +698,13 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return fileProcessor;  }
 			}
 			
-		/* Property: FileSearcher
-		 * Returns the <Files.Searcher> associated with this instance.
+		/* Property: FileAdder
+		 * Returns the <Files.Adder> associated with this instance.
 		 */
-		public Files.Searcher FileSearcher
+		public Files.Adder FileAdder
 			{
 			get
-				{  return fileSearcher;  }
+				{  return fileAdder;  }
 			}
 			
 			
@@ -737,7 +737,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		protected Files.Processor fileProcessor;
 
-		protected Files.Searcher fileSearcher;
+		protected Files.Adder fileAdder;
 
 		}
 	}

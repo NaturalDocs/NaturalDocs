@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.Searcher
+ * Class: CodeClear.NaturalDocs.Engine.Files.Adder
  * ____________________________________________________________________________
  * 
- * A module which handles scanning <FileSources> and adding all files found to <Files.Manager>.
+ * A module which handles adding all files in <FileSources> to <Files.Manager>.
  * 
  * 
  * Topic: Usage
@@ -32,16 +32,16 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class Searcher : Module
+	public class Adder : Module
 		{
 		
 		// Group: Initialization and Configuration Functions
 		// __________________________________________________________________________
 		
 
-		/* Function: Searcher
+		/* Function: Adder
 		 */
-		public Searcher (Engine.Instance engineInstance) : base (engineInstance)
+		public Adder (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			fileSources = null;
 			fileSourcesClaimed = null;

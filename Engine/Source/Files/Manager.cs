@@ -18,9 +18,9 @@
  *		- Call <Engine.Instance.Start()> which will start this module. At this point the class is usable, but the file information
  *		  is as of the last run.
  *		  
- *		- Use <Files.Searcher> to scan for added and changed files and to register them with the class.
+ *		- Use <Files.Adder> to scan for added and changed files and to register them with the class.
  *		
- *		- Call <DeleteFilesNotReAdded()> to mark everything not found by the <Searcher> as deleted.
+ *		- Call <DeleteFilesNotReAdded()> to mark everything not found by <Files.Adder> as deleted.
  *		  
  *		- Use <Files.Processor> to process the changes.
  *		  
@@ -423,8 +423,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Function: DeleteFilesNotReAdded
 		 * 
 		 * Calls <DeleteFile()> on any file that hasn't been passed to <AddOrUpdateFile()> since <Start()> was called.  <Start()>
-		 * loads the file information as of Natural Docs' last run, and <Files.Searcher> adds everything it finds, so when all the 
-		 * <Searcher> threads have completed then this represents files that no longer exist and should be treated as deleted.
+		 * loads the file information as of Natural Docs' last run, and <Files.Adder> adds everything it finds, so when all the 
+		 * <Adder> threads have completed then this represents files that no longer exist and should be treated as deleted.
 		 * 
 		 * While this function takes a <CancelDelegate>, it is not a WorkOn function because more than one thread cannot work
 		 * on this task simultaneously.
@@ -716,7 +716,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* var: filesAddedSinceStart
 		 * 
 		 * The IDs of all the files that have been passed to <AddOrUpdateFile()> since <Start()> was called.  This means these
-		 * are all the files found in the filesystem by <Searcher>, whereas <files> will also include files that existed on the last
+		 * are all the files found in the filesystem by <Adder>, whereas <files> will also include files that existed on the last
 		 * run.  Anything in <files> that isn't in here has thus been deleted since the last run.
 		 * 
 		 * Thread Safety:
