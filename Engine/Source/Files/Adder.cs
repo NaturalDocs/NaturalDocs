@@ -49,6 +49,20 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		override protected void Dispose (bool strictRulesApply)
 			{
+			if (!strictRulesApply)
+				{
+				if (fileSourceAdders != null)
+					{
+					for (int i = 0; i < fileSourceAdders.Length; i++)
+						{
+						if (fileSourceAdders[i] != null)
+							{
+							fileSourceAdders[i].Dispose();
+							fileSourceAdders[i] = null;
+							}
+						}
+					}
+				}
 			}
 			
 			
