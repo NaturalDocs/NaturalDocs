@@ -69,10 +69,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		abstract public Path MakeAbsolute (Path path);
 		
 
-		/* Function: CreateAdder
+
+		// Group: Processes
+		// __________________________________________________________________________
+
+
+		/* Function: CreateAdderProcess
 		 * Creates a new <FileSourceAdder> that can be used with this FileSource.
 		 */
-		abstract public FileSourceAdder CreateAdder ();
+		abstract public FileSourceAdder CreateAdderProcess ();
 			
 		
 		

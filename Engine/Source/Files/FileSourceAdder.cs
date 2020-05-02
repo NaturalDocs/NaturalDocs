@@ -33,7 +33,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	abstract public class FileSourceAdder : Module
+	abstract public class FileSourceAdder : Process
 		{
 		
 		// Group: Functions
@@ -53,14 +53,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		override protected void Dispose (bool strictRulesApply)
 			{
-			}
-
-
-		/* Function: Start
-		 */
-		public bool Start (Errors.ErrorList errors)
-			{
-			return true;
 			}
 			
 			

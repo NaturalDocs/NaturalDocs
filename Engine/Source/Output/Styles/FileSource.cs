@@ -87,10 +87,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Styles
 			throw new InvalidOperationException();
 			}
 
-		/* Function: CreateAdder
+
+
+		// Group: Processes
+		// __________________________________________________________________________
+
+
+		/* Function: CreateAdderProcess
 		 * Creates a <Files.FileSourceAdder> that can be used with this FileSource.
 		 */
-		override public Files.FileSourceAdder CreateAdder ()
+		override public Files.FileSourceAdder CreateAdderProcess ()
 			{
 			return new Styles.FileSourceAdder(this, EngineInstance);
 			}

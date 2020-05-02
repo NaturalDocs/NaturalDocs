@@ -137,7 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 								{
 								fileSourcesClaimed[i] = true;
 								folderPrefixesClaimed.Add(folderPrefix);
-								fileSourceAdder = fileSource.CreateAdder();
+								fileSourceAdder = fileSource.CreateAdderProcess();
 								fileSourceAdders[i] = fileSourceAdder;
 								return true;
 								}
@@ -145,7 +145,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						else // not a folder
 							{
 							fileSourcesClaimed[i] = true;
-							fileSourceAdder = fileSource.CreateAdder();
+							fileSourceAdder = fileSource.CreateAdderProcess();
 							fileSourceAdders[i] = fileSourceAdder;
 							return true;
 							}

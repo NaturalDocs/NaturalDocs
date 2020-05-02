@@ -83,10 +83,15 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			}
 
 
-		/* Function: CreateAdder
+
+		// Group: Processes
+		// __________________________________________________________________________
+
+
+		/* Function: CreateAdderProcess
 		 * Returns a <FileSourceAdder> that can be used with this FileSource.
 		 */
-		override public FileSourceAdder CreateAdder()
+		override public FileSourceAdder CreateAdderProcess()
 			{
 			return new FolderAdder(this, EngineInstance);
 			}
