@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.ChangeProcessor
  * ____________________________________________________________________________
  * 
- * A module which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
+ * A process  which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
  * image files that can be referenced with "(see image.jpg)" and extras tied to CSS styles.
  * 
  * 
@@ -30,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class ChangeProcessor : Module
+	public class ChangeProcessor : Process
 		{
 		
 		// Group: Types
@@ -72,11 +72,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				if (!filesBeingProcessed.IsEmpty)
 					{  throw new Exception("Files.ChangeProcessor shut down while files were still being processed.");  }
 				}
-			}
-
-		public bool Start (Errors.ErrorList errors)
-			{
-			return true;
 			}
 
 

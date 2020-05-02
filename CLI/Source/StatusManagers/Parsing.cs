@@ -22,9 +22,11 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public Parsing (string alternativeStartMessage) : base (Application.StatusInterval)
+		public Parsing (Engine.Files.ChangeProcessor process, string alternativeStartMessage = null) : base (Application.StatusInterval)
 			{
+			this.process = process;
 			status = new Engine.Files.ChangeProcessorStatus();
+
 			totalFilesToProcess = 0;
 			lastPercentage = 0;
 			this.alternativeStartMessage = alternativeStartMessage;
@@ -32,7 +34,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowStartMessage ()
 			{
-			Application.EngineInstance.FileChangeProcessor.GetStatus(ref status);
+			process.GetStatus(ref status);
 			totalFilesToProcess = status.ChangedFilesRemaining + status.DeletedFilesRemaining;
 			
 			if (alternativeStartMessage != null)
@@ -41,20 +43,17 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 					Engine.Locale.Get("NaturalDocs.CLI", alternativeStartMessage)
 					);
 				}
+			else if (status.ChangedFilesRemaining == 0 && status.DeletedFilesRemaining == 0)
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.NoChanges")
+					);
+				}
 			else if (status.ChangedFilesRemaining == 0)
-				{			
-				if (status.DeletedFilesRemaining == 0)
-					{
-					System.Console.WriteLine(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.NoChanges")
-						);
-					}
-				else
-					{
-					System.Console.WriteLine(
-						Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(deleted)", status.DeletedFilesRemaining)
-						);
-					}
+				{
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.StartFileParsing(deleted)", status.DeletedFilesRemaining)
+					);
 				}
 			else if (status.DeletedFilesRemaining == 0)
 				{
@@ -76,7 +75,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 			if (totalFilesToProcess == 0)
 				{  return;  }
 				
-			Application.EngineInstance.FileChangeProcessor.GetStatus(ref status);
+			process.GetStatus(ref status);
 			
 			int completed = totalFilesToProcess - status.ChangedFilesRemaining - status.DeletedFilesRemaining - status.FilesBeingProcessed;
 			int newPercentage = (completed * 100) / totalFilesToProcess;
@@ -105,7 +104,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
+		protected Engine.Files.ChangeProcessor process;
 		protected Engine.Files.ChangeProcessorStatus status;
+
 		protected int totalFilesToProcess;
 		protected int lastPercentage;
 		protected string alternativeStartMessage;

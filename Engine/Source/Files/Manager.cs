@@ -18,11 +18,11 @@
  *		- Call <Engine.Instance.Start()> which will start this module. At this point the class is usable, but the file information
  *		  is as of the last run.
  *		  
- *		- Use <Files.Adder> to scan for added and changed files and to register them with the class.
+ *		- Use <CreateAdderProcess()> to scan for added and changed files and to register them with the class.
  *		
  *		- Call <DeleteFilesNotReAdded()> to mark everything not found by <Files.Adder> as deleted.
  *		  
- *		- Use <Files.ChangeProcessor> to process the changes.
+ *		- Use <CreateChangeProcessor()> to process the changes.
  *		  
  * 
  * Multithreading: Thread Safety Notes
@@ -486,6 +486,28 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 
 
+		// Group: Processes
+		// __________________________________________________________________________
+
+
+		/* Function: CreateAdderProcess
+		 * Creates and returns an <Adder> process for adding all files in the <FileSources> to this manager.
+		 */
+		public Files.Adder CreateAdderProcess ()
+			{
+			return new Files.Adder(EngineInstance);
+			}
+
+		/* Function: CreateChangeProcessor
+		 * Creates and returns a <ChangeProcessor> for processing all file changes recorded by this manager.
+		 */
+		public Files.ChangeProcessor CreateChangeProcessor ()
+			{
+			return new Files.ChangeProcessor(EngineInstance);
+			}
+
+		
+			
 		// Group: Static Functions
 		// __________________________________________________________________________
 		

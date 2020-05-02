@@ -2,15 +2,8 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.Adder
  * ____________________________________________________________________________
  * 
- * A module which handles adding all files in all the <FileSources> to <Files.Manager>.
+ * A process which handles adding all files in all the <FileSources> to <Files.Manager>.
  * 
- * 
- * Topic: Usage
- * 
- *		- Call <Start()> after <Files.Manager> is started, as it depends on its list of <FileSources>.
- *		
- *		- Multiple threads can call <WorkOnAddingAllFiles()>.
- *		
  * 
  * Multithreading: Thread Safety Notes
  * 
@@ -32,7 +25,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class Adder : Module
+	public class Adder : Process
 		{
 		
 		// Group: Initialization and Configuration Functions
@@ -43,10 +36,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public Adder (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			fileSources = null;
-			fileSourcesClaimed = null;
-			fileSourceAdders = null;
-			folderPrefixesClaimed = null;
+			fileSources = Manager.FileSources;
+			fileSourcesClaimed = new bool[fileSources.Count];
+			fileSourceAdders = new FileSourceAdder[fileSources.Count];
+			folderPrefixesClaimed = new StringSet (KeySettings.IgnoreCase);
 
 			accessLock = new object();
 			}
@@ -56,19 +49,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		override protected void Dispose (bool strictRulesApply)
 			{
-			}
-
-
-		/* Function: Start
-		 */
-		public bool Start (Errors.ErrorList errors)
-			{
-			fileSources = Manager.FileSources;
-			fileSourcesClaimed = new bool[fileSources.Count];
-			fileSourceAdders = new FileSourceAdder[fileSources.Count];
-			folderPrefixesClaimed = new StringSet (KeySettings.IgnoreCase);
-
-			return true;
 			}
 			
 			

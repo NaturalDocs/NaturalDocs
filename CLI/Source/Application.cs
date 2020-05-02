@@ -179,43 +179,50 @@ namespace CodeClear.NaturalDocs.CLI
 						
 				executionTimer.Start("Finding Source Files");
 
-				using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch() )
+				var adderProcess = EngineInstance.Files.CreateAdderProcess();
+
+				using ( StatusManagers.FileSearch statusManager = new StatusManagers.FileSearch(adderProcess) )
 					{
 					statusManager.Start();
 							
-					Multithread("File Adder", EngineInstance.FileAdder.WorkOnAddingAllFiles);
+					Multithread("File Adder", adderProcess.WorkOnAddingAllFiles);
 							
 					statusManager.End();
 					}
 							
 				EngineInstance.Files.DeleteFilesNotReAdded( Engine.Delegates.NeverCancel );
+				adderProcess.Dispose();
 							
 				executionTimer.End("Finding Source Files");
 
 						
 				// Rebuild notice
 
-				string alternateStartMessage = null;
+				string alternativeStartMessage = null;
 						
 				if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
-					{  alternateStartMessage = "Status.RebuildEverythingByRequest";  }
+					{  alternativeStartMessage = "Status.RebuildEverythingByRequest";  }
 				else if (EngineInstance.Config.ReparseEverything && EngineInstance.Config.RebuildAllOutput)
-					{  alternateStartMessage = "Status.RebuildEverythingAutomatically";  }
+					{  alternativeStartMessage = "Status.RebuildEverythingAutomatically";  }
 							
 							
 				// Parsing
 						
 				executionTimer.Start("Parsing Source Files");
 
-				using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(alternateStartMessage) )
+				var changeProcessor = EngineInstance.Files.CreateChangeProcessor();
+
+				using ( StatusManagers.Parsing statusManager = new StatusManagers.Parsing(changeProcessor, alternativeStartMessage) )
 					{
 					statusManager.Start();
 					totalFileChanges = statusManager.TotalFilesToProcess;
 
-					Multithread("Parser", EngineInstance.FileChangeProcessor.WorkOnProcessingChanges);							
+					Multithread("Parser", changeProcessor.WorkOnProcessingChanges);							
 							
 					statusManager.End();
 					}
+
+				changeProcessor.Dispose();
 							
 				executionTimer.End("Parsing Source Files");
 

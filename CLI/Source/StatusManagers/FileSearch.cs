@@ -22,8 +22,9 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public FileSearch () : base (Application.StatusInterval)
+		public FileSearch (Engine.Files.Adder process) : base (Application.StatusInterval)
 			{
+			this.process = process;
 			status = new Engine.Files.AdderStatus();
 			
 			lastSourceFilesFound = 0;
@@ -39,7 +40,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			Application.EngineInstance.FileAdder.GetStatus(ref status);
+			process.GetStatus(ref status);
 			
 			if (lastSourceFilesFound != status.SourceFilesFound || lastSourceFoldersFound != status.SourceFoldersFound)
 				{
@@ -54,7 +55,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowEndMessage ()
 			{
-			Application.EngineInstance.FileAdder.GetStatus(ref status);
+			process.GetStatus(ref status);
 
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.EndFileSearch(files, folders)", status.SourceFilesFound, status.SourceFoldersFound)
@@ -65,10 +66,11 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		Engine.Files.AdderStatus status;
+		protected Engine.Files.Adder process;
+		protected Engine.Files.AdderStatus status;
 		
-		int lastSourceFoldersFound;
-		int lastSourceFilesFound;
+		protected int lastSourceFoldersFound;
+		protected int lastSourceFilesFound;
 		
 		}
 	}
