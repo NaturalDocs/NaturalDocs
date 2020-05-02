@@ -218,10 +218,15 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 */
 		public void Run ()
 			{
-			EngineInstance.FileAdder.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
+			var adder = EngineInstance.Files.CreateAdderProcess();
+			adder.WorkOnAddingAllFiles(Engine.Delegates.NeverCancel);
+			adder.Dispose();
+
 			EngineInstance.Files.DeleteFilesNotReAdded(Engine.Delegates.NeverCancel);
-							
-			EngineInstance.FileChangeProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
+			
+			var changeProcessor = EngineInstance.Files.CreateChangeProcessor();
+			changeProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
+			changeProcessor.Dispose();
 
 			EngineInstance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
 			EngineInstance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
