@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Files
+namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
 	public class FolderAdder : FileSourceAdder
 		{
