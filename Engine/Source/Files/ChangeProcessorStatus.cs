@@ -27,14 +27,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		public ChangeProcessorStatus ()
 			{
-			Reset();
-			}
-			
-		/* Function: Reset
-		 * Reset all values back to their initial state.
-		 */
-		public void Reset ()
-			{
 			FilesBeingProcessed = 0;
 			ChangedFilesRemaining = 0;
 			DeletedFilesRemaining = 0;
@@ -42,24 +34,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 
 
-		// Group: Properties
-		// __________________________________________________________________________
-		
-		
-		/* Property: Completed
-		 * Whether all files are processed.
-		 */
-		public bool Completed 
-			{
-			get
-				{
-				return (FilesBeingProcessed == 0 && 
-						  ChangedFilesRemaining == 0 &&
-						  DeletedFilesRemaining == 0);
-				}
-			}
-			
-			
 		// Group: Public Variables
 		// __________________________________________________________________________
 		

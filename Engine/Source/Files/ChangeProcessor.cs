@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.ChangeProcessor
  * ____________________________________________________________________________
  * 
- * A process  which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
+ * A process which handles processing changes to the files Natural Docs scans.  In addition to source files, this includes 
  * image files that can be referenced with "(see image.jpg)" and extras tied to CSS styles.
  * 
  * 
@@ -144,7 +144,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				int addedOrChangedFileIDs, deletedFileIDs;
 				Manager.UnprocessedChanges.GetStatus(out addedOrChangedFileIDs, out deletedFileIDs);
 
-				statusTarget.Reset();
 				statusTarget.FilesBeingProcessed = filesBeingProcessed.Count;
 				statusTarget.ChangedFilesRemaining = addedOrChangedFileIDs;
 				statusTarget.DeletedFilesRemaining = deletedFileIDs;
