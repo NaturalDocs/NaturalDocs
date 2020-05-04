@@ -22,21 +22,20 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		
-		public ResolvingLinks () : base (Application.StatusInterval)
+		public ResolvingLinks (Engine.Links.Resolver process) : base (Application.StatusInterval)
 			{
+			this.process = process;
+			status = new Engine.Links.ResolverStatus();
+
 			lastPercentage = 0;
-			totalUnitsOfWork = 0;
-			}
-
-		public override void Start ()
-			{
-			totalUnitsOfWork = Application.EngineInstance.Links.UnitsOfWorkRemaining();
-
-			base.Start();
+			totalChanges = 0;
 			}
 
 		protected override void ShowStartMessage ()
 			{
+			process.GetStatus(ref status);
+			totalChanges = status.ChangesBeingProcessed + status.ChangesRemaining;
+
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartLinkResolving")
 				);
@@ -44,16 +43,16 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			long unitsOfWorkRemaining = Application.EngineInstance.Links.UnitsOfWorkRemaining();
+			// Prevent divide by zero when calculating a percentage
+			if (totalChanges == 0)
+				{  return;  }
 
-			// Sanity check in case it increases while running.
-			if (unitsOfWorkRemaining > totalUnitsOfWork)
-				{  unitsOfWorkRemaining = totalUnitsOfWork;  }
+			process.GetStatus(ref status);
 
-			long unitsOfWorkDone = totalUnitsOfWork - unitsOfWorkRemaining;
-			int newPercentage = (int)((100 * unitsOfWorkDone) / totalUnitsOfWork);
+			int changesComplete = totalChanges - status.ChangesRemaining - status.ChangesBeingProcessed;
+			int newPercentage = (int)((100 * changesComplete) / totalChanges);
 			
-			// Another sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
+			// Sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
 			if (newPercentage > lastPercentage)
 				{
@@ -69,8 +68,11 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 
+		protected Engine.Links.Resolver process;
+		protected Engine.Links.ResolverStatus status;
+
 		protected int lastPercentage;
-		protected long totalUnitsOfWork;
+		protected int totalChanges;
 
 		}
 	}

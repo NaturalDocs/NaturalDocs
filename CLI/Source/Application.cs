@@ -231,14 +231,18 @@ namespace CodeClear.NaturalDocs.CLI
 						
 				executionTimer.Start("Resolving Links");
 
-				using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks() )
+				var resolverProcess = EngineInstance.Links.CreateResolverProcess();
+
+				using ( StatusManagers.ResolvingLinks statusManager = new StatusManagers.ResolvingLinks(resolverProcess) )
 					{
 					statusManager.Start();
 
-					Multithread("Resolver", EngineInstance.Links.WorkOnResolvingLinks);
+					Multithread("Resolver", resolverProcess.WorkOnResolvingLinks);
 							
 					statusManager.End();
 					}
+
+				resolverProcess.Dispose();
 							
 				executionTimer.End("Resolving Links");
 

@@ -50,6 +50,8 @@
     <Compile Include="Source\Files\FileSourceAdder.cs" />
     <Compile Include="Source\Files\FileSources\FolderAdder.cs" />
     <Compile Include="Source\Languages\Parsers\Lua.cs" />
+    <Compile Include="Source\Links\Resolver.cs" />
+    <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\Styles\FileSourceAdder.cs" />
     <Compile Include="Source\Process.cs" />
@@ -67,7 +69,6 @@
     <Compile Include="Source\Languages\Parsers\Python.cs" />
     <Compile Include="Source\Links\ImageLink.cs" />
     <Compile Include="Source\Links\ImageLinkSet.cs" />
-    <Compile Include="Source\Links\Manager.Resolving.cs" />
     <Compile Include="Source\Links\Manager.Scoring.cs" />
     <Compile Include="Source\Links\Manager.cs" />
     <Compile Include="Source\Module.cs" />

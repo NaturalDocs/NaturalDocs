@@ -181,13 +181,15 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		/* Function: Count
 		 * Returns the total number of changes, which is the number of links to resolve plus the number of new topics.
 		 */
-		public long Count
+		public int Count
 			{
 			get
 				{
+				// DEPENDENCY: Make sure Resolver.changesBeingProcessed follows the same method of counting changes
+
 				lock (accessLock)
 					{
-					long changes = linksToResolve.Count;
+					int changes = linksToResolve.Count;
 
 					foreach (var pair in newTopicIDsByEndingSymbol)
 						{  changes += pair.Value.Count;  }

@@ -110,6 +110,36 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 
+		// Group: Processes
+		// __________________________________________________________________________
+
+
+		/* Function: CreateResolverProcess
+		 * Creates and returns a <Resolver> process for resolving everything in <UnprocessedChanges>.
+		 */
+		public Links.Resolver CreateResolverProcess ()
+			{
+			return new Links.Resolver(EngineInstance);
+			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* var: UnprocessedChanges
+		 * 
+		 * Returns the <Links.UnprocessedChanges> of all the unprocessed link changes that have been detected.
+		 */
+		public UnprocessedChanges UnprocessedChanges
+			{
+			get
+				{  return unprocessedChanges;  }
+			}
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 
