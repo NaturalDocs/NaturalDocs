@@ -312,6 +312,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					case NDMarkup.Iterator.ElementType.BoldTag:
 					case NDMarkup.Iterator.ElementType.ItalicsTag:
 					case NDMarkup.Iterator.ElementType.UnderlineTag:
+                    case NDMarkup.Iterator.ElementType.CodeTag:
 					case NDMarkup.Iterator.ElementType.LTEntityChar:
 					case NDMarkup.Iterator.ElementType.GTEntityChar:
 					case NDMarkup.Iterator.ElementType.AmpEntityChar:

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI", "CLI\CLI.csproj", "{2190235A-96D0-4369-B6E6-4C123B76DA04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{F7569B05-FFFD-4084-8F33-760F3E1916CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2190235A-96D0-4369-B6E6-4C123B76DA04}.Debug|x86.ActiveCfg = Debug|x86
+		{2190235A-96D0-4369-B6E6-4C123B76DA04}.Debug|x86.Build.0 = Debug|x86
+		{2190235A-96D0-4369-B6E6-4C123B76DA04}.Release|x86.ActiveCfg = Release|x86
+		{2190235A-96D0-4369-B6E6-4C123B76DA04}.Release|x86.Build.0 = Release|x86
+		{F7569B05-FFFD-4084-8F33-760F3E1916CD}.Debug|x86.ActiveCfg = Debug|x86
+		{F7569B05-FFFD-4084-8F33-760F3E1916CD}.Debug|x86.Build.0 = Debug|x86
+		{F7569B05-FFFD-4084-8F33-760F3E1916CD}.Release|x86.ActiveCfg = Release|x86
+		{F7569B05-FFFD-4084-8F33-760F3E1916CD}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50747555-C17C-456F-94D5-85A4097246A8}
+	EndGlobalSection
+EndGlobal
