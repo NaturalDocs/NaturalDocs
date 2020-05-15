@@ -272,13 +272,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (builtPrototype == false)
 				{
-				if (cachedHTMLPrototypeBuilder == null)
-					{  cachedHTMLPrototypeBuilder = new HTMLPrototype(topicPage);  }
+				Formats.HTML.Context context = new Formats.HTML.Context(this.HTMLBuilder, this.TopicPage, this.topic);
 
-				if (isToolTip)
-					{  cachedHTMLPrototypeBuilder.Build(topic, null, null, htmlOutput);  }
+				if (cachedHTMLPrototypeBuilder == null)
+					{  cachedHTMLPrototypeBuilder = new Formats.HTML.Components.Prototype(context);  }
+
+				if (isToolTip)  // no links
+					{  cachedHTMLPrototypeBuilder.AppendPrototype(topic.ParsedPrototype, context, htmlOutput);  }
 				else
-					{  cachedHTMLPrototypeBuilder.Build(topic, links, linkTargets, htmlOutput);  }
+					{  cachedHTMLPrototypeBuilder.AppendPrototype(topic.ParsedPrototype, context, htmlOutput, links, linkTargets);  }
 				}
 			}
 
@@ -818,11 +820,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 
 		/* var: cachedHTMLPrototypeBuilder
-		 * A <HTMLPrototype> object for building prototypes, or null if one hasn't been created yet.  Since this
-		 * class can be reused to build multiple <Topics>, and <HTMLPrototypeBuilders> can be reused to build
+		 * An object for building prototypes, or null if one hasn't been created yet.  Since this
+		 * class can be reused to build multiple <Topics>, and these objects can be reused to build
 		 * multiple prototypes, one is stored with the class so it can be reused between runs.
 		 */
-		protected HTMLPrototype cachedHTMLPrototypeBuilder;
+		protected Formats.HTML.Components.Prototype cachedHTMLPrototypeBuilder;
 
 		/* var: cachedHTMLClassPrototypeBuilder
 		 * A <HTMLClassPrototype> object for building prototypes, or null if one hasn't been created yet.  Since 

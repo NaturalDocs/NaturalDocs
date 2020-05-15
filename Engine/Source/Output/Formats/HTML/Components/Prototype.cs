@@ -1,32 +1,13 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Components.HTMLPrototype
+ * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components.Prototype
  * ____________________________________________________________________________
  * 
- * A reusable helper class to build prototypes for <Output.Builders.HTML>.
- * 
- * Why a Separate Class?:
- * 
- *		Well, building a HTML prototype isn't straightforward.  There's a lot of parsing stages and this keeps them separate
- *		and organized.  More importantly, the parsing stages have to pass a lot of data between them.  You can't store it
- *		in instance variables in <Builders.HTML> because multiple threads may be calling the build functions at the same time.
- *		Passing the structures around individually as function parameters quickly becomes unwieldy.  If you bundle them into
- *		a single object to pass around, well then you've already introduced a separate object allocation just for prototype
- *		parsing so you might as well move the functions in there to make it cleaner, right?
- * 
- * 
- * Topic: Usage
- *		
- *		- Create a HTMLPrototype object.
- *		- Call <Build()>.
- *		- The object can be reused on different prototypes by calling <Build()> again as long as they come from the same
- *		  <HTMLTopicPage>.
+ * A reusable class for building HTML prototypes.
  * 
  * 
  * Threading: Not Thread Safe
  * 
- *		This class is only designed to be used by one thread at a time.  It has an internal state that is used during a call to
- *		<Build()>, and another <Build()> should not be started until it's completed.  Instead each thread should create its 
- *		own object.
+ *		This class is only designed to be used by one thread at a time.
  * 
  */
 
@@ -44,9 +25,9 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
 	{
-	public class HTMLPrototype : HTMLComponent
+	public class Prototype : HTML.Component
 		{
 
 		// Group: Types
@@ -85,58 +66,86 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 
-		/* Constructor: HTMLPrototype
+		/* Constructor: Prototype
 		 */
-		public HTMLPrototype (HTMLTopicPage topicPage) : base (topicPage)
+		public Prototype (Context context) : base (context)
 			{
 			parsedPrototype = null;
-			language = null;
+
 			parameterTableSection = null;
 			parameterTableTokenIndexes = null;
 			parameterTableColumnsUsed = null;
 			symbolColumnWidth = 0;
+
+			links = null;
+			linkTargets = null;
 			addLinks = false;
+
+			formattedTextBuilder = new Components.FormattedText(context);
 			}
 
 
-		/* Function: Build
+		/* Function: BuildPrototype
 		 * 
-		 * Builds the HTML for the <Topic's> prototype and returns it as a string.  If the string is going to be appended to
-		 * a StringBuilder, it is more efficient to use the other function.
+		 * Builds the HTML for the passed prototype.
 		 * 
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
 		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
 		 * links, set both to null.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- The <Context>'s topic must be set.
+		 *		- If type links are being generated, the <Context>'s topic page must also be set.
 		 */
-		public string Build (Topic topic, IList<Link> links, IList<Topic> linkTargets)
+		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null, 
+												  IList<Topic> linkTargets = null)
 			{
 			StringBuilder output = new StringBuilder();
-			Build(topic, links, linkTargets, output);
+			AppendPrototype(parsedPrototype, context, output, links, linkTargets);
 			return output.ToString();
 			}
 
 
-		/* Function: Build
+		/* Function: AppendPrototype
 		 * 
-		 * Builds the HTML for the <Topic's> prototype and appends it to the passed StringBuilder.
+		 * Builds the HTML for the passed prototype and appends it to the passed StringBuilder.
 		 * 
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
 		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
 		 * links, set both to null.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- The <Context>'s topic must be set.
+		 *		- If type links are being generated, the <Context>'s topic page must also be set.
 		 */
-		public void Build (Topic topic, IList<Link> links, IList<Topic> linkTargets, StringBuilder output)
+		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output, 
+												   IList<Link> links = null, IList<Topic> linkTargets = null)
 			{
-			this.topic = topic;
-			this.addLinks = (links != null && linkTargets != null);
+			this.parsedPrototype = parsedPrototype;
+			this.context = context;
+			this.formattedTextBuilder.Context = context;
+
+			#if DEBUG
+			if (context.Topic == null)
+				{  throw new Exception("Tried to generate a prototype when the context's topic was not set.");  }
+			#endif
+
 			this.links = links;
 			this.linkTargets = linkTargets;
-			htmlOutput = output;
+			this.addLinks = (links != null && linkTargets != null);
 
-			language = EngineInstance.Languages.FromID(topic.LanguageID);
-			parsedPrototype = topic.ParsedPrototype;
+			#if DEBUG
+			if (this.addLinks && context.TopicPage == null)
+				{  throw new Exception("Tried to generate a prototype with type links when the context's topic page was not set.");  }
+			#endif
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
-				{  language.SyntaxHighlight(parsedPrototype);  }
+				{  
+				var language = EngineInstance.Languages.FromID(Context.Topic.LanguageID);
+				language.SyntaxHighlight(parsedPrototype);  
+				}
 
 			// Determine if there's parameters anywhere.  It's possible for parsedPrototype.NumberOfParameters to be zero and 
 			// there still be a parameters section present somewhere such as for SQL's return table definitions.
@@ -153,19 +162,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			// We always build the wide form by default, but only include the attribute if there's parameters.  The JavaScript assumes
 			// there will be a parameters section in any prototype that has it.
-			htmlOutput.Append("<div id=\"NDPrototype" + topic.TopicID + "\" class=\"NDPrototype" +
-										(hasParameters ? " WideForm" : "") + "\">");
+			output.Append("<div id=\"NDPrototype" + Context.Topic.TopicID + "\" class=\"NDPrototype" +
+								  (hasParameters ? " WideForm" : "") + "\">");
 
 			foreach (var section in parsedPrototype.Sections)
 				{
 				if (section is Prototypes.ParameterSection && (section as Prototypes.ParameterSection).NumberOfParameters > 0)
-					{  BuildParameterSection((Prototypes.ParameterSection)section);  }
+					{  AppendParameterSection((Prototypes.ParameterSection)section, output);  }
 				else
-					{  BuildPlainSection(section);  }
+					{  AppendPlainSection(section, output);  }
 				}
 
-			htmlOutput.Append("</div>");
+			output.Append("</div>");
 			}
+
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
 
 
 		/* Function: CalculateParameterTable
@@ -755,25 +769,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildPlainSection
+		/* Function: AppendPlainSection
 		 */
-		protected void BuildPlainSection (Prototypes.Section section)
+		protected void AppendPlainSection (Prototypes.Section section, StringBuilder output)
 			{
-			htmlOutput.Append("<div class=\"PSection PPlainSection\">");
+			output.Append("<div class=\"PSection PPlainSection\">");
 
 			if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(section.Start, section.End);  }
+				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(section.Start, section.End, output, links, linkTargets);  }
 			else
-				{  BuildSyntaxHighlightedText(section.Start, section.End);  }
+				{  formattedTextBuilder.AppendSyntaxHighlightedText(section.Start, section.End, output);  }
 
-			htmlOutput.Append("</div>");
+			output.Append("</div>");
 			}
 
 
-		/* Function: BuildParameterSection
+		/* Function: AppendParameterSection
 		 * Builds the HTML for a <Prototypes.ParameterSection>.  It will always be in wide form.
 		 */
-		protected void BuildParameterSection (Prototypes.ParameterSection parameterTableSection)
+		protected void AppendParameterSection (Prototypes.ParameterSection parameterTableSection, StringBuilder output)
 			{
 			this.parameterTableSection = parameterTableSection;
 
@@ -791,52 +805,52 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					throw new NotImplementedException();
 				}
 
-			htmlOutput.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
+			output.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
 
-			htmlOutput.Append("<table><tr>");
+			output.Append("<table><tr>");
 
 			TokenIterator start, end;
 			parameterTableSection.GetBeforeParameters(out start, out end);
 
-			htmlOutput.Append("<td class=\"PBeforeParameters\">");
+			output.Append("<td class=\"PBeforeParameters\">");
 
 			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 			if (addLinks)
-				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
+				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
 			else
-				{ BuildSyntaxHighlightedText(start, end); }
+				{  formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  }
 
 			if (addNBSP)
-				{  htmlOutput.Append("&nbsp;");  }
+				{  output.Append("&nbsp;");  }
 
-			htmlOutput.Append("</td>");
+			output.Append("</td>");
 
-			htmlOutput.Append("<td class=\"PParametersParentCell\">");
-			BuildParameterTable();
-			htmlOutput.Append("</td>");
+			output.Append("<td class=\"PParametersParentCell\">");
+			AppendParameterTable(output);
+			output.Append("</td>");
 
 			parameterTableSection.GetAfterParameters(out start, out end);
 
-			htmlOutput.Append("<td class=\"PAfterParameters\">");
+			output.Append("<td class=\"PAfterParameters\">");
 
 			if (start.NextPastWhitespace(end))
-				{  htmlOutput.Append("&nbsp;");  };
+				{  output.Append("&nbsp;");  };
 
 			if (addLinks)
-				{ BuildTypeLinkedAndSyntaxHighlightedText(start, end); }
+				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
 			else
-				{ BuildSyntaxHighlightedText(start, end); }
+				{  formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  }
 
-			htmlOutput.Append("</td></tr></table>");
+			output.Append("</td></tr></table>");
 
-			htmlOutput.Append("</div>");
+			output.Append("</div>");
 			}
 
 
-		/* Function: BuildParameterTable
+		/* Function: AppendParameterTable
 		 */
-		protected void BuildParameterTable ()
+		protected void AppendParameterTable (StringBuilder output)
 			{
 			CalculateParameterTable(parameterTableSection);
 
@@ -848,11 +862,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			while (lastUsedCell > 0 && parameterTableColumnsUsed[lastUsedCell] == false)
 				{  lastUsedCell--;  }
 
-			htmlOutput.Append("<table class=\"PParameters\">");
+			output.Append("<table class=\"PParameters\">");
 
 			for (int parameterIndex = 0; parameterIndex < parameterTableSection.NumberOfParameters; parameterIndex++)
 				{
-				htmlOutput.Append("<tr>");
+				output.Append("<tr>");
 
 				for (int cellIndex = firstUsedCell; cellIndex <= lastUsedCell; cellIndex++)
 					{
@@ -870,31 +884,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						if (parameterTableTokenIndexes[parameterIndex, cellIndex] == parameterTableTokenIndexes[parameterIndex, cellIndex + 1])
 							{  
 							if (extraClass == null)
-								{  htmlOutput.Append("<td></td>");  }
+								{  output.Append("<td></td>");  }
 							else
-								{  htmlOutput.Append("<td class=\"" + extraClass + "\"></td>");  }
+								{  output.Append("<td class=\"" + extraClass + "\"></td>");  }
 							}
 						else
 							{
-							htmlOutput.Append("<td class=\"P" + ColumnOrder[cellIndex].ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
+							output.Append("<td class=\"P" + ColumnOrder[cellIndex].ToString() + (extraClass != null ? ' ' + extraClass : "") + "\">");
 
-							BuildCellContents(parameterIndex, cellIndex);
+							AppendCellContents(parameterIndex, cellIndex, output);
 
-							htmlOutput.Append("</td>");
+							output.Append("</td>");
 							}
 						}
 					}
 
-				htmlOutput.Append("</tr>");
+				output.Append("</tr>");
 				}
 
-			htmlOutput.Append("</table>");
+			output.Append("</table>");
 			}
 
 
-		/* Function: BuildCellContents
+		/* Function: AppendCellContents
 		 */
-		protected void BuildCellContents (int parameterIndex, int cellIndex)
+		protected void AppendCellContents (int parameterIndex, int cellIndex, StringBuilder output)
 			{
 			TokenIterator start = parameterTableSection.Start;
 			start.Next(parameterTableTokenIndexes[parameterIndex, cellIndex] - start.TokenIndex);
@@ -923,16 +937,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (type == ColumnType.DefaultValueSeparator ||
 				(type == ColumnType.PropertyValueSeparator && (start.Character != ':' || start.MatchesAcrossTokens(":="))) ||
 				(type == ColumnType.TypeNameSeparator && start.FundamentalType == FundamentalType.Text))
-				{  htmlOutput.Append("&nbsp;");  }
+				{  output.Append("&nbsp;");  }
 
 			// We don't want to highlight keywords on the Name cell because identifiers can accidentally be marked as them with
 			// basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
-				{  BuildSyntaxHighlightedText(start, end, htmlOutput, excludeKeywords: true);  }
+				{  
+				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output, excludeKeywords: true);  
+				}
 			else if (addLinks)
-				{  BuildTypeLinkedAndSyntaxHighlightedText(start, end, true, htmlOutput);  }
+				{  
+				formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets,
+																											   extendTypeSearch: true);  
+				}
 			else
-				{  BuildSyntaxHighlightedText(start, end, htmlOutput);  }
+				{  
+				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  
+				}
 
 			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure 
 			// the spaces aren't duplicated by the preceding cells.
@@ -944,7 +965,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					nextType != ColumnType.DefaultValueSeparator && 
 					nextType != ColumnType.PropertyValueSeparator && 
 					nextType != ColumnType.TypeNameSeparator) )
-				{  htmlOutput.Append("&nbsp;");  }
+				{  output.Append("&nbsp;");  }
 			}
 
 
@@ -1013,11 +1034,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected ParsedPrototype parsedPrototype;
 
-		/* var: language
-		 * The <Languages.Language> of the prototype.
-		 */
-		protected Languages.Language language;
-
 		/* var: parameterTableSection
 		 * The <Prototypes.ParameterSection> currently being processed.
 		 */
@@ -1040,10 +1056,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected int symbolColumnWidth;
 
+		/* var: links
+		 * A list of <Links> that contain any which will appear in the prototype, or null if links aren't needed.
+		 */
+		protected IList<Link> links;
+
+		/* var: linkTargets
+		 * A list of <Topics> that contain the targets of any resolved links appearing in <links>, or null if links aren't needed.
+		 */
+		protected IList<Topic> linkTargets;
+
 		/* var: addLinks
 		 * Whether to add type links to the prototype.
 		 */
 		protected bool addLinks;
+
+		/* var: formattedTextBuilder
+		 * A <Components.FormattedText> object for internal use.
+		 */
+		protected Components.FormattedText formattedTextBuilder;
 
 
 

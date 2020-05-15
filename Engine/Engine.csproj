@@ -54,6 +54,7 @@
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\Formats\HTML\Component.cs" />
+    <Compile Include="Source\Output\Formats\HTML\Components\Prototype.cs" />
     <Compile Include="Source\Output\Formats\HTML\Context.cs" />
     <Compile Include="Source\Output\Styles\FileSourceAdder.cs" />
     <Compile Include="Source\Output\Formats\HTML\Components\FormattedText.cs" />
@@ -189,7 +190,6 @@
     <Compile Include="Source\Output\Components\HTMLComponent.cs" />
     <Compile Include="Source\Output\Components\JSSummaryData.cs" />
     <Compile Include="Source\Output\Components\HTMLTopic.cs" />
-    <Compile Include="Source\Output\Components\HTMLPrototype.cs" />
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
