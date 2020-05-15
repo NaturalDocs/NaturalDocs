@@ -56,6 +56,7 @@
     <Compile Include="Source\Output\Formats\HTML\Component.cs" />
     <Compile Include="Source\Output\Formats\HTML\Context.cs" />
     <Compile Include="Source\Output\Styles\FileSourceAdder.cs" />
+    <Compile Include="Source\Output\Formats\HTML\Components\FormattedText.cs" />
     <Compile Include="Source\Process.cs" />
     <Compile Include="Source\SystemInfo.cs" />
     <Compile Include="Source\Files\FilesBeingProcessed.cs" />
