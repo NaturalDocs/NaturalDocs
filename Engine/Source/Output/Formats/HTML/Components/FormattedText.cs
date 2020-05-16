@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
 		 * 
 		 *		- The <Context>'s topic page must be set.
 		 */
-		protected void AppendOpeningLinkTag (Topic targetTopic, StringBuilder output, string extraCSSClass = null)
+		public void AppendOpeningLinkTag (Topic targetTopic, StringBuilder output, string extraCSSClass = null)
 			{
 			#if DEBUG
 			if (Context.TopicPage == null)
