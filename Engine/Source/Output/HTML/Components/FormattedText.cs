@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components.FormattedText
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.FormattedText
  * ____________________________________________________________________________
  * 
  * A reusable class for generating formatted text such as syntax highlighting.
@@ -27,7 +27,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
 	public class FormattedText : Component
 		{

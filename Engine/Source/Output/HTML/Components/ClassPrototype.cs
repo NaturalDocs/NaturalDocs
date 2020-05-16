@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components.ClassPrototype
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.ClassPrototype
  * ____________________________________________________________________________
  * 
  * A reusable class for building HTML class prototypes.
@@ -28,7 +28,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
 	public class ClassPrototype : HTML.Component
 		{
@@ -674,7 +674,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
 
 		/* __________________________________________________________________________
 		 * 
-		 * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components.ClassPrototype.Parent
+		 * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.ClassPrototype.Parent
 		 * __________________________________________________________________________
 		 */
 		protected class Parent

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Component
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Component
  * ____________________________________________________________________________
  * 
  * A base class for all HTML components.
@@ -19,7 +19,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
 	public class Component
 		{

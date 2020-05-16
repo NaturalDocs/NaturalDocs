@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Context
+ * Struct: CodeClear.NaturalDocs.Engine.Output.HTML.Context
  * ____________________________________________________________________________
  * 
  * A struct that contains the context in which a HTML component is being built, such as which <Topic> it's for and which
@@ -21,7 +21,7 @@ using System;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
 	public struct Context
 		{

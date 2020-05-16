@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components.Prototype
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Prototype
  * ____________________________________________________________________________
  * 
  * A reusable class for building HTML prototypes.
@@ -25,7 +25,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Formats.HTML.Components
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
 	public class Prototype : HTML.Component
 		{
