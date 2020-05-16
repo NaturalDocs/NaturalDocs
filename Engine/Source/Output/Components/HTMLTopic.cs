@@ -252,6 +252,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			{
 			bool builtPrototype = false;
 
+			Formats.HTML.Context context = new Formats.HTML.Context(this.HTMLBuilder, this.TopicPage, this.topic);
+
 			if (EngineInstance.CommentTypes.FromID(topic.CommentTypeID).Flags.ClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = topic.ParsedClassPrototype;
@@ -259,12 +261,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (parsedClassPrototype != null)
 					{
 					if (cachedHTMLClassPrototypeBuilder == null)
-						{  cachedHTMLClassPrototypeBuilder = new HTMLClassPrototype(topicPage);  }
+						{  cachedHTMLClassPrototypeBuilder = new Formats.HTML.Components.ClassPrototype(context);  }
 
-					if (isToolTip)
-						{  cachedHTMLClassPrototypeBuilder.Build(topic, true, null, null, htmlOutput);  }
+					if (isToolTip)  // no links
+						{  cachedHTMLClassPrototypeBuilder.AppendClassPrototype(topic.ParsedClassPrototype, context, true, htmlOutput);  }
 					else
-						{  cachedHTMLClassPrototypeBuilder.Build(topic, false, links, linkTargets, htmlOutput);  }
+						{  cachedHTMLClassPrototypeBuilder.AppendClassPrototype(topic.ParsedClassPrototype, context, false, htmlOutput, links, linkTargets);  }
 
 					builtPrototype = true;
 					}
@@ -272,8 +274,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (builtPrototype == false)
 				{
-				Formats.HTML.Context context = new Formats.HTML.Context(this.HTMLBuilder, this.TopicPage, this.topic);
-
 				if (cachedHTMLPrototypeBuilder == null)
 					{  cachedHTMLPrototypeBuilder = new Formats.HTML.Components.Prototype(context);  }
 
@@ -827,11 +827,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		protected Formats.HTML.Components.Prototype cachedHTMLPrototypeBuilder;
 
 		/* var: cachedHTMLClassPrototypeBuilder
-		 * A <HTMLClassPrototype> object for building prototypes, or null if one hasn't been created yet.  Since 
-		 * this class can be reused to build multiple <Topics>, and <HTMLClassPrototypeBuilders> can be reused 
-		 * to build multiple prototypes, one is stored with the class so it can be reused between runs.
+		 * An object for building prototypes, or null if one hasn't been created yet.  Since this
+		 * class can be reused to build multiple <Topics>, and these objects can be reused to build
+		 * multiple prototypes, one is stored with the class so it can be reused between runs.
 		 */
-		protected HTMLClassPrototype cachedHTMLClassPrototypeBuilder;
+		protected Formats.HTML.Components.ClassPrototype cachedHTMLClassPrototypeBuilder;
 
 		/* var: isToolTip
 		 * Whether we're building a tooltip instead of a full topic.
