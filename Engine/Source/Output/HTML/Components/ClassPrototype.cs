@@ -30,7 +30,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class ClassPrototype : HTML.Component
+	public class ClassPrototype : HTML.Components.FormattedText
 		{
 
 		// Group: Functions
@@ -47,8 +47,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			links = null;
 			linkTargets = null;
 			isToolTip = false;
-
-			formattedTextBuilder = new Components.FormattedText(context);
 			}
 
 
@@ -88,7 +86,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			this.parsedClassPrototype = parsedPrototype;
 			this.context = context;
-			this.formattedTextBuilder.Context = context;
 			this.language = EngineInstance.Languages.FromID(context.Topic.LanguageID);
 
 			this.links = links;
@@ -392,7 +389,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  entryClass += " T" + parentCommentType.SimpleIdentifier;  }
 
 			if (parent.targetTopic != null)
-				{  formattedTextBuilder.AppendOpeningLinkTag(parent.targetTopic, output, entryClass);  }
+				{  AppendOpeningLinkTag(parent.targetTopic, output, entryClass);  }
 			else
 				{  output.Append("<div class=\"" + entryClass + "\">");  }
 
@@ -405,7 +402,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				parsedClassPrototype.GetParentModifiers(parent.prototypeIndex, out start, out end) == true)
 				{
 				output.Append("<div class=\"CPModifiers\">");
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);
+				AppendSyntaxHighlightedText(start, end, output);
 				output.Append("</div>");
 				}
 
@@ -425,16 +422,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  throw new Exception("There was a parent without a target topic or a link associated with it.");  }
 			#endif
 
-			HTML.Components.FormattedText.WrappedTitleMode wrappedTitleMode;
+			WrappedTitleMode wrappedTitleMode;
 
 			if (parentCommentType.Flags.File == true)
-				{  wrappedTitleMode = Components.FormattedText.WrappedTitleMode.File;  }
+				{  wrappedTitleMode = WrappedTitleMode.File;  }
 			else if (parentCommentType.Flags.Code == true)
-				{  wrappedTitleMode = Components.FormattedText.WrappedTitleMode.Code;  }
+				{  wrappedTitleMode = WrappedTitleMode.Code;  }
 			else
-				{  wrappedTitleMode = Components.FormattedText.WrappedTitleMode.None;  }
+				{  wrappedTitleMode = WrappedTitleMode.None;  }
 
-			formattedTextBuilder.AppendWrappedTitle(name, wrappedTitleMode, output);
+			AppendWrappedTitle(name, wrappedTitleMode, output);
 
 
 			// Template suffix
@@ -447,7 +444,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  output.Append("&#8203;");  }
 
 				output.Append("<span class=\"TemplateSignature\">");
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);
+				AppendSyntaxHighlightedText(start, end, output);
 				output.Append("</span>");
 				}
 
@@ -481,7 +478,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				parsedClassPrototype.GetPrePrototypeLine(i, out start, out end);
 
 				output.Append("<div class=\"CPPrePrototypeLine\">");
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);
+				AppendSyntaxHighlightedText(start, end, output);
 				output.Append("</div>");
 				}
 
@@ -531,7 +528,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						TokenIterator lookbehind = partial;
 						lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
 
-						formattedTextBuilder.AppendSyntaxHighlightedText(startModifiers, lookbehind, modifiersOutput);
+						AppendSyntaxHighlightedText(startModifiers, lookbehind, modifiersOutput);
 						}
 
 					partial.Next();
@@ -542,12 +539,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						if (modifiersOutput.Length > 0)
 							{  modifiersOutput.Append(' ');  }
 
-						formattedTextBuilder.AppendSyntaxHighlightedText(partial, endModifiers, modifiersOutput);
+						AppendSyntaxHighlightedText(partial, endModifiers, modifiersOutput);
 						}
 					}
 				else if (hasModifiers)
 					{
-					formattedTextBuilder.AppendSyntaxHighlightedText(startModifiers, endModifiers, modifiersOutput);
+					AppendSyntaxHighlightedText(startModifiers, endModifiers, modifiersOutput);
 					}
 
 				// Add the keyword if it isn't "class"
@@ -556,7 +553,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					if (modifiersOutput.Length > 0)
 						{  modifiersOutput.Append(' ');  }
 
-					formattedTextBuilder.AppendSyntaxHighlightedText(startKeyword, endKeyword, modifiersOutput);  
+					AppendSyntaxHighlightedText(startKeyword, endKeyword, modifiersOutput);  
 					}
 
 				if (modifiersOutput.Length > 0)
@@ -572,8 +569,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append("<div class=\"CPName\">");
 
-			formattedTextBuilder.AppendWrappedTitle(context.Topic.Symbol.FormatWithSeparator(language.MemberOperator),
-																		 Components.FormattedText.WrappedTitleMode.Code, output);
+			AppendWrappedTitle(context.Topic.Symbol.FormatWithSeparator(language.MemberOperator), WrappedTitleMode.Code, output);
 
 			TokenIterator startTemplate, endTemplate;
 			if (parsedClassPrototype.GetTemplateSuffix(out startTemplate, out endTemplate))
@@ -583,7 +579,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  output.Append("&#8203;");  }
 
 				output.Append("<span class=\"TemplateSignature\">");
-				formattedTextBuilder.AppendSyntaxHighlightedText(startTemplate, endTemplate, output);
+				AppendSyntaxHighlightedText(startTemplate, endTemplate, output);
 				output.Append("</span>");
 				}
 
@@ -599,7 +595,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				parsedClassPrototype.GetPostPrototypeLine(i, out start, out end);
 
 				output.Append("<div class=\"CPPostPrototypeLine\">");
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);
+				AppendSyntaxHighlightedText(start, end, output);
 				output.Append("</div>");
 				}
 
@@ -614,12 +610,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);  
 			string memberOperator = language.MemberOperator;
 
-			formattedTextBuilder.AppendOpeningLinkTag(childTopic, output, "CPEntry Child T" + childCommentType.SimpleIdentifier);
+			AppendOpeningLinkTag(childTopic, output, "CPEntry Child T" + childCommentType.SimpleIdentifier);
 
 				output.Append("<div class=\"CPName\">");
 
-					formattedTextBuilder.AppendWrappedTitle(childTopic.Symbol.FormatWithSeparator(memberOperator), 
-																				 Components.FormattedText.WrappedTitleMode.Code, output);
+					AppendWrappedTitle(childTopic.Symbol.FormatWithSeparator(memberOperator), WrappedTitleMode.Code, output);
 
 				output.Append("</div>");
 
@@ -665,11 +660,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* var: isToolTip
 		 */
 		protected bool isToolTip;
-
-		/* var: formattedTextBuilder
-		 * A <Components.FormattedText> object for internal use.
-		 */
-		protected Components.FormattedText formattedTextBuilder;
 
 
 		/* __________________________________________________________________________

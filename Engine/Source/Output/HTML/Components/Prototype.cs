@@ -27,7 +27,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class Prototype : HTML.Component
+	public class Prototype : HTML.Components.FormattedText
 		{
 
 		// Group: Types
@@ -80,8 +80,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			links = null;
 			linkTargets = null;
 			addLinks = false;
-
-			formattedTextBuilder = new Components.FormattedText(context);
 			}
 
 
@@ -125,7 +123,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			this.parsedPrototype = parsedPrototype;
 			this.context = context;
-			this.formattedTextBuilder.Context = context;
 
 			#if DEBUG
 			if (context.Topic == null)
@@ -776,9 +773,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append("<div class=\"PSection PPlainSection\">");
 
 			if (addLinks)
-				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(section.Start, section.End, output, links, linkTargets);  }
+				{  AppendSyntaxHighlightedTextWithTypeLinks(section.Start, section.End, output, links, linkTargets);  }
 			else
-				{  formattedTextBuilder.AppendSyntaxHighlightedText(section.Start, section.End, output);  }
+				{  AppendSyntaxHighlightedText(section.Start, section.End, output);  }
 
 			output.Append("</div>");
 			}
@@ -817,9 +814,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
 			if (addLinks)
-				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
+				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
 			else
-				{  formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  }
+				{  AppendSyntaxHighlightedText(start, end, output);  }
 
 			if (addNBSP)
 				{  output.Append("&nbsp;");  }
@@ -838,9 +835,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  output.Append("&nbsp;");  };
 
 			if (addLinks)
-				{  formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
+				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
 			else
-				{  formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  }
+				{  AppendSyntaxHighlightedText(start, end, output);  }
 
 			output.Append("</td></tr></table>");
 
@@ -942,18 +939,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// We don't want to highlight keywords on the Name cell because identifiers can accidentally be marked as them with
 			// basic language support, such as "event" in "wxPaintEvent &event".
 			if (type == ColumnType.Name)
-				{  
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output, excludeKeywords: true);  
-				}
+				{  AppendSyntaxHighlightedText(start, end, output, excludeKeywords: true);  }
 			else if (addLinks)
-				{  
-				formattedTextBuilder.AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets,
-																											   extendTypeSearch: true);  
-				}
+				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets, extendTypeSearch: true);  }
 			else
-				{  
-				formattedTextBuilder.AppendSyntaxHighlightedText(start, end, output);  
-				}
+				{  AppendSyntaxHighlightedText(start, end, output);  }
 
 			// Default value separators, property value separators, and type/name separators always get spaces after.  Make sure 
 			// the spaces aren't duplicated by the preceding cells.
@@ -1070,11 +1060,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Whether to add type links to the prototype.
 		 */
 		protected bool addLinks;
-
-		/* var: formattedTextBuilder
-		 * A <Components.FormattedText> object for internal use.
-		 */
-		protected Components.FormattedText formattedTextBuilder;
 
 
 
