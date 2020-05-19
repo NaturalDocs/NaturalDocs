@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			fileHashPath = null;
 			topics = null;
 
-			htmlTopic = new HTMLTopic(topicPage);
+			tooltipBuilder = new HTML.Components.Tooltip( new HTML.Context(HTMLBuilder, topicPage) );
 			usedLanguages = new List<Language>();
 			usedCommentTypes = new List<CommentType>();
 
@@ -379,7 +379,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				if (topic.IsEmbedded == false)
 					{
-					string toolTipHTML = htmlTopic.BuildToolTip(topic, links);
+					string toolTipHTML = tooltipBuilder.BuildToolTip(topic, links);
 
 					if (toolTipHTML != null)
 						{
@@ -463,10 +463,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected IList<Link> links;
 
-		/* var: htmlTopic
-		 * A <HTMLTopic> to build tooltips.
+		/* var: tooltipBuilder
+		 * A <HTML.Components.Tooltip> to build tooltips.
 		 */
-		protected HTMLTopic htmlTopic;
+		protected HTML.Components.Tooltip tooltipBuilder;
 
 		/* var: usedLanguages
 		 * A list of the languages used in <topics>.  The order in which they appear here will be the order in which they

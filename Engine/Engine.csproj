@@ -55,6 +55,8 @@
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
+    <Compile Include="Source\Output\HTML\Components\Tooltip.cs" />
+    <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
     <Compile Include="Source\Output\HTML\Context.cs" />
     <Compile Include="Source\Output\Styles\FileSourceAdder.cs" />
@@ -189,7 +191,6 @@
     <Compile Include="Source\Output\Components\JSMenuData.cs" />
     <Compile Include="Source\Output\Components\HTMLComponent.cs" />
     <Compile Include="Source\Output\Components\JSSummaryData.cs" />
-    <Compile Include="Source\Output\Components\HTMLTopic.cs" />
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />

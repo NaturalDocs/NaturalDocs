@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- The <Context>'s topic and topic page must be set.
 		 */
 		public string BuildClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, IList<Link> links = null,
-														 IList<Topic> linkTargets = null)
+														 IList<Topics.Topic> linkTargets = null)
 			{
 			StringBuilder output = new StringBuilder();
 			AppendClassPrototype(parsedPrototype, context, isToolTip, output, links, linkTargets);
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- The <Context>'s topic and topic page must be set.
 		 */
 		public void AppendClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, StringBuilder output,
-														  IList<Link> links = null, IList<Topic> linkTargets = null)
+														  IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 			this.parsedClassPrototype = parsedPrototype;
 			this.context = context;
@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else
 			    {
 			    List<Parent> parents = GetParentList();
-				List<Topic> children = GetChildList();
+				List<Topics.Topic> children = GetChildList();
 
 
 				// Main div
@@ -308,7 +308,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: GetChildList
 		 */
-		protected List<Topic> GetChildList ()
+		protected List<Topics.Topic> GetChildList ()
 			{
 
 			// First find all the class parent links that resolve to this one and collect the class IDs.
@@ -335,7 +335,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Now find the topics that define those classes.
 
-			List<Topic> childTopics = new List<Topic>();
+			List<Topics.Topic> childTopics = new List<Topics.Topic>();
 
 			foreach (var linkTarget in linkTargets)
 				{
@@ -353,7 +353,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// Now sort the child topics by symbol.
 
 			childTopics.Sort( 
-				delegate(Topic a, Topic b)
+				delegate(Topics.Topic a, Topics.Topic b)
 					{
 					return a.Symbol.CompareTo(b.Symbol, !language.CaseSensitive);
 					}
@@ -605,7 +605,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendChildClassPrototype
 		 */
-		protected void AppendChildClassPrototype (Topic childTopic, StringBuilder output)
+		protected void AppendChildClassPrototype (Topics.Topic childTopic, StringBuilder output)
 			{
 			CommentType childCommentType = EngineInstance.CommentTypes.FromID(childTopic.CommentTypeID);  
 			string memberOperator = language.MemberOperator;
@@ -655,7 +655,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* var: linkTargets
 		 * A list of <Topics> that contain the targets of any resolved links appearing in <links>, or null if links aren't needed.
 		 */
-		protected IList<Topic> linkTargets;
+		protected IList<Topics.Topic> linkTargets;
 
 		/* var: isToolTip
 		 */
@@ -695,7 +695,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			/* var: targetTopic
 			 * The <Topic> that serves as the target of <link>, or null if none.
 			 */
-			public Topic targetTopic;
+			public Topics.Topic targetTopic;
 			}
 		}
 	}

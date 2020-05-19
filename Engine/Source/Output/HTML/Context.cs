@@ -41,11 +41,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if ((object)topicPage.HTMLBuilder != (object)builder)
 					{  throw new Exception("Tried to create a Context with a topic page that doesn't match the builder.");  }
 				}
-			if (topic != null)
-				{
-				if (topicPage == null)
-					{  throw new Exception("Tried to create a Context with a topic but not a topic page.");  }
-				}
 			#endif
 
 			this.builder = builder;

@@ -88,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Builds the HTML for the passed prototype.
 		 * 
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
-		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
+		 * linkTargets must also be specified and contain the target topics of all links.  If you do not need type
 		 * links, set both to null.
 		 * 
 		 * Requirements:
@@ -97,7 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- If type links are being generated, the <Context>'s topic page must also be set.
 		 */
 		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null, 
-												  IList<Topic> linkTargets = null)
+												  IList<Topics.Topic> linkTargets = null)
 			{
 			StringBuilder output = new StringBuilder();
 			AppendPrototype(parsedPrototype, context, output, links, linkTargets);
@@ -110,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Builds the HTML for the passed prototype and appends it to the passed StringBuilder.
 		 * 
 		 * In order to have type links, links must be specified and contain any links that appear in the prototype.
-		 * linkTargets must also be specified and contain the target <Topics> of all links.  If you do not need type
+		 * linkTargets must also be specified and contain the target topics of all links.  If you do not need type
 		 * links, set both to null.
 		 * 
 		 * Requirements:
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- If type links are being generated, the <Context>'s topic page must also be set.
 		 */
 		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output, 
-												   IList<Link> links = null, IList<Topic> linkTargets = null)
+												   IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
 			{
 			this.parsedPrototype = parsedPrototype;
 			this.context = context;
@@ -1052,9 +1052,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected IList<Link> links;
 
 		/* var: linkTargets
-		 * A list of <Topics> that contain the targets of any resolved links appearing in <links>, or null if links aren't needed.
+		 * A list of topics that contain the targets of any resolved links appearing in <links>, or null if links aren't needed.
 		 */
-		protected IList<Topic> linkTargets;
+		protected IList<Topics.Topic> linkTargets;
 
 		/* var: addLinks
 		 * Whether to add type links to the prototype.

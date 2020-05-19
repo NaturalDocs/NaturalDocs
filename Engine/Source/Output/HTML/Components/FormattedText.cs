@@ -62,13 +62,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendOpeningLinkTag
 		 * 
-		 * Constructs an <a> tag from the <Context's> <HTMLTopicPage> to the passed <Topic> and appends it to the passed StringBuilder.
+		 * Constructs an <a> tag from the <Context's> <HTMLTopicPage> to the passed topic and appends it to the passed StringBuilder.
 		 * 
 		 * Requirements:
 		 * 
 		 *		- The <Context>'s topic page must be set.
 		 */
-		public void AppendOpeningLinkTag (Topic targetTopic, StringBuilder output, string extraCSSClass = null)
+		public void AppendOpeningLinkTag (Topics.Topic targetTopic, StringBuilder output, string extraCSSClass = null)
 			{
 			#if DEBUG
 			if (Context.TopicPage == null)
@@ -216,7 +216,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		output - The StringBuilder to append the output to.
 		 *		
 		 *		links - A list of <Links> that should  contain any appearing in the code.
-		 *		linkTargets - A list of <Topics> that should contain any used as targets in the list of links.
+		 *		linkTargets - A list of topics that should contain any used as targets in the list of links.
 		 *		
 		 *		extendTypeSearch - If true, it will search beyond the bounds of the iterators to get the complete type.  This allows you to 
 		 *									 format only a portion of the link with this function yet still have the link go to the complete destination.
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		- The <Context>'s topic and topic page must be set.
 		 */
 		public void AppendSyntaxHighlightedTextWithTypeLinks (TokenIterator start, TokenIterator end, StringBuilder output, 
-																						  IList<Link> links, IList<Topic> linkTargets,
+																						  IList<Link> links, IList<Topics.Topic> linkTargets,
 																						  bool extendTypeSearch = false)
 			{
 			#if DEBUG
@@ -342,9 +342,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							{
 							// If it did resolve, find Topic it resolved to.
 
-							Topic targetTopic = null;
+							Topics.Topic targetTopic = null;
 
-							foreach (Topic linkTarget in linkTargets)
+							foreach (var linkTarget in linkTargets)
 								{
 								if (linkTarget.TopicID == fullLink.TargetTopicID)
 									{
