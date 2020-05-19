@@ -50,7 +50,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Parameters:
 		 * 
 		 *		topic - The topic to build.
-		 *		context - The <Context> the topic appears in.
+		 *		context - The <Context> the topic appears in.  The topic will automatically replace the context's topic, so you can just
+		 *					  pass the context of the topic page.
 		 *		links - A list of <Links> that must contain any links found in the topic.
 		 *		linkTargets - A list of topics that must contain any topics used as targets in the links.
 		 *		output - The StringBuilder that the output will be appended to.
@@ -66,13 +67,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Setup
 
-				// Topic should be the same as what's in the context, so we don't need to store it.  But just in case...
-				#if DEBUG
-				if ((object)topic != (object)context.Topic)
-					{  throw new Exception("Tried to call AppendTopic when the topic didn't match the context's topic.");  }
-				#endif
-
 				this.context = context;
+				this.context.Topic = topic;
 				this.links = links;
 				this.linkTargets = linkTargets;
 				this.embeddedTopics = embeddedTopics;

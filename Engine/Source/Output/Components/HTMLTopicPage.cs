@@ -243,7 +243,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 						if (topics[i].IsEmbedded == false)
 							{
-							context = new HTML.Context(HTMLBuilder, this, topics[i]);
 							topicBuilder.AppendTopic(topics[i], context, links, linkTargets, html, topics, i + 1, extraClass);  
 							html.Append("\r\n\r\n");
 							}
@@ -267,7 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						for (int i = 0; i < linkTargets.Count; i++)
 							{
 							Topic topic = linkTargets[i];
-							string toolTipHTML = tooltipBuilder.BuildToolTip(topic, summaryLinks);
+							string toolTipHTML = tooltipBuilder.BuildToolTip(topic, context, summaryLinks);
 
 							if (toolTipHTML != null)
 								{

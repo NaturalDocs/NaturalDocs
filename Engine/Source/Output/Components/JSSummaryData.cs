@@ -372,6 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 			bool first = true;
+			HTML.Context context = new HTML.Context(HTMLBuilder);
 
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
@@ -379,7 +380,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				if (topic.IsEmbedded == false)
 					{
-					string toolTipHTML = tooltipBuilder.BuildToolTip(topic, links);
+					string toolTipHTML = tooltipBuilder.BuildToolTip(topic, context, links);
 
 					if (toolTipHTML != null)
 						{

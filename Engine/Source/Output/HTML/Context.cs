@@ -81,6 +81,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{  return topic;  }
+			set
+				{  topic = value;  }
 			}
 
 
