@@ -71,6 +71,7 @@ namespace CodeClear.NaturalDocs.CLI
 		private static ParseCommandLineResult ParseCommandLine (string[] commandLineSegments, out ProjectConfig commandLineConfig, ErrorList errorList)
 			{
 			int originalErrorCount = errorList.Count;
+			ParseCommandLineResult result = ParseCommandLineResult.Run;
 
 			Engine.CommandLine commandLine = new CommandLine(commandLineSegments);
 
@@ -673,7 +674,7 @@ namespace CodeClear.NaturalDocs.CLI
 				
 				else if (parameter == "--help")
 					{
-					return ParseCommandLineResult.ShowCommandLineReference;
+					result = ParseCommandLineResult.ShowCommandLineReference;
 					}
 
 
@@ -682,7 +683,7 @@ namespace CodeClear.NaturalDocs.CLI
 				
 				else if (parameter == "--version")
 					{
-					return ParseCommandLineResult.ShowVersion;
+					result = ParseCommandLineResult.ShowVersion;
 					}
 
 
@@ -727,10 +728,10 @@ namespace CodeClear.NaturalDocs.CLI
 				
 			// Done.
 				
-			if (errorList.Count == originalErrorCount)
-				{  return ParseCommandLineResult.Run;  }
-			else
-				{  return ParseCommandLineResult.Error;  }
+			if (result == ParseCommandLineResult.Run && errorList.Count != originalErrorCount)
+				{  result = ParseCommandLineResult.Error;  }
+
+			return result;
 			}
 
 		}
