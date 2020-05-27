@@ -300,7 +300,7 @@ namespace CodeClear.NaturalDocs.Engine
 				{  }
 
 			try
-				{  sqliteVersion = SQLite.API.LibVersion();  }
+				{  sqliteVersion = Engine.SystemInfo.SQLiteVersion;  }
 			catch
 				{  }
 

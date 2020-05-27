@@ -305,6 +305,21 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
+		/* Property: SQLiteVersion
+		 * Returns the version of SQLite we're using, or null if it can't be determined.
+		 */
+		static public string SQLiteVersion
+			{
+			get
+				{
+				try
+					{  return Engine.SQLite.API.LibVersion();  }
+				catch
+					{  return null;  }
+				}
+			}
+
+
 			
 		// Group: Static Variables
 		// __________________________________________________________________________

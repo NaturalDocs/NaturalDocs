@@ -381,7 +381,7 @@ namespace CodeClear.NaturalDocs.CLI
 				{  }
 
 			try
-				{  sqliteVersion = Engine.SQLite.API.LibVersion();  }
+				{  sqliteVersion = Engine.SystemInfo.SQLiteVersion;  }
 			catch
 				{  }
 
