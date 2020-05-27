@@ -360,30 +360,10 @@ namespace CodeClear.NaturalDocs.CLI
 			string osNameAndVersion = null;
 			string sqliteVersion = null;
 
-			if (Engine.SystemInfo.OnWindows)
-				{
-				try
-					{  dotNETVersion = Engine.SystemInfo.dotNETVersion;  }
-				catch
-					{  }
-				}
-			else if (Engine.SystemInfo.OnUnix)
-				{
-				try
-					{  monoVersion = Engine.SystemInfo.MonoVersion;  }
-				catch
-					{  }
-				}
-			
-			try
-				{  osNameAndVersion = Engine.SystemInfo.OSNameAndVersion;  }
-			catch
-				{  }
-
-			try
-				{  sqliteVersion = Engine.SystemInfo.SQLiteVersion;  }
-			catch
-				{  }
+			try { dotNETVersion = Engine.SystemInfo.dotNETVersion; } catch {  }
+			try { monoVersion = Engine.SystemInfo.MonoVersion; } catch {  }
+			try { osNameAndVersion = Engine.SystemInfo.OSNameAndVersion; } catch {  }
+			try { sqliteVersion = Engine.SystemInfo.SQLiteVersion; } catch {  }
 
 
 			// Output versions
