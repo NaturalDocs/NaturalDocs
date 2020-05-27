@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Property: dotNETVersion
 		 * The version of .NET we're running on, or null if it can't be determined.  This will probably return a value for Mono so check
-		 * <OnWindows> if you only want it for actual .NET.
+		 * <MonoVersion> first if you only want it for actual .NET.
 		 */
 		static public string dotNETVersion
 			{

@@ -395,19 +395,20 @@ namespace CodeClear.NaturalDocs.CLI
 			else
 				{  Console.WriteLine("Couldn't get OS name and version");  }
 
-			if (Engine.SystemInfo.OnWindows) 
-				{  
-				if (dotNETVersion != null)
-					{  Console.WriteLine("        .NET: " + dotNETVersion);  }
-				else
-					{  Console.WriteLine("Couldn't get .NET version");  }
-				}
-			else if (Engine.SystemInfo.OnUnix)
+			// There's a possibility of Natural Docs being run through Mono on Windows
+			if (Engine.SystemInfo.OnUnix || monoVersion != null)
 				{
 				if (monoVersion != null)
 					{  Console.WriteLine("        Mono: " + monoVersion);  }
 				else
 					{  Console.WriteLine("Couldn't get Mono version");  }
+				}
+			else
+				{  
+				if (dotNETVersion != null)
+					{  Console.WriteLine("        .NET: " + dotNETVersion);  }
+				else
+					{  Console.WriteLine("Couldn't get .NET version");  }
 				}
 
 			if (sqliteVersion != null)
