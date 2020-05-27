@@ -332,18 +332,13 @@ namespace CodeClear.NaturalDocs.Engine
 
 				// Outdated Mono version
 
-				if (monoVersion != null)
+				if (SystemInfo.MonoVersionTooOld)
 					{
-					if (monoVersion.StartsWith("0.") || 
-						monoVersion.StartsWith("1.") ||
-						monoVersion.StartsWith("2.") )
-						{
-						output.AppendLine();
-						output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
-													 "You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
-						output.AppendLine();
-						output.AppendLine("   Mono " + monoVersion);
-						}
+					output.AppendLine();
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
+													"You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
+					output.AppendLine();
+					output.AppendLine("   Mono " + monoVersion);
 					}
 
 

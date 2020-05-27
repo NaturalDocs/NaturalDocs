@@ -120,6 +120,25 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 
 
+		/* Property: MonoVersionTooOld
+		 * Returns whether the version of Mono we're running on is too told and known to cause problems.  Will return false when not running on Mono.
+		 */
+		static public bool MonoVersionTooOld
+			{
+			get
+				{
+				string monoVersion = MonoVersion;
+
+				if (monoVersion == null)
+					{  return false;  }
+
+				return ( monoVersion.StartsWith("0.") || 
+							monoVersion.StartsWith("1.") ||
+							monoVersion.StartsWith("2.") );
+				}
+			}
+
+
 		/* Property: dotNETVersion
 		 * The version of .NET we're running on, or null if it can't be determined.  This will probably return a value for Mono so check
 		 * <OnWindows> if you only want it for actual .NET.
