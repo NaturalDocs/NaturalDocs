@@ -206,6 +206,12 @@ Common Parameters:
 --version
     Displays the current version of Natural Docs.
 
+ -vs
+--versions
+--all-versions
+    Displays the current version of Natural Docs and all supporting systems
+    like .NET or Mono.
+
  -?
  -h
 --help

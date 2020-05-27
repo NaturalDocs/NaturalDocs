@@ -88,6 +88,12 @@ namespace CodeClear.NaturalDocs.CLI
 					gracefulExit = true;
 					}
 
+				else if (parseCommandLineResult == ParseCommandLineResult.ShowAllVersions)
+					{
+					ShowAllVersions();
+					gracefulExit = true;
+					}
+
 				else // (parseCommandLineResult == ParseCommandLineResult.Run)
 					{
 					if (quiet)
@@ -341,6 +347,88 @@ namespace CodeClear.NaturalDocs.CLI
 		private static void ShowVersion ()
 			{
 			Console.WriteLine( Engine.Instance.VersionString );
+			}
+
+
+		private static void ShowAllVersions ()
+			{
+
+			// Collect versions in try blocks in case there are any errors
+
+			string dotNETVersion = null;
+			string monoVersion = null;
+			string osNameAndVersion = null;
+			string sqliteVersion = null;
+
+			if (Engine.SystemInfo.OnWindows)
+				{
+				try
+					{  dotNETVersion = Engine.SystemInfo.dotNETVersion;  }
+				catch
+					{  }
+				}
+			else if (Engine.SystemInfo.OnUnix)
+				{
+				try
+					{  monoVersion = Engine.SystemInfo.MonoVersion;  }
+				catch
+					{  }
+				}
+			
+			try
+				{  osNameAndVersion = Engine.SystemInfo.OSNameAndVersion;  }
+			catch
+				{  }
+
+			try
+				{  sqliteVersion = Engine.SQLite.API.LibVersion();  }
+			catch
+				{  }
+
+
+			// Output versions
+
+			Console.WriteLine("Natural Docs: " + Instance.VersionString);
+
+			if (osNameAndVersion != null)
+				{  Console.WriteLine("    Platform: " + osNameAndVersion);  }
+			else
+				{  Console.WriteLine("Couldn't get OS name and version");  }
+
+			if (Engine.SystemInfo.OnWindows) 
+				{  
+				if (dotNETVersion != null)
+					{  Console.WriteLine("        .NET: " + dotNETVersion);  }
+				else
+					{  Console.WriteLine("Couldn't get .NET version");  }
+				}
+			else if (Engine.SystemInfo.OnUnix)
+				{
+				if (monoVersion != null)
+					{  Console.WriteLine("        Mono: " + monoVersion);  }
+				else
+					{  Console.WriteLine("Couldn't get Mono version");  }
+				}
+
+			if (sqliteVersion != null)
+				{  Console.WriteLine("      SQLite: " + sqliteVersion);  }
+			else
+				{  Console.WriteLine("Couldn't get SQLite version");  }
+				
+
+			// Include a notice for outdated Mono versions
+
+			if (monoVersion != null)
+				{
+				if (monoVersion.StartsWith("0.") || 
+					monoVersion.StartsWith("1.") ||
+					monoVersion.StartsWith("2.") )
+					{
+					Console.WriteLine();
+					Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
+												"You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
+					}
+				}
 			}
 
 

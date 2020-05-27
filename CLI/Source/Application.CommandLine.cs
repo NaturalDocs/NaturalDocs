@@ -27,9 +27,10 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Error - There was an error on the command line.
 		 * ShowCommandLineReference - The user asked for the command line reference to be displayed.
 		 * ShowVersion - The user asked for the version number to be displayed.
+		 * ShowAllVersions - The user asked for the version number of Natural Docs and all supporting systems like .NET and Mono to be displayed.
 		 */
 		public enum ParseCommandLineResult : byte
-			{  Run, Error, ShowCommandLineReference, ShowVersion  };
+			{  Run, Error, ShowCommandLineReference, ShowVersion, ShowAllVersions  };
 			
 
 		/* Function: ParseCommandLine
@@ -54,6 +55,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -ro, --rebuild-output
 		 *		- -q, --quiet
 		 *		- -v, --version
+		 *		- -vs, --versions, --all-versions
 		 *		- --benchmark
 		 *		- --worker-threads, --threads
 		 *		- --pause-before-exit, --pause
@@ -90,6 +92,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--rebuild-output", "-ro", "--rebuildoutput");
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--version", "-v");
+			commandLine.AddAliases("--all-versions", "-vs", "--versions", "--allversions");
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink-output", "--dontshrinkoutput", "--dont-shrink", "--dontshrink");
@@ -684,6 +687,15 @@ namespace CodeClear.NaturalDocs.CLI
 				else if (parameter == "--version")
 					{
 					result = ParseCommandLineResult.ShowVersion;
+					}
+
+
+
+				// All Versions
+				
+				else if (parameter == "--all-versions")
+					{
+					result = ParseCommandLineResult.ShowAllVersions;
 					}
 
 
