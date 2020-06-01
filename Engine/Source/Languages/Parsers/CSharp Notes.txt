@@ -2,10 +2,8 @@
 Title: C# Parser Notes
 _______________________________________________________________________________
 
-This parser is built from version 4.0 of the <C# language specification: http://www.microsoft.com/en-us/download/details.aspx?id=7029>.
-All references below such as [2.3.1] refer to headings in this document.
-
-Additional support was added for the async and await keywords, as well as expression-bodied functions and properties.
+This parser was originally built from version 4.0 of the <C# language specification: http://www.microsoft.com/en-us/download/details.aspx?id=7029>,
+though it has been updated for newer language features.  All references below such as [2.3.1] refer to headings in this document.
 
 The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers other than 
 "extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever it may simplify the 
@@ -70,7 +68,7 @@ _______________________________________________________________________________
 			Unix - LF (U+000A)
 			Mac - CR (U+000D)
 
-		The parser does not support the alternate formats C# supports [2.3.1]:
+		The parser does not support the alternative formats C# supports [2.3.1]:
 
 			Next line character - U+0085
 			Line separator character - U+2028
@@ -84,7 +82,7 @@ _______________________________________________________________________________
 			Space - U+0020
 			Tab - U+0009
 
-		The parser does not support the alternate characters C# supports [2.3.3]:
+		The parser does not support the alternative characters C# supports [2.3.3]:
 
 			Vertical tab character - U+000B
 			Form feed character - U+000C
