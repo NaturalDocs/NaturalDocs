@@ -381,13 +381,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 
-			// Now merge groups.  If any remaining groups match the title of an existing group, move its members to
-			// the end of the existing group.
+			// Now merge groups.
 
 			int remainingGroupIndex = 0;
 			while (remainingGroupIndex < groupedRemainingTopics.Groups.Count)
 				{
 				var remainingGroup = groupedRemainingTopics.Groups[remainingGroupIndex];
+
+				// If any remaining groups match the title of an existing group, move its members to the end of the 
+				// existing group.
+			
 				bool merged = false;
 
 				if (remainingGroup.Title != null)
@@ -401,45 +404,39 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 							break;
 							}
 						}
-					}
 
-				if (merged == false)
-					{  remainingGroupIndex++;  }
-				}
-
-
-			// Move any groups with titles that didn't match to the other list.  We insert it after the last group
-			// of the same dominant type so function groups stay with other function groups, variable groups stay
-			// with other variable groups, etc.
-
-			remainingGroupIndex = 0;
-			while (remainingGroupIndex < groupedRemainingTopics.Groups.Count)
-				{
-				var remainingGroup = groupedRemainingTopics.Groups[remainingGroupIndex];
-
-				if (remainingGroup.Title != null)
-					{
-					int bestMatchIndex = -1;
-
-					// Walk the list backwards because we want it to be after the last group of the type, not the first.
-					for (int i = groupedTopics.Groups.Count - 1; i >= 0; i--)
+					if (merged == false)
 						{
-						if (groupedTopics.Groups[i].DominantTypeID == remainingGroup.DominantTypeID)
-							{
-							bestMatchIndex = i;
-							break;
-							}
-						}
+						// If the groups with titles didn't match one on the other list, insert it after the last group of the same dominant
+						// type so function groups stay with other function groups, variable groups stay with other variable groups, etc.
 
-					if (bestMatchIndex == -1)
-						{  
-						// Just add them to the end if nothing matches.
-						groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics);  
+						int bestMatchIndex = -1;
+
+						// Walk the list backwards because we want it to be after the last group of the type, not the first.
+						for (int i = groupedTopics.Groups.Count - 1; i >= 0; i--)
+							{
+							if (groupedTopics.Groups[i].DominantTypeID == remainingGroup.DominantTypeID)
+								{
+								bestMatchIndex = i;
+								break;
+								}
+							}
+
+						if (bestMatchIndex == -1)
+							{  
+							// Just add them to the end if nothing matches.
+							groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics);  
+							}
+						else
+							{
+							groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics, bestMatchIndex + 1);
+							}
+
+						merged = true;
 						}
-					else
-						{  groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics, bestMatchIndex + 1);  }
 					}
-				else
+
+				if (!merged)
 					{  remainingGroupIndex++;  }
 				}
 
