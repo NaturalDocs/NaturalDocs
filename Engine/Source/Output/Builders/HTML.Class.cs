@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					{
 					result.Append('/');
 					string pathString = partialSymbol.FormatWithSeparator('/');
-					result.Append(SanitizePath(pathString));
+					result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
 					}
 				}
 
@@ -129,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (partialSymbol != null)
 				{
 				string pathString = partialSymbol.FormatWithSeparator('.');
-				result.Append(SanitizePath(pathString));
+				result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
 				result.Append('.');
 				}
 
@@ -152,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				result.Append('/');
 				string pathString = partialSymbol.FormatWithSeparator('/');
-				result.Append(SanitizePath(pathString));
+				result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
 				}
 
 			return result.ToString();
@@ -177,7 +177,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				if (partialSymbol != null)
 					{
 					string pathString = partialSymbol.FormatWithSeparator('.');
-					result.Append(SanitizePath(pathString));
+					result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
 					result.Append('.');
 					}
 

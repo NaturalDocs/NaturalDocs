@@ -175,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{
 				Files.File file = EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Builders.HTML.SanitizePath(nameString, true) + ".html";
+				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + ".html";
 				}
 			}
 
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{
 				Files.File file = EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Builders.HTML.SanitizePath(nameString);
+				return Output.HTML.Paths.Utilities.Sanitize(nameString);
 				}
 			}
 
@@ -221,7 +221,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{
 				Files.File file = EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Builders.HTML.SanitizePath(nameString, true) + "-ToolTips.js";
+				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-ToolTips.js";
 				}
 			}
 
@@ -254,7 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{
 				Files.File file = EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Builders.HTML.SanitizePath(nameString, true) + "-Summary.js";
+				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-Summary.js";
 				}
 			}
 
@@ -287,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				{
 				Files.File file = EngineInstance.Files.FromID(fileID);
 				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Builders.HTML.SanitizePath(nameString, true) + "-SummaryToolTips.js";
+				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-SummaryToolTips.js";
 				}
 			}
 

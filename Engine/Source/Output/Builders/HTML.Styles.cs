@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (style != null)
 				{  
 				result.Append('/');
-				result.Append(SanitizePath(style.Name));
+				result.Append(Output.HTML.Paths.Utilities.Sanitize(style.Name));
 				}
 			
 			return result.ToString();
@@ -543,7 +543,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				if (style.Contains(originalStyleFile))
 					{
 					Path relativeStyleFile = style.MakeRelative(originalStyleFile);
-					return OutputFolder + "/styles/" + SanitizePath(style.Name) + "/" + SanitizePath(relativeStyleFile);
+					return OutputFolder + "/styles/" + Output.HTML.Paths.Utilities.Sanitize(style.Name) + "/" + Output.HTML.Paths.Utilities.Sanitize(relativeStyleFile);
 					}
 				}
 

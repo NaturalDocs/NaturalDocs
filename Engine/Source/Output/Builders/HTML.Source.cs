@@ -109,7 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (relativeFolder != null)
 				{
 				result.Append('/');
-				result.Append(SanitizePath(relativeFolder));
+				result.Append(Output.HTML.Paths.Utilities.Sanitize(relativeFolder));
 				}
 
 			return result.ToString();
@@ -133,7 +133,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// Since we're building a string we can't rely on Path to simplify out ./					
 			if (relativeFolder != null && relativeFolder != ".")
 				{
-				result.Append(SanitizePath(relativeFolder.ToURL()));
+				result.Append(Output.HTML.Paths.Utilities.Sanitize(relativeFolder.ToURL()));
 				result.Append('/');
 				}
 
@@ -221,7 +221,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					}
 				}
 
-			return SanitizePath(hashPath.ToString());
+			return Output.HTML.Paths.Utilities.Sanitize(hashPath.ToString());
 			}
 
 
