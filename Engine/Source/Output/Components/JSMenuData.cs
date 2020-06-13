@@ -636,8 +636,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (menuEntry is MenuEntries.Files.FileSource)
 					{
 					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)menuEntry;
-					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number,
-																													  fileSourceEntry.CondensedPathFromFileSource );
+					hashPath = Output.HTML.Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number,
+																										 fileSourceEntry.CondensedPathFromFileSource );
 					}
 				else if (menuEntry is MenuEntries.Files.Folder)
 					{
@@ -661,8 +661,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					MenuEntries.Files.Folder folderEntry = (MenuEntries.Files.Folder)menuEntry;
 					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)container;
 
-					hashPath = htmlBuilder.Source_OutputFolderHashPath( fileSourceEntry.WrappedFileSource.Number, 
-																													  folderEntry.PathFromFileSource );
+					hashPath = Output.HTML.Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number, 
+																										 folderEntry.PathFromFileSource );
 					}
 				else if (menuEntry is MenuEntries.Classes.Language)
 					{

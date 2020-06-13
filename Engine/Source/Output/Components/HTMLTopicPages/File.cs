@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + OutputFileNameOnly;
+				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + OutputFileNameOnly;
 				}
 			}
 
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
 				// OutputFolderHashPath already includes the trailing symbol so we don't need + '/' +
-				return htmlBuilder.Source_OutputFolderHashPath(fileSource.Number, relativePath.ParentFolder) + OutputFileNameOnlyHashPath;
+				return Output.HTML.Paths.SourceFile.FolderHashPath(fileSource.Number, relativePath.ParentFolder) + OutputFileNameOnlyHashPath;
 				}
 			}
 
@@ -208,7 +208,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + ToolTipsFileNameOnly;
+				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + ToolTipsFileNameOnly;
 				}
 			}
 
@@ -241,7 +241,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + SummaryFileNameOnly;
+				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + SummaryFileNameOnly;
 				}
 			}
 
@@ -274,7 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				return htmlBuilder.Source_OutputFolder(fileSource.Number, relativePath.ParentFolder) + '/' + SummaryToolTipsFileNameOnly;
+				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + SummaryToolTipsFileNameOnly;
 				}
 			}
 

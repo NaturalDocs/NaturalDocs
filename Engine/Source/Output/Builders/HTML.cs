@@ -312,10 +312,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						Path outputFolder;
 						
 						if (previousFileSourceInfo.Type == InputType.Source)
-							{  outputFolder = Source_OutputFolder(previousFileSourceInfo.Number);  }
+							{  outputFolder = Output.HTML.Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
 						else
 							{  
-							throw new Exception("xxx");							// xxx image source
+							throw new Exception("xxx"); // xxx image source
 							}
 
 						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);

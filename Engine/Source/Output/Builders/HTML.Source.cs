@@ -94,53 +94,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: Source_OutputFolder
-		 * Returns the output folder of the passed file source number and, if specified, the folder within it.  If the folder is null
-		 * it returns the root output folder for the file source number.
-		 */
-		public Path Source_OutputFolder (int number, Path relativeFolder = default(Path))
-			{
-			StringBuilder result = new StringBuilder(OutputFolder);
-			result.Append("/files");  
-
-			if (number != 1)
-				{  result.Append(number);  }
-					
-			if (relativeFolder != null)
-				{
-				result.Append('/');
-				result.Append(Output.HTML.Paths.Utilities.Sanitize(relativeFolder));
-				}
-
-			return result.ToString();
-			}
-
-
-		/* Function: Source_OutputFolderHashPath
-		 * Returns the hash path of the output folder of the passed file source number and, if specified, the folder within it.
-		 * If the folder is null it returns the root output folder hash path for the file source number.  The hash path will always
-		 * include a trailing symbol so that the file name can simply be concatenated.
-		 */
-		public string Source_OutputFolderHashPath (int number, Path relativeFolder = default(Path))
-			{
-			StringBuilder result = new StringBuilder("File");
-
-			if (number != 1)
-				{  result.Append(number);  }
-
-			result.Append(':');
-
-			// Since we're building a string we can't rely on Path to simplify out ./					
-			if (relativeFolder != null && relativeFolder != ".")
-				{
-				result.Append(Output.HTML.Paths.Utilities.Sanitize(relativeFolder.ToURL()));
-				result.Append('/');
-				}
-
-			return result.ToString();
-			}
-
-
 		/* Function: Source_TopicHashPath
 		 * Returns a hash path representing a specific <Topic> within an output file.  If it returns null, you should use the hash path for
 		 * the class or file without a topic anchor.
