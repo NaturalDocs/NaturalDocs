@@ -78,64 +78,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 
 
-		/* Function: Class_OutputFolder
-		 * 
-		 * Returns the output folder for class files, optionally for the passed language and partial symbol within it.
-		 * 
-		 * - If language isn't specified, it returns the output folder for all class files.
-		 * - If language is specified but the symbol is not, it returns the output folder for all class files of that language.
-		 * - If language and partial symbol are specified, it returns the output folder for that symbol.
-		 */
-		public Path Class_OutputFolder (Language language = null, SymbolString partialSymbol = default(SymbolString))
-			{
-			StringBuilder result = new StringBuilder(OutputFolder);
-			result.Append("/classes");  
-
-			if (language != null)
-				{
-				result.Append('/');
-				result.Append(language.SimpleIdentifier);
-					
-				if (partialSymbol != null)
-					{
-					result.Append('/');
-					string pathString = partialSymbol.FormatWithSeparator('/');
-					result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
-					}
-				}
-
-			return result.ToString();
-			}
-
-
-		/* Function: Class_OutputFolderHashPath
-		 * Returns the hash path of the output folder for class files, optionally for the passed language and partial symbol 
-		 * within.  The hash path will always include a trailing symbol so that the file name can simply be concatenated.
-		 * 
-		 * - If language isn't specified, it returns null since there is no common prefix for all class paths.
-		 * - If language is specified but the symbol is not, it returns the prefix for all class paths of that language.
-		 * - If language and partial symbol are specified, it returns the hash path for that symbol.
-		 */
-		public string Class_OutputFolderHashPath (Language language = null, SymbolString partialSymbol = default(SymbolString))
-			{
-			if (language == null)
-				{  return null;  }
-
-			StringBuilder result = new StringBuilder();
-
-			result.Append(language.SimpleIdentifier);
-			result.Append("Class:");
-
-			if (partialSymbol != null)
-				{
-				string pathString = partialSymbol.FormatWithSeparator('.');
-				result.Append(Output.HTML.Paths.Utilities.Sanitize(pathString));
-				result.Append('.');
-				}
-
-			return result.ToString();
-			}
-
 		/* Function: Database_OutputFolder
 		 * 
 		 * Returns the output folder for database files, optionally for the partial symbol within it.

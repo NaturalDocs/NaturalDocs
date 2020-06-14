@@ -668,8 +668,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{
 					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)menuEntry;
 
-					hashPath = htmlBuilder.Class_OutputFolderHashPath( languageEntry.WrappedLanguage,
-																													languageEntry.CondensedScopeString );
+					hashPath = Output.HTML.Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
+																									 languageEntry.CondensedScopeString);
 					}
 				else if (menuEntry is MenuEntries.Classes.Scope)
 					{
@@ -699,7 +699,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					else
 						{
 						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)container;
-						hashPath = htmlBuilder.Class_OutputFolderHashPath(languageEntry.WrappedLanguage, scopeEntry.WrappedScopeString);
+						hashPath = Output.HTML.Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
+																										 scopeEntry.WrappedScopeString);
 						}
 					}
 				else if (menuEntry == menu.RootFileMenu || menuEntry == menu.RootClassMenu)
