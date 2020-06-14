@@ -41,6 +41,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files
 
 				Members = subFolder.Members;
 
+				foreach (var member in Members)
+					{  member.Parent = this;  }
+
 				if (CondensedTitles == null)
 					{  CondensedTitles = new List<string>();  }
 

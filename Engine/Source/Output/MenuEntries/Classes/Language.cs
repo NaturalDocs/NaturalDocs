@@ -35,20 +35,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes
 			CondenseContainersInMembers();
 
 			if (Members.Count == 1 && Members[0] is Scope)
-			   {
-			   Scope childScope = (Members[0] as Scope);
+				{
+				Scope childScope = (Members[0] as Scope);
 
-			   Members = childScope.Members;
+				Members = childScope.Members;
 
-			   if (CondensedTitles == null)
-			      {  CondensedTitles = new List<string>();  }
+				foreach (var member in Members)
+					{  member.Parent = this;  }
 
-			   CondensedTitles.Add(childScope.Title);
+				if (CondensedTitles == null)
+					{  CondensedTitles = new List<string>();  }
 
-			   if (childScope.CondensedTitles != null)
-			      {  CondensedTitles.AddRange(childScope.CondensedTitles);  }
+				CondensedTitles.Add(childScope.Title);
 
-			   condensedScopeString = childScope.WrappedScopeString;
+				if (childScope.CondensedTitles != null)
+					{  CondensedTitles.AddRange(childScope.CondensedTitles);  }
+
+				condensedScopeString = childScope.WrappedScopeString;
 				}
 			}
 

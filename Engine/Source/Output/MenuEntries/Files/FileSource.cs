@@ -41,6 +41,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files
 
 				Members = subFolder.Members;
 
+				foreach (var member in Members)
+					{  member.Parent = this;  }
+
 				// We ignore any titles it had, condensed or otherwise, to get rid of unnecessary subfolders.
 				// We want to go straight into the topmost folder that had content.
 
