@@ -21,6 +21,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 	static public class Class
 		{
 
+		/* Function: OutputFile
+		 * Returns the output file for a class.
+		 */
+		static public Path OutputFile (Path targetOutputFolder, string simpleLanguageID, SymbolString classSymbol)
+			{
+			SymbolString qualifier = classSymbol.WithoutLastSegment;
+			string endingSymbol = classSymbol.LastSegment;
+
+			return OutputFolder(targetOutputFolder, simpleLanguageID, qualifier) + '/' +
+					  Utilities.Sanitize(endingSymbol, replaceDots: true) + ".html";
+			}
+
+
 		/* Function: OutputFolder
 		 * 
 		 * Returns the output folder for class files, optionally for the passed language and qualifier within it.
@@ -55,6 +68,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 				}
 
 			return result.ToString();
+			}
+
+
+		/* Function: HashPath
+		 * Returns the hash path for the class.
+		 */
+		static public string HashPath (string simpleLanguageID, SymbolString classSymbol)
+			{
+			SymbolString qualifier = classSymbol.WithoutLastSegment;
+			string endingSymbol = classSymbol.LastSegment;
+
+			return QualifierHashPath(simpleLanguageID, qualifier) + Utilities.Sanitize(endingSymbol);
 			}
 
 

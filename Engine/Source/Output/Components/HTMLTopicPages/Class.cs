@@ -233,7 +233,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.OutputFolder(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
+					return Output.HTML.Paths.Class.OutputFile(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol);
 					}
 				else // Database
 					{  
@@ -257,10 +257,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				if (classString.Hierarchy == ClassString.HierarchyType.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-
-					// QualifierHashPath already includes the trailing separator so we can just concatenate them.
-					return Output.HTML.Paths.Class.QualifierHashPath(language.SimpleIdentifier, classString.Symbol.WithoutLastSegment) + 
-								 OutputFileNameOnlyHashPath;
+					return Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);
 					}
 				else // Database
 					{

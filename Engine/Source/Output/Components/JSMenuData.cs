@@ -509,19 +509,39 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (menuEntry is MenuEntries.Files.File)
 					{  
 					MenuEntries.Files.File fileMenuEntry = (MenuEntries.Files.File)menuEntry;
-					HTMLTopicPages.File fileTopicPage = new HTMLTopicPages.File(htmlBuilder, fileMenuEntry.WrappedFile.ID);
-					hashPath = fileTopicPage.OutputFileNameOnlyHashPath;  
+					Files.File file = fileMenuEntry.WrappedFile;
+					Files.FileSource fileSource = htmlBuilder.EngineInstance.Files.FileSourceOf(file);
+
+					hashPath = Output.HTML.Paths.SourceFile.HashPath(fileSource.Number, fileSource.MakeRelative(file.FileName));  
 					}
 				else if (menuEntry is MenuEntries.Classes.Class)
 					{  
 					MenuEntries.Classes.Class classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
-					HTMLTopicPages.Class classTopicPage = new HTMLTopicPages.Class(htmlBuilder, classString: classMenuEntry.WrappedClassString);
-					hashPath = classTopicPage.OutputFileNameOnlyHashPath;  
+					Symbols.ClassString classString = classMenuEntry.WrappedClassString;
+
+					if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
+						{
+						Languages.Language language = htmlBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
+						hashPath = Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);  
+						}
+					else if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Database)
+						{
+						HTMLTopicPages.Class classTopicPage = new HTMLTopicPages.Class(htmlBuilder, classString: classMenuEntry.WrappedClassString);
+						hashPath = classTopicPage.OutputFileNameOnlyHashPath;  
+						}
+					else
+						{  throw new NotImplementedException();  }
 					}
 				#if DEBUG
 				else
 					{  throw new Exception ("Don't know how to generate JSON for target \"" + menuEntry.Title + "\".");  }
 				#endif
+
+				// Make the hashpath relative to the parent.
+				ContainerExtraData parent = (ContainerExtraData)menuEntry.Parent.ExtraData;
+
+				if (hashPath.StartsWith(parent.HashPath))
+					{  hashPath = hashPath.Substring(parent.HashPath.Length);  }
 
 				if (hashPath != htmlTitle)
 					{

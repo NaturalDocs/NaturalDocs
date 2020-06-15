@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + OutputFileNameOnly;
+				return Output.HTML.Paths.SourceFile.OutputFile(htmlBuilder.OutputFolder, fileSource.Number, relativePath);
 				}
 			}
 
@@ -161,35 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 				Path relativePath = fileSource.MakeRelative(file.FileName);
 
-				// OutputFolderHashPath already includes the trailing symbol so we don't need + '/' +
-				return Output.HTML.Paths.SourceFile.FolderHashPath(fileSource.Number, relativePath.ParentFolder) + OutputFileNameOnlyHashPath;
-				}
-			}
-
-		/* Property: OutputFileNameOnly
-		 * The output file name of topic page without the path.
-		 */
-		public Path OutputFileNameOnly
-			{
-			get
-				{
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + ".html";
-				}
-			}
-
-
-		/* Property: OutputFileNameOnlyHashPath
-		 * The file name portion of the topic page's hash path.
-		 */
-		public string OutputFileNameOnlyHashPath
-			{
-			get
-				{
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Output.HTML.Paths.Utilities.Sanitize(nameString);
+				return Output.HTML.Paths.SourceFile.HashPath(fileSource.Number, relativePath);
 				}
 			}
 

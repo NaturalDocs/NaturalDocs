@@ -20,6 +20,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 	static public class SourceFile
 		{
 
+		/* Function: OutputFile
+		 * Returns the output file of the source file.  The file path must be relative to the file source.
+		 */
+		static public Path OutputFile (Path targetOutputFolder, int fileSourceNumber, Path relativeFilePath)
+			{
+			string fileName = relativeFilePath.NameWithoutPath.ToString();
+			string outputFileName = Utilities.Sanitize(fileName, replaceDots: true) + ".html";
+			string outputFolder = OutputFolder(targetOutputFolder, fileSourceNumber, relativeFilePath.ParentFolder);
+			
+			return outputFolder + '/' + outputFileName;
+			}
+
+
 		/* Function: OutputFolder
 		 * 
 		 * Returns the output folder of the passed output target, file source number, and optionally a subfolder within it.
@@ -45,6 +58,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 				}
 
 			return result.ToString();
+			}
+
+
+		/* Function: HashPath
+		 * Returns the hash path of the source file.  The file path must be relative to the file source.
+		 */
+		static public string HashPath (int fileSourceNumber, Path relativeFilePath)
+			{  
+			Path fileName = relativeFilePath.NameWithoutPath;
+			Path fileFolder = relativeFilePath.ParentFolder;
+
+			return FolderHashPath(fileSourceNumber, fileFolder) + Utilities.Sanitize(fileName);
 			}
 
 
