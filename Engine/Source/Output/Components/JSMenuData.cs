@@ -526,8 +526,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						}
 					else if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Database)
 						{
-						HTMLTopicPages.Class classTopicPage = new HTMLTopicPages.Class(htmlBuilder, classString: classMenuEntry.WrappedClassString);
-						hashPath = classTopicPage.OutputFileNameOnlyHashPath;  
+						hashPath = Output.HTML.Paths.Database.HashPath(classString.Symbol);
 						}
 					else
 						{  throw new NotImplementedException();  }
@@ -714,7 +713,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (container == menu.RootDatabaseMenu)
 						{
-						hashPath = htmlBuilder.Database_OutputFolderHashPath(scopeEntry.WrappedScopeString);
+						hashPath = Output.HTML.Paths.Database.QualifierHashPath(scopeEntry.WrappedScopeString);
 						}
 					else
 						{
@@ -733,7 +732,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{
 					// If we're at the root database menu and the entry is not also a scope, it means there are multiple scopes beneath it.  However, unlike
 					// files and classes, there is still the shared "Database:" hash path.
-					hashPath = htmlBuilder.Database_OutputFolderHashPath();
+					hashPath = Output.HTML.Paths.Database.QualifierHashPath();
 					}
 				#if DEBUG
 				else

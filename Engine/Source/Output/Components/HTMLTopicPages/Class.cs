@@ -235,10 +235,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return Output.HTML.Paths.Class.OutputFile(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol);
 					}
-				else // Database
+				else if (classString.Hierarchy == ClassString.HierarchyType.Database)
 					{  
-					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + OutputFileNameOnly;
+					return Output.HTML.Paths.Database.OutputFile(htmlBuilder.OutputFolder, classString.Symbol);
 					}
+				else
+					{  throw new NotImplementedException();  }
 				}
 			}
 
@@ -259,46 +261,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);
 					}
-				else // Database
+				else if (classString.Hierarchy == ClassString.HierarchyType.Database)
 					{
-					return htmlBuilder.Database_OutputFolderHashPath(classString.Symbol.WithoutLastSegment) + 
-								 OutputFileNameOnlyHashPath;
+					return Output.HTML.Paths.Database.HashPath(classString.Symbol);
 					}
-				}
-			}
-
-		/* Property: OutputFileNameOnly
-		 * The output file name of topic page without the path.
-		 */
-		public Path OutputFileNameOnly
-			{
-			get
-				{
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				string nameString = classString.Symbol.LastSegment;
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + ".html";
-				}
-			}
-
-
-		/* Property: OutputFileNameOnlyHashPath
-		 * The file name portion of the topic page's hash path.
-		 */
-		public string OutputFileNameOnlyHashPath
-			{
-			get
-				{
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				string nameString = classString.Symbol.LastSegment;
-				return Output.HTML.Paths.Utilities.Sanitize(nameString);
+				else
+					{  throw new NotImplementedException();  }
 				}
 			}
 
@@ -321,7 +289,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					}
 				else // Database
 					{
-					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
+					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
 					}
 				}
 			}
@@ -362,7 +330,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					}
 				else
 					{
-					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
+					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
 					}
 				}
 			}
@@ -404,7 +372,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					}
 				else // Database
 					{
-					return htmlBuilder.Database_OutputFolder(classString.Symbol.WithoutLastSegment) + '/' + 
+					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + 
 								 SummaryToolTipsFileNameOnly;
 					}
 				}

@@ -364,7 +364,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (!hasBinaryBuildStateFile)
 				{
 				Start_PurgeFolder(Output.HTML.Paths.Class.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Database_OutputFolder(), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Output.HTML.Paths.Database.OutputFolder(this.OutputFolder),  ref saidPurgingOutputFiles);
 				Start_PurgeFolder(Menu_DataFolder, ref saidPurgingOutputFiles);
 				Start_PurgeFolder(SearchIndex_DataFolder, ref saidPurgingOutputFiles);
 
