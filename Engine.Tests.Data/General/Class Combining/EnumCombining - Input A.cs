@@ -9,26 +9,26 @@ public partial class EnumCombining
 		This version should be selected because it's the only one that's documented.
 
 		Enum: EnumB
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
-		This version has a longer overall body length but the version with documented valuse should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
+		This version has a longer overall body length but the version with documented values should be preferred.
 	*/
 
 	}
