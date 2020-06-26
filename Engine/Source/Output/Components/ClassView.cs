@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
@@ -183,13 +182,265 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 
 
-			// Merge any duplicate topics into the list.  This is used for things like header vs. source definitions in C++.
+			// Now merge the remaining topics into the main list.
+			
+			// We loop through this process one file at a time in case some topics have to be merged that aren't present in the
+			// base we chose.  For example, File A has FunctionA but not FunctionZ.  File B and File C both have FunctionZ and
+			// they need to be merged with each other.  If we only did one pass comparing all the remaining topics to the base
+			// we wouldn't see that.
+			
+			while (remainingTopics.Count > 0)
+				{
+				int fileID = remainingTopics[0].FileID;
 
-			// First we go through the primary topic list to handle removing list topics and merging individual topics into list
-			// topics in the remaining topic list.  Everything else will be handled when iterating through the remaining topic list.
 
-			int topicIndex = 0;
-			while (topicIndex < topics.Count)
+				// First pick out and merge duplicates.  This is used for things like combining header and source definitions in C++.
+
+				for (int remainingTopicIndex = 0; 
+					  remainingTopicIndex < remainingTopics.Count && remainingTopics[remainingTopicIndex].FileID == fileID;
+					  /* no auto-increment */)
+					{
+					var remainingTopic = remainingTopics[remainingTopicIndex];
+
+					// We're ignoring group topics for now.  They stay in remainingTopics.
+					if (remainingTopic.IsGroup)
+						{  
+						remainingTopicIndex++;  
+						continue;
+						}
+
+					int embeddedTopicCount = CountEmbeddedTopics(remainingTopics, remainingTopicIndex);
+
+
+					// If we're merging enums, the one with the most embedded topics (documented values) wins.  In practice one
+					// should be documented and one shouldn't be, so this should usually be any number versus zero.
+
+					if (remainingTopic.IsEnum)
+						{
+						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+
+						if (duplicateIndex == -1)
+							{  remainingTopicIndex += 1 + embeddedTopicCount;  }
+						else
+							{
+							int duplicateEmbeddedTopicCount = CountEmbeddedTopics(topics, duplicateIndex);
+
+							if (embeddedTopicCount > duplicateEmbeddedTopicCount ||
+								 ( embeddedTopicCount == duplicateEmbeddedTopicCount &&
+									engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false ) )
+								{
+								topics.RemoveRange(duplicateIndex, 1 + duplicateEmbeddedTopicCount);
+								topics.InsertRange(duplicateIndex, remainingTopics.GetRange(remainingTopicIndex, 1 + embeddedTopicCount));
+								}
+
+							remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);
+							}
+						}
+
+
+					// If it's not an enum and it's a standalone topic, the one with the best score wins.
+
+					else if (embeddedTopicCount == 0)
+						{
+						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+
+						if (duplicateIndex == -1)
+							{  remainingTopicIndex++;  }
+						else if (engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false)
+							{  
+							if (topics[duplicateIndex].IsEmbedded)
+								{  
+								// Just leave them both in
+								remainingTopicIndex++;  
+								}
+							else
+								{
+								topics[duplicateIndex] = remainingTopic;  
+								remainingTopics.RemoveAt(remainingTopicIndex);
+								}
+							}
+						else
+							{  remainingTopics.RemoveAt(remainingTopicIndex);  }
+						}
+
+
+					// If it's not an enum and we're at a list topic, leave it for now.  We only want to remove it if EVERY member has 
+					// a better definition, and those definitions can be in different files, so wait until the list is fully combined.
+
+					else
+						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
+
+					}
+
+
+				// Generate groups from the topic lists.
+
+				// Start at 1 to skip the class topic.
+				var topicGroups = GetTopicGroups(topics, startingIndex: 1);
+
+				var remainingTopicGroups = GetTopicGroups(remainingTopics, limitToFileID: fileID);
+
+
+				// Now merge groups.
+
+				int remainingGroupIndex = 0;
+				while (remainingGroupIndex < remainingTopicGroups.Groups.Count)
+					{
+					var remainingGroup = remainingTopicGroups.Groups[remainingGroupIndex];
+					bool merged = false;
+
+					// If the group is empty because all its members were merged as duplicates, just delete it.
+					if (remainingGroup.IsEmpty)
+						{  
+						remainingTopicGroups.RemoveGroupAndTopics(remainingGroupIndex);
+						merged = true;
+						}
+
+					// If it matches the title of an existing group, move its members to the end of the existing group.
+					else if (remainingGroup.Title != null)
+						{
+						for (int groupIndex = 0; groupIndex < topicGroups.Groups.Count; groupIndex++)
+							{
+							if (topicGroups.Groups[groupIndex].Title == remainingGroup.Title)
+								{
+								remainingTopicGroups.MergeGroupInto(remainingGroupIndex, topicGroups, groupIndex);
+								merged = true;
+								break;
+								}
+							}
+
+						// If the group had a title but didn't match one on the other list, insert it after the last group of the same 
+						// dominant type so function groups stay with other function groups, variable groups stay with other variable
+						// groups, etc.
+						if (merged == false)
+							{
+							int bestMatchIndex = -1;
+
+							// Walk the list backwards because we want it to be after the last group of the type, not the first.
+							for (int i = topicGroups.Groups.Count - 1; i >= 0; i--)
+								{
+								if (topicGroups.Groups[i].DominantTypeID == remainingGroup.DominantTypeID)
+									{
+									bestMatchIndex = i;
+									break;
+									}
+								}
+
+							if (bestMatchIndex == -1)
+								{  
+								// Just add the group to the end if nothing matches.
+								remainingTopicGroups.MoveGroupTo(remainingGroupIndex, topicGroups);  
+								}
+							else
+								{
+								remainingTopicGroups.MoveGroupTo(remainingGroupIndex, topicGroups, bestMatchIndex + 1);
+								}
+
+							merged = true;
+							}
+						}
+
+					if (!merged)
+						{  remainingGroupIndex++;  }
+					}
+
+
+				// Now we're left with topics that are not in titled groups, meaning the file itself had no group topics or there were
+				// topics that appeared before the first one.  See if the base contains any titled groups.
+
+				bool hasGroupsWithTitles = false;
+
+				foreach (var group in topicGroups.Groups)
+					{
+					if (group.Title != null)
+						{
+						hasGroupsWithTitles = true;
+						break;
+						}
+					}
+
+
+				// If there's no titles we can just append the remaining topics as is.
+
+				if (hasGroupsWithTitles == false)
+					{
+					int fileIDLimit = 0;
+
+					while (fileIDLimit < remainingTopics.Count && remainingTopics[fileIDLimit].FileID == fileID)
+						{  fileIDLimit++;  }
+
+					if (fileIDLimit > 0)
+						{
+						topics.AddRange( remainingTopics.GetRange(0, fileIDLimit) );
+						remainingTopics.RemoveRange(0, fileIDLimit);
+						}
+					}
+
+
+				// If there are titled groups, see if we can add them to the end of existing groups.  However, only do
+				// this if TitleMatchesType is set.  It's okay to put random functions into the group "Functions" but
+				// not into something more specific.  If there aren't appropriate groups to do this with, create new ones.
+
+				else
+					{
+					while (remainingTopics.Count > 0 && remainingTopics[0].FileID == fileID)
+						{
+						int type = remainingTopics[0].CommentTypeID;
+						int matchingGroupIndex = -1;
+
+						for (int i = topicGroups.Groups.Count - 1; i >= 0; i--)
+							{
+							if (topicGroups.Groups[i].DominantTypeID == type && 
+								 topicGroups.Groups[i].TitleMatchesType)
+								{  
+								matchingGroupIndex = i;
+								break;
+								}
+							}
+
+						// Create a new group if there's no existing one we can use.
+						if (matchingGroupIndex == -1)
+							{
+							Topic generatedTopic = new Topic(builder.EngineInstance.CommentTypes);
+							generatedTopic.TopicID = 0;
+							generatedTopic.Title = builder.EngineInstance.CommentTypes.FromID(type).PluralDisplayName;
+							generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
+							generatedTopic.ClassString = topics[0].ClassString;
+							generatedTopic.ClassID = topics[0].ClassID;
+							generatedTopic.CommentTypeID = builder.EngineInstance.CommentTypes.IDFromKeyword("group");
+							generatedTopic.FileID = topics[0].FileID;
+							generatedTopic.LanguageID = topics[0].LanguageID;
+
+							// In case there's nothing that defines the "group" keyword.
+							if (generatedTopic.CommentTypeID != 0)
+								{
+								topicGroups.Topics.Add(generatedTopic);
+								topicGroups.CreateGroup(topicGroups.Topics.Count - 1, 1);
+								}
+
+							matchingGroupIndex = topicGroups.Groups.Count - 1;
+							}
+
+						do
+							{
+							int topicsToMove = 1 + CountEmbeddedTopics(remainingTopics, 0);
+
+							while (topicsToMove > 0)
+								{
+								topicGroups.AppendToGroup(matchingGroupIndex, remainingTopics[0]);
+								remainingTopics.RemoveAt(0);
+								topicsToMove--;
+								}
+							}
+						while (remainingTopics.Count > 0 && remainingTopics[0].CommentTypeID == type);
+						}
+					}
+				}
+
+
+			// Now that everything's merged into one list, make another pass to merge list topics.
+
+			for (int topicIndex = 0; topicIndex < topics.Count; /* no auto-increment */)
 				{
 				var topic = topics[topicIndex];
 
@@ -202,329 +453,116 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				int embeddedTopicCount = CountEmbeddedTopics(topics, topicIndex);
 
-
-				// We don't need to worry about enums until we do remaining topics.
-
-				if (topic.IsEnum)
-					{  topicIndex += 1 + embeddedTopicCount;  }
-
-
-				// If it's not an enum and it's a standalone topic see if it will merge with an embedded topic in the remaining topic
-				// list.  We don't have to worry about merging with standalone topics until we do the remaining topic list.
-
-				else if (embeddedTopicCount == 0)
-					{
-					int duplicateIndex = FindDuplicateTopic(topic, remainingTopics, builder);
-
-					if (duplicateIndex == -1)
-						{  topicIndex++;  }
-					else if (remainingTopics[duplicateIndex].IsEmbedded &&
-							  engineInstance.Links.IsBetterTopicDefinition(topic, remainingTopics[duplicateIndex]))
-						{  topics.RemoveAt(topicIndex);  }
-					else
-						{  topicIndex++;  }
-					}
-
-
-				// If it's not an enum and we're at a list topic, only remove it if EVERY member has a better definition in the other
-				// list.  We can't pluck them out individually.  If even one is documented here that isn't documented elsewhere we
-				// keep the entire thing in even if that leads to some duplicates.
-
-				else
-					{
-					bool allHaveBetterMatches = true;
-
-					for (int i = 0; i < embeddedTopicCount; i++)
-						{
-						Topic embeddedTopic = topics[topicIndex + 1 + i];
-						int duplicateIndex = FindDuplicateTopic(embeddedTopic, remainingTopics, builder);
-
-						if (duplicateIndex == -1 ||
-							engineInstance.Links.IsBetterTopicDefinition(embeddedTopic, remainingTopics[duplicateIndex]) == false)
-							{
-							allHaveBetterMatches = false;
-							break;
-							}
-						}
-
-					if (allHaveBetterMatches)
-						{  topics.RemoveRange(topicIndex, 1 + embeddedTopicCount);  }
-					else
-						{  topicIndex += 1 + embeddedTopicCount;  }
-					}
-				}
-
-
-			// Now do a more comprehensive merge of the remaining topics into the primary topic list.
-
-			int remainingTopicIndex = 0;
-			while (remainingTopicIndex < remainingTopics.Count)
-				{
-				var remainingTopic = remainingTopics[remainingTopicIndex];
-
-				// Ignore group topics
-				if (remainingTopic.IsGroup)
+				// Ignore single topics and enums.  Enums have embedded topics but we already handled them earlier.
+				if (embeddedTopicCount == 0 || topic.IsEnum)
 					{  
-					remainingTopicIndex++;  
+					topicIndex += 1 + embeddedTopicCount;  
 					continue;
 					}
 
-				int embeddedTopicCount = CountEmbeddedTopics(remainingTopics, remainingTopicIndex);
 
+				// If we're here we're at a list topic.  Compare its members with every other member in the list.  Remove standalone
+				// topics if the list contains a better definition, but only remove the list if EVERY member has a better definition
+				// somewhere else.  If only some do we'll leave in the whole thing and have duplicates instead of trying to pluck out
+				// individual embedded topics.
 
-				// If we're merging enums, the one with the most embedded topics (documented values) wins.  In practice one
-				// should be documented and one shouldn't be, so this will be any number versus zero.
+				bool embeddedContainsBetterDefinitions = false;
+				bool embeddedContainsNonDuplicates = false;
 
-				if (remainingTopic.IsEnum)
+				for (int embeddedTopicIndex = topicIndex + 1; 
+					  embeddedTopicIndex < topicIndex + 1 + embeddedTopicCount;
+					  embeddedTopicIndex++)
 					{
-					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+					var embeddedTopic = topics[embeddedTopicIndex];
+					var embeddedTopicLanguage = builder.EngineInstance.Languages.FromID(embeddedTopic.LanguageID);
+					var foundDuplicate = false;
 
-					if (duplicateIndex == -1)
-						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
-					else
+					for (int potentialDuplicateTopicIndex = 0; potentialDuplicateTopicIndex < topics.Count; /* no auto-increment */)
 						{
-						int duplicateEmbeddedTopicCount = CountEmbeddedTopics(topics, duplicateIndex);
-
-						if (embeddedTopicCount > duplicateEmbeddedTopicCount ||
-							 ( embeddedTopicCount == duplicateEmbeddedTopicCount &&
-								engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false ) )
+						/* Skip ones in the list topic */
+						if (potentialDuplicateTopicIndex == topicIndex)
 							{
-							topics.RemoveRange(duplicateIndex, 1 + duplicateEmbeddedTopicCount);
-							topics.InsertRange(duplicateIndex, remainingTopics.GetRange(remainingTopicIndex, 1 + embeddedTopicCount));
+							potentialDuplicateTopicIndex += 1 + embeddedTopicCount;
+							continue;
 							}
 
-						remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);
-						}
-					}
+						var potentialDuplicateTopic = topics[potentialDuplicateTopicIndex];
 
+						if (embeddedTopicLanguage.IsSameCodeElement(embeddedTopic, potentialDuplicateTopic))
+							{
+							foundDuplicate = true;
 
-				// If it's not an enum and it's a standalone topic the one with the best score wins.
+							// If the current embedded topic is the better definition
+							if (engineInstance.Links.IsBetterTopicDefinition(potentialDuplicateTopic, embeddedTopic))
+								{
+								embeddedContainsBetterDefinitions = true;
+							
+								// If the duplicate is also embedded, leave it alone.  Either the duplicate is going to be allowed to exist
+								// because neither list can be completely removed, or it will be removed later when its own list is checked
+								// for duplicates.
+								if (potentialDuplicateTopic.IsEmbedded)
+									{
+									potentialDuplicateTopicIndex++;
+									}
 
-				else if (embeddedTopicCount == 0)
-					{
-					int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+								// If the duplicate is not embedded we can remove it.
+								else
+									{
+									topics.RemoveAt(potentialDuplicateTopicIndex);
 
-					if (duplicateIndex == -1)
-						{  remainingTopicIndex++;  }
-					else if (engineInstance.Links.IsBetterTopicDefinition(remainingTopic, topics[duplicateIndex]) == false)
-						{  
-						if (topics[duplicateIndex].IsEmbedded)
-							{  
-							// Just leave them both in
-							remainingTopicIndex++;  
+									if (potentialDuplicateTopicIndex < topicIndex)
+										{  
+										topicIndex--;
+										embeddedTopicIndex--;
+										}
+									}
+								}
+
+							// If the potential duplicate is the better definition.  We don't need to do anything here because we're just 
+							// looking to see if all of them have better definitions elsewhere, which can be determined by whether this
+							// group contains any better definitions or non-duplicates.
+							else
+								{  potentialDuplicateTopicIndex++;  }
 							}
+
+						// Not the same code element
 						else
-							{
-							topics[duplicateIndex] = remainingTopic;  
-							remainingTopics.RemoveAt(remainingTopicIndex);
-							}
+							{  potentialDuplicateTopicIndex++;  }
 						}
-					else
-						{  remainingTopics.RemoveAt(remainingTopicIndex);  }
+
+					if (!foundDuplicate)
+						{  embeddedContainsNonDuplicates = true;  }
 					}
 
 
-				// If it's not an enum and we're at a list topic, only remove it if EVERY member has a better definition in the other
-				// list.  We can't pluck them out individually.  If even one is documented here that isn't documented elsewhere we
-				// keep the entire thing in even if that leads to some duplicates.
+				// Now that we've checked every embedded topic against every other topic, remove the entire list only if EVERY
+				// member has a better definition somewhere else, which is the same as saying it doesn't contain any better
+				// topic definitions or non-duplicates.
 
+				if (embeddedContainsBetterDefinitions == false && embeddedContainsNonDuplicates == false)
+					{
+					topics.RemoveRange(topicIndex, 1 + embeddedTopicCount);
+					}
 				else
 					{
-					bool allHaveBetterMatches = true;
-
-					for (int i = 0; i < embeddedTopicCount; i++)
-						{
-						Topic embeddedTopic = remainingTopics[remainingTopicIndex + 1 + i];
-						int duplicateIndex = FindDuplicateTopic(embeddedTopic, topics, builder);
-
-						if (duplicateIndex == -1 ||
-							engineInstance.Links.IsBetterTopicDefinition(embeddedTopic, topics[duplicateIndex]) == false)
-							{
-							allHaveBetterMatches = false;
-							break;
-							}
-						}
-
-					if (allHaveBetterMatches)
-						{  remainingTopics.RemoveRange(remainingTopicIndex, 1 + embeddedTopicCount);  }
-					else
-						{  remainingTopicIndex += 1 + embeddedTopicCount;  }
+					topicIndex += 1 + embeddedTopicCount;
 					}
 				}
 
 
-			// Generate groups from the topic lists.
+			// Now that everything's merged, delete any empty groups.  We do this on the main group list for consistency,
+			// since we were doing it on the remaining group list during merging.  Also, there may be new empty groups after
+			// merging the list topics.
 
 			// Start at 1 to skip the class topic.
-			// Don't group by file ID because topics from other files may have been combined into the list.
-			var groupedTopics = GetTopicGroups(topics, 1, false);
-
-			var groupedRemainingTopics = GetTopicGroups(remainingTopics);
-
-
-			// Delete any empty groups.  We do this on the main group list too for consistency.
-
+			var groupedTopics = GetTopicGroups(topics, startingIndex: 1);
+			
 			for (int i = 0; i < groupedTopics.Groups.Count; /* don't auto increment */)
 				{
 				if (groupedTopics.Groups[i].IsEmpty)
 					{  groupedTopics.RemoveGroupAndTopics(i);  }
 				else
 					{  i++;  }
-				}
-
-			for (int i = 0; i < groupedRemainingTopics.Groups.Count; /* don't auto increment */)
-				{
-				if (groupedRemainingTopics.Groups[i].IsEmpty)
-					{  groupedRemainingTopics.RemoveGroupAndTopics(i);  }
-				else
-					{  i++;  }
-				}
-
-
-			// Now merge groups.
-
-			int remainingGroupIndex = 0;
-			while (remainingGroupIndex < groupedRemainingTopics.Groups.Count)
-				{
-				var remainingGroup = groupedRemainingTopics.Groups[remainingGroupIndex];
-
-				// If any remaining groups match the title of an existing group, move its members to the end of the 
-				// existing group.
-			
-				bool merged = false;
-
-				if (remainingGroup.Title != null)
-					{
-					for (int groupIndex = 0; groupIndex < groupedTopics.Groups.Count; groupIndex++)
-						{
-						if (groupedTopics.Groups[groupIndex].Title == remainingGroup.Title)
-							{
-							groupedRemainingTopics.MergeGroupInto(remainingGroupIndex, groupedTopics, groupIndex);
-							merged = true;
-							break;
-							}
-						}
-
-					if (merged == false)
-						{
-						// If the groups with titles didn't match one on the other list, insert it after the last group of the same dominant
-						// type so function groups stay with other function groups, variable groups stay with other variable groups, etc.
-
-						int bestMatchIndex = -1;
-
-						// Walk the list backwards because we want it to be after the last group of the type, not the first.
-						for (int i = groupedTopics.Groups.Count - 1; i >= 0; i--)
-							{
-							if (groupedTopics.Groups[i].DominantTypeID == remainingGroup.DominantTypeID)
-								{
-								bestMatchIndex = i;
-								break;
-								}
-							}
-
-						if (bestMatchIndex == -1)
-							{  
-							// Just add them to the end if nothing matches.
-							groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics);  
-							}
-						else
-							{
-							groupedRemainingTopics.MoveGroupTo(remainingGroupIndex, groupedTopics, bestMatchIndex + 1);
-							}
-
-						merged = true;
-						}
-					}
-
-				if (!merged)
-					{  remainingGroupIndex++;  }
-				}
-
-
-			// Now we're left with topics that are not in groups.  See if the list contains any titled groups at all.
-
-			bool groupsWithTitles = false;
-
-			foreach (var group in groupedTopics.Groups)
-				{
-				if (group.Title != null)
-					{
-					groupsWithTitles = true;
-					break;
-					}
-				}
-
-
-			// If there's no titles we can just append the remaining topics as is.
-
-			if (groupsWithTitles == false)
-				{
-				groupedTopics.Topics.AddRange(groupedRemainingTopics.Topics);
-				}
-
-
-			// If there are titled groups, see if we can add them to the end of existing groups.  However, only do
-			// this if TitleMatchesType is set.  It's okay to put random functions into the group "Functions" but
-			// not into something more specific.  If there aren't appropriate groups to do this with, create new ones.
-
-			else
-				{
-				// We don't care about the remaining groups anymore so we can just work directly on the topics.
-				remainingTopics = groupedRemainingTopics.Topics;
-				groupedRemainingTopics = null;  // for safety
-
-				while (remainingTopics.Count > 0)
-					{
-					int type = remainingTopics[0].CommentTypeID;
-					int matchingGroupIndex = -1;
-
-					for (int i = groupedTopics.Groups.Count - 1; i >= 0; i--)
-						{
-						if (groupedTopics.Groups[i].DominantTypeID == type && 
-							 groupedTopics.Groups[i].TitleMatchesType)
-							{  
-							matchingGroupIndex = i;
-							break;
-							}
-						}
-
-					// Create a new group if there's no existing one we can use.
-					if (matchingGroupIndex == -1)
-						{
-						Topic generatedTopic = new Topic(builder.EngineInstance.CommentTypes);
-						generatedTopic.TopicID = 0;
-						generatedTopic.Title = builder.EngineInstance.CommentTypes.FromID(type).PluralDisplayName;
-						generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
-						generatedTopic.ClassString = topics[0].ClassString;
-						generatedTopic.ClassID = topics[0].ClassID;
-						generatedTopic.CommentTypeID = builder.EngineInstance.CommentTypes.IDFromKeyword("group");
-						generatedTopic.FileID = topics[0].FileID;
-						generatedTopic.LanguageID = topics[0].LanguageID;
-
-						// In case there's nothing that defines the "group" keyword.
-						if (generatedTopic.CommentTypeID != 0)
-							{
-							groupedTopics.Topics.Add(generatedTopic);
-							groupedTopics.CreateGroup(groupedTopics.Topics.Count - 1, 1);
-							}
-
-						matchingGroupIndex = groupedTopics.Groups.Count - 1;
-						}
-
-					for (int i = 0; i < remainingTopics.Count; /* don't auto increment */)
-						{
-						var remainingTopic = remainingTopics[i];
-
-						// Need to check IsEmbedded because enums values will not have the same type as their parent.
-						if (remainingTopic.CommentTypeID == type || remainingTopic.IsEmbedded)
-							{
-							groupedTopics.AppendToGroup(matchingGroupIndex, remainingTopic);
-							remainingTopics.RemoveAt(i);
-							}
-						else
-							{  i++;  }
-						}
-					}
 				}
 			}
 
@@ -569,22 +607,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		/* Function: GetTopicGroups
 		 * Returns a list of <TopicGroups> for the passed <Topics>.
 		 */
-		private static GroupedTopics GetTopicGroups (List<Topic> topics, int startingIndex = 0, bool groupByFileID = true)
+		private static GroupedTopics GetTopicGroups (List<Topic> topics, int startingIndex = 0, int limitToFileID = 0)
 			{
 			GroupedTopics groupedTopics = new GroupedTopics(topics);
 
 			int i = startingIndex;
-			while (i < topics.Count)
+			while (i < topics.Count &&
+					  (limitToFileID == 0 || topics[i].FileID == limitToFileID))
 				{
-				int fileID = topics[i].FileID;
 				int groupStart = i;
 				int groupCount = 1;
 
 				i++;
 
 				while (i < topics.Count && 
-							(topics[i].FileID == fileID || !groupByFileID) && 
-							topics[i].IsGroup == false)
+						  (limitToFileID == 0 || topics[i].FileID == limitToFileID) && 
+						  topics[i].IsGroup == false)
 					{
 					groupCount++;
 					i++;
