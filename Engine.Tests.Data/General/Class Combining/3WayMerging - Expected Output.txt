@@ -1,0 +1,29 @@
+____________________
+
+3WayMerging
+<p>Description to make this the first file.</p>
+____________________
+
+
+   --------------------
+   Group From File A
+   --------------------
+
+      FunctionA
+
+      FunctionB
+
+   --------------------
+   Group From Files B and C
+   <p>These need to combine even though they didn't appear in file A.</p>
+   --------------------
+
+      FunctionC
+      <p>Longer description from file B</p>
+
+      FunctionD
+      <p>Longer description from file C</p>
+
+      FunctionE1
+
+      FunctionE2
