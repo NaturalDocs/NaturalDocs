@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files.FileSource
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.FileSource
  * ____________________________________________________________________________
  * 
  * A container that represents a <Files.FileSource> in <Menu>.
@@ -14,9 +14,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	public class FileSource : Base.Container
+	public class FileSource : Container
 		{
 
 		// Group: Functions

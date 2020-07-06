@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Menu
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.Menu
  * ____________________________________________________________________________
  * 
  * A class for generating a menu tree.
@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
 	public class Menu
 		{
@@ -47,68 +47,68 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Adds a file to the menu tree.
 		 */
 		public void AddFile (Files.File file)
-		   {
+			{
 			#if DEBUG
 			if (isCondensed)
 				{  throw new Exception("Cannot add a file to the menu once it's been condensed.");  }
 			#endif
 
 
-		   // Find which file source owns this file and generate a relative path to it.
+			// Find which file source owns this file and generate a relative path to it.
 
-		   MenuEntries.Files.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
-		   Path relativePath = fileSourceEntry.WrappedFileSource.MakeRelative(file.FileName);
-
-
-		   // Split off the file name and split the rest into individual folder names.
-
-		   string prefix;
-		   List<string> pathSegments;
-		   relativePath.Split(out prefix, out pathSegments);
-
-		   string fileName = pathSegments[pathSegments.Count - 1];
-		   pathSegments.RemoveAt(pathSegments.Count - 1);
+			MenuEntries.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
+			Path relativePath = fileSourceEntry.WrappedFileSource.MakeRelative(file.FileName);
 
 
-		   // Create the file entry and find out where it goes.  Create new folder levels as necessary.
+			// Split off the file name and split the rest into individual folder names.
 
-		   MenuEntries.Files.File fileEntry = new MenuEntries.Files.File(file);
-		   MenuEntries.Base.Container container = fileSourceEntry;
+			string prefix;
+			List<string> pathSegments;
+			relativePath.Split(out prefix, out pathSegments);
 
-		   foreach (string pathSegment in pathSegments)
-		      {
+			string fileName = pathSegments[pathSegments.Count - 1];
+			pathSegments.RemoveAt(pathSegments.Count - 1);
+
+
+			// Create the file entry and find out where it goes.  Create new folder levels as necessary.
+
+			MenuEntries.File fileEntry = new MenuEntries.File(file);
+			MenuEntries.Container container = fileSourceEntry;
+
+			foreach (string pathSegment in pathSegments)
+				{
 				Path pathFromFileSource;
 
 				if (container == fileSourceEntry)
 					{  pathFromFileSource = pathSegment;  }
 				else
-					{  pathFromFileSource = (container as MenuEntries.Files.Folder).PathFromFileSource + '/' + pathSegment;  }
+					{  pathFromFileSource = (container as MenuEntries.Folder).PathFromFileSource + '/' + pathSegment;  }
 
-		      MenuEntries.Files.Folder folderEntry = null;
+				MenuEntries.Folder folderEntry = null;
 
-		      foreach (var member in container.Members)
-		         {
-		         if (member is MenuEntries.Files.Folder && 
-		             (member as MenuEntries.Files.Folder).PathFromFileSource == pathFromFileSource)
-		            {  
-		            folderEntry = (MenuEntries.Files.Folder)member;
-		            break;
-		            }
-		         }
+				foreach (var member in container.Members)
+					{
+					if (member is MenuEntries.Folder && 
+						(member as MenuEntries.Folder).PathFromFileSource == pathFromFileSource)
+						{  
+						folderEntry = (MenuEntries.Folder)member;
+						break;
+						}
+					}
 
-		      if (folderEntry == null)
-		         {
-		         folderEntry = new MenuEntries.Files.Folder(pathFromFileSource);
-		         folderEntry.Parent = container;
-		         container.Members.Add(folderEntry);
-		         }
+				if (folderEntry == null)
+					{
+					folderEntry = new MenuEntries.Folder(pathFromFileSource);
+					folderEntry.Parent = container;
+					container.Members.Add(folderEntry);
+					}
 
-		      container = folderEntry;
-		      }
+				container = folderEntry;
+				}
 
-		   fileEntry.Parent = container;
-		   container.Members.Add(fileEntry);
-		   }
+			fileEntry.Parent = container;
+			container.Members.Add(fileEntry);
+			}
 
 
 		/* Function: AddClass
@@ -122,14 +122,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			#endif
 
 
-		   string[] classSegments = classString.Symbol.SplitSegments();
+			string[] classSegments = classString.Symbol.SplitSegments();
 
-		   MenuEntries.Base.Container container;
+			MenuEntries.Container container;
 			bool ignoreCase;
 
 			if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
 				{
-				MenuEntries.Classes.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
+				MenuEntries.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
 
 				container = languageEntry;
 				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
@@ -139,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{
 				if (rootDatabaseMenu == null)
 					{
-					rootDatabaseMenu = new MenuEntries.Base.Container();
+					rootDatabaseMenu = new MenuEntries.Container();
 					rootDatabaseMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Database");
 					}
 
@@ -148,14 +148,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				}
 
 
-		   // Create the class and find out where it goes.  Create new scope containers as necessary.
+			// Create the class and find out where it goes.  Create new scope containers as necessary.
 
-		   MenuEntries.Classes.Class classEntry = new MenuEntries.Classes.Class(classString);
+			MenuEntries.Class classEntry = new MenuEntries.Class(classString);
 			string scopeSoFar = null;
 
 			// We only want to walk through the scope levels so we use length - 1 to ignore the last segment, which is the class name.
-		   for (int i = 0; i < classSegments.Length - 1; i++)
-		      {
+			for (int i = 0; i < classSegments.Length - 1; i++)
+				{
 				string classSegment = classSegments[i];
 
 				if (scopeSoFar == null)
@@ -163,31 +163,31 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				else
 					{  scopeSoFar += Symbols.SymbolString.SeparatorChar + classSegment;  }
 
-		      MenuEntries.Classes.Scope scopeEntry = null;
+				MenuEntries.Scope scopeEntry = null;
 
-		      foreach (var member in container.Members)
-		         {
-		         if (member is MenuEntries.Classes.Scope && 
-		             string.Compare((member as MenuEntries.Classes.Scope).WrappedScopeString, scopeSoFar, ignoreCase) == 0)
-		            {  
-		            scopeEntry = (MenuEntries.Classes.Scope)member;
-		            break;
-		            }
-		         }
+				foreach (var member in container.Members)
+					{
+					if (member is MenuEntries.Scope && 
+						string.Compare((member as MenuEntries.Scope).WrappedScopeString, scopeSoFar, ignoreCase) == 0)
+						{  
+						scopeEntry = (MenuEntries.Scope)member;
+						break;
+						}
+					}
 
-		      if (scopeEntry == null)
-		         {
-		         scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar));
-		         scopeEntry.Parent = container;
-		         container.Members.Add(scopeEntry);
-		         }
+				if (scopeEntry == null)
+					{
+					scopeEntry = new MenuEntries.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar));
+					scopeEntry.Parent = container;
+					container.Members.Add(scopeEntry);
+					}
 
-		      container = scopeEntry;
-		      }
+				container = scopeEntry;
+				}
 
-		   classEntry.Parent = container;
-		   container.Members.Add(classEntry);
-		   }
+			classEntry.Parent = container;
+			container.Members.Add(classEntry);
+			}
 
 
 		/* Function: Condense
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				// If there's only one file source we can remove the top level container.
 				if (rootFileMenu.Members.Count == 1)
 					{  
-					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu.Members[0];
+					MenuEntries.FileSource fileSourceEntry = (MenuEntries.FileSource)rootFileMenu.Members[0];
 
 					// Overwrite the file source name with the tab title, especially since it might not be defined if there was only one.
 					// We don't need an unnecessary level for a single file source.
@@ -222,7 +222,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				// If there's only one language we can remove the top level container.
 				if (rootClassMenu.Members.Count == 1)
 					{  
-					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu.Members[0];
+					MenuEntries.Language languageEntry = (MenuEntries.Language)rootClassMenu.Members[0];
 
 					// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
 					// for the language.
@@ -240,9 +240,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			   rootDatabaseMenu.Condense();
 
 				// If the only top level entry is a scope we can merge it
-				if (rootDatabaseMenu.Members.Count == 1 && rootDatabaseMenu.Members[0] is MenuEntries.Classes.Scope)
+				if (rootDatabaseMenu.Members.Count == 1 && rootDatabaseMenu.Members[0] is MenuEntries.Scope)
 					{  
-					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)rootDatabaseMenu.Members[0];
+					MenuEntries.Scope scopeEntry = (MenuEntries.Scope)rootDatabaseMenu.Members[0];
 
 					// Move the scope title into CondensedTitles since we want it to be visible.
 					if (scopeEntry.CondensedTitles == null)
@@ -270,7 +270,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Sorts the menu entries.  Should only be done after everything is added to the menu.
 		 */
 		public void Sort ()
-		   {
+			{
 			if (rootFileMenu != null)
 				{  rootFileMenu.Sort();  }
 
@@ -279,7 +279,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			if (rootDatabaseMenu != null)
 				{  rootDatabaseMenu.Sort();  }
-		   }
+			}
 
 
 
@@ -290,7 +290,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		/* Function: FindOrCreateFileSourceEntryOf
 		 * Finds or creates the file source entry associated with the passed file.
 		 */
-		protected MenuEntries.Files.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
+		protected MenuEntries.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
 			{
 			var fileSource = EngineInstance.Files.FileSourceOf(file);
 			var fileSourceEntry = FindFileSourceEntry(fileSource);
@@ -306,8 +306,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Creates an entry for the file source, adds it to the menu, and returns it.  It will also create the <rootFileMenu> 
 		 * container if necessary.
 		 */
-		protected MenuEntries.Files.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
-		   {
+		protected MenuEntries.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
+			{
 			#if DEBUG
 			if (FindFileSourceEntry(fileSource) != null)
 				{  throw new Exception ("Tried to create a file source entry that already existed in the menu.");  }
@@ -315,31 +315,31 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			if (rootFileMenu == null)
 				{
-				rootFileMenu = new MenuEntries.Base.Container();
+				rootFileMenu = new MenuEntries.Container();
 				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
 				}
 
-		   MenuEntries.Files.FileSource fileSourceEntry = new MenuEntries.Files.FileSource(fileSource);
-		   fileSourceEntry.Parent = rootFileMenu;
-		   rootFileMenu.Members.Add(fileSourceEntry);
+			MenuEntries.FileSource fileSourceEntry = new MenuEntries.FileSource(fileSource);
+			fileSourceEntry.Parent = rootFileMenu;
+			rootFileMenu.Members.Add(fileSourceEntry);
 
 			return fileSourceEntry;
-		   }
+			}
 
 
 		/* Function: FindFileSourceEntry
 		 * Returns the menu entry that contains the passed file source, or null if there isn't one yet.
 		 */
-		protected MenuEntries.Files.FileSource FindFileSourceEntry (Files.FileSource fileSource)
+		protected MenuEntries.FileSource FindFileSourceEntry (Files.FileSource fileSource)
 			{
 			if (rootFileMenu == null)
 				{  return null;  }
 
 			// If the menu only had one file source and it was condensed, the root file entry may have been replaced
 			// by that file source.
-			else if (rootFileMenu is MenuEntries.Files.FileSource)
+			else if (rootFileMenu is MenuEntries.FileSource)
 				{
-				MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu;
+				MenuEntries.FileSource fileSourceEntry = (MenuEntries.FileSource)rootFileMenu;
 
 				if (fileSourceEntry.WrappedFileSource == fileSource)
 					{  return fileSourceEntry;  }
@@ -353,9 +353,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{
 				foreach (var member in rootFileMenu.Members)
 					{
-					if (member is MenuEntries.Files.FileSource)
+					if (member is MenuEntries.FileSource)
 						{
-						MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)member;
+						MenuEntries.FileSource fileSourceEntry = (MenuEntries.FileSource)member;
 						
 						if (fileSourceEntry.WrappedFileSource == fileSource)
 							{  return fileSourceEntry;  }
@@ -370,7 +370,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		/* Function: FindOrCreateLanguageEntryOf
 		 * Finds or creates the language entry associated with the passed ClassString.
 		 */
-		protected MenuEntries.Classes.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
+		protected MenuEntries.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
 			{
 			var language = EngineInstance.Languages.FromID(classString.LanguageID);
 			var languageEntry = FindLanguageEntry(language);
@@ -386,8 +386,8 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * Creates an entry for the language, adds it to the class menu, and returns it.  It will also create the <rootClassMenu> 
 		 * container if necessary.
 		 */
-		protected MenuEntries.Classes.Language CreateLanguageEntry (Languages.Language language)
-		   {
+		protected MenuEntries.Language CreateLanguageEntry (Languages.Language language)
+			{
 			#if DEBUG
 			if (FindLanguageEntry(language) != null)
 				{  throw new Exception ("Tried to create a language entry that already existed in the menu.");  }
@@ -395,31 +395,31 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 			if (rootClassMenu == null)
 				{
-				rootClassMenu = new MenuEntries.Base.Container();
+				rootClassMenu = new MenuEntries.Container();
 				rootClassMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Classes");
 				}
 
-		   MenuEntries.Classes.Language languageEntry = new MenuEntries.Classes.Language(language);
-		   languageEntry.Parent = rootClassMenu;
-		   rootClassMenu.Members.Add(languageEntry);
+			MenuEntries.Language languageEntry = new MenuEntries.Language(language);
+			languageEntry.Parent = rootClassMenu;
+			rootClassMenu.Members.Add(languageEntry);
 
 			return languageEntry;
-		   }
+			}
 
 
 		/* Function: FindLanguageEntry
 		 * Returns the entry that contains the passed language, or null if there isn't one yet.
 		 */
-		protected MenuEntries.Classes.Language FindLanguageEntry (Languages.Language language)
+		protected MenuEntries.Language FindLanguageEntry (Languages.Language language)
 			{
 			if (rootClassMenu == null)
 				{  return null;  }
 
 			// If the menu only had one language and it was condensed, the root class entry may have been replaced
 			// by that language.
-			else if (rootClassMenu is MenuEntries.Classes.Language)
+			else if (rootClassMenu is MenuEntries.Language)
 				{
-				MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu;
+				MenuEntries.Language languageEntry = (MenuEntries.Language)rootClassMenu;
 
 				if (languageEntry.WrappedLanguage == language)
 					{  return languageEntry;  }
@@ -432,9 +432,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{
 				foreach (var member in rootClassMenu.Members)
 					{
-					if (member is MenuEntries.Classes.Language)
+					if (member is MenuEntries.Language)
 						{
-						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)member;
+						MenuEntries.Language languageEntry = (MenuEntries.Language)member;
 						
 						if (languageEntry.WrappedLanguage == language)
 							{  return languageEntry;  }
@@ -460,6 +460,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{  return builder;  }
 			}
 
+
 		/* Property: EngineInstance
 		 * The <Engine.Instance> associated with this menu.
 		 */
@@ -469,39 +470,40 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{  return Builder.EngineInstance;  }
 			}
 
+
 		/* Property: RootFileMenu
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.FileSources> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
-		public MenuEntries.Base.Container RootFileMenu
-		   {
-		   get
-		      {  return rootFileMenu;  }
-		   }
+		public MenuEntries.Container RootFileMenu
+			{
+			get
+				{  return rootFileMenu;  }
+			}
 			
 
 		/* Property: RootClassMenu
 		 * 
 		 * The root container of all class-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Languages> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
-		public MenuEntries.Base.Container RootClassMenu
-		   {
-		   get
-		      {  return rootClassMenu;  }
-		   }
+		public MenuEntries.Container RootClassMenu
+			{
+			get
+				{  return rootClassMenu;  }
+			}
 
 
 		/* Property: RootDatabaseMenu
 		 * 
 		 * The root container of all database-based menu entries, or null if none.
 		 */
-		public MenuEntries.Base.Container RootDatabaseMenu
+		public MenuEntries.Container RootDatabaseMenu
 			{
 			get
 				{  return rootDatabaseMenu;  }
@@ -522,25 +524,25 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.FileSources> as its members.  However,
 		 * after condensation it may be a file source if there was only one.
 		 */
-		protected MenuEntries.Base.Container rootFileMenu;
+		protected MenuEntries.Container rootFileMenu;
 
 		/* var: rootClassMenu
 		 * 
 		 * The root container of all class-based menu entries, or null if none.
 		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
+		 * Before condensation this will be a container with only <MenuEntries.Languages> as its members.  However,
 		 * after condensation it may be a language if there was only one.
 		 */
-		protected MenuEntries.Base.Container rootClassMenu;
+		protected MenuEntries.Container rootClassMenu;
 
 		/* var: rootDatabaseMenu
 		 * 
 		 * The root container of all database-based menu entries, or null if none.
 		 */
-		protected MenuEntries.Base.Container rootDatabaseMenu;
+		protected MenuEntries.Container rootDatabaseMenu;
 
 		/* var: isCondensed
 		 * Whether the menu tree has been condensed.

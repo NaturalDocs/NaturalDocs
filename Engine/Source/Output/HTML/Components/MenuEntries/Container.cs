@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base.Container
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Container
  * ____________________________________________________________________________
  * 
  * A base class for <Entries> which can contain other entries, such as folders.
@@ -14,9 +14,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	public class Container : Base.Entry
+	public class Container : Entry
 		{
 
 		// Group: Functions
@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 		 */
 		public Container () : base ()
 			{
-			members = new List<Base.Entry>();
+			members = new List<Entry>();
 			condensedTitles = null;
 			}
 
@@ -37,17 +37,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 			{
 			members.Sort(CompareMembers);
 
-			foreach (Base.Entry member in members)
+			foreach (Entry member in members)
 				{
-				if (member is Base.Container)
-					{  (member as Base.Container).Sort();  }
+				if (member is Container)
+					{  (member as Container).Sort();  }
 				}
 			}
 
 		/* Function: CompareMembers
 		 * The function used for sorting members.
 		 */
-		static protected int CompareMembers (Base.Entry a, Base.Entry b)
+		static protected int CompareMembers (Entry a, Entry b)
 			{
 			string aTitle = a.Title;
 			string bTitle = b.Title;
@@ -55,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 
 			// If we're comparing two files we want to ignore the extension so A.cpp appears before A.B.cpp.
 
-			bool comparingFiles = (a is MenuEntries.Files.File && b is MenuEntries.Files.File);
+			bool comparingFiles = (a is MenuEntries.File && b is MenuEntries.File);
 
 			if (comparingFiles)
 				{
@@ -97,10 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 			// At this point the titles are exactly equal.  Make sure non-containers come first so the class A will
 			// appear before the container A which leads to A.B.
 
-			if (a is Base.Container)
-				{  return (b is Base.Container ? 0 : 1);  }
-			else if (b is Base.Container)
-				{  return (a is Base.Container ? 0 : -1);  }
+			if (a is Container)
+				{  return (b is Container ? 0 : 1);  }
+			else if (b is Container)
+				{  return (a is Container ? 0 : -1);  }
 			else
 				{  return 0;  }
 			}
@@ -125,10 +125,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 		 */
 		protected void CondenseContainersInMembers ()
 			{
-			foreach (Base.Entry member in members)
+			foreach (var member in members)
 				{
-				if (member is Base.Container)
-					{  (member as Base.Container).Condense();  }
+				if (member is Container)
+					{  (member as Container).Condense();  }
 				}
 			}
 
@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 		 * The list of members this entry contains.  The entire list may be replaced with another one, which is
 		 * useful when merging containers.
 		 */
-		public List<Base.Entry> Members
+		public List<Entry> Members
 			{  
 			get
 				{  return members;  }
@@ -166,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 
 		/* var: members
 		 */
-		protected List<Base.Entry> members;
+		protected List<Entry> members;
 
 		/* var: condensedTitles
 		 */

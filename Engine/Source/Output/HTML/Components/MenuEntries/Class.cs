@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base.Target
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Class
  * ____________________________________________________________________________
  * 
- * A base class for <Entries> that cause navigation, such as a file or a class, as opposed to a <Container>.
+ * Represents a class in <Menu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -13,25 +13,40 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	public class Target : Base.Entry
+	public class Class : Entry
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public Target () : base ()
+		/* Function: Class
+		 */
+		public Class (Symbols.ClassString classString) : base ()
 			{
+			this.classString = classString;
+			this.Title = classString.Symbol.LastSegment;
 			}
 
 
 		// Group: Properties
 		// __________________________________________________________________________
 
+		/* Property: WrappedClassString
+		 * The <Symbols.ClassString> associated with this entry.
+		 */
+		public Symbols.ClassString WrappedClassString
+			{
+			get
+				{  return classString;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
+
+		protected Symbols.ClassString classString;
 
 		}
 	}

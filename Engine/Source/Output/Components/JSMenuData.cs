@@ -30,12 +30,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Output.MenuEntries;
+using CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
 	{
-	public class JSMenuData : Menu
+	public class JSMenuData : Output.HTML.Components.Menu
 		{
 
 		// Group: Functions
@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			if (!EngineInstance.Config.ShrinkFiles)
 				{  tabInformation.Append('\n');  }
 
-			List<MenuEntries.Base.Container> tabContainers = new List<MenuEntries.Base.Container>();
+			List<HTML.Components.MenuEntries.Container> tabContainers = new List<HTML.Components.MenuEntries.Container>();
 			List<string> tabTypes = new List<string>();
 
 			// DEPENDENCY: tabTypes must use the same strings as the NDLocation JavaScript class.
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		/* Function: GenerateJSON
 		 * Generates JSON for all the entries in the passed container.
 		 */
-		protected void GenerateJSON (MenuEntries.Base.Container container)
+		protected void GenerateJSON (HTML.Components.MenuEntries.Container container)
 			{
 			ContainerExtraData containerExtraData = new ContainerExtraData(container);
 			container.ExtraData = containerExtraData;
@@ -202,16 +202,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			foreach (var member in container.Members)
 				{
-				if (member is MenuEntries.Base.Target)
+				if (member is HTML.Components.MenuEntries.Container)
 					{
-					TargetExtraData targetExtraData = new TargetExtraData((MenuEntries.Base.Target)member);
+					GenerateJSON((HTML.Components.MenuEntries.Container)member);
+					}
+				else
+					{
+					TargetExtraData targetExtraData = new TargetExtraData((HTML.Components.MenuEntries.Entry)member);
 					member.ExtraData = targetExtraData;
 
 					targetExtraData.GenerateJSON(HTMLBuilder, this);
-					}
-				else if (member is MenuEntries.Base.Container)
-					{
-					GenerateJSON((MenuEntries.Base.Container)member);
 					}
 				}
 			}
@@ -220,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		/* Function: SegmentMenu
 		 * Segments the menu into smaller pieces and generates data file names.
 		 */
-		protected void SegmentMenu (MenuEntries.Base.Container container, string dataFileType, 
+		protected void SegmentMenu (HTML.Components.MenuEntries.Container container, string dataFileType, 
 															  ref StringTable<IDObjects.NumberSet> usedDataFiles)
 			{
 			// Generate the data file name for this container.
@@ -245,16 +245,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			int containerJSONSize = extraData.JSONBeforeMembers.Length + extraData.JSONAfterMembers.Length + 
 														extraData.JSONLengthOfMembers;
 
-			List<MenuEntries.Base.Container> subContainers = null;
+			List<HTML.Components.MenuEntries.Container> subContainers = null;
 
 			foreach (var member in container.Members)
 				{
-				if (member is MenuEntries.Base.Container)
+				if (member is HTML.Components.MenuEntries.Container)
 					{
 					if (subContainers == null)
-						{  subContainers = new List<MenuEntries.Base.Container>();  }
+						{  subContainers = new List<HTML.Components.MenuEntries.Container>();  }
 
-					subContainers.Add((MenuEntries.Base.Container)member);
+					subContainers.Add((HTML.Components.MenuEntries.Container)member);
 					}
 				}
 
@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			// Now start including the contents of subcontainers until we reach the size limit.  We're going breadth-first instead of
 			// depth first.
 
-			List<MenuEntries.Base.Container> nextSubContainers = null;
+			List<HTML.Components.MenuEntries.Container> nextSubContainers = null;
 
 			for (;;)
 				{
@@ -300,12 +300,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				foreach (var member in subContainers[smallestSubContainerIndex].Members)
 					{
-					if (member is MenuEntries.Base.Container)
+					if (member is HTML.Components.MenuEntries.Container)
 						{
 						if (nextSubContainers == null)
-							{  nextSubContainers = new List<MenuEntries.Base.Container>();  }
+							{  nextSubContainers = new List<HTML.Components.MenuEntries.Container>();  }
 
-						nextSubContainers.Add((MenuEntries.Base.Container)member);
+						nextSubContainers.Add((HTML.Components.MenuEntries.Container)member);
 						}
 					}
 
@@ -333,19 +333,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * Generates the output file for the container.  It must have <ContainerExtraData.DataFileName> set.  If it finds
 		 * any sub-containers that also have that set, it will recursively generate files for them as well.
 		 */
-		protected void BuildOutput (MenuEntries.Base.Container container)
+		protected void BuildOutput (HTML.Components.MenuEntries.Container container)
 			{
 			#if DEBUG
 			if (container.ExtraData == null || (container.ExtraData as ContainerExtraData).StartsNewDataFile == false)
 				{  throw new Exception ("BuildOutput() can only be called on containers with DataFileName set.");  }
 			#endif
 
-			Stack<MenuEntries.Base.Container> containersToBuild = new Stack<MenuEntries.Base.Container>();
+			Stack<HTML.Components.MenuEntries.Container> containersToBuild = new Stack<HTML.Components.MenuEntries.Container>();
 			containersToBuild.Push(container);
 
 			while (containersToBuild.Count > 0)
 				{
-				MenuEntries.Base.Container containerToBuild = containersToBuild.Pop();
+				HTML.Components.MenuEntries.Container containerToBuild = containersToBuild.Pop();
 				string fileName = (containerToBuild.ExtraData as ContainerExtraData).DataFileName;
 				
 				StringBuilder output = new StringBuilder();
@@ -373,8 +373,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * going through sub-containers as well.  This will not include the surrounding brackets, only the comma-separated
 		 * member entries.  If it finds any sub-containers that start a new data file, it will add them to containersToBuild.
 		 */
-		protected void AppendMembers (MenuEntries.Base.Container container, StringBuilder output, int indent, 
-																  Stack<MenuEntries.Base.Container> containersToBuild)
+		protected void AppendMembers (HTML.Components.MenuEntries.Container container, StringBuilder output, int indent, 
+																  Stack<HTML.Components.MenuEntries.Container> containersToBuild)
 			{
 			for (int i = 0; i < container.Members.Count; i++)
 				{
@@ -383,12 +383,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (!EngineInstance.Config.ShrinkFiles)
 					{  output.Append(' ', indent * IndentSpaces);  }
 
-				if (member is MenuEntries.Base.Target)
-					{
-					TargetExtraData targetExtraData = (TargetExtraData)member.ExtraData;
-					output.Append(targetExtraData.JSON);
-					}
-				else if (member is MenuEntries.Base.Container)
+				if (member is HTML.Components.MenuEntries.Container)
 					{
 					ContainerExtraData containerExtraData = (ContainerExtraData)member.ExtraData;
 					output.Append(containerExtraData.JSONBeforeMembers);
@@ -399,7 +394,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						output.StringEscapeAndAppend(containerExtraData.DataFileName);
 						output.Append('"');
 
-						containersToBuild.Push((MenuEntries.Base.Container)member);
+						containersToBuild.Push((HTML.Components.MenuEntries.Container)member);
 						}
 					else
 						{
@@ -408,7 +403,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						if (!EngineInstance.Config.ShrinkFiles)
 							{  output.AppendLine();  }
 
-						AppendMembers((MenuEntries.Base.Container)member, output, indent + 1, containersToBuild);
+						AppendMembers((HTML.Components.MenuEntries.Container)member, output, indent + 1, containersToBuild);
 
 						if (!EngineInstance.Config.ShrinkFiles)
 							{  output.Append(' ', (indent + 1) * IndentSpaces);  }
@@ -418,10 +413,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					output.Append(containerExtraData.JSONAfterMembers);
 					}
-				#if DEBUG
-				else
-					{  throw new Exception ("Can't append JSON for menu entry " + member.Title + ".");  }
-				#endif
+				else // not a container
+					{
+					TargetExtraData targetExtraData = (TargetExtraData)member.ExtraData;
+					output.Append(targetExtraData.JSON);
+					}
 
 				if (i < container.Members.Count - 1)
 					{  output.Append(',');  }
@@ -485,7 +481,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			/* Function: TargetExtraData
 			 */
-			public TargetExtraData (MenuEntries.Base.Target menuEntry)
+			public TargetExtraData (HTML.Components.MenuEntries.Entry menuEntry)
 				{
 				this.menuEntry = menuEntry;
 				this.json = null;
@@ -506,17 +502,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				string hashPath = null;
 				
-				if (menuEntry is MenuEntries.Files.File)
+				if (menuEntry is HTML.Components.MenuEntries.File)
 					{  
-					MenuEntries.Files.File fileMenuEntry = (MenuEntries.Files.File)menuEntry;
+					HTML.Components.MenuEntries.File fileMenuEntry = (HTML.Components.MenuEntries.File)menuEntry;
 					Files.File file = fileMenuEntry.WrappedFile;
 					Files.FileSource fileSource = htmlBuilder.EngineInstance.Files.FileSourceOf(file);
 
 					hashPath = Output.HTML.Paths.SourceFile.HashPath(fileSource.Number, fileSource.MakeRelative(file.FileName));  
 					}
-				else if (menuEntry is MenuEntries.Classes.Class)
+				else if (menuEntry is HTML.Components.MenuEntries.Class)
 					{  
-					MenuEntries.Classes.Class classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
+					HTML.Components.MenuEntries.Class classMenuEntry = (HTML.Components.MenuEntries.Class)menuEntry;
 					Symbols.ClassString classString = classMenuEntry.WrappedClassString;
 
 					if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
@@ -574,7 +570,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			/* var: menuEntry
 			 * The menu entry associated with this object.
 			 */
-			protected MenuEntries.Base.Target menuEntry;
+			protected HTML.Components.MenuEntries.Entry menuEntry;
 
 			/* var: json
 			 * The generated JSON for this entry.
@@ -600,7 +596,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			// Group: Functions
 			// _________________________________________________________________________
 
-			public ContainerExtraData (MenuEntries.Base.Container menuEntry)
+			public ContainerExtraData (HTML.Components.MenuEntries.Container menuEntry)
 				{
 				this.menuEntry = menuEntry;
 				this.jsonBeforeMembers = null;
@@ -652,22 +648,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				output.Append(',');
 
-				if (menuEntry is MenuEntries.Files.FileSource)
+				if (menuEntry is HTML.Components.MenuEntries.FileSource)
 					{
-					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)menuEntry;
+					HTML.Components.MenuEntries.FileSource fileSourceEntry = (HTML.Components.MenuEntries.FileSource)menuEntry;
 					hashPath = Output.HTML.Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number,
 																										 fileSourceEntry.CondensedPathFromFileSource );
 					}
-				else if (menuEntry is MenuEntries.Files.Folder)
+				else if (menuEntry is HTML.Components.MenuEntries.Folder)
 					{
-					MenuEntries.Base.Container container = menuEntry.Parent;
+					HTML.Components.MenuEntries.Container container = menuEntry.Parent;
 
 					#if DEBUG
 					if (container == null)
 						{  throw new Exception ("Parent must be defined when generating JSON for menu folder \"" + menuEntry.Title + "\".");  }
 					#endif
 
-					while ((container is MenuEntries.Files.FileSource) == false)
+					while ((container is HTML.Components.MenuEntries.FileSource) == false)
 						{
 						container = container.Parent;
 
@@ -677,29 +673,29 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						#endif
 						}
 
-					MenuEntries.Files.Folder folderEntry = (MenuEntries.Files.Folder)menuEntry;
-					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)container;
+					HTML.Components.MenuEntries.Folder folderEntry = (HTML.Components.MenuEntries.Folder)menuEntry;
+					HTML.Components.MenuEntries.FileSource fileSourceEntry = (HTML.Components.MenuEntries.FileSource)container;
 
 					hashPath = Output.HTML.Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number, 
 																										 folderEntry.PathFromFileSource );
 					}
-				else if (menuEntry is MenuEntries.Classes.Language)
+				else if (menuEntry is HTML.Components.MenuEntries.Language)
 					{
-					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)menuEntry;
+					HTML.Components.MenuEntries.Language languageEntry = (HTML.Components.MenuEntries.Language)menuEntry;
 
 					hashPath = Output.HTML.Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
 																									 languageEntry.CondensedScopeString);
 					}
-				else if (menuEntry is MenuEntries.Classes.Scope)
+				else if (menuEntry is HTML.Components.MenuEntries.Scope)
 					{
-					MenuEntries.Base.Container container = menuEntry;
+					HTML.Components.MenuEntries.Container container = menuEntry;
 
 					#if DEBUG
 					if (container == null)
 						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + menuEntry.Title + "\".");  }
 					#endif
 
-					while ((container is MenuEntries.Classes.Language) == false && container != menu.RootDatabaseMenu)
+					while ((container is HTML.Components.MenuEntries.Language) == false && container != menu.RootDatabaseMenu)
 						{
 						container = container.Parent;
 
@@ -709,7 +705,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						#endif
 						}
 
-					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)menuEntry;
+					HTML.Components.MenuEntries.Scope scopeEntry = (HTML.Components.MenuEntries.Scope)menuEntry;
 
 					if (container == menu.RootDatabaseMenu)
 						{
@@ -717,7 +713,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						}
 					else
 						{
-						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)container;
+						HTML.Components.MenuEntries.Language languageEntry = (HTML.Components.MenuEntries.Language)container;
 						hashPath = Output.HTML.Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
 																										 scopeEntry.WrappedScopeString);
 						}
@@ -817,14 +813,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					foreach (var member in menuEntry.Members)
 						{
-						if (member is MenuEntries.Base.Target)
-							{
-							jsonLengthOfMembers += (member.ExtraData as TargetExtraData).JSON.Length;
-							}
-						else // container
+						if (member is HTML.Components.MenuEntries.Container)
 							{
 							ContainerExtraData extraData = (ContainerExtraData)member.ExtraData;
 							jsonLengthOfMembers += extraData.JSONBeforeMembers.Length + extraData.JSONAfterMembers.Length;
+							}
+						else
+							{
+							jsonLengthOfMembers += (member.ExtraData as TargetExtraData).JSON.Length;
 							}
 						}
 
@@ -849,7 +845,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			/* var: menuEntry
 			 * The menu entry associated with this object.
 			 */
-			protected MenuEntries.Base.Container menuEntry;
+			protected HTML.Components.MenuEntries.Container menuEntry;
 
 			/* var: jsonBeforeMembers
 			 * The generated JSON for this entry, up to the point where its members would be inserted.

@@ -1,9 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes.Scope
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Language
  * ____________________________________________________________________________
  * 
- * Represents a scope in <Menu>, aka a container for all classes appearing at the same level of the
- * hierarchy.
+ * A container that represents a language in <Menu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -15,20 +14,20 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	public class Scope : Base.Container
+	public class Language : Container
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		/* Function: Scope
+		/* Function: Language
 		 */
-		public Scope (Symbols.SymbolString scopeString) : base ()
+		public Language (Languages.Language language) : base ()
 			{
-			this.scopeString = scopeString;
-			this.Title = scopeString.LastSegment;
+			this.language = language;
+			Title = language.Name;
 			}
 
 		override public void Condense ()
@@ -52,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes
 				if (childScope.CondensedTitles != null)
 					{  CondensedTitles.AddRange(childScope.CondensedTitles);  }
 
-				scopeString = childScope.scopeString;
+				condensedScopeString = childScope.WrappedScopeString;
 				}
 			}
 
@@ -60,20 +59,36 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Classes
 		// Group: Properties
 		// __________________________________________________________________________
 
-		/* Property: WrappedScopeString
-		 * The scope <Symbols.SymbolString> associated with this entry.
+		/* Property: WrappedLanguage
+		 * The language associated with this entry.
 		 */
-		public Symbols.SymbolString WrappedScopeString
+		public Languages.Language WrappedLanguage
 			{
 			get
-				{  return scopeString;  }
+				{  return language;  }
+			}
+
+		/* Property: CondensedScopeString
+		 * If this language had a scope condensed into it, this will be the scope <Symbols.SymbolString> associated 
+		 * with that entry.
+		 */
+		public Symbols.SymbolString CondensedScopeString
+			{
+			get
+				{  return condensedScopeString;  }
 			}
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Symbols.SymbolString scopeString;
+		/* var: language
+		 */
+		protected Languages.Language language;
+
+		/* var: condensedScopeString
+		 */
+		protected Symbols.SymbolString condensedScopeString;
 
 		}
 	}

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files.Folder
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Folder
  * ____________________________________________________________________________
  * 
  * Represents a folder or group of folders in a <Menu>.  It will only represent a group of folders
@@ -15,9 +15,9 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Files
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	public class Folder : Base.Container
+	public class Folder : Container
 		{
 
 		// Group: Functions

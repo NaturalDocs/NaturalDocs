@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base.Entry
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Entry
  * ____________________________________________________________________________
  * 
  * A base class for all entries in <Menu>.
@@ -13,9 +13,9 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 	{
-	abstract public class Entry //: IComparable<Entry>
+	abstract public class Entry
 		{
 
 		// Group: Functions
@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 		/* Property: Parent
 		 * The parent of this entry, or null if none.
 		 */
-		public Base.Container Parent
+		public Container Parent
 			{
 			get
 				{  return parent;  }
@@ -79,7 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.MenuEntries.Base
 
 		/* var: parent
 		 */
-		protected Base.Container parent;
+		protected Container parent;
 
 		/* var: extraData
 		 */
