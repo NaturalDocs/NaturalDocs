@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					foreach (int oldNumber in oldNumbers)
 						{
 						try
-							{  System.IO.File.Delete(Menu_DataFile(type, oldNumber));  }
+							{  System.IO.File.Delete(Output.HTML.Paths.Menu.OutputFile(this.OutputFolder, type, oldNumber));  }
 						catch (Exception e)
 							{
 							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
@@ -113,37 +113,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				buildState.UsedMenuDataFiles = newMenuDataFiles;
 				}
-			}
-
-
-
-		// Group: Path Functions
-		// __________________________________________________________________________
-
-
-		/* Property: Menu_DataFolder
-		 * The folder that holds all the menu JavaScript files.
-		 */
-		public Path Menu_DataFolder
-			{
-			get
-				{  return OutputFolder + "/menu";  }
-			}
-
-		/* Function: Menu_DataFileNameOnly
-		 * Returns the file name of the JavaScript data file with the passed type and ID number.
-		 */
-		public Path Menu_DataFileNameOnly (string type, int id)
-			{
-			return type + (id == 1 ? "" : id.ToString()) + ".js";
-			}
-
-		/* Function: Menu_DataFile
-		 * Returns the path of the JavaScript data file with the passed type and ID number.
-		 */
-		public Path Menu_DataFile (string type, int id)
-			{
-			return OutputFolder + "/menu/" + Menu_DataFileNameOnly(type, id);
 			}
 
 		}

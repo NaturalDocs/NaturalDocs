@@ -369,7 +369,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				Start_PurgeFolder(Output.HTML.Paths.Class.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				Start_PurgeFolder(Output.HTML.Paths.Database.OutputFolder(this.OutputFolder),  ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Menu_DataFolder, ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Output.HTML.Paths.Menu.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				Start_PurgeFolder(SearchIndex_DataFolder, ref saidPurgingOutputFiles);
 
 				buildState.NeedToBuildMenu = true;

@@ -59,13 +59,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(HTMLBuilder.Menu_DataFolder);  
+				System.IO.Directory.CreateDirectory(HTML.Paths.Menu.OutputFolder(HTMLBuilder.OutputFolder));  
 				}
 			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
 					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
-									HTMLBuilder.Menu_DataFolder, e.Message) 
+									HTML.Paths.Menu.OutputFolder(HTMLBuilder.OutputFolder), e.Message) 
 					);
 				}
 
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			tabInformation.Append("]);");
 
-			System.IO.File.WriteAllText( HTMLBuilder.Menu_DataFile("tabs", 1), tabInformation.ToString() );
+			System.IO.File.WriteAllText( HTML.Paths.Menu.OutputFile(HTMLBuilder.OutputFolder, "tabs"), tabInformation.ToString() );
 
 
 			return outputFiles;
@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			usedDataFileNumbers.Add(dataFileNumber);
 
 			ContainerExtraData extraData = (ContainerExtraData)container.ExtraData;
-			extraData.DataFileName = HTMLBuilder.Menu_DataFileNameOnly(dataFileType, dataFileNumber);
+			extraData.DataFileName = HTML.Paths.Menu.OutputFile(HTMLBuilder.OutputFolder, dataFileType, dataFileNumber, fileNameOnly: true);
 
 
 			// The data file has to include all the members in this container no matter what.
@@ -363,7 +363,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				output.Append("]);");
 
-				System.IO.File.WriteAllText(HTMLBuilder.Menu_DataFolder + "/" + fileName, output.ToString());
+				System.IO.File.WriteAllText(HTML.Paths.Menu.OutputFolder(HTMLBuilder.OutputFolder) + "/" + fileName, output.ToString());
 				}
 			}
 

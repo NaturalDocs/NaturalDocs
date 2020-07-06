@@ -59,6 +59,7 @@
     <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
     <Compile Include="Source\Output\HTML\Context.cs" />
+    <Compile Include="Source\Output\HTML\Paths\Menu.cs" />
     <Compile Include="Source\Output\HTML\Paths\Database.cs" />
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
     <Compile Include="Source\Output\HTML\Paths\SourceFile.cs" />
