@@ -282,32 +282,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				if (classString.Hierarchy == ClassString.HierarchyType.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.OutputFolder(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
-					}
-				else // Database
-					{
-					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + ToolTipsFileNameOnly;
-					}
-				}
-			}
+				Path outputFile = this.OutputFile;
 
-		/* Property: ToolTipsFileNameOnly
-		 * The file name of the topic page's tool tips file without the path.
-		 */
-		public Path ToolTipsFileNameOnly
-			{
-			get
-				{
+				if (outputFile == null)
+					{  return null;  }
+
+				string outputFileString = outputFile.ToString();
+
 				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
 				#endif
 
-				string nameString = classString.Symbol.LastSegment;
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-ToolTips.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-ToolTips.js";
 				}
 			}
 
@@ -323,32 +310,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				if (classString.Hierarchy == ClassString.HierarchyType.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.OutputFolder(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
-					}
-				else
-					{
-					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + SummaryFileNameOnly;
-					}
-				}
-			}
+				Path outputFile = this.OutputFile;
 
-		/* Property: SummaryFileNameOnly
-		 * The file name of the topic page's summary file without the path.
-		 */
-		public Path SummaryFileNameOnly
-			{
-			get
-				{
+				if (outputFile == null)
+					{  return null;  }
+
+				string outputFileString = outputFile.ToString();
+
 				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
 				#endif
 
-				string nameString = classString.Symbol.LastSegment;
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-Summary.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-Summary.js";
 				}
 			}
 
@@ -364,34 +338,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				if (classString.Hierarchy == ClassString.HierarchyType.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.OutputFolder(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol.WithoutLastSegment) + '/' + 
-								 SummaryToolTipsFileNameOnly;
-					}
-				else // Database
-					{
-					return Output.HTML.Paths.Database.OutputFolder(htmlBuilder.OutputFolder, classString.Symbol.WithoutLastSegment) + '/' + 
-								 SummaryToolTipsFileNameOnly;
-					}
-				}
-			}
+				Path outputFile = this.OutputFile;
 
-		/* Property: SummaryToolTipsFileNameOnly
-		 * The file name of the topic page's summary tool tips file without the path.
-		 */
-		public Path SummaryToolTipsFileNameOnly
-			{
-			get
-				{
+				if (outputFile == null)
+					{  return null;  }
+
+				string outputFileString = outputFile.ToString();
+
 				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
 				#endif
 
-				string nameString = classString.Symbol.LastSegment;
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-SummaryToolTips.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-SummaryToolTips.js";
 				}
 			}
 

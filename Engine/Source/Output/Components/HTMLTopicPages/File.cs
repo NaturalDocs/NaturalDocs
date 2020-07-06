@@ -171,29 +171,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		override public Path ToolTipsFile
 		   {  
 			get
-				{  
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
+				{
+				Path outputFile = this.OutputFile;
 
-				if (fileSource == null)
+				if (outputFile == null)
 					{  return null;  }
 
-				Path relativePath = fileSource.MakeRelative(file.FileName);
+				string outputFileString = outputFile.ToString();
 
-				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + ToolTipsFileNameOnly;
-				}
-			}
+				#if DEBUG
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
+				#endif
 
-		/* Property: ToolTipsFileNameOnly
-		 * The file name of the topic page's tool tips file without the path.
-		 */
-		public Path ToolTipsFileNameOnly
-			{
-			get
-				{
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-ToolTips.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-ToolTips.js";
 				}
 			}
 
@@ -205,28 +196,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
+				Path outputFile = this.OutputFile;
 
-				if (fileSource == null)
+				if (outputFile == null)
 					{  return null;  }
 
-				Path relativePath = fileSource.MakeRelative(file.FileName);
+				string outputFileString = outputFile.ToString();
 
-				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + SummaryFileNameOnly;
-				}
-			}
+				#if DEBUG
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
+				#endif
 
-		/* Property: SummaryFileNameOnly
-		 * The file name of the topic page's summary file without the path.
-		 */
-		public Path SummaryFileNameOnly
-			{
-			get
-				{
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-Summary.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-Summary.js";
 				}
 			}
 
@@ -238,28 +220,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		   {  
 			get
 				{  
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
+				Path outputFile = this.OutputFile;
 
-				if (fileSource == null)
+				if (outputFile == null)
 					{  return null;  }
 
-				Path relativePath = fileSource.MakeRelative(file.FileName);
+				string outputFileString = outputFile.ToString();
 
-				return Output.HTML.Paths.SourceFile.OutputFolder(htmlBuilder.OutputFolder, fileSource.Number, relativePath.ParentFolder) + '/' + SummaryToolTipsFileNameOnly;
-				}
-			}
+				#if DEBUG
+				if (!outputFileString.EndsWith(".html"))
+					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
+				#endif
 
-		/* Property: SummaryToolTipsFileNameOnly
-		 * The file name of the topic page's summary tool tips file without the path.
-		 */
-		public Path SummaryToolTipsFileNameOnly
-			{
-			get
-				{
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				string nameString = file.FileName.NameWithoutPath.ToString();
-				return Output.HTML.Paths.Utilities.Sanitize(nameString, true) + "-SummaryToolTips.js";
+				return outputFileString.Substring(0, outputFileString.Length - 5) + "-SummaryToolTips.js";
 				}
 			}
 
