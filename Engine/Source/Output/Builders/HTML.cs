@@ -69,6 +69,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
 		{
 
+		// Group: Types
+		// __________________________________________________________________________
+
+
 		/* enum: PageType
 		 * Used for specifying the type of page something applies to.
 		 * 

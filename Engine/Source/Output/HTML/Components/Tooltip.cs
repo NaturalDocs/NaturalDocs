@@ -103,6 +103,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
 		/* Function: AppendPrototype
 		 * Covers both prototypes and class prototypes.
 		 */

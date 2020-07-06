@@ -172,6 +172,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
 		/* Function: AppendTitle
 		 */
 		protected void AppendTitle (StringBuilder output)
