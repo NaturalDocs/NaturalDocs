@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
 				}
 
-			else // Database
+			else if (classString.Hierarchy == Hierarchy.Database)
 				{
 				if (rootDatabaseMenu == null)
 					{
@@ -146,6 +146,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				container = rootDatabaseMenu;
 				ignoreCase = true;
 				}
+
+			else
+				{  throw new NotImplementedException();  }
 
 
 			// Create the class and find out where it goes.  Create new scope containers as necessary.

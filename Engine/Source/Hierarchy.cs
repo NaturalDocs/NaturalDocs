@@ -4,6 +4,7 @@
  * 
  * Which hierarchy a <Symbols.ClassString> or other element appears in.
  * 
+ * File - The file hierarchy.
  * Class - The class hierarchy.
  * Database - The database hierarchy.
  * 
@@ -22,6 +23,7 @@ namespace CodeClear.NaturalDocs.Engine
 	{
 	public enum Hierarchy : byte
 		{  
+		File = 0,
 		Class = 1, 
 		Database = 2  
 		}

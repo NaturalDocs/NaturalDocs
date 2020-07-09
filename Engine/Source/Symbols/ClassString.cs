@@ -66,13 +66,15 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				else
 					{  stringBuilder.Append('c');  }
 				}
-			else // (hierarchy == Hierarchy.Database)
+			else if (hierarchy == Hierarchy.Database)
 				{  
 				if (caseSensitive)
 					{  stringBuilder.Append('D');  }
 				else
 					{  stringBuilder.Append('d');  }
 				}
+			else
+				{  throw new NotImplementedException();  }
 
 			do
 				{
