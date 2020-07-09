@@ -23,25 +23,6 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 	public struct ClassString : IComparable, Collections.ILookupKey
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-
-		/* Enum: HierarchyType
-		 * 
-		 * Which hierarchy the ClassString is for.  The numeric values match the values in <CodeDB.Classes.Hierarchy>.
-		 * 
-		 * Class - The class hierarchy.
-		 * Database - The database hierarchy.
-		 */
-		public enum HierarchyType : byte
-			{  
-			Class = 1, 
-			Database = 2  
-			}
-
-
-		
 		// Group: Constants
 		// __________________________________________________________________________
 
@@ -68,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* Function: FromParameters
 		 * Creates a ClassString from the passed parameters.
 		 */
-		static public ClassString FromParameters (HierarchyType hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
+		static public ClassString FromParameters (Hierarchy hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
 			{
 			if (symbol == null)
 				{  throw new NullReferenceException();  }
@@ -78,14 +59,14 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			// allocation.
 			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 4);
 
-			if (hierarchy == HierarchyType.Class)
+			if (hierarchy == Hierarchy.Class)
 				{  
 				if (caseSensitive)
 					{  stringBuilder.Append('C');  }
 				else
 					{  stringBuilder.Append('c');  }
 				}
-			else // (hierarchy == HierarchyType.Database)
+			else // (hierarchy == Hierarchy.Database)
 				{  
 				if (caseSensitive)
 					{  stringBuilder.Append('D');  }
@@ -192,14 +173,14 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* Property: Hierarchy
 		 * Which hierarchy the class is a part of.
 		 */
-		public HierarchyType Hierarchy
+		public Hierarchy Hierarchy
 			{
 			get
 				{
 				if (classString == null || classString[0] == 'C' || classString[0] == 'c')
-					{  return HierarchyType.Class;  }
+					{  return Hierarchy.Class;  }
 				else if (classString[0] == 'D' || classString[0] == 'd')
-					{  return HierarchyType.Database;  }
+					{  return Hierarchy.Database;  }
 				else
 					{  throw new FormatException();  }
 				}

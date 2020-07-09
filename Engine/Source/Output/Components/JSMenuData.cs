@@ -515,12 +515,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					HTML.Components.MenuEntries.Class classMenuEntry = (HTML.Components.MenuEntries.Class)menuEntry;
 					Symbols.ClassString classString = classMenuEntry.WrappedClassString;
 
-					if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
+					if (classString.Hierarchy == Hierarchy.Class)
 						{
 						Languages.Language language = htmlBuilder.EngineInstance.Languages.FromID(classString.LanguageID);
 						hashPath = Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);  
 						}
-					else if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Database)
+					else if (classString.Hierarchy == Hierarchy.Database)
 						{
 						hashPath = Output.HTML.Paths.Database.HashPath(classString.Symbol);
 						}

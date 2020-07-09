@@ -230,12 +230,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+				if (classString.Hierarchy == Hierarchy.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return Output.HTML.Paths.Class.OutputFile(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol);
 					}
-				else if (classString.Hierarchy == ClassString.HierarchyType.Database)
+				else if (classString.Hierarchy == Hierarchy.Database)
 					{  
 					return Output.HTML.Paths.Database.OutputFile(htmlBuilder.OutputFolder, classString.Symbol);
 					}
@@ -256,12 +256,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
 				#endif
 
-				if (classString.Hierarchy == ClassString.HierarchyType.Class)
+				if (classString.Hierarchy == Hierarchy.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					return Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);
 					}
-				else if (classString.Hierarchy == ClassString.HierarchyType.Database)
+				else if (classString.Hierarchy == Hierarchy.Database)
 					{
 					return Output.HTML.Paths.Database.HashPath(classString.Symbol);
 					}

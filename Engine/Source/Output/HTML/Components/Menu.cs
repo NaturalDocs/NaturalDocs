@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			MenuEntries.Container container;
 			bool ignoreCase;
 
-			if (classString.Hierarchy == Symbols.ClassString.HierarchyType.Class)
+			if (classString.Hierarchy == Hierarchy.Class)
 				{
 				MenuEntries.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
 

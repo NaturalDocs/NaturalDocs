@@ -691,7 +691,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
-				ClassString classString = ClassString.FromParameters(ClassString.HierarchyType.Class, this.ID, true, symbol);
+				ClassString classString = ClassString.FromParameters(Hierarchy.Class, this.ID, true, symbol);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;

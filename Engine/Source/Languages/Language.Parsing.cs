@@ -3111,12 +3111,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (commentType.Scope == CommentType.ScopeValue.Start && 
 						  (commentType.Flags.ClassHierarchy == true || commentType.Flags.DatabaseHierarchy == true) )
 						{
-						ClassString.HierarchyType hierarchyType = (commentType.Flags.ClassHierarchy ? 
-																												ClassString.HierarchyType.Class :
-																												ClassString.HierarchyType.Database);
+						Hierarchy hierarchy = (commentType.Flags.ClassHierarchy ? Hierarchy.Class : Hierarchy.Database);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-						ClassString classString = ClassString.FromParameters(hierarchyType, language.ID, language.CaseSensitive, topicSymbol);
+						ClassString classString = ClassString.FromParameters(hierarchy, language.ID, language.CaseSensitive, topicSymbol);
 
 						topic.ClassString = classString;
 
