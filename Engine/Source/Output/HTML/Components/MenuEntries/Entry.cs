@@ -23,11 +23,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Entry
 		 */
-		public Entry ()
+		public Entry (Hierarchy hierarchy)
 			{
 			title = null;
 			parent = null;
 			extraData = null;
+
+			this.hierarchy = hierarchy;
 			}
 
 
@@ -69,6 +71,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 				{  extraData = value;  }
 			}
 
+		/* Property: Hierarchy
+		 * The <Engine.Hierarchy> this entry appears in.
+		 */
+		public Hierarchy Hierarchy
+			{
+			get
+				{  return hierarchy;  }
+			set
+				{  hierarchy = value;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -84,6 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 		/* var: extraData
 		 */
 		protected object extraData;
+
+		/* var: hierarchy
+		 */
+		protected Hierarchy hierarchy;
 
 		}
 	}

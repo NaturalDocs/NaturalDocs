@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Folder
 		 */
-		public Folder (Path pathFromFileSource) : base ()
+		public Folder (Path pathFromFileSource) : base (Hierarchy.File)
 			{
 			this.pathFromFileSource = pathFromFileSource;
 			this.Title = pathFromFileSource.NameWithoutPath;
