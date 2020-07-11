@@ -56,6 +56,10 @@
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONMenu.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Container.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Target.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Entry.cs" />
     <Compile Include="Source\Output\HTML\Components\Tooltip.cs" />
     <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
@@ -194,7 +198,6 @@
     <Compile Include="Source\Output\Components\HTMLTopicPages\Class.cs" />
     <Compile Include="Source\Output\Components\HTMLTopicPages\File.cs" />
     <Compile Include="Source\Output\Builders\HTML.Class.cs" />
-    <Compile Include="Source\Output\Components\JSMenuData.cs" />
     <Compile Include="Source\Output\Components\JSSummaryData.cs" />
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
