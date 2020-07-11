@@ -1,13 +1,11 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Collections.ToNumberSetTable
+ * Class: CodeClear.NaturalDocs.Engine.Collections.NumberSetTable
  * ____________________________________________________________________________
  * 
  * A generic lookup table for mapping something to NumberSets.  This is preferable to a Dictionary<object, NumberSet>
  * class because:
  * 
- * - It can apply the normalizations in <KeySettings>.
- * - Reading non-existent keys returns null instead of throwing an exception.
- * - Adding and removing individual numbers is easier.
+ * - Adding and removing individual numbers automatically creates and deletes NumberSets.
  * 
  */
 
@@ -21,13 +19,17 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Collections
 	{
-	public class ToNumberSetTable<ObjectType> : SafeDictionary<ObjectType, IDObjects.NumberSet>
+	public class NumberSetTable<ObjectType> : SafeDictionary<ObjectType, IDObjects.NumberSet>
 		{
+
+		// Group: Functions
+		// __________________________________________________________________________
+
 		
-		/* Function: ToNumberSetTable
+		/* Function: NumberSetTable
 		 * Creates an empty table.
 		 */
-		public ToNumberSetTable () : base()
+		public NumberSetTable () : base()
 			{
 			}
 			
@@ -95,6 +97,24 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			}
 		
 			
+		/* Function: LowestAvailable
+		 * The lowest unused number available for the passed key, starting at one.
+		 */
+		public int LowestAvailable (ObjectType key)
+			{
+			IDObjects.NumberSet numberSet = this[key];
+
+			if (numberSet == null)
+				{  return 1;  }
+			else
+				{  return numberSet.LowestAvailable;  }
+			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
 
 		/* Property: IsEmpty
 		 * Returns whether the table is empty, which is faster than testing <Count> if that's all you need.
