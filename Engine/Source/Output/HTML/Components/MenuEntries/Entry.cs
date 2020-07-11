@@ -27,7 +27,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 			{
 			title = null;
 			parent = null;
-			extraData = null;
 
 			this.hierarchy = hierarchy;
 			}
@@ -59,18 +58,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 				{  parent = value;  }
 			}
 
-		/* Property: ExtraData
-		 * A object reference that can be used to attach arbitrary data to an individual entry.  This can be used to aid 
-		 * code that converts the menu to an output format.
-		 */
-		public object ExtraData
-			{
-			get
-				{  return extraData;  }
-			set
-				{  extraData = value;  }
-			}
-
 		/* Property: Hierarchy
 		 * The <Engine.Hierarchy> this entry appears in.
 		 */
@@ -93,10 +80,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 		/* var: parent
 		 */
 		protected Container parent;
-
-		/* var: extraData
-		 */
-		protected object extraData;
 
 		/* var: hierarchy
 		 */
