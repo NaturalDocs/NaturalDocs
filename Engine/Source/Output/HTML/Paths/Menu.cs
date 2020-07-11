@@ -23,14 +23,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 		/* Function: OutputFile
 		 * 
-		 * Returns the file name of the JavaScript data file with the passed type and ID number.
+		 * Returns the file name of the JavaScript data file with the passed hierarchy and ID number.
 		 * 
 		 * Examples:
 		 * 
-		 *		targetOutputFolder + type + id - C:\Project\Documentation\menu\files3.js
-		 *		targetOutputFolder + type + id + fileNameOnly - files3.js
+		 *		targetOutputFolder + hierarchy + id - C:\Project\Documentation\menu\files3.js
+		 *		targetOutputFolder + hierarchy + id + fileNameOnly - files3.js
 		 */
-		static public Path OutputFile (Path targetOutputFolder, string type, int id = 1, bool fileNameOnly = false)
+		static public Path OutputFile (Path targetOutputFolder, Hierarchy hierarchy, int id = 1, bool fileNameOnly = false)
 			{
 			StringBuilder result = new StringBuilder();
 
@@ -40,7 +40,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 				result.Append("/menu/");
 				}
 
-			result.Append(type);
+			switch (hierarchy)
+				{
+				case Hierarchy.File:
+					result.Append("files");
+					break;
+				case Hierarchy.Class:
+					result.Append("classes");
+					break;
+				case Hierarchy.Database:
+					result.Append("database");
+					break;
+				default:
+					throw new NotImplementedException();
+				}
 
 			if (id != 1)
 				{  result.Append(id);  }
@@ -48,6 +61,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 			result.Append(".js");
 
 			return result.ToString();
+			}
+
+
+		/* Function: TabOutputFile
+		 * 
+		 * Returns the file name of the JavaScript data file which stores the tab information.
+		 * 
+		 * Examples:
+		 * 
+		 *		targetOutputFolder - C:\Project\Documentation\menu\tabs.js
+		 *		targetOutputFolder + fileNameOnly - tabs.js
+		 */
+		static public Path TabOutputFile (Path targetOutputFolder, bool fileNameOnly = false)
+			{
+			if (fileNameOnly)
+				{  return "tabs.js";  }
+			else
+				{  return (targetOutputFolder + "/menu/tabs.js");  }
 			}
 
 
