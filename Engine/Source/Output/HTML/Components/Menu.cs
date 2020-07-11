@@ -25,16 +25,14 @@ using System.Collections.Generic;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class Menu
+	public class Menu : Component
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public Menu (Builder builder)
+		public Menu (Context context) : base (context)
 			{
-			this.builder = builder;
-
 			rootFileMenu = null;
 			rootClassMenu = null;
 			rootDatabaseMenu = null;
@@ -454,26 +452,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Property: Builder
-		 * The <Builder> associated with this menu.
-		 */
-		public Builder Builder
-			{
-			get
-				{  return builder;  }
-			}
-
-
-		/* Property: EngineInstance
-		 * The <Engine.Instance> associated with this menu.
-		 */
-		public Engine.Instance EngineInstance
-			{
-			get
-				{  return Builder.EngineInstance;  }
-			}
-
-
 		/* Property: RootFileMenu
 		 * 
 		 * The root container of all file-based menu entries, or null if none.
@@ -517,11 +495,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Variables
 		// __________________________________________________________________________
 
-
-		/* var: builder
-		 * The <Builder> associated with this menu.
-		 */
-		protected Builder builder;
 
 		/* var: rootFileMenu
 		 * 
