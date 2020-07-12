@@ -2,8 +2,8 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONMenu
  * ____________________________________________________________________________
  * 
- * A helper class to build a JSON representation of <Menu> for output.  It can also save the representation to JavaScript files as documented in
- * <JavaScript Menu Data>.
+ * A helper class to build a JSON representation of <Menu> for output.  It can also save the representation to JavaScript files as 
+ * documented in <JavaScript Menu Data>.
  * 
  * Usage:
  * 
@@ -43,7 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: ConvertToJSON
-		 * Converts the passed <Menu> to a JSON menu structure, accessible from <RootFileMenu>, <RootClassMenu>, and <RootDatabaseMenu>.
+		 * Converts the passed <Menu> to a JSON menu structure, accessible from <RootFileMenu>, <RootClassMenu>, and 
+		 * <RootDatabaseMenu>.
 		 */
 		public void ConvertToJSON (Menu menu)
 			{
@@ -55,8 +56,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: BuildDataFiles
 		 * 
-		 * Converts the JSON menu created by <ConvertToJSON()> and saves it as a series of JavaScript files as documented in <JavaScript Menu Data>.
-		 * This includes the tab information file.  Note that you have to call <ConvertToJSON()> prior to calling this function or no data files will be generated.
+		 * Takes the JSON menu created by <ConvertToJSON()> and saves it as a series of JavaScript files as documented in 
+		 * <JavaScript Menu Data>.  This includes the tab information file.  Note that you have to call <ConvertToJSON()> prior to 
+		 * calling this function or no data files will be generated.
 		 * 
 		 * Returns:
 		 * 
@@ -521,7 +523,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				AppendMembers(containerToBuild, output, 1, containersToBuild);
 
 				if (!EngineInstance.Config.ShrinkFiles)
-					{  output.Append(' ', IndentSpaces);  }
+					{  output.Append(' ', IndentWidth);  }
 
 				output.Append("]);");
 
@@ -543,7 +545,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				var member = container.Members[i];
 
 				if (!EngineInstance.Config.ShrinkFiles)
-					{  output.Append(' ', indent * IndentSpaces);  }
+					{  output.Append(' ', indent * IndentWidth);  }
 
 				if (member is JSONMenuEntries.Container)
 					{
@@ -569,7 +571,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						AppendMembers(memberContainer, output, indent + 1, containersToBuild);
 
 						if (!EngineInstance.Config.ShrinkFiles)
-							{  output.Append(' ', (indent + 1) * IndentSpaces);  }
+							{  output.Append(' ', (indent + 1) * IndentWidth);  }
 
 						output.Append(']');
 						}
@@ -626,7 +628,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			for (int i = 0; i < tabContainers.Count; i++)
 				{
 				if (!EngineInstance.Config.ShrinkFiles)
-					{  tabInformation.Append(' ', IndentSpaces);  }
+					{  tabInformation.Append(' ', IndentWidth);  }
 
 				tabInformation.Append("[\"");
 				tabInformation.Append(tabTypes[i]);
@@ -678,7 +680,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			if (!EngineInstance.Config.ShrinkFiles)
-				{  tabInformation.Append(' ', IndentSpaces);  }
+				{  tabInformation.Append(' ', IndentWidth);  }
 
 			tabInformation.Append("]);");
 
@@ -725,10 +727,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Constants
 		// __________________________________________________________________________
 
-		/* Constant: IndentSpaces
+		/* Constant: IndentWidth
 		 * The number of spaces to indent each level by when building the output without file shrinking.
 		 */
-		protected const int IndentSpaces = 3;
+		protected const int IndentWidth = 3;
 
 		/* const: SegmentLength
 		 * The amount of data to try to fit in each JSON file before splitting it off into another one.  This will be
