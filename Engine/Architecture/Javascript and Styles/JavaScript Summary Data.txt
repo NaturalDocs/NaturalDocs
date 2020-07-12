@@ -29,20 +29,26 @@ _______________________________________________________________________________
 		>     [1235,0,1,"Topic 2 HTML Name","Topic2HashSymbol"],
 		>     [1236,0,1,,"Topic3HashSymbol"]]
 		>    );
-			
-		The first parameter is is an array of the languages used in the summary.  They appear in the order in which they should
-		appear in the output.  Each language is an array with these members:
+		
+		Languages:
+
+			The first parameter is is an array of the languages used in the summary.  They appear in the order in which they should
+			appear in the output.  Each language is an array with these members:
 			
 			nameHTML - The name of the language in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
-				
-		The second parameter is an array of the comment types used in the summary.  They appear in the order in which they should
-		appear in the output.  Each comment type is an array with these members:
+		
+		Comment Types:
+
+			The second parameter is an array of the comment types used in the summary.  They appear in the order in which they should
+			appear in the output.  Each comment type is an array with these members:
 			
 			pluralNameHTML - The plural name of the comment type in HTML.
 			simpleIdentifier - A simplified version of the name which can be used in CSS classes.
-			
-		The third parameter is an array of summary entries, each of which is an array with these members:
+		
+		Summary Entries:
+
+			The third parameter is an array of summary entries, each of which is an array with these members:
 			
 			topicID - A numeric ID for the topic, unique across the whole project.
 			languageIndex - The topic's language as an index into the languages array.
@@ -50,6 +56,6 @@ _______________________________________________________________________________
 			nameHTML - The name of the topic in HTML.  This will be undefined for embedded topics.
 			symbol - The topic's symbol in the hash path.  May be undefined if you should use the file's hash path alone.
 
-		What is an embedded topic?  One that appears within another topic, such as a list topic or an enumeration's members.
-		The names are undefined so they should not be displayed in the summary's generated HTML.  However, they are included
-		in the summary data anyway because a complete list of defined topics may be needed to help navigation.
+			What is an embedded topic?  One that appears within another topic, such as a list topic or an enumeration's members.
+			The names are undefined so they should not be displayed in the summary's generated HTML.  However, they are included
+			in the summary data anyway because a complete list of defined topics may be needed to help navigation.
