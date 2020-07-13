@@ -39,6 +39,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			rootFileMenu = null;
 			rootClassMenu = null;
 			rootDatabaseMenu = null;
+
+			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 			}
 
 
@@ -51,6 +53,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			rootFileMenu = (menu.RootFileMenu != null ? ConvertToJSON(menu.RootFileMenu) : null);
 			rootClassMenu = (menu.RootClassMenu != null ? ConvertToJSON(menu.RootClassMenu) : null);
 			rootDatabaseMenu = (menu.RootDatabaseMenu != null ? ConvertToJSON(menu.RootDatabaseMenu) : null);
+
+			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 			}
 
 
@@ -517,12 +521,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				output.StringEscapeAndAppend(fileName);
 				output.Append("\",[");
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  output.AppendLine();  }
 				
 				AppendMembers(containerToBuild, output, 1, containersToBuild);
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  output.Append(' ', IndentWidth);  }
 
 				output.Append("]);");
@@ -544,7 +548,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var member = container.Members[i];
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  output.Append(' ', indent * IndentWidth);  }
 
 				if (member is JSONMenuEntries.Container)
@@ -565,12 +569,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{
 						output.Append('[');
 
-						if (!EngineInstance.Config.ShrinkFiles)
+						if (addWhitespace)
 							{  output.AppendLine();  }
 
 						AppendMembers(memberContainer, output, indent + 1, containersToBuild);
 
-						if (!EngineInstance.Config.ShrinkFiles)
+						if (addWhitespace)
 							{  output.Append(' ', (indent + 1) * IndentWidth);  }
 
 						output.Append(']');
@@ -587,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (i < container.Members.Count - 1)
 					{  output.Append(',');  }
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  output.AppendLine();  }
 				}
 			}
@@ -600,7 +604,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			StringBuilder tabInformation = new StringBuilder("NDMenu.OnTabsLoaded([");
 
-			if (!EngineInstance.Config.ShrinkFiles)
+			if (addWhitespace)
 				{  tabInformation.Append('\n');  }
 
 			List<JSONMenuEntries.Container> tabContainers = new List<JSONMenuEntries.Container>();
@@ -627,7 +631,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			for (int i = 0; i < tabContainers.Count; i++)
 				{
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  tabInformation.Append(' ', IndentWidth);  }
 
 				tabInformation.Append("[\"");
@@ -675,11 +679,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (i < tabContainers.Count - 1)
 					{  tabInformation.Append(',');  }
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  tabInformation.Append('\n');  }
 				}
 
-			if (!EngineInstance.Config.ShrinkFiles)
+			if (addWhitespace)
 				{  tabInformation.Append(' ', IndentWidth);  }
 
 			tabInformation.Append("]);");
@@ -728,7 +732,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 		/* Constant: IndentWidth
-		 * The number of spaces to indent each level by when building the output without file shrinking.
+		 * The number of spaces to indent each level by when building the output with extra whitespace.
 		 */
 		protected const int IndentWidth = 3;
 
@@ -762,6 +766,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * The root container of all database-based menu entries, or null if none.
 		 */
 		protected JSONMenuEntries.Container rootDatabaseMenu;
+
+		/* var: addWhitespace
+		 * Whether additional whitespace and line breaks should be added to the JSON output to make it more readable.
+		 */
+		protected bool addWhitespace;
 
 		}
 	}
