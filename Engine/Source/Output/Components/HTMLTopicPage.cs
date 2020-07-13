@@ -254,54 +254,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					htmlBuilder.BuildFile(OutputFile, PageTitle, html.ToString(), Builders.HTML.PageType.Content);
 
 
-					// Build the tooltips file
-
-					using (System.IO.StreamWriter file = htmlBuilder.CreateTextFileAndPath(ToolTipsFile))
-						{
-						file.Write("NDContentPage.OnToolTipsLoaded({");
-
-						if (!EngineInstance.Config.ShrinkFiles)
-							{  file.WriteLine();  }
-
-						for (int i = 0; i < linkTargets.Count; i++)
-							{
-							Topic topic = linkTargets[i];
-							string toolTipHTML = tooltipBuilder.BuildToolTip(topic, context, summaryLinks);
-
-							if (toolTipHTML != null)
-								{
-								if (!EngineInstance.Config.ShrinkFiles)
-									{  file.Write("   ");  }
-
-								file.Write(topic.TopicID);
-								file.Write(":\"");
-								file.Write(toolTipHTML.StringEscape());
-								file.Write('"');
-
-								if (i != linkTargets.Count - 1)
-									{  file.Write(',');  }
-
-								if (!EngineInstance.Config.ShrinkFiles)
-									{  file.WriteLine();  }
-								}
-							}
-
-						if (!EngineInstance.Config.ShrinkFiles)
-							{  file.Write("   ");  }
-
-						file.Write("});");
-						}
-
-
-					// Build summary and summary tooltips files
+					// Build summary and tooltips files
 
 					HTML.Components.JSONSummary summaryBuilder = new HTML.Components.JSONSummary(context);
 					summaryBuilder.ConvertToJSON(topics, context);
 					summaryBuilder.BuildDataFile();
 
-					HTML.Components.JSONToolTips summaryToolTipsBuilder = new HTML.Components.JSONToolTips(context);
-					summaryToolTipsBuilder.ConvertToJSON(topics, links, context);
-					summaryToolTipsBuilder.BuildDataFileForSummary();
+					HTML.Components.JSONToolTips toolTipsBuilder = new HTML.Components.JSONToolTips(context);
+					toolTipsBuilder.ConvertToJSON(topics, links, context);
+					toolTipsBuilder.BuildDataFileForSummary();
+
+					toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, context);
+					toolTipsBuilder.BuildDataFileForContent();
 
 					return true;
 					}

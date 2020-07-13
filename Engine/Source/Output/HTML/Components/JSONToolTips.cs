@@ -79,6 +79,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: BuildDataFileForContent
+		 * 
+		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for content files as documented in 
+		 * <JavaScript ToolTip Data>.  It will use the file name specified in <HTMLTopicsPage.ToolTipsFile>.  Note that you 
+		 * have to call <ConvertToJSON()> prior to calling this function.
+		 */
+		public void BuildDataFileForContent ()
+			{
+			StringBuilder output = new StringBuilder();
+
+			output.Append("NDContentPage.OnToolTipsLoaded(");
+
+			if (addWhitespace)
+				{  output.AppendLine();  }
+
+			output.Append(tooltipsJSON);
+			output.Append(");");
+
+			System.IO.StreamWriter toolTipsFile = context.Builder.CreateTextFileAndPath(context.TopicPage.ToolTipsFile);
+
+			try
+				{  toolTipsFile.Write(output.ToString());  }
+			finally
+				{  toolTipsFile.Dispose();  }
+			}
+
+
 		/* Function: BuildDataFileForSummary
 		 * 
 		 * Takes the JSON created by <ConvertToJSON()> and saves it as a JavaScript file for summaries as documented in 
