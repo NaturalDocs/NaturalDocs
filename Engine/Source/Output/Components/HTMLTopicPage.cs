@@ -295,8 +295,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					// Build summary and summary tooltips files
 
-					JSSummaryData summaryBuilder = new JSSummaryData(this);
-					summaryBuilder.Build(topics, links, PageTitle, OutputFileHashPath, SummaryFile, SummaryToolTipsFile);
+					HTML.Components.JSONSummary summaryBuilder = new HTML.Components.JSONSummary(context);
+					summaryBuilder.ConvertToJSON(topics, context);
+					summaryBuilder.BuildDataFile();
+
+					HTML.Components.JSONToolTips summaryToolTipsBuilder = new HTML.Components.JSONToolTips(context);
+					summaryToolTipsBuilder.ConvertToJSON(topics, links, context);
+					summaryToolTipsBuilder.BuildDataFileForSummary();
 
 					return true;
 					}

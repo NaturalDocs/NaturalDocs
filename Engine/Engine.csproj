@@ -60,6 +60,8 @@
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Container.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Target.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Entry.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONToolTips.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONSummary.cs" />
     <Compile Include="Source\Output\HTML\Components\Tooltip.cs" />
     <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
@@ -198,7 +200,6 @@
     <Compile Include="Source\Output\Components\HTMLTopicPages\Class.cs" />
     <Compile Include="Source\Output\Components\HTMLTopicPages\File.cs" />
     <Compile Include="Source\Output\Builders\HTML.Class.cs" />
-    <Compile Include="Source\Output\Components\JSSummaryData.cs" />
     <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
     <Compile Include="Source\Output\Builders\HTML.Source.cs" />
     <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
