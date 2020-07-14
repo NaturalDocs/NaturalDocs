@@ -20,7 +20,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	abstract public class Builder
+	abstract public class Builder : Module
 		{
 		
 		// Group: Functions
@@ -29,7 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		
 		/* Function: Builder
 		 */
-		public Builder (Output.Manager manager)
+		public Builder (Output.Manager manager) : base (manager.EngineInstance)
 			{
 			this.manager = manager;
 			}
@@ -138,16 +138,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			get
 				{  return manager;  }
-			}
-
-
-		/* Property: EngineInstance
-		 * The <Engine.Instance> associated with this builder.
-		 */
-		public Engine.Instance EngineInstance
-			{
-			get
-				{  return Manager.EngineInstance;  }
 			}
 
 

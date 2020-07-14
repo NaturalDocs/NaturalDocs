@@ -521,15 +521,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 		/* Function: Dispose
 		 */
-		public void Dispose ()
+		override protected void Dispose (bool strictRulesApply)
 			{
-			try
+			if (!strictRulesApply)
 				{
-				if (buildState != null)
-					{  HTMLBuildState.SaveBinaryFile(WorkingDataFolder + "/BuildState.nd", buildState);  }
+				try
+					{
+					if (buildState != null)
+						{  HTMLBuildState.SaveBinaryFile(WorkingDataFolder + "/BuildState.nd", buildState);  }
+					}
+				catch 
+					{  }
 				}
-			catch 
-				{  }
 			}
 
 

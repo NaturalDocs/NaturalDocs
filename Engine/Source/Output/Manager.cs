@@ -40,10 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			if (!strictRulesApply)
 				{
 				foreach (Builder builder in builders)
-					{
-					if (builder is IDisposable)
-						{  ((IDisposable)builder).Dispose();  }
-					}
+					{  builder.Dispose();  }
 				}
 			}
 
