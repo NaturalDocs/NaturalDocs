@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<string> GetAllPrefixes ()
 			{
-			return EngineInstance.SearchIndex.UsedPrefixes();
+			return HTMLBuilder.SearchIndex.UsedPrefixes();
 			}
 
 
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 */
 		protected List<HTML.SearchIndex.Entries.Keyword> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			return EngineInstance.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
+			return HTMLBuilder.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
 			}
 
 

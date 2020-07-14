@@ -37,11 +37,9 @@
  *		
  *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> and <Files.Manager> watcher.
  *		
- *		- <SearchIndex.Manager> is next because it also needs to be added as a <CodeDB.Manager> watcher.
- *		
- *		- <Output.Manager> is next because <Output.Builders> may need to be added as <Files.Manager>, <CodeDB.Manager>, and 
- *		  <SearchIndex.Manager> watchers.  They can also set the rebuild/reparse flags that CodeDB needs to interpret.  Also, it adds
- *		  a FileSource to <Files.Manager> for dealing with style files.
+ *		- <Output.Manager> is next because <Output.Builders> may need to be added as <Files.Manager> and <CodeDB.Manager>
+ *		  watchers.  They can also set the rebuild/reparse flags that CodeDB needs to interpret.  Also, it adds a FileSource to 
+ *		  <Files.Manager> for dealing with style files.
  *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
@@ -87,8 +85,7 @@ namespace CodeClear.NaturalDocs.Engine
 		public Instance (Config.Manager configManager = null, CommentTypes.Manager commentTypesManager = null, 
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
-								Output.Manager outputManager = null, Output.HTML.SearchIndex.Manager searchIndexManager = null, 
-								Files.Manager filesManager = null)
+								Output.Manager outputManager = null, Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
@@ -99,7 +96,6 @@ namespace CodeClear.NaturalDocs.Engine
 			this.links = linksManager ?? new Links.Manager(this);
 			this.codeDB = codeDBManager ?? new CodeDB.Manager(this);
 			this.output = outputManager ?? new Output.Manager(this);
-			this.searchIndex = searchIndexManager ?? new Output.HTML.SearchIndex.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
 			}
 			
@@ -158,12 +154,6 @@ namespace CodeClear.NaturalDocs.Engine
 				files = null;
 				}
 			
-			if (searchIndex != null && !strictRulesApply)
-				{
-				searchIndex.Dispose();					
-				searchIndex = null;
-				}
-
 			if (links != null && !strictRulesApply)
 				{
 				links.Dispose();					
@@ -227,7 +217,6 @@ namespace CodeClear.NaturalDocs.Engine
 				languages.Start(errors) &&
 				comments.Start(errors) &&
 				links.Start(errors) &&
-				searchIndex.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
 				files.Start(errors)
@@ -620,15 +609,6 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return codeDB;  }
 			}
 			
-		/* Property: SearchIndex
-		 * Returns the <SearchIndex.Manager> associated with this instance.
-		 */
-		public Output.HTML.SearchIndex.Manager SearchIndex
-			{
-			get
-				{  return searchIndex;  }
-			}
-
 		/* Property: Output
 		 * Returns the <Output.Manager> associated with this instance.
 		 */
@@ -669,8 +649,6 @@ namespace CodeClear.NaturalDocs.Engine
 		
 		protected CodeDB.Manager codeDB;
 		
-		protected Output.HTML.SearchIndex.Manager searchIndex;
-
 		protected Output.Manager output;
 			
 		protected Files.Manager files;

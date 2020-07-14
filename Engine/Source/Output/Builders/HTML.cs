@@ -104,6 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			this.config = config;
 			styles = null;
+			searchIndex = null;
 			}
 
 
@@ -416,11 +417,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			SaveBinaryConfigFile(WorkingDataFolder + "/Config.nd", styles, fileSourceInfoList);
 
 
-			// Watch other modules
+			// Create the search index and watch other modules
+
+			searchIndex = new Output.HTML.SearchIndex.Manager(this);
 
 			EngineInstance.CodeDB.AddChangeWatcher(this);
 			EngineInstance.Files.AddChangeWatcher(this);
-			EngineInstance.SearchIndex.AddChangeWatcher(this);
+			searchIndex.AddChangeWatcher(this);
+
+			searchIndex.Start(errorList);
 
 
 			return (errors == errorList.Count);
@@ -527,6 +532,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				try
 					{
+					if (searchIndex != null)
+						{  searchIndex.Dispose();  }
 					if (buildState != null)
 						{  HTMLBuildState.SaveBinaryFile(WorkingDataFolder + "/BuildState.nd", buildState);  }
 					}
@@ -1403,6 +1410,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			}
 
 
+		/* Property: SearchIndex
+		 * The <SearchIndex.Manager> associated with this build target.
+		 */
+		public Output.HTML.SearchIndex.Manager SearchIndex
+			{
+			get
+				{  return searchIndex;  }
+			}
+
+
 
 		// Group: Constants
 		// __________________________________________________________________________
@@ -1468,6 +1485,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * A list of <Styles.HTMLStyles> that apply to this builder in the order in which they should be loaded.
 		 */
 		protected List<Styles.HTMLStyle> styles;
+
+		/* var: searchIndex
+		 * The <SearchIndex.Manager> for this output target.
+		 */
+		protected Output.HTML.SearchIndex.Manager searchIndex;
 
 
 

@@ -46,8 +46,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		
 		/* Constructor: Manager
 		 */
-		public Manager (Engine.Instance engineInstance) : base (engineInstance)
+		public Manager (Output.Builders.HTML builder) : base (builder.EngineInstance)
 			{
+			this.builder = builder;
 			accessLock = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
 			changeWatchers = new List<IChangeWatcher>();
 			prefixTopicIDs = null;
@@ -62,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				{
 				try
 					{
-					SaveBinaryFile(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+					SaveBinaryFile(Builder.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
 					}
 				catch 
 					{  }
@@ -81,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			if (!EngineInstance.Config.ReparseEverything)
 				{
-				hasBinaryFile = LoadBinaryFile(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
+				hasBinaryFile = LoadBinaryFile(Builder.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
 				{
@@ -609,6 +610,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 
 
+		// Group: Properties
+		// __________________________________________________________________________
+
+		
+		/* Property: Builder
+		 * The <Output.Builders.HTML> this seach index is associated with.
+		 */
+		public Output.Builders.HTML Builder
+			{
+			get
+				{  return builder;  }
+			}
+
+
+
 		// Group: Constants
 		// __________________________________________________________________________
 
@@ -618,6 +634,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 		// Group: Variables
 		// __________________________________________________________________________
+
+		protected Output.Builders.HTML builder;
 
 		protected System.Threading.ReaderWriterLockSlim accessLock;
 

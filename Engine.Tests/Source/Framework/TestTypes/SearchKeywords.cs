@@ -32,6 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				{  return "(No topics found)";  }
 
 			StringBuilder output = new StringBuilder();
+			var searchIndex = (EngineInstance.Output.Builders[0] as Engine.Output.Builders.HTML).SearchIndex;
 
 			for (int i = 0; i < topics.Count; i++)
 				{
@@ -40,7 +41,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				output.AppendLine("Topic: " + topics[i].Title);
 
-				var searchEntry = new Engine.Output.HTML.SearchIndex.Entries.Topic(topics[i], EngineInstance.SearchIndex);
+				var searchEntry = new Engine.Output.HTML.SearchIndex.Entries.Topic(topics[i], searchIndex);
 
 				output.Append("- Display Name: ");
 
