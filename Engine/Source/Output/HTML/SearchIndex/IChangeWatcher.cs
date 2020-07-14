@@ -1,5 +1,5 @@
 ﻿/* 
- * Interface: CodeClear.NaturalDocs.Engine.SearchIndex.IChangeWatcher
+ * Interface: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.IChangeWatcher
  * ____________________________________________________________________________
  * 
  * An interface for any class that wants to watch for changes in the search index.
@@ -24,7 +24,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 	{
 	public interface IChangeWatcher
 		{

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.SearchIndex.TopicEntry
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries.Topic
  * ____________________________________________________________________________
  * 
  * A single topic entry in the search index.
@@ -15,23 +15,23 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 	{
-	public class TopicEntry : Entry
+	public class Topic : Entry
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		public TopicEntry (Topic topic, SearchIndex.Manager manager) : base ()
+		public Topic (Engine.Topics.Topic topic, SearchIndex.Manager searchIndex) : base ()
 			{
-			this.topic = topic;
-			var commentType = manager.EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
-			var language = manager.EngineInstance.Languages.FromID(topic.LanguageID);
+			wrappedTopic = topic;
+
+			var commentType = searchIndex.EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
+			var language = searchIndex.EngineInstance.Languages.FromID(topic.LanguageID);
 
 
 			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that 
@@ -56,8 +56,8 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			if (symbolString.Length > titleSymbolString.Length)
 				{
-				// We have to go by LastIndexOf rather than EndsWith because operator<string> will have <string> cut off as a parameter.
-				// We have to go by LastIndexOf instead of IndexOf so constructors don't get cut off (Package.Class.Class).
+				// We have to go by LastIndexOf rather than EndsWith because "operator<string>" will have "<string>" cut off as a parameter.
+				// We also have to go by LastIndexOf instead of IndexOf so constructors don't get cut off (Package.Class.Class).
 				int titleIndex = symbolString.LastIndexOf(titleSymbolString);
 
 				#if DEBUG
@@ -83,13 +83,13 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			if (commentType.Flags.File)
 				{
-				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
-				endOfSearchTextQualifiers = EndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
+				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
+				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
 				}
 			else if (commentType.Flags.Code)
 				{
-				endOfDisplayNameQualifiers = EndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
-				endOfSearchTextQualifiers = EndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
+				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
+				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
 				}
 			else // documentation topic
 				{
@@ -110,15 +110,20 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			keywords = new List<string>();
 
 			if (endOfDisplayNameQualifiers == 0)
-				{  AddKeywords(displayName, commentType.Flags.Documentation);  }
+				{  AddKeywords(displayName, isDocumentation: commentType.Flags.Documentation);  }
 			else
-				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), commentType.Flags.Documentation);  }
+				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), isDocumentation: commentType.Flags.Documentation);  }
 			}
 
 
-		/* Function: EndOfQualifiers
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
+		/* Function: FindEndOfQualifiers
 		 */
-		protected int EndOfQualifiers (string title, MatchCollection splitSymbols)
+		protected int FindEndOfQualifiers (string title, MatchCollection splitSymbols)
 			{
 			if (splitSymbols == null || splitSymbols.Count == 0)
 				{  return 0;  }
@@ -167,7 +172,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 */
 		protected int AddKeywords (string text, bool isDocumentation)
 			{
-			text = NormalizeSeparatorsOnly(text);
+			text = NormalizeSeparators(text);
 
 			int count = 0;
 			int startingIndex = 0;
@@ -215,13 +220,13 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		// __________________________________________________________________________
 
 
-		/* Property: Topic
-		 * The <Topics.Topic> associated with this entry.
+		/* Property: WrappedTopic
+		 * The <Engine.Topics.Topic> associated with this entry.
 		 */
-		public Topic Topic
+		public Engine.Topics.Topic WrappedTopic
 			{
 			get
-				{  return topic;  }
+				{  return wrappedTopic;  }
 			}
 
 		/* Property: DisplayName
@@ -244,14 +249,8 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			}
 
 		/* Propety: SearchText
-		 * 
-		 * The full name of the entry normalized for search, such as "package.package.name".
-		 * 
-		 * Normalization:
-		 * - All characters are converted to lowercase, regardless of whether the language is case sensitive or not.
-		 * - :: and -> are converted to . regardless of what the language's member operator is.
-		 * - \ is converted to / regardless of what the platform's path separator is.
-		 * - ::, ->, and \ are converted everywhere, not just in code and file topics respectively.
+		 * The full name of the entry normalized for search, such as "package.package.name".  See <Entry.Normalize()> for the
+		 * details.
 		 */
 		public string SearchText
 			{
@@ -285,7 +284,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Topic topic;
+		protected Engine.Topics.Topic wrappedTopic;
 		protected string displayName;
 		protected int endOfDisplayNameQualifiers;
 		protected string searchText;

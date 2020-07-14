@@ -66,7 +66,7 @@ using CodeClear.NaturalDocs.Engine.Output.Styles;
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	{
-	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
+	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, Output.HTML.SearchIndex.IChangeWatcher, IDisposable
 		{
 
 		// Group: Types

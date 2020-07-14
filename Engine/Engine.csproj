@@ -239,11 +239,11 @@
     <Compile Include="Source\Languages\Manager.cs" />
     <Compile Include="Source\Languages\ShebangStringComparer.cs" />
     <Compile Include="Source\Locale.cs" />
-    <Compile Include="Source\SearchIndex\Entry.cs" />
-    <Compile Include="Source\SearchIndex\KeywordEntry.cs" />
-    <Compile Include="Source\SearchIndex\TopicEntry.cs" />
-    <Compile Include="Source\SearchIndex\IChangeWatcher.cs" />
-    <Compile Include="Source\SearchIndex\Manager.cs" />
+    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Entry.cs" />
+    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Keyword.cs" />
+    <Compile Include="Source\Output\HTML\SearchIndex\Entries\Topic.cs" />
+    <Compile Include="Source\Output\HTML\SearchIndex\IChangeWatcher.cs" />
+    <Compile Include="Source\Output\HTML\SearchIndex\Manager.cs" />
     <Compile Include="Source\StringBuilderExtensions.cs" />
     <Compile Include="Source\Output\Builder.cs" />
     <Compile Include="Source\Output\Builders\HTML.cs" />

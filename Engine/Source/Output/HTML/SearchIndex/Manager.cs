@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.SearchIndex.Manager
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Manager
  * ____________________________________________________________________________
  * 
  * Multithreading: Thread Safety Notes
@@ -28,16 +28,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Errors;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.IDObjects;
-using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Topics;
+using CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries;
 
 
-namespace CodeClear.NaturalDocs.Engine.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 	{
 	public class Manager : Module, CodeDB.IChangeWatcher
 		{
@@ -144,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 * Returns a list of all the <KeywordEntries> for a prefix, complete with all their <TopicEntries>.  If there are none it will return
 		 * null.  The returned list will not be in any particular order, it is up to the calling code to sort them as desired.
 		 */
-		public List<KeywordEntry> GetKeywordEntries (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		public List<Keyword> GetKeywordEntries (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 
 			// Retrieve the topics from the database
@@ -154,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			if (topicIDs == null || topicIDs.IsEmpty)
 				{  return null;  }
 
-			List<Topic> topics = null;
+			List<Engine.Topics.Topic> topics = null;
 			bool releaseDBLock = false;
 
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
@@ -167,9 +165,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				{
 				// Need to lookup class strings to be able to build hash paths
 				topics = accessor.GetTopicsByID(topicIDs, cancelDelegate, CodeDB.Accessor.GetTopicFlags.BodyLengthOnly | 
-																								CodeDB.Accessor.GetTopicFlags.DontLookupContexts | 
-																								CodeDB.Accessor.GetTopicFlags.DontIncludeSummary | 
-																								CodeDB.Accessor.GetTopicFlags.DontIncludePrototype);
+																									 CodeDB.Accessor.GetTopicFlags.DontLookupContexts | 
+																									 CodeDB.Accessor.GetTopicFlags.DontIncludeSummary | 
+																									 CodeDB.Accessor.GetTopicFlags.DontIncludePrototype);
 				}
 			finally
 				{
@@ -183,11 +181,11 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			// Convert the topics into entries
 
-			StringTable<KeywordEntry> keywordEntryTable = new StringTable<KeywordEntry>(KeySettings.IgnoreCase);
+			StringTable<Keyword> keywordEntryTable = new StringTable<Keyword>(KeySettings.IgnoreCase);
 
 			foreach (var topic in topics)
 				{
-				TopicEntry topicEntry = new TopicEntry(topic, this);
+				var topicEntry = new SearchIndex.Entries.Topic(topic, this);
 
 				foreach (var keyword in topicEntry.Keywords)
 					{
@@ -197,10 +195,10 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 						if (keywordEntry == null)
 							{
-							keywordEntry = new KeywordEntry(keyword);
+							keywordEntry = new Keyword(keyword);
 							keywordEntryTable[keyword] = keywordEntry;
 							}
-						else if (keywordEntry.Keyword != keyword)
+						else if (keywordEntry.DisplayName != keyword)
 							{
 							// If they differ in case we still want to combine them, but we have to choose which case will be in the
 							// results.  Prioritize in this order: mixed case ('m'), all lowercase ('l'), all uppercase ('u').
@@ -214,9 +212,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 							else
 								{  keywordCase = 'm';  }
 
-							if (keywordEntry.Keyword == keywordEntry.Keyword.ToLower())
+							if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToLower())
 								{  keywordEntryCase = 'l';  }
-							else if (keywordEntry.Keyword == keywordEntry.Keyword.ToUpper())
+							else if (keywordEntry.DisplayName == keywordEntry.DisplayName.ToUpper())
 								{  keywordEntryCase = 'u';  }
 							else
 								{  keywordEntryCase = 'm';  }
@@ -224,13 +222,13 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 							if ( (keywordCase == 'm' && keywordEntryCase != 'm') ||
 								 (keywordCase == 'l' && keywordEntryCase == 'u') )
 								{  
-								keywordEntry.Keyword = keyword;  
+								keywordEntry.DisplayName = keyword;  
 								}
 							else if (keywordCase == 'm' && keywordEntryCase == 'm')
 								{
 								// If they're both mixed, use the sort order.  This lets SomeValue be used instead of someValue.
-								if (string.Compare(keyword, keywordEntry.Keyword) > 0)
-									{  keywordEntry.Keyword = keyword;  }
+								if (string.Compare(keyword, keywordEntry.DisplayName) > 0)
+									{  keywordEntry.DisplayName = keyword;  }
 								}
 							}
 
@@ -239,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 					}
 				}
 
-			List<KeywordEntry> keywordEntries = new List<KeywordEntry>(keywordEntryTable.Count);
+			List<Keyword> keywordEntries = new List<Keyword>(keywordEntryTable.Count);
 
 			foreach (var keywordEntryTablePair in keywordEntryTable)
 				{  keywordEntries.Add(keywordEntryTablePair.Value);  }
@@ -250,9 +248,9 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 
 		/* Function: IncludeInIndex
-		 * Whether the passed <Topic> should be included in the search index.
+		 * Whether the passed <Engine.Topics.Topic> should be included in the search index.
 		 */
-		protected bool IncludeInIndex (Topic topic)
+		protected bool IncludeInIndex (Engine.Topics.Topic topic)
 			{
 			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
@@ -431,12 +429,12 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		// __________________________________________________________________________
 
 
-		public void OnAddTopic (Topic topic, CodeDB.EventAccessor eventAccessor)
+		public void OnAddTopic (Engine.Topics.Topic topic, CodeDB.EventAccessor eventAccessor)
 			{
 			if (!IncludeInIndex(topic))
 				{  return;  }
 
-			TopicEntry entry =  new TopicEntry(topic, this);
+			var entry =  new SearchIndex.Entries.Topic(topic, this);
 
 			accessLock.EnterWriteLock();
 
@@ -470,7 +468,8 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			}
 
 
-		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, CodeDB.EventAccessor eventAccessor)
+		public void OnUpdateTopic (Engine.Topics.Topic oldTopic, Engine.Topics.Topic newTopic, Engine.Topics.Topic.ChangeFlags changeFlags, 
+											   CodeDB.EventAccessor eventAccessor)
 			{
 			#if DEBUG
 			if (IncludeInIndex(newTopic) != IncludeInIndex(oldTopic))
@@ -480,9 +479,14 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			if (!IncludeInIndex(newTopic))
 				{  return;  }
 
-			if ((changeFlags & (Topic.ChangeFlags.Title | Topic.ChangeFlags.CommentTypeID | Topic.ChangeFlags.SymbolDefinitonNumber |
-									  Topic.ChangeFlags.Symbol | Topic.ChangeFlags.LanguageID | Topic.ChangeFlags.FileID | 
-									  Topic.ChangeFlags.EffectiveAccessLevel | Topic.ChangeFlags.Class)) == 0)
+			if ((changeFlags & (Engine.Topics.Topic.ChangeFlags.Title |
+										Engine.Topics.Topic.ChangeFlags.CommentTypeID | 
+										Engine.Topics.Topic.ChangeFlags.SymbolDefinitonNumber |
+										Engine.Topics.Topic.ChangeFlags.Symbol | 
+										Engine.Topics.Topic.ChangeFlags.LanguageID | 
+										Engine.Topics.Topic.ChangeFlags.FileID | 
+										Engine.Topics.Topic.ChangeFlags.EffectiveAccessLevel | 
+										Engine.Topics.Topic.ChangeFlags.Class)) == 0)
 				{  return;  }
 
 
@@ -495,8 +499,8 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				if (newTopic.TopicID != oldTopic.TopicID)
 					{  throw new Exception ("SearchIndex incorrectly assumes both the old and new topics in OnUpdateTopic() have the same topic IDs.");  }
 
-				TopicEntry newEntry = new TopicEntry(newTopic, this);
-				TopicEntry oldEntry = new TopicEntry(oldTopic, this);
+				var newEntry = new SearchIndex.Entries.Topic(newTopic, this);
+				var oldEntry = new SearchIndex.Entries.Topic(oldTopic, this);
 
 				if (newEntry.Keywords.Count != oldEntry.Keywords.Count)
 					{  throw new Exception ("SearchIndex incorrectly assumes both the old and new topics in OnUpdateTopic() have the same keywords.");  }
@@ -509,7 +513,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 
 			#endif
 
-			TopicEntry entry = new TopicEntry(newTopic, this);
+			var entry = new SearchIndex.Entries.Topic(newTopic, this);
 
 			// We use upgradeable in case one of the change handlers needs to do something that requires a write lock.
 			accessLock.EnterUpgradeableReadLock();
@@ -533,12 +537,12 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			}
 
 
-		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, CodeDB.EventAccessor eventAccessor)
+		public void OnDeleteTopic (Engine.Topics.Topic topic, IDObjects.NumberSet linksAffected, CodeDB.EventAccessor eventAccessor)
 			{
 			if (!IncludeInIndex(topic))
 				{  return;  }
 
-			TopicEntry entry =  new TopicEntry(topic, this);
+			var entry =  new SearchIndex.Entries.Topic(topic, this);
 
 			accessLock.EnterWriteLock();
 

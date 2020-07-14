@@ -40,7 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 				output.AppendLine("Topic: " + topics[i].Title);
 
-				Engine.SearchIndex.TopicEntry searchEntry = new Engine.SearchIndex.TopicEntry(topics[i], EngineInstance.SearchIndex);
+				var searchEntry = new Engine.Output.HTML.SearchIndex.Entries.Topic(topics[i], EngineInstance.SearchIndex);
 
 				output.Append("- Display Name: ");
 

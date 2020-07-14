@@ -87,7 +87,7 @@ namespace CodeClear.NaturalDocs.Engine
 		public Instance (Config.Manager configManager = null, CommentTypes.Manager commentTypesManager = null, 
 								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
 								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
-								Output.Manager outputManager = null, SearchIndex.Manager searchIndexManager = null, 
+								Output.Manager outputManager = null, Output.HTML.SearchIndex.Manager searchIndexManager = null, 
 								Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
@@ -99,7 +99,7 @@ namespace CodeClear.NaturalDocs.Engine
 			this.links = linksManager ?? new Links.Manager(this);
 			this.codeDB = codeDBManager ?? new CodeDB.Manager(this);
 			this.output = outputManager ?? new Output.Manager(this);
-			this.searchIndex = searchIndexManager ?? new SearchIndex.Manager(this);
+			this.searchIndex = searchIndexManager ?? new Output.HTML.SearchIndex.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
 			}
 			
@@ -623,7 +623,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Property: SearchIndex
 		 * Returns the <SearchIndex.Manager> associated with this instance.
 		 */
-		public SearchIndex.Manager SearchIndex
+		public Output.HTML.SearchIndex.Manager SearchIndex
 			{
 			get
 				{  return searchIndex;  }
@@ -669,7 +669,7 @@ namespace CodeClear.NaturalDocs.Engine
 		
 		protected CodeDB.Manager codeDB;
 		
-		protected SearchIndex.Manager searchIndex;
+		protected Output.HTML.SearchIndex.Manager searchIndex;
 
 		protected Output.Manager output;
 			

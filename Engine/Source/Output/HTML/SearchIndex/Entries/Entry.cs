@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.SearchIndex.Entry
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries.Entry
  * ____________________________________________________________________________
  * 
  * A base class for all entries in the search index.
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 	{
 	public class Entry
 		{
@@ -32,10 +32,10 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 * 
 		 * Converts a string to a standardized form that's easier to search.
 		 * 
-		 * - Text is converted to lowercase.
+		 * - Text is converted to lowercase, regardless of whether the language is case-sensitive or not.
 		 * - Whitespace is condensed.
 		 * - Spaces that don't separate alphanumeric and underscore characters are removed.
-		 * - Separators are normalized with <NormalizeSeparatorsOnly()>.
+		 * - Separators are normalized with <NormalizeSeparators()>.
 		 * - Leading separators are removed.
 		 */
 		static public string Normalize (string text)
@@ -56,13 +56,13 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				char charAfter = text[spaceIndex + 1];
 
 				bool alphanumBefore = ( (charBefore >= 'a' && charBefore <= 'z') ||
-												 (charBefore >= 'A' && charBefore <= 'Z') ||
-												 (charBefore >= '0' && charBefore <= '9') ||
-												 charBefore == '_' );
+													 (charBefore >= 'A' && charBefore <= 'Z') ||
+													 (charBefore >= '0' && charBefore <= '9') ||
+													 charBefore == '_' );
 				bool alphanumAfter = ( (charAfter >= 'a' && charAfter <= 'z') ||
-												 (charAfter >= 'A' && charAfter <= 'Z') ||
-												 (charAfter >= '0' && charAfter <= '9') ||
-												 charAfter == '_' );
+												   (charAfter >= 'A' && charAfter <= 'Z') ||
+												   (charAfter >= '0' && charAfter <= '9') ||
+												   charAfter == '_' );
 
 				if (alphanumBefore && alphanumAfter)
 					{  spaceIndex = text.IndexOf(' ', spaceIndex + 1);  }
@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 				}
 
 
-			text = NormalizeSeparatorsOnly(text);
+			text = NormalizeSeparators(text);
 
 
 			// Remove leading separators.  We don't have to worry about whitespace between them and the rest.
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 			}
 
 
-		/* Function: NormalizeSeparatorsOnly
+		/* Function: NormalizeSeparators
 		 * 
 		 * Converts all separators to a standardized form that's easier to search.  If you called <Normalize()> there is no need
 		 * to call this as well.
@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.SearchIndex
 		 * - \ is converted to / regardless of what the platform's path separator is.  It also doesn't matter if they appear in
 		 *   non-file topics or not.
 		 */
-		static public string NormalizeSeparatorsOnly (string text)
+		static public string NormalizeSeparators (string text)
 			{
 			text = text.Replace("::", ".");
 			text = text.Replace("->", ".");
