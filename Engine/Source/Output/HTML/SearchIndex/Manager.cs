@@ -64,6 +64,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				try
 					{
 					SaveBinaryFile(Builder.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+
+					// Prior to Natural Docs 2.1 SearchIndex.nd was saved in the main working data folder instead of the output target's.
+					// Clean it up if it still exists there.
+					if (System.IO.File.Exists(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd"))
+						{  System.IO.File.Delete(EngineInstance.Config.WorkingDataFolder + "/SearchIndex.nd");  }
 					}
 				catch 
 					{  }
