@@ -62,6 +62,16 @@ namespace CodeClear.NaturalDocs.Engine
 			// Use the operator.
 			this = newPath;
 			}
+
+
+		/* Property: Length
+		 * The length of the path string.
+		 */
+		public int Length
+			{
+			get
+				{  return pathString.Length;  }
+			}
 			
 			
 		/* Property: IsAbsolute
