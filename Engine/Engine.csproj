@@ -62,6 +62,7 @@
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Entry.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONToolTips.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONSummary.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONSearchIndex.cs" />
     <Compile Include="Source\Output\HTML\Components\Tooltip.cs" />
     <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />

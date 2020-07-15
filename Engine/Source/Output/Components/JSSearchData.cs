@@ -66,17 +66,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(HTMLBuilder.SearchIndex_DataFolder);  
+				System.IO.Directory.CreateDirectory(Output.HTML.Paths.SearchIndex.OutputFolder(HTMLBuilder.OutputFolder));  
 				}
 			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
 					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
-									HTMLBuilder.SearchIndex_DataFolder, e.Message) 
+									Output.HTML.Paths.SearchIndex.OutputFolder(HTMLBuilder.OutputFolder), e.Message) 
 					);
 				}
 
-			System.IO.File.WriteAllText(HTMLBuilder.SearchIndex_PrefixIndexFile, output.ToString());
+			System.IO.File.WriteAllText(Output.HTML.Paths.SearchIndex.IndexOutputFile(HTMLBuilder.OutputFolder), output.ToString());
 			}
 
 
@@ -168,7 +168,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			if (keywordEntries == null || keywordEntries.Count == 0)
 				{
-				HTMLBuilder.DeleteOutputFileIfExists(HTMLBuilder.SearchIndex_PrefixDataFile(prefix));
+				HTMLBuilder.DeleteOutputFileIfExists(Output.HTML.Paths.SearchIndex.PrefixOutputFile(HTMLBuilder.OutputFolder, prefix));
 				return;
 				}
 
@@ -182,7 +182,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			BuildPrefixDataFileJS(prefix, keywordEntries);
 
-			Path path = HTMLBuilder.SearchIndex_PrefixDataFile(prefix);
+			Path path = Output.HTML.Paths.SearchIndex.PrefixOutputFile(HTMLBuilder.OutputFolder, prefix);
 
 			try
 				{  
