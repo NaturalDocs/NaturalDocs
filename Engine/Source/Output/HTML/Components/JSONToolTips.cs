@@ -8,7 +8,7 @@
  * Topic: Usage
  *		
  *		- Call <ConvertToJSON()> to convert a topic list to JSON.
- *		- If desired, call <BuildDataFileForSummary()> to create the output file.
+ *		- If desired, call <BuildDataFileForSummary()> or <BuildDataFileForContent()> to create the output file.
  *		- The object may be reused to convert another topic list.
  * 
  * Threading: Not Thread Safe
