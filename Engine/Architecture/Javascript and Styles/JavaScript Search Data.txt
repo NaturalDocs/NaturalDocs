@@ -23,67 +23,7 @@ _______________________________________________________________________________
 		Application, but the file for "a" will only store keywords that are exactly "a" and not include keywords that start with A.
 
 
-	Topic: Prefix Data File
-
-		The prefix data file calls <NDSearch.OnPrefixDataLoaded()> with its data, which conceptually looks like this:
-
-		> NDSearch.OnPrefixDataLoaded(prefix, commentTypeSimpleIDs[], keywords[]);
-		>
-		> keyword: [ htmlName, searchText (optional), members[] ]
-		
-		searchText is undefined if it's the same as htmlName in lowercase
-
-		> member: [ 
-		>    htmlQualifier (optional),
-		>    htmlName (optional),
-		>    htmlLanguageName (optional), 
-		>    searchText (optional), 
-		>    commentTypeIndex, 
-		>    fileHashPath, 
-		>    classHashPath (optional) ]
-
-		- htmlQualifier is undefined if there isn't one
-		- htmlName is undefined if it's the same as the keyword's htmlName
-		- htmlLanguageName is undefined unless there's another member that has the same name and qualifier but is in a different language.
-		- searchText is undefined if it's the same as htmlName in lowercase
-		- classHashPath is undefined if there isn't one
-
-		Applied without removing optional parameters it would look like this:
-
-		> NDSearch.OnPrefixDataLoaded(
-		>    "acc",
-		>    [ "Function", "Property" ],
-		>    [
-		>       [ "Accessor", "accessor", [
-		>          [ undefined, "Accessor", undefined, "accessor", 0, "File:Folder/Documentation.txt:Accessor", undefined ]
-		>          [ "ClassA", "Accessor", undefined, "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB", "Accessor", "C#", "accessor", 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
-		>          [ "ClassB", "Accessor", "C/C++", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
-		>       ]]
-		>    ]);
-
-		With optional parameters applied it looks like this:
-
-		> NDSearch.OnPrefixDataLoaded(
-		>    "acc",
-		>    [ "Function", "Property" ],
-		>    [
-		>       [ "Accessor", , [
-		>          [ , , , , 0, "File:Folder/Documentation.txt#Accessor" ]
-		>          [ "ClassA", , , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
-		>          [ "ClassB", , "C#", , 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
-		>          [ "ClassB", , "C/C++", , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
-		>       ]]
-		>    ]);
-
-		The use of optional parameters greatly cuts down on redundant data to limit file sizes.  They only appear when necessary.
-		For example, the keyword "operator<" would need htmlName "operator&lt;" and searchText "operator<", but that's not
-		necessary for "Accessor" in our example above.
-
-		Both the list of keywords and each keyword's list of members are already sorted into the order in which they should appear.
-
-
-	Topic: Prefix Index File
+	Topic: Index Data File
 
 		Information about which prefixes have data files are stored in [Output Folder]\search\index.js.  The file contains a call to 
 		<NDSearch.OnPrefixIndexLoaded()> that looks like this:
@@ -92,3 +32,72 @@ _______________________________________________________________________________
 
 		The only parameter is an array of all the letter combinations that have files defined.  They are sorted so you can use a
 		binary search to walk through them.
+
+
+	Topic: Prefix Data File
+
+		The prefix data file calls <NDSearch.OnPrefixDataLoaded()> with its data, which conceptually looks like this:
+
+		> NDSearch.OnPrefixDataLoaded(prefix, commentTypeSimpleIDs[], keywords[]);
+
+		Both the list of keywords and each keyword's list of topics are already sorted into the order in which they should appear.
+
+		Keywords:
+
+			> keyword: [ 
+			>    htmlName, 
+			>    searchText (optional), 
+			>    topics[] ]
+		
+			searchText is undefined if it's the same as htmlName in lowercase
+
+		Topics:
+
+			> topic: [ 
+			>    htmlQualifier (optional),
+			>    htmlName (optional),
+			>    htmlLanguageName (optional), 
+			>    searchText (optional), 
+			>    commentTypeIndex, 
+			>    fileHashPath, 
+			>    classHashPath (optional) ]
+
+			- htmlQualifier is undefined if there isn't one
+			- htmlName is undefined if it's the same as the keyword's htmlName
+			- htmlLanguageName is undefined unless there's another member that has the same name and qualifier but is in a different language.
+			- searchText is undefined if it's the same as htmlName in lowercase
+			- classHashPath is undefined if there isn't one
+
+		Optional Parameters:
+
+			Applied without removing optional parameters it would look like this:
+
+			> NDSearch.OnPrefixDataLoaded(
+			>    "acc",
+			>    [ "Function", "Property" ],
+			>    [
+			>       [ "Accessor", "accessor", [
+			>          [ undefined, "Accessor", undefined, "accessor", 0, "File:Folder/Documentation.txt:Accessor", undefined ]
+			>          [ "ClassA", "Accessor", undefined, "accessor", 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+			>          [ "ClassB", "Accessor", "C#", "accessor", 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
+			>          [ "ClassB", "Accessor", "C/C++", "accessor", 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+			>       ]]
+			>    ]);
+
+			With optional parameters applied it looks like this:
+
+			> NDSearch.OnPrefixDataLoaded(
+			>    "acc",
+			>    [ "Function", "Property" ],
+			>    [
+			>       [ "Accessor", , [
+			>          [ , , , , 0, "File:Folder/Documentation.txt#Accessor" ]
+			>          [ "ClassA", , , , 0, "File:Folder/ClassA.cs:ClassA.Accessor", "CSharpClass:ClassA:Accessor" ],
+			>          [ "ClassB", , "C#", , 1, "File:Folder/ClassB.cs:ClassB.Accessor", "CSharpClass:ClassB:Accessor" ]
+			>          [ "ClassB", , "C/C++", , 1, "File:Folder/ClassB.cpp:ClassB.Accessor", "CClass:ClassB:Accessor" ]
+			>       ]]
+			>    ]);
+
+			The use of optional parameters greatly cuts down on redundant data to limit file sizes.  They only appear when necessary.
+			For example, the keyword "operator<" would need htmlName "operator&lt;" and searchText "operator<", but that's not
+			necessary for "Accessor" in our example above.
