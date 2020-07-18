@@ -67,6 +67,7 @@
     <Compile Include="Source\Output\HTML\Components\Topic.cs" />
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
     <Compile Include="Source\Output\HTML\Context.cs" />
+    <Compile Include="Source\Output\HTML\Paths\SearchIndex.cs" />
     <Compile Include="Source\Output\HTML\Paths\Menu.cs" />
     <Compile Include="Source\Output\HTML\Paths\Database.cs" />
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
@@ -145,7 +146,6 @@
     <Compile Include="Source\Languages\Languages_txt.cs" />
     <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
     <Compile Include="Source\Output\Builders\HTMLBuildState.cs" />
-    <Compile Include="Source\Output\Components\JSSearchData.cs" />
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
     <Compile Include="Source\Output\ResourceProcessors\CSS.cs" />

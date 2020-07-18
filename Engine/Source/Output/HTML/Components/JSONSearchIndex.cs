@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Components.JSSearchData
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONSearchIndex
  * ____________________________________________________________________________
  * 
  * A helper class to build JavaScript search data for <Output.Builders.HTML>.  See <JavaScript Search Data>
@@ -8,8 +8,8 @@
  * Topic: Usage
  *		
  *		- Create a JSSearchData object.
- *		- Call <BuildPrefixIndex()>.
- *		- Call <BuildPrefixDataFile()>.
+ *		- Call <ConvertToJSON()>.
+ *		- Call <BuildIndexDataFile()> and <BuildPrefixDataFile()> as necessary.
  * 
  * Threading: Not Thread Safe
  * 
@@ -28,71 +28,48 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class JSSearchData
+	public class JSONSearchIndex : Component
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: JSSearchData
+		/* Constructor: JSONSearchIndex
 		 */
-		public JSSearchData (Builders.HTML htmlBuilder)
+		public JSONSearchIndex (Context context) : base (context)
 			{
-			this.htmlBuilder = htmlBuilder;
-
-			output = null;
 			usedCommentTypes = null;
 			}
 
 
-
-		// Group: Prefix Index Functions
-		// __________________________________________________________________________
-
-
-		/* Function: BuildPrefixIndex
+		/* Function: ConvertToJSON
+		 * Converts the passed search index to JSON.  After this you can build the data files.
 		 */
-		public void BuildPrefixIndex ()
+		public void ConvertToJSON (SearchIndex.Manager searchIndex, Context context)
 			{
-			var prefixes = GetAllPrefixes();
+			this.context = context;
 
-			SortPrefixes(prefixes);
+			// The searchIndex parameter is really just for API consistency with the other JSON builders.  We can get it from the context.
+			#if DEBUG
+			if ((object)searchIndex != (object)context.Builder.SearchIndex)
+				{  throw new Exception("The search index passed to ConvertToJSON must be the same as the one in the context's builder.");  }
+			#endif
 
-			BuildPrefixIndexJS(prefixes);
-
-			try
-				{  
-				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(Output.HTML.Paths.SearchIndex.OutputFolder(HTMLBuilder.OutputFolder));  
-				}
-			catch (Exception e)
-				{
-				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
-									Output.HTML.Paths.SearchIndex.OutputFolder(HTMLBuilder.OutputFolder), e.Message) 
-					);
-				}
-
-			System.IO.File.WriteAllText(Output.HTML.Paths.SearchIndex.IndexOutputFile(HTMLBuilder.OutputFolder), output.ToString());
+			// That's it.  We're going to build the JSON for the data files on demand, so this function is also just for API consistency with
+			// the other JSON builders.
 			}
 
 
-		/* Function: GetAllPrefixes
-		 * Returns a list of all used prefixes in the search index.
+		/* Function: BuildIndexDataFile
+		 * Creates the prefix index data file as described in <JavaScript Search Data>.
 		 */
-		protected List<string> GetAllPrefixes ()
+		public void BuildIndexDataFile ()
 			{
-			return HTMLBuilder.SearchIndex.UsedPrefixes();
-			}
+			var prefixes = context.Builder.SearchIndex.UsedPrefixes();
 
-
-		/* Function: SortPrefixes
-		 */
-		protected void SortPrefixes (List<string> prefixes)
-			{
 			prefixes.Sort(
 				delegate (string a, string b)
 					{
@@ -101,74 +78,83 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					return string.CompareOrdinal(a, b);
 					}
 				);
-			}
 
-
-		/* Function: BuildPrefixIndexJS
-		 */
-		protected void BuildPrefixIndexJS (List<string> prefixes)
-			{
-			if (output == null)	
-				{  output = new StringBuilder();  }
-			else
-				{  output.Remove(0, output.Length);  }
-
+			StringBuilder output = new StringBuilder();
 
 			output.Append("NDSearch.OnPrefixIndexLoaded([");
 
-			char lastStartingLetter = '\0';
-			int lineCount = 0;
-			bool isFirst = true;
+			int prefixCountOnLine = 0;
+			bool firstPrefixOnLine = true;
+			char lastPrefixStartingLetter = '\0';
+			bool addWhitespace = !EngineInstance.Config.ShrinkFiles;
 
 			foreach (string prefix in prefixes)
 				{
-				if (isFirst)
-					{  isFirst = false;  }
-				else
+				if (!firstPrefixOnLine)
 					{  output.Append(',');  }
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{
-					if (prefix[0] != lastStartingLetter)
+					if (prefix[0] != lastPrefixStartingLetter)
 						{
 						output.Append("\n\n   ");
-						lastStartingLetter = prefix[0];
-						lineCount = 0;
+						prefixCountOnLine = 0;
 						}
-					else if (lineCount % 20 == 0)
+					else if (prefixCountOnLine == 20)
 						{
 						output.Append("\n   ");
+						prefixCountOnLine = 0;
 						}
-
-					lineCount++;
 					}
 
 				output.Append('"');
 				output.StringEscapeAndAppend(prefix);
 				output.Append('"');
+
+				prefixCountOnLine++;
+				firstPrefixOnLine = false;
+				lastPrefixStartingLetter = prefix[0];
 				}
 
-			if (!EngineInstance.Config.ShrinkFiles)
+			if (addWhitespace)
 				{  output.Append("\n\n   ");  }
 
 			output.Append("]);");
+
+			try
+				{  
+				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
+				System.IO.Directory.CreateDirectory(Paths.SearchIndex.OutputFolder(context.Builder.OutputFolder));  
+				}
+			catch (Exception e)
+				{
+				throw new Exceptions.UserFriendly( 
+					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
+									Paths.SearchIndex.OutputFolder(context.Builder.OutputFolder), e.Message) 
+					);
+				}
+
+			System.IO.File.WriteAllText(Paths.SearchIndex.IndexOutputFile(context.Builder.OutputFolder), output.ToString());
 			}
 
 
-
-		// Group: Prefix Data File Functions
-		// __________________________________________________________________________
-
-
 		/* Function: BuildPrefixDataFile
+		 * 
+		 * Creates a data file for a single prefix as described in <JavaScript Search Data>.  It requires a <CodeDB.Accessor> to
+		 * be able to get information about each search result, such as what type it is and the hash path needed to get t oit.
+		 * 
+		 * Pass a <CancelDelegate> if you need to be able to interrupt the process, or <Delegates.NeverCancel> if not.
 		 */
 		public void BuildPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
+
+			// Get and sort the keywords and topics
+
 			var keywordEntries = GetPrefixKeywords(prefix, accessor, cancelDelegate);
 
 			if (keywordEntries == null || keywordEntries.Count == 0)
 				{
-				HTMLBuilder.DeleteOutputFileIfExists(Output.HTML.Paths.SearchIndex.PrefixOutputFile(HTMLBuilder.OutputFolder, prefix));
+				context.Builder.DeleteOutputFileIfExists( Paths.SearchIndex.PrefixOutputFile(context.Builder.OutputFolder, prefix) );
 				return;
 				}
 
@@ -180,9 +166,67 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				RemoveDuplicateTopics(keywordEntry);
 				}
 
-			BuildPrefixDataFileJS(prefix, keywordEntries);
+		
+			// Build the list of all used comment types
 
-			Path path = Output.HTML.Paths.SearchIndex.PrefixOutputFile(HTMLBuilder.OutputFolder, prefix);
+			if (usedCommentTypes == null)
+				{  usedCommentTypes = new List<CommentType>();  }
+			else
+				{  usedCommentTypes.Clear();  }
+
+			foreach (var keywordEntry in keywordEntries)
+				{
+				foreach (var topicEntry in keywordEntry.TopicEntries)
+					{
+					int commentTypeID = topicEntry.WrappedTopic.CommentTypeID;
+
+					if (UsedCommentTypeIndex(commentTypeID) == -1)
+						{  usedCommentTypes.Add( EngineInstance.CommentTypes.FromID(commentTypeID));  }
+					}
+				}
+
+
+			// Build the output
+
+			StringBuilder output = new StringBuilder();
+			bool addWhitespace = !EngineInstance.Config.ShrinkFiles;
+
+			output.Append("NDSearch.OnPrefixDataLoaded(\"");
+			output.StringEscapeAndAppend(prefix);
+			output.Append("\",");
+
+			if (addWhitespace)
+				{  output.Append("\n   ");  }
+
+			AppendUsedCommentTypes(output);
+			output.Append(',');
+
+			if (addWhitespace)
+				{  output.Append("\n   ");  }
+
+			output.Append('[');
+
+			bool isFirstKeywordEntry = true;
+
+			foreach (var keywordEntry in keywordEntries)
+				{
+				if (isFirstKeywordEntry)
+					{  isFirstKeywordEntry = false;  }
+				else
+					{  output.Append(',');  }
+
+				AppendKeyword(keywordEntry, output);
+				}
+
+			if (addWhitespace)
+				{  output.Append("\n\n");  }
+
+			output.Append("]);");
+
+
+			// Write it to the file
+
+			Path path = Paths.SearchIndex.PrefixOutputFile(context.Builder.OutputFolder, prefix);
 
 			try
 				{  
@@ -202,22 +246,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
 		/* Function: GetPrefixKeywords
 		 */
-		protected List<HTML.SearchIndex.Entries.Keyword> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		protected List<SearchIndex.Entries.Keyword> GetPrefixKeywords (string prefix, CodeDB.Accessor accessor, 
+																										CancelDelegate cancelDelegate)
 			{
-			return HTMLBuilder.SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
+			return SearchIndex.GetKeywordEntries(prefix, accessor, cancelDelegate);
 			}
 
 
 		/* Function: SortKeywordEntries
 		 */
-		protected void SortKeywordEntries (List<HTML.SearchIndex.Entries.Keyword> keywordEntries)
+		protected void SortKeywordEntries (List<SearchIndex.Entries.Keyword> keywordEntries)
 			{
 			// Compare case-insensitively at first, then use case sensitivity to break ties.
 
 			keywordEntries.Sort( 
-				delegate (HTML.SearchIndex.Entries.Keyword a, HTML.SearchIndex.Entries.Keyword b)
+				delegate (SearchIndex.Entries.Keyword a, SearchIndex.Entries.Keyword b)
 					{
 					int result = string.Compare(a.DisplayName, b.DisplayName, true);
 
@@ -232,24 +282,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 		/* Function: SortTopicEntries
 		 */
-		protected void SortTopicEntries (HTML.SearchIndex.Entries.Keyword keywordEntry)
+		protected void SortTopicEntries (SearchIndex.Entries.Keyword keywordEntry)
 			{
-			List<HTML.SearchIndex.Entries.Topic> topicEntries = keywordEntry.TopicEntries;
+			List<SearchIndex.Entries.Topic> topicEntries = keywordEntry.TopicEntries;
 
 			topicEntries.Sort(
-				delegate (HTML.SearchIndex.Entries.Topic a, HTML.SearchIndex.Entries.Topic b)
+				delegate (SearchIndex.Entries.Topic a, SearchIndex.Entries.Topic b)
 					{
-					// Sort by the non-qualifier part first since they'll be displayed in "Name, Class" format.  The below code is just an elaborate 
-					// way of doing that without allocating intermediate strings for each comparison.
+					// Sort by the non-qualifier part first since they'll be displayed in "Name, Class" format.  The below code is just 
+					// an elaborate way of doing that without allocating intermediate strings for each comparison.
 
 					int aNonQualifierLength = a.DisplayName.Length - a.EndOfDisplayNameQualifiers;
 					int bNonQualifierLength = b.DisplayName.Length - b.EndOfDisplayNameQualifiers;
-					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? aNonQualifierLength : bNonQualifierLength);
+					int shorterNonQualifierLength = (aNonQualifierLength < bNonQualifierLength ? 
+																	aNonQualifierLength : bNonQualifierLength);
 
 
 					// Compare non-qualifiers in a case-insensitive way first.
 
-					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
+					int result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, 
+															b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, true);
 
 					if (result != 0)
 						{  return result;  }
@@ -260,8 +312,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						{  return result;  }
 
 
-					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token" to appear before
-					// variable "token" even though normally we want lowercase to go first.
+					// Before comparing in a case-sensitive way, compare based on hierarchy membership.  We want class "Token"
+					// to appear before variable "token" even though normally we want lowercase to go first.
 
 					var aCommentType = EngineInstance.CommentTypes.FromID(a.WrappedTopic.CommentTypeID);
 					var bCommentType = EngineInstance.CommentTypes.FromID(b.WrappedTopic.CommentTypeID);
@@ -275,12 +327,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					// Still equal, now compare the qualifiers in a case-sensitive way to break ties.
 
-					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
+					result = string.Compare(a.DisplayName, a.EndOfDisplayNameQualifiers, 
+														b.DisplayName, b.EndOfDisplayNameQualifiers, shorterNonQualifierLength, false);
 
 					if (result != 0)
 						{  return result;  }
 
-					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
+					int shorterQualifierLength = (a.EndOfDisplayNameQualifiers < b.EndOfDisplayNameQualifiers ? 
+															   a.EndOfDisplayNameQualifiers : b.EndOfDisplayNameQualifiers);
 
 
 					// Still equal so do a case-insensitive comparison of qualifiers, so "Name, ClassA" comes before "Name, ClassB".
@@ -354,7 +408,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			for (int i = 0; i < topicEntries.Count; i++)
 				{
-				int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, topicEntries[i].EndOfSearchTextQualifiers);
+				int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, 
+																								topicEntries[i].EndOfSearchTextQualifiers);
 
 				if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
 					{
@@ -370,7 +425,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				for (int i = topicEntries.Count - 1; i >= 0; i--)
 					{
-					int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, topicEntries[i].EndOfSearchTextQualifiers);
+					int keywordIndex = topicEntries[i].SearchText.IndexOf(keywordEntry.SearchText, 
+																									topicEntries[i].EndOfSearchTextQualifiers);
 
 					if (keywordIndex == topicEntries[i].EndOfSearchTextQualifiers)
 						{  break;  }
@@ -388,12 +444,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 
 		/* Function: RemoveDuplicateTopics
-		 * Removes topics from the results which have the same letter for letter display names.  An exception is made if they
-		 * have different languages.
+		 * Removes topics from the results which have the same letter for letter display names.  An exception is made if 
+		 * they have different languages.
 		 */
-		protected void RemoveDuplicateTopics (HTML.SearchIndex.Entries.Keyword keywordEntry)
+		protected void RemoveDuplicateTopics (SearchIndex.Entries.Keyword keywordEntry)
 			{
-			List<HTML.SearchIndex.Entries.Topic> topicEntries = keywordEntry.TopicEntries;
+			List<SearchIndex.Entries.Topic> topicEntries = keywordEntry.TopicEntries;
 
 			for (int i = 1; i < topicEntries.Count; /* no auto-increment */)
 				{
@@ -409,77 +465,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildPrefixDataFileJS
+		/* Function: AppendKeyword
+		 * Appends the keyword entry as a JSON array.
 		 */
-		protected void BuildPrefixDataFileJS (string prefix, List<HTML.SearchIndex.Entries.Keyword> keywordEntries)
+		protected void AppendKeyword (SearchIndex.Entries.Keyword keywordEntry, StringBuilder output)
 			{
-			// Build the list of all used comment types
+			bool addWhitespace = !EngineInstance.Config.ShrinkFiles;
 
-			if (usedCommentTypes == null)
-				{  usedCommentTypes = new List<CommentType>();  }
-			else
-				{  usedCommentTypes.Clear();  }
-
-			foreach (var keywordEntry in keywordEntries)
-				{
-				foreach (var topicEntry in keywordEntry.TopicEntries)
-					{
-					int commentTypeID = topicEntry.WrappedTopic.CommentTypeID;
-					int commentTypeIndex = UsedCommentTypesIndex(commentTypeID);
-
-					if (commentTypeIndex == -1)
-						{  usedCommentTypes.Add( EngineInstance.CommentTypes.FromID(commentTypeID) );  }
-					}
-				}
-
-
-			// Build the output
-
-			if (output == null)	
-				{  output = new StringBuilder();  }
-			else
-				{  output.Remove(0, output.Length);  }
-
-
-			output.Append("NDSearch.OnPrefixDataLoaded(\"");
-			output.StringEscapeAndAppend(prefix);
-			output.Append("\",");
-
-			if (!EngineInstance.Config.ShrinkFiles)
-				{  output.Append("\n   ");  }
-
-			BuildCommentTypeList(keywordEntries);
-			output.Append(',');
-
-			if (!EngineInstance.Config.ShrinkFiles)
-				{  output.Append("\n   ");  }
-
-			output.Append('[');
-
-			bool isFirstKeywordEntry = true;
-
-			foreach (var keywordEntry in keywordEntries)
-				{
-				if (isFirstKeywordEntry)
-					{  isFirstKeywordEntry = false;  }
-				else
-					{  output.Append(',');  }
-
-				BuildKeywordEntry(keywordEntry);
-				}
-
-			if (!EngineInstance.Config.ShrinkFiles)
-				{  output.Append("\n\n");  }
-
-			output.Append("]);");
-			}
-
-
-		/* Function: BuildKeywordEntry
-		 */
-		protected void BuildKeywordEntry (HTML.SearchIndex.Entries.Keyword keywordEntry)
-			{
-			if (!EngineInstance.Config.ShrinkFiles)
+			if (addWhitespace)
 				{  output.Append("\n\n   ");  }
 
 			string keywordHTMLName = keywordEntry.DisplayName.ToHTML();
@@ -504,7 +497,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				if (i > 0)
 					{  output.Append(',');  }
 
-				if (!EngineInstance.Config.ShrinkFiles)
+				if (addWhitespace)
 					{  output.Append("\n      ");  }
 
 				var topicEntry = keywordEntry.TopicEntries[i];
@@ -514,7 +507,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{
 					var other = keywordEntry.TopicEntries[i + 1];
 
-					if (topicEntry.DisplayName == other.DisplayName && topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
+					if (topicEntry.DisplayName == other.DisplayName && 
+						topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
 						{  includeLanguage = true;  }
 					}
 
@@ -522,23 +516,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{
 					var other = keywordEntry.TopicEntries[i - 1];
 
-					if (topicEntry.DisplayName == other.DisplayName && topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
+					if (topicEntry.DisplayName == other.DisplayName && 
+						topicEntry.WrappedTopic.LanguageID != other.WrappedTopic.LanguageID)
 						{  includeLanguage = true;  }
 					}
 
-				BuildTopicEntry(topicEntry, keywordHTMLName, includeLanguage);
+				AppendTopic(topicEntry, keywordHTMLName, includeLanguage, output);
 				}
 
-			if (!EngineInstance.Config.ShrinkFiles)
+			if (addWhitespace)
 				{  output.Append("\n   ");  }
 
 			output.Append("]]");
 			}
 
 
-		/* Function: BuildTopicEntry
+		/* Function: AppendTopic
+		 * Appends a topic entry as a JSON array.
 		 */
-		protected void BuildTopicEntry (HTML.SearchIndex.Entries.Topic topicEntry, string keywordHTMLName, bool includeLanguage)
+		protected void AppendTopic (SearchIndex.Entries.Topic topicEntry, string keywordHTMLName, bool includeLanguage, 
+												 StringBuilder output)
 			{
 			string topicHTMLPrefix, topicHTMLName, topicSearchText;
 
@@ -600,13 +597,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 			output.Append(',');
 
-			output.Append(UsedCommentTypesIndex(topicEntry.WrappedTopic.CommentTypeID));
+			output.Append(UsedCommentTypeIndex(topicEntry.WrappedTopic.CommentTypeID));
 
 			output.Append(",\"");
-			Components.HTMLTopicPages.File filePage = new Components.HTMLTopicPages.File(HTMLBuilder, topicEntry.WrappedTopic.FileID);
+			var filePage = new Output.Components.HTMLTopicPages.File(context.Builder, topicEntry.WrappedTopic.FileID);
 			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
 
-			string topicHashPath = HTMLBuilder.Source_TopicHashPath(topicEntry.WrappedTopic, true);
+			string topicHashPath = context.Builder.Source_TopicHashPath(topicEntry.WrappedTopic, true);
 
 			if (topicHashPath != null)
 				{
@@ -620,11 +617,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{
 				output.Append(",\"");
 
-				Components.HTMLTopicPages.Class classPage = 
-					new Components.HTMLTopicPages.Class(HTMLBuilder, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString);
+				var classPage = new Output.Components.HTMLTopicPages.Class(context.Builder, topicEntry.WrappedTopic.ClassID, 
+																											 topicEntry.WrappedTopic.ClassString);
 				output.StringEscapeAndAppend(classPage.OutputFileHashPath);
 
-				string classTopicHashPath = HTMLBuilder.Source_TopicHashPath(topicEntry.WrappedTopic, false);
+				string classTopicHashPath = context.Builder.Source_TopicHashPath(topicEntry.WrappedTopic, false);
 
 				if (classTopicHashPath != null)
 					{
@@ -639,9 +636,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: BuildCommentTypeList
+		/* Function: AppendUsedCommentTypes
+		 * Appends <usedCommentTypes> to the output as a JSON array.
 		 */
-		protected void BuildCommentTypeList (IList<HTML.SearchIndex.Entries.Keyword> keywordEntries)
+		protected void AppendUsedCommentTypes (StringBuilder output)
 			{
 			output.Append('[');
 
@@ -659,10 +657,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
-		/* Function: UsedCommentTypesIndex
-		 * Returns the index into <usedCommentTypes> of the passed comment type ID, or -1 if it isn't in the list.
+		/* Function: UsedCommentTypeIndex
+		 * Returns the index of the passed comment type ID in <usedCommentTypes>, or -1 if it isn't in the list.
 		 */
-		protected int UsedCommentTypesIndex (int commentTypeID)
+		protected int UsedCommentTypeIndex (int commentTypeID)
 			{
 			for (int i = 0; i < usedCommentTypes.Count; i++)
 				{
@@ -679,16 +677,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 
-		public Builders.HTML HTMLBuilder
+		/* Property: SearchIndex
+		 * The <SearchIndex.Manager> this is being built for.
+		 */
+		public SearchIndex.Manager SearchIndex
 			{
 			get
-				{  return htmlBuilder;  }
-			}
-
-		public Engine.Instance EngineInstance
-			{
-			get
-				{  return HTMLBuilder.EngineInstance;  }
+				{  return context.Builder.SearchIndex;  }
 			}
 
 
@@ -697,18 +692,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 
-		/* var: htmlBuilder
-		 */
-		protected Builders.HTML htmlBuilder;
-
-		/* var: output
-		 * The JavaScript being generated.
-		 */
-		protected StringBuilder output;
-
 		/* var: usedCommentTypes
-		 * A list of the comment types used in the search data.  The order in which they appear here will be the order in which they
-		 * appear in the JavaScript array.
+		 * A list of the <CommentTypes> used by the prefix currently being built.
 		 */
 		protected List<CommentType> usedCommentTypes;
 

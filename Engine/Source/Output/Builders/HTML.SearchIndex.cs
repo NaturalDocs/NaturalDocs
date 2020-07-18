@@ -29,8 +29,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSearchPrefixIndex (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			Components.JSSearchData searchData = new Components.JSSearchData(this);
-			searchData.BuildPrefixIndex();
+			Output.HTML.Context context = new Output.HTML.Context(this);
+			Output.HTML.Components.JSONSearchIndex searchData = new Output.HTML.Components.JSONSearchIndex(context);
+			searchData.BuildIndexDataFile();
 			}
 
 
@@ -38,7 +39,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSearchPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			Components.JSSearchData searchData = new Components.JSSearchData(this);
+			Output.HTML.Context context = new Output.HTML.Context(this);
+			Output.HTML.Components.JSONSearchIndex searchData = new Output.HTML.Components.JSONSearchIndex(context);
 			searchData.BuildPrefixDataFile(prefix, accessor, cancelDelegate);
 			}
 
