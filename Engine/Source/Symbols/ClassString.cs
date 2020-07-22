@@ -179,7 +179,9 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			get
 				{
-				if (classString == null || classString[0] == 'C' || classString[0] == 'c')
+				if (classString == null)
+					{  throw new NullReferenceException();  }
+				else if (classString[0] == 'C' || classString[0] == 'c')
 					{  return Hierarchy.Class;  }
 				else if (classString[0] == 'D' || classString[0] == 'd')
 					{  return Hierarchy.Database;  }
