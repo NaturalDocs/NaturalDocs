@@ -67,8 +67,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Setup
 
+				context.Topic = topic;
+
 				this.context = context;
-				this.context.Topic = topic;
 				this.links = links;
 				this.linkTargets = linkTargets;
 				this.embeddedTopics = embeddedTopics;
@@ -79,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
 				string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
-				string topicHashPath = Paths.Topic.HashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
+				string topicHashPath = context.TopicOnlyHashPath;
 
 				if (topicHashPath != null)
 					{  output.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
@@ -360,13 +361,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 										{  throw new Exception ("There are not enough embedded topics to build the definition list.");  }
 								#endif
 
-								string topicHashPath = Paths.Topic.HashPath(embeddedTopics[embeddedTopicIndex], 
-																								 context.TopicPage.IncludeClassInTopicHashPaths);
+								var embeddedTopic = embeddedTopics[embeddedTopicIndex];
 
-								if (topicHashPath != null)
-									{  output.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
+								Context embeddedTopicContext = context;
+								embeddedTopicContext.Topic = embeddedTopic;
 
-								output.Append("<a name=\"Topic" + embeddedTopics[embeddedTopicIndex].TopicID + "\"></a>");
+								string embeddedTopicHashPath = embeddedTopicContext.TopicOnlyHashPath;
+
+								if (embeddedTopicHashPath != null)
+									{  output.Append("<a name=\"" + embeddedTopicHashPath.EntityEncode() + "\"></a>");  }
+
+								output.Append("<a name=\"Topic" + embeddedTopic.TopicID + "\"></a>");
 
 								embeddedTopicIndex++;
 								}

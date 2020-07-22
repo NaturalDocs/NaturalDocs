@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, Context context)
 			{
 			#if DEBUG
-			if (context.TopicPage == null)
+			if (context.TopicPage.IsNull)
 				{  throw new Exception("The topic page must be specified when creating a JSONSummary object.");  }
 			#endif
 
@@ -87,6 +87,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFileForContent ()
 			{
+			// Build the content
+
 			StringBuilder output = new StringBuilder();
 
 			output.Append("NDContentPage.OnToolTipsLoaded(");
@@ -97,7 +99,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(tooltipsJSON);
 			output.Append(");");
 
-			System.IO.StreamWriter toolTipsFile = context.Builder.CreateTextFileAndPath(context.TopicPage.ToolTipsFile);
+
+			// Save it
+
+			System.IO.StreamWriter toolTipsFile = context.Builder.CreateTextFileAndPath(context.ToolTipsFile);
 
 			try
 				{  toolTipsFile.Write(output.ToString());  }
@@ -114,9 +119,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFileForSummary ()
 			{
+			// Build the content
+
 			StringBuilder output = new StringBuilder();
 
-			output.Append("NDSummary.OnToolTipsLoaded(\"" + context.TopicPage.OutputFileHashPath.StringEscape() + "\",");
+			output.Append("NDSummary.OnToolTipsLoaded(\"" + context.HashPath.StringEscape() + "\",");
 
 			if (addWhitespace)
 				{  output.AppendLine();  }
@@ -124,7 +131,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(tooltipsJSON);
 			output.Append(");");
 
-			System.IO.StreamWriter summaryToolTipsFile = context.Builder.CreateTextFileAndPath(context.TopicPage.SummaryToolTipsFile);
+
+			// Save it
+
+			System.IO.StreamWriter summaryToolTipsFile = context.Builder.CreateTextFileAndPath(context.SummaryToolTipsFile);
 
 			try
 				{  summaryToolTipsFile.Write(output.ToString());  }

@@ -600,16 +600,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(UsedCommentTypeIndex(topicEntry.WrappedTopic.CommentTypeID));
 
 			output.Append(",\"");
-			var filePage = new Output.Components.HTMLTopicPages.File(context.Builder, topicEntry.WrappedTopic.FileID);
-			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
 
-			string topicHashPath = Paths.Topic.HashPath(topicEntry.WrappedTopic, true);
-
-			if (topicHashPath != null)
-				{
-				output.Append(':');
-				output.StringEscapeAndAppend(topicHashPath);
-				}
+			Context fileContext = new Context(context.Builder, topicEntry.WrappedTopic.FileID, topicEntry.WrappedTopic);
+			output.StringEscapeAndAppend(fileContext.HashPath);
 
 			output.Append('"');
 
@@ -617,18 +610,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				output.Append(",\"");
 
-				var classPage = new Output.Components.HTMLTopicPages.Class(context.Builder, topicEntry.WrappedTopic.ClassID, 
-																											 topicEntry.WrappedTopic.ClassString);
-				output.StringEscapeAndAppend(classPage.OutputFileHashPath);
+				Context classContext = new Context(context.Builder, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString, 
+																	  topicEntry.WrappedTopic);
+				output.StringEscapeAndAppend(classContext.HashPath);
 
-				string classTopicHashPath = Paths.Topic.HashPath(topicEntry.WrappedTopic, false);
-
-				if (classTopicHashPath != null)
-					{
-					output.Append(':');
-					output.StringEscapeAndAppend(classTopicHashPath);
-					}
-	
 				output.Append('"');
 				}
 

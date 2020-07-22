@@ -35,22 +35,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 
 		/* Constructor: Class
-		 * 
-		 * Creates a new class topic page.  Which features are available depend on which parameters you pass.
-		 * 
-		 * - If you pass a <ClassString> AND a class ID, all features are available immediately.
-		 * - If you only pass a <ClassString>, then only the <path properties> are available.
-		 * - If you only pass a class ID, then only the <database functions> are available.
-		 *		- The <path properties> will be available after one of the <database functions> is called as they will look up the
-		 *			<ClassString>.
-		 *		- It is safe to call <HTMLTopicPage.Build()> when you only passed a class ID.
+		 * Creates a new class topic page.
 		 */
-		public Class (Builders.HTML htmlBuilder, int classID = 0, ClassString classString = default(ClassString)) : base (htmlBuilder)
+		public Class (Output.HTML.Context context) : base (context)
 			{
-			// DEPENDENCY: This class assumes HTMLTopicPage.Build() will call a database function before using any path properties.
-
-			this.classID = classID;
-			this.classString = classString;
 			}
 
 
@@ -69,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		public override List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
 			#if DEBUG
-			if (classID <= 0)
+			if (context.TopicPage.ClassID <= 0)
 				{  throw new Exception("You cannot use HTMLTopicPages.Class.GetTopics when classID is not set.");  }
 			#endif
 
@@ -87,10 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 			
 			try
 				{  
-				if (classString == null)
-					{  classString = accessor.GetClassByID(classID);  }
-
-				topics = accessor.GetTopicsInClass(classID, cancelDelegate);  
+				topics = accessor.GetTopicsInClass(context.TopicPage.ClassID, cancelDelegate);  
 				}
 			finally
 				{
@@ -123,7 +108,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			// Merge the topics from multiple files into one coherent list.
 
-			ClassView.MergeTopics(topics, HTMLBuilder);
+			ClassView.MergeTopics(topics, context.Builder);
 
 
 			return topics;
@@ -139,11 +124,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 		 */
 		public override List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			#if DEBUG
-			if (classID <= 0)
-				{  throw new Exception("You cannot use HTMLTopicPages.Class.GetLinks when classID is not set.");  }
-			#endif
-
 			bool releaseLock = false;
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
 				{
@@ -155,10 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			try
 				{  
-				if (classString == null)
-					{  classString = accessor.GetClassByID(classID);  }
-
-				links = accessor.GetLinksInClass(classID, cancelDelegate);  
+				links = accessor.GetLinksInClass(context.TopicPage.ClassID, cancelDelegate);  
 				}
 			finally
 				{
@@ -168,207 +145,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 			return links;
 			}
-
-
-		/* Function: GetLinkTarget
-		 */
-		public override HTMLTopicPage GetLinkTarget (Topic targetTopic)
-			{
-			// We want to stay in the class view if we can, but since there's no generated page for globals we have to
-			// switch to the file view for them.
-
-			if (targetTopic.ClassID != 0)
-				{  return new HTMLTopicPages.Class (htmlBuilder, targetTopic.ClassID, targetTopic.ClassString);  }
-			else
-				{  return new HTMLTopicPages.File (htmlBuilder, targetTopic.FileID);  }
-			}
-
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: PageTitle
-		 */
-		override public string PageTitle
-			{
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use HTMLTopicPages.Class.PageTitle when classString is not set.");  }
-				#endif
-
-				return classString.Symbol.LastSegment;  
-				}
-			}
-
-		/* Property: IncludeClassInTopicHashPaths
-		 */
-		override public bool IncludeClassInTopicHashPaths
-			{
-			get
-				{  return false;  }
-			}
-
-
-
-		// Group: Path Properties
-		// __________________________________________________________________________
-
-
-		/* Property: OutputFile
-		 * The path of the topic page's output file.
-		 */
-		override public Path OutputFile
-		   {  
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				if (classString.Hierarchy == Hierarchy.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.OutputFile(htmlBuilder.OutputFolder, language.SimpleIdentifier, classString.Symbol);
-					}
-				else if (classString.Hierarchy == Hierarchy.Database)
-					{  
-					return Output.HTML.Paths.Database.OutputFile(htmlBuilder.OutputFolder, classString.Symbol);
-					}
-				else
-					{  throw new NotImplementedException();  }
-				}
-			}
-
-		/* Property: OutputFileHashPath
-		 * The hash path of the topic page.
-		 */
-		override public string OutputFileHashPath
-			{
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				if (classString.Hierarchy == Hierarchy.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					return Output.HTML.Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);
-					}
-				else if (classString.Hierarchy == Hierarchy.Database)
-					{
-					return Output.HTML.Paths.Database.HashPath(classString.Symbol);
-					}
-				else
-					{  throw new NotImplementedException();  }
-				}
-			}
-
-		/* Property: ToolTipsFile
-		 * The path of the topic page's tool tips file.
-		 */
-		override public Path ToolTipsFile
-		   {  
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-ToolTips.js";
-				}
-			}
-
-		/* Property: SummaryFile
-		 * The path of the topic page's summary file.
-		 */
-		override public Path SummaryFile
-		   {  
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-Summary.js";
-				}
-			}
-
-		/* Property: SummaryToolTipsFile
-		 * The path of the topic page's summary tool tips file.
-		 */
-		override public Path SummaryToolTipsFile
-		   {  
-			get
-				{  
-				#if DEBUG
-				if (classString == null)
-					{  throw new Exception("You cannot use the path properties in HTMLTopicPages.Class when classString is not set.");  }
-				#endif
-
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-SummaryToolTips.js";
-				}
-			}
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-
-		/* var: classID
-		 * The ID of the class that this object is building.
-		 */
-		protected int classID;
-
-		/* var: classString
-		 * The <Symbols.ClassString> associated with <classID>.
-		 */
-		protected Symbols.ClassString classString;
 
 		}
 	}

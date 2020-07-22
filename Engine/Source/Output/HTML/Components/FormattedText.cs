@@ -71,29 +71,38 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public void AppendOpeningLinkTag (Topics.Topic targetTopic, StringBuilder output, string extraCSSClass = null)
 			{
 			#if DEBUG
-			if (Context.TopicPage == null)
+			if (Context.TopicPage.IsNull)
 				{  throw new Exception("Tried to call AppendOpeningLinkTag without setting the context's topic page.");  }
 			#endif
 
-			// The URL can't be only the hash path because it would use the iframe's location.  We need a relative path back to index.html
-			// to append it to.
+			// Build a context for the link target.  If we're already in a hierarchy page, make the link target go to a hierarchy page as well.
+			// However, it may have to fall back to a source file page if the target isn't part of a class.
 
-			Path currentOutputFolder = Context.TopicPage.OutputFile.ParentFolder;
+			Context targetContext;
+
+			if (context.TopicPage.InHierarchy && targetTopic.ClassString != null)
+				{  targetContext = new Context(context.Builder, targetTopic.ClassID, targetTopic.ClassString, targetTopic);  }
+			else
+				{  targetContext = new Context(context.Builder, targetTopic.FileID, targetTopic);  }
+
+
+			// Find the path from the current output file back to index.html.  The target URL needs to include this because relative paths are
+			// based on the the iframe's location.
+
+			Path currentOutputFolder = Context.OutputFile.ParentFolder;
 			Path indexFile = Context.Builder.OutputFolder + "/index.html";
 			Path pathToIndex = indexFile.MakeRelativeTo(currentOutputFolder);
 
-			Output.Components.HTMLTopicPage targetTopicPage = Context.TopicPage.GetLinkTarget(targetTopic);
+
+			// Build the link
 
 			output.Append("<a ");
 			
 			if (extraCSSClass != null)
 				{  output.Append("class=\"" + extraCSSClass + "\" ");  }
 
-			string topicHashPath = Paths.Topic.HashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
-
-			output.Append("href=\"" + pathToIndex.ToURL() + 
-											'#' + targetTopicPage.OutputFileHashPath.EntityEncode() + 
-											(topicHashPath != null ? ':' + topicHashPath.EntityEncode() : "") + "\" " +
+			output.Append("href=\"" + pathToIndex.ToURL() +
+											'#' + targetContext.HashPath.EntityEncode() + "\" " +
 										"target=\"_top\" " +
 										"onmouseover=\"NDContentPage.OnLinkMouseOver(event," + targetTopic.TopicID + ");\" " +
 										"onmouseout=\"NDContentPage.OnLinkMouseOut(event);\" " +
@@ -232,7 +241,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#if DEBUG
 			if (Context.Topic == null)
 				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the context's topic.");  }
-			if (Context.TopicPage == null)
+			if (Context.TopicPage.IsNull)
 				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the context's topic page.");  }
 			if (links == null)
 				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the links variable.");  }

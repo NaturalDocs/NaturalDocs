@@ -41,9 +41,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildClassFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			Components.HTMLTopicPages.Class page = new Components.HTMLTopicPages.Class(this, classID);
+			Output.HTML.Context context;
+			bool hasTopics = false;
 
-			bool hasTopics = page.Build(accessor, cancelDelegate);
+			accessor.GetReadOnlyLock();
+
+			try
+				{  
+				ClassString classString = accessor.GetClassByID(classID);  
+				context = new Output.HTML.Context(this, classID, classString);
+				Components.HTMLTopicPages.Class page = new Components.HTMLTopicPages.Class(context);
+
+				hasTopics = page.Build(accessor, cancelDelegate);
+				}
+			finally
+				{  accessor.ReleaseLock();  }
 
 			if (cancelDelegate())
 				{  return;  }
@@ -59,16 +71,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				}
 			else
 				{
-				DeleteOutputFileIfExists(page.OutputFile);
-				DeleteOutputFileIfExists(page.ToolTipsFile);
-				DeleteOutputFileIfExists(page.SummaryFile);
-				DeleteOutputFileIfExists(page.SummaryToolTipsFile);
+				DeleteOutputFileIfExists(context.OutputFile);
+				DeleteOutputFileIfExists(context.ToolTipsFile);
+				DeleteOutputFileIfExists(context.SummaryFile);
+				DeleteOutputFileIfExists(context.SummaryToolTipsFile);
 
 				lock (accessLock)
-				   {
-				   if (buildState.ClassFilesWithContent.Remove(classID) == true)
-				      {  buildState.NeedToBuildMenu = true;  }
-				   }
+					{
+					if (buildState.ClassFilesWithContent.Remove(classID) == true)
+						{  buildState.NeedToBuildMenu = true;  }
+					}
 				}
 			}
 

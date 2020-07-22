@@ -33,9 +33,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 
 		/* Constructor: File
 		 */
-		public File (Builders.HTML htmlBuilder, int fileID) : base (htmlBuilder)
+		public File (Output.HTML.Context context) : base (context)
 			{
-			this.fileID = fileID;
 			}
 
 
@@ -56,7 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				}
 
 			try
-				{  return accessor.GetTopicsInFile(fileID, cancelDelegate);  }
+				{  return accessor.GetTopicsInFile(context.TopicPage.FileID, cancelDelegate);  }
 			finally
 				{
 				if (releaseLock)
@@ -82,170 +81,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				}
 
 			try
-				{  return accessor.GetLinksInFile(fileID, cancelDelegate);  }
+				{  return accessor.GetLinksInFile(context.TopicPage.FileID, cancelDelegate);  }
 			finally
 				{
 				if (releaseLock)
 					{  accessor.ReleaseLock();  }
 				}
 			}
-
-
-		/* Function: GetLinkTarget
-		 */
-		public override HTMLTopicPage GetLinkTarget (Topic targetTopic)
-			{
-			return new HTMLTopicPages.File (htmlBuilder, targetTopic.FileID);
-			}
-
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: PageTitle
-		 */
-		override public string PageTitle
-			{
-			get
-				{  return EngineInstance.Files.FromID(fileID).FileName.NameWithoutPath;  }
-			}
-
-		/* Property: IncludeClassInTopicHashPaths
-		 */
-		override public bool IncludeClassInTopicHashPaths
-			{
-			get
-				{  return true;  }
-			}
-
-
-
-		// Group: Path Properties
-		// __________________________________________________________________________
-
-
-		/* Property: OutputFile
-		 * The path of the topic page's output file, or null if none.  It may be null if the <FileSource> that created
-		 * it no longer exists.
-		 */
-		override public Path OutputFile
-		   {  
-			get
-				{  
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
-
-				if (fileSource == null)
-					{  return null;  }
-
-				Path relativePath = fileSource.MakeRelative(file.FileName);
-
-				return Output.HTML.Paths.SourceFile.OutputFile(htmlBuilder.OutputFolder, fileSource.Number, relativePath);
-				}
-			}
-
-		/* Property: OutputFileHashPath
-		 * The hash path of the topic page, or null if none.  It may be null if the <FileSource> that created it no longer exists.
-		 */
-		override public string OutputFileHashPath
-			{
-			get
-				{  
-				Files.File file = EngineInstance.Files.FromID(fileID);
-				Files.FileSource fileSource = EngineInstance.Files.FileSourceOf(file);
-
-				if (fileSource == null)
-					{  return null;  }
-
-				Path relativePath = fileSource.MakeRelative(file.FileName);
-
-				return Output.HTML.Paths.SourceFile.HashPath(fileSource.Number, relativePath);
-				}
-			}
-
-		/* Property: ToolTipsFile
-		 * The path of the topic page's tool tips file, or null if none.  It may be null if the <FileSource> that created it no longer exists.
-		 */
-		override public Path ToolTipsFile
-		   {  
-			get
-				{
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-ToolTips.js";
-				}
-			}
-
-		/* Property: SummaryFile
-		 * The path of the topic page's summary file, or null if none.  It may be null if the <FileSource> that created it no longer 
-		 * exists.
-		 */
-		override public Path SummaryFile
-		   {  
-			get
-				{  
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-Summary.js";
-				}
-			}
-
-		/* Property: SummaryToolTipsFile
-		 * The path of the topic page's summary tool tips file, or null if none.  It may be null if the <FileSource> that created it
-		 * no longer exists.
-		 */
-		override public Path SummaryToolTipsFile
-		   {  
-			get
-				{  
-				Path outputFile = this.OutputFile;
-
-				if (outputFile == null)
-					{  return null;  }
-
-				string outputFileString = outputFile.ToString();
-
-				#if DEBUG
-				if (!outputFileString.EndsWith(".html"))
-					{  throw new Exception("Expected output file path \"" + outputFileString + "\" to end with \".html\".");  }
-				#endif
-
-				return outputFileString.Substring(0, outputFileString.Length - 5) + "-SummaryToolTips.js";
-				}
-			}
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-
-		/* var: fileID
-		 * The ID of the file that this object is building.
-		 */
-		protected int fileID;
 
 		}
 	}

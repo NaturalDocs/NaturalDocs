@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			this.addLinks = (links != null && linkTargets != null);
 
 			#if DEBUG
-			if (this.addLinks && context.TopicPage == null)
+			if (this.addLinks && context.TopicPage.IsNull)
 				{  throw new Exception("Tried to generate a prototype with type links when the context's topic page was not set.");  }
 			#endif
 

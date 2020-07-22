@@ -70,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, Context context)
 			{
 			#if DEBUG
-			if (context.TopicPage == null)
+			if (context.TopicPage.IsNull)
 				{  throw new Exception("The topic page must be specified when creating a JSONSummary object.");  }
 			#endif
 
@@ -99,10 +99,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFile ()
 			{
+			// Determine the page title
+
+			string pageTitle;
+
+			if (context.TopicPage.IsSourceFile)
+				{  pageTitle = EngineInstance.Files.FromID(context.TopicPage.FileID).FileName.NameWithoutPath;  }
+			else if (context.TopicPage.InHierarchy)
+				{  pageTitle = context.TopicPage.ClassString.Symbol.LastSegment;  }
+			else
+				{  throw new NotImplementedException();  }
+
+
+			// Build the content
+
 			StringBuilder output = new StringBuilder();
 
 			output.Append(
-				"NDFramePage.OnPageTitleLoaded(\"" + context.TopicPage.OutputFileHashPath.StringEscape() + "\",\"" + context.TopicPage.PageTitle.StringEscape() + "\");"
+				"NDFramePage.OnPageTitleLoaded(\"" + context.HashPath.StringEscape() + "\",\"" + pageTitle.StringEscape() + "\");"
 				);
 
 			if (addWhitespace)
@@ -111,7 +125,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				output.AppendLine();
 				}
 
-			output.Append("NDSummary.OnSummaryLoaded(\"" + context.TopicPage.OutputFileHashPath.StringEscape() + "\",");
+			output.Append("NDSummary.OnSummaryLoaded(\"" + context.HashPath.StringEscape() + "\",");
 
 			if (addWhitespace)
 				{  output.AppendLine();  }
@@ -138,7 +152,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(");");
 
 
-			System.IO.StreamWriter summaryFile = context.Builder.CreateTextFileAndPath(context.TopicPage.SummaryFile);
+			// Save it
+
+			System.IO.StreamWriter summaryFile = context.Builder.CreateTextFileAndPath(context.SummaryFile);
 
 			try
 				{  summaryFile.Write(output.ToString());  }
@@ -361,6 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				var topic = topics[topicIndex];
+				var topicContext = new Context(context.Builder, context.TopicPage, topic);
 
 				if (addWhitespace)
 					{  json.Append(' ', IndentWidth * 2);  }
@@ -418,7 +435,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Hash Path
 
-				string topicHashPath = Paths.Topic.HashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
+				string topicHashPath = topicContext.TopicOnlyHashPath;
 
 				if (topicHashPath != null)
 					{

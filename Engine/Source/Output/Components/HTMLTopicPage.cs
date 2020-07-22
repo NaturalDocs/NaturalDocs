@@ -34,7 +34,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Output.Components
 	{
-	public abstract class HTMLTopicPage
+	public abstract class HTMLTopicPage : Output.HTML.Component
 		{
 
 		// Group: Functions
@@ -44,9 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		/* Constructor: HTMLTopicPage
 		 * Creates a new HTMLTopicPage object.
 		 */
-		public HTMLTopicPage (Builders.HTML htmlBuilder)
+		public HTMLTopicPage (Output.HTML.Context context) : base (context)
 			{
-			this.htmlBuilder = htmlBuilder;
 			}
 
 
@@ -218,11 +217,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				try
 					{
 
+					// Determine the page title
+
+					string pageTitle;
+
+					if (context.TopicPage.IsSourceFile)
+						{  pageTitle = EngineInstance.Files.FromID(context.TopicPage.FileID).FileName.NameWithoutPath;  }
+					else if (context.TopicPage.InHierarchy)
+						{  pageTitle = context.TopicPage.ClassString.Symbol.LastSegment;  }
+					else
+						{  throw new NotImplementedException();  }
+
+
 					// Build the HTML for the list of topics
 
 					StringBuilder html = new StringBuilder("\r\n\r\n");
 
-					HTML.Context context = new HTML.Context(HTMLBuilder, this);
 					HTML.Components.Topic topicBuilder = new HTML.Components.Topic(context);
 					HTML.Components.Tooltip tooltipBuilder = new HTML.Components.Tooltip(context);
 
@@ -251,7 +261,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					// Build the full HTML file
 
-					htmlBuilder.BuildFile(OutputFile, PageTitle, html.ToString(), Builders.HTML.PageType.Content);
+					context.Builder.BuildFile(context.OutputFile, pageTitle, html.ToString(), Builders.HTML.PageType.Content);
 
 
 					// Build summary and tooltips files
@@ -272,7 +282,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				catch (Exception e)
 					{
 					try
-						{  e.AddNaturalDocsTask("Building File: " + OutputFile);  }
+						{  e.AddNaturalDocsTask("Building File: " + context.OutputFile);  }
 					catch
 						{  }
 
@@ -309,92 +319,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
 		 */
 		public abstract List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
-
-
-		/* Function: GetLinkTarget
-		 * Returns a <HTMLTopicPage> for the target of a link which resolves to the passed <Topic>.
-		 */
-		public abstract HTMLTopicPage GetLinkTarget (Topic targetTopic);
-
-
-
-		// Group: Properties
-		// __________________________________________________________________________
-
-
-		/* Property: HTMLBuilder
-		 * The <Builders.HTML> associated with this topic page.
-		 */
-		public Builders.HTML HTMLBuilder
-			{
-			get
-				{  return htmlBuilder;  }
-			}
-
-
-		/* Property: EngineInstance
-		 * The <Engine.Instance> associated with this topic page.
-		 */
-		public Engine.Instance EngineInstance
-			{
-			get
-				{  return HTMLBuilder.EngineInstance;  }
-			}
-
-
-
-		// Group: Abstract Properties
-		// __________________________________________________________________________
-
-
-		/* Property: PageTitle
-		 */
-		abstract public string PageTitle
-			{  get;  }
-
-		/* Function: IncludeClassInTopicHashPaths
-		 * Whether to include the class in the topic part of hash paths.  For example, you would want "#Class:MyClass:Member" 
-		 * instead of "#Class:MyClass:MyClass.Member".  However, you would want "#File:MyFile.cs:MyClass.Member" instead of
-		 * "#File:MyFile.cs:Member".
-		 */
-		public abstract bool IncludeClassInTopicHashPaths
-			{  get;  }
-
-		/* Property: OutputFile
-		 */
-		abstract public Path OutputFile
-		   {  get;  }
-
-		/* Property: OutputFileHashPath
-		 */
-		abstract public string OutputFileHashPath
-			{  get;  }
-
-		/* Property: ToolTipsFile
-		 */
-		abstract public Path ToolTipsFile
-		   {  get;  }
-
-		/* Property: SummaryFile
-		 */
-		abstract public Path SummaryFile
-		   {  get;  }
-
-		/* Property: SummaryToolTipsFile
-		 */
-		abstract public Path SummaryToolTipsFile
-		   {  get;  }
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-
-
-		/* var: htmlBuilder
-		 * The <Builders.HTML> associated with this object.
-		 */
-		protected Builders.HTML htmlBuilder;
 
 		}
 	}

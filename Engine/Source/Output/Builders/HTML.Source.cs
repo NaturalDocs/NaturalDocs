@@ -41,7 +41,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			Components.HTMLTopicPages.File page = new Components.HTMLTopicPages.File(this, fileID);
+			Output.HTML.Context context = new Output.HTML.Context(this, fileID);
+			Components.HTMLTopicPages.File page = new Components.HTMLTopicPages.File(context);
 
 			bool hasTopics = page.Build(accessor, cancelDelegate);
 
@@ -59,10 +60,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				}
 			else
 				{
-				DeleteOutputFileIfExists(page.OutputFile);
-				DeleteOutputFileIfExists(page.ToolTipsFile);
-				DeleteOutputFileIfExists(page.SummaryFile);
-				DeleteOutputFileIfExists(page.SummaryToolTipsFile);
+				DeleteOutputFileIfExists(context.OutputFile);
+				DeleteOutputFileIfExists(context.ToolTipsFile);
+				DeleteOutputFileIfExists(context.SummaryFile);
+				DeleteOutputFileIfExists(context.SummaryToolTipsFile);
 
 				lock (accessLock)
 					{
