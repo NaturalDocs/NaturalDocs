@@ -79,7 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
 				string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
-				string topicHashPath = context.Builder.Source_TopicHashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
+				string topicHashPath = Paths.Topic.HashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
 
 				if (topicHashPath != null)
 					{  output.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }
@@ -360,8 +360,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 										{  throw new Exception ("There are not enough embedded topics to build the definition list.");  }
 								#endif
 
-								string topicHashPath = context.Builder.Source_TopicHashPath(embeddedTopics[embeddedTopicIndex], 
-																														 context.TopicPage.IncludeClassInTopicHashPaths);
+								string topicHashPath = Paths.Topic.HashPath(embeddedTopics[embeddedTopicIndex], 
+																								 context.TopicPage.IncludeClassInTopicHashPaths);
 
 								if (topicHashPath != null)
 									{  output.Append("<a name=\"" + topicHashPath.EntityEncode() + "\"></a>");  }

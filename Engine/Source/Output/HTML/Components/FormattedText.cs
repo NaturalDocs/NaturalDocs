@@ -89,7 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (extraCSSClass != null)
 				{  output.Append("class=\"" + extraCSSClass + "\" ");  }
 
-			string topicHashPath = Context.Builder.Source_TopicHashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
+			string topicHashPath = Paths.Topic.HashPath(targetTopic, targetTopicPage.IncludeClassInTopicHashPaths);
 
 			output.Append("href=\"" + pathToIndex.ToURL() + 
 											'#' + targetTopicPage.OutputFileHashPath.EntityEncode() + 

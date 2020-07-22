@@ -603,7 +603,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var filePage = new Output.Components.HTMLTopicPages.File(context.Builder, topicEntry.WrappedTopic.FileID);
 			output.StringEscapeAndAppend(filePage.OutputFileHashPath);
 
-			string topicHashPath = context.Builder.Source_TopicHashPath(topicEntry.WrappedTopic, true);
+			string topicHashPath = Paths.Topic.HashPath(topicEntry.WrappedTopic, true);
 
 			if (topicHashPath != null)
 				{
@@ -621,7 +621,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 																											 topicEntry.WrappedTopic.ClassString);
 				output.StringEscapeAndAppend(classPage.OutputFileHashPath);
 
-				string classTopicHashPath = context.Builder.Source_TopicHashPath(topicEntry.WrappedTopic, false);
+				string classTopicHashPath = Paths.Topic.HashPath(topicEntry.WrappedTopic, false);
 
 				if (classTopicHashPath != null)
 					{

@@ -418,7 +418,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Hash Path
 
-				string topicHashPath = context.Builder.Source_TopicHashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
+				string topicHashPath = Paths.Topic.HashPath(topic, context.TopicPage.IncludeClassInTopicHashPaths);
 
 				if (topicHashPath != null)
 					{
