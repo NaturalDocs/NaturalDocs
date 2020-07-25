@@ -157,7 +157,7 @@
     <Compile Include="Source\Languages\Parsers\CSharp.cs" />
     <Compile Include="Source\Languages\Element.cs" />
     <Compile Include="Source\Languages\ParentElement.cs" />
-    <Compile Include="Source\Output\Components\ClassView.cs" />
+    <Compile Include="Source\ClassView.cs" />
     <Compile Include="Source\Prototypes\ParameterSection.cs" />
     <Compile Include="Source\Prototypes\TypeBuilder.cs" />
     <Compile Include="Source\Prototypes\Section.cs" />

@@ -84,31 +84,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPages
 				}
 
 
-			// Filter out any list topics that are members of the hierarchy.  If someone documents classes as part of a list,
-			// we only want pages for the individual members, not the list topic.
-
-			for (int i = 0; i < topics.Count; i++)
-				{
-				bool remove = false;
-
-				if (topics[i].IsList)
-					{
-					CommentType commentType = EngineInstance.CommentTypes.FromID(topics[i].CommentTypeID);
-
-					if (commentType.Flags.ClassHierarchy || commentType.Flags.DatabaseHierarchy)
-						{  remove = true;  }
-					}
-
-				if (remove)
-					{  topics.RemoveAt(i);  }
-				else
-					{  i++;  }
-				}
-
-
 			// Merge the topics from multiple files into one coherent list.
 
-			ClassView.MergeTopics(topics, context.Builder);
+			ClassView.Merge(ref topics, EngineInstance);
 
 
 			return topics;

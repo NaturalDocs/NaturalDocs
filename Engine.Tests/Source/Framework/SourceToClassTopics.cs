@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 						for (;;)
 							{
 							List<Topic> classTopics =  accessor.GetTopicsInClass(classID, Delegates.NeverCancel);
-							Engine.Output.Components.ClassView.MergeTopics(classTopics, engineInstanceManager.HTMLBuilder);
+							ClassView.Merge(ref classTopics, engineInstanceManager.EngineInstance);
 
 							if (classTopics == null || classTopics.Count == 0)
 								{  break;  }

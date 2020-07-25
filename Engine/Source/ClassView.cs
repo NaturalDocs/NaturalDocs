@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Components.ClassView
+ * Class: CodeClear.NaturalDocs.Engine.ClassView
  * ____________________________________________________________________________
  * 
  * A static class that merges all the <Topics> from a class into one coherent list, even if they come from multiple files.
@@ -23,7 +23,7 @@ using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine
 	{
 	public static class ClassView
 		{
@@ -32,24 +32,54 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 		// __________________________________________________________________________
 
 
-		/* Function: MergeTopics
-		 * Takes a list of <Topics> that come from the same class but multiple source files and combines them into a
-		 * single coherent list.  It assumes all topics from a single file will be consecutive, but otherwise the groups of
-		 * topics can be in any order.
+		/* Function: Merge
+		 * 
+		 * Takes a list of <Topics> that come from the same class but multiple source files and rearranges them into a
+		 * single coherent list.  Some topics may be removed or merged with others.  The original topic list will be changed.
+		 * 
+		 * Each file's topics should appear consecutively in the list and ideally in source order.  The order of the files is not
+		 * important but should ideally be consistent from one run to the next.
 		 */
-		public static void MergeTopics (List<Topic> topics, Builder builder)
+		public static void Merge (ref List<Topic> topics, Engine.Instance engineInstance)
 			{
+			var files = engineInstance.Files;
+			var commentTypes = engineInstance.CommentTypes;
+
+
+			// Filter out any list topics that are members of the hierarchy.  If someone documents classes as part of a list,
+			// we only want pages for the individual members, not the list topic.
+
+			for (int i = 0; i < topics.Count; /* no auto-increment */)
+				{
+				bool remove = false;
+
+				if (topics[i].IsList)
+					{
+					var commentType = commentTypes.FromID(topics[i].CommentTypeID);
+
+					if (commentType.Flags.ClassHierarchy || commentType.Flags.DatabaseHierarchy)
+						{  remove = true;  }
+					}
+
+				if (remove)
+					{  topics.RemoveAt(i);  }
+				else
+					{  i++;  }
+				}
+
+
 			if (topics.Count == 0)
 				{  return;  }
 
-			#if DEBUG
+
 			// Validate that they're all from the same class and that all of a file's topics are consecutive.
 
+			#if DEBUG
 			int classID = topics[0].ClassID;
 			ClassString classString = topics[0].ClassString;
 
 			if (classID == 0)
-				{  throw new Exception("All topics passed to MergeTopics() must have a class ID set.");  }
+				{  throw new Exception("All topics passed to Merge() must have a class ID set.");  }
 
 			int currentFileID = topics[0].FileID;
 			IDObjects.NumberSet previousFileIDs = new IDObjects.NumberSet();
@@ -57,12 +87,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			for (int i = 1; i < topics.Count; i++)
 				{
 				if (topics[i].ClassID != classID || topics[i].ClassString != classString)
-					{  throw new Exception("All topics passed to MergeTopics() must have the same class string and ID.");  }
+					{  throw new Exception("All topics passed to Merge() must have the same class string and ID.");  }
 
 				if (topics[i].FileID != currentFileID)
 					{
 					if (previousFileIDs.Contains(topics[i].FileID))
-						{  throw new Exception("MergeTopics() requires all topics that share a file ID be consecutive.");  }
+						{  throw new Exception("Merge() requires all topics that share a file ID be consecutive.");  }
 
 					previousFileIDs.Add(currentFileID);
 					currentFileID = topics[i].FileID;
@@ -70,7 +100,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				}
 			#endif
 
+
 			// If the first and last topic have the same file ID, that means the entire list does and we can return it as is.
+
 			if (topics[0].FileID == topics[topics.Count-1].FileID)
 				{  
 				// We do still have to make sure the first topic isn't embedded though so that classes documented in lists will
@@ -83,10 +115,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				return;  
 				}
-
-			var engineInstance = builder.EngineInstance;
-			var files = engineInstance.Files;
-			var commentTypes = engineInstance.CommentTypes;
 
 
 			// First we have to sort the topic list by file name.  This ensures that the merge occurs consistently no matter
@@ -142,8 +170,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				{
 				Topic topic = remainingTopics[i];
 
-				if (topic.DefinesClass &&
-					builder.EngineInstance.Links.IsBetterClassDefinition(bestDefinition, topic))
+				if (topic.DefinesClass && engineInstance.Links.IsBetterClassDefinition(bestDefinition, topic))
 					{
 					bestDefinition = topic;
 					bestDefinitionIndex = i;
@@ -217,7 +244,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					if (remainingTopic.IsEnum)
 						{
-						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, engineInstance);
 
 						if (duplicateIndex == -1)
 							{  remainingTopicIndex += 1 + embeddedTopicCount;  }
@@ -242,7 +269,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 					else if (embeddedTopicCount == 0)
 						{
-						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, builder);
+						int duplicateIndex = FindDuplicateTopic(remainingTopic, topics, engineInstance);
 
 						if (duplicateIndex == -1)
 							{  remainingTopicIndex++;  }
@@ -401,13 +428,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 						// Create a new group if there's no existing one we can use.
 						if (matchingGroupIndex == -1)
 							{
-							Topic generatedTopic = new Topic(builder.EngineInstance.CommentTypes);
+							Topic generatedTopic = new Topic(engineInstance.CommentTypes);
 							generatedTopic.TopicID = 0;
-							generatedTopic.Title = builder.EngineInstance.CommentTypes.FromID(type).PluralDisplayName;
+							generatedTopic.Title = engineInstance.CommentTypes.FromID(type).PluralDisplayName;
 							generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
 							generatedTopic.ClassString = topics[0].ClassString;
 							generatedTopic.ClassID = topics[0].ClassID;
-							generatedTopic.CommentTypeID = builder.EngineInstance.CommentTypes.IDFromKeyword("group");
+							generatedTopic.CommentTypeID = engineInstance.CommentTypes.IDFromKeyword("group");
 							generatedTopic.FileID = topics[0].FileID;
 							generatedTopic.LanguageID = topics[0].LanguageID;
 
@@ -474,7 +501,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					  embeddedTopicIndex++)
 					{
 					var embeddedTopic = topics[embeddedTopicIndex];
-					var embeddedTopicLanguage = builder.EngineInstance.Languages.FromID(embeddedTopic.LanguageID);
+					var embeddedTopicLanguage = engineInstance.Languages.FromID(embeddedTopic.LanguageID);
 					var foundDuplicate = false;
 
 					for (int potentialDuplicateTopicIndex = 0; potentialDuplicateTopicIndex < topics.Count; /* no auto-increment */)
@@ -567,13 +594,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 			}
 
 
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+
+
 		/* Function: FindDuplicateTopic
 		 * Returns the index of a topic that defines the same code element as the passed one, or -1 if there isn't
 		 * any.  Topics are considered duplicates if <Language.IsSameCodeElement> returns true.
 		 */
-		private static int FindDuplicateTopic (Topic topic, List<Topic> listToSearch, Builder builder)
+		private static int FindDuplicateTopic (Topic topic, List<Topic> listToSearch, Engine.Instance engineInstance)
 			{
-			Language language = builder.EngineInstance.Languages.FromID(topic.LanguageID);
+			Language language = engineInstance.Languages.FromID(topic.LanguageID);
 
 			for (int i = 0; i < listToSearch.Count; i++)
 				{
