@@ -39,6 +39,10 @@ namespace CodeClear.NaturalDocs.Engine
 		 * 
 		 * Each file's topics should appear consecutively in the list and ideally in source order.  The order of the files is not
 		 * important but should ideally be consistent from one run to the next.
+		 * 
+		 * It's possible for this function to reduce the number of topics to zero.  For example, if defining classes with a list
+		 * topic, the list topic itself will be removed.  You should be able to handle this and treat it as if the topic list had
+		 * no content.
 		 */
 		public static void Merge (ref List<Topic> topics, Engine.Instance engineInstance)
 			{
@@ -46,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine
 			var commentTypes = engineInstance.CommentTypes;
 
 
-			// Filter out any list topics that are members of the hierarchy.  If someone documents classes as part of a list,
+			// Filter out any list topics that define members of a hierarchy.  If someone documents classes as part of a list,
 			// we only want pages for the individual members, not the list topic.
 
 			for (int i = 0; i < topics.Count; /* no auto-increment */)
@@ -66,7 +70,6 @@ namespace CodeClear.NaturalDocs.Engine
 				else
 					{  i++;  }
 				}
-
 
 			if (topics.Count == 0)
 				{  return;  }
@@ -111,6 +114,17 @@ namespace CodeClear.NaturalDocs.Engine
 					{
 					topics[0] = topics[0].Duplicate();
 					topics[0].IsEmbedded = false;
+					}
+
+				// We also still have to remove  empty groups for consistency.  Start at 1 to skip the class topic.
+				var groups = GetTopicGroups(topics, startingIndex: 1);
+			
+				for (int i = 0; i < groups.Groups.Count; /* don't auto increment */)
+					{
+					if (groups.Groups[i].IsEmpty)
+						{  groups.RemoveGroupAndTopics(i);  }
+					else
+						{  i++;  }
 					}
 
 				return;  

@@ -95,6 +95,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (topicPage.InHierarchy)
 					{
 					ClassView.Merge(ref topics, EngineInstance);
+
+					// It's possible for ClassView to reduce the number of topics to zero, so check for that and treat it as if the
+					// class page has no content.
+					if (topics.Count == 0)
+						{  return false;  }
 					}
 
 
