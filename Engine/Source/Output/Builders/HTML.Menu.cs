@@ -12,7 +12,6 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Output.Components;
 using CodeClear.NaturalDocs.Engine.Symbols;
 
 

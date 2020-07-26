@@ -1,22 +1,13 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Components.HTMLTopicPage
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PageContent
  * ____________________________________________________________________________
  * 
- * A base class for components that build a page of <Topics> for <Output.Builders.HTML>.
+ * Creates the page content for the <Topics> of a source file or class and all it's supporting JavaScript files.
  * 
- * 
- * Topic: Usage
- * 
- *		- Create a new HTMLTopicPage.
- *		- Call <Build()>.
- *		- Unlike other components, this object cannot be reused for other locations.
- *		
  * 
  * Threading: Not Thread Safe
  * 
- *		This class is only designed to be used by one thread at a time.  It has an internal state that is used during a call to
- *		<Build()>, and another <Build()> should not be started until it's completed.  Instead each thread should create its 
- *		own object.
+ *		This class is only designed to be used by one thread at a time.  Each thread should create its own object.
  * 
  */
 
@@ -28,38 +19,45 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Components
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public abstract class HTMLTopicPage : Output.HTML.Component
+	public class PageContent : Component
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: HTMLTopicPage
-		 * Creates a new HTMLTopicPage object.
+		/* Constructor: PageContent
 		 */
-		public HTMLTopicPage (Output.HTML.Context context) : base (context)
+		public PageContent (Context context) : base (context)
 			{
 			}
 
 
-		/* Function: Build
+		/* Function: BuildDataFiles
 		 * 
-		 * Builds the page and its supporting JSON files.  Returns whether there was any content.  It will also return false
-		 * if it was interrupted by the <CancelDelegate>.
+		 * Builds the content HTML file for the passed <Context's> <TopicPage> and its supporting <JSONSummary> and 
+		 * <JSONToolTips>.  Returns whether there was any content.  It will also return false if it was interrupted by the 
+		 * <CancelDelegate>.
 		 * 
-		 * If the <CodeDB.Accessor> doesn't have a lock, this function will automatically acquire and release a read-only lock.
-		 * This is the preferred way of using this function as the lock will only be held during the data querying stage and will be 
-		 * released before writing output to disk.  If it already has a lock it will use it and not release it.
+		 * If the <CodeDB.Accessor> doesn't have a lock, this function will automatically acquire and release a read-only 
+		 * lock.  This is the preferred way of using this function as the lock will only be held during the data querying stage 
+		 * and will be  released before writing output to disk.
+		 * 
+		 * If it already had a lock it will use it and not release it unless you set releaseExistingLocks.
 		 */
-		public bool Build (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
+		public bool BuildDataFiles (Context context, CodeDB.Accessor accessor, CancelDelegate cancelDelegate, 
+												bool releaseExistingLocks = false)
 			{
+			this.Context = context;
+			var topicPage = context.TopicPage;
+
+			List<Engine.Topics.Topic> topics;
+			List<Engine.Links.Link> links;
+
 			bool releaseDBLock = false;
 
 			if (accessor.LockHeld == CodeDB.Accessor.LockType.None)
@@ -67,18 +65,51 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				accessor.GetReadOnlyLock();
 				releaseDBLock = true;
 				}
+			else if (releaseExistingLocks)
+				{
+				releaseDBLock = true;
+				}
 
 			try
 				{
-				// DEPENDENCY: HTMLTopicPages.Class assumes that this function will call a database function before using any path
-				// properties.
 
-				List<Topic> topics = GetTopics(accessor, cancelDelegate) ?? new List<Topic>();
-				
-				if (topics.Count == 0 || cancelDelegate())
+				// Get the topics from the database.
+
+				if (topicPage.IsSourceFile)
+					{
+					topics = accessor.GetTopicsInFile(topicPage.FileID, cancelDelegate);
+					}
+				else if (topicPage.InHierarchy)
+					{
+					topics = accessor.GetTopicsInClass(topicPage.ClassID, cancelDelegate);
+					}
+				else
+					{  throw new NotImplementedException();  }
+
+				if (topics == null || topics.Count == 0 || cancelDelegate())
 					{  return false;  }
+
+
+				// Create the class view if appropriate
+
+				if (topicPage.InHierarchy)
+					{
+					ClassView.Merge(ref topics, EngineInstance);
+					}
+
+
+				// Get the links from the database.
 				
-				List<Link> links = GetLinks(accessor, cancelDelegate) ?? new List<Link>();
+				if (topicPage.IsSourceFile)
+					{
+					links = accessor.GetLinksInFile(topicPage.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					}
+				else if (topicPage.InHierarchy)
+					{
+					links = accessor.GetLinksInClass(topicPage.ClassID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					}
+				else
+					{  throw new NotImplementedException();  }
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -104,9 +135,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look 
 				// up the class parent links separately by class ID.
 
-				if ((this is HTMLTopicPages.Class) == false && classIDsDefined.IsEmpty == false)
+				if (topicPage.InHierarchy == false && classIDsDefined.IsEmpty == false)
 					{
-					List<Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
+					List<Engine.Links.Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
 
 					if (classParentLinks != null && classParentLinks.Count > 0)
 						{  links.AddRange(classParentLinks);  }
@@ -119,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 				// Now we need to find the children of all the classes defined on this page.  Get the class parent links that resolve to 
 				// any of the defined classes, but keep them separate for now.
 
-				List<Link> childLinks = null;
+				List<Engine.Links.Link> childLinks = null;
 
 				if (classIDsDefined.IsEmpty == false)
 					{  childLinks = accessor.GetClassParentLinksToClasses(classIDsDefined, cancelDelegate);  }
@@ -132,13 +163,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				IDObjects.NumberSet linkTargetIDs = new IDObjects.NumberSet();
 
-				foreach (Link link in links)
+				foreach (var link in links)
 					{
 					if (link.IsResolved)
 						{  linkTargetIDs.Add(link.TargetTopicID);  }
 					}
 
-				List<Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate) ?? new List<Topic>();
+				List<Engine.Topics.Topic> linkTargets = accessor.GetTopicsByID(linkTargetIDs, cancelDelegate) ??
+																		  new List<Engine.Topics.Topic>();
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -146,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				// Now get targets for the children.
 
-				List<Topic> childTargets = null;
+				List<Engine.Topics.Topic> childTargets = null;
 
 				if (childLinks != null && childLinks.Count > 0)
 					{
@@ -190,13 +222,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 
 				IDObjects.NumberSet summaryLinkFileIDs = new IDObjects.NumberSet();
 
-				foreach (Topic linkTarget in linkTargets)
+				foreach (var linkTarget in linkTargets)
 					{
 					if (linkTarget.Summary != null && linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1)
 						{  summaryLinkFileIDs.Add(linkTarget.FileID);  }
 					}
 
-				List<Link> summaryLinks = null;
+				List<Engine.Links.Link> summaryLinks = null;
 					
 				if (!summaryLinkFileIDs.IsEmpty)
 					{  summaryLinks = accessor.GetNaturalDocsLinksInFiles(summaryLinkFileIDs, cancelDelegate);  }
@@ -296,29 +328,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Components
 					{  accessor.ReleaseLock();  }
 				}
 			}
-
-
-
-		// Group: Abstract Functions
-		// __________________________________________________________________________
-
-
-		/* Function: GetTopics
-		 * 
-		 * Retrieves the <Topics> for the page's location.
-		 * 
-		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
-		 */
-		public abstract List<Topic> GetTopics (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
-
-
-		/* Function: GetLinks
-		 * 
-		 * Retrieves the <Links> appearing in the page's location.
-		 * 
-		 * When implementing this function note that the <CodeDB.Accessor> may or may not already have a lock.
-		 */
-		public abstract List<Link> GetLinks (CodeDB.Accessor accessor, CancelDelegate cancelDelegate);
 
 		}
 	}

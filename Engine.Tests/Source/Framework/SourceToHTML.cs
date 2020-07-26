@@ -126,7 +126,6 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 								{  throw new Exception("Could not get file info of " + file);  }
 
 							var fileContext = new Engine.Output.HTML.Context(engineInstanceManager.HTMLBuilder, fileInfo.ID);
-							var fileTopicPage = new Engine.Output.Components.HTMLTopicPages.File(fileContext);
 
 							Path htmlFile = fileContext.OutputFile;
 

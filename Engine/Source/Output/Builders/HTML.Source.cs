@@ -15,7 +15,6 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Output.Components;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -41,21 +40,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			Output.HTML.Context context = new Output.HTML.Context(this, fileID);
-			Components.HTMLTopicPages.File page = new Components.HTMLTopicPages.File(context);
+			var context = new Output.HTML.Context(this, fileID);
+			var pageContent = new Output.HTML.Components.PageContent(context);
 
-			bool hasTopics = page.Build(accessor, cancelDelegate);
+			bool hasTopics = pageContent.BuildDataFiles(context, accessor, cancelDelegate);
 
 			if (cancelDelegate())
 				{  return;  }
-
 
 			if (hasTopics)
 				{
 				lock (accessLock)
 					{
 					if (buildState.SourceFilesWithContent.Add(fileID) == true)
-						{  buildState.NeedToBuildMenu = true;;  }
+						{  buildState.NeedToBuildMenu = true;  }
 					}
 				}
 			else

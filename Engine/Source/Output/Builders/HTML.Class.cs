@@ -15,7 +15,6 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Output.Components;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
@@ -48,14 +47,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			try
 				{  
-				ClassString classString = accessor.GetClassByID(classID);  
-				context = new Output.HTML.Context(this, classID, classString);
-				Components.HTMLTopicPages.Class page = new Components.HTMLTopicPages.Class(context);
+				ClassString classString = accessor.GetClassByID(classID);
 
-				hasTopics = page.Build(accessor, cancelDelegate);
+				context = new Output.HTML.Context(this, classID, classString);
+				var pageContent = new Output.HTML.Components.PageContent(context);
+
+				hasTopics = pageContent.BuildDataFiles(context, accessor, cancelDelegate, releaseExistingLocks: true);
 				}
 			finally
-				{  accessor.ReleaseLock();  }
+				{  
+				if (accessor.LockHeld != CodeDB.Accessor.LockType.None)
+					{  accessor.ReleaseLock();  }
+				}
 
 			if (cancelDelegate())
 				{  return;  }
