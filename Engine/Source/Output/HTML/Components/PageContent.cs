@@ -300,7 +300,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					HTML.Components.JSONSummary summaryBuilder = new HTML.Components.JSONSummary(context);
 					summaryBuilder.ConvertToJSON(topics, context);
-					summaryBuilder.BuildDataFile();
+					summaryBuilder.BuildDataFile(pageTitle);
 
 					HTML.Components.JSONToolTips toolTipsBuilder = new HTML.Components.JSONToolTips(context);
 					toolTipsBuilder.ConvertToJSON(topics, links, context);

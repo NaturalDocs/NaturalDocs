@@ -97,19 +97,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * It will use the file name specified in <HTMLTopicsPage.SummaryFile>.  Note that you have to call <ConvertToJSON()> prior to 
 		 * calling this function.
 		 */
-		public void BuildDataFile ()
+		public void BuildDataFile (string pageTitle)
 			{
-			// Determine the page title
-
-			string pageTitle;
-
-			if (context.TopicPage.IsSourceFile)
-				{  pageTitle = EngineInstance.Files.FromID(context.TopicPage.FileID).FileName.NameWithoutPath;  }
-			else if (context.TopicPage.InHierarchy)
-				{  pageTitle = context.TopicPage.ClassString.Symbol.LastSegment;  }
-			else
-				{  throw new NotImplementedException();  }
-
 
 			// Build the content
 
