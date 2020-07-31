@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * All - Applies to all page types.
 		 * Frame - Applies to index.html.
 		 * Content - Applies to page content for a source file or class.
-		 * Other - Applies to other page content such as the default home page.
+		 * Home - Applies to the default home page.
 		 */
 		public enum PageType : byte {
 			// Indexes are manual and start at zero so they can be used as indexes into AllPageTypeNames.
@@ -125,6 +125,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			string styleName = config.ProjectInfo.StyleName ?? "Default";
 			Path stylePath = FindStyle(styleName);
+			Style_txt styleParser = new Style_txt();
 
 			if (stylePath == null)
 				{
@@ -139,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					// Inherit Default so everything still works before it's filled out.
 					style.AddInheritedStyle("Default");
 
-					if (SaveStyle(style, errorList, false))
+					if (styleParser.Save(style, errorList, false))
 						{  stylePath = style.Location;  }
 					}
 				}
@@ -391,7 +392,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					{  
 					// No error on save for system styles.
 					bool isSystemStyle = EngineInstance.Config.SystemStyleFolder.Contains(style.Location);
-					SaveStyle(style, errorList, isSystemStyle);  
+					styleParser.Save(style, errorList, isSystemStyle);  
 					}
 				}
 
@@ -458,7 +459,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			int errors = errorList.Count;
 
-			Style style = LoadStyle(stylePath, errorList);
+			Style_txt styleParser = new Style_txt();
+			Style style = styleParser.Load(stylePath, errorList);
 
 			if (style == null)
 				{  return false;  }

@@ -54,6 +54,7 @@
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
+    <Compile Include="Source\Output\Style_txt.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
     <Compile Include="Source\Output\HTML\Components\PageContent.cs" />
