@@ -41,24 +41,24 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		static Manager ()
 			{
-			systemDefaultConfig = new ProjectConfig(Source.SystemDefault);
+			systemDefaultConfig = new ProjectConfig(PropertySource.SystemDefault);
 
 			// DEPENDENCY: Start() assumes these properties are set.
 
 			systemDefaultConfig.TabWidth = DefaultTabWidth;
-			systemDefaultConfig.TabWidthPropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.TabWidthPropertyLocation = PropertySource.SystemDefault;
 
 			systemDefaultConfig.DocumentedOnly = false;
-			systemDefaultConfig.DocumentedOnlyPropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.DocumentedOnlyPropertyLocation = PropertySource.SystemDefault;
 
 			systemDefaultConfig.AutoGroup = true;
-			systemDefaultConfig.AutoGroupPropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.AutoGroupPropertyLocation = PropertySource.SystemDefault;
 
 			systemDefaultConfig.ShrinkFiles = true;
-			systemDefaultConfig.ShrinkFilesPropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.ShrinkFilesPropertyLocation = PropertySource.SystemDefault;
 
 			systemDefaultConfig.ProjectInfo.StyleName = "Default";
-			systemDefaultConfig.ProjectInfo.StyleNamePropertyLocation = Source.SystemDefault;
+			systemDefaultConfig.ProjectInfo.StyleNamePropertyLocation = PropertySource.SystemDefault;
 			}
 
 
@@ -107,7 +107,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				errorList.Add( 
 					message: Locale.Get("NaturalDocs.Engine", "Error.NoProjectConfigFolder"),
-					configSource: Source.CommandLine,
+					configSource: PropertySource.CommandLine,
 					property: "ProjectConfigFolder"
 					);
 					
@@ -142,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			// Load and merge configuration files
 			
-			ProjectConfig combinedConfig = new ProjectConfig(Source.Combined);
+			ProjectConfig combinedConfig = new ProjectConfig(PropertySource.Combined);
 			MergeConfig(combinedConfig, commandLineConfig);
 
 			var projectTxtParser = new Project_txt();
@@ -287,7 +287,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						if (usedSourceNumbers.Contains(target.Number))
 							{
 							target.Number = 0;
-							target.NumberPropertyLocation = Source.NotDefined;
+							target.NumberPropertyLocation = PropertySource.NotDefined;
 							}
 						else
 							{  usedSourceNumbers.Add(target.Number);  }
@@ -298,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						if (usedImageNumbers.Contains(target.Number))
 							{
 							target.Number = 0;
-							target.NumberPropertyLocation = Source.NotDefined;
+							target.NumberPropertyLocation = PropertySource.NotDefined;
 							}
 						else
 							{  usedImageNumbers.Add(target.Number);  }
@@ -317,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					if (usedOutputNumbers.Contains(target.Number))
 						{  
 						target.Number = 0;
-						target.NumberPropertyLocation = Source.NotDefined;
+						target.NumberPropertyLocation = PropertySource.NotDefined;
 
 						// Since we don't know which of the two entries generated working data under this number, purge it to be safe.
 						outputNumbersToPurge.Add(target.Number);
@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					if (target.Number == 0)
 						{
 						target.Number = usedSourceNumbers.LowestAvailable;
-						target.NumberPropertyLocation = Source.SystemGenerated;
+						target.NumberPropertyLocation = PropertySource.SystemGenerated;
 
 						usedSourceNumbers.Add(target.Number);
 						}
@@ -353,7 +353,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					if (target.Number == 0)
 						{
 						target.Number = usedImageNumbers.LowestAvailable;
-						target.NumberPropertyLocation = Source.SystemGenerated;
+						target.NumberPropertyLocation = PropertySource.SystemGenerated;
 
 						usedImageNumbers.Add(target.Number);
 						}
@@ -365,7 +365,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				if (target.Number == 0)
 					{
 					target.Number = usedOutputNumbers.LowestAvailable;
-					target.NumberPropertyLocation = Source.SystemGenerated;
+					target.NumberPropertyLocation = PropertySource.SystemGenerated;
 
 					usedOutputNumbers.Add(target.Number);
 
@@ -577,8 +577,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * targets not appearing in the primary config will be ignored.  If there are no input targets in the primary config, they will be copied
 		 * from the secondary config.
 		 * 
-		 * This system also applies for output and filter targets, with the exception of filter targets from a <Source.SystemDefault> config.
-		 * Filters found in a <Source.SystemDefault> config will always be added to the primary config.
+		 * This system also applies for output and filter targets, with the exception of filter targets from a <PropertySource.SystemDefault>
+		 * config.  Filters found in a <PropertySource.SystemDefault> config will always be added to the primary config.
 		 */
 		public static void MergeConfig (ProjectConfig primaryConfig, ProjectConfig secondaryConfig)
 			{
@@ -641,7 +641,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Copy them from the secondary config if the primary config doesn't have any.  This allows things like specifying
 			// filters in Project.txt when there's none on the command line.  Also copy system default filters no matter what.
 			if (primaryConfig.FilterTargets.Count == 0 ||
-				secondaryConfig.Source == Source.SystemDefault)
+				secondaryConfig.Source == PropertySource.SystemDefault)
 				{
 				foreach (var secondaryTarget in secondaryConfig.FilterTargets)
 					{

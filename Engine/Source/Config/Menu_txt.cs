@@ -98,7 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		public bool Load (Path path, out ProjectConfig projectConfig)
 			{
-			projectConfig = new ProjectConfig(Source.OldMenuFile);
+			projectConfig = new ProjectConfig(PropertySource.OldMenuFile);
 
 			using (var configFile = new ConfigFile())
 				{
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				
 				while (configFile.Get(out lcIdentifier, out value))
 					{
-					var propertyLocation = new PropertyLocation(Source.OldMenuFile, path, configFile.LineNumber);
+					var propertyLocation = new PropertyLocation(PropertySource.OldMenuFile, path, configFile.LineNumber);
 
 					if (lcIdentifier == "title")
 						{  

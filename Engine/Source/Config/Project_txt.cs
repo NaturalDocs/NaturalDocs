@@ -176,7 +176,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		public bool Load (Path path, out ProjectConfig projectConfig, ErrorList errorList)
 			{
-			projectConfig = new ProjectConfig(Source.ProjectFile);
+			projectConfig = new ProjectConfig(PropertySource.ProjectFile);
 
 			this.errorList = errorList;
 			this.projectConfig = projectConfig;
@@ -201,7 +201,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 				while (configFile.Get(out lcIdentifier, out value))
 					{
-					var propertyLocation = new PropertyLocation(Source.ProjectFile, configFile.FileName, configFile.LineNumber);
+					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 					Targets.Base target = null;
 
 					if (GetGlobalProperty(lcIdentifier, value, propertyLocation))
@@ -520,20 +520,19 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * 
 		 * Property Source:
 		 * 
-		 *		<Source.SystemDefault> - Will never be saved into <Project.txt>.
+		 *		<PropertySource.SystemDefault> - Will never be saved into <Project.txt>.
 		 *		
-		 *		<Source.SystemGenerated> - Will always be saved into <Project.txt>.  This allows things like source folder names and
-		 *												 numbers to be written into <Project.txt> so that they remain consistent between runs
-		 *												 and so it's easy for the user to edit them.
+		 *		<PropertySource.SystemGenerated> - Will always be saved into <Project.txt>.  This allows things like source folder
+		 *			names and numbers to be written into <Project.txt> so that they remain consistent between runs and so it's easy 
+		 *			for the user to edit them.
 		 *												 
-		 *		<Source.CommandLine> - Global properties will not be saved into <Project.txt> so that settings don't get tattooed into
-		 *										   place.  If someone specifies Documented Only on the command line it should turn off when
-		 *										   they take it off the command line.  They shouldn't have to edit <Project.txt> as well.
+		 *		<PropertySource.CommandLine> - Global properties will not be saved into <Project.txt> so that settings don't get 
+		 *			tattooed into place.  If someone specifies Documented Only on the command line it should turn off when they take
+		 *			it off the command line.  They shouldn't have to edit <Project.txt> as well.
 		 *										   
-		 *										   Targets and their associated properties will be saved into <Project.txt>.  This allows a
-		 *										   <Project.txt> file to be generated from the command line so we can store secondary target
-		 *										   settings.  Since <Project.txt> targets are ignored except for secondary settings when they're
-		 *										   specified on the command line, tattooing is less of an issue.
+		 *			Targets and their associated properties will be saved into <Project.txt>.  This allows a <Project.txt> file to be 
+		 *			generated from the command line so we can store secondary target settings.  Since <Project.txt> targets are 
+		 *			ignored except for secondary settings when they're specified on the command line, tattooing is less of an issue.
 		 */
 		public bool Save (Path path, ProjectConfig projectConfig, Errors.ErrorList errorList)
 			{
@@ -584,20 +583,20 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Defined values
 
 			bool hasTitle = (projectConfig.ProjectInfo.TitlePropertyLocation.IsDefined &&
-								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.SystemDefault &&
-								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != Source.CommandLine);
+								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault &&
+								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasSubtitle = (projectConfig.ProjectInfo.SubtitlePropertyLocation.IsDefined &&
-									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != Source.SystemDefault &&
-									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != Source.CommandLine);
+									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault &&
+									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
-										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault &&
-										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != Source.CommandLine);
+										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault &&
+										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.CommandLine);
 			bool hasTimestampCode = (projectConfig.ProjectInfo.TimestampCodePropertyLocation.IsDefined &&
-												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != Source.SystemDefault &&
-												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != Source.CommandLine);
+												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault &&
+												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasStyleName = (projectConfig.ProjectInfo.StyleNamePropertyLocation.IsDefined &&
-										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault &&
-										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != Source.CommandLine);
+										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault &&
+										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.CommandLine);
 
 			if (hasTitle)
 				{  
@@ -682,23 +681,23 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected void AppendOverriddenProjectInfo (ProjectInfo projectInfo, StringBuilder output)
 			{
 			if (projectInfo.TitlePropertyLocation.IsDefined &&
-				projectInfo.TitlePropertyLocation.Source != Source.SystemDefault)
+				projectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Title: " + projectInfo.Title);  }
 					
 			if (projectInfo.SubtitlePropertyLocation.IsDefined &&
-				projectInfo.SubtitlePropertyLocation.Source != Source.SystemDefault)
+				projectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Subtitle: " + projectInfo.Subtitle);  }
 					
 			if (projectInfo.CopyrightPropertyLocation.IsDefined &&
-				projectInfo.CopyrightPropertyLocation.Source != Source.SystemDefault)
+				projectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Copyright: " + projectInfo.Copyright);  }
 			
 			if (projectInfo.TimestampCodePropertyLocation.IsDefined &&
-				projectInfo.TimestampCodePropertyLocation.Source != Source.SystemDefault)
+				projectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Timestamp: " + projectInfo.TimestampCode);  }
 
 			if (projectInfo.StyleNamePropertyLocation.IsDefined &&
-				projectInfo.StyleNamePropertyLocation.Source != Source.SystemDefault)
+				projectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Style: " + projectInfo.StyleName);   }
 			}
 
@@ -720,7 +719,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// We save input targets even if they're specified on the command line so we can still use Project.txt for secondary
 				// settings.
-				if (target.PropertyLocation.Source != Source.SystemDefault)
+				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
 					{
 					if (target is Targets.SourceFolder &&
 						target.Type == Files.InputType.Source)
@@ -735,7 +734,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			foreach (var target in projectConfig.InputTargets)
 				{
-				if (target.PropertyLocation.Source != Source.SystemDefault)
+				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
 					{
 					if (target is Targets.SourceFolder)
 						{
@@ -770,7 +769,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected void AppendSourceFolder (Targets.SourceFolder target, StringBuilder output, Path projectFolder)
 			{
-			if (target.PropertyLocation.Source == Source.SystemDefault)
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
 			if (target.Type == Files.InputType.Source)
@@ -783,7 +782,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			output.Append(" Folder");
 
 			if (target.NumberPropertyLocation.IsDefined &&
-				target.NumberPropertyLocation.Source != Source.SystemDefault &&
+				target.NumberPropertyLocation.Source != PropertySource.SystemDefault &&
 				target.Number != 1)
 				{  output.Append(" " + target.Number);  }
 
@@ -793,7 +792,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
 			if (target.NamePropertyLocation.IsDefined &&
-				target.NamePropertyLocation.Source != Source.SystemDefault)
+				target.NamePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Name: " + target.Name);  }
 			}
 
@@ -812,7 +811,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// We save filter targets even if they're specified on the command line so we can still use Project.txt for secondary
 				// settings.
-				if (target.PropertyLocation.Source != Source.SystemDefault)
+				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
 					{
 					if (target is Targets.IgnoredSourceFolder)
 						{  AppendIgnoredSourceFolder((Targets.IgnoredSourceFolder)target, output, projectFolder);  }
@@ -844,7 +843,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected void AppendIgnoredSourceFolder (Targets.IgnoredSourceFolder target, StringBuilder output, Path projectFolder)
 			{
-			if (target.PropertyLocation.Source == Source.SystemDefault)
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
 			output.Append("Ignore Source Folder: ");
@@ -859,7 +858,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected void AppendIgnoredSourceFolderPattern (Targets.IgnoredSourceFolderPattern target, StringBuilder output)
 			{
-			if (target.PropertyLocation.Source == Source.SystemDefault)
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
 			output.AppendLine("Ignore Source Folder Pattern: " + target.Pattern);
@@ -880,7 +879,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// We save output targets even if they're specified on the command line so we can still use Project.txt for secondary
 				// settings.
-				if (target.PropertyLocation.Source != Source.SystemDefault)
+				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
 					{
 					if (target is Targets.HTMLOutputFolder)
 						{  AppendHTMLOutputFolder((Targets.HTMLOutputFolder)target, output, projectFolder);  }
@@ -905,7 +904,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		protected void AppendHTMLOutputFolder (Targets.HTMLOutputFolder target, StringBuilder output, Path projectFolder)
 			{
-			if (target.PropertyLocation.Source == Source.SystemDefault)
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
 			output.Append("HTML Output Folder: ");
@@ -932,14 +931,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Defined values
 
 			bool hasTabWidth = (projectConfig.TabWidthPropertyLocation.IsDefined &&
-										projectConfig.TabWidthPropertyLocation.Source != Source.SystemDefault &&
-										projectConfig.TabWidthPropertyLocation.Source != Source.CommandLine);
+										projectConfig.TabWidthPropertyLocation.Source != PropertySource.SystemDefault &&
+										projectConfig.TabWidthPropertyLocation.Source != PropertySource.CommandLine);
 			bool hasDocumentedOnly = (projectConfig.DocumentedOnlyPropertyLocation.IsDefined &&
-													projectConfig.DocumentedOnlyPropertyLocation.Source != Source.SystemDefault &&
-													projectConfig.DocumentedOnlyPropertyLocation.Source != Source.CommandLine);
+													projectConfig.DocumentedOnlyPropertyLocation.Source != PropertySource.SystemDefault &&
+													projectConfig.DocumentedOnlyPropertyLocation.Source != PropertySource.CommandLine);
 			bool hasAutoGroup = (projectConfig.AutoGroupPropertyLocation.IsDefined &&
-										  projectConfig.AutoGroupPropertyLocation.Source != Source.SystemDefault &&
-										  projectConfig.AutoGroupPropertyLocation.Source != Source.CommandLine);
+										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.SystemDefault &&
+										  projectConfig.AutoGroupPropertyLocation.Source != PropertySource.CommandLine);
 				
 			if (hasTabWidth)
 				{

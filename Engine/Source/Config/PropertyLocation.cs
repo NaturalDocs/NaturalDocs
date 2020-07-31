@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		
 		/* Constructor: PropertyLocation
 		 */
-		public PropertyLocation (Config.Source source, Path fileName = default(Path), int lineNumber = 0)
+		public PropertyLocation (Config.PropertySource source, Path fileName = default(Path), int lineNumber = 0)
 			{
 			#if DEBUG
 			if (IsFileBased(source))
@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Operator: operator PropertyLocation
 		 * Allows non-file based <Config.Sources> to be cast directly to a PropertyLocation.
 		 */
-		public static implicit operator PropertyLocation (Config.Source configSource)
+		public static implicit operator PropertyLocation (Config.PropertySource configSource)
 			{
 			return new PropertyLocation(configSource);
 			}
@@ -62,10 +62,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Function: IsFileBased
 		 * Returns whether the passed <Config.Source> is file-based.
 		 */
-		public static bool IsFileBased (Config.Source configSource)
+		public static bool IsFileBased (Config.PropertySource configSource)
 			{
-			return (configSource >= Source.LowestFileValue &&
-					  configSource <= Source.HighestFileValue);
+			return (configSource >= PropertySource.LowestFileValue &&
+					  configSource <= PropertySource.HighestFileValue);
 			}
 
 
@@ -75,19 +75,19 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		
 		
 		/* Property: IsDefined
-		 * Whether the property is defined.  Is equivalent to testing <Source> for <Source.NotDefined>.
+		 * Whether the property is defined.  Is equivalent to testing <Source> for <PropertySource.NotDefined>.
 		 */
 		public bool IsDefined
 			{
 			get
-				{  return (source != Source.NotDefined);  }
+				{  return (source != PropertySource.NotDefined);  }
 			}
 
 
 		/* Property: Source
-		 * The <Config.Source> where this property is defined, or <Source.NotDefined> if it hasn't been set.
+		 * The <Config.Source> where this property is defined, or <PropertySource.NotDefined> if it hasn't been set.
 		 */
-		public Config.Source Source
+		public Config.PropertySource Source
 			{
 			get
 				{  return source;  }
@@ -150,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// Group: Variables
 		// __________________________________________________________________________		
 		
-		private Source source;
+		private PropertySource source;
 		private Path fileName;
 		private int lineNumber;
 		

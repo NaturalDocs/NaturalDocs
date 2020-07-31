@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		public IgnoredSourceFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			folder = null;
-			folderPropertyLocation = Source.NotDefined;
+			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public IgnoredSourceFolder (IgnoredSourceFolder toCopy) : base (toCopy)

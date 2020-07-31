@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		public IgnoredSourceFolderPattern (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			pattern = null;
-			patternPropertyLocation = Source.NotDefined;
+			patternPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public IgnoredSourceFolderPattern (IgnoredSourceFolderPattern toCopy) : base (toCopy)

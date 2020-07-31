@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 		/* Constructor: Error
 		 * A constructor for an error that occurs in a specific file.
 		 */
-		public Error (string message, Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined, 
+		public Error (string message, Path file = default(Path), int lineNumber = 0, Config.PropertySource configSource = Config.PropertySource.NotDefined, 
 						 string property = null)
 			{
 			this.message = message;
@@ -50,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 		/* Function: Matches
 		 * Whether the error occurs in the passed location.
 		 */
-		public bool Matches (Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined, 
+		public bool Matches (Path file = default(Path), int lineNumber = 0, Config.PropertySource configSource = Config.PropertySource.NotDefined, 
 									string property = null)
 			{
 			return (this.file == file && this.lineNumber == lineNumber && this.configSource == configSource && this.property == property);
@@ -144,9 +144,9 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 			}
 
 		/* Property: ConfigSource
-		 * The config source the error occurs in, if appropriate.  Will be <Config.Source.NotDefined> otherwise.
+		 * The config source the error occurs in, if appropriate.  Will be <Config.PropertySource.NotDefined> otherwise.
 		 */
-		public Config.Source ConfigSource
+		public Config.PropertySource ConfigSource
 			{
 			get
 				{  return configSource;  }
@@ -180,7 +180,7 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 
 		protected Path file;
 		protected int lineNumber;
-		protected Config.Source configSource;
+		protected Config.PropertySource configSource;
 		protected string property;
 
 		}

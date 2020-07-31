@@ -315,7 +315,7 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Function: AddError
 		 * Adds an error to the list, automatically filling in the file and line number properties based on the last call to <Get()>.
 		 */
-		public void AddError (string errorMessage, Config.Source configSource = Config.Source.NotDefined, string property = null)
+		public void AddError (string errorMessage, Config.PropertySource configSource = Config.PropertySource.NotDefined, string property = null)
 			{
 			errorList.Add(errorMessage, fileName, lineNumber, configSource, property);
 			}

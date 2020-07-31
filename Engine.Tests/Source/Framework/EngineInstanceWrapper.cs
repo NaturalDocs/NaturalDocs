@@ -155,39 +155,39 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			engineInstance = new NaturalDocs.Engine.Instance();
 
-			var config = new Config.ProjectConfig(Config.Source.CommandLine);
+			var config = new Config.ProjectConfig(Config.PropertySource.CommandLine);
 
 			config.ProjectConfigFolder = projectConfigFolder;
-			config.ProjectConfigFolderPropertyLocation = Config.Source.CommandLine;
+			config.ProjectConfigFolderPropertyLocation = Config.PropertySource.CommandLine;
 
 			config.WorkingDataFolder = workingDataFolder;
-			config.WorkingDataFolderPropertyLocation = Config.Source.CommandLine;
+			config.WorkingDataFolderPropertyLocation = Config.PropertySource.CommandLine;
 
 			config.AutoGroup = autoGroup;
-			config.AutoGroupPropertyLocation = Config.Source.CommandLine;
+			config.AutoGroupPropertyLocation = Config.PropertySource.CommandLine;
 
-			var inputTarget = new Config.Targets.SourceFolder(Config.Source.CommandLine, Files.InputType.Source);
+			var inputTarget = new Config.Targets.SourceFolder(Config.PropertySource.CommandLine, Files.InputType.Source);
 
 			inputTarget.Folder = inputFolder;
-			inputTarget.FolderPropertyLocation = Config.Source.CommandLine;
+			inputTarget.FolderPropertyLocation = Config.PropertySource.CommandLine;
 
 			config.InputTargets.Add(inputTarget);
 
-			var outputTarget = new Config.Targets.HTMLOutputFolder(Config.Source.CommandLine);
+			var outputTarget = new Config.Targets.HTMLOutputFolder(Config.PropertySource.CommandLine);
 			
 			outputTarget.Folder = outputFolder;
-			outputTarget.FolderPropertyLocation = Config.Source.CommandLine;
+			outputTarget.FolderPropertyLocation = Config.PropertySource.CommandLine;
 			
 			if (outputTitle != null)
 				{
 				outputTarget.ProjectInfo.Title = outputTitle;
-				outputTarget.ProjectInfo.TitlePropertyLocation = Config.Source.CommandLine;
+				outputTarget.ProjectInfo.TitlePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			if (outputSubtitle != null)
 				{
 				outputTarget.ProjectInfo.Subtitle = outputSubtitle;
-				outputTarget.ProjectInfo.SubtitlePropertyLocation = Config.Source.CommandLine;
+				outputTarget.ProjectInfo.SubtitlePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			config.OutputTargets.Add(outputTarget);

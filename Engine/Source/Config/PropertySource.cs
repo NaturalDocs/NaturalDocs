@@ -1,8 +1,8 @@
 ﻿/* 
- * Enum: CodeClear.NaturalDocs.Engine.Config.Source
+ * Enum: CodeClear.NaturalDocs.Engine.Config.PropertySource
  * ____________________________________________________________________________
  * 
- * A configuration source.
+ * The source of a configuration property.
  * 
  * Values:
  * 
@@ -40,7 +40,7 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	public enum Source : byte
+	public enum PropertySource : byte
 		{
 		NotDefined = 0,
 		SystemDefault,

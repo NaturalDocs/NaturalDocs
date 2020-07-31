@@ -106,7 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		public bool Load (Path filename, out ProjectConfig projectConfig)
 			{
-			projectConfig = new ProjectConfig(Source.PreviousRun);
+			projectConfig = new ProjectConfig(PropertySource.PreviousRun);
 			this.projectConfig = projectConfig;
 
 			binaryFile = new BinaryFile();
@@ -129,16 +129,16 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					// [Byte: Shrink Files (0 or 1)]
 
 					projectConfig.TabWidth = binaryFile.ReadInt32();
-					projectConfig.TabWidthPropertyLocation = Source.PreviousRun;
+					projectConfig.TabWidthPropertyLocation = PropertySource.PreviousRun;
 
 					projectConfig.DocumentedOnly = (binaryFile.ReadByte() == 1);
-					projectConfig.DocumentedOnlyPropertyLocation = Source.PreviousRun;
+					projectConfig.DocumentedOnlyPropertyLocation = PropertySource.PreviousRun;
 
 					projectConfig.AutoGroup = (binaryFile.ReadByte() == 1);
-					projectConfig.AutoGroupPropertyLocation = Source.PreviousRun;
+					projectConfig.AutoGroupPropertyLocation = PropertySource.PreviousRun;
 
 					projectConfig.ShrinkFiles = (binaryFile.ReadByte() == 1);
-					projectConfig.ShrinkFilesPropertyLocation = Source.PreviousRun;
+					projectConfig.ShrinkFilesPropertyLocation = PropertySource.PreviousRun;
 					
 					// [String: Identifier]
 					// [[Properties]]
@@ -159,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				result = false;
 
 				// Reset everything.
-				projectConfig = new ProjectConfig(Source.PreviousRun);
+				projectConfig = new ProjectConfig(PropertySource.PreviousRun);
 				}
 			finally
 				{
@@ -192,13 +192,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			var target = new Targets.SourceFolder(Source.PreviousRun, Files.InputType.Source);
+			var target = new Targets.SourceFolder(PropertySource.PreviousRun, Files.InputType.Source);
 
 			target.Folder = binaryFile.ReadString();
-			target.FolderPropertyLocation = Source.PreviousRun;
+			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();
-			target.NumberPropertyLocation = Source.PreviousRun;
+			target.NumberPropertyLocation = PropertySource.PreviousRun;
 
 			projectConfig.InputTargets.Add(target);
 			}
@@ -209,13 +209,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			var target = new Targets.SourceFolder(Source.PreviousRun, Files.InputType.Image);
+			var target = new Targets.SourceFolder(PropertySource.PreviousRun, Files.InputType.Image);
 
 			target.Folder = binaryFile.ReadString();
-			target.FolderPropertyLocation = Source.PreviousRun;
+			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();
-			target.NumberPropertyLocation = Source.PreviousRun;
+			target.NumberPropertyLocation = PropertySource.PreviousRun;
 
 			projectConfig.InputTargets.Add(target);
 			}
@@ -226,13 +226,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			var target = new Targets.HTMLOutputFolder(Source.PreviousRun);
+			var target = new Targets.HTMLOutputFolder(PropertySource.PreviousRun);
 
 			target.Folder = binaryFile.ReadString();
-			target.FolderPropertyLocation = Source.PreviousRun;
+			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();
-			target.NumberPropertyLocation = Source.PreviousRun;
+			target.NumberPropertyLocation = PropertySource.PreviousRun;
 
 			projectConfig.OutputTargets.Add(target);
 			}

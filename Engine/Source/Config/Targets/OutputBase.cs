@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			projectInfo = new ProjectInfo();
 
 			number = 0;
-			numberPropertyLocation = Source.NotDefined;
+			numberPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public OutputBase (OutputBase toCopy) : base (toCopy)
@@ -83,7 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 					
 		/* Property: NumberPropertyLocation
-		 * Where <Number> is defined, or <Source.NotDefined> if it isn't.
+		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation NumberPropertyLocation
 		    {

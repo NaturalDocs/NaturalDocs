@@ -27,7 +27,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		public HTMLOutputFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			folder = null;
-			folderPropertyLocation = Source.NotDefined;
+			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public HTMLOutputFolder (HTMLOutputFolder toCopy) : base (toCopy)

@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		public SourceFolder (PropertyLocation propertyLocation, Files.InputType type) : base (propertyLocation, type)
 			{
 			folder = null;
-			folderPropertyLocation = Source.NotDefined;
+			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			else
 				{  name = folder;  }
 
-			namePropertyLocation = Source.SystemGenerated;
+			namePropertyLocation = PropertySource.SystemGenerated;
 			}
 
 

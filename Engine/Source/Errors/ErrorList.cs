@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 		/* Function: Add
 		 * Adds an error occurring in a particular file to the list.
 		 */
-		public void Add (string message, Path file = default(Path), int lineNumber = 0, Config.Source configSource = Config.Source.NotDefined,
+		public void Add (string message, Path file = default(Path), int lineNumber = 0, Config.PropertySource configSource = Config.PropertySource.NotDefined,
 							  string property = null)
 			{
 			list.Add ( new Error(message, file, lineNumber, configSource, property) );

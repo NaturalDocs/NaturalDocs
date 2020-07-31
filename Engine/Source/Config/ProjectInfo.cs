@@ -30,11 +30,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			timestampCode = null;
 			styleName = null;
 
-			titlePropertyLocation = Source.NotDefined;
-			subtitlePropertyLocation = Source.NotDefined;
-			copyrightPropertyLocation = Source.NotDefined;
-			timestampCodePropertyLocation = Source.NotDefined;
-			styleNamePropertyLocation = Source.NotDefined;
+			titlePropertyLocation = PropertySource.NotDefined;
+			subtitlePropertyLocation = PropertySource.NotDefined;
+			copyrightPropertyLocation = PropertySource.NotDefined;
+			timestampCodePropertyLocation = PropertySource.NotDefined;
+			styleNamePropertyLocation = PropertySource.NotDefined;
 			}
 
 		public ProjectInfo (ProjectInfo toCopy)
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		
 		
 		/* Property: TitlePropertyLocation
-		 * Where the <Title> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <Title> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation TitlePropertyLocation
 			{
@@ -225,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 		/* Property: SubtitlePropertyLocation
-		 * Where the <Subtitle> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <Subtitle> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation SubtitlePropertyLocation
 			{
@@ -236,7 +236,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 		/* Property: CopyrightPropertyLocation
-		 * Where the <Copyright> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <Copyright> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation CopyrightPropertyLocation
 			{
@@ -247,7 +247,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 		/* Property: TimestampCodePropertyLocation
-		 * Where the <TimestampCode> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <TimestampCode> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation TimestampCodePropertyLocation
 			{
@@ -258,7 +258,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 		/* Property: StyleNamePropertyLocation
-		 * Where the <StyleName> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <StyleName> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation StyleNamePropertyLocation
 			{

@@ -29,8 +29,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			this.number = 0;
 			this.type = type;
 
-			namePropertyLocation = Source.NotDefined;
-			numberPropertyLocation = Source.NotDefined;
+			namePropertyLocation = PropertySource.NotDefined;
+			numberPropertyLocation = PropertySource.NotDefined;
 			typePropertyLocation = propertyLocation;
 			}
 
@@ -107,7 +107,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 					
 		/* Property: NamePropertyLocation
-		 * Where <Name> is defined, or <Source.NotDefined> if it isn't.
+		 * Where <Name> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation NamePropertyLocation
 		    {
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: NumberPropertyLocation
-		 * Where <Number> is defined, or <Source.NotDefined> if it isn't.
+		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation NumberPropertyLocation
 		    {
@@ -131,7 +131,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: TypePropertyLocation
-		 * Where <Type> is defined, or <Source.NotDefined> if it isn't.
+		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation TypePropertyLocation
 		    {

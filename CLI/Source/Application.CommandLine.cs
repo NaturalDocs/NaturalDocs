@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--headers-only", "-ho", "--headersonly");
 			commandLine.AddAliases("--auto-group", "-ag", "--autogroup");
 			
-			commandLineConfig = new ProjectConfig(Source.CommandLine);
+			commandLineConfig = new ProjectConfig(PropertySource.CommandLine);
 			
 			string parameter, parameterAsEntered;
 			bool isFirst = true;
@@ -155,10 +155,10 @@ namespace CodeClear.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.SourceFolder(Source.CommandLine, Engine.Files.InputType.Source);
+						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine, Engine.Files.InputType.Source);
 
 						target.Folder = folder;
-						target.FolderPropertyLocation = Source.CommandLine;
+						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);
 						}
@@ -190,10 +190,10 @@ namespace CodeClear.NaturalDocs.CLI
 
 						if (format == "html" || format == "framedhtml")
 							{  
-							var target = new Engine.Config.Targets.HTMLOutputFolder(Source.CommandLine);
+							var target = new Engine.Config.Targets.HTMLOutputFolder(PropertySource.CommandLine);
 
 							target.Folder = folder;
-							target.FolderPropertyLocation = Source.CommandLine;
+							target.FolderPropertyLocation = PropertySource.CommandLine;
 
 							commandLineConfig.OutputTargets.Add(target);
 							}
@@ -242,7 +242,7 @@ namespace CodeClear.NaturalDocs.CLI
 						else
 							{  
 							commandLineConfig.ProjectConfigFolder = folder;
-							commandLineConfig.ProjectConfigFolderPropertyLocation = Source.CommandLine;
+							commandLineConfig.ProjectConfigFolderPropertyLocation = PropertySource.CommandLine;
 							}
 						}
 					}
@@ -277,7 +277,7 @@ namespace CodeClear.NaturalDocs.CLI
 						else
 							{
 							commandLineConfig.WorkingDataFolder = folder;
-							commandLineConfig.WorkingDataFolderPropertyLocation = Source.CommandLine;
+							commandLineConfig.WorkingDataFolderPropertyLocation = PropertySource.CommandLine;
 							}
 						}
 					}
@@ -303,10 +303,10 @@ namespace CodeClear.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.IgnoredSourceFolder(Source.CommandLine);
+						var target = new Engine.Config.Targets.IgnoredSourceFolder(PropertySource.CommandLine);
 
 						target.Folder = folder;
-						target.FolderPropertyLocation = Source.CommandLine;
+						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.FilterTargets.Add(target);
 						}
@@ -330,10 +330,10 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						var target =  new Engine.Config.Targets.IgnoredSourceFolderPattern(Source.CommandLine);
+						var target =  new Engine.Config.Targets.IgnoredSourceFolderPattern(PropertySource.CommandLine);
 
 						target.Pattern = pattern;
-						target.PatternPropertyLocation = Source.CommandLine;
+						target.PatternPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.FilterTargets.Add(target);
 						}
@@ -360,10 +360,10 @@ namespace CodeClear.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.SourceFolder(Source.CommandLine, Engine.Files.InputType.Image);
+						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine, Engine.Files.InputType.Image);
 
 						target.Folder = folder;
-						target.FolderPropertyLocation = Source.CommandLine;
+						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);
 						}
@@ -396,7 +396,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{  
 						commandLineConfig.TabWidth = tabWidth;
-						commandLineConfig.TabWidthPropertyLocation = Source.CommandLine;
+						commandLineConfig.TabWidthPropertyLocation = PropertySource.CommandLine;
 						}	
 					}
 					
@@ -434,7 +434,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{  
 						commandLineConfig.TabWidth = tabWidth;
-						commandLineConfig.TabWidthPropertyLocation = Source.CommandLine;
+						commandLineConfig.TabWidthPropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					
@@ -455,7 +455,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						commandLineConfig.DocumentedOnly = true;
-						commandLineConfig.DocumentedOnlyPropertyLocation = Source.CommandLine;
+						commandLineConfig.DocumentedOnlyPropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					
@@ -476,7 +476,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						commandLineConfig.AutoGroup = false;
-						commandLineConfig.AutoGroupPropertyLocation = Source.CommandLine;
+						commandLineConfig.AutoGroupPropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					
@@ -497,7 +497,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						commandLineConfig.ShrinkFiles = false;
-						commandLineConfig.ShrinkFilesPropertyLocation = Source.CommandLine;
+						commandLineConfig.ShrinkFilesPropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					
@@ -520,7 +520,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						commandLineConfig.ProjectInfo.StyleName = styleName;
-						commandLineConfig.ProjectInfo.StyleNamePropertyLocation = Source.CommandLine;
+						commandLineConfig.ProjectInfo.StyleNamePropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					

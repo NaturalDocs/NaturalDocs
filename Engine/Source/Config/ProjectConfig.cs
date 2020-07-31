@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 
-		public ProjectConfig (Config.Source source)
+		public ProjectConfig (Config.PropertySource source)
 			{
 			this.source = source;
 
@@ -38,12 +38,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			autoGroup = true;
 			shrinkFiles = true;
 
-			projectConfigFolderPropertyLocation = Source.NotDefined;
-			workingDataFolderPropertyLocation = Source.NotDefined;
-			tabWidthPropertyLocation = Source.NotDefined;
-			documentedOnlyPropertyLocation = Source.NotDefined;
-			autoGroupPropertyLocation = Source.NotDefined;
-			shrinkFilesPropertyLocation = Source.NotDefined;
+			projectConfigFolderPropertyLocation = PropertySource.NotDefined;
+			workingDataFolderPropertyLocation = PropertySource.NotDefined;
+			tabWidthPropertyLocation = PropertySource.NotDefined;
+			documentedOnlyPropertyLocation = PropertySource.NotDefined;
+			autoGroupPropertyLocation = PropertySource.NotDefined;
+			shrinkFilesPropertyLocation = PropertySource.NotDefined;
 
 			inputTargets = new List<Targets.InputBase>();
 			filterTargets = new List<Targets.FilterBase>();
@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Property: Source
 		 * The <Config.Source> of the entire configuration.
 		 */
-		public Config.Source Source
+		public Config.PropertySource Source
 			{
 			get
 				{  return source;  }
@@ -177,7 +177,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 	
 
 		/* Property: ProjectConfigFolderPropertyLocation
-		 * Where the <ProjectConfigFolder> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <ProjectConfigFolder> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation ProjectConfigFolderPropertyLocation
 			{
@@ -188,7 +188,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 		/* Property: WorkingDataFolderPropertyLocation
-		 * Where the <WorkingDataFolder> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <WorkingDataFolder> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation WorkingDataFolderPropertyLocation
 			{
@@ -199,7 +199,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 		/* Property: TabWidthPropertyLocation
-		 * Where the <TabWidth> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <TabWidth> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation TabWidthPropertyLocation
 			{
@@ -211,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 	
 		/* Property: DocumentedOnlyPropertyLocation
-		 * Where the <DocumentedOnly> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <DocumentedOnly> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation DocumentedOnlyPropertyLocation
 			{
@@ -223,7 +223,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 	
 		/* Property: AutoGroupPropertyLocation
-		 * Where the <AutoGroup> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <AutoGroup> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation AutoGroupPropertyLocation
 			{
@@ -235,7 +235,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 	
 		/* Property: ShrinkFilesPropertyLocation
-		 * Where the <ShrinkFiles> property is defined, or <Source.NotDefined> if it isn't.
+		 * Where the <ShrinkFiles> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
 		public PropertyLocation ShrinkFilesPropertyLocation
 			{
@@ -250,7 +250,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected Config.Source source;
+		protected Config.PropertySource source;
 
 		protected Path projectConfigFolder;
 		protected Path workingDataFolder;
