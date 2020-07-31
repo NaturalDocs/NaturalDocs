@@ -26,9 +26,9 @@
  *		> [String: null]
  *		
  *		Stores the list of styles that apply to this target, in the order in which they must be loaded, as a null-terminated
- *		list of style paths.  The paths are either to <HTMLStyle.CSSFile> or <HTMLStyle.ConfigFile>.  These are stored
- *		instead of the names so that if a name is interpreted differently from one run to the next it will be detected.  It's
- *		also the computed list of styles after all inheritance has been applied.
+ *		list of style paths.  The paths are either to <Style.CSSFile> or <Style.ConfigFile>.  These are stored instead of
+ *		the names so that if a name is interpreted differently from one run to the next it will be detected.  It's also the
+ *		computed list of styles after all inheritance has been applied.
  *		
  *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
  *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
@@ -61,7 +61,6 @@ using System.Threading;
 using CodeClear.NaturalDocs.Engine.Files;
 
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Output.Styles;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders
@@ -135,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					{
 					// Generate a default Style.txt for the folder
 
-					HTMLStyle style = new HTMLStyle( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
+					Style style = new Style( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
 
 					// Inherit Default so everything still works before it's filled out.
 					style.AddInheritedStyle("Default");
@@ -151,7 +150,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				return false;
 				}
 
-			styles = new List<HTMLStyle>();
+			styles = new List<Style>();
 			StringSet definedStyles = new StringSet(Config.Manager.KeySettingsForPaths);
 
 			if (!Start_LoadStyles(styleName, stylePath, styles, definedStyles, errorList))
@@ -160,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Load Config.nd
 
-			List<HTMLStyle> previousStyles;
+			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
@@ -170,7 +169,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				}
 			else
 				{
-				previousStyles = new List<HTMLStyle>();
+				previousStyles = new List<Style>();
 				previousFileSourceInfoList = new List<FileSourceInfo>();
 				}
 
@@ -224,11 +223,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				// Purge the style folders of anything deleted or changed.
 
-				foreach (HTMLStyle previousStyle in previousStyles)
+				foreach (var previousStyle in previousStyles)
 					{
 					bool stillExists = false;
 
-					foreach (HTMLStyle currentStyle in styles)
+					foreach (var currentStyle in styles)
 						{
 						if (currentStyle.IsSameFundamentalStyle(previousStyle))
 							{
@@ -247,11 +246,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				// sent to the IChangeWatcher functions because another output target may have been using it, and thus they
 				// are already in Files.Manager.
 
-				foreach (HTMLStyle currentStyle in styles)
+				foreach (var currentStyle in styles)
 					{
 					bool foundMatch = false;
 
-					foreach (HTMLStyle previousStyle in previousStyles)
+					foreach (var previousStyle in previousStyles)
 						{
 						if (previousStyle.IsSameFundamentalStyle(currentStyle))
 							{
@@ -386,7 +385,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Resave the Style.txt-based styles.
 
-			foreach (HTMLStyle style in styles)
+			foreach (var style in styles)
 				{
 				if (style.IsCSSOnly == false)
 					{  
@@ -445,7 +444,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Returns:
 		 *    Whether it completed without errors.
 		 */
-		private bool Start_LoadStyles (string styleName, string stylePath, List<HTMLStyle> loadList, StringSet definedStyles,
+		private bool Start_LoadStyles (string styleName, string stylePath, List<Style> loadList, StringSet definedStyles,
 																	Errors.ErrorList errorList)
 			{
 			// If we're already defined, quit to avoid circular inheritance.  We don't add an error message because a style can
@@ -459,7 +458,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			int errors = errorList.Count;
 
-			HTMLStyle style = LoadStyle(stylePath, errorList);
+			Style style = LoadStyle(stylePath, errorList);
 
 			if (style == null)
 				{  return false;  }
@@ -1218,9 +1217,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public static bool LoadBinaryConfigFile (Path filename, out List<HTMLStyle> styles, out List<FileSourceInfo> fileSourceInfoList)
+		public static bool LoadBinaryConfigFile (Path filename, out List<Style> styles, out List<FileSourceInfo> fileSourceInfoList)
 			{
-			styles = new List<HTMLStyle>();
+			styles = new List<Style>();
 			fileSourceInfoList = new List<FileSourceInfo>();
 
 			BinaryFile binaryFile = new BinaryFile();
@@ -1241,7 +1240,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					while (stylePath != null)
 						{
-						styles.Add( new HTMLStyle(stylePath) );
+						styles.Add( new Style(stylePath) );
 						stylePath = binaryFile.ReadString();
 						}
 
@@ -1301,7 +1300,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		/* Function: SaveBinaryConfigFile
 		 * Saves the passed information in <Config.nd>.
 		 */
-		public static void SaveBinaryConfigFile (Path filename, List<HTMLStyle> styles, List<FileSourceInfo> fileSourceInfoList)
+		public static void SaveBinaryConfigFile (Path filename, List<Style> styles, List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -1312,7 +1311,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
  				// ...
  				// [String: null]
 
-				foreach (HTMLStyle style in styles)
+				foreach (var style in styles)
 					{
 					if (style.IsCSSOnly)
 						{  binaryFile.WriteString(style.CSSFile);  }
@@ -1403,8 +1402,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{
-				// Have to do this because you can't cast directly from List<HTMLStyle> to IList<Style>.  You can
-				// cast an array to IList<Style> though.
+				// Have to do this because you can't cast directly from List<Style> to IList<Style>.  You can cast an array to
+				// IList<Style> though.
 				return styles.ToArray();
 				}
 			}
@@ -1482,9 +1481,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected Config.Targets.HTMLOutputFolder config;
 
 		/* var: styles
-		 * A list of <Styles.HTMLStyles> that apply to this builder in the order in which they should be loaded.
+		 * A list of <Styles> that apply to this builder in the order in which they should be loaded.
 		 */
-		protected List<Styles.HTMLStyle> styles;
+		protected List<Style> styles;
 
 		/* var: searchIndex
 		 * The <SearchIndex.Manager> for this output target.

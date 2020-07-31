@@ -215,7 +215,6 @@
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Folder.cs" />
     <Compile Include="Source\Output\Style.cs" />
     <Compile Include="Source\Output\Styles\FileSource.cs" />
-    <Compile Include="Source\Output\Styles\HTMLStyle.cs" />
     <Compile Include="Source\Prototypes\ParsedPrototype.cs" />
     <Compile Include="Source\Path.cs" />
     <Compile Include="Source\Files\File.cs" />

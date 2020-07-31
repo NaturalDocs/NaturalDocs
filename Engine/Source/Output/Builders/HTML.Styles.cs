@@ -82,12 +82,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: LoadStyle
-		 * Converts a style path to a <HTMLStyle> object, loading its <Style.txt> if appropriate.  If there are any errors found 
+		 * Converts a style path to a <Style> object, loading its <Style.txt> if appropriate.  If there are any errors found 
 		 * in <Style.txt> they will be added to the list and the function will return null.
 		 */
-		public static HTMLStyle LoadStyle (Path stylePath, Errors.ErrorList errors)
+		public static Style LoadStyle (Path stylePath, Errors.ErrorList errors)
 			{
-			HTMLStyle style = new HTMLStyle(stylePath);
+			Style style = new Style(stylePath);
 
 			if (style.IsCSSOnly)
 				{  return style;  }
@@ -181,9 +181,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 
 		/* Function: SaveStyle
-		 * Saves the passed <HTMLStyle> as <Style.txt>, provided it's not CSS-only.
+		 * Saves the passed <Style> as <Style.txt>, provided it's not CSS-only.
 		 */
-		static public bool SaveStyle (HTMLStyle style, Errors.ErrorList errorList, bool noErrorOnFail)
+		static public bool SaveStyle (Style style, Errors.ErrorList errorList, bool noErrorOnFail)
 			{
 			if (style.IsCSSOnly)
 				{  throw new InvalidOperationException();  }
@@ -229,7 +229,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (style.Links != null)
 				{
-				foreach (HTMLStyleFileLink link in style.Links)
+				foreach (StyleFileLink link in style.Links)
 					{
 					if (link.Type != PageType.All)
 						{  
@@ -257,7 +257,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (style.OnLoad != null)
 				{
-				foreach (HTMLStyleOnLoadStatement onLoadStatement in style.OnLoad)
+				foreach (StyleOnLoadStatement onLoadStatement in style.OnLoad)
 					{
 					if (onLoadStatement.Type != PageType.All)
 						{  
@@ -299,7 +299,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// There's nothing to condense so just write it directly to a file.
 			using (System.IO.StreamWriter mainCSSFile = System.IO.File.CreateText(Styles_OutputFolder() + "/main.css"))
 				{
-				foreach (HTMLStyle style in styles)
+				foreach (var style in styles)
 					{
 					if (style.IsCSSOnly)
 						{
@@ -309,7 +309,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						}
 					else if (style.Links != null)
 						{
-						foreach (HTMLStyleFileLink link in style.Links)
+						foreach (StyleFileLink link in style.Links)
 							{
 							// We don't care about filters for CSS files.
 							if (link.File.Extension.ToLower() == "css")
@@ -329,7 +329,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			StringBuilder[] jsLinks = new StringBuilder[ AllPageTypes.Length ];
 			StringBuilder[] jsOnLoads = new StringBuilder[ AllPageTypes.Length ];
 
-			foreach (HTMLStyle style in styles)
+			foreach (var style in styles)
 				{
 				if (style.Links != null)
 					{
@@ -519,7 +519,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		/* Function: Styles_OutputFolder
 		 * Returns the folder for the passed style, or if null, the root output folder for all styles.
 		 */
-		protected Path Styles_OutputFolder (HTMLStyle style = null)
+		protected Path Styles_OutputFolder (Style style = null)
 			{
 			StringBuilder result = new StringBuilder(OutputFolder);
 			result.Append("/styles");
@@ -538,7 +538,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected Path Styles_OutputFile (Path originalStyleFile)
 			{
-			foreach (HTMLStyle style in styles)
+			foreach (var style in styles)
 				{
 				if (style.Contains(originalStyleFile))
 					{
