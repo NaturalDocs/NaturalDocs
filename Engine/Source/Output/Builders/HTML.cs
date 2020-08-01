@@ -124,24 +124,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// Load and validate the styles.
 
 			string styleName = config.ProjectInfo.StyleName ?? "Default";
-			Path stylePath = FindStyle(styleName);
+			Path stylePath = FindStyle(styleName);  // will return path to Style.txt or a CSS file, or null if the style can't be found
 			Style_txt styleParser = new Style_txt();
 
 			if (stylePath == null)
 				{
+				// Check if it's an empty folder we want to generate a default Style.txt for
 				if (styleName != "Default" &&
 					System.IO.Directory.Exists( EngineInstance.Config.ProjectConfigFolder + '/' + styleName ) &&
 					System.IO.File.Exists( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" ) == false)
 					{
-					// Generate a default Style.txt for the folder
-
-					Style style = new Style( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
+					Styles.Advanced style = new Styles.Advanced( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
 
 					// Inherit Default so everything still works before it's filled out.
 					style.AddInheritedStyle("Default");
 
 					if (styleParser.Save(style, errorList, false))
-						{  stylePath = style.Location;  }
+						{  stylePath = style.ConfigFile;  }
 					}
 				}
 
@@ -388,11 +387,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			foreach (var style in styles)
 				{
-				if (style.IsCSSOnly == false)
-					{  
+				if (style is Styles.Advanced)
+					{
+					var advancedStyle = style as Styles.Advanced;
+					bool isSystemStyle = EngineInstance.Config.SystemStyleFolder.Contains(advancedStyle.ConfigFile);
+
 					// No error on save for system styles.
-					bool isSystemStyle = EngineInstance.Config.SystemStyleFolder.Contains(style.Location);
-					styleParser.Save(style, errorList, isSystemStyle);  
+					styleParser.Save(advancedStyle, errorList, noErrorOnFail: isSystemStyle);  
 					}
 				}
 
@@ -437,7 +438,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * 
 		 * Parameters:
 		 *    styleName - The name of the style being loaded.  Must already be determined to exist.
-		 *    stylePath - The path of the style being loaded.  Must already be determined to exist.
+		 *    stylePath - The path to the <Style.txt> or CSS file of the style being loaded.  Must already be determined to exist.
 		 *    loadList - A list of <HTMLStyles> in the order in which they should be added to the output.
 		 *    definedStyles - A set of style names that have been defined thus far.
 		 *    errorList - Any errors found in <Style.txt> will be added here.
@@ -445,8 +446,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Returns:
 		 *    Whether it completed without errors.
 		 */
-		private bool Start_LoadStyles (string styleName, string stylePath, List<Style> loadList, StringSet definedStyles,
-																	Errors.ErrorList errorList)
+		private bool Start_LoadStyles (string styleName, Path stylePath, List<Style> loadList, StringSet definedStyles, Errors.ErrorList errorList)
 			{
 			// If we're already defined, quit to avoid circular inheritance.  We don't add an error message because a style can
 			// also be inherited by two separate styles, meaning this function would get called for it twice without it being an
@@ -458,16 +458,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			definedStyles.Add(styleName);
 
 			int errors = errorList.Count;
+			Style style = null;
 
-			Style_txt styleParser = new Style_txt();
-			Style style = styleParser.Load(stylePath, errorList);
+			// Process a CSS-only style
+			if (stylePath.Extension.ToLower() == "css")
+				{
+				style = new Styles.CSSOnly(stylePath);
+				style.AddInheritedStyle("Default");
+				style.AddLinkedFile(stylePath);
+				}
+			// Process a Style.txt-base style
+			else
+				{
+				Style_txt styleParser = new Style_txt();
+				style = styleParser.Load(stylePath, errorList);
 
-			if (style == null)
-				{  return false;  }
-
-			// If there's only one style and it's CSS-only, it inherits Default automatically.
-			if (definedStyles.Count == 1 && style.IsCSSOnly && styleName != "Default")
-				{  style.AddInheritedStyle("Default");  }
+				if (style == null)
+					{  return false;  }
+				}
 
 			if (style.Inherits != null)
 				{
@@ -477,10 +485,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					if (inheritedStylePath == null)
 						{
-						Path configFile = (style.IsCSSOnly ? null : style.ConfigFile);
-
-						errorList.Add( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindInheritedStyle(name)", inheritedStyleName),
-													configFile );
+						if (style is Styles.Advanced)
+							{
+							errorList.Add( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindInheritedStyle(name)", inheritedStyleName),
+												 (style as Styles.Advanced).ConfigFile );
+							}
 
 						// We don't return because we want to find and report all possible errors, not just the first one.
 						}
@@ -1242,7 +1251,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					while (stylePath != null)
 						{
-						styles.Add( new Style(stylePath) );
+						if (stylePath.EndsWith(".css", StringComparison.CurrentCultureIgnoreCase))
+							{  styles.Add( new Styles.CSSOnly(stylePath) );  }
+						else
+							{  styles.Add( new Styles.Advanced(stylePath) );  }
+
 						stylePath = binaryFile.ReadString();
 						}
 
@@ -1315,10 +1328,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				foreach (var style in styles)
 					{
-					if (style.IsCSSOnly)
-						{  binaryFile.WriteString(style.CSSFile);  }
+					if (style is Styles.CSSOnly)
+						{  binaryFile.WriteString( (style as Styles.CSSOnly).CSSFile );  }
+					else if (style is Styles.Advanced)
+						{  binaryFile.WriteString( (style as Styles.Advanced).ConfigFile );  }
 					else
-						{  binaryFile.WriteString(style.ConfigFile);  }
+						{  throw new NotImplementedException();  }
 					}
 
 				binaryFile.WriteString(null);

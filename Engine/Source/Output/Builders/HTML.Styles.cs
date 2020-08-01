@@ -102,20 +102,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				foreach (var style in styles)
 					{
-					if (style.IsCSSOnly)
+					if (style.Links != null)
 						{
-						Path outputPath = Styles_OutputFile(style.CSSFile);
-						Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
-						mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
-						}
-					else if (style.Links != null)
-						{
-						foreach (StyleFileLink link in style.Links)
+						foreach (var link in style.Links)
 							{
 							// We don't care about filters for CSS files.
 							if (link.File.Extension.ToLower() == "css")
 								{
-								Path outputPath = Styles_OutputFile(style.Folder + '/' + link.File);
+								Path outputPath = Styles_OutputFile(link.File);
 								Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
 								mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 								}
@@ -145,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							else
 								{  jsLinks[(int)link.Type].Append(", ");  }
 
-							Path outputPath = Styles_OutputFile(style.Folder + "/" + link.File);
+							Path outputPath = Styles_OutputFile(link.File);
 							Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
 							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
@@ -257,8 +251,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			string jsOutputString = jsOutput.ToString();
 
-			ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
-			jsOutputString = jsProcessor.Process(jsOutputString, EngineInstance.Config.ShrinkFiles);
+			if (EngineInstance.Config.ShrinkFiles)
+				{
+				ResourceProcessors.JavaScript jsProcessor = new ResourceProcessors.JavaScript();
+				jsOutputString = jsProcessor.Process(jsOutputString, true);
+				}
 
 			System.IO.File.WriteAllText(Styles_OutputFolder() + "/main.js", jsOutputString);
 			}

@@ -69,20 +69,17 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: Load
-		 * Converts a style path to a <Style> object, loading its <Style.txt> if appropriate.  If there are any errors found 
-		 * in <Style.txt> they will be added to the list and the function will return null.
+		 * Loads <Style.txt> and returns it as a <Styles.Advanced> object.  If there are any errors found in <Style.txt> they will be added 
+		 * to the list and the function will return null.
 		 */
-		public Style Load (Path stylePath, Errors.ErrorList errors)
+		public Styles.Advanced Load (Path path, Errors.ErrorList errors)
 			{
-			Style style = new Style(stylePath);
-
-			if (style.IsCSSOnly)
-				{  return style;  }
+			Styles.Advanced style = new Styles.Advanced(path);
 
 			using (ConfigFile file = new ConfigFile())
 				{
-				if (!file.Open(stylePath, ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
-															 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace, errors))
+				if (!file.Open(path, ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
+										   ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace, errors))
 					{  return null;  }
 
 				int errorCount = errors.Count;
@@ -118,7 +115,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 							Path fullLinkedFile = style.Folder + "/" + linkedFile;
 
 							if (System.IO.File.Exists(fullLinkedFile))
-								{  style.AddLinkedFile(linkedFile, pageType);  }
+								{  style.AddLinkedFile(fullLinkedFile, pageType);  }
 							else
 								{
 								file.AddError( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );
@@ -127,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 						else
 							{  
 							file.AddError( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantLinkFileWithExtension(extension)",
-																			 linkedFile.Extension) );  
+																 linkedFile.Extension) );  
 							}
 
 						continue;
@@ -163,13 +160,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: Save
-		 * Saves the passed <Style> as <Style.txt>, provided it's not CSS-only.
+		 * Saves the passed style's <Style.txt>.
 		 */
-		public bool Save (Style style, Errors.ErrorList errorList, bool noErrorOnFail)
+		public bool Save (Styles.Advanced style, Errors.ErrorList errorList, bool noErrorOnFail)
 			{
-			if (style.IsCSSOnly)
-				{  throw new InvalidOperationException();  }
-
 			System.Text.StringBuilder output = new System.Text.StringBuilder(512);
 
 
@@ -220,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 						}
 
 					output.Append("Link: ");
-					output.AppendLine(link.File);
+					output.AppendLine(style.MakeRelative(link.File));
 					}
 
 				output.AppendLine();
