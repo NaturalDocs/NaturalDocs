@@ -78,7 +78,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{
 				if (builder.Styles != null)
 					{
-					foreach (Style style in builder.Styles)
+					foreach (var style in builder.Styles)
 						{  styleFileSource.AddStyle(style);  }
 					}
 				}

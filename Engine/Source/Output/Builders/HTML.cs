@@ -54,13 +54,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-
-// We must include this so that "FileSource" doesn't get accidentally interpreted as Output.Styles.FileSource
-// instead of Files.FileSource.  Including them both makes "FileSource" ambiguous and the compiler forces you
-// to specify.
-using CodeClear.NaturalDocs.Engine.Files;
-
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Files;
+using CodeClear.NaturalDocs.Engine.Styles;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders
@@ -146,7 +142,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (stylePath == null)
 				{
-				errorList.Add( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindStyle(name)", styleName) );
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindStyle(name)", styleName) );
 				return false;
 				}
 
@@ -487,7 +483,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						{
 						if (style is Styles.Advanced)
 							{
-							errorList.Add( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindInheritedStyle(name)", inheritedStyleName),
+							errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindInheritedStyle(name)", inheritedStyleName),
 												 (style as Styles.Advanced).ConfigFile );
 							}
 

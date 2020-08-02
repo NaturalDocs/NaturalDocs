@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Style_txt
+ * Class: CodeClear.NaturalDocs.Engine.Styles.Style_txt
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Style.txt>.
@@ -48,7 +48,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class Style_txt
 		{
@@ -61,10 +61,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		public Style_txt ()
 			{
-			inheritRegex = new Regex.Styles.HTML.Inherit();
-			linkRegex = new Regex.Styles.HTML.Link();
-			onLoadRegex = new Regex.Styles.HTML.OnLoad();
-			linkableFileExtensionsRegex = new Regex.Styles.HTML.LinkableFileExtensions();
+			inheritRegex = new Regex.Styles.Inherit();
+			linkRegex = new Regex.Styles.Link();
+			onLoadRegex = new Regex.Styles.OnLoad();
+			linkableFileExtensionsRegex = new Regex.Styles.LinkableFileExtensions();
 			}
 
 
@@ -97,10 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					match = linkRegex.Match(lcIdentifier);
 					if (match.Success)
 						{  
-						Builders.HTML.PageType pageType = Builders.HTML.PageType.All;
+						Output.Builders.HTML.PageType pageType = Output.Builders.HTML.PageType.All;
 						if (match.Groups[1].Success)
 							{
-							Builders.HTML.PageType? pageTypeTemp = Builders.HTML.PageTypeOf(match.Groups[1].ToString());
+							Output.Builders.HTML.PageType? pageTypeTemp = Output.Builders.HTML.PageTypeOf(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -118,12 +118,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 								{  style.AddLinkedFile(fullLinkedFile, pageType);  }
 							else
 								{
-								file.AddError( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );
+								file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );
 								}
 							}
 						else
 							{  
-							file.AddError( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.CantLinkFileWithExtension(extension)",
+							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantLinkFileWithExtension(extension)",
 																 linkedFile.Extension) );  
 							}
 
@@ -133,10 +133,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					match = onLoadRegex.Match(lcIdentifier);
 					if (match.Success)
 						{  
-						Builders.HTML.PageType pageType = Builders.HTML.PageType.All;
+						Output.Builders.HTML.PageType pageType = Output.Builders.HTML.PageType.All;
 						if (match.Groups[1].Success)
 							{
-							Builders.HTML.PageType? pageTypeTemp = Builders.HTML.PageTypeOf(match.Groups[1].ToString());
+							Output.Builders.HTML.PageType? pageTypeTemp = Output.Builders.HTML.PageTypeOf(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -171,14 +171,14 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			
 			output.AppendLine("Format: " + Engine.Instance.VersionString);
 			output.AppendLine();
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.Header.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.Header.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 			
 
 			// Inheritance
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.InheritanceHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.InheritanceHeader.multiline") );
 			output.AppendLine();
 
 			if (style.Inherits != null)
@@ -193,23 +193,23 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				output.AppendLine();
 				}
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.InheritanceReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.InheritanceReference.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 
 
 			// Linked Files
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.LinkedFilesHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.LinkedFilesHeader.multiline") );
 			output.AppendLine();
 
 			if (style.Links != null)
 				{
 				foreach (StyleFileLink link in style.Links)
 					{
-					if (link.Type != Builders.HTML.PageType.All)
+					if (link.Type != Output.Builders.HTML.PageType.All)
 						{  
-						output.Append(Builders.HTML.PageTypeNameOf(link.Type));
+						output.Append(Output.Builders.HTML.PageTypeNameOf(link.Type));
 						output.Append(' ');
 						}
 
@@ -221,23 +221,23 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				output.AppendLine();
 				}
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.LinkedFilesReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.LinkedFilesReference.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 
 
 			// OnLoad
 			
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.OnLoadHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.OnLoadHeader.multiline") );
 			output.AppendLine();
 
 			if (style.OnLoad != null)
 				{
 				foreach (StyleOnLoadStatement onLoadStatement in style.OnLoad)
 					{
-					if (onLoadStatement.Type != Builders.HTML.PageType.All)
+					if (onLoadStatement.Type != Output.Builders.HTML.PageType.All)
 						{  
-						output.Append(Builders.HTML.PageTypeNameOf(onLoadStatement.Type));
+						output.Append(Output.Builders.HTML.PageTypeNameOf(onLoadStatement.Type));
 						output.Append(' ');
 						}
 
@@ -249,7 +249,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				output.AppendLine();
 				}
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "HTML.Style.txt.OnLoadReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.OnLoadReference.multiline") );
 
 
 			return ConfigFile.SaveIfDifferent(style.ConfigFile, output.ToString(), noErrorOnFail, errorList);
@@ -260,10 +260,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Regular Expressions
 		// __________________________________________________________________________
 
-		protected Regex.Styles.HTML.Inherit inheritRegex;
-		protected Regex.Styles.HTML.Link linkRegex;
-		protected Regex.Styles.HTML.OnLoad onLoadRegex;
-		protected Regex.Styles.HTML.LinkableFileExtensions linkableFileExtensionsRegex;
+		protected Regex.Styles.Inherit inheritRegex;
+		protected Regex.Styles.Link linkRegex;
+		protected Regex.Styles.OnLoad onLoadRegex;
+		protected Regex.Styles.LinkableFileExtensions linkableFileExtensionsRegex;
 
 		}
 	}

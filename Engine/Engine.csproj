@@ -54,9 +54,9 @@
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
-    <Compile Include="Source\Output\Styles\CSSOnly.cs" />
-    <Compile Include="Source\Output\Styles\Advanced.cs" />
-    <Compile Include="Source\Output\Style_txt.cs" />
+    <Compile Include="Source\Styles\CSSOnly.cs" />
+    <Compile Include="Source\Styles\Advanced.cs" />
+    <Compile Include="Source\Styles\Style_txt.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
     <Compile Include="Source\Output\HTML\Components\PageContent.cs" />
@@ -79,7 +79,7 @@
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
     <Compile Include="Source\Output\HTML\Paths\SourceFile.cs" />
     <Compile Include="Source\Output\HTML\Paths\Utilities.cs" />
-    <Compile Include="Source\Output\Styles\FileSourceAdder.cs" />
+    <Compile Include="Source\Styles\FileSourceAdder.cs" />
     <Compile Include="Source\Output\HTML\Components\FormattedText.cs" />
     <Compile Include="Source\Process.cs" />
     <Compile Include="Source\SystemInfo.cs" />
@@ -216,8 +216,8 @@
     <Compile Include="Source\Output\HTML\Components\MenuEntries\File.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\FileSource.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Folder.cs" />
-    <Compile Include="Source\Output\Style.cs" />
-    <Compile Include="Source\Output\Styles\FileSource.cs" />
+    <Compile Include="Source\Styles\Style.cs" />
+    <Compile Include="Source\Styles\FileSource.cs" />
     <Compile Include="Source\Prototypes\ParsedPrototype.cs" />
     <Compile Include="Source\Path.cs" />
     <Compile Include="Source\Files\File.cs" />

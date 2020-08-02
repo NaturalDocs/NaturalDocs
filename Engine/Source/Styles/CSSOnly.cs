@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Styles.CSSOnly
+ * Class: CodeClear.NaturalDocs.Engine.Styles.CSSOnly
  * ____________________________________________________________________________
  * 
  * A class representing a style that is only a single CSS file.
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Styles
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class CSSOnly : Style
 		{

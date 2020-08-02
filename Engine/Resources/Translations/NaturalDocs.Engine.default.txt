@@ -782,22 +782,22 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 # _____________________________________________________________________________
 
 
-HTML.Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css, .js, and .json files.
-HTML.Style.txt.CantFindStyle(name): Can't find style {0}.
-HTML.Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
-HTML.Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.
+Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css, .js, and .json files.
+Style.txt.CantFindStyle(name): Can't find style {0}.
+Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
+Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.
 
 
-HTML.Style.txt.Header.multiline {{{
+Style.txt.Header.multiline {{{
 # This is a configuration file for a Natural Docs HTML output style.
 }}}
 
-HTML.Style.txt.InheritanceHeader.multiline {{{
+Style.txt.InheritanceHeader.multiline {{{
 # Inheritance
 # ------------------------------------------------------------------------
 }}}
 
-HTML.Style.txt.InheritanceReference.multiline {{{
+Style.txt.InheritanceReference.multiline {{{
 # You can inherit the settings of another style like this:
 #
 # Inherit: [style]
@@ -811,12 +811,12 @@ HTML.Style.txt.InheritanceReference.multiline {{{
 # but not the CSS or images.
 }}}
 
-HTML.Style.txt.LinkedFilesHeader.multiline {{{
+Style.txt.LinkedFilesHeader.multiline {{{
 # Linked Files
 # ------------------------------------------------------------------------
 }}}
 
-HTML.Style.txt.LinkedFilesReference.multiline {{{
+Style.txt.LinkedFilesReference.multiline {{{
 # You can link .css, .js, and .json files to the output like this:
 #
 # Link: [file]
@@ -834,12 +834,12 @@ HTML.Style.txt.LinkedFilesReference.multiline {{{
 # but they will not be added to the pages automatically.
 }}}
 
-HTML.Style.txt.OnLoadHeader.multiline {{{
+Style.txt.OnLoadHeader.multiline {{{
 # OnLoad
 # ------------------------------------------------------------------------
 }}}
 
-HTML.Style.txt.OnLoadReference.multiline {{{
+Style.txt.OnLoadReference.multiline {{{
 # You can add code to the page's OnLoad handler like this:
 #
 # OnLoad: [statement]

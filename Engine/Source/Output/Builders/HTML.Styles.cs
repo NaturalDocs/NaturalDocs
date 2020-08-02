@@ -41,7 +41,7 @@
 using System;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Files;
-using CodeClear.NaturalDocs.Engine.Output.Styles;
+using CodeClear.NaturalDocs.Engine.Styles;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.Builders

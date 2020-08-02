@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Styles;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 

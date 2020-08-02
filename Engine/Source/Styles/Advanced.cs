@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Styles.Advanced
+ * Class: CodeClear.NaturalDocs.Engine.Styles.Advanced
  * ____________________________________________________________________________
  * 
  * A class representing an advanced output style using <Style.txt>.
@@ -14,7 +14,7 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Styles
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class Advanced : Style
 		{

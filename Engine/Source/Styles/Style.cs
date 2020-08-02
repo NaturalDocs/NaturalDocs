@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Style
+ * Class: CodeClear.NaturalDocs.Engine.Styles.Style
  * ____________________________________________________________________________
  * 
  * A class representing an output style.
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public abstract class Style
 		{
@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		/* Function: AddLinkedFile
 		 */
-		public void AddLinkedFile (Path file, Builders.HTML.PageType type = Builders.HTML.PageType.All)
+		public void AddLinkedFile (Path file, Output.Builders.HTML.PageType type = Output.Builders.HTML.PageType.All)
 			{
 			#if DEBUG
 			if (file.IsRelative)
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, Builders.HTML.PageType type = Builders.HTML.PageType.All)
+		public void AddOnLoad (string onLoadString, Output.Builders.HTML.PageType type = Output.Builders.HTML.PageType.All)
 			{
 			if (onLoad == null)
 				{  onLoad = new List<StyleOnLoadStatement>();  }
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 	 */
 	public struct StyleFileLink
 		{
-		public Builders.HTML.PageType Type;
+		public Output.Builders.HTML.PageType Type;
 		public Path File;
 		}
 
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 	 */
 	public struct StyleOnLoadStatement
 		{
-		public Builders.HTML.PageType Type;
+		public Output.Builders.HTML.PageType Type;
 		public string Statement;
 		}
 	}

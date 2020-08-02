@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Styles.FileSourceAdder
+ * Class: CodeClear.NaturalDocs.Engine.Styles.FileSourceAdder
  * ____________________________________________________________________________
  * 
  * A <Files.FileSourceAdder> that can be used with <Output.Styles.FileSource>.
@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Styles
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class FileSourceAdder : Files.FileSourceAdder
 		{

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Styles.FileSource
+ * Class: CodeClear.NaturalDocs.Engine.Styles.FileSource
  * ____________________________________________________________________________
  * 
  * A file source that handles monitoring all the style files, both project and system.
@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Styles
+namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public class FileSource : Engine.Files.FileSource
 		{
