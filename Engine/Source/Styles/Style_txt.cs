@@ -22,6 +22,7 @@
  *		> OnLoad: [code]
  *		> Frame OnLoad: [code]
  *		> Content OnLoad: [code]
+ *		> Home OnLoad: [code]
  *		
  *		Specifies a single line of JavaScript code that will be executed from the page's OnLoad function.  Can be restricted
  *		to certain page types or applied to all of them.  If you have a non-trivial amount of code to run you should define 
@@ -30,6 +31,7 @@
  *		> Link: [file]
  *		> Frame Link: [file]
  *		> Content Link: [file]
+ *		> Home Link: [file]
  *		
  *		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.  
  *		JavaScript files can be restricted to certain page types or linked to all of them.  The file path is relative to the style's
@@ -37,6 +39,11 @@
  *		
  *		All files found in the style's folder are not automatically included because some may be intended to be loaded 
  *		dynamically, or the .css files may already be linked together with @import.
+ *		
+ *		Revision History:
+ *		
+ *			- 2.1
+ *				- Added Home as an option for OnLoad and Link statements.
  *		
  */
 

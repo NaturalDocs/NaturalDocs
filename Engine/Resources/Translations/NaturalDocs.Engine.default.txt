@@ -822,6 +822,7 @@ Style.txt.LinkedFilesReference.multiline {{{
 # Link: [file]
 # Frame Link: [file]
 # Content Link: [file]
+# Home Link: [file]
 #
 # These files will be added to the generated output via link or script tags.
 #
@@ -845,6 +846,7 @@ Style.txt.OnLoadReference.multiline {{{
 # OnLoad: [statement]
 # Frame OnLoad: [statement]
 # Content OnLoad: [statement]
+# Home OnLoad: [statement]
 #
 # You can limit it to just to the frame page, which handles the header,
 # footer, menu, and summary, or to content pages, which is the documentation
