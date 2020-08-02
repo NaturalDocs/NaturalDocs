@@ -97,10 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					match = linkRegex.Match(lcIdentifier);
 					if (match.Success)
 						{  
-						Output.Builders.HTML.PageType pageType = Output.Builders.HTML.PageType.All;
+						PageType pageType = PageType.All;
 						if (match.Groups[1].Success)
 							{
-							Output.Builders.HTML.PageType? pageTypeTemp = Output.Builders.HTML.PageTypeOf(match.Groups[1].ToString());
+							PageType? pageTypeTemp = PageTypeUtilities.ToPageType(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -133,10 +133,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					match = onLoadRegex.Match(lcIdentifier);
 					if (match.Success)
 						{  
-						Output.Builders.HTML.PageType pageType = Output.Builders.HTML.PageType.All;
+						PageType pageType = PageType.All;
 						if (match.Groups[1].Success)
 							{
-							Output.Builders.HTML.PageType? pageTypeTemp = Output.Builders.HTML.PageTypeOf(match.Groups[1].ToString());
+							PageType? pageTypeTemp = PageTypeUtilities.ToPageType(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -207,9 +207,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				{
 				foreach (StyleFileLink link in style.Links)
 					{
-					if (link.Type != Output.Builders.HTML.PageType.All)
+					if (link.Type != PageType.All)
 						{  
-						output.Append(Output.Builders.HTML.PageTypeNameOf(link.Type));
+						output.Append(PageTypeUtilities.ToString(link.Type));
 						output.Append(' ');
 						}
 
@@ -235,9 +235,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				{
 				foreach (StyleOnLoadStatement onLoadStatement in style.OnLoad)
 					{
-					if (onLoadStatement.Type != Output.Builders.HTML.PageType.All)
+					if (onLoadStatement.Type != PageType.All)
 						{  
-						output.Append(Output.Builders.HTML.PageTypeNameOf(onLoadStatement.Type));
+						output.Append(PageTypeUtilities.ToString(onLoadStatement.Type));
 						output.Append(' ');
 						}
 

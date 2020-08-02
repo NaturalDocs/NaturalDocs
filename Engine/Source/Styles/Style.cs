@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddLinkedFile
 		 */
-		public void AddLinkedFile (Path file, Output.Builders.HTML.PageType type = Output.Builders.HTML.PageType.All)
+		public void AddLinkedFile (Path file, PageType type = PageType.All)
 			{
 			#if DEBUG
 			if (file.IsRelative)
@@ -69,7 +69,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, Output.Builders.HTML.PageType type = Output.Builders.HTML.PageType.All)
+		public void AddOnLoad (string onLoadString, PageType type = PageType.All)
 			{
 			if (onLoad == null)
 				{  onLoad = new List<StyleOnLoadStatement>();  }
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 	 */
 	public struct StyleFileLink
 		{
-		public Output.Builders.HTML.PageType Type;
+		public PageType Type;
 		public Path File;
 		}
 
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 	 */
 	public struct StyleOnLoadStatement
 		{
-		public Output.Builders.HTML.PageType Type;
+		public PageType Type;
 		public string Statement;
 		}
 	}
