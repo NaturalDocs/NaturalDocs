@@ -16,10 +16,12 @@
  *		PreviousRun - The property comes from the previous run, such as being stored in <Project.nd>.
  *		ProjectFile - The property is defined in <Project.txt>.
  *		OldMenuFile - The property is defined in <Menu.txt>.
+ *		ParserConfigurationFile - The property is defined in <Parser.txt>.
  *		ProjectLanguageFile - The property is defined in the project's <Languages.txt> file.
  *		SystemLanguageFile - The property is defined in the system's <Languages.txt> file.
- *		ProjectTopicsFile - The property is defined in the project's <Comments.txt> file.
- *		SystemTopicsFile - The property is defined in the system's <Comments.txt> file.
+ *		ProjectCommentsFile - The property is defined in the project's <Comments.txt> file.
+ *		SystemCommentsFile - The property is defined in the system's <Comments.txt> file.
+ *		StyleConfigurationFile - The property is defined in a <Style.txt> file.
  *		
  * Meta-Values:
  * 
@@ -51,12 +53,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		ProjectFile,
 		OldMenuFile,
+		ParserConfigurationFile,
 		ProjectLanguageFile,
 		SystemLanguageFile,
-		ProjectTopicsFile,
-		SystemTopicsFile,
+		ProjectCommentsFile,
+		SystemCommentsFile,
+		StyleConfigurationFile,
 
 		LowestFileValue = ProjectFile,
-		HighestFileValue = SystemTopicsFile
+		HighestFileValue = StyleConfigurationFile
 		}
 	}
