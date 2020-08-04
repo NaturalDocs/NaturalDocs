@@ -228,6 +228,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
+		 *		propertySource - The <Config.PropertySource> associated with the file.
 		 *		fileCommentTypes - Returns a list of <ConfigFileCommentTypes> in no particular order.
 		 *		fileIgnoredKeywords - Returns any ignored keywords as a string array in the format of 
 		 *										<ConfigFileCommentType.Keywords>.
@@ -238,7 +239,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * 
 		 *		Whether it was able to successfully load and parse the file without any errors.
 		 */
-		public bool Load (Path filename, out List<ConfigFileCommentType> fileCommentTypes, 
+		public bool Load (Path filename, Config.PropertySource propertySource,
+								 out List<ConfigFileCommentType> fileCommentTypes, 
 								 out List<string> fileIgnoredKeywords, out List<string> fileTags,
 								 Errors.ErrorList errorList)
 			{
@@ -252,6 +254,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			using (ConfigFile file = new ConfigFile())
 				{
 				bool openResult = file.Open(filename, 
+														 propertySource,
 														 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
 														 ConfigFile.FileFormatFlags.CondenseValueWhitespace | 
 														 ConfigFile.FileFormatFlags.SupportsNullValueLines | 

@@ -26,14 +26,14 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 		/* Constructor: Error
 		 * A constructor for an error that occurs in a specific file.
 		 */
-		public Error (string message, Path file = default(Path), int lineNumber = 0, Config.PropertySource configSource = Config.PropertySource.NotDefined, 
-						 string property = null)
+		public Error (string message, Path file = default(Path), int lineNumber = 0, 
+						   Config.PropertySource configSource = Config.PropertySource.NotDefined, string property = null)
 			{
 			this.message = message;
 
 			this.file = file;
 			this.lineNumber = lineNumber;
-			this.configSource = configSource;
+			this.propertySource = configSource;
 			this.property = property;
 			}
 			
@@ -50,10 +50,11 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 		/* Function: Matches
 		 * Whether the error occurs in the passed location.
 		 */
-		public bool Matches (Path file = default(Path), int lineNumber = 0, Config.PropertySource configSource = Config.PropertySource.NotDefined, 
-									string property = null)
+		public bool Matches (Path file = default(Path), int lineNumber = 0, 
+									  Config.PropertySource propertySource = Config.PropertySource.NotDefined, string property = null)
 			{
-			return (this.file == file && this.lineNumber == lineNumber && this.configSource == configSource && this.property == property);
+			return (this.file == file && this.lineNumber == lineNumber && 
+					   this.propertySource == propertySource && this.property == property);
 			}
 			
 			
@@ -89,9 +90,9 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 					return lineNumber - other.lineNumber;
 					}
 
-				if (configSource != other.configSource)
+				if (propertySource != other.propertySource)
 					{
-					return (int)configSource - (int)other.configSource;
+					return (int)propertySource - (int)other.propertySource;
 					}
 
 				if (property != other.property)
@@ -143,24 +144,33 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 				{  lineNumber = value;  }
 			}
 
-		/* Property: ConfigSource
-		 * The config source the error occurs in, if appropriate.  Will be <Config.PropertySource.NotDefined> otherwise.
+		/* Property: PropertySource
+		 * The <Config.PropertySource> the error occurs in, if appropriate.  Will be <Config.PropertySource.NotDefined> otherwise.
 		 */
-		public Config.PropertySource ConfigSource
+		public Config.PropertySource PropertySource
 			{
 			get
-				{  return configSource;  }
+				{  return propertySource;  }
 			set
-				{  configSource = value;  }
+				{  propertySource = value;  }
+			}
+
+		/* Property: PropertyLocation
+		 * The <Config.PropertyLocation> the error occurs in.
+		 */
+		public Config.PropertyLocation PropertyLocation
+			{
+			get
+				{  return new Config.PropertyLocation(propertySource, file, lineNumber);  }
 			}
 
 		/* Property: Property
 		 * 
 		 * The propery that the error occurs in, if appropriate.  Will be null otherwise.
 		 * 
-		 * The string will match the class property name.  For example, an error in <ProjectConfig.TabWidth> will have "TabWidth".  An error in the 
-		 * global title will be "ProjectInfo.Title".  If it occurs in one of the targets, it will be something like "InputTargets[0].Folder" or 
-		 * "OutputTargets[1].ProjectInfo.Title".
+		 * The string will match the class property name.  For example, an error in <ProjectConfig.TabWidth> will have "TabWidth".
+		 * An error in the global title will be "ProjectInfo.Title".  If it occurs in one of the targets, it will be something like 
+		 * "InputTargets[0].Folder" or "OutputTargets[1].ProjectInfo.Title".
 		 */
 		public string Property
 			{
@@ -180,7 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.Errors
 
 		protected Path file;
 		protected int lineNumber;
-		protected Config.PropertySource configSource;
+		protected Config.PropertySource propertySource;
 		protected string property;
 
 		}

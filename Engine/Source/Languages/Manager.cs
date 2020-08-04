@@ -205,7 +205,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			
 			// Load the files.
 			
-			if (!languagesTxtParser.Load( systemFile, out systemLanguageList, out ignoredSystemExtensions, errorList ))
+			if (!languagesTxtParser.Load( systemFile, Config.PropertySource.SystemLanguageFile, 
+													   out systemLanguageList, out ignoredSystemExtensions, errorList ))
 			    {  
 			    success = false;  
 			    // Continue anyway because we want to show errors from both files.
@@ -213,7 +214,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			
 			if (System.IO.File.Exists(projectFile))
 			    {
-			    if (!languagesTxtParser.Load( projectFile, out projectLanguageList, out ignoredProjectExtensions, errorList ))
+			    if (!languagesTxtParser.Load( projectFile, Config.PropertySource.ProjectLanguageFile,
+														   out projectLanguageList, out ignoredProjectExtensions, errorList ))
 			        {  success = false;  }
 			    }
 			else

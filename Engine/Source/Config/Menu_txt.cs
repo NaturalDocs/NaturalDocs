@@ -104,10 +104,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				ErrorList ignored = new Errors.ErrorList();
 				bool openResult = configFile.Open(path, 
-															  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
-															  ConfigFile.FileFormatFlags.SupportsBraces |
-															  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
-															  ignored);
+																  PropertySource.OldMenuFile,
+																  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
+																  ConfigFile.FileFormatFlags.SupportsBraces |
+																  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
+																  ignored);
 														 
 				if (openResult == false)
 					{  return false;  }

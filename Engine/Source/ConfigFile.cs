@@ -67,6 +67,7 @@ namespace CodeClear.NaturalDocs.Engine
 		
 		// Group: Types
 		// __________________________________________________________________________
+
 		
 		/* Enum: FileFormatFlags
 		 * 
@@ -94,7 +95,6 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 			
 			
-			
 		
 		// Group: Functions
 		// __________________________________________________________________________
@@ -107,6 +107,7 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			file = null;
 			fileName = null;
+			propertySource = Config.PropertySource.NotDefined;
 			version = null;
 			fileFormatFlags = 0;
 			lineNumber = 0;
@@ -115,6 +116,18 @@ namespace CodeClear.NaturalDocs.Engine
 			}
 			
 		
+		/* Function: Dispose
+		 */
+		public void Dispose ()
+			{
+			if (file != null)
+				{
+				file.Dispose();
+				file = null;
+				}
+			}
+
+
 		/* Function: Open
 		 * 
 		 * Attempts to open the passed configuration file and returns whether it was successful.  Any errors 
@@ -122,39 +135,41 @@ namespace CodeClear.NaturalDocs.Engine
 		 * 
 		 * Parameters:
 		 * 
-		 *		newFileName - The <Path> of the configuration file.
-		 *		newFileFormatFlags - The <FileFormatFlags> to use when parsing the file.
-		 *		newErrorList - A list where the parser will put any errors.
+		 *		fileName - The <Path> of the configuration file.
+		 *		propertySource - The <Config.PropertySource> this file represents.
+		 *		fileFormatFlags - The <FileFormatFlags> to use when parsing the file.
+		 *		errorList - A list where the parser will put any errors.
 		 */
-		public bool Open (Path newFileName, FileFormatFlags newFileFormatFlags, ErrorList newErrorList)
+		public bool Open (Path fileName, Config.PropertySource propertySource, FileFormatFlags fileFormatFlags, ErrorList errorList)
 			{
 			if (IsOpen)
-				{  throw new Engine.Exceptions.FileAlreadyOpen(newFileName, fileName);  }
+				{  throw new Engine.Exceptions.FileAlreadyOpen(fileName, this.fileName);  }
 				
-			if (!File.Exists(newFileName))
+			if (!File.Exists(fileName))
 				{
-				newErrorList.Add( 
-					Locale.Get("NaturalDocs.Engine", "ConfigFile.DoesNotExist(name)", newFileName)
+				errorList.Add( 
+					Locale.Get("NaturalDocs.Engine", "ConfigFile.DoesNotExist(name)", fileName)
 					);
 					
 				return false;
 				}
 				
 			try
-				{  file = new StreamReader(newFileName, System.Text.Encoding.UTF8, true);  }
+				{  file = new StreamReader(fileName, System.Text.Encoding.UTF8, true);  }
 			catch (Exception e)
 				{
-				newErrorList.Add( 
-					Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotOpen(name, exception)", newFileName, e.Message)
+				errorList.Add( 
+					Locale.Get("NaturalDocs.Engine", "ConfigFile.CouldNotOpen(name, exception)", fileName, e.Message)
 					);
 					
 				return false;
 				}
 				
-			fileName = newFileName;
-			fileFormatFlags = newFileFormatFlags;
-			errorList = newErrorList;
-			lineNumber = 0;
+			this.fileName = fileName;
+			this.propertySource = propertySource;
+			this.fileFormatFlags = fileFormatFlags;
+			this.errorList = errorList;
+			this.lineNumber = 0;
 			
 			string identifier, valueString;
 			
@@ -193,6 +208,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 				file = null;
 				fileName = null;
+				propertySource = Config.PropertySource.NotDefined;
 				version = null;  
 				fileFormatFlags = 0;
 				lineNumber = 0;
@@ -315,9 +331,9 @@ namespace CodeClear.NaturalDocs.Engine
 		/* Function: AddError
 		 * Adds an error to the list, automatically filling in the file and line number properties based on the last call to <Get()>.
 		 */
-		public void AddError (string errorMessage, Config.PropertySource configSource = Config.PropertySource.NotDefined, string property = null)
+		public void AddError (string errorMessage, string property = null)
 			{
-			errorList.Add(errorMessage, fileName, lineNumber, configSource, property);
+			errorList.Add(errorMessage, fileName, lineNumber, propertySource, property);
 			}
 			
 			
@@ -380,25 +396,6 @@ namespace CodeClear.NaturalDocs.Engine
 			
 			
 			
-			
-		// Group: IDisposable Functions
-		// __________________________________________________________________________
-		
-			
-		/* Function: Dispose
-		 */
-		public void Dispose ()
-			{
-			if (file != null)
-				{
-				file.Dispose();
-				file = null;
-				}
-			}
-			
-			
-			
-			
 		// Group: Properties
 		// __________________________________________________________________________
 		
@@ -440,6 +437,26 @@ namespace CodeClear.NaturalDocs.Engine
 			{
 			get
 				{  return lineNumber;  }
+			}
+			
+			
+		/* Property: PropertySource
+		 * Returns the <Config.PropertySource> of the open file, or <Config.Property.NotDefined> if none.
+		 */
+		public Config.PropertySource PropertySource
+			{
+			get
+				{  return propertySource;  }
+			}
+
+
+		/* Property: PropertyLocation
+		 * Returns a <Config.PropertyLocation> created from <PropertySource>, <FileName>, and <LineNumber>.
+		 */
+		public Config.PropertyLocation PropertyLocation
+			{
+			get
+				{  return new Config.PropertyLocation(propertySource, fileName, lineNumber);  }
 			}
 			
 			
@@ -723,50 +740,54 @@ namespace CodeClear.NaturalDocs.Engine
 		/* var: file
 		 * The currently open file, or null if none.
 		 */
-		protected StreamReader file;
-		
+		protected StreamReader file;		
 		
 		/* var: fileName
 		 * The <Path> of the file currently being parsed, or null if none.
 		 */
 		protected Path fileName;
-		
+
+		/* var: propertySource
+		 * The <Config.PropertySource> represented by the file currently being parsed, or <Config.PropertySource.NotDefined>
+		 * if none.
+		 */
+		protected Config.PropertySource propertySource;		
 		
 		/* var: version
 		 * The version of the file if one is open, null otherwise.
 		 */
 		protected Engine.Version version;
 
-
 		/* var: fileFormatFlags
 		 * The file format flags of the currently open file.
 		 */
-		protected FileFormatFlags fileFormatFlags;
-		
+		protected FileFormatFlags fileFormatFlags;		
 		
 		/* var: lineNumber
 		 * The line number of the last value returned, or zero if none.
 		 */
-		protected int lineNumber;
-		
+		protected int lineNumber;		
 		
 		/* var: restOfLine
 		 * If a line is being split because of braces, this string will hold the rest of it between calls.  Null otherwise.
 		 */
-		protected string restOfLine;
-		
+		protected string restOfLine;		
 		
 		/* var: errorList
 		 * A reference to the list of errors to add to if we encounter any.
 		 */
 		protected ErrorList errorList;
 
+
+		
+		// Group: Static Variables
+		// __________________________________________________________________________
+
 		
 		/* var: BracesChars
 		 * An array of braces characters for use with IndexOfAny(char[]).
 		 */
 		static protected char[] BracesChars = new char[] { '{', '}' };
-
 
 		static public Regex.Config.FormatLine FormatLineRegex = new Regex.Config.FormatLine();
 									

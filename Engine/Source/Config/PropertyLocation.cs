@@ -65,7 +65,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		public static bool IsFileBased (Config.PropertySource configSource)
 			{
 			return (configSource >= PropertySource.LowestFileValue &&
-					  configSource <= PropertySource.HighestFileValue);
+					   configSource <= PropertySource.HighestFileValue);
 			}
 
 
@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 		/* Property: Source
-		 * The <Config.Source> where this property is defined, or <PropertySource.NotDefined> if it hasn't been set.
+		 * The <Config.PropertySource> where this property is defined, or <PropertySource.NotDefined> if it hasn't been set.
 		 */
 		public Config.PropertySource Source
 			{

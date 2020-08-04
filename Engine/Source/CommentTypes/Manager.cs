@@ -171,7 +171,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			
 			// Load the files.
 			
-			if (!commentsTxtParser.Load( systemFile, out systemCommentTypeList, out ignoredSystemKeywords, out systemTags, errorList ))
+			if (!commentsTxtParser.Load( systemFile, Config.PropertySource.SystemCommentsFile, 
+													   out systemCommentTypeList, out ignoredSystemKeywords, out systemTags, errorList ))
 				{  
 				success = false;  
 				// Continue anyway because we want to show errors from both files.
@@ -179,12 +180,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			
 			if (System.IO.File.Exists(projectFile))
 				{
-				if (!commentsTxtParser.Load( projectFile, out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
+				if (!commentsTxtParser.Load( projectFile, Config.PropertySource.ProjectCommentsFile,
+														   out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
 					{  success = false;  }
 				}
 			else if (System.IO.File.Exists(oldProjectFile))
 				{
-				if (!commentsTxtParser.Load( oldProjectFile, out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
+				if (!commentsTxtParser.Load( oldProjectFile, Config.PropertySource.ProjectCommentsFile,
+														   out projectCommentTypeList, out ignoredProjectKeywords, out projectTags, errorList ))
 					{  success = false;  }
 				}
 			else

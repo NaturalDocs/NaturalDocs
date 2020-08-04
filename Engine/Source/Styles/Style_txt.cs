@@ -85,8 +85,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 			using (ConfigFile file = new ConfigFile())
 				{
-				if (!file.Open(path, ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
-										   ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace, errors))
+				if (!file.Open(path,
+								   Config.PropertySource.StyleConfigurationFile,
+								   ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
+								   ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace, errors))
 					{  return null;  }
 
 				int errorCount = errors.Count;

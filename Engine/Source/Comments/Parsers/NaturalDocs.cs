@@ -3141,6 +3141,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		    using (ConfigFile file = new ConfigFile())
 		        {
 		        bool openResult = file.Open(filename, 
+														 Config.PropertySource.ParserConfigurationFile,
 														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase |
 		                                                 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
 		                                                 ConfigFile.FileFormatFlags.SupportsRawValueLines,

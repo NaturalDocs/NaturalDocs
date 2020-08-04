@@ -214,6 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
+		 *		propertySource - The <Config.PropertySource> associated with the file.
 		 *		fileLanguages - Returns a list of <ConfigFileLanguages> in no particular order.
 		 *		fileIgnoredExtensions - Returns any ignored extensions as a string array.
 		 *		errorList - If it couldn't successfully parse the file it will add error messages to this list.
@@ -222,8 +223,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * 
 		 *		Whether it was able to successfully load and parse the file without any errors.
 		 */
-		public bool Load (Path filename, out List<ConfigFileLanguage> fileLanguages, 
-								 out List<string> fileIgnoredExtensions, Errors.ErrorList errorList)
+		public bool Load (Path filename, Config.PropertySource propertySource,
+								 out List<ConfigFileLanguage> fileLanguages, out List<string> fileIgnoredExtensions, 
+								 Errors.ErrorList errorList)
 			{
 			fileLanguages = new List<ConfigFileLanguage>();
 			fileIgnoredExtensions = new List<string>();
@@ -236,6 +238,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				// Can't make identifiers lowercase here or we'd lose the case of the comment type in prototype ender lines.
 				bool openResult = file.Open(filename, 
+														 propertySource,
 														 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
 														 ConfigFile.FileFormatFlags.CondenseValueWhitespace,
 														 errorList);

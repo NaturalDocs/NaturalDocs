@@ -187,9 +187,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// We don't condense value whitespace because some things like title, subtitle, and copyright may want multiple spaces.
 				bool openResult = configFile.Open(path, 
-															  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
-															  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
-															  errorList);
+																  PropertySource.ProjectFile,
+																  ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
+																  ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
+																  errorList);
 														 
 				if (openResult == false)
 					{  return false;  }
