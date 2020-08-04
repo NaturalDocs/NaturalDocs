@@ -97,11 +97,17 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 				while (file.Get(out lcIdentifier, out value))
 					{
+
+					// Inherit
+
 					if (inheritRegex.IsMatch(lcIdentifier))
 						{  
-						style.AddInheritedStyle(value);
+						style.AddInheritedStyle(value, file.PropertyLocation, null);
 						continue;
 						}
+
+
+					// Link
 
 					match = linkRegex.Match(lcIdentifier);
 					if (match.Success)
@@ -124,11 +130,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 							Path fullLinkedFile = style.Folder + "/" + linkedFile;
 
 							if (System.IO.File.Exists(fullLinkedFile))
-								{  style.AddLinkedFile(fullLinkedFile, pageType);  }
+								{  style.AddLinkedFile(fullLinkedFile, file.PropertyLocation, pageType);  }
 							else
-								{
-								file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );
-								}
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );  }
 							}
 						else
 							{  
@@ -138,6 +142,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 						continue;
 						}
+
+
+					// OnLoad
 
 					match = onLoadRegex.Match(lcIdentifier);
 					if (match.Success)
@@ -153,7 +160,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 								{  pageType = pageTypeTemp.Value;  }
 							}
 
-						style.AddOnLoad(value, pageType);
+						style.AddOnLoad(value, file.PropertyLocation, pageType);
 						continue;
 						}
 
@@ -192,10 +199,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 			if (style.Inherits != null)
 				{
-				foreach (string inheritedStyleName in style.Inherits)
+				foreach (var inheritedStyle in style.Inherits)
 					{
 					output.Append("Inherit: ");
-					output.AppendLine(inheritedStyleName);
+					output.AppendLine(inheritedStyle.Name);
 					}
 
 				output.AppendLine();

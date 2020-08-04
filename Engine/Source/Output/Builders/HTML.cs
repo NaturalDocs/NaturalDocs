@@ -26,7 +26,7 @@
  *		> [String: null]
  *		
  *		Stores the list of styles that apply to this target, in the order in which they must be loaded, as a null-terminated
- *		list of style paths.  The paths are either to <Style.CSSFile> or <Style.ConfigFile>.  These are stored instead of
+ *		list of style paths.  The paths are either to the style's CSS file or <Style.txt>.  These are stored instead of
  *		the names so that if a name is interpreted differently from one run to the next it will be detected.  It's also the
  *		computed list of styles after all inheritance has been applied.
  *		
@@ -133,7 +133,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					Styles.Advanced style = new Styles.Advanced( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
 
 					// Inherit Default so everything still works before it's filled out.
-					style.AddInheritedStyle("Default");
+					style.AddInheritedStyle("Default", Config.PropertySource.SystemGenerated);
 
 					if (styleParser.Save(style, errorList, false))
 						{  stylePath = style.ConfigFile;  }
@@ -460,8 +460,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (stylePath.Extension.ToLower() == "css")
 				{
 				style = new Styles.CSSOnly(stylePath);
-				style.AddInheritedStyle("Default");
-				style.AddLinkedFile(stylePath);
+				style.AddInheritedStyle("Default", Config.PropertySource.SystemDefault);
+				style.AddLinkedFile(stylePath, Config.PropertySource.SystemDefault);
 				}
 			// Process a Style.txt-base style
 			else
@@ -475,15 +475,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (style.Inherits != null)
 				{
-				foreach (string inheritedStyleName in style.Inherits)
+				foreach (var inheritedStyle in style.Inherits)
 					{
-					Path inheritedStylePath = FindStyle(inheritedStyleName);
+					Path inheritedStylePath = FindStyle(inheritedStyle.Name);
 
 					if (inheritedStylePath == null)
 						{
 						if (style is Styles.Advanced)
 							{
-							errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindInheritedStyle(name)", inheritedStyleName),
+							errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindInheritedStyle(name)", inheritedStyle.Name),
 												 (style as Styles.Advanced).ConfigFile );
 							}
 
@@ -491,7 +491,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						}
 					else
 						{
-						Start_LoadStyles (inheritedStyleName, inheritedStylePath, loadList, definedStyles, errorList);
+						Start_LoadStyles (inheritedStyle.Name, inheritedStylePath, loadList, definedStyles, errorList);
 						// Ditto on returning if false.
 						}
 					}

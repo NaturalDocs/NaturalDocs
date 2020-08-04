@@ -38,18 +38,31 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 		/* Function: AddInheritedStyle
 		 */
-		public void AddInheritedStyle (string name)
+		public void AddInheritedStyle (string name, Config.PropertyLocation propertyLocation, Style styleObject = null)
 			{
 			if (inherits == null)
-				{  inherits = new List<string>();  }
+				{  inherits = new List<StyleInheritStatement>();  }
 
-			inherits.Add(name);
+			StyleInheritStatement entry = new StyleInheritStatement();
+			entry.Name = name;
+			entry.Style = styleObject;
+			entry.PropertyLocation = propertyLocation;
+
+			inherits.Add(entry);
+			}
+
+
+		/* Function: AddInheritedStyle
+		 */
+		public void AddInheritedStyle (string name, Config.PropertySource propertySource, Style styleObject = null)
+			{
+			AddInheritedStyle(name, new Config.PropertyLocation(propertySource), styleObject);
 			}
 
 
 		/* Function: AddLinkedFile
 		 */
-		public void AddLinkedFile (Path file, PageType type = PageType.All)
+		public void AddLinkedFile (Path file, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
 			#if DEBUG
 			if (file.IsRelative)
@@ -62,14 +75,23 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			StyleFileLink entry = new StyleFileLink();
 			entry.Type = type;
 			entry.File = file;
+			entry.PropertyLocation = propertyLocation;
 
 			links.Add(entry);
 			}
 
 
+		/* Function: AddLinkedFile
+		 */
+		public void AddLinkedFile (Path file, Config.PropertySource propertySource, PageType type = PageType.All)
+			{
+			AddLinkedFile(file, new Config.PropertyLocation(propertySource), type);
+			}
+
+
 		/* Function: AddOnLoad
 		 */
-		public void AddOnLoad (string onLoadString, PageType type = PageType.All)
+		public void AddOnLoad (string onLoadString, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
 			if (onLoad == null)
 				{  onLoad = new List<StyleOnLoadStatement>();  }
@@ -77,8 +99,17 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			StyleOnLoadStatement entry = new StyleOnLoadStatement();
 			entry.Type = type;
 			entry.Statement = onLoadString;
+			entry.PropertyLocation = propertyLocation;
 
 			onLoad.Add(entry);
+			}
+
+
+		/* Function: AddOnLoad
+		 */
+		public void AddOnLoad (string onLoadString, Config.PropertySource propertySource, PageType type = PageType.All)
+			{
+			AddOnLoad(onLoadString, new Config.PropertyLocation(propertySource), type);
 			}
 
 
@@ -113,9 +144,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Property: Inherits
-		 * A list of style names this one inherits, or null if none.  Do not change.
+		 * A list of styles this one inherits, or null if none.  Do not change.
 		 */
-		public List<string> Inherits
+		public List<StyleInheritStatement> Inherits
 			{
 			get
 				{  return inherits;  }
@@ -149,9 +180,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* var: inherits
-		 * A list of style names this one inherits.  Null if none.
+		 * A list of styles this one inherits, or null if none.
 		 */
-		protected List<string> inherits;
+		protected List<StyleInheritStatement> inherits;
 
 		/* var: onLoad
 		 * A list of OnLoad code statements associated with this style, or null if none.
@@ -178,22 +209,35 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		}
 
 
-	/* Struct: CodeClear.NaturalDocs.Engine.Output.StyleFileLink
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleInheritStatement
+	 * ___________________________________________________________________________
+	 */
+	public struct StyleInheritStatement
+		{
+		public string Name;
+		public Style Style;
+		public Config.PropertyLocation PropertyLocation;
+		}
+
+
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleFileLink
 	 * ___________________________________________________________________________
 	 */
 	public struct StyleFileLink
 		{
 		public PageType Type;
 		public Path File;
+		public Config.PropertyLocation PropertyLocation;
 		}
 
 
-	/* Struct: CodeClear.NaturalDocs.Engine.Output.StyleOnLoadStatement
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleOnLoadStatement
 	 * ___________________________________________________________________________
 	 */
 	public struct StyleOnLoadStatement
 		{
 		public PageType Type;
 		public string Statement;
+		public Config.PropertyLocation PropertyLocation;
 		}
 	}
