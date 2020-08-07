@@ -2,20 +2,8 @@
  * Class: CodeClear.NaturalDocs.Engine.Styles.FileSourceAdder
  * ____________________________________________________________________________
  * 
- * A <Files.FileSourceAdder> that can be used with <Output.Styles.FileSource>.
+ * A <Files.FileSourceAdder> that can be used with <Styles.FileSource>.
  * 
- * 
- * Topic: Usage
- * 
- *		- Call <AddAllFiles()>.  This is not a WorkOn function so only a single thread can call it.
- *		
- *		- Other threads may check the status with GetStatus().
- *		
- * 
- * Multithreading: Thread Safety Notes
- * 
- *		Externally, this class is thread safe.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -25,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Styles
@@ -40,58 +27,75 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			}
 			
 		/* Function: AddAllFiles
-		 * Goes through all the files for all the used styles and calls <Files.Manager.AddOrUpdateFile()> on each one.
+		 * Goes through all the files for all the loaded styles in <Styles.Manager> and calls <Files.Manager.AddOrUpdateFile()>
+		 * on each one.
 		 */
 		override public void AddAllFiles (CancelDelegate cancelDelegate)
 			{
 			status.Reset();
 
-			Styles.FileSource stylesFileSource = (Styles.FileSource)FileSource;
-			IList<Style> styles = stylesFileSource.Styles;
+			IList<Style> styles = EngineInstance.Styles.LoadedStyles;
+			bool forceReparse = EngineInstance.Styles.ReparseStyleFiles || EngineInstance.Config.ReparseEverything;
 
 			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
 			// them all or otherwise use Path functions on them.
 			Stack<string> foldersToSearch = new Stack<string>();
-			foldersToSearch.Push(EngineInstance.Config.SystemStyleFolder);
-			foldersToSearch.Push(EngineInstance.Config.ProjectConfigFolder);
-			status.AddFolders(Files.InputType.Style, 2);
-			
-			while (foldersToSearch.Count > 0)
-			   {
-			   string folder = foldersToSearch.Pop();
-			   string[] subfolders = System.IO.Directory.GetDirectories(folder);
-			   status.AddFolders(Files.InputType.Style, subfolders.Length);
-				
-			   if (cancelDelegate())
-			      {  return;  }
-			
-			   foreach (string subfolder in subfolders)
-			      {  foldersToSearch.Push(subfolder);  }
 
-			   string[] files = System.IO.Directory.GetFiles(folder);
-				
-			   if (cancelDelegate())
-			      {  return;  }
+			foreach (var style in styles)
+				{
+				if (style is Styles.CSSOnly)
+					{
+					Path cssFile = (style as Styles.CSSOnly).CSSFile;
 
-			   foreach (string file in files)
-			      {
-			      if (cancelDelegate())
-			         {  return;  }
+					status.AddFiles(Files.FileType.Style, 1);
 
-					Path filePath = file;
+					EngineInstance.Files.AddOrUpdateFile(cssFile, Files.FileType.Style, 
+																			System.IO.File.GetLastWriteTimeUtc(cssFile), forceReparse);
+					}
 
-					foreach (Style style in styles)
+				else if (style is Styles.Advanced)
+					{
+					foldersToSearch.Clear();
+					foldersToSearch.Push((style as Styles.Advanced).Folder);
+
+					status.AddFolders(Files.InputType.Style, 1);
+
+					while (foldersToSearch.Count > 0)
 						{
-						if (style.Contains(filePath))
-							{  
-							status.AddFiles(Files.FileType.Style, 1);
-							Manager.AddOrUpdateFile(filePath, Files.FileType.Style, System.IO.File.GetLastWriteTimeUtc(file), 
-																  stylesFileSource.ForceReparse);
-							break;
+						string folder = foldersToSearch.Pop();
+
+						string[] subfolders = System.IO.Directory.GetDirectories(folder);
+				   
+						status.AddFolders(Files.InputType.Style, subfolders.Length);
+				
+						foreach (string subfolder in subfolders)
+							{  foldersToSearch.Push(subfolder);  }
+
+						if (cancelDelegate())
+							{  return;  }
+
+						string[] files = System.IO.Directory.GetFiles(folder);
+				
+						foreach (string file in files)
+							{
+							if (style.Contains(file))
+								{  
+								status.AddFiles(Files.FileType.Style, 1);
+
+								EngineInstance.Files.AddOrUpdateFile(file, Files.FileType.Style, 
+																						System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
+
+								if (cancelDelegate())
+									{  return;  }
+								}
 							}
 						}
 					}
+
+				else
+					{  throw new NotImplementedException();  }
 				}
+
 			}
 			
 		}

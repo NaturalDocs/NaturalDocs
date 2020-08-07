@@ -1,36 +1,6 @@
 ﻿/* 
  * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
  * ____________________________________________________________________________
- * 
- * 
- * File: Style.txt
- * 
- *		A configuration file for an advanced style in Natural Docs.
- *		
- *		> Inherit: [style]
- *		
- *		States that this style inherits the specified style, meaning the inherited style's files will be included in the
- *		output first, then this style's files.  Can be specified multiple times.
- *		
- *		> OnLoad: [code]
- *		> Frame OnLoad: [code]
- *		> Content OnLoad: [code]
- *		
- *		Specifies a single line of JavaScript code that will be executed from the page's OnLoad function.  Can be restricted
- *		to certain page types or applied to all of them.  If you have a non-trivial amount of code to run you should define 
- *		a function to be called from here instead.
- *		
- *		> Link: [file]
- *		> Frame Link: [file]
- *		> Content Link: [file]
- *		
- *		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.  
- *		JavaScript files can be restricted to certain page types or linked to all of them.  The file path is relative to the style's
- *		folder.
- *		
- *		All files found in the style's folder are not automatically included because some may be intended to be loaded 
- *		dynamically, or the .css files may already be linked together with @import.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -39,6 +9,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Styles;
@@ -48,39 +19,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	{
 	public partial class HTML
 		{
-
-		// Group: Functions
-		// __________________________________________________________________________
-
-
-		/* Function: FindStyle
-		 * Attempts to convert the passed style name into a style path, returning null if one isn't found.
-		 * For CSS-only styles, it will be a path to the .css file in the system or project folder.  For full styles,
-		 * it will be a path to <Style.txt> in the system or project folder.
-		 */
-		protected Path FindStyle (string name, bool systemFolderOnly = false)
-			{
-			if (!systemFolderOnly)
-				{
-				if (System.IO.File.Exists( EngineInstance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt" ))
-					{  return EngineInstance.Config.ProjectConfigFolder + "/" + name + ".HTML/Style.txt";  }
-				else if (System.IO.File.Exists( EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt" ))
-					{  return EngineInstance.Config.ProjectConfigFolder + "/" + name + "/Style.txt";  }
-				else if (System.IO.File.Exists( EngineInstance.Config.ProjectConfigFolder + "/" + name + ".css" ))
-					{  return EngineInstance.Config.ProjectConfigFolder + "/" + name + ".css";  }
-				}
-
-			if (System.IO.File.Exists( EngineInstance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt" ))
-				{  return EngineInstance.Config.SystemStyleFolder + "/" + name + ".HTML/Style.txt";  }
-			else if (System.IO.File.Exists( EngineInstance.Config.SystemStyleFolder + "/" + name + "/Style.txt" ))
-				{  return EngineInstance.Config.SystemStyleFolder + "/" + name + "/Style.txt";  }
-			else if (System.IO.File.Exists( EngineInstance.Config.SystemStyleFolder + "/" + name + ".css" ))
-				{  return EngineInstance.Config.SystemStyleFolder + "/" + name + ".css";  }
-
-			return null;
-			}
-
-
 
 		// Group: Builder Functions
 		// __________________________________________________________________________
@@ -100,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			// There's nothing to condense so just write it directly to a file.
 			using (System.IO.StreamWriter mainCSSFile = System.IO.File.CreateText(Styles_OutputFolder() + "/main.css"))
 				{
-				foreach (var style in styles)
+				foreach (var style in stylesWithInheritance)
 					{
 					if (style.Links != null)
 						{
@@ -124,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			StringBuilder[] jsLinks = new StringBuilder[ AllPageTypes.Length ];
 			StringBuilder[] jsOnLoads = new StringBuilder[ AllPageTypes.Length ];
 
-			foreach (var style in styles)
+			foreach (var style in stylesWithInheritance)
 				{
 				if (style.Links != null)
 					{
@@ -336,7 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected Path Styles_OutputFile (Path originalStyleFile)
 			{
-			foreach (var style in styles)
+			foreach (var style in stylesWithInheritance)
 				{
 				if (style.Contains(originalStyleFile))
 					{

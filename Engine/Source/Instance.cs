@@ -37,9 +37,11 @@
  *		
  *		- <Links.Manager> is next because it needs to be added as a <CodeDB.Manager> and <Files.Manager> watcher.
  *		
+ *		- <Styles.Manager> is next because it adds a FileSource to <Files.Manager> for dealing with style files.
+ *		
  *		- <Output.Manager> is next because <Output.Builders> may need to be added as <Files.Manager> and <CodeDB.Manager>
- *		  watchers.  They can also set the rebuild/reparse flags that CodeDB needs to interpret.  Also, it adds a FileSource to 
- *		  <Files.Manager> for dealing with style files.
+ *		  watchers.  They also need to load their styles from <Styles.Manager>.  They can also set the rebuild/reparse flags that 
+ *		  CodeDB and <Styles.Manager> need to interpret.
  *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
@@ -82,10 +84,15 @@ namespace CodeClear.NaturalDocs.Engine
 		 * You can optionally pass your own module objects in which allows you to populate the engine with derived classes.
 		 * Any left as null will have the default classes created instead.
 		 */
-		public Instance (Config.Manager configManager = null, CommentTypes.Manager commentTypesManager = null, 
-								Languages.Manager languagesManager = null, Comments.Manager commentsManager = null, 
-								Links.Manager linksManager = null, CodeDB.Manager codeDBManager = null, 
-								Output.Manager outputManager = null, Files.Manager filesManager = null)
+		public Instance (Config.Manager configManager = null, 
+								CommentTypes.Manager commentTypesManager = null, 
+								Languages.Manager languagesManager = null, 
+								Comments.Manager commentsManager = null, 
+								Links.Manager linksManager = null, 
+								CodeDB.Manager codeDBManager = null,
+								Styles.Manager stylesManager = null, 
+								Output.Manager outputManager = null, 
+								Files.Manager filesManager = null)
 			{
 			startupWatchers = new List<IStartupWatcher>();
 
@@ -95,6 +102,7 @@ namespace CodeClear.NaturalDocs.Engine
 			this.comments = commentsManager ?? new Comments.Manager(this);
 			this.links = linksManager ?? new Links.Manager(this);
 			this.codeDB = codeDBManager ?? new CodeDB.Manager(this);
+			this.styles = stylesManager ?? new Styles.Manager(this);
 			this.output = outputManager ?? new Output.Manager(this);
 			this.files = filesManager ?? new Files.Manager(this);
 			}
@@ -140,6 +148,12 @@ namespace CodeClear.NaturalDocs.Engine
 				{
 				output.Dispose();
 				output = null;
+				}
+
+			if (styles != null && !strictRulesApply)
+				{
+				styles.Dispose();
+				styles = null;
 				}
 
 			if (codeDB != null && !strictRulesApply)
@@ -217,6 +231,7 @@ namespace CodeClear.NaturalDocs.Engine
 				languages.Start(errors) &&
 				comments.Start(errors) &&
 				links.Start(errors) &&
+				styles.Start(errors) &&
 				output.Start(errors) &&
 				codeDB.Start(errors) &&
 				files.Start(errors)
@@ -541,7 +556,6 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public const string VersionString = "2.1 (Development Release 2)";
 		
-		
 		/* Property: Version
 		 * The current version of the Natural Docs engine.
 		 */
@@ -553,8 +567,7 @@ namespace CodeClear.NaturalDocs.Engine
 				return version;
 				}
 			}
-			
-	
+
 		/* Property: Config
 		 * Returns the <Config.Manager> associated with this instance.
 		 */
@@ -609,6 +622,15 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return codeDB;  }
 			}
 			
+		/* Property: Styles
+		 * Returns the <Styles.Manager> associated with this instance.
+		 */
+		public Styles.Manager Styles
+			{
+			get
+				{  return styles;  }
+			}
+
 		/* Property: Output
 		 * Returns the <Output.Manager> associated with this instance.
 		 */
@@ -648,6 +670,8 @@ namespace CodeClear.NaturalDocs.Engine
 		protected Links.Manager links;
 		
 		protected CodeDB.Manager codeDB;
+
+		protected Styles.Manager styles;
 		
 		protected Output.Manager output;
 			

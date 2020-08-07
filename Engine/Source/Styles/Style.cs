@@ -132,6 +132,50 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		abstract public bool IsSameFundamentalStyle (Style other);
 
 
+		/* Function: BuildInheritanceList
+		 * Returns a list of <Styles> containing this one and all its inherited styles in the order in which they should be applied.
+		 */
+		public List<Style> BuildInheritanceList ()
+			{
+			List<Style> inheritanceList = new List<Style>();
+
+			AddToInheritanceList(ref inheritanceList);
+
+			return inheritanceList;
+			}
+
+
+		/* Function: AddToInheritanceList
+		 * A recursive function used by <BuildInheritanceList()>.
+		 */
+		protected void AddToInheritanceList (ref List<Style> inheritanceList)
+			{
+			// First see if this style already exists in the list.  If it does, we're done.  This not only prevents duplicates, it also
+			// guards against circular dependencies creating an infinite loop.
+
+			foreach (var style in inheritanceList)
+				{
+				if (this.IsSameFundamentalStyle(style))
+					{  return;  }
+				}
+
+			// Next, recursively add any children.  We add them before ourself because the current style must appear after all
+			// its inherited ones so it can override things.
+
+			if (inherits != null)
+				{
+				foreach (var inheritStatement in inherits)
+					{
+					inheritStatement.Style.AddToInheritanceList(ref inheritanceList);
+					}
+				}
+
+			// Now we can finally add ourself.
+
+			inheritanceList.Add(this);
+			}
+
+
 
 		// Group: Properties
 		// __________________________________________________________________________

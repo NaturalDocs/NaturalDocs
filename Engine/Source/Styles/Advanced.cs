@@ -79,14 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		override public string Name
 			{
 			get
-				{
-				string folderName = folder.NameWithoutPath;
-
-				if (folderName.EndsWith(".HTML", StringComparison.CurrentCultureIgnoreCase))
-					{  folderName = folderName.Substring(0, folderName.Length - 5);  }
-
-				return folderName;
-				}
+				{  return folder.NameWithoutPath;  }
 			}
 
 

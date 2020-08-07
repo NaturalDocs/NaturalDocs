@@ -142,10 +142,10 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 
-		/* Property: Styles
-		 * A list of <Styles> that apply to this builder, or null if none.
+		/* Property: Style
+		 * The <Style> that applies to this builder, or null if none.
 		 */
-		virtual public IList<Style> Styles
+		virtual public Style Style
 			{
 			get
 				{  return null;  }

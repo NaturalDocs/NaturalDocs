@@ -29,7 +29,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			builders = new List<Builder>();
-			reparseStyleFiles = false;
 			}
 			
 			
@@ -68,25 +67,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				if (builder.Start(errorList) == false)
 					{  success = false;  }
 				}
-				
-			if (success == false)
-				{  return false;  }
-
-			Styles.FileSource styleFileSource = new Styles.FileSource(this);
-				
-			foreach (Builder builder in builders)
-				{
-				if (builder.Styles != null)
-					{
-					foreach (var style in builder.Styles)
-						{  styleFileSource.AddStyle(style);  }
-					}
-				}
-
-			if (reparseStyleFiles)
-				{  styleFileSource.ForceReparse = true;  }
-
-			EngineInstance.Files.AddFileSource(styleFileSource);
 				
 			return success;
 			}
@@ -178,34 +158,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{  return builders.AsReadOnly();  }
 			}
 
-		/* Property: ReparseStyleFiles
-		 * If set to true, it will force reparsing of all files associated with styles.  Use this when adding a new style to a builder,
-		 * since if another builder already used that style they will not be parsed again otherwise.  You can only set this to true,
-		 * you cannot set it back to false.
-		 */
-		public bool ReparseStyleFiles
-			{
-			get
-				{  return reparseStyleFiles;  }
-			set
-				{
-				if (value == true)
-					{  reparseStyleFiles = true;  }
-				else
-					{  throw new InvalidOperationException();  }
-				}
-			}
-
 
 			
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		
 		protected List<Builder> builders;
 
-		protected bool reparseStyleFiles;
-		
-		
 		}
 	}

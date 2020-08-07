@@ -56,6 +56,7 @@
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Styles\CSSOnly.cs" />
     <Compile Include="Source\Styles\Advanced.cs" />
+    <Compile Include="Source\Styles\Manager.cs" />
     <Compile Include="Source\Styles\PageType.cs" />
     <Compile Include="Source\Styles\PageTypeUtilities.cs" />
     <Compile Include="Source\Styles\Style_txt.cs" />
