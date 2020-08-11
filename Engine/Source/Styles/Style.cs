@@ -208,8 +208,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Property: Links
-		 * A list of files to link to each output file, or null if none.  They can be .js, .json, or .css.  Each file is relative to 
-		 * <Folder>.  Do not change.
+		 * A list of files to link to each output file, or null if none.  They can be .js, .json, or .css.  Each link stores an absolute
+		 * path but it will be contained in <Folder>.  Do not change.
 		 */
 		public List<StyleFileLink> Links
 			{
