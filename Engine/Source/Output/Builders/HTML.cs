@@ -217,7 +217,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
-				Start_PurgeFolder(Styles_OutputFolder(), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				EngineInstance.Styles.ReparseStyleFiles = true;
 				}
 
@@ -240,7 +240,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					if (stillExists == false)
 						{  
-						Start_PurgeFolder(Styles_OutputFolder(previousStyle), ref saidPurgingOutputFiles);
+						Start_PurgeFolder(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder, previousStyle.Name), ref saidPurgingOutputFiles);
 						}
 					}
 
@@ -869,11 +869,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							"<title>" + pageTitle.ToHTML() + "</title>" +
 
 							"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
-								MakeRelativeURL(outputPath, Styles_OutputFolder() + "/main.css") +
+								MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.css") +
 								"\" />");
 
 							string pageTypeName = PageTypeNameOf(pageType);
-							string jsRelativePrefix = MakeRelativeURL(outputPath, Styles_OutputFolder()) + '/';
+							string jsRelativePrefix = MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder)) + '/';
 
 							file.Write(
 							"<script type=\"text/javascript\" src=\"" + jsRelativePrefix + "main.js\"></script>" +

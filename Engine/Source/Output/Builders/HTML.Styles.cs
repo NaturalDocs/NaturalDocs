@@ -30,13 +30,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected void BuildMainStyleFiles (CancelDelegate cancelDelegate)
 			{
 			// Creates all subdirectories needed.  Does nothing if it already exists.
-			System.IO.Directory.CreateDirectory(Styles_OutputFolder());
+			System.IO.Directory.CreateDirectory(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
 
 
 			// main.css
 
 			// There's nothing to condense so just write it directly to a file.
-			using (System.IO.StreamWriter mainCSSFile = System.IO.File.CreateText(Styles_OutputFolder() + "/main.css"))
+			using (System.IO.StreamWriter mainCSSFile = 
+						System.IO.File.CreateText(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.css"))
 				{
 				foreach (var style in stylesWithInheritance)
 					{
@@ -47,8 +48,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							// We don't care about filters for CSS files.
 							if (link.File.Extension.ToLower() == "css")
 								{
-								Path outputPath = Styles_OutputFile(link.File);
-								Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
+								Path relativeLinkPath = style.MakeRelative(link.File);
+								Path outputPath = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
+								Path relativeOutputPath = outputPath.MakeRelativeTo(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
 								mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 								}
 							}
@@ -77,8 +79,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							else
 								{  jsLinks[(int)link.Type].Append(", ");  }
 
-							Path outputPath = Styles_OutputFile(link.File);
-							Path relativeOutputPath = outputPath.MakeRelativeTo(Styles_OutputFolder());
+							Path relativeLinkPath = style.MakeRelative(link.File);
+							Path outputPath = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
+							Path relativeOutputPath = outputPath.MakeRelativeTo(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
 							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
 						}
@@ -195,16 +198,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				jsOutputString = jsProcessor.Process(jsOutputString, true);
 				}
 
-			System.IO.File.WriteAllText(Styles_OutputFolder() + "/main.js", jsOutputString);
+			System.IO.File.WriteAllText(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.js", jsOutputString);
 			}
 
 
 		protected void BuildStyleFile (int fileID, CancelDelegate cancelled)
 			{
 			File file = EngineInstance.Files.FromID(fileID);
+			Path outputFile = null;
+			
+			foreach (var style in stylesWithInheritance)
+				{
+				if (style.Contains(file.FileName))
+					{
+					Path relativeStylePath = style.MakeRelative(file.FileName);
+					outputFile = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeStylePath);
 
-			// Will return null if the file isn't used by this builder
-			Path outputFile = Styles_OutputFile(file.FileName);
+					break;
+					}
+				}
 
 			if (outputFile == null)
 				{  return;  }
@@ -244,46 +256,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					System.IO.File.Copy(file.FileName, outputFile, true);  
 					}
 				}
-			}
-
-
-
-		// Group: Path Functions
-		// __________________________________________________________________________
-
-
-		/* Function: Styles_OutputFolder
-		 * Returns the folder for the passed style, or if null, the root output folder for all styles.
-		 */
-		protected Path Styles_OutputFolder (Style style = null)
-			{
-			StringBuilder result = new StringBuilder(OutputFolder);
-			result.Append("/styles");
-
-			if (style != null)
-				{  
-				result.Append('/');
-				result.Append(Output.HTML.Paths.Utilities.Sanitize(style.Name));
-				}
-			
-			return result.ToString();
-			}
-
-		/* Function: Styles_OutputFile
-		 * Returns the output path of the passed style file if it is part of a style used by this builder.  Otherwise returns null.
-		 */
-		protected Path Styles_OutputFile (Path originalStyleFile)
-			{
-			foreach (var style in stylesWithInheritance)
-				{
-				if (style.Contains(originalStyleFile))
-					{
-					Path relativeStyleFile = style.MakeRelative(originalStyleFile);
-					return OutputFolder + "/styles/" + Output.HTML.Paths.Utilities.Sanitize(style.Name) + "/" + Output.HTML.Paths.Utilities.Sanitize(relativeStyleFile);
-					}
-				}
-
-			return null;
 			}
 
 
