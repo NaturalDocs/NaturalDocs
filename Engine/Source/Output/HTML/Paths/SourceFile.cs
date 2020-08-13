@@ -25,6 +25,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 */
 		static public Path OutputFile (Path targetOutputFolder, int fileSourceNumber, Path relativeFilePath)
 			{
+			#if DEBUG
+			if (relativeFilePath.IsAbsolute)
+				{  throw new Exception ("You must pass relative file paths to HTML.Paths.SourceFile.OutputFile.");  }
+			#endif
+
 			string fileName = relativeFilePath.NameWithoutPath.ToString();
 			string outputFileName = Utilities.Sanitize(fileName, replaceDots: true) + ".html";
 			string outputFolder = OutputFolder(targetOutputFolder, fileSourceNumber, relativeFilePath.ParentFolder);
