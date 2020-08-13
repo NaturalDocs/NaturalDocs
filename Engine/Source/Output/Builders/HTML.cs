@@ -15,34 +15,6 @@
  *		must not upgrade the database lock from read/possible write to read/write while holding <accessLock>, as there
  *		may be a thread with a read-only accessor waiting for <accessLock>.
  *		
- * 
- * File: Config.nd
- * 
- *		A file used to store information about the configuration as of last time this output target was built.
- *		
- *		> [String: Style Path]
- *		> [String: Style Path]
- *		> ...
- *		> [String: null]
- *		
- *		Stores the list of styles that apply to this target, in the order in which they must be loaded, as a null-terminated
- *		list of style paths.  The paths are either to the style's CSS file or <Style.txt>.  These are stored instead of
- *		the names so that if a name is interpreted differently from one run to the next it will be detected.  It's also the
- *		computed list of styles after all inheritance has been applied.
- *		
- *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
- *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
- *		> ...
- *		> [Int32: 0]
- *		>
- *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
- *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
- *		> ...
- *		> [Int32: 0]
- *		
- *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
- *		one is deleted or changes.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -161,13 +133,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Load Config.nd
 
+			Output.HTML.Config_nd binaryConfigParser = new Output.HTML.Config_nd();
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
 			if (!EngineInstance.Config.ReparseEverything)
 				{
-				hasBinaryConfigFile = LoadBinaryConfigFile(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
+				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
 				}
 			else
 				{
@@ -417,7 +390,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					};
 				}
 
-			SaveBinaryConfigFile(WorkingDataFolder + "/Config.nd", stylesWithInheritance, fileSourceInfoList);
+			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", stylesWithInheritance, fileSourceInfoList);
 
 
 			// Create the search index and watch other modules
@@ -1141,160 +1114,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					}
 
 				folder = folder.ParentFolder;
-				}
-			}
-
-
-
-		// Group: File Functions
-		// __________________________________________________________________________
-
-
-		/* Function: LoadBinaryConfigFile
-		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
-		 * return objects, they will just be empty.  
-		 */
-		public static bool LoadBinaryConfigFile (Path filename, out List<Style> styles, out List<FileSourceInfo> fileSourceInfoList)
-			{
-			styles = new List<Style>();
-			fileSourceInfoList = new List<FileSourceInfo>();
-
-			BinaryFile binaryFile = new BinaryFile();
-			bool result = true;
-
-			try
-				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
-					{  result = false;  }
-				else
-					{
-					// [String: Style Path]
-					// [String: Style Path]
- 					// ...
- 					// [String: null]
-
-					string stylePath = binaryFile.ReadString();
-
-					while (stylePath != null)
-						{
-						if (stylePath.EndsWith(".css", StringComparison.CurrentCultureIgnoreCase))
-							{  styles.Add( new Styles.CSSOnly(stylePath) );  }
-						else
-							{  styles.Add( new Styles.Advanced(stylePath) );  }
-
-						stylePath = binaryFile.ReadString();
-						}
-
-					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-					// ...
-					// [Int32: 0]
-
-					FileSourceInfo fileSourceInfo = new FileSourceInfo();
-					fileSourceInfo.Type = Files.InputType.Source;
-
-					for (;;)
-						{
-						fileSourceInfo.Number = binaryFile.ReadInt32();
-
-						if (fileSourceInfo.Number == 0)
-							{  break;  }
-
-						fileSourceInfo.UniqueIDString = binaryFile.ReadString();
-						fileSourceInfoList.Add(fileSourceInfo);
-						}
-
-					// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
-					// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
-					// ...
-					// [Int32: 0]
-
-					fileSourceInfo.Type = Files.InputType.Image;
-
-					for (;;)
-						{
-						fileSourceInfo.Number = binaryFile.ReadInt32();
-
-						if (fileSourceInfo.Number == 0)
-							{  break;  }
-
-						fileSourceInfo.UniqueIDString = binaryFile.ReadString();
-						fileSourceInfoList.Add(fileSourceInfo);
-						}
-					}
-				}
-			catch
-				{  result = false;  }
-			finally
-				{  binaryFile.Dispose();  }
-
-			if (result == false)
-				{
-				styles.Clear();
-				fileSourceInfoList.Clear();
-				}
-
-			return result;
-			}
-
-
-		/* Function: SaveBinaryConfigFile
-		 * Saves the passed information in <Config.nd>.
-		 */
-		public static void SaveBinaryConfigFile (Path filename, List<Style> styles, List<FileSourceInfo> fileSourceInfoList)
-			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
-				binaryFile.OpenForWriting(filename);
-
-				// [String: Style Path]
-				// [String: Style Path]
- 				// ...
- 				// [String: null]
-
-				foreach (var style in styles)
-					{
-					if (style is Styles.CSSOnly)
-						{  binaryFile.WriteString( (style as Styles.CSSOnly).CSSFile );  }
-					else if (style is Styles.Advanced)
-						{  binaryFile.WriteString( (style as Styles.Advanced).ConfigFile );  }
-					else
-						{  throw new NotImplementedException();  }
-					}
-
-				binaryFile.WriteString(null);
-
-				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
-				// ...
-				// [Int32: 0]
-
-				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
-					{
-					if (fileSourceInfo.Type == Files.InputType.Source)
-						{
-						binaryFile.WriteInt32(fileSourceInfo.Number);
-						binaryFile.WriteString(fileSourceInfo.UniqueIDString);
-						}
-					}
-
-				binaryFile.WriteInt32(0);
-
-				// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
-				// [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
-				// ...
-				// [Int32: 0]
-
-				foreach (FileSourceInfo fileSourceInfo in fileSourceInfoList)
-					{
-					if (fileSourceInfo.Type == Files.InputType.Image)
-						{
-						binaryFile.WriteInt32(fileSourceInfo.Number);
-						binaryFile.WriteString(fileSourceInfo.UniqueIDString);
-						}
-					}
-
-				binaryFile.WriteInt32(0);
 				}
 			}
 
