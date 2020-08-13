@@ -3,55 +3,6 @@
  * ____________________________________________________________________________
  * 
  * A class encompassing all the build state information for a HTML output target.
- * 
- * 
- * File: BuildState.nd
- * 
- *		A file used to store the build state of this output target the last time it was built.
- *	
- *		> [Byte: Need to Build Frame Page (0 or 1)]
- *		> [Byte: Need to Build Main Style Files (0 or 1)]
- *		> [Byte: Need to Build Menu (0 or 1)]
- *		> [Byte: Need to Build Search Prefix Index (0 or 1)]
- *		
- *		Flags for some of the structural items that need to be built.
- * 
- *		> [NumberSet: Source File IDs to Rebuild]
- *		> [NumberSet: Class IDs to Rebuild]
- *		> [NumberSet: Style File IDs to Rebuild]
- *		
- *		The source and class files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
- *		be empty sets, though if the build was interrupted this will have the ones left to do.
- *		
- *		> [NumberSet: Source File IDs with Content]
- *		> [NumberSet: Class IDs with Content]
- *		
- *		A set of all the source and class files known to have content after all filters were applied.
- *		
- *		> [StringSet: Search Prefixes to Rebuild]
- *		
- *		A set of all the search index prefixes which were changed or deleted and thus need to be rebuilt.
- * 
- *		> [StringSet: Folders to Check for Deletion]
- *		
- *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
- *		to completion this should be an empty set.
- * 
- *		> [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
- *		> [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
- *		> ...
- *		> [String: null]
- *		
- *		A list of the data files that were created to build the menu, stored as string-NumberSet pairs that repeats until there
- *		is a null string.  This allows us to clean up old data files if we're using fewer than before.
- *		
- *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
- *		stored as "files" and {1-3}.
- *		
- *		Version History:
- *		
- *			- 2.0.2
- *				- Added Style File IDs to Rebuild.
  *		
  */
 
@@ -74,18 +25,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		// __________________________________________________________________________
 		
 		
-		public HTMLBuildState () : this (createEmptyObjects: true)
-			{
-			}
-
-
-		/* Function: HTMLBuildState
-		 * 
-		 * In this version of the constructor you can set createEmptyObjects to false to have variables like <sourceFilesToRebuild>
-		 * set to null instead of empty objects.  Only do this if you're going to be creating the objects yourself since they shouldn't
-		 * normally be set to null.
+		/* Construction: HTMLBuildState
+		 * Creates a new HTMLBuildState object.  If createEmptyObjects is changed to false, fields such as <SourceFilesToRebuild>
+		 * and <UsedMenuDataFiles> will be set to null instead of empty objects.  This is useful to avoid unnecessary memory 
+		 * allocations if they're just going to get replaced, such as by <BuildState_nd.Load()>.
 		 */
-		private HTMLBuildState (bool createEmptyObjects)
+		public HTMLBuildState (bool createEmptyObjects = true)
 			{
 			if (createEmptyObjects)
 				{
@@ -94,6 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				classFilesToRebuild = new IDObjects.NumberSet();
 				classFilesWithContent = new IDObjects.NumberSet();
 				styleFilesToRebuild = new IDObjects.NumberSet();
+
 				searchPrefixesToRebuild = new StringSet();
 				foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
 				usedMenuDataFiles = new StringTable<NumberSet>();
@@ -105,6 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				classFilesToRebuild = null;
 				classFilesWithContent = null;
 				styleFilesToRebuild = null;
+
 				searchPrefixesToRebuild = null;
 				foldersToCheckForDeletion = null;
 				usedMenuDataFiles = null;
@@ -114,134 +61,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			needToBuildMainStyleFiles = false;
 			needToBuildMenu = false;
 			needToBuildSearchPrefixIndex = false;
-			}
-
-
-
-		// Group: File Functions
-		// __________________________________________________________________________
-
-
-		/* Function: LoadBinaryFile
-		 * Loads the information in <BuildState.nd> and returns whether it was successful.  If not the function will return an empty
-		 * BuildState object.
-		 */
-		public static bool LoadBinaryFile (Path filename, out HTMLBuildState buildState)
-			{
-			buildState = new HTMLBuildState(createEmptyObjects: false);
-
-			BinaryFile binaryFile = new BinaryFile();
-			bool result = true;
-
-			try
-				{
-				if (binaryFile.OpenForReading(filename, "2.0.2") == false)
-					{  result = false;  }
-				else
-					{
-					// [Byte: Need to Build Frame Page (0 or 1)]
-					// [Byte: Need to Build Main Style Files (0 or 1)]
-					// [Byte: Need to Build Menu (0 or 1)]
-					// [Byte: Need to Build Search Prefix Index (0 or 1)]
-
-					buildState.needToBuildFramePage = (binaryFile.ReadByte() == 1);
-					buildState.needToBuildMainStyleFiles = (binaryFile.ReadByte() == 1);
-					buildState.needToBuildMenu = (binaryFile.ReadByte() == 1);
-					buildState.needToBuildSearchPrefixIndex = (binaryFile.ReadByte() == 1);
-
-					// [NumberSet: Source File IDs to Rebuild]
-					// [NumberSet: Class IDs to Rebuild]
-					// [NumberSet: Style File IDs to Rebuild]
-					// [NumberSet: Source File IDs with Content]
-					// [NumberSet: Class IDs with Content]
-					// [StringSet: Search Prefixes to Rebuild]
-					// [StringSet: Folders to Check for Deletion]
-
-					buildState.sourceFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.classFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.styleFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.sourceFilesWithContent = binaryFile.ReadNumberSet();
-					buildState.classFilesWithContent = binaryFile.ReadNumberSet();
-					buildState.searchPrefixesToRebuild = binaryFile.ReadStringSet();
-					buildState.foldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.KeySettingsForPaths);
-
-					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-					// ...
-					// [String: null]
-
-					buildState.usedMenuDataFiles = new StringTable<IDObjects.NumberSet>();
-					string menuDataFileType = binaryFile.ReadString();
-
-					while (menuDataFileType != null)
-						{
-						IDObjects.NumberSet menuDataFileNumbers = binaryFile.ReadNumberSet();
-						buildState.usedMenuDataFiles.Add(menuDataFileType, menuDataFileNumbers);
-
-						menuDataFileType = binaryFile.ReadString();
-						}
-					}
-				}
-			catch
-				{  result = false;  }
-			finally
-				{  binaryFile.Dispose();  }
-
-			if (result == false)
-				{  buildState = new HTMLBuildState(createEmptyObjects: true);  }
-
-			return result;
-			}
-
-
-		/* Function: SaveBinaryFile
-		 * Saves the passed information in <BuildState.nd>.
-		 */
-		public static void SaveBinaryFile (Path filename, HTMLBuildState buildState)
-			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
-				binaryFile.OpenForWriting(filename);
-
-				// [Byte: Need to Build Frame Page (0 or 1)]
-				// [Byte: Need to Build Main Style Files (0 or 1)]
-				// [Byte: Need to Build Menu (0 or 1)]
-				// [Byte: Need to Build Search Prefix Index (0 or 1)]
-
-				binaryFile.WriteByte( (byte)(buildState.needToBuildFramePage ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.needToBuildMainStyleFiles ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.needToBuildMenu ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.needToBuildSearchPrefixIndex ? 1 : 0) );
-
-				// [NumberSet: Source File IDs to Rebuild]
-				// [NumberSet: Class IDs to Rebuild]
-				// [NumberSet: Style File IDs to Rebuild]
-				// [NumberSet: Source File IDs with Content]
-				// [NumberSet: Class IDs with Content]
-				// [StringSet: Search Prefixes to Rebuild]
-				// [StringSet: Folders to Check for Deletion]
-
-				binaryFile.WriteNumberSet(buildState.sourceFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.classFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.styleFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
-				binaryFile.WriteNumberSet(buildState.classFilesWithContent);
-				binaryFile.WriteStringSet(buildState.searchPrefixesToRebuild);
-				binaryFile.WriteStringSet(buildState.foldersToCheckForDeletion);
-
-				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-				// ...
-				// [String: null]
-
-				foreach (var menuDataFilePair in buildState.usedMenuDataFiles)
-					{
-					binaryFile.WriteString(menuDataFilePair.Key);
-					binaryFile.WriteNumberSet(menuDataFilePair.Value);
-					}
-
-				binaryFile.WriteString(null);
-				}
 			}
 
 
@@ -257,6 +76,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return sourceFilesToRebuild;  }
+			set
+				{  sourceFilesToRebuild = value;  }
 			}
 
 		/* Property: SourceFilesWithContent
@@ -267,6 +88,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return sourceFilesWithContent;  }
+			set
+				{  sourceFilesWithContent = value;  }
 			}
 
 		/* Property: ClassFilesToRebuild
@@ -276,6 +99,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return classFilesToRebuild;  }
+			set
+				{  classFilesToRebuild = value;  }
 			}
 
 		/* Property: ClassFilesWithContent
@@ -286,6 +111,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return classFilesWithContent;  }
+			set
+				{  classFilesWithContent = value;  }
 			}
 
 		/* Property: StyleFilesToRebuild
@@ -296,6 +123,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return styleFilesToRebuild;  }
+			set
+				{  styleFilesToRebuild = value;  }
 			}
 
 		/* Property: NeedToBuildFramePage
@@ -362,6 +191,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return searchPrefixesToRebuild;  }
+			set
+				{  searchPrefixesToRebuild = value;  }
 			}
 		
 		/* Property: FoldersToCheckForDeletion
@@ -371,6 +202,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return foldersToCheckForDeletion;  }
+			set
+				{  foldersToCheckForDeletion = value;  }
 			}
 
 

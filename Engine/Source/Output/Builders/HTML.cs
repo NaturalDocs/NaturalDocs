@@ -151,10 +151,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			
 			// Load BuildState.nd
 
+			Output.HTML.BuildState_nd buildStateParser = new Output.HTML.BuildState_nd();
 			bool hasBinaryBuildStateFile = false;
 			
 			if (!EngineInstance.Config.ReparseEverything)
-				{  hasBinaryBuildStateFile = HTMLBuildState.LoadBinaryFile(WorkingDataFolder + "/BuildState.nd", out buildState);  }
+				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState);  }
 			else
 				{  buildState = new HTMLBuildState();  }
 
@@ -444,7 +445,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					if (searchIndex != null)
 						{  searchIndex.Dispose();  }
 					if (buildState != null)
-						{  HTMLBuildState.SaveBinaryFile(WorkingDataFolder + "/BuildState.nd", buildState);  }
+						{
+						Output.HTML.BuildState_nd buildStateParser = new Output.HTML.BuildState_nd();
+						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState);  
+						}
 					}
 				catch 
 					{  }
