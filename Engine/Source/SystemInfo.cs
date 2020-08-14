@@ -163,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 							if (versionString != null && Int32.TryParse(versionString, out versionInt))
 								{
-								if (versionInt == 528040 || versionInt == 528209 || versionInt == 528049)  // known versions of 4.8
+								if (versionInt == 528040 || versionInt == 528209 || versionInt == 528049 || versionInt == 528372)  // known versions of 4.8
 									{  return "4.8";  }
 								else if (versionInt >= 528040)  // cover future versions
 									{  return "4.8 or later (" + versionInt + ")";  }
