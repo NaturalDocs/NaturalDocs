@@ -56,6 +56,8 @@
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\HTML\BuildState_nd.cs" />
     <Compile Include="Source\Output\HTML\Config_nd.cs" />
+    <Compile Include="Source\Output\HTML\PageType.cs" />
+    <Compile Include="Source\Output\HTML\PageTypeUtilities.cs" />
     <Compile Include="Source\Output\HTML\Paths\Style.cs" />
     <Compile Include="Source\Styles\CSSOnly.cs" />
     <Compile Include="Source\Styles\Advanced.cs" />

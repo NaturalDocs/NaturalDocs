@@ -36,28 +36,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, Output.HTML.SearchIndex.IChangeWatcher, IDisposable
 		{
 
-		// Group: Types
-		// __________________________________________________________________________
-
-
-		/* enum: PageType
-		 * Used for specifying the type of page something applies to.
-		 * 
-		 * All - Applies to all page types.
-		 * Frame - Applies to index.html.
-		 * Content - Applies to page content for a source file or class.
-		 * Home - Applies to the default home page.
-		 */
-		public enum PageType : byte {
-			// Indexes are manual and start at zero so they can be used as indexes into AllPageTypeNames.
-  			All = 0,
-			Frame = 1,
-			Content = 2,
-			Home = 3
-			}
-
-		
-
 		// Group: Functions
 		// __________________________________________________________________________
 		
@@ -827,7 +805,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
+		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, Output.HTML.PageType pageType)
 			{
 			using (System.IO.StreamWriter file = CreateTextFileAndPath(outputPath))
 				{
@@ -849,7 +827,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 								MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.css") +
 								"\" />");
 
-							string pageTypeName = PageTypeNameOf(pageType);
+							string pageTypeName = Output.HTML.PageTypeUtilities.ToString(pageType);
 							string jsRelativePrefix = MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder)) + '/';
 
 							file.Write(
@@ -1020,7 +998,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				);
 
-			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
+			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), Output.HTML.PageType.Frame);
 
 
 			// other/home.html, the default welcome page
@@ -1090,7 +1068,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"</div>" + 
 			"</div>");
 
-			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), PageType.Home);
+			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), Output.HTML.PageType.Home);
 			}
 
 
@@ -1258,43 +1236,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * The <SearchIndex.Manager> for this output target.
 		 */
 		protected Output.HTML.SearchIndex.Manager searchIndex;
-
-
-
-		// Group: Static Functions and Variables
-		// __________________________________________________________________________
-
-		/* var: AllPageTypes
-		 * A static array of all the choices in <PageType>.
-		 */
-		public static PageType[] AllPageTypes = { PageType.All, PageType.Frame, PageType.Content, PageType.Home };
-
-		/* var: AllPageTypeNames
-		 * A static array of simple A-Z names with each index corresponding to those in <AllPageTypes>.
-		 */
-		public static string[] AllPageTypeNames = { "All", "Frame", "Content", "Home" };
-
-		/* Function: PageTypeNameOf
-		 * Translates a <PageType> into a string.
-		 */
-		public static string PageTypeNameOf (PageType type)
-			{
-			return AllPageTypeNames[(int)type];
-			}
-
-		/* Function: PageTypeOf
-		 * Translates a string into a <PageType>, or returns null if there isn't a match.
-		 */
-		public static PageType? PageTypeOf (string typeName)
-			{
-			for (int i = 0; i < AllPageTypeNames.Length; i++)
-				{
-				if (String.Compare(typeName, AllPageTypeNames[i], true) == 0)
-					{  return AllPageTypes[i];  }
-				}
-
-			return null;
-			}
 
 		}
 

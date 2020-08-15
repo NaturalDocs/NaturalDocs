@@ -61,8 +61,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// main.js
 
-			StringBuilder[] jsLinks = new StringBuilder[ AllPageTypes.Length ];
-			StringBuilder[] jsOnLoads = new StringBuilder[ AllPageTypes.Length ];
+			StringBuilder[] jsLinks = new StringBuilder[ Output.HTML.PageTypeUtilities.AllPageTypes.Length ];
+			StringBuilder[] jsOnLoads = new StringBuilder[ Output.HTML.PageTypeUtilities.AllPageTypes.Length ];
 
 			foreach (var style in stylesWithInheritance)
 				{
@@ -116,9 +116,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"var NDLoader = new function ()\n" +
 				"   {\n");
 				
-			for (int i = 0; i < AllPageTypes.Length; i++)
+			for (int i = 0; i < Output.HTML.PageTypeUtilities.AllPageTypes.Length; i++)
 				{
-				jsOutput.Append("   this.JSLinks_" + AllPageTypeNames[i] + " = [ ");
+				jsOutput.Append("   this.JSLinks_" + Output.HTML.PageTypeUtilities.AllPageTypeNames[i] + " = [ ");
 
 				if (jsLinks[i] != null)
 					{  jsOutput.Append( jsLinks[i].ToString() );  }
@@ -173,11 +173,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"      };\n");
 
 
-			for (int i = 0; i < AllPageTypes.Length; i++)
+			for (int i = 0; i < Output.HTML.PageTypeUtilities.AllPageTypes.Length; i++)
 				{
 				jsOutput.Append(
 				"\n" +
-				"   this.OnLoad_" + AllPageTypeNames[i] + " = function ()\n" +
+				"   this.OnLoad_" + Output.HTML.PageTypeUtilities.AllPageTypeNames[i] + " = function ()\n" +
 				"      {\n");
 
 				if (jsOnLoads[i] != null)

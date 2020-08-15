@@ -298,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					// Build the full HTML file
 
-					context.Builder.BuildFile(context.OutputFile, pageTitle, html.ToString(), Builders.HTML.PageType.Content);
+					context.Builder.BuildFile(context.OutputFile, pageTitle, html.ToString(), PageType.Content);
 
 
 					// Build summary and tooltips files
