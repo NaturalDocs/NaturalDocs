@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet ()
 			{
-			ranges = new NumberRange[1];
+			ranges = null;
 			usedRanges = 0;
 			}
 			
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			if (string.IsNullOrEmpty(input) || input == EmptySetString)
 				{
-				ranges = new NumberRange[1];
+				ranges = null;
 				usedRanges = 0;
 				return;
 				}
@@ -164,19 +164,33 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public NumberSet (NumberSet toCopy)
 			{
-			ranges = new NumberRange[toCopy.usedRanges];
-			usedRanges = toCopy.usedRanges;
+			if (toCopy.usedRanges == 0)
+				{
+				if (ranges != null && ShouldShrinkTo(ranges.Length, 0) == 0)
+					{  ranges = null;  }
 
-			Array.Copy(toCopy.ranges, ranges, usedRanges);
+				usedRanges = 0;
+				}
+			else
+				{
+				ranges = new NumberRange[toCopy.usedRanges];
+				usedRanges = toCopy.usedRanges;
+
+				Array.Copy(toCopy.ranges, ranges, usedRanges);
+				}
 			}
 			
 
 		/* Constructor: NumberSet
-		 * Reads a number set with the passed number of ranges preallocated.
+		 * Creates an empty number set with the passed number of ranges preallocated.
 		 */
 		protected NumberSet (int numberOfRanges)
 			{
-			ranges = new NumberRange[numberOfRanges];
+			if (numberOfRanges == 0)
+				{  ranges = null;  }
+			else
+				{  ranges = new NumberRange[numberOfRanges];  }
+
 			usedRanges = 0;
 			}
 
@@ -266,6 +280,9 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public void Add (NumberSet setToAdd)
 			{
+			if (ranges == null && setToAdd.usedRanges > 0)
+				{  ranges = new NumberRange[setToAdd.usedRanges];  }
+
 			int position = 0;
 			int setToAddPosition = 0;
 
@@ -332,17 +349,22 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 				}
 
 			// If there's still more ranges left to add, add them to the end.
-
-			while (setToAddPosition < setToAdd.usedRanges)
+			if (setToAddPosition < setToAdd.usedRanges)
 				{
-				NumberRange rangeToAdd = setToAdd.ranges[setToAddPosition];
-				position = usedRanges;
+				int rangesLeftToAdd = setToAdd.usedRanges - setToAddPosition;
 
-				InsertAtIndex(position);
-				ranges[position].Low = rangeToAdd.Low;
-				ranges[position].High = rangeToAdd.High;
+				int newLength = ShouldGrowTo(ranges.Length, usedRanges + rangesLeftToAdd);
 
-				setToAddPosition++;
+				if (newLength > ranges.Length)
+					{
+					NumberRange[] newArray = new NumberRange[newLength];
+					Array.Copy( ranges, 0, newArray, 0, ranges.Length );
+
+					ranges = newArray;
+					}
+					
+				Array.Copy( setToAdd.ranges, setToAddPosition, ranges, usedRanges, rangesLeftToAdd );
+				usedRanges += rangesLeftToAdd;
 				}
 			}
 
@@ -509,6 +531,9 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Contains (int number)
 			{
+			if (IsEmpty)
+				{  return false;  }
+
 			int index = FindRangeIndex(number);
 			
 			if (index >= usedRanges)
@@ -527,10 +552,8 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			usedRanges = 0;
 			
-			int shouldShrinkTo = ShouldShrinkTo(ranges.Length, 0);
-
-			if (shouldShrinkTo < ranges.Length)
-				{  ranges = new NumberRange[shouldShrinkTo];  }
+			if (ranges != null && ShouldShrinkTo(ranges.Length, 0) == 0)
+				{  ranges = null;  }
 			}
 
 
@@ -544,7 +567,9 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 
 			NumberSet result = new NumberSet(count);
 
-			Array.Copy(ranges, index, result.ranges, 0, count);
+			if (count > 0)
+				{  Array.Copy(ranges, index, result.ranges, 0, count);  }
+
 			result.usedRanges = count;
 
 			return result;
@@ -566,7 +591,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 				for (int i = 0; i < setA.usedRanges; i++)
 					{
 					if (setA.ranges[i].Low != setB.ranges[i].Low ||
-						 setA.ranges[i].High != setB.ranges[i].High)
+						setA.ranges[i].High != setB.ranges[i].High)
 						{  return false;  }
 					}
 					
@@ -593,7 +618,6 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			return ToString().GetHashCode();
 			}
-			
 			
 			
 		/* Function: ToString
@@ -671,7 +695,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			if (length < 0)
 				{  throw new FormatException();  }
 
-			NumberSet numberSet = new NumberSet( (length != 0 ? length : 1) );
+			NumberSet numberSet = new NumberSet(length);
 
 			numberSet.usedRanges = length;
 
@@ -878,15 +902,11 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		protected void InsertAtIndex (int index)
 			{
-			if (usedRanges == ranges.Length)
+			int length = (ranges == null ? 0 : ranges.Length);
+			int newLength = ShouldGrowTo(length, usedRanges + 1);
+
+			if (newLength > length)
 				{
-				int newLength;
-
-				if (usedRanges == 1)
-					{  newLength = 4;  }
-				else
-					{  newLength = usedRanges * 2;  }
-
 				NumberRange[] newArray = new NumberRange[newLength];
 
 				if (index > 0)
@@ -916,7 +936,10 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			int shouldShrinkTo = ShouldShrinkTo(ranges.Length, usedRanges - 1);
 
-			if (shouldShrinkTo < ranges.Length)
+			if (shouldShrinkTo == 0)
+				{  ranges = null;  }
+
+			else if (shouldShrinkTo < ranges.Length)
 				{
 				NumberRange[] newArray = new NumberRange[shouldShrinkTo];
 				
@@ -936,23 +959,58 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 
 
+		/* Function: ShouldGrowTo
+		 * When an array needs to be replaced with a bigger one given the passed data and array sizes, returns the new array size that 
+		 * should be allocated.
+		 */
+		protected static int ShouldGrowTo (int memoryLength, int dataLength)
+			{
+			// If it fits in the existing allocation, keep it.
+			if (dataLength <= memoryLength)
+				{  return memoryLength;  }
+
+			// If this is the first allocation, use the exact amount needed.
+			if (memoryLength == 0)
+				{  return dataLength;  }
+
+			// Grow to 4, then 8, then double the amount needed.
+			if (dataLength <= 4)
+				{  return 4;  }
+			else if (dataLength <= 8)
+				{  return 8;  }
+			else
+				{  return dataLength * 2;  }
+			}
+
+
 		/* Function: ShouldShrinkTo
 		 * If an array should be replaced with a smaller one given the passed data and array sizes, returns the new array size that 
 		 * should be used.  If the array shouldn't be reallocated this will return the existing length.
 		 */
-		protected static int ShouldShrinkTo (int arrayLength, int dataLength)
+		protected static int ShouldShrinkTo (int memoryLength, int dataLength)
 			{
 			// We're much more conservative about shrinking than growing because we'll actually end up using more memory until the 
 			// next garbage collection, so the savings have to be significant.
-			if (arrayLength > 8 && dataLength <= arrayLength / 8)
-				{
-				if (dataLength < 4)
-					{  return 4;  }
-				else
-					{  return dataLength;  }
-				}
+
+			// If the array is 8 or less, leave it alone no matter what.
+			if (memoryLength <= 8)
+				{  return memoryLength;  }
+
+			// If the array is greater than 8 and the set is empty, drop the array completely.
+			if (dataLength == 0)
+				{  return 0;  }
+
+			// If we're using at least a quarter of the capacity, leave it alone.
+			if (dataLength >= memoryLength / 4)
+				{  return memoryLength;  }
+
+			// Otherwise shrink it to the data length rounded up to the next 8, so 7=8, 8=8, 9=16, 10=16, etc.
+			int modulo8 = dataLength % 8;
+
+			if (modulo8 == 0)
+				{  return dataLength;  }
 			else
-				{  return arrayLength;  }
+				{  return dataLength + 8 - modulo8;  }
 			}
 			
 			
