@@ -83,7 +83,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (cancelDelegate())
 				{  return;  }
 
-			NumberSetTable<Hierarchy> usedMenuDataFiles = jsonMenu.BuildDataFiles();
+			NumberSetTable<Hierarchy> newMenuDataFiles = jsonMenu.BuildDataFiles();
 
 			if (cancelDelegate())
 				{  return;  }
@@ -91,11 +91,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Clear out any old menu files that are no longer in use.
 
+			List<string> stringTypesToDelete = null;
+
 			lock (accessLock)
 				{
-				foreach (var oldMenuDataFiles in buildState.UsedMenuDataFiles)
+				foreach (var menuDataFileInfo in buildState.UsedMenuDataFiles)
 					{
-					string stringType = oldMenuDataFiles.Key;
+					var stringType = menuDataFileInfo.Key;
+					var fileNumbers = menuDataFileInfo.Value;
+
 					Hierarchy hierarchy;
 
 					if (stringType == "files")
@@ -107,36 +111,50 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					else
 						{  throw new NotImplementedException();  }
 
-					IDObjects.NumberSet oldNumbers = oldMenuDataFiles.Value;
-					IDObjects.NumberSet newNumbers = usedMenuDataFiles[hierarchy];
+					IDObjects.NumberSet newFileNumbers = newMenuDataFiles[hierarchy];
 
-					if (newNumbers != null)
-						{  
-						// It's okay that we're altering the old NumberSet, we're replacing it completely later.
-						oldNumbers.Remove(newNumbers);  
-						}
+					IDObjects.NumberSet deletedFileNumbers = new IDObjects.NumberSet(fileNumbers);
 
-					foreach (int oldNumber in oldNumbers)
+					if (newFileNumbers != null)
+						{  deletedFileNumbers.Remove(newFileNumbers);  }
+
+					foreach (int deletedFileNumber in deletedFileNumbers)
 						{
 						try
-							{  System.IO.File.Delete(Output.HTML.Paths.Menu.OutputFile(this.OutputFolder, hierarchy, oldNumber));  }
+							{  System.IO.File.Delete(Output.HTML.Paths.Menu.OutputFile(this.OutputFolder, hierarchy, deletedFileNumber));  }
 						catch (Exception e)
 							{
 							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
 								{  throw;  }
 							}
 						}
+
+					if (newFileNumbers == null)
+						{
+						if (stringTypesToDelete == null)
+							{  stringTypesToDelete = new List<string>();  }
+
+						stringTypesToDelete.Add(stringType);
+						}
+					else
+						{  fileNumbers.SetTo(newFileNumbers);  }
+					}
+
+				if (stringTypesToDelete != null)
+					{
+					foreach (var stringTypeToDelete in stringTypesToDelete)
+						{  buildState.UsedMenuDataFiles.Remove(stringTypeToDelete);  }
 					}
 
 
-				// Update the build state.  We need to convert it back to the old format for now.
+				// All the key/value pairs that already existed in the build state were updated or deleted.  Now we need to add any that 
+				// didn't already exist.
 
-				StringTable<IDObjects.NumberSet> usedMenuDataFiles_OldFormat = new StringTable<IDObjects.NumberSet>();
-
-				foreach (var keyValuePair in usedMenuDataFiles)
+				foreach (var newMenuDataFileInfo in newMenuDataFiles)
 					{
-					var hierarchy = keyValuePair.Key;
-					var numberSet = keyValuePair.Value;
+					var hierarchy = newMenuDataFileInfo.Key;
+					var newFileNumbers = newMenuDataFileInfo.Value;
+
 					string stringType;
 
 					if (hierarchy == Hierarchy.File)
@@ -148,10 +166,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					else
 						{  throw new NotImplementedException();  }
 
-					usedMenuDataFiles_OldFormat[stringType] = numberSet;
+					if (!buildState.UsedMenuDataFiles.ContainsKey(stringType))
+						{  buildState.UsedMenuDataFiles.Add(stringType, newFileNumbers);  }
 					}
-
-				buildState.UsedMenuDataFiles = usedMenuDataFiles_OldFormat;
 				}
 			}
 

@@ -26,36 +26,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		
 		
 		/* Construction: HTMLBuildState
-		 * Creates a new HTMLBuildState object.  If createEmptyObjects is changed to false, fields such as <SourceFilesToRebuild>
-		 * and <UsedMenuDataFiles> will be set to null instead of empty objects.  This is useful to avoid unnecessary memory 
-		 * allocations if they're just going to get replaced, such as by <BuildState_nd.Load()>.
 		 */
-		public HTMLBuildState (bool createEmptyObjects = true)
+		public HTMLBuildState ()
 			{
-			if (createEmptyObjects)
-				{
-				sourceFilesToRebuild = new IDObjects.NumberSet();
-				sourceFilesWithContent = new IDObjects.NumberSet();
-				classFilesToRebuild = new IDObjects.NumberSet();
-				classFilesWithContent = new IDObjects.NumberSet();
-				styleFilesToRebuild = new IDObjects.NumberSet();
+			sourceFilesToRebuild = new IDObjects.NumberSet();
+			sourceFilesWithContent = new IDObjects.NumberSet();
+			classFilesToRebuild = new IDObjects.NumberSet();
+			classFilesWithContent = new IDObjects.NumberSet();
+			styleFilesToRebuild = new IDObjects.NumberSet();
 
-				searchPrefixesToRebuild = new StringSet();
-				foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
-				usedMenuDataFiles = new StringTable<NumberSet>();
-				}
-			else
-				{
-				sourceFilesToRebuild = null;
-				sourceFilesWithContent = null;
-				classFilesToRebuild = null;
-				classFilesWithContent = null;
-				styleFilesToRebuild = null;
-
-				searchPrefixesToRebuild = null;
-				foldersToCheckForDeletion = null;
-				usedMenuDataFiles = null;
-				}
+			searchPrefixesToRebuild = new StringSet();
+			foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
+			usedMenuDataFiles = new StringTable<NumberSet>();
 
 			needToBuildFramePage = false;
 			needToBuildMainStyleFiles = false;
@@ -76,8 +58,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return sourceFilesToRebuild;  }
-			set
-				{  sourceFilesToRebuild = value;  }
 			}
 
 		/* Property: SourceFilesWithContent
@@ -88,8 +68,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return sourceFilesWithContent;  }
-			set
-				{  sourceFilesWithContent = value;  }
 			}
 
 		/* Property: ClassFilesToRebuild
@@ -99,8 +77,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return classFilesToRebuild;  }
-			set
-				{  classFilesToRebuild = value;  }
 			}
 
 		/* Property: ClassFilesWithContent
@@ -111,8 +87,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return classFilesWithContent;  }
-			set
-				{  classFilesWithContent = value;  }
 			}
 
 		/* Property: StyleFilesToRebuild
@@ -123,8 +97,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return styleFilesToRebuild;  }
-			set
-				{  styleFilesToRebuild = value;  }
 			}
 
 		/* Property: NeedToBuildFramePage
@@ -168,8 +140,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return usedMenuDataFiles;  }
-			set
-				{  usedMenuDataFiles = value;  }
 			}
 
 		/* Property: NeedToBuildSearchPrefixIndex
@@ -191,8 +161,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return searchPrefixesToRebuild;  }
-			set
-				{  searchPrefixesToRebuild = value;  }
 			}
 		
 		/* Property: FoldersToCheckForDeletion
@@ -202,8 +170,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			{
 			get
 				{  return foldersToCheckForDeletion;  }
-			set
-				{  foldersToCheckForDeletion = value;  }
 			}
 
 

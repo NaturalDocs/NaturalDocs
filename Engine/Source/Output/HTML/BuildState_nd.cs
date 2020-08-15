@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		public bool Load (Path filename, out HTMLBuildState buildState)
 			{
-			buildState = new HTMLBuildState(createEmptyObjects: false);
+			buildState = new HTMLBuildState();
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -122,24 +122,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
 
-					buildState.SourceFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.ClassFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.StyleFilesToRebuild = binaryFile.ReadNumberSet();
-					buildState.SourceFilesWithContent = binaryFile.ReadNumberSet();
-					buildState.ClassFilesWithContent = binaryFile.ReadNumberSet();
+					buildState.SourceFilesToRebuild.ReadFrom(binaryFile);
+					buildState.ClassFilesToRebuild.ReadFrom(binaryFile);
+					buildState.StyleFilesToRebuild.ReadFrom(binaryFile);
+					buildState.SourceFilesWithContent.ReadFrom(binaryFile);
+					buildState.ClassFilesWithContent.ReadFrom(binaryFile);
 
 					// [StringSet: Search Prefixes to Rebuild]
 					// [StringSet: Folders to Check for Deletion]
 
-					buildState.SearchPrefixesToRebuild = binaryFile.ReadStringSet();
-					buildState.FoldersToCheckForDeletion = binaryFile.ReadStringSet(Config.Manager.KeySettingsForPaths);
+					buildState.SearchPrefixesToRebuild.ReadFrom(binaryFile);
+					buildState.FoldersToCheckForDeletion.ReadFrom(binaryFile);
 
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 					// ...
 					// [String: null]
 
-					buildState.UsedMenuDataFiles = new StringTable<IDObjects.NumberSet>();
 					string menuDataFileType = binaryFile.ReadString();
 
 					while (menuDataFileType != null)
@@ -157,7 +156,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  binaryFile.Dispose();  }
 
 			if (result == false)
-				{  buildState = new HTMLBuildState(createEmptyObjects: true);  }
+				{  buildState = new HTMLBuildState();  }
 
 			return result;
 			}
