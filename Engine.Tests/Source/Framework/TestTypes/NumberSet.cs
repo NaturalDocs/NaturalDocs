@@ -87,12 +87,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						}
 					else if (command.StartsWith("{"))
 						{  
-						set = Engine.IDObjects.NumberSet.FromString(braces);
+						set.SetTo(braces);
 						showSet = true;
 						}
 					else if (command.StartsWith("+{"))
 						{
-						Engine.IDObjects.NumberSet temp = Engine.IDObjects.NumberSet.FromString(braces);
+						Engine.IDObjects.NumberSet temp = new Engine.IDObjects.NumberSet(braces);
 						set.Add(temp);
 						showSet = true;
 						}
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 						}
 					else if (command.StartsWith("-{"))
 						{
-						Engine.IDObjects.NumberSet temp = Engine.IDObjects.NumberSet.FromString(braces);
+						Engine.IDObjects.NumberSet temp = new Engine.IDObjects.NumberSet(braces);
 						set.Remove(temp);
 						showSet = true;
 						}

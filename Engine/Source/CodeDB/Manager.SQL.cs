@@ -156,11 +156,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				query.Step();
 				
-				usedTopicIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
-				usedLinkIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
-				usedImageLinkIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
-				usedClassIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
-				usedContextIDs = IDObjects.NumberSet.FromString( query.NextStringColumn() );
+				usedTopicIDs.SetTo( query.NextStringColumn() );
+				usedLinkIDs.SetTo( query.NextStringColumn() );
+				usedImageLinkIDs.SetTo( query.NextStringColumn() );
+				usedClassIDs.SetTo( query.NextStringColumn() );
+				usedContextIDs.SetTo( query.NextStringColumn() );
 				}
 			}
 			

@@ -897,7 +897,10 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access TagString when tags were ignored.");  }
 				#endif
 
-				tagIDs = IDObjects.NumberSet.FromString(value);
+				if (tagIDs == null)
+					{  tagIDs = new IDObjects.NumberSet(value);  }
+				else
+					{  tagIDs.SetTo(value);  }
 				}
 			}
 			
