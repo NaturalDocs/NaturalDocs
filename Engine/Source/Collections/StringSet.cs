@@ -137,10 +137,10 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			}
 			
 			
-		/* Function: ToBinaryFile
+		/* Function: WriteTo
 		 * Writes the contents of the string set to the passed binary file.
 		 */
-		public void ToBinaryFile (BinaryFile binaryFile)
+		public void WriteTo (BinaryFile binaryFile)
 			{
 			// [String: member]
 			// [String: member]
@@ -154,12 +154,12 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			}
 
 
-		/* Function: FromBinaryFile
+		/* Function: ReadFrom
 		 * Reads the contents of the string set from the passed binary file.
 		 */
-		static public StringSet FromBinaryFile (BinaryFile binaryFile, KeySettings keySettings = KeySettings.Literal)
+		public void ReadFrom (BinaryFile binaryFile)
 			{
-			StringSet stringSet = new StringSet(keySettings);
+			Clear();
 
 			// [String: member]
 			// [String: member]
@@ -167,9 +167,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 			// [String: null]
 
 			for (string member = binaryFile.ReadString(); member != null; member = binaryFile.ReadString())
-			   {  stringSet.Add(member);  }
-
-			return stringSet;
+			   {  Add(member);  }
 			}
 
 
@@ -218,7 +216,9 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 		 */
 		static public StringSet ReadStringSet (this BinaryFile binaryFile, KeySettings keySettings = KeySettings.Literal)
 			{
-			return StringSet.FromBinaryFile(binaryFile, keySettings);
+			StringSet stringSet = new StringSet(keySettings);
+			stringSet.ReadFrom(binaryFile);
+			return stringSet;
 			}
 
 		/* Function: WriteStringSet
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Collections
 		 */
 		static public void WriteStringSet (this BinaryFile binaryFile, StringSet stringSet)
 			{
-			stringSet.ToBinaryFile(binaryFile);
+			stringSet.WriteTo(binaryFile);
 			}
 		}
 
