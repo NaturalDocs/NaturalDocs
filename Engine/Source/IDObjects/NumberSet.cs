@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 	public class NumberSet : IEnumerable<int>
 		{
 		
-		// Group: Functions
+		// Group: Constructors
 		// __________________________________________________________________________
 		
 		
@@ -193,6 +193,11 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 
 			usedRanges = 0;
 			}
+
+
+
+		// Group: Modification Functions
+		// __________________________________________________________________________
 
 			
 		/* Function: Add
@@ -524,6 +529,23 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 
 			return id;
 			}
+
+
+		/* Function: Clear
+		 * Removes all entries from the set, making it empty.
+		 */
+		public void Clear ()
+			{
+			usedRanges = 0;
+			
+			if (ranges != null && ShouldShrinkTo(ranges.Length, 0) == 0)
+				{  ranges = null;  }
+			}
+
+
+
+		// Group: Information Functions
+		// __________________________________________________________________________
 			
 			
 		/* Function: Contains
@@ -545,18 +567,6 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 			
 			
-		/* Function: Clear
-		 * Removes all entries from the set, making it empty.
-		 */
-		public void Clear ()
-			{
-			usedRanges = 0;
-			
-			if (ranges != null && ShouldShrinkTo(ranges.Length, 0) == 0)
-				{  ranges = null;  }
-			}
-
-
 		/* Function: ExtractRanges
 		 * Creates a new set from the specified ranges.  Note that the index and length refer to <Ranges>, not to values.
 		 */
@@ -598,6 +608,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 				return true;
 				}
 			}
+
 			
 		/* Operator: operator!=
 		 */
@@ -620,6 +631,32 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 			
 			
+		/* Function: GetEnumerator
+		 * Returns an enumerator that returns each value.  This allows the number set to be used with foreach.
+		 */
+		IEnumerator<int> IEnumerable<int>.GetEnumerator ()
+			{
+			for (int rangeIndex = 0; rangeIndex < usedRanges; rangeIndex++)
+				{
+				NumberRange range = ranges[rangeIndex];
+
+				for (int number = range.Low; number <= range.High; number++)
+					{  yield return number;  }
+				}
+			}
+
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
+			{
+			return ((System.Collections.Generic.IEnumerable<int>)this).GetEnumerator();
+			}
+			
+
+			
+		// Group: Conversion Functions
+		// __________________________________________________________________________
+
+
 		/* Function: ToString
 		 * Returns the set as a string.
 		 */
@@ -712,6 +749,11 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 
 
+
+		// Group: Support Functions
+		// __________________________________________________________________________
+		
+		
 		/* Function: Validate
 		 * Checks whether <ranges> is in the proper format to be used.
 		 */
@@ -732,128 +774,6 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 
 
-		/* Function: GetEnumerator
-		 * Returns an enumerator that returns each value.  This allows the number set to be used with foreach.
-		 */
-		IEnumerator<int> IEnumerable<int>.GetEnumerator ()
-			{
-			for (int rangeIndex = 0; rangeIndex < usedRanges; rangeIndex++)
-				{
-				NumberRange range = ranges[rangeIndex];
-
-				for (int number = range.Low; number <= range.High; number++)
-					{  yield return number;  }
-				}
-			}
-
-
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator ()
-			{
-			return ((System.Collections.Generic.IEnumerable<int>)this).GetEnumerator();
-			}
-			
-
-			
-		// Group: Properties
-		// __________________________________________________________________________
-			
-			
-		/* Property: IsEmpty
-		 * Whether the set is empty.
-		 */
-		public bool IsEmpty
-			{
-			get
-				{  return (usedRanges == 0);  }
-			}
-			
-			
-		/* Property: LowestAvailable
-		 * The lowest unused number available, starting at one.
-		 */
-		public int LowestAvailable
-			{
-			get
-				{
-				if (usedRanges == 0)
-					{  return 1;  }
-				else if (ranges[0].Low > 1)
-					{  return 1;  }
-				else
-					{  return ranges[0].High + 1;  }
-				}
-			}
-			
-			
-		/* Property: Highest
-		 * The highest number in the set or zero if the set is empty.
-		 */
-		public int Highest
-			{
-			get
-				{
-				if (usedRanges == 0)
-					{  return 0;  }
-				else
-					{  return ranges[usedRanges - 1].High;  }
-				}
-			}
-			
-			
-		/* Property: Count
-		 * How many discrete numbers are in the set.
-		 */
-		public int Count
-			{
-			get
-				{
-				int count = 0;
-				int index = 0;
-				
-				while (index < usedRanges)
-					{
-					count += (ranges[index].High - ranges[index].Low + 1);
-					index++;
-					}
-					
-				return count;
-				}
-			}
-
-
-		/* Property: Ranges
-		 * 
-		 * Returns an enumerator that returns each <NumberRange> in the set.  This property is usable with foreach.
-		 * 
-		 * > foreach (NumberRange range in numberSet.Ranges)
-		 * >    { ... }
-		 */
-		public IEnumerable<NumberRange> Ranges
-			{
-			get
-				{
-				for (int i = 0; i < usedRanges; i++)
-					{  yield return ranges[i];  }
-				}
-			}
-			
-		
-		/* Property: RangeCount
-		 * How many ranges are in the set.
-		 */
-		public int RangeCount
-			{
-			get
-				{  return usedRanges;  }
-			}
-
-
-			
-			
-		// Group: Protected Functions
-		// __________________________________________________________________________
-		
-		
 		/* Function: FindRangeIndex
 		 * Finds the <NumberRange> that would hold the passed number and returns its index into the array.  If 
 		 * the number is not in the array, it returns the index of the range above it (the insertion point if a new 
@@ -1013,6 +933,101 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 				{  return dataLength + 8 - modulo8;  }
 			}
 			
+			
+			
+		// Group: Properties
+		// __________________________________________________________________________
+			
+			
+		/* Property: IsEmpty
+		 * Whether the set is empty.
+		 */
+		public bool IsEmpty
+			{
+			get
+				{  return (usedRanges == 0);  }
+			}
+			
+			
+		/* Property: LowestAvailable
+		 * The lowest unused number available, starting at one.
+		 */
+		public int LowestAvailable
+			{
+			get
+				{
+				if (usedRanges == 0)
+					{  return 1;  }
+				else if (ranges[0].Low > 1)
+					{  return 1;  }
+				else
+					{  return ranges[0].High + 1;  }
+				}
+			}
+			
+			
+		/* Property: Highest
+		 * The highest number in the set or zero if the set is empty.
+		 */
+		public int Highest
+			{
+			get
+				{
+				if (usedRanges == 0)
+					{  return 0;  }
+				else
+					{  return ranges[usedRanges - 1].High;  }
+				}
+			}
+			
+			
+		/* Property: Count
+		 * How many discrete numbers are in the set.
+		 */
+		public int Count
+			{
+			get
+				{
+				int count = 0;
+				int index = 0;
+				
+				while (index < usedRanges)
+					{
+					count += (ranges[index].High - ranges[index].Low + 1);
+					index++;
+					}
+					
+				return count;
+				}
+			}
+
+
+		/* Property: Ranges
+		 * 
+		 * Returns an enumerator that returns each <NumberRange> in the set.  This property is usable with foreach.
+		 * 
+		 * > foreach (NumberRange range in numberSet.Ranges)
+		 * >    { ... }
+		 */
+		public IEnumerable<NumberRange> Ranges
+			{
+			get
+				{
+				for (int i = 0; i < usedRanges; i++)
+					{  yield return ranges[i];  }
+				}
+			}
+			
+		
+		/* Property: RangeCount
+		 * How many ranges are in the set.
+		 */
+		public int RangeCount
+			{
+			get
+				{  return usedRanges;  }
+			}
+
 			
 			
 		// Group: Constants
