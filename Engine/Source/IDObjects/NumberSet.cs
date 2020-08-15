@@ -662,6 +662,9 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public override string ToString ()
 			{
+			if (IsEmpty)
+				{  return EmptySetString;  }
+
 			System.Text.StringBuilder output = new System.Text.StringBuilder();
 			
 			output.Append('{');
