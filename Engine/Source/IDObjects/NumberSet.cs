@@ -912,6 +912,11 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		protected static int ShouldShrinkTo (int memoryLength, int dataLength)
 			{
+			#if DEBUG
+			if (dataLength > memoryLength)
+				{  throw new InvalidOperationException();  }
+			#endif
+
 			// We're much more conservative about shrinking than growing because we'll actually end up using more memory until the 
 			// next garbage collection, so the savings have to be significant.
 
