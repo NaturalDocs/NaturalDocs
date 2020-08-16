@@ -165,8 +165,11 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public void Add (NumberSet setToAdd)
 			{
-			if (ranges == null && setToAdd.usedRanges > 0)
-				{  ranges = new NumberRange[setToAdd.usedRanges];  }
+			if (IsEmpty)
+				{
+				SetTo(setToAdd);
+				return;
+				}
 
 			int position = 0;
 			int setToAddPosition = 0;
@@ -425,7 +428,13 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 				}
 			else
 				{
-				ranges = new NumberRange[toCopy.usedRanges];
+				if (ranges == null || 
+					ranges.Length < toCopy.usedRanges || 
+					ShouldShrinkTo(ranges.Length, toCopy.usedRanges) != ranges.Length)
+					{
+					ranges = new NumberRange[toCopy.usedRanges];
+					}
+
 				usedRanges = toCopy.usedRanges;
 
 				Array.Copy(toCopy.ranges, ranges, usedRanges);
