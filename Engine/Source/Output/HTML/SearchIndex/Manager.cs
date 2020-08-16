@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		
 		/* Constructor: Manager
 		 */
-		public Manager (Output.Builders.HTML builder) : base (builder.EngineInstance)
+		public Manager (HTML.Builder builder) : base (builder.EngineInstance)
 			{
 			this.builder = builder;
 			accessLock = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
@@ -620,9 +620,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 		
 		/* Property: Builder
-		 * The <Output.Builders.HTML> this seach index is associated with.
+		 * The <HTML.Builder> this seach index is associated with.
 		 */
-		public Output.Builders.HTML Builder
+		public HTML.Builder Builder
 			{
 			get
 				{  return builder;  }
@@ -640,7 +640,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Output.Builders.HTML builder;
+		protected HTML.Builder builder;
 
 		protected System.Threading.ReaderWriterLockSlim accessLock;
 

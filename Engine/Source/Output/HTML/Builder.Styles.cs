@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  */
 
@@ -9,15 +9,13 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Files;
-using CodeClear.NaturalDocs.Engine.Styles;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML
+	public partial class Builder
 		{
 
 		// Group: Builder Functions
@@ -30,14 +28,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		protected void BuildMainStyleFiles (CancelDelegate cancelDelegate)
 			{
 			// Creates all subdirectories needed.  Does nothing if it already exists.
-			System.IO.Directory.CreateDirectory(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
+			System.IO.Directory.CreateDirectory(Paths.Style.OutputFolder(this.OutputFolder));
 
 
 			// main.css
 
 			// There's nothing to condense so just write it directly to a file.
 			using (System.IO.StreamWriter mainCSSFile = 
-						System.IO.File.CreateText(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.css"))
+						System.IO.File.CreateText(Paths.Style.OutputFolder(this.OutputFolder) + "/main.css"))
 				{
 				foreach (var style in stylesWithInheritance)
 					{
@@ -49,8 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							if (link.File.Extension.ToLower() == "css")
 								{
 								Path relativeLinkPath = style.MakeRelative(link.File);
-								Path outputPath = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
-								Path relativeOutputPath = outputPath.MakeRelativeTo(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
+								Path outputPath = Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
+								Path relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(this.OutputFolder));
 								mainCSSFile.Write("@import URL(\"" + relativeOutputPath.ToURL() + "\");");
 								}
 							}
@@ -61,8 +59,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// main.js
 
-			StringBuilder[] jsLinks = new StringBuilder[ Output.HTML.PageTypeUtilities.AllPageTypes.Length ];
-			StringBuilder[] jsOnLoads = new StringBuilder[ Output.HTML.PageTypeUtilities.AllPageTypes.Length ];
+			StringBuilder[] jsLinks = new StringBuilder[ PageTypeUtilities.AllPageTypes.Length ];
+			StringBuilder[] jsOnLoads = new StringBuilder[ PageTypeUtilities.AllPageTypes.Length ];
 
 			foreach (var style in stylesWithInheritance)
 				{
@@ -80,8 +78,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 								{  jsLinks[(int)link.Type].Append(", ");  }
 
 							Path relativeLinkPath = style.MakeRelative(link.File);
-							Path outputPath = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
-							Path relativeOutputPath = outputPath.MakeRelativeTo(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder));
+							Path outputPath = Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeLinkPath);
+							Path relativeOutputPath = outputPath.MakeRelativeTo(Paths.Style.OutputFolder(this.OutputFolder));
 							jsLinks[(int)link.Type].Append("\"" + relativeOutputPath.ToURL() + "\"");
 							}
 						}
@@ -116,9 +114,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"var NDLoader = new function ()\n" +
 				"   {\n");
 				
-			for (int i = 0; i < Output.HTML.PageTypeUtilities.AllPageTypes.Length; i++)
+			for (int i = 0; i < PageTypeUtilities.AllPageTypes.Length; i++)
 				{
-				jsOutput.Append("   this.JSLinks_" + Output.HTML.PageTypeUtilities.AllPageTypeNames[i] + " = [ ");
+				jsOutput.Append("   this.JSLinks_" + PageTypeUtilities.AllPageTypeNames[i] + " = [ ");
 
 				if (jsLinks[i] != null)
 					{  jsOutput.Append( jsLinks[i].ToString() );  }
@@ -173,11 +171,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"      };\n");
 
 
-			for (int i = 0; i < Output.HTML.PageTypeUtilities.AllPageTypes.Length; i++)
+			for (int i = 0; i < PageTypeUtilities.AllPageTypes.Length; i++)
 				{
 				jsOutput.Append(
 				"\n" +
-				"   this.OnLoad_" + Output.HTML.PageTypeUtilities.AllPageTypeNames[i] + " = function ()\n" +
+				"   this.OnLoad_" + PageTypeUtilities.AllPageTypeNames[i] + " = function ()\n" +
 				"      {\n");
 
 				if (jsOnLoads[i] != null)
@@ -198,7 +196,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				jsOutputString = jsProcessor.Process(jsOutputString, true);
 				}
 
-			System.IO.File.WriteAllText(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.js", jsOutputString);
+			System.IO.File.WriteAllText(Paths.Style.OutputFolder(this.OutputFolder) + "/main.js", jsOutputString);
 			}
 
 
@@ -212,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				if (style.Contains(file.FileName))
 					{
 					Path relativeStylePath = style.MakeRelative(file.FileName);
-					outputFile = Output.HTML.Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeStylePath);
+					outputFile = Paths.Style.OutputFile(this.OutputFolder, style.Name, relativeStylePath);
 
 					break;
 					}

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  * 
  */
@@ -10,15 +10,11 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML
+	public partial class Builder
 		{
 
 		// Group: Functions
@@ -29,8 +25,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSearchPrefixIndex (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			Output.HTML.Context context = new Output.HTML.Context(this);
-			Output.HTML.Components.JSONSearchIndex searchData = new Output.HTML.Components.JSONSearchIndex(context);
+			Context context = new Context(this);
+			Components.JSONSearchIndex searchData = new Components.JSONSearchIndex(context);
 			searchData.BuildIndexDataFile();
 			}
 
@@ -39,8 +35,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildSearchPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			Output.HTML.Context context = new Output.HTML.Context(this);
-			Output.HTML.Components.JSONSearchIndex searchData = new Output.HTML.Components.JSONSearchIndex(context);
+			Context context = new Context(this);
+			Components.JSONSearchIndex searchData = new Components.JSONSearchIndex(context);
 			searchData.BuildPrefixDataFile(prefix, accessor, cancelDelegate);
 			}
 

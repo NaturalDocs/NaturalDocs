@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTMLBuildState
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.BuildState
  * ____________________________________________________________________________
  * 
  * A class encompassing all the build state information for a HTML output target.
@@ -16,18 +16,18 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTMLBuildState
+	public class BuildState
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Construction: HTMLBuildState
+		/* Construction: BuildState
 		 */
-		public HTMLBuildState ()
+		public BuildState ()
 			{
 			sourceFilesToRebuild = new IDObjects.NumberSet();
 			sourceFilesWithContent = new IDObjects.NumberSet();

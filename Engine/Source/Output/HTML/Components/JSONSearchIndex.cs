@@ -2,8 +2,8 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONSearchIndex
  * ____________________________________________________________________________
  * 
- * A helper class to build JavaScript search data for <Output.Builders.HTML>.  See <JavaScript Search Data>
- * for the output format.
+ * A helper class to build JavaScript search data for <HTML.Builders>.  See <JavaScript Search Data> for the
+ * output format.
  * 
  * Topic: Usage
  *		

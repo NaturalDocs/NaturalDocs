@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  * 
  */
@@ -10,20 +10,13 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Tokenization;
 using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML
+	public partial class Builder
 		{
 
 		// Group: Functions
@@ -40,8 +33,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			var context = new Output.HTML.Context(this, fileID);
-			var pageContent = new Output.HTML.Components.PageContent(context);
+			var context = new Context(this, fileID);
+			var pageContent = new Components.PageContent(context);
 
 			bool hasTopics = pageContent.BuildDataFiles(context, accessor, cancelDelegate);
 

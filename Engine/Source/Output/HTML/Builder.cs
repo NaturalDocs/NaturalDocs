@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  * 
  * An output builder for HTML.
@@ -26,21 +26,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML : Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, Output.HTML.SearchIndex.IChangeWatcher, IDisposable
+	public partial class Builder : Output.Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public HTML (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
+		public Builder (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
 			{
 			accessLock = new object();
 
@@ -111,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Load Config.nd
 
-			Output.HTML.Config_nd binaryConfigParser = new Output.HTML.Config_nd();
+			Config_nd binaryConfigParser = new Config_nd();
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
@@ -129,13 +128,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			
 			// Load BuildState.nd
 
-			Output.HTML.BuildState_nd buildStateParser = new Output.HTML.BuildState_nd();
+			BuildState_nd buildStateParser = new BuildState_nd();
 			bool hasBinaryBuildStateFile = false;
 			
 			if (!EngineInstance.Config.ReparseEverything)
 				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState);  }
 			else
-				{  buildState = new HTMLBuildState();  }
+				{  buildState = new BuildState();  }
 
 			if (!hasBinaryBuildStateFile)
 				{
@@ -169,7 +168,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{
 				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
-				Start_PurgeFolder(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Paths.Style.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				EngineInstance.Styles.ReparseStyleFiles = true;
 				}
 
@@ -192,7 +191,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 					if (stillExists == false)
 						{  
-						Start_PurgeFolder(Output.HTML.Paths.Style.OutputFolder(this.OutputFolder, previousStyle.Name), ref saidPurgingOutputFiles);
+						Start_PurgeFolder(Paths.Style.OutputFolder(this.OutputFolder, previousStyle.Name), ref saidPurgingOutputFiles);
 						}
 					}
 
@@ -270,7 +269,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						Path outputFolder;
 						
 						if (previousFileSourceInfo.Type == InputType.Source)
-							{  outputFolder = Output.HTML.Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
+							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
 						else
 							{  
 							throw new Exception("xxx"); // xxx image source
@@ -321,10 +320,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			if (!hasBinaryBuildStateFile)
 				{
-				Start_PurgeFolder(Output.HTML.Paths.Class.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Output.HTML.Paths.Database.OutputFolder(this.OutputFolder),  ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Output.HTML.Paths.Menu.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Output.HTML.Paths.SearchIndex.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Paths.Class.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Paths.Database.OutputFolder(this.OutputFolder),  ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Paths.Menu.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				Start_PurgeFolder(Paths.SearchIndex.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 
 				buildState.NeedToBuildMenu = true;
 				buildState.NeedToBuildSearchPrefixIndex = true;
@@ -374,7 +373,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 			// Create the search index and watch other modules
 
-			searchIndex = new Output.HTML.SearchIndex.Manager(this);
+			searchIndex = new SearchIndex.Manager(this);
 
 			EngineInstance.CodeDB.AddChangeWatcher(this);
 			EngineInstance.Files.AddChangeWatcher(this);
@@ -424,7 +423,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 						{  searchIndex.Dispose();  }
 					if (buildState != null)
 						{
-						Output.HTML.BuildState_nd buildStateParser = new Output.HTML.BuildState_nd();
+						BuildState_nd buildStateParser = new BuildState_nd();
 						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState);  
 						}
 					}
@@ -805,7 +804,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 * Builds an output file based on the passed parameters.  Using this function centralizes standard elements of the page
 		 * structure like the doctype, charset, and embedded comments.
 		 */
-		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, Output.HTML.PageType pageType)
+		public void BuildFile (Path outputPath, string pageTitle, string pageContentHTML, PageType pageType)
 			{
 			using (System.IO.StreamWriter file = CreateTextFileAndPath(outputPath))
 				{
@@ -824,11 +823,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 							"<title>" + pageTitle.ToHTML() + "</title>" +
 
 							"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
-								MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder) + "/main.css") +
+								MakeRelativeURL(outputPath, Paths.Style.OutputFolder(this.OutputFolder) + "/main.css") +
 								"\" />");
 
-							string pageTypeName = Output.HTML.PageTypeUtilities.ToString(pageType);
-							string jsRelativePrefix = MakeRelativeURL(outputPath, Output.HTML.Paths.Style.OutputFolder(this.OutputFolder)) + '/';
+							string pageTypeName = PageTypeUtilities.ToString(pageType);
+							string jsRelativePrefix = MakeRelativeURL(outputPath, Paths.Style.OutputFolder(this.OutputFolder)) + '/';
 
 							file.Write(
 							"<script type=\"text/javascript\" src=\"" + jsRelativePrefix + "main.js\"></script>" +
@@ -998,7 +997,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 
 				);
 
-			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), Output.HTML.PageType.Frame);
+			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
 
 
 			// other/home.html, the default welcome page
@@ -1068,7 +1067,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				"</div>" + 
 			"</div>");
 
-			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), Output.HTML.PageType.Home);
+			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), PageType.Home);
 			}
 
 
@@ -1154,7 +1153,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		/* Property: SearchIndex
 		 * The <SearchIndex.Manager> associated with this build target.
 		 */
-		public Output.HTML.SearchIndex.Manager SearchIndex
+		public SearchIndex.Manager SearchIndex
 			{
 			get
 				{  return searchIndex;  }
@@ -1204,7 +1203,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		/* var: buildState
 		 * The current build state for the HTML target.
 		 */
-		protected HTMLBuildState buildState;
+		protected BuildState buildState;
 
 		/* var: unitsOfWorkInProgress
 		 * 
@@ -1235,7 +1234,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		/* var: searchIndex
 		 * The <SearchIndex.Manager> for this output target.
 		 */
-		protected Output.HTML.SearchIndex.Manager searchIndex;
+		protected SearchIndex.Manager searchIndex;
 
 		}
 

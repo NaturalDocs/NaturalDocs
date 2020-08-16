@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context with the passed parameters.
 		 */
-		public Context (Builders.HTML builder, TopicPage topicPage = default, Topic topic = null)
+		public Context (HTML.Builder builder, TopicPage topicPage = default, Topic topic = null)
 			{
 			this.builder = builder;
 			this.topicPage = topicPage;
@@ -43,7 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context that includes a source file topic page.
 		 */
-		public Context (Builders.HTML builder, int fileID, Topic topic = null)
+		public Context (HTML.Builder builder, int fileID, Topic topic = null)
 			{
 			this.builder = builder;
 			this.topicPage = new TopicPage(fileID);
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context that includes a topic page in a class hierarchy.
 		 */
-		public Context (Builders.HTML builder, int classID, Symbols.ClassString classString, Topic topic = null)
+		public Context (HTML.Builder builder, int classID, Symbols.ClassString classString, Topic topic = null)
 			{
 			#if DEBUG
 			if (classString != null && classID == 0)
@@ -74,9 +74,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: Builder
-		 * The <Builders.HTML> associated with this context.
+		 * The <HTML.Builder> associated with this context.
 		 */
-		public Builders.HTML Builder
+		public HTML.Builder Builder
 			{
 			get
 				{  return builder;  }
@@ -306,9 +306,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: builder
-		 * The <Builders.HTML> being built for.
+		 * The <HTML.Builder> being built for.
 		 */
-		private readonly Builders.HTML builder;
+		private readonly HTML.Builder builder;
 
 		/* var: topicPage
 		 * The <TopicPage> being built for, or null if it's not relevant.

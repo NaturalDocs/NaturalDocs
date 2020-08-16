@@ -46,7 +46,6 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Output.Builders;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 

@@ -69,7 +69,6 @@ using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
-using CodeClear.NaturalDocs.Engine.Output.Builders;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
@@ -93,9 +92,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * Loads the information in <BuildState.nd> and returns whether it was successful.  If not the function will return an empty
 		 * BuildState object.
 		 */
-		public bool Load (Path filename, out HTMLBuildState buildState)
+		public bool Load (Path filename, out BuildState buildState)
 			{
-			buildState = new HTMLBuildState();
+			buildState = new BuildState();
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -156,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  binaryFile.Dispose();  }
 
 			if (result == false)
-				{  buildState = new HTMLBuildState();  }
+				{  buildState = new BuildState();  }
 
 			return result;
 			}
@@ -165,7 +164,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Function: Save
 		 * Saves the passed information in <BuildState.nd>.
 		 */
-		public void Save (Path filename, HTMLBuildState buildState)
+		public void Save (Path filename, BuildState buildState)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{

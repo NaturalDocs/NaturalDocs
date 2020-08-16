@@ -158,8 +158,8 @@
     <Compile Include="Source\Languages\Languages_nd.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Languages\Languages_txt.cs" />
-    <Compile Include="Source\Output\Builders\HTML.SearchIndex.cs" />
-    <Compile Include="Source\Output\Builders\HTMLBuildState.cs" />
+    <Compile Include="Source\Output\HTML\Builder.SearchIndex.cs" />
+    <Compile Include="Source\Output\HTML\BuildState.cs" />
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
     <Compile Include="Source\Output\ResourceProcessors\CSS.cs" />
@@ -211,10 +211,10 @@
     <Compile Include="Source\Exceptions\Thread.cs" />
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
-    <Compile Include="Source\Output\Builders\HTML.Class.cs" />
-    <Compile Include="Source\Output\Builders\HTML.Menu.cs" />
-    <Compile Include="Source\Output\Builders\HTML.Source.cs" />
-    <Compile Include="Source\Output\Builders\HTML.Styles.cs" />
+    <Compile Include="Source\Output\HTML\Builder.Class.cs" />
+    <Compile Include="Source\Output\HTML\Builder.Menu.cs" />
+    <Compile Include="Source\Output\HTML\Builder.Source.cs" />
+    <Compile Include="Source\Output\HTML\Builder.Styles.cs" />
     <Compile Include="Source\Output\HTML\Components\Menu.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Container.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Entry.cs" />
@@ -257,7 +257,7 @@
     <Compile Include="Source\Output\HTML\SearchIndex\Manager.cs" />
     <Compile Include="Source\StringBuilderExtensions.cs" />
     <Compile Include="Source\Output\Builder.cs" />
-    <Compile Include="Source\Output\Builders\HTML.cs" />
+    <Compile Include="Source\Output\HTML\Builder.cs" />
     <Compile Include="Source\Output\Manager.cs" />
     <Compile Include="Source\SQLite\API.cs" />
     <Compile Include="Source\SQLite\Connection.cs" />

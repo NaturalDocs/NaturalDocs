@@ -274,14 +274,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			}
 
 
-		public Engine.Output.Builders.HTML HTMLBuilder
+		public Engine.Output.HTML.Builder HTMLBuilder
 			{
 			get
 				{
 				foreach (var builder in EngineInstance.Output.Builders)
 					{
-					if (builder is Engine.Output.Builders.HTML)
-						{  return (Engine.Output.Builders.HTML)builder;  }
+					if (builder is Engine.Output.HTML.Builder)
+						{  return (Engine.Output.HTML.Builder)builder;  }
 					}
 
 				return null;

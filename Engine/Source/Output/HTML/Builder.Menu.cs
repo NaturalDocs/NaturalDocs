@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  * 
  */
@@ -15,9 +15,9 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Symbols;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML
+	public partial class Builder
 		{
 
 		// Group: Functions
@@ -28,8 +28,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 		 */
 		protected void BuildMenu (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
-			Output.HTML.Context context = new Output.HTML.Context(this);
-			Output.HTML.Components.Menu menu = new Output.HTML.Components.Menu(context);
+			Context context = new Context(this);
+			Components.Menu menu = new Components.Menu(context);
 
 
 			// Build file menu
@@ -77,7 +77,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 			if (cancelDelegate())
 				{  return;  }
 
-			Output.HTML.Components.JSONMenu jsonMenu = new Output.HTML.Components.JSONMenu(context);
+			Components.JSONMenu jsonMenu = new Components.JSONMenu(context);
 			jsonMenu.ConvertToJSON(menu);
 
 			if (cancelDelegate())
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 					foreach (int deletedFileNumber in deletedFileNumbers)
 						{
 						try
-							{  System.IO.File.Delete(Output.HTML.Paths.Menu.OutputFile(this.OutputFolder, hierarchy, deletedFileNumber));  }
+							{  System.IO.File.Delete(Paths.Menu.OutputFile(this.OutputFolder, hierarchy, deletedFileNumber));  }
 						catch (Exception e)
 							{
 							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))

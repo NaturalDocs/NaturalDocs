@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builders.HTML
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
  * ____________________________________________________________________________
  * 
  */
@@ -10,19 +10,12 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Languages;
-using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.Builders
+namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class HTML
+	public partial class Builder
 		{
 
 		// Group: Functions
@@ -40,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  throw new Exception ("Shouldn't call BuildClassFile() when the accessor already holds a database lock.");  }
 			#endif
 
-			Output.HTML.Context context;
+			Context context;
 			bool hasTopics = false;
 
 			accessor.GetReadOnlyLock();
@@ -49,8 +42,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.Builders
 				{  
 				ClassString classString = accessor.GetClassByID(classID);
 
-				context = new Output.HTML.Context(this, classID, classString);
-				var pageContent = new Output.HTML.Components.PageContent(context);
+				context = new Context(this, classID, classString);
+				var pageContent = new Components.PageContent(context);
 
 				hasTopics = pageContent.BuildDataFiles(context, accessor, cancelDelegate, releaseExistingLocks: true);
 				}

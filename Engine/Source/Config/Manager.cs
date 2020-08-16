@@ -883,7 +883,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected virtual Output.Builder CreateBuilder (Targets.OutputBase target)
 			{
 			if (target is Targets.HTMLOutputFolder)
-				{  return new Output.Builders.HTML(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }
+				{  return new Output.HTML.Builder(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }
 			else
 				{  throw new NotImplementedException();  }
 			}

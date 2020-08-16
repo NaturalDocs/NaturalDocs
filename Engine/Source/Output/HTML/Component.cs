@@ -52,9 +52,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: Builder
-		 * The <Builders.HTML> associated with this component.
+		 * The <HTML.Builder> associated with this component.
 		 */
-		public Builders.HTML Builder
+		public HTML.Builder Builder
 			{
 			get
 				{  return context.Builder;  }
