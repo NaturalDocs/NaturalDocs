@@ -22,7 +22,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		Frame = 1,
 		Content = 2,
 		Home = 3
-		// DEPENDENCY: PageTypeUtilities.AllPageTypes and AllPageTypeNames depend on the integer values and order
+		// DEPENDENCY: PageTypes.All and AllNames depend on the integer values and order
 		}
 
 	}
