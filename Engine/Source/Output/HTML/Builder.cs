@@ -826,7 +826,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 								MakeRelativeURL(outputPath, Paths.Style.OutputFolder(this.OutputFolder) + "/main.css") +
 								"\" />");
 
-							string pageTypeName = PageTypeUtilities.ToString(pageType);
+							string pageTypeName = PageTypes.NameOf(pageType);
 							string jsRelativePrefix = MakeRelativeURL(outputPath, Paths.Style.OutputFolder(this.OutputFolder)) + '/';
 
 							file.Write(
