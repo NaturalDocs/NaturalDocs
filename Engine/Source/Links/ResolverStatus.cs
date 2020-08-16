@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		// __________________________________________________________________________
 		
 		
-		/* Function: ChangeProcessorStatus
+		/* Function: ResolverStatus
 		 */
 		public ResolverStatus ()
 			{
