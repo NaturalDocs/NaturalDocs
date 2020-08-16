@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Styles.PageTypeUtilities
+ * Class: CodeClear.NaturalDocs.Engine.Styles.PageTypes
  * ____________________________________________________________________________
  * 
  * A static class of functions related to <PageType>.
@@ -16,13 +16,13 @@ using System.Text;
 
 namespace CodeClear.NaturalDocs.Engine.Styles
 	{
-	static public class PageTypeUtilities
+	static public class PageTypes
 		{
 
-		/* Function: ToString
-		 * Converts the <PageType> to a string.
+		/* Function: NameOf
+		 * Returns the string name of a <PageType>.
 		 */
-		public static string ToString (PageType type)
+		public static string NameOf (PageType type)
 			{
 			switch (type)
 				{
@@ -39,10 +39,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				}
 			}
 
-		/* Function: ToPageType
-		 * Converts the string to a <PageType> if it can, or null if it can't.
+		/* Function: FromName
+		 * Converts the string name to a <PageType> if it can, or null if it can't.
 		 */
-		public static PageType? ToPageType (string value)
+		public static PageType? FromName (string value)
 			{
 			value = value.ToLower();
 

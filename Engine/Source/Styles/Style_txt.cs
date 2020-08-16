@@ -115,7 +115,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 						PageType pageType = PageType.All;
 						if (match.Groups[1].Success)
 							{
-							PageType? pageTypeTemp = PageTypeUtilities.ToPageType(match.Groups[1].ToString());
+							PageType? pageTypeTemp = PageTypes.FromName(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -152,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 						PageType pageType = PageType.All;
 						if (match.Groups[1].Success)
 							{
-							PageType? pageTypeTemp = PageTypeUtilities.ToPageType(match.Groups[1].ToString());
+							PageType? pageTypeTemp = PageTypes.FromName(match.Groups[1].ToString());
 
 							if (pageTypeTemp == null)
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );  }
@@ -225,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					{
 					if (link.Type != PageType.All)
 						{  
-						output.Append(PageTypeUtilities.ToString(link.Type));
+						output.Append(PageTypes.NameOf(link.Type));
 						output.Append(' ');
 						}
 
@@ -253,7 +253,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					{
 					if (onLoadStatement.Type != PageType.All)
 						{  
-						output.Append(PageTypeUtilities.ToString(onLoadStatement.Type));
+						output.Append(PageTypes.NameOf(onLoadStatement.Type));
 						output.Append(' ');
 						}
 
