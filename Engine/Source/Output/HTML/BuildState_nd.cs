@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  binaryFile.Dispose();  }
 
 			if (result == false)
-				{  buildState = new BuildState();  }
+				{  buildState.Clear();  }
 
 			return result;
 			}

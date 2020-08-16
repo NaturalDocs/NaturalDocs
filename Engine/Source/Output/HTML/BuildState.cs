@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// __________________________________________________________________________
 		
 		
-		/* Construction: BuildState
+		/* Constructor: BuildState
 		 */
 		public BuildState ()
 			{
@@ -38,6 +38,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			searchPrefixesToRebuild = new StringSet();
 			foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
 			usedMenuDataFiles = new StringTable<NumberSet>();
+
+			needToBuildFramePage = false;
+			needToBuildMainStyleFiles = false;
+			needToBuildMenu = false;
+			needToBuildSearchPrefixIndex = false;
+			}
+
+
+		/* Function: Clear
+		 */
+		public void Clear ()
+			{
+			sourceFilesToRebuild.Clear();
+			sourceFilesWithContent.Clear();
+			classFilesToRebuild.Clear();
+			classFilesWithContent.Clear();
+			styleFilesToRebuild.Clear();
+
+			searchPrefixesToRebuild.Clear();
+			foldersToCheckForDeletion.Clear();
+			usedMenuDataFiles.Clear();
 
 			needToBuildFramePage = false;
 			needToBuildMainStyleFiles = false;
