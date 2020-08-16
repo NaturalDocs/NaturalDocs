@@ -51,7 +51,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 *		topic - The topic to build.
 		 *		context - The <Context> the topic appears in.  The topic will automatically replace the context's topic, so you can just
-		 *					  pass the context of the topic page.
+		 *					  pass the context of the page.
 		 *		links - A list of <Links> that must contain any links found in the topic.
 		 *		linkTargets - A list of topics that must contain any topics used as targets in the links.
 		 *		output - The StringBuilder that the output will be appended to.

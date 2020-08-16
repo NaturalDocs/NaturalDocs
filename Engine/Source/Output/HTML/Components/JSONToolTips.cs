@@ -57,14 +57,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Parameters:
 		 * 
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
-		 *		context - The <Context> of the file.  Must include the topic page.
+		 *		context - The <Context> of the file.  Must include the page.
 		 *		links - A list of <Engine.Links.Links> that contain any which will be found in the tooltip.
 		 */
 		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, Context context)
 			{
 			#if DEBUG
-			if (context.TopicPage.IsNull)
-				{  throw new Exception("The topic page must be specified when creating a JSONSummary object.");  }
+			if (context.Page.IsNull)
+				{  throw new Exception("The page must be specified when creating a JSONSummary object.");  }
 			#endif
 
 			this.context = context;

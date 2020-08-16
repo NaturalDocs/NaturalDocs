@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.TopicPage
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.PageLocation
  * ____________________________________________________________________________
  * 
- * A topic page location, such as for a source file or class.
+ * The location of a topic page, such as for a source file or class.
  * 
  */
 
@@ -16,33 +16,33 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public struct TopicPage
+	public struct PageLocation
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Function: TopicPage
-		 * Creates a new source file based topic page.
+		/* Function: PageLocation
+		 * Creates a new page location for a source file.
 		 */
-		public TopicPage (int fileID)
+		public PageLocation (int fileID)
 			{
 			this.fileID = fileID;
 			this.classID = 0;
 			this.classString = default;
 			}
 
-		/* Function: TopicPage
-		 * Creates a new class hierarchy based topic page.
+		/* Function: PageLocation
+		 * Creates a new page location for a class page.
 		 */
-		public TopicPage (int classID, Symbols.ClassString classString)
+		public PageLocation (int classID, Symbols.ClassString classString)
 			{
 			#if DEBUG
 			if (classString != null && classID == 0)
-				{  throw new Exception("Can't create a TopicPage from a class string when its ID isn't known.");  }
+				{  throw new Exception("Can't create a PageLocation from a class string when its ID isn't known.");  }
 			if (classID != 0 && classString == null)
-				{  throw new Exception("Can't create a TopicPage from a class ID when its string isn't known.");  }
+				{  throw new Exception("Can't create a PageLocation from a class ID when its string isn't known.");  }
 			#endif
 
 			this.fileID = 0;
@@ -57,7 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: IsNull
-		 * Whether there is any topic page set.
+		 * Whether there is any page set.
 		 */
 		public bool IsNull
 			{
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: IsSourceFile
-		 * Whether the topic page is for a source file.
+		 * Whether the page is for a source file.
 		 */
 		public bool IsSourceFile
 			{
@@ -75,7 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: IsClass
-		 * Whether the topic page is for a class.  If you need to know whether the topic page is for any page that is part of the
+		 * Whether the page is for a class.  If you need to know whether the page is for any page that is part of the
 		 * class hierarchy, use <InHierarchy> instead.
 		 */
 		public bool IsClass
@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: IsDatabase
-		 * Whether the topic page is for a database.
+		 * Whether the page is for a database.
 		 */
 		public bool IsDatabase
 			{
@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: InHierarchy
-		 * Whether the topic page appears in any class hierarchy, such as for classes or databases.
+		 * Whether the page appears in any class hierarchy, such as for classes or databases.
 		 */
 		public bool InHierarchy
 			{
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: FileID
-		 * If the topic page is a source file, returns the file ID associated with it.  Returns zero otherwise.
+		 * If the page is a source file, returns the file ID associated with it.  Returns zero otherwise.
 		 */
 		public int FileID
 			{
@@ -112,7 +112,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: ClassID
-		 * If the topic page is in the class hierarchy, returns the class ID associated with it.  Returns zero otherwise.
+		 * If the page is in the class hierarchy, returns the class ID associated with it.  Returns zero otherwise.
 		 */
 		public int ClassID
 			{
@@ -121,7 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: ClassString
-		 * If the topic page is in the class hierarchy, returns the <Symbols.ClassString> associated with it.  Returns null otherwise.
+		 * If the page is in the class hierarchy, returns the <Symbols.ClassString> associated with it.  Returns null otherwise.
 		 */
 		public Symbols.ClassString ClassString
 			{
@@ -136,19 +136,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* var: fileID
-		 * The file ID of the topic page's source file, or zero if it's not source file based.  This cannot be set at the same time as
+		 * The file ID of the page's source file, or zero if it's not source file based.  This cannot be set at the same time as
 		 * <classID> and <classString>.
 		 */
 		private readonly int fileID;
 
 		/* var: classID
-		 * The class ID of the topic page's class, or zero if it's not class hierarchy based.  Both classID and <classString> must
+		 * The class ID of the page's class, or zero if it's not class hierarchy based.  Both classID and <classString> must
 		 * be set together, and <fileID> cannot be set.
 		 */
 		private readonly int classID;
 
 		/* var: classString
-		 * The <Symbols.ClassString> of the topic page's class, or null if it's not class hierarchy based.  Both classString and
+		 * The <Symbols.ClassString> of the page's class, or null if it's not class hierarchy based.  Both classString and
 		 * <classID> must be set together, and <fileID> cannot be set.
 		 */
 		private readonly Symbols.ClassString classString;

@@ -50,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 *		topic - The topic to build the tooltip for.
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
-		 *					  so you can just pass the context of the topic page, if any.
+		 *					  so you can just pass the context of the page, if any.
 		 *		links - A list of <Links> that must contain any links found in the topic.
 		 */
 		public string BuildToolTip (Topics.Topic topic, Context context, IList<Link> links)
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 *		topic - The topic to build the tooltip for.
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
-		 *					  so you can just pass the context of the topic page, if any.
+		 *					  so you can just pass the context of the page, if any.
 		 *		links - A list of <Links> that must contain any links found in the topic.
 		 */
 		public bool AppendToolTip (Topics.Topic topic, Context context, IList<Link> links, StringBuilder output)

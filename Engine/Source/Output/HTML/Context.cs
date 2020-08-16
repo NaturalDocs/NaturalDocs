@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A struct that contains the context in which a HTML component is being built, such as which <Topic> it's for and which
- * <HTMLTopicPage> it appears in.
+ * <PageLocation> it appears in.
  * 
  * 
  * Multithreading: Not Thread Safe
@@ -33,25 +33,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context with the passed parameters.
 		 */
-		public Context (HTML.Builder builder, TopicPage topicPage = default, Topic topic = null)
+		public Context (HTML.Builder builder, PageLocation page = default, Topic topic = null)
 			{
 			this.builder = builder;
-			this.topicPage = topicPage;
+			this.page = page;
 			this.topic = topic;
 			}
 
 		/* Constructor: Context
-		 * Creates a context that includes a source file topic page.
+		 * Creates a context that includes a source file page.
 		 */
 		public Context (HTML.Builder builder, int fileID, Topic topic = null)
 			{
 			this.builder = builder;
-			this.topicPage = new TopicPage(fileID);
+			this.page = new PageLocation(fileID);
 			this.topic = topic;
 			}
 
 		/* Constructor: Context
-		 * Creates a context that includes a topic page in a class hierarchy.
+		 * Creates a context that includes a class page.
 		 */
 		public Context (HTML.Builder builder, int classID, Symbols.ClassString classString, Topic topic = null)
 			{
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			#endif
 
 			this.builder = builder;
-			this.topicPage = new TopicPage(classID, classString);
+			this.page = new PageLocation(classID, classString);
 			this.topic = topic;
 			}
 
@@ -83,13 +83,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		/* Property: TopicPage
-		 * The <TopicPage> associated with this context, or null if it's not relevant.
+		/* Property: Page
+		 * The <PageLocation> associated with this context, or null if it's not relevant.
 		 */
-		public TopicPage TopicPage
+		public PageLocation Page
 			{
 			get
-				{  return topicPage;  }
+				{  return page;  }
 			}
 
 
@@ -111,18 +111,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: OutputFile
-		 * The output file of the <TopicPage>.
+		 * The output file of the <Page>.
 		 */
 		public Path OutputFile
 			{
 			get
 				{
-				if (builder == null || topicPage.IsNull)
+				if (builder == null || page.IsNull)
 					{  throw new NullReferenceException();  }
 
-				if (topicPage.IsSourceFile)
+				if (page.IsSourceFile)
 					{
-					var file = builder.EngineInstance.Files.FromID(topicPage.FileID);
+					var file = builder.EngineInstance.Files.FromID(page.FileID);
 					var fileSource = builder.EngineInstance.Files.FileSourceOf(file);
 
 					if (fileSource == null)
@@ -133,15 +133,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					return Paths.SourceFile.OutputFile(builder.OutputFolder, fileSource.Number, relativePath);
 					}
 
-				else if (topicPage.IsClass)
+				else if (page.IsClass)
 					{
-					var language = builder.EngineInstance.Languages.FromID(topicPage.ClassString.LanguageID);
-					return Paths.Class.OutputFile(builder.OutputFolder, language.SimpleIdentifier, topicPage.ClassString.Symbol);
+					var language = builder.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
+					return Paths.Class.OutputFile(builder.OutputFolder, language.SimpleIdentifier, page.ClassString.Symbol);
 					}
 
-				else if (topicPage.IsDatabase)
+				else if (page.IsDatabase)
 					{
-					return Paths.Database.OutputFile(builder.OutputFolder, topicPage.ClassString.Symbol);
+					return Paths.Database.OutputFile(builder.OutputFolder, page.ClassString.Symbol);
 					}
 
 				else
@@ -151,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: ToolTipsFile
-		 * The path of the <TopicPage's> tool tips data file.
+		 * The path of the <Page's> tool tips data file.
 		 */
 		public Path ToolTipsFile
 		   {  
@@ -170,7 +170,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: SummaryFile
-		 * The path of the <TopicPage's> summary data file.
+		 * The path of the <Page's> summary data file.
 		 */
 		public Path SummaryFile
 		   {  
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: SummaryToolTipsFile
-		 * The path of the <TopicPage's> summary tool tips data file.
+		 * The path of the <Page's> summary tool tips data file.
 		 */
 		public Path SummaryToolTipsFile
 		   {  
@@ -208,7 +208,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: HashPath
-		 * The hash path of the <TopicPage>, and if set, the <Topic>.
+		 * The hash path of the <Page>, and if set, the <Topic>.
 		 */
 		public string HashPath
 			{
@@ -218,12 +218,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				string fileHashPath;
 
-				if (builder == null || topicPage.IsNull)
+				if (builder == null || page.IsNull)
 					{  throw new NullReferenceException();  }
 
-				if (topicPage.IsSourceFile)
+				if (page.IsSourceFile)
 					{
-					var file = builder.EngineInstance.Files.FromID(topicPage.FileID);
+					var file = builder.EngineInstance.Files.FromID(page.FileID);
 					var fileSource = builder.EngineInstance.Files.FileSourceOf(file);
 
 					if (fileSource == null)
@@ -234,15 +234,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					fileHashPath = Paths.SourceFile.HashPath(fileSource.Number, relativePath);
 					}
 
-				else if (topicPage.IsClass)
+				else if (page.IsClass)
 					{
-					var language = builder.EngineInstance.Languages.FromID(topicPage.ClassString.LanguageID);
-					fileHashPath = Paths.Class.HashPath(language.SimpleIdentifier, topicPage.ClassString.Symbol);
+					var language = builder.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
+					fileHashPath = Paths.Class.HashPath(language.SimpleIdentifier, page.ClassString.Symbol);
 					}
 
-				else if (topicPage.IsDatabase)
+				else if (page.IsDatabase)
 					{
-					fileHashPath = Paths.Database.HashPath(topicPage.ClassString.Symbol);
+					fileHashPath = Paths.Database.HashPath(page.ClassString.Symbol);
 					}
 
 				else
@@ -266,7 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: TopicOnlyHashPath
-		 * Returns only the topic part of the hash path, or null if there is none.  The topic page must still be set since it affects
+		 * Returns only the topic part of the hash path, or null if there is none.  The page must still be set since it affects
 		 * how this is generated.
 		 */
 		public string TopicOnlyHashPath
@@ -276,13 +276,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (topic == null)
 					{  return null;  }
 
-				else if (topicPage.IsSourceFile)
+				else if (page.IsSourceFile)
 					{
 					// Include the class because it needs to be File:Class.Member
 					return Paths.Topic.HashPath(topic, includeClass: true);
 					}
 
-				else if (topicPage.InHierarchy)
+				else if (page.InHierarchy)
 					{
 					// If we're in a class hierarchy and the topic defines a class, that means we're on the first topic on the
 					// page.  We omit the topic part so it can just be Class instead of Class:Class.
@@ -310,10 +310,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		private readonly HTML.Builder builder;
 
-		/* var: topicPage
-		 * The <TopicPage> being built for, or null if it's not relevant.
+		/* var: page
+		 * The <PageLocation> being built for, or null if it's not relevant.
 		 */
-		private readonly TopicPage topicPage;
+		private readonly PageLocation page;
 
 		/* var: topic
 		 * The <Topic> being built for, or null if it's not relevant.

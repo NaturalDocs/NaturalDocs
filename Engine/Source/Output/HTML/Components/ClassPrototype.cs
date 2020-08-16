@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 * Requirements:
 		 * 
-		 *		- The <Context>'s topic and topic page must be set.
+		 *		- The <Context>'s topic and page must be set.
 		 */
 		public string BuildClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, IList<Link> links = null,
 														 IList<Topics.Topic> linkTargets = null)
@@ -79,7 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 * Requirements:
 		 * 
-		 *		- The <Context>'s topic and topic page must be set.
+		 *		- The <Context>'s topic and page must be set.
 		 */
 		public void AppendClassPrototype (ParsedClassPrototype parsedPrototype, Context context, bool isToolTip, StringBuilder output,
 														  IList<Link> links = null, IList<Topics.Topic> linkTargets = null)

@@ -39,7 +39,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: BuildDataFiles
 		 * 
-		 * Builds the content HTML file for the passed <Context's> <TopicPage> and its supporting <JSONSummary> and 
+		 * Builds the content HTML file for the passed <Context's> <PageLocation> and its supporting <JSONSummary> and 
 		 * <JSONToolTips>.  Returns whether there was any content.  It will also return false if it was interrupted by the 
 		 * <CancelDelegate>.
 		 * 
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 												bool releaseExistingLocks = false)
 			{
 			this.Context = context;
-			var topicPage = context.TopicPage;
+			var location = context.Page;
 
 			List<Engine.Topics.Topic> topics;
 			List<Engine.Links.Link> links;
@@ -75,13 +75,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Get the topics from the database.
 
-				if (topicPage.IsSourceFile)
+				if (location.IsSourceFile)
 					{
-					topics = accessor.GetTopicsInFile(topicPage.FileID, cancelDelegate);
+					topics = accessor.GetTopicsInFile(location.FileID, cancelDelegate);
 					}
-				else if (topicPage.InHierarchy)
+				else if (location.InHierarchy)
 					{
-					topics = accessor.GetTopicsInClass(topicPage.ClassID, cancelDelegate);
+					topics = accessor.GetTopicsInClass(location.ClassID, cancelDelegate);
 					}
 				else
 					{  throw new NotImplementedException();  }
@@ -92,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Create the class view if appropriate
 
-				if (topicPage.InHierarchy)
+				if (location.InHierarchy)
 					{
 					ClassView.Merge(ref topics, EngineInstance);
 
@@ -105,13 +105,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Get the links from the database.
 				
-				if (topicPage.IsSourceFile)
+				if (location.IsSourceFile)
 					{
-					links = accessor.GetLinksInFile(topicPage.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					links = accessor.GetLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
 					}
-				else if (topicPage.InHierarchy)
+				else if (location.InHierarchy)
 					{
-					links = accessor.GetLinksInClass(topicPage.ClassID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					links = accessor.GetLinksInClass(location.ClassID, cancelDelegate) ?? new List<Engine.Links.Link>();
 					}
 				else
 					{  throw new NotImplementedException();  }
@@ -140,7 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look 
 				// up the class parent links separately by class ID.
 
-				if (topicPage.InHierarchy == false && classIDsDefined.IsEmpty == false)
+				if (location.InHierarchy == false && classIDsDefined.IsEmpty == false)
 					{
 					List<Engine.Links.Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
 
@@ -258,10 +258,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					string pageTitle;
 
-					if (context.TopicPage.IsSourceFile)
-						{  pageTitle = EngineInstance.Files.FromID(context.TopicPage.FileID).FileName.NameWithoutPath;  }
-					else if (context.TopicPage.InHierarchy)
-						{  pageTitle = context.TopicPage.ClassString.Symbol.LastSegment;  }
+					if (context.Page.IsSourceFile)
+						{  pageTitle = EngineInstance.Files.FromID(context.Page.FileID).FileName.NameWithoutPath;  }
+					else if (context.Page.InHierarchy)
+						{  pageTitle = context.Page.ClassString.Symbol.LastSegment;  }
 					else
 						{  throw new NotImplementedException();  }
 

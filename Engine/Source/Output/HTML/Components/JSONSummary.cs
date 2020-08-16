@@ -65,13 +65,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Parameters:
 		 * 
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
-		 *		context - The <Context> of the file.  Must include the topic page.
+		 *		context - The <Context> of the file.  Must include the page.
 		 */
 		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, Context context)
 			{
 			#if DEBUG
-			if (context.TopicPage.IsNull)
-				{  throw new Exception("The topic page must be specified when creating a JSONSummary object.");  }
+			if (context.Page.IsNull)
+				{  throw new Exception("The page must be specified when creating a JSONSummary object.");  }
 			#endif
 
 			this.context = context;
@@ -366,7 +366,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				var topic = topics[topicIndex];
-				var topicContext = new Context(context.Builder, context.TopicPage, topic);
+				var topicContext = new Context(context.Builder, context.Page, topic);
 
 				if (addWhitespace)
 					{  json.Append(' ', IndentWidth * 2);  }

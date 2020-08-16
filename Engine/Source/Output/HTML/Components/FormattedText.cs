@@ -62,17 +62,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		/* Function: AppendOpeningLinkTag
 		 * 
-		 * Constructs an <a> tag from the <Context's> <HTMLTopicPage> to the passed topic and appends it to the passed StringBuilder.
+		 * Constructs an <a> tag from the <Context's> <PageLocation> to the passed topic and appends it to the passed StringBuilder.
 		 * 
 		 * Requirements:
 		 * 
-		 *		- The <Context>'s topic page must be set.
+		 *		- The <Context>'s page must be set.
 		 */
 		public void AppendOpeningLinkTag (Topics.Topic targetTopic, StringBuilder output, string extraCSSClass = null)
 			{
 			#if DEBUG
-			if (Context.TopicPage.IsNull)
-				{  throw new Exception("Tried to call AppendOpeningLinkTag without setting the context's topic page.");  }
+			if (Context.Page.IsNull)
+				{  throw new Exception("Tried to call AppendOpeningLinkTag without setting the context's page.");  }
 			#endif
 
 			// Build a context for the link target.  If we're already in a hierarchy page, make the link target go to a hierarchy page as well.
@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			Context targetContext;
 
-			if (context.TopicPage.InHierarchy && targetTopic.ClassString != null)
+			if (context.Page.InHierarchy && targetTopic.ClassString != null)
 				{  targetContext = new Context(context.Builder, targetTopic.ClassID, targetTopic.ClassString, targetTopic);  }
 			else
 				{  targetContext = new Context(context.Builder, targetTopic.FileID, targetTopic);  }
@@ -232,7 +232,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *
 		 * Requirements:
 		 * 
-		 *		- The <Context>'s topic and topic page must be set.
+		 *		- The <Context>'s topic and page must be set.
 		 */
 		public void AppendSyntaxHighlightedTextWithTypeLinks (TokenIterator start, TokenIterator end, StringBuilder output, 
 																						  IList<Link> links, IList<Topics.Topic> linkTargets,
@@ -241,8 +241,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			#if DEBUG
 			if (Context.Topic == null)
 				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the context's topic.");  }
-			if (Context.TopicPage.IsNull)
-				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the context's topic page.");  }
+			if (Context.Page.IsNull)
+				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the context's page.");  }
 			if (links == null)
 				{  throw new Exception("Tried to call AppendSyntaxtHighlightedTextWithTypeLinks without setting the links variable.");  }
 			if (linkTargets == null)

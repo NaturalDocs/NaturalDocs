@@ -80,7 +80,7 @@
     <Compile Include="Source\Output\HTML\Components\Prototype.cs" />
     <Compile Include="Source\Output\HTML\Context.cs" />
     <Compile Include="Source\Output\HTML\Paths\Topic.cs" />
-    <Compile Include="Source\Output\HTML\TopicPage.cs" />
+    <Compile Include="Source\Output\HTML\PageLocation.cs" />
     <Compile Include="Source\Output\HTML\Paths\SearchIndex.cs" />
     <Compile Include="Source\Output\HTML\Paths\Menu.cs" />
     <Compile Include="Source\Output\HTML\Paths\Database.cs" />

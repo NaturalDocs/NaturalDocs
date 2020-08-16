@@ -94,7 +94,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Requirements:
 		 * 
 		 *		- The <Context>'s topic must be set.
-		 *		- If type links are being generated, the <Context>'s topic page must also be set.
+		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
 		public string BuildPrototype (ParsedPrototype parsedPrototype, Context context, IList<Link> links = null, 
 												  IList<Topics.Topic> linkTargets = null)
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Requirements:
 		 * 
 		 *		- The <Context>'s topic must be set.
-		 *		- If type links are being generated, the <Context>'s topic page must also be set.
+		 *		- If type links are being generated, the <Context>'s page must also be set.
 		 */
 		public void AppendPrototype (ParsedPrototype parsedPrototype, Context context, StringBuilder output, 
 												   IList<Link> links = null, IList<Topics.Topic> linkTargets = null)
@@ -134,8 +134,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			this.addLinks = (links != null && linkTargets != null);
 
 			#if DEBUG
-			if (this.addLinks && context.TopicPage.IsNull)
-				{  throw new Exception("Tried to generate a prototype with type links when the context's topic page was not set.");  }
+			if (this.addLinks && context.Page.IsNull)
+				{  throw new Exception("Tried to generate a prototype with type links when the context's page was not set.");  }
 			#endif
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
