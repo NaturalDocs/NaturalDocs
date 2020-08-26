@@ -17,7 +17,7 @@
  *		> [Byte: Need to Build Frame Page (0 or 1)]
  *		> [Byte: Need to Build Main Style Files (0 or 1)]
  *		> [Byte: Need to Build Menu (0 or 1)]
- *		> [Byte: Need to Build Search Prefix Index (0 or 1)]
+ *		> [Byte: Need to Build Main Search Files (0 or 1)]
  *		
  *		Flags for some of the structural items that need to be built.
  * 
@@ -92,9 +92,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * Loads the information in <BuildState.nd> and returns whether it was successful.  If not the function will return an empty
 		 * BuildState object.
 		 */
-		public bool Load (Path filename, out BuildState buildState)
+		public bool Load (Path filename, out BuildState buildState, out UnprocessedChanges unprocessedChanges)
 			{
+			// Since we're creating new objects only we have access to them right now and thus we don't need to use Lock() and 
+			// Unlock().
 			buildState = new BuildState();
+			unprocessedChanges = new UnprocessedChanges();
 
 			BinaryFile binaryFile = new BinaryFile();
 			bool result = true;
@@ -108,12 +111,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					// [Byte: Need to Build Frame Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
 					// [Byte: Need to Build Menu (0 or 1)]
-					// [Byte: Need to Build Search Prefix Index (0 or 1)]
+					// [Byte: Need to Build Main Search Files (0 or 1)]
 
-					buildState.NeedToBuildFramePage = (binaryFile.ReadByte() == 1);
-					buildState.NeedToBuildMainStyleFiles = (binaryFile.ReadByte() == 1);
-					buildState.NeedToBuildMenu = (binaryFile.ReadByte() == 1);
-					buildState.NeedToBuildSearchPrefixIndex = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.framePage = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.mainStyleFiles = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.menu = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.mainSearchFiles = (binaryFile.ReadByte() == 1);
 
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
@@ -121,17 +124,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
 
-					buildState.SourceFilesToRebuild.ReadFrom(binaryFile);
-					buildState.ClassFilesToRebuild.ReadFrom(binaryFile);
-					buildState.StyleFilesToRebuild.ReadFrom(binaryFile);
-					buildState.SourceFilesWithContent.ReadFrom(binaryFile);
-					buildState.ClassFilesWithContent.ReadFrom(binaryFile);
+					unprocessedChanges.sourceFiles.ReadFrom(binaryFile);
+					unprocessedChanges.classes.ReadFrom(binaryFile);
+					unprocessedChanges.styleFiles.ReadFrom(binaryFile);
+					buildState.sourceFilesWithContent.ReadFrom(binaryFile);
+					buildState.classesWithContent.ReadFrom(binaryFile);
 
 					// [StringSet: Search Prefixes to Rebuild]
 					// [StringSet: Folders to Check for Deletion]
 
-					buildState.SearchPrefixesToRebuild.ReadFrom(binaryFile);
-					buildState.FoldersToCheckForDeletion.ReadFrom(binaryFile);
+					unprocessedChanges.searchPrefixes.ReadFrom(binaryFile);
+					unprocessedChanges.possiblyEmptyFolders.ReadFrom(binaryFile);
 
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
@@ -142,8 +145,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					while (menuDataFileType != null)
 						{
+						Hierarchy hierarchy;
+
+						if (menuDataFileType == "files")
+							{  hierarchy = Hierarchy.File;  }
+						else if (menuDataFileType == "classes")
+							{  hierarchy = Hierarchy.Class;  }
+						else if (menuDataFileType == "database")
+							{  hierarchy = Hierarchy.Database;  }
+						else
+							{  throw new NotImplementedException();  }
+
 						NumberSet menuDataFileNumbers = binaryFile.ReadNumberSet();
-						buildState.UsedMenuDataFiles.Add(menuDataFileType, menuDataFileNumbers);
+						buildState.usedMenuDataFiles.Add(hierarchy, menuDataFileNumbers);
 
 						menuDataFileType = binaryFile.ReadString();
 						}
@@ -155,7 +169,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  binaryFile.Dispose();  }
 
 			if (result == false)
-				{  buildState.Clear();  }
+				{  
+				buildState = new BuildState();
+				unprocessedChanges = new UnprocessedChanges();
+				}
 
 			return result;
 			}
@@ -164,8 +181,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Function: Save
 		 * Saves the passed information in <BuildState.nd>.
 		 */
-		public void Save (Path filename, BuildState buildState)
+		public void Save (Path filename, BuildState buildState, UnprocessedChanges unprocessedChanges)
 			{
+			// We're assuming no other code is accessing these variables at the point at which we'd be saving them so we don't
+			// need to call Lock() and Unlock().
+
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
 				binaryFile.OpenForWriting(filename);
@@ -173,12 +193,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// [Byte: Need to Build Frame Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
 				// [Byte: Need to Build Menu (0 or 1)]
-				// [Byte: Need to Build Search Prefix Index (0 or 1)]
+				// [Byte: Need to Build Main Search Files (0 or 1)]
 
-				binaryFile.WriteByte( (byte)(buildState.NeedToBuildFramePage ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.NeedToBuildMainStyleFiles ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.NeedToBuildMenu ? 1 : 0) );
-				binaryFile.WriteByte( (byte)(buildState.NeedToBuildSearchPrefixIndex ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.framePage ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.mainStyleFiles ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.menu ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.mainSearchFiles ? 1 : 0) );
 
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
@@ -186,26 +206,40 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
 
-				binaryFile.WriteNumberSet(buildState.SourceFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.ClassFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.StyleFilesToRebuild);
-				binaryFile.WriteNumberSet(buildState.SourceFilesWithContent);
-				binaryFile.WriteNumberSet(buildState.ClassFilesWithContent);
+				binaryFile.WriteNumberSet(unprocessedChanges.sourceFiles);
+				binaryFile.WriteNumberSet(unprocessedChanges.classes);
+				binaryFile.WriteNumberSet(unprocessedChanges.styleFiles);
+				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
+				binaryFile.WriteNumberSet(buildState.classesWithContent);
 
 				// [StringSet: Search Prefixes to Rebuild]
 				// [StringSet: Folders to Check for Deletion]
 
-				binaryFile.WriteStringSet(buildState.SearchPrefixesToRebuild);
-				binaryFile.WriteStringSet(buildState.FoldersToCheckForDeletion);
+				binaryFile.WriteStringSet(unprocessedChanges.searchPrefixes);
+				binaryFile.WriteStringSet(unprocessedChanges.possiblyEmptyFolders);
 
 				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
 				// ...
 				// [String: null]
 
-				foreach (var menuDataFilePair in buildState.UsedMenuDataFiles)
+				foreach (var menuDataFilePair in buildState.usedMenuDataFiles)
 					{
-					binaryFile.WriteString(menuDataFilePair.Key);
+					switch (menuDataFilePair.Key)
+						{
+						case Hierarchy.File:
+							binaryFile.WriteString("files");
+							break;
+						case Hierarchy.Class:
+							binaryFile.WriteString("classes");
+							break;
+						case Hierarchy.Database:
+							binaryFile.WriteString("database");
+							break;
+						default:
+							throw new NotImplementedException();
+						}
+
 					binaryFile.WriteNumberSet(menuDataFilePair.Value);
 					}
 

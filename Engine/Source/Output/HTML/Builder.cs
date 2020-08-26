@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Styles;
 
@@ -44,6 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			accessLock = new object();
 
 			buildState = null;
+			unprocessedChanges = null;
 			unitsOfWorkInProgress = 0;
 
 			this.config = config;
@@ -132,9 +134,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			bool hasBinaryBuildStateFile = false;
 			
 			if (!EngineInstance.Config.ReparseEverything)
-				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState);  }
+				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);  }
 			else
-				{  buildState = new BuildState();  }
+				{  
+				buildState = new BuildState();
+				unprocessedChanges = new UnprocessedChanges();
+				}
 
 			if (!hasBinaryBuildStateFile)
 				{
@@ -149,14 +154,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Always rebuild the scaffolding since they're quick.  If you ever make this differential, remember that FramePage depends
 			// on the project name and other information.
 
-			buildState.NeedToBuildFramePage = true;
-			buildState.NeedToBuildMainStyleFiles = true;
+			unprocessedChanges.AddFramePage();
+			unprocessedChanges.AddMainStyleFiles();
 
 			if (EngineInstance.Config.RebuildAllOutput)
 				{
 				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
-				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildSearchPrefixIndex = true;
+				unprocessedChanges.AddMenu();
+				unprocessedChanges.AddMainSearchFiles();
 				}
 
 
@@ -325,8 +330,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				Start_PurgeFolder(Paths.Menu.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				Start_PurgeFolder(Paths.SearchIndex.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 
-				buildState.NeedToBuildMenu = true;
-				buildState.NeedToBuildSearchPrefixIndex = true;
+				unprocessedChanges.AddMenu();
+				unprocessedChanges.AddMainSearchFiles();
 				}
 
 
@@ -424,7 +429,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					if (buildState != null)
 						{
 						BuildState_nd buildStateParser = new BuildState_nd();
-						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState);  
+						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState, unprocessedChanges);
 						}
 					}
 				catch 
@@ -439,31 +444,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return;  }
 
 			CodeDB.Accessor accessor = null;
-			bool haveAccessLock = false;
 			
 			try
 				{
 				for (;;)
 					{
-					Monitor.Enter(accessLock);
-					haveAccessLock = true;
 
 					// Remember the following in the below code:
-					// - Every clause of the if-else statement starts off holding the lock.
-					// - You can't acquire or change the database lock while holding it.
-					// - You can't call cancelDelegate while holding it.
-					// - Every clause of the if-else statement must end with the lock released.
+					// - unprocessedChanges is thread safe.  You don't need to hold accessLock to use it.
+					// - You can't acquire or change the database lock while holding accessLock.
+					// - You can't call cancelDelegate while holding accessLock.
 					
 
 					// Build frame page
 
-					if (buildState.NeedToBuildFramePage)
+					if (unprocessedChanges.PickFramePage())
 						{
-						buildState.NeedToBuildFramePage = false;
-						unitsOfWorkInProgress += UnitsOfWork_FramePage;
-
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_FramePage;  }
 
 						BuildFramePage(cancelDelegate);
 
@@ -472,21 +470,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.NeedToBuildFramePage = true;  }
+							unprocessedChanges.AddFramePage();
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
 
 					// Build main style files
 						
-					else if (buildState.NeedToBuildMainStyleFiles)
+					if (unprocessedChanges.PickMainStyleFiles())
 						{
-						buildState.NeedToBuildMainStyleFiles = false;
-						unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;
-
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;  }
 
 						BuildMainStyleFiles(cancelDelegate);
 
@@ -495,21 +492,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.NeedToBuildMainStyleFiles = true;  }
+							unprocessedChanges.AddMainStyleFiles();
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
 
 					// Build style files
 						
-					else if (buildState.StyleFilesToRebuild.IsEmpty == false)
+					int styleFileToRebuild = unprocessedChanges.PickStyleFile();
+
+					if (styleFileToRebuild != 0)
 						{
-						int styleFileToRebuild = buildState.StyleFilesToRebuild.Pop();
-						unitsOfWorkInProgress += UnitsOfWork_StyleFile;
-						
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_StyleFile;  }
 						
 						BuildStyleFile(styleFileToRebuild, cancelDelegate);
 						
@@ -518,21 +516,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.StyleFilesToRebuild.Add(styleFileToRebuild);  }
-							}						
+							unprocessedChanges.AddStyleFile(styleFileToRebuild);
+							break;
+							}		
+						else
+							{  continue;  }
 						}
 						
 
 					// Build source files
-						
-					else if (buildState.SourceFilesToRebuild.IsEmpty == false)
+					
+					int sourceFileToRebuild = unprocessedChanges.PickSourceFile();
+
+					if (sourceFileToRebuild != 0)
 						{
-						int sourceFileToRebuild = buildState.SourceFilesToRebuild.Pop();
-						unitsOfWorkInProgress += UnitsOfWork_SourceFile;
-						
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_SourceFile;  }
 						
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
@@ -544,48 +543,46 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.SourceFilesToRebuild.Add(sourceFileToRebuild);  }
-							}						
+							unprocessedChanges.AddSourceFile(sourceFileToRebuild);
+							break;
+							}
+						else
+							{  continue;  }
 						}
 						
 
 					// Build class files
 						
-					else if (buildState.ClassFilesToRebuild.IsEmpty == false)
+					int classToRebuild = unprocessedChanges.PickClass();
+
+					if (classToRebuild != 0)
 						{
-						int classFileToRebuild = buildState.ClassFilesToRebuild.Pop();
-						unitsOfWorkInProgress += UnitsOfWork_ClassFile;
-						
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_ClassFile;  }
 						
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
 							
-						BuildClassFile(classFileToRebuild, accessor, cancelDelegate);
+						BuildClassFile(classToRebuild, accessor, cancelDelegate);
 						
 						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_ClassFile;  }
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.ClassFilesToRebuild.Add(classFileToRebuild);  }
-							}						
+							unprocessedChanges.AddClass(classToRebuild);
+							break;
+							}		
+						else
+							{  continue;  }
 						}
 						
 					else
 						{  break;  }
-						
-					if (cancelDelegate())
-						{  return;  }
 					}
 				}
 			finally
 				{
-				if (haveAccessLock)
-					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
 				}
@@ -598,92 +595,74 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return;  }
 
 			CodeDB.Accessor accessor = null;
-			bool haveAccessLock = false;
 			
 			try
 				{
 				for (;;)
 					{
-					Monitor.Enter(accessLock);
-					haveAccessLock = true;
 					
 					// Remember the following in the below code:
-					// - Every clause of the if-else statement starts off holding the lock.
-					// - You can't acquire or change the database lock while holding it.
-					// - You can't call cancelDelegate while holding it.
-					// - Every clause of the if-else statement must end with the lock released.
+					// - unprocessedChanges is thread safe.  You don't need to hold accessLock to use it.
+					// - You can't acquire or change the database lock while holding accessLock.
+					// - You can't call cancelDelegate while holding accessLock.
 
 
 					// Delete empty folders
 
-					if (buildState.FoldersToCheckForDeletion.IsEmpty == false)
+
+					List<Path> possiblyEmptyFolders = unprocessedChanges.PickPossiblyEmptyFolders();
+
+					if (possiblyEmptyFolders != null)
 						{
 						// This task is not parallelizable so it gets claimed by one thread and looped to completion.  Theoretically it should
 						// be, but in practice when two or more threads try to delete the same folder at the same time they both fail.  This
 						// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
 						// while the other thread gets it by walking up the child's tree.
 
-						string[] foldersToCheckForDeletion = new string[ buildState.FoldersToCheckForDeletion.Count ];
-						buildState.FoldersToCheckForDeletion.CopyTo(foldersToCheckForDeletion);
-						buildState.FoldersToCheckForDeletion.Clear();
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion * possiblyEmptyFolders.Count;  }
 
-						unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion * foldersToCheckForDeletion.Length;
 						int folderIndex = 0;
 
-						while (folderIndex < foldersToCheckForDeletion.Length)
+						while (folderIndex < possiblyEmptyFolders.Count)
 							{
-							Monitor.Exit(accessLock);
-							haveAccessLock = false;
+							DeleteEmptyFolders(possiblyEmptyFolders[folderIndex]);
+							folderIndex++;
+
+							lock (accessLock)
+								{  unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;  }
 
 							if (cancelDelegate())
 								{  break;  }
-
-							DeleteEmptyFolders(foldersToCheckForDeletion[folderIndex]);
-							folderIndex++;
-
-							Monitor.Enter(accessLock);
-							haveAccessLock = true;
-
-							unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
 							}
 
 						// If folderIndex isn't at the end that means the cancel delegate was triggered and we have to add the remaining
-						// folders back to the build state.
-						if (folderIndex < foldersToCheckForDeletion.Length)
+						// folders back to the unprocessed changes.
+						if (folderIndex < possiblyEmptyFolders.Count)
 							{
-							if (haveAccessLock == false)
-								{
-								Monitor.Enter(accessLock);
-								haveAccessLock = true;
-								}
+							lock (accessLock)
+								{  unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion * (possiblyEmptyFolders.Count - folderIndex);  }
 
 							do
 								{
-								buildState.FoldersToCheckForDeletion.Add(foldersToCheckForDeletion[folderIndex]);
+								unprocessedChanges.AddPossiblyEmptyFolder(possiblyEmptyFolders[folderIndex]);
 								folderIndex++;
-
-								unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;
 								}
-							while (folderIndex < foldersToCheckForDeletion.Length);
-							}
+							while (folderIndex < possiblyEmptyFolders.Count);
 
-						if (haveAccessLock)
-							{
-							Monitor.Exit(accessLock);
-							haveAccessLock = false;
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
 
 					// Build the menu
 
-					else if (buildState.NeedToBuildMenu)
+					if (unprocessedChanges.PickMenu())
 						{
-						buildState.NeedToBuildMenu = false;
-						unitsOfWorkInProgress += UnitsOfWork_Menu;
-
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_Menu;  }
 
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
@@ -695,21 +674,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.NeedToBuildMenu = true;  }
+							unprocessedChanges.AddMenu();
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
 
-					// Build the search index
+					// Build the main search files
 
-					else if (buildState.NeedToBuildSearchPrefixIndex)
+					if (unprocessedChanges.PickMainSearchFiles())
 						{
-						buildState.NeedToBuildSearchPrefixIndex = false;
-						unitsOfWorkInProgress += UnitsOfWork_SearchPrefixIndex;
-
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_SearchPrefixIndex;  }
 
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
@@ -721,46 +699,47 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.NeedToBuildSearchPrefixIndex = true;  }
+							unprocessedChanges.AddMainSearchFiles();
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
-					else if (buildState.SearchPrefixesToRebuild.IsEmpty == false)
-						{
-						string prefix = buildState.SearchPrefixesToRebuild.RemoveOne();
-						unitsOfWorkInProgress += UnitsOfWork_KeywordDataFile;
 
-						Monitor.Exit(accessLock);
-						haveAccessLock = false;
+					// Build the search index prefixes
+
+					string prefixToRebuild = unprocessedChanges.PickSearchPrefix();
+
+					if (prefixToRebuild != null)
+						{
+						lock (accessLock)
+							{  unitsOfWorkInProgress += UnitsOfWork_KeywordDataFile;  }
 
 						if (accessor == null)
 							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
 
-						BuildSearchPrefixDataFile(prefix, accessor, cancelDelegate);
+						BuildSearchPrefixDataFile(prefixToRebuild, accessor, cancelDelegate);
 
 						lock (accessLock)
 							{  unitsOfWorkInProgress -= UnitsOfWork_KeywordDataFile;  }
 
 						if (cancelDelegate())
 							{
-							lock (accessLock)
-								{  buildState.SearchPrefixesToRebuild.Add(prefix);  }
+							unprocessedChanges.AddSearchPrefix(prefixToRebuild);
+							break;
 							}
+						else
+							{  continue;  }
 						}
 
 
 					else
 						{  break;  }
-						
-					if (cancelDelegate())
-						{  return;  }
 					}
 				}
 			finally
 				{
-				if (haveAccessLock)
-					{  Monitor.Exit(accessLock);  }
 				if (accessor != null)
 					{  accessor.Dispose();  }
 				}
@@ -773,21 +752,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			lock (accessLock)
 				{
-				value += buildState.SourceFilesToRebuild.Count * UnitsOfWork_SourceFile;
-				value += buildState.ClassFilesToRebuild.Count * UnitsOfWork_ClassFile;
-				value += buildState.StyleFilesToRebuild.Count * UnitsOfWork_StyleFile;
-				value += buildState.FoldersToCheckForDeletion.Count * UnitsOfWork_FolderToCheckForDeletion;
-				value += buildState.SearchPrefixesToRebuild.Count * UnitsOfWork_KeywordDataFile;
-
-				if (buildState.NeedToBuildFramePage)
-					{  value += UnitsOfWork_FramePage;  }
-				if (buildState.NeedToBuildMainStyleFiles)
-					{  value += UnitsOfWork_MainStyleFiles;  }
-				if (buildState.NeedToBuildMenu)
-					{  value += UnitsOfWork_Menu;  }
-				if (buildState.NeedToBuildSearchPrefixIndex)
-					{  value += UnitsOfWork_SearchPrefixIndex;  }
-
+				unprocessedChanges.GetStatus(out value);
 				value += unitsOfWorkInProgress;
 				}
 
@@ -1204,6 +1169,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The current build state for the HTML target.
 		 */
 		protected BuildState buildState;
+
+		/* var: unprocessedChanges
+		 */
+		protected UnprocessedChanges unprocessedChanges;
 
 		/* var: unitsOfWorkInProgress
 		 * 

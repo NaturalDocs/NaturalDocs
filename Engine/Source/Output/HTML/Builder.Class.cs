@@ -59,11 +59,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (hasTopics)
 				{
-				lock (accessLock)
-					{
-					if (buildState.ClassFilesWithContent.Add(classID) == true)
-						{  buildState.NeedToBuildMenu = true;  }
-					}
+				if (buildState.AddClassWithContent(classID) == true)
+					{  unprocessedChanges.AddMenu();  }
 				}
 			else
 				{
@@ -72,11 +69,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				DeleteOutputFileIfExists(context.SummaryFile);
 				DeleteOutputFileIfExists(context.SummaryToolTipsFile);
 
-				lock (accessLock)
-					{
-					if (buildState.ClassFilesWithContent.Remove(classID) == true)
-						{  buildState.NeedToBuildMenu = true;  }
-					}
+				if (buildState.RemoveClassWithContent(classID) == true)
+					{  unprocessedChanges.AddMenu();  }
 				}
 			}
 

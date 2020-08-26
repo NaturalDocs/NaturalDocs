@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.BuildState
  * ____________________________________________________________________________
  * 
- * A class encompassing all the build state information for a HTML output target.
+ * A class tracking information about a HTML output target.
  *		
  */
 
@@ -29,189 +29,212 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		public BuildState ()
 			{
-			sourceFilesToRebuild = new IDObjects.NumberSet();
-			sourceFilesWithContent = new IDObjects.NumberSet();
-			classFilesToRebuild = new IDObjects.NumberSet();
-			classFilesWithContent = new IDObjects.NumberSet();
-			styleFilesToRebuild = new IDObjects.NumberSet();
+			sourceFilesWithContent = new NumberSet();
+			classesWithContent = new NumberSet();
 
-			searchPrefixesToRebuild = new StringSet();
-			foldersToCheckForDeletion = new StringSet(Config.Manager.KeySettingsForPaths);
-			usedMenuDataFiles = new StringTable<NumberSet>();
+			usedMenuDataFiles = new NumberSetTable<Hierarchy>();
 
-			needToBuildFramePage = false;
-			needToBuildMainStyleFiles = false;
-			needToBuildMenu = false;
-			needToBuildSearchPrefixIndex = false;
+			accessLock = new object();
 			}
 
 
-		/* Function: Clear
+		/* Function: Lock
+		 * 
+		 * Locks the object to apply multiple changes efficiently or to directly access the variables.  This prevents other threads
+		 * from accessing the object until you call <Unlock()>.
+		 * 
+		 * Use of the other functions will lock and unlock this object automatically, so it is not necessary for most use cases.
 		 */
-		public void Clear ()
+		public void Lock ()
 			{
-			sourceFilesToRebuild.Clear();
-			sourceFilesWithContent.Clear();
-			classFilesToRebuild.Clear();
-			classFilesWithContent.Clear();
-			styleFilesToRebuild.Clear();
+			System.Threading.Monitor.Enter(accessLock);
+			}
 
-			searchPrefixesToRebuild.Clear();
-			foldersToCheckForDeletion.Clear();
-			usedMenuDataFiles.Clear();
 
-			needToBuildFramePage = false;
-			needToBuildMainStyleFiles = false;
-			needToBuildMenu = false;
-			needToBuildSearchPrefixIndex = false;
+		/* Function: Unlock
+		 * Releases the thread lock applied by <Lock()>.
+		 */
+		public void Unlock ()
+			{
+			System.Threading.Monitor.Exit(accessLock);
 			}
 
 
 
-		// Group: Properties
+		// Group: Source File Functions
 		// __________________________________________________________________________
 
 
-		/* Property: SourceFilesToRebuild
-		 * A set of the source file IDs that need their output file rebuilt.
+		/* Function: SourceFileHasContent
+		 * Returns whether the passed source file ID has content this build target can use.
 		 */
-		public IDObjects.NumberSet SourceFilesToRebuild
+		public bool SourceFileHasContent (int fileID)
 			{
-			get
-				{  return sourceFilesToRebuild;  }
+			lock (accessLock)
+				{  return sourceFilesWithContent.Contains(fileID);  }
 			}
 
-		/* Property: SourceFilesWithContent
-		 * A set of the source file IDs that contain content this output target can use.  This is different from all the files with
-		 * content in <CodeDB.Manager> because it is after all filters have been applied.
+		/* Function: AddSourceFileWithContent
+		 * Tells the class that the passed file ID has content this build target can use.  Returns true if the number didn't 
+		 * already exist in the set and was added, false if it was already in the set.
 		 */
-		public IDObjects.NumberSet SourceFilesWithContent
+		public bool AddSourceFileWithContent (int fileID)
 			{
-			get
-				{  return sourceFilesWithContent;  }
+			lock (accessLock)
+				{  return sourceFilesWithContent.Add(fileID);  }
 			}
 
-		/* Property: ClassFilesToRebuild
-		 * A set of the class IDs that need their output file rebuilt.
+		/* Function: RemoveSourceFileWithContent
+		 * Tells the class that the passed file ID does not have content this build target can use.  Returns true if the number
+		 * existed in the set and was removed, false if it wasn't part of the set.
 		 */
-		public IDObjects.NumberSet ClassFilesToRebuild
+		public bool RemoveSourceFileWithContent (int fileID)
 			{
-			get
-				{  return classFilesToRebuild;  }
+			lock (accessLock)
+				{  return sourceFilesWithContent.Remove(fileID);  }
 			}
 
-		/* Property: ClassFilesWithContent
-		 * A set of the class IDs that contain content this output target can use.  This is different from all the classes with 
-		 * content in <CodeDB.Manager> because it is after all filters have been applied.
+
+
+		// Group: Class Functions
+		// __________________________________________________________________________
+
+
+		/* Function: ClassHasContent
+		 * Returns whether the passed class ID has content this build target can use.
 		 */
-		public IDObjects.NumberSet ClassFilesWithContent
+		public bool ClassHasContent (int classID)
 			{
-			get
-				{  return classFilesWithContent;  }
+			lock (accessLock)
+				{  return classesWithContent.Contains(classID);  }
 			}
 
-		/* Property: StyleFilesToRebuild
-		 * A set of IDs for the style files that need their output updated.  This includes new, changed, and deleted files so
-		 * you should check the file's status to see if it's deleted before processing it.
+		/* Function: AddClassWithContent
+		 * Tells the class that the passed class ID has content this build target can use.  Returns true if the number didn't
+		 * already exist in the set and was added, false if it was already in the set.
 		 */
-		public IDObjects.NumberSet StyleFilesToRebuild
+		public bool AddClassWithContent (int classID)
 			{
-			get
-				{  return styleFilesToRebuild;  }
+			lock (accessLock)
+				{  return classesWithContent.Add(classID);  }
 			}
 
-		/* Property: NeedToBuildFramePage
-		 * Whether the frame page, index.html, needs to be rebuilt.
+		/* Function: RemoveClassWithContent
+		 * Tells the class that the passed class ID does not have content this build target can use.  Returns true if the 
+		 * number existed in the set and was removed, false if it wasn't part of the set.
 		 */
-		public bool NeedToBuildFramePage
+		public bool RemoveClassWithContent (int classID)
 			{
-			get
-				{  return needToBuildFramePage;  }
-			set
-				{  needToBuildFramePage = value;  }
+			lock (accessLock)
+				{  return classesWithContent.Remove(classID);  }
 			}
 
-		/* Property: NeedToBuildMainStyleFiles
-		 * Whether the main style files, main.css and main.js, need to be rebuilt.
+
+
+		// Group: Menu Data File Functions
+		// __________________________________________________________________________
+
+
+		/* Function: HasUsedMenuDataFile
+		 * Returns whether the passed <Hierarchy> and number are used by the menu data files.
 		 */
-		public bool NeedToBuildMainStyleFiles
+		public bool HasUsedMenuDataFile (Hierarchy hierarchy, int number)
 			{
-			get
-				{  return needToBuildMainStyleFiles;  }
-			set
-				{  needToBuildMainStyleFiles = value;  }
+			lock (accessLock)
+				{  
+				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
+
+				if (hierarchyNumbers == null)
+					{  return false;  }
+
+				return hierarchyNumbers.Contains(number);
+				}
 			}
 
-		/* Property: NeedToBuildMenu
-		 * Whether the menu data files need to be rebuilt.
+		/* Function: AddUsedMenuDataFile
+		 * Adds a <Hierarchy>/number combination to the list of used menu data files.
 		 */
-		public bool NeedToBuildMenu
+		public void AddUsedMenuDataFile (Hierarchy hierarchy, int number)
 			{
-			get
-				{  return needToBuildMenu;  }
-			set
-				{  needToBuildMenu = value;  }
+			lock (accessLock)
+				{
+				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
+
+				if (hierarchyNumbers == null)
+					{
+					hierarchyNumbers = new NumberSet();
+					usedMenuDataFiles[hierarchy] = hierarchyNumbers;
+					}
+
+				hierarchyNumbers.Add(number);
+				}
 			}
 
-		/* Property: UsedMenuDataFiles
-		 * The menu data files created the last time the menu was built.  It maps strings like "files" and "classes" to NumberSets,
-		 * so files.js, files2.js, and files3.js would map to "files" and {1-3}.
+		/* Function: RemoveUsedMenuDataFile
+		 * Remove a <Hierarchy>/number combination to the list of used menu data files.
 		 */
-		public StringTable<IDObjects.NumberSet> UsedMenuDataFiles
+		public void RemoveUsedMenuDataFile (Hierarchy hierarchy, int number)
 			{
-			get
-				{  return usedMenuDataFiles;  }
-			}
+			lock (accessLock)
+				{
+				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
 
-		/* Property: NeedToBuildSearchPrefixIndex
-		 * Whether the search prefix index needs to be rebuilt.
-		 */
-		public bool NeedToBuildSearchPrefixIndex
-			{
-			get
-				{  return needToBuildSearchPrefixIndex;  }
-			set
-				{  needToBuildSearchPrefixIndex = value;  }
-			}
-
-		/* Property: SearchPrefixesToRebuild
-		 * A set of all the search index prefixes which need to be rebuilt.  This set combines changed and deleted IDs, so when 
-		 * using <SearchIndex.Manager.GetKeywordEntries()> make sure to test each result for null.
-		 */
-		public StringSet SearchPrefixesToRebuild
-			{
-			get
-				{  return searchPrefixesToRebuild;  }
-			}
-		
-		/* Property: FoldersToCheckForDeletion
-		 * A set of folders that have had files removed, and thus should be deleted if empty.
-		 */
-		public StringSet FoldersToCheckForDeletion
-			{
-			get
-				{  return foldersToCheckForDeletion;  }
+				if (hierarchyNumbers != null)
+					{  hierarchyNumbers.Remove(number);  }
+				}
 			}
 
 
 
 		// Group: Variables
 		// __________________________________________________________________________
+		//
+		// These variables are protected internal because some code may need to access them directly.  You should use the
+		// access functions instead of doing this whenever possible.  All direct access to the variables must be surrounded by
+		// calls to <Lock()> and <Unlock()>.
+		//
+
 				
-		protected IDObjects.NumberSet sourceFilesToRebuild;
-		protected IDObjects.NumberSet sourceFilesWithContent;
-		protected IDObjects.NumberSet classFilesToRebuild;
-		protected IDObjects.NumberSet classFilesWithContent;
-		protected IDObjects.NumberSet styleFilesToRebuild;
+		/* var: sourceFilesWithContent
+		 * 
+		 * A set of the source file IDs that contain content this output target can use.  This is different from all the files with
+		 * content in <CodeDB.Manager> because it is after all filters have been applied.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSet sourceFilesWithContent;
 
-		protected StringSet searchPrefixesToRebuild;
-		protected StringSet foldersToCheckForDeletion;
-		protected StringTable<IDObjects.NumberSet> usedMenuDataFiles;
 
-		protected bool needToBuildFramePage;
-		protected bool needToBuildMainStyleFiles;
-		protected bool needToBuildMenu;
-		protected bool needToBuildSearchPrefixIndex;
+		/* var: classesWithContent
+		 * 
+		 * A set of the class IDs that contain content this output target can use.  This is different from all the classes with 
+		 * content in <CodeDB.Manager> because it is after all filters have been applied.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSet classesWithContent;
+
+
+		/* var: usedMenuDataFiles
+		 * 
+		 * The menu data files created the last time the menu was built.  It maps <Hierarchies> to <NumberSets>, so
+		 * files.js, files2.js, and files3.js would map to <Hierarchy.File> and {1-3}.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSetTable<Hierarchy> usedMenuDataFiles;
+
+
+		/* var: accessLock
+		 * An object used for a monitor that prevents more than one thread from accessing any of the variables at a time.
+		 */
+		protected object accessLock;
 
 		}
 	}

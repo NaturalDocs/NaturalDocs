@@ -224,9 +224,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (System.IO.File.Exists(outputFile))
 					{  
 					System.IO.File.Delete(outputFile);
-
-					lock (accessLock)
-						{  buildState.FoldersToCheckForDeletion.Add(outputFile.ParentFolder);  }
+					unprocessedChanges.AddPossiblyEmptyFolder(outputFile.ParentFolder);
 					}
 				}
 
@@ -264,20 +262,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnAddFile (File file)
 			{
-			lock (accessLock)
-				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
+			unprocessedChanges.AddStyleFile(file.ID);
 			}
 
 		public void OnFileChanged (File file)
 			{
-			lock (accessLock)
-				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
+			unprocessedChanges.AddStyleFile(file.ID);
 			}
 
 		public void OnDeleteFile (File file)
 			{
-			lock (accessLock)
-				{  buildState.StyleFilesToRebuild.Add(file.ID);  }
+			unprocessedChanges.AddStyleFile(file.ID);
 			}
 
 		}

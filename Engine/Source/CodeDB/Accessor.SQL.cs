@@ -2278,11 +2278,11 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 * 
 		 *		- You must have at least a read-only lock.
 		 */
-		public List<KeyValuePair<int, ClassString>> GetClassesByID (IDObjects.NumberSet ids, CancelDelegate cancelled)
+		public List<ClassString> GetClassesByID (IDObjects.NumberSet ids, CancelDelegate cancelled)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 
-			List<KeyValuePair<int, ClassString>> classes = new List<KeyValuePair<int, ClassString>>();
+			List<ClassString> classes = new List<ClassString>();
 
 			if (ids.IsEmpty)
 				{  return classes;  }
@@ -2297,17 +2297,16 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			do
 				{
 				IDObjects.NumberSet temp;
-				string queryText = "SELECT ClassID, ifnull(ClassString,LookupKey) FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", remainingIDs, out temp);
+				string queryText = "SELECT ifnull(ClassString,LookupKey) FROM Classes WHERE " + ColumnIsInNumberSetExpression("ClassID", remainingIDs, out temp);
 				remainingIDs = temp;
 
 				using (SQLite.Query query = connection.Query(queryText))
 					{
 					while (query.Step())
 						{
-						int classID = query.IntColumn(0);
-						ClassString classString = ClassString.FromExportedString(query.StringColumn(1));
+						ClassString classString = ClassString.FromExportedString(query.StringColumn(0));
 
-						classes.Add( new KeyValuePair<int, ClassString>(classID, classString));
+						classes.Add(classString);
 					
 						if (cancelled())
 							{  break;  }

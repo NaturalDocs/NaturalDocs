@@ -43,11 +43,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (hasTopics)
 				{
-				lock (accessLock)
-					{
-					if (buildState.SourceFilesWithContent.Add(fileID) == true)
-						{  buildState.NeedToBuildMenu = true;  }
-					}
+				if (buildState.AddSourceFileWithContent(fileID) == true)
+					{  unprocessedChanges.AddMenu();  }
 				}
 			else
 				{
@@ -56,11 +53,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				DeleteOutputFileIfExists(context.SummaryFile);
 				DeleteOutputFileIfExists(context.SummaryToolTipsFile);
 
-				lock (accessLock)
-					{
-					if (buildState.SourceFilesWithContent.Remove(fileID) == true)
-						{  buildState.NeedToBuildMenu = true;  }
-					}
+				if (buildState.RemoveSourceFileWithContent(fileID) == true)
+					{  unprocessedChanges.AddMenu();  }
 				}
 			}
 
@@ -74,9 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (outputFile != null && System.IO.File.Exists(outputFile))
 				{  
 				System.IO.File.Delete(outputFile);
-
-				lock (accessLock)
-					{  buildState.FoldersToCheckForDeletion.Add(outputFile.ParentFolder);  }
+				unprocessedChanges.AddPossiblyEmptyFolder(outputFile.ParentFolder);
 				}
 			}
 
@@ -100,18 +92,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
 				}
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
-				buildState.SourceFilesToRebuild.Add(topic.FileID);
+				unprocessedChanges.AddSourceFile(topic.FileID);
 
 				if (topic.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(topic.ClassID);  }
+					{  unprocessedChanges.AddClass(topic.ClassID);  }
 
 				if (parentClassIDs != null)
-					{  buildState.ClassFilesToRebuild.Add(parentClassIDs);  }
+					{  unprocessedChanges.AddClasses(parentClassIDs);  }
 				if (parentClassFileIDs != null)
-					{  buildState.SourceFilesToRebuild.Add(parentClassFileIDs);  }
+					{  unprocessedChanges.AddSourceFiles(parentClassFileIDs);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 			}
 
 		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, CodeDB.EventAccessor eventAccessor)
@@ -124,9 +119,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (changeFlags == 0)
 				{  return;  }
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
-				buildState.SourceFilesToRebuild.Add(oldTopic.FileID);
+				unprocessedChanges.AddSourceFile(oldTopic.FileID);
 
 				#if DEBUG
 				if (newTopic.FileID != oldTopic.FileID)
@@ -134,10 +130,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				#endif
 
 				if (oldTopic.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(oldTopic.ClassID);  }
+					{  unprocessedChanges.AddClass(oldTopic.ClassID);  }
 				if (newTopic.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(newTopic.ClassID);  }
+					{  unprocessedChanges.AddClass(newTopic.ClassID);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 
 			// If the summary or prototype changed this means its tooltip changed.  Rebuild any file that contains links 
 			// to this topic.
@@ -161,21 +159,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					oldParentClassIDs != null || oldParentClassFileIDs != null ||
 					newParentClassIDs != null || newParentClassFileIDs != null)
 					{  
-					lock (accessLock)
+					unprocessedChanges.Lock();
+					try
 						{  
 						if (linkFileIDs != null)
-							{  buildState.SourceFilesToRebuild.Add(linkFileIDs);  }
+							{  unprocessedChanges.AddSourceFiles(linkFileIDs);  }
 						if (linkClassIDs != null)
-							{  buildState.ClassFilesToRebuild.Add(linkClassIDs);  }
+							{  unprocessedChanges.AddClasses(linkClassIDs);  }
 						if (oldParentClassIDs !=  null)
-							{  buildState.ClassFilesToRebuild.Add(oldParentClassIDs);  }
+							{  unprocessedChanges.AddClasses(oldParentClassIDs);  }
 						if (oldParentClassFileIDs != null)
-							{  buildState.SourceFilesToRebuild.Add(oldParentClassFileIDs);  }
+							{  unprocessedChanges.AddSourceFiles(oldParentClassFileIDs);  }
 						if (newParentClassIDs !=  null)
-							{  buildState.ClassFilesToRebuild.Add(newParentClassIDs);  }
+							{  unprocessedChanges.AddClasses(newParentClassIDs);  }
 						if (newParentClassFileIDs != null)
-							{  buildState.SourceFilesToRebuild.Add(newParentClassFileIDs);  }
+							{  unprocessedChanges.AddSourceFiles(newParentClassFileIDs);  }
 						}
+					finally
+						{  unprocessedChanges.Unlock();  }
 					}
 				}
 			}
@@ -192,18 +193,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				eventAccessor.GetInfoOnClassParents(topic.ClassID, out parentClassIDs, out parentClassFileIDs);
 				}
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
-				buildState.SourceFilesToRebuild.Add(topic.FileID);
+				unprocessedChanges.AddSourceFile(topic.FileID);
 
 				if (topic.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(topic.ClassID);  }
+					{  unprocessedChanges.AddClass(topic.ClassID);  }
 
 				if (parentClassIDs != null)
-					{  buildState.ClassFilesToRebuild.Add(parentClassIDs);  }
+					{  unprocessedChanges.AddClasses(parentClassIDs);  }
 				if (parentClassFileIDs != null)
-					{  buildState.SourceFilesToRebuild.Add(parentClassFileIDs);  }
+					{  unprocessedChanges.AddSourceFiles(parentClassFileIDs);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 			}
 
 		public void OnAddLink (Link link, CodeDB.EventAccessor eventAccessor)
@@ -228,22 +232,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
 				// Even if it's not a class parent link we still need to rebuild the source and class files that contain it.  We can't
 				// rely on the topic events picking it up because it's possible to change links without changing topics.  How?  By
 				// changing a using statement, which causes all the links to change.
-				buildState.SourceFilesToRebuild.Add(link.FileID);
+				unprocessedChanges.AddSourceFile(link.FileID);
 
 				if (link.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
+					{  unprocessedChanges.AddClass(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
+					{  unprocessedChanges.AddClass(link.TargetClassID);  }
 
 				if (filesThatDefineClass != null)
-					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  unprocessedChanges.AddSourceFiles(filesThatDefineClass);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 			}
 		
 		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, CodeDB.EventAccessor eventAccessor)
@@ -275,24 +282,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
-				buildState.SourceFilesToRebuild.Add(link.FileID);
+				unprocessedChanges.AddSourceFile(link.FileID);
 
 				if (link.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
+					{  unprocessedChanges.AddClass(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent)
 					{
 					if (link.TargetClassID != 0)
-						{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
+						{  unprocessedChanges.AddClass(link.TargetClassID);  }
 					if (oldTargetClassID != 0)
-						{  buildState.ClassFilesToRebuild.Add(oldTargetClassID);  }
+						{  unprocessedChanges.AddClass(oldTargetClassID);  }
 					}
 
 				if (filesThatDefineClass != null)
-					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  unprocessedChanges.AddSourceFiles(filesThatDefineClass);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 
 			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
 			// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
@@ -312,13 +322,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				if (fileIDs != null || classIDs != null)
 					{
-					lock (accessLock)
+					unprocessedChanges.Lock();
+					try
 						{
 						if (fileIDs != null)
-							{  buildState.SourceFilesToRebuild.Add(fileIDs);  }
+							{  unprocessedChanges.AddSourceFiles(fileIDs);  }
 						if (classIDs != null)
-							{  buildState.ClassFilesToRebuild.Add(classIDs);  }
+							{  unprocessedChanges.AddClasses(classIDs);  }
 						}
+					finally
+						{  unprocessedChanges.Unlock();  }
 					}
 				}
 			}
@@ -342,19 +355,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			lock (accessLock)
+			unprocessedChanges.Lock();
+			try
 				{
-				buildState.SourceFilesToRebuild.Add(link.FileID);
+				unprocessedChanges.AddSourceFile(link.FileID);
 
 				if (link.ClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(link.ClassID);  }
+					{  unprocessedChanges.AddClass(link.ClassID);  }
 
 				if (link.Type == LinkType.ClassParent && link.TargetClassID != 0)
-					{  buildState.ClassFilesToRebuild.Add(link.TargetClassID);  }
+					{  unprocessedChanges.AddClass(link.TargetClassID);  }
 
 				if (filesThatDefineClass != null)
-					{  buildState.SourceFilesToRebuild.Add(filesThatDefineClass);  }
+					{  unprocessedChanges.AddSourceFiles(filesThatDefineClass);  }
 				}
+			finally
+				{  unprocessedChanges.Unlock();  }
 			}
 
 		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)

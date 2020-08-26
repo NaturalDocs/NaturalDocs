@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.IDObjects;
 using CodeClear.NaturalDocs.Engine.Symbols;
 
 
@@ -31,38 +32,42 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Context context = new Context(this);
 			Components.Menu menu = new Components.Menu(context);
 
-
-			// Build file menu
-
-			lock (accessLock)
+			buildState.Lock();
+			try
 				{
-				foreach (int fileID in buildState.SourceFilesWithContent)
+
+				// Build the file menu
+
+				foreach (int fileID in buildState.sourceFilesWithContent)
 					{
+					menu.AddFile(EngineInstance.Files.FromID(fileID));
+
 					if (cancelDelegate())
 						{  return;  }
-
-					menu.AddFile(EngineInstance.Files.FromID(fileID));
 					}
+
+
+				// Build the class and database menus
+
+				List<ClassString> classStrings = null;
+
+				accessor.GetReadOnlyLock();
+				try
+					{  classStrings = accessor.GetClassesByID(buildState.classesWithContent, cancelDelegate);  }
+				finally
+					{  accessor.ReleaseLock();  }
+
+				foreach (var classString in classStrings)
+					{
+					menu.AddClass(classString);
+
+					if (cancelDelegate())
+						{  return;  }
+					}
+
 				}
-
-
-			// Build class and database menu
-
-			List<KeyValuePair<int, ClassString>> classes = null;
-
-			accessor.GetReadOnlyLock();
-			try
-				{  classes = accessor.GetClassesByID(buildState.ClassFilesWithContent, cancelDelegate);  }
 			finally
-				{  accessor.ReleaseLock();  }
-
-			foreach (KeyValuePair<int, ClassString> classEntry in classes)
-				{
-				if (cancelDelegate())
-					{  return;  }
-
-				menu.AddClass(classEntry.Value);
-				}
+				{  buildState.Unlock();  }
 
 
 			// Condense, sort, and build
@@ -91,85 +96,48 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			// Clear out any old menu files that are no longer in use.
 
-			List<string> stringTypesToDelete = null;
-
-			lock (accessLock)
+			buildState.Lock();
+			try
 				{
-				foreach (var menuDataFileInfo in buildState.UsedMenuDataFiles)
+				foreach (var hierarchyMenuDataFiles in buildState.usedMenuDataFiles)
 					{
-					var stringType = menuDataFileInfo.Key;
-					var fileNumbers = menuDataFileInfo.Value;
 
-					Hierarchy hierarchy;
+					// Compare the old and new numbers to determine which ones to remove
 
-					if (stringType == "files")
-						{  hierarchy = Hierarchy.File;  }
-					else if (stringType == "classes")
-						{  hierarchy = Hierarchy.Class;  }
-					else if (stringType == "database")
-						{  hierarchy = Hierarchy.Database;  }
-					else
-						{  throw new NotImplementedException();  }
+					var hierarchy = hierarchyMenuDataFiles.Key;
+					var oldFileNumbers = hierarchyMenuDataFiles.Value;
 
-					IDObjects.NumberSet newFileNumbers = newMenuDataFiles[hierarchy];
-
-					IDObjects.NumberSet deletedFileNumbers = new IDObjects.NumberSet(fileNumbers);
+					NumberSet newFileNumbers = newMenuDataFiles[hierarchy];
+					NumberSet removedFileNumbers;
 
 					if (newFileNumbers != null)
-						{  deletedFileNumbers.Remove(newFileNumbers);  }
+						{  
+						removedFileNumbers = oldFileNumbers.Duplicate();
+						removedFileNumbers.Remove(newFileNumbers);  
+						}
+					else
+						{  removedFileNumbers = oldFileNumbers;  }
 
-					foreach (int deletedFileNumber in deletedFileNumbers)
+
+					// Remove the data files associated with them
+
+					foreach (int removedFileNumber in removedFileNumbers)
 						{
 						try
-							{  System.IO.File.Delete(Paths.Menu.OutputFile(this.OutputFolder, hierarchy, deletedFileNumber));  }
+							{  System.IO.File.Delete(Paths.Menu.OutputFile(this.OutputFolder, hierarchy, removedFileNumber));  }
 						catch (Exception e)
 							{
 							if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
 								{  throw;  }
 							}
 						}
-
-					if (newFileNumbers == null)
-						{
-						if (stringTypesToDelete == null)
-							{  stringTypesToDelete = new List<string>();  }
-
-						stringTypesToDelete.Add(stringType);
-						}
-					else
-						{  fileNumbers.SetTo(newFileNumbers);  }
 					}
 
-				if (stringTypesToDelete != null)
-					{
-					foreach (var stringTypeToDelete in stringTypesToDelete)
-						{  buildState.UsedMenuDataFiles.Remove(stringTypeToDelete);  }
-					}
-
-
-				// All the key/value pairs that already existed in the build state were updated or deleted.  Now we need to add any that 
-				// didn't already exist.
-
-				foreach (var newMenuDataFileInfo in newMenuDataFiles)
-					{
-					var hierarchy = newMenuDataFileInfo.Key;
-					var newFileNumbers = newMenuDataFileInfo.Value;
-
-					string stringType;
-
-					if (hierarchy == Hierarchy.File)
-						{  stringType = "files";  }
-					else if (hierarchy == Hierarchy.Class)
-						{  stringType = "classes";  }
-					else if (hierarchy == Hierarchy.Database)
-						{  stringType = "database";  }
-					else
-						{  throw new NotImplementedException();  }
-
-					if (!buildState.UsedMenuDataFiles.ContainsKey(stringType))
-						{  buildState.UsedMenuDataFiles.Add(stringType, newFileNumbers);  }
-					}
+				buildState.usedMenuDataFiles = newMenuDataFiles;
 				}
+
+			finally
+				{  buildState.Unlock();  }
 			}
 
 		}
