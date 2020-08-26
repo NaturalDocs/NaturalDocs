@@ -442,6 +442,16 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			}
 
 
+		/* Function: Duplicate
+		 * Creates and returns a new NumberSet with the same value as this one.  It will be an independent copy so changing
+		 * one will not affect the other.
+		 */
+		public NumberSet Duplicate ()
+			{
+			return new NumberSet(this);
+			}
+
+
 		/* Function: Clear
 		 * Removes all entries from the set, making it empty.
 		 */
