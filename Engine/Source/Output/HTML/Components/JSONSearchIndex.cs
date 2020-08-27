@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.JSONSearchIndex
  * ____________________________________________________________________________
  * 
- * A helper class to build JavaScript search data for <HTML.Builders>.  See <JavaScript Search Data> for the
+ * A helper class to build JavaScript search data for <HTML.Targets>.  See <JavaScript Search Data> for the
  * output format.
  * 
  * Topic: Usage
@@ -54,8 +54,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// The searchIndex parameter is really just for API consistency with the other JSON builders.  We can get it from the context.
 			#if DEBUG
-			if ((object)searchIndex != (object)context.Builder.SearchIndex)
-				{  throw new Exception("The search index passed to ConvertToJSON must be the same as the one in the context's builder.");  }
+			if ((object)searchIndex != (object)context.Target.SearchIndex)
+				{  throw new Exception("The search index passed to ConvertToJSON must be the same as the one in the context's target.");  }
 			#endif
 
 			// That's it.  We're going to build the JSON for the data files on demand, so this function is also just for API consistency with
@@ -68,7 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildIndexDataFile ()
 			{
-			var prefixes = context.Builder.SearchIndex.UsedPrefixes();
+			var prefixes = context.Target.SearchIndex.UsedPrefixes();
 
 			prefixes.Sort(
 				delegate (string a, string b)
@@ -124,17 +124,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(Paths.SearchIndex.OutputFolder(context.Builder.OutputFolder));  
+				System.IO.Directory.CreateDirectory(Paths.SearchIndex.OutputFolder(context.Target.OutputFolder));  
 				}
 			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
 					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
-									Paths.SearchIndex.OutputFolder(context.Builder.OutputFolder), e.Message) 
+									Paths.SearchIndex.OutputFolder(context.Target.OutputFolder), e.Message) 
 					);
 				}
 
-			System.IO.File.WriteAllText(Paths.SearchIndex.IndexOutputFile(context.Builder.OutputFolder), output.ToString());
+			System.IO.File.WriteAllText(Paths.SearchIndex.IndexOutputFile(context.Target.OutputFolder), output.ToString());
 			}
 
 
@@ -154,7 +154,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (keywordEntries == null || keywordEntries.Count == 0)
 				{
-				context.Builder.DeleteOutputFileIfExists( Paths.SearchIndex.PrefixOutputFile(context.Builder.OutputFolder, prefix) );
+				context.Target.DeleteOutputFileIfExists( Paths.SearchIndex.PrefixOutputFile(context.Target.OutputFolder, prefix) );
 				return;
 				}
 
@@ -226,7 +226,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Write it to the file
 
-			Path path = Paths.SearchIndex.PrefixOutputFile(context.Builder.OutputFolder, prefix);
+			Path path = Paths.SearchIndex.PrefixOutputFile(context.Target.OutputFolder, prefix);
 
 			try
 				{  
@@ -601,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append(",\"");
 
-			Context fileContext = new Context(context.Builder, topicEntry.WrappedTopic.FileID, topicEntry.WrappedTopic);
+			Context fileContext = new Context(context.Target, topicEntry.WrappedTopic.FileID, topicEntry.WrappedTopic);
 			output.StringEscapeAndAppend(fileContext.HashPath);
 
 			output.Append('"');
@@ -610,7 +610,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				output.Append(",\"");
 
-				Context classContext = new Context(context.Builder, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString, 
+				Context classContext = new Context(context.Target, topicEntry.WrappedTopic.ClassID, topicEntry.WrappedTopic.ClassString, 
 																	  topicEntry.WrappedTopic);
 				output.StringEscapeAndAppend(classContext.HashPath);
 
@@ -668,7 +668,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public SearchIndex.Manager SearchIndex
 			{
 			get
-				{  return context.Builder.SearchIndex;  }
+				{  return context.Target.SearchIndex;  }
 			}
 
 

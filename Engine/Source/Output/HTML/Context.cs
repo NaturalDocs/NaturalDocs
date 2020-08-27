@@ -33,9 +33,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context with the passed parameters.
 		 */
-		public Context (HTML.Builder builder, PageLocation page = default, Topic topic = null)
+		public Context (HTML.Target target, PageLocation page = default, Topic topic = null)
 			{
-			this.builder = builder;
+			this.target = target;
 			this.page = page;
 			this.topic = topic;
 			}
@@ -43,9 +43,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context that includes a source file page.
 		 */
-		public Context (HTML.Builder builder, int fileID, Topic topic = null)
+		public Context (HTML.Target target, int fileID, Topic topic = null)
 			{
-			this.builder = builder;
+			this.target = target;
 			this.page = new PageLocation(fileID);
 			this.topic = topic;
 			}
@@ -53,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Constructor: Context
 		 * Creates a context that includes a class page.
 		 */
-		public Context (HTML.Builder builder, int classID, Symbols.ClassString classString, Topic topic = null)
+		public Context (HTML.Target target, int classID, Symbols.ClassString classString, Topic topic = null)
 			{
 			#if DEBUG
 			if (classString != null && classID == 0)
@@ -62,7 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  throw new Exception("Can't create a Context from a class ID when its string isn't known.");  }
 			#endif
 
-			this.builder = builder;
+			this.target = target;
 			this.page = new PageLocation(classID, classString);
 			this.topic = topic;
 			}
@@ -73,13 +73,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// __________________________________________________________________________
 
 
-		/* Property: Builder
-		 * The <HTML.Builder> associated with this context.
+		/* Property: Target
+		 * The <HTML.Target> associated with this context.
 		 */
-		public HTML.Builder Builder
+		public HTML.Target Target
 			{
 			get
-				{  return builder;  }
+				{  return target;  }
 			}
 
 
@@ -117,31 +117,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{
-				if (builder == null || page.IsNull)
+				if (target == null || page.IsNull)
 					{  throw new NullReferenceException();  }
 
 				if (page.IsSourceFile)
 					{
-					var file = builder.EngineInstance.Files.FromID(page.FileID);
-					var fileSource = builder.EngineInstance.Files.FileSourceOf(file);
+					var file = target.EngineInstance.Files.FromID(page.FileID);
+					var fileSource = target.EngineInstance.Files.FileSourceOf(file);
 
 					if (fileSource == null)
 						{  throw new InvalidOperationException();  }
 
 					Path relativePath = fileSource.MakeRelative(file.FileName);
 
-					return Paths.SourceFile.OutputFile(builder.OutputFolder, fileSource.Number, relativePath);
+					return Paths.SourceFile.OutputFile(target.OutputFolder, fileSource.Number, relativePath);
 					}
 
 				else if (page.IsClass)
 					{
-					var language = builder.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
-					return Paths.Class.OutputFile(builder.OutputFolder, language.SimpleIdentifier, page.ClassString.Symbol);
+					var language = target.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
+					return Paths.Class.OutputFile(target.OutputFolder, language.SimpleIdentifier, page.ClassString.Symbol);
 					}
 
 				else if (page.IsDatabase)
 					{
-					return Paths.Database.OutputFile(builder.OutputFolder, page.ClassString.Symbol);
+					return Paths.Database.OutputFile(target.OutputFolder, page.ClassString.Symbol);
 					}
 
 				else
@@ -218,13 +218,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				string fileHashPath;
 
-				if (builder == null || page.IsNull)
+				if (target == null || page.IsNull)
 					{  throw new NullReferenceException();  }
 
 				if (page.IsSourceFile)
 					{
-					var file = builder.EngineInstance.Files.FromID(page.FileID);
-					var fileSource = builder.EngineInstance.Files.FileSourceOf(file);
+					var file = target.EngineInstance.Files.FromID(page.FileID);
+					var fileSource = target.EngineInstance.Files.FileSourceOf(file);
 
 					if (fileSource == null)
 						{  throw new InvalidOperationException();  }
@@ -236,7 +236,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				else if (page.IsClass)
 					{
-					var language = builder.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
+					var language = target.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
 					fileHashPath = Paths.Class.HashPath(language.SimpleIdentifier, page.ClassString.Symbol);
 					}
 
@@ -305,18 +305,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// __________________________________________________________________________
 
 
-		/* var: builder
-		 * The <HTML.Builder> being built for.
+		/* var: target
+		 * The <HTML.Target> associated with this context.
 		 */
-		private readonly HTML.Builder builder;
+		private readonly HTML.Target target;
 
 		/* var: page
-		 * The <PageLocation> being built for, or null if it's not relevant.
+		 * The <PageLocation> associated with this context, or null if it's not relevant.
 		 */
 		private readonly PageLocation page;
 
 		/* var: topic
-		 * The <Topic> being built for, or null if it's not relevant.
+		 * The <Topic> associated with this context, or null if it's not relevant.
 		 */
 		private Topic topic;
 

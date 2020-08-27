@@ -5,10 +5,10 @@
  * A file source that handles monitoring all the style files, both project and system.
  * 
  * All output targets must load the styles they use with <Styles.Manager>, since it only submits files from its loaded
- * styles to <Files.Manager>.  Since style references across all output builders are pooled, you cannot rely on file 
- * deletion notices when a style is removed from a particular builder.  It may be referenced by other builders and 
+ * styles to <Files.Manager>.  Since style references across all output targets are pooled, you cannot rely on file 
+ * deletion notices when a style is removed from a particular target.  It may be referenced by other targets and 
  * thus still be seen as a valid part of the project by <Files.Manager>.  Also, when a new style is added you should tell
- * <Styles.Manager> to reparse everything, since the style may already be in use by another builder and thus you 
+ * <Styles.Manager> to reparse everything, since the style may already be in use by another target and thus you 
  * won't get the new/change notice automatically.
  * 
  */
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			{
 			get 
 				{  
-				// Since we only have one FileSource for all the combined styles in all the output builders, we don't need to append
+				// Since we only have one FileSource for all the combined styles in all the output targets, we don't need to append
 				// any sort of path or style name information.
 				return "Styles:";  
 				}

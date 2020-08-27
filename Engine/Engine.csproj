@@ -54,7 +54,7 @@
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
-    <Compile Include="Source\Output\HTML\Builder.Events.cs" />
+    <Compile Include="Source\Output\HTML\Target.Events.cs" />
     <Compile Include="Source\Output\HTML\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\HTML\BuildState_nd.cs" />
     <Compile Include="Source\Output\HTML\Config_nd.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="Source\Languages\Languages_nd.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Languages\Languages_txt.cs" />
-    <Compile Include="Source\Output\HTML\Builder.SearchIndex.cs" />
+    <Compile Include="Source\Output\HTML\Target.SearchIndex.cs" />
     <Compile Include="Source\Output\HTML\BuildState.cs" />
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
@@ -213,10 +213,10 @@
     <Compile Include="Source\Exceptions\Thread.cs" />
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
-    <Compile Include="Source\Output\HTML\Builder.Class.cs" />
-    <Compile Include="Source\Output\HTML\Builder.Menu.cs" />
-    <Compile Include="Source\Output\HTML\Builder.Source.cs" />
-    <Compile Include="Source\Output\HTML\Builder.Styles.cs" />
+    <Compile Include="Source\Output\HTML\Target.Class.cs" />
+    <Compile Include="Source\Output\HTML\Target.Menu.cs" />
+    <Compile Include="Source\Output\HTML\Target.Source.cs" />
+    <Compile Include="Source\Output\HTML\Target.Styles.cs" />
     <Compile Include="Source\Output\HTML\Components\Menu.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Container.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Entry.cs" />
@@ -258,8 +258,8 @@
     <Compile Include="Source\Output\HTML\SearchIndex\IChangeWatcher.cs" />
     <Compile Include="Source\Output\HTML\SearchIndex\Manager.cs" />
     <Compile Include="Source\StringBuilderExtensions.cs" />
-    <Compile Include="Source\Output\Builder.cs" />
-    <Compile Include="Source\Output\HTML\Builder.cs" />
+    <Compile Include="Source\Output\Target.cs" />
+    <Compile Include="Source\Output\HTML\Target.cs" />
     <Compile Include="Source\Output\Manager.cs" />
     <Compile Include="Source\SQLite\API.cs" />
     <Compile Include="Source\SQLite\Connection.cs" />

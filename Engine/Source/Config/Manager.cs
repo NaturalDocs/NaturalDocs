@@ -370,7 +370,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					usedOutputNumbers.Add(target.Number);
 
 					// If we're assigning it for the first time, purge it on the off chance that there's data left over from another
-					// builder.
+					// target.
 					outputNumbersToPurge.Add(target.Number);
 					}
 				}
@@ -484,14 +484,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 			
 
-			// Create builders for Output.Manager
+			// Create targets for Output.Manager
 			
 			foreach (var target in combinedConfig.OutputTargets)
 				{
 				// Merge the global project info so it has a complete configuration.  The configuration files have already been saved without it.
 				MergeProjectInfo(target.ProjectInfo, combinedConfig.ProjectInfo);
 
-				EngineInstance.Output.AddBuilder(CreateBuilder(target));  
+				EngineInstance.Output.AddTarget(CreateOutputTarget(target));  
 				}
 
 
@@ -877,13 +877,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  throw new NotImplementedException();  }
 			}
 
-		/* Function: CreateBuilder
-		 * Creates and returns an <Output.Builder> from the passed target config.
+		/* Function: CreateOutputTarget
+		 * Creates and returns an <Output.Target> from the passed target config.
 		 */
-		protected virtual Output.Builder CreateBuilder (Targets.OutputBase target)
+		protected virtual Output.Target CreateOutputTarget (Targets.OutputBase target)
 			{
 			if (target is Targets.HTMLOutputFolder)
-				{  return new Output.HTML.Builder(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }
+				{  return new Output.HTML.Target(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }
 			else
 				{  throw new NotImplementedException();  }
 			}

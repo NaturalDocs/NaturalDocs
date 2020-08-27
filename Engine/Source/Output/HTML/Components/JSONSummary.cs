@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Save it
 
-			System.IO.StreamWriter summaryFile = context.Builder.CreateTextFileAndPath(context.SummaryFile);
+			System.IO.StreamWriter summaryFile = context.Target.CreateTextFileAndPath(context.SummaryFile);
 
 			try
 				{  summaryFile.Write(output.ToString());  }
@@ -366,7 +366,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			for (int topicIndex = 0; topicIndex < topics.Count; topicIndex++)
 				{
 				var topic = topics[topicIndex];
-				var topicContext = new Context(context.Builder, context.Page, topic);
+				var topicContext = new Context(context.Target, context.Page, topic);
 
 				if (addWhitespace)
 					{  json.Append(' ', IndentWidth * 2);  }

@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.Builder
+ * Class: CodeClear.NaturalDocs.Engine.Output.Target
  * ____________________________________________________________________________
  * 
- * The base class for an output builder.
+ * The base class for an output target.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -11,33 +11,29 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Styles;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	abstract public class Builder : Module
+	abstract public class Target : Module
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Function: Builder
+		/* Function: Target
 		 */
-		public Builder (Output.Manager manager) : base (manager.EngineInstance)
+		public Target (Output.Manager manager) : base (manager.EngineInstance)
 			{
 			this.manager = manager;
 			}
 			
 		
 		/* Function: Start
-		 * Initializes the builder and returns whether all the settings are correct and that execution is ready to begin.  
+		 * Initializes the target and returns whether all the settings are correct and that execution is ready to begin.  
 		 * If there are problems they are added as <Errors> to the errorList parameter.
 		 */
 		virtual public bool Start (Errors.ErrorList errorList)
@@ -77,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Function: Cleanup
-		 * Cleans up the builder's internal data when everything is up to date.  The default implementation does nothing.  You
+		 * Cleans up the target's internal data when everything is up to date.  The default implementation does nothing.  You
 		 * can pass a <CancelDelegate> to interrupt the process if necessary.
 		 */
 		virtual public void Cleanup (CancelDelegate cancelDelegate)
@@ -133,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Property: Manager
-		 * The <Output.Manager> associated with this builder.
+		 * The <Output.Manager> associated with this target.
 		 */
 		public Output.Manager Manager
 			{
@@ -143,7 +139,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 
 
 		/* Property: Style
-		 * The <Style> that applies to this builder, or null if none.
+		 * The <Style> that applies to this target, or null if none.
 		 */
 		virtual public Style Style
 			{

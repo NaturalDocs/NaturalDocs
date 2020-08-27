@@ -81,16 +81,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			Context targetContext;
 
 			if (context.Page.InHierarchy && targetTopic.ClassString != null)
-				{  targetContext = new Context(context.Builder, targetTopic.ClassID, targetTopic.ClassString, targetTopic);  }
+				{  targetContext = new Context(context.Target, targetTopic.ClassID, targetTopic.ClassString, targetTopic);  }
 			else
-				{  targetContext = new Context(context.Builder, targetTopic.FileID, targetTopic);  }
+				{  targetContext = new Context(context.Target, targetTopic.FileID, targetTopic);  }
 
 
 			// Find the path from the current output file back to index.html.  The target URL needs to include this because relative paths are
 			// based on the the iframe's location.
 
 			Path currentOutputFolder = Context.OutputFile.ParentFolder;
-			Path indexFile = Context.Builder.OutputFolder + "/index.html";
+			Path indexFile = Context.Target.OutputFolder + "/index.html";
 			Path pathToIndex = indexFile.MakeRelativeTo(currentOutputFolder);
 
 

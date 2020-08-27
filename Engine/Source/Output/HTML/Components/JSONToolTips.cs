@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Save it
 
-			System.IO.StreamWriter toolTipsFile = context.Builder.CreateTextFileAndPath(context.ToolTipsFile);
+			System.IO.StreamWriter toolTipsFile = context.Target.CreateTextFileAndPath(context.ToolTipsFile);
 
 			try
 				{  toolTipsFile.Write(output.ToString());  }
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Save it
 
-			System.IO.StreamWriter summaryToolTipsFile = context.Builder.CreateTextFileAndPath(context.SummaryToolTipsFile);
+			System.IO.StreamWriter summaryToolTipsFile = context.Target.CreateTextFileAndPath(context.SummaryToolTipsFile);
 
 			try
 				{  summaryToolTipsFile.Write(output.ToString());  }

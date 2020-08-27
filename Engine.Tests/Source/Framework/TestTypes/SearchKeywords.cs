@@ -32,7 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 				{  return "(No topics found)";  }
 
 			StringBuilder output = new StringBuilder();
-			var searchIndex = (EngineInstance.Output.Builders[0] as Engine.Output.HTML.Builder).SearchIndex;
+			var searchIndex = (EngineInstance.Output.Targets[0] as Engine.Output.HTML.Target).SearchIndex;
 
 			for (int i = 0; i < topics.Count; i++)
 				{

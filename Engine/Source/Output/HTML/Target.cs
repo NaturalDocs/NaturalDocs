@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Target
  * ____________________________________________________________________________
  * 
- * An output builder for HTML.
+ * A HTML output target.
  * 
  * 
  * Multithreading: Thread Safety Notes
@@ -33,14 +33,14 @@ using CodeClear.NaturalDocs.Engine.Styles;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class Builder : Output.Builder, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
+	public partial class Target : Output.Target, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public Builder (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
+		public Target (Output.Manager manager, Config.Targets.HTMLOutputFolder config) : base (manager)
 			{
 			accessLock = new object();
 
@@ -1104,7 +1104,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Property: Style
-		 * The <Style> that applies to this builder, or null if none.
+		 * The <Style> that applies to this target, or null if none.
 		 */
 		override public Style Style
 			{

@@ -13,8 +13,8 @@
  * File: Project.nd
  * 
  *		A binary file which stores some of the previous settings of <Project.txt>.  Only settings relevant to the global operation of 
- *		the program are stored.  Information that is only relevant to the output builders is not because whether a change is significant
- *		and what its effects are are dependent on the builders themselves.  They are expected to track any changes that are relevant
+ *		the program are stored.  Information that is only relevant to the output targets is not because whether a change is significant
+ *		and what its effects are are dependent on the targets themselves.  They are expected to track any changes that are relevant
  *		themselves.
  *		
  *		Format:
@@ -57,7 +57,7 @@
  *			
  *			A new output target requires a full rebuild, and knowing its number is important for allowing it to keep intermediate data.
  *			Project information like Title is not stored, either at the global or output target level, as it is only relevant to the output 
- *			builders.
+ *			targets.
  *			
  * 
  *		Revisions:

@@ -47,17 +47,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public Engine.Instance EngineInstance
 			{
 			get
-				{  return Builder.EngineInstance;  }
+				{  return Target.EngineInstance;  }
 			}
 
 
-		/* Property: Builder
-		 * The <HTML.Builder> associated with this component.
+		/* Property: Target
+		 * The <HTML.Target> associated with this component.
 		 */
-		public HTML.Builder Builder
+		public HTML.Target Target
 			{
 			get
-				{  return context.Builder;  }
+				{  return context.Target;  }
 			}
 
 

@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Builder
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Target
  * ____________________________________________________________________________
  * 
  */
@@ -16,7 +16,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class Builder
+	public partial class Target
 		{
 
 		// Group: Functions

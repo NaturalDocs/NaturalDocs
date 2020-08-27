@@ -73,13 +73,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			try
 				{  
 				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory( Paths.Menu.OutputFolder(context.Builder.OutputFolder) );
+				System.IO.Directory.CreateDirectory( Paths.Menu.OutputFolder(context.Target.OutputFolder) );
 				}
 			catch (Exception e)
 				{
 				throw new Exceptions.UserFriendly( 
 					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
-									Paths.Menu.OutputFolder(context.Builder.OutputFolder), e.Message) 
+									Paths.Menu.OutputFolder(context.Target.OutputFolder), e.Message) 
 					);
 				}
 
@@ -393,7 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			int dataFileNumber = usedDataFiles.LowestAvailable(hierarchy);
 			usedDataFiles.Add(hierarchy, dataFileNumber);
 
-			container.DataFileName = Paths.Menu.OutputFile(Builder.OutputFolder, hierarchy, dataFileNumber, fileNameOnly: true);
+			container.DataFileName = Paths.Menu.OutputFile(Target.OutputFolder, hierarchy, dataFileNumber, fileNameOnly: true);
 
 
 			// The data file has to include all the members in this container no matter what, so we don't check the size against the limit
@@ -531,7 +531,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("]);");
 
-				System.IO.File.WriteAllText(Paths.Menu.OutputFolder(Builder.OutputFolder) + "/" + fileName, output.ToString());
+				System.IO.File.WriteAllText(Paths.Menu.OutputFolder(Target.OutputFolder) + "/" + fileName, output.ToString());
 				}
 			}
 
@@ -688,7 +688,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			tabInformation.Append("]);");
 
-			System.IO.File.WriteAllText( Paths.Menu.TabOutputFile(Builder.OutputFolder), tabInformation.ToString() );
+			System.IO.File.WriteAllText( Paths.Menu.TabOutputFile(Target.OutputFolder), tabInformation.ToString() );
 			}
 
 

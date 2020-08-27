@@ -39,7 +39,7 @@
  *		
  *		- <Styles.Manager> is next because it adds a FileSource to <Files.Manager> for dealing with style files.
  *		
- *		- <Output.Manager> is next because <Output.Builders> may need to be added as <Files.Manager> and <CodeDB.Manager>
+ *		- <Output.Manager> is next because <Output.Targets> may need to be added as <Files.Manager> and <CodeDB.Manager>
  *		  watchers.  They also need to load their styles from <Styles.Manager>.  They can also set the rebuild/reparse flags that 
  *		  CodeDB and <Styles.Manager> need to interpret.
  *		   
@@ -246,7 +246,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * 
 		 * It is important to run this process, but it is also important that it only be run when all other operations are complete.
 		 * For example, one of the things it does is remove entries and IDs of deleted files.  This can't be done immediately 
-		 * because builders may not have handled the deletions yet and rely on that entry.  Once everything is up to date 
+		 * because output targets may not have handled the deletions yet and rely on that entry.  Once everything is up to date 
 		 * however you can assume nothing else needs them.
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)

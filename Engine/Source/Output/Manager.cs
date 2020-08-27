@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Output.Manager
  * ____________________________________________________________________________
  * 
- * A class to manage all the output builders.
+ * A class to manage all the output targets.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			builders = new List<Builder>();
+			targets = new List<Target>();
 			}
 			
 			
@@ -38,18 +38,18 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			if (!strictRulesApply)
 				{
-				foreach (Builder builder in builders)
-					{  builder.Dispose();  }
+				foreach (var target in targets)
+					{  target.Dispose();  }
 				}
 			}
 
 
-		/* Function: AddBuilder
-		 * Adds an <Output.Builder> to the list.  This can only be called before the class is started.
+		/* Function: AddTarget
+		 * Adds an <Output.Target> to the list.  This can only be called before the class is started.
 		 */
-		public void AddBuilder (Builder builder)
+		public void AddTarget (Target target)
 			{
-			builders.Add(builder);
+			targets.Add(target);
 			}
 			
 			
@@ -62,9 +62,9 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			bool success = true;
 			
-			foreach (Builder builder in builders)
+			foreach (var target in targets)
 				{
-				if (builder.Start(errorList) == false)
+				if (target.Start(errorList) == false)
 					{  success = false;  }
 				}
 				
@@ -84,12 +84,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		public void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
 			{
-			foreach (Builder builder in builders)
+			foreach (var target in targets)
 				{
 				if (cancelDelegate())
 					{  return;  }
 					
-				builder.WorkOnUpdatingOutput(cancelDelegate);
+				target.WorkOnUpdatingOutput(cancelDelegate);
 				}
 			}
 
@@ -108,12 +108,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		public void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
 			{
-			foreach (Builder builder in builders)
+			foreach (var target in targets)
 				{
 				if (cancelDelegate())
 					{  return;  }
 					
-				builder.WorkOnFinalizingOutput(cancelDelegate);
+				target.WorkOnFinalizingOutput(cancelDelegate);
 				}
 			}
 
@@ -124,21 +124,21 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		public void Cleanup (CancelDelegate cancelDelegate)
 			{
-			foreach (Builder builder in builders)
-				{  builder.Cleanup(cancelDelegate);  }
+			foreach (var target in targets)
+				{  target.Cleanup(cancelDelegate);  }
 			}
 			
 
 		/* Function: UnitsOfWorkRemaining
-		 * Returns a number representing how much work the builders have left to do.  What tasks the units represent can vary,
+		 * Returns a number representing how much work the targets have left to do.  What tasks the units represent can vary,
 		 * so this is intended simply to allow a percentage to be calculated.
 		 */
 		public long UnitsOfWorkRemaining ()
 			{
 			long value = 0;
 
-			foreach (Builder builder in builders)
-				{  value += builder.UnitsOfWorkRemaining();  }
+			foreach (var target in targets)
+				{  value += target.UnitsOfWorkRemaining();  }
 
 			return value;
 			}
@@ -149,13 +149,13 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// __________________________________________________________________________
 		
 		
-		/* Property: Builders
-		 * A read-only list of <Builders> managed by this module.  If there are none, the list will be empty instead of null.
+		/* Property: Targets
+		 * A read-only list of <Targets> managed by this module.  If there are none, the list will be empty instead of null.
 		 */
-		public IList<Builder> Builders
+		public IList<Target> Targets
 			{
 			get
-				{  return builders.AsReadOnly();  }
+				{  return targets.AsReadOnly();  }
 			}
 
 
@@ -163,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected List<Builder> builders;
+		protected List<Target> targets;
 
 		}
 	}

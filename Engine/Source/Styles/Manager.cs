@@ -245,8 +245,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Property: ReparseStyleFiles
-		 * If set to true, it will force reparsing of all files associated with styles.  Use this when adding a new style to a builder,
-		 * since if another builder already used that style they will not be parsed again otherwise.  You can only set this to true,
+		 * If set to true, it will force reparsing of all files associated with styles.  Use this when adding a new style to a target,
+		 * since if another target already used that style they will not be parsed again otherwise.  You can only set this to true,
 		 * you cannot set it back to false.
 		 */
 		public bool ReparseStyleFiles

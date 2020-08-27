@@ -21,7 +21,7 @@ Topic: File IDs
 
 	File IDs are assigned by <Files.Manager>.  First the IDs from the previous run are loaded from <Files.nd>.  Then as
 	the program executes, new files are added to it and old ones are culled by notifications provided by external code.
-	When it is notified of a file deletion, it first puts it on a list so that builders can claim and process it.  Even after
+	When it is notified of a file deletion, it first puts it on a list so that targets can claim and process it.  Even after
 	the file is successfully processed, the ID remains assigned and the file information for it remains intact.  Only after
 	<Files.Manager.Cleanup()> is called is the file information destroyed and the ID released.
 
@@ -32,8 +32,8 @@ Topic: Topic IDs
 	and the IDs are removed immediately when it deletes them.  However, they will still exist while the 
 	<CodeDB.IChangeWatchers> are being notified.
 	
-	Builders should not need deleted topic IDs to stick around.  They should be translating the add/change/delete events
-	into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
+	Output targets should not need deleted topic IDs to stick around.  They should be translating the add/change/delete 
+	events into the effects on the documentation, such as "rebuild file x".  They should not need them beyond the event
 	notification.
 
 
@@ -41,5 +41,5 @@ Topic: Class IDs
 
 	Class IDs are assigned by <CodeDB.Manager>.  They behave more like <file IDs> than <topic IDs> in that they
 	stick around even after all references are removed and only go away permanently once <CodeDB.Manager.Cleanup()>
-	is called.  This is because builders may be keeping a set of class IDs to rebuild later and will need to be able to look
+	is called.  This is because targets may be keeping a set of class IDs to rebuild later and will need to be able to look
 	up their <ClassStrings> even after the change notification was processed.

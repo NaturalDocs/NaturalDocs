@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			else
 				{
-				// Style and image files are only processed by output builders.  They're not in CodeDB so we don't need to do 
+				// Style and image files are only processed by output targets.  They're not in CodeDB so we don't need to do 
 				// anything here.
 				return ProcessFileResult.Success;
 				}
@@ -333,7 +333,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			else
 				{
-				// Style and image files are only processed by output builders.  They're not in CodeDB so we don't need to do 
+				// Style and image files are only processed by output targets.  They're not in CodeDB so we don't need to do 
 				// anything here.
 				return ProcessFileResult.Success;
 				}

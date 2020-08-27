@@ -46,9 +46,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		
 		/* Constructor: Manager
 		 */
-		public Manager (HTML.Builder builder) : base (builder.EngineInstance)
+		public Manager (HTML.Target target) : base (target.EngineInstance)
 			{
-			this.builder = builder;
+			this.target = target;
 			accessLock = new System.Threading.ReaderWriterLockSlim(System.Threading.LockRecursionPolicy.SupportsRecursion);
 			changeWatchers = new List<IChangeWatcher>();
 			prefixTopicIDs = null;
@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				{
 				try
 					{
-					SaveBinaryFile(Builder.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+					SaveBinaryFile(Target.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
 
 					// Prior to Natural Docs 2.1 SearchIndex.nd was saved in the main working data folder instead of the output target's.
 					// Clean it up if it still exists there.
@@ -87,7 +87,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			if (!EngineInstance.Config.ReparseEverything)
 				{
-				hasBinaryFile = LoadBinaryFile(Builder.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
+				hasBinaryFile = LoadBinaryFile(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
 				{
@@ -619,13 +619,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		// __________________________________________________________________________
 
 		
-		/* Property: Builder
-		 * The <HTML.Builder> this seach index is associated with.
+		/* Property: Target
+		 * The <HTML.Target> this seach index is associated with.
 		 */
-		public HTML.Builder Builder
+		public HTML.Target Target
 			{
 			get
-				{  return builder;  }
+				{  return target;  }
 			}
 
 
@@ -640,7 +640,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected HTML.Builder builder;
+		protected HTML.Target target;
 
 		protected System.Threading.ReaderWriterLockSlim accessLock;
 
