@@ -54,6 +54,7 @@
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
+    <Compile Include="Source\Output\HTML\Builder.Events.cs" />
     <Compile Include="Source\Output\HTML\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\HTML\BuildState_nd.cs" />
     <Compile Include="Source\Output\HTML\Config_nd.cs" />

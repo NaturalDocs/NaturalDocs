@@ -254,27 +254,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			}
 
-
-
-		// Group: Files.IChangeWatcher Functions
-		// __________________________________________________________________________
-
-
-		public void OnAddFile (File file)
-			{
-			unprocessedChanges.AddStyleFile(file.ID);
-			}
-
-		public void OnFileChanged (File file)
-			{
-			unprocessedChanges.AddStyleFile(file.ID);
-			}
-
-		public void OnDeleteFile (File file)
-			{
-			unprocessedChanges.AddStyleFile(file.ID);
-			}
-
 		}
 	}
 

@@ -40,29 +40,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			searchData.BuildPrefixDataFile(prefix, accessor, cancelDelegate);
 			}
 
-
-
-		// Group: SearchIndex.IChangeWatcher Functions
-		// __________________________________________________________________________
-
-
-		public void OnAddPrefix (string prefix, CodeDB.EventAccessor accessor)
-			{
-			unprocessedChanges.AddMainSearchFiles();
-			unprocessedChanges.AddSearchPrefix(prefix);  
-			}
-
-		public void OnUpdatePrefix (string prefix, CodeDB.EventAccessor accessor)
-			{
-			unprocessedChanges.AddSearchPrefix(prefix);
-			}
-
-		public void OnDeletePrefix (string prefix, CodeDB.EventAccessor accessor)
-			{
-			unprocessedChanges.AddMainSearchFiles();
-			unprocessedChanges.AddSearchPrefix(prefix);  
-			}
-
 		}
 	}
 
