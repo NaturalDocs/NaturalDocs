@@ -70,7 +70,7 @@
     <Compile Include="Source\Styles\Style_txt.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
-    <Compile Include="Source\Output\HTML\Components\PageContent.cs" />
+    <Compile Include="Source\Output\HTML\Components\TopicPage.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenu.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Container.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\Target.cs" />

@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.PageContent
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.TopicPage
  * ____________________________________________________________________________
  * 
- * Creates the page content for the <Topics> of a source file or class and all it's supporting JavaScript files.
+ * Creates the HTML page for the <Topics> of a source file or class and all it's supporting JavaScript files.
  * 
  * 
  * Threading: Not Thread Safe
@@ -23,16 +23,16 @@ using System.Text;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 	{
-	public class PageContent : Component
+	public class TopicPage : Page
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Constructor: PageContent
+		/* Constructor: TopicPage
 		 */
-		public PageContent (Context context) : base (context)
+		public TopicPage (Context context) : base (context)
 			{
 			}
 
@@ -298,16 +298,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					// Build the full HTML file
 
-					context.Target.BuildFile(context.OutputFile, pageTitle, html.ToString(), PageType.Content);
+					Build(context.OutputFile, pageTitle, html.ToString(), PageType.Content);
 
 
 					// Build summary and tooltips files
 
-					HTML.Components.JSONSummary summaryBuilder = new HTML.Components.JSONSummary(context);
+					JSONSummary summaryBuilder = new JSONSummary(context);
 					summaryBuilder.ConvertToJSON(topics, context);
 					summaryBuilder.BuildDataFile(pageTitle);
 
-					HTML.Components.JSONToolTips toolTipsBuilder = new HTML.Components.JSONToolTips(context);
+					JSONToolTips toolTipsBuilder = new JSONToolTips(context);
 					toolTipsBuilder.ConvertToJSON(topics, links, context);
 					toolTipsBuilder.BuildDataFileForSummary();
 
