@@ -143,7 +143,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (keywordEntries == null || keywordEntries.Count == 0)
 				{
-				context.Target.DeleteOutputFileIfExists( Paths.SearchIndex.PrefixOutputFile(context.Target.OutputFolder, prefix) );
+				if (System.IO.File.Exists(path))
+					{  System.IO.File.Delete(path);  }
+					
 				return;
 				}
 
