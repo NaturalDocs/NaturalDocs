@@ -531,7 +531,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				output.Append("]);");
 
-				System.IO.File.WriteAllText(Paths.Menu.OutputFolder(Target.OutputFolder) + "/" + fileName, output.ToString());
+				WriteTextFile(Paths.Menu.OutputFolder(Target.OutputFolder) + "/" + fileName, output.ToString());
 				}
 			}
 
@@ -688,7 +688,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			tabInformation.Append("]);");
 
-			System.IO.File.WriteAllText( Paths.Menu.TabOutputFile(Target.OutputFolder), tabInformation.ToString() );
+			WriteTextFile( Paths.Menu.TabOutputFile(Target.OutputFolder), tabInformation.ToString() );
 			}
 
 

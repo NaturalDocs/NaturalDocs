@@ -87,8 +87,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFileForContent ()
 			{
-			// Build the content
-
 			StringBuilder output = new StringBuilder();
 
 			output.Append("NDContentPage.OnToolTipsLoaded(");
@@ -99,15 +97,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(tooltipsJSON);
 			output.Append(");");
 
-
-			// Save it
-
-			System.IO.StreamWriter toolTipsFile = context.Target.CreateTextFileAndPath(context.ToolTipsFile);
-
-			try
-				{  toolTipsFile.Write(output.ToString());  }
-			finally
-				{  toolTipsFile.Dispose();  }
+			WriteTextFile(context.ToolTipsFile, output.ToString());
 			}
 
 
@@ -119,8 +109,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFileForSummary ()
 			{
-			// Build the content
-
 			StringBuilder output = new StringBuilder();
 
 			output.Append("NDSummary.OnToolTipsLoaded(\"" + context.HashPath.StringEscape() + "\",");
@@ -131,15 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(tooltipsJSON);
 			output.Append(");");
 
-
-			// Save it
-
-			System.IO.StreamWriter summaryToolTipsFile = context.Target.CreateTextFileAndPath(context.SummaryToolTipsFile);
-
-			try
-				{  summaryToolTipsFile.Write(output.ToString());  }
-			finally
-				{  summaryToolTipsFile.Dispose();  }
+			WriteTextFile(context.SummaryToolTipsFile, output.ToString());
 			}
 
 

@@ -99,9 +99,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildDataFile (string pageTitle)
 			{
-
-			// Build the content
-
 			StringBuilder output = new StringBuilder();
 
 			output.Append(
@@ -140,15 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			output.Append(topicsSummaryJSON);
 			output.Append(");");
 
-
-			// Save it
-
-			System.IO.StreamWriter summaryFile = context.Target.CreateTextFileAndPath(context.SummaryFile);
-
-			try
-				{  summaryFile.Write(output.ToString());  }
-			finally
-				{  summaryFile.Dispose();  }
+			WriteTextFile(context.SummaryFile, output.ToString());
 			}
 
 

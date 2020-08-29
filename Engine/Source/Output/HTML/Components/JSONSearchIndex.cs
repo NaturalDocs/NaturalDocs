@@ -121,20 +121,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			output.Append("]);");
 
-			try
-				{  
-				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				System.IO.Directory.CreateDirectory(Paths.SearchIndex.OutputFolder(context.Target.OutputFolder));  
-				}
-			catch (Exception e)
-				{
-				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
-									Paths.SearchIndex.OutputFolder(context.Target.OutputFolder), e.Message) 
-					);
-				}
-
-			System.IO.File.WriteAllText(Paths.SearchIndex.IndexOutputFile(context.Target.OutputFolder), output.ToString());
+			WriteTextFile(Paths.SearchIndex.IndexOutputFile(context.Target.OutputFolder), output.ToString());
 			}
 
 
@@ -147,6 +134,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void BuildPrefixDataFile (string prefix, CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
 			{
+			Path path = Paths.SearchIndex.PrefixOutputFile(context.Target.OutputFolder, prefix);
+
 
 			// Get and sort the keywords and topics
 
@@ -226,23 +215,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Write it to the file
 
-			Path path = Paths.SearchIndex.PrefixOutputFile(context.Target.OutputFolder, prefix);
-
-			try
-				{  
-				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				// We can't use SearchIndex_DataFolder because we may need a subfolder of it.
-				System.IO.Directory.CreateDirectory(path.ParentFolder);
-				}
-			catch (Exception e)
-				{
-				throw new Exceptions.UserFriendly( 
-					Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)", 
-									path.ParentFolder, e.Message) 
-					);
-				}
-
-			System.IO.File.WriteAllText(path, output.ToString());
+			WriteTextFile(path, output.ToString());
 			}
 
 

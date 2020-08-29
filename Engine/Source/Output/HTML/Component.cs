@@ -37,6 +37,40 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 
+		// Group: Static Functions
+		// __________________________________________________________________________
+
+
+		/* Function: WriteTextFile
+		 * Creates a UTF-8 text file at the specified path, creating any subfolders as required and overwriting the file if
+		 * it already exists.
+		 */
+		static public void WriteTextFile (Path path, string content)
+			{
+			try
+				{  
+				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
+				System.IO.Directory.CreateDirectory(path.ParentFolder);  
+				}
+			catch (Exception e)
+				{
+				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
+																					 path.ParentFolder, e.Message) );
+				}
+				
+			try
+				{  
+				System.IO.File.WriteAllText(path, content, System.Text.Encoding.UTF8);
+				}
+			catch (Exception e)
+				{
+				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name, exception)", 
+																					 path, e.Message) );
+				}
+			}
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 

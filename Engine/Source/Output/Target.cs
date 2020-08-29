@@ -86,41 +86,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 * file is counted as 10 units so everything else should be scored relative to that.
 		 */
 		abstract public long UnitsOfWorkRemaining ();
-			
-			
-			
-		// Group: Path Functions
-		// __________________________________________________________________________
-		
-		
-		/* Function: CreateTextFileAndPath
-		 * Creates a UTF-8 text file at the specified path, creating any subfolders as required.
-		 */
-		public StreamWriter CreateTextFileAndPath (Path path)
-			{
-			try
-				{  
-				// This will create multiple subdirectories if needed, and will not throw an exception if it already exists.
-				Directory.CreateDirectory(path.ParentFolder);  
-				}
-			catch (Exception e)
-				{
-				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFolder(name, exception)",
-																					 path.ParentFolder, e.Message) );
-				}
-				
-			StreamWriter streamWriter = null;
-			
-			try
-				{  streamWriter = File.CreateText(path);  }
-			catch (Exception e)
-				{
-				throw new Exceptions.UserFriendly( Locale.Get("NaturalDocs.Engine", "Error.CouldNotCreateOutputFile(name, exception)", 
-																					 path, e.Message) );
-				}
-				
-			return streamWriter;
-			}
 
 
 
