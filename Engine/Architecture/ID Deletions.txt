@@ -2,9 +2,9 @@
 Title: ID Deletions
 _______________________________________________________________________________
 
-This is actually an important issue to keep track of because ID numbers are managed in <IDObjects.Managers> and/or
+This is an important issue to keep track of because ID numbers are managed in <IDObjects.Managers> and/or
 <IDObjects.NumberSets>.  When a NumberSet assigns a new ID number it gives out the lowest one available, which
-means that IDs which are deleted will probably be reused right away.  That means it's important to keep track of exactly 
+means that IDs which are deleted will probably be reused right away.  That means it's important to manage exactly 
 when they are deleted so that you know there are no references left behind when it happens.  Otherwise an ID number's 
 meaning may change out from under code unexpectedly.
 
@@ -20,9 +20,8 @@ Topic: Comment Type, Language, and Tag IDs
 Topic: File IDs
 
 	File IDs are assigned by <Files.Manager>.  First the IDs from the previous run are loaded from <Files.nd>.  Then as
-	the program executes, new files are added to it and old ones are culled by notifications provided by external code.
-	When it is notified of a file deletion, it first puts it on a list so that targets can claim and process it.  Even after
-	the file is successfully processed, the ID remains assigned and the file information for it remains intact.  Only after
+	the program executes, new files are added to it and old files are marked deleted.  However, a deleted file's ID remains
+	assigned and the file information for it remains intact so other code can process the deletion.  Only after
 	<Files.Manager.Cleanup()> is called is the file information destroyed and the ID released.
 
 

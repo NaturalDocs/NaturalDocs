@@ -3,48 +3,19 @@ Title: Code Conventions
 _______________________________________________________________________________
 
 
-Topic: Naming
-
-	Properties, Variables, and Constants:
+Topic: WorkOn Functions
 	
-		- Variables start with a lowercase letter and otherwise use internal capitalization, such as myVariable.
-		- Properties start with a capital letter to distinguish them, so the property that handles myVariable can be MyVariable.
-		- Constants are named like properties because they are closer to them in use.  They are sometimes public parts of a class,
-		  and properties can sometimes be read-only as constants always are.  Thus constants start with a capital letter, such as
-		  MyConstant, which also allows the implementation to switch between constants and properties without changes in the calling 
-		  code.
-
-	Events and Thread Synchronization Objects:
-
-		- Events in the engine are capitalized and end with "Event", such as FileChangeEvent.  Events in UI code are not in order to
-		  maintain consistency with WinForms.  While complete consistency would seem ideal, I find engine code is much clearer with 
-		  "Event" appended since there are only a few scattered around.  UI code is different because it is almost entirely event
-		  driven, and maintaining consistency with WinForms is required in order to seamlessly derive from its classes.
-		  
-		  Events are capitalized because they are public members of the class.
-		  
-		- Event handlers are prefixed with "On" in order to maintain consistency with WinForms, such as OnFileChange.  There's no
-		  need to break the convention in the engine.
-		  
-		- Event trigger functions start with "Trigger" and end with "Event", such as TriggerFileChangeEvent.
-		  
-		- Thread synchronization objects are prefixed with "When", such as WhenThereAreFileChanges.  They are capitalized 
-		  because they are also public members of the class.
-		  
-	Multithreaded Code:
-	
-		- Functions prefixed with "WorkOn" are meant for worker thread processing, such as WorkOnAddingAllFiles().  They have 
-		  <CancelDelegate> parameters so they can be interrupted, and are designed so that more than one thread can call the
-		  function and they will split the workload between them.  However, if the multithreading model is not desired, they can
-		  be called from a single thread with <Delegates.NeverCancel> and it will behave as a normal function.
+	Functions prefixed with "WorkOn" are meant for worker thread processing, such as WorkOnAddingAllFiles().  They have 
+	<CancelDelegate> parameters so they can be interrupted, and are designed so that more than one thread can call the
+	function and they will split the workload between them.  However, if the multithreading model is not desired, they can
+	be called from a single thread with <Delegates.NeverCancel> and it will behave as a normal function.
 
 
 Topic: Dependency Comments
 
-	Sometimes functions depend on assumed behaviors in other functions, implementation details that may not be obvious from 
-	the outside.  Normally you wouldn't want to tightly couple function implementations like this but it may be important for efficiency,
-	and part of the feature's design was FunctionA doing X specifically so FunctionB can do Y.  When this happens, _both_ functions 
-	_must_ contain a dependency comment:
+	Sometimes functions depend on assumed behaviors in other functions or implementation details that may not be obvious 
+	from 	the outside.  Normally you would want to avoid this but sometimes it may be important for efficiency.  When this 
+	happens, *both* functions *must* contain a dependency comment:
 
 	> void FunctionA ()
 	>    {
@@ -58,7 +29,7 @@ Topic: Dependency Comments
 	>    ...
 	>    }
 
-	Each comment _must_ explicitly name the other functions involved and explain the behavior.  This is so when someone 
+	Each comment *must* explicitly name the other functions involved and explain the behavior.  This is so when someone 
 	changes one of the functions, it's obvious which other functions depend on the behavior, what that behavior is, and why.
 	Then the programmer won't inadvertantly change that behavior without being aware of the side effects, and if it needs to 
 	be changed anyway they can update the dependent functions.  These comments also start with "DEPENDENCY:" by convention 

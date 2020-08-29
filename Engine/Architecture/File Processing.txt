@@ -17,19 +17,20 @@ Topic: Setup
 
 Topic: Initial Scan
 
-	Client code calls <Files.Manager.WorkOnAddingAllFiles()> which iterates through every file and adds it to 
-	<Files.Manager>.  If the file was previously unknown or the timestamp has changed, the file is new or changed.
+	Client code calls <Files.Manager.CreateAdderProcess()> and executes it, which iterates through every file and 
+	adds it to <Files.Manager>.  If the file was previously unknown or the timestamp has changed, the file is new or 
+	changed.
 	
-	After this process, the client code calls <Files.Manager.DeleteFilesNotInFileSources()> to find which ones were 
-	deleted and mark them as such.
+	After this process, the client code calls <Files.Manager.DeleteFilesNotReAdded()> to find which ones were deleted
+	and mark them as such.
 	
 	
 Topic: Parsing
 
-	The client calls <Files.Manager.WorkOnProcessingChanges()>.  Every deleted file will have its information deleted
-	from the database.  Every new or changed file will have its language determined by <Languages.Manager>, be 
-	loaded from disk, be run through the appropriate <Languages.Language.Parse()> function, have the results compared 
-	to the database, and then the database will be updated.
+	The client calls <Files.Manager.CreateChangeProcessor()> and executes it.  Every deleted file will have its 
+	information deleted from the database.  Every new or changed file will have its language determined by 
+	<Languages.Manager>, be loaded from disk, be run through the appropriate <Languages.Language.Parse()> function,
+	have the results compared to the database, and then the database will be updated.
 
 	
 Topic: Detecting Changes
@@ -47,9 +48,6 @@ Topic: Building Output
 	that was changed, but the net effect it has on the building stage.  For example, if a new topic was added, they only
 	need to store the IDs of the source and class files that need to be updated because of it.
 
-	After all parsing is done, client code calls <Output.Manager.WorkOnUpdatingOutput()>.  This goes through all the
-	targets so they can recreate the output files that were affected by the changes they observed.  They can retrieve the 
+	After all parsing is done, client code calls <Output.Manager.CreateBuilderProcess()> and executes it.  This goes through
+	all the targets so they can recreate the output files that were affected by the changes they observed.  They can retrieve the 
 	updated topics from <CodeDB.Manager> which is why it was unnecessary to store every detail of every change.
-
-	Client code also calls <Output.Manager.WorkOnFinalizingOutput()> in case there is additional work that must be done
-	only after WorkOnUpdatingOutput() has completed.
