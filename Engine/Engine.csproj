@@ -54,6 +54,8 @@
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
+    <Compile Include="Source\Output\Builder.cs" />
+    <Compile Include="Source\Output\HTML\TargetBuilder.cs" />
     <Compile Include="Source\Output\HTML\Components\Page.cs" />
     <Compile Include="Source\Output\HTML\Target.Events.cs" />
     <Compile Include="Source\Output\HTML\UnprocessedChanges.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Source\Output\HTML\PageType.cs" />
     <Compile Include="Source\Output\HTML\PageTypes.cs" />
     <Compile Include="Source\Output\HTML\Paths\Style.cs" />
+    <Compile Include="Source\Output\TargetBuilder.cs" />
     <Compile Include="Source\Styles\CSSOnly.cs" />
     <Compile Include="Source\Styles\Advanced.cs" />
     <Compile Include="Source\Styles\Manager.cs" />
@@ -161,7 +164,6 @@
     <Compile Include="Source\Languages\Languages_nd.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
     <Compile Include="Source\Languages\Languages_txt.cs" />
-    <Compile Include="Source\Output\HTML\Target.SearchIndex.cs" />
     <Compile Include="Source\Output\HTML\BuildState.cs" />
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
@@ -214,10 +216,6 @@
     <Compile Include="Source\Exceptions\Thread.cs" />
     <Compile Include="Source\Exceptions\UserFriendly.cs" />
     <Compile Include="Source\IStartupWatcher.cs" />
-    <Compile Include="Source\Output\HTML\Target.Class.cs" />
-    <Compile Include="Source\Output\HTML\Target.Menu.cs" />
-    <Compile Include="Source\Output\HTML\Target.Source.cs" />
-    <Compile Include="Source\Output\HTML\Target.Styles.cs" />
     <Compile Include="Source\Output\HTML\Components\Menu.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Container.cs" />
     <Compile Include="Source\Output\HTML\Components\MenuEntries\Entry.cs" />

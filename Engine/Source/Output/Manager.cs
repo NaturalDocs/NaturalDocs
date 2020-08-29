@@ -72,49 +72,12 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 
-		/* Function: WorkOnUpdatingOutput
-		 * 
-		 * Works on the task of updating the output files for any changes it has detected so far.  This is a parallelizable task, so
-		 * multiple threads can call this function and the work will be divided up between them.  Note that the output may not be
-		 * usable after this completes; you also need to call <WorkOnFinalizingOutput()>.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
-		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
-		 * may have returned because there was no more work for this thread to do, but other threads are still working.
+		/* Function: CreateBuilderProcess
+		 * Creates a <Builder> for updating all the output.
 		 */
-		public void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
+		public Builder CreateBuilderProcess ()
 			{
-			foreach (var target in targets)
-				{
-				if (cancelDelegate())
-					{  return;  }
-					
-				target.WorkOnUpdatingOutput(cancelDelegate);
-				}
-			}
-
-
-		/* Function: WorkOnFinalizingOutput
-		 * 
-		 * Works on the task of finalizing the output, which is any task that requires all files to be successfully processed by
-		 * <WorkOnUpdatingOutput()> before it can run.  You must wait for all threads to return from <WorkOnUpdatingOutput()>
-		 * before calling this function.  Examples of finalization include generating index and search data for HTML output and
-		 * compiling the temporary files into the final one for PDF output.  This is a parallelizable task, so multiple threads can call 
-		 * this function and the work will be divided up between them.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
-		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
-		 * may have returned because there was no more work for this thread to do, but other threads are still working.
-		 */
-		public void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
-			{
-			foreach (var target in targets)
-				{
-				if (cancelDelegate())
-					{  return;  }
-					
-				target.WorkOnFinalizingOutput(cancelDelegate);
-				}
+			return new Builder(engineInstance);
 			}
 
 
@@ -126,21 +89,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			{
 			foreach (var target in targets)
 				{  target.Cleanup(cancelDelegate);  }
-			}
-			
-
-		/* Function: UnitsOfWorkRemaining
-		 * Returns a number representing how much work the targets have left to do.  What tasks the units represent can vary,
-		 * so this is intended simply to allow a percentage to be calculated.
-		 */
-		public long UnitsOfWorkRemaining ()
-			{
-			long value = 0;
-
-			foreach (var target in targets)
-				{  value += target.UnitsOfWorkRemaining();  }
-
-			return value;
 			}
 
 

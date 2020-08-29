@@ -24,9 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Styles;
 
@@ -46,7 +43,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			buildState = null;
 			unprocessedChanges = null;
-			unitsOfWorkInProgress = 0;
 
 			this.config = config;
 			style = null;
@@ -438,577 +434,58 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		public override void WorkOnUpdatingOutput (CancelDelegate cancelDelegate)
-			{
-			if (cancelDelegate())
-				{  return;  }
-
-			CodeDB.Accessor accessor = null;
-			
-			try
-				{
-				for (;;)
-					{
-
-					// Remember the following in the below code:
-					// - unprocessedChanges is thread safe.  You don't need to hold accessLock to use it.
-					// - You can't acquire or change the database lock while holding accessLock.
-					// - You can't call cancelDelegate while holding accessLock.
-					
-
-					// Build frame page
-
-					if (unprocessedChanges.PickFramePage())
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_FramePage;  }
-
-						BuildFramePage(cancelDelegate);
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_FramePage;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddFramePage();
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					// Build main style files
-						
-					if (unprocessedChanges.PickMainStyleFiles())
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_MainStyleFiles;  }
-
-						BuildMainStyleFiles(cancelDelegate);
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_MainStyleFiles;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddMainStyleFiles();
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					// Build style files
-						
-					int styleFileToRebuild = unprocessedChanges.PickStyleFile();
-
-					if (styleFileToRebuild != 0)
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_StyleFile;  }
-						
-						BuildStyleFile(styleFileToRebuild, cancelDelegate);
-						
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_StyleFile;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddStyleFile(styleFileToRebuild);
-							break;
-							}		
-						else
-							{  continue;  }
-						}
-						
-
-					// Build source files
-					
-					int sourceFileToRebuild = unprocessedChanges.PickSourceFile();
-
-					if (sourceFileToRebuild != 0)
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_SourceFile;  }
-						
-						if (accessor == null)
-							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
-						BuildSourceFile(sourceFileToRebuild, accessor, cancelDelegate);
-						
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_SourceFile;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddSourceFile(sourceFileToRebuild);
-							break;
-							}
-						else
-							{  continue;  }
-						}
-						
-
-					// Build class files
-						
-					int classToRebuild = unprocessedChanges.PickClass();
-
-					if (classToRebuild != 0)
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_ClassFile;  }
-						
-						if (accessor == null)
-							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-							
-						BuildClassFile(classToRebuild, accessor, cancelDelegate);
-						
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_ClassFile;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddClass(classToRebuild);
-							break;
-							}		
-						else
-							{  continue;  }
-						}
-						
-					else
-						{  break;  }
-					}
-				}
-			finally
-				{
-				if (accessor != null)
-					{  accessor.Dispose();  }
-				}
-			}
-			
-
-		public override void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
-			{
-			if (cancelDelegate())
-				{  return;  }
-
-			CodeDB.Accessor accessor = null;
-			
-			try
-				{
-				for (;;)
-					{
-					
-					// Remember the following in the below code:
-					// - unprocessedChanges is thread safe.  You don't need to hold accessLock to use it.
-					// - You can't acquire or change the database lock while holding accessLock.
-					// - You can't call cancelDelegate while holding accessLock.
-
-
-					// Delete empty folders
-
-
-					List<Path> possiblyEmptyFolders = unprocessedChanges.PickPossiblyEmptyFolders();
-
-					if (possiblyEmptyFolders != null)
-						{
-						// This task is not parallelizable so it gets claimed by one thread and looped to completion.  Theoretically it should
-						// be, but in practice when two or more threads try to delete the same folder at the same time they both fail.  This
-						// could happen if both the folder and it's parent folder are on the deletion list, so one thread gets it from the list
-						// while the other thread gets it by walking up the child's tree.
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_FolderToCheckForDeletion * possiblyEmptyFolders.Count;  }
-
-						int folderIndex = 0;
-
-						while (folderIndex < possiblyEmptyFolders.Count)
-							{
-							DeleteEmptyFolders(possiblyEmptyFolders[folderIndex]);
-							folderIndex++;
-
-							lock (accessLock)
-								{  unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion;  }
-
-							if (cancelDelegate())
-								{  break;  }
-							}
-
-						// If folderIndex isn't at the end that means the cancel delegate was triggered and we have to add the remaining
-						// folders back to the unprocessed changes.
-						if (folderIndex < possiblyEmptyFolders.Count)
-							{
-							lock (accessLock)
-								{  unitsOfWorkInProgress -= UnitsOfWork_FolderToCheckForDeletion * (possiblyEmptyFolders.Count - folderIndex);  }
-
-							do
-								{
-								unprocessedChanges.AddPossiblyEmptyFolder(possiblyEmptyFolders[folderIndex]);
-								folderIndex++;
-								}
-							while (folderIndex < possiblyEmptyFolders.Count);
-
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					// Build the menu
-
-					if (unprocessedChanges.PickMenu())
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_Menu;  }
-
-						if (accessor == null)
-							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-
-						BuildMenu(accessor, cancelDelegate);
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_Menu;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddMenu();
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					// Build the main search files
-
-					if (unprocessedChanges.PickMainSearchFiles())
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_SearchPrefixIndex;  }
-
-						if (accessor == null)
-							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-
-						BuildSearchPrefixIndex(accessor, cancelDelegate);
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_SearchPrefixIndex;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddMainSearchFiles();
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					// Build the search index prefixes
-
-					string prefixToRebuild = unprocessedChanges.PickSearchPrefix();
-
-					if (prefixToRebuild != null)
-						{
-						lock (accessLock)
-							{  unitsOfWorkInProgress += UnitsOfWork_KeywordDataFile;  }
-
-						if (accessor == null)
-							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
-
-						BuildSearchPrefixDataFile(prefixToRebuild, accessor, cancelDelegate);
-
-						lock (accessLock)
-							{  unitsOfWorkInProgress -= UnitsOfWork_KeywordDataFile;  }
-
-						if (cancelDelegate())
-							{
-							unprocessedChanges.AddSearchPrefix(prefixToRebuild);
-							break;
-							}
-						else
-							{  continue;  }
-						}
-
-
-					else
-						{  break;  }
-					}
-				}
-			finally
-				{
-				if (accessor != null)
-					{  accessor.Dispose();  }
-				}
-			}
-			
-
-		override public long UnitsOfWorkRemaining ()
-			{
-			long value = 0;
-
-			lock (accessLock)
-				{
-				unprocessedChanges.GetStatus(out value);
-				value += unitsOfWorkInProgress;
-				}
-
-			return value;
-			}
-
-
-			
-		// Group: Builder Functions
-		// __________________________________________________________________________
-
-
-		/* Function: BuildFramePage
-		 * Builds index.html, which provides the documentation frame.
+		/* Function: CreateBuilderProcess
+		 * Creates a <TargetBuilder> capable of building the output for this target.
 		 */
-		protected void BuildFramePage (CancelDelegate cancelDelegate)
+		override public Output.TargetBuilder CreateBuilderProcess ()
 			{
-
-			// Page and header titles
-
-			string rawPageTitle;
-			string headerTitleHTML;
-			string headerSubtitleHTML;
-
-			if (config.ProjectInfo.Title == null)
-				{
-				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
-				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
-				headerSubtitleHTML = null;
-				}
-			else
-				{
-				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", config.ProjectInfo.Title);
-				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", config.ProjectInfo.Title).ToHTML();
-
-				if (config.ProjectInfo.Subtitle == null)
-					{  headerSubtitleHTML = null;  }
-				else
-					{
-					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)",
-																				 config.ProjectInfo.Subtitle).ToHTML();
-					}
-				}
-
-
-			// Footer
-
-			string timestampHTML = config.ProjectInfo.MakeTimestamp();
-			string copyrightHTML = config.ProjectInfo.Copyright;
-
-			if (timestampHTML != null)
-				{  timestampHTML = timestampHTML.ToHTML();  }
-			if (copyrightHTML != null)
-				{  copyrightHTML = copyrightHTML.ToHTML();  }
-
-
-			// index.html, the main frame page
-
-			StringBuilder content = new StringBuilder();
-
-			content.Append(
-
-				"<div id=\"NDMessages\">" +
-					"<a href=\"javascript:NDFramePage.CloseMessages()\" id=\"MsgCloseButton\">" +
-						Locale.Get("NaturalDocs.Engine", "HTML.Close").ToHTML() +
-					"</a>" +
-					"<div id=\"MsgContent\"></div>" +
-				"</div>" +
-
-				"<div id=\"NDHeader\">" +
-					"<div id=\"HTitle\">" +
-					
-						"<a href=\"#\">" +
-							headerTitleHTML +
-						"</a>" +
-					
-					"</div>");
-
-					if (headerSubtitleHTML != null)
-						{  
-						content.Append(
-							"<div id=\"HSubtitle\">" +
-								"<a href=\"#\">" +
-									headerSubtitleHTML +
-								"</a>" +
-							"</div>");  
-						}
-
-				content.Append(
-				"<input id=\"NDSearchField\" type=\"text\" />"+
-
-				"</div>" +
-
-				"<script type=\"text/javascript\">" +
-					// The backslash on /div is necessary to validate even though it's logically not necessary.  See here:
-					// http://www.htmlhelp.com/tools/validator/problems.html#script
-					"document.write(\"<div id=\\\"NDLoadingNotice\\\"><\\/div>\");" +
-				"</script>" +
-				"<noscript>" +
-					"<div id=\"NDJavaScriptRequiredNotice\">" +
-						Locale.Get("NaturalDocs.Engine", "HTML.JavaScriptRequiredNotice").ToHTML() +
-					"</div>" +
-				"</noscript>" +
-
-				"<div id=\"NDMenu\"></div>" +
-				"<div id=\"NDMenuSizer\"></div>" +
-
-				"<div id=\"NDSummary\"></div>" +
-				"<div id=\"NDSummarySizer\"></div>" +
-
-				"<div id=\"NDContent\">" +
-
-					// We can theoretically replace this with an object tag which will let us go back to HTML Strict, but it's more trouble
-					// than it's worth.  You'll still need to fall back to iframes for IE8 and below, and WebKit has issues with using
-					// location.replace() from the local drive.  This keeps the JavaScript simpler.
-					"<iframe id=\"CFrame\" frameborder=\"0\"></iframe>" +
-
-				"</div>" +
-
-				"<div id=\"NDFooter\">");
-
-					if (copyrightHTML != null)
-						{
-						content.Append(
-							"<div id=\"FCopyright\">" +
-								copyrightHTML +
-							"</div>");
-						}
-
-					if (timestampHTML != null)
-						{
-						content.Append(
-							"<div id=\"FTimestamp\">" +
-								timestampHTML +
-							"</div>");
-						}
-
-					content.Append(
-					"<div id=\"FGeneratedBy\">" +
-
-						// Deliberately hard coded (as opposed to using Locale) so it stays consistent and we can find users of any
-						// language by putting it into a search engine.  If they don't want it in their docs they can set #FGeneratedBy 
-						// to display: none.
-						"<a href=\"http://www.naturaldocs.org\" target=\"_blank\">Generated by Natural Docs</a>" +
-
-					"</div>" +
-				"</div>"
-
-				);
-
-			BuildFile(OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
-
-
-			// other/home.html, the default welcome page
-
-			content.Remove(0, content.Length);
-
-			string titleHTML, subtitleHTML;
-
-			if (config.ProjectInfo.Title != null)
-				{
-				titleHTML = headerTitleHTML;
-
-				if (config.ProjectInfo.Subtitle != null)
-					{  subtitleHTML = headerSubtitleHTML;  }
-				else
-					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeSubtitleIfTitleExists").ToHTML();  }
-				}
-			else
-				{
-				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeTitle").ToHTML();
-				subtitleHTML = null;
-				}
-
-			content.Append(
-				"\r\n\r\n" +
-				"<div class=\"HFrame\">" +
-					"<div class=\"HContent\">" + 
-						"<div class=\"HTitle\">" +
-							titleHTML + 
-						"</div>");
-
-						if (subtitleHTML != null)
-							{
-							content.Append(
-								"<div class=\"HSubtitle\">" +
-									subtitleHTML + 
-								"</div>");
-							}
-
-
-					content.Append(
-						"\r\n\r\n" +
-						"<div class=\"HFooter\">");
-
-						if (copyrightHTML != null)
-							{
-							content.Append(
-								"<div class=\"HCopyright\">" +
-									copyrightHTML +
-								"</div>");
-							}
-
-						if (timestampHTML != null)
-							{
-							content.Append(
-								"<div class=\"HTimestamp\">" +
-									timestampHTML +
-								"</div>");
-							}
-
-						content.Append(
-						"<div class=\"HGeneratedBy\">" +
-							"<a href=\"http://www.naturaldocs.org\" target=\"_blank\">Generated by Natural Docs</a>" +
-						"</div>" +
-
-					"</div>" + 
-				"</div>" + 
-			"</div>");
-
-			BuildFile(OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), PageType.Home);
+			return new HTML.TargetBuilder(this);
 			}
 
 
-		/* Function: DeleteEmptyFolders
-		 * Deletes the passed folder if it's empty.  If so it also tries the parent folder, continuing up the tree until it finds a
-		 * non-empty folder or reaches the root output folder.
+		/* Function: GetStatus
+		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in 
+		 * this class weighted by the <TargetBuilder.Cost Constants> which estimate how hard they are to perform.  The value
+		 * of the total is meaningless other than to track progress as it works its way towards zero.
 		 */
-		protected void DeleteEmptyFolders (Path folder)
+		override public void GetStatus (out long workRemaining)
 			{
-			while (OutputFolder.Contains(folder))
-				{
-				try
-					{
-					// If the folder isn't empty this will throw an exception.  We have to rely on that because .NET doesn't otherwise
-					// provide an efficient way to detect if a folder is empty.  All its functions enumerate all its contents and return it
-					// as an array; there's nothing that returns the first item and lets you stop there.
-					System.IO.Directory.Delete(folder);
-					}
-				catch (Exception e)
-					{
-					if (e is System.IO.IOException || e is System.IO.DirectoryNotFoundException)
-						{  break;  }
-					else
-						{  throw;  }
-					}
+			unprocessedChanges.GetStatus(out workRemaining);
+			}
 
-				folder = folder.ParentFolder;
-				}
+
+		/* Function: MakeRelativeURL
+		 * Creates a relative URL between the two absolute filesystem paths.  Make sure the From parameter is a *file* and not
+		 * a folder.
+		 */
+		public string MakeRelativeURL (Path fromFile, Path toFile)
+			{
+			return toFile.MakeRelativeTo(fromFile.ParentFolder).ToURL();
 			}
 
 
 
-		// Group: Path Functions
+		// Group: Properties
 		// __________________________________________________________________________
 		
+
+		/* Property: BuildState
+		 */
+		public BuildState BuildState
+			{
+			get
+				{  return buildState;  }
+			}
+
+
+		/* Property: UnprocessedChanges
+		 */
+		public UnprocessedChanges UnprocessedChanges
+			{
+			get
+				{  return unprocessedChanges;  }
+			}
+
 
 		/* Property: OutputFolder
 		 * The root output folder of the entire build target.
@@ -1018,6 +495,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			get
 				{  return config.Folder;  }
 			}
+
 
 		/* Property: WorkingDataFolder
 		 * The working data folder specifically for this build target.
@@ -1029,19 +507,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		/* Function: MakeRelativeURL
-		 * Creates a relative URL between the two absolute filesystem paths.  Make sure the From parameter is a *file* and not
-		 * a folder.
+		/* Property: ProjectInfo
 		 */
-		protected string MakeRelativeURL (Path fromFile, Path toFile)
+		public Config.ProjectInfo ProjectInfo
 			{
-			return toFile.MakeRelativeTo(fromFile.ParentFolder).ToURL();
+			get
+				{  return config.ProjectInfo;  }
 			}
-
-
-
-		// Group: Properties
-		// __________________________________________________________________________
 
 
 		/* Property: Style
@@ -1050,9 +522,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		override public Style Style
 			{
 			get
-				{
-				return style;
-				}
+				{  return style;  }
+			}
+
+
+		/* Property: StylesWithInheritance
+		 * A list which includes <Style> and all its inherited members in the order in which they should be applied.
+		 */
+		public List<Style> StylesWithInheritance
+			{
+			get
+				{  return stylesWithInheritance;  }
 			}
 
 
@@ -1064,36 +544,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			get
 				{  return searchIndex;  }
 			}
-
-
-
-		// Group: Constants
-		// __________________________________________________________________________
-
-
-		/* Constants: UnitsOfWork Constants
-		 * 
-		 * The values for each task when calculating <UnitsOfWorkRemaining()>.
-		 * 
-		 *		UnitsOfWork_SourceFile - How much building a single source file costs.
-		 *		UnitsOfWork_ClassFile - How much building a single class file costs.
-		 *		UnitsOfWork_StyleFile - How much building a single style file costs.
-		 *		UnitsOfWork_FramePage - How much building index.html costs.
-		 *		UnitsOfWork_MainStyleFiles - How much building main.css and main.js costs.
-		 *		UnitsOfWork_Menu - How much building the menu costs.
-		 *		UnitsOfWork_SearchPrefixIndex - How much building the prefix index file costs.
-		 *		UnitsOfWork_KeywordDataFile - How much building a single keyword data file costs.
-		 *		UnitsOfWork_FolderToCheckForDeletion - How much checking a single folder for deletion costs.
-		 */
-		protected const long UnitsOfWork_SourceFile = 10;
-		protected const long UnitsOfWork_ClassFile = 10;
-		protected const long UnitsOfWork_StyleFile = 4;
-		protected const long UnitsOfWork_FramePage = 1;
-		protected const long UnitsOfWork_MainStyleFiles = 1;
-		protected const long UnitsOfWork_Menu = 15;
-		protected const long UnitsOfWork_SearchPrefixIndex = 1;
-		protected const long UnitsOfWork_KeywordDataFile = 2;
-		protected const long UnitsOfWork_FolderToCheckForDeletion = 1;
 
 
 
@@ -1114,18 +564,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* var: unprocessedChanges
 		 */
 		protected UnprocessedChanges unprocessedChanges;
-
-		/* var: unitsOfWorkInProgress
-		 * 
-		 * A running total of the units of work of tasks that are currently in progress.  This should be incremented by one of
-		 * the <UnitsOfWork constants> whenever a task is claimed and decremented when it is released.
-		 * 
-		 * Why is this necessary?  When calculating a total for <UnitsOfWorkRemaining()> we can only detect unclaimed
-		 * tasks from variables like <sourceFilesToRebuild> as each source file will be removed from that list as soon as a 
-		 * thread starts working on it.  This is necessary to prevent another thread from claiming the same file.  We want to
-		 * keep it in <UnitsOfWorkRemaining()> until it's completed so we maintain this variable to add to it.
-		 */
-		protected long unitsOfWorkInProgress;
 
 		/* var: config
 		 */
@@ -1170,4 +608,3 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public string UniqueIDString;
 		}
 	}
-

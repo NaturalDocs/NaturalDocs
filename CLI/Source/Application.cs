@@ -257,15 +257,19 @@ namespace CodeClear.NaturalDocs.CLI
 						
 				executionTimer.Start("Building Output");
 
-				using ( StatusManagers.Building statusManager = new StatusManagers.Building() )
+				var builderProcess = EngineInstance.Output.CreateBuilderProcess();
+
+				using ( StatusManagers.Building statusManager = new StatusManagers.Building(builderProcess) )
 					{
 					statusManager.Start();
 
-					Multithread("Builder", EngineInstance.Output.WorkOnUpdatingOutput);
-					Multithread("Finalizer", EngineInstance.Output.WorkOnFinalizingOutput);							
+					Multithread("Builder", builderProcess.WorkOnUpdatingOutput);
+					Multithread("Finalizer", builderProcess.WorkOnFinalizingOutput);							
 							
 					statusManager.End();
 					}
+
+				builderProcess.Dispose();
 							
 				executionTimer.End("Building Output");
 

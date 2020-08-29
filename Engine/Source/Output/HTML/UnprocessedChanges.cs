@@ -56,9 +56,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: GetStatus
-		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in this class
-		 * weighted by the <Cost Constants> which estimate how hard they are to perform.  The value of the total is meaningless
-		 * other than to track progress as it works its way towards zero.
+		 * Returns a numeric value representing the total changes yet to be processed.  It is the sum of everything in 
+		 * this class weighted by the <TargetBuilder.Cost Constants> which estimate how hard they are to perform.  The value
+		 * of the total is meaningless other than to track progress as it works its way towards zero.
 		 */
 		public void GetStatus (out long workRemaining)
 			{
@@ -66,25 +66,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			lock (accessLock)
 				{
-				count += sourceFiles.Count * SourceFileCost;
-				count += classes.Count * ClassCost;
-				count += styleFiles.Count * StyleFileCost;
+				count += sourceFiles.Count * TargetBuilder.SourceFileCost;
+				count += classes.Count * TargetBuilder.ClassCost;
+				count += styleFiles.Count * TargetBuilder.StyleFileCost;
 
 				if (mainStyleFiles)
-					{  count += MainStyleFilesCost;  }
+					{  count += TargetBuilder.MainStyleFilesCost;  }
 
-				count += searchPrefixes.Count * SearchPrefixCost;
+				count += searchPrefixes.Count * TargetBuilder.SearchPrefixCost;
 
 				if (mainSearchFiles)
-					{  count += MainSearchFilesCost;  }
+					{  count += TargetBuilder.MainSearchFilesCost;  }
 
 				if (framePage)
-					{  count += FramePageCost;  }
+					{  count += TargetBuilder.FramePageCost;  }
 
 				if (menu)
-					{  count += MenuCost;  }
+					{  count += TargetBuilder.MenuCost;  }
 
-				count += possiblyEmptyFolders.Count * PossiblyEmptyFolderCost;
+				count += possiblyEmptyFolders.Count * TargetBuilder.PossiblyEmptyFolderCost;
 				}
 
 			workRemaining = count;
@@ -498,37 +498,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * An object used for a monitor that prevents more than one thread from accessing any of the variables at a time.
 		 */
 		protected object accessLock;
-
-
-
-		// Group: Constants
-		// __________________________________________________________________________
-
-
-		/* Constants: Cost Constants
-		 * 
-		 * The values to use for each element when calculating a number for <GetStatus()> to return.  These are very rough 
-		 * estimates, but they allow the more difficult to build files to weigh on the status more than the easier ones.
-		 * 
-		 *		SourceFileCost - How much building a single source file costs.
-		 *		ClassCost - How much building a single class file costs.
-		 *		StyleFileCost - How much building a single style file costs.
-		 *		MainStyleFilesCost - How much building the main style files costs.
-		 *		SearchPrefixCost - How much building a single search prefix costs.
-		 *		MainSearchFilesCost - How much building the main search files costs.
-		 *		FramePageCost - How much building the frame page costs.
-		 *		MenuCost - How much building the menu costs.
-		 *		PossiblyEmptyFolderCost - How much checking a single folder for files costs.
-		 */
-		public const long SourceFileCost = 10;
-		public const long ClassCost = 10;
-		public const long StyleFileCost = 2;
-		public const long MainStyleFilesCost = 1;
-		public const long SearchPrefixCost = 4;
-		public const long MainSearchFilesCost = 1;
-		public const long FramePageCost = 1;
-		public const long MenuCost = 15;
-		public const long PossiblyEmptyFolderCost = 1;
 
 		}
 	}

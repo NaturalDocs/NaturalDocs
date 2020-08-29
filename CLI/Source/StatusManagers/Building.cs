@@ -22,15 +22,20 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 
-		public Building () : base (Application.StatusInterval)
+		public Building (Engine.Output.Builder builderProcess) : base (Application.StatusInterval)
 			{
-			lastPercentage = 0;
-			totalUnitsOfWork = 0;
+			this.builderProcess = builderProcess;
+
+			totalWork = 0;
+			lastPercentageDone = 0;
 			}
 
 		protected override void ShowStartMessage ()
 			{
-			totalUnitsOfWork = Application.EngineInstance.Output.UnitsOfWorkRemaining();
+			long workInProgress, workRemaining;
+			builderProcess.GetStatus(out workInProgress, out workRemaining);
+
+			totalWork = workInProgress + workRemaining;
 
 			System.Console.WriteLine(
 				Engine.Locale.Get("NaturalDocs.CLI", "Status.StartOutputBuilding")
@@ -39,24 +44,32 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 
 		protected override void ShowUpdateMessage ()
 			{
-			long unitsOfWorkRemaining = Application.EngineInstance.Output.UnitsOfWorkRemaining();
+			// Don't want to divide by zero
+			if (totalWork == 0)
+				{  return;  }
+
+			long workInProgress, workRemaining;
+			builderProcess.GetStatus(out workInProgress, out workRemaining);
+
+			// We don't want to count work in progress until it's done.
+			workRemaining += workInProgress;
 
 			// Sanity check since as it runs a builder can add tasks to the list of things it needs to do.
-			if (unitsOfWorkRemaining > totalUnitsOfWork)
-				{  unitsOfWorkRemaining = totalUnitsOfWork;  }
+			if (workRemaining > totalWork)
+				{  workRemaining = totalWork;  }
 
-			long unitsOfWorkDone = totalUnitsOfWork - unitsOfWorkRemaining;
-			int newPercentage = (int)((100 * unitsOfWorkDone) / totalUnitsOfWork);
+			long workDone = totalWork - workRemaining;
+			int newPercentage = (int)((100 * workDone) / totalWork);
 			
 			// Another sanity check.  We use > instead of != because we don't want the percentage to ever go down.  It's better
 			// for the percentage to just stall until it catches up again as that's less confusing to the user.
-			if (newPercentage > lastPercentage)
+			if (newPercentage > lastPercentageDone)
 				{
 				System.Console.WriteLine(
 					Engine.Locale.Get("NaturalDocs.CLI", "Status.OutputBuildingUpdate(percent)", newPercentage)
 					);
 					
-				lastPercentage = newPercentage;
+				lastPercentageDone = newPercentage;
 				}
 			}
 
@@ -64,8 +77,10 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected int lastPercentage;
-		protected long totalUnitsOfWork;
+		protected Engine.Output.Builder builderProcess;
+
+		protected long totalWork;
+		protected int lastPercentageDone;
 
 		}
 	}

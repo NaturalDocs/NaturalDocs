@@ -11,7 +11,6 @@
 
 
 using System;
-using System.IO;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
@@ -42,36 +41,6 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 			
 			
-		/* Function: WorkOnUpdatingOutput
-		 * 
-		 * Works on the task of updating the output files for any changes it has detected so far.  This is a parallelizable task, so
-		 * multiple threads can call this function and the work will be divided up between them.  Note that the output may not be
-		 * usable after this completes; you also need to call <WorkOnFinalizingOutput()>.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
-		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
-		 * may have returned because there was no more work for this thread to do, but other threads are still working.
-		 */
-		abstract public void WorkOnUpdatingOutput (CancelDelegate cancelDelegate);
-
-			
-		/* Function: WorkOnFinalizingOutput
-		 * 
-		 * Works on the task of finalizing the output, which is any task that requires all files to be successfully processed by
-		 * <WorkOnUpdatingOutput()> before it can run.  You must wait for all threads to return from <WorkOnUpdatingOutput()>
-		 * before calling this function.  Examples of finalization include generating index and search data for HTML output and
-		 * compiling the temporary files into the final one for PDF output.  This is a parallelizable task, so multiple threads can call 
-		 * this function and the work will be divided up between them.
-		 * 
-		 * This function returns if it's cancelled or there is no more work to be done.  If there is only one thread working on this 
-		 * then the task is complete, but if there are multiple threads the task isn't complete until they all have returned.  This one 
-		 * may have returned because there was no more work for this thread to do, but other threads are still working.
-		 */
-		virtual public void WorkOnFinalizingOutput (CancelDelegate cancelDelegate)
-			{
-			}
-
-
 		/* Function: Cleanup
 		 * Cleans up the target's internal data when everything is up to date.  The default implementation does nothing.  You
 		 * can pass a <CancelDelegate> to interrupt the process if necessary.
@@ -81,11 +50,17 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			}
 
 
-		/* Function: UnitsOfWorkRemaining
-		 * Returns a number representing how much work the builder has left to do.  Building the HTML output for a single source 
-		 * file is counted as 10 units so everything else should be scored relative to that.
+		/* Function: CreateBuilderProcess
+		 * Creates a <TargetBuilder> capable of building the output for this target.
 		 */
-		abstract public long UnitsOfWorkRemaining ();
+		abstract public TargetBuilder CreateBuilderProcess ();
+
+
+		/* Function: GetStatus
+		 * Returns a numeric value representing the total changes yet to be processed.  The value is meaningless other than 
+		 * to track the progress of the <TargetBuilder> as it works its way towards zero.
+		 */
+		abstract public void GetStatus (out long workRemaining);
 
 
 

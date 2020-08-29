@@ -228,8 +228,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			changeProcessor.WorkOnProcessingChanges(Engine.Delegates.NeverCancel);
 			changeProcessor.Dispose();
 
-			EngineInstance.Output.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
-			EngineInstance.Output.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
+			var builder = EngineInstance.Output.CreateBuilderProcess();
+			builder.WorkOnUpdatingOutput(Engine.Delegates.NeverCancel);
+			builder.WorkOnFinalizingOutput(Engine.Delegates.NeverCancel);
+			builder.Dispose();
 						
 			EngineInstance.Cleanup(Delegates.NeverCancel);
 			}
