@@ -1,5 +1,5 @@
 /* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Targets.OutputBase
+ * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Output
  * ____________________________________________________________________________
  * 
  * A base class for the configuration of all output targets.
@@ -11,19 +11,18 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class OutputBase : Base
+	abstract public class Output : Target
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public OutputBase (PropertyLocation propertyLocation) : base (propertyLocation)
+		public Output (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			projectInfo = new ProjectInfo();
 
@@ -31,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			numberPropertyLocation = PropertySource.NotDefined;
 			}
 
-		public OutputBase (OutputBase toCopy) : base (toCopy)
+		public Output (Output toCopy) : base (toCopy)
 			{
 			projectInfo = new ProjectInfo(toCopy.projectInfo);
 
@@ -39,14 +38,14 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			numberPropertyLocation = toCopy.numberPropertyLocation;
 			}
 
-		abstract public OutputBase Duplicate ();
+		abstract public Output Duplicate ();
 
 		/* Function: IsSameTarget
 		 * Override to determine whether the two output targets are fundamentally the same.  Only primary identifying properties
 		 * should be compared, so two <HTMLOutputFolders> should return true if they point to the same folder, and secondary
 		 * properties like those in <ProjectInfo> are ignored.
 		 */
-		public abstract bool IsSameTarget (OutputBase other);
+		public abstract bool IsSameTarget (Output other);
 			
 	
 

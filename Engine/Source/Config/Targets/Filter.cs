@@ -1,5 +1,5 @@
 /* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Targets.FilterBase
+ * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Filter
  * ____________________________________________________________________________
  * 
  * A base class for the configuration of all filter targets.
@@ -11,27 +11,26 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class FilterBase : Base
+	abstract public class Filter : Target
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 
-		public FilterBase (PropertyLocation propertyLocation) : base (propertyLocation)
+		public Filter (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			}
 
-		public FilterBase (FilterBase toCopy) : base (toCopy)
+		public Filter (Filter toCopy) : base (toCopy)
 			{
 			}
 
-		abstract public FilterBase Duplicate ();
+		abstract public Filter Duplicate ();
 					
 		}
 	}

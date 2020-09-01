@@ -758,7 +758,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * 
 		 * It is assumed that the two targets are of the same class and match with <Targets.InputBase.IsSameTarget()>.
 		 */
-		protected static void MergeInputTargets (Targets.InputBase primaryTarget, Targets.InputBase secondaryTarget)
+		protected static void MergeInputTargets (Targets.Input primaryTarget, Targets.Input secondaryTarget)
 			{
 			#if DEBUG
 			if (primaryTarget.GetType() != secondaryTarget.GetType())
@@ -805,7 +805,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * 
 		 * It is assumed that the two targets are of the same class and match with <Targets.OutputBase.IsSameTarget()>.
 		 */
-		protected static void MergeOutputTargets (Targets.OutputBase primaryTarget, Targets.OutputBase secondaryTarget)
+		protected static void MergeOutputTargets (Targets.Output primaryTarget, Targets.Output secondaryTarget)
 			{
 			#if DEBUG
 			if (primaryTarget.GetType() != secondaryTarget.GetType())
@@ -844,7 +844,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Function: CreateFileSource
 		 * Creates and returns a <Files.FileSource> from the passed input target config.
 		 */
-		protected virtual Files.FileSource CreateFileSource (Targets.InputBase target)
+		protected virtual Files.FileSource CreateFileSource (Targets.Input target)
 			{
 			if (target is Targets.SourceFolder)
 				{  return new Files.FileSources.Folder(EngineInstance.Files, (Targets.SourceFolder)target);  }
@@ -855,7 +855,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Function: CreateFilter
 		 * Creates and returns a <Files.Filter> from the passed target config.
 		 */
-		protected virtual Files.Filter CreateFilter (Targets.FilterBase target)
+		protected virtual Files.Filter CreateFilter (Targets.Filter target)
 			{
 			if (target is Targets.IgnoredSourceFolder)
 				{  return new Files.Filters.IgnoredSourceFolder((target as Targets.IgnoredSourceFolder).Folder);  }
@@ -869,7 +869,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Creates and returns a <Files.Filter> from the passed output target so that the target's files are excluded from being
 		 * scanned with the source, or null if one isn't needed.
 		 */
-		protected virtual Files.Filter CreateOutputFilter (Targets.OutputBase target)
+		protected virtual Files.Filter CreateOutputFilter (Targets.Output target)
 			{
 			if (target is Targets.HTMLOutputFolder)
 				{  return new Files.Filters.IgnoredSourceFolder((target as Targets.HTMLOutputFolder).Folder);  }
@@ -880,7 +880,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Function: CreateOutputTarget
 		 * Creates and returns an <Output.Target> from the passed target config.
 		 */
-		protected virtual Output.Target CreateOutputTarget (Targets.OutputBase target)
+		protected virtual Output.Target CreateOutputTarget (Targets.Output target)
 			{
 			if (target is Targets.HTMLOutputFolder)
 				{  return new Output.HTML.Target(EngineInstance.Output, (Targets.HTMLOutputFolder)target);  }

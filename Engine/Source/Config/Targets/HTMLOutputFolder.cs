@@ -11,13 +11,12 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	public class HTMLOutputFolder : OutputBase
+	public class HTMLOutputFolder : Targets.Output
 		{
 		
 		// Group: Functions
@@ -36,12 +35,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			folderPropertyLocation = toCopy.folderPropertyLocation;
 			}
 
-		override public OutputBase Duplicate ()
+		override public Output Duplicate ()
 			{
 			return new HTMLOutputFolder(this);
 			}
 
-		override public bool IsSameTarget (OutputBase other)
+		override public bool IsSameTarget (Output other)
 			{
 			if ((other is HTMLOutputFolder) == false)
 				{  return false;  }

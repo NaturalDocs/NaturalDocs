@@ -1,5 +1,5 @@
 /* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Targets.InputBase
+ * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Input
  * ____________________________________________________________________________
  * 
  * A base class for the configuration of all input targets.
@@ -11,19 +11,18 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class InputBase : Base
+	abstract public class Input : Target
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public InputBase (PropertyLocation propertyLocation, Files.InputType type) : base (propertyLocation)
+		public Input (PropertyLocation propertyLocation, Files.InputType type) : base (propertyLocation)
 			{
 			this.name = null;
 			this.number = 0;
@@ -34,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			typePropertyLocation = propertyLocation;
 			}
 
-		public InputBase (InputBase toCopy) : base (toCopy)
+		public Input (Input toCopy) : base (toCopy)
 			{
 			name = toCopy.name;
 			number = toCopy.number;
@@ -45,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			typePropertyLocation = toCopy.typePropertyLocation;
 			}
 
-		abstract public InputBase Duplicate ();
+		abstract public Input Duplicate ();
 
 		abstract public void GenerateDefaultName ();
 
@@ -55,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		 * should be compared, so two <SourceFolders> should return true if they point to the same folder, and secondary
 		 * properties such as <Name> and <Number> should be ignored.
 		 */
-		public abstract bool IsSameTarget (InputBase other);
+		public abstract bool IsSameTarget (Input other);
 			
 	
 		

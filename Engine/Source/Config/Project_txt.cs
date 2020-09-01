@@ -197,13 +197,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 				string lcIdentifier, value;
 				
-				Targets.Base currentTarget =  null;
+				Target currentTarget =  null;
 				ProjectInfo currentProjectInfo = projectConfig.ProjectInfo;
 
 				while (configFile.Get(out lcIdentifier, out value))
 					{
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
-					Targets.Base target = null;
+					Target target = null;
 
 					if (GetGlobalProperty(lcIdentifier, value, propertyLocation))
 						{
@@ -214,8 +214,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						{
 						currentTarget = target;
 
-						if (target is Targets.OutputBase)
-							{  currentProjectInfo = (target as Targets.OutputBase).ProjectInfo;  }
+						if (target is Targets.Output)
+							{  currentProjectInfo = (target as Targets.Output).ProjectInfo;  }
 						else
 							{  currentProjectInfo = projectConfig.ProjectInfo;  }
 						}
@@ -362,7 +362,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * it is a recognized target header but there is a syntax error in the value, it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Targets.Base newTarget)
+		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Target newTarget)
 			{
 
 			// Source folder
@@ -485,7 +485,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * the <ProjectInfo> settings for output targets, use <GetProjectInfoProperty()> for that instead.  If the value is invalid it will 
 		 * add an error to <errorList> and still return true.  It will only return false if the identifier is unrecognized.
 		 */
-		protected bool GetTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, Targets.Base target)
+		protected bool GetTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, Target target)
 			{
 			if (lcIdentifier == "name")
 				{

@@ -1,8 +1,8 @@
 /* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Targets.Base
+ * Class: CodeClear.NaturalDocs.Engine.Config.Target
  * ____________________________________________________________________________
  * 
- * A shared base class for all <InputTargets>, <OutputTargets>, and <FilterTargets>.
+ * A shared base class for all input, output, and filter targets.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -14,21 +14,21 @@ using System;
 using CodeClear.NaturalDocs.Engine.Config;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config.Targets
+namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	abstract public class Base
+	abstract public class Target
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 
-		public Base (PropertyLocation propertyLocation)
+		public Target (PropertyLocation propertyLocation)
 			{
 			this.propertyLocation = propertyLocation;
 			}
 
-		public Base (Base toCopy)
+		public Target (Target toCopy)
 			{
 			this.propertyLocation = toCopy.propertyLocation;
 			}

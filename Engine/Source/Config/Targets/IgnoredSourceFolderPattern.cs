@@ -11,13 +11,12 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	public class IgnoredSourceFolderPattern : FilterBase
+	public class IgnoredSourceFolderPattern : Targets.Filter
 		{
 		
 		// Group: Functions
@@ -36,7 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			patternPropertyLocation = toCopy.patternPropertyLocation;
 			}
 
-		override public FilterBase Duplicate ()
+		override public Filter Duplicate ()
 			{
 			return new IgnoredSourceFolderPattern(this);
 			}

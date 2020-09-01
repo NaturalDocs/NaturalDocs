@@ -12,13 +12,12 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	public class SourceFolder : InputBase
+	public class SourceFolder : Targets.Input
 		{
 		
 		// Group: Functions
@@ -37,12 +36,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			folderPropertyLocation = toCopy.folderPropertyLocation;
 			}
 
-		override public InputBase Duplicate ()
+		override public Input Duplicate ()
 			{
 			return new SourceFolder(this);
 			}
 
-		override public bool IsSameTarget (InputBase other)
+		override public bool IsSameTarget (Input other)
 			{
 			if ((other is SourceFolder) == false)
 				{  return false;  }

@@ -45,9 +45,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			autoGroupPropertyLocation = PropertySource.NotDefined;
 			shrinkFilesPropertyLocation = PropertySource.NotDefined;
 
-			inputTargets = new List<Targets.InputBase>();
-			filterTargets = new List<Targets.FilterBase>();
-			outputTargets = new List<Targets.OutputBase>();
+			inputTargets = new List<Targets.Input>();
+			filterTargets = new List<Targets.Filter>();
+			outputTargets = new List<Targets.Output>();
 			}
 
 
@@ -101,7 +101,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Property: InputTargets
 		 * All the input targets defined in this file.  If there are none, the list will exist but be empty.
 		 */
-		public List<Targets.InputBase> InputTargets
+		public List<Targets.Input> InputTargets
 			{
 			get
 				{  return inputTargets;  }
@@ -110,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Property: FilterTargets
 		 * All the input filters defined in this file.  If there are none, the list will exist but be empty.
 		 */
-		public List<Targets.FilterBase> FilterTargets
+		public List<Targets.Filter> FilterTargets
 			{
 			get
 				{  return filterTargets;  }
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Property: OutputTargets
 		 * All the output targets defined in this file.  If there are none, the list will exist but be empty.
 		 */
-		public List<Targets.OutputBase> OutputTargets
+		public List<Targets.Output> OutputTargets
 			{
 			get
 				{  return outputTargets;  }
@@ -270,9 +270,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected PropertyLocation autoGroupPropertyLocation;
 		protected PropertyLocation shrinkFilesPropertyLocation;
 
-		protected List<Targets.InputBase> inputTargets;
-		protected List<Targets.FilterBase> filterTargets;
-		protected List<Targets.OutputBase> outputTargets;
+		protected List<Targets.Input> inputTargets;
+		protected List<Targets.Filter> filterTargets;
+		protected List<Targets.Output> outputTargets;
 		
 		}
 	}
