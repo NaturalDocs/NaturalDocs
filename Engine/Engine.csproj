@@ -46,6 +46,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Files\Files_nd.cs" />
     <Compile Include="Source\Hierarchy.cs" />
     <Compile Include="Source\Collections\NumberSetTable.cs" />
     <Compile Include="Source\Files\FileSourceAdder.cs" />
