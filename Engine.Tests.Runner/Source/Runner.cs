@@ -28,13 +28,24 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 			showNUnitOutput = false;
 			pauseOnError = false;
 			pauseBeforeExit = false;
+			string  dashedLine = "-------------------------";
 
 			try
 				{
+				string headerLine1 = "Natural Docs Engine Tests";
+				string headerLine2 = "Version " + Engine.Instance.VersionString;
+
+				int dashedLineLength = Math.Max(headerLine1.Length, headerLine2.Length);
+				
+				StringBuilder dashedLineBuilder = new StringBuilder(dashedLineLength);
+				dashedLineBuilder.Append('-', dashedLineLength);
+
+				dashedLine = dashedLineBuilder.ToString();
+
 				System.Console.WriteLine();
-				System.Console.WriteLine("Natural Docs Engine Tests");
-				System.Console.WriteLine("Version " + Engine.Instance.VersionString);
-				System.Console.WriteLine("-------------------------");
+				System.Console.WriteLine(headerLine1);
+				System.Console.WriteLine(headerLine2);
+				System.Console.WriteLine(dashedLine);
 
 				var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 				Path assemblyFolder = Path.FromAssembly(assembly).ParentFolder;
@@ -162,14 +173,14 @@ namespace CodeClear.NaturalDocs.Engine.Tests
 						{  System.Console.WriteLine("All tests successful.");  }
 					}
 
-				System.Console.WriteLine("-------------------------");
+				System.Console.WriteLine(dashedLine);
 				}
 			catch (Exception e)
 				{
 				if (pauseOnError)
 					{  pauseBeforeExit = true;  }
 
-				System.Console.WriteLine("-------------------------");
+				System.Console.WriteLine(dashedLine);
 				System.Console.WriteLine();
 				System.Console.WriteLine("Exception: " + e.Message);
 				}

@@ -21,19 +21,8 @@
 #______________________________________________________________________________
 
 
-Status.Start(version).multiline {{{
-Natural Docs {0}
-----------------------
-}}}
-Status.Start(version,subversion).multiline {{{
-Natural Docs {0}
-{1}
-----------------------
-}}}
-Status.End.multiline {{{
-Done.
-----------------------
-}}}
+Status.Start(version): Natural Docs {0}
+Status.End: Done.
 
 Status.StartFileSearch: Searching for files...
 Status.FileSearchUpdate(files, folders): ...{0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder} so far

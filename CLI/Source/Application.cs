@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using CodeClear.NaturalDocs.Engine;
 using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
@@ -53,6 +54,7 @@ namespace CodeClear.NaturalDocs.CLI
 			engineInstance = null;
 
 			quiet = false;
+			dashLength = 15;
 			workerThreadCount = DefaultWorkerThreadCount;
 			totalFileChanges = 0;
 			benchmark = false;
@@ -422,20 +424,23 @@ namespace CodeClear.NaturalDocs.CLI
 			string version = Engine.Instance.Version.PrimaryVersionString;
 			string subversion = Engine.Instance.Version.SecondaryVersionString;
 
-			if (subversion == null)
+			string versionOutput = Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version)", version);
+
+			System.Console.WriteLine();
+			System.Console.WriteLine(versionOutput);
+
+			dashLength = Math.Max(dashLength, versionOutput.Length);
+
+			if (subversion != null)
 				{
-				System.Console.WriteLine();
-				System.Console.Write(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version).multiline", version)
-					);
+				System.Console.WriteLine(subversion);
+				dashLength = Math.Max(dashLength, subversion.Length);
 				}
-			else
-				{
-				System.Console.WriteLine();
-				System.Console.Write(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.Start(version,subversion).multiline", version, subversion)
-					);
-				}
+			
+			StringBuilder dashedLine = new StringBuilder(dashLength);
+			dashedLine.Append('-', dashLength);
+
+			System.Console.WriteLine(dashedLine.ToString());
 			}
 
 
@@ -443,9 +448,14 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			if (successful)
 				{
-				System.Console.Write(
-					Engine.Locale.Get("NaturalDocs.CLI", "Status.End.multiline")
+				System.Console.WriteLine(
+					Engine.Locale.Get("NaturalDocs.CLI", "Status.End")
 					);
+
+				StringBuilder dashedLine = new StringBuilder(dashLength);
+				dashedLine.Append('-', dashLength);
+
+				System.Console.WriteLine(dashedLine.ToString());
 				System.Console.WriteLine();
 				}
 			}
@@ -705,6 +715,11 @@ namespace CodeClear.NaturalDocs.CLI
 		 * Whether the application should suppress all non-error output.
 		 */
 		static private bool quiet;
+
+		/* var: dashLength
+		 * The number of dashes to include in horizontal lines in the output.
+		 */
+		static private int dashLength;
 
 		static private int workerThreadCount;
 		static private int totalFileChanges;
