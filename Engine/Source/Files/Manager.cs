@@ -163,12 +163,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				
 			foreach (FileSource fileSource in fileSources)
 				{
-				if (fileSource is FileSources.Folder)
+				if (fileSource is FileSources.SourceFolder)
 					{
-					FileSources.Folder folderFileSource = (FileSources.Folder)fileSource;
+					FileSources.SourceFolder folderFileSource = (FileSources.SourceFolder)fileSource;
 					
-					if (folderFileSource.Type == InputType.Source &&
-						SourceFolderIsIgnored(folderFileSource.Path))
+					if (SourceFolderIsIgnored(folderFileSource.Path))
 						{
 						errors.Add(
 							Locale.Get("NaturalDocs.Engine", "Error.SourceFolderIsIgnored(sourceFolder)", folderFileSource.Path)

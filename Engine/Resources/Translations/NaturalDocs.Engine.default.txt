@@ -254,7 +254,8 @@ Project.txt.SourceFolderSyntax.multiline {{{
 
 Project.txt.ImageFolderSyntax.multiline {{{
 # Image Folder: [path]
-#    Specifies a folder which will be searched for image files.
+#    Specifies a folder which will be searched for image files.  They can be
+#    referenced in comments with (see filename.jpg).
 }}}
 
 Project.txt.FilterHeader.multiline {{{

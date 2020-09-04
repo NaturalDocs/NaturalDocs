@@ -166,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			config.AutoGroup = autoGroup;
 			config.AutoGroupPropertyLocation = Config.PropertySource.CommandLine;
 
-			var inputTarget = new Config.Targets.SourceFolder(Config.PropertySource.CommandLine, Files.InputType.Source);
+			var inputTarget = new Config.Targets.SourceFolder(Config.PropertySource.CommandLine);
 
 			inputTarget.Folder = inputFolder;
 			inputTarget.FolderPropertyLocation = Config.PropertySource.CommandLine;

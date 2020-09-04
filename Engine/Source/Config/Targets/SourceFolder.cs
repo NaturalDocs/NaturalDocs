@@ -24,16 +24,22 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 		
-		public SourceFolder (PropertyLocation propertyLocation, Files.InputType type) : base (propertyLocation, type)
+		public SourceFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
 			folder = null;
 			folderPropertyLocation = PropertySource.NotDefined;
+
+			this.name = null;
+			namePropertyLocation = PropertySource.NotDefined;
 			}
 
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
 			{
 			folder = toCopy.folder;
 			folderPropertyLocation = toCopy.folderPropertyLocation;
+
+			name = toCopy.name;
+			namePropertyLocation = toCopy.namePropertyLocation;
 			}
 
 		override public Input Duplicate ()
@@ -53,21 +59,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			{
 			if (System.IO.Directory.Exists(folder) == false)
 				{
-				string localeKey = "Project.txt.SourceFolderDoesNotExist(folder)";
-
-				if (type == Files.InputType.Image)
-					{  localeKey = "Project.txt.ImageFolderDoesNotExist(folder)";  }
-
-				errorList.Add( Locale.Get("NaturalDocs.Engine", localeKey, folder),
-								   folderPropertyLocation,
-								   "InputTargets[" + targetIndex + "].Folder" );
+				errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderDoesNotExist(folder)", folder),
+								     folderPropertyLocation,
+								     "InputTargets[" + targetIndex + "].Folder" );
 				return false;
 				}
 
 			return true;
 			}
 
-		public override void GenerateDefaultName ()
+		public void GenerateDefaultName ()
 			{
 			string prefix;
 			List<string> segments;
@@ -115,11 +116,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
-		
-					
 		/* Property: FolderPropertyLocation
 		 * Where <Folder> is defined.
 		 */
@@ -131,14 +127,64 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  folderPropertyLocation = value;  }
 		    }
 
-	
+
+		/* Property: Name
+		 * The name of the input target, or null if it isn't defined.  Names are used to distinguish multiple file sources in user-visible
+		 * places such as menus.  They should ideally be unique.
+		 */
+		public string Name
+			{
+			get
+				{  return name;  }
+			set
+				{  name = value;  }
+			}
+
+
+		/* Property: NamePropertyLocation
+		 * Where <Name> is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation NamePropertyLocation
+		    {
+		    get
+		        {  return namePropertyLocation;  }
+		    set
+		        {  namePropertyLocation = value;  }
+		    }
+
+
+		/* Property: Type
+		 * The type of file source this input target provides.
+		 */
+		override public Files.InputType Type
+			{  
+			get
+				{  return Files.InputType.Source;  }
+			}
+
+
+		/* Property: TypePropertyLocation
+		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		override public PropertyLocation TypePropertyLocation
+		    {
+		    get
+		        {  
+				// Same as where the entire property is defined, since it's specified by "Source Folder:".
+				return this.PropertyLocation;  
+				}
+		    }
+
+
 		
 		// Group: Variables
 		// __________________________________________________________________________
 		
 
-		protected Path folder;
+		protected string name;
+		protected PropertyLocation namePropertyLocation;
 
+		protected Path folder;
 		protected PropertyLocation folderPropertyLocation;
 
 		}

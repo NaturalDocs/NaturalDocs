@@ -334,6 +334,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				if (target.Type == Files.InputType.Source)
 					{
+					Targets.SourceFolder sourceTarget = (Targets.SourceFolder)target;
+
 					if (target.Number == 0)
 						{
 						target.Number = usedSourceNumbers.LowestAvailable;
@@ -342,9 +344,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						usedSourceNumbers.Add(target.Number);
 						}
 							
-					if (target.Name == null && combinedConfig.InputTargets.Count > 1)
+					if (sourceTarget.Name == null && combinedConfig.InputTargets.Count > 1)
 						{
-						target.GenerateDefaultName();
+						sourceTarget.GenerateDefaultName();
 						}
 					}
 						
@@ -459,7 +461,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
 			
 			
-			// Check all input folder entries against the filters.
+			// Check all source folder entries against the filters.
 			
 			for (int i = 0; i < combinedConfig.InputTargets.Count; i++)
 				{
@@ -467,8 +469,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					{
 					var sourceFolderTarget = (Targets.SourceFolder)combinedConfig.InputTargets[i];
 					
-					if (sourceFolderTarget.Type == Files.InputType.Source &&
-						EngineInstance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
+					if (EngineInstance.Files.SourceFolderIsIgnored(sourceFolderTarget.Folder))
 						{
 						errorList.Add(
 							message: Locale.Get("NaturalDocs.Engine", "Error.SourceFolderIsIgnored(sourceFolder)", sourceFolderTarget.Folder),
@@ -479,8 +480,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 						success = false;
 						}
 					}
-				else
-					{  throw new NotImplementedException();  }
 				}
 			
 
@@ -767,31 +766,45 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  throw new Exception ("Cannot call MergeInputTargets() when they do not match with IsSameTarget().");  }
 			#endif
 
-			if (!primaryTarget.NamePropertyLocation.IsDefined)
-			    {
-			    primaryTarget.Name = secondaryTarget.Name;
-			    primaryTarget.NamePropertyLocation = secondaryTarget.NamePropertyLocation;
-			    }
-			if (!primaryTarget.NumberPropertyLocation.IsDefined)
-			    {
-			    primaryTarget.Number = secondaryTarget.Number;
-			    primaryTarget.NumberPropertyLocation = secondaryTarget.NumberPropertyLocation;
-			    }
-			if (!primaryTarget.TypePropertyLocation.IsDefined)
-			    {
-			    primaryTarget.Type = secondaryTarget.Type;
-			    primaryTarget.TypePropertyLocation = secondaryTarget.TypePropertyLocation;
-			    }
-				
-
 			if (primaryTarget is Targets.SourceFolder)
 				{
-				if (!(primaryTarget as Targets.SourceFolder).FolderPropertyLocation.IsDefined)
+				Targets.SourceFolder primarySourceFolder = (Targets.SourceFolder)primaryTarget;
+				Targets.SourceFolder secondarySourceFolder = (Targets.SourceFolder)secondaryTarget;
+
+				if (!primarySourceFolder.FolderPropertyLocation.IsDefined)
 					{
-					(primaryTarget as Targets.SourceFolder).Folder = (secondaryTarget as Targets.SourceFolder).Folder;
-					(primaryTarget as Targets.SourceFolder).FolderPropertyLocation = (secondaryTarget as Targets.SourceFolder).FolderPropertyLocation;
+					primarySourceFolder.Folder = secondarySourceFolder.Folder;
+					primarySourceFolder.FolderPropertyLocation = secondarySourceFolder.FolderPropertyLocation;
+					}
+				if (!primarySourceFolder.NamePropertyLocation.IsDefined)
+					{
+					primarySourceFolder.Name = secondarySourceFolder.Name;
+					primarySourceFolder.NamePropertyLocation = secondarySourceFolder.NamePropertyLocation;
+					}
+				if (!primarySourceFolder.NumberPropertyLocation.IsDefined)
+					{
+					primarySourceFolder.Number = secondarySourceFolder.Number;
+					primarySourceFolder.NumberPropertyLocation = secondarySourceFolder.NumberPropertyLocation;
 					}
 				}
+
+			else if (primaryTarget is Targets.ImageFolder)
+				{
+				Targets.ImageFolder primaryImageFolder = (Targets.ImageFolder)primaryTarget;
+				Targets.ImageFolder secondaryImageFolder = (Targets.ImageFolder)secondaryTarget;
+
+				if (!primaryImageFolder.FolderPropertyLocation.IsDefined)
+					{
+					primaryImageFolder.Folder = secondaryImageFolder.Folder;
+					primaryImageFolder.FolderPropertyLocation = secondaryImageFolder.FolderPropertyLocation;
+					}
+				if (!primaryImageFolder.NumberPropertyLocation.IsDefined)
+					{
+					primaryImageFolder.Number = secondaryImageFolder.Number;
+					primaryImageFolder.NumberPropertyLocation = secondaryImageFolder.NumberPropertyLocation;
+					}
+				}
+
 			else
 				{  throw new NotImplementedException();  }
 			}
@@ -847,7 +860,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected virtual Files.FileSource CreateFileSource (Targets.Input target)
 			{
 			if (target is Targets.SourceFolder)
-				{  return new Files.FileSources.Folder(EngineInstance.Files, (Targets.SourceFolder)target);  }
+				{  return new Files.FileSources.SourceFolder(EngineInstance.Files, (Targets.SourceFolder)target);  }
+			else if (target is Targets.ImageFolder)
+				{  return new Files.FileSources.ImageFolder(EngineInstance.Files, (Targets.ImageFolder)target);  }
 			else
 				{  throw new NotImplementedException();  }
 			}

@@ -46,11 +46,16 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Config\Targets\ImageFolder.cs" />
+    <Compile Include="Source\Files\FileSources\Folder.cs" />
+    <Compile Include="Source\Files\FileSources\ImageFolder.cs" />
+    <Compile Include="Source\Files\FileSources\SourceFolder.cs" />
+    <Compile Include="Source\Files\FileSources\ImageFolderAdder.cs" />
     <Compile Include="Source\Files\Files_nd.cs" />
     <Compile Include="Source\Hierarchy.cs" />
     <Compile Include="Source\Collections\NumberSetTable.cs" />
     <Compile Include="Source\Files\FileSourceAdder.cs" />
-    <Compile Include="Source\Files\FileSources\FolderAdder.cs" />
+    <Compile Include="Source\Files\FileSources\SourceFolderAdder.cs" />
     <Compile Include="Source\Languages\Parsers\Lua.cs" />
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
@@ -232,7 +237,6 @@
     <Compile Include="Source\Path.cs" />
     <Compile Include="Source\Files\File.cs" />
     <Compile Include="Source\Files\FileSource.cs" />
-    <Compile Include="Source\Files\FileSources\Folder.cs" />
     <Compile Include="Source\Files\FileType.cs" />
     <Compile Include="Source\Files\Filter.cs" />
     <Compile Include="Source\Files\Filters\IgnoredSourceFolder.cs" />

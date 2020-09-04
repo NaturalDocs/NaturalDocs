@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.FolderAdder
+ * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.SourceFolderAdder
  * ____________________________________________________________________________
  * 
- * A <FileSourceAdder> that can be used with <FileSources.Folder>.
+ * A <FileSourceAdder> that can be used with <FileSources.SourceFolder>.
  * 
  * 
  * Topic: Usage
@@ -29,12 +29,12 @@ using System.Collections.Generic;
 
 namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
-	public class FolderAdder : FileSourceAdder
+	public class SourceFolderAdder : FileSourceAdder
 		{
 		
-		/* Function: FolderAdder
+		/* Function: SourceFolderAdder
 		 */
-		public FolderAdder (FileSources.Folder fileSource, Engine.Instance engineInstance) : base (fileSource, engineInstance)
+		public SourceFolderAdder (FileSources.SourceFolder fileSource, Engine.Instance engineInstance) : base (fileSource, engineInstance)
 			{
 			}
 					
@@ -45,8 +45,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 			{
 			status.Reset();
 
-			Path path = (FileSource as FileSources.Folder).Path;
-			InputType type = FileSource.Type;
+			Path path = (FileSource as FileSources.SourceFolder).Path;
 			
 			// Using a string stack instead of Path stack because the I/O functions will return strings and there's no need to normalize
 			// them all or otherwise use Path functions on them.
@@ -57,13 +56,10 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 				{
 				string folder = foldersToSearch.Pop();
 
-				if (type == InputType.Source)
-					{
-					if (Manager.SourceFolderIsIgnored(folder))
- 						{  continue;  }	
-					}
+				if (Manager.SourceFolderIsIgnored(folder))
+						{  continue;  }	
 				
-				status.AddFolders(type, 1);
+				status.AddFolders(InputType.Source, 1);
 
 				string[] subfolders = System.IO.Directory.GetDirectories(folder);
 				
@@ -84,16 +80,11 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					string extension = filePath.Extension;
 					FileType? fileType = null;
 						
-					if (type == InputType.Source)
-						{
-						if ( EngineInstance.Languages.FromExtension(extension) != null)
-							{  fileType = FileType.Source;  }
-						// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
-						// file instead of an image folder.
-						else if (Files.Manager.ImageExtensions.Contains(extension) )
-							{  fileType = FileType.Image;  }
-						}
-					else if (type == InputType.Image && Files.Manager.ImageExtensions.Contains(extension))
+					if ( EngineInstance.Languages.FromExtension(extension) != null)
+						{  fileType = FileType.Source;  }
+					// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
+					// file instead of an image folder.
+					else if (Files.Manager.ImageExtensions.Contains(extension) )
 						{  fileType = FileType.Image;  }
 
 					if (fileType != null)

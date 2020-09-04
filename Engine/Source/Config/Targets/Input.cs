@@ -22,31 +22,19 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 		
-		public Input (PropertyLocation propertyLocation, Files.InputType type) : base (propertyLocation)
+		public Input (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			this.name = null;
 			this.number = 0;
-			this.type = type;
-
-			namePropertyLocation = PropertySource.NotDefined;
 			numberPropertyLocation = PropertySource.NotDefined;
-			typePropertyLocation = propertyLocation;
 			}
 
 		public Input (Input toCopy) : base (toCopy)
 			{
-			name = toCopy.name;
 			number = toCopy.number;
-			type = toCopy.type;
-
-			namePropertyLocation = toCopy.namePropertyLocation;
 			numberPropertyLocation = toCopy.numberPropertyLocation;
-			typePropertyLocation = toCopy.typePropertyLocation;
 			}
 
 		abstract public Input Duplicate ();
-
-		abstract public void GenerateDefaultName ();
 
 
 		/* Function: IsSameTarget
@@ -62,17 +50,18 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 
 
-		/* Property: Name
-		 * The name of the input target, or null if it isn't defined.  Names are used to distinguish multiple file sources in user-visible
-		 * places such as menus.  They should ideally be unique.
+		/* Property: Type
+		 * The type of file source this input target provides.
 		 */
-		public string Name
-			{
-			get
-				{  return name;  }
-			set
-				{  name = value;  }
-			}
+		abstract public Files.InputType Type
+			{  get;  }
+
+
+		/* Property: TypePropertyLocation
+		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		abstract public PropertyLocation TypePropertyLocation
+		    {  get;  }
 
 
 		/* Property: Number
@@ -88,35 +77,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
-		/* Property: Type
-		 * The type of file source this input target provides.
-		 */
-		public Files.InputType Type
-			{
-			get
-				{  return type;  }
-			set
-				{  type = value;  }
-			}
-
-
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
-		
-					
-		/* Property: NamePropertyLocation
-		 * Where <Name> is defined, or <PropertySource.NotDefined> if it isn't.
-		 */
-		public PropertyLocation NamePropertyLocation
-		    {
-		    get
-		        {  return namePropertyLocation;  }
-		    set
-		        {  namePropertyLocation = value;  }
-		    }
-
-
 		/* Property: NumberPropertyLocation
 		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -129,29 +89,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		/* Property: TypePropertyLocation
-		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
-		 */
-		public PropertyLocation TypePropertyLocation
-		    {
-		    get
-		        {  return typePropertyLocation;  }
-		    set
-		        {  typePropertyLocation = value;  }
-		    }
-
-
 		
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		protected string name;
 		protected int number;
-		protected Files.InputType type;
-
-		protected PropertyLocation namePropertyLocation;
 		protected PropertyLocation numberPropertyLocation;
-		protected PropertyLocation typePropertyLocation;
 		
 		}
 	}

@@ -136,7 +136,7 @@ namespace CodeClear.NaturalDocs.CLI
 				isFirst = false;
 
 					
-				// Input folders
+				// Source folders
 					
 				if (parameter == "--input")
 					{
@@ -155,7 +155,7 @@ namespace CodeClear.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine, Engine.Files.InputType.Source);
+						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine);
 
 						target.Folder = folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
@@ -360,7 +360,7 @@ namespace CodeClear.NaturalDocs.CLI
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine, Engine.Files.InputType.Image);
+						var target = new Engine.Config.Targets.ImageFolder(PropertySource.CommandLine);
 
 						target.Folder = folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;

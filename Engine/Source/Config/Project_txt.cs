@@ -371,7 +371,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			if (match.Success)
 				{
-				var target = new Targets.SourceFolder(propertyLocation, Files.InputType.Source);
+				var target = new Targets.SourceFolder(propertyLocation);
 
 				target.Folder = value;
 				target.FolderPropertyLocation = propertyLocation;
@@ -399,7 +399,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			if (match.Success)
 				{  
-				var target = new Targets.SourceFolder(propertyLocation, Files.InputType.Image);
+				var target = new Targets.ImageFolder(propertyLocation);
 
 				target.Folder = value;
 				target.FolderPropertyLocation = propertyLocation;
@@ -720,32 +720,22 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// We save input targets even if they're specified on the command line so we can still use Project.txt for secondary
 				// settings.
-				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
-					{
-					if (target is Targets.SourceFolder &&
-						target.Type == Files.InputType.Source)
-						{  
-						AppendSourceFolder((Targets.SourceFolder)target, output, projectFolder);
+				if (target is Targets.SourceFolder &&
+					target.PropertyLocation.Source != PropertySource.SystemDefault)
+					{  
+					AppendSourceFolder((Targets.SourceFolder)target, output, projectFolder);
 
-						output.AppendLine();
-						appended++;
-						}
+					output.AppendLine();
+					appended++;
 					}
 				}
 
 			foreach (var target in projectConfig.InputTargets)
 				{
-				if (target.PropertyLocation.Source != PropertySource.SystemDefault)
+				if (target is Targets.ImageFolder &&
+					target.PropertyLocation.Source != PropertySource.SystemDefault)
 					{
-					if (target is Targets.SourceFolder)
-						{
-						if (target.Type == Files.InputType.Image)
-							{  AppendSourceFolder((Targets.SourceFolder)target, output, projectFolder);  }
-						else if (target.Type != Files.InputType.Source)
-							{  throw new NotImplementedException();  }
-						}
-					else
-						{  throw new NotImplementedException();  }
+					AppendImageFolder((Targets.ImageFolder)target, output, projectFolder);
 
 					output.AppendLine();
 					appended++;
@@ -758,8 +748,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.InputHeaderText.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderSyntax.multiline") );
-			//output.AppendLine("#");
-			//output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline") );
+			output.AppendLine("#");
+			output.Append(Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline"));
 			output.AppendLine();
 			output.AppendLine();
 			}
@@ -773,14 +763,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
 				{  return;  }
 
-			if (target.Type == Files.InputType.Source)
-				{  output.Append("Source");  }
-			else if (target.Type == Files.InputType.Image)
-				{  output.Append("Image");  }
-			else
-				{  throw new NotImplementedException();  }
-
-			output.Append(" Folder");
+			output.Append("Source Folder");
 
 			if (target.NumberPropertyLocation.IsDefined &&
 				target.NumberPropertyLocation.Source != PropertySource.SystemDefault &&
@@ -795,6 +778,28 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (target.NamePropertyLocation.IsDefined &&
 				target.NamePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Name: " + target.Name);  }
+			}
+
+
+		/* Function: AppendImageFolder
+		 * Appends an image folder target and all its settings to the StringBuilder.
+		 */
+		protected void AppendImageFolder (Targets.ImageFolder target, StringBuilder output, Path projectFolder)
+			{
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
+				{  return;  }
+
+			output.Append("Image Folder");
+
+			if (target.NumberPropertyLocation.IsDefined &&
+				target.NumberPropertyLocation.Source != PropertySource.SystemDefault &&
+				target.Number != 1)
+				{  output.Append(" " + target.Number);  }
+
+			output.Append(": ");
+
+			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
+			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 			}
 
 

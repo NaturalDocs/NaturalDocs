@@ -192,7 +192,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			var target = new Targets.SourceFolder(PropertySource.PreviousRun, Files.InputType.Source);
+			var target = new Targets.SourceFolder(PropertySource.PreviousRun);
 
 			target.Folder = binaryFile.ReadString();
 			target.FolderPropertyLocation = PropertySource.PreviousRun;
@@ -209,7 +209,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// [String: Absolute Path]
 			// [Int32: Number]
 
-			var target = new Targets.SourceFolder(PropertySource.PreviousRun, Files.InputType.Image);
+			var target = new Targets.ImageFolder(PropertySource.PreviousRun);
 
 			target.Folder = binaryFile.ReadString();
 			target.FolderPropertyLocation = PropertySource.PreviousRun;
@@ -272,14 +272,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		        foreach (var target in projectConfig.InputTargets)
 		            {
 		            if (target is Targets.SourceFolder)
-		                {  
-						if (target.Type == Files.InputType.Source)
-							{  SaveSourceFolder((Targets.SourceFolder)target, output);  }
-						else if (target.Type == Files.InputType.Image)
-							{  SaveImageFolder((Targets.SourceFolder)target, output);  }
-						else
-							{  throw new NotImplementedException();  }
-						}
+						{  SaveSourceFolder((Targets.SourceFolder)target, output);  }
+		            else if (target is Targets.ImageFolder)
+						{  SaveImageFolder((Targets.ImageFolder)target, output);  }
 					else
 						{  throw new NotImplementedException();  }
 		            }
@@ -316,7 +311,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		    }
 
 
-		protected void SaveImageFolder (Targets.SourceFolder target, BinaryFile output)
+		protected void SaveImageFolder (Targets.ImageFolder target, BinaryFile output)
 		    {
 		    // [String: Identifier="Image Folder"]
 		    // [String: Absolute Path]

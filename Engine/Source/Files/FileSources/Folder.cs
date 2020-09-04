@@ -2,7 +2,7 @@
  * Class: CodeClear.NaturalDocs.Engine.Files.FileSources.Folder
  * ____________________________________________________________________________
  * 
- * A file source representing a specific folder on disk.
+ * A base class for folder-based file sources.
  * 
  */
 
@@ -12,12 +12,11 @@
 
 
 using System;
-using System.Collections.Generic;
 
 
 namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 	{
-	public class Folder : FileSource
+	abstract public class Folder : FileSource
 		{
 		
 		// Group: Functions
@@ -25,14 +24,12 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		
 		
 		/* Function: Folder
-		 * Instance constructor.  If the path is relative it will be made absolute using the current working folder.
 		 */
-		public Folder (Files.Manager manager, Config.Targets.SourceFolder config) : base (manager)
+		public Folder (Files.Manager manager) : base (manager)
 			{
-			this.config = config;
 			}
-			
-			
+
+
 		/* Function: Validate
 		 * Makes sure the folder exists and adds an error if not.
 		 */
@@ -84,75 +81,15 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 
 
 
-		// Group: Processes
-		// __________________________________________________________________________
-
-
-		/* Function: CreateAdderProcess
-		 * Returns a <FileSourceAdder> that can be used with this FileSource.
-		 */
-		override public FileSourceAdder CreateAdderProcess()
-			{
-			return new FolderAdder(this, EngineInstance);
-			}
-
-
-		
 		// Group: Properties
 		// __________________________________________________________________________
 
-		/* Property: UniqueIDString
-		 * A string that uniquely identifies this FileSource among all others of its <Type>, including FileSources based on other
-		 * classes.
-		 */
-		override public string UniqueIDString
-			{
-			get 
-				{  return "Folder:" + config.Folder;  }
-			}
 
 		/* Property: Path
 		 * The path to the FileSource's folder.
 		 */
-		public Path Path
-			{
-			get 
-				{  return config.Folder;  }
-			}
-
-		/* Property: Type
-		 * The type of files this FileSource provides.
-		 */
-		override public InputType Type
-			{
-			get 
-				{  return config.Type;  }
-			}
-			
-		/* Property: Number
-		 * The number assigned to this FileSource.
-		 */
-		override public int Number
-			{
-			get
-				{  return config.Number;  }
-			}
-						
-		/* Property: Name
-		 * The name assigned to this FileSource, or null if one hasn't been set.
-		 */
-		override public string Name
-			{
-			get
-				{  return config.Name;  }
-			}
-
-
-
-		// Group: Variables
-		// __________________________________________________________________________
-			
-		protected Config.Targets.SourceFolder config;
+		abstract public Path Path
+			{  get;  }
 
 		}
 	}

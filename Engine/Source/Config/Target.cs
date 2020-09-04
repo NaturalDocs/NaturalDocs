@@ -42,7 +42,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 	
 		
-		// Group: Property Locations
+		// Group: Properties
 		// __________________________________________________________________________
 		
 					
