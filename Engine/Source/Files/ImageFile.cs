@@ -20,28 +20,22 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		
 		// Group: Functions
 		// __________________________________________________________________________
-		
+
 		/* Function: ImageFile
 		 * Creates a new ImageFile with unknown dimensions.
 		 */
-		public ImageFile (Path newFileName, DateTime newLastModified) : base (newFileName, FileType.Image, newLastModified)
+		public ImageFile (Path fileName, DateTime lastModified) : base (fileName, FileType.Image, lastModified)
 			{
 			width = 0;
 			height = 0;
 			}
-			
+
 		/* Function: ImageFile
 		 * Creates a new ImageFile with known dimensions.
 		 */
-		public ImageFile (Path newFileName, DateTime newLastModified, uint width, uint height) : base (newFileName, FileType.Image, newLastModified)
+		public ImageFile (Path fileName, DateTime lastModified, uint width, uint height) : base (fileName, FileType.Image, lastModified)
 			{
-			#if DEBUG
-			if (width <= 0 || height <= 0)
-				{  throw new Exception("Tried to create ImageFile with invalid dimensions.");  }
-			#endif
-
-			this.width = width;
-			this.height = height;
+			SetDimensions(width, height);
 			}
 			
 		/* Function: CreateSnapshotOfProperties
@@ -62,55 +56,70 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			return duplicate;
 			}
 
-			
+
+		/* Function: SetDimensions
+		 * Assigns the image to known dimensions.  If you want to set them back to unknown, set <DimensionsKnown> to
+		 * false.
+		 */
+		public void SetDimensions (uint width, uint height)
+			{
+			if (width == 0 || height == 0)
+				{  throw new InvalidOperationException();  }
+
+			this.width = width;
+			this.height = height;
+			}
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 
 		/* Property: DimensionsKnown
-		 * Whether the image's dimensions are known.
+		 * Whether the image's dimensions are known.  You can only set it to false.  Use <SetDimensions()> to set it to true.
 		 */
 		public bool DimensionsKnown
 			{
 			get
-				{  return (width > 0 && height > 0);  }
+				{  return (width != 0);  }
+			set
+				{
+				if (value == true)
+					{  throw new InvalidOperationException();  }
+
+				width = 0;
+				height = 0;
+				}
 			}
 
 		/* Property: Width
-		 * The image's width.  Check <DimensionsKnown> before reading.  In debug builds attempting to read while
-		 * <DimensionsKnown> is false will throw an exception.
+		 * The image's width.  Check <DimensionsKnown> before reading.  Attempting to read while <DimensionsKnown> is 
+		 * false will throw an exception.
 		 */
 		public uint Width
 			{
 			get
 				{
-				#if DEBUG
-				if (DimensionsKnown == false)
-					{  throw new Exception("Tried to read ImageFile.Width while DimensionsKnown was false.");  }
-				#endif
+				if (!DimensionsKnown)
+					{  throw new InvalidOperationException();  }
 
 				return width;
 				}
-			set
-				{  width = value;  }
 			}
 
 		/* Property: Height
-		 * The image's height.  Check <DimensionsKnown> before reading.  In debug builds attempting to read while
-		 * <DimensionsKnown> is false will throw an exception.
+		 * The image's height.  Check <DimensionsKnown> before reading.  Attempting to read while <DimensionsKnown> is
+		 * false will throw an exception.
 		 */
 		public uint Height
 			{
 			get
 				{
-				#if DEBUG
-				if (DimensionsKnown == false)
-					{  throw new Exception("Tried to read ImageFile.Height while DimensionsKnown was false.");  }
-				#endif
+				if (!DimensionsKnown)
+					{  throw new InvalidOperationException();  }
 
 				return height;
 				}
-			set
-				{  height = value;  }
 			}
 		
 			
