@@ -38,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 * The duplicate will not change so it can be used to compare to the original File object later to see if any 
 		 * of the properties have changed.
 		 */
-		public File CreateSnapshotOfProperties ()
+		virtual public File CreateSnapshotOfProperties ()
 			{
 			File duplicate = new File (fileName, type, lastModified);
 			duplicate.ID = ID;

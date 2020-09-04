@@ -44,6 +44,24 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			this.height = height;
 			}
 			
+		/* Function: CreateSnapshotOfProperties
+		 * Creates a duplicate File object that contains all the file's properties at the time this function was called.
+		 * The duplicate will not change so it can be used to compare to the original File object later to see if any 
+		 * of the properties have changed.
+		 */
+		override public File CreateSnapshotOfProperties ()
+			{
+			ImageFile duplicate = new ImageFile (fileName, lastModified);
+			duplicate.ID = ID;
+			duplicate.deleted = deleted;
+
+			// We do this here instead of using the other constructor to avoid the validation check
+			duplicate.width = width;
+			duplicate.height = height;
+
+			return duplicate;
+			}
+
 			
 		// Group: Properties
 		// __________________________________________________________________________
