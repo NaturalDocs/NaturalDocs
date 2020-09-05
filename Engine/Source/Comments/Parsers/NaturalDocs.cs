@@ -1565,8 +1565,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 		/* Function: IsImageTagContent
 		 * Returns whether the passed string is the content of an image tag, like "see image.jpg".  It validates the file name against
-		 * the registered extensions in <Files.FileSources.Folder>.  The string must not contain the parentheses.  If it is tag content 
-		 * it will also returns the keyword and file name.
+		 * the registered extensions in <Files.Manager.ImageExtensions>.  The string must not contain the parentheses.  If it is tag 
+		 * content it will also returns the keyword and file name.
 		 */
 		protected bool IsImageTagContent (string betweenParens, out string keyword, out Path file)
 		    {
