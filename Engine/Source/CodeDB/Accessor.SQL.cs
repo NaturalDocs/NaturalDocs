@@ -2235,6 +2235,53 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 			
+		/* Function: UpdateImageLinkTarget
+		 * 
+		 * Updates the score and interpretation of an image link in the database.  Assumes both IDs already exist.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires a read/write lock.  Read/possible write locks will be upgraded automatically.
+		 */
+		public void UpdateImageLinkTarget (ImageLink imageLink, int oldTargetFileID)
+			{
+			RequireAtLeast(LockType.ReadWrite);
+
+			BeginTransaction();
+			try
+				{
+				connection.Execute("UPDATE ImageLinks SET TargetFileID=?, TargetScore=? WHERE ImageLinkID=?", 
+											 imageLink.TargetFileID, imageLink.TargetScore, imageLink.ImageLinkID);
+				CommitTransaction();
+				}
+			catch
+				{
+				RollbackTransactionForException();
+				throw;
+				}
+
+
+			// Notify change watchers
+			
+			IList<IChangeWatcher> changeWatchers = Manager.LockChangeWatchers();
+			
+			try
+				{
+				if (changeWatchers.Count > 0)
+					{
+					EventAccessor eventAccessor = new EventAccessor(this);
+
+					foreach (IChangeWatcher changeWatcher in changeWatchers)
+						{  changeWatcher.OnChangeImageLinkTarget(imageLink, oldTargetFileID, eventAccessor);  }
+					}
+				}
+			finally
+				{
+				Manager.ReleaseChangeWatchers();
+				}
+			}
+
+
 
 		// Group: Class Functions
 		// __________________________________________________________________________
