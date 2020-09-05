@@ -219,8 +219,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			
 		/* Function: ProcessNewOrChangedFile
-		 * Takes a new or changed <File>, parses it, and updates <CodeDB.Manager> with its contents.  The <CodeDB.Accessor> 
-		 * should NOT already hold a lock.
+		 * Takes a new or changed <File> and processes it according to its type.  The <CodeDB.Accessor> should NOT already 
+		 * hold a lock.
 		 */
 		protected ProcessFileResult ProcessNewOrChangedFile (File file, Engine.CodeDB.Accessor codeDBAccessor,
 																					  CancelDelegate cancelDelegate)
@@ -228,12 +228,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (file.Type == FileType.Source)
 				{  return ProcessNewOrChangedSourceFile(file, codeDBAccessor, cancelDelegate);  }
 
+			else if (file.Type == FileType.Image)
+				{  return ProcessNewOrChangedImageFile((ImageFile)file, codeDBAccessor, cancelDelegate);  }
+
+			// Style files are only processed by output targets.  They're not in CodeDB so we don't need to do anything here.
 			else
-				{
-				// Style and image files are only processed by output targets.  They're not in CodeDB so we don't need to do 
-				// anything here.
-				return ProcessFileResult.Success;
-				}
+				{  return ProcessFileResult.Success;  }
 			}
 
 
@@ -323,6 +323,30 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 			
 			
+		/* Function: ProcessNewOrChangedImageFile
+		 * Takes a new or changed <ImageFile> and determines its dimensions if it can.
+		 */
+		protected ProcessFileResult ProcessNewOrChangedImageFile (ImageFile file, Engine.CodeDB.Accessor codeDBAccessor,
+																								 CancelDelegate cancelDelegate)
+			{
+			try
+				{
+				// xxx find dimensions
+				return ProcessFileResult.Success;
+				}
+
+			catch (Exception e)
+				{
+				try
+					{  e.AddNaturalDocsTask("Determining Dimensions: " + file.FileName);  }
+				catch
+					{  }
+
+				throw;
+				}
+			}
+			
+			
 		/* Function: ProcessDeletedFile
 		 * Takes a deleted <File> and updates <CodeDB.Manager>.  The <CodeDB.Accessor> should NOT already hold a lock.
 		 */
@@ -331,12 +355,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (file.Type == FileType.Source)
 				{  return ProcessDeletedSourceFile(file, codeDBAccessor, cancelDelegate);  }
 
+			// Style and image files are only processed by output targets.  They're not in CodeDB so we don't need to do anything here.
 			else
-				{
-				// Style and image files are only processed by output targets.  They're not in CodeDB so we don't need to do 
-				// anything here.
-				return ProcessFileResult.Success;
-				}
+				{  return ProcessFileResult.Success;  }
 			}
 
 
