@@ -57,6 +57,7 @@
     <Compile Include="Source\Files\FileSourceAdder.cs" />
     <Compile Include="Source\Files\FileSources\SourceFolderAdder.cs" />
     <Compile Include="Source\Languages\Parsers\Lua.cs" />
+    <Compile Include="Source\Links\Manager.Events.cs" />
     <Compile Include="Source\Links\Resolver.cs" />
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />

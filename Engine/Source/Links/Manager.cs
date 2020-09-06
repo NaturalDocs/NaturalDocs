@@ -20,14 +20,12 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.CodeDB;
 using CodeClear.NaturalDocs.Engine.Errors;
-using CodeClear.NaturalDocs.Engine.Topics;
 
 
 namespace CodeClear.NaturalDocs.Engine.Links
 	{
-	public partial class Manager : Engine.Module, Engine.CodeDB.IChangeWatcher
+	public partial class Manager : Engine.Module, CodeDB.IChangeWatcher, Files.IChangeWatcher
 		{
 
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
@@ -40,72 +38,15 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			unprocessedChanges = new UnprocessedChanges( reparsingEverything: EngineInstance.Config.ReparseEverything );
 
-			// Watch CodeDB for changes
+			// Watch for changes
 			EngineInstance.CodeDB.AddChangeWatcher(this);
+			EngineInstance.Files.AddChangeWatcher(this);
 
 			return true;
 			}
 
 		protected override void Dispose (bool strictRulesApply)
 			{
-			}
-
-
-
-		// Group: CodeDB.IChangeWatcher Functions
-		// __________________________________________________________________________
-
-
-		public void OnAddTopic (Topic topic, EventAccessor eventAccessor)
-			{
-			unprocessedChanges.AddTopic(topic);
-			}
-		
-
-		public void OnUpdateTopic (Topic oldTopic, Topic newTopic, Topic.ChangeFlags changeFlags, EventAccessor eventAccessor)
-			{
-			}
-		
-
-		public void OnDeleteTopic (Topic topic, IDObjects.NumberSet linksAffected, EventAccessor eventAccessor)
-			{
-			unprocessedChanges.DeleteTopic(topic, linksAffected);
-			}
-
-		
-		public void OnAddLink (Link link, EventAccessor eventAccessor)
-			{
-			unprocessedChanges.AddLink(link);
-			}
-
-		
-		public void OnChangeLinkTarget (Link link, int oldTargetTopicID, int oldTargetClassID, EventAccessor eventAccessor)
-			{
-			// We're going to be the one causing this event, not responding to it.  No other code should be changing link definitions.
-			}
-
-		
-		public void OnDeleteLink (Link link, EventAccessor eventAccessor)
-			{
-			unprocessedChanges.DeleteLink(link);
-			}
-
-
-		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
-			}
-
-
-		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
-			}
-
-
-		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
-			{
-			// xxx placeholder
 			}
 
 
