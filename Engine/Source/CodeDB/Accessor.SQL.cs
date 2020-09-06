@@ -1959,6 +1959,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetImageLinkIDsByTarget
+		 * 
+		 * Retrieves the set of all the image links IDs which resolve to the passed file ID.  If there are none it will return an 
+		 * empty set.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public IDObjects.NumberSet GetImageLinkIDsByTarget (int targetFileID, CancelDelegate cancelled)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			IDObjects.NumberSet linksAffected = new IDObjects.NumberSet();
+
+			using (SQLite.Query query = connection.Query("SELECT ImageLinkID FROM ImageLinks WHERE TargetFileID=?", targetFileID))
+				{
+				while (query.Step())
+					{  linksAffected.Add( query.IntColumn(0) );  }
+				}
+
+			return linksAffected;
+			}
+
+
 		/* Function: AddImageLink
 		 * 
 		 * Adds an <ImageLink> to the database.  Assumes it doesn't already exist.
