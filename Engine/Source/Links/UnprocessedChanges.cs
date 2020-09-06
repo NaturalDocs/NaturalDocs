@@ -21,6 +21,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
 
@@ -41,8 +42,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			linksToResolve = new IDObjects.NumberSet();
 			newTopicIDsByEndingSymbol = new SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet>();
 
-			// If we're reparsing everything we can ignore new topics.  See the variable's documentation for the explanation.
-			ignoreNewTopics = reparsingEverything;
+			imageLinksToResolve = new IDObjects.NumberSet();
+			newImageFileIDsByLCFileName = new SafeDictionary<string, IDObjects.NumberSet>();
+
+			// If we're reparsing everything we can ignore new topics and image files.  See the variable's documentation for the explanation.
+			allLinksAreNew = reparsingEverything;
 
 			accessLock = new object();
 			}
@@ -72,21 +76,19 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			lock (accessLock)
 				{
-				if (!ignoreNewTopics)
+				if (allLinksAreNew)
+					{  return;  }
+
+				var endingSymbol = topic.Symbol.EndingSymbol;
+				var newTopicIDs = newTopicIDsByEndingSymbol[endingSymbol];
+
+				if (newTopicIDs == null)
 					{
-					// Add to newTopicIDsByEndingSymbol
-
-					var endingSymbol = topic.Symbol.EndingSymbol;
-					var newTopicIDs = newTopicIDsByEndingSymbol[endingSymbol];
-
-					if (newTopicIDs == null)
-						{
-						newTopicIDs = new IDObjects.NumberSet();
-						newTopicIDsByEndingSymbol[endingSymbol] = newTopicIDs;
-						}
-
-					newTopicIDs.Add(topic.TopicID);
+					newTopicIDs = new IDObjects.NumberSet();
+					newTopicIDsByEndingSymbol[endingSymbol] = newTopicIDs;
 					}
+
+				newTopicIDs.Add(topic.TopicID);
 				}
 			}
 
@@ -118,6 +120,74 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 			
 
+		/* Function: AddImageLink
+		 */
+		public void AddImageLink (ImageLink imageLink)
+			{
+			lock (accessLock)
+				{  imageLinksToResolve.Add(imageLink.ImageLinkID);  }
+			}
+
+
+		/* Function: DeleteImageLink
+		 */
+		public void DeleteImageLink (ImageLink imageLink)
+			{
+			lock (accessLock)
+				{  imageLinksToResolve.Remove(imageLink.ImageLinkID);  }
+			}
+
+
+		/* Function: AddImageFile
+		 */
+		public void AddImageFile (ImageFile imageFile)
+			{
+			lock (accessLock)
+				{
+				if (allLinksAreNew)
+					{  return;  }
+
+				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower();
+				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
+
+				if (newImageFileIDs == null)
+					{
+					newImageFileIDs = new IDObjects.NumberSet();
+					newImageFileIDsByLCFileName[lcFileName] = newImageFileIDs;
+					}
+
+				newImageFileIDs.Add(imageFile.ID);
+				}
+			}
+
+
+		/* Function: DeleteImageFile
+		 */
+		public void DeleteImageFile (ImageFile imageFile, IDObjects.NumberSet linksAffected)
+			{
+			lock (accessLock)
+				{
+				// Reresolve affected links
+
+				imageLinksToResolve.Add(linksAffected);
+
+
+				// Remove topic from newTopicIDsByEndingSymbol
+
+				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower();
+				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
+
+				if (newImageFileIDs != null)
+					{  
+					newImageFileIDs.Remove(imageFile.ID);
+
+					if (newImageFileIDs.IsEmpty)
+						{  newImageFileIDsByLCFileName.Remove(lcFileName);  }
+					}
+				}
+			}
+			
+
 
 		// Group: Pick Functions
 		// __________________________________________________________________________
@@ -132,8 +202,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				// Once we pick a link to resolve we can't allow this optimization anymore.  See the variable's documentation for
 				// the explanation.
-				ignoreNewTopics = false;
-
+				allLinksAreNew = false;
+				
 				return linksToResolve.Pop();  
 				}
 			}
@@ -157,7 +227,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					{
 					// Once links might be resolved we can't allow this optimization anymore.  See the variable's documentation for
 					// the explanation.
-					ignoreNewTopics = false;
+					allLinksAreNew = false;
 
 					var enumerator = newTopicIDsByEndingSymbol.GetEnumerator();
 					enumerator.MoveNext();  // It's not positioned on the first element by default.
@@ -166,6 +236,56 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					topicIDs = enumerator.Current.Value;
 
 					newTopicIDsByEndingSymbol.Remove(endingSymbol);
+
+					return true;
+					}
+				}
+			}
+
+
+		/* Function: PickImageLinkID
+		 * Returns an image link ID that needs to be processed, or zero if there aren't any.
+		 */
+		public int PickImageLinkID ()
+			{
+			lock (accessLock)
+				{
+				// Once we pick a link to resolve we can't allow this optimization anymore.  See the variable's documentation for
+				// the explanation.
+				allLinksAreNew = false;
+				
+				return imageLinksToResolve.Pop();  
+				}
+			}
+
+
+		/* Function: PickNewImageFiles
+		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows you to 
+		 * process new image files that could potentially serve as better definitions to existing links.
+		 */
+		public bool PickNewImageFiles (out IDObjects.NumberSet imageFileIDs, out string lcFileName)
+			{
+			lock (accessLock)
+				{
+				if (newImageFileIDsByLCFileName.Count == 0)
+					{
+					imageFileIDs = null;
+					lcFileName = null;
+					return false;
+					}
+				else
+					{
+					// Once links might be resolved we can't allow this optimization anymore.  See the variable's documentation for
+					// the explanation.
+					allLinksAreNew = false;
+
+					var enumerator = newImageFileIDsByLCFileName.GetEnumerator();
+					enumerator.MoveNext();  // It's not positioned on the first element by default.
+
+					lcFileName = enumerator.Current.Key;
+					imageFileIDs = enumerator.Current.Value;
+
+					newImageFileIDsByLCFileName.Remove(lcFileName);
 
 					return true;
 					}
@@ -192,6 +312,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					int changes = linksToResolve.Count;
 
 					foreach (var pair in newTopicIDsByEndingSymbol)
+						{  changes += pair.Value.Count;  }
+
+					changes += imageLinksToResolve.Count;
+
+					foreach (var pair in newImageFileIDsByLCFileName)
 						{  changes += pair.Value.Count;  }
 
 					return changes;
@@ -242,9 +367,44 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		protected SafeDictionary<Symbols.EndingSymbol, IDObjects.NumberSet> newTopicIDsByEndingSymbol;
 
 
-		/* var: ignoreNewTopics
+		/* var: imageLinksToResolve
 		 * 
-		 * Wheher we can optimize the change list by not tracking new topics in <newTopicIDsByEndingSymbol>.
+		 * The IDs of all the image links that need to be resolved, either because they're new or their previous target was deleted.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected IDObjects.NumberSet imageLinksToResolve;
+
+
+		/* var: newImageFileIDsByLCFileName
+		 * 
+		 * Keeps track of all newly created image file IDs.  The keys are their all-lowercase file names, and the values are
+		 * <IDObjects.NumberSets> of all the file IDs associated with that file name.
+		 * 
+		 * Rationale:
+		 * 
+		 *		When a new image file is detected, it might serve as a better definition for existing image links.  We don't want to 
+		 *		reresolve the links as soon as the file is detected because there may be multiple files that affect the same links and we'd 
+		 *		be wasting effort.  Instead we store which files are new and resolve the links after parsing is complete.
+		 *		
+		 *		We group them by file name instead of having a single NumberSet so that we can reresolve links in batches.  Image files
+		 *		that have the same file name will be candidates for the same group of links, so we can query those links into memory, 
+		 *		reresolve them all at once, and then move on to the next file name.  If we stored a single NumberSet of image file IDs 
+		 *		we'd have to handle the files one by one and query for each file's links separately.
+		 *		
+		 * Thread Safety:
+		 * 
+		 *		You must hold <accessLock> in order to use this variable.
+		 */
+		protected SafeDictionary<string, IDObjects.NumberSet> newImageFileIDsByLCFileName;
+
+
+		/* var: allLinksAreNew
+		 * 
+		 * Wheher we can optimize the change list by not tracking new topics in <newTopicIDsByEndingSymbol> or new files to
+		 * <newImageFileIDsByLCFileName>.
 		 * 
 		 * This occurs when we're reparsing everything.  All links will be treated as new and added to <linksToResolve>, therefore we
 		 * don't need to track new <Topics> to see if they serve as better definitions for any unchanged links, because there aren't any.
@@ -254,7 +414,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		 * 
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
-		protected bool ignoreNewTopics;
+		protected bool allLinksAreNew;
 
 
 		/* var: accessLock
