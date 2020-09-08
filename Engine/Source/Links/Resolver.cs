@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.CodeDB;
+using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -76,13 +77,12 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				accessor.GetReadPossibleWriteLock();
 
-				int linkID;
-				EndingSymbol endingSymbol;
-				NumberSet topicIDs;
-
 				while (!cancelled())
 					{
-					linkID = PickLinkID();
+
+					// Links
+
+					int linkID = PickLinkID();
 
 					if (linkID != 0)
 						{
@@ -91,15 +91,58 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 						if (accessor.LockHeld == Accessor.LockType.ReadWrite)
 							{  accessor.DowngradeToReadPossibleWriteLock();  }
+
+						continue;
 						}
 
-					else if (PickNewTopics(out topicIDs, out endingSymbol))
+
+					// New topics
+
+					NumberSet topicIDs;
+					EndingSymbol endingSymbol;
+
+					if (PickNewTopics(out topicIDs, out endingSymbol))
 						{
 						ResolveNewTopics(topicIDs, endingSymbol, accessor);
 						FinalizeNewTopics(topicIDs, endingSymbol);
 
 						if (accessor.LockHeld == Accessor.LockType.ReadWrite)
 							{  accessor.DowngradeToReadPossibleWriteLock();  }
+
+						continue;
+						}
+
+
+					// Image links
+
+					int imageLinkID = PickImageLinkID();
+
+					if (imageLinkID != 0)
+						{
+						ResolveImageLink(imageLinkID, accessor);
+						FinalizeImageLinkID(imageLinkID);
+
+						if (accessor.LockHeld == Accessor.LockType.ReadWrite)
+							{  accessor.DowngradeToReadPossibleWriteLock();  }
+
+						continue;
+						}
+
+
+					// New image files
+
+					NumberSet imageFileIDs;
+					string lcFileName;
+
+					if (PickNewImageFiles(out imageFileIDs, out lcFileName))
+						{
+						ResolveNewImageFiles(imageFileIDs, lcFileName, accessor);
+						FinalizeNewImageFiles(imageFileIDs, lcFileName);
+
+						if (accessor.LockHeld == Accessor.LockType.ReadWrite)
+							{  accessor.DowngradeToReadPossibleWriteLock();  }
+
+						continue;
 						}
 
 					else
@@ -268,6 +311,132 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 
 
+		/* Function: ResolveImageLink
+		 * 
+		 * Calculates a new target for the passed image link ID.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires the accessor to have at least a read/possible write lock.  If the link target changes it will be upgraded to
+		 *		  read/write automatically.
+		 *		
+		 */
+		protected void ResolveImageLink (int imageLinkID, Accessor accessor)
+			{
+			ImageLink imageLink = accessor.GetImageLinkByID(imageLinkID, Accessor.GetImageLinkFlags.DontLookupClasses);
+
+			int bestMatchFileID = imageLink.TargetFileID;
+			int bestMatchScore = imageLink.TargetScore;
+
+
+			// First try the path relative to the source file.
+
+			Path pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
+			File fileRelativeToSourceFile = EngineInstance.Files.FromPath(pathRelativeToSourceFile);
+
+			if (fileRelativeToSourceFile != null)
+				{
+				int score = Manager.Score(imageLink, fileRelativeToSourceFile, bestMatchScore);
+
+				if (score > bestMatchScore)
+					{
+					bestMatchScore = score;
+					bestMatchFileID = fileRelativeToSourceFile.ID;
+					}
+				}
+
+
+			// Next try the path relative to any image folders.
+
+			foreach (var fileSource in EngineInstance.Files.FileSources)
+				{
+				if (fileSource.Type == InputType.Image)
+					{
+					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
+					File fileRelativeToFileSource = EngineInstance.Files.FromPath(pathRelativeToFileSource);
+
+					if (fileRelativeToFileSource != null)
+						{
+						int score = Manager.Score(imageLink, fileRelativeToFileSource, bestMatchScore);
+
+						if (score > bestMatchScore)
+							{
+							bestMatchScore = score;
+							bestMatchFileID = fileRelativeToFileSource.ID;
+							}
+						}
+					}
+				}
+
+
+			// Update the database
+
+			if (bestMatchFileID != imageLink.TargetFileID ||
+				bestMatchScore != imageLink.TargetScore)
+				{
+				int oldTargetFileID = imageLink.TargetFileID;
+
+				imageLink.TargetFileID = bestMatchFileID;
+				imageLink.TargetFileID = bestMatchScore;
+
+				accessor.UpdateImageLinkTarget(imageLink, oldTargetFileID);
+				}
+			}
+
+
+		/* Function: ResolveNewImageFiles
+		 * 
+		 * Goes through the IDs of newly created image files and sees if they serve as better targets for any existing links.
+		 * 
+		 * Parameters:
+		 * 
+		 *		imageFileIDs - The set of IDs to check.  Every file represented here must have the same lowercase file name.
+		 *		lcFileName - The all lowercase file name shared by all of the file IDs.  It does not include any part of the path.
+		 *		accessor - The <Accessor> used for the database.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- Requires the accessor to have at least a read/possible write lock.  If the link changes it will be upgraded to
+		 *		  read/write automatically.
+		 *		
+		 */
+		protected void ResolveNewImageFiles (NumberSet imageFileIDs, string lcFileName, Accessor accessor)
+			{
+			List<ImageLink> imageLinks = accessor.GetImageLinksByFileName(lcFileName, Delegates.NeverCancel,
+																											  Accessor.GetImageLinkFlags.DontLookupClasses);
+
+
+			// Go through each image link and see if any of the new image files serve as a better target.
+
+			foreach (var imageLink in imageLinks)
+				{
+				int bestMatchFileID = imageLink.TargetFileID;
+				int bestMatchScore = imageLink.TargetScore;
+
+				foreach (int imageFileID in imageFileIDs)
+					{
+					int newScore = Manager.Score(imageLink, EngineInstance.Files.FromID(imageFileID), bestMatchScore);
+
+					if (newScore > bestMatchScore)
+						{
+						bestMatchFileID = imageFileID;
+						bestMatchScore = newScore;
+						}
+					}
+
+				if (imageLink.TargetFileID != bestMatchFileID)
+					{
+					int oldTargetFileID = imageLink.TargetFileID;
+
+					imageLink.TargetFileID = bestMatchFileID;
+					imageLink.TargetScore = bestMatchScore;
+
+					accessor.UpdateImageLinkTarget(imageLink, oldTargetFileID);
+					}
+				}
+			}
+
+
 		/* Function: GetStatus
 		 * Fills the passed object with the status of <WorkOnResolvingLinks()>.  This will be a snapshot of its progress rather than
 		 * a live object, so the values won't change out from under you.
@@ -329,6 +498,48 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			}
 			
 
+		/* Function: PickImageLinkID
+		 * Returns an image link ID that needs to be processed, or zero if there aren't any.  All image link IDs should be passed to 
+		 * <FinalizeImageLinkID()> after being resolved.
+		 */
+		protected int PickImageLinkID ()
+			{
+			lock (accessLock)
+				{
+				int imageLinkID = Manager.UnprocessedChanges.PickImageLinkID();
+
+				if (imageLinkID != 0)
+					{
+					// DEPENDENCY: Make sure all changes to changesBeingProcessed match the system used in UnprocessedChanges.Count
+					changesBeingProcessed++;
+					}
+
+				return imageLinkID;
+				}
+			}
+
+
+		/* Function: PickNewImageFiles
+		 * Returns the IDs for a batch of new image files and their shared lowercase file name, or false if there aren't any.  This allows 
+		 * you to process new images that could potentially serve as better definitions to existing links.  You must pass the values
+		 * to <FinalizeNewImageFiles()> after resolving them.
+		 */
+		protected bool PickNewImageFiles (out IDObjects.NumberSet imageFileIDs, out string lcFileName)
+			{
+			lock (accessLock)
+				{
+				if (Manager.UnprocessedChanges.PickNewImageFiles(out imageFileIDs, out lcFileName))
+					{
+					// DEPENDENCY: Make sure all changes to changesBeingProcessed match the system used in UnprocessedChanges.Count
+					changesBeingProcessed += imageFileIDs.Count;
+					return true;
+					}
+				else
+					{  return false;  }
+				}
+			}
+			
+
 		/* Function: FinalizeLinkID
 		 * Finalizes processing of a link ID that was resolved.
 		 */
@@ -354,6 +565,35 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{
 				// DEPENDENCY: Make sure all changes to changesBeingProcessed match the system used in UnprocessedChanges.Count
 				changesBeingProcessed -= topicIDs.Count;
+				}
+			}
+			
+
+		/* Function: FinalizeImageLinkID
+		 * Finalizes processing of an image link ID that was resolved.
+		 */
+		protected void FinalizeImageLinkID (int imageLinkID)
+			{
+			if (imageLinkID == 0)
+				{  return;  }
+
+			lock (accessLock)
+				{
+				// DEPENDENCY: Make sure all changes to changesBeingProcessed match the system used in UnprocessedChanges.Count
+				changesBeingProcessed--;
+				}
+			}
+
+
+		/* Function: FinalizeNewImageFiles
+		 * Finalizes processing of a set of new image files and their shared lowercase file name.
+		 */
+		protected void FinalizeNewImageFiles (IDObjects.NumberSet imageFileIDs, string lcFileName)
+			{
+			lock (accessLock)
+				{
+				// DEPENDENCY: Make sure all changes to changesBeingProcessed match the system used in UnprocessedChanges.Count
+				changesBeingProcessed -= imageFileIDs.Count;
 				}
 			}
 			
