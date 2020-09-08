@@ -1935,6 +1935,60 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetImageLinkByID
+		 * 
+		 * Retrieves an image link by its ID.  Assumes the link already exists.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 * and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public ImageLink GetImageLinkByID (int imageLinkID, GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = imageLinkID;
+
+			List<ImageLink> imageLinks = GetImageLinks("ImageLinks.ImageLinkID=?", parameters, Delegates.NeverCancel, getImageLinkFlags);
+			
+			#if DEBUG
+			if (imageLinks.Count == 0)
+				{  throw new Exception ("Tried to look up image link ID " + imageLinkID + " which doesn't exist.");  }
+			#endif
+
+			return imageLinks[0];
+			}
+
+
+		/* Function: GetImageLinksByFileName
+		 * 
+		 * Retrieves a list of all the image links which use the passed lowercase file name.  If there are none it will return an
+		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 * if not.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 * and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ImageLink> GetImageLinksByFileName (string fileName, CancelDelegate cancelled,
+																				   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = fileName.ToLower();
+
+			return GetImageLinks("ImageLinks.FileName=?", parameters, cancelled, getImageLinkFlags);
+			}
+
+
 		/* Function: GetImageLinksInFile
 		 * 
 		 * Retrieves a list of all the image links present in the passed file ID.  If there are none it will return an empty list.
