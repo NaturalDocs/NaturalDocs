@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 	public partial class Manager
 		{
 
-		// Group: Link Targeting Functions
+		// Group: Link Scoring Functions
 		// __________________________________________________________________________
 
 
@@ -829,6 +829,58 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 
 			return score;
+			}
+
+
+
+		// Group: Image Link Scoring Functions
+		// __________________________________________________________________________
+
+
+		/* Function: Score
+		 * 
+		 * Generates a numeric score representing how well the <File> serves as a match for the <ImageLink>.  Higher scores 
+		 * are better, and zero means they don't match at all.
+		 * 
+		 * If a score has to beat a certain threshold to be relevant, you can pass it to lessen the processing load.  This function 
+		 * may be able to tell it can't beat the score early and return without performing later steps.  In these cases it will return 
+		 * -1.
+		 */
+		public int Score (ImageLink imageLink, File file, int minimumScore = 0)
+			{
+
+			// If it's already resolved to the maximum value we can quit without checking anything.
+
+			if (minimumScore == int.MaxValue)
+				{  return -1;  }
+
+
+			// See if the target path is the same as the path relative to the source file.  This is our best choice.
+			// We always ignore case regardless of the underlying file system's case sensitivity.
+
+			Path pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
+
+			if (string.Compare(pathRelativeToSourceFile, file.FileName, true) == 0)
+				{  return int.MaxValue;  }
+
+
+			// Otherwise see if the target path is the same as the path relative to an image folder.  This is our next best choice.  We
+			// rank image folders by their number, lower being better.
+
+			var fileSource = EngineInstance.Files.FileSourceOf(file);
+
+			if (fileSource.Type == InputType.Image)
+				{
+				Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
+
+				if (string.Compare(pathRelativeToFileSource, file.FileName, true) == 0)
+					{  return (int.MaxValue - fileSource.Number);  }
+				}
+
+
+			// Nope.
+
+			return 0;
 			}
 
 
