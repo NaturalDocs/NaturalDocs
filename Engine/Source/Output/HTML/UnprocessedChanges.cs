@@ -163,15 +163,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  styleFiles.Add(fileID);  }
 			}
 
-		/* Function: AddStyleFiles
-		 * Adds a set of style file IDs to the list that need their output files rebuilt.
-		 */
-		public void AddStyleFiles (NumberSet fileIDs)
-			{
-			lock (accessLock)
-				{  styleFiles.Add(fileIDs);  }
-			}
-
 		/* Function: AddMainStyleFiles
 		 * Adds the main style files, main.css and main.js, to the list of things that need to be rebuilt.
 		 */
