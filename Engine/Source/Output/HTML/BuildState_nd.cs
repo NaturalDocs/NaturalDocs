@@ -23,15 +23,20 @@
  * 
  *		> [NumberSet: Source File IDs to Rebuild]
  *		> [NumberSet: Class IDs to Rebuild]
+ *		> [NumberSet: Image File IDs to Rebuild]
  *		> [NumberSet: Style File IDs to Rebuild]
  *		
- *		The source and class files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
+ *		The files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
  *		be empty sets, though if the build was interrupted this will have the ones left to do.
  *		
  *		> [NumberSet: Source File IDs with Content]
  *		> [NumberSet: Class IDs with Content]
  *		
  *		A set of all the source and class files known to have content after all filters were applied.
+ *		
+ *		> [NumberSet: Unchanged Image File Use Check IDs]
+ *		
+ *		A set of all the image file IDs that haven't changed but whether they're used in the output may have.
  *		
  *		> [StringSet: Search Prefixes to Rebuild]
  *		
@@ -55,6 +60,9 @@
  *		
  *		Version History:
  *		
+ *			- 2.1
+ *				- Added Image Files to Rebuild and Unchanged Image File Use Check IDs.
+ *			
  *			- 2.0.2
  *				- Added Style File IDs to Rebuild.
  *			
@@ -66,10 +74,8 @@
 
 
 using System;
-using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
-using CodeClear.NaturalDocs.Engine.Styles;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
@@ -104,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.0.2") == false)
+				if (binaryFile.OpenForReading(filename, "2.1") == false)
 					{  result = false;  }
 				else
 					{
@@ -120,15 +126,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
+					// [NumberSet: Image File IDs to Rebuild]
 					// [NumberSet: Style File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
+					// [NumberSet: Unchanged Image File Use Check IDs]
 
 					unprocessedChanges.sourceFiles.ReadFrom(binaryFile);
 					unprocessedChanges.classes.ReadFrom(binaryFile);
+					unprocessedChanges.imageFiles.ReadFrom(binaryFile);
 					unprocessedChanges.styleFiles.ReadFrom(binaryFile);
 					buildState.sourceFilesWithContent.ReadFrom(binaryFile);
 					buildState.classesWithContent.ReadFrom(binaryFile);
+					unprocessedChanges.unchangedImageFileUseChecks.ReadFrom(binaryFile);
 
 					// [StringSet: Search Prefixes to Rebuild]
 					// [StringSet: Folders to Check for Deletion]
@@ -202,15 +212,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
+				// [NumberSet: Image File IDs to Rebuild]
 				// [NumberSet: Style File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
+				// [NumberSet: Unchanged Image File Use Check IDs]
 
 				binaryFile.WriteNumberSet(unprocessedChanges.sourceFiles);
 				binaryFile.WriteNumberSet(unprocessedChanges.classes);
+				binaryFile.WriteNumberSet(unprocessedChanges.imageFiles);
 				binaryFile.WriteNumberSet(unprocessedChanges.styleFiles);
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classesWithContent);
+				binaryFile.WriteNumberSet(unprocessedChanges.unchangedImageFileUseChecks);
 
 				// [StringSet: Search Prefixes to Rebuild]
 				// [StringSet: Folders to Check for Deletion]

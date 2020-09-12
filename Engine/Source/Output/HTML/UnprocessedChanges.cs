@@ -40,6 +40,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			sourceFiles = new NumberSet();
 			classes = new NumberSet();
 
+			imageFiles = new NumberSet();
+			unchangedImageFileUseChecks = new NumberSet();
+
 			styleFiles = new NumberSet();
 			mainStyleFiles = false;
 
@@ -68,6 +71,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{
 				count += sourceFiles.Count * TargetBuilder.SourceFileCost;
 				count += classes.Count * TargetBuilder.ClassCost;
+				count += imageFiles.Count * TargetBuilder.ImageFileCost;
+				count += unchangedImageFileUseChecks.Count * TargetBuilder.UnchangedImageFileUseCheckCost;
 				count += styleFiles.Count * TargetBuilder.StyleFileCost;
 
 				if (mainStyleFiles)
@@ -152,6 +157,30 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			lock (accessLock)
 				{  classes.Add(classIDs);  }
+			}
+
+		/* Function: AddImageFile
+		 * Adds an image file ID to the list that need their output files rebuilt.
+		 */
+		public void AddImageFile (int imageFileID)
+			{
+			lock (accessLock)
+				{  
+				imageFiles.Add(imageFileID);
+				unchangedImageFileUseChecks.Remove(imageFileID);
+				}
+			}
+
+		/* Function: AddImageFileUseCheck
+		 * Adds an image file ID to the list that need to be checked to see if they're still used in the output.
+		 */
+		public void AddImageFileUseCheck (int imageFileID)
+			{
+			lock (accessLock)
+				{
+				if (!imageFiles.Contains(imageFileID))
+					{  unchangedImageFileUseChecks.Add(imageFileID);  }
+				}
 			}
 
 		/* Function: AddStyleFile
@@ -244,6 +273,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			lock (accessLock)
 				{
 				return classes.Pop();
+				}
+			}
+
+		/* Function: PickImageFile
+		 * Picks an image file ID that needs its output file rebuilt to work on, if there are any.  This will include new, changed, 
+		 * and deleted files so you should check the file's status to see if it's deleted before processing it.  You also need to 
+		 * check that it's actually used in the output.  It will be removed from the list of unprocessed changes.  If there aren't 
+		 * any it will return zero.
+		 */
+		 public int PickImageFile ()
+			{
+			lock (accessLock)
+				{
+				return imageFiles.Pop();
+				}
+			}
+
+		/* Function: PickUnchangedImageFileUseCheck
+		 * Picks an image file ID where whether it's used in the output may have changed.  This will only return IDs where the
+		 * file itself hasn't changed and thus the ID wouldn't also be returned by <PickImageFile()>.  It will be removed from 
+		 * the list of unprocessed changes.  If there aren't any it will return zero.
+		 */
+		 public int PickUnchangedImageFileUseCheck ()
+			{
+			lock (accessLock)
+				{
+				return unchangedImageFileUseChecks.Pop();
 				}
 			}
 
@@ -404,6 +460,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Lock()> and <Unlock()>.
 		 */
 		protected internal NumberSet classes;
+
+
+		/* var: imageFiles
+		 * 
+		 * A set of IDs for the image files that need their output updated.  This includes new, changed, and deleted files so
+		 * you should check the file's status to see if it's deleted before processing it.  You also need to check that it's actually
+		 * used in the output.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSet imageFiles;
+
+
+		/* var: unchangedImageFileUseChecks
+		 * 
+		 * A set of IDs for image files where the file itself didn't change, but whether it's used or not might have.  No IDs will
+		 * appear both in here and in <imageFiles>.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSet unchangedImageFileUseChecks;
 
 
 		/* var: styleFiles

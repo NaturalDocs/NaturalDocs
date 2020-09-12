@@ -1152,6 +1152,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * 
 		 *		SourceFileCost - How much building a single source file costs.
 		 *		ClassCost - How much building a single class file costs.
+		 *		ImageFileCost - How much building a single image file costs.
+		 *		UnchangedImageFileUseCheckCost - How much checking if an image file is used and rebuilding it if that's 
+		 *															  changed costs.
 		 *		StyleFileCost - How much building a single style file costs.
 		 *		MainStyleFilesCost - How much building the main style files costs.
 		 *		SearchPrefixCost - How much building a single search prefix costs.
@@ -1162,6 +1165,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		public const long SourceFileCost = 10;
 		public const long ClassCost = 10;
+		public const long ImageFileCost = 2;
+		public const long UnchangedImageFileUseCheckCost = 1;
 		public const long StyleFileCost = 2;
 		public const long MainStyleFilesCost = 1;
 		public const long SearchPrefixCost = 4;
