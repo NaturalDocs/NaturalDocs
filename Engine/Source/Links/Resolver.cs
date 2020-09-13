@@ -377,7 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				int oldTargetFileID = imageLink.TargetFileID;
 
 				imageLink.TargetFileID = bestMatchFileID;
-				imageLink.TargetFileID = bestMatchScore;
+				imageLink.TargetScore = bestMatchScore;
 
 				accessor.UpdateImageLinkTarget(imageLink, oldTargetFileID);
 				}
