@@ -251,6 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{  unprocessedChanges.Unlock();  }
 
+
 			// If this is a Natural Docs link, see if it appears in the summary for any topics.  This would mean that it appears in
 			// these topics' tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
 
@@ -338,12 +339,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			unprocessedChanges.AddSourceFile(imageLink.FileID);
 			unprocessedChanges.AddClass(imageLink.ClassID);
 
+
 			// We also have to check both image files because they could have changed between used and unused.
 
 			if (imageLink.TargetFileID != 0)
 				{  unprocessedChanges.AddImageFileUseCheck(imageLink.TargetFileID);  }
 			if (oldTargetFileID != 0)
 				{  unprocessedChanges.AddImageFileUseCheck(oldTargetFileID);  }
+
+
+			// We also have to see if it appears in the summary for any topics.  This would mean that it appears in these topics'
+			// tooltips, so we have to find any links to these topics and rebuild the files those links appear in.
+
+			// Why do we have to do this if links aren't added to tooltips?  Because how it's resolved can affect it's appearance.
+			// It will show up as "(see diagram)" versus "(see images/diagram.jpg)" if it's resolved or not.
+
+			IDObjects.NumberSet fileIDs, classIDs;
+			eventAccessor.GetInfoOnLinksToTopicsWithImageLinkInSummary(imageLink, out fileIDs, out classIDs);
+
+			if (fileIDs != null)
+				{  unprocessedChanges.AddSourceFiles(fileIDs);  }
+			if (classIDs != null)
+				{  unprocessedChanges.AddClasses(classIDs);  }
 			}
 
 		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
