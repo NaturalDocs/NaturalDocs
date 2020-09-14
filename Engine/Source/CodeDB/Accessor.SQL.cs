@@ -1989,6 +1989,31 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: GetImageLinksByTarget
+		 * 
+		 * Retrieves a list of all the image links which resolve to the passed image file ID.  If there are none it will return an
+		 * empty list.  Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> 
+		 * if not.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some out 
+		 * and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ImageLink> GetImageLinksByTarget (int imageFileID, CancelDelegate cancelled,
+																			   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = imageFileID;
+
+			return GetImageLinks("ImageLinks.TargetFileID=?", parameters, cancelled, getImageLinkFlags);
+			}
+
+
 		/* Function: GetImageLinksInFile
 		 * 
 		 * Retrieves a list of all the image links present in the passed file ID.  If there are none it will return an empty list.
@@ -2002,7 +2027,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 *		- You must have at least a read-only lock.
 		 */
 		public List<ImageLink> GetImageLinksInFile (int fileID, CancelDelegate cancelled, 
-																		GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+																		   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
 			{
 			RequireAtLeast(LockType.ReadOnly);
 			
@@ -2010,6 +2035,70 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			parameters[0] = fileID;
 
 			return GetImageLinks("ImageLinks.FileID=?", parameters, cancelled, getImageLinkFlags);
+			}
+
+
+		/* Function: GetImageLinksInFiles
+		 * 
+		 * Retrieves a list of all the image links present in the passed file IDs.  If there are none it will return an empty list.
+		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 * out and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ImageLink> GetImageLinksInFiles (IDObjects.NumberSet fileIDs, CancelDelegate cancelled, 
+																		   GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			List<ImageLink> imageLinks = null;
+			IDObjects.NumberSet fileIDsRemaining = fileIDs;
+
+			do
+				{
+				IDObjects.NumberSet temp;
+
+				List<ImageLink> imageLinkBatch = GetImageLinks(ColumnIsInNumberSetExpression("ImageLinks.FileID", fileIDsRemaining, out temp), 
+																							null, cancelled, getImageLinkFlags);
+
+				fileIDsRemaining = temp;
+
+				if (imageLinks == null)
+					{  imageLinks = imageLinkBatch;  }
+				else
+					{  imageLinks.AddRange(imageLinkBatch);  }
+				}
+			while (fileIDsRemaining != null && !cancelled());
+
+			return imageLinks;
+			}
+
+
+		/* Function: GetImageLinksInClass
+		 * 
+		 * Retrieves a list of all the image links present in the passed class ID.  If there are none it will return an empty list.
+		 * Pass a <CancelDelegate> if you'd like to be able to interrupt this process, or <Delegates.NeverCancel> if not.
+		 * 
+		 * If you don't need every property in the <ImageLink> object you can use <GetImageLinkFlags> to filter some 
+		 * out and save processing time.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public List<ImageLink> GetImageLinksInClass (int classID, CancelDelegate cancelled, 
+																			  GetImageLinkFlags getImageLinkFlags = GetImageLinkFlags.Everything)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			object[] parameters = new object[1];
+			parameters[0] = classID;
+
+			return GetImageLinks("ImageLinks.ClassID=?", parameters, cancelled, getImageLinkFlags);
 			}
 
 
@@ -2270,6 +2359,28 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 					
 				throw;
 				}
+			}
+
+
+		/* Function: IsTargetOfImageLink
+		 * 
+		 * Returns whether the passed file ID is the target of any image link.
+		 * 
+		 * Requirements:
+		 * 
+		 *		- You must have at least a read-only lock.
+		 */
+		public bool IsTargetOfImageLink (int imageFileID)
+			{
+			RequireAtLeast(LockType.ReadOnly);
+			
+			using (SQLite.Query query = connection.Query("SELECT ImageLinkID FROM ImageLinks WHERE TargetFileID=? LIMIT 1", imageFileID))
+				{
+				if (query.Step())
+					{  return true;  }
+				}
+			
+			return false;
 			}
 
 
