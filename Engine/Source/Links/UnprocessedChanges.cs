@@ -172,7 +172,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				imageLinksToResolve.Add(linksAffected);
 
 
-				// Remove topic from newTopicIDsByEndingSymbol
+				// Remove topic from newImageFileIDsByLCFileName
 
 				string lcFileName = imageFile.FileName.NameWithoutPath.ToLower();
 				var newImageFileIDs = newImageFileIDsByLCFileName[lcFileName];
