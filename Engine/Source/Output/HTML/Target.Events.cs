@@ -10,6 +10,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Files;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Topics;
@@ -321,17 +322,38 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnAddImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
 			{
-			// xxx placeholder
+			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was 
+			// changed so we can rely on the topic code to handle that.
+
+			// However, this could change whether the image file is used or unused, so we have to add it to the list.
+			if (imageLink.TargetFileID != 0)
+				{  unprocessedChanges.AddImageFileUseCheck(imageLink.TargetFileID);  }
 			}
 
 		public void OnChangeImageLinkTarget (ImageLink imageLink, int oldTargetFileID, CodeDB.EventAccessor eventAccessor)
 			{
-			// xxx placeholder
+			// Here we have to rebuild the HTML containing the link because this could happen without the containing
+			// topic changing, such as if an image file was deleted or a new one served as a better target.
+
+			unprocessedChanges.AddSourceFile(imageLink.FileID);
+			unprocessedChanges.AddClass(imageLink.ClassID);
+
+			// We also have to check both image files because they could have changed between used and unused.
+
+			if (imageLink.TargetFileID != 0)
+				{  unprocessedChanges.AddImageFileUseCheck(imageLink.TargetFileID);  }
+			if (oldTargetFileID != 0)
+				{  unprocessedChanges.AddImageFileUseCheck(oldTargetFileID);  }
 			}
 
 		public void OnDeleteImageLink (ImageLink imageLink, CodeDB.EventAccessor eventAccessor)
 			{
-			// xxx placeholder
+			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was 
+			// changed so we can rely on the topic code to handle that.
+
+			// However, this could change whether the image file is used or unused, so we have to add it to the list.
+			if (imageLink.TargetFileID != 0)
+				{  unprocessedChanges.AddImageFileUseCheck(imageLink.TargetFileID);  }
 			}
 
 
@@ -342,17 +364,76 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		public void OnAddFile (File file)
 			{
-			unprocessedChanges.AddStyleFile(file.ID);
+			if (file.Type == FileType.Style)
+				{  
+				// Add it to the build list.  The build function will check if it's part of a style we're using.
+				unprocessedChanges.AddStyleFile(file.ID);  
+				}
+
+			else if (file.Type == FileType.Image)
+				{
+				// Add it to the build list.  The build function will check if it's used or unused.
+				unprocessedChanges.AddImageFile(file.ID);
+				}
+
+			// We don't care about source files here.  They'll be handled by functions like OnAddTopic().
 			}
 
 		public void OnFileChanged (File file)
 			{
-			unprocessedChanges.AddStyleFile(file.ID);
+			if (file.Type == FileType.Style)
+				{  
+				// Add it to the build list.  The build function will check if it's part of a style we're using.
+				unprocessedChanges.AddStyleFile(file.ID);  
+				}
+
+			else if (file.Type == FileType.Image)
+				{
+				// Add it to the build list.  The build function will check if it's used or unused.
+				unprocessedChanges.AddImageFile(file.ID);
+
+				// Also rebuild the HTML files containing links to it in case the dimensions changed.
+
+				// Creating and destroying an accessor on every event might be a heavy operation.  This event shouldn't
+				// happen too often though so it's probably not worth caching one, plus it would be difficult to know when
+				// to release it.
+				CodeDB.Accessor accessor = EngineInstance.CodeDB.GetAccessor();
+
+				try
+					{
+					accessor.GetReadOnlyLock();
+
+					List<ImageLink> imageLinks = accessor.GetImageLinksByTarget(file.ID, Delegates.NeverCancel, 
+																														  CodeDB.Accessor.GetImageLinkFlags.DontLookupClasses);
+
+					foreach (var imageLink in imageLinks)
+						{
+						unprocessedChanges.AddSourceFile(imageLink.FileID);
+						unprocessedChanges.AddClass(imageLink.ClassID);
+						}
+					}
+				finally
+					{  accessor.Dispose();  }
+				}
+
+			// We don't care about source files here.  They'll be handled by functions like OnUpdateTopic().
 			}
 
 		public void OnDeleteFile (File file)
 			{
-			unprocessedChanges.AddStyleFile(file.ID);
+			if (file.Type == FileType.Style)
+				{  
+				// Add it to the build list.  The build function will check if it's part of a style we're using.
+				unprocessedChanges.AddStyleFile(file.ID);  
+				}
+
+			else if (file.Type == FileType.Image)
+				{
+				// Add it to the build list.  The build function will check if it's used or unused.
+				unprocessedChanges.AddImageFile(file.ID);
+				}
+
+			// We don't care about source files here.  They'll be handled by functions like OnDeleteTopic().
 			}
 
 
