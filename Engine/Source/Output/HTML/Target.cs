@@ -251,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				// Purge the output folders of anything deleted or changed.
 
-				foreach (FileSourceInfo previousFileSourceInfo in previousFileSourceInfoList)
+				foreach (var previousFileSourceInfo in previousFileSourceInfoList)
 					{
 					bool stillExists = false;
 
@@ -271,10 +271,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						
 						if (previousFileSourceInfo.Type == InputType.Source)
 							{  outputFolder = Paths.SourceFile.OutputFolder(OutputFolder, previousFileSourceInfo.Number);  }
+						else if (previousFileSourceInfo.Type == InputType.Image)
+							{  outputFolder = Paths.Image.OutputFolder(OutputFolder, previousFileSourceInfo.Number, previousFileSourceInfo.Type);  }
 						else
-							{  
-							throw new Exception("xxx"); // xxx image source
-							}
+							{  throw new NotImplementedException();  }
 
 						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);
 						}
