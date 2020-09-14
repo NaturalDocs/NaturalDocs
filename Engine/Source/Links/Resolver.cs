@@ -334,7 +334,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			Path pathRelativeToSourceFile = EngineInstance.Files.FromID(imageLink.FileID).FileName.ParentFolder + '/' + imageLink.Path;
 			File fileRelativeToSourceFile = EngineInstance.Files.FromPath(pathRelativeToSourceFile);
 
-			if (fileRelativeToSourceFile != null)
+			if (fileRelativeToSourceFile != null && fileRelativeToSourceFile.Deleted == false)
 				{
 				int score = Manager.Score(imageLink, fileRelativeToSourceFile, bestMatchScore);
 
@@ -355,7 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
 					File fileRelativeToFileSource = EngineInstance.Files.FromPath(pathRelativeToFileSource);
 
-					if (fileRelativeToFileSource != null)
+					if (fileRelativeToFileSource != null && fileRelativeToFileSource.Deleted == false)
 						{
 						int score = Manager.Score(imageLink, fileRelativeToFileSource, bestMatchScore);
 

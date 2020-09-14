@@ -855,6 +855,12 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				{  return -1;  }
 
 
+			// If it's a deleted file it obviously can't be a match.
+
+			if (file.Deleted)
+				{  return 0;  }
+
+
 			// See if the target path is the same as the path relative to the source file.  This is our best choice.
 			// We always ignore case regardless of the underlying file system's case sensitivity.
 
