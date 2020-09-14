@@ -73,6 +73,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 					iterator.Next();
 					}
 
+				// Also allow standalone image links to come before the opening paragraph.
+				else if (iterator.Type == NDMarkup.Iterator.ElementType.ImageTag && iterator.Property("type") == "standalone")
+					{
+					iterator.Next();
+					}
+
 				// Extract the entire openng paragraph for the summary, unlike Natural Docs 1.x which only used the first sentence.
 				else if (iterator.Type == NDMarkup.Iterator.ElementType.ParagraphTag)
 					{
