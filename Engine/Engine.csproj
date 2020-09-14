@@ -62,6 +62,7 @@
     <Compile Include="Source\Links\ResolverStatus.cs" />
     <Compile Include="Source\Links\UnprocessedChanges.cs" />
     <Compile Include="Source\Output\Builder.cs" />
+    <Compile Include="Source\Output\HTML\Paths\Image.cs" />
     <Compile Include="Source\Output\HTML\TargetBuilder.cs" />
     <Compile Include="Source\Output\HTML\Components\Page.cs" />
     <Compile Include="Source\Output\HTML\Target.Events.cs" />
