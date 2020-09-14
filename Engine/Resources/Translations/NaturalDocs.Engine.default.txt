@@ -227,12 +227,12 @@ Project.txt.StyleSyntax.multiline {{{
 #    contains Style.txt.  Do not include ".css" if using a CSS file.
 }}}
 
-Project.txt.InputHeader.multiline {{{
+Project.txt.SourceHeader.multiline {{{
 # Source Code
 # ------------------------------------------------------------------------
 }}}
 
-Project.txt.InputHeaderText.multiline {{{
+Project.txt.SourceHeaderText.multiline {{{
 # This is where you specify what files and folders Natural Docs should be 
 # scanning.  If you use any of these options on the command line, this entire
 # section is ignored except for names and numbers.
@@ -250,12 +250,6 @@ Project.txt.SourceFolderSyntax.multiline {{{
 #    Specifies a folder which will be searched for source files.  If you have
 #    more than one, add the Name property to set how it will show up in the
 #    menu.
-}}}
-
-Project.txt.ImageFolderSyntax.multiline {{{
-# Image Folder: [path]
-#    Specifies a folder which will be searched for image files.  They can be
-#    referenced in comments with (see filename.jpg).
 }}}
 
 Project.txt.FilterHeader.multiline {{{
@@ -283,6 +277,32 @@ Project.txt.IgnoreSourceFolderPatternSyntax.multiline {{{
 #
 #    The data folders of common version control systems (.git, .svn, .cvs, .hg)
 #    are ignored automatically.  You do not have to specify them here.
+}}}
+
+Project.txt.ImageHeader.multiline {{{
+# Images
+# ------------------------------------------------------------------------
+}}}
+
+Project.txt.ImageHeaderText.multiline {{{
+# This is where you specify additional folders Natural Docs should look for
+# images in.  When you put something like (see diagram.jpg) in a comment
+# Natural Docs looks for it relative to the source file.  If you put
+# additional folders here it will also check them for the image.
+#
+# If you use any of these options on the command line, this entire section is
+# ignored except for numbers.
+#
+# All paths are relative to the project configuration folder, which lets this
+# file remain portable across computers and not cause problems in version
+# control systems.  You can enter absolute paths and they will be converted
+# automatically.
+}}}
+
+Project.txt.ImageFolderSyntax.multiline {{{
+# Image Folder: [path]
+#    Specifies a folder which will be searched for image files.  They can be
+#    referenced in comments with (see filename.jpg).
 }}}
 
 Project.txt.OutputHeader.multiline {{{

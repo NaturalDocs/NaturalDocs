@@ -549,8 +549,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			AppendFileHeader(output);			
 			
 			AppendGlobalProjectInfo(output);
-			AppendInputTargets(output, projectFolder);
+			AppendSourceTargets(output, projectFolder);
 			AppendFilterTargets(output, projectFolder);
+			AppendImageTargets(output, projectFolder);
 			AppendOutputTargets(output, projectFolder);
 			AppendGlobalSettings(output);
 			
@@ -703,18 +704,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		/* Function: AppendInputTargets
-		 * Appends all input targets in <projectConfig> to the passed StringBuilder.
+		/* Function: AppendSourceTargets
+		 * Appends all source targets in <projectConfig> to the passed StringBuilder.
 		 */
-		protected void AppendInputTargets (StringBuilder output, Path projectFolder)
+		protected void AppendSourceTargets (StringBuilder output, Path projectFolder)
 			{
-			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.InputHeader.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceHeader.multiline") );
 			output.AppendLine();
 
 			int appended = 0;
-
-
-			// Put source folders before image folders
 
 			foreach (var target in projectConfig.InputTargets)
 				{
@@ -730,26 +728,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					}
 				}
 
-			foreach (var target in projectConfig.InputTargets)
-				{
-				if (target is Targets.ImageFolder &&
-					target.PropertyLocation.Source != PropertySource.SystemDefault)
-					{
-					AppendImageFolder((Targets.ImageFolder)target, output, projectFolder);
-
-					output.AppendLine();
-					appended++;
-					}
-				}
-
 			if (appended > 0)
 				{  output.AppendLine();  }
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.InputHeaderText.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceHeaderText.multiline") );
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SourceFolderSyntax.multiline") );
-			output.AppendLine("#");
-			output.Append(Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline"));
 			output.AppendLine();
 			output.AppendLine();
 			}
@@ -778,28 +762,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (target.NamePropertyLocation.IsDefined &&
 				target.NamePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Name: " + target.Name);  }
-			}
-
-
-		/* Function: AppendImageFolder
-		 * Appends an image folder target and all its settings to the StringBuilder.
-		 */
-		protected void AppendImageFolder (Targets.ImageFolder target, StringBuilder output, Path projectFolder)
-			{
-			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
-				{  return;  }
-
-			output.Append("Image Folder");
-
-			if (target.NumberPropertyLocation.IsDefined &&
-				target.NumberPropertyLocation.Source != PropertySource.SystemDefault &&
-				target.Number != 1)
-				{  output.Append(" " + target.Number);  }
-
-			output.Append(": ");
-
-			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
-			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 			}
 
 
@@ -868,6 +830,61 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return;  }
 
 			output.AppendLine("Ignore Source Folder Pattern: " + target.Pattern);
+			}
+
+
+		/* Function: AppendImageTargets
+		 * Appends all image targets in <projectConfig> to the passed StringBuilder.
+		 */
+		protected void AppendImageTargets (StringBuilder output, Path projectFolder)
+			{
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageHeader.multiline") );
+			output.AppendLine();
+
+			int appended = 0;
+
+			foreach (var target in projectConfig.InputTargets)
+				{
+				if (target is Targets.ImageFolder &&
+					target.PropertyLocation.Source != PropertySource.SystemDefault)
+					{
+					AppendImageFolder((Targets.ImageFolder)target, output, projectFolder);
+
+					output.AppendLine();
+					appended++;
+					}
+				}
+
+			if (appended > 0)
+				{  output.AppendLine();  }
+
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ImageHeaderText.multiline") );
+			output.AppendLine("#");
+			output.Append(Locale.Get("NaturalDocs.Engine", "Project.txt.ImageFolderSyntax.multiline"));
+			output.AppendLine();
+			output.AppendLine();
+			}
+
+
+		/* Function: AppendImageFolder
+		 * Appends an image folder target and all its settings to the StringBuilder.
+		 */
+		protected void AppendImageFolder (Targets.ImageFolder target, StringBuilder output, Path projectFolder)
+			{
+			if (target.PropertyLocation.Source == PropertySource.SystemDefault)
+				{  return;  }
+
+			output.Append("Image Folder");
+
+			if (target.NumberPropertyLocation.IsDefined &&
+				target.NumberPropertyLocation.Source != PropertySource.SystemDefault &&
+				target.Number != 1)
+				{  output.Append(" " + target.Number);  }
+
+			output.Append(": ");
+
+			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
+			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 			}
 
 

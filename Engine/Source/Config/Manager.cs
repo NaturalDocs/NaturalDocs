@@ -604,13 +604,30 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 			// Input targets
 
+			int primarySourceFolderCount = 0;
+			int primaryImageFolderCount = 0;
+
+			foreach (var inputTarget in primaryConfig.InputTargets)
+				{
+				if (inputTarget is Targets.SourceFolder)
+					{  primarySourceFolderCount++;  }
+				else if (inputTarget is Targets.ImageFolder)
+					{  primaryImageFolderCount++;  }
+				}
+
+
+			// Source input targets
+
 			// Copy them from the secondary config if the primary config doesn't have any.  This allows things like having
 			// input folders in Project.txt when there's none on the command line.
-			if (primaryConfig.InputTargets.Count == 0)
+			if (primarySourceFolderCount == 0)
 				{
 				foreach (var secondaryTarget in secondaryConfig.InputTargets)
 					{
-					primaryConfig.InputTargets.Add( secondaryTarget.Duplicate() );
+					if (secondaryTarget is Targets.SourceFolder)
+						{
+						primaryConfig.InputTargets.Add( secondaryTarget.Duplicate() );
+						}
 					}
 				}
 
@@ -623,12 +640,54 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				foreach (var primaryTarget in primaryConfig.InputTargets)
 					{
-					foreach (var secondaryTarget in secondaryConfig.InputTargets)
+					if (primaryTarget is Targets.SourceFolder)
 						{
-						if (secondaryTarget.IsSameTarget(primaryTarget))
+						foreach (var secondaryTarget in secondaryConfig.InputTargets)
 							{
-							MergeInputTargets(primaryTarget, secondaryTarget);
-							break;
+							if (secondaryTarget.IsSameTarget(primaryTarget))
+								{
+								MergeInputTargets(primaryTarget, secondaryTarget);
+								break;
+								}
+							}
+						}
+					}
+				}
+
+
+			// Image input targets
+
+			// Copy them from the secondary config if the primary config doesn't have any.  This allows things like having
+			// input folders in Project.txt when there's none on the command line.
+			if (primaryImageFolderCount == 0)
+				{
+				foreach (var secondaryTarget in secondaryConfig.InputTargets)
+					{
+					if (secondaryTarget is Targets.ImageFolder)
+						{
+						primaryConfig.InputTargets.Add( secondaryTarget.Duplicate() );
+						}
+					}
+				}
+
+			// If the primary config does have input targets, only copy secondary settings from matching targets.  This
+			// allows things like having input folders specified on the command line but still being able to set the name and
+			// number from Project.txt.  However, any targets in Project.txt that don't appear on the command line are ignored.
+			// This allows people to change the command line and have it reflected immediately instead of having old sources
+			// hang around until they're deleted from the command line AND Project.txt.
+			else
+				{
+				foreach (var primaryTarget in primaryConfig.InputTargets)
+					{
+					if (primaryTarget is Targets.ImageFolder)
+						{
+						foreach (var secondaryTarget in secondaryConfig.InputTargets)
+							{
+							if (secondaryTarget.IsSameTarget(primaryTarget))
+								{
+								MergeInputTargets(primaryTarget, secondaryTarget);
+								break;
+								}
 							}
 						}
 					}
