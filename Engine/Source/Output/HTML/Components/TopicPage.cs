@@ -57,6 +57,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			List<Engine.Topics.Topic> topics;
 			List<Engine.Links.Link> links;
+			List<Engine.Links.ImageLink> imageLinks;
 
 			bool releaseDBLock = false;
 
@@ -108,10 +109,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (location.IsSourceFile)
 					{
 					links = accessor.GetLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					imageLinks = accessor.GetImageLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.ImageLink>();
 					}
 				else if (location.InHierarchy)
 					{
 					links = accessor.GetLinksInClass(location.ClassID, cancelDelegate) ?? new List<Engine.Links.Link>();
+					imageLinks = accessor.GetImageLinksInClass(location.ClassID, cancelDelegate) ?? new List<Engine.Links.ImageLink>();
 					}
 				else
 					{  throw new NotImplementedException();  }
@@ -211,14 +214,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  return false;  }
 
 
-				// Now we need to find any Natural Docs links appearing inside the summaries of link targets.  The tooltips
-				// that will be generated for them include their summaries, and even though we don't generate HTML links 
-				// inside tooltips, how and if they're resolved affects the appearance of Natural Docs links.  We need to know 
-				// whether to include the original text with angle brackets, the text without angle brackets if it's resolved, or 
-				// only part of the text if it's a resolved named link.
+				// Now we need to find any Natural Docs and image links appearing inside the summaries of link targets.
+				// The tooltips that will be generated for them include their summaries, and even though we don't generate 
+				// HTML links inside tooltips, how and if they're resolved affects their appearance.  We need to know whether
+				// to include the original text with angle brackets, the text without angle brackets if it's resolved, or only part
+				// of the text if it's a resolved named link.
 				
 				// Links don't store which topic they appear in but they do store the file, so gather the file IDs of the link 
-				// targets that have Natural Docs links in the summaries and get all the links in those files.
+				// targets that have Natural Docs or image links in the summaries and get all the links in those files.
 
 				// Links also store which class they appear in, so why not do this by class instead of by file?  Because a 
 				// link could be to something global, and the global scope could potentially have a whole hell of a lot of 
@@ -229,14 +232,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				foreach (var linkTarget in linkTargets)
 					{
-					if (linkTarget.Summary != null && linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1)
+					if (linkTarget.Summary != null && 
+						(linkTarget.Summary.IndexOf("<link type=\"naturaldocs\"") != -1 || linkTarget.Summary.IndexOf("<image ") != -1))
 						{  summaryLinkFileIDs.Add(linkTarget.FileID);  }
 					}
 
 				List<Engine.Links.Link> summaryLinks = null;
+				List<Engine.Links.ImageLink> summaryImageLinks = null;
 					
 				if (!summaryLinkFileIDs.IsEmpty)
-					{  summaryLinks = accessor.GetNaturalDocsLinksInFiles(summaryLinkFileIDs, cancelDelegate);  }
+					{  
+					summaryLinks = accessor.GetNaturalDocsLinksInFiles(summaryLinkFileIDs, cancelDelegate);
+					summaryImageLinks = accessor.GetImageLinksInFiles(summaryLinkFileIDs, cancelDelegate);
+					}
 
 				if (cancelDelegate())
 					{  return false;  }
@@ -290,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						if (topics[i].IsEmbedded == false)
 							{
-							topicBuilder.AppendTopic(topics[i], context, links, linkTargets, html, topics, i + 1, extraClass);  
+							topicBuilder.AppendTopic(topics[i], context, links, linkTargets, imageLinks, html, topics, i + 1, extraClass);  
 							html.Append("\r\n\r\n");
 							}
 						}
@@ -308,10 +316,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					summaryBuilder.BuildDataFile(pageTitle);
 
 					JSONToolTips toolTipsBuilder = new JSONToolTips(context);
-					toolTipsBuilder.ConvertToJSON(topics, links, context);
+					toolTipsBuilder.ConvertToJSON(topics, links, imageLinks, context);
 					toolTipsBuilder.BuildDataFileForSummary();
 
-					toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, context);
+					toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, summaryImageLinks, context);
 					toolTipsBuilder.BuildDataFileForContent();
 
 					return true;

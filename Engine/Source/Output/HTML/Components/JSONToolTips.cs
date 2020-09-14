@@ -43,6 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			topics = null;
 			links = null;
+			imageLinks = null;
 			tooltipsJSON = null;
 
 			tooltipBuilder = new Tooltip(context);
@@ -59,8 +60,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		topics - The <Engine.Topics.Topics> that appear in this file.
 		 *		context - The <Context> of the file.  Must include the page.
 		 *		links - A list of <Engine.Links.Links> that contain any which will be found in the tooltip.
+		 *		imageLinks - A list of <ImageLinks> that must contain any image links found in this topic.
 		 */
-		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, Context context)
+		public void ConvertToJSON (IList<Engine.Topics.Topic> topics, IList<Engine.Links.Link> links, IList<Engine.Links.ImageLink> imageLinks, Context context)
 			{
 			#if DEBUG
 			if (context.Page.IsNull)
@@ -72,6 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			this.topics = topics;
 			this.links = links;
+			this.imageLinks = imageLinks;
 
 			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 
@@ -159,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (topic.IsEmbedded)
 					{  continue;  }
 
-				string tooltipHTML = tooltipBuilder.BuildToolTip(topic, context, links);
+				string tooltipHTML = tooltipBuilder.BuildToolTip(topic, context, links, imageLinks);
 
 				// Will be null if the topic doesn't have a prototype or summary, and thus have nothing to show
 				if (tooltipHTML == null)
@@ -242,6 +245,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * A list of <Links> that contain any which will appear in the tooltips.
 		 */
 		protected IList<Engine.Links.Link> links;
+
+		/* var: imageLinks
+		 * A list of <ImageLinks> that contain any which will appear in the tooltips.
+		 */
+		protected IList<Engine.Links.ImageLink> imageLinks;
 
 		/* var: tooltipsJSON
 		 * The tooltips for <topics> as a JSON array, or null if it hasn't been generated yet.  It will be in the format described in

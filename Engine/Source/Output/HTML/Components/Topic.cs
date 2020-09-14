@@ -54,13 +54,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *					  pass the context of the page.
 		 *		links - A list of <Links> that must contain any links found in the topic.
 		 *		linkTargets - A list of topics that must contain any topics used as targets in the links.
+		 *		imageLinks - A list of <ImageLinks> that must contain any image links found in this topic.
 		 *		output - The StringBuilder that the output will be appended to.
 		 *		embeddedTopics - A list of topics that contains any embedded topics contained in this one.
 		 *		embeddedTopicIndex - The index into embeddedTopics to start at.
 		 *		extraClass - If specified, this string will be added to the CTopic div as an extra CSS class.
 		 */
-		public void AppendTopic (Topics.Topic topic, Context context, IList<Link> links, IList<Topics.Topic> linkTargets, StringBuilder output, 
-											IList<Topics.Topic> embeddedTopics = null, int embeddedTopicIndex = 0, string extraClass = null)
+		public void AppendTopic (Topics.Topic topic, Context context, IList<Link> links, IList<Topics.Topic> linkTargets, 
+											IList<ImageLink> imageLinks, StringBuilder output, IList<Topics.Topic> embeddedTopics = null, 
+											int embeddedTopicIndex = 0, string extraClass = null)
 			{
 			try
 				{
@@ -72,6 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				this.context = context;
 				this.links = links;
 				this.linkTargets = linkTargets;
+				this.imageLinks = imageLinks;
 				this.embeddedTopics = embeddedTopics;
 				this.embeddedTopicIndex = embeddedTopicIndex;
 
@@ -245,6 +248,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			string parameterListSymbol = null;
 			string altParameterListSymbol = null;
 
+			StringBuilder inlineImageContent = null;
+			int imageNumber = 1;
+
 			while (iterator.IsInBounds)
 				{
 				switch (iterator.Type)
@@ -260,6 +266,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 					case NDMarkup.Iterator.ElementType.ParagraphTag:
+
+						iterator.AppendTo(output);
+
+						if (iterator.IsClosingTag && inlineImageContent != null && inlineImageContent.Length > 0)
+							{
+							output.Append(inlineImageContent.ToString());
+							inlineImageContent.Remove(0, inlineImageContent.Length);
+							}
+
+						break;
+
+
 					case NDMarkup.Iterator.ElementType.BulletListTag:
 					case NDMarkup.Iterator.ElementType.BulletListItemTag:
 					case NDMarkup.Iterator.ElementType.BoldTag:
@@ -487,15 +505,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						break;
 
 
-					case NDMarkup.Iterator.ElementType.ImageTag: // xxx
+					case NDMarkup.Iterator.ElementType.ImageTag:
 
 						if (iterator.Property("type") == "standalone")
-							{  output.Append("<p>");  }
+							{  AppendStandaloneImageLink(iterator, output);  }
 
-						output.Append(iterator.Property("originaltext").ToHTML());
+						else if (iterator.Property("type") == "inline")
+							{
+							if (inlineImageContent == null)
+								{  inlineImageContent = new StringBuilder();  }
 
-						if (iterator.Property("type") == "standalone")
-							{  output.Append("</p>");  }
+							AppendInlineImageLink(iterator, output, inlineImageContent, imageNumber);
+
+							imageNumber++;
+							}
+
+						else
+							{  throw new NotImplementedException();  }
+
 						break;
 					}
 
@@ -707,6 +734,152 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: AppendStandaloneImageLink
+		 */
+		protected void AppendStandaloneImageLink (NDMarkup.Iterator iterator, StringBuilder output)
+			{
+			// Create a link object with the identifying properties needed to look it up in the list of links.
+
+			ImageLink imageLinkStub = new ImageLink();
+			imageLinkStub.OriginalText = iterator.Property("originaltext");
+			imageLinkStub.FileID = context.Topic.FileID;
+			imageLinkStub.ClassString = context.Topic.ClassString;
+			imageLinkStub.ClassID = context.Topic.ClassID;
+
+
+			// Find the actual link so we know if it resolved to anything.
+
+			ImageLink fullImageLink = null;
+
+			foreach (var imageLink in imageLinks)
+				{
+				if (imageLink.SameIdentifyingPropertiesAs(imageLinkStub))
+					{
+					fullImageLink = imageLink;
+					break;
+					}
+				}
+
+			#if DEBUG
+			if (fullImageLink == null)
+				{  throw new Exception("All image links in a topic must be in the list passed to HTMLTopic.");  }
+			#endif
+
+
+			// If it didn't resolve, we just output the original text and we're done.
+
+			if (!fullImageLink.IsResolved)
+				{
+				output.Append("<p>");
+				output.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				output.Append("</p>");
+				return;
+				}
+
+
+			Files.ImageFile targetFile = (Files.ImageFile)EngineInstance.Files.FromID(fullImageLink.TargetFileID);
+			string description = targetFile.FileName.NameWithoutPathOrExtension;
+			
+			var fileSource = EngineInstance.Files.FileSourceOf(targetFile);
+			Path relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
+			Path targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
+			Path relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
+
+			output.Append(
+				"<div class=\"CImage\">" +
+					"<a href=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" target=\"_blank\" class=\"ZoomLink\">" +
+
+						"<img src=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" loading=\"lazy\" " +
+							(targetFile.DimensionsKnown ? 
+								"class=\"KnownDimensions\" width=\"" + targetFile.Width + "\" height=\"" + targetFile.Height + "\" " +
+									"style=\"max-width: " + targetFile.Width + "px\" " :
+								"class=\"UnknownDimensions\" ") +
+							"alt=\"" + description.EntityEncode() + "\" />" +
+
+					"</a>" +
+				"</div>");
+			}
+
+
+		/* Function: AppendInlineImageLink
+		 */
+		protected void AppendInlineImageLink (NDMarkup.Iterator iterator, StringBuilder linkOutput, StringBuilder imageOutput, int imageNumber)
+			{
+			// Create a link object with the identifying properties needed to look it up in the list of links.
+
+			ImageLink imageLinkStub = new ImageLink();
+			imageLinkStub.OriginalText = iterator.Property("originaltext");
+			imageLinkStub.FileID = context.Topic.FileID;
+			imageLinkStub.ClassString = context.Topic.ClassString;
+			imageLinkStub.ClassID = context.Topic.ClassID;
+
+
+			// Find the actual link so we know if it resolved to anything.
+
+			ImageLink fullImageLink = null;
+
+			foreach (var imageLink in imageLinks)
+				{
+				if (imageLink.SameIdentifyingPropertiesAs(imageLinkStub))
+					{
+					fullImageLink = imageLink;
+					break;
+					}
+				}
+
+			#if DEBUG
+			if (fullImageLink == null)
+				{  throw new Exception("All image links in a topic must be in the list passed to HTMLTopic.");  }
+			#endif
+
+
+			// If it didn't resolve, we just output the original text and we're done.
+
+			if (!fullImageLink.IsResolved)
+				{
+				linkOutput.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				return;
+				}
+
+
+			Files.ImageFile targetFile = (Files.ImageFile)EngineInstance.Files.FromID(fullImageLink.TargetFileID);
+			string description = targetFile.FileName.NameWithoutPathOrExtension;
+			string anchor = "Topic" + context.Topic.TopicID + "_Image" + imageNumber;
+
+			var fileSource = EngineInstance.Files.FileSourceOf(targetFile);
+			Path relativeTargetPath = fileSource.MakeRelative(targetFile.FileName);
+			Path targetOutputPath = Paths.Image.OutputFile(context.Target.OutputFolder, fileSource.Number, fileSource.Type, relativeTargetPath);
+			Path relativeTargetOutputPath = targetOutputPath.MakeRelativeTo(context.OutputFile.ParentFolder);
+
+			linkOutput.Append(
+				"<a href=\"#" + anchor + "\" class=\"SeeImageLink\">" +
+					iterator.Property("linktext").EntityEncode() +
+				"</a>");
+
+			imageOutput.Append(
+				"<div class=\"CImage\">" +
+
+					"<a name=\"" + anchor + "\"></a>" +
+
+					"<a href=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" target=\"_blank\" class=\"ZoomLink\">" +
+
+						"<img src=\"" + relativeTargetOutputPath.ToURL().EntityEncode() + "\" loading=\"lazy\" " +
+							(targetFile.DimensionsKnown ? 
+								"class=\"KnownDimensions\" width=\"" + targetFile.Width + "\" height=\"" + targetFile.Height + "\" " +
+									"style=\"max-width: " + targetFile.Width + "px\" " :
+								"class=\"UnknownDimensions\" ") +
+							"alt=\"" + description.EntityEncode() + "\" />" +
+
+					"</a>" +
+
+					"<div class=\"CICaption\">" +
+						description.EntityEncode() +
+					"</div>" +
+
+				"</div>");
+			}
+
+
 		/* Function: NDMarkupCodeToText
 		 * Converts code sections in <NDMarkup> back to plain text, decoding entity chars and converting line breaks
 		 * to \n.
@@ -725,7 +898,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* var: links
-		 * A list of <Links> that contain any which will appear in the prototype, or null if links aren't needed.
+		 * A list of <Links> that contain any which will appear in the topic, or null if links aren't needed.
 		 */
 		protected IList<Link> links;
 
@@ -733,6 +906,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * A list of topics that contain the targets of any resolved links appearing in <links>, or null if links aren't needed.
 		 */
 		protected IList<Topics.Topic> linkTargets;
+
+		/* var: imageLinks
+		 * A list of <ImageLinks> that contain any which will appear in the topic, or null if links aren't needed.
+		 */
+		protected IList<ImageLink> imageLinks;
 
 		/* var: embeddedTopics
 		 * A list of topics that contains any that are embedded in the one we are building.

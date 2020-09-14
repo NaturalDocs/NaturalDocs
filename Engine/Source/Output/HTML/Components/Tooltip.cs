@@ -36,6 +36,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public Tooltip (Context context) : base (context)
 			{
+			links = null;
+			imageLinks = null;
+
 			// These are created on first use since they may not be needed
 			prototypeBuilder = null;
 			classPrototypeBuilder = null;
@@ -52,14 +55,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
 		 *					  so you can just pass the context of the page, if any.
 		 *		links - A list of <Links> that must contain any links found in the topic.
+		 *		imageLinks - A list of <ImageLinks> that must contain any image links found in this topic.
 		 */
-		public string BuildToolTip (Topics.Topic topic, Context context, IList<Link> links)
+		public string BuildToolTip (Topics.Topic topic, Context context, IList<Link> links, IList<ImageLink> imageLinks)
 			{
 			if (topic.Prototype == null && topic.Summary == null)
 				{  return null;  }
 	
 			StringBuilder output = new StringBuilder();
-			AppendToolTip(topic, context, links, output);
+			AppendToolTip(topic, context, links, imageLinks, output);
 			return output.ToString();
 			}
 
@@ -75,8 +79,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 *		context - The context of the page the tooltip is being built for.  The topic will automatically replace the context's topic
 		 *					  so you can just pass the context of the page, if any.
 		 *		links - A list of <Links> that must contain any links found in the topic.
+		 *		imageLinks - A list of <ImageLinks> that must contain any image links found in this topic.
 		 */
-		public bool AppendToolTip (Topics.Topic topic, Context context, IList<Link> links, StringBuilder output)
+		public bool AppendToolTip (Topics.Topic topic, Context context, IList<Link> links, IList<ImageLink> imageLinks, StringBuilder output)
 			{
 			if (topic.Prototype == null && topic.Summary == null)
 				{  return false;  }
@@ -84,6 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			this.context = context;
 			this.context.Topic = topic;
 			this.links = links;
+			this.imageLinks = imageLinks;
 
 			string simpleCommentTypeName = EngineInstance.CommentTypes.FromID(topic.CommentTypeID).SimpleIdentifier;
 			string simpleLanguageName = EngineInstance.Languages.FromID(topic.LanguageID).SimpleIdentifier;
@@ -183,6 +189,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						else // type == "naturaldocs"
 							{  AppendNaturalDocsLink(iterator, output);  }
 
+						break;
+
+					case NDMarkup.Iterator.ElementType.ImageTag:
+						if (iterator.Property("type") == "inline")
+							{  AppendInlineImageLink(iterator, output);  }
 						break;
 					}
 
@@ -350,6 +361,49 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: AppendInlineImageLink
+		 */
+		protected void AppendInlineImageLink (NDMarkup.Iterator iterator, StringBuilder output)
+			{
+			// Create a link object with the identifying properties needed to look it up in the list of links.
+
+			ImageLink imageLinkStub = new ImageLink();
+			imageLinkStub.OriginalText = iterator.Property("originaltext");
+			imageLinkStub.FileID = context.Topic.FileID;
+			imageLinkStub.ClassString = context.Topic.ClassString;
+			imageLinkStub.ClassID = context.Topic.ClassID;
+
+
+			// Find the actual link so we know if it resolved to anything.
+
+			ImageLink fullImageLink = null;
+
+			foreach (var imageLink in imageLinks)
+				{
+				if (imageLink.SameIdentifyingPropertiesAs(imageLinkStub))
+					{
+					fullImageLink = imageLink;
+					break;
+					}
+				}
+
+			#if DEBUG
+			if (fullImageLink == null)
+				{  throw new Exception("All image links in a topic must be in the list passed to HTMLTooltip.");  }
+			#endif
+
+
+			if (fullImageLink.IsResolved)
+				{
+				output.EntityEncodeAndAppend(iterator.Property("linktext"));
+				}
+			else
+				{
+				output.EntityEncodeAndAppend(iterator.Property("originaltext"));
+				}
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -359,6 +413,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * A list of <Links> that contain any which will appear in the prototype, or null if links aren't needed.
 		 */
 		protected IList<Link> links;
+
+		/* var: imageLinks
+		 * A list of <ImageLinks> that contain any which will appear in the topic, or null if links aren't needed.
+		 */
+		protected IList<ImageLink> imageLinks;
 
 		/* var: prototypeBuilder
 		 * An object for building prototypes, or null if one hasn't been created yet.  Since this

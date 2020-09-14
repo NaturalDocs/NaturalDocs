@@ -199,6 +199,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						else
 							{  continue;  }
 						}
+
+						
+					// Build image files
+						
+					int imageToRebuild = Target.UnprocessedChanges.PickImageFile();
+
+					if (imageToRebuild != 0)
+						{
+						lock (accessLock)
+							{  workInProgress += ImageFileCost;  }
+						
+						if (accessor == null)
+							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
+							
+						BuildImageFile(imageToRebuild, accessor, cancelDelegate);
+						
+						lock (accessLock)
+							{  workInProgress -= ImageFileCost;  }
+
+						if (cancelDelegate())
+							{
+							Target.UnprocessedChanges.AddImageFile(imageToRebuild);
+							break;
+							}		
+						else
+							{  continue;  }
+						}
+						
+
+					// Build image files that haven't changed but may or may not be used anymore
+						
+					int imageToCheck = Target.UnprocessedChanges.PickUnchangedImageFileUseCheck();
+
+					if (imageToCheck != 0)
+						{
+						lock (accessLock)
+							{  workInProgress += UnchangedImageFileUseCheckCost;  }
+						
+						if (accessor == null)
+							{  accessor = EngineInstance.CodeDB.GetAccessor();  }
+							
+						// Same as building a regular image, only we don't have to do anything if the output file already exists.  It didn't change
+						// so the existing output file should be fine.
+						BuildImageFile(imageToCheck, accessor, cancelDelegate, overwrite: false);
+						
+						lock (accessLock)
+							{  workInProgress -= UnchangedImageFileUseCheckCost;  }
+
+						if (cancelDelegate())
+							{
+							Target.UnprocessedChanges.AddImageFileUseCheck(imageToCheck);
+							break;
+							}		
+						else
+							{  continue;  }
+						}
 						
 					else
 						{  break;  }
@@ -706,6 +762,65 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
+		/* Function: BuildImageFile
+		 * 
+		 * Copies an image to the output folder if it is used, or deletes it if it is not.  The accessor should NOT hold a lock on the 
+		 * database.
+		 * 
+		 * Overwrite is set to true by default, which means the file will always be copied.  If set to false the image file will only be
+		 * copied if the output file doesn't already exist.  This does NOT check if the files are different, just whether a file already
+		 * exists.
+		 */
+		protected void BuildImageFile (int imageFileID, CodeDB.Accessor accessor, CancelDelegate cancelDelegate, bool overwrite = true)
+			{
+			#if DEBUG
+			if (accessor.LockHeld != CodeDB.Accessor.LockType.None)
+				{  throw new Exception ("Shouldn't call BuildImageFile() when the accessor already holds a database lock.");  }
+			#endif
+
+			var imageFile = EngineInstance.Files.FromID(imageFileID);
+			var fileSource = EngineInstance.Files.FileSourceOf(imageFile);
+
+			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
+			// The output files associated with it will have been purged already so we don't need to worry about them.
+			if (imageFile.Deleted && fileSource == null)
+				{  return;  }
+
+			var relativePath = fileSource.MakeRelative(imageFile.Name);
+
+			Path outputPath = Paths.Image.OutputFile(Target.OutputFolder, fileSource.Number, fileSource.Type, relativePath);
+
+			if (imageFile.Deleted)
+				{  DeleteOutputFileIfExists(outputPath);  }
+			else
+				{
+				bool imageFileIsUsed;
+				accessor.GetReadOnlyLock();
+
+				try
+					{
+					imageFileIsUsed = accessor.IsTargetOfImageLink(imageFileID);
+					}
+				finally
+					{
+					if (accessor.LockHeld != CodeDB.Accessor.LockType.None)
+						{  accessor.ReleaseLock();  }
+					}
+
+				if (!imageFileIsUsed)
+					{  DeleteOutputFileIfExists(outputPath);  }
+				else
+					{
+					// Creates all subdirectories needed.  Does nothing if it already exists.
+					System.IO.Directory.CreateDirectory(outputPath.ParentFolder);
+
+					if (overwrite || !System.IO.File.Exists(outputPath))
+						{  System.IO.File.Copy(imageFile.FileName, outputPath, true);  }
+					}
+				}
+			}
+
+
 		/* Function: BuildMenuFiles
 		 */
 		protected void BuildMenuFiles (CodeDB.Accessor accessor, CancelDelegate cancelDelegate)
@@ -1031,14 +1146,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  return;  }
 
 			if (file.Deleted)
-				{
-				if (System.IO.File.Exists(outputFile))
-					{  
-					System.IO.File.Delete(outputFile);
-					Target.UnprocessedChanges.AddPossiblyEmptyFolder(outputFile.ParentFolder);
-					}
-				}
-
+				{  DeleteOutputFileIfExists(outputFile);  }
 			else // file new or changed
 				{
 				// Creates all subdirectories needed.  Does nothing if it already exists.

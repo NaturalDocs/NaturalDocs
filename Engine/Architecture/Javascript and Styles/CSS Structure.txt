@@ -229,6 +229,15 @@ _______________________________________________________________________________
 					Code
 				</pre>
 
+				<p>Text <a SeeImageLink>(see image.jpg)</a SeeImageLink> text.</p>
+
+				<CImage>
+					<a ZoomLink>
+						<img KnownDimensions? UnknownDimensions?>
+					</a ZoomLink>
+					<CICaption>Caption</CICaption>?
+				</CImage>
+
 			</CBody>
 
 		</CTopic>

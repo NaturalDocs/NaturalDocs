@@ -745,6 +745,33 @@ body.NDContentPage {
 		padding: .5ex 1ex;
 		}
 
+	.CImage {
+		text-align: center;
+		margin: 1em 0;
+		}
+		.CImage img.KnownDimensions {
+			width: 100%;
+			height: auto;
+			}
+		.CImage img.UnknownDimensions {
+			max-width: 100%;
+			}
+		.CImage a.ZoomLink {
+			cursor: zoom-in;
+			}
+		.CImage a.ZoomLink img {
+			border: none;
+			}
+
+		.CICaption {
+			color: #808080;
+			margin-top: .25em;
+			}
+		.CTopic a.SeeImageLink {
+			color: #808080;
+			font-style: italic;
+			}
+
 	.CBodyNDMarkup {
 		font: 8pt Verdana, sans-serif;
 		color: $MessageTextColor;
