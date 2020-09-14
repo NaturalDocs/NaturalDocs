@@ -620,6 +620,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  throw new Exception ("Shouldn't call BuildSourceFile() when the accessor already holds a database lock.");  }
 			#endif
 
+			var file = EngineInstance.Files.FromID(fileID);
+
+			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
+			// The output files associated with it will have been purged already so we don't need to worry about them.
+			if (file.Deleted && EngineInstance.Files.FileSourceOf(file) == null)
+				{  return;  }
+
 			var context = new Context(Target, fileID);
 			var topicPage = new Components.TopicPage(context);
 
