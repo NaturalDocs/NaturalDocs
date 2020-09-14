@@ -325,8 +325,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			{
 			ImageLink imageLink = accessor.GetImageLinkByID(imageLinkID, Accessor.GetImageLinkFlags.DontLookupClasses);
 
-			int bestMatchFileID = imageLink.TargetFileID;
-			int bestMatchScore = imageLink.TargetScore;
+			int bestMatchFileID = 0;
+			int bestMatchScore = 0;
 
 
 			// First try the path relative to the source file.
