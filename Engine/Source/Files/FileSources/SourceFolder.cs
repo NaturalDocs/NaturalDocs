@@ -56,7 +56,12 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		override public string UniqueIDString
 			{
 			get 
-				{  return "Folder:" + config.Folder;  }
+				{  
+				if (SystemInfo.IgnoreCaseInPaths)
+					{  return "Folder:" + config.Folder.ToString().ToLower();  }
+				else
+					{  return "Folder:" + config.Folder;  }
+				}
 			}
 
 		/* Property: Path
