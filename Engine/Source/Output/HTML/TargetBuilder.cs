@@ -681,7 +681,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
 			// The output files associated with it will have been purged already so we don't need to worry about them.
 			if (file.Deleted && EngineInstance.Files.FileSourceOf(file) == null)
-				{  return;  }
+				{  
+				if (Target.BuildState.RemoveSourceFileWithContent(fileID) == true)
+					{  Target.UnprocessedChanges.AddMenu();  }
+
+				return;
+				}
 
 			var context = new Context(Target, fileID);
 			var topicPage = new Components.TopicPage(context);
