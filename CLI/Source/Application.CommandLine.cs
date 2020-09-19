@@ -118,22 +118,19 @@ namespace CodeClear.NaturalDocs.CLI
 					parameter = "--project";
 					parameterAsEntered = parameter;
 					}
-				else
-					{  
-					if (!commandLine.GetParameter(out parameter, out parameterAsEntered))
-						{
-						string bareWord;
-						commandLine.GetBareWord(out bareWord);
+				else if (!commandLine.GetParameter(out parameter, out parameterAsEntered))
+					{
+					string bareWord;
+					commandLine.GetBareWord(out bareWord);
 
-						errorList.Add(
-							Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedParameter(param)", bareWord)
-							);
+					errorList.Add(
+						Locale.Get("NaturalDocs.CLI", "CommandLine.UnrecognizedParameter(param)", bareWord)
+						);
 
-						commandLine.SkipToNextParameter();
-						}
+					commandLine.SkipToNextParameter();
+					continue;
 					}
 
-				isFirst = false;
 
 					
 				// Source folders
@@ -725,6 +722,10 @@ namespace CodeClear.NaturalDocs.CLI
 
 					commandLine.SkipToNextParameter();
 					}
+
+
+
+				isFirst = false;
 				}
 				
 				
