@@ -331,8 +331,27 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			{
 			try
 				{
-				// xxx find dimensions
-				return ProcessFileResult.Success;
+				uint width, height;
+
+				ImageFileProcessor.Result result = ImageFileProcessor.GetDimensions(file.FileName, out width, out height);
+
+				if (result == ImageFileProcessor.Result.FileDoesntExist)
+					{  return ProcessFileResult.FileDoesntExist;  }
+				else if (result == ImageFileProcessor.Result.CantAccessFile)
+					{  return ProcessFileResult.CantAccessFile;  }
+				else if (result == ImageFileProcessor.Result.Success)
+					{
+					file.SetDimensions(width, height);
+					return ProcessFileResult.Success;
+					}
+				else
+					{
+					// If we can't determine the dimensions because of a file format error or some other reason, then the dimensions
+					// aren't knowable to us.  Knowing that is still a successful evaluation of the file because there's no point in trying
+					// to do it again.
+					file.DimensionsKnown = false;
+					return ProcessFileResult.Success;
+					}
 				}
 
 			catch (Exception e)
