@@ -428,6 +428,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						unprocessedChanges.AddSourceFile(imageLink.FileID);
 						unprocessedChanges.AddClass(imageLink.ClassID);
 						}
+
+					accessor.ReleaseLock();
 					}
 				finally
 					{  accessor.Dispose();  }
