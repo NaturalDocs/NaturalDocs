@@ -573,7 +573,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					string href = iterator.HTMLTagProperty("href");
 
 					if (href == null || href == "" || href == "#" || href.StartsWith("{@docRoot}") ||
-						href.StartsWith("javascript:", StringComparison.CurrentCultureIgnoreCase))
+						href.StartsWith("javascript:", StringComparison.OrdinalIgnoreCase))
 						{  iterator.Next();  }
 					else
 						{  GetHTMLLink(ref iterator, output);  }
@@ -922,7 +922,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			if (iterator.IsInBounds)
 				{  iterator.Next();  }
 
-			if (href.StartsWith("mailto:", StringComparison.CurrentCultureIgnoreCase))
+			if (href.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase))
 				{
 				output.Append("<link type=\"email\" target=\"");
 				output.EntityEncodeAndAppend(href.Substring(7));

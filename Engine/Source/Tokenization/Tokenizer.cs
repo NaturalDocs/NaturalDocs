@@ -186,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 					{  throw new ArgumentOutOfRangeException();  }
 			#endif
 
-			StringComparison compareMode = (ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture);
+			StringComparison compareMode = (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 			return (rawText.IndexOf(searchText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex, compareMode) != -1);
 			}
 
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			if (end.RawTextIndex - start.RawTextIndex != searchText.Length)
 				{  return false;  }
 
-			StringComparison compareMode = (ignoreCase ? StringComparison.CurrentCultureIgnoreCase : StringComparison.CurrentCulture);
+			StringComparison compareMode = (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 			return (rawText.IndexOf(searchText, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex, compareMode) == start.RawTextIndex);
 			}
 
@@ -247,8 +247,7 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				}
 				
 			int resultIndex = rawText.IndexOf( text, start.RawTextIndex, end.RawTextIndex - start.RawTextIndex,
-																(ignoreCase ? StringComparison.CurrentCultureIgnoreCase : 
-																					 StringComparison.CurrentCulture) );
+																(ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal) );
 																									   
 			if (resultIndex == -1)
 				{  

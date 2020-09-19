@@ -509,9 +509,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				string widthString = content.Substring(widthPropertyStart + 8, widthPropertyEnd - widthPropertyStart - 8);
 				string heightString = content.Substring(heightPropertyStart + 9, heightPropertyEnd - heightPropertyStart - 9);
 
-				if (widthString.EndsWith("px", StringComparison.CurrentCultureIgnoreCase))
+				if (widthString.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 					{  widthString = widthString.Substring(0, widthString.Length - 2);  }
-				if (heightString.EndsWith("px", StringComparison.CurrentCultureIgnoreCase))
+				if (heightString.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 					{  heightString = heightString.Substring(0, heightString.Length - 2);  }
 
 				if (!uint.TryParse(widthString, out width) || 

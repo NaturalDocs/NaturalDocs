@@ -163,7 +163,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return (symbolString.Length > other.symbolString.Length &&
 					  symbolString[other.symbolString.Length] == SeparatorChar &&
-					  symbolString.StartsWith(other.symbolString, ignoreCase, System.Globalization.CultureInfo.CurrentCulture));
+					  symbolString.StartsWith(other.symbolString, (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) );
 			}
 			
 		
@@ -175,7 +175,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			{
 			return (symbolString.Length > other.symbolString.Length &&
 					  symbolString[symbolString.Length - other.symbolString.Length - 1] == SeparatorChar &&
-					  symbolString.EndsWith(other.symbolString, ignoreCase, System.Globalization.CultureInfo.CurrentCulture));
+					  symbolString.EndsWith(other.symbolString, (ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) );
 			}
 
 

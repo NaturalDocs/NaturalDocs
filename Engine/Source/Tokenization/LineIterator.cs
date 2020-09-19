@@ -300,8 +300,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			CalculateBounds(boundsMode, out rawTextStart, out rawTextEnd, out tokenStart, out tokenEnd);
 
 			int resultIndex = tokenizer.RawText.IndexOf( text, rawTextStart, rawTextEnd - rawTextStart,
-																			  (ignoreCase ? StringComparison.CurrentCultureIgnoreCase : 
-																								   StringComparison.CurrentCulture) );
+																			  (ignoreCase ? StringComparison.OrdinalIgnoreCase: 
+																								   StringComparison.Ordinal) );
 																									   
 			if (resultIndex == -1)
 				{  

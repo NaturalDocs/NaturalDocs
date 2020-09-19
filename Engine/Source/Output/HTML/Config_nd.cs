@@ -92,7 +92,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					while (stylePath != null)
 						{
-						if (stylePath.EndsWith(".css", StringComparison.CurrentCultureIgnoreCase))
+						if (stylePath.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
 							{  styles.Add( new Styles.CSSOnly(stylePath) );  }
 						else
 							{  styles.Add( new Styles.Advanced(stylePath) );  }

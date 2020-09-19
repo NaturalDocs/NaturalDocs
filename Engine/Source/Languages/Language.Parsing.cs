@@ -1530,13 +1530,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				}
 
 			// If "operator" is in the string, make another attempt to see if we can match "operator +" with "operator+".
-			else if (undecoratedTitle.IndexOf("operator", StringComparison.CurrentCultureIgnoreCase) != -1)
+			else if (undecoratedTitle.IndexOf("operator", StringComparison.OrdinalIgnoreCase) != -1)
 				{
 				string undecoratedTitleOp = extraOperatorWhitespaceRegex.Replace(undecoratedTitle, "");
 				string prototypeString = prototypeStart.TextBetween(prototypeEnd);
 				string prototypeStringOp = extraOperatorWhitespaceRegex.Replace(prototypeString, "");
 
-				if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.CurrentCultureIgnoreCase) != -1)
+				if (prototypeStringOp.IndexOf(undecoratedTitleOp, StringComparison.OrdinalIgnoreCase) != -1)
 					{  return true;  }
 				}
 
@@ -1544,12 +1544,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else if (tokenizer.ContainsTextBetween(".prototype.", true, prototypeStart, prototypeEnd))
 				{
 				string prototypeString = prototypeStart.TextBetween(prototypeEnd);
-				int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.CurrentCultureIgnoreCase);
+				int prototypeIndex = prototypeString.IndexOf(".prototype.", StringComparison.OrdinalIgnoreCase);
 
 				// We want to keep the trailing period so String.prototype.Function becomes String.Function.
 				prototypeString = prototypeString.Substring(0, prototypeIndex) + prototypeString.Substring(prototypeIndex + 10);
 
-				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.CurrentCultureIgnoreCase) != -1)
+				if (prototypeString.IndexOf(undecoratedTitle, StringComparison.OrdinalIgnoreCase) != -1)
 					{  return true;  }
 				}
 

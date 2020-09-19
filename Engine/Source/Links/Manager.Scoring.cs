@@ -411,7 +411,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					// --C----- -------- -------- -SSSSSSS SSS----- -------- -------- -------=
 					// Apply C
 					if (!caseFlagged || 
-						(topicSymbolString.EndsWith(interpretation, false, System.Globalization.CultureInfo.CurrentCulture) == true &&
+						(topicSymbolString.EndsWith(interpretation) == true &&
 						 string.Compare(linkContextString, linkScopeIndex, topicSymbolString, topicScopeIndex, topicScopeLength, false) == 0) )
 						{  score |= 0x2000000000000000;  }
 					}
