@@ -36,6 +36,10 @@
  *			
  *		Revisions:
  *		
+ *			- 2.1
+ *				- No changes to the file format, but 2.1 actually determines image dimensions.  When reading files from earlier
+ *				  versions you should make sure they're reparsed.
+ *		
  *			- 2.0.2
  *				- Added dimensions for image files.  They will always be zero because image file support was only partially
  *				  implemented and it would have been too much effort to back it out for 2.0.2.
@@ -123,9 +127,6 @@ namespace CodeClear.NaturalDocs.Engine.Files
 								{
 								width = 0;
 								height = 0;
-
-								// Reset last modification time so they'll be reparsed
-								lastModification = new DateTime(0);
 								}
 							else
 								{
@@ -134,7 +135,14 @@ namespace CodeClear.NaturalDocs.Engine.Files
 								}
 
 							if (width == 0 || height == 0)
-								{  file = new ImageFile(path, lastModification);  }
+								{  
+								// If this file is from a different version of Natural Docs, no matter which one, reset the last modification 
+								// time so they'll be reparsed and take another stab at getting the dimensions
+								if (binaryFile.Version != Engine.Instance.Version)
+									{  lastModification = new DateTime(0);  }
+
+								file = new ImageFile(path, lastModification);  
+								}
 							else
 								{  file = new ImageFile(path, lastModification, width, height);  }
 							}
