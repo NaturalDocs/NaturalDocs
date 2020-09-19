@@ -741,7 +741,7 @@ namespace CodeClear.NaturalDocs.CLI
 				
 			// Done.
 				
-			if (result == ParseCommandLineResult.Run && errorList.Count != originalErrorCount)
+			if (errorList.Count != originalErrorCount)
 				{  result = ParseCommandLineResult.Error;  }
 
 			return result;
