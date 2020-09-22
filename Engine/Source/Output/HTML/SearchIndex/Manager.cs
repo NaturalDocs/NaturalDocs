@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			bool hasBinaryFile;
 
-			if (!EngineInstance.Config.ReparseEverything)
+			if (!EngineInstance.Config.ReparseEverything_old)
 				{
 				hasBinaryFile = LoadBinaryFile(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
@@ -96,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				}
 
 			if (!hasBinaryFile)
-				{  EngineInstance.Config.ReparseEverything = true;  }
+				{  EngineInstance.Config.ReparseEverything_old = true;  }
 
 
 			// Watch CodeDB for topic changes

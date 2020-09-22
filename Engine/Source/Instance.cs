@@ -215,8 +215,8 @@ namespace CodeClear.NaturalDocs.Engine
 			
 			if (System.IO.File.Exists(gracefulExitFilePath))
 				{  
-				config.ReparseEverything = true;
-				config.RebuildAllOutput = true;
+				config.ReparseEverything_old = true;
+				config.RebuildAllOutput_old = true;
 				}
 			else
 				{			

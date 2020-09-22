@@ -35,7 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			status.Reset();
 
 			IList<Style> styles = EngineInstance.Styles.LoadedStyles;
-			bool forceReparse = EngineInstance.Styles.ReparseStyleFiles || EngineInstance.Config.ReparseEverything;
+			bool forceReparse = EngineInstance.Styles.ReparseStyleFiles || EngineInstance.Config.ReparseEverything_old;
 
 			// String stack instead of Path stack because the IO functions will return strings and there's no need to normalize
 			// them all or otherwise use Path functions on them.

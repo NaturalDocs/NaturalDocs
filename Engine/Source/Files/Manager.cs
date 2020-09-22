@@ -181,10 +181,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			Files_nd filesParser = new Files_nd();
 
-			if (EngineInstance.Config.ReparseEverything == false)
+			if (EngineInstance.Config.ReparseEverything_old == false)
 				{
 				if (filesParser.Load( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files) == false)
-					{  EngineInstance.Config.ReparseEverything = true;  }
+					{  EngineInstance.Config.ReparseEverything_old = true;  }
 				}
 
 			return (errors.Count == startingErrorCount);

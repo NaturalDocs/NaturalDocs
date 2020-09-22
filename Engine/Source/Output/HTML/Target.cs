@@ -113,7 +113,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
-			if (!EngineInstance.Config.ReparseEverything)
+			if (!EngineInstance.Config.ReparseEverything_old)
 				{
 				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
 				}
@@ -129,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			BuildState_nd buildStateParser = new BuildState_nd();
 			bool hasBinaryBuildStateFile = false;
 			
-			if (!EngineInstance.Config.ReparseEverything)
+			if (!EngineInstance.Config.ReparseEverything_old)
 				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);  }
 			else
 				{  
@@ -140,10 +140,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (!hasBinaryBuildStateFile)
 				{
 				// Because we need source/classFilesWithContent
-				EngineInstance.Config.ReparseEverything = true;
+				EngineInstance.Config.ReparseEverything_old = true;
 
 				// Because we don't know if there was anything left in sourceFilesToRebuild
-				EngineInstance.Config.RebuildAllOutput = true;
+				EngineInstance.Config.RebuildAllOutput_old = true;
 				}
 
 
@@ -153,7 +153,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			unprocessedChanges.AddFramePage();
 			unprocessedChanges.AddMainStyleFiles();
 
-			if (EngineInstance.Config.RebuildAllOutput)
+			if (EngineInstance.Config.RebuildAllOutput_old)
 				{
 				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
 				unprocessedChanges.AddMenu();
@@ -313,7 +313,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// files in the child folder.
 
 				if (hasAdditions && hasDeletions)
-					{  EngineInstance.Config.RebuildAllOutput = true;  }
+					{  EngineInstance.Config.RebuildAllOutput_old = true;  }
 				}
 
 

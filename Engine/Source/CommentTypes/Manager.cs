@@ -100,7 +100,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// We need the ID numbers to stay consistent between runs, so we need to create all the comment types and tags from the
 			// binary file first.  We'll worry about comparing their attributes and seeing if any were added or deleted later.
 
-			if (EngineInstance.Config.ReparseEverything == true)
+			if (EngineInstance.Config.ReparseEverything_old == true)
 				{
 				binaryCommentTypes = new List<CommentType>();
 				binaryTags = new List<Tag>();
@@ -538,7 +538,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 										  commentTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
 			if (success == true && changed == true)
-				{  EngineInstance.Config.ReparseEverything = true;  }
+				{  EngineInstance.Config.ReparseEverything_old = true;  }
 
 			groupCommentTypeID = IDFromKeyword("group");
 				

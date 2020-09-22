@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			if (loadFileResult == false )
 				{  return false;  }
 								
-			if (EngineInstance.Config.ReparseEverything == false)
+			if (EngineInstance.Config.ReparseEverything_old == false)
 				{
 				StringSet[] binarySets;
 				StringTable<byte>[] binaryTables;
@@ -272,13 +272,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 																			 out binarySets, out binaryTables, out binaryConversionLists );
 																		 
 				if (loadBinaryFileResult == false)
-					{  EngineInstance.Config.ReparseEverything = true;  }
+					{  EngineInstance.Config.ReparseEverything_old = true;  }
 					
 				// Try quick compares before full ones
 				else if (sets.Length != binarySets.Length ||
 							 tables.Length != binaryTables.Length ||
 							 conversionLists.Length != binaryConversionLists.Length)
-					{  EngineInstance.Config.ReparseEverything = true;  }
+					{  EngineInstance.Config.ReparseEverything_old = true;  }
 
 				else
 					{
@@ -336,7 +336,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						}
 						
 					if (equal == false)
-						{  EngineInstance.Config.ReparseEverything = true;  }
+						{  EngineInstance.Config.ReparseEverything_old = true;  }
 					}
 				}
 		        

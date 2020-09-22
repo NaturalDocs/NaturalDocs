@@ -537,8 +537,8 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						EngineInstance.Config.ReparseEverything = true;
-						EngineInstance.Config.RebuildAllOutput = true;
+						EngineInstance.Config.ReparseEverything_old = true;
+						EngineInstance.Config.RebuildAllOutput_old = true;
 						}
 					}
 					
@@ -554,7 +554,7 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						EngineInstance.Config.RebuildAllOutput = true;
+						EngineInstance.Config.RebuildAllOutput_old = true;
 						}
 					}
 					

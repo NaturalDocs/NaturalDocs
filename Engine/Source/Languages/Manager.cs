@@ -129,7 +129,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Languages_nd languagesNDParser = new Languages_nd(this);
 
 			// Don't bother going through the effort if we're rebuilding everything anyway.
-			if (EngineInstance.Config.ReparseEverything == true)
+			if (EngineInstance.Config.ReparseEverything_old == true)
 				{
 				binaryLanguages = new List<Language>();
 				binaryAliases = new List<KeyValuePair<string,int>>();
@@ -400,7 +400,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								   
 			
 			if (success == true && changed == true)
-			    {  EngineInstance.Config.ReparseEverything = true;  }
+			    {  EngineInstance.Config.ReparseEverything_old = true;  }
 
 			return success;
 			}

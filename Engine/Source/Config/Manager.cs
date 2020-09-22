@@ -74,8 +74,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			autoGroup = true;
 			shrinkFiles = true;
 
-			reparseEverything = false;
-			rebuildAllOutput = false;
+			reparseEverything_old = false;
+			rebuildAllOutput_old = false;
+
+			userWantsEverythingRebuilt = false;
+			userWantsOutputRebuilt = false;
 			}
 
 
@@ -208,7 +211,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			ProjectConfig previousConfig = null;
 			var projectNDParser = new Project_nd();
 
-			if (ReparseEverything == false && System.IO.File.Exists(workingDataFolder + "/Project.nd"))
+			if (ReparseEverything_old == false && System.IO.File.Exists(workingDataFolder + "/Project.nd"))
 				{  
 				if (!projectNDParser.Load(workingDataFolder + "/Project.nd", out previousConfig))
 					{  previousConfig = null;  }
@@ -398,7 +401,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 				if (foundMatch == false)
 					{
-					RebuildAllOutput = true;
+					RebuildAllOutput_old = true;
 					break;
 					}
 				}
@@ -418,12 +421,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				documentedOnly != previousConfig.DocumentedOnly ||
 				autoGroup != previousConfig.AutoGroup)
 				{
-				ReparseEverything = true;
+				ReparseEverything_old = true;
 				}
 			else if (previousConfig != null &&
 					  shrinkFiles != previousConfig.ShrinkFiles)
 				{
-				RebuildAllOutput = true;
+				RebuildAllOutput_old = true;
 				}
 
 
@@ -1016,7 +1019,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 
-		/* Property: ReparseEverything
+		/* Property: ReparseEverything_old
 		 * 
 		 * If set, all source files are going to be reparsed.  Modules *MUST* check this and rebuild their data files from scratch
 		 * if it's set.  This is important because this gets set if certain data files are corrupted (such as <Languages.nd>) and thus
@@ -1024,15 +1027,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * 
 		 * It is only possible to change this property to true.  You cannot turn it off once it's on.
 		 */
-		public bool ReparseEverything
+		public bool ReparseEverything_old
 			{
 			get
-				{  return reparseEverything;  }
+				{  return reparseEverything_old;  }
 			set
 				{
 				if (value == true)
 					{
-					reparseEverything = true;
+					reparseEverything_old = true;
 
 					// xxx temporary shim between old and new systems
 					EngineInstance.AddStartupIssues(StartupIssues.NeedToReparseAllFiles);
@@ -1043,26 +1046,80 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 			
-		/* Property: RebuildAllOutput
+		/* Property: RebuildAllOutput_old
 		 * 
 		 * If set, all output is going to be regenerated.
 		 * 
 		 * It is only possible to change this property to true.  You cannot turn it off once it's on.
 		 */
-		public bool RebuildAllOutput
+		public bool RebuildAllOutput_old
 			{
 			get
-				{  return rebuildAllOutput;  }
+				{  return rebuildAllOutput_old;  }
 			set
 				{
 				if (value == true)
 					{  
-					rebuildAllOutput = true;  
-					reparseEverything = true; //xxx until rebuildAllOutput is supported
+					rebuildAllOutput_old = true;  
+					reparseEverything_old = true; //xxx until rebuildAllOutput is supported
 
 					// xxx temporary shim between old and new systems
 					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput |
 																	 StartupIssues.NeedToReparseAllFiles);
+					}
+				else
+					{  throw new InvalidOperationException();  }
+				}
+			}
+			
+			
+		/* Property: UserWantsEverythingRebuilt
+		 * 
+		 * If set, the user has indicated that everything from the previous run should be ignored and Natural Docs should start fresh.  It is
+		 * only possible to set this property to true.  You cannot turn it off once it's on.
+		 * 
+		 * The property is given this name because it specifically represents whether the *user* requested everything to be rebuilt, such as 
+		 * with -r on the  command line.  It should not be used by <Modules> to indicate that an internal issue requires everything to be 
+		 * rebuilt.  <Modules> should use <Engine.Instance.AddStartupIssues()> and <Engine.Instance.HasIssues()> instead.
+		 */
+		public bool UserWantsEverythingRebuilt
+			{
+			get
+				{  return userWantsEverythingRebuilt;  }
+			set
+				{
+				if (value == true)
+					{
+					userWantsEverythingRebuilt = true;
+					EngineInstance.AddStartupIssues(StartupIssues.NeedToStartFresh |
+																	 StartupIssues.NeedToReparseAllFiles |
+																	 StartupIssues.NeedToRebuildAllOutput);
+					}
+				else
+					{  throw new InvalidOperationException();  }
+				}
+			}
+			
+			
+		/* Property: UserWantsOutputRebuilt
+		 * 
+		 * If set, the user has indicated that all the output should be rebuilt.  It is only possible to set this property to true.  You cannot turn 
+		 * it off once it's on.
+		 * 
+		 * The property is given this name because it specifically represents whether the *user* requested the output to be rebuilt, such as 
+		 * with -ro on the command line.  It should not be used by <Modules> to indicate that an internal issue requires the output to be 
+		 * rebuilt.  <Modules> should use <Engine.Instance.AddStartupIssues()> and <Engine.Instance.HasIssues()> instead.
+		 */
+		public bool UserWantsOutputRebuilt
+			{
+			get
+				{  return userWantsOutputRebuilt;  }
+			set
+				{
+				if (value == true)
+					{  
+					userWantsOutputRebuilt = true;  
+					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput);
 					}
 				else
 					{  throw new InvalidOperationException();  }
@@ -1199,15 +1256,25 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected bool shrinkFiles;
 
-		/* bool: reparseEverything
+		/* bool: reparseEverything_old
 		 * Whether all source files should be reparsed.
 		 */
-		protected bool reparseEverything;
+		protected bool reparseEverything_old;
 		
-		/* bool: rebuildAllOutput
+		/* bool: rebuildAllOutput_old
 		 * Whether all output should be recreated from scatch.
 		 */
-		protected bool rebuildAllOutput;
+		protected bool rebuildAllOutput_old;
+		
+		/* bool: userWantsEverythingRebuilt
+		 * Whether the user wants Natural Docs to ignore everything from the previous run and start fresh.
+		 */
+		protected bool userWantsEverythingRebuilt;
+		
+		/* bool: userWantsOutputRebuilt
+		 * Whether the user wants all output to be recreated from scatch.
+		 */
+		protected bool userWantsOutputRebuilt;
 		
 
 

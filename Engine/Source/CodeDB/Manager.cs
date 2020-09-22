@@ -159,7 +159,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection = new SQLite.Connection();
 			bool success = false;
 			
-			if (EngineInstance.Config.ReparseEverything == false)
+			if (EngineInstance.Config.ReparseEverything_old == false)
 				{
 				try
 					{
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (System.IO.File.Exists(databaseFile))
 					{  System.IO.File.Delete(databaseFile);  }
 					
-				EngineInstance.Config.ReparseEverything = true;
+				EngineInstance.Config.ReparseEverything_old = true;
 					
 				connection.Open(databaseFile, true);
 				CreateDatabase();
