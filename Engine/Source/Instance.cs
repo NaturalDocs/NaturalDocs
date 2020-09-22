@@ -41,12 +41,12 @@
  *		
  *		- <Output.Manager> is next because <Output.Targets> may need to be added as <Files.Manager> and <CodeDB.Manager>
  *		  watchers.  They also need to load their styles from <Styles.Manager>.  They can also set the rebuild/reparse flags that 
- *		  CodeDB and <Styles.Manager> need to interpret.
+ *		  <CodeDB.Manager> and <Styles.Manager> need to interpret.
  *		   
  *		- <CodeDB.Manager> needs to be almost last so it can handle anything that can set <Config.Manager.ReparseEverything>
  *		   to true, though it only needs <Config.Manager>.
  *		   
- *		- <Files.Manager> is almost last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
+ *		- <Files.Manager> is last because it must be after anything that can set <Config.Manager.ReparseEverything> to true.
  *		   It also depends on <Languages.Manager> to know whether a file's extension is for a supported language or not.
  *		
  * 
@@ -94,6 +94,7 @@ namespace CodeClear.NaturalDocs.Engine
 								Output.Manager outputManager = null, 
 								Files.Manager filesManager = null)
 			{
+			startupIssues = StartupIssues.None;
 			startupWatchers = new List<IStartupWatcher>();
 
 			this.config = configManager ?? new Config.Manager(this);
@@ -201,8 +202,8 @@ namespace CodeClear.NaturalDocs.Engine
 			
 
 		/* Function: Start
-		 * Attempts to start the engine instance.  Returns whether it was successful, and if it wasn't, puts any errors that 
-		 * prevented it on the list.  If you wish to try to start it again, call <Dispose()> and <Create()> first.
+		 * Attempts to start the engine instance.  Returns whether it was successful, and if it wasn't, puts any errors that prevented
+		 * it on the list.  If you wish to try to start it again, <Dispose()> of the instance object and create another one.
 		 */
 		public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
 			{
@@ -266,6 +267,11 @@ namespace CodeClear.NaturalDocs.Engine
 				
 			codeDB.Cleanup(cancelDelegate);
 			}
+
+
+
+		// Group: Crash Handling
+		// __________________________________________________________________________
 			
 			
 		/* Function: GetCrashInformation
@@ -511,17 +517,18 @@ namespace CodeClear.NaturalDocs.Engine
 			
 
 
-		// Group: Startup Event Functions
+		// Group: Startup Tracking Functions
 		// __________________________________________________________________________
 
 
 		/* Function: AddStartupWatcher
-		 * Adds an object that wants to be aware of events that occur during initialization.  Call after <Create()> but before <Start()>.
+		 * Adds an object that wants to be aware of events that occur during initialization.  Call before <Start()>.
 		 */
 		public void AddStartupWatcher (IStartupWatcher watcher)
 			{
 			startupWatchers.Add(watcher);
 			}
+
 
 		/* Function: StartPossiblyLongOperation
 		 * Called *by module code only* to signify that a possibly long operation is about to begin.  The operation name is arbitrary but 
@@ -531,9 +538,10 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public void StartPossiblyLongOperation (string operationName)
 			{
-			foreach (IStartupWatcher watcher in startupWatchers)
+			foreach (var watcher in startupWatchers)
 				{  watcher.OnStartPossiblyLongOperation(operationName);  }
 			}
+
 
 		/* Function: EndPossiblyLongOperation
 		 * Called *by module code only* to signify that the possibly long operation previously recorded with <StartPossiblyLongOperation()>
@@ -541,13 +549,46 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public void EndPossiblyLongOperation ()
 			{
-			foreach (IStartupWatcher watcher in startupWatchers)
+			foreach (var watcher in startupWatchers)
 				{  watcher.OnEndPossiblyLongOperation();  }
 			}
 
 
+		/* Function: AddStartupIssues
+		 * Called *during engine startup only* to set one or more <StartupIssueFlags>.  These are combined with the existing
+		 * <StartupIssues> rather than replacing them, which means flags can be set but they cannot be cleared.  More than one can be
+		 * set in a single call so you can pass a combination of flags.  If any of them weren't previously set it will notify the 
+		 * <IStartupWatchers> of the changes.
+		 */
+		public void AddStartupIssues (StartupIssues newIssues)
+			{
+			StartupIssues oldIssues = this.startupIssues;
+			StartupIssues combinedIssues = (oldIssues | newIssues);
 
-		// Group: Constants and Properties
+			if (combinedIssues != oldIssues)
+				{
+				StartupIssues changedIssues = (combinedIssues & ~oldIssues);
+
+				this.startupIssues = combinedIssues;
+
+				foreach (var watcher in startupWatchers)
+					{  watcher.OnStartupIssues(changedIssues, combinedIssues);  }
+				}
+			}
+
+
+		/* Function: HasIssues
+		 * Returns whether *any* of the passed <StartupIssues> are set to true.  You can pass a combination of flags to this function to test
+		 * several at once.  It will only return false if *all* of the passed flags are false.
+		 */
+		public bool HasIssues (StartupIssues toTest)
+			{
+			return ( (startupIssues & toTest) != 0 );
+			}
+
+
+
+		// Group: Constants
 		// __________________________________________________________________________
 		
 		
@@ -555,6 +596,12 @@ namespace CodeClear.NaturalDocs.Engine
 		 * The current version of the Natural Docs engine as a string.
 		 */
 		public const string VersionString = "2.1 (Development Release 2)";
+
+				
+
+		// Group: Properties
+		// __________________________________________________________________________
+		
 		
 		/* Property: Version
 		 * The current version of the Natural Docs engine.
@@ -567,6 +614,24 @@ namespace CodeClear.NaturalDocs.Engine
 				return version;
 				}
 			}
+
+
+		/* Property: StartupIssues
+		 * Returns a combination of all <StartupIssueFlags> that apply at the current point of the engine startup.  It may be easier to
+		 * use <HasIssues()> than reading this directly.  If you need to be notified of any issues that occur after your module has been
+		 * started, implement <IStartupWatcher> and pass it to <AddStartupWatcher()>.
+		 */
+		public StartupIssues StartupIssues
+			{
+			get
+				{  return startupIssues;  }
+			}
+
+
+
+		// Group: Modules
+		// __________________________________________________________________________
+		
 
 		/* Property: Config
 		 * Returns the <Config.Manager> associated with this instance.
@@ -654,27 +719,43 @@ namespace CodeClear.NaturalDocs.Engine
 		// Group: Variables
 		// __________________________________________________________________________
 	
+
+		/* var: startupIssues
+		 * 
+		 * A set of flags that track issues that can occur during engine startup.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		This variable is not thread safe.  However, it should only be modified during engine initialization which is a single
+		 *		threaded process.  Afterwards it becomes read only.
+		 */
+		protected StartupIssues startupIssues;
+
+
 		/* var: startupWatchers
+		 * 
 		 * A list of all the objects that want to observe the engine's initialization.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		This variable is not thread safe.  However, it should only be modified during engine initialization which is a single
+		 *		threaded process.  Afterwards it becomes read only.
 		 */
 		protected List<IStartupWatcher> startupWatchers;
 
+
+
+		// Group: Module Variables
+		// __________________________________________________________________________
+
 		protected Config.Manager config;
-		
 		protected CommentTypes.Manager commentTypes;
-		
 		protected Languages.Manager languages;
-		
 		protected Comments.Manager comments;
-
 		protected Links.Manager links;
-		
 		protected CodeDB.Manager codeDB;
-
 		protected Styles.Manager styles;
-		
 		protected Output.Manager output;
-			
 		protected Files.Manager files;
 
 		}

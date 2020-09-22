@@ -46,6 +46,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\StartupIssues.cs" />
     <Compile Include="Source\Config\Targets\ImageFolder.cs" />
     <Compile Include="Source\Files\FileSources\Folder.cs" />
     <Compile Include="Source\Files\FileSources\ImageFolder.cs" />

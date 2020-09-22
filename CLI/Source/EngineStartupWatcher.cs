@@ -35,6 +35,10 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			status.End();
 			}
+
+		public void OnStartupIssues (Engine.StartupIssues newIssues, Engine.StartupIssues allIssues)
+			{
+			}
 		
 
 		// Group: Variables
