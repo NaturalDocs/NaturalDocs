@@ -1031,7 +1031,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{
 				if (value == true)
-					{  reparseEverything = true;  }
+					{
+					reparseEverything = true;
+
+					// xxx temporary shim between old and new systems
+					EngineInstance.AddStartupIssues(StartupIssues.NeedToReparseAllFiles);
+					}
 				else
 					{  throw new InvalidOperationException();  }
 				}
@@ -1054,6 +1059,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 					{  
 					rebuildAllOutput = true;  
 					reparseEverything = true; //xxx until rebuildAllOutput is supported
+
+					// xxx temporary shim between old and new systems
+					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput |
+																	 StartupIssues.NeedToReparseAllFiles);
 					}
 				else
 					{  throw new InvalidOperationException();  }
