@@ -539,8 +539,13 @@ namespace CodeClear.NaturalDocs.CLI
 						{
 						EngineInstance.Config.ReparseEverything_old = true;
 						EngineInstance.Config.RebuildAllOutput_old = true;
+						EngineInstance.Config.UserWantsEverythingRebuilt = true;
 						}
 					}
+
+
+
+				// Rebuild Output
 					
 				else if (parameter == "--rebuild-output")
 					{
@@ -555,6 +560,7 @@ namespace CodeClear.NaturalDocs.CLI
 					else
 						{
 						EngineInstance.Config.RebuildAllOutput_old = true;
+						EngineInstance.Config.UserWantsOutputRebuilt = true;
 						}
 					}
 					

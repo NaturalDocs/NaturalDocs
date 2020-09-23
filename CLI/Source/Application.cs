@@ -170,9 +170,6 @@ namespace CodeClear.NaturalDocs.CLI
 			{
 			ShowConsoleHeader();
 
-			bool rebuildAllOutputFromCommandLine = EngineInstance.Config.RebuildAllOutput_old;
-			bool reparseEverythingFromCommandLine = EngineInstance.Config.ReparseEverything_old;
-
 			EngineInstance.AddStartupWatcher(new EngineStartupWatcher());
 
 
@@ -208,10 +205,17 @@ namespace CodeClear.NaturalDocs.CLI
 
 				string alternativeStartMessage = null;
 						
-				if (reparseEverythingFromCommandLine || rebuildAllOutputFromCommandLine)
-					{  alternativeStartMessage = "Status.RebuildEverythingByRequest";  }
-				else if (EngineInstance.Config.ReparseEverything_old && EngineInstance.Config.RebuildAllOutput_old)
-					{  alternativeStartMessage = "Status.RebuildEverythingAutomatically";  }
+				if (EngineInstance.Config.UserWantsEverythingRebuilt ||
+					EngineInstance.Config.UserWantsOutputRebuilt)
+					{
+					alternativeStartMessage = "Status.RebuildEverythingByRequest";
+					}
+				else if (EngineInstance.HasIssues(StartupIssues.NeedToStartFresh |
+																  StartupIssues.NeedToReparseAllFiles |
+																  StartupIssues.NeedToRebuildAllOutput))
+					{
+					alternativeStartMessage = "Status.RebuildEverythingAutomatically";
+					}
 							
 							
 				// Parsing
