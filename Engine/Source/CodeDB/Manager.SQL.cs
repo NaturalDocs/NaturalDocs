@@ -126,6 +126,24 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			}
 
 
+		/* Function: ResetDatabase
+		 * Removes all data from the database and creates a fresh set of tables.  Also initializes the system variables so you don't 
+		 * have to call <LoadSystemVariables()> afterwards.
+		 */
+		protected void ResetDatabase ()
+			{
+			connection.Execute("DROP TABLE System");
+			connection.Execute("DROP TABLE Topics");
+			connection.Execute("DROP TABLE Links");
+			connection.Execute("DROP TABLE AlternateLinkEndingSymbols");
+			connection.Execute("DROP TABLE ImageLinks");
+			connection.Execute("DROP TABLE Classes");
+			connection.Execute("DROP TABLE Contexts");
+
+			CreateDatabase();
+			}
+
+
 		/* Function: GetVersion
 		 * Retrieves the database version.
 		 */
