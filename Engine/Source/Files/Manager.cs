@@ -40,7 +40,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
@@ -142,6 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public bool Start (Errors.ErrorList errors)
 			{
 			int startingErrorCount = errors.Count;
+			StartupIssues newStartupIssues = StartupIssues.None;
 
 
 			// Validate FileSources
@@ -161,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			// Make sure no source folders are completely ignored because of filters
 				
-			foreach (FileSource fileSource in fileSources)
+			foreach (var fileSource in fileSources)
 				{
 				if (fileSource is FileSources.SourceFolder)
 					{
@@ -179,13 +179,30 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 			// Load Files.nd
 
-			Files_nd filesParser = new Files_nd();
-
-			if (EngineInstance.Config.ReparseEverything_old == false)
+			if (EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				if (filesParser.Load( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files) == false)
-					{  EngineInstance.Config.ReparseEverything_old = true;  }
+				newStartupIssues |= StartupIssues.FileIDsInvalidated |
+												StartupIssues.NeedToReparseAllFiles;
 				}
+			else
+				{
+				Files_nd filesParser = new Files_nd();
+
+				if (!filesParser.Load( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files ))
+					{
+					newStartupIssues |= StartupIssues.FileIDsInvalidated |
+												   StartupIssues.NeedToReparseAllFiles;
+					}
+				else // Files.nd loaded successfully
+					{
+					if (EngineInstance.HasIssues( StartupIssues.NeedToReparseAllFiles ))
+						{  unprocessedChanges.AddChangedFiles(files.usedIDs);  }
+					}
+				}
+
+
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
 			return (errors.Count == startingErrorCount);
 			}
