@@ -54,12 +54,32 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 			
 			
+		public void AddNewFiles (IDObjects.NumberSet fileIDs)
+			{
+			lock (accessLock)
+				{
+				deletedFileIDs.Remove(fileIDs);
+				newOrChangedFileIDs.Add(fileIDs);
+				}
+			}
+			
+			
 		public void AddChangedFile (File file)
 			{
 			lock (accessLock)
 				{
 				deletedFileIDs.Remove(file.ID);
 				newOrChangedFileIDs.Add(file.ID);
+				}
+			}
+			
+			
+		public void AddChangedFiles (IDObjects.NumberSet fileIDs)
+			{
+			lock (accessLock)
+				{
+				deletedFileIDs.Remove(fileIDs);
+				newOrChangedFileIDs.Add(fileIDs);
 				}
 			}
 			
