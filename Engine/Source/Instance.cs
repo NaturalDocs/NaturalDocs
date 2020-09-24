@@ -555,12 +555,16 @@ namespace CodeClear.NaturalDocs.Engine
 
 
 		/* Function: AddStartupIssues
+		 * 
 		 * Called *during engine startup only* to set one or more <StartupIssueFlags>.  These are combined with the existing
-		 * <StartupIssues> rather than replacing them, which means flags can be set but they cannot be cleared.  More than one can be
-		 * set in a single call so you can pass a combination of flags.  If any of them weren't previously set it will notify the 
+		 * <StartupIssues> rather than replacing them, which means flags can be set but they cannot be cleared.  More than one can
+		 * be set in a single call so you can pass a combination of flags.  If any of them weren't previously set it will notify the 
 		 * <IStartupWatchers> of the changes.
+		 * 
+		 * You can pass one startup watcher to not be notified, which can be used to prevent a module from receiving its own notification.
+		 * If that notification leads to other startup issues being added it will still receive those later notifications.
 		 */
-		public void AddStartupIssues (StartupIssues newIssues)
+		public void AddStartupIssues (StartupIssues newIssues, IStartupWatcher dontNotify = null)
 			{
 			StartupIssues oldIssues = this.startupIssues;
 			StartupIssues combinedIssues = (oldIssues | newIssues);
@@ -572,7 +576,10 @@ namespace CodeClear.NaturalDocs.Engine
 				this.startupIssues = combinedIssues;
 
 				foreach (var watcher in startupWatchers)
-					{  watcher.OnStartupIssues(changedIssues, combinedIssues);  }
+					{  
+					if (watcher != dontNotify)
+						{  watcher.OnStartupIssues(changedIssues, combinedIssues);  }
+					}
 				}
 			}
 
