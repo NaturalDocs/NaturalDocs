@@ -58,18 +58,11 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Languages;
-using CodeClear.NaturalDocs.Engine.Links;
-using CodeClear.NaturalDocs.Engine.Symbols;
-using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Topics;
-using CodeClear.NaturalDocs.Engine.CommentTypes;
 
 
 namespace CodeClear.NaturalDocs.Engine.CodeDB
 	{
-	public partial class Manager : Module
+	public partial class Manager : Module, IStartupWatcher
 		{
 		
 		// Group: Functions
@@ -150,6 +143,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		public bool Start (Errors.ErrorList errors)
 			{
+			EngineInstance.AddStartupWatcher(this);
+
 			SQLite.API.Result sqliteResult = SQLite.API.Initialize();
 			
 			if (sqliteResult != SQLite.API.Result.OK)
@@ -159,7 +154,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection = new SQLite.Connection();
 			bool success = false;
 			
-			if (EngineInstance.Config.ReparseEverything_old == false)
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
 				try
 					{
@@ -183,10 +178,13 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				if (System.IO.File.Exists(databaseFile))
 					{  System.IO.File.Delete(databaseFile);  }
 					
-				EngineInstance.Config.ReparseEverything_old = true;
-					
 				connection.Open(databaseFile, true);
 				CreateDatabase();
+
+				EngineInstance.AddStartupIssues( StartupIssues.CodeIDsInvalidated |
+																   StartupIssues.CommentIDsInvalidated |
+																   StartupIssues.NeedToReparseAllFiles,
+																   dontNotify: this);
 				}
 				
 			return true;
@@ -264,6 +262,29 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				accessor.ReleaseLock();
 				}
 			}
+
+
+		/* Function: OnStartupIssues
+		 * Called whenever new startup issues occur.  Includes both what's new for this call and the total for the engine initialization
+		 * thus far.  Multiple new issues can be combined into a single notification, but you will only be notified of each new issue once.
+		 */
+		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
+			{
+			if ( (newIssues & ( StartupIssues.CodeIDsInvalidated |
+										StartupIssues.CommentIDsInvalidated |
+										StartupIssues.FileIDsInvalidated )) != 0)
+				{
+				ResetDatabase();
+				EngineInstance.AddStartupIssues( StartupIssues.NeedToReparseAllFiles, 
+																   dontNotify: this );
+				}
+			}
+
+		public void OnStartPossiblyLongOperation (string operationName)
+			{  }
+		
+		public void OnEndPossiblyLongOperation ()
+			{  }
 
 
 			
