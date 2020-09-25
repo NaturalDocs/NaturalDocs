@@ -171,6 +171,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			}
 
+		/* Function: AddImageFiles
+		 * Adds a set of image file IDs to the list that need their output files rebuilt.
+		 */
+		public void AddImageFiles (NumberSet imageFileIDs)
+			{
+			lock (accessLock)
+				{
+				imageFiles.Add(imageFileIDs);
+				unchangedImageFileUseChecks.Remove(imageFileIDs);
+				}
+			}
+
 		/* Function: AddImageFileUseCheck
 		 * Adds an image file ID to the list that need to be checked to see if they're still used in the output.
 		 */

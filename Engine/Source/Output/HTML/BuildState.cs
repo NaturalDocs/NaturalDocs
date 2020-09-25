@@ -31,6 +31,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			sourceFilesWithContent = new NumberSet();
 			classesWithContent = new NumberSet();
+			usedImageFiles = new NumberSet();
 
 			usedMenuDataFiles = new NumberSetTable<Hierarchy>();
 
@@ -131,14 +132,49 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 
+		// Group: Image File Functions
+		// __________________________________________________________________________
+
+
+		/* Function: ImageFileIsUsed
+		 * Returns whether the passed image file ID is used in the output.
+		 */
+		public bool ImageFileIsUsed (int imageFileID)
+			{
+			lock (accessLock)
+				{  return usedImageFiles.Contains(imageFileID);  }
+			}
+
+		/* Function: AddUsedImageFile
+		 * Tells the class that the passed image file ID is used in the output.  Returns true if the number didn't already exist in the set 
+		 * and was added, false if it was already in the set.
+		 */
+		public bool AddUsedImageFile (int imageFileID)
+			{
+			lock (accessLock)
+				{  return usedImageFiles.Add(imageFileID);  }
+			}
+
+		/* Function: RemoveUsedImageFile
+		 * Tells the class that the passed image file ID is not used in the output.  Returns true if the number existed in the set and was 
+		 * removed, false if it wasn't part of the set.
+		 */
+		public bool RemoveUsedImageFile (int imageFileID)
+			{
+			lock (accessLock)
+				{  return usedImageFiles.Remove(imageFileID);  }
+			}
+
+
+
 		// Group: Menu Data File Functions
 		// __________________________________________________________________________
 
 
-		/* Function: HasUsedMenuDataFile
+		/* Function: MenuDataFileIsUsed
 		 * Returns whether the passed <Hierarchy> and number are used by the menu data files.
 		 */
-		public bool HasUsedMenuDataFile (Hierarchy hierarchy, int number)
+		public bool MenuDataFileIsUsed (Hierarchy hierarchy, int number)
 			{
 			lock (accessLock)
 				{  
@@ -217,6 +253,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Lock()> and <Unlock()>.
 		 */
 		protected internal NumberSet classesWithContent;
+
+
+		/* var: usedImageFiles
+		 * 
+		 * A set of the image file IDs that are used in the output.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal NumberSet usedImageFiles;
 
 
 		/* var: usedMenuDataFiles

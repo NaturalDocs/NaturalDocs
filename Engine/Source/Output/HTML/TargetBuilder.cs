@@ -789,14 +789,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Quit early if the file source was deleted since that will cause a lot of problems like not being able to build paths.
 			// The output files associated with it will have been purged already so we don't need to worry about them.
 			if (imageFile.Deleted && fileSource == null)
-				{  return;  }
+				{  
+				Target.BuildState.RemoveUsedImageFile(imageFile.ID);
+				return;
+				}
 
 			var relativePath = fileSource.MakeRelative(imageFile.Name);
 
 			Path outputPath = Paths.Image.OutputFile(Target.OutputFolder, fileSource.Number, fileSource.Type, relativePath);
 
 			if (imageFile.Deleted)
-				{  DeleteOutputFileIfExists(outputPath);  }
+				{
+				DeleteOutputFileIfExists(outputPath);
+				Target.BuildState.RemoveUsedImageFile(imageFile.ID);
+				}
 			else
 				{
 				bool imageFileIsUsed;
@@ -813,7 +819,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 				if (!imageFileIsUsed)
-					{  DeleteOutputFileIfExists(outputPath);  }
+					{  
+					DeleteOutputFileIfExists(outputPath);
+					Target.BuildState.RemoveUsedImageFile(imageFile.ID);
+					}
 				else
 					{
 					// Creates all subdirectories needed.  Does nothing if it already exists.
@@ -821,6 +830,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					if (overwrite || !System.IO.File.Exists(outputPath))
 						{  System.IO.File.Copy(imageFile.FileName, outputPath, true);  }
+
+					Target.BuildState.AddUsedImageFile(imageFile.ID);
 					}
 				}
 			}

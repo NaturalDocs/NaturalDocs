@@ -34,6 +34,10 @@
  *		
  *		A set of all the source and class files known to have content after all filters were applied.
  *		
+ *		> [NumberSet: Used Image File IDs]
+ *		
+ *		A set of all the image file IDs which were used in the output.
+ *		
  *		> [NumberSet: Unchanged Image File Use Check IDs]
  *		
  *		A set of all the image file IDs that haven't changed but whether they're used in the output may have.
@@ -61,7 +65,7 @@
  *		Version History:
  *		
  *			- 2.1
- *				- Added Image Files to Rebuild and Unchanged Image File Use Check IDs.
+ *				- Added Used Image File IDs, Image Files to Rebuild, and Unchanged Image File Use Check IDs.
  *			
  *			- 2.0.2
  *				- Added Style File IDs to Rebuild.
@@ -130,6 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					// [NumberSet: Style File IDs to Rebuild]
 					// [NumberSet: Source File IDs with Content]
 					// [NumberSet: Class IDs with Content]
+					// [NumberSet: Used Image File IDs]
 					// [NumberSet: Unchanged Image File Use Check IDs]
 
 					unprocessedChanges.sourceFiles.ReadFrom(binaryFile);
@@ -138,6 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					unprocessedChanges.styleFiles.ReadFrom(binaryFile);
 					buildState.sourceFilesWithContent.ReadFrom(binaryFile);
 					buildState.classesWithContent.ReadFrom(binaryFile);
+					buildState.usedImageFiles.ReadFrom(binaryFile);
 					unprocessedChanges.unchangedImageFileUseChecks.ReadFrom(binaryFile);
 
 					// [StringSet: Search Prefixes to Rebuild]
@@ -216,6 +222,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// [NumberSet: Style File IDs to Rebuild]
 				// [NumberSet: Source File IDs with Content]
 				// [NumberSet: Class IDs with Content]
+				// [NumberSet: Used Image File IDs]
 				// [NumberSet: Unchanged Image File Use Check IDs]
 
 				binaryFile.WriteNumberSet(unprocessedChanges.sourceFiles);
@@ -224,6 +231,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				binaryFile.WriteNumberSet(unprocessedChanges.styleFiles);
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classesWithContent);
+				binaryFile.WriteNumberSet(buildState.usedImageFiles);
 				binaryFile.WriteNumberSet(unprocessedChanges.unchangedImageFileUseChecks);
 
 				// [StringSet: Search Prefixes to Rebuild]
