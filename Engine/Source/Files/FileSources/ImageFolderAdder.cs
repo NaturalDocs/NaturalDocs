@@ -44,6 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		override public void AddAllFiles (CancelDelegate cancelDelegate)
 			{
 			status.Reset();
+			bool forceReparse = EngineInstance.HasIssues( StartupIssues.NeedToReparseAllFiles );
 
 			Path path = (FileSource as FileSources.ImageFolder).Path;
 			
@@ -79,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					if (Files.Manager.ImageExtensions.Contains(extension))
 						{  
 						status.AddFiles(FileType.Image, 1);
-						Manager.AddOrUpdateFile(filePath, FileType.Image, System.IO.File.GetLastWriteTimeUtc(file));
+						Manager.AddOrUpdateFile(filePath, FileType.Image, System.IO.File.GetLastWriteTimeUtc(file), forceReparse);
 						}
 
 					if (cancelDelegate())

@@ -30,7 +30,8 @@ using CodeClear.NaturalDocs.Engine.Styles;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	{
-	public partial class Target : Output.Target, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, IDisposable
+	public partial class Target : Output.Target, CodeDB.IChangeWatcher, Files.IChangeWatcher, SearchIndex.IChangeWatcher, 
+											IStartupWatcher, IDisposable
 		{
 
 		// Group: Functions
@@ -54,6 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public override bool Start (Errors.ErrorList errorList)
 			{  
 			int errors = errorList.Count;
+			StartupIssues newStartupIssues = StartupIssues.None;
 
 
 			// Validate the output folder.
@@ -113,11 +115,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
-			if (!EngineInstance.Config.ReparseEverything_old)
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
 				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
 				}
-			else
+			else // start fresh
 				{
 				previousStyles = new List<Style>();
 				previousFileSourceInfoList = new List<FileSourceInfo>();
@@ -129,9 +131,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			BuildState_nd buildStateParser = new BuildState_nd();
 			bool hasBinaryBuildStateFile = false;
 			
-			if (!EngineInstance.Config.ReparseEverything_old)
-				{  hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);  }
-			else
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
+				{
+				hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);
+				}
+			else // start fresh
 				{  
 				buildState = new BuildState();
 				unprocessedChanges = new UnprocessedChanges();
@@ -139,11 +143,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (!hasBinaryBuildStateFile)
 				{
-				// Because we need source/classFilesWithContent
-				EngineInstance.Config.ReparseEverything_old = true;
-
-				// Because we don't know if there was anything left in sourceFilesToRebuild
-				EngineInstance.Config.RebuildAllOutput_old = true;
+				// We need to reparse all the source files because we need source/classFilesWithContent
+				// We need to rebuild all the output because we don't know if there was anything left in sourceFilesToRebuild
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
+											   StartupIssues.NeedToRebuildAllOutput;
 				}
 
 
@@ -153,27 +156,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			unprocessedChanges.AddFramePage();
 			unprocessedChanges.AddMainStyleFiles();
 
-			if (EngineInstance.Config.RebuildAllOutput_old)
-				{
-				// If the documentation is being built for the first time, these will be triggered by the changes the parser detects.
-				unprocessedChanges.AddMenu();
-				unprocessedChanges.AddMainSearchFiles();
-				}
-
 
 			// Compare to the previous list of styles.
 
 			bool saidPurgingOutputFiles = false;
 
-			if (!hasBinaryConfigFile || !hasBinaryBuildStateFile)
+			if (!hasBinaryConfigFile)
 				{
-				// If the binary file doesn't exist, we have to purge every style folder because some of them may no longer be in
+				// If the binary file doesn't exist we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
 				Start_PurgeFolder(Paths.Style.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
 				EngineInstance.Styles.ReparseStyleFiles = true;
 				}
 
-			else // (hasBinaryFile)
+			else // (hasBinaryConfigFile)
 				{
 				// Purge the style folders of anything deleted or changed.
 
@@ -224,7 +220,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			// Compare to the previous list of FileSources.
 
-			if (!hasBinaryConfigFile || !hasBinaryBuildStateFile)
+			if (!hasBinaryConfigFile)
 				{
 				// If the binary file doesn't exist, we have to purge every folder because some of them may have changed or are no
 				// longer in use and we won't know which.
@@ -243,7 +239,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			else  // (hasBinaryFile)
+			else  // (hasBinaryConfigFile)
 				{
 				bool hasDeletions = false;
 				bool hasAdditions = false;
@@ -255,7 +251,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{
 					bool stillExists = false;
 
-					foreach (Files.FileSource fileSource in EngineInstance.Files.FileSources)
+					foreach (var fileSource in EngineInstance.Files.FileSources)
 						{
 						if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
 							{
@@ -283,13 +279,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				// Check if anything was added or changed.
 
-				foreach (Files.FileSource fileSource in EngineInstance.Files.FileSources)
+				foreach (var fileSource in EngineInstance.Files.FileSources)
 					{
 					if (fileSource.Type == InputType.Source || fileSource.Type == InputType.Image)
 						{
 						bool foundMatch = false;
 
-						foreach (FileSourceInfo previousFileSourceInfo in previousFileSourceInfoList)
+						foreach (var previousFileSourceInfo in previousFileSourceInfoList)
 							{
 							if (previousFileSourceInfo.IsSameFundamentalFileSource(fileSource))
 								{
@@ -313,11 +309,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// files in the child folder.
 
 				if (hasAdditions && hasDeletions)
-					{  EngineInstance.Config.RebuildAllOutput_old = true;  }
+					{  newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;  }
 				}
 
 
-			// If the binary file doesn't exist, purge the rest of the output files too.
+			// If the binary build state file doesn't exist, purge the rest of the output files too.
 
 			if (!hasBinaryBuildStateFile)
 				{
@@ -359,7 +355,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			List<FileSourceInfo> fileSourceInfoList = new List<FileSourceInfo>();
 
-			foreach (Files.FileSource fileSource in EngineInstance.Files.FileSources)
+			foreach (var fileSource in EngineInstance.Files.FileSources)
 				{
 				if (fileSource.Type == Files.InputType.Source || fileSource.Type == Files.InputType.Image)
 					{
@@ -372,6 +368,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", stylesWithInheritance, fileSourceInfoList);
 
 
+			// Load up unprocessedChanges if we're rebuilding
+
+			if (EngineInstance.HasIssues( StartupIssues.NeedToRebuildAllOutput ) ||
+				(newStartupIssues & StartupIssues.NeedToRebuildAllOutput) != 0)
+				{
+				unprocessedChanges.AddSourceFiles(buildState.sourceFilesWithContent);
+				unprocessedChanges.AddClasses(buildState.classesWithContent);
+				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
+
+				unprocessedChanges.AddMainStyleFiles();
+				unprocessedChanges.AddMainSearchFiles();
+				unprocessedChanges.AddFramePage();
+				unprocessedChanges.AddMenu();
+				
+				EngineInstance.Styles.ReparseStyleFiles = true;
+				}
+
+
 			// Create the search index and watch other modules
 
 			searchIndex = new SearchIndex.Manager(this);
@@ -379,9 +393,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			EngineInstance.CodeDB.AddChangeWatcher(this);
 			EngineInstance.Files.AddChangeWatcher(this);
 			searchIndex.AddChangeWatcher(this);
+			EngineInstance.AddStartupWatcher(this);
+
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues, dontNotify: this);  }
 
 			searchIndex.Start(errorList);
-
 
 			return (errors == errorList.Count);
 			}
@@ -434,6 +451,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
+		/* Function: OnStartupIssues
+		 * Called whenever new startup issues occur.  Includes both what's new for this call and the total for the engine initialization
+		 * thus far.  Multiple new issues can be combined into a single notification, but you will only be notified of each new issue once.
+		 */
+		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
+			{
+			if ( (newIssues & ( StartupIssues.NeedToRebuildAllOutput |
+										StartupIssues.CodeIDsInvalidated |
+										StartupIssues.CommentIDsInvalidated |
+										StartupIssues.FileIDsInvalidated )) != 0)
+				{
+				unprocessedChanges.AddSourceFiles(buildState.sourceFilesWithContent);
+				unprocessedChanges.AddClasses(buildState.classesWithContent);
+				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
+
+				unprocessedChanges.AddMainStyleFiles();
+				unprocessedChanges.AddMainSearchFiles();
+				unprocessedChanges.AddFramePage();
+				unprocessedChanges.AddMenu();
+				
+				EngineInstance.AddStartupIssues( StartupIssues.NeedToReparseAllFiles |
+																   StartupIssues.NeedToRebuildAllOutput, 
+																   dontNotify: this );
+				}
+			}
+
+
 		/* Function: CreateBuilderProcess
 		 * Creates a <TargetBuilder> capable of building the output for this target.
 		 */
@@ -462,6 +506,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			return toFile.MakeRelativeTo(fromFile.ParentFolder).ToURL();
 			}
+
+
+		public void OnStartPossiblyLongOperation (string operationName)
+			{  }
+		
+		public void OnEndPossiblyLongOperation ()
+			{  }
 
 
 

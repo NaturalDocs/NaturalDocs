@@ -211,7 +211,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			ProjectConfig previousConfig = null;
 			var projectNDParser = new Project_nd();
 
-			if (ReparseEverything_old == false && System.IO.File.Exists(workingDataFolder + "/Project.nd"))
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ) && 
+				System.IO.File.Exists(workingDataFolder + "/Project.nd"))
 				{  
 				if (!projectNDParser.Load(workingDataFolder + "/Project.nd", out previousConfig))
 					{  previousConfig = null;  }
@@ -1061,11 +1062,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				if (value == true)
 					{  
 					rebuildAllOutput_old = true;  
-					reparseEverything_old = true; //xxx until rebuildAllOutput is supported
 
 					// xxx temporary shim between old and new systems
-					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput |
-																	 StartupIssues.NeedToReparseAllFiles);
+					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput);
 					}
 				else
 					{  throw new InvalidOperationException();  }
