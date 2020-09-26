@@ -7,18 +7,6 @@
  *		Externally, this class is thread safe.  All locking is handled internally so you may access it from multiple threads.
  *		Internally all access is handled by <accessLock>.
  *		
- * 
- * File: SearchIndex.nd
- * 
- *		A file used to store the state of the search index.
- *		
- *		> [String: Prefix]
- *		> [NumberSet: Prefix Topic IDs]
- *		> ...
- *		> [String: null]
- *		
- *		The file stores each prefix as a string followed by a NumberSet of its associated topic IDs.  The String-NumberSet pairs 
- *		continue in no particular order until it reaches a null ID.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -63,7 +51,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				{
 				try
 					{
-					SaveBinaryFile(Target.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
+					SearchIndex_nd binaryFileParser = new SearchIndex_nd();
+					binaryFileParser.Save(Target.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
 
 					// Prior to Natural Docs 2.1 SearchIndex.nd was saved in the main working data folder instead of the output target's.
 					// Clean it up if it still exists there.
@@ -87,7 +76,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			if (!EngineInstance.Config.ReparseEverything_old)
 				{
-				hasBinaryFile = LoadBinaryFile(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
+				SearchIndex_nd binaryFileParser = new SearchIndex_nd();
+				hasBinaryFile = binaryFileParser.Load(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
 				{
@@ -293,82 +283,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		public bool KeywordMatchesPrefix (string keyword, string prefix)
 			{
 			return (keyword.Length >= prefix.Length && string.Compare(keyword, 0, prefix, 0, prefix.Length, true) == 0);
-			}
-
-
-
-		// Group: File Functions
-		// __________________________________________________________________________
-
-
-		/* Function: LoadBinaryFile
-		 * Loads the information in <SearchIndex.nd> and returns whether it was successful.  If not all the out parameters will still 
-		 * return objects, they will just be empty.  
-		 */
-		public static bool LoadBinaryFile (Path filename, out StringTable<IDObjects.NumberSet> prefixTopicIDs)
-			{
-			prefixTopicIDs = new StringTable<IDObjects.NumberSet>(KeySettingsForPrefixes);
-
-			BinaryFile binaryFile = new BinaryFile();
-			bool result = true;
-
-			try
-				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
-					{  result = false;  }
-				else
-					{
-					// [String: Prefix]
-					// [NumberSet: Prefix Topic IDs]
-					// ...
-					// [String: null]
-
-					for (;;)
-						{
-						string prefix = binaryFile.ReadString();
-
-						if (prefix == null)
-							{  break;  }
-
-						IDObjects.NumberSet topicIDs = binaryFile.ReadNumberSet();
-						prefixTopicIDs.Add(prefix, topicIDs);
-						}
-					}
-				}
-			catch
-				{  result = false;  }
-			finally
-				{  binaryFile.Dispose();  }
-
-			if (result == false)
-				{  prefixTopicIDs.Clear();  }
-
-			return result;
-			}
-
-
-		/* Function: SaveBinaryFile
-		 * Saves the passed information in <SearchIndex.nd>.
-		 */
-		public static void SaveBinaryFile (Path filename, StringTable<IDObjects.NumberSet> prefixTopicIDs)
-			{
-			using (BinaryFile binaryFile = new BinaryFile())
-				{
-				binaryFile.OpenForWriting(filename);
-
-				// [String: Prefix]
-				// [NumberSet: Prefix Topic IDs]
-				// ...
-				// [String: null]
-
-				foreach (var prefixPair in prefixTopicIDs)
-					{
-					binaryFile.WriteString(prefixPair.Key);
-					binaryFile.WriteNumberSet(prefixPair.Value);
-					}
-
-				binaryFile.WriteString(null);
-				}
 			}
 
 
@@ -633,7 +547,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		// Group: Constants
 		// __________________________________________________________________________
 
-		protected const KeySettings KeySettingsForPrefixes = KeySettings.Literal;
+		public const KeySettings KeySettingsForPrefixes = KeySettings.Literal;
 
 
 

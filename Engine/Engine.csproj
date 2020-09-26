@@ -46,6 +46,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Output\HTML\SearchIndex\SearchIndex_nd.cs" />
     <Compile Include="Source\StartupIssues.cs" />
     <Compile Include="Source\Config\Targets\ImageFolder.cs" />
     <Compile Include="Source\Files\FileSources\Folder.cs" />
