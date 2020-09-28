@@ -312,12 +312,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// them to CodeDB, and then CodeDB won't send topic updates if the underlying content hasn't changed.  We'd actually need
 				// to add all files and classes to UnprocessedChanges, but the Files module isn't started yet.  So fuck it, blow it all up and start
 				// over.
-				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
-											   StartupIssues.NeedToRebuildAllOutput |
-											   StartupIssues.NeedToStartFresh |
-											   StartupIssues.FileIDsInvalidated |
-											   StartupIssues.CodeIDsInvalidated |
-											   StartupIssues.CommentIDsInvalidated;
+				newStartupIssues |= StartupIssues.NeedToStartFresh;
 				EngineInstance.Styles.ReparseStyleFiles = true;
 
 				// Purge everything so no stray files are left behind from the previous build.
