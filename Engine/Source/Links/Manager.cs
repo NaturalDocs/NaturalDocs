@@ -36,7 +36,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 		public bool Start (ErrorList errorList)
 			{
-			unprocessedChanges = new UnprocessedChanges( reparsingEverything: EngineInstance.Config.ReparseEverything_old );
+			bool reparsingEverything = EngineInstance.HasIssues( StartupIssues.NeedToStartFresh | StartupIssues.NeedToReparseAllFiles );
+			unprocessedChanges = new UnprocessedChanges(reparsingEverything);
 
 			// Watch for changes
 			EngineInstance.CodeDB.AddChangeWatcher(this);
