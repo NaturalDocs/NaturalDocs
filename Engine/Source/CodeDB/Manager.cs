@@ -270,7 +270,8 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 		 */
 		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
 			{
-			if ( (newIssues & ( StartupIssues.CodeIDsInvalidated |
+			if ( (newIssues & ( StartupIssues.NeedToStartFresh |
+										StartupIssues.CodeIDsInvalidated |
 										StartupIssues.CommentIDsInvalidated |
 										StartupIssues.FileIDsInvalidated )) != 0)
 				{
