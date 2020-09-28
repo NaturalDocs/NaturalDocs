@@ -154,7 +154,10 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 			connection = new SQLite.Connection();
 			bool success = false;
 			
-			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+														 StartupIssues.FileIDsInvalidated |
+														 StartupIssues.CodeIDsInvalidated |
+														 StartupIssues.CommentIDsInvalidated ))
 				{
 				try
 					{

@@ -44,7 +44,8 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 		override public void AddAllFiles (CancelDelegate cancelDelegate)
 			{
 			status.Reset();
-			bool forceReparse = EngineInstance.HasIssues( StartupIssues.NeedToReparseAllFiles );
+			bool forceReparse = EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+																				  StartupIssues.NeedToReparseAllFiles );
 
 			Path path = (FileSource as FileSources.SourceFolder).Path;
 			
