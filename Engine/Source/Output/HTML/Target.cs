@@ -58,7 +58,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			StartupIssues newStartupIssues = StartupIssues.None;
 
 
+			//
 			// Validate the output folder.
+			//
 
 			if (System.IO.Directory.Exists(config.Folder) == false)
 				{
@@ -67,7 +69,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 
-			// Load and validate the style.  This will also load and validate any inherited styles.
+			//
+			// Load and validate the styles, including any inherited styles.
+			//
 
 			string styleName = config.ProjectInfo.StyleName;
 			Style_txt styleParser = new Style_txt();
@@ -108,7 +112,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			stylesWithInheritance = style.BuildInheritanceList();
 
 
+			//
 			// Load Config.nd
+			//
 
 			Config_nd binaryConfigParser = new Config_nd();
 			List<Style> previousStyles;
@@ -126,52 +132,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 			
-			// Load BuildState.nd
-
-			BuildState_nd buildStateParser = new BuildState_nd();
-			bool hasBinaryBuildStateFile = false;
-			
-			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
-				{
-				hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);
-				}
-			else // start fresh
-				{  
-				buildState = new BuildState();
-				unprocessedChanges = new UnprocessedChanges();
-				}
-
-			if (!hasBinaryBuildStateFile)
-				{
-				// We need to reparse all the source files because we need source/classFilesWithContent
-				// We need to rebuild all the output because we don't know if there was anything left in sourceFilesToRebuild
-				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
-											   StartupIssues.NeedToRebuildAllOutput;
-				}
-
-
-			// Always rebuild the scaffolding since they're quick.  If you ever make this differential, remember that FramePage depends
-			// on the project name and other information.
-
-			unprocessedChanges.AddFramePage();
-			unprocessedChanges.AddMainStyleFiles();
-
-
+			//
 			// Compare to the previous list of styles.
+			//
 
-			bool saidPurgingOutputFiles = false;
+			bool inPurgingOperation = false;
 
 			if (!hasBinaryConfigFile)
 				{
-				// If the binary file doesn't exist we have to purge every style folder because some of them may no longer be in
+				// If we don't have the binary config file we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
-				Start_PurgeFolder(Paths.Style.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				PurgeAllStyleFolders(ref inPurgingOperation);
 				EngineInstance.Styles.ReparseStyleFiles = true;
 				}
 
 			else // (hasBinaryConfigFile)
 				{
-				// Purge the style folders of anything deleted or changed.
+				// Purge the style folders for any no longer in use.
 
 				foreach (var previousStyle in previousStyles)
 					{
@@ -186,15 +163,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 						}
 
-					if (stillExists == false)
+					if (!stillExists)
 						{  
-						Start_PurgeFolder(Paths.Style.OutputFolder(this.OutputFolder, previousStyle.Name), ref saidPurgingOutputFiles);
+						PurgeStyleFolder(previousStyle.Name, ref inPurgingOperation);
 						}
 					}
 
-				// Reparse styles on anything new or changed.  If a style is new we can't assume all its files are going to be
-				// sent to the IChangeWatcher functions because another output target may have been using it, and thus they
-				// are already in Files.Manager.
+				// Reparse styles on anything new.  If a style is new we can't assume all its files are going to be sent to the 
+				// IChangeWatcher functions because another output target may have been using it, and thus they are already in
+				// Files.Manager.
 
 				foreach (var currentStyle in stylesWithInheritance)
 					{
@@ -209,7 +186,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 						}
 
-					if (foundMatch == false)
+					if (!foundMatch)
 						{  
 						EngineInstance.Styles.ReparseStyleFiles = true;
 						break;
@@ -218,25 +195,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 
+			//
 			// Compare to the previous list of FileSources.
+			//
 
 			if (!hasBinaryConfigFile)
 				{
-				// If the binary file doesn't exist, we have to purge every folder because some of them may have changed or are no
-				// longer in use and we won't know which.
+				// If we don't have the binary config file we need to rebuild all the output because we don't know which FileSource was 
+				// previously set to which number, which determines which output folder they use, like /files vs /files2.
+				newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;
 
-				Regex.Output.HTML.SourceOrImageOutputFolder sourceOrImageOutputFolderRegex = 
-					new Regex.Output.HTML.SourceOrImageOutputFolder();
-
-				string[] outputFolders = System.IO.Directory.GetDirectories(OutputFolder);
-
-				foreach (string outputFolder in outputFolders)
-					{
-					if (sourceOrImageOutputFolderRegex.IsMatch(outputFolder))
-						{
-						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);
-						}
-					}
+				// This also means we have to purge every source or image output folder because we won't know which changed or are
+				// no longer in use.
+				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
 				}
 
 			else  // (hasBinaryConfigFile)
@@ -245,7 +216,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				bool hasAdditions = false;
 
 
-				// Purge the output folders of anything deleted or changed.
+				// Purge the output folders of any deleted FileSources
 
 				foreach (var previousFileSourceInfo in previousFileSourceInfoList)
 					{
@@ -260,7 +231,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 							}
 						}
 
-					if (stillExists == false)
+					if (!stillExists)
 						{
 						hasDeletions = true;
 						Path outputFolder;
@@ -272,12 +243,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						else
 							{  throw new NotImplementedException();  }
 
-						Start_PurgeFolder(outputFolder, ref saidPurgingOutputFiles);
+						PurgeFolder(outputFolder, ref inPurgingOperation);
 						}
 					}
 
 
-				// Check if anything was added or changed.
+				// Check if any FileSources were added
 
 				foreach (var fileSource in EngineInstance.Files.FileSources)
 					{
@@ -294,7 +265,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 								}
 							}
 
-						if (foundMatch == false)
+						if (!foundMatch)
 							{  
 							hasAdditions = true;
 							break;
@@ -313,27 +284,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 
-			// If the binary build state file doesn't exist, purge the rest of the output files too.
+			//
+			// Load BuildState.nd
+			//
+
+			BuildState_nd buildStateParser = new BuildState_nd();
+			bool hasBinaryBuildStateFile = false;
+			
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+														 StartupIssues.FileIDsInvalidated |
+														 StartupIssues.CodeIDsInvalidated |
+														 StartupIssues.CommentIDsInvalidated ))
+				{
+				hasBinaryBuildStateFile = buildStateParser.Load(WorkingDataFolder + "/BuildState.nd", out buildState, out unprocessedChanges);
+				}
+			else // start fresh
+				{  
+				buildState = new BuildState();
+				unprocessedChanges = new UnprocessedChanges();
+				}
 
 			if (!hasBinaryBuildStateFile)
 				{
-				Start_PurgeFolder(Paths.Class.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Paths.Database.OutputFolder(this.OutputFolder),  ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Paths.Menu.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
-				Start_PurgeFolder(Paths.SearchIndex.OutputFolder(this.OutputFolder), ref saidPurgingOutputFiles);
+				// If we don't have a build state file we need to reparse all the source files because we need to know sourceFilesWithContent
+				// and classesWithContent.  We also need to rebuild all the output because we don't know if there was anything left in 
+				// sourceFilesToRebuild from the last run.  But those two flags actually aren't enough, because it will reparse those files, send
+				// them to CodeDB, and then CodeDB won't send topic updates if the underlying content hasn't changed.  We'd actually need
+				// to add all files and classes to UnprocessedChanges, but the Files module isn't started yet.  So fuck it, blow it all up and start
+				// over.
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
+											   StartupIssues.NeedToRebuildAllOutput |
+											   StartupIssues.NeedToStartFresh |
+											   StartupIssues.FileIDsInvalidated |
+											   StartupIssues.CodeIDsInvalidated |
+											   StartupIssues.CommentIDsInvalidated;
+				EngineInstance.Styles.ReparseStyleFiles = true;
 
-				unprocessedChanges.AddMenu();
-				unprocessedChanges.AddMainSearchFiles();
+				// Purge everything so no stray files are left behind from the previous build.
+				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
+				PurgeAllClassFolders(ref inPurgingOperation);
+				PurgeAllDatabaseFolders(ref inPurgingOperation);
+				PurgeAllStyleFolders(ref inPurgingOperation);
+				PurgeAllMenuFolders(ref inPurgingOperation);
+				PurgeAllSearchIndexFolders(ref inPurgingOperation);
 				}
 
 
+			//
 			// We're done with anything that could purge.
+			//
 
-			if (saidPurgingOutputFiles)
-				{  EngineInstance.EndPossiblyLongOperation();  }
+			FinishedPurging(ref inPurgingOperation);
 
 
+			//
 			// Resave the Style.txt-based styles.
+			//
 
 			foreach (var style in stylesWithInheritance)
 				{
@@ -348,7 +354,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 
+			//
 			// Save Config.nd.
+			//
 
 			if (!System.IO.Directory.Exists(WorkingDataFolder))
 				{  System.IO.Directory.CreateDirectory(WorkingDataFolder);  }
@@ -368,7 +376,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", stylesWithInheritance, fileSourceInfoList);
 
 
+			//
+			// Always rebuild the scaffolding since they're quick.  If you ever make this differential, remember that FramePage depends
+			// on the project name and other information.
+			//
+
+			unprocessedChanges.AddFramePage();
+			unprocessedChanges.AddMainStyleFiles();
+
+
+			//
 			// Load up unprocessedChanges if we're rebuilding
+			//
 
 			if (EngineInstance.HasIssues( StartupIssues.NeedToRebuildAllOutput ) ||
 				(newStartupIssues & StartupIssues.NeedToRebuildAllOutput) != 0)
@@ -377,16 +396,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddClasses(buildState.classesWithContent);
 				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
 
+				EngineInstance.Styles.ReparseStyleFiles = true;
+
 				unprocessedChanges.AddMainStyleFiles();
 				unprocessedChanges.AddMainSearchFiles();
 				unprocessedChanges.AddFramePage();
 				unprocessedChanges.AddMenu();
-				
-				EngineInstance.Styles.ReparseStyleFiles = true;
+
+				// We'll handle search prefixes after starting SearchIndex
 				}
 
 
-			// Create the search index and watch other modules
+			//
+			// Create the search index, watch other modules, and apply new StartupIssues
+			//
 
 			searchIndex = new SearchIndex.Manager(this);
 
@@ -400,32 +423,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			searchIndex.Start(errorList);
 
-			return (errors == errorList.Count);
-			}
 
-			
-		/* Function: Start_PurgeFolder
-		 * A helper function used only by <Start()> which deletes a folder if it exists.  If it does exist and saidPurgingOutputFiles
-		 * is false, it will set the status message and set it to true.
-		 */
-		protected void Start_PurgeFolder (Path folder, ref bool saidPurgingOutputFiles)
-			{
-			if (System.IO.Directory.Exists(folder))
-				{  
-				if (!saidPurgingOutputFiles)
-					{
-					EngineInstance.StartPossiblyLongOperation("PurgingOutputFiles");
-					saidPurgingOutputFiles = true;
-					}
+			//
+			// If we're rebuilding everything, add the search index prefixes now that that's started
+			//
 
-				try
-					{  System.IO.Directory.Delete(folder, true);  }
-				catch (Exception e)
-					{
-					if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
-						{  throw;  }
-					}
+			if (EngineInstance.HasIssues( StartupIssues.NeedToRebuildAllOutput ))
+				{
+				var usedPrefixes = searchIndex.UsedPrefixes();
+
+				foreach (var searchPrefix in usedPrefixes)
+					{  unprocessedChanges.AddSearchPrefix(searchPrefix);  }
 				}
+
+
+			return (errors == errorList.Count);
 			}
 
 
@@ -447,33 +459,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				catch 
 					{  }
-				}
-			}
-
-
-		/* Function: OnStartupIssues
-		 * Called whenever new startup issues occur.  Includes both what's new for this call and the total for the engine initialization
-		 * thus far.  Multiple new issues can be combined into a single notification, but you will only be notified of each new issue once.
-		 */
-		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
-			{
-			if ( (newIssues & ( StartupIssues.NeedToRebuildAllOutput |
-										StartupIssues.CodeIDsInvalidated |
-										StartupIssues.CommentIDsInvalidated |
-										StartupIssues.FileIDsInvalidated )) != 0)
-				{
-				unprocessedChanges.AddSourceFiles(buildState.sourceFilesWithContent);
-				unprocessedChanges.AddClasses(buildState.classesWithContent);
-				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
-
-				unprocessedChanges.AddMainStyleFiles();
-				unprocessedChanges.AddMainSearchFiles();
-				unprocessedChanges.AddFramePage();
-				unprocessedChanges.AddMenu();
-				
-				EngineInstance.AddStartupIssues( StartupIssues.NeedToReparseAllFiles |
-																   StartupIssues.NeedToRebuildAllOutput, 
-																   dontNotify: this );
 				}
 			}
 
@@ -508,11 +493,132 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		public void OnStartPossiblyLongOperation (string operationName)
-			{  }
-		
-		public void OnEndPossiblyLongOperation ()
-			{  }
+
+		// Group: Purging Functions
+		// __________________________________________________________________________
+
+			
+		/* Function: PurgeFolder
+		 * Deletes an output folder and all its contents if it exists.  Pass a reference to a bool that tracks whether we've registered a
+		 * PossiblyLongOperation for purging with <Engine.Instance>.  If it's set to false and there's a folder to purge it will call
+		 * <Engine.Instance.StartPossiblyLongOperation()> and set it to true.  Call <FinishedPurging()> after all purging calls to end
+		 * it.
+		 */
+		protected void PurgeFolder (Path folder, ref bool inPurgingOperation)
+			{
+			if (System.IO.Directory.Exists(folder))
+				{  
+				if (!inPurgingOperation)
+					{
+					EngineInstance.StartPossiblyLongOperation("PurgingOutputFiles");
+					inPurgingOperation = true;
+					}
+
+				try
+					{  System.IO.Directory.Delete(folder, true);  }
+				catch (Exception e)
+					{
+					if (!(e is System.IO.IOException || e is System.IO.DirectoryNotFoundException))
+						{  throw;  }
+					}
+				}
+			}
+
+
+		/* Function: PurgeStyleFolder
+		 * Deletes an output folder for a style and all its contents if it exists.  Pass a reference to a bool that tracks whether we've 
+		 * registered a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeStyleFolder (string styleName, ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Style.OutputFolder(this.OutputFolder, styleName), ref inPurgingOperation );
+			}
+
+
+		/* Function: PurgeAllStyleFolders
+		 * Deletes all the style output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllStyleFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Style.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
+		/* Function: PurgeAllSourceAndImageFolders
+		 * Deletes all the source and image output folders and their contents.  Pass a reference to a bool that tracks whether 
+		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all 
+		 * purging calls.
+		 */
+		protected void PurgeAllSourceAndImageFolders (ref bool inPurgingOperation)
+			{
+			var sourceOrImageOutputFolderRegex = new Regex.Output.HTML.SourceOrImageOutputFolder();
+
+			string[] outputFolders = System.IO.Directory.GetDirectories(OutputFolder);
+
+			foreach (string outputFolder in outputFolders)
+				{
+				if (sourceOrImageOutputFolderRegex.IsMatch(outputFolder))
+					{
+					PurgeFolder(outputFolder, ref inPurgingOperation);
+					}
+				}
+			}
+
+
+		/* Function: PurgeAllClassFolders
+		 * Deletes all the class output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllClassFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Class.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
+		/* Function: PurgeAllDatabaseFolders
+		 * Deletes all the database output folders and their contents.  Pass a reference to a bool that tracks whether we've registered
+		 * a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllDatabaseFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Database.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
+		/* Function: PurgeAllMenuFolders
+		 * Deletes all the menu output folders and their contents.  Pass a reference to a bool that tracks whether we've registered a 
+		 * PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllMenuFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.Menu.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
+		/* Function: PurgeAllSearchIndexFolders
+		 * Deletes all the search index output folders and their contents.  Pass a reference to a bool that tracks whether we've registered 
+		 * a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
+		 */
+		protected void PurgeAllSearchIndexFolders (ref bool inPurgingOperation)
+			{
+			PurgeFolder( Paths.SearchIndex.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			}
+
+
+		/* Function: FinishedPurging
+		 * Call this after you're done calling all the other purging functions.  Pass the reference to the bool that tracked whether 
+		 * we've registered a PossiblyLongOperation for purging with <Engine.Instance>.  If it's set to true it will call
+		 * <Engine.Instance.EndPossiblyLongOperation()> and set it to false.
+		 */
+		protected void FinishedPurging (ref bool inPurgingOperation)
+			{
+			if (inPurgingOperation)
+				{
+				EngineInstance.EndPossiblyLongOperation();
+				inPurgingOperation = false;
+				}
+			}
 
 
 

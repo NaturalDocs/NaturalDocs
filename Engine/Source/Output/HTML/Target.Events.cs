@@ -21,6 +21,76 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 	public partial class Target
 		{
 
+		// Group: IStartupWatcher Functions
+		// __________________________________________________________________________
+
+
+		/* Function: OnStartupIssues
+		 * Called whenever new startup issues occur.  Includes both what's new for this call and the total for the engine initialization
+		 * thus far.  Multiple new issues can be combined into a single notification, but you will only be notified of each new issue once.
+		 */
+		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
+			{
+			StartupIssues issuesToAdd = StartupIssues.None;
+
+			if ( (newIssues & ( StartupIssues.NeedToStartFresh |
+										StartupIssues.CodeIDsInvalidated |
+										StartupIssues.CommentIDsInvalidated |
+										StartupIssues.FileIDsInvalidated )) != 0)
+				{
+				buildState.sourceFilesWithContent.Clear();
+				unprocessedChanges.sourceFiles.Clear();
+
+				buildState.classesWithContent.Clear();
+				unprocessedChanges.classes.Clear();
+
+				buildState.usedImageFiles.Clear();
+				unprocessedChanges.imageFiles.Clear();
+
+				bool inPurgingOperation = false;
+				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
+				PurgeAllClassFolders(ref inPurgingOperation);
+				PurgeAllDatabaseFolders(ref inPurgingOperation);
+				PurgeAllMenuFolders(ref inPurgingOperation);
+				FinishedPurging(ref inPurgingOperation);
+
+				unprocessedChanges.AddMenu();
+
+				issuesToAdd |= StartupIssues.NeedToReparseAllFiles |
+									   StartupIssues.NeedToRebuildAllOutput;
+				}
+
+			if ( (newIssues & StartupIssues.NeedToRebuildAllOutput) != 0 ||
+				 (issuesToAdd & StartupIssues.NeedToRebuildAllOutput) != 0 )
+				{
+				unprocessedChanges.AddSourceFiles(buildState.sourceFilesWithContent);
+				unprocessedChanges.AddClasses(buildState.classesWithContent);
+				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
+
+				var usedPrefixes = searchIndex.UsedPrefixes();
+
+				foreach (var searchPrefix in usedPrefixes)
+					{  unprocessedChanges.AddSearchPrefix(searchPrefix);  }
+
+				unprocessedChanges.AddMainStyleFiles();
+				unprocessedChanges.AddMainSearchFiles();
+				unprocessedChanges.AddFramePage();
+				unprocessedChanges.AddMenu();
+				}
+
+			if (issuesToAdd != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(issuesToAdd, dontNotify: this);  }
+			}
+
+
+		public void OnStartPossiblyLongOperation (string operationName)
+			{  }
+		
+		public void OnEndPossiblyLongOperation ()
+			{  }
+
+
+
 		// Group: CodeDB.IChangeWatcher Functions
 		// __________________________________________________________________________
 		
