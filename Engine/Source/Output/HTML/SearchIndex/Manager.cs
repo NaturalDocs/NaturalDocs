@@ -25,7 +25,7 @@ using CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries;
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 	{
-	public class Manager : Module, CodeDB.IChangeWatcher
+	public class Manager : Module, CodeDB.IChangeWatcher, IStartupWatcher
 		{
 
 		// Group: Functions
@@ -69,12 +69,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		 */
 		public bool Start (ErrorList errorList)
 			{
+			StartupIssues newStartupIssues = StartupIssues.None;
+
 
 			// Load SearchIndex.nd
 
 			bool hasBinaryFile;
 
-			if (!EngineInstance.Config.ReparseEverything_old)
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+														StartupIssues.CommentIDsInvalidated |
+														StartupIssues.CodeIDsInvalidated |
+														StartupIssues.CommentIDsInvalidated ))
 				{
 				SearchIndex_nd binaryFileParser = new SearchIndex_nd();
 				hasBinaryFile = binaryFileParser.Load(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
@@ -86,13 +91,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				}
 
 			if (!hasBinaryFile)
-				{  EngineInstance.Config.ReparseEverything_old = true;  }
+				{
+				// If we don't have the binary file we need to reparse all the source files to rebuild the index.  However, setting NeedToReparseAllFiles
+				// isn't enough because it will reparse those files, send them to CodeDB, and then CodeDB won't send topic updates if the underlying 
+				// content hasn't changed.  So fuck it, blow it all up and start over.
+				newStartupIssues |= StartupIssues.NeedToStartFresh;
+				}
 
 
-			// Watch CodeDB for topic changes
+			// Add watchers
 
 			EngineInstance.CodeDB.AddChangeWatcher(this);
+			EngineInstance.AddStartupWatcher(this);
 
+
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues, dontNotify: this);  }
 
 			return true;
 			}
@@ -342,6 +356,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			finally
 				{  accessLock.ExitWriteLock();  }
 			}
+
+
+
+		// Group: IStartupWatcher Functions
+		// __________________________________________________________________________
+
+
+		/* Function: OnStartupIssues
+		 * Called whenever new startup issues occur.  Includes both what's new for this call and the total for the engine initialization
+		 * thus far.  Multiple new issues can be combined into a single notification, but you will only be notified of each new issue once.
+		 */
+		public void OnStartupIssues (StartupIssues newIssues, StartupIssues allIssues)
+			{
+			if ( (newIssues & ( StartupIssues.NeedToStartFresh |
+										StartupIssues.CodeIDsInvalidated |
+										StartupIssues.CommentIDsInvalidated |
+										StartupIssues.FileIDsInvalidated )) != 0)
+				{
+				prefixTopicIDs.Clear();
+				EngineInstance.AddStartupIssues( StartupIssues.NeedToStartFresh, dontNotify: this );
+				}
+			}
+
+		public void OnStartPossiblyLongOperation (string operationName)
+			{  }
+		
+		public void OnEndPossiblyLongOperation ()
+			{  }
 
 
 
