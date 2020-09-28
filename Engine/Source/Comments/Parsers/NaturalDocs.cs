@@ -253,6 +253,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 */
 		public override bool Start (Errors.ErrorList errors)
 		    {
+			StartupIssues newStartupIssues = StartupIssues.None;
+
 
 			 // Load configuration files
 
@@ -261,89 +263,98 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 													 
 			if (loadFileResult == false )
 				{  return false;  }
+
+			bool loadBinaryFileResult = false;
+			StringSet[] binarySets = null;
+			StringTable<byte>[] binaryTables = null;
+			List<string>[] binaryConversionLists = null;
+
 								
-			if (EngineInstance.Config.ReparseEverything_old == false)
+			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				StringSet[] binarySets;
-				StringTable<byte>[] binaryTables;
-				List<string>[] binaryConversionLists;
+				loadBinaryFileResult = LoadBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
+																		out binarySets, out binaryTables, out binaryConversionLists );
+				}
 
-				bool loadBinaryFileResult = LoadBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
-																			 out binarySets, out binaryTables, out binaryConversionLists );
-																		 
-				if (loadBinaryFileResult == false)
-					{  EngineInstance.Config.ReparseEverything_old = true;  }
+
+			// Compare to previous settings
+			
+			if (loadBinaryFileResult == false)
+				{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
 					
-				// Try quick compares before full ones
-				else if (sets.Length != binarySets.Length ||
-							 tables.Length != binaryTables.Length ||
-							 conversionLists.Length != binaryConversionLists.Length)
-					{  EngineInstance.Config.ReparseEverything_old = true;  }
+			// Try quick compares before full ones
+			else if (sets.Length != binarySets.Length ||
+					   tables.Length != binaryTables.Length ||
+					   conversionLists.Length != binaryConversionLists.Length)
+				{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
 
-				else
+			else
+				{
+				bool equal = true;
+
+				for (int i = 0; i < sets.Length && equal; i++)	
 					{
-					bool equal = true;
-
-					for (int i = 0; i < sets.Length && equal; i++)	
+					if (sets[i].Count != binarySets[i].Count)
+						{  equal = false;  }
+					else
 						{
-						if (sets[i].Count != binarySets[i].Count)
-							{  equal = false;  }
-						else
+						foreach (string setMember in sets[i])
 							{
-							foreach (string setMember in sets[i])
+							if (!binarySets[i].Contains(setMember))
 								{
-								if (!binarySets[i].Contains(setMember))
-									{
-									equal = false;
-									break;
-									}
+								equal = false;
+								break;
 								}
 							}
 						}
-						
-					for (int i = 0; i < tables.Length && equal; i++)
-						{
-						if (tables[i].Count != binaryTables[i].Count)
-							{  equal = false;  }
-						else
-							{
-							foreach (KeyValuePair<string, byte> pair in tables[i])
-								{
-								if (binaryTables[i][pair.Key] != pair.Value)	
-									{
-									equal = false;
-									break;
-									}
-								}
-							}
-						}
-						
-					for (int i = 0; i < conversionLists.Length && equal; i++)
-						{
-						if (conversionLists[i].Count != binaryConversionLists[i].Count)
-							{  equal = false;  }
-						else
-							{
-							for (int x = 0; x < conversionLists[i].Count; x++)
-								{
-								if (conversionLists[i][x] != binaryConversionLists[i][x])
-									{
-									equal = false;
-									break;
-									}
-								}
-							}
-						}
-						
-					if (equal == false)
-						{  EngineInstance.Config.ReparseEverything_old = true;  }
 					}
+						
+				for (int i = 0; i < tables.Length && equal; i++)
+					{
+					if (tables[i].Count != binaryTables[i].Count)
+						{  equal = false;  }
+					else
+						{
+						foreach (KeyValuePair<string, byte> pair in tables[i])
+							{
+							if (binaryTables[i][pair.Key] != pair.Value)	
+								{
+								equal = false;
+								break;
+								}
+							}
+						}
+					}
+						
+				for (int i = 0; i < conversionLists.Length && equal; i++)
+					{
+					if (conversionLists[i].Count != binaryConversionLists[i].Count)
+						{  equal = false;  }
+					else
+						{
+						for (int x = 0; x < conversionLists[i].Count; x++)
+							{
+							if (conversionLists[i][x] != binaryConversionLists[i][x])
+								{
+								equal = false;
+								break;
+								}
+							}
+						}
+					}
+						
+				if (equal == false)
+					{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
 				}
 		        
 			ConfigFile.TryToRemoveErrorAnnotations( EngineInstance.Config.SystemConfigFolder + "/Parser.txt" );
 				
 			SaveBinaryFile( EngineInstance.Config.WorkingDataFolder + "/Parser.nd",
-								  sets, tables, conversionLists );
+									sets, tables, conversionLists );
+
+
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
 			return true;
 			}
