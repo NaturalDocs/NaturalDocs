@@ -8,6 +8,7 @@
  *		
  *		NeedToStartFresh - You should avoid loading any data from the previous run.
  *		NeedToReparseAllFiles - All source files need to be reparsed.
+ *		NeedToReparseStyleFiles - All style files need to be reparsed.
  *		NeedToRebuildAllOutput - All output files need to be rebuilt.
  *		
  *		LanguageIDsInvalidated - The language IDs may have changed since the last run.
@@ -43,17 +44,18 @@ namespace CodeClear.NaturalDocs.Engine
 
 		NeedToStartFresh = 0x0001,
 		NeedToReparseAllFiles = 0x0002,
-		NeedToRebuildAllOutput = 0x0004,
+		NeedToReparseStyleFiles = 0x0004,
+		NeedToRebuildAllOutput = 0x0008,
 
-		LanguageIDsInvalidated = 0x0008,
-		LanguageSettingsChanged = 0x0010,
+		LanguageIDsInvalidated = 0x0010,
+		LanguageSettingsChanged = 0x0020,
 
-		CommentTypeIDsInvalidated = 0x0020,
-		CommentTypeSettingsChanged = 0x0040,
+		CommentTypeIDsInvalidated = 0x0040,
+		CommentTypeSettingsChanged = 0x0080,
 
-		FileIDsInvalidated = 0x0080,
-		CodeIDsInvalidated = 0x0100,
-		CommentIDsInvalidated = 0x0200
+		FileIDsInvalidated = 0x0100,
+		CodeIDsInvalidated = 0x0200,
+		CommentIDsInvalidated = 0x0400
 		}
 
 	}

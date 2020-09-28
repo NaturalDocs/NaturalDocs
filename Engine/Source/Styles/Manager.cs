@@ -44,7 +44,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			{
 			loadedStyles = new List<Style>();
 			fileSource = null;
-			reparseStyleFiles = false;
 			}
 
 
@@ -244,25 +243,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			}
 
 
-		/* Property: ReparseStyleFiles
-		 * If set to true, it will force reparsing of all files associated with styles.  Use this when adding a new style to a target,
-		 * since if another target already used that style they will not be parsed again otherwise.  You can only set this to true,
-		 * you cannot set it back to false.
-		 */
-		public bool ReparseStyleFiles
-			{
-			get
-				{  return reparseStyleFiles;  }
-			set
-				{
-				if (value == true)
-					{  reparseStyleFiles = true;  }
-				else
-					{  throw new InvalidOperationException();  }
-				}
-			}
-
-
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -271,8 +251,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		protected List<Style> loadedStyles;
 
 		protected Styles.FileSource fileSource;
-
-		protected bool reparseStyleFiles;
 
 		}
 	}

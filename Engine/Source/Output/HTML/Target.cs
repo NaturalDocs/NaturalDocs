@@ -143,7 +143,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// If we don't have the binary config file we have to purge every style folder because some of them may no longer be in
 				// use and we won't know which.
 				PurgeAllStyleFolders(ref inPurgingOperation);
-				EngineInstance.Styles.ReparseStyleFiles = true;
+
+				newStartupIssues |= StartupIssues.NeedToReparseStyleFiles;
 				}
 
 			else // (hasBinaryConfigFile)
@@ -188,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					if (!foundMatch)
 						{  
-						EngineInstance.Styles.ReparseStyleFiles = true;
+						newStartupIssues |= StartupIssues.NeedToReparseStyleFiles;
 						break;
 						}
 					}
@@ -313,7 +314,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// to add all files and classes to UnprocessedChanges, but the Files module isn't started yet.  So fuck it, blow it all up and start
 				// over.
 				newStartupIssues |= StartupIssues.NeedToStartFresh;
-				EngineInstance.Styles.ReparseStyleFiles = true;
 
 				// Purge everything so no stray files are left behind from the previous build.
 				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
@@ -391,7 +391,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddClasses(buildState.classesWithContent);
 				unprocessedChanges.AddImageFiles(buildState.usedImageFiles);
 
-				EngineInstance.Styles.ReparseStyleFiles = true;
+				newStartupIssues |= StartupIssues.NeedToReparseStyleFiles;
 
 				unprocessedChanges.AddMainStyleFiles();
 				unprocessedChanges.AddMainSearchFiles();
