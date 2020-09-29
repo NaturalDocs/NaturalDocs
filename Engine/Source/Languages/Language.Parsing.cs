@@ -2262,11 +2262,18 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// IsEmbedded - Use the comment.  We want to be able to merge code topics into embedded comment topics.
 			mergedTopic.IsEmbedded = commentTopic.IsEmbedded;
 
-			// CommentTypeID - If the user specified one, we always want to use that.  We don't care if the comment type would normally switch the
-			//					   containing element between an Element and a ParentElement, or if the new type has a different scope setting.  We'll
-			//					   switch to the comment's comment type but retain the code settings for those.
+			// CommentTypeID - If the user specified one, we always want to use that.
 			if (commentTopic.CommentTypeID != 0)
-				{  mergedTopic.CommentTypeID = commentTopic.CommentTypeID;  }
+				{  
+				mergedTopic.CommentTypeID = commentTopic.CommentTypeID;
+
+				// If this changed whether the topic defines a class, reset the symbols to the comment's
+				if (commentTopic.DefinesClass != codeTopic.DefinesClass)
+					{
+					mergedTopic.Symbol = commentTopic.Symbol;
+					mergedTopic.ClassString = commentTopic.ClassString;
+					}
+				}
 			else
 				{  mergedTopic.CommentTypeID = codeTopic.CommentTypeID;  }
 
@@ -3064,8 +3071,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{
 				if (element.Topic != null)
 					{
-					if (element.Topic.Symbol == null && element.InCode == true)
-						{  throw new Exception("Code topics may not have undefined symbols before calling GenerateRemainingSymbols().");  }
 					if (element.Topic.Title == null)
 						{  throw new Exception("Headerless topics must be removed before calling GenerateRemainingSymbols().");  }
 					if (element.Topic.LanguageID == 0)
