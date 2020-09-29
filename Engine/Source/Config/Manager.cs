@@ -74,9 +74,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			autoGroup = true;
 			shrinkFiles = true;
 
-			reparseEverything_old = false;
-			rebuildAllOutput_old = false;
-
 			userWantsEverythingRebuilt = false;
 			userWantsOutputRebuilt = false;
 			}
@@ -98,6 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		public bool Start (ErrorList errorList, ProjectConfig commandLineConfig)
 			{
+			StartupIssues newStartupIssues = StartupIssues.None;
 			bool success = true;
 			
 			
@@ -402,7 +400,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 				if (foundMatch == false)
 					{
-					RebuildAllOutput_old = true;
+					newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;
 					break;
 					}
 				}
@@ -422,12 +420,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				documentedOnly != previousConfig.DocumentedOnly ||
 				autoGroup != previousConfig.AutoGroup)
 				{
-				ReparseEverything_old = true;
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles;
 				}
 			else if (previousConfig != null &&
 					  shrinkFiles != previousConfig.ShrinkFiles)
 				{
-				RebuildAllOutput_old = true;
+				newStartupIssues |= StartupIssues.NeedToRebuildAllOutput;
 				}
 
 
@@ -565,6 +563,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (raisedPossiblyLongOperationEvent)
 				{  EngineInstance.EndPossiblyLongOperation();  }
 				
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
 			return success;
 			}
@@ -1020,58 +1020,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 
-		/* Property: ReparseEverything_old
-		 * 
-		 * If set, all source files are going to be reparsed.  Modules *MUST* check this and rebuild their data files from scratch
-		 * if it's set.  This is important because this gets set if certain data files are corrupted (such as <Languages.nd>) and thus
-		 * various numeric IDs are not guaranteed to mean the same thing they did on the last run.
-		 * 
-		 * It is only possible to change this property to true.  You cannot turn it off once it's on.
-		 */
-		public bool ReparseEverything_old
-			{
-			get
-				{  return reparseEverything_old;  }
-			set
-				{
-				if (value == true)
-					{
-					reparseEverything_old = true;
-
-					// xxx temporary shim between old and new systems
-					EngineInstance.AddStartupIssues(StartupIssues.NeedToReparseAllFiles);
-					}
-				else
-					{  throw new InvalidOperationException();  }
-				}
-			}
-			
-			
-		/* Property: RebuildAllOutput_old
-		 * 
-		 * If set, all output is going to be regenerated.
-		 * 
-		 * It is only possible to change this property to true.  You cannot turn it off once it's on.
-		 */
-		public bool RebuildAllOutput_old
-			{
-			get
-				{  return rebuildAllOutput_old;  }
-			set
-				{
-				if (value == true)
-					{  
-					rebuildAllOutput_old = true;  
-
-					// xxx temporary shim between old and new systems
-					EngineInstance.AddStartupIssues(StartupIssues.NeedToRebuildAllOutput);
-					}
-				else
-					{  throw new InvalidOperationException();  }
-				}
-			}
-			
-			
 		/* Property: UserWantsEverythingRebuilt
 		 * 
 		 * If set, the user has indicated that everything from the previous run should be ignored and Natural Docs should start fresh.  It is
@@ -1255,16 +1203,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 */
 		protected bool shrinkFiles;
 
-		/* bool: reparseEverything_old
-		 * Whether all source files should be reparsed.
-		 */
-		protected bool reparseEverything_old;
-		
-		/* bool: rebuildAllOutput_old
-		 * Whether all output should be recreated from scatch.
-		 */
-		protected bool rebuildAllOutput_old;
-		
 		/* bool: userWantsEverythingRebuilt
 		 * Whether the user wants Natural Docs to ignore everything from the previous run and start fresh.
 		 */
