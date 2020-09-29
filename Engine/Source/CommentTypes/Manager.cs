@@ -73,6 +73,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
+			StartupIssues newStartupIssues = StartupIssues.None;
+
 			List<ConfigFileCommentType> systemCommentTypeList;
 			List<ConfigFileCommentType> projectCommentTypeList;
 			List<string> ignoredSystemKeywords;
@@ -90,17 +92,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// the project Comments.txt.  The project Comments.txt not existing is not a failure.
 			bool success = true;
 			
-			// Whether anything has changed since the last run, as determined by Comments.nd.  If Comments.nd doesn't exist or is corrupt,
-			// we have to assume something changed.
-			bool changed = false;
-
 			Comments_nd commentsNDParser = new Comments_nd();
 
 
 			// We need the ID numbers to stay consistent between runs, so we need to create all the comment types and tags from the
 			// binary file first.  We'll worry about comparing their attributes and seeing if any were added or deleted later.
 
-			if (EngineInstance.Config.ReparseEverything_old == true)
+			if (EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+														StartupIssues.CommentIDsInvalidated ))
 				{
 				binaryCommentTypes = new List<CommentType>();
 				binaryTags = new List<Tag>();
@@ -108,14 +107,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				binaryPluralKeywords = new List<KeyValuePair<string,int>>();
 				binaryIgnoredKeywords = new List<string>();
 				
-				changed = true;
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
+											   StartupIssues.CommentIDsInvalidated;
 				}
 				
 			else if (commentsNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Comments.nd", out binaryCommentTypes, out binaryTags, 
 													out binarySingularKeywords, out binaryPluralKeywords, out binaryIgnoredKeywords) == false)
 				{
-				changed = true;
 				// Even though it failed, LoadBinaryFile will still create valid empty objects for the variables.
+
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
+											   StartupIssues.CommentIDsInvalidated;
 				}
 				
 			else // Load binary file succeeded
@@ -147,9 +149,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					}
 				catch
 					{
+					newStartupIssues |= StartupIssues.NeedToReparseAllFiles |
+												   StartupIssues.CommentIDsInvalidated;
+
 					commentTypes.Clear();
 					tags.Clear();
-					changed = true;
 					
 					// Clear them since they may be used later in this function.
 					binaryCommentTypes.Clear();
@@ -294,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (commentType.Flags.InConfigFiles == false)
 					{
 					deletedIDs.Add(commentType.ID);
-					changed = true;
+					newStartupIssues |= StartupIssues.NeedToReparseAllFiles;
 					}
 				}
 				
@@ -311,7 +315,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				if (tag.InConfigFiles == false)
 					{
 					deletedIDs.Add(tag.ID);
-					changed = true;
+					newStartupIssues |= StartupIssues.NeedToReparseAllFiles;
 					}
 				}
 				
@@ -447,7 +451,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{  success = false;  };
 			
 			
-			// Compare the structures with the binary ones to see if anything changed.
+			// Compare the structures with the binary ones to see if anything changed.  We only need to bother if we weren't already going to reparse
+			// all the files.
+
+			bool changed = EngineInstance.HasIssues(StartupIssues.NeedToReparseAllFiles) || 
+									(newStartupIssues & StartupIssues.NeedToReparseAllFiles) != 0;
 
 			if (changed == false)
 				{
@@ -533,14 +541,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					}
 				}
 
+			if (changed)
+				{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
+
 				
 			commentsNDParser.Save(EngineInstance.Config.WorkingDataFolder + "/Comments.nd", 
 										  commentTypes, tags, singularKeywords, pluralKeywords, ignoredKeywords);
 								   
-			if (success == true && changed == true)
-				{  EngineInstance.Config.ReparseEverything_old = true;  }
-
 			groupCommentTypeID = IDFromKeyword("group");
+
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 				
 			return success;
 			}
