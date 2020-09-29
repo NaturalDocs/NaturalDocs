@@ -97,6 +97,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
  		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
+			StartupIssues newStartupIssues = StartupIssues.None;
+
 			List<ConfigFileLanguage> systemLanguageList;
 			List<ConfigFileLanguage> projectLanguageList;
 			List<string> ignoredSystemExtensions;
@@ -112,10 +114,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// it exists, the project Languages.txt.  The project Languages.txt not existing is not a failure.
 			bool success = true;
 			
-			// Whether anything has changed since the last run, as determined by Languages.nd.  If Languages.nd doesn't exist 
-			// or is corrupt, we have to assume something changed.
-			bool changed = false;
-			
 			
 			// First add all the predefined languages, since they may be subclassed.
 			
@@ -129,7 +127,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Languages_nd languagesNDParser = new Languages_nd(this);
 
 			// Don't bother going through the effort if we're rebuilding everything anyway.
-			if (EngineInstance.Config.ReparseEverything_old == true)
+			if (EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
+														StartupIssues.CodeIDsInvalidated ))
 				{
 				binaryLanguages = new List<Language>();
 				binaryAliases = new List<KeyValuePair<string,int>>();
@@ -137,13 +136,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				binaryShebangStrings = new List<KeyValuePair<string,int>>();
 				binaryIgnoredExtensions = new List<string>();
 				
-				changed = true;
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles | 
+											   StartupIssues.CodeIDsInvalidated;
 				}
 				
-			else if (languagesNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Languages.nd", out binaryLanguages,
-														  out binaryAliases, out binaryExtensions, out binaryShebangStrings, out binaryIgnoredExtensions) == false)
+			else if (!languagesNDParser.Load(EngineInstance.Config.WorkingDataFolder + "/Languages.nd", out binaryLanguages,
+															out binaryAliases, out binaryExtensions, out binaryShebangStrings, out binaryIgnoredExtensions))
 				{
-				changed = true;
+				newStartupIssues |= StartupIssues.NeedToReparseAllFiles | 
+											   StartupIssues.CodeIDsInvalidated;
 				// Even though it failed, LoadBinaryFiles will still have created valid empty objects for them.
 				}
 				
@@ -180,7 +181,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				catch
 					{
 					languages.Clear();
-					changed = true;
+
+					newStartupIssues |= StartupIssues.NeedToReparseAllFiles | 
+												   StartupIssues.CodeIDsInvalidated;
 			        
 					foreach (Language predefinedLanguage in predefinedLanguages)
 						{  languages.Add(predefinedLanguage);  }
@@ -278,7 +281,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Check this flag so we don't set it to changed if we're deleting a predefined language that wasn't in the binary
 					// file.
 					if (language.InBinaryFile == true)
-						{  changed = true;  }
+						{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
 					}
 				}
 				
@@ -322,11 +325,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			    binaryShebangStrings.Count != shebangStrings.Count || 
 			    binaryIgnoredExtensions.Count != ignoredExtensions.Count)
 			   {
-			   changed = true;
+			   newStartupIssues |= StartupIssues.NeedToReparseAllFiles;
 			   }
-			else if (changed == false)
+
+			// Only bother to do a detailed comparison if we're not already reparsing everything.
+			else if (!EngineInstance.HasIssues(StartupIssues.NeedToReparseAllFiles) &&
+					   (newStartupIssues & StartupIssues.NeedToReparseAllFiles) == 0)
 			    {
-			    // Do a detailed comparison now.
+			    bool changed = false;
 				
 			    foreach (Language binaryLanguage in binaryLanguages)
 			        {
@@ -392,6 +398,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			                }
 			            }
 			        }
+
+				if (changed)
+					{  newStartupIssues |= StartupIssues.NeedToReparseAllFiles;  }
 			    }
 
 			
@@ -399,8 +408,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 												languages, aliases, extensions, shebangStrings, ignoredExtensions);
 								   
 			
-			if (success == true && changed == true)
-			    {  EngineInstance.Config.ReparseEverything_old = true;  }
+			if (newStartupIssues != StartupIssues.None)
+				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
 			return success;
 			}
