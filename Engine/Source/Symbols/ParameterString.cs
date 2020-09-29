@@ -171,7 +171,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				if (i > 0)
 					{  output.Append(SeparatorChar);  }
 
-				NormalizeAndAppend(parameterStrings[i], output);
+				if (parameterStrings[i] != null)
+					{  NormalizeAndAppend(parameterStrings[i], output);  }
 				}
 
 			return new ParameterString(output.ToString());

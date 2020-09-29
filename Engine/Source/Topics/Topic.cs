@@ -1336,8 +1336,8 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 						for (int i = 0; i < parsedPrototype.NumberOfParameters; i++)
 							{
-							parsedPrototype.GetBaseParameterType(i, out start, out end);
-							parameterTypes[i] = start.TextBetween(end);
+							if (parsedPrototype.GetBaseParameterType(i, out start, out end))
+								{  parameterTypes[i] = start.TextBetween(end);  }
 							}
 
 						prototypeParameters = ParameterString.FromParameterTypes(parameterTypes);
