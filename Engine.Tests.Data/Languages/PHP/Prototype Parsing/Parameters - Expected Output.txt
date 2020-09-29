@@ -1,0 +1,90 @@
+- Parameter Section:
+  - Before Parameters: function ParameterNames_ShouldIncludeSymbol (
+    - Access Level: Unknown
+    - Link Candidates: function
+
+  - Parameter 1: $a,
+    - Name: $a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: $b
+    - Name: $b
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function OptionalTypes_ShouldNotInherit (
+    - Access Level: Unknown
+    - Link Candidates: function
+
+  - Parameter 1: $a,
+    - Name: $a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 2: int $b,
+    - Name: $b
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - Parameter 3: $c,
+    - Name: $c
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - Parameter 4: string $d,
+    - Name: $d
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 5: $e
+    - Name: $e
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: function DefaultValues (
+    - Access Level: Unknown
+    - Link Candidates: function
+
+  - Parameter 1: $a = 12,
+    - Name: $a
+    - Full Type: (not detected)
+    - Base Type: (not detected)
+    - Link Candidates: (none)
+    - Default Value: 12
+
+  - Parameter 2: string $b = "text"
+    - Name: $b
+    - Full Type: string
+    - Base Type: string
+    - Link Candidates: string
+    - Default Value: "text"
+
+  - After Parameters: )
+    - Link Candidates: (none)
