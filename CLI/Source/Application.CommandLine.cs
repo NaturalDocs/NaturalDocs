@@ -734,7 +734,8 @@ namespace CodeClear.NaturalDocs.CLI
 				
 			// Validation
 			
-			if (!commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
+			if (result == ParseCommandLineResult.Run &&
+				!commandLineConfig.ProjectConfigFolderPropertyLocation.IsDefined)
 				{
 				errorList.Add( 
 					Locale.Get("NaturalDocs.CLI", "CommandLine.NoProjectConfigFolder")
