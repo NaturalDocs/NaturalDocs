@@ -314,7 +314,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			catch (Exception e)
 				{
 				try
-					{  e.AddNaturalDocsTask("Parsing File: " + file.FileName);  }
+					{  e.AddNaturalDocsTask("Parsing file " + file.FileName);  }
 				catch
 					{  }
 
@@ -357,7 +357,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			catch (Exception e)
 				{
 				try
-					{  e.AddNaturalDocsTask("Determining Dimensions: " + file.FileName);  }
+					{  e.AddNaturalDocsTask("Determining dimensions of " + file.FileName);  }
 				catch
 					{  }
 

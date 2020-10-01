@@ -130,42 +130,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// Build a message to show the topic we crashed on
 				if (topic != null)
 					{
-					StringBuilder task = new StringBuilder();
+					StringBuilder task = new StringBuilder("Building HTML for topic");
 
 					// Topic name
-					if (string.IsNullOrEmpty(topic.Title) == false)
-						{  task.Append("Building topic \"" + topic.Title + "\"");  }
+					if (topic.Title == null)
+						{  task.Append(" ID " + topic.TopicID + " (null title)");  }
+					else if (topic.Title == "")
+						{  task.Append(" ID " + topic.TopicID + " (empty string title)");  }
 					else
-						{
-						task.Append("Building topic ID " + topic.TopicID);
-
-						if (topic.Title == null)
-							{  task.Append(" (null title)");  }
-						else // empty
-							{  task.Append(" (empty string title)");  }
-						}
+						{  task.Append(" \"" + topic.Title + "\"");  }
 
 					// File name
-					if (topic.FileID > 0)
+					var file = (topic.FileID > 0 ? EngineInstance.Files.FromID(topic.FileID) : null);
+
+					if (file != null)
+						{  task.Append(" from file " + file.FileName);  }
+					else
+						{  task.Append(" from file ID " + topic.FileID);  }
+
+					// Line number
+					if (topic.CommentLineNumber > 0)
 						{
-						var file = EngineInstance.Files.FromID(topic.FileID);
-
-						if (file != null)
-							{  task.Append(" from file \"" + file.FileName + "\"");  }
+						if (topic.CodeLineNumber > 0 && topic.CodeLineNumber != topic.CommentLineNumber)
+							{  task.Append(" lines " + topic.CommentLineNumber + " and " + topic.CodeLineNumber);  }
 						else
-							{  task.Append(" from file ID " + topic.FileID);  }
-
-						// Line number
-						if (topic.CommentLineNumber > 0)
-							{
-							if (topic.CodeLineNumber != topic.CommentLineNumber && topic.CodeLineNumber > 0)
-								{  task.Append(" lines " + topic.CommentLineNumber + " and " + topic.CodeLineNumber);  }
-							else
-								{  task.Append(" line " + topic.CommentLineNumber);  }
-							}
-						else if (topic.CodeLineNumber > 0)
-							{  task.Append(" line " + topic.CodeLineNumber);  }
+							{  task.Append(" line " + topic.CommentLineNumber);  }
 						}
+					else
+						{  task.Append(" line " + topic.CodeLineNumber);  }
 
 					e.AddNaturalDocsTask(task.ToString());
 					}

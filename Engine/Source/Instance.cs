@@ -439,7 +439,6 @@ namespace CodeClear.NaturalDocs.Engine
 				output.AppendLine ( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.Versions", "Versions") + ':' );
 				output.AppendLine ();
 				output.AppendLine ( "   Natural Docs " + Instance.VersionString );
-				output.AppendLine ();
 
 				if (osNameAndVersion != null)
 					{  output.AppendLine( "   " + osNameAndVersion);  }

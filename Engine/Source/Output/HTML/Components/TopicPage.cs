@@ -325,7 +325,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			catch (Exception e)
 				{
 				try
-					{  e.AddNaturalDocsTask("Building File: " + context.OutputFile);  }
+					{  e.AddNaturalDocsTask("Building HTML file " + context.OutputFile);  }
 				catch
 					{  }
 
