@@ -259,80 +259,77 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					}
 
 
-				try
-					{
+				// Determine the page title
 
-					// Determine the page title
+				string pageTitle;
 
-					string pageTitle;
-
-					if (context.Page.IsSourceFile)
-						{  pageTitle = EngineInstance.Files.FromID(context.Page.FileID).FileName.NameWithoutPath;  }
-					else if (context.Page.InHierarchy)
-						{  pageTitle = context.Page.ClassString.Symbol.LastSegment;  }
-					else
-						{  throw new NotImplementedException();  }
+				if (context.Page.IsSourceFile)
+					{  pageTitle = EngineInstance.Files.FromID(context.Page.FileID).FileName.NameWithoutPath;  }
+				else if (context.Page.InHierarchy)
+					{  pageTitle = context.Page.ClassString.Symbol.LastSegment;  }
+				else
+					{  throw new NotImplementedException();  }
 
 
-					// Build the HTML for the list of topics
+				// Build the HTML for the list of topics
 
-					StringBuilder html = new StringBuilder("\r\n\r\n");
+				StringBuilder html = new StringBuilder("\r\n\r\n");
 
-					HTML.Components.Topic topicBuilder = new HTML.Components.Topic(context);
-					HTML.Components.Tooltip tooltipBuilder = new HTML.Components.Tooltip(context);
+				HTML.Components.Topic topicBuilder = new HTML.Components.Topic(context);
+				HTML.Components.Tooltip tooltipBuilder = new HTML.Components.Tooltip(context);
 
-					// We don't put embedded topics in the output, so we need to find the last non-embedded one to make
-					// sure that the "last" CSS tag is correctly applied.
-					int lastNonEmbeddedTopic = topics.Count - 1;
-					while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
-						{  lastNonEmbeddedTopic--;  }
+				// We don't put embedded topics in the output, so we need to find the last non-embedded one to make
+				// sure that the "last" CSS tag is correctly applied.
+				int lastNonEmbeddedTopic = topics.Count - 1;
+				while (lastNonEmbeddedTopic > 0 && topics[lastNonEmbeddedTopic].IsEmbedded == true)
+					{  lastNonEmbeddedTopic--;  }
 
-					for (int i = 0; i <= lastNonEmbeddedTopic; i++)
-						{  
-						string extraClass = null;
+				for (int i = 0; i <= lastNonEmbeddedTopic; i++)
+					{  
+					string extraClass = null;
 
-						if (i == 0)
-							{  extraClass = "first";  }
-						else if (i == lastNonEmbeddedTopic)
-							{  extraClass = "last";  }
+					if (i == 0)
+						{  extraClass = "first";  }
+					else if (i == lastNonEmbeddedTopic)
+						{  extraClass = "last";  }
 
-						if (topics[i].IsEmbedded == false)
-							{
-							topicBuilder.AppendTopic(topics[i], context, links, linkTargets, imageLinks, html, topics, i + 1, extraClass);  
-							html.Append("\r\n\r\n");
-							}
+					if (topics[i].IsEmbedded == false)
+						{
+						topicBuilder.AppendTopic(topics[i], context, links, linkTargets, imageLinks, html, topics, i + 1, extraClass);  
+						html.Append("\r\n\r\n");
 						}
+					}
 							
 
-					// Build the full HTML file
+				// Build the full HTML file
 
-					Build(context.OutputFile, pageTitle, html.ToString(), PageType.Content);
+				Build(context.OutputFile, pageTitle, html.ToString(), PageType.Content);
 
 
-					// Build summary and tooltips files
+				// Build summary and tooltips files
 
-					JSONSummary summaryBuilder = new JSONSummary(context);
-					summaryBuilder.ConvertToJSON(topics, context);
-					summaryBuilder.BuildDataFile(pageTitle);
+				JSONSummary summaryBuilder = new JSONSummary(context);
+				summaryBuilder.ConvertToJSON(topics, context);
+				summaryBuilder.BuildDataFile(pageTitle);
 
-					JSONToolTips toolTipsBuilder = new JSONToolTips(context);
-					toolTipsBuilder.ConvertToJSON(topics, links, imageLinks, context);
-					toolTipsBuilder.BuildDataFileForSummary();
+				JSONToolTips toolTipsBuilder = new JSONToolTips(context);
+				toolTipsBuilder.ConvertToJSON(topics, links, imageLinks, context);
+				toolTipsBuilder.BuildDataFileForSummary();
 
-					toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, summaryImageLinks, context);
-					toolTipsBuilder.BuildDataFileForContent();
+				toolTipsBuilder.ConvertToJSON(linkTargets, summaryLinks, summaryImageLinks, context);
+				toolTipsBuilder.BuildDataFileForContent();
 
-					return true;
-					}
-				catch (Exception e)
-					{
-					try
-						{  e.AddNaturalDocsTask("Building File: " + context.OutputFile);  }
-					catch
-						{  }
+				return true;
+				}
 
-					throw;
-					}
+			catch (Exception e)
+				{
+				try
+					{  e.AddNaturalDocsTask("Building File: " + context.OutputFile);  }
+				catch
+					{  }
+
+				throw;
 				}
 				
 			finally
