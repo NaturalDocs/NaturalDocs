@@ -37,6 +37,7 @@ Language: C/C++
    Case Sensitive: Yes
 
    Class Prototype Enders: ; {
+   Struct Prototype Enders: ; {
    Function Prototype Enders: ; {
    Variable Prototype Enders: ; =
 
