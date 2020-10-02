@@ -26,12 +26,19 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		public PossiblyLongStartupOperation () : base (0, Application.DelayedMessageThreshold)
 			{
 			operationName = null;
+			lastOperationName = null;
 			}
 
 		public void Start (string operationName)
 			{
-			this.operationName = operationName;
-			base.Start();
+			// We don't want to show more than one status message for the same type of operation.  This could happen when deleting
+			// output for multiple targets.
+			if (operationName != lastOperationName)
+				{
+				this.operationName = operationName;
+				this.lastOperationName = operationName;
+				base.Start();
+				}
 			}
 
 		protected override void ShowStartMessage ()
@@ -49,6 +56,7 @@ namespace CodeClear.NaturalDocs.CLI.StatusManagers
 		// __________________________________________________________________________
 
 		protected string operationName;
+		protected string lastOperationName;
 		
 		}
 	}
