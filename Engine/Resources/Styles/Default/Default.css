@@ -768,8 +768,15 @@ body.NDContentPage {
 			margin-top: .25em;
 			}
 		.CTopic a.SeeImageLink {
-			color: #808080;
 			font-style: italic;
+			}
+		.CTopic a.SeeImageLink:link,
+		.CTopic a.SeeImageLink:hover,
+		.CTopic a.SeeImageLink:visited {
+			color: #000000;
+			}
+		.CTopic a.SeeImageLink:active {
+			color: $TextLinkColor;
 			}
 
 	.CBodyNDMarkup {
