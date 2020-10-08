@@ -407,7 +407,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// topic changing, such as if an image file was deleted or a new one served as a better target.
 
 			unprocessedChanges.AddSourceFile(imageLink.FileID);
-			unprocessedChanges.AddClass(imageLink.ClassID);
+
+			if (imageLink.ClassID != 0)
+				{  unprocessedChanges.AddClass(imageLink.ClassID);  }
 
 
 			// We also have to check both image files because they could have changed between used and unused.
@@ -438,7 +440,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// We don't have to force any HTML to be rebuilt here.  This can only happen if the containing topic was 
 			// changed so we can rely on the topic code to handle that.
 
-			// However, this could change whether the image file is used or unused, so we have to add it to the list.
+			// However, this could chang e whether the image file is used or unused, so we have to add it to the list.
 			if (imageLink.TargetFileID != 0)
 				{  unprocessedChanges.AddImageFileUseCheck(imageLink.TargetFileID);  }
 			}
