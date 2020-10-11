@@ -170,20 +170,11 @@ td {
 	background: #FFFFFF URL("images/search.png") no-repeat left center;
 	padding: .5ex 1.5ex .5ex 3.5ex;
 	border: 0 none;
-
-	/* Firefox doesn't support plain border-radius until 4. */
-	/* Chrome supports plain border-radius since 8, and Safari since 5. */
-	/* Opera 11 supports plain border-radius. */
-	-moz-border-radius: 5ex;
 	border-radius: 5ex;
 
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;
 	}
-	.IE #NDSearchField {
-		/* IE 10 doesn't like custom fonts on the search field.  It will make the size jump around on focus and hover. */
-		font: inherit;
-		}
 
 	#NDSearchField.DefaultText {
 		color: #808080;
@@ -206,12 +197,6 @@ td {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #BCBCBC #747474 #747474 #BCBCBC;
-
-	/* Firefox doesn't support plain box-shadow until 4. */
-	/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
-	/* Opera 11 supports plain box-shadow. */
-	-moz-box-shadow: .15ex .25ex .4ex #606060;
-	-webkit-box-shadow: .15ex .25ex .4ex #606060;
 	box-shadow: .15ex .25ex .4ex #606060;
 	}
 
@@ -325,11 +310,6 @@ td {
 	display: none;  /* Default for loading page, will be changed by JavaScript once the scripts are loaded */
 	}
 
-	/* The tab bar causes a horizontal scroll bar on IE7 for some inexplicable reason. */
-	.IE7 #NDMenu {
-		overflow-x: hidden;
-		}
-
 	#NDMenu a:hover,
 	#NDMenu a:active {
 		text-decoration: none;
@@ -365,35 +345,12 @@ td {
 		outline: 0;
 		}
 
-	/* IE 6-8 can't handle opacity so use background color instead.  Opacity is preferable for other browsers because it will */
-	/* affect the text and icon too.  We don't bother changing the text color here because then it wouldn't match the icon. */
-	/* We also don't bother with "filter: alpha(opacity=n)" because that turns off ClearType and on italic text that looks terrible. */
-	.IE6 .MTab,
-	.IE7 .MTab,
-	.IE8 .MTab {
-		background-color: #D0D0D0;
-		}
-	.IE6 .MTab.Selected,
-	.IE7 .MTab.Selected,
-	.IE8 .MTab.Selected {
-		background-color: $MenuBackgroundColor;
-		}
-	.IE6 .MTab:hover,
-	.IE7 .MTab:hover,
-	.IE8 .MTab:hover {
-		background-color: $MenuHoverColor;
-		}
-
 	.MTabIcon {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
 		position: relative;
 		top: 3px;
-		}
-	.IE7 .MTabIcon,
-	.IE6 .MTabIcon {
-		top: 0;
 		}
 	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.png") center center no-repeat;  }
 	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.png") center center no-repeat;  }
@@ -412,11 +369,6 @@ td {
 		width: 1px;
 		margin: 0 -1px 0 0;
 		visibility: hidden;
-		}
-
-	/* IE6 can't handle it at all.  Hiding the text and having uneven heights is less sucky than the alternative. */
-	.IE6 .MTab.Narrow .MTabTitle {
-		display: none;
 		}
 
 
@@ -467,9 +419,6 @@ td {
 		width: 6px; height: 7px;
 		padding: .8em 1.2em 0 0;
 		}
-		.IE6 .MFolderIcon {
-			padding-top: 0;
-			}
 
 	.MFolder.Selected {
 		font-weight: bold;
@@ -815,7 +764,6 @@ body.NDContentPage {
 			}
 		.NDPrototype::-webkit-scrollbar-thumb {
 			background-color: #C8C8C8;
-			border-bottom: 1px solid #FFFFFF;
 			}
 
 	.PParameterSection td {
@@ -900,11 +848,6 @@ body.NDContentPage {
 		border-width: 1px 2px 2px 1px; border-style: solid; border-color: #000000;
 		padding: .5ex 1ex;
 		margin-bottom: 4px;  /* .5ex sometimes makes the spacing uneven */
-
-		/* Firefox doesn't support plain border-radius until 4. */
-		/* Chrome supports plain border-radius since 8, and Safari since 5. */
-		/* Opera 11 supports plain border-radius. */
-		-moz-border-radius: 1ex;
 		border-radius: 1ex;
 
 		background-color: #FFFFFF;
@@ -1015,7 +958,6 @@ body.NDContentPage {
 	.TFunction .NDPrototype::-webkit-scrollbar-thumb,
 	.TOperator .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #C8C8C8;
-		border-bottom: 1px solid #F0F0F0;
 		}
 	.TFunction .NDPrototype::-webkit-scrollbar-track,
 	.TOperator .NDPrototype::-webkit-scrollbar-track {
@@ -1039,7 +981,6 @@ body.NDContentPage {
 	}
 	.TProperty .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #COCOD6;
-		border-bottom: 1px solid #ECECFF;
 		}
 	.TProperty .NDPrototype::-webkit-scrollbar-track {
 		background-color: #ECECFF;
@@ -1062,7 +1003,6 @@ body.NDContentPage {
 	.TVariable .NDPrototype::-webkit-scrollbar-thumb,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #D2D2B8;
-		border-bottom: 1px solid #FCFCE6;
 		}
 	.TVariable .NDPrototype::-webkit-scrollbar-track,
 	.TDatabaseField .NDPrototype::-webkit-scrollbar-track {
@@ -1086,7 +1026,6 @@ body.NDContentPage {
 	}
 	.TConstant .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #979797;
-		border-bottom: 1px solid #CACACA;
 		}
 	.TConstant .NDPrototype::-webkit-scrollbar-track {
 		background-color: #CACACA;
@@ -1111,7 +1050,6 @@ body.NDContentPage {
 	.TEnumeration .NDPrototype::-webkit-scrollbar-thumb,
 	.TDelegate .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #D8CBBA;
-		border-bottom: 1px solid #FCEFDE;
 		}
 	.TType .NDPrototype::-webkit-scrollbar-track,
 	.TEnumeration .NDPrototype::-webkit-scrollbar-track,
@@ -1138,7 +1076,6 @@ body.NDContentPage {
 	}
 	.TEvent .NDPrototype::-webkit-scrollbar-thumb {
 		background-color: #BCCFBC;
-		border-bottom: 1px solid #E6F9E6;
 		}
 	.TEvent .NDPrototype::-webkit-scrollbar-track {
 		background-color: #E6F9E6;
@@ -1161,7 +1098,6 @@ body.NDContentPage {
 	}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-thumb {
 		background-color: #C0C0C0;
-		border-bottom: 1px solid #EAEAEA;
 		}
 	.NDClassPrototype .CPEntry::-webkit-scrollbar-track {
 		background-color: #EAEAEA;
@@ -1175,18 +1111,6 @@ body.NDContentPage {
 			background-color: #A8A8A8;
 			}
 
-	/* IE 6-8 can't handle opacity so approximate it with background colors.  The text won't fade but that's okay. */
-	/* We don't use "filter: alpha(opacity=n)" because that turns off ClearType. */
-	.IE6 .NDClassPrototype .CPEntry.Parent,
-	.IE6 .NDClassPrototype .CPEntry.Child,
-	.IE7 .NDClassPrototype .CPEntry.Parent,
-	.IE7 .NDClassPrototype .CPEntry.Child,
-	.IE8 .NDClassPrototype .CPEntry.Parent,
-	.IE8 .NDClassPrototype .CPEntry.Child {
-		border-color: #B4B4B4;
-		background-color: #F5F5F5;
-		}
-
 .NDClassPrototype .CPEntry.TInterface {
 	background-color: #EAEAFF;
 	border-color: #686879;
@@ -1194,20 +1118,9 @@ body.NDContentPage {
 	}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-thumb {
 		background-color: #BCBCE0;
-		border-bottom: 1px solid #EAEAFF;
 		}
 	.NDClassPrototype .CPEntry.TInterface::-webkit-scrollbar-track {
 		background-color: #EAEAFF;
-		}
-
-	.IE6 .NDClassPrototype .CPEntry.TInterface.Parent,
-	.IE6 .NDClassPrototype .CPEntry.TInterface.Child,
-	.IE7 .NDClassPrototype .CPEntry.TInterface.Parent,
-	.IE7 .NDClassPrototype .CPEntry.TInterface.Child,
-	.IE8 .NDClassPrototype .CPEntry.TInterface.Parent,
-	.IE8 .NDClassPrototype .CPEntry.TInterface.Child {
-		border-color: #B3B3BB;
-		background-color: #F5F5FF;
 		}
 
 
@@ -1252,18 +1165,7 @@ body.NDContentPage {
 	border-color: #A0A193 #57574B #57574B #A0A193;
 	padding: 1ex;
 	overflow: hidden;
-
-	/* Firefox doesn't support plain border-radius until 4. */
-	/* Chrome supports plain border-radius since 8, and Safari since 5. */
-	/* Opera 11 supports plain border-radius. */
-	-moz-border-radius: 1ex;
 	border-radius: 1ex;
-
-	/* Firefox doesn't support plain box-shadow until 4. */
-	/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
-	/* Opera 11 supports plain box-shadow. */
-	-moz-box-shadow: .15ex .25ex .4ex #606060;
-	-webkit-box-shadow: .15ex .25ex .4ex #606060;
 	box-shadow: .15ex .25ex .4ex #606060;
 	}
 
@@ -1317,14 +1219,6 @@ body.NDContentPage {
 		content: "  ·  ";
 		}
 
-		/* IE can't do :after elements prior to 8 */
-		.IE6 #FCopyright,
-		.IE7 #FCopyright,
-		.IE6 #FTimestamp,
-		.IE7 #FTimestamp {
-			margin-right: 3ex;
-			}
-
 	#FGeneratedBy {
 		display: inline;
 		}
@@ -1340,25 +1234,7 @@ body.NDContentPage {
 body.NDHomePage {
 	padding: 0; margin: 0;
 	background-color: $MenuBackgroundColor;
-
-	/* Firefox 3.6, 4, 5 */
-	background-image: -moz-linear-gradient(top, $HeaderBackgroundColor, $MenuBackgroundColor);
-
-	/* Chrome 12, 13, Safari 4, 5 */
-	/* Chrome also supports -webkit-linear-gradient but Safari doesn't.  5.1 supposedly does though. */
-	background-image: -webkit-gradient(linear, left top, left bottom, from($HeaderBackgroundColor), to($MenuBackgroundColor));
-
-	/* Opera 11.5 */
-	background-image: -o-linear-gradient(top, $HeaderBackgroundColor, $MenuBackgroundColor);
-
-	/* IE 6, 7, 8, 9 */
-	/* Strings don't get checked for substitutions so set the colors manually. */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7070C0', endColorstr='#E0E0E0', GradientType=0 );
-
-	/* IE 10 */
-	background-image: -ms-linear-gradient(top, $HeaderBackgroundColor 0%, $MenuBackgroundColor 100%);
-
-	background-image: linear-gradient(top, $HeaderBackgroundColor, $MenuBackgroundColor);
+	background-image: linear-gradient(to bottom, $HeaderBackgroundColor, $MenuBackgroundColor);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	height: 100%;
@@ -1374,26 +1250,19 @@ body.NDHomePage {
 		}
 
 	.HFrame {
-		/* Firefox 4 puts extra vertical space on the page if you do this with .HHeader margin-top instead */
+		/* Firefox puts extra vertical space on the page if you do this with .HContent margin-top instead */
 		padding: 4em 5em .5em 5em;
 		}
 
 	.HContent {
 		max-width: 28em;
-		margin: 0 auto 3em auto;
+		margin: 0 auto;
 		padding: 1.5em 2em;
 		overflow: hidden;
 		background-color: #FFFFFF;
 		border-width: .5ex;
 		border-style: solid;
 		border-color: #E0E0E0 #A0A0A0 #202020 #C0C0C0;
-
-		/* Firefox doesn't support plain box-shadow until 4. */
-		/* Chrome doesn't support plain box-shadow until 10, and Safari 5 still doesn't. */
-		/* Opera 11 supports plain box-shadow. */
-		/* IE 9 supports plain box shadow, IE 6-8 don't support any form at all. */
-		-moz-box-shadow: 0 .25ex .75ex #383838;
-		-webkit-box-shadow: 0 .25ex .75ex #383838;
 		box-shadow: 0 .25ex .75ex #383838;
 		}
 
@@ -1463,54 +1332,3 @@ body.NDHomePage {
 		border-top: 1px dashed #D0D0C8;
 		margin-top: 1.2ex;
 		}
-
-
-
-/* Group: IE 6 Touch Ups
-	___________________________________________________________________________
-
-	IE 6 doesn't understand .A.B selectors, so these are a few things to make it less horrible.  I'm not going to move
-	mountains to support IE 6, but since it's mostly functional anyway I can put in this little bit of effort at least.
-
-	IE 6's interpretation depends on the order of otherwise unrelated rules above, which means these have to be at
-	the bottom of the file.  This also makes it fairly unpredictable so it's better to cordon off the insanity here rather 
-	than try to beat the rest of the file into something it likes.  However, this also means this is an ugly hack because
-	it's separate from where the relevant rules are defined and it's only used to beat glaring problems into line as they
-	come up rather than being a coherent design.  But... so what?  IE 6 is on its way out, so an ugly "good enough" 
-	solution is fine.  It's not worth the effort to do something more and it's definitely not worth polluting the rest of the 
-	file to make it work better.
-*/
-
-.IE6 .MTab {
-	border-bottom: 0px none;
-	}
-.IE6 #MContent .Selected {
-	background-color: #FFFFFF;
-	}
-.IE6 .NDPrototype .PModifierQualifier,
-.IE6 .NDPrototype .PType {
-	font: 10pt $CodeFontFamily;
-	padding: 0;
-	border-bottom: 0px none;
-	}
-.IE6 .CTopic p,
-.IE6 .CTopic .CTitle,
-.IE6 .NDClassPrototype .CPName {
-	color: #000000;
-	}
-.IE6 .NDClassPrototype .CPEntry {
-	margin-top: 0;
-	}
-.IE6 .SeEntry {
-	border-bottom: 0px none;
-	padding: .2ex 1.25ex .2ex 3.25ex;
-	margin: 0;
-	font: 10pt $SearchFontFamily;
-	}
-.IE6 .SeChildren .SeEntry {
-	padding-left: 5.5ex;
-	}
-.IE6 #SeSelectedEntry {
-	border-style: solid;
-	border-width: 1px;
-	}
