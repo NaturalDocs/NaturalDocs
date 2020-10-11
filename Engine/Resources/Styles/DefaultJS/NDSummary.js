@@ -127,7 +127,8 @@ var NDSummary = new function ()
 			// Create a new summary loader.  We don't load the tooltips until the summary is complete to
 			// avoid having to wait for a potentially large file.
 
-			NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");
+			if (newLocation.summaryFile)
+				{  NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");  }
 			}
 
 		this.FinishNavigation();
