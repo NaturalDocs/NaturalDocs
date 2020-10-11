@@ -357,11 +357,17 @@ var NDFramePage = new function ()
 			menu.style.display = "block";
 			NDCore.SetToAbsolutePosition(menu, currentX, headerHeight, undefined, remainingHeight);
 
-			currentX += menu.offsetWidth;
-			remainingWidth -= menu.offsetWidth;
+			// The menu's width might be set in something other than pixels, like ex, which might make it fractional when
+			// converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns pixels
+			// so re-set the width to guarantee whole pixels.
+			var menuWidth = menu.offsetWidth;
+			NDCore.SetToAbsolutePosition(menu, undefined, undefined, menuWidth, undefined);
+
+			currentX += menuWidth;
+			remainingWidth -= menuWidth;
 
 			if (this.desiredMenuWidth == undefined)
-				{  this.desiredMenuWidth = menu.offsetWidth;  }
+				{  this.desiredMenuWidth = menuWidth;  }
 
 			menuSizer.style.display = "block";
 			NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
@@ -379,11 +385,17 @@ var NDFramePage = new function ()
 			summary.style.display = "block";
 			NDCore.SetToAbsolutePosition(summary, currentX, headerHeight, undefined, remainingHeight);
 
-			currentX += summary.offsetWidth;
-			remainingWidth -= summary.offsetWidth;
+			// The summary's width might be set in something other than pixels, like ex, which might make it fractional when
+			// converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns pixels
+			// so re-set the width to guarantee whole pixels.
+			var summaryWidth = summary.offsetWidth;
+			NDCore.SetToAbsolutePosition(summary, undefined, undefined, summaryWidth, undefined);
+
+			currentX += summaryWidth;
+			remainingWidth -= summaryWidth;
 
 			if (this.desiredSummaryWidth == undefined)
-				{  this.desiredSummaryWidth = summary.offsetWidth;  }
+				{  this.desiredSummaryWidth = summaryWidth;  }
 
 			summarySizer.style.display = "block";
 			NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);

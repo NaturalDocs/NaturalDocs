@@ -168,7 +168,7 @@ var NDCore = new function ()
 		// We have to use the non-standard (though universally supported) offsetWidth instead of the W3C-approved scrollWidth.
 		// In all browsers offsetWidth returns the full width of the element in pixels including the border.  In Firefox and Opera 
 		// scrollWidth will do the same, but in IE and WebKit it's instead equivalent to clientWidth which doesn't include the border.
-		if (width != undefined && element.offsetWidth != width)
+		if (width != undefined)
 			{
 			// If the width isn't already specified in pixels, set it to pixels.  We can't figure out the difference between the style
 			// and offset widths otherwise.  This might cause an extra resize, but only the first time.
@@ -191,7 +191,7 @@ var NDCore = new function ()
 			}
 
 		// Copypasta for height
-		if (height != undefined && element.offsetHeight != height)
+		if (height != undefined)
 			{
 			if (!this.pxRegex.test(element.style.height))
 				{  
