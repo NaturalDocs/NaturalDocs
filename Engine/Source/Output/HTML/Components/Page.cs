@@ -54,6 +54,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 						"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />" +
 
+						// This turns off Internet Explorer 11's compatibility view, since we might get hit by it if "Display intranet in Compatibility View" is
+						// turned on.
+						"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
+
 						"<title>" + pageTitle.ToHTML() + "</title>" +
 
 						"<link rel=\"stylesheet\" type=\"text/css\" href=\"" +
