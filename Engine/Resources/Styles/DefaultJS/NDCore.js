@@ -24,49 +24,6 @@ var NDCore = new function ()
 	{
 
 
-	// Group: Selection Functions
-	// ____________________________________________________________________________
-
-
-	/* Function: GetElementsByClassName
-
-		Returns an array of HTML elements matching the passed class name.  IE 8 and earlier don't have the native DOM function
-		so this simulates it.
-
-		The tag hint is used to help optimize the IE version since it uses getElementsByTagName and this will cut down the number
-		of results it has to sift through.  However, you must remember that it's a hint and not a filter -- you can't rely on the results 
-		only being elements of that tag type because it won't apply when using the native DOM function.
-	*/
-	this.GetElementsByClassName = function (baseElement, className, tagHint)
-		{
-		if (baseElement.getElementsByClassName)
-			{  return baseElement.getElementsByClassName(className);  }
-		
-		if (!tagHint)
-			{  tagHint = "*";  }
-
-		var tagArray = baseElement.getElementsByTagName(tagHint);
-		var matchArray = new Array();
-
-		var tagIndex = 0;
-		var matchIndex = 0;
-
-		while (tagIndex < tagArray.length)
-			{
-			if (this.HasClass(tagArray[tagIndex], className))
-				{
-				matchArray[matchIndex] = tagArray[tagIndex];
-				matchIndex++;
-				}
-
-			tagIndex++;
-			}
-
-		return matchArray;
-		};
-
-
-
 	// Group: Class Functions
 	// ____________________________________________________________________________
 
@@ -181,69 +138,18 @@ var NDCore = new function ()
 
 
 	/* Function: RemoveScriptElement
-		Removes a script element from the document using the passed ID.  This incorporates some browser-specific logic
-		so it is better to use this function instead of doing it manually.
+		Removes a script element from the document using the passed ID.
 	*/
 	this.RemoveScriptElement = function (id)
 		{
 		var script = document.getElementById(id);
-
-		if (this.IEVersion() == 6)
-			{  
-			// Remove the node on a delay so IE6 doesn't crash.  I'm guessing the reason this crashes is that if you remove
-			// the node from its callback function, you're removing the script while it's still executing.  All other browsers
-			// handle this fine though, including IE7+.
-
-			// This actually causes a race condition because you're assuming you won't try to load another script with the 
-			// same ID before this fires.  However, this isn't likely to happen in my code and IE6 is on its way out, so I'm 
-			// willing to live with this.  I'm not going to move mountains to continue to support IE6.  As long as you don't
-			// reuse the same ID from its callback function you should be fine.
-
-			// You might think that this also causes a race condition in that you're assuming the callback function will return 
-			// before this fires.  It doesn't simply because JavaScript executes as a single thread, so even if the timeout expires
-			// before the callback is done the event handler still has to wait for all scripts to complete before it can execute.
-			// I tested this with IE6 and it's why it's safe to use a timeout of 1.
-
-			setTimeout(function () { script.parentNode.removeChild(script); }, 1);
-			}
-		else
-			{  script.parentNode.removeChild(script);  }
+		script.parentNode.removeChild(script);
 		};
 
 
 
 	// Group: Positioning Functions
 	// ________________________________________________________________________
-
-
-	/* Function: WindowClientWidth
-		 A browser-agnostic way to get the window's client width.
-	*/
-	this.WindowClientWidth = function ()
-		{
-		var width = window.innerWidth;
-
-		// Internet Explorer
-		if (width === undefined)
-			{  width = document.documentElement.clientWidth;  }
-
-		return width;
-		};
-
-
-	/* Function: WindowClientHeight
-		 A browser-agnostic way to get the window's client height.
-	*/
-	this.WindowClientHeight = function ()
-		{
-		var height = window.innerHeight;
-
-		// Internet Explorer
-		if (height === undefined)
-			{  height = document.documentElement.clientHeight;  }
-
-		return height;
-		};
 
 
 	/* Function: SetToAbsolutePosition
@@ -388,77 +294,6 @@ var NDCore = new function ()
 		return (this.IsIE() || this.IsEdgeHTML());
 		};
 
-	/* Function: IEVersion
-		Returns the major IE version as an integer, or undefined if not using IE.
-	*/
-	this.IEVersion = function ()
-		{
-		// IE 10 and earlier: Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)
-
-		var ieIndex = navigator.userAgent.indexOf("MSIE");
-
-		if (ieIndex != -1)
-			{  ieIndex += 5;  }
-		else
-			{
-			// IE 11 and later: Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko
-
-			ieIndex = navigator.userAgent.indexOf("Trident");
-
-			if (ieIndex != -1)
-				{
-				ieIndex = navigator.userAgent.indexOf("rv:");
-
-				if (ieIndex != -1)
-					{  ieIndex += 3;  }
-				}
-			}
-
-		if (ieIndex != -1)
-			{
-			// parseInt() allows random crap to appear after the numbers.  It will still interpret only the leading digit
-			// characters at that location and return successfully.
-			return parseInt(navigator.userAgent.substr(ieIndex));
-			}
-		else
-			{  return undefined;  }
-		};
-
-	/* Function: AddIEClassesToBody
-		If the current browser is Internet Explorer 6 through 8, add IE6, IE7, or IE8 classes to HTML.body.  We're not 
-		doing a more generalized thing like Natural Docs 1.x did because it's not generally good practice and none of 
-		the other browsers should be broken enough to need it anymore.
-	*/
-	this.AddIEClassesToBody = function ()
-		{
-		var ieVersion = this.IEVersion();
-
-		if (ieVersion != undefined)
-			{
-			this.AddClass(document.body, "IE");
-
-			if (ieVersion >= 6 && ieVersion <= 8)  // 7 covers IE8 in IE7 compatibility mode
-				{  this.AddClass(document.body, "IE" + ieVersion);  }
-			}
-		};
-
-
-	/* Function: SupportsOnInput
-		Whether the browser supports the oninput event.
-	*/
-	this.SupportsOnInput = function ()
-		{
-		// IE 9 has a buggy implementation that detects new characters but not deleted ones, so make it a special case.
-		if (this.IEVersion() == 9)
-			{  return false;  }
-		// All other browsers will have it as undefined if it's unsupported.  If it's supported but not set it will be null.
-		else
-			{  return (window.oninput !== undefined);  }
-
-		// IE 8 and earlier don't support it, IE 9 is buggy, and IE 10 and later support it.
-		// Firefox 3.6 doesn't support it, but 9 and later do.  Don't know which intermediate version introduced it.
-		};
-
 
 
 	// Group: Prototype Functions
@@ -574,12 +409,6 @@ var NDCore = new function ()
 		if (window.getComputedStyle)
 			{
 			return window.getComputedStyle(element, "")[style];
-			}
-
-		// IE 6-8 method
-		else if (element.currentStyle)
-			{
-			return element.currentStyle[style];
 			}
 
 		else
@@ -870,47 +699,3 @@ function NDLocation (hashString)
 	this.Constructor(hashString);
 
 	};
-
-
-// IE 8 and earlier don't have array.indexOf().  Add it. This code matches the standard algorithm according to 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
-if (!Array.prototype.indexOf)
-	{
-	Array.prototype.indexOf = function (searchElement /*, fromIndex */ )
-		{
-		"use strict";
-
-		if (this == null)
-			{  throw new TypeError();  }
-
-		var n, k, t = Object(this),
-		len = t.length >>> 0;
-
-		if (len === 0)
-			{  return -1;  }
-
-		n = 0;
-
-		if (arguments.length > 1)
-			{
-			n = Number(arguments[1]);
-			if (n != n)  // shortcut for verifying if it's NaN
-				{  n = 0;  }
-			else if (n != 0 && n != Infinity && n != -Infinity)
-				{
-				n = (n > 0 || -1) * Math.floor(Math.abs(n));
-				}
-			}
-	
-		if (n >= len)
-			{  return -1;  }
-
-		for (k = n >= 0 ? n : Math.max(len - Math.abs(n), 0); k < len; k++)
-			{
-			if (k in t && t[k] === searchElement)
-				{  return k;  }
-			}
-
-		return -1;
-		};
-	}

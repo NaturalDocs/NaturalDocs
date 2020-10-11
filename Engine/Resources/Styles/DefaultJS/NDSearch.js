@@ -70,10 +70,6 @@ var NDSearch = new function ()
 		this.domResults.id = "NDSearchResults";
 		this.domResults.style.display = "none";
 		this.domResults.style.position = "fixed";
-
-		if (NDCore.IEVersion() == 6)
-			{  this.domResults.style.position = "absolute";  }
-
 		this.domResultsContent = document.createElement("div");
 		this.domResultsContent.id = "SeContent";
 
@@ -109,18 +105,7 @@ var NDSearch = new function ()
 
 		this.domSearchField.onfocus = function () {  NDSearch.OnSearchFieldFocus();  };
 		this.domSearchField.onkeydown = function (event) {  NDSearch.OnSearchFieldKey(event);  };
-
-		if (NDCore.SupportsOnInput())
-			{
-			this.domSearchField.oninput = function (event) {  NDSearch.OnSearchFieldChange(event);  };
-			}
-		else
-			{
-			// It will be emulated with this and additional logic inside of OnSearchFieldKey()
-			this.domSearchField.oncut = function (event) {  NDSearch.OnSearchFieldChange(event);  };
-			this.domSearchField.onpaste = function (event) {  NDSearch.OnSearchFieldChange(event);  };
-			}
-
+		this.domSearchField.oninput = function (event) {  NDSearch.OnSearchFieldChange(event);  };
 		this.domResults.onfocus = function () {  NDSearch.OnResultsFocus();  };
 
 
@@ -459,17 +444,6 @@ var NDSearch = new function ()
 				this.UpdateSelection();
 				}
 			}
-
-		// Pick up the slack for browsers missing oninput support.
-		else if (NDCore.SupportsOnInput() == false)
-			{
-			if (event.keyCode != $KeyCode_LeftArrow &&
-				event.keyCode != $KeyCode_RightArrow)
-				{
-				this.OnSearchFieldChange(event);
-				}
-			}
-
 		};
 
 
@@ -1206,7 +1180,7 @@ var NDSearch = new function ()
 		var footer = document.getElementById("NDFooter");
 
 		var maxWidth = urX;
-		var maxHeight = NDCore.WindowClientHeight() - urY - (footer.offsetHeight * 2);
+		var maxHeight = window.innerHeight - urY - (footer.offsetHeight * 2);
 
 
 		// Resize
@@ -1258,7 +1232,7 @@ var NDSearch = new function ()
 		var domNewSelection = undefined;
 
 		if (this.keyboardSelectionIndex != -1)
-			{  domNewSelection = NDCore.GetElementsByClassName(this.domResultsContent, "SeEntry", "a")[this.keyboardSelectionIndex];  }
+			{  domNewSelection = this.domResultsContent.getElementsByClassName("SeEntry")[this.keyboardSelectionIndex];  }
 
 		if (domCurrentSelection != undefined)
 			{  domCurrentSelection.id = undefined;  }

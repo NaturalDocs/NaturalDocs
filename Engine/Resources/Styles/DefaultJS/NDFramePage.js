@@ -44,8 +44,6 @@ var NDFramePage = new function ()
 	*/
 	this.Start = function ()
 		{
-		var ieVersion = NDCore.IEVersion();
-
 		
 		// The default title of the page is the project title.  Save a copy before we mess with it.
 		
@@ -71,28 +69,7 @@ var NDFramePage = new function ()
 			};
 		var pageElementPositioning = "fixed";
 
-		// IE 6 doesn't like fixed positioning the way other browsers do.  It works with absolute positioning though.
-		if (ieVersion == 6)
-			{  pageElementPositioning = "absolute";  }
-
-		// Resizing is flaky on IE prior to 8, so just disable it.
-		if (ieVersion < 8)
-			{
-			document.getElementById("NDMenuSizer").style.display = "none";
-			delete pageElements.NDMenuSizer;
-
-			document.getElementById("NDSummarySizer").style.display = "none";
-			delete pageElements.NDSummarySizer;
-			}
-
-		// IE will sometimes put a disabled scrollbar on the right side of the window if this isn't done.  It isn't always
-		// predictable though.  IE 7 will always do it in my virtual machine, but IE 6 and 8 won't.  However, IE 8 does
-		// do it on a different computer even though they're both running the same version and are both XP.  Weird.
-		// Since it shouldn't have any detrimental effect, add it for all IE versions just to be safe.
-		if (ieVersion !== undefined)
-			{  document.getElementsByTagName("html")[0].style.overflow = "hidden";  }
-
-		// Done with the browser tweaks.  Update the layout.
+		// Update the layout.
 		for (var pageElementName in pageElements)
 			{
 			var domElement = document.getElementById(pageElementName);
@@ -336,11 +313,8 @@ var NDFramePage = new function ()
 	*/
 	this.UpdateLayout = function ()
 		{
-		var ieVersion = NDCore.IEVersion();
-		var useSizers = (ieVersion == undefined || ieVersion >= 8);
-
-		var fullWidth = NDCore.WindowClientWidth();
-		var fullHeight = NDCore.WindowClientHeight();
+		var fullWidth = window.innerWidth;
+		var fullHeight = window.innerHeight;
 
 		var header = document.getElementById("NDHeader");
 		var searchField = document.getElementById("NDSearchField");
@@ -389,11 +363,8 @@ var NDFramePage = new function ()
 			if (this.desiredMenuWidth == undefined)
 				{  this.desiredMenuWidth = menu.offsetWidth;  }
 
-			if (useSizers)
-				{
-				menuSizer.style.display = "block";
-				NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
-				}
+			menuSizer.style.display = "block";
+			NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
 
 			NDMenu.OnUpdateLayout();
 			}
@@ -414,11 +385,8 @@ var NDFramePage = new function ()
 			if (this.desiredSummaryWidth == undefined)
 				{  this.desiredSummaryWidth = summary.offsetWidth;  }
 
-			if (useSizers)
-				{
-				summarySizer.style.display = "block";
-				NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
-				}
+			summarySizer.style.display = "block";
+			NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
 			}
 		else
 			{
@@ -509,7 +477,7 @@ var NDFramePage = new function ()
 			// Must be appended before calling SetToAbsolutePosition or it won't position properly.
 			document.body.appendChild(contentCover);
 
-			NDCore.SetToAbsolutePosition(contentCover, 0, 0, NDCore.WindowClientWidth(), NDCore.WindowClientHeight());
+			NDCore.SetToAbsolutePosition(contentCover, 0, 0, window.innerWidth, window.innerHeight);
 
 			return false;
 			}
@@ -526,7 +494,7 @@ var NDFramePage = new function ()
 			{  event = window.event;  }
 
 		var offset = event.clientX - this.sizerDragging.originalClientX;
-		var windowClientWidth = NDCore.WindowClientWidth();
+		var windowClientWidth = window.innerWidth;
 
 		// Sanity checks
 		if (this.sizerDragging.sizer.id == "NDMenuSizer")

@@ -67,10 +67,6 @@ html {
 	/* Needed to allow full height gradients on the home page. */
 	height: 100%;
 
-	/* Needed in combination with the hacks in NDMenu/NDSummary.Build() to placate IE10. */
-	/* See NDMenu.Build()'s comment for why this is necessary. */
-	font: 10pt $MenuFontFamily;
-
 	/* Can't apply to iframe or body.NDContentPage, needs to be on HTML in Firefox.*/
 	scrollbar-color: $ContentScrollbarColors;
 	}

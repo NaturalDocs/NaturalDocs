@@ -56,11 +56,6 @@ var NDSummary = new function ()
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
-
-		var ieVersion = NDCore.IEVersion();
-		if (ieVersion != undefined && ieVersion == 6)
-			{  this.toolTipHolder.style.position = "absolute";  }
-
 		this.toolTipHolder.style.zIndex = 21;  // documented in default.css
 		document.body.appendChild(this.toolTipHolder);
 		};
@@ -245,15 +240,6 @@ var NDSummary = new function ()
 		// Don't resize on the loading notice to avoid unnecessary jumpiness.
 		if (this.summaryEntries != undefined)
 			{  NDFramePage.SizeSummaryToContent();  }
-
-		// See the comment in NDMenu.Build() for why this is necessary.
-		if (NDCore.IsIE() && NDCore.IEVersion() == 10)
-			{ 
-			setTimeout( function () 
-				{
-				document.getElementById("NDSummary").style.zoom="100%";  
-				}, 0 );
-			}
 		};
 
 	
@@ -401,7 +387,7 @@ var NDSummary = new function ()
 		var x = summaryBlock.offsetLeft + entry.offsetLeft + entry.offsetWidth;
 		var y = summaryBlock.offsetTop + entry.offsetTop - summaryBlock.scrollTop;
 		var newWidth = undefined;
-		var maxWidth = NDCore.WindowClientWidth() - x;
+		var maxWidth = window.innerWidth - x;
 
 		if (this.toolTipHolder.offsetWidth > maxWidth)
 			{  newWidth = maxWidth;  }
@@ -410,7 +396,7 @@ var NDSummary = new function ()
 		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
 
 		// Switch prototype styles if it's getting clipped.
-		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
+		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
 		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
@@ -423,9 +409,9 @@ var NDSummary = new function ()
 		// setting the width may have changed the height due to wrapping.  We include the footer height not
 		// because we care about covering the footer, but because that serves as a good estimate for the
 		// URL popup you get in Firefox and Chrome.
-		if (y + this.toolTipHolder.offsetHeight + (footer.offsetHeight * 2) > NDCore.WindowClientHeight())
+		if (y + this.toolTipHolder.offsetHeight + (footer.offsetHeight * 2) > window.innerHeight)
 			{
-			var newY = NDCore.WindowClientHeight() - this.toolTipHolder.offsetHeight - (footer.offsetHeight * 2);
+			var newY = window.innerHeight - this.toolTipHolder.offsetHeight - (footer.offsetHeight * 2);
 
 			if (newY < 0)
 				{  newY = 0;  }

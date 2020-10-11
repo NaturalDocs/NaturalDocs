@@ -50,8 +50,6 @@ Content Link: NDContentPage.js
 # OnLoad
 # ------------------------------------------------------------------------
 
-OnLoad: NDCore.AddIEClassesToBody();
-
 Frame OnLoad: NDFramePage.Start();
 
 Content OnLoad: NDContentPage.Start();

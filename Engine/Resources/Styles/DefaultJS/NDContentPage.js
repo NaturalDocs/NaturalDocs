@@ -32,32 +32,25 @@ var NDContentPage = new function ()
 	*/
 	this.Start = function ()
 		{
-		var ieVersion = NDCore.IEVersion();
-
 
 		// Resize prototypes to better fit the window.
 
-		// Using onresize completely freezes IE 6, not worth figuring out why.
-		// IE 7 doesn't return the proper measurements for prototype reformatting.
-		if (ieVersion == undefined || ieVersion >= 8)
+		this.CalculateWideFormPrototypeWidths();
+
+		// Firefox will sometimes execute Start() too early and all the prototype widths will be zero.
+		// Check the widths, and if any of them are zero quit and retry a little later.
+		for (var key in this.wideFormPrototypeWidths)
 			{
-			this.CalculateWideFormPrototypeWidths();
-
-			// Firefox will sometimes execute Start() too early and all the prototype widths will be zero.
-			// Check the widths, and if any of them are zero quit and retry a little later.
-			for (var key in this.wideFormPrototypeWidths)
+			if (this.wideFormPrototypeWidths[key] == 0)
 				{
-				if (this.wideFormPrototypeWidths[key] == 0)
-					{
-					setTimeout("NDContentPage.Start();", 200);
-					return;
-					}
+				setTimeout("NDContentPage.Start();", 200);
+				return;
 				}
-
-			this.ReformatPrototypes();
-
-			window.onresize = function () {  NDContentPage.OnResize();  }
 			}
+
+		this.ReformatPrototypes();
+
+		window.onresize = function () {  NDContentPage.OnResize();  };
 
 
 		// Create the tooltip holder.
@@ -65,10 +58,6 @@ var NDContentPage = new function ()
 		this.toolTipHolder = document.createElement("div");
 		this.toolTipHolder.style.display = "none";
 		this.toolTipHolder.style.position = "fixed";
-
-		if (ieVersion == 6)
-			{  this.toolTipHolder.style.position = "absolute";  }
-
 		this.toolTipHolder.style.zIndex = 20;  // documented in default.css
 		document.body.appendChild(this.toolTipHolder);
 
@@ -129,7 +118,7 @@ var NDContentPage = new function ()
 	*/
 	this.CalculateWideFormPrototypeWidths = function ()
 		{
-		var prototypes = NDCore.GetElementsByClassName(document, "NDPrototype", "div");
+		var prototypes = document.getElementsByClassName("NDPrototype");
 
 		for (var i = 0; i < prototypes.length; i++)
 			{
@@ -162,7 +151,7 @@ var NDContentPage = new function ()
 	*/
 	this.ReformatPrototypes = function ()
 		{
-		var prototypes = NDCore.GetElementsByClassName(document, "NDPrototype", "div");
+		var prototypes = document.getElementsByClassName("NDPrototype");
 
 		for (var i = 0; i < prototypes.length; i++)
 			{
@@ -206,8 +195,8 @@ var NDContentPage = new function ()
 		{
 		var prototype = document.getElementById(prototypeID);
 
-		var notice = NDCore.GetElementsByClassName(prototype, "CPAdditionalChildrenNotice", "a")[0];
-		var additionalChildren = NDCore.GetElementsByClassName(prototype, "CPAdditionalChildren", "div")[0];
+		var notice = prototype.getElementsByClassName("CPAdditionalChildrenNotice")[0];
+		var additionalChildren = prototype.getElementsByClassName("CPAdditionalChildren", "div")[0];
 
 		notice.style.display = "none";
 		additionalChildren.style.display = "block";
@@ -277,10 +266,6 @@ var NDContentPage = new function ()
 	*/
 	this.ShowToolTip = function ()
 		{
-		// IE 6's positioning is all screwy and it's not worth trying to figure out.
-		if (NDCore.IsIE() && NDCore.IEVersion() < 7)
-			{  return;  }
-
 		this.toolTipHolder.innerHTML = this.toolTips[this.showingToolTip];
 		this.toolTipHolder.style.visibility = "hidden";
 		this.toolTipHolder.style.display = "block";
@@ -317,7 +302,7 @@ var NDContentPage = new function ()
 		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
 
 		// Switch prototype styles if it's getting clipped.
-		var prototypes = NDCore.GetElementsByClassName(this.toolTipHolder, "NDPrototype", "div");
+		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
 		if (prototypes.length > 0 && NDCore.HasClass(prototypes[0], "WideForm") &&
 			prototypes[0].scrollWidth > prototypes[0].offsetWidth)
 			{
