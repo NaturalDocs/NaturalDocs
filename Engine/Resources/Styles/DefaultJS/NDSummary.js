@@ -135,7 +135,7 @@ var NDSummary = new function ()
 			NDCore.LoadJavaScript(newLocation.summaryFile, "NDSummaryLoader");
 			}
 
-		this.FinishIENavigation();
+		this.FinishNavigation();
 		};
 
 
@@ -150,7 +150,7 @@ var NDSummary = new function ()
 			this.summaryEntries = summaryEntries;
 
 			this.Build();
-			this.FinishIENavigation();
+			this.FinishNavigation();
 
 
 			// Load the tooltips.  We only do this after the summary is loaded to avoid having to wait for it.
@@ -257,13 +257,13 @@ var NDSummary = new function ()
 		};
 
 	
-	/* Function: FinishIENavigation
-		In some cases the content iframe can't be set by <NDFramePage.OnHashChange()> because Internet Explorer uses
-		case-insensitive anchors.  This function will set the iframe in a way that works with IE in these situations.
+	/* Function: FinishNavigation
+		In some cases the content iframe can't be set by <NDFramePage.OnHashChange()> because the browser uses
+		case-insensitive anchors.  This function will set the iframe in a way that works with them in these situations.
 	*/
-	this.FinishIENavigation = function ()
+	this.FinishNavigation = function ()
 		{
-		if (NDCore.IsIE() && 
+		if (NDCore.CaseInsensitiveAnchors() && 
 			this.summaryEntries != undefined &&
 			NDFramePage.currentLocation != undefined && 
 			NDFramePage.currentLocation.member != undefined)

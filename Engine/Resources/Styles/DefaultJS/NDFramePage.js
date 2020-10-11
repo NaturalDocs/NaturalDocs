@@ -216,10 +216,10 @@ var NDFramePage = new function ()
 
 		var frame = document.getElementById("CFrame");
 
-		// Internet Explorer treats anchors as case-insensitive.  If the hash path has a member we won't do the navigation here
-		// because it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation 
-		// with a Topic# anchor.
-		if (NDCore.IsIE() && this.currentLocation.member != undefined)
+		// If the browser treats anchors as case-insensitive and the hash path has a member we won't do the navigation here because
+		// it would confuse member and Member.  Instead we'll let the summary look up the member and do the navigation with a 
+		// Topic# anchor.
+		if (NDCore.CaseInsensitiveAnchors() && this.currentLocation.member != undefined)
 			{
 			// Do nothing.  We can't even go to the base page here and let the summary replace it with the anchor because they don't
 			// always occur in the right order.
