@@ -46,9 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			WriteTextFile(outputPath, 
 
-				// We're stuck in Transitional while we use iframes, which are deprecated in Strict.  HTML5 will supposedly bring
-				// iframes back.
-				"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">" +
+				"<!DOCTYPE html>" +
 				"\r\n\r\n" +
 
 				"<html>" +
