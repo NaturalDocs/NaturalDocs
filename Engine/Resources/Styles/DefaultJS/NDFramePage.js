@@ -10,11 +10,6 @@
 	Such documentation is not covered by Natural Docs' copyright and licensing,
 	and may have its own copyright and distribution terms as decided by its author.
 
-	This file includes code derived from jQuery HashChange Event, which is
-	Copyright © 2010 "Cowboy" Ben Alman.  jQuery HashChange Event may be
-	obtained separately under the MIT license or the GNU General Public License (GPL).
-	However, this combined product is still licensed under the terms of the AGPLv3.
-
 */
 
 "use strict";
@@ -113,11 +108,21 @@ var NDFramePage = new function ()
 		this.UpdateLayout();
 
 
-		// Attach event handlers
+		// Attach event handlers.  All browsers Natural Docs supports support onhashchange now, including IE 11 and 
+		// EdgeHTML.
 
 		window.onresize = function () {  NDFramePage.OnResize();  };
+		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
-		this.AddHashChangeHandler();
+
+
+		// ...however, IE 11 and EdgeHTML still use case-insensitive anchors, so we still need to poll the location to detect
+		// navigation between "Member" and "member".  They'll still mess up the back/forward browser history a bit, but
+		// at least clicking between them will work.
+
+		if (NDCore.CaseInsensitiveAnchors())
+			{  this.CreateHashChangePoller();  }
+
 
 		// We want to close the search results when we click anywhere else.  OnMouseDown handles clicks on most of the
 		// page but not inside the content iframe.  window.onblur will fire for IE 10, Firefox, and Chrome.  document.onblur 
@@ -189,9 +194,8 @@ var NDFramePage = new function ()
 		this.currentLocation = new NDLocation(location.hash);
 
 
-		// Update the poller for IE browsers that support the onhashchange event to prevent this function from
-		// being called twice.  The poller will therefore only catch navigation that the event doesn't fire for,
-		// like moving from "Member" to "member".
+		// Update the poller for the browsers that need it to prevent this function from being called twice.  The poller will 
+		// therefore only catch navigation that the event doesn't fire for, like moving from "Member" to "member".
 
 		if (this.hashChangePoller != undefined)
 			{  this.hashChangePoller.lastHash = location.hash;  }
@@ -271,175 +275,46 @@ var NDFramePage = new function ()
 		};
 
 
-	/* Function: AddHashChangeHandler
-		Sets up <OnHashChange()> to be called whenever a hash change event occurs.  Based on jQuery HashChange
-		Event because not all browsers support window.onhashchange.
+	/* Function: CreateHashChangePoller
+		Creates and starts <hashChangePoller> to make sure browsers with case-insensitive anchors still fire <OnHashChange()>
+		when navigating between "Member" and "member".
 	*/
-	this.AddHashChangeHandler = function ()
+	this.CreateHashChangePoller = function ()
 		{
-		// Note that IE8 running in IE7 compatibility mode reports true for "onhashchange" in window even
-		// though the event isn't supported, so also test document.documentMode.
-		var supportsOnHashChange = ("onhashchange" in window && (document.documentMode === undefined || document.documentMode > 7));
+		this.hashChangePoller = {
+			// timeoutID: undefined,
+			timeoutLength: 200,  // Every fifth of a second
 
-		// Add a straightforward hash change handler if the browser supports it.
-		if (supportsOnHashChange)
+			// Remember the initial hash so it doesn't get triggered immediately.
+			lastHash: location.hash
+			};
+
+		this.hashChangePoller.Start = function ()
 			{
-			window.onhashchange = function () {  NDFramePage.OnHashChange();  };
-			}
+			this.Poll();
+			};
 
-		// Add a poller if the browser doesn't, or is IE.  We need it for IE even when it supports onhashchange because it 
-		// treats anchors as case-insensitive, so the event won't fire when navigating from "Member" to "member".
-		if (!supportsOnHashChange || NDCore.IsIE())
+		this.hashChangePoller.Stop = function ()
 			{
-			this.hashChangePoller = {
-				// timeoutID: undefined,
-				timeoutLength: 200,  // Every fifth of a second
-
-				// Remember the initial hash so it doesn't get triggered immediately.
-				lastHash: location.hash
-				};
-
-			// Non-IE browsers that don't support onhashchange and IE versions that do can use a straightforward polling 
-			// loop of the hash.
-			if (!NDCore.IsIE() || supportsOnHashChange)
+			if (this.timeoutID != undefined)
 				{
-				this.hashChangePoller.Start = function ()
-					{
-					this.Poll();
-					};
+				clearTimeout(this.timeoutID);
+				this.timeoutID = undefined;
+				}
+			};
 
-				this.hashChangePoller.Stop = function ()
-					{
-					if (this.timeoutID != undefined)
-						{
-						clearTimeout(this.timeoutID);
-						this.timeoutID = undefined;
-						}
-					};
-
-				this.hashChangePoller.Poll = function ()
-					{
-					if (location.hash != this.lastHash)
-						{
-						this.lastHash = location.hash;
-						NDFramePage.OnHashChange();
-						}
-
-					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
-					};
+		this.hashChangePoller.Poll = function ()
+			{
+			if (location.hash != this.lastHash)
+				{
+				this.lastHash = location.hash;
+				NDFramePage.OnHashChange();
 				}
 
-			else  // IE versions that don't support onhashchange
-				{
-				// Not only do IE6/7 need the "magical" iframe treatment, but so does IE8
-				// when running in IE7 compatibility mode.
+			this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
+			};
 
-				this.hashChangePoller.Start = function ()
-					{
-					// Create a hidden iframe for history handling.
-					var iframeElement = document.createElement("iframe");
-
-					// Attempt to make it as hidden as possible by using techniques from
-					// http://www.paciellogroup.com/blog/?p=604
-					iframeElement.title = "empty";
-					iframeElement.tabindex = -1;
-					iframeElement.style.display = "none";
-					iframeElement.width = 0;
-					iframeElement.height = 0;
-					iframeElement.src = "javascript:0";
-
-					this.firstRun = true;
-
-					iframeElement.attachEvent("onload",
-						function ()
-							{
-							if (NDFramePage.hashChangePoller.firstRun)
-								{
-								NDFramePage.hashChangePoller.firstRun = false;
-								NDFramePage.hashChangePoller.SetHistory(location.hash);
-
-								NDFramePage.hashChangePoller.Poll();
-								}
-							}
-						);
-
-					// jQuery HashChange Event does some stuff I'm not 100% clear on to "append iframe after
-					// the end of the body to prevent unnecessary initial page scrolling (yes, this works)."  Bah,
-					// screw it, let's just go with straightforward.
-					document.body.appendChild(iframeElement);
-
-					this.iframe = iframeElement.contentWindow;
-
-					// Whenever the document.title changes, update the iframe's title to
-					// prettify the back/next history menu entries.  Since IE sometimes
-					// errors with "Unspecified error" the very first time this is set
-					// (yes, very useful) wrap this with a try/catch block.
-					document.onpropertychange = function ()
-						{
-						if (event.propertyName == "title")
-							{
-							try
-								{  NDFramePage.hashChangePoller.iframe.document.title = document.title;  }
-							catch(e)
-								{  }
-							}
-						};
-					};
-
-				// No Stop method since an IE6/7 iframe was created.  Even
-				// without an event handler the polling loop would still be necessary
-				// for back/next to work at all!
-				this.hashChangePoller.Stop = function () { };
-
-
-				this.hashChangePoller.Poll = function ()
-					{
-					var hash = location.hash;
-					var historyHash = this.GetHistory();
-
-					// If location.hash changed, which covers mouse clicks and manual editing
-					if (hash != this.lastHash)
-						{
-						this.lastHash = location.hash;
-						this.SetHistory(hash, historyHash);
-						NDFramePage.OnHashChange();
-						}
-
-					// If historyHash changed, which covers back and forward buttons
-					else if (historyHash != this.lastHash)
-						{
-						location.href = location.href.replace( /#.*/, '' ) + historyHash;
-						}
-
-					this.timeoutID = setTimeout("NDFramePage.hashChangePoller.Poll()", this.timeoutLength);
-					};
-
-				this.hashChangePoller.GetHistory = function ()
-					{
-					return this.iframe.location.hash;
-					};
-
-				this.hashChangePoller.SetHistory = function (hash, historyHash)
-					{
-					if (hash != historyHash)
-						{
-						// Update iframe with any initial document.title that might be set.
-						this.iframe.document.title = document.title;
-
-						// Opening the iframe's document after it has been closed is what
-						// actually adds a history entry.
-						this.iframe.document.open();
-
-						this.iframe.document.close();
-
-						// Update the iframe's hash, for great justice.
-						this.iframe.location.hash = hash;
-						}
-					};
-				}
-
-			this.hashChangePoller.Start();
-			}
+		this.hashChangePoller.Start();
 		};
 
 
@@ -807,8 +682,7 @@ var NDFramePage = new function ()
 	*/
 
 	/* var: hashChangePoller
-		An object to assist with hash change polling on browsers that don't support onhashchange.  Only used in
-		<AddHashChangeHandler()>.
+		An object to assist with hash change polling on browsers that use case-insensitive anchors.
 	*/
 
 
