@@ -266,7 +266,6 @@ var NDSummary = new function ()
 		if (NDCore.IsIE() && 
 			this.summaryEntries != undefined &&
 			NDFramePage.currentLocation != undefined && 
-			NDFramePage.currentLocation.type == "File" &&
 			NDFramePage.currentLocation.member != undefined)
 			{
 			var topicID = -1;
