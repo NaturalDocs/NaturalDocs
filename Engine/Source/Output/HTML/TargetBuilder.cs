@@ -500,13 +500,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			content.Append(
 
-				"<div id=\"NDMessages\">" +
-					"<a href=\"javascript:NDFramePage.CloseMessages()\" id=\"MsgCloseButton\">" +
-						Locale.Get("NaturalDocs.Engine", "HTML.Close").ToHTML() +
-					"</a>" +
-					"<div id=\"MsgContent\"></div>" +
-				"</div>" +
-
 				"<div id=\"NDHeader\">" +
 					"<div id=\"HTitle\">" +
 					

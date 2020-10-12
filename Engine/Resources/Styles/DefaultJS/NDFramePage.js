@@ -63,7 +63,6 @@ var NDFramePage = new function ()
 			NDMenu: true, 
 			NDSummary: false, // UpdateLayout() will enable this if necessary
 			NDContent: true,
-			NDMessages: false,
 			NDMenuSizer: true, // Needs to be visible, but is styled as transparent unless hovered over
 			NDSummarySizer: true // Needs to be visible, but is styled as transparent unless hovered over
 			};
@@ -117,32 +116,6 @@ var NDFramePage = new function ()
 		// Load the hash location, if any.
 
 		this.OnHashChange();
-		};
-
-
-	/* Function: Message
-		Posts a message on the screen.
-	*/
-	this.Message = function (message)
-		{
-		var htmlEntry = document.createElement("div");
-		htmlEntry.className = "MsgMessage";
-
-		var htmlMessage = document.createTextNode(message);
-		htmlEntry.appendChild(htmlMessage);
-
-		document.getElementById("MsgContent").appendChild(htmlEntry);
-		document.getElementById("NDMessages").style.display = "block";
-		this.OnResize();
-		};
-
-
-	/* Function: CloseMessages
-	*/
-	this.CloseMessages = function ()
-		{
-		document.getElementById("NDMessages").style.display = "none";
-		document.getElementById("MsgContent").innerHTML = "";
 		};
 
 
@@ -324,7 +297,6 @@ var NDFramePage = new function ()
 		var summary = document.getElementById("NDSummary");
 		var summarySizer = document.getElementById("NDSummarySizer");
 		var content = document.getElementById("NDContent");
-		var messages = document.getElementById("NDMessages");
 
 		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
 		NDCore.SetToAbsolutePosition(footer, 0, undefined, fullWidth, undefined);
@@ -407,7 +379,6 @@ var NDFramePage = new function ()
 			}
 
 		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
-		NDCore.SetToAbsolutePosition(messages, currentX, 0, remainingWidth, undefined);
 		NDSearch.OnUpdateLayout();
 		};
 

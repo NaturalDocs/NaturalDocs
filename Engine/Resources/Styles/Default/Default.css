@@ -27,10 +27,6 @@
 	$SummaryScrollbarColors: #D0D0D0 #F0F0F0;
 	$ContentScrollbarColors: #CCCCCC #F0F0F0;
 
-	$MessageBackgroundColor: #FFFFF0;
-	$MessageBorderColor: #A0A000;
-	$MessageTextColor: #787800;
-
 	$ProjectTitleFontFamily: Georgia, serif;
 	$ProjectSubtitleFontFamily: Georgia, serif;
 	$MenuFontFamily: "Trebuchet MS", Tahoma, Geneva, sans-serif;
@@ -44,8 +40,6 @@
 	$TextLinkActiveColor: #F04040;
 
 /* Z-Indexes */
-
-	$NDMessagesZIndex: 9999;
 
 	$NDSearchFieldZIndex: 201;
 	$NDSearchResultsZIndex: 200;
@@ -726,9 +720,9 @@ body.NDContentPage {
 
 	.CBodyNDMarkup {
 		font: 8pt Verdana, sans-serif;
-		color: $MessageTextColor;
-		background-color: $MessageBackgroundColor;
-		border: 1px solid $MessageBorderColor;
+		color: #787878;
+		background-color: #FFFFF0;
+		border: 1px solid #A0A000;
 		padding: .5em;
 		}
 
@@ -1288,43 +1282,3 @@ body.NDHomePage {
 		.HFooter a:active {
 			color: #A0A0A0;
 			}
-
-
-
-
-
-/* Group: Messages
-	___________________________________________________________________________
-*/
-
-#NDMessages {
-	background-color: $MessageBackgroundColor;
-	z-index: $NDMessagesZIndex;
-	overflow: auto;
-	max-height: 33%;
-	display: none;
-
-	padding: .8ex 1ex 1ex 1ex;
-	border-bottom: 3px solid $MessageBorderColor;
-	border-left: 1px solid $MessageBorderColor;
-	}
-
-	#MsgCloseButton {
-		float: right;
-		font: bold 8pt Verdana, sans-serif;
-		color: #000000;
-		}
-	a#MsgCloseButton:hover,
-	a#MsgCloseButton:active {
-		text-decoration: none;
-		}
-
-	.MsgMessage {
-		color: $MessageTextColor;
-		font: italic 8pt Verdana, sans-serif;
-		}
-	.MsgMessage ~ .MsgMessage {
-		padding-top: .9ex;
-		border-top: 1px dashed #D0D0C8;
-		margin-top: 1.2ex;
-		}

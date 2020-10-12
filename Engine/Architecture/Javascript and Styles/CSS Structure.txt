@@ -37,19 +37,6 @@ _______________________________________________________________________________
 
 	<body NDPage NDFramePage>
 
-		<#NDMessages>
-
-			<#MsgCloseButton></#MsgCloseButton>
-
-			<#MsgContent>
-				<MsgMessage Debug?>
-					message
-				</MsgMessage>
-				...
-			</#MsgContent>
-
-		</#NDMessages>
-
 		<#NDHeader>
 			<#HTitle>...</#HTitle>
 			<#HSubtitle>...</#HSubtitle>
