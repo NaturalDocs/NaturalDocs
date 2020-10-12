@@ -1186,31 +1186,37 @@ body.NDContentPage {
 	___________________________________________________________________________
 */
 
+$FooterTextColor: #909090;
+$FooterHoverColor: #606060;
+
+
 #NDFooter {
+	font: 8pt $MenuFontFamily;
+	color: $FooterTextColor;
 	background-color: $MenuBackgroundColor;
-	font: 7pt $MenuFontFamily;
-	padding: .1em 1ex;
-	text-align: right;
+	text-align: center;
+	
+	border-top: 1px dotted $FooterTextColor;
+	padding: .75em .5em 1em .5em;
+
 	z-index: $NDFooterZIndex;
 	}
-
-	#NDFooter,
-	#NDFooter a {
-		color: #808080;
+	#NDFooter:hover {
+		color: $FooterHoverColor;
+		border-color: $FooterHoverColor;
 		}
+
+	#NDFooter a {
+		color: $FooterTextColor;
+		}
+		#NDFooter:hover a {
+			color: $FooterHoverColor;
+			text-decoration: underline;
+			}
 
 	#FCopyright,
-	#FTimestamp{
-		display: inline;
-		}
-	#FCopyright:after,
-	#FTimestamp:after {
-		white-space: pre;
-		content: "  ·  ";
-		}
-
-	#FGeneratedBy {
-		display: inline;
+	#FTimestamp {
+		margin-top: .5em;
 		}
 
 
@@ -1266,19 +1272,22 @@ body.NDHomePage {
 			}
 
 	.HFooter {
-		margin: 0 auto;
-		margin-top: 2em;
+		margin: 2em auto .5em auto;
 		border-top: 1px solid #A0A0A0;
 		padding-top: 2em;
 		font: 8pt $ParagraphFontFamily;
+		color: #A0A0A0;
 		}
-		.HFooter div {
-			margin-bottom: .5em;
-			color: #A0A0A0;
+		.HCopyright,
+		.HTimestamp{
+			margin-top: .5em;
 			}
 		.HFooter a:link,
 		.HFooter a:visited,
 		.HFooter a:hover,
 		.HFooter a:active {
 			color: #A0A0A0;
+			}
+		.HContent:hover .HFooter a {
+			text-decoration: underline;
 			}

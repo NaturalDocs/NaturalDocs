@@ -55,7 +55,7 @@ var NDFramePage = new function ()
 		var loadingNotice = document.getElementById("NDLoadingNotice");
 		loadingNotice.parentNode.removeChild(loadingNotice);
 
-		// True or false determines whether it will be made visible later.
+		// True or false determines whether it will be made visible.
 		var pageElements = {
 			NDHeader: true,
 			NDSearchField: true,
@@ -66,13 +66,12 @@ var NDFramePage = new function ()
 			NDMenuSizer: true, // Needs to be visible, but is styled as transparent unless hovered over
 			NDSummarySizer: true // Needs to be visible, but is styled as transparent unless hovered over
 			};
-		var pageElementPositioning = "fixed";
 
 		// Update the layout.
 		for (var pageElementName in pageElements)
 			{
 			var domElement = document.getElementById(pageElementName);
-			domElement.style.position = pageElementPositioning;
+			domElement.style.position = "fixed";
 
 			if (pageElements[pageElementName] == true)
 				{  domElement.style.display = "block";  }
@@ -299,7 +298,6 @@ var NDFramePage = new function ()
 		var content = document.getElementById("NDContent");
 
 		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
-		NDCore.SetToAbsolutePosition(footer, 0, undefined, fullWidth, undefined);
 
 		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the 
 		// rest of the page elements.  We do this because when browsers are set to zoom levels greater than 100%,
@@ -307,50 +305,50 @@ var NDFramePage = new function ()
 		// the menu background color blends in.  The header is different because a gray bar between it and the home 
 		// page is very noticable.
 		var headerHeight = header.offsetHeight - 1;
-		var footerHeight = footer.offsetHeight;
-
-		// We needed separate calls to set the footer's Y position and width since wrapping may change its height.
-		NDCore.SetToAbsolutePosition(footer, undefined, fullHeight - footerHeight, undefined, undefined);
 
 		var searchMargin = (headerHeight - searchField.offsetHeight) / 2;
 		NDCore.SetToAbsolutePosition(searchField, fullWidth - searchField.offsetWidth - searchMargin, searchMargin, undefined, undefined);
 
-		var remainingHeight = fullHeight - headerHeight - footerHeight;
+		var remainingHeight = fullHeight - headerHeight;
 		var remainingWidth = fullWidth;
 		var currentX = 0;
+
+
+		// Menu and footer
 
 		// The order of operations below is very important.  Block has to be set before checking the offset width or it
 		// might return zero.  It also has to be set before setting the position or Firefox will sometimes not show
 		// scrollbars on the summary panel when navigating back and forth between the home page where it's hidden
 		// and regular pages where it's not.
 
-		if (this.MenuIsVisible())
-			{
-			menu.style.display = "block";
-			NDCore.SetToAbsolutePosition(menu, currentX, headerHeight, undefined, remainingHeight);
+		menu.style.display = "block";
+		NDCore.SetToAbsolutePosition(menu, currentX, headerHeight, undefined, undefined);
 
-			// The menu's width might be set in something other than pixels, like ex, which might make it fractional when
-			// converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns pixels
-			// so re-set the width to guarantee whole pixels.
-			var menuWidth = menu.offsetWidth;
-			NDCore.SetToAbsolutePosition(menu, undefined, undefined, menuWidth, undefined);
+		// The menu's default width might be set in something other than pixels, like ex, which might make it fractional
+		// when converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns
+		// pixels so re-set the width to guarantee whole pixels.
+		var menuWidth = menu.offsetWidth;
+		NDCore.SetToAbsolutePosition(menu, undefined, undefined, menuWidth, undefined);
 
-			currentX += menuWidth;
-			remainingWidth -= menuWidth;
+		NDCore.SetToAbsolutePosition(footer, currentX, headerHeight, menuWidth, undefined);
+		var footerHeight = footer.offsetHeight;
 
-			if (this.desiredMenuWidth == undefined)
-				{  this.desiredMenuWidth = menuWidth;  }
+		NDCore.SetToAbsolutePosition(menu, undefined, undefined, undefined, remainingHeight - footerHeight);
+		NDCore.SetToAbsolutePosition(footer, undefined, headerHeight + remainingHeight - footerHeight, undefined, undefined);		
 
-			menuSizer.style.display = "block";
-			NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
+		currentX += menuWidth;
+		remainingWidth -= menuWidth;
 
-			NDMenu.OnUpdateLayout();
-			}
-		else
-			{
-			menu.style.display = "none";
-			menuSizer.style.display = "none";
-			}
+		if (this.desiredMenuWidth == undefined)
+			{  this.desiredMenuWidth = menuWidth;  }
+
+		menuSizer.style.display = "block";
+		NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
+
+		NDMenu.OnUpdateLayout();
+
+
+		// Summary
 
 		if (this.SummaryIsVisible())
 			{
@@ -380,14 +378,6 @@ var NDFramePage = new function ()
 
 		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
 		NDSearch.OnUpdateLayout();
-		};
-
-
-	/* Function: MenuIsVisible
-	*/
-	this.MenuIsVisible = function ()
-		{
-		return true;
 		};
 
 
