@@ -71,7 +71,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			inheritRegex = new Regex.Styles.Inherit();
 			linkRegex = new Regex.Styles.Link();
 			onLoadRegex = new Regex.Styles.OnLoad();
-			linkableFileExtensionsRegex = new Regex.Styles.LinkableFileExtensions();
 			}
 
 
@@ -125,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 						Path linkedFile = value;
 
-						if (linkableFileExtensionsRegex.IsMatch(linkedFile.Extension))
+						if (Styles.Manager.LinkableFileExtensions.Contains(linkedFile.Extension))
 							{
 							Path fullLinkedFile = style.Folder + "/" + linkedFile;
 
@@ -279,7 +278,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		protected Regex.Styles.Inherit inheritRegex;
 		protected Regex.Styles.Link linkRegex;
 		protected Regex.Styles.OnLoad onLoadRegex;
-		protected Regex.Styles.LinkableFileExtensions linkableFileExtensionsRegex;
 
 		}
 	}

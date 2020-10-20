@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
@@ -241,6 +242,25 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			get
 				{  return loadedStyles;  }
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		/* var: FileExtensions
+		 * A <StringSet> of the supported extensions for files associated with styles.  This includes image extensions but not .html for
+		 * the home page file.
+		 */
+		static public StringSet FileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json", 
+																																				 "gif", "jpg", "jpeg", "png", "bmp", "svg",
+																																				 "woff", "eot", "svg", "ttf" });
+
+		/* var: LinkableFileExtensions
+		 * A <StringSet> of the extensions for files that can be linked to pages in <Style.txt>.
+		 */
+		static public StringSet LinkableFileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json" });
 
 
 

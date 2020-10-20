@@ -13,7 +13,6 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Styles
@@ -237,18 +236,6 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * A list of files to link to each output file, which can be CSS, JS, or JSON.  Null if none.
 		 */
 		protected List<StyleFileLink> links;
-
-
-
-		// Group: Static Variables
-		// __________________________________________________________________________
-
-
-		/* var: FileExtensions
-		 * A <StringSet> of the supported extensions for files associated with styles.  This does not include image extensions; get
-		 * those from <Files.Manager.ImageExtensions> instead.
-		 */
-		static public StringSet FileExtensions = new StringSet (KeySettings.IgnoreCase, new string[] { "css", "js", "json", "woff", "eot", "svg", "ttf" });
 
 		}
 
