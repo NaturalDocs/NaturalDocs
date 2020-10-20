@@ -804,6 +804,7 @@ Languages.txt.ProjectLanguagesReference.multiline {{{
 
 
 Style.txt.CantLinkFileWithExtension(extension): You can only use Link with .css, .js, and .json files.
+Style.txt.CantLinkCSSFileToSpecificPageTypes(pageType): You can't link CSS files to only {0} pages, they must be linked to all of them.
 Style.txt.CantFindStyle(name): Can't find style {0}.
 Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
 Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.

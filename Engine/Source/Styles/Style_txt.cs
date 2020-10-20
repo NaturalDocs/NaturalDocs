@@ -34,8 +34,8 @@
  *		> Home Link: [file]
  *		
  *		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.  
- *		JavaScript files can be restricted to certain page types or linked to all of them.  The file path is relative to the style's
- *		folder.
+ *		JavaScript files can be restricted to certain page types or linked to all of them.  CSS files can only be linked to all
+ *		of them.  The file path is relative to the style's folder.
  *		
  *		All files found in the style's folder are not automatically included because some may be intended to be loaded 
  *		dynamically, or the .css files may already be linked together with @import.
@@ -124,19 +124,24 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 						Path linkedFile = value;
 
-						if (Styles.Manager.LinkableFileExtensions.Contains(linkedFile.Extension))
-							{
-							Path fullLinkedFile = style.Folder + "/" + linkedFile;
-
-							if (System.IO.File.Exists(fullLinkedFile))
-								{  style.AddLinkedFile(fullLinkedFile, file.PropertyLocation, pageType);  }
-							else
-								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );  }
-							}
-						else
+						if (!Styles.Manager.LinkableFileExtensions.Contains(linkedFile.Extension))
 							{  
 							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantLinkFileWithExtension(extension)",
 																 linkedFile.Extension) );  
+							}
+						else if (linkedFile.Extension.ToLower() == "css" && pageType != PageType.All)
+							{
+							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantLinkCSSFileToSpecificPageTypes(pageType)", 
+																 PageTypes.NameOf(pageType)) );
+							}
+						else
+							{
+							Path fullLinkedFile = style.Folder + "/" + linkedFile;
+
+							if (!System.IO.File.Exists(fullLinkedFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );  }
+							else
+								{  style.AddLinkedFile(fullLinkedFile, file.PropertyLocation, pageType);  }
 							}
 
 						continue;
