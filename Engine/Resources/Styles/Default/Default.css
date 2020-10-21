@@ -1038,7 +1038,7 @@ body.NDContentPage {
 	scrollbar-color: #C0C0D6 #ECECFF;
 	}
 	.TProperty .NDPrototype::-webkit-scrollbar-thumb {
-		background-color: #COCOD6;
+		background-color: #C0C0D6;
 		border-bottom: 1px solid #ECECFF;
 		}
 	.TProperty .NDPrototype::-webkit-scrollbar-track {
