@@ -109,6 +109,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				return false;
 				}
 
+			if (style == null)
+				{  return false;  }
+
 			stylesWithInheritance = style.BuildInheritanceList();
 
 
