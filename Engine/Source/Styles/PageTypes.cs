@@ -52,7 +52,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				{  return PageType.Content;  }
 			else if (value == "frame")
 				{  return PageType.Frame;  }
-			else if (value == "home")
+			else if (value == "home" ||
+					   value == "home page" ||
+					   value == "homepage")
 				{  return PageType.Home;  }
 			else
 				{  return null;  }

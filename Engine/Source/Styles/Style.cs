@@ -32,6 +32,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			inherits = null;
 			onLoad = null;
 			links = null;
+			homePage = default;
 			}
 
 
@@ -112,6 +113,33 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			}
 
 
+		/* Function: SetHomePage
+		 */
+		public void SetHomePage (Path file, Config.PropertyLocation propertyLocation)
+			{
+			#if DEBUG
+			if (file.IsRelative)
+				{  throw new Exception("Paths passed to SetHomePage() must be absolute.");  }
+			#endif
+
+			homePage.File = file;
+			homePage.PropertyLocation = propertyLocation;
+			}
+
+
+		/* Function: SetHomePage
+		 */
+		public void SetHomePage (Path file, Config.PropertySource propertySource)
+			{
+			SetHomePage(file, new Config.PropertyLocation(propertySource));
+			}
+
+
+
+		// Group: Information Functions
+		// __________________________________________________________________________
+
+
 		/* Function: Contains
 		 * Returns whether this style contains the passed file.
 		 */
@@ -142,6 +170,11 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 			return inheritanceList;
 			}
+
+
+
+		// Group: Support Functions
+		// __________________________________________________________________________
 
 
 		/* Function: AddToInheritanceList
@@ -217,6 +250,16 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			}
 
 
+		/* Property: HomePage
+		 * The home page HTML file this style uses, or null if none.
+		 */
+		public Path HomePage
+			{
+			get
+				{  return homePage.File;  }
+			}
+
+
 
 		// Group: Variables
 		// __________________________________________________________________________
@@ -236,6 +279,11 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * A list of files to link to each output file, which can be CSS, JS, or JSON.  Null if none.
 		 */
 		protected List<LinkStatement> links;
+
+		/* var: homePage
+		 * The home page for this style, or undefined if none.
+		 */
+		protected HomePageStatement homePage;
 
 		}
 
@@ -269,6 +317,16 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		{
 		public PageType Type;
 		public string Statement;
+		public Config.PropertyLocation PropertyLocation;
+		}
+
+
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.HomePageStatement
+	 * ___________________________________________________________________________
+	 */
+	public struct HomePageStatement
+		{
+		public Path File;
 		public Config.PropertyLocation PropertyLocation;
 		}
 	}

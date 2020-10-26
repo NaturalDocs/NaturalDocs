@@ -808,6 +808,8 @@ Style.txt.CantLinkCSSFileToSpecificPageTypes(pageType): You can't link CSS files
 Style.txt.CantFindStyle(name): Can't find style {0}.
 Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
 Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.
+Style.txt.HomePageMustHaveHTMLExtension(extension): The home page must have a .html file extension.
+Style.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 
 
 Style.txt.Header.multiline {{{
@@ -880,4 +882,33 @@ Style.txt.OnLoadReference.multiline {{{
 # it's recommended that you make it a function in a separate .js file, link
 # that file, and then call the function from this statement rather than trying
 # to cram it all on this line.
+}}}
+
+Style.txt.HomePageHeader.multiline {{{
+# Home Page
+# ------------------------------------------------------------------------
+}}}
+
+Style.txt.HomePageReference.multiline {{{
+# You can choose a custom HTML file to serve as the home page for the output
+# like this:
+#
+# Home Page: [file]
+#
+# It will appear in the content area of the documentation's home page,
+# separate from the header and side menu which will both still be visible.
+# The file you choose must have a .html extension.
+#
+# If this is defined, none of the OnLoad or Link properties will have any
+# effect on it.  You must add those things directly to the HTML file if
+# they're needed.  If this property isn't defined then a default home page
+# will be generated.
+#
+# The HTML file may contain these values which will be replaced by their
+# corresponding properties from the project information:
+#
+#    - %NaturalDocs_ProjectTitle%
+#    - %NaturalDocs_ProjectSubTitle%
+#    - %NaturalDocs_Copyright%
+#    - %NaturalDocs_Timestamp%
 }}}

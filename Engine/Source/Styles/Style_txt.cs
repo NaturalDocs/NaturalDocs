@@ -19,6 +19,7 @@
  *		States that this style inherits the specified style, meaning the inherited style's files will be included in the
  *		output first, then this style's files.  Can be specified multiple times.
  *		
+ *		
  *		> OnLoad: [code]
  *		> Frame OnLoad: [code]
  *		> Content OnLoad: [code]
@@ -27,6 +28,7 @@
  *		Specifies a single line of JavaScript code that will be executed from the page's OnLoad function.  Can be restricted
  *		to certain page types or applied to all of them.  If you have a non-trivial amount of code to run you should define 
  *		a function to be called from here instead.
+ *		
  *		
  *		> Link: [file]
  *		> Frame Link: [file]
@@ -40,8 +42,26 @@
  *		All files found in the style's folder are not automatically included because some may be intended to be loaded 
  *		dynamically, or the .css files may already be linked together with @import.
  *		
+ *		
+ *		> Home Page: [file]
+ *		
+ *		Specifies a .html file to serve as the home page.  If it's defined none of the OnLoad or Link properties will have any 
+ *		effect on it.  Equivalent properties must be manually added to the HTML file if they're needed.  If a home page isn't
+ *		defined then default one will be generated.
+ *		
+ *		The home page HTML file may contain these values which will be replaced by their corresponding properties in the
+ *		project info:
+ *		
+ *		- %NaturalDocs_ProjectTitle%
+ *		- %NaturalDocs_ProjectSubTitle%
+ *		- %NaturalDocs_Copyright%
+ *		- %NaturalDocs_Timestamp%
+ *		
  *		Revision History:
  *		
+ *			- 2.2
+ *				- Added the Home Page property.
+ *				
  *			- 2.1
  *				- Added Home as an option for OnLoad and Link statements.
  *		
@@ -71,6 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			inheritRegex = new Regex.Styles.Inherit();
 			linkRegex = new Regex.Styles.Link();
 			onLoadRegex = new Regex.Styles.OnLoad();
+			homePageRegex = new Regex.Styles.HomePage();
 			}
 
 
@@ -167,6 +188,35 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 						style.AddOnLoad(value, file.PropertyLocation, pageType);
 						continue;
 						}
+
+
+					// Home Page
+
+					if (homePageRegex.IsMatch(lcIdentifier))
+						{  
+						Path homePageFile = value;
+						string lcExtension = homePageFile.Extension.ToLower();
+
+						if (lcExtension != "html" && lcExtension != "htm")
+							{  
+							file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageMustHaveHTMLExtension(extension)",
+																 homePageFile.Extension) );  
+							}
+						else
+							{
+							Path fullHomePageFile = style.Folder + "/" + homePageFile;
+
+							if (!System.IO.File.Exists(fullHomePageFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindHomePageFile(name)", fullHomePageFile) );  }
+							else
+								{  
+								style.SetHomePage(fullHomePageFile, file.PropertyLocation);
+								}
+							}
+
+						continue;
+						}
+
 
 					file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );
 					}
@@ -270,6 +320,24 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				}
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.OnLoadReference.multiline") );
+			output.AppendLine();
+			output.AppendLine();
+
+
+			// Home Page
+			
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageHeader.multiline") );
+			output.AppendLine();
+
+			if (style.HomePage != null)
+				{
+				output.Append("Home Page: ");
+				output.AppendLine(style.MakeRelative(style.HomePage));
+				output.AppendLine();
+				output.AppendLine();
+				}
+
+			output.Append( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageReference.multiline") );
 
 
 			return ConfigFile.SaveIfDifferent(style.ConfigFile, output.ToString(), noErrorOnFail, errorList);
@@ -283,6 +351,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		protected Regex.Styles.Inherit inheritRegex;
 		protected Regex.Styles.Link linkRegex;
 		protected Regex.Styles.OnLoad onLoadRegex;
+		protected Regex.Styles.HomePage homePageRegex;
 
 		}
 	}
