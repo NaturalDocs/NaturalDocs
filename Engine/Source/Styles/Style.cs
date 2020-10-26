@@ -40,9 +40,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		public void AddInheritedStyle (string name, Config.PropertyLocation propertyLocation, Style styleObject = null)
 			{
 			if (inherits == null)
-				{  inherits = new List<StyleInheritStatement>();  }
+				{  inherits = new List<InheritStatement>();  }
 
-			StyleInheritStatement entry = new StyleInheritStatement();
+			InheritStatement entry = new InheritStatement();
 			entry.Name = name;
 			entry.Style = styleObject;
 			entry.PropertyLocation = propertyLocation;
@@ -69,9 +69,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			#endif
 
 			if (links == null)
-				{  links = new List<StyleFileLink>();  }
+				{  links = new List<LinkStatement>();  }
 
-			StyleFileLink entry = new StyleFileLink();
+			LinkStatement entry = new LinkStatement();
 			entry.Type = type;
 			entry.File = file;
 			entry.PropertyLocation = propertyLocation;
@@ -93,9 +93,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		public void AddOnLoad (string onLoadString, Config.PropertyLocation propertyLocation, PageType type = PageType.All)
 			{
 			if (onLoad == null)
-				{  onLoad = new List<StyleOnLoadStatement>();  }
+				{  onLoad = new List<OnLoadStatement>();  }
 
-			StyleOnLoadStatement entry = new StyleOnLoadStatement();
+			OnLoadStatement entry = new OnLoadStatement();
 			entry.Type = type;
 			entry.Statement = onLoadString;
 			entry.PropertyLocation = propertyLocation;
@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Property: Inherits
 		 * A list of styles this one inherits, or null if none.  Do not change.
 		 */
-		public List<StyleInheritStatement> Inherits
+		public List<InheritStatement> Inherits
 			{
 			get
 				{  return inherits;  }
@@ -199,7 +199,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* Property: OnLoad
 		 * A list of JavaScript OnLoad code statements associated with this style, or null if none.  Do not change.
 		 */
-		public List<StyleOnLoadStatement> OnLoad
+		public List<OnLoadStatement> OnLoad
 			{
 			get
 				{  return onLoad;  }
@@ -210,7 +210,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		 * A list of files to link to each output file, or null if none.  They can be .js, .json, or .css.  Each link stores an absolute
 		 * path but it will be contained in <Folder>.  Do not change.
 		 */
-		public List<StyleFileLink> Links
+		public List<LinkStatement> Links
 			{
 			get
 				{  return links;  }
@@ -225,25 +225,25 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		/* var: inherits
 		 * A list of styles this one inherits, or null if none.
 		 */
-		protected List<StyleInheritStatement> inherits;
+		protected List<InheritStatement> inherits;
 
 		/* var: onLoad
 		 * A list of OnLoad code statements associated with this style, or null if none.
 		 */
-		protected List<StyleOnLoadStatement> onLoad;
+		protected List<OnLoadStatement> onLoad;
 
 		/* var: links
 		 * A list of files to link to each output file, which can be CSS, JS, or JSON.  Null if none.
 		 */
-		protected List<StyleFileLink> links;
+		protected List<LinkStatement> links;
 
 		}
 
 
-	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleInheritStatement
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.InheritStatement
 	 * ___________________________________________________________________________
 	 */
-	public struct StyleInheritStatement
+	public struct InheritStatement
 		{
 		public string Name;
 		public Style Style;
@@ -251,10 +251,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		}
 
 
-	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleFileLink
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.LinkStatement
 	 * ___________________________________________________________________________
 	 */
-	public struct StyleFileLink
+	public struct LinkStatement
 		{
 		public PageType Type;
 		public Path File;
@@ -262,10 +262,10 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		}
 
 
-	/* Struct: CodeClear.NaturalDocs.Engine.Styles.StyleOnLoadStatement
+	/* Struct: CodeClear.NaturalDocs.Engine.Styles.OnLoadStatement
 	 * ___________________________________________________________________________
 	 */
-	public struct StyleOnLoadStatement
+	public struct OnLoadStatement
 		{
 		public PageType Type;
 		public string Statement;

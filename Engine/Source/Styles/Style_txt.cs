@@ -225,7 +225,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 			if (style.Links != null)
 				{
-				foreach (StyleFileLink link in style.Links)
+				foreach (var link in style.Links)
 					{
 					if (link.Type != PageType.All)
 						{  
@@ -253,7 +253,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 			if (style.OnLoad != null)
 				{
-				foreach (StyleOnLoadStatement onLoadStatement in style.OnLoad)
+				foreach (var onLoadStatement in style.OnLoad)
 					{
 					if (onLoadStatement.Type != PageType.All)
 						{  
