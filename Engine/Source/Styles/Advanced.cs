@@ -41,7 +41,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			if (!folder.Contains(file))
 				{  return false;  }
 
-			return Styles.Manager.FileExtensions.Contains(file.Extension);
+			return (Styles.Manager.FileExtensions.Contains(file.Extension) ||
+					   file == this.HomePage);
 			}
 
 

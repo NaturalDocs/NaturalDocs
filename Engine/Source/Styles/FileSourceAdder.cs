@@ -57,6 +57,16 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 				else if (style is Styles.Advanced)
 					{
+					Path homePage = style.HomePage;
+
+					if (homePage != null)
+						{
+						status.AddFiles(Files.FileType.Style, 1);
+
+						EngineInstance.Files.AddOrUpdateFile(homePage, Files.FileType.Style, 
+																				System.IO.File.GetLastWriteTimeUtc(homePage), forceReparse);
+						}
+
 					foldersToSearch.Clear();
 					foldersToSearch.Push((style as Styles.Advanced).Folder);
 
