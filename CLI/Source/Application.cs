@@ -378,10 +378,10 @@ namespace CodeClear.NaturalDocs.CLI
 
 			// Output versions
 
-			Console.WriteLine("Natural Docs: " + Instance.VersionString);
+			Console.WriteLine("Natural Docs " + Instance.VersionString);
 
 			if (osNameAndVersion != null)
-				{  Console.WriteLine("    Platform: " + osNameAndVersion);  }
+				{  Console.WriteLine(osNameAndVersion);  }
 			else
 				{  Console.WriteLine("Couldn't get OS name and version");  }
 
@@ -389,20 +389,20 @@ namespace CodeClear.NaturalDocs.CLI
 			if (Engine.SystemInfo.OnUnix || monoVersion != null)
 				{
 				if (monoVersion != null)
-					{  Console.WriteLine("        Mono: " + monoVersion);  }
+					{  Console.WriteLine("Mono " + monoVersion);  }
 				else
 					{  Console.WriteLine("Couldn't get Mono version");  }
 				}
 			else
 				{  
 				if (dotNETVersion != null)
-					{  Console.WriteLine("        .NET: " + dotNETVersion);  }
+					{  Console.WriteLine(".NET " + dotNETVersion);  }
 				else
 					{  Console.WriteLine("Couldn't get .NET version");  }
 				}
 
 			if (sqliteVersion != null)
-				{  Console.WriteLine("      SQLite: " + sqliteVersion);  }
+				{  Console.WriteLine("SQLite " + sqliteVersion);  }
 			else
 				{  Console.WriteLine("Couldn't get SQLite version");  }
 				
