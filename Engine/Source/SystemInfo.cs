@@ -263,7 +263,13 @@ namespace CodeClear.NaturalDocs.Engine
 							{
 							result = productName;
 
-							string win10version = key.GetValue("ReleaseId")?.ToString();
+							// Newer key that will say things like "20H2".  Doesn't exist on older versions.
+							string win10version = key.GetValue("DisplayVersion")?.ToString();
+
+							// Older key that will say things like "1909".  Still exists on newer versions but will say "2009" instead of "20H2".
+							if (win10version == null)
+								{  win10version = key.GetValue("ReleaseId")?.ToString();  }
+
 							if (win10version != null)
 								{  result += " version " + win10version;  }
 
