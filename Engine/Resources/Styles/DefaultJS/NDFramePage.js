@@ -301,7 +301,10 @@ var NDFramePage = new function ()
 
 		// Header
 
-		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
+		header.style.left = "0px";
+		header.style.top = "0px";
+		header.style.width = fullWidth + "px";
+
 
 		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the 
 		// rest of the page elements.  We do this because when browsers are set to zoom levels greater than 100%,
@@ -339,7 +342,9 @@ var NDFramePage = new function ()
 		if (searchWidth > maxSearchWidth)
 			{  searchWidth = maxSearchWidth;  }
 
-		NDCore.SetToAbsolutePosition(searchField, fullWidth - searchMargin - searchWidth, searchMargin, searchWidth, undefined);
+		searchField.style.left = (fullWidth - searchWidth - searchMargin) + "px";
+		searchField.style.top = searchMargin + "px";
+		searchField.style.width = searchWidth + "px";
 
 
 		// Menu and footer
@@ -347,6 +352,7 @@ var NDFramePage = new function ()
 		var remainingHeight = fullHeight - headerHeight;
 		var remainingWidth = fullWidth;
 		var currentX = 0;
+		var currentY = headerHeight;
 
 		// The order of operations below is very important.  Block has to be set before checking the offset width or it
 		// might return zero.  It also has to be set before setting the position or Firefox will sometimes not show
@@ -354,30 +360,35 @@ var NDFramePage = new function ()
 		// and regular pages where it's not.
 
 		menu.style.display = "block";
-		NDCore.SetToAbsolutePosition(menu, currentX, headerHeight, undefined, undefined);
+		menu.style.left = currentX + "px";
+		menu.style.top = currentY + "px";
 
 		// The menu's default width might be set in something other than pixels, like ex, which might make it fractional
 		// when converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns
 		// pixels so re-set the width to guarantee whole pixels.
 		var menuWidth = menu.offsetWidth;
-		NDCore.SetToAbsolutePosition(menu, undefined, undefined, menuWidth, undefined);
+		menu.style.width = menuWidth + "px";
 
-		NDCore.SetToAbsolutePosition(footer, currentX, headerHeight, menuWidth, undefined);
+		footer.style.left = currentX + "px";
+		footer.style.top = currentY + "px";
+		footer.style.width = menuWidth + "px";
 		var footerHeight = footer.offsetHeight;
 
-		NDCore.SetToAbsolutePosition(menu, undefined, undefined, undefined, remainingHeight - footerHeight);
-		NDCore.SetToAbsolutePosition(footer, undefined, headerHeight + remainingHeight - footerHeight, undefined, undefined);		
-
-		currentX += menuWidth;
-		remainingWidth -= menuWidth;
+		menu.style.height = (remainingHeight - footerHeight) + "px";
+		footer.style.top = (currentY + remainingHeight - footerHeight) + "px";
 
 		if (this.desiredMenuWidth == undefined)
 			{  this.desiredMenuWidth = menuWidth;  }
 
 		menuSizer.style.display = "block";
-		NDCore.SetToAbsolutePosition(menuSizer, currentX, headerHeight, undefined, remainingHeight);
+		menuSizer.style.left = currentX + menuWidth + "px";
+		menuSizer.style.top = currentY + "px";
+		menuSizer.style.height = remainingHeight + "px";
 
 		NDMenu.OnUpdateLayout();
+
+		currentX += menuWidth;
+		remainingWidth -= menuWidth;
 
 
 		// Summary
@@ -385,22 +396,26 @@ var NDFramePage = new function ()
 		if (this.SummaryIsVisible())
 			{
 			summary.style.display = "block";
-			NDCore.SetToAbsolutePosition(summary, currentX, headerHeight, undefined, remainingHeight);
+			summary.style.left = currentX + "px";
+			summary.style.top = currentY + "px";
+			summary.style.height = remainingHeight + "px";
 
 			// The summary's width might be set in something other than pixels, like ex, which might make it fractional when
 			// converted to pixels.  This can create black bars between panels in Firefox.  offsetWidth always returns pixels
 			// so re-set the width to guarantee whole pixels.
 			var summaryWidth = summary.offsetWidth;
-			NDCore.SetToAbsolutePosition(summary, undefined, undefined, summaryWidth, undefined);
-
-			currentX += summaryWidth;
-			remainingWidth -= summaryWidth;
+			summary.style.width = summaryWidth + "px";
 
 			if (this.desiredSummaryWidth == undefined)
 				{  this.desiredSummaryWidth = summaryWidth;  }
 
 			summarySizer.style.display = "block";
-			NDCore.SetToAbsolutePosition(summarySizer, currentX, headerHeight, undefined, remainingHeight);
+			summarySizer.style.left = (currentX + summaryWidth - 1) + "px";
+			summarySizer.style.top = currentY + "px";
+			summarySizer.style.height = remainingHeight + "px";
+
+			currentX += summaryWidth;
+			remainingWidth -= summaryWidth;
 			}
 		else
 			{
@@ -408,7 +423,11 @@ var NDFramePage = new function ()
 			summarySizer.style.display = "none";
 			}
 
-		NDCore.SetToAbsolutePosition(content, currentX, headerHeight, remainingWidth, remainingHeight);
+		content.style.left = currentX + "px";
+		content.style.top = currentY + "px";
+		content.style.width = remainingWidth + "px";
+		content.style.height = remainingHeight + "px";
+
 		NDSearch.OnUpdateLayout();
 		};
 
@@ -452,19 +471,19 @@ var NDFramePage = new function ()
 
 		if (target.id == "NDMenuSizer" || target.id == "NDSummarySizer")
 			{
-			var element;
+			var panel;
 
 			if (target.id == "NDMenuSizer")
-				{  element = document.getElementById("NDMenu");  }
+				{  panel = document.getElementById("NDMenu");  }
 			else
-				{  element = document.getElementById("NDSummary");  }
+				{  panel = document.getElementById("NDSummary");  }
 
 			this.sizerDragging =
 				{
 				"sizer": target,
-				"element": element,
+				"panel": panel,
 				"originalSizerX": target.offsetLeft,
-				"originalElementWidth": element.offsetWidth,
+				"originalPanelWidth": panel.offsetWidth,
 				"originalClientX": event.clientX
 				};
 
@@ -479,10 +498,12 @@ var NDFramePage = new function ()
 			var contentCover = document.createElement("div");
 			contentCover.id = "NDContentCover";
 
-			// Must be appended before calling SetToAbsolutePosition or it won't position properly.
-			document.body.appendChild(contentCover);
+			contentCover.style.left = "0px";
+			contentCover.style.top = "0px";
+			contentCover.style.width = window.innerWidth + "px";
+			contentCover.style.height = window.innerHeight + "px";
 
-			NDCore.SetToAbsolutePosition(contentCover, 0, 0, window.innerWidth, window.innerHeight);
+			document.body.appendChild(contentCover);
 
 			return false;
 			}
@@ -520,8 +541,8 @@ var NDFramePage = new function ()
 				{  offset = windowClientWidth - this.sizerDragging.sizer.offsetWidth - this.sizerDragging.originalSizerX;  }
 			}
 
-		NDCore.SetToAbsolutePosition(this.sizerDragging.sizer, this.sizerDragging.originalSizerX + offset, undefined, undefined, undefined);
-		NDCore.SetToAbsolutePosition(this.sizerDragging.element, undefined, undefined, this.sizerDragging.originalElementWidth + offset, undefined);
+		this.sizerDragging.sizer.style.left = (this.sizerDragging.originalSizerX + offset) + "px";
+		this.sizerDragging.panel.style.width = (this.sizerDragging.originalPanelWidth + offset) + "px";
 
 		if (this.sizerDragging.sizer.id == "NDMenuSizer")
 			{  this.desiredMenuWidth = document.getElementById("NDMenu").offsetWidth;  }
@@ -592,7 +613,7 @@ var NDFramePage = new function ()
 				// The panel is different than the desired width, meaning it was automatically expanded for the previous
 				// content.  There's no way for us to determine the minimum content width to only shrink it down when
 				// necessary, so we have to reset it and then determine if we need to expand it again.
-				NDCore.SetToAbsolutePosition(panel, undefined, undefined, desiredOffsetWidth, undefined);
+				panel.style.width = desiredOffsetWidth + "px";
 				resized = true;
 				}
 			}
@@ -632,7 +653,7 @@ var NDFramePage = new function ()
 			
 			if (panel.offsetWidth != newOffsetWidth)
 				{  
-				NDCore.SetToAbsolutePosition(panel, undefined, undefined, newOffsetWidth, undefined);  
+				panel.style.width = newOffsetWidth + "px";
 				resized = true;
 				}
 			}
@@ -668,9 +689,9 @@ var NDFramePage = new function ()
 		If we're currently dragging a sizer, this will be an object with these members:
 
 		sizer - The sizer DOM element.
-		element - The DOM element the sizer is stretching.
+		panel - The DOM element of the panel the sizer is stretching.
 		originalSizerX - The sizer's original X position.
-		originalElementWidth - The element's original width.
+		originalPanelWidth - The panel's original width.
 		originalClientX - The mouse's original X position.
 	*/
 

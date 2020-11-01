@@ -42,6 +42,10 @@ $KeyCode_UpArrow = 38;
 $KeyCode_RightArrow = 39;
 $KeyCode_DownArrow = 40;
 
+$Results_TopSpacing = 5;
+$Results_BottomSpacing = 25;  /* leave space for link address pop-up */
+$Results_LeftSpacing = 25;
+
 
 "use strict";
 
@@ -1162,61 +1166,48 @@ var NDSearch = new function ()
 
 		// First set the position to 0,0 and the width and height back to auto so it will be sized naturally to its content
 
-		NDCore.SetToAbsolutePosition(this.domResults, 0, 0, undefined, undefined);
-		this.domResults.style.width = "";
-		this.domResults.style.height = "";
+		this.domResults.style.left = "0px";
+		this.domResults.style.top = "0px";
+		this.domResults.style.width = "auto";
+		this.domResults.style.height = "auto";
 
 		
 		// Figure out our desired upper right coordinates
 
 		var urX = this.domSearchField.offsetLeft + this.domSearchField.offsetWidth;
-		var urY = this.domSearchField.offsetTop + this.domSearchField.offsetHeight + 5;
+		var urY = this.domSearchField.offsetTop + this.domSearchField.offsetHeight + $Results_TopSpacing;
 
 
-		// Figure out our maximum width/height so we don't go off the screen.  We include the footer height not because
-		// we care about covering the footer, but because it serves as a good estimate for the URL popup you get in
-		// Firefox and Chrome.
+		// Figure out our maximum width/height so we don't go off the screen.
 
-		var footer = document.getElementById("NDFooter");
-
-		var maxWidth = urX;
-		var maxHeight = window.innerHeight - urY - (footer.offsetHeight * 2);
+		var maxWidth = urX - $Results_LeftSpacing;
+		var maxHeight = window.innerHeight - urY - $Results_BottomSpacing;
 
 
 		// Resize
 
 		if (this.domResults.offsetHeight > maxHeight)
-			{  NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, undefined, maxHeight);  }
+			{  this.domResults.style.height = maxHeight + "px";  }
+
 		if (this.domResults.offsetWidth > maxWidth)
-			{  NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, maxWidth, undefined);  }
+			{  this.domResults.style.width = maxWidth + "px";  }
+
+		// Make sure the results are at least as wide as the search box.
+		else if (this.domResults.offsetWidth < this.domSearchField.offsetWidth)
+			{  this.domResults.style.width = this.domSearchField.offsetWidth + "px";  }
+
 		else
-			{
-			// Firefox and Chrome will sometimes not set the automatic width correctly, leaving a horizontal scroll bar where 
-			// one isn't necessary.  Weird.  Fix it up for them.  This also fixes the positioning for IE 6 and 7.
-			if (this.domResults.scrollWidth > this.domResults.clientWidth)
-				{
-				var newWidth = this.domResults.offsetWidth + 
-									 (this.domResults.scrollWidth - this.domResults.clientWidth) + 5;
-
-				if (newWidth > maxWidth)
-					{  newWidth = maxWidth;  }
-
-				NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, newWidth, undefined);
-				}
-
-			// Also make sure the results are at least as wide as the search box.
-			if (this.domResults.offsetWidth < this.domSearchField.offsetWidth)
-				{
-				NDCore.SetToAbsolutePosition(this.domResults, undefined, undefined, this.domSearchField.offsetWidth, undefined);
-				}
+			{  
+			// Seems like a no-op, but Chrome needs it for some reason.  Firefox, Safari, and EdgeHTML work fine without it.
+			// Chrome also needs +1 to avoid wrapping results sometimes.  This is as of Chrome 86 in Nov 2020.
+			this.domResults.style.width = (this.domResults.offsetWidth + 1) + "px";  
 			}
 
 
 		// Reposition
 
-		NDCore.SetToAbsolutePosition(this.domResults, urX - this.domResults.offsetWidth, urY, 
-												 undefined, undefined);
-
+		this.domResults.style.left = (urX - this.domResults.offsetWidth) + "px";
+		this.domResults.style.top = urY + "px";
 
 		this.domResults.scrollTop = oldScrollTop;
 		this.domResults.style.visibility = "visible";

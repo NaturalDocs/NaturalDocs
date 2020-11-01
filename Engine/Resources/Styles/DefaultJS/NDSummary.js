@@ -394,9 +394,13 @@ var NDSummary = new function ()
 
 		if (this.toolTipHolder.offsetWidth > maxWidth)
 			{  newWidth = maxWidth;  }
-		// Otherwise leave undefined which will make SetToAbsolutePosition() leave it alone.
+		// Otherwise leave undefined.
 
-		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
+		this.toolTipHolder.style.left = x + "px";
+		this.toolTipHolder.style.top = y + "px";
+
+		if (newWidth != undefined)
+			{  this.toolTipHolder.style.width = newWidth + "px";  }
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
@@ -415,7 +419,7 @@ var NDSummary = new function ()
 			if (newY < 0)
 				{  newY = 0;  }
 
-			NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
+			this.toolTipHolder.style.top = newY + "px";
 			}
 
 		this.toolTipHolder.style.visibility = "visible";

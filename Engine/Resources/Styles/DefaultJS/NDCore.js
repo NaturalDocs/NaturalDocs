@@ -152,23 +152,6 @@ var NDCore = new function ()
 	// ________________________________________________________________________
 
 
-	/* Function: SetToAbsolutePosition
-		Sets the element to the absolute position and size passed as measured in pixels.  This assumes the element is 
-		positioned using fixed or absolute.  If any of the coordinates are undefined it will be left alone.
-	*/
-	this.SetToAbsolutePosition = function (element, x, y, width, height)
-		{
-		if (x != undefined)
-			{  element.style.left = x + "px";  }
-		if (y != undefined)
-			{  element.style.top = y + "px";  }
-		if (width != undefined)
-			{  element.style.width = width + "px";  }
-		if (height != undefined)
-			{  element.style.height = height + "px";  }
-		};
-
-
 	/* Function: GetFullOffsets
 		Returns an object with the cumulative offsetTop and offsetLeft of the passed DOM element, going all the
 		way up to the page body.

@@ -276,7 +276,7 @@ var NDContentPage = new function ()
 		this.toolTipHolder.style.display = "block";
 
 		// We need to reset the x position so that width measurements are taken correctly.
-		NDCore.SetToAbsolutePosition(this.toolTipHolder, 0, undefined, undefined, undefined);
+		this.toolTipHolder.style.left = "0px";
 
 		// In Firefox and IE, scrollTop is applied to the html node (document.body.parentNode).
 		// In Chrome, scrollTop is applied to document.body.
@@ -306,9 +306,13 @@ var NDContentPage = new function ()
 				newWidth = document.body.offsetWidth - $ToolTipHorizontalMarginX2;
 				}
 			}
-		// Otherwise leave newWidth undefined which will make SetToAbsolutePosition() leave it alone.
+		// Otherwise leave newWidth undefined.
 
-		NDCore.SetToAbsolutePosition(this.toolTipHolder, x, y, newWidth, undefined);
+		this.toolTipHolder.style.left = x + "px";
+		this.toolTipHolder.style.top = y + "px";
+
+		if (newWidth != undefined)
+			{  this.toolTipHolder.style.width = newWidth + "px";  }
 
 		// Switch prototype styles if it's getting clipped.
 		var prototypes = this.toolTipHolder.getElementsByClassName("NDPrototype");
@@ -327,7 +331,7 @@ var NDContentPage = new function ()
 
 			if (newY >= $ToolTipVerticalOffset)
 				{
-				NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
+				this.toolTipHolder.style.top = newY + "px";
 				}
 			}
 

@@ -762,7 +762,9 @@ var NDMenu = new function ()
 			{  return;  }
 
 		var menu = document.getElementById("NDMenu");
-		var menuWidth = menu.clientWidth;
+
+		// Subtract 1 to account for rounding errors.  Otherwise the tabs will sometimes wrap before shrinking.
+		var menuWidth = menu.clientWidth - 1;
 
 		var allWideWidth = 0;
 		var selectedWideWidth = 0;
