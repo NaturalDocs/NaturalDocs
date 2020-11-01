@@ -32,6 +32,8 @@
 // Other
 
 	$ToolTipDelay = 350;
+	$ToolTipRightEdgeMargin = 5;
+	$ToolTipBottomEdgeMargin = 25;  /* leave space for link address pop-up */
 	$LoadingNoticeDelay = 250;
 
 
@@ -388,7 +390,7 @@ var NDSummary = new function ()
 		var x = summaryBlock.offsetLeft + entry.offsetLeft + entry.offsetWidth;
 		var y = summaryBlock.offsetTop + entry.offsetTop - summaryBlock.scrollTop;
 		var newWidth = undefined;
-		var maxWidth = window.innerWidth - x;
+		var maxWidth = window.innerWidth - x - $ToolTipRightEdgeMargin;
 
 		if (this.toolTipHolder.offsetWidth > maxWidth)
 			{  newWidth = maxWidth;  }
@@ -404,15 +406,11 @@ var NDSummary = new function ()
 			NDCore.ChangePrototypeToNarrowForm(prototypes[0]);
 			}
 
-		var footer = document.getElementById("NDFooter");
-
 		// Make sure the bottom doesn't go off the visible page.  We do this in a separate step because
-		// setting the width may have changed the height due to wrapping.  We include the footer height not
-		// because we care about covering the footer, but because that serves as a good estimate for the
-		// URL popup you get in Firefox and Chrome.
-		if (y + this.toolTipHolder.offsetHeight + (footer.offsetHeight * 2) > window.innerHeight)
+		// setting the width may have changed the height due to wrapping.
+		if (y + this.toolTipHolder.offsetHeight + $ToolTipBottomEdgeMargin > window.innerHeight)
 			{
-			var newY = window.innerHeight - this.toolTipHolder.offsetHeight - (footer.offsetHeight * 2);
+			var newY = window.innerHeight - this.toolTipHolder.offsetHeight - $ToolTipBottomEdgeMargin;
 
 			if (newY < 0)
 				{  newY = 0;  }

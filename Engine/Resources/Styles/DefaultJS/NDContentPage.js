@@ -13,6 +13,11 @@
 
 
 $ToolTipDelay = 350;
+$ToolTipVerticalOffset = 3;
+$ToolTipHorizontalOffset = 8;
+$ToolTipHorizontalMargin = 5;
+$ToolTipHorizontalMarginX2 = 10;
+$ToolTipBottomMargin = 25;  /* leave space for link address pop-up */
 
 "use strict";
 
@@ -281,20 +286,24 @@ var NDContentPage = new function ()
 
 		var linkOffsets = NDCore.GetFullOffsets(this.domLinkShowingToolTip);
 
-		var x = linkOffsets.offsetLeft;
-		var y = linkOffsets.offsetTop + this.domLinkShowingToolTip.offsetHeight - scrollParent.scrollTop + 5;
+		var x = linkOffsets.offsetLeft - $ToolTipHorizontalOffset;
+		var y = linkOffsets.offsetTop + this.domLinkShowingToolTip.offsetHeight - scrollParent.scrollTop + $ToolTipVerticalOffset;
 		var newWidth = undefined;
 
-		// If the tooltip goes off the edge of the page, shift it left.  We also want a two pixel border on each side.
-		if (x + this.toolTipHolder.offsetWidth + 2 > document.body.offsetWidth)
-			{  
-			x = document.body.offsetWidth - this.toolTipHolder.offsetWidth - 2;  
+		// If the horizontal offset pushed it too far to the left, shift it right.
+		if (x < $ToolTipHorizontalMargin)
+			{  x = $ToolTipHorizontalMargin;  }
 
-			// If x is now negative because the tooltip is too large for the page, force it to the page width.
-			if (x < 2)
+		// If the tooltip goes off the edge of the page, shift it left.
+		if (x + this.toolTipHolder.offsetWidth + $ToolTipHorizontalMargin > document.body.offsetWidth)
+			{  
+			x = document.body.offsetWidth - this.toolTipHolder.offsetWidth - $ToolTipHorizontalMargin;  
+
+			// If x is now too large for the page, force it to the page width.
+			if (x < $ToolTipHorizontalMargin)
 				{
-				x = 2;
-				newWidth = document.body.offsetWidth - 4;
+				x = $ToolTipHorizontalMargin;
+				newWidth = document.body.offsetWidth - $ToolTipHorizontalMarginX2;
 				}
 			}
 		// Otherwise leave newWidth undefined which will make SetToAbsolutePosition() leave it alone.
@@ -312,11 +321,11 @@ var NDContentPage = new function ()
 		// If we can't fit the tooltip on the page underneath the link, see if we can do it above.  We only do this
 		// if the whole thing can fit though.  It's better to have just the top part than the bottom part.
 		// Chrome, IE, and Firefox all use the html element here (document.body.parentNode).
-		if (y + this.toolTipHolder.offsetHeight + 2 > document.body.parentNode.offsetHeight)
+		if (y + this.toolTipHolder.offsetHeight + $ToolTipBottomMargin > document.body.parentNode.offsetHeight)
 			{
-			var newY = linkOffsets.offsetTop - this.toolTipHolder.offsetHeight - scrollParent.scrollTop - 5;
+			var newY = linkOffsets.offsetTop - this.toolTipHolder.offsetHeight - scrollParent.scrollTop - $ToolTipVerticalOffset;
 
-			if (newY >= 0)
+			if (newY >= $ToolTipVerticalOffset)
 				{
 				NDCore.SetToAbsolutePosition(this.toolTipHolder, undefined, newY, undefined, undefined);
 				}
