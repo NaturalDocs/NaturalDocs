@@ -435,7 +435,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 
-		/* Property: InBounds
+		/* Property: IsInBounds
 		 * Whether the current position is in bounds.
 		 */
 		public bool IsInBounds
