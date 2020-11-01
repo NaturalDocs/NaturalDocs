@@ -77,6 +77,7 @@ var NDFramePage = new function ()
 				{  domElement.style.display = "block";  }
 			}
 
+		// this.desiredSearchWidth = undefined;
 		// this.desiredMenuWidth = undefined;
 		// this.desiredSummaryWidth = undefined;
 
@@ -297,6 +298,9 @@ var NDFramePage = new function ()
 		var summarySizer = document.getElementById("NDSummarySizer");
 		var content = document.getElementById("NDContent");
 
+
+		// Header
+
 		NDCore.SetToAbsolutePosition(header, 0, 0, fullWidth, undefined);
 
 		// Treat the header as one pixel shorter than it actually is.  This makes it so it there's a lip that sits under the 
@@ -305,16 +309,44 @@ var NDFramePage = new function ()
 		// the menu background color blends in.  The header is different because a gray bar between it and the home 
 		// page is very noticable.
 		var headerHeight = header.offsetHeight - 1;
+		
+		// firstChild moves from the div to the link
+		var headerTitle = document.getElementById("HTitle").firstChild;
+		var headerTitleRightEdge = headerTitle.offsetLeft + headerTitle.offsetWidth;
 
-		var searchMargin = (headerHeight - searchField.offsetHeight) / 2;
-		NDCore.SetToAbsolutePosition(searchField, fullWidth - searchField.offsetWidth - searchMargin, searchMargin, undefined, undefined);
+		var headerSubTitle = document.getElementById("HSubtitle");  // may not exist
+		var headerSubTitleRightEdge = 0;
+
+		if (headerSubTitle)
+			{
+			headerSubTitle = headerSubTitle.firstChild;
+			headerSubTitleRightEdge = headerSubTitle.offsetLeft + headerSubTitle.offsetWidth;
+			}
+
+		var headerRightEdge = Math.max(headerTitleRightEdge, headerSubTitleRightEdge);
+
+
+		// Search field
+
+		if (this.desiredSearchWidth == undefined)
+			{  this.desiredSearchWidth = searchField.offsetWidth;  }
+
+		var searchMargin = Math.floor((headerHeight - searchField.offsetHeight) / 2);
+
+		var searchWidth = this.desiredSearchWidth;
+		var maxSearchWidth = fullWidth - headerRightEdge - (searchMargin * 4);  // 3x left margin + right margin
+
+		if (searchWidth > maxSearchWidth)
+			{  searchWidth = maxSearchWidth;  }
+
+		NDCore.SetToAbsolutePosition(searchField, fullWidth - searchMargin - searchWidth, searchMargin, searchWidth, undefined);
+
+
+		// Menu and footer
 
 		var remainingHeight = fullHeight - headerHeight;
 		var remainingWidth = fullWidth;
 		var currentX = 0;
-
-
-		// Menu and footer
 
 		// The order of operations below is very important.  Block has to be set before checking the offset width or it
 		// might return zero.  It also has to be set before setting the position or Firefox will sometimes not show
@@ -640,6 +672,11 @@ var NDFramePage = new function ()
 		originalSizerX - The sizer's original X position.
 		originalElementWidth - The element's original width.
 		originalClientX - The mouse's original X position.
+	*/
+
+	/* var: desiredSearchWidth
+		The width the search field should use, or undefined to use the default.  The actual search field may be
+		shorter if it is space constrained.
 	*/
 
 	/* var: desiredMenuWidth
