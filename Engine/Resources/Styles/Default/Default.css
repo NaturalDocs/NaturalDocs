@@ -101,6 +101,19 @@ td {
 	font: 10pt $ParagraphFontFamily;
 	}
 
+/* Important for NDFramePage sizing */
+#NDHeader,
+#NDMenu,
+#NDMenuSizer,
+#NDSummary,
+#NDSummarySizer,
+#NDContent,
+#NDFooter,
+#NDSearchField,
+#NDSearchResults {
+	box-sizing: border-box;
+	}
+
 
 
 /* Group: Header

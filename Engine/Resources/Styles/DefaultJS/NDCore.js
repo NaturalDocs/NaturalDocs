@@ -154,62 +154,18 @@ var NDCore = new function ()
 
 	/* Function: SetToAbsolutePosition
 		Sets the element to the absolute position and size passed as measured in pixels.  This assumes the element is 
-		positioned using fixed or absolute.  It accounts for all sizing weirdness so that the ending offsetWidth and offsetHeight
-		will match what you passed regardless of any borders or padding.  If any of the coordinates are undefined it will be
-		left alone.
+		positioned using fixed or absolute.  If any of the coordinates are undefined it will be left alone.
 	*/
 	this.SetToAbsolutePosition = function (element, x, y, width, height)
 		{
-		if (x != undefined && element.offsetLeft != x)
+		if (x != undefined)
 			{  element.style.left = x + "px";  }
-		if (y != undefined && element.offsetTop != y)
+		if (y != undefined)
 			{  element.style.top = y + "px";  }
-			
-		// We have to use the non-standard (though universally supported) offsetWidth instead of the W3C-approved scrollWidth.
-		// In all browsers offsetWidth returns the full width of the element in pixels including the border.  In Firefox and Opera 
-		// scrollWidth will do the same, but in IE and WebKit it's instead equivalent to clientWidth which doesn't include the border.
 		if (width != undefined)
-			{
-			// If the width isn't already specified in pixels, set it to pixels.  We can't figure out the difference between the style
-			// and offset widths otherwise.  This might cause an extra resize, but only the first time.
-			if (!this.pxRegex.test(element.style.width))
-				{  
-				element.style.width = width + "px";  
-
-				if (element.offsetWidth != width)
-					{
-					var adjustment = width - element.offsetWidth;
-					element.style.width = (width + adjustment) + "px";
-					}
-				}
-			else
-				{  
-				var styleWidth = RegExp.$1;
-				var adjustment = styleWidth - element.offsetWidth;
-				element.style.width = (width + adjustment) + "px";
-				}
-			}
-
-		// Copypasta for height
+			{  element.style.width = width + "px";  }
 		if (height != undefined)
-			{
-			if (!this.pxRegex.test(element.style.height))
-				{  
-				element.style.height = height + "px";  
-
-				if (element.offsetHeight != height)
-					{
-					var adjustment = height - element.offsetHeight;
-					element.style.height = (height + adjustment) + "px";
-					}
-				}
-			else
-				{  
-				var styleHeight = RegExp.$1;
-				var adjustment = styleHeight - element.offsetHeight;
-				element.style.height = (height + adjustment) + "px";
-				}
-			}
+			{  element.style.height = height + "px";  }
 		};
 
 
