@@ -519,7 +519,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 					content.Append(
-					"<input id=\"NDSearchField\" type=\"text\" />"+
+					"<input id=\"NDSearchField\" type=\"text\" autocomplete=\"off\" />"+
 
 				"</div>" +
 
