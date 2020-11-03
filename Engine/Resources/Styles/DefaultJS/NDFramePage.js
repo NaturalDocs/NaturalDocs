@@ -584,18 +584,19 @@ var NDFramePage = new function ()
 
 		if (NDSearch.SearchFieldIsActive())
 			{
-			var targetIsInResults = false;
+			var targetIsPartOfSearch = false;
 
 			for (var element = target; element != undefined; element = element.parentNode)
 				{
-				if (element.id == "NDSearchResults")
+				if (element.id == "NDSearchResults" ||
+					element.id == "NDSearchField")
 					{  
-					targetIsInResults = true;
+					targetIsPartOfSearch = true;
 					break;
 					}
 				}
 
-			if (!targetIsInResults)
+			if (!targetIsPartOfSearch)
 				{
 				NDSearch.ClearResults();
 				NDSearch.DeactivateSearchField();
