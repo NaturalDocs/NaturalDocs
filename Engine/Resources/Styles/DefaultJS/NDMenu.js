@@ -301,6 +301,7 @@ var NDMenu = new function ()
 		var iterator = path.GetIterator();
 		var navigationType;
 		var selectedTab;
+		var hasParentFolders = false;
 
 
 		// Generate the list of folders up to and including the selected one.
@@ -340,6 +341,7 @@ var NDMenu = new function ()
 						htmlEntry.innerHTML = selectedTab[$Tab_HTMLTitle][i];
 
 						htmlMenu.appendChild(htmlEntry);
+						hasParentFolders = true;
 						}
 					}
 
@@ -363,6 +365,7 @@ var NDMenu = new function ()
 						htmlEntry.innerHTML = title;
 
 						htmlMenu.appendChild(htmlEntry);
+						hasParentFolders = true;
 						}
 					else
 						{
@@ -372,6 +375,7 @@ var NDMenu = new function ()
 						htmlEntry.innerHTML = title;
 
 						htmlMenu.appendChild(htmlEntry);
+						hasParentFolders = true;
 						}
 					}
 
@@ -396,6 +400,7 @@ var NDMenu = new function ()
 						htmlEntry.innerHTML = currentEntry[$Entry_HTMLTitle][i];
 
 						htmlMenu.appendChild(htmlEntry);
+						hasParentFolders = true;
 						}
 
 					title = currentEntry[$Entry_HTMLTitle][ currentEntry[$Entry_HTMLTitle].length - 1 ];
@@ -410,6 +415,7 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
+					hasParentFolders = true;
 					}
 				else
 					{
@@ -419,6 +425,7 @@ var NDMenu = new function ()
 					htmlEntry.innerHTML = title;
 
 					htmlMenu.appendChild(htmlEntry);
+					hasParentFolders = true;
 					}
 
 				iterator.Next();
@@ -469,7 +476,7 @@ var NDMenu = new function ()
 					if (i == selectedFileIndex)
 						{
 						var htmlEntry = document.createElement("div");
-						htmlEntry.className = "MEntry MFile Selected";
+						htmlEntry.className = "MEntry MFile Selected" + (hasParentFolders ? "" : " TopLevel");
 						htmlEntry.innerHTML = member[$Entry_HTMLTitle];
 
 						htmlMenu.appendChild(htmlEntry);
@@ -485,7 +492,7 @@ var NDMenu = new function ()
 							{  hashPath += member[$Entry_HashPath];  }
 
 						var htmlEntry = document.createElement("a");
-						htmlEntry.className = "MEntry MFile";
+						htmlEntry.className = "MEntry MFile" + (hasParentFolders ? "" : " TopLevel");
 						htmlEntry.setAttribute("href", "#" + hashPath);
 						htmlEntry.innerHTML = member[$Entry_HTMLTitle];
 
@@ -504,7 +511,7 @@ var NDMenu = new function ()
 					var targetPath = (pathSoFar.length == 0 ? i : pathSoFar.join(",") + "," + i);
 
 					var htmlEntry = document.createElement("a");
-					htmlEntry.className = "MEntry MFolder Child";
+					htmlEntry.className = "MEntry MFolder Child" + (hasParentFolders ? "" : " TopLevel");
 					htmlEntry.setAttribute("href", "javascript:NDMenu.GoToOffsets([" + targetPath + "])");
 					htmlEntry.innerHTML = title;
 

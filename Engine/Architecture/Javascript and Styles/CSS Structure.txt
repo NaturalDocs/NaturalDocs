@@ -102,19 +102,15 @@ JavaScript class included in the DefaultJS style.  Other styles may or may not u
 				<MTabTitle>Title</MTabTitle>
 			</MTabAsFolder>
 
-			<MFolder MEntry Parent Root Selected?>
-				Name
-			</MFolder>
-
 			<MFolder MEntry Parent Empty? Selected?>
 				Name
 			</MFolder>
 
-			<MFile MEntry Selected>
+			<MFile MEntry TopLevel? Selected?>
 				Name
 			</MFile>
 
-			<MFolder MEntry Child>
+			<MFolder MEntry Child TopLevel?>
 				<MFolderIcon></MFolderIcon>
 				Name
 			</MFolder>
@@ -127,14 +123,22 @@ JavaScript class included in the DefaultJS style.  Other styles may or may not u
 
 ----------
 
-	The menu always starts with a root folder entry.  There may also be a list of subfolder entries leading from it to the
-	currently selected folder.  Most entries will be "a" tags, though they may be div tags if they don't need to serve as a
-	link, such as empty and selected folders.  Use the Root, Parent, Child, and Selected classes to distinguish between types 
-	of folder entries, such as .MFolder.Child.
+	If there's nothing selected, not even a tab, there will be no MTabBar.  Instead the tabs will appear as MTabAsFolder
+	entries so they can be formatted more like regular menu entries.
 
-	Following it will be a list of the files and folders contained in that location.
+	If a tab is selected there will be a MTabBar followed by a list of MFile and MFolder entries representing the root level
+	contents of that tab.  They will all have the TopLevel attribute applied.
 
+	Once a folder is selected there will be a MTabBar followed by a stack of parent MFolders representing the path from
+	the tab to the selected folder, then followed by the MFile and MFolder entries that are the contents of that folder.
+	
+	Most entries will be "a" tags, though they may be div tags if they don't need to serve as a link, such as empty and 
+	selected folders.  Use the Parent, Child, and Selected classes to distinguish between types of folder entries, such as
+	.MFolder.Child.
 
+	At any point the sequence above can be truncated with a MLoadingNotice tab if the menu is not completely loaded yet.
+
+	
 
 Topic: Summary
 _______________________________________________________________________________
