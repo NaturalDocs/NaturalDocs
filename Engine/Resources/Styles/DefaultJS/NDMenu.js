@@ -325,15 +325,12 @@ var NDMenu = new function ()
 				selectedTab = iterator.CurrentEntry();
 
 
-				// If there's multiple titles, create empty parent folders.
+				// If there's multiple titles, create parent folders.
 
 				if (typeof(selectedTab[$Tab_HTMLTitle]) == "object")
 					{
-					// We start at 1 instead of 0 because the first string is the tab title.  If there's more than one tab then this
-					// is already taken care of by the tab bar.  If there's only one tab but it has multiple titles then the later
-					// titles can serve as the click target to return to the root and there's no need for the tab title as a parent
-					// folder anymore.
-
+					// We start at 1 instead of 0 because the first string is the tab title.
+					// We end at length - 1 since we want to build the last one as selected.
 					for (var i = 1; i < selectedTab[$Tab_HTMLTitle].length - 1; i++)
 						{
 						var htmlEntry = document.createElement("div");
@@ -343,40 +340,14 @@ var NDMenu = new function ()
 						htmlMenu.appendChild(htmlEntry);
 						hasParentFolders = true;
 						}
-					}
 
-				
-				// If there's multiple titles we still have to display the last one as a parent folder.  If there's only one tab we
-				// also have to display that as a parent folder because we're not showing the tab bar.
+					// Build the final one as selected.
+					var htmlEntry = document.createElement("div");
+					htmlEntry.className = "MEntry MFolder Selected";
+					htmlEntry.innerHTML = selectedTab[$Tab_HTMLTitle][ selectedTab[$Tab_HTMLTitle].length - 1 ];
 
-				var title;
-
-				if (typeof(selectedTab[$Tab_HTMLTitle]) == "object")
-					{  title = selectedTab[$Tab_HTMLTitle][ selectedTab[$Tab_HTMLTitle].length - 1 ];  }
-				else if (this.tabs.length == 1)
-					{  title = selectedTab[$Tab_HTMLTitle];  }
-
-				if (title != undefined)
-					{
-					if (navigationType == $Nav_SelectedParentFolder)
-						{
-						var htmlEntry = document.createElement("div");
-						htmlEntry.className = "MEntry MFolder Selected";
-						htmlEntry.innerHTML = title;
-
-						htmlMenu.appendChild(htmlEntry);
-						hasParentFolders = true;
-						}
-					else
-						{
-						var htmlEntry = document.createElement("a");
-						htmlEntry.className = "MEntry MFolder Parent";
-						htmlEntry.setAttribute("href", "javascript:NDMenu.GoToTab(\"" + selectedTab[$Tab_Type] + "\")");
-						htmlEntry.innerHTML = title;
-
-						htmlMenu.appendChild(htmlEntry);
-						hasParentFolders = true;
-						}
+					htmlMenu.appendChild(htmlEntry);
+					hasParentFolders = true;
 					}
 
 				iterator.Next();
@@ -825,8 +796,7 @@ var NDMenu = new function ()
 	*/
 	this.ShouldTabsShow = function ()
 		{
-		return (this.tabs !== undefined && this.tabs.length > 1 &&
-				   this.selectedTabType != undefined && this.selectedTabType != "Home");
+		return (this.tabs !== undefined && this.selectedTabType != undefined && this.selectedTabType != "Home");
 		};
 
 
