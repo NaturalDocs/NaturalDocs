@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 04-06-2017)
+﻿Format: 2.1
 
 # This is a configuration file for a Natural Docs HTML output style.
 
@@ -35,13 +35,15 @@ Content Link: NDContentPage.js
 # Link: [file]
 # Frame Link: [file]
 # Content Link: [file]
+# Home Link: [file]
 #
 # These files will be added to the generated output via link or script tags.
 #
-# You can limit them to just to the frame page, which handles the header,
-# footer, menu, and summary, or to content pages, which is the documentation
-# in the rightmost panel.  If you do not specify a page type, they will be
-# linked to every page.
+# You can limit JavaScript files to just to the frame page, which handles the
+# header, footer, menu, and summary, or to content pages, which is the
+# documentation in the rightmost panel, or to the home page.  If you do not
+# specify a page type they will be linked to every page.  CSS files can only
+# be linked to every page.
 #
 # All files will be copied to the output folder even if you don't link them,
 # but they will not be added to the pages automatically.
@@ -62,11 +64,12 @@ Content OnLoad: NDContentPage.Start();
 # OnLoad: [statement]
 # Frame OnLoad: [statement]
 # Content OnLoad: [statement]
+# Home OnLoad: [statement]
 #
 # You can limit it to just to the frame page, which handles the header,
 # footer, menu, and summary, or to content pages, which is the documentation
-# in the rightmost panel.  If you do not specify a page type, it will be added
-# to every page.
+# in the rightmost panel, or to the home page.  If you do not specify a page
+# type it will be added to every page.
 #
 # The OnLoad statement is limited to a single line.  If you have a lot of code
 # it's recommended that you make it a function in a separate .js file, link
