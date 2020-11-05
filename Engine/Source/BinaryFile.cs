@@ -218,6 +218,13 @@ namespace CodeClear.NaturalDocs.Engine
 			return result;
 			}
 
+		/* Functions: Skip
+		 * Skips ahead the passed number of bytes without reading them.
+		 */
+		public void Skip (int bytes)
+			{
+			fileStream.Seek(bytes, SeekOrigin.Current);
+			}
 
 		/* Functions: Writing Functions
 		 * Writes the specified type to a binary file open for writing.
