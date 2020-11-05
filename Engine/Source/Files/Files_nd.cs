@@ -86,7 +86,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 			try
 				{
-				// We'll continue to handle 2.0 files in 2.0.2 since it's easy enough
+				// We'll continue to handle 2.0 files in later versions since it's easy enough
 				if (binaryFile.OpenForReading(filename, "2.0") == false)
 					{
 					result = false;
@@ -102,11 +102,15 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					//    [UInt32: Height in Pixels or 0 if unknown]
  					// ...
 					// [Int32: 0]
+
+					bool forceReparse = (binaryFile.Version < "2.1");
+					bool didntStoreImageDimensions = (binaryFile.Version < "2.0.2");
 					
 					int id;
 					Path path;
 					FileType type;
 					DateTime lastModification;
+					DateTime lastModification_ForceReparse = new DateTime(0);
 					File file;
 					uint width, height;
 					
@@ -119,11 +123,20 @@ namespace CodeClear.NaturalDocs.Engine.Files
 							
 						path = binaryFile.ReadString();
 						type = (FileType)binaryFile.ReadByte();
-						lastModification = new DateTime(binaryFile.ReadInt64());
-						
+
+						if (forceReparse)
+							{
+							lastModification = lastModification_ForceReparse;
+							binaryFile.Skip(8);
+							}
+						else
+							{
+							lastModification = new DateTime(binaryFile.ReadInt64());
+							}
+
 						if (type == FileType.Image)
 							{
-							if (binaryFile.Version < "2.0.2")
+							if (didntStoreImageDimensions)
 								{
 								width = 0;
 								height = 0;
@@ -139,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 								// If this file is from a different version of Natural Docs, no matter which one, reset the last modification 
 								// time so they'll be reparsed and take another stab at getting the dimensions
 								if (binaryFile.Version != Engine.Instance.Version)
-									{  lastModification = new DateTime(0);  }
+									{  lastModification = lastModification_ForceReparse;  }
 
 								file = new ImageFile(path, lastModification);  
 								}
