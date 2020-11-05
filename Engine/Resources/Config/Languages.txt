@@ -1,4 +1,4 @@
-﻿Format: 2.0
+﻿Format: 2.1
 
 # This is the main Natural Docs languages file.  If you change anything here,
 # it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
@@ -125,7 +125,7 @@ Language: SQL
 
    Extension: sql
 
-   Alias: PL/SQL PLSQL T-SQL TSQL Transact-SQL TransactSQL
+   Aliases: PL/SQL PLSQL T-SQL TSQL Transact-SQL TransactSQL
 
    Line Comment: --
    Block Comment: /* */
@@ -134,7 +134,7 @@ Language: SQL
 
    Function Prototype Enders: ; AS IS BEGIN
    Variable Prototype Enders: ; = := DEFAULT
-   
+
 
 Language: Visual Basic
 
@@ -286,13 +286,13 @@ Language: Fortran
 
 Language: Lua
 
-   Extensions: lua
+   Extension: lua
 
    Line Comment: --
    Block Comment: --[[ ]]
    Case Sensitive: Yes
 
-   Function Prototype Ender: ; \n
+   Function Prototype Enders: ; \n
    Variable Prototype Enders: ; \n =
 
 

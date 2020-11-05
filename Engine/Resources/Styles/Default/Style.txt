@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 04-06-2017)
+﻿Format: 2.1
 
 # This is a configuration file for a Natural Docs HTML output style.
 
@@ -33,13 +33,15 @@ Link: Default.css
 # Link: [file]
 # Frame Link: [file]
 # Content Link: [file]
+# Home Link: [file]
 #
 # These files will be added to the generated output via link or script tags.
 #
-# You can limit them to just to the frame page, which handles the header,
-# footer, menu, and summary, or to content pages, which is the documentation
-# in the rightmost panel.  If you do not specify a page type, they will be
-# linked to every page.
+# You can limit JavaScript files to just to the frame page, which handles the
+# header, footer, menu, and summary, or to content pages, which is the
+# documentation in the rightmost panel, or to the home page.  If you do not
+# specify a page type they will be linked to every page.  CSS files can only
+# be linked to every page.
 #
 # All files will be copied to the output folder even if you don't link them,
 # but they will not be added to the pages automatically.
@@ -53,13 +55,40 @@ Link: Default.css
 # OnLoad: [statement]
 # Frame OnLoad: [statement]
 # Content OnLoad: [statement]
+# Home OnLoad: [statement]
 #
 # You can limit it to just to the frame page, which handles the header,
 # footer, menu, and summary, or to content pages, which is the documentation
-# in the rightmost panel.  If you do not specify a page type, it will be added
-# to every page.
+# in the rightmost panel, or to the home page.  If you do not specify a page
+# type it will be added to every page.
 #
 # The OnLoad statement is limited to a single line.  If you have a lot of code
 # it's recommended that you make it a function in a separate .js file, link
 # that file, and then call the function from this statement rather than trying
 # to cram it all on this line.
+
+
+# Home Page
+# ------------------------------------------------------------------------
+
+# You can choose a custom HTML file to serve as the home page for the output
+# like this:
+#
+# Home Page: [file]
+#
+# It will appear in the content area of the documentation's home page,
+# separate from the header and side menu which will both still be visible.
+# The file you choose must have a .html extension.
+#
+# If this is defined, none of the OnLoad or Link properties will have any
+# effect on it.  You must add those things directly to the HTML file if
+# they're needed.  If this property isn't defined then a default home page
+# will be generated.
+#
+# The HTML file may contain these values which will be replaced by their
+# corresponding properties from the project information:
+#
+#    - %NaturalDocs_ProjectTitle%
+#    - %NaturalDocs_ProjectSubTitle%
+#    - %NaturalDocs_Copyright%
+#    - %NaturalDocs_Timestamp%
