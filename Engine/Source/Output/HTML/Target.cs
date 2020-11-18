@@ -380,6 +380,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			//
 
 			unprocessedChanges.AddFramePage();
+			unprocessedChanges.AddHomePage();
 			unprocessedChanges.AddMainStyleFiles();
 
 
@@ -399,6 +400,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddMainStyleFiles();
 				unprocessedChanges.AddMainSearchFiles();
 				unprocessedChanges.AddFramePage();
+				unprocessedChanges.AddHomePage();
 				unprocessedChanges.AddMenu();
 
 				// We'll handle search prefixes after starting SearchIndex

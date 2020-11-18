@@ -75,6 +75,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddMainStyleFiles();
 				unprocessedChanges.AddMainSearchFiles();
 				unprocessedChanges.AddFramePage();
+				unprocessedChanges.AddHomePage();
 				unprocessedChanges.AddMenu();
 				}
 

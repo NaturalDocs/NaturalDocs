@@ -101,6 +101,28 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 
+					// Build home page
+
+					if (Target.UnprocessedChanges.PickHomePage())
+						{
+						lock (accessLock)
+							{  workInProgress += HomePageCost;  }
+
+						BuildHomePage(cancelDelegate);
+
+						lock (accessLock)
+							{  workInProgress -= HomePageCost;  }
+
+						if (cancelDelegate())
+							{
+							Target.UnprocessedChanges.AddHomePage();
+							break;
+							}
+						else
+							{  continue;  }
+						}
+
+
 					// Build main style files
 						
 					if (Target.UnprocessedChanges.PickMainStyleFiles())
@@ -457,21 +479,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void BuildFramePage (CancelDelegate cancelDelegate)
 			{
 
-			// Page and header titles
+			// Gather and format project info
 
-			string rawPageTitle;
+			string pageTitleText;
 			string headerTitleHTML;
 			string headerSubtitleHTML;
 
 			if (Target.ProjectInfo.Title == null)
 				{
-				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
 				headerSubtitleHTML = null;
 				}
 			else
 				{
-				rawPageTitle = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.ProjectInfo.Title);
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.ProjectInfo.Title);
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
 
 				if (Target.ProjectInfo.Subtitle == null)
@@ -482,9 +504,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-
-			// Footer
-
 			string timestampHTML = Target.ProjectInfo.MakeTimestamp();
 			string copyrightHTML = Target.ProjectInfo.Copyright;
 
@@ -494,7 +513,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
 
-			// index.html, the main frame page
+			// Build index.html, the main frame page
 
 			StringBuilder content = new StringBuilder();
 
@@ -572,12 +591,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Context context = new Context(Target);
 			Components.Page pageBuilder = new Components.Page(context);
 
-			pageBuilder.Build(Target.OutputFolder + "/index.html", rawPageTitle, content.ToString(), PageType.Frame);
+			pageBuilder.Build(Target.OutputFolder + "/index.html", pageTitleText, content.ToString(), PageType.Frame);
+			}
 
 
-			// other/home.html, the default welcome page
+		/* Function: BuildHomePage
+		 * Builds home.html, which provides the default home page.
+		 */
+		protected void BuildHomePage (CancelDelegate cancelDelegate)
+			{
+			BuildDefaultHomePage(cancelDelegate);
+			}
 
-			content.Remove(0, content.Length);
+
+		/* Function: BuildDefaultHomePage
+		 * Builds the default home.html if a custom one wasn't specified.
+		 */
+		protected void BuildDefaultHomePage (CancelDelegate cancelDelegate)
+			{
+
+			// Gather and format project info
+
+			string pageTitleText;
+			string headerTitleHTML;
+			string headerSubtitleHTML;
+
+			if (Target.ProjectInfo.Title == null)
+				{
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
+				headerSubtitleHTML = null;
+				}
+			else
+				{
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.ProjectInfo.Title);
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
+
+				if (Target.ProjectInfo.Subtitle == null)
+					{  headerSubtitleHTML = null;  }
+				else
+					{
+					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.ProjectInfo.Subtitle).ToHTML();
+					}
+				}
+
+			string timestampHTML = Target.ProjectInfo.MakeTimestamp();
+			string copyrightHTML = Target.ProjectInfo.Copyright;
+
+			if (timestampHTML != null)
+				{  timestampHTML = timestampHTML.ToHTML();  }
+			if (copyrightHTML != null)
+				{  copyrightHTML = copyrightHTML.ToHTML();  }
+
+
+			// Build other/home.html, the default welcome page
+
+			StringBuilder content = new StringBuilder();
 
 			string titleHTML, subtitleHTML;
 
@@ -642,7 +711,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				"</div>" + 
 			"</div>");
 
-			pageBuilder.Build(Target.OutputFolder + "/other/home.html", rawPageTitle, content.ToString(), PageType.Home);
+			Context context = new Context(Target);
+			Components.Page pageBuilder = new Components.Page(context);
+
+			pageBuilder.Build(Target.OutputFolder + "/other/home.html", pageTitleText, content.ToString(), PageType.Home);
 			}
 
 
@@ -1272,6 +1344,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 *		SearchPrefixCost - How much building a single search prefix costs.
 		 *		MainSearchFilesCost - How much building the main search files costs.
 		 *		FramePageCost - How much building the frame page costs.
+		 *		HomePageCost - How much building the home page costs.
 		 *		MenuCost - How much building the menu costs.
 		 *		PossiblyEmptyFolderCost - How much checking a single folder for files costs.
 		 */
@@ -1284,6 +1357,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public const long SearchPrefixCost = 4;
 		public const long MainSearchFilesCost = 1;
 		public const long FramePageCost = 1;
+		public const long HomePageCost = 1;
 		public const long MenuCost = 15;
 		public const long PossiblyEmptyFolderCost = 1;
 

@@ -15,6 +15,7 @@
  *		A file used to store the build state of this output target the last time it was built.
  *	
  *		> [Byte: Need to Build Frame Page (0 or 1)]
+ *		> [Byte: Need to Build Home Page (0 or 1)]
  *		> [Byte: Need to Build Main Style Files (0 or 1)]
  *		> [Byte: Need to Build Menu (0 or 1)]
  *		> [Byte: Need to Build Main Search Files (0 or 1)]
@@ -63,6 +64,9 @@
  *		stored as "files" and {1-3}.
  *		
  *		Version History:
+ *		
+ *			- 2.2
+ *				- Added Need to Build Home Page.
  *		
  *			- 2.1
  *				- Added Used Image File IDs, Image Files to Rebuild, and Unchanged Image File Use Check IDs.
@@ -114,16 +118,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.1") == false)
+				if (binaryFile.OpenForReading(filename, "2.2") == false)
 					{  result = false;  }
 				else
 					{
 					// [Byte: Need to Build Frame Page (0 or 1)]
+					// [Byte: Need to Build Home Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
 					// [Byte: Need to Build Menu (0 or 1)]
 					// [Byte: Need to Build Main Search Files (0 or 1)]
 
 					unprocessedChanges.framePage = (binaryFile.ReadByte() == 1);
+					unprocessedChanges.homePage = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.mainStyleFiles = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.menu = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.mainSearchFiles = (binaryFile.ReadByte() == 1);
@@ -207,11 +213,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				binaryFile.OpenForWriting(filename);
 
 				// [Byte: Need to Build Frame Page (0 or 1)]
+				// [Byte: Need to Build Home Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
 				// [Byte: Need to Build Menu (0 or 1)]
 				// [Byte: Need to Build Main Search Files (0 or 1)]
 
 				binaryFile.WriteByte( (byte)(unprocessedChanges.framePage ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(unprocessedChanges.homePage ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.mainStyleFiles ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.menu ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.mainSearchFiles ? 1 : 0) );

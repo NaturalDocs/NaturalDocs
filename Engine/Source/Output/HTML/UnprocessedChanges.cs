@@ -50,6 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			mainSearchFiles = false;
 
 			framePage = false;
+			homePage = false;
 			menu = false;
 
 			possiblyEmptyFolders = new StringSet(Config.Manager.KeySettingsForPaths);
@@ -85,6 +86,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				if (framePage)
 					{  count += TargetBuilder.FramePageCost;  }
+
+				if (homePage)
+					{  count += TargetBuilder.HomePageCost;  }
 
 				if (menu)
 					{  count += TargetBuilder.MenuCost;  }
@@ -240,6 +244,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  framePage = true;  }
 			}
 
+		/* Function: AddHomePage
+		 * Adds the home page, home.html, to the list of things that need to be rebuilt.
+		 */
+		public void AddHomePage ()
+			{
+			lock (accessLock)
+				{  homePage = true;  }
+			}
+
 		/* Function: AddMenu
 		 * Adds the menu to the list of things that need to be rebuilt.
 		 */
@@ -386,6 +399,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (framePage)
 					{
 					framePage = false;
+					return true;
+					}
+				else
+					{  return false;  }
+				}
+			}
+
+		/* Function: PickHomePage
+		 * Picks the home page to work on, returning whether it's necessary.  If it returns true it will be removed from the list of
+		 * unprocessed changes.
+		 */
+		 public bool PickHomePage ()
+			{
+			lock (accessLock)
+				{
+				if (homePage)
+					{
+					homePage = false;
 					return true;
 					}
 				else
@@ -554,6 +585,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Lock()> and <Unlock()>.
 		 */
 		protected internal bool framePage;
+
+
+		/* var: homePage
+		 * 
+		 * Whether the home page, home.html, needs to be rebuilt.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal bool homePage;
 
 
 		/* var: menu
