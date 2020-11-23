@@ -254,8 +254,8 @@ td {
 		}
 	.SeEntry:hover,
 	#SeSelectedEntry {
-		background-color: #FCFCE6;
-		border-color: #D2D2B8;
+		background-color: #ECECEC;
+		border-color: #D0D0D0;
 		}
 	a.SeEntry {
 		display: block;
