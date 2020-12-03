@@ -15,14 +15,23 @@
  *		A file used to store information about the configuration as of last time this output target was built.
  *		
  *		> [String: Style Path]
+ *		>    [String: Inherit] ... [String: null]
+ *		>    [String: OnLoad] [Byte: Page Type] ... [String: null]
+ *		>    [String: Link] [Byte: Page Type] ... [String: null]
+ *		>    [String: Home Page or null]
+ *		>
  *		> [String: Style Path]
  *		> ...
  *		> [String: null]
  *		
- *		Stores the list of styles that apply to this target, in the order in which they must be loaded, as a null-terminated
- *		list of style paths.  The paths are either to the style's CSS file or <Style.txt>.  These are stored instead of
- *		the names so that if a name is interpreted differently from one run to the next it will be detected.  It's also the
- *		computed list of styles after all inheritance has been applied.
+ *		Stores the list of styles that apply to this target in the order in which they must be loaded.  Each one starts as
+ *		a path, which is either to the style's CSS file or <Style.txt>.  These are stored instead of the names so that if a
+ *		name is interpreted differently from one run to the next it will be detected.
+ *		
+ *		The properties are a null-terminated list of inherit statements, then a null-terminated list of OnLoad statements
+ *		each followed by a page type byte, then a null terminated list of Link statements each followed by a page type
+ *		byte, then the path to the custom home page file or rull if it's not defined.  There will not be a page type byte
+ *		following the null strings that end the OnLoad and Link lists.
  *		
  *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
  *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
@@ -36,7 +45,12 @@
  *		
  *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
  *		one is deleted or changes.
- *			
+ *	
+ *	
+ *		Revision History:
+ *		
+ *			- 2.2
+ *				- Added the properties of each style.  Previously it only stored each one's style path.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -79,11 +93,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			try
 				{
-				if (binaryFile.OpenForReading(filename, "2.0") == false)
+				if (binaryFile.OpenForReading(filename, "2.2") == false)
 					{  result = false;  }
 				else
 					{
 					// [String: Style Path]
+					//    (properties)
 					// [String: Style Path]
  					// ...
  					// [String: null]
@@ -92,13 +107,82 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					while (stylePath != null)
 						{
-						if (stylePath.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
-							{  styles.Add( new Styles.CSSOnly(stylePath) );  }
-						else
-							{  styles.Add( new Styles.Advanced(stylePath) );  }
+						Style style;
 
+						if (stylePath.EndsWith(".css", StringComparison.OrdinalIgnoreCase))
+							{  style = new Styles.CSSOnly(stylePath);  }
+						else
+							{  style = new Styles.Advanced(stylePath);  }
+
+						styles.Add(style);
+
+
+						// [String: Inherit] ... [String: null]
+
+						string inheritStatement = binaryFile.ReadString();
+
+						while (inheritStatement != null)
+							{
+							// Find the name in the list of styles so we can connect the objects together properly.  There should only
+							// be one style per name so we can just compare by name.  Also, this list is stored in the order in which 
+							// they must be applied, which means inherited styles will appear before the ones that inherit from them,
+							// so we can search the list we've built so far instead of waiting until they're all loaded.
+							Style matchingStyle = null;
+
+							for (int i = 0; i < styles.Count; i++)
+								{
+								if (string.Compare(inheritStatement, styles[i].Name, StringComparison.OrdinalIgnoreCase) == 0)
+									{
+									matchingStyle = styles[i];
+									break;
+									}
+								}
+
+							// If there's no match just add it as null.
+							style.AddInheritedStyle(inheritStatement, Config.PropertySource.PreviousRun, matchingStyle);
+
+							inheritStatement = binaryFile.ReadString();
+							}
+
+
+						// [String: OnLoad] [Byte: Page Type] ... [String: null]
+
+						string onLoadStatement = binaryFile.ReadString();
+
+						while (onLoadStatement != null)
+							{
+							Engine.Styles.PageType pageType = (Engine.Styles.PageType)binaryFile.ReadByte();
+							style.AddOnLoad(onLoadStatement, Config.PropertySource.PreviousRun, pageType);
+
+							onLoadStatement = binaryFile.ReadString();
+							}
+
+
+						// [String: Link] [Byte: Page Type] ... [String: null]
+
+						string linkStatement = binaryFile.ReadString();
+
+						while (linkStatement != null)
+							{
+							Engine.Styles.PageType pageType = (Engine.Styles.PageType)binaryFile.ReadByte();
+							style.AddLinkedFile(linkStatement, Config.PropertySource.PreviousRun, pageType);
+
+							linkStatement = binaryFile.ReadString();
+							}
+
+
+						// [String: Home Page or null]
+
+						string homePage = binaryFile.ReadString();
+
+						if (homePage != null)
+							{  style.SetHomePage(homePage, Config.PropertySource.PreviousRun);  }
+
+
+						// Next style path
 						stylePath = binaryFile.ReadString();
 						}
+
 
 					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
 					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
@@ -163,6 +247,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				binaryFile.OpenForWriting(filename);
 
 				// [String: Style Path]
+				//    (properties)
 				// [String: Style Path]
  				// ...
  				// [String: null]
@@ -175,9 +260,55 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						{  binaryFile.WriteString( (style as Styles.Advanced).ConfigFile );  }
 					else
 						{  throw new NotImplementedException();  }
+
+
+					// [String: Inherit] ... [String: null]
+
+					if (style.Inherits != null)
+						{
+						foreach (var inheritStatement in style.Inherits)
+							{  binaryFile.WriteString(inheritStatement.Name);  }
+						}
+					
+					binaryFile.WriteString(null);
+
+
+					// [String: OnLoad] [Byte: Page Type] ... [String: null]
+
+					if (style.OnLoad != null)
+						{
+						foreach (var onLoadStatement in style.OnLoad)
+							{
+							binaryFile.WriteString(onLoadStatement.Statement);
+							binaryFile.WriteByte((byte)onLoadStatement.Type);
+							}
+						}
+
+					binaryFile.WriteString(null);
+
+
+					// [String: Link] [Byte: Page Type] ... [String: null]
+
+					if (style.Links != null)
+						{
+						foreach (var linkStatement in style.Links)
+							{
+							binaryFile.WriteString(linkStatement.File);
+							binaryFile.WriteByte((byte)linkStatement.Type);
+							}
+						}
+
+					binaryFile.WriteString(null);
+
+
+					// [String: Home Page or null]
+
+					binaryFile.WriteString(style.HomePage);
 					}
 
+				// End of style paths
 				binaryFile.WriteString(null);
+
 
 				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
 				// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
