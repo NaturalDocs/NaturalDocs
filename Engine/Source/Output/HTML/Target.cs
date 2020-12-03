@@ -132,9 +132,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			else // start fresh
 				{
+				previousProjectInfo = new Config.ProjectInfo();
 				previousStyles = new List<Style>();
 				previousFileSourceInfoList = new List<FileSourceInfo>();
 				}
+
+
+			//
+			// Compare to the previous project info
+			//
+
+			bool hasProjectInfoChanges = (!hasBinaryConfigFile ||
+														  ProjectInfo.Title != previousProjectInfo.Title ||
+														  ProjectInfo.Subtitle != previousProjectInfo.Subtitle ||
+														  ProjectInfo.Copyright != previousProjectInfo.Copyright ||
+														  ProjectInfo.TimestampCode != previousProjectInfo.TimestampCode);
 
 			
 			//
@@ -398,13 +410,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 			//
-			// Always rebuild the scaffolding since it's quick.
-			//
-
-			unprocessedChanges.AddFramePage();
-
-
-			//
 			// Load up unprocessedChanges
 			//
 
@@ -428,10 +433,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			else
 				{
+				if (!hasBinaryConfigFile || hasProjectInfoChanges)
+					{  unprocessedChanges.AddFramePage();  }
+
 				if (!hasBinaryConfigFile || hasStyleChanges)	
 					{  unprocessedChanges.AddMainStyleFiles();  }
 
-				if (!hasBinaryConfigFile || Style.HomePageOf(stylesWithInheritance) != Style.HomePageOf(previousStyles))
+				if (!hasBinaryConfigFile || hasProjectInfoChanges ||
+					Style.HomePageOf(stylesWithInheritance) != Style.HomePageOf(previousStyles))
 					{  unprocessedChanges.AddHomePage();  }
 				}
 
