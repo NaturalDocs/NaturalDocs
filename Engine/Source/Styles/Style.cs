@@ -159,6 +159,93 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		abstract public bool IsSameFundamentalStyle (Style other);
 
 
+		/* Function: IsSameStyleAndProperties
+		 * Returns whether this style is the same as the passed one, meaning both <IsSameFundamentStyle()> plus all supporting
+		 * properties.  It will return false if any setting is different.
+		 */
+		public bool IsSameStyleAndProperties (Style other, bool includeInheritedStyles = true)
+			{
+			if (!IsSameFundamentalStyle(other))
+				{  return false;  }
+
+
+			// Inherits
+
+			int inheritsCount = (inherits == null ? 0 : inherits.Count);
+			int otherInheritsCount = (other.inherits == null ? 0 : other.inherits.Count);
+
+			if (inheritsCount != otherInheritsCount)
+				{  return false;  }
+
+			for (int i = 0; i < inheritsCount; i++)
+				{
+				if (inherits[i].HasSameProperties(other.inherits[i]) == false)
+					{  return false;  }
+				}
+
+
+			// OnLoad
+
+			int onLoadCount = (onLoad == null ? 0 : onLoad.Count);
+			int otherOnLoadCount = (other.onLoad == null ? 0 : other.onLoad.Count);
+
+			if (onLoadCount != otherOnLoadCount)
+				{  return false;  }
+
+			for (int i = 0; i < onLoadCount; i++)
+				{
+				if (onLoad[i].HasSameProperties(other.onLoad[i]) == false)
+					{  return false;  }
+				}
+
+
+			// Links
+
+			int linksCount = (links == null ? 0 : links.Count);
+			int otherLinksCount = (other.links == null ? 0 : other.links.Count);
+
+			if (linksCount != otherLinksCount)
+				{  return false;  }
+
+			for (int i = 0; i < linksCount; i++)
+				{
+				if (links[i].HasSameProperties(other.links[i]) == false)
+					{  return false;  }
+				}
+
+
+			// Home Page
+
+			if (homePage.HasSameProperties(other.homePage) == false)
+				{  return false;  }
+
+
+			// Compare inherited styles
+
+			if (includeInheritedStyles && inheritsCount > 0)
+				{
+				// We're going to build inheritance lists and compare those instead of just recursing through the inherit statements.
+				// Why?  The function that builds the inheritance list avoids circular dependencies so we won't have the potential 
+				// for an infinite loop.
+
+				List<Style> inheritanceList = BuildInheritanceList();
+				List<Style> otherInheritanceList = other.BuildInheritanceList();
+
+				if (inheritanceList.Count != otherInheritanceList.Count)
+					{  return false;  }
+
+				for (int i = 0; i < inheritanceList.Count; i++)
+					{
+					if (!inheritanceList[i].IsSameStyleAndProperties(otherInheritanceList[i], includeInheritedStyles: false))
+						{  return false;  }
+					}
+				}
+
+
+			return true;
+			}
+
+
 		/* Function: BuildInheritanceList
 		 * Returns a list of <Styles> containing this one and all its inherited styles in the order in which they should be applied.
 		 */
@@ -296,6 +383,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		public string Name;
 		public Style Style;
 		public Config.PropertyLocation PropertyLocation;
+
+		public bool HasSameProperties (InheritStatement other)
+			{  return (Name == other.Name);  }
 		}
 
 
@@ -307,6 +397,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		public PageType Type;
 		public Path File;
 		public Config.PropertyLocation PropertyLocation;
+
+		public bool HasSameProperties (LinkStatement other)
+			{  return (Type == other.Type && File == other.File);  }
 		}
 
 
@@ -318,6 +411,9 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		public PageType Type;
 		public string Statement;
 		public Config.PropertyLocation PropertyLocation;
+
+		public bool HasSameProperties (OnLoadStatement other)
+			{  return (Type == other.Type && Statement == other.Statement);  }
 		}
 
 
@@ -328,5 +424,8 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 		{
 		public Path File;
 		public Config.PropertyLocation PropertyLocation;
+
+		public bool HasSameProperties (HomePageStatement other)
+			{  return (File == other.File);  }
 		}
 	}
