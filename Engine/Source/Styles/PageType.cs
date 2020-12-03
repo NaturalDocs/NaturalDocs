@@ -18,10 +18,10 @@
 namespace CodeClear.NaturalDocs.Engine.Styles
 	{
 	public enum PageType : byte {
-  		All,
-		Frame,
-		Content,
-		Home
+  		All = 0,
+		Frame = 1,
+		Content = 2,
+		Home = 3
 		}
 
 	}
