@@ -120,13 +120,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			//
 
 			Config_nd binaryConfigParser = new Config_nd();
+			Config.ProjectInfo previousProjectInfo;
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousStyles, out previousFileSourceInfoList);
+				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousProjectInfo, 
+																					out previousStyles, out previousFileSourceInfoList);
 				}
 			else // start fresh
 				{
@@ -392,7 +394,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					};
 				}
 
-			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", stylesWithInheritance, fileSourceInfoList);
+			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", ProjectInfo, stylesWithInheritance, fileSourceInfoList);
 
 
 			//

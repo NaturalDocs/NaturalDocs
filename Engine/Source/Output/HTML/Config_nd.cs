@@ -14,6 +14,13 @@
  * 
  *		A file used to store information about the configuration as of last time this output target was built.
  *		
+ *		> [String: Project Title or null]
+ *		> [String: Project Subtitle or null]
+ *		> [String: Project Copyright or null]
+ *		> [String: Project Timestamp Code or null]
+ *		
+ *		The project info as of the last run.  If any of the properties were not set they will be null.
+ *		
  *		> [String: Style Path]
  *		>    [String: Inherit] ... [String: null]
  *		>    [String: OnLoad] [Byte: Page Type] ... [String: null]
@@ -45,11 +52,12 @@
  *		
  *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
  *		one is deleted or changes.
- *	
+ *		
  *	
  *		Revision History:
  *		
  *			- 2.2
+ *				- Added the project title, subtitle, copyright, and timestamp code.
  *				- Added the properties of each style.  Previously it only stored each one's style path.
  */
 
@@ -83,8 +91,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public bool Load (Path filename, out List<Style> styles, out List<FileSourceInfo> fileSourceInfoList)
+		public bool Load (Path filename, out Config.ProjectInfo projectInfo, out List<Style> styles, out List<FileSourceInfo> fileSourceInfoList)
 			{
+			projectInfo = new Config.ProjectInfo();
 			styles = new List<Style>();
 			fileSourceInfoList = new List<FileSourceInfo>();
 
@@ -97,6 +106,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{  result = false;  }
 				else
 					{
+					// [String: Project Title or null]
+					// [String: Project Subtitle or null]
+					// [String: Project Copyright or null]
+					// [String: Project Timestamp Code or null]
+
+					projectInfo.Title = binaryFile.ReadString();
+					projectInfo.TitlePropertyLocation = Config.PropertySource.PreviousRun;
+
+					projectInfo.Subtitle = binaryFile.ReadString();
+					projectInfo.SubtitlePropertyLocation = Config.PropertySource.PreviousRun;
+
+					projectInfo.Copyright = binaryFile.ReadString();
+					projectInfo.CopyrightPropertyLocation = Config.PropertySource.PreviousRun;
+
+					projectInfo.TimestampCode = binaryFile.ReadString();
+					projectInfo.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
+
+
 					// [String: Style Path]
 					//    (properties)
 					// [String: Style Path]
@@ -183,6 +210,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						stylePath = binaryFile.ReadString();
 						}
 
+					projectInfo.StyleName = styles[styles.Count - 1].Name;
+					projectInfo.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
+
 
 					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
 					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
@@ -229,6 +259,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			if (result == false)
 				{
+				projectInfo = new Config.ProjectInfo();
 				styles.Clear();
 				fileSourceInfoList.Clear();
 				}
@@ -240,11 +271,22 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Function: Save
 		 * Saves the passed information in <Config.nd>.
 		 */
-		public void Save (Path filename, List<Style> styles, List<FileSourceInfo> fileSourceInfoList)
+		public void Save (Path filename, Config.ProjectInfo projectInfo, List<Style> styles, List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
 				binaryFile.OpenForWriting(filename);
+
+				// [String: Project Title or null]
+				// [String: Project Subtitle or null]
+				// [String: Project Copyright or null]
+				// [String: Project Timestamp Code or null]
+
+				binaryFile.WriteString(projectInfo.Title);
+				binaryFile.WriteString(projectInfo.Subtitle);
+				binaryFile.WriteString(projectInfo.Copyright);
+				binaryFile.WriteString(projectInfo.TimestampCode);
+
 
 				// [String: Style Path]
 				//    (properties)
