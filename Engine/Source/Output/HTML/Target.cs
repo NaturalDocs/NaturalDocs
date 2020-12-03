@@ -140,6 +140,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			//
 
 			bool inPurgingOperation = false;
+			bool hasStyleChanges = false;
 
 			if (!hasBinaryConfigFile)
 				{
@@ -148,6 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				PurgeAllStyleFolders(ref inPurgingOperation);
 
 				newStartupIssues |= StartupIssues.NeedToReparseStyleFiles;
+				hasStyleChanges = true;
 				}
 
 			else // (hasBinaryConfigFile)
@@ -168,7 +170,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 					if (!stillExists)
-						{  
+						{
+						hasStyleChanges = true;
 						PurgeStyleFolder(previousStyle.Name, ref inPurgingOperation);
 						}
 					}
@@ -191,9 +194,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 						}
 
 					if (!foundMatch)
-						{  
+						{
+						hasStyleChanges = true;
 						newStartupIssues |= StartupIssues.NeedToReparseStyleFiles;
 						break;
+						}
+					}
+
+				// Check if the list of styles is the same or there's any changes in the settings.
+
+				if (stylesWithInheritance.Count != previousStyles.Count)
+					{  hasStyleChanges = true;  }
+
+				if (!hasStyleChanges)
+					{
+					for (int i = 0; i < stylesWithInheritance.Count; i++)
+						{
+						if (!stylesWithInheritance[i].IsSameStyleAndProperties(previousStyles[i], includeInheritedStyles: false))
+							{
+							hasStyleChanges = true;
+							break;
+							}
 						}
 					}
 				}
@@ -375,17 +396,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 			//
-			// Always rebuild the scaffolding since they're quick.  If you ever make this differential, remember that FramePage depends
-			// on the project name and other information.
+			// Always rebuild the scaffolding since it's quick.
 			//
 
 			unprocessedChanges.AddFramePage();
-			unprocessedChanges.AddHomePage();
-			unprocessedChanges.AddMainStyleFiles();
 
 
 			//
-			// Load up unprocessedChanges if we're rebuilding
+			// Load up unprocessedChanges
 			//
 
 			if (EngineInstance.HasIssues( StartupIssues.NeedToRebuildAllOutput ) ||
@@ -404,6 +422,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				unprocessedChanges.AddMenu();
 
 				// We'll handle search prefixes after starting SearchIndex
+				}
+
+			else
+				{
+				if (!hasBinaryConfigFile || hasStyleChanges)	
+					{  unprocessedChanges.AddMainStyleFiles();  }
+
+				if (!hasBinaryConfigFile || Style.HomePageOf(stylesWithInheritance) != Style.HomePageOf(previousStyles))
+					{  unprocessedChanges.AddHomePage();  }
 				}
 
 
