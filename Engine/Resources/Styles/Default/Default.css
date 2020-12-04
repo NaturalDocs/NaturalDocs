@@ -416,6 +416,7 @@ td {
 		height: 16px;
 		position: relative;
 		top: 3px;
+		opacity: .75;
 		}
 	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.svg") center center no-repeat;  }
 	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.svg") center center no-repeat;  }
@@ -435,7 +436,7 @@ td {
 
 	.MTabTitle {
 		display: inline-block;
-		color: #606060;
+		color: #808080;
 		font-style: italic;
 		margin: 0 4px;
 		}
@@ -462,6 +463,12 @@ td {
 			to regular tabs the first icon and text doesn't shift at all. */
 		padding-left: 5px;
 		}
+		.MTabAsFolder .MTabTitle {
+			color: #606060;
+			}
+		.MTabAsFolder .MTabIcon {
+			opacity: 1;
+			}
 		.MTabAsFolder .MFolderIcon {
 			padding-top: 1.2rem;
 			}
