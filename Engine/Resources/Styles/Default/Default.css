@@ -24,7 +24,10 @@
 	$ToolTipBackgroundColor: #FFFFF0;
 	$ContentBackgroundColor: #FFFFFF;
 
-	$MenuLineColor: #C0C0C0;
+	$MenuTextColor: #606060;
+	$MenuFadedTextColor: #808080;
+	$MenuFadedOpacity: .75;
+	$MenuLineColor: #BCBCBC;
 	$MenuHoverColor: #EEEEEE;
 
 	$MenuSummaryBorderColor: #D8D8D8;
@@ -416,7 +419,7 @@ td {
 		height: 16px;
 		position: relative;
 		top: 3px;
-		opacity: .75;
+		opacity: $MenuFadedOpacity;
 		}
 	#MFileTab .MTabIcon {  background: url("images/menu-tab-files.svg") center center no-repeat;  }
 	#MClassTab .MTabIcon {  background: url("images/menu-tab-classes.svg") center center no-repeat;  }
@@ -436,7 +439,7 @@ td {
 
 	.MTabTitle {
 		display: inline-block;
-		color: #808080;
+		color: $MenuFadedTextColor;
 		font-style: italic;
 		margin: 0 4px;
 		}
@@ -451,7 +454,7 @@ td {
 		}
 	.MEntry,
 	a.MEntry {
-		color: #606060;
+		color: $MenuTextColor;
 		}
 	a.MEntry:hover,
 	a.MEntry:active {
@@ -464,7 +467,7 @@ td {
 		padding-left: 5px;
 		}
 		.MTabAsFolder .MTabTitle {
-			color: #606060;
+			color: $MenuTextColor;
 			}
 		.MTabAsFolder .MTabIcon {
 			opacity: 1;
@@ -486,7 +489,7 @@ td {
 		}
 	.MFolder.Parent,
 	a.MFolder.Parent {
-		color: #808080;
+		color: $MenuFadedTextColor;
 		}
 	.MFolder.Parent.Empty {
 		color: #B0B0B0;
@@ -511,7 +514,7 @@ td {
 	.MFolder.Selected {
 		font-weight: $MenuSelectedFontWeight;
 		background-color: #FFFFFF;
-		border-bottom: 3px solid #888888;
+		border-bottom: 2px solid $MenuFadedTextColor;
 		}
 	.MFile.Selected {
 		font-weight: $MenuSelectedFontWeight;
@@ -577,7 +580,7 @@ td {
 		padding: .5em .65rem .25em .65rem;
 		margin: 1.25rem 0 .25rem 0;
 		line-height: 120%;
-		border-bottom: 1px solid #D4D4D4;
+		border-bottom: 1px solid #D0D0D0;
 		}
 		.SuEntry.TClass.first,
 		.SuEntry.TInterface.first,
