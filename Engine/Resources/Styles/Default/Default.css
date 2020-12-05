@@ -217,11 +217,11 @@ td {
 
 #NDSearchField {
 	z-index: $NDSearchFieldZIndex;
-	width: 17.5rem;
-	background: #FFFFFF URL("images/search.svg") no-repeat .48rem center;
-	padding: .3em .75rem .2em 1.8rem;
+	width: 18rem;
+	background: #FFFFFF URL("images/search.svg") no-repeat .58rem center;
+	padding: .4em .85rem .3em 1.9rem;
 	border: 0 none;
-	border-radius: 2.5rem;
+	border-radius: 1em;
 
 	/* Default to not displaying so it doesn't show up on the loading page.  NDFramePage will make it visible when it starts. */
 	display: none;
