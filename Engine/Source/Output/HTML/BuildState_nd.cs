@@ -63,10 +63,25 @@
  *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
  *		stored as "files" and {1-3}.
  *		
+ *		> [String: Path to Home Page or null]
+ *		
+ *		The custom home page file, or null if using the default.
+ *		
+ *		> [String: Generated Timestamp or null]
+ *		
+ *		The timestamp used the last time the output was built.  This is the generated result, so "Updated January 1, 2020", 
+ *		and not the code like "Updated month d, yyyy".
+ *		
+ *		> [Byte: Home Page Uses Timestamp (0 or 1)]
+ *		
+ *		Whether the home page uses the generated timestamp or not.
+ *		
+ *		
  *		Version History:
  *		
  *			- 2.2
  *				- Added Need to Build Home Page.
+ *				- Added Path to Home Page, Generated Timestamp, and Home Page Uses Timestamp.
  *		
  *			- 2.1
  *				- Added Used Image File IDs, Image Files to Rebuild, and Unchanged Image File Use Check IDs.
@@ -183,6 +198,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 						menuDataFileType = binaryFile.ReadString();
 						}
+
+					// [String: Path to Home Page or null]
+					// [String: Generated Timestamp or null]
+					// [Byte: Home Page Uses Timestamp (0 or 1)]
+
+					buildState.HomePage = binaryFile.ReadString();
+					buildState.GeneratedTimestamp = binaryFile.ReadString();
+					buildState.HomePageUsesTimestamp = (binaryFile.ReadByte() != 0);
 					}
 				}
 			catch
@@ -274,6 +297,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 				binaryFile.WriteString(null);
+
+				// [String: Path to Home Page or null]
+				// [String: Generated Timestamp or null]
+				// [Byte: Home Page Uses Timestamp (0 or 1)]
+
+				binaryFile.WriteString(buildState.HomePage);
+				binaryFile.WriteString(buildState.GeneratedTimestamp);
+				binaryFile.WriteByte( (buildState.HomePageUsesTimestamp ? 1 : 0) );
 				}
 			}
 

@@ -35,6 +35,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			usedMenuDataFiles = new NumberSetTable<Hierarchy>();
 
+			homePage = null;
+			generatedTimestamp = null;
+
+			// Default to true instead of false since the default home page uses it.  Also, having this set incorrectly true just
+			// means an extra file is rebuilt, whereas setting it incorrectly false means a file that should be rebuilt isn't.
+			homePageUsesTimestamp = true;
+
 			accessLock = new object();
 			}
 
@@ -222,6 +229,68 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 
+		// Group: Home Page and Timestamp Properties
+		// __________________________________________________________________________
+
+
+		/* Property: HomePage
+		 * The custom home page used for the target, or null if using the default one.
+		 */
+		public Path HomePage
+			{
+			get
+				{
+				lock (accessLock)
+					{  return homePage;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  homePage = value;  }
+				}
+			}
+
+
+		/* Property: GeneratedTimestamp
+		 * The generated timestamp being used, or null if one isn't defined.  This is the final result, like "Updated January
+		 * 1, 2021", and not the code, like "Updated month d, yyyy".
+		 */
+		public string GeneratedTimestamp
+			{
+			get
+				{
+				lock (accessLock)
+					{  return generatedTimestamp;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  generatedTimestamp = value;  }
+				}
+			}
+
+
+		/* Property: HomePageUsesTimestamp
+		 * Whether the home page uses the generated timestamp, and thus needs to be updated whenever it changes.  This
+		 * is necessary because there may be a timestamp code in <Project.txt> but it's not included in a custom home page
+		 * defined in <Style.txt>.
+		 */
+		public bool HomePageUsesTimestamp
+			{
+			get
+				{
+				lock (accessLock)
+					{  return homePageUsesTimestamp;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  homePageUsesTimestamp = value;  }
+				}
+			}
+
+
+
 		// Group: Variables
 		// __________________________________________________________________________
 		//
@@ -276,6 +345,27 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * <Lock()> and <Unlock()>.
 		 */
 		protected internal NumberSetTable<Hierarchy> usedMenuDataFiles;
+
+
+		/* var: homePage
+		 * The custom home page used for the target, or null if using the default one.
+		 */
+		protected Path homePage;
+
+
+		/* var: generatedTimestamp
+		 * The generated timestamp being used, or null if one isn't defined.  This is the final result, like "Updated January
+		 * 1, 2021", and not the code, like "Updated month d, yyyy".
+		 */
+		protected string generatedTimestamp;
+
+
+		/* var: homePageUsesTimestamp
+		 * Whether the home page uses the generated timestamp, and thus needs to be updated whenever it changes.  This
+		 * is necessary because there may be a timestamp code in <Project.txt> but it's not included in a custom home page
+		 * defined in <Style.txt>.
+		 */
+		protected bool homePageUsesTimestamp;
 
 
 		/* var: accessLock
