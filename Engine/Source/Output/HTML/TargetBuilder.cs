@@ -504,7 +504,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			string timestampHTML = Target.ProjectInfo.MakeTimestamp();
+			string timestampHTML = Target.BuildState.GeneratedTimestamp;
 			string copyrightHTML = Target.ProjectInfo.Copyright;
 
 			if (timestampHTML != null)
@@ -635,13 +635,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 				}
 
-			string timestampHTML = Target.ProjectInfo.MakeTimestamp();
+			string timestampHTML = Target.BuildState.GeneratedTimestamp;
 			string copyrightHTML = Target.ProjectInfo.Copyright;
 
 			if (timestampHTML != null)
 				{  timestampHTML = timestampHTML.ToHTML();  }
 			if (copyrightHTML != null)
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
+
+
+			// Update HomePageUsesTimestamp
+
+			Target.BuildState.HomePageUsesTimestamp = true;
 
 
 			// Build other/home.html, the default welcome page

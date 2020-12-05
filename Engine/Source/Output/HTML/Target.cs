@@ -142,11 +142,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Compare to the previous project info
 			//
 
-			bool hasProjectInfoChanges = (!hasBinaryConfigFile ||
-														  ProjectInfo.Title != previousProjectInfo.Title ||
-														  ProjectInfo.Subtitle != previousProjectInfo.Subtitle ||
-														  ProjectInfo.Copyright != previousProjectInfo.Copyright ||
-														  ProjectInfo.TimestampCode != previousProjectInfo.TimestampCode);
+			bool projectInfoChanged = (!hasBinaryConfigFile ||
+													 ProjectInfo.Title != previousProjectInfo.Title ||
+													 ProjectInfo.Subtitle != previousProjectInfo.Subtitle ||
+													 ProjectInfo.Copyright != previousProjectInfo.Copyright ||
+													 ProjectInfo.TimestampCode != previousProjectInfo.TimestampCode);
 
 			
 			//
@@ -388,7 +388,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 			//
-			// Save Config.nd.
+			// Save Config.nd
 			//
 
 			if (!System.IO.Directory.Exists(WorkingDataFolder))
@@ -407,6 +407,30 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", ProjectInfo, stylesWithInheritance, fileSourceInfoList);
+
+
+			//
+			// Determine our home page
+			//
+
+			Path newHomePage = Style.HomePageOf(stylesWithInheritance);
+			bool homePageChanged = (newHomePage != buildState.HomePage);
+
+			buildState.HomePage = newHomePage;
+			// HomePageUsesTimestamp will be determined when it's built.
+
+
+			//
+			// Generate our timestamp
+			//
+
+			// We do it here instead of as needed because there are two places it could be used (the frame page and the home page)
+			// and we want to avoid the admittedly unlikely possibility that Natural Docs can be building around midnight and use one
+			// date for one and another for the other.
+			string newTimestamp = ProjectInfo.MakeTimestamp();
+			bool timestampChanged = (newTimestamp != buildState.GeneratedTimestamp);
+
+			buildState.GeneratedTimestamp = newTimestamp;
 
 
 			//
@@ -433,14 +457,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			else
 				{
-				if (!hasBinaryConfigFile || hasProjectInfoChanges)
+				if (!hasBinaryConfigFile || projectInfoChanged || timestampChanged)
 					{  unprocessedChanges.AddFramePage();  }
 
 				if (!hasBinaryConfigFile || hasStyleChanges)	
 					{  unprocessedChanges.AddMainStyleFiles();  }
 
-				if (!hasBinaryConfigFile || hasProjectInfoChanges ||
-					Style.HomePageOf(stylesWithInheritance) != Style.HomePageOf(previousStyles))
+				if (!hasBinaryConfigFile || homePageChanged || projectInfoChanged ||
+					(timestampChanged && buildState.HomePageUsesTimestamp))
 					{  unprocessedChanges.AddHomePage();  }
 				}
 
