@@ -600,12 +600,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected void BuildHomePage (CancelDelegate cancelDelegate)
 			{
-			BuildDefaultHomePage(cancelDelegate);
+			if (Target.BuildState.HomePage == null)
+				{  BuildDefaultHomePage(cancelDelegate);  }
+			else
+				{  BuildCustomHomePage(Target.BuildState.HomePage, cancelDelegate);  }
 			}
 
 
 		/* Function: BuildDefaultHomePage
-		 * Builds the default home.html if a custom one wasn't specified.
+		 * Builds the default home.html.
 		 */
 		protected void BuildDefaultHomePage (CancelDelegate cancelDelegate)
 			{
@@ -720,6 +723,63 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			Components.Page pageBuilder = new Components.Page(context);
 
 			pageBuilder.Build(Target.OutputFolder + "/other/home.html", pageTitleText, content.ToString(), PageType.Home);
+			}
+
+
+		/* Function: BuildCustomHomePage
+		 * Builds a custom home.html from the template.
+		 */
+		protected void BuildCustomHomePage (Path template, CancelDelegate cancelDelegate)
+			{
+			string output = System.IO.File.ReadAllText(template);
+
+			var titleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Title();
+			var subtitleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Subtitle();
+			var copyrightRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Copyright();
+			var timestampRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Timestamp();
+
+			// Can't use null strings for regex substitutions, so use empty strings.
+			string titleHTML = "";
+			string subtitleHTML = "";
+			string timestampHTML = "";
+			string copyrightHTML = "";
+
+
+			// Gather and format project info
+
+			if (Target.ProjectInfo.Title == null)
+				{
+				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
+				}
+			else
+				{
+				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
+
+				if (Target.ProjectInfo.Subtitle != null)
+					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.ProjectInfo.Subtitle).ToHTML();  }
+				}
+
+			if (Target.BuildState.GeneratedTimestamp != null)
+				{  timestampHTML = Target.BuildState.GeneratedTimestamp.ToHTML();  }
+			
+			if (Target.ProjectInfo.Copyright != null)
+				{  copyrightHTML = Target.ProjectInfo.Copyright.ToHTML();  }
+
+
+			// Update HomePageUsesTimestamp
+
+			Target.BuildState.HomePageUsesTimestamp = timestampRegex.IsMatch(output);
+
+
+			// Perform substitutions
+
+			output = titleRegex.Replace(output, titleHTML);
+			output = subtitleRegex.Replace(output, subtitleHTML);
+			output = copyrightRegex.Replace(output, copyrightHTML);
+			output = timestampRegex.Replace(output, timestampHTML);
+
+			Path outputFile = Target.OutputFolder + "/other/home.html";
+			HTML.Component.WriteTextFile(outputFile, output);
 			}
 
 

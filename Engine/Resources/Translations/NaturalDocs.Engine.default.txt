@@ -901,14 +901,15 @@ Style.txt.HomePageReference.multiline {{{
 #
 # If this is defined, none of the OnLoad or Link properties will have any
 # effect on it.  You must add those things directly to the HTML file if
-# they're needed.  If this property isn't defined then a default home page
-# will be generated.
+# they're needed.
 #
-# The HTML file may contain these values which will be replaced by their
-# corresponding properties from the project information:
+# The HTML file may contain these strings which will be replaced by your
+# project information.  They will have entity substitutions made for <, >,
+# and " characters so they're safe to place directly in the HTML or inside
+# double-quoted JavaScript strings.
 #
-#    - %NaturalDocs_ProjectTitle%
-#    - %NaturalDocs_ProjectSubTitle%
-#    - %NaturalDocs_Copyright%
-#    - %NaturalDocs_Timestamp%
+#    %NaturalDocs_Title%
+#    %NaturalDocs_Subtitle%
+#    %NaturalDocs_Copyright%
+#    %NaturalDocs_Timestamp%
 }}}

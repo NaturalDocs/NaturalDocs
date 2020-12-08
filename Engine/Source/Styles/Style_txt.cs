@@ -52,10 +52,13 @@
  *		The home page HTML file may contain these values which will be replaced by their corresponding properties in the
  *		project info:
  *		
- *		- %NaturalDocs_ProjectTitle%
- *		- %NaturalDocs_ProjectSubTitle%
+ *		- %NaturalDocs_Title%
+ *		- %NaturalDocs_Subtitle%
  *		- %NaturalDocs_Copyright%
  *		- %NaturalDocs_Timestamp%
+ *		
+ *		Entity subsitutions will be made for <, >, and " so they are safe to embed directly in the HTML or in double-quoted
+ *		JavaScript strings.
  *		
  *		Revision History:
  *		
