@@ -160,12 +160,15 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 							}
 						else
 							{
-							Path fullLinkedFile = style.Folder + "/" + linkedFile;
+							if (linkedFile.IsRelative)
+								{  linkedFile = style.Folder + "/" + linkedFile;  }
 
-							if (!System.IO.File.Exists(fullLinkedFile))
-								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", fullLinkedFile) );  }
+							if (!System.IO.File.Exists(linkedFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindLinkedFile(name)", linkedFile) );  }
+							else if (!style.Folder.Contains(linkedFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.LinkedFileMustBeInStyleFolder(name, folder)", linkedFile, style.Folder) );  }
 							else
-								{  style.AddLinkedFile(fullLinkedFile, file.PropertyLocation, pageType);  }
+								{  style.AddLinkedFile(linkedFile, file.PropertyLocation, pageType);  }
 							}
 
 						continue;
@@ -207,13 +210,16 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 							}
 						else
 							{
-							Path fullHomePageFile = style.Folder + "/" + homePageFile;
+							if (homePageFile.IsRelative)
+								{  homePageFile = style.Folder + "/" + homePageFile;  }
 
-							if (!System.IO.File.Exists(fullHomePageFile))
-								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindHomePageFile(name)", fullHomePageFile) );  }
+							if (!System.IO.File.Exists(homePageFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindHomePageFile(name)", homePageFile) );  }
+							else if (!style.Folder.Contains(homePageFile))
+								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageFileMustBeInStyleFolder(name, folder)", homePageFile, style.Folder) );  }
 							else
 								{  
-								style.SetHomePage(fullHomePageFile, file.PropertyLocation);
+								style.SetHomePage(homePageFile, file.PropertyLocation);
 								}
 							}
 
