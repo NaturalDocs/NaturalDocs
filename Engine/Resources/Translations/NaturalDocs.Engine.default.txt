@@ -810,6 +810,8 @@ Style.txt.CantFindInheritedStyle(name): Can't find inherited style {0}.
 Style.txt.CantFindLinkedFile(name): Can't find linked file {0}.
 Style.txt.HomePageMustHaveHTMLExtension(extension): The home page must have a .html file extension.
 Style.txt.CantFindHomePageFile(name): Can't find home page file {0}.
+Style.txt.CantUseHomeLinksWithCustomHomePage: Home Link statements won't apply to custom home pages, you must add them to the HTML file yourself.
+Style.txt.CantUseHomeOnLoadWithCustomHomePage: Home OnLoad statements won't apply to custom home pages, you must add them to the HTML file yourself.
 
 
 Style.txt.Header.multiline {{{

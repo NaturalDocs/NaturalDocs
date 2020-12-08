@@ -224,6 +224,35 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					file.AddError( Locale.Get("NaturalDocs.Engine", "ConfigFile.NotAValidIdentifier(identifier)", lcIdentifier) );
 					}
 
+
+				// Check for files or JavaScript linked to custom home pages since they wouldn't apply.
+
+				if (style.HomePage != null)
+					{
+					if (style.Links != null)
+						{
+						foreach (var link in style.Links)
+							{
+							if (link.Type == PageType.Home)
+								{
+								errors.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantUseHomeLinksWithCustomHomePage"), link.PropertyLocation);
+								}
+							}
+						}
+
+					if (style.OnLoad != null)
+						{
+						foreach (var onLoad in style.OnLoad)
+							{
+							if (onLoad.Type == PageType.Home)
+								{
+								errors.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantUseHomeOnLoadWithCustomHomePage"), onLoad.PropertyLocation);
+								}
+							}
+						}
+					}
+
+
 				if (errorCount == errors.Count)
 					{  return style;  }
 				else
