@@ -1283,9 +1283,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  DeleteOutputFileIfExists(outputFile);  }
 			else // file new or changed
 				{
-				// Creates all subdirectories needed.  Does nothing if it already exists.
-				System.IO.Directory.CreateDirectory(outputFile.ParentFolder);
-
 				string extension = outputFile.Extension.ToLower();
 
 				if (extension == "js" || extension == "json")
@@ -1300,8 +1297,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					string output = cssProcessor.Process(System.IO.File.ReadAllText(file.FileName), EngineInstance.Config.ShrinkFiles);
 					HTML.Component.WriteTextFile(outputFile, output);
 					}
+				else if (extension == "html" || extension == "htm")
+					{
+					if (file.FileName == Target.BuildState.HomePage)
+						{  Target.UnprocessedChanges.AddHomePage();  }
+					}
 				else
 					{
+					// Creates all subdirectories needed.  Does nothing if it already exists.
+					System.IO.Directory.CreateDirectory(outputFile.ParentFolder);
+
 					System.IO.File.Copy(file.FileName, outputFile, true);  
 					}
 				}
