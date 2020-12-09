@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				binaryFile.WriteString(buildState.HomePage);
 				binaryFile.WriteString(buildState.GeneratedTimestamp);
-				binaryFile.WriteByte( (buildState.HomePageUsesTimestamp ? 1 : 0) );
+				binaryFile.WriteByte( (byte)(buildState.HomePageUsesTimestamp ? 1 : 0) );
 				}
 			}
 
