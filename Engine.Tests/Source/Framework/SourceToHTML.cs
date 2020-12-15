@@ -95,12 +95,13 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 * passed class name.
 		 */
 		public void TestFolder (Path testDataFolder, Path projectConfigFolder, string tagName, string className = null, 
-									   bool reformatHTML = false, string outputTitle = null, string outputSubtitle = null)
+									   bool reformatHTML = false, string outputTitle = null, string outputSubtitle = null,
+									   string outputStyle = null)
 			{
 			TestList allTests = new TestList();
 
 			engineInstanceManager = new EngineInstanceManager();
-			engineInstanceManager.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubtitle);
+			engineInstanceManager.Start(testDataFolder, projectConfigFolder, true, outputTitle, outputSubtitle, outputStyle);
 
 			// Store this so we can still use it for error messages after the engine is disposed of.
 			Path inputFolder = engineInstanceManager.InputFolder;

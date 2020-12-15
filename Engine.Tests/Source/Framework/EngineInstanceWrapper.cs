@@ -63,7 +63,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		 * If keepOutputFolder is true, the HTML output folder will not be deleted after the engine is disposed of.
 		 */
 		public void Start (Path testDataFolder, Path projectConfigFolder = default(Path), bool keepOutputFolder = false, 
-								 string outputTitle = null, string outputSubtitle = null, bool autoGroup = false)
+								 string outputTitle = null, string outputSubtitle = null, string outputStyle = null, bool autoGroup = false)
 			{
 			this.inputFolder = testDataFolder;
 			this.projectConfigFolder = projectConfigFolder;
@@ -188,6 +188,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				{
 				outputTarget.ProjectInfo.Subtitle = outputSubtitle;
 				outputTarget.ProjectInfo.SubtitlePropertyLocation = Config.PropertySource.CommandLine;
+				}
+
+			if (outputStyle != null)
+				{
+				outputTarget.ProjectInfo.StyleName = outputStyle;
+				outputTarget.ProjectInfo.StyleNamePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			config.OutputTargets.Add(outputTarget);
