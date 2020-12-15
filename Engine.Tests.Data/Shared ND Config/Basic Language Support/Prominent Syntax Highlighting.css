@@ -1,0 +1,30 @@
+.CTopic pre {
+	line-height: 1.6;
+	}
+
+.SHComment {
+	font-style: italic;
+	color: #00B000;
+	border: 1px solid #00B000;
+	}
+.SHKeyword {
+	color: #FF0000;
+	border: 1px solid #FF0000;
+	}
+.SHNumber {
+	color: #8000A0;
+	border: 1px solid #8000A0;
+	}
+.SHString {
+	color: #0000FF;
+	border: 1px solid #0000FF;
+	}
+.SHPreprocessingDirective {
+	font-weight: bold;
+	color: #000000;
+	border: 1px solid #000000;
+	}
+.SHMetadata {
+	color: #A0A000;
+	border: 1px solid #A0A000;
+	}
