@@ -51,3 +51,8 @@
     TestClass.PropertyH
     public int PropertyH { get; set }
     (line 40, char 2, child of TestClass)
+    ---------------
+    Property: PropertyI
+    TestClass.PropertyI
+    public string PropertyI { get }
+    (line 46, char 5, child of TestClass)

@@ -42,4 +42,9 @@ class TestClass
 		get => x;
 		set => x = value;
 		}
-	}
+
+    public string PropertyI { get; } = string.IsNullOrWhiteSpace(
+        string connectionString =
+            (string)Properties.Settings.Default.Context?["connectionString"])?
+        connectionString : "<none>";
+  }
