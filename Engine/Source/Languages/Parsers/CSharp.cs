@@ -3049,7 +3049,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Additional keywords found in the syntax reference
 
-			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await",
+			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
 
 			// Additional keywords for LINQ
 
