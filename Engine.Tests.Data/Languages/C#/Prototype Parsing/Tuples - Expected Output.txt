@@ -1,0 +1,200 @@
+- Plain Section: class TestClass
+  - Access Level: Unknown
+  - Link Candidates: class
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public (string, int) FunctionA (
+    - Access Level: Public
+    - Link Candidates: string, int
+
+  - Parameter 1: (string, int) x
+    - Name: x
+    - Full Type: (string, int)
+    - Base Type: (not detected)
+    - Link Candidates: string, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public (string a, int b) FunctionB (
+    - Access Level: Public
+    - Link Candidates: string, int
+
+  - Parameter 1: (string a, int b) x
+    - Name: x
+    - Full Type: (string a, int b)
+    - Base Type: (not detected)
+    - Link Candidates: string, int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public (string, (int, float)) FunctionC (
+    - Access Level: Public
+    - Link Candidates: string, int, float
+
+  - Parameter 1: (string, (int, float)) x
+    - Name: x
+    - Full Type: (string, (int, float))
+    - Base Type: (not detected)
+    - Link Candidates: string, int, float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public (string a, (int b, float c)) FunctionD (
+    - Access Level: Public
+    - Link Candidates: string, int, float
+
+  - Parameter 1: (string a, (int b, float c)) x
+    - Name: x
+    - Full Type: (string a, (int b, float c))
+    - Base Type: (not detected)
+    - Link Candidates: string, int, float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE (
+    - Access Level: Public
+    - Link Candidates: string, Namespace.MyClass, int, float
+
+  - Parameter 1: (string[,,] a, (Namespace.MyClass<int> b, float? c)) x
+    - Name: x
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Base Type: (not detected)
+    - Link Candidates: string, Namespace.MyClass, int, float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: public (string, int) varA
+  - Access Level: Public
+  - Link Candidates: string, int
+
+------------------------------
+
+- Plain Section: public (string a, int b) varB
+  - Access Level: Public
+  - Link Candidates: string, int
+
+------------------------------
+
+- Plain Section: public (string, (int, float)) varC
+  - Access Level: Public
+  - Link Candidates: string, int, float
+
+------------------------------
+
+- Plain Section: public (string a, (int b, float c)) varD
+  - Access Level: Public
+  - Link Candidates: string, int, float
+
+------------------------------
+
+- Plain Section: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE
+  - Access Level: Public
+  - Link Candidates: string, Namespace.MyClass, int, float
+
+------------------------------
+
+- Plain Section: public (string, int) PropertyA { get }
+  - Access Level: Public
+  - Link Candidates: string, int
+
+------------------------------
+
+- Plain Section: public (string a, int b) PropertyB { get; set }
+  - Access Level: Public
+  - Link Candidates: string, int
+
+------------------------------
+
+- Plain Section: public (string, (int, float)) PropertyC { get }
+  - Access Level: Public
+  - Link Candidates: string, int, float
+
+------------------------------
+
+- Plain Section: public (string a, (int b, float c)) PropertyD { get; set }
+  - Access Level: Public
+  - Link Candidates: string, int, float
+
+------------------------------
+
+- Plain Section: public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE { get }
+  - Access Level: Public
+  - Link Candidates: string, Namespace.MyClass, int, float
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public void TypeSpacing (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - Parameter 1: ( ( int , int ) , float , ( string , string ) ) x1,
+    - Name: x1
+    - Full Type: ((int, int), float, (string, string))
+    - Base Type: (not detected)
+    - Link Candidates: int, int, float, string, string
+    - Default Value: (not detected)
+
+  - Parameter 2: ((int,int),float,(string,string)) x2,
+    - Name: x2
+    - Full Type: ((int, int), float, (string, string))
+    - Base Type: (not detected)
+    - Link Candidates: int, int, float, string, string
+    - Default Value: (not detected)
+
+  - Parameter 3: ( ( int a , int b ) , float c , ( string d , string e ) ) x3,
+    - Name: x3
+    - Full Type: ((int a, int b), float c, (string d, string e))
+    - Base Type: (not detected)
+    - Link Candidates: int, int, float, string, string
+    - Default Value: (not detected)
+
+  - Parameter 4: ((int a,int b),float c,(string d,string e)) x4,
+    - Name: x4
+    - Full Type: ((int a, int b), float c, (string d, string e))
+    - Base Type: (not detected)
+    - Link Candidates: int, int, float, string, string
+    - Default Value: (not detected)
+
+  - Parameter 5: ( string[,,] a, ( Namespace.MyClass<int> b , float? c ) ) x5,
+    - Name: x5
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Base Type: (not detected)
+    - Link Candidates: string, Namespace.MyClass, int, float
+    - Default Value: (not detected)
+
+  - Parameter 6: (string[,,] a,(Namespace.MyClass<int> b,float? c)) x6
+    - Name: x6
+    - Full Type: (string[,,] a, (Namespace.MyClass<int> b, float? c))
+    - Base Type: (not detected)
+    - Link Candidates: string, Namespace.MyClass, int, float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)

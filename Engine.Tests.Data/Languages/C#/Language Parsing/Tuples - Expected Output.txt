@@ -1,0 +1,88 @@
+[Root Element]
+- Child Language: C#
+- Maximum Effective Child Access Level: Public
+- Default Declared Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  Class: TestClass
+  TestClass
+  class TestClass
+  (line 1, char 1)
+  - Child Language: C#
+  - Default Declared Child Access Level: Private
+  - Child Scope: TestClass
+    ---------------
+    Function: FunctionA
+    TestClass.FunctionA
+    public (string, int) FunctionA ((string, int) x)
+    (line 6, char 2, child of TestClass)
+    ---------------
+    Function: FunctionB
+    TestClass.FunctionB
+    public (string a, int b) FunctionB ((string a, int b) x)
+    (line 9, char 2, child of TestClass)
+    ---------------
+    Function: FunctionC
+    TestClass.FunctionC
+    public (string, (int, float)) FunctionC ((string, (int, float)) x)
+    (line 12, char 2, child of TestClass)
+    ---------------
+    Function: FunctionD
+    TestClass.FunctionD
+    public (string a, (int b, float c)) FunctionD ((string a, (int b, float c)) x)
+    (line 15, char 2, child of TestClass)
+    ---------------
+    Function: FunctionE
+    TestClass.FunctionE
+    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) FunctionE ((string[,,] a, (Namespace.MyClass<int> b, float? c)) x)
+    (line 18, char 2, child of TestClass)
+    ---------------
+    Variable: varA
+    TestClass.varA
+    public (string, int) varA
+    (line 24, char 2, child of TestClass)
+    ---------------
+    Variable: varB
+    TestClass.varB
+    public (string a, int b) varB
+    (line 26, char 2, child of TestClass)
+    ---------------
+    Variable: varC
+    TestClass.varC
+    public (string, (int, float)) varC
+    (line 28, char 2, child of TestClass)
+    ---------------
+    Variable: varD
+    TestClass.varD
+    public (string a, (int b, float c)) varD
+    (line 30, char 2, child of TestClass)
+    ---------------
+    Variable: varE
+    TestClass.varE
+    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) varE
+    (line 32, char 2, child of TestClass)
+    ---------------
+    Property: PropertyA
+    TestClass.PropertyA
+    public (string, int) PropertyA { get }
+    (line 37, char 2, child of TestClass)
+    ---------------
+    Property: PropertyB
+    TestClass.PropertyB
+    public (string a, int b) PropertyB { get; set }
+    (line 40, char 2, child of TestClass)
+    ---------------
+    Property: PropertyC
+    TestClass.PropertyC
+    public (string, (int, float)) PropertyC { get }
+    (line 43, char 2, child of TestClass)
+    ---------------
+    Property: PropertyD
+    TestClass.PropertyD
+    public (string a, (int b, float c)) PropertyD { get; set }
+    (line 46, char 2, child of TestClass)
+    ---------------
+    Property: PropertyE
+    TestClass.PropertyE
+    public (string[,,] a, (Namespace.MyClass<int> b, float? c)) PropertyE { get }
+    (line 49, char 2, child of TestClass)
