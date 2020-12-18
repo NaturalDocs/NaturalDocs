@@ -19,4 +19,8 @@ class TestClass
 	extern static TestClass (float x);
 
 	extern ~TestClass ();
+
+    public TestClass (int x) => this.x = x;
+
+    ~TestClass () => SomeFunction();
 	}

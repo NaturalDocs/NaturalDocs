@@ -51,3 +51,8 @@
     TestClass.operator true
     public static bool operator true (TestClass input)
     (line 24, char 2, child of TestClass)
+    ---------------
+    Operator: operator string
+    TestClass.operator string
+    public implicit operator string (TestClass input)
+    (line 26, char 2, child of TestClass)

@@ -46,3 +46,13 @@
     TestClass.~TestClass
     extern ~TestClass ()
     (line 21, char 2, child of TestClass)
+    ---------------
+    Function: TestClass
+    TestClass.TestClass
+    public TestClass (int x)
+    (line 23, char 5, child of TestClass)
+    ---------------
+    Function: ~TestClass
+    TestClass.~TestClass
+    ~TestClass ()
+    (line 25, char 5, child of TestClass)

@@ -22,4 +22,6 @@ class TestClass
 		{ }
 
 	public static bool operator true (TestClass input) => input.success ? 1 : 0;
-	}
+
+	public implicit operator string (TestClass input) => "";
+    }
