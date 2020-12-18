@@ -1123,7 +1123,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.IsInBounds &&
 				lookahead.Character != '{' &&
-				lookahead.Character != ';')
+				lookahead.Character != ';' &&
+				lookahead.MatchesAcrossTokens("=>") == false)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -1164,6 +1165,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
+			else if (lookahead.MatchesAcrossTokens("=>"))
+				{
+				lookahead.Next(2);
+				GenericSkipUntilAfter(ref lookahead, ';');
+				}
 			// Don't fail if it doesn't exist since we may be parsing a prototype.
 
 
@@ -1286,7 +1292,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.IsInBounds &&
 				lookahead.Character != '{' &&
-				lookahead.Character != ';')
+				lookahead.Character != ';' &&
+				lookahead.MatchesAcrossTokens("=>") == false)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -1327,6 +1334,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 			else if (lookahead.Character == ';')
 				{  lookahead.Next();  }
+			else if (lookahead.MatchesAcrossTokens("=>"))
+				{
+				lookahead.Next(2);
+				GenericSkipUntilAfter(ref lookahead, ';');
+				}
 			// Don't fail if it doesn't exist since we may be parsing a prototype.
 
 
