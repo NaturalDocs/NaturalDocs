@@ -130,11 +130,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 			while (iterator < end && 
 					  iterator.PrototypeParsingType != PrototypeParsingType.Type &&
-					  iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier)
+					  iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
+					  iterator.PrototypeParsingType != PrototypeParsingType.StartOfTuple)
 				{  iterator.Next();  }
 
 			baseTypeStart = iterator;
 
+			// Only advance if it's not on a tuple.  We return false for tuples.
 			while (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 					  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier)
 				{  iterator.Next();  }
@@ -169,7 +171,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					 iterator.PrototypeParsingType != PrototypeParsingType.TypeQualifier &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.OpeningTypeModifier &&
 					 iterator.PrototypeParsingType != PrototypeParsingType.ParamModifier &&
-					 iterator.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier)
+					 iterator.PrototypeParsingType != PrototypeParsingType.OpeningParamModifier &&
+					 iterator.PrototypeParsingType != PrototypeParsingType.StartOfTuple)
 				{  iterator.Next();  }
 
 			fullTypeStart = iterator;
@@ -186,7 +189,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					}
 				else if (iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
+						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
 					{
 					iterator.Next();
 					}
@@ -204,7 +211,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						lookahead.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						lookahead.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-						lookahead.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+						lookahead.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
+						lookahead.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
+						lookahead.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
+						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
+						lookahead.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
 						{  
 						iterator = lookahead;
 						}
@@ -233,7 +244,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						  iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningTypeModifier ||
 						  iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
-						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier)
+						  iterator.PrototypeParsingType == PrototypeParsingType.OpeningParamModifier ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
+						  iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
 					{
 					continuous = false;
 					}
@@ -288,17 +303,6 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			else
 				{
 				Tokenizer fullTypeTokenizer = BuildFullType();
-
-				#if DEBUG
-				// Test that the call to BuildFullType() was necessary and not a quirk in our spacing detection logic.
-				// fullTypeStart and fullTypeEnd are still set to the original tokenizer.
-
-				if (continuous && !acceptableSpacing &&
-					fullTypeStart.TextBetween(fullTypeEnd) == fullTypeTokenizer.RawText)
-					{
-					throw new Exception("Built type matches continuous, building was unnecessary: \"" + fullTypeTokenizer.RawText + "\"");
-					}
-				#endif
 
 				fullTypeStart = fullTypeTokenizer.FirstToken;
 				fullTypeEnd = fullTypeTokenizer.LastToken;
@@ -441,7 +445,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 				if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 					iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
 					iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
+					iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
+					iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
+					iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
+					iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
+					iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
 					{
 					typeBuilder.AddToken(iterator);
 					}

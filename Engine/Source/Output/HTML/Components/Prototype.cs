@@ -288,6 +288,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						else if (type == PrototypeParsingType.OpeningTypeModifier ||
 									type == PrototypeParsingType.OpeningParamModifier)
 							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else if (type == PrototypeParsingType.StartOfTuple)
+							{  SkipTuple(ref iterator, endOfParam);  }
 						else
 							{  break;  }						
 						}
@@ -598,8 +600,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 							type == PrototypeParsingType.Null)
 							{  iterator.Next();   }
 						else if (type == PrototypeParsingType.OpeningTypeModifier ||
-									type == PrototypeParsingType.OpeningParamModifier)
+								   type == PrototypeParsingType.OpeningParamModifier)
 							{  SkipModifierBlock(ref iterator, endOfParam);  }
+						else if (type == PrototypeParsingType.StartOfTuple)
+							{  SkipTuple(ref iterator, endOfParam);  }
 						else
 							{  break;  }						
 						}
@@ -758,6 +762,31 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{  level++;  }
 					else if (iterator.PrototypeParsingType == PrototypeParsingType.ClosingTypeModifier ||
 							   iterator.PrototypeParsingType == PrototypeParsingType.ClosingParamModifier)
+						{  level--;  }
+
+					iterator.Next();
+					}
+				}
+			}
+
+
+		/* Function: SkipTuple
+		 * If the iterator is on a <PrototypeParsingType.StartOfTuple> token, moves the token iterator past the entire tuple, 
+		 * including any nested tuples.
+		 */
+		protected void SkipTuple (ref TokenIterator iterator, TokenIterator limit)
+			{
+			if (iterator < limit &&
+				iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
+				{
+				int level = 1;
+				iterator.Next();
+
+				while (iterator < limit && level > 0)
+					{
+					if (iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple)
+						{  level++;  }
+					else if (iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple)
 						{  level--;  }
 
 					iterator.Next();

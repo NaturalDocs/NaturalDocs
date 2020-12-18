@@ -68,7 +68,11 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 			if (iterator.PrototypeParsingType == PrototypeParsingType.Type ||
 				iterator.PrototypeParsingType == PrototypeParsingType.TypeModifier ||
 				iterator.PrototypeParsingType == PrototypeParsingType.TypeQualifier ||
-				iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier)
+				iterator.PrototypeParsingType == PrototypeParsingType.ParamModifier ||
+				iterator.PrototypeParsingType == PrototypeParsingType.StartOfTuple ||
+				iterator.PrototypeParsingType == PrototypeParsingType.EndOfTuple ||
+				iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator ||
+				iterator.PrototypeParsingType == PrototypeParsingType.TupleMemberName)
 				{
 				FundamentalType thisTokenType = (iterator.Character == '_' ? FundamentalType.Text : iterator.FundamentalType);
 
@@ -81,7 +85,9 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 						  (iterator.Tokenizer != lastTokenIterator.Tokenizer || iterator.TokenIndex != lastTokenIterator.TokenIndex + 1)) 
 						 ||
 						 (thisTokenType == FundamentalType.Text && lastTokenType == FundamentalType.Symbol && 
-						  !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock)) )
+						  !dontAddSpaceAfterSymbol && (pastFirstText || lastSymbolWasBlock))
+						 ||
+						 (!lastTokenIterator.IsNull && lastTokenIterator.PrototypeParsingType == PrototypeParsingType.TupleMemberSeparator))
 						{
 						rawText.Append(' ');
 						prototypeParsingTypes.Add(PrototypeParsingType.Null);
@@ -95,7 +101,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							(iterator.Character == ':' && dontAddSpaceAfterSymbol) ||  // second colon of ::
 							iterator.Character == '%' ||  // used for MyVar%TYPE or MyTable%ROWTYPE in Oracle's PL/SQL
 							iterator.Character == '"' || iterator.Character == '\'' ||  // strings in Java annotations like @copyright("me")
-							iterator.Character == '@')  // tags in Java annotations like @copyright
+							iterator.Character == '@' ||  // tags in Java annotations like @copyright
+							iterator.Character == '(')  // parens around tuples
 							{  dontAddSpaceAfterSymbol = true;  }
 						else
 							{  dontAddSpaceAfterSymbol = false;  }
@@ -117,7 +124,7 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 
 
 		/* Function: AddModifierBlock
-		 * Adds a full modifier block marked with <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingTYpe.OpeningParamModifier>
+		 * Adds a full modifier block marked with <PrototypeParsingType.OpeningTypeModifier> or <PrototypeParsingType.OpeningParamModifier>
 		 * to the type builder.
 		 */
 		public void AddModifierBlock (TokenIterator openingToken, TokenIterator closingToken)
@@ -224,6 +231,13 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					}
 				else if (iterator.FundamentalType == FundamentalType.Symbol)
 					{
+					if (iterator.Character == ',')
+						{
+						// Quit early on commas, since it could be x[,,] or (x, y), in which case it's not clear whether there should be
+						// a space without making this logic even more complicated.  Just fail out and build a new one.
+						return false;
+						}
+
 					if (lastTokenType == FundamentalType.Null ||
 						lastTokenType == FundamentalType.Text ||
 						lastTokenType == FundamentalType.Symbol)
@@ -237,7 +251,8 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 							iterator.NextByCharacters(2);
 							}
 						else if (iterator.Character == '.' || iterator.Character == '%' || 
-								   iterator.Character == '"' || iterator.Character == '\'' || iterator.Character == '@')
+								   iterator.Character == '"' || iterator.Character == '\'' || iterator.Character == '@' ||
+								   iterator.Character == '(')
 							{
 							lastSymbolWasBlock = false;
 							dontAddSpaceAfterSymbol = true;
