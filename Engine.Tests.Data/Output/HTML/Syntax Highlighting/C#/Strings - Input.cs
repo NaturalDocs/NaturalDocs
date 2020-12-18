@@ -40,4 +40,26 @@
 		char hex2 = '\xABCD';
 
 		(end)
+
+
+	Topic: Interpolated Strings
+
+		(code)
+
+        string interpolatedString1 = $"abc {def} ghi";
+
+        string interpolatedString2 = $@"abc {def} ghi";
+
+        string interpolatedString3 = $"abc {4+5} ghi";
+
+        string interpolatedString4 = $@"abc {obj.Function(12, false)} ghi";
+
+        string interpolatedString4 = $"abc { (x == y ? "y" : "n") } ghi";
+
+        string interpolatedString5 = $"abc {{ def";
+
+        string invalidInterpolatedString = $"abc { def";
+
+		(end)
+
 */
