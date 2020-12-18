@@ -94,6 +94,11 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 	 * OpeningTypeModifier - An opening symbol modifying a type, such as "[" in "int[]" or "<" in "List<int>".
 	 * ClosingTypeModifier - A closing symbol modifying a type, such as "]" in "int[]" or ">" in "List<int>".
 	 * 
+	 * StartOfTuple - The start of a tuple, such as an opening parenthesis.
+	 * EndOfTuple - The end of a tuple, such as a closing parenthesis.
+	 * TupleMemberSeparator - A separator between tuple members, such as a comma.
+	 * TupleMemberName - The name of a tuple member.
+	 * 
 	 * NameTypeSeparator - In languages that use them, the symbol separating a variable name from its type, such as ":" in
 	 *									"x: int".  In languages that simply use a space this type won't appear.
 	 *
@@ -121,6 +126,8 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		StartOfParams, EndOfParams, ParamSeparator,
 
 		Type, TypeModifier, TypeQualifier, OpeningTypeModifier, ClosingTypeModifier,
+
+		StartOfTuple, EndOfTuple, TupleMemberSeparator, TupleMemberName,
 
 		NameTypeSeparator, 
 		
