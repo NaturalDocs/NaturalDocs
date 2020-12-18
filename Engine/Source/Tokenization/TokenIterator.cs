@@ -883,6 +883,15 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				{  return (tokenIndex >= 0 && tokenIndex < tokenizer.TokenCount);  }
 			}
 			
+		/* Property: IsNull
+		 * Whether the iterator is set to a <Tokenizer> at all.
+		 */
+		public bool IsNull
+			{
+			get
+				{  return (tokenizer == null);  }
+			}
+			
 		/* Property: Tokenizer
 		 * The <Tokenizer> associated with this iterator.
 		 */
