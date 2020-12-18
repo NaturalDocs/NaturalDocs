@@ -2961,7 +2961,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipString
 		 * 
-		 * This covers string, @string, and character constants.
+		 * This covers string, $string, @string, $@string, and character constants.
 		 * 
 		 * Supported Modes:
 		 * 
@@ -2971,61 +2971,69 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override protected bool TryToSkipString (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (iterator.Character == '\"' || iterator.Character == '\'')
+			if (iterator.Character != '\'' && iterator.Character != '\"' &&
+				iterator.Character != '@' && iterator.Character != '$')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+
+			// String opening
+
+			bool interpolated = (lookahead.Character == '$');
+
+			if (interpolated)
+				{  lookahead.Next();  }
+
+			bool literal = (lookahead.Character == '@');
+
+			if (literal)
+				{  lookahead.Next();  }
+
+			if (lookahead.Character != '\"' && lookahead.Character != '\'')
+				{  return false;  }
+
+			char closingChar = lookahead.Character;
+			lookahead.Next();
+
+
+			// String body
+
+			while (lookahead.IsInBounds)
 				{
-				char closingChar = iterator.Character;
-
-				TokenIterator startOfString = iterator;
-				iterator.Next();
-
-				while (iterator.IsInBounds)
+				if ( (literal && lookahead.MatchesAcrossTokens("\"\"")) ||
+					 (!literal && lookahead.Character == '\\') ||
+					 (interpolated && lookahead.MatchesAcrossTokens("{{")) )
 					{
-					if (iterator.Character == closingChar)
-						{  
-						iterator.Next();
-						break;
-						}
-					if (iterator.Character == '\\')
-						{  
-						iterator.Next();
-
-						if (iterator.IsInBounds)
-							{  iterator.Next();  }
-						}
-					else
-						{  iterator.Next();  }
+					// Two characters for "" and {{, two tokens for \x
+					lookahead.Next(2);
 					}
 
-				if (mode == ParseMode.SyntaxHighlight)
-					{  startOfString.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.String);  }
-
-				return true;
-				}
-
-			else if (iterator.MatchesAcrossTokens("@\""))
-				{
-				TokenIterator startOfString = iterator;
-				iterator.NextByCharacters(2);
-
-				while (iterator.IsInBounds)
+				else if (interpolated && lookahead.Character == '{')
 					{
-					if (iterator.MatchesAcrossTokens("\"\""))
-						{  iterator.NextByCharacters(2);  }
-					else if (iterator.Character == '\"')
-						{
-						iterator.Next();
-						break;  
-						}
-					else
-						{  iterator.Next();  }
+					lookahead.Next();
+					GenericSkipUntilAfter(ref lookahead, '}');
 					}
 
-				if (mode == ParseMode.SyntaxHighlight)
-					{  startOfString.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.String);  }
+				else if (lookahead.Character == closingChar)
+					{
+					lookahead.Next();
+					break;
+					}
 
-				return true;
+				else
+					{  lookahead.Next();  }
 				}
 
+
+			if (lookahead.IsInBounds)
+				{
+				if (mode == ParseMode.SyntaxHighlight)
+					{  iterator.SetSyntaxHighlightingTypeBetween(lookahead, SyntaxHighlightingType.String);  }
+
+				iterator = lookahead;
+				return true;
+				}
 			else
 				{  return false;  }
 			}
