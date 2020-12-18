@@ -2057,10 +2057,104 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipTuple
+		 * 
+		 * Tries to move the iterator past a tuple, which may or not have names, multiple members, or embedded tuples.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTuple (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if (iterator.Character != '(')
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfTuple;  }
+
+			lookahead.Next();
+			lookahead.NextPastWhitespace();
+
+			for (;;)
+				{
+				if (lookahead.Character == ')')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfTuple;  }
+
+					lookahead.Next();
+
+					iterator = lookahead;
+					return true;
+					}
+				else if (lookahead.Character == ',')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.TupleMemberSeparator;  }
+
+					lookahead.Next();
+					lookahead.NextPastWhitespace();
+					}
+				else if (TryToSkipTupleMember(ref lookahead, mode))
+					{
+					lookahead.NextPastWhitespace();
+					}
+				else
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
+				}
+			}
+
+
+		/* Function: TryToSkipTupleMember
+		 * 
+		 * Tries to move the iterator past a member of a tuple, which is a type and optionally a name.  The type can be another tuple.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipTupleMember (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// Type, which may be another tuple
+
+			if (!TryToSkipType(ref iterator, mode))
+				{  return false;  }
+
+
+			// Optional name
+
+			TokenIterator lookahead = iterator;
+			lookahead.NextPastWhitespace();
+
+			if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode))
+				{  
+				if (mode == ParseMode.ParsePrototype)
+					{
+					iterator.NextPastWhitespace();
+					iterator.SetPrototypeParsingTypeBetween(lookahead, PrototypeParsingType.TupleMemberName);  
+					}
+
+				iterator = lookahead;
+				}
+
+			return true;
+			}
+
+
 		/* Function: TryToSkipType
 		 * 
-		 * Tries to move the iterator past a type, such as "int", "System.Collections.Generic.List<int>", or "int[]".  This accepts
-		 * "void" as a valid type.
+		 * Tries to move the iterator past a type, such as "int", "(int, string)", "System.Collections.Generic.List<int>", or "int[]".  This can
+		 * handle tuples and accepts "void" as a valid type.
 		 * 
 		 * Supported Modes:
 		 * 
@@ -2070,6 +2164,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
+			// Tuple
+
+			if (TryToSkipTuple(ref iterator, mode))
+				{  return true;  }
+
+
+			// Base type
+
 			TokenIterator lookahead = iterator;
 
 			if (TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Type) == false)
@@ -2077,6 +2179,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			iterator = lookahead;
 			TryToSkipWhitespace(ref lookahead);
+
+
+			// Nullable
 
 			if (lookahead.Character == '?')
 				{
@@ -2088,11 +2193,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipWhitespace(ref lookahead);
 				}
 
+
+			// Template Signature
+
 			if (TryToSkipTemplateSignature(ref lookahead, mode, true))
 				{
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
+
+
+			// Pointer
 
 			if (lookahead.Character == '*')
 				{
@@ -2103,6 +2214,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				iterator = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
+
+
+			// Array
 
 			while (lookahead.Character == '[')
 				{
