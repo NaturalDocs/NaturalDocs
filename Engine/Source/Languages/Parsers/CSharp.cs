@@ -376,8 +376,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipUsingStatement (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 																SymbolString scope = default(SymbolString))
 			{
-			// See [9.3] and [B.2.6]
-
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
 				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
@@ -479,8 +477,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipNamespace (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 														  SymbolString scope = default(SymbolString))
 			{
-			// See [9] and [B.2.6]
-
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
 				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements.");  }
@@ -561,9 +557,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 												  SymbolString scope = default(SymbolString))
 			{
-			// Classes - See [10] and [B.2.7]
-			// Structs - See [11] and [B.2.8]
-			// Interfaces - See [13] and [B.2.10]
+			// Classes, Structs, Interfaces
 
 			// While there are differences in the syntax of the three (classes have more possible modifiers, structs and interfaces can
 			// only inherit interfaces, etc.) they are pretty small and for our purposes we can combine them into one parsing function.
@@ -777,9 +771,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipFunction (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 													   SymbolString scope = default(SymbolString))
 			{
-			// Functions (methods) - See [10.6] and [B.2.7]
-			// Delegates - See [15] and [B.2.12]
-			// Operators - See [10.10] and [B.2.7]
+			// Functions, Delegates, Operators
 
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
@@ -995,8 +987,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipConstructor (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null,
 														   SymbolString scope = default(SymbolString))
 			{
-			// Constructors - See [10.11] and [B.2.7]
-			// Destructors - See [10.13] and [B.2.7]
+			// Constructors, Destructors
 
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
@@ -1194,8 +1185,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipConversionOperator (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, 
 																	 List<Element> elements = null, SymbolString scope = default(SymbolString))
 			{
-			// Operators - See [10.10] and [B.2.7]
-
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
 				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
@@ -1363,9 +1352,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipVariable (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 													 SymbolString scope = default(SymbolString))
 			{
-			// Variables (fields) - See [10.5] and [B.2.7]
-			// Constants - See [10.4] and [B.2.7]
-			// Events - See [10.8] and [B.2.7]
+			// Variables, Constants, Events
 
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
@@ -1556,9 +1543,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipProperty (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 													  SymbolString scope = default(SymbolString))
 			{
-			// Properties - See [10.7] and [B.2.7]
-			// Indexers - See [10.9] and [B.2.7]
-			// Events - See [10.8] and [B.2.7]
+			// Properties, Indexers, Events
 
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
@@ -1814,8 +1799,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipEnum (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 												  SymbolString scope = default(SymbolString))
 			{
-			// See [14] and [B.2.11]
-
 			#if DEBUG
 			if (mode == ParseMode.CreateElements && elements == null)
 				{  throw new Exception("Elements and scope must be set when using ParseMode.CreateElements().");  }
@@ -2228,7 +2211,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 				else if (lookahead.MatchesAcrossTokens("::"))
 					{  
-					// :: can be used with "extern alias" identifiers.  See [9.3].
+					// :: can be used with "extern alias" identifiers.
 					lookahead.Next(2);  
 					}
 				else
@@ -2341,7 +2324,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						}
 					else // not a type
 						{
-						// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.  See [13.1.3]
+						// In interfaces and delegates there is an additional in/out modifier that can be applied to each one.
 						if (lookahead.MatchesToken("in") || 
 							lookahead.MatchesToken("out"))
 							{
@@ -2420,8 +2403,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipWhereClause (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// See [10.1.5] and [B.2.7]
-
 			if (iterator.MatchesToken("where") == false)
 				{  return false;  }
 

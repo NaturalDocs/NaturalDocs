@@ -2,13 +2,12 @@
 Title: C# Parser Notes
 _______________________________________________________________________________
 
-This parser was originally built from version 4.0 of the <C# language specification: http://www.microsoft.com/en-us/download/details.aspx?id=7029>,
-though it has been updated for newer language features.  All references below such as [2.3.1] refer to headings in this document.
+This parser is currently written for the C# 9.0 language proposal and was last updated in December 2020.
 
-The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers other than 
-"extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever it may simplify the 
-parser code (in this case, condensing all modifier parsing into a single <TryToSkipModifiers()> function) as it's not important for the code 
-to be perfectly valid in order to generate documentation.
+The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers 
+other than "extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever 
+it may simplify the parser code (in this case, condensing all modifier parsing into a single <TryToSkipModifiers()> function) 
+as it's not important for the code to be perfectly valid in order to generate documentation.
 
 In other places it may be less tolerant, but these are documented in <Unsupported Features>.
 
@@ -22,21 +21,21 @@ _______________________________________________________________________________
 
 	Topic: @ Identifiers
 
-		Identifiers may be prefixed with the @ symbol, which allows the use of keywords as identifiers [2.4.2].  Thus "class" should be 
+		Identifiers may be prefixed with the @ symbol, which allows the use of keywords as identifiers.  Thus "class" should be 
 		highlighted as a keyword but "@class" should not.
 
 
 	Topic: Access Level Interaction
 
-		When a class marked "internal" has a member marked "public", the member is functionally "internal" for all practical purposes.
-		See [3.5.2] for the full rules regarding these types of interactions.
+		When a class marked "internal" has a member marked "public", the member is functionally "internal" for all practical 
+		purposes.  See the language reference for the full rules regarding these types of interactions.
 
 
 	Topic: Pointer Types and Unsafe Code
 
-		Unsafe code extensions are documented separately in [18] and [B.3], so looking at the syntax diagrams without them will give
-		an incomplete picture.  For example, void* is a valid type that can be used anywhere even though void would only be used in
-		function return values otherwise.
+		Unsafe code extensions are documented separately in the language reference, so looking at the syntax diagrams without
+		them will give an incomplete picture.  For example, void* is a valid type that can be used anywhere even though void 
+		would only be used in function return values otherwise.
 
 		Also, look at this code:
 
@@ -68,7 +67,7 @@ _______________________________________________________________________________
 			Unix - LF (U+000A)
 			Mac - CR (U+000D)
 
-		The parser does not support the alternative formats C# supports [2.3.1]:
+		The parser does not support the alternative formats C# supports:
 
 			Next line character - U+0085
 			Line separator character - U+2028
@@ -82,7 +81,7 @@ _______________________________________________________________________________
 			Space - U+0020
 			Tab - U+0009
 
-		The parser does not support the alternative characters C# supports [2.3.3]:
+		The parser does not support the alternative characters C# supports:
 
 			Vertical tab character - U+000B
 			Form feed character - U+000C
@@ -91,7 +90,7 @@ _______________________________________________________________________________
 
 	Topic: Unicode Escapes Sequences in Identifiers
 
-		The parser supports Unicode escape sequences ("\u0066") in string and char literals.  C# also supports them in identifiers [2.4.1]
+		The parser supports Unicode escape sequences ("\u0066") in string and char literals.  C# also supports them in identifiers
 		so that this:
 
 		> \u0066 = 12;
@@ -105,26 +104,29 @@ _______________________________________________________________________________
 
 	Topic: @ Identifier Equivalence
 
-		The @ character can precede an identifier to allow keywords to be used, such as "int @class = 6" [2.4.2].  This is supported.  
-		However, the @ character is not actually part of the name, so it can also be used with non-keywords and "@x" and "x" are considered
-		the same identifier.  This is not supported.
+		The @ character can precede an identifier to allow keywords to be used, such as "int @class = 6".  This is supported.
+		However, the @ character is not actually part of the name, so it can also be used with non-keywords and "@x" and "x"
+		are considered the same identifier.  This is not supported.
 
 
 	Topic: Identifier Characters
 
-		Excluding the @, C# identifiers can start with an underscore or any character in Unicode classes Lu (Letter, Uppercase) Ll (Letter, Lowercase)
-		Lt, Lm, Lo, or Nl.  Subsequent characters can also be in the character classes Mn, Mc, Nd (Number, Decimal Digit) Pc, or Cf [2.4.2].
+		Excluding the @, C# identifiers can start with an underscore or any character in Unicode classes Lu (Letter, Uppercase)
+		Ll (Letter, Lowercase) Lt, Lm, Lo, or Nl.  Subsequent characters can also be in the character classes Mn, Mc, Nd (Number, 
+		Decimal Digit) Pc, or Cf.
 
-		The parser follows these rules for ASCII characters, but all Unicode characters beyond U+007F are treated as if they are a letter.
+		The parser follows these rules for ASCII characters, but all Unicode characters beyond U+007F are treated as if they are 
+		a letter.
 
 
 	Topic: Contextual Keywords
 
-		In C# "get", "set", and "var" are not standard keywords [2.4.3] and thus can be used as identifiers.  The parser will always highlight them 
-		as keywords.
+		In C# "get", "set", and "var" are not standard keywords and thus can be used as identifiers.  The parser will always highlight
+		them as keywords.
 
 
 	Topic: Separate Accessor Access Levels
 
-		Properties can have access keywords like "public" applied to itself as a whole and also specifically to get and set.  While the access keywords
-		applied to get and set will appear in the prototype, Natural Docs will otherwise only use the overall access level of the property.
+		Properties can have access keywords like "public" applied to itself as a whole and also specifically to get and set.  While the
+		access keywords applied to get and set will appear in the prototype, Natural Docs will otherwise only use the overall access 
+		level of the property.
