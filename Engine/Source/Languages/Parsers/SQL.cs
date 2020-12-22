@@ -68,10 +68,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		override protected bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
 																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
-			if (topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure") ||
-				topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function") ||
-				topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure"))
+			if (topic.CommentTypeID != 0 &&
+				( topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure") ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function") ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure") ))
 				{
 				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.Everything);
 				TokenIterator endToken = endCode.FirstToken(LineBoundsMode.Everything);
