@@ -16,10 +16,6 @@
 
 			ulong x = 123456789ul;
 
-			int x = 0x01230ABC;
-
-			ulong x = 0xabc12345UL;
-
 		(end)
 
 
@@ -50,6 +46,38 @@
 			decimal x = 0.0123E10;
 
 			decimal x = -123.123e-9m;
+
+		(end)
+
+
+	Topic: Hex and Binary
+
+		(code)
+
+			int x = 0x01230ABC;
+
+			ulong x = 0xabc12345UL;
+
+			int x = 0b00100110;
+
+			ulong x = 0B0110100110011100ul;
+
+		(end)
+
+
+	Topic: Digit Separators
+
+		(code)
+
+			int x = 1_234_567;
+
+			ulong x = 0xabc1_2345UL;
+
+			ulong x = 0B0110_1001_1001_1100ul;
+
+			float x = 1.234_567e1_2;
+
+			int x = 1____2____3;
 
 		(end)
 
@@ -85,6 +113,15 @@
 			int x = (-1);
 
 			int x = 1 + -1;
+
+		(end)
+
+
+		Digit separators can't start a number.
+
+		(code)
+
+			int x = _12;
 
 		(end)
 */
