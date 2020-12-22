@@ -3134,6 +3134,116 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipNumber
+		 * 
+		 * If the iterator is on a numeric literal, moves the iterator past it and returns true.
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.SyntaxHighlight>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		override protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || 
+				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+			bool passedPeriod = false;
+			bool lastCharWasE = false;
+			bool isHex = false;
+			bool isBinary = false;
+
+			if (lookahead.Character == '-' || lookahead.Character == '+')
+				{  
+				// Distinguish between -1 and x-1
+
+				TokenIterator lookbehind = iterator;
+				lookbehind.Previous();
+
+				lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.Iterator);
+
+				if (lookbehind.FundamentalType == FundamentalType.Text || lookbehind.Character == '_')
+					{  return false;  }
+
+				lookahead.Next();  
+				}
+
+			if (lookahead.Character == '.')
+				{  
+				lookahead.Next();  
+				passedPeriod = true;
+				}
+
+			if (lookahead.Character >= '0' && lookahead.Character <= '9')
+				{
+				if (lookahead.Character == '0' && lookahead.RawTextLength > 1)
+					{
+					char secondChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex + 1 ];
+					isHex = (secondChar == 'x' || secondChar == 'X');
+					isBinary = (secondChar == 'b' || secondChar == 'B');
+					}
+
+				lookahead.Next();
+
+				while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+					{  lookahead.Next();  }
+
+				char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
+				lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+				}
+			else
+				{  return false;  }
+
+			// We're definitely on a number, so apply the position in case the later lookaheads fail.
+			TokenIterator startOfNumber = iterator;
+			iterator = lookahead;
+
+			if (lookahead.Character == '.' && !passedPeriod)
+				{
+				lookahead.Next();
+
+				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+					{
+					lookahead.Next();
+					passedPeriod = true;
+
+					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+						{  lookahead.Next();  }
+
+					char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
+					lastCharWasE = (lastChar == 'e' || lastChar == 'E');
+					}
+				else
+					{  lookahead = iterator;  }
+				}
+
+			if (lastCharWasE && !isHex && !isBinary && (lookahead.Character == '-' || lookahead.Character == '+'))
+				{
+				lookahead.Next();
+
+				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+					{
+					lookahead.Next();
+
+					while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+						{  lookahead.Next();  }
+
+					iterator = lookahead;
+					}
+				else
+					{  lookahead = iterator;  }
+				}
+
+			if (mode == ParseMode.SyntaxHighlight)
+				{  startOfNumber.SetSyntaxHighlightingTypeBetween(iterator, SyntaxHighlightingType.Number);  }
+
+			return true;
+			}
+
+
 
 		// Group: Static Variables
 		// __________________________________________________________________________
