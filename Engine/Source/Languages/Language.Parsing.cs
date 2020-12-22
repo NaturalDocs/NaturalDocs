@@ -4380,7 +4380,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		- <ParseMode.SyntaxHighlight>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+		virtual protected bool TryToSkipNumber (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
 			if ( ((iterator.Character >= '0' && iterator.Character <= '9') || 
 				   iterator.Character == '-' || iterator.Character == '+' || iterator.Character == '.') == false)
