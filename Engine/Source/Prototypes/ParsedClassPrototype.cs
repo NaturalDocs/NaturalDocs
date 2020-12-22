@@ -133,11 +133,18 @@ namespace CodeClear.NaturalDocs.Engine.Prototypes
 					if (iterator.MatchesToken("public"))
 						{  accessLevel = Languages.AccessLevel.Public;  }
 					else if (iterator.MatchesToken("private"))
-						{  accessLevel = Languages.AccessLevel.Private;  }
+						{  
+						if (accessLevel == Languages.AccessLevel.Protected)
+							{  accessLevel = Languages.AccessLevel.PrivateProtected;  }
+						else
+							{  accessLevel = Languages.AccessLevel.Private;  }
+						}
 					else if (iterator.MatchesToken("protected"))
 						{
 						if (accessLevel == Languages.AccessLevel.Internal)
 							{  accessLevel = Languages.AccessLevel.ProtectedInternal;  }
+						else if (accessLevel == Languages.AccessLevel.Private)
+							{  accessLevel = Languages.AccessLevel.PrivateProtected;  }
 						else
 							{  accessLevel = Languages.AccessLevel.Protected;  }
 						}

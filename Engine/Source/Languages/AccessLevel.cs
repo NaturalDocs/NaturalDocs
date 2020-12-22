@@ -13,7 +13,9 @@
  * Private - Private access level.
  * Internal - Internal access level.
  * ProtectedInternal - C#'s "protected internal" access level, which means things that are *either*
- *							   protected or internal can access it.  It doesn't have to be both.
+ *							   derived classes or in the same assembly can access it.
+ * PrivateProtected - C#'- "private protected" access level, which means things that are *both*
+ *							   derived classes and in the same assembly can access it.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
@@ -33,6 +35,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		Private,
 		Protected,
 		Internal,
-		ProtectedInternal
+		ProtectedInternal,
+		PrivateProtected
 		}
 	}

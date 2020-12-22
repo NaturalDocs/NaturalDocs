@@ -102,6 +102,12 @@ Table: Access Level
 	internal-protected -> protectedinternal
 	protectedinternal -> protectedinternal
 	internalprotected -> protectedinternal
+	private protected -> privateprotected
+	protected private -> privateprotected
+	private-protected -> privateprotected
+	protected-private -> privateprotected
+	privateprotected -> privateprotected
+	protectedprivate -> privateprotected
 	
 	
 

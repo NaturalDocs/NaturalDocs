@@ -2777,12 +2777,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					{  accessLevel = AccessLevel.Public;  }
 
 				else if (lookahead.MatchesToken("private"))
-					{  accessLevel = AccessLevel.Private;  }
+					{  
+					if (accessLevel == AccessLevel.Protected)
+						{  accessLevel = AccessLevel.PrivateProtected;  }
+					else
+						{  accessLevel = AccessLevel.Private;  }
+					}
 
 				else if (lookahead.MatchesToken("protected"))
 					{  
 					if (accessLevel == AccessLevel.Internal)
 						{  accessLevel = AccessLevel.ProtectedInternal;  }
+					else if (accessLevel == AccessLevel.Private)
+						{  accessLevel = AccessLevel.PrivateProtected;  }
 					else
 						{  accessLevel = AccessLevel.Protected;  }
 					}
