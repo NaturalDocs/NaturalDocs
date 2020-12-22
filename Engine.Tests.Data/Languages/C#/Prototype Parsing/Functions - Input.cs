@@ -11,7 +11,15 @@ public static string Modifiers (int? x, out string y)
 	{
 	}
 
-public async int NewModifiers ()
+public async int AsyncModifier ()
+	{
+	}
+
+protected internal void CompoundModifierA ()
+	{
+	}
+
+private protected void CompoundModifierB ()
 	{
 	}
 

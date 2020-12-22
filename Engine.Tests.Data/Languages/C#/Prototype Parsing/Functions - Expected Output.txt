@@ -57,9 +57,29 @@
 ------------------------------
 
 - Parameter Section:
-  - Before Parameters: public async int NewModifiers (
+  - Before Parameters: public async int AsyncModifier (
     - Access Level: Public
     - Link Candidates: int
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: protected internal void CompoundModifierA (
+    - Access Level: ProtectedInternal
+    - Link Candidates: void
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: private protected void CompoundModifierB (
+    - Access Level: PrivateProtected
+    - Link Candidates: void
 
   - After Parameters: )
     - Link Candidates: (none)
