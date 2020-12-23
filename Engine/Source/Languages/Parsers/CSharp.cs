@@ -3296,7 +3296,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * to every code element (such as "sealed" not being revelant for constants) but it is okay for the parser to be over tolerant.
 		 */
 		static protected string[] NonAccessModifiers = new string[] {
-			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe", "async"
+			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe", "async", "ref"
 			};
 
 		/* var: BuiltInTypes
