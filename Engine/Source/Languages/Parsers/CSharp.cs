@@ -1426,6 +1426,33 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			TryToSkipWhitespace(ref lookahead);
 
+
+			// Fixed size buffer
+
+			// Only valid for unsafe structs, and can only be a single dimension
+			if (lookahead.Character == '[')
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningParamModifier;  }
+
+				lookahead.Next();
+
+				while (lookahead.IsInBounds && lookahead.Character != ']')
+					{  GenericSkip(ref lookahead);  }
+
+				if (lookahead.Character != ']')
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;						
+					}
+
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.ClosingParamModifier;  }
+
+				lookahead.Next();
+				lookahead.NextPastWhitespace();
+				}
+
 			if (lookahead.IsInBounds &&
 				lookahead.Character != ';' &&
 				lookahead.Character != ',' &&
@@ -3297,7 +3324,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 * to every code element (such as "sealed" not being revelant for constants) but it is okay for the parser to be over tolerant.
 		 */
 		static protected string[] NonAccessModifiers = new string[] {
-			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe", "async", "ref"
+			"new", "abstract", "sealed", "static", "partial", "readonly", "volatile", "virtual", "override", "extern", "unsafe", "async", "ref", "fixed"
 			};
 
 		/* var: BuiltInTypes
