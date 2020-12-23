@@ -34,6 +34,6 @@ public string PropertyF => string.Format("#{0:X2}{1:X2}{2:X2}", Red, Green, Blue
 
 public int PropertyG
 	{
-	get => x;
+	readonly get => x;
 	set => x = value;
 	}

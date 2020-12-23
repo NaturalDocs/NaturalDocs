@@ -20,10 +20,18 @@
   - Default Declared Child Access Level: Private
   - Child Scope: TestStruct
   ---------------
+  Struct: TestStruct2
+  TestStruct2
+  readonly struct TestStruct2
+  (line 10, char 1)
+  - Child Language: C#
+  - Default Declared Child Access Level: Private
+  - Child Scope: TestStruct2
+  ---------------
   Interface: TestInterface
   TestInterface
   interface TestInterface
-  (line 10, char 1)
+  (line 14, char 1)
   - Child Language: C#
   - Default Declared Child Access Level: Public
   - Child Scope: TestInterface

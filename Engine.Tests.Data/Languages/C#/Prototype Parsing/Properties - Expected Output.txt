@@ -38,6 +38,6 @@
 
 ------------------------------
 
-- Plain Section: public int PropertyG { get; set }
+- Plain Section: public int PropertyG { readonly get; set }
   - Access Level: Public
   - Link Candidates: int

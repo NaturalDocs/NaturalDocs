@@ -49,7 +49,7 @@
     ---------------
     Property: PropertyH
     TestClass.PropertyH
-    public int PropertyH { get; set }
+    public int PropertyH { readonly get; set }
     (line 40, char 2, child of TestClass)
     ---------------
     Property: PropertyI

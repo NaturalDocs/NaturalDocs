@@ -39,7 +39,7 @@ class TestClass
 
 	public int PropertyH
 		{
-		get => x;
+		readonly get => x;
 		set => x = value;
 		}
 
