@@ -29,4 +29,7 @@ class TestClass
 			color.Green ^ 0xFF,
 			color.Blue ^ 0xFF
 			);
+
+	public static ref readonly ReturnStruct FunctionJ ()
+		{  }
 	}

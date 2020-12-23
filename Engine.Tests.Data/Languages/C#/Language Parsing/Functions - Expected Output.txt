@@ -56,3 +56,8 @@
     TestClass.FunctionI
     public static RgbColor FunctionI (RgbColor color)
     (line 26, char 2, child of TestClass)
+    ---------------
+    Function: FunctionJ
+    TestClass.FunctionJ
+    public static ref readonly ReturnStruct FunctionJ ()
+    (line 33, char 2, child of TestClass)
