@@ -1999,6 +1999,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 			if (lookahead.MatchesToken("ref") ||
+				lookahead.MatchesToken("in") ||
 				lookahead.MatchesToken("out") ||
 				lookahead.MatchesToken("params") ||
 				lookahead.MatchesToken("this"))
