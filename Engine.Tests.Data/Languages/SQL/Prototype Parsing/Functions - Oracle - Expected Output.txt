@@ -2,17 +2,9 @@
   - Access Level: Unknown
   - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: RETURN NUMBER IS 
-    - Access Level: Unknown
-    - Link Candidates: NUMBER
-
-  - Parameter 1: x NUMBER
-    - Name: x
-    - Full Type: NUMBER
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
 
 ------------------------------
 
@@ -20,17 +12,9 @@
   - Access Level: Unknown
   - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: RETURN NUMBER AS 
-    - Access Level: Unknown
-    - Link Candidates: NUMBER
-
-  - Parameter 1: x NUMBER(2,3)
-    - Name: x
-    - Full Type: NUMBER(2,3)
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
 
 ------------------------------
 
@@ -80,17 +64,9 @@
   - After Parameters: )
     - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: RETURN NUMBER AS 
-    - Access Level: Unknown
-    - Link Candidates: NUMBER
-
-  - Parameter 1: x NUMBER
-    - Name: x
-    - Full Type: NUMBER
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
 
 ------------------------------
 
@@ -130,17 +106,9 @@
   - After Parameters: )
     - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: RETURN NUMBER IS 
-    - Access Level: Unknown
-    - Link Candidates: NUMBER
-
-  - Parameter 1: x NUMBER(2,3) NOT NULL
-    - Name: x
-    - Full Type: NUMBER(2,3) NOT NULL
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
 
 ------------------------------
 
@@ -187,17 +155,9 @@
   - After Parameters: )
     - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: RETURN NUMBER IS 
-    - Access Level: Unknown
-    - Link Candidates: NUMBER
-
-  - Parameter 1: x NUMBER NOT NULL
-    - Name: x
-    - Full Type: NUMBER NOT NULL
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
 
 ------------------------------
 
@@ -259,18 +219,6 @@
   - Access Level: Unknown
   - Link Candidates: (none)
 
-- Parameter Section:
-  - Before Parameters: IS 
-    - Access Level: Unknown
-    - Link Candidates: (none)
-
-  - Parameter 1: x NUMBER NOT NULL
-    - Name: x
-    - Full Type: NUMBER NOT NULL
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
-
 ------------------------------
 
 - Plain Section: CREATE FUNCTION Modifiers3
@@ -314,15 +262,3 @@
 - Plain Section: PIPELINED TABLE POLYMORPHIC USING Schema.#BEGIN
   - Access Level: Unknown
   - Link Candidates: (none)
-
-- Parameter Section:
-  - Before Parameters: IS 
-    - Access Level: Unknown
-    - Link Candidates: (none)
-
-  - Parameter 1: x NUMBER NOT NULL
-    - Name: x
-    - Full Type: NUMBER NOT NULL
-    - Base Type: NUMBER
-    - Link Candidates: NUMBER
-    - Default Value: (not detected)
