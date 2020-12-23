@@ -3223,7 +3223,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				lookahead.Next();
 
-				while ( (lookahead.Character >= '0' && lookahead.Character <= '9') || lookahead.Character == '_')
+				while ( (lookahead.Character >= '0' && lookahead.Character <= '9') ||
+						  (isHex && lookahead.Character >= 'a' && lookahead.Character <= 'f') ||
+						  (isHex && lookahead.Character >= 'A' && lookahead.Character <= 'F') ||
+						  lookahead.Character == '_')
 					{  lookahead.Next();  }
 
 				char lastChar = iterator.Tokenizer.RawText[ lookahead.RawTextIndex - 1 ];
@@ -3240,7 +3243,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				lookahead.Next();
 
-				if (lookahead.Character >= '0' && lookahead.Character <= '9')
+				if ( (lookahead.Character >= '0' && lookahead.Character <= '9') ||
+					 (isHex && lookahead.Character >= 'a' && lookahead.Character <= 'f') ||
+					 (isHex && lookahead.Character >= 'A' && lookahead.Character <= 'F') )
 					{
 					lookahead.Next();
 					passedPeriod = true;
