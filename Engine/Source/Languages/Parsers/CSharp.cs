@@ -2348,7 +2348,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				TryToSkipWhitespace(ref lookahead);
 
 				if (lookahead.Character == '.')
-					{  
+					{
+					if (lookahead.MatchesAcrossTokens("..") && iterator.MatchesToken("operator", true))
+						{  break;  }	
+
 					lookahead.Next();  
 					}
 				else if (lookahead.MatchesAcrossTokens("::"))
