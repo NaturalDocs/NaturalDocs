@@ -14,6 +14,10 @@ public static TestClass operator+ (TestClass a, TestClass b)
 public static TestClass<T> operator<< (TestClass<T> a, TestClass<T> b)
 	{ }
 
+public System.Index operator ^(int fromEnd);
+
+public System.Range operator ..(Index start = 0, Index end = ^0);
+
 public static extern implicit operator string (TestClass input);
 
 public static explicit operator List<string> (TestClass input)

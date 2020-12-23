@@ -37,22 +37,32 @@
     [Attribute] public static TestClass<T> operator<< (TestClass<T> a, TestClass<T> b)
     (line 15, char 2, child of TestClass)
     ---------------
+    Operator: operator ^
+    TestClass.operator^
+    public System.Index operator ^(int fromEnd)
+    (line 19, char 5, child of TestClass)
+    ---------------
+    Operator: operator ..
+    TestClass.operator
+    public System.Range operator ..(Index start = 0, Index end = ^0)
+    (line 21, char 5, child of TestClass)
+    ---------------
     Operator: operator string
     TestClass.operator string
     public static extern implicit operator string (TestClass input)
-    (line 19, char 2, child of TestClass)
+    (line 23, char 2, child of TestClass)
     ---------------
     Operator: operator List<string>
     TestClass.operator List<string>
     public static explicit operator List<string> (TestClass input)
-    (line 21, char 2, child of TestClass)
+    (line 25, char 2, child of TestClass)
     ---------------
     Operator: operator true
     TestClass.operator true
     public static bool operator true (TestClass input)
-    (line 24, char 2, child of TestClass)
+    (line 28, char 2, child of TestClass)
     ---------------
     Operator: operator string
     TestClass.operator string
     public implicit operator string (TestClass input)
-    (line 26, char 2, child of TestClass)
+    (line 30, char 2, child of TestClass)

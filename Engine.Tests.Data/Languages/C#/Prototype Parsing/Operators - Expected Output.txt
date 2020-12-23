@@ -102,6 +102,47 @@
 ------------------------------
 
 - Parameter Section:
+  - Before Parameters: public System.Index operator ^(
+    - Access Level: Public
+    - Link Candidates: System.Index
+
+  - Parameter 1: int fromEnd
+    - Name: fromEnd
+    - Full Type: int
+    - Base Type: int
+    - Link Candidates: int
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public System.Range operator ..(
+    - Access Level: Public
+    - Link Candidates: System.Range
+
+  - Parameter 1: Index start = 0,
+    - Name: start
+    - Full Type: Index
+    - Base Type: Index
+    - Link Candidates: Index
+    - Default Value:  0
+
+  - Parameter 2: Index end = ^0
+    - Name: end
+    - Full Type: Index
+    - Base Type: Index
+    - Link Candidates: Index
+    - Default Value:  ^0
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
   - Before Parameters: public static extern implicit operator string (
     - Access Level: Public
     - Link Candidates: (none)
