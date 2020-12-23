@@ -12,3 +12,5 @@ int* varE;
 
 [AttributeA][AttributeB(12)]
 protected internal System.Text.StringBuilder varF, varG = null, varH;
+
+public fixed int x[100];
