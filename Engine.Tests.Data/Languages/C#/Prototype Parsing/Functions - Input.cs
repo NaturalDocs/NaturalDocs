@@ -7,7 +7,7 @@ void Basic (int x, string y)
 	{
 	}
 
-public static string Modifiers (int? x, out string y)
+public static string Modifiers (int? x, out string y, in MyStruct z)
 	{
 	}
 

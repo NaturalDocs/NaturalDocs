@@ -44,11 +44,18 @@
     - Link Candidates: int
     - Default Value: (not detected)
 
-  - Parameter 2: out string y
+  - Parameter 2: out string y,
     - Name: y
     - Full Type: out string
     - Base Type: string
     - Link Candidates: string
+    - Default Value: (not detected)
+
+  - Parameter 3: in MyStruct z
+    - Name: z
+    - Full Type: in MyStruct
+    - Base Type: MyStruct
+    - Link Candidates: MyStruct
     - Default Value: (not detected)
 
   - After Parameters: )
