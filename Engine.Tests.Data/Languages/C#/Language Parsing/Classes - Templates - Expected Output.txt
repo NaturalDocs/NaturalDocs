@@ -24,7 +24,7 @@
   ---------------
   Interface: TemplateWithConditions
   TemplateWithConditions
-  public interface TemplateWithConditions<in X, out Y> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y>
+  public interface TemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
   (line 10, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
@@ -34,7 +34,7 @@
   Class: TemplateWithEmbeddedTemplates
   TemplateWithEmbeddedTemplates
   public class TemplateWithEmbeddedTemplates<X,Y,Z> : Base<KeyValuePair<X,Y>, int> where Z: IEnumerable<KeyValuePair<X,Y>>
-  (line 16, char 1)
+  (line 17, char 1)
   - Child Language: C#
   - Maximum Effective Child Access Level: Public
   - Default Declared Child Access Level: Private

@@ -7,9 +7,10 @@ public struct TemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interfa
 	{
 	}
 
-public interface TemplateWithConditions<in X, out Y> 
+public interface TemplateWithConditions<in X, out Y, out Z> 
 	where X: class, Interface, new ()
 	where Y: System.Collections.IEnumerable<Y>
+    where Z: class?, unmanaged, notnull
 	{
 	}
 
