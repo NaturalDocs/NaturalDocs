@@ -2569,13 +2569,29 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			for (;;)
 				{
-				if (lookahead.MatchesToken("class") ||
-					lookahead.MatchesToken("struct"))
+				if (lookahead.MatchesToken("struct") ||
+					lookahead.MatchesToken("notnull") ||
+					lookahead.MatchesToken("unmanaged"))
 					{
 					lookahead.Next();
 					endOfClause = lookahead;
 
 					TryToSkipWhitespace(ref lookahead);
+					}
+				else if (lookahead.MatchesToken("class"))
+					{
+					lookahead.Next();
+					endOfClause = lookahead;
+
+					TryToSkipWhitespace(ref lookahead);
+
+					if (lookahead.Character == '?')
+						{
+						lookahead.Next();
+						endOfClause = lookahead;
+
+						TryToSkipWhitespace(ref lookahead);
+						}
 					}
 				else if (lookahead.MatchesToken("new"))
 					{
@@ -3318,7 +3334,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Additional keywords found in the syntax reference
 
 			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
-			"when",
+			"when", "unmanaged", "notnull",
 
 			// Additional keywords for LINQ
 
