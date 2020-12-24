@@ -50,13 +50,13 @@
 
         string interpolatedString2 = $@"abc {def} ghi";
 
-        string interpolatedString3 = $"abc {4+5} ghi";
+        string interpolatedString3 = @$"abc {4+5} ghi";
 
-        string interpolatedString4 = $@"abc {obj.Function(12, false)} ghi";
+        string interpolatedString4 = $"abc {obj.Function(12, false)} ghi";
 
-        string interpolatedString4 = $"abc { (x == y ? "y" : "n") } ghi";
+        string interpolatedString5 = $@"abc { (x == y ? "y" : "n") } ghi";
 
-        string interpolatedString5 = $"abc {{ def";
+        string interpolatedString6 = @$"abc {{ def";
 
         string invalidInterpolatedString = $"abc { def";
 
