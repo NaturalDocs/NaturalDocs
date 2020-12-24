@@ -3129,15 +3129,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// String opening
 
-			bool interpolated = (lookahead.Character == '$');
-
-			if (interpolated)
-				{  lookahead.Next();  }
-
-			bool literal = (lookahead.Character == '@');
-
-			if (literal)
-				{  lookahead.Next();  }
+			bool interpolated = false;
+			bool literal = false;
+			
+			if (lookahead.MatchesAcrossTokens("$@") ||
+				lookahead.MatchesAcrossTokens("@$"))
+				{
+				interpolated = true;
+				literal = true;
+				lookahead.Next(2);
+				}
+			else if (lookahead.Character == '@')
+				{
+				literal = true;
+				lookahead.Next();
+				}
+			else if (lookahead.Character == '$')
+				{
+				interpolated = true;
+				lookahead.Next();
+				}
 
 			if (lookahead.Character != '\"' && lookahead.Character != '\'')
 				{  return false;  }
