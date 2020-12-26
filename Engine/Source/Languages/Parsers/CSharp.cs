@@ -1712,9 +1712,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						if (TryToSkipModifiers(ref lookahead))
 							{  TryToSkipWhitespace(ref lookahead);  }
 
-						if ( (keyword == "property" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-							 (keyword == "operator" && lookahead.MatchesToken("get") == false && lookahead.MatchesToken("set") == false) ||
-							 (keyword == "event" && lookahead.MatchesToken("add") == false && lookahead.MatchesToken("remove") == false) )
+						bool validAccessor = false;
+
+						if (keyword == "property" || keyword == "operator")
+							{
+							validAccessor = (lookahead.MatchesToken("get") || 
+													 lookahead.MatchesToken("set") || 
+													 lookahead.MatchesToken("init"));
+							}
+						else if (keyword == "event")
+							{
+							validAccessor = (lookahead.MatchesToken("add") || 
+													 lookahead.MatchesToken("remove"));
+							}
+
+						if (!validAccessor)
 							{  
 							ResetTokensBetween(iterator, lookahead, mode);
 							return false;  
@@ -3345,7 +3357,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Additional keywords found in the syntax reference
 
 			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
-			"when", "unmanaged", "notnull", "global", "with",
+			"when", "unmanaged", "notnull", "global", "with", "init",
 
 			// Additional keywords for LINQ
 
