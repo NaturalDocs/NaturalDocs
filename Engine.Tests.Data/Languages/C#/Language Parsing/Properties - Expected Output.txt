@@ -4,60 +4,67 @@
 - Default Declared Child Access Level: Internal
 - Child Scope: (global)
   ---------------
-  Class: TestClass
-  TestClass
-  class TestClass
+  Property: PropertyA
+  PropertyA
+  int PropertyA { get }
   (line 2, char 1)
-  - Child Language: C#
-  - Default Declared Child Access Level: Private
-  - Child Scope: TestClass
-    ---------------
-    Property: PropertyA
-    TestClass.PropertyA
-    int PropertyA { get }
-    (line 4, char 2, child of TestClass)
-    ---------------
-    Property: PropertyB
-    TestClass.PropertyB
-    protected int PropertyB { get; private set }
-    (line 10, char 2, child of TestClass)
-    ---------------
-    Property: PropertyC
-    TestClass.PropertyC
-    [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
-    (line 18, char 2, child of TestClass)
-    ---------------
-    Property: PropertyD
-    TestClass.PropertyD
-    abstract int PropertyD { get; set }
-    (line 30, char 2, child of TestClass)
-    ---------------
-    Property: PropertyE
-    TestClass.PropertyE
-    unsafe abstract void* PropertyE { get; set }
-    (line 33, char 2, child of TestClass)
-    ---------------
-    Property: PropertyF
-    TestClass.PropertyF
-    public int PropertyF { get }
-    (line 36, char 2, child of TestClass)
-    ---------------
-    Property: PropertyG
-    TestClass.PropertyG
-    public string PropertyG { get }
-    (line 38, char 2, child of TestClass)
-    ---------------
-    Property: PropertyH
-    TestClass.PropertyH
-    public int PropertyH { readonly get; set }
-    (line 40, char 2, child of TestClass)
-    ---------------
-    Property: PropertyI
-    TestClass.PropertyI
-    public string PropertyI { get; set }
-    (line 46, char 5, child of TestClass)
-    ---------------
-    Property: PropertyJ
-    TestClass.PropertyJ
-    public string PropertyJ { get }
-    (line 48, char 5, child of TestClass)
+  ---------------
+  Property: PropertyB
+  PropertyB
+  protected int PropertyB { get; private set }
+  (line 8, char 1)
+  ---------------
+  Property: PropertyC
+  PropertyC
+  [Attribute] internal System.Text.StringBuilder PropertyC { [SetAttribute] protected internal set; [GetAttribute] internal get }
+  (line 16, char 1)
+  ---------------
+  Property: PropertyD
+  PropertyD
+  abstract int PropertyD { get; set }
+  (line 28, char 1)
+  ---------------
+  Property: PropertyE
+  PropertyE
+  unsafe abstract void* PropertyE { get; set }
+  (line 31, char 1)
+  ---------------
+  Property: PropertyF
+  PropertyF
+  public int PropertyF { get }
+  (line 37, char 1)
+  ---------------
+  Property: PropertyG
+  PropertyG
+  public string PropertyG { get }
+  (line 39, char 1)
+  ---------------
+  Property: PropertyH
+  PropertyH
+  public int PropertyH { readonly get; set }
+  (line 41, char 1)
+  ---------------
+  Property: PropertyI
+  PropertyI
+  public string PropertyI { get; set }
+  (line 50, char 1)
+  ---------------
+  Property: PropertyJ
+  PropertyJ
+  public string PropertyJ { get }
+  (line 52, char 1)
+  ---------------
+  Property: PropertyK
+  PropertyK
+  public string PropertyK { get; init }
+  (line 60, char 1)
+  ---------------
+  Property: ProperyL
+  ProperyL
+  public string ProperyL { get; init }
+  (line 62, char 1)
+  ---------------
+  Property: PropertyM
+  PropertyM
+  public string PropertyM { get; init }
+  (line 70, char 1)

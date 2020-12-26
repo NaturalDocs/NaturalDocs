@@ -26,18 +26,54 @@
 
 ------------------------------
 
-- Plain Section: public int PropertyE { get }
+- Plain Section: unsafe abstract void* PropertyE { get; set }
+  - Access Level: Unknown
+  - Link Candidates: void
+
+------------------------------
+
+- Plain Section: public int PropertyF { get }
   - Access Level: Public
   - Link Candidates: int
 
 ------------------------------
 
-- Plain Section: public string PropertyF { get }
+- Plain Section: public string PropertyG { get }
   - Access Level: Public
   - Link Candidates: string
 
 ------------------------------
 
-- Plain Section: public int PropertyG { readonly get; set }
+- Plain Section: public int PropertyH { readonly get; set }
   - Access Level: Public
   - Link Candidates: int
+
+------------------------------
+
+- Plain Section: public string PropertyI { get; set }
+  - Access Level: Public
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: public string PropertyJ { get }
+  - Access Level: Public
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: public string PropertyK { get; init }
+  - Access Level: Public
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: public string ProperyL { get; init }
+  - Access Level: Public
+  - Link Candidates: string
+
+------------------------------
+
+- Plain Section: public string PropertyM { get; init }
+  - Access Level: Public
+  - Link Candidates: string

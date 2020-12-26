@@ -5,3 +5,21 @@
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[Attribute]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">internal</span> System.Text.StringBuilder PropertyC { <span class="SHMetadata">[SetAttribute]</span> <span class="SHKeyword">protected internal set</span>; <span class="SHMetadata">[GetAttribute]</span> <span class="SHKeyword">internal get</span> }</div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">abstract</span> <span class="SHKeyword">int</span> PropertyD { <span class="SHKeyword">get</span>; <span class="SHKeyword">set</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">unsafe abstract</span> <span class="SHKeyword">void</span>* PropertyE { <span class="SHKeyword">get</span>; <span class="SHKeyword">set</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> PropertyF { <span class="SHKeyword">get</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyG { <span class="SHKeyword">get</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">int</span> PropertyH { <span class="SHKeyword">readonly get</span>; <span class="SHKeyword">set</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyI { <span class="SHKeyword">get</span>; <span class="SHKeyword">set</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyJ { <span class="SHKeyword">get</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyK { <span class="SHKeyword">get</span>; <span class="SHKeyword">init</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> ProperyL { <span class="SHKeyword">get</span>; <span class="SHKeyword">init</span> }</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">string</span> PropertyM { <span class="SHKeyword">get</span>; <span class="SHKeyword">init</span> }</div></div>
