@@ -1,0 +1,24 @@
+class TestClass
+
+  - Name: TestClass
+  - Keyword: class
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+struct TestStruct
+
+  - Name: TestStruct
+  - Keyword: struct
+  - Access Level: Unknown
+  - No parents
+
+-----
+
+interface TestInterface
+
+  - Name: TestInterface
+  - Keyword: interface
+  - Access Level: Unknown
+  - No parents

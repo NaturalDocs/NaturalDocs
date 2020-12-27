@@ -7,19 +7,19 @@ class Plain
 
 -----
 
-public static interface WithModifiers
+public static class WithModifiers
 
   - Name: WithModifiers
-  - Keyword: interface
+  - Keyword: class
   - Modifiers: public static
   - Access Level: Public
   - No parents
 
 -----
 
-class Template<T>
+class AsTemplate<T>
 
-  - Name: Template
+  - Name: AsTemplate
   - Template Suffix: <T>
   - Keyword: class
   - Access Level: Unknown
@@ -27,23 +27,23 @@ class Template<T>
 
 -----
 
-[Something] struct Metadata
+[Something] class WithMetadata
 
   - Pre-Prototype Line: [Something]
-  - Name: Metadata
-  - Keyword: struct
+  - Name: WithMetadata
+  - Keyword: class
   - Access Level: Unknown
   - No parents
 
 -----
 
-[Something("value", 2)] [SomethingElse] public static interface Everything<X, Y>
+[Something("value", 2)] [SomethingElse] public static class WithEverything<X, Y>
 
   - Pre-Prototype Line: [Something("value", 2)]
   - Pre-Prototype Line: [SomethingElse]
-  - Name: Everything
+  - Name: WithEverything
   - Template Suffix: <X, Y>
-  - Keyword: interface
+  - Keyword: class
   - Modifiers: public static
   - Access Level: Public
   - No parents
