@@ -883,28 +883,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameters
 
-			if (lookahead.Character != '(')
-				{  
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
-				}
-
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-			lookahead.Next();
-			TryToSkipWhitespace(ref lookahead);
-
-			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+			if (!TryToSkipParameters(ref lookahead, mode))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
 
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
-
-			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
 
@@ -1058,28 +1042,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameters
 
-			if (lookahead.Character != '(')
-				{  
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
-				}
-
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-			lookahead.Next();
-			TryToSkipWhitespace(ref lookahead);
-
-			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+			if (!TryToSkipParameters(ref lookahead, mode))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
 
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
-
-			lookahead.Next();
 			TokenIterator endOfPrototype = lookahead;
 			TryToSkipWhitespace(ref lookahead);
 
@@ -1255,28 +1223,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Parameters
 
-			if (lookahead.Character != '(')
-				{  
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
-				}
-
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-			lookahead.Next();
-			TryToSkipWhitespace(ref lookahead);
-
-			if (TryToSkipParameters(ref lookahead, ')', mode) == false || lookahead.Character != ')')
+			if (!TryToSkipParameters(ref lookahead, mode))
 				{
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;
 				}
 
-			if (mode == ParseMode.ParsePrototype)
-				{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
-
-			lookahead.Next();
 			TryToSkipWhitespace(ref lookahead);
 
 			if (lookahead.IsInBounds &&
@@ -1650,28 +1602,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				keyword = "operator";
 
-				if (lookahead.Character != '[')
+				if (!TryToSkipParameters(ref lookahead, mode, openingSymbol: '['))
 					{  
 					ResetTokensBetween(iterator, lookahead, mode);
 					return false;  
 					}
 
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-				lookahead.Next();
-				TryToSkipWhitespace(ref lookahead);
-
-				if (TryToSkipParameters(ref lookahead, ']', mode) == false || lookahead.Character != ']')
-					{  
-					ResetTokensBetween(iterator, lookahead, mode);
-					return false;  
-					}
-
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
-
-				lookahead.Next();
 				TryToSkipWhitespace(ref lookahead);
 				}
 
@@ -1978,8 +1914,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Function: TryToSkipParameters
 		 * 
-		 * Tries to move the iterator past a comma-separated list of parameters ending at the closing symbol, which defaults to
-		 * a closing parenthesis.
+		 * Tries to move the iterator past a comma-separated list of parameters in parentheses or brackets.  The opening symbol
+		 * defaults to ( but can be set to [ or <.
 		 * 
 		 * Supported Modes:
 		 * 
@@ -1987,34 +1923,73 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 *		- <ParseMode.ParsePrototype>
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
-		protected bool TryToSkipParameters (ref TokenIterator iterator, char closingSymbol = ')', ParseMode mode = ParseMode.IterateOnly)
+		protected bool TryToSkipParameters (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, char openingSymbol = '(')
 			{
+			if (iterator.Character != openingSymbol)
+				{  return false;  }
+
+
+			// Setup
+
 			TokenIterator lookahead = iterator;
 
-			for (;;)
+			char closingSymbol;
+
+			if (openingSymbol == '(')
+				{  closingSymbol = ')';  }
+			else if (openingSymbol == '[')
+				{  closingSymbol = ']';  }
+			else if (openingSymbol == '<')
+				{  closingSymbol = '>';  }
+			else
+				{  throw new InvalidOperationException();  }
+
+
+			// Opening paren
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Parameter list
+
+			while (lookahead.IsInBounds && lookahead.Character != closingSymbol)
 				{
-				if (lookahead.Character == closingSymbol)
+				if (lookahead.Character == ',')
 					{
-					iterator = lookahead;
-					return true;
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
+
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
 					}
-				else 
+				else if (TryToSkipParameter(ref lookahead, closingSymbol, mode))
 					{
-					if (TryToSkipParameter(ref lookahead, closingSymbol, mode) == false)
-						{  
-						ResetTokensBetween(iterator, lookahead, mode);
-						return false;  
-						}
-
-					if (lookahead.Character == ',')
-						{
-						if (mode == ParseMode.ParsePrototype)
-							{  lookahead.PrototypeParsingType = PrototypeParsingType.ParamSeparator;  }
-
-						lookahead.Next();
-						TryToSkipWhitespace(ref lookahead);
-						}
+					TryToSkipWhitespace(ref lookahead);
 					}
+				else
+					{  break;  }
+				}
+
+
+			// Closing paren
+
+			if (lookahead.Character == closingSymbol)
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.EndOfParams;  }
+
+				lookahead.Next();
+				iterator = lookahead;
+				return true;
+				}
+			else
+				{  
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;  
 				}
 			}
 
