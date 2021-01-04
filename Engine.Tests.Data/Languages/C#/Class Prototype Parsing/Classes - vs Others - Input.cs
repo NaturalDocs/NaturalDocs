@@ -10,3 +10,7 @@ struct TestStruct
 interface TestInterface
 	{
 	}
+
+record TestRecord
+	{
+	}

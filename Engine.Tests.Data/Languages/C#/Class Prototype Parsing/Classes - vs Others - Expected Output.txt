@@ -22,3 +22,12 @@ interface TestInterface
   - Keyword: interface
   - Access Level: Unknown
   - No parents
+
+-----
+
+record TestRecord
+
+  - Name: TestRecord
+  - Keyword: record
+  - Access Level: Unknown
+  - No parents

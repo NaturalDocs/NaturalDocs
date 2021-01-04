@@ -1,0 +1,161 @@
+[Root Element]
+- Child Language: C#
+- Maximum Effective Child Access Level: Public
+- Default Declared Child Access Level: Internal
+- Child Scope: (global)
+  ---------------
+  Class: WithEmptyParameters
+  WithEmptyParameters
+  public record WithEmptyParameters ()
+  (line 2, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithEmptyParameters
+  ---------------
+  Class: WithEmptyParameters_NoBody
+  WithEmptyParameters_NoBody
+  public record WithEmptyParameters_NoBody ( )
+  (line 6, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithEmptyParameters_NoBody
+  ---------------
+  Class: WithParameters
+  WithParameters
+  public record WithParameters (string X, int Y)
+  (line 8, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParameters
+    ---------------
+    Property: X
+    WithParameters.X
+    public string X { get; init }
+    (line 8, char 31, child of WithParameters)
+    ---------------
+    Property: Y
+    WithParameters.Y
+    public int Y { get; init }
+    (line 8, char 41, child of WithParameters)
+  ---------------
+  Class: WithParameters_NoBody
+  WithParameters_NoBody
+  public record WithParameters_NoBody (string X, int Y)
+  (line 12, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParameters_NoBody
+    ---------------
+    Property: X
+    WithParameters_NoBody.X
+    public string X { get; init }
+    (line 12, char 38, child of WithParameters_NoBody)
+    ---------------
+    Property: Y
+    WithParameters_NoBody.Y
+    public int Y { get; init }
+    (line 12, char 48, child of WithParameters_NoBody)
+  ---------------
+  Class: WithParametersAndInheritance
+  WithParametersAndInheritance
+  public record WithParametersAndInheritance (string X, int Y, float Z) : Parent (X, Y)
+  (line 14, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParametersAndInheritance
+    ---------------
+    Property: Z
+    WithParametersAndInheritance.Z
+    public float Z { get; init }
+    (line 14, char 62, child of WithParametersAndInheritance)
+  ---------------
+  Class: WithParametersAndInheritance_NoBody
+  WithParametersAndInheritance_NoBody
+  public record WithParametersAndInheritance_NoBody (string X, int Y, float Z) : Parent (X, Y)
+  (line 19, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParametersAndInheritance_NoBody
+    ---------------
+    Property: Z
+    WithParametersAndInheritance_NoBody.Z
+    public float Z { get; init }
+    (line 19, char 69, child of WithParametersAndInheritance_NoBody)
+  ---------------
+  Class: WithParametersAndMembers
+  WithParametersAndMembers
+  public record WithParametersAndMembers (string X, int Y)
+  (line 22, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParametersAndMembers
+    ---------------
+    Property: X
+    WithParametersAndMembers.X
+    public string X { get; init }
+    (line 22, char 41, child of WithParametersAndMembers)
+    ---------------
+    Property: Y
+    WithParametersAndMembers.Y
+    public int Y { get; init }
+    (line 22, char 51, child of WithParametersAndMembers)
+    ---------------
+    Property: Z
+    WithParametersAndMembers.Z
+    public float Z { get }
+    (line 24, char 2, child of WithParametersAndMembers)
+  ---------------
+  Class: WithParametersAndModifiers
+  WithParametersAndModifiers
+  public record WithParametersAndModifiers (Namespace.MyClass X_2, [attribute] int Y, in float Z = 1.2)
+  (line 27, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithParametersAndModifiers
+    ---------------
+    Property: X_2
+    WithParametersAndModifiers.X_2
+    public Namespace.MyClass X_2 { get; init }
+    (line 27, char 43, child of WithParametersAndModifiers)
+    ---------------
+    Property: Y
+    WithParametersAndModifiers.Y
+    [attribute] public int Y { get; init }
+    (line 27, char 66, child of WithParametersAndModifiers)
+    ---------------
+    Property: Z
+    WithParametersAndModifiers.Z
+    public float Z { get; init }
+    (line 27, char 88, child of WithParametersAndModifiers)
+  ---------------
+  Class: WithAll
+  WithAll
+  public record WithAll<T> (Namespace.MyClass X_2, [attribute] int Y, in float Z = 1.2) : Parent (X_2), Parent2 (in Y), Parent3 where T: unmanaged, notnull
+  (line 29, char 1)
+  - Child Language: C#
+  - Maximum Effective Child Access Level: Public
+  - Default Declared Child Access Level: Public
+  - Child Scope: WithAll
+    ---------------
+    Property: Z
+    WithAll.Z
+    public float Z { get; init }
+    (line 31, char 13, child of WithAll)
+    ---------------
+    Property: Q
+    WithAll.Q
+    public List<T> Q { get }
+    (line 35, char 2, child of WithAll)
+    ---------------
+    Function: MyFunction
+    WithAll.MyFunction
+    public void MyFunction()
+    (line 36, char 2, child of WithAll)

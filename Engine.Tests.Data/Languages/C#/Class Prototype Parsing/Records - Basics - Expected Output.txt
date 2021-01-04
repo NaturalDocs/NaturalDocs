@@ -1,0 +1,78 @@
+public record WithInheritance : Parent, Interface, Interface2
+
+  - Name: WithInheritance
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: Parent
+    - Name: Parent
+
+  - Parent 2: Interface
+    - Name: Interface
+
+  - Parent 3: Interface2
+    - Name: Interface2
+
+-----
+
+internal sealed partial record WithModifiers
+
+  - Name: WithModifiers
+  - Keyword: record
+  - Modifiers: internal sealed partial
+  - Access Level: Internal
+  - No parents
+
+-----
+
+[Attibute] internal protected record WithAttributesAndNamespace
+
+  - Pre-Prototype Line: [Attibute]
+  - Name: WithAttributesAndNamespace
+  - Keyword: record
+  - Modifiers: internal protected
+  - Access Level: ProtectedInternal
+  - No parents
+
+-----
+
+public record AsTemplate<T>
+
+  - Name: AsTemplate
+  - Template Suffix: <T>
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+public record AsTemplateWithInheritance<X,Y> : System.Collections.List<Y>, Interface
+
+  - Name: AsTemplateWithInheritance
+  - Template Suffix: <X,Y>
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: System.Collections.List<Y>
+    - Name: System.Collections.List
+    - Template Suffix: <Y>
+
+  - Parent 2: Interface
+    - Name: Interface
+
+-----
+
+public record AsTemplateWithConditions<in X, out Y, out Z> where X: class, Interface, new () where Y: System.Collections.IEnumerable<Y> where Z: class?, unmanaged, notnull
+
+  - Name: AsTemplateWithConditions
+  - Template Suffix: <in X, out Y, out Z>
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - Post-Prototype Line: where X: class, Interface, new ()
+  - Post-Prototype Line: where Y: System.Collections.IEnumerable<Y>
+  - Post-Prototype Line: where Z: class?, unmanaged, notnull
+  - No parents

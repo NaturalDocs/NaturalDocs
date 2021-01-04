@@ -1,0 +1,161 @@
+public record WithEmptyParameters ()
+
+  - Name: WithEmptyParameters
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+public record WithEmptyParameters_NoBody ( )
+
+  - Name: WithEmptyParameters_NoBody
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+public record WithParameters (string X, int Y)
+
+  - Name: WithParameters
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithParameters_NoBody (string X, int Y)
+
+  - Name: WithParameters_NoBody
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithParametersAndInheritance (string X, int Y, float Z) : Parent (X, Y)
+
+  - Name: WithParametersAndInheritance
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: Parent (X, Y)
+    - Name: Parent
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithParametersAndInheritance_NoBody (string X, int Y, float Z) : Parent (X, Y)
+
+  - Name: WithParametersAndInheritance_NoBody
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+
+  - Parent 1: Parent (X, Y)
+    - Name: Parent
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithParametersAndMembers (string X, int Y)
+
+  - Name: WithParametersAndMembers
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithParametersAndModifiers (Namespace.MyClass X_2, [attribute] int Y, in float Z = 1.2)
+
+  - Name: WithParametersAndModifiers
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - No parents
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+public record WithAll<T> (Namespace.MyClass X_2, [attribute] int Y, in float Z = 1.2) : Parent (X_2), Parent2 (in Y), Parent3 where T: unmanaged, notnull
+
+  - Name: WithAll
+  - Template Suffix: <T>
+  - Keyword: record
+  - Modifiers: public
+  - Access Level: Public
+  - Post-Prototype Line: where T: unmanaged, notnull
+
+  - Parent 1: Parent (X_2)
+    - Name: Parent
+
+  - Parent 2: Parent2 (in Y)
+    - Name: Parent2
+
+  - Parent 3: Parent3
+    - Name: Parent3
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)
+
+-----
+
+(No class prototype detected)

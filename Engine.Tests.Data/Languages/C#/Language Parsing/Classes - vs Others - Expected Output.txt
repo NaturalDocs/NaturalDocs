@@ -27,3 +27,11 @@
   - Child Language: C#
   - Default Declared Child Access Level: Public
   - Child Scope: TestInterface
+  ---------------
+  Class: TestRecord
+  TestRecord
+  record TestRecord
+  (line 14, char 1)
+  - Child Language: C#
+  - Default Declared Child Access Level: Public
+  - Child Scope: TestRecord
