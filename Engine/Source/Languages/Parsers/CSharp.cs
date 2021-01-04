@@ -557,9 +557,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		protected bool TryToSkipClass (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly, List<Element> elements = null, 
 												  SymbolString scope = default(SymbolString))
 			{
-			// Classes, Structs, Interfaces
+			// Classes, Structs, Interfaces, Records
 
-			// While there are differences in the syntax of the three (classes have more possible modifiers, structs and interfaces can
+			// While there are differences in the syntax of the four (classes have more possible modifiers, structs and interfaces can
 			// only inherit interfaces, etc.) they are pretty small and for our purposes we can combine them into one parsing function.
 			// It's okay to be over tolerant.
 
@@ -600,7 +600,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (lookahead.MatchesToken("class") == false &&
 				lookahead.MatchesToken("struct") == false &&
-				lookahead.MatchesToken("interface") == false)
+				lookahead.MatchesToken("interface") == false &&
+				lookahead.MatchesToken("record") == false)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
 				return false;  
@@ -633,7 +634,27 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
+			// Record parameters
+
+			TokenIterator startOfRecordParameters = lookahead;
+			TokenIterator endOfRecordParameters = lookahead;
+			bool hasRecordParameters = false;
+
+			if (keyword == "record" && TryToSkipParameters(ref lookahead, mode))
+				{  
+				hasRecordParameters = true;
+				endOfRecordParameters = lookahead;
+
+				TryToSkipWhitespace(ref lookahead, mode);
+				}
+
+
 			// Base classes and interfaces
+
+			// If you have "record MyRec (int X, int Y) : ParentRec (X)", then X is defined in the parent record and inherited.  It will 
+			// not be defined as a new property in MyRec.  Therefore we need to collect the names that appear in the parent statements
+			// so we can ignore them when creating new properties.
+			StringSet ignoredRecordParameters = null;
 
 			if (lookahead.Character == ':')
 				{
@@ -645,11 +666,61 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				for (;;)
 					{
+
+					// Parent identifier
+
 					TryToSkipIdentifier(ref lookahead, mode, PrototypeParsingType.Null);
 					TryToSkipWhitespace(ref lookahead);
 
+
+					// Parent template signature
+
 					if (TryToSkipTemplateSignature(ref lookahead, mode, true))
 						{  TryToSkipWhitespace(ref lookahead);  }
+
+
+					// Parent record parameters
+
+					if (keyword == "record" && lookahead.Character == '(')
+						{  
+						if (ignoredRecordParameters == null)
+							{  ignoredRecordParameters = new StringSet();  }
+
+						lookahead.Next();
+						TryToSkipWhitespace(ref lookahead);
+
+						while (lookahead.IsInBounds)
+							{
+							TokenIterator startOfIdentifier = lookahead;
+
+							if (TryToSkipUnqualifiedIdentifier(ref lookahead, mode))
+								{
+								string identifier = startOfIdentifier.TextBetween(lookahead);
+
+								TryToSkipWhitespace(ref lookahead);
+
+								// Only add it if it's the last word before a comma or parenthesis, so we skip modifiers like "in"
+								if (lookahead.Character == ',' ||
+									lookahead.Character == ')')
+									{
+									ignoredRecordParameters.Add(identifier);
+									}
+								}
+							else if (lookahead.Character == ',')
+								{
+								lookahead.Next();
+								TryToSkipWhitespace(ref lookahead);
+								}
+							else if (lookahead.Character == ')')
+								{
+								lookahead.Next();
+								TryToSkipWhitespace(ref lookahead);
+								break;
+								}
+							else
+								{  lookahead.Next();  }
+							}
+						}
 
 					if (lookahead.Character != ',')
 						{  break;  }
@@ -672,6 +743,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Start of body
 
 			if (lookahead.Character != '{' &&
+				lookahead.Character != ';' &&
 				lookahead.IsInBounds)
 				{  
 				ResetTokensBetween(iterator, lookahead, mode);
@@ -679,7 +751,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				}
 
 
-			// Create element
+			// Create elements
 
 			if (mode == ParseMode.CreateElements)
 				{
@@ -696,7 +768,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				classElement.ChildContextString = childContext;
 				classElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
-				if (keyword == "interface")
+				if (keyword == "interface" || keyword == "record")
 					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;  }
 				else // "class" or "struct"
 					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
@@ -719,6 +791,117 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				elements.Add(classElement);
+
+
+				// Add properties from record parameters
+
+				if (hasRecordParameters)
+					{
+					int propertyCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("property");
+
+					if (propertyCommentTypeID != 0)
+						{
+						// Extract the entire parameter parenthetical into its own Tokenizer.
+						var parametersTokenizer = Tokenizer.CreateFromIterators(startOfRecordParameters, endOfRecordParameters);
+
+						// Walk over it with ParseMode.ParsePrototype to set the PrototypeParsingType tokens.
+						var tempIterator = parametersTokenizer.FirstToken;
+						TryToSkipParameters(ref tempIterator, ParseMode.ParsePrototype);
+
+						// Now we can throw it into a ParsedPrototype in order to easily iterate through the parameters and get their
+						// properties.
+						var parametersPrototype = new ParsedPrototype(parametersTokenizer);
+
+						for (int i = 0; i < parametersPrototype.NumberOfParameters; i++)
+							{
+							TokenIterator parameterNameStart, parameterNameEnd;
+
+							if (parametersPrototype.GetParameterName(i, out parameterNameStart, out parameterNameEnd))
+								{
+								string parameterName = parameterNameStart.TextBetween(parameterNameEnd);
+
+								if (ignoredRecordParameters == null ||
+									ignoredRecordParameters.Contains(parameterName) == false)
+									{
+
+									// Construct a prototype
+									
+									// Start by getting the full parameter line.
+									TokenIterator fullParameterStart, fullParameterEnd;
+									parametersPrototype.GetParameter(i, out fullParameterStart, out fullParameterEnd);
+
+									// Trim off the trailing comma and default value expression
+									TokenIterator paramLookBehind = fullParameterEnd;
+									paramLookBehind.Previous();
+
+									while (paramLookBehind > fullParameterStart &&
+											  (paramLookBehind.PrototypeParsingType == PrototypeParsingType.ParamSeparator ||
+											   paramLookBehind.PrototypeParsingType == PrototypeParsingType.DefaultValue ||
+											   paramLookBehind.PrototypeParsingType == PrototypeParsingType.DefaultValueSeparator ||
+											   paramLookBehind.FundamentalType == FundamentalType.Whitespace ||
+											   paramLookBehind.FundamentalType == FundamentalType.LineBreak))
+										{  
+										fullParameterEnd.Previous();  
+										paramLookBehind.Previous();
+										}
+
+									// Trim off leading modifiers
+									TryToSkipWhitespace(ref fullParameterStart);
+
+									while (fullParameterStart.MatchesToken("in") ||
+											  fullParameterStart.MatchesToken("params"))
+										{
+										TokenIterator paramLookahead = fullParameterStart;
+										paramLookahead.Next();
+
+										// Only accept it if there's whitespace following it, so it's not "in_object".
+										if (TryToSkipWhitespace(ref paramLookahead))
+											{  fullParameterStart = paramLookahead;  }
+										else
+											{  break;  }
+										}
+
+									// See if there's any attributes at the beginning, because if there are we want to place "public" after it so
+									// we don't end up with "public [attributes] int X { get; init }"
+									string propertyPrototype;
+									TokenIterator afterAttributes = fullParameterStart;
+
+									if (TryToSkipAttributes(ref afterAttributes))
+										{
+										propertyPrototype = fullParameterStart.TextBetween(afterAttributes) + " public ";
+										TryToSkipWhitespace(ref afterAttributes);
+										propertyPrototype += afterAttributes.TextBetween(fullParameterEnd) + " { get; init }";
+										}
+									else
+										{
+										propertyPrototype = "public " + fullParameterStart.TextBetween(fullParameterEnd) + " { get; init }";
+										}
+
+									// Find the parameter's location in the original text so we get the correct character number, since we
+									// cut off the beginning of the line for our tokenizer.
+									TokenIterator propertyLocation = startOfRecordParameters;
+									propertyLocation.Next(fullParameterStart.TokenIndex);
+
+
+									// Create the topic
+
+									Topic propertyTopic = new Topic(EngineInstance.CommentTypes);
+									propertyTopic.Title = parameterName;
+									propertyTopic.Symbol = symbol + SymbolString.FromPlainText_NoParameters(parameterName);
+									propertyTopic.Prototype = NormalizePrototype(propertyPrototype);
+									propertyTopic.CommentTypeID = propertyCommentTypeID;
+									propertyTopic.LanguageID = this.ID;
+									propertyTopic.CodeLineNumber = propertyLocation.LineNumber;
+
+									Element propertyElement = new Element(propertyLocation, Element.Flags.InCode);
+									propertyElement.Topic = propertyTopic;
+
+									elements.Add(propertyElement);
+									}
+								}
+							}
+						}
+					}
 
 
 				// Body
@@ -3332,7 +3515,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Additional keywords found in the syntax reference
 
 			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
-			"when", "unmanaged", "notnull", "global", "with", "init",
+			"when", "unmanaged", "notnull", "global", "with", "init", "record",
 
 			// Additional keywords for LINQ
 
