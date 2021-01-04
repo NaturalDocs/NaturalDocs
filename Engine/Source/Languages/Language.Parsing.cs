@@ -1366,7 +1366,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				TokenIterator prototypeStart, prototypeEnd;
 				if (TryToFindBasicPrototype(elements[elementIndex].Topic, startCode, endCode, out prototypeStart, out prototypeEnd))
 					{
-					Tokenizer prototype = prototypeStart.Tokenizer.CreateFromIterators(prototypeStart, prototypeEnd);
+					Tokenizer prototype = Tokenizer.CreateFromIterators(prototypeStart, prototypeEnd);
 					elements[elementIndex].Topic.Prototype = NormalizePrototype(prototype);
 					}
 				}

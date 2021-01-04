@@ -60,49 +60,49 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 * is faster than creating a new tokenizer around a substring of the raw text because it doesn't need to be
 		 * tokenized all over again.  It also carries over any defined token information like <CommentParsingTypes>.
 		 */
-		public Tokenizer CreateFromIterators (TokenIterator start, TokenIterator end)
+		public static Tokenizer CreateFromIterators (TokenIterator start, TokenIterator end)
 			{
-			#if DEBUG
-				if (start.Tokenizer != this || end.Tokenizer != this)
-					{  throw new InvalidOperationException();  }
-				if (!start.IsInBounds || start > end)
-					{  throw new ArgumentOutOfRangeException();  }
-			#endif
+			Tokenizer original = start.Tokenizer;
 
-			Tokenizer result = new Tokenizer();
+			if (end.Tokenizer != original)
+				{  throw new InvalidOperationException();  }
+			if (!start.IsInBounds || start > end)
+				{  throw new ArgumentOutOfRangeException();  }
+
+			Tokenizer extracted = new Tokenizer();
 			
 			// If end is out of bounds it's return values will be one past the end of the data.	
-			result.rawText = rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
+			extracted.rawText = original.rawText.Substring(start.RawTextIndex, end.RawTextIndex - start.RawTextIndex);
 			
-			result.tokenLengths = tokenLengths.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
-			result.startingLineNumber = start.LineNumber;
-			result.tabWidth = start.Tokenizer.TabWidth;
+			extracted.tokenLengths = original.tokenLengths.GetRange(start.TokenIndex, end.TokenIndex - start.TokenIndex);
+			extracted.startingLineNumber = start.LineNumber;
+			extracted.tabWidth = original.tabWidth;
 			
 			// Leave lines null.  Even if they exist the iterators may not be cleanly on the beginning and end.  Let them be
 			// recalculated.
 
-			if (commentParsingTypes != null)
+			if (original.commentParsingTypes != null)
 				{  
-				result.commentParsingTypes = new CommentParsingType[result.tokenLengths.Count];
-				Array.Copy(commentParsingTypes, start.TokenIndex, result.commentParsingTypes, 0, result.tokenLengths.Count);
+				extracted.commentParsingTypes = new CommentParsingType[extracted.tokenLengths.Count];
+				Array.Copy(original.commentParsingTypes, start.TokenIndex, extracted.commentParsingTypes, 0, extracted.tokenLengths.Count);
 				}
-			if (syntaxHighlightingTypes != null)
+			if (original.syntaxHighlightingTypes != null)
 				{  
-				result.syntaxHighlightingTypes = new SyntaxHighlightingType[result.tokenLengths.Count];
-				Array.Copy(syntaxHighlightingTypes, start.TokenIndex, result.syntaxHighlightingTypes, 0, result.tokenLengths.Count);
+				extracted.syntaxHighlightingTypes = new SyntaxHighlightingType[extracted.tokenLengths.Count];
+				Array.Copy(original.syntaxHighlightingTypes, start.TokenIndex, extracted.syntaxHighlightingTypes, 0, extracted.tokenLengths.Count);
 				}
-			if (prototypeParsingTypes != null)
+			if (original.prototypeParsingTypes != null)
 				{  
-				result.prototypeParsingTypes = new PrototypeParsingType[result.tokenLengths.Count];
-				Array.Copy(prototypeParsingTypes, start.TokenIndex, result.prototypeParsingTypes, 0, result.tokenLengths.Count);
+				extracted.prototypeParsingTypes = new PrototypeParsingType[extracted.tokenLengths.Count];
+				Array.Copy(original.prototypeParsingTypes, start.TokenIndex, extracted.prototypeParsingTypes, 0, extracted.tokenLengths.Count);
 				}
-			if (classPrototypeParsingTypes != null)
+			if (original.classPrototypeParsingTypes != null)
 				{  
-				result.classPrototypeParsingTypes = new ClassPrototypeParsingType[result.tokenLengths.Count];
-				Array.Copy(classPrototypeParsingTypes, start.TokenIndex, result.classPrototypeParsingTypes, 0, result.tokenLengths.Count);
+				extracted.classPrototypeParsingTypes = new ClassPrototypeParsingType[extracted.tokenLengths.Count];
+				Array.Copy(original.classPrototypeParsingTypes, start.TokenIndex, extracted.classPrototypeParsingTypes, 0, extracted.tokenLengths.Count);
 				}
 
-			return result;
+			return extracted;
 			}
 
 
@@ -112,14 +112,14 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 		 * is faster than creating a new tokenizer around a substring of the raw text because it doesn't need to be
 		 * tokenized all over again.  It also carries over any defined token information like <CommentParsingTypes>.
 		 */
-		public Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
+		public static Tokenizer CreateFromIterators (LineIterator start, LineIterator end)
 		    {
-			Tokenizer result = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything), 
-																					end.FirstToken(LineBoundsMode.Everything) );
+			Tokenizer extracted = CreateFromIterators( start.FirstToken(LineBoundsMode.Everything), 
+																			end.FirstToken(LineBoundsMode.Everything) );
 
-			result.lines = lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
+			extracted.lines = start.Tokenizer.lines.GetRange(start.LineIndex, end.LineIndex - start.LineIndex);
 			
-			return result;
+			return extracted;
 			}
 
 
