@@ -2,7 +2,7 @@
 Title: C# Parser Notes
 _______________________________________________________________________________
 
-This parser is currently written for the C# 9.0 language proposal and was last updated in December 2020.
+This parser is currently written for the C# 9.0 language proposal as of January 2021.
 
 The parser may be more tolerant than the actual C# syntax in places.  For example, destructors may not have modifiers 
 other than "extern", but this parser will accept any of the standard ones like "public" and "protected".  This is done wherever 
