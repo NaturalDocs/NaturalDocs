@@ -51,3 +51,7 @@ public static RgbColor ExpressionBodyB (RgbColor color) =>
 		color.Green ^ 0xFF,
 		color.Blue ^ 0xFF
 		);
+
+public void FunctionPointer (delegate* unmanaged[Cdecl] <int, float> x)
+	{
+	}

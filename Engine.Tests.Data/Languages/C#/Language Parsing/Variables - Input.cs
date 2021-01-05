@@ -19,6 +19,14 @@ class TestClass
 
 	void* varK, varL;
 
+	delegate*<int, int> varM;
+
+	delegate* managed<float> varN;
+
+	delegate* unmanaged<int> varO;
+
+	delegate* unmanaged[Cdecl] <int, float> varP;
+
 	public int PropertyNotVariableA => 12;
 
 	public int PropertyNotVariableB => x ? 0 : 12;

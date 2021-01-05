@@ -72,12 +72,32 @@
     void* varL
     (line 20, char 14, child of TestClass)
     ---------------
+    Variable: varM
+    TestClass.varM
+    delegate*<int, int> varM
+    (line 22, char 2, child of TestClass)
+    ---------------
+    Variable: varN
+    TestClass.varN
+    delegate* managed<float> varN
+    (line 24, char 2, child of TestClass)
+    ---------------
+    Variable: varO
+    TestClass.varO
+    delegate* unmanaged<int> varO
+    (line 26, char 2, child of TestClass)
+    ---------------
+    Variable: varP
+    TestClass.varP
+    delegate* unmanaged[Cdecl] <int, float> varP
+    (line 28, char 2, child of TestClass)
+    ---------------
     Property: PropertyNotVariableA
     TestClass.PropertyNotVariableA
     public int PropertyNotVariableA { get }
-    (line 22, char 2, child of TestClass)
+    (line 30, char 2, child of TestClass)
     ---------------
     Property: PropertyNotVariableB
     TestClass.PropertyNotVariableB
     public int PropertyNotVariableB { get }
-    (line 24, char 2, child of TestClass)
+    (line 32, char 2, child of TestClass)

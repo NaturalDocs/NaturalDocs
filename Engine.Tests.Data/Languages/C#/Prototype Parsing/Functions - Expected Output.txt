@@ -243,3 +243,20 @@
 
   - After Parameters: )
     - Link Candidates: (none)
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: public void FunctionPointer (
+    - Access Level: Public
+    - Link Candidates: void
+
+  - Parameter 1: delegate* unmanaged[Cdecl] <int, float> x
+    - Name: x
+    - Full Type: delegate* unmanaged[Cdecl]<int, float>
+    - Base Type: delegate
+    - Link Candidates: delegate, int, float
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)

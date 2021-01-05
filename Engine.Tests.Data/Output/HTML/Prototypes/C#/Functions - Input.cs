@@ -30,3 +30,7 @@ public List<T1> WhereClause<T1,T2> (List<T2> x, int y)
 	where T2: System.Collections.IEnumerable<T2>
 	{
 	}
+
+public void FunctionPointer (delegate* unmanaged[Cdecl] <int, float> x, int y)
+	{
+	}

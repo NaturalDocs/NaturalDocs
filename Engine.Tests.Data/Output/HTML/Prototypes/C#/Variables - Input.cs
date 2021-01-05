@@ -13,4 +13,6 @@ int* varE;
 [AttributeA][AttributeB(12)]
 protected internal System.Text.StringBuilder varF, varG = null, varH;
 
-public fixed int x[100];
+public fixed int varI[100];
+
+delegate* unmanaged[Cdecl] <int, float> varJ;

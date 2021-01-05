@@ -14,4 +14,6 @@
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeA]</span></div><div class="PSection PPlainSection"><span class="SHMetadata">[AttributeB(12)]</span></div><div class="PSection PPlainSection"><span class="SHKeyword">protected internal</span> System.Text.StringBuilder varH</div></div>
 -----
-<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public fixed</span> <span class="SHKeyword">int</span> x[<span class="SHNumber">100</span>]</div></div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public fixed</span> <span class="SHKeyword">int</span> varI[<span class="SHNumber">100</span>]</div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">delegate</span>* <span class="SHKeyword">unmanaged</span>[Cdecl] &lt;<span class="SHKeyword">int</span>, <span class="SHKeyword">float</span>&gt; varJ</div></div>
