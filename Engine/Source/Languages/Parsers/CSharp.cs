@@ -1511,43 +1511,57 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{  TryToSkipWhitespace(ref lookahead);  }
 
 
-			// Keyword
+			// Keyword and Type
 
 			string keyword = null;
+			TokenIterator endOfType;
 
-			if (lookahead.MatchesToken("const"))
-				{  keyword = "constant";  }
-			else if (lookahead.MatchesToken("event"))
-				{  keyword = "event";  }
-			else if (lookahead.MatchesToken("implicit") ||
-					  lookahead.MatchesToken("explicit") ||
-					  lookahead.MatchesToken("enum") ||
-					  lookahead.MatchesToken("delegate") ||
-					  lookahead.MatchesToken("using"))
-				{  
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
-				}
-
-			if (keyword == null)
-				{  keyword = "variable";  }
-			else
+			if (lookahead.MatchesToken("delegate"))
 				{
-				lookahead.Next();
+				// Only accept the "delegate" keyword if it's part of a function pointer.  If it's an actual delegate definition then
+				// we want to fail.
+				if (!TryToSkipFunctionPointer(ref lookahead, mode))
+					{
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;
+					}
+
+				keyword = "variable";
+				endOfType = lookahead;
 				TryToSkipWhitespace(ref lookahead);
 				}
+			else
+				{
+				if (lookahead.MatchesToken("const"))
+					{  keyword = "constant";  }
+				else if (lookahead.MatchesToken("event"))
+					{  keyword = "event";  }
+				else if (lookahead.MatchesToken("implicit") ||
+						  lookahead.MatchesToken("explicit") ||
+						  lookahead.MatchesToken("enum") ||
+						  lookahead.MatchesToken("using"))
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
 
+				if (keyword == null)
+					{  keyword = "variable";  }
+				else
+					{
+					lookahead.Next();
+					TryToSkipWhitespace(ref lookahead);
+					}
 
-			// Type
+				if (TryToSkipType(ref lookahead, mode) == false)
+					{  
+					ResetTokensBetween(iterator, lookahead, mode);
+					return false;  
+					}
 
-			if (TryToSkipType(ref lookahead, mode) == false)
-				{  
-				ResetTokensBetween(iterator, lookahead, mode);
-				return false;  
+				endOfType = lookahead;
+				TryToSkipWhitespace(ref lookahead);
 				}
-
-			TokenIterator endOfType = lookahead;
-			TryToSkipWhitespace(ref lookahead);
 
 
 			// Name
@@ -2349,6 +2363,104 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			}
 
 
+		/* Function: TryToSkipFunctionPointer
+		 * 
+		 * Tries to move the iterator past a function pointer, such as "delegate*<int>" or "delegate unmanaged[Cdecl]<float>".
+		 * 
+		 * Supported Modes:
+		 * 
+		 *		- <ParseMode.IterateOnly>
+		 *		- <ParseMode.ParsePrototype>
+		 *		- Everything else is treated as <ParseMode.IterateOnly>.
+		 */
+		protected bool TryToSkipFunctionPointer (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
+			{
+			// Delegate keyword
+
+			if (!iterator.MatchesToken("delegate"))
+				{  return false;  }
+
+			TokenIterator lookahead = iterator;
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.Type;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Asterisk
+
+			if (lookahead.Character != '*')
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			if (mode == ParseMode.ParsePrototype)
+				{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+			lookahead.Next();
+			TryToSkipWhitespace(ref lookahead);
+
+
+			// Managed or Unmanaged modifier, optional
+
+			if (lookahead.MatchesToken("managed"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+				}
+			else if (lookahead.MatchesToken("unmanaged"))
+				{
+				if (mode == ParseMode.ParsePrototype)
+					{  lookahead.PrototypeParsingType = PrototypeParsingType.TypeModifier;  }
+
+				lookahead.Next();
+				TryToSkipWhitespace(ref lookahead);
+
+
+				// Declaration type modifier, optional
+
+				if (lookahead.Character == '[')
+					{
+					if (mode == ParseMode.ParsePrototype)
+						{  lookahead.PrototypeParsingType = PrototypeParsingType.OpeningTypeModifier;  }
+
+					if (!TryToSkipBlock(ref lookahead, false))
+						{
+						ResetTokensBetween(iterator, lookahead, mode);
+						return false;
+						}
+
+					if (mode == ParseMode.ParsePrototype)
+						{
+						lookahead.Previous();
+						lookahead.PrototypeParsingType = PrototypeParsingType.ClosingTypeModifier;
+						lookahead.Next();
+						}
+
+					TryToSkipWhitespace(ref lookahead);
+					}
+				}
+
+
+			// Parameters as template signature
+
+			if (!TryToSkipTemplateSignature(ref lookahead, mode, true))
+				{
+				ResetTokensBetween(iterator, lookahead, mode);
+				return false;
+				}
+
+			iterator = lookahead;
+			return true;
+			}
+
+
 		/* Function: TryToSkipType
 		 * 
 		 * Tries to move the iterator past a type, such as "int", "(int, string)", "System.Collections.Generic.List<int>", or "int[]".  This can
@@ -2362,9 +2474,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		protected bool TryToSkipType (ref TokenIterator iterator, ParseMode mode = ParseMode.IterateOnly)
 			{
-			// Tuple
+			// Dedicated functions for more complicated types
 
-			if (TryToSkipTuple(ref iterator, mode))
+			if (TryToSkipTuple(ref iterator, mode) ||
+				TryToSkipFunctionPointer(ref iterator, mode))
 				{  return true;  }
 
 
@@ -3515,7 +3628,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Additional keywords found in the syntax reference
 
 			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
-			"when", "unmanaged", "notnull", "global", "with", "init", "record", "and", "or", "not", "nint", "nuint",
+			"when", "unmanaged", "notnull", "global", "with", "init", "record", "and", "or", "not", "nint", "nuint", "managed",
 
 			// Additional keywords for LINQ
 
@@ -3537,7 +3650,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		static protected StringSet BuiltInTypes = new StringSet (KeySettings.Literal, new string[] {
 
 			"byte", "sbyte", "int", "uint", "short", "ushort", "long", "ulong", "float", "double", "decimal",
-			"char", "string", "bool", "void", "object", "dynamic", "nint", "nuint"
+			"char", "string", "bool", "void", "object", "dynamic", "nint", "nuint", "delegate", "managed", "unmanaged"
 
 			});
 		}
