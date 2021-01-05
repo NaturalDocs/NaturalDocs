@@ -3515,7 +3515,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Additional keywords found in the syntax reference
 
 			"get", "set", "var", "alias", "partial", "dynamic", "yield", "where", "add", "remove", "value", "async", "await", "nameof",
-			"when", "unmanaged", "notnull", "global", "with", "init", "record", "and", "or", "not",
+			"when", "unmanaged", "notnull", "global", "with", "init", "record", "and", "or", "not", "nint", "nuint",
 
 			// Additional keywords for LINQ
 
@@ -3537,7 +3537,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		static protected StringSet BuiltInTypes = new StringSet (KeySettings.Literal, new string[] {
 
 			"byte", "sbyte", "int", "uint", "short", "ushort", "long", "ulong", "float", "double", "decimal",
-			"char", "string", "bool", "void", "object", "dynamic"
+			"char", "string", "bool", "void", "object", "dynamic", "nint", "nuint"
 
 			});
 		}
