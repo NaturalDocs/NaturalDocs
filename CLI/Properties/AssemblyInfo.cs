@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration ("")]
 [assembly: AssemblyCompany ("Code Clear LLC")]
 [assembly: AssemblyProduct ("Natural Docs")]
-[assembly: AssemblyCopyright ("Copyright © 2003-2020 Code Clear LLC")]
+[assembly: AssemblyCopyright("Copyright © 2003-2021 Code Clear LLC")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.2.0.11")]
-[assembly: AssemblyFileVersion("2.2.0.11")]
+[assembly: AssemblyVersion("2.2.0.12")]
+[assembly: AssemblyFileVersion("2.2.0.12")]
