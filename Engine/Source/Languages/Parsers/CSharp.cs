@@ -2854,7 +2854,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				if (lookahead.MatchesToken("struct") ||
 					lookahead.MatchesToken("notnull") ||
-					lookahead.MatchesToken("unmanaged"))
+					lookahead.MatchesToken("unmanaged") ||
+					lookahead.MatchesToken("default"))
 					{
 					lookahead.Next();
 					endOfClause = lookahead;
