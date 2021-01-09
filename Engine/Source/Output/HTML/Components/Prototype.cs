@@ -800,12 +800,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendPlainSection (Prototypes.Section section, StringBuilder output)
 			{
 			output.Append("<div class=\"PSection PPlainSection\">");
-
-			if (addLinks)
-				{  AppendSyntaxHighlightedTextWithTypeLinks(section.Start, section.End, output, links, linkTargets);  }
-			else
-				{  AppendSyntaxHighlightedText(section.Start, section.End, output);  }
-
+			AppendSectionText(section.Start, section.End, output, excludePartial: true);
 			output.Append("</div>");
 			}
 
@@ -832,29 +827,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			output.Append("<div class=\"PSection PParameterSection " + parameterClass + "\">");
-
 			output.Append("<table><tr>");
+
+
+			// Before parameters
 
 			TokenIterator start, end;
 			parameterTableSection.GetBeforeParameters(out start, out end);
 
-			output.Append("<td class=\"PBeforeParameters\">");
-
 			bool addNBSP = end.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds, start);
 
-			if (addLinks)
-				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
-			else
-				{  AppendSyntaxHighlightedText(start, end, output);  }
+			output.Append("<td class=\"PBeforeParameters\">");
+
+			AppendSectionText(start, end, output, excludePartial: true);
 
 			if (addNBSP)
 				{  output.Append("&nbsp;");  }
 
 			output.Append("</td>");
 
+
+			// Parameters
+
 			output.Append("<td class=\"PParametersParentCell\">");
 			AppendParameterTable(output);
 			output.Append("</td>");
+
+
+			// After parameters
 
 			parameterTableSection.GetAfterParameters(out start, out end);
 
@@ -863,14 +863,62 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (start.NextPastWhitespace(end))
 				{  output.Append("&nbsp;");  };
 
-			if (addLinks)
-				{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
-			else
-				{  AppendSyntaxHighlightedText(start, end, output);  }
+			AppendSectionText(start, end, output);
 
 			output.Append("</td></tr></table>");
-
 			output.Append("</div>");
+			}
+
+
+		/* Function: AppendSectionText
+		 */
+		protected void AppendSectionText (TokenIterator start, TokenIterator end, StringBuilder output, bool excludePartial = false)
+			{
+			TokenIterator partial;
+
+			if (excludePartial &&
+				start.Tokenizer.FindTokenBetween("partial", false, start, end, out partial) &&
+				partial.IsStandaloneWord() &&
+				partial.PrototypeParsingType == PrototypeParsingType.TypeModifier)
+				{
+				bool hasBeforePartial = (partial > start);
+				bool hasSpaceBeforePartial = false;
+
+				if (hasBeforePartial)
+					{
+					TokenIterator lookbehind = partial;
+					hasSpaceBeforePartial = lookbehind.PreviousPastWhitespace(PreviousPastWhitespaceMode.EndingBounds);
+
+					if (addLinks)
+						{  AppendSyntaxHighlightedTextWithTypeLinks(start, lookbehind, output, links, linkTargets);  }
+					else
+						{  AppendSyntaxHighlightedText(start, lookbehind, output);  }
+					}
+
+				partial.Next();
+				bool hasSpaceAfterPartial = partial.NextPastWhitespace();
+
+				bool hasAfterPartial = (partial < end);
+
+				if (hasAfterPartial)
+					{
+					if (hasBeforePartial && (hasSpaceBeforePartial || hasSpaceAfterPartial))
+						{  output.Append(' ');  }
+
+					if (addLinks)
+						{  AppendSyntaxHighlightedTextWithTypeLinks(partial, end, output, links, linkTargets);  }
+					else
+						{  AppendSyntaxHighlightedText(partial, end, output);  }
+					}
+				}
+
+			else // no partial
+				{
+				if (addLinks)
+					{  AppendSyntaxHighlightedTextWithTypeLinks(start, end, output, links, linkTargets);  }
+				else
+					{  AppendSyntaxHighlightedText(start, end, output);  }
+				}
 			}
 
 
