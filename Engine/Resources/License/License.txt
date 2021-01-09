@@ -21,7 +21,7 @@ SQLite::
 	Natural Docs includes code from SQLite, which is in the public domain.  SQLite may be obtained separately to
 	be used without restriction.  However, this combined product is still licensed under the terms of the AGPLv3.
 
-		- <Web Site: http://www.sqlite.org/>
+		- <Web Site: https://www.sqlite.org>
 		- See <Public Domain Statement for SQLite>
 
 
@@ -31,7 +31,7 @@ _______________________________________________________________________________
 
 	Version 3, 19 November 2007
 
-	Copyright © 2007 Free Software Foundation, Inc.  <http://fsf.org/>
+	Copyright © 2007 Free Software Foundation, Inc.  <https://www.fsf.org>
 
 	Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not
 	allowed.
@@ -495,7 +495,7 @@ found.
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Also add information on how to contact you by electronic and paper mail.
 
@@ -505,7 +505,7 @@ users to an archive of the code. There are many ways you could offer source, and
 programs; see section 13 for the specific requirements.
 
 You should also get your employer (if you work as a programmer) or school, if any, to sign a "copyright disclaimer" for the
-program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see <http://www.gnu.org/licenses/>.
+program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see <https://www.gnu.org/licenses/>.
 
 
 
@@ -536,4 +536,4 @@ All of the deliverable code in SQLite has been written from scratch. No code has
 internet. Every line of code can be traced back to its original author, and all of those authors have public domain dedications on file.
 So the SQLite code base is clean and is uncontaminated with licensed code from other projects.
 
-(Public domain statement retrieved from http://www.sqlite.org/copyright.html)
+(Public domain statement retrieved from https://www.sqlite.org/copyright.html)
