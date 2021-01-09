@@ -495,6 +495,36 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 
+		/* Function: IsStandaloneWord
+		 * Returns whether the iterator is on a text token and the tokens immediately before and after it are not text.  You can
+		 * optionally have it treat underscores as text for this purpose.
+		 */
+		public bool IsStandaloneWord (bool includeUnderscores = true)
+			{
+			if (FundamentalType == FundamentalType.Text ||
+				(includeUnderscores && Character == '_'))
+				{
+				TokenIterator lookahead = this;
+				lookahead.Next();
+
+				if (lookahead.FundamentalType == FundamentalType.Text ||
+					(includeUnderscores && lookahead.Character == '_'))
+					{  return false;  }
+
+				TokenIterator lookbehind = this;
+				lookbehind.Previous();
+
+				if (lookbehind.FundamentalType == FundamentalType.Text ||
+					(includeUnderscores && lookbehind.Character == '_'))
+					{  return false;  }
+
+				return true;
+				}
+			else
+				{  return false;  }
+			}
+
+
 		/* Function: TextBetween
 		 * Returns the text between the two passed iterators.  If you plan to add it to a StringBuilder, it is more efficient to call
 		 * <AppendTextBetweenTo()> instead because that won't require the creation of an intermediate string.
