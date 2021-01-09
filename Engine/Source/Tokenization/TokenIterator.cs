@@ -102,12 +102,18 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 
 
 		/* Function: NextPastWhitespace
-		 * Moves forward until past all whitespace tokens.
+		 * Moves forward until past all whitespace tokens.  Returns whether it moved.
 		 */
-		public void NextPastWhitespace ()
+		public bool NextPastWhitespace ()
 			{
-			while (FundamentalType == FundamentalType.Whitespace)
+			if (FundamentalType != FundamentalType.Whitespace)
+				{  return false;  }
+
+			do
 				{  Next();  }
+			while (FundamentalType == FundamentalType.Whitespace);
+
+			return true;
 			}
 			
 			
