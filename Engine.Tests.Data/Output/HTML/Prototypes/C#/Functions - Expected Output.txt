@@ -134,3 +134,57 @@
       <td class="PAfterParameters">)</td>
    </tr>
 </table></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers ()</div></div>
+-----
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_BeginningOfModifiers2 (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+            <td class="PName last">x,</td>
+         </tr><tr>
+            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+            <td class="PName last">y</td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers ()</div></div>
+-----
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">public</span> <span class="SHKeyword">void</span> Partial_MiddleOfModifiers2 (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+            <td class="PName last">x,</td>
+         </tr><tr>
+            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+            <td class="PName last">y</td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div></div>
+-----
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">public</span> Partial_EndOfModifiers ()</div></div>
+-----
+<div class="NDPrototype WideForm"><div class="PSection PParameterSection CStyle"><table>
+   <tr>
+      <td class="PBeforeParameters"><span class="SHKeyword">public</span> Partial_EndOfModifiers2 (</td>
+      <td class="PParametersParentCell"><table class="PParameters">
+         <tr>
+            <td class="PType first"><span class="SHKeyword">int</span>&nbsp;</td>
+            <td class="PName last">x,</td>
+         </tr><tr>
+            <td class="PType first"><span class="SHKeyword">float</span>&nbsp;</td>
+            <td class="PName last">y</td>
+         </tr>
+      </table></td>
+      <td class="PAfterParameters">)</td>
+   </tr>
+</table></div></div>
