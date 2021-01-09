@@ -5,7 +5,7 @@
  * Thrown when an <Accessor> was attempting to move from one lock type to another in an incorrect way.
  */
 
-// This file is part of Natural Docs, which is Copyright © 2003-2020 Code Clear LLC.
+// This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
 // Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
 // Refer to License.txt for the complete details
 
