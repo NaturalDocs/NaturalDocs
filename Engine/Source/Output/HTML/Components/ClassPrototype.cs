@@ -502,23 +502,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Make sure "partial" is a keyword and not part of a longer identifier
 				if (hasPartial)
-					{
-					TokenIterator lookahead = partial;
-					lookahead.Next();
-
-					if (lookahead < endModifiers && 
-						(lookahead.FundamentalType == FundamentalType.Text ||
-						 lookahead.Character == '_'))
-						{  hasPartial = false;  }
-
-					TokenIterator lookbehind = partial;
-					lookbehind.Previous();
-
-					if (lookbehind >= startModifiers &&
-						(lookbehind.FundamentalType == FundamentalType.Text ||
-						 lookbehind.Character == '_'))
-						{  hasPartial = false;  }
-					}
+					{  hasPartial = partial.IsStandaloneWord();  }
 
 				// Add the modifiers sans-"partial"
 				if (hasModifiers && hasPartial)

@@ -604,17 +604,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						  iterator.MatchesToken("struct") || 
 						  iterator.MatchesToken("interface"))
 					{  
-					// Only count it as a keyword if it's surrounded by whitespace.  We don't want to get tripped up on a macro called
-					// external_class or something like that.
-
-					TokenIterator lookahead = iterator;
-					lookahead.Next();
-
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous();
-
-					if (lookahead.FundamentalType == FundamentalType.Whitespace &&
-						 (lookbehind.IsInBounds == false || lookbehind.FundamentalType == FundamentalType.Whitespace) )
+					// Only count it as a keyword if it's a standalone word.  We don't want to get tripped up on a macro called external_class or 
+					// something like that.
+					if (iterator.IsStandaloneWord())
 						{  
 						iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.Keyword;
 						foundKeyword = true;
@@ -842,13 +834,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					}
 				else if (iterator.MatchesAnyToken(inheritanceKeywords) != -1)
 					{
-					TokenIterator lookahead = iterator;
-					lookahead.Next();
-
-					TokenIterator lookbehind = iterator;
-					lookbehind.Previous();
-
-					if (lookahead.Character != '_' && lookbehind.Character != '_')
+					if (iterator.IsStandaloneWord())
 						{  iterator.ClassPrototypeParsingType = ClassPrototypeParsingType.ParentSeparator;  }
 
 					iterator.Next();
