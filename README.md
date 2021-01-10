@@ -7,9 +7,11 @@ your code and builds [high-quality HTML documentation](https://www.naturaldocs.o
 
 More information is available on [NaturalDocs.org](https://www.naturaldocs.org), including:
 
-- [Download](https://www.naturaldocs.org/download)
-- [Language Support](https://www.naturaldocs.org/languages)
+- [Downloads](https://www.naturaldocs.org/download)
+- [Features](https://www.naturaldocs.org/features)
+- [Supported Languages](https://www.naturaldocs.org/languages)
 - [Getting Started](https://www.naturaldocs.org/getting_started)
+- [Example Output](https://www.naturaldocs.org/documentation)
 
 You can also join the community:
 
@@ -18,5 +20,5 @@ You can also join the community:
 - [Discussion](https://www.reddit.com/r/NaturalDocs)
 
 Natural Docs is licensed under the GNU Affero General Public License, version 3.  See 
-[Engine\Resources\License\License.txt](https://github.com/NaturalDocs/NaturalDocs/blob/master/Engine/Resources/License/License.txt)
+[Engine\Resources\License\License.txt](https://www.naturaldocs.org/documentation/#File:Engine/Resources/License/License.txt)
 for full details and incorporated code.
