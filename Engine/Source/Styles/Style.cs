@@ -160,7 +160,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 
 
 		/* Function: IsSameStyleAndProperties
-		 * Returns whether this style is the same as the passed one, meaning both <IsSameFundamentStyle()> plus all supporting
+		 * Returns whether this style is the same as the passed one, meaning both <IsSameFundamentalStyle()> plus all supporting
 		 * properties.  It will return false if any setting is different.
 		 */
 		public bool IsSameStyleAndProperties (Style other, bool includeInheritedStyles = true)
