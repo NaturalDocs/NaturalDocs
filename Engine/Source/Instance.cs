@@ -28,10 +28,13 @@
  *		- <Config.Manager> is first because almost everything depends on it, such as for its config and working data folder
  *		  properties or for its flag to rebuild everything.
  *		  
- *		- <CommentTypes.Manager> is next.
+ *		- <CommentTypes.Manager.Start_Stage1()> is next.
  *		
  *		- <Languages.Manager> is next because it depends on <CommentTypes.Manager> for the "[Comment Type] Prototype Enders"
  *		  property.
+ *		  
+ *		- <CommentTypes.Manager.Start_Stage2()> is next because it depends on <Languages.Manager> for the
+ *		  "[Language Name] Keywords" property.
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
@@ -227,8 +230,9 @@ namespace CodeClear.NaturalDocs.Engine
 				
 				
 			return (
-				commentTypes.Start(errors) &&
+				commentTypes.Start_Stage1(errors) &&
 				languages.Start(errors) &&
+				commentTypes.Start_Stage2(errors) &&
 				comments.Start(errors) &&
 				links.Start(errors) &&
 				styles.Start(errors) &&

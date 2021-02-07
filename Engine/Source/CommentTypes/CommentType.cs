@@ -2,10 +2,15 @@
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.CommentType
  * ____________________________________________________________________________
  * 
- * A class encapsulating information about a comment type.  This differs from <ConfigFileCommentType> in that its meant to 
- * represent the final combined settings of a comment type rather than its entry in a config file.  For example, all fields are 
- * initialized to default values rather than null or Default, and it doesn't store the type's keywords.
+ * A class encapsulating information about a comment type.
  * 
+ * 
+ * Multithreading: Not Thread Safe, Supports Multiple Readers
+ * 
+ *		This object doesn't have any locking built in, and so it is up to the class managing it to provide thread safety if needed.
+ *		However, it does support multiple concurrent readers.  This means it can be used in read-only mode with no locking or
+ *		in read/write mode with a ReaderWriterLock.
+ *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -25,18 +30,42 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		// Group: Types
 		// __________________________________________________________________________
 		
+
 		/* Enum: ScopeValue
 		 * Can be Normal, Start, End, or AlwaysGlobal.
 		 */
 		public enum ScopeValue : byte
 			{  Normal, Start, End, AlwaysGlobal  };
+
 		
-		/* Enum: IndexValue
-		 * Can be Yes, No, or IndexWith.
+		/* Enum: FlagValue
+		 * 
+		 *		Code - Set if the comment type describes a code element.
+		 *		File - Set if the comment type describes a file.
+		 *		Documentation - Set if the comment type is for standalone documentation.
+		 * 
+		 *		VariableType - Set if the comment type can be used as a type for a variable.
+		 * 
+		 *		ClassHierarchy - Set if the comment type should appear in the class hierarchy.
+		 *		DatabaseHierarchy - Set if the comment type should appear in the database hierarchy.
+		 * 
+		 *		Enum - Set if the comment type describes an enum.
 		 */
-		public enum IndexValue : byte
-			{  Yes, No, IndexWith  };
-		
+		[Flags]
+		public enum FlagValue : byte
+			{
+			Code = 0x01,
+			File = 0x02,
+			Documentation = 0x04,
+
+			VariableType = 0x08,
+
+			ClassHierarchy = 0x10,
+			DatabaseHierarchy = 0x20,
+
+			Enum = 0x40
+			}
+
 		
 		
 		// Group: Functions
@@ -45,25 +74,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		
 		/* Constructor: CommentType
 		 */
-		public CommentType (string newName) : base()
+		public CommentType (string name) : base()
 			{
-			name = newName;
-			
-			// Null to indicate that they're not manually set.  Their properties will always return a value though.
+			this.name = name;
+
 			displayName = null;
 			pluralDisplayName = null;
 			simpleIdentifier = null;
-			
-			// Why not set them to default values like name and the rest of the variables?  Because their default values change 
-			// based on what else was set.  displayName's default value is name no matter what so that could be done, but 
-			// pluralDisplayName's default value is whatever displayName is.  If it's set here it would get set to name as well, but 
-			// if displayName then gets changed it wouldn't carry over to pluralDisplayName.
-
-			index = IndexValue.Yes;
-			indexWith = 0;
 			scope = ScopeValue.Normal;
-			breakLists = false;
-			Flags = new CommentTypeFlags();
+			flags = default;
 			}
 			
 
@@ -87,12 +106,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		public string DisplayName
 			{
 			get
-				{  
-				if (displayName == null)
-					{  return name;  }
-				else
-					{  return displayName;  }
-				}
+				{  return displayName;  }
 			set
 				{  displayName = value;  }
 			}
@@ -103,12 +117,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		public string PluralDisplayName
 			{
 			get
-				{  
-				if (pluralDisplayName == null)
-					{  return DisplayName;  }
-				else
-					{  return pluralDisplayName;  }
-				}
+				{  return pluralDisplayName;  }
 			set
 				{  pluralDisplayName = value;  }
 			}
@@ -119,52 +128,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		public string SimpleIdentifier
 			{
 			get
-				{
-				// Generate and store simpleIdentifier.  Since Name can't change, we don't have to worry about keeping
-				// this null so that it can be regenerated again.
-				if (simpleIdentifier == null)
-					{  simpleIdentifier = name.OnlyAToZ();  }
-					
-				// A fallback if that didn't work.
-				if (simpleIdentifier == null)
-					{  simpleIdentifier = "CommentTypeID" + ID;  }
-					
-				return simpleIdentifier;
-				}
+				{  return simpleIdentifier;  }
 			set
 				{  simpleIdentifier = value;  }
-			}
-			
-		/* Property: Index
-		 * Whether the comment type is indexed.  If set to IndexWith, you must also set the <IndexWith> property.
-		 */
-		public IndexValue Index
-			{
-			get
-				{  return index;  }
-			set
-				{  
-				index = value;  
-				
-				if (index != IndexValue.IndexWith)
-					{  indexWith = 0;  }
-				}
-			}
-			
-		/* Property: IndexWith
-		 * The ID of the comment type this one is indexed with, provided <Index> is set to IndexWith.  Will be zero otherwise.
-		 */
-		public int IndexWith
-			{
-			get
-				{
-				if (index == IndexValue.IndexWith)
-					{  return indexWith;  }
-				else
-					{  return 0;  }
-				}
-			set
-				{  indexWith = value;  }
 			}
 			
 		/* Property: Scope
@@ -178,24 +144,137 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{  scope = value;  }
 			}
 			
-		/* Property: BreakLists
-		 * Whether list comments should be broken into individual topics in the output.
+		/* Property: Flags
+		 * The combination of all <FlagValues> applying to the comment type.
 		 */
-		public bool BreakLists
+		public FlagValue Flags
 			{
 			get
-				{  return breakLists;  }
+				{  return flags;  }
 			set
-				{  breakLists = value;  }
+				{  flags = value;  }
 			}
-
-		/* Variable: Flags
-		 * <CommentTypeFlags> as a public variable, so you can use it like a property.
-		 */
-		public CommentTypeFlags Flags;
 
 			
 						
+		// Group: Flags
+		// __________________________________________________________________________
+
+						
+		/* Property: IsCode
+		 * Whether the comment type describes a code element.
+		 */
+		public bool IsCode
+			{
+			get
+				{  return ( (flags & FlagValue.Code) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.Code;  }
+				else
+					{  flags &= ~FlagValue.Code;  }
+				}
+			}
+
+		/* Property: IsFile
+		 * Whether the comment type describes a file.
+		 */
+		public bool IsFile
+			{
+			get
+				{  return ( (flags & FlagValue.File) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.File;  }
+				else
+					{  flags &= ~FlagValue.File;  }
+				}
+			}
+
+		/* Property: IsDocumentation
+		 * Whether the comment type is used for standalone documentation.
+		 */
+		public bool IsDocumentation
+			{
+			get
+				{  return ( (flags & FlagValue.Documentation) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.Documentation;  }
+				else
+					{  flags &= ~FlagValue.Documentation;  }
+				}
+			}
+
+		/* Property: IsVariableType
+		 * Whether the comment type describes a code element that can be used as the type of a variable.
+		 */
+		public bool IsVariableType
+			{
+			get
+				{  return ( (flags & FlagValue.VariableType) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.VariableType;  }
+				else
+					{  flags &= ~FlagValue.VariableType;  }
+				}
+			}
+
+		/* Property: InClassHierarchy
+		 * Whether the comment type is part of the class hierarchy.
+		 */
+		public bool InClassHierarchy
+			{
+			get
+				{  return ( (flags & FlagValue.ClassHierarchy) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.ClassHierarchy;  }
+				else
+					{  flags &= ~FlagValue.ClassHierarchy;  }
+				}
+			}
+
+		/* Property: InDatabaseHierarchy
+		 * Whether the comment type is part of the database hierarchy.
+		 */
+		public bool InDatabaseHierarchy
+			{
+			get
+				{  return ( (flags & FlagValue.DatabaseHierarchy) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.DatabaseHierarchy;  }
+				else
+					{  flags &= ~FlagValue.DatabaseHierarchy;  }
+				}
+			}
+
+		/* Property: IsEnum
+		 * Whether the comment type describes an enum.
+		 */
+		public bool IsEnum
+			{
+			get
+				{  return ( (flags & FlagValue.Enum) != 0);  }
+			set
+				{  
+				if (value == true)
+					{  flags |= FlagValue.Enum;  }
+				else
+					{  flags &= ~FlagValue.Enum;  }
+				}
+			}
+
+
+
 		// Group: Operators
 		// __________________________________________________________________________
 		
@@ -213,16 +292,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			else
 				{
 				return (type1.ID == type2.ID &&
-							  type1.Index == type2.Index &&
-							  type1.Scope == type2.Scope &&
-							  type1.BreakLists == type2.BreakLists &&
-							  type1.Flags.AllConfigurationProperties == type2.Flags.AllConfigurationProperties &&
-							  (type1.Index != IndexValue.IndexWith || type1.IndexWith == type2.IndexWith) &&
-
-							  type1.Name == type2.Name &&
-							  type1.DisplayName == type2.DisplayName &&
-							  type1.PluralDisplayName == type2.PluralDisplayName &&
-							  type1.SimpleIdentifier == type2.SimpleIdentifier);
+						   type1.Name == type2.Name &&
+						   type1.DisplayName == type2.DisplayName &&
+						   type1.PluralDisplayName == type2.PluralDisplayName &&
+						   type1.SimpleIdentifier == type2.SimpleIdentifier &&
+						   type1.Scope == type2.Scope &&
+						   type1.Flags == type2.Flags);
 				}
 			}
 			
@@ -236,11 +311,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			return !(type1 == type2);
 			}
 			
-			
-			
-		// Group: Interface Functions
-		// __________________________________________________________________________
-		
 		
 		public override bool Equals (object o)
 			{
@@ -267,45 +337,29 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		protected string name;
 		
 		/* var: displayName
-		 * The comment type's display name.  May be null to indicate that it was not set.  <DisplayName> will always return a value
-		 * though.
+		 * The comment type's display name.
 		 */
 		protected string displayName;
 		
 		/* var: pluralDisplayName
-		 * The comment type's plural display name.  May be null to indicate that it was not set.  <PluralDisplayName> will always
-		 * return a value though.
+		 * The comment type's plural display name.
 		 */
 		protected string pluralDisplayName;
 		
 		/* var: simpleIdentifier
 		 * The comment type's name using only the letters A to Z.  No spaces, numbers, symbols, or Unicode.
-		 * May be null to indicate that it was not set.  <SimpleIdentifier> will always return a value though.
 		 */
 		protected string simpleIdentifier;
-		
-		/* var: index
-		 * Whether the comment type is indexed.
-		 */
-		protected IndexValue index;
-		
-		/* var: indexWith
-		 * The ID of the comment type to index this one with, or zero if none.
-		 */
-		protected int indexWith;
 		
 		/* var: scope
 		 * The scope of the comment type.
 		 */
 		protected ScopeValue scope;
 		
-		/* var: breakLists
-		 * Whether lists comments should be broken into individual topics.
+		/* var: flags
+		 * The combination of all <FlagValues> applying to the comment type.
 		 */
-		protected bool breakLists;
+		protected FlagValue flags;
 		
-		// Flags
-		// Also remember Flags is a public variable.
-
 		}
 	}

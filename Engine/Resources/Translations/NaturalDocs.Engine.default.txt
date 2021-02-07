@@ -424,6 +424,7 @@ Comments.txt.NoMoreThanOneTagOnALine: There cannot be more than one tag on a lin
 Comments.txt.KeywordMustBeInCommentType(keyword): The keyword "{0}" can only be used after a Comment Type or Alter Comment Type keyword.
 Comments.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
 Comments.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
+Comments.txt.UnrecognizedKeywordLanguage(name): "{0}" is not a defined language.
 Comments.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
 Comments.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.
@@ -529,6 +530,14 @@ Comments.txt.SystemCommentTypesReference.multiline {{{
 #    ...
 #    A list of the comment type's keywords.  Each line after the heading is
 #    the keyword and optionally its plural form for list comments.
+#
+# [Language] Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of keywords that only apply to the comment type when using a
+#    specific programming language.  Each line after the heading is the
+#    keyword and optionally its plural form for list comments.
 }}}
 
 Comments.txt.ProjectCommentTypesReference.multiline {{{
@@ -584,6 +593,14 @@ Comments.txt.ProjectCommentTypesReference.multiline {{{
 #    reuse existing keywords to change their definition.  When using
 #    "Alter Comment Type", these keywords are added to the existing ones
 #    rather than replacing them.
+#
+# [Language] Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of keywords that only apply to the comment type when using a
+#    specific programming language.  Each line after the heading is the
+#    keyword and optionally its plural form for list comments.
 }}}
 
 

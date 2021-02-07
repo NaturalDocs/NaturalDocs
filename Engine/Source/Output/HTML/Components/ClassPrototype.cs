@@ -424,9 +424,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			WrappedTitleMode wrappedTitleMode;
 
-			if (parentCommentType.Flags.File == true)
+			if (parentCommentType.IsFile == true)
 				{  wrappedTitleMode = WrappedTitleMode.File;  }
-			else if (parentCommentType.Flags.Code == true)
+			else if (parentCommentType.IsCode == true)
 				{  wrappedTitleMode = WrappedTitleMode.Code;  }
 			else
 				{  wrappedTitleMode = WrappedTitleMode.None;  }

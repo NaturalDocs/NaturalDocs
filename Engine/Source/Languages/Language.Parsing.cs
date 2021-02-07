@@ -583,7 +583,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (Type == LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
-			if (EngineInstance.CommentTypes.FromID(commentTypeID).Flags.ClassHierarchy == false)
+			if (EngineInstance.CommentTypes.FromID(commentTypeID).InClassHierarchy == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -2180,7 +2180,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				#endif
 
 				// Documentation and file topics should not be merged with code.  Headerless topics are assumed to be code.
-				if (EngineInstance.CommentTypes.FromID(commentTopic.CommentTypeID).Flags.Code == false)
+				if (EngineInstance.CommentTypes.FromID(commentTopic.CommentTypeID).IsCode == false)
 					{  return false;  }
 
 				#if DEBUG
@@ -2572,7 +2572,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					bool addGroup = true;
 
 					// Don't group on files if they're the first topic in the file.
-					if (lastCommentType.Flags.File)
+					if (lastCommentType.IsFile)
 						{
 						addGroup = false;
 
@@ -3109,9 +3109,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// Set Topic.ClassString and ParentElement.DefaultChildClassString if appropriate
 
 					if (commentType.Scope == CommentType.ScopeValue.Start && 
-						  (commentType.Flags.ClassHierarchy == true || commentType.Flags.DatabaseHierarchy == true) )
+						  (commentType.InClassHierarchy == true || commentType.InDatabaseHierarchy == true) )
 						{
-						Hierarchy hierarchy = (commentType.Flags.ClassHierarchy ? Hierarchy.Class : Hierarchy.Database);
+						Hierarchy hierarchy = (commentType.InClassHierarchy ? Hierarchy.Class : Hierarchy.Database);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 						ClassString classString = ClassString.FromParameters(hierarchy, language.ID, language.CaseSensitive, topicSymbol);
@@ -3131,22 +3131,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (element is ParentElement && topic.IsList == false)
 						{
 						EnumValues enumValue = 0;
-						if (commentType.Flags.Enum == true)
+						if (commentType.IsEnum == true)
 							{  enumValue = Manager.FromID(topic.LanguageID).EnumValue;  }
 							
 						if (commentType.Scope == CommentType.ScopeValue.Start ||
-						    (commentType.Flags.Enum == true && enumValue == EnumValues.UnderType))
+						    (commentType.IsEnum == true && enumValue == EnumValues.UnderType))
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = topic.Symbol;
 							(element as ParentElement).ChildContextString = newContext;
 							}
 						else if (commentType.Scope == CommentType.ScopeValue.End ||
-								  (commentType.Flags.Enum == true && enumValue == EnumValues.Global))
+								  (commentType.IsEnum == true && enumValue == EnumValues.Global))
 							{
 							(element as ParentElement).ChildContextString = new ContextString();
 							}
-						else if (commentType.Flags.Enum == true && enumValue == EnumValues.UnderParent)
+						else if (commentType.IsEnum == true && enumValue == EnumValues.UnderParent)
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = parentContext.Scope;

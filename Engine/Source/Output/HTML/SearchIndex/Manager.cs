@@ -269,7 +269,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 
 			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost
 			// certainly want the class and this just pollutes the results by forcing them under a keyword heading.
-			else if (commentType.Flags.Code && commentType.Flags.ClassHierarchy == false && topic.Symbol.EndsWithDuplicate())
+			else if (commentType.IsCode && commentType.InClassHierarchy == false && topic.Symbol.EndsWithDuplicate())
 			    {  return false;  }
 
 			else

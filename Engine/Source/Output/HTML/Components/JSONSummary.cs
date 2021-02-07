@@ -397,9 +397,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 					FormattedText.WrappedTitleMode mode;
 
-					if (commentType.Flags.File)
+					if (commentType.IsFile)
 						{  mode = FormattedText.WrappedTitleMode.File;  }
-					else if (commentType.Flags.Code)
+					else if (commentType.IsCode)
 						{  mode = FormattedText.WrappedTitleMode.Code;  }
 					else
 						{  mode = FormattedText.WrappedTitleMode.None;  }

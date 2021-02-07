@@ -76,8 +76,8 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 			var language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-			if ( (link.Type == LinkType.ClassParent && commentType.Flags.ClassHierarchy == false) ||
-				  (link.Type == LinkType.Type && commentType.Flags.VariableType == false) )
+			if ( (link.Type == LinkType.ClassParent && commentType.InClassHierarchy == false) ||
+				  (link.Type == LinkType.Type && commentType.IsVariableType == false) )
 				{  return 0;  }
 
 
@@ -314,11 +314,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			if (link.Type == LinkType.NaturalDocs)
 				{  
 				caseRequired = false;
-				caseFlagged = (commentType.Flags.Code && topicLanguage.CaseSensitive);
+				caseFlagged = (commentType.IsCode && topicLanguage.CaseSensitive);
 				}
 			else
 				{
-				if (commentType.Flags.Code == false)
+				if (commentType.IsCode == false)
 					{  return 0;  }
 
 				caseRequired = topicLanguage.CaseSensitive;  
@@ -484,11 +484,11 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			if (link.Type == LinkType.NaturalDocs)
 				{  
 				caseRequired = false;
-				caseFlagged = (commentType.Flags.Code && topicLanguage.CaseSensitive);
+				caseFlagged = (commentType.IsCode && topicLanguage.CaseSensitive);
 				}
 			else
 				{
-				if (commentType.Flags.Code == false)
+				if (commentType.IsCode == false)
 					{  return 0;  }
 
 				caseRequired = topicLanguage.CaseSensitive;  

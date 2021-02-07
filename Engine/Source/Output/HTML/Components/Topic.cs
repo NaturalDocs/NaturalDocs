@@ -181,9 +181,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			WrappedTitleMode mode;
 			
-			if (commentType.Flags.File)
+			if (commentType.IsFile)
 				{  mode = WrappedTitleMode.File;  }
-			else if (commentType.Flags.Code)
+			else if (commentType.IsCode)
 				{  mode = WrappedTitleMode.Code;  }
 			else
 				{  mode = WrappedTitleMode.None;  }
@@ -202,7 +202,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var commentType = EngineInstance.CommentTypes.FromID(context.Topic.CommentTypeID);
 			bool builtPrototype = false;
 
-			if (commentType.Flags.ClassHierarchy)
+			if (commentType.InClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = context.Topic.ParsedClassPrototype;
 

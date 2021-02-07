@@ -293,11 +293,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					var aCommentType = EngineInstance.CommentTypes.FromID(a.WrappedTopic.CommentTypeID);
 					var bCommentType = EngineInstance.CommentTypes.FromID(b.WrappedTopic.CommentTypeID);
 
-					if (aCommentType.Flags.ClassHierarchy != bCommentType.Flags.ClassHierarchy)
-						{  return (aCommentType.Flags.ClassHierarchy ? -1 : 1);  }
+					if (aCommentType.InClassHierarchy != bCommentType.InClassHierarchy)
+						{  return (aCommentType.InClassHierarchy ? -1 : 1);  }
 
-					if (aCommentType.Flags.DatabaseHierarchy != bCommentType.Flags.DatabaseHierarchy)
-						{  return (aCommentType.Flags.DatabaseHierarchy ? -1 : 1);  }
+					if (aCommentType.InDatabaseHierarchy != bCommentType.InDatabaseHierarchy)
+						{  return (aCommentType.InDatabaseHierarchy ? -1 : 1);  }
 
 
 					// Still equal, now compare the qualifiers in a case-sensitive way to break ties.

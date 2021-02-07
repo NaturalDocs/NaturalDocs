@@ -328,10 +328,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Comments.txt") == false)
 				{
-				Engine.CommentTypes.Comments_txt commentsTxtParser = new Engine.CommentTypes.Comments_txt();
-				commentsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Comments.txt",
-												new List<Engine.CommentTypes.ConfigFileCommentType>(), new List<string>(), new List<string>(),
-												errorList, true, false);
+				var commentsTxtParser = new Engine.CommentTypes.ConfigFiles.TextFileParser();
+				commentsTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Comments.txt", PropertySource.ProjectCommentsFile,
+													 new Engine.CommentTypes.ConfigFiles.TextFile(), errorList);
 				}
 
 			if (errorList.Count > priorErrorCount)

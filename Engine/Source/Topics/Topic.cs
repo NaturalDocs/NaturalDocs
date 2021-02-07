@@ -1363,7 +1363,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					{  throw new InvalidOperationException("Tried to access IsEnum when the comment type ID was ignored.");  }
 				#endif
 
-				return (commentTypeID != 0 && CommentTypes.FromID(commentTypeID).Flags.Enum == true);
+				return (commentTypeID != 0 && CommentTypes.FromID(commentTypeID).IsEnum == true);
 				}
 			}
 
@@ -1401,7 +1401,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 				var commentType = CommentTypes.FromID(commentTypeID);
 
-				return ((commentType.Flags.ClassHierarchy || commentType.Flags.DatabaseHierarchy) && isList == false);
+				return ((commentType.InClassHierarchy || commentType.InDatabaseHierarchy) && isList == false);
 				}
 			}
 			

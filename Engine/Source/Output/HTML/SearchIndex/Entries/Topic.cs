@@ -81,12 +81,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			displayName = (extraScope == null ? title : extraScope + title);
 			searchText = Normalize(displayName);
 
-			if (commentType.Flags.File)
+			if (commentType.IsFile)
 				{
 				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, FileSplitSymbolsRegex.Matches(displayName));
 				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, FileSplitSymbolsRegex.Matches(searchText));
 				}
-			else if (commentType.Flags.Code)
+			else if (commentType.IsCode)
 				{
 				endOfDisplayNameQualifiers = FindEndOfQualifiers(displayName, CodeSplitSymbolsRegex.Matches(displayName));
 				endOfSearchTextQualifiers = FindEndOfQualifiers(searchText, CodeSplitSymbolsRegex.Matches(searchText));
@@ -110,9 +110,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			keywords = new List<string>();
 
 			if (endOfDisplayNameQualifiers == 0)
-				{  AddKeywords(displayName, isDocumentation: commentType.Flags.Documentation);  }
+				{  AddKeywords(displayName, isDocumentation: commentType.IsDocumentation);  }
 			else
-				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), isDocumentation: commentType.Flags.Documentation);  }
+				{  AddKeywords(displayName.Substring(endOfDisplayNameQualifiers), isDocumentation: commentType.IsDocumentation);  }
 			}
 
 

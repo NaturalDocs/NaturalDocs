@@ -122,7 +122,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var commentType = EngineInstance.CommentTypes.FromID(context.Topic.CommentTypeID);
 			bool builtPrototype = false;
 
-			if (commentType.Flags.ClassHierarchy)
+			if (commentType.InClassHierarchy)
 				{
 				ParsedClassPrototype parsedClassPrototype = context.Topic.ParsedClassPrototype;
 

@@ -47,6 +47,11 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\CommentTypes\Config.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileCommentType.cs" />
+    <Compile Include="Source\CommentTypes\KeywordDefinition.cs" />
+    <Compile Include="Source\CommentTypes\Manager.Start.cs" />
     <Compile Include="Source\Languages\Parsers\PHP.cs" />
     <Compile Include="Source\Output\HTML\SearchIndex\SearchIndex_nd.cs" />
     <Compile Include="Source\StartupIssues.cs" />
@@ -295,13 +300,12 @@
     <Compile Include="Source\Tokenization\TokenIterator.cs" />
     <Compile Include="Source\Tokenization\Tokenizer.cs" />
     <Compile Include="Source\Tokenization\TokenTypes.cs" />
-    <Compile Include="Source\CommentTypes\Comments_nd.cs" />
-    <Compile Include="Source\CommentTypes\Comments_txt.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\BinaryFileParser.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileParser.cs" />
     <Compile Include="Source\Topics\Topic.cs" />
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFileTopicType.cs" />
-    <Compile Include="Source\CommentTypes\CommentTypeFlags.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywords.cs" />
     <Compile Include="Source\CommentTypes\Manager.cs" />
     <Compile Include="Source\CommentTypes\Tag.cs" />
     <Compile Include="Source\CommentTypes\CommentType.cs" />
@@ -314,6 +318,7 @@
     <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Database Layout\Classes.txt" />
     <Content Include="Architecture\Database Layout\ImageLinks.txt" />
+    <Content Include="Architecture\File Formats\Comments.nd.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript Search Data.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript Summary Data.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript ToolTip Data.txt" />
@@ -334,6 +339,7 @@
     <Content Include="Resources\Config\Comments.txt" />
     <Content Include="Resources\License\License.txt" />
     <Content Include="Resources\Translations\NaturalDocs.Engine.default.txt" />
+    <Content Include="Architecture\File Formats\Comments.txt.txt" />
     <Content Include="Source\Languages\Parsers\SQL Notes.txt" />
     <Content Include="Source\Languages\Parsers\Perl Notes.txt" />
     <Content Include="Source\Languages\Parsers\CSharp Notes.txt" />
