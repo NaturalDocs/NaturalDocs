@@ -151,7 +151,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 				}
 			finally
 				{  
-				if (accessor.LockHeld != Accessor.LockType.None)
+				if (accessor.HasLock)
 					{  accessor.ReleaseLock();  }
 
 				accessor.Dispose();

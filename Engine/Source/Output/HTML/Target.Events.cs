@@ -505,7 +505,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					accessor.ReleaseLock();
 					}
 				finally
-					{  accessor.Dispose();  }
+					{  
+					if (accessor.HasLock)
+						{  accessor.ReleaseLock();  }
+
+					accessor.Dispose();  
+					}
 				}
 
 			// We don't care about source files here.  They'll be handled by functions like OnUpdateTopic().

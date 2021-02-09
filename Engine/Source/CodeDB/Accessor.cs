@@ -398,6 +398,15 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{  return connection;  }
 			}
 		
+		/* Property: HasLock
+		 * Whether any type of lock is currently held.
+		 */
+		public bool HasLock
+			{
+			get
+				{  return (lockHeld != LockType.None);  }
+			}
+
 		/* Property: LockHeld
 		 * The type of lock currently held, if any.
 		 */
