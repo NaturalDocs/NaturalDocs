@@ -9,67 +9,6 @@
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  *		
- * 
- * File: Languages.nd
- * 
- *		A binary file which stores the combined results of the two versions of <Languages.txt> as of the last run, as well as 
- *		storing the IDs of each type so they maintain their consistency between runs.
- *		
- *		> [[Binary Header]]
- *		
- *		The file starts with the standard binary file header as managed by <BinaryFile>.
- *		
- *		Languages:
- *			
- *			> [String: Language Name]
- *			> [[Language Attributes]]
- *			> ...
- *			> [String: null]
- *			
- *			The file then encodes each language by its name string, followed by its attributes, and repeats until it reaches a null
- *			string instead of a new name string.
- *			
- *			> Language Attributes:
- *			> [Int32: ID]
- *			> [Byte: Type]
- *			> [String: Simple Identifier]
- *			> [String: Alias] [] ... [String: null]
- *			> [Byte: Enum Values]
- *			> [Byte: Case Sensitive (1 or 0)]
- *			> [String: Member Operator Symbol]
- *			> [String: Line Extender Symbol]
- *			> [String: Line Comment Symbol] [] ... [String: null]
- *			> [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
- *			> [String: Javadoc Opening Line Comment Symbol] [String: Javadoc Remainder Line Comment Symbol] [] ... [String: null]
- *			> [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
- *			> [String: XML Line Comment Symbol] [] ... [String: null]
- *			
- *			The attributes are self-explanitory.  The comment symbols repeat until a null string is reached.
- *			
- *			> [Int32: Comment Type ID]
- *			> [Byte: Include Line Breaks (1 or 0)]
- *			> [String: Prototype Ender Symbol] [] ... [String: null]
- *			> ...
- *			> [Int32: 0]
- *			
- *			Prototype ender sections repeat until a zero ID is reached.
- *			
- *		Other Data:
- *			
- *			> [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
- *			> [String: Extension] [Int32: Language ID] [] [] ... [String: Null]
- *			> [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
- *			> [String: Ignored Extension] [] ... [String: Null]
- *			
- *			File extensions, shebang strings, and aliases are paired with language IDs.  Ignored extensions aren't paired with anything.
- *			All repeat until they hit a null string.
- *			
- *		Revisions:
- *		
- *			2.0:
- *				
- *				- The file was introduced.
- *		
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.

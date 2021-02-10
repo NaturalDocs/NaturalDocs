@@ -318,7 +318,9 @@
     <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Database Layout\Classes.txt" />
     <Content Include="Architecture\Database Layout\ImageLinks.txt" />
+    <Content Include="Architecture\File Formats\Languages.nd.txt" />
     <Content Include="Architecture\File Formats\Comments.nd.txt" />
+    <Content Include="Architecture\File Formats\Languages.txt.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript Search Data.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript Summary Data.txt" />
     <Content Include="Architecture\JavaScript and Styles\JavaScript ToolTip Data.txt" />
