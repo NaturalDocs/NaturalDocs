@@ -1,4 +1,4 @@
-﻿Format: 2.0 (Development Release 04-06-2017)
+﻿Format: 2.2 (Development Release 2)
 
 # This is the Natural Docs comments file for this project.  If you change
 # anything here, it will apply to THIS PROJECT ONLY.  You can edit the version
@@ -78,3 +78,11 @@ Tags:
 #    reuse existing keywords to change their definition.  When using
 #    "Alter Comment Type", these keywords are added to the existing ones
 #    rather than replacing them.
+#
+# [Language] Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of keywords that only apply to the comment type when using a
+#    specific programming language.  Each line after the heading is the
+#    keyword and optionally its plural form for list comments.
