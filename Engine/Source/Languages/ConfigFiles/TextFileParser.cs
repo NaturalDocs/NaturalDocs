@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Languages.Languages_txt
+ * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Languages.txt>.
@@ -21,18 +21,18 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 	{
-	public class Languages_txt
+	public class TextFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Languages_txt
+		/* Constructor: TextFileParser
 		 */
-		public Languages_txt ()
+		public TextFileParser ()
 			{
 			yesRegex = new Regex.Config.Yes();
 			noRegex = new Regex.Config.No();
@@ -80,13 +80,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		Whether it was able to successfully load and parse the file without any errors.
 		 */
 		public bool Load (Path filename, Config.PropertySource propertySource,
-								 out List<ConfigFileLanguage> fileLanguages, out List<string> fileIgnoredExtensions, 
+								 out List<TextFileLanguage> fileLanguages, out List<string> fileIgnoredExtensions, 
 								 Errors.ErrorList errorList)
 			{
-			fileLanguages = new List<ConfigFileLanguage>();
+			fileLanguages = new List<TextFileLanguage>();
 			fileIgnoredExtensions = new List<string>();
-			StringTable<ConfigFileLanguage> fileLanguageNames = 
-				new StringTable<ConfigFileLanguage>(Engine.Languages.Manager.KeySettingsForLanguageName);
+			StringTable<TextFileLanguage> fileLanguageNames = 
+				new StringTable<TextFileLanguage>(Engine.Languages.Manager.KeySettingsForLanguageName);
 
 			int previousErrorCount = errorList.Count;
 
@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					{  return false;  }
 					
 				string identifier, lcIdentifier, value;
-				ConfigFileLanguage currentLanguage = null;
+				TextFileLanguage currentLanguage = null;
 				
 				// We need this in addition to ConfigFileLanguage.AlterLanguage because an entry altering a type defined in the 
 				// same file would be combined into the original, yet we still need to know if that entry is Alter to properly
@@ -152,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							
 						else
 							{
-							currentLanguage = new ConfigFileLanguage(value, false, file.LineNumber);
+							currentLanguage = new TextFileLanguage(value, false, file.LineNumber);
 							alterCurrentLanguage = false;
 							fileLanguages.Add(currentLanguage);
 							fileLanguageNames.Add(value, currentLanguage);
@@ -178,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						// file.
 						else
 							{
-							currentLanguage = new ConfigFileLanguage(value, true, file.LineNumber);
+							currentLanguage = new TextFileLanguage(value, true, file.LineNumber);
 							alterCurrentLanguage = true;
 							fileLanguages.Add(currentLanguage);
 							fileLanguageNames.Add(value, currentLanguage);
@@ -586,7 +586,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		Whether it was able to successfully save the file without any errors.  If the file didn't need saving because
 		 *		the generated file was the same as the one on disk, this will still return true.
 		 */
-		public bool Save (Path filename, List<ConfigFileLanguage> languages, 
+		public bool Save (Path filename, List<TextFileLanguage> languages, 
 								 List<string> ignoredExtensions, Errors.ErrorList errorList, bool isProjectFile, bool noErrorOnFail)
 			{
 			System.Text.StringBuilder output = new System.Text.StringBuilder(1024);
@@ -648,11 +648,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			//
 			
 			languages.Sort( 
-				delegate (ConfigFileLanguage a, ConfigFileLanguage b)
+				delegate (TextFileLanguage a, TextFileLanguage b)
 					{  return a.LineNumber - b.LineNumber;  } 
 				);
 				
-			foreach (ConfigFileLanguage language in languages)
+			foreach (var language in languages)
 				{
 				if (language.AlterLanguage == true)
 					{  output.Append("Alter ");  }

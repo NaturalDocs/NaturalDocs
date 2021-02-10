@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFileLanguage
+ * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.TextFileLanguage
  * ____________________________________________________________________________
  * 
  * A class encapsulating information about a language as it appears in <Languages.txt>.  This differs from <Language> in 
@@ -16,18 +16,18 @@ using System;
 using System.Collections.Generic;
 
 
-namespace CodeClear.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 	{
-	public class ConfigFileLanguage
+	public class TextFileLanguage
 		{
 		
 		// Group: Functions and Properties
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: ConfigFileLanguage
+		/* Constructor: TextFileLanguage
 		 */
-		public ConfigFileLanguage (string newName, bool newAlterLanguage, int newLineNumber)
+		public TextFileLanguage (string newName, bool newAlterLanguage, int newLineNumber)
 			{
 			name = newName;
 			alterLanguage = newAlterLanguage;
@@ -262,7 +262,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Attempting to remove an entry should be rare, so we can deal with the potential performance hit of creating and
 			// deleting a list every time we try to remove from an empty list.  The code simplification is worth it.
 			if (prototypeEndersList == null)
-				{  prototypeEndersList = new List<ConfigFilePrototypeEnders>();  }
+				{  prototypeEndersList = new List<TextFilePrototypeEnders>();  }
 					
 			string lcCommentTypeName = commentTypeName.ToLower();
 			bool found = false;
@@ -283,7 +283,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					
 			if (found == false && prototypeEnderStrings != null)
 				{  
-				ConfigFilePrototypeEnders prototypeEnders = new ConfigFilePrototypeEnders();
+				TextFilePrototypeEnders prototypeEnders = new TextFilePrototypeEnders();
 				prototypeEnders.CommentTypeName = commentTypeName;
 				prototypeEnders.EnderStrings = prototypeEnderStrings;
 				prototypeEndersList.Add(prototypeEnders);  
@@ -440,10 +440,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected string memberOperator;
 		
 		/* object: prototypeEndersList
-		 * A list of <ConfigFilePrototypeEnders> mapping comment type strings to arrays of ender strings.  Line breaks are 
+		 * A list of <TextFilePrototypeEnders> mapping comment type strings to arrays of ender strings.  Line breaks are 
 		 * represented with "\n".  Will be null if not set.
 		 */
-		protected List<ConfigFilePrototypeEnders> prototypeEndersList;
+		protected List<TextFilePrototypeEnders> prototypeEndersList;
 		
 		/* string: lineExtender
 		 * A string representing the line extender symbol if line breaks are significant to the language.  Will be null if not set.
@@ -460,28 +460,5 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool? caseSensitive;
 		
-
-
-
-		/* Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFileLanguage.ConfigFilePrototypeEnders
-		* __________________________________________________________________________
-		*/
-		protected class ConfigFilePrototypeEnders
-			{
-			public ConfigFilePrototypeEnders()
-				{
-				CommentTypeName = null;
-				EnderStrings = null;
-				}
-			
-			public string CommentTypeName;
-
-			/* var: EnderStrings
-			 * An array of ender strings which may be symbols and/or "\n".
-			 */
-			public string[] EnderStrings;
-			}
-
 		}
-	
 	}

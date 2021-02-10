@@ -320,9 +320,9 @@ namespace CodeClear.NaturalDocs.CLI
 
 			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Languages.txt") == false)
 				{
-				Engine.Languages.Languages_txt languagesTxtParser = new Engine.Languages.Languages_txt();
+				Engine.Languages.ConfigFiles.TextFileParser languagesTxtParser = new Engine.Languages.ConfigFiles.TextFileParser();
 				languagesTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Languages.txt",
-													new List<Engine.Languages.ConfigFileLanguage>(), new List<string>(),
+													new List<Engine.Languages.ConfigFiles.TextFileLanguage>(), new List<string>(),
 													errorList, true, false);
 				}
 

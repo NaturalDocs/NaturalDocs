@@ -102,8 +102,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			StartupIssues newStartupIssues = StartupIssues.None;
 
-			List<ConfigFileLanguage> systemLanguageList;
-			List<ConfigFileLanguage> projectLanguageList;
+			List<ConfigFiles.TextFileLanguage> systemLanguageList;
+			List<ConfigFiles.TextFileLanguage> projectLanguageList;
 			List<string> ignoredSystemExtensions;
 			List<string> ignoredProjectExtensions;
 			
@@ -127,7 +127,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// We need the ID numbers to stay consistent between runs, so we create all the languages from the binary file
 			// next.  We'll worry about comparing their attributes with the text files and seeing if any were added or deleted later.
 
-			Languages_nd languagesNDParser = new Languages_nd(this);
+			ConfigFiles.BinaryFileParser languagesNDParser = new ConfigFiles.BinaryFileParser(this);
 
 			// Don't bother going through the effort if we're rebuilding everything anyway.
 			if (EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			Path systemFile = EngineInstance.Config.SystemConfigFolder + "/Languages.txt";
 			Path projectFile = EngineInstance.Config.ProjectConfigFolder + "/Languages.txt";
 
-			Languages_txt languagesTxtParser = new Languages_txt();
+			ConfigFiles.TextFileParser languagesTxtParser = new ConfigFiles.TextFileParser();
 
 			
 			// Load the files.
@@ -227,7 +227,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 			    {
 			    // The project file not existing is not an error condition.  Fill in the variables with empty structures.
-			    projectLanguageList = new List<ConfigFileLanguage>();
+			    projectLanguageList = new List<ConfigFiles.TextFileLanguage>();
 			    ignoredProjectExtensions = new List<string>();
 			    }
 				
@@ -252,13 +252,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// entry applying to a language in the same file.)  Start_AddLanguage() also prevents inappropriate properties from 
 			// being set on languages, like Line Comment on one with full language support.
 
-			foreach (ConfigFileLanguage configFileLanguage in systemLanguageList)
+			foreach (var configFileLanguage in systemLanguageList)
 			    {  
 			    if (!Start_AddLanguage(configFileLanguage, systemFile, true, ignoredExtensions, errorList))
 			        {  success = false;  }
 			    }
 
-			foreach (ConfigFileLanguage configFileLanguage in projectLanguageList)
+			foreach (var configFileLanguage in projectLanguageList)
 			    {  
 			    if (!Start_AddLanguage(configFileLanguage, projectFile, false, ignoredExtensions, errorList))
 			        {  success = false;  }
@@ -422,7 +422,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * A helper function that is used only by <Start()> to add a <ConfigFileLanguage> into <languages>.
 		 * Returns whether it was able to do so without any errors.
 		 */
-		private bool Start_AddLanguage (ConfigFileLanguage configFileLanguage, Path sourceFile, bool isSystemFile,
+		private bool Start_AddLanguage (ConfigFiles.TextFileLanguage configFileLanguage, Path sourceFile, bool isSystemFile,
 														StringSet ignoredExtensions, Errors.ErrorList errorList)
 			{
 			bool success = true;
@@ -670,7 +670,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * A helper function used only by <Start()> and its other helper functions which adds an error saying the passed
 		 * property cannot be defined for the current language type.
 		 */
-		private void Start_CantDefinePropertyError (ConfigFileLanguage configFileLanguage, Language.LanguageType type,
+		private void Start_CantDefinePropertyError (ConfigFiles.TextFileLanguage configFileLanguage, Language.LanguageType type,
 																		 Path sourceFile, string propertyName, Errors.ErrorList errorList)
 			{
 			string typeString;
@@ -700,9 +700,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * 
 		 * Assumes <languages> and <CommentTypes.Manager> are already filled in and valid.
 		 */
-		public void Start_FixCapitalization (List<ConfigFileLanguage> languageList)
+		public void Start_FixCapitalization (List<ConfigFiles.TextFileLanguage> languageList)
 			{
-			foreach (ConfigFileLanguage configFileLanguage in languageList)
+			foreach (var configFileLanguage in languageList)
 				{
 				if (configFileLanguage.AlterLanguage == true)
 					{

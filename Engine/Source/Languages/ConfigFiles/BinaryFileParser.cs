@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Languages.Languages_nd
+ * Class: CodeClear.NaturalDocs.Engine.Languages.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Languages.nd>.
@@ -21,18 +21,18 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
 
 
-namespace CodeClear.NaturalDocs.Engine.Languages
+namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 	{
-	public class Languages_nd
+	public class BinaryFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Languages_nd
+		/* Constructor: BinaryFileParser
 		 */
-		public Languages_nd (Languages.Manager manager)
+		public BinaryFileParser (Languages.Manager manager)
 			{
 			languageManager = manager;
 			}

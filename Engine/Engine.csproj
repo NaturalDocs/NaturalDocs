@@ -52,6 +52,7 @@
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFileCommentType.cs" />
     <Compile Include="Source\CommentTypes\KeywordDefinition.cs" />
     <Compile Include="Source\CommentTypes\Manager.Start.cs" />
+    <Compile Include="Source\Languages\ConfigFiles\TextFilePrototypeEnders.cs" />
     <Compile Include="Source\Languages\Parsers\PHP.cs" />
     <Compile Include="Source\Output\HTML\SearchIndex\SearchIndex_nd.cs" />
     <Compile Include="Source\StartupIssues.cs" />
@@ -179,9 +180,9 @@
     <Compile Include="Source\Config\ProjectInfo.cs" />
     <Compile Include="Source\Config\PropertySource.cs" />
     <Compile Include="Source\Config\PropertyLocation.cs" />
-    <Compile Include="Source\Languages\Languages_nd.cs" />
+    <Compile Include="Source\Languages\ConfigFiles\BinaryFileParser.cs" />
     <Compile Include="Source\Languages\Parsers\Perl.cs" />
-    <Compile Include="Source\Languages\Languages_txt.cs" />
+    <Compile Include="Source\Languages\ConfigFiles\TextFileParser.cs" />
     <Compile Include="Source\Output\HTML\BuildState.cs" />
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
@@ -263,7 +264,7 @@
     <Compile Include="Source\IDObjects\NumberSet.cs" />
     <Compile Include="Source\Instance.cs" />
     <Compile Include="Source\Languages\AccessLevel.cs" />
-    <Compile Include="Source\Languages\ConfigFileLanguage.cs" />
+    <Compile Include="Source\Languages\ConfigFiles\TextFileLanguage.cs" />
     <Compile Include="Source\Languages\Language.cs" />
     <Compile Include="Source\Languages\Manager.cs" />
     <Compile Include="Source\Languages\ShebangStringComparer.cs" />
