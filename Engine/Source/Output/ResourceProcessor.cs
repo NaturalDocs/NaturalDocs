@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	public abstract class ResourceProcessor : Languages.CommentFinder
+	public abstract class ResourceProcessor : Languages.Language
 		{
 
 		// Group: Functions
@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			IncludeInOutputRegex = new Regex.Comments.IncludeInOutput();
 			}
 
-		public ResourceProcessor (string name) : base (name)
+		public ResourceProcessor (Engine.Instance engineInstance, string name) : base (engineInstance.Languages, name)
 			{
 			this.quoteCharacters = null;
 			}

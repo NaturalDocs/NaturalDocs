@@ -28,7 +28,7 @@ using CodeClear.NaturalDocs.Engine.Comments;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public partial class Language : CommentFinder
+	public partial class Language : IDObjects.Base
 		{
 		
 		// Group: Types
@@ -86,18 +86,100 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		/* Constructor: Language
 		 * Creates a new language object.
 		 */
-		public Language (Languages.Manager manager, string name) : base (name)
+		public Language (Languages.Manager manager, string name) : base ()
 			{
 			this.manager = manager;
-			
+			this.name = name;
+
 			simpleIdentifier = null;			
 			type = LanguageType.BasicSupport;
+			lineCommentStrings = null;
+			blockCommentStringPairs = null;
+			javadocLineCommentStringPairs = null;
+			javadocBlockCommentStringPairs = null;
+			xmlLineCommentStrings = null;
 			memberOperator = ".";
 			commentTypesToPrototypeEnders = null;
 			lineExtender = null;
 			enumValue = EnumValues.UnderType;
 			caseSensitive = true;
 			flags = 0;
+			}
+
+
+		/* Function: GenerateJavadocCommentStrings
+		 * If they're not already defined, generate <JavadocLineCommentStringPairs> and <JavadocBlockCommentStringPairs>
+		 * from <LineCommentStrings> and <BlockCommentStringPairs>.
+		 */
+		public void GenerateJavadocCommentStrings ()
+			{
+			if (javadocBlockCommentStringPairs == null && blockCommentStringPairs != null)
+				{
+				int count = 0;
+
+				for (int i = 0; i < blockCommentStringPairs.Length; i += 2)
+					{
+					// We only accept strings like /* */ and (* *).  Anything else doesn't get it.
+					if (blockCommentStringPairs[i].Length == 2 && 
+						 blockCommentStringPairs[i+1].Length == 2 &&
+						 blockCommentStringPairs[i][1] == '*' &&
+						 blockCommentStringPairs[i+1][0] == '*')
+						{  count++;  }
+					}
+
+				if (count > 0)
+					{
+					javadocBlockCommentStringPairs = new string[count * 2];
+					int javadocIndex = 0;
+
+					for (int i = 0; i < blockCommentStringPairs.Length; i += 2)
+						{
+						if (blockCommentStringPairs[i].Length == 2 && 
+							 blockCommentStringPairs[i+1].Length == 2 &&
+							 blockCommentStringPairs[i][1] == '*' &&
+							 blockCommentStringPairs[i+1][0] == '*')
+							{  
+							javadocBlockCommentStringPairs[javadocIndex] = blockCommentStringPairs[i] + '*';
+							javadocBlockCommentStringPairs[javadocIndex+1] = blockCommentStringPairs[i+1];
+							javadocIndex += 2;
+							}
+						}
+					}
+				}
+
+			if (javadocLineCommentStringPairs == null && lineCommentStrings != null)
+				{
+				javadocLineCommentStringPairs = new string[lineCommentStrings.Length * 2];
+
+				for (int i = 0; i < lineCommentStrings.Length; i++)
+					{
+					javadocLineCommentStringPairs[i*2] = lineCommentStrings[i] + lineCommentStrings[i][ lineCommentStrings[i].Length - 1 ];
+					javadocLineCommentStringPairs[(i*2)+1] = lineCommentStrings[i];
+					}
+				}
+			}
+
+
+		/* Function: GenerateXMLCommentStrings
+		 * If they're not already defined, generate <XMLLineCommentStrings> from <LineCommentStrings>.
+		 */
+		public void GenerateXMLCommentStrings ()
+			{
+			if (xmlLineCommentStrings == null && lineCommentStrings != null)
+				{
+				xmlLineCommentStrings = new string[lineCommentStrings.Length];
+
+				for (int i = 0; i < lineCommentStrings.Length; i++)
+					{
+					// If it's only one character, turn it to three like ''' in Visual Basic.
+					if (lineCommentStrings[i].Length == 1)
+						{  xmlLineCommentStrings[i] = lineCommentStrings[i] + lineCommentStrings[i][0] + lineCommentStrings[i];  }
+
+					// Otherwise just duplicate the last charater like /// in C#.
+					else
+						{  xmlLineCommentStrings[i] = lineCommentStrings[i] + lineCommentStrings[i][ lineCommentStrings[i].Length - 1 ];  }
+					}
+				}
 			}
 
 
@@ -124,6 +206,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return Manager.EngineInstance;  }
 			}
 			
+		/* Property: Name
+		 * The name of the language.
+		 */
+		override public string Name
+			{
+			get
+				{  return name;  }
+			}
+
 		/* Property: SimpleIdentifier
 		 * The name of the language using only the letters A to Z.
 		 */
@@ -157,6 +248,102 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  type = value;  }
 			}
 			
+		/* Property: LineCommentStrings
+		 * An array of strings representing line comment symbols.  Will be null if none are defined.
+		 */
+		public string[] LineCommentStrings
+			{
+			get
+				{  return lineCommentStrings;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  lineCommentStrings = value;  }
+				else
+					{  lineCommentStrings = null;  }
+				}
+			}
+			
+		/* Property: BlockCommentStringPairs
+		 * An array of string pairs representing start and stop block comment symbols.  Will be null if none are defined.
+		 */
+		public string[] BlockCommentStringPairs
+			{
+			get
+				{  return blockCommentStringPairs;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  
+					if (value.Length % 2 == 1)
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
+
+					blockCommentStringPairs = value;  
+					}
+				else
+					{  blockCommentStringPairs = null;  }
+				}
+			}
+			
+		/* Property: JavadocLineCommentStringPairs
+		 * An array of string pairs representing Javadoc line comment symbols.  The first are are the symbols that must start the
+		 * comment, and the second are the symbols that must be used on every following line.  Will be null if none are defined.
+		 */
+		public string[] JavadocLineCommentStringPairs
+			{
+			get
+				{  return javadocLineCommentStringPairs;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  
+					if (value.Length % 2 == 1)
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocLineCommentStringPairs");  }
+
+					javadocLineCommentStringPairs = value;  
+					}
+				else
+					{  javadocLineCommentStringPairs = null;  }
+				}
+			}
+			
+		/* Property: JavadocBlockCommentStringPairs
+		 * An array of string pairs representing start and stop Javadoc block comment symbols.  Will be null if none are defined.
+		 */
+		public string[] JavadocBlockCommentStringPairs
+			{
+			get
+				{  return javadocBlockCommentStringPairs;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  
+					if (value.Length % 2 == 1)
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("JavadocBlockCommentStringPairs");  }
+
+					javadocBlockCommentStringPairs = value;  
+					}
+				else
+					{  javadocBlockCommentStringPairs = null;  }
+				}
+			}
+			
+		/* Property: XMLLineCommentStrings
+		 * An array of strings representing XML line comment symbols.  Will be null if none are defined.
+		 */
+		public string[] XMLLineCommentStrings
+			{
+			get
+				{  return xmlLineCommentStrings;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  xmlLineCommentStrings = value;  }
+				else
+					{  xmlLineCommentStrings = null;  }
+				}
+			}
+
 		/* Property: MemberOperator
 		 * A string representing the default member operator symbol.
 		 */
@@ -508,6 +695,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected Languages.Manager manager;
 
+		/* var: name
+		 * The language name.
+		 */
+		protected string name;
+
 		/* var: simpleIdentifier
 		 * The language's name using only the letters A to Z, or null if it's not defined.
 		 */
@@ -517,6 +709,32 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * The type of the language or file.
 		 */
 		protected LanguageType type;
+
+		/* array: lineCommentStrings
+		 * An array of strings that start line comments.
+		 */
+		protected string[] lineCommentStrings;
+		
+		/* array: blockCommentStringPairs
+		 * An array of string pairs that start and end block comments.
+		 */
+		protected string[] blockCommentStringPairs;
+		
+		/* array: javadocLineCommentStringPairs
+		 * An array of string pairs that start Javadoc line comments.  The first will be the symbol that must start it, and
+		 * the second will be the symbol that must be used on every following line.
+		 */
+		protected string[] javadocLineCommentStringPairs;
+		
+		/* array: javadocBlockCommentStringPairs
+		 * An array of string pairs that start and end Javadoc black comments.
+		 */
+		protected string[] javadocBlockCommentStringPairs;
+		
+		/* array: xmlLineCommentStrings
+		 * An array of strings that start XML line comments.
+		 */
+		protected string[] xmlLineCommentStrings;
 
 		/* string: memberOperator
 		 * A string representing the default member operator symbol.
