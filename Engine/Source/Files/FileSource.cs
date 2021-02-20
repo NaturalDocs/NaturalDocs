@@ -4,13 +4,6 @@
  * 
  * The base class for a file source.
  * 
- * 
- * Multithreading: Thread Safety Notes
- * 
- *		<AddAllFiles()> is the only function that is allowed to alter <adderStatus>.  However, other threads may read its 
- *		values at any time.  Since they are all integer counters and are only used for informational purposes, no thread 
- *		synchronization is necessary.
- * 
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
