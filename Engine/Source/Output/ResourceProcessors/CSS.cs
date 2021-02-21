@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public CSS (Engine.Instance engineInstance) : base (engineInstance, "CSS")
+		public CSS () : base ()
 			{
 			this.BlockCommentStringPairs = new string[] { "/*", "*/" };
 			this.QuoteCharacters = new char[] { '"', '\'' };

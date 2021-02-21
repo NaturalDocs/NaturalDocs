@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Output
 	{
-	public abstract class ResourceProcessor : Languages.Language
+	public abstract class ResourceProcessor
 		{
 
 		// Group: Functions
@@ -30,15 +30,200 @@ namespace CodeClear.NaturalDocs.Engine.Output
 			IncludeInOutputRegex = new Regex.Comments.IncludeInOutput();
 			}
 
-		public ResourceProcessor (Engine.Instance engineInstance, string name) : base (engineInstance.Languages, name)
+		public ResourceProcessor ()
 			{
-			this.quoteCharacters = null;
+			quoteCharacters = null;
+			lineCommentStrings = null;
+			blockCommentStringPairs = null;
 			}
 
 
 		/* Function: Process
 		 */
 		abstract public string Process (string input, bool shrink = true);
+
+
+		/* Function: GetPossibleDocumentationComments
+		 *
+		 * Goes through the file looking for comments that could possibly contain documentation and returns them as a list.  These 
+		 * comments are not guaranteed to have documentation in them, just to be acceptable candidates for them.  If there are no 
+		 * comments it will return an empty list.
+		 */
+		protected List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
+			{
+			List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>();
+
+			LineIterator lineIterator = source.FirstLine;
+
+			while (lineIterator.IsInBounds)
+				{
+				bool foundComment = false;
+				PossibleDocumentationComment possibleDocumentationComment = null;
+				
+				// Block comments
+				if (blockCommentStringPairs != null)
+					{
+					for (int i = 0; foundComment == false && i < blockCommentStringPairs.Length; i += 2)
+						{
+						foundComment = TryToGetBlockComment(ref lineIterator, blockCommentStringPairs[i], blockCommentStringPairs[i+1], 
+																					 out possibleDocumentationComment);
+						}
+					}
+					
+				// Plain line comments
+				if (foundComment == false && lineCommentStrings != null)
+					{
+					for (int i = 0; foundComment == false && i < lineCommentStrings.Length; i++)
+						{
+						foundComment = TryToGetLineComment(ref lineIterator, lineCommentStrings[i], out possibleDocumentationComment);
+						}
+					}
+				
+				// Nada.
+				if (foundComment == false)
+					{  lineIterator.Next();  }
+				else
+					{
+					if (possibleDocumentationComment != null)
+						{  possibleDocumentationComments.Add(possibleDocumentationComment);  }
+
+					// lineIterator would have been moved already if foundComment is true
+					}
+				}
+
+			return possibleDocumentationComments;
+			}
+
+
+		/* Function: TryToGetBlockComment
+		 * 
+		 * If the iterator is on a line that starts with the opening symbol of a block comment, this function moves the iterator
+		 * past the entire comment and returns true.  If the comment is a candidate for documentation it will also return it as
+		 * a <PossibleDocumentationComment> and mark the symbols as <CommentParsingType.CommentSymbol>.  If the
+		 * line does not start with an opening comment symbol it will return false and leave the iterator where it is.
+		 * 
+		 * Not all the block comments it finds will be candidates for documentation, since some will have text after the closing
+		 * symbol, so it's possible for this function to return true and have comment be null.
+		 */
+		protected bool TryToGetBlockComment (ref LineIterator lineIterator, string openingSymbol, string closingSymbol,
+																 out PossibleDocumentationComment comment)
+			{
+			TokenIterator firstToken, endOfLine;
+			lineIterator.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
+
+			if (firstToken.MatchesAcrossTokens(openingSymbol) == false)
+				{  
+				comment = null;
+				return false;
+				}
+
+			// Advance past the opening symbol because it's possible for it to be the same as the closing one, such as with 
+			// Python's ''' and """ strings.
+			firstToken.NextByCharacters(openingSymbol.Length);
+
+			comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+
+			var tokenizer = lineIterator.Tokenizer;
+			var lookahead = lineIterator;
+
+			for (;;)
+				{
+				TokenIterator closingSymbolIterator;
+				
+				if (tokenizer.FindTokensBetween(closingSymbol, false, firstToken, endOfLine, out closingSymbolIterator) == true)
+					{
+					// Move past the end of the comment regardless of whether it's acceptable for documentation or not
+					lookahead.Next();
+
+					// Make sure nothing appears after the closing symbol on the line
+					closingSymbolIterator.NextByCharacters(closingSymbol.Length);
+					closingSymbolIterator.NextPastWhitespace();
+
+					if (closingSymbolIterator.FundamentalType != FundamentalType.LineBreak &&
+						closingSymbolIterator.FundamentalType != FundamentalType.Null)
+						{  comment = null;  }
+					else
+						{  comment.End = lookahead;  }
+
+					break;
+					}
+
+				lookahead.Next();
+
+				// If we're not in bounds that means there was an unclosed comment at the end of the file.  Skip it but don't treat
+				// it as a documentation candidate.
+				if (!lookahead.IsInBounds)
+					{  
+					comment = null;
+					break;  
+					}
+
+				lookahead.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
+				}
+
+
+			if (comment != null)
+				{
+				// Mark the symbols before returning
+
+				firstToken = comment.Start.FirstToken(LineBoundsMode.ExcludeWhitespace);
+				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, openingSymbol.Length);
+
+				LineIterator lastLine = lookahead;
+				lastLine.Previous();
+				lastLine.GetBounds(LineBoundsMode.ExcludeWhitespace, out firstToken, out endOfLine);
+				endOfLine.PreviousByCharacters(closingSymbol.Length);
+				endOfLine.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, closingSymbol.Length);
+				}
+
+			// If we made it this far that means we found a comment and can move the line iterator and return true.  Whether
+			// that comment was suitable for documentation will be determined by the comment variable, but we are moving the
+			// iterator and returning true either way.
+			lineIterator = lookahead;
+			return true;
+			}
+
+
+		/* Function: TryToGetLineComment
+		 * If the iterator is on a line that starts with a line comment symbol, this function moves the iterator past the entire
+		 * comment and returns true.  If the comment is a candidate for documentation it will also return it as a
+		 * <PossibleDocumentationComment>.  If the line does not start with a line comment symbol it will return false and 
+		 * leave the iterator where it is.
+		 */
+		protected bool TryToGetLineComment (ref LineIterator lineIterator, string commentSymbol, 
+																out PossibleDocumentationComment comment)
+			{
+			TokenIterator firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+
+			if (firstToken.MatchesAcrossTokens(commentSymbol) == false)
+				{  
+				comment = null;
+				return false;
+				}
+
+			comment = new PossibleDocumentationComment();
+			comment.Start = lineIterator;
+			lineIterator.Next();
+
+			// Since we're definitely returning a comment we can mark the comment symbols as we go rather than waiting until
+			// the end.
+			firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, commentSymbol.Length);
+
+			while (lineIterator.IsInBounds)
+				{
+				firstToken = lineIterator.FirstToken(LineBoundsMode.ExcludeWhitespace);
+					
+				if (firstToken.MatchesAcrossTokens(commentSymbol) == false)
+					{  break;  }
+
+				firstToken.SetCommentParsingTypeByCharacters(CommentParsingType.CommentSymbol, commentSymbol.Length);
+				lineIterator.Next();
+				}
+			
+			comment.End = lineIterator;
+			return true;
+			}
 
 
 		/* Function: FindIncludeInOutput
@@ -618,11 +803,63 @@ namespace CodeClear.NaturalDocs.Engine.Output
 				{  quoteCharacters = value;  }
 			}
 
+		/* Property: LineCommentStrings
+		 * An array of strings representing line comment symbols.  Will be null if none are defined.
+		 */
+		public string[] LineCommentStrings
+			{
+			get
+				{  return lineCommentStrings;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  lineCommentStrings = value;  }
+				else
+					{  lineCommentStrings = null;  }
+				}
+			}
+			
+		/* Property: BlockCommentStringPairs
+		 * An array of string pairs representing start and stop block comment symbols.  Will be null if none are defined.
+		 */
+		public string[] BlockCommentStringPairs
+			{
+			get
+				{  return blockCommentStringPairs;  }
+			set
+				{
+				if (value != null && value.Length != 0)
+					{  
+					if (value.Length % 2 == 1)
+						{  throw new Engine.Exceptions.ArrayDidntHaveEvenLength("BlockCommentStringPairs");  }
+
+					blockCommentStringPairs = value;  
+					}
+				else
+					{  blockCommentStringPairs = null;  }
+				}
+			}
+			
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
+
+		/* var: quoteCharacters
+		 */
 		protected char[] quoteCharacters;
+
+		/* var: lineCommentStrings
+		 * An array of strings that start line comments.
+		 */
+		protected string[] lineCommentStrings;
+		
+		/* var: blockCommentStringPairs
+		 * An array of string pairs that start and end block comments.
+		 */
+		protected string[] blockCommentStringPairs;
+		
 
 
 		// Group: Static Variables

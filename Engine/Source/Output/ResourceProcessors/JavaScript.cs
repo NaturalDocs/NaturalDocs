@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.ResourceProcessors
 		// Group: Functions
 		// __________________________________________________________________________
 
-		public JavaScript(Engine.Instance engineInstance)  : base (engineInstance, "JavaScript")
+		public JavaScript()  : base ()
 			{
 			this.LineCommentStrings = new string[] { "//" };
 			this.BlockCommentStringPairs = new string[] { "/*", "*/" };
