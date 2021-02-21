@@ -234,7 +234,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 							string code = System.IO.File.ReadAllText(test.InputFile);
 							Tokenizer tokenizedCode = new Tokenizer(code);
-							List<Element> codeElements = language.GetCodeElements(tokenizedCode);
+							List<Element> codeElements = language.Parser.GetCodeElements(tokenizedCode);
 
 							if (codeElements == null)
 								{  throw new Exception("GetCodeElements() returned null.");  }

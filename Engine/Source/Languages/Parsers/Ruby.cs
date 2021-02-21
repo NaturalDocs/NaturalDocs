@@ -17,7 +17,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class Ruby : Language
+	public class Ruby : Parser
 		{
 
 		// Group: Functions
@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: Ruby
 		 */
-		public Ruby (Languages.Manager manager) : base (manager, "Ruby")
+		public Ruby (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

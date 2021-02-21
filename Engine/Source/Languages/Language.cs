@@ -2,17 +2,22 @@
  * Class: CodeClear.NaturalDocs.Engine.Languages.Language
  * ____________________________________________________________________________
  * 
- * A class encapsulating information about a language.  This differs from <ConfigFileLanguage> in that its meant to 
- * represent the final combined settings of a language rather than its entry in a config file.  For example, this class
- * doesn't store the language's extensions or shebang strings.
+ * A class encapsulating information about a language.
  * 
  * 
  * Multithreading: Thread Safety Notes
  * 
  *		Once the object is set up, meaning there will be no further changes to properties like <LineCommentStrings>,
- *		the object can be used by multiple threads to parse multiple files simultaneously.  The parsing functions store
- *		no state information inside the object.
+ *		the object is read-only and can be used by multiple threads simultaneously.  <Parser> stores no parsing state 
+ *		information so it is also okay to be used by multiple threads simulaneously.
  *		
+ *	
+ * Topic: Language-Specific Parsers
+ * 
+ *		The <Parser> property can be set to a language-specific one instead of the default generalized one.  In order to
+ *		have it used automatically you must also create a predefined language entry in <Languages.Manager>'s 
+ *		constructor.
+ * 
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -22,13 +27,11 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Tokenization;
-using CodeClear.NaturalDocs.Engine.Comments;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public partial class Language : IDObjects.Base
+	public class Language : IDObjects.Base
 		{
 		
 		// Group: Types
@@ -90,6 +93,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			{
 			this.manager = manager;
 			this.name = name;
+
+			// Leave null so it can be set to a derived class.  A generic one will be created on use if this doesn't happen.
+			parser = null;
 
 			simpleIdentifier = null;			
 			type = LanguageType.BasicSupport;
@@ -188,6 +194,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 		
 		
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this language.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return Manager.EngineInstance;  }
+			}
+
 		/* Property: Manager
 		 * The <Languages.Manager> associated with this language.
 		 */
@@ -197,13 +212,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return manager;  }
 			}
 
-		/* Property: EngineInstance
-		 * The <Engine.Instance> associated with this language.
+		/* Property: Parser
+		 * The <Languages.Parser> associated with this language.  This can be set to class derived from <Languages.Parser>, or
+		 * it will return a generic one if not.
 		 */
-		public Engine.Instance EngineInstance
+		public Languages.Parser Parser
 			{
 			get
-				{  return Manager.EngineInstance;  }
+				{  
+				// Create on use.  This is technically a race condition because multiple threads could call this at the same time while
+				// it's null and more than one parser object could be created.  However, this is a harmless situation as they would both
+				// be equivalent and there's no parsing state information stored inside them.  One would end up saved here and one
+				// would be abandoned and garbage collected after one use with no ill effects.  Therefore it's not worth the overhead
+				// of protecting with a lock.
+				if (parser == null)
+					{  parser = new Parser(EngineInstance, this);  }
+
+				return parser;
+				}
+			set
+				{  parser = value;  }
 			}
 			
 		/* Property: Name
@@ -690,10 +718,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 		
-		/* var: languageManager
+		/* var: manager
 		 * The <Languages.Manager> this language is associated with.
 		 */
 		protected Languages.Manager manager;
+
+		/* var: parser
+		 * The <Languages.Parser> associated with this language.  Is null and created on first use.
+		 */
+		protected Languages.Parser parser;
 
 		/* var: name
 		 * The language name.

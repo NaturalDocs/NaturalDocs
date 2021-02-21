@@ -905,7 +905,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 		public bool IsBetterTopicDefinition (Topic currentDefinition, Topic toTest)
 			{
 			#if DEBUG
-			if (EngineInstance.Languages.FromID(currentDefinition.LanguageID).IsSameCodeElement(currentDefinition, toTest) == false)
+			if (EngineInstance.Languages.FromID(currentDefinition.LanguageID).Parser.IsSameCodeElement(currentDefinition, toTest) == false)
 				{  throw new Exception("Tried to call IsBetterTopicDefinition() on two topics with different code elements.");  }
 			#endif
 

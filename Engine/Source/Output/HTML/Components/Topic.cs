@@ -330,7 +330,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 								{  preLanguage = EngineInstance.Languages.FromID(context.Topic.LanguageID);  }
 
 							Tokenizer code = new Tokenizer(textCode, tabWidth: EngineInstance.Config.TabWidth);
-							preLanguage.SyntaxHighlight(code);
+							preLanguage.Parser.SyntaxHighlight(code);
 							AppendSyntaxHighlightedText(code.FirstToken, code.LastToken, output);
 							}
 						else

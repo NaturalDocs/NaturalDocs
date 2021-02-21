@@ -17,7 +17,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 {
-	public class Java : Language
+	public class Java : Parser
 		{
 
 		// Group: Functions
@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Constructor: Java
 		 */
-		public Java (Languages.Manager manager) : base (manager, "Java")
+		public Java (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

@@ -301,7 +301,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					// Built in types don't get links
 
-					if (language.IsBuiltInType(symbolStart, symbolEnd))
+					if (language.Parser.IsBuiltInType(symbolStart, symbolEnd))
 						{
 						AppendSyntaxHighlightedText(textStart, textEnd, output);
 						}

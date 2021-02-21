@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class Python : Language
+	public class Python : Parser
 		{
 
 		// Group: Functions
@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: Python
 		 */
-		public Python (Languages.Manager manager) : base (manager, "Python")
+		public Python (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

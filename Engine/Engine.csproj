@@ -215,7 +215,7 @@
     <Compile Include="Source\ConfigFile.cs" />
     <Compile Include="Source\Config\Manager.cs" />
     <Compile Include="Source\IDObjects\NumberRange.cs" />
-    <Compile Include="Source\Languages\Language.Parsing.cs" />
+    <Compile Include="Source\Languages\Parser.cs" />
     <Compile Include="Source\Languages\PrototypeEnders.cs" />
     <Compile Include="Source\Links\LinkSet.cs" />
     <Compile Include="Source\Links\Link.cs" />

@@ -21,12 +21,11 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class ShebangScript : Language
+	public class ShebangScript : Parser
 		{
 	
-		public ShebangScript (Languages.Manager manager) : base (manager, "Shebang Script")
+		public ShebangScript (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
-			Type = LanguageType.Container;
 			}
 
 		override public ParseResult Parse (Path filePath, int fileID, CancelDelegate cancelDelegate, 
@@ -80,7 +79,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Since we ate the first line, start the tokenizer at line 2.
 			Tokenizer tokenizedContent = new Tokenizer(content, startingLineNumber: 2, tabWidth: EngineInstance.Config.TabWidth);
 
-			return language.Parse(tokenizedContent, fileID, cancelDelegate, out topics, out classParentLinks);
+			return language.Parser.Parse(tokenizedContent, fileID, cancelDelegate, out topics, out classParentLinks);
 			}
 
 		}

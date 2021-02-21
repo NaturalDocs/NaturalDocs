@@ -19,7 +19,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 {
-	public class SQL : Language
+	public class SQL : Parser
 		{
 
 		// Group: Functions
@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: SQL
 		 */
-		public SQL (Languages.Manager manager) : base (manager, "SQL")
+		public SQL (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

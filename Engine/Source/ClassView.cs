@@ -527,7 +527,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 								var potentialDuplicateTopic = topics[potentialDuplicateTopicIndex];
 
-								if (embeddedTopicLanguage.IsSameCodeElement(embeddedTopic, potentialDuplicateTopic))
+								if (embeddedTopicLanguage.Parser.IsSameCodeElement(embeddedTopic, potentialDuplicateTopic))
 									{
 									foundDuplicate = true;
 
@@ -658,7 +658,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 			for (int i = 0; i < listToSearch.Count; i++)
 				{
-				if (language.IsSameCodeElement(topic, listToSearch[i]))
+				if (language.Parser.IsSameCodeElement(topic, listToSearch[i]))
 					{  return i;  }
 				}
 

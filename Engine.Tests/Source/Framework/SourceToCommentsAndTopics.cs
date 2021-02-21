@@ -103,11 +103,11 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 							string code = System.IO.File.ReadAllText(test.InputFile);
 
-							IList<PossibleDocumentationComment> comments = language.GetPossibleDocumentationComments(code);
+							IList<PossibleDocumentationComment> comments = language.Parser.GetPossibleDocumentationComments(code);
 
 							IList<Topic> topics;
 							LinkSet classParentLinks;
-							language.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+							language.Parser.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 							test.SetActualOutput( OutputOf(comments, topics) );
 							}

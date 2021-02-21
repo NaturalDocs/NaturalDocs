@@ -141,7 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
 				{  
 				var language = EngineInstance.Languages.FromID(Context.Topic.LanguageID);
-				language.SyntaxHighlight(parsedPrototype);  
+				language.Parser.SyntaxHighlight(parsedPrototype);  
 				}
 
 			// Determine if there's parameters anywhere.  It's possible for parsedPrototype.NumberOfParameters to be zero and 

@@ -102,7 +102,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 							IList<Topic> topics;
 							LinkSet classParentLinks;
-							language.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
+							language.Parser.Parse(test.InputFile, -1, Engine.Delegates.NeverCancel, out topics, out classParentLinks);
 
 							test.SetActualOutput( OutputOf(topics) );  
 							}

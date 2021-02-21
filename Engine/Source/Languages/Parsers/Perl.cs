@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class Perl : Language
+	public class Perl : Parser
 		{
 
 		// Group: Types
@@ -48,7 +48,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: Perl
 		 */
-		public Perl (Languages.Manager manager) : base (manager, "Perl")
+		public Perl (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

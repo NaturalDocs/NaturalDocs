@@ -49,38 +49,53 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			extensions = new StringTable<Language>(KeySettingsForExtensions);
 			shebangStrings = new SortedStringTable<Language>(new ShebangStringComparer(), KeySettingsForShebangStrings);
 			
-			predefinedLanguages = new Language[10];
+
+			// Predefined languages
+
+			Language textFile = new Language(this, "Text File");
+			textFile.Type = Language.LanguageType.TextFile;
+
+			Language shebangScript = new Language(this, "Shebang Script");
+			shebangScript.Type = Language.LanguageType.Container;
+			shebangScript.Parser = new Parsers.ShebangScript(engineInstance, shebangScript);
+
+			Language cSharp = new Language(this, "C#");
+			cSharp.Type = Language.LanguageType.FullSupport;
+			cSharp.Parser = new Parsers.CSharp(engineInstance, cSharp);
+			cSharp.LineCommentStrings = new string[] { "//" };
+			cSharp.BlockCommentStringPairs = new string[] { "/*", "*/" };
+			cSharp.JavadocBlockCommentStringPairs = new string[] { "/**", "*/" };
+			cSharp.XMLLineCommentStrings = new string[] { "///" };
+			cSharp.MemberOperator = ".";
+			cSharp.EnumValue = Language.EnumValues.UnderType;
+			cSharp.CaseSensitive = true;
+
+			Language perl = new Language(this, "Perl");
+			perl.Parser = new Parsers.Perl(engineInstance, perl);
+
+			Language python = new Language(this, "Python");
+			python.Parser = new Parsers.Python(engineInstance, python);
 			
-			predefinedLanguages[0] = new Language(this, "Text File");
-			predefinedLanguages[0].Type = Language.LanguageType.TextFile;
-			predefinedLanguages[0].Predefined = true;
-			
-			predefinedLanguages[1] = new Languages.Parsers.ShebangScript(this);
-			predefinedLanguages[1].Predefined = true;
+			Language ruby = new Language(this, "Ruby");
+			ruby.Parser = new Parsers.Ruby(engineInstance, ruby);
 
-			predefinedLanguages[2] = new Languages.Parsers.CSharp(this);
-			predefinedLanguages[2].Predefined = true;
+			Language sql = new Language(this, "SQL");
+			sql.Parser = new Parsers.SQL(engineInstance, sql);
 
-			predefinedLanguages[3] = new Languages.Parsers.Perl(this);
-			predefinedLanguages[3].Predefined = true;
+			Language java = new Language(this, "Java");
+			java.Parser = new Parsers.Java(engineInstance, java);
 
-			predefinedLanguages[4] = new Languages.Parsers.Python(this);
-			predefinedLanguages[4].Predefined = true;
-			
-			predefinedLanguages[5] = new Languages.Parsers.Ruby(this);
-			predefinedLanguages[5].Predefined = true;
+			Language lua = new Language(this, "Lua");
+			lua.Parser = new Parsers.Lua(engineInstance, lua);
 
-			predefinedLanguages[6] = new Languages.Parsers.SQL(this);
-			predefinedLanguages[6].Predefined = true;
+			Language php = new Language(this, "PHP");
+			php.Parser = new Parsers.PHP(engineInstance, php);
 
-			predefinedLanguages[7] = new Languages.Parsers.Java(this);
-			predefinedLanguages[7].Predefined = true;
 
-			predefinedLanguages[8] = new Languages.Parsers.Lua(this);
-			predefinedLanguages[8].Predefined = true;
+			predefinedLanguages = new Language[] { textFile, shebangScript, cSharp, perl, python, ruby, sql, java, lua, php };
 
-			predefinedLanguages[9] = new Languages.Parsers.PHP(this);
-			predefinedLanguages[9].Predefined = true;
+			foreach (var predefinedLanguage in predefinedLanguages)
+				{  predefinedLanguage.Predefined = true;  }
 			}
 
 

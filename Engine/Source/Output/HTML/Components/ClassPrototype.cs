@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			this.isToolTip = isToolTip;
 
 			if (parsedPrototype.Tokenizer.HasSyntaxHighlighting == false)
-				{  language.SyntaxHighlight(parsedPrototype);  }
+				{  language.Parser.SyntaxHighlight(parsedPrototype);  }
 
 			if (isToolTip)
 			    {  

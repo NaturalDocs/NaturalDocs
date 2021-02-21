@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class CSharp : Language
+	public class CSharp : Parser
 		{
 
 		// Group: Types
@@ -45,18 +45,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: CSharp
 		 */
-		public CSharp (Languages.Manager manager) : base (manager, "C#")
+		public CSharp (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
-			Type = LanguageType.FullSupport;
-
-			LineCommentStrings = new string[] { "//" };
-			BlockCommentStringPairs = new string[] { "/*", "*/" };
-			JavadocBlockCommentStringPairs = new string[] { "/**", "*/" };
-			XMLLineCommentStrings = new string[] { "///" };
-
-			MemberOperator = ".";
-			EnumValue = EnumValues.UnderType;
-			CaseSensitive = true;
 			}
 
 
@@ -184,7 +174,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			rootElement.IsRootElement = true;
 			rootElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
 			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
-			rootElement.DefaultChildLanguageID = this.ID;
+			rootElement.DefaultChildLanguageID = language.ID;
 			rootElement.ChildContextString = new ContextString();
 			rootElement.EndingLineNumber = int.MaxValue;
 			rootElement.EndingCharNumber = int.MaxValue;
@@ -514,7 +504,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				childContext.Scope = symbol;
 
 				ParentElement namespaceElement = new ParentElement(iterator, Element.Flags.InCode);
-				namespaceElement.DefaultChildLanguageID = this.ID;
+				namespaceElement.DefaultChildLanguageID = language.ID;
 				namespaceElement.ChildContextString = childContext;
 				namespaceElement.MaximumEffectiveChildAccessLevel = AccessLevel.Public;
 				namespaceElement.DefaultDeclaredChildAccessLevel = AccessLevel.Internal;
@@ -757,13 +747,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
-				ClassString classString = ClassString.FromParameters(Hierarchy.Class, this.ID, true, symbol);
+				ClassString classString = ClassString.FromParameters(Hierarchy.Class, language.ID, true, symbol);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;
 
 				ParentElement classElement = new ParentElement(iterator, Element.Flags.InCode);
-				classElement.DefaultChildLanguageID = this.ID;
+				classElement.DefaultChildLanguageID = language.ID;
 				classElement.DefaultChildClassString = classString;
 				classElement.ChildContextString = childContext;
 				classElement.MaximumEffectiveChildAccessLevel = accessLevel;
@@ -783,7 +773,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					classTopic.ClassString = classString;
 					classTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
 					classTopic.CommentTypeID = commentTypeID;
-					classTopic.LanguageID = this.ID;
+					classTopic.LanguageID = language.ID;
 					classTopic.DeclaredAccessLevel = accessLevel;
 					classTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -890,7 +880,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 									propertyTopic.Symbol = symbol + SymbolString.FromPlainText_NoParameters(parameterName);
 									propertyTopic.Prototype = NormalizePrototype(propertyPrototype);
 									propertyTopic.CommentTypeID = propertyCommentTypeID;
-									propertyTopic.LanguageID = this.ID;
+									propertyTopic.LanguageID = language.ID;
 									propertyTopic.CodeLineNumber = propertyLocation.LineNumber;
 
 									Element propertyElement = new Element(propertyLocation, Element.Flags.InCode);
@@ -1104,7 +1094,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
 					functionTopic.CommentTypeID = commentTypeID;
-					functionTopic.LanguageID = this.ID;
+					functionTopic.LanguageID = language.ID;
 					functionTopic.DeclaredAccessLevel = accessLevel;
 					functionTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -1286,7 +1276,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					functionTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					functionTopic.Prototype = NormalizePrototype( iterator.TextBetween(endOfPrototype) );
 					functionTopic.CommentTypeID = commentTypeID;
-					functionTopic.LanguageID = this.ID;
+					functionTopic.LanguageID = language.ID;
 					functionTopic.DeclaredAccessLevel = accessLevel;
 					functionTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -1437,7 +1427,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					operatorTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(operatorTopic.Title);
 					operatorTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
 					operatorTopic.CommentTypeID = commentTypeID;
-					operatorTopic.LanguageID = this.ID;
+					operatorTopic.LanguageID = language.ID;
 					operatorTopic.DeclaredAccessLevel = accessLevel;
 					operatorTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -1624,7 +1614,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				variableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 				variableTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
 				variableTopic.CommentTypeID = commentTypeID;
-				variableTopic.LanguageID = this.ID;
+				variableTopic.LanguageID = language.ID;
 				variableTopic.DeclaredAccessLevel = accessLevel;
 				variableTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -1681,7 +1671,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						newVariableTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(newName);
 						newVariableTopic.Prototype = NormalizePrototype( iterator.TextBetween(endOfType) + " " + newName );
 						newVariableTopic.CommentTypeID = commentTypeID;
-						newVariableTopic.LanguageID = this.ID;
+						newVariableTopic.LanguageID = language.ID;
 						newVariableTopic.DeclaredAccessLevel = accessLevel;
 						newVariableTopic.CodeLineNumber = startOfNewName.LineNumber;
 
@@ -1923,7 +1913,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					propertyTopic.Symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 					propertyTopic.Prototype = NormalizePrototype(prototype.ToString());
 					propertyTopic.CommentTypeID = commentTypeID;
-					propertyTopic.LanguageID = this.ID;
+					propertyTopic.LanguageID = language.ID;
 					propertyTopic.DeclaredAccessLevel = accessLevel;
 					propertyTopic.CodeLineNumber = iterator.LineNumber;
 
@@ -2063,7 +2053,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					enumTopic.Symbol = symbol;
 					enumTopic.Prototype = NormalizePrototype( iterator.TextBetween(lookahead) );
 					enumTopic.CommentTypeID = commentTypeID;
-					enumTopic.LanguageID = this.ID;
+					enumTopic.LanguageID = language.ID;
 					enumTopic.DeclaredAccessLevel = accessLevel;
 					enumTopic.CodeLineNumber = iterator.LineNumber;
 

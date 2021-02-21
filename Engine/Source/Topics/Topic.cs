@@ -1226,7 +1226,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedPrototype = null;  }
 					else
-						{  parsedPrototype = EngineInstance.Languages.FromID(languageID).ParsePrototype(prototype, commentTypeID);  }
+						{  parsedPrototype = EngineInstance.Languages.FromID(languageID).Parser.ParsePrototype(prototype, commentTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedPrototype;
 					}
@@ -1254,7 +1254,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 					if (prototype == null)
 						{  parsedClassPrototype = null;  }
 					else
-						{  parsedClassPrototype = EngineInstance.Languages.FromID(languageID).ParseClassPrototype(prototype, commentTypeID);  }
+						{  parsedClassPrototype = EngineInstance.Languages.FromID(languageID).Parser.ParseClassPrototype(prototype, commentTypeID);  }
 
 					buildFlags |= BuildFlags.ParsedClassPrototype;
 					}

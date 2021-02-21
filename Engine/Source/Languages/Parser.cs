@@ -1,5 +1,25 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Languages.Language
+ * Class: CodeClear.NaturalDocs.Engine.Languages.Parser
+ * ____________________________________________________________________________
+ * 
+ * A generalized language parser, and also a base class for language-specific parsers.
+ * 
+ * 
+ * Multithreading: Thread Safe
+ * 
+ *		The parser object may be used by multiple threads at the same time.  It stores no internal state related to parsing,
+ *		and other instance variables are read-only once the parser is created.
+ *		
+ *		
+ * Topic: Implementing Language-Specific Parsers
+ * 
+ *		Since there will only be one shared parser per <Language> object, all derived classes must also be thread safe and 
+ *		allow multiple threads to use them on multiple files concurrently.  There should be no parsing state data stored in 
+ *		instance variables.
+ *		
+ *		In order to have Natural Docs use the parser automatically for a specific language you must create a predefined
+ *		language entry in <Languages.Manager>'s constructor.
+ * 
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -22,7 +42,7 @@ using CodeClear.NaturalDocs.Engine.Topics;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public partial class Language
+	public class Parser
 		{
 		
 		// Group: Types
@@ -73,6 +93,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 	
 
+		/* Function: Parser
+		 */
+		public Parser (Engine.Instance engineInstance, Language language)
+			{
+			this.engineInstance = engineInstance;
+			this.language = language;
+			}
+
+
 		/* Function: Parse
 		 * Parses the passed file and returns it as a list of <Topics> and class parent <Links>.  Set cancelDelegate for the ability
 		 * to interrupt parsing, or use <Delegates.NeverCancel> if that's not needed.
@@ -107,7 +136,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		virtual public ParseResult Parse (Tokenizer source, int fileID, CancelDelegate cancelDelegate, 
 													out IList<Topic> topics, out LinkSet classParentLinks)
 			{
-			if (Type == LanguageType.Container)
+			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("Parse(tokenizer)");  }
 
 			List<Element> elements = null;
@@ -137,7 +166,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Apply file and language IDs since we're going to need the language ID to deal with prototypes.
 
-			ApplyFileAndLanguageIDs(commentElements, fileID, this.ID);
+			ApplyFileAndLanguageIDs(commentElements, fileID, language.ID);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
@@ -153,7 +182,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// If we have full language support, get the code elements as well.
 
-			if (Type == LanguageType.FullSupport)
+			if (language.Type == Language.LanguageType.FullSupport)
 				{
 
 				// Fill in any access levels we can find in comment prototypes.  Since this requires prototype parsing, we have to make sure
@@ -234,7 +263,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// If we have basic language support...
 
-			else if (Type == LanguageType.BasicSupport)
+			else if (language.Type == Language.LanguageType.BasicSupport)
 				{
 				
 				// Fill in additional prototypes via our language-neutral algorithm.  These will not overwrite the comment prototypes.
@@ -276,7 +305,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// If this is a text file just use the comment elements unaltered.
 
-			else if (Type == LanguageType.TextFile)
+			else if (language.Type == Language.LanguageType.TextFile)
 				{
 
 				// Fill in any access levels we can find in the prototypes.  Prototypes may have been defined in the comments.
@@ -305,7 +334,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			else
 				{
 				// Container was already handled at the beginning of the function.
-				throw new Exception ("Unrecognized language type " + Type);
+				throw new Exception ("Unrecognized language type " + language.Type);
 				}
 			#endif
 
@@ -327,7 +356,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			// Reapply file and language IDs so that they also apply to code elements and auto-groups.
 
-			ApplyFileAndLanguageIDs(elements, fileID, this.ID);
+			ApplyFileAndLanguageIDs(elements, fileID, language.ID);
 
 			if (cancelDelegate())
 				{  return ParseResult.Cancelled;  }
@@ -402,7 +431,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public virtual ParsedPrototype ParsePrototype (string stringPrototype, int commentTypeID)
 			{
-			if (Type == LanguageType.Container)
+			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParsePrototype");  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -580,7 +609,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public virtual ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
 			{
-			if (Type == LanguageType.Container)
+			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
 			if (EngineInstance.CommentTypes.FromID(commentTypeID).InClassHierarchy == false)
@@ -977,7 +1006,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public virtual void SyntaxHighlight (Tokenizer source)
 			{
-			if (Type == LanguageType.Container)
+			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("SyntaxHighlight");  }
 
 			SimpleSyntaxHighlight(source);
@@ -1061,10 +1090,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		//
 		virtual public List<PossibleDocumentationComment> GetPossibleDocumentationComments (Tokenizer source)
 			{
-			if (Type == LanguageType.Container)
+			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("GetPossibleDocumentationComments");  }
 				
-			else if (Type == LanguageType.TextFile)
+			else if (language.Type == Language.LanguageType.TextFile)
 				{
 				List<PossibleDocumentationComment> possibleDocumentationComments = new List<PossibleDocumentationComment>(1);
 
@@ -1093,12 +1122,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// We test for these before regular block comments because they are usually extended versions of them, such
 					// as /** and /*.
 
-					if (javadocBlockCommentStringPairs != null)
+					if (language.JavadocBlockCommentStringPairs != null)
 						{
-						for (int i = 0; foundComment == false && i < javadocBlockCommentStringPairs.Length; i += 2)
+						for (int i = 0; foundComment == false && i < language.JavadocBlockCommentStringPairs.Length; i += 2)
 							{
 							foundComment = TryToGetBlockComment(ref lineIterator, 
-																						 javadocBlockCommentStringPairs[i], javadocBlockCommentStringPairs[i+1], true,
+																						 language.JavadocBlockCommentStringPairs[i], 
+																						 language.JavadocBlockCommentStringPairs[i+1], true,
 																						 out possibleDocumentationComment);
 							}
 
@@ -1112,12 +1142,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
 					// versus --[[ and ]]--.
 
-					if (foundComment == false && blockCommentStringPairs != null)
+					if (foundComment == false && language.BlockCommentStringPairs != null)
 						{
-						for (int i = 0; foundComment == false && i < blockCommentStringPairs.Length; i += 2)
+						for (int i = 0; foundComment == false && i < language.BlockCommentStringPairs.Length; i += 2)
 							{
 							foundComment = TryToGetBlockComment(ref lineIterator, 
-																						 blockCommentStringPairs[i], blockCommentStringPairs[i+1], false,
+																						 language.BlockCommentStringPairs[i],
+																						 language.BlockCommentStringPairs[i+1], false,
 																						 out possibleDocumentationComment);
 							}
 
@@ -1140,12 +1171,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					
 					// XML line comments
 
-					if (foundComment == false && xmlLineCommentStrings != null)
+					if (foundComment == false && language.XMLLineCommentStrings != null)
 						{
-						for (int i = 0; foundComment == false && i < xmlLineCommentStrings.Length; i++)
+						for (int i = 0; foundComment == false && i < language.XMLLineCommentStrings.Length; i++)
 							{
 							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   xmlLineCommentStrings[i], xmlLineCommentStrings[i], true,
+																					   language.XMLLineCommentStrings[i], 
+																					   language.XMLLineCommentStrings[i], true,
 																					   out possibleDocumentationComment);
 							}
 
@@ -1160,16 +1192,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// symbol, such as ///.
 
 					if (possibleDocumentationComment != null && possibleDocumentationComment.XML == true &&
-						javadocLineCommentStringPairs != null)
+						language.JavadocLineCommentStringPairs != null)
 						{
 						LineIterator javadocLineIterator = possibleDocumentationComment.Start;
 						PossibleDocumentationComment possibleJavadocDocumentationComment = null;
 						bool foundJavadocComment = false;
 
-						for (int i = 0; foundJavadocComment == false && i < javadocLineCommentStringPairs.Length; i += 2)
+						for (int i = 0; foundJavadocComment == false && i < language.JavadocLineCommentStringPairs.Length; i += 2)
 							{
 							foundJavadocComment = TryToGetLineComment(ref javadocLineIterator, 
-																								  javadocLineCommentStringPairs[i], javadocLineCommentStringPairs[i+1], true,
+																								  language.JavadocLineCommentStringPairs[i], 
+																								  language.JavadocLineCommentStringPairs[i+1], true,
 																								  out possibleJavadocDocumentationComment);
 							}
 
@@ -1232,12 +1265,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Javadoc line comments
 
-					if (foundComment == false && javadocLineCommentStringPairs != null)
+					if (foundComment == false && language.JavadocLineCommentStringPairs != null)
 						{
-						for (int i = 0; foundComment == false && i < javadocLineCommentStringPairs.Length; i += 2)
+						for (int i = 0; foundComment == false && i < language.JavadocLineCommentStringPairs.Length; i += 2)
 							{
 							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   javadocLineCommentStringPairs[i], javadocLineCommentStringPairs[i+1], true,
+																					   language.JavadocLineCommentStringPairs[i], 
+																					   language.JavadocLineCommentStringPairs[i+1], true,
 																					   out possibleDocumentationComment);
 							}
 
@@ -1248,12 +1282,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Plain line comments
 				
-					if (foundComment == false && lineCommentStrings != null)
+					if (foundComment == false && language.LineCommentStrings != null)
 						{
-						for (int i = 0; foundComment == false && i < lineCommentStrings.Length; i++)
+						for (int i = 0; foundComment == false && i < language.LineCommentStrings.Length; i++)
 							{
 							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   lineCommentStrings[i], lineCommentStrings[i], false,
+																					   language.LineCommentStrings[i],
+																					   language.LineCommentStrings[i], false,
 																					   out possibleDocumentationComment);
 							}
 						}
@@ -1313,7 +1348,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return false;  }
 
 			#if DEBUG
-			if (topicA.LanguageID != this.ID)
+			if (topicA.LanguageID != language.ID)
 				{  throw new Exception("Tried to call IsSameCodeElement() using a language object that neither topic uses.");  }
 			#endif
 
@@ -1369,7 +1404,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			ParentElement rootElement = new ParentElement(0, 0, Element.Flags.InComments);
 			rootElement.IsRootElement = true;
 			rootElement.DefaultDeclaredChildAccessLevel = AccessLevel.Public;
-			rootElement.DefaultChildLanguageID = this.ID;
+			rootElement.DefaultChildLanguageID = language.ID;
 			rootElement.EndingLineNumber = int.MaxValue;
 			rootElement.EndingCharNumber = int.MaxValue;
 
@@ -1611,7 +1646,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected virtual bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
-			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.CommentTypeID);
+			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
 				{  
@@ -1638,7 +1673,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit, 
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
-			PrototypeEnders prototypeEnders = GetPrototypeEnders(topic.CommentTypeID);
+			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
 				{  
@@ -1674,14 +1709,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Line Extender
 
-				else if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
+				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
 					{
 					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
 					// it's probably part of an identifier.
 
 					bool partOfIdentifier = false;
 
-					if (LineExtender == "_")
+					if (language.LineExtender == "_")
 						{
 						TokenIterator temp = iterator;
 
@@ -1704,7 +1739,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				// Ender Symbol, not in a bracket
 
 				// We test this before looking for opening brackets so the opening symbols can be used as enders.
-				else if (prototypeEnders.Symbols != null && iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols, !CaseSensitive) != -1)
+				else if (prototypeEnders.Symbols != null && 
+						   iterator.MatchesAnyAcrossTokens(prototypeEnders.Symbols, !language.CaseSensitive) != -1)
 					{
 					goodPrototype = true;
 					break;
@@ -1852,14 +1888,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				// Line Extender
 
-				else if (LineExtender != null && iterator.MatchesAcrossTokens(LineExtender))
+				else if (language.LineExtender != null && iterator.MatchesAcrossTokens(language.LineExtender))
 					{
 					// If the line extender is an underscore we don't want to treat it as one if it's adjacent to any text because
 					// it's probably part of an identifier.
 
 					bool partOfIdentifier = false;
 
-					if (LineExtender == "_")
+					if (language.LineExtender == "_")
 						{
 						TokenIterator temp = iterator;
 
@@ -3375,23 +3411,23 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					if (element is ParentElement && topic.IsList == false)
 						{
-						EnumValues enumValue = 0;
+						Language.EnumValues enumValue = 0;
 						if (commentType.IsEnum == true)
 							{  enumValue = Manager.FromID(topic.LanguageID).EnumValue;  }
 							
 						if (commentType.Scope == CommentType.ScopeValue.Start ||
-						    (commentType.IsEnum == true && enumValue == EnumValues.UnderType))
+						    (commentType.IsEnum == true && enumValue == Language.EnumValues.UnderType))
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = topic.Symbol;
 							(element as ParentElement).ChildContextString = newContext;
 							}
 						else if (commentType.Scope == CommentType.ScopeValue.End ||
-								  (commentType.IsEnum == true && enumValue == EnumValues.Global))
+								  (commentType.IsEnum == true && enumValue == Language.EnumValues.Global))
 							{
 							(element as ParentElement).ChildContextString = new ContextString();
 							}
-						else if (commentType.IsEnum == true && enumValue == EnumValues.UnderParent)
+						else if (commentType.IsEnum == true && enumValue == Language.EnumValues.UnderParent)
 							{
 							ContextString newContext = new ContextString();
 							newContext.Scope = parentContext.Scope;
@@ -4598,13 +4634,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (LineCommentStrings == null)
+			if (language.LineCommentStrings == null)
 				{
 				commentSymbol = null;
 				return false;
 				}
 
-			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(LineCommentStrings);
+			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(language.LineCommentStrings);
 
 			if (commentSymbolIndex == -1)
 				{
@@ -4612,7 +4648,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			commentSymbol = LineCommentStrings[commentSymbolIndex];
+			commentSymbol = language.LineCommentStrings[commentSymbolIndex];
 
 			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(commentSymbol.Length);
@@ -4659,14 +4695,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol, 
 															  ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (BlockCommentStringPairs == null)
+			if (language.BlockCommentStringPairs == null)
 				{
 				openingSymbol = null;
 				closingSymbol = null;
 				return false;
 				}
 
-			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(BlockCommentStringPairs);
+			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(language.BlockCommentStringPairs);
 
 			if (openingCommentSymbolIndex == -1)
 				{
@@ -4675,8 +4711,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			openingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex];
-			closingSymbol = BlockCommentStringPairs[openingCommentSymbolIndex + 1];
+			openingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex];
+			closingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex + 1];
 
 			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(openingSymbol.Length);
@@ -5278,6 +5314,48 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 			#endif
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+
+
+		/* Property: EngineInstance
+		 * The <Engine.Instance> associated with this parser.
+		 */
+		public Engine.Instance EngineInstance
+			{
+			get
+				{  return engineInstance;  }
+			}
+
+		/* Propetry: Language
+		 * The <Languages.Language> associated with this parser.
+		 */
+		public Languages.Language Language
+			{
+			get
+				{  return language;  }
+			}
+
+		/* Property: Manager
+		 * The <Languages.Manager> associated with this parser.
+		 */
+		public Languages.Manager Manager
+			{
+			get
+				{  return language.Manager;  }
+			}
+
+
+
+		// Group: Variables
+		// __________________________________________________________________________
+
+		protected Engine.Instance engineInstance;
+
+		protected Language language;
 
 
 			

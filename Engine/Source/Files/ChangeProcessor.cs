@@ -254,13 +254,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 
 				// Parse the file
 
-				var parseResult = language.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
+				var parseResult = language.Parser.Parse(file.FileName, file.ID, cancelDelegate, out topics, out links);
 
-				if (parseResult == Language.ParseResult.Cancelled)
+				if (parseResult == Parser.ParseResult.Cancelled)
 					{  return ProcessFileResult.Cancelled;  }
-				else if (parseResult == Language.ParseResult.CantAccessFile)
+				else if (parseResult == Parser.ParseResult.CantAccessFile)
 					{  return ProcessFileResult.CantAccessFile;  }
-				else if (parseResult == Language.ParseResult.FileDoesntExist)
+				else if (parseResult == Parser.ParseResult.FileDoesntExist)
 					{  return ProcessFileResult.FileDoesntExist;  }
 
 
@@ -607,7 +607,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					while (symbolEnd.PrototypeParsingType == PrototypeParsingType.Type ||
 							 symbolEnd.PrototypeParsingType == PrototypeParsingType.TypeQualifier);
 
-					if (language.IsBuiltInType(symbolStart, symbolEnd) == false)
+					if (language.Parser.IsBuiltInType(symbolStart, symbolEnd) == false)
 						{
 						Link link = new Link();
 

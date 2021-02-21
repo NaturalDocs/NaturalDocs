@@ -17,7 +17,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 {
-	public class PHP : Language
+	public class PHP : Parser
 		{
 
 		// Group: Functions
@@ -26,7 +26,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 		/* Constructor: PHP
 		 */
-		public PHP (Languages.Manager manager) : base (manager, "PHP")
+		public PHP (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 

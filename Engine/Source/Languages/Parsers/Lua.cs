@@ -20,7 +20,7 @@ using CodeClear.NaturalDocs.Engine.Tokenization;
 
 namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 	{
-	public class Lua : Language
+	public class Lua : Parser
 		{
 
 		// Group: Functions
@@ -29,7 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		
 		/* Constructor: Lua
 		 */
-		public Lua (Languages.Manager manager) : base (manager, "Lua")
+		public Lua (Engine.Instance engineInstance, Language language) : base (engineInstance, language)
 			{
 			}
 
