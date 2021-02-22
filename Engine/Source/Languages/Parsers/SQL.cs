@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function") ||
 				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure") ))
 				{
-				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.Everything);
+				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 				TokenIterator endToken = endCode.FirstToken(LineBoundsMode.Everything);
 
 				TokenIterator iterator = startToken;
