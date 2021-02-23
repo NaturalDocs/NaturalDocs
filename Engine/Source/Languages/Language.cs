@@ -413,10 +413,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Simplify prototypeEnders
 			if (prototypeEnders != null)
 				{
-				if (prototypeEnders.Symbols != null && prototypeEnders.Symbols.Length == 0)
-					{  prototypeEnders.Symbols = null;  }
-
-				if (prototypeEnders.Symbols == null && prototypeEnders.IncludeLineBreaks == false)
+				if (!prototypeEnders.HasSymbols && !prototypeEnders.IncludeLineBreaks)
 					{  prototypeEnders = null;  }
 				}
 
@@ -684,8 +681,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (prototypeEnders2Value == null)
 						{  return false;  }
 
-					if (prototypeEnders1Pair.Value.IncludeLineBreaks != prototypeEnders2Value.IncludeLineBreaks ||
-						!StringArraysAreEqual(prototypeEnders1Pair.Value.Symbols, prototypeEnders2Value.Symbols) )
+					if (prototypeEnders1Pair.Value != prototypeEnders2Value)
 						{  return false;  }
 					}
 					

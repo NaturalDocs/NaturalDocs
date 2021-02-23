@@ -389,7 +389,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an
 		 * empty array.
 		 */
-		private void WriteStringArray (BinaryFile file, string[] stringArray)
+		private void WriteStringArray (BinaryFile file, IEnumerable<string> stringArray)
 			{
 			if (stringArray != null)
 				{
