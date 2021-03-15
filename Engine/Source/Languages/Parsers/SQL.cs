@@ -706,7 +706,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Return value
 
 			TryToSkipWhitespace(ref lookahead);
-			bool isOracleFunction = false;
 
 
 			// Microsoft uses RETURNS
@@ -792,8 +791,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			else if (OnKeyword(lookahead, "RETURN"))
 				{
-				isOracleFunction = true;
-
 				if (mode == ParseMode.ParsePrototype)
 					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfPrototypeSection;  }
 				else if (mode == ParseMode.SyntaxHighlight)
@@ -946,39 +943,6 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 					}
 
 				iterator = lookahead;
-				}
-
-
-			// IS/AS segment for Oracle functions
-
-			if (isOracleFunction && 
-				OnAnyKeyword(lookahead, "IS", "AS"))
-				{
-				if (mode == ParseMode.SyntaxHighlight)
-					{  lookahead.SyntaxHighlightingType = SyntaxHighlightingType.Keyword;  }
-
-				lookahead.Next();
-
-				if (mode == ParseMode.ParsePrototype)
-					{  lookahead.PrototypeParsingType = PrototypeParsingType.StartOfParams;  }
-
-				TryToSkipWhitespace(ref lookahead, true, mode);
-
-				if (lookahead.Character != ';' &&
-					!OnKeyword(lookahead, "BEGIN"))	
-					{
-					TokenIterator startOfReturnDetail = lookahead;
-
-					while (lookahead.IsInBounds &&
-								lookahead.Character != ';' &&
-								!OnKeyword(lookahead, "BEGIN"))
-						{
-						GenericSkip(ref lookahead, mode);
-						}
-
-					ParseVariable(startOfReturnDetail, lookahead, mode);
-					iterator = lookahead;
-					}
 				}
 
 			return true;
