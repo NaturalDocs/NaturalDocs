@@ -499,7 +499,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 
 
-			return (errors == errorList.Count);
+			bool success = (errors == errorList.Count);
+
+			started = success;
+			return success;
 			}
 
 
@@ -513,7 +516,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{
 					if (searchIndex != null)
 						{  searchIndex.Dispose();  }
-					if (buildState != null)
+
+					if (buildState != null && started)
 						{
 						BuildState_nd buildStateParser = new BuildState_nd();
 						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState, unprocessedChanges);

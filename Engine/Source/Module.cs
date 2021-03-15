@@ -25,6 +25,7 @@ namespace CodeClear.NaturalDocs.Engine
 		public Module (Engine.Instance engineInstance)
 			{
 			this.engineInstance = engineInstance;
+			started = false;
 			}
 
 		~Module ()
@@ -49,11 +50,25 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return engineInstance;  }
 			}
 
+		/* Property: Started
+		 * Whether the module was successfully started.
+		 */
+		public bool Started
+			{
+			get
+				{  return started;  }
+			}
+
 
 		// Group: Variables
 		// __________________________________________________________________________
 
 		protected Engine.Instance engineInstance;
+
+		/* var: started
+		 * Whether the module was successfully started.
+		 */
+		protected bool started;
 
 		}
 	}

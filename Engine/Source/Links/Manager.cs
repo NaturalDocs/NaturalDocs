@@ -43,6 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			EngineInstance.CodeDB.AddChangeWatcher(this);
 			EngineInstance.Files.AddChangeWatcher(this);
 
+			started = true;
 			return true;
 			}
 

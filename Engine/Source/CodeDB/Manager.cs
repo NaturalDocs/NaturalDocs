@@ -190,6 +190,7 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 																   dontNotify: this);
 				}
 				
+			started = true;
 			return true;
 			}
 			
@@ -222,9 +223,12 @@ namespace CodeClear.NaturalDocs.Engine.CodeDB
 				{
 				if (databaseLock.IsLocked)
 					{  throw new Exception("Attempted to dispose of database when there were still locks held.");  }
-				
-				Cleanup(Delegates.NeverCancel);
-				SaveSystemVariablesAndVersion();
+			
+				if (started)
+					{
+					Cleanup(Delegates.NeverCancel);
+					SaveSystemVariablesAndVersion();
+					}
 					
 				connection.Dispose();
 				connection = null;

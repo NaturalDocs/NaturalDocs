@@ -37,6 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 		 */
 		virtual public bool Start (Errors.ErrorList errorList)
 			{  
+			started = true;
 			return true;
 			}
 			

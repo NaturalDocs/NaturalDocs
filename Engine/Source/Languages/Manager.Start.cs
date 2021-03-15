@@ -272,7 +272,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			mergedTextConfig = null;
 			lastRunConfig = null;
 
-
+			started = true;
 			return true;
 			}
 

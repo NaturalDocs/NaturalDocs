@@ -68,6 +68,7 @@ namespace CodeClear.NaturalDocs.Engine.Output
 					{  success = false;  }
 				}
 				
+			started = success;
 			return success;
 			}
 

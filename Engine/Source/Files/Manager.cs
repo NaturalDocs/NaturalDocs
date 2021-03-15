@@ -72,7 +72,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		override protected void Dispose (bool strictRulesApply)
 			{
-			if (!strictRulesApply)
+			// We don't want to save Files.nd if the module wasn't started because it would blank out all the existing data.
+			if (!strictRulesApply && started)
 				{
 				// Set the last modification time to zero for anything still being worked on
 				DateTime zero = new DateTime(0);
@@ -204,7 +205,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
-			return (errors.Count == startingErrorCount);
+			bool success = (errors.Count == startingErrorCount);
+
+			started = success;
+			return success;
 			}
 			
 			

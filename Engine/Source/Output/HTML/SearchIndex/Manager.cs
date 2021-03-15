@@ -47,7 +47,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 		 */
 		protected override void Dispose(bool strictRulesApply)
 			{
-			if (!strictRulesApply)
+			// We don't want to save SearchIndex.nd if the module wasn't started or it will blank out all the existing data.
+			if (!strictRulesApply && prefixTopicIDs != null && started)
 				{
 				try
 					{
@@ -108,6 +109,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues, dontNotify: this);  }
 
+			started = true;
 			return true;
 			}
 

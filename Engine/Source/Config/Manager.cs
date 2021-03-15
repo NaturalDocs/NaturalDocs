@@ -566,6 +566,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (newStartupIssues != StartupIssues.None)
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
+			started = success;
 			return success;
 			}
 

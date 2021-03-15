@@ -67,6 +67,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 			fileSource = new Styles.FileSource(this);
 			EngineInstance.Files.AddFileSource(fileSource);
 
+			started = success;
 			return success;
 			}
 

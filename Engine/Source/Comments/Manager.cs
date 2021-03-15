@@ -52,9 +52,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 */
 		public bool Start (Errors.ErrorList errors)
 			{
-			return (naturalDocsParser.Start(errors) &&
-					  xmlParser.Start(errors) &&
-					  javadocParser.Start(errors));
+			bool success = (naturalDocsParser.Start(errors) &&
+								    xmlParser.Start(errors) &&
+								    javadocParser.Start(errors));
+
+			started = success;
+			return success;
 			}
 			
 			

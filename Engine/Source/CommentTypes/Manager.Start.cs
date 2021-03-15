@@ -337,7 +337,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			mergedTextConfig = null;
 			lastRunConfig = null;
 
-
+			started = true;
 			return true;
 			}
 
