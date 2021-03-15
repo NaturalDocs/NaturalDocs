@@ -20,7 +20,7 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class Tag : IDObjects.Base
+	public class Tag : IDObjects.IDObject
 		{
 		
 		// Group: Functions

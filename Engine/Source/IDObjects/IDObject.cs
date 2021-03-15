@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.IDObjects.Base
+ * Class: CodeClear.NaturalDocs.Engine.IDObjects.IDObject
  * ____________________________________________________________________________
  * 
  * The base class for all objects to be managed with <IDObjects.Manager>.
@@ -21,12 +21,12 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
-	abstract public class Base
+	abstract public class IDObject
 		{
 		
-		/* Function: Base
+		/* Function: IDObject
 		 */
-		public Base ()
+		public IDObject ()
 			{
 			id = 0;
 			}

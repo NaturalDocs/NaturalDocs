@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes
 	{
-	public class CommentType : IDObjects.Base
+	public class CommentType : IDObjects.IDObject
 		{
 		
 		// Group: Types

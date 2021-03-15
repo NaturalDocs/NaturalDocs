@@ -32,7 +32,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.Languages
 	{
-	public class Language : IDObjects.Base
+	public class Language : IDObjects.IDObject
 		{
 		
 		// Group: Types

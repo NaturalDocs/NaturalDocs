@@ -3,7 +3,7 @@
  * ____________________________________________________________________________
  * 
  * A class for managing objects that have to be referenced either by a string ID or a unique numeric ID.  This is a generic
- * class.  Set the type to be an object derived from <IDObjects.Base>.
+ * class.  Set the type to be an object derived from <IDObject>.
  * 
  * 
  * Topic: Usage
@@ -25,7 +25,7 @@ using CodeClear.NaturalDocs.Engine.Collections;
 
 namespace CodeClear.NaturalDocs.Engine.IDObjects
 	{
-	public class Manager<IDObjectType> : IEnumerable<IDObjectType> where IDObjectType: IDObjects.Base 
+	public class Manager<IDObjectType> : IEnumerable<IDObjectType> where IDObjectType: IDObjects.IDObject 
 		{
 		
 		// Group: Functions
@@ -116,7 +116,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 		 */
 		public bool Remove (string name)
 			{
-			IDObjects.Base obj = objectsByName[name];
+			IDObjects.IDObject obj = objectsByName[name];
 			
 			if (obj == null)
 				{  return false;  }
@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 			{
 			if (!sparse)
 				{
-				IDObjects.Base obj = objectsByID[id];
+				IDObjects.IDObject obj = objectsByID[id];
 			
 				if (obj == null)
 					{  return false;  }
@@ -165,7 +165,7 @@ namespace CodeClear.NaturalDocs.Engine.IDObjects
 					{  return false;  }
 				else
 					{
-					IDObjects.Base obj = objectsByID[position];
+					IDObjects.IDObject obj = objectsByID[position];
 
 					objectsByID.RemoveAt(position);
 					objectsByName.Remove(obj.Name);

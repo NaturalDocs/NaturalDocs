@@ -15,7 +15,7 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Files
 	{
-	public class File : IDObjects.Base
+	public class File : IDObjects.IDObject
 		{
 		
 		// Group: Functions
