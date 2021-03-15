@@ -25,11 +25,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		
 		/* Function: Start_Stage1
 		 * 
-		 * Loads and combines the two versions of <Comments.txt>, returning whether it was successful.  If there were any errors
-		 * they will be added to errorList.
+		 * Loads and combines the two versions of <Comments.txt>, returning whether it was successful.  If there were any 
+		 * errors they will be added to errorList.
 		 * 
 		 * Only the settings which don't depend on <Languages.txt> will be loaded.  Call <Start_Stage2()> after
-		 * <Languages.Manager.Start()> has been called to complete the process.
+		 * <Languages.Manager.Start_Stage1()> has been called to complete the process.
 		 * 
 		 * Dependencies:
 		 * 
@@ -260,17 +260,17 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 		/* Function: Start_Stage2
 		 * 
-		 * Finishes loading and and combing the two versions of <Comments.txt>, returning whether it was successful.  If there were
-		 * any errors they will be added to errorList.
+		 * Finishes loading and and combing the two versions of <Comments.txt>, returning whether it was successful.  If there
+		 * were any errors they will be added to errorList.
 		 * 
-		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start()>.  This finalizes any
-		 * settings which also depend on <Languages.txt>.
+		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This 
+		 * finalizes any settings which also depend on <Languages.txt>.
 		 * 
 		 * Dependencies:
 		 * 
 		 *		- <Config.Manager> must be started before this class can start.
 		 *		- <Start_Stage1()> must be called and return true before this function can be called.
-		 *		- <Languages.Manager.Start()> must be called and return true before this function can be called.
+		 *		- <Languages.Manager.Start_Stage1()> must be called and return true before this function can be called.
 		 */
 		public bool Start_Stage2 (Errors.ErrorList errorList)
 			{

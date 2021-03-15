@@ -5,7 +5,7 @@
  * A class to handle loading and saving <Languages.nd>.
  * 
  * 
- * Threading: Not Thread Safe
+ * Multithreading: Not Thread Safe
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
  *		
@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
@@ -32,9 +31,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		
 		/* Constructor: BinaryFileParser
 		 */
-		public BinaryFileParser (Languages.Manager manager)
+		public BinaryFileParser ()
 			{
-			languageManager = manager;
 			}
 
 
@@ -44,217 +42,243 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 
 		/* Function: Load
-		 * Loads the information in <Languages.nd>, which is the computed language settings from the last time Natural Docs 
-		 * was run.  Returns whether it was successful.  If not all the out parameters will still return objects, they will just be 
-		 * empty.  
+		 * Loads the information in <Languages.nd> into a <Config> object, returning whether it was successful.  If it was not
+		 * config will be null.
 		 */
-		public bool Load (Path filename,
-								 out List<Language> languages, 
-								 out List<KeyValuePair<string, int>> aliases,
-								 out List<KeyValuePair<string, int>> extensions,
-								 out List<KeyValuePair<string, int>> shebangStrings, 
-								 out List<string> ignoredExtensions)
+		public bool Load (Path filename, out Config config)
 			{
-			languages = new List<Language>();
-			
-			aliases = new List<KeyValuePair<string,int>>();
-			extensions = new List<KeyValuePair<string,int>>();
-			shebangStrings = new List<KeyValuePair<string,int>>();
-			ignoredExtensions = new List<string>();
-			
 			BinaryFile file = new BinaryFile();
-			bool result = true;
-			IDObjects.NumberSet usedLanguageIDs = new IDObjects.NumberSet();
 			
 			try
 				{
-				if (file.OpenForReading(filename, "2.0") == false)
+				if (file.OpenForReading(filename, "2.2") == false)
 					{
-					result = false;
+					config = null;
+					return false;
 					}
 				else
 					{
+					config = new Config();
 						
 					// [String: Language Name]
-					// [Int32: ID]
-					// [Byte: Type]
-					// [String: Simple Identifier]
-					// [Byte: Enum Values]
-					// [Byte: Case Sensitive (1 or 0)]
-					// [String: Member Operator Symbol]
-					// [String: Line Extender Symbol]
-					// [String: Line Comment Symbol] [] ... [String: null]
-					// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
-					// [String: Opening Javadoc Line Comment Symbol] [String: Remainder Javadoc Line Comment Symbol [] ... [String: null]
-					// [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
-					// [String: XML Line Comment Symbol] [] ... [String: null]
-					
-					// [Int32: Comment Type ID]
-					// [Byte: Include Line Breaks (1 or 0)]
-					// [String: Prototype Ender Symbol] [] ... [String: null]
-					// ...
-					// [Int32: 0]
-					
+					// [[Language Attributes]]
 					// ...
 					// [String: null]
 						
-					for (string languageName = file.ReadString();
-						  languageName != null;
-						  languageName = file.ReadString())
+					string languageName = file.ReadString();
+
+					while (languageName != null)
 						{
-						Language language = new Language(languageManager, languageName);
+						Language language = new Language(languageName);
 						
+						// [Int32: ID]
+						// [Byte: Type]
+						// [String: Simple Identifier]
+						// [Byte: Enum Values]
+						// [Byte: Case Sensitive (1 or 0)]
+						// [String: Member Operator Symbol]
+						// [String: Line Extender Symbol]
+					
 						language.ID = file.ReadInt32();
 						
-						byte rawTypeValue = file.ReadByte();
-						if (Enum.IsDefined(typeof(Language.LanguageType), rawTypeValue))
-							{  language.Type = (Language.LanguageType)rawTypeValue;  }
+						byte type = file.ReadByte();
+						if (Enum.IsDefined(typeof(Language.LanguageType), type))
+							{  language.Type = (Language.LanguageType)type;  }
 						else
-							{  result = false;  }
+							{  
+							config = null;
+							return false;
+							}
 							
 						language.SimpleIdentifier = file.ReadString();
 						
-						byte rawEnumValue = file.ReadByte();
-						if (Enum.IsDefined(typeof(Language.EnumValues), rawEnumValue))
-							{  language.EnumValue = (Language.EnumValues)rawEnumValue;  }
+						byte enumValues = file.ReadByte();
+						if (Enum.IsDefined(typeof(Language.EnumValues), enumValues))
+							{  language.EnumValue = (Language.EnumValues)enumValues;  }
 						else
-							{  result = false;  }
+							{  
+							config = null;
+							return false;
+							}
 						
 						language.CaseSensitive = (file.ReadByte() == 1);	
 						
 						language.MemberOperator = file.ReadString();
 						language.LineExtender = file.ReadString();
 
-						language.LineCommentStrings = ReadStringArray(file);
-						language.BlockCommentStringPairs = ReadStringArray(file);
-						language.JavadocLineCommentStringPairs = ReadStringArray(file);
-						language.JavadocBlockCommentStringPairs = ReadStringArray(file);
-						language.XMLLineCommentStrings = ReadStringArray(file);
-							
-						for (int commentTypeID = file.ReadInt32();
-							  commentTypeID != 0;
-							  commentTypeID = file.ReadInt32())
+						// [String: Line Comment Symbol] [] ... [String: null]
+						// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbol] [] [] ... [String: null]
+						// [String: Javadoc First Line Comment Symbol] [String: Javadoc Following Lines Comment Symbol [] [] ... [String: null]
+						// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
+						// [String: XML Line Comment Symbol] [] ... [String: null]
+					
+						var lineCommentSymbols = ReadSymbolList(file);
+						if (lineCommentSymbols != null)
+							{  language.LineCommentSymbols = lineCommentSymbols;  }
+
+						var blockCommentSymbols = ReadBlockCommentSymbolsList(file);
+						if (blockCommentSymbols != null)
+							{  language.BlockCommentSymbols = blockCommentSymbols;  }
+
+						var javadocLineCommentSymbols = ReadLineCommentSymbolsList(file);
+						if (javadocLineCommentSymbols != null)
+							{  language.JavadocLineCommentSymbols = javadocLineCommentSymbols;  }
+
+						var javadocBlockCommentSymbols = ReadBlockCommentSymbolsList(file);
+						if (javadocBlockCommentSymbols != null)
+							{  language.JavadocBlockCommentSymbols = javadocBlockCommentSymbols;  }
+
+						var xmlLineCommentSymbols = ReadSymbolList(file);
+						if (xmlLineCommentSymbols != null)
+							{  language.XMLLineCommentSymbols = xmlLineCommentSymbols;  }
+
+						// Prototype Enders:
+						// [Int32: Comment Type ID]
+						// [Byte: Include Line Breaks (1 or 0)]
+						// [String: Prototype Ender Symbol] [] ... [String: null]
+						// ...
+						// [Int32: 0]
+
+						int commentTypeID = file.ReadInt32();
+
+						while (commentTypeID != 0)
 							{
 							bool includeLineBreaks = (file.ReadByte() == 1);
-							string[] enderSymbols = ReadStringArray(file);
+							var enderSymbols = ReadSymbolList(file);
 
-							language.SetPrototypeEnders(commentTypeID, new PrototypeEnders(enderSymbols, includeLineBreaks));
+							language.AddPrototypeEnders( new PrototypeEnders(commentTypeID, enderSymbols, includeLineBreaks) );
+
+							commentTypeID = file.ReadInt32();
 							}
 						
-						languages.Add(language);
-						usedLanguageIDs.Add(language.ID);
-						}
+						config.AddLanguage(language);
 
+						languageName = file.ReadString();
+						}
 						
 					// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 					
-					for (string alias = file.ReadString();
-						  alias != null;
-						  alias = file.ReadString())
+					string alias = file.ReadString();
+					
+					while (alias != null)
 						{
 						int languageID = file.ReadInt32();
-						
-						if (usedLanguageIDs.Contains(languageID) == true)
-							{
-							aliases.Add( new KeyValuePair<string, int>(alias, languageID) );
-							}
-						else
-							{
-							result = false;
-							}
+						config.AddAlias(alias, languageID);
+
+						alias = file.ReadString();
 						}
 						
-					// [String: Extension] [Int32: Language ID] [] [] ... [String: Null]
+					// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 					
-					for (string extension = file.ReadString();
-						  extension != null;
-						  extension = file.ReadString())
+					string fileExtension = file.ReadString();
+
+					while (fileExtension != null)
 						{
 						int languageID = file.ReadInt32();
-						
-						if (usedLanguageIDs.Contains(languageID) == true)
-							{
-							extensions.Add( new KeyValuePair<string, int>(extension, languageID) );
-							}
-						else
-							{
-							result = false;
-							}
+						config.AddFileExtension(fileExtension, languageID);
+
+						fileExtension = file.ReadString();
 						}
 						
 					// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
-					for (string shebangString = file.ReadString();
-						  shebangString != null;
-						  shebangString = file.ReadString())
+					string shebangString = file.ReadString();
+
+					while (shebangString != null)
 						{
 						int languageID = file.ReadInt32();
-						
-						if (usedLanguageIDs.Contains(languageID) == true)
-							{
-							shebangStrings.Add( new KeyValuePair<string, int>(shebangString, languageID) );
-							}
-						else
-							{
-							result = false;
-							}
-						}
+						config.AddShebangString(shebangString, languageID);
 
-					// [String: Ignored Extension] [] ... [String: Null]
-
-					for (string ignoredExtension = file.ReadString();
-						  ignoredExtension != null;
-						  ignoredExtension = file.ReadString())
-						{
-						ignoredExtensions.Add(ignoredExtension);
+						shebangString = file.ReadString();
 						}
 					}
 				}
 			catch
 				{
-				result = false;
+				config = null;
+				return false;
 				}
 			finally
 				{
 				file.Close();
 				}
 				
-			if (result == false)
-				{
-				// Reset all the objects to empty versions.
-				languages.Clear();
-
-				extensions.Clear();
-				shebangStrings.Clear();
-				ignoredExtensions.Clear();				
-				}
-				
-			return result;
+			return true;
 			}
 			
 			
-		/* Function: ReadStringArray
-		 * A helper function used only by <Load()> which loads a sequence of strings into an array.  The sequence ends when a
-		 * null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead of an
-		 * empty array.
+		/* Function: ReadSymbolList
+		 * A helper function used only by <Load()> which reads a sequence of string symbols.  The sequence ends when a null 
+		 * string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead of an empty 
+		 * list.
 		 */
-		private string[] ReadStringArray (BinaryFile file)
+		protected List<string> ReadSymbolList (BinaryFile file)
 			{
-			string stringFromFile = file.ReadString();
+			string symbol = file.ReadString();
 			
-			if (stringFromFile == null)
+			if (symbol == null)
 				{  return null;  }
 				
-			List<string> stringList = new List<string>();
+			List<string> symbolList = new List<string>();
 
 			do			
 				{
-				stringList.Add(stringFromFile);
-				stringFromFile = file.ReadString();
+				symbolList.Add(symbol);
+				symbol = file.ReadString();
 				}
-			while (stringFromFile != null);
+			while (symbol != null);
 				
-			return stringList.ToArray();
+			return symbolList;
+			}
+
+
+		/* Function: ReadLineCommentSymbolsList
+		 * A helper function used only by <Load()> which reads a sequence of <LineCommentSymbols>.  The sequence ends 
+		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
+		 * of an empty list.
+		 */
+		protected List<LineCommentSymbols> ReadLineCommentSymbolsList (BinaryFile file)
+			{
+			string symbol = file.ReadString();
+			
+			if (symbol == null)
+				{  return null;  }
+				
+			List<LineCommentSymbols> symbolList = new List<LineCommentSymbols>();
+
+			do			
+				{
+				symbolList.Add( new LineCommentSymbols(symbol, file.ReadString()) );
+				symbol = file.ReadString();
+				}
+			while (symbol != null);
+				
+			return symbolList;
+			}
+
+			
+		/* Function: ReadBlockCommentSymbolsList
+		 * A helper function used only by <Load()> which reads a sequence of <BlockCommentSymbols>.  The sequence ends 
+		 * when a null string is encountered.  If there are no strings in the sequence (the first one is null) it returns null instead
+		 * of an empty list.
+		 */
+		protected List<BlockCommentSymbols> ReadBlockCommentSymbolsList (BinaryFile file)
+			{
+			string symbol = file.ReadString();
+			
+			if (symbol == null)
+				{  return null;  }
+				
+			List<BlockCommentSymbols> symbolList = new List<BlockCommentSymbols>();
+
+			do			
+				{
+				symbolList.Add( new BlockCommentSymbols(symbol, file.ReadString()) );
+				symbol = file.ReadString();
+				}
+			while (symbol != null);
+				
+			return symbolList;
 			}
 
 			
@@ -266,9 +290,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		/* Function: Save
 		 * Saves the current computed languages into <Languages.nd>.  Throws an exception if unsuccessful.
 		 */
-		public void Save (Path filename, IDObjects.Manager<Language> languages,
-								 StringTable<Language> aliases, StringTable<Language> extensions, 
-								 SortedStringTable<Language> shebangStrings, StringSet ignoredExtensions)
+		public void Save (Path filename, Config config)
 			{
 			BinaryFile file = new BinaryFile();
 			file.OpenForWriting(filename);
@@ -277,31 +299,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				{
 
 				// [String: Language Name]
-				// [Int32: ID]
-				// [Byte: Type]
-				// [String: Simple Identifier]
-				// [Byte: Enum Values]
-				// [Byte: Case Sensitive (1 or 0)]
-				// [String: Member Operator Symbol]
-				// [String: Line Extender Symbol]
-				// [String: Line Comment Symbol] [] ... [String: null]
-				// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
-				// [String: Opening Javadoc Line Comment Symbol] [String: Remainder Javadoc Line Comment Symbol [] ... [String: null]
-				// [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
-				// [String: XML Line Comment Symbol] [] ... [String: null]
-				
-				// [Int32: Comment Type ID]
-				// [Byte: Include Line Breaks (0 or 1)]
-				// [String: Prototype Ender Symbol] [] ... [String: null]
-				// ...
-				// [Int32: 0]
-				
+				// [[Language Attributes]]
 				// ...
 				// [String: null]
 
-				foreach (Language language in languages)
+				foreach (var language in config.Languages)
 					{
 					file.WriteString( language.Name );
+
+					// [Int32: ID]
+					// [Byte: Type]
+					// [String: Simple Identifier]
+					// [Byte: Enum Values]
+					// [Byte: Case Sensitive (1 or 0)]
+					// [String: Member Operator Symbol]
+					// [String: Line Extender Symbol]
+				
 					file.WriteInt32( language.ID );
 					file.WriteByte( (byte)language.Type );
 					file.WriteString( language.SimpleIdentifier );
@@ -310,24 +323,35 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					file.WriteString( language.MemberOperator );
 					file.WriteString( language.LineExtender );
 					
-					WriteStringArray(file, language.LineCommentStrings);
-					WriteStringArray(file, language.BlockCommentStringPairs);
-					WriteStringArray(file, language.JavadocLineCommentStringPairs);
-					WriteStringArray(file, language.JavadocBlockCommentStringPairs);
-					WriteStringArray(file, language.XMLLineCommentStrings);
+					// [String: Line Comment Symbol] [] ... [String: null]
+					// [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
+					// [String: Javadoc First Line Comment Symbol] [String: Javadoc Following Lines Comment Symbol [] ... [String: null]
+					// [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
+					// [String: XML Line Comment Symbol] [] ... [String: null]
+				
+					WriteSymbolList(file, language.LineCommentSymbols);
+					WriteBlockCommentSymbolsList(file, language.BlockCommentSymbols);
+					WriteLineCommentSymbolsList(file, language.JavadocLineCommentSymbols);
+					WriteBlockCommentSymbolsList(file, language.JavadocBlockCommentSymbols);
+					WriteSymbolList(file, language.XMLLineCommentSymbols);
 
-					int[] commentTypes = language.GetCommentTypesWithPrototypeEnders();
-					if (commentTypes != null)
+					// Prototype Enders:
+					// [Int32: Comment Type ID]
+					// [Byte: Include Line Breaks (0 or 1)]
+					// [String: Prototype Ender Symbol] [] ... [String: null]
+					// ...
+					// [Int32: 0]
+
+					if (language.HasPrototypeEnders)
 						{
-						foreach (int commentType in commentTypes)
+						foreach (var prototypeEnders in language.PrototypeEnders)
 							{
-							PrototypeEnders prototypeEnders = language.GetPrototypeEnders(commentType);
-
-							file.WriteInt32(commentType);
+							file.WriteInt32( prototypeEnders.CommentTypeID );
 							file.WriteByte( (byte)(prototypeEnders.IncludeLineBreaks ? 1 : 0) );
-							WriteStringArray(file, prototypeEnders.Symbols);
+							WriteSymbolList(file, prototypeEnders.Symbols);
 							}
 						}
+
 					file.WriteInt32(0);					
 					}
 					
@@ -336,21 +360,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				
 				// [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
 
-				foreach (KeyValuePair<string, Language> pair in aliases)
+				foreach (KeyValuePair<string, int> aliasKVP in config.Aliases)
 					{
-					file.WriteString( pair.Key );
-					file.WriteInt32( pair.Value.ID );
+					file.WriteString( aliasKVP.Key );
+					file.WriteInt32( aliasKVP.Value );
 					}
 					
 				file.WriteString(null);
 				
 				
-				// [String: Extension] [Int32: Language ID] [] [] ... [String: Null]
+				// [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 
-				foreach (KeyValuePair<string, Language> pair in extensions)
+				foreach (KeyValuePair<string, int> fileExtensionKVP in config.FileExtensions)
 					{
-					file.WriteString( pair.Key );
-					file.WriteInt32( pair.Value.ID );
+					file.WriteString( fileExtensionKVP.Key );
+					file.WriteInt32( fileExtensionKVP.Value );
 					}
 					
 				file.WriteString(null);
@@ -358,20 +382,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				
 				// [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
 
-				foreach (KeyValuePair<string, Language> pair in shebangStrings)
+				foreach (KeyValuePair<string, int> shebangStringKVP in config.ShebangStrings)
 					{
-					file.WriteString( pair.Key );
-					file.WriteInt32( pair.Value.ID );
-					}
-					
-				file.WriteString(null);
-				
-				
-				// [String: Ignored Extension] [] ... [String: Null]
-
-				foreach (string ignoredExtension in ignoredExtensions)
-					{
-					file.WriteString( ignoredExtension );
+					file.WriteString( shebangStringKVP.Key );
+					file.WriteInt32( shebangStringKVP.Value );
 					}
 					
 				file.WriteString(null);
@@ -384,26 +398,58 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			}
 			
 			
-		/* Function: WriteStringArray
-		 * A helper function used only by <Save()> which writes a string array to the file.  The strings are written
-		 * in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an
-		 * empty array.
+		/* Function: WriteSymbolList
+		 * A helper function used only by <Save()> which writes a list of symbol strings to the file.  The strings are written in
+		 * sequence and followed by a null string.  It is okay to pass null to this function, it will be treated as an empty list.
 		 */
-		private void WriteStringArray (BinaryFile file, IEnumerable<string> stringArray)
+		private void WriteSymbolList (BinaryFile file, IList<string> symbolList)
 			{
-			if (stringArray != null)
+			if (symbolList != null)
 				{
-				foreach (string stringFromArray in stringArray)
-					{  file.WriteString(stringFromArray);  }
+				foreach (var symbol in symbolList)
+					{  file.WriteString(symbol);  }
 				}
 				
 			file.WriteString(null);
 			}
 
+		/* Function: WriteLineCommentSymbolsList
+		 * A helper function used only by <Save()> which writes a list of <LineCommentStrings> to the file.  The strings
+		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated 
+		 * as an empty array.
+		 */
+		private void WriteLineCommentSymbolsList (BinaryFile file, IList<LineCommentSymbols> lineCommentSymbolsList)
+			{
+			if (lineCommentSymbolsList != null)
+				{
+				foreach (var lineCommentSymbols in lineCommentSymbolsList)
+					{  
+					file.WriteString(lineCommentSymbols.FirstLineSymbol);
+					file.WriteString(lineCommentSymbols.FollowingLinesSymbol);
+					}
+				}
+				
+			file.WriteString(null);
+			}
 
-		// Group: Variables
-		// __________________________________________________________________________
+		/* Function: WriteBlockCommentSymbolsList
+		 * A helper function used only by <Save()> which writes a list of <BlockCommentSymbols> to the file.  The strings
+		 * are written in sequence and followed by a null string.  It is okay to pass null to this function, it will be treated 
+		 * as an empty array.
+		 */
+		private void WriteBlockCommentSymbolsList (BinaryFile file, IList<BlockCommentSymbols> blockCommentSymbolsList)
+			{
+			if (blockCommentSymbolsList != null)
+				{
+				foreach (var blockCommentSymbols in blockCommentSymbolsList)
+					{  
+					file.WriteString(blockCommentSymbols.OpeningSymbol);
+					file.WriteString(blockCommentSymbols.ClosingSymbol);
+					}
+				}
+				
+			file.WriteString(null);
+			}
 
-		protected Languages.Manager languageManager;
 		}
 	}

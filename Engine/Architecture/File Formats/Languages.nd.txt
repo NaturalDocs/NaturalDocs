@@ -26,22 +26,27 @@ _______________________________________________________________________________
 		The file then encodes each language by its name string, followed by its attributes, and repeats until it reaches a null
 		string instead of a new name string.
 		
-		> Language Attributes:
+
+		Language Attributes:
+
 		> [Int32: ID]
 		> [Byte: Type]
 		> [String: Simple Identifier]
-		> [String: Alias] [] ... [String: null]
 		> [Byte: Enum Values]
 		> [Byte: Case Sensitive (1 or 0)]
 		> [String: Member Operator Symbol]
 		> [String: Line Extender Symbol]
 		> [String: Line Comment Symbol] [] ... [String: null]
 		> [String: Opening Block Comment Symbol] [String: Closing Block Comment Symbo] [] [] ... [String: null]
-		> [String: Javadoc Opening Line Comment Symbol] [String: Javadoc Remainder Line Comment Symbol] [] ... [String: null]
-		> [String: Opening Javadoc Block Comment Symbol] [String: Closing Javadoc Block Comment Symbol] [] [] ... [String: null]
+		> [String: Javadoc First Line Comment Symbol] [String: Javadoc Following Lines Comment Symbol] [] [] ... [String: null]
+		> [String: Javadoc Opening Block Comment Symbol] [String: Javadoc Closing Block Comment Symbol] [] [] ... [String: null]
 		> [String: XML Line Comment Symbol] [] ... [String: null]
+		> [[Prototype Enders]]
 		
 		The attributes are self-explanitory.  The comment symbols repeat until a null string is reached.
+
+
+		Prototype Enders:
 		
 		> [Int32: Comment Type ID]
 		> [Byte: Include Line Breaks (1 or 0)]
@@ -55,17 +60,22 @@ _______________________________________________________________________________
 	Topic: File Extensions and Other Identifiers
 		
 		> [String: Alias] [Int32: Language ID] [] [] ... [String: Null]
-		> [String: Extension] [Int32: Language ID] [] [] ... [String: Null]
+		> [String: File Extension] [Int32: Language ID] [] [] ... [String: Null]
 		> [String: Shebang String] [Int32: Language ID] [] [] ... [String: Null]
-		> [String: Ignored Extension] [] ... [String: Null]
 		
-		File extensions, shebang strings, and aliases are paired with language IDs.  Ignored extensions aren't paired with anything.
-		All repeat until they hit a null string.
+		Aliases, file extensions, and shebang strings are paired with language IDs.  All repeat until they hit a null string.
 		
 
 Group: Revisions
 _______________________________________________________________________________
 	
+	Topic: 2.2
+
+		- Removed Aliases from the language attributes.  They will be reflected in the later Alias list.
+			- The file format documentation for 2.0 listed Aliases in both the language attributes and later in the Alias list, but only the
+			  latter was implemented.  So this change is really just updating the documentation to match how it was actually implemented.
+		- Removed the Ignored Extensions list.  They will be reflected by omissions from the Extensions list.
+
 	Topic: 2.0
 			
 		- The file was introduced.

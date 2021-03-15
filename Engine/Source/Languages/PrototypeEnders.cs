@@ -26,8 +26,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		/* Constructor: PrototypeEnders
 		 */
-		public PrototypeEnders ()
+		public PrototypeEnders (int commentTypeID)
 			{
+			this.commentTypeID = commentTypeID;
+
 			includeLineBreaks = false;
 			symbols = null;
 			}
@@ -36,10 +38,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Creates the object with the passed symbols and line break flag.  The symbols array should not include "\n".  Use the
 		 * ender strings constructor to convert arrays with "\n" automatically.
 		 */
-		public PrototypeEnders (IList<string> symbols, bool includeLineBreaks)
+		public PrototypeEnders (int commentTypeID, IList<string> symbols, bool includeLineBreaks)
 			{
-			this.symbols = new List<string>(symbols.Count);
-			this.symbols.AddRange(symbols);
+			this.commentTypeID = commentTypeID;
+
+			if (symbols == null || symbols.Count == 0)
+				{  this.symbols = null;  }
+			else
+				{
+				this.symbols = new List<string>(symbols.Count);
+				this.symbols.AddRange(symbols);
+				}
 
 			this.includeLineBreaks = includeLineBreaks;
 			}
@@ -48,8 +57,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * Creates the object with the passed ender strings.  If any strings are "\n" it will automatically set <IncludeLineBreaks>
 		 * and be excluded from <Symbols>.
 		 */
-		public PrototypeEnders (IList<string> enderStrings)
+		public PrototypeEnders (int commentTypeID, IList<string> enderStrings)
 			{
+			this.commentTypeID = commentTypeID;
+
 			symbols = null;
 			includeLineBreaks = false;
 
@@ -103,7 +114,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  return true;  }
 			else if ((object)prototypeEnders1 == null || (object)prototypeEnders2 == null)
 				{  return false;  }
-			if (prototypeEnders1.IncludeLineBreaks != prototypeEnders2.IncludeLineBreaks)
+
+			if (prototypeEnders1.commentTypeID != prototypeEnders2.commentTypeID ||
+				prototypeEnders1.includeLineBreaks != prototypeEnders2.includeLineBreaks)
 				{  return false;  }
 
 			int symbolCount1 = (prototypeEnders1.HasSymbols ? prototypeEnders1.Symbols.Count : 0);
@@ -153,16 +166,22 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 		public override int GetHashCode ()
 			{
-			if (HasSymbols)
-				{  return Symbols[0].GetHashCode();  }
-			else
-				{  return (IncludeLineBreaks ? 1 : 0);  }
+			return commentTypeID;
 			}
 
 
 
 		// Group: Properties
 		// __________________________________________________________________________
+
+		/* Property: CommentTypeID
+		 * The ID of the comment type these enders are for.
+		 */
+		public int CommentTypeID
+			{
+			get
+				{  return commentTypeID;  }
+			}
 
 		/* Property: IncludeLineBreaks
 		 * Whether line breaks end prototypes.
@@ -197,14 +216,19 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// Group: Variables
 		// __________________________________________________________________________
 
+		/* var: commentTypeID
+		 * The ID of the comment type these enders are for.
+		 */
+		protected int commentTypeID;
+
 		/* var: includeLineBreaks
 		 * Whether line breaks end prototypes.
 		 */
-		public bool includeLineBreaks;
+		protected bool includeLineBreaks;
 
 		/* var: symbols
 		 * A list of symbol strings that end prototypes, or null if none.  Line breaks are not included.
 		 */
-		public List<string> symbols;
+		protected List<string> symbols;
 		}
 	}

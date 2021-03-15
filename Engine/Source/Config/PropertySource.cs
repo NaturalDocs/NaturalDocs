@@ -17,8 +17,8 @@
  *		ProjectFile - The property is defined in <Project.txt>.
  *		OldMenuFile - The property is defined in <Menu.txt>.
  *		ParserConfigurationFile - The property is defined in <Parser.txt>.
- *		ProjectLanguageFile - The property is defined in the project's <Languages.txt> file.
- *		SystemLanguageFile - The property is defined in the system's <Languages.txt> file.
+ *		ProjectLanguagesFile - The property is defined in the project's <Languages.txt> file.
+ *		SystemLanguagesFile - The property is defined in the system's <Languages.txt> file.
  *		ProjectCommentsFile - The property is defined in the project's <Comments.txt> file.
  *		SystemCommentsFile - The property is defined in the system's <Comments.txt> file.
  *		StyleConfigurationFile - The property is defined in a <Style.txt> file.
@@ -54,8 +54,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		ProjectFile,
 		OldMenuFile,
 		ParserConfigurationFile,
-		ProjectLanguageFile,
-		SystemLanguageFile,
+		ProjectLanguagesFile,
+		SystemLanguagesFile,
 		ProjectCommentsFile,
 		SystemCommentsFile,
 		StyleConfigurationFile,

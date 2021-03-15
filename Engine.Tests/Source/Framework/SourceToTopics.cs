@@ -95,7 +95,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 						try
 							{
-							Language language = EngineInstance.Languages.FromExtension(test.InputFile.Extension);
+							Language language = EngineInstance.Languages.FromFileExtension(test.InputFile.Extension);
 
 							if (language == null)
 								{  throw new Exception("Extension " + test.InputFile.Extension + " did not resolve to a language.");  }

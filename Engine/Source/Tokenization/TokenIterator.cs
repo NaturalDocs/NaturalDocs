@@ -477,30 +477,6 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 			}
 
 
-		/* Function: MatchesAnyPairAcrossTokens
-		 * Determines whether any of the passed string pairs match the tokens at the current position, returning the match's
-		 * array index if true or -1 if not.  Only the first of each pair are tested against the current position.  The string 
-		 * comparison can span multiple tokens, which allows you to test against things like "/*" which would be two tokens.  
-		 * However, the string must still match complete tokens so "/* some" won't match "/* something".
-		 */
-		public int MatchesAnyPairAcrossTokens (IList<string> text, bool ignoreCase = false)
-			{
-			if (!IsInBounds)
-				{  return -1;  }
-			if (text.Count % 2 != 0)
-				{  throw new Exceptions.ArrayDidntHaveEvenLength("symbol pairs");  }
-				
-			for (int i = 0; i < text.Count; i += 2)
-				{
-				if (TokensInCharacters(text[i].Length) != -1 &&
-					 String.Compare(tokenizer.RawText, rawTextIndex, text[i], 0, text[i].Length, ignoreCase) == 0)
-					{  return i;  }
-				}
-
-			return -1;
-			}
-
-
 		/* Function: IsStandaloneWord
 		 * Returns whether the iterator is on a text token and the tokens immediately before and after it are not text.  You can
 		 * optionally have it treat underscores as text for this purpose.

@@ -1122,14 +1122,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// We test for these before regular block comments because they are usually extended versions of them, such
 					// as /** and /*.
 
-					if (language.JavadocBlockCommentStringPairs != null)
+					if (language.HasJavadocBlockCommentSymbols)
 						{
-						for (int i = 0; foundComment == false && i < language.JavadocBlockCommentStringPairs.Length; i += 2)
+						foreach (var javadocBlockCommentSymbols in language.JavadocBlockCommentSymbols)
 							{
 							foundComment = TryToGetBlockComment(ref lineIterator, 
-																						 language.JavadocBlockCommentStringPairs[i], 
-																						 language.JavadocBlockCommentStringPairs[i+1], true,
-																						 out possibleDocumentationComment);
+																						 javadocBlockCommentSymbols.OpeningSymbol, 
+																						 javadocBlockCommentSymbols.ClosingSymbol,
+																						 true, out possibleDocumentationComment);
+
+							if (foundComment)
+								{  break;  }
 							}
 
 						if (possibleDocumentationComment != null)
@@ -1142,14 +1145,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// We test block comments ahead of line comments because in Lua the line comments are a substring of them: --
 					// versus --[[ and ]]--.
 
-					if (foundComment == false && language.BlockCommentStringPairs != null)
+					if (foundComment == false && language.HasBlockCommentSymbols)
 						{
-						for (int i = 0; foundComment == false && i < language.BlockCommentStringPairs.Length; i += 2)
+						foreach (var blockCommentSymbols in language.BlockCommentSymbols)
 							{
 							foundComment = TryToGetBlockComment(ref lineIterator, 
-																						 language.BlockCommentStringPairs[i],
-																						 language.BlockCommentStringPairs[i+1], false,
-																						 out possibleDocumentationComment);
+																						 blockCommentSymbols.OpeningSymbol,
+																						 blockCommentSymbols.ClosingSymbol, 
+																						 false, out possibleDocumentationComment);
+
+							if (foundComment)
+								{  break;  }
 							}
 
 						// Skip Splint comments so that they can appear in prototypes.
@@ -1171,14 +1177,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					
 					// XML line comments
 
-					if (foundComment == false && language.XMLLineCommentStrings != null)
+					if (foundComment == false && language.HasXMLLineCommentSymbols)
 						{
-						for (int i = 0; foundComment == false && i < language.XMLLineCommentStrings.Length; i++)
+						foreach (var xmlLineCommentSymbol in language.XMLLineCommentSymbols)
 							{
-							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   language.XMLLineCommentStrings[i], 
-																					   language.XMLLineCommentStrings[i], true,
-																					   out possibleDocumentationComment);
+							foundComment = TryToGetLineComment(ref lineIterator, xmlLineCommentSymbol, xmlLineCommentSymbol,
+																					   true, out possibleDocumentationComment);
+
+							if (foundComment)
+								{  break;  }
 							}
 
 						if (possibleDocumentationComment != null)
@@ -1192,18 +1199,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					// symbol, such as ///.
 
 					if (possibleDocumentationComment != null && possibleDocumentationComment.XML == true &&
-						language.JavadocLineCommentStringPairs != null)
+						language.HasJavadocLineCommentSymbols)
 						{
 						LineIterator javadocLineIterator = possibleDocumentationComment.Start;
 						PossibleDocumentationComment possibleJavadocDocumentationComment = null;
 						bool foundJavadocComment = false;
 
-						for (int i = 0; foundJavadocComment == false && i < language.JavadocLineCommentStringPairs.Length; i += 2)
+						foreach (var javadocLineCommentSymbols in language.JavadocLineCommentSymbols)
 							{
 							foundJavadocComment = TryToGetLineComment(ref javadocLineIterator, 
-																								  language.JavadocLineCommentStringPairs[i], 
-																								  language.JavadocLineCommentStringPairs[i+1], true,
-																								  out possibleJavadocDocumentationComment);
+																								  javadocLineCommentSymbols.FirstLineSymbol,
+																								  javadocLineCommentSymbols.FollowingLinesSymbol,
+																								  true, out possibleJavadocDocumentationComment);
+
+							if (foundJavadocComment)
+								{  break;  }
 							}
 
 						if (possibleJavadocDocumentationComment != null)
@@ -1265,14 +1275,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Javadoc line comments
 
-					if (foundComment == false && language.JavadocLineCommentStringPairs != null)
+					if (foundComment == false && language.HasJavadocLineCommentSymbols)
 						{
-						for (int i = 0; foundComment == false && i < language.JavadocLineCommentStringPairs.Length; i += 2)
+						foreach (var javadocLineCommentSymbols in language.JavadocLineCommentSymbols)
 							{
 							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   language.JavadocLineCommentStringPairs[i], 
-																					   language.JavadocLineCommentStringPairs[i+1], true,
-																					   out possibleDocumentationComment);
+																					   javadocLineCommentSymbols.FirstLineSymbol,
+																					   javadocLineCommentSymbols.FollowingLinesSymbol,
+																					   true, out possibleDocumentationComment);
+
+							if (foundComment)
+								{  break;  }
 							}
 
 						if (possibleDocumentationComment != null)
@@ -1282,14 +1295,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Plain line comments
 				
-					if (foundComment == false && language.LineCommentStrings != null)
+					if (foundComment == false && language.HasLineCommentSymbols)
 						{
-						for (int i = 0; foundComment == false && i < language.LineCommentStrings.Length; i++)
+						foreach (var lineCommentSymbol in language.LineCommentSymbols)
 							{
-							foundComment = TryToGetLineComment(ref lineIterator, 
-																					   language.LineCommentStrings[i],
-																					   language.LineCommentStrings[i], false,
-																					   out possibleDocumentationComment);
+							foundComment = TryToGetLineComment(ref lineIterator, lineCommentSymbol, lineCommentSymbol,
+																					   false, out possibleDocumentationComment);
+
+							if (foundComment)
+								{  break;  }
 							}
 						}
 					
@@ -1646,7 +1660,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected virtual bool TryToFindBasicPrototype (Topic topic, LineIterator startCode, LineIterator endCode,
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
-			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.CommentTypeID);
+			PrototypeEnders prototypeEnders = language.GetPrototypeEndersFor(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
 				{  
@@ -1673,7 +1687,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		protected virtual bool TryToFindBasicPrototype (Topic topic, TokenIterator start, TokenIterator limit, 
 																			out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
-			PrototypeEnders prototypeEnders = language.GetPrototypeEnders(topic.CommentTypeID);
+			PrototypeEnders prototypeEnders = language.GetPrototypeEndersFor(topic.CommentTypeID);
 
 			if (prototypeEnders == null)
 				{  
@@ -4634,13 +4648,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool TryToSkipLineComment (ref TokenIterator iterator, out string commentSymbol, ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (language.LineCommentStrings == null)
+			if (!language.HasLineCommentSymbols)
 				{
 				commentSymbol = null;
 				return false;
 				}
 
-			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(language.LineCommentStrings);
+			int commentSymbolIndex = iterator.MatchesAnyAcrossTokens(language.LineCommentSymbols);
 
 			if (commentSymbolIndex == -1)
 				{
@@ -4648,7 +4662,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				return false;
 				}
 
-			commentSymbol = language.LineCommentStrings[commentSymbolIndex];
+			commentSymbol = language.LineCommentSymbols[commentSymbolIndex];
 
 			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(commentSymbol.Length);
@@ -4693,26 +4707,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 *		- Everything else is treated as <ParseMode.IterateOnly>.
 		 */
 		protected bool TryToSkipBlockComment (ref TokenIterator iterator, out string openingSymbol, out string closingSymbol, 
-															  ParseMode mode = ParseMode.IterateOnly)
+																  ParseMode mode = ParseMode.IterateOnly)
 			{
-			if (language.BlockCommentStringPairs == null)
+			openingSymbol = null;
+			closingSymbol = null;
+
+			if (!language.HasBlockCommentSymbols)
+				{  return false;  }
+
+			foreach (var blockCommentSymbols in language.BlockCommentSymbols)
 				{
-				openingSymbol = null;
-				closingSymbol = null;
-				return false;
+				if (iterator.MatchesAcrossTokens(blockCommentSymbols.OpeningSymbol))
+					{
+					openingSymbol = blockCommentSymbols.OpeningSymbol;
+					closingSymbol = blockCommentSymbols.ClosingSymbol;
+					break;
+					}
 				}
 
-			int openingCommentSymbolIndex = iterator.MatchesAnyPairAcrossTokens(language.BlockCommentStringPairs);
-
-			if (openingCommentSymbolIndex == -1)
-				{
-				openingSymbol = null;
-				closingSymbol = null;
-				return false;
-				}
-
-			openingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex];
-			closingSymbol = language.BlockCommentStringPairs[openingCommentSymbolIndex + 1];
+			if (openingSymbol == null)
+				{  return false;  }
 
 			TokenIterator startOfComment = iterator;
 			iterator.NextByCharacters(openingSymbol.Length);
@@ -5345,7 +5359,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public Languages.Manager Manager
 			{
 			get
-				{  return language.Manager;  }
+				{  return engineInstance.Languages;  }
 			}
 
 

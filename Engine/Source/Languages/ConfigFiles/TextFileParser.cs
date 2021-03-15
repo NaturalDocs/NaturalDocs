@@ -46,7 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			alterLanguageRegex = new Regex.Languages.AlterLanguage();
 			blockCommentsRegex = new Regex.Languages.BlockComments();
 			enumValuesRegex = new Regex.Languages.EnumValues();
-			extensionsRegex = new Regex.Languages.Extensions();
+			fileExtensionsRegex = new Regex.Languages.FileExtensions();
 			ignorePrefixesRegex = new Regex.Languages.IgnorePrefixes();
 			ignoreExtensionsRegex = new Regex.Languages.IgnoreExtensions();
 			lineCommentsRegex = new Regex.Languages.LineComments();
@@ -64,71 +64,58 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 
 		/* Function: Load
 		 * 
-		 * Loads the configuration file and parses it.  Redundant information will be simplified out, such as an Alter
-		 * Language section that applies to a language defined in the same file.
+		 * Loads the contents of a <Languages.txt> file into a <ConfigFiles.Textfile>, returning whether it was successful.  If it
+		 * was unsuccessful config will be null and it will place errors on the errorList.
 		 * 
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
-		 *		propertySource - The <Config.PropertySource> associated with the file.
-		 *		fileLanguages - Returns a list of <ConfigFileLanguages> in no particular order.
-		 *		fileIgnoredExtensions - Returns any ignored extensions as a string array.
+		 *		propertySource - The <Engine.Config.PropertySource> associated with the file.
 		 *		errorList - If it couldn't successfully parse the file it will add error messages to this list.
-		 *		
-		 * Returns:
-		 * 
-		 *		Whether it was able to successfully load and parse the file without any errors.
+		 *		config - The contents of the file as a <ConfigFiles.TextFile>.
 		 */
-		public bool Load (Path filename, Config.PropertySource propertySource,
-								 out List<TextFileLanguage> fileLanguages, out List<string> fileIgnoredExtensions, 
-								 Errors.ErrorList errorList)
+		public bool Load (Path filename, Engine.Config.PropertySource propertySource, Errors.ErrorList errorList,
+								  out ConfigFiles.TextFile config)
 			{
-			fileLanguages = new List<TextFileLanguage>();
-			fileIgnoredExtensions = new List<string>();
-			StringTable<TextFileLanguage> fileLanguageNames = 
-				new StringTable<TextFileLanguage>(Engine.Languages.Manager.KeySettingsForLanguageName);
-
 			int previousErrorCount = errorList.Count;
 
 			using (ConfigFile file = new ConfigFile())
 				{
-				// Can't make identifiers lowercase here or we'd lose the case of the comment type in prototype ender lines.
 				bool openResult = file.Open(filename, 
 														 propertySource,
 														 ConfigFile.FileFormatFlags.CondenseIdentifierWhitespace |
-														 ConfigFile.FileFormatFlags.CondenseValueWhitespace,
+														 ConfigFile.FileFormatFlags.CondenseValueWhitespace |
+														 ConfigFile.FileFormatFlags.MakeIdentifiersLowercase,
 														 errorList);
 														 
 				if (openResult == false)
-					{  return false;  }
+					{
+					config = null;
+					return false;  
+					}
 					
-				string identifier, lcIdentifier, value;
+				config = new ConfigFiles.TextFile();
+					
 				TextFileLanguage currentLanguage = null;
-				
-				// We need this in addition to ConfigFileLanguage.AlterLanguage because an entry altering a type defined in the 
-				// same file would be combined into the original, yet we still need to know if that entry is Alter to properly
-				// detect whether we need to use Add/Replace with certain properties.
-				bool alterCurrentLanguage = false;
-				
 				char[] space = { ' ' };
-				
 				System.Text.RegularExpressions.Match match;
 				
 
-				while (file.Get(out identifier, out value))
+				while (file.Get(out string identifier, out string value))
 					{
-					lcIdentifier = identifier.ToLower();
 
 					//
 					// Ignore Extensions
 					//
 					
-					if (ignoreExtensionsRegex.IsMatch(lcIdentifier))
+					if (ignoreExtensionsRegex.IsMatch(identifier))
 						{
 						currentLanguage = null;
 						
-						string[] ignoredExtensionsArray = value.Split(space);
-						fileIgnoredExtensions.AddRange(ignoredExtensionsArray);
+						var ignoredExtensions = value.Split(space);
+						NormalizeFileExtensions(ignoredExtensions);
+
+						config.AddIgnoredFileExtensions(ignoredExtensions, file.PropertyLocation);
 						}
 					
 					
@@ -136,9 +123,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Language
 					//
 						
-					else if (lcIdentifier == "language")
+					else if (identifier == "language")
 						{
-						if (fileLanguageNames.ContainsKey(value))
+						var existingLanguage = config.FindLanguage(value);
+
+						if (existingLanguage != null)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Languages.txt.LanguageAlreadyExists(name)", value)
@@ -146,43 +135,41 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							
 							// Continue parsing.  We'll throw this into the existing language even though it shouldn't be overwriting
 							// its values because we want to find any other errors there are in the file.
-							currentLanguage = fileLanguageNames[value];
-							alterCurrentLanguage = false;
+							currentLanguage = existingLanguage;
 							}
 							
 						else
 							{
-							currentLanguage = new TextFileLanguage(value, false, file.LineNumber);
-							alterCurrentLanguage = false;
-							fileLanguages.Add(currentLanguage);
-							fileLanguageNames.Add(value, currentLanguage);
+							currentLanguage = new TextFileLanguage(value, file.PropertyLocation);
+							config.AddLanguage(currentLanguage);
 							}								
 						}
-						
 						
 						
 					//
 					// Alter Language
 					//
 					
-					else if (alterLanguageRegex.IsMatch(lcIdentifier))
+					else if (alterLanguageRegex.IsMatch(identifier))
 						{
-						// If this language already exists, collapse it into the current definition.
-						if (fileLanguageNames.ContainsKey(value))
-							{
-							currentLanguage = fileLanguageNames[value];
-							alterCurrentLanguage = true;
-							}
-							
-						// If it doesn't exist, create the new language anyway with the alter flag set because it may exist in another
-						// file.
-						else
-							{
-							currentLanguage = new TextFileLanguage(value, true, file.LineNumber);
-							alterCurrentLanguage = true;
-							fileLanguages.Add(currentLanguage);
-							fileLanguageNames.Add(value, currentLanguage);
-							}								
+						// We don't check if the name exists because it may exist in a different file.  We also don't check if it exists
+						// in the current file because using Alter is valid (if unnecessary) in that case and we don't want to combine 
+						// their definitions.  Why?  Consider this:
+						//
+						// Language: Language A
+						//    Extensions: langA
+						//
+						// Language: Language B
+						//    Extensions: langB
+						//
+						// Alter Language: Language A
+						//    Add Extensions: langB
+						//
+						// Extension langB should be part of Language A.  However, if we merged the definitions it would appear
+						// first and be overridden by Language B.  So we just create two language entries for A instead.
+
+						currentLanguage = new TextFileLanguage(value, file.PropertyLocation, alterLanguage: true);
+						config.AddLanguage(currentLanguage);
 						}
 
 
@@ -190,11 +177,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Aliases
 					//
 						
-					else if (aliasesRegex.IsMatch(lcIdentifier))
+					else if (aliasesRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-						else if (alterCurrentLanguage == true)
+							{  AddNeedsLanguageError(file, identifier);  }
+						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Languages.txt.NeedAddReplaceWhenAlteringLanguage(keyword)", "Aliases")
@@ -202,8 +189,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 						else
 							{
-							currentLanguage.Aliases = value.Split(space);
-							currentLanguage.AddAliases = false;
+							var aliases = value.Split(space);
+							currentLanguage.SetAliases(aliases, file.PropertyLocation);
 							}
 						}
 						
@@ -212,45 +199,55 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Add/Replace Aliases
 					//
 					
-					else if ( (match = addReplaceAliasesRegex.Match(lcIdentifier)) != null && match.Success )
+					else if ( (match = addReplaceAliasesRegex.Match(identifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-							
-						else if (alterCurrentLanguage == true && match.Groups[1].Value == "add" && 
-								  currentLanguage.Aliases != null)
-							{
-							string[] addAliases = value.Split(space);
-							string[] newAliases = new string[ addAliases.Length + currentLanguage.Aliases.Length ];
-							
-							currentLanguage.Aliases.CopyTo(newAliases, 0);
-							addAliases.CopyTo(newAliases, currentLanguage.Aliases.Length);
-							
-							currentLanguage.Aliases = newAliases;
-							currentLanguage.AddAliases = true;
-							}
-						
-						// Covers "replace" when altering a language, "add" and "replace" when not altering a language (no point
-						// in adding an error when we can just tolerate it, and "replace" when altering a language that doesn't have
-						// anything defined.
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							currentLanguage.Aliases = value.Split(space);
-							currentLanguage.AddAliases = (match.Groups[1].Value == "add");
+							TextFileLanguage.PropertyChange propertyChange;
+
+							if (match.Groups[1].Value == "add")
+								{  propertyChange = TextFileLanguage.PropertyChange.Add;  }
+							else if (match.Groups[1].Value == "replace")
+								{  propertyChange = TextFileLanguage.PropertyChange.Replace;  }
+							else
+								{  throw new NotImplementedException();  }
+
+							// If we're adding to a language that already has them, we need to combine the properties.
+							if (propertyChange == TextFileLanguage.PropertyChange.Add &&
+								currentLanguage.HasAliases)
+								{
+								var oldAliases = currentLanguage.Aliases;
+								var newAliases = value.Split(space);
+								
+								List<string> combinedAliases = new List<string>(oldAliases.Count + newAliases.Length);
+								combinedAliases.AddRange(oldAliases);
+								combinedAliases.AddRange(newAliases);
+
+								currentLanguage.SetAliases(combinedAliases, file.PropertyLocation, propertyChange);
+								}
+
+							// Otherwise we can just add them as is.
+							else
+								{
+								var aliases = value.Split(space);
+								currentLanguage.SetAliases(aliases, file.PropertyLocation, propertyChange);
+								}
 							}
 						}
 						
 
 
 					//
-					// Extensions
+					// File Extensions
 					//
 						
-					else if (extensionsRegex.IsMatch(lcIdentifier))
+					else if (fileExtensionsRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-						else if (alterCurrentLanguage == true)
+							{  AddNeedsLanguageError(file, identifier);  }
+						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Languages.txt.NeedAddReplaceWhenAlteringLanguage(keyword)", "Extensions")
@@ -258,41 +255,56 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 						else
 							{
-							currentLanguage.Extensions = value.Split(space);
-							currentLanguage.AddExtensions = false;
+							var extensions = value.Split(space);
+							NormalizeFileExtensions(extensions);
+
+							currentLanguage.SetFileExtensions(extensions, file.PropertyLocation);
 							}
 						}
 						
 						
 					//
-					// Add/Replace Extensions
+					// Add/Replace File Extensions
 					//
 					
-					else if ( (match = addReplaceExtensionsRegex.Match(lcIdentifier)) != null && match.Success )
+					else if ( (match = addReplaceExtensionsRegex.Match(identifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-							
-						else if (alterCurrentLanguage == true && match.Groups[1].Value == "add" && 
-								  currentLanguage.Extensions != null)
-							{
-							string[] addExtensions = value.Split(space);
-							string[] newExtensions = new string[ addExtensions.Length + currentLanguage.Extensions.Length ];
-							
-							currentLanguage.Extensions.CopyTo(newExtensions, 0);
-							addExtensions.CopyTo(newExtensions, currentLanguage.Extensions.Length);
-							
-							currentLanguage.Extensions = newExtensions;
-							currentLanguage.AddExtensions = true;
-							}
-						
-						// Covers "replace" when altering a language, "add" and "replace" when not altering a language (no point
-						// in adding an error when we can just tolerate it, and "replace" when altering a language that doesn't have
-						// anything defined.
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
-							{
-							currentLanguage.Extensions = value.Split(space);
-							currentLanguage.AddExtensions = (match.Groups[1].Value == "add");
+							{							
+							TextFileLanguage.PropertyChange propertyChange;
+
+							if (match.Groups[1].Value == "add")
+								{  propertyChange = TextFileLanguage.PropertyChange.Add;  }
+							else if (match.Groups[1].Value == "replace")
+								{  propertyChange = TextFileLanguage.PropertyChange.Replace;  }
+							else
+								{  throw new NotImplementedException();  }
+
+							// If we're adding to a language that already has them, we need to combine the properties.
+							if (propertyChange == TextFileLanguage.PropertyChange.Add &&
+								currentLanguage.HasFileExtensions)
+								{
+								var oldExtensions = currentLanguage.FileExtensions;
+								var newExtensions = value.Split(space);
+								NormalizeFileExtensions(newExtensions);
+								
+								List<string> combinedExtensions = new List<string>(oldExtensions.Count + newExtensions.Length);
+								combinedExtensions.AddRange(oldExtensions);
+								combinedExtensions.AddRange(newExtensions);
+
+								currentLanguage.SetFileExtensions(combinedExtensions, file.PropertyLocation, propertyChange);
+								}
+
+							// Otherwise we can just add them as is.
+							else
+								{
+								var extensions = value.Split(space);
+								NormalizeFileExtensions(extensions);
+
+								currentLanguage.SetFileExtensions(extensions, file.PropertyLocation, propertyChange);
+								}
 							}
 						}
 						
@@ -302,11 +314,11 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Shebang Strings
 					//
 						
-					else if (shebangStringsRegex.IsMatch(lcIdentifier))
+					else if (shebangStringsRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-						else if (alterCurrentLanguage == true)
+							{  AddNeedsLanguageError(file, identifier);  }
+						else if (currentLanguage.AlterLanguage)
 							{
 							file.AddError(
 								Locale.Get("NaturalDocs.Engine", "Languages.txt.NeedAddReplaceWhenAlteringLanguage(keyword)", "Shebang Strings")
@@ -314,8 +326,8 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 						else
 							{
-							currentLanguage.ShebangStrings = value.Split(space);
-							currentLanguage.AddShebangStrings = false;
+							var shebangStrings = value.Split(space);
+							currentLanguage.SetShebangStrings(shebangStrings, file.PropertyLocation);
 							}
 						}
 						
@@ -324,32 +336,41 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Add/Replace Shebang Strings
 					//
 					
-					else if ( (match = addReplaceShebangStringsRegex.Match(lcIdentifier)) != null && match.Success )
+					else if ( (match = addReplaceShebangStringsRegex.Match(identifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-							
-						else if (alterCurrentLanguage == true && match.Groups[1].Value == "add" && 
-								  currentLanguage.ShebangStrings != null)
-							{
-							string[] addShebangStrings = value.Split(space);
-							string[] newShebangStrings = new string[ addShebangStrings.Length + 
-																						 currentLanguage.ShebangStrings.Length ];
-							
-							currentLanguage.ShebangStrings.CopyTo(newShebangStrings, 0);
-							addShebangStrings.CopyTo(newShebangStrings, currentLanguage.ShebangStrings.Length);
-							
-							currentLanguage.ShebangStrings = newShebangStrings;
-							currentLanguage.AddShebangStrings = true;
-							}
-						
-						// Covers "replace" when altering a language, "add" and "replace" when not altering a language (no point
-						// in adding an error when we can just tolerate it, and "replace" when altering a language that doesn't have
-						// anything defined.
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							currentLanguage.ShebangStrings = value.Split(space);
-							currentLanguage.AddShebangStrings = (match.Groups[1].Value == "add");
+							TextFileLanguage.PropertyChange propertyChange;
+
+							if (match.Groups[1].Value == "add")
+								{  propertyChange = TextFileLanguage.PropertyChange.Add;  }
+							else if (match.Groups[1].Value == "replace")
+								{  propertyChange = TextFileLanguage.PropertyChange.Replace;  }
+							else
+								{  throw new NotImplementedException();  }
+
+							// If we're adding to a language that already has them, we need to combine the properties.
+							if (propertyChange == TextFileLanguage.PropertyChange.Add &&
+								currentLanguage.HasShebangStrings)
+								{
+								var oldShebangStrings = currentLanguage.ShebangStrings;
+								var newShebangStrings = value.Split(space);
+								
+								List<string> combinedShebangStrings = new List<string>(oldShebangStrings.Count + newShebangStrings.Length);
+								combinedShebangStrings.AddRange(oldShebangStrings);
+								combinedShebangStrings.AddRange(newShebangStrings);
+
+								currentLanguage.SetShebangStrings(combinedShebangStrings, file.PropertyLocation, propertyChange);
+								}
+
+							// Otherwise we can just add them as is.
+							else
+								{
+								var shebangStrings = value.Split(space);
+								currentLanguage.SetShebangStrings(shebangStrings, file.PropertyLocation, propertyChange);
+								}
 							}
 						}
 						
@@ -359,10 +380,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Simple Identifier
 					//
 					
-					else if (lcIdentifier == "simple identifier")
+					else if (identifier == "simple identifier")
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else if (nonASCIILettersRegex.IsMatch(value))
 							{
 							file.AddError(
@@ -371,7 +392,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 							}
 						else
 							{
-							currentLanguage.SimpleIdentifier = value;
+							currentLanguage.SetSimpleIdentifier(value, file.PropertyLocation);
 							}
 						}
 						
@@ -381,13 +402,14 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Line Comments
 					//
 					
-					else if (lineCommentsRegex.IsMatch(lcIdentifier))
+					else if (lineCommentsRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							currentLanguage.LineCommentStrings = value.Split(space);
+							var lineCommentSymbols = value.Split(space);
+							currentLanguage.SetLineCommentSymbols(lineCommentSymbols, file.PropertyLocation);
 							}
 						}
 						
@@ -397,15 +419,15 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Block Comments
 					//
 					
-					else if (blockCommentsRegex.IsMatch(lcIdentifier))
+					else if (blockCommentsRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							string[] newBlockCommentStrings = value.Split(space);
+							var blockCommentStrings = value.Split(space);
 							
-							if (newBlockCommentStrings.Length % 2 != 0)
+							if (blockCommentStrings.Length % 2 != 0)
 								{
 								file.AddError(
 									Locale.Get("NaturalDocs.Engine", "Languages.txt.BlockCommentsMustHaveAnEvenNumberOfSymbols")
@@ -413,7 +435,17 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 								}
 							else
 								{
-								currentLanguage.BlockCommentStringPairs = newBlockCommentStrings;
+								List<BlockCommentSymbols> blockCommentSymbols = 
+									new List<BlockCommentSymbols>(blockCommentStrings.Length / 2);
+
+								for (int i = 0; i < blockCommentStrings.Length; i += 2)
+									{
+									blockCommentSymbols.Add(
+										new BlockCommentSymbols(blockCommentStrings[i], blockCommentStrings[i+1])
+										);
+									}
+
+								currentLanguage.SetBlockCommentSymbols(blockCommentSymbols, file.PropertyLocation);
 								}
 							}
 						}
@@ -424,12 +456,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Member Operator
 					//
 					
-					else if (memberOperatorRegex.IsMatch(lcIdentifier))
+					else if (memberOperatorRegex.IsMatch(identifier))
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
-							{  currentLanguage.MemberOperator = value;  }
+							{  currentLanguage.SetMemberOperator(value, file.PropertyLocation);  }
 						}
 						
 						
@@ -438,12 +470,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Line Extender
 					//
 					
-					else if (lcIdentifier == "line extender")
+					else if (identifier == "line extender")
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
-							{  currentLanguage.LineExtender = value;  }
+							{  currentLanguage.SetLineExtender(value, file.PropertyLocation);  }
 						}
 						
 						
@@ -452,23 +484,26 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Enum Values
 					//
 					
-					else if (enumValuesRegex.IsMatch(lcIdentifier))
+					else if (enumValuesRegex.IsMatch(identifier))
 						{
-						string lcValue = value.ToLower();
-						
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-						else if (lcValue == "global")
-							{  currentLanguage.EnumValue = Language.EnumValues.Global;  }
-						else if (lcValue == "under type")
-							{  currentLanguage.EnumValue = Language.EnumValues.UnderType;  }
-						else if (lcValue == "under parent")
-							{  currentLanguage.EnumValue = Language.EnumValues.UnderParent;  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Languages.txt.InvalidEnumValue(value)", value)
-								);
+							string lcValue = value.ToLower();
+						
+							if (lcValue == "global")
+								{  currentLanguage.SetEnumValues(Language.EnumValues.Global, file.PropertyLocation);  }
+							else if (lcValue == "under type")
+								{  currentLanguage.SetEnumValues(Language.EnumValues.UnderType, file.PropertyLocation);  }
+							else if (lcValue == "under parent")
+								{  currentLanguage.SetEnumValues(Language.EnumValues.UnderParent, file.PropertyLocation);  }
+							else
+								{
+								file.AddError(
+									Locale.Get("NaturalDocs.Engine", "Languages.txt.InvalidEnumValue(value)", value)
+									);
+								}
 							}
 						}
 						
@@ -477,21 +512,24 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Case Sensitive
 					//
 					
-					else if (caseSensitiveRegex.IsMatch(lcIdentifier))
+					else if (caseSensitiveRegex.IsMatch(identifier))
 						{
-						string lcValue = value.ToLower();
-						
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
-						else if (yesRegex.IsMatch(lcValue))
-							{  currentLanguage.CaseSensitive = true;  }
-						else if (noRegex.IsMatch(lcValue))
-							{  currentLanguage.CaseSensitive = false;  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
-							file.AddError(
-								Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedValue(keyword, value)", "Case Sensitive", value)
-								);
+							string lcValue = value.ToLower();
+						
+							if (yesRegex.IsMatch(lcValue))
+								{  currentLanguage.SetCaseSensitive(true, file.PropertyLocation);  }
+							else if (noRegex.IsMatch(lcValue))
+								{  currentLanguage.SetCaseSensitive(false, file.PropertyLocation);  }
+							else
+								{
+								file.AddError(
+									Locale.Get("NaturalDocs.Engine", "Languages.txt.UnrecognizedValue(keyword, value)", "Case Sensitive", value)
+									);
+								}
 							}
 						}
 						
@@ -504,13 +542,16 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					else if ( (match = prototypeEndersRegex.Match(identifier)) != null && match.Success )
 						{
 						if (currentLanguage == null)
-							{  NeedsLanguageError(file, identifier);  }
+							{  AddNeedsLanguageError(file, identifier);  }
 						else
 							{
 							string commentType = match.Groups[1].Value;
 							string[] enderStrings = value.Split(space);
 
-							currentLanguage.SetPrototypeEnderStrings(commentType, enderStrings);
+							var enders = new TextFilePrototypeEnders(commentType, file.PropertyLocation);
+							enders.AddEnderStrings(enderStrings);
+
+							currentLanguage.AddPrototypeEnders(enders);
 							}
 						}
 						
@@ -519,8 +560,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 					// Deprecated keywords
 					//
 					
-					else if ( ignorePrefixesRegex.IsMatch(lcIdentifier) || 
-								lcIdentifier == "perl package" || lcIdentifier == "full language support" )
+					else if ( ignorePrefixesRegex.IsMatch(identifier) || 
+								identifier == "perl package" || 
+								identifier == "full language support" )
 						{
 						// Ignore
 						}
@@ -550,15 +592,25 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			}
 			
 
-		/* Function: NeedsLanguageError
+		/* Function: AddNeedsLanguageError
 		 * A shortcut function only used by <Load()> which adds an error stating that the passed keyword needs to appear
 		 * in a language section.
 		 */
-		private void NeedsLanguageError (ConfigFile file, string identifier)
+		private void AddNeedsLanguageError (ConfigFile file, string identifier)
 			{
 			file.AddError(
 				Locale.Get("NaturalDocs.Engine", "Languages.txt.KeywordMustBeInLanguage(keyword)", identifier)
 				);
+			}
+
+
+		/* Function: NormalizeFileExtensions
+		 * Takes a list of file extensions and removes any leading dots and stars, so ".txt" and "*.txt" are both accepted as just "txt".
+		 */
+		private void NormalizeFileExtensions (IList<string> extensions)
+			{
+			for (int i = 0; i < extensions.Count; i++)
+				{  extensions[i] = extensions[i].TrimStart('*', '.');  }
 			}
 
 
@@ -574,48 +626,60 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		 * Parameters:
 		 * 
 		 *		filename - The <Path> where the file is located.
-		 *		languages - A list of <ConfigFileLanguages>.  
-		 *		ignoredExtensions - A string array of ignored extensions in the format of.
-		 *		errorList - If it couldn't successfully save the file it will add error messages to this list.
-		 *		isProjectFile - Whether the file is for a project configuration folder as opposed to the system folder.
-		 *		noErrorOnFail - Prevents errors from being added to errorList if the function fails.  Used when a file may be in a
-		 *							   shared, read-only location and it's not critical if it's saved.
+		 *		propertySource - The <Engine.Config.PropertySource> associated with the file.  It must be
+		 *								 <Engine.Config.PropertySource.ProjectLanguagesFile> or 
+		 *								 <Engine.Config.PropertySource.SystemLanguagesFile>.
+		 *		config - The configuration to be saved.
+		 *		errorList - If it couldn't successfully save the file it will add error messages to this list.  This list may be null if
+		 *						you don't need the error.
 		 *		
 		 * Returns:
 		 * 
 		 *		Whether it was able to successfully save the file without any errors.  If the file didn't need saving because
 		 *		the generated file was the same as the one on disk, this will still return true.
 		 */
-		public bool Save (Path filename, List<TextFileLanguage> languages, 
-								 List<string> ignoredExtensions, Errors.ErrorList errorList, bool isProjectFile, bool noErrorOnFail)
+		public bool Save (Path filename, Engine.Config.PropertySource propertySource, ConfigFiles.TextFile config,
+								 Errors.ErrorList errorList = null)
 			{
 			System.Text.StringBuilder output = new System.Text.StringBuilder(1024);
-			string projectSystem = (isProjectFile ? "Project" : "System");
+
+			string projectOrSystem;
+			
+			if (propertySource == Engine.Config.PropertySource.ProjectLanguagesFile)
+				{  projectOrSystem = "Project";  }
+			else if (propertySource == Engine.Config.PropertySource.SystemLanguagesFile)
+				{  projectOrSystem = "System";  }
+			else
+				{  throw new InvalidOperationException();  }
 			
 			
-			//
-			// Create header
-			//
+			// Header
 			
 			output.AppendLine("Format: " + Engine.Instance.VersionString);
 			output.AppendLine();
-			output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt." + projectSystem + "Header.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt." + projectOrSystem + "Header.multiline") );
 			output.AppendLine();
 			output.AppendLine();
+
+
+			// Ignored Extensions
 			
-			if (ignoredExtensions.Count > 0)
+			if (config.HasIgnoredFileExtensions)
 				{
 				output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.IgnoredExtensionsHeader.multiline") );
 				output.AppendLine();
 				
-				if (ignoredExtensions.Count == 1)
-					{  output.AppendLine("Ignore Extension: " + ignoredExtensions[0]);  }
+				if (config.IgnoredFileExtensions.Count == 1)
+					{  output.AppendLine("Ignore Extension: " + config.IgnoredFileExtensions[0]);  }
 				else
 					{  
 					output.Append("Ignore Extensions:");
 
-					foreach (string extension in ignoredExtensions)
-						{  output.Append(" " + extension);  }
+					foreach (string ignoredExtension in config.IgnoredFileExtensions)
+						{  
+						output.Append(' ');
+						output.Append(ignoredExtension);
+						}
 						
 					output.AppendLine();
 					}
@@ -623,196 +687,143 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 				output.AppendLine();
 				output.AppendLine();
 				}
-			else if (isProjectFile)
+			else 
 				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.IgnoredExtensionsHeader.multiline") );
-				output.AppendLine();
+				if (propertySource == Engine.Config.PropertySource.ProjectLanguagesFile)
+					{
+					output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.IgnoredExtensionsHeader.multiline") );
+					output.AppendLine();
 
-				output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.IgnoredExtensionsReference.multiline") );
-				output.AppendLine();
-				output.AppendLine();
+					output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.IgnoredExtensionsReference.multiline") );
+					output.AppendLine();
+					output.AppendLine();
+					}
+				// Add nothing for the system config file.
 				}
-			// Add nothing for the system config file.
-			
+
+
+			// Languages		
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.LanguagesHeader.multiline") );
 
-			if (languages.Count > 1)
-				{  output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.DeferredLanguagesReference.multiline") );  }
-
-			output.AppendLine();
-				
+			if (config.HasLanguages)
+				{  
+				output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt.DeferredLanguagesReference.multiline") );
+				output.AppendLine();
 			
-			//
-			// Create content
-			//
-			
-			languages.Sort( 
-				delegate (TextFileLanguage a, TextFileLanguage b)
-					{  return a.LineNumber - b.LineNumber;  } 
-				);
-				
-			foreach (var language in languages)
-				{
-				if (language.AlterLanguage == true)
-					{  output.Append("Alter ");  }
-					
-				output.AppendLine("Language: " + language.Name);
-				
-				int oldGroupNumber = 0;
-
-				if (language.Extensions != null)
+				foreach (var language in config.Languages)
 					{
-					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
+					if (language.AlterLanguage)
+						{  output.Append("Alter ");  }
 					
-					if (language.AlterLanguage == true)
+					output.AppendLine("Language: " + language.Name);
+				
+					int oldGroupNumber = 0;
+
+					if (language.HasFileExtensions)
 						{
-						if (language.AddExtensions == true)
-							{  
-							if (language.Extensions.Length == 1)
-								{  output.Append("   Add Extension: ");  }
-							else
-								{  output.Append("   Add Extensions: ");  }
-							}
-						else
-							{  output.Append("   Replace Extensions: ");  }  // Regardless of singular or plural
+						AppendLineBreakOnGroupChange(1, ref oldGroupNumber, output);
+						AppendProperty("Extension", "Extensions", language.FileExtensionsPropertyChange, 
+												language.FileExtensions, output);
 						}
-					else
+					if (language.HasShebangStrings)
+						{
+						AppendLineBreakOnGroupChange(1, ref oldGroupNumber, output);
+						AppendProperty("Shebang String", "Shebang Strings", language.ShebangStringsPropertyChange, 
+												language.ShebangStrings, output);
+						}
+					
+					if (language.HasSimpleIdentifier)
 						{  
-						if (language.Extensions.Length == 1)
-							{  output.Append("   Extension: ");  }
-						else
-							{  output.Append("   Extensions: ");  }
+						AppendLineBreakOnGroupChange(2, ref oldGroupNumber, output);
+						output.AppendLine("   Simple Identifier: " + language.SimpleIdentifier);  
 						}
 					
-					output.AppendLine(string.Join(" ", language.Extensions));
-					}
-					
-				if (language.ShebangStrings != null)
-					{
-					LineBreakOnGroupChange(1, ref oldGroupNumber, output);
-
-					if (language.AlterLanguage == true)
+					if (language.HasAliases)
 						{
-						if (language.AddShebangStrings == true)
-							{  
-							if (language.ShebangStrings.Length == 1)
-								{  output.Append("   Add Shebang String: ");  }
-							else
-								{  output.Append("   Add Shebang Strings: ");  }
-							}
-						else
-							{  output.Append("   Replace Shebang Strings: ");  }  // Regardless of singular or plural
+						AppendLineBreakOnGroupChange(2, ref oldGroupNumber, output);
+						AppendProperty("Alias", "Aliases", language.AliasesPropertyChange,
+												language.Aliases, output);
 						}
-					else
+					
+					if (language.HasLineCommentSymbols)
 						{  
-						if (language.ShebangStrings.Length == 1)
-							{  output.Append("   Shebang String: ");  }
-						else
-							{  output.Append("   Shebang Strings: ");  }
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						AppendProperty("Line Comment", language.LineCommentSymbols, output);
 						}
-
-					output.AppendLine(string.Join(" ", language.ShebangStrings));
-					}
-					
-				if (language.SimpleIdentifier != null)
-					{  
-					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
-					output.AppendLine("   Simple Identifier: " + language.SimpleIdentifier);  
-					}
-					
-				if (language.Aliases != null)
-					{
-					LineBreakOnGroupChange(2, ref oldGroupNumber, output);
-
-					if (language.AlterLanguage == true)
-						{
-						if (language.AddAliases == true)
-							{  
-							if (language.Aliases.Length == 1)
-								{  output.Append("   Add Alias: ");  }
-							else
-								{  output.Append("   Add Aliases: ");  }
-							}
-						else
-							{  output.Append("   Replace Aliases: ");  }  // Regardless of singular or plural
-						}
-					else
+					if (language.HasBlockCommentSymbols)
 						{  
-						if (language.Aliases.Length == 1)
-							{  output.Append("   Alias: ");  }
-						else
-							{  output.Append("   Aliases: ");  }
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						AppendProperty("Block Comment", language.BlockCommentSymbols, output);
 						}
-
-					output.AppendLine(string.Join(" ", language.Aliases));
-					}
+					if (language.HasMemberOperator)
+						{  
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						output.AppendLine("   Member Operator: " + language.MemberOperator);  
+						}
+					if (language.HasLineExtender)
+						{  
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						output.AppendLine("   Line Extender: " + language.LineExtender);  
+						}
+					if (language.HasEnumValues)
+						{  
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						output.Append("   Enum Values: ");
 					
-				if (language.LineCommentStrings != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.AppendLine("   Line Comment: " + string.Join(" ", language.LineCommentStrings));  
-					}
-				if (language.BlockCommentStringPairs != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.AppendLine("   Block Comment: " + string.Join(" ", language.BlockCommentStringPairs));  
-					}
-				if (language.MemberOperator != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.AppendLine("   Member Operator: " + language.MemberOperator);  
-					}
-				if (language.LineExtender != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.AppendLine("   Line Extender: " + language.LineExtender);  
-					}
-				if (language.EnumValue != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.Append("   Enum Values: ");
-					
-					if (language.EnumValue == Language.EnumValues.Global)
-						{  output.AppendLine("Global");  }
-					else if (language.EnumValue == Language.EnumValues.UnderParent)
-						{  output.AppendLine("Under Parent");  }
-					else // Language.EnumValues.UnderType
-						{  output.AppendLine("Under Type");  }
-					}
-				if (language.CaseSensitive != null)
-					{  
-					LineBreakOnGroupChange(3, ref oldGroupNumber, output);
-					output.AppendLine("   Case Sensitive: " + ((language.CaseSensitive != null && (bool)language.CaseSensitive == true) ? "Yes" : "No"));  
-					}
-				
-				string[] commentTypeNamesWithPrototypeEnders = language.GetCommentTypeNamesWithPrototypeEnders();
-				
-				if (commentTypeNamesWithPrototypeEnders != null)
-					{
-					LineBreakOnGroupChange(4, ref oldGroupNumber, output);
-
-					foreach (string commentTypeName in commentTypeNamesWithPrototypeEnders)
-						{
-						string[] prototypeEnderStrings = language.GetPrototypeEnderStrings(commentTypeName);
+						switch (language.EnumValues)
+							{
+							case Language.EnumValues.Global:
+								output.AppendLine("Global");
+								break;
+							case Language.EnumValues.UnderParent:
+								output.AppendLine("Under Parent");
+								break;
+							case Language.EnumValues.UnderType:
+								output.AppendLine("Under Type");
+								break;
+							default:
+								throw new NotImplementedException();
+							}
+						}
+					if (language.HasCaseSensitive)
+						{  
+						AppendLineBreakOnGroupChange(3, ref oldGroupNumber, output);
+						output.Append("   Case Sensitive: ");
 						
-						if (prototypeEnderStrings.Length == 1)
-							{  
-							output.AppendLine( "   " + commentTypeName + " Prototype Ender: " + prototypeEnderStrings[0] );  
-							}
-						else
-							{  
-							output.AppendLine( "   " + commentTypeName + " Prototype Enders: " + string.Join(" ", prototypeEnderStrings) );  
+						switch (language.CaseSensitive)
+							{
+							case true:
+								output.AppendLine("Yes");
+								break;
+							case false:
+								output.AppendLine("No");
+								break;
+							default:
+								throw new NotImplementedException();
 							}
 						}
+
+					if (language.HasPrototypeEnders)
+						{
+						foreach (var enderGroup in language.PrototypeEnders)
+							{
+							AppendLineBreakOnGroupChange(4, ref oldGroupNumber, output);
+							AppendProperty(enderGroup.CommentType + " Prototype Ender", enderGroup.CommentType + " Prototype Enders",
+													enderGroup.EnderStrings, output);
+							}
+						}
+
+
+					output.AppendLine();
+					output.AppendLine();
 					}
-
-				output.AppendLine();
-				output.AppendLine();
 				}
+			else // no languages
+				{  output.AppendLine();  }
 
 
-			output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt." + projectSystem + "LanguagesReference.multiline") );
+			output.Append( Locale.Get("NaturalDocs.Engine", "Languages.txt." + projectOrSystem + "LanguagesReference.multiline") );
 
 				
 				
@@ -820,21 +831,122 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 			// Compare with previous file and write to disk
 			//
 			
-			return ConfigFile.SaveIfDifferent(filename, output.ToString(), noErrorOnFail, errorList);
+			return ConfigFile.SaveIfDifferent(filename, output.ToString(), noErrorOnFail: (errorList == null), errorList);
 			}
 			
 			
-		/* Function: LineBreakOnGroupChange
+		/* Function: AppendLineBreakOnGroupChange
 		 * A shortcut function used only by <Save()> which inserts a line break between groups.  It will also update 
 		 * oldGroupNumber automatically.
 		 */
-		private void LineBreakOnGroupChange (int groupNumber, ref int oldGroupNumber, System.Text.StringBuilder output)
+		private void AppendLineBreakOnGroupChange (int groupNumber, ref int oldGroupNumber, System.Text.StringBuilder output)
 			{
 			if (groupNumber != oldGroupNumber)
 				{
 				output.AppendLine();
 				oldGroupNumber = groupNumber;
 				}
+			}
+
+
+		/* Function: AppendProperty
+		 * A shortcut function used only by <Save()> which appends a property which has a space separated list of values.
+		 */
+		private void AppendProperty (string propertyName, IList<string> values, System.Text.StringBuilder output)
+			{
+			output.Append("   " + propertyName + ":");
+			
+			foreach (var value in values)
+				{
+				output.Append(' ');
+				output.Append(value);
+				}
+				
+			output.AppendLine();
+			}
+
+
+		/* Function: AppendProperty
+		 * A shortcut function used only by <Save()> which appends a property which has a space separated list of 
+		 * <BlockCommentSymbols>.
+		 */
+		private void AppendProperty (string propertyName, IList<BlockCommentSymbols> values, System.Text.StringBuilder output)
+			{
+			output.Append("   " + propertyName + ":");
+			
+			foreach (var value in values)
+				{
+				output.Append(' ');
+				output.Append(value.OpeningSymbol);
+				output.Append(' ');
+				output.Append(value.ClosingSymbol);
+				}
+				
+			output.AppendLine();
+			}
+
+
+		/* Function: AppendProperty
+		 * A shortcut function used only by <Save()> which appends a property which has a space separated list of values and the
+		 * property name has singular and plural forms.
+		 */
+		private void AppendProperty (string singularPropertyName, string pluralPropertyName, 
+												   IList<string> values, System.Text.StringBuilder output)
+			{
+			if (values.Count > 1)
+				{  output.Append("   " + pluralPropertyName + ":");  }
+			else
+				{  output.Append("   " + singularPropertyName + ":");  }
+					
+			foreach (var value in values)
+				{
+				output.Append(' ');
+				output.Append(value);
+				}
+
+			output.AppendLine();
+			}
+
+
+		/* Function: AppendProperty
+		 * A shortcut function used only by <Save()> which appends a property which has a space separated list of values, the
+		 * property name has singular and plural forms, and it also has "Add" and "Change" variants.
+		 */
+		private void AppendProperty (string singularPropertyName, string pluralPropertyName, 
+												   TextFileLanguage.PropertyChange propertyChange, 
+												   IList<string> values, System.Text.StringBuilder output)
+			{
+			string prefix;
+			bool alwaysPlural = false;
+
+			switch (propertyChange)
+				{
+				case TextFileLanguage.PropertyChange.None:
+					prefix = "";
+					break;
+				case TextFileLanguage.PropertyChange.Add:
+					prefix = "Add ";
+					break;
+				case TextFileLanguage.PropertyChange.Replace:
+					prefix = "Replace ";
+					alwaysPlural = true;
+					break;
+				default:
+					throw new NotImplementedException();
+				}
+
+			if (alwaysPlural || values.Count > 1)
+				{  output.Append("   " + prefix + pluralPropertyName + ":");  }
+			else
+				{  output.Append("   " + prefix + singularPropertyName + ":");  }
+					
+			foreach (var value in values)
+				{
+				output.Append(' ');
+				output.Append(value);
+				}
+
+			output.AppendLine();
 			}
 
 
@@ -854,7 +966,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.ConfigFiles
 		protected Regex.Languages.AlterLanguage alterLanguageRegex;
 		protected Regex.Languages.BlockComments blockCommentsRegex;
 		protected Regex.Languages.EnumValues enumValuesRegex;
-		protected Regex.Languages.Extensions extensionsRegex;
+		protected Regex.Languages.FileExtensions fileExtensionsRegex;
 		protected Regex.Languages.IgnorePrefixes ignorePrefixesRegex;
 		protected Regex.Languages.IgnoreExtensions ignoreExtensionsRegex;
 		protected Regex.Languages.LineComments lineCommentsRegex;

@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.FileSources
 					string extension = filePath.Extension;
 					FileType? fileType = null;
 						
-					if ( EngineInstance.Languages.FromExtension(extension) != null)
+					if ( EngineInstance.Languages.FromFileExtension(extension) != null)
 						{  fileType = FileType.Source;  }
 					// We also look for images in the source folders because "(see image.jpg)" may be relative to the source
 					// file instead of an image folder.
