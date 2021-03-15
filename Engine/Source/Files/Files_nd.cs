@@ -103,7 +103,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
  					// ...
 					// [Int32: 0]
 
-					bool forceReparse = (binaryFile.Version < "2.1");
+					bool forceReparse = (binaryFile.Version < "2.1.1");
 					bool didntStoreImageDimensions = (binaryFile.Version < "2.0.2");
 					
 					int id;
