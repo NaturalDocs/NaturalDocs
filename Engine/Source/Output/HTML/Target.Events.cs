@@ -498,7 +498,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					foreach (var imageLink in imageLinks)
 						{
 						unprocessedChanges.AddSourceFile(imageLink.FileID);
-						unprocessedChanges.AddClass(imageLink.ClassID);
+
+						if (imageLink.ClassID != 0)
+							{  unprocessedChanges.AddClass(imageLink.ClassID);  }
 						}
 
 					accessor.ReleaseLock();
