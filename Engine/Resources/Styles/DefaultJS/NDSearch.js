@@ -369,6 +369,9 @@ var NDSearch = new function ()
 			this.DeactivateSearchField();
 
 			// Set focus to the content page iframe so that keyboard scrolling works without clicking over to it.
+			// Since setting focus to the iframe via Javascript unfortunately isn't guaranteed to work, blur the
+			// search field too so at least it loses the caret and doesn't appear broken or create other problems.
+			this.domSearchField.blur();
 			document.getElementById("CFrame").contentWindow.focus();
 			}
 
