@@ -50,6 +50,7 @@
     <Compile Include="Source\CommentTypes\Config.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFileCommentType.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywordDefinition.cs" />
     <Compile Include="Source\CommentTypes\KeywordDefinition.cs" />
     <Compile Include="Source\CommentTypes\Manager.Start.cs" />
     <Compile Include="Source\Languages\ConfigFiles\TextFilePrototypeEnders.cs" />
@@ -305,7 +306,7 @@
     <Compile Include="Source\Topics\Topic.cs" />
     <Compile Include="Source\Topics\GroupedTopics.cs" />
     <Compile Include="Source\Topics\TopicGroup.cs" />
-    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywords.cs" />
+    <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywordGroup.cs" />
     <Compile Include="Source\CommentTypes\Manager.cs" />
     <Compile Include="Source\CommentTypes\Tag.cs" />
     <Compile Include="Source\CommentTypes\CommentType.cs" />

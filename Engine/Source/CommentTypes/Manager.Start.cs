@@ -1,14 +1,6 @@
 ﻿/* 
  * Class: CodeClear.NaturalDocs.Engine.CommentTypes.Manager
  * ____________________________________________________________________________
- * 
- * A module to handle <Comments.txt> and all the comment type settings within Natural Docs.
- * 
- * 
- * Topic: Usage
- * 
- *		- Call <Engine.Instance.Start()> which will start this module.
- *	
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -190,21 +182,18 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			// Now do the same thing for tags.
 
 			List<string> mergedTagList = null;
+			int mergedTagCount = (systemTextConfig.HasTags ? systemTextConfig.Tags.Count : 0) +
+											 (projectTextConfig.HasTags ? projectTextConfig.Tags.Count : 0);
 
-			if (systemTextConfig.HasTags)
+			if (mergedTagCount > 0)
 				{
-				if (projectTextConfig.HasTags)
-					{
-					mergedTagList = new List<string>(systemTextConfig.Tags.Count + projectTextConfig.Tags.Count);
-					mergedTagList.AddRange(systemTextConfig.Tags);
-					mergedTagList.AddRange(projectTextConfig.Tags);
-					}
-				else
-					{  mergedTagList = systemTextConfig.Tags;  }
-				}
-			else if (projectTextConfig.HasTags)
-				{  mergedTagList = projectTextConfig.Tags;  }
+				mergedTagList = new List<string>(mergedTagCount);
 
+				if (projectTextConfig.HasTags)
+					{  mergedTagList.AddRange(systemTextConfig.Tags);  }
+				if (projectTextConfig.HasTags)
+					{  mergedTagList.AddRange(projectTextConfig.Tags);  }
+				}
 
 			IDObjects.NumberSet usedTagIDs = new IDObjects.NumberSet();
 			IDObjects.NumberSet lastRunUsedTagIDs = lastRunConfig.UsedTagIDs();
@@ -298,15 +287,15 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			// Now add all keywords that aren't ignored, validating the language names along the way.
 
-			if (!MergeKeywordsInto(ref config, systemTextConfig, ignoredKeywords, errorList) ||
-				!MergeKeywordsInto(ref config, projectTextConfig, ignoredKeywords, errorList))
+			if (!MergeKeywordsInto_Stage2(ref config, systemTextConfig, ignoredKeywords, errorList) ||
+				!MergeKeywordsInto_Stage2(ref config, projectTextConfig, ignoredKeywords, errorList))
 				{  return false;  }
 
 				
 			// Now we have our final configuration and everything is okay.  Save the text files again to reformat them.
 			
-			TouchUp(ref systemTextConfig, config);
-			TouchUp(ref projectTextConfig, config);
+			TouchUp_Stage2(ref systemTextConfig, config);
+			TouchUp_Stage2(ref projectTextConfig, config);
 
 			Path systemTextConfigPath = EngineInstance.Config.SystemConfigFolder + "/Comments.txt";
 			Path projectTextConfigPath = EngineInstance.Config.ProjectConfigFolder + "/Comments.txt";
@@ -386,8 +375,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: ValidateCommentType
-		 * Validates all the settings in a <TextFileCommentType>.  Returns whether it is valid, and adds any errors it finds to
-		 * errorList.
+		 * Validates all the settings in a <ConfigFiles.TextFileCommentType>.  Returns whether it is valid, and adds any errors it finds
+		 * to errorList.
 		 */
 		protected bool ValidateCommentType (ConfigFiles.TextFileCommentType commentType, Errors.ErrorList errorList)
 			{
@@ -645,7 +634,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							}
 						else
 							{
-							baseConfig.AddCommentType( overridingCommentType.DuplicateWithoutKeywords() );
+							baseConfig.AddCommentType( overridingCommentType.Duplicate() );
 							}
 						}
 
@@ -657,8 +646,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: MergeCommentTypeInto
-		 * Merges the settings of a <TextFileCommentType> into another one, overriding the settings of the first.  This does NOT
-		 * cover keywords.  The base object will be altered.
+		 * Merges the settings of a <ConfigFiles.TextFileCommentType> into another one, overriding the settings of the first.  This 
+		 * does NOT cover keywords.  The base object will be altered.
 		 */
 		protected void MergeCommentTypeInto (ref ConfigFiles.TextFileCommentType baseCommentType, 
 																   ConfigFiles.TextFileCommentType overridingCommentType)
@@ -738,7 +727,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: FinalizeCommentType
-		 * Converts a <TextFileCommentType> into a <CommentType>.  This does NOT cover keywords.  Also,
+		 * Converts a <ConfigFiles.TextFileCommentType> into a <CommentType>.  This does NOT cover keywords.  Also,
 		 * <CommentType.SimpleIdentifier> may still be null if one wasn't defined and it cannot be generated automatically.
 		 */
 		protected CommentType FinalizeCommentType (ConfigFiles.TextFileCommentType textCommentType)
@@ -794,25 +783,26 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{
 				foreach (var ignoredKeywordGroup in textConfig.IgnoredKeywordGroups)
 					{
-					foreach (var ignoredKeyword in ignoredKeywordGroup.KeywordPairs)
+					foreach (var ignoredKeywordDefinition in ignoredKeywordGroup.KeywordDefinitions)
 						{
-						// We have to check for null because the keyword pairs could have null for the plural entry
-						if (ignoredKeyword != null)
-							{  ignoredKeywords.Add(ignoredKeyword);  }
+						ignoredKeywords.Add(ignoredKeywordDefinition.Keyword);
+
+						if (ignoredKeywordDefinition.HasPlural)
+							{  ignoredKeywords.Add(ignoredKeywordDefinition.Plural);  }
 						}
 					}
 				}
 			}
 
 
-		/* Function: MergeKeywordsInto
+		/* Function: MergeKeywordsInto_Stage2
 		 * Merges the keywords from the <ConfigFiles.TextFile> into the <Config>, returning whether it was successful.  It 
-		 * assumes all <TextCommentTypes> in textConfig have corresponding <CommentTypes> in outputConfig.  Any errors
-		 * will be added to errorList, such as having a language-specific keyword that doesn't match a name in
+		 * assumes all <ConfigFiles.TextCommentTypes> in textConfig have corresponding <CommentTypes> in outputConfig.  
+		 * Any errors will be added to errorList, such as having a language-specific keyword that doesn't match a name in
 		 * <Languages.Manager>.
 		 */
-		protected bool MergeKeywordsInto (ref Config outputConfig, ConfigFiles.TextFile textConfig, StringSet ignoredKeywords,
-															Errors.ErrorList errorList)
+		protected bool MergeKeywordsInto_Stage2 (ref Config outputConfig, ConfigFiles.TextFile textConfig, 
+																		StringSet ignoredKeywords, Errors.ErrorList errorList)
 			{
 			bool success = true;
 
@@ -827,7 +817,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						{  throw new InvalidOperationException();  }
 					#endif
 
-					if (commentType.HasKeywords)
+					if (commentType.HasKeywordGroups)
 						{
 						foreach (var keywordGroup in commentType.KeywordGroups)
 							{
@@ -850,36 +840,30 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 									{  languageID = language.ID;  }
 								}
 
-							if (keywordGroup.KeywordPairs != null)
+							foreach (var keywordDefinition in keywordGroup.KeywordDefinitions)
 								{
-								for (int i = 0; i < keywordGroup.KeywordPairs.Count; i += 2)
+								if (!ignoredKeywords.Contains(keywordDefinition.Keyword))
 									{
-									string singularKeyword = keywordGroup.KeywordPairs[i];
-									string pluralKeyword = keywordGroup.KeywordPairs[i+1];
+									var outputKeywordDefinition = new KeywordDefinition(keywordDefinition.Keyword);
+									outputKeywordDefinition.CommentTypeID = commentTypeID;
 
-									if (singularKeyword != null && !ignoredKeywords.Contains(singularKeyword))
-										{
-										var keywordDefinition = new KeywordDefinition(singularKeyword);
-										keywordDefinition.CommentTypeID = commentTypeID;
+									if (languageID != 0)
+										{  outputKeywordDefinition.LanguageID = languageID;  }
 
-										if (languageID != 0)
-											{  keywordDefinition.LanguageID = languageID;  }
+									// AddKeywordDefinition will handle overwriting definitions with the same keyword and language
+									outputConfig.AddKeywordDefinition(outputKeywordDefinition);
+									}
 
-										// AddKeywordDefinition will handle overwriting definitions with the same keyword and language
-										outputConfig.AddKeywordDefinition(keywordDefinition);
-										}
+								if (keywordDefinition.HasPlural && !ignoredKeywords.Contains(keywordDefinition.Plural))
+									{
+									var outputKeywordDefinition = new KeywordDefinition(keywordDefinition.Plural);
+									outputKeywordDefinition.CommentTypeID = commentTypeID;
+									outputKeywordDefinition.Plural = true;
 
-									if (pluralKeyword != null && !ignoredKeywords.Contains(pluralKeyword))
-										{
-										var keywordDefinition = new KeywordDefinition(pluralKeyword);
-										keywordDefinition.CommentTypeID = commentTypeID;
-										keywordDefinition.Plural = true;
+									if (languageID != 0)
+										{  outputKeywordDefinition.LanguageID = languageID;  }
 
-										if (languageID != 0)
-											{  keywordDefinition.LanguageID = languageID;  }
-
-										outputConfig.AddKeywordDefinition(keywordDefinition);
-										}
+									outputConfig.AddKeywordDefinition(outputKeywordDefinition);
 									}
 								}
 							}
@@ -891,13 +875,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			}
 
 
-		/* Function: TouchUp
+		/* Function: TouchUp_Stage2
 		 * Applies some minor improvements to the <ConfigFiles.TextFile>, such as making sure the capitalization of Alter Topic Type
 		 * and [Language] Keywords match the original definition.  Assumes everything is valid, meaning all Alter Topic Type entries
 		 * have corresponding entries in finalConfig and all [Language] Keyword entries have corresponding languages in
 		 * <Languages.Manager>.
 		 */
-		 protected void TouchUp (ref ConfigFiles.TextFile textConfig, Config finalConfig)
+		 protected void TouchUp_Stage2 (ref ConfigFiles.TextFile textConfig, Config finalConfig)
 			{
 			if (textConfig.HasCommentTypes)
 				{
@@ -928,7 +912,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						}
 
 
-					if (commentType.HasKeywords)
+					if (commentType.HasKeywordGroups)
 						{
 						foreach (var keywordGroup in commentType.KeywordGroups)
 							{

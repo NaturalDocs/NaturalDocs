@@ -104,7 +104,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				config = new ConfigFiles.TextFile();
 				
 				TextFileCommentType currentCommentType = null;
-				TextFileKeywords currentKeywordGroup = null;
+				TextFileKeywordGroup currentKeywordGroup = null;
 				bool inKeywords = false;
 				bool inTags = false;
 
@@ -230,7 +230,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						{
 						currentCommentType = null;
 
-						currentKeywordGroup = new TextFileKeywords(file.PropertyLocation);
+						currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation);
 						config.AddIgnoredKeywordGroup(currentKeywordGroup);
 						inKeywords = true;
 
@@ -551,7 +551,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{  AddNeedsCommentTypeError(file, identifier);  }
 						else
 							{
-							currentKeywordGroup = new TextFileKeywords(file.PropertyLocation);
+							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation);
 							currentCommentType.AddKeywordGroup(currentKeywordGroup);
 							inKeywords = true;
 							
@@ -592,7 +592,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							var match = languageSpecificKeywordsRegex.Match(identifier);
 							var languageName = match.Groups[1].ToString();
 
-							currentKeywordGroup = new TextFileKeywords(file.PropertyLocation, languageName);
+							currentKeywordGroup = new TextFileKeywordGroup(file.PropertyLocation, languageName);
 							currentCommentType.AddKeywordGroup(currentKeywordGroup);
 							inKeywords = true;
 							
@@ -735,15 +735,18 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				output.AppendLine();
 				output.AppendLine();
 				}
-			else if (propertySource == Engine.Config.PropertySource.ProjectCommentsFile)
+			else
 				{
-				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsHeader.multiline") );
-				output.AppendLine();
-				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsReference.multiline") );
-				output.AppendLine();
-				output.AppendLine();
+				if (propertySource == Engine.Config.PropertySource.ProjectCommentsFile)
+					{
+					output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsHeader.multiline") );
+					output.AppendLine();
+					output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.IgnoredKeywordsReference.multiline") );
+					output.AppendLine();
+					output.AppendLine();
+					}
+				// Add nothing for the system config file.
 				}
-			// Add nothing for the system config file.
 			
 			
 			// Tags
@@ -777,13 +780,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.CommentTypesHeader.multiline") );
 
 			if (config.HasCommentTypes)
-				{  output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredCommentTypesReference.multiline") );  }
-				
-			output.AppendLine();
-
-
-			if (config.HasCommentTypes)
 				{
+				output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt.DeferredCommentTypesReference.multiline") );				
+				output.AppendLine();
+
 				foreach (var commentType in config.CommentTypes)
 					{
 					if (commentType.AlterType == true)
@@ -881,7 +881,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						output.AppendLine();
 						}
 					
-					if (commentType.HasKeywords)
+					if (commentType.HasKeywordGroups)
 						{
 						foreach (var keywordGroup in commentType.KeywordGroups)
 							{
@@ -900,13 +900,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					output.AppendLine();
 					}
 				}
+			else // no comment types
+				{  output.AppendLine();  }
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Comments.txt." + projectOrSystem + "CommentTypesReference.multiline") );
 				
 				
-			//
 			// Compare with previous file and write to disk
-			//
 			
 			return ConfigFile.SaveIfDifferent(filename, output.ToString(), noErrorOnFail: (errorList == null), errorList);
 			}
@@ -915,16 +915,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Function: AppendKeywordGroup
 		 * A function used only by <Save()> that adds a keyword group to the passed StringBuilder.
 		 */
-		private void AppendKeywordGroup (System.Text.StringBuilder output, TextFileKeywords keywords, string linePrefix)
+		private void AppendKeywordGroup (System.Text.StringBuilder output, TextFileKeywordGroup keywordGroup, string linePrefix)
 			{
-			List<string> keywordPairs = keywords.KeywordPairs;
-
-			for (int i = 0; i < keywordPairs.Count; i += 2)
+			foreach (var keywordDefinition in keywordGroup.KeywordDefinitions)
 				{
-				output.Append(linePrefix + keywordPairs[i]);
+				output.Append(linePrefix + keywordDefinition.Keyword);
 
-				if (i + 1 < keywordPairs.Count && keywordPairs[i + 1] != null)
-					{  output.Append(", " + keywordPairs[i+1]);  }
+				if (keywordDefinition.HasPlural)
+					{  output.Append(", " + keywordDefinition.Plural);  }
 
 				output.AppendLine();
 				}

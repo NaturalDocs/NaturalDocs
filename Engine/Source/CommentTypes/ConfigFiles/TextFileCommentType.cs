@@ -61,10 +61,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			}
 
 
-		/* Function: DuplicateWithoutKeywords
-		 * Creates an independent copy of the object and all its attributes, except for the keywords.
+		/* Function: Duplicate
+		 * Creates an independent copy of the object and all its attributes.
 		 */
-		public TextFileCommentType DuplicateWithoutKeywords ()
+		public TextFileCommentType Duplicate ()
 			{
 			TextFileCommentType copy = new TextFileCommentType(name, namePropertyLocation, alterType);
 
@@ -85,7 +85,14 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			copy.simpleIdentifierPropertyLocation = simpleIdentifierPropertyLocation;
 			copy.scope = scope;
 			copy.scopePropertyLocation = scopePropertyLocation;
-			// ignore keywordGroups
+
+			if (keywordGroups != null)
+				{
+				copy.keywordGroups = new List<TextFileKeywordGroup>(keywordGroups.Count);
+				foreach (var keywordGroup in keywordGroups)
+					{  copy.keywordGroups.Add( keywordGroup.Duplicate() );  }
+				}
+			
 			copy.flags = flags;
 			copy.flagsPropertyLocation = flagsPropertyLocation;
 
@@ -180,10 +187,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Function: AddKeywordGroup
 		 * Adds a keyword group to the comment type.
 		 */
-		public void AddKeywordGroup (TextFileKeywords keywordGroup)
+		public void AddKeywordGroup (TextFileKeywordGroup keywordGroup)
 			{
 			if (keywordGroups == null)
-				{  keywordGroups = new List<TextFileKeywords>();  }
+				{  keywordGroups = new List<TextFileKeywordGroup>();  }
 
 			keywordGroups.Add(keywordGroup);
 			}
@@ -404,10 +411,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  return scopePropertyLocation;  }
 			}
 
-		/* Property: HasKeywords
-		 * Whether the comment type has keywords defined.
+		/* Property: HasKeywordGroups
+		 * Whether the comment type has keyword groups defined.
 		 */
-		public bool HasKeywords
+		public bool HasKeywordGroups
 			{
 			get
 				{  return (keywordGroups != null);  }
@@ -416,7 +423,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Property: KeywordGroups
 		 * A list of all the keyword groups defined, or null if none.
 		 */
-		public List<TextFileKeywords> KeywordGroups
+		public IList<TextFileKeywordGroup> KeywordGroups
 			{
 			get
 				{  return keywordGroups;  }
@@ -532,7 +539,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* array: keywordGroups
 		 * A list of all the keyword groups defined, or null if none.
 		 */
-		protected List<TextFileKeywords> keywordGroups;
+		protected List<TextFileKeywordGroup> keywordGroups;
 
 		/* var: flags
 		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.

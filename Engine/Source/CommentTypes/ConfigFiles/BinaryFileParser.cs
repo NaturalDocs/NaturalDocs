@@ -203,7 +203,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				foreach (var keywordDefinition in config.KeywordDefinitions)
 					{
 					file.WriteString( keywordDefinition.Keyword );
-					file.WriteByte( (keywordDefinition.Plural ? 1 : 0) );
+					file.WriteByte( (byte)(keywordDefinition.Plural ? 1 : 0) );
 					file.WriteInt32( keywordDefinition.CommentTypeID );
 					file.WriteInt32( (keywordDefinition.IsLanguageSpecific ? keywordDefinition.LanguageID : 0) );
 					}

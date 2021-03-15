@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileKeywords
+ * Class: CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles.TextFileKeywordGroup
  * ____________________________________________________________________________
  * 
  * A class encapsulating information about a group of keywords parsed from a <ConfigFiles.TextFile>.  They can represent
@@ -26,30 +26,43 @@ using CodeClear.NaturalDocs.Engine.Config;
 
 namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 	{
-	public class TextFileKeywords
+	public class TextFileKeywordGroup
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: TextFileKeywords
+		/* Constructor: TextFileKeywordGroup
 		 */
-		public TextFileKeywords (PropertyLocation propertyLocation, string languageName = null)
+		public TextFileKeywordGroup (PropertyLocation propertyLocation, string languageName = null)
 			{
 			this.propertyLocation = propertyLocation;
 			this.languageName = languageName;
-			this.keywordPairs = new List<string>();
+			this.keywordDefinitions = new List<TextFileKeywordDefinition>();
+			}
+
+
+		/* Function: Duplicate
+		 * Creates an independent copy of the keyword group and all its properties.
+		 */
+		public TextFileKeywordGroup Duplicate ()
+			{
+			TextFileKeywordGroup copy = new TextFileKeywordGroup(propertyLocation, languageName);
+
+			copy.keywordDefinitions = new List<TextFileKeywordDefinition>(keywordDefinitions.Count);
+			copy.keywordDefinitions.AddRange(keywordDefinitions);  // this works because it's a struct
+
+			return copy;
 			}
 
 
 		/* Function: Add
 		 * Adds a keyword to the list, and optionally its plural form.
 		 */
-		public void Add (string keyword, string pluralKeyword = null)
+		public void Add (string keyword, string plural = null)
 			{
-			keywordPairs.Add(keyword);
-			keywordPairs.Add(pluralKeyword);
+			keywordDefinitions.Add( new TextFileKeywordDefinition(keyword, plural) );
 			}
 
 
@@ -96,14 +109,13 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  languageName = value;  }
 			}
 			
-		/* Property: KeywordPairs
-		 * An array of keyword pairs.  Odd indexes are singular forms, even are plural.  An even entry will be null if a plural 
-		 * form is not defined.
+		/* Property: KeywordDefinitions
+		 * All the keywords defined by the group, including their optional plural forms.
 		 */
-		public List<string> KeywordPairs
+		public IList<TextFileKeywordDefinition> KeywordDefinitions
 			{
 			get
-				{  return keywordPairs;  }
+				{  return keywordDefinitions;  }
 			}
 
 				
@@ -121,11 +133,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		protected string languageName;
 		
-		/* array: keywordPairs
-		 * An array of keyword pairs.  Odd indexes are singular forms, even are plural.  An even entry will  be null if a plural 
-		 * form is not defined.
+		/* var: keywordDefinitions
+		 * All the keywords defined by the group, including their optional plural forms.
 		 */
-		protected List<string> keywordPairs;
+		protected List<TextFileKeywordDefinition> keywordDefinitions;
 
 		}
 	}

@@ -53,10 +53,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Function: AddIgnoredKeywordGroup
 		 * Adds a set of ignored keyword to the file.  There can be more than one.
 		 */
-		public void AddIgnoredKeywordGroup (TextFileKeywords keywordGroup)
+		public void AddIgnoredKeywordGroup (TextFileKeywordGroup keywordGroup)
 			{
 			if (ignoredKeywordGroups == null)
-				{  ignoredKeywordGroups = new List<TextFileKeywords>();  }
+				{  ignoredKeywordGroups = new List<TextFileKeywordGroup>();  }
 
 			ignoredKeywordGroups.Add(keywordGroup);
 			}
@@ -128,7 +128,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Property: IgnoredKeywordGroups
 		 * A list of the ignored keyword groups in the order they appear in the text file, or null if there aren't any.
 		 */
-		public List<TextFileKeywords> IgnoredKeywordGroups
+		public IList<TextFileKeywordGroup> IgnoredKeywordGroups
 			{
 			get
 				{  return ignoredKeywordGroups;  }
@@ -148,7 +148,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Property: Tags
 		 * A list of the tags in the order and case they appear in in the text file, or null if there aren't any.
 		 */
-		public List<string> Tags
+		public IList<string> Tags
 			{
 			get
 				{  return tags;  }
@@ -178,7 +178,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* Property: CommentTypes
 		 * A list <TextConfigFileCommentTypes> in the order they appear in the text file, or null if there aren't any.
 		 */
-		public List<TextFileCommentType> CommentTypes
+		public IList<TextFileCommentType> CommentTypes
 			{
 			get
 				{  return commentTypes;  }
@@ -193,7 +193,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		/* var: ignoredKeywordGroups
 		 * A list of the ignored keyword groups in the order they appear in the text file, or null if there aren't any.
 		 */
-		protected List<TextFileKeywords> ignoredKeywordGroups;
+		protected List<TextFileKeywordGroup> ignoredKeywordGroups;
 
 		/* var: tags
 		 * A list of the tags in the order and case they appear in in the text file, or null if there aren't any.
