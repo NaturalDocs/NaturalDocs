@@ -61,6 +61,7 @@ namespace CodeClear.NaturalDocs.CLI
 			pauseOnError = false;
 			pauseBeforeExit = false;
 			
+			ErrorList startupErrors = new ErrorList();
 			bool gracefulExit = false;
 
 			var standardOutput = System.Console.Out;
@@ -69,7 +70,6 @@ namespace CodeClear.NaturalDocs.CLI
 				{
 				engineInstance = new NaturalDocs.Engine.Instance();
 				
-				ErrorList startupErrors = new ErrorList();
 				ParseCommandLineResult parseCommandLineResult = ParseCommandLine(commandLine, out commandLineConfig, startupErrors);
 
 				
@@ -81,19 +81,16 @@ namespace CodeClear.NaturalDocs.CLI
 				else if (parseCommandLineResult == ParseCommandLineResult.ShowCommandLineReference)
 					{
 					ShowCommandLineReference();
-					gracefulExit = true;
 					}
 
 				else if (parseCommandLineResult == ParseCommandLineResult.ShowVersion)
 					{
 					ShowVersion();
-					gracefulExit = true;
 					}
 
 				else if (parseCommandLineResult == ParseCommandLineResult.ShowAllVersions)
 					{
 					ShowAllVersions();
-					gracefulExit = true;
 					}
 
 				else // (parseCommandLineResult == ParseCommandLineResult.Run)
@@ -113,9 +110,7 @@ namespace CodeClear.NaturalDocs.CLI
 						commandLineConfig.OutputTargets.Count == 0 &&
 						!System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Project.txt"))
 						{
-						if (CreateProjectConfiguration(startupErrors))
-							{  gracefulExit = true;  }
-						else
+						if (!CreateProjectConfiguration(startupErrors))
 							{  HandleErrorList(startupErrors);  }
 						}
 
@@ -124,12 +119,12 @@ namespace CodeClear.NaturalDocs.CLI
 
 					else
 						{
-						if (BuildDocumentation(startupErrors))
-							{  gracefulExit = true;  }
-						else
+						if (!BuildDocumentation(startupErrors))
 							{  HandleErrorList(startupErrors);  }
 						}
 					}
+
+				gracefulExit = true;
 				}
 
 			catch (Exception e)
@@ -155,7 +150,7 @@ namespace CodeClear.NaturalDocs.CLI
 					{  System.Console.SetOut(standardOutput);  }
 				}
 				
-			if (pauseBeforeExit || (pauseOnError && !gracefulExit))
+			if (pauseBeforeExit || (pauseOnError && (!gracefulExit || startupErrors.Count > 0)))
 				{
 				System.Console.WriteLine();
 				System.Console.WriteLine(
@@ -622,7 +617,7 @@ namespace CodeClear.NaturalDocs.CLI
 			
 		/* Function: HandleErrorList
 		 */
-		static private void HandleErrorList (Engine.Errors.ErrorList errorList)
+		static private void HandleErrorList (ErrorList errorList)
 			{
 			// Annotate any config files before printing them to the console, since the line numbers may change.
 			
@@ -637,7 +632,7 @@ namespace CodeClear.NaturalDocs.CLI
 			Path lastErrorFile = null;
 			bool hasNonFileErrors = false;
 				
-			foreach (Engine.Errors.Error error in errorList)
+			foreach (var error in errorList)
 				{  
 				if (error.File != lastErrorFile)
 					{
