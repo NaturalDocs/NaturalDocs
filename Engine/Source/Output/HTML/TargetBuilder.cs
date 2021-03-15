@@ -263,7 +263,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{
 				if (accessor != null)
-					{  accessor.Dispose();  }
+					{  
+					if (accessor.HasLock)
+						{  accessor.ReleaseLock();  }
+
+					accessor.Dispose();  
+					}
 				}
 			}
 			
@@ -424,7 +429,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			finally
 				{
 				if (accessor != null)
-					{  accessor.Dispose();  }
+					{  
+					if (accessor.HasLock)
+						{  accessor.ReleaseLock();  }
+
+					accessor.Dispose();  
+					}
 				}
 			}
 		 

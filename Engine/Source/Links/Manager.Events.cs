@@ -112,7 +112,12 @@ namespace CodeClear.NaturalDocs.Engine.Links
 					unprocessedChanges.DeleteImageFile((ImageFile)file, linksAffected);
 					}
 				finally
-					{  accessor.Dispose();  }
+					{  
+					if (accessor.HasLock)
+						{  accessor.ReleaseLock();  }
+
+					accessor.Dispose();
+					}
 				}
 			}
 
