@@ -33,6 +33,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 			var commentType = searchIndex.EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 			var language = searchIndex.EngineInstance.Languages.FromID(topic.LanguageID);
 
+			// It's possible for language to be null if we're creating this to handle an OnDeleteTopic event for a language that
+			// was deleted.
+			var memberOperator = (language != null ? language.MemberOperator : ".");
+
 
 			// Get the title without any parameters.  We don't want to include parameters in the index.  Multiple functions that 
 			// differ only by parameter will be treated as one entry.
@@ -51,8 +55,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.Entries
 
 			SymbolString titleSymbol = SymbolString.FromPlainText_NoParameters(title);
 
-			string titleSymbolString = titleSymbol.FormatWithSeparator(language.MemberOperator);
-			string symbolString = topic.Symbol.FormatWithSeparator(language.MemberOperator);
+			string titleSymbolString = titleSymbol.FormatWithSeparator(memberOperator);
+			string symbolString = topic.Symbol.FormatWithSeparator(memberOperator);
 
 			if (symbolString.Length > titleSymbolString.Length)
 				{
