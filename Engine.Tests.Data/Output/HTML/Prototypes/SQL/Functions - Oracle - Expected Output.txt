@@ -1,28 +1,6 @@
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> Returns1</div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">IS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">FUNCTION</span> Returns1</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Returns2</div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">AS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">2</span>,<span class="SHNumber">3</span>)</td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Returns2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE OR REPLACE FUNCTION</span> Returns3</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
@@ -54,18 +32,7 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">AS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+</table></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
 <div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
    <tr>
@@ -87,18 +54,7 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">IS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span>(<span class="SHNumber">2</span>,<span class="SHNumber">3</span>) <span class="SHKeyword">NOT NULL</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+</table></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
 <div class="NDPrototype WideForm"><div class="PSection PParameterSection PascalStyle"><table>
    <tr>
@@ -131,45 +87,12 @@
       </table></td>
       <td class="PAfterParameters">)</td>
    </tr>
-</table></div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span> <span class="SHKeyword">IS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span> <span class="SHKeyword">NOT NULL</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+</table></div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers1</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">SHARING = NONE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AUTHID DEFINER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">ACCESSIBLE BY (FUNCTION Func1, PACKAGE A.B)</span></div><div class="PSection PPlainSection"><span class="SHMetadata">DEFAULT COLLATION USING_NLS_COMP</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">SHARING = METADATA</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AUTHID CURRENT_USER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">DETERMINISTIC</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PARALLEL_ENABLE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">RESULT_CACHE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AGGREGATE USING Schema.$IS</span></div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">IS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span> <span class="SHKeyword">NOT NULL</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers2</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">SHARING = METADATA</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AUTHID CURRENT_USER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">DETERMINISTIC</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PARALLEL_ENABLE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">RESULT_CACHE</span></div><div class="PSection PPlainSection"><span class="SHMetadata">AGGREGATE USING Schema.$IS</span></div></div>
 -----
 <div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers3</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">DETERMINISTIC</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PARALLEL_ENABLE (PARTITION x BY VALUE (col))</span></div><div class="PSection PPlainSection"><span class="SHMetadata">RESULT_CACHE RELIES ON (x, y)</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PIPELINED USING Schema.AS#</span></div></div>
 -----
-<div class="NDPrototype WideForm"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers4</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PARALLEL_ENABLE (PARTITION x BY HASH (col) ORDER x BY (y, z))</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PIPELINED TABLE POLYMORPHIC USING Schema.#BEGIN</span></div><div class="PSection PParameterSection PascalStyle"><table>
-   <tr>
-      <td class="PBeforeParameters"><span class="SHKeyword">IS</span>&nbsp;</td>
-      <td class="PParametersParentCell"><table class="PParameters">
-         <tr>
-            <td class="PName first">x&nbsp;</td>
-            <td class="PType last"><span class="SHKeyword">NUMBER</span> <span class="SHKeyword">NOT NULL</span></td>
-         </tr>
-      </table></td>
-      <td class="PAfterParameters"></td>
-   </tr>
-</table></div></div>
+<div class="NDPrototype"><div class="PSection PPlainSection"><span class="SHKeyword">CREATE FUNCTION</span> Modifiers4</div><div class="PSection PPlainSection"><span class="SHKeyword">RETURN</span> <span class="SHKeyword">NUMBER</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PARALLEL_ENABLE (PARTITION x BY HASH (col) ORDER x BY (y, z))</span></div><div class="PSection PPlainSection"><span class="SHMetadata">PIPELINED TABLE POLYMORPHIC USING Schema.#BEGIN</span></div></div>
