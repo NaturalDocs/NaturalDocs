@@ -189,7 +189,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{
 				mergedTagList = new List<string>(mergedTagCount);
 
-				if (projectTextConfig.HasTags)
+				if (systemTextConfig.HasTags)
 					{  mergedTagList.AddRange(systemTextConfig.Tags);  }
 				if (projectTextConfig.HasTags)
 					{  mergedTagList.AddRange(projectTextConfig.Tags);  }
