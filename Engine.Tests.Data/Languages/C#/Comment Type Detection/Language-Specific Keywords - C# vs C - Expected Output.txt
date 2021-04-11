@@ -1,0 +1,7 @@
+Record
+- Comment Type: Class
+- Line 2
+
+CSharpRecord
+- Comment Type: Class
+- Line 4

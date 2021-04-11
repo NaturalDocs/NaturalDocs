@@ -1,0 +1,75 @@
+Database
+- Comment Type: Database
+- Line 2
+
+Database Table
+- Comment Type: Database Table
+- Line 5
+
+Table
+- Comment Type: Database Table
+- Line 7
+
+Database Field
+- Comment Type: Database Field
+- Line 10
+
+Field
+- Comment Type: Database Field
+- Line 12
+
+Database Column
+- Comment Type: Database Field
+- Line 15
+
+Column
+- Comment Type: Database Field
+- Line 17
+
+Database View
+- Comment Type: Database View
+- Line 20
+
+View
+- Comment Type: Database View
+- Line 22
+
+Database Index
+- Comment Type: Database Index
+- Line 25
+
+Index
+- Comment Type: Database Index
+- Line 27
+
+Database Key
+- Comment Type: Database Index
+- Line 30
+
+Key
+- Comment Type: Database Index
+- Line 32
+
+Database Primary Key
+- Comment Type: Database Index
+- Line 35
+
+Primary Key
+- Comment Type: Database Index
+- Line 37
+
+Database Cursor
+- Comment Type: Database Cursor
+- Line 40
+
+Cursor
+- Comment Type: Database Cursor
+- Line 42
+
+Database Trigger
+- Comment Type: Database Trigger
+- Line 45
+
+Trigger
+- Comment Type: Database Trigger
+- Line 47
