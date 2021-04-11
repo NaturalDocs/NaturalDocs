@@ -446,7 +446,7 @@ namespace CodeClear.NaturalDocs.Engine
 									generatedTopic.Symbol = SymbolString.FromPlainText_NoParameters(generatedTopic.Title);
 									generatedTopic.ClassString = topics[0].ClassString;
 									generatedTopic.ClassID = topics[0].ClassID;
-									generatedTopic.CommentTypeID = engineInstance.CommentTypes.IDFromKeyword("group");
+									generatedTopic.CommentTypeID = engineInstance.CommentTypes.IDFromKeyword("group", topics[0].LanguageID);
 									generatedTopic.FileID = topics[0].FileID;
 									generatedTopic.LanguageID = topics[0].LanguageID;
 

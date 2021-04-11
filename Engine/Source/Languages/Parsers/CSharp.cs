@@ -59,48 +59,48 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			TokenIterator startOfPrototype = tokenizedPrototype.FirstToken;
 			bool parsed = false;
 
-			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("delegate") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator"))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("delegate", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator", language.ID))
 			    {
 				parsed = TryToSkipFunction(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 			
 			if (!parsed &&
-				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constant") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constant", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event", language.ID)) )
 			    {
 				parsed = TryToSkipVariable(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("property") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("property", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("event", language.ID)) )
 			    {
 				parsed = TryToSkipProperty(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constructor") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("destructor")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("constructor", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("destructor", language.ID)) )
 			    {
 				parsed = TryToSkipConstructor(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("enum") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("type")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("enum", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("type", language.ID)) )
 			    {
 				parsed = TryToSkipEnum(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
 
 			if (!parsed &&
-				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator") ||
-				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function")) )
+				(commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("operator", language.ID) ||
+				 commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID)) )
 			    {
 				parsed = TryToSkipConversionOperator(ref startOfPrototype, ParseMode.ParsePrototype);
 			    }
@@ -125,9 +125,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			ParsedClassPrototype parsedPrototype = new ParsedClassPrototype(tokenizedPrototype);
 			bool parsed = false;
 
-			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("class") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("struct") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("interface"))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("class", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("struct", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("interface", language.ID))
 			    {
 				parsed = TryToSkipClass(ref startOfPrototype, ParseMode.ParseClassPrototype);
 			    }
@@ -763,7 +763,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				else // "class" or "struct"
 					{  classElement.DefaultDeclaredChildAccessLevel = AccessLevel.Private;  }
 
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 				if (commentTypeID != 0)
 					{
@@ -787,7 +787,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				if (hasRecordParameters)
 					{
-					int propertyCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("property");
+					int propertyCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("property", language.ID);
 
 					if (propertyCommentTypeID != 0)
 						{
@@ -1085,7 +1085,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 				if (commentTypeID != 0)
 					{
@@ -1267,7 +1267,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 				if (commentTypeID != 0)
 					{
@@ -1418,7 +1418,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			if (mode == ParseMode.CreateElements)
 				{
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("operator");
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("operator", language.ID);
 
 				if (commentTypeID != 0)
 					{
@@ -1605,7 +1605,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 			// Create element
 
-			int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
+			int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 			if (mode == ParseMode.CreateElements && commentTypeID != 0)
 				{
@@ -1899,7 +1899,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 
 				// Create element
 
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword);
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword(keyword, language.ID);
 
 				if (commentTypeID != 0)
 					{
@@ -2044,7 +2044,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				enumElement.ChildContextString = childContext;
 				enumElement.MaximumEffectiveChildAccessLevel = accessLevel;
 
-				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("enum");
+				int commentTypeID = EngineInstance.CommentTypes.IDFromKeyword("enum", language.ID);
 
 				if (commentTypeID != 0)
 					{

@@ -69,10 +69,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 																			   out TokenIterator prototypeStart, out TokenIterator prototypeEnd)
 			{
 			if (topic.CommentTypeID != 0 &&
-				( topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure") ||
-				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function") ||
-				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure") ))
+				( topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure", language.ID) ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function", language.ID) ||
+				  topic.CommentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure", language.ID) ))
 				{
 				TokenIterator startToken = startCode.FirstToken(LineBoundsMode.ExcludeWhitespace);
 				TokenIterator endToken = endCode.FirstToken(LineBoundsMode.Everything);
@@ -305,20 +305,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			{
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
 
-			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function") ||
-				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure"))
+			if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("function", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("procedure", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database function", language.ID) ||
+				commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database procedure", language.ID))
 				{
 				TokenIterator iterator = tokenizedPrototype.FirstToken;
 				TryToSkipFunction(ref iterator, ParseMode.ParsePrototype);
 				}
-			else if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable") ||
-					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("column") ||
-					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("cursor") ||
-					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database variable") ||
-					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database column") ||
-					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database cursor"))
+			else if (commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("variable", language.ID) ||
+					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("column", language.ID) ||
+					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("cursor", language.ID) ||
+					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database variable", language.ID) ||
+					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database column", language.ID) ||
+					   commentTypeID == EngineInstance.CommentTypes.IDFromKeyword("database cursor", language.ID))
 				{
 				ParseVariable(tokenizedPrototype.FirstToken, tokenizedPrototype.LastToken, ParseMode.ParsePrototype);
 				}

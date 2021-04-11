@@ -54,7 +54,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * zero it will only return language agnostic definitions, whereas if it has a value it will also search the language-specific 
 		 * definitions and favor those if there are both.
 		 */
-		public KeywordDefinition KeywordDefinition (string keyword, int languageID = 0)
+		public KeywordDefinition KeywordDefinition (string keyword, int languageID)
 			{
 			KeywordDefinition singleDefinition = singleDefinitionKeywords[keyword];
 

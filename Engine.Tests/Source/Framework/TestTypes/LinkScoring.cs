@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 
 			Topic topic = new Topic(EngineInstance.CommentTypes);
 			topic.LanguageID = EngineInstance.Languages.FromName("C#").ID;
-			topic.CommentTypeID = EngineInstance.CommentTypes.FromKeyword("Function").ID;
+			topic.CommentTypeID = EngineInstance.CommentTypes.FromKeyword("Function", topic.LanguageID).ID;
 
 			Link link = new Engine.Links.Link();
 			link.LanguageID = EngineInstance.Languages.FromName("C#").ID;
@@ -183,7 +183,7 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework.TestTypes
 							if (valueString == null)
 								{  throw new Exception("Topic.Keyword must be set to a string value.");  }
 
-							var commentType = EngineInstance.CommentTypes.FromKeyword(valueString);
+							var commentType = EngineInstance.CommentTypes.FromKeyword(valueString, topic.LanguageID);
 
 							if (commentType == null)
 								{  throw new Exception("\"" + valueString + "\" is not recognized as a keyword.");  }

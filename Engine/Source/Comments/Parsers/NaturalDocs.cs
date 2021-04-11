@@ -375,7 +375,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 *		- UsesPluralKeyword, unless doesn't require header
 		 *		- IsEmbedded
 		 */
-		public bool Parse (PossibleDocumentationComment comment, List<Topic> topics, bool requireHeader)
+		public bool Parse (PossibleDocumentationComment comment, int languageID, List<Topic> topics, bool requireHeader)
 			{
 			// Skip initial blank and horizontal lines.
 
@@ -397,7 +397,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			Topic currentTopic;
 			LineIterator firstContentLine;
 			
-			if (IsTopicLine(lineIterator, out currentTopic))
+			if (IsTopicLine(lineIterator, languageID, out currentTopic))
 				{
 				lineIterator.Next();
 				firstContentLine = lineIterator;
@@ -426,7 +426,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 			while (lineIterator < comment.End)
 				{
-				if (prevLineBlank && IsTopicLine(lineIterator, out nextTopic))
+				if (prevLineBlank && IsTopicLine(lineIterator, languageID, out nextTopic))
 					{
 					if (firstContentLine < lineIterator)
 						{  ParseBody(firstContentLine, lineIterator, currentTopic);  }
@@ -762,11 +762,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		 *		- Title
 		 *		- CommentTypeID
 		 *		- IsList
-		 *		- LanguageID, if specified
-		 *		- AccessLevel, if specified
+		 *		- LanguageID, if specified as a tag
+		 *		- AccessLevel, if specified as a tag
 		 *		- Tags, if specified
+		 *		
+		 *	Note that even though a language ID is passed to this function, <Topic.LanguageID> will not be filled in unless a language
+		 *	name was specified as a tag, such as "JavaScript Class: MyClass".  This allows language-tagged topics to be distringuished
+		 *	from ones that inherit the default language.
 		 */
-		protected bool IsTopicLine (LineIterator lineIterator, out Topic topic)
+		protected bool IsTopicLine (LineIterator lineIterator, int languageID, out Topic topic)
 			{
 			topic = null;
 			
@@ -816,119 +820,153 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			keywordsAndTags = keywordsAndTags.CondenseWhitespace();
 			
 
-			// Parse out the keyword.  Since they can have spaces in them, we start with the full string and work our way
-			// down to the last word.  So if there's a keyword "Private Function" it will be seen as such before "Function"
-			// with the modifier "Private".
-			
+			// If there are spaces, then there are a lot of potential interpretations for keywords and tags.  For example,
+			// "JavaScript Function" can keyword "Function" with tag "JavaScript", but it can be also be just keyword
+			// "JavaScript Function".  The latter is possible because people may have used them as workarounds before tags
+			// were supported, such as using "Private Function" as a keyword that's defined in one set of documentation but
+			// not in another.  So we test all possible permutations until we find one that makes sense or we run out of
+			// possibilities.
+
+			List<int> tagIDs = null;
+			int languageIDFromTags = 0;
+			Languages.AccessLevel accessLevelFromTags = Languages.AccessLevel.Unknown;
+
+
+			// First we choose our keyword.  We start with the longest one possible for the first permutation.
+		
 			int keywordStartingIndex = 0;
 			int keywordEndingIndex = keywordsAndTags.Length;
-			
-			bool pluralKeyword;
-			CommentTypes.CommentType commentType = EngineInstance.CommentTypes.FromKeyword(keywordsAndTags, out pluralKeyword);
-			
-			while (commentType == null)
-				{
-				keywordStartingIndex = keywordsAndTags.IndexOf(' ', keywordStartingIndex);
-				
-				if (keywordStartingIndex == -1)
-					{  break;  }
-					
-				keywordStartingIndex++;
-				
-				commentType = EngineInstance.CommentTypes.FromKeyword( 
-											keywordsAndTags.Substring (keywordStartingIndex, keywordEndingIndex - keywordStartingIndex),
-											out pluralKeyword);
-				}
-				
-			if (commentType == null)
-				{  return false;  }
-				
 
-			// Parse out the language, access level, and tags.  Start with the full string before the keyword and work our way down 
-			// to the first word.  This allows longer tags and access levels like "Protected Internal" to apply before shorter ones like
-			// "Protected" and "Internal".  One word can serve as both, so "Private" can be both a tag and a protection level.			
-			
-			int languageID = 0;
-			List<int> tagIDs = null;
-			Languages.AccessLevel accessLevel = Languages.AccessLevel.Unknown;
-			
-			if (keywordStartingIndex >= 2)
+			for (;;)
 				{
-				int tagStartingIndex = 0;
-				int tagEndingIndex = keywordStartingIndex - 1;  // -1 to skip separating space.
-				
-				for (;;)
+				// We can't test whether it's an actual keyword yet because it may be a language-dependent one, and we won't
+				// know which language to use until we parse all the tags.
+
+				// So now we parse out the tags, language, and access level.  We start with the full string before the keyword
+				// and work our way down to the first word.  This allows longer tags and access levels like "Protected Internal"
+				// to apply before shorter ones like "Protected" and "Internal".  One word can serve as both, so "Private" can be
+				// both a tag and a protection level.
+
+				int tagSectionStartingIndex = 0;
+				int tagSectionEndingIndex = (keywordStartingIndex == 0 ? 0 : keywordStartingIndex - 1);  // -1 to skip separating space
+
+				bool tagsAreValid = true;
+
+				if (tagSectionEndingIndex > tagSectionStartingIndex)
 					{
-					bool success = false;
-					string substring = keywordsAndTags.Substring(tagStartingIndex, tagEndingIndex - tagStartingIndex);
+					int candidateStartingIndex = tagSectionStartingIndex;
+					int candidateEndingIndex = tagSectionEndingIndex;
+				
+					for (;;)
+						{
+						bool foundInterpretation = false;
+						string candidate = keywordsAndTags.Substring(candidateStartingIndex, candidateEndingIndex - candidateStartingIndex);
 					
-					CommentTypes.Tag tag = EngineInstance.CommentTypes.TagFromName(substring);
+						CommentTypes.Tag candidateAsTag = EngineInstance.CommentTypes.TagFromName(candidate);
 														
-					if (tag != null)
-						{
-						if (tagIDs == null)
-							{  tagIDs = new List<int>();  }
+						if (candidateAsTag != null)
+							{
+							if (tagIDs == null)
+								{  tagIDs = new List<int>();  }
 						
-						tagIDs.Add(tag.ID);
-						success = true;
-						}
+							tagIDs.Add(candidateAsTag.ID);
+							foundInterpretation = true;
+							}
 						
-					Languages.AccessLevel tempAccessLevel;
+						Languages.AccessLevel candidateAsAccessLevel;
 					
-					if (IsAccessLevelTag(substring, out tempAccessLevel))
-						{
-						accessLevel = (Languages.AccessLevel)tempAccessLevel;
-						success = true;
-						}
+						if (IsAccessLevelTag(candidate, out candidateAsAccessLevel))
+							{
+							accessLevelFromTags = candidateAsAccessLevel;
+							foundInterpretation = true;
+							}
 
-					Language language = EngineInstance.Languages.FromName(substring);
+						Language candidateAsLanguage = EngineInstance.Languages.FromName(candidate);
 
-					if (language != null)
-						{
-						languageID = language.ID;
-						success = true;
-						}
+						if (candidateAsLanguage != null)
+							{
+							languageIDFromTags = candidateAsLanguage.ID;
+							foundInterpretation = true;
+							}
 						
-					if (success)
-						{
-						// Move on to the next tag
-						tagStartingIndex = tagEndingIndex + 1;  // +1 to skip separating space.
-						tagEndingIndex = keywordStartingIndex - 1;  // -1 to skip separating space.
+						if (foundInterpretation)
+							{
+							// We found an interpretation for this tag candidate.  It might not encompass the entire tag section so move
+							// on to the next part.
+							candidateStartingIndex = candidateEndingIndex + 1;  // +1 to skip separating space.
+							candidateEndingIndex = tagSectionEndingIndex;
 						
-						// Break if there are no more
-						if (tagStartingIndex >= tagEndingIndex)
-							{  break;  }
-						}
-					else // failed
-						{
-						// Trim the last word off the section we're checking.  Fail if there are no more spaces.
-						tagEndingIndex = keywordsAndTags.LastIndexOf(' ', tagEndingIndex - 1, tagEndingIndex - tagStartingIndex);
+							// If there's no more to the tag section then we're done.
+							if (candidateStartingIndex >= candidateEndingIndex)
+								{  break;  }
+							}
+						else
+							{
+							// We didn't find an interpretation for this tag canditate.  If it contains a space there are still other permutations
+							// we can try, so shave off the last word and try again.
+							candidateEndingIndex = keywordsAndTags.LastIndexOf(' ', candidateEndingIndex - 1, 																												  candidateEndingIndex - candidateStartingIndex);
 						
-						if (tagEndingIndex == -1)
-							{  return false;  }
+							// If there aren't any more spaces then this entire tag section is invalid.
+							if (candidateEndingIndex == -1)
+								{  
+								tagsAreValid = false;  
+								break;
+								}
+							}
 						}
 					}
-				}
-				
-				
-			// If we made it this far, we're okay.  Set any topic properties.
-			
-			topic = new Topic(EngineInstance.CommentTypes);
-			topic.CommentLineNumber = lineIterator.LineNumber;
-			topic.Title = tokenizer.RawText.Substring( afterColon.RawTextIndex, lineEndingIndex - afterColon.RawTextIndex );
-			topic.CommentTypeID = commentType.ID;
-			topic.IsList = pluralKeyword;
-			
-			topic.DeclaredAccessLevel = accessLevel;
-			topic.LanguageID = languageID;
 
-			if (tagIDs != null)
-				{  
-				foreach (int tagID in tagIDs)
-					{  topic.AddTagID(tagID);  }
-				}
+
+				if (tagsAreValid)
+					{
+					// If the tags are valid in this permutation then we can test the keyword.
+
+					string keyword = keywordsAndTags.Substring(keywordStartingIndex, keywordEndingIndex - keywordStartingIndex);
+					bool keywordIsPlural;
+
+					var commentType = EngineInstance.CommentTypes.FromKeyword(keyword, 
+																													(languageIDFromTags != 0 ? languageIDFromTags : languageID),
+																													out keywordIsPlural);
+
+					// If we found a comment type then we're done.
+
+					if (commentType != null)
+						{
+						topic = new Topic(EngineInstance.CommentTypes);
+						topic.CommentLineNumber = lineIterator.LineNumber;
+						topic.Title = tokenizer.RawText.Substring( afterColon.RawTextIndex, lineEndingIndex - afterColon.RawTextIndex );
+						topic.CommentTypeID = commentType.ID;
+						topic.IsList = keywordIsPlural;
+
+						if (accessLevelFromTags != AccessLevel.Unknown)
+							{  topic.DeclaredAccessLevel = accessLevelFromTags;  }
+						if (languageIDFromTags != 0)
+							{  topic.LanguageID = languageIDFromTags;  }
+						if (tagIDs != null)
+							{  
+							foreach (int tagID in tagIDs)
+								{  topic.AddTagID(tagID);  }
+							}
 				
-			return true;
+						return true;
+						}
+					}
+
+
+				// If we're here then either the keyword or the tags weren't valid for this permutation.  Try shaving one word off
+				// the front of the keyword and trying again.
+			
+				int firstKeywordSpaceIndex = keywordsAndTags.IndexOf(' ', keywordStartingIndex);
+
+				if (firstKeywordSpaceIndex != -1)
+					{  keywordStartingIndex = firstKeywordSpaceIndex + 1;  }
+				else
+					{ 
+					// If there's no more spaces in the keyword section then there's no more possibilities so we're done.
+					topic = null;
+					return false;
+					}
+				}
 			}
 
 
@@ -3087,7 +3125,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			int embeddedCommentTypeID = 0;
 
 			if (topic.IsEnum)
-				{  embeddedCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant");  }
+				{  embeddedCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("constant", topic.LanguageID);  }
 
 			// We do it this way in case there is no type that uses the "constant" keyword.
 			if (embeddedCommentTypeID == 0)

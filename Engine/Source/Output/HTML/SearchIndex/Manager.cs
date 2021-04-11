@@ -266,7 +266,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 			{
 			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 
-			if (commentType.ID == EngineInstance.CommentTypes.IDFromKeyword("group"))
+			if (commentType.ID == EngineInstance.CommentTypes.IDFromKeyword("group", 0))
 				{  return false;  }
 
 			// If it's a code topic and it ends with a duplicate it's most likely a constructor.  Don't index it since the user almost

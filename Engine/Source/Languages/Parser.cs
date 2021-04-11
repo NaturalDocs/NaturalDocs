@@ -1408,7 +1408,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			List<Topic> topics = new List<Topic>();
 				
 			foreach (var comment in possibleDocumentationComments)
-				{  EngineInstance.Comments.Parse(comment, topics);  }
+				{  EngineInstance.Comments.Parse(comment, language.ID, topics);  }
 
 
 			// Convert the topics to elements.  Generate ranges for scoped topics and groups.
@@ -2849,7 +2849,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				if (elements[i].Topic.IsEnum)
 					{  
-					int typeCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("type");
+					int typeCommentTypeID = EngineInstance.CommentTypes.IDFromKeyword("type", language.ID);
 
 					if (typeCommentTypeID != 0)
 						{  effectiveCommentTypeID = typeCommentTypeID;  }

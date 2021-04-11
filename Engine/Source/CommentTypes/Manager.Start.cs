@@ -320,7 +320,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 			// Look up our Group comment type ID since it's used often and we want to cache it.
 
-			groupCommentTypeID = IDFromKeyword("group");
+			groupCommentTypeID = IDFromKeyword("group", 0);
 
 
 			// Compare the config against the previous one and reparse everything if there are changes.  Changes that would invalidate

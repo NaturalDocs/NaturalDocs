@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		/* Function: Parse
 		 * Parses the passed comment for documentation.  If successful it will return true and add <Topics> to the list.
 		 */
-		public bool Parse (PossibleDocumentationComment comment, List<Topic> topics)
+		public bool Parse (PossibleDocumentationComment comment, int languageID, List<Topic> topics)
 			{
 			// Apply to all comments, not just Natural Docs'.  Javadoc comments may use a left line of stars which would
 			// need to be taken out.
@@ -72,7 +72,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			
 			// First try Natural Docs while requiring a header.  If the first line is a header it's treated as Natural Docs content 
 			// regardless of comment style.
-			if (naturalDocsParser.Parse(comment, topics, true) == true)
+			if (naturalDocsParser.Parse(comment, languageID, topics, true) == true)
 				{  return true;  }
 				
 			// Next try Javadoc.  We test this before XML so it's not mistaken for it if it starts with a HTML tag.
@@ -88,7 +88,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 			// If neither of them were able to parse it, we can assume comments using the XML or Javadoc styles are headerless 
 			// Natural Docs comments.
 			if ((comment.Javadoc || comment.XML) &&
-				naturalDocsParser.Parse(comment, topics, false) == true)
+				naturalDocsParser.Parse(comment, languageID, topics, false) == true)
 				{  return true;  }
 				
 			return false;

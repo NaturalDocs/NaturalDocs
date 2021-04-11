@@ -377,7 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 			else
 				{  
-				parentCommentType = EngineInstance.CommentTypes.FromKeyword("class");
+				parentCommentType = EngineInstance.CommentTypes.FromKeyword("class", language.ID);
 				memberOperator = ".";
 				}
 

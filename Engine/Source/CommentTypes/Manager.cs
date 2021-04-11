@@ -56,20 +56,23 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 		/* Function: FromKeyword
-		 * Returns the <CommentType> associated with the passed keyword, or null if none.
+		 * Returns the <CommentType> associated with the passed keyword, or null if none.  The language ID should be set to 
+		 * the language the keyword appears in, though it can also be zero to only return comment types from language agnostic 
+		 * keywords.
 		 */
-		public CommentType FromKeyword (string keyword)
+		public CommentType FromKeyword (string keyword, int languageID)
 			{
-			return config.CommentTypeFromKeyword(keyword, 0);
+			return config.CommentTypeFromKeyword(keyword, languageID);
 			}
 
 		/* Function: FromKeyword
 		 * Returns the <CommentType> associated with the passed keyword, or null if none.  Also returns whether it was singular
-		 * or plural.
+		 * or plural.  The language ID should be set to the language the keyword appears in, though it can also be zero to only return
+		 * comment types from language agnostic keywords.
 		 */
-		public CommentType FromKeyword (string keyword, out bool plural)
+		public CommentType FromKeyword (string keyword, int languageID, out bool plural)
 			{
-			return config.CommentTypeFromKeyword(keyword, 0, out plural);
+			return config.CommentTypeFromKeyword(keyword, languageID, out plural);
 			}
 			
 		/* Function: FromName
@@ -91,9 +94,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		/* Function: IDFromKeyword
 		 * Returns the comment type ID associated with the passed keyword, or zero if none.
 		 */
-		public int IDFromKeyword (string keyword)
+		public int IDFromKeyword (string keyword, int languageID)
 			{
-			var keywordDefinition = config.KeywordDefinition(keyword, 0);
+			var keywordDefinition = config.KeywordDefinition(keyword, languageID);
 
 			if (keywordDefinition == null)
 				{  return 0;  }
