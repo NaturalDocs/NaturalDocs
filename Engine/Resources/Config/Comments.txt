@@ -301,6 +301,9 @@ Comment Type: Database Table
       db table, db tables
       dbtable, dbtables
 
+   SQL Keywords:
+      table, tables
+
 
 Comment Type: Database Field
 
@@ -319,6 +322,10 @@ Comment Type: Database Field
       db column, db columns
       dbcolumn, dbcolumns
 
+   SQL Keywords:
+      field, fields
+      column, columns
+
 
 Comment Type: Database View
 
@@ -333,6 +340,9 @@ Comment Type: Database View
       databaseview, databaseviews
       db view, db views
       dbview, dbviews
+
+   SQL Keywords:
+      view, views
 
 
 Comment Type: Database Index
@@ -360,6 +370,13 @@ Comment Type: Database Index
       db primary key, db primary keys
       dbprimarykey, dbprimarykeys
 
+   SQL Keywords:
+      index, indexes
+      index, indices
+      key, keys
+      primary key, primary keys
+      primarykey, primarykeys
+
 
 Comment Type: Database Cursor
 
@@ -374,6 +391,9 @@ Comment Type: Database Cursor
       db cursor, db cursors
       dbcursor, dbcursors
 
+   SQL Keywords:
+      cursor, cursors
+
 
 Comment Type: Database Trigger
 
@@ -387,6 +407,9 @@ Comment Type: Database Trigger
       databasetrigger, databasetriggers
       db trigger, db triggers
       dbtrigger, dbtriggers
+
+   SQL Keywords:
+      trigger, triggers
 
 
 # Each Natural Docs comment has a corresponding type which determine its
