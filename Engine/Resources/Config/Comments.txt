@@ -23,7 +23,9 @@ Comment Type: Class
       class, classes
       package, packages
       namespace, namespaces
-	  record, records
+
+   C# Keywords:
+      record, records
 
 
 Comment Type: Interface
