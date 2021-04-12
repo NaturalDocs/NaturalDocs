@@ -412,8 +412,9 @@ namespace CodeClear.NaturalDocs.CLI
 			if (Engine.SystemInfo.MonoVersionTooOld)
 				{
 				Console.WriteLine();
-				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
-											"You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
+				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+											"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
+											Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
 				}
 			}
 
@@ -616,6 +617,18 @@ namespace CodeClear.NaturalDocs.CLI
 					errorOutput.WriteLine (Locale.SafeGet("NaturalDocs.CLI", "Crash.IncludeInfoAndGetHelp",
 																			"Please include this information when asking for help at naturaldocs.org."));
 					}
+
+
+				// Include a notice for outdated Mono versions
+
+				if (Engine.SystemInfo.MonoVersionTooOld)
+					{
+					errorOutput.WriteLine();
+					errorOutput.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+													  "You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
+													  Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
+					}
+
 				}
 
 			errorOutput.Write ("------------------------------------------------------------\n\n");

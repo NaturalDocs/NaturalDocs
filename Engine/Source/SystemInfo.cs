@@ -134,8 +134,19 @@ namespace CodeClear.NaturalDocs.Engine
 
 				return ( monoVersion.StartsWith("0.") || 
 							monoVersion.StartsWith("1.") ||
-							monoVersion.StartsWith("2.") );
+							monoVersion.StartsWith("2.") ||
+							monoVersion.StartsWith("3.") );
 				}
+			}
+
+
+		/* Property: MinimumMonoVersion
+		 * Returns the minimum version of Mono required by Natural Docs.
+		 */
+		static public string MinimumMonoVersion
+			{
+			get
+				{  return "4.0";  }
 			}
 
 
