@@ -326,10 +326,9 @@ namespace CodeClear.NaturalDocs.Engine
 				if (SystemInfo.MonoVersionTooOld)
 					{
 					output.AppendLine();
-					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono", 
-													"You appear to be using a very outdated version of Mono.  This has been known to cause Natural Docs to crash.  Please update it to a more recent version.") );
-					output.AppendLine();
-					output.AppendLine("   Mono " + monoVersion);
+					output.AppendLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
+													"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
+													monoVersion, SystemInfo.MinimumMonoVersion) );
 					}
 
 
