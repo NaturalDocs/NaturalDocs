@@ -594,6 +594,7 @@ namespace CodeClear.NaturalDocs.CLI
 				if (crashFile != null)
 					{
 					errorOutput.WriteLine(e.Message);
+					errorOutput.WriteLine("(" + e.GetType() + ")");
 					errorOutput.WriteLine();
 					errorOutput.Write (Locale.SafeGet("NaturalDocs.CLI", "Crash.ReportAt(file).multiline", 
 																	  "A crash report has been generated at {0}.\n" +
