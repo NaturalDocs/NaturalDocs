@@ -191,7 +191,7 @@
     <Compile Include="Source\Output\ResourceProcessor.cs" />
     <Compile Include="Source\Output\ResourceProcessors\JavaScript.cs" />
     <Compile Include="Source\Output\ResourceProcessors\CSS.cs" />
-    <Compile Include="Source\Position.cs" />
+    <Compile Include="Source\FilePosition.cs" />
     <Compile Include="Source\Languages\Exceptions\BadContainerOperation.cs" />
     <Compile Include="Source\Languages\Parsers\ShebangScript.cs" />
     <Compile Include="Source\Languages\Parsers\CSharp.cs" />

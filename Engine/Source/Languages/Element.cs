@@ -67,7 +67,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			topic = null;
 			classParentLinks = null;
 
-			position = new Position(lineNumber, charNumber);
+			filePosition = new FilePosition(lineNumber, charNumber);
 			this.flags = flags;
 			}
 
@@ -107,9 +107,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public int LineNumber
 			{
 			get
-				{  return position.LineNumber;  }
+				{  return filePosition.LineNumber;  }
 			set
-				{  position.LineNumber = value;  }
+				{  filePosition.LineNumber = value;  }
 			}
 
 
@@ -120,21 +120,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public int CharNumber
 			{
 			get
-				{  return position.CharNumber;  }
+				{  return filePosition.CharNumber;  }
 			set
-				{  position.CharNumber = value;  }
+				{  filePosition.CharNumber = value;  }
 			}
 
 
-		/* Property: Position
-		 * The position the element appears at.
+		/* Property: FilePosition
+		 * The file position the element appears at.
 		 */
-		public Position Position
+		public FilePosition FilePosition
 			{
 			get
-				{  return position;  }
+				{  return filePosition;  }
 			set
-				{  position = value;  }
+				{  filePosition = value;  }
 			}
 
 
@@ -178,10 +178,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		// __________________________________________________________________________
 
 		
-		/* var: position
-		 * The position the element appears at.
+		/* var: filePosition
+		 * The file position the element appears at.
 		 */
-		protected Position position;
+		protected FilePosition filePosition;
 
 		/* var: flags
 		 */

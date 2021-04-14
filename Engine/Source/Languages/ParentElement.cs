@@ -67,7 +67,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			childContextString = new ContextString();
 			childContextStringSet = false;
 
-			endingPosition = new Position(-1, -1);
+			endingFilePosition = new FilePosition(-1, -1);
 			}
 
 
@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				{  throw new Exception("Can't use ParentElement.Contains() if the ending line and char numbers weren't set.");  }
 			#endif
 
-			return (Position <= element.Position && EndingPosition > element.Position);
+			return (FilePosition <= element.FilePosition && EndingFilePosition > element.FilePosition);
 			}
 
 
@@ -197,9 +197,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public int EndingLineNumber
 			{
 			get
-				{  return endingPosition.LineNumber;  }
+				{  return endingFilePosition.LineNumber;  }
 			set
-				{  endingPosition.LineNumber = value;  }
+				{  endingFilePosition.LineNumber = value;  }
 			}
 
 		/* Property: EndingCharNumber
@@ -209,21 +209,21 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		public int EndingCharNumber
 			{
 			get
-				{  return endingPosition.CharNumber;  }
+				{  return endingFilePosition.CharNumber;  }
 			set
-				{  endingPosition.CharNumber = value;  }
+				{  endingFilePosition.CharNumber = value;  }
 			}
 
 
-		/* Property: EndingPosition
-		 * The position where the parent's influence ends.
+		/* Property: EndingFilePosition
+		 * The file position where the parent's influence ends.
 		 */
-		public Position EndingPosition
+		public FilePosition EndingFilePosition
 			{
 			get
-				{  return endingPosition;  }
+				{  return endingFilePosition;  }
 			set
-				{  endingPosition = value;  }
+				{  endingFilePosition = value;  }
 			}
 
 
@@ -276,10 +276,10 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		protected bool childContextStringSet;
 
-		/* var: endingPosition
-		 * The position where the parent's influence ends.
+		/* var: endingFilePosition
+		 * The file position where the parent's influence ends.
 		 */
-		protected Position endingPosition;
+		protected FilePosition endingFilePosition;
 
 		}
 	}

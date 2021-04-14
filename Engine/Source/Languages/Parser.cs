@@ -2190,7 +2190,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// Comments must appear above what they document, so any code elements that appear before the first comment element 
 			// are added as is.
 
-			while (codeIndex < codeElements.Count && codeElements[codeIndex].Position < commentElements[commentIndex].Position)
+			while (codeIndex < codeElements.Count && codeElements[codeIndex].FilePosition < commentElements[commentIndex].FilePosition)
 				{
 				mergedElements.Add(codeElements[codeIndex]);
 				codeIndex++;
@@ -2206,7 +2206,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				int commentCount = 1;
 
 				while (commentIndex + commentCount < commentElements.Count &&
-						 commentElements[commentIndex + commentCount].Position < codeElements[codeIndex].Position)
+						 commentElements[commentIndex + commentCount].FilePosition < codeElements[codeIndex].FilePosition)
 					{  commentCount++;  }
 
 				int codeCount = 1;
@@ -2216,7 +2216,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 				else
 					{
 					while (codeIndex + codeCount < codeElements.Count &&
-							 codeElements[codeIndex + codeCount].Position < commentElements[commentIndex + commentCount].Position)
+							 codeElements[codeIndex + codeCount].FilePosition < commentElements[commentIndex + commentCount].FilePosition)
 						{  codeCount++;  }
 					}
 
@@ -2276,7 +2276,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 							// the last one to make sure the list is still in order.
 
 							if (mergedElements.Count > 1 &&
-								mergedElements[mergedElements.Count - 1].Position < mergedElements[mergedElements.Count - 2].Position)
+								mergedElements[mergedElements.Count - 1].FilePosition < mergedElements[mergedElements.Count - 2].FilePosition)
 								{
 								mergedElements[mergedElements.Count - 1].LineNumber = mergedElements[mergedElements.Count - 2].LineNumber;
 								mergedElements[mergedElements.Count - 1].CharNumber = mergedElements[mergedElements.Count - 2].CharNumber + 1;
@@ -2389,7 +2389,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						{
 						ParentElement parentElement = (ParentElement)mergedElements[parentIndex];
 
-						if (element.EndingPosition > parentElement.EndingPosition)
+						if (element.EndingFilePosition > parentElement.EndingFilePosition)
 							{
 							element.EndingLineNumber = parentElement.EndingLineNumber;
 							element.EndingCharNumber = parentElement.EndingCharNumber;
@@ -2417,7 +2417,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 								{
 								var nextCodeElement = mergedElements[nextCodeIndex];
 
-								if (element.EndingPosition > nextCodeElement.Position)
+								if (element.EndingFilePosition > nextCodeElement.FilePosition)
 									{
 									element.EndingLineNumber = nextCodeElement.LineNumber;
 									element.EndingCharNumber = nextCodeElement.CharNumber;
@@ -2927,7 +2927,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 				int parentIndex = FindElementParent(elements, lastGroupAddedIndex);
 
-				if (parentIndex != -1 && (elements[parentIndex] as ParentElement).EndingPosition < lastGroupAdded.EndingPosition)
+				if (parentIndex != -1 && (elements[parentIndex] as ParentElement).EndingFilePosition < lastGroupAdded.EndingFilePosition)
 					{
 					lastGroupAdded.EndingLineNumber = (elements[parentIndex] as ParentElement).EndingLineNumber;
 					lastGroupAdded.EndingCharNumber = (elements[parentIndex] as ParentElement).EndingCharNumber;

@@ -1,5 +1,5 @@
 ﻿/* 
- * Struct: CodeClear.NaturalDocs.Engine.Position
+ * Struct: CodeClear.NaturalDocs.Engine.FilePosition
  * ____________________________________________________________________________
  * 
  * A position within a source file, which encapsulates both a line number and character number.
@@ -16,14 +16,14 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine
 	{
-	public struct Position
+	public struct FilePosition
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public Position (int lineNumber, int charNumber)
+		public FilePosition (int lineNumber, int charNumber)
 			{
 			this.lineNumber = lineNumber;
 			this.charNumber = charNumber;
@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine
 		
 		/* Operator: operator ==
 		 */
-		public static bool operator== (Position a, Position b)
+		public static bool operator== (FilePosition a, FilePosition b)
 			{
 			return (a.lineNumber == b.lineNumber &&
 					  a.charNumber == b.charNumber);
@@ -45,14 +45,14 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Operator: operator !=
 		 */
-		public static bool operator!= (Position a, Position b)
+		public static bool operator!= (FilePosition a, FilePosition b)
 			{
 			return !(a == b);
 			}
 
 		/* Operator: operator >
 		 */
-		public static bool operator> (Position a, Position b)
+		public static bool operator> (FilePosition a, FilePosition b)
 			{
 			return (a.lineNumber > b.lineNumber ||
 					  (a.lineNumber == b.lineNumber &&
@@ -61,7 +61,7 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Operator: operator >=
 		 */
-		public static bool operator>= (Position a, Position b)
+		public static bool operator>= (FilePosition a, FilePosition b)
 			{
 			return (a.lineNumber > b.lineNumber ||
 					  (a.lineNumber == b.lineNumber &&
@@ -70,14 +70,14 @@ namespace CodeClear.NaturalDocs.Engine
 
 		/* Operator: operator <
 		 */
-		public static bool operator< (Position a, Position b)
+		public static bool operator< (FilePosition a, FilePosition b)
 			{
 			return !(a >= b);
 			}
 
 		/* Operator: operator <=
 		 */
-		public static bool operator<= (Position a, Position b)
+		public static bool operator<= (FilePosition a, FilePosition b)
 			{
 			return !(a > b);
 			}
@@ -93,8 +93,8 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public override bool Equals (object obj)
 			{
-			if (obj is Position)
-				{  return (this == (Position)obj);  }
+			if (obj is FilePosition)
+				{  return (this == (FilePosition)obj);  }
 			else
 				{  return false;  }
 			}

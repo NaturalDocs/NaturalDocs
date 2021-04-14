@@ -844,13 +844,13 @@ namespace CodeClear.NaturalDocs.Engine.Tokenization
 				}
 			}
 			
-		/* Property: Position
-		 * The position of the current token.
+		/* Property: FilePosition
+		 * The file position of the current token.
 		 */
-		public Position Position
+		public FilePosition FilePosition
 			{
 			get
-				{  return new Position(lineNumber, CharNumber);  }
+				{  return new FilePosition(lineNumber, CharNumber);  }
 			}
 
 		/* Property: RawTextIndex

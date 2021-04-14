@@ -427,9 +427,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 						{
 						ParentElement parentElement = (ParentElement)elements[i];
 
-						if (parentElement.Position <= iterator.Position &&
+						if (parentElement.FilePosition <= iterator.FilePosition &&
 							(parentElement.EndingLineNumber == -1 ||
-							 parentElement.EndingPosition > iterator.Position))
+							 parentElement.EndingFilePosition > iterator.FilePosition))
 							{
 							parentIndex = i;
 							break;
