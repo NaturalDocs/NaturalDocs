@@ -28,6 +28,8 @@
  *		- <Config.Manager> is first because almost everything depends on it, such as for its config and working data folder
  *		  properties or for its flag to rebuild everything.
  *		  
+ *		- <Hierarchies.Manager> is next because it has no dependencies.
+ *		  
  *		- <CommentTypes.Manager.Start_Stage1()> and <Languages.Manager.Start_Stage1()> are next.
  *		
  *		- <CommentTypes.Manager.Start_Stage2()> and <Languages.Manager.Start_Stage2()> follow because they depend on
@@ -85,6 +87,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Any left as null will have the default classes created instead.
 		 */
 		public Instance (Config.Manager configManager = null, 
+								Hierarchies.Manager hierarchiesManager = null,
 								CommentTypes.Manager commentTypesManager = null, 
 								Languages.Manager languagesManager = null, 
 								Comments.Manager commentsManager = null, 
@@ -98,6 +101,7 @@ namespace CodeClear.NaturalDocs.Engine
 			startupWatchers = new List<IStartupWatcher>();
 
 			this.config = configManager ?? new Config.Manager(this);
+			this.hierarchies = hierarchiesManager ?? new Hierarchies.Manager(this);
 			this.commentTypes = commentTypesManager ?? new CommentTypes.Manager(this);
 			this.languages = languagesManager ?? new Languages.Manager(this);
 			this.comments = commentsManager ?? new Comments.Manager(this);
@@ -193,6 +197,12 @@ namespace CodeClear.NaturalDocs.Engine
 				commentTypes = null;
 				}
 
+			if (hierarchies != null && !strictRulesApply)
+				{
+				hierarchies.Dispose();					
+				hierarchies = null;
+				}
+
 			if (config != null && !strictRulesApply)
 				{
 				config.Dispose();					
@@ -227,6 +237,7 @@ namespace CodeClear.NaturalDocs.Engine
 				
 				
 			return (
+				hierarchies.Start(errors) &&
 				commentTypes.Start_Stage1(errors) &&
 				languages.Start_Stage1(errors) &&
 				commentTypes.Start_Stage2(errors) &&
@@ -648,6 +659,15 @@ namespace CodeClear.NaturalDocs.Engine
 				{  return config;  }
 			}
 			
+		/* Property: Hierarchies
+		 * Returns the <Hierarchies.Manager> associated with this instance.
+		 */
+		public Hierarchies.Manager Hierarchies
+			{
+			get
+				{  return hierarchies;  }
+			}
+			
 		/* Property: CommentTypes
 		 * Returns the <CommentTypes.Manager> associated with this instance.
 		 */
@@ -755,6 +775,7 @@ namespace CodeClear.NaturalDocs.Engine
 		// __________________________________________________________________________
 
 		protected Config.Manager config;
+		protected Hierarchies.Manager hierarchies;
 		protected CommentTypes.Manager commentTypes;
 		protected Languages.Manager languages;
 		protected Comments.Manager comments;

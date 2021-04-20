@@ -53,6 +53,7 @@
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFileKeywordDefinition.cs" />
     <Compile Include="Source\CommentTypes\KeywordDefinition.cs" />
     <Compile Include="Source\CommentTypes\Manager.Start.cs" />
+    <Compile Include="Source\Hierarchies\Manager.cs" />
     <Compile Include="Source\Languages\CommentSymbols.cs" />
     <Compile Include="Source\Languages\ConfigFiles\TextFile.cs" />
     <Compile Include="Source\Languages\ConfigFiles\TextFilePrototypeEnders.cs" />
