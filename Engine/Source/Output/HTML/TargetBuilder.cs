@@ -1031,7 +1031,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Don't check cancelDelegate after this because we'll be committed to replacing BuildState.UsedMenuDataFiles and
 			// cleaning up the difference.  Otherwise things will be in an inconsistent state.
 
-			NumberSetTable<Hierarchy> newMenuDataFiles = jsonMenu.BuildDataFiles();
+			NumberSetTable<Hierarchies.HierarchyType> newMenuDataFiles = jsonMenu.BuildDataFiles();
 
 
 			// Clear out any old menu files that are no longer in use.

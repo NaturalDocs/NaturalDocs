@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: FileSource
 		 */
-		public FileSource (Engine.Files.FileSource fileSource) : base (Hierarchy.File)
+		public FileSource (Engine.Files.FileSource fileSource) : base (Hierarchies.HierarchyType.File)
 			{
 			this.fileSource = fileSource;
 

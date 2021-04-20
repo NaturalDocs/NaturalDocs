@@ -616,7 +616,7 @@ namespace CodeClear.NaturalDocs.Engine
 					StringBuilder task = new StringBuilder("Building class view for");
 					
 					// Hierarchy
-					if (topic.ClassString.Hierarchy == Hierarchy.Database)
+					if (topic.ClassString.Hierarchy == Hierarchies.HierarchyType.Database)
 						{  
 						task.Append(" database");  
 						}

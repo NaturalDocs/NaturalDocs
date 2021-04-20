@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
@@ -24,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Container
 		 */
-		public Container (Hierarchy hierarchy) : base (hierarchy)
+		public Container (HierarchyType hierarchy) : base (hierarchy)
 			{
 			members = new List<Entry>();
 			condensedTitles = null;

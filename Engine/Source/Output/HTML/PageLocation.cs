@@ -81,7 +81,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public bool IsClass
 			{
 			get
-				{  return (InHierarchy && classString.Hierarchy == Hierarchy.Class);  }
+				{  return (InHierarchy && classString.Hierarchy == Hierarchies.HierarchyType.Class);  }
 			}
 
 		/* Property: IsDatabase
@@ -90,7 +90,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		public bool IsDatabase
 			{
 			get
-				{  return (InHierarchy && classString.Hierarchy == Hierarchy.Database);  }
+				{  return (InHierarchy && classString.Hierarchy == Hierarchies.HierarchyType.Database);  }
 			}
 
 		/* Property: InHierarchy

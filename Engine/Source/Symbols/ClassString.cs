@@ -16,6 +16,7 @@
 
 using System;
 using System.Text;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Symbols
@@ -49,7 +50,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* Function: FromParameters
 		 * Creates a ClassString from the passed parameters.
 		 */
-		static public ClassString FromParameters (Hierarchy hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
+		static public ClassString FromParameters (HierarchyType hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
 			{
 			if (symbol == null)
 				{  throw new NullReferenceException();  }
@@ -59,14 +60,14 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			// allocation.
 			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 4);
 
-			if (hierarchy == Hierarchy.Class)
+			if (hierarchy == HierarchyType.Class)
 				{  
 				if (caseSensitive)
 					{  stringBuilder.Append('C');  }
 				else
 					{  stringBuilder.Append('c');  }
 				}
-			else if (hierarchy == Hierarchy.Database)
+			else if (hierarchy == HierarchyType.Database)
 				{  
 				if (caseSensitive)
 					{  stringBuilder.Append('D');  }
@@ -175,16 +176,16 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* Property: Hierarchy
 		 * Which hierarchy the class is a part of.
 		 */
-		public Hierarchy Hierarchy
+		public HierarchyType Hierarchy
 			{
 			get
 				{
 				if (classString == null)
 					{  throw new NullReferenceException();  }
 				else if (classString[0] == 'C' || classString[0] == 'c')
-					{  return Hierarchy.Class;  }
+					{  return HierarchyType.Class;  }
 				else if (classString[0] == 'D' || classString[0] == 'd')
-					{  return Hierarchy.Database;  }
+					{  return HierarchyType.Database;  }
 				else
 					{  throw new FormatException();  }
 				}

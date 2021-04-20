@@ -13,7 +13,7 @@
 
 using System;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Symbols;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
@@ -30,7 +30,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		 *		targetOutputFolder + hierarchy + id - C:\Project\Documentation\menu\files3.js
 		 *		targetOutputFolder + hierarchy + id + fileNameOnly - files3.js
 		 */
-		static public Path OutputFile (Path targetOutputFolder, Hierarchy hierarchy, int id = 1, bool fileNameOnly = false)
+		static public Path OutputFile (Path targetOutputFolder, HierarchyType hierarchy, int id = 1, bool fileNameOnly = false)
 			{
 			StringBuilder result = new StringBuilder();
 
@@ -42,13 +42,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 
 			switch (hierarchy)
 				{
-				case Hierarchy.File:
+				case HierarchyType.File:
 					result.Append("files");
 					break;
-				case Hierarchy.Class:
+				case HierarchyType.Class:
 					result.Append("classes");
 					break;
-				case Hierarchy.Database:
+				case HierarchyType.Database:
 					result.Append("database");
 					break;
 				default:

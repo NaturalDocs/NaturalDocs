@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
@@ -125,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			MenuEntries.Container container;
 			bool ignoreCase;
 
-			if (classString.Hierarchy == Hierarchy.Class)
+			if (classString.Hierarchy == HierarchyType.Class)
 				{
 				MenuEntries.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
 
@@ -133,11 +134,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
 				}
 
-			else if (classString.Hierarchy == Hierarchy.Database)
+			else if (classString.Hierarchy == HierarchyType.Database)
 				{
 				if (rootDatabaseMenu == null)
 					{
-					rootDatabaseMenu = new MenuEntries.Container(Hierarchy.Database);
+					rootDatabaseMenu = new MenuEntries.Container(HierarchyType.Database);
 					rootDatabaseMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Database");
 					}
 
@@ -316,7 +317,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (rootFileMenu == null)
 				{
-				rootFileMenu = new MenuEntries.Container(Hierarchy.File);
+				rootFileMenu = new MenuEntries.Container(HierarchyType.File);
 				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
 				}
 
@@ -396,11 +397,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (rootClassMenu == null)
 				{
-				rootClassMenu = new MenuEntries.Container(Hierarchy.Class);
+				rootClassMenu = new MenuEntries.Container(HierarchyType.Class);
 				rootClassMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Classes");
 				}
 
-			MenuEntries.Language languageEntry = new MenuEntries.Language(language, Hierarchy.Class);
+			MenuEntries.Language languageEntry = new MenuEntries.Language(language, HierarchyType.Class);
 			languageEntry.Parent = rootClassMenu;
 			rootClassMenu.Members.Add(languageEntry);
 

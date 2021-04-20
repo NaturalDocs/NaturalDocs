@@ -11,6 +11,7 @@
 
 
 using System;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
@@ -23,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Entry
 		 */
-		public Entry (Hierarchy hierarchy)
+		public Entry (HierarchyType hierarchy)
 			{
 			title = null;
 			parent = null;
@@ -59,9 +60,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 			}
 
 		/* Property: Hierarchy
-		 * The <Engine.Hierarchy> this entry appears in.
+		 * The <HierarchyType> this entry appears in.
 		 */
-		public Hierarchy Hierarchy
+		public HierarchyType Hierarchy
 			{
 			get
 				{  return hierarchy;  }
@@ -83,7 +84,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* var: hierarchy
 		 */
-		protected Hierarchy hierarchy;
+		protected HierarchyType hierarchy;
 
 		}
 	}

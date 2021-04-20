@@ -1,5 +1,5 @@
 ﻿/* 
- * Enum: CodeClear.NaturalDocs.Engine.Hierarchy
+ * Enum: CodeClear.NaturalDocs.Engine.Hierarchies.HierarchyType
  * ____________________________________________________________________________
  * 
  * Which hierarchy a <Symbols.ClassString> or other element appears in.
@@ -19,9 +19,9 @@ using System;
 using System.Text;
 
 
-namespace CodeClear.NaturalDocs.Engine
+namespace CodeClear.NaturalDocs.Engine.Hierarchies
 	{
-	public enum Hierarchy : byte
+	public enum HierarchyType : byte
 		{  
 		File = 0,
 		Class = 1, 

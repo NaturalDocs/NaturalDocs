@@ -98,6 +98,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
@@ -182,14 +183,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					while (menuDataFileType != null)
 						{
-						Hierarchy hierarchy;
+						HierarchyType hierarchy;
 
 						if (menuDataFileType == "files")
-							{  hierarchy = Hierarchy.File;  }
+							{  hierarchy = HierarchyType.File;  }
 						else if (menuDataFileType == "classes")
-							{  hierarchy = Hierarchy.Class;  }
+							{  hierarchy = HierarchyType.Class;  }
 						else if (menuDataFileType == "database")
-							{  hierarchy = Hierarchy.Database;  }
+							{  hierarchy = HierarchyType.Database;  }
 						else
 							{  throw new NotImplementedException();  }
 
@@ -280,13 +281,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					{
 					switch (menuDataFilePair.Key)
 						{
-						case Hierarchy.File:
+						case HierarchyType.File:
 							binaryFile.WriteString("files");
 							break;
-						case Hierarchy.Class:
+						case HierarchyType.Class:
 							binaryFile.WriteString("classes");
 							break;
-						case Hierarchy.Database:
+						case HierarchyType.Database:
 							binaryFile.WriteString("database");
 							break;
 						default:

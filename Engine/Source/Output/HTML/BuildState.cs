@@ -13,6 +13,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
@@ -33,7 +34,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			classesWithContent = new NumberSet();
 			usedImageFiles = new NumberSet();
 
-			usedMenuDataFiles = new NumberSetTable<Hierarchy>();
+			usedMenuDataFiles = new NumberSetTable<HierarchyType>();
 
 			homePage = null;
 			generatedTimestamp = null;
@@ -179,9 +180,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 		/* Function: MenuDataFileIsUsed
-		 * Returns whether the passed <Hierarchy> and number are used by the menu data files.
+		 * Returns whether the passed <HierarchyType> and number are used by the menu data files.
 		 */
-		public bool MenuDataFileIsUsed (Hierarchy hierarchy, int number)
+		public bool MenuDataFileIsUsed (HierarchyType hierarchy, int number)
 			{
 			lock (accessLock)
 				{  
@@ -195,9 +196,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: AddUsedMenuDataFile
-		 * Adds a <Hierarchy>/number combination to the list of used menu data files.
+		 * Adds a <HierarchyType>/number combination to the list of used menu data files.
 		 */
-		public void AddUsedMenuDataFile (Hierarchy hierarchy, int number)
+		public void AddUsedMenuDataFile (HierarchyType hierarchy, int number)
 			{
 			lock (accessLock)
 				{
@@ -214,9 +215,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Function: RemoveUsedMenuDataFile
-		 * Remove a <Hierarchy>/number combination to the list of used menu data files.
+		 * Remove a <HierarchyType>/number combination to the list of used menu data files.
 		 */
-		public void RemoveUsedMenuDataFile (Hierarchy hierarchy, int number)
+		public void RemoveUsedMenuDataFile (HierarchyType hierarchy, int number)
 			{
 			lock (accessLock)
 				{
@@ -337,14 +338,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 		/* var: usedMenuDataFiles
 		 * 
-		 * The menu data files created the last time the menu was built.  It maps <Hierarchies> to <NumberSets>, so
+		 * The menu data files created the last time the menu was built.  It maps <HierarchyTypes> to <NumberSets>, so
 		 * files.js, files2.js, and files3.js would map to <Hierarchy.File> and {1-3}.
 		 * 
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
 		 */
-		protected internal NumberSetTable<Hierarchy> usedMenuDataFiles;
+		protected internal NumberSetTable<HierarchyType> usedMenuDataFiles;
 
 
 		/* var: homePage

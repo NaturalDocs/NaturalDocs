@@ -33,6 +33,7 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments;
 using CodeClear.NaturalDocs.Engine.CommentTypes;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.Links;
 using CodeClear.NaturalDocs.Engine.Prototypes;
 using CodeClear.NaturalDocs.Engine.Symbols;
@@ -3406,7 +3407,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 					if (commentType.Scope == CommentType.ScopeValue.Start && 
 						  (commentType.InClassHierarchy == true || commentType.InDatabaseHierarchy == true) )
 						{
-						Hierarchy hierarchy = (commentType.InClassHierarchy ? Hierarchy.Class : Hierarchy.Database);
+						HierarchyType hierarchy = (commentType.InClassHierarchy ? HierarchyType.Class : HierarchyType.Database);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
 						ClassString classString = ClassString.FromParameters(hierarchy, language.ID, language.CaseSensitive, topicSymbol);

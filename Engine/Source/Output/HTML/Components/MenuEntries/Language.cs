@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Language
 		 */
-		public Language (Languages.Language language, Hierarchy hierarchy) : base (hierarchy)
+		public Language (Languages.Language language, Hierarchies.HierarchyType hierarchy) : base (hierarchy)
 			{
 			this.language = language;
 			Title = language.Name;

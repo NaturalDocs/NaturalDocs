@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
+using CodeClear.NaturalDocs.Engine.Hierarchies;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
@@ -66,9 +67,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 * Returns:
 		 * 
-		 *		A table mapping each <Hierarchy> to the data file numbers used for it, such as Files -> {1-4}.
+		 *		A table mapping each <HierarchyTypes> to the data file numbers used for it, such as Files -> {1-4}.
 		 */
-		public NumberSetTable<Hierarchy> BuildDataFiles ()
+		public NumberSetTable<HierarchyType> BuildDataFiles ()
 			{
 			try
 				{  
@@ -142,12 +143,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				var classMenuEntry = (MenuEntries.Class)menuEntry;
 				var classString = classMenuEntry.WrappedClassString;
 
-				if (classString.Hierarchy == Hierarchy.Class)
+				if (classString.Hierarchy == HierarchyType.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					hashPath = Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);  
 					}
-				else if (classString.Hierarchy == Hierarchy.Database)
+				else if (classString.Hierarchy == HierarchyType.Database)
 					{
 					hashPath = Paths.Database.HashPath(classString.Symbol);
 					}
@@ -270,7 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var scopeEntry = (MenuEntries.Scope)menuContainer;
 
-				if (scopeEntry.Hierarchy == Hierarchy.Class)
+				if (scopeEntry.Hierarchy == HierarchyType.Class)
 					{
 					// Walk up the tree until you find the language
 					MenuEntries.Container parentEntry = menuContainer.Parent;
@@ -294,7 +295,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier, 
 																				 scopeEntry.WrappedScopeString);
 					}
-				else if (scopeEntry.Hierarchy == Hierarchy.Database)
+				else if (scopeEntry.Hierarchy == HierarchyType.Database)
 					{
 					hashPath = Paths.Database.QualifierHashPath(scopeEntry.WrappedScopeString);
 					}
@@ -305,14 +306,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// If we're at one of the menu roots
 			else if (menuContainer.Parent == null)
 				{
-				if (menuContainer.Hierarchy == Hierarchy.File || menuContainer.Hierarchy == Hierarchy.Class)
+				if (menuContainer.Hierarchy == HierarchyType.File || menuContainer.Hierarchy == HierarchyType.Class)
 					{
 					// If we're at a root file or class container that is not also a language or file source, it means there are multiple 
 					// languages and/or file sources beneath it and thus there is no shared hash path.  "CSharpClass:" and "PerlClass:",
 					// "Files:" and "Files2:", etc.
 					hashPath = null;
 					}
-				else if (menuContainer.Hierarchy == Hierarchy.Database)
+				else if (menuContainer.Hierarchy == HierarchyType.Database)
 					{
 					// If we're at the root database menu and the entry is not also a scope, it means there are multiple scopes beneath it.
 					// However, unlike files and classes, there is still the shared "Database:" hash path.
@@ -356,11 +357,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * 
 		 * Returns:
 		 * 
-		 *		A table mapping each <Hierarchy> to the data file numbers used for it, such as Files -> {1-4}.
+		 *		A table mapping each <HierarchyType> to the data file numbers used for it, such as Files -> {1-4}.
 		 */
-		protected NumberSetTable<Hierarchy> AssignDataFiles ()
+		protected NumberSetTable<HierarchyType> AssignDataFiles ()
 			{
-			NumberSetTable<Hierarchy> usedDataFiles = new NumberSetTable<Hierarchy>();
+			NumberSetTable<HierarchyType> usedDataFiles = new NumberSetTable<HierarchyType>();
 
 			if (rootFileMenu != null)
 				{  AssignDataFiles(rootFileMenu, ref usedDataFiles);  }
@@ -380,15 +381,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Parameters:
 		 * 
 		 *		container - The container to segment.  This will always be assigned a data file name.
-		 *		usedDataFiles - A table mapping each <Hierarchy> to the data file numbers already in use for it, such as Files -> {1-4}.
+		 *		usedDataFiles - A table mapping each <HierarchyType> to the data file numbers already in use for it, such as Files -> {1-4}.
 		 *							   It will be used to determine which numbers are available to assign, and new numbers will be added to it
 		 *							   as they are assigned by this function.
 		 */
-		protected void AssignDataFiles (JSONMenuEntries.Container container, ref NumberSetTable<Hierarchy> usedDataFiles)
+		protected void AssignDataFiles (JSONMenuEntries.Container container, ref NumberSetTable<HierarchyType> usedDataFiles)
 			{
 			// Generate the data file name for this container.
 
-			Hierarchy hierarchy = container.MenuEntry.Hierarchy;
+			HierarchyType hierarchy = container.MenuEntry.Hierarchy;
 
 			int dataFileNumber = usedDataFiles.LowestAvailable(hierarchy);
 			usedDataFiles.Add(hierarchy, dataFileNumber);
