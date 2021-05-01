@@ -36,7 +36,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 		 */
 		override public ParsedClassPrototype ParseClassPrototype (string stringPrototype, int commentTypeID)
 			{
-			if (EngineInstance.CommentTypes.FromID(commentTypeID).InClassHierarchy == false)
+			if (EngineInstance.CommentTypes.InClassHierarchy(commentTypeID) == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);

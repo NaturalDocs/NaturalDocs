@@ -1401,7 +1401,7 @@ namespace CodeClear.NaturalDocs.Engine.Topics
 
 				var commentType = CommentTypes.FromID(commentTypeID);
 
-				return ((commentType.InClassHierarchy || commentType.InDatabaseHierarchy) && isList == false);
+				return (commentType.InHierarchy && isList == false);
 				}
 			}
 			

@@ -119,10 +119,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void AppendPrototype (StringBuilder output)
 			{
-			var commentType = EngineInstance.CommentTypes.FromID(context.Topic.CommentTypeID);
 			bool builtPrototype = false;
 
-			if (commentType.InClassHierarchy)
+			if (EngineInstance.CommentTypes.InClassHierarchy(context.Topic.CommentTypeID))
 				{
 				ParsedClassPrototype parsedClassPrototype = context.Topic.ParsedClassPrototype;
 

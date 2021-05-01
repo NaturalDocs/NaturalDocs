@@ -75,8 +75,9 @@ namespace CodeClear.NaturalDocs.Engine.Links
 
 			var commentType = EngineInstance.CommentTypes.FromID(topic.CommentTypeID);
 			var language = EngineInstance.Languages.FromID(topic.LanguageID);
+			bool inClassHierarchy = EngineInstance.CommentTypes.InClassHierarchy(commentType);
 
-			if ( (link.Type == LinkType.ClassParent && commentType.InClassHierarchy == false) ||
+			if ( (link.Type == LinkType.ClassParent && inClassHierarchy == false) ||
 				  (link.Type == LinkType.Type && commentType.IsVariableType == false) )
 				{  return 0;  }
 

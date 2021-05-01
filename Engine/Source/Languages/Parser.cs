@@ -613,7 +613,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			if (language.Type == Language.LanguageType.Container)
 				{  throw new Exceptions.BadContainerOperation("ParseClassPrototype");  }
 
-			if (EngineInstance.CommentTypes.FromID(commentTypeID).InClassHierarchy == false)
+			if (EngineInstance.CommentTypes.InClassHierarchy(commentTypeID) == false)
 				{  return null;  }
 
 			Tokenizer tokenizedPrototype = new Tokenizer(stringPrototype, tabWidth: EngineInstance.Config.TabWidth);
@@ -3404,13 +3404,12 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 
 					// Set Topic.ClassString and ParentElement.DefaultChildClassString if appropriate
 
-					if (commentType.Scope == CommentType.ScopeValue.Start && 
-						  (commentType.InClassHierarchy == true || commentType.InDatabaseHierarchy == true) )
+					if (commentType.Scope == CommentType.ScopeValue.Start && commentType.InHierarchy)
 						{
-						HierarchyType hierarchy = (commentType.InClassHierarchy ? HierarchyType.Class : HierarchyType.Database);
+						var hierarchy = EngineInstance.Hierarchies.FromID(commentType.HierarchyID);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-						ClassString classString = ClassString.FromParameters(hierarchy, language.ID, language.CaseSensitive, topicSymbol);
+						ClassString classString = ClassString.FromParameters(hierarchy.Type, language.ID, language.CaseSensitive, topicSymbol);
 
 						topic.ClassString = classString;
 

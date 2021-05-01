@@ -64,7 +64,7 @@ namespace CodeClear.NaturalDocs.Engine
 						{
 						var commentType = commentTypes.FromID(topics[i].CommentTypeID);
 
-						if (commentType.InClassHierarchy || commentType.InDatabaseHierarchy)
+						if (commentType.InHierarchy)
 							{  remove = true;  }
 						}
 
