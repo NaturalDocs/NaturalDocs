@@ -435,7 +435,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 
 
-			// Validate flags
+			// Validate flags and hierarchy
 
 			if (commentType.Flags != null)
 				{
@@ -445,8 +445,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				bool fileFlag = ((flags & CommentType.FlagValue.File) != 0);
 				bool documentationFlag = ((flags & CommentType.FlagValue.Documentation) != 0);
 				bool variableTypeFlag = ((flags & CommentType.FlagValue.VariableType) != 0);
-				bool classHierarchyFlag = ((flags & CommentType.FlagValue.ClassHierarchy) != 0);
-				bool databaseHierarchyFlag = ((flags & CommentType.FlagValue.DatabaseHierarchy) != 0);
 				bool enumFlag = ((flags & CommentType.FlagValue.Enum) != 0);
 
 
@@ -480,7 +478,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					}
 
 
-				// Check that File and Documentation aren't used with any of the other flags
+				// Check that File and Documentation aren't used with any of the other flags or hierarchies
 
 				if (fileFlag)
 					{
@@ -489,14 +487,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Variable Type"),
 											commentType.FlagsPropertyLocation);
 						}
-					if (classHierarchyFlag)
+					if (commentType.HasHierarchyName)
 						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Class Hierarchy"),
-											commentType.FlagsPropertyLocation);
-						}
-					if (databaseHierarchyFlag)
-						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", "Database Hierarchy"),
+						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "File", commentType.HierarchyName + " Hierarchy"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (enumFlag)
@@ -513,14 +506,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Variable Type"),
 											commentType.FlagsPropertyLocation);
 						}
-					if (classHierarchyFlag)
+					if (commentType.HasHierarchyName)
 						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Class Hierarchy"),
-											commentType.FlagsPropertyLocation);
-						}
-					if (databaseHierarchyFlag)
-						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", "Database Hierarchy"),
+						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Documentation", commentType.HierarchyName + " Hierarchy"),
 											commentType.FlagsPropertyLocation);
 						}
 					if (enumFlag)
@@ -531,35 +519,29 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 					}
 
 
-				// Check that Class Hierarchy and Database Hierarchy aren't both defined
-
-				if (classHierarchyFlag && databaseHierarchyFlag)
-					{  
-					errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.CantCombine(a,b)", "Class Hierarchy", "Database Hierarchy"),
-										commentType.FlagsPropertyLocation);
-					}
-
-
-				// Check that Class Hierarchy and Database Hierarchy comment types also have Scope: Start
-
-				if (commentType.Scope != CommentType.ScopeValue.Start)
+				if (commentType.HasHierarchyName)
 					{
-					// This is an error if Scope isn't defined because it's too big a behavior change to just make it implied.
 
-					if (classHierarchyFlag)
-						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.FlagRequiresScope(flag,scope)", "Class Hierarchy", "Start"),
+					// Check that the hierarchy name is valid
+
+					var hierarchy = EngineInstance.Hierarchies.FromName(commentType.HierarchyName);
+
+					if (hierarchy == null || hierarchy.Type == Hierarchies.HierarchyType.File)
+						{
+						errorList.Add(Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedHierarchy(name)", commentType.HierarchyName),
 											commentType.FlagsPropertyLocation);
 						}
-					if (databaseHierarchyFlag)
-						{  
-						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.FlagRequiresScope(flag,scope)", "Database Hierarchy", "Start"),
+
+
+					// Check that hierarchy comment types also have Scope: Start.  We can't make hierarchies imply it because it's
+					// too big a behavior change.  It must be explicitly defined.
+
+					if (commentType.Scope != CommentType.ScopeValue.Start)
+						{
+						errorList.Add(Locale.Get("NaturalDocs.Engine", "CommentTypeFlags.FlagRequiresScope(flag,scope)", commentType.HierarchyName + " Hierarchy", "Start"),
 											commentType.FlagsPropertyLocation);
 						}
 					}
-
-				// Variable Type and Enum are okay.  We already know they aren't being used with File or Documentation, and they're safe 
-				// to use with Class Hierarchy and Database Hierarchy.
 
 				}
 
@@ -687,6 +669,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				baseCommentType.SetScope(overridingCommentType.Scope, 
 														  overridingCommentType.ScopePropertyLocation);
 				}
+			if (overridingCommentType.HasHierarchyName)
+				{
+				baseCommentType.SetHierarchyName(overridingCommentType.HierarchyName,
+																		overridingCommentType.HierarchyNamePropertyLocation);
+				}
 
 			// Ignore keywods
 
@@ -710,16 +697,8 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 							   CommentType.FlagValue.Documentation)) == 0)
 				{  flags |= CommentType.FlagValue.Code;  }
 
-			// Add Code if Variable Type, Class Hierarchy, Database Hierarchy, or Enum are defined.
-			if ( (flags & (CommentType.FlagValue.VariableType | 
-							   CommentType.FlagValue.ClassHierarchy | 
-							   CommentType.FlagValue.DatabaseHierarchy | 
-							   CommentType.FlagValue.Enum)) != 0)
-				{  flags |= CommentType.FlagValue.Code;  }
-
-			// Add Variable Type if Class Hierarchy or Enum are defined.
-			if ( (flags & (CommentType.FlagValue.ClassHierarchy | 
-							   CommentType.FlagValue.Enum)) != 0)
+			// Add Variable Type if Enum is defined.
+			if ( (flags & (CommentType.FlagValue.Enum)) != 0)
 				{  flags |= CommentType.FlagValue.VariableType;  }
 
 			return flags;
@@ -764,6 +743,9 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{  final.Scope = (CommentType.ScopeValue)textCommentType.Scope;  }
 			else
 				{  final.Scope = CommentType.ScopeValue.Normal;  }
+
+			if (textCommentType.HasHierarchyName)
+				{  final.HierarchyID = EngineInstance.Hierarchies.FromName(textCommentType.HierarchyName).ID;  }
 
 			if (textCommentType.HasFlags)
 				{  final.Flags = AddImpliedFlags( (CommentType.FlagValue)textCommentType.Flags );  }
@@ -912,19 +894,28 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						}
 
 
+					// Fix "[Language] Keywords" capitalization
+
 					if (commentType.HasKeywordGroups)
 						{
 						foreach (var keywordGroup in commentType.KeywordGroups)
 							{
-
-							// Fix "[Language] Keywords" capitalization
-
 							if (keywordGroup.IsLanguageSpecific)
 								{
 								var originalLanguage = EngineInstance.Languages.FromName(keywordGroup.LanguageName);
 								keywordGroup.LanguageName = originalLanguage.Name;
 								}
 							}
+						}
+
+
+					// Fix "Flags: [name] Hierarchy" capitalization
+
+					if (commentType.HasHierarchyName)
+						{
+						commentType.SetHierarchyName(
+							EngineInstance.Hierarchies.FromName(commentType.HierarchyName).Name,
+							commentType.HierarchyNamePropertyLocation);
 						}
 					}
 				}

@@ -42,6 +42,7 @@ _______________________________________________________________________________
  		> [String: Plural Display Name]
  		> [String: Simple Identifier]
  		> [Byte: Scope]
+		> [Int32: Hierarchy ID or 0 if none]
  		> [Byte: Flags]
  			
  		The attributes include strings for the display and plural display names.  These are the computed strings, so if they
@@ -79,6 +80,7 @@ _______________________________________________________________________________
 
 		- Removed comment type attributes Index, Index With ID, and Break Lists.
 		- Flags is now a byte instead of UInt16.
+		- Hierarchy ID was moved out of Flags into it's own value.
 		- The Keywords section is revamped, allowing language-specific keywords and combining the singular/plural lists into
 		  one.
 		- Removed the Ignored Keywords section.  Ignored keywords will be reflected by omissions from the keywords list.

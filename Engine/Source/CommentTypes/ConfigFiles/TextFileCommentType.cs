@@ -55,9 +55,12 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			simpleIdentifierPropertyLocation = default;
 			scope = null;
 			scopePropertyLocation = default;
-			keywordGroups = null;
+			hierarchyName = null;
+			hierarchyNamePropertyLocation = default;
 			flags = null;
 			flagsPropertyLocation = default;
+
+			keywordGroups = null;
 			}
 
 
@@ -85,6 +88,10 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			copy.simpleIdentifierPropertyLocation = simpleIdentifierPropertyLocation;
 			copy.scope = scope;
 			copy.scopePropertyLocation = scopePropertyLocation;
+			copy.hierarchyName = hierarchyName;
+			copy.hierarchyNamePropertyLocation = hierarchyNamePropertyLocation;
+			copy.flags = flags;
+			copy.flagsPropertyLocation = flagsPropertyLocation;
 
 			if (keywordGroups != null)
 				{
@@ -93,9 +100,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					{  copy.keywordGroups.Add( keywordGroup.Duplicate() );  }
 				}
 			
-			copy.flags = flags;
-			copy.flagsPropertyLocation = flagsPropertyLocation;
-
 			return copy;
 			}
 
@@ -184,6 +188,24 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			this.scopePropertyLocation = propertyLocation;
 			}
 
+		/* Function: SetHierarchyName
+		 * Sets the name of the hierarchy the comment type appears in.
+		 */
+		public void SetHierarchyName (string hierarchyName, PropertyLocation propertyLocation)
+			{
+			this.hierarchyName = hierarchyName;
+			this.hierarchyNamePropertyLocation = propertyLocation;
+			}
+
+		/* Function: SetFlags
+		 * Sets the flags for this comment type.
+		 */
+		public void SetFlags (CommentType.FlagValue? flags, PropertyLocation propertyLocation)
+			{
+			this.flags = flags;
+			this.flagsPropertyLocation = propertyLocation;
+			}
+
 		/* Function: AddKeywordGroup
 		 * Adds a keyword group to the comment type.
 		 */
@@ -193,15 +215,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  keywordGroups = new List<TextFileKeywordGroup>();  }
 
 			keywordGroups.Add(keywordGroup);
-			}
-			
-		/* Function: SetFlags
-		 * Sets the flags for this comment type.
-		 */
-		public void SetFlags (CommentType.FlagValue? flags, PropertyLocation propertyLocation)
-			{
-			this.flags = flags;
-			this.flagsPropertyLocation = propertyLocation;
 			}
 
 
@@ -411,6 +424,61 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				{  return scopePropertyLocation;  }
 			}
 
+		/* Property: HasHierarchyName
+		 * Whether the comment type's hierarchy property was defined.
+		 */
+		public bool HasHierarchyName
+			{
+			get
+				{  return (hierarchyName != null);  }
+			}
+
+		/* Property: HierarchyName
+		 * The name of the hierarchy the comment type appears in, or null if it is not defined.
+		 */
+		public string HierarchyName
+			{
+			get
+				{  return hierarchyName;  }
+			}
+
+		/* Property: HierarchyNamePropertyLocation
+		 * The <PropertyLocation> where <HierarchyName> is defined.
+		 */
+		public PropertyLocation HierarchyNamePropertyLocation
+			{
+			get
+				{  return hierarchyNamePropertyLocation;  }
+			}
+
+		/* Property: HasFlags
+		 * Whether the comment type's flags property is defined.
+		 */
+		public bool HasFlags
+			{
+			get
+				{  return (flags != null);  }
+			}
+
+		/* Property: Flags
+		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.  Note that this does not
+		 * include the <HierarchyName> even though that's defined with the flags.
+		 */
+		public CommentType.FlagValue? Flags
+			{
+			get
+				{  return flags;  }
+			}
+
+		/* Property: FlagsPropertyLocation
+		 * The <PropertyLocation> where <Flags> is defined.
+		 */
+		public PropertyLocation FlagsPropertyLocation
+			{
+			get
+				{  return flagsPropertyLocation;  }
+			}
+
 		/* Property: HasKeywordGroups
 		 * Whether the comment type has keyword groups defined.
 		 */
@@ -427,33 +495,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			{
 			get
 				{  return keywordGroups;  }
-			}
-
-		/* Property: HasFlags
-		 * Whether the comment type's flags property is defined.
-		 */
-		public bool HasFlags
-			{
-			get
-				{  return (flags != null);  }
-			}
-
-		/* Property: Flags
-		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.
-		 */
-		public CommentType.FlagValue? Flags
-			{
-			get
-				{  return flags;  }
-			}
-
-		/* Property: FlagsPropertyLocation
-		 * The <PropertyLocation> where <Flags> is defined.
-		 */
-		public PropertyLocation FlagsPropertyLocation
-			{
-			get
-				{  return flagsPropertyLocation;  }
 			}
 
 				
@@ -536,13 +577,19 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 */
 		protected PropertyLocation scopePropertyLocation;
 		
-		/* array: keywordGroups
-		 * A list of all the keyword groups defined, or null if none.
+		/* var: hierarchyName
+		 * The name of the hierarchy the comment type appears in, or null if none.
 		 */
-		protected List<TextFileKeywordGroup> keywordGroups;
+		protected string hierarchyName;
 
+		/* var: hierarchyNamePropertyLocation
+		 * The <PropertyLocation> where <hierarchyName> is defined.
+		 */
+		protected PropertyLocation hierarchyNamePropertyLocation;
+		
 		/* var: flags
-		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.
+		 * The combination of all <CommentType.FlagValues> that apply, or null if it is not defined.  Note that this does not
+		 * include the <hierarchyName> even though that's declared in the flags.
 		 */
 		protected CommentType.FlagValue? flags;
 
@@ -550,6 +597,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		 * The <PropertyLocation> where <flags> is defined.
 		 */
 		protected PropertyLocation flagsPropertyLocation;
+
+		/* array: keywordGroups
+		 * A list of all the keyword groups defined, or null if none.
+		 */
+		protected List<TextFileKeywordGroup> keywordGroups;
 
 		}
 	}

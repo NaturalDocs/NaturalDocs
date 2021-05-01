@@ -425,6 +425,7 @@ Comments.txt.KeywordMustBeInCommentType(keyword): The keyword "{0}" can only be 
 Comments.txt.UnrecognizedKeyword(keyword): "{0}" is not a valid keyword.
 Comments.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Comments.txt.UnrecognizedKeywordLanguage(name): "{0}" is not a defined language.
+Comments.txt.UnrecognizedHierarchy(name): "{0}" is not a valid hierarchy.
 Comments.txt.CannotDefineXWhenYIsDefined(x,y): You cannot define "{0}" if "{1}" is already defined.
 Comments.txt.CircularDependencyInIndexWith(list): There is a circular dependency in "Index: with [type]": {0}
 Comments.txt.SimpleIdentifierMustOnlyBeASCIILetters(name): The simple identifier "{0}" may only contain the letters A to Z.

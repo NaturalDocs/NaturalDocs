@@ -46,9 +46,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * 
 		 *		VariableType - Set if the comment type can be used as a type for a variable.
 		 * 
-		 *		ClassHierarchy - Set if the comment type should appear in the class hierarchy.
-		 *		DatabaseHierarchy - Set if the comment type should appear in the database hierarchy.
-		 * 
 		 *		Enum - Set if the comment type describes an enum.
 		 */
 		[Flags]
@@ -59,9 +56,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			Documentation = 0x04,
 
 			VariableType = 0x08,
-
-			ClassHierarchy = 0x10,
-			DatabaseHierarchy = 0x20,
 
 			Enum = 0x40
 			}
@@ -82,6 +76,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 			pluralDisplayName = null;
 			simpleIdentifier = null;
 			scope = ScopeValue.Normal;
+			hierarchyID = 0;
 			flags = default;
 			}
 			
@@ -142,6 +137,26 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				{  return scope;  }
 			set
 				{  scope = value;  }
+			}
+
+		/* Property: InHierarchy
+		 * Whether this comment type belongs to any hierarchies.  You can get which from <HierarchyID>.
+		 */
+		public bool InHierarchy
+			{
+			get
+				{  return (hierarchyID != 0);  }
+			}
+
+		/* Property: HierarchyID
+		 * The ID of the hierarchy this comment type belongs to, or zero if none.
+		 */
+		public int HierarchyID
+			{
+			get
+				{  return hierarchyID;  }
+			set
+				{  hierarchyID = value;  }
 			}
 			
 		/* Property: Flags
@@ -225,38 +240,6 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 				}
 			}
 
-		/* Property: InClassHierarchy
-		 * Whether the comment type is part of the class hierarchy.
-		 */
-		public bool InClassHierarchy
-			{
-			get
-				{  return ( (flags & FlagValue.ClassHierarchy) != 0);  }
-			set
-				{  
-				if (value == true)
-					{  flags |= FlagValue.ClassHierarchy;  }
-				else
-					{  flags &= ~FlagValue.ClassHierarchy;  }
-				}
-			}
-
-		/* Property: InDatabaseHierarchy
-		 * Whether the comment type is part of the database hierarchy.
-		 */
-		public bool InDatabaseHierarchy
-			{
-			get
-				{  return ( (flags & FlagValue.DatabaseHierarchy) != 0);  }
-			set
-				{  
-				if (value == true)
-					{  flags |= FlagValue.DatabaseHierarchy;  }
-				else
-					{  flags &= ~FlagValue.DatabaseHierarchy;  }
-				}
-			}
-
 		/* Property: IsEnum
 		 * Whether the comment type describes an enum.
 		 */
@@ -297,6 +280,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 						   type1.PluralDisplayName == type2.PluralDisplayName &&
 						   type1.SimpleIdentifier == type2.SimpleIdentifier &&
 						   type1.Scope == type2.Scope &&
+						   type1.HierarchyID == type2.HierarchyID &&
 						   type1.Flags == type2.Flags);
 				}
 			}
@@ -355,6 +339,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * The scope of the comment type.
 		 */
 		protected ScopeValue scope;
+
+		/* var: hierarchyID
+		 * The ID of the hierarchy this comment type belongs to, or zero if none.
+		 */
+		protected int hierarchyID;
 		
 		/* var: flags
 		 * The combination of all <FlagValues> applying to the comment type.

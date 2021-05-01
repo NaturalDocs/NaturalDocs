@@ -77,6 +77,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					// [String: Plural Display Name]
 					// [String: Simple Identifier]
 					// [Byte: Scope]
+					// [Int32: Hierarchy ID or 0 if none]
 					// [Byte: Flags]
 					// ...
 					// [String: null]
@@ -96,6 +97,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						// versions, which are validated.  If these are invalid they'll just show up as changed.
 
 						commentType.Scope = (CommentType.ScopeValue)file.ReadByte();
+
+						int hierarchyID = file.ReadInt32();
+						if (hierarchyID != 0)
+							{  commentType.HierarchyID = hierarchyID;  }
+
 						commentType.Flags = (CommentType.FlagValue)file.ReadByte();
 
 						config.AddCommentType(commentType);
@@ -175,6 +181,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 				// [String: Plural Display Name]
 				// [String: Simple Identifier]
 				// [Byte: Scope]
+				// [Int32: Hierarchy ID or 0 if none]
 				// [Byte: Flags]
 				// ...
 				// [String: null]
@@ -187,6 +194,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 					file.WriteString( commentType.PluralDisplayName );
 					file.WriteString( commentType.SimpleIdentifier );
 					file.WriteByte( (byte)commentType.Scope );
+					file.WriteInt32( commentType.HierarchyID );
 					file.WriteByte( (byte)commentType.Flags );
 					}
 					

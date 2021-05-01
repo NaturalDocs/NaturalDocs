@@ -122,6 +122,28 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 
 
+		// Group: Convenience Functions
+		// __________________________________________________________________________
+
+
+		/* Function: InClassHierarchy
+		 * Whether the passed comment type is part of the class hierarchy.
+		 */
+		public bool InClassHierarchy (CommentType commentType)
+			{
+			return EngineInstance.Hierarchies.IsClassHierarchy(commentType.HierarchyID);
+			}
+
+		/* Function: InClassHierarchy
+		 * Whether the passed comment type ID is part of the class hierarchy.
+		 */
+		public bool InClassHierarchy (int commentTypeID)
+			{
+			return InClassHierarchy( FromID(commentTypeID) );
+			}
+
+
+
 		// Group: Properties
 		// __________________________________________________________________________
 

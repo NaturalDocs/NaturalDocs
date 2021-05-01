@@ -47,11 +47,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 			pluralDisplayNameRegex = new Regex.CommentTypes.PluralDisplayName();
 			displayNameFromLocaleRegex = new Regex.CommentTypes.DisplayNameFromLocale();
 			pluralDisplayNameFromLocaleRegex = new Regex.CommentTypes.PluralDisplayNameFromLocale();
+			hierarchyNameRegex = new Regex.CommentTypes.HierarchyName();
 			flagsRegex = new Regex.CommentTypes.Flags();
 			documentationRegex = new Regex.CommentTypes.Documentation();
 			variableTypeRegex = new Regex.CommentTypes.VariableType();
 			classHierarchyRegex = new Regex.CommentTypes.ClassHierarchy();
-			databaseHierarchyRegex = new Regex.CommentTypes.DatabaseHierarchy();
 			enumRegex = new Regex.CommentTypes.Enum();
 			breakListsRegex = new Regex.CommentTypes.BreakLists();
 			keywordsRegex = new Regex.CommentTypes.Keywords();
@@ -461,7 +461,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 						
 						
 					//
-					// Flags
+					// Flags and Hierarchy
 					//
 					
 					else if (flagsRegex.IsMatch(identifier))
@@ -475,10 +475,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							if (!string.IsNullOrEmpty(value))
 								{
 								string[] flagStrings = commaSeparatorRegex.Split(value);
-
-								// Merge them with the existing flags instead of overwriting them since they may also be set by the
-								// Class Hierarchy property.
-								CommentType.FlagValue flagsValue = currentCommentType.Flags ?? default;
+								CommentType.FlagValue flagsValue = default;
 							
 								foreach (string flagString in flagStrings)
 									{
@@ -490,17 +487,22 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 										{  flagsValue |= CommentType.FlagValue.Documentation;  }
 									else if (variableTypeRegex.IsMatch(flagString))
 										{  flagsValue |= CommentType.FlagValue.VariableType;  }
-									else if (classHierarchyRegex.IsMatch(flagString))
-										{  flagsValue |= CommentType.FlagValue.ClassHierarchy;  }
-									else if (databaseHierarchyRegex.IsMatch(flagString))
-										{  flagsValue |= CommentType.FlagValue.DatabaseHierarchy;  }
 									else if (enumRegex.IsMatch(flagString))
 										{  flagsValue |= CommentType.FlagValue.Enum;  }
-									else if (string.IsNullOrEmpty(flagString) == false)
-										{  
-										file.AddError(
-											Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", flagString)
-											);
+									else
+										{
+										var hierarchyMatch = hierarchyNameRegex.Match(flagString);
+
+										if (hierarchyMatch.Success)
+											{
+											currentCommentType.SetHierarchyName(hierarchyMatch.Groups[1].ToString(), file.PropertyLocation);
+											}
+										else if (string.IsNullOrEmpty(flagString) == false)
+											{  
+											file.AddError(
+												Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Flags", flagString)
+												);
+											}
 										}
 									}
 
@@ -522,21 +524,20 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							{
 							value = value.ToLower();
 
-							// Merge it with the existing flags since they may already be set.
-							CommentType.FlagValue flagsValue = currentCommentType.Flags ?? default;
-							
 							if (yesRegex.IsMatch(value))
-								{  flagsValue |= CommentType.FlagValue.ClassHierarchy;  }
+								{  currentCommentType.SetHierarchyName("Class", file.PropertyLocation);  }
 							else if (noRegex.IsMatch(value))
-								{  flagsValue &= ~CommentType.FlagValue.ClassHierarchy;  }
+								{  
+								if (currentCommentType.HierarchyName != null &&
+									currentCommentType.HierarchyName.ToLower() == "class")
+									{  currentCommentType.SetHierarchyName(null, file.PropertyLocation);  }
+								}
 							else
 								{
 								file.AddError(
 									Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedValue(keyword, value)", "Class Hierarchy", value)
 									);
 								}
-
-							currentCommentType.SetFlags(flagsValue, file.PropertyLocation);
 							}
 						}
 						
@@ -843,32 +844,33 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 							}
 						}
 					
-					if (commentType.HasFlags)
+					if (commentType.HasFlags || commentType.HasHierarchyName)
 						{
 						AppendLineBreakOnGroupChange(2, ref oldGroupNumber, output);
 
 						output.Append("   Flags: ");
+						List<string> flagStrings = new List<string>(4);
 
-						var flagsValue = (CommentType.FlagValue)commentType.Flags;
-						List<string> flagStrings = new List<string>(7);
+						if (commentType.HasFlags)
+							{
+							var flagsValue = (CommentType.FlagValue)commentType.Flags;
 					
-						if ( (flagsValue & CommentType.FlagValue.Code) != 0)
-							{  flagStrings.Add("Code");  }
-						if ( (flagsValue & CommentType.FlagValue.File) != 0)
-							{  flagStrings.Add("File");  }
-						if ( (flagsValue & CommentType.FlagValue.Documentation) != 0)
-							{  flagStrings.Add("Documentation");  }
+							if ( (flagsValue & CommentType.FlagValue.Code) != 0)
+								{  flagStrings.Add("Code");  }
+							if ( (flagsValue & CommentType.FlagValue.File) != 0)
+								{  flagStrings.Add("File");  }
+							if ( (flagsValue & CommentType.FlagValue.Documentation) != 0)
+								{  flagStrings.Add("Documentation");  }
 
-						if ( (flagsValue & CommentType.FlagValue.VariableType) != 0)
-							{  flagStrings.Add("Variable Type");  }
+							if ( (flagsValue & CommentType.FlagValue.VariableType) != 0)
+								{  flagStrings.Add("Variable Type");  }
 
-						if ( (flagsValue & CommentType.FlagValue.ClassHierarchy) != 0)
-							{  flagStrings.Add("Class Hierarchy");  }
-						if ( (flagsValue & CommentType.FlagValue.DatabaseHierarchy) != 0)
-							{  flagStrings.Add("Database Hierarchy");  }
+							if ( (flagsValue & CommentType.FlagValue.Enum) != 0)
+								{  flagStrings.Add("Enum");  }
+							}
 
-						if ( (flagsValue & CommentType.FlagValue.Enum) != 0)
-							{  flagStrings.Add("Enum");  }
+						if (commentType.HasHierarchyName)
+							{  flagStrings.Add( commentType.HierarchyName + " Hierarchy" );  }
 
 						for (int i = 0; i < flagStrings.Count; i++)
 							{
@@ -961,11 +963,11 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes.ConfigFiles
 		protected Regex.CommentTypes.PluralDisplayName pluralDisplayNameRegex;
 		protected Regex.CommentTypes.DisplayNameFromLocale displayNameFromLocaleRegex;
 		protected Regex.CommentTypes.PluralDisplayNameFromLocale pluralDisplayNameFromLocaleRegex;
+		protected Regex.CommentTypes.HierarchyName hierarchyNameRegex;
 		protected Regex.CommentTypes.Flags flagsRegex;
 		protected Regex.CommentTypes.Documentation documentationRegex;
 		protected Regex.CommentTypes.VariableType variableTypeRegex;
 		protected Regex.CommentTypes.ClassHierarchy classHierarchyRegex;
-		protected Regex.CommentTypes.DatabaseHierarchy databaseHierarchyRegex;
 		protected Regex.CommentTypes.Enum enumRegex;
 		protected Regex.CommentTypes.BreakLists breakListsRegex;
 		protected Regex.CommentTypes.Keywords keywordsRegex;

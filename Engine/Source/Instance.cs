@@ -30,7 +30,8 @@
  *		  
  *		- <Hierarchies.Manager> is next because it has no dependencies.
  *		  
- *		- <CommentTypes.Manager.Start_Stage1()> and <Languages.Manager.Start_Stage1()> are next.
+ *		- <CommentTypes.Manager.Start_Stage1()> and <Languages.Manager.Start_Stage1()> are next.  <CommentTypes.Manager>
+ *		  depends on <Hierarchies.Manager>.
  *		
  *		- <CommentTypes.Manager.Start_Stage2()> and <Languages.Manager.Start_Stage2()> follow because they depend on
  *		  each other's Stage1 functions for things like "[Language Name] Keywords" and "[Comment Type Name] Prototype Enders".
