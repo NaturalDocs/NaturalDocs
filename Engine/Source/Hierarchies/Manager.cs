@@ -33,11 +33,23 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			var fileHierarchy = new Hierarchy("File", "Files", HierarchyType.File);
+			var fileHierarchy = new Hierarchy(
+				name: "File", 
+				pluralName: "Files", 
+				type: HierarchyType.File,
+				languageSpecific: false);
 
-			var classHierarchy = new Hierarchy("Class", "Classes", HierarchyType.Class);
+			var classHierarchy = new Hierarchy(
+				name: "Class", 
+				pluralName: "Classes", 
+				type: HierarchyType.Class,
+				languageSpecific: true);
 
-			var databaseHierarchy = new Hierarchy("Database", null, HierarchyType.Database);
+			var databaseHierarchy = new Hierarchy(
+				name: "Database", 
+				pluralName: "Database", 
+				type: HierarchyType.Database,
+				languageSpecific: false);
 
 			hierarchies = new Hierarchy[] { fileHierarchy, classHierarchy, databaseHierarchy };
 

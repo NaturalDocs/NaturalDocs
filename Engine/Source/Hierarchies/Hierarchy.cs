@@ -25,11 +25,12 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		
 		/* Constructor: Hierarchy
 		 */
-		public Hierarchy (string name, string pluralName, HierarchyType type)
+		public Hierarchy (string name, string pluralName, HierarchyType type, bool languageSpecific)
 			{
 			this.name = name;
 			this.pluralName = pluralName;
 			this.type = type;
+			this.languageSpecific = languageSpecific;
 			}
 
 
@@ -74,6 +75,24 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				{  return type;  }
 			}
 
+		/* Property: LanguageSpecific
+		 * Whether members of the hierarchy should be separated by language.
+		 */
+		public bool LanguageSpecific
+			{
+			get
+				{  return languageSpecific;  }
+			}
+
+		/* Property: LanguageAgnostic
+		 * Whether members of the hierarchy don't need to be separated by language.
+		 */
+		public bool LanguageAgnostic
+			{
+			get
+				{  return !LanguageSpecific;  }
+			}
+
 
 
 		// Group: Variables
@@ -94,6 +113,11 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 * The <HierarchyType> associated with this hierarchy.
 		 */
 		protected HierarchyType type;
+
+		/* var: languageSpecific
+		 * Whether hierarchy members should be separated by language.
+		 */
+		protected bool languageSpecific;
 
 		}
 	}
