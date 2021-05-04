@@ -126,7 +126,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			MenuEntries.Container container;
 			bool ignoreCase;
 
-			if (classString.Hierarchy == HierarchyType.Class)
+			if (classString.HierarchyType == HierarchyType.Class)
 				{
 				MenuEntries.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
 
@@ -134,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
 				}
 
-			else if (classString.Hierarchy == HierarchyType.Database)
+			else if (classString.HierarchyType == HierarchyType.Database)
 				{
 				if (rootDatabaseMenu == null)
 					{
@@ -179,7 +179,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (scopeEntry == null)
 					{
-					scopeEntry = new MenuEntries.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), classString.Hierarchy);
+					scopeEntry = new MenuEntries.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), classString.HierarchyType);
 					scopeEntry.Parent = container;
 					container.Members.Add(scopeEntry);
 					}

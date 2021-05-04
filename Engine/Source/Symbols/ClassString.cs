@@ -50,13 +50,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		/* Function: FromParameters
 		 * Creates a ClassString from the passed parameters.
 		 */
-		static public ClassString FromParameters (HierarchyType hierarchy, int languageID, bool caseSensitive, SymbolString symbol)
+		static public ClassString FromParameters (int hierarchyID, int languageID, bool caseSensitive, SymbolString symbol)
 			{
 			if (symbol == null)
 				{  throw new NullReferenceException();  }
 
-			// SymbolString plus case-sensitivity, hierarchy, language ID, and separators.  It's almost definitely only going to use one
-			// char each for the hierarchy and language ID, but getting room for a second one just to be certain isn't a big deal when
+			// SymbolString plus case-sensitivity char, hierarchy ID, language ID, and separators.  It's almost definitely only
+			// going to use one char each of the IDs, but getting room for a second one just to be certain isn't a big deal when
 			// we're already paying for the allocation.
 			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 7);
 
@@ -65,10 +65,10 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			else
 				{  stringBuilder.Append('i');  }
 
-			AppendBase64Int((int)hierarchy, stringBuilder);
+			AppendBase64Int(hierarchyID, stringBuilder);
 			stringBuilder.Append(SeparatorChar);
 
-			AppendBase64Int((int)languageID, stringBuilder);
+			AppendBase64Int(languageID, stringBuilder);
 			stringBuilder.Append(SeparatorChar);
 
 			string symbolString = symbol.ToString();
@@ -87,6 +87,15 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				}
 
 			return new ClassString(classString, lookupKey);
+			}
+
+
+		/* Function: FromParameters
+		 * Creates a ClassString from the passed parameters.
+		 */
+		static public ClassString FromParameters (HierarchyType hierarchyType, int languageID, bool caseSensitive, SymbolString symbol)
+			{
+			return FromParameters((int)hierarchyType, languageID, caseSensitive, symbol);
 			}
 
 
@@ -109,7 +118,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				{
 				StringBuilder stringBuilder = new StringBuilder(classString.Length);
 
-				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy ID will always take at least one char.
 				int separator1Index = classString.IndexOf(SeparatorChar, 2);
 
 				// We can use +2 because there's the separator char plus the language ID will always take at least one char.
@@ -144,7 +153,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				if (classString == null)
 					{  return new SymbolString();  }
 
-				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy ID will always take at least one char.
 				int separator1Index = classString.IndexOf(SeparatorChar, 2);
 
 				// We can use +2 because there's the separator char plus the language ID will always take at least one char.
@@ -155,10 +164,10 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Property: Hierarchy
+		/* Property: HierarchyID
 		 * Which hierarchy the class is a part of.
 		 */
-		public HierarchyType Hierarchy
+		public int HierarchyID
 			{
 			get
 				{
@@ -168,8 +177,18 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				// We start at 1 because of the case-sensitivity char.
 				int value = DecodeBase64Int(classString, 1);
 
-				return (HierarchyType)value;
+				return value;
 				}
+			}
+
+
+		/* Property: HierarchyType
+		 * Which <HierarchyType> the class is a part of.
+		 */
+		public HierarchyType HierarchyType
+			{
+			get
+				{  return (HierarchyType)HierarchyID;  }
 			}
 
 
@@ -183,7 +202,8 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				if (classString == null)
 					{  return 0;  }
 
-				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy ID will always take at least one
+				// char.
 				int separator1Index = classString.IndexOf(SeparatorChar, 2);
 
 				int value = DecodeBase64Int(classString, separator1Index + 1);
@@ -378,7 +398,7 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		 * The combined class string.
 		 * 
 		 * - First will be the character 'C' or 'i' depending on whether it's case-sensitive or not.
-		 * - Next will be the hierarchy type encoded in base64, followed by a <SeparatorChar>.
+		 * - Next will be the hierarchy ID encoded in base64, followed by a <SeparatorChar>.
 		 * - Next will be the language ID encoded in base64, followed by a <SeparatorChar>.
 		 * - Next will be an embedded <SymbolString> representing the class.
 		 */

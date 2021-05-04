@@ -143,12 +143,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				var classMenuEntry = (MenuEntries.Class)menuEntry;
 				var classString = classMenuEntry.WrappedClassString;
 
-				if (classString.Hierarchy == HierarchyType.Class)
+				if (classString.HierarchyType == HierarchyType.Class)
 					{
 					var language = EngineInstance.Languages.FromID(classString.LanguageID);
 					hashPath = Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);  
 					}
-				else if (classString.Hierarchy == HierarchyType.Database)
+				else if (classString.HierarchyType == HierarchyType.Database)
 					{
 					hashPath = Paths.Database.HashPath(classString.Symbol);
 					}
