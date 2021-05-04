@@ -40,10 +40,10 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		
 		/* Function: ClassString
 		 */
-		private ClassString (string newClassString, string newLookupKey)
+		private ClassString (string classString, string lookupKey)
 			{
-			classString = newClassString;
-			lookupKey = newLookupKey;
+			this.classString = classString;
+			this.lookupKey = lookupKey;
 			}
 
 			
@@ -55,47 +55,20 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			if (symbol == null)
 				{  throw new NullReferenceException();  }
 
-			// SymbolString plus hierarchy, language ID, and separator.  It's almost definitely only going to use one char for the
-			// language ID, but getting room for a second one just to be certain isn't a big deal when we're already paying for the
-			// allocation.
-			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 4);
+			// SymbolString plus case-sensitivity, hierarchy, language ID, and separators.  It's almost definitely only going to use one
+			// char each for the hierarchy and language ID, but getting room for a second one just to be certain isn't a big deal when
+			// we're already paying for the allocation.
+			StringBuilder stringBuilder = new System.Text.StringBuilder(symbol.ToString().Length + 7);
 
-			if (hierarchy == HierarchyType.Class)
-				{  
-				if (caseSensitive)
-					{  stringBuilder.Append('C');  }
-				else
-					{  stringBuilder.Append('c');  }
-				}
-			else if (hierarchy == HierarchyType.Database)
-				{  
-				if (caseSensitive)
-					{  stringBuilder.Append('D');  }
-				else
-					{  stringBuilder.Append('d');  }
-				}
+			if (caseSensitive)
+				{  stringBuilder.Append('C');  }
 			else
-				{  throw new NotImplementedException();  }
+				{  stringBuilder.Append('i');  }
 
-			do
-				{
-				int value = languageID & 0x0000003F;
+			AppendBase64Int((int)hierarchy, stringBuilder);
+			stringBuilder.Append(SeparatorChar);
 
-				if (value < 10)
-					{  stringBuilder.Append((char)('0' + value));  }
-				else if (value < 36)
-					{  stringBuilder.Append((char)('A' + (value - 10)));  }
-				else if (value < 62)
-					{  stringBuilder.Append((char)('a' + (value - 36)));  }
-				else if (value == 62)
-					{  stringBuilder.Append('!');  }
-				else // (value == 63)
-					{  stringBuilder.Append('@');  }
-
-				languageID >>= 6;
-				}
-			while (languageID > 0);
-
+			AppendBase64Int((int)languageID, stringBuilder);
 			stringBuilder.Append(SeparatorChar);
 
 			string symbolString = symbol.ToString();
@@ -130,19 +103,24 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			string classString = exportedClassString;
 			string lookupKey;
 
-			if (classString[0] >= 'A' && classString[0] <= 'Z')
+			if (classString[0] == 'C')
 				{  lookupKey = classString;  }
 			else
 				{
 				StringBuilder stringBuilder = new StringBuilder(classString.Length);
 
-				int separatorIndex = classString.IndexOf(SeparatorChar);
-				stringBuilder.Append(classString, 0, separatorIndex + 1);
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				int separator1Index = classString.IndexOf(SeparatorChar, 2);
+
+				// We can use +2 because there's the separator char plus the language ID will always take at least one char.
+				int separator2Index = classString.IndexOf(SeparatorChar, separator1Index + 2);
+
+				stringBuilder.Append(classString, 0, separator2Index + 1);
 
 				// Turning the entire thing to lowercase requires one allocation and only adds a few extra characters of work.
 				// If we extracted a substring then turned that into lowercase it would require two allocations.
 				string lowercaseClassString = classString.ToLower();
-				stringBuilder.Append(lowercaseClassString, separatorIndex + 1, lowercaseClassString.Length - (separatorIndex + 1));
+				stringBuilder.Append(lowercaseClassString, separator2Index + 1, lowercaseClassString.Length - (separator2Index + 1));
 
 				lookupKey = stringBuilder.ToString();
 				}
@@ -166,9 +144,13 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				if (classString == null)
 					{  return new SymbolString();  }
 
-				int separatorIndex = classString.IndexOf(SeparatorChar);
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				int separator1Index = classString.IndexOf(SeparatorChar, 2);
 
-				return SymbolString.FromExportedString( classString.Substring(separatorIndex + 1) );
+				// We can use +2 because there's the separator char plus the language ID will always take at least one char.
+				int separator2Index = classString.IndexOf(SeparatorChar, separator1Index + 2);
+
+				return SymbolString.FromExportedString( classString.Substring(separator2Index + 1) );
 				}
 			}
 
@@ -181,13 +163,12 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			get
 				{
 				if (classString == null)
-					{  throw new NullReferenceException();  }
-				else if (classString[0] == 'C' || classString[0] == 'c')
-					{  return HierarchyType.Class;  }
-				else if (classString[0] == 'D' || classString[0] == 'd')
-					{  return HierarchyType.Database;  }
-				else
-					{  throw new FormatException();  }
+					{  return 0;  }
+
+				// We start at 1 because of the case-sensitivity char.
+				int value = DecodeBase64Int(classString, 1);
+
+				return (HierarchyType)value;
 				}
 			}
 
@@ -202,33 +183,12 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 				if (classString == null)
 					{  return 0;  }
 
-				int languageID = 0;
-				int index = 1;
+				// We can start at 2 because there's the case-sensitivity char plus the hierarchy will always take at least one char.
+				int separator1Index = classString.IndexOf(SeparatorChar, 2);
 
-				do
-					{
-					char currentChar = classString[index];
-					int value;
+				int value = DecodeBase64Int(classString, separator1Index + 1);
 
-					if (currentChar >= '0' && currentChar <= '9')
-						{  value = currentChar - '0';  }
-					else if (currentChar >= 'A' && currentChar <= 'Z')
-						{  value = 10 + (currentChar - 'A');  }
-					else if (currentChar >= 'a' && currentChar <= 'z')
-						{  value = 36 + (currentChar - 'a');  }
-					else if (currentChar == '!')
-						{  value = 62;  }
-					else // (currentChar == '@')
-						{  value = 63;  }
-
-					value <<= (index - 1) * 6;
-					languageID |= value;
-
-					index++;
-					}
-				while (classString[index] != SeparatorChar);
-
-				return languageID;
+				return value;
 				}
 			}
 
@@ -255,7 +215,86 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			}
 
 
-			
+
+		// Group: Private Functions
+		// __________________________________________________________________________
+
+
+		/* Function: AppendBase64Int
+		 * 
+		 * Appends a base64-encoded integer to the StringBuilder.  Remember to append a <SeparatorChar>
+		 * afterwards since it's required by <DecodeBase64Int()>.
+		 * 
+		 * Format:
+		 * 
+		 *   - The integer is encoded in base64 using the following charset: 0-9, A-Z, a-z, !, @.
+		 *   - The encoding is little endian, so the first characters are the lowest order bits.  This is just for ease
+		 *      of encoding since it's unlikely we'll need more than one character in practice.
+		 *   - This charset is used instead of standard base64 to make it easier to read, since it mimics decimal
+		 *      and hex at low values.
+		 *   - Base64 is used instead of hex because it's more compact and is unlikely to require more than one
+		 *      character in practice.
+		 */
+		static private void AppendBase64Int (int value, StringBuilder stringBuilder)
+			{
+			do
+				{
+				int codon = value & 0x0000003F;
+
+				if (codon < 10)
+					{  stringBuilder.Append((char)('0' + codon));  }
+				else if (codon < 36)
+					{  stringBuilder.Append((char)('A' + (codon - 10)));  }
+				else if (codon < 62)
+					{  stringBuilder.Append((char)('a' + (codon - 36)));  }
+				else if (codon == 62)
+					{  stringBuilder.Append('!');  }
+				else // (value == 63)
+					{  stringBuilder.Append('@');  }
+
+				value >>= 6;
+				}
+			while (value > 0);
+			}
+
+
+		/* Function: DecodeBase64Int
+		 * Decodes a base64-encoded integer from the string.  It starts at the passed index and ends at the next <SeparatorChar>.
+		 */
+		static private int DecodeBase64Int (string text, int index = 0)
+			{
+			if (text == null)
+				{  return 0;  }
+
+			int result = 0;
+
+			while (text[index] != SeparatorChar)
+				{
+				char codon = text[index];
+				int codonValue;
+
+				if (codon >= '0' && codon <= '9')
+					{  codonValue = codon - '0';  }
+				else if (codon >= 'A' && codon <= 'Z')
+					{  codonValue = 10 + (codon - 'A');  }
+				else if (codon >= 'a' && codon <= 'z')
+					{  codonValue = 36 + (codon - 'a');  }
+				else if (codon == '!')
+					{  codonValue = 62;  }
+				else // (codon == '@')
+					{  codonValue = 63;  }
+
+				result <<= 6;
+				result |= codonValue;
+
+				index++;
+				}
+
+			return result;
+			}
+
+
+
 		// Group: Operators
 		// __________________________________________________________________________
 		
@@ -338,16 +377,9 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 		 * 
 		 * The combined class string.
 		 * 
-		 * - The first character will be 'C' or 'c' for class or 'D' or 'd' for database.
-		 *   - Uppercase means the language is case sensitive, lowercase means it's not.
-		 * - Next will be the language ID encoded in base64 using the following charset: 0-9, A-Z, a-z, !, @.
-		 *   - The encoding is little endian, so the first characters are the lowest order bits.  This is just for ease
-		 *      of encoding since it's unlikely we'll need more than one char in practice.
-		 *   - This charset is used instead of standard base64 to make it easier to read, since it mimics decimal
-		 *      and hex at low values.
-		 *   - Base64 is used instead of hex because it's more compact and is unlikely to require more than one
-		 *      character in practice.
-		 * - Next will be <SeparatorChar>, which determines when the base64 ends.
+		 * - First will be the character 'C' or 'i' depending on whether it's case-sensitive or not.
+		 * - Next will be the hierarchy type encoded in base64, followed by a <SeparatorChar>.
+		 * - Next will be the language ID encoded in base64, followed by a <SeparatorChar>.
 		 * - Next will be an embedded <SymbolString> representing the class.
 		 */
 		private string classString;
