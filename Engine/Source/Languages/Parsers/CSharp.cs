@@ -747,7 +747,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 				{
 				SymbolString symbol = scope + SymbolString.FromPlainText_NoParameters(name);
 
-				ClassString classString = ClassString.FromParameters(Hierarchies.HierarchyType.Class, language.ID, true, symbol);
+				ClassString classString = ClassString.FromParameters(EngineInstance.Hierarchies.ClassHierarchyID, language.ID, true, symbol);
 
 				ContextString childContext = new ContextString();
 				childContext.Scope = symbol;
