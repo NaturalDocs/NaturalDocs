@@ -112,7 +112,6 @@ namespace CodeClear.NaturalDocs.Engine
 
 				bool multipleSourceFiles = (topics[0].FileID != topics[topics.Count-1].FileID);
 
-			
 				List<Topic> remainingTopics = null;
 
 				if (multipleSourceFiles)
@@ -613,26 +612,29 @@ namespace CodeClear.NaturalDocs.Engine
 				if (topics != null && topics.Count >= 1 && topics[0].ClassString != null)
 					{
 					var topic = topics[0];
-					StringBuilder task = new StringBuilder("Building class view for");
 					
-					// Hierarchy
-					if (topic.ClassString.HierarchyType == Hierarchies.HierarchyType.Database)
-						{  
-						task.Append(" database");  
-						}
-					else
-						{  
-						// Language name
-						var language = (topics[0].LanguageID > 0 ? engineInstance.Languages.FromID(topics[0].LanguageID) : null);
+					int hierarchyID = topic.ClassString.HierarchyID;
+					var hierarchy = (hierarchyID == 0 ? null : engineInstance.Hierarchies.FromID(hierarchyID));
+					string hierarchyName = (hierarchy == null ? "hierarchy " +  hierarchyID : hierarchy.Name.ToLower());
 
-						if (language == null)
-							{  task.Append(" language ID " + topics[0].LanguageID + " class");  }
-						else
-							{  task.Append(" " + language.Name + " class");  }
+					bool includeLanguage = (hierarchy == null ? true : hierarchy.LanguageSpecific);
+
+					StringBuilder task = new StringBuilder("Building class view for ");
+
+					if (includeLanguage)
+						{
+						var language = (topic.LanguageID == 0 ? null : engineInstance.Languages.FromID(topic.LanguageID));
+						string languageName = (language == null ? "language " + topic.LanguageID : language.Name);
+
+						task.Append(languageName);
+						task.Append(' ');
 						}
+
+					task.Append(hierarchyName);
+					task.Append(' ');
 
 					// Class name
-					task.Append(" " + topic.ClassString.Symbol.FormatWithSeparator('.'));
+					task.Append(topic.ClassString.Symbol.FormatWithSeparator('.'));
 					
 					e.AddNaturalDocsTask(task.ToString());
 					}
