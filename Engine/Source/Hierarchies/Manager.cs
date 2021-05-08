@@ -47,7 +47,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 
 			var databaseHierarchy = new Hierarchy(
 				name: "Database", 
-				pluralName: "Database", 
+				pluralName: "Database", // we don't want "Databases"
 				type: HierarchyType.Database,
 				languageSpecific: false);
 

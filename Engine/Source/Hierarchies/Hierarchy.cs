@@ -28,7 +28,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		public Hierarchy (string name, string pluralName, HierarchyType type, bool languageSpecific)
 			{
 			this.name = name;
-			this.pluralName = pluralName;
+			this.pluralName = pluralName ?? this.name;
 			this.type = type;
 			this.languageSpecific = languageSpecific;
 			}
@@ -58,7 +58,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 			}
 
 		/* Property: PluralName
-		 * The plural name of the hierarchy, or null if none.
+		 * The plural name of the hierarchy.
 		 */
 		public string PluralName
 			{
@@ -105,7 +105,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		protected string name;
 
 		/* var: pluralName
-		 * The plural name of the hierarchy, or null if none.
+		 * The plural name of the hierarchy.
 		 */
 		protected string pluralName;
 
