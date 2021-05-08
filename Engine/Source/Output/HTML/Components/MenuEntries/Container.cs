@@ -56,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 			// If we're comparing two files we want to ignore the extension so A.cpp appears before A.B.cpp.
 
-			bool comparingFiles = (a is MenuEntries.File && b is MenuEntries.File);
+			bool comparingFiles = (a is MenuEntries.Files.File && b is MenuEntries.Files.File);
 
 			if (comparingFiles)
 				{

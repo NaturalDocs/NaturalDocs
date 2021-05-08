@@ -130,17 +130,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			string hashPath = null;
 				
-			if (menuEntry is MenuEntries.File)
+			if (menuEntry is MenuEntries.Files.File)
 				{  
-				var fileMenuEntry = (MenuEntries.File)menuEntry;
+				var fileMenuEntry = (MenuEntries.Files.File)menuEntry;
 				var file = fileMenuEntry.WrappedFile;
 				var fileSource = EngineInstance.Files.FileSourceOf(file);
 
 				hashPath = Paths.SourceFile.HashPath(fileSource.Number, fileSource.MakeRelative(file.FileName));  
 				}
-			else if (menuEntry is MenuEntries.Class)
+			else if (menuEntry is MenuEntries.Classes.Class)
 				{  
-				var classMenuEntry = (MenuEntries.Class)menuEntry;
+				var classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
 				var classString = classMenuEntry.WrappedClassString;
 
 				if (classString.HierarchyType == HierarchyType.Class)
@@ -226,16 +226,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			string hashPath = null;
 
-			if (menuContainer is MenuEntries.FileSource)
+			if (menuContainer is MenuEntries.Files.FileSource)
 				{
-				var fileSourceEntry = (MenuEntries.FileSource)menuContainer;
+				var fileSourceEntry = (MenuEntries.Files.FileSource)menuContainer;
 				hashPath = Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number,
 																				 fileSourceEntry.CondensedPathFromFileSource);
 				}
 
-			else if (menuContainer is MenuEntries.Folder)
+			else if (menuContainer is MenuEntries.Files.Folder)
 				{
-				var folderEntry = (MenuEntries.Folder)menuContainer;
+				var folderEntry = (MenuEntries.Files.Folder)menuContainer;
 
 				// Walk up the tree until you find the FileSource
 				MenuEntries.Container parentEntry = menuContainer.Parent;
@@ -245,7 +245,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{  throw new Exception ("Parent must be defined when generating JSON for menu folder \"" + (folderEntry.Title ?? "") + "\".");  }
 				#endif
 
-				while ((parentEntry is MenuEntries.FileSource) == false)
+				while ((parentEntry is MenuEntries.Files.FileSource) == false)
 					{
 					parentEntry = parentEntry.Parent;
 
@@ -255,21 +255,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					#endif
 					}
 
-				var fileSourceEntry = (MenuEntries.FileSource)parentEntry;
+				var fileSourceEntry = (MenuEntries.Files.FileSource)parentEntry;
 				hashPath = Paths.SourceFile.FolderHashPath(fileSourceEntry.WrappedFileSource.Number, 
 																				 folderEntry.PathFromFileSource );
 				}
 
-			else if (menuContainer is MenuEntries.Language)
+			else if (menuContainer is MenuEntries.Classes.Language)
 				{
-				var languageEntry = (MenuEntries.Language)menuContainer;
+				var languageEntry = (MenuEntries.Classes.Language)menuContainer;
 				hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
 																			  languageEntry.CondensedScopeString);
 				}
 
-			else if (menuContainer is MenuEntries.Scope)
+			else if (menuContainer is MenuEntries.Classes.Scope)
 				{
-				var scopeEntry = (MenuEntries.Scope)menuContainer;
+				var scopeEntry = (MenuEntries.Classes.Scope)menuContainer;
 
 				if (scopeEntry.Hierarchy == HierarchyType.Class)
 					{
@@ -281,7 +281,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + (scopeEntry.Title ?? "") + "\".");  }
 					#endif
 
-					while ((parentEntry is MenuEntries.Language) == false)
+					while ((parentEntry is MenuEntries.Classes.Language) == false)
 						{
 						parentEntry = parentEntry.Parent;
 
@@ -291,7 +291,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 						#endif
 						}
 
-					var languageEntry = (MenuEntries.Language)parentEntry;
+					var languageEntry = (MenuEntries.Classes.Language)parentEntry;
 					hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier, 
 																				 scopeEntry.WrappedScopeString);
 					}

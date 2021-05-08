@@ -1,8 +1,8 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.File
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Classes.Class
  * ____________________________________________________________________________
  * 
- * Represents a file in <Menu>.
+ * Represents a class in <Menu>.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -13,40 +13,40 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Classes
 	{
-	public class File : Entry
+	public class Class : Entry
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
-		/* Function: File
+		/* Function: Class
 		 */
-		public File (Engine.Files.File file) : base (Hierarchies.HierarchyType.File)
+		public Class (Symbols.ClassString classString) : base (classString.HierarchyType)
 			{
-			this.file = file;
-			this.Title = file.FileName.NameWithoutPath;
+			this.classString = classString;
+			this.Title = classString.Symbol.LastSegment;
 			}
 
 
 		// Group: Properties
 		// __________________________________________________________________________
 
-		/* Property: WrappedFile
-		 * The <Engine.Files.File> associated with this entry.
+		/* Property: WrappedClassString
+		 * The <Symbols.ClassString> associated with this entry.
 		 */
-		public Engine.Files.File WrappedFile
+		public Symbols.ClassString WrappedClassString
 			{
 			get
-				{  return file;  }
+				{  return classString;  }
 			}
 
 
 		// Group: Variables
 		// __________________________________________________________________________
 
-		protected Engine.Files.File file;
+		protected Symbols.ClassString classString;
 
 		}
 	}
