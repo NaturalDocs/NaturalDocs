@@ -131,7 +131,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 */
 		public bool InClassHierarchy (CommentType commentType)
 			{
-			return EngineInstance.Hierarchies.IsClassHierarchy(commentType.HierarchyID);
+			return (commentType.HierarchyID == EngineInstance.Hierarchies.ClassHierarchyID);
 			}
 
 		/* Function: InClassHierarchy

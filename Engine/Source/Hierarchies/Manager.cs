@@ -131,25 +131,17 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 
 
 
-		// Group: Convenience Functions
+		// Group: Properties
 		// __________________________________________________________________________
 
 
-		/* Function: IsClassHierarchy
-		 * Returns whether the passed ID is the class hierarchy ID.  A convenience function since this is used so often.
+		/* Property: ClassHierarchyID
+		 * Returns the ID of the class hierarchy.
 		 */
-		public bool IsClassHierarchy (int hierarchyID)
+		public int ClassHierarchyID
 			{
-			// We're assuming the class hierarchy is always defined, which should be pretty safe, so we only have to test
-			// against classHierarchyID and not also test against zero.  However, if the class hierarchy can ever be undefined
-			// then this logic needs to be updated or else it will return true for every non-hierarchy element.
-
-			#if DEBUG
-			if (classHierarchyID == 0)
-				{  throw new Exception("IsClassHierarchy needs to be updated if classHierarchyID can be zero.");  }
-			#endif
-
-			return (hierarchyID == classHierarchyID);
+			get
+				{  return classHierarchyID;  }
 			}
 
 
