@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Classe
 
 		/* Function: Class
 		 */
-		public Class (Symbols.ClassString classString) : base (classString.HierarchyType)
+		public Class (Symbols.ClassString classString) : base (classString.HierarchyType, classString.HierarchyID)
 			{
 			this.classString = classString;
 			this.Title = classString.Symbol.LastSegment;

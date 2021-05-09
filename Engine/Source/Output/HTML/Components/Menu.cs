@@ -138,7 +138,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				if (rootDatabaseMenu == null)
 					{
-					rootDatabaseMenu = new MenuEntries.Container(HierarchyType.Database);
+					rootDatabaseMenu = new MenuEntries.Container(HierarchyType.Database, classString.HierarchyID);
 					rootDatabaseMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Database");
 					}
 
@@ -179,7 +179,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (scopeEntry == null)
 					{
-					scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), classString.HierarchyType);
+					scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), 
+																					   classString.HierarchyType, classString.HierarchyID);
 					scopeEntry.Parent = container;
 					container.Members.Add(scopeEntry);
 					}
@@ -317,7 +318,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (rootFileMenu == null)
 				{
-				rootFileMenu = new MenuEntries.Container(HierarchyType.File);
+				rootFileMenu = new MenuEntries.Container(HierarchyType.File, 0);
 				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
 				}
 
@@ -397,11 +398,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (rootClassMenu == null)
 				{
-				rootClassMenu = new MenuEntries.Container(HierarchyType.Class);
+				rootClassMenu = new MenuEntries.Container(HierarchyType.Class, EngineInstance.Hierarchies.ClassHierarchyID);
 				rootClassMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Classes");
 				}
 
-			MenuEntries.Classes.Language languageEntry = new MenuEntries.Classes.Language(language, HierarchyType.Class);
+			MenuEntries.Classes.Language languageEntry = new MenuEntries.Classes.Language(language, HierarchyType.Class,
+																																	   EngineInstance.Hierarchies.ClassHierarchyID);
 			languageEntry.Parent = rootClassMenu;
 			rootClassMenu.Members.Add(languageEntry);
 

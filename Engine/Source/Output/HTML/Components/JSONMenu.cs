@@ -271,7 +271,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{
 				var scopeEntry = (MenuEntries.Classes.Scope)menuContainer;
 
-				if (scopeEntry.Hierarchy == HierarchyType.Class)
+				if (scopeEntry.HierarchyType == HierarchyType.Class)
 					{
 					// Walk up the tree until you find the language
 					MenuEntries.Container parentEntry = menuContainer.Parent;
@@ -295,7 +295,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier, 
 																				 scopeEntry.WrappedScopeString);
 					}
-				else if (scopeEntry.Hierarchy == HierarchyType.Database)
+				else if (scopeEntry.HierarchyType == HierarchyType.Database)
 					{
 					hashPath = Paths.Database.QualifierHashPath(scopeEntry.WrappedScopeString);
 					}
@@ -306,14 +306,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// If we're at one of the menu roots
 			else if (menuContainer.Parent == null)
 				{
-				if (menuContainer.Hierarchy == HierarchyType.File || menuContainer.Hierarchy == HierarchyType.Class)
+				if (menuContainer.HierarchyType == HierarchyType.File || menuContainer.HierarchyType == HierarchyType.Class)
 					{
 					// If we're at a root file or class container that is not also a language or file source, it means there are multiple 
 					// languages and/or file sources beneath it and thus there is no shared hash path.  "CSharpClass:" and "PerlClass:",
 					// "Files:" and "Files2:", etc.
 					hashPath = null;
 					}
-				else if (menuContainer.Hierarchy == HierarchyType.Database)
+				else if (menuContainer.HierarchyType == HierarchyType.Database)
 					{
 					// If we're at the root database menu and the entry is not also a scope, it means there are multiple scopes beneath it.
 					// However, unlike files and classes, there is still the shared "Database:" hash path.
@@ -389,7 +389,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			// Generate the data file name for this container.
 
-			HierarchyType hierarchy = container.MenuEntry.Hierarchy;
+			HierarchyType hierarchy = container.MenuEntry.HierarchyType;
 
 			int dataFileNumber = usedDataFiles.LowestAvailable(hierarchy);
 			usedDataFiles.Add(hierarchy, dataFileNumber);

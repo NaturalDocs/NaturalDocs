@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Files
 
 		/* Function: File
 		 */
-		public File (Engine.Files.File file) : base (Hierarchies.HierarchyType.File)
+		public File (Engine.Files.File file) : base (Hierarchies.HierarchyType.File, 0)
 			{
 			this.file = file;
 			this.Title = file.FileName.NameWithoutPath;
