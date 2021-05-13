@@ -33,27 +33,8 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		public Manager (Engine.Instance engineInstance) : base (engineInstance)
 			{
-			var fileHierarchy = new Hierarchy(
-				name: "File", 
-				pluralName: "Files", 
-				type: HierarchyType.File,
-				languageSpecific: false);
-
-			var classHierarchy = new Hierarchy(
-				name: "Class", 
-				pluralName: "Classes", 
-				type: HierarchyType.Class,
-				languageSpecific: true);
-
-			var databaseHierarchy = new Hierarchy(
-				name: "Database", 
-				pluralName: "Database", // we don't want "Databases"
-				type: HierarchyType.Database,
-				languageSpecific: false);
-
-			hierarchies = new Hierarchy[] { fileHierarchy, classHierarchy, databaseHierarchy };
-
-			classHierarchyID = classHierarchy.ID;
+			hierarchies = null;
+			classHierarchyID = 0;
 			}
 
 		protected override void Dispose (bool strictRulesApply)
@@ -62,14 +43,40 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		
 		/* Function: Start
 		 * 
-		 * Starts the module, returning whether it was successful.  If there were any  errors they will be added to errorList.
+		 * Starts the module, returning whether it was successful.  If there were any errors they will be added to errorList.
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- Currently there are no dependencies.
+		 *		- Call <Languages.Manager.Start_Stage1()> before calling this function.
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
+			var fileHierarchy = new Hierarchy(
+				name: "File", 
+				pluralName: "Files", 
+				type: HierarchyType.File,
+				languageSpecific: false,
+				caseSensitive: !SystemInfo.IgnoreCaseInPaths);
+
+			var classHierarchy = new Hierarchy(
+				name: "Class", 
+				pluralName: "Classes", 
+				type: HierarchyType.Class,
+				languageSpecific: true);
+
+			var sqlLanguage = EngineInstance.Languages.FromName("SQL");
+
+			var databaseHierarchy = new Hierarchy(
+				name: "Database", 
+				pluralName: "Database", // we don't want "Databases"
+				type: HierarchyType.Database,
+				languageSpecific: false,
+				caseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
+
+			hierarchies = new Hierarchy[] { fileHierarchy, classHierarchy, databaseHierarchy };
+
+			classHierarchyID = classHierarchy.ID;
+
 			return true;
 			}
 

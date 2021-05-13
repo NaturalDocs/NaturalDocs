@@ -28,12 +28,14 @@
  *		- <Config.Manager> is first because almost everything depends on it, such as for its config and working data folder
  *		  properties or for its flag to rebuild everything.
  *		  
- *		- <Hierarchies.Manager> is next because it has no dependencies.
+ *		- <Languages.Manager.Start_Stage1()> is next.
  *		  
- *		- <CommentTypes.Manager.Start_Stage1()> and <Languages.Manager.Start_Stage1()> are next.  <CommentTypes.Manager>
- *		  depends on <Hierarchies.Manager>.
+ *		- <Hierarchies.Manager> is next because it may copy some case-sensitivity settings from <Languages.Manager>.
+ *		  
+ *		- <CommentTypes.Manager.Start_Stage1()> is next because it depends on <Hierarchies.Manager> to interpret settings
+ *		  like "Flags: Class Hierarchy".
  *		
- *		- <CommentTypes.Manager.Start_Stage2()> and <Languages.Manager.Start_Stage2()> follow because they depend on
+ *		- <Languages.Manager.Start_Stage2()> and <CommentTypes.Manager.Start_Stage2()> follow because they depend on
  *		  each other's Stage1 functions for things like "[Language Name] Keywords" and "[Comment Type Name] Prototype Enders".
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
@@ -238,11 +240,11 @@ namespace CodeClear.NaturalDocs.Engine
 				
 				
 			return (
+				languages.Start_Stage1(errors) &&
 				hierarchies.Start(errors) &&
 				commentTypes.Start_Stage1(errors) &&
-				languages.Start_Stage1(errors) &&
-				commentTypes.Start_Stage2(errors) &&
 				languages.Start_Stage2(errors) &&
+				commentTypes.Start_Stage2(errors) &&
 				comments.Start(errors) &&
 				links.Start(errors) &&
 				styles.Start(errors) &&
