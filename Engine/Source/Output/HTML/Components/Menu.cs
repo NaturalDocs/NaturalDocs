@@ -34,10 +34,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 		public Menu (Context context) : base (context)
 			{
-			rootFileMenu = null;
-			rootClassMenu = null;
-			rootDatabaseMenu = null;
-
+			fileRoot = null;
+			hierarchyRoots = null;
 			isCondensed = false;
 			}
 
@@ -55,7 +53,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			// Find which file source owns this file and generate a relative path to it.
 
-			MenuEntries.Files.FileSource fileSourceEntry = FindOrCreateFileSourceEntryOf(file);
+			var fileSourceEntry = FindOrCreateRoot(file);
 			Path relativePath = fileSourceEntry.WrappedFileSource.MakeRelative(file.FileName);
 
 
@@ -120,39 +118,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  throw new Exception("Cannot add a class to the menu once it's been condensed.");  }
 			#endif
 
+			var rootEntry = FindOrCreateRoot(classString);
 
-			string[] classSegments = classString.Symbol.SplitSegments();
+			var hierarchy = EngineInstance.Hierarchies.FromID(classString.HierarchyID);
+			bool caseSensitive;
 
-			MenuEntries.Container container;
-			bool ignoreCase;
-
-			if (classString.HierarchyType == HierarchyType.Class)
-				{
-				MenuEntries.Classes.Language languageEntry = FindOrCreateLanguageEntryOf(classString);
-
-				container = languageEntry;
-				ignoreCase = (languageEntry.WrappedLanguage.CaseSensitive == false);
-				}
-
-			else if (classString.HierarchyType == HierarchyType.Database)
-				{
-				if (rootDatabaseMenu == null)
-					{
-					rootDatabaseMenu = new MenuEntries.Container(HierarchyType.Database, classString.HierarchyID);
-					rootDatabaseMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Database");
-					}
-
-				container = rootDatabaseMenu;
-				ignoreCase = true;
-				}
-
+			if (hierarchy.LanguageAgnostic)
+				{  caseSensitive = hierarchy.CaseSensitive;  }
 			else
-				{  throw new NotImplementedException();  }
+				{  caseSensitive = (rootEntry as MenuEntries.Classes.Language).WrappedLanguage.CaseSensitive;  }
 
 
 			// Create the class and find out where it goes.  Create new scope containers as necessary.
 
 			MenuEntries.Classes.Class classEntry = new MenuEntries.Classes.Class(classString);
+			MenuEntries.Container container = rootEntry;
+
+			string[] classSegments = classString.Symbol.SplitSegments();
 			string scopeSoFar = null;
 
 			// We only want to walk through the scope levels so we use length - 1 to ignore the last segment, which is the class name.
@@ -170,7 +152,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				foreach (var member in container.Members)
 					{
 					if (member is MenuEntries.Classes.Scope && 
-						string.Compare((member as MenuEntries.Classes.Scope).WrappedScopeString, scopeSoFar, ignoreCase) == 0)
+						string.Compare((member as MenuEntries.Classes.Scope).WrappedScopeString, scopeSoFar, !caseSensitive) == 0)
 						{  
 						scopeEntry = (MenuEntries.Classes.Scope)member;
 						break;
@@ -198,70 +180,76 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void Condense ()
 			{
-			if (rootFileMenu != null)
+			if (fileRoot != null)
 				{
-				rootFileMenu.Condense();
+				fileRoot.Condense();
 
 				// If there's only one file source we can remove the top level container.
-				if (rootFileMenu.Members.Count == 1)
+				if (fileRoot.Members.Count == 1)
 					{  
-					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu.Members[0];
+					MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)fileRoot.Members[0];
 
 					// Overwrite the file source name with the tab title, especially since it might not be defined if there was only one.
 					// We don't need an unnecessary level for a single file source.
-					fileSourceEntry.Title = rootFileMenu.Title;
+					fileSourceEntry.Title = fileRoot.Title;
 
 					// Get rid of unnecessary levels as there's no point in displaying them.
 					fileSourceEntry.CondensedTitles = null;
 
-					rootFileMenu = fileSourceEntry;
+					fileRoot = fileSourceEntry;
 					}
 				}
 
-			if (rootClassMenu != null)
+			if (hierarchyRoots != null)
 				{
-				rootClassMenu.Condense();
+				for (int i = 0; i < hierarchyRoots.Count; i++)
+					{
+					var hierarchyRoot = hierarchyRoots[i];
 
-				// If there's only one language we can remove the top level container.
-				if (rootClassMenu.Members.Count == 1)
-					{  
-					MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu.Members[0];
+					hierarchyRoot.Condense();
 
-					// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
-					// for the language.
-					languageEntry.Title = rootClassMenu.Title;
-
-					// However, we are going to keep CondensedTitles because we want all scope levels to be visible, even if
-					// they're empty.
-
-					rootClassMenu = languageEntry;
-					}
-				}
-
-			if (rootDatabaseMenu != null)
-			   {
-			   rootDatabaseMenu.Condense();
-
-				// If the only top level entry is a scope we can merge it
-				if (rootDatabaseMenu.Members.Count == 1 && rootDatabaseMenu.Members[0] is MenuEntries.Classes.Scope)
-					{  
-					MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)rootDatabaseMenu.Members[0];
-
-					// Move the scope title into CondensedTitles since we want it to be visible.
-					if (scopeEntry.CondensedTitles == null)
+					if (EngineInstance.Hierarchies.FromID(hierarchyRoot.HierarchyID).LanguageSpecific)
 						{
-						scopeEntry.CondensedTitles = new List<string>(1);
-						scopeEntry.CondensedTitles.Add(scopeEntry.Title);
-						}
-					else
-						{
-						scopeEntry.CondensedTitles.Insert(0, scopeEntry.Title);
+						// If there's only one language we can remove the top level container.
+						if (hierarchyRoot.Members.Count == 1)
+							{  
+							MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)hierarchyRoot.Members[0];
+
+							// We can overwrite the language name with the tab title.  We're not going to preserve an unnecessary level
+							// for the language.
+							languageEntry.Title = hierarchyRoot.Title;
+
+							// However, we are going to keep CondensedTitles because we want all scope levels to be visible, even if
+							// they're empty.
+
+							hierarchyRoots[i] = languageEntry;
+							}
 						}
 
-					// Now overwrite the original title with the tab title.
-					scopeEntry.Title = rootDatabaseMenu.Title;
+					else // language-agnostic
+						{
+						// If the only top level entry is a scope we can merge it
+						if (hierarchyRoot.Members.Count == 1 && hierarchyRoot.Members[0] is MenuEntries.Classes.Scope)
+							{  
+							MenuEntries.Classes.Scope scopeEntry = (MenuEntries.Classes.Scope)hierarchyRoot.Members[0];
 
-					rootDatabaseMenu = scopeEntry;
+							// Move the scope title into CondensedTitles since we want it to be visible.
+							if (scopeEntry.CondensedTitles == null)
+								{
+								scopeEntry.CondensedTitles = new List<string>(1);
+								scopeEntry.CondensedTitles.Add(scopeEntry.Title);
+								}
+							else
+								{
+								scopeEntry.CondensedTitles.Insert(0, scopeEntry.Title);
+								}
+
+							// Now overwrite the original title with the tab title.
+							scopeEntry.Title = hierarchyRoot.Title;
+
+							hierarchyRoots[i] = scopeEntry;
+							}
+						}
 					}
 			   }
 
@@ -274,14 +262,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public void Sort ()
 			{
-			if (rootFileMenu != null)
-				{  rootFileMenu.Sort();  }
+			if (fileRoot != null)
+				{  fileRoot.Sort();  }
 
-			if (rootClassMenu != null)
-				{  rootClassMenu.Sort();  }
+			if (hierarchyRoots != null)
+				{
+				foreach (var hierarchyRoot in hierarchyRoots)
+					{  hierarchyRoot.Sort();  }
+				}
+			}
 
-			if (rootDatabaseMenu != null)
-				{  rootDatabaseMenu.Sort();  }
+
+		/* Function: HierarchyRootOf
+		 * Returns the root <MenuEntries.Container> for the passed hierarchy ID, or null if there isn't one.
+		 */
+		public MenuEntries.Container HierarchyRootOf (int hierarchyID)
+			{
+			if (hierarchyRoots != null)
+				{
+				foreach (var hierarchyMenu in hierarchyRoots)
+					{
+					if (hierarchyMenu.HierarchyID == hierarchyID)
+						{  return hierarchyMenu;  }
+					}
+				}
+
+			return null;
 			}
 
 
@@ -290,162 +296,110 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Function: FindOrCreateFileSourceEntryOf
-		 * Finds or creates the file source entry associated with the passed file.
+		/* Function: FindOrCreateRoot
+		 * 
+		 * Finds and returns the root container associated with the passed file, creating one if it doesn't exist.  This will be a 
+		 * <MenuEntries.Files.FileSource> for the file's associated source, which is the second level under the hierarchy root.
+		 * 
+		 * This function cannot be used after <Condense()> is called.
 		 */
-		protected MenuEntries.Files.FileSource FindOrCreateFileSourceEntryOf (Files.File file)
+		protected MenuEntries.Files.FileSource FindOrCreateRoot (Files.File file)
 			{
+			#if DEBUG
+			if (isCondensed)
+				{  throw new Exception("Cannot use FindOrCreateRoot() after the menu has been condensed.");  }
+			#endif
+
+			if (fileRoot == null)
+				{
+				fileRoot = new MenuEntries.Container(HierarchyType.File, 0);
+				fileRoot.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
+				}
+
 			var fileSource = EngineInstance.Files.FileSourceOf(file);
-			var fileSourceEntry = FindFileSourceEntry(fileSource);
+			MenuEntries.Files.FileSource fileSourceContainer = null;
 
-			if (fileSourceEntry == null)
-				{  fileSourceEntry = CreateFileSourceEntry(fileSource);  }
+			foreach (MenuEntries.Files.FileSource member in fileRoot.Members)
+				{
+				if (member.WrappedFileSource == fileSource)
+					{
+					fileSourceContainer = member;
+					break;
+					}
+				}
 
-			return fileSourceEntry;
+			if (fileSourceContainer == null)
+				{
+				fileSourceContainer = new MenuEntries.Files.FileSource(fileSource);
+				fileSourceContainer.Parent = fileRoot;
+
+				fileRoot.Members.Add(fileSourceContainer);
+				}
+
+			return fileSourceContainer;
 			}
 
 
-		/* Function: CreateFileSourceEntry
-		 * Creates an entry for the file source, adds it to the menu, and returns it.  It will also create the <rootFileMenu> 
-		 * container if necessary.
+		/* Function: FindOrCreateRoot
+		 * 
+		 * Finds and returns the root container associated with the passed ClassString, creating one if it doesn't exist.  If the 
+		 * hierarchy is language-specific this will be a <MenuEntries.Classes.Language> for the associated language, which is
+		 * the second level under the hierarchy root.  If it is language-agnostic it will be the root <MenuEntries.Container> 
+		 * element.
+		 * 
+		 * This function cannot be used after <Condense()> is called.
 		 */
-		protected MenuEntries.Files.FileSource CreateFileSourceEntry (Files.FileSource fileSource)
+		protected MenuEntries.Container FindOrCreateRoot (Symbols.ClassString classString)
 			{
 			#if DEBUG
-			if (FindFileSourceEntry(fileSource) != null)
-				{  throw new Exception ("Tried to create a file source entry that already existed in the menu.");  }
+			if (isCondensed)
+				{  throw new Exception("Cannot use FindOrCreateRoot() after the menu has been condensed.");  }
 			#endif
 
-			if (rootFileMenu == null)
+			var hierarchy = EngineInstance.Hierarchies.FromID(classString.HierarchyID);
+			var rootContainer = HierarchyRootOf(hierarchy.ID);
+
+			if (rootContainer == null)
 				{
-				rootFileMenu = new MenuEntries.Container(HierarchyType.File, 0);
-				rootFileMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
-				}
+				rootContainer = new MenuEntries.Container(hierarchy.Type, hierarchy.ID);
+				rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralName, hierarchy.PluralName);
 
-			MenuEntries.Files.FileSource fileSourceEntry = new MenuEntries.Files.FileSource(fileSource);
-			fileSourceEntry.Parent = rootFileMenu;
-			rootFileMenu.Members.Add(fileSourceEntry);
-
-			return fileSourceEntry;
-			}
-
-
-		/* Function: FindFileSourceEntry
-		 * Returns the menu entry that contains the passed file source, or null if there isn't one yet.
-		 */
-		protected MenuEntries.Files.FileSource FindFileSourceEntry (Files.FileSource fileSource)
-			{
-			if (rootFileMenu == null)
-				{  return null;  }
-
-			// If the menu only had one file source and it was condensed, the root file entry may have been replaced
-			// by that file source.
-			else if (rootFileMenu is MenuEntries.Files.FileSource)
-				{
-				MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)rootFileMenu;
-
-				if (fileSourceEntry.WrappedFileSource == fileSource)
-					{  return fileSourceEntry;  }
-				else
-					{  return null;  }
-				}
-
-			// We're assuming that the only other possibility is a container with a flat list of FileSources.  If we later allow 
-			// FileSources to be put in nested groups this will need to be updated.
-			else
-				{
-				foreach (var member in rootFileMenu.Members)
+				if (hierarchyRoots == null)
 					{
-					if (member is MenuEntries.Files.FileSource)
+					// Most projects will only have one, but four should cover almost all cases without needing to reallocate.
+					hierarchyRoots = new List<MenuEntries.Container>(4);
+					}
+
+				hierarchyRoots.Add(rootContainer);
+				}
+
+			if (hierarchy.LanguageAgnostic)
+				{
+				return rootContainer;
+				}
+			else // language-specific
+				{
+				int languageID = classString.LanguageID;
+				MenuEntries.Classes.Language languageContainer = null;
+
+				foreach (MenuEntries.Classes.Language member in rootContainer.Members)
+					{
+					if (member.WrappedLanguage.ID == languageID)
 						{
-						MenuEntries.Files.FileSource fileSourceEntry = (MenuEntries.Files.FileSource)member;
-						
-						if (fileSourceEntry.WrappedFileSource == fileSource)
-							{  return fileSourceEntry;  }
+						languageContainer = member;
+						break;
 						}
 					}
 
-				return null;
-				}
-			}
-
-
-		/* Function: FindOrCreateLanguageEntryOf
-		 * Finds or creates the language entry associated with the passed ClassString.
-		 */
-		protected MenuEntries.Classes.Language FindOrCreateLanguageEntryOf (Symbols.ClassString classString)
-			{
-			var language = EngineInstance.Languages.FromID(classString.LanguageID);
-			var languageEntry = FindLanguageEntry(language);
-
-			if (languageEntry == null)
-				{  languageEntry = CreateLanguageEntry(language);  }
-
-			return languageEntry;
-			}
-
-
-		/* Function: CreateLanguageEntry
-		 * Creates an entry for the language, adds it to the class menu, and returns it.  It will also create the <rootClassMenu> 
-		 * container if necessary.
-		 */
-		protected MenuEntries.Classes.Language CreateLanguageEntry (Languages.Language language)
-			{
-			#if DEBUG
-			if (FindLanguageEntry(language) != null)
-				{  throw new Exception ("Tried to create a language entry that already existed in the menu.");  }
-			#endif
-
-			if (rootClassMenu == null)
-				{
-				rootClassMenu = new MenuEntries.Container(HierarchyType.Class, EngineInstance.Hierarchies.ClassHierarchyID);
-				rootClassMenu.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Classes");
-				}
-
-			MenuEntries.Classes.Language languageEntry = new MenuEntries.Classes.Language(language, HierarchyType.Class,
-																																	   EngineInstance.Hierarchies.ClassHierarchyID);
-			languageEntry.Parent = rootClassMenu;
-			rootClassMenu.Members.Add(languageEntry);
-
-			return languageEntry;
-			}
-
-
-		/* Function: FindLanguageEntry
-		 * Returns the entry that contains the passed language, or null if there isn't one yet.
-		 */
-		protected MenuEntries.Classes.Language FindLanguageEntry (Languages.Language language)
-			{
-			if (rootClassMenu == null)
-				{  return null;  }
-
-			// If the menu only had one language and it was condensed, the root class entry may have been replaced
-			// by that language.
-			else if (rootClassMenu is MenuEntries.Classes.Language)
-				{
-				MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)rootClassMenu;
-
-				if (languageEntry.WrappedLanguage == language)
-					{  return languageEntry;  }
-				else
-					{  return null;  }
-				}
-
-			// The only other possibility is a container with a flat list of languages.
-			else
-				{
-				foreach (var member in rootClassMenu.Members)
+				if (languageContainer == null)
 					{
-					if (member is MenuEntries.Classes.Language)
-						{
-						MenuEntries.Classes.Language languageEntry = (MenuEntries.Classes.Language)member;
-						
-						if (languageEntry.WrappedLanguage == language)
-							{  return languageEntry;  }
-						}
+					languageContainer = new MenuEntries.Classes.Language(EngineInstance.Languages.FromID(languageID),
+																										hierarchy.Type, hierarchy.ID);
+					languageContainer.Parent = rootContainer;
+					rootContainer.Members.Add(languageContainer);
 					}
 
-				return null;
+				return languageContainer;
 				}
 			}
 
@@ -455,42 +409,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Property: RootFileMenu
-		 * 
-		 * The root container of all file-based menu entries, or null if none.
-		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
-		 * after condensation it may be a file source if there was only one.
+		/* Property: FileRoot
+		 * The root <MenuEntries.Container> for the file menu, or null if there isn't one.
 		 */
-		public MenuEntries.Container RootFileMenu
+		public MenuEntries.Container FileRoot
 			{
 			get
-				{  return rootFileMenu;  }
-			}
-			
-
-		/* Property: RootClassMenu
-		 * 
-		 * The root container of all class-based menu entries, or null if none.
-		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
-		 * after condensation it may be a file source if there was only one.
-		 */
-		public MenuEntries.Container RootClassMenu
-			{
-			get
-				{  return rootClassMenu;  }
+				{  return fileRoot;  }
 			}
 
-
-		/* Property: RootDatabaseMenu
-		 * 
-		 * The root container of all database-based menu entries, or null if none.
+		/* Property: HierarchyRoots
+		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each 
+		 * hierarchy ID in use.  They are in no particular order.
 		 */
-		public MenuEntries.Container RootDatabaseMenu
+		public IList<MenuEntries.Container> HierarchyRoots
 			{
 			get
-				{  return rootDatabaseMenu;  }
+				{  return hierarchyRoots;  }
 			}
 			
 
@@ -498,30 +433,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// Group: Variables
 		// __________________________________________________________________________
 
-
-		/* var: rootFileMenu
-		 * 
-		 * The root container of all file-based menu entries, or null if none.
-		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Files.FileSources> as its members.  However,
-		 * after condensation it may be a file source if there was only one.
+		/* var: fileRoot
+		 * The root <MenuEntries.Container> for the file menu, or null if there are no files.
 		 */
-		protected MenuEntries.Container rootFileMenu;
+		protected MenuEntries.Container fileRoot;
 
-		/* var: rootClassMenu
-		 * 
-		 * The root container of all class-based menu entries, or null if none.
-		 * 
-		 * Before condensation this will be a container with only <MenuEntries.Classes.Languages> as its members.  However,
-		 * after condensation it may be a language if there was only one.
+		/* var: hierarchyRoots
+		 * The root <MenuEntries.Container> for each hierarchy menu, or null if there are none.  There will be one for each 
+		 * hierarchy ID in use.  They are in no particular order.
 		 */
-		protected MenuEntries.Container rootClassMenu;
-
-		/* var: rootDatabaseMenu
-		 * 
-		 * The root container of all database-based menu entries, or null if none.
-		 */
-		protected MenuEntries.Container rootDatabaseMenu;
+		protected List<MenuEntries.Container> hierarchyRoots;
 
 		/* var: isCondensed
 		 * Whether the menu tree has been condensed.

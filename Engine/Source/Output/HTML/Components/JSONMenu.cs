@@ -37,25 +37,41 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		public JSONMenu (Context context) : base (context)
 			{
-			rootFileMenu = null;
-			rootClassMenu = null;
-			rootDatabaseMenu = null;
-
+			fileRoot = null;
+			hierarchyRoots = null;
 			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 			}
 
 
 		/* Function: ConvertToJSON
-		 * Converts the passed <Menu> to a JSON menu structure, accessible from <RootFileMenu>, <RootClassMenu>, and 
-		 * <RootDatabaseMenu>.
+		 * Converts the passed <Menu> to a JSON menu structure, accessible from <FileRoot> and <HierarchyRoots>.
 		 */
 		public void ConvertToJSON (Menu menu)
 			{
-			rootFileMenu = (menu.RootFileMenu != null ? ConvertToJSON(menu.RootFileMenu) : null);
-			rootClassMenu = (menu.RootClassMenu != null ? ConvertToJSON(menu.RootClassMenu) : null);
-			rootDatabaseMenu = (menu.RootDatabaseMenu != null ? ConvertToJSON(menu.RootDatabaseMenu) : null);
+			if (menu.FileRoot != null)
+				{  fileRoot = ConvertToJSON(menu.FileRoot);  }
+			else
+				{  fileRoot = null;  }
+			
+			if (menu.HierarchyRoots != null)
+				{
+				hierarchyRoots = new List<JSONMenuEntries.Container>( menu.HierarchyRoots.Count );
 
-			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
+				foreach (var menuHierarchyRoot in menu.HierarchyRoots)
+					{  hierarchyRoots.Add( ConvertToJSON(menuHierarchyRoot) );  }
+
+				hierarchyRoots.Sort(
+					delegate (JSONMenuEntries.Container a, JSONMenuEntries.Container b)
+						{
+						var hierarchyA = EngineInstance.Hierarchies.FromID( a.MenuEntry.HierarchyID );
+						var hierarchyB = EngineInstance.Hierarchies.FromID( b.MenuEntry.HierarchyID );
+
+						return (hierarchyA.SortValue - hierarchyB.SortValue);
+						}
+					);
+				}
+			else
+				{  hierarchyRoots = null;  }
 			}
 
 
@@ -86,12 +102,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			var usedDataFiles = AssignDataFiles();
 
-			if (rootFileMenu != null)
-				{  BuildDataFiles(rootFileMenu);  }
-			if (rootClassMenu != null)
-				{  BuildDataFiles(rootClassMenu);  }
-			if (rootDatabaseMenu != null)
-				{  BuildDataFiles(rootDatabaseMenu);  }
+			if (fileRoot != null)
+				{  BuildDataFiles(fileRoot);  }
+
+			if (hierarchyRoots != null)
+				{  
+				foreach (var hierarchyRoot in hierarchyRoots)
+					{  BuildDataFiles(hierarchyRoot);  }
+				}
 
 			BuildTabDataFile();
 
@@ -363,12 +381,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			NumberSetTable<HierarchyType> usedDataFiles = new NumberSetTable<HierarchyType>();
 
-			if (rootFileMenu != null)
-				{  AssignDataFiles(rootFileMenu, ref usedDataFiles);  }
-			if (rootClassMenu != null)
-				{  AssignDataFiles(rootClassMenu, ref usedDataFiles);  }
-			if (rootDatabaseMenu != null)
-				{  AssignDataFiles(rootDatabaseMenu, ref usedDataFiles);  }
+			if (fileRoot != null)
+				{  AssignDataFiles(fileRoot, ref usedDataFiles);  }
+
+			if (hierarchyRoots != null)
+				{
+				foreach (var hierarchyRoot in hierarchyRoots)
+					{  AssignDataFiles(hierarchyRoot, ref usedDataFiles);  }
+				}
 
 			return usedDataFiles;
 			}
@@ -614,20 +634,21 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			// DEPENDENCY: tabTypes must use the same strings as the NDLocation JavaScript class.
 			// DEPENDENCY: tabTypes must use strings safe for including in CSS names.
 
-			if (rootFileMenu != null)
+			if (fileRoot != null)
 				{
-				tabContainers.Add(rootFileMenu);
+				tabContainers.Add(fileRoot);
 				tabTypes.Add("File");
 				}
-			if (rootClassMenu != null)
+
+			if (hierarchyRoots != null)
 				{
-				tabContainers.Add(rootClassMenu);
-				tabTypes.Add("Class");
-				}
-			if (rootDatabaseMenu != null)
-				{
-				tabContainers.Add(rootDatabaseMenu);
-				tabTypes.Add("Database");
+				foreach (var hierarchyRoot in hierarchyRoots)
+					{
+					var hierarchy = EngineInstance.Hierarchies.FromID(hierarchyRoot.MenuEntry.HierarchyID);
+
+					tabContainers.Add(hierarchyRoot);
+					tabTypes.Add(hierarchy.SimpleIdentifier);
+					}
 				}
 
 			for (int i = 0; i < tabContainers.Count; i++)
@@ -698,33 +719,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* Property: RootFileMenu
+		/* Property: FileRoot
 		 * The root container of all file-based menu entries, or null if none.
 		 */
-		public JSONMenuEntries.Container RootFileMenu
+		public JSONMenuEntries.Container FileRoot
 			{
 			get
-				{  return rootFileMenu;  }
+				{  return fileRoot;  }
 			}
 			
 
-		/* Property: RootClassMenu
-		 * The root container of all class-based menu entries, or null if none.
+		/* Property HierarchyRoots
+		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
 		 */
-		public JSONMenuEntries.Container RootClassMenu
+		public IList<JSONMenuEntries.Container> HierarchyRoots
 			{
 			get
-				{  return rootClassMenu;  }
-			}
-
-
-		/* Property: RootDatabaseMenu
-		 * The root container of all database-based menu entries, or null if none.
-		 */
-		public JSONMenuEntries.Container RootDatabaseMenu
-			{
-			get
-				{  return rootDatabaseMenu;  }
+				{  return hierarchyRoots;  }
 			}
 
 
@@ -753,20 +764,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		// __________________________________________________________________________
 
 
-		/* var: rootFileMenu
-		 * The root container of all file-based menu entries, or null if none.
+		/* var: fileRoot
+		 * The root container of all file-based menu entries, or null if there are no files.
 		 */
-		protected JSONMenuEntries.Container rootFileMenu;
+		protected JSONMenuEntries.Container fileRoot;
 
-		/* var: rootClassMenu
-		 * The root container of all class-based menu entries, or null if none.
+		/* var: hierarchyRoots
+		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
 		 */
-		protected JSONMenuEntries.Container rootClassMenu;
-
-		/* var: rootDatabaseMenu
-		 * The root container of all database-based menu entries, or null if none.
-		 */
-		protected JSONMenuEntries.Container rootDatabaseMenu;
+		protected List<JSONMenuEntries.Container> hierarchyRoots;
 
 		/* var: addWhitespace
 		 * Whether additional whitespace and line breaks should be added to the JSON output to make it more readable.
