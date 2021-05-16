@@ -874,20 +874,29 @@ namespace CodeClear.NaturalDocs.Engine.Links
 			// Otherwise see if the target path is the same as the path relative to an image folder.  This is our next best choice.  We
 			// rank image folders by their number, lower being better.
 
-			var fileSource = EngineInstance.Files.FileSourceOf(file);
+			// We have to go through all the image file sources because they could be subfolders of source file sources.  Thus using
+			// EngineInstance.Files.FileSourceOf() could return the source file source but not the image file source that also applies.
 
-			if (fileSource.Type == InputType.Image)
+			int bestScore = 0;
+
+			foreach (var fileSource in EngineInstance.Files.FileSources)
 				{
-				Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
+				if (fileSource.Type == InputType.Image)
+					{
+					Path pathRelativeToFileSource = fileSource.MakeAbsolute(imageLink.Path);
 
-				if (string.Compare(pathRelativeToFileSource, file.FileName, true) == 0)
-					{  return (int.MaxValue - fileSource.Number);  }
+					if (string.Compare(pathRelativeToFileSource, file.FileName, true) == 0)
+						{  
+						int score = (int.MaxValue - fileSource.Number);
+
+						if (score > bestScore)
+							{  bestScore = score;  }
+						}
+					}
 				}
 
-
-			// Nope.
-
-			return 0;
+			// Still zero if there were no matches.
+			return bestScore;
 			}
 
 
