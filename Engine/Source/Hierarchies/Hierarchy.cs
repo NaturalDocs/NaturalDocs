@@ -26,15 +26,15 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		/* Constructor: Hierarchy
 		 */
 		public Hierarchy (string name, string pluralName, string simpleIdentifier, string pluralSimpleIdentifier,
-								 HierarchyType type, bool languageSpecific, bool caseSensitive = true)
+								 HierarchyType type, bool isLanguageSpecific, bool isCaseSensitive = true)
 			{
 			this.name = name;
 			this.pluralName = pluralName;
 			this.simpleIdentifier = simpleIdentifier;
 			this.pluralSimpleIdentifier = pluralSimpleIdentifier;
 			this.type = type;
-			this.languageSpecific = languageSpecific;
-			this.caseSensitive = caseSensitive;
+			this.isLanguageSpecific = isLanguageSpecific;
+			this.isCaseSensitive = isCaseSensitive;
 			}
 
 
@@ -101,39 +101,39 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				{  return type;  }
 			}
 
-		/* Property: LanguageSpecific
+		/* Property: IsLanguageSpecific
 		 * Whether members of the hierarchy should be separated by language.
 		 */
-		public bool LanguageSpecific
+		public bool IsLanguageSpecific
 			{
 			get
-				{  return languageSpecific;  }
+				{  return isLanguageSpecific;  }
 			}
 
-		/* Property: LanguageAgnostic
+		/* Property: IsLanguageAgnostic
 		 * Whether members of the hierarchy don't need to be separated by language.
 		 */
-		public bool LanguageAgnostic
+		public bool IsLanguageAgnostic
 			{
 			get
-				{  return !LanguageSpecific;  }
+				{  return !IsLanguageSpecific;  }
 			}
 
-		/* Property: CaseSensitive
-		 * Whether members of the hierarchy are case-sensitive.  Note that this is only relevant if the hierarchy is <LanguageAgnostic>.
-		 * If it is <LanguageSpecific> you should get the case-sensitivity setting from the language associated with it instead.  In debug
-		 * builds attempting to access this property will throw an exception if the hierarchy is <LanguageSpecific>.
+		/* Property: IsCaseSensitive
+		 * Whether members of the hierarchy are case-sensitive.  Note that this is only relevant if the hierarchy is language-agnostic.
+		 * If it language-specific you should get the case-sensitivity setting from the language associated with it instead.  In debug
+		 * builds attempting to access this property will throw an exception if the hierarchy is language-specific.
 		 */
-		public bool CaseSensitive
+		public bool IsCaseSensitive
 			{
 			get
 				{  
 				#if DEBUG
-				if (LanguageSpecific)
-					{  throw new InvalidOperationException("Shouldn't read Hierarchy.CaseSensitive for language-specific hierarchies.");  }
+				if (IsLanguageSpecific)
+					{  throw new InvalidOperationException("Shouldn't read Hierarchy.IsCaseSensitive for language-specific hierarchies.");  }
 				#endif
 
-				return caseSensitive;  
+				return isCaseSensitive;  
 				}
 			}
 
@@ -177,16 +177,16 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		protected HierarchyType type;
 
-		/* var: languageSpecific
+		/* var: isLanguageSpecific
 		 * Whether hierarchy members should be separated by language.
 		 */
-		protected bool languageSpecific;
+		protected bool isLanguageSpecific;
 
-		/* var: caseSensitive
+		/* var: isCaseSensitive
 		 * Whether the hierarchy members are case-sensitive.  This is only relevant if the hierarchy is language-agnostic.  If the
 		 * hierarchy is language-specific you should get this setting from the language instead.
 		 */
-		protected bool caseSensitive;
+		protected bool isCaseSensitive;
 
 		}
 	}

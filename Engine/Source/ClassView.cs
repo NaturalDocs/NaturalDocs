@@ -617,7 +617,7 @@ namespace CodeClear.NaturalDocs.Engine
 					var hierarchy = (hierarchyID == 0 ? null : engineInstance.Hierarchies.FromID(hierarchyID));
 					string hierarchyName = (hierarchy == null ? "hierarchy " +  hierarchyID : hierarchy.Name.ToLower());
 
-					bool includeLanguage = (hierarchy == null ? true : hierarchy.LanguageSpecific);
+					bool includeLanguage = (hierarchy == null ? true : hierarchy.IsLanguageSpecific);
 
 					StringBuilder task = new StringBuilder("Building class view for ");
 

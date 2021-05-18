@@ -57,8 +57,8 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				simpleIdentifier: "File",
 				pluralSimpleIdentifier: "Files",
 				type: HierarchyType.File,
-				languageSpecific: false,
-				caseSensitive: !SystemInfo.IgnoreCaseInPaths);
+				isLanguageSpecific: false,
+				isCaseSensitive: !SystemInfo.IgnoreCaseInPaths);
 
 			var classHierarchy = new Hierarchy(
 				name: "Class", 
@@ -66,7 +66,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				simpleIdentifier: "Class",
 				pluralSimpleIdentifier: "Classes",
 				type: HierarchyType.Class,
-				languageSpecific: true);
+				isLanguageSpecific: true);
 
 			var sqlLanguage = EngineInstance.Languages.FromName("SQL");
 
@@ -76,8 +76,8 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				simpleIdentifier: "Database",
 				pluralSimpleIdentifier: "Database", // we don't want "Databases"
 				type: HierarchyType.Database,
-				languageSpecific: false,
-				caseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
+				isLanguageSpecific: false,
+				isCaseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
 
 			hierarchies = new Hierarchy[] { fileHierarchy, classHierarchy, databaseHierarchy };
 

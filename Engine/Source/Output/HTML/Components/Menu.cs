@@ -123,8 +123,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			var hierarchy = EngineInstance.Hierarchies.FromID(classString.HierarchyID);
 			bool caseSensitive;
 
-			if (hierarchy.LanguageAgnostic)
-				{  caseSensitive = hierarchy.CaseSensitive;  }
+			if (hierarchy.IsLanguageAgnostic)
+				{  caseSensitive = hierarchy.IsCaseSensitive;  }
 			else
 				{  caseSensitive = (rootEntry as MenuEntries.Classes.Language).WrappedLanguage.CaseSensitive;  }
 
@@ -208,7 +208,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 					hierarchyRoot.Condense();
 
-					if (EngineInstance.Hierarchies.FromID(hierarchyRoot.HierarchyID).LanguageSpecific)
+					if (EngineInstance.Hierarchies.FromID(hierarchyRoot.HierarchyID).IsLanguageSpecific)
 						{
 						// If there's only one language we can remove the top level container.
 						if (hierarchyRoot.Members.Count == 1)
@@ -373,7 +373,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				hierarchyRoots.Add(rootContainer);
 				}
 
-			if (hierarchy.LanguageAgnostic)
+			if (hierarchy.IsLanguageAgnostic)
 				{
 				return rootContainer;
 				}
