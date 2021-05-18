@@ -55,6 +55,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				name: "File", 
 				pluralName: "Files", 
 				simpleIdentifier: "File",
+				pluralSimpleIdentifier: "Files",
 				type: HierarchyType.File,
 				languageSpecific: false,
 				caseSensitive: !SystemInfo.IgnoreCaseInPaths);
@@ -63,6 +64,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				name: "Class", 
 				pluralName: "Classes", 
 				simpleIdentifier: "Class",
+				pluralSimpleIdentifier: "Classes",
 				type: HierarchyType.Class,
 				languageSpecific: true);
 
@@ -72,6 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				name: "Database", 
 				pluralName: "Database", // we don't want "Databases"
 				simpleIdentifier: "Database",
+				pluralSimpleIdentifier: "Database", // we don't want "Databases"
 				type: HierarchyType.Database,
 				languageSpecific: false,
 				caseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );

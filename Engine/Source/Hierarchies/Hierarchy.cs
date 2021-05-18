@@ -25,12 +25,13 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		
 		/* Constructor: Hierarchy
 		 */
-		public Hierarchy (string name, string pluralName, string simpleIdentifier, 
+		public Hierarchy (string name, string pluralName, string simpleIdentifier, string pluralSimpleIdentifier,
 								 HierarchyType type, bool languageSpecific, bool caseSensitive = true)
 			{
 			this.name = name;
-			this.pluralName = pluralName ?? this.name;
+			this.pluralName = pluralName;
 			this.simpleIdentifier = simpleIdentifier;
+			this.pluralSimpleIdentifier = pluralSimpleIdentifier;
 			this.type = type;
 			this.languageSpecific = languageSpecific;
 			this.caseSensitive = caseSensitive;
@@ -78,6 +79,17 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				{  return simpleIdentifier;  }
 			set
 				{  simpleIdentifier = value;  }
+			}
+			
+		/* Property: PluralSimpleIdentifier
+		 * The hierarchy's plural name using only the letters A to Z.
+		 */
+		public string PluralSimpleIdentifier
+			{
+			get
+				{  return pluralSimpleIdentifier;  }
+			set
+				{  pluralSimpleIdentifier = value;  }
 			}
 			
 		/* Property: Type
@@ -154,6 +166,11 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 * The hierarchy's name using only the letters A to Z.
 		 */
 		protected string simpleIdentifier;
+
+		/* var: pluralSimpleIdentifier
+		 * The hierarchy's plural name using only the letters A to Z.
+		 */
+		protected string pluralSimpleIdentifier;
 
 		/* var: type
 		 * The <HierarchyType> associated with this hierarchy.
