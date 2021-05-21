@@ -148,6 +148,15 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		// __________________________________________________________________________
 
 
+		/* Property: AllHierarchies
+		 * Returns all the defined hierarchies.
+		 */
+		public IEnumerable<Hierarchy> AllHierarchies
+			{
+			get
+				{  return hierarchies;  }
+			}
+
 		/* Property: ClassHierarchyID
 		 * Returns the ID of the class hierarchy.
 		 */
