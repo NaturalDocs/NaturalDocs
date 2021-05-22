@@ -136,12 +136,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				else if (page.IsClass)
 					{
 					var language = target.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
-					return Paths.Class.OutputFile(target.OutputFolder, language.SimpleIdentifier, page.ClassString.Symbol);
-					}
-
-				else if (page.IsDatabase)
-					{
-					return Paths.Database.OutputFile(target.OutputFolder, page.ClassString.Symbol);
+					var hierarchy = target.EngineInstance.Hierarchies.FromID(page.ClassString.HierarchyID);
+					return Paths.Class.OutputFile(target.OutputFolder, hierarchy, language, page.ClassString.Symbol);
 					}
 
 				else
@@ -237,12 +233,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				else if (page.IsClass)
 					{
 					var language = target.EngineInstance.Languages.FromID(page.ClassString.LanguageID);
-					fileHashPath = Paths.Class.HashPath(language.SimpleIdentifier, page.ClassString.Symbol);
-					}
-
-				else if (page.IsDatabase)
-					{
-					fileHashPath = Paths.Database.HashPath(page.ClassString.Symbol);
+					var hierarchy = target.EngineInstance.Hierarchies.FromID(page.ClassString.HierarchyID);
+					fileHashPath = Paths.Class.HashPath(hierarchy, language, page.ClassString.Symbol);
 					}
 
 				else
@@ -282,7 +274,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					return Paths.Topic.HashPath(topic, includeClass: true);
 					}
 
-				else if (page.InHierarchy)
+				else if (page.IsClass)
 					{
 					// If we're in a class hierarchy and the topic defines a class, that means we're on the first topic on the
 					// page.  We omit the topic part so it can just be Class instead of Class:Class.

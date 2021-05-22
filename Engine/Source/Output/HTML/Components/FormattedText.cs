@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			Context targetContext;
 
-			if (context.Page.InHierarchy && targetTopic.ClassString != null)
+			if (context.Page.IsClass && targetTopic.ClassString != null)
 				{  targetContext = new Context(context.Target, targetTopic.ClassID, targetTopic.ClassString, targetTopic);  }
 			else
 				{  targetContext = new Context(context.Target, targetTopic.FileID, targetTopic);  }

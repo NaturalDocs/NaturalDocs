@@ -356,7 +356,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				// Purge everything so no stray files are left behind from the previous build.
 				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
 				PurgeAllClassFolders(ref inPurgingOperation);
-				PurgeAllDatabaseFolders(ref inPurgingOperation);
 				PurgeAllStyleFolders(ref inPurgingOperation);
 				PurgeAllMenuFolders(ref inPurgingOperation);
 				PurgeAllSearchIndexFolders(ref inPurgingOperation);
@@ -638,17 +637,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected void PurgeAllClassFolders (ref bool inPurgingOperation)
 			{
-			PurgeFolder( Paths.Class.OutputFolder(this.OutputFolder), ref inPurgingOperation );
-			}
-
-
-		/* Function: PurgeAllDatabaseFolders
-		 * Deletes all the database output folders and their contents.  Pass a reference to a bool that tracks whether we've registered
-		 * a PossiblyLongOperation for purging with <Engine.Instance>.  Call <FinishedPurging()> after all purging calls.
-		 */
-		protected void PurgeAllDatabaseFolders (ref bool inPurgingOperation)
-			{
-			PurgeFolder( Paths.Database.OutputFolder(this.OutputFolder), ref inPurgingOperation );
+			foreach (var hierarchy in EngineInstance.Hierarchies.AllHierarchies)
+				{
+				PurgeFolder( Paths.Class.OutputFolder(this.OutputFolder, hierarchy), ref inPurgingOperation );
+				}
 			}
 
 

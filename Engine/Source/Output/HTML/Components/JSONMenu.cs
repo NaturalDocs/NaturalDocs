@@ -160,18 +160,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				{  
 				var classMenuEntry = (MenuEntries.Classes.Class)menuEntry;
 				var classString = classMenuEntry.WrappedClassString;
+				var hierarchy = EngineInstance.Hierarchies.FromID(classMenuEntry.HierarchyID);
+				var language = EngineInstance.Languages.FromID(classString.LanguageID);
 
-				if (classString.HierarchyType == HierarchyType.Class)
-					{
-					var language = EngineInstance.Languages.FromID(classString.LanguageID);
-					hashPath = Paths.Class.HashPath(language.SimpleIdentifier, classString.Symbol);  
-					}
-				else if (classString.HierarchyType == HierarchyType.Database)
-					{
-					hashPath = Paths.Database.HashPath(classString.Symbol);
-					}
-				else
-					{  throw new NotImplementedException();  }
+				hashPath = Paths.Class.HashPath(hierarchy, language, classString.Symbol);  
 				}
 			else
 				{  throw new NotImplementedException();  }
@@ -281,64 +273,72 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			else if (menuContainer is MenuEntries.Classes.Language)
 				{
 				var languageEntry = (MenuEntries.Classes.Language)menuContainer;
-				hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier,
-																			  languageEntry.CondensedScopeString);
+				var hierarchy = EngineInstance.Hierarchies.FromID(languageEntry.HierarchyID);
+				var language = languageEntry.WrappedLanguage;
+
+				hashPath = Paths.Class.QualifierHashPath(hierarchy, language, languageEntry.CondensedScopeString);
 				}
 
 			else if (menuContainer is MenuEntries.Classes.Scope)
 				{
 				var scopeEntry = (MenuEntries.Classes.Scope)menuContainer;
+				var hierarchy = EngineInstance.Hierarchies.FromID(scopeEntry.HierarchyID);
 
-				if (scopeEntry.HierarchyType == HierarchyType.Class)
+				if (hierarchy.IsLanguageSpecific)
 					{
 					// Walk up the tree until you find the language
 					MenuEntries.Container parentEntry = menuContainer.Parent;
 
+					while (parentEntry != null && (parentEntry is MenuEntries.Classes.Language) == false)
+						{  parentEntry = parentEntry.Parent;  }
+
 					#if DEBUG
 					if (parentEntry == null)
-						{  throw new Exception ("Parent must be defined when generating JSON for menu scope \"" + (scopeEntry.Title ?? "") + "\".");  }
+						{  throw new Exception ("Couldn't find a language among the scope \"" + (scopeEntry.Title ?? "") + "\"'s parents when generating JSON.");  }
 					#endif
 
-					while ((parentEntry is MenuEntries.Classes.Language) == false)
-						{
-						parentEntry = parentEntry.Parent;
-
-						#if DEBUG
-						if (parentEntry == null)
-							{  throw new Exception ("Couldn't find a language among the scope \"" + (scopeEntry.Title ?? "") + "\"'s parents when generating JSON.");  }
-						#endif
-						}
-
 					var languageEntry = (MenuEntries.Classes.Language)parentEntry;
-					hashPath = Paths.Class.QualifierHashPath(languageEntry.WrappedLanguage.SimpleIdentifier, 
-																				 scopeEntry.WrappedScopeString);
+					var language = languageEntry.WrappedLanguage;
+
+					hashPath = Paths.Class.QualifierHashPath(hierarchy, language, scopeEntry.WrappedScopeString);
 					}
-				else if (scopeEntry.HierarchyType == HierarchyType.Database)
+				else // language-agnostic
 					{
-					hashPath = Paths.Database.QualifierHashPath(scopeEntry.WrappedScopeString);
+					hashPath = Paths.Class.QualifierHashPath(hierarchy, null, scopeEntry.WrappedScopeString);
 					}
-				else
-					{  throw new NotImplementedException();  }
 				}
 
 			// If we're at one of the menu roots
 			else if (menuContainer.Parent == null)
 				{
-				if (menuContainer.HierarchyType == HierarchyType.File || menuContainer.HierarchyType == HierarchyType.Class)
+
+				// If we're at the file root
+				if (menuContainer.HierarchyID == 0)
 					{
-					// If we're at a root file or class container that is not also a language or file source, it means there are multiple 
-					// languages and/or file sources beneath it and thus there is no shared hash path.  "CSharpClass:" and "PerlClass:",
-					// "Files:" and "Files2:", etc.
+					// If we're at the file root container and it wasn't also a file source, it means there are multiple file sources beneath
+					// it and thus there is no shared hash path.  "Files:" and "Files2:", etc.
 					hashPath = null;
 					}
-				else if (menuContainer.HierarchyType == HierarchyType.Database)
-					{
-					// If we're at the root database menu and the entry is not also a scope, it means there are multiple scopes beneath it.
-					// However, unlike files and classes, there is still the shared "Database:" hash path.
-					hashPath = Paths.Database.QualifierHashPath();
-					}
+
+				// if we're at one of the class hierarchy roots
 				else
-					{  throw new NotImplementedException();  }
+					{
+					var hierarchy = EngineInstance.Hierarchies.FromID(menuContainer.HierarchyID);
+
+					if (hierarchy.IsLanguageSpecific)
+						{
+						// If we're at a root language-specific class container that wasn't also a language, it means there are multiple
+						// languages beneath it and thus there is no shared hash path.  "CSharpClass:" and "PerlClass:", etc.
+						hashPath = null;
+						}
+					else // language-agnostic
+						{
+						// If we're at a root language-agnostic class container that wasn't also a scope, it means there are multiple scopes
+						// beneath it.  However, unlike files and language-specific classes, there is still a shared hash path.  "Database:",
+						// etc.
+						hashPath = Paths.Class.QualifierHashPath(hierarchy, null);
+						}
+					}
 				}
 
 			else

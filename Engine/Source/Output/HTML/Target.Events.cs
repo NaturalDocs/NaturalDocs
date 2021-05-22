@@ -50,7 +50,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				bool inPurgingOperation = false;
 				PurgeAllSourceAndImageFolders(ref inPurgingOperation);
 				PurgeAllClassFolders(ref inPurgingOperation);
-				PurgeAllDatabaseFolders(ref inPurgingOperation);
 				PurgeAllMenuFolders(ref inPurgingOperation);
 				FinishedPurging(ref inPurgingOperation);
 

@@ -75,28 +75,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 		/* Property: IsClass
-		 * Whether the page is for a class.  If you need to know whether the page is for any page that is part of the
-		 * class hierarchy, use <InHierarchy> instead.
+		 * Whether the page is for a class.
 		 */
 		public bool IsClass
-			{
-			get
-				{  return (InHierarchy && classString.HierarchyType == Hierarchies.HierarchyType.Class);  }
-			}
-
-		/* Property: IsDatabase
-		 * Whether the page is for a database.
-		 */
-		public bool IsDatabase
-			{
-			get
-				{  return (InHierarchy && classString.HierarchyType == Hierarchies.HierarchyType.Database);  }
-			}
-
-		/* Property: InHierarchy
-		 * Whether the page appears in any class hierarchy, such as for classes or databases.
-		 */
-		public bool InHierarchy
 			{
 			get
 				{  return (classID != 0);  }

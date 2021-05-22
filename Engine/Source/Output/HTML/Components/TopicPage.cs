@@ -80,7 +80,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{
 					topics = accessor.GetTopicsInFile(location.FileID, cancelDelegate);
 					}
-				else if (location.InHierarchy)
+				else if (location.IsClass)
 					{
 					topics = accessor.GetTopicsInClass(location.ClassID, cancelDelegate);
 					}
@@ -93,7 +93,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				// Create the class view if appropriate
 
-				if (location.InHierarchy)
+				if (location.IsClass)
 					{
 					ClassView.Merge(ref topics, EngineInstance);
 
@@ -111,7 +111,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					links = accessor.GetLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.Link>();
 					imageLinks = accessor.GetImageLinksInFile(location.FileID, cancelDelegate) ?? new List<Engine.Links.ImageLink>();
 					}
-				else if (location.InHierarchy)
+				else if (location.IsClass)
 					{
 					links = accessor.GetLinksInClass(location.ClassID, cancelDelegate) ?? new List<Engine.Links.Link>();
 					imageLinks = accessor.GetImageLinksInClass(location.ClassID, cancelDelegate) ?? new List<Engine.Links.ImageLink>();
@@ -143,7 +143,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				// may be defined across multiple files and we need the class parent links in all of them.  In this case we need to look 
 				// up the class parent links separately by class ID.
 
-				if (location.InHierarchy == false && classIDsDefined.IsEmpty == false)
+				if (location.IsClass == false && classIDsDefined.IsEmpty == false)
 					{
 					List<Engine.Links.Link> classParentLinks = accessor.GetClassParentLinksInClasses(classIDsDefined, cancelDelegate);
 
@@ -265,7 +265,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (context.Page.IsSourceFile)
 					{  pageTitle = EngineInstance.Files.FromID(context.Page.FileID).FileName.NameWithoutPath;  }
-				else if (context.Page.InHierarchy)
+				else if (context.Page.IsClass)
 					{  pageTitle = context.Page.ClassString.Symbol.LastSegment;  }
 				else
 					{  throw new NotImplementedException();  }
