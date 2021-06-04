@@ -51,17 +51,18 @@
  *		
  *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
  *		to completion this should be an empty set.
+ *		
+ *		> [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
  * 
- *		> [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
- *		> [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
+ *		> [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
+ *		> [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
  *		> ...
- *		> [String: null]
+ *		> [Int32: 0]
  *		
- *		A list of the data files that were created to build the menu, stored as string-NumberSet pairs that repeats until there
- *		is a null string.  This allows us to clean up old data files if we're using fewer than before.
- *		
- *		The type will be strings like "files" and "classes", so if the menu created files.js, files2.js, and files3.js, this will be
- *		stored as "files" and {1-3}.
+ *		File identifiers and <NumberSets> of the data files that were created when the menus were built, so if the file
+ *		menu created files.js, files2.js, and files3.js, it will store "files" and {1-3}.  This allows us to clean up old data 
+ *		files if we're using fewer than before.  Hierarchy menus are stored as Int32-String-NumberSet groups that repeat 
+ *		until there's a hierarchy ID of zero.
  *		
  *		> [String: Path to Home Page or null]
  *		
@@ -82,6 +83,7 @@
  *			- 2.2
  *				- Added Need to Build Home Page.
  *				- Added Path to Home Page, Generated Timestamp, and Home Page Uses Timestamp.
+ *				- Changed how menu data file information is stored.
  *		
  *			- 2.1
  *				- Added Used Image File IDs, Image Files to Rebuild, and Unchanged Image File Use Check IDs.
@@ -97,8 +99,8 @@
 
 
 using System;
+using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
@@ -174,30 +176,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					unprocessedChanges.searchPrefixes.ReadFrom(binaryFile);
 					unprocessedChanges.possiblyEmptyFolders.ReadFrom(binaryFile);
 
-					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-					// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
+					// [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
+					
+					string fileMenuDataFileIdentifier = binaryFile.ReadString();
+					NumberSet fileMenuDataFileNumbers = binaryFile.ReadNumberSet();
+
+					if (!fileMenuDataFileNumbers.IsEmpty)
+						{  
+						buildState.fileMenuInfo = new BuildState.MenuInfo(fileMenuDataFileIdentifier, fileMenuDataFileNumbers);
+						}
+
+					// [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
+					// [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
 					// ...
-					// [String: null]
+					// [Int32: 0]
 
-					string menuDataFileType = binaryFile.ReadString();
+					int hierarchyID = binaryFile.ReadInt32();
 
-					while (menuDataFileType != null)
+					while (hierarchyID != 0)
 						{
-						HierarchyType hierarchy;
+						if (buildState.hierarchyMenuInfo == null)
+							{  buildState.hierarchyMenuInfo = new List<BuildState.MenuInfo>();  }
 
-						if (menuDataFileType == "files")
-							{  hierarchy = HierarchyType.File;  }
-						else if (menuDataFileType == "classes")
-							{  hierarchy = HierarchyType.Class;  }
-						else if (menuDataFileType == "database")
-							{  hierarchy = HierarchyType.Database;  }
-						else
-							{  throw new NotImplementedException();  }
+						buildState.hierarchyMenuInfo.Add(
+							new BuildState.MenuInfo(binaryFile.ReadString(), binaryFile.ReadNumberSet(), hierarchyID)
+							);
 
-						NumberSet menuDataFileNumbers = binaryFile.ReadNumberSet();
-						buildState.usedMenuDataFiles.Add(hierarchy, menuDataFileNumbers);
-
-						menuDataFileType = binaryFile.ReadString();
+						hierarchyID = binaryFile.ReadInt32();
 						}
 
 					// [String: Path to Home Page or null]
@@ -272,32 +277,35 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				binaryFile.WriteStringSet(unprocessedChanges.searchPrefixes);
 				binaryFile.WriteStringSet(unprocessedChanges.possiblyEmptyFolders);
 
-				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-				// [String: Menu Data File Type] [NumberSet: Menu Data File Numbers]
-				// ...
-				// [String: null]
+				// [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
 
-				foreach (var menuDataFilePair in buildState.usedMenuDataFiles)
+				if (buildState.fileMenuInfo != null)
 					{
-					switch (menuDataFilePair.Key)
-						{
-						case HierarchyType.File:
-							binaryFile.WriteString("files");
-							break;
-						case HierarchyType.Class:
-							binaryFile.WriteString("classes");
-							break;
-						case HierarchyType.Database:
-							binaryFile.WriteString("database");
-							break;
-						default:
-							throw new NotImplementedException();
-						}
-
-					binaryFile.WriteNumberSet(menuDataFilePair.Value);
+					binaryFile.WriteString(buildState.fileMenuInfo.DataFileIdentifier);
+					binaryFile.WriteNumberSet(buildState.fileMenuInfo.UsedDataFileNumbers);
+					}
+				else
+					{
+					binaryFile.WriteString(null);
+					binaryFile.WriteNumberSet( new NumberSet() );
 					}
 
-				binaryFile.WriteString(null);
+				// [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
+				// [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
+				// ...
+				// [Int32: 0]
+
+				if (buildState.hierarchyMenuInfo != null)
+					{
+					foreach (var hierarchyMenu in buildState.hierarchyMenuInfo)
+						{
+						binaryFile.WriteInt32(hierarchyMenu.HierarchyID);
+						binaryFile.WriteString(hierarchyMenu.DataFileIdentifier);
+						binaryFile.WriteNumberSet(hierarchyMenu.UsedDataFileNumbers);
+						}
+					}
+
+				binaryFile.WriteInt32(0);
 
 				// [String: Path to Home Page or null]
 				// [String: Generated Timestamp or null]

@@ -971,14 +971,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			Context context = new Context(Target);
 			Components.Menu menu = new Components.Menu(context);
+			var buildState = Target.BuildState;
 
-			Target.BuildState.Lock();
+			buildState.Lock();
 			try
 				{
 
 				// Build the file menu
 
-				foreach (int fileID in Target.BuildState.sourceFilesWithContent)
+				foreach (int fileID in buildState.sourceFilesWithContent)
 					{
 					menu.AddFile(EngineInstance.Files.FromID(fileID));
 
@@ -987,13 +988,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					}
 
 
-				// Build the class and database menus
+				// Build the hierarchy menus
 
 				List<ClassString> classStrings = null;
 
 				accessor.GetReadOnlyLock();
 				try
-					{  classStrings = accessor.GetClassesByID(Target.BuildState.classesWithContent, cancelDelegate);  }
+					{  classStrings = accessor.GetClassesByID(buildState.classesWithContent, cancelDelegate);  }
 				finally
 					{  accessor.ReleaseLock();  }
 
@@ -1007,7 +1008,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				}
 			finally
-				{  Target.BuildState.Unlock();  }
+				{  buildState.Unlock();  }
 
 
 			// Condense, sort, and build
@@ -1028,50 +1029,98 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (cancelDelegate())
 				{  return;  }
 
-			// Don't check cancelDelegate after this because we'll be committed to replacing BuildState.UsedMenuDataFiles and
+			jsonMenu.AssignDataFiles();
+
+			if (cancelDelegate())
+				{  return;  }
+
+			// Don't check cancelDelegate after this point because we'll be committed to replacing BuildState's menu data files and
 			// cleaning up the difference.  Otherwise things will be in an inconsistent state.
 
-			NumberSetTable<Hierarchies.HierarchyType> newMenuDataFiles = jsonMenu.BuildDataFiles();
-
-
-			// Clear out any old menu files that are no longer in use.
-
-			Target.BuildState.Lock();
+			buildState.Lock();
 			try
 				{
-				foreach (var hierarchyMenuDataFiles in Target.BuildState.usedMenuDataFiles)
+				// Clear out all the data files that are no longer in use.
+
+				// We do this as a separate step before building the menu in case changes to the data file identifiers conflict.  So if a
+				// file name was used for one menu last run and should be deleted, but is now used by another menu this run, we won't
+				// delete the new version of the file we built.
+
+				if (buildState.FileMenuInfo != null)
 					{
-
-					// Compare the old and new numbers to determine which ones to remove
-
-					var hierarchy = hierarchyMenuDataFiles.Key;
-					var oldFileNumbers = hierarchyMenuDataFiles.Value;
-
-					NumberSet newFileNumbers = newMenuDataFiles[hierarchy];
-					NumberSet removedFileNumbers;
-
-					if (newFileNumbers != null)
-						{  
-						removedFileNumbers = oldFileNumbers.Duplicate();
-						removedFileNumbers.Remove(newFileNumbers);  
-						}
+					if (jsonMenu.FileRoot == null)
+						{  DeleteMenuDataFiles(buildState.FileMenuInfo);  }
 					else
-						{  removedFileNumbers = oldFileNumbers;  }
+						{  DeleteUnusedMenuDataFiles(jsonMenu.FileRoot, buildState.FileMenuInfo);  }
+					}
 
-
-					// Remove the data files associated with them
-
-					foreach (int removedFileNumber in removedFileNumbers)
+				if (buildState.HierarchyMenuInfo != null)
+					{
+					foreach (var oldHierarchyMenu in buildState.HierarchyMenuInfo)
 						{
-						DeleteOutputFileIfExists(Paths.Menu.OutputFile(Target.OutputFolder, hierarchy, removedFileNumber));
+						if (jsonMenu.HierarchyRoots == null)
+							{  DeleteMenuDataFiles(oldHierarchyMenu);  }
+						else
+							{
+							bool foundMatch = false;
+
+							foreach (var newHierarchyMenu in jsonMenu.HierarchyRoots)
+								{
+								if (newHierarchyMenu.DataFileIdentifier == oldHierarchyMenu.DataFileIdentifier)
+									{  
+									DeleteUnusedMenuDataFiles(newHierarchyMenu, oldHierarchyMenu);
+									foundMatch = true;
+									}
+								}
+
+							if (!foundMatch)
+								{  DeleteMenuDataFiles(oldHierarchyMenu);  }
+							}
 						}
 					}
 
-				Target.BuildState.usedMenuDataFiles = newMenuDataFiles;
-				}
 
+				// Rebuild the menu.
+
+				jsonMenu.BuildDataFiles();
+
+
+				// Copy the new used numbers into BuildState.
+
+				if (jsonMenu.FileRoot != null)
+					{
+					buildState.FileMenuInfo = new BuildState.MenuInfo(
+						jsonMenu.FileRoot.DataFileIdentifier,
+						jsonMenu.FileRoot.UsedDataFileNumbers
+						);
+					}
+				else
+					{  buildState.FileMenuInfo = null;  }
+
+				if (jsonMenu.HierarchyRoots != null)
+					{
+					if (buildState.HierarchyMenuInfo == null)
+						{  buildState.HierarchyMenuInfo = new List<BuildState.MenuInfo>(jsonMenu.HierarchyRoots.Count);  }
+					else
+						{  buildState.HierarchyMenuInfo.Clear();  }
+						
+					foreach (var hierarchyRoot in jsonMenu.HierarchyRoots)
+						{
+						buildState.HierarchyMenuInfo.Add(
+							new BuildState.MenuInfo(
+								hierarchyRoot.DataFileIdentifier,
+								hierarchyRoot.UsedDataFileNumbers,
+								hierarchyRoot.MenuEntry.HierarchyID
+								)
+							);
+						}
+					}
+				else
+					{  buildState.HierarchyMenuInfo = null;  }
+
+				}
 			finally
-				{  Target.BuildState.Unlock();  }
+				{  buildState.Unlock();  }
 			}
 
 
@@ -1323,11 +1372,50 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
+		/* Function: DeleteMenuDataFiles
+		 * Removes all the files that are part of the passed menu.
+		 */
+		protected void DeleteMenuDataFiles (BuildState.MenuInfo menu)
+			{
+			foreach (int dataFileNumber in menu.UsedDataFileNumbers)
+				{
+				// We build the path using the stored data file identifier instead of getting it from the hierarchy ID because the identifier
+				// associated with the hierarchy ID could have changed since the last run.
+				var dataFilePath = Paths.Menu.MenuOutputFile(Target.OutputFolder, menu.DataFileIdentifier, dataFileNumber);
+
+				DeleteOutputFileIfExists(dataFilePath);
+				}
+			}
+
+
+		/* Function: DeleteUnusedMenuDataFiles
+		 * Removes all files that are part of the old menu but not the new menu.
+		 */
+		protected void DeleteUnusedMenuDataFiles (Components.JSONMenuEntries.RootContainer newMenu, BuildState.MenuInfo oldMenu)
+			{
+			// If the data file identifier has changed, remove everything from the old one.
+			if (newMenu.DataFileIdentifier != oldMenu.DataFileIdentifier)
+				{
+				DeleteMenuDataFiles(oldMenu);
+				return;
+				}
+
+			NumberSet removedFileNumbers = oldMenu.UsedDataFileNumbers.Duplicate();
+			removedFileNumbers.Remove(newMenu.UsedDataFileNumbers);
+
+			foreach (int dataFileNumber in removedFileNumbers)
+				{
+				var dataFilePath = Paths.Menu.MenuOutputFile(Target.OutputFolder, oldMenu.DataFileIdentifier, dataFileNumber);
+				DeleteOutputFileIfExists(dataFilePath);
+				}
+			}
+
+
 		/* Function: DeleteOutputFileIfExists
 		 * If the passed file exists, deletes it and adds its parent folder to <UnprocessedChanges.FoldersToCheckForDeletion>.
 		 * It's okay for the output path to be null.
 		 */
-		public void DeleteOutputFileIfExists (Path outputFile)
+		protected void DeleteOutputFileIfExists (Path outputFile)
 			{
 			if (outputFile != null && System.IO.File.Exists(outputFile))
 				{  

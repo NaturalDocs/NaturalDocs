@@ -12,8 +12,8 @@
 
 
 using System;
+using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Hierarchies;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
@@ -34,7 +34,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			classesWithContent = new NumberSet();
 			usedImageFiles = new NumberSet();
 
-			usedMenuDataFiles = new NumberSetTable<HierarchyType>();
+			fileMenuInfo = null;
+			hierarchyMenuInfo = null;
 
 			homePage = null;
 			generatedTimestamp = null;
@@ -175,57 +176,32 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 
-		// Group: Menu Data File Functions
+		// Group: Menu Data File Properties
 		// __________________________________________________________________________
 
 
-		/* Function: MenuDataFileIsUsed
-		 * Returns whether the passed <HierarchyType> and number are used by the menu data files.
+		/* Property: FileMenuInfo
+		 * Information about the file menu the last time it was built, or null if there wasn't one.  All access to this property MUST
+		 * be surrounded by calls to <Lock()> and <Unlock()>.
 		 */
-		public bool MenuDataFileIsUsed (HierarchyType hierarchy, int number)
+		public MenuInfo FileMenuInfo
 			{
-			lock (accessLock)
-				{  
-				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
-
-				if (hierarchyNumbers == null)
-					{  return false;  }
-
-				return hierarchyNumbers.Contains(number);
-				}
+			get
+				{  return fileMenuInfo;  }
+			set
+				{  fileMenuInfo = value;  }
 			}
 
-		/* Function: AddUsedMenuDataFile
-		 * Adds a <HierarchyType>/number combination to the list of used menu data files.
+		/* Property: HierarchyMenuInfo
+		 * Information about the hierarchy menus the last time they were built, or null if there weren't any.  All access to this 
+		 * property MUST be surrounded by calls to <Lock()> and <Unlock()>.
 		 */
-		public void AddUsedMenuDataFile (HierarchyType hierarchy, int number)
+		public List<MenuInfo> HierarchyMenuInfo
 			{
-			lock (accessLock)
-				{
-				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
-
-				if (hierarchyNumbers == null)
-					{
-					hierarchyNumbers = new NumberSet();
-					usedMenuDataFiles[hierarchy] = hierarchyNumbers;
-					}
-
-				hierarchyNumbers.Add(number);
-				}
-			}
-
-		/* Function: RemoveUsedMenuDataFile
-		 * Remove a <HierarchyType>/number combination to the list of used menu data files.
-		 */
-		public void RemoveUsedMenuDataFile (HierarchyType hierarchy, int number)
-			{
-			lock (accessLock)
-				{
-				NumberSet hierarchyNumbers = usedMenuDataFiles[hierarchy];
-
-				if (hierarchyNumbers != null)
-					{  hierarchyNumbers.Remove(number);  }
-				}
+			get
+				{  return hierarchyMenuInfo;  }
+			set
+				{  hierarchyMenuInfo = value;  }
 			}
 
 
@@ -336,16 +312,26 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected internal NumberSet usedImageFiles;
 
 
-		/* var: usedMenuDataFiles
+		/* var: fileMenuInfo
 		 * 
-		 * The menu data files created the last time the menu was built.  It maps <HierarchyTypes> to <NumberSets>, so
-		 * files.js, files2.js, and files3.js would map to <Hierarchy.File> and {1-3}.
+		 * Information about the file menu the last time it was built, or null if there wasn't one.
 		 * 
 		 * This variable is protected internal because some code may need to access it directly.  You should use the access
 		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
 		 * <Lock()> and <Unlock()>.
 		 */
-		protected internal NumberSetTable<HierarchyType> usedMenuDataFiles;
+		protected internal MenuInfo fileMenuInfo;
+
+
+		/* var: hierarchyMenuInfo
+		 * 
+		 * Information about the hierarchy menus the last time they were built, or null if there weren't any.
+		 * 
+		 * This variable is protected internal because some code may need to access it directly.  You should use the access
+		 * functions instead of doing this whenever possible.  All direct access to the variable must be surrounded by calls to
+		 * <Lock()> and <Unlock()>.
+		 */
+		protected internal List<MenuInfo> hierarchyMenuInfo;
 
 
 		/* var: homePage
@@ -374,6 +360,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected object accessLock;
 
+
+
+		/* __________________________________________________________________________
+		 * 
+		 * Class: MenuInfo
+		 * __________________________________________________________________________
+		 */
+		public class MenuInfo
+			{
+			public MenuInfo ()
+				{
+				DataFileIdentifier = null;
+				UsedDataFileNumbers = new NumberSet();
+				HierarchyID = 0;
+				}
+
+			public MenuInfo (string dataFileIdentifier, NumberSet usedDataFileNumbers, int hierarchyID = 0)
+				{
+				this.DataFileIdentifier = dataFileIdentifier;
+				this.UsedDataFileNumbers = usedDataFileNumbers.Duplicate();
+				this.HierarchyID = hierarchyID;
+				}
+
+			public string DataFileIdentifier;
+			public NumberSet UsedDataFileNumbers;
+			public int HierarchyID;
+			}
 		}
 	}
 

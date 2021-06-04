@@ -21,16 +21,51 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 	static public class Menu
 		{
 
-		/* Function: OutputFile
+		/* Function: FileMenuOutputFile
 		 * 
-		 * Returns the file name of the JavaScript data file with the passed hierarchy and ID number.
+		 * Returns the file name of the JavaScript menu data file with the passed number.
 		 * 
 		 * Examples:
 		 * 
-		 *		targetOutputFolder + hierarchy + id - C:\Project\Documentation\menu\files3.js
-		 *		targetOutputFolder + hierarchy + id + fileNameOnly - files3.js
+		 *		targetOutputFolder - C:\Project\Documentation\menu\files.js
+		 *		targetOutputFolder + number - C:\Project\Documentation\menu\files3.js
+		 *		targetOutputFolder + number + fileNameOnly - files3.js
 		 */
-		static public Path OutputFile (Path targetOutputFolder, HierarchyType hierarchy, int id = 1, bool fileNameOnly = false)
+		static public Path FileMenuOutputFile (Path targetOutputFolder, int number = 1, bool fileNameOnly = false)
+			{
+			return MenuOutputFile(targetOutputFolder, FileMenuDataFileIdentifier, number, fileNameOnly);
+			}
+
+
+		/* Function: HierarchyMenuOutputFile
+		 * 
+		 * Returns the file name of the JavaScript menu data file for the passed hierarchy and number.
+		 * 
+		 * Examples:
+		 * 
+		 *		targetOutputFolder + hierarchy - C:\Project\Documentation\menu\classes.js
+		 *		targetOutputFolder + hierarchy + number - C:\Project\Documentation\menu\classes3.js
+		 *		targetOutputFolder + hierarchy + number + fileNameOnly - classes3.js
+		 */
+		static public Path HierarchyMenuOutputFile (Path targetOutputFolder, Hierarchy hierarchy, int number = 1, bool fileNameOnly = false)
+			{
+			return MenuOutputFile(targetOutputFolder, HierarchyMenuDataFileIdentifier(hierarchy), number, fileNameOnly);
+			}
+
+
+		/* Function: MenuOutputFile
+		 * 
+		 * Returns the file name of the JavaScript menu data file with the passed identifier and number.  Generally you should use
+		 * <FileMenuOutputFile()> and <HierarchyMenuOutputFile()> instead, but this works if you have the identifier (such as 
+		 * "files" or "classes") instead.
+		 * 
+		 * Examples:
+		 * 
+		 *		targetOutputFolder + identifier - C:\Project\Documentation\menu\classes.js
+		 *		targetOutputFolder + identifier + number - C:\Project\Documentation\menu\classes3.js
+		 *		targetOutputFolder + identifier + number + fileNameOnly - classes3.js
+		 */
+		static public Path MenuOutputFile (Path targetOutputFolder, string dataFileIdentifier, int number = 1, bool fileNameOnly = false)
 			{
 			StringBuilder result = new StringBuilder();
 
@@ -40,23 +75,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 				result.Append("/menu/");
 				}
 
-			switch (hierarchy)
-				{
-				case HierarchyType.File:
-					result.Append("files");
-					break;
-				case HierarchyType.Class:
-					result.Append("classes");
-					break;
-				case HierarchyType.Database:
-					result.Append("database");
-					break;
-				default:
-					throw new NotImplementedException();
-				}
+			result.Append(dataFileIdentifier);
 
-			if (id != 1)
-				{  result.Append(id);  }
+			if (number != 1)
+				{  result.Append(number);  }
 
 			result.Append(".js");
 
@@ -88,6 +110,25 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Paths
 		static public Path OutputFolder (Path targetOutputFolder)
 			{
 			return targetOutputFolder + "/menu";
+			}
+
+
+		/* Property: FileMenuDataFileIdentifier
+		 * The identifier that gets used in file menu data files, such as "files".
+		 */
+		static public string FileMenuDataFileIdentifier
+			{
+			get
+				{  return "files";  }
+			}
+
+
+		/* Function: HierarchyMenuDataFileIdentifier
+		 * The identifier that gets used in the menu data files of the passed hierarchy, such as "classes" or "database".
+		 */
+		static public string HierarchyMenuDataFileIdentifier (Hierarchy hierarchy)
+			{
+			return hierarchy.PluralSimpleIdentifier.ToLowerInvariant();
 			}
 
 		}

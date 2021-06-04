@@ -61,6 +61,7 @@
     <Compile Include="Source\Languages\Config.cs" />
     <Compile Include="Source\Languages\Manager.Start.cs" />
     <Compile Include="Source\Languages\Parsers\PHP.cs" />
+    <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\RootContainer.cs" />
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
     <Compile Include="Source\Output\HTML\SearchIndex\SearchIndex_nd.cs" />
     <Compile Include="Source\StartupIssues.cs" />

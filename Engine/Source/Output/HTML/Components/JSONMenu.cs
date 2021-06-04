@@ -8,6 +8,8 @@
  * Usage:
  * 
  *		- Call <ConvertToJSON(Menu)> to create the JSON representation of the <Menu>.
+ *		- If desired, call <AssignDataFiles()> to determine how the menu will be divided into files.  This will be called automatically
+ *		  by <BuildDataFiles()> if you do not do it manually.
  *		- If desired, call <BuildDataFiles()> to create the output files.
  * 
  */
@@ -20,8 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Collections;
-using CodeClear.NaturalDocs.Engine.Hierarchies;
+using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
 namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
@@ -48,19 +49,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		public void ConvertToJSON (Menu menu)
 			{
 			if (menu.FileRoot != null)
-				{  fileRoot = ConvertToJSON(menu.FileRoot);  }
+				{  fileRoot = (JSONMenuEntries.RootContainer)ConvertToJSON(menu.FileRoot, isRoot: true);  }
 			else
 				{  fileRoot = null;  }
 			
 			if (menu.HierarchyRoots != null)
 				{
-				hierarchyRoots = new List<JSONMenuEntries.Container>( menu.HierarchyRoots.Count );
+				hierarchyRoots = new List<JSONMenuEntries.RootContainer>( menu.HierarchyRoots.Count );
 
 				foreach (var menuHierarchyRoot in menu.HierarchyRoots)
-					{  hierarchyRoots.Add( ConvertToJSON(menuHierarchyRoot) );  }
+					{  hierarchyRoots.Add( (JSONMenuEntries.RootContainer)ConvertToJSON(menuHierarchyRoot, isRoot: true) );  }
 
 				hierarchyRoots.Sort(
-					delegate (JSONMenuEntries.Container a, JSONMenuEntries.Container b)
+					delegate (JSONMenuEntries.RootContainer a, JSONMenuEntries.RootContainer b)
 						{
 						var hierarchyA = EngineInstance.Hierarchies.FromID( a.MenuEntry.HierarchyID );
 						var hierarchyB = EngineInstance.Hierarchies.FromID( b.MenuEntry.HierarchyID );
@@ -74,17 +75,41 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			}
 
 
+		/* Function: AssignDataFiles
+		 * 
+		 * Takes the JSON menu created by <ConvertToJSON()> and determines how it will be saved into individual data files.  After
+		 * this function is called you can retrieve the used data file numbers from <FileRoot> and <HierarchyRoots>.
+		 * 
+		 * You do not need to call this function manually.  <BuildDataFiles()> will do it for you automatically if you do not.  However,
+		 * calling it manually allows you to inspect what the data files would be before they're actually created.
+		 */
+		public void AssignDataFiles ()
+			{
+			// DEPENDENCY: BuildDataFiles() assumes calling this function multiple times has no effect.
+
+			if (fileRoot != null && fileRoot.DataFileName == null)
+				{  AssignDataFiles(fileRoot);  }
+
+			if (hierarchyRoots != null)
+				{  
+				foreach (var hierarchyRoot in hierarchyRoots)
+					{
+					if (hierarchyRoot.DataFileName == null)
+						{  AssignDataFiles(hierarchyRoot);  }
+					}
+				}
+			}
+
+
 		/* Function: BuildDataFiles
 		 * 
 		 * Takes the JSON menu created by <ConvertToJSON()> and saves it as a series of JavaScript files as documented in 
 		 * <JavaScript Menu Data>.  This includes the tab information file.  Note that you have to call <ConvertToJSON()> prior to 
 		 * calling this function or no data files will be generated.
 		 * 
-		 * Returns:
-		 * 
-		 *		A table mapping each <HierarchyTypes> to the data file numbers used for it, such as Files -> {1-4}.
+		 * This function will call <AssignDataFiles()> if you did not do it yourself.
 		 */
-		public NumberSetTable<HierarchyType> BuildDataFiles ()
+		public void BuildDataFiles ()
 			{
 			try
 				{  
@@ -99,7 +124,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					);
 				}
 
-			var usedDataFiles = AssignDataFiles();
+			// Assign data files in case it hasn't been done yet.
+			// DEPENDENCY: This assumes duplicate calls to AssignDataFiles() have no effect.
+			AssignDataFiles();
 
 			if (fileRoot != null)
 				{  BuildDataFiles(fileRoot);  }
@@ -111,8 +138,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				}
 
 			BuildTabDataFile();
-
-			return usedDataFiles;
 			}
 
 
@@ -192,9 +217,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Converts a Container menu entry to JSON, along with all of its members.  This is a recursive function so it will convert
 		 * the entire tree inside the container.
 		 */
-		protected JSONMenuEntries.Container ConvertToJSON (MenuEntries.Container menuContainer)
+		protected JSONMenuEntries.Container ConvertToJSON (MenuEntries.Container menuContainer, bool isRoot = false)
 			{
-			JSONMenuEntries.Container jsonContainer = new JSONMenuEntries.Container(menuContainer);
+			JSONMenuEntries.Container jsonContainer = (isRoot ? new JSONMenuEntries.RootContainer(menuContainer) :
+																						   new JSONMenuEntries.Container(menuContainer));
 			StringBuilder jsonBeforeMembers = new StringBuilder();
 
 			jsonBeforeMembers.Append("[2,");
@@ -369,51 +395,34 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 
 		/* Function: AssignDataFiles
-		 * 
 		 * Segments the menu into smaller pieces and generates data file names.
-		 * 
-		 * Returns:
-		 * 
-		 *		A table mapping each <HierarchyType> to the data file numbers used for it, such as Files -> {1-4}.
 		 */
-		protected NumberSetTable<HierarchyType> AssignDataFiles ()
+		protected void AssignDataFiles(JSONMenuEntries.RootContainer root)
 			{
-			NumberSetTable<HierarchyType> usedDataFiles = new NumberSetTable<HierarchyType>();
+			int hierarchyID = root.MenuEntry.HierarchyID;
 
-			if (fileRoot != null)
-				{  AssignDataFiles(fileRoot, ref usedDataFiles);  }
+			if (hierarchyID == 0) // file menu
+				{  root.DataFileIdentifier = Paths.Menu.FileMenuDataFileIdentifier;  }
+			else
+				{  root.DataFileIdentifier = Paths.Menu.HierarchyMenuDataFileIdentifier( EngineInstance.Hierarchies.FromID(hierarchyID) );  }
 
-			if (hierarchyRoots != null)
-				{
-				foreach (var hierarchyRoot in hierarchyRoots)
-					{  AssignDataFiles(hierarchyRoot, ref usedDataFiles);  }
-				}
-
-			return usedDataFiles;
+			root.UsedDataFileNumbers = new NumberSet();
+			AssignDataFiles(root, root);
 			}
 
 
 		/* Function: AssignDataFiles
-		 * 
-		 * Segments the menu into smaller pieces and generates data file names.
-		 * 
-		 * Parameters:
-		 * 
-		 *		container - The container to segment.  This will always be assigned a data file name.
-		 *		usedDataFiles - A table mapping each <HierarchyType> to the data file numbers already in use for it, such as Files -> {1-4}.
-		 *							   It will be used to determine which numbers are available to assign, and new numbers will be added to it
-		 *							   as they are assigned by this function.
+		 * Segments the menu into smaller pieces and generates data file names.  The passed container will always be assigned
+		 * a data file name, so this can be used recursively.
 		 */
-		protected void AssignDataFiles (JSONMenuEntries.Container container, ref NumberSetTable<HierarchyType> usedDataFiles)
+		protected void AssignDataFiles(JSONMenuEntries.Container container, JSONMenuEntries.RootContainer root)
 			{
-			// Generate the data file name for this container.
+			// Generate the data file name and number for this container.
 
-			HierarchyType hierarchy = container.MenuEntry.HierarchyType;
+			int fileNumber = root.UsedDataFileNumbers.LowestAvailable;
+			root.UsedDataFileNumbers.Add(fileNumber);
 
-			int dataFileNumber = usedDataFiles.LowestAvailable(hierarchy);
-			usedDataFiles.Add(hierarchy, dataFileNumber);
-
-			container.DataFileName = Paths.Menu.OutputFile(Target.OutputFolder, hierarchy, dataFileNumber, fileNameOnly: true);
+			container.DataFileName = Paths.Menu.MenuOutputFile(Target.OutputFolder, root.DataFileIdentifier, fileNumber, fileNameOnly: true);
 
 
 			// The data file has to include all the members in this container no matter what, so we don't check the size against the limit
@@ -485,7 +494,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				else
 					{
 					foreach (var inliningCandidate in inliningCandidates)
-						{  AssignDataFiles(inliningCandidate, ref usedDataFiles);  }
+						{  AssignDataFiles(inliningCandidate, root);  }
 
 					inliningCandidates.Clear();
 					}
@@ -521,15 +530,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * Generates the output data file for the container.  It must have <JSONContainer.DataFileName> set.  If it finds any 
 		 * sub-containers that also have that set, it will recursively generate files for them as well.
 		 */
-		protected void BuildDataFiles (JSONMenuEntries.Container container)
+		protected void BuildDataFiles (JSONMenuEntries.RootContainer root)
 			{
 			#if DEBUG
-			if (container.StartsNewDataFile == false)
+			if (root.StartsNewDataFile == false)
 				{  throw new Exception ("BuildOutput() can only be called on containers with DataFileName set.");  }
 			#endif
 
 			Stack<JSONMenuEntries.Container> containersToBuild = new Stack<JSONMenuEntries.Container>();
-			containersToBuild.Push(container);
+			containersToBuild.Push(root);
 
 			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 
@@ -726,7 +735,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Property: FileRoot
 		 * The root container of all file-based menu entries, or null if none.
 		 */
-		public JSONMenuEntries.Container FileRoot
+		public JSONMenuEntries.RootContainer FileRoot
 			{
 			get
 				{  return fileRoot;  }
@@ -736,7 +745,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* Property HierarchyRoots
 		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
 		 */
-		public IList<JSONMenuEntries.Container> HierarchyRoots
+		public IList<JSONMenuEntries.RootContainer> HierarchyRoots
 			{
 			get
 				{  return hierarchyRoots;  }
@@ -771,12 +780,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		/* var: fileRoot
 		 * The root container of all file-based menu entries, or null if there are no files.
 		 */
-		protected JSONMenuEntries.Container fileRoot;
+		protected JSONMenuEntries.RootContainer fileRoot;
 
 		/* var: hierarchyRoots
 		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
 		 */
-		protected List<JSONMenuEntries.Container> hierarchyRoots;
+		protected List<JSONMenuEntries.RootContainer> hierarchyRoots;
 
 		}
 	}
