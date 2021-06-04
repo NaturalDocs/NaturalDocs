@@ -39,7 +39,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			{
 			fileRoot = null;
 			hierarchyRoots = null;
-			addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 			}
 
 
@@ -532,6 +531,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			Stack<JSONMenuEntries.Container> containersToBuild = new Stack<JSONMenuEntries.Container>();
 			containersToBuild.Push(container);
 
+			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
+
 			while (containersToBuild.Count > 0)
 				{
 				var containerToBuild = containersToBuild.Pop();
@@ -565,6 +566,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void AppendMembers (JSONMenuEntries.Container container, StringBuilder output, int indent, 
 													   Stack<JSONMenuEntries.Container> containersToBuild)
 			{
+			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
+
 			for (int i = 0; i < container.Members.Count; i++)
 				{
 				var member = container.Members[i];
@@ -624,6 +627,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void BuildTabDataFile ()
 			{
 			StringBuilder tabInformation = new StringBuilder("NDMenu.OnTabsLoaded([");
+			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 
 			if (addWhitespace)
 				{  tabInformation.Append('\n');  }
@@ -773,11 +777,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 * The root container for each hierarchy menu, or null if there are none.  There will be one for each hierarchy ID in use.
 		 */
 		protected List<JSONMenuEntries.Container> hierarchyRoots;
-
-		/* var: addWhitespace
-		 * Whether additional whitespace and line breaks should be added to the JSON output to make it more readable.
-		 */
-		protected bool addWhitespace;
 
 		}
 	}
