@@ -262,6 +262,8 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{  return ProcessFileResult.CantAccessFile;  }
 				else if (parseResult == Parser.ParseResult.FileDoesntExist)
 					{  return ProcessFileResult.FileDoesntExist;  }
+				else if (parseResult != Parser.ParseResult.Success)
+					{  throw new NotImplementedException();  }
 
 
 				// Extract links from the bodies and prototypes
@@ -339,12 +341,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{  return ProcessFileResult.FileDoesntExist;  }
 				else if (result == ImageFileProcessor.Result.CantAccessFile)
 					{  return ProcessFileResult.CantAccessFile;  }
-				else if (result == ImageFileProcessor.Result.Success)
-					{
-					file.SetDimensions(width, height);
-					return ProcessFileResult.Success;
-					}
-				else
+				else if (result == ImageFileProcessor.Result.IncorrectFormat)
 					{
 					// If we can't determine the dimensions because of a file format error or some other reason, then the dimensions
 					// aren't knowable to us.  Knowing that is still a successful evaluation of the file because there's no point in trying
@@ -352,6 +349,13 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					file.DimensionsKnown = false;
 					return ProcessFileResult.Success;
 					}
+				else if (result == ImageFileProcessor.Result.Success)
+					{
+					file.SetDimensions(width, height);
+					return ProcessFileResult.Success;
+					}
+				else
+					{  throw new NotImplementedException();  }
 				}
 
 			catch (Exception e)
