@@ -69,6 +69,9 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 */
 		public Language LanguageFromShebangLine (string shebangLine)
 			{
+			if (String.IsNullOrEmpty(shebangLine))
+				{  return null;  }
+
 			shebangLine = shebangLine.NormalizeKey(KeySettingsForShebangStrings);
 			
 			// shebangStrings is sorted so longer string come before shorter ones, so it will match against "php4" before "php".

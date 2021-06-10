@@ -112,6 +112,9 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		public Hierarchy FromName (string name)
 			{
+			if (String.IsNullOrEmpty(name))
+				{  return null;  }
+
 			Collections.KeySettings normalizationSettings = Collections.KeySettings.IgnoreCase;
 
 			string normalizedName = name.NormalizeKey(normalizationSettings);
