@@ -62,6 +62,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		public ChangeProcessor (Engine.Instance engineInstance) : base (engineInstance)
 			{
 			filesBeingProcessed = new FilesBeingProcessed();
+			inaccessibleFiles = new IDObjects.NumberSet();
 			accessLock = new object();
 			}
 			
@@ -446,13 +447,18 @@ namespace CodeClear.NaturalDocs.Engine.Files
 					{  Manager.UnprocessedChanges.AddChangedFile(file);  }
 				}
 
-			else if (processResult == ProcessFileResult.CantAccessFile ||
-					  processResult == ProcessFileResult.FileDoesntExist)
+			else if (processResult == ProcessFileResult.FileDoesntExist)
 				{
 				if (changedSinceProcessed)
 					{  Manager.UnprocessedChanges.AddChangedFile(file);  }
 				else
 					{  Manager.UnprocessedChanges.AddDeletedFile(file);  }
+				}
+
+			else if (processResult == ProcessFileResult.CantAccessFile)
+				{
+				inaccessibleFiles.Add(file.ID);
+				Manager.UnprocessedChanges.AddDeletedFile(file);  
 				}
 
 			else
@@ -467,7 +473,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 */
 		protected void FinalizeDeletedFile (File file, ProcessFileResult processResult)
 			{
-			bool recreatedSinceProcessed = !file.Deleted;
+			bool recreatedSinceProcessed = (!file.Deleted && !inaccessibleFiles.Contains(file.ID));
 
 			lock (accessLock)
 				{
@@ -668,6 +674,12 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		 *		You must hold <accessLock> in order to use this variable.
 		 */
 		protected FilesBeingProcessed filesBeingProcessed;
+
+
+		/* var: inaccessibleFiles
+		 * A set of all the file IDs we attempted to process but which returned <Parser.ParseResult.CantAccessFile>.
+		 */
+		protected IDObjects.NumberSet inaccessibleFiles;
 
 
 		/* var: accessLock
