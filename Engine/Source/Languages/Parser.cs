@@ -1379,15 +1379,20 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 			// So now we have two topics of the same language, symbol, and type.  Now the assumption is they're the same
 			// unless they're distinguished by parameters.
 
-			ParameterString topicAPrototypeParameters = topicA.PrototypeParameters;
-			ParameterString topicBPrototypeParameters = topicB.PrototypeParameters;
+			if (!topicA.DefinesClass)
+				{
+				ParameterString topicAPrototypeParameters = topicA.PrototypeParameters;
+				ParameterString topicBPrototypeParameters = topicB.PrototypeParameters;
 
-			if (topicAPrototypeParameters == null && topicBPrototypeParameters == null)
-				{  return true;  }
-			else if (topicAPrototypeParameters != null && topicBPrototypeParameters != null)
-				{  return (string.Compare(topicA.PrototypeParameters, topicB.PrototypeParameters, ignoreCase) == 0);  }
-			else
-				{  return false;  }
+				if (topicAPrototypeParameters == null && topicBPrototypeParameters == null)
+					{  return true;  }
+				else if (topicAPrototypeParameters != null && topicBPrototypeParameters != null)
+					{  return (string.Compare(topicA.PrototypeParameters, topicB.PrototypeParameters, ignoreCase) == 0);  }
+				else
+					{  return false;  }
+				}
+
+			return true;
 			}
 
 
