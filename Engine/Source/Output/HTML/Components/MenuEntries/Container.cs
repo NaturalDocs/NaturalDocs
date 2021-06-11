@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Container
 		 */
-		public Container (HierarchyType hierarchyType, int hierarchyID) : base (hierarchyType, hierarchyID)
+		public Container (int hierarchyID = 0) : base (hierarchyID)
 			{
 			members = new List<Entry>();
 			condensedTitles = null;

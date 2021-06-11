@@ -24,12 +24,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 
 		/* Function: Entry
 		 */
-		public Entry (HierarchyType hierarchyType, int hierarchyID)
+		public Entry (int hierarchyID = 0)
 			{
 			title = null;
 			parent = null;
 
-			this.hierarchyType = hierarchyType;
 			this.hierarchyID = hierarchyID;
 			}
 
@@ -60,17 +59,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 				{  parent = value;  }
 			}
 
-		/* Property: HierarchyType
-		 * The <HierarchyType> this entry appears in.
-		 */
-		public HierarchyType HierarchyType
-			{
-			get
-				{  return hierarchyType;  }
-			set
-				{  hierarchyType = value;  }
-			}
-
 		/* Property: HierarchyID
 		 * The ID of the hierarchy this entry is a member of, or zero if it is part of the file hierarchy.
 		 */
@@ -93,10 +81,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries
 		/* var: parent
 		 */
 		protected Container parent;
-
-		/* var: hierarchyType
-		 */
-		protected HierarchyType hierarchyType;
 
 		/* var: hierarchyID
 		 * The ID of the hierarchy this entry is a member of, or zero if it is part of the file hierarchy.

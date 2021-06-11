@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 				if (scopeEntry == null)
 					{
 					scopeEntry = new MenuEntries.Classes.Scope(Symbols.SymbolString.FromExportedString(scopeSoFar), 
-																					   classString.HierarchyType, classString.HierarchyID);
+																					   classString.HierarchyID);
 					scopeEntry.Parent = container;
 					container.Members.Add(scopeEntry);
 					}
@@ -312,7 +312,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (fileRoot == null)
 				{
-				fileRoot = new MenuEntries.Container(HierarchyType.File, 0);
+				fileRoot = new MenuEntries.Container();
 				fileRoot.Title = Engine.Locale.Get("NaturalDocs.Engine", "Menu.Files");
 				}
 
@@ -361,7 +361,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 			if (rootContainer == null)
 				{
-				rootContainer = new MenuEntries.Container(hierarchy.Type, hierarchy.ID);
+				rootContainer = new MenuEntries.Container(hierarchy.ID);
 				rootContainer.Title = Engine.Locale.SafeGet("NaturalDocs.Engine", "Menu." + hierarchy.PluralName, hierarchy.PluralName);
 
 				if (hierarchyRoots == null)
@@ -393,8 +393,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 
 				if (languageContainer == null)
 					{
-					languageContainer = new MenuEntries.Classes.Language(EngineInstance.Languages.FromID(languageID),
-																										hierarchy.Type, hierarchy.ID);
+					languageContainer = new MenuEntries.Classes.Language(EngineInstance.Languages.FromID(languageID), hierarchy.ID);
 					languageContainer.Parent = rootContainer;
 					rootContainer.Members.Add(languageContainer);
 					}

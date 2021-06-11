@@ -25,8 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components.MenuEntries.Classe
 
 		/* Function: Scope
 		 */
-		public Scope (Symbols.SymbolString scopeString, Hierarchies.HierarchyType hierarchyType, int hierarchyID) 
-			: base (hierarchyType, hierarchyID)
+		public Scope (Symbols.SymbolString scopeString,int hierarchyID) : base (hierarchyID)
 			{
 			this.scopeString = scopeString;
 			this.Title = scopeString.LastSegment;
