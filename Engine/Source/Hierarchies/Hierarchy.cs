@@ -25,14 +25,14 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		
 		/* Constructor: Hierarchy
 		 */
-		public Hierarchy (string name, string pluralName, string simpleIdentifier, string pluralSimpleIdentifier,
-								 HierarchyType type, bool isLanguageSpecific, bool isCaseSensitive = true)
+		public Hierarchy (int id, string name, string pluralName, string simpleIdentifier, string pluralSimpleIdentifier,
+								 bool isLanguageSpecific, bool isCaseSensitive = true)
 			{
+			this.id = id;
 			this.name = name;
 			this.pluralName = pluralName;
 			this.simpleIdentifier = simpleIdentifier;
 			this.pluralSimpleIdentifier = pluralSimpleIdentifier;
-			this.type = type;
 			this.isLanguageSpecific = isLanguageSpecific;
 			this.isCaseSensitive = isCaseSensitive;
 			}
@@ -49,7 +49,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		public int ID
 			{
 			get
-				{  return (int)type;  }
+				{  return id;  }
 			}
 
 		/* Property: Name
@@ -92,15 +92,6 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				{  pluralSimpleIdentifier = value;  }
 			}
 			
-		/* Property: Type
-		 * The <HierarchyType> of the hierarchy.
-		 */
-		public HierarchyType Type
-			{
-			get
-				{  return type;  }
-			}
-
 		/* Property: IsLanguageSpecific
 		 * Whether members of the hierarchy should be separated by language.
 		 */
@@ -143,7 +134,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		public int SortValue
 			{
 			get
-				{  return (int)type;  }
+				{  return id;  }
 			}
 
 
@@ -151,6 +142,11 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		// Group: Variables
 		// __________________________________________________________________________
 
+
+		/* var: id
+		 * The unique numeric ID of the hierarchy.
+		 */
+		protected int id;
 
 		/* var: name
 		 * The name of the hierarchy.
@@ -171,11 +167,6 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 * The hierarchy's plural name using only the letters A to Z.
 		 */
 		protected string pluralSimpleIdentifier;
-
-		/* var: type
-		 * The <HierarchyType> associated with this hierarchy.
-		 */
-		protected HierarchyType type;
 
 		/* var: isLanguageSpecific
 		 * Whether hierarchy members should be separated by language.

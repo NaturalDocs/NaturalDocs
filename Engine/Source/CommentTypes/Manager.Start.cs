@@ -526,7 +526,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 
 					var hierarchy = EngineInstance.Hierarchies.FromName(commentType.HierarchyName);
 
-					if (hierarchy == null || hierarchy.Type == Hierarchies.HierarchyType.File)
+					if (hierarchy == null)
 						{
 						errorList.Add(Locale.Get("NaturalDocs.Engine", "Comments.txt.UnrecognizedHierarchy(name)", commentType.HierarchyName),
 											commentType.FlagsPropertyLocation);

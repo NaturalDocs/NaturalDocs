@@ -72,7 +72,6 @@
     <Compile Include="Source\Files\FileSources\ImageFolderAdder.cs" />
     <Compile Include="Source\Files\Files_nd.cs" />
     <Compile Include="Source\Files\ImageFileProcessor.cs" />
-    <Compile Include="Source\Hierarchies\HierarchyType.cs" />
     <Compile Include="Source\Collections\NumberSetTable.cs" />
     <Compile Include="Source\Files\FileSourceAdder.cs" />
     <Compile Include="Source\Files\FileSources\SourceFolderAdder.cs" />

@@ -52,30 +52,30 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		public bool Start (Errors.ErrorList errorList)
 			{
 			var fileHierarchy = new Hierarchy(
+				id: 0,
 				name: "File", 
 				pluralName: "Files", 
 				simpleIdentifier: "File",
 				pluralSimpleIdentifier: "Files",
-				type: HierarchyType.File,
 				isLanguageSpecific: false,
 				isCaseSensitive: !SystemInfo.IgnoreCaseInPaths);
 
 			var classHierarchy = new Hierarchy(
+				id: 1,
 				name: "Class", 
 				pluralName: "Classes", 
 				simpleIdentifier: "Class",
 				pluralSimpleIdentifier: "Classes",
-				type: HierarchyType.Class,
 				isLanguageSpecific: true);
 
 			var sqlLanguage = EngineInstance.Languages.FromName("SQL");
 
 			var databaseHierarchy = new Hierarchy(
+				id: 2,
 				name: "Database", 
 				pluralName: "Database", // we don't want "Databases"
 				simpleIdentifier: "Database",
 				pluralSimpleIdentifier: "Database", // we don't want "Databases"
-				type: HierarchyType.Database,
 				isLanguageSpecific: false,
 				isCaseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
 
@@ -125,20 +125,6 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 					{  return hierarchy;  }
 				if (hierarchy.PluralName != null &&
 					hierarchy.PluralName.NormalizeKey(normalizationSettings) == normalizedName)
-					{  return hierarchy;  }
-				}
-
-			return null;
-			}
-
-		/* Function: FromType
-		 * Returns the <Hierarchy> associated with the passed <HierarchyType>.
-		 */
-		public Hierarchy FromType (HierarchyType hierarchyType)
-			{
-			foreach (var hierarchy in hierarchies)
-				{
-				if (hierarchy.Type == hierarchyType)
 					{  return hierarchy;  }
 				}
 
