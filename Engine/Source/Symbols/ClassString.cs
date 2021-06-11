@@ -90,15 +90,6 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 			}
 
 
-		/* Function: FromParameters
-		 * Creates a ClassString from the passed parameters.
-		 */
-		static public ClassString FromParameters (HierarchyType hierarchyType, int languageID, bool caseSensitive, SymbolString symbol)
-			{
-			return FromParameters((int)hierarchyType, languageID, caseSensitive, symbol);
-			}
-
-
 		/* Function: FromExportedString
 		 * Creates a ClassString from the passed string which originally came from another ClassString object.  This assumes the
 		 * string is already be in the proper format.  Only use this when retrieving ClassStrings that were stored as plain text 
@@ -179,16 +170,6 @@ namespace CodeClear.NaturalDocs.Engine.Symbols
 
 				return value;
 				}
-			}
-
-
-		/* Property: HierarchyType
-		 * Which <HierarchyType> the class is a part of.
-		 */
-		public HierarchyType HierarchyType
-			{
-			get
-				{  return (HierarchyType)HierarchyID;  }
 			}
 
 

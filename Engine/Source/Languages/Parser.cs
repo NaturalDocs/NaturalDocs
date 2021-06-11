@@ -3414,7 +3414,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 						var hierarchy = EngineInstance.Hierarchies.FromID(commentType.HierarchyID);
 						Language language = EngineInstance.Languages.FromID(topic.LanguageID);
 
-						ClassString classString = ClassString.FromParameters(hierarchy.Type, language.ID, language.CaseSensitive, topicSymbol);
+						ClassString classString = ClassString.FromParameters(hierarchy.ID, language.ID, language.CaseSensitive, topicSymbol);
 
 						topic.ClassString = classString;
 
