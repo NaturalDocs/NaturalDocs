@@ -51,15 +51,6 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 		 */
 		public bool Start (Errors.ErrorList errorList)
 			{
-			var fileHierarchy = new Hierarchy(
-				id: 0,
-				name: "File", 
-				pluralName: "Files", 
-				simpleIdentifier: "File",
-				pluralSimpleIdentifier: "Files",
-				isLanguageSpecific: false,
-				isCaseSensitive: !SystemInfo.IgnoreCaseInPaths);
-
 			var classHierarchy = new Hierarchy(
 				id: 1,
 				name: "Class", 
@@ -79,7 +70,7 @@ namespace CodeClear.NaturalDocs.Engine.Hierarchies
 				isLanguageSpecific: false,
 				isCaseSensitive: (sqlLanguage != null ? sqlLanguage.CaseSensitive : false) );
 
-			hierarchies = new Hierarchy[] { fileHierarchy, classHierarchy, databaseHierarchy };
+			hierarchies = new Hierarchy[] { classHierarchy, databaseHierarchy };
 
 			classHierarchyID = classHierarchy.ID;
 
