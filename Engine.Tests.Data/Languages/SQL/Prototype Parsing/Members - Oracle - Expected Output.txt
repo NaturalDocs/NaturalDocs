@@ -1,0 +1,91 @@
+- Plain Section: Var1 VARCHAR2(10 Byte)
+  - Access Level: Unknown
+  - Link Candidates: VARCHAR2
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: CONSTRUCTOR FUNCTION Func1 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x IN OUT NOCOPY ObjectType,
+    - Name: x
+    - Full Type: IN OUT NOCOPY ObjectType
+    - Base Type: ObjectType
+    - Link Candidates: ObjectType
+    - Default Value: (not detected)
+
+  - Parameter 2: y VARCHAR2
+    - Name: y
+    - Full Type: VARCHAR2
+    - Base Type: VARCHAR2
+    - Link Candidates: VARCHAR2
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: RETURN x
+  - Access Level: Unknown
+  - Link Candidates: x
+
+------------------------------
+
+- Plain Section: STATIC PROCEDURE Func2
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+------------------------------
+
+- Plain Section: MAP MEMBER FUNCTION Func3
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+------------------------------
+
+- Plain Section: ORDER MEMBER FUNCTION Func4
+  - Access Level: Unknown
+  - Link Candidates: (none)
+
+- Plain Section: RETURN NUMBER
+  - Access Level: Unknown
+  - Link Candidates: NUMBER
+
+------------------------------
+
+- Parameter Section:
+  - Before Parameters: MEMBER FUNCTION Func5 (
+    - Access Level: Unknown
+    - Link Candidates: (none)
+
+  - Parameter 1: x PLS_INTEGER,
+    - Name: x
+    - Full Type: PLS_INTEGER
+    - Base Type: PLS_INTEGER
+    - Link Candidates: PLS_INTEGER
+    - Default Value: (not detected)
+
+  - Parameter 2: y VARCHAR2
+    - Name: y
+    - Full Type: VARCHAR2
+    - Base Type: VARCHAR2
+    - Link Candidates: VARCHAR2
+    - Default Value: (not detected)
+
+  - After Parameters: )
+    - Link Candidates: (none)
+
+- Plain Section: RETURN BOOLEAN
+  - Access Level: Unknown
+  - Link Candidates: BOOLEAN
+
+------------------------------
+
+- Plain Section: MEMBER PROCEDURE Func6
+  - Access Level: Unknown
+  - Link Candidates: (none)
