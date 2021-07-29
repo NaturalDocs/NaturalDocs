@@ -7,10 +7,43 @@ _______________________________________________________________________________
 	style this will be handled by <NDMenu>.
 
 
+	Topic: Location Information
+
+		Information about how to interpret hash paths and convert them into data file paths is stored in [Output Folder]\menu\tabs.js.
+		The file contains a call to the function <NDFramePage.OnLocationsLoaded()> that looks like this:
+
+		> NDFramePage.OnLocationsLoaded([
+		>    [ "File", "files", 0, "^File([0-9]*)$" ],
+		>    [ "Class", "classes", 1, "^([A-Za-z]+)Class$" ],
+		>    [ "Database", "database", 2, "^Database$" ]
+		>    ]);
+
+		The only parameter is an array of the location types that are known.  Each entry is an array in this format:
+
+		> [ "Simple Identifier", "Folder", Type, "Prefix Regex" ]
+
+		The first member is a string representing the location's simple identifier.  It will be the string "File" or the simple identifier
+		of a hierarchy.
+
+		The second member is the folder name associated with it.
+		
+		The third member is the type as a numeric constant with one of these values:
+
+		0 - Files
+		1 - Language-specific hierarchy
+		2 - Language-agnostic hierarchy
+
+		The fourth member is a regular expression string (not a RegExp object itself) that's used to determine whether a prefix 
+		belongs to the location type.  For example, the Class regex should match "CSharpClass" and "JavaScriptClass".
+
+		For file and language-specific hierarchy locations, the regular expression will include a single capture that returns the file
+		source number (which is optional) or the language identifier (which is not.)
+
+
 	Topic: Tab Information
 
-		Information about which tabs are available in the menu is stored in [Output Folder]\menu\tabs.js.  The file contains a call to
-		the function NDMenu.OnTabsLoaded() that looks like this:
+		Information about which tabs are available in the menu is also stored in [Output Folder]\menu\tabs.js.  The file contains a 
+		call to the function NDMenu.OnTabsLoaded() that looks like this:
 
 		> NDMenu.OnTabsLoaded([
 		>    [ "File", "Files", "File:Folder/", "files.js" ],
@@ -19,12 +52,11 @@ _______________________________________________________________________________
 
 		The only parameter is an array of the tabs that are present.  Each entry is an array in this format:
 
-		> [ "Type", "HTML Title", "Hash Path", "FileWithContents.js" ]
-		> [ "Type", ["HTML Title", "HTML Title 2", "HTML Title 3"], "Hash Path", "FileWithContents.js" ]
+		> [ "Simple Identifier", "HTML Title", "Partial Hash Path", "FileWithContents.js" ]
+		> [ "Simple Identifier", ["HTML Title", "HTML Title 2", "HTML Title 3"], "Partial Hash Path", "FileWithContents.js" ]
 
-		The first member is a string representing the type of tab it is.  If you're using the DefaultJS style, this will map directly to
-		<NDLocation.type> so you can tell which one should be selected for a given location.  It will be safe to include as part of a
-		CSS name and it will stay consistent across languages.
+		The first member is a string representing the simple identifier of the location the tab is associated with.  It will be the string 
+		"File" or the simple identifier of a hierarchy so it is safe to include in CSS names.
 
 		The second member is the title in HTML, and it may be a string or an array of strings.  If it's an array of strings, that means 
 		the menu has been condensed and multiple layers of containers have been combined into it.
@@ -32,8 +64,8 @@ _______________________________________________________________________________
 		The third member is the hash path, which may be undefined.  If the menu was condensed containers that had hash paths
 		may have been combined with the root container, giving the tab a hash path.
 		
-		The fourth member is the file which contains the data for that particular tab.  It's stored in the menu subfolder of the output 
-		folder, just like tabs.js.
+		The fourth member is the root file which contains the data for that particular tab.  It's stored in the menu subfolder of the 
+		output folder, just like tabs.js.
 
 
 	Topic: Menu Sections

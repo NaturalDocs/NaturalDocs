@@ -635,22 +635,18 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		 */
 		protected void BuildTabDataFile ()
 			{
-			StringBuilder tabInformation = new StringBuilder("NDMenu.OnTabsLoaded([");
-			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
 
-			if (addWhitespace)
-				{  tabInformation.Append('\n');  }
+			// Collect what we need to build
 
-			List<JSONMenuEntries.Container> tabContainers = new List<JSONMenuEntries.Container>();
-			List<string> tabTypes = new List<string>();
-
-			// DEPENDENCY: tabTypes must use the same strings as the NDLocation JavaScript class.
-			// DEPENDENCY: tabTypes must use strings safe for including in CSS names.
+			List<string> simpleIdentifiers = new List<string>();
+			List<JSONMenuEntries.Container> containers = new List<JSONMenuEntries.Container>();
+			List<Hierarchies.Hierarchy> hierarchies = new List<Hierarchies.Hierarchy>();
 
 			if (fileRoot != null)
 				{
-				tabContainers.Add(fileRoot);
-				tabTypes.Add("File");
+				simpleIdentifiers.Add("File");
+				containers.Add(fileRoot);
+				hierarchies.Add(null);
 				}
 
 			if (hierarchyRoots != null)
@@ -659,71 +655,167 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					{
 					var hierarchy = EngineInstance.Hierarchies.FromID(hierarchyRoot.MenuEntry.HierarchyID);
 
-					tabContainers.Add(hierarchyRoot);
-					tabTypes.Add(hierarchy.SimpleIdentifier);
+					simpleIdentifiers.Add(hierarchy.SimpleIdentifier);
+					containers.Add(hierarchyRoot);
+					hierarchies.Add(hierarchy);
 					}
 				}
 
-			for (int i = 0; i < tabContainers.Count; i++)
+
+			// Build the output
+
+			StringBuilder output = new StringBuilder();
+			bool addWhitespace = (EngineInstance.Config.ShrinkFiles == false);
+
+
+			// NDFramePage.OnLocationsLoaded()
+
+			output.Append("NDFramePage.OnLocationsLoaded([");
+
+			if (addWhitespace)
+				{  output.Append('\n');  }
+
+			for (int i = 0; i < containers.Count; i++)
 				{
 				if (addWhitespace)
-					{  tabInformation.Append(' ', IndentWidth);  }
+					{  output.Append(' ', IndentWidth);  }
 
-				tabInformation.Append("[\"");
-				tabInformation.Append(tabTypes[i]);
-				tabInformation.Append("\",");
+				AppendLocationEntry(simpleIdentifiers[i], hierarchies[i], output);
 
-				var condensedTitles = (tabContainers[i].MenuEntry as MenuEntries.Container).CondensedTitles;
-
-				if (condensedTitles == null)
-					{
-					tabInformation.Append('"');
-					tabInformation.StringEscapeAndAppend( tabContainers[i].MenuEntry.Title.ToHTML() );
-					tabInformation.Append('"');
-					}
-				else
-					{
-					tabInformation.Append("[\"");
-					tabInformation.StringEscapeAndAppend( tabContainers[i].MenuEntry.Title.ToHTML() );
-					tabInformation.Append('"');
-
-					foreach (var condensedTitle in condensedTitles)
-						{
-						tabInformation.Append(",\"");
-						tabInformation.StringEscapeAndAppend( condensedTitle.ToHTML() );
-						tabInformation.Append('"');
-						}
-
-					tabInformation.Append(']');
-					}
-
-				tabInformation.Append(',');
-
-				if (tabContainers[i].HashPath != null)
-					{
-					tabInformation.Append('"');
-					tabInformation.StringEscapeAndAppend(tabContainers[i].HashPath);
-					tabInformation.Append('"');
-					}
-				// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
-
-				tabInformation.Append(",\"");
-				tabInformation.StringEscapeAndAppend(tabContainers[i].DataFileName);
-				tabInformation.Append("\"]");
-
-				if (i < tabContainers.Count - 1)
-					{  tabInformation.Append(',');  }
+				if (i < containers.Count - 1)
+					{  output.Append(',');  }
 
 				if (addWhitespace)
-					{  tabInformation.Append('\n');  }
+					{  output.Append('\n');  }
 				}
 
 			if (addWhitespace)
-				{  tabInformation.Append(' ', IndentWidth);  }
+				{  output.Append(' ', IndentWidth);  }
 
-			tabInformation.Append("]);");
+			output.Append("]);");
 
-			WriteTextFile( Paths.Menu.TabOutputFile(Target.OutputFolder), tabInformation.ToString() );
+			if (addWhitespace)
+				{  output.Append("\n\n");  }
+
+
+			// NDMenu.OnTabsLoaded()
+
+			output.Append("NDMenu.OnTabsLoaded([");
+
+			if (addWhitespace)
+				{  output.Append('\n');  }
+
+			for (int i = 0; i < containers.Count; i++)
+				{
+				if (addWhitespace)
+					{  output.Append(' ', IndentWidth);  }
+
+				AppendTabEntry(simpleIdentifiers[i], containers[i], output);
+
+				if (i < containers.Count - 1)
+					{  output.Append(',');  }
+
+				if (addWhitespace)
+					{  output.Append('\n');  }
+				}
+
+			if (addWhitespace)
+				{  output.Append(' ', IndentWidth);  }
+
+			output.Append("]);");
+
+
+			// Write the output to the file
+
+			WriteTextFile( Paths.Menu.TabOutputFile(Target.OutputFolder), output.ToString() );
+			}
+
+
+		/* Function: AppendLocationEntry
+		 * A function which appends a single array entry for <NDFramePage.OnLocationsLoaded()> to the output.
+		 */
+		protected void AppendLocationEntry (string simpleIdentifier, Hierarchies.Hierarchy hierarchy, StringBuilder output)
+			{
+			output.Append("[\"");
+			output.Append(simpleIdentifier);
+			output.Append("\",");
+
+			output.Append('"');
+			if (hierarchy == null)
+				{  output.StringEscapeAndAppend("files");  }
+			else
+				{  output.StringEscapeAndAppend( hierarchy.PluralSimpleIdentifier.ToLowerInvariant() );  }
+			output.Append("\",");
+
+			if (hierarchy == null)
+				{  
+				output.Append("0,\"^");
+				output.StringEscapeAndAppend(simpleIdentifier);
+				output.Append("([0-9]*)$\"");
+				}
+			else if (hierarchy.IsLanguageSpecific)
+				{  
+				output.Append("1,\"^([A-Za-z]+)");
+				output.StringEscapeAndAppend(simpleIdentifier);
+				output.Append("$\"");
+				}
+			else // language-agnostic
+				{  
+				output.Append("2,\"^");
+				output.StringEscapeAndAppend(simpleIdentifier);
+				output.Append("$\"");
+				}
+
+			output.Append(']');
+			}
+
+
+		/* Function: AppendTabEntry
+		 * A function which appends a single array entry for <NDMenu.OnTabsLoaded()> to the output.
+		 */
+		protected void AppendTabEntry (string simpleIdentifier, JSONMenuEntries.Container container, StringBuilder output)
+			{
+			output.Append("[\"");
+			output.Append(simpleIdentifier);
+			output.Append("\",");
+
+			var condensedTitles = (container.MenuEntry as MenuEntries.Container).CondensedTitles;
+
+			if (condensedTitles == null)
+				{
+				output.Append('"');
+				output.StringEscapeAndAppend( container.MenuEntry.Title.ToHTML() );
+				output.Append('"');
+				}
+			else
+				{
+				output.Append("[\"");
+				output.StringEscapeAndAppend( container.MenuEntry.Title.ToHTML() );
+				output.Append('"');
+
+				foreach (var condensedTitle in condensedTitles)
+					{
+					output.Append(",\"");
+					output.StringEscapeAndAppend( condensedTitle.ToHTML() );
+					output.Append('"');
+					}
+
+				output.Append(']');
+				}
+
+			output.Append(',');
+
+			if (container.HashPath != null)
+				{
+				output.Append('"');
+				output.StringEscapeAndAppend(container.HashPath);
+				output.Append('"');
+				}
+			// Otherwise leave an empty spot before the comma.  We don't have to write out "undefined".
+
+			output.Append(",\"");
+			output.StringEscapeAndAppend(container.DataFileName);
+			output.Append("\"]");
 			}
 
 
