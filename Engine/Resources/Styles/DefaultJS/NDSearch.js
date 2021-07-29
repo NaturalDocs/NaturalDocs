@@ -156,7 +156,7 @@ var NDSearch = new function ()
 			}
 
 		var location = new NDLocation(window.location.hash);
-		var favorClasses = (location.type == "Class" || location.type == "Database");
+		var favorClasses = (location.type != "File");
 
 		// Don't fonce expansion if it returns undefined because more needs to be loaded.
 		var forceExpansion = (this.TotalMatchesGreaterThan(searchInterpretations, searchInterpretationPrefixes, $MaxAutoExpand) === false);

@@ -15,22 +15,24 @@
 "use strict";
 
 
+// Location Info Members
+
+	$LocationInfo_SimpleIdentifier = 0;
+	$LocationInfo_Folder = 1;
+	$LocationInfo_Type = 2;
+	$LocationInfo_PrefixRegexString = 3;
+	$LocationInfo_PrefixRegexObject = 4;
+
+// Location Info Type values
+
+	$LocationInfoType_File = 0
+	$LocationInfoType_LanguageSpecificHierarchy = 1;
+	$LocationInfoType_LanguageAgnosticHierarchy = 2;
+
+
+
 /* Class: NDFramePage
 	_____________________________________________________________________________
-
-	Topic: URL Hash Format
-
-		File References:
-
-			> #File[number unless 1]:[full path]:[full symbol (optional)]
-			>
-			> #File:source/module/file.cs
-			> #File3:source/module/file.cs:Namespace.Package.Function
-
-		Path Restrictions:
-
-			Because of the above format, generated file paths cannot contain the colon character.  This is
-			documented in <CodeClear.NaturalDocs.Engine.Output.Builders.HTML.Path Restrictions>.
 
 */
 var NDFramePage = new function ()
@@ -44,7 +46,7 @@ var NDFramePage = new function ()
 	*/
 	this.Start = function ()
 		{
-		
+
 		// The default title of the page is the project title.  Save a copy before we mess with it.
 		
 		this.projectTitle = document.title;
@@ -113,9 +115,9 @@ var NDFramePage = new function ()
 		NDSearch.Start();
 
 
-		// Load the hash location, if any.
+		// We have to wait for OnLocationsLoaded() to interpret the hash path, so we don't call OnHashChange() here.  It
+		// will be done by OnLocationsLoaded() instead.
 
-		this.OnHashChange();
 		};
 
 
@@ -201,6 +203,23 @@ var NDFramePage = new function ()
 
 		if (this.currentLocation.summaryFile == undefined)
 			{  this.UpdatePageTitle();  }
+		};
+
+
+	/* Function: OnLocationsLoaded
+	*/
+	this.OnLocationsLoaded = function (locationInfo)
+		{
+		this.locationInfo = locationInfo;
+
+		// Create RegExp objects since they're not included in the data
+		for (var i = 0; i < this.locationInfo.length; i++)
+			{
+			this.locationInfo[i][$LocationInfo_PrefixRegexObject] = new RegExp( this.locationInfo[i][$LocationInfo_PrefixRegexString] );
+			}
+
+		// Now we can interpret the initial hash path
+		this.OnHashChange();
 		};
 
 
@@ -670,6 +689,11 @@ var NDFramePage = new function ()
 
 	/* var: currentLocation
 		A <NDLocation> representing the current hash path location.
+	*/
+
+	/* var: locationInfo
+		An array of location information objects as documented in <Location Information>, or undefined if <OnLocationsLoaded()> hasn't
+		been called yet.
 	*/
 
 	/* var: projectTitle

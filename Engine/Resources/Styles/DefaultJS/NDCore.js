@@ -15,6 +15,22 @@
 "use strict";
 
 
+// Location Info Members
+
+	$LocationInfo_SimpleIdentifier = 0;
+	$LocationInfo_Folder = 1;
+	$LocationInfo_Type = 2;
+	$LocationInfo_PrefixRegexString = 3;
+	$LocationInfo_PrefixRegexObject = 4;
+
+// Location Info Type values
+
+	$LocationInfoType_File = 0
+	$LocationInfoType_LanguageSpecificHierarchy = 1;
+	$LocationInfoType_LanguageAgnosticHierarchy = 2;
+
+
+
 /* Class: NDCore
 	_____________________________________________________________________________
 
@@ -436,148 +452,145 @@ function NDLocation (hashString)
 
 
 	/* Private Function: Constructor
-
 		You do not need to call this function.  Simply call "new NDLocation(hashString)" and this will be called automatically.
-
-		This will set <hashString>, <type>, <path>, and <member>.  AddURLs will set <contentPage>, <summaryFile>,
-		and <summaryTTFile>.
 	 */
 	this.Constructor = function (hashString)
 		{
+
+		//
+		// Normalize our hash string
+		//
+
 		this.hashString = NDCore.NormalizeHash(hashString);
 
-		// DEPENDENCY: type must use the same strings as menu/tabs.js.
-		// DEPENDENCY: type must use strings safe for including in CSS names.
 
-		if (this.hashString.match(/^File[0-9]*:/) != null)
+		//
+		// Split it up into path, member, and prefix
+		//
+
+		// The first colon separates the path prefix from the rest of the path, such as the one after File: or CSharpClass:.
+		// This may not exist if this is a Home or invalid hash path.
+		var prefixSeparator = this.hashString.indexOf(':');
+		var memberSeparator = -1;
+
+		if (prefixSeparator == -1)
 			{
-			this.type = "File";
-			this.SplitPathAndMember();
-			this.AddFileURLs();
-			}
-
-		else if (this.hashString.match(/^[A-Z]+Class:/i) != null)
-			{
-			this.type = "Class";
-			this.SplitPathAndMember();
-			this.AddClassURLs();
-			}
-
-		else if (this.hashString.substr(0,9).toLowerCase() == "database:")
-			{
-			this.type = "Database";
-			this.SplitPathAndMember();
-			this.AddDatabaseURLs();
-			}
-
-		else
-			{
-			// All empty and invalid hashes show the home page.
-			this.type = "Home";
-			this.AddHomeURLs();
-			}
-		};
-
-
-	/* Private Function: SplitPathAndMember
-		Generates <path> and <member> from <hashString> assuming <hashString> is in a relevant format.
-	*/
-	this.SplitPathAndMember = function ()
-		{
-		// The first colon after the path type, such as File: or CSharpClass:.  This should always exist.
-		var pathSeparator = this.hashString.indexOf(':');
-
-		// The first colon after the path, which may or may not exist.
-		var memberSeparator = this.hashString.indexOf(':', pathSeparator + 1);
-
-		if (memberSeparator == -1)
-			{
-			this.path = this.hashString;
+			this.prefix = undefined;
+			this.path = undefined;
+			this.member = undefined;
 			}
 		else
 			{
-			this.path = this.hashString.substr(0, memberSeparator);
-			this.member = this.hashString.substr(memberSeparator + 1);
+			this.prefix = this.hashString.substr(0, prefixSeparator);
 
-			if (this.member == "")
-				{  this.member = undefined;  }
+			// The second colon, which separates the path from the member.  This may not exist if the path just goes
+			// to a file or class and not one of its members.
+			memberSeparator = this.hashString.indexOf(':', prefixSeparator + 1);
+
+			if (memberSeparator == -1)
+				{
+				// Remember path includes the prefix
+				this.path = this.hashString;
+				this.member = undefined;
+				}
+			else
+				{
+				this.path = this.hashString.substr(0, memberSeparator);
+				this.member = this.hashString.substr(memberSeparator + 1);
+
+				if (this.member == "")
+					{  this.member = undefined;  }
+				}
 			}
-		};
 
-	
-	/* Private Function: AddHomeURLs
-		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
-		must be "Home".
-	*/
-	this.AddHomeURLs = function ()
-		{
-		this.contentPage = "other/home.html";
-		};
-
-	
-	/* Private Function: AddFileURLs
-		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
-		must be "File".
-	*/
-	this.AddFileURLs = function ()
-		{
-		var pathPrefix = this.path.match(/^File([0-9]*):/);
-		var basePath = "files" + pathPrefix[1] + "/" + this.path.substr(pathPrefix[0].length);
-
-		var lastSeparator = basePath.lastIndexOf('/');
-		var filename = basePath.substr(lastSeparator + 1);
-		filename = filename.replace(/\./g, '-');
 		
-		basePath = basePath.substr(0, lastSeparator + 1) + filename;
+		//
+		// Determine the type from the prefix
+		//
 
-		this.contentPage = basePath + ".html";
-		this.summaryFile = basePath + "-Summary.js";
-		this.summaryTTFile = basePath + "-SummaryToolTips.js";
+		var foundPrefix = false;
+		var locationInfo = undefined;
+		var prefixParam = undefined;
 
-		if (this.member != undefined)
-			{  this.contentPage += '#' + this.member;  }
+		if (this.hashString == "")
+			{
+			this.type = "Home";
+			foundPrefix = true;
+			}
+
+		else if (NDFramePage != undefined && 
+				  NDFramePage.locationInfo != undefined)
+			{
+			for (var i = 0; i < NDFramePage.locationInfo.length; i++)
+				{
+				var matchResult = this.prefix.match( NDFramePage.locationInfo[i][$LocationInfo_PrefixRegexObject] );
+
+				if (matchResult)
+					{
+					locationInfo = NDFramePage.locationInfo[i];
+					this.type = locationInfo[$LocationInfo_SimpleIdentifier];
+					prefixParam = matchResult[1];
+
+					foundPrefix = true;
+					break;
+					}
+				}
+			}
+
+		// No matches or NDFramePage.locationInfo isn't loaded yet
+		if (!foundPrefix)
+			{
+			this.type = "Home";
+			}
+
+
+		//
+		// Determine URLs for contentPage, summaryFile, and summaryTTFile
+		//
+
+		if (this.type == "Home" || locationInfo == undefined)
+			{
+			this.contentPage = "other/home.html";
+			this.summaryFile = undefined;
+			this.summaryTTFile = undefined;
+			}
+		else
+			{
+			var path = locationInfo[$LocationInfo_Folder];
+			
+			if (locationInfo[$LocationInfo_Type] == $LocationInfoType_File && prefixParam != undefined)
+				{  path += prefixParam;  }  // files2
+			else if (locationInfo[$LocationInfo_Type] == $LocationInfoType_LanguageSpecificHierarchy)
+				{  path += '/' + prefixParam;  }  // classes/CSharp
+
+			path += '/' + this.path.substr(prefixSeparator + 1);
+
+			if (locationInfo[$LocationInfo_Type] == $LocationInfoType_File)
+				{  
+				var lastSeparator = path.lastIndexOf('/');
+				var folder = path.substr(0, lastSeparator + 1);
+				var file = path.substr(lastSeparator + 1);
+
+				// Need to use replace() with a regex because older versions of Safari don't have replaceAll()
+				file = file.replace(/\./g, '-');
+				
+				path = folder + file;
+				}
+			else // hierarchy
+				{
+				path = path.replace(/\./g, '/');
+				}
+
+			this.contentPage = path + ".html";
+			this.summaryFile = path + "-Summary.js";
+			this.summaryTTFile = path + "-SummaryToolTips.js";
+
+			if (this.member != undefined)
+				{  this.contentPage += '#' + this.member;  }
+			}
 		};
 
-
-	/* Private Function: AddClassURLs
-		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
-		must be "File".
-	*/
-	this.AddClassURLs = function ()
-		{
-		var pathPrefix = this.path.match(/^([A-Z]+)Class:/i);
-		var basePath = "classes/" + pathPrefix[1] + "/" + this.path.substr(pathPrefix[0].length);
-
-		basePath = basePath.replace(/\.|::/g, "/");
-
-		this.contentPage = basePath + ".html";
-		this.summaryFile = basePath + "-Summary.js";
-		this.summaryTTFile = basePath + "-SummaryToolTips.js";
-
-		if (this.member != undefined)
-			{  this.contentPage += '#' + this.member;  }
-		};
-
-
-	/* Private Function: AddDatabaseURLs
-		Sets <contentPage>, <summaryFile>, and <summaryTTFile> for the location object.  The object's type
-		must be "Database".
-	*/
-	this.AddDatabaseURLs = function ()
-		{
-		var basePath = "database/" + this.path.substr(9);
-
-		basePath = basePath.replace(/\./g, "/");
-
-		this.contentPage = basePath + ".html";
-		this.summaryFile = basePath + "-Summary.js";
-		this.summaryTTFile = basePath + "-SummaryToolTips.js";
-
-		if (this.member != undefined)
-			{  this.contentPage += '#' + this.member;  }
-		};
-
-
+	
 
 	// Group: Variables
 	// ___________________________________________________________________________
@@ -594,22 +607,22 @@ function NDLocation (hashString)
 		
 		Possible Values:
 		
-			- "Home"
-			- "File"
-			- "Class"
-			- "Database"
-			
-			Code should be able to handle strings that don't appear on this list as the types may be expanded in the future.
+			"Home" - The home page.  For now if there's an invalid hash path the location will be set the home page.  In the future 
+						  there may be a separate 404-type page.
+			"File" - A source file.
+			"Class" - A class.
+			other strings - Other strings that don't appear in this list since it's expandable by entries in <NDFramePage.locationInfo>.
+								 Code should be able to handle strings besides the above.
 
 
 		var: path
 
-		If <hashString> can be split into a path and member, this will be the path.
+		If <hashString> can be split into a path and member, this will be the path.  This includes the prefix like File:.
 		
 		Examples:
 		
 			File - "File:Folder/Folder/Source.cs"
-			Class - "CSharp_Class:Namespace.Namespace.Class".
+			Class - "CSharpClass:Namespace.Namespace.Class"
 
 
 		var: member
@@ -619,10 +632,20 @@ function NDLocation (hashString)
 		
 		Examples:
 		
-			File - "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member".
-			Class - "Member" in "CSharp_Class:Namespace.Namespace.Class:Member".
+			File - "Class.Class.Member" in "File:Folder/Folder/Source.cs:Class.Class.Member"
+			Class - "Member" in "CSharpClass:Namespace.Namespace.Class:Member"
 
 
+		var: prefix
+
+		If <hashString> contains a path, this will be just the prefix.  It does not include the colon.
+		
+		Examples:
+		
+			File - "File" in "File:Folder/Folder/Source.cs"
+			Class - "CSharpClass" in "CSharpClass:Namespace.Namespace.Class"
+
+		
 		var: contentPage
 		The URL to the content page.
 
