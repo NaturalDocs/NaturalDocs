@@ -553,17 +553,13 @@ namespace CodeClear.NaturalDocs.Engine.Languages.Parsers
 			// Keywords
 
 			// Skip things like CREATE OR REPLACE and random modifiers like EDITIONABLE to get to the main keyword
-			if (OnAnyKeyword(lookahead, "CREATE", "REPLACE", "ALTER"))
-				{
-				// Microsoft allows PROC instead of PROCEDURE, though not FUNC instead of FUNCTION
-				do
-					{  lookahead.Next();  }
-				while ( (lookahead.FundamentalType == FundamentalType.Text ||
-							lookahead.FundamentalType == FundamentalType.Whitespace ||
-							lookahead.FundamentalType == FundamentalType.LineBreak ||
-							lookahead.Character == '_') &&
-						  !OnAnyKeyword(lookahead, "FUNCTION", "PROCEDURE", "PROC"));
-				}
+			// Microsoft allows PROC instead of PROCEDURE, though not FUNC instead of FUNCTION
+			while ( (lookahead.FundamentalType == FundamentalType.Text ||
+						lookahead.FundamentalType == FundamentalType.Whitespace ||
+						lookahead.FundamentalType == FundamentalType.LineBreak ||
+						lookahead.Character == '_') &&
+						!OnAnyKeyword(lookahead, "FUNCTION", "PROCEDURE", "PROC"))
+				{  lookahead.Next();  }
 
 			if (!OnAnyKeyword(lookahead, "FUNCTION", "PROCEDURE", "PROC"))
 				{  return false;  }
