@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Project_txt
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Project.txt>.
@@ -24,16 +24,16 @@ using CodeClear.NaturalDocs.Engine.Errors;
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
-	public class Project_txt
+	public class TextFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Project_txt
+		/* Constructor: TextFileParser
 		 */
-		public Project_txt ()
+		public TextFileParser ()
 			{
 			errorList = null;
 			projectConfig = null;

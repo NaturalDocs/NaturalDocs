@@ -310,7 +310,7 @@ namespace CodeClear.NaturalDocs.CLI
 
 			int priorErrorCount = errorList.Count;
 
-			Engine.Config.ConfigFiles.Project_txt projectTxtParser = new Engine.Config.ConfigFiles.Project_txt();
+			Engine.Config.ConfigFiles.TextFileParser projectTxtParser = new Engine.Config.ConfigFiles.TextFileParser();
 			projectTxtParser.Save(commandLineConfig.ProjectConfigFolder + "/Project.txt", commandLineConfig, errorList);
 
 			if (System.IO.File.Exists(commandLineConfig.ProjectConfigFolder + "/Languages.txt") == false)

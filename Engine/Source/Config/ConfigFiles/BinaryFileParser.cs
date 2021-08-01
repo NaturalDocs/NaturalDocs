@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Project_nd
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Project.nd>.
@@ -23,16 +23,16 @@ using CodeClear.NaturalDocs.Engine.Config;
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
-	public class Project_nd
+	public class BinaryFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Project_nd
+		/* Constructor: BinaryFileParser
 		 */
-		public Project_nd ()
+		public BinaryFileParser ()
 			{
 			projectConfig = null;
 			binaryFile = null;

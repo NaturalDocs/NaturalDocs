@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Menu_txt
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.LegacyMenuFileParser
  * ____________________________________________________________________________
  * 
  * A class to handling loading project information from a pre-2.0 version of <Menu.txt>.  It does not load the menu information
@@ -25,16 +25,16 @@ using CodeClear.NaturalDocs.Engine.Errors;
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
-	public class Menu_txt
+	public class LegacyMenuFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Menu_txt
+		/* Constructor: LegacyMenuFileParser
 		 */
-		public Menu_txt ()
+		public LegacyMenuFileParser ()
 			{
 			}
 
@@ -45,8 +45,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 
 		/* Function: Load
-		 * Attempts to load any project information it can find in <Menu.txt>.  Unlike <Project_txt.Load()>, this doesn't take an
-		 * <ErrorList>.  Loading <Menu.txt> is done when it can provide a benefit but it failing to load is not an error.
+		 * Attempts to load any project information it can find in <Menu.txt>.  Unlike <TextFileParser.Load()>, this doesn't take
+		 * an <ErrorList>.  Loading <Menu.txt> is done when it can provide a benefit but it failing to load is not an error.
 		 */
 		public bool Load (Path path, out ProjectConfig projectConfig)
 			{
