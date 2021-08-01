@@ -1,0 +1,117 @@
+﻿
+File: Project.txt
+_______________________________________________________________________________
+
+The configuration file that defines the project settings for Natural Docs.  Various settings may be overridden by the command
+line, though.
+
+These files follows the standard conventions in <ConfigFile>.  Identifier whitespace is condensed.  Y, N, True, and False can 
+be substituted for Yes and No.
+		
+
+Group: Format
+_______________________________________________________________________________
+	
+	Topic: Project Information
+		
+		> Title: [title]
+		> Subtitle: [subtitle]
+		> Copyright: [copyright]
+
+		The title, subtitle, and copyright notice for the project.  (C), (R), and (TM) will be converted into their respective symbols.
+			
+		> Timestamp: [timestamp code]
+			
+		The timestamp code is a regular string with the following subsitutions performed:
+			
+			m - Single digit month, when possible.  January is "1".
+			mm - Always double digit month.  January is "01".
+			mon - Short month word.  January is "Jan".
+			month - Long month word.  January is "January".
+			d - Single digit day, when possible.  1 is "1".
+			dd - Always double digit day.  1 is "01".
+			day - Day with text extension.  1 is "1st".
+			yy - Double digit year.  2021 is "21".
+			yyyy - Four digit year.  2021 is "2021".
+			year - Four digit year.  2021 is "2021".
+			
+		Anything else is left literal in the output.  The substitution requires a non-letter on each side, so every m will not turn into
+		the month.
+			
+		> Style: [name]
+			
+		The style to apply to all output targets.
+			
+ 
+	Topic: Input Targets
+
+		> Source Folder: [path]
+		> Source Folder [number]: [path]
+		>    Name: [name]
+				
+		Specifies a source folder.  Relative paths are relative to the project folder.
+			
+		A number can optionally be specified.  If one is not, it uses the lowest number not in use by another source folder.  Each
+		folder must have a unique number.
+			
+		Name can optionally be specified.  It's not required if there is only one source folder.  If there's more than one and it's 
+		not specified it will be automatically generated.
+			
+		> Image Folder: [path]
+		> Image Folder [number]: [path]
+			
+		Specifies an image folder.  Relative paths are relative to the project folder.
+			
+		A number can optionally be specified.  If one is not, it uses the lowest number not in use by another image folder.  Each
+		folder must have a unique number.
+			
+ 
+	Topic: Filters
+		
+		> Ignore Source Folder: [path]
+			
+		Specifies a source folder that should not be scanned for files.  Relative paths are relative to the project folder.
+			
+		> Ignore Source Folder Pattern: [pattern]
+			
+		Specifies a pattern that should cause a source folder to be ignored if it matches.  ? matches a single character, * matches 
+		zero or more characters.  It applies to the entire folder name, so "cli" will not match "client", although "cli*" will.
+			
+ 
+	Topic: Output Targets
+ 
+		> HTML Output Folder: [path]
+		>    [Project Info Settings]
+			
+		Specifies a HTML output folder.  Relative paths are relative to the project folder.
+			
+		Each folder may override any of the project information settings if desired.  This allows projects with multiple output targets
+		to give each one its own style, subtitle, etc.
+			
+		Although internally output targets have numbers like input targets, they're not stored in this file because it's not important
+		for them to remain consistent from one computer to the next.  They're only used for temporary data, whereas input target
+		numbers affect the generated output file paths (/files2, etc.) and thus need to remain consistent so URLs don't constantly
+		change.
+			
+ 
+	Topic: Global Settings
+ 
+		> Tab Width: [width]
+			
+		The number of spaces a tab should be expanded to.
+			
+		> Documented Only: [yes|no]
+			
+		Whether only documented code elements should appear in the output.
+			
+		> Auto Group: [yes|no]
+			
+		Whether automatic grouping should be applied.
+			
+ 
+Group: Revisions
+_______________________________________________________________________________
+ 
+	Topic: 2.0
+		
+		- The initial version of this file.

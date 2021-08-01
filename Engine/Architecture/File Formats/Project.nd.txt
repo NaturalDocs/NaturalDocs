@@ -1,0 +1,78 @@
+﻿
+File: Project.nd
+_______________________________________________________________________________
+
+A binary file which stores some of the previous settings of <Project.txt>.  Only settings relevant to the global operation of 
+the program are stored.  Information that is only relevant to the output targets is not because whether a change is significant
+and what its effects are are dependent on the targets themselves.  They are expected to track any changes that are relevant
+themselves.
+
+
+Group: Format
+_______________________________________________________________________________
+
+	Topic: Header
+
+		> [[Binary Header]]
+		
+		The file starts with the standard binary file header as managed by <BinaryFile>.
+
+
+	Topic: Global Properties
+			
+		> [Int32: Tab Width]
+		> [Byte: Documented Only (0 or 1)]
+		> [Byte: Auto Group (0 or 1)]
+		> [Byte: Shrink Files (0 or 1)]
+
+
+	Topic: Input and Output Targets
+			
+		> [String: Target Type]
+		> [[Properties]]
+		> ...
+		> [String: null]
+			
+		A segment of data for each target.  They each start with a type string and the following properties and their encodings
+		are specific to the type.  Segments continue until a null identifier is reached.
+			
+
+		Source Folders:
+
+		> [String: Target Type="Source Folder"]
+		> [String: Absolute Path]
+		> [Int32: Number]
+			
+		The Name property isn't stored because that's only used for presentation in the output.
+		
+
+		Image Folders:
+
+		> [String: Target Type="Image Folder"]
+		> [String: Absolute Path]
+		> [String: Number]
+
+
+		Source Filters:
+			
+		Filter targets are not stored.  When a filter is changed from one run to the next the effects will be reflected in the file
+		scans, so there is no need to detect it separately.
+			
+
+		Output Folders:
+
+		> [String: Target Type="HTML Output Folder"]
+		> [String: Absolute Path]
+		> [Int32: Number]
+			
+		A new output target requires a full rebuild, and knowing its number is important for allowing it to keep intermediate data.
+		Project information like Title is not stored, either at the global or output target level, as it is only relevant to the output 
+		targets.
+ 			
+
+Group: Revisions
+_______________________________________________________________________________
+
+ 	Topic: 2.0
+
+ 		- The file is introduced.

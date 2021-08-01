@@ -323,6 +323,9 @@
     <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Database Layout\Classes.txt" />
     <Content Include="Architecture\Database Layout\ImageLinks.txt" />
+    <Content Include="Architecture\File Formats\Project.nd.txt" />
+    <Content Include="Architecture\File Formats\Menu.txt.txt" />
+    <Content Include="Architecture\File Formats\Project.txt.txt" />
     <Content Include="Architecture\File Formats\Languages.nd.txt" />
     <Content Include="Architecture\File Formats\Comments.nd.txt" />
     <Content Include="Architecture\File Formats\Languages.txt.txt" />

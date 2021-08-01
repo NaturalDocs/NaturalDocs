@@ -9,54 +9,6 @@
  * Threading: Not Thread Safe
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
- * 
- * File: Menu.txt
- * 
- *		The file used to generate the menu in pre-2.0 versions of Natural Docs.
- *
- *		Project Information:
- * 
- *			> Title: [title]
- *			> Subtitle: [subtitle]
- *			> Footer: [footer]
- *			> Timestamp: [timestamp code]
- *
- *			These directly correspond to the equivalent entries in <Project.txt>.
- *		
- *
- *		Ignored Settings:
- *		
- *			> File: [title] ([file name])
- *			> File: [title] (auto-title, [file name])
- *			> File: [title] (no auto-title, [file name])
- *			>
- *			> Group: [title]
- *			> Group: [title] { ... }
- *			>
- *			> Text: [text]
- *			> Link: [URL]
- *			> Link: [title] ([URL])
- *			>
- *			> Index: [name]
- *			> [comment type name] Index: [name]
- *			>
- *			> Don't Index: [comment type name]
- *			> Don't Index: [comment type name], [comment type name], ...
- *			>
- *			> Data: [number]([obscured data])
- *			> Data: 1([obscured: [directory name]///[input directory]])
- *			> Data: 2([obscured: [directory name])
- *			
- *			This is kept for historical reasons but all of this data is ignored.  View the pre-2.0 documentation if you want more
- *			information on these items or to see the file format history.
- *			
- *			The only thing to keep in mind when parsing Menu.txt is that groups can have braces, which can appear anywhere on
- *			a line and violate the one-command-per-line rule.  They always have implicit line breaks around them.  For example, 
- *			this is valid:
- *			
- *			> Group: Classes { File: ClassA (ClassA.cs)
- *			> File: ClassB (ClassB.cs) } File: Functions (Functions.cs)
  *			
  */
 
