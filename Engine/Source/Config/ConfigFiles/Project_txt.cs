@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Project_txt
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Project_txt
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Project.txt>.
@@ -22,7 +22,7 @@ using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
 	public class Project_txt
 		{

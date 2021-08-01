@@ -146,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			ProjectConfig combinedConfig = new ProjectConfig(PropertySource.Combined);
 			MergeConfig(combinedConfig, commandLineConfig);
 
-			var projectTxtParser = new Project_txt();
+			var projectTxtParser = new ConfigFiles.Project_txt();
 
 			if (System.IO.File.Exists(projectConfigFolder + "/Project.txt"))
 				{
@@ -162,7 +162,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				// Try to extract information from a pre-2.0 Menu.txt instead.
 
 				ProjectConfig menuTxtConfig;
-				var menuTxtParser = new Menu_txt();
+				var menuTxtParser = new ConfigFiles.Menu_txt();
 
 				if (menuTxtParser.Load(ProjectConfigFolder + "/Menu.txt", out menuTxtConfig))
 					{  MergeConfig(combinedConfig, menuTxtConfig);  }
@@ -207,7 +207,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			// Load the previous configuration state.  Remember that not every value in ProjectConfig is stored in Project.nd.
 				
 			ProjectConfig previousConfig = null;
-			var projectNDParser = new Project_nd();
+			var projectNDParser = new ConfigFiles.Project_nd();
 
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ) && 
 				System.IO.File.Exists(workingDataFolder + "/Project.nd"))

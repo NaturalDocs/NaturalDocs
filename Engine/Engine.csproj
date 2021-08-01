@@ -170,10 +170,10 @@
     <Compile Include="Source\Comments\Components\XMLElementType.cs" />
     <Compile Include="Source\Comments\Components\XMLIterator.cs" />
     <Compile Include="Source\CommandLine.cs" />
-    <Compile Include="Source\Config\Menu_txt.cs" />
-    <Compile Include="Source\Config\Project_nd.cs" />
+    <Compile Include="Source\Config\ConfigFiles\Menu_txt.cs" />
+    <Compile Include="Source\Config\ConfigFiles\Project_nd.cs" />
     <Compile Include="Source\Config\Target.cs" />
-    <Compile Include="Source\Config\Project_txt.cs" />
+    <Compile Include="Source\Config\ConfigFiles\Project_txt.cs" />
     <Compile Include="Source\Config\Targets\IgnoredSourceFolderPattern.cs" />
     <Compile Include="Source\Config\Targets\IgnoredSourceFolder.cs" />
     <Compile Include="Source\Config\Targets\SourceFolder.cs" />

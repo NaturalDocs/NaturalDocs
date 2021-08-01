@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Menu_txt
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Menu_txt
  * ____________________________________________________________________________
  * 
  * A class to handling loading project information from a pre-2.0 version of <Menu.txt>.  It does not load the menu information
@@ -23,7 +23,7 @@ using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
 	public class Menu_txt
 		{

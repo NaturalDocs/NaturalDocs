@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Config.Project_nd
+ * Class: CodeClear.NaturalDocs.Engine.Config.ConfigFiles.Project_nd
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Project.nd>.
@@ -21,7 +21,7 @@ using System.Text;
 using CodeClear.NaturalDocs.Engine.Config;
 
 
-namespace CodeClear.NaturalDocs.Engine.Config
+namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 	{
 	public class Project_nd
 		{
