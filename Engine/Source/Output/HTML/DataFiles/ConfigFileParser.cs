@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.Config_nd
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.ConfigFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Config.nd>.
@@ -8,57 +8,6 @@
  * Threading: Not Thread Safe
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
- * 
- * File: Config.nd
- * 
- *		A file used to store information about the configuration as of last time this output target was built.
- *		
- *		> [String: Project Title or null]
- *		> [String: Project Subtitle or null]
- *		> [String: Project Copyright or null]
- *		> [String: Project Timestamp Code or null]
- *		
- *		The project info as of the last run.  If any of the properties were not set they will be null.
- *		
- *		> [String: Style Path]
- *		>    [String: Inherit] ... [String: null]
- *		>    [String: OnLoad] [Byte: Page Type] ... [String: null]
- *		>    [String: Link] [Byte: Page Type] ... [String: null]
- *		>    [String: Home Page or null]
- *		>
- *		> [String: Style Path]
- *		> ...
- *		> [String: null]
- *		
- *		Stores the list of styles that apply to this target in the order in which they must be loaded.  Each one starts as
- *		a path, which is either to the style's CSS file or <Style.txt>.  These are stored instead of the names so that if a
- *		name is interpreted differently from one run to the next it will be detected.
- *		
- *		The properties are a null-terminated list of inherit statements, then a null-terminated list of OnLoad statements
- *		each followed by a page type byte, then a null terminated list of Link statements each followed by a page type
- *		byte, then the path to the custom home page file or rull if it's not defined.  There will not be a page type byte
- *		following the null strings that end the OnLoad and Link lists.
- *		
- *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
- *		> [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
- *		> ...
- *		> [Int32: 0]
- *		>
- *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
- *		> [Int32: Image FileSource Number] [String: Image FileSource UniqueIDString]
- *		> ...
- *		> [Int32: 0]
- *		
- *		Stores all the <FileSource> IDs and what their numbers are.  This allows us to purge the related output folders if
- *		one is deleted or changes.
- *		
- *	
- *		Revision History:
- *		
- *			- 2.2
- *				- Added the project title, subtitle, copyright, and timestamp code.
- *				- Added the properties of each style.  Previously it only stored each one's style path.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -71,18 +20,18 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 	{
-	public class Config_nd
+	public class ConfigFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Config_nd
+		/* Constructor: ConfigFileParser
 		 */
-		public Config_nd ()
+		public ConfigFileParser ()
 			{
 			}
 

@@ -1,0 +1,30 @@
+﻿
+File: SearchIndex.nd
+_______________________________________________________________________________
+
+A file used to store the state of the search index.
+		
+
+Group: Format
+_______________________________________________________________________________
+
+	> [[Binary Header]]
+		
+	The file starts with the standard binary file header as managed by <BinaryFile>.
+
+	> [String: Prefix]
+	> [NumberSet: Prefix Topic IDs]
+	> ...
+	> [String: null]
+		
+	The file stores each prefix as a string followed by a NumberSet of its associated topic IDs.  The String-NumberSet pairs 
+	continue in no particular order until it reaches a null ID.
+
+ 			
+
+Group: Revisions
+_______________________________________________________________________________
+
+ 	Topic: 2.0
+
+ 		- The file is introduced.

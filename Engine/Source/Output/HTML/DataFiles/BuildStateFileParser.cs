@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.BuildState_nd
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.BuildStateFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <BuildState.nd>.
@@ -8,89 +8,6 @@
  * Threading: Not Thread Safe
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
- * 
- * File: BuildState.nd
- * 
- *		A file used to store the build state of this output target the last time it was built.
- *	
- *		> [Byte: Need to Build Frame Page (0 or 1)]
- *		> [Byte: Need to Build Home Page (0 or 1)]
- *		> [Byte: Need to Build Main Style Files (0 or 1)]
- *		> [Byte: Need to Build Menu (0 or 1)]
- *		> [Byte: Need to Build Main Search Files (0 or 1)]
- *		
- *		Flags for some of the structural items that need to be built.
- * 
- *		> [NumberSet: Source File IDs to Rebuild]
- *		> [NumberSet: Class IDs to Rebuild]
- *		> [NumberSet: Image File IDs to Rebuild]
- *		> [NumberSet: Style File IDs to Rebuild]
- *		
- *		The files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
- *		be empty sets, though if the build was interrupted this will have the ones left to do.
- *		
- *		> [NumberSet: Source File IDs with Content]
- *		> [NumberSet: Class IDs with Content]
- *		
- *		A set of all the source and class files known to have content after all filters were applied.
- *		
- *		> [NumberSet: Used Image File IDs]
- *		
- *		A set of all the image file IDs which were used in the output.
- *		
- *		> [NumberSet: Unchanged Image File Use Check IDs]
- *		
- *		A set of all the image file IDs that haven't changed but whether they're used in the output may have.
- *		
- *		> [StringSet: Search Prefixes to Rebuild]
- *		
- *		A set of all the search index prefixes which were changed or deleted and thus need to be rebuilt.
- * 
- *		> [StringSet: Folders to Check for Deletion]
- *		
- *		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
- *		to completion this should be an empty set.
- *		
- *		> [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
- * 
- *		> [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
- *		> [Int32: Hierarchy ID] [String: Menu Data File Identifier] [NumberSet: Menu Data File Numbers]
- *		> ...
- *		> [Int32: 0]
- *		
- *		File identifiers and <NumberSets> of the data files that were created when the menus were built, so if the file
- *		menu created files.js, files2.js, and files3.js, it will store "files" and {1-3}.  This allows us to clean up old data 
- *		files if we're using fewer than before.  Hierarchy menus are stored as Int32-String-NumberSet groups that repeat 
- *		until there's a hierarchy ID of zero.
- *		
- *		> [String: Path to Home Page or null]
- *		
- *		The custom home page file, or null if using the default.
- *		
- *		> [String: Generated Timestamp or null]
- *		
- *		The timestamp used the last time the output was built.  This is the generated result, so "Updated January 1, 2020", 
- *		and not the code like "Updated month d, yyyy".
- *		
- *		> [Byte: Home Page Uses Timestamp (0 or 1)]
- *		
- *		Whether the home page uses the generated timestamp or not.
- *		
- *		
- *		Version History:
- *		
- *			- 2.2
- *				- Added Need to Build Home Page.
- *				- Added Path to Home Page, Generated Timestamp, and Home Page Uses Timestamp.
- *				- Changed how menu data file information is stored.
- *		
- *			- 2.1
- *				- Added Used Image File IDs, Image Files to Rebuild, and Unchanged Image File Use Check IDs.
- *			
- *			- 2.0.2
- *				- Added Style File IDs to Rebuild.
- *			
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -104,18 +21,18 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 	{
-	public class BuildState_nd
+	public class BuildStateFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: BuildState_nd
+		/* Constructor: BuildStateFileParser
 		 */
-		public BuildState_nd ()
+		public BuildStateFileParser ()
 			{
 			}
 

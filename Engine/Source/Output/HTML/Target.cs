@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Load Config.nd
 			//
 
-			Config_nd binaryConfigParser = new Config_nd();
+			DataFiles.ConfigFileParser binaryConfigParser = new DataFiles.ConfigFileParser();
 			Config.ProjectInfo previousProjectInfo;
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
@@ -327,7 +327,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Load BuildState.nd
 			//
 
-			BuildState_nd buildStateParser = new BuildState_nd();
+			DataFiles.BuildStateFileParser buildStateParser = new DataFiles.BuildStateFileParser();
 			bool hasBinaryBuildStateFile = false;
 			
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh |
@@ -518,7 +518,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 					if (buildState != null && started)
 						{
-						BuildState_nd buildStateParser = new BuildState_nd();
+						DataFiles.BuildStateFileParser buildStateParser = new DataFiles.BuildStateFileParser();
 						buildStateParser.Save(WorkingDataFolder + "/BuildState.nd", buildState, unprocessedChanges);
 						}
 					}

@@ -1,21 +1,9 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex.SearchIndex_nd
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.SeachIndexFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <SearchIndex.nd>.
  * 
- * 
- * File: SearchIndex.nd
- * 
- *		A file used to store the state of the search index.
- *		
- *		> [String: Prefix]
- *		> [NumberSet: Prefix Topic IDs]
- *		> ...
- *		> [String: null]
- *		
- *		The file stores each prefix as a string followed by a NumberSet of its associated topic IDs.  The String-NumberSet pairs 
- *		continue in no particular order until it reaches a null ID.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -28,12 +16,12 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 	{
-	public class SearchIndex_nd
+	public class SearchIndexFileParser
 		{
 
-		public SearchIndex_nd ()
+		public SearchIndexFileParser ()
 			{
 			}
 

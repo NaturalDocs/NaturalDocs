@@ -52,7 +52,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 				{
 				try
 					{
-					SearchIndex_nd binaryFileParser = new SearchIndex_nd();
+					DataFiles.SearchIndexFileParser binaryFileParser = new DataFiles.SearchIndexFileParser();
 					binaryFileParser.Save(Target.WorkingDataFolder + "/SearchIndex.nd", prefixTopicIDs);
 
 					// Prior to Natural Docs 2.1 SearchIndex.nd was saved in the main working data folder instead of the output target's.
@@ -82,7 +82,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.SearchIndex
 														StartupIssues.CodeIDsInvalidated |
 														StartupIssues.CommentIDsInvalidated ))
 				{
-				SearchIndex_nd binaryFileParser = new SearchIndex_nd();
+				DataFiles.SearchIndexFileParser binaryFileParser = new DataFiles.SearchIndexFileParser();
 				hasBinaryFile = binaryFileParser.Load(Target.WorkingDataFolder + "/SearchIndex.nd", out prefixTopicIDs);
 				}
 			else
