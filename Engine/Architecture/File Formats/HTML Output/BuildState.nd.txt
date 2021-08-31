@@ -8,9 +8,14 @@ A file used to store the build state of this output target the last time it was 
 Group: Format
 _______________________________________________________________________________
 
+	Topic: Header
+
 		> [[Binary Header]]
 		
 		The file starts with the standard binary file header as managed by <BinaryFile>.
+
+
+	Topic: Build Flags
 
 		> [Byte: Need to Build Frame Page (0 or 1)]
 		> [Byte: Need to Build Home Page (0 or 1)]
@@ -20,6 +25,9 @@ _______________________________________________________________________________
 		
 		Flags for some of the structural items that need to be built.
 
+
+	Topic: Build Sets
+
 		> [NumberSet: Source File IDs to Rebuild]
 		> [NumberSet: Class IDs to Rebuild]
 		> [NumberSet: Image File IDs to Rebuild]
@@ -27,7 +35,26 @@ _______________________________________________________________________________
 		
 		The files that needed to be rebuilt but weren't yet.  If the last build was run to completion these should 
 		be empty sets, though if the build was interrupted this will have the ones left to do.
+
+		> [StringSet: Search Prefixes to Rebuild]
 		
+		A set of all the search index prefixes which were changed or deleted and thus need to be rebuilt.
+
+
+	Topic: Cleanup Sets
+
+		> [NumberSet: Unchanged Image File Use Check IDs]
+		
+		A set of all the image file IDs that haven't changed but whether they're used in the output may have.
+		
+		> [StringSet: Folders to Check for Deletion]
+		
+		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
+		to completion this should be an empty set.
+		
+
+	Topic: Content Info
+			
 		> [NumberSet: Source File IDs with Content]
 		> [NumberSet: Class IDs with Content]
 		
@@ -36,19 +63,9 @@ _______________________________________________________________________________
 		> [NumberSet: Used Image File IDs]
 		
 		A set of all the image file IDs which were used in the output.
-		
-		> [NumberSet: Unchanged Image File Use Check IDs]
-		
-		A set of all the image file IDs that haven't changed but whether they're used in the output may have.
-		
-		> [StringSet: Search Prefixes to Rebuild]
-		
-		A set of all the search index prefixes which were changed or deleted and thus need to be rebuilt.
- 
-		> [StringSet: Folders to Check for Deletion]
-		
-		A set of all folders which have had files removed and thus should be removed if empty.  If the last build was run
-		to completion this should be an empty set.
+
+
+	Topic: Menu Data File Info
 		
 		> [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
  
@@ -61,6 +78,9 @@ _______________________________________________________________________________
 		menu created files.js, files2.js, and files3.js, it will store "files" and {1-3}.  This allows us to clean up old data 
 		files if we're using fewer than before.  Hierarchy menus are stored as Int32-String-NumberSet groups that repeat 
 		until there's a hierarchy ID of zero.
+
+
+	Topic: Project Info
 		
 		> [String: Path to Home Page or null]
 		
@@ -85,6 +105,7 @@ _______________________________________________________________________________
 		- Added Need to Build Home Page.
 		- Added Path to Home Page, Generated Timestamp, and Home Page Uses Timestamp.
 		- Changed how menu data file information is stored.
+		- Reorganized the order in which the values appear.
 		
 	Topic: 2.1
 

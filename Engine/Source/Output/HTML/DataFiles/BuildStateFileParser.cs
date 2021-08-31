@@ -57,6 +57,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 					{  result = false;  }
 				else
 					{
+
+					// Build Flags
+
 					// [Byte: Need to Build Frame Page (0 or 1)]
 					// [Byte: Need to Build Home Page (0 or 1)]
 					// [Byte: Need to Build Main Style Files (0 or 1)]
@@ -69,29 +72,45 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 					unprocessedChanges.menu = (binaryFile.ReadByte() == 1);
 					unprocessedChanges.mainSearchFiles = (binaryFile.ReadByte() == 1);
 
+
+					// Build Sets
+
 					// [NumberSet: Source File IDs to Rebuild]
 					// [NumberSet: Class IDs to Rebuild]
 					// [NumberSet: Image File IDs to Rebuild]
 					// [NumberSet: Style File IDs to Rebuild]
-					// [NumberSet: Source File IDs with Content]
-					// [NumberSet: Class IDs with Content]
-					// [NumberSet: Used Image File IDs]
-					// [NumberSet: Unchanged Image File Use Check IDs]
 
 					unprocessedChanges.sourceFiles.ReadFrom(binaryFile);
 					unprocessedChanges.classes.ReadFrom(binaryFile);
 					unprocessedChanges.imageFiles.ReadFrom(binaryFile);
 					unprocessedChanges.styleFiles.ReadFrom(binaryFile);
+
+					// [StringSet: Search Prefixes to Rebuild]
+
+					unprocessedChanges.searchPrefixes.ReadFrom(binaryFile);
+
+
+					// Cleanup Sets
+
+					// [NumberSet: Unchanged Image File Use Check IDs]
+					// [StringSet: Folders to Check for Deletion]
+
+					unprocessedChanges.unchangedImageFileUseChecks.ReadFrom(binaryFile);
+					unprocessedChanges.possiblyEmptyFolders.ReadFrom(binaryFile);
+
+
+					// Content Info
+
+					// [NumberSet: Source File IDs with Content]
+					// [NumberSet: Class IDs with Content]
+					// [NumberSet: Used Image File IDs]
+
 					buildState.sourceFilesWithContent.ReadFrom(binaryFile);
 					buildState.classesWithContent.ReadFrom(binaryFile);
 					buildState.usedImageFiles.ReadFrom(binaryFile);
-					unprocessedChanges.unchangedImageFileUseChecks.ReadFrom(binaryFile);
 
-					// [StringSet: Search Prefixes to Rebuild]
-					// [StringSet: Folders to Check for Deletion]
 
-					unprocessedChanges.searchPrefixes.ReadFrom(binaryFile);
-					unprocessedChanges.possiblyEmptyFolders.ReadFrom(binaryFile);
+					// Menu Data File Info
 
 					// [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
 					
@@ -121,6 +140,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 
 						hierarchyID = binaryFile.ReadInt32();
 						}
+
+
+					// Project Info
 
 					// [String: Path to Home Page or null]
 					// [String: Generated Timestamp or null]
@@ -158,6 +180,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 				{
 				binaryFile.OpenForWriting(filename);
 
+				// Build Flags
+
 				// [Byte: Need to Build Frame Page (0 or 1)]
 				// [Byte: Need to Build Home Page (0 or 1)]
 				// [Byte: Need to Build Main Style Files (0 or 1)]
@@ -170,29 +194,45 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 				binaryFile.WriteByte( (byte)(unprocessedChanges.menu ? 1 : 0) );
 				binaryFile.WriteByte( (byte)(unprocessedChanges.mainSearchFiles ? 1 : 0) );
 
+
+				// Build Sets
+
 				// [NumberSet: Source File IDs to Rebuild]
 				// [NumberSet: Class IDs to Rebuild]
 				// [NumberSet: Image File IDs to Rebuild]
 				// [NumberSet: Style File IDs to Rebuild]
-				// [NumberSet: Source File IDs with Content]
-				// [NumberSet: Class IDs with Content]
-				// [NumberSet: Used Image File IDs]
-				// [NumberSet: Unchanged Image File Use Check IDs]
 
 				binaryFile.WriteNumberSet(unprocessedChanges.sourceFiles);
 				binaryFile.WriteNumberSet(unprocessedChanges.classes);
 				binaryFile.WriteNumberSet(unprocessedChanges.imageFiles);
 				binaryFile.WriteNumberSet(unprocessedChanges.styleFiles);
+
+				// [StringSet: Search Prefixes to Rebuild]
+
+				binaryFile.WriteStringSet(unprocessedChanges.searchPrefixes);
+
+
+				// Cleanup Sets
+
+				// [NumberSet: Unchanged Image File Use Check IDs]
+				// [StringSet: Folders to Check for Deletion]
+
+				binaryFile.WriteNumberSet(unprocessedChanges.unchangedImageFileUseChecks);
+				binaryFile.WriteStringSet(unprocessedChanges.possiblyEmptyFolders);
+
+
+				// Content Info
+
+				// [NumberSet: Source File IDs with Content]
+				// [NumberSet: Class IDs with Content]
+				// [NumberSet: Used Image File IDs]
+
 				binaryFile.WriteNumberSet(buildState.sourceFilesWithContent);
 				binaryFile.WriteNumberSet(buildState.classesWithContent);
 				binaryFile.WriteNumberSet(buildState.usedImageFiles);
-				binaryFile.WriteNumberSet(unprocessedChanges.unchangedImageFileUseChecks);
 
-				// [StringSet: Search Prefixes to Rebuild]
-				// [StringSet: Folders to Check for Deletion]
 
-				binaryFile.WriteStringSet(unprocessedChanges.searchPrefixes);
-				binaryFile.WriteStringSet(unprocessedChanges.possiblyEmptyFolders);
+				// Menu Data File Info
 
 				// [String: File Menu Data File Identifier] [NumberSet: File Menu Data File Numbers]
 
@@ -223,6 +263,9 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 					}
 
 				binaryFile.WriteInt32(0);
+
+
+				// Project Info
 
 				// [String: Path to Home Page or null]
 				// [String: Generated Timestamp or null]
