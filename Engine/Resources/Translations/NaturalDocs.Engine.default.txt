@@ -226,6 +226,11 @@ Project.txt.StyleSyntax.multiline {{{
 #    a CSS file in the project configuration folder or a subfolder that
 #    contains Style.txt.  Do not include ".css" if using a CSS file.
 }}}
+Project.txt.HomePageSyntax.multiline {{{
+# Home Page: [file]
+#    The file that should serve as the home page.  This could be a source file
+#    in one of the input targets, or a HTML file in any location.
+}}}
 
 Project.txt.SourceHeader.multiline {{{
 # Source Code

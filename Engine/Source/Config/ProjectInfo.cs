@@ -29,12 +29,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			copyright = null;
 			timestampCode = null;
 			styleName = null;
+			homePage = null;
 
 			titlePropertyLocation = PropertySource.NotDefined;
 			subtitlePropertyLocation = PropertySource.NotDefined;
 			copyrightPropertyLocation = PropertySource.NotDefined;
 			timestampCodePropertyLocation = PropertySource.NotDefined;
 			styleNamePropertyLocation = PropertySource.NotDefined;
+			homePagePropertyLocation = PropertySource.NotDefined;
 			}
 
 		public ProjectInfo (ProjectInfo toCopy)
@@ -44,12 +46,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			copyright = toCopy.copyright;
 			timestampCode = toCopy.timestampCode;
 			styleName = toCopy.styleName;
+			homePage = toCopy.homePage;
 
 			titlePropertyLocation = toCopy.titlePropertyLocation;
 			subtitlePropertyLocation = toCopy.subtitlePropertyLocation;
 			copyrightPropertyLocation = toCopy.copyrightPropertyLocation;
 			timestampCodePropertyLocation = toCopy.timestampCodePropertyLocation;
 			styleNamePropertyLocation = toCopy.styleNamePropertyLocation;
+			homePagePropertyLocation = toCopy.homePagePropertyLocation;
 			}
 			
 
@@ -206,6 +210,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			set
 				{  styleName = value;  }
 			}
+
+		/* Property: HomePage
+		 * The file that should serve as the home page, or null if it's not set.
+		 */
+		public Path HomePage
+			{
+			get
+				{  return homePage;  }
+			set
+				{  homePage = value;  }
+			}
 			
 	
 		
@@ -268,6 +283,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  styleNamePropertyLocation = value;  }
 			}
 			
+		/* Property: HomePagePropertyLocation
+		 * Where the <HomePage> property is defined, or <PropertySource.NotDefined> if it isn't.
+		 */
+		public PropertyLocation HomePagePropertyLocation
+			{
+			get
+				{  return homePagePropertyLocation;  }
+			set
+				{  homePagePropertyLocation = value;  }
+			}
+			
 	
 		
 		// Group: Variables
@@ -278,12 +304,14 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected string copyright;
 		protected string timestampCode;
 		protected string styleName;
+		protected Path homePage;
 
 		protected PropertyLocation titlePropertyLocation;
 		protected PropertyLocation subtitlePropertyLocation;
 		protected PropertyLocation copyrightPropertyLocation;
 		protected PropertyLocation timestampCodePropertyLocation;
 		protected PropertyLocation styleNamePropertyLocation;
+		protected PropertyLocation homePagePropertyLocation;
 		
 		}
 	}

@@ -43,6 +43,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 							
 			subtitleRegex = new Regex.Config.Subtitle();
 			timestampRegex = new Regex.Config.Timestamp();
+			homePageRegex = new Regex.Config.HomePage();
 			tabWidthRegex = new Regex.Config.TabWidth();
 			documentedOnlyRegex = new Regex.Config.DocumentedOnly();
 			autoGroupRegex = new Regex.Config.AutoGroup();
@@ -204,7 +205,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 
 		/* Function: GetProjectInfoProperty
-		 * If the passed identifier is a project info property like Title, adds it to <currentProjectInfo> and returns true.  If it is a recognized
+		 * If the passed identifier is a project info property like Title, adds it to the <ProjectInfo> and returns true.  If it is a recognized
 		 * project info property but there's a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
 		 * false for unrecognized identifiers.
 		 */
@@ -238,6 +239,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				{
 				projectInfo.StyleName = value;
 				projectInfo.StyleNamePropertyLocation = propertyLocation;
+				return true;
+				}
+			else if (homePageRegex.IsMatch(lcIdentifier))
+				{
+				projectInfo.HomePage = value;
+				projectInfo.HomePagePropertyLocation = propertyLocation;
+
+				if (projectInfo.HomePage.IsRelative)
+					{  projectInfo.HomePage = propertyLocation.FileName.ParentFolder + "/" + projectInfo.HomePage;  }
+
 				return true;
 				}
 			else
@@ -475,20 +486,23 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			// Defined values
 
 			bool hasTitle = (projectConfig.ProjectInfo.TitlePropertyLocation.IsDefined &&
-								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault &&
-								  projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.CommandLine);
+									projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault &&
+									projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasSubtitle = (projectConfig.ProjectInfo.SubtitlePropertyLocation.IsDefined &&
-									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault &&
-									  projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.CommandLine);
+										projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault &&
+										projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
-										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault &&
-										projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.CommandLine);
+											projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault &&
+											projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.CommandLine);
 			bool hasTimestampCode = (projectConfig.ProjectInfo.TimestampCodePropertyLocation.IsDefined &&
-												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault &&
-												 projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.CommandLine);
+													projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault &&
+													projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.CommandLine);
 			bool hasStyleName = (projectConfig.ProjectInfo.StyleNamePropertyLocation.IsDefined &&
-										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault &&
-										  projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.CommandLine);
+											 projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault &&
+											 projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasHomePage = (projectConfig.ProjectInfo.HomePagePropertyLocation.IsDefined &&
+											projectConfig.ProjectInfo.HomePagePropertyLocation.Source != PropertySource.SystemDefault &&
+											projectConfig.ProjectInfo.HomePagePropertyLocation.Source != PropertySource.CommandLine);
 
 			if (hasTitle)
 				{  
@@ -523,7 +537,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				output.AppendLine();
 				}
 
-			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName)
+			if (hasHomePage)
+				{
+				Path relativePath = projectConfig.ProjectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				
+				output.AppendLine("Home Page: " + (relativePath != null ? relativePath : projectConfig.ProjectInfo.HomePage));
+				output.AppendLine();
+				}
+
+			if (hasTitle || hasSubtitle || hasCopyright || hasTimestampCode || hasStyleName || hasHomePage)
 				{  output.AppendLine();  }
 
 
@@ -562,6 +584,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.StyleSyntax.multiline") );
 				}
 
+			if (!hasHomePage)
+				{
+				output.AppendLine("#");
+				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HomePageSyntax.multiline") );
+				}
+
 			output.AppendLine();
 			output.AppendLine();
 			}
@@ -591,6 +619,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (projectInfo.StyleNamePropertyLocation.IsDefined &&
 				projectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
 				{  output.AppendLine("   Style: " + projectInfo.StyleName);   }
+
+			if (projectInfo.HomePagePropertyLocation.IsDefined &&
+				projectInfo.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
+				{  
+				Path relativePath = projectConfig.ProjectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : projectConfig.ProjectInfo.HomePage));
+				}
 			}
 
 
@@ -916,6 +951,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 		protected Regex.Config.Subtitle subtitleRegex;
 		protected Regex.Config.Timestamp timestampRegex;
+		protected Regex.Config.HomePage homePageRegex;
 		protected Regex.Config.TabWidth tabWidthRegex;
 		protected Regex.Config.DocumentedOnly documentedOnlyRegex;
 		protected Regex.Config.AutoGroup autoGroupRegex;

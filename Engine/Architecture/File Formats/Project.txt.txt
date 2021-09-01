@@ -41,7 +41,12 @@ _______________________________________________________________________________
 		> Style: [name]
 			
 		The style to apply to all output targets.
-			
+
+		> Home Page: [file]
+
+		The file that should serve as the home page.  This could be a source file in one of the input targets, or a HTML file in any
+		location.
+
  
 	Topic: Input Targets
 
@@ -112,6 +117,10 @@ _______________________________________________________________________________
 Group: Revisions
 _______________________________________________________________________________
  
+	Topic: 2.2
+
+		- Added Home Page.
+
 	Topic: 2.0
 		
 		- The initial version of this file.
