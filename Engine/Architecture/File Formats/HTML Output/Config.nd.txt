@@ -21,8 +21,12 @@ _______________________________________________________________________________
 		> [String: Project Subtitle or null]
 		> [String: Project Copyright or null]
 		> [String: Project Timestamp Code or null]
+		> [String: Project Home Page or null]
 		
 		The project info as of the last run.  If any of the properties were not set they will be null.
+
+		Project Home Page is the setting applied by <Project.txt>, if any.  It is not the final computed home page that
+		includes any specified by styles.
 		
 
 	Topic: Style Info
@@ -68,7 +72,7 @@ Group: Revisions
 _______________________________________________________________________________
 
 	Topic: 2.2
-		- Added the project title, subtitle, copyright, and timestamp code.
+		- Added the project title, subtitle, copyright, timestamp code, and home page.
 		- Added the properties of each style.  Previously it only stored each one's style path.
 
  	Topic: 2.0
