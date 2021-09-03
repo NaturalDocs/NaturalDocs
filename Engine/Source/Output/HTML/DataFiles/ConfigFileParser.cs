@@ -59,7 +59,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 					// [String: Project Subtitle or null]
 					// [String: Project Copyright or null]
 					// [String: Project Timestamp Code or null]
-					// [String: Project Home Page or null]
+					// [String: Project Home Page Path (absolute) or null]
 
 					projectInfo.Title = binaryFile.ReadString();
 					projectInfo.TitlePropertyLocation = Config.PropertySource.PreviousRun;
@@ -73,7 +73,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 					projectInfo.TimestampCode = binaryFile.ReadString();
 					projectInfo.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
 
-					projectInfo.HomePage = binaryFile.ReadString();
+					projectInfo.HomePage = (AbsolutePath)binaryFile.ReadString();
 					projectInfo.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
 
 
@@ -234,7 +234,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
 				// [String: Project Subtitle or null]
 				// [String: Project Copyright or null]
 				// [String: Project Timestamp Code or null]
-				// [String: Project Home Page or null]
+				// [String: Project Home Page Path (absolute) or null]
 
 				binaryFile.WriteString(projectInfo.Title);
 				binaryFile.WriteString(projectInfo.Subtitle);

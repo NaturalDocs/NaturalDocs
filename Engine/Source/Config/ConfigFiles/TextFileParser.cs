@@ -243,11 +243,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				}
 			else if (homePageRegex.IsMatch(lcIdentifier))
 				{
-				projectInfo.HomePage = value;
-				projectInfo.HomePagePropertyLocation = propertyLocation;
+				Path path = value;
 
-				if (projectInfo.HomePage.IsRelative)
-					{  projectInfo.HomePage = propertyLocation.FileName.ParentFolder + "/" + projectInfo.HomePage;  }
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				projectInfo.HomePage = (AbsolutePath)path;
+				projectInfo.HomePagePropertyLocation = propertyLocation;
 
 				return true;
 				}

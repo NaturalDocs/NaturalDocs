@@ -21,7 +21,7 @@ _______________________________________________________________________________
 		> [String: Project Subtitle or null]
 		> [String: Project Copyright or null]
 		> [String: Project Timestamp Code or null]
-		> [String: Project Home Page or null]
+		> [String: Project Home Page Path (absolute) or null]
 		
 		The project info as of the last run.  If any of the properties were not set they will be null.
 

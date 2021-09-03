@@ -45,7 +45,7 @@ _______________________________________________________________________________
 		> Home Page: [file]
 
 		The file that should serve as the home page.  This could be a source file in one of the input targets, or a HTML file in any
-		location.
+		location.  Relative paths are relative to the project folder.
 
  
 	Topic: Input Targets

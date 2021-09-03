@@ -29,7 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			copyright = null;
 			timestampCode = null;
 			styleName = null;
-			homePage = null;
+			homePage = default;
 
 			titlePropertyLocation = PropertySource.NotDefined;
 			subtitlePropertyLocation = PropertySource.NotDefined;
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		/* Property: HomePage
 		 * The file that should serve as the home page, or null if it's not set.
 		 */
-		public Path HomePage
+		public AbsolutePath HomePage
 			{
 			get
 				{  return homePage;  }
@@ -304,7 +304,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected string copyright;
 		protected string timestampCode;
 		protected string styleName;
-		protected Path homePage;
+		protected AbsolutePath homePage;
 
 		protected PropertyLocation titlePropertyLocation;
 		protected PropertyLocation subtitlePropertyLocation;
