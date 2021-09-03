@@ -286,7 +286,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Returns the path as one relative to the passed folder, if possible.  If it's not possible (for example, if they're on
 		 * different drive letters) it returns null.
 		 */
-		public Path MakeRelativeTo (Path folder)
+		public RelativePath MakeRelativeTo (Path folder)
 			{
 			if (folder.Contains(this))
 				{
@@ -294,7 +294,7 @@ namespace CodeClear.NaturalDocs.Engine
 				// do something really simple here.  This should not require the result to be normalized again.
 				Path result;
 				result.pathString = pathString.Substring( folder.pathString.Length + 1 );
-				return result;
+				return (RelativePath)result;
 				}
 			else
 				{
@@ -305,7 +305,7 @@ namespace CodeClear.NaturalDocs.Engine
 				folder.Split(out folderPrefix, out folderSections);
 				
 				if (String.Compare(thisPrefix, folderPrefix, Engine.SystemInfo.IgnoreCaseInPaths) != 0)
-					{  return null;  }
+					{  return default;  }
 					
 				while (thisSections.Count > 0 && folderSections.Count > 0 &&
 						 String.Compare(thisSections[0], folderSections[0], Engine.SystemInfo.IgnoreCaseInPaths) == 0)
@@ -325,7 +325,7 @@ namespace CodeClear.NaturalDocs.Engine
 					resultString.Append(thisSections[i]);
 					}
 					
-				return new Path( resultString.ToString() );
+				return new RelativePath( resultString.ToString() );
 				}
 			}
 			
@@ -460,29 +460,28 @@ namespace CodeClear.NaturalDocs.Engine
 		 * which will only be available relative to the original file.  .NET's GetExecutingAssembly().CodeBase returns the
 		 * correct path but in a weird format, so this function abstracts away the conversion from that to a normal Path.
 		 */
-		static public Path FromAssembly (System.Reflection.Assembly assembly)
+		static public AbsolutePath FromAssembly (System.Reflection.Assembly assembly)
 			{
 			string codeBase = assembly.CodeBase;
 			UriBuilder uri = new UriBuilder(codeBase);
 			string assemblyPath = Uri.UnescapeDataString(uri.Path);
 
-			Path result = new Path();
-
 			// The above code always returns a path with slashes, even on Windows.  However, we can assume it's otherwise
 			// properly normalized so just do a quick search and replace if it's needed.
-			if (Engine.SystemInfo.PathSeparatorCharacter == '/')
-				{  result.pathString = assemblyPath;  }
-			else
-				{  result.pathString = assemblyPath.Replace('/', Engine.SystemInfo.PathSeparatorCharacter);  }
+			if (Engine.SystemInfo.PathSeparatorCharacter != '/')
+				{  assemblyPath = assemblyPath.Replace('/', Engine.SystemInfo.PathSeparatorCharacter);  }
 
 			// Actually, let's check that assumption in debug builds.
 			#if DEBUG
 			Path test = new Path(assemblyPath);
-			if (test != result)
+			if (test.pathString != assemblyPath)
 				{  throw new Exception("Path wasn't properly normalized in Path.FromAssembly.");  }
 			#endif
 
-			return result;
+			Path result;
+			result.pathString = assemblyPath;
+
+			return (AbsolutePath)result;
 			}
 
 

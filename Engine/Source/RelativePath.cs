@@ -94,10 +94,15 @@ namespace CodeClear.NaturalDocs.Engine
 		 * The parent folder of the path.  If the path is to a file, it will be a path to its containing folder.  If the path is to a folder, it
 		 * will be the folder above it.  It will start using ".." once the visible path is exhausted.
 		 */
-		public Path ParentFolder
+		public RelativePath ParentFolder
 			{
 			get
-				{  return path.ParentFolder;  }
+				{
+				// We know the parent of a relative folder is also relative, so create it this way to avoid the check in the constructor.
+				RelativePath parent;
+				parent.path = path.ParentFolder;
+				return parent;
+				}
 			}
 			
 		/* Property: NameWithoutPath
@@ -141,7 +146,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * Returns the path as one relative to the passed folder, if possible.  If it's not possible (for example, if they're on
 		 * different drive letters) it returns null.
 		 */
-		public Path MakeRelativeTo (Path folder)
+		public RelativePath MakeRelativeTo (AbsolutePath folder)
 			{
 			return path.MakeRelativeTo(folder);
 			}
