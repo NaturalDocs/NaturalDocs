@@ -89,7 +89,34 @@ namespace CodeClear.NaturalDocs.Engine
 		public bool IsAbsolute
 			{
 			get
-				{  return pathPrefixRegex.Match(pathString).Success;  }
+				{
+				// We do this by hand instead of using the regex for efficiency, especially since this may be called a lot more
+				// with conversions to AbsolutePath and RelativePath.
+
+				if (pathString == null || pathString.Length == 0)
+					{  return false;  }
+
+				char first = pathString[0];
+
+				if (first == '/')
+					{  return true;  }
+
+				if (pathString.Length >= 2)
+					{
+					char second = pathString[1];
+
+					if (second == ':' &&
+						( (first >= 'a' && first <= 'z') ||
+						  (first >= 'A' && first <= 'Z') )
+						)
+						{  return true;  }
+
+					if (first == '\\' && second == '\\')
+						{  return true;  }
+					}
+
+				return false;
+				}
 			}
 			
 		/* Property: IsRelative
