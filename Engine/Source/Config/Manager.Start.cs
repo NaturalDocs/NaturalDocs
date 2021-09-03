@@ -748,6 +748,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				primaryProjectInfo.StyleName = secondaryProjectInfo.StyleName;
 				primaryProjectInfo.StyleNamePropertyLocation = secondaryProjectInfo.StyleNamePropertyLocation;
 				}
+
+			if (!primaryProjectInfo.HomePagePropertyLocation.IsDefined)
+				{
+				primaryProjectInfo.HomePage = secondaryProjectInfo.HomePage;
+				primaryProjectInfo.HomePagePropertyLocation = secondaryProjectInfo.HomePagePropertyLocation;
+				}
 			}
 
 
