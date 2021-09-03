@@ -2,8 +2,9 @@
  * Struct: CodeClear.NaturalDocs.Engine.Path
  * ____________________________________________________________________________
  * 
- * A struct encapsulating a file path string.  This is needed because Natural Docs needs to be able to handle all
- * three path formats at once, not just the local format.  Natural Docs on Windows may be reading a 
+ * A struct encapsulating a file path string, which can be relative or absolute.  This allows Natural Docs to 
+ * handle file paths in a platform-independent way.  It also enables it to handle paths originating on any 
+ * platform regardless of the platform it's currently running on, so Natural Docs on Windows can read a 
  * configuration file from Natural Docs on Linux and vice versa.  
  * 
  * Also, using Paths in place of strings enforces normalization.  Any time a Path is set to a raw string it is
@@ -12,10 +13,15 @@
  *	> Path path = currentFolder + "/" + fileName;
  *		
  *	You don't have to check whether currentFolder has a trailing slash or not because the duplicate would be
- *	removed.  You don't have to use the native separator character because it would be converted if that's not it.
- *	You do, however, have to check whether currentFolder is empty in the above case because a Linux path
+ *	removed.  You don't have to use the native separator character because it would be converted if that's not
+ *	it.  You do, however, have to check whether currentFolder is empty in the above case because a Linux path
  *	starting with a slash becomes absolute.  However, if currentFolder was already a Path that's not a worry
  *	because it would be "." in that case.
+ *	
+ *	If you know a particular path will be relative or absolute, or want to require it to be, you can use
+ *	<RelativePath> and <AbsolutePath> instead.  These make it clear to the code using them what type of
+ *	paths they are, and they enforce those requirements.  You cannot accidentally set one type to the other, 
+ *	and converting a Path or a string of the opposite type to them will throw an exception.
  * 
  *	Supported:
  *	
@@ -42,7 +48,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using CodeClear.NaturalDocs.Engine;
 
 
 namespace CodeClear.NaturalDocs.Engine
@@ -50,20 +55,25 @@ namespace CodeClear.NaturalDocs.Engine
 	public struct Path : IComparable
 		{
 		
-		// Group: Functions and Properties
+		// Group: Constructors
 		// __________________________________________________________________________
 		
 			
 		/* Constructor: Path (string)
 		 * Creates a new Path from the passed string.
 		 */
-		public Path (string newPath)
+		public Path (string pathString)
 			{
-			// Use the operator.
-			this = newPath;
+			this.pathString = pathString;
+			Normalize();
 			}
 
 
+
+		// Group: Properties
+		// __________________________________________________________________________
+		
+			
 		/* Property: Length
 		 * The length of the path string.
 		 */
@@ -72,7 +82,6 @@ namespace CodeClear.NaturalDocs.Engine
 			get
 				{  return pathString.Length;  }
 			}
-			
 			
 		/* Property: IsAbsolute
 		 * Whether the path is absolute.
@@ -215,7 +224,12 @@ namespace CodeClear.NaturalDocs.Engine
 					}
 				}
 			}
-			
+
+
+
+		// Group: Functions
+		// __________________________________________________________________________
+		
 			
 		/* Function: Contains
 		 * Returns whether this path contains the passed one, meaning it's a higher level folder.
@@ -405,7 +419,7 @@ namespace CodeClear.NaturalDocs.Engine
 					index++;
 					}
 				}
-				
+
 			return result.ToString();
 			}
 
@@ -475,12 +489,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public static implicit operator Path (string newString)
 			{
-			Path result;
-			
-			result.pathString = newString;
-			result.Normalize();
-			
-			return result;
+			return new Path(newString);
 			}
 			
 		/* Operator: operator ==
