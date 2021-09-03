@@ -47,6 +47,9 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Exceptions\PathMustBeAbsolute.cs" />
+    <Compile Include="Source\Exceptions\PathMustBeRelative.cs" />
+    <Compile Include="Source\RelativePath.cs" />
     <Compile Include="Source\CommentTypes\Config.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFileCommentType.cs" />
@@ -65,6 +68,7 @@
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\RootContainer.cs" />
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
     <Compile Include="Source\Output\HTML\DataFiles\SearchIndexFileParser.cs" />
+    <Compile Include="Source\AbsolutePath.cs" />
     <Compile Include="Source\StartupIssues.cs" />
     <Compile Include="Source\Config\Targets\ImageFolder.cs" />
     <Compile Include="Source\Files\FileSources\Folder.cs" />
