@@ -75,11 +75,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{  number = value;  }
 			}
 
-
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
-		
 					
 		/* Property: NumberPropertyLocation
 		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
@@ -97,10 +92,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// Group: Variables
 		// __________________________________________________________________________
 		
+
 		protected ProjectInfo projectInfo;
 
 		protected int number;
-
 		protected PropertyLocation numberPropertyLocation;
 				
 		}

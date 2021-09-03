@@ -24,7 +24,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public IgnoredSourceFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = null;
+			folder = default;
 			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
@@ -61,20 +61,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: Folder
-		 * The <Path> that should have its contents ignored.
+		 * The <AbsolutePath> that should have its contents ignored.
 		 */
-		public Path Folder
+		public AbsolutePath Folder
 		    {
 		    get
 		        {  return folder;  }
 			set
 				{  folder = value;  }
 		    }
-
-
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
 		
 					
 		/* Property: FolderPropertyLocation
@@ -94,8 +89,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 
-		protected Path folder;
-
+		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;
 
 		}

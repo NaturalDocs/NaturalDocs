@@ -149,12 +149,12 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						if (folder.IsRelative)
-							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
-					
 						var target = new Engine.Config.Targets.SourceFolder(PropertySource.CommandLine);
 
-						target.Folder = folder;
+						if (folder.IsRelative)
+							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
+
+						target.Folder = (AbsolutePath)folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);
@@ -180,16 +180,16 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
+						format = format.ToLower();
+
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						format = format.ToLower();
-
 						if (format == "html" || format == "framedhtml")
 							{  
 							var target = new Engine.Config.Targets.HTMLOutputFolder(PropertySource.CommandLine);
 
-							target.Folder = folder;
+							target.Folder = (AbsolutePath)folder;
 							target.FolderPropertyLocation = PropertySource.CommandLine;
 
 							commandLineConfig.OutputTargets.Add(target);
@@ -238,7 +238,7 @@ namespace CodeClear.NaturalDocs.CLI
 							}
 						else
 							{  
-							commandLineConfig.ProjectConfigFolder = folder;
+							commandLineConfig.ProjectConfigFolder = (AbsolutePath)folder;
 							commandLineConfig.ProjectConfigFolderPropertyLocation = PropertySource.CommandLine;
 							}
 						}
@@ -273,7 +273,7 @@ namespace CodeClear.NaturalDocs.CLI
 							}
 						else
 							{
-							commandLineConfig.WorkingDataFolder = folder;
+							commandLineConfig.WorkingDataFolder = (AbsolutePath)folder;
 							commandLineConfig.WorkingDataFolderPropertyLocation = PropertySource.CommandLine;
 							}
 						}
@@ -297,12 +297,12 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
+						var target = new Engine.Config.Targets.IgnoredSourceFolder(PropertySource.CommandLine);
+
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.IgnoredSourceFolder(PropertySource.CommandLine);
-
-						target.Folder = folder;
+						target.Folder = (AbsolutePath)folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.FilterTargets.Add(target);
@@ -354,12 +354,12 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
+						var target = new Engine.Config.Targets.ImageFolder(PropertySource.CommandLine);
+
 						if (folder.IsRelative)
 							{  folder = System.Environment.CurrentDirectory + "/" + folder;  }
 					
-						var target = new Engine.Config.Targets.ImageFolder(PropertySource.CommandLine);
-
-						target.Folder = folder;
+						target.Folder = (AbsolutePath)folder;
 						target.FolderPropertyLocation = PropertySource.CommandLine;
 
 						commandLineConfig.InputTargets.Add(target);

@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public ImageFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = null;
+			folder = default;
 			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
@@ -68,9 +68,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: Folder
-		 * The <Path> that should be searched for image files.
+		 * The <AbsolutePath> that should be searched for image files.
 		 */
-		public Path Folder
+		public AbsolutePath Folder
 		    {
 		    get
 		        {  return folder;  }
@@ -119,7 +119,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 
-		protected Path folder;
+		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;
 
 		}

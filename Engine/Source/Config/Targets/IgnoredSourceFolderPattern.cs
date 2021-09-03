@@ -46,6 +46,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
+
 		// Group: Properties
 		// __________________________________________________________________________
 
@@ -62,11 +63,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
-		
-					
 		/* Property: PatternPropertyLocation
 		 * Where <Pattern> is defined.
 		 */
@@ -85,7 +81,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 
 		protected string pattern;
-
 		protected PropertyLocation patternPropertyLocation;
 
 		}

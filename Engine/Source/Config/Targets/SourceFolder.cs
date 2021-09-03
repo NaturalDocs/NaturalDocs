@@ -26,10 +26,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public SourceFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = null;
+			folder = default;
 			folderPropertyLocation = PropertySource.NotDefined;
 
-			this.name = null;
+			name = null;
 			namePropertyLocation = PropertySource.NotDefined;
 			}
 
@@ -105,9 +105,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: Folder
-		 * The <Path> that should be searched for source files.
+		 * The <AbsolutePath> that should be searched for source files.
 		 */
-		public Path Folder
+		public AbsolutePath Folder
 		    {
 		    get
 		        {  return folder;  }
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		protected string name;
 		protected PropertyLocation namePropertyLocation;
 
-		protected Path folder;
+		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;
 
 		}

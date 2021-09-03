@@ -39,12 +39,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			{
 			engineInstance = null;
 
-			inputFolder = null;
-			projectConfigFolder = null;
-			workingDataFolder = null;
-			outputFolder = null;
+			inputFolder = default;
+			projectConfigFolder = default;
+			workingDataFolder = default;
+			outputFolder = default;
 
-			temporaryFolderRoot = null;
+			temporaryFolderRoot = default;
 
 			keepOutputFolder = false;
 			}
@@ -65,15 +65,16 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 		public void Start (Path testDataFolder, Path projectConfigFolder = default(Path), bool keepOutputFolder = false, 
 								 string outputTitle = null, string outputSubtitle = null, string outputStyle = null, bool autoGroup = false)
 			{
-			this.inputFolder = testDataFolder;
-			this.projectConfigFolder = projectConfigFolder;
+
+			// keepOutputFolder
+
 			this.keepOutputFolder = keepOutputFolder;
 
 
-			// testDataRoot
+			// testDataRoot and testDataFolder
 
-			Path assemblyFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder;
-			Path testDataRoot = assemblyFolder;
+			AbsolutePath assemblyFolder = Path.FromAssembly( System.Reflection.Assembly.GetExecutingAssembly() ).ParentFolder;
+			AbsolutePath testDataRoot = assemblyFolder;
 
 			while (System.IO.Directory.Exists(testDataRoot + "/Engine.Tests.Data") == false)
 				{
@@ -83,13 +84,15 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 				testDataRoot = testDataRoot.ParentFolder;
 				}
 
-			testDataRoot = testDataRoot + "/Engine.Tests.Data";
+			testDataRoot = (AbsolutePath)(testDataRoot + "/Engine.Tests.Data");
+
+			if (testDataFolder.IsRelative)
+				{  testDataFolder = testDataRoot + '/' + testDataFolder;  }
 
 
 			// inputFolder
 
-			if (inputFolder.IsRelative)
-				{  inputFolder = testDataRoot + '/' + inputFolder;  }
+			this.inputFolder = (AbsolutePath)testDataFolder;
 
 			if (System.IO.Directory.Exists(inputFolder) == false)
 				{  throw new Exception("Cannot locate input folder " + inputFolder);  }
@@ -97,17 +100,22 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			// temporaryFolderRoot
 
-			temporaryFolderRoot = inputFolder + "/ND Temp";
+			this.temporaryFolderRoot = (AbsolutePath)(inputFolder + "/ND Temp");
 
 
 			// projectConfigFolder
 
 			if (projectConfigFolder == null)
-				{  projectConfigFolder = temporaryFolderRoot + "/Project";   }
+				{  
+				projectConfigFolder = temporaryFolderRoot + "/Project";
+				this.projectConfigFolder = (AbsolutePath)projectConfigFolder;
+				}
 			else
 				{
 				if (projectConfigFolder.IsRelative)
 					{  projectConfigFolder = testDataRoot + '/' + projectConfigFolder;  }
+
+				this.projectConfigFolder = (AbsolutePath)projectConfigFolder;
 
 				if (System.IO.Directory.Exists(projectConfigFolder) == false)
 					{  throw new Exception("Cannot locate config folder " + projectConfigFolder);  }
@@ -116,15 +124,15 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			// workingDataFolder
 
-			workingDataFolder = temporaryFolderRoot + "/Working Data";
+			this.workingDataFolder = (AbsolutePath)(temporaryFolderRoot + "/Working Data");
 
 
 			// outputFolder
 
 			if (keepOutputFolder)
-				{  outputFolder = inputFolder + "/HTML Output";  }
+				{  outputFolder = (AbsolutePath)(inputFolder + "/HTML Output");  }
 			else
-				{  outputFolder = temporaryFolderRoot + "/HTML Output";  }
+				{  outputFolder = (AbsolutePath)(temporaryFolderRoot + "/HTML Output");  }
 
 
 			// Clear out old data before start.
@@ -303,12 +311,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 		protected NaturalDocs.Engine.Instance engineInstance;
 
-		protected Path inputFolder;
-		protected Path projectConfigFolder;
-		protected Path workingDataFolder;
-		protected Path outputFolder;
+		protected AbsolutePath inputFolder;
+		protected AbsolutePath projectConfigFolder;
+		protected AbsolutePath workingDataFolder;
+		protected AbsolutePath outputFolder;
 
-		protected Path temporaryFolderRoot;
+		protected AbsolutePath temporaryFolderRoot;
 
 		protected bool keepOutputFolder;
 

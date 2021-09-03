@@ -137,7 +137,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			var target = new Targets.SourceFolder(PropertySource.PreviousRun);
 
-			target.Folder = binaryFile.ReadString();
+			target.Folder = (AbsolutePath)binaryFile.ReadString();
 			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();
@@ -154,7 +154,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			var target = new Targets.ImageFolder(PropertySource.PreviousRun);
 
-			target.Folder = binaryFile.ReadString();
+			target.Folder = (AbsolutePath)binaryFile.ReadString();
 			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();
@@ -171,7 +171,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			var target = new Targets.HTMLOutputFolder(PropertySource.PreviousRun);
 
-			target.Folder = binaryFile.ReadString();
+			target.Folder = (AbsolutePath)binaryFile.ReadString();
 			target.FolderPropertyLocation = PropertySource.PreviousRun;
 
 			target.Number = binaryFile.ReadInt32();

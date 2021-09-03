@@ -275,12 +275,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (match.Success)
 				{
 				var target = new Targets.SourceFolder(propertyLocation);
+				Path path = value;
 
-				target.Folder = value;
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
 				target.FolderPropertyLocation = propertyLocation;
-
-				if (target.Folder.IsRelative)
-					{  target.Folder = propertyLocation.FileName.ParentFolder + "/" + target.Folder;  }
 
 				int number = 0;
 
@@ -303,12 +304,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (match.Success)
 				{  
 				var target = new Targets.ImageFolder(propertyLocation);
+				Path path = value;
 
-				target.Folder = value;
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
 				target.FolderPropertyLocation = propertyLocation;
-
-				if (target.Folder.IsRelative)
-					{  target.Folder = propertyLocation.FileName.ParentFolder + "/" + target.Folder;  }
 
 				int number = 0;
 
@@ -329,12 +331,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			else if (htmlOutputFolderRegex.IsMatch(lcIdentifier))
 				{  
 				var target = new Targets.HTMLOutputFolder(propertyLocation);
+				Path path = value;
 
-				target.Folder = value;
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
 				target.FolderPropertyLocation = propertyLocation;
-
-				if (target.Folder.IsRelative)
-					{  target.Folder = propertyLocation.FileName.ParentFolder + "/" + target.Folder;  }
 
 				projectConfig.OutputTargets.Add(target);
 				newTarget = target;
@@ -347,12 +350,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			else if (ignoredSourceFolderRegex.IsMatch(lcIdentifier))
 				{  
 				var target = new Targets.IgnoredSourceFolder(propertyLocation);
+				Path path = value;
 
-				target.Folder = value;
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
 				target.FolderPropertyLocation = propertyLocation;
-
-				if (target.Folder.IsRelative)
-					{  target.Folder = propertyLocation.FileName.ParentFolder + "/" + target.Folder;  }
 
 				projectConfig.FilterTargets.Add(target);
 				newTarget = target;

@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public HTMLOutputFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = null;
+			folder = default;
 			folderPropertyLocation = PropertySource.NotDefined;
 			}
 
@@ -70,9 +70,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 
 		/* Property: Folder
-		 * The <Path> where the generated HTML output will go.
+		 * The <AbsolutePath> where the generated HTML output will go.
 		 */
-		public Path Folder
+		public AbsolutePath Folder
 		    {
 		    get
 		        {  return folder;  }
@@ -80,11 +80,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{  folder = value;  }
 		    }
 
-
-		
-		// Group: Property Locations
-		// __________________________________________________________________________
-		
 					
 		/* Property: FolderPropertyLocation
 		 * Where <Folder> is defined.
@@ -103,8 +98,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 
-		protected Path folder;
-
+		protected AbsolutePath folder;
 		protected PropertyLocation folderPropertyLocation;
 
 		}
