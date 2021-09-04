@@ -13,7 +13,7 @@ _______________________________________________________________________________
 
 		> [[Binary Header]]
 	
-		The file starts with the standard binary file header as managed by <BinaryFile>.
+		The file starts with the standard binary file header as managed by <CodeClear.NaturalDocs.Engine.BinaryFile>.
 	
 
 	Topic: Languages
