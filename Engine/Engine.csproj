@@ -75,7 +75,7 @@
     <Compile Include="Source\Files\FileSources\ImageFolder.cs" />
     <Compile Include="Source\Files\FileSources\SourceFolder.cs" />
     <Compile Include="Source\Files\FileSources\ImageFolderAdder.cs" />
-    <Compile Include="Source\Files\Files_nd.cs" />
+    <Compile Include="Source\Files\ConfigFiles\BinaryFileParser.cs" />
     <Compile Include="Source\Files\ImageFileProcessor.cs" />
     <Compile Include="Source\Collections\NumberSetTable.cs" />
     <Compile Include="Source\Files\FileSourceAdder.cs" />

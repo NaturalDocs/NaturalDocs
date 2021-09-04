@@ -89,11 +89,11 @@ namespace CodeClear.NaturalDocs.Engine.Files
 						{  ((IDisposable)fileSource).Dispose();  }
 					}
 
-				Files_nd filesParser = new Files_nd();
+				ConfigFiles.BinaryFileParser binaryFileParser = new ConfigFiles.BinaryFileParser();
 					
 				try
 					{
-					filesParser.Save( EngineInstance.Config.WorkingDataFolder + "/Files.nd", files );
+					binaryFileParser.Save( EngineInstance.Config.WorkingDataFolder + "/Files.nd", files );
 					}
 				catch
 					{  }
@@ -187,9 +187,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				}
 			else
 				{
-				Files_nd filesParser = new Files_nd();
+				ConfigFiles.BinaryFileParser binaryFileParser = new ConfigFiles.BinaryFileParser();
 
-				if (!filesParser.Load( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files ))
+				if (!binaryFileParser.Load( EngineInstance.Config.WorkingDataFolder + "/Files.nd", out files ))
 					{
 					newStartupIssues |= StartupIssues.FileIDsInvalidated |
 												   StartupIssues.NeedToReparseAllFiles;

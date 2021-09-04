@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Files.Files_nd
+ * Class: CodeClear.NaturalDocs.Engine.Files.ConfigFiles.BinaryFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Files.nd>.
@@ -19,18 +19,18 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Files
+namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 	{
-	public class Files_nd
+	public class BinaryFileParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: Files_nd
+		/* Constructor: BinaryFileParser
 		 */
-		public Files_nd ()
+		public BinaryFileParser ()
 			{
 			}
 
