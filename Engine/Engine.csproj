@@ -331,6 +331,7 @@
     <Content Include="Architecture\File Formats\HTML Output\SearchIndex.nd.txt" />
     <Content Include="Architecture\File Formats\HTML Output\BuildState.nd.txt" />
     <Content Include="Architecture\File Formats\HTML Output\Config.nd.txt" />
+    <Content Include="Architecture\File Formats\Files.nd.txt" />
     <Content Include="Architecture\File Formats\Project.nd.txt" />
     <Content Include="Architecture\File Formats\Menu.txt.txt" />
     <Content Include="Architecture\File Formats\Project.txt.txt" />

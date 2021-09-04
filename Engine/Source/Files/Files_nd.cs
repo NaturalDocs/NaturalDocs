@@ -8,44 +8,6 @@
  * Threading: Not Thread Safe
  * 
  *		The parser object may be reused, but multiple threads cannot use it at the same time.
- *		
- * 
- * File: Files.nd
- * 
- *		A binary file which stores the state of the source files as of Natural Docs' last run.
- *		
- *		> [[Binary Header]]
- *		
- *		The file starts with the standard binary file header as managed by <BinaryFile>.
- *		
- *		> [Int32: ID]
- *		> [String: Path]
- *		> [Byte: Type]
- *		> [Int64: Last Modification in Ticks or 0]
- *		> (if image)
- *		>    [UInt32: Width in Pixels or 0 if unknown]
- *		>    [UInt32: Height in Pixels or 0 if unknown]
- *		> ...
- *		> [Int32: 0]
- *		
- *		For each file it stores the ID number, the absolute path, <FileType>, and the last modification time in ticks.  If the file 
- *		wasn't fully processed when Natural Docs shut down, either due to a change or a deletion, the tick count will be zero to 
- *		indicate that it should be processed again.
- *		
- *		This continues until there is an ID number of zero.
- *			
- *		Revisions:
- *		
- *			- 2.1
- *				- No changes to the file format, but 2.1 actually determines image dimensions.  When reading files from earlier
- *				  versions you should make sure they're reparsed.
- *		
- *			- 2.0.2
- *				- Added dimensions for image files.  They will always be zero because image file support was only partially
- *				  implemented and it would have been too much effort to back it out for 2.0.2.
- *		
- *			- 2.0
- *				- The file was introduced.
  *			
  */
 
@@ -94,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				else
 					{
 					// [Int32: ID]
-					// [String: Path]
+					// [String: Absolute Path]
 					// [Byte: Type]
 					// [Int64: Last Modification in Ticks or 0]
 					// (if image)
@@ -199,7 +161,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 				foreach (File file in files)
 					{
 					// [Int32: ID]
-					// [String: Path]
+					// [String: Absolute Path]
 					// [Byte: Type]
 					// [Int64: Last Modification in Ticks or 0]
 					// (if image)
