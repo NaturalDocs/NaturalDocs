@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.ConfigFileParser
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.BinaryConfigParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Config.nd>.
@@ -20,18 +20,18 @@ using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Styles;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
-	public class ConfigFileParser
+	public class BinaryConfigParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: ConfigFileParser
+		/* Constructor: BinaryConfigParser
 		 */
-		public ConfigFileParser ()
+		public BinaryConfigParser ()
 			{
 			}
 

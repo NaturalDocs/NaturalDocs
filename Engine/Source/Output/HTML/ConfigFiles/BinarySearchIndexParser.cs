@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.SeachIndexFileParser
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.BinarySeachIndexParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <SearchIndex.nd>.
@@ -16,12 +16,12 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
-	public class SearchIndexFileParser
+	public class BinarySeachIndexParser
 		{
 
-		public SearchIndexFileParser ()
+		public BinarySeachIndexParser ()
 			{
 			}
 

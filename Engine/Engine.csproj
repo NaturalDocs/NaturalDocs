@@ -67,7 +67,7 @@
     <Compile Include="Source\Languages\Parsers\PHP.cs" />
     <Compile Include="Source\Output\HTML\Components\JSONMenuEntries\RootContainer.cs" />
     <Compile Include="Source\Output\HTML\Paths\Class.cs" />
-    <Compile Include="Source\Output\HTML\DataFiles\SearchIndexFileParser.cs" />
+    <Compile Include="Source\Output\HTML\ConfigFiles\BinarySearchIndexParser.cs" />
     <Compile Include="Source\AbsolutePath.cs" />
     <Compile Include="Source\StartupIssues.cs" />
     <Compile Include="Source\Config\Targets\ImageFolder.cs" />
@@ -91,8 +91,8 @@
     <Compile Include="Source\Output\HTML\Components\Page.cs" />
     <Compile Include="Source\Output\HTML\Target.Events.cs" />
     <Compile Include="Source\Output\HTML\UnprocessedChanges.cs" />
-    <Compile Include="Source\Output\HTML\DataFiles\BuildStateFileParser.cs" />
-    <Compile Include="Source\Output\HTML\DataFiles\ConfigFileParser.cs" />
+    <Compile Include="Source\Output\HTML\ConfigFiles\BinaryBuildStateParser.cs" />
+    <Compile Include="Source\Output\HTML\ConfigFiles\BinaryConfigParser.cs" />
     <Compile Include="Source\Output\HTML\PageType.cs" />
     <Compile Include="Source\Output\HTML\PageTypes.cs" />
     <Compile Include="Source\Output\HTML\Paths\Style.cs" />

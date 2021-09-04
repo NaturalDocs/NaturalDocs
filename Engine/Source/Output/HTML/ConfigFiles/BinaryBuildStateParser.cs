@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles.BuildStateFileParser
+ * Class: CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles.BinaryBuildStateParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <BuildState.nd>.
@@ -21,18 +21,18 @@ using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.IDObjects;
 
 
-namespace CodeClear.NaturalDocs.Engine.Output.HTML.DataFiles
+namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 	{
-	public class BuildStateFileParser
+	public class BinaryBuildStateParser
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		/* Constructor: BuildStateFileParser
+		/* Constructor: BinaryBuildStateParser
 		 */
-		public BuildStateFileParser ()
+		public BinaryBuildStateParser ()
 			{
 			}
 
