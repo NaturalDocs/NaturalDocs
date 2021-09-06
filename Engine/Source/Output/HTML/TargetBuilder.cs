@@ -1356,11 +1356,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					string output = cssProcessor.Process(System.IO.File.ReadAllText(file.FileName), EngineInstance.Config.ShrinkFiles);
 					HTML.Component.WriteTextFile(outputFile, output);
 					}
-				else if (extension == "html" || extension == "htm")
-					{
-					if (file.FileName == Target.BuildState.HomePage)
-						{  Target.UnprocessedChanges.AddHomePage();  }
-					}
 				else
 					{
 					// Creates all subdirectories needed.  Does nothing if it already exists.
