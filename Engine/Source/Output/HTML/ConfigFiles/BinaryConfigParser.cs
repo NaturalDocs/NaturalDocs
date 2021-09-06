@@ -151,12 +151,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 							}
 
 
-						// [String: Home Page or null]
+						// [String: Home Page Path (absolute) or null]
 
 						string homePage = binaryFile.ReadString();
 
 						if (homePage != null)
-							{  style.SetHomePage(homePage, Config.PropertySource.PreviousRun);  }
+							{  style.SetHomePage((AbsolutePath)homePage, Config.PropertySource.PreviousRun);  }
 
 
 						// Next style path
@@ -298,7 +298,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					binaryFile.WriteString(null);
 
 
-					// [String: Home Page or null]
+					// [String: Home Page Path (absolute) or null]
 
 					binaryFile.WriteString(style.HomePage);
 					}

@@ -383,7 +383,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Determine our home page
 			//
 
-			Path newHomePage = Style.HomePageOf(stylesWithInheritance);
+			AbsolutePath newHomePage = Style.HomePageOf(stylesWithInheritance);
 			bool homePageChanged = (newHomePage != buildState.HomePage);
 
 			buildState.HomePage = newHomePage;

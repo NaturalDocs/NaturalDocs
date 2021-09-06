@@ -35,7 +35,7 @@ _______________________________________________________________________________
 		>    [String: Inherit] ... [String: null]
 		>    [String: OnLoad] [Byte: Page Type] ... [String: null]
 		>    [String: Link] [Byte: Page Type] ... [String: null]
-		>    [String: Home Page or null]
+		>    [String: Home Page Path (absolute) or null]
 		>
 		> [String: Style Path]
 		> ...

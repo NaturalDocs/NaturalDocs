@@ -160,7 +160,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 								{  file.AddError( Locale.Get("NaturalDocs.Engine", "Style.txt.HomePageFileMustBeInStyleFolder(name, folder)", homePageFile, style.Folder) );  }
 							else
 								{  
-								style.SetHomePage(homePageFile, file.PropertyLocation);
+								style.SetHomePage((AbsolutePath)homePageFile, file.PropertyLocation);
 								}
 							}
 

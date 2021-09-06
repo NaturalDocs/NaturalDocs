@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			fileMenuInfo = null;
 			hierarchyMenuInfo = null;
 
-			homePage = null;
+			homePage = default;
 			homePageLastModified = default;
 			generatedTimestamp = null;
 
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* Property: HomePage
 		 * The custom home page used for the target, or null if using the default one.
 		 */
-		public Path HomePage
+		public AbsolutePath HomePage
 			{
 			get
 				{
@@ -356,7 +356,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		/* var: homePage
 		 * The custom home page used for the target, or null if using the default one.
 		 */
-		protected Path homePage;
+		protected AbsolutePath homePage;
 
 
 		/* var: homePageLastModified

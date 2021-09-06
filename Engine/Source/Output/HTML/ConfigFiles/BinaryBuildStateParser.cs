@@ -149,7 +149,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// [String: Generated Timestamp or null]
 					// [Byte: Home Page Uses Timestamp (0 or 1)]
 
-					buildState.HomePage = binaryFile.ReadString();
+					buildState.HomePage = (AbsolutePath)binaryFile.ReadString();
 					buildState.HomePageLastModified = new DateTime(binaryFile.ReadInt64());
 					buildState.GeneratedTimestamp = binaryFile.ReadString();
 					buildState.HomePageUsesTimestamp = (binaryFile.ReadByte() != 0);
