@@ -1,0 +1,77 @@
+﻿
+File: Style.txt
+_______________________________________________________________________________
+
+A configuration file for an advanced style in Natural Docs.
+		
+
+Group: Format
+_______________________________________________________________________________
+	
+	Topic: Inhert
+	
+		> Inherit: [style]
+		
+		States that this style inherits the specified style, meaning the inherited style's files will be included in the
+		output first, then this style's files.  Can be specified multiple times.
+		
+		
+	Topic: Onload
+
+		> OnLoad: [code]
+		> Frame OnLoad: [code]
+		> Content OnLoad: [code]
+		> Home OnLoad: [code]
+		
+		Specifies a single line of JavaScript code that will be executed from the page's OnLoad function.  Can be restricted
+		to certain page types or applied to all of them.  If you have a non-trivial amount of code to run you should define 
+		a function to be called from here instead.
+		
+		
+	Topic: Link
+
+		> Link: [file]
+		> Frame Link: [file]
+		> Content Link: [file]
+		> Home Link: [file]
+		
+		Specifies a .css, .js, or .json file that should be included in the page output, such as with a script or link tag.  
+		JavaScript files can be restricted to certain page types or linked to all of them.  CSS files can only be linked to all
+		of them.  The file path is relative to the style's folder.
+		
+		All files found in the style's folder are not automatically included because some may be intended to be loaded 
+		dynamically, or the .css files may already be linked together with @import.
+		
+		
+	Topic: Home Page
+
+		> Home Page: [file]
+		
+		Specifies a .html file to serve as the home page.  If it's defined none of the OnLoad or Link properties will have any 
+		effect on it.  Equivalent properties must be manually added to the HTML file if they're needed.  If a home page isn't
+		defined then default one will be generated.
+		
+		The home page HTML file may contain these values which will be replaced by their corresponding properties in the
+		project info:
+		
+		- %NaturalDocs_Title%
+		- %NaturalDocs_Subtitle%
+		- %NaturalDocs_Copyright%
+		- %NaturalDocs_Timestamp%
+		
+		Entity subsitutions will be made for <, >, and " so they are safe to embed directly in the HTML or in double-quoted
+		JavaScript strings.
+
+			
+
+Group: Revisions
+_______________________________________________________________________________
+		
+	Topic: 2.2
+
+		- Added the Home Page property.
+
+
+	Topic: 2.1
+
+		- Added Home as an option for OnLoad and Link statements.

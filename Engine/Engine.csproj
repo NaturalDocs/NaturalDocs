@@ -328,6 +328,7 @@
     <Content Include="Architecture\Database Layout\Contexts.txt" />
     <Content Include="Architecture\Database Layout\Classes.txt" />
     <Content Include="Architecture\Database Layout\ImageLinks.txt" />
+    <Content Include="Architecture\File Formats\Style.txt" />
     <Content Include="Architecture\File Formats\HTML Output\SearchIndex.nd.txt" />
     <Content Include="Architecture\File Formats\HTML Output\BuildState.nd.txt" />
     <Content Include="Architecture\File Formats\HTML Output\Config.nd.txt" />
