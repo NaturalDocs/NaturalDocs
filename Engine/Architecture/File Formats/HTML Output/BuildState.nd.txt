@@ -82,13 +82,18 @@ _______________________________________________________________________________
 
 	Topic: Project Info
 		
-		> [String: Path to Home Page or null]
+		> [String: Home Page Path (absolute) or null]
 		
-		The custom home page file, or null if using the default.
+		The custom home page file, or null if using the default.  This is the final calculated value between any settings in
+		<Project.txt>, <Style.txt>, or any of the inherited styles.
+
+		> [Int64: Home Page Last Modification Time in ticks or 0]
+
+		The last modification time of the file used for the home page, or zero if using the default.
 		
 		> [String: Generated Timestamp or null]
 		
-		The timestamp used the last time the output was built.  This is the generated result, so "Updated January 1, 2020", 
+		The timestamp used the last time the output was built.  This is the generated result, so "Updated January 1, 2021",
 		and not the code like "Updated month d, yyyy".
 		
 		> [Byte: Home Page Uses Timestamp (0 or 1)]
@@ -103,7 +108,7 @@ _______________________________________________________________________________
 	Topic: 2.2
 
 		- Added Need to Build Home Page.
-		- Added Path to Home Page, Generated Timestamp, and Home Page Uses Timestamp.
+		- Added Home Page Path, Home Page Last Modification Time, Generated Timestamp, and Home Page Uses Timestamp.
 		- Changed how menu data file information is stored.
 		- Reorganized the order in which the values appear.
 		

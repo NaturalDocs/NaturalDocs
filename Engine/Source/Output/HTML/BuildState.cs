@@ -38,6 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			hierarchyMenuInfo = null;
 
 			homePage = null;
+			homePageLastModified = default;
 			generatedTimestamp = null;
 
 			// Default to true instead of false since the default home page uses it.  Also, having this set incorrectly true just
@@ -228,6 +229,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
+		/* Property: HomePageLastModified
+		 * The time when the <HomePage> was last modified as of the last time the home page output file was built.
+		 */
+		public DateTime HomePageLastModified
+			{
+			get
+				{
+				lock (accessLock)
+					{  return homePageLastModified;  }
+				}
+			set
+				{
+				lock (accessLock)
+					{  homePageLastModified = value;  }
+				}
+			}
+
+
 		/* Property: GeneratedTimestamp
 		 * The generated timestamp being used, or null if one isn't defined.  This is the final result, like "Updated January
 		 * 1, 2021", and not the code, like "Updated month d, yyyy".
@@ -338,6 +357,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 * The custom home page used for the target, or null if using the default one.
 		 */
 		protected Path homePage;
+
+
+		/* var: homePageLastModified
+		 * The last modification time of <homePage> as of the last time its output file was built.
+		 */
+		protected DateTime homePageLastModified;
 
 
 		/* var: generatedTimestamp

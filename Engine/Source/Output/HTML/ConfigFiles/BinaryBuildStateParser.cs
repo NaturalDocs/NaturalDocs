@@ -144,11 +144,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 					// Project Info
 
-					// [String: Path to Home Page or null]
+					// [String: Home Page Path (absolute) or null]
+					// [Int64: Home Page Last Modification Time in ticks or 0]
 					// [String: Generated Timestamp or null]
 					// [Byte: Home Page Uses Timestamp (0 or 1)]
 
 					buildState.HomePage = binaryFile.ReadString();
+					buildState.HomePageLastModified = new DateTime(binaryFile.ReadInt64());
 					buildState.GeneratedTimestamp = binaryFile.ReadString();
 					buildState.HomePageUsesTimestamp = (binaryFile.ReadByte() != 0);
 					}
@@ -267,11 +269,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 				// Project Info
 
-				// [String: Path to Home Page or null]
+				// [String: Home Page Path (absolute) or null]
+				// [Int64: Home Page Last Modification Time in ticks or 0]
 				// [String: Generated Timestamp or null]
 				// [Byte: Home Page Uses Timestamp (0 or 1)]
 
 				binaryFile.WriteString(buildState.HomePage);
+				binaryFile.WriteInt64(buildState.HomePageLastModified.Ticks);
 				binaryFile.WriteString(buildState.GeneratedTimestamp);
 				binaryFile.WriteByte( (byte)(buildState.HomePageUsesTimestamp ? 1 : 0) );
 				}
