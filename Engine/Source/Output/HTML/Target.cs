@@ -74,7 +74,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			//
 
 			string styleName = config.ProjectInfo.StyleName;
-			Style_txt styleParser = new Style_txt();
+			Styles.ConfigFiles.TextFileParser styleParser = new Styles.ConfigFiles.TextFileParser();
 
 			if (styleName == null)
 				{

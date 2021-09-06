@@ -1,5 +1,5 @@
 ﻿/* 
- * Class: CodeClear.NaturalDocs.Engine.Styles.Style_txt
+ * Class: CodeClear.NaturalDocs.Engine.Styles.ConfigFiles.TextFileParser
  * ____________________________________________________________________________
  * 
  * A class to handle loading and saving <Style.txt>.
@@ -19,18 +19,18 @@
 using System;
 
 
-namespace CodeClear.NaturalDocs.Engine.Styles
+namespace CodeClear.NaturalDocs.Engine.Styles.ConfigFiles
 	{
-	public class Style_txt
+	public class TextFileParser
 		{
 
 		// Group: Functions
 		// __________________________________________________________________________
 
 
-		/* Function: Style_txt
+		/* Function: TextFileParser
 		 */
-		public Style_txt ()
+		public TextFileParser ()
 			{
 			inheritRegex = new Regex.Styles.Inherit();
 			linkRegex = new Regex.Styles.Link();

@@ -102,7 +102,7 @@
     <Compile Include="Source\Styles\Manager.cs" />
     <Compile Include="Source\Styles\PageType.cs" />
     <Compile Include="Source\Styles\PageTypes.cs" />
-    <Compile Include="Source\Styles\Style_txt.cs" />
+    <Compile Include="Source\Styles\ConfigFiles\TextFileParser.cs" />
     <Compile Include="Source\Output\HTML\Component.cs" />
     <Compile Include="Source\Output\HTML\Components\ClassPrototype.cs" />
     <Compile Include="Source\Output\HTML\Components\TopicPage.cs" />

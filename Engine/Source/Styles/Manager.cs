@@ -115,7 +115,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 				}
 			else if (style is Styles.Advanced)
 				{
-				Style_txt styleParser = new Style_txt();
+				ConfigFiles.TextFileParser styleParser = new ConfigFiles.TextFileParser();
 				style = styleParser.Load((style as Styles.Advanced).ConfigFile, errorList);
 
 				if (style == null)
