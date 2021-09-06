@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Source\Exceptions\PathMustBeAbsolute.cs" />
     <Compile Include="Source\Exceptions\PathMustBeRelative.cs" />
+    <Compile Include="Source\Output\HTML\Target.Start.cs" />
     <Compile Include="Source\RelativePath.cs" />
     <Compile Include="Source\CommentTypes\Config.cs" />
     <Compile Include="Source\CommentTypes\ConfigFiles\TextFile.cs" />
