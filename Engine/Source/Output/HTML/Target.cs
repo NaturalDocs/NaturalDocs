@@ -139,14 +139,14 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 
 			//
-			// Compare to the previous project info
+			// Compare to the previous project title, subtitle, and copyright.
 			//
 
-			bool projectInfoChanged = (!hasBinaryConfigFile ||
-													 ProjectInfo.Title != previousProjectInfo.Title ||
-													 ProjectInfo.Subtitle != previousProjectInfo.Subtitle ||
-													 ProjectInfo.Copyright != previousProjectInfo.Copyright ||
-													 ProjectInfo.TimestampCode != previousProjectInfo.TimestampCode);
+			// We don't care about timestamp or home page here since their changes are detected separately.
+			bool titlesAndCopyrightChanged = (!hasBinaryConfigFile ||
+																ProjectInfo.Title != previousProjectInfo.Title ||
+																ProjectInfo.Subtitle != previousProjectInfo.Subtitle ||
+																ProjectInfo.Copyright != previousProjectInfo.Copyright);
 
 			
 			//
@@ -456,13 +456,13 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			else
 				{
-				if (!hasBinaryConfigFile || projectInfoChanged || timestampChanged)
+				if (!hasBinaryConfigFile || titlesAndCopyrightChanged || timestampChanged)
 					{  unprocessedChanges.AddFramePage();  }
 
 				if (!hasBinaryConfigFile || hasStyleChanges)	
 					{  unprocessedChanges.AddMainStyleFiles();  }
 
-				if (!hasBinaryConfigFile || homePageChanged || projectInfoChanged ||
+				if (!hasBinaryConfigFile || homePageChanged || titlesAndCopyrightChanged ||
 					(timestampChanged && buildState.HomePageUsesTimestamp))
 					{  unprocessedChanges.AddHomePage();  }
 				}
