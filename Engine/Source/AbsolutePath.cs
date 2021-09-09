@@ -206,7 +206,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 * A cast operator to convert a string to an AbsolutePath.  The string will be normalized.  It will throw
 		 * an exception if it's a relative path.
 		 */
-		public static explicit operator AbsolutePath (string pathString)
+		public static implicit operator AbsolutePath (string pathString)
 			{
 			return new AbsolutePath(pathString);
 			}
