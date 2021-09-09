@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public HTMLOutputFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = default;
+			folder = null;
 			folderPropertyLocation = PropertySource.NotDefined;
 			}
 

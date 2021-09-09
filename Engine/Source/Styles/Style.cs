@@ -273,7 +273,7 @@ namespace CodeClear.NaturalDocs.Engine.Styles
 					{  return inheritanceList[i].HomePage;  }
 				}
 
-			return default;
+			return null;
 			}
 
 

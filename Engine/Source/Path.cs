@@ -305,7 +305,7 @@ namespace CodeClear.NaturalDocs.Engine
 				folder.Split(out folderPrefix, out folderSections);
 				
 				if (String.Compare(thisPrefix, folderPrefix, Engine.SystemInfo.IgnoreCaseInPaths) != 0)
-					{  return default;  }
+					{  return null;  }
 					
 				while (thisSections.Count > 0 && folderSections.Count > 0 &&
 						 String.Compare(thisSections[0], folderSections[0], Engine.SystemInfo.IgnoreCaseInPaths) == 0)

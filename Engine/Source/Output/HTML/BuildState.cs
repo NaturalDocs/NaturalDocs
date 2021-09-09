@@ -37,8 +37,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			fileMenuInfo = null;
 			hierarchyMenuInfo = null;
 
-			homePage = default;
-			homePageLastModified = default;
+			homePage = null;
+			homePageLastModified = new DateTime(0);
 			generatedTimestamp = null;
 
 			// Default to true instead of false since the default home page uses it.  Also, having this set incorrectly true just

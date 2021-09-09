@@ -39,12 +39,12 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			{
 			engineInstance = null;
 
-			inputFolder = default;
-			projectConfigFolder = default;
-			workingDataFolder = default;
-			outputFolder = default;
+			inputFolder = null;
+			projectConfigFolder = null;
+			workingDataFolder = null;
+			outputFolder = null;
 
-			temporaryFolderRoot = default;
+			temporaryFolderRoot = null;
 
 			keepOutputFolder = false;
 			}

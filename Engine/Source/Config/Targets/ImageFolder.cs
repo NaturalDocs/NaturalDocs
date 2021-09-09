@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public ImageFolder (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			folder = default;
+			folder = null;
 			folderPropertyLocation = PropertySource.NotDefined;
 			}
 

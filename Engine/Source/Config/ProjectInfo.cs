@@ -29,7 +29,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			copyright = null;
 			timestampCode = null;
 			styleName = null;
-			homePage = default;
+			homePage = null;
 
 			titlePropertyLocation = PropertySource.NotDefined;
 			subtitlePropertyLocation = PropertySource.NotDefined;
