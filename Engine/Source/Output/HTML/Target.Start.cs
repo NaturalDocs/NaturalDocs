@@ -383,10 +383,30 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Determine our home page
 			//
 
-			AbsolutePath newHomePage = Style.HomePageOf(stylesWithInheritance);
-			bool homePageChanged = (newHomePage != buildState.HomePage);
+			AbsolutePath homePage;
 
-			buildState.HomePage = newHomePage;
+			if (ProjectInfo.HomePage != null)
+				{  homePage = ProjectInfo.HomePage;  }
+			else
+				{  homePage = Style.HomePageOf(stylesWithInheritance);  }
+
+			bool homePageChanged = (homePage != buildState.HomePage);
+			buildState.HomePage = homePage;
+
+			if (homePage != null)
+				{
+				DateTime homePageLastModified = System.IO.File.GetLastWriteTimeUtc(homePage);
+
+				if (!homePageChanged && buildState.HomePageLastModified.Ticks != homePageLastModified.Ticks)
+					{  homePageChanged = true;  }
+
+				buildState.HomePageLastModified = homePageLastModified;
+				}
+			else // homePage == null)
+				{
+				buildState.HomePageLastModified = new DateTime(0);
+				}
+
 			// HomePageUsesTimestamp will be determined when it's built.
 
 
