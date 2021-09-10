@@ -60,7 +60,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				return false;
 				}
 
-			return true;
+			return base.Validate(errorList, targetIndex);
 			}
 			
 	

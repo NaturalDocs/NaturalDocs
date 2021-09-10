@@ -11,6 +11,7 @@
 
 
 using System;
+using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
@@ -36,6 +37,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 			number = toCopy.number;
 			numberPropertyLocation = toCopy.numberPropertyLocation;
+			}
+
+		override public bool Validate (ErrorList errorList, int targetIndex)
+			{
+			return ProjectInfo.Validate(errorList);
 			}
 
 		abstract public Output Duplicate ();

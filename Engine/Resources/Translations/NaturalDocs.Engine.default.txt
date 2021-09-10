@@ -173,6 +173,7 @@ Project.txt.FolderNumberMustBeGreaterThanZero: Folders must have a number greate
 Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to source folders.
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
+Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 
 Project.txt.FileHeader.multiline {{{
 # This is the file you use to provide information about your project.  It can

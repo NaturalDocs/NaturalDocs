@@ -140,6 +140,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				
 			if (success == false)
 				{  return false;  }
+
+
+			// Validate the global project info
+
+			if (!combinedConfig.ProjectInfo.Validate(errorList))
+				{  success = false;  }
 				
 				
 			// Load the previous configuration state.  Remember that not every value in ProjectConfig is stored in Project.nd.

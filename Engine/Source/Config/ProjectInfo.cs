@@ -12,6 +12,7 @@
 
 using System;
 using CodeClear.NaturalDocs.Engine.Config;
+using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config
@@ -56,6 +57,21 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			homePagePropertyLocation = toCopy.homePagePropertyLocation;
 			}
 			
+
+		public bool Validate (ErrorList errorList)
+			{
+			if (homePage != null && System.IO.File.Exists(homePage) == false)
+				{  
+				errorList.Add(
+					Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", homePage),
+					homePagePropertyLocation);
+
+				return false;
+				}
+
+			return true;
+			}
+
 
 		/* Functoin: MakeTimestamp
 		 * Generates a time stamp from <TimestampCode> and the current date.  If <TimestampCode> is null this will also
