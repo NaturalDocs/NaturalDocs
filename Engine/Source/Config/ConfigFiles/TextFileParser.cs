@@ -629,8 +629,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (projectInfo.HomePagePropertyLocation.IsDefined &&
 				projectInfo.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
 				{  
-				Path relativePath = projectConfig.ProjectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
-				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : projectConfig.ProjectInfo.HomePage));
+				Path relativePath = projectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : projectInfo.HomePage));
 				}
 			}
 
