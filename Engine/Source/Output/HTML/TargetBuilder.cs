@@ -611,9 +611,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected void BuildHomePage (CancelDelegate cancelDelegate)
 			{
 			if (Target.BuildState.HomePage == null)
-				{  BuildDefaultHomePage(cancelDelegate);  }
+				{  
+				BuildDefaultHomePage(cancelDelegate);
+				return;
+				}
+
+			string extension = Target.BuildState.HomePage.Extension.ToLowerInvariant();
+
+			if (extension == "html" || extension == "htm")
+				{  BuildCustomHTMLHomePage(Target.BuildState.HomePage, cancelDelegate);  }
 			else
-				{  BuildCustomHomePage(Target.BuildState.HomePage, cancelDelegate);  }
+				{  throw new NotImplementedException();  }
 			}
 
 
@@ -736,10 +744,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		/* Function: BuildCustomHomePage
+		/* Function: BuildCustomHTMLHomePage
 		 * Builds a custom home.html from the template.
 		 */
-		protected void BuildCustomHomePage (Path template, CancelDelegate cancelDelegate)
+		protected void BuildCustomHTMLHomePage (Path template, CancelDelegate cancelDelegate)
 			{
 			string output;
 			
