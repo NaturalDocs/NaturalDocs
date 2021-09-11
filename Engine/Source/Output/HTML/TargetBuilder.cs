@@ -741,7 +741,16 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected void BuildCustomHomePage (Path template, CancelDelegate cancelDelegate)
 			{
-			string output = System.IO.File.ReadAllText(template);
+			string output;
+			
+			try
+				{  output = System.IO.File.ReadAllText(template);  }
+			catch
+				{
+				throw new Exceptions.UserFriendly(
+					Locale.Get("NaturalDocs.Engine", "Project.txt.CantOpenHomePageFile(name)", template)
+					);
+				}
 
 			var titleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Title();
 			var subtitleRegex = new Engine.Regex.Output.HTML.HomePageSubstitutions.Subtitle();
