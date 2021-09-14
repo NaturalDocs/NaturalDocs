@@ -90,7 +90,7 @@ var NDFramePage = new function ()
 		// EdgeHTML.
 
 		window.onresize = function () {  NDFramePage.OnResize();  };
-		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
+		// window.onhashchange = function () {  NDFramePage.OnHashChange();  };  // Wait until OnLocationsLoaded
 		document.onmousedown = function (e) {  return NDFramePage.OnMouseDown(e);  };
 
 
@@ -218,7 +218,9 @@ var NDFramePage = new function ()
 			this.locationInfo[i][$LocationInfo_PrefixRegexObject] = new RegExp( this.locationInfo[i][$LocationInfo_PrefixRegexString] );
 			}
 
-		// Now we can interpret the initial hash path
+		
+		// Now we can interpret the initial hash path and set the event handler for future ones.
+		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
 		this.OnHashChange();
 		};
 
