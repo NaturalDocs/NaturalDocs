@@ -610,16 +610,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		 */
 		protected void BuildHomePage (CancelDelegate cancelDelegate)
 			{
-			if (Target.BuildState.HomePage == null)
+			if (Target.BuildState.CalculatedHomePage == null)
 				{  
 				BuildDefaultHomePage(cancelDelegate);
 				return;
 				}
-
-			string extension = Target.BuildState.HomePage.Extension.ToLowerInvariant();
-
-			if (extension == "html" || extension == "htm")
-				{  BuildCustomHTMLHomePage(Target.BuildState.HomePage, cancelDelegate);  }
+			else if (Target.BuildState.CalculatedHomePageIsHTML)
+				{  
+				BuildCustomHTMLHomePage(Target.BuildState.CalculatedHomePage, cancelDelegate);
+				}
 			else
 				{  throw new NotImplementedException();  }
 			}

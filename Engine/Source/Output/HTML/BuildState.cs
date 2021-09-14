@@ -37,7 +37,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			fileMenuInfo = null;
 			hierarchyMenuInfo = null;
 
-			homePage = null;
+			calculatedHomePage = null;
 			homePageLastModified = new DateTime(0);
 			generatedTimestamp = null;
 
@@ -211,20 +211,59 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		// __________________________________________________________________________
 
 
-		/* Property: HomePage
-		 * The custom home page used for the target, or null if using the default one.
+		/* Property: CalculatedHomePage
+		 * The custom home page used for the target, or null if using the default one.  This is the final calculated value
+		 * from all the places it could be set in <Project.txt> and <Styles.txt>.
 		 */
-		public AbsolutePath HomePage
+		public AbsolutePath CalculatedHomePage
 			{
 			get
 				{
 				lock (accessLock)
-					{  return homePage;  }
+					{  return calculatedHomePage;  }
 				}
 			set
 				{
 				lock (accessLock)
-					{  homePage = value;  }
+					{  calculatedHomePage = value;  }
+				}
+			}
+
+
+		/* Property: CalculatedHomePageIsHTML
+		 * Whether <CalculatedHomePage> is a HTML file.
+		 */
+		public bool CalculatedHomePageIsHTML
+			{
+			get
+				{
+				lock (accessLock)
+					{  
+					if (calculatedHomePage == null)
+						{  return false;  }
+
+					string lcExtension = calculatedHomePage.Extension.ToLowerInvariant();
+
+					return (lcExtension == "html" || lcExtension == "htm");
+					}
+				}
+			}
+
+
+		/* Property: CalculatedHomePageIsSourceFile
+		 * Whether <CalculatedHomePage> is a source file.
+		 */
+		public bool CalculatedHomePageIsSourceFile
+			{
+			get
+				{
+				lock (accessLock)
+					{  
+					if (calculatedHomePage == null)
+						{  return false;  }
+
+					return !CalculatedHomePageIsHTML;
+					}
 				}
 			}
 
@@ -353,10 +392,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 		protected internal List<MenuInfo> hierarchyMenuInfo;
 
 
-		/* var: homePage
-		 * The custom home page used for the target, or null if using the default one.
+		/* var: calculatedHomePage
+		 * The custom home page used for the target, or null if using the default one.  This is the final calculated value from
+		 * all the places it could be set in <Project.txt> and <Styles.txt>.
 		 */
-		protected AbsolutePath homePage;
+		protected AbsolutePath calculatedHomePage;
 
 
 		/* var: homePageLastModified

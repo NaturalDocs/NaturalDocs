@@ -390,8 +390,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			else
 				{  homePage = Style.HomePageOf(stylesWithInheritance);  }
 
-			bool homePageChanged = (homePage != buildState.HomePage);
-			buildState.HomePage = homePage;
+			bool homePageChanged = (homePage != buildState.CalculatedHomePage);
+			buildState.CalculatedHomePage = homePage;
 
 			if (homePage != null)
 				{

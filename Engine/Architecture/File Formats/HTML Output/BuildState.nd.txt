@@ -82,9 +82,9 @@ _______________________________________________________________________________
 
 	Topic: Project Info
 		
-		> [String: Home Page Path (absolute) or null]
+		> [String: Calculated Home Page Path (absolute) or null]
 		
-		The custom home page file, or null if using the default.  This is the final calculated value between any settings in
+		The calculated home page file, or null if using the default.  This is the final calculated value between any settings in
 		<Project.txt>, <Style.txt>, or any of the inherited styles.
 
 		> [Int64: Home Page Last Modification Time in ticks or 0]
