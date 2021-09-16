@@ -518,6 +518,24 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			}
 
 
+		/* Property: Filters
+		 * 
+		 * Retrieves a read-only list of the filters this instance has.
+		 * 
+		 * Thread Safety:
+		 * 
+		 *		During engine initialization this function is not thread safe, but engine initialization should be a single-threaded operation
+		 *		anyway.
+		 *		
+		 *		Once the engine is started this is treated as a read-only variable, which would make it inherently thread safe.
+		 */
+		public IList<Filter> Filters
+			{
+			get
+				{  return filters.AsReadOnly();  }
+			}
+
+
 		/* Property: UnprocessedChanges
 		 * 
 		 * Returns a <Files.UnprocessedChanges> object which stores all of the unprocessed file changes that have been detected.
