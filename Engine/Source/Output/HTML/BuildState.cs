@@ -237,6 +237,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{
+				// DEPENDENCY: This logic has to match Config.ProjectInfo.HomePageIsHTML
+
 				lock (accessLock)
 					{  
 					if (calculatedHomePage == null)
@@ -257,6 +259,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{
+				// DEPENDENCY: This logic has to match Config.ProjectInfo.HomePageIsSourceFile
+
 				lock (accessLock)
 					{  
 					if (calculatedHomePage == null)

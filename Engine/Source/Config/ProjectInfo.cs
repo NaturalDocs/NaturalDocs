@@ -223,7 +223,41 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  homePage = value;  }
 			}
 			
-	
+		/* Property: HomePageIsHTML
+		 * Whether <HomePage> is a HTML file.
+		 */
+		public bool HomePageIsHTML
+			{
+			get
+				{
+				// DEPENDENCY: This logic has to match Output.HTML.BuildState.CalculatedHomePageIsHTML
+
+				if (homePage == null)
+					{  return false;  }
+
+				string lcExtension = homePage.Extension.ToLowerInvariant();
+
+				return (lcExtension == "html" || lcExtension == "htm");
+				}
+			}
+
+		/* Property: HomePageIsSourceFile
+		 * Whether <HomePage> is a source file.
+		 */
+		public bool HomePageIsSourceFile
+			{
+			get
+				{
+				// DEPENDENCY: This logic has to match Output.HTML.BuildState.CalculatedHomePageIsSourceFile
+
+				if (homePage == null)
+					{  return false;  }
+
+				return !HomePageIsHTML;
+				}
+			}
+
+
 		
 		// Group: Property Locations
 		// __________________________________________________________________________
