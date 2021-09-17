@@ -96,12 +96,12 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 					Target target = null;
 
-					if (GetGlobalProperty(lcIdentifier, value, propertyLocation))
+					if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
 						{
 						currentTarget = null;
 						currentProjectInfo = projectConfig.ProjectInfo;
 						}
-					else if (GetTargetHeader(lcIdentifier, value, propertyLocation, out target))
+					else if (GetTargetHeader(lcIdentifier, value, propertyLocation, out target, errorList))
 						{
 						currentTarget = target;
 
@@ -110,9 +110,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						else
 							{  currentProjectInfo = projectConfig.ProjectInfo;  }
 						}
-					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation, currentProjectInfo))
+					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation, currentProjectInfo, errorList))
 						{  }
-					else if (currentTarget != null && GetTargetProperty(lcIdentifier, value, propertyLocation, currentTarget))
+					else if (currentTarget != null && GetTargetProperty(lcIdentifier, value, propertyLocation, currentTarget, errorList))
 						{  }
 					else
 						{
@@ -135,7 +135,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * global property but has a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
 		 * false on unrecognized identifiers.
 		 */
-		protected bool GetGlobalProperty (string lcIdentifier, string value, PropertyLocation propertyLocation)
+		protected bool GetGlobalProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ErrorList errorList)
 			{
 			if (tabWidthRegex.IsMatch(lcIdentifier))
 				{
@@ -209,7 +209,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * project info property but there's a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
 		 * false for unrecognized identifiers.
 		 */
-		protected bool GetProjectInfoProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ProjectInfo projectInfo)
+		protected bool GetProjectInfoProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ProjectInfo projectInfo,
+																ErrorList errorList)
 			{
 			if (lcIdentifier == "title")
 				{
@@ -248,6 +249,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				if (path.IsRelative)
 					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
 
+				if (!System.IO.File.Exists(path))
+					{  
+					errorList.Add(
+						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
+						propertyLocation);  
+					}
+
 				projectInfo.HomePage = (AbsolutePath)path;
 				projectInfo.HomePagePropertyLocation = propertyLocation;
 
@@ -265,7 +273,8 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * it is a recognized target header but there is a syntax error in the value, it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Target newTarget)
+		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Target newTarget, 
+														ErrorList errorList)
 			{
 
 			// Source folder
@@ -392,7 +401,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		 * the <ProjectInfo> settings for output targets, use <GetProjectInfoProperty()> for that instead.  If the value is invalid it will 
 		 * add an error to <errorList> and still return true.  It will only return false if the identifier is unrecognized.
 		 */
-		protected bool GetTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, Target target)
+		protected bool GetTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, Target target, ErrorList errorList)
 			{
 			if (lcIdentifier == "name")
 				{

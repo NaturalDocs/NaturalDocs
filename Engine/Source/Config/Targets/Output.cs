@@ -39,11 +39,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			numberPropertyLocation = toCopy.numberPropertyLocation;
 			}
 
-		override public bool Validate (ErrorList errorList, int targetIndex)
-			{
-			return ProjectInfo.Validate(errorList);
-			}
-
 		abstract public Output Duplicate ();
 
 		/* Function: IsSameTarget
