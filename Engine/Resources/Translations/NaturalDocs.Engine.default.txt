@@ -113,6 +113,12 @@ Error.ProjectConfigFolderCannotEqualSystemConfigFolder: The project configuratio
 Error.TabWidthMustBeANumber: The tab width must be a number.
 Error.TabWidthMustBeGreaterThanZero: The tab width must be greater than zero.
 
+Error.CantOpenHomePageFile(file): Could not open home page file {0}.
+Error.HomePageIsntASourceFileOrHTML(file): The home page must be set to a HTML file or a source file.
+Error.HomePageSourceFileIsntInSourceFolders(file): The home page file {0} isn't included in Natural Docs' source folders.
+Error.HomePageSourceFileIsIgnored(file): The home page file {0} can't be used because it matches a filter or is in an output folder or configuration folder.
+Error.HomePageSourceFileDoesntHaveContent(file): The home page file {0} doesn't contain any documentation.
+
 Error.CouldNotWriteToDataFile(name, exception): Could not write to data file {0}.  {1}
 Error.NoInputTargets: There were no input targets in Project.txt or the command line.
 Error.NoOutputTargets: There were no output targets in Project.txt or the command line.
@@ -174,7 +180,6 @@ Project.txt.NameOnlyAppliesToSourceFolders: The Name property only applies to so
 Project.txt.StyleOnlyAppliesToHTMLOutputFolders: The Style property only applies to HTML output folders.
 Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0}.
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
-Project.txt.CantOpenHomePageFile(name): Could not open home page file {0}.
 
 Project.txt.FileHeader.multiline {{{
 # This is the file you use to provide information about your project.  It can

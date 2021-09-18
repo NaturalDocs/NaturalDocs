@@ -159,6 +159,18 @@ var NDFramePage = new function ()
 		NDSearch.DeactivateSearchField();
 
 
+		// If we're using a source file for the home page, substitute its location.  We don't have to worry about handling 
+		// custom home pages based on HTML files here because they get resaved into the default location.
+
+		if (this.currentLocation.type == "Home" && this.sourceFileHomePageHashPath)
+			{
+			var homePageLocation = new NDLocation(this.sourceFileHomePageHashPath);
+			homePageLocation.type = "Home";
+
+			this.currentLocation = homePageLocation;
+			}
+
+
 		// We need to update the layout if the location changes the visibility of the summary panel.
 
 		var oldLocationHasSummary = (oldLocation != undefined && oldLocation.summaryFile != undefined);
@@ -208,7 +220,7 @@ var NDFramePage = new function ()
 
 	/* Function: OnLocationsLoaded
 	*/
-	this.OnLocationsLoaded = function (locationInfo)
+	this.OnLocationsLoaded = function (locationInfo, sourceFileHomePageHashPath)
 		{
 		this.locationInfo = locationInfo;
 
@@ -218,6 +230,7 @@ var NDFramePage = new function ()
 			this.locationInfo[i][$LocationInfo_PrefixRegexObject] = new RegExp( this.locationInfo[i][$LocationInfo_PrefixRegexString] );
 			}
 
+		this.sourceFileHomePageHashPath = sourceFileHomePageHashPath;
 		
 		// Now we can interpret the initial hash path and set the event handler for future ones.
 		window.onhashchange = function () {  NDFramePage.OnHashChange();  };
@@ -700,6 +713,11 @@ var NDFramePage = new function ()
 
 	/* var: projectTitle
 		The project title in HTML.
+	*/
+
+	/* var: sourceFileHomePageHashPath
+		The hash path of the source file serving as a custom home page, or undefined if none.  This will be undefined if there is no custom
+		home page or if there is a custom home page but it is a HTML file.
 	*/
 
 	/* var: hashChangePoller

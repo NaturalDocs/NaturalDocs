@@ -9,7 +9,6 @@
 
 
 using System;
-using System.Collections.Generic;
 using CodeClear.NaturalDocs.Engine.Errors;
 
 
@@ -22,7 +21,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		// __________________________________________________________________________
 		
 		
-		/* Function: Start
+		/* Function: Start_Stage1
 		 * 
 		 * Initializes the configuration and returns whether all the settings are correct and that execution is ready to begin.  
 		 * If there are problems they are added as <Errors> to the errorList parameter.  This class is *not* designed to allow 
@@ -31,13 +30,15 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * After <Start()> is called the properties of this class become read-only.  This function will add all the input and filter
 		 * targets it has to <Files.Manager>, and all output targets to <Output.Manager>.
 		 */
-		public bool Start (ErrorList errorList, ProjectConfig commandLineConfig)
+		public bool Start_Stage1 (ErrorList errorList, ProjectConfig commandLineConfig)
 			{
 			StartupIssues newStartupIssues = StartupIssues.None;
 			bool success = true;
 			
 			
+			//
 			// Validate project config folder
+			//
 
 			projectConfigFolder = commandLineConfig.ProjectConfigFolder;
 				
@@ -79,7 +80,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return false;  }
 				
 
+			//
 			// Load and merge configuration files
+			//
 			
 			ProjectConfig combinedConfig = new ProjectConfig(PropertySource.Combined);
 			MergeConfig(combinedConfig, commandLineConfig);
@@ -114,7 +117,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return false;  }
 
 
+			//
 			// Validate the working data folder, creating one if it doesn't exist.
+			//
 
 			workingDataFolder = combinedConfig.WorkingDataFolder;
 
@@ -142,7 +147,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return false;  }
 
 
+			//
 			// Load the previous configuration state.  Remember that not every value in ProjectConfig is stored in Project.nd.
+			//
 				
 			ProjectConfig previousConfig = null;
 			var projectNDParser = new ConfigFiles.BinaryFileParser();
@@ -155,8 +162,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 				
 
+			//
 			// Merge output target numbers from Project.nd into the settings.  These are not stored in Project.txt because they're
 			// pretty expendible.
+			//
 
 			if (previousConfig != null)
 				{
@@ -174,7 +183,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 				
-			// Target validation
+			//
+			// Validate targets
+			//
 						
 			if (combinedConfig.InputTargets.Count < 1)
 				{
@@ -213,7 +224,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  return false;  }
 
 
+			//
 			// Determine the target numbers that are already used and reset duplicates.
+			//
 			
 			IDObjects.NumberSet usedSourceNumbers = new IDObjects.NumberSet();
 			IDObjects.NumberSet usedImageNumbers = new IDObjects.NumberSet();
@@ -268,7 +281,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 				
 
-			// Assign numbers to the entries that don't already have them and generate default input folder names.
+			//
+			// Assign numbers to the targets that don't already have them and generate default input folder names.
+			//
 
 			foreach (var target in combinedConfig.InputTargets)
 				{
@@ -318,7 +333,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 
+			//
 			// Rebuild everything if there's an output target that didn't exist on the last run.
+			//
 
 			foreach (var target in combinedConfig.OutputTargets)
 				{
@@ -344,7 +361,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 				
+			//
 			// Apply global settings.
+			//
 
 			// DEPENDENCY: We assume all these settings are set in systemDefaultConfig so we don't have to worry about them being 
 			// undefined.
@@ -367,13 +386,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 
+			//
 			// Resave the configuration. The text file parser will handle skipping all the default and command line properties.
+			//
 
 			projectTxtParser.Save(projectConfigFolder + "/Project.txt", combinedConfig, errorList);
 			projectNDParser.Save(workingDataFolder + "/Project.nd", combinedConfig);
 			
 			
+			//
 			// Create file sources and filters for Files.Manager
+			//
 	
 			foreach (var target in combinedConfig.InputTargets)
 				{  EngineInstance.Files.AddFileSource(CreateFileSource(target));  }
@@ -381,17 +404,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			foreach (var target in combinedConfig.FilterTargets)
 				{  EngineInstance.Files.AddFilter(CreateFilter(target));  }
 
-			// Some people may put the output folder in their source folder.  Exclude it automatically.
-			foreach (var target in combinedConfig.OutputTargets)
-				{  
-				var filter = CreateOutputFilter(target);
-
-				if (filter != null)
-					{  EngineInstance.Files.AddFilter(filter);  }
-				}
 				
-				
-			// Create more default filters
+			//
+			// Create default filters
+			//
 
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(ProjectConfigFolder) );
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(WorkingDataFolder) );
@@ -399,9 +415,20 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolder(SystemStyleFolder) );
 			
 			EngineInstance.Files.AddFilter( new Engine.Files.Filters.IgnoredSourceFolderRegex(new Regex.Config.DefaultIgnoredSourceFolderRegex()) );
-			
-			
+
+			// Some people may put output folders in their source folders.  Exclude them automatically.
+			foreach (var outputTarget in combinedConfig.OutputTargets)
+				{  
+				var filter = CreateOutputFilter(outputTarget);
+
+				if (filter != null)
+					{  EngineInstance.Files.AddFilter(filter);  }
+				}
+
+		
+			//
 			// Check all source folder entries against the filters.
+			//
 			
 			for (int i = 0; i < combinedConfig.InputTargets.Count; i++)
 				{
@@ -423,7 +450,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 			
 
-			// Create targets for Output.Manager
+			//
+			// Create output targets for Output.Manager
+			//
 			
 			foreach (var target in combinedConfig.OutputTargets)
 				{
@@ -434,7 +463,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 
+			//
 			// Purge stray output working data, since otherwise it will be left behind if an output entry is removed.
+			//
 
 			Regex.Config.OutputPathNumber outputPathNumberRegex = new Regex.Config.OutputPathNumber();
 			bool raisedPossiblyLongOperationEvent = false;
@@ -505,6 +536,114 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  EngineInstance.AddStartupIssues(newStartupIssues);  }
 
 			started = success;
+			return success;
+			}
+
+
+		/* Function: Start_Stage2
+		 * 
+		 * Finishes validating the configuration, returning whether it was successful.  If there were any errors they will be added to 
+		 * errorList.
+		 * 
+		 * This must be called after <Start_Stage1()> has been called, and also <Languages.Manager.Start_Stage1()>.  This 
+		 * finalizes any settings which also depend on <Languages.txt>.
+		 * 
+		 * Dependencies:
+		 * 
+		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
+		 *		- <Languages.Manager.Start_Stage1()> must be called and return true before this function can be called.
+		 */
+		public bool Start_Stage2 (ErrorList errorList)
+			{
+			bool success = true;
+
+
+			//
+			// Validate the home pages in project info.  TextFileParser should have already checked whether the files exist.
+			//
+
+			foreach (var outputTarget in EngineInstance.Output.Targets)
+				{
+				if (outputTarget is Output.HTML.Target)
+					{
+					var htmlOutputTarget = (Output.HTML.Target)outputTarget;
+
+
+					// If it's a source file instead of a HTML file...
+
+					if (htmlOutputTarget.ProjectInfo.HomePage != null &&
+						htmlOutputTarget.ProjectInfo.HomePageIsSourceFile)
+						{
+						AbsolutePath homePage = htmlOutputTarget.ProjectInfo.HomePage;
+
+
+						// Check that it appears in a file source.
+
+						bool homePageInFileSource = false;
+
+						foreach (var fileSource in EngineInstance.Files.FileSources)
+							{
+							if (fileSource.Contains(homePage))
+								{
+								homePageInFileSource = true;
+								break;
+								}
+							}
+
+						if (!homePageInFileSource)
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)", homePage),
+								htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+								);
+
+							success = false;
+							continue;
+							}
+
+
+						// Check that it's not excluded by one of the filters.
+
+						Path homePageParentFolder = homePage.ParentFolder;
+
+						foreach (var filter in EngineInstance.Files.Filters)
+							{
+							if (filter.IgnoreSourceFolder(homePageParentFolder))
+								{
+								errorList.Add(
+									Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsIgnored(file)", homePage),
+									htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+									);
+
+								success = false;
+								continue;
+								}
+							}
+
+
+						// Check that its file extension is recognized by Languages.Manager.
+
+						var homePageLanguage = EngineInstance.Languages.FromFileName(homePage);
+
+						if (homePageLanguage == null)
+							{
+							errorList.Add(
+								Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)", homePage),
+								htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+								);
+
+							success = false;
+							continue;
+							}
+
+
+						// We won't be able to check whether it has content until after it's parsed, so that falls to
+						// JSONMenu.BuildTabDataFile().
+
+						}
+					}
+				}
+
 			return success;
 			}
 

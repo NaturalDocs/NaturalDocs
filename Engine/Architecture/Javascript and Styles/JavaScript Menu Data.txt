@@ -12,32 +12,43 @@ _______________________________________________________________________________
 		Information about how to interpret hash paths and convert them into data file paths is stored in [Output Folder]\menu\tabs.js.
 		The file contains a call to the function <NDFramePage.OnLocationsLoaded()> that looks like this:
 
-		> NDFramePage.OnLocationsLoaded([
-		>    [ "File", "files", 0, "^File([0-9]*)$" ],
-		>    [ "Class", "classes", 1, "^([A-Za-z]+)Class$" ],
-		>    [ "Database", "database", 2, "^Database$" ]
+		> NDFramePage.OnLocationsLoaded(
+		>    [
+		>       [ "File", "files", 0, "^File([0-9]*)$" ],
+		>       [ "Class", "classes", 1, "^([A-Za-z]+)Class$" ],
+		>       [ "Database", "database", 2, "^Database$" ]
+		>    ],
+		>    "Source File Home Page Hash Path (optional)"
 		>    ]);
 
-		The only parameter is an array of the location types that are known.  Each entry is an array in this format:
+		Location Processing:
 
-		> [ "Simple Identifier", "Folder", Type, "Prefix Regex" ]
+			The first parameter is an array of the location types that are known.  Each entry is an array in this format:
 
-		The first member is a string representing the location's simple identifier.  It will be the string "File" or the simple identifier
-		of a hierarchy.
+			> [ "Simple Identifier", "Folder", Type, "Prefix Regex" ]
 
-		The second member is the folder name associated with it.
+			The first member is a string representing the location's simple identifier.  It will be the string "File" or the simple identifier
+			of a hierarchy.
+
+			The second member is the folder name associated with it.
 		
-		The third member is the type as a numeric constant with one of these values:
+			The third member is the type as a numeric constant with one of these values:
 
-		0 - Files
-		1 - Language-specific hierarchy
-		2 - Language-agnostic hierarchy
+			0 - Files
+			1 - Language-specific hierarchy
+			2 - Language-agnostic hierarchy
 
-		The fourth member is a regular expression string (not a RegExp object itself) that's used to determine whether a prefix 
-		belongs to the location type.  For example, the Class regex should match "CSharpClass" and "JavaScriptClass".
+			The fourth member is a regular expression string (not a RegExp object itself) that's used to determine whether a prefix 
+			belongs to the location type.  For example, the Class regex should match "CSharpClass" and "JavaScriptClass".
 
-		For file and language-specific hierarchy locations, the regular expression will include a single capture that returns the file
-		source number (which is optional) or the language identifier (which is not.)
+			For file and language-specific hierarchy locations, the regular expression will include a single capture that returns the file
+			source number (which is optional) or the language identifier (which is not.)
+
+		Source File Home Page:
+
+			The second parameter is the hash path of a custom home page, if the custom home page is a source file.  If there is no
+			custom home page this won't be specified.  If the custom home page is a HTML file set from <Project.txt> or <Style.txt>
+			this also won't be specified.  This is ONLY used if the custom home page is a source file.
 
 
 	Topic: Tab Information

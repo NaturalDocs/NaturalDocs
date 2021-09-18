@@ -268,7 +268,7 @@ namespace CodeClear.NaturalDocs.Engine.CommentTypes
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- <Config.Manager> must be started before this class can start.
+		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
 		 *		- <Start_Stage1()> must be called and return true before this function can be called.
 		 *		- <Languages.Manager.Start_Stage1()> must be called and return true before this function can be called.
 		 */

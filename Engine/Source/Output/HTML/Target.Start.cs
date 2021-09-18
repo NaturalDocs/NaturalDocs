@@ -456,6 +456,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				if (!hasBinaryConfigFile || homePageChanged || titlesAndCopyrightChanged ||
 					(timestampChanged && buildState.HomePageUsesTimestamp))
 					{  unprocessedChanges.AddHomePage();  }
+
+				// May need to update the home page stored in tabs.js
+				if (!hasBinaryConfigFile || homePageChanged)
+					{  unprocessedChanges.AddMenu();  }
 				}
 
 

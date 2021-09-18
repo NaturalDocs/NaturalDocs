@@ -25,8 +25,8 @@
  *		It's critical for module code to understand its place in the initialization order so it doesn't call anything later than itself in
  *		its Start() function.  This also serves to document exactly why the order is the way it is.
  *		
- *		- <Config.Manager> is first because almost everything depends on it, such as for its config and working data folder
- *		  properties or for its flag to rebuild everything.
+ *		- <Config.Manager.Start_Stage1()> is first because almost everything depends on it, such as for its config and working 
+ *		  data folder properties or for its flag to rebuild everything.
  *		  
  *		- <Languages.Manager.Start_Stage1()> is next.
  *		  
@@ -37,6 +37,9 @@
  *		
  *		- <Languages.Manager.Start_Stage2()> and <CommentTypes.Manager.Start_Stage2()> follow because they depend on
  *		  each other's Stage1 functions for things like "[Language Name] Keywords" and "[Comment Type Name] Prototype Enders".
+ *		  
+ *		- <Config.Manager.Start_Stage2()> is next because it depends on <Languages.Manager> to check file extensions if a
+ *		  source file is used as a custom home page.
  *		  
  *		- <Comments.Manager> is next though it only needs <Config.Manager> and <CommentTypes.Manager>.
  *		
@@ -220,7 +223,7 @@ namespace CodeClear.NaturalDocs.Engine
 		 */
 		public bool Start (Errors.ErrorList errors, Config.ProjectConfig commandLineConfig)
 			{
-			if (config.Start(errors, commandLineConfig) == false)
+			if (config.Start_Stage1(errors, commandLineConfig) == false)
 				{  return false;  }
 				
 				
@@ -245,6 +248,7 @@ namespace CodeClear.NaturalDocs.Engine
 				commentTypes.Start_Stage1(errors) &&
 				languages.Start_Stage2(errors) &&
 				commentTypes.Start_Stage2(errors) &&
+				config.Start_Stage2(errors) &&
 				comments.Start(errors) &&
 				links.Start(errors) &&
 				styles.Start(errors) &&

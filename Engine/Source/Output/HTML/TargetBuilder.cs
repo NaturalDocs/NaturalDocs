@@ -619,6 +619,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				{  
 				BuildCustomHTMLHomePage(Target.BuildState.CalculatedHomePage, cancelDelegate);
 				}
+			else if (Target.BuildState.CalculatedHomePageIsSourceFile)
+				{
+				// It will be handled by JSONMenu since it's just a parameter in tabs.js
+				}
 			else
 				{  throw new NotImplementedException();  }
 			}
@@ -755,7 +759,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			catch
 				{
 				throw new Exceptions.UserFriendly(
-					Locale.Get("NaturalDocs.Engine", "Project.txt.CantOpenHomePageFile(name)", template)
+					Locale.Get("NaturalDocs.Engine", "Error.CantOpenHomePageFile(file)", template)
 					);
 				}
 

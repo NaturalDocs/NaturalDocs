@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Languages
 		 * 
 		 * Dependencies:
 		 * 
-		 *		- <Config.Manager> must be started before this class can start.
+		 *		- <Config.Manager.Start_Stage1()> must be started before this class can start.
 		 */
 		public bool Start_Stage1 (Errors.ErrorList errorList)
 			{

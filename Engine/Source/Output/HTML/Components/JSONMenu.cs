@@ -636,7 +636,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 		protected void BuildTabDataFile ()
 			{
 
-			// Collect what we need to build
+			// Collect hierarchy information
 
 			List<string> simpleIdentifiers = new List<string>();
 			List<JSONMenuEntries.Container> containers = new List<JSONMenuEntries.Container>();
@@ -658,6 +658,43 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 					simpleIdentifiers.Add(hierarchy.SimpleIdentifier);
 					containers.Add(hierarchyRoot);
 					hierarchies.Add(hierarchy);
+					}
+				}
+
+
+			// Collect source file home page information;
+
+			Files.File sourceFileHomePage = null;
+
+			if (Target.BuildState.CalculatedHomePage != null &&
+				Target.BuildState.CalculatedHomePageIsSourceFile)
+				{
+				Files.File potentialSourceFileHomePage = EngineInstance.Files.FromPath(Target.BuildState.CalculatedHomePage);
+
+				if (potentialSourceFileHomePage == null)
+					{
+					throw new Exceptions.UserFriendly(
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)", 
+										 Target.BuildState.CalculatedHomePage) 
+						);
+					}
+				else if (potentialSourceFileHomePage.Type != Files.FileType.Source)
+					{
+					throw new Exceptions.UserFriendly(
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)", 
+										 Target.BuildState.CalculatedHomePage) 
+						);
+					}
+				else if (!Target.BuildState.SourceFileHasContent(potentialSourceFileHomePage.ID))
+					{
+					throw new Exceptions.UserFriendly(
+						Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileDoesntHaveContent(file)", 
+										 Target.BuildState.CalculatedHomePage) 
+						);
+					}
+				else
+					{
+					sourceFileHomePage = potentialSourceFileHomePage;
 					}
 				}
 
@@ -692,7 +729,24 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.Components
 			if (addWhitespace)
 				{  output.Append(' ', IndentWidth);  }
 
-			output.Append("]);");
+			output.Append(']');
+
+			if (sourceFileHomePage != null)
+				{
+				var fileSource = EngineInstance.Files.FileSourceOf(sourceFileHomePage);
+				var relativePath = fileSource.MakeRelative(sourceFileHomePage.Name);
+
+				output.Append(',');
+
+				if (addWhitespace)
+					{  output.Append("\n   ");  }
+
+				output.Append('\"');
+				output.Append( Paths.SourceFile.HashPath(fileSource.Number, relativePath) );
+				output.Append('\"');
+				}
+
+			output.Append(");");
 
 			if (addWhitespace)
 				{  output.Append("\n\n");  }
