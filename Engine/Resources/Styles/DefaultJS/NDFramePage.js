@@ -244,11 +244,19 @@ var NDFramePage = new function ()
 	this.OnPageTitleLoaded = function (hashPath, title)
 		{
 		if (this.currentLocation.path == hashPath)
-			{  this.UpdatePageTitle(title);  }
+			{  
+			// If we're handling a source file being loaded as the home page, ignore its page title and set it back to the project's.
+			if (this.currentLocation.type == "Home")
+				{  this.UpdatePageTitle();  }
+			else
+				{  this.UpdatePageTitle(title);  }
+			}
 		};
 
 
 	/* Function: UpdatePageTitle
+		Changes the page title to one incorporating the passed source page title.  If the page title is undefined it gets set back to
+		the default page title.
 	*/
 	this.UpdatePageTitle = function (pageTitle)
 		{
