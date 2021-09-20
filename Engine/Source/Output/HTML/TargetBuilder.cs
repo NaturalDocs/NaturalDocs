@@ -613,7 +613,6 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (Target.BuildState.CalculatedHomePage == null)
 				{  
 				BuildDefaultHomePage(cancelDelegate);
-				return;
 				}
 			else if (Target.BuildState.CalculatedHomePageIsHTML)
 				{  
@@ -621,7 +620,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			else if (Target.BuildState.CalculatedHomePageIsSourceFile)
 				{
-				// It will be handled by JSONMenu since it's just a parameter in tabs.js
+				// We don't need to build home.html since it's not used in this case.  JSONMenu will add an extra parameter in tabs.js and
+				// NDFramePage will handle loading the appropriate source file's output instead.  However, we do want to delete home.html
+				// if it was added by a previous run just to be tidy and also to not accidentally leak data.
+				DeleteOutputFileIfExists(Target.OutputFolder + "/other/home.html");
 				}
 			else
 				{  throw new NotImplementedException();  }
