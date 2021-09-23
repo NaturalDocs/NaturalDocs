@@ -302,7 +302,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					{  return false;  }
 
 				var textSection = comment.GetOrCreateTextSection(tag);
-				textSection.Content.Append(description);
+				textSection.Append(description);
 				return true;
 				}
 

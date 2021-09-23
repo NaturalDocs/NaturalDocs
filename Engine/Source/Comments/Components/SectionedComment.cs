@@ -129,6 +129,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Components
 				Content = new StringBuilder();
 				}
 
+			public void Append (string content)
+				{
+				Content.Append(content);
+				}
+
 			public StringBuilder Content;
 			}
 
