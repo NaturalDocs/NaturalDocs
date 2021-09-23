@@ -259,8 +259,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				if (symbol == null || symbol == "" || description == null || description == "")
 					{  return false;  }
 
-				var commentBlock = comment.GetListBlock(tag);
-				commentBlock.Add(symbol, description);
+				var listSection = comment.GetOrCreateListSection(tag);
+				listSection.AddMember(symbol, description);
 				return true;
 				}
 
@@ -285,8 +285,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					}
 				else
 					{
-					var commentBlock = comment.GetListBlock(tag);
-					commentBlock.Add(null, description);
+					var listSection = comment.GetOrCreateListSection(tag);
+					listSection.AddMember(null, description);
 					}
 
 				return true;
@@ -301,8 +301,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				if (description == null || description == "")
 					{  return false;  }
 
-				var commentBlock = comment.GetTextBlock(tag);
-				commentBlock.Text.Append(description);
+				var textSection = comment.GetOrCreateTextSection(tag);
+				textSection.Content.Append(description);
 				return true;
 				}
 
@@ -340,8 +340,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				if (description == null || description == "")
 					{  return false;  }
 
-				var commentBlock = comment.GetListBlock(tag);
-				commentBlock.Add(null, description);
+				var listSection = comment.GetOrCreateListSection(tag);
+				listSection.AddMember(null, description);
 				return true;
 				}
 
@@ -1075,13 +1075,13 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				body.Append( Normalize(comment.Description.ToString()) );
 				}
 
-			foreach (var block in comment.Blocks)
+			foreach (var section in comment.Sections)
 				{
-				if (block is BlockComment.TextBlock)
+				if (section is SectionedComment.TextSection)
 					{
-					BlockComment.TextBlock textBlock = (BlockComment.TextBlock)block;
+					SectionedComment.TextSection textSection = (SectionedComment.TextSection)section;
 
-					string heading = Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + textBlock.Type, null);
+					string heading = Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + textSection.Name, null);
 
 					if (heading != null)
 						{
@@ -1090,21 +1090,21 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						body.Append("</h>");
 						}
 
-					body.Append(textBlock.Text);
+					body.Append(textSection.Content);
 					}
 
 				else
 					{
-					BlockComment.ListBlock listBlock = (BlockComment.ListBlock)block;
+					SectionedComment.ListSection listSection = (SectionedComment.ListSection)section;
 
-					if (listBlock.Count > 0)
+					if (listSection.MemberCount > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + listBlock.Type + "(count)", null, 
-																				listBlock.Count);
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "Javadoc.Heading." + listSection.Name + "(count)", null, 
+																				listSection.MemberCount);
 
 						if (heading != null)
 							{
-							if (listBlock.Type == "param")
+							if (listSection.Name == "param")
 								{  body.Append("<h type=\"parameters\">");  }
 							else
 								{  body.Append("<h>");  }
@@ -1115,27 +1115,27 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with 
 						// them in HTML.
-						bool useDefinitionList = (listBlock.Type == "param" || (listBlock.HasNames && listBlock.HasDescriptions));
-						bool addLinks = (listBlock.Type == "exception" || listBlock.Type == "throws");
+						bool useDefinitionList = (listSection.Name == "param" || (listSection.MembersHaveNames && listSection.MembersHaveDescriptions));
+						bool addLinks = (listSection.Name == "exception" || listSection.Name == "throws");
 
 						if (useDefinitionList)
 							{  body.Append("<dl>");  }
-						else if (listBlock.Count != 1)
+						else if (listSection.MemberCount != 1)
 							{  body.Append("<ul>");  }
 
-						foreach (var listItem in listBlock.List)
+						foreach (var listMember in listSection.Members)
 							{
 							if (useDefinitionList)
 								{  body.Append("<de>");  }
-							else if (listBlock.Count != 1)
+							else if (listSection.MemberCount != 1)
 								{  body.Append("<li>");  }
 
-							if (listItem.Name != null)
+							if (listMember.Name != null)
 								{  
 								if (addLinks)
 									{  body.Append("<link type=\"naturaldocs\" originaltext=\"");  }
 
-								body.EntityEncodeAndAppend(listItem.Name);  
+								body.EntityEncodeAndAppend(listMember.Name);  
 
 								if (addLinks)
 									{  body.Append("\">");  }
@@ -1144,20 +1144,20 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							if (useDefinitionList)
 								{  body.Append("</de><dd>");  }
 
-							if (listItem.Description != null)
+							if (listMember.Description != null)
 								{
-								body.Append( Normalize(listItem.Description) );  // Should already be in NDMarkup
+								body.Append( Normalize(listMember.Description) );  // Should already be in NDMarkup
 								}
 
 							if (useDefinitionList)
 								{  body.Append("</dd>");  }
-							else if (listBlock.Count != 1)
+							else if (listSection.MemberCount != 1)
 								{  body.Append("</li>");  }
 							}
 
 						if (useDefinitionList)
 							{  body.Append("</dl>");  }
-						else if (listBlock.Count != 1)
+						else if (listSection.MemberCount != 1)
 							{  body.Append("</ul>");  }
 						}
 					}

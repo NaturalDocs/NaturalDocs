@@ -18,7 +18,7 @@ using System.Text;
 
 namespace CodeClear.NaturalDocs.Engine.Comments.Components
 	{
-	public class XMLComment : BlockComment
+	public class XMLComment : SectionedComment
 		{
 
 		/* Constructor: XMLComment

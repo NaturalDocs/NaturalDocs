@@ -145,16 +145,16 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			if (keyword == "remarks")
 				{  blockType = "remark";  }
 
-			XMLComment.TextBlock block = comment.GetTextBlock(blockType);
+			XMLComment.TextSection section = comment.GetOrCreateTextSection(blockType);
 
 			TagStack tagStack = new TagStack();
 			tagStack.OpenTag(keyword);
 
 			iterator.Next();
 
-			GetText(ref iterator, block.Text, tagStack);
+			GetText(ref iterator, section.Content, tagStack);
 
-			tagStack.CloseAllTags(block.Text);
+			tagStack.CloseAllTags(section.Content);
 
 			if (iterator.IsOnTag(keyword, TagForm.Closing))
 				{  iterator.Next();  }
@@ -184,7 +184,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			if (keyword == "see")
 				{  keyword = "seealso";  }
 
-			XMLComment.ListBlock block = comment.GetListBlock(keyword);
+			XMLComment.ListSection section = comment.GetOrCreateListSection(keyword);
 
 			string name = null;
 			string description = null;
@@ -214,7 +214,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{  iterator.Next();  }
 
 			if (name != null)
-				{  block.Add(name, description);  }
+				{  section.AddMember(name, description);  }
 
 			return true;
 			}
@@ -735,14 +735,14 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			StringBuilder body = new StringBuilder();
 
 
-			// For the first pass just add summary and similar blocks to the body without a heading.  We want them to always
+			// For the first pass just add summary and similar sections to the body without a heading.  We want them to always
 			// come first.
 
-			foreach (var block in comment.Blocks)
+			foreach (var section in comment.Sections)
 				{
-				if (block.Type == "summary" || block.Type == "remark" || block.Type == "value")
+				if (section.Name == "summary" || section.Name == "remark" || section.Name == "value")
 					{
-					string text = (block as XMLComment.TextBlock).Text.ToString();
+					string text = (section as XMLComment.TextSection).Content.ToString();
 					text = Normalize(text);
 
 					if (text != null && text.Length > 0)
@@ -751,23 +751,23 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				}
 
 
-			// The rest of the blocks can be added afterwards with headings.
+			// The rest of the sections can be added afterwards with headings.
 
-			foreach (var block in comment.Blocks)
+			foreach (var section in comment.Sections)
 				{
-				if (block.Type == "summary" || block.Type == "remark" || block.Type == "value")
+				if (section.Name == "summary" || section.Name == "remark" || section.Name == "value")
 					{  continue;  }
 
-				else if (block is BlockComment.TextBlock)
+				else if (section is SectionedComment.TextSection)
 					{
-					BlockComment.TextBlock textBlock = (BlockComment.TextBlock)block;
+					SectionedComment.TextSection textSection = (SectionedComment.TextSection)section;
 
-					string text = textBlock.Text.ToString();
+					string text = textSection.Content.ToString();
 					text = Normalize(text);
 
 					if (text != null && text.Length > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + textBlock.Type, null);
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + textSection.Name, null);
 
 						if (heading != null)
 							{
@@ -780,18 +780,18 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 						}
 					}
 
-				else // BlockComment.ListBlock
+				else // SectionedComment.ListSection
 					{
-					BlockComment.ListBlock listBlock = (BlockComment.ListBlock)block;
+					SectionedComment.ListSection listSection = (SectionedComment.ListSection)section;
 
-					if (listBlock.Count > 0)
+					if (listSection.MemberCount > 0)
 						{
-						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + listBlock.Type + "(count)", null, 
-																			  listBlock.Count);
+						string heading = Engine.Locale.SafeGet("NaturalDocs.Engine", "XML.Heading." + listSection.Name + "(count)", null, 
+																				  listSection.MemberCount);
 
 						if (heading != null)
 							{
-							if (listBlock.Type == "param")
+							if (listSection.Name == "param")
 								{  body.Append("<h type=\"parameters\">");  }
 							else
 								{  body.Append("<h>");  }
@@ -802,15 +802,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 						// Parameters always get definition lists even if they don't have descriptions so that the type information can appear with 
 						// them in HTML.
-						bool useDefinitionList = (listBlock.Type == "param" || (listBlock.HasNames && listBlock.HasDescriptions));
-						bool addLinks = (listBlock.Type == "exception" || listBlock.Type == "permission" || listBlock.Type == "seealso");
+						bool useDefinitionList = (listSection.Name == "param" || (listSection.MembersHaveNames && listSection.MembersHaveDescriptions));
+						bool addLinks = (listSection.Name == "exception" || listSection.Name == "permission" || listSection.Name == "seealso");
 
 						if (useDefinitionList)
 							{  body.Append("<dl>");  }
 						else
 							{  body.Append("<ul>");  }
 
-						foreach (var listItem in listBlock.List)
+						foreach (var listMember in listSection.Members)
 							{
 							if (useDefinitionList)
 								{  body.Append("<de>");  }
@@ -820,7 +820,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							if (addLinks)
 								{  body.Append("<link type=\"naturaldocs\" originaltext=\"");  }
 
-							body.EntityEncodeAndAppend(listItem.Name);
+							body.EntityEncodeAndAppend(listMember.Name);
 
 							if (addLinks)
 								{  body.Append("\">");  }
@@ -828,7 +828,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							if (useDefinitionList)
 								{
 								body.Append("</de><dd>");
-								body.Append(listItem.Description);  // Should already be in NDMarkup
+								body.Append(listMember.Description);  // Should already be in NDMarkup
 								body.Append("</dd>");
 								}
 							else
