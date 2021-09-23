@@ -91,7 +91,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 		public bool Parse (PossibleDocumentationComment sourceComment, List<Topic> topics)
 			{
 			XMLIterator iterator = new XMLIterator(sourceComment.Start.FirstToken(Tokenization.LineBoundsMode.Everything), 
-																 sourceComment.End.FirstToken(Tokenization.LineBoundsMode.Everything));
+																	  sourceComment.End.FirstToken(Tokenization.LineBoundsMode.Everything));
 
 			while (iterator.Type == XMLElementType.Indent ||
 					 iterator.Type == XMLElementType.LineBreak)
@@ -104,11 +104,11 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			
 			while (iterator.IsInBounds)
 				{
-				if (TryToGetTopLevelTextBlock(ref iterator, xmlComment) ||
-					TryToGetTopLevelListItem(ref iterator, xmlComment))
+				if (TryToGetTopLevelTextSection(ref iterator, xmlComment) ||
+					TryToGetTopLevelListSection(ref iterator, xmlComment))
 				    {  }
-				else if (iterator.IsOnTag(TagForm.Opening))
-					{  SkipBlock(ref iterator);  }
+				else if (TryToSkipOpeningTagAndContents(ref iterator))
+					{  }
 				else
 					{  iterator.Next();  }
 				}
@@ -125,11 +125,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: TryToGetTopLevelTextBlock
-		 * If the iterator is on a summary, remark, returns, or top-level example tag it will convert it to NDMarkup, add it to the comment 
-		 * in a text block, move the iterator past it, and return true.  Otherwise it returns false and nothing is changed.
+		/* Function: TryToGetTopLevelTextSection
+		 * If the iterator is on a top-level text section such as a summary or returns tag it will convert it to NDMarkup, add it
+		 * to the comment as a text section, move the iterator past it, and return true.  Otherwise it returns false and nothing
+		 * is changed.
 		 */
-		protected bool TryToGetTopLevelTextBlock (ref XMLIterator iterator, XMLComment comment)
+		protected bool TryToGetTopLevelTextSection (ref XMLIterator iterator, XMLComment comment)
 			{
 			if (iterator.IsOnTag("summary", TagForm.Opening) == false &&
 				iterator.IsOnTag("remark", TagForm.Opening) == false &&
@@ -140,12 +141,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{  return false;  }
 
 			string keyword = iterator.TagType;
-			string blockType = keyword;
+			string sectionType = keyword;
 
 			if (keyword == "remarks")
-				{  blockType = "remark";  }
+				{  sectionType = "remark";  }
 
-			XMLComment.TextSection section = comment.GetOrCreateTextSection(blockType);
+			XMLComment.TextSection section = comment.GetOrCreateTextSection(sectionType);
 
 			TagStack tagStack = new TagStack();
 			tagStack.OpenTag(keyword);
@@ -163,11 +164,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: TryToGetTopLevelListItem
-		 * If the iterator is on a param, typeparam, exception, or permission tag it will convert it to NDMarkup, add it to the 
-		 * comment in a list block, move the iterator past it, and return true.  Otherwise it returns false and nothing is changed.
+		/* Function: TryToGetTopLevelListSection
+		 * If the iterator is on a top-level list section such as a param tag it will convert it to NDMarkup, add it to the 
+		 * comment in a list section, move the iterator past it, and return true.  Otherwise it returns false and nothing 
+		 * is changed.
 		 */
-		protected bool TryToGetTopLevelListItem (ref XMLIterator iterator, XMLComment comment)
+		protected bool TryToGetTopLevelListSection (ref XMLIterator iterator, XMLComment comment)
 			{
 			if (iterator.IsOnTag("param", TagForm.Opening) == false &&
 				iterator.IsOnTag("exception", TagForm.Opening) == false &&
@@ -180,11 +182,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{  return false;  }
 
 			string keyword = iterator.TagType;
+			string sectionType = keyword;
 
 			if (keyword == "see")
-				{  keyword = "seealso";  }
+				{  sectionType = "seealso";  }
 
-			XMLComment.ListSection section = comment.GetOrCreateListSection(keyword);
+			XMLComment.ListSection section = comment.GetOrCreateListSection(sectionType);
 
 			string name = null;
 			string description = null;
@@ -217,6 +220,39 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 				{  section.AddMember(name, description);  }
 
 			return true;
+			}
+
+
+		/* Function: TryToSkipOpeningTagAndContents
+		 * If the iterator is on an opening tag it will move past it, all contained content, and its closing tag and return true.
+		 * Otherwise returns false.
+		 */
+		protected bool TryToSkipOpeningTagAndContents (ref XMLIterator iterator)
+			{
+			if (iterator.IsOnTag(TagForm.Opening))
+				{
+				TagStack tagStack = new TagStack();
+				tagStack.OpenTag(iterator.TagType);
+				iterator.Next();
+
+				while (iterator.IsInBounds && !tagStack.IsEmpty)
+					{
+					if (iterator.Type == XMLElementType.Tag)
+						{
+						if (iterator.TagForm == TagForm.Opening)
+							{  tagStack.OpenTag(iterator.TagType);  }
+						else if (iterator.TagForm == TagForm.Closing)
+							{  tagStack.CloseTag(iterator.TagType);  }
+						// Ignore standalone tags
+						}
+				
+					iterator.Next();
+					}
+
+				return true;
+				}
+			else
+				{  return false;  }
 			}
 
 
@@ -628,8 +664,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					tagStack.CloseTag("description");
 					}
 
-				else if (iterator.IsOnTag(TagForm.Opening))
-					{  SkipBlock(ref iterator);  }
+				else if (TryToSkipOpeningTagAndContents(ref iterator))
+					{  }
 
 				else
 					{  iterator.Next();  }
@@ -691,37 +727,6 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 					output.Append("</ul>");
 					}
-				}
-			}
-
-
-		/* Function: SkipBlock
-		 * If the iterator is on an opening tag it will move past it, all contained content, and its closing tag and return true.
-		 * Otherwise returns false.
-		 */
-		protected void SkipBlock (ref XMLIterator iterator)
-			{
-			#if DEBUG
-			if (iterator.IsOnTag(TagForm.Opening) == false)
-				{  throw new Exception("Can only call SkipBlock() when the iterator is on an opening tag.");  }
-			#endif
-
-			TagStack tagStack = new TagStack();
-			tagStack.OpenTag(iterator.TagType);
-			iterator.Next();
-
-			while (iterator.IsInBounds && !tagStack.IsEmpty)
-				{
-				if (iterator.Type == XMLElementType.Tag)
-					{
-					if (iterator.TagForm == TagForm.Opening)
-						{  tagStack.OpenTag(iterator.TagType);  }
-					else if (iterator.TagForm == TagForm.Closing)
-						{  tagStack.CloseTag(iterator.TagType);  }
-					// Ignore standalone tags
-					}
-				
-				iterator.Next();
 				}
 			}
 
