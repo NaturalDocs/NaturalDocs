@@ -110,7 +110,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments
 		 * Cleans up the generated NDMarkup.
 		 * 
 		 * - Replaces tab characters with spaces.
-		 * - Any '\n' characters will be replaced with spaces or double spaces deepending on whether it appears to come at the end
+		 * - Any '\n' characters will be replaced with spaces or double spaces depending on whether it appears to come at the end
 		 *   of a sentence.
 		 * - Empty paragraphs and extraneous whitespace will be removed.
 		 * 
