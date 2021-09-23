@@ -1093,7 +1093,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					body.Append(textSection.Content);
 					}
 
-				else
+				else if (section is SectionedComment.ListSection)
 					{
 					SectionedComment.ListSection listSection = (SectionedComment.ListSection)section;
 
@@ -1161,6 +1161,9 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							{  body.Append("</ul>");  }
 						}
 					}
+
+				else
+					{  throw new NotImplementedException();  }
 				}
 
 			Topic topic = null;
