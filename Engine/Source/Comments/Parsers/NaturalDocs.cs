@@ -122,6 +122,7 @@ using System.Text.RegularExpressions;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Languages;
 using CodeClear.NaturalDocs.Engine.Links;
+using CodeClear.NaturalDocs.Engine.Regex.Comments;
 using CodeClear.NaturalDocs.Engine.Regex.Comments.NaturalDocs;
 using CodeClear.NaturalDocs.Engine.Symbols;
 using CodeClear.NaturalDocs.Engine.Tokenization;
