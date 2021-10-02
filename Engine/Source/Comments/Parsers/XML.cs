@@ -30,8 +30,10 @@
  *		Supported Non-Standard Tags:
  *		
  *			remarks - Treated as remark.  Found in Ookii.Dialogs documentation.
+ *			a href - A link to an URL, or an e-mail address if it uses mailto.
+ *			see href - See with the href property instead of cref.  Links to an URL, or an e-mail address if it uses mailto.
  *			see langword - See with the langword property instead of cref.  Langword is added as plain text.  Found in 
- *								 Ookii.Dialogs documentation.
+ *								  Ookii.Dialogs documentation.
  * 
  *		Unsupported Tags:
  *		
@@ -60,6 +62,7 @@ using System.Collections.Generic;
 using System.Text;
 using CodeClear.NaturalDocs.Engine.Collections;
 using CodeClear.NaturalDocs.Engine.Comments.Components;
+using CodeClear.NaturalDocs.Engine.Regex.Comments;
 using CodeClear.NaturalDocs.Engine.Topics;
 
 
@@ -197,24 +200,41 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			else
 				{  name = iterator.TagProperty("cref") ?? iterator.TagProperty("langword");  }
 
-			if (iterator.TagForm == TagForm.Opening)
+			bool foundSeeLink = false;
+
+			if (keyword == "see")
 				{
-				TagStack tagStack = new TagStack();
-				tagStack.OpenTag(keyword);
+				StringBuilder linkOutput = new StringBuilder();
+				foundSeeLink = TryToGetLink(ref iterator, linkOutput);
 
-				iterator.Next();
+				if (foundSeeLink)
+					{
+					name = linkOutput.ToString();
+					foundSeeLink = true;
+					}
+				}
 
-				StringBuilder descriptionBuilder = new StringBuilder();
-				GetText(ref iterator, descriptionBuilder, tagStack);
-				tagStack.CloseAllTags(descriptionBuilder);
+			if (!foundSeeLink)
+				{
+				if (iterator.TagForm == TagForm.Opening)
+					{
+					TagStack tagStack = new TagStack();
+					tagStack.OpenTag(keyword);
 
-				description = Normalize(descriptionBuilder.ToString());
+					iterator.Next();
 
-				if (iterator.IsOnTag(keyword, TagForm.Closing))
+					StringBuilder descriptionBuilder = new StringBuilder();
+					GetText(ref iterator, descriptionBuilder, tagStack);
+					tagStack.CloseAllTags(descriptionBuilder);
+
+					description = Normalize(descriptionBuilder.ToString());
+
+					if (iterator.IsOnTag(keyword, TagForm.Closing))
+						{  iterator.Next();  }
+					}
+				else
 					{  iterator.Next();  }
 				}
-			else
-				{  iterator.Next();  }
 
 			if (name != null)
 				{  section.AddMember(name, description);  }
@@ -256,9 +276,210 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
+		/* Function: TryToGetLink
+		 * If the iterator is on a link tag it will convert it to NDMarkup, add it to the output, move the iterator past it, and
+		 * return true.  Otherwise it will return false and nothing will be affected.
+		 */
+		protected bool TryToGetLink (ref XMLIterator iterator, StringBuilder output)
+			{
+			return (TryToGetStandaloneLink(ref iterator, output) ||
+					   TryToGetNamedLink(ref iterator, output));
+			}
+
+
+		/* Function: TryToGetStandaloneLink
+		 * If the iterator is on a standalone link tag it will convert it to NDMarkup, add it to the output, move the iterator 
+		 * past it, and return true.  Otherwise it will return false and nothing will be affected.
+		 */
+		protected bool TryToGetStandaloneLink (ref XMLIterator iterator, StringBuilder output)
+			{
+			if (!iterator.IsOnTag("see", TagForm.Standalone) &&
+				!iterator.IsOnTag("a", TagForm.Standalone))
+				{  return false;  }
+
+			string keyword = iterator.TagType;
+
+
+			// Code references: <see cref="">
+
+			string cref = iterator.TagProperty("cref");
+
+			if (cref != null && keyword == "see")
+				{
+				output.Append("<link type=\"naturaldocs\" originaltext=\"");
+				output.EntityEncodeAndAppend(cref);
+				output.Append("\">");
+
+				iterator.Next();
+				return true;
+				}
+
+
+			// URL and e-mail links: <a href="">, <see href="">
+
+			string href = iterator.TagProperty("href");
+
+			if (href != null)
+				{
+				if (href.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+					{
+					string emailAddress = href.Substring(7);
+
+					output.Append("<link type=\"email\" target=\"");
+					output.EntityEncodeAndAppend(emailAddress);
+					output.Append("\">");
+					}
+
+				else
+					{
+					output.Append("<link type=\"url\" target=\"");
+					output.EntityEncodeAndAppend(href);
+					output.Append("\">");
+					}
+
+				iterator.Next();
+				return true;
+				}
+
+
+			// Language links: <see langword="">
+
+			string langword = iterator.TagProperty("langword");
+
+			if (keyword == "see" && langword != null)
+				{  
+				// Just replace it with the text
+				output.EntityEncodeAndAppend(langword);
+
+				iterator.Next();
+				return true;
+				}
+
+			return false;
+			}
+
+
+		/* Function: TryToGetNamedLink
+		 * If the iterator is on an opening link tag it will convert it and everything through the corresponding closing tag to
+		 * NDMarkup, add it to the output, move the iterator past it, and return true.  Otherwise it will return false and 
+		 * nothing will be affected.
+		 */
+		protected bool TryToGetNamedLink (ref XMLIterator iterator, StringBuilder output)
+			{
+
+			// Validate the opening tag
+
+			if (!iterator.IsOnTag("see", TagForm.Opening) &&
+				!iterator.IsOnTag("a", TagForm.Opening))
+				{  return false;  }
+
+			string keyword = iterator.TagType;
+			string cref = iterator.TagProperty("cref");
+			string href = iterator.TagProperty("href");
+
+			// Code references: <see cref="">
+			// URL and e-mail links: <a href="">, <see href="">
+			// Ignore language links: <see langword="">
+			bool success = ((cref != null && keyword == "see") || href != null);
+
+			if (!success)
+				{  return false;  }
+
+
+			// Get the text between the opening and closing tags
+
+			XMLIterator openingTag = iterator;
+			iterator.Next();
+
+			StringBuilder linkTextBuilder = new StringBuilder();
+			TagStack tagStack = new TagStack();
+			tagStack.OpenTag(keyword);
+
+			GetUnformattedText(ref iterator, linkTextBuilder, tagStack);
+
+			tagStack.CloseAllTags(linkTextBuilder);
+
+			// GetUnformattedText returns entity-encoded chars.  We note this in the variable name so we don't accidentally
+			// double-encode them.
+			string entityEncodedLinkText = linkTextBuilder.ToString();
+
+
+			// Move past the closing tag
+
+			if (iterator.IsOnTag(keyword, TagForm.Closing))
+				{  iterator.Next();  }
+
+
+			// Generate the NDMarkup
+
+			// Code references: <see cref="">
+
+			if (cref != null && keyword == "see")
+				{
+				output.Append("<link type=\"naturaldocs\" originaltext=\"");
+
+				if (entityEncodedLinkText != cref)
+					{
+					output.Append(entityEncodedLinkText);
+					output.Append(" at ");
+					}
+
+				output.EntityEncodeAndAppend(cref);
+				output.Append("\">");
+
+				return true;
+				}
+
+
+			// URL and e-mail links: <a href="">, <see href="">
+
+			if (href != null)
+				{
+				if (href.StartsWith("mailto:", StringComparison.InvariantCultureIgnoreCase))
+					{
+					string emailAddress = href.Substring(7);
+
+					output.Append("<link type=\"email\" target=\"");
+					output.EntityEncodeAndAppend(emailAddress);
+
+					if (entityEncodedLinkText != emailAddress)
+						{
+						output.Append("\" text=\"");
+						output.Append(entityEncodedLinkText);
+						}
+
+					output.Append("\">");
+					}
+
+				else
+					{
+					output.Append("<link type=\"url\" target=\"");
+					output.EntityEncodeAndAppend(href);
+
+					if (entityEncodedLinkText != href)
+						{
+						output.Append("\" text=\"");
+						output.Append(entityEncodedLinkText);
+						}
+
+					output.Append("\">");
+					}
+
+				return true;
+				}
+
+
+			// Failsafe.  We shouldn't reach this code in practice.
+
+			output.Append(entityEncodedLinkText);
+			return true;
+			}
+
+
 		/* Function: GetText
-		 * Converts a block of formatted text to NDMarkup and adds it to the output.  It ends when it reaches the closing tag for anything 
-		 * already on the tag stack.
+		 * Converts a block of formatted text to NDMarkup and adds it to the output.  Entity chars will be encoded, recognized 
+		 * XML tags will be converted, and unrecognized XML tags will be stripped.  It ends when it reaches the closing tag for
+		 * anything already on the tag stack.
 		 */
 		protected void GetText (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
 			{
@@ -272,8 +493,34 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 				if (iterator.IsOn(XMLElementType.Text))
 					{
-					output.EntityEncodeAndAppend(iterator.String);
+					// Send the text to ConvertUnformattedTextAndBareLinks.  However, if there are entity chars we have to convert them
+					// into a continuous entity-decoded string or else raw URLs with entity chars like https://example.com&x=y won't get
+					// recognized as links.
+
+					string text = iterator.String;
 					iterator.Next();
+
+					if (iterator.IsOn(XMLElementType.Text) || 
+						iterator.IsOn(XMLElementType.EntityChar))
+						{
+						StringBuilder textBuilder = new StringBuilder(text);
+
+						for (;;)
+							{
+							if (iterator.IsOn(XMLElementType.Text))
+								{  textBuilder.Append(iterator.String);  }
+							else if (iterator.IsOn(XMLElementType.EntityChar))
+								{  textBuilder.Append(iterator.EntityValue);  }
+							else
+								{  break;  }
+
+							iterator.Next();
+							}
+
+						text = textBuilder.ToString();
+						}
+
+					ConvertUnformattedTextAndBareLinks(text, output);
 					}
 
 				else if (iterator.IsOn(XMLElementType.EntityChar))
@@ -343,27 +590,8 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 					}
 
-				else if (iterator.IsOnTag("see", TagForm.Standalone))
-					{
-					// Can't assume all the properties are set
-					string cref = iterator.TagProperty("cref");
-
-					if (cref != null)
-						{
-						output.Append("<link type=\"naturaldocs\" originaltext=\"");
-						output.EntityEncodeAndAppend(cref);
-						output.Append("\">");
-						}
-					else
-						{
-						string langword = iterator.TagProperty("langword");
-
-						if (langword != null)
-							{  output.EntityEncodeAndAppend(langword);  }
-						}
-
-					iterator.Next();
-					}
+				else if (TryToGetLink(ref iterator, output))
+					{  }
 
 				else if (iterator.IsOnTag(TagForm.Opening))
 					{  
@@ -397,11 +625,12 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 			}
 
 
-		/* Function: GetSimpleText
-		 * Converts a block of plain unformatted text to NDMarkup and adds it to the output.  Unlike <GetText()> this will not surround the 
-		 * output in paragraph tags.  It ends when it reaches the closing tag for anything already on the tag stack.
+		/* Function: GetUnformattedText
+		 * Converts a block of text to NDMarkup and adds it to the output, stripping out any formatting tags.  Entity chars will be
+		 * encoded.  Unlike <GetText()> this will not surround the output in paragraph tags.  It ends when it reaches the closing 
+		 * tag for anything already on the tag stack.
 		 */
-		protected void GetSimpleText (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
+		protected void GetUnformattedText (ref XMLIterator iterator, StringBuilder output, TagStack tagStack)
 			{
 			int surroundingTagCount = tagStack.Count;
 
@@ -640,7 +869,7 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 					iterator.Next();
 
 					stringBuilder.Remove(0, stringBuilder.Length);
-					GetSimpleText(ref iterator, stringBuilder, tagStack);
+					GetUnformattedText(ref iterator, stringBuilder, tagStack);
 					currentItem.Term = stringBuilder.ToString();
 
 					if (iterator.TagType == "term" && iterator.TagForm == TagForm.Closing)
@@ -727,6 +956,67 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 					output.Append("</ul>");
 					}
+				}
+			}
+
+
+		/* Function: ConvertUnformattedTextAndBareLinks
+		 * Converts an unformatted string to NDMarkup and adds it to the output, finding any bare URLs or e-mail addresses and
+		 * converting them to links.  Entity chars will be encoded.  No tags are expected in the string so any that appear will be
+		 * entity encoded.
+		 */
+		protected void ConvertUnformattedTextAndBareLinks (string text, StringBuilder output)
+			{
+			int index = 0;
+			var urlMatch = URLAnywhereInLineRegex.Match(text);
+			var emailMatch = EMailAnywhereInLineRegex.Match(text);
+
+
+			// Walk through the string, handling the thing with the lowest index: an e-mail address, an URL, or if the index is
+			// lower than both of them, plain text.  Then advance to the next thing to handle until we're done.
+
+			while (index < text.Length)
+				{
+				// The index is on an e-mail address
+				if (emailMatch.Success && emailMatch.Index == index)
+					{
+					output.Append("<link type=\"email\" target=\"");
+					output.EntityEncodeAndAppend(emailMatch.Groups[1].ToString());
+					output.Append("\">");
+
+					index += emailMatch.Length;
+					}
+
+				// The index is on an URL
+				else if (urlMatch.Success && urlMatch.Index == index &&
+						   Manager.NaturalDocsParser.IsURLProtocol(urlMatch.Groups[1].ToString()))
+					{
+					output.Append("<link type=\"url\" target=\"");
+					output.EntityEncodeAndAppend(urlMatch.ToString());
+					output.Append("\">");
+
+					index += urlMatch.Length;
+					}
+
+				// The index is on plain text
+				else
+					{
+					int endOfText = text.Length;
+
+					if (emailMatch.Success)
+						{  endOfText = emailMatch.Index;  }
+					if (urlMatch.Success && urlMatch.Index < endOfText)
+						{  endOfText = urlMatch.Index;  }
+
+					output.EntityEncodeAndAppend(text, index, endOfText - index);
+					index = endOfText;
+					}
+
+				// Now refresh our regular expressions if they've fallen behind the index
+				if (urlMatch.Success && urlMatch.Index < index)
+					{  urlMatch = URLAnywhereInLineRegex.Match(text, index);  }
+				if (emailMatch.Success && emailMatch.Index < index)
+					{  emailMatch = EMailAnywhereInLineRegex.Match(text, index);  }
 				}
 			}
 
@@ -822,13 +1112,21 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 							else
 								{  body.Append("<li><p>");  }
 
-							if (addLinks)
-								{  body.Append("<link type=\"naturaldocs\" originaltext=\"");  }
+							// Entries created by <see href=""> will already have a NDMarkup link.  Just use it as is.
+							if (listMember.Name.StartsWith("<link type="))
+								{  body.Append(listMember.Name);  }
 
-							body.EntityEncodeAndAppend(listMember.Name);
+							// Other entries such as <exception name=""> get a generated link if addLinks is set.
+							else
+								{
+								if (addLinks)
+									{  body.Append("<link type=\"naturaldocs\" originaltext=\"");  }
 
-							if (addLinks)
-								{  body.Append("\">");  }
+								body.EntityEncodeAndAppend(listMember.Name);
+
+								if (addLinks)
+									{  body.Append("\">");  }
+								}
 
 							if (useDefinitionList)
 								{
@@ -863,6 +1161,15 @@ namespace CodeClear.NaturalDocs.Engine.Comments.Parsers
 
 			return topic;
 			}
+
+
+
+		// Group: Static Variables
+		// __________________________________________________________________________
+
+
+		protected static URLAnywhereInLine URLAnywhereInLineRegex = new URLAnywhereInLine();
+		protected static EMailAnywhereInLine EMailAnywhereInLineRegex = new EMailAnywhereInLine();
 
 
 
