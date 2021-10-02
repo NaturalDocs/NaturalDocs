@@ -1,0 +1,43 @@
+<p><link type="url" target="http://www.example.com" text="Named URL link"></p>
+-----
+<p><link type="url" target="http://www.example.com" text="Named URL link with properties"></p>
+-----
+<p><link type="url" target="http://www.example.com"> Standalone URL link</p>
+-----
+<p><link type="url" target="http://www.example.com"> Raw URL</p>
+-----
+<p><link type="url" target="http://www.example.com"> Literal URL link</p>
+-----
+<p><link type="email" target="a@example.com" text="Named mailto link"></p>
+-----
+<p><link type="email" target="a@example.com"> Standalone mailto link</p>
+-----
+<p><link type="email" target="a@example.com"> Raw e-mail address</p>
+-----
+<p><link type="email" target="a@example.com"> Raw mailto link</p>
+-----
+<p><link type="email" target="a@example.com"> Literal mailto/e-mail address link</p>
+-----
+<p><link type="url" target="http://www.example.com" text="Named see href link"></p>
+-----
+<p><link type="url" target="http://www.example.com" text="Named see href link with properties"></p>
+-----
+<p><link type="email" target="a@example.com" text="Named see href link with mailto target"></p>
+-----
+<p><link type="url" target="http://www.example.com"> Standalone see href link</p>
+-----
+<h>See Also</h><ul><li><p><link type="url" target="http://www.example.com" text="Named top level see href link"></p></li></ul>
+-----
+<h>See Also</h><ul><li><p><link type="url" target="http://www.example.com" text="Named top level see href link with properties"></p></li></ul>
+-----
+<h>See Also</h><ul><li><p><link type="email" target="a@example.com" text="Named top level see href link with mailto target"></p></li></ul>
+-----
+<p>Standalone top level see href link</p><h>See Also</h><ul><li><p><link type="url" target="http://www.example.com"></p></li></ul>
+-----
+<p><link type="url" target="http://www.example.com&amp;var=y" text="Named URL link &amp; entity chars"></p>
+-----
+<p><link type="url" target="http://www.example.com&amp;var=y"> Standalone URL link &amp; entity chars</p>
+-----
+<p><link type="url" target="http://www.example.com&amp;var=y"> Raw URL link &amp; entity chars</p>
+-----
+<p><link type="email" target="a@example.com" text="Named e-mail link &amp; entity chars"></p>
