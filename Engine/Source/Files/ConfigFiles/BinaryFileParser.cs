@@ -55,37 +55,39 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 					}
 				else
 					{
-					// [Int32: ID]
-					// [String: Absolute Path]
-					// [Byte: Type]
-					// [Int64: Last Modification in Ticks or 0]
-					// (if image)
-					//    [UInt32: Width in Pixels or 0 if unknown]
-					//    [UInt32: Height in Pixels or 0 if unknown]
- 					// ...
-					// [Int32: 0]
-
 					bool forceReparse = (binaryFile.Version < "2.1");
 					bool didntStoreImageDimensions = (binaryFile.Version < "2.0.2");
+					bool didntStoreEncodingID = (binaryFile.Version != Engine.Instance.VersionString); // xxx change to < "2.2" on release
 					
 					int id;
 					Path path;
 					FileType type;
 					DateTime lastModification;
 					DateTime lastModification_ForceReparse = new DateTime(0);
+					int characterEncodingID;
 					File file;
 					uint width, height;
 					
 					for (;;)
 						{
+						// [Int32: ID]
+						//    (properties)
+						// ...
+						// [Int32: 0]
+
 						id = binaryFile.ReadInt32();
 						
 						if (id == 0)
 							{  break;  }
 							
+						// [String: Absolute Path]
+						// [Byte: Type]
+
 						path = binaryFile.ReadString();
 						type = (FileType)binaryFile.ReadByte();
 
+						// [Int64: Last Modification in Ticks or 0]
+	
 						if (forceReparse)
 							{
 							lastModification = lastModification_ForceReparse;
@@ -95,6 +97,17 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 							{
 							lastModification = new DateTime(binaryFile.ReadInt64());
 							}
+
+						// [Int32: Character Encoding ID or 0]
+
+						if (didntStoreEncodingID)
+							{  characterEncodingID = 0;  }
+						else
+							{  characterEncodingID = binaryFile.ReadInt32();  }
+
+						// (if image)
+						//    [UInt32: Width in Pixels or 0 if unknown]
+						//    [UInt32: Height in Pixels or 0 if unknown]
 
 						if (type == FileType.Image)
 							{
@@ -123,7 +136,7 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 							}
 						else
 							{
-							file = new File(path, type, lastModification);
+							file = new File(path, type, lastModification, characterEncodingID);
 							}
 
 						file.ID = id;
@@ -164,14 +177,17 @@ namespace CodeClear.NaturalDocs.Engine.Files.ConfigFiles
 					// [String: Absolute Path]
 					// [Byte: Type]
 					// [Int64: Last Modification in Ticks or 0]
-					// (if image)
-					//    [UInt32: Width in Pixels or 0 if unknown]
-					//    [UInt32: Height in Pixels or 0 if unknown]
+					// [Int32: Character Encoding ID or 0]
 					
 					binaryFile.WriteInt32(file.ID);
 					binaryFile.WriteString(file.FileName);
 					binaryFile.WriteByte((byte)file.Type);
 					binaryFile.WriteInt64(file.LastModified.Ticks);
+					binaryFile.WriteInt32(file.CharacterEncodingID);
+
+					// (if image)
+					//    [UInt32: Width in Pixels or 0 if unknown]
+					//    [UInt32: Height in Pixels or 0 if unknown]
 
 					if (file.Type == FileType.Image)
 						{

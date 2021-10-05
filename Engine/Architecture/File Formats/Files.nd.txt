@@ -21,15 +21,25 @@ _______________________________________________________________________________
 		> [String: Absolute Path]
 		> [Byte: Type]
 		> [Int64: Last Modification in Ticks or 0]
+		> [Int32: Character Encoding ID or 0]
 		> (if image)
 		>    [UInt32: Width in Pixels or 0 if unknown]
 		>    [UInt32: Height in Pixels or 0 if unknown]
 		> ...
 		> [Int32: 0]
 		
-		For each file it stores the ID number, the absolute path, <CodeClear.NaturalDocs.Engine.Files.FileType>, and the last 
-		modification time in ticks.  If the file wasn't fully processed when Natural Docs shut down, either due to a change or 
-		a deletion, the tick count will be zero to indicate that it should be processed again.
+		For each file it first stores its ID number, its absolute path, and its <CodeClear.NaturalDocs.Engine.Files.FileType>.
+		
+		Then it stores the last modification time in ticks.  If the file wasn't fully processed when Natural Docs shut down, 
+		either due to a change or a deletion, the tick count will be zero to indicate that it should be processed again.
+
+		Next it stores the character encoding ID, or zero if it should auto-detect its Unicode encoding or it's not a text file.  
+		Auto-detection is the default and should handle all forms of UTF-8 and UTF-16.  Other values correspond to the code 
+		page identifier which can be passed directly to System.Text.Encoding.GetEncoding(int32).
+
+		<Code Page Reference: https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding#list-of-encodings>
+
+		If the file is an image, it will then be followed by the width and height of the image in pixels, or zero if it's not known.
 		
 		This continues until there is an ID number of zero.
 		
@@ -37,6 +47,10 @@ _______________________________________________________________________________
 Group: Revisions
 _______________________________________________________________________________
 	
+	Topic: 2.2
+
+		- Added Character Encoding ID.
+
 	Topic: 2.1
 
 		- No changes to the file format, but 2.1 actually determines image dimensions.  When reading files from earlier
