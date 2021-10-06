@@ -85,7 +85,7 @@ namespace CodeClear.NaturalDocs.Engine.Files
 			
 		/* Property: AutoDetectUnicodeEncoding
 		 * Whether you should auto-detect this file's Unicode encoding instead of using a specific one.  This should handle all
-		 * forms of UTF-8 and UTF-16.  If this is false you need to pass <CharacterEncodingID> to 
+		 * forms of UTF-8, UTF-16, and UTF-32.  If this is false you need to pass <CharacterEncodingID> to 
 		 * System.Text.Encoding.GetEncoding(int32) to read the file.
 		 */
 		public bool AutoDetectUnicodeEncoding
@@ -97,9 +97,10 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* Property: CharacterEncodingID
 		 * 
 		 * The ID of the character encoding used for this file if it's a text file.  Zero means auto-detect the Unicode encoding, 
-		 * which should handle all forms of UTF-8 and UTF-16, though you should use <AutoDetectUnicodeEncoding> instead 
-		 * as it's clearer in the calling code.  Zero could also mean this property isn't relevant because it's not a text file.  Other 
-		 * values correspond to the code page identifier and can be passed directly to System.Text.Encoding.GetEncoding(int32).
+		 * which should handle all forms of UTF-8, UTF-16, and UTF-32, though you should use <AutoDetectUnicodeEncoding>
+		 * instead as it's clearer in the calling code.  Zero could also mean this property isn't relevant because it's not a text file.
+		 * Other values correspond to the code page identifier and can be passed directly to 
+		 * System.Text.Encoding.GetEncoding(int32).
 		 * 
 		 * <Code Page Reference: https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding#list-of-encodings>
 		 */
@@ -155,8 +156,9 @@ namespace CodeClear.NaturalDocs.Engine.Files
 		/* var: characterEncodingID
 		 * 
 		 * The ID of the character encoding used for this file if it's a text file.  Zero means use Unicode auto-detect, which 
-		 * covers all forms of UTF-8 and UTF-16, or that it's not relevant because it's not a text file.  Other values correspond
-		 * to the code page identifier used by .NET and can be passed directly to System.Text.Encoding.GetEncoding(int32).
+		 * covers all forms of UTF-8, UTF-16, and UTF-32, or that it's not relevant because it's not a text file.  Other values
+		 * correspond to the code page identifier used by .NET and can be passed directly to 
+		 * System.Text.Encoding.GetEncoding(int32).
 		 * 
 		 * <Code Page Reference: https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding#list-of-encodings>
 		 */

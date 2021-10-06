@@ -34,8 +34,8 @@ _______________________________________________________________________________
 		either due to a change or a deletion, the tick count will be zero to indicate that it should be processed again.
 
 		Next it stores the character encoding ID, or zero if it should auto-detect its Unicode encoding or it's not a text file.  
-		Auto-detection is the default and should handle all forms of UTF-8 and UTF-16.  Other values correspond to the code 
-		page identifier which can be passed directly to System.Text.Encoding.GetEncoding(int32).
+		Auto-detection is the default and should handle all forms of UTF-8, UTF-16, and UTF-32.  Other values correspond
+		to the code page identifier which can be passed directly to System.Text.Encoding.GetEncoding(int32).
 
 		<Code Page Reference: https://docs.microsoft.com/en-us/dotnet/api/system.text.encoding#list-of-encodings>
 
