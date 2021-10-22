@@ -51,6 +51,12 @@ Status.CouldNotSaveBenchmarksIn(file): Could not save benchmarks in {0}.
 
 Status.PressAnyKeyToContinue: Press any key to continue...
 
+Encodings.CodePage: Code Page
+Encodings.Name: Name
+Encodings.Description: Description
+Encodings.UnicodeDescription: Unicode auto-detect (UTF-8, UTF-16, UTF-32)
+
+
 
 #
 # Command Line
@@ -205,6 +211,11 @@ Common Parameters:
 --all-versions
     Displays the current version of Natural Docs and all supporting systems
     like .NET or Mono.
+
+--encodings
+--list-encodings
+    Displays all the character encodings that are available on the current
+    system.
 
  -?
  -h

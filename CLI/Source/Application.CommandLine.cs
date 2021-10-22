@@ -28,9 +28,10 @@ namespace CodeClear.NaturalDocs.CLI
 		 * ShowCommandLineReference - The user asked for the command line reference to be displayed.
 		 * ShowVersion - The user asked for the version number to be displayed.
 		 * ShowAllVersions - The user asked for the version number of Natural Docs and all supporting systems like .NET and Mono to be displayed.
+		 * ShowEncodings - The user asked for all the supported character encodings to be displayed.
 		 */
 		public enum ParseCommandLineResult : byte
-			{  Run, Error, ShowCommandLineReference, ShowVersion, ShowAllVersions  };
+			{  Run, Error, ShowCommandLineReference, ShowVersion, ShowAllVersions, ShowEncodings  };
 			
 
 		/* Function: ParseCommandLine
@@ -56,6 +57,7 @@ namespace CodeClear.NaturalDocs.CLI
 		 *		- -q, --quiet
 		 *		- -v, --version
 		 *		- -vs, --versions, --all-versions
+		 *		- --encodings, --show-encodings, --list-encodings, --show-charsets, --list-charsets
 		 *		- --benchmark
 		 *		- --worker-threads, --threads
 		 *		- --pause-before-exit, --pause
@@ -93,6 +95,13 @@ namespace CodeClear.NaturalDocs.CLI
 			commandLine.AddAliases("--quiet", "-q");
 			commandLine.AddAliases("--version", "-v");
 			commandLine.AddAliases("--all-versions", "-vs", "--versions", "--allversions");
+			commandLine.AddAliases("--encodings", "--show-encodings", "--showencodings", 
+																		"--list-encodings", "--listencodings",
+																		"--show-char-set", "--show-charset", "--showcharset",
+																		"--show-char-sets", "--show-charsets", "--showcharsets",
+																		"--list-char-set", "--list-charset", "--listcharset",
+																		"--list-char-sets", "--list-charsets", "--listcharsets",
+																		"--char-sets", "--charsets");
 			commandLine.AddAliases("--pause-before-exit", "--pausebeforexit", "--pause");
 			commandLine.AddAliases("--pause-on-error", "--pauseonerror");
 			commandLine.AddAliases("--dont-shrink-files", "--dontshrinkfiles", "--dont-shrink-output", "--dontshrinkoutput", "--dont-shrink", "--dontshrink");
@@ -696,6 +705,15 @@ namespace CodeClear.NaturalDocs.CLI
 				else if (parameter == "--all-versions")
 					{
 					result = ParseCommandLineResult.ShowAllVersions;
+					}
+
+
+
+				// Encodings
+				
+				else if (parameter == "--encodings")
+					{
+					result = ParseCommandLineResult.ShowEncodings;
 					}
 
 

@@ -93,6 +93,11 @@ namespace CodeClear.NaturalDocs.CLI
 					ShowAllVersions();
 					}
 
+				else if (parseCommandLineResult == ParseCommandLineResult.ShowEncodings)
+					{
+					ShowEncodings();
+					}
+
 				else // (parseCommandLineResult == ParseCommandLineResult.Run)
 					{
 					if (quiet)
@@ -408,6 +413,98 @@ namespace CodeClear.NaturalDocs.CLI
 				Console.WriteLine( Locale.SafeGet("NaturalDocs.Engine", "CrashReport.OutdatedMono(currentVersion, minimumVersion)", 
 											"You appear to be using Mono {0}, which is very outdated.  This has been known to cause Natural Docs to crash.  Please update it to version {1} or higher.",
 											Engine.SystemInfo.MonoVersion, Engine.SystemInfo.MinimumMonoVersion) );
+				}
+			}
+
+
+		private static void ShowEncodings ()
+			{
+			// Get the system encodings
+
+			var systemEncodings = System.Text.Encoding.GetEncodings();
+
+
+			// Convert them to a List so that we can sort it by description.  We also use our own struct because we can't create
+			// System.Text.Encoding.EncodingInfos to add our auto-detect option or change them to make the UTF-16 descriptions
+			// clearer.
+
+			List<EncodingTableEntry> encodingTable = new List<EncodingTableEntry>(systemEncodings.Length + 1);
+
+			foreach (var systemEncoding in systemEncodings)
+				{
+				string description = systemEncoding.DisplayName;
+
+				// Improve the descriptions for UTF-16
+				if (systemEncoding.CodePage == 1200 && description == "Unicode")
+					{  description = "Unicode (UTF-16)";  }
+				else if (systemEncoding.CodePage == 1201 && description == "Unicode (Big-Endian)")
+					{  description = "Unicode (UTF-16 Big-Endian)";  }
+
+				encodingTable.Add(
+					new EncodingTableEntry(systemEncoding.Name, description, systemEncoding.CodePage)
+					);
+				}
+
+
+			// Add our auto-detect option
+
+			string unicodeName = "Unicode";
+			string unicodeDescription = Locale.Get("NaturalDocs.CLI", "Encodings.UnicodeDescription");
+
+			encodingTable.Add(
+				new EncodingTableEntry(unicodeName, unicodeDescription, 0)
+				);
+
+
+			// Sort it by description
+
+			encodingTable.Sort(
+				delegate (EncodingTableEntry a, EncodingTableEntry b)
+					{  return string.Compare(a.Description, b.Description);  }
+				);
+
+
+			// Get the headers
+
+			string nameHeader = Locale.Get("NaturalDocs.CLI", "Encodings.Name");
+			string descriptionHeader = Locale.Get("NaturalDocs.CLI", "Encodings.Description");
+			string codePageHeader = Locale.Get("NaturalDocs.CLI", "Encodings.CodePage");
+
+
+			// Get the column widths
+
+			int nameColumnWidth = nameHeader.Length;
+			int descriptionColumnWidth = descriptionHeader.Length;
+			int codePageColumnWidth = Math.Max(codePageHeader.Length, 5);
+
+			foreach (var encoding in encodingTable)
+				{
+				nameColumnWidth = Math.Max(nameColumnWidth, encoding.Name.Length);
+				descriptionColumnWidth = Math.Max(descriptionColumnWidth, encoding.Description.Length);
+				}
+
+
+			// Display the header
+
+			string format = "{0,-" + descriptionColumnWidth + "}  {1,-" + nameColumnWidth + "}  {2,-" + codePageColumnWidth + "}";
+
+			System.Console.WriteLine(format, descriptionHeader, nameHeader, codePageHeader);
+
+			StringBuilder dashedLine = new StringBuilder(descriptionColumnWidth + nameColumnWidth + codePageColumnWidth + 6);
+			dashedLine.Append('-', descriptionColumnWidth);
+			dashedLine.Append(' ', 2);
+			dashedLine.Append('-', nameColumnWidth);
+			dashedLine.Append(' ', 2);
+			dashedLine.Append('-', codePageColumnWidth);
+
+			System.Console.WriteLine(dashedLine.ToString());
+
+
+			// Display the encodings
+
+			foreach (var encoding in encodingTable)
+				{
+				System.Console.WriteLine(format, encoding.Description, encoding.Name, encoding.CodePage);
 				}
 			}
 
@@ -744,6 +841,26 @@ namespace CodeClear.NaturalDocs.CLI
 		static private bool pauseBeforeExit;
 
 		static private ExecutionTimer executionTimer;
+
+
+		/* __________________________________________________________________________
+		 * 
+		 * Struct: EncodingTableEntry
+		 * __________________________________________________________________________
+		 */
+		private struct EncodingTableEntry
+			{
+			public EncodingTableEntry (string name, string description, int codePage)
+				{
+				this.Name = name;
+				this.Description = description;
+				this.CodePage = codePage;
+				}
+
+			public string Name;
+			public string Description;
+			public int CodePage;
+			}
 		
 		}
 	}
