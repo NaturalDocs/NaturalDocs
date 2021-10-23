@@ -475,13 +475,17 @@ namespace CodeClear.NaturalDocs.CLI
 
 			int nameColumnWidth = nameHeader.Length;
 			int descriptionColumnWidth = descriptionHeader.Length;
-			int codePageColumnWidth = Math.Max(codePageHeader.Length, 5);
+			int codePageColumnWidth = codePageHeader.Length;
+			int maxCodePage = 0;
 
 			foreach (var encoding in encodingTable)
 				{
 				nameColumnWidth = Math.Max(nameColumnWidth, encoding.Name.Length);
 				descriptionColumnWidth = Math.Max(descriptionColumnWidth, encoding.Description.Length);
+				maxCodePage = Math.Max(maxCodePage, encoding.CodePage);
 				}
+
+			codePageColumnWidth = Math.Max(codePageColumnWidth, maxCodePage.ToString().Length);
 
 
 			// Display the header
