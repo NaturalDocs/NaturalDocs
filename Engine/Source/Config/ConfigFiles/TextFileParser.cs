@@ -87,33 +87,24 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{  return false;  }
 
 				string lcIdentifier, value;
-				
 				Target currentTarget =  null;
-				ProjectInfo currentProjectInfo = projectConfig.ProjectInfo;
 
 				while (configFile.Get(out lcIdentifier, out value))
 					{
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
-					Target target = null;
 
-					if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
-						{
-						currentTarget = null;
-						currentProjectInfo = projectConfig.ProjectInfo;
-						}
-					else if (GetTargetHeader(lcIdentifier, value, propertyLocation, out target, errorList))
-						{
-						currentTarget = target;
-
-						if (target is Targets.Output)
-							{  currentProjectInfo = (target as Targets.Output).ProjectInfo;  }
-						else
-							{  currentProjectInfo = projectConfig.ProjectInfo;  }
-						}
-					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation, currentProjectInfo, errorList))
+					if (GetTargetHeader(lcIdentifier, value, propertyLocation, out var target, errorList))
+						{  currentTarget = target;  }
+					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation,
+																(currentTarget != null && currentTarget is Targets.Output ? 
+																	 (currentTarget as Targets.Output).ProjectInfo : projectConfig.ProjectInfo),
+																errorList))
 						{  }
-					else if (currentTarget != null && GetTargetProperty(lcIdentifier, value, propertyLocation, currentTarget, errorList))
+					else if (currentTarget != null && currentTarget is Targets.Input &&
+							   GetInputTargetProperty(lcIdentifier, value, propertyLocation, currentTarget as Targets.Input, errorList))
 						{  }
+					else if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
+						{  currentTarget = null;  }
 					else
 						{
 						errorList.Add (
@@ -130,148 +121,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			}
 
 
-		/* Function: GetGlobalProperty
-		 * If the passed identifier is a global property like Tab Width, adds it to <projectConfig> and returns true.  If it is a recognized
-		 * global property but has a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
-		 * false on unrecognized identifiers.
-		 */
-		protected bool GetGlobalProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ErrorList errorList)
-			{
-			if (tabWidthRegex.IsMatch(lcIdentifier))
-				{
-				int tabWidth = 0;
-						
-				if (Int32.TryParse(value, out tabWidth) == true)
-					{  
-					projectConfig.TabWidth = tabWidth;
-					projectConfig.TabWidthPropertyLocation = propertyLocation;
-					}
-				else
-					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber"), 
-									   propertyLocation.FileName, propertyLocation.LineNumber );
-					}
-
-				return true;
-				}
-
-			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
-				{
-				if (yesRegex.IsMatch(value))
-					{  
-					projectConfig.DocumentedOnly = true;  
-					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
-					}
-				else if (noRegex.IsMatch(value))
-					{  
-					projectConfig.DocumentedOnly = false;
-					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
-					}
-				else
-					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Documented Only", value),
-									   propertyLocation.FileName, propertyLocation.LineNumber );
-					}
-
-				return true;
-				}
-
-			else if (autoGroupRegex.IsMatch(lcIdentifier))
-				{
-				if (yesRegex.IsMatch(value))
-					{  
-					projectConfig.AutoGroup = true;  
-					projectConfig.AutoGroupPropertyLocation = propertyLocation;
-					}
-				else if (noRegex.IsMatch(value))
-					{  
-					projectConfig.AutoGroup = false;  
-					projectConfig.AutoGroupPropertyLocation = propertyLocation;
-					}
-				else
-					{
-					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Auto Group", value),
-									   propertyLocation.FileName, propertyLocation.LineNumber );
-					}
-
-				return true;
-				}
-
-			else
-				{
-				return false;
-				}
-			}
-
-
-		/* Function: GetProjectInfoProperty
-		 * If the passed identifier is a project info property like Title, adds it to the <ProjectInfo> and returns true.  If it is a recognized
-		 * project info property but there's a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
-		 * false for unrecognized identifiers.
-		 */
-		protected bool GetProjectInfoProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ProjectInfo projectInfo,
-																ErrorList errorList)
-			{
-			if (lcIdentifier == "title")
-				{
-				projectInfo.Title = value.ConvertCopyrightAndTrademark();
-				projectInfo.TitlePropertyLocation = propertyLocation;
-				return true;
-				}
-			else if (subtitleRegex.IsMatch(lcIdentifier))
-				{
-				projectInfo.Subtitle = value.ConvertCopyrightAndTrademark();
-				projectInfo.SubtitlePropertyLocation = propertyLocation;
-				return true;
-				}
-			else if (lcIdentifier == "copyright")
-				{
-				projectInfo.Copyright = value.ConvertCopyrightAndTrademark();
-				projectInfo.CopyrightPropertyLocation = propertyLocation;
-				return true;
-				}
-			else if (timestampRegex.IsMatch(lcIdentifier))
-				{
-				projectInfo.TimestampCode = value;
-				projectInfo.TimestampCodePropertyLocation = propertyLocation;
-				return true;
-				}
-			else if (lcIdentifier == "style")
-				{
-				projectInfo.StyleName = value;
-				projectInfo.StyleNamePropertyLocation = propertyLocation;
-				return true;
-				}
-			else if (homePageRegex.IsMatch(lcIdentifier))
-				{
-				Path path = value;
-
-				if (path.IsRelative)
-					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
-
-				if (!System.IO.File.Exists(path))
-					{  
-					errorList.Add(
-						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
-						propertyLocation);  
-					}
-
-				projectInfo.HomePage = (AbsolutePath)path;
-				projectInfo.HomePagePropertyLocation = propertyLocation;
-
-				return true;
-				}
-			else
-				{
-				return false;
-				}
-			}
-
-
 		/* Function: GetTargetHeader
-		 * If the passed identifier starts a target like "Source Folder", adds a new target for it in <projectConfig> and returns true.  If 
-		 * it is a recognized target header but there is a syntax error in the value, it will add an error to <errorList> and still return true.
-		 * It only returns false for unrecognized identifiers.
+		 * If the passed identifier starts a target like "Source Folder", creates a new target for it and returns true.  If it's a recognized 
+		 * identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It only returns 
+		 * false for unrecognized identifiers.
 		 */
 		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Target newTarget, 
 														ErrorList errorList)
@@ -386,7 +239,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				newTarget = target;
 				return true;
 				}
-				
 
 			else
 				{  
@@ -396,20 +248,110 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		    }
 
 
-		/* Function: GetTargetProperty
-		 * If the passed identifier is a valid keyword for <currentTarget>, applies the property and returns true.  This does not cover
-		 * the <ProjectInfo> settings for output targets, use <GetProjectInfoProperty()> for that instead.  If the value is invalid it will 
-		 * add an error to <errorList> and still return true.  It will only return false if the identifier is unrecognized.
+		/* Function: GetProjectInfoProperty
+		 * 
+		 * If the passed identifier is a property like Style that's part of <ProjectInfo>, adds it to the passed <ProjectInfo> object
+		 * and returns true.  This can be the global one in <projectConfig> or one attached to an output target.
+		 * 
+		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
+		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, Target target, ErrorList errorList)
+		protected bool GetProjectInfoProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ProjectInfo projectInfo,
+																ErrorList errorList)
+			{
+
+			// Title
+
+			if (lcIdentifier == "title")
+				{
+				projectInfo.Title = value.ConvertCopyrightAndTrademark();
+				projectInfo.TitlePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Subtitle
+
+			else if (subtitleRegex.IsMatch(lcIdentifier))
+				{
+				projectInfo.Subtitle = value.ConvertCopyrightAndTrademark();
+				projectInfo.SubtitlePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Copyright
+
+			else if (lcIdentifier == "copyright")
+				{
+				projectInfo.Copyright = value.ConvertCopyrightAndTrademark();
+				projectInfo.CopyrightPropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Timestamp
+
+			else if (timestampRegex.IsMatch(lcIdentifier))
+				{
+				projectInfo.TimestampCode = value;
+				projectInfo.TimestampCodePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Style
+
+			else if (lcIdentifier == "style")
+				{
+				projectInfo.StyleName = value;
+				projectInfo.StyleNamePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Home page
+
+			else if (homePageRegex.IsMatch(lcIdentifier))
+				{
+				Path path = value;
+
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				if (!System.IO.File.Exists(path))
+					{  
+					errorList.Add(
+						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
+						propertyLocation);  
+					}
+
+				projectInfo.HomePage = (AbsolutePath)path;
+				projectInfo.HomePagePropertyLocation = propertyLocation;
+				return true;
+				}
+
+			else
+				{
+				return false;
+				}
+			}
+
+
+		/* Function: GetInputTargetProperty
+		 * If the passed identifier is a valid property for an input target, applies the property and returns true.  If the value is 
+		 * invalid it will add an error to <errorList> and still return true.  It will only return false if the identifier is unrecognized.
+		 */
+		protected bool GetInputTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+																 Targets.Input inputTarget, ErrorList errorList)
 			{
 			if (lcIdentifier == "name")
 				{
-				 if (target is Targets.SourceFolder && 
-					(target as Targets.SourceFolder).Type == Files.InputType.Source)
+				 if (inputTarget is Targets.SourceFolder && 
+					(inputTarget as Targets.SourceFolder).Type == Files.InputType.Source)
 					{
-					(target as Targets.SourceFolder).Name = value;
-					(target as Targets.SourceFolder).NamePropertyLocation = propertyLocation;
+					(inputTarget as Targets.SourceFolder).Name = value;
+					(inputTarget as Targets.SourceFolder).NamePropertyLocation = propertyLocation;
 					}
 				else
 					{
@@ -422,6 +364,89 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: GetGlobalProperty
+		 * If the passed identifier is a global property like Tab Width, adds it to <projectConfig> and returns true.  If it is a recognized
+		 * global property but has a syntax error in the value, it will add an error to <errorList> and still return true.  It only returns
+		 * false on unrecognized identifiers.
+		 */
+		protected bool GetGlobalProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ErrorList errorList)
+			{
+
+			// Tab width
+
+			if (tabWidthRegex.IsMatch(lcIdentifier))
+				{
+				int tabWidth = 0;
+						
+				if (Int32.TryParse(value, out tabWidth) == true)
+					{  
+					projectConfig.TabWidth = tabWidth;
+					projectConfig.TabWidthPropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Error.TabWidthMustBeANumber"), 
+									   propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+
+			// Documented only
+
+			else if (documentedOnlyRegex.IsMatch(lcIdentifier))
+				{
+				if (yesRegex.IsMatch(value))
+					{  
+					projectConfig.DocumentedOnly = true;  
+					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
+					}
+				else if (noRegex.IsMatch(value))
+					{  
+					projectConfig.DocumentedOnly = false;
+					projectConfig.DocumentedOnlyPropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Documented Only", value),
+									   propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+
+			// Auto-group
+
+			else if (autoGroupRegex.IsMatch(lcIdentifier))
+				{
+				if (yesRegex.IsMatch(value))
+					{  
+					projectConfig.AutoGroup = true;  
+					projectConfig.AutoGroupPropertyLocation = propertyLocation;
+					}
+				else if (noRegex.IsMatch(value))
+					{  
+					projectConfig.AutoGroup = false;  
+					projectConfig.AutoGroupPropertyLocation = propertyLocation;
+					}
+				else
+					{
+					errorList.Add( Locale.Get("NaturalDocs.Engine", "Project.txt.UnrecognizedValue(keyword, value)", "Auto Group", value),
+									   propertyLocation.FileName, propertyLocation.LineNumber );
+					}
+
+				return true;
+				}
+
+			else
+				{
+				return false;
+				}
 			}
 
 
