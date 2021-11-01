@@ -399,7 +399,13 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			//
 	
 			foreach (var target in combinedConfig.InputTargets)
-				{  EngineInstance.Files.AddFileSource(CreateFileSource(target));  }
+				{  
+				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
+				// been saved without them.
+				MergeInputSettings(target.OverridableSettings, combinedConfig.InputSettings);
+
+				EngineInstance.Files.AddFileSource(CreateFileSource(target));  
+				}
 
 			foreach (var target in combinedConfig.FilterTargets)
 				{  EngineInstance.Files.AddFilter(CreateFilter(target));  }
@@ -456,8 +462,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			
 			foreach (var target in combinedConfig.OutputTargets)
 				{
-				// Merge the global project info so it has a complete configuration.  The configuration files have already been saved without it.
-				MergeProjectInfo(target.ProjectInfo, combinedConfig.ProjectInfo);
+				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
+				// been saved without them.
+				MergeOutputSettings(target.OverridableSettings, combinedConfig.OutputSettings);
 
 				EngineInstance.Output.AddTarget(CreateOutputTarget(target));  
 				}
@@ -559,7 +566,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 
 			//
-			// Validate the home pages in project info.  TextFileParser should have already checked whether the files exist.
+			// Validate the home pages.  TextFileParser should have already checked whether the files exist.
 			//
 
 			foreach (var outputTarget in EngineInstance.Output.Targets)
@@ -571,10 +578,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 					// If it's a source file instead of a HTML file...
 
-					if (htmlOutputTarget.ProjectInfo.HomePage != null &&
-						htmlOutputTarget.ProjectInfo.HomePageIsSourceFile)
+					if (htmlOutputTarget.OverridableSettings.HomePage != null &&
+						htmlOutputTarget.OverridableSettings.HomePageIsSourceFile)
 						{
-						AbsolutePath homePage = htmlOutputTarget.ProjectInfo.HomePage;
+						AbsolutePath homePage = htmlOutputTarget.OverridableSettings.HomePage;
 
 
 						// Check that it appears in a file source.
@@ -594,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							{
 							errorList.Add(
 								Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)", homePage),
-								htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+								htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
 								);
 
 							success = false;
@@ -612,7 +619,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 								{
 								errorList.Add(
 									Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsIgnored(file)", homePage),
-									htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+									htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
 									);
 
 								success = false;
@@ -629,7 +636,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							{
 							errorList.Add(
 								Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)", homePage),
-								htmlOutputTarget.ProjectInfo.HomePagePropertyLocation
+								htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
 								);
 
 							success = false;
@@ -679,9 +686,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 
 
-			// Global project info
+			// Project info
 
-			MergeProjectInfo(primaryConfig.ProjectInfo, secondaryConfig.ProjectInfo);
+			MergeInputSettings(primaryConfig.InputSettings, secondaryConfig.InputSettings);
+			MergeOutputSettings(primaryConfig.OutputSettings, secondaryConfig.OutputSettings);
 
 
 			// Input targets
@@ -848,54 +856,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		/* Function: MergeProjectInfo
-		 * 
-		 * Merges the settings of the secondary <ProjectInfo> into the primary one.  The primary <ProjectInfo> will only adopt the secondary 
-		 * settings which it does not already have set.  When merging you should start with your most important configuration and merge
-		 * others into it in order of importance.
-		 */
-		protected static void MergeProjectInfo (ProjectInfo primaryProjectInfo, ProjectInfo secondaryProjectInfo)
-			{
-			if (!primaryProjectInfo.TitlePropertyLocation.IsDefined)
-				{
-				primaryProjectInfo.Title = secondaryProjectInfo.Title;
-				primaryProjectInfo.TitlePropertyLocation = secondaryProjectInfo.TitlePropertyLocation;
-
-				// If we're using the secondary project info's title, we want to use its subtitle as well, even if it's undefined.  Setting only the
-				// title should reset the subtitle.
-				if (!primaryProjectInfo.SubtitlePropertyLocation.IsDefined)
-					{
-					primaryProjectInfo.Subtitle = secondaryProjectInfo.Subtitle;
-					primaryProjectInfo.SubtitlePropertyLocation = secondaryProjectInfo.SubtitlePropertyLocation;
-					}
-				}
-
-			if (!primaryProjectInfo.CopyrightPropertyLocation.IsDefined)
-				{
-				primaryProjectInfo.Copyright = secondaryProjectInfo.Copyright;
-				primaryProjectInfo.CopyrightPropertyLocation = secondaryProjectInfo.CopyrightPropertyLocation;
-				}
-
-			if (!primaryProjectInfo.TimestampCodePropertyLocation.IsDefined)
-				{
-				primaryProjectInfo.TimestampCode = secondaryProjectInfo.TimestampCode;
-				primaryProjectInfo.TimestampCodePropertyLocation = secondaryProjectInfo.TimestampCodePropertyLocation;
-				}
-
-			if (!primaryProjectInfo.StyleNamePropertyLocation.IsDefined)
-				{
-				primaryProjectInfo.StyleName = secondaryProjectInfo.StyleName;
-				primaryProjectInfo.StyleNamePropertyLocation = secondaryProjectInfo.StyleNamePropertyLocation;
-				}
-
-			if (!primaryProjectInfo.HomePagePropertyLocation.IsDefined)
-				{
-				primaryProjectInfo.HomePage = secondaryProjectInfo.HomePage;
-				primaryProjectInfo.HomePagePropertyLocation = secondaryProjectInfo.HomePagePropertyLocation;
-				}
-			}
-
-
 		/* Function: MergeInputTargets
 		 * 
 		 * Merges the settings of the secondary input target into the primary one.  The primary target will only adopt the secondary 
@@ -912,6 +872,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			if (primaryTarget.IsSameTarget(secondaryTarget) == false)
 				{  throw new Exception ("Cannot call MergeInputTargets() when they do not match with IsSameTarget().");  }
 			#endif
+
+			MergeInputSettings(primaryTarget.OverridableSettings, secondaryTarget.OverridableSettings);
 
 			if (primaryTarget is Targets.SourceFolder)
 				{
@@ -957,6 +919,17 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
+		/* Function: MergeInputSettings
+		 * 
+		 * Merges the settings of the secondary <OverridableInputSettings> into the primary one.  The primary one will only adopt
+		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
+		 * configuration and merge others into it in order of importance.
+		 */
+		protected static void MergeInputSettings (OverridableInputSettings primarySettings, OverridableInputSettings secondarySettings)
+			{
+			}
+
+
 		/* Function: MergeOutputTargets
 		 * 
 		 * Merges the settings of the secondary output target into the primary one.  The primary target will only adopt the secondary 
@@ -974,7 +947,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  throw new Exception ("Cannot call MergeOutputTargets() when they do not match with IsSameTarget().");  }
 			#endif
 
-			MergeProjectInfo(primaryTarget.ProjectInfo, secondaryTarget.ProjectInfo);
+			MergeOutputSettings(primaryTarget.OverridableSettings, secondaryTarget.OverridableSettings);
 
 			if (!primaryTarget.NumberPropertyLocation.IsDefined)
 			    {
@@ -993,6 +966,54 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				}
 			else
 				{  throw new NotImplementedException();  }
+			}
+
+
+		/* Function: MergeOutputSettings
+		 * 
+		 * Merges the settings of the secondary <OverridableOutputSettings> into the primary one.  The primary one will only adopt
+		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
+		 * configuration and merge others into it in order of importance.
+		 */
+		protected static void MergeOutputSettings (OverridableOutputSettings primarySettings, OverridableOutputSettings secondarySettings)
+			{
+			if (!primarySettings.TitlePropertyLocation.IsDefined)
+				{
+				primarySettings.Title = secondarySettings.Title;
+				primarySettings.TitlePropertyLocation = secondarySettings.TitlePropertyLocation;
+
+				// If we're using the secondary settings' title, we want to use its subtitle as well, even if it's undefined.  Setting only the
+				// title should reset the subtitle.
+				if (!primarySettings.SubtitlePropertyLocation.IsDefined)
+					{
+					primarySettings.Subtitle = secondarySettings.Subtitle;
+					primarySettings.SubtitlePropertyLocation = secondarySettings.SubtitlePropertyLocation;
+					}
+				}
+
+			if (!primarySettings.CopyrightPropertyLocation.IsDefined)
+				{
+				primarySettings.Copyright = secondarySettings.Copyright;
+				primarySettings.CopyrightPropertyLocation = secondarySettings.CopyrightPropertyLocation;
+				}
+
+			if (!primarySettings.TimestampCodePropertyLocation.IsDefined)
+				{
+				primarySettings.TimestampCode = secondarySettings.TimestampCode;
+				primarySettings.TimestampCodePropertyLocation = secondarySettings.TimestampCodePropertyLocation;
+				}
+
+			if (!primarySettings.StyleNamePropertyLocation.IsDefined)
+				{
+				primarySettings.StyleName = secondarySettings.StyleName;
+				primarySettings.StyleNamePropertyLocation = secondarySettings.StyleNamePropertyLocation;
+				}
+
+			if (!primarySettings.HomePagePropertyLocation.IsDefined)
+				{
+				primarySettings.HomePage = secondarySettings.HomePage;
+				primarySettings.HomePagePropertyLocation = secondarySettings.HomePagePropertyLocation;
+				}
 			}
 
 

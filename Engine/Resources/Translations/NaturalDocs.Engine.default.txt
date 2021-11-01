@@ -332,14 +332,14 @@ Project.txt.OutputHeaderText.multiline {{{
 # control systems.  You can enter absolute paths and they will be converted
 # automatically.
 #
-# You can override any of the project information settings under each entry,
-# so if you have multiple output folders you can give them each different
-# styles or subtitles.
+# You can override the Title, Subtitle, Copyright, Timestamp, Style, and Home
+# Page settings under each entry if desired, so if you have multiple output
+# folders you can give them each different styles or subtitles.
 }}}
 
 Project.txt.HTMLOutputFoldersSyntax.multiline {{{
 # HTML Output Folder: [path]
-#    [Project Information]
+#    [Overridden Properties]
 #
 #    Generates HTML documentation in the specified folder.
 }}}

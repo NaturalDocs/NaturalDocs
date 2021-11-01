@@ -1,8 +1,8 @@
 /* 
- * Class: CodeClear.NaturalDocs.Engine.Config.ProjectInfo
+ * Class: CodeClear.NaturalDocs.Engine.Config.OverridableOutputSettings
  * ____________________________________________________________________________
  * 
- * A class representing project information.
+ * A set of properties that apply to the output and can be set either globally or to a single output target.
  */
 
 // This file is part of Natural Docs, which is Copyright © 2003-2021 Code Clear LLC.
@@ -11,19 +11,17 @@
 
 
 using System;
-using CodeClear.NaturalDocs.Engine.Config;
-using CodeClear.NaturalDocs.Engine.Errors;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config
 	{
-	public class ProjectInfo
+	public class OverridableOutputSettings
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
-		public ProjectInfo ()
+		public OverridableOutputSettings ()
 			{
 			title = null;
 			subtitle = null;
@@ -40,7 +38,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			homePagePropertyLocation = PropertySource.NotDefined;
 			}
 
-		public ProjectInfo (ProjectInfo toCopy)
+		public OverridableOutputSettings (OverridableOutputSettings toCopy)
 			{
 			title = toCopy.title;
 			subtitle = toCopy.subtitle;
@@ -58,7 +56,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 			
 
-		/* Functoin: MakeTimestamp
+		/* Function: MakeTimestamp
 		 * Generates a time stamp from <TimestampCode> and the current date.  If <TimestampCode> is null this will also
 		 * return null.
 		 */
@@ -258,11 +256,11 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 
-		
+
 		// Group: Property Locations
 		// __________________________________________________________________________
-		
-		
+
+
 		/* Property: TitlePropertyLocation
 		 * Where the <Title> property is defined, or <PropertySource.NotDefined> if it isn't.
 		 */

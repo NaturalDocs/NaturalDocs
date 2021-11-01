@@ -237,7 +237,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{
-				// DEPENDENCY: This logic has to match Config.ProjectInfo.HomePageIsHTML
+				// DEPENDENCY: This logic has to match Config.OverridableOutputSettings.HomePageIsHTML
 
 				lock (accessLock)
 					{  
@@ -259,7 +259,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			{
 			get
 				{
-				// DEPENDENCY: This logic has to match Config.ProjectInfo.HomePageIsSourceFile
+				// DEPENDENCY: This logic has to match Config.OverridableOutputSettings.HomePageIsSourceFile
 
 				lock (accessLock)
 					{  

@@ -495,7 +495,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			string headerTitleHTML;
 			string headerSubtitleHTML;
 
-			if (Target.ProjectInfo.Title == null)
+			if (Target.OverridableSettings.Title == null)
 				{
 				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
@@ -503,19 +503,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			else
 				{
-				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.ProjectInfo.Title);
-				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.OverridableSettings.Title);
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.OverridableSettings.Title).ToHTML();
 
-				if (Target.ProjectInfo.Subtitle == null)
+				if (Target.OverridableSettings.Subtitle == null)
 					{  headerSubtitleHTML = null;  }
 				else
 					{
-					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.ProjectInfo.Subtitle).ToHTML();
+					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.OverridableSettings.Subtitle).ToHTML();
 					}
 				}
 
 			string timestampHTML = Target.BuildState.GeneratedTimestamp;
-			string copyrightHTML = Target.ProjectInfo.Copyright;
+			string copyrightHTML = Target.OverridableSettings.Copyright;
 
 			if (timestampHTML != null)
 				{  timestampHTML = timestampHTML.ToHTML();  }
@@ -642,7 +642,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			string headerTitleHTML;
 			string headerSubtitleHTML;
 
-			if (Target.ProjectInfo.Title == null)
+			if (Target.OverridableSettings.Title == null)
 				{
 				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.DefaultPageTitle");
 				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
@@ -650,19 +650,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				}
 			else
 				{
-				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.ProjectInfo.Title);
-				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
+				pageTitleText = Locale.Get("NaturalDocs.Engine", "HTML.PageTitle(projectTitle)", Target.OverridableSettings.Title);
+				headerTitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.OverridableSettings.Title).ToHTML();
 
-				if (Target.ProjectInfo.Subtitle == null)
+				if (Target.OverridableSettings.Subtitle == null)
 					{  headerSubtitleHTML = null;  }
 				else
 					{
-					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.ProjectInfo.Subtitle).ToHTML();
+					headerSubtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.OverridableSettings.Subtitle).ToHTML();
 					}
 				}
 
 			string timestampHTML = Target.BuildState.GeneratedTimestamp;
-			string copyrightHTML = Target.ProjectInfo.Copyright;
+			string copyrightHTML = Target.OverridableSettings.Copyright;
 
 			if (timestampHTML != null)
 				{  timestampHTML = timestampHTML.ToHTML();  }
@@ -681,11 +681,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			string titleHTML, subtitleHTML;
 
-			if (Target.ProjectInfo.Title != null)
+			if (Target.OverridableSettings.Title != null)
 				{
 				titleHTML = headerTitleHTML;
 
-				if (Target.ProjectInfo.Subtitle != null)
+				if (Target.OverridableSettings.Subtitle != null)
 					{  subtitleHTML = headerSubtitleHTML;  }
 				else
 					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHomeSubtitleIfTitleExists").ToHTML();  }
@@ -779,23 +779,23 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			// Gather and format project info
 
-			if (Target.ProjectInfo.Title == null)
+			if (Target.OverridableSettings.Title == null)
 				{
 				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.DefaultHeaderTitle").ToHTML();
 				}
 			else
 				{
-				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.ProjectInfo.Title).ToHTML();
+				titleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderTitle(projectTitle)", Target.OverridableSettings.Title).ToHTML();
 
-				if (Target.ProjectInfo.Subtitle != null)
-					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.ProjectInfo.Subtitle).ToHTML();  }
+				if (Target.OverridableSettings.Subtitle != null)
+					{  subtitleHTML = Locale.Get("NaturalDocs.Engine", "HTML.HeaderSubtitle(projectSubtitle)", Target.OverridableSettings.Subtitle).ToHTML();  }
 				}
 
 			if (Target.BuildState.GeneratedTimestamp != null)
 				{  timestampHTML = Target.BuildState.GeneratedTimestamp.ToHTML();  }
 			
-			if (Target.ProjectInfo.Copyright != null)
-				{  copyrightHTML = Target.ProjectInfo.Copyright.ToHTML();  }
+			if (Target.OverridableSettings.Copyright != null)
+				{  copyrightHTML = Target.OverridableSettings.Copyright.ToHTML();  }
 
 
 			// Update HomePageUsesTimestamp

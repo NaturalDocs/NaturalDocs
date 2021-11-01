@@ -76,23 +76,23 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 					if (lcIdentifier == "title")
 						{  
-						projectConfig.ProjectInfo.Title = value.ConvertCopyrightAndTrademark();
-						projectConfig.ProjectInfo.TitlePropertyLocation = propertyLocation;
+						projectConfig.OutputSettings.Title = value.ConvertCopyrightAndTrademark();
+						projectConfig.OutputSettings.TitlePropertyLocation = propertyLocation;
 						}
 					else if (subtitleRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.ProjectInfo.Subtitle = value.ConvertCopyrightAndTrademark();  
-						projectConfig.ProjectInfo.SubtitlePropertyLocation = propertyLocation;
+						projectConfig.OutputSettings.Subtitle = value.ConvertCopyrightAndTrademark();  
+						projectConfig.OutputSettings.SubtitlePropertyLocation = propertyLocation;
 						}
 					else if (lcIdentifier == "footer" || lcIdentifier == "copyright")
 						{  
-						projectConfig.ProjectInfo.Copyright = value.ConvertCopyrightAndTrademark();
-						projectConfig.ProjectInfo.CopyrightPropertyLocation = propertyLocation;
+						projectConfig.OutputSettings.Copyright = value.ConvertCopyrightAndTrademark();
+						projectConfig.OutputSettings.CopyrightPropertyLocation = propertyLocation;
 						}
 					else if (timestampRegex.IsMatch(lcIdentifier))
 						{  
-						projectConfig.ProjectInfo.TimestampCode = value;
-						projectConfig.ProjectInfo.TimestampCodePropertyLocation = propertyLocation;
+						projectConfig.OutputSettings.TimestampCode = value;
+						projectConfig.OutputSettings.TimestampCodePropertyLocation = propertyLocation;
 						}
 					// Otherwise just ignore the entry.
 					}

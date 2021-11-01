@@ -268,12 +268,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		/* Property: ProjectInfo
+		/* Property: OverridableSettings
 		 */
-		public Config.ProjectInfo ProjectInfo
+		public Config.OverridableOutputSettings OverridableSettings
 			{
 			get
-				{  return config.ProjectInfo;  }
+				{  return config.OverridableSettings;  }
 			}
 
 

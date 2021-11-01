@@ -18,8 +18,8 @@
 
 using System;
 using System.Text;
-using CodeClear.NaturalDocs.Engine.Config;
 using CodeClear.NaturalDocs.Engine.Errors;
+using CodeClear.NaturalDocs.Engine.Collections;
 
 
 namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
@@ -87,24 +87,26 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{  return false;  }
 
 				string lcIdentifier, value;
-				Target currentTarget =  null;
+				Targets.Input currentInputTarget = null;
+				Targets.Output currentOutputTarget =  null;
 
 				while (configFile.Get(out lcIdentifier, out value))
 					{
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 
 					if (GetTargetHeader(lcIdentifier, value, propertyLocation, out var target, errorList))
-						{  currentTarget = target;  }
-					else if (GetProjectInfoProperty(lcIdentifier, value, propertyLocation,
-																(currentTarget != null && currentTarget is Targets.Output ? 
-																	 (currentTarget as Targets.Output).ProjectInfo : projectConfig.ProjectInfo),
-																errorList))
-						{  }
-					else if (currentTarget != null && currentTarget is Targets.Input &&
-							   GetInputTargetProperty(lcIdentifier, value, propertyLocation, currentTarget as Targets.Input, errorList))
+						{  
+						currentInputTarget = target as Targets.Input;  // Will set to null if incorrect type
+						currentOutputTarget = target as Targets.Output;
+						}
+					else if (GetInputProperty(lcIdentifier, value, propertyLocation, currentInputTarget, errorList) ||
+							   GetOutputProperty(lcIdentifier, value, propertyLocation, currentOutputTarget, errorList))
 						{  }
 					else if (GetGlobalProperty(lcIdentifier, value, propertyLocation, errorList))
-						{  currentTarget = null;  }
+						{  
+						currentInputTarget = null;
+						currentOutputTarget = null;
+						}
 					else
 						{
 						errorList.Add (
@@ -248,102 +250,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 		    }
 
 
-		/* Function: GetProjectInfoProperty
+		/* Function: GetInputProperty
 		 * 
-		 * If the passed identifier is a property like Style that's part of <ProjectInfo>, adds it to the passed <ProjectInfo> object
-		 * and returns true.  This can be the global one in <projectConfig> or one attached to an output target.
+		 * If the passed identifier is an input property like Name or Encoding, adds it to the relevant object and returns true.  If
+		 * inputTarget is specified it will be added to that.  If it's null it will be added to <ProjectConfig.InputSettings>.
 		 * 
 		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
 		 * It only returns false for unrecognized identifiers.
 		 */
-		protected bool GetProjectInfoProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, ProjectInfo projectInfo,
-																ErrorList errorList)
-			{
-
-			// Title
-
-			if (lcIdentifier == "title")
-				{
-				projectInfo.Title = value.ConvertCopyrightAndTrademark();
-				projectInfo.TitlePropertyLocation = propertyLocation;
-				return true;
-				}
-
-
-			// Subtitle
-
-			else if (subtitleRegex.IsMatch(lcIdentifier))
-				{
-				projectInfo.Subtitle = value.ConvertCopyrightAndTrademark();
-				projectInfo.SubtitlePropertyLocation = propertyLocation;
-				return true;
-				}
-
-
-			// Copyright
-
-			else if (lcIdentifier == "copyright")
-				{
-				projectInfo.Copyright = value.ConvertCopyrightAndTrademark();
-				projectInfo.CopyrightPropertyLocation = propertyLocation;
-				return true;
-				}
-
-
-			// Timestamp
-
-			else if (timestampRegex.IsMatch(lcIdentifier))
-				{
-				projectInfo.TimestampCode = value;
-				projectInfo.TimestampCodePropertyLocation = propertyLocation;
-				return true;
-				}
-
-
-			// Style
-
-			else if (lcIdentifier == "style")
-				{
-				projectInfo.StyleName = value;
-				projectInfo.StyleNamePropertyLocation = propertyLocation;
-				return true;
-				}
-
-
-			// Home page
-
-			else if (homePageRegex.IsMatch(lcIdentifier))
-				{
-				Path path = value;
-
-				if (path.IsRelative)
-					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
-
-				if (!System.IO.File.Exists(path))
-					{  
-					errorList.Add(
-						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
-						propertyLocation);  
-					}
-
-				projectInfo.HomePage = (AbsolutePath)path;
-				projectInfo.HomePagePropertyLocation = propertyLocation;
-				return true;
-				}
-
-			else
-				{
-				return false;
-				}
-			}
-
-
-		/* Function: GetInputTargetProperty
-		 * If the passed identifier is a valid property for an input target, applies the property and returns true.  If the value is 
-		 * invalid it will add an error to <errorList> and still return true.  It will only return false if the identifier is unrecognized.
-		 */
-		protected bool GetInputTargetProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, 
-																 Targets.Input inputTarget, ErrorList errorList)
+		protected bool GetInputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+														Targets.Input inputTarget, ErrorList errorList)
 			{
 			if (lcIdentifier == "name")
 				{
@@ -364,6 +280,109 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				
 			else
 				{  return false;  }
+			}
+
+
+		/* Function: GetOutputProperty
+		 * 
+		 * If the passed identifier is an output property like Style, adds it to the relevant object and returns true.  If outputTarget
+		 * is specified it will be added to that.  If it's null it will be added to <ProjectConfig.OutputSettings>.
+		 * 
+		 * If it's a recognized identifier but there's a syntax error in the value it will add an error to <errorList> and still return true.
+		 * It only returns false for unrecognized identifiers.
+		 */
+		protected bool GetOutputProperty (string lcIdentifier, string value, PropertyLocation propertyLocation,
+														  Targets.Output outputTarget, ErrorList errorList)
+			{
+
+			// Title
+
+			if (lcIdentifier == "title")
+				{
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.Title = value.ConvertCopyrightAndTrademark();
+				outputSettings.TitlePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Subtitle
+
+			else if (subtitleRegex.IsMatch(lcIdentifier))
+				{
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.Subtitle = value.ConvertCopyrightAndTrademark();
+				outputSettings.SubtitlePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Copyright
+
+			else if (lcIdentifier == "copyright")
+				{
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.Copyright = value.ConvertCopyrightAndTrademark();
+				outputSettings.CopyrightPropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Timestamp
+
+			else if (timestampRegex.IsMatch(lcIdentifier))
+				{
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.TimestampCode = value;
+				outputSettings.TimestampCodePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Style
+
+			else if (lcIdentifier == "style")
+				{
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.StyleName = value;
+				outputSettings.StyleNamePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			// Home page
+
+			else if (homePageRegex.IsMatch(lcIdentifier))
+				{
+				Path path = value;
+
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				if (!System.IO.File.Exists(path))
+					{  
+					errorList.Add(
+						Locale.Get("NaturalDocs.Engine", "Project.txt.CantFindHomePageFile(name)", path), 
+						propertyLocation);  
+					}
+
+				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+
+				outputSettings.HomePage = (AbsolutePath)path;
+				outputSettings.HomePagePropertyLocation = propertyLocation;
+				return true;
+				}
+
+
+			else
+				{
+				return false;
+				}
 			}
 
 
@@ -489,7 +508,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			AppendFileHeader(output);			
 			
-			AppendGlobalProjectInfo(output);
+			AppendProjectInfo(output);
 			AppendSourceTargets(output, projectFolder);
 			AppendFilterTargets(output, projectFolder);
 			AppendImageTargets(output, projectFolder);
@@ -511,10 +530,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			}
 
 
-		/* Function: AppendGlobalProjectInfo
-		 * Appends the global <ProjectInfo> in <projectConfig> to the passed string.
+		/* Function: AppendProjectInfo
+		 * Appends the project information to the passed string, which includes the global <OverridableInputSettings> and
+		 * <OverridableOutputSettings>.
 		 */
-		protected void AppendGlobalProjectInfo (StringBuilder output)
+		protected void AppendProjectInfo (StringBuilder output)
 			{
 
 			// Header
@@ -525,28 +545,28 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			// Defined values
 
-			bool hasTitle = (projectConfig.ProjectInfo.TitlePropertyLocation.IsDefined &&
-									projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault &&
-									projectConfig.ProjectInfo.TitlePropertyLocation.Source != PropertySource.CommandLine);
-			bool hasSubtitle = (projectConfig.ProjectInfo.SubtitlePropertyLocation.IsDefined &&
-										projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault &&
-										projectConfig.ProjectInfo.SubtitlePropertyLocation.Source != PropertySource.CommandLine);
-			bool hasCopyright = (projectConfig.ProjectInfo.CopyrightPropertyLocation.IsDefined &&
-											projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault &&
-											projectConfig.ProjectInfo.CopyrightPropertyLocation.Source != PropertySource.CommandLine);
-			bool hasTimestampCode = (projectConfig.ProjectInfo.TimestampCodePropertyLocation.IsDefined &&
-													projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault &&
-													projectConfig.ProjectInfo.TimestampCodePropertyLocation.Source != PropertySource.CommandLine);
-			bool hasStyleName = (projectConfig.ProjectInfo.StyleNamePropertyLocation.IsDefined &&
-											 projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault &&
-											 projectConfig.ProjectInfo.StyleNamePropertyLocation.Source != PropertySource.CommandLine);
-			bool hasHomePage = (projectConfig.ProjectInfo.HomePagePropertyLocation.IsDefined &&
-											projectConfig.ProjectInfo.HomePagePropertyLocation.Source != PropertySource.SystemDefault &&
-											projectConfig.ProjectInfo.HomePagePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasTitle = (projectConfig.OutputSettings.TitlePropertyLocation.IsDefined &&
+									projectConfig.OutputSettings.TitlePropertyLocation.Source != PropertySource.SystemDefault &&
+									projectConfig.OutputSettings.TitlePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasSubtitle = (projectConfig.OutputSettings.SubtitlePropertyLocation.IsDefined &&
+										projectConfig.OutputSettings.SubtitlePropertyLocation.Source != PropertySource.SystemDefault &&
+										projectConfig.OutputSettings.SubtitlePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasCopyright = (projectConfig.OutputSettings.CopyrightPropertyLocation.IsDefined &&
+											projectConfig.OutputSettings.CopyrightPropertyLocation.Source != PropertySource.SystemDefault &&
+											projectConfig.OutputSettings.CopyrightPropertyLocation.Source != PropertySource.CommandLine);
+			bool hasTimestampCode = (projectConfig.OutputSettings.TimestampCodePropertyLocation.IsDefined &&
+													projectConfig.OutputSettings.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault &&
+													projectConfig.OutputSettings.TimestampCodePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasStyleName = (projectConfig.OutputSettings.StyleNamePropertyLocation.IsDefined &&
+											 projectConfig.OutputSettings.StyleNamePropertyLocation.Source != PropertySource.SystemDefault &&
+											 projectConfig.OutputSettings.StyleNamePropertyLocation.Source != PropertySource.CommandLine);
+			bool hasHomePage = (projectConfig.OutputSettings.HomePagePropertyLocation.IsDefined &&
+											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.SystemDefault &&
+											projectConfig.OutputSettings.HomePagePropertyLocation.Source != PropertySource.CommandLine);
 
 			if (hasTitle)
 				{  
-				output.AppendLine("Title: " + projectConfig.ProjectInfo.Title);
+				output.AppendLine("Title: " + projectConfig.OutputSettings.Title);
 
 				if (!hasSubtitle)
 					{  output.AppendLine();  }
@@ -554,34 +574,34 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					
 			if (hasSubtitle)
 				{
-				output.AppendLine("Subtitle: " + projectConfig.ProjectInfo.Subtitle);
+				output.AppendLine("Subtitle: " + projectConfig.OutputSettings.Subtitle);
 				output.AppendLine();
 				}
 					
 			if (hasCopyright)
 				{
-				output.AppendLine("Copyright: " + projectConfig.ProjectInfo.Copyright);
+				output.AppendLine("Copyright: " + projectConfig.OutputSettings.Copyright);
 				output.AppendLine();
 				}
 			
 			if (hasTimestampCode)
 				{  
-				output.AppendLine("Timestamp: " + projectConfig.ProjectInfo.TimestampCode);
+				output.AppendLine("Timestamp: " + projectConfig.OutputSettings.TimestampCode);
 				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
 				output.AppendLine();
 				}
 
 			if (hasStyleName)
 				{
-				output.AppendLine("Style: " + projectConfig.ProjectInfo.StyleName);
+				output.AppendLine("Style: " + projectConfig.OutputSettings.StyleName);
 				output.AppendLine();
 				}
 
 			if (hasHomePage)
 				{
-				Path relativePath = projectConfig.ProjectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				Path relativePath = projectConfig.OutputSettings.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
 				
-				output.AppendLine("Home Page: " + (relativePath != null ? relativePath : projectConfig.ProjectInfo.HomePage));
+				output.AppendLine("Home Page: " + (relativePath != null ? relativePath : projectConfig.OutputSettings.HomePage));
 				output.AppendLine();
 				}
 
@@ -632,40 +652,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			output.AppendLine();
 			output.AppendLine();
-			}
-
-
-		/* Function: AppendOverriddenProjectInfo
-		 * Appends the overridden <ProjectInfo> to the passed string.
-		 */
-		protected void AppendOverriddenProjectInfo (ProjectInfo projectInfo, StringBuilder output)
-			{
-			if (projectInfo.TitlePropertyLocation.IsDefined &&
-				projectInfo.TitlePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Title: " + projectInfo.Title);  }
-					
-			if (projectInfo.SubtitlePropertyLocation.IsDefined &&
-				projectInfo.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Subtitle: " + projectInfo.Subtitle);  }
-					
-			if (projectInfo.CopyrightPropertyLocation.IsDefined &&
-				projectInfo.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Copyright: " + projectInfo.Copyright);  }
-			
-			if (projectInfo.TimestampCodePropertyLocation.IsDefined &&
-				projectInfo.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Timestamp: " + projectInfo.TimestampCode);  }
-
-			if (projectInfo.StyleNamePropertyLocation.IsDefined &&
-				projectInfo.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Style: " + projectInfo.StyleName);   }
-
-			if (projectInfo.HomePagePropertyLocation.IsDefined &&
-				projectInfo.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
-				{  
-				Path relativePath = projectInfo.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
-				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : projectInfo.HomePage));
-				}
 			}
 
 
@@ -900,7 +886,42 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
-			AppendOverriddenProjectInfo(target.ProjectInfo, output);
+			AppendOverriddenOutputSettings(target.OverridableSettings, output);
+			}
+
+
+		/* Function: AppendOverriddenOutputSettings
+		 * Appends any defined <OverridableOutputSettings> to the passed string.  They will be indented because it is assumed
+		 * that they are appearing under an output target definition.
+		 */
+		protected void AppendOverriddenOutputSettings (OverridableOutputSettings outputSettings, StringBuilder output)
+			{
+			if (outputSettings.TitlePropertyLocation.IsDefined &&
+				outputSettings.TitlePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Title: " + outputSettings.Title);  }
+					
+			if (outputSettings.SubtitlePropertyLocation.IsDefined &&
+				outputSettings.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Subtitle: " + outputSettings.Subtitle);  }
+					
+			if (outputSettings.CopyrightPropertyLocation.IsDefined &&
+				outputSettings.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Copyright: " + outputSettings.Copyright);  }
+			
+			if (outputSettings.TimestampCodePropertyLocation.IsDefined &&
+				outputSettings.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Timestamp: " + outputSettings.TimestampCode);  }
+
+			if (outputSettings.StyleNamePropertyLocation.IsDefined &&
+				outputSettings.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Style: " + outputSettings.StyleName);   }
+
+			if (outputSettings.HomePagePropertyLocation.IsDefined &&
+				outputSettings.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
+				{  
+				Path relativePath = outputSettings.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : outputSettings.HomePage));
+				}
 			}
 
 

@@ -40,9 +40,10 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		 * Loads the information in <Config.nd> and returns whether it was successful.  If not all the out parameters will still 
 		 * return objects, they will just be empty.  
 		 */
-		public bool Load (Path filename, out Config.ProjectInfo projectInfo, out List<Style> styles, out List<FileSourceInfo> fileSourceInfoList)
+		public bool Load (Path filename, out Config.OverridableOutputSettings overridableSettings, out List<Style> styles, 
+								 out List<FileSourceInfo> fileSourceInfoList)
 			{
-			projectInfo = new Config.ProjectInfo();
+			overridableSettings = new Config.OverridableOutputSettings();
 			styles = new List<Style>();
 			fileSourceInfoList = new List<FileSourceInfo>();
 
@@ -61,20 +62,20 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 					// [String: Project Timestamp Code or null]
 					// [String: Project Home Page Path (absolute) or null]
 
-					projectInfo.Title = binaryFile.ReadString();
-					projectInfo.TitlePropertyLocation = Config.PropertySource.PreviousRun;
+					overridableSettings.Title = binaryFile.ReadString();
+					overridableSettings.TitlePropertyLocation = Config.PropertySource.PreviousRun;
 
-					projectInfo.Subtitle = binaryFile.ReadString();
-					projectInfo.SubtitlePropertyLocation = Config.PropertySource.PreviousRun;
+					overridableSettings.Subtitle = binaryFile.ReadString();
+					overridableSettings.SubtitlePropertyLocation = Config.PropertySource.PreviousRun;
 
-					projectInfo.Copyright = binaryFile.ReadString();
-					projectInfo.CopyrightPropertyLocation = Config.PropertySource.PreviousRun;
+					overridableSettings.Copyright = binaryFile.ReadString();
+					overridableSettings.CopyrightPropertyLocation = Config.PropertySource.PreviousRun;
 
-					projectInfo.TimestampCode = binaryFile.ReadString();
-					projectInfo.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
+					overridableSettings.TimestampCode = binaryFile.ReadString();
+					overridableSettings.TimestampCodePropertyLocation = Config.PropertySource.PreviousRun;
 
-					projectInfo.HomePage = (AbsolutePath)binaryFile.ReadString();
-					projectInfo.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
+					overridableSettings.HomePage = (AbsolutePath)binaryFile.ReadString();
+					overridableSettings.HomePagePropertyLocation= Config.PropertySource.PreviousRun;
 
 
 					// [String: Style Path]
@@ -163,8 +164,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 						stylePath = binaryFile.ReadString();
 						}
 
-					projectInfo.StyleName = styles[styles.Count - 1].Name;
-					projectInfo.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
+					overridableSettings.StyleName = styles[styles.Count - 1].Name;
+					overridableSettings.StyleNamePropertyLocation = Config.PropertySource.PreviousRun;
 
 
 					// [Int32: Source FileSource Number] [String: Source FileSource UniqueIDString]
@@ -212,7 +213,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 
 			if (result == false)
 				{
-				projectInfo = new Config.ProjectInfo();
+				overridableSettings = new Config.OverridableOutputSettings();
 				styles.Clear();
 				fileSourceInfoList.Clear();
 				}
@@ -224,7 +225,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 		/* Function: Save
 		 * Saves the passed information in <Config.nd>.
 		 */
-		public void Save (Path filename, Config.ProjectInfo projectInfo, List<Style> styles, List<FileSourceInfo> fileSourceInfoList)
+		public void Save (Path filename, Config.OverridableOutputSettings overridableSettings, List<Style> styles, 
+								  List<FileSourceInfo> fileSourceInfoList)
 			{
 			using (BinaryFile binaryFile = new BinaryFile())
 				{
@@ -236,11 +238,11 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML.ConfigFiles
 				// [String: Project Timestamp Code or null]
 				// [String: Project Home Page Path (absolute) or null]
 
-				binaryFile.WriteString(projectInfo.Title);
-				binaryFile.WriteString(projectInfo.Subtitle);
-				binaryFile.WriteString(projectInfo.Copyright);
-				binaryFile.WriteString(projectInfo.TimestampCode);
-				binaryFile.WriteString(projectInfo.HomePage);
+				binaryFile.WriteString(overridableSettings.Title);
+				binaryFile.WriteString(overridableSettings.Subtitle);
+				binaryFile.WriteString(overridableSettings.Copyright);
+				binaryFile.WriteString(overridableSettings.TimestampCode);
+				binaryFile.WriteString(overridableSettings.HomePage);
 
 
 				// [String: Style Path]

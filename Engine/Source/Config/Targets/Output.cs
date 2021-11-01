@@ -25,7 +25,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public Output (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			projectInfo = new ProjectInfo();
+			overridableSettings = new OverridableOutputSettings();
 
 			number = 0;
 			numberPropertyLocation = PropertySource.NotDefined;
@@ -33,7 +33,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		public Output (Output toCopy) : base (toCopy)
 			{
-			projectInfo = new ProjectInfo(toCopy.projectInfo);
+			overridableSettings = new OverridableOutputSettings(toCopy.overridableSettings);
 
 			number = toCopy.number;
 			numberPropertyLocation = toCopy.numberPropertyLocation;
@@ -44,7 +44,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		/* Function: IsSameTarget
 		 * Override to determine whether the two output targets are fundamentally the same.  Only primary identifying properties
 		 * should be compared, so two <HTMLOutputFolders> should return true if they point to the same folder, and secondary
-		 * properties like those in <ProjectInfo> are ignored.
+		 * properties like those in <OverridableSettings> are ignored.
 		 */
 		public abstract bool IsSameTarget (Output other);
 			
@@ -54,13 +54,15 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 
 
-		/* Property: ProjectInfo
-		 * The <ProjectInfo> for this output target.  The object will always be defined, even if none of its properties are.
+		/* Property: OverridableSettings
+		 * The <OverridableOutputSettings> for this target.  These are settings that can be specified either here or in the
+		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
+		 * are.
 		 */
-		public ProjectInfo ProjectInfo
+		public OverridableOutputSettings OverridableSettings
 			{
 			get
-				{  return projectInfo;  }
+				{  return overridableSettings;  }
 			}
 
 
@@ -94,7 +96,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 
-		protected ProjectInfo projectInfo;
+		protected OverridableOutputSettings overridableSettings;
 
 		protected int number;
 		protected PropertyLocation numberPropertyLocation;

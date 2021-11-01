@@ -31,7 +31,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			projectConfigFolder = new Path();
 			workingDataFolder = new Path();
 
-			projectInfo = new ProjectInfo();
+			inputSettings = new OverridableInputSettings();
+			outputSettings = new OverridableOutputSettings();
+
+			inputTargets = new List<Targets.Input>();
+			filterTargets = new List<Targets.Filter>();
+			outputTargets = new List<Targets.Output>();
 
 			tabWidth = 0;
 			documentedOnly = false;
@@ -44,10 +49,6 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			documentedOnlyPropertyLocation = PropertySource.NotDefined;
 			autoGroupPropertyLocation = PropertySource.NotDefined;
 			shrinkFilesPropertyLocation = PropertySource.NotDefined;
-
-			inputTargets = new List<Targets.Input>();
-			filterTargets = new List<Targets.Filter>();
-			outputTargets = new List<Targets.Output>();
 			}
 
 
@@ -88,14 +89,24 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  workingDataFolder = value;  }
 			}
 
-		/* Property: ProjectInfo
-		 * The <ProjectInfo> that applies to the entire project.  The object will always be defined, though the properties inside it may
-		 * not be.
+		/* Property: InputSettings
+		 * The <OverridableInputSettings> that apply to the entire project.  Individual input targets may override its properties.
+		 * This object will always be defined, though the properties inside it may not be.
 		 */
-		public ProjectInfo ProjectInfo
+		public OverridableInputSettings InputSettings
 			{
 			get
-				{  return projectInfo;  }
+				{  return inputSettings;  }
+			}
+
+		/* Property: OutputSettings
+		 * The <OverridableOutputSettings> that apply to the entire project.  Individual output targets may override its properties.
+		 * This object will always be defined, though the properties inside it may not be.
+		 */
+		public OverridableOutputSettings OutputSettings
+			{
+			get
+				{  return outputSettings;  }
 			}
 
 		/* Property: InputTargets
@@ -255,7 +266,12 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		protected Path projectConfigFolder;
 		protected Path workingDataFolder;
 
-		protected ProjectInfo projectInfo;
+		protected OverridableInputSettings inputSettings;
+		protected OverridableOutputSettings outputSettings;
+
+		protected List<Targets.Input> inputTargets;
+		protected List<Targets.Filter> filterTargets;
+		protected List<Targets.Output> outputTargets;
 
 		protected int tabWidth;
 		protected bool documentedOnly;
@@ -264,15 +280,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		protected PropertyLocation projectConfigFolderPropertyLocation;
 		protected PropertyLocation workingDataFolderPropertyLocation;
-		protected PropertyLocation globalStyleNamePropertyLocation;
 		protected PropertyLocation tabWidthPropertyLocation;
 		protected PropertyLocation documentedOnlyPropertyLocation;
 		protected PropertyLocation autoGroupPropertyLocation;
 		protected PropertyLocation shrinkFilesPropertyLocation;
 
-		protected List<Targets.Input> inputTargets;
-		protected List<Targets.Filter> filterTargets;
-		protected List<Targets.Output> outputTargets;
-		
 		}
 	}

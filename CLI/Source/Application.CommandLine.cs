@@ -525,8 +525,8 @@ namespace CodeClear.NaturalDocs.CLI
 						}
 					else
 						{
-						commandLineConfig.ProjectInfo.StyleName = styleName;
-						commandLineConfig.ProjectInfo.StyleNamePropertyLocation = PropertySource.CommandLine;
+						commandLineConfig.OutputSettings.StyleName = styleName;
+						commandLineConfig.OutputSettings.StyleNamePropertyLocation = PropertySource.CommandLine;
 						}
 					}
 					

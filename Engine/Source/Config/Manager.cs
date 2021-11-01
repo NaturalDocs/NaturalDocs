@@ -7,7 +7,7 @@
  * 
  * Topic: Usage
  * 
- *		- Create a <ProjectInfo> object with the command line configuration.  At minimum the project config folder must be set.
+ *		- Create a <ProjectConfig> object with the command line configuration.  At minimum the project config folder must be set.
  *		
  *		- Call <Engine.Instance.Start()>, which will start this module.
  *		  
@@ -57,8 +57,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			systemDefaultConfig.ShrinkFiles = true;
 			systemDefaultConfig.ShrinkFilesPropertyLocation = PropertySource.SystemDefault;
 
-			systemDefaultConfig.ProjectInfo.StyleName = "Default";
-			systemDefaultConfig.ProjectInfo.StyleNamePropertyLocation = PropertySource.SystemDefault;
+			systemDefaultConfig.OutputSettings.StyleName = "Default";
+			systemDefaultConfig.OutputSettings.StyleNamePropertyLocation = PropertySource.SystemDefault;
 			}
 
 
