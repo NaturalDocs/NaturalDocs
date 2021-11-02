@@ -15,34 +15,46 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class Input : Target
+	abstract public class Input
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public Input (Files.InputType type, PropertyLocation propertyLocation) : base (propertyLocation)
+		public Input (Files.InputType type, PropertyLocation propertyLocation)
 			{
 			this.type = type;
 			this.number = 0;
 
 			this.overridableSettings = new OverridableInputSettings();
 
+			this.propertyLocation = propertyLocation;
 			this.numberPropertyLocation = PropertySource.NotDefined;
 			}
 
 
-		public Input (Input toCopy) : base (toCopy)
+		public Input (Input toCopy)
 			{
-			overridableSettings = new OverridableInputSettings(toCopy.overridableSettings);
+			this.type = toCopy.type;
+			this.number = toCopy.number;
 
-			number = toCopy.number;
-			numberPropertyLocation = toCopy.numberPropertyLocation;
+			this.overridableSettings = new OverridableInputSettings(toCopy.overridableSettings);
+
+			this.propertyLocation = toCopy.propertyLocation;
+			this.numberPropertyLocation = toCopy.numberPropertyLocation;
 			}
 
 
 		abstract public Input Duplicate ();
+
+
+		/* Function: Validate
+		 * Override to add errors if there are any problems with the target's properties, such as a folder not existing.
+		 * TargetIndex is passed so that you may include it in the error's Property field, such as
+		 * "InputTargets[0].Folder".
+		 */
+		public abstract bool Validate (Errors.ErrorList errorList, int targetIndex);
 
 
 		/* Function: IsSameTarget
@@ -98,6 +110,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 
 
+		/* Property: PropertyLocation
+		 * Where the input target is defined.
+		 */
+		public PropertyLocation PropertyLocation
+			{
+			get
+				{  return propertyLocation;  }
+			}
+
+
 		/* Property: NumberPropertyLocation
 		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -119,6 +141,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 
 		protected OverridableInputSettings overridableSettings;
 
+		protected PropertyLocation propertyLocation;
 		protected PropertyLocation numberPropertyLocation;
 		
 		}

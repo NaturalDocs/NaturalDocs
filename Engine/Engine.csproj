@@ -179,7 +179,6 @@
     <Compile Include="Source\CommandLine.cs" />
     <Compile Include="Source\Config\ConfigFiles\LegacyMenuFileParser.cs" />
     <Compile Include="Source\Config\ConfigFiles\BinaryFileParser.cs" />
-    <Compile Include="Source\Config\Target.cs" />
     <Compile Include="Source\Config\ConfigFiles\TextFileParser.cs" />
     <Compile Include="Source\Config\Targets\IgnoredSourceFolderPattern.cs" />
     <Compile Include="Source\Config\Targets\IgnoredSourceFolder.cs" />
