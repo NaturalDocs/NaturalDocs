@@ -15,31 +15,27 @@ using System;
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class Input
+	abstract public class Input : OverridableInputSettings
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public Input (Files.InputType type, PropertyLocation propertyLocation)
+		public Input (Files.InputType type, PropertyLocation propertyLocation) : base ()
 			{
 			this.type = type;
 			this.number = 0;
-
-			this.overridableSettings = new OverridableInputSettings();
 
 			this.propertyLocation = propertyLocation;
 			this.numberPropertyLocation = PropertySource.NotDefined;
 			}
 
 
-		public Input (Input toCopy)
+		public Input (Input toCopy) : base (toCopy)
 			{
 			this.type = toCopy.type;
 			this.number = toCopy.number;
-
-			this.overridableSettings = new OverridableInputSettings(toCopy.overridableSettings);
 
 			this.propertyLocation = toCopy.propertyLocation;
 			this.numberPropertyLocation = toCopy.numberPropertyLocation;
@@ -93,18 +89,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
-		/* Property: OverridableSettings
-		 * The <OverridableIntputSettings> for this target.  These are settings that can be specified either here or in the
-		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
-		 * are.
-		 */
-		public OverridableInputSettings OverridableSettings
-			{
-			get
-				{  return overridableSettings;  }
-			}
-
-
 
 		// Group: Property Locations
 		// __________________________________________________________________________
@@ -138,8 +122,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		protected Files.InputType type;
 		protected int number;
-
-		protected OverridableInputSettings overridableSettings;
 
 		protected PropertyLocation propertyLocation;
 		protected PropertyLocation numberPropertyLocation;

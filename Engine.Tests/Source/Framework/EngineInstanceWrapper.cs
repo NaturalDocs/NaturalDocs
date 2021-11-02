@@ -188,20 +188,20 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 			
 			if (outputTitle != null)
 				{
-				outputTarget.OverridableSettings.Title = outputTitle;
-				outputTarget.OverridableSettings.TitlePropertyLocation = Config.PropertySource.CommandLine;
+				outputTarget.Title = outputTitle;
+				outputTarget.TitlePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			if (outputSubtitle != null)
 				{
-				outputTarget.OverridableSettings.Subtitle = outputSubtitle;
-				outputTarget.OverridableSettings.SubtitlePropertyLocation = Config.PropertySource.CommandLine;
+				outputTarget.Subtitle = outputSubtitle;
+				outputTarget.SubtitlePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			if (outputStyle != null)
 				{
-				outputTarget.OverridableSettings.StyleName = outputStyle;
-				outputTarget.OverridableSettings.StyleNamePropertyLocation = Config.PropertySource.CommandLine;
+				outputTarget.StyleName = outputStyle;
+				outputTarget.StyleNamePropertyLocation = Config.PropertySource.CommandLine;
 				}
 
 			config.OutputTargets.Add(outputTarget);

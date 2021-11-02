@@ -268,12 +268,12 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			}
 
 
-		/* Property: OverridableSettings
+		/* Property: Config
 		 */
-		public Config.OverridableOutputSettings OverridableSettings
+		public Config.Targets.HTMLOutputFolder Config
 			{
 			get
-				{  return config.OverridableSettings;  }
+				{  return config;  }
 			}
 
 

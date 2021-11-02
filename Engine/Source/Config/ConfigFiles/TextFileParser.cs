@@ -341,7 +341,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			if (lcIdentifier == "title")
 				{
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.Title = value.ConvertCopyrightAndTrademark();
 				outputSettings.TitlePropertyLocation = propertyLocation;
@@ -353,7 +353,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (subtitleRegex.IsMatch(lcIdentifier))
 				{
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.Subtitle = value.ConvertCopyrightAndTrademark();
 				outputSettings.SubtitlePropertyLocation = propertyLocation;
@@ -365,7 +365,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (lcIdentifier == "copyright")
 				{
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.Copyright = value.ConvertCopyrightAndTrademark();
 				outputSettings.CopyrightPropertyLocation = propertyLocation;
@@ -377,7 +377,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (timestampRegex.IsMatch(lcIdentifier))
 				{
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.TimestampCode = value;
 				outputSettings.TimestampCodePropertyLocation = propertyLocation;
@@ -389,7 +389,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 
 			else if (lcIdentifier == "style")
 				{
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.StyleName = value;
 				outputSettings.StyleNamePropertyLocation = propertyLocation;
@@ -413,7 +413,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 						propertyLocation);  
 					}
 
-				var outputSettings = (outputTarget != null ? outputTarget.OverridableSettings : projectConfig.OutputSettings);
+				var outputSettings = outputTarget ?? projectConfig.OutputSettings;
 
 				outputSettings.HomePage = (AbsolutePath)path;
 				outputSettings.HomePagePropertyLocation = propertyLocation;
@@ -928,41 +928,40 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			Path relativePath = target.Folder.MakeRelativeTo(projectFolder);
 			output.AppendLine( (relativePath != null ? relativePath : target.Folder) );
 
-			AppendOverriddenOutputSettings(target.OverridableSettings, output);
+			AppendOverriddenOutputSettings(target, output);
 			}
 
 
 		/* Function: AppendOverriddenOutputSettings
-		 * Appends any defined <OverridableOutputSettings> to the passed string.  They will be indented because it is assumed
-		 * that they are appearing under an output target definition.
+		 * Appends any <OverridableOutputSettings> defined in the output target to the passed string.
 		 */
-		protected void AppendOverriddenOutputSettings (OverridableOutputSettings outputSettings, StringBuilder output)
+		protected void AppendOverriddenOutputSettings (Targets.Output outputTarget, StringBuilder output)
 			{
-			if (outputSettings.TitlePropertyLocation.IsDefined &&
-				outputSettings.TitlePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Title: " + outputSettings.Title);  }
+			if (outputTarget.TitlePropertyLocation.IsDefined &&
+				outputTarget.TitlePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Title: " + outputTarget.Title);  }
 					
-			if (outputSettings.SubtitlePropertyLocation.IsDefined &&
-				outputSettings.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Subtitle: " + outputSettings.Subtitle);  }
+			if (outputTarget.SubtitlePropertyLocation.IsDefined &&
+				outputTarget.SubtitlePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Subtitle: " + outputTarget.Subtitle);  }
 					
-			if (outputSettings.CopyrightPropertyLocation.IsDefined &&
-				outputSettings.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Copyright: " + outputSettings.Copyright);  }
+			if (outputTarget.CopyrightPropertyLocation.IsDefined &&
+				outputTarget.CopyrightPropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Copyright: " + outputTarget.Copyright);  }
 			
-			if (outputSettings.TimestampCodePropertyLocation.IsDefined &&
-				outputSettings.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Timestamp: " + outputSettings.TimestampCode);  }
+			if (outputTarget.TimestampCodePropertyLocation.IsDefined &&
+				outputTarget.TimestampCodePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Timestamp: " + outputTarget.TimestampCode);  }
 
-			if (outputSettings.StyleNamePropertyLocation.IsDefined &&
-				outputSettings.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
-				{  output.AppendLine("   Style: " + outputSettings.StyleName);   }
+			if (outputTarget.StyleNamePropertyLocation.IsDefined &&
+				outputTarget.StyleNamePropertyLocation.Source != PropertySource.SystemDefault)
+				{  output.AppendLine("   Style: " + outputTarget.StyleName);   }
 
-			if (outputSettings.HomePagePropertyLocation.IsDefined &&
-				outputSettings.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
+			if (outputTarget.HomePagePropertyLocation.IsDefined &&
+				outputTarget.HomePagePropertyLocation.Source != PropertySource.SystemDefault)
 				{  
-				Path relativePath = outputSettings.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
-				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : outputSettings.HomePage));
+				Path relativePath = outputTarget.HomePage.MakeRelativeTo(projectConfig.ProjectConfigFolder);
+				output.AppendLine("   Home Page: " + (relativePath != null ? relativePath : outputTarget.HomePage));
 				}
 			}
 

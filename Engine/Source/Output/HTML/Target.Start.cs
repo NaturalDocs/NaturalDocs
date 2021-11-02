@@ -44,17 +44,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// Load and validate the styles, including any inherited styles.
 			//
 
-			string styleName = config.OverridableSettings.StyleName;
+			string styleName = config.StyleName;
 			Styles.ConfigFiles.TextFileParser styleParser = new Styles.ConfigFiles.TextFileParser();
 
 			if (styleName == null)
 				{
-				style = EngineInstance.Styles.LoadStyle("Default", errorList, Config.PropertySource.SystemDefault);
+				style = EngineInstance.Styles.LoadStyle("Default", errorList, Engine.Config.PropertySource.SystemDefault);
 				}
 
 			else if (EngineInstance.Styles.StyleExists(styleName))
 				{  
-				style = EngineInstance.Styles.LoadStyle(styleName, errorList, config.OverridableSettings.StyleNamePropertyLocation);
+				style = EngineInstance.Styles.LoadStyle(styleName, errorList, config.StyleNamePropertyLocation);
 				}
 
 			// Check if it's an empty folder we want to generate a default Style.txt for
@@ -64,19 +64,19 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 				style = new Styles.Advanced( EngineInstance.Config.ProjectConfigFolder + '/' + styleName + "/Style.txt" );
 
 				// Inherit Default so everything still works before it's filled out.
-				style.AddInheritedStyle("Default", Config.PropertySource.SystemGenerated);
+				style.AddInheritedStyle("Default", Engine.Config.PropertySource.SystemGenerated);
 
 				if (!styleParser.Save((Styles.Advanced)style, errorList, false))
 					{  return false;  }
 
 				// Now we have to reload it so it loads the inherited style as well.
-				style = EngineInstance.Styles.LoadStyle(styleName, errorList, config.OverridableSettings.StyleNamePropertyLocation);
+				style = EngineInstance.Styles.LoadStyle(styleName, errorList, config.StyleNamePropertyLocation);
 				}
 
 			else
 				{
 				errorList.Add( Locale.Get("NaturalDocs.Engine", "Style.txt.CantFindStyle(name)", styleName), 
-									 config.OverridableSettings.StyleNamePropertyLocation );
+									 config.StyleNamePropertyLocation );
 				return false;
 				}
 
@@ -91,33 +91,33 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			//
 
 			ConfigFiles.BinaryConfigParser binaryConfigParser = new ConfigFiles.BinaryConfigParser();
-			Config.OverridableOutputSettings previousOverridableSettings;
+			Config.OverridableOutputSettings previousOutputSettings;
 			List<Style> previousStyles;
 			List<FileSourceInfo> previousFileSourceInfoList;
 			bool hasBinaryConfigFile = false;
 			
 			if (!EngineInstance.HasIssues( StartupIssues.NeedToStartFresh ))
 				{
-				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousOverridableSettings, 
+				hasBinaryConfigFile = binaryConfigParser.Load(WorkingDataFolder + "/Config.nd", out previousOutputSettings, 
 																					out previousStyles, out previousFileSourceInfoList);
 				}
 			else // start fresh
 				{
-				previousOverridableSettings = new Config.OverridableOutputSettings();
+				previousOutputSettings = new Config.OverridableOutputSettings();
 				previousStyles = new List<Style>();
 				previousFileSourceInfoList = new List<FileSourceInfo>();
 				}
 
 
 			//
-			// Compare to the previous title, subtitle, and copyright.
+			// Compare to the previous project title, subtitle, and copyright.
 			//
 
 			// We don't care about timestamp or home page here since their changes are detected separately.
 			bool titlesAndCopyrightChanged = (!hasBinaryConfigFile ||
-																OverridableSettings.Title != previousOverridableSettings.Title ||
-																OverridableSettings.Subtitle != previousOverridableSettings.Subtitle ||
-																OverridableSettings.Copyright != previousOverridableSettings.Copyright);
+																Config.Title != previousOutputSettings.Title ||
+																Config.Subtitle != previousOutputSettings.Subtitle ||
+																Config.Copyright != previousOutputSettings.Copyright);
 
 			
 			//
@@ -376,7 +376,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 					};
 				}
 
-			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", OverridableSettings, stylesWithInheritance, fileSourceInfoList);
+			binaryConfigParser.Save(WorkingDataFolder + "/Config.nd", Config, stylesWithInheritance, fileSourceInfoList);
 
 
 			//
@@ -385,8 +385,8 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 			AbsolutePath homePage;
 
-			if (OverridableSettings.HomePage != null)
-				{  homePage = OverridableSettings.HomePage;  }
+			if (Config.HomePage != null)
+				{  homePage = Config.HomePage;  }
 			else
 				{  homePage = Style.HomePageOf(stylesWithInheritance);  }
 
@@ -417,7 +417,7 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			// We do it here instead of as needed because there are two places it could be used (the frame page and the home page)
 			// and we want to avoid the admittedly unlikely possibility that Natural Docs can be building around midnight and use one
 			// date for one and another for the other.
-			string newTimestamp = OverridableSettings.MakeTimestamp();
+			string newTimestamp = Config.MakeTimestamp();
 			bool timestampChanged = (newTimestamp != buildState.GeneratedTimestamp);
 
 			buildState.GeneratedTimestamp = newTimestamp;

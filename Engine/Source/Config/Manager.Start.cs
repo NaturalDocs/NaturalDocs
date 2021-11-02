@@ -402,7 +402,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  
 				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
 				// been saved without them.
-				MergeInputSettings(target.OverridableSettings, combinedConfig.InputSettings);
+				MergeInputSettings(target, combinedConfig.InputSettings);
 
 				EngineInstance.Files.AddFileSource(CreateFileSource(target));  
 				}
@@ -464,7 +464,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{
 				// Merge the project-wide settings into them so they have a complete configuration.  The configuration files have already
 				// been saved without them.
-				MergeOutputSettings(target.OverridableSettings, combinedConfig.OutputSettings);
+				MergeOutputSettings(target, combinedConfig.OutputSettings);
 
 				EngineInstance.Output.AddTarget(CreateOutputTarget(target));  
 				}
@@ -578,10 +578,10 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 					// If it's a source file instead of a HTML file...
 
-					if (htmlOutputTarget.OverridableSettings.HomePage != null &&
-						htmlOutputTarget.OverridableSettings.HomePageIsSourceFile)
+					if (htmlOutputTarget.Config.HomePage != null &&
+						htmlOutputTarget.Config.HomePageIsSourceFile)
 						{
-						AbsolutePath homePage = htmlOutputTarget.OverridableSettings.HomePage;
+						AbsolutePath homePage = htmlOutputTarget.Config.HomePage;
 
 
 						// Check that it appears in a file source.
@@ -601,7 +601,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							{
 							errorList.Add(
 								Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsntInSourceFolders(file)", homePage),
-								htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
+								htmlOutputTarget.Config.HomePagePropertyLocation
 								);
 
 							success = false;
@@ -619,7 +619,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 								{
 								errorList.Add(
 									Locale.Get("NaturalDocs.Engine", "Error.HomePageSourceFileIsIgnored(file)", homePage),
-									htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
+									htmlOutputTarget.Config.HomePagePropertyLocation
 									);
 
 								success = false;
@@ -636,7 +636,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 							{
 							errorList.Add(
 								Locale.Get("NaturalDocs.Engine", "Error.HomePageIsntASourceFileOrHTML(file)", homePage),
-								htmlOutputTarget.OverridableSettings.HomePagePropertyLocation
+								htmlOutputTarget.Config.HomePagePropertyLocation
 								);
 
 							success = false;
@@ -873,7 +873,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  throw new Exception ("Cannot call MergeInputTargets() when they do not match with IsSameTarget().");  }
 			#endif
 
-			MergeInputSettings(primaryTarget.OverridableSettings, secondaryTarget.OverridableSettings);
+			MergeInputSettings(primaryTarget, secondaryTarget);
 
 			if (primaryTarget is Targets.SourceFolder)
 				{
@@ -924,6 +924,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Merges the settings of the secondary <OverridableInputSettings> into the primary one.  The primary one will only adopt
 		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
 		 * configuration and merge others into it in order of importance.
+		 * 
+		 * Note that <Targets.Input> is derived from <OverridableInputSettings> so you can pass targets as one or both parameters.
 		 */
 		protected static void MergeInputSettings (OverridableInputSettings primarySettings, OverridableInputSettings secondarySettings)
 			{
@@ -947,7 +949,7 @@ namespace CodeClear.NaturalDocs.Engine.Config
 				{  throw new Exception ("Cannot call MergeOutputTargets() when they do not match with IsSameTarget().");  }
 			#endif
 
-			MergeOutputSettings(primaryTarget.OverridableSettings, secondaryTarget.OverridableSettings);
+			MergeOutputSettings(primaryTarget, secondaryTarget);
 
 			if (!primaryTarget.NumberPropertyLocation.IsDefined)
 			    {
@@ -974,6 +976,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		 * Merges the settings of the secondary <OverridableOutputSettings> into the primary one.  The primary one will only adopt
 		 * the secondary settings which it does not already have set.  When merging you should start with your most important 
 		 * configuration and merge others into it in order of importance.
+		 * 
+		 * Note that <Targets.Output> is derived from <OverridableOutputSettings> so you can pass targets as one or both parameters.
 		 */
 		protected static void MergeOutputSettings (OverridableOutputSettings primarySettings, OverridableOutputSettings secondarySettings)
 			{

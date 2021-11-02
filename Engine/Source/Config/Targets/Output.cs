@@ -16,29 +16,25 @@ using CodeClear.NaturalDocs.Engine.Errors;
 
 namespace CodeClear.NaturalDocs.Engine.Config.Targets
 	{
-	abstract public class Output
+	abstract public class Output : OverridableOutputSettings
 		{
 		
 		// Group: Functions
 		// __________________________________________________________________________
 		
 		
-		public Output (PropertyLocation propertyLocation)
+		public Output (PropertyLocation propertyLocation) : base ()
 			{
 			this.number = 0;
-
-			this.overridableSettings = new OverridableOutputSettings();
 
 			this.propertyLocation = propertyLocation;
 			this.numberPropertyLocation = PropertySource.NotDefined;
 			}
 
 
-		public Output (Output toCopy)
+		public Output (Output toCopy) : base (toCopy)
 			{
 			this.number = toCopy.number;
-
-			this.overridableSettings = new OverridableOutputSettings(toCopy.overridableSettings);
 
 			this.propertyLocation = toCopy.propertyLocation;
 			this.numberPropertyLocation = toCopy.numberPropertyLocation;
@@ -82,18 +78,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			}
 
 
-		/* Property: OverridableSettings
-		 * The <OverridableOutputSettings> for this target.  These are settings that can be specified either here or in the
-		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
-		 * are.
-		 */
-		public OverridableOutputSettings OverridableSettings
-			{
-			get
-				{  return overridableSettings;  }
-			}
-
-
 					
 		// Group: Property Locations
 		// __________________________________________________________________________
@@ -127,8 +111,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 
 		protected int number;
-
-		protected OverridableOutputSettings overridableSettings;
 
 		protected PropertyLocation propertyLocation;
 		protected PropertyLocation numberPropertyLocation;
