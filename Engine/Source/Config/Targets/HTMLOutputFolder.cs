@@ -81,6 +81,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 					
+
+		// Group: Property Locations
+		// __________________________________________________________________________
+
+
 		/* Property: FolderPropertyLocation
 		 * Where <Folder> is defined.
 		 */

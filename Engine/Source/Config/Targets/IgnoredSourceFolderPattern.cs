@@ -63,6 +63,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
+
+		// Group: Property Locations
+		// __________________________________________________________________________
+
+
 		/* Property: PatternPropertyLocation
 		 * Where <Pattern> is defined.
 		 */

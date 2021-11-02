@@ -24,21 +24,21 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 		
-		public SourceFolder (PropertyLocation propertyLocation) : base (propertyLocation)
+		public SourceFolder (PropertyLocation propertyLocation) : base (Files.InputType.Source, propertyLocation)
 			{
 			folder = null;
-			folderPropertyLocation = PropertySource.NotDefined;
-
 			name = null;
+
+			folderPropertyLocation = PropertySource.NotDefined;
 			namePropertyLocation = PropertySource.NotDefined;
 			}
 
 		public SourceFolder (SourceFolder toCopy) : base (toCopy)
 			{
 			folder = toCopy.folder;
-			folderPropertyLocation = toCopy.folderPropertyLocation;
-
 			name = toCopy.name;
+
+			folderPropertyLocation = toCopy.folderPropertyLocation;
 			namePropertyLocation = toCopy.namePropertyLocation;
 			}
 
@@ -116,18 +116,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		/* Property: FolderPropertyLocation
-		 * Where <Folder> is defined.
-		 */
-		public PropertyLocation FolderPropertyLocation
-		    {
-		    get
-		        {  return folderPropertyLocation;  }
-		    set
-		        {  folderPropertyLocation = value;  }
-		    }
-
-
 		/* Property: Name
 		 * The name of the input target, or null if it isn't defined.  Names are used to distinguish multiple file sources in user-visible
 		 * places such as menus.  They should ideally be unique.
@@ -139,6 +127,23 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			set
 				{  name = value;  }
 			}
+
+
+
+		// Group: Property Locations
+		// __________________________________________________________________________
+
+
+		/* Property: FolderPropertyLocation
+		 * Where <Folder> is defined.
+		 */
+		public PropertyLocation FolderPropertyLocation
+		    {
+		    get
+		        {  return folderPropertyLocation;  }
+		    set
+		        {  folderPropertyLocation = value;  }
+		    }
 
 
 		/* Property: NamePropertyLocation
@@ -153,39 +158,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
-		/* Property: Type
-		 * The type of file source this input target provides.
-		 */
-		override public Files.InputType Type
-			{  
-			get
-				{  return Files.InputType.Source;  }
-			}
-
-
-		/* Property: TypePropertyLocation
-		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
-		 */
-		override public PropertyLocation TypePropertyLocation
-		    {
-		    get
-		        {  
-				// Same as where the entire property is defined, since it's specified by "Source Folder:".
-				return this.PropertyLocation;  
-				}
-		    }
-
-
 		
 		// Group: Variables
 		// __________________________________________________________________________
 		
 
-		protected string name;
-		protected PropertyLocation namePropertyLocation;
-
 		protected AbsolutePath folder;
+		protected string name;
+
 		protected PropertyLocation folderPropertyLocation;
+		protected PropertyLocation namePropertyLocation;
 
 		}
 	}

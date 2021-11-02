@@ -23,7 +23,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 		
-		public ImageFolder (PropertyLocation propertyLocation) : base (propertyLocation)
+		public ImageFolder (PropertyLocation propertyLocation) : base (Files.InputType.Image, propertyLocation)
 			{
 			folder = null;
 			folderPropertyLocation = PropertySource.NotDefined;
@@ -79,6 +79,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		    }
 
 
+
+		// Group: Property Locations
+		// __________________________________________________________________________
+
+
 		/* Property: FolderPropertyLocation
 		 * Where <Folder> is defined.
 		 */
@@ -88,29 +93,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		        {  return folderPropertyLocation;  }
 		    set
 		        {  folderPropertyLocation = value;  }
-		    }
-
-
-		/* Property: Type
-		 * The type of file source this input target provides.
-		 */
-		override public Files.InputType Type
-			{  
-			get
-				{  return Files.InputType.Image;  }
-			}
-
-
-		/* Property: TypePropertyLocation
-		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
-		 */
-		override public PropertyLocation TypePropertyLocation
-		    {
-		    get
-		        {  
-				// Same as where the entire property is defined, since it's specified by "Image Folder:".
-				return this.PropertyLocation;  
-				}
 		    }
 
 	

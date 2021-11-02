@@ -25,21 +25,26 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		
 		public Output (PropertyLocation propertyLocation) : base (propertyLocation)
 			{
+			number = 0;
+
 			overridableSettings = new OverridableOutputSettings();
 
-			number = 0;
 			numberPropertyLocation = PropertySource.NotDefined;
 			}
 
+
 		public Output (Output toCopy) : base (toCopy)
 			{
+			number = toCopy.number;
+
 			overridableSettings = new OverridableOutputSettings(toCopy.overridableSettings);
 
-			number = toCopy.number;
 			numberPropertyLocation = toCopy.numberPropertyLocation;
 			}
 
+
 		abstract public Output Duplicate ();
+
 
 		/* Function: IsSameTarget
 		 * Override to determine whether the two output targets are fundamentally the same.  Only primary identifying properties
@@ -54,18 +59,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 
 
-		/* Property: OverridableSettings
-		 * The <OverridableOutputSettings> for this target.  These are settings that can be specified either here or in the
-		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
-		 * are.
-		 */
-		public OverridableOutputSettings OverridableSettings
-			{
-			get
-				{  return overridableSettings;  }
-			}
-
-
 		/* Property: Number
 		 * The number of the output target, or zero if it isn't defined.  Numbers are used to determine the folder name each
 		 * output target can use to save its working data.
@@ -78,7 +71,24 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 				{  number = value;  }
 			}
 
+
+		/* Property: OverridableSettings
+		 * The <OverridableOutputSettings> for this target.  These are settings that can be specified either here or in the
+		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
+		 * are.
+		 */
+		public OverridableOutputSettings OverridableSettings
+			{
+			get
+				{  return overridableSettings;  }
+			}
+
+
 					
+		// Group: Property Locations
+		// __________________________________________________________________________
+
+
 		/* Property: NumberPropertyLocation
 		 * Where <Number> is defined, or <PropertySource.NotDefined> if it isn't.
 		 */
@@ -96,9 +106,10 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 
+		protected int number;
+
 		protected OverridableOutputSettings overridableSettings;
 
-		protected int number;
 		protected PropertyLocation numberPropertyLocation;
 				
 		}

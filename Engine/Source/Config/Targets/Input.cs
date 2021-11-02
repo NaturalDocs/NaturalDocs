@@ -22,13 +22,16 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 		
 		
-		public Input (PropertyLocation propertyLocation) : base (propertyLocation)
+		public Input (Files.InputType type, PropertyLocation propertyLocation) : base (propertyLocation)
 			{
-			overridableSettings = new OverridableInputSettings();
-
+			this.type = type;
 			this.number = 0;
-			numberPropertyLocation = PropertySource.NotDefined;
+
+			this.overridableSettings = new OverridableInputSettings();
+
+			this.numberPropertyLocation = PropertySource.NotDefined;
 			}
+
 
 		public Input (Input toCopy) : base (toCopy)
 			{
@@ -37,6 +40,7 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			number = toCopy.number;
 			numberPropertyLocation = toCopy.numberPropertyLocation;
 			}
+
 
 		abstract public Input Duplicate ();
 
@@ -54,30 +58,14 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// __________________________________________________________________________
 
 
-		/* Property: OverridableSettings
-		 * The <OverridableIntputSettings> for this target.  These are settings that can be specified either here or in the
-		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
-		 * are.
-		 */
-		public OverridableInputSettings OverridableSettings
-			{
-			get
-				{  return overridableSettings;  }
-			}
-
-
 		/* Property: Type
 		 * The type of file source this input target provides.
 		 */
-		abstract public Files.InputType Type
-			{  get;  }
-
-
-		/* Property: TypePropertyLocation
-		 * Where <Type> is defined, or <PropertySource.NotDefined> if it isn't.
-		 */
-		abstract public PropertyLocation TypePropertyLocation
-		    {  get;  }
+		public Files.InputType Type
+			{
+			get
+				{  return type;  }
+			}
 
 
 		/* Property: Number
@@ -91,6 +79,23 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 			set
 				{  number = value;  }
 			}
+
+
+		/* Property: OverridableSettings
+		 * The <OverridableIntputSettings> for this target.  These are settings that can be specified either here or in the
+		 * <ProjectConfig>.  The ones here take precedence.  This object will always be defined, even if none of its properties 
+		 * are.
+		 */
+		public OverridableInputSettings OverridableSettings
+			{
+			get
+				{  return overridableSettings;  }
+			}
+
+
+
+		// Group: Property Locations
+		// __________________________________________________________________________
 
 
 		/* Property: NumberPropertyLocation
@@ -109,9 +114,11 @@ namespace CodeClear.NaturalDocs.Engine.Config.Targets
 		// Group: Variables
 		// __________________________________________________________________________
 		
+		protected Files.InputType type;
+		protected int number;
+
 		protected OverridableInputSettings overridableSettings;
 
-		protected int number;
 		protected PropertyLocation numberPropertyLocation;
 		
 		}
