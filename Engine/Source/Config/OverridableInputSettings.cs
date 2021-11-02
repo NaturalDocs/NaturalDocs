@@ -24,11 +24,60 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		
 		public OverridableInputSettings ()
 			{
+			characterEncodingRules = null;
 			}
 
 		public OverridableInputSettings (OverridableInputSettings toCopy)
 			{
+			if (toCopy.HasCharacterEncodingRules)
+				{  
+				// This is a shallow copy as CharacterEncodingRule is a class and not a struct.  However, CharacterEncodingRule's
+				// properties are only set when it's created so it should be okay to share the member objects.
+				characterEncodingRules = toCopy.characterEncodingRules.GetRange(0, characterEncodingRules.Count);
+				}
+			else
+				{  characterEncodingRules = null;  }
+			}			
+
+		/* Function: AddCharacterEncodingRule
+		 * Adds a <CharacterEncodingRule> to the list.
+		 */
+		public void AddCharacterEncodingRule (CharacterEncodingRule rule)
+			{
+			if (characterEncodingRules == null)
+				{  characterEncodingRules = new List<CharacterEncodingRule>();  }
+
+			characterEncodingRules.Add(rule);
 			}
+
+
+
+		// Group: Properties
+		// __________________________________________________________________________
+		
+		/* Property: CharacterEncodingRules
+		 * A list of <CharacterEncodingRule> objects that apply, or null if there aren't any.
+		 */
+		public IList<CharacterEncodingRule> CharacterEncodingRules
+			{
+			get
+				{  return characterEncodingRules; }
+			}
+
+		/* Property: HasCharacterEncodingRules
+		 * Whether any <CharacterEncodingRules> are defined.
+		 */
+		public bool HasCharacterEncodingRules
+			{
+			get
+				{  return (characterEncodingRules != null);  }
+			}
+	
+		
+		// Group: Variables
+		// __________________________________________________________________________
+		
+		protected List<CharacterEncodingRule> characterEncodingRules;
 		
 		}
 	}

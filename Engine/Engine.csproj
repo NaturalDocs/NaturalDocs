@@ -47,6 +47,7 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Source\Config\CharacterEncodingRule.cs" />
     <Compile Include="Source\Config\OverridableInputSettings.cs" />
     <Compile Include="Source\Exceptions\PathMustBeAbsolute.cs" />
     <Compile Include="Source\Exceptions\PathMustBeRelative.cs" />
