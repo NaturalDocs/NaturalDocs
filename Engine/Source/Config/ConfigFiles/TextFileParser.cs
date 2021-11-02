@@ -94,10 +94,20 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 					{
 					var propertyLocation = new PropertyLocation(PropertySource.ProjectFile, configFile.FileName, configFile.LineNumber);
 
-					if (GetTargetHeader(lcIdentifier, value, propertyLocation, out var target, errorList))
+					if (GetInputTargetHeader(lcIdentifier, value, propertyLocation, out var inputTarget, errorList))
 						{  
-						currentInputTarget = target as Targets.Input;  // Will set to null if incorrect type
-						currentOutputTarget = target as Targets.Output;
+						currentInputTarget = inputTarget;
+						currentOutputTarget = null;
+						}
+					else if (GetFilterTargetHeader(lcIdentifier, value, propertyLocation, out var filterTarget, errorList))
+						{
+						currentInputTarget = null;
+						currentOutputTarget = null;
+						}
+					else if (GetOutputTargetHeader(lcIdentifier, value, propertyLocation, out var outputTarget, errorList))
+						{  
+						currentInputTarget = null;
+						currentOutputTarget = outputTarget;
 						}
 					else if (GetInputProperty(lcIdentifier, value, propertyLocation, currentInputTarget, errorList) ||
 							   GetOutputProperty(lcIdentifier, value, propertyLocation, currentOutputTarget, errorList))
@@ -123,13 +133,13 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			}
 
 
-		/* Function: GetTargetHeader
-		 * If the passed identifier starts a target like "Source Folder", creates a new target for it and returns true.  If it's a recognized 
-		 * identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It only returns 
-		 * false for unrecognized identifiers.
+		/* Function: GetInputTargetHeader
+		 * If the passed identifier starts an input target like "Source Folder", creates a new target object for it and returns true.  If it's
+		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It only 
+		 * returns false for unrecognized identifiers.
 		 */
-		protected bool GetTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, out Target newTarget, 
-														ErrorList errorList)
+		protected bool GetInputTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation,
+															   out Targets.Input newTarget, ErrorList errorList)
 			{
 
 			// Source folder
@@ -189,59 +199,6 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 				return true;
 				}
 
-
-			// HTML output folder
-				
-			else if (htmlOutputFolderRegex.IsMatch(lcIdentifier))
-				{  
-				var target = new Targets.HTMLOutputFolder(propertyLocation);
-				Path path = value;
-
-				if (path.IsRelative)
-					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
-
-				target.Folder = (AbsolutePath)path;
-				target.FolderPropertyLocation = propertyLocation;
-
-				projectConfig.OutputTargets.Add(target);
-				newTarget = target;
-				return true;
-				}
-
-
-			// Ignored source folder
-				
-			else if (ignoredSourceFolderRegex.IsMatch(lcIdentifier))
-				{  
-				var target = new Targets.IgnoredSourceFolder(propertyLocation);
-				Path path = value;
-
-				if (path.IsRelative)
-					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
-
-				target.Folder = (AbsolutePath)path;
-				target.FolderPropertyLocation = propertyLocation;
-
-				projectConfig.FilterTargets.Add(target);
-				newTarget = target;
-				return true;
-				}
-				
-
-			// Ignored source folder pattern
-				
-			else if (ignoredSourceFolderPatternRegex.IsMatch(lcIdentifier))
-				{  
-				var target = new Targets.IgnoredSourceFolderPattern(propertyLocation);
-
-				target.Pattern = value;
-				target.PatternPropertyLocation = propertyLocation;
-
-				projectConfig.FilterTargets.Add(target);
-				newTarget = target;
-				return true;
-				}
-
 			else
 				{  
 				newTarget = null;
@@ -281,6 +238,91 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			else
 				{  return false;  }
 			}
+
+
+		/* Function: GetFilterTargetHeader
+		 * If the passed identifier starts a filter target like "Ignore Source Folder", creates a new target for it and returns true.  If it's
+		 * a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.  It 
+		 * only returns false for unrecognized identifiers.
+		 */
+		protected bool GetFilterTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+															   out Targets.Filter newTarget, ErrorList errorList)
+			{
+
+			// Ignored source folder
+				
+			if (ignoredSourceFolderRegex.IsMatch(lcIdentifier))
+				{  
+				var target = new Targets.IgnoredSourceFolder(propertyLocation);
+				Path path = value;
+
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
+				target.FolderPropertyLocation = propertyLocation;
+
+				projectConfig.FilterTargets.Add(target);
+				newTarget = target;
+				return true;
+				}
+				
+
+			// Ignored source folder pattern
+				
+			else if (ignoredSourceFolderPatternRegex.IsMatch(lcIdentifier))
+				{  
+				var target = new Targets.IgnoredSourceFolderPattern(propertyLocation);
+
+				target.Pattern = value;
+				target.PatternPropertyLocation = propertyLocation;
+
+				projectConfig.FilterTargets.Add(target);
+				newTarget = target;
+				return true;
+				}
+
+			else
+				{  
+				newTarget = null;
+				return false;  
+				}
+		    }
+
+
+		/* Function: GetOutputTargetHeader
+		 * If the passed identifier starts an output target like "HTML Output Folder", creates a new target for it and returns true.  If 
+		 * it's a recognized identifier but there is a syntax error in the value it will add an error to <errorList> and still return true.
+		 * It only returns false for unrecognized identifiers.
+		 */
+		protected bool GetOutputTargetHeader (string lcIdentifier, string value, PropertyLocation propertyLocation, 
+																 out Targets.Output newTarget, ErrorList errorList)
+			{
+
+			// HTML output folder
+				
+			if (htmlOutputFolderRegex.IsMatch(lcIdentifier))
+				{  
+				var target = new Targets.HTMLOutputFolder(propertyLocation);
+				Path path = value;
+
+				if (path.IsRelative)
+					{  path = propertyLocation.FileName.ParentFolder + "/" + path;  }
+
+				target.Folder = (AbsolutePath)path;
+				target.FolderPropertyLocation = propertyLocation;
+
+				projectConfig.OutputTargets.Add(target);
+				newTarget = target;
+				return true;
+				}
+
+			else
+				{  
+				newTarget = null;
+				return false;  
+				}
+		    }
 
 
 		/* Function: GetOutputProperty
