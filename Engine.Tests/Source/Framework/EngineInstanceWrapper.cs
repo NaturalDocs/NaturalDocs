@@ -165,10 +165,10 @@ namespace CodeClear.NaturalDocs.Engine.Tests.Framework
 
 			var config = new Config.ProjectConfig(Config.PropertySource.CommandLine);
 
-			config.ProjectConfigFolder = projectConfigFolder;
+			config.ProjectConfigFolder = this.projectConfigFolder;
 			config.ProjectConfigFolderPropertyLocation = Config.PropertySource.CommandLine;
 
-			config.WorkingDataFolder = workingDataFolder;
+			config.WorkingDataFolder = this.workingDataFolder;
 			config.WorkingDataFolderPropertyLocation = Config.PropertySource.CommandLine;
 
 			config.AutoGroup = autoGroup;

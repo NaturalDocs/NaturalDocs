@@ -28,8 +28,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			{
 			this.source = source;
 
-			projectConfigFolder = new Path();
-			workingDataFolder = new Path();
+			projectConfigFolder = null;
+			workingDataFolder = null;
 
 			inputSettings = new OverridableInputSettings();
 			outputSettings = new OverridableOutputSettings();
@@ -68,9 +68,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 
 		
 		/* Property: ProjectConfigFolder
-		 * The <Path> where the project configuration is stored, or null if it hasn't been set.
+		 * The <AbsolutePath> where the project configuration is stored, or null if it hasn't been set.
 		 */
-		public Path ProjectConfigFolder
+		public AbsolutePath ProjectConfigFolder
 			{
 			get
 				{  return projectConfigFolder;  }
@@ -79,9 +79,9 @@ namespace CodeClear.NaturalDocs.Engine.Config
 			}
 
 		/* Property: WorkingDataFolder
-		 * The <Path> where temporary working data is stored, or null if it hasn't been set.
+		 * The <AbsolutePath> where temporary working data is stored, or null if it hasn't been set.
 		 */
-		public Path WorkingDataFolder
+		public AbsolutePath WorkingDataFolder
 			{
 			get
 				{  return workingDataFolder;  }
@@ -263,8 +263,8 @@ namespace CodeClear.NaturalDocs.Engine.Config
 		
 		protected Config.PropertySource source;
 
-		protected Path projectConfigFolder;
-		protected Path workingDataFolder;
+		protected AbsolutePath projectConfigFolder;
+		protected AbsolutePath workingDataFolder;
 
 		protected OverridableInputSettings inputSettings;
 		protected OverridableOutputSettings outputSettings;
