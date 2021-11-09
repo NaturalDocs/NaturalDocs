@@ -182,9 +182,7 @@ Project.txt.UnrecognizedValue(keyword, value): "{1}" is not a valid value for {0
 Project.txt.CantFindHomePageFile(name): Can't find home page file {0}.
 
 Project.txt.FileHeader.multiline {{{
-# This is the file you use to provide information about your project.  It can
-# also be used to specify input and output settings so you don't have to
-# include them on the command line.
+# This is the main file you use to configure Natural Docs for your project.
 }}}
 
 Project.txt.ProjectInfoHeader.multiline {{{
@@ -193,7 +191,8 @@ Project.txt.ProjectInfoHeader.multiline {{{
 }}}
 
 Project.txt.ProjectInfoHeaderText.multiline {{{
-# This is where you specify general information about your project.
+# This is where you put general information about your project.  None of these
+# settings are required, though Title is recommended.
 }}}
 
 Project.txt.TitleSyntax.multiline {{{
@@ -203,7 +202,7 @@ Project.txt.TitleSyntax.multiline {{{
 }}}
 Project.txt.SubtitleSyntax.multiline {{{
 # Subtitle: [text]
-#    A subtitle for your project.
+#    A subtitle for your project, if desired.
 }}}
 Project.txt.CopyrightSyntax.multiline {{{
 # Copyright: [text]
@@ -212,7 +211,8 @@ Project.txt.CopyrightSyntax.multiline {{{
 }}}
 Project.txt.TimestampSyntax.multiline {{{
 # Timestamp: [text]
-#    Text explaining when the documentation was generated.  The following
+#    Text explaining when the documentation was generated, such as "Last
+#    Updated Month Day Year", if you want that to be included.  The following
 #    substitutions are performed:
 }}}
 Project.txt.TimestampSubstitutions.multiline {{{
@@ -223,20 +223,21 @@ Project.txt.TimestampSubstitutions.multiline {{{
 #    d     - Single digit day, when possible.  1 is "1".
 #    dd    - Always double digit day.  1 is "01".
 #    day   - Day with text extension.  1 is "1st".
-#    yy    - Double digit year.  2020 is "20".
-#    yyyy  - Four digit year.  2020 is "2020".
-#    year  - Four digit year.  2020 is "2020".
+#    yy    - Double digit year.  2021 is "21".
+#    yyyy  - Four digit year.  2021 is "2021".
+#    year  - Four digit year.  2021 is "2021".
 }}}
 Project.txt.StyleSyntax.multiline {{{
 # Style: [style]
-#    The style to apply to the generated documentation.  It can be the name of
-#    a CSS file in the project configuration folder or a subfolder that
-#    contains Style.txt.  Do not include ".css" if using a CSS file.
+#    A custom style to apply to the generated documentation.  See
+#    https://naturaldocs.org/reference/styles for more information.
 }}}
 Project.txt.HomePageSyntax.multiline {{{
 # Home Page: [file]
-#    The file that should serve as the home page.  This could be a source file
-#    in one of the input targets, or a HTML file in any location.
+#    A custom home page for the generated documentation.  It could be a
+#    documented file in one of the source folders or a HTML file in any
+#    location.
+}}}
 Project.txt.EncodingSyntax.multiline {{{
 # Encoding: [name or code page number]
 # Encoding: [name or code page number] *.[extension]
@@ -261,23 +262,25 @@ Project.txt.SourceHeader.multiline {{{
 }}}
 
 Project.txt.SourceHeaderText.multiline {{{
-# This is where you specify what files and folders Natural Docs should be 
-# scanning.  If you use any of these options on the command line, this entire
-# section is ignored except for names and numbers.
-#
-# All paths are relative to the project configuration folder, which lets this
-# file remain portable across computers and not cause problems in version
-# control systems.  You can enter absolute paths and they will be converted
-# automatically.
+# This is where you tell Natural Docs which folders it should scan for source
+# files.  If you add any on the command line this section is ignored except
+# for the properties of the ones from the command line.
 }}}
 
 Project.txt.SourceFolderSyntax.multiline {{{
-# Source Folder: [path]
-#    Name: [name]
+# Source Folder: [folder]
+#    Specifies a folder which will be searched for source files.  The path is
+#    relative to the project configuration folder, which lets this file remain
+#    portable across computers and not cause problems in version control
+#    systems.  You can enter an absolute path and it will be converted
+#    automatically.
 #
-#    Specifies a folder which will be searched for source files.  If you have
-#    more than one, add the Name property to set how it will show up in the
-#    menu.
+#    Additional properties can be added after each source folder:
+#
+#    Name: [name]
+#       How this source folder will appear in the menu if you have more than
+#       one.
+#
 #    Encoding: [name or code page number]
 #    Encoding: [name or code page number] *.[extension]
 #    Encoding: [name or code page number] [folder]
@@ -303,12 +306,12 @@ Project.txt.FilterHeader.multiline {{{
 
 Project.txt.FilterHeaderText.multiline {{{
 # If there are any subfolders in the source code that you would like Natural
-# Docs to ignore, they can be specified here.  If you use any of these options
-# on the command line, this entire section is ignored.
+# Docs to ignore they can be added here.  If you use any of these options on
+# the command line this section is ignored.
 }}}
 
 Project.txt.IgnoreSourceFolderSyntax.multiline {{{
-# Ignore Source Folder: [path]
+# Ignore Source Folder: [folder]
 #    Tells Natural Docs to skip this folder when scanning files.
 }}}
 
@@ -320,7 +323,7 @@ Project.txt.IgnoreSourceFolderPatternSyntax.multiline {{{
 #    match "client", although "cli*" will.
 #
 #    The data folders of common version control systems (.git, .svn, .cvs, .hg)
-#    are ignored automatically.  You do not have to specify them here.
+#    are ignored automatically.  You don't have to add them here.
 }}}
 
 Project.txt.ImageHeader.multiline {{{
@@ -329,24 +332,20 @@ Project.txt.ImageHeader.multiline {{{
 }}}
 
 Project.txt.ImageHeaderText.multiline {{{
-# This is where you specify additional folders Natural Docs should look for
-# images in.  When you put something like (see diagram.jpg) in a comment
-# Natural Docs looks for it relative to the source file.  If you put
-# additional folders here it will also check them for the image.
-#
-# If you use any of these options on the command line, this entire section is
-# ignored except for numbers.
-#
-# All paths are relative to the project configuration folder, which lets this
-# file remain portable across computers and not cause problems in version
-# control systems.  You can enter absolute paths and they will be converted
-# automatically.
+# This is where you tell Natural Docs which folders it should look for images
+# in.  When you put something like (see diagram.jpg) in a comment Natural Docs
+# will look for it relative to the source file it appears in plus any folders
+# added here.  If you add any on the command line this section is ignored.
 }}}
 
 Project.txt.ImageFolderSyntax.multiline {{{
-# Image Folder: [path]
-#    Specifies a folder which will be searched for image files.  They can be
-#    referenced in comments with (see filename.jpg).
+# Image Folder: [folder]
+#    Specifies a folder which will be searched for image files.  The path is
+#    relative to the project configuration folder, which lets this file remain
+#    portable across computers and not cause problems in version control
+#    systems.  You can enter absolute paths and they will be converted
+#    automatically.
+
 }}}
 
 Project.txt.OutputHeader.multiline {{{
@@ -355,25 +354,31 @@ Project.txt.OutputHeader.multiline {{{
 }}}
 
 Project.txt.OutputHeaderText.multiline {{{
-# This is where you specify what kind of documentation you want Natural Docs
-# to build and where it should be put.  If you use any of these options on the
-# command line, this entire section is ignored except for secondary settings.
-#
-# All paths are relative to the project configuration folder, which lets this
-# file remain portable across computers and not cause problems in version
-# control systems.  You can enter absolute paths and they will be converted
-# automatically.
-#
-# You can override the Title, Subtitle, Copyright, Timestamp, Style, and Home
-# Page settings under each entry if desired, so if you have multiple output
-# folders you can give them each different styles or subtitles.
+# This is where you tell Natural Docs what kind of documentation you want
+# built and where it should be put.  If you use any of these options on the
+# command line this section is ignored except for the properties of the ones
+# from the command line.
 }}}
 
 Project.txt.HTMLOutputFoldersSyntax.multiline {{{
-# HTML Output Folder: [path]
-#    [Overridden Properties]
+# HTML Output Folder: [folder]
+#    Generates HTML documentation in the specified folder.  The path is
+#    relative to the project configuration folder, which lets this file remain
+#    portable across computers and not cause problems in version control
+#    systems.  You can enter an absolute path and it will be converted
+#    automatically.
 #
-#    Generates HTML documentation in the specified folder.
+#    Additional properties can be added after each output folder:
+#
+#    Title: [text]
+#    Subtitle: [text]
+#    Copyright: [text]
+#    Timestamp: [text]
+#    Style: [style]
+#    Home Page: [file]
+#       These properties can be overridden for just this output folder, which
+#       allows you to have multiple output folders with different styles or
+#       titles.  See the Project Information section for descriptions of them.
 }}}
 
 Project.txt.GlobalSettingsHeader.multiline {{{

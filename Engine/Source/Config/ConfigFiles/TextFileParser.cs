@@ -800,7 +800,9 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			if (hasStyleName)
 				{
 				output.AppendLine("Style: " + projectConfig.OutputSettings.StyleName);
-				output.AppendLine();
+				
+				if (!hasHomePage)
+					{  output.AppendLine();  }
 				}
 
 			if (hasHomePage)
@@ -873,49 +875,22 @@ namespace CodeClear.NaturalDocs.Engine.Config.ConfigFiles
 			// Syntax reference
 
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.ProjectInfoHeaderText.multiline") );
-
-			if (!hasTitle)
-				{
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TitleSyntax.multiline") );
-				}
-					
-			if (!hasSubtitle)
-				{  
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.SubtitleSyntax.multiline") );
-				}
-					
-			if (!hasCopyright)
-				{  
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.CopyrightSyntax.multiline") );
-				}
-			
-			if (!hasTimestampCode)
-				{  
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSyntax.multiline") );
+			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.TimestampSubstitutions.multiline") );
-				}
-
-			if (!hasStyleName)
-				{
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.StyleSyntax.multiline") );
-				}
-
-			if (!hasHomePage)
-				{
 			output.AppendLine("#");
 			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.HomePageSyntax.multiline") );
-				}
-
-			if (hasEncodingRules)
-				{
-				output.AppendLine("#");
-				output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingSyntax.multiline") );
-				}
+			output.AppendLine("#");
+			output.Append( Locale.Get("NaturalDocs.Engine", "Project.txt.EncodingSyntax.multiline") );
 			output.AppendLine();
 			output.AppendLine();
 			}
