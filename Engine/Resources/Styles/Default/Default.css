@@ -139,6 +139,21 @@ td {
 	vertical-align: top;
 	}
 
+.TM {
+	position: relative;
+	font-size: 40%;
+	top: -1em;
+	line-height: 0;
+	vertical-align: baseline;
+	}
+.RegTM {
+	position: relative;
+	font-size: 30%;
+	top: -1.6em;
+	line-height: 0;
+	vertical-align: baseline;
+	}
+
 #NDLoadingNotice {
 	height: 40px;
 	background: URL("images/menu-loading.gif") no-repeat center center;

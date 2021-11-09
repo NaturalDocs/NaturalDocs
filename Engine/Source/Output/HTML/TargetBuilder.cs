@@ -522,6 +522,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (copyrightHTML != null)
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
+			if (headerTitleHTML != null)
+				{  headerTitleHTML = FormatTrademarks(headerTitleHTML);  }
+			if (headerSubtitleHTML != null)
+				{  headerSubtitleHTML = FormatTrademarks(headerSubtitleHTML);  }
+			if (timestampHTML != null)
+				{  timestampHTML = FormatTrademarks(timestampHTML);  }
+			if (copyrightHTML != null)
+				{  copyrightHTML = FormatTrademarks(copyrightHTML);  }
+
 
 			// Build index.html, the main frame page
 
@@ -669,6 +678,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			if (copyrightHTML != null)
 				{  copyrightHTML = copyrightHTML.ToHTML();  }
 
+			if (headerTitleHTML != null)
+				{  headerTitleHTML = FormatTrademarks(headerTitleHTML);  }
+			if (headerSubtitleHTML != null)
+				{  headerSubtitleHTML = FormatTrademarks(headerSubtitleHTML);  }
+			if (timestampHTML != null)
+				{  timestampHTML = FormatTrademarks(timestampHTML);  }
+			if (copyrightHTML != null)
+				{  copyrightHTML = FormatTrademarks(copyrightHTML);  }
+
 
 			// Update HomePageUsesTimestamp
 
@@ -796,6 +814,15 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 			
 			if (Target.Config.Copyright != null)
 				{  copyrightHTML = Target.Config.Copyright.ToHTML();  }
+
+			if (titleHTML != null)
+				{  titleHTML = FormatTrademarks(titleHTML);  }
+			if (subtitleHTML != null)
+				{  subtitleHTML = FormatTrademarks(subtitleHTML);  }
+			if (timestampHTML != null)
+				{  timestampHTML = FormatTrademarks(timestampHTML);  }
+			if (copyrightHTML != null)
+				{  copyrightHTML = FormatTrademarks(copyrightHTML);  }
 
 
 			// Update HomePageUsesTimestamp
@@ -1467,6 +1494,17 @@ namespace CodeClear.NaturalDocs.Engine.Output.HTML
 
 				folder = folder.ParentFolder;
 				}
+			}
+
+
+		/* Function: FormatTrademarks
+		 * Adds CSS classes to trademark symbols.
+		 */
+		protected string FormatTrademarks (string html)
+			{
+			html = html.Replace("®", "<sup class=\"RegTM\">®</sup>");
+			html = html.Replace("™", "<sup class=\"TM\">™</sup>");
+			return html;
 			}
 
 
